@@ -48,13 +48,11 @@
               </div>
           </div>
 
-
-
             <ice:dataTable headerClass="groupRow"
                                 id="dataverseList"
+                                binding="#{manageClassificationsPage.mainTable}"
                                 rowClasses="evenRow oddRow"
-                                sortColumn="Name"
-                                sortAscending="true"
+                                sortColumn="#{manageClassificationsPage.sortColumnName}"
                                 value="#{manageClassificationsPage.itemBeans}"
                                 var="dvItems"
                                 styleClass="dvn_networkHomePanelInner"
@@ -91,9 +89,10 @@
                 <ice:column style="width:40%" >
                   <f:facet name="header">
                     <ice:commandSortHeader
-                      columnName="Name"
-                      arrow="true">
-                      <ice:outputText value="Name"/>
+                      columnName="#{manageClassificationsPage.nameColumnName}"
+                      arrow="true"
+                      actionListener="#{manageClassificationsPage.sort}">
+                      <ice:outputText value="#{manageClassificationsPage.nameColumnName}"/>
                     </ice:commandSortHeader>
                   </f:facet>
                   <ice:outputLink value="/dvn/faces/networkAdmin/AddClassificationsPage.xhtml">
@@ -105,9 +104,10 @@
                 <ice:column style="width:35%">
                     <f:facet name="header">
                         <ice:commandSortHeader
-                            columnName="#{dvItems.shortDescriptionColumnName}"
-                            arrow="true">
-                            <ice:outputText value="Description"/>
+                            columnName="#{manageClassificationsPage.shortDescriptionColumnName}"
+                            arrow="true"
+                            actionListener="#{manageClassificationsPage.sort}">
+                            <ice:outputText value="#{manageClassificationsPage.shortDescriptionColumnName}"/>
                         </ice:commandSortHeader>
                     </f:facet>
                     <ice:outputText value="#{dvItems.shortDescription}"/>
@@ -116,9 +116,10 @@
                 <ice:column style="width:10%">
                     <f:facet name="header">
                         <ice:commandSortHeader
-                            columnName="#{dvItems.subclassificationsColumnName}"
-                            arrow="true">
-                            <ice:outputText value="Subclassifications"/>
+                            columnName="#{manageClassificationsPage.subclassificationsColumnName}"
+                            arrow="true"
+                            actionListener="#{manageClassificationsPage.sort}">
+                            <ice:outputText value="#{manageClassificationsPage.subclassificationsColumnName}"/>
                         </ice:commandSortHeader>
                     </f:facet>
                     <ice:outputText value="#{dvItems.subclassification}"/>

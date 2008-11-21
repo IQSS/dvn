@@ -3,116 +3,103 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:gui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core" 
+      xmlns:f="http://java.sun.com/jsf/core"
       xmlns:jsp="http://java.sun.com/JSP/Page"
-      xmlns:ice="http://www.icesoft.com/icefaces/component"
-      >
+      xmlns:ice="http://www.icesoft.com/icefaces/component">
 <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
-
 <body>
-<gui:composition template="/template.xhtml">
+  <gui:composition template="/template.xhtml">
+    <gui:param name="pageTitle" value="DVN - Account Terms of Use"/>
+    <gui:define name="body">
+      <ice:form  id="form1">
+        <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+        <input type="hidden" value="TermsOfUsePage" name="pageName"/>
+        <ice:inputHidden id="studyId" value="#{TermsOfUsePage.studyId}"/>
+        <ice:inputHidden id="redirectPage" value="#{TermsOfUsePage.redirectPage}"/>
+        <ice:inputHidden id="tou" value="#{TermsOfUsePage.touParam}"/>
+        <div class="dvn_section">
+          <div class="dvn_sectionTitle">
+            <ice:outputText value="Terms of Use"/>
+          </div>
+          <div class="dvn_sectionBox">
+            <div class="dvn_margin12">
+              <div class="termsAgreementMessage">
+                <ice:outputText rendered="#{TermsOfUsePage.touTypeDownload}" value="Please agree to the terms of use below before accessing the files for study: "/>
+                <ice:outputText rendered="#{TermsOfUsePage.touTypeDeposit and TermsOfUsePage.studyId!=null}" value="Please agree to the terms of use below before editing study: "/>
+                <ice:outputText styleClass="warnMessage" value="#{TermsOfUsePage.study.title}"/>
+                <ice:outputText rendered="#{TermsOfUsePage.studyId==null}" value="Please agree to the terms of use below before creating a new study."/>
+              </div>
+              <div jsfc="ice:panelGroup" rendered="#{TermsOfUsePage.studyId!=null and TermsOfUsePage.touTypeDownload}" style="padding: .5em 0;">
+                <ice:outputText value="Once you have been prompted to download the file, you may return "/>
+                <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{TermsOfUsePage.study.id}&amp;tab=files">
+                  <ice:outputText value="back to the Study"/>
+                </ice:outputLink>
+                <ice:outputText value="."/>
+              </div>
+              <div class="termsAgreementBox">
+                <div jsfc="ice:panelGroup" rendered="#{TermsOfUsePage.touTypeDownload}">
+                  <!-- Study Terms of Use -->
+                  <ice:outputText value="Confidentiality Declaration" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.confidentialityDeclaration}"/>
+                  <ice:outputText value="#{TermsOfUsePage.study.confidentialityDeclaration}" rendered="#{!empty TermsOfUsePage.study.confidentialityDeclaration}" escape="false"/>
 
-<gui:param name="pageTitle" value="DVN - Account Terms of Use" />
+                  <ice:outputText value="Special Permissions" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.specialPermissions}"/>
+                  <ice:outputText value="#{TermsOfUsePage.study.specialPermissions}" rendered="#{!empty TermsOfUsePage.study.specialPermissions}" escape="false"/>
 
-  <gui:define name="body">   
-        <ice:form  id="form1">
-            <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/> 
-            <input type="hidden" value="TermsOfUsePage" name="pageName"/>
-            <ice:inputHidden id="studyId" value="#{TermsOfUsePage.studyId}"/>
-            <ice:inputHidden id="redirectPage" value="#{TermsOfUsePage.redirectPage}"/>
-            <ice:inputHidden id="tou" value="#{TermsOfUsePage.touParam}"/>
-        
-            <div class="dvn_section">
-                <div class="dvn_sectionTitle">
-                    <ice:outputText value="Terms of Use" />
+                  <ice:outputText value="Restrictions" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.restrictions}" />
+                  <ice:outputText value="#{TermsOfUsePage.study.restrictions}" rendered="#{!empty TermsOfUsePage.study.restrictions}" escape="false"/>
+
+                  <ice:outputText value="Contact" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.contact}" />
+                  <ice:outputText value="#{TermsOfUsePage.study.contact}" rendered="#{!empty TermsOfUsePage.study.contact}" escape="false"/>
+
+                  <ice:outputText value="Citation Requirements" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.citationRequirements}"/>
+                  <ice:outputText value="#{TermsOfUsePage.study.citationRequirements}" rendered="#{!empty TermsOfUsePage.study.citationRequirements}" escape="false"/>
+
+                  <ice:outputText value="Depositor Requirements" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.depositorRequirements}"/>
+                  <ice:outputText value="#{TermsOfUsePage.study.depositorRequirements}" rendered="#{!empty TermsOfUsePage.study.depositorRequirements}" escape="false"/>
+
+                  <ice:outputText value="Conditions" styleClass="termsAgreementMessageTitle"  rendered="#{!empty TermsOfUsePage.study.conditions}"/>
+                  <ice:outputText value="#{TermsOfUsePage.study.conditions}" rendered="#{!empty TermsOfUsePage.study.conditions}" escape="false"/>
+
+                  <ice:outputText value="Disclaimer" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.disclaimer}"/>
+                  <ice:outputText value="#{TermsOfUsePage.study.disclaimer}" rendered="#{!empty TermsOfUsePage.study.disclaimer}" escape="false"/>
+
+                  <!-- Dataverse, Dataverse Network and Harvest Terms of Use -->
+                  <ice:outputText value="Dataverse Terms of Use" styleClass="termsAgreementMessageTitle" rendered="#{TermsOfUsePage.downloadDataverseTermsRequired}" />
+                  <ice:outputText value="#{TermsOfUsePage.study.owner.downloadTermsOfUse}" rendered="#{TermsOfUsePage.downloadDataverseTermsRequired}" escape="false"/>
+
+                  <ice:outputText value="Dataverse Network Terms of Use" styleClass="termsAgreementMessageTitle" rendered="#{TermsOfUsePage.downloadDvnTermsRequired}" />
+                  <ice:outputText value="#{TermsOfUsePage.vdcNetwork.downloadTermsOfUse}" rendered="#{TermsOfUsePage.downloadDvnTermsRequired}" escape="false"/>
+
+                  <ice:outputText value="Original Dataverse Terms of Use" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.harvestDVTermsOfUse}" />
+                  <ice:outputText value="#{TermsOfUsePage.study.harvestDVTermsOfUse}" rendered="#{!empty TermsOfUsePage.study.harvestDVTermsOfUse}"  escape="false"/>
+
+                  <ice:outputText value="Original Dataverse Network Terms of Use" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.harvestDVNTermsOfUse}"/>
+                  <ice:outputText value="#{TermsOfUsePage.study.harvestDVNTermsOfUse}" rendered="#{!empty TermsOfUsePage.study.harvestDVNTermsOfUse}" escape="false"/>
                 </div>
-                
-                <div class="dvn_sectionBox">
-                    <div class="dvn_margin12">
-                        
-                        <div styleClass="termsAgreementMessage">
-                           <ice:outputText rendered="#{TermsOfUsePage.touTypeDownload}" value="Please agree to the terms of use below before accessing the files for study: "/>
-                           <ice:outputText rendered="#{TermsOfUsePage.touTypeDeposit and TermsOfUsePage.studyId!=null}" value="Please agree to the terms of use below before editing study: "/>
-                           <ice:outputText styleClass="warnMessage" value="#{TermsOfUsePage.study.title}"/>
-                           <ice:outputText rendered="#{TermsOfUsePage.studyId==null}" value="Please agree to the terms of use below before creating a new study."/>
-                       </div>
-                       <div jsfc="ice:panelGroup" rendered="#{TermsOfUsePage.studyId!=null and TermsOfUsePage.touTypeDownload}" style="padding: .5em 0;">
-                            <ice:outputText value="Once you have been prompted to download the file, you may return "/>
-                            <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{TermsOfUsePage.study.id}&amp;tab=files">
-                                <ice:outputText value="back to the Study"/>
-                            </ice:outputLink>
-                            <ice:outputText value="."/>
-                       </div>
-                        <div styleClass="termsAgreementBox">
-                            <div jsfc="ice:panelGroup" rendered="#{TermsOfUsePage.touTypeDownload}">
-                                <!-- Study Terms of Use -->  
-                                <ice:outputText value="Confidentiality Declaration" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.confidentialityDeclaration}"/>     
-                                <ice:outputText value="#{TermsOfUsePage.study.confidentialityDeclaration}" rendered="#{!empty TermsOfUsePage.study.confidentialityDeclaration}" escape="false"/>
-                                
-                                <ice:outputText value="Special Permissions" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.specialPermissions}"/>
-                                <ice:outputText value="#{TermsOfUsePage.study.specialPermissions}" rendered="#{!empty TermsOfUsePage.study.specialPermissions}" escape="false"/>
-                                
-                                <ice:outputText value="Restrictions" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.restrictions}" />
-                                <ice:outputText value="#{TermsOfUsePage.study.restrictions}" rendered="#{!empty TermsOfUsePage.study.restrictions}" escape="false"/>
-                                
-                                <ice:outputText value="Contact" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.contact}" />
-                                <ice:outputText value="#{TermsOfUsePage.study.contact}" rendered="#{!empty TermsOfUsePage.study.contact}" escape="false"/>
-                                
-                                <ice:outputText value="Citation Requirements" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.citationRequirements}"/>
-                                <ice:outputText value="#{TermsOfUsePage.study.citationRequirements}" rendered="#{!empty TermsOfUsePage.study.citationRequirements}" escape="false"/>
-                                
-                                <ice:outputText value="Depositor Requirements" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.depositorRequirements}"/>
-                                <ice:outputText value="#{TermsOfUsePage.study.depositorRequirements}" rendered="#{!empty TermsOfUsePage.study.depositorRequirements}" escape="false"/>
-                                
-                                <ice:outputText value="Conditions" styleClass="termsAgreementMessageTitle"  rendered="#{!empty TermsOfUsePage.study.conditions}"/>
-                                <ice:outputText value="#{TermsOfUsePage.study.conditions}" rendered="#{!empty TermsOfUsePage.study.conditions}" escape="false"/>
-                                
-                                <ice:outputText value="Disclaimer" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.disclaimer}"/>
-                                <ice:outputText value="#{TermsOfUsePage.study.disclaimer}" rendered="#{!empty TermsOfUsePage.study.disclaimer}" escape="false"/>
-                                
-                                <!-- Dataverse, Dataverse Network and Harvest Terms of Use -->
-                                <ice:outputText value="Dataverse Terms of Use" styleClass="termsAgreementMessageTitle" rendered="#{TermsOfUsePage.downloadDataverseTermsRequired}" />
-                                <ice:outputText value="#{TermsOfUsePage.study.owner.downloadTermsOfUse}" rendered="#{TermsOfUsePage.downloadDataverseTermsRequired}" escape="false"/>
-                                
-                                <ice:outputText value="Dataverse Network Terms of Use" styleClass="termsAgreementMessageTitle" rendered="#{TermsOfUsePage.downloadDvnTermsRequired}" />
-                                <ice:outputText value="#{TermsOfUsePage.vdcNetwork.downloadTermsOfUse}" rendered="#{TermsOfUsePage.downloadDvnTermsRequired}" escape="false"/>
-                                
-                                 <ice:outputText value="Original Dataverse Terms of Use" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.harvestDVTermsOfUse}" />
-                                <ice:outputText value="#{TermsOfUsePage.study.harvestDVTermsOfUse}" rendered="#{!empty TermsOfUsePage.study.harvestDVTermsOfUse}"  escape="false"/>
-                               
-                                <ice:outputText value="Original Dataverse Network Terms of Use" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.harvestDVNTermsOfUse}"/>
-                                <ice:outputText value="#{TermsOfUsePage.study.harvestDVNTermsOfUse}" rendered="#{!empty TermsOfUsePage.study.harvestDVNTermsOfUse}" escape="false"/>
-                             
-                            </div>
-                            
-                            <div jsfc="ice:panelGroup" rendered="#{TermsOfUsePage.touTypeDeposit}">
-                                <ice:outputText value="Dataverse Network Deposit Terms of Use" styleClass="termsAgreementMessageTitle" rendered="#{TermsOfUsePage.depositDvnTermsRequired}" />
-                                <ice:outputText value="#{TermsOfUsePage.vdcNetwork.depositTermsOfUse}" rendered="#{TermsOfUsePage.depositDvnTermsRequired}" escape="false"/>
-                                
-                                <ice:outputText value="Dataverse Deposit Terms of Use" styleClass="termsAgreementMessageTitle" rendered="#{TermsOfUsePage.depositDataverseTermsRequired}" />
-                                <ice:outputText value="#{TermsOfUsePage.depositDataverseTerms}" rendered="#{TermsOfUsePage.depositDataverseTermsRequired}" escape="false"/>
-                             </div>
-                        </div>
-                        
-                         <div>
-                            <ice:selectBooleanCheckbox id="termsAccepted"  required="true" validator="#{TermsOfUsePage.validateTermsAccepted}"  value="#{TermsOfUsePage.termsAccepted}" />
-                            <ice:outputText styleClass="vdcFieldTitle" value="I agree and accept these terms of use." />
-                            <ice:message for="termsAccepted" styleClass="errorMessage"/>
+                <div jsfc="ice:panelGroup" rendered="#{TermsOfUsePage.touTypeDeposit}">
+                  <ice:outputText value="Dataverse Network Deposit Terms of Use" styleClass="termsAgreementMessageTitle" rendered="#{TermsOfUsePage.depositDvnTermsRequired}" />
+                  <ice:outputText value="#{TermsOfUsePage.vdcNetwork.depositTermsOfUse}" rendered="#{TermsOfUsePage.depositDvnTermsRequired}" escape="false"/>
 
-                        </div>
-                        
-                        <div styleClass="termsAgreementButtons">
-                            <ice:commandButton id="termsButton" value="Continue" action="#{TermsOfUsePage.acceptTerms_action}"/>
-                            <ice:commandButton id="cancelButton" value="Cancel" onclick="window.location='/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{TermsOfUsePage.study.id}&amp;tab=files';return false;" rendered="#{TermsOfUsePage.studyId!=null}"/>
-                        </div>
-                    </div>
+                  <ice:outputText value="Dataverse Deposit Terms of Use" styleClass="termsAgreementMessageTitle" rendered="#{TermsOfUsePage.depositDataverseTermsRequired}" />
+                  <ice:outputText value="#{TermsOfUsePage.depositDataverseTerms}" rendered="#{TermsOfUsePage.depositDataverseTermsRequired}" escape="false"/>
                 </div>
+              </div>
+              <div>
+                <ice:selectBooleanCheckbox id="termsAccepted"  required="true" validator="#{TermsOfUsePage.validateTermsAccepted}"  value="#{TermsOfUsePage.termsAccepted}" />
+                <ice:outputText styleClass="vdcFieldTitle" value="I agree and accept these terms of use." />
+                <ice:message for="termsAccepted" styleClass="errorMessage"/>
+              </div>
+              <div class="dvnFormPadding dvnFormMargin">
+                <ice:commandButton id="termsButton" value="Continue" action="#{TermsOfUsePage.acceptTerms_action}"/>
+                <ice:commandButton id="cancelButton" value="Cancel" onclick="window.location='/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{TermsOfUsePage.study.id}&amp;tab=files';return false;" rendered="#{TermsOfUsePage.studyId!=null}"/>
+              </div>
             </div>
-        </ice:form>
-            </gui:define>
-        </gui:composition>
-    </body>
+          </div>
+        </div>
+      </ice:form>
+    </gui:define>
+  </gui:composition>
+</body>
 </html>

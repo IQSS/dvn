@@ -67,6 +67,7 @@ public class DeleteDataversePage extends VDCBaseBean implements java.io.Serializ
      * <p>Construct a new Page bean instance.</p>
      */
     public DeleteDataversePage() {
+        System.out.println("-------------------------DeleteDataverse Constructor");
         
     }
     /**
@@ -97,7 +98,7 @@ public class DeleteDataversePage extends VDCBaseBean implements java.io.Serializ
         vdcService.delete(deleteId);
         HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
         String referer      = (String)request.getHeader("referer");
-        result       = referer.substring(referer.lastIndexOf("/")+1, referer.indexOf("."));
+        result       = referer.substring(referer.lastIndexOf("/")+1, referer.lastIndexOf("."));
         result       = getFriendlyLinkName();
         resultLink   = referer;
         return "success";

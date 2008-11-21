@@ -16,16 +16,23 @@
       <ice:form id="accountForm">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <div class="dvn_section">
+          <!--
+          <div jsfc="ice:panelGroup" styleClass="#{AccountPage.statusMessage.styleClass}" rendered="#{!empty AccountPage.statusMessage.messageText}">
+                <ice:outputText id="statusMessage" value="#{AccountPage.statusMessage.messageText}"/>
+              </div>
+          -->
+          <div jsfc="ice:panelGroup" styleClass="dvnRoundCornerMsgBlock dvnSuccessMessage" rendered="#{!empty AccountPage.statusMessage.messageText}">
+             <div>
+               <ice:outputText id="statusMessage" value="#{AccountPage.statusMessage.messageText}"/>
+             </div>
+          </div>
           <div class="dvn_sectionTitle">
             <ice:outputText value="Account for "/>
             <ice:outputText value="#{AccountPage.user.userName}"/>
           </div>
           <div class="dvn_sectionBox">
             <div class="dvn_margin12">
-              <div jsfc="ice:panelGroup" styleClass="#{AccountPage.statusMessage.styleClass}" rendered="#{!empty AccountPage.statusMessage.messageText}">
-                <ice:outputText id="statusMessage" value="#{AccountPage.statusMessage.messageText}"/>
-              </div>
-              <div class="dvnFormPadding vdcTextRight">
+              <div class="vdcTextRight">
                 <ice:outputLink id="linkAction3" rendered="#{ !VDCSession.loginBean.networkAdmin and VDCSession.loginBean.user.id == AccountPage.user.id and VDCSession.loginBean.hasDataverses}" value="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/MyDataversePage.xhtml">
                   <ice:outputText id="linkAction3Text" value="My Dataverses"/>
                 </ice:outputLink>

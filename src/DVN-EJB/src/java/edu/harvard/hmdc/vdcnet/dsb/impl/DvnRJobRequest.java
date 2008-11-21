@@ -64,6 +64,8 @@ public class DvnRJobRequest {
         Map<String, Map<String, String>> vts,
         Map<String, List<Object>> rs,
         AdvancedStatGUIdata.Model zp){
+        
+
         dataVariablesForRequest = dv;
         
         listParametersForRequest = listParams;
@@ -71,20 +73,23 @@ public class DvnRJobRequest {
         valueTables = vts;
         recodeSchema  = rs;
         zeligModelSpec = zp;
-        
-        dbgLog.fine("variables="+dataVariablesForRequest);
-        dbgLog.fine("map="+listParametersForRequest);
-        dbgLog.fine("value table="+valueTables);
-        dbgLog.fine("recodeSchema"+recodeSchema);
-        dbgLog.fine("model spec="+zeligModelSpec);
+        dbgLog.fine("***** DvnRJobRequest: within the default constructor : initial *****");
+        dbgLog.fine("DvnRJobRequest: variables="+dataVariablesForRequest);
+        dbgLog.fine("DvnRJobRequest: map="+listParametersForRequest);
+        dbgLog.fine("DvnRJobRequest: value table="+valueTables);
+        dbgLog.fine("DvnRJobRequest: recodeSchema"+recodeSchema);
+        dbgLog.fine("DvnRJobRequest: model spec="+zeligModelSpec);
         checkVariableNames();
         
-        if (rs.size() > 0){
-            this.subsetRecodeConditions = generateSubsetRecodeConditions();
-            for (int i= 0; i < getRecodedVarIdSet().length; i++){
-                recodedVarIdToName.put(getRecodedVarIdSet()[i],getRecodedVarNameSet()[i]);
+        if (rs != null){
+            if (rs.size() > 0){
+                this.subsetRecodeConditions = generateSubsetRecodeConditions();
+                for (int i= 0; i < getRecodedVarIdSet().length; i++){
+                    recodedVarIdToName.put(getRecodedVarIdSet()[i],getRecodedVarNameSet()[i]);
+                }
             }
         }
+        dbgLog.fine("***** DvnRJobRequest: within the default constructor ends here *****");
     }
 
     
@@ -96,8 +101,22 @@ public class DvnRJobRequest {
         Map<String, List<String>> listParams, 
         Map<String, Map<String, String>> vts,
         Map<String, List<Object>> rs){
-
         this(dv,listParams,vts,rs, null);
+        dbgLog.fine("***** DvnRJobRequest: within the 3-option constructor ends here *****");
+
+
+    }
+
+    /**
+     * 2-arg Constructor for non-zelig, whole-file downloading cases
+     *
+     */
+    public DvnRJobRequest(List<DataVariable> dv, 
+        Map<String, List<String>> listParams, 
+        Map<String, Map<String, String>> vts){
+
+        this(dv,listParams, vts, null, null);
+        dbgLog.fine("***** DvnRJobRequest: within the 2-option constructor ends here *****");
 
     }
 

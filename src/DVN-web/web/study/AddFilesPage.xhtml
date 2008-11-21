@@ -79,8 +79,8 @@
         <ice:message for="inputFileComponent" /> 
         <ice:outputProgress rendered="#{AddFilesPage.progressRequested}" 
             value="#{AddFilesPage.fileProgress}" />        
- <!-- <ice:messages layout="table" globalOnly="false" 
-                  showDetail="true" showSummary="true"/> -->        
+  <ice:messages layout="table" globalOnly="false" 
+                  showDetail="false" showSummary="true"/>        
 
    
 <br/>
@@ -151,7 +151,7 @@
                 </f:facet>
                 <ice:commandLink
                         value="Remove"
-                        actionListener="#{AddFilesPage.removeUploadedFile}">
+                        actionListener="#{AddFilesPage.removeUploadedFile}" immediate="true" >
                    <f:param name="fileName" value="#{file.studyFile.fileName}"/> 
                 </ice:commandLink>
             </ice:column> 

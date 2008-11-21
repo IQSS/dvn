@@ -26,15 +26,15 @@
                 <ice:outputText id="statusMessage" value="#{AccountPage.statusMessage.messageText}"/>
               </div>
               <div class="dvnFormPadding vdcTextRight">
-                <ice:outputLink id="linkAction3" rendered="#{ !VDCSession.loginBean.networkAdmin and VDCSession.loginBean.hasDataverses}" value="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/MyDataversePage.xhtml">
+                <ice:outputLink id="linkAction3" rendered="#{ !VDCSession.loginBean.networkAdmin and VDCSession.loginBean.user.id == AccountPage.user.id and VDCSession.loginBean.hasDataverses}" value="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/MyDataversePage.xhtml">
                   <ice:outputText id="linkAction3Text" value="My Dataverses"/>
                 </ice:outputLink>
-                <ice:outputText value=" | " rendered="#{!VDCSession.loginBean.networkAdmin and VDCSession.loginBean.hasDataverses}"/>
-                <ice:outputLink id="linkAction1" value="/dvn/faces/login/EditAccountPage.xhtml?userId=#{AccountPage.user.id}&amp;vdcId=#{VDCRequest.currentVDCId}">
+                <ice:outputText value=" | " rendered="#{!VDCSession.loginBean.networkAdmin and VDCSession.loginBean.user.id == AccountPage.user.id and VDCSession.loginBean.hasDataverses}"/>
+                <ice:outputLink id="linkAction1" rendered="#{VDCSession.loginBean.networkAdmin or VDCSession.loginBean.user.id == AccountPage.user.id}"  value="/dvn/faces/login/EditAccountPage.xhtml?userId=#{AccountPage.user.id}&amp;vdcId=#{VDCRequest.currentVDCId}">
                   <ice:outputText id="linkAction1Text" value="Update Account"/>
                 </ice:outputLink>
-                <ice:outputText value=" | " />
-                <ice:outputLink id="linkAction2" value="/dvn/faces/login/EditPasswordPage.xhtml?userId=#{AccountPage.user.id}&amp;vdcId=#{VDCRequest.currentVDCId}">
+                <ice:outputText rendered="#{VDCSession.loginBean.networkAdmin or VDCSession.loginBean.user.id == AccountPage.user.id}" value=" | " />
+                <ice:outputLink rendered="#{VDCSession.loginBean.networkAdmin or VDCSession.loginBean.user.id == AccountPage.user.id}"  value="/dvn/faces/login/EditPasswordPage.xhtml?userId=#{AccountPage.user.id}&amp;vdcId=#{VDCRequest.currentVDCId}">
                   <ice:outputText id="linkAction2Text" value="Change Password"/>
                 </ice:outputLink>
                 <ice:outputText value=" | " rendered="#{VDCSession.loginBean.networkAdmin and VDCRequest.currentVDC == null}"/>

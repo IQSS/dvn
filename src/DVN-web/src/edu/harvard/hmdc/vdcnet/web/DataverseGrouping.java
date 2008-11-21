@@ -41,6 +41,7 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import javax.faces.context.FacesContext;
@@ -339,47 +340,52 @@ public class DataverseGrouping extends SortableList {
                 if (sortColumnName == null) {
                     return 0;
                 }
-                if (sortColumnName.equals(nameColumnName)) {
-                    return ascending ?
-                            new String(c1.getName()).compareTo(new String(c2.getName())) :
-                            new String(c2.getName()).compareTo(new String(c1.getName()));
-                } else if (sortColumnName.equals(affiliationColumnName)) {
-                    return ascending ? c1.getAffiliation().compareTo(c2.getAffiliation()) :
-                            c2.getAffiliation().compareTo(c1.getAffiliation());
-                } else if (sortColumnName.equals(createdByColumnName)) {
-                    return ascending ? c1.getCreatedBy().compareTo(c2.getCreatedBy()) :
-                        c2.getCreatedBy().compareTo(c1.getCreatedBy());
-                } else if (sortColumnName.equals(dateReleasedColumnName)) {
-                    return ascending ?
-                        c1.getReleaseDate().compareTo(c2.getReleaseDate()) :
-                        c2.getReleaseDate().compareTo(c1.getReleaseDate());
-                } else if (sortColumnName.equals(dateCreatedColumnName)) {
-                    return ascending ?
-                        c1.getCreationDate().compareTo(c2.getCreationDate()) :
-                        c2.getCreationDate().compareTo(c1.getCreationDate());
-                } else if (sortColumnName.equals(lastUpdatedColumnName)) {
-                    return ascending ?
-                            c1.getLastUpdateTime().compareTo(c2.getLastUpdateTime()) :
-                            c2.getLastUpdateTime().compareTo(c1.getLastUpdateTime());
-                } else if (sortColumnName.equals(activityColumnName)) {
-                    return ascending ?
-                            c1.getActivity().compareTo(c2.getActivity()) :
-                            c2.getActivity().compareTo(c1.getActivity());
-                } else if (sortColumnName.equals(shortDescriptionColumnName)) {
-                    return ascending ? c1.getShortDescription().compareTo(c2.getShortDescription()) :
-                            c2.getShortDescription().compareTo(c1.getShortDescription());
-                } else if (sortColumnName.equals(subclassificationsColumnName)) {
-                    return ascending ? c1.getSubclassification().compareTo(c2.getSubclassification()) :
-                            c2.getSubclassification().compareTo(c1.getSubclassification());
-                } else if (sortColumnName.equals(numberOwnedStudiesColumnName)) {
-                    return ascending ?
-                            c1.getNumberOwnedStudies().compareTo(c2.getNumberOwnedStudies()) :
-                            c2.getNumberOwnedStudies().compareTo(c1.getNumberOwnedStudies());
-                } else if (sortColumnName.equals(shortDescriptionColumnName)) {
-                    return ascending ? c1.getType().compareTo(c2.getType()) :
-                        c2.getType().compareTo(c1.getType());
-                } else {
-                    return 0;
+                try {
+                    if (sortColumnName.equals(nameColumnName)) {
+                        return ascending ?
+                                new String(c1.getName().toUpperCase()).compareTo(new String(c2.getName().toUpperCase())) :
+                                new String(c2.getName().toUpperCase()).compareTo(new String(c1.getName().toUpperCase()));
+                    } else if (sortColumnName.equals(affiliationColumnName)) {
+                        return ascending ? c1.getAffiliation().toUpperCase().compareTo(c2.getAffiliation().toUpperCase()) :
+                                c2.getAffiliation().toUpperCase().compareTo(c1.getAffiliation().toUpperCase());
+                    } else if (sortColumnName.equals(createdByColumnName)) {
+                        return ascending ? c1.getCreatedBy().toUpperCase().compareTo(c2.getCreatedBy().toUpperCase()) :
+                            c2.getCreatedBy().toUpperCase().compareTo(c1.getCreatedBy().toUpperCase());
+                    } else if (sortColumnName.equals(dateReleasedColumnName)) {
+                        return ascending ?
+                            c1.getReleaseDateTimestamp().compareTo(c2.getReleaseDateTimestamp()) :
+                            c2.getReleaseDateTimestamp().compareTo(c1.getReleaseDateTimestamp());
+                    } else if (sortColumnName.equals(dateCreatedColumnName)) {
+                        return ascending ?
+                            c1.getCreationDateTimestamp().compareTo(c2.getCreationDateTimestamp()) :
+                            c2.getCreationDateTimestamp().compareTo(c1.getCreationDateTimestamp());
+                    } else if (sortColumnName.equals(lastUpdatedColumnName)) {
+                        return ascending ?
+                                c1.getLastUpdateTimestamp().compareTo(c2.getLastUpdateTimestamp()) :
+                                c2.getLastUpdateTimestamp().compareTo(c1.getLastUpdateTimestamp());
+                    } else if (sortColumnName.equals(activityColumnName)) {
+                        return ascending ?
+                                c1.getActivity().compareTo(c2.getActivity()) :
+                                c2.getActivity().compareTo(c1.getActivity());
+                    } else if (sortColumnName.equals(shortDescriptionColumnName)) {
+                        return ascending ? c1.getShortDescription().compareTo(c2.getShortDescription()) :
+                                c2.getShortDescription().compareTo(c1.getShortDescription());
+                    } else if (sortColumnName.equals(subclassificationsColumnName)) {
+                        return ascending ? c1.getSubclassification().compareTo(c2.getSubclassification()) :
+                                c2.getSubclassification().compareTo(c1.getSubclassification());
+                    } else if (sortColumnName.equals(numberOwnedStudiesColumnName)) {
+                        return ascending ?
+                                c1.getNumberOwnedStudies().compareTo(c2.getNumberOwnedStudies()) :
+                                c2.getNumberOwnedStudies().compareTo(c1.getNumberOwnedStudies());
+                    } else if (sortColumnName.equals(shortDescriptionColumnName)) {
+                        return ascending ? c1.getType().toUpperCase().compareTo(c2.getType().toUpperCase()) :
+                            c2.getType().toUpperCase().compareTo(c1.getType().toUpperCase());
+                    } else {
+                        return 0;
+                    }
+                } catch (Exception npe) {
+                    System.out.println("Found a null value: " + npe.toString());
+                    return 1;
                 }
             }
         };
@@ -545,6 +551,10 @@ public class DataverseGrouping extends SortableList {
         this.releaseDate = releaseDate;
     }
 
+    public Timestamp getReleaseDateTimestamp() {
+        return this.releaseDate;
+    }
+
     public String getLastUpdateTime() {
         if(lastUpdateTime != null)
             return getLastUpdatedTime(lastUpdateTime.getTime());
@@ -558,6 +568,10 @@ public class DataverseGrouping extends SortableList {
         return timestampString;
     }
 
+    public Timestamp getLastUpdateTimestamp() {
+        return this.lastUpdateTime;
+    }
+
     public void setLastUpdateTime(Timestamp lastDateUpdated) {
         lastUpdateTime = lastDateUpdated;
     }
@@ -567,6 +581,10 @@ public class DataverseGrouping extends SortableList {
             return localizedDate.getLocalizedDate(creationDate, 2);
         else
             return "";
+    }
+
+    public Timestamp getCreationDateTimestamp() {
+        return this.creationDate;
     }
 
     public void setCreationDate(Timestamp creationDate) {

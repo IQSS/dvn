@@ -292,6 +292,11 @@ public class LoginFilter implements Filter {
             if (study.isStudyRestrictedForUser(user, ipUserGroup)) {
                 return false;
             }        
+        } else if (isEditAccountPage(pageDef)) {
+            String userId = VDCBaseBean.getParamFromRequestOrComponent("userId", request);
+            if (user==null || user.getId()!=Long.parseLong(userId)) {
+                return false;
+            }
         }
         return true;
     }
@@ -387,6 +392,12 @@ public class LoginFilter implements Filter {
         return false;
     }
 
+      private boolean isEditAccountPage(PageDef pageDef) {
+        if (pageDef != null && pageDef.getName().equals(pageDefService.EDIT_ACCOUNT_PAGE)) {
+            return true;
+        }
+        return false;
+    }
     private boolean isTermsOfUsePage(PageDef pageDef) {
          if (pageDef != null &&( pageDef.getName().equals(pageDefService.TERMS_OF_USE_PAGE) ||pageDef.getName().equals(pageDefService.ACCOUNT_TERMS_OF_USE_PAGE)) ) {
             return true;

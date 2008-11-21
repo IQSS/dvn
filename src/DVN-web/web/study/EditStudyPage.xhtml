@@ -92,34 +92,27 @@
       <ice:form id="studyForm">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <input type="hidden" name="pageName" value="EditStudyPage"/>
-        <ice:inputHidden id="studyId" value="#{EditStudyPage.studyId}" />
-        <ice:inputHidden id="token" value="#{EditStudyPage.token}" />
-
+        <ice:inputHidden id="studyId" value="#{EditStudyPage.studyId}"/>
+        <ice:inputHidden id="token" value="#{EditStudyPage.token}"/>
         <div class="dvn_section">
-          <div class="dvnInformationMessage">
-             <ice:outputText value="#{bundlePageInfo.editStudyHelp}" escape="false" />
-          </div> 
-          
-          <div class="dvn_sectionTitle">
+          <div class="dvnRoundCornerMsgBlock dvnInformationMessage">
+             <ice:outputText value="#{bundlePageInfo.editStudyHelp}" escape="false"/>
+          </div>
+          <div class="dvn_sectionTitle dvn_sectionTitleLinksL">
             <ice:outputText value="#{EditStudyPage.study.title}"/>
           </div>
+          <div class="dvn_sectionTitleLinksR">
+            <div jsfc="ice:panelGroup" id="groupPanel10" styleClass="vdcTextRight dvnFormMargin">
+              <ice:commandButton id="button1" value="Save" action="#{EditStudyPage.save}"/>
+              <ice:commandButton id="button2" value="Cancel" immediate="true" action="#{EditStudyPage.cancel}"/>
+            </div>
+          </div>
           <div class="dvn_sectionBoxNoBorders">
-
-       
-
               <!-- validation errors occurred? -->
-              <div jsfc="ice:panelGroup" id="messagePanel" styleClass="errorMessage">
-                <ice:outputText value="Please check messages below" rendered="#{!empty facesContext.maximumSeverity}" />
+              <div jsfc="ice:panelGroup" id="messagePanel" styleClass="errorMessage" rendered="#{!empty facesContext.maximumSeverity}">
+                <ice:outputText value="Please check messages below"/>
               </div>
-
-              <div jsfc="ice:panelGroup" id="groupPanel10" styleClass="vdcTextRight">
-                <ice:commandButton id="button1" value="Save" action="#{EditStudyPage.save}"/>
-                <ice:commandButton immediate="true" id="button2" style="margin-left: 30px; margin-right: 15px" value="Cancel" action="#{EditStudyPage.cancel}"/>
-              </div>
-
-
-
-                  <ice:panelGroup  panelLayout="flow" style="width: 98%;" rendered="#{EditStudyPage.showCatalog}">
+                  <ice:panelGroup panelLayout="flow" style="width: 98%;" rendered="#{EditStudyPage.showCatalog}">
                     <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%" style="margin-bottom: 5px;">
                       <div jsfc="ice:panelGroup" id="groupPanel9b">
                         <ice:outputText value="Select Study Template: " rendered="#{EditStudyPage.showTemplateList}"/>
@@ -2045,33 +2038,31 @@
                         </ice:column>
                       </ice:dataTable>
                     </ice:column>
-                  </ice:dataTable>
-              
+                  </ice:dataTable>              
               </ice:panelGroup>
 
               <!-- FILES TAB -->
-
-
-               <ice:panelGroup id="layoutPanel1" panelLayout="flow" style="width: 98%;" rendered="#{EditStudyPage.showFiles}">
-
-                <div jsfc="ice:panelGroup" id="noFilesPanel" style="padding-top: 30px; padding-bottom: 30px; padding-left: 20px;" rendered="#{empty EditStudyPage.files}">
-                  <ice:outputText value="No files have been provided for this study. To add files, return to the study view (by clicking Save or Cancel) and follow the Add File(s) link."/>
+               <ice:panelGroup id="layoutPanel1" panelLayout="flow" rendered="#{EditStudyPage.showFiles}">
+                <div jsfc="ice:panelGroup" id="noFilesPanel" styleClass="dvnFormPadding" rendered="#{empty EditStudyPage.files}">
+                  <p>
+                    <ice:outputText value="No files have been provided for this study. To add files, return to the study view (by clicking Save or Cancel) and follow the Add File(s) link."/>
+                  </p>
                 </div>
-                <div jsfc="ice:panelGroup" id="layoutPanel2" panelLayout="flow" style="width: 98%;" rendered="#{!empty EditStudyPage.files}">
+                <div jsfc="ice:panelGroup" id="layoutPanel2" panelLayout="flow" rendered="#{!empty EditStudyPage.files}">
                   <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
-                  <ice:dataTable id="fileDataTableWrapper" cellpadding="0" cellspacing="0" width="100%" value="dummy_datatable" >
+                  <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
+                                 id="fileDataTableWrapper" styleClass="vdcEditStudyOuterTable" value="dummy_datatable">
                     <ice:column>
                       <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
-                                     styleClass="vdcEditStudyInnerTable"
-                                     columnClasses="vdcEditFilesColA, vdcEditFilesColA, vdcEditFilesColB, vdcEditFilesColC"
-                                     headerClass="vdcEditFilesHeader" id="fileDataTable" rowClasses="list-row-even,list-row-odd"
-                                     value="#{EditStudyPage.files}" var="file">
+                                     styleClass="vdcEditStudyInnerTable" headerClasses="vdcEditFilesHeader"
+                                     columnClasses="vdcEditFilesColA, vdcEditFilesColA, vdcEditFilesColB, vdcEditFilesColC" rowClasses="list-row-even,list-row-odd"
+                                     id="fileDataTable" value="#{EditStudyPage.files}" var="file">
                         <ice:column id="column9">
-                          <div jsfc="ice:panelGroup" style="white-space: nowrap;">
+                          <div jsfc="ice:panelGroup">
                             <!-- note that the Javascript functions currently depends on the placement and ids of these fields (and the dropdown box;
                                                   changing them may require corresponding changes in the Javascript  -->
                             <ice:selectBooleanCheckbox id="catCheckbox" onclick="updateCategory(this);"/>
-                            <ice:inputText id="catTextField" size="25" value="#{file.fileCategoryName}" onfocus="deselectCategory(this)"/>
+                            <ice:inputText id="catTextField" size="26" value="#{file.fileCategoryName}" onfocus="deselectCategory(this)"/>
                           </div>
                           <f:facet name="header">
                             <div jsfc="ice:panelGroup" id="catColPanelGroup">
@@ -2085,14 +2076,14 @@
                         <ice:column id="column10">
                           <ice:inputText id="input_fileName" size="30" value="#{file.studyFile.fileName}" required="true" requiredMessage="This field is required."  validator="#{EditStudyPage.validateFileName}" />
                           <ice:message styleClass="errorMessage" for="input_fileName"/><br/>
+                          <ice:graphicImage rendered="#{file.studyFile.subsettable}" id="imagefs" styleClass="vdcNoBorders" value="/resources/icon_subsettable.gif"/>
                           <ice:outputText id="outputText17" value="#{file.userFriendlyFileType}"/>
-                          <ice:graphicImage  rendered="#{file.studyFile.subsettable}" id="imagefs" styleClass="vdcNoBorders" value="/resources/icon_subsettable.gif"/>
                           <f:facet name="header">
                             <ice:outputText id="outputText13" value="File Name"/>
                           </f:facet>
                         </ice:column>
                         <ice:column id="column11">
-                          <ice:inputTextarea cols="30" rows="2" value="#{file.studyFile.description}"/>
+                          <ice:inputTextarea cols="48" rows="2" value="#{file.studyFile.description}"/>
                           <f:facet name="header">
                             <ice:outputText id="outputText16" value="Description"/>
                           </f:facet>
@@ -2100,7 +2091,7 @@
                         <ice:column id="deleteColumn">
                           <ice:selectBooleanCheckbox id="deleteCheckBox" value="#{file.deleteFlag}"/>
                           <f:facet name="header">
-                            <ice:outputText id="deleteText" value="Delete?"/>
+                            <ice:outputText id="deleteText" value="Delete"/>
                           </f:facet>
                         </ice:column>
                       </ice:dataTable>
@@ -2111,7 +2102,7 @@
       
             <div jsfc="ice:panelGroup" styleClass="vdcTextRight dvnFormPadding dvnFormMargin">
               <ice:commandButton id="button1b" value="Save" action="#{EditStudyPage.save}"/>
-              <ice:commandButton immediate="true" id="button2b" value="Cancel" action="#{EditStudyPage.cancel}"/>
+              <ice:commandButton id="button2b" value="Cancel" immediate="true" action="#{EditStudyPage.cancel}"/>
             </div>
           </div>
         </div>

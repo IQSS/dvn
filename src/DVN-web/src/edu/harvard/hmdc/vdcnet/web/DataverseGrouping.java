@@ -352,17 +352,41 @@ public class DataverseGrouping extends SortableList {
                         return ascending ? c1.getCreatedBy().toUpperCase().compareTo(c2.getCreatedBy().toUpperCase()) :
                             c2.getCreatedBy().toUpperCase().compareTo(c1.getCreatedBy().toUpperCase());
                     } else if (sortColumnName.equals(dateReleasedColumnName)) {
-                        return ascending ?
-                            c1.getReleaseDateTimestamp().compareTo(c2.getReleaseDateTimestamp()) :
-                            c2.getReleaseDateTimestamp().compareTo(c1.getReleaseDateTimestamp());
+                        if (c1.getReleaseDateTimestamp() == null && c2.getReleaseDateTimestamp() != null) {
+                            return ascending ? -1 : 1;
+                        } else if (c1.getReleaseDateTimestamp() != null && c2.getReleaseDateTimestamp() == null) {
+                            return ascending ? 1 : -1;
+                        } else if (c1.getReleaseDateTimestamp() == null && c2.getReleaseDateTimestamp() == null) {
+                            return 0;
+                        } else {
+                            return ascending ?
+                                c1.getReleaseDateTimestamp().compareTo(c2.getReleaseDateTimestamp()) :
+                                c2.getReleaseDateTimestamp().compareTo(c1.getReleaseDateTimestamp());
+                        }
                     } else if (sortColumnName.equals(dateCreatedColumnName)) {
-                        return ascending ?
-                            c1.getCreationDateTimestamp().compareTo(c2.getCreationDateTimestamp()) :
-                            c2.getCreationDateTimestamp().compareTo(c1.getCreationDateTimestamp());
+                        if (c1.getCreationDateTimestamp() == null && c2.getCreationDateTimestamp() != null) {
+                            return ascending ? -1 : 1;
+                        } else if (c1.getCreationDateTimestamp() != null && c2.getCreationDateTimestamp() == null) {
+                            return ascending ? 1 : -1;
+                        } else if (c1.getCreationDateTimestamp() == null && c2.getCreationDateTimestamp() == null) {
+                            return 0;
+                        } else {
+                           return ascending ?
+                                c1.getCreationDateTimestamp().compareTo(c2.getCreationDateTimestamp()) :
+                                c2.getCreationDateTimestamp().compareTo(c1.getCreationDateTimestamp());
+                        }
                     } else if (sortColumnName.equals(lastUpdatedColumnName)) {
-                        return ascending ?
+                        if (c1.getLastUpdateTimestamp() == null && c2.getLastUpdateTimestamp() != null) {
+                            return ascending ? -1 : 1;
+                        } else if (c1.getLastUpdateTimestamp() != null && c2.getLastUpdateTimestamp() == null) {
+                            return ascending ? 1 : -1;
+                        } else if (c1.getLastUpdateTimestamp() == null && c2.getLastUpdateTimestamp() == null) {
+                            return 0;
+                        } else {
+                            return ascending ?
                                 c1.getLastUpdateTimestamp().compareTo(c2.getLastUpdateTimestamp()) :
                                 c2.getLastUpdateTimestamp().compareTo(c1.getLastUpdateTimestamp());
+                        }
                     } else if (sortColumnName.equals(activityColumnName)) {
                         return ascending ?
                                 c1.getActivity().compareTo(c2.getActivity()) :

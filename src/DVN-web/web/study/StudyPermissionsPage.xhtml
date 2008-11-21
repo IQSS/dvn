@@ -206,10 +206,11 @@
                           <ice:selectBooleanCheckbox value="#{currPermission.checked}"/>
                         </ice:column>
                         <ice:column>
-                          <ice:outputLink value="http://www.sun.com/jscreator">
-                            <ice:outputText value="#{currPermission.user.userName}" rendered="#{currPermission.user!=null}"/>
-                            <ice:outputText value="#{currPermission.group.name}" rendered="#{currPermission.group!=null}"/>
-                          </ice:outputLink>
+                          <ice:outputLink rendered="#{currPermission.user!=null}" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/AccountPage.xhtml?userId=#{currPermission.user.id}">
+                            <ice:outputText value="#{currPermission.user.userName}" />
+                          </ice:outputLink>                          
+                          <ice:outputText value="#{currPermission.group.name}" rendered="#{currPermission.group!=null}" />
+                          
                         </ice:column>
                       </ice:dataTable>
                     </ice:column>

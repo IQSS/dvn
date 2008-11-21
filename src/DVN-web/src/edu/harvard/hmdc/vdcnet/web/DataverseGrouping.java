@@ -383,11 +383,10 @@ public class DataverseGrouping extends SortableList {
                 }
             }
         };
-        if (!childItems.isEmpty())
             Collections.sort(childItems, comparator);
-        else
-            Collections.sort(parentItems, comparator);
     }
+
+
 
     public String getNameColumnName() {
         return nameColumnName;

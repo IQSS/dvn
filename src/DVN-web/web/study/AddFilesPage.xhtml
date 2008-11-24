@@ -80,7 +80,7 @@
         <ice:outputProgress rendered="#{AddFilesPage.progressRequested}" 
             value="#{AddFilesPage.fileProgress}" />        
   <ice:messages layout="table" globalOnly="false" 
-                  showDetail="false" showSummary="true"/>        
+                  showDetail="true" showSummary="false"/>       
 
    
 <br/>
@@ -96,18 +96,18 @@
             data can then be sortColumnName by a sortColumnName algorithm if a
             change is detected.
         -->
-        
+     
           <ice:dataTable cellpadding="0" cellspacing="0" rendered="true" 
                 width="80%"
                 value="#{AddFilesPage.fileList}" id="fileDataTable" binding="#{AddFilesPage.filesDataTable}" 
                 var="file">
-           
+                      
    <ice:column id="catCol">
  <ice:panelGroup block="true" id="panel1" style="white-space: nowrap;">   
                                             <!-- note that the Javascript functions currently depends on the placement and ids of these fields (and the dropdown box; 
                                             changing them may require corresponding changes in the Javascript  -->
   <ice:selectBooleanCheckbox id="catCheckbox"  onclick="updateCategory(this);"/>
-  <ice:inputText id="catTextField" size="30" value="#{file.fileCategoryName}" 
+  <ice:inputText id="catTextField" size="30" value="#{file.fileCategoryName}" partialSubmit="true" 
   onfocus="deselectCategory(this)"/>
 </ice:panelGroup>
    <f:facet name="header" id="f1">
@@ -124,7 +124,8 @@
                     <ice:outputLabel
                             value="File Name"/>
                 </f:facet>
-                <ice:inputText id="input_filename" size="30" value="#{file.studyFile.fileName}" required="true" validator="#{AddFilesPage.validateFileName}" /> 
+                <ice:inputText id="input_filename" size="30" value="#{file.studyFile.fileName}" required="true" 
+                               validator="#{AddFilesPage.validateFileName}" partialSubmit="true" /> 
                   <!-- <f:param name="fileName" value="#{file.studyFile.fileName}"/> -->
                   <ice:message errorStyle="errorMessage" for="input_filename" />
             </ice:column> 
@@ -133,7 +134,8 @@
                     <ice:outputLabel
                             value="Description"/>
                 </f:facet>
-                <ice:inputTextarea id="description_filename"  rows="2" value="#{file.studyFile.description}" immediate="true" />
+                <ice:inputTextarea id="description_filename"  rows="2" 
+                             value="#{file.studyFile.description}" partialSubmit="true" />
                
             </ice:column>
 
@@ -155,8 +157,8 @@
                    <f:param name="fileName" value="#{file.studyFile.fileName}"/> 
                 </ice:commandLink>
             </ice:column> 
-        </ice:dataTable>
-     
+     </ice:dataTable>
+   
    
      <ice:panelGroup block="true" rendered="#{AddFilesPage.emailRequested}" 
         style="padding-top: 20px; padding-bottom: 10px" >

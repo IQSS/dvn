@@ -940,6 +940,50 @@ public class HomePage extends VDCBaseBean implements Serializable {
         this.outputEndContentTime = outputLoadTime;
     }
 
+      // *********** tree STATISTICS ****************
+    private Timestamp startTreeTime;
+    private Timestamp endTreeTime;
+    private HtmlOutputText outputEndTreeTime;
+    private HtmlOutputText inputStartTreeTime;
+
+    public Timestamp getEndTreeTime() {
+        if (endTreeTime == null) {
+            endTreeTime = DateUtils.getTimestamp();
+        }
+        return endTreeTime;
+    }
+
+    public void setEndTreeTime(Timestamp endTime) {
+        this.endTreeTime = endTime;
+    }
+
+    public Timestamp getStartTreeTime() {
+        if (startTreeTime == null) {
+            startTreeTime = DateUtils.getTimestamp();
+        }
+        return startTreeTime;
+    }
+
+    public void setStartTreeTime(Timestamp startTime) {
+        this.startTreeTime = startTime;
+    }
+
+    public HtmlOutputText getInputStartTreeTime() {
+        return inputStartTreeTime;
+    }
+
+    public void setInputStartTreeTime(HtmlOutputText inputStartTime) {
+        this.inputStartTreeTime = inputStartTime;
+    }
+
+    public HtmlOutputText getOutputEndTreeTime() {
+        return this.outputEndTreeTime;
+    }
+
+    public void setOutputEndTreeTime(HtmlOutputText outputLoadTime) {
+        this.outputEndTreeTime = outputLoadTime;
+    }
+
 
 
     private List<String> loadTimes = new ArrayList();
@@ -961,6 +1005,11 @@ public class HomePage extends VDCBaseBean implements Serializable {
         startContentTime = null;
         loadtime = DateUtils.getLoadTime(localStartTime.getTime());
         loadTimes.add((String)outputEndContentTime.getAttributes().get("loadLabel") + loadtime);
+        //tree
+        localStartTime = startTreeTime;
+        startTreeTime = null;
+        loadtime = DateUtils.getLoadTime(localStartTime.getTime());
+        loadTimes.add((String)outputEndTreeTime.getAttributes().get("loadLabel") + loadtime);
          return this.loadTimes;
     }
 

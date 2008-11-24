@@ -138,7 +138,7 @@
     background: inherit;
     color: #0c54b3;
     display: block;
-    padding: 0 3px;
+    padding: 0 .25em;
     margin: 0;
     text-decoration: none;
     vertical-align: top;
@@ -170,7 +170,7 @@
 .studyEditLinks li.sfHover ul a:active {
     background: khaki;
     color: #0c54b3;
-    line-height: 1.5;
+    padding: .5em .25em 0 .25em;
     text-decoration: none !important;
     outline: none;
 }
@@ -178,7 +178,7 @@
 .studyEditLinks li.sfHover ul a:hover {
     background: khaki;
     color: #c55b28;
-    line-height: 1.5;
+    padding: .5em .25em 0 .25em;
     text-decoration: underline !important;
 }
 .editDropDown ul {
@@ -193,7 +193,7 @@
 .editDropDown li:hover ul,
 .editDropDown li.sfHover ul {
     top: 1.3em;
-    left: 1.3em;
+    left: 1em;
     border: 0;
 }
 .editDropDown ul li {

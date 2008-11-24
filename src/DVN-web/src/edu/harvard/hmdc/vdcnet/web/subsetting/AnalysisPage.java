@@ -714,6 +714,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         // advance stat area
         msgAdvStatButton.setValue(" ");
         msgAdvStatButton.setVisible(false);
+        
+        // uncheck-variable-error message 
+        resetMsgVariableSelection();
     }
     
     public void processTabChange(TabChangeEvent tce){
@@ -751,6 +754,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             // advance stat area
             msgAdvStatButton.setValue("");
             msgAdvStatButton.setVisible(false);
+            
+            // uncheck-variable-error message 
+            resetMsgVariableSelection();
         }        
         
         dbgLog.fine("***** within processTabChange: end *****");
@@ -6921,7 +6927,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 advStatVarRBox3.clear();
                 advStatVarRBox3.addAll(tmpRBox3);
 
-                msgVariableSelection.setRendered(true);
+                msgVariableSelection.setVisible(true);
                 msgVariableSelection.setValue(
                     "At least one variable is used for recoding;<br />"+
                     "Remove its recoded variable(s) first.");
@@ -6986,7 +6992,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         resetMsgEdaButton();
         resetMsg4MoveVar();
         resetMsgAdvStatButton();
-
+        resetMsgVariableSelection();
 
 
         if ((Boolean) tmpDataLine.get(0)) {
@@ -7029,7 +7035,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 tmpDataLine.set(0, Boolean.TRUE);
                 dbgLog.fine("flip the boolean value");
                 // shows the error message
-                msgVariableSelection.setRendered(true);
+                msgVariableSelection.setVisible(true);
                 msgVariableSelection
                     .setValue("The variable ("
                         + tmpDataLine.get(3)
@@ -7096,7 +7102,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
      * is unchecked.  Exposed to the subsetting page and 
      * the component id is the same as this property
      */
-    private HtmlOutputText msgVariableSelection = 
+    private com.icesoft.faces.component.ext.HtmlOutputText msgVariableSelection = 
         new com.icesoft.faces.component.ext.HtmlOutputText();
     
     /**
@@ -7104,7 +7110,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
      *
      * @return    an unchecked-error message 
      */
-    public HtmlOutputText getMsgVariableSelection() {
+    public com.icesoft.faces.component.ext.HtmlOutputText getMsgVariableSelection() {
         return msgVariableSelection;
     }
 
@@ -7113,7 +7119,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
      *
      * @param txt    an uncheck-error message to be displayed
      */
-    public void setMsgVariableSelection(HtmlOutputText txt) {
+    public void setMsgVariableSelection(com.icesoft.faces.component.ext.HtmlOutputText txt) {
         this.msgVariableSelection = txt;
     }
     
@@ -7123,7 +7129,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
      */
     public void resetMsgVariableSelection() {
         dbgLog.fine("***** resetMsgVariableSelection: start *****");
-        msgVariableSelection.setRendered(false);
+        msgVariableSelection.setVisible(false);
         msgVariableSelection.setValue(" ");
         dbgLog.fine("***** resetMsgVariableSelection: end *****");
     }

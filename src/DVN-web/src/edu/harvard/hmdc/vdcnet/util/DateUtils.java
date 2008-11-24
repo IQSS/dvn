@@ -87,4 +87,34 @@ public class DateUtils implements java.io.Serializable {
         else 
             return "--";
         }
+
+    public static String getLoadTime(Long startMilliseconds) {
+        Long currentMilliseconds = System.currentTimeMillis();
+        Long interval            = (currentMilliseconds - startMilliseconds);
+        //System.out.println("currentMillis are " + currentMilliseconds + " and startMillis are " + startMilliseconds + " Time elapsed in minutes is : " + interval.toString() + " minutes");
+        Long uBoundMinutes = new Long(60 * 60);
+        Long uBoundHours   = new Long(uBoundMinutes * 24);
+        Long uBoundDays    = new Long(uBoundHours * 7);
+        Long uBoundWeeks   = new Long(uBoundDays * 4);
+        Long uBoundMonths  = new Long(uBoundWeeks * 12);
+        interval           = interval/1000;
+        if (interval < 0)
+            return "under a second";
+        else if (interval > 0 && interval < 60)
+            return interval + ((interval > 1) ? " seconds" : " second");
+        else if (interval > 60 && interval < uBoundMinutes)
+            return interval/(60) + ((interval > 1) ? " minutes" : " minute");
+        else if (interval >= uBoundMinutes && interval < uBoundHours)
+            return interval/uBoundMinutes + ((interval/uBoundMinutes > 1) ? " hours" : " hour");
+        else if (interval >= uBoundHours && interval < uBoundDays)
+            return interval/uBoundHours + ((interval/uBoundHours > 1) ? " days" : " day");
+        else if (interval >= uBoundDays && interval < uBoundWeeks)
+            return interval/uBoundDays + ((interval/uBoundDays > 1) ? " weeks" : " week");
+        else if (interval >= uBoundWeeks && interval < uBoundMonths)
+            return interval/uBoundWeeks + ((interval/uBoundWeeks > 1) ? " months" : " month");
+        else if (interval >= uBoundMonths)
+            return "More than a year";
+        else
+            return "under a second";
+        }
 }

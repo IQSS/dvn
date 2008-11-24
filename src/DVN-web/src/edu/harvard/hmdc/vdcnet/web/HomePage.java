@@ -32,6 +32,8 @@ package edu.harvard.hmdc.vdcnet.web;
 
 import com.icesoft.faces.component.dragdrop.DropEvent;
 import com.icesoft.faces.component.ext.HtmlCommandLink;
+import com.icesoft.faces.component.ext.HtmlInputHidden;
+import com.icesoft.faces.component.ext.HtmlOutputText;
 import com.icesoft.faces.component.ext.HtmlPanelGroup;
 import com.icesoft.faces.component.tree.IceUserObject;
 import edu.harvard.hmdc.vdcnet.admin.NetworkRoleServiceLocal;
@@ -41,7 +43,6 @@ import edu.harvard.hmdc.vdcnet.admin.VDCUser;
 import edu.harvard.hmdc.vdcnet.index.IndexServiceLocal;
 import edu.harvard.hmdc.vdcnet.index.SearchTerm;
 import edu.harvard.hmdc.vdcnet.study.Study;
-import edu.harvard.hmdc.vdcnet.study.StudyDownload;
 import edu.harvard.hmdc.vdcnet.study.StudyFile;
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.VariableServiceLocal;
@@ -240,6 +241,78 @@ public class HomePage extends VDCBaseBean implements Serializable {
         // fire effects.);
         //valueChangeEffect.setFired(false);
     }
+    // START DEBUG
+    /**
+     * Toggles the expanded state of this dataverse group.
+     *
+     * @param event
+     */
+    public void toggleChildren() {
+        Long parentId = new Long(groupingId);
+        Iterator iterator = itemBeans.iterator();
+        DataverseGrouping parentitem = null;
+        while (iterator.hasNext()) {
+            parentitem = (DataverseGrouping)iterator.next();
+            if (parentitem.getId().equals(groupingId)) {
+                break;
+            }
+        }
+        if (!parentitem.isIsExpanded()) {
+            expandSubClassification(vdcGroupService.findByParentId(parentId), parentitem);
+            parentitem.setIsExpanded(true);
+        } else {
+            contractSubClassification(vdcGroupService.findByParentId(parentId), parentitem);
+            parentitem.setIsExpanded(false);
+        }
+    }
+
+    int indent = 10; //initialize primitive
+
+    private void expandSubClassification(List<VDCGroup> children, DataverseGrouping parentitem) {
+
+         String expandImage     = EXPAND_IMAGE;
+         String contractImage   = CONTRACT_IMAGE;
+         boolean isExpanded     = false;
+         Iterator iterator = children.iterator();
+         indent = parentitem.getTextIndent() + 5;
+         while(iterator.hasNext()) {
+             VDCGroup vdcgroup = (VDCGroup)iterator.next();
+            synchronized(itemBeans) {
+                parentItem  = new DataverseGrouping(vdcgroup.getId(), vdcgroup.getName(), "subgroup", itemBeans, isExpanded, expandImage, contractImage, new Long(parentitem.getId()));
+             }
+             parentItem.setIndentStyleClass("childRowIndentStyle"); //deprecate in favor of inline indent
+             parentItem.setTextIndent(indent);
+             parentItem.setSubclassification(new Long(Integer.toString(vdcGroupService.findByParentId(vdcgroup.getId()).size())));
+             parentitem.addChildItem(parentItem);
+             addNode(regionNode, childItem.getName(), childItem);
+            // if (itemBeans.contains(parentItem))
+                  //itemBeans.remove(parentItem);
+             //itemBeans.add(itemBeans.indexOf(parentitem) + 1, parentItem);
+
+         }
+     }
+
+    private void contractSubClassification(List<VDCGroup> children, DataverseGrouping parentitem) {
+         String expandImage     = EXPAND_IMAGE;
+         String contractImage   = CONTRACT_IMAGE;
+         boolean isExpanded     = false;
+         Iterator iterator      = children.iterator();
+         Iterator itemsIterator = itemBeans.iterator();
+         while(iterator.hasNext()) {
+             VDCGroup vdcgroup = (VDCGroup)iterator.next();
+             while (itemsIterator.hasNext()) {
+                 DataverseGrouping grouping = (DataverseGrouping)itemsIterator.next();
+                 if (new Long(grouping.getId()).equals(vdcgroup.getId())) {
+                     itemsIterator.remove();
+                 }
+             }
+         }
+         parentitem.recurseAndContractNodeAction();
+     }
+
+
+
+    // END DEBUG
 
     HtmlCommandLink linkSelect = new HtmlCommandLink();
 
@@ -368,17 +441,11 @@ public class HomePage extends VDCBaseBean implements Serializable {
     //Manage classification
      private void populateParentClassification(VDCGroup vdcgroup, String indentStyle) {
          Long parent = (vdcgroup.getParent() != null) ? vdcgroup.getParent() : new Long("-1");
-         //System.out.println("dv records manager: parent in group is " + vdcgroup.getParent());
-         List list = vdcGroupService.findByParentId(vdcgroup.getId());
-         Iterator iterator = list.iterator();
-         String expandImage = null;
-         String contractImage = null;
-         boolean isExpanded   = false;
-         // if (iterator.hasNext()) {
-            // expandImage   = EXPAND_IMAGE;
-            // contractImage = CONTRACT_IMAGE;
-            // isExpanded    = true;
-         // }
+         List list              = vdcGroupService.findByParentId(vdcgroup.getId());
+         Iterator iterator      = list.iterator();
+         String expandImage     = EXPAND_IMAGE;
+         String contractImage   = CONTRACT_IMAGE;
+         boolean isExpanded     = false;
          synchronized(dvGroupItemBeans) {
             parentItem = new DataverseGrouping(vdcgroup.getId(), vdcgroup.getName(), "group", dvGroupItemBeans, isExpanded, expandImage, contractImage, parent);
             // DEBUG
@@ -389,46 +456,21 @@ public class HomePage extends VDCBaseBean implements Serializable {
          parentItem.setSubclassification(new Long(list.size()));
          if (!indentStyle.equals(""))
              parentItem.setIndentStyleClass(indentStyle);
-         List innerlist = vdcGroupService.findByParentId(vdcgroup.getId());//get the children
-         Iterator inneriterator = innerlist.iterator();
-         System.out.println("populateParent: " + vdcgroup.getName());
-         removeFromList.add(vdcgroup);
-         while(inneriterator.hasNext()) {
-            VDCGroup subgroup = (VDCGroup)inneriterator.next();
-            parent = vdcgroup.getParent();
-            populateSubClassification(subgroup, parentItem);
+         // List innerlist = vdcGroupService.findByParentId(vdcgroup.getId());//get the children
+         // Iterator inneriterator = innerlist.iterator();
+         // removeFromList.add(vdcgroup);
+          // while(inneriterator.hasNext()) {
+           //  VDCGroup subgroup = (VDCGroup)inneriterator.next();
+            // parent = vdcgroup.getParent();
+            // populateSubClassification(subgroup, parentItem);
                 //remove the subgroup from the iterator
-            removeFromList.add(subgroup);
-         }
+           //  removeFromList.add(subgroup);
+        // }
      }
 
-     private void populateSubClassification(VDCGroup vdcgroup, DataverseGrouping parentitem) {
+      
 
-         List list = vdcGroupService.findByParentId(vdcgroup.getId());//get the children
-         Iterator iterator = list.iterator();
-         String expandImage = null;
-         String contractImage = null;
-         boolean isExpanded   = false;
-         // if (!list.isEmpty()) {
-             // expandImage    = EXPAND_IMAGE;
-             // contractImage  = CONTRACT_IMAGE;
-             // isExpanded     = true;
-         // }
-         childItem = new DataverseGrouping(vdcgroup.getId(), vdcgroup.getName(), "subgroup", isExpanded, expandImage, contractImage, new Long(parentitem.getId()));
-         childItem.setShortDescription(vdcgroup.getDescription());
-         childItem.setIndentStyleClass("childRowIndentStyle");
-         parentitem.addChildItem(childItem);
-         addNode(regionNode, childItem.getName(), childItem);
-         //parentitem.toggleSubGroupAction();
-         System.out.println("Created a child whose name is " + vdcgroup.getName());
-         removeFromList.add(vdcgroup);
-        while (iterator.hasNext() && !removeFromList.contains(vdcgroup)) {
-             VDCGroup subgroup = (VDCGroup)iterator.next();
-             populateSubClassification(subgroup, childItem);
-
-         }
-
-     }
+     
 
      DefaultMutableTreeNode rootNode;
      DefaultMutableTreeNode regionNode;
@@ -765,5 +807,167 @@ public class HomePage extends VDCBaseBean implements Serializable {
      */
     private void _init() {
     }
+
+        // utility props and methods
+    private Timestamp startAutoLoadTime;
+    private Timestamp endAutoLoadTime;
+    private HtmlOutputText outputEndAutoLoadTime;
+    private HtmlOutputText inputStartAutoLoadTime;
+
+    public Timestamp getEndAutoLoadTime() {
+        if (endAutoLoadTime == null) {
+            endAutoLoadTime = DateUtils.getTimestamp();
+        }
+        return endAutoLoadTime;
+    }
+
+    public void setEndAutoLoadTime(Timestamp endTime) {
+        this.endAutoLoadTime = endTime;
+    }
+
+    public Timestamp getStartAutoLoadTime() {
+        if (startAutoLoadTime == null) {
+            startAutoLoadTime = DateUtils.getTimestamp();
+        }
+        return startAutoLoadTime;
+    }
+
+    public void setStartAutoLoadTime(Timestamp startTime) {
+        this.startAutoLoadTime = startTime;
+    }
+
+    public HtmlOutputText getInputStartAutoLoadTime() {
+        return inputStartAutoLoadTime;
+    }
+
+    public void setInputStartAutoLoadTime(HtmlOutputText inputStartTime) {
+        this.inputStartAutoLoadTime = inputStartTime;
+    }
+
+    public HtmlOutputText getOutputEndAutoLoadTime() {
+        return this.outputEndAutoLoadTime;
+    }
+
+    public void setOutputEndAutoLoadTime(HtmlOutputText outputLoadTime) {
+        this.outputEndAutoLoadTime = outputLoadTime;
+    }
+
+    // *********** INLINE STATISTICS ****************
+    private Timestamp startStatisticsTime;
+    private Timestamp endStatisticsTime;
+    private HtmlOutputText outputEndStatisticsTime;
+    private HtmlOutputText inputStartStatisticsTime;
+
+    public Timestamp getEndStatisticsTime() {
+        if (endStatisticsTime == null) {
+            endStatisticsTime = DateUtils.getTimestamp();
+        }
+        return endStatisticsTime;
+    }
+
+    public void setEndStatisticsTime(Timestamp endTime) {
+        this.endStatisticsTime = endTime;
+    }
+
+    public Timestamp getStartStatisticsTime() {
+        if (startStatisticsTime == null) {
+            startStatisticsTime = DateUtils.getTimestamp();
+        }
+        return startStatisticsTime;
+    }
+
+    public void setStartStatisticsTime(Timestamp startTime) {
+        this.startStatisticsTime = startTime;
+    }
+
+    public HtmlOutputText getInputStartStatisticsTime() {
+        return inputStartStatisticsTime;
+    }
+
+    public void setInputStartStatisticsTime(HtmlOutputText inputStartTime) {
+        this.inputStartStatisticsTime = inputStartTime;
+    }
+
+    public HtmlOutputText getOutputEndStatisticsTime() {
+        return this.outputEndStatisticsTime;
+    }
+
+    public void setOutputEndStatisticsTime(HtmlOutputText outputLoadTime) {
+        this.outputEndStatisticsTime = outputLoadTime;
+    }
+
+    // *********** content STATISTICS ****************
+    private Timestamp startContentTime;
+    private Timestamp endContentTime;
+    private HtmlOutputText outputEndContentTime;
+    private HtmlOutputText inputStartContentTime;
+
+    public Timestamp getEndContentTime() {
+        if (endContentTime == null) {
+            endContentTime = DateUtils.getTimestamp();
+        }
+        return endContentTime;
+    }
+
+    public void setEndContentTime(Timestamp endTime) {
+        this.endContentTime = endTime;
+    }
+
+    public Timestamp getStartContentTime() {
+        if (startContentTime == null) {
+            startContentTime = DateUtils.getTimestamp();
+        }
+        return startContentTime;
+    }
+
+    public void setStartContentTime(Timestamp startTime) {
+        this.startContentTime = startTime;
+    }
+
+    public HtmlOutputText getInputStartContentTime() {
+        return inputStartContentTime;
+    }
+
+    public void setInputStartContentTime(HtmlOutputText inputStartTime) {
+        this.inputStartContentTime = inputStartTime;
+    }
+
+    public HtmlOutputText getOutputEndContentTime() {
+        return this.outputEndContentTime;
+    }
+
+    public void setOutputEndContentTime(HtmlOutputText outputLoadTime) {
+        this.outputEndContentTime = outputLoadTime;
+    }
+
+
+
+    private List<String> loadTimes = new ArrayList();
+
+    
+
+    public List<String> getLoadTimes() {
+        Timestamp localStartTime = startAutoLoadTime;
+        startAutoLoadTime = null;
+        String loadtime = DateUtils.getLoadTime(localStartTime.getTime());
+        loadTimes.add((String)outputEndAutoLoadTime.getAttributes().get("loadLabel") + loadtime);
+       //statistics
+        localStartTime = startStatisticsTime;
+        startStatisticsTime = null;
+        loadtime = DateUtils.getLoadTime(localStartTime.getTime());
+        loadTimes.add((String)outputEndStatisticsTime.getAttributes().get("loadLabel") + loadtime);
+        //content
+        localStartTime = startContentTime;
+        startContentTime = null;
+        loadtime = DateUtils.getLoadTime(localStartTime.getTime());
+        loadTimes.add((String)outputEndContentTime.getAttributes().get("loadLabel") + loadtime);
+         return this.loadTimes;
+    }
+
+    public void setLoadTimes(List<String> loadtimes) {
+        this.loadTimes = loadtimes;
+    }
+
+    
 
 }

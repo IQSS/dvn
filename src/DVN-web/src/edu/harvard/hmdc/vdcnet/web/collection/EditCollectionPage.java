@@ -42,6 +42,10 @@ import edu.harvard.hmdc.vdcnet.web.study.StudyUI;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
+import javax.faces.component.UIInput;
+import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.faces.event.ActionEvent;
 
@@ -375,5 +379,29 @@ public class EditCollectionPage extends VDCBaseBean implements java.io.Serializa
         
         return studyUIs;
     }
+    
+    public void validateCollectionName(FacesContext context,
+            UIComponent toValidate,
+            Object value) {
+
+        // to validate we need to know the parent collection
+        String parentIdAttr = (String) toValidate.getAttributes().get("parentId");
+        UIInput parentIdInput = (UIInput) context.getViewRoot().findComponent(parentIdAttr);
+        Long parentId = new Long( (String) parentIdInput.getSubmittedValue() );
+        VDCCollection parentColl = vdcCollectionService.find(parentId);
+
+        String collectionName = (String) value;
+        
+        for (VDCCollection subColl : parentColl.getSubCollections()) {
+            if ( !subColl.getId().equals(collId) && subColl.getName().equals( collectionName) ) {
+                ((UIInput)toValidate).setValid(false);
+                FacesMessage message = new FacesMessage("This name is already in use (in this parent).");
+                context.addMessage(toValidate.getClientId(context), message);
+                break;
+            }
+        }
+  
+    }
+       
 }
 

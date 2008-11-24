@@ -1,14 +1,57 @@
 # robots.txt generated at http://www.mcanerin.com
-User-agent: *
-Crawl-delay: 60
-Disallow: /*/FileDownload/*
+# edited by wbossons
+User-agent: Googlebot
+Crawl-delay: 120
+Disallow:  /*/FileDownload/*
 Disallow: /*/resources/*
 Disallow: /*/subsetting/SubsettingPage.xhtml*
 Disallow: /*/study/TermsOfUsePage.xhtml*
 Disallow: /*/ContactUsPage.xhtml*
 
-User-agent: msnbot
+User-agent: MSNBot
 Disallow: /
 
-User-agent: *.msnbot
+User-agent: Slurp
+Disallow: /
+
+User-agent: Teoma
+Disallow: /
+
+User-agent: twiceler
+Disallow: /
+
+User-agent: Gigabot
+Disallow: /
+
+User-agent: Scrubby
+Disallow: /
+
+User-agent: Robozilla
+Disallow: /
+
+User-agent: Nutch
+Disallow: /
+
+User-agent: ia_archiver
+Disallow: /
+
+User-agent: baiduspider
+Disallow: /
+
+User-agent: naverbot
+Disallow: /
+
+User-agent: yeti
+Disallow: /
+
+User-agent: yahoo-mmcrawler
+Disallow: /
+
+User-agent: psbot
+Disallow: /
+
+User-agent: asterias
+Disallow: /
+
+User-agent: yahoo-blogs/v3.9
 Disallow: /

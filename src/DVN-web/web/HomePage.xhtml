@@ -73,10 +73,18 @@
           <!-- Search Section ends here -->
         </div>
         <!-- Main Section ends here -->
-
+        
+<!-- *************** Test load Time ************** -->
+ <ice:outputText binding="#{HomePage.inputStartAutoLoadTime}" value="Starting Auto Load #{HomePage.startAutoLoadTime}"/>
         <div id="hiddenDiv" style="display:none;">
           <ice:outputText value="#{NetworkStatsBean.autoLoad}"/>
         </div>
+        <br />
+<ice:outputText  binding="#{HomePage.outputEndAutoLoadTime}" value="End auto load: #{HomePage.endAutoLoadTime}">
+  <f:attribute name="loadLabel" value="Autoloading stats in  "/>
+</ice:outputText>
+<!-- *************** Test load Time ************** -->
+
         <!-- ***************** NETWORK HOMEPAGE CONTENT *************************  -->
 
         <!-- ADD STYLE CLASS 'dvn_sectionContent' TO THE PANELSERIES BELOW IN ORDER TO
@@ -116,6 +124,12 @@
                 <div jsfc="ice:panelGroup" 
                             rendered="#{not empty(dvItems.childItems)and VDCRequest.currentVDC == null }"
                             style="float: left; width: 60%; padding-top: 2px; padding-bottom: 2px;">
+
+
+  
+<!-- *********************** inline dataverse statistics load times *************************** -->
+<ice:outputText binding="#{HomePage.inputStartStatisticsTime}" value="Starting Statistics Load #{HomePage.startStatisticsTime}"/>
+<br />
                     <h:outputText binding="#{NetworkStatsBean.inlineDataverseKey}"
                                   effect="#{item.effect}"
                                   styleClass="dvn_totalsLabel"
@@ -135,9 +149,19 @@
                                   value="#{NetworkStatsBean.inlineFilesValue}">
                       <f:attribute name="itemid" value="item#{dvItems.id}"/>
                     </h:outputText>
+                    <br />
+<ice:outputText  binding="#{HomePage.outputEndStatisticsTime}" value="End auto load: #{HomePage.endStatisticsTime}">
+  <f:attribute name="loadLabel" value="The statistics loaded in "/>
+</ice:outputText>
+<!-- ********************* END inline statistics ******************************** -->
+
+   
                 </div>
                 
                 <div jsfc="ice:panelGroup" rendered="#{not empty(dvItems.childItems) }" style="float: right; width: 20%;">
+
+              <!--    <ice:inputHidden binding="#{HomePage.inputStartTime}" value="#{HomePage.startTime}"/> -->
+
                   <ice:dataPaginator id="dataScroll_3" styleClass="dvnPaginatorRight"
                                      for="dataverseList" paginator="true" fastStep="3"
                                      paginatorMaxPages="4" renderFacetsIfSinglePage="false">
@@ -179,6 +203,9 @@
 
           <!-- Start Browse section (with side panels, if available) -->
           <div jsfc="ice:panelGroup" rendered="#{not empty(dvItems.childItems) }">
+
+              <!-- *********************** content load times *************************** -->
+<ice:outputText binding="#{HomePage.inputStartContentTime}" value="Content start load:  #{HomePage.startContentTime}"/>
             <ice:dataTable headerClass="groupRow"
                            id="dataverseList"
                            rendered="#{not empty(dvItems.childItems) }"
@@ -266,6 +293,11 @@
                 <!-- <ice:outputText value="#{items.activity}"/> -->
               </ice:column>
             </ice:dataTable>
+
+     <ice:outputText  binding="#{HomePage.outputEndContentTime}" value="End auto load: #{HomePage.endContentTime}">
+  <f:attribute name="loadLabel" value="The content loaded in "/>
+</ice:outputText>
+<!-- ********************* END inline statistics ******************************** -->
             <!-- BELIEVE THIS WONT NEED TO BE DISPLAYED BECAUSE OF THE PAGINATION AND DATAVERSE/STUDY/FILE COUNTER
             <ice:dataPaginator id="dataScroll_2" for="dataverseList"
                                rowsCountVar="rowsCount"
@@ -339,6 +371,17 @@
         <ice:outputLink value="/dvn/dv/#{VDCRequest.currentVDC.alias}/faces/StudyListingPage.xhtml?mode=1&amp;collectionId=#{VDCRequest.currentVDC.rootCollection.id}" rendered="#{VDCRequest.currentVDC != null}">
           <ice:outputText value="#{VDCRequest.currentVDC.name} Dataverse - Study Listing (temporary link)" />
         </ice:outputLink>
+
+<!-- output all of the load times -->
+<ul>
+<gui:repeat value="#{HomePage.loadTimes}" var="item">
+   <li>
+       <ice:outputText value="#{item}"/>
+   </li>
+
+
+</gui:repeat>
+</ul>
 
       </ice:form>
 

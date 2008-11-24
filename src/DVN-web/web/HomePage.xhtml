@@ -330,7 +330,7 @@
           render will be needed to display/remove it when necessary. -->
 
           <div class="dvnNetworkHmpgDvListNav">
-          
+          <ice:outputText binding="#{HomePage.inputStartTreeTime}" value="Tree start load:  #{HomePage.startTreeTime}"/>
           <ice:tree id="tree"
               value="#{HomePage.model}"
               var="node"
@@ -360,6 +360,9 @@
                 </f:facet>
             </ice:treeNode>
         </ice:tree>
+        <ice:outputText  binding="#{HomePage.outputEndTreeTime}" value="End auto load: #{HomePage.endTreeTime}">
+  <f:attribute name="loadLabel" value="The tree loaded in "/>
+</ice:outputText>
         </div>
       </div>
 

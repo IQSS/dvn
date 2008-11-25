@@ -66,19 +66,37 @@
   <!-- Start Search Results (with side panel, if available) -->
           <div jsfc="ice:panelGroup" styleClass="#{ (StudyListingPage.renderTree) ? 'dvn_section dvn_overflow' : 'dvn_section'}">
             <div jsfc="ice:panelGroup" styleClass="#{ (StudyListingPage.renderTree) ? 'dvn_sectionContent' : 'dvn_sectionContentNoPanels'}">
+              <!-- This is the old search results text and can be removed
               <div>
                 <ice:outputText value="This is where search terms should go..."/>
                 <ice:outputText value="#{StudyListingPage.subListHeader}"/>
                 <ice:outputText id="listMessagePrefix" value="#{StudyListingPage.listMessagePrefix}"/>
                 <ice:outputText id="listMessageContent" styleClass="warnMessage" value="#{StudyListingPage.listMessageContent}"/>
                 <ice:outputText id="listMessageSuffix" value="#{StudyListingPage.listMessageSuffix}"/>
-              </div>
-              <div jsfc="ice:panelGroup" styleClass="dvnStudyListCollectionName">
-                <ice:outputText value="#{StudyListingPage.collectionName}"/>
+              </div> -->
+              <div jsfc="ice:panelGroup" styleClass="dvnStudyListCollectionNameBlock">
+                <div jsfc="ice:panelGroup" id="beContributor" styleClass="dvnStudyListContributorBlock" rendered="#{HomePage.showRequestContributor}">
+                  <ice:outputLink styleClass="dvnStudyListContributorLink" value="/dvn/dv/#{VDCRequest.currentVDC.alias}/faces/login/ContributorRequestInfoPage.xhtml">
+                    <ice:outputText value="Become a Contributor" escape="false"/>
+                  </ice:outputLink>
+                </div>
+                <div jsfc="ice:panelGroup" styleClass="dvnStudyListCollectionName">
+                  <ice:outputText value="#{StudyListingPage.collectionName}"/>
+                  <ice:outputText value="Search Results" rendered="#{(StudyListingPage.studyListing.mode == 2)}"/>
+                  <ice:outputText styleClass="dvnStudyListSearchResultsMessage" value="#{StudyListingPage.listMessagePrefix}" rendered="#{(StudyListingPage.studyListing.mode == 2 and StudyListingPage.studyCount != 0)}"/>
+                  <ice:outputText styleClass="dvnStudyListSearchResultsMessage" value="#{StudyListingPage.listMessageContent}" rendered="#{(StudyListingPage.studyListing.mode == 2 and StudyListingPage.studyCount != 0)}"/>
+                </div>
               </div>
               <div class="dvnStudyListWrapper">
-                <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="3" id="gridPanel2" width="100%"
-                               styleClass="dvnStudyListResultsTop" rendered="#{StudyListingPage.renderSort or StudyListingPage.renderScroller}">
+                <div jsfc="ice:panelGroup" styleClass="dvnStudyListNoStudies" rendered="#{StudyListingPage.studyCount == 0 and StudyListingPage.studyListing.mode != 2}">
+                  <p><ice:outputText value="There are no studies in the dataverse."/></p>
+                </div>
+                <div jsfc="ice:panelGroup" styleClass="dvnStudyListNoStudies" rendered="#{(StudyListingPage.studyListing.mode == 2 and StudyListingPage.studyCount == 0)}">
+                  <p><ice:outputText value="Your search #{StudyListingPage.listMessagePrefix} #{StudyListingPage.listMessageContent} returned no results."/></p>
+                </div>
+                <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="3" id="gridPanel2"
+                               styleClass="dvnStudyListResultsTop" columnClasses="dvn_StudyListSort, dvn_StudyListTotals, dvnPaginatorWrap"
+                               rendered="#{StudyListingPage.renderSort or StudyListingPage.renderScroller}">
                   <div jsfc="ice:panelGroup" id="groupPanel5" rendered="#{StudyListingPage.renderSort}">
                     <ice:selectOneMenu id="dropdown2" valueChangeListener="#{StudyListingPage.sort_action}" onchange="submit();">
                       <f:selectItem itemLabel="Sort By:" itemValue=""/>
@@ -87,31 +105,31 @@
                       <f:selectItem itemLabel="- Download Count" itemValue="downloadCount"/>
                     </ice:selectOneMenu>
                   </div>
-                  <div jsfc="ice:panelGroup" id="groupPanel6" styleClass="dvn_StudyListTotals">
+                  <div jsfc="ice:panelGroup" id="groupPanel6">
                     <ice:outputText styleClass="dvn_totalsLabel" value="Studies: "/>
                     <ice:outputText styleClass="dvn_totalsValue" value="#{StudyListingPage.studyCount}"/>
                   </div>
-                  <div jsfc="ice:panelGroup" id="groupPanel4" rendered="#{StudyListingPage.renderScroller}" styleClass="dvnPaginatorWrap">
+                  <div jsfc="ice:panelGroup" id="groupPanel4" rendered="#{StudyListingPage.renderScroller}">
                     <ice:dataPaginator id="studyListingPaginatorTop" styleClass="dvnPaginatorRight"
                                        for="studyListTable1" paginator="true" partialSubmit="true"
                                        fastStep="3" paginatorMaxPages="4" renderFacetsIfSinglePage="false">
                       <f:facet name="first">
-                        <ice:graphicImage url="./xmlhttp/css/xp/css-images/arrow-first.gif" title="First Page"/>
+                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-first.gif" title="First Page"/>
                       </f:facet>
                       <f:facet name="previous">
-                        <ice:graphicImage url="./xmlhttp/css/xp/css-images/arrow-previous.gif" title="Previous"/>
+                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-previous.gif" title="Previous"/>
                       </f:facet>
                       <f:facet name="next">
-                        <ice:graphicImage url="./xmlhttp/css/xp/css-images/arrow-next.gif" title="Next"/>
+                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-next.gif" title="Next"/>
                       </f:facet>
                       <f:facet name="last">
-                        <ice:graphicImage url="./xmlhttp/css/xp/css-images/arrow-last.gif" title="Last Page"/>
+                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-last.gif" title="Last Page"/>
                       </f:facet>
                       <f:facet name="fastforward">
-                        <ice:graphicImage url="./xmlhttp/css/xp/css-images/arrow-ff.gif" title="Fast Forward"/>
+                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-ff.gif" title="Fast Forward"/>
                       </f:facet>
                       <f:facet name="fastrewind">
-                        <ice:graphicImage url="./xmlhttp/css/xp/css-images/arrow-fr.gif" title="Fast Rewind"/>
+                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-fr.gif" title="Fast Rewind"/>
                       </f:facet>
                     </ice:dataPaginator>
                   </div>
@@ -127,6 +145,7 @@
                         <ice:outputText id="outputText13" styleClass="dvnStudyListStudyAuthor" value="by #{studyUI.authors}" rendered="#{studyUI.authors != null and studyUI.authors != ''}"/>
                       </div>
                       <!--
+                              NO FILES NEED TO GO SOMEWHERE ELSE
                               <div>
                                 <ice:graphicImage alt="This study contains no files." rendered="#{!studyUI.files}"
                                                   title="This study contains no files." value="/resources/icon_nofiles.gif" />
@@ -140,61 +159,56 @@
                               -->
                       <div jsfc="ice:panelGroup" id="groupPanel2" rendered="#{studyUI.abstracts != null and studyUI.abstracts != ''}">
                         <ice:outputText id="outputText14" styleClass="dvnStudyListTableAbstract" escape="false" value="Abstract: #{studyUI.truncatedAbstracts}"/>
-                        <!-- <div jsfc="ice:panelGroup"  styleClass="dvnStudyListTableAbstract">
-                                    <ice:outputText  id="outputText14" escape="false" value="#{studyUI.truncatedAbstracts}" />
-                             </div> -->
                       </div>
-                      <!-- Optional search fields
-                              <div jsfc="ice:panelGroup" rendered="#{!empty StudyListingPage.studyFields[sfc.productionDate]  and !empty studyUI.study.productionDate}">
-                                  <ice:outputText id="outputText15" styleClass="vdcSResultsField" value="Production Date:" />
-                                  <ice:outputText id="outputText11" value="#{studyUI.study.productionDate}" />
-                              </div>
-                              <div jsfc="ice:panelGroup"  rendered="#{!empty StudyListingPage.studyFields[sfc.producerName]  and !empty studyUI.producers}">
-                                  <ice:outputText value="Producer:" styleClass="vdcSResultsField" />
-                                  <ice:outputText value="#{studyUI.producers}" escape="false" />
-                              </div>
-                              <div jsfc="ice:panelGroup"  rendered="#{!empty StudyListingPage.studyFields[sfc.distributionDate]  and !empty studyUI.study.distributionDate}">
-                                  <ice:outputText value="Distribution Date:" styleClass="vdcSResultsField" />
-                                  <ice:outputText value="#{studyUI.study.distributionDate}" escape="false" />
-                              </div>
-                              <div jsfc="ice:panelGroup"  rendered="#{!empty StudyListingPage.studyFields[sfc.distributorName]  and !empty studyUI.distributors}">
-                                  <ice:outputText value="Distributor:" styleClass="vdcSResultsField" />
-                                  <ice:outputText value="#{studyUI.distributors}" escape="false" />
-                              </div>
-                              <div jsfc="ice:panelGroup"  rendered="#{!empty StudyListingPage.studyFields[sfc.replicationFor]  and !empty studyUI.study.replicationFor}">
-                                  <ice:outputText value="Replication For:" styleClass="vdcSResultsField" />
-                                  <ice:outputText value="#{studyUI.study.replicationFor}" escape="false" />
-                              </div>
-                              <div jsfc="ice:panelGroup"  rendered="#{!empty StudyListingPage.studyFields[sfc.relatedPublications]  and !empty studyUI.relPublications}">
-                                  <ice:outputText value="Related Publications:" styleClass="vdcSResultsField" />
-                                  <ice:outputText value="#{studyUI.relPublications}" escape="false" />
-                              </div>
-                              <div jsfc="ice:panelGroup"  rendered="#{!empty StudyListingPage.studyFields[sfc.relatedMaterial]  and !empty studyUI.relMaterials}">
-                                  <ice:outputText value="Related Material:" styleClass="vdcSResultsField" />
-                                  <ice:outputText value="#{studyUI.relMaterials}" escape="false" />
-                              </div>
-                              <div jsfc="ice:panelGroup"  rendered="#{!empty StudyListingPage.studyFields[sfc.relatedStudies]  and !empty studyUI.relStudies}">
-                                  <ice:outputText value="Related Studies:" styleClass="vdcSResultsField" />
-                                  <ice:outputText value="#{studyUI.relStudies}" escape="false" />
-                              </div>
-
-                              <div jsfc="ice:panelGroup"  rendered="#{ !empty studyUI.foundInVariables}">
-                                  <ice:outputText value="Found In Variables:" styleClass="vdcSResultsField" />
-                                  <ice:dataTable id="dvDataTable" value="#{studyUI.foundInVariables}" var="dv" width="100%">
-                                      <ice:column>
-                                          <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/VariablePage.xhtml?dvId=#{dv.id}">
-                                              <ice:outputText value="#{dv.name}" />
-                                          </ice:outputLink>
-                                      </ice:column>
-                                      <ice:column>
-                                          <ice:outputText value="#{dv.label}" />
-                                      </ice:column>
-                                      <ice:column>
-                                          <ice:outputText value="#{dv.dataTable.studyFile.fileName}" />
-                                      </ice:column>
-                                  </ice:dataTable>
-                              </div>
-                              -->
+                      <!-- Optional search fields -->
+                      <div jsfc="ice:panelGroup" styleClass="dvnStudyListTableOptionalField" rendered="#{!empty StudyListingPage.studyFields[sfc.productionDate] and !empty studyUI.study.productionDate}">
+                          <ice:outputText value="Production Date:" styleClass="dvnStudyListTableOptionalFieldLabel"/>
+                          <ice:outputText value="#{studyUI.study.productionDate}"/>
+                      </div>
+                      <div jsfc="ice:panelGroup" styleClass="dvnStudyListTableOptionalField" rendered="#{!empty StudyListingPage.studyFields[sfc.producerName] and !empty studyUI.producers}">
+                          <ice:outputText value="Producer:" styleClass="dvnStudyListTableOptionalFieldLabel"/>
+                          <ice:outputText value="#{studyUI.producers}" escape="false"/>
+                      </div>
+                      <div jsfc="ice:panelGroup" styleClass="dvnStudyListTableOptionalField" rendered="#{!empty StudyListingPage.studyFields[sfc.distributionDate] and !empty studyUI.study.distributionDate}">
+                          <ice:outputText value="Distribution Date:" styleClass="dvnStudyListTableOptionalFieldLabel"/>
+                          <ice:outputText value="#{studyUI.study.distributionDate}" escape="false"/>
+                      </div>
+                      <div jsfc="ice:panelGroup" styleClass="dvnStudyListTableOptionalField" rendered="#{!empty StudyListingPage.studyFields[sfc.distributorName] and !empty studyUI.distributors}">
+                          <ice:outputText value="Distributor:" styleClass="dvnStudyListTableOptionalFieldLabel"/>
+                          <ice:outputText value="#{studyUI.distributors}" escape="false"/>
+                      </div>
+                      <div jsfc="ice:panelGroup" styleClass="dvnStudyListTableOptionalField" rendered="#{!empty StudyListingPage.studyFields[sfc.replicationFor] and !empty studyUI.study.replicationFor}">
+                          <ice:outputText value="Replication For:" styleClass="dvnStudyListTableOptionalFieldLabel"/>
+                          <ice:outputText value="#{studyUI.study.replicationFor}" escape="false"/>
+                      </div>
+                      <div jsfc="ice:panelGroup" styleClass="dvnStudyListTableOptionalField" rendered="#{!empty StudyListingPage.studyFields[sfc.relatedPublications] and !empty studyUI.relPublications}">
+                          <ice:outputText value="Related Publications:" styleClass="dvnStudyListTableOptionalFieldLabel"/>
+                          <ice:outputText value="#{studyUI.relPublications}" escape="false"/>
+                      </div>
+                      <div jsfc="ice:panelGroup" styleClass="dvnStudyListTableOptionalField" rendered="#{!empty StudyListingPage.studyFields[sfc.relatedMaterial] and !empty studyUI.relMaterials}">
+                          <ice:outputText value="Related Material:" styleClass="dvnStudyListTableOptionalFieldLabel"/>
+                          <ice:outputText value="#{studyUI.relMaterials}" escape="false"/>
+                      </div>
+                      <div jsfc="ice:panelGroup" styleClass="dvnStudyListTableOptionalField" rendered="#{!empty StudyListingPage.studyFields[sfc.relatedStudies] and !empty studyUI.relStudies}">
+                          <ice:outputText value="Related Studies:" styleClass="dvnStudyListTableOptionalFieldLabel"/>
+                          <ice:outputText value="#{studyUI.relStudies}" escape="false"/>
+                      </div>
+                      <div jsfc="ice:panelGroup" styleClass="dvnStudyListTableOptionalField" rendered="#{ !empty studyUI.foundInVariables}">
+                          <ice:outputText value="Found In Variables:" styleClass="dvnStudyListTableOptionalFieldLabel"/>
+                          <ice:dataTable cellspacing="0" cellpadding="0" width="100%" id="dvDataTable" value="#{studyUI.foundInVariables}" var="dv">
+                              <ice:column>
+                                  <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/VariablePage.xhtml?dvId=#{dv.id}">
+                                      <ice:outputText value="#{dv.name}"/>
+                                  </ice:outputLink>
+                              </ice:column>
+                              <ice:column>
+                                  <ice:outputText value="#{dv.label}"/>
+                              </ice:column>
+                              <ice:column>
+                                  <ice:outputText value="#{dv.dataTable.studyFile.fileName}"/>
+                              </ice:column>
+                          </ice:dataTable>
+                      </div>
                     </div>
                     <div class="dvnStudyListIDDownloads">
                       <ice:outputText styleClass="dvnStudyListGlobalId" value="#{studyUI.study.globalId}"/>
@@ -203,10 +217,11 @@
                     </div>
                   </ice:column>
                 </ice:dataTable>
-                <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="2" id="gridPanel22" width="100%"
-                               styleClass="dvnStudyListResultsBottom" rendered="#{StudyListingPage.renderSort or StudyListingPage.renderScroller}">
-                  <div jsfc="ice:panelGroup" id="groupPanel55" rendered="#{StudyListingPage.renderSort}">
-
+                <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="2" id="gridPanel22"
+                               styleClass="dvnStudyListResultsBottom" columnClasses="dvn_StudyListTotals, dvnPaginatorWrap"
+                               rendered="#{StudyListingPage.renderSort or StudyListingPage.renderScroller}">
+                  <div jsfc="ice:panelGroup" id="groupPanel55">
+                    &nbsp;
                   </div>
                   <div jsfc="ice:panelGroup" id="groupPanel44" rendered="#{StudyListingPage.renderScroller}" styleClass="dvnPaginatorWrap">
                     <ice:dataPaginator id="studyListingPaginatorBottom" styleClass="dvnPaginatorRight"
@@ -214,22 +229,22 @@
                                        for="studyListTable1" paginator="true" partialSubmit="true"
                                        fastStep="3" paginatorMaxPages="4" renderFacetsIfSinglePage="false">
                       <f:facet name="first">
-                        <ice:graphicImage url="./xmlhttp/css/xp/css-images/arrow-first.gif" title="First Page"/>
+                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-first.gif" title="First Page"/>
                       </f:facet>
                       <f:facet name="previous">
-                        <ice:graphicImage url="./xmlhttp/css/xp/css-images/arrow-previous.gif" title="Previous"/>
+                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-previous.gif" title="Previous"/>
                       </f:facet>
                       <f:facet name="next">
-                        <ice:graphicImage url="./xmlhttp/css/xp/css-images/arrow-next.gif" title="Next"/>
+                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-next.gif" title="Next"/>
                       </f:facet>
                       <f:facet name="last">
-                        <ice:graphicImage url="./xmlhttp/css/xp/css-images/arrow-last.gif" title="Last Page"/>
+                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-last.gif" title="Last Page"/>
                       </f:facet>
                       <f:facet name="fastforward">
-                        <ice:graphicImage url="./xmlhttp/css/xp/css-images/arrow-ff.gif" title="Fast Forward"/>
+                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-ff.gif" title="Fast Forward"/>
                       </f:facet>
                       <f:facet name="fastrewind">
-                        <ice:graphicImage url="./xmlhttp/css/xp/css-images/arrow-fr.gif" title="Fast Rewind"/>
+                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-fr.gif" title="Fast Rewind"/>
                       </f:facet>
                     </ice:dataPaginator>
                   </div>
@@ -237,18 +252,7 @@
               </div>
             </div>
             <div jsfc="ice:panelGroup" id="groupPanel55" styleClass="dvn_sectionPanels" rendered="#{StudyListingPage.renderTree}">
-              <script>
-                  // <![CDATA[
-                  jQuery(document).ready(function(){
-                      jQuery("a#dvnTreeOpen").click(function(){
-                          jQuery(".dvnCollectionTreeBlock").animate({width: "400%"}, 1500 );
-                      });
-                      jQuery("a#dvnTreeClose").click(function(){
-                          jQuery(".dvnCollectionTreeBlock").animate({width: "100%"}, 1500 );
-                      });
-                  });
-                  // ]]>
-              </script>
+
               <div class="dvnCollectionTreeBlock">
               <div class="dvnCollectionTreeControls">
                 <a id="dvnTreeOpen" name="open">Expand &#187;</a> <a id="dvnTreeClose" name="close">&#171; Close</a>

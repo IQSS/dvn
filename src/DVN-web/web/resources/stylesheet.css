@@ -68,7 +68,8 @@
   margin-right: 2em;
 }
 .dvnInlineButton {
-  display: inline;
+  float: left;
+  margin-right: 2em;
 }
 .dvnFormDataTable {
     border: 0;
@@ -318,8 +319,12 @@ div.dvn_searchblock {margin-bottom: 12px; padding: 4px 12px 4px 12px; background
 #dvn_MainSectionCount {position: absolute; top: 0; right: 0;}
 
 /* PAGINATOR */
-.dvnPaginatorWrap {overflow: hidden;}
-.dvnPaginatorRight {margin: 0; padding: 0; float: right;}
+td.dvnPaginatorWrap {padding: .25em 0;}
+
+td.dvnPaginatorWrap div.icePnlGrp {}
+td.dvnPaginatorWrap table.dvnPaginatorRight {}
+
+.dvnPaginatorRight {}
 .dvnPaginatorRight img {border: 0;}
 
 /* ANALYSIS PAGE */
@@ -695,11 +700,19 @@ a.dvnHmpgGroupCreateLink:hover, a.dvnHmpgGroupCreateLink:active {
 
 /* STUDYLISTING PAGE */
 .dvnStudyListWrapper {border: 1px solid #dcdddf;}
-.dvnStudyListCollectionNameBlock {padding: .5em .25em; border: 1px solid #dcdddf; border-width: 1px 1px 0 1px;}
+.dvnStudyListCollectionNameBlock {padding: .5em .25em; border: 1px solid #dcdddf; border-width: 1px 1px 0 1px; text-align: right; overflow: hidden;}
+.dvnStudyListCollectionName {float: left; text-align: left;}
 .dvnStudyListCollectionName span {font-size: 140% !important; font-weight: bold;}
+.dvnStudyListContributorBlock {padding-bottom: .25em;}
+a.dvnStudyListContributorLink:link, a.dvnStudyListContributorLink:visited,
+a.dvnStudyListContributorLink:hover, a.dvnStudyListContributorLink:active {
+    padding-right: 28px; color: #c55b28; background: url(start-arrows.gif) 100% 52% no-repeat; font-size: 95%; text-decoration: none;
+}
+
 .dvnStudyListResultsTop {border-bottom: 1px solid #dcdddf;}
 .dvnStudyListResultsBottom {border-top: 1px solid #dcdddf;}
-.dvn_StudyListTotals {text-align: right;}
+td.dvn_StudyListTotals {text-align: right; width: 100%; padding: 0 .5em;}
+td.dvn_StudyListSort {padding: .25em;}
 
 .dvnStudyListStudyInfo {float: left; width: 77%; background: inherit;}
 span.dvnStudyListStudyAuthor {font-size: 90% !important;}
@@ -720,6 +733,9 @@ span.dvnStudyListGlobalId {color: black;}
 .dvnStudyListTableAbstract div, .dvnStudyListTableAbstract p {margin: 0; padding: 0; display: inline;}
 span.dvnStudyListTableAbstract {color: grey; font-size: 90% !important;}
 .dvnStudyListTableAbstract p {color: black; font-size: 90% !important;}
+.dvnStudyListTableOptionalField span.iceOutTxt {font-size: 90% !important; display: inline !important;}
+span.dvnStudyListTableOptionalFieldLabel {color: grey;}
+.dvnStudyListTableOptionalField table.iceDatTbl span.iceOutTxt {font-size: 90% !important;}
 
 /* NEW STYLES: STUDY LIST + STUDIES TREE (these override IceFace styles) */
 .dvnStudyListTable {border: 0; margin: 0 0 0 0;}
@@ -733,8 +749,9 @@ span.dvnStudyListSearchResultsMessage {
   font-size: 100% !important;
   font-weight: normal;
 }
-.dvnStudyListSearchNoResults {
+.dvnStudyListNoStudies {
   padding: 0 1em;
+  text-align: center;
 }
 
 /* Style rules for Study Page (Cataloging Info and Files)
@@ -1115,6 +1132,9 @@ td.vdcEditFilesColC{
     float: left;
     margin-left: 2em;
 }
+
+/* Manage Studies Page */
+.dvnManageStudiesTable span.iceOutTxt {font-size: 90% !important;}
 
 /* Style Rules for Most Pouplar Table
 */

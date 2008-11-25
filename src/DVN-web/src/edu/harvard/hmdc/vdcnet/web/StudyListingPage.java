@@ -384,7 +384,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
 
         if (mode == StudyListing.SEARCH) {
             listHeader = "Results";
-            listMessagePrefix = "You searched for ";
+            listMessagePrefix = "for ";
 
             listMessageContent = "";
             if (studyListing.getSearchTerms() != null) {

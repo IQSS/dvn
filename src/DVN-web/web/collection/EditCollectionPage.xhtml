@@ -124,6 +124,7 @@
                     <div jsfc="ice:panelGroup">
                       <ice:inputText id="input_collectionName" size="45" maxlength="255" value="#{EditCollectionPage.collection.name}" validator="#{EditCollectionPage.validateCollectionName}" required="#{empty EditCollectionPage.collection.name}" requiredMessage="This field is required.">
                         <f:attribute name="parentId" value="form1:parentColl" />
+                        <f:attribute name="saveButton" value="form1:saveButton" />
                       </ice:inputText>
                       <ice:message styleClass="errorMessage" for="input_collectionName"/>
                     </div>
@@ -288,7 +289,7 @@ a control on the data to hide/show the table columns.-->
                   </div>
                 </div>
                 <div class="dvnFormPadding dvnFormMargin">
-                  <ice:commandButton id="button3" value="Save Collection" action="#{EditCollectionPage.save_action}"/>
+                  <ice:commandButton id="saveButton" value="Save Collection" action="#{EditCollectionPage.save_action}"/>
                   <ice:commandButton id="button4" immediate="true" value="Cancel" action="manageCollections"/>
                 </div>
               </div>

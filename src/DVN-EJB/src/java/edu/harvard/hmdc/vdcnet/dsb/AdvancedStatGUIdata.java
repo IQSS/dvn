@@ -51,8 +51,8 @@ public class AdvancedStatGUIdata  implements java.io.Serializable {
     
     // private static String[] modelFilter = {"gam.logit", "gam.normal","gam.poisson","gam.probit","logit.gee"};
     // as of 2008-07-22
-    // last update: 2008-11-25 (Zelig 3.4.0: mloglm is added)
-    private static String[] modelFilter = {"coxph","ei.dynamic", "ei.hier", 
+    // last update: 2008-11-25 (Zelig 3.4.0: mloglm and aov are  added)
+    private static String[] modelFilter = {"aov", "coxph","ei.dynamic", "ei.hier", 
     "gamma.gee", "logit.gee", "normal.gee", "poisson.gee", "probit.gee", 
     "logit.gam", "normal.gam", "poisson.gam", "probit.gam",
     "cloglog.net", "gamma.net", "logit.net", "ls.net", "normal.net", 

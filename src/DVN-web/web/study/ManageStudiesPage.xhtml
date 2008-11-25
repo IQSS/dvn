@@ -3,216 +3,165 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:gui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core" 
+      xmlns:f="http://java.sun.com/jsf/core"
       xmlns:jsp="http://java.sun.com/JSP/Page"
-      xmlns:ice="http://www.icesoft.com/icefaces/component"
-      >
+      xmlns:ice="http://www.icesoft.com/icefaces/component">
 <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
-
 <body>
-<gui:composition template="/template.xhtml">
-
-<gui:param name="pageTitle" value="#{bundlePageInfo.manageStudiesTitle}"  />
-
-  <gui:define name="body">
-
-        <ice:form>
-            <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
-
-            <div class="dvn_section">
-                 <div class="dvnInformationMessage">
-                <ice:outputText value="#{bundlePageInfo.manageStudiesHelp}" escape="false" />
-          </div> 
-                
-                <div class="dvn_sectionTitle">
-                      <ice:outputText value="#{bundlePageInfo.manageStudiesTitle}" />                         
-                </div>            
-                <div class="dvn_sectionBox">
-                    <div class="dvn_margin12">
-                        
-                      
-  
-        <ice:dataTable headerClass="groupRow" 
-                                id="studyData"
-                                rendered="#{not empty(ManageStudiesList.studyUIList) }"
-                                rowClasses="evenRow oddRow"
-                                rows="20"
-                                sortColumn="#{ManageStudiesList.sortColumnName}"
-                                sortAscending="#{ManageStudiesList.ascending}"
-                              
-                                value="#{ManageStudiesList.studyUIList}" 
-                                var="studyUI"
-                                width="100%">
-           
-                <f:facet name="header">
-
-                </f:facet>
-                <ice:column style="width:10%">
-                    <f:facet name="header">
-                        <ice:commandSortHeader
-                            columnName="#{ManageStudiesList.idColumn}"
-                            arrow="true">
-                            <ice:outputText value="#{bundle.MSIdColumn}"/>
-                        </ice:commandSortHeader>
-                    </f:facet>
-                   
-                    <ice:outputLink  value="/dvn/dv/#{VDCRequest.currentVDC.alias}/faces/study/StudyPage.xhtml?studyId=#{studyUI.study.id}">
-                       
-                       <ice:outputText  value="#{studyUI.study.globalId}"/>
-                    
-                    </ice:outputLink>
-                   
+  <gui:composition template="/template.xhtml">
+    <gui:param name="pageTitle" value="#{bundlePageInfo.manageStudiesTitle}"/>
+    <gui:define name="body">
+      <ice:form>
+        <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+        <div class="dvn_section">
+          <div class="dvnRoundCornerMsgBlock dvnInformationMessage">
+            <ice:outputText value="#{bundlePageInfo.manageStudiesHelp}" escape="false"/>
+          </div>
+          <div class="dvn_sectionTitle">
+            <ice:outputText value="#{bundlePageInfo.manageStudiesTitle}"/>
+          </div>
+          <div jsfc="ice:panelGroup">
+            <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="2"
+                           styleClass="dvnManageStudiesTableTop" columnClasses="dvn_StudyListTotals, dvnPaginatorWrap"
+                           rendered="#{not empty(ManageStudiesList.studyUIList)}">
+              <div jsfc="ice:panelGroup" id="groupPanel3" styleClass="dvn_StudyListTotals">
+                <ice:dataPaginator id="scroll_2"
+                                   for="studyData"
+                                   rowsCountVar="rowsCount"
+                                   displayedRowsCountVar="displayedRowsCountVar"
+                                   firstRowIndexVar="firstRowIndex"
+                                   lastRowIndexVar="lastRowIndex"
+                                   pageCountVar="pageCount"
+                                   pageIndexVar="pageIndex">
+                  <ice:outputFormat rendered="#{rowsCount > displayedRowsCountVar}" value="{0} Studies, displaying {2} to {3}" styleClass="dvn_totalsValue">
+                    <f:param value="#{rowsCount}"/>
+                    <f:param value="#{displayedRowsCountVar}"/>
+                    <f:param value="#{firstRowIndex}"/>
+                    <f:param value="#{lastRowIndex}"/>
+                  </ice:outputFormat>
+                </ice:dataPaginator>
+              </div>
+              <div jsfc="ice:panelGroup" id="groupPanel4" styleClass="dvnPaginatorWrap">
+                <ice:dataPaginator id="scroll_1" styleClass="dvnPaginatorRight"
+                                   for="studyData" fastStep="3"
+                                   pageCountVar="pageCount" pageIndexVar="pageIndex"
+                                   paginator="true" paginatorMaxPages="4" renderFacetsIfSinglePage="false">
+                  <f:facet name="first">
+                    <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-first.gif"/>
+                  </f:facet>
+                  <f:facet name="last">
+                    <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-last.gif"/>
+                  </f:facet>
+                  <f:facet name="previous">
+                    <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-previous.gif"/>
+                  </f:facet>
+                  <f:facet name="next">
+                    <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-next.gif"/>
+                  </f:facet>
+                  <f:facet name="fastforward">
+                    <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-ff.gif"/>
+                  </f:facet>
+                  <f:facet name="fastrewind">
+                    <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-fr.gif"/>
+                  </f:facet>
+                </ice:dataPaginator>
+              </div>
+            </ice:panelGrid>
+            <div class="dvnManageStudiesTableBlock">
+              <ice:dataTable rows="10" id="studyData" styleClass="dvnManageStudiesTable" headerClass="groupRow" rowClasses="evenRow oddRow"
+                             rendered="#{not empty(ManageStudiesList.studyUIList)}"
+                             sortColumn="#{ManageStudiesList.sortColumnName}" sortAscending="#{ManageStudiesList.ascending}"
+                             value="#{ManageStudiesList.studyUIList}" var="studyUI">
+                <ice:column>
+                  <f:facet name="header">
+                    <ice:commandSortHeader
+                      columnName="#{ManageStudiesList.idColumn}"
+                      arrow="true">
+                      <ice:outputText value="#{bundle.MSIdColumn}"/>
+                    </ice:commandSortHeader>
+                  </f:facet>
+                  <ice:outputLink value="/dvn/dv/#{VDCRequest.currentVDC.alias}/faces/study/StudyPage.xhtml?studyId=#{studyUI.study.id}">
+                    <ice:outputText value="#{studyUI.study.globalId}"/>
+                  </ice:outputLink>
                 </ice:column>
-                <ice:column style="width:25%">
-                    <f:facet name="header">
-                        <ice:commandSortHeader
-                            columnName="#{ManageStudiesList.titleColumn}"
-                            arrow="true">
-                            <ice:outputText value="#{bundle.MSTitleColumn}"/>
-                        </ice:commandSortHeader>
-                    </f:facet>
-                   
-                    <ice:outputLink  value="/dvn/dv/#{VDCRequest.currentVDC.alias}/faces/study/StudyPage.xhtml?studyId=#{studyUI.study.id}">
-                        <ice:outputText  value="#{studyUI.study.title}"/>
-                    </ice:outputLink>
+                <ice:column>
+                  <f:facet name="header">
+                    <ice:commandSortHeader
+                      columnName="#{ManageStudiesList.titleColumn}"
+                      arrow="true">
+                      <ice:outputText value="#{bundle.MSTitleColumn}"/>
+                    </ice:commandSortHeader>
+                  </f:facet>
+                  <ice:outputLink value="/dvn/dv/#{VDCRequest.currentVDC.alias}/faces/study/StudyPage.xhtml?studyId=#{studyUI.study.id}">
+                    <ice:outputText value="#{studyUI.study.title}"/>
+                  </ice:outputLink>
                 </ice:column>
-                <ice:column style="width:15%">
-                    <f:facet name="header">
-                        <ice:commandSortHeader
-                            columnName="#{ManageStudiesList.creatorColumn}"
-                            arrow="true">
-                            <ice:outputText value="#{bundle.MSCreatorColumn}"/>
-                        </ice:commandSortHeader>
-                    </f:facet>
-                   
-                    <ice:outputLink  value="/dvn/dv/#{VDCRequest.currentVDC.alias}/faces/login/AccountPage.xhtml?userId=#{studyUI.study.creator.id}">
-                        <ice:outputText  value="#{studyUI.study.creator.userName}"/>
-                    </ice:outputLink>
+                <ice:column>
+                  <f:facet name="header">
+                    <ice:commandSortHeader
+                      columnName="#{ManageStudiesList.creatorColumn}"
+                      arrow="true">
+                      <ice:outputText value="#{bundle.MSCreatorColumn}"/>
+                    </ice:commandSortHeader>
+                  </f:facet>
+                  <ice:outputLink value="/dvn/dv/#{VDCRequest.currentVDC.alias}/faces/login/AccountPage.xhtml?userId=#{studyUI.study.creator.id}">
+                    <ice:outputText value="#{studyUI.study.creator.userName}"/>
+                  </ice:outputLink>
                 </ice:column>
-               <ice:column style="width:10%">
-                    <f:facet name="header">
-                        <ice:commandSortHeader
-                            columnName="#{ManageStudiesList.createdColumn}"
-                            arrow="true">
-                            <ice:outputText value="#{bundle.MSCreatedColumn}"/>
-                        </ice:commandSortHeader>
-                    </f:facet>                  
-                        <ice:outputText  value="#{studyUI.study.createTime}"/>
+                <ice:column>
+                  <f:facet name="header">
+                    <ice:commandSortHeader
+                      columnName="#{ManageStudiesList.createdColumn}"
+                      arrow="true">
+                      <ice:outputText value="#{bundle.MSCreatedColumn}"/>
+                    </ice:commandSortHeader>
+                  </f:facet>
+                  <ice:outputText value="#{studyUI.study.createTime}"/>
                 </ice:column>
-                 <ice:column style="width:10%">
-                    <f:facet name="header">
-                        <ice:commandSortHeader
-                            columnName="#{ManageStudiesList.statusColumn}"
-                            arrow="true">
-                            <ice:outputText value="#{bundle.MSStatusColumn}"/>
-                        </ice:commandSortHeader>
-                    </f:facet>
-                   
-                    <ice:outputLink  rendered="#{studyUI.study.reviewState.name != 'Released'}" value="/dvn/dv/#{VDCRequest.currentVDC.alias}/faces/study/StudyPage.xhtml?studyId=#{studyUI.study.id}">
-                        <ice:outputText  value="#{studyUI.study.reviewState.name}"/>
-                    </ice:outputLink>
-                    
-                    <ice:outputText rendered="#{studyUI.study.reviewState.name == 'Released'}"  value="Released"/>
+                <ice:column>
+                  <f:facet name="header">
+                    <ice:commandSortHeader
+                      columnName="#{ManageStudiesList.statusColumn}"
+                      arrow="true">
+                      <ice:outputText value="#{bundle.MSStatusColumn}"/>
+                    </ice:commandSortHeader>
+                  </f:facet>
+                  <ice:outputLink rendered="#{studyUI.study.reviewState.name != 'Released'}" value="/dvn/dv/#{VDCRequest.currentVDC.alias}/faces/study/StudyPage.xhtml?studyId=#{studyUI.study.id}">
+                    <ice:outputText value="#{studyUI.study.reviewState.name}"/>
+                  </ice:outputLink>
+                  <ice:outputText rendered="#{studyUI.study.reviewState.name == 'Released'}" value="Released"/>
                 </ice:column>
-                 <ice:column style="width:20%">
-                    <f:facet name="header">
-                        <ice:commandSortHeader
-                            columnName="#{ManageStudiesList.templateColumn}"
-                            arrow="true">
-                            <ice:outputText value="#{bundle.MSTemplateColumn}"/>
-                        </ice:commandSortHeader>
-                    </f:facet>
-                        <ice:outputText  value="#{studyUI.study.template.name}"/>
-                 </ice:column>
-                  <ice:column style="width:35%">
-                    <f:facet name="header">
-                        <ice:commandSortHeader
-                            columnName="#{ManageStudiesList.updatedColumn}"
-                            arrow="true">
-                            <ice:outputText value="#{bundle.MSUpdatedColumn}"/>
-                        </ice:commandSortHeader>
-                    </f:facet>
-                        <ice:outputText  value="#{studyUI.study.lastUpdateTime}"/>
-                 </ice:column>
- 
-    </ice:dataTable>
- 
-    
-    <ice:panelGrid     rendered="#{not empty(ManageStudiesList.studyUIList) }" columns="1" styleClass="scrollerTable2" columnClasses="standardTable_ColumnCentered" >
- 
-        <ice:dataPaginator id="scroll_1"
-                         for="studyData"
-                         fastStep="10"
-                         pageCountVar="pageCount"
-                         pageIndexVar="pageIndex"
-                         paginator="true"
-                         paginatorMaxPages="9"
-                         >
- 
-                <f:facet name="first" >
-                         <ice:graphicImage url="css/xp/css-images/arrow-first.gif" style="border:none;"/>
-                </f:facet>
- 
-                <f:facet name="last">
-                        <ice:graphicImage url="css/xp/css-images/arrow-last.gif" style="border:none;" />
-                </f:facet>
- 
-                <f:facet name="previous">
-                        <ice:graphicImage url="css/xp/css-images/arrow-previous.gif" style="border:none;" />
-                </f:facet>
- 
-                <f:facet name="next">
-                        <ice:graphicImage url="css/xp/css-images/arrow-next.gif" style="border:none;" />
-                </f:facet>
- 
-                <f:facet name="fastforward">
-                        <ice:graphicImage url="css/xp/css-images/arrow-ff.gif" style="border:none;" />
-                </f:facet>
- 
-                <f:facet name="fastrewind">
-                        <ice:graphicImage url="css/xp/css-images/arrow-fr.gif" style="border:none;" />
-                </f:facet>
- 
-        </ice:dataPaginator>
- 
-        <ice:dataPaginator id="scroll_2"
-                        for="studyData"
-                        rowsCountVar="rowsCount"
-                        displayedRowsCountVar="displayedRowsCountVar"
-                        firstRowIndexVar="firstRowIndex"
-                        lastRowIndexVar="lastRowIndex"
-                        pageCountVar="pageCount"
-                        pageIndexVar="pageIndex"
-                        >
- 
-                 <ice:outputFormat rendered ="#{rowsCount > displayedRowsCountVar}" value="{0} Studies found, displaying {1} studies, from {2} to {3}. Page {4} / {5}" styleClass="standard" >
-                        <f:param value="#{rowsCount}" />
-                        <f:param value="#{displayedRowsCountVar}" />
-                        <f:param value="#{firstRowIndex}" />
-                        <f:param value="#{lastRowIndex}" />
-                        <f:param value="#{pageIndex}" />
-                        <f:param value="#{pageCount}" />
-                </ice:outputFormat>
- 
-        </ice:dataPaginator>
- 
-    </ice:panelGrid>
-    
- 
-        
-                        <div jsfc="ice:panelGroup" style="padding-top: 10px" rendered="#{ empty(ManageStudiesList.studyUIList) }">
-                            <ice:outputText id="noStudiesText" value="There are currently no New studies or studies In Review." styleClass="warnMessage"  />
-                        </div>
-                    
-                        
-                    </div>
-                </div>
+                <ice:column>
+                  <f:facet name="header">
+                    <ice:commandSortHeader
+                      columnName="#{ManageStudiesList.templateColumn}"
+                      arrow="true">
+                      <ice:outputText value="#{bundle.MSTemplateColumn}"/>
+                    </ice:commandSortHeader>
+                  </f:facet>
+                  <ice:outputText value="#{studyUI.study.template.name}"/>
+                </ice:column>
+                <ice:column>
+                  <f:facet name="header">
+                    <ice:commandSortHeader
+                      columnName="#{ManageStudiesList.updatedColumn}"
+                      arrow="true">
+                      <ice:outputText value="#{bundle.MSUpdatedColumn}"/>
+                    </ice:commandSortHeader>
+                  </f:facet>
+                  <ice:outputText value="#{studyUI.study.lastUpdateTime}"/>
+                </ice:column>
+              </ice:dataTable>
+              <div jsfc="ice:panelGroup" styleClass="dvnManageStudiesTableEmpty" rendered="#{ empty(ManageStudiesList.studyUIList)}">
+                <ice:outputText id="noStudiesText" value="There are currently no studies."/>
+              </div>
             </div>
-        </ice:form>          
-            </gui:define>
-        </gui:composition>
-    </body>
+          </div>
+        </div>
+      </ice:form>
+    </gui:define>
+  </gui:composition>
+</body>
 </html>

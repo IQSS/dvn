@@ -1134,7 +1134,15 @@ td.vdcEditFilesColC{
 }
 
 /* Manage Studies Page */
+.dvnManageStudiesTableTop {border: 1px solid #d9d9d9; border-bottom: 0;}
+.dvnManageStudiesTableBlock {overflow-x: scroll;}
+.dvnManageStudiesTable {margin-top: 0;}
 .dvnManageStudiesTable span.iceOutTxt {font-size: 90% !important;}
+.dvnManageStudiesTable th span.iceOutTxt {font-size: 100% !important;}
+.dvnManageStudiesTable th table td {font-size: 100% !important; font-weight: bold;}
+.dvnManageStudiesTable tbody td.iceDatTblCol1, .dvnManageStudiesTable tbody td.iceDatTblCol2 {padding: .75em;}
+.dvnManageStudiesTable tbody span.iceOutTxt {display: inline; white-space: nowrap;}
+.dvnManageStudiesTableEmpty {padding: 1em;}
 
 /* Style Rules for Most Pouplar Table
 */

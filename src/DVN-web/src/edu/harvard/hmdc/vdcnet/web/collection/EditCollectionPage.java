@@ -33,6 +33,7 @@ import edu.harvard.hmdc.vdcnet.index.IndexServiceLocal;
 import edu.harvard.hmdc.vdcnet.index.SearchTerm;
 import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
+import edu.harvard.hmdc.vdcnet.util.StringUtil;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.vdc.VDCCollection;
 import edu.harvard.hmdc.vdcnet.vdc.VDCCollectionServiceLocal;
@@ -43,11 +44,13 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
+import javax.faces.component.UICommand;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.faces.event.ActionEvent;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * <p>Page bean that corresponds to a similarly named JSP page.  This
@@ -384,6 +387,13 @@ public class EditCollectionPage extends VDCBaseBean implements java.io.Serializa
             UIComponent toValidate,
             Object value) {
 
+        String saveButtonAttr = (String) toValidate.getAttributes().get("saveButton");
+        String saveButton = getRequestParam(saveButtonAttr);
+            
+        if ( StringUtil.isEmpty(saveButton) ) {
+            return; // as this was tyhe result of a partial submit, do not do validation
+        }
+
         // to validate we need to know the parent collection
         String parentIdAttr = (String) toValidate.getAttributes().get("parentId");
         UIInput parentIdInput = (UIInput) context.getViewRoot().findComponent(parentIdAttr);
@@ -402,6 +412,7 @@ public class EditCollectionPage extends VDCBaseBean implements java.io.Serializa
         }
   
     }
+    
        
 }
 

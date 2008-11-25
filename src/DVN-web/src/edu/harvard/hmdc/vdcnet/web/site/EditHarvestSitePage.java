@@ -59,6 +59,7 @@ import com.icesoft.faces.component.ext.HtmlInputText;
 import com.icesoft.faces.component.ext.HtmlSelectBooleanCheckbox;
 import com.icesoft.faces.component.ext.HtmlSelectOneMenu;
 import com.icesoft.faces.component.ext.HtmlSelectOneRadio;
+import java.util.ResourceBundle;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.model.SelectItem;
@@ -805,6 +806,10 @@ public void validateDayOfWeek(FacesContext context,
     private boolean isCreateMode() {
        return editHarvestSiteService.getEditMode().equals(EditHarvestSiteService.EDIT_MODE_CREATE);
     }
+
+    public boolean getCreateMode() {
+        return isCreateMode();
+    }
     
     private HtmlSelectOneRadio inputHarvestType;
 
@@ -835,6 +840,17 @@ public void validateDayOfWeek(FacesContext context,
 
     public List getAllowedFileUsers() {
         return this.getEditHarvestSiteService().getAllowedFileUsers();
+    }
+    
+    public String getPageTitle() {
+      
+        if (isCreateMode()) {
+            return ResourceBundle.getBundle("BundlePageInfo").getString("createHarvestingDvTitle");
+        } else {
+            return ResourceBundle.getBundle("BundlePageInfo").getString("editHarvestingDvTitle");
+        }
+            
+        
     }
 
 }

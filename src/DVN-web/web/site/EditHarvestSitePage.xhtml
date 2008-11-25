@@ -11,7 +11,7 @@
 </head>
 <body>
   <gui:composition template="/template.xhtml">
-    <gui:param name="pageTitle" value="#{bundlePageInfo.createHarvestingDvTitle}"/>
+    <gui:param name="pageTitle" value="#{EditHarvestSitePage.pageTitle}"/>
     <gui:define name="body">
       <script type="text/javascript">
           // <![CDATA[
@@ -97,7 +97,7 @@
             </div>
           </div>
           <div class="dvn_sectionTitle">
-            <ice:outputText value="#{bundlePageInfo.createHarvestingDvTitle}"/>
+            <ice:outputText value="#{EditHarvestSitePage.pageTitle}"/>
           </div>
           <div class="dvn_sectionBox">
             <div class="dvn_margin12">

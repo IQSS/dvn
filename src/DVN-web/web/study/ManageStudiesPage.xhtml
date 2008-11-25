@@ -69,7 +69,7 @@
                 </ice:dataPaginator>
               </div>
             </ice:panelGrid>
-            <div class="dvnManageStudiesTableBlock">
+            <div jsfc="ice:panelGroup" styleClass="dvnManageStudiesTableBlock" rendered="#{!empty (ManageStudiesList.studyUIList)}">
               <ice:dataTable rows="10" id="studyData" styleClass="dvnManageStudiesTable" headerClass="groupRow" rowClasses="evenRow oddRow"
                              rendered="#{not empty(ManageStudiesList.studyUIList)}"
                              sortColumn="#{ManageStudiesList.sortColumnName}" sortAscending="#{ManageStudiesList.ascending}"
@@ -154,9 +154,9 @@
                   <ice:outputText value="#{studyUI.study.lastUpdateTime}"/>
                 </ice:column>
               </ice:dataTable>
-              <div jsfc="ice:panelGroup" styleClass="dvnManageStudiesTableEmpty" rendered="#{ empty(ManageStudiesList.studyUIList)}">
-                <ice:outputText id="noStudiesText" value="There are currently no studies."/>
-              </div>
+            </div>
+            <div jsfc="ice:panelGroup" styleClass="dvnManageStudiesTableEmpty" rendered="#{empty (ManageStudiesList.studyUIList)}">
+              <ice:outputText id="noStudiesText" value="There are currently no studies in this dataverse."/>
             </div>
           </div>
         </div>

@@ -391,7 +391,7 @@ public class EditCollectionPage extends VDCBaseBean implements java.io.Serializa
         String saveButton = getRequestParam(saveButtonAttr);
             
         if ( StringUtil.isEmpty(saveButton) ) {
-            return; // as this was tyhe result of a partial submit, do not do validation
+            return; // as this was the result of a partial submit, do not do validation
         }
 
         // to validate we need to know the parent collection

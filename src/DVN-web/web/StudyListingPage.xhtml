@@ -252,32 +252,43 @@
               </div>
             </div>
             <div jsfc="ice:panelGroup" id="groupPanel55" styleClass="dvn_sectionPanels" rendered="#{StudyListingPage.renderTree}">
-
               <div class="dvnCollectionTreeBlock">
-              <div class="dvnCollectionTreeControls">
-                <a id="dvnTreeOpen" name="open">Expand &#187;</a> <a id="dvnTreeClose" name="close">&#171; Close</a>
-              </div>
-              <ice:tree id="collectionTree"
-                        value="#{StudyListingPage.collectionTree}"
-                        var="item"
-                        hideRootNode="true"
-                        hideNavigation="false"
-                        imageDir="/dvn/resources/icefaces/dvn_rime/css-images/">
-                <ice:treeNode>
-                  <f:facet name="icon">
-                    <ice:panelGroup>
-                      <h:graphicImage value="#{item.userObject.icon}"/>
-                    </ice:panelGroup>
-                  </f:facet>
-                  <f:facet name="content">
-                    <ice:panelGroup>
-                        <ice:outputLink value="#{item.userObject.url}">
-                          <ice:outputText value="#{item.userObject.text}"/>
-                        </ice:outputLink>
-                    </ice:panelGroup>
-                  </f:facet>
-                </ice:treeNode>
-              </ice:tree>
+                <script>
+                    // <![CDATA[
+                    jQuery(document).ready(function(){
+                        jQuery("a#dvnTreeOpen").click(function(){
+                            jQuery(".dvnCollectionTreeBlock").animate({width: "400%"}, 1999 );
+                        });
+                        jQuery("a#dvnTreeClose").click(function(){
+                            jQuery(".dvnCollectionTreeBlock").animate({width: "100%"}, 1999 );
+                        });
+                    });
+                    // ]]>
+                </script>
+                <div class="dvnCollectionTreeControls">
+                  <a id="dvnTreeOpen" name="open">Expand &#187;</a> <a id="dvnTreeClose" name="close">&#171; Close</a>
+                </div>
+                <ice:tree id="collectionTree"
+                          value="#{StudyListingPage.collectionTree}"
+                          var="item"
+                          hideRootNode="true"
+                          hideNavigation="false"
+                          imageDir="/dvn/resources/icefaces/dvn_rime/css-images/">
+                  <ice:treeNode>
+                    <f:facet name="icon">
+                      <ice:panelGroup>
+                        <h:graphicImage value="#{item.userObject.icon}"/>
+                      </ice:panelGroup>
+                    </f:facet>
+                    <f:facet name="content">
+                      <ice:panelGroup>
+                          <ice:outputLink value="#{item.userObject.url}">
+                            <ice:outputText value="#{item.userObject.text}"/>
+                          </ice:outputLink>
+                      </ice:panelGroup>
+                    </f:facet>
+                  </ice:treeNode>
+                </ice:tree>
               </div>
             </div>
           </div>

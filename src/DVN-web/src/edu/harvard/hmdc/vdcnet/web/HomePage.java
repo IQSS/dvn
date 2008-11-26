@@ -32,10 +32,11 @@ package edu.harvard.hmdc.vdcnet.web;
 
 import com.icesoft.faces.component.dragdrop.DropEvent;
 import com.icesoft.faces.component.ext.HtmlCommandLink;
-import com.icesoft.faces.component.ext.HtmlInputHidden;
+import com.icesoft.faces.component.ext.HtmlGraphicImage;
 import com.icesoft.faces.component.ext.HtmlOutputText;
 import com.icesoft.faces.component.ext.HtmlPanelGroup;
 import com.icesoft.faces.component.tree.IceUserObject;
+import com.icesoft.faces.component.tree.Tree;
 import edu.harvard.hmdc.vdcnet.admin.NetworkRoleServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.RoleRequestServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.UserServiceLocal;
@@ -57,6 +58,8 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -79,32 +82,23 @@ public class HomePage extends VDCBaseBean implements Serializable {
     @EJB RoleRequestServiceLocal roleRequestService;
     @EJB UserServiceLocal        userService;
 
-    private ArrayList itemBeans;
-    private ArrayList dvGroupItemBeans;
+    
     private boolean isInit;
-    private int itemBeansSize = 0;
-    public static final String GROUP_INDENT_STYLE_CLASS = "GROUP_INDENT_STYLE_CLASS";
-    public static final String GROUP_ROW_STYLE_CLASS    = "groupRow";
-    public static final String CHILD_INDENT_STYLE_CLASS = "CHILD_INDENT_STYLE_CLASS";
+    private int classificationsSize = 0;
     public static final String CONTRACT_IMAGE           = "tree_nav_top_close_no_siblings.gif";
     public static final String EXPAND_IMAGE             = "tree_nav_top_open_no_siblings.gif";
-    public String CHILD_ROW_STYLE_CLASS;
-    private String ALL_DATAVERSES_LABEL = "All Dataverses";
-
-    //these static variables have a dependency on the Network Stats Server e.g.
-    // they should be held as constants in a constants file ... TODO
-    private static Long   OTHER_ID   = new Long("-2");
-    private static String OTHER_SHORT_DESCRIPTION = new String("A short description for the unclassified dataverses group (other).");
-
-    private int classificationsSize = 0;
-
+    private String ALL_DATAVERSES_LABEL                 = "All Dataverses";
     StatusMessage msg;
 
+    private ArrayList itemBeans;
+    private ArrayList dvGroupItemBeans;
+    private List allVdcs        = new ArrayList();
+    private List allVdcGroups   = new ArrayList();
 
-
+    DataverseGrouping parentItem = null;
+    DataverseGrouping childItem  = null;
+    
     public HomePage() {
-        //init();
-        CHILD_ROW_STYLE_CLASS = "";
     }
 
      @SuppressWarnings("unchecked")
@@ -117,13 +111,54 @@ public class HomePage extends VDCBaseBean implements Serializable {
             itemBeans = new ArrayList();
         }
         initChrome();
-        List list = (List)vdcService.findAll();
-        initAllDataverses(list);
+        allVdcs = (List)vdcService.findAll();
+        initAllDataverses(allVdcs);
+        allVdcGroups = (List)vdcGroupService.findAll();
         initMenu();
+
      }
 
-     DataverseGrouping parentItem = null;
-     DataverseGrouping childItem  = null;
+         /**
+     * <p>Callback method that is called after the component tree has been
+     * restored, but before any event processing takes place.  This method
+     * will <strong>only</strong> be called on a postback request that
+     * is processing a form submit.  Customize this method to allocate
+     * resources that will be required in your event handlers.</p>
+     */
+    public void preprocess() {
+    }
+
+    /**
+     * <p>Callback method that is called just before rendering takes place.
+     * This method will <strong>only</strong> be called for the page that
+     * will actually be rendered (and not, for example, on a page that
+     * handled a postback and then navigated to a different page).  Customize
+     * this method to allocate resources that will be required for rendering
+     * this page.</p>
+     */
+    public void prerender() {
+    }
+
+    /**
+     * <p>Callback method that is called after rendering is completed for
+     * this request, if <code>init()</code> was called (regardless of whether
+     * or not this was the page that was actually rendered).  Customize this
+     * method to release resources acquired in the <code>init()</code>,
+     * <code>preprocess()</code>, or <code>prerender()</code> methods (or
+     * acquired during execution of an event handler).</p>
+     */
+    public void destroy() {
+    }
+
+    /**
+     * <p>Automatically managed component initialization.  <strong>WARNING:</strong>
+     * This method is automatically generated, so any user-specified code inserted
+     * here is subject to being replaced.</p>
+     */
+    private void _init() {
+    }
+
+     
 
      private void initChrome() {
          msg =  (StatusMessage)getRequestMap().get("statusMessage");
@@ -154,7 +189,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
          VDC vdc = null;
          while(iterator.hasNext()) {
             //add DataListItems to the list
-            itemBeansSize++;
+            //itemBeansSize++;
             vdc = (VDC)iterator.next();
             Long parent = new Long("0");
             Timestamp lastUpdateTime = (studyService.getLastUpdatedTime(vdc.getId()) != null ? studyService.getLastUpdatedTime(vdc.getId()) : vdc.getReleaseDate());
@@ -167,19 +202,15 @@ public class HomePage extends VDCBaseBean implements Serializable {
          }
      }
 
-     private void initGroupBean(VDCGroup vdcgroup) {
-            //add DataListItems to the list
-            itemBeansSize++;
+      private void initGroupBean(VDCGroup vdcgroup) {
             Long parent = (vdcgroup.getParent() != null) ? vdcgroup.getParent() : new Long("-1");
             parentItem = new DataverseGrouping(vdcgroup.getId(), vdcgroup.getName(), "group", itemBeans, true, EXPAND_IMAGE, CONTRACT_IMAGE, parent);
             parentItem.setShortDescription(vdcgroup.getDescription());
             parentItem.setSubclassification(new Long("25"));
             List innerlist = vdcgroup.getVdcs();
             Iterator inneriterator = innerlist.iterator();
-            // ArrayList childItems   = new ArrayList();
             while(inneriterator.hasNext()) {
                 VDC vdc = (VDC)inneriterator.next();
-                //TODO: Make this the timestamp for last update time
                 Timestamp lastUpdateTime = (studyService.getLastUpdatedTime(vdc.getId()) != null ? studyService.getLastUpdatedTime(vdc.getId()) : vdc.getReleaseDate());
                 Long localActivity       = calculateActivity(vdc);
                 String activity          = getActivityClass(localActivity);
@@ -190,33 +221,226 @@ public class HomePage extends VDCBaseBean implements Serializable {
             }
      }
 
+      //actions and actionListeners
 
-     // ***************** DEBUG START TREE *****************
+          public String search_action() {
+        List searchTerms = new ArrayList();
+        SearchTerm st = new SearchTerm();
+        st.setFieldName( searchField );
+        st.setValue( searchValue );
+        searchTerms.add(st);
+        List studies = new ArrayList();
+        Map variableMap = new HashMap();
+
+        if ( searchField.equals("variable") ) {
+            List variables = indexService.searchVariables(getVDCRequestBean().getCurrentVDC(), st);
+            varService.determineStudiesFromVariables(variables, studies, variableMap);
+
+        } else {
+            studies = indexService.search(getVDCRequestBean().getCurrentVDC(), searchTerms);
+        }
+
+
+        StudyListing sl = new StudyListing(StudyListing.SEARCH);
+        sl.setStudyIds(studies);
+        sl.setSearchTerms(searchTerms);
+        sl.setVariableMap(variableMap);
+        getVDCRequestBean().setStudyListing(sl);
+
+        return "search";
+    }
+
+      // getters and setters
+
+       public int getClassificationsSize() {
+        return this.classificationsSize;
+    }
+       
+       public ArrayList getItemBeans() {
+        return itemBeans;
+    }
+
+    //TREE items
+    public ArrayList getDvGroupItemBeans() {
+        return dvGroupItemBeans;
+    }
+
+
+    public StatusMessage getMsg(){
+        return msg;
+    }
+
+    private String defaultVdcPath;
+
+    public String getDefaultVdcPath() {
+        return defaultVdcPath;
+    }
+
+    private boolean showRequestCreator;
+    /**
+     * Getter for property showRequestCreator.
+     * @return Value of property showRequestCreator.
+     */
+    public boolean isShowRequestCreator() {
+        return this.showRequestCreator;
+    }
+
+    public void setMsg(StatusMessage msg){
+        this.msg = msg;
+    }
+
+    private String searchField;
+    /* SEARCH FIELD RELATED CODE */
+    public String getSearchField() {
+        return searchField;
+    }
+
+    public void setSearchField(String searchField) {
+        this.searchField = searchField;
+    }
+
+    private String searchValue;
+    public String getSearchValue() {
+        return searchValue;
+    }
+
+    public void setSearchValue(String searchValue) {
+        this.searchValue = searchValue;
+    }
+
+    /**
+     * Holds value of property showRequestContributor.
+     */
+    private boolean showRequestContributor;
+
+    /**
+     * Getter for property showRequestContributor.
+     * @return Value of property showRequestContributor.
+     */
+    public boolean isShowRequestContributor() {
+        return this.showRequestContributor;
+    }
+
+    private List recentStudies;
+
+    public List getRecentStudies() {
+        if (recentStudies == null) {
+            recentStudies = new ArrayList();
+            VDC vdc = getVDCRequestBean().getCurrentVDC();
+            if (vdc != null) {
+                VDCUser user = getVDCSessionBean().getUser();
+                recentStudies = StudyUI.filterVisibleStudies( studyService.getRecentStudies(vdc.getId(), -1), vdc, user, getVDCSessionBean().getIpUserGroup(), 3 );
+            }
+        }
+        return recentStudies;
+    }
+
+
+    private String parsedLocalAnnouncements = parseAnnouncements((getVDCRequestBean().getCurrentVDC()!= null) ? getVDCRequestBean().getCurrentVDC().getAnnouncements(): "", true);
+
+    public String getParsedLocalAnnouncements() {
+        return this.parsedLocalAnnouncements;
+    }
+
+    public void setParsedLocalAnnouncements(String announcements) {
+        this.parsedLocalAnnouncements = announcements;
+    }
+
+    private String parsedNetworkAnnouncements = parseAnnouncements((getVDCRequestBean().getVdcNetwork() != null) ? getVDCRequestBean().getVdcNetwork().getAnnouncements(): "", false);
+
+    public String getParsedNetworkAnnouncements() {
+        return this.parsedNetworkAnnouncements;
+    }
+
+    public void setParsedNetworkAnnouncements(String announcements) {
+        this.parsedNetworkAnnouncements = announcements;
+    }
+
+
+    /** public String parseLocalAnnouncements
+     *
+     * @description This utility method checks a string
+     * for a regexp pattern and then parses off the remainder.
+     *
+     *
+     *@return parsed announcements
+     *
+     */
+    public String parseAnnouncements(String announcements, boolean isLocal) {
+        String truncatedAnnouncements = StringUtil.truncateString(announcements, 1000);
+        if ( truncatedAnnouncements != null && !truncatedAnnouncements.equals(announcements) ) {
+            ResourceBundle resourceBundle = ResourceBundle.getBundle("Bundle");
+            if (isLocal) {
+                truncatedAnnouncements += "<a href=\"/dvn/faces/AnnouncementsPage.xhtml?vdcId=" + getVDCRequestBean().getCurrentVDC().getId() + "\" title=\"" + resourceBundle.getString("moreLocalAnnouncementsTip") + "\" class=\"dvn_more\" >more >></a>";
+            } else {
+                truncatedAnnouncements += "<a href=\"/dvn/faces/AnnouncementsPage.xhtml\" title=\"" + resourceBundle.getString("moreNetworkAnnouncementsTip") + "\" class=\"dvn_more\" >more >></a>";
+            }
+        }
+        return truncatedAnnouncements;
+    }
+
+   /**
+     * Setter for property showRequestCreator.
+     * @param showRequestCreator New value of property showRequestCreator.
+     */
+    public void setShowRequestCreator(boolean showRequestCreator) {
+        this.showRequestCreator = showRequestCreator;
+    }
+
+     // ***************** START TREE *****************
      // tree default model, used as a value for the tree component
     private DefaultTreeModel model;
     private DataverseGroupingObject selectedUserObject;
-
-
-    public DefaultTreeModel getModel() {
-        return model;
-    }
-
-    public void setModel(DefaultTreeModel model) {
-        this.model = model;
-    }
-
-    public DataverseGroupingObject getSelectedUserObject() {
-        return selectedUserObject;
-    }
-
     private String groupingId;
+    DefaultMutableTreeNode rootNode;
+     DefaultMutableTreeNode regionNode;
+     List descendants = new ArrayList();
 
-    public String getGroupingId() {
-        return groupingId;
-    }
+    protected void initMenu() {
+        if (dvGroupItemBeans != null) {
+            dvGroupItemBeans.clear();
+        } else {
+            dvGroupItemBeans = new ArrayList();
+        }
 
-    public void setGroupingId(String groupingId) {
-        this.groupingId = groupingId;
+        // Top Level
+        rootNode = addNode(null, "All Dataverses", new DataverseGrouping(new Long("0"), "", ""));
+        model = new DefaultTreeModel(rootNode);
+        selectedUserObject = (DataverseGroupingObject) rootNode.getUserObject();
+        selectedUserObject.setExpanded(true);
+        //END Top
+         Iterator outeriterator = allVdcGroups.iterator();
+         VDCGroup vdcgroup = null;
+         Long parent;
+         List list;
+         Iterator iterator;
+         String expandImage     = EXPAND_IMAGE;
+         String contractImage   = CONTRACT_IMAGE;
+         boolean isExpanded     = false;
+         while(outeriterator.hasNext()) {
+            classificationsSize++;
+            vdcgroup = (VDCGroup)outeriterator.next();
+            Long id = vdcgroup.getId();
+            parent = (vdcgroup.getParent() != null) ? vdcgroup.getParent() : new Long("-1");
+            if (parent.equals(new Long("-1"))) {
+               parentItem = new DataverseGrouping(id, vdcgroup.getName(), "group", dvGroupItemBeans, isExpanded, expandImage, contractImage, parent);
+               populateTopNode(parentItem);
+            }
+         }
+         descendants = allVdcGroups;
+         sort(descendants);
+         iterator = descendants.iterator();
+         while (iterator.hasNext()) {
+             VDCGroup group = (VDCGroup)iterator.next();
+             Long parentId = group.getParent();
+             if (parentId == null) {
+                 iterator.remove();
+             } else {
+                 parentItem = new DataverseGrouping(group.getId(), group.getName(), "subgroup", dvGroupItemBeans, isExpanded, expandImage, contractImage, parentId);
+                 populateTopNode(parentItem);
+             }
+
+         }
     }
 
     public void groupingNodeSelected(ActionEvent event) {
@@ -233,87 +457,11 @@ public class HomePage extends VDCBaseBean implements Serializable {
             VDCGroup vdcgroup = vdcGroupService.findById(new Long(groupingId));
             initGroupBean(vdcgroup);
         } else {
-            list = (List)vdcService.findAll();
-            initAllDataverses(list);
+            initAllDataverses(allVdcs);
 
-        }
-        // initMenu();
-        // fire effects.);
-        //valueChangeEffect.setFired(false);
-    }
-    // START DEBUG
-    /**
-     * Toggles the expanded state of this dataverse group.
-     *
-     * @param event
-     */
-    public void toggleChildren() {
-        Long parentId = new Long(groupingId);
-        Iterator iterator = itemBeans.iterator();
-        DataverseGrouping parentitem = null;
-        while (iterator.hasNext()) {
-            parentitem = (DataverseGrouping)iterator.next();
-            if (parentitem.getId().equals(groupingId)) {
-                break;
-            }
-        }
-        if (!parentitem.isIsExpanded()) {
-            expandSubClassification(vdcGroupService.findByParentId(parentId), parentitem);
-            parentitem.setIsExpanded(true);
-        } else {
-            contractSubClassification(vdcGroupService.findByParentId(parentId), parentitem);
-            parentitem.setIsExpanded(false);
         }
     }
-
-    int indent = 10; //initialize primitive
-
-    private void expandSubClassification(List<VDCGroup> children, DataverseGrouping parentitem) {
-
-         String expandImage     = EXPAND_IMAGE;
-         String contractImage   = CONTRACT_IMAGE;
-         boolean isExpanded     = false;
-         Iterator iterator = children.iterator();
-         indent = parentitem.getTextIndent() + 5;
-         while(iterator.hasNext()) {
-             VDCGroup vdcgroup = (VDCGroup)iterator.next();
-            synchronized(itemBeans) {
-                parentItem  = new DataverseGrouping(vdcgroup.getId(), vdcgroup.getName(), "subgroup", itemBeans, isExpanded, expandImage, contractImage, new Long(parentitem.getId()));
-             }
-             parentItem.setIndentStyleClass("childRowIndentStyle"); //deprecate in favor of inline indent
-             parentItem.setTextIndent(indent);
-             parentItem.setSubclassification(new Long(Integer.toString(vdcGroupService.findByParentId(vdcgroup.getId()).size())));
-             parentitem.addChildItem(parentItem);
-             addNode(regionNode, childItem.getName(), childItem);
-            // if (itemBeans.contains(parentItem))
-                  //itemBeans.remove(parentItem);
-             //itemBeans.add(itemBeans.indexOf(parentitem) + 1, parentItem);
-
-         }
-     }
-
-    private void contractSubClassification(List<VDCGroup> children, DataverseGrouping parentitem) {
-         String expandImage     = EXPAND_IMAGE;
-         String contractImage   = CONTRACT_IMAGE;
-         boolean isExpanded     = false;
-         Iterator iterator      = children.iterator();
-         Iterator itemsIterator = itemBeans.iterator();
-         while(iterator.hasNext()) {
-             VDCGroup vdcgroup = (VDCGroup)iterator.next();
-             while (itemsIterator.hasNext()) {
-                 DataverseGrouping grouping = (DataverseGrouping)itemsIterator.next();
-                 if (new Long(grouping.getId()).equals(vdcgroup.getId())) {
-                     itemsIterator.remove();
-                 }
-             }
-         }
-         parentitem.recurseAndContractNodeAction();
-     }
-
-
-
-    // END DEBUG
-
+    
     HtmlCommandLink linkSelect = new HtmlCommandLink();
 
     public HtmlCommandLink getLinkSelect() {
@@ -417,17 +565,17 @@ public class HomePage extends VDCBaseBean implements Serializable {
         node.setUserObject(userObject);
         userObject.setGrouping(grouping);
 
-        // non-grouping node or branch
+        // grouping node or branch
         if (title != null) {
             userObject.setText(title);
             userObject.setLeaf(false);
-            userObject.setExpanded(false);
+            userObject.setExpanded(false); //false
             node.setAllowsChildren(true);
         }
-        // grouping node
+        // non grouping node or leaf
         else {
             userObject.setText(grouping.getName());
-            userObject.setLeaf(true);//TODO: change to false because only groups are being created
+            userObject.setLeaf(true);
             node.setAllowsChildren(false);
         }
         // finally add the node to the parent.
@@ -439,73 +587,44 @@ public class HomePage extends VDCBaseBean implements Serializable {
     }
 
     //Manage classification
-     private void populateParentClassification(VDCGroup vdcgroup, String indentStyle) {
-         Long parent = (vdcgroup.getParent() != null) ? vdcgroup.getParent() : new Long("-1");
-         List list              = vdcGroupService.findByParentId(vdcgroup.getId());
-         Iterator iterator      = list.iterator();
+     private void populateTopNode(DataverseGrouping topnode) {
          String expandImage     = EXPAND_IMAGE;
          String contractImage   = CONTRACT_IMAGE;
          boolean isExpanded     = false;
-         synchronized(dvGroupItemBeans) {
-            parentItem = new DataverseGrouping(vdcgroup.getId(), vdcgroup.getName(), "group", dvGroupItemBeans, isExpanded, expandImage, contractImage, parent);
-            // DEBUG
-             regionNode = addNode(rootNode, parentItem.getName(), parentItem);
-             //END DEBUG
+         if (topnode.getParentClassification().equals(Long.parseLong("-1"))) {
+             regionNode = addNode(rootNode, topnode.getName(), topnode);
+         } else {//find the parent node by the id and add topnode to it.
+             DefaultMutableTreeNode node = findTreeNode(topnode.getParentClassification().toString());
+             if (node != null)
+                regionNode = addNode(node, topnode.getName(), topnode);
          }
-         parentItem.setShortDescription(vdcgroup.getDescription());
-         parentItem.setSubclassification(new Long(list.size()));
-         if (!indentStyle.equals(""))
-             parentItem.setIndentStyleClass(indentStyle);
-         // List innerlist = vdcGroupService.findByParentId(vdcgroup.getId());//get the children
-         // Iterator inneriterator = innerlist.iterator();
-         // removeFromList.add(vdcgroup);
-          // while(inneriterator.hasNext()) {
-           //  VDCGroup subgroup = (VDCGroup)inneriterator.next();
-            // parent = vdcgroup.getParent();
-            // populateSubClassification(subgroup, parentItem);
-                //remove the subgroup from the iterator
-           //  removeFromList.add(subgroup);
-        // }
+         //parentItem.setShortDescription(vdcgroup.getDescription());
+         //parentItem.setSubclassification(new Long(list.size()));
      }
 
+    
+
+    protected void sort(List alldescendants) {
+        Comparator comparator = new Comparator() {
+            public int compare(Object o1, Object o2) {
+                VDCGroup c1 = (VDCGroup) o1;
+                VDCGroup c2 = (VDCGroup) o2;
+                if (c1.getParent() == null) return 1;
+                else if (c2.getParent() == null) return -1;
+                else return c1.getParent().compareTo(c2.getParent());
+            }
+        };
+
+            Collections.sort(alldescendants, comparator);
+    }
       
 
      
 
-     DefaultMutableTreeNode rootNode;
-     DefaultMutableTreeNode regionNode;
-     List removeFromList = new ArrayList();
+     
+    
 
-    protected void initMenu() {
-        if (dvGroupItemBeans != null) {
-            dvGroupItemBeans.clear();
-        } else {
-            dvGroupItemBeans = new ArrayList();
-        }
-       
-        // Top Level
-        rootNode = addNode(null, "All Dataverses", new DataverseGrouping(new Long("0"), "", ""));
-        model = new DefaultTreeModel(rootNode);
-        selectedUserObject = (DataverseGroupingObject) rootNode.getUserObject();
-        selectedUserObject.setExpanded(true);
-        //END Top
-            List list = (List)vdcGroupService.findAll();
-            Iterator outeriterator = list.iterator();
-             VDCGroup vdcgroup = null;
-             System.out.println(list.toString());
-             while(outeriterator.hasNext()) {
-                classificationsSize++;
-                vdcgroup = (VDCGroup)outeriterator.next();
-                if (removeFromList.contains(vdcgroup)) {
-                    continue;
-                } else {
-                String indentStyle = (vdcgroup.getParent() == null) ? "" : "childRowIndentStyle";
-                populateParentClassification(vdcgroup, indentStyle);
-                }
-             }
-    }
-
-    private DefaultMutableTreeNode findTreeNode(String nodeId) {
+    private DefaultMutableTreeNode findTreeNode(String groupingId) {
         DefaultMutableTreeNode theRootNode =
                 (DefaultMutableTreeNode) model.getRoot();
         DefaultMutableTreeNode node;
@@ -521,9 +640,33 @@ public class HomePage extends VDCBaseBean implements Serializable {
         }
         return null;
     }
-     // ******************** END DEBUG TREE ******************************
 
-    public void dispose() {
+    public DefaultTreeModel getModel() {
+        return model;
+    }
+
+    public void setModel(DefaultTreeModel model) {
+        this.model = model;
+    }
+
+    public DataverseGroupingObject getSelectedUserObject() {
+        return selectedUserObject;
+    }
+
+
+
+    public String getGroupingId() {
+        return groupingId;
+    }
+
+    public void setGroupingId(String groupingId) {
+        this.groupingId = groupingId;
+    }
+
+     // ******************** END TREE ******************************
+
+        // utility props and methods
+public void dispose() {
         isInit = false;
         if(itemBeans != null) {
             DataverseGrouping dataversegrouping;
@@ -538,25 +681,6 @@ public class HomePage extends VDCBaseBean implements Serializable {
             itemBeans.clear();
         }
     }
-
-    public ArrayList getItemBeans() {
-        return itemBeans;
-    }
-
-    public int getItemBeansSize() {
-        return itemBeansSize;
-    }
-    
-    //tree map related
-    public ArrayList getDvGroupItemBeans() {
-        return dvGroupItemBeans;
-    }
-
-    public int getClassificationsSize() {
-        return this.classificationsSize;
-    }
-
-
 
     private String getLastUpdatedTime(Long vdcId) {
         Timestamp timestamp = null;
@@ -581,8 +705,8 @@ public class HomePage extends VDCBaseBean implements Serializable {
                     numberOfDownloads += studyfile.getStudyFileActivity() != null ? studyfile.getStudyFileActivity().getDownloadCount() : 0;
                 }
             }
-            
-            
+
+
 
         } catch (Exception e) {
             System.out.println("an exception was thrown while calculating activity");
@@ -613,408 +737,6 @@ public class HomePage extends VDCBaseBean implements Serializable {
            case 5: activityClass =  "activitylevelicon al-5"; break;
        }
         return activityClass;
-    }
-
-    public StatusMessage getMsg(){
-        return msg;
-    }
-
-    private String defaultVdcPath;
-
-    public String getDefaultVdcPath() {
-        return defaultVdcPath;
-    }
-
-    private boolean showRequestCreator;
-    /**
-     * Getter for property showRequestCreator.
-     * @return Value of property showRequestCreator.
-     */
-    public boolean isShowRequestCreator() {
-        return this.showRequestCreator;
-    }
-
-    public void setMsg(StatusMessage msg){
-        this.msg = msg;
-    }
-
-    private String searchField;
-    /* SEARCH FIELD RELATED CODE */
-    public String getSearchField() {
-        return searchField;
-    }
-
-    public void setSearchField(String searchField) {
-        this.searchField = searchField;
-    }
-
-    private String searchValue;
-    public String getSearchValue() {
-        return searchValue;
-    }
-
-    public void setSearchValue(String searchValue) {
-        this.searchValue = searchValue;
-    }
-
-    /**
-     * Holds value of property showRequestContributor.
-     */
-    private boolean showRequestContributor;
-
-    /**
-     * Getter for property showRequestContributor.
-     * @return Value of property showRequestContributor.
-     */
-    public boolean isShowRequestContributor() {
-        return this.showRequestContributor;
-    }
-
-    private List recentStudies;
-
-    public List getRecentStudies() {
-        if (recentStudies == null) {
-            recentStudies = new ArrayList();
-            VDC vdc = getVDCRequestBean().getCurrentVDC();
-            if (vdc != null) {
-                VDCUser user = getVDCSessionBean().getUser();
-                recentStudies = StudyUI.filterVisibleStudies( studyService.getRecentStudies(vdc.getId(), -1), vdc, user, getVDCSessionBean().getIpUserGroup(), 3 );
-            }
-        }
-        return recentStudies;
-    }
-
-
-
-    public List getVdcs() {
-        return vdcService.findAll();
-    }
-
-
-    public String search_action() {
-        List searchTerms = new ArrayList();
-        SearchTerm st = new SearchTerm();
-        st.setFieldName( searchField );
-        st.setValue( searchValue );
-        searchTerms.add(st);
-        List studies = new ArrayList();
-        Map variableMap = new HashMap();
-
-        if ( searchField.equals("variable") ) {
-            List variables = indexService.searchVariables(getVDCRequestBean().getCurrentVDC(), st);
-            varService.determineStudiesFromVariables(variables, studies, variableMap);
-
-        } else {
-            studies = indexService.search(getVDCRequestBean().getCurrentVDC(), searchTerms);
-        }
-
-
-        StudyListing sl = new StudyListing(StudyListing.SEARCH);
-        sl.setStudyIds(studies);
-        sl.setSearchTerms(searchTerms);
-        sl.setVariableMap(variableMap);
-        getVDCRequestBean().setStudyListing(sl);
-
-        return "search";
-    }
-
-    private String parsedLocalAnnouncements = parseAnnouncements((getVDCRequestBean().getCurrentVDC()!= null) ? getVDCRequestBean().getCurrentVDC().getAnnouncements(): "", true);
-
-    public String getParsedLocalAnnouncements() {
-        return this.parsedLocalAnnouncements;
-    }
-
-    public void setParsedLocalAnnouncements(String announcements) {
-        this.parsedLocalAnnouncements = announcements;
-    }
-
-    private String parsedNetworkAnnouncements = parseAnnouncements((getVDCRequestBean().getVdcNetwork() != null) ? getVDCRequestBean().getVdcNetwork().getAnnouncements(): "", false);
-
-    public String getParsedNetworkAnnouncements() {
-        return this.parsedNetworkAnnouncements;
-    }
-
-    public void setParsedNetworkAnnouncements(String announcements) {
-        this.parsedNetworkAnnouncements = announcements;
-    }
-
-
-    /** public String parseLocalAnnouncements
-     *
-     * @description This utility method checks a string
-     * for a regexp pattern and then parses off the remainder.
-     *
-     *
-     *@return parsed announcements
-     *
-     */
-    public String parseAnnouncements(String announcements, boolean isLocal) {
-        String truncatedAnnouncements = StringUtil.truncateString(announcements, 1000);
-        if ( truncatedAnnouncements != null && !truncatedAnnouncements.equals(announcements) ) {
-            ResourceBundle resourceBundle = ResourceBundle.getBundle("Bundle");
-            if (isLocal) {
-                truncatedAnnouncements += "<a href=\"/dvn/faces/AnnouncementsPage.xhtml?vdcId=" + getVDCRequestBean().getCurrentVDC().getId() + "\" title=\"" + resourceBundle.getString("moreLocalAnnouncementsTip") + "\" class=\"dvn_more\" >more >></a>";
-            } else {
-                truncatedAnnouncements += "<a href=\"/dvn/faces/AnnouncementsPage.xhtml\" title=\"" + resourceBundle.getString("moreNetworkAnnouncementsTip") + "\" class=\"dvn_more\" >more >></a>";
-            }
-        }
-        return truncatedAnnouncements;
-    }
-
-   /**
-     * Setter for property showRequestCreator.
-     * @param showRequestCreator New value of property showRequestCreator.
-     */
-    public void setShowRequestCreator(boolean showRequestCreator) {
-        this.showRequestCreator = showRequestCreator;
-    }
-    /**
-     * <p>Callback method that is called after the component tree has been
-     * restored, but before any event processing takes place.  This method
-     * will <strong>only</strong> be called on a postback request that
-     * is processing a form submit.  Customize this method to allocate
-     * resources that will be required in your event handlers.</p>
-     */
-    public void preprocess() {
-    }
-
-    /**
-     * <p>Callback method that is called just before rendering takes place.
-     * This method will <strong>only</strong> be called for the page that
-     * will actually be rendered (and not, for example, on a page that
-     * handled a postback and then navigated to a different page).  Customize
-     * this method to allocate resources that will be required for rendering
-     * this page.</p>
-     */
-    public void prerender() {
-    }
-
-    /**
-     * <p>Callback method that is called after rendering is completed for
-     * this request, if <code>init()</code> was called (regardless of whether
-     * or not this was the page that was actually rendered).  Customize this
-     * method to release resources acquired in the <code>init()</code>,
-     * <code>preprocess()</code>, or <code>prerender()</code> methods (or
-     * acquired during execution of an event handler).</p>
-     */
-    public void destroy() {
-    }
-
-    /**
-     * <p>Automatically managed component initialization.  <strong>WARNING:</strong>
-     * This method is automatically generated, so any user-specified code inserted
-     * here is subject to being replaced.</p>
-     */
-    private void _init() {
-    }
-
-        // utility props and methods
-    private Timestamp startAutoLoadTime;
-    private Timestamp endAutoLoadTime;
-    private HtmlOutputText outputEndAutoLoadTime;
-    private HtmlOutputText inputStartAutoLoadTime;
-
-    public Timestamp getEndAutoLoadTime() {
-        if (endAutoLoadTime == null) {
-            endAutoLoadTime = DateUtils.getTimestamp();
-        }
-        return endAutoLoadTime;
-    }
-
-    public void setEndAutoLoadTime(Timestamp endTime) {
-        this.endAutoLoadTime = endTime;
-    }
-
-    public Timestamp getStartAutoLoadTime() {
-        if (startAutoLoadTime == null) {
-            startAutoLoadTime = DateUtils.getTimestamp();
-        }
-        return startAutoLoadTime;
-    }
-
-    public void setStartAutoLoadTime(Timestamp startTime) {
-        this.startAutoLoadTime = startTime;
-    }
-
-    public HtmlOutputText getInputStartAutoLoadTime() {
-        return inputStartAutoLoadTime;
-    }
-
-    public void setInputStartAutoLoadTime(HtmlOutputText inputStartTime) {
-        this.inputStartAutoLoadTime = inputStartTime;
-    }
-
-    public HtmlOutputText getOutputEndAutoLoadTime() {
-        return this.outputEndAutoLoadTime;
-    }
-
-    public void setOutputEndAutoLoadTime(HtmlOutputText outputLoadTime) {
-        this.outputEndAutoLoadTime = outputLoadTime;
-    }
-
-    // *********** INLINE STATISTICS ****************
-    private Timestamp startStatisticsTime;
-    private Timestamp endStatisticsTime;
-    private HtmlOutputText outputEndStatisticsTime;
-    private HtmlOutputText inputStartStatisticsTime;
-
-    public Timestamp getEndStatisticsTime() {
-        if (endStatisticsTime == null) {
-            endStatisticsTime = DateUtils.getTimestamp();
-        }
-        return endStatisticsTime;
-    }
-
-    public void setEndStatisticsTime(Timestamp endTime) {
-        this.endStatisticsTime = endTime;
-    }
-
-    public Timestamp getStartStatisticsTime() {
-        if (startStatisticsTime == null) {
-            startStatisticsTime = DateUtils.getTimestamp();
-        }
-        return startStatisticsTime;
-    }
-
-    public void setStartStatisticsTime(Timestamp startTime) {
-        this.startStatisticsTime = startTime;
-    }
-
-    public HtmlOutputText getInputStartStatisticsTime() {
-        return inputStartStatisticsTime;
-    }
-
-    public void setInputStartStatisticsTime(HtmlOutputText inputStartTime) {
-        this.inputStartStatisticsTime = inputStartTime;
-    }
-
-    public HtmlOutputText getOutputEndStatisticsTime() {
-        return this.outputEndStatisticsTime;
-    }
-
-    public void setOutputEndStatisticsTime(HtmlOutputText outputLoadTime) {
-        this.outputEndStatisticsTime = outputLoadTime;
-    }
-
-    // *********** content STATISTICS ****************
-    private Timestamp startContentTime;
-    private Timestamp endContentTime;
-    private HtmlOutputText outputEndContentTime;
-    private HtmlOutputText inputStartContentTime;
-
-    public Timestamp getEndContentTime() {
-        if (endContentTime == null) {
-            endContentTime = DateUtils.getTimestamp();
-        }
-        return endContentTime;
-    }
-
-    public void setEndContentTime(Timestamp endTime) {
-        this.endContentTime = endTime;
-    }
-
-    public Timestamp getStartContentTime() {
-        if (startContentTime == null) {
-            startContentTime = DateUtils.getTimestamp();
-        }
-        return startContentTime;
-    }
-
-    public void setStartContentTime(Timestamp startTime) {
-        this.startContentTime = startTime;
-    }
-
-    public HtmlOutputText getInputStartContentTime() {
-        return inputStartContentTime;
-    }
-
-    public void setInputStartContentTime(HtmlOutputText inputStartTime) {
-        this.inputStartContentTime = inputStartTime;
-    }
-
-    public HtmlOutputText getOutputEndContentTime() {
-        return this.outputEndContentTime;
-    }
-
-    public void setOutputEndContentTime(HtmlOutputText outputLoadTime) {
-        this.outputEndContentTime = outputLoadTime;
-    }
-
-      // *********** tree STATISTICS ****************
-    private Timestamp startTreeTime;
-    private Timestamp endTreeTime;
-    private HtmlOutputText outputEndTreeTime;
-    private HtmlOutputText inputStartTreeTime;
-
-    public Timestamp getEndTreeTime() {
-        if (endTreeTime == null) {
-            endTreeTime = DateUtils.getTimestamp();
-        }
-        return endTreeTime;
-    }
-
-    public void setEndTreeTime(Timestamp endTime) {
-        this.endTreeTime = endTime;
-    }
-
-    public Timestamp getStartTreeTime() {
-        if (startTreeTime == null) {
-            startTreeTime = DateUtils.getTimestamp();
-        }
-        return startTreeTime;
-    }
-
-    public void setStartTreeTime(Timestamp startTime) {
-        this.startTreeTime = startTime;
-    }
-
-    public HtmlOutputText getInputStartTreeTime() {
-        return inputStartTreeTime;
-    }
-
-    public void setInputStartTreeTime(HtmlOutputText inputStartTime) {
-        this.inputStartTreeTime = inputStartTime;
-    }
-
-    public HtmlOutputText getOutputEndTreeTime() {
-        return this.outputEndTreeTime;
-    }
-
-    public void setOutputEndTreeTime(HtmlOutputText outputLoadTime) {
-        this.outputEndTreeTime = outputLoadTime;
-    }
-
-
-
-    private List<String> loadTimes = new ArrayList();
-
-    
-
-    public List<String> getLoadTimes() {
-        Timestamp localStartTime = startAutoLoadTime;
-        startAutoLoadTime = null;
-        String loadtime = DateUtils.getLoadTime(localStartTime.getTime());
-        loadTimes.add((String)outputEndAutoLoadTime.getAttributes().get("loadLabel") + loadtime);
-       //statistics
-        localStartTime = startStatisticsTime;
-        startStatisticsTime = null;
-        loadtime = DateUtils.getLoadTime(localStartTime.getTime());
-        loadTimes.add((String)outputEndStatisticsTime.getAttributes().get("loadLabel") + loadtime);
-        //content
-        localStartTime = startContentTime;
-        startContentTime = null;
-        loadtime = DateUtils.getLoadTime(localStartTime.getTime());
-        loadTimes.add((String)outputEndContentTime.getAttributes().get("loadLabel") + loadtime);
-        //tree
-        localStartTime = startTreeTime;
-        startTreeTime = null;
-        loadtime = DateUtils.getLoadTime(localStartTime.getTime());
-        loadTimes.add((String)outputEndTreeTime.getAttributes().get("loadLabel") + loadtime);
-         return this.loadTimes;
-    }
-
-    public void setLoadTimes(List<String> loadtimes) {
-        this.loadTimes = loadtimes;
     }
 
     

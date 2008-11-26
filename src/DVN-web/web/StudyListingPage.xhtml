@@ -163,7 +163,7 @@
                       <!-- Optional search fields -->
                       <div jsfc="ice:panelGroup" styleClass="dvnStudyListTableOptionalField" rendered="#{!empty StudyListingPage.studyFields[sfc.productionDate] and !empty studyUI.study.productionDate}">
                           <ice:outputText value="Production Date:" styleClass="dvnStudyListTableOptionalFieldLabel"/>
-                          <ice:outputText value="#{studyUI.study.productionDate}"/>
+                          <ice:outputText value="#{studyUI.productionDate}"/>
                       </div>
                       <div jsfc="ice:panelGroup" styleClass="dvnStudyListTableOptionalField" rendered="#{!empty StudyListingPage.studyFields[sfc.producerName] and !empty studyUI.producers}">
                           <ice:outputText value="Producer:" styleClass="dvnStudyListTableOptionalFieldLabel"/>
@@ -171,7 +171,7 @@
                       </div>
                       <div jsfc="ice:panelGroup" styleClass="dvnStudyListTableOptionalField" rendered="#{!empty StudyListingPage.studyFields[sfc.distributionDate] and !empty studyUI.study.distributionDate}">
                           <ice:outputText value="Distribution Date:" styleClass="dvnStudyListTableOptionalFieldLabel"/>
-                          <ice:outputText value="#{studyUI.study.distributionDate}" escape="false"/>
+                          <ice:outputText value="#{studyUI.distributionDate}" escape="false"/>
                       </div>
                       <div jsfc="ice:panelGroup" styleClass="dvnStudyListTableOptionalField" rendered="#{!empty StudyListingPage.studyFields[sfc.distributorName] and !empty studyUI.distributors}">
                           <ice:outputText value="Distributor:" styleClass="dvnStudyListTableOptionalFieldLabel"/>

@@ -388,7 +388,7 @@
                       <ice:inputText id="input_productionDate" styleClass="formDateFormat" value="#{EditStudyPage.study.productionDate}"  required="#{EditStudyPage.studyMap[sfc.productionDate].required}">
                         <f:validator validatorId="DateValidator"/>
                       </ice:inputText>
-                      <ice:outputText value=" (YYYY or YYYY-MM or YYYY-MM-DD)"/>
+                      <ice:outputText value="#{editstudybundle.dateFormatDescription}"/>
                       <ice:message styleClass="errorMessage" for="input_productionDate"><f:param name="x" value="Production Date:"/> </ice:message>
                     </div>
                   </ice:panelGrid>
@@ -635,7 +635,7 @@
                       <ice:inputText id="input_distributionDate" styleClass="formDateFormat" value="#{EditStudyPage.study.distributionDate}" required="#{EditStudyPage.studyMap[sfc.distributionDate].required}">
                         <f:validator validatorId="DateValidator"/>
                       </ice:inputText>
-                      <ice:outputText value=" (YYYY or YYYY-MM or YYYY-MM-DD)"/>
+                      <ice:outputText value="#{editstudybundle.dateFormatDescription}"/>
                       <ice:message styleClass="errorMessage" for="input_distributionDate"/>
                     </div>
                   </ice:panelGrid>
@@ -668,7 +668,7 @@
                       <ice:inputText id="input_dateOfDeposit" styleClass="formDateFormat" value="#{EditStudyPage.study.dateOfDeposit}" required="#{EditStudyPage.studyMap[sfc.dateOfDeposit].required}">
                         <f:validator validatorId="DateValidator"/>
                       </ice:inputText>
-                      <ice:outputText value=" (YYYY or YYYY-MM or YYYY-MM-DD)"/>
+                      <ice:outputText value="#{editstudybundle.dateFormatDescription}"/>
                       <ice:message styleClass="errorMessage" for="input_dateOfDeposit"/>
                     </div>
                   </ice:panelGrid>
@@ -732,7 +732,7 @@
                         <ice:inputText binding="#{EditStudyPage.inputVersionDate}" validator="#{EditStudyPage.validateVersion}" id="input_versionDate" styleClass="formDateFormat" value="#{EditStudyPage.study.versionDate}" required="#{EditStudyPage.studyMap[sfc.versionDate].required}" >
                           <f:validator validatorId="DateValidator"/>
                         </ice:inputText>
-                        <ice:outputText value=" (YYYY or YYYY-MM or YYYY-MM-DD)"/>
+                        <ice:outputText value="#{editstudybundle.dateFormatDescription}"/>
                         <ice:message styleClass="errorMessage" for="input_versionDate"/>
                       </div>
                     </div>
@@ -802,7 +802,7 @@
                               <ice:inputText binding="#{EditStudyPage.inputAbstractDate}" validator="#{EditStudyPage.validateStudyAbstract}" id="input_abstractDate" styleClass="formDateFormat" value="#{currentRow.date}" required="#{EditStudyPage.studyMap[sfc.abstractDate].required}">
                                 <f:validator validatorId="DateValidator"/>
                               </ice:inputText>
-                              <ice:outputText value=" (YYYY or YYYY-MM or YYYY-MM-DD)"/>
+                              <ice:outputText value="#{editstudybundle.dateFormatDescription}"/>
                               <ice:message styleClass="errorMessage" for="input_abstractDate"/>
                             </div>
                           </div>
@@ -1088,7 +1088,7 @@
                       <ice:inputText id="input_timePeriodCoveredStart" styleClass="formDateFormat" value="#{EditStudyPage.study.timePeriodCoveredStart}" required="#{EditStudyPage.studyMap[sfc.timePeriodCoveredStart].required}">
                         <f:validator validatorId="DateValidator"/>
                       </ice:inputText>
-                      <ice:outputText value=" (YYYY or YYYY-MM or YYYY-MM-DD)"/>
+                      <ice:outputText value="#{editstudybundle.dateFormatDescription}"/>
                       <ice:message styleClass="errorMessage" for="input_timePeriodCoveredStart"/>
                     </div>
                   </ice:panelGrid>
@@ -1106,7 +1106,7 @@
                       <ice:inputText id="input_timePeriodCoveredEnd" styleClass="formDateFormat" value="#{EditStudyPage.study.timePeriodCoveredEnd}" required="#{EditStudyPage.studyMap[sfc.timePeriodCoveredEnd].required}">
                         <f:validator validatorId="DateValidator"/>
                       </ice:inputText>
-                      <ice:outputText value=" (YYYY or YYYY-MM or YYYY-MM-DD)"/>
+                      <ice:outputText value="#{editstudybundle.dateFormatDescription}"/>
                       <ice:message styleClass="errorMessage" for="input_timePeriodCoveredEnd"/>
                     </div>
                   </ice:panelGrid>
@@ -1124,7 +1124,7 @@
                       <ice:inputText id="input_dateOfCollectionStart" styleClass="formDateFormat" value="#{EditStudyPage.study.dateOfCollectionStart}"  required="#{EditStudyPage.studyMap[sfc.dateOfCollectionStart].required}">
                         <f:validator validatorId="DateValidator"/>
                       </ice:inputText>
-                      <ice:outputText value=" (YYYY or YYYY-MM or YYYY-MM-DD)"/>
+                      <ice:outputText value="#{editstudybundle.dateFormatDescription}"/>
                       <ice:message styleClass="errorMessage" for="input_dateOfCollectionStart"/>
                     </div>
                   </ice:panelGrid>
@@ -1142,7 +1142,7 @@
                       <ice:inputText id="input_dateOfCollectionEnd" styleClass="formDateFormat" value="#{EditStudyPage.study.dateOfCollectionEnd}"  required="#{EditStudyPage.studyMap[sfc.dateOfCollectionEnd].required}">
                         <f:validator validatorId="DateValidator"/>
                       </ice:inputText>
-                      <ice:outputText value=" (YYYY or YYYY-MM or YYYY-MM-DD)"/>
+                      <ice:outputText value="#{editstudybundle.dateFormatDescription}"/>
                       <ice:message styleClass="errorMessage" for="input_dateOfCollectionEnd"/>
                     </div>
                   </ice:panelGrid>

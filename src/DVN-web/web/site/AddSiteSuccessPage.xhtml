@@ -3,87 +3,88 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:gui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core" 
+      xmlns:f="http://java.sun.com/jsf/core"
       xmlns:jsp="http://java.sun.com/JSP/Page"
-       xmlns:ice="http://www.icesoft.com/icefaces/component"
-      >
+      xmlns:ice="http://www.icesoft.com/icefaces/component">
 <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
-
 <body>
-<gui:composition template="/template.xhtml">
-
-<gui:param name="pageTitle" value="DVN - Dataverse Creation Success" />
-
-  <gui:define name="body">
-
-        <ice:form  id="creatorRequestForm">
-          <input type="hidden" name="pageName" value="CreatorRequestPage"/>
-            <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
-
-            <div jsfc="ice:panelGroup" styleClass="#{ (LoginWorkflowBean.creatorWorkflow) ? 'dvn_createDvRequest dvn_section dvn_overflow' : 'dvn_section'}">
-              <div jsfc="ice:panelGroup" rendered="#{LoginWorkflowBean.creatorWorkflow}" styleClass="requestHeader dvn_overflow">
-                      <ice:outputText value="Success! &lt;span&gt;&gt; Create Your Own Dataverse&lt;/span&gt;" escape="false"/>
-              </div>
-              <div jsfc="ice:panelGroup" rendered="#{LoginWorkflowBean.creatorWorkflow}" styleClass="requestTimeline" style="background-position: 0 -12px;">
-                        <div class="requestTimelinePoint" style="left: 51px;"><img src="/dvn/resources/lrg-blue-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong style="color:#035899;">Create Account</strong></div>
-                        <div class="requestTimelinePoint" style="left: 249px;"><img src="/dvn/resources/lrg-blue-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong style="color:#035899;">Terms of Use</strong></div>
-                        <div class="requestTimelinePoint" style="left: 435px;"><img src="/dvn/resources/lrg-blue-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong style="color:#035899;">Name Dataverse</strong></div>
-                        <div class="requestTimelinePoint" style="left: 651px;"><img src="/dvn/resources/lrg-blue-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong style="color:#035899; font-weight:bold;">Success!</strong></div>
-              </div>
-              <div jsfc="ice:panelGroup" styleClass="requestContent">
-                  
-                  <div jsfc="ice:panelGroup"  styleClass="requestContentDescLeft requestContentSucessH4">
-                      <h4>Your new dataverse has been created!</h4>
-                  </div>
-                  
-                  <div jsfc="ice:panelGroup"  styleClass="requestContentDescRight requestContentSucess">
-                  <div jsfc="ice:panelGroup"  styleClass="dvn_margin12">
-                      
-                        <p>Your new dataverse is set to <em>Not Released</em> by default, and appears on the Coming Soon tab of the Network homepage.
-                            </p>
-                           <ul>
-                            <li> <ice:outputText value=" Click "/>                                
-                             <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml">
-                                <ice:outputText value="My Options"/>
-                            </ice:outputLink> <ice:outputText value=" to administrate your dataverse "/>
-                            </li>
-                            <li> <ice:outputText value=" Begin "/>      
-                             <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml">
-                                <ice:outputText value="adding studies and uploading files"/>
-                             </ice:outputLink> <ice:outputText value=" or "/>
-                             <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/collection/ManageCollectionsPage.xhtml">
-                                 <ice:outputText value="creating collections"/> 
-                             </ice:outputLink> <ice:outputText value=" of data from other dataverses."/>
-                            </li>
-                            <li>
-                             <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditBannerFooterPage.xhtml">
-                                   <ice:outputText value="Customize the layout"/>
-                            </ice:outputLink><ice:outputText value=", and then you are ready to "/> 
-                            <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/PrivilegedUsersPage.xhtml">
-                                   <ice:outputText value="release"/>
-                            </ice:outputLink>
-                            <ice:outputText value=" your dataverse live!"/>
-                           </li>
-                        </ul>
-                        <p>
-                        You can access your dataverse directly by entering this URL:</p>
-                        <p>
-                            <ice:outputLink  value="http://#{LoginWorkflowBean.hostUrl}/dvn#{VDCRequest.currentVDCURL}">
-                                <ice:outputText value="http://#{LoginWorkflowBean.hostUrl}/dvn#{VDCRequest.currentVDCURL}"/>
-                            </ice:outputLink> 
-                        </p>
-                      
-                  </div>
-                  </div>
-                  
-              </div>
+  <gui:composition template="/template.xhtml">
+    <gui:param name="pageTitle" value="DVN - Dataverse Creation Success"/>
+    <gui:define name="body">
+      <ice:form id="creatorRequestForm">
+        <input type="hidden" name="pageName" value="CreatorRequestPage"/>
+        <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+        <div jsfc="ice:panelGroup" styleClass="#{(LoginWorkflowBean.creatorWorkflow) ? 'dvn_createDvRequest dvn_section dvn_overflow' : 'dvn_section'}">
+          <div jsfc="ice:panelGroup" rendered="#{LoginWorkflowBean.plainWorkflow}" styleClass="dvnRoundCornerMsgBlock dvnSuccessMessage">
+             <ice:outputText styleClass="successMessage" value="Your new dataverse has been created!"/>
           </div>
-
-        </ice:form>
-            </gui:define>
-        </gui:composition>
-    </body>
+          <div jsfc="ice:panelGroup" rendered="#{LoginWorkflowBean.plainWorkflow}" styleClass="dvn_sectionTitle">
+            <ice:outputText value="#{bundlePageInfo.createDvTitle}"/>
+          </div>
+          <div jsfc="ice:panelGroup" rendered="#{LoginWorkflowBean.creatorWorkflow}" styleClass="requestHeader dvn_overflow">
+            <ice:outputText value="Success! &lt;span&gt;&gt; Create Your Own Dataverse&lt;/span&gt;" escape="false"/>
+          </div>
+          <div jsfc="ice:panelGroup" rendered="#{LoginWorkflowBean.creatorWorkflow}" styleClass="requestTimeline" style="background-position: 0 -12px;">
+            <div class="requestTimelinePoint" style="left: 51px;"><img src="/dvn/resources/lrg-blue-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong style="color:#035899;">Create Account</strong></div>
+            <div class="requestTimelinePoint" style="left: 249px;"><img src="/dvn/resources/lrg-blue-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong style="color:#035899;">Terms of Use</strong></div>
+            <div class="requestTimelinePoint" style="left: 435px;"><img src="/dvn/resources/lrg-blue-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong style="color:#035899;">Name Dataverse</strong></div>
+            <div class="requestTimelinePoint" style="left: 651px;"><img src="/dvn/resources/lrg-blue-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong style="color:#035899; font-weight:bold;">Success!</strong></div>
+          </div>
+          <div jsfc="ice:panelGroup" styleClass="#{(LoginWorkflowBean.creatorWorkflow) ? 'requestContent' : 'dvn_sectionBox'}">
+            <div jsfc="ice:panelGroup" rendered="#{LoginWorkflowBean.creatorWorkflow}" styleClass="requestContentDescLeft requestContentSucessH4">
+              <h4>Your new dataverse has been created!</h4>
+            </div>
+            <div jsfc="ice:panelGroup" styleClass="#{(LoginWorkflowBean.creatorWorkflow) ? 'requestContentDescRight requestContentSucess' : 'empty'}">
+              <div jsfc="ice:panelGroup" styleClass="dvn_margin12">
+                <p>
+                  Your new dataverse is set to <em>Not Released</em> by default, and appears on the Coming Soon tab of the Network homepage.
+                </p>
+                <ul>
+                  <li>
+                    <ice:outputText value=" Click "/>
+                    <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml">
+                      <ice:outputText value="My Options"/>
+                    </ice:outputLink>
+                    <ice:outputText value=" to administrate your dataverse "/>
+                  </li>
+                  <li>
+                    <ice:outputText value=" Begin "/>
+                    <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml">
+                      <ice:outputText value="adding studies and uploading files"/>
+                    </ice:outputLink>
+                    <ice:outputText value=" or "/>
+                    <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/collection/ManageCollectionsPage.xhtml">
+                      <ice:outputText value="creating collections"/>
+                    </ice:outputLink>
+                    <ice:outputText value=" of data from other dataverses."/>
+                  </li>
+                  <li>
+                    <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditBannerFooterPage.xhtml">
+                      <ice:outputText value="Customize the layout"/>
+                    </ice:outputLink>
+                    <ice:outputText value=" and then you are ready to "/>
+                    <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/PrivilegedUsersPage.xhtml">
+                      <ice:outputText value="release"/>
+                    </ice:outputLink>
+                    <ice:outputText value=" your dataverse live!"/>
+                  </li>
+                </ul>
+                <p>
+                  You can access your dataverse directly by entering this URL:
+                </p>
+                <p>
+                  <ice:outputLink value="http://#{LoginWorkflowBean.hostUrl}/dvn#{VDCRequest.currentVDCURL}">
+                    <ice:outputText value="http://#{LoginWorkflowBean.hostUrl}/dvn#{VDCRequest.currentVDCURL}"/>
+                  </ice:outputLink>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ice:form>
+    </gui:define>
+  </gui:composition>
+</body>
 </html>

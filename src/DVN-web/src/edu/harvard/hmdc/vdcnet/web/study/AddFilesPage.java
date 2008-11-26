@@ -103,8 +103,8 @@ public static final Log mLog = LogFactory.getLog(AddFilesPage.class);
     Collection<StudyFile> objStudyFiles; 
     //the names of the study files that already exist in storage 
     private String[] studyFileNames=null;  
-    //
-  
+    //ActionEvent object associated with ice:inputFile component 
+    private InputFile inputFile = null;
      /**
      * Return the reference to the
      * {@link com.icesoft.faces.webapp.xmlhttp.PersistentFacesState
@@ -129,7 +129,16 @@ public static final Log mLog = LogFactory.getLog(AddFilesPage.class);
     public StudyFileEditBean getCurrentFile() {
         return currentFile;
     }
-
+    public void setCurrentFile(StudyFileEditBean f) {
+        currentFile=f;
+    }
+    public InputFile getInputFile( ) {
+        return inputFile;
+    }
+    public void setInputFile(InputFile f) {
+        inputFile=f;
+    }
+ 
     public int getFileProgress() {
         return fileProgress;
     }
@@ -168,8 +177,9 @@ public static final Log mLog = LogFactory.getLog(AddFilesPage.class);
      */
     public void uploadFile(ActionEvent event) {
         InputFile inputFile = (InputFile) event.getSource();
+      
+        this.inputFile = inputFile; 
         String str="";
-        
 	if (inputFile.getStatus() != InputFile.SAVED){
             str = "Uploaded File: " + inputFile.getFileInfo().getFileName()+ "\n" + 
                    "InputFile Status: "+ inputFile.getStatus();
@@ -266,7 +276,7 @@ public static final Log mLog = LogFactory.getLog(AddFilesPage.class);
     public void fileUploadProgress(EventObject event) {
         InputFile ifile = (InputFile) event.getSource();
         fileProgress = ifile.getFileInfo().getPercent();
-  if (persistentFacesState !=null) {
+        if (persistentFacesState !=null) {
          renderManager.getOnDemandRenderer(sessionId).requestRender();} 
         
     }
@@ -525,7 +535,7 @@ private boolean  hasFileName( StudyFileEditBean inputFileData, boolean remov){
          String nm = sf.getFileName();
          int found = Arrays.binarySearch(studyFileNames, nm);
               
-              mLog.debug(tmp.getStudyFile().getDescription()+"; File DeScription");
+              mLog.debug(tmp.getStudyFile().getDescription()+"; File Description");
             //if the file name exist remove it from temp directory and do not store
             if(found>=0){
                 edbean.remove();
@@ -755,7 +765,7 @@ private boolean  hasFileName( StudyFileEditBean inputFileData, boolean remov){
           if ( fileName.equals(dummy) ) {
                 errorMessage = "must be unique (a previously existing file already exists with the name).";
                 displayError(context, (UIInput) toValidate, errorMessage);
-                return;
+               return;
                
             }
         }

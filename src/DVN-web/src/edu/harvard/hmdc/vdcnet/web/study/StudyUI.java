@@ -282,17 +282,32 @@ public class StudyUI  implements java.io.Serializable {
     
     private String reformatDate(String dateString) {
          
-        Date date = DvnDate.convertFromPattern(dateString,"yyyy-MM-dd");
-        if (date!=null) {
+        Date date = DvnDate.convertFromPattern(dateString, "yyyyyyyyy-MM-dd GG");
+        if (date != null) {
+            SimpleDateFormat formatter = new SimpleDateFormat("MMMMM dd, yyyy GG");
+            return formatter.format(date);
+        }
+        date = DvnDate.convertFromPattern(dateString, "yyyyyyyyy-MM GG");
+        if (date != null) {
+            SimpleDateFormat formatter = new SimpleDateFormat("MMMMM, yyyy GG");
+            return formatter.format(date);
+        }
+        date = DvnDate.convertFromPattern(dateString, "yyyyyyyyy GG");
+        if (date != null) {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy GG");
+            return formatter.format(date);
+        }
+        date = DvnDate.convertFromPattern(dateString, "yyyy-MM-dd");
+        if (date != null) {
             SimpleDateFormat formatter = new SimpleDateFormat("MMMMM dd, yyyy");
             return formatter.format(date);
         }
-        date = DvnDate.convertFromPattern(dateString,"yyyy-MM");
-        if (date!=null) {
+        date = DvnDate.convertFromPattern(dateString, "yyyy-MM");
+        if (date != null) {
             SimpleDateFormat formatter = new SimpleDateFormat("MMMMM, yyyy");
             return formatter.format(date);
         }
-             
+
         return dateString;
         
     }

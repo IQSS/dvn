@@ -33,7 +33,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.logging.Logger;
+import java.util.GregorianCalendar;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
@@ -70,17 +70,19 @@ public class DateValidator implements Validator, java.io.Serializable  {
         valid = isValid(dateString,"yyyy-MM-dd");
         if (!valid ) {
             valid = isValid(dateString, "yyyy-MM");
-        }
-         if (!valid) {
-            valid = isValid(dateString,"yyyy GG");
-        }
-        if (!valid) {
-            valid = isValid(dateString,"yyyyGG");
-        }
+        }     
         if (!valid) {
             valid = isValid(dateString,"yyyy");
         }
-
+        if (!valid ) {
+            valid = isValid(dateString, "yyyyyyyyy-MM-dd GG");
+        }   
+        if (!valid ) {
+            valid = isValid(dateString, "yyyyyyyyy-MM GG");
+        }     
+        if (!valid) {
+            valid = isValid(dateString,"yyyyyyyyy GG");
+        }      
         return valid;
     }
     
@@ -95,6 +97,13 @@ public class DateValidator implements Validator, java.io.Serializable  {
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(date);
             int year = calendar.get(Calendar.YEAR);
+            int era = calendar.get(Calendar.ERA);
+            if (era == GregorianCalendar.AD ) {
+                if ( year > 9999) {
+                    valid=false;
+                }
+
+            }
          //   System.out.println("pattern is "+ pattern);
          //   System.out.println("Year is "+year);
          //   System.out.println("Calendar date is "+date.toString());
@@ -109,7 +118,7 @@ public class DateValidator implements Validator, java.io.Serializable  {
     }
     public static void main(String args[]) {
         DateValidator validator = new DateValidator();     
-        System.out.println(validator.validate("2008-02 "));
+        System.out.println("Result is "+validator.validate("-20080-02 "));
         
     }
 }

@@ -36,9 +36,13 @@
           </div>
           <div jsfc="ice:panelGroup" styleClass="#{(LoginWorkflowBean.creatorWorkflow or LoginWorkflowBean.contributorWorkflow) ? 'requestContent' : 'dvn_sectionBox'}">
             <div jsfc="ice:panelGroup" rendered="#{LoginWorkflowBean.creatorWorkflow or LoginWorkflowBean.contributorWorkflow}" styleClass="requestContentDescLeft">
-              <p><ice:outputText value="Please read and agree to the terms of use for the"/>
-                <ice:outputText value="#{VDCRequest.vdcNetwork.name}"/>
-              <ice:outputText value="Dataverse Network. Check the 'I agree and accept' box and continue."/></p>
+              <div class="dvnRoundCornerMsgBlock dvnInformationMessage">
+                <p>
+                  <ice:outputText value="Please read and agree to the terms of use for the "/>
+                  <ice:outputText value="#{VDCRequest.vdcNetwork.name}"/>
+                  <ice:outputText value=" Dataverse Network. Check the 'I agree and accept' box and continue."/>
+                </p>
+              </div>
             </div>
             <div jsfc="ice:panelGroup" styleClass="#{(LoginWorkflowBean.creatorWorkflow or LoginWorkflowBean.contributorWorkflow) ? 'requestContentFormRight' : 'empty'}">
               <div class="dvn_margin12">

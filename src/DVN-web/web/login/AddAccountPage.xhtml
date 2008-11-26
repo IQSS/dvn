@@ -7,18 +7,16 @@
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:ice="http://www.icesoft.com/icefaces/component">
 <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
-
 <body>
   <gui:composition template="/template.xhtml">
     <gui:param name="pageTitle" value="#{bundlePageInfo.createAccountTitle}"/>
     <gui:define name="body">
       <ice:form id="form1">
-        <div class="dvnInformationMessage">
-             <ice:outputText value="#{bundlePageInfo.createAccountHelp}" escape="false" />
-           </div> 
-          
+        <div jsfc="ice:panelGroup" rendered="#{LoginWorkflowBean.plainWorkflow}" styleClass="dvnRoundCornerMsgBlock dvnInformationMessage">
+          <ice:outputText value="#{bundlePageInfo.createAccountHelp}" escape="false"/>
+        </div>
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <ice:inputHidden id="studyId" value="#{AddAccountPage.studyId}"/>
         <ice:inputHidden binding="#{AddAccountPage.hiddenWorkflow}" value="#{AddAccountPage.workflow}"/>
@@ -41,17 +39,16 @@
             <div class="requestTimelinePoint" style="left: 347px;"><img src="/dvn/resources/lrg-grey-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong>Terms of Use</strong></div>
             <div class="requestTimelinePoint" style="left: 554px;"><img src="/dvn/resources/lrg-grey-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong>Success!</strong></div>
           </div>
-          <div jsfc="ice:panelGroup" styleClass="#{ (LoginWorkflowBean.creatorWorkflow or LoginWorkflowBean.contributorWorkflow) ? 'requestContent' : 'dvn_sectionBox'}">
+          <div jsfc="ice:panelGroup" styleClass="#{(LoginWorkflowBean.creatorWorkflow or LoginWorkflowBean.contributorWorkflow) ? 'requestContent' : 'dvn_sectionBox'}">
             <div jsfc="ice:panelGroup" rendered="#{LoginWorkflowBean.creatorWorkflow or LoginWorkflowBean.contributorWorkflow}" styleClass="requestContentDescLeft">
-              <p><ice:outputText value="Please create an account to join the"/>
-              <ice:outputText value="#{VDCRequest.vdcNetwork.name}"/>
-              <ice:outputText value="Dataverse Network" />.</p>
+              <div class="dvnRoundCornerMsgBlock dvnInformationMessage">
+                <ice:outputText value="#{bundlePageInfo.createAccountHelp}" escape="false"/>
+              </div>
             </div>
-            <div jsfc="ice:panelGroup" styleClass="#{ (LoginWorkflowBean.creatorWorkflow or LoginWorkflowBean.contributorWorkflow) ? 'requestContentDescRight' : 'empty'}">
+            <div jsfc="ice:panelGroup" styleClass="#{(LoginWorkflowBean.creatorWorkflow or LoginWorkflowBean.contributorWorkflow) ? 'requestContentDescRight' : 'empty'}">
               <div jsfc="ice:panelGroup" styleClass="dvn_margin12">
-
                 <ice:panelGrid cellpadding="0" cellspacing="0" columns="2"
-                       columnClasses="vdcColPadded, vdcColPadded" id="gridPanel2">
+                               columnClasses="vdcColPadded, vdcColPadded" id="gridPanel2">
                   <div jsfc="ice:panelGroup" id="groupPanel1">
                     <ice:outputText value="Username"/>
                     <ice:graphicImage id="image1" value="/resources/icon_required.gif"/>
@@ -113,11 +110,11 @@
                     <ice:outputText value="Position"/>
                   </div>
                   <div jsfc="ice:panelGroup">
-                    <ice:selectOneMenu value="#{AddAccountPage.user.position}" >
-                      <f:selectItem itemLabel="Student" itemValue="Student" />
-                      <f:selectItem itemLabel="Faculty" itemValue="Faculty" />
-                      <f:selectItem itemLabel="Staff" itemValue="Staff" />
-                      <f:selectItem itemLabel="Other" itemValue="Other" />
+                    <ice:selectOneMenu value="#{AddAccountPage.user.position}">
+                      <f:selectItem itemLabel="Student" itemValue="Student"/>
+                      <f:selectItem itemLabel="Faculty" itemValue="Faculty"/>
+                      <f:selectItem itemLabel="Staff" itemValue="Staff"/>
+                      <f:selectItem itemLabel="Other" itemValue="Other"/>
                     </ice:selectOneMenu>
                   </div>
                   <div jsfc="ice:panelGroup">

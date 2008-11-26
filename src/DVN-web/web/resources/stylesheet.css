@@ -408,7 +408,7 @@ td.dvnPaginatorWrap table.dvnPaginatorRight {}
    font-weight: bold;
    padding: 0;
    text-align: left;
-   width: auot;
+   width: auto;
    margin: 0 0 0 48px;
 }
 
@@ -1780,6 +1780,11 @@ span.termsAgreementMessageTitle {display: block; padding-top: 1em; color: #526f7
 .dvn_createDvRequest .requestContentSucess a {font-weight: bold;}
 .dvn_createDvRequest .requestContentSucess ul {margin-left: 1.5em; list-style: disc;}
 .dvn_createDvRequest .requestContentSucessH4 h4 {margin: 0; padding: 0; color: #c55b28; font-size: 100% !important;}
+.dvnCreateDvClassificationTable td span.iceOutTxt {font-size: 90% !important;}
+.dvnCreateDvClassificationTable td.dvnCreateDvClassificationSelectColumn {border-right: 0px;}
+
+table.dvnCreateDvClassificationTable div {border-top: 0px;}
+table.dvnCreateDvClassificationTable table {width: 100%; border-top: 1px solid #dcdddf;}
 
 /**** Dataverse Analysis Results ****/
 .dvn_analysisResultContainer {padding: 10px; border: 1px solid #6e7f90; clear: both;}

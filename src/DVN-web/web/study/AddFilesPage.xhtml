@@ -28,7 +28,7 @@
                 function updateCategory( checkbox ) {
                 if (checkbox.checked) {
               
-              dropdown = document.getElementById("form1:fileDataTable:catDropdown"); 
+              dropdown = document.getElementById("form1:dummy_datatable:0:fileDataTable:catDropdown"); 
               textField = (document.getElementById(checkbox.id)).nextSibling;
               textField.value= dropdown.value;
              // checkbox.checked = false;
@@ -75,7 +75,9 @@
       
         <ice:inputFile id="inputFileComponent" 
             progressListener="#{AddFilesPage.fileUploadProgress}" 
-            actionListener="#{AddFilesPage.uploadFile}" />
+            actionListener="#{AddFilesPage.uploadFile}" binding="#{AddFilesPage.inputFile}" >
+        <!--    <ice:commandButton binding="#{AddFilesPage.inputFile}" /> -->
+                               </ice:inputFile>    
         <ice:message for="inputFileComponent" /> 
         <ice:outputProgress rendered="#{AddFilesPage.progressRequested}" 
             value="#{AddFilesPage.fileProgress}" />        
@@ -96,7 +98,10 @@
             data can then be sortColumnName by a sortColumnName algorithm if a
             change is detected.
         -->
-     
+      <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
+          <ice:dataTable cellpadding="0" cellspacing="0" width="80%" id="dummy_datatable"
+                                 value="dummy_datatable">
+                    <ice:column>
           <ice:dataTable cellpadding="0" cellspacing="0" rendered="true" 
                 width="80%"
                 value="#{AddFilesPage.fileList}" id="fileDataTable" binding="#{AddFilesPage.filesDataTable}" 
@@ -107,7 +112,7 @@
                                             <!-- note that the Javascript functions currently depends on the placement and ids of these fields (and the dropdown box; 
                                             changing them may require corresponding changes in the Javascript  -->
   <ice:selectBooleanCheckbox id="catCheckbox"  onclick="updateCategory(this);"/>
-  <ice:inputText id="catTextField" size="30" value="#{file.fileCategoryName}" partialSubmit="true" 
+  <ice:inputText id="catTextField" size="30" value="#{file.fileCategoryName}" partialSubmit="false" 
   onfocus="deselectCategory(this)"/>
 </ice:panelGroup>
    <f:facet name="header" id="f1">
@@ -125,7 +130,7 @@
                             value="File Name"/>
                 </f:facet>
                 <ice:inputText id="input_filename" size="30" value="#{file.studyFile.fileName}" required="true" 
-                               validator="#{AddFilesPage.validateFileName}" partialSubmit="true" /> 
+                               validator="#{AddFilesPage.validateFileName}" partialSubmit="false" /> 
                   <!-- <f:param name="fileName" value="#{file.studyFile.fileName}"/> -->
                   <ice:message errorStyle="errorMessage" for="input_filename" />
             </ice:column> 
@@ -135,7 +140,7 @@
                             value="Description"/>
                 </f:facet>
                 <ice:inputTextarea id="description_filename"  rows="2" 
-                             value="#{file.studyFile.description}" partialSubmit="true" />
+                             value="#{file.studyFile.description}" partialSubmit="false" />
                
             </ice:column>
 
@@ -158,17 +163,22 @@
                 </ice:commandLink>
             </ice:column> 
      </ice:dataTable>
-   
+    </ice:column> 
+     </ice:dataTable>
    
      <ice:panelGroup block="true" rendered="#{AddFilesPage.emailRequested}" 
         style="padding-top: 20px; padding-bottom: 10px" >
       <ice:outputText styleClass="vdcTextStandout" value="NOTE:"/>
-      <ice:outputText id="email" escape="false" styleClass="warnMessage" value="Fill the message"/>
+      <ice:outputText id="email" escape="false" styleClass="warnMessage" 
+      value="SPSS and STATA files will be converted to a  tab delimited  format and become subsettable. You will still be able to download the original file, as well as other formats. Subsettable files might take a long time to upload and be processed. We will send you an e-mail notification when the upload process starts and when it completes. "/>
       <br/>
      <ice:outputText   value="E-Mail Address:"/>
      <ice:inputText id="textField3" size="50" value="#{AddFilesPage.ingestEmail}">
          <f:validator validatorId="EmailValidator"/>
       </ice:inputText>
+      <br/>
+        <ice:outputText id="emailmany" escape="false" styleClass="warnMessage" 
+      value="Separate multiple e-mail addresses with a comma (and no spaces). "/>
       <ice:message for="textField3" id="validatorMessage" styleClass="errorMessage"/>
 <br />
  </ice:panelGroup>

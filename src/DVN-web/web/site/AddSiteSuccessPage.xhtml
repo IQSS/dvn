@@ -33,13 +33,15 @@
             <div class="requestTimelinePoint" style="left: 651px;"><img src="/dvn/resources/lrg-blue-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong style="color:#035899; font-weight:bold;">Success!</strong></div>
           </div>
           <div jsfc="ice:panelGroup" styleClass="#{(LoginWorkflowBean.creatorWorkflow) ? 'requestContent' : 'dvn_sectionBox'}">
-            <div jsfc="ice:panelGroup" rendered="#{LoginWorkflowBean.creatorWorkflow}" styleClass="requestContentDescLeft requestContentSucessH4">
-              <h4>Your new dataverse has been created!</h4>
+            <div jsfc="ice:panelGroup" rendered="#{LoginWorkflowBean.creatorWorkflow}" styleClass="requestContentDescLeft">
+              <div class="dvnRoundCornerMsgBlock dvnSuccessMessage">
+                <ice:outputText styleClass="successMessage" value="Your new dataverse has been created!"/>
+              </div>
             </div>
-            <div jsfc="ice:panelGroup" styleClass="#{(LoginWorkflowBean.creatorWorkflow) ? 'requestContentDescRight requestContentSucess' : 'empty'}">
+            <div jsfc="ice:panelGroup" styleClass="#{(LoginWorkflowBean.creatorWorkflow) ? 'requestContentDescRight requestContentSucess' : 'requestContentSucess'}">
               <div jsfc="ice:panelGroup" styleClass="dvn_margin12">
                 <p>
-                  Your new dataverse is set to <em>Not Released</em> by default, and appears on the Coming Soon tab of the Network homepage.
+                  Your new dataverse is set to <em>Not Released</em> by default, and will not be featured on the Network homepage until it is released.
                 </p>
                 <ul>
                   <li>

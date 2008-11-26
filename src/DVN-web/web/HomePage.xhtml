@@ -130,11 +130,6 @@
                 <div jsfc="ice:panelGroup" 
                             rendered="#{not empty(dvItems.childItems)and VDCRequest.currentVDC == null }"
                             style="float: left; width: 60%; padding-top: 2px; padding-bottom: 2px;">
-
-
-  
-
-<br />
                     <h:outputText binding="#{NetworkStatsBean.inlineDataverseKey}"
                                   effect="#{item.effect}"
                                   styleClass="dvn_totalsLabel"
@@ -341,8 +336,8 @@
                 <f:facet name="icon">
                     <ice:panelGroup
                             style="display: inline" >
-                        <ice:graphicImage
-                             value="/resources/icefaces/dvn_rime/css-images/#{node.userObject.icon}"/>
+                    <ice:graphicImage
+                             value="/resources/icefaces/dvn_rime/css-images/#{node.userObject.icon}"/> 
                     </ice:panelGroup>
                 </f:facet>
                 <f:facet name="content">

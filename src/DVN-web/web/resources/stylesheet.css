@@ -380,6 +380,7 @@ td.dvnPaginatorWrap table.dvnPaginatorRight {}
 .dvnInformationMessage p:first-child {padding-top: 0; margin-top: 0;}
 .dvnInformationMessage p {
   margin-left: 48px;
+  background: transparent;
 }
 
 .dvnSuccessMessage {
@@ -389,20 +390,23 @@ td.dvnPaginatorWrap table.dvnPaginatorRight {}
 .dvnSuccessMessage p:first-child {padding-top: 0; margin-top: 0;}
 .dvnSuccessMessage p {
   margin-left: 48px;
+  background: transparent;
 }
 .dvnSuccessMessage ul, .dvnSuccessMessage div {
   margin-left: 48px;
   padding-left: 0;
   list-style: none;
+  background: transparent;
 }
 .dvnSuccessMessage li, .dvnSuccessMessage div span {
   margin: 0;
   padding: 0;
   font-weight: bold;
   color: #299a0b;
+  background: transparent;
 }
 .dvnSuccessMessage .successMessage {
-   background: none;
+   background: transparent;
    color: #299a0b;
    display: inline;
    font-weight: bold;
@@ -1777,9 +1781,8 @@ td.dvnPermissionsTableHeader {padding: .5em 1em; background: gainsboro; color: g
 span.termsAgreementMessageTitle {display: block; padding-top: 1em; color: #526f76; font-size: 120% !important; font-weight: bold; text-transform: uppercase;}
 .termsAgreementBox {margin-bottom: 20px; padding: 4px; width: 450px; height: 300px; border: 1px solid #035899; overflow: scroll; overflow-x: auto;}
 .termsAgreementButtons {padding-top: 20px; width: 450px; text-align: center;}
-.dvn_createDvRequest .requestContentSucess a {font-weight: bold;}
-.dvn_createDvRequest .requestContentSucess ul {margin-left: 1.5em; list-style: disc;}
-.dvn_createDvRequest .requestContentSucessH4 h4 {margin: 0; padding: 0; color: #c55b28; font-size: 100% !important;}
+.requestContentSucess a {font-weight: bold;}
+.requestContentSucess ul {margin-left: 1.5em; list-style: disc;}
 .dvnCreateDvClassificationTable td span.iceOutTxt {font-size: 90% !important;}
 .dvnCreateDvClassificationTable td.dvnCreateDvClassificationSelectColumn {border-right: 0px;}
 

@@ -3,46 +3,39 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:gui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core" 
+      xmlns:f="http://java.sun.com/jsf/core"
       xmlns:jsp="http://java.sun.com/JSP/Page"
-      xmlns:ice="http://www.icesoft.com/icefaces/component"
-      >
+      xmlns:ice="http://www.icesoft.com/icefaces/component">
 <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
-
 <body>
-<gui:composition template="/template.xhtml">
-
-<gui:param name="pageTitle" value="DVN - Delete Dataverse Successful" />
-
-  <gui:define name="body">
-
-      
-        <h:form  id="form1">
-            <input type="hidden" name="pageName" value="DeleteSuccessPage"/>
-
-            <div class="dvn_section">
-                <div class="dvn_sectionTitle">
-                    
-                    <h:outputText value="Delete Successful"/>
-                 
-                </div>            
-                <div class="dvn_sectionBox"> 
-                    <div class="dvn_margin12">
-                        
-                        <ice:outputText id="outputText2" value="The dataverse has been deleted successfully. "/>
-                        <br />
-                        <ice:outputLink value="#{DeleteDataversePage.resultLink}">
-                            <ice:outputText id="returnLink" value="Return to the #{DeleteDataversePage.result}"/>
-                        </ice:outputLink>
-                        
-                    </div>
-                </div>
+  <gui:composition template="/template.xhtml">
+    <gui:param name="pageTitle" value="#{bundlePageInfo.deleteDataverseTitle}"/>
+    <gui:define name="body">
+      <h:form id="form1">
+        <input type="hidden" name="pageName" value="DeleteSuccessPage"/>
+        <div class="dvn_section">
+          <div class="dvnRoundCornerMsgBlock dvnSuccessMessage">
+            <div>
+              <ice:outputText id="outputText2" value="The dataverse has been deleted successfully."/>
             </div>
-        </h:form>   
-            </gui:define>
-        </gui:composition>
-    </body>
+          </div>
+          <div class="dvn_sectionTitle">
+            <h:outputText value="#{bundlePageInfo.deleteDataverseTitle}"/>
+          </div>
+          <div class="dvn_sectionBox">
+            <div class="dvn_margin12">
+              <p>
+                <ice:outputLink value="#{DeleteDataversePage.resultLink}">
+                  <ice:outputText id="returnLink" value="Return to the #{DeleteDataversePage.result}"/>
+                </ice:outputLink>
+              </p>
+            </div>
+          </div>
+        </div>
+      </h:form>
+    </gui:define>
+  </gui:composition>
+</body>
 </html>

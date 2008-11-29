@@ -3,59 +3,43 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:gui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core" 
+      xmlns:f="http://java.sun.com/jsf/core"
       xmlns:jsp="http://java.sun.com/JSP/Page"
-      xmlns:ice="http://www.icesoft.com/icefaces/component"
-      >
+      xmlns:ice="http://www.icesoft.com/icefaces/component">
 <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
-
 <body>
-<gui:composition template="/template.xhtml">
-
-<gui:param name="pageTitle" value="DVN - Delete Dataverse" />
-
-  <gui:define name="body">
-
-      
-        <ice:form  id="form1">
-
-            <input type="hidden" name="pageName" value="DeleteDataversePage"/>
-            <ice:inputHidden id="deleteId" value="#{DeleteDataversePage.deleteId}"  binding="#{DeleteDataversePage.hiddenVdcId}" />                                    
-            <ice:inputHidden binding="#{DeleteDataversePage.hiddenVdcName}" id="vdcName" value="#{DeleteDataversePage.vdcName}"/>                                    
-
-                    <div class="dvn_section">
-                        <div class="dvn_sectionTitle">
-                             
-                                <ice:outputText  value="Deleting a Dataverse"/>
-                             
-                        </div>            
-                        <div class="dvn_sectionBox"> 
-                            <div class="dvn_margin12"> 
-                                
-                                <div id="groupPanel1">
-                                    <ice:outputText  styleClass="warnMessage"
-                                                        value="By deleting a dataverse, you are removing it permanently from the Archive. All studies and collections owned by this dataverse will also be deleted."/>
-                                     <br />
-                                    <ice:outputText  styleClass="warnMessage" value="Are you sure you want to delete "/>
-                                    <ice:outputFormat  id="outputText3" styleClass="vdcTextStandOut" value="{0}">
-                                        <f:param value="#{DeleteDataversePage.vdcName}"/>
-                                    </ice:outputFormat>
-                                    <ice:outputText  id="outputText4" value="?"/>
-                                </div>
-                                <div id="groupPanel2" style="padding-top: 30px; text-align: center">
-                                    <ice:commandButton  id="button1" value="Delete" action="#{DeleteDataversePage.delete}"/>
-                                    <ice:commandButton  immediate="true" id="button2" style="margin-left: 30px" value="Cancel" action="#{DeleteDataversePage.cancel}"/>
-                                </div>
-                                
-                            </div>
-                        </div>
-                    </div>
-                                
-                    </ice:form>
-            </gui:define>
-        </gui:composition>
-    </body>
+  <gui:composition template="/template.xhtml">
+    <gui:param name="pageTitle" value="#{bundlePageInfo.deleteDataverseTitle}"/>
+    <gui:define name="body">
+      <ice:form id="form1">
+        <input type="hidden" name="pageName" value="DeleteDataversePage"/>
+        <ice:inputHidden id="deleteId" value="#{DeleteDataversePage.deleteId}" binding="#{DeleteDataversePage.hiddenVdcId}"/>
+        <ice:inputHidden binding="#{DeleteDataversePage.hiddenVdcName}" id="vdcName" value="#{DeleteDataversePage.vdcName}"/>
+        <div class="dvn_section">
+          <div class="dvnRoundCornerMsgBlock dvnInformationMessage">
+            <ice:outputText value="#{bundlePageInfo.deleteDataverseHelp}" escape="false"/>
+          </div>
+          <div class="dvn_sectionTitle">
+            <ice:outputText value="#{bundlePageInfo.deleteDataverseTitle}"/>
+          </div>
+          <div class="dvn_sectionBox">
+            <div class="dvn_margin12">
+              <div id="groupPanel1">
+                <p>
+                  <ice:outputText styleClass="warnMessage" value="Are you sure you want to delete &lt;span class='vdcTextStandOut'&gt;#{DeleteDataversePage.vdcName}&lt;/span&gt;?" escape="false"/>
+                </p>
+              </div>
+              <div class="dvnFormPadding dvnFormMargin">
+                <ice:commandButton id="button1" value="Delete" action="#{DeleteDataversePage.delete}"/>
+                <ice:commandButton immediate="true" id="button2" value="Cancel" action="#{DeleteDataversePage.cancel}"/>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ice:form>
+    </gui:define>
+  </gui:composition>
+</body>
 </html>

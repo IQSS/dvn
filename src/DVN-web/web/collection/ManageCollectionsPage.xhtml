@@ -7,9 +7,8 @@
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:ice="http://www.icesoft.com/icefaces/component">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
-
 <body>
   <gui:composition template="/template.xhtml">
     <gui:param name="pageTitle" value="#{bundlePageInfo.manageCollectionsTitle}"/>
@@ -17,14 +16,12 @@
       <ice:form id="form1">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <div class="dvn_section">
-          
-          <div class="dvnInformationMessage">
-             <ice:outputText value="#{bundlePageInfo.manageCollectionsHelp}" escape="false" />
+          <div class="dvnRoundCornerMsgBlock dvnInformationMessage">
+            <ice:outputText value="#{bundlePageInfo.manageCollectionsHelp}" escape="false"/>
           </div>
-
-           <div class="dvn_sectionTitle">
+          <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.manageCollectionsTitle}"/>
-          </div>    
+          </div>
           <!--
           <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/collection/EditCollectionPage.xhtml">
             <ice:outputText id="hyperlink3Text2" value="Create a New Collection"/>
@@ -35,7 +32,7 @@
                          var="collUI"
                          value="#{ManageCollectionsPage.collections}"
                          columnWidths="70%,10%,10%,10%"
-                         style="dvnManageCollectionsTable">
+                         styleClass="dvnManageCollectionsTable">
             <ice:column>
               <f:facet name="header">
                 <ice:outputText id="nameCol" value="Collection Name"/>
@@ -76,37 +73,42 @@
               </ice:commandLink>
             </ice:column>
           </ice:dataTable>
-
-          <div style="margin-top: 1.5em; text-align: right;">
-            <ice:outputLink id="hyperlinkAddLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/collection/AddLinkPage.xhtml">
-              <ice:outputText id="hyperlinkTextAddLink" value="+ Create a New Linked Collection"/>
-            </ice:outputLink>
-            <ice:dataTable id="linksDataTbl"
-                           var="collUI"
-                           value="#{ManageCollectionsPage.linkedCollections}"
-                           columnWidths="60%,30%,10%">
-              <ice:column>
-                <f:facet name="header">
-                  <ice:outputText id="linknameCol" value="Collection Name"/>
-                </f:facet>
-                <ice:outputText value="#{collUI.collection.name}"/>
-              </ice:column>
-              <ice:column>
-                <f:facet name="header">
-                  <ice:outputText id="dvCol" value="Dataverse"/>
-                </f:facet>
-                <ice:outputText id="type" value="#{collUI.collection.owner.name}"/>
-              </ice:column>
-              <ice:column>
-                <f:facet name="header">
-                  <ice:outputText id="removeLinkCol" value="Remove Link"/>
-                </f:facet>
-                <ice:commandLink id="removeLinkColLink" action="#{collUI.removeLink_action}">
-                  <ice:outputText value="Remove"/>
-                </ice:commandLink>
-              </ice:column>
-            </ice:dataTable>
+          <div class="dvnManageTableTop dvnManageSecondTable">
+            <div jsfc="ice:panelGroup" styleClass="dvnManageTableTotals">
+              <ice:outputText value="Linked Collections: ManageCollectionsPage.itemBeansSize"/>
+            </div>
+            <div jsfc="ice:panelGroup" styleClass="dvnManageTableCreateLink">
+              <ice:outputLink id="hyperlinkAddLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/collection/AddLinkPage.xhtml">
+                <ice:outputText id="hyperlinkTextAddLink" value="Create Linked Collection"/>
+              </ice:outputLink>
+            </div>
           </div>
+          <ice:dataTable id="linksDataTbl"
+                         styleClass="dvnManageTable"
+                         var="collUI"
+                         value="#{ManageCollectionsPage.linkedCollections}"
+                         columnWidths="60%,30%,10%">
+            <ice:column>
+              <f:facet name="header">
+                <ice:outputText id="linknameCol" value="Collection Name"/>
+              </f:facet>
+              <ice:outputText value="#{collUI.collection.name}"/>
+            </ice:column>
+            <ice:column>
+              <f:facet name="header">
+                <ice:outputText id="dvCol" value="Dataverse"/>
+              </f:facet>
+              <ice:outputText id="type" value="#{collUI.collection.owner.name}"/>
+            </ice:column>
+            <ice:column>
+              <f:facet name="header">
+                <ice:outputText id="removeLinkCol" value="Remove Link"/>
+              </f:facet>
+              <ice:commandLink id="removeLinkColLink" action="#{collUI.removeLink_action}">
+                <ice:outputText value="Remove"/>
+              </ice:commandLink>
+            </ice:column>
+          </ice:dataTable>
         </div>
       </ice:form>
     </gui:define>

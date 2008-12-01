@@ -5,26 +5,23 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:jsp="http://java.sun.com/JSP/Page"
-      xmlns:ice="http://www.icesoft.com/icefaces/component"
-      ><!-- removed xmlns:ui="http://www.sun.com/web/ui" on 10/17/2008 for v1.4 wjb
+      xmlns:ice="http://www.icesoft.com/icefaces/component">
+      <!-- removed xmlns:ui="http://www.sun.com/web/ui" on 10/17/2008 for v1.4 wjb
       TODO: remove this comment after icefaces component has replaced the ui: tag see below -->
-
 <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
-
 <body>
   <gui:composition template="/template.xhtml">
     <gui:param name="pageTitle" value="#{bundlePageInfo.utilitiesTitle}"/>
     <gui:define name="body">
-      <ice:form  id="utilitiesForm1">
+      <ice:form id="utilitiesForm1">
         <ice:inputHidden rendered="#{VDCRequest.currentVDCId != null}" id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <input type ="hidden"  name="selectedPanel" value="${UtilitiesPage.selectedPanel}"/>
         <div class="dvn_section">
-           <div class="dvnInformationMessage">
-             <ice:outputText value="#{bundlePageInfo.utilitiesHelp}" escape="false" />
-          </div> 
-            
+          <div class="dvnRoundCornerMsgBlock dvnInformationMessage">
+            <ice:outputText value="#{bundlePageInfo.utilitiesHelp}" escape="false"/>
+          </div>
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.utilitiesTitle}"/>
           </div>
@@ -39,7 +36,7 @@
                 <ice:graphicImage styleClass="vdcNoBorders" value="/resources/icon_expand.gif" rendered="#{UtilitiesPage.studyLockPanelRendered}"/>
               </div>
               <ice:panelGrid style="margin-left: auto; margin-right: auto;" rendered="#{UtilitiesPage.studyLockPanelRendered}">
-                <ice:messages id="studyLockMessage"  styleClass="errorMessage"/>
+                <ice:messages id="studyLockMessage" styleClass="errorMessage"/>
                 <ice:outputText value="Current Locks:"/>
                 <ice:dataTable value="#{UtilitiesPage.studyLockList}" var="studyLock" width="100%">
                   <ice:column>
@@ -83,7 +80,7 @@
                 <ice:graphicImage styleClass="vdcNoBorders" value="/resources/icon_expand.gif" rendered="#{UtilitiesPage.indexPanelRendered}"/>
               </div>
               <ice:panelGrid style="margin-left: auto; margin-right: auto;" rendered="#{UtilitiesPage.indexPanelRendered}">
-                <ice:messages id="indexMessage"  styleClass="errorMessage"/>
+                <ice:messages id="indexMessage" styleClass="errorMessage"/>
                 <ice:outputText value="To reindex all studies, click on the button below:"/>
                 <div>
                   <ice:commandButton value="Index All" action="#{UtilitiesPage.indexAll_action}"/>
@@ -91,7 +88,7 @@
                 <hr/>
                 <ice:outputText value="To index studies owned by a specific dataverse, input the dataverse id and click on the button below:"/>
                 <div>
-                  <ice:inputText value="#{UtilitiesPage.indexDVId}" size="6" />
+                  <ice:inputText value="#{UtilitiesPage.indexDVId}" size="6"/>
                   <ice:commandButton value="Index Dataverse" action="#{UtilitiesPage.indexDV_action}"/>
                 </div>
                 <hr/>
@@ -119,7 +116,7 @@
                 </ice:outputLink>
                 <ice:graphicImage styleClass="vdcNoBorders" value="/resources/icon_expand.gif" rendered="#{UtilitiesPage.exportPanelRendered}"/>
               </div>
-              <ice:panelGrid style="margin-left: auto; margin-right: auto;" rendered="#{UtilitiesPage.exportPanelRendered}" >
+              <ice:panelGrid style="margin-left: auto; margin-right: auto;" rendered="#{UtilitiesPage.exportPanelRendered}">
                 <ice:messages id="exportMessage" styleClass="errorMessage"/>
                 <ice:outputText value="To run export now (all updated studies in all formats will be exported and update harvest studies will be run), click on the button below:"/>
                 <div>
@@ -134,10 +131,10 @@
                 <hr/>
                 <ice:outputText value="OR, for a CUSTOM export (note: harvest studies will NOT be updated), select export format, then either:"/>
                 <ice:selectOneMenu id="dropdown1" value="#{UtilitiesPage.exportFormat}">
-                  <f:selectItem itemLabel="Export all formats" itemValue="" />
-                  <f:selectItem itemLabel="- Export DDI only" itemValue="ddi" />
-                  <f:selectItem itemLabel="- Export Dublin Core only" itemValue="oai_dc" />
-                  <f:selectItem itemLabel="- Export Marc only" itemValue="marc" />
+                  <f:selectItem itemLabel="Export all formats" itemValue=""/>
+                  <f:selectItem itemLabel="- Export DDI only" itemValue="ddi"/>
+                  <f:selectItem itemLabel="- Export Dublin Core only" itemValue="oai_dc"/>
+                  <f:selectItem itemLabel="- Export Marc only" itemValue="marc"/>
                 </ice:selectOneMenu>
                 <hr/>
                 <ice:outputText value="a) export all studies (regardless of update time), click the button below:"/>
@@ -224,18 +221,17 @@
                 <hr/>
                 <ice:outputText value="or b) Single import - browse for the file and click on the button:"/>
                 <div>
-                    
-              <ice:inputFile id="inputImportFileComponent" label="Upload"
-            action="#{UtilitiesPage.uploadFile}" binding="#{UtilitiesPage.inputFile}"
-           progressListener="#{UtilitiesPage.fileUploadProgress}" 
-           accept="#{UtilitiesPage.importDVId}, #{UtilitiesPage.importFileFormat}" >
-                 </ice:inputFile> 
-                 <ice:commandButton value="Single Import" id="buttonEV" 
-                 action="#{UtilitiesPage.importSingleFile_action}"/>
-        <ice:message for="inputImportFileComponent" /> 
-      <ice:outputProgress 
-            value="#{UtilitiesPage.fileProgress}" >
-       </ice:outputProgress> 
+                  <ice:inputFile id="inputImportFileComponent" label="Upload"
+                                 action="#{UtilitiesPage.uploadFile}" binding="#{UtilitiesPage.inputFile}"
+                                 progressListener="#{UtilitiesPage.fileUploadProgress}"
+                                 accept="#{UtilitiesPage.importDVId}, #{UtilitiesPage.importFileFormat}">
+                  </ice:inputFile>
+                  <ice:commandButton value="Single Import" id="buttonEV"
+                                     action="#{UtilitiesPage.importSingleFile_action}"/>
+                  <ice:message for="inputImportFileComponent"/>
+                  <ice:outputProgress
+                    value="#{UtilitiesPage.fileProgress}">
+                  </ice:outputProgress>
                 </div>
                 <hr/>
               </ice:panelGrid>
@@ -248,11 +244,11 @@
                 <ice:graphicImage styleClass="vdcNoBorders" value="/resources/icon_expand.gif" rendered="#{UtilitiesPage.deletePanelRendered}"/>
               </div>
               <ice:panelGrid style="margin-left: auto; margin-right: auto;" rendered="#{UtilitiesPage.deletePanelRendered}">
-                <ice:messages id="deleteMessage"  styleClass="errorMessage"/>
+                <ice:messages id="deleteMessage" styleClass="errorMessage"/>
                 <ice:outputText value="To delete arbitrary studies, input the study ids and click on the button below:"/>
                 <div>
                   <ice:inputTextarea value="#{UtilitiesPage.deleteStudyIds}" rows="8" cols="80"/>
-                  <ice:commandButton  value="Delete Studies" action="#{UtilitiesPage.deleteStudies_action}" onclick="return confirm('Please confirm this DELETE request. This change CANNOT be undone.');"/>
+                  <ice:commandButton value="Delete Studies" action="#{UtilitiesPage.deleteStudies_action}" onclick="return confirm('Please confirm this DELETE request. This change CANNOT be undone.');"/>
                 </div>
               </ice:panelGrid>
             </div>

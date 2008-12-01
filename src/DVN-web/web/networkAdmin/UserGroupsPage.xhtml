@@ -15,8 +15,8 @@
     <gui:define name="body">
       <ice:form id="form1">
         <div class="dvn_section">
-           <div jsfc="ice:panelGroup" styleClass="#{(UserGroupsPage.statusMessage.messageText) ? 'dvnSuccessMessage' : 'dvnInformationMessage'}">
-             <ice:outputText value="#{bundlePageInfo.manageGroupsHelp}" escape="false" />
+           <div jsfc="ice:panelGroup" styleClass="dvnRoundCornerMsgBlock #{(UserGroupsPage.statusMessage.messageText) ? 'dvnSuccessMessage' : 'dvnInformationMessage'}">
+             <ice:outputText value="#{bundlePageInfo.manageGroupsHelp}" escape="false"/>
              <div jsfc="ice:panelGroup" rendered="#{!empty UserGroupsPage.statusMessage.messageText}">
                <ice:outputText id="statusMessage" value="#{UserGroupsPage.statusMessage.messageText}"/>
              </div>
@@ -24,48 +24,49 @@
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.manageGroupsTitle}"/>
           </div>
-          <div class="dvn_sectionBox">
-            <div class="dvn_margin12">
+          <div class="dvnManageTableTop">
+            <div class="dvnManageTableCreateLink">
               <ice:outputLink value="/dvn/faces/networkAdmin/EditUserGroupPage.xhtml?userGroupType=usergroup">
-                <ice:outputText value="Create a New Group"/>
+                <ice:outputText value="Create Group"/>
               </ice:outputLink>
-              <ice:dataTable cellpadding="0" cellspacing="0" width="100%" binding="#{UserGroupsPage.dataTable}"
-                             columnClasses="vdcColPadded, vdcColPadded" headerClass="list-header-left" id="dataTable1"
-                             rowClasses="list-row-even,list-row-odd" value="#{UserGroupsPage.goups}" var="currentRow">
-                <ice:column id="column1">
-                  <f:facet name="header">
-                    <ice:outputText id="column1Header" value="Group"/>
-                  </f:facet>
-                  <ice:outputLink value="/dvn/faces/networkAdmin/EditUserGroupPage.xhtml?userGroupId=#{currentRow.group.id}">
-                    <ice:outputText value="#{currentRow.group.name}"/>
-                  </ice:outputLink>
-                </ice:column>
-                <ice:column id="column2">
-                  <f:facet name="header">
-                    <ice:outputText id="column2Header" value="Friendly Group Name"/>
-                  </f:facet>
-                  <ice:outputLink value="/dvn/faces/networkAdmin/EditUserGroupPage.xhtml?userGroupId=#{currentRow.group.id}">
-                    <ice:outputText value="#{currentRow.group.friendlyName}"/>
-                  </ice:outputLink>
-                </ice:column>
-                <ice:column id="column3">
-                  <f:facet name="header">
-                    <ice:outputText id="column3Header" value="Users"/>
-                  </f:facet>
-                  <ice:outputText value="#{currentRow.details}"/>
-                </ice:column>
-                <!-- add later - group pin service -->
-                <ice:column id="column4">
-                  <f:facet name="header">
-                    <ice:outputText id="outputText10" value="Delete"/>
-                  </f:facet>
-                  <ice:commandLink actionListener="#{UserGroupsPage.deleteGroup}">
-                    <ice:outputText value="Delete Group"/>
-                  </ice:commandLink>
-                </ice:column>
-              </ice:dataTable>
             </div>
           </div>
+          <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
+                         binding="#{UserGroupsPage.dataTable}" id="dataTable1"
+                         styleClass="dvnManageTable" columnClasses="vdcColPadded, vdcColPadded" headerClass="list-header-left"
+                         rowClasses="list-row-even,list-row-odd" value="#{UserGroupsPage.goups}" var="currentRow">
+            <ice:column id="column1">
+              <f:facet name="header">
+                <ice:outputText id="column1Header" value="Group"/>
+              </f:facet>
+              <ice:outputLink value="/dvn/faces/networkAdmin/EditUserGroupPage.xhtml?userGroupId=#{currentRow.group.id}">
+                <ice:outputText value="#{currentRow.group.name}"/>
+              </ice:outputLink>
+            </ice:column>
+            <ice:column id="column2">
+              <f:facet name="header">
+                <ice:outputText id="column2Header" value="Friendly Group Name"/>
+              </f:facet>
+              <ice:outputLink value="/dvn/faces/networkAdmin/EditUserGroupPage.xhtml?userGroupId=#{currentRow.group.id}">
+                <ice:outputText value="#{currentRow.group.friendlyName}"/>
+              </ice:outputLink>
+            </ice:column>
+            <ice:column id="column3">
+              <f:facet name="header">
+                <ice:outputText id="column3Header" value="Users"/>
+              </f:facet>
+              <ice:outputText value="#{currentRow.details}"/>
+            </ice:column>
+            <!-- add later - group pin service -->
+            <ice:column id="column4">
+              <f:facet name="header">
+                <ice:outputText id="outputText10" value="Delete"/>
+              </f:facet>
+              <ice:commandLink actionListener="#{UserGroupsPage.deleteGroup}">
+                <ice:outputText value="Delete Group"/>
+              </ice:commandLink>
+            </ice:column>
+          </ice:dataTable>
         </div>
       </ice:form>
     </gui:define>

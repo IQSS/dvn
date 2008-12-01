@@ -7,13 +7,12 @@
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:ice="http://www.icesoft.com/icefaces/component">
 <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
 <body>
   <gui:composition template="/template.xhtml">
     <gui:param name="pageTitle" value="#{bundlePageInfo.editGroupTitle}"/>
     <gui:define name="body">
-        
       <ice:form id="form1">
         <f:verbatim rendered="#{param.userGroupId == null}">
           <script type="text/javascript">
@@ -42,7 +41,7 @@
         <div class="dvn_section">
            <div class="dvnInformationMessage">
              <ice:outputText value="#{bundlePageInfo.editGroupHelp}" escape="false" />
-          </div>            
+          </div>
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.editGroupTitle}"/>
           </div>
@@ -127,7 +126,7 @@
                 </ice:dataTable>
               </div>
               <!-- ******************** Affiliate login services for IP Groups ****************** -->
-              <div jsfc="ice:panelGroup" styleClass="dvnFormPadding" rendered="#{ (EditUserGroupPage.userGroupType == 'none' or EditUserGroupPage.userGroupType == 'ipgroup')}" id="affiliateLoginServices" style="#{(EditUserGroupPage.userGroupType == 'ipgroup') ? 'display:block' : 'display:none;'}">
+              <div jsfc="ice:panelGroup" styleClass="dvnFormPadding" rendered="#{(EditUserGroupPage.userGroupType == 'none' or EditUserGroupPage.userGroupType == 'ipgroup')}" id="affiliateLoginServices" style="#{(EditUserGroupPage.userGroupType == 'ipgroup') ? 'display:block;' : 'display:none;'}">
                 <ice:outputText styleClass="vdcSubHeaderColor" value="Affiliate Login Service"/>
                 <div jsfc="ice:panelGroup" styleClass="vdcHelpText" style="#{(EditUserGroupPage.chkAffiliateLoginService) ? 'display:block;' : 'display:none;'}">
                   <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" value="/resources/icon_info.gif"/>

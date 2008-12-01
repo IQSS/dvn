@@ -7,7 +7,7 @@
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:ice="http://www.icesoft.com/icefaces/component">
 <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
 <body>
   <gui:composition template="/template.xhtml">
@@ -16,8 +16,8 @@
       <ice:form id="form1">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <div class="dvn_section">
-           <div jsfc="ice:panelGroup" styleClass="#{(EditNetworkDownloadUseTermsPage.success) ? 'dvnSuccessMessage' : 'dvnInformationMessage'}">
-             <ice:outputText value="#{bundlePageInfo.editDvnDownloadTermsHelp}" escape="false" />
+           <div jsfc="ice:panelGroup" styleClass="dvnRoundCornerMsgBlock #{(EditNetworkDownloadUseTermsPage.success) ? 'dvnSuccessMessage' : 'dvnInformationMessage'}">
+             <ice:outputText value="#{bundlePageInfo.editDvnDownloadTermsHelp}" escape="false"/>
              <ice:messages layout="list" showDetail="false" showSummary="true" styleClass="successMessage"/>
           </div>
           <div class="dvn_sectionTitle">

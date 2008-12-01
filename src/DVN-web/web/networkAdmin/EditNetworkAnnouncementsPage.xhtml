@@ -7,7 +7,7 @@
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:ice="http://www.icesoft.com/icefaces/component">
 <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
 <body>
   <gui:composition template="/template.xhtml">
@@ -15,7 +15,7 @@
     <gui:define name="body">
       <ice:form id="editNetworkAnnouncementsForm">
         <div class="dvn_section">
-          <div jsfc="ice:panelGroup" styleClass="#{(EditNetworkAnnouncementsPage.success) ? 'dvnSuccessMessage' : 'dvnInformationMessage'}">
+          <div jsfc="ice:panelGroup" styleClass="dvnRoundCornerMsgBlock #{(EditNetworkAnnouncementsPage.success) ? 'dvnSuccessMessage' : 'dvnInformationMessage'}">
              <ice:outputText value="#{bundlePageInfo.editDvnDescriptionHelp}" escape="false"/>
              <ice:messages layout="list" showDetail="false" showSummary="true"/>
           </div>

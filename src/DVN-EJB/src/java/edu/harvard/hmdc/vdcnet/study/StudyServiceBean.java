@@ -1895,18 +1895,29 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         return timestamp;
     }
 
-    public Integer getActivityCount(Long vdcId) {
+    public Long getActivityCount(Long vdcId) {
         String queryString  = "select sum(downloadcount) from studyfileactivity  sfa," +
                 " studyfile sf, filecategory fc, study s" +
                 " where sfa.studyfile_id = sf.id" +
                 " and sf.filecategory_id = fc.id" +
                 " and fc.study_id = s.id" +
-                " and s.owner_id=2; ";
+                " and s.owner_id=" + vdcId;
         Query query         = em.createNativeQuery(queryString);
         Object object       = ((List)query.getSingleResult()).get(0);
         Long longValue      = (Long)object;
-        String strValue     = longValue.toString();
-        return Integer.getInteger(strValue);
+        return longValue;
+    }
+
+    public Long getTotalActivityCount() {
+        String queryString  = "select sum(downloadcount) from studyfileactivity  sfa," +
+                " studyfile sf, filecategory fc, study s" +
+                " where sfa.studyfile_id = sf.id" +
+                " and sf.filecategory_id = fc.id" +
+                " and fc.study_id = s.id";
+        Query query         = em.createNativeQuery(queryString);
+        Object object       = ((List)query.getSingleResult()).get(0);
+        Long longValue      = (Long)object;
+        return longValue;
     }
 
 }

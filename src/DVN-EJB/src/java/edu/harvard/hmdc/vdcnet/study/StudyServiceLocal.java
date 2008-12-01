@@ -146,5 +146,7 @@ public interface StudyServiceLocal extends java.io.Serializable {
     
     public void updateReviewState(Long studyId, String reviewStateName);
     
-    public Integer getActivityCount(Long vdcId);
+    public Long getActivityCount(Long vdcId);
+
+    public Long getTotalActivityCount();
 }

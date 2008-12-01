@@ -319,7 +319,7 @@ div.dvn_searchblock {margin-bottom: 12px; padding: 4px 12px 4px 12px; background
 #dvn_MainSectionCount {position: absolute; top: 0; right: 0;}
 
 /* PAGINATOR */
-td.dvnPaginatorWrap {padding: .25em 0;}
+td.dvnPaginatorWrap, div.dvnPaginatorWrap {padding: .25em 0;}
 
 td.dvnPaginatorWrap div.icePnlGrp {}
 td.dvnPaginatorWrap table.dvnPaginatorRight {}
@@ -1249,6 +1249,9 @@ td.vdcEditFilesColC{
 }
 .dvnManageTableTotals {float: left; width: 75%; padding: .5em .25em;}
 .dvnManageTableCreateLink {float: right; width: 20%; padding: .5em .25em; text-align: right;}
+
+.dvnManageTableEmpty {padding: 20px 0;}
+.dvnManageTableEmpty div.dvnManageTableEmptyMessage, .dvnManageTableEmpty span.dvnManageTableEmptyMessage {text-align: center;}
 
 /* Add/Manage Classification Style Rules*/
 .dvnManageClassificationsTable {

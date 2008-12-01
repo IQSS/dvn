@@ -701,6 +701,23 @@ a.dvnHmpgGroupCreateLink:link, a.dvnHmpgGroupCreateLink:visited,
 a.dvnHmpgGroupCreateLink:hover, a.dvnHmpgGroupCreateLink:active {
     padding-right: 28px; color: #c55b28; background: url(start-arrows.gif) 100% 52% no-repeat; font-size: 95%; text-decoration: none;
 }
+.dvnHmpgGroupNoDVs {
+    margin-top: .25em;
+    padding: 0 1em;
+    border: 1px solid #dcdddf;
+    text-align: center;
+}
+.dvnHmpgGroupTableWrap {
+    margin-top: .25em;
+    border: 1px solid #dcdddf;
+    border-bottom: 0;
+}
+.dvnHmpgGroupTableTop {
+}
+.dvnHmpgGroupTotals {text-align: right; width: 100%; padding: 5px .5em;}
+.dvnHmpgGroupDataTable {margin: 0;}
+.dvnHmpgGroupDataTable span {font-size: 90% !important;}
+.dvnHmpgGroupDataTable th span.iceOutTxt td {font-size: 90% !important;}
 
 /* STUDYLISTING PAGE */
 .dvnStudyListWrapper {border: 1px solid #dcdddf;}
@@ -1148,33 +1165,6 @@ td.vdcEditFilesColC{
 .dvnManageStudiesTable tbody span.iceOutTxt {display: inline; white-space: nowrap;}
 .dvnManageStudiesTableEmpty {border: 1px solid #d9d9d9; padding: 1em; text-align: center;}
 
-/* Style Rules for Most Pouplar Table
-*/
-
-.vdcTableHeaderWhite{
-   background-color: white;
-   font-weight: bold;
-   text-align: center
-}
-
-.vdcTableMPopularCol1{
-   border-right-color: #cccccc;
-   border-right-style: solid;
-   border-right-width: 1px;
-   padding-bottom: 4px;
-   padding-left: 4px;
-   padding-right: 2px;
-   padding-top: 4px
-}
-
-.vdcTableMPopularCol2{
-   padding-bottom: 4px;
-   padding-left: 4px;
-   padding-right: 2px;
-   padding-top: 4px;
-   width: 30px
-}
-
 /* Advanced Search Style Rules */
 .dvnAdvSearchScopeTable {
   max-width: 900px;
@@ -1213,8 +1203,7 @@ td.vdcEditFilesColC{
   display: inline; padding-left: 18px; background: url(/dvn/resources/icefaces/dvn_rime/css-images/tree_line_last_node.gif) 0 0 no-repeat;
 }
 
-/* Add/Manage Collection Style Rules
-*/
+/* Add/Manage Collection Style Rules*/
 .dvnManageCollectionsTable {
   width: 100%; margin-top: 0;
 }
@@ -1233,7 +1222,7 @@ td.vdcEditFilesColC{
 .dvnEditCollectionStudyListID {width: 16%;}
 .dvnEditCollectionStudyListTitle {width: 56%;}
 .dvnEditCollectionStudyListOwner {width: 28%;}
-.dvnEditCollectionStudySelectionList .iceDatTbl {border: 1px solid #ccc; border-width: 1px 0 0 0;}
+.dvnEditCollectionStudySelectionList .iceDatTbl {margin: 0; border: 1px solid #ccc; border-width: 1px 0 0 0;}
 .dvnEditCollectionStudySelectionList .iceDatTbl td, .dvnEditCollectionStudySelectionList .iceDatTbl div {margin: 0; border: 0;}
 .dvnEditCollectionStudySelectionList .iceDatTbl tr {border: 1px solid #ccc; border-width: 0 0 1px 0;}
 
@@ -1247,6 +1236,76 @@ td.vdcEditFilesColC{
    padding-bottom: 4px;
    padding-left: 20px;
    padding-top: 4px;
+}
+/* Manage Study Templates */
+.dvnManageTable {
+  width: 100%; margin: 0;
+}
+.dvnManageSecondTable {
+  margin-top: 1.5em;
+}
+.dvnManageTableTop {
+  border: 1px solid #d9d9d9; border-bottom: 0; overflow: hidden;
+}
+.dvnManageTableTotals {float: left; width: 75%; padding: .5em .25em;}
+.dvnManageTableCreateLink {float: right; width: 20%; padding: .5em .25em; text-align: right;}
+
+/* Add/Manage Classification Style Rules*/
+.dvnManageClassificationsTable {
+  width: 100%; margin: 0;
+}
+.dvnManageClassificationsTable img {border: 0;}
+.dvnManageClassificationsTableTop {
+  border: 1px solid #d9d9d9; border-bottom: 0; overflow: hidden;
+}
+.dvnManageClassificationsTableTotals {float: left; width: 75%; padding: .5em .25em;}
+.dvnManageClassificationsTableCreateLink {float: right; width: 20%; padding: .5em .25em; text-align: right;}
+.dvnMngClssTableSelect {width: 1%;}
+.dvnMngClssTableName {width: 40%;}
+.dvnMngClssTableDesc {width: 35%;}
+.dvnMngClssTableCount {width: 10%;}
+.dvnMngClssTableDelete {width: 10%;}
+
+.dvnAddClassificationBlock {overflow: hidden;}
+.dvnAddClassificationDataverses {margin-right:25px; float:left;}
+
+.dvnAddClassificationDataverses table.iceDatTbl {border: 1px solid #d9d9d9;}
+.dvnAddClassificationDataverses div.iceDatTblScrlSpr table {border: 1px;}
+.dvnAddClassificationDataverses table.iceDatTbl div.iceDatTblScrlSpr {border: 0;}
+.dvnAddClassificationDataverses tr.iceDatTblRow1,
+.dvnAddClassificationDataverses tr.iceDatTblRow2 {
+    border: 0;
+}
+.dvnAddClassificationDataverses tr.iceDatTblRow1 td,
+.dvnAddClassificationDataverses tr.iceDatTblRow2 td {
+    border-left: 0;
+    border-right: 0;
+}
+.dvnAddClassificationDataverses th.iceDatTblColHdr1 {border-right: 0;}
+.dvnAddClassificationDataverses th.iceDatTblColHdr2 {border-left: 1px solid #d9d9d9;}
+.dvnAddClassificationDataverses tr.iceDatTblRow1 td.dvnAddClassificationDvID,
+.dvnAddClassificationDataverses tr.iceDatTblRow2 td.dvnAddClassificationDvID,
+.dvnAddClassificationDataverses tr.iceDatTblRow1 td.dvnAddClassificationDvName,
+.dvnAddClassificationDataverses tr.iceDatTblRow2 td.dvnAddClassificationDvName {
+    border-right: 1px solid #d9d9d9;
+}
+
+.dvnAddClassificationSelected table.iceDatTbl {border: 1px solid #d9d9d9;}
+.dvnAddClassificationSelected div.iceDatTblScrlSpr table {border: 1px;}
+.dvnAddClassificationSelected table.iceDatTbl div.iceDatTblScrlSpr {border: 0;}
+.dvnAddClassificationSelected tr.iceDatTblRow1,
+.dvnAddClassificationSelected tr.iceDatTblRow2 {
+    border: 0;
+}
+.dvnAddClassificationSelected tr.iceDatTblRow1 td,
+.dvnAddClassificationSelected tr.iceDatTblRow2 td {
+    border-left: 0;
+    border-right: 0;
+}
+.dvnAddClassificationSelected th.iceDatTblColHdr2 {border-right: 0;}
+.dvnAddClassificationSelected tr.iceDatTblRow1 td.dvnAddClassificationDvName,
+.dvnAddClassificationSelected tr.iceDatTblRow2 td.dvnAddClassificationDvName {
+    border-right: 1px solid #d9d9d9;
 }
 
 /* Add Site Page Style Rules
@@ -1542,8 +1601,7 @@ td.vdcEditFilesColC{
         v1.4 styles
         */
         
-.dvn_networkHomePanelInner span {font-size: 90% !important;}
-.dvn_networkHomePanelInnerHdr span.iceOutTxt td {font-size: 90% !important;}
+
 
 .childRowIndentStyle {text-indent:15px;}
 .activity {width: 120px; text-align: center;}
@@ -1811,7 +1869,7 @@ table.dvnCreateDvClassificationTable table {width: 100%; border-top: 1px solid #
 .dvnPromotionalLinks .dvnPromotionalLinksInstructions {padding-bottom: 1em;}
 .dvnPromotionalLinks .dvnPromotionalLinksInstructions img {vertical-align: bottom;}
 .dvnPromotionalLinks .dvnPromotionalLinksBlock {width: 100%; overflow: hidden;}
-.dvnPromotionalLinks .dvnPromotionalLinksHeader {width: 100%; padding-left: 1em; font-weight: bold; background-color: #dadee0;}
+.dvnPromotionalLinks .dvnPromotionalLinksHeader {width: 100%; padding: .5em 1em; background: gainsboro; color: grey; text-transform: uppercase;}
 .dvnPromotionalLinks .dvnPromotionalSampleBlock {padding: 1em; overflow: hidden;}
 .dvnPromotionalLinks .dvnPromotionalSample {float: left; width: 25.333%;}
 .dvnPromotionalLinks .dvnPromotionalCode {float: left; width: 36.333%;}

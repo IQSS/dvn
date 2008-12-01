@@ -32,19 +32,14 @@ package edu.harvard.hmdc.vdcnet.web;
 
 import com.icesoft.faces.component.dragdrop.DropEvent;
 import com.icesoft.faces.component.ext.HtmlCommandLink;
-import com.icesoft.faces.component.ext.HtmlGraphicImage;
-import com.icesoft.faces.component.ext.HtmlOutputText;
 import com.icesoft.faces.component.ext.HtmlPanelGroup;
 import com.icesoft.faces.component.tree.IceUserObject;
-import com.icesoft.faces.component.tree.Tree;
 import edu.harvard.hmdc.vdcnet.admin.NetworkRoleServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.RoleRequestServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.UserServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
 import edu.harvard.hmdc.vdcnet.index.IndexServiceLocal;
 import edu.harvard.hmdc.vdcnet.index.SearchTerm;
-import edu.harvard.hmdc.vdcnet.study.Study;
-import edu.harvard.hmdc.vdcnet.study.StudyFile;
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.VariableServiceLocal;
 import edu.harvard.hmdc.vdcnet.util.DateUtils;
@@ -56,10 +51,11 @@ import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
 import edu.harvard.hmdc.vdcnet.web.study.StudyUI;
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -192,7 +188,8 @@ public class HomePage extends VDCBaseBean implements Serializable {
             //itemBeansSize++;
             vdc = (VDC)iterator.next();
             Long parent = new Long("0");
-            Timestamp lastUpdateTime = (studyService.getLastUpdatedTime(vdc.getId()) != null ? studyService.getLastUpdatedTime(vdc.getId()) : vdc.getReleaseDate());
+            //Timestamp lastUpdateTime = (studyService.getLastUpdatedTime(vdc.getId()) != null ? studyService.getLastUpdatedTime(vdc.getId()) : vdc.getReleaseDate());
+            Timestamp lastUpdateTime = getLastUpdatedTime(vdc.getId());
             Long localActivity       = calculateActivity(vdc);
             String activity          = getActivityClass(localActivity);
             if (vdc.getReleaseDate() != null) {
@@ -211,7 +208,8 @@ public class HomePage extends VDCBaseBean implements Serializable {
             Iterator inneriterator = innerlist.iterator();
             while(inneriterator.hasNext()) {
                 VDC vdc = (VDC)inneriterator.next();
-                Timestamp lastUpdateTime = (studyService.getLastUpdatedTime(vdc.getId()) != null ? studyService.getLastUpdatedTime(vdc.getId()) : vdc.getReleaseDate());
+                //Timestamp lastUpdateTime = (studyService.getLastUpdatedTime(vdc.getId()) != null ? studyService.getLastUpdatedTime(vdc.getId()) : vdc.getReleaseDate());
+                Timestamp lastUpdateTime = this.getLastUpdatedTime(vdc.getId());
                 Long localActivity       = calculateActivity(vdc);
                 String activity          = getActivityClass(localActivity);
                 if (vdc.getReleaseDate() != null) {
@@ -682,19 +680,23 @@ public void dispose() {
         }
     }
 
-    private String getLastUpdatedTime(Long vdcId) {
+    private Timestamp getLastUpdatedTime(Long vdcId) {
         Timestamp timestamp = null;
-        timestamp = studyService.getLastUpdatedTime(vdcId);
-        //TODO: convert this to n (hours, months days) time ago
-        String timestampString = DateUtils.getTimeInterval(timestamp.getTime());
-        return timestampString;
+        //timestamp = studyService.getLastUpdatedTime(vdcId);
+        //FOR DEBUGGING PURPOSES
+        Date date = new Date();
+        timestamp = new Timestamp(date.getTime());
+        //String timestampString = DateUtils.getTimeInterval(timestamp.getTime());
+        //return timestampString;
+         // END DEBUGGING
+        return timestamp;
     }
 
     private Long calculateActivity(VDC vdc) {
         Integer numberOfDownloads = 0;
         Integer numberOwnedStudies = new Integer(0);
         Long localActivity;
-        try {
+        /* try {
             Collection collection = vdc.getOwnedStudies();
             numberOwnedStudies = collection.size();
             Iterator iterator = collection.iterator();
@@ -723,7 +725,9 @@ public void dispose() {
                 localActivity = new Long(numberOfDownloads.toString());
             }
             return localActivity;
-        }
+        } */
+        //FOR DEBUGGING PURPOSES
+        return new Long("1");
     }
 
     private String getActivityClass(Long activity) {

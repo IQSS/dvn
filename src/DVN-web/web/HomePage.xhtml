@@ -37,23 +37,6 @@
 
         <!-- Main Section starts here -->
         <div id="dvn_mainSection">
-          <div id="dvn_mainSectionTitle">
-            <ice:outputText value="Dataverses" rendered="#{VDCRequest.currentVDC == null}"/>
-            <ice:outputText value="Studies" rendered="#{VDCRequest.currentVDC != null}" />
-          </div>
-
-          <div jsfc="ice:panelGroup" id="createDataverse" styleClass="requestHmpgSide" rendered="#{HomePage.showRequestCreator}">
-            <ice:outputLink styleClass="requestHmpgSideLink" value="/dvn/faces/login/CreatorRequestInfoPage.xhtml">
-              <ice:outputText value="Create your own Dataverse" escape="false"/>
-            </ice:outputLink>
-          </div>
-
-          <div jsfc="ice:panelGroup" id="beContributor" styleClass="requestHmpgSide" rendered="#{HomePage.showRequestContributor}">
-            <ice:outputLink styleClass="requestHmpgSideLink"  value="/dvn/dv/#{VDCRequest.currentVDC.alias}/faces/login/ContributorRequestInfoPage.xhtml">
-              <ice:outputText value="Become a Contributor" escape="false"/>
-            </ice:outputLink>
-          </div>
-
           <!-- Search Section starts here -->
           <div class="dvn_searchblock">
             <div class="dvn_searchBoxContent">
@@ -94,8 +77,6 @@
         <div id="hiddenDiv" style="display:none;">
           <ice:outputText value="#{NetworkStatsBean.autoLoad}"/>
         </div>
-        <br />
-
 
 
         <!-- ***************** NETWORK HOMEPAGE CONTENT *************************  -->
@@ -108,96 +89,73 @@
                          value="#{HomePage.itemBeans}"
                          var="dvItems"
                          rendered="#{VDCRequest.currentVDC == null}">
-          <ice:outputText rendered="#{dvItems.recordType eq 'group'}"
-                          style="font-size: 1.5em !important; font-weight: bold;"
-                          value="#{dvItems.name}"/>
-                            <!-- Placeholder for TODO: what output when group is empty? -->
-         <div jsfc="ice:panelGroup"
-              rendered="#{dvItems.recordType eq 'group'}">
-            <ice:outputText rendered="#{ (empty(dvItems.childItems) and (dvItems.recordType eq 'group') )}"
-                            value="There are no dataverses to display in this group."/>
-          </div>
-          <div  jsfc="ice:panelGroup"
-                rendered="#{dvItems.recordType eq 'group'}"
-                style="margin-top: .5em;
-                border: 1px solid #d9d9d9;
-                border-bottom: 1px solid transparent;">
-            <div jsfc="ice:panelGroup" 
-                    rendered="#{not empty(dvItems.childItems) }"
-                    style="overflow: hidden; margin-bottom: .25em;">
 
-              <div style="float: left; width: 100%; padding-top: 4px;">
-                <div jsfc="ice:panelGroup" 
-                            rendered="#{not empty(dvItems.childItems)and VDCRequest.currentVDC == null }"
-                            style="float: left; width: 60%; padding-top: 2px; padding-bottom: 2px;">
-                    <h:outputText binding="#{NetworkStatsBean.inlineDataverseKey}"
-                                  effect="#{item.effect}"
-                                  styleClass="dvn_totalsLabel"
-                                  value="#{NetworkStatsBean.inlineDataverseValue}">
-                      <f:attribute name="itemid" styleClass="dvn_totalsValue" value="item#{dvItems.id}"/>
-                    </h:outputText>
-                    <!-- TODO: For the next two rendered was, #{dvItems.parentClassification == 0} -->
-                    <h:outputText binding="#{NetworkStatsBean.inlineStudyKey}"
-                                  effect="#{item.effect}"
-                                  rendered="true"
-                                  value="#{NetworkStatsBean.inlineStudyValue}">
-                      <f:attribute name="itemid" value="item#{dvItems.id}"/>
-                    </h:outputText>
-                    <h:outputText binding="#{NetworkStatsBean.inlineFilesKey}"
-                                  effect="#{item.effect}"
-                                  rendered="true"
-                                  value="#{NetworkStatsBean.inlineFilesValue}">
-                      <f:attribute name="itemid" value="item#{dvItems.id}"/>
-                    </h:outputText>
-                    <br />
-
-<!-- ********************* END inline statistics ******************************** -->
-
-   
-                </div>
-                
-                <div jsfc="ice:panelGroup" rendered="#{not empty(dvItems.childItems) }" style="float: right; width: 20%;">
-
-              <!--    <ice:inputHidden binding="#{HomePage.inputStartTime}" value="#{HomePage.startTime}"/> -->
-
-                  <ice:dataPaginator id="dataScroll_3" styleClass="dvnPaginatorRight"
-                                     for="dataverseList" paginator="true" fastStep="3"
-                                     paginatorMaxPages="4" renderFacetsIfSinglePage="false">
-                    <f:facet name="first">
-                      <ice:graphicImage
-                        url="./xmlhttp/css/xp/css-images/arrow-first.gif"
-                        style="border:none;"
-                        title="First Page"/>
-                    </f:facet>
-                    <f:facet name="previous">
-                      <ice:graphicImage
-                        url="./xmlhttp/css/xp/css-images/arrow-previous.gif"
-                        style="border:none;"
-                        title="Previous"/>
-                    </f:facet>
-                    <f:facet name="next">
-                      <ice:graphicImage
-                        url="./xmlhttp/css/xp/css-images/arrow-next.gif"
-                        style="border:none;"
-                        title="Previous"/>
-                    </f:facet>
-                    <f:facet name="last">
-                      <ice:graphicImage
-                        url="./xmlhttp/css/xp/css-images/arrow-last.gif"
-                        style="border:none;"
-                        title="Previous"/>
-                    </f:facet>
-                  </ice:dataPaginator>
-                </div>
-              </div>
-
-              <!-- DONT BELIEVE THIS FUNCTIONALITY IS BEING USED ANY LONGER BECAUSE WE ARE USING THE SIDE FILTER LINKS
-              <ice:commandLink immediate="true" action="#{dvItems.toggleSubGroupAction}">
-                <ice:graphicImage style="border:0px solid; vertical-align:middle;" value="#{dvItems.expandContractImage}"/>
-              </ice:commandLink>
-              -->
+          <div class="dvnHmpgGroupTableHeaderBlock">
+            <div class="dvnHmpgGroupHeaderBlock">
+              <ice:outputText rendered="#{dvItems.recordType eq 'group'}" styleClass="dvnHmpgGroupHeader" value="#{dvItems.name}"/>
+            </div>
+            <div jsfc="ice:panelGroup" styleClass="dvnHmpgGroupCreateBlock" id="createDataverse" rendered="#{dvItems.recordType eq 'group' and HomePage.showRequestCreator}">
+              <ice:outputLink styleClass="dvnHmpgGroupCreateLink" value="/dvn/faces/login/CreatorRequestInfoPage.xhtml">
+                <ice:outputText value="Create your own Dataverse" escape="false"/>
+              </ice:outputLink>
             </div>
           </div>
+          <div jsfc="ice:panelGroup" styleClass="dvnHmpgGroupNoDVs" rendered="#{empty(dvItems.childItems) and dvItems.recordType eq 'group'}">
+            <p><ice:outputText value="There are no dataverses to display in this group."/></p>
+          </div>
+          <div jsfc="ice:panelGroup" styleClass="dvnHmpgGroupTableWrap" rendered="#{! empty(dvItems.childItems) and dvItems.recordType eq 'group'}">
+            <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="2" id="gridPanel2"
+                           styleClass="dvnHmpgGroupTableTop" columnClasses="dvnHmpgGroupTotals, dvnPaginatorWrap">
+              <div jsfc="ice:panelGroup" id="groupPanel1" rendered="#{not empty(dvItems.childItems) and VDCRequest.currentVDC == null}">
+                <h:outputText binding="#{NetworkStatsBean.inlineDataverseKey}"
+                              effect="#{item.effect}"
+                              styleClass="dvn_totalsLabel"
+                              value="#{NetworkStatsBean.inlineDataverseValue}">
+                  <f:attribute name="itemid" styleClass="dvn_totalsValue" value="item#{dvItems.id}"/>
+                </h:outputText>
+                <!-- TODO: For the next two rendered was, #{dvItems.parentClassification == 0} -->
+                <h:outputText binding="#{NetworkStatsBean.inlineStudyKey}"
+                              effect="#{item.effect}"
+                              styleClass="dvn_totalsLabel"
+                              rendered="true"
+                              value="#{NetworkStatsBean.inlineStudyValue}">
+                  <f:attribute name="itemid" styleClass="dvn_totalsValue" value="item#{dvItems.id}"/>
+                </h:outputText>
+                <h:outputText binding="#{NetworkStatsBean.inlineFilesKey}"
+                              effect="#{item.effect}"
+                              styleClass="dvn_totalsLabel"
+                              rendered="true"
+                              value="#{NetworkStatsBean.inlineFilesValue}">
+                  <f:attribute name="itemid" styleClass="dvn_totalsValue" value="item#{dvItems.id}"/>
+                </h:outputText>
+              </div>
+              <div jsfc="ice:panelGroup" id="groupPanel2" rendered="#{not empty(dvItems.childItems)}">
+                <!-- <ice:inputHidden binding="#{HomePage.inputStartTime}" value="#{HomePage.startTime}"/> -->                  
+                <ice:dataPaginator id="dataScroll_3" styleClass="dvnPaginatorRight"
+                                   for="dataverseList" paginator="true" fastStep="3"
+                                   paginatorMaxPages="4" renderFacetsIfSinglePage="false">
+                  <f:facet name="first">
+                    <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-first.gif" title="First Page"/>
+                  </f:facet>
+                  <f:facet name="previous">
+                    <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-previous.gif" title="Previous"/>
+                  </f:facet>
+                  <f:facet name="next">
+                    <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-next.gif" title="Previous"/>
+                  </f:facet>
+                  <f:facet name="last">
+                    <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-last.gif" title="Previous"/>
+                  </f:facet>
+                </ice:dataPaginator>
+              </div>
+            </ice:panelGrid>
+          </div>
+
+          <!-- DONT BELIEVE THIS FUNCTIONALITY IS BEING USED ANY LONGER BECAUSE WE ARE USING THE SIDE FILTER LINKS
+          <ice:commandLink immediate="true" action="#{dvItems.toggleSubGroupAction}">
+            <ice:graphicImage style="border:0px solid; vertical-align:middle;" value="#{dvItems.expandContractImage}"/>
+          </ice:commandLink>
+          -->
 
           <!-- Start Browse section (with side panels, if available) -->
           <div jsfc="ice:panelGroup" rendered="#{not empty(dvItems.childItems) }">
@@ -210,10 +168,9 @@
                            rows="10" width="100%"
                            sortColumn="#{dvItems.sortColumnName}"
                            sortAscending="#{dvItems.ascending}"
-                           styleClass="dvn_networkHomePanelInner"
+                           styleClass="dvnHmpgGroupDataTable"
                            value="#{dvItems.childItems}"
-                           var="items"
-                           style="margin-bottom: 1em; margin-top: 0;">
+                           var="items">
               <!-- name number -->
               <f:facet name="header">
 

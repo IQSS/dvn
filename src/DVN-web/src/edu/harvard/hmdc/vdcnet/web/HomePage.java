@@ -666,8 +666,8 @@ public void dispose() {
 
 
     private Long calculateActivity(VDC vdc) {
-        Integer numberOfDownloads = 0;
-        Integer numberOwnedStudies = new Integer(0);
+        Long numberOfDownloads  = new Long("0");
+        Long numberOwnedStudies = new Long("0");
         Long localActivity;
 
 
@@ -680,7 +680,7 @@ public void dispose() {
             if (numberOwnedStudies > 0) {
                    //range 1
                 long a = 0;
-                long b = 1000;//this is artificial high range and could be based on numberOfTotal Downloads maybe
+                long b = studyService.getTotalActivityCount();//this is artificial high range and could be based on numberOfTotal Downloads maybe
                 //range 2
                 long c = 1;
                 long d = 5;
@@ -688,6 +688,8 @@ public void dispose() {
             } else {
                 localActivity = new Long(numberOfDownloads.toString());
             }
+            String strValue = String.valueOf(Math.round(localActivity.doubleValue()));
+            localActivity = new Long(strValue);
             return localActivity;
         } 
     }

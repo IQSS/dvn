@@ -107,4 +107,12 @@ INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'ManageClas
 -- remove production date from dfault seatch results
 update studyfield set searchresultfield = false where name = 'productionDate';
 
+create index study_owner_id_index on study(owner_id);
+create index filecategory_id_index on filecategory(id);
+create index studyfile_id_index on studyfile(id);
+create index studyfileactivity_id_index on studyfileactivity(id);
+create index studyfileactivity_studyfile_id_index on studyfileactivity(studyfile_id);
+
+
+
 commit;

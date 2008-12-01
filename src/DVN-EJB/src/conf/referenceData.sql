@@ -970,9 +970,12 @@ create index variablecategory_id_index on  variablecategory (id);
 create index variablecategory_datavariable_id_index on  variablecategory (datavariable_id);
 create index variablerange_id_index on  variablerange (id);
 create index study_id_index on study(id);
+create index study_owner_id_index on study(owner_id);
 create index weightedvarrelationship_id_index on  weightedvarrelationship (weighted_variable_id,variable_id);
+create index filecategory_id_index on filecategory(id);
 create index filecategory_study_id_index on filecategory(study_id);
 create index studyfile_filecategory_id_index on studyfile(filecategory_id);
+create index studyfile_id_index on studyfile(id);
 create index datavariable_datatable_id_index on datavariable(datatable_id);
 create index variablerange_datavariable_id_index on  variablerange (datavariable_id);
 create index metadata_id_index on metadata(id);
@@ -993,6 +996,10 @@ create index studyrelstudy_metadata_id_index on studyrelstudy(metadata_id);
 create index studysoftware_metadata_id_index on studysoftware(metadata_id);
 create index studytopicclass_metadata_id_index on studytopicclass(metadata_id);
 create index template_metadata_id_index on template(metadata_id);
+create index studyfileactivity_id_index on studyfileactivity(id);
+create index studyfileactivity_studyfile_id_index on studyfileactivity(studyfile_id);
+
+
 
 
 insert into dvnversion( id, buildnumber,versionnumber) values (1,4,1);

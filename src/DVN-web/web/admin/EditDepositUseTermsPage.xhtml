@@ -16,7 +16,7 @@
       <ice:form id="form1">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <div class="dvn_section">
-           <div jsfc="ice:panelGroup" styleClass="#{(EditDepositUseTermsPage.success) ? 'dvnSuccessMessage' : 'dvnInformationMessage'}">
+           <div jsfc="ice:panelGroup" styleClass="dvnRoundCornerMsgBlock #{(EditDepositUseTermsPage.success) ? 'dvnSuccessMessage' : 'dvnInformationMessage'}">
              <ice:outputText value="#{bundlePageInfo.editDvDepositTermsHelp}" escape="false" />
              <ice:messages layout="list" showDetail="false" showSummary="true"/>
           </div>
@@ -41,7 +41,7 @@
                 </ice:inputTextarea>
               </div>
               <div class="dvnFormPadding dvnFormMargin">
-                <ice:commandButton id="button1" value="Save" action="#{EditDepositUseTermsPage.save_action}"/>
+                <ice:commandButton id="button1" styleClass="dvnListenSave" value="Save" action="#{EditDepositUseTermsPage.save_action}"/>
                 <ice:commandButton id="button2" value="Cancel" action="#{EditDepositUseTermsPage.cancel_action}"/>
               </div>
             </div>

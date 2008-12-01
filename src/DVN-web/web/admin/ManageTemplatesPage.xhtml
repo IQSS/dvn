@@ -11,7 +11,7 @@
 </head>
 <body>
   <gui:composition template="/template.xhtml">
-    <gui:param name="pageTitle" value="#{bundlePageInfo.manageTemplatesTitle}" />
+    <gui:param name="pageTitle" value="#{bundlePageInfo.manageTemplatesTitle}"/>
     <gui:define name="body">
       <script type="text/javascript">
           // <![CDATA[
@@ -25,18 +25,25 @@
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <ice:inputHidden id="hiddenNetworkTemplateId" value="#{ManageTemplatesPage.networkTemplateId}"/>
         <div class="dvn_section">
-           <div class="dvnInformationMessage">
-             <ice:outputText value="#{bundlePageInfo.manageTemplatesHelp}" escape="false" />
+          <div class="dvnRoundCornerMsgBlock dvnInformationMessage">
+            <ice:outputText value="#{bundlePageInfo.manageTemplatesHelp}" escape="false"/>
           </div>
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.manageTemplatesTitle}"/>
           </div>
-          <div class="dvn_sectionBox">
-            <div class="dvn_margin12">
+          <div class="dvnManageTableTop">
+            <div jsfc="ice:panelGroup" styleClass="dvnManageTableTotals">
+              <ice:outputText value="Templates: ManageTemplatesPage.itemBeansSize"/>
+            </div>
+            <div jsfc="ice:panelGroup" styleClass="dvnManageTableCreateLink">
               <ice:outputLink value="/dvn/dv/#{VDCRequest.currentVDC.alias}/faces/study/TemplateFormPage.xhtml">
-                <ice:outputText value="+ Create New Template"/>
+                <ice:outputText value="Create New Template"/>
               </ice:outputLink>
+            </div>
+          </div>
+          <div>
               <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
+                             styleClass="dvnManageTable"
                              binding="#{ManageTemplatesPage.templateDataTable}"
                              headerClass="list-header-left vdcColPadded" id="dataTable1"
                              rowClasses="list-row-even vdcColPadded, list-row-odd vdcColPadded"
@@ -74,7 +81,6 @@
                 </ice:column>
               </ice:dataTable>
             </div>
-          </div>
         </div>
       </ice:form>
     </gui:define>

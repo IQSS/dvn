@@ -16,9 +16,9 @@
       <ice:form id="form1">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <div class="dvn_section">
-           <div jsfc="ice:panelGroup" styleClass="#{(EditUseTermsPage.success) ? 'dvnSuccessMessage' : 'dvnInformationMessage'}">
+          <div jsfc="ice:panelGroup" styleClass="dvnRoundCornerMsgBlock #{(EditUseTermsPage.success) ? 'dvnSuccessMessage' : 'dvnInformationMessage'}">
              <ice:outputText value="#{bundlePageInfo.editDvDownloadTermsHelp}" escape="false"/>
-             <ice:messages layout="list" showDetail="false" showSummary="true"/>
+             <ice:messages binding="#{EditUseTermsPage.messageTag}" layout="list" showDetail="false" showSummary="true"/>
           </div>
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.editDvDownloadTermsTitle}"/>
@@ -29,9 +29,8 @@
                 <ice:selectBooleanCheckbox value="#{EditUseTermsPage.termsOfUseEnabled}"/>
                 <ice:outputText value=" Enable Terms of Use"/>
               </div>
-              <ice:message for="textArea1" styleClass="errorMessage" id="outputText2Msg"/>
-              <br/>
-              <div>
+              <div style="overflow: hidden;">
+                <div style="float: left;">
                 <ice:outputText id="outputText2" styleClass="vdcFieldTitle" value="Terms of Use"/>
                 <br/>
                 <ice:inputTextarea styleClass="formHtmlEnabled" cols="70" rows="8"
@@ -39,6 +38,10 @@
                                    value="#{EditUseTermsPage.termsOfUse}">
                   <f:validator validatorId="XhtmlValidator"/>
                 </ice:inputTextarea>
+                </div>
+                <div style="float: left; width: 30%; padding: 10px;">
+                  <ice:message for="textArea1" styleClass="errorMessage" id="outputText2Msg"/>
+                </div>
               </div>
               <div class="dvnFormPadding dvnFormMargin">
                 <ice:commandButton id="button1" value="Save" action="#{EditUseTermsPage.save_action}"/>

@@ -17,14 +17,14 @@
         <input type="hidden" name="pageName" value="PrivilegedUsersPage"/>
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <div class="dvn_section">
-           <div class="dvnInformationMessage">
+           <div class="dvnRoundCornerMsgBlock dvnInformationMessage">
              <ice:outputText value="#{bundlePageInfo.codePromotionalHelp}" escape="false"/>
           </div>
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.codePromotionalTitle}"/>
           </div>
-          <div class="dvn_sectionBox dvnPromotionalLinks">
-            <div class="dvn_margin12">
+          <div class="dvnPromotionalLinks">
+            
               <div class="dvnPromotionalLinksBlock">
                 <div class="dvnPromotionalLinksHeader">
                   <ice:outputText value="Text Link"/>
@@ -65,7 +65,7 @@
                     <br/>
                     <input type="button" value="Select All Code" onClick="javascript:this.form.text_area2.focus();this.form.text_area2.select();"/>
                   </div>
-                  <div jstyleClass="dvnPromotionalTip">
+                  <div class="dvnPromotionalTip">
                     <span>Tip</span><br/>
                     Add this dataverse link to your site's main content area, header or navigation bar.
                   </div>
@@ -96,7 +96,7 @@
                 </div>
               </div>
             </div>
-          </div>
+          
         </div>
       </ice:form>
     </gui:define>

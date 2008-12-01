@@ -7,9 +7,8 @@
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:ice="http://www.icesoft.com/icefaces/component">
 <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
-
 <body>
   <gui:composition template="/template.xhtml">
     <gui:param name="pageTitle"  value="#{bundlePageInfo.editDvSettingsTitle}"/>
@@ -52,22 +51,17 @@
             // ]]>
         </script>
         <div class="dvn_section">
-          <div class="dvnInformationMessage">
-                 <ice:outputText value="#{bundlePageInfo.editDvSettingsHelp}" escape="false" />
-              </div>    
-
-              <div class="dvn_sectionTitle">
-                <ice:outputText value="#{bundlePageInfo.editDvSettingsTitle}"/>
-              </div> 
+          <div class="dvnRoundCornerMsgBlock dvnInformationMessage">
+            <ice:outputText value="#{bundlePageInfo.editDvSettingsHelp}" escape="false"/>
+          </div>
+          <div class="dvn_sectionTitle">
+            <ice:outputText value="#{bundlePageInfo.editDvSettingsTitle}"/>
+          </div>
           <div class="dvn_sectionBox">
             <div class="dvn_margin12" id="successMessageDiv">
               <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
               <div jsfc="ice:panelGroup" styleClass="#{EditSitePage.msg.styleClass}" rendered="#{!empty EditSitePage.msg.messageText}">
-                <ice:outputText id="statusMessage" value="#{EditSitePage.msg.messageText}" />
-              </div>
-              <div class="vdcHelpText">
-                <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" value="/resources/icon_info.gif"/>
-                <ice:outputText id="outputText2" value="Note that if you change the alias, links to this Dataverse will change (http//.../dv/'alias')."/>
+                <ice:outputText id="statusMessage" value="#{EditSitePage.msg.messageText}"/>
               </div>
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2"
                              columnClasses="vdcAddSiteCol1, vdcAddSiteCol2" id="gridPanel1">
@@ -174,10 +168,10 @@
                 </div>
                 <div jsfc="ice:panelGroup">
                   <ice:inputTextarea binding="#{EditSitePage.shortDescriptionInput}"
-                                 id="dataverseShortDescription"
-                                 required="false"
-                                 validator="#{EditSitePage.validateShortDescription}"
-                                 value="#{EditSitePage.shortDescription}"/>
+                                     id="dataverseShortDescription"
+                                     required="false"
+                                     validator="#{EditSitePage.validateShortDescription}"
+                                     value="#{EditSitePage.shortDescription}"/>
                   <br/>
                   <ice:outputText styleClass="vdcHelpText" value="Short description to appear on the network home page with your dataverse listing."/>
                   <ice:message for="dataverseShortDescription" showSummary="true" showDetail="false" styleClass="errorMessage"/>

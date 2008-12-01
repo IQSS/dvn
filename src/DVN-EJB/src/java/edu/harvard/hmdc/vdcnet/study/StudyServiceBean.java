@@ -1888,15 +1888,25 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     }
 
     public Timestamp getLastUpdatedTime(Long vdcId) {
-        String queryString = "SELECT s.lastUpdateTime FROM Study s WHERE s.owner.id = '" + vdcId + "' ORDER BY s.lastUpdateTime DESC";
-        Query query        = em.createQuery(queryString);
-        List list          = query.getResultList();
-        Date lastupdatetime = null;
-        Timestamp convertedDate = null;
-        if (list.size() >= 1) {
-            lastupdatetime = (Date)list.get(0);
-            convertedDate = new java.sql.Timestamp(lastupdatetime.getTime());
-        }
-        return convertedDate;
+        String queryString  = "SELECT max(lastupdatetime) from study where owner_id=" + vdcId;
+        Query query         = em.createNativeQuery(queryString);
+        Object object       = ((List)query.getSingleResult()).get(0);
+        Timestamp timestamp = (Timestamp)object;
+        return timestamp;
     }
+
+    public Integer getActivityCount(Long vdcId) {
+        String queryString  = "select sum(downloadcount) from studyfileactivity  sfa," +
+                " studyfile sf, filecategory fc, study s" +
+                " where sfa.studyfile_id = sf.id" +
+                " and sf.filecategory_id = fc.id" +
+                " and fc.study_id = s.id" +
+                " and s.owner_id=2; ";
+        Query query         = em.createNativeQuery(queryString);
+        Object object       = ((List)query.getSingleResult()).get(0);
+        Long longValue      = (Long)object;
+        String strValue     = longValue.toString();
+        return Integer.getInteger(strValue);
+    }
+
 }

@@ -7,9 +7,8 @@
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:ice="http://www.icesoft.com/icefaces/component">
 <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
-
 <body>
   <gui:composition template="/template.xhtml">
     <gui:param name="pageTitle" value="#{bundlePageInfo.manageUsersTitle}"/>
@@ -17,8 +16,8 @@
       <ice:form id="form1">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <div class="dvn_section">
-           <div class="dvnInformationMessage">
-             <ice:outputText value="#{bundlePageInfo.manageUsersHelp}" escape="false" />
+          <div class="dvnRoundCornerMsgBlock dvnInformationMessage">
+            <ice:outputText value="#{bundlePageInfo.manageUsersHelp}" escape="false"/>
           </div>
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.manageUsersTitle}"/>
@@ -42,7 +41,7 @@
             </ice:column>
             <ice:column id="column2">
               <f:facet name="header">
-                <ice:outputText id="outputText3" value="Role/s"/>
+                <ice:outputText id="outputText3" value="Role(s)"/>
               </f:facet>
               <ice:outputText id="outputText4" value="#{currentRow.roles}"/>
             </ice:column>

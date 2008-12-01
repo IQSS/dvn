@@ -677,7 +677,7 @@ public void dispose() {
         } catch (Exception e) {
             System.out.println("an exception was thrown while calculating activity");
         } finally {
-            if (numberOwnedStudies > 0) {
+            if (numberOfDownloads > 0) {
                    //range 1
                 long a = 0;
                 long b = studyService.getTotalActivityCount();//this is artificial high range and could be based on numberOfTotal Downloads maybe
@@ -688,6 +688,7 @@ public void dispose() {
             } else {
                 localActivity = new Long(numberOfDownloads.toString());
             }
+            if (localActivity < 0) localActivity = numberOfDownloads;
             String strValue = String.valueOf(Math.round(localActivity.doubleValue()));
             localActivity = new Long(strValue);
             return localActivity;

@@ -128,10 +128,10 @@
                       <ice:outputText value="#{bundle.MSStatusColumn}"/>
                     </ice:commandSortHeader>
                   </f:facet>
-                  <ice:outputLink rendered="#{studyUI.study.reviewState.name != 'Released'}" value="/dvn/dv/#{VDCRequest.currentVDC.alias}/faces/study/StudyPage.xhtml?studyId=#{studyUI.study.id}">
+                  <ice:outputLink rendered="#{studyUI.study.reviewState.name == 'New' or (studyUI.study.reviewState.name == 'In Review' and !ManageStudiesList.loginBean.contributor) }" value="/dvn/dv/#{VDCRequest.currentVDC.alias}/faces/study/StudyPage.xhtml?studyId=#{studyUI.study.id}">
                     <ice:outputText value="#{studyUI.study.reviewState.name}"/>
                   </ice:outputLink>
-                  <ice:outputText rendered="#{studyUI.study.reviewState.name == 'Released'}" value="Released"/>
+                  <ice:outputText rendered="#{studyUI.study.reviewState.name == 'Released' or (studyUI.study.reviewState.name == 'In Review' and ManageStudiesList.loginBean.contributor) }" value="#{studyUI.study.reviewState.name}"/>
                 </ice:column>
                 <ice:column>
                   <f:facet name="header">

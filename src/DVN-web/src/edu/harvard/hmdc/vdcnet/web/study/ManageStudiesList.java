@@ -7,6 +7,7 @@ package edu.harvard.hmdc.vdcnet.web.study;
 
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
 import edu.harvard.hmdc.vdcnet.web.SortableList;
+import edu.harvard.hmdc.vdcnet.web.common.LoginBean;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
@@ -34,6 +35,7 @@ public class ManageStudiesList extends SortableList {
     
  
     private Long vdcId;
+    private LoginBean loginBean;
     
     public ManageStudiesList() {
         super(ID_COLUMN);
@@ -63,12 +65,25 @@ public class ManageStudiesList extends SortableList {
             } else {
                 throw new RuntimeException("Unknown sortColumnName: "+sortColumnName);
             }
-            List studyIds = studyService.getDvOrderedStudyIds(vdcId, orderBy, ascending);
+            List studyIds =null;
+            if (loginBean!=null && loginBean.isContributor()) {
+                studyIds = studyService.getDvOrderedStudyIdsByCreator(vdcId, loginBean.getUser().getId(), orderBy, ascending);
+            } else {
+                studyIds = studyService.getDvOrderedStudyIds(vdcId, orderBy, ascending);
+            }
             studyUIList = new ArrayList<StudyUI>();
             for (Object studyId: studyIds) {
                 studyUIList.add(new StudyUI((Long)studyId));
             }
 }
+
+    public LoginBean getLoginBean() {
+        return loginBean;
+    }
+
+    public void setLoginBean(LoginBean loginBean) {
+        this.loginBean = loginBean;
+    }
     public boolean isDefaultAscending(String columnName) {
         return true;
         

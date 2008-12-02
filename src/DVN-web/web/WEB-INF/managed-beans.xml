@@ -300,6 +300,12 @@
             <property-class>java.lang.Long</property-class>
             <value>#{VDCRequest.currentVDCId}</value>
         </managed-property>       
+        <managed-property>
+            <property-name>loginBean</property-name>
+            <property-class>edu.harvard.hmdc.vdcnet.web.common.LoginBean</property-class>
+            <value>#{VDCSession.loginBean}</value>
+        </managed-property>       
+
     </managed-bean>
     <managed-bean>
         <managed-bean-name>StudyPermissionsPage</managed-bean-name>

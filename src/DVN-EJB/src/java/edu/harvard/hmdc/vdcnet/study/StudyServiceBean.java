@@ -563,7 +563,13 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
           }    
             return (List) em.createQuery(query).getResultList();
         }
-    
+        public List getDvOrderedStudyIdsByCreator(Long vdcId, Long creatorId, String orderBy, boolean ascending ) {
+          String query = "SELECT s.id FROM Study s WHERE s.owner.id = " + vdcId + " and s.creator.id = " +creatorId+" ORDER BY s."+orderBy;
+          if (!ascending) {
+              query+= " desc";
+          }    
+            return (List) em.createQuery(query).getResultList();
+        }    
     
     public List<Study> getReviewerStudies(Long vdcId) {
         String query = "SELECT s FROM Study s WHERE s.reviewState.name = 'In Review' AND s.owner.id = " + vdcId;

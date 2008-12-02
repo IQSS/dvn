@@ -119,14 +119,12 @@ public class ManageDataversesPage extends VDCBaseBean implements Serializable {
             vdc = (VDC)iterator.next();
             Long parent = new Long("0");
             Timestamp lastUpdateTime = (studyService.getLastUpdatedTime(vdc.getId()) != null ? studyService.getLastUpdatedTime(vdc.getId()) : vdc.getReleaseDate());
-            Long localActivity       = calculateActivity(vdc);
-            String activity          = getActivityClass(localActivity);
+            String activity          = "0"; //placeholder -- there is no activity for this page.
             childItem = new DataverseGrouping(vdc.getName(), vdc.getAlias(), vdc.getAffiliation(), vdc.getReleaseDate(), lastUpdateTime, vdc.getDvnDescription(), "dataverse", activity);
             childItem.setId(vdc.getId());
             childItem.setCreationDate(vdc.getCreatedDate());
             childItem.setNumberOwnedStudies(getOwnedStudies(vdc));
             childItem.setType(vdc.getDtype());
-            //System.out.println("the vdc is " + vdc.getName() + "the number of studies is " + getOwnedStudies(vdc));
             childItem.setCreatedBy(getCreatorName(vdc.getCreator().getId()));
             parentItem.addChildItem(childItem);
          }
@@ -172,22 +170,6 @@ public class ManageDataversesPage extends VDCBaseBean implements Serializable {
                 System.out.println(e.toString());
             }
             return numberOwnedStudies;
-     }
-
-     private void initUnGroupedBeans(List list, String caption, Long netstatsId) {
-        Iterator iterator = list.iterator();
-        parentItem = new DataverseGrouping(netstatsId, caption, "group", itemBeans, true, EXPAND_IMAGE, CONTRACT_IMAGE, new Long("-1"));
-        parentItem.setShortDescription("Hello Wendy");
-        parentItem.setSubclassification(new Long("25"));
-        itemBeansSize++;
-        while (iterator.hasNext()) {
-            VDC vdc = (VDC)iterator.next();
-            Timestamp lastUpdateTime = (studyService.getLastUpdatedTime(vdc.getId()) != null ? studyService.getLastUpdatedTime(vdc.getId()) : vdc.getReleaseDate());
-            Long localActivity       = calculateActivity(vdc);
-            String activity          = getActivityClass(localActivity);
-            childItem = new DataverseGrouping(vdc.getName(), vdc.getAlias(), vdc.getAffiliation(), vdc.getReleaseDate(), lastUpdateTime, vdc.getDvnDescription(),  "dataverse", activity);
-            parentItem.addChildItem(childItem);
-        }
      }
 
     public void dispose() {

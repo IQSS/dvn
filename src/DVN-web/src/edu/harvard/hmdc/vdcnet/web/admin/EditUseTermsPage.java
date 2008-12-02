@@ -26,6 +26,7 @@
  */
 package edu.harvard.hmdc.vdcnet.web.admin;
 
+import com.icesoft.faces.component.ext.HtmlMessages;
 import edu.harvard.hmdc.vdcnet.util.ExceptionMessageWriter;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
@@ -50,6 +51,13 @@ public class EditUseTermsPage extends VDCBaseBean implements java.io.Serializabl
     private boolean termsOfUseEnabled;
     private String termsOfUse;
 
+    private HtmlMessages messageTag = new HtmlMessages();
+
+    public void init() {
+        super.init();
+        messageTag.setRendered(false);
+    };
+
     public boolean isTermsOfUseEnabled() {
         return termsOfUseEnabled;
     }
@@ -69,6 +77,7 @@ public class EditUseTermsPage extends VDCBaseBean implements java.io.Serializabl
     public String save_action() {
         String msg = SUCCESS_MESSAGE;
         success    = true;
+        messageTag.setRendered(true);
          try {
             if (validateTerms()) {
                 // action code here
@@ -82,6 +91,7 @@ public class EditUseTermsPage extends VDCBaseBean implements java.io.Serializabl
                 success = false;
             }
         } catch (Exception e) {
+            messageTag.setRendered(false);
             msg = "An error occurred: " + e.getCause().toString();
             System.out.println(msg);
         } finally {
@@ -116,6 +126,15 @@ public class EditUseTermsPage extends VDCBaseBean implements java.io.Serializabl
     public void setSuccess(boolean success) {
         this.success = success;
     }
+
+    public HtmlMessages getMessageTag() {
+        return messageTag;
+    }
+
+    public void setMessageTag(HtmlMessages messageTag) {
+        this.messageTag = messageTag;
+    }
+
     /* validateTerms
      *
      **<p> Utility method to validate that the user entered terms of use.</p>
@@ -129,9 +148,10 @@ public class EditUseTermsPage extends VDCBaseBean implements java.io.Serializabl
         boolean isUseTerms = true;
          if ( (elementValue == null || elementValue.equals("")) && (termsOfUseEnabled) ) {
             isUseTerms = false;
-            FacesMessage message = new FacesMessage("To enable this feature, you must also enter terms of use in the field below.  Please enter terms of use as either plain text or html.");
+            FacesMessage message = new FacesMessage("This field is required.");
             FacesContext.getCurrentInstance().addMessage("form1:textArea1", message);
         }
+        messageTag.setRendered(false);
         return isUseTerms;
     }
 }

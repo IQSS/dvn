@@ -3,196 +3,170 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:gui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core" 
+      xmlns:f="http://java.sun.com/jsf/core"
       xmlns:jsp="http://java.sun.com/JSP/Page"
-      xmlns:ice="http://www.icesoft.com/icefaces/component"
-      >
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+      xmlns:ice="http://www.icesoft.com/icefaces/component">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+  <gui:composition template="/template.xhtml">
+    <gui:param name="pageTitle" value="#{bundlePageInfo.addFilesTitle}"/>
+    <gui:define name="body">
+      <script type="text/javascript">
+          // <![CDATA[
+          // functions to work with category selection
+          // note a few assumptions that these functions have:
+          // the id of the dropdown (including parent nodes); the partial id of the checkboxes;
+          // and that the checkbox is two elements before the text field (there is empty text
+          // in between, created by the div)
+          function updateCategory( checkbox ) {
+              if (checkbox.checked) {
+                  dropdown = document.getElementById("form1:dummy_datatable:0:fileDataTable:catDropdown");
+                  textField = (document.getElementById(checkbox.id)).nextSibling;
+                  textField.value= dropdown.value;
+                  // checkbox.checked = false;
+                  //alert("text value "+ textField.value);
+              }
+          }
+          function deselectCategory( textField ) {
+              checkbox = document.getElementById(textField.id).previousSibling;
+              checkbox.checked = false;
+          }
+          function updateAllCheckedCategories( dropdown ) {
+              checkboxes=document.getElementsByTagName("input");
+              for(i=0; i < checkboxes.length; i++) {
+                  if (checkboxes[i].id.indexOf("catCheckbox") != -1 && checkboxes[i].checked == true) {
+                      textField = checkboxes[i].nextSibling;
+                      textField.value = dropdown.value;
+                  }
+              }
+          }
+          function disableSave() {
+              document.getElementById("form1:saveButton").disabled = true;
+          }
+          // ]]>
+      </script>
+      <div class="dvn_section">
+        <div class="dvnRoundCornerMsgBlock dvnInformationMessage">
+          <ice:outputText value="#{bundlePageInfo.addFilesHelp}" escape="false"/>
+        </div>
+        <div class="dvn_sectionTitle">
+          <ice:outputText value="#{bundlePageInfo.addFilesTitle}"/>
+        </div>
+        <div class="dvn_sectionBox">
+          <div class="dvn_margin12">
+            <ice:form id="form1">
+              <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+              <ice:inputHidden id="studyId" value="#{AddFilesPage.study.id}"/>
+              <input type="hidden" name="pageName" value="AddFilesPage"/>
+              <div class="dvnAddFilesInputBlock">
+                <ice:inputFile id="inputFileComponent"
+                               progressListener="#{AddFilesPage.fileUploadProgress}"
+                               actionListener="#{AddFilesPage.uploadFile}" binding="#{AddFilesPage.inputFile}">
+                  <!-- <ice:commandButton binding="#{AddFilesPage.inputFile}"/> -->
+                </ice:inputFile>
+                <ice:message for="inputFileComponent"/>
+                <ice:outputProgress rendered="#{AddFilesPage.progressRequested}"
+                                    value="#{AddFilesPage.fileProgress}"/>
+                <ice:messages layout="table" globalOnly="false"
+                              showDetail="true" showSummary="false"/>
+              </div>
+              <!--
+              This is a very basic table comprising four columns. Each
+              row represents an inventory item.  Each column represents a
+              inventory item property.  commandSortHeader components have been
+              added ot the table headers.
 
-    </head>
-
-    <body>
-        <gui:composition template="/template.xhtml">
-
-<gui:param name="pageTitle" value="#{bundlePageInfo.addFilesTitle}" />
-
-  <gui:define name="body">
-  <script type="text/javascript">
-             // <![CDATA[                  
-                // functions to work with category selection
-                // note a few assumptions that these functions have:
-                // the id of the dropdown (including parent nodes); the partial id of the checkboxes;
-                // and that the checkbox is two elements before the text field (there is empty text
-                // in between, created by the div)
-                function updateCategory( checkbox ) {
-                if (checkbox.checked) {
-              
-              dropdown = document.getElementById("form1:dummy_datatable:0:fileDataTable:catDropdown"); 
-              textField = (document.getElementById(checkbox.id)).nextSibling;
-              textField.value= dropdown.value;
-             // checkbox.checked = false;
-             //alert("text value "+ textField.value);
-                }
-                }
-                function deselectCategory( textField ) {
-                checkbox = document.getElementById(textField.id).previousSibling;
-                checkbox.checked = false;
-                }
-                function updateAllCheckedCategories( dropdown ) {
-                checkboxes=document.getElementsByTagName("input");
-                for(i=0; i < checkboxes.length; i++) {
-                if (checkboxes[i].id.indexOf("catCheckbox") != -1 && checkboxes[i].checked == true) {
-                 textField = checkboxes[i].nextSibling;
-                textField.value = dropdown.value;     
-                }
-                }
-                }
-                
-                function disableSave() {
-                document.getElementById("form1:saveButton").disabled = true;
-                }
-    // ]]>
-            </script>
-            
-  <div class="dvn_section">
-           <div class="dvnInformationMessage">
-             <ice:outputText value="#{bundlePageInfo.addFilesHelp}" escape="false" />
-          </div> 
-            
-          <div class="dvn_sectionTitle">
-            <ice:outputText value="#{bundlePageInfo.addFilesTitle}"/>
-          </div>
-            <div class="dvn_sectionBox">
-            <div class="dvn_margin12">          
-            
-   <ice:form id="form1">
-       
-       <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
-       <ice:inputHidden id="studyId" value="#{AddFilesPage.study.id}"/>
-      <input type="hidden" name="pageName" value="AddFilesPage"/>
-      
-      
-        <ice:inputFile id="inputFileComponent" 
-            progressListener="#{AddFilesPage.fileUploadProgress}" 
-            actionListener="#{AddFilesPage.uploadFile}" binding="#{AddFilesPage.inputFile}" >
-        <!--    <ice:commandButton binding="#{AddFilesPage.inputFile}" /> -->
-                               </ice:inputFile>    
-        <ice:message for="inputFileComponent" /> 
-        <ice:outputProgress rendered="#{AddFilesPage.progressRequested}" 
-            value="#{AddFilesPage.fileProgress}" />        
-  <ice:messages layout="table" globalOnly="false" 
-                  showDetail="true" showSummary="false"/>       
-
-   
-<br/>
-
-        <!--
-            This is a very basic table comprising four columns. Each
-            row represents an inventory item.  Each column represents a
-            inventory item property.  commandSortHeader components have been
-            added ot the table headers.
-
-            The sortAscending and sortColumn attributes are set when a command
-            sortColumnName header is activated.  The sortColumn and sortAscending
-            data can then be sortColumnName by a sortColumnName algorithm if a
-            change is detected.
-        -->
-      <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
-          <ice:dataTable cellpadding="0" cellspacing="0" width="80%" id="dummy_datatable"
-                                 value="dummy_datatable">
+              The sortAscending and sortColumn attributes are set when a command
+              sortColumnName header is activated.  The sortColumn and sortAscending
+              data can then be sortColumnName by a sortColumnName algorithm if a
+              change is detected.
+              -->
+              <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
+              <ice:dataTable cellpadding="0" cellspacing="0" width="100%" id="dummy_datatable"
+                             value="dummy_datatable" styleClass="dvnAddFilesOuterTable">
+                <ice:column>
+                  <ice:dataTable cellpadding="0" cellspacing="0" rendered="true"
+                                 width="100%"
+                                 value="#{AddFilesPage.fileList}" id="fileDataTable" binding="#{AddFilesPage.filesDataTable}"
+                                 styleClass="dvnAddFilesTable"
+                                 var="file">
+                    <ice:column id="catCol">
+                      <ice:panelGroup block="true" id="panel1" style="white-space: nowrap;">
+                        <!-- note that the Javascript functions currently depends on the placement and ids of these fields (and the dropdown box;
+                                          changing them may require corresponding changes in the Javascript  -->
+                        <ice:selectBooleanCheckbox id="catCheckbox"  onclick="updateCategory(this);"/>
+                        <ice:inputText id="catTextField" size="30" value="#{file.fileCategoryName}" partialSubmit="false"
+                                       onfocus="deselectCategory(this)"/>
+                      </ice:panelGroup>
+                      <f:facet name="header" id="f1">
+                        <ice:panelGroup id="catColPanelGroup" styleClass="dvnAddFilesTableCategory">
+                          <ice:outputLabel id="catDesc" value="Category"/>
+                          <ice:selectOneMenu id="catDropdown" onchange="updateAllCheckedCategories(this);">
+                            <f:selectItems value="#{AddFilesPage.fileCategories}"/>
+                          </ice:selectOneMenu>
+                        </ice:panelGroup>
+                      </f:facet>
+                    </ice:column>
                     <ice:column>
-          <ice:dataTable cellpadding="0" cellspacing="0" rendered="true" 
-                width="80%"
-                value="#{AddFilesPage.fileList}" id="fileDataTable" binding="#{AddFilesPage.filesDataTable}" 
-                var="file">
-                      
-   <ice:column id="catCol">
- <ice:panelGroup block="true" id="panel1" style="white-space: nowrap;">   
-                                            <!-- note that the Javascript functions currently depends on the placement and ids of these fields (and the dropdown box; 
-                                            changing them may require corresponding changes in the Javascript  -->
-  <ice:selectBooleanCheckbox id="catCheckbox"  onclick="updateCategory(this);"/>
-  <ice:inputText id="catTextField" size="30" value="#{file.fileCategoryName}" partialSubmit="false" 
-  onfocus="deselectCategory(this)"/>
-</ice:panelGroup>
-   <f:facet name="header" id="f1">
-            <ice:panelGroup id="catColPanelGroup">
-            <ice:outputText id="catDesc" value="Category"/>
-            <ice:selectOneMenu id="catDropdown" onchange="updateAllCheckedCategories(this);">
-            <f:selectItems value="#{AddFilesPage.fileCategories}" />
-            </ice:selectOneMenu>  
-                                            </ice:panelGroup>
-                                        </f:facet>   
-                                    </ice:column>
- <ice:column>
-                <f:facet name="header">
-                    <ice:outputLabel
-                            value="File Name"/>
-                </f:facet>
-                <ice:inputText id="input_filename" size="30" value="#{file.studyFile.fileName}" required="true" 
-                               validator="#{AddFilesPage.validateFileName}" partialSubmit="false" /> 
-                  <!-- <f:param name="fileName" value="#{file.studyFile.fileName}"/> -->
-                  <ice:message errorStyle="errorMessage" for="input_filename" />
-            </ice:column> 
-            <ice:column>
-                <f:facet name="header">
-                    <ice:outputLabel
-                            value="Description"/>
-                </f:facet>
-                <ice:inputTextarea id="description_filename"  rows="2" 
-                             value="#{file.studyFile.description}" partialSubmit="false" />
-               
-            </ice:column>
-
-            <ice:column>
-                <f:facet name="header">
-                    <ice:outputLabel
-                            value="Size"/>
-                </f:facet>
-                <ice:outputText size="25" value="#{file.sizeFormatted}"/>
-            </ice:column>
-          <ice:column>
-                <f:facet name="header">
-                    <ice:outputText
-                            value="Remove" />
-                </f:facet>
-                <ice:commandLink
+                      <f:facet name="header">
+                        <ice:outputLabel value="File Name"/>
+                      </f:facet>
+                      <ice:inputText id="input_filename" size="30" value="#{file.studyFile.fileName}" required="true"
+                                     validator="#{AddFilesPage.validateFileName}" partialSubmit="false"/>
+                      <!-- <f:param name="fileName" value="#{file.studyFile.fileName}"/> -->
+                      <ice:message errorStyle="errorMessage" for="input_filename"/>
+                    </ice:column>
+                    <ice:column>
+                      <f:facet name="header">
+                        <ice:outputLabel value="Description"/>
+                      </f:facet>
+                      <ice:inputTextarea id="description_filename" rows="2"
+                                         value="#{file.studyFile.description}" partialSubmit="false"/>
+                    </ice:column>
+                    <ice:column>
+                      <f:facet name="header">
+                        <ice:outputLabel value="Size"/>
+                      </f:facet>
+                      <ice:outputText size="25" value="#{file.sizeFormatted}"/>
+                    </ice:column>
+                    <ice:column>
+                      <f:facet name="header">
+                        <ice:outputLabel value="Remove"/>
+                      </f:facet>
+                      <ice:commandLink
                         value="Remove"
-                        actionListener="#{AddFilesPage.removeUploadedFile}" immediate="true" >
-                   <f:param name="fileName" value="#{file.studyFile.fileName}"/> 
-                </ice:commandLink>
-            </ice:column> 
-     </ice:dataTable>
-    </ice:column> 
-     </ice:dataTable>
-   
-     <ice:panelGroup block="true" rendered="#{AddFilesPage.emailRequested}" 
-        style="padding-top: 20px; padding-bottom: 10px" >
-      <ice:outputText styleClass="vdcTextStandout" value="NOTE:"/>
-      <ice:outputText id="email" escape="false" styleClass="warnMessage" 
-      value="SPSS and STATA files will be converted to a  tab delimited  format and become subsettable. You will still be able to download the original file, as well as other formats. Subsettable files might take a long time to upload and be processed. We will send you an e-mail notification when the upload process starts and when it completes. "/>
-      <br/>
-     <ice:outputText   value="E-Mail Address:"/>
-     <ice:inputText id="textField3" size="50" value="#{AddFilesPage.ingestEmail}">
-         <f:validator validatorId="EmailValidator"/>
-      </ice:inputText>
-      <br/>
-        <ice:outputText id="emailmany" escape="false" styleClass="warnMessage" 
-      value="Separate multiple e-mail addresses with a comma (and no spaces). "/>
-      <ice:message for="textField3" id="validatorMessage" styleClass="errorMessage"/>
-<br />
- </ice:panelGroup>
-        <ice:commandButton id="saveButton" value ="Save" action="#{AddFilesPage.save_action}" />
-          <ice:commandButton  id="cancelButton" value ="Cancel" immediate="true" 
-          action="#{AddFilesPage.cancel_action}" style="margin-left: 30px;"/>
-          
-
-    </ice:form>
-    
-</div>
-</div>
-</div>    
-</gui:define>
-    </gui:composition>
-    </body>
-    </html>
+                        actionListener="#{AddFilesPage.removeUploadedFile}" immediate="true">
+                        <f:param name="fileName" value="#{file.studyFile.fileName}"/>
+                      </ice:commandLink>
+                    </ice:column>
+                  </ice:dataTable>
+                </ice:column>
+              </ice:dataTable>
+              <ice:panelGroup block="true" styleClass="dvnFormPadding" rendered="#{AddFilesPage.emailRequested}">
+                <ice:outputText styleClass="vdcTextStandout" value="NOTE:"/>
+                <ice:outputText id="email" escape="false" styleClass="warnMessage"
+                                value="SPSS and STATA files will be converted to a  tab delimited  format and become subsettable. You will still be able to download the original file, as well as other formats. Subsettable files might take a long time to upload and be processed. We will send you an e-mail notification when the upload process starts and when it completes."/>
+                <br/>
+                <ice:outputText value="E-Mail Address:"/>
+                <ice:inputText id="textField3" size="50" value="#{AddFilesPage.ingestEmail}">
+                  <f:validator validatorId="EmailValidator"/>
+                </ice:inputText>
+                <br/>
+                <ice:outputText id="emailmany" escape="false" styleClass="warnMessage"
+                                value="Separate multiple e-mail addresses with a comma (and no spaces)."/>
+                <ice:message for="textField3" id="validatorMessage" styleClass="errorMessage"/>
+              </ice:panelGroup>
+              <div class="dvnFormPadding dvnFormMargin">
+                <ice:commandButton id="saveButton" value="Save" action="#{AddFilesPage.save_action}"/>
+                <ice:commandButton id="cancelButton" value="Cancel" immediate="true" action="#{AddFilesPage.cancel_action}"/>
+              </div>
+            </ice:form>
+          </div>
+        </div>
+      </div>
+    </gui:define>
+  </gui:composition>
+</body>
+</html>

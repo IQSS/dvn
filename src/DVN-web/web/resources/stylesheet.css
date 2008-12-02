@@ -1055,6 +1055,15 @@ a.vdcStudyFileSubsetAnalysisLink:active, a.vdcStudyFileSubsetAnalysisLink:visite
     color: #c55b28;
 }
 
+/* Add Files Page */
+.dvnAddFilesInputBlock {}
+.dvnAddFilesOuterTable {}
+.dvnAddFilesOuterTable td {padding: 0;}
+.dvnAddFilesTable {margin-top: 0; border: 0;}
+.dvnAddFilesTable th.iceDatTblColHdr1 {border-left: 0; border-right: 0;}
+.dvnAddFilesTableCategory label.iceOutLbl {display: inline;}
+.dvnAddFilesTableCategory select.iceSelOneMnu {display: inline;}
+
 /* Edit Study/Files style rules
 */
 .vdcStudyTemplateFormTable {width: 98%; border: 1px solid #6E7F90; padding: 10px; margin-top: 1em;}

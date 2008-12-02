@@ -79,6 +79,7 @@ import javax.jms.QueueConnectionFactory;
 import javax.jms.QueueSender;
 import javax.jms.QueueSession;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.xml.bind.JAXBException;
@@ -1902,10 +1903,16 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
                 " and sf.filecategory_id = fc.id" +
                 " and fc.study_id = s.id" +
                 " and s.owner_id=" + vdcId;
+        Long longValue = null;
         Query query         = em.createNativeQuery(queryString);
-        Object object       = ((List)query.getSingleResult()).get(0);
-        Long longValue      = (Long)object;
-        return longValue;
+        try {
+            Object object       = ((List)query.getSingleResult()).get(0);
+            longValue      = (Long)object;
+        } catch (Exception nre) {
+            longValue = new Long("0");
+        } finally {
+            return longValue;
+        }
     }
 
     public Long getTotalActivityCount() {

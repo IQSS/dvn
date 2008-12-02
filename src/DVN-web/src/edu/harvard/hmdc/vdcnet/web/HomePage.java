@@ -189,8 +189,6 @@ public class HomePage extends VDCBaseBean implements Serializable {
             Timestamp lastUpdateTime = (studyService.getLastUpdatedTime(vdc.getId()) != null ? studyService.getLastUpdatedTime(vdc.getId()) : vdc.getReleaseDate());
             Long localActivity       = calculateActivity(vdc);
             String activity          = getActivityClass(localActivity);
-            System.out.println("The activity class name is " + activity);
-            System.out.println("The number of study downloads is " + this.totalStudyDownloads);
             if (vdc.getReleaseDate() != null) {
                 childItem = new DataverseGrouping(vdc.getName(), vdc.getAlias(), vdc.getAffiliation(), vdc.getReleaseDate(), lastUpdateTime, vdc.getDvnDescription(), "dataverse", activity);
                 parentItem.addChildItem(childItem);

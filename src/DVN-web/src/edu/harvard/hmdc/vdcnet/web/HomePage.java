@@ -77,10 +77,14 @@ public class HomePage extends VDCBaseBean implements Serializable {
 
     
     private boolean isInit;
-    private int classificationsSize = 0;
-    public static final String CONTRACT_IMAGE           = "tree_nav_top_close_no_siblings.gif";
-    public static final String EXPAND_IMAGE             = "tree_nav_top_open_no_siblings.gif";
-    private String ALL_DATAVERSES_LABEL                 = "All Dataverses";
+    
+    private int classificationsSize  = 0;
+    private long totalStudyDownloads = -1;
+
+    public static final String CONTRACT_IMAGE  = "tree_nav_top_close_no_siblings.gif";
+    public static final String EXPAND_IMAGE    = "tree_nav_top_open_no_siblings.gif";
+    private String ALL_DATAVERSES_LABEL        = "All Dataverses";
+
     StatusMessage msg;
 
     private ArrayList itemBeans;
@@ -108,7 +112,6 @@ public class HomePage extends VDCBaseBean implements Serializable {
         initAllDataverses(allVdcs);
         allVdcGroups = (List)vdcGroupService.findAll();
         initMenu();
-
      }
 
          /**
@@ -186,6 +189,8 @@ public class HomePage extends VDCBaseBean implements Serializable {
             Timestamp lastUpdateTime = (studyService.getLastUpdatedTime(vdc.getId()) != null ? studyService.getLastUpdatedTime(vdc.getId()) : vdc.getReleaseDate());
             Long localActivity       = calculateActivity(vdc);
             String activity          = getActivityClass(localActivity);
+            System.out.println("The activity class name is " + activity);
+            System.out.println("The number of study downloads is " + this.totalStudyDownloads);
             if (vdc.getReleaseDate() != null) {
                 childItem = new DataverseGrouping(vdc.getName(), vdc.getAlias(), vdc.getAffiliation(), vdc.getReleaseDate(), lastUpdateTime, vdc.getDvnDescription(), "dataverse", activity);
                 parentItem.addChildItem(childItem);
@@ -667,33 +672,35 @@ public void dispose() {
 
     private Long calculateActivity(VDC vdc) {
         Long numberOfDownloads  = new Long("0");
-        Long numberOwnedStudies = new Long("0");
         Long localActivity;
-
-
         try {
-            
-            numberOfDownloads += ( studyService.getActivityCount(vdc.getId()) ) != null ? studyService.getActivityCount(vdc.getId()) : 0;
-        } catch (Exception e) {
-            System.out.println("an exception was thrown while calculating activity");
-        } finally {
-            if (numberOfDownloads > 0) {
-                   //range 1
-                long a = 0;
-                long b = studyService.getTotalActivityCount();//this is artificial high range and could be based on numberOfTotal Downloads maybe
-                //range 2
-                long c = 1;
-                long d = 5;
-                localActivity = ((numberOfDownloads - a) * (d-c)/(b-a)) + c;
-            } else {
-                localActivity = new Long(numberOfDownloads.toString());
+            try {
+                numberOfDownloads += studyService.getActivityCount(vdc.getId());
+            } catch (Exception e) {
+                System.out.println("An exception occured in the StudyServiceBean. Probably there were no downloads for this vdc . . .");
             }
-            if (localActivity < 0) localActivity = numberOfDownloads;
+            if (totalStudyDownloads == -1)
+                totalStudyDownloads = studyService.getTotalActivityCount();
+        } catch (Exception e) {
+            System.out.println("An exception occured in the StudyServiceBean. Probably there were no downloads for the entire network.");
+            totalStudyDownloads = 0;
+        } finally {
+            if (numberOfDownloads > 0 && totalStudyDownloads > 0) {
+                    //range 1
+                    long a = 0;
+                    long b = totalStudyDownloads;
+                    //range 2
+                    long c = 1;
+                    long d = 5;
+                    localActivity = ((numberOfDownloads - a) * (d-c)/(b-a)) + c;
+             } else {
+                    localActivity = numberOfDownloads;
+             }
             String strValue = String.valueOf(Math.round(localActivity.doubleValue()));
             localActivity = new Long(strValue);
             return localActivity;
-        } 
-    }
+        }
+    } 
 
     private String getActivityClass(Long activity) {
         String activityClass = new String();

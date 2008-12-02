@@ -184,9 +184,8 @@
                   });
                   // ]]>
               </script>
-              <div jsfc="ice:panelGroup" styleClass="dvnInlineButton" rendered="#{studyPage.userAuthorizedToRelease and studyPage.studyUI.study.studyLock==null and studyPage.studyUI.study.inReview}">
-                <ice:commandButton value="Release" actionListener="#{studyPage.setReleased}"/>
-              </div>
+              <ice:commandButton styleClass="dvnInlineButton" value="Release" actionListener="#{studyPage.setReleased}" rendered="#{studyPage.userAuthorizedToRelease and studyPage.studyUI.study.studyLock==null and studyPage.studyUI.study.inReview}"/>
+
               <ul class="studyEditLinks editDropDown">
                 <li>
                   <a class="editDropDownLink">Edit...</a>

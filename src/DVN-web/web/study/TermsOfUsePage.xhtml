@@ -47,10 +47,10 @@
                   <ice:outputText value="Special Permissions" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.specialPermissions}"/>
                   <ice:outputText value="#{TermsOfUsePage.study.specialPermissions}" rendered="#{!empty TermsOfUsePage.study.specialPermissions}" escape="false"/>
 
-                  <ice:outputText value="Restrictions" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.restrictions}" />
+                  <ice:outputText value="Restrictions" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.restrictions}"/>
                   <ice:outputText value="#{TermsOfUsePage.study.restrictions}" rendered="#{!empty TermsOfUsePage.study.restrictions}" escape="false"/>
 
-                  <ice:outputText value="Contact" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.contact}" />
+                  <ice:outputText value="Contact" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.contact}"/>
                   <ice:outputText value="#{TermsOfUsePage.study.contact}" rendered="#{!empty TermsOfUsePage.study.contact}" escape="false"/>
 
                   <ice:outputText value="Citation Requirements" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.citationRequirements}"/>
@@ -59,7 +59,7 @@
                   <ice:outputText value="Depositor Requirements" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.depositorRequirements}"/>
                   <ice:outputText value="#{TermsOfUsePage.study.depositorRequirements}" rendered="#{!empty TermsOfUsePage.study.depositorRequirements}" escape="false"/>
 
-                  <ice:outputText value="Conditions" styleClass="termsAgreementMessageTitle"  rendered="#{!empty TermsOfUsePage.study.conditions}"/>
+                  <ice:outputText value="Conditions" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.conditions}"/>
                   <ice:outputText value="#{TermsOfUsePage.study.conditions}" rendered="#{!empty TermsOfUsePage.study.conditions}" escape="false"/>
 
                   <ice:outputText value="Disclaimer" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.disclaimer}"/>
@@ -69,26 +69,26 @@
                   <ice:outputText value="Dataverse Terms of Use" styleClass="termsAgreementMessageTitle" rendered="#{TermsOfUsePage.downloadDataverseTermsRequired}" />
                   <ice:outputText value="#{TermsOfUsePage.study.owner.downloadTermsOfUse}" rendered="#{TermsOfUsePage.downloadDataverseTermsRequired}" escape="false"/>
 
-                  <ice:outputText value="Dataverse Network Terms of Use" styleClass="termsAgreementMessageTitle" rendered="#{TermsOfUsePage.downloadDvnTermsRequired}" />
+                  <ice:outputText value="Dataverse Network Terms of Use" styleClass="termsAgreementMessageTitle" rendered="#{TermsOfUsePage.downloadDvnTermsRequired}"/>
                   <ice:outputText value="#{TermsOfUsePage.vdcNetwork.downloadTermsOfUse}" rendered="#{TermsOfUsePage.downloadDvnTermsRequired}" escape="false"/>
 
-                  <ice:outputText value="Original Dataverse Terms of Use" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.harvestDVTermsOfUse}" />
-                  <ice:outputText value="#{TermsOfUsePage.study.harvestDVTermsOfUse}" rendered="#{!empty TermsOfUsePage.study.harvestDVTermsOfUse}"  escape="false"/>
+                  <ice:outputText value="Original Dataverse Terms of Use" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.harvestDVTermsOfUse}"/>
+                  <ice:outputText value="#{TermsOfUsePage.study.harvestDVTermsOfUse}" rendered="#{!empty TermsOfUsePage.study.harvestDVTermsOfUse}" escape="false"/>
 
                   <ice:outputText value="Original Dataverse Network Terms of Use" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.harvestDVNTermsOfUse}"/>
                   <ice:outputText value="#{TermsOfUsePage.study.harvestDVNTermsOfUse}" rendered="#{!empty TermsOfUsePage.study.harvestDVNTermsOfUse}" escape="false"/>
                 </div>
                 <div jsfc="ice:panelGroup" rendered="#{TermsOfUsePage.touTypeDeposit}">
-                  <ice:outputText value="Dataverse Network Deposit Terms of Use" styleClass="termsAgreementMessageTitle" rendered="#{TermsOfUsePage.depositDvnTermsRequired}" />
+                  <ice:outputText value="Dataverse Network Study Creation Terms of Use" styleClass="termsAgreementMessageTitle" rendered="#{TermsOfUsePage.depositDvnTermsRequired}"/>
                   <ice:outputText value="#{TermsOfUsePage.vdcNetwork.depositTermsOfUse}" rendered="#{TermsOfUsePage.depositDvnTermsRequired}" escape="false"/>
 
-                  <ice:outputText value="Dataverse Deposit Terms of Use" styleClass="termsAgreementMessageTitle" rendered="#{TermsOfUsePage.depositDataverseTermsRequired}" />
+                  <ice:outputText value="Dataverse Study Creation Terms of Use" styleClass="termsAgreementMessageTitle" rendered="#{TermsOfUsePage.depositDataverseTermsRequired}"/>
                   <ice:outputText value="#{TermsOfUsePage.depositDataverseTerms}" rendered="#{TermsOfUsePage.depositDataverseTermsRequired}" escape="false"/>
                 </div>
               </div>
               <div>
-                <ice:selectBooleanCheckbox id="termsAccepted"  required="true" validator="#{TermsOfUsePage.validateTermsAccepted}"  value="#{TermsOfUsePage.termsAccepted}" />
-                <ice:outputText styleClass="vdcFieldTitle" value="I agree and accept these terms of use." />
+                <ice:selectBooleanCheckbox id="termsAccepted" required="true" validator="#{TermsOfUsePage.validateTermsAccepted}" value="#{TermsOfUsePage.termsAccepted}"/>
+                <ice:outputText styleClass="vdcFieldTitle" value="I agree and accept these terms of use."/>
                 <ice:message for="termsAccepted" styleClass="errorMessage"/>
               </div>
               <div class="dvnFormPadding dvnFormMargin">

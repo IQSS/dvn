@@ -8,48 +8,40 @@
       xmlns:ice="http://www.icesoft.com/icefaces/component"
       xmlns:dvn="/WEB-INF/tlds/dvn-components">
 <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
-
 <body>
   <gui:composition template="/template.xhtml">
     <gui:param name="pageTitle" value="#{bundlePageInfo.editTemplateTitle}"/>
-
     <gui:define name="body">
       <f:loadBundle basename="EditStudyBundle" var="editstudybundle"/>
-
       <dvn:inlinehelpsupport writeHelpDiv="true" writeTipDiv="true" rendered="true"/>
       <ice:form id="templateForm">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <input type="hidden" name="pageName" value="TemplateFormPage"/>
         <ice:inputHidden id="token" value="#{TemplateFormPage.token}"/>
         <ice:inputHidden immediate="true" binding="#{TemplateFormPage.hiddenStudyId}" id="studyId" value="#{TemplateFormPage.studyId}"/>
-
         <div class="dvn_section">
-          <div class="dvnInformationMessage">
-             <ice:outputText value="#{bundlePageInfo.editTemplateHelp}" escape="false" />
-          </div> 
-          
+          <div class="dvnRoundCornerMsgBlock dvnInformationMessage">
+             <ice:outputText value="#{bundlePageInfo.editTemplateHelp}" escape="false"/>
+          </div>
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{EditStudyPage.study.title}"/>
           </div>
           <div class="dvn_sectionBoxNoBorders">
-
             <!-- validation errors occurred? -->
             <div id="messagePanel" class="errorMessage">
               <ice:outputText value="Please check messages below" rendered="#{!empty facesContext.maximumSeverity}"/>
             </div>
-
             <div id="groupPanel10" class="vdcTextRight dvnFormMargin">
               <ice:commandButton id="button1" value="Save" action="#{TemplateFormPage.save}"/>
               <ice:commandButton immediate="true" id="button2" value="Cancel" action="#{TemplateFormPage.cancel}"/>
             </div>
-
             <div panelLayout="flow" class="vdcStudyTemplateFormTable">
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%" style="margin-bottom: 5px;">
                 <div>
                   <div class="dvnFormPadding">
-                    <ice:outputText  value="Template Name: "/><ice:inputText id="template_name" size="45" value='#{TemplateFormPage.template.name}' required='true' requiredMessage='This field is required.'/>
+                    <ice:outputText value="Template Name: "/><ice:inputText id="template_name" size="45" value='#{TemplateFormPage.template.name}' required='true' requiredMessage='This field is required.'/>
                     <ice:message styleClass="errorMessage" for="template_name"/>
                   </div>
                 </div>
@@ -88,7 +80,7 @@
                   <ice:message styleClass="errorMessage" for="input_title"/>
                 </div>
               </ice:panelGrid>
-              
+
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                     styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.subTitle].templateField.fieldInputLevel.name}"
                     columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
@@ -290,7 +282,7 @@
                 </div>
                 <div>
                   <ice:inputText id="input_productionDate" styleClass="formDateFormat" value="#{TemplateFormPage.template.metadata.productionDate}" required="#{TemplateFormPage.studyMap[sfc.productionDate].required}">
-                  
+
                   </ice:inputText>
                   <ice:outputText value=" (YYYY or YYYY-MM or YYYY-MM-DD)"/>
                   <ice:message styleClass="errorMessage" for="input_productionDate"><f:param name="x" value="Production Date:"/> </ice:message>
@@ -524,19 +516,19 @@
                   </div>
                 </div>
               </ice:panelGrid>
-              
+
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.distributionDate].templateField.fieldInputLevel.name}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div jsfc="ice:panelGroup" id="groupPanel49" styleClass="vdcEditStudyField #{TemplateFormPage.studyMap[sfc.distributionDate].templateField.fieldInputLevel.name}">
-                  <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.distributionDate].recommended}"  /> 
+                  <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.distributionDate].recommended}"  />
                   <dvn:inlinehelp helpMessage="#{editstudybundle.distributionDateHelp}" linkText="#{editstudybundle.distributionDateLabel}" heading="#{editstudybundle.distributionDateHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                   <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.distributionDate].required}"/>
                   <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.distributionDate].recommended}"/>
                 </div>
                 <div jsfc="ice:panelGroup" id="groupPanel26" styleClass="#{TemplateFormPage.studyMap[sfc.distributionDate].templateField.fieldInputLevel.name}">
                   <ice:inputText id="input_distributionDate" styleClass="formDateFormat" value="#{TemplateFormPage.template.metadata.distributionDate}"  required="#{TemplateFormPage.studyMap[sfc.distributionDate].required}">
-                  
+
                   </ice:inputText>
                   <ice:outputText value=" (YYYY or YYYY-MM or YYYY-MM-DD)"/>
                   <ice:message styleClass="errorMessage" for="input_distributionDate"/>
@@ -557,7 +549,7 @@
                   <ice:message styleClass="errorMessage" for="input_depositor"/>
                 </div>
               </ice:panelGrid>
-              
+
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.dateOfDeposit].templateField.fieldInputLevel.name}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
@@ -569,7 +561,7 @@
                 </div>
                 <div jsfc="ice:panelGroup" id="groupPanel28" styleClass="vdcEditStudyField #{TemplateFormPage.studyMap[sfc.dateOfDeposit].templateField.fieldInputLevel.name}">
                   <ice:inputText id="input_dateOfDeposit" styleClass="formDateFormat" value="#{TemplateFormPage.template.metadata.dateOfDeposit}"  required="#{TemplateFormPage.studyMap[sfc.dateOfDeposit].required}">
-                    
+
                   </ice:inputText>
                   <ice:outputText value=" (YYYY or YYYY-MM or YYYY-MM-DD)"/>
                   <ice:message styleClass="errorMessage" for="input_dateOfDeposit"/>
@@ -633,7 +625,7 @@
                     <dvn:inlinehelp helpMessage="#{editstudybundle.seriesVersionDateHelp}" linkText="#{editstudybundle.seriesVersionDateLabel}" heading="#{editstudybundle.seriesVersionDateHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                     <br/>
                     <ice:inputText binding="#{TemplateFormPage.inputVersionDate}" validator="#{TemplateFormPage.validateVersion}" id="input_versionDate" styleClass="formDateFormat" value="#{TemplateFormPage.template.metadata.versionDate}" required="#{TemplateFormPage.studyMap[sfc.versionDate].required}" >
-                    
+
                     </ice:inputText>
                     <ice:outputText value=" (YYYY or YYYY-MM or YYYY-MM-DD)"/>
                     <ice:message styleClass="errorMessage" for="input_versionDate"/>
@@ -827,7 +819,7 @@
                   </ice:dataTable>
                 </ice:column>
               </ice:dataTable>
-              
+
               <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
               <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                              styleClass="vdcEditStudyTable"
@@ -877,7 +869,7 @@
                                  value="#{TemplateFormPage.template.metadata.studyRelMaterials}" var="currentRow">
                     <ice:column>
                       <div class="vdcEditStudyField">
-                        <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.relatedMaterial].recommended}" rendered ="#{TemplateFormPage.dataTableRelMaterials.rowIndex==0}"  />                                                                        
+                        <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.relatedMaterial].recommended}" rendered ="#{TemplateFormPage.dataTableRelMaterials.rowIndex==0}"  />
                         <dvn:inlinehelp helpMessage="#{editstudybundle.relatedMaterialHelp}" linkText="#{editstudybundle.relatedMaterialLabel}" heading="#{editstudybundle.relatedMaterialHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                         <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.relatedMaterial].required}"/>
                         <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.relatedMaterial].recommended}"/>
@@ -953,7 +945,7 @@
                                  value="#{TemplateFormPage.template.metadata.studyOtherRefs}" var="currentRow">
                     <ice:column>
                       <div class="vdcEditStudyField">
-                        <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.otherReferences].recommended}" rendered ="#{TemplateFormPage.dataTableOtherReferences.rowIndex==0}"  />                                                                                                
+                        <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.otherReferences].recommended}" rendered ="#{TemplateFormPage.dataTableOtherReferences.rowIndex==0}"  />
                         <dvn:inlinehelp helpMessage="#{editstudybundle.otherReferencesHelp}" linkText="#{editstudybundle.otherReferencesLabel}" heading="#{editstudybundle.otherReferencesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                         <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.otherReferences].required}"/>
                         <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.otherReferences].recommended}"/>
@@ -1212,7 +1204,7 @@
                   <ice:message styleClass="errorMessage" for="input_timeMethod"/>
                 </div>
               </ice:panelGrid>
-              
+
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.dataCollector].templateField.fieldInputLevel.name}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
@@ -1897,7 +1889,7 @@
                                  value="#{TemplateFormPage.template.metadata.studyNotes}" var="currentRow">
                     <ice:column>
                       <div class="vdcEditStudyField">
-                        <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.notesInformationType].recommended}" rendered ="#{TemplateFormPage.dataTableNotes.rowIndex==0}"  />                                                                                                
+                        <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.notesInformationType].recommended}" rendered ="#{TemplateFormPage.dataTableNotes.rowIndex==0}"  />
                         <dvn:inlinehelp helpMessage="#{editstudybundle.notesTypeHelp}" linkText="#{editstudybundle.notesTypeLabel}" heading="#{editstudybundle.notesTypeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                         <ice:graphicImage value="/resources/icon_required.gif" rendered="#{TemplateFormPage.noteInputLevel=='required'}"/>
                         <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.noteInputLevel=='recommended'}"/>
@@ -1961,8 +1953,6 @@
           </div>
         </div>
       </ice:form>
-
-    
     </gui:define>
   </gui:composition>
 </body>

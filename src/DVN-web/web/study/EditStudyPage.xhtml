@@ -11,20 +11,14 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
-
 <body>
   <gui:composition template="/template.xhtml">
-    <gui:param name="pageTitle" value="#{bundlePageInfo.editStudyTitle}" />
+    <gui:param name="pageTitle" value="#{bundlePageInfo.editStudyTitle}"/>
     <gui:define name="body">
       <f:loadBundle basename="EditStudyBundle" var="editstudybundle"/>
-
       <script type="text/javascript">
           // <![CDATA[
           // Functions for hiding and showing study fields
-          //
-
-      
-
           function addLoadEvent(func) {
               var oldonload = window.onload;
               if (typeof window.onload != 'function') {
@@ -38,9 +32,6 @@
                   }
               }
           }
-
-
-
           // functions to work with category selection
           // note a few assumptions that these functions have:
           // the id of the dropdown (including parent nodes); the partial id of the checkboxes;
@@ -86,9 +77,7 @@
           }
           // ]]>
       </script>
-
       <dvn:inlinehelpsupport writeHelpDiv="true" writeTipDiv="true" rendered="true"/>
-
       <ice:form id="studyForm">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <input type="hidden" name="pageName" value="EditStudyPage"/>
@@ -112,7 +101,7 @@
               <div jsfc="ice:panelGroup" id="messagePanel" styleClass="errorMessage" rendered="#{!empty facesContext.maximumSeverity}">
                 <ice:outputText value="Please check messages below"/>
               </div>
-                  <ice:panelGroup panelLayout="flow" style="width: 98%;" rendered="#{EditStudyPage.showCatalog}">
+                  <ice:panelGroup panelLayout="flow" rendered="#{EditStudyPage.showCatalog}">
                     <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%" style="margin-bottom: 5px;">
                       <div jsfc="ice:panelGroup" id="groupPanel9b">
                         <ice:outputText value="Select Study Template: " rendered="#{EditStudyPage.showTemplateList}"/>
@@ -125,13 +114,11 @@
                      <!--
                         <input checked="checked" type="radio" id="hideRadio" name="hideShowRadio" value="hide" onclick="updateHideShow(this);"/> Show Required and Recommended Fields
                         <input type="radio" id="showRadio" name="hideShowRadio" value="show" onclick="updateHideShow(this);"/> Show All Fields
-                       -->
-                        
+                       -->                        
                         <ice:selectOneRadio partialSubmit="true" value ="#{EditStudyPage.showAll}">
                           <f:selectItem itemLabel="Show Required and Recommended Fields" itemValue="false"/>
                           <f:selectItem itemLabel="Show All Fields" itemValue="true"/>
-                        </ice:selectOneRadio>
-                      
+                        </ice:selectOneRadio>                      
                       </div>
                       <div jsfc="ice:panelGroup" styleClass="vdcEditStudyTableLegend">
                         <div jsfc="ice:panelGroup">
@@ -150,7 +137,6 @@
                       </div>
                     </div>
                   </ice:panelGrid>
-
                   <div jsfc="ice:panelGroup" id="groupPanel9" styleClass="vdcStudyInfoHeader">
                     <ice:outputText id="outputText26" value="Citation Information"/>
                   </div>

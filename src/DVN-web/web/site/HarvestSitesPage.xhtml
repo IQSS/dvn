@@ -66,9 +66,10 @@
               <f:facet name="header">
                 <ice:outputText value="Result"/>
               </f:facet>
-              <ice:outputText value="Harvest completed, #{currentRow.harvestedStudyCount} Studies harvested" rendered="#{currentRow.harvestResult == currentRow.harvestResultSuccess}"/>
-              <ice:outputText value="#{currentRow.failedStudyCount} Failures" rendered="#{currentRow.harvestResult == currentRow.harvestResultSuccess and currentRow.failedStudyCount > 0}"/>
-              <ice:outputText value="Harvest Failed" rendered = "#{currentRow.harvestResult == currentRow.harvestResultFailed}"/>
+              <ice:outputText value="Harvest Completed " rendered="#{currentRow.harvestResult == currentRow.harvestResultSuccess}"/>
+              <ice:outputText value="Harvest failed before completion (see log file for details) " rendered = "#{currentRow.harvestResult == currentRow.harvestResultFailed}"/>
+              <ice:outputText value="#{currentRow.harvestedStudyCount} Studies harvested" rendered="#{!empty currentRow.harvestedStudyCount}"  />
+              <ice:outputText value="#{currentRow.failedStudyCount} Failures" rendered="#{currentRow.harvestResult == currentRow.harvestResultSuccess and currentRow.failedStudyCount > 0}" />
               <ice:outputText value="No results available" rendered="#{empty currentRow.harvestResult}"/>
             </ice:column>
             <ice:column>
@@ -82,7 +83,9 @@
               <f:facet name="header">
                 <ice:outputText id="outputText3" value="Remove"/>
               </f:facet>
-              <ice:outputLink disabled="#{currentRow.harvestingNow}" value="/dvn/faces/site/DeleteDataversePage.xhtml?deleteId=#{currentRow.vdc.id}">
+              <ice:outputLink disabled="#{currentRow.harvestingNow}" value="/dvn/faces/site/DeleteDataversePage.xhtml">
+                <f:param name="deleteId" value="#{currentRow.vdc.id}"/>
+                <f:param name="from" value="manageHarvesting" />
                 <ice:outputText value="Remove"/>
               </ice:outputLink>
             </ice:column>

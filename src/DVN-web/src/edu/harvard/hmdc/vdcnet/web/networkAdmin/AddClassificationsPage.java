@@ -117,7 +117,10 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
         int i = 1;
         while (iterator.hasNext()) {
             VDCGroup vdcgroup = (VDCGroup)iterator.next();
-            parentSelectItems[i] = new SelectItem(vdcgroup.getId(), vdcgroup.getName());
+            //if (cid != null && cid.equals(vdcgroup.getId()))
+                //continue;
+            //else
+                parentSelectItems[i] = new SelectItem(vdcgroup.getId(), vdcgroup.getName());
             i++;
         }
     }

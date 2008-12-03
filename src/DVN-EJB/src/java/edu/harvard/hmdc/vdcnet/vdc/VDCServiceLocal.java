@@ -94,8 +94,7 @@ public interface VDCServiceLocal extends java.io.Serializable  {
 
     public List<VDC> getUserVDCs(Long userId); 
     
-
     public java.util.List<Long> getOwnedStudyIds(Long vdcId);
     
-
+    public Long getOwnedStudyCount(Long vdcId);
 }

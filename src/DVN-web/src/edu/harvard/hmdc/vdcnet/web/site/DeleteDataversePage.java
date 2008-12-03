@@ -53,6 +53,15 @@ public class DeleteDataversePage extends VDCBaseBean implements java.io.Serializ
     private String resultLink;
     private String vdcName;
     private Long cid;
+    private String from;
+
+    public String getFrom() {
+        return from;
+    }
+
+    public void setFrom(String from) {
+        this.from = from;
+    }
 
 
     public String getVdcName() {
@@ -106,7 +115,7 @@ public class DeleteDataversePage extends VDCBaseBean implements java.io.Serializ
     
     public String cancel() {
       
-        return "cancel";
+        return from;
     }
 
     

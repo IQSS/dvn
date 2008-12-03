@@ -73,6 +73,20 @@
             <from-outcome>addSite</from-outcome>
             <to-view-id>/site/AddSitePage.xhtml</to-view-id>
         </navigation-case>
+    </navigation-rule>  
+      <navigation-rule>
+        <from-view-id>/*</from-view-id>
+        <navigation-case>
+            <from-outcome>manageDataverses</from-outcome>
+            <to-view-id>/networkAdmin/ManageDataversesPage.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+      <navigation-rule>
+        <from-view-id>/*</from-view-id>
+        <navigation-case>
+            <from-outcome>manageHarvesting</from-outcome>
+            <to-view-id>/site/HarvestSitesPage.xhtml</to-view-id>
+        </navigation-case>
     </navigation-rule>
   <navigation-rule>
      <from-view-id>/*</from-view-id>
@@ -243,10 +257,6 @@
             <navigation-case>
                 <from-outcome>success</from-outcome>
                 <to-view-id>/site/DeleteDataverseSuccessPage.xhtml</to-view-id>
-            </navigation-case>
-            <navigation-case>
-                <from-outcome>cancel</from-outcome>
-                <to-view-id>/site/HarvestSitesPage.xhtml</to-view-id>
             </navigation-case>
     </navigation-rule>
     <navigation-rule>

@@ -352,6 +352,11 @@
             <property-class>java.lang.Long</property-class>
             <value>#{param.deleteId}</value>
         </managed-property>
+           <managed-property>
+            <property-name>from</property-name>
+            <property-class>java.lang.String</property-class>
+            <value>#{param.from}</value>
+        </managed-property>
     </managed-bean>
     <managed-bean>
         <managed-bean-name>DeleteClassificationsPage</managed-bean-name>

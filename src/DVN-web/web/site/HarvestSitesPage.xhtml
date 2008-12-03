@@ -34,7 +34,9 @@
                 <ice:outputText value="Dataverse"/>
               </f:facet>
               <ice:outputText value="#{currentRow.vdc.name}" rendered="#{currentRow.harvestingNow}"/>
-              <ice:outputLink rendered="#{!currentRow.harvestingNow}" value="/dvn/dv/#{currentRow.vdc.alias}/faces/site/EditHarvestSitePage.xhtml?harvestId=#{currentRow.id}">
+              <ice:outputLink rendered="#{!currentRow.harvestingNow}" value="/dvn/faces/site/EditHarvestSitePage.xhtml">
+                <f:param name="harvestId" value="#{currentRow.id}"/>
+                <f:param name="from" value="manageHarvesting"/>
                 <ice:outputText value="#{currentRow.vdc.name}"/>
               </ice:outputLink>
             </ice:column>
@@ -46,8 +48,10 @@
                 <ice:outputText value="#{currentRow.scheduleDescription}" rendered="#{currentRow.oai and !empty currentRow.schedulePeriod}"/>
                 <ice:outputText value="Nesstar server - run on demand only" rendered="#{currentRow.nesstar}"/>
                 <ice:outputText value="Not Defined" rendered="#{currentRow.harvestingNow and currentRow.oai and empty currentRow.schedulePeriod}"/>
-                <ice:outputLink rendered="#{!currentRow.harvestingNow and currentRow.oai and empty currentRow.schedulePeriod}" value="/dvn/dv/#{currentRow.vdc.alias}/faces/site/EditHarvestSitePage.xhtml?harvestId=#{currentRow.id}">
-                  <ice:outputText value="Not Defined"/>
+                <ice:outputLink rendered="#{!currentRow.harvestingNow and currentRow.oai and empty currentRow.schedulePeriod}" value="/dvn/faces/site/EditHarvestSitePage.xhtml">
+                    <f:param name="harvestId" value="#{currentRow.id}"/>
+                    <f:param name="from" value="manageHarvesting"/>
+                    <ice:outputText value="Not Defined"/>
                 </ice:outputLink>
                 <ice:outputText value="(Unscheduled)" rendered="#{currentRow.oai and !empty currentRow.schedulePeriod and !currentRow.scheduled}"/>
                 <ice:outputText value="(Scheduled)" rendered="#{currentRow.oai and !empty currentRow.schedulePeriod and currentRow.scheduled}"/>

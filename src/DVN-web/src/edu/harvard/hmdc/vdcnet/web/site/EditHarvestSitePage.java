@@ -78,9 +78,18 @@ public class EditHarvestSitePage extends VDCBaseBean implements java.io.Serializ
     @EJB VDCServiceLocal vdcService;
     @EJB HarvesterServiceLocal harvesterService;
     @EJB HandlePrefixServiceLocal handlePrefixService;
+
+    public String getFrom() {
+        return from;
+    }
+
+    public void setFrom(String from) {
+        this.from = from;
+    }
     HtmlSelectBooleanCheckbox scheduledCheckbox;
     HtmlSelectOneMenu schedulePeriod;
     String _HARVEST_DTYPE = "Basic";
+    String from;  // page you are comming from
 
     public HtmlSelectOneMenu getSchedulePeriod() {
         return schedulePeriod;
@@ -253,8 +262,7 @@ public class EditHarvestSitePage extends VDCBaseBean implements java.io.Serializ
     }
     
     public String cancel() {
-        editHarvestSiteService.cancel();
-        return "myNetworkOptions";
+        return from;
     }
     /**
      * Holds value of property success.

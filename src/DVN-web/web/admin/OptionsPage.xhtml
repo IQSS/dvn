@@ -98,7 +98,9 @@
                             <gui:fragment rendered="#{VDCRequest.currentVDC.harvestingDv}">
                                 <tr>
                                     <td class="dvnOptionsTableOption">
-                                        <ice:outputLink id="hyperlink15b" value="/dvn#{VDCRequest.currentVDCURL}/faces/site/EditHarvestSitePage.xhtml?harvestId=#{VDCRequest.currentVDC.harvestingDataverse.id}">
+                                        <ice:outputLink id="hyperlink15b" value="/dvn#{VDCRequest.currentVDCURL}/faces/site/EditHarvestSitePage.xhtml">
+                                            <f:param name="harvestId" value="#{VDCRequest.currentVDC.harvestingDataverse.id}"/>
+                                            <f:param name="from" value="myOptions"/>
                                             <ice:outputText id="hyperlink15bText" value="#{bundlePageInfo.dvHarvestSettingsTitle}"/>
                                         </ice:outputLink>
                                     </td>

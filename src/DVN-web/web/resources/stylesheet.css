@@ -223,13 +223,6 @@
    line-height: inherit ;
 }
 
-.Tree {
-    background: none !important;
-}
-.Tree .float {
-    float: left;
-}
-
 span.disabled {font-weight: bold;}
 
 /* MAIN SECTION */
@@ -249,18 +242,17 @@ span.disabled {font-weight: bold;}
 .iceTreeRow .icePnlGrp {display: inline;}
 
 .dvnCollectionTreeBlock {
-  position: absolute;
-  left: 0;
-  top: 0;
   width: 100%;
   padding: .25em;
-  overflow: hidden;
   border: 1px solid #DCDDDF;
-  background-color: white;
+  position: relative;
 }
 .dvnCollectionTreeControls {padding: 0 .25em; overflow: hidden;}
 #dvnTreeOpen {font-size: 90% !important; float: left; cursor: pointer;}
 #dvnTreeClose {font-size: 90% !important; float: right; cursor: pointer;}
+
+.dvnTreeExpirement {width: 100%; background-color: white; overflow: hidden;}
+.dvnTreeExpirement div.iceTree {overflow-x: hidden; overflow-y: hidden; clear: both; width: 100%; padding-bottom: 2em;}
 
 /* HEADER */
 .dvn_headerTitle {position: relative;}
@@ -384,8 +376,9 @@ td.dvnPaginatorWrap table.dvnPaginatorRight {}
 }
 
 .dvnSuccessMessage {
-    width: 80%; margin: 0 auto 1em auto; padding: 4px; min-height: 40px;
-    background: url(icon_success.png) #cee6bb 4px 4px no-repeat;
+  max-width: 900px;
+  width: 80%; margin: 0 auto 1em auto; padding: 4px; min-height: 40px;
+  background: url(icon_success.png) #cee6bb 4px 4px no-repeat;
 }
 .dvnSuccessMessage p:first-child {padding-top: 0; margin-top: 0;}
 .dvnSuccessMessage p {
@@ -1518,47 +1511,6 @@ td.vdcEditFilesColC{
    padding-top: 4px;
    padding-bottom: 4px;
 }
-
-.vdcTreeDataverse{
-    white-space: normal;
-}
-.vdcTreeDataverse a:link, .vdcTreeDataverse a:visited, .vdcTreeDataverse a:hover, .vdcTreeDataverse a:active{
-    font-weight: bold; 
-}
-.vdcTreeDataverse img{
-   display: inline !important;
-   vertical-align: text-top;
-   padding-bottom : 0.3em;     
-}
-.vdcTreeCollection{
-   white-space: normal;
-}
-.vdcTreeCollection a:link, .vdcTreeCollection a:visited, .vdcTreeCollection a:hover, .vdcTreeCollection a:active{
-   white-space: normal;
-}
-.vdcTreeCollection img{
-   display: inline !important;
-   vertical-align: text-top;
-   padding-bottom : 0.3em;
-}
-.vdcTreeStudy{
-   white-space: normal;
-}
-
-.vdcTreeStudy a:link, .vdcTreeStudy a:visited, .vdcTreeStudy a:hover, .vdcTreeStudy a:active{
-   white-space: normal;
-}
-.vdcTreeStudy img{
-   display: inline !important;
-   vertical-align: text-top;
-   padding-bottom : 0.3em;
-}
-.TreeContent {
-    display: block;
-    /* padding: 0.1em; *********************************************************************/
-    margin: 0;
-}
-.TreeImgHeight {line-height: 50.4px !important;}
 
 /* subsetting page: summary statistics: starts here */
 

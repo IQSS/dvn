@@ -19,7 +19,6 @@ import edu.harvard.hmdc.vdcnet.study.VariableServiceLocal;
 import edu.harvard.hmdc.vdcnet.util.DateUtils;
 import edu.harvard.hmdc.vdcnet.util.StringUtil;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
-import edu.harvard.hmdc.vdcnet.vdc.VDCGroup;
 import edu.harvard.hmdc.vdcnet.vdc.VDCGroupServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
 import edu.harvard.hmdc.vdcnet.web.DataverseGrouping;
@@ -118,12 +117,13 @@ public class ManageDataversesPage extends VDCBaseBean implements Serializable {
             itemBeansSize++;
             vdc = (VDC)iterator.next();
             Long parent = new Long("0");
-            Timestamp lastUpdateTime = (studyService.getLastUpdatedTime(vdc.getId()) != null ? studyService.getLastUpdatedTime(vdc.getId()) : vdc.getReleaseDate());
+            Long vdcId  = vdc.getId();
+            Timestamp lastUpdateTime = (studyService.getLastUpdatedTime(vdcId) != null ? studyService.getLastUpdatedTime(vdcId) : vdc.getReleaseDate());
             String activity          = "0"; //placeholder -- there is no activity for this page.
             childItem = new DataverseGrouping(vdc.getName(), vdc.getAlias(), vdc.getAffiliation(), vdc.getReleaseDate(), lastUpdateTime, vdc.getDvnDescription(), "dataverse", activity);
-            childItem.setId(vdc.getId());
+            childItem.setId(vdcId);
             childItem.setCreationDate(vdc.getCreatedDate());
-            childItem.setNumberOwnedStudies(getOwnedStudies(vdc));
+            childItem.setNumberOwnedStudies(new Integer(String.valueOf(getOwnedStudies(vdcId))));
             childItem.setType(vdc.getDtype());
             childItem.setCreatedBy(getCreatorName(vdc.getCreator().getId()));
             parentItem.addChildItem(childItem);
@@ -160,15 +160,16 @@ public class ManageDataversesPage extends VDCBaseBean implements Serializable {
 
      }
 
-     private Integer getOwnedStudies(VDC vdc) {
-            Integer numberOwnedStudies = new Integer(0);
-            Long localActivity;
+     private Long getOwnedStudies(Long vdcid) {
+            Long numberOwnedStudies = new Long("0");
+            Long localOwnedStudies  = new Long("0");
             try {
-                Collection collection = vdc.getOwnedStudies();
-                numberOwnedStudies = collection.size();
+                localOwnedStudies = vdcService.getOwnedStudyCount(vdcid);
             } catch (Exception e) {
                 System.out.println(e.toString());
             }
+            if (localOwnedStudies != null)
+                numberOwnedStudies = localOwnedStudies;
             return numberOwnedStudies;
      }
 

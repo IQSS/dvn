@@ -22,6 +22,7 @@
         <ice:inputHidden id="studyListingIndex" value="#{StudyListingPage.studyListingIndex}"/>
         <!-- Main Section starts here -->
         <div id="dvn_mainSection">
+          
           <!-- Search Section starts here -->
           <div class="dvn_searchblock">
             <div class="dvn_searchBoxContent">
@@ -252,19 +253,28 @@
               </div>
             </div>
             <div jsfc="ice:panelGroup" id="groupPanel55" styleClass="dvn_sectionPanels" rendered="#{StudyListingPage.renderTree}">
-              <div class="dvnCollectionTreeBlock">
+              <div class="dvnCollectionTreeBlock" style="height: 58em;">
                 <script>
                     // <![CDATA[
                     jQuery(document).ready(function(){
                         jQuery("a#dvnTreeOpen").click(function(){
-                            jQuery(".dvnCollectionTreeBlock").animate({width: "400%"}, 1999 );
+                            jQuery(".dvnTreeExpirement").animate({width: "400%"}, 299 );
+                            jQuery(".dvnTreeExpirement").css({overflow: "visible"});
+                            jQuery(".dvnTreeExpirement").css({position: "absolute", top: ".25em", left: ".25em"});
+                            jQuery(".iceTree").css({"overflow-x": "auto"});
                         });
                         jQuery("a#dvnTreeClose").click(function(){
-                            jQuery(".dvnCollectionTreeBlock").animate({width: "100%"}, 1999 );
+                            jQuery(".dvnTreeExpirement").animate({width: "100%"}, 299 );
+                            jQuery(".dvnTreeExpirement").css({overflow: "hidden"});
+                            jQuery(".dvnTreeExpirement").css({position: "relative", top: "0", left: "0"});
+                            jQuery(".iceTree").css({"overflow-x": "hidden"});
                         });
                     });
                     // ]]>
                 </script>
+                
+                <div class="dvnTreeExpirement">
+                  
                 <div class="dvnCollectionTreeControls">
                   <a id="dvnTreeOpen" name="open">Expand &#187;</a> <a id="dvnTreeClose" name="close">&#171; Close</a>
                 </div>
@@ -289,6 +299,10 @@
                     </f:facet>
                   </ice:treeNode>
                 </ice:tree>
+                  
+                </div>
+
+
               </div>
             </div>
           </div>

@@ -55,6 +55,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
 
@@ -473,6 +474,20 @@ public class VDCServiceBean implements VDCServiceLocal {
     public java.util.List<Long> getOwnedStudyIds(Long vdcId) {
         String queryStr = "SELECT s.id FROM VDC v JOIN v.ownedStudies s where v.id = " + vdcId + " ORDER BY s.metadata.title";
         return em.createQuery(queryStr).getResultList();
+    }
+
+    public Long getOwnedStudyCount(Long vdcId) {
+        String queryString  = "select count(owner_id) from study  s where s.owner_id = " + vdcId;
+        Long longValue = null;
+        Query query         = em.createNativeQuery(queryString);
+        try {
+            Object object       = ((List)query.getSingleResult()).get(0);
+            longValue      = (Long)object;
+        } catch (Exception nre) {
+            longValue = new Long("0");
+        } finally {
+            return longValue;
+        }
     }
 
 }

@@ -18,12 +18,14 @@
     font-family: "HelveticaNeue", Helvetica, Arial, sans-serif !important;
     font-size: 12px !important;
     line-height: 18px !important;
+    background-color: transparent;
 }
 
 .dvn_content h1, .dvn_content h2, .dvn_content h3, .dvn_content h4, .dvn_content h5, .dvn_content h6 {
     font-family: "HelveticaNeue", Helvetica, Arial, sans-serif !important;
     font-weight: bold !important;
     font-style: normal !important;
+    background-color: transparent;
 }
 
 .dvn_content a, .dvn_content a:link, .dvn_content a:visited, .dvn_content a:hover, .dvn_content a:active {

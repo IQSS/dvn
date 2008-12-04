@@ -72,6 +72,8 @@ import edu.harvard.hmdc.vdcnet.study.StudyFile;
 
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
 import edu.harvard.hmdc.vdcnet.web.study.StudyUI;
+import edu.harvard.hmdc.vdcnet.admin.DVNVersion;
+import edu.harvard.hmdc.vdcnet.admin.DVNVersionServiceLocal;
 
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
 import edu.harvard.hmdc.vdcnet.admin.GroupServiceLocal;
@@ -109,7 +111,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     private VariableServiceLocal variableService;
     @EJB
     private DvnDSBTimerServiceLocal dvnDSBTimerService;
-
+    @EJB
+    private DVNVersionServiceLocal dvnVersionService;
     /**
      * getter for the injected VariableServiceLocal
      * 
@@ -244,6 +247,12 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         DVN_R_HELPER_FILE = new File(this.getClass().getResource("dvn_helper.R").getFile());
         
         R_COMMAND_FILE_PREFIX = "RcommandFile_";
+        
+        DVNversionNo =
+                dvnVersionService.getLatestVersion().getVersionNumber() +
+                "." + dvnVersionService.getLatestVersion().getBuildNumber();
+
+
     } // end of _init()
 
     // </editor-fold>
@@ -530,6 +539,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         this.resultInfo = resultInfo;
     }    
     
+    
+    private String DVNversionNo;
     // </editor-fold>
 
     // -----------------------------------------------------------------------
@@ -1306,8 +1317,14 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             resultInfo.put("dtId", dtId.toString());
             resultInfo.put("studyURL", studyURL);
             resultInfo.put("R_min_verion_no","2.7.0");
-            resultInfo.put("dataverse_version_no","1.3");
+//            DVNversionNo = dvnVersionService.getLatestVersion().getVersionNumber() +
+//                "." + dvnVersionService.getLatestVersion().getBuildNumber();
             
+            resultInfo.put("dataverse_version_no",DVNversionNo);
+            // resultInfo.put("dataverse_version_no","1.3");
+             dbgLog.fine("DVNversionNo="+DVNversionNo);
+             dbgLog.fine("dataverse_version_no="+resultInfo.get("dataverse_version_no"));
+           
             dbgLog.fine("wbDataFileName="+resultInfo.get("wbDataFileName"));
             dbgLog.fine("RwrkspFileName="+resultInfo.get("wrkspFileName"));
             
@@ -3355,7 +3372,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             resultInfo.put("dtId", dtId.toString());
             resultInfo.put("studyURL", studyURL);
             resultInfo.put("R_min_verion_no","2.7.0");
-            resultInfo.put("dataverse_version_no","1.3");
+            resultInfo.put("dataverse_version_no",DVNversionNo);
             
             dbgLog.fine("RwrkspFileName="+resultInfo.get("wrkspFileName"));
 
@@ -6046,7 +6063,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             resultInfo.put("dtId", dtId.toString());
             resultInfo.put("studyURL", studyURL);
             resultInfo.put("R_min_verion_no","2.7.0");
-            resultInfo.put("dataverse_version_no","1.3");
+            resultInfo.put("dataverse_version_no",DVNversionNo);
             
             dbgLog.fine("RwrkspFileName="+resultInfo.get("wrkspFileName"));
 

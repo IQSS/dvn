@@ -675,12 +675,12 @@ public void dispose() {
             try {
                 numberOfDownloads += studyService.getActivityCount(vdc.getId());
             } catch (Exception e) {
-                System.out.println("An exception occured in the StudyServiceBean. Probably there were no downloads for this vdc . . .");
+                // System.out.println("An exception occured in the StudyServiceBean. Probably there were no downloads for this vdc . . ."); //commented so as not to cause confusion in the server log
             }
             if (totalStudyDownloads == -1)
                 totalStudyDownloads = studyService.getTotalActivityCount();
         } catch (Exception e) {
-            System.out.println("An exception occured in the StudyServiceBean. Probably there were no downloads for the entire network.");
+            // System.out.println("An exception occured in the StudyServiceBean. Probably there were no downloads for the entire network."); //commented so as not to cause confusion in the server log
             totalStudyDownloads = 0;
         } finally {
             if (numberOfDownloads > 0 && totalStudyDownloads > 0) {

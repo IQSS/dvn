@@ -61,7 +61,7 @@
                                 <!-- h:commandButton value="Download Replication-ZIP File" action="{AnalysisResultsPage.getReplicationPack}" id="resultURLRworkspace" / -->
                                 <ice:outputResource id="replicationPack"
                                                     resource="#{AnalysisResultsPage.zipResourceDynFileName}" 
-                                                    mimeType="application/zip"
+                                                    mimeType="application/octet-stream"
                                                     value="Download Replication-ZIP File" 
                                                     fileName="#{AnalysisResultsPage.zipFileName}" 
                                                     type="button" 

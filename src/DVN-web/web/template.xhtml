@@ -15,7 +15,6 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
   <meta http-equiv="Content-Language" content="en"/>
   <meta http-equiv="imagetoolbar" content="no"/>
-  <link rel="stylesheet" type="text/css" href="/dvn/resources/jquery/tabs/flora.all.css"/>
   <link rel="stylesheet" type="text/css" href="/dvn/resources/icefaces/dvn_rime/dvn_rime.css"/>
   <link rel="stylesheet" type="text/css" href="/dvn/css/demo_template.css"/>
   <link rel="stylesheet" type="text/css" href="/dvn/css/auction_styles.css"/>
@@ -29,14 +28,10 @@
   <script type="text/javascript" src="/dvn/resources/sgbeal-togglepane.jquery.js"/>
   <script type="text/javascript" src="/dvn/resources/jcap.js"/>
   <script type="text/javascript" src="/dvn/resources/md5.js"/>
-  <script type="text/javascript" src="/dvn/resources/jquery/tabs/jquery.ui.core.js"/>
-  <script type="text/javascript" src="/dvn/resources/jquery/tabs/jquery.ui.tabs.js"/>
   <script type="text/javascript">
       // <![CDATA[
       jQuery.noConflict();
       jQuery(document).ready(function(){
-          jQuery("#editStudyTabSet > ul").tabs();
-          jQuery("#viewStudyTabSet > ul").tabs();
           jQuery("div.dvn_navblock").corner("10px bottom");
           jQuery("div.dvn_block, div.dvn_blockTitleBar, div.dvn_searchblock, div.successMessage, div.dvnInformationMessage, dvnSuccessMessage, div.vdcStudyFilesMessage"
             ).corner("10px");
@@ -95,6 +90,7 @@
         <gui:include src="views/Menubar.xhtml"/>
       </gui:insert>
       <gui:insert name="body">Default Body</gui:insert>
+      <div class="dvn_clear"></div>
     </div>
   </div>
   <gui:insert name="footer">

@@ -165,7 +165,7 @@
                            id="dataverseList"
                            rendered="#{not empty(dvItems.childItems) }"
                            rowClasses="evenRow oddRow"
-                           rows="10" width="100%"
+                           rows="10" width="100%" columnWidths="35%,35%,10%,10%,10%"
                            sortColumn="#{dvItems.sortColumnName}"
                            sortAscending="#{dvItems.ascending}"
                            styleClass="dvnHmpgGroupDataTable"
@@ -175,7 +175,7 @@
               <f:facet name="header">
 
               </f:facet>
-              <ice:column style="width: 35%;">
+              <ice:column>
                 <f:facet name="header">
                   <ice:commandSortHeader
                     columnName="#{dvItems.nameColumnName}"
@@ -194,7 +194,7 @@
                 </div>
               </ice:column>
               <!-- affiliation -->
-              <ice:column style="width: 35%;">
+              <ice:column>
                 <f:facet name="header">
                   <ice:commandSortHeader
                     columnName="#{dvItems.affiliationColumnName}"
@@ -206,7 +206,7 @@
               </ice:column>
 
               <!-- DateReleased  -->
-              <ice:column style="width: 10%;">
+              <ice:column>
                 <f:facet name="header">
                   <ice:commandSortHeader
                     columnName="#{dvItems.dateReleasedColumnName}"
@@ -218,7 +218,7 @@
               </ice:column>
 
               <!-- Last Update -->
-              <ice:column style="width: 10%;">
+              <ice:column>
                 <f:facet name="header">
                   <ice:commandSortHeader
                     columnName="#{dvItems.lastUpdatedColumnName}"
@@ -230,7 +230,7 @@
               </ice:column>
 
               <!-- Activity -->
-              <ice:column style="width: 10%;">
+              <ice:column styleClass="activityColumn">
                 <f:facet name="header">
                   <ice:commandSortHeader
                     columnName="#{dvItems.activityColumnName}"
@@ -239,11 +239,10 @@
                   </ice:commandSortHeader>
                 </f:facet>
                 <div class="activity">
-                  <div jsfc="ice:panelLayout" styleClass="#{items.activity}">
+                  <div jsfc="ice:panelGroup" styleClass="#{items.activity}">
                     <span class="numbervalue">0</span>
                   </div>
                 </div>
-
                 <!-- <ice:outputText value="#{items.activity}"/> -->
               </ice:column>
             </ice:dataTable>

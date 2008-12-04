@@ -717,8 +717,8 @@ a.dvnHmpgGroupCreateLink:hover, a.dvnHmpgGroupCreateLink:active {
 
 /* STUDYLISTING PAGE */
 .dvnStudyListWrapper {border: 1px solid #dcdddf;}
-.dvnStudyListCollectionNameBlock {padding: .5em .25em; border: 1px solid #dcdddf; border-width: 1px 1px 0 1px; text-align: right; overflow: hidden;}
-.dvnStudyListCollectionName {float: left; text-align: left;}
+.dvnStudyListCollectionNameBlock {padding: .5em .25em; border: 1px solid #dcdddf; border-width: 1px 1px 0 1px; text-align: right;}
+.dvnStudyListCollectionName {clear: left; text-align: left;}
 .dvnStudyListCollectionName span {font-size: 140% !important; font-weight: bold;}
 .dvnStudyListContributorBlock {padding-bottom: .25em;}
 a.dvnStudyListContributorLink:link, a.dvnStudyListContributorLink:visited,

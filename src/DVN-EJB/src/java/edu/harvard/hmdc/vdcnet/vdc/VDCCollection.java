@@ -88,7 +88,7 @@ public class VDCCollection implements java.io.Serializable {
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name = name != null ? name.trim() : null;
     }
 
     public String getDescription() {

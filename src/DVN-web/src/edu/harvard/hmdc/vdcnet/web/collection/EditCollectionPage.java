@@ -403,7 +403,7 @@ public class EditCollectionPage extends VDCBaseBean implements java.io.Serializa
         String collectionName = (String) value;
         
         for (VDCCollection subColl : parentColl.getSubCollections()) {
-            if ( !subColl.getId().equals(collId) && subColl.getName().equals( collectionName) ) {
+            if ( !subColl.getId().equals(collId) && subColl.getName().trim().equals( collectionName.trim() ) ) {
                 ((UIInput)toValidate).setValid(false);
                 FacesMessage message = new FacesMessage("This name is already in use (in this parent).");
                 context.addMessage(toValidate.getClientId(context), message);

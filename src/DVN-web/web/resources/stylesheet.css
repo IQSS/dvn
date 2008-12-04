@@ -55,8 +55,11 @@
 .dvn_floatR {
 	float: right;
 }
-.dvn_overflow{
+.dvn_overflow {
   overflow: hidden;
+}
+.dvn_clear {
+  clear: both;
 }
 .dvn_indent {
   margin-left: 2em;
@@ -703,6 +706,7 @@ a.dvnHmpgGroupCreateLink:hover, a.dvnHmpgGroupCreateLink:active {
     padding: 0 1em;
     border: 1px solid #dcdddf;
     text-align: center;
+    clear: both;
 }
 .dvnHmpgGroupTableWrap {
     margin-top: .25em;

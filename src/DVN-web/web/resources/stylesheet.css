@@ -18,6 +18,9 @@
     font-family: "HelveticaNeue", Helvetica, Arial, sans-serif !important;
     font-size: 12px !important;
     line-height: 18px !important;
+}
+
+.dvn_content span, .dvn_content p {
     background-color: transparent;
 }
 
@@ -25,7 +28,6 @@
     font-family: "HelveticaNeue", Helvetica, Arial, sans-serif !important;
     font-weight: bold !important;
     font-style: normal !important;
-    background-color: transparent;
 }
 
 .dvn_content a, .dvn_content a:link, .dvn_content a:visited, .dvn_content a:hover, .dvn_content a:active {

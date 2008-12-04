@@ -124,7 +124,7 @@ public class ManageDataversesPage extends VDCBaseBean implements Serializable {
             childItem.setId(vdcId);
             childItem.setCreationDate(vdc.getCreatedDate());
             childItem.setNumberOwnedStudies(new Integer(String.valueOf(getOwnedStudies(vdcId))));
-            childItem.setType(vdc.getDtype());
+            childItem.setType((vdc.isHarvestingDv()) ? "Harvesting" : vdc.getDtype());
             childItem.setCreatedBy(getCreatorName(vdc.getCreator().getId()));
             parentItem.addChildItem(childItem);
          }

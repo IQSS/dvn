@@ -25,7 +25,9 @@
                   dropdown = document.getElementById("form1:dummy_datatable:0:fileDataTable:catDropdown");
                   textField = (document.getElementById(checkbox.id)).nextSibling;
                   textField.value= dropdown.value;
-                  // checkbox.checked = false;
+                  textField.focus(); 
+                 // document.forms['form1'].elements[textFiled.id].select();
+                  // 
                   //alert("text value "+ textField.value);
               }
           }
@@ -39,6 +41,10 @@
                   if (checkboxes[i].id.indexOf("catCheckbox") != -1 && checkboxes[i].checked == true) {
                       textField = checkboxes[i].nextSibling;
                       textField.value = dropdown.value;
+                      textField.focus();
+                       
+                    
+                    
                   }
               }
           }
@@ -67,7 +73,7 @@
                   <!-- <ice:commandButton binding="#{AddFilesPage.inputFile}"/> -->
                 </ice:inputFile>
                 <ice:message for="inputFileComponent"/>
-                <ice:outputProgress rendered="#{AddFilesPage.progressRequested}"
+                <ice:outputProgress rendered="true"
                                     value="#{AddFilesPage.fileProgress}"/>
                 <ice:messages layout="table" globalOnly="false"
                               showDetail="true" showSummary="false"/>
@@ -98,7 +104,10 @@
                                           changing them may require corresponding changes in the Javascript  -->
                         <ice:selectBooleanCheckbox id="catCheckbox"  onclick="updateCategory(this);"/>
                         <ice:inputText id="catTextField" size="30" value="#{file.fileCategoryName}" partialSubmit="false"
-                                       onfocus="deselectCategory(this)"/>
+                                       onfocus="deselectCategory(this);"
+                                        valueChangeListener="#{AddFilesPage.addCategory}"
+                                      onblur="iceSubmitPartial(form,this,event);"/> 
+                                                                   
                       </ice:panelGroup>
                       <f:facet name="header" id="f1">
                         <ice:panelGroup id="catColPanelGroup" styleClass="dvnAddFilesTableCategory">
@@ -114,8 +123,10 @@
                         <ice:outputLabel value="File Name"/>
                       </f:facet>
                       <ice:inputText id="input_filename" size="30" value="#{file.studyFile.fileName}" required="true"
-                                     validator="#{AddFilesPage.validateFileName}" partialSubmit="false"/>
-                      <!-- <f:param name="fileName" value="#{file.studyFile.fileName}"/> -->
+                                     validator="#{AddFilesPage.validateFileName}" partialSubmit="false"
+                                     onchange="iceSubmitPartial(form,this,event);"/> 
+                                     <!-- "this.form.submit();"/>
+                      <f:param name="fileName" value="#{file.studyFile.fileName}"/> -->
                       <ice:message errorStyle="errorMessage" for="input_filename"/>
                     </ice:column>
                     <ice:column>
@@ -123,7 +134,9 @@
                         <ice:outputLabel value="Description"/>
                       </f:facet>
                       <ice:inputTextarea id="description_filename" rows="2"
-                                         value="#{file.studyFile.description}" partialSubmit="false"/>
+                                         value="#{file.studyFile.description}" partialSubmit="false"
+                                         onchange="iceSubmitPartial(form,this,event);"/> 
+                                         <!-- iceSubmitPartial(form,this,event);"/>-->
                     </ice:column>
                     <ice:column>
                       <f:facet name="header">
@@ -137,7 +150,7 @@
                       </f:facet>
                       <ice:commandLink
                         value="Remove"
-                        actionListener="#{AddFilesPage.removeUploadedFile}" immediate="true">
+                        actionListener="#{AddFilesPage.removeUploadedFile}">
                         <f:param name="fileName" value="#{file.studyFile.fileName}"/>
                       </ice:commandLink>
                     </ice:column>

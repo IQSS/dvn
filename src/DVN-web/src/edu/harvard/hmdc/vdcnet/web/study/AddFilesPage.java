@@ -64,6 +64,7 @@ import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.study.StudyFile;
 import edu.harvard.hmdc.vdcnet.study.TemplateFileCategory;
 import edu.harvard.hmdc.vdcnet.study.FileCategory;
+import javax.faces.event.ValueChangeEvent;
 import javax.servlet.http.HttpServletRequest;
 
 
@@ -177,7 +178,7 @@ public static final Log mLog = LogFactory.getLog(AddFilesPage.class);
      */
     public void uploadFile(ActionEvent event) {
         InputFile inputFile = (InputFile) event.getSource();
-      
+   
         this.inputFile = inputFile; 
         String str="";
 	if (inputFile.getStatus() != InputFile.SAVED){
@@ -193,7 +194,7 @@ public static final Log mLog = LogFactory.getLog(AddFilesPage.class);
             //return;
            }
           }
-                      
+                     
           
          currentFile = createStudyFile(inputFile);
          if(currentFile==null){
@@ -228,14 +229,14 @@ public static final Log mLog = LogFactory.getLog(AddFilesPage.class);
                 fileList.add(currentFile);   
            }  
     
-    try{
+        try{
         if (persistentFacesState !=null) persistentFacesState.executeAndRender();
      }catch(RenderingException ee){ 
          mLog.error(ee.getMessage()); } 
      
 
     }
-   
+    
       private StudyFileEditBean createStudyFile(InputFile inputFile){
         File file = inputFile.getFile();
       //  FileInfo info = inputFile.getFileInfo();
@@ -448,7 +449,8 @@ private boolean  hasFileName( StudyFileEditBean inputFileData, boolean remov){
      */
     public void existentFiles(String mess){
          objStudyFiles  = study.getStudyFiles();
-        if(objStudyFiles==null || objStudyFiles.size()<=0) return;
+        if(objStudyFiles==null || objStudyFiles.size()<=0) 
+            objStudyFiles = new ArrayList<StudyFile>();
            
         Iterator<StudyFile> itfl = objStudyFiles.iterator();
         Collection<String> studyFiles = new ArrayList<String>();
@@ -466,16 +468,15 @@ private boolean  hasFileName( StudyFileEditBean inputFileData, boolean remov){
          
     }
     /**
-     * Find the categories in the study for displaying in a dropdown menu
-     * @return Collection<SelectItem>
+     * Find the names of the categories that exists in the Study
+     * @return String array with the names of categories in the study
      */
-    public Collection<SelectItem> buildCategories(){
-        if(study==null || study.getFileCategories()==null)return fileCategories;
-        List<FileCategory> tfc =  study.getFileCategories(); 
+    private String[] studyCategories(){
+         List<FileCategory> tfc =  study.getFileCategories(); 
         mLog.debug("Files categories are "+ tfc.size());
         Collection<FileCategory> tfcuniq= new HashSet<FileCategory>(tfc);
         int ln = tfcuniq.size();
-        if(ln <=0) return fileCategories;
+        if(ln <=0) return null;
         Iterator<FileCategory> iter = tfcuniq.iterator();
         int cnt=0;
         //category names that are stored in the study
@@ -487,9 +488,19 @@ private boolean  hasFileName( StudyFileEditBean inputFileData, boolean remov){
             cnt++; 
         }
         Arrays.sort(catstudy);
+        return catstudy;
+    }
+    /**
+     * Find the categories in the study for displaying in a dropdown menu
+     * @return Collection<SelectItem>
+     */
+    public Collection<SelectItem> buildCategories(){
+        if(study==null || study.getFileCategories()==null)return fileCategories;
+       String [] catstudy =studyCategories();
+       if (catstudy==null) return fileCategories;
        //category names that are stored in drop down list of SelectItem      
        String catfiles[] = new String[fileCategories.size()];
-       cnt=0;
+       int cnt=0;
        for(SelectItem sel:fileCategories){
             String key = ((String) sel.getValue()).trim();
             catfiles[cnt]= key;
@@ -811,7 +822,10 @@ private boolean  hasFileName( StudyFileEditBean inputFileData, boolean remov){
     public void setFilesDataTable(HtmlDataTable hdt) {
         this.filesDataTable = hdt;
     }        
-    
+    /**
+     * 
+     * @return list of SelectItem to display in the AddFilesPage.xhtml 
+     */
    
      public Collection<SelectItem>  getFileCategories( ){
            mLog.debug("In getFileCategories");
@@ -874,9 +888,16 @@ private boolean  hasFileName( StudyFileEditBean inputFileData, boolean remov){
      public String getFileCategoryName(){
          return fileCategoryName;
      }
-     public void setFileCategoryName(String s){
-         mLog.debug("Category name..." +s);
-         fileCategoryName =s;
+     public void setFileCategoryName(String key){
+         mLog.debug("Category name..." +key);
+         fileCategoryName =key.trim();
+      
+        
      }
      
-     }
+     public void addCategory(ValueChangeEvent e){
+         currentFile.setFileCategoryName(((String) e.getNewValue()).trim());
+         currentFile.addFileToCategory(study);
+        
+           }
+}

@@ -200,7 +200,7 @@
 }
 .editDropDown li:hover ul,
 .editDropDown li.sfHover ul {
-    top: 1.3em;
+    top: 1.2em;
     left: 1em;
     border: 0;
 }
@@ -213,6 +213,7 @@
     white-space: nowrap;
 }
 .editDropDown ul a:hover {
+    margin: 0;
     background: khaki;
     color: #c55b28;
 }

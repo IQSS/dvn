@@ -113,6 +113,7 @@ create index studyfile_id_index on studyfile(id);
 create index studyfileactivity_id_index on studyfileactivity(id);
 create index studyfileactivity_studyfile_id_index on studyfileactivity(studyfile_id);
 
-
+-- update production for releasedate
+Update vdc set releasedate = createddate where releasedate IS null and restricted = false;
 
 commit;

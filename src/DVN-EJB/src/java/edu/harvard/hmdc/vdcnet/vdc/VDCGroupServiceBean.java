@@ -31,6 +31,7 @@
 
 package edu.harvard.hmdc.vdcnet.vdc;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import javax.ejb.EJB;
@@ -69,7 +70,7 @@ public class VDCGroupServiceBean implements VDCGroupServiceLocal {
         try {
             vdcgroup = (VDCGroup)em.createQuery(query).setParameter("fieldName", name).getSingleResult();
         } catch (NoResultException nre) {
-            System.out.println("no result for findByName " + name);
+            //System.out.println("no result for findByName " + name);
         }
         finally {
             return vdcgroup;
@@ -94,6 +95,8 @@ public class VDCGroupServiceBean implements VDCGroupServiceLocal {
         return vdcgroups;
     }
 
+    List<VDCGroup> allDescendants = new ArrayList();
+            
     @Remove
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void removeVdcGroup(VDCGroup vdcgroup) {
@@ -108,8 +111,52 @@ public class VDCGroupServiceBean implements VDCGroupServiceLocal {
                 iterator.remove();//remove the vdc from the group relationship
             } 
         }
+        List<VDCGroup> nodeDescendants = findByParentId(group.getId());
+        if (nodeDescendants != null) {
+            allDescendants.addAll(nodeDescendants);
+            System.out.println("VDCGroupServiceBean: descendants = " + allDescendants.toString());
+            buildDescendantsList(nodeDescendants);
+            Iterator innerIterator = allDescendants.iterator();
+            while (innerIterator.hasNext()) {
+                VDCGroup vdcGroup = (VDCGroup)innerIterator.next();
+                List vdcs = (List)vdcGroup.getVdcs();
+                Iterator vdcIterator = vdcs.iterator();
+                while (vdcIterator.hasNext()) {
+                    VDC vdc = (VDC)vdcIterator.next();
+                    if (vdc.getVdcGroups().contains(vdcGroup))
+                        vdc.getVdcGroups().remove(vdcGroup);
+                    vdcIterator.remove();//remove the vdc from the group relationship
+                }
+                em.remove(vdcGroup);
+            }
+        }
         em.remove(group);
     }
+
+    private void buildDescendantsList(List<VDCGroup> descendants) {
+        Iterator iterator = descendants.iterator();
+        while (iterator.hasNext()) {
+            VDCGroup group = (VDCGroup)iterator.next();
+            List<VDCGroup> nodeDescendants = findByParentId(group.getId());
+            if (nodeDescendants != null) {
+                allDescendants.addAll(nodeDescendants);
+                recurseAndBuildDescendantsList(nodeDescendants);
+            }
+        }
+    }
+
+    private void recurseAndBuildDescendantsList(List<VDCGroup> descendants) {
+          Iterator iterator = descendants.iterator();
+          while (iterator.hasNext()) {
+                VDCGroup group = (VDCGroup)iterator.next();
+                List<VDCGroup> nodeDescendants = findByParentId(group.getId());
+                if (nodeDescendants != null) {
+                    allDescendants.addAll(nodeDescendants);
+                    recurseAndBuildDescendantsList(nodeDescendants);
+                }
+          }
+    }
+    //END DEBUG
     
     public void create(VDCGroup vdcgroup) {
         em.persist(vdcgroup);

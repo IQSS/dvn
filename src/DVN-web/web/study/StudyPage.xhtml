@@ -136,7 +136,7 @@
           <div jsfc="ice:panelGroup" styleClass="dvnRoundCornerMsgBlock dvnInformationMessage" rendered="#{studyPage.studyUI.anyFileRestricted or !empty studyPage.studyUI.study.harvestHoldings and studyPage.studyUI.study.isHarvested}">
             <div jsfc="ice:panelGroup" rendered="#{!empty studyPage.studyUI.study.harvestHoldings and studyPage.studyUI.study.isHarvested}">
               <p>
-                Files for this study may also be accessed from their
+                <ice:outputText value="Files for this study may also be accessed from their "/>
                 <ice:outputLink value="#{studyPage.studyUI.study.harvestHoldings}">
                   <ice:outputText value="original source."/>
                 </ice:outputLink>

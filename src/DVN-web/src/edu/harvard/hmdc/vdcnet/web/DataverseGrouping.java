@@ -315,38 +315,6 @@ public class DataverseGrouping extends SortableList {
               }
     }
 
-    /**
-     * Recursive utility method to build a comma-separated string
-     * of the children of a parent. Used by the deleteClassificationsPage
-     * to delete all of the children when their parent grouping is deleted.
-     */
-    public String recurseAndBuildDescendantsList() {
-        String descendants = new String("");
-        if (childItems != null && childItems.size() > 0) {
-            Iterator iterator = childItems.iterator();
-            while(iterator.hasNext()) {
-                DataverseGrouping childitem = (DataverseGrouping)iterator.next();
-                descendants += recurseAndBuildDescendantsList(childitem);
-            }
-        }
-        return descendants;
-    }
-
-    private String recurseAndBuildDescendantsList(DataverseGrouping childItem) {
-          String descendants = new String("");
-          Iterator iterator = parentItems.iterator();
-          while (iterator.hasNext()) {
-              DataverseGrouping item = (DataverseGrouping)iterator.next();
-              if (item.parentClassification.equals(childItem.id)) {
-                  descendants += "," + item.getId();
-                  if (item.childItems.size() >= 1)
-                    recurseAndContractNodeAction(item);
-              }
-          }
-          return descendants;
-    }
-    //END RECURSIVE NODE ACTIONS
-
 
     // ************  SORTING **************
 

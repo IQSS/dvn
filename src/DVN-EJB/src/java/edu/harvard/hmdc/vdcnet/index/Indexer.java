@@ -638,10 +638,9 @@ public class Indexer implements java.io.Serializable  {
             }
             logger.info("Start searcher: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             hits = searcher.search(query); 
-            logger.info("done searcher: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+            logger.info("done searcher: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND) + "hits: "+hits.length());
             logger.info("Start iterate: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             for (int i = 0; i < hits.length(); i++) {
-                System.out.println("Score: "+hits.score(i));
                 documents.add(hits.doc(i));
             }
             logger.info("done iterate: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
@@ -659,10 +658,9 @@ public class Indexer implements java.io.Serializable  {
             }
             logger.info("Start searcher: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             hits = searcher.search(query); 
-            logger.info("done searcher: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+            logger.info("done searcher: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND) + "hits: "+hits.length());
             logger.info("Start iterate: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             for (int i = 0; i < hits.length(); i++) {
-                System.out.println("Score: "+hits.score(i));
                 documents.add(hits.doc(i));
             }
             logger.info("done iterate: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));

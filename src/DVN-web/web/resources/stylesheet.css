@@ -869,15 +869,20 @@ div.vdcStudyFilesMessage a:link, div.vdcStudyFilesMessage a:visited, div.vdcStud
    border-bottom-style: solid;
    border-bottom-width: 1px;
    padding: 2px 0;
-   overflow: hidden;
+   height: 1.5em;
 }
 
+.vdcStudyFilesCatLabel input.iceSelBoolChkbx, .vdcStudyFilesCatLabel input.iceSelBoolChkbx-dis {
+    margin: 0 .5em 0 0;
+    padding: 0;
+    vertical-align: middle;
+}
+.vdcStudyFilesCatLabel span.iceOutTxt {display: inline;}
+
 .vdcStudyFilesCatLabel {
-   float: left;
    font-weight: bold;
    padding-left: 22px;
    padding-right: 8px;
-   vertical-align: middle;
 }
 
 .TogglePaneFancyHeader {
@@ -907,13 +912,15 @@ a.vdcTruncatorLinkLess:link, a.vdcTruncatorLinkLess:hover, a.vdcTruncatorLinkLes
 }
 
 /* STUDY FILES PAGE */
+.vdcStudyFileTableWrap {}
+.vdcStudyFileTableWrap table.iceDatTbl, .vdcStudyFileTableWrap table.icePnlGrd {margin: 0; padding: 0;}
 .vdcStudyFileCheckBox, .vdcStudyFileSpacer {vertical-align: top; width: 24px;}
 .vdcStudyFileInfo, .vdcStudyFileSubsetting {vertical-align: top; width: 40%;}
 .vdcStudyFileDownload, .vdcStudyFileAnalysis {vertical-align: top; width: 150px;}
 .vdcStudyFileDesc, .vdcStudyFileCitation {vertical-align: top; width: 35%;}
 
-.vdcStudyFileRowFileInfo {padding: 0 .25em;}
-.vdcStudyFileRowFileThumb {padding: .25em;}
+.vdcStudyFileRowFileInfo {overflow: hidden; padding: 0 .25em;}
+.vdcStudyFileRowFileThumb {float: left; padding: .25em;}
 .vdcStudyFileRowFileName {}
 span.vdcStudyFileRowFileDetails {font-size: 90% !important; color: darkgray;  white-space: nowrap;}
 .vdcStudyFileRowFileDownload {padding: .25em 0;}

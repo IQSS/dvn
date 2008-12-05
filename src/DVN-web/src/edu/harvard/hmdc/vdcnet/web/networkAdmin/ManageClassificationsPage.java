@@ -33,7 +33,7 @@ package edu.harvard.hmdc.vdcnet.web.networkAdmin;
 import com.icesoft.faces.component.ext.HtmlDataTable;
 import com.icesoft.faces.component.ext.HtmlGraphicImage;
 import com.icesoft.faces.component.ext.HtmlMessages;
-import edu.harvard.hmdc.vdcnet.study.StudyDownload;
+import com.icesoft.faces.component.ext.HtmlOutputText;
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
 import edu.harvard.hmdc.vdcnet.util.DateUtils;
 import edu.harvard.hmdc.vdcnet.vdc.*;
@@ -43,32 +43,32 @@ import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import javax.ejb.EJB;
+import javax.faces.application.NavigationHandler;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
 
 public class ManageClassificationsPage extends VDCBaseBean implements Serializable {
     @EJB StudyServiceLocal studyService;
     @EJB VDCGroupServiceLocal vdcGroupService;
     @EJB VDCServiceLocal vdcService;
 
-     private Long cid;
-
-     private boolean result;
-     private String statusMessage;
-     private String SUCCESS_MESSAGE   = new String("Success. The classifications and dataverses operation completed successfully.");
-     private String FAIL_MESSAGE      = new String("Problems occurred during the form submission. Please see error messages below.");
-     private HtmlMessages      iceMessage = new HtmlMessages();
-
-    private boolean isInit;
-    private int itemBeansSize = 0; //used to output the number of classifications
+    private Long cid;
+    private int itemBeansSize       = 0; //used to output the number of classifications
     private int classificationsSize = 0;
-    private DataverseGrouping parentItem = null;
-    private DataverseGrouping childItem  = null;
-    private final ArrayList itemBeans    = new ArrayList();
+
+    private boolean result;
+    private String statusMessage;
+    private String SUCCESS_MESSAGE   = new String("Success. The classifications and dataverses operation completed successfully.");
+    private String FAIL_MESSAGE      = new String("Problems occurred during the form submission. Please see error messages below.");
+     
+    private boolean isInit;
+    
+    private final ArrayList itemBeans = new ArrayList();
 
     public String CHILD_ROW_STYLE_CLASS;
     public static final String GROUP_INDENT_STYLE_CLASS = "GROUP_INDENT_STYLE_CLASS";
@@ -77,7 +77,12 @@ public class ManageClassificationsPage extends VDCBaseBean implements Serializab
     public static final String CONTRACT_IMAGE           = "tree_nav_top_close_no_siblings.gif";
     public static final String EXPAND_IMAGE             = "tree_nav_top_open_no_siblings.gif";
 
-    private HtmlDataTable mainTable = new HtmlDataTable();
+    private HtmlDataTable mainTable   = new HtmlDataTable();
+    private HtmlMessages   iceMessage = new HtmlMessages();
+    private HtmlOutputText linkDelete = new HtmlOutputText();
+
+    private DataverseGrouping parentItem = null;
+    private DataverseGrouping childItem  = null;
 
     public ManageClassificationsPage() {
         //init();

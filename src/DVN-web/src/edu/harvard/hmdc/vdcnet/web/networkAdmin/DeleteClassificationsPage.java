@@ -155,7 +155,12 @@ public class DeleteClassificationsPage extends VDCBaseBean implements Serializab
         return cid;
     }
 
-
+    private String getFriendlyLinkName() {
+        if (result.indexOf("ManageClassificationsPage") != -1)
+            return "Manage Classifications Page";
+        else
+            return "";
+    }
 
     //setters
 
@@ -194,13 +199,5 @@ public class DeleteClassificationsPage extends VDCBaseBean implements Serializab
     public void setResultLink(String resultLink) {
         this.resultLink = resultLink;
     }
-
-    private String getFriendlyLinkName() {
-        if (result.indexOf("ManageClassificationsPage") != -1)
-            return "Manage Classifications Page";
-        else
-            return "";
-    }
-
 
 }

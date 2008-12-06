@@ -768,6 +768,11 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             
             // uncheck-variable-error message 
             resetMsgVariableSelection();
+            
+            // hide the download button and
+            // show the create button
+            dwnldButton.setRendered(true);
+            dwnloadSubsetButton.setRendered(false);
         }        
         
         dbgLog.fine("***** within processTabChange: end *****");
@@ -6781,6 +6786,11 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
         // clear the error message if it still exists
         resetMsgVariableSelection();
+        
+        // hide the download button and
+        // show the create button
+        dwnldButton.setRendered(true);
+        dwnloadSubsetButton.setRendered(false);
 
         // check the displayed rows
         int firstRow = data.getFirst();
@@ -7097,8 +7107,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         }
         // hide the download button and
         // show the create button
-                    dwnldButton.setRendered(true);
-                    dwnloadSubsetButton.setRendered(false);
+        dwnldButton.setRendered(true);
+        dwnloadSubsetButton.setRendered(false);
         
         // Checkes the number of the currently selected variables and 
         // if positive, enable command buttons; disable them otherwise

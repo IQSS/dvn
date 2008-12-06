@@ -266,6 +266,7 @@
                         binding="#{AnalysisPage.dwnldButton}" 
                         type="submit" 
                         disabled="true" 
+                        onclick="disableThis(this);"
                         style="margin-top:10px"
                         value="#{bundleAnalysis['dwnld.button.submit']}" 
                         action="#{AnalysisPage.dwnldAction}" >
@@ -1542,6 +1543,12 @@ function shwNshwTxt(id) {
     srcEl.style.display = "none";
   }
 }
+
+// disable this element onclick
+function disableThis(el) {
+    el.disabled = "disabled";
+}
+
 
        // ]]>    
   </script>

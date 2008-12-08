@@ -1745,6 +1745,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
                     for (Iterator elc = catStat.iterator(); elc.hasNext();) {
                         VariableCategory dvcat = (VariableCategory) elc.next();
+                        if ((dvcat.getValue().equals(".")) && (dvcat.getFrequency() == 0)){
+                            continue;
+                        }
                         List<Object> rw = new ArrayList<Object>();
 
                         // 0th: Drop
@@ -2232,13 +2235,19 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     public boolean isDuplicatedVariableName(String newVarName) {
         boolean rtvl = false;
         // against the set of the existing variable names
-        for (Iterator el = dataVariables.iterator(); el.hasNext();) {
-            DataVariable dv = (DataVariable) el.next();
-            if (dv.getName().equals(newVarName)) {
-                rtvl = true;
-                break;
+        if (recodeVarNameSet.contains(newVarName)){
+            rtvl = true;
+            
+        } else {
+            for (Iterator el = dataVariables.iterator(); el.hasNext();) {
+                DataVariable dv = (DataVariable) el.next();
+                if (dv.getName().equals(newVarName)) {
+                    rtvl = true;
+                    break;
+                }
             }
         }
+
         return rtvl;
     }
 

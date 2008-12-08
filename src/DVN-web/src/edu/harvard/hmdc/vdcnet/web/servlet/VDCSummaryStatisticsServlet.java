@@ -258,6 +258,9 @@ public class VDCSummaryStatisticsServlet extends HttpServlet {
 
             for (Iterator elc = catStat.iterator(); elc.hasNext();) {
                 VariableCategory dvcat = (VariableCategory) elc.next();
+                if ((dvcat.getValue().equals(".")) && (dvcat.getFrequency() == 0)){
+                    continue;
+                }                
                 // key:statistic-type, value: its freq
 
                 StringBuilder sb = new StringBuilder();
@@ -302,6 +305,10 @@ public class VDCSummaryStatisticsServlet extends HttpServlet {
             Map<String, String> catStatSet = new LinkedHashMap<String, String>();
             for (Iterator elc = catStat.iterator(); elc.hasNext();) {
                 VariableCategory dvcat = (VariableCategory) elc.next();
+                
+                if ((dvcat.getValue().equals(".")) && (dvcat.getFrequency() == 0)){
+                       continue;
+                }
                 // key:statistic-type, value: its freq
                 StringBuilder sb = new StringBuilder();
                 sb.append(dvcat.getValue());

@@ -1179,11 +1179,18 @@ public class DvnRJobRequest {
                     //dbgLog.fine("recpooli: value foreach loop: size\n"+recpooli.getValue().size());
                     
                     if (variableTypes[j] > 0){
-                        
-                        recode2ndLine     =  vn + "[" + StringUtils.join(recpooli.getValue()," |" ) + "] <- " + recpooli.getKey() + "\n";
+                        dbgLog.fine("numeric var: key="+recpooli.getKey());
+                        if (recpooli.getKey().equals(".")){
+                            recode2ndLine =  vn + "[" + StringUtils.join(recpooli.getValue()," |" ) + "] <- " + " NA " + "\n";
+                        } else {
+                            recode2ndLine =  vn + "[" + StringUtils.join(recpooli.getValue()," |" ) + "] <- " + recpooli.getKey() + "\n";
+                        }
                     } else {
+                        dbgLog.fine("char var: key="+recpooli.getKey());
                         if (recpooli.getKey().equals("NA")){
                             recode2ndLine =  vn + "[" + StringUtils.join(recpooli.getValue()," |" ) + "] <- " + recpooli.getKey() + "\n";
+                        } else if (recpooli.getKey().equals(".")){
+                            recode2ndLine =  vn + "[" + StringUtils.join(recpooli.getValue()," |" ) + "] <- " + " NA " + "\n";
                         } else {
                             recode2ndLine =  vn + "[" + StringUtils.join(recpooli.getValue()," |" ) + "] <- '"+ recpooli.getKey() + "'\n";
                         }
@@ -1405,27 +1412,50 @@ public class DvnRJobRequest {
             if (   (rangeSet.get(i).get(1).equals(rangeSet.get(i).get(3))) 
                 && (rangeSet.get(i).get(0).equals("3"))
                 && (rangeSet.get(i).get(2).equals("4")) ) {
-
+                dbgLog.fine("point case");
                 // point type
                 if (vtype > 0){
-                    condition.append("(" +  variableName + " == " +  rangeSet.get(i).get(1) + ")");
+                    if (rangeSet.get(i).get(1).equals(".")){
+                        condition.append("(is.na(" +  variableName  + "))");
+                        dbgLog.fine("missing value case:numeric var");
+                    } else {
+                        condition.append("(" +  variableName + " == " +  rangeSet.get(i).get(1) + ")");
+                    }
                 } else {
-                    condition.append("(" +  variableName + " == '" +  rangeSet.get(i).get(1) + "')") ;
+                    if (rangeSet.get(i).get(1).equals(".")){
+                        dbgLog.fine("missing value case: char var");
+                        condition.append("(is.na(" +  variableName  + "))");
+                    } else {
+                        condition.append("(" +  variableName + " == '" +  rangeSet.get(i).get(1) + "')") ;
+                    }
                 }
-                
-                if (type.equals("d")){
-                    condition.insert(0, " !");
-                } else {
-                    condition.insert(0, " ");
-                }
+
+                    if (type.equals("d")){
+                        condition.insert(0, " !");
+                    } else {
+                        condition.insert(0, " ");
+                    }                    
                 dbgLog.fine(i + "-th condition point:" + condition.toString());
 
             } else if (rangeSet.get(i).get(0).equals("2")) {
+                dbgLog.fine("point-negation case");
                 // point negation
                 if (vtype > 0){
+                    
+                    if (rangeSet.get(i).get(1).equals(".")){
+                        condition.append("(! is.na(" +  variableName  + "))");
+                        dbgLog.fine("missing value case:numeric var");
+                        
+                    } else {
                     condition.append( "("  +  variableName + " != " + rangeSet.get(i).get(1) + ")" );
+                    }
                 } else {
+                    if (rangeSet.get(i).get(1).equals(".")){
+                        dbgLog.fine("missing value case: char var");
+                        condition.append("(! is.na(" +  variableName  + "))");
+                    } else {
                     condition.append( "("  +  variableName + " != '"+ rangeSet.get(i).get(1) + "')" );
+                    }
                 }
 
                 if (type.equals("d")){

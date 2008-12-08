@@ -206,7 +206,7 @@ createvalindex <-function(dtfrm, attrname=NULL){
 
 frqtbl.ctn<-function(x){
     frqtbl<-list()
-    tbl1<-table(x, exclude=NULL)
+    tbl1<-table(x, useNA='ifany')
     frqtbl[['Mode']]<-NA
     if (length(x) > length(tbl1)) {
         frqtbl[['Mode']]<- names(tbl1)[which.max(tbl1)]
@@ -219,7 +219,7 @@ frqtbl.dsc<-function(x){
     DBG<-FALSE
         
         # ftbl: frequency table
-        ftbl<-table(x, exclude=NULL)
+        ftbl<-table(x, useNA='ifany')
             
         # get the mode
         frqtbl[['Mode']]<-NA
@@ -1057,7 +1057,7 @@ sumStatTabAll.DDI<-function(dtfrm, file="", flid=1, jobNo=0, startno=1, novars=0
             }
 
             
-            tbl1<-table(tmpvari, exclude=NULL)
+            tbl1<-table(tmpvari, useNA='ifany')
 
             N<-sum(complete.cases(tmpvari))
 

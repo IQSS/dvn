@@ -371,42 +371,46 @@ td.dvnPaginatorWrap table.dvnPaginatorRight {}
 .infoMessage {
   color: black;
 }
-
-.dvnInformationMessage {
+div.dvnInformationMsgWrap {
+    display: table-cell;
+    vertical-align: middle;
+    min-height: 8em;
+}
+div.dvnInformationMessage {
   max-width: 900px;
   width: 80%; margin: 0 auto 1em auto; padding: 4px; min-height: 40px;
-  background: url(icon_information.png) #bfdcf1 4px 4px no-repeat;
+  background: url(icon_information.png) #bfdcf1 4px no-repeat;
 }
-.dvnInformationMessage p:first-child {padding-top: 0; margin-top: 0;}
-.dvnInformationMessage p {
+/* .dvnInformationMessage p:first-child {padding-top: 0; margin-top: 0;} */
+div.dvnInformationMessage p {
   margin-left: 48px;
   background: transparent;
 }
 
-.dvnSuccessMessage {
+div.dvnSuccessMessage {
   max-width: 900px;
   width: 80%; margin: 0 auto 1em auto; padding: 4px; min-height: 40px;
   background: url(icon_success.png) #cee6bb 4px 4px no-repeat;
 }
-.dvnSuccessMessage p:first-child {padding-top: 0; margin-top: 0;}
-.dvnSuccessMessage p {
+/* div.dvnSuccessMessage p:first-child {padding-top: 0; margin-top: 0;} */
+div.dvnSuccessMessage p {
   margin-left: 48px;
   background: transparent;
 }
-.dvnSuccessMessage ul, .dvnSuccessMessage div {
+div.dvnSuccessMessage ul, div.dvnSuccessMessage div {
   margin-left: 48px;
   padding-left: 0;
   list-style: none;
   background: transparent;
 }
-.dvnSuccessMessage li, .dvnSuccessMessage div span {
+div.dvnSuccessMessage li, div.dvnSuccessMessage div span {
   margin: 0;
   padding: 0;
   font-weight: bold;
   color: #299a0b;
   background: transparent;
 }
-.dvnSuccessMessage .successMessage {
+div.dvnSuccessMessage .successMessage {
    background: transparent;
    color: #299a0b;
    display: inline;
@@ -580,7 +584,7 @@ a.dvn_more:link, a.dvn_more:visited, a.dvn_more:hover, a.dvn_more:active{
     text-decoration: none;
 }
 
-.vdcTooltipContents {
+p.vdcTooltipContents {
     display: block;
     height: 100%;
     border: 1px solid #cccccc;

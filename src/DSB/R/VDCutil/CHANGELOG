@@ -11,3 +11,4 @@
 1.14 -- code clean-up in compliance with R 2.6.0 
 1.15 -- bug-fix of VDCgenAnalysis()
 1.16 -- bug-fix: setx2Args and new Zelig GUI Schema location
+1.17 -- bug-fix: plot.grob, summary.vglm 

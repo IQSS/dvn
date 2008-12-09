@@ -1,6 +1,8 @@
 import(R2HTML)
 import(Zelig)
 import(accuracy)
+importFrom(grid, grid.draw)
+importFrom(VGAM, summaryvglm)
 export(hplot)
 export(VDCgenAnalysis)
 export(printZeligSchemaInstance)

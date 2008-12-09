@@ -29,6 +29,9 @@
   <script type="text/javascript" src="/dvn/resources/jcap.js"/>
   <script type="text/javascript" src="/dvn/resources/md5.js"/>
   <script type="text/javascript">
+      // #{pageTitle} - MAGIC!
+  </script>
+  <script type="text/javascript">
       // <![CDATA[
       jQuery.noConflict();
       jQuery(document).ready(function(){
@@ -84,7 +87,7 @@
  <div class="dvn_wrapper" id="dvn_wrapper">
     <div class="dvn_content" id="content-frame">
       <!-- required to fix a bug in firefox where the connection status box can be displayed erroneously -->
-      <ice:outputConnectionStatus/>
+      <ice:outputConnectionStatus showPopupOnDisconnect="true"/>
       <gui:insert name="title">
         <!-- *** MENUBAR (Included from template) *** -->
         <gui:include src="views/Menubar.xhtml"/>

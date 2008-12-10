@@ -1321,7 +1321,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             resultInfo.put("studyNo", studyId.toString());
             resultInfo.put("dtId", dtId.toString());
             resultInfo.put("studyURL", studyURL);
-            resultInfo.put("R_min_verion_no","2.7.0");
+            resultInfo.put("R_min_verion_no",resultInfo.get("Rversion").substring(2));
 //            DVNversionNo = dvnVersionService.getLatestVersion().getVersionNumber() +
 //                "." + dvnVersionService.getLatestVersion().getBuildNumber();
             
@@ -2235,19 +2235,13 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     public boolean isDuplicatedVariableName(String newVarName) {
         boolean rtvl = false;
         // against the set of the existing variable names
-        if (recodeVarNameSet.contains(newVarName)){
-            rtvl = true;
-            
-        } else {
-            for (Iterator el = dataVariables.iterator(); el.hasNext();) {
-                DataVariable dv = (DataVariable) el.next();
-                if (dv.getName().equals(newVarName)) {
-                    rtvl = true;
-                    break;
-                }
+        for (Iterator el = dataVariables.iterator(); el.hasNext();) {
+            DataVariable dv = (DataVariable) el.next();
+            if (dv.getName().equals(newVarName)) {
+                rtvl = true;
+                break;
             }
         }
-
         return rtvl;
     }
 
@@ -3385,7 +3379,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             resultInfo.put("studyNo", studyId.toString());
             resultInfo.put("dtId", dtId.toString());
             resultInfo.put("studyURL", studyURL);
-            resultInfo.put("R_min_verion_no","2.7.0");
+            resultInfo.put("R_min_verion_no",resultInfo.get("Rversion").substring(2));
             resultInfo.put("dataverse_version_no",DVNversionNo);
             
             dbgLog.fine("RwrkspFileName="+resultInfo.get("wrkspFileName"));
@@ -6076,7 +6070,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             resultInfo.put("studyNo", studyId.toString());
             resultInfo.put("dtId", dtId.toString());
             resultInfo.put("studyURL", studyURL);
-            resultInfo.put("R_min_verion_no","2.7.0");
+            resultInfo.put("R_min_verion_no",resultInfo.get("Rversion").substring(2));
             resultInfo.put("dataverse_version_no",DVNversionNo);
             
             dbgLog.fine("RwrkspFileName="+resultInfo.get("wrkspFileName"));

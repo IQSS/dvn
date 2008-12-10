@@ -32,7 +32,7 @@ public class DvnReplicationREADMEFileWriter {
     
     public static String pt1Template = 
     "_How to Replicate Analysis_\n\n"+
-    "1.  If you do not already have R (version ${R_min_verion_no} or later) installed on your \n" +
+    "1.  If you do not already have R (${R_min_verion_no} or later) installed on your \n" +
     "    computer, install it from:\n\n" +
     "    http://cran.r-project.org\n\n"+
     "    Note: Some analyses require additional modules, the replication file \n" +
@@ -112,6 +112,7 @@ public class DvnReplicationREADMEFileWriter {
         "        PID=>${PID}\n"+
         "        Date=>${RexecDate}\n"+
         "        Host=>${dsbHost}\n"+
+        "        R_version=>${R_min_verion_no}\n"+
         "        Title=>${studyTitle}\n"+
         "        No=>${studyNo}\n"+
         "        URL=>${studyURL}\n"+

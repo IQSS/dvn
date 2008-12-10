@@ -76,7 +76,7 @@
                 <ice:outputText id="listMessageSuffix" value="#{StudyListingPage.listMessageSuffix}"/>
               </div> -->
               <div jsfc="ice:panelGroup" styleClass="dvnStudyListCollectionNameBlock">
-                <div jsfc="ice:panelGroup" id="beContributor" styleClass="dvnStudyListContributorBlock" rendered="#{HomePage.showRequestContributor}">
+                <div jsfc="ice:panelGroup" id="beContributor" styleClass="dvnStudyListContributorBlock" rendered="#{StudyListingPage.showRequestContributor}">
                   <ice:outputLink styleClass="dvnStudyListContributorLink" value="/dvn/dv/#{VDCRequest.currentVDC.alias}/faces/login/ContributorRequestInfoPage.xhtml">
                     <ice:outputText value="Become a Contributor" escape="false"/>
                   </ice:outputLink>

@@ -278,6 +278,7 @@
                 <div class="dvnCollectionTreeControls">
                   <a id="dvnTreeOpen" name="open">Expand &#187;</a> <a id="dvnTreeClose" name="close">&#171; Close</a>
                 </div>
+                <ice:outputText value="Visible Nodes: #{StudyListingPage.collectionTreeVisibleNodeCount * .75}" />
                 <ice:tree id="collectionTree"
                           value="#{StudyListingPage.collectionTree}"
                           var="item"

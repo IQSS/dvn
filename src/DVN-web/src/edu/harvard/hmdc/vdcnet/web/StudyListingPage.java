@@ -29,6 +29,7 @@
 package edu.harvard.hmdc.vdcnet.web;
 
 import com.icesoft.faces.component.datapaginator.DataPaginator;
+import com.icesoft.faces.component.tree.IceUserObject;
 import edu.harvard.hmdc.vdcnet.admin.NetworkRoleServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.RoleServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.UserGroup;
@@ -51,6 +52,7 @@ import edu.harvard.hmdc.vdcnet.web.site.VDCUI;
 import edu.harvard.hmdc.vdcnet.web.study.StudyUI;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -60,6 +62,7 @@ import java.util.ResourceBundle;
 import javax.ejb.EJB;
 import javax.faces.component.UIData;
 import javax.faces.event.ValueChangeEvent;
+import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
 /**
@@ -784,5 +787,29 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
         }
 
         return null;
+    }
+
+    public int getCollectionTreeVisibleNodeCount() {
+        int visibleNodeCount = 0;
+        if (renderTree) {
+            DefaultMutableTreeNode rootNode = (DefaultMutableTreeNode) collectionTree.getRoot();
+            visibleNodeCount = countVisibleNodes(rootNode) - 1; // subtract 1 to remove the hidden root from the count
+        }
+
+        return visibleNodeCount;
+    }
+
+    private int countVisibleNodes(DefaultMutableTreeNode node) {
+        int count = 1;
+
+        if ( ((IceUserObject) node.getUserObject()).isExpanded()) {
+            Enumeration childrenEnum = node.children();
+            while (childrenEnum.hasMoreElements()) {
+                DefaultMutableTreeNode childNode = (DefaultMutableTreeNode) childrenEnum.nextElement();
+                count += countVisibleNodes(childNode);
+            }
+        }
+
+        return count;
     }
 }

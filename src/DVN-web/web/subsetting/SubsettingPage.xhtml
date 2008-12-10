@@ -143,6 +143,21 @@
                 alert("The browser failed to get summary statistics from the server.\n"+
                       "Please make sure of your internet connection and try again later");
             }
+
+            function editVariables() {
+                var varList = document.getElementById("form1:tabSet1:0:mListboxDwnld");
+                var dvFilter = "";
+                
+                for (var i=0; i < varList.options.length; i++) {
+                    if (dvFilter == "") {
+                        dvFilter = "&dvFilter=" + varList.options[i].value;
+                    } else {
+                        dvFilter += "," + varList.options[i].value;
+                    }
+                }
+                
+                window.location.href="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditVariablePage.xhtml?dtId=#{AnalysisPage.dtId}" + dvFilter;
+            }
        // ]]>      
         </script>
      
@@ -290,11 +305,9 @@
             columns="1"
             rendered="#{AnalysisPage.editVariableActionRendered}" 
             style="padding-top:10px; padding-bottom:10px;">
-            <ice:commandLink id="linkAction5" 
-                action="#{AnalysisPage.gotoEditVariableAction}">
-                    <ice:outputText id="linkAction5Text" 
-                        value="Edit selected variables"/>   
-            </ice:commandLink>
+            <ice:outputLink value="javascript:editVariables()">
+                <ice:outputText  value="Edit selected variables"/>
+            </ice:outputLink>
             <ice:outputText id="linkAction5HelpText" 
                 styleClass="vdcHelpText" 
                 value="(If no variables are selected, all variables will be displayed in Edit Variables page.)"/>

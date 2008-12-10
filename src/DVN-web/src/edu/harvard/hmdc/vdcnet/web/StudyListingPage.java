@@ -46,6 +46,7 @@ import edu.harvard.hmdc.vdcnet.vdc.VDCCollection;
 import edu.harvard.hmdc.vdcnet.vdc.VDCCollectionServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
 import edu.harvard.hmdc.vdcnet.web.collection.CollectionUI;
+import edu.harvard.hmdc.vdcnet.web.common.LoginBean;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
 import edu.harvard.hmdc.vdcnet.web.component.VDCCollectionTree;
 import edu.harvard.hmdc.vdcnet.web.site.VDCUI;
@@ -811,5 +812,14 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
         }
 
         return count;
+    }
+
+    public boolean isShowRequestContributor() {
+         LoginBean loginBean = getVDCSessionBean().getLoginBean();
+
+         return  getVDCRequestBean().getCurrentVDC() != null &&
+                 getVDCRequestBean().getCurrentVDC().isAllowContributorRequests() &&
+                 (loginBean == null || (loginBean != null && loginBean.isBasicUser() ) );
+
     }
 }

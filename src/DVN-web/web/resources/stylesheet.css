@@ -249,18 +249,18 @@ span.disabled {font-weight: bold;}
 .iceTreeRow a span.iceOutTxt {font-size: 90% !important;}
 .iceTreeRow .icePnlGrp {display: inline;}
 
-.dvnCollectionTreeBlock {
+.dvnTreeBlock {
   width: 100%;
   padding: .25em;
   border: 1px solid #DCDDDF;
   position: relative;
 }
-.dvnCollectionTreeControls {padding: 0 .25em; overflow: hidden;}
+.dvnTreeControls {padding: 0 .25em; overflow: hidden;}
 #dvnTreeOpen {font-size: 90% !important; float: left; cursor: pointer;}
 #dvnTreeClose {font-size: 90% !important; float: right; cursor: pointer;}
 
-.dvnTreeExpirement {width: 100%; background-color: white; overflow: hidden;}
-.dvnTreeExpirement div.iceTree {overflow-x: hidden; overflow-y: hidden; clear: both; width: 100%; padding-bottom: 2em;}
+.dvnTreeContainer {width: 100%; background-color: white; overflow: hidden;}
+.dvnTreeContainer div.iceTree {overflow-x: hidden; overflow-y: hidden; clear: both; width: 100%; padding-bottom: 1.75em;}
 
 /* HEADER */
 .dvn_headerTitle {position: relative;}

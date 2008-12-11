@@ -71,16 +71,20 @@
                   <ice:inputText id="inputFriendlyGroupName" size="40" value="#{EditUserGroupPage.group.friendlyName}" required="true" requiredMessage="This field is required." onkeypress="if (window.event) return processEvent('', 'form1:btnSave'); else return processEvent(event, 'form1:btnSave');"/>
                   <ice:message styleClass="errorMessage" for="inputFriendlyGroupName"/>
                 </div>
+
               </ice:panelGrid>
-              <br/>
-              <!--TBD (wjb) What type of group is this -->
-              <div jsfc="ice:panelGroup">
-                <ice:selectOneRadio rendered="#{EditUserGroupPage.userGroupType == 'none' and param.userGroupId == null}" onclick="setUserGroupType(this);document.forms[0].submit();" value="#{EditUserGroupPage.userGroupType}">
+                  <div jsfc="ice:panelGroup" rendered="#{EditUserGroupPage.userGroupType == 'none' and param.userGroupId == null}">
+                <ice:selectOneRadio id="userGroupType"  required="true"  requiredMessage="This field is required." onclick="setUserGroupType(this);document.forms[0].submit();" value="#{EditUserGroupPage.userGroupType}">
                   <f:selectItems value="#{EditUserGroupPage.userGroupTypes}"/>
                 </ice:selectOneRadio>
+                <ice:message styleClass="errorMessage" for="userGroupType"/>
+
+               
               </div>
+              <br/>
+              <!--TBD (wjb) What type of group is this -->
               <ice:inputHidden valueChangeListener="#{EditUserGroupPage.changeUserGroupType}" value="#{EditUserGroupPage.userGroupType}" id="userGroupType"/>
-              <ice:message for="userGroupType" styleClass="errorMessage" id="userGroupTypeMsg"/>
+             
               <!-- User Groups -->
               <div jsfc="ice:panelGroup" styleClass="dvnFormPadding" rendered="#{ EditUserGroupPage.userGroupType == 'none' or EditUserGroupPage.userGroupType == 'usergroup'}" id="usergroups">
                 <ice:outputText styleClass="vdcSubHeaderColor" value="Usernames"/>

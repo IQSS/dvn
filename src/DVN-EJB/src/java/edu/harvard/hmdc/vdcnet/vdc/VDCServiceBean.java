@@ -489,5 +489,23 @@ public class VDCServiceBean implements VDCServiceLocal {
             return longValue;
         }
     }
+    
+    public List getPagedData(Long vdcId, int firstRow, int totalRows, String orderBy, String order) {
+      List<VDC> list = new ArrayList();
+      try {
+        String queryString  = "SELECT id, name, alias, affiliation, releasedate, dvndescription FROM vdc WHERE restricted = false ORDER BY LOWER(" + orderBy + ") " + order + " LIMIT " + totalRows + " OFFSET " + firstRow;
+        Query query         = em.createNativeQuery(queryString);
+        list = (List<VDC>)query.getResultList();
+      } catch (Exception e) {
+        //do something here with the exception
+        list = new ArrayList();
+      } finally {
+          return list;
+      }
+    }
+
+
+
+
 
 }

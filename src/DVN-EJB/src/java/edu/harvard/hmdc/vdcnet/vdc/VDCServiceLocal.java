@@ -97,4 +97,7 @@ public interface VDCServiceLocal extends java.io.Serializable  {
     public java.util.List<Long> getOwnedStudyIds(Long vdcId);
     
     public Long getOwnedStudyCount(Long vdcId);
+
+    public List getPagedData(Long vdcId, int firstRow, int totalRows, String orderBy, String order);
+
 }

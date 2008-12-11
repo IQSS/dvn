@@ -22,7 +22,11 @@
         <ice:inputHidden id="studyListingIndex" value="#{StudyListingPage.studyListingIndex}"/>
         <!-- Main Section starts here -->
         <div id="dvn_mainSection">
-          
+
+        <div jsfc="ice:panelGroup" styleClass="dvn_hmpgMainMessage" rendered="#{StudyListingPage.renderDescription}" block="true">
+            <h:outputText escape="false" value="#{VDCRequest.currentVDC.announcements}"/>
+        </div>
+
           <!-- Search Section starts here -->
           <div class="dvn_searchblock">
             <div class="dvn_searchBoxContent">
@@ -64,36 +68,23 @@
             </div>
           </div>
           <!-- Search Section ends here -->
-  <!-- Start Search Results (with side panel, if available) -->
+          <!-- Start Search Results (with side panel, if available) -->
           <div jsfc="ice:panelGroup" styleClass="#{ (StudyListingPage.renderTree) ? 'dvn_section dvn_overflow' : 'dvn_section'}">
             <div jsfc="ice:panelGroup" styleClass="#{ (StudyListingPage.renderTree) ? 'dvn_sectionContent' : 'dvn_sectionContentNoPanels'}">
-              <!-- This is the old search results text and can be removed
-              <div>
-                <ice:outputText value="This is where search terms should go..."/>
-                <ice:outputText value="#{StudyListingPage.subListHeader}"/>
-                <ice:outputText id="listMessagePrefix" value="#{StudyListingPage.listMessagePrefix}"/>
-                <ice:outputText id="listMessageContent" styleClass="warnMessage" value="#{StudyListingPage.listMessageContent}"/>
-                <ice:outputText id="listMessageSuffix" value="#{StudyListingPage.listMessageSuffix}"/>
-              </div> -->
               <div jsfc="ice:panelGroup" styleClass="dvnStudyListCollectionNameBlock">
-                <div jsfc="ice:panelGroup" id="beContributor" styleClass="dvnStudyListContributorBlock" rendered="#{StudyListingPage.showRequestContributor}">
+                <div jsfc="ice:panelGroup" id="beContributor" styleClass="dvnStudyListContributorBlock" rendered="#{StudyListingPage.renderContributorLink}">
                   <ice:outputLink styleClass="dvnStudyListContributorLink" value="/dvn/dv/#{VDCRequest.currentVDC.alias}/faces/login/ContributorRequestInfoPage.xhtml">
                     <ice:outputText value="Become a Contributor" escape="false"/>
                   </ice:outputLink>
                 </div>
                 <div jsfc="ice:panelGroup" styleClass="dvnStudyListCollectionName">
-                  <ice:outputText value="#{StudyListingPage.collectionName}"/>
-                  <ice:outputText value="Search Results" rendered="#{(StudyListingPage.studyListing.mode == 2)}"/>
-                  <ice:outputText styleClass="dvnStudyListSearchResultsMessage" value="#{StudyListingPage.listMessagePrefix}" rendered="#{(StudyListingPage.studyListing.mode == 2 and StudyListingPage.studyCount != 0)}"/>
-                  <ice:outputText styleClass="dvnStudyListSearchResultsMessage" value="#{StudyListingPage.listMessageContent}" rendered="#{(StudyListingPage.studyListing.mode == 2 and StudyListingPage.studyCount != 0)}"/>
+                  <ice:outputText value="#{StudyListingPage.listHeader}"/>
+                  <ice:outputText styleClass="dvnStudyListSearchResultsMessage" value="#{StudyListingPage.listMessage}" rendered="#{StudyListingPage.studyCount != 0}"/>
                 </div>
               </div>
               <div class="dvnStudyListWrapper">
-                <div jsfc="ice:panelGroup" styleClass="dvnStudyListNoStudies" rendered="#{StudyListingPage.studyCount == 0 and StudyListingPage.studyListing.mode != 2}">
-                  <p><ice:outputText value="There are no studies in the dataverse."/></p>
-                </div>
-                <div jsfc="ice:panelGroup" styleClass="dvnStudyListNoStudies" rendered="#{(StudyListingPage.studyListing.mode == 2 and StudyListingPage.studyCount == 0)}">
-                  <p><ice:outputText value="Your search #{StudyListingPage.listMessagePrefix} #{StudyListingPage.listMessageContent} returned no results."/></p>
+                <div jsfc="ice:panelGroup" styleClass="dvnStudyListNoStudies" rendered="#{StudyListingPage.studyCount == 0}">
+                  <p><ice:outputText value="#{StudyListingPage.listMessage}"/></p>
                 </div>
                 <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="3" id="gridPanel2"
                                styleClass="dvnStudyListResultsTop" columnClasses="dvn_StudyListSort, dvn_StudyListTotals, dvnPaginatorWrap"

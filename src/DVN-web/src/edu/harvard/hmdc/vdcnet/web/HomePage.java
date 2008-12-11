@@ -30,8 +30,11 @@
 
 package edu.harvard.hmdc.vdcnet.web;
 
+import com.icesoft.faces.component.datapaginator.DataPaginator;
+import com.icesoft.faces.component.datapaginator.PaginatorActionEvent;
 import com.icesoft.faces.component.dragdrop.DropEvent;
 import com.icesoft.faces.component.ext.HtmlCommandLink;
+import com.icesoft.faces.component.ext.HtmlDataTable;
 import com.icesoft.faces.component.ext.HtmlPanelGroup;
 import com.icesoft.faces.component.tree.IceUserObject;
 import edu.harvard.hmdc.vdcnet.admin.NetworkRoleServiceLocal;
@@ -42,6 +45,7 @@ import edu.harvard.hmdc.vdcnet.index.IndexServiceLocal;
 import edu.harvard.hmdc.vdcnet.index.SearchTerm;
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.VariableServiceLocal;
+import edu.harvard.hmdc.vdcnet.util.PagedDataModel;
 import edu.harvard.hmdc.vdcnet.util.StringUtil;
 import edu.harvard.hmdc.vdcnet.vdc.*;
 import edu.harvard.hmdc.vdcnet.web.common.LoginBean;
@@ -61,6 +65,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
 import javax.faces.event.ActionEvent;
+import javax.faces.model.DataModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
@@ -77,7 +82,8 @@ public class HomePage extends VDCBaseBean implements Serializable {
 
     
     private boolean isInit;
-    
+
+
     private int classificationsSize  = 0;
     private long totalStudyDownloads = -1;
 
@@ -178,60 +184,119 @@ public class HomePage extends VDCBaseBean implements Serializable {
      }
 
 
+     /**
+      * @description Prepare the itemBeans
+      * @param list
+      */
      private void initAllDataverses(List list) {
          parentItem = new DataverseGrouping(new Long("0"), ALL_DATAVERSES_LABEL, "group", itemBeans, true, EXPAND_IMAGE, CONTRACT_IMAGE, null);
          parentItem.setSubclassification(new Long("0"));
+         parentItem.setRecordSize(list.size());
          Iterator iterator = list.iterator();
          VDC vdc = null;
+         List groupList = new ArrayList();
          while(iterator.hasNext()) {
             vdc = (VDC)iterator.next();
             Long parent = new Long("0");
-            Timestamp lastUpdateTime = (studyService.getLastUpdatedTime(vdc.getId()) != null ? studyService.getLastUpdatedTime(vdc.getId()) : vdc.getReleaseDate());
-            Long localActivity       = calculateActivity(vdc);
-            String activity          = getActivityClass(localActivity);
-            if (vdc.getReleaseDate() != null) {
-                childItem = new DataverseGrouping(vdc.getName(), vdc.getAlias(), vdc.getAffiliation(), vdc.getReleaseDate(), lastUpdateTime, vdc.getDvnDescription(), "dataverse", activity);
-                parentItem.addChildItem(childItem);
+            Long vdcId  = vdc.getId();
+            if (vdc.getReleaseDate() != null && !vdc.isRestricted()) {
+                childItem = new DataverseGrouping(vdcId);
+                groupList.add(childItem);
             }
          }
+         dataModel = new PagedDataModel(groupList, list.size(), 10);
+         parentItem.setDataModel(dataModel);
+         parentItem.setDataModelRowCount(list.size());
      }
 
+     private int currentRow;
+     private PagedDataModel dataModel;
+
+     public void setDataModel(PagedDataModel datamodel) {
+         this.dataModel = datamodel;
+     }
+
+    
+
       private void initGroupBean(VDCGroup vdcgroup) {
-            Long parent = (vdcgroup.getParent() != null) ? vdcgroup.getParent() : new Long("-1");
-            parentItem = new DataverseGrouping(vdcgroup.getId(), vdcgroup.getName(), "group", itemBeans, true, EXPAND_IMAGE, CONTRACT_IMAGE, parent);
-            parentItem.setShortDescription(vdcgroup.getDescription());
-            parentItem.setSubclassification(new Long("25"));
-            List innerlist = vdcgroup.getVdcs();
+            List innerlist  = vdcgroup.getVdcs();
             Iterator inneriterator = innerlist.iterator();
+            Long parent     = (vdcgroup.getParent() != null) ? vdcgroup.getParent() : new Long("-1");
+            parentItem      = new DataverseGrouping(vdcgroup.getId(), vdcgroup.getName(), "group", itemBeans, true, EXPAND_IMAGE, CONTRACT_IMAGE, parent);
+            parentItem.setShortDescription(vdcgroup.getDescription());
+            //parentItem.setSubclassification(new Long("25"));
+            List groupList = new ArrayList();
             while(inneriterator.hasNext()) {
-                VDC vdc = (VDC)inneriterator.next();
-                Timestamp lastUpdateTime = (studyService.getLastUpdatedTime(vdc.getId()) != null ? studyService.getLastUpdatedTime(vdc.getId()) : vdc.getReleaseDate());
-                Long localActivity       = calculateActivity(vdc);
-                String activity          = getActivityClass(localActivity);
-                if (vdc.getReleaseDate() != null) {
-                    childItem = new DataverseGrouping(vdc.getName(), vdc.getAlias(), vdc.getAffiliation(), vdc.getReleaseDate(), lastUpdateTime, vdc.getDvnDescription(), "dataverse", activity);
-                    parentItem.addChildItem(childItem);
+                VDC vdc     = (VDC)inneriterator.next();
+                Long vdcId  = vdc.getId();
+                if (vdc.getReleaseDate() != null && !vdc.isRestricted()) {
+                    childItem = new DataverseGrouping(vdcId);
+                    groupList.add(childItem);
                 }
             }
+         dataModel = new PagedDataModel(groupList, innerlist.size(), 10);
+         parentItem.setDataModel(dataModel);
+         parentItem.setDataModelRowCount(innerlist.size());
+     }
+
+      //  pagination
+     DataPaginator dataPaginator = new DataPaginator(); //DEBUG test
+     public DataPaginator getDataPaginator() {
+         return this.dataPaginator;
+     }
+
+     public void setDataPaginator(DataPaginator dataPaginator) {
+         this.dataPaginator = dataPaginator;
+     }
+
+     /** paginate
+      * @description the home page pagination is bound to the home page backing
+      * bean so that large data sets can be populated dynamically
+      * 
+      * @param action
+      */
+      public void paginate(ActionEvent action) {
+        PaginatorActionEvent pEvent = (PaginatorActionEvent) action;
+        DataverseGrouping grouping = (DataverseGrouping)itemBeans.get(0);
+        if (DataPaginator.FACET_FIRST.equals(pEvent.getScrollerfacet())) {
+            grouping.setFirstRow(0);
+            grouping.setPageAction(true);
+            grouping.getDataModel();
+         } else if (DataPaginator.FACET_PREVIOUS.equals(pEvent.getScrollerfacet())) {
+             grouping.setFirstRow(grouping.getFirstRow() - 10);
+             grouping.setPageAction(true);
+             grouping.getDataModel();
+         }
+         else if (DataPaginator.FACET_NEXT.equals(pEvent.getScrollerfacet())) {
+              grouping.setFirstRow(grouping.getFirstRow() + 10);
+              grouping.setPageAction(true);
+              grouping.getDataModel();
+         } else if (DataPaginator.FACET_LAST.equals(pEvent.getScrollerfacet())) {
+              grouping.setFirstRow(grouping.getDataModelRowCount() - (grouping.getDataModelRowCount() - 10));
+              grouping.setPageAction(true);
+              grouping.getDataModel();
+         } else {
+              System.out.println("The page event is " + pEvent.getScrollerfacet().toString());
+         }
      }
 
       //actions and actionListeners
 
-          public String search_action() {
-        List searchTerms = new ArrayList();
-        SearchTerm st = new SearchTerm();
+    public String search_action() {
+        List searchTerms    = new ArrayList();
+        SearchTerm st       = new SearchTerm();
         st.setFieldName( searchField );
         st.setValue( searchValue );
         searchTerms.add(st);
-        List studies = new ArrayList();
-        Map variableMap = new HashMap();
+        List studies        = new ArrayList();
+        Map variableMap     = new HashMap();
 
         if ( searchField.equals("variable") ) {
-            List variables = indexService.searchVariables(getVDCRequestBean().getCurrentVDC(), st);
+            List variables  = indexService.searchVariables(getVDCRequestBean().getCurrentVDC(), st);
             varService.determineStudiesFromVariables(variables, studies, variableMap);
 
         } else {
-            studies = indexService.search(getVDCRequestBean().getCurrentVDC(), searchTerms);
+            studies         = indexService.search(getVDCRequestBean().getCurrentVDC(), searchTerms);
         }
 
 
@@ -246,15 +311,30 @@ public class HomePage extends VDCBaseBean implements Serializable {
 
       // getters and setters
 
-       public int getClassificationsSize() {
+    public int getClassificationsSize() {
         return this.classificationsSize;
     }
        
-       public ArrayList getItemBeans() {
-        return itemBeans;
+   public ArrayList getItemBeans() {
+       return itemBeans;
     }
 
-    //TREE items
+   private DataModel pagedDataModel;
+
+   private HtmlDataTable dataverseList = new HtmlDataTable();
+   
+   public HtmlDataTable getDataverseList() {
+       return this.dataverseList;
+   }
+   
+   public void setDataverseList(HtmlDataTable dataverselist) {
+       this.dataverseList = dataverselist;
+   }
+
+
+   int currentItemIndex = 0;
+
+      //TREE items
     public ArrayList getDvGroupItemBeans() {
         return dvGroupItemBeans;
     }
@@ -666,53 +746,4 @@ public void dispose() {
             itemBeans.clear();
         }
     }
-
-
-    private Long calculateActivity(VDC vdc) {
-        Long numberOfDownloads  = new Long("0");
-        Long localActivity;
-        try {
-            try {
-                numberOfDownloads += studyService.getActivityCount(vdc.getId());
-            } catch (Exception e) {
-                // System.out.println("An exception occured in the StudyServiceBean. Probably there were no downloads for this vdc . . ."); //commented so as not to cause confusion in the server log
-            }
-            if (totalStudyDownloads == -1)
-                totalStudyDownloads = studyService.getTotalActivityCount();
-        } catch (Exception e) {
-            // System.out.println("An exception occured in the StudyServiceBean. Probably there were no downloads for the entire network."); //commented so as not to cause confusion in the server log
-            totalStudyDownloads = 0;
-        } finally {
-            if (numberOfDownloads > 0 && totalStudyDownloads > 0) {
-                    //range 1
-                    long a = 0;
-                    long b = totalStudyDownloads;
-                    //range 2
-                    long c = 1;
-                    long d = 5;
-                    localActivity = ((numberOfDownloads - a) * (d-c)/(b-a)) + c;
-             } else {
-                    localActivity = numberOfDownloads;
-             }
-            String strValue = String.valueOf(Math.round(localActivity.doubleValue()));
-            localActivity = new Long(strValue);
-            return localActivity;
-        }
-    } 
-
-    private String getActivityClass(Long activity) {
-        String activityClass = new String();
-        switch (activity.intValue()) {
-           case 0: activityClass =  "activitylevelicon al-0"; break;
-           case 1: activityClass =  "activitylevelicon al-1"; break;
-           case 2: activityClass =  "activitylevelicon al-2"; break;
-           case 3: activityClass =  "activitylevelicon al-3"; break;
-           case 4: activityClass =  "activitylevelicon al-4"; break;
-           case 5: activityClass =  "activitylevelicon al-5"; break;
-       }
-        return activityClass;
-    }
-
-    
-
 }

@@ -32,7 +32,10 @@
 
 package edu.harvard.hmdc.vdcnet.web;
 
+import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
 import edu.harvard.hmdc.vdcnet.util.DateUtils;
+import edu.harvard.hmdc.vdcnet.util.PagedDataModel;
+import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
 import javax.faces.event.ActionEvent;
 import java.sql.Timestamp;
 
@@ -41,11 +44,12 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Vector;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
+import javax.naming.InitialContext;
 import javax.servlet.http.HttpServletRequest;
 
 public class DataverseGrouping extends SortableList {
@@ -85,11 +89,46 @@ public class DataverseGrouping extends SortableList {
     private static final String numberOwnedStudiesColumnName = "Owned Studies";
     private static final String typeColumnName          = "Type";
 
-    ArrayList parentItems = new ArrayList();
-    ArrayList childItems = new ArrayList();
+    ArrayList parentItems    = new ArrayList();
+    ArrayList childItems     = new ArrayList();
+    PagedDataModel dataModel = new PagedDataModel();
 
     public DataverseGrouping() {
         super(nameColumnName);
+        
+    }
+    
+    
+    /** DataverseGrouping
+     * Overloaded constructor for the
+     * Add/Remove Dataverse to/from Page.
+     *
+     *
+     * @param id
+     *
+     *
+     */
+    public DataverseGrouping(Long id) {
+        super(nameColumnName);
+        this.id             = id;
+    }
+
+
+    /** DataverseGrouping
+     * Overloaded constructor for the
+     * Add/Remove Dataverse to/from Page.
+     *
+     *
+     * @param name
+     * @param affiliation
+     *
+     *
+     */
+    public DataverseGrouping(Long id, String name, String affiliation) {
+        super(nameColumnName);
+        this.id             = id;
+        this.name           = name;
+        this.affiliation    = affiliation;
     }
 
     public DataverseGrouping(Long id, String name, String recordType, ArrayList parentItems, boolean isExpanded, String expandImage, String contractImage, Long parentClassification) {
@@ -130,10 +169,9 @@ public class DataverseGrouping extends SortableList {
         this.classificationSelect = false;
     }
 
-
+    // dataverses
     public DataverseGrouping(String name, String alias, String affiliation, Timestamp releaseDate, Timestamp lastUpdateTime, String shortDescription, String recordType, String activity) {
         super(nameColumnName);
-        this.id             = id;
         this.name           = name;
         this.alias          = alias;
         this.affiliation    = affiliation;
@@ -146,22 +184,6 @@ public class DataverseGrouping extends SortableList {
         this.classificationSelect = false;
     }
 
-    /** DataverseGrouping
-     * Overloaded constructor for the
-     * Add/Remove Dataverse to/from Page.
-     *
-     *
-     * @param name
-     * @param affiliation
-     *
-     *
-     */
-    public DataverseGrouping(Long id, String name, String affiliation) {
-        super(nameColumnName);
-        this.id             = id;
-        this.name           = name;
-        this.affiliation    = affiliation;
-    }
 
 
     public void addChildItem(DataverseGrouping dvGroupRecord) {
@@ -407,12 +429,12 @@ public class DataverseGrouping extends SortableList {
                         return 0;
                     }
                 } catch (Exception npe) {
-                    System.out.println("Found a null value: " + npe.toString());
+                    // System.out.println("Found a null value: " + npe.toString());
                     return 1;
                 }
             }
         };
-            Collections.sort(childItems, comparator);
+        Collections.sort(childItems, comparator);
     }
 
 
@@ -474,19 +496,124 @@ public class DataverseGrouping extends SortableList {
      * Gets the child dataverses
      * @return arraylist of member dataverses.
      */
-   @SuppressWarnings("unchecked")
-   public ArrayList<DataverseGrouping> getChildItems() {
+  @SuppressWarnings("unchecked")
+  public ArrayList<DataverseGrouping> getChildItems()
+    {
         // we only want to sortColumnName if the column or ordering has changed.
-            if (!oldSort.equals(sortColumnName) ||
-                oldAscending != ascending){
-                sort();
-                oldSort = sortColumnName;
+          if (!oldSort.equals(sortColumnName) ||
+                 oldAscending != ascending){
+                 sort();
+                 oldSort = sortColumnName;
                 oldAscending = ascending;
-            }
+             }
             return childItems;
-        }
+     }
 
-       /**
+     private int firstRow = 0;
+     private int rows = 10;
+     private int dataModelRowCount;
+
+    public int getDataModelRowCount() {
+        return dataModelRowCount;
+    }
+
+    public void setDataModelRowCount(int dataModelRowCount) {
+        this.dataModelRowCount = dataModelRowCount;
+    }
+
+     
+
+     public int getFirstRow() {
+        return firstRow;
+     }
+
+     public void setFirstRow(int firstRow) {
+        this.firstRow = firstRow;
+     }
+
+     //fields and methods to support large data sets paging on the home page
+    List<DataverseGrouping> groupList = new ArrayList();
+    private boolean pageAction = false;
+    String oldOrder;
+    String oldField;
+
+    public boolean getPageAction() {
+        return this.pageAction;
+    }
+    public void setPageAction(Boolean bool) {
+        this.pageAction = bool;
+    }
+     public PagedDataModel getDataModel() {
+             StudyServiceLocal studyService = null;
+             VDCServiceLocal vdcService = null;
+             try {
+                    studyService = (StudyServiceLocal) new InitialContext().lookup("java:comp/env/studyService");
+                    vdcService = (VDCServiceLocal) new InitialContext().lookup("java:comp/env/vdcService");
+             } catch (javax.naming.NamingException ne) {
+                 //naming exception
+             }
+             List resultList = new ArrayList();
+             String field = new String();
+               if (sortColumnName.equals(dateReleasedColumnName))
+                   field = "releasedate";
+               else if (sortColumnName.equals(lastUpdatedColumnName)) {
+                   field = "createddate";
+               } else if (sortColumnName.equals(activityColumnName)) {
+                   field = "";
+               } else {
+                   field = sortColumnName;
+               }
+             if (!oldSort.equals(sortColumnName) || oldAscending != ascending){
+               String order = (ascending == true) ? "ASC" : "DESC";
+               resultList = vdcService.getPagedData(this.id, firstRow, rows, field, order);//This is the new sort. TODO: figure out activity sort
+               oldSort = sortColumnName;
+               oldAscending = ascending;
+               oldOrder     = order;
+               oldField     = field;
+            } else {
+                resultList = vdcService.getPagedData(this.id, firstRow, rows, oldField, oldOrder);
+            }
+             
+             List newList    = new ArrayList();
+             Iterator iterator = resultList.iterator();
+             while (iterator.hasNext()) { // populate the grouplist and pagedDataModel
+                 Vector vector = (Vector)iterator.next();
+                 Long vdcId = new Long(((Integer)vector.get(0)).toString());
+                 Timestamp releaseDate = (Timestamp)vector.get(4);
+                 Timestamp lastUpdateTime = (studyService.getLastUpdatedTime(vdcId) != null ? studyService.getLastUpdatedTime(vdcId) : releaseDate);
+                 Long localActivity       = calculateActivity(vdcId);
+                 String activity          = getActivityClass(localActivity);
+                 //String activity = "activitylevelicon al-5";
+                 DataverseGrouping grouping = new DataverseGrouping(vdcId);
+                 grouping.setName((String)vector.get(1));
+                 grouping.setAlias((String)vector.get(2));
+                 grouping.setAffiliation((String)vector.get(3));
+                 grouping.setReleaseDate(releaseDate);
+                 grouping.setLastUpdateTime(lastUpdateTime);
+                 grouping.setShortDescription((String)vector.get(5));
+                 grouping.setRecordType("dataverse");
+                 grouping.setActivity(activity);
+                 newList.add(grouping);
+             }
+             groupList.clear();
+             groupList.addAll(newList);
+             dataModel = new PagedDataModel(groupList, dataModelRowCount, 10);
+             if (pageAction == true) {
+                 FacesContext context = FacesContext.getCurrentInstance();
+                 context.renderResponse();
+                 pageAction = false;
+             }
+             
+             return dataModel;
+     }
+
+    public void setDataModel(PagedDataModel dataModel) {
+        this.dataModel = dataModel;
+    }
+
+    // end fields and methods for large data sets and paging on home page.
+
+   /**
      * Gets the image which will represent either the expanded or contracted
      * state of the <code>FilesGroupRecordBean</code>.
      *
@@ -536,6 +663,7 @@ public class DataverseGrouping extends SortableList {
     private boolean classificationSelect = false;
     private Integer numberOwnedStudies;
     private String type;
+    private int recordSize;
 
 
 
@@ -715,8 +843,6 @@ public class DataverseGrouping extends SortableList {
         this.numberOwnedStudies = numberOwnedStudies;
     }
 
-
-
     public String getType() {
         return type;
     }
@@ -747,6 +873,15 @@ public class DataverseGrouping extends SortableList {
         this.indentStyleClass = indentstyle;
     }
 
+    public int getRecordSize() {
+        return recordSize;
+    }
+
+    public void setRecordSize(int recordSize) {
+        this.recordSize = recordSize;
+    }
+    
+
     //******************* UTILS ***************************
     public String toString() {
           String dataverseToString = new String("");
@@ -766,4 +901,53 @@ public class DataverseGrouping extends SortableList {
         return this.toString();
     }
 
+    private long totalStudyDownloads = -1;
+        private Long calculateActivity(Long vdcId) {
+        Long numberOfDownloads  = new Long("0");
+        Long localActivity;
+        StudyServiceLocal studyService = null;
+        VDCServiceLocal vdcService = null;
+        try {
+            studyService = (StudyServiceLocal) new InitialContext().lookup("java:comp/env/studyService");
+            vdcService = (VDCServiceLocal) new InitialContext().lookup("java:comp/env/vdcService");
+            try {
+                numberOfDownloads += studyService.getActivityCount(vdcId);
+            } catch (Exception e) {
+                // System.out.println("An exception occured in the StudyServiceBean. Probably there were no downloads for this vdc . . ."); //commented so as not to cause confusion in the server log
+            }
+            if (totalStudyDownloads == -1)
+                totalStudyDownloads = studyService.getTotalActivityCount();
+        } catch (Exception e) {
+            // System.out.println("An exception occured in the StudyServiceBean. Probably there were no downloads for the entire network."); //commented so as not to cause confusion in the server log
+            totalStudyDownloads = 0;
+        } finally {
+            if (numberOfDownloads > 0 && totalStudyDownloads > 0) {
+                    //range 1
+                    long a = 0;
+                    long b = totalStudyDownloads;
+                    //range 2
+                    long c = 1;
+                    long d = 5;
+                    localActivity = ((numberOfDownloads - a) * (d-c)/(b-a)) + c;
+             } else {
+                    localActivity = numberOfDownloads;
+             }
+            String strValue = String.valueOf(Math.round(localActivity.doubleValue()));
+            localActivity = new Long(strValue);
+            return localActivity;
+        }
+    }
+
+    private String getActivityClass(Long activity) {
+        String activityClass = new String();
+        switch (activity.intValue()) {
+           case 0: activityClass =  "activitylevelicon al-0"; break;
+           case 1: activityClass =  "activitylevelicon al-1"; break;
+           case 2: activityClass =  "activitylevelicon al-2"; break;
+           case 3: activityClass =  "activitylevelicon al-3"; break;
+           case 4: activityClass =  "activitylevelicon al-4"; break;
+           case 5: activityClass =  "activitylevelicon al-5"; break;
+       }
+        return activityClass;
+    }
  }

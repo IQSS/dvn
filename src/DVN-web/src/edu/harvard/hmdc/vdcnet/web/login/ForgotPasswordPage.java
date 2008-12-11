@@ -130,7 +130,7 @@ public class ForgotPasswordPage extends VDCBaseBean implements java.io.Serializa
     if (user==null) {
        ((UIInput)toValidate).setValid(false);
        
-        FacesMessage message = new FacesMessage("No user account was found for this user name.");
+        FacesMessage message = new FacesMessage("No user account was found for this username.");
         context.addMessage(toValidate.getClientId(context), message);
     }
 

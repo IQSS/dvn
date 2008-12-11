@@ -396,7 +396,7 @@ INSERT INTO studyfield (id, description, name,basicSearchField,advancedSearchFie
 INSERT INTO studyfield (id, description, name,basicSearchField,advancedSearchField, searchResultField) VALUES (6, 'Producer URL', 'producerURL', FALSE, FALSE, FALSE );
 INSERT INTO studyfield (id, description, name,basicSearchField,advancedSearchField, searchResultField) VALUES (7, 'URL to Producer Logo', 'producerLogo', FALSE, FALSE, FALSE );
 INSERT INTO studyfield (id, description, name,basicSearchField,advancedSearchField, searchResultField) VALUES (8, 'Producer Name Abbreviation', 'producerAbbreviation', FALSE, FALSE, FALSE );
-INSERT INTO studyfield (id, description, name,basicSearchField,advancedSearchField, searchResultField) VALUES (9, 'Production Date', 'productionDate', FALSE, TRUE, TRUE );
+INSERT INTO studyfield (id, description, name,basicSearchField,advancedSearchField, searchResultField) VALUES (9, 'Production Date', 'productionDate', FALSE, TRUE, FALSE );
 INSERT INTO studyfield (id, description, name,basicSearchField,advancedSearchField, searchResultField) VALUES (10, 'Software', 'softwareName', FALSE, FALSE, FALSE );
 INSERT INTO studyfield (id, description, name,basicSearchField,advancedSearchField, searchResultField) VALUES (11, 'Software Version', 'softwareVersion', FALSE, FALSE, FALSE );
 INSERT INTO studyfield (id, description, name,basicSearchField,advancedSearchField, searchResultField) VALUES (12, 'Funding Agency', 'fundingAgency', FALSE, FALSE, FALSE );

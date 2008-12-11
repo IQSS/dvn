@@ -401,13 +401,16 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
         } else if (mode == StudyListing.COLLECTION_STUDIES) {
             listHeader = vdcCollectionService.find(studyListing.getCollectionId()).getName();
 
-            if (matches == 0) {
-                listMessage = "There are no studies in this collection.";
+            VDC currentVDC = getVDCRequestBean().getCurrentVDC();
+            if (currentVDC == null ||
+                    (currentVDC.getRootCollection().getSubCollections().size() == 0 &&
+                    currentVDC.getLinkedCollections().size() == 0)) {
+                renderTree = false;
+            } else {
+                renderTree = true;
             }
 
             renderSearchCollectionFilter = true;
-            renderTree = true;
-
             renderDescription = getVDCRequestBean().getCurrentVDC().isDisplayAnnouncements();
 
             LoginBean loginBean = getVDCSessionBean().getLoginBean();
@@ -415,6 +418,10 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
                 getVDCRequestBean().getCurrentVDC() != null &&
                 getVDCRequestBean().getCurrentVDC().isAllowContributorRequests() &&
                 (loginBean == null || (loginBean != null && loginBean.isBasicUser() ) );
+
+            if (matches == 0) {
+                listMessage = "There are no studies in this " + (renderTree ? "collection." : "dataverse.");
+            }
 
         } else if (mode == StudyListing.VDC_RECENT_STUDIES) {
             listHeader = "Studies Uploaded and Released to This Dataverse";
@@ -438,20 +445,6 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
                 listMessage = "The results for this listing were generated while searching or browsing a different dataverse.";
             }
         }
-
-
-        // determine renderTree
-        if (renderTree) {
-            VDC currentVDC = getVDCRequestBean().getCurrentVDC();
-            if (currentVDC == null ||
-                    (currentVDC.getRootCollection().getSubCollections().size() == 0 &&
-                    currentVDC.getLinkedCollections().size() == 0)) {
-                renderTree = false;
-            } else {
-                renderTree = true;
-            }
-        }
-
 
     }
 
@@ -586,7 +579,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
             }
         }
 
-        // no params; default behavior, show root collection (or first linked); for vdn, show error version
+        // no params; default behavior, show root collection (or first linked); for dvn, show error version
         if (sl == null) {
             VDC currentVDC = getVDCRequestBean().getCurrentVDC();
             if (currentVDC != null) {

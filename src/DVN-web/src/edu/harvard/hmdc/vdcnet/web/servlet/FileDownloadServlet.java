@@ -30,20 +30,22 @@ package edu.harvard.hmdc.vdcnet.web.servlet;
 
 import edu.harvard.hmdc.vdcnet.admin.UserGroup;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
+
 import edu.harvard.hmdc.vdcnet.study.FileCategory;
 import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.study.StudyFile;
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.RemoteAccessAuth;
-
 import edu.harvard.hmdc.vdcnet.study.DataVariable;
 import edu.harvard.hmdc.vdcnet.study.VariableCategory;
-import edu.harvard.hmdc.vdcnet.web.study.StudyUI;
-
 
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
+
+import edu.harvard.hmdc.vdcnet.web.study.StudyUI;
 import edu.harvard.hmdc.vdcnet.web.study.FileCategoryUI;
+import edu.harvard.hmdc.vdcnet.web.dvnremote.DvnTermsOfUseAccess;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -593,17 +595,7 @@ public class FileDownloadServlet extends HttpServlet {
 
                                 // Accept the TOU agreement:
 
-                                //method = dvnAcceptRemoteTOU ( redirectLocation + "&clicker=downloadServlet", jsessionid, file.getFileSystemLocation() );
-                                //method = dvnAcceptRemoteTOU ( redirectLocation + "&clicker=downloadServlet", jsessionid, remoteFileUrl );
-                                method = dvnAcceptRemoteTOU(redirectLocation, jsessionid, remoteFileUrl);
-
-                                // (the condition above was causing the problem
-                                // with the extra Variable header supplied by a
-                                // remote DVN; note that the "getFileSystemLocation"
-                                // was used, instead of the remoteFileUrl, that
-                                // already has the "noVarHeader" flag attached.
-
-
+				method = remoteAccessTOU(redirectLocation, jsessionid, remoteFileUrl);
 
                                 // If everything has worked right
                                 // we should be redirected to the final
@@ -621,7 +613,6 @@ public class FileDownloadServlet extends HttpServlet {
 
                             } else {
                                 // just try again (and hope for the best!)
-
                                 method = new GetMethod(redirectLocation);
                                 status = getClient().executeMethod(method);
                             }
@@ -1939,7 +1930,7 @@ public class FileDownloadServlet extends HttpServlet {
                     // try following redirects until we get a static page,
                     // or until we exceed the hoop limit.
                     if (redirectLocation.matches(".*TermsOfUsePage.*")) {
-                        loginGetMethod = dvnAcceptRemoteTOU(redirectLocation + "&clicker=downloadServlet", remoteJsessionid, null);
+                        loginGetMethod = remoteAccessTOU(redirectLocation + "&clicker=downloadServlet", remoteJsessionid, null);
                         if (loginGetMethod != null) {
                             status = loginGetMethod.getStatusCode();
                         }
@@ -1970,191 +1961,34 @@ public class FileDownloadServlet extends HttpServlet {
         return remoteJsessionid;
     }
 
-    private GetMethod dvnAcceptRemoteTOU(String TOUurl, String jsessionid, String downloadURL) {
+    private GetMethod remoteAccessTOU(String TOUurl, String jsessionid, String downloadURL) {
+	DvnTermsOfUseAccess dvnTOU = new DvnTermsOfUseAccess();
 
-        GetMethod TOUgetMethod = null;
-        PostMethod TOUpostMethod = null;
-        GetMethod redirectGetMethod = null;
+	jsessionid = dvnTOU.dvnAcceptRemoteTOU ( TOUurl, jsessionid, downloadURL ); 
 
-        String compatibilityPrefix = "";
-        Boolean compatibilityMode = false;
+	GetMethod finalGetMethod = null; 
+	int status = 0; 
 
-        try {
+	try {
+	    finalGetMethod = new GetMethod ( downloadURL );
+	    finalGetMethod.setFollowRedirects(false);
+	    finalGetMethod.addRequestHeader("Cookie", "JSESSIONID=" + jsessionid ); 
+	    status = getClient().executeMethod(finalGetMethod);
+	    
+	} catch (IOException ex) {
+	    if (finalGetMethod != null) { 
+		finalGetMethod.releaseConnection(); 
+	    }
+	}
 
+	if (status != 200) {
+	    if (finalGetMethod != null) { 
+		finalGetMethod.releaseConnection(); 
+	    }
+	    return null;
+	}
 
-            TOUgetMethod = new GetMethod(TOUurl);
-            if (jsessionid != null) {
-                TOUgetMethod.addRequestHeader("Cookie", "JSESSIONID=" + jsessionid);
-            }
-
-            int status = getClient().executeMethod(TOUgetMethod);
-
-            InputStream in = TOUgetMethod.getResponseBodyAsStream();
-            BufferedReader rd = new BufferedReader(new InputStreamReader(in));
-
-            String line = null;
-
-            String viewstate = null;
-            String studyid = null;
-            String remotefileid = null;
-
-            String regexpJsession = "jsessionid=([^\"?&]*)";
-            String regexpViewState = "ViewState\" value=\"([^\"]*)\"";
-            String regexpStudyId = "studyId\" value=\"([0-9]*)\"";
-            //String regexpRemoteFileId = "(/FileDownload.*fileId=[0-9]*)";
-            String regexpRemoteFileId = "(/FileDownload.*)";
-            String regexpOldStyleForm = "content:termsOfUsePageView:";
-
-
-            Pattern patternJsession = Pattern.compile(regexpJsession);
-            Pattern patternViewState = Pattern.compile(regexpViewState);
-            Pattern patternStudyId = Pattern.compile(regexpStudyId);
-            Pattern patternRemoteFileId = Pattern.compile(regexpRemoteFileId);
-            Pattern patternOldStyleForm = Pattern.compile(regexpOldStyleForm);
-
-
-            Matcher matcher = null;
-
-            if (downloadURL != null) {
-                matcher = patternRemoteFileId.matcher(downloadURL);
-                if (matcher.find()) {
-                    remotefileid = matcher.group(1);
-                }
-            }
-
-            while ((line = rd.readLine()) != null) {
-                matcher = patternJsession.matcher(line);
-                if (matcher.find()) {
-                    jsessionid = matcher.group(1);
-                }
-                matcher = patternViewState.matcher(line);
-                if (matcher.find()) {
-                    viewstate = matcher.group(1);
-                }
-                matcher = patternStudyId.matcher(line);
-                if (matcher.find()) {
-                    studyid = matcher.group(1);
-                }
-                if (!compatibilityMode) {
-                    matcher = patternOldStyleForm.matcher(line);
-                    if (matcher.find()) {
-                        compatibilityMode = true;
-                    }
-                }
-            }
-
-            if (compatibilityMode) {
-                compatibilityPrefix = "content:termsOfUsePageView:";
-            }
-
-
-
-            rd.close();
-            TOUgetMethod.releaseConnection();
-
-            if (jsessionid != null) {
-
-                // We seem to have been issued a new JSESSIONID;
-                // or perhaps already had a JSESSIONID issued
-                // to us when we logged in.
-                // Now we can make the call agreeing to
-                // to the Terms of Use;
-                // it has to be a POST method:
-
-                TOUurl = TOUurl.substring(0, TOUurl.indexOf("?"));
-                TOUpostMethod = new PostMethod(TOUurl + ";jsessionid=" + jsessionid);
-                TOUpostMethod.setFollowRedirects(false);
-
-
-                Part[] parts = {
-                    new StringPart(compatibilityPrefix + "form1:vdcId", ""),
-                    new StringPart("pageName", "TermsOfUsePage"),
-                    new StringPart(compatibilityPrefix + "form1:studyId", studyid),
-                    new StringPart(compatibilityPrefix + "form1:redirectPage", remotefileid),
-                    new StringPart(compatibilityPrefix + "form1:tou", "download"),
-                    new StringPart(compatibilityPrefix + "form1:termsAccepted", "on"),
-                    new StringPart(compatibilityPrefix + "form1:termsButton", "Continue"),
-                    new StringPart(compatibilityPrefix + "form1_hidden", compatibilityPrefix + "form1_hidden'"),
-                    new StringPart("javax.faces.ViewState", viewstate)
-                };
-
-                // TODO:
-
-                // no need to set the redirectPage parameter, if there's
-                // no filedownload url.
-
-                TOUpostMethod.setRequestEntity(new MultipartRequestEntity(parts, TOUpostMethod.getParams()));
-                TOUpostMethod.addRequestHeader("Cookie", "JSESSIONID=" + jsessionid);
-                status = getClient().executeMethod(TOUpostMethod);
-
-                // Now the TOU system is going to redirect
-                // us to the actual download URL.
-                // Note that it can be MORE THAN ONE
-                // redirects (first to the homepage, then
-                // eventually to the file download url);
-                // So we want to just keep following the
-                // redirects until we get the file.
-                // But just in case, we'll be counting the
-                // redirect hoops to make sure we're not
-                // stuck in a loop.
-
-                String redirectLocation = null;
-
-                if (status == 302) {
-                    for (int i = 0; i < TOUpostMethod.getResponseHeaders().length; i++) {
-                        String headerName = TOUpostMethod.getResponseHeaders()[i].getName();
-                        if (headerName.equals("Location")) {
-                            redirectLocation = TOUpostMethod.getResponseHeaders()[i].getValue();
-                        }
-                    }
-                }
-
-                TOUpostMethod.releaseConnection();
-
-                int counter = 0;
-
-                while (status == 302 && counter < 10) {
-
-                    if (counter > 0) {
-                        for (int i = 0; i < redirectGetMethod.getResponseHeaders().length; i++) {
-                            String headerName = redirectGetMethod.getResponseHeaders()[i].getName();
-                            if (headerName.equals("Location")) {
-                                redirectLocation = redirectGetMethod.getResponseHeaders()[i].getValue();
-                            }
-                        }
-                    }
-
-                    redirectGetMethod = new GetMethod(redirectLocation);
-                    redirectGetMethod.setFollowRedirects(false);
-                    redirectGetMethod.addRequestHeader("Cookie", "JSESSIONID=" + jsessionid);
-                    status = getClient().executeMethod(redirectGetMethod);
-
-                    if (status == 302) {
-                        redirectGetMethod.releaseConnection();
-                    }
-                    counter++;
-
-                }
-
-            }
-
-            if (status == 302) {
-                return null;
-            }
-        } catch (IOException ex) {
-            if (redirectGetMethod != null) {
-                redirectGetMethod.releaseConnection();
-            }
-            if (TOUgetMethod != null) {
-                TOUgetMethod.releaseConnection();
-            }
-            if (TOUpostMethod != null) {
-                TOUpostMethod.releaseConnection();
-            }
-            return null;
-        }
-
-        return redirectGetMethod;
+	return finalGetMethod; 
     }
     
     
@@ -2172,6 +2006,8 @@ public class FileDownloadServlet extends HttpServlet {
      */
     private List<Object> dt4Display = new ArrayList<Object>();
     
+
+
     
     /**
      * Adds major metadata of all variables in the requested data file into

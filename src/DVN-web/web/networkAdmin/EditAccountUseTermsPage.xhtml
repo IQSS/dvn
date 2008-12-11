@@ -16,9 +16,8 @@
       <ice:form id="form1">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <div class="dvn_section">
-           <div jsfc="ice:panelGroup" styleClass="dvnRoundCornerMsgBlock #{(EditAccountUseTermsPage.success) ? 'dvnSuccessMessage' : 'dvnInformationMessage'}">
+           <div jsfc="ice:panelGroup" styleClass="dvnRoundCornerMsgBlock #{'dvnInformationMessage'}">
              <ice:outputText value="#{bundlePageInfo.editDvnAccountTermsHelp}" escape="false"/>
-             <ice:messages layout="list" showDetail="false" showSummary="true"/>
           </div>
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.editDvnAccountTermsTitle}"/>

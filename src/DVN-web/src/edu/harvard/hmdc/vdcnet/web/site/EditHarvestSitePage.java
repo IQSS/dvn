@@ -256,9 +256,10 @@ public class EditHarvestSitePage extends VDCBaseBean implements java.io.Serializ
         }
         
         editHarvestSiteService.save(userId, dataverseName,dataverseAlias, filesRestricted, _HARVEST_DTYPE);
-        success=true;
-        return "success";
-        
+
+        this.getVDCRequestBean().setSuccessMessage("Successfully created a harvest dataverse.");
+        return from;
+
     }
     
     public String cancel() {

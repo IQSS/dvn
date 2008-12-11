@@ -64,7 +64,7 @@ public class EditBannerFooterPage extends VDCBaseBean  implements java.io.Serial
     // </editor-fold>
 
     private String ERROR_MESSAGE   = new String("An Error Occurred.");
-    private String SUCCESS_MESSAGE = new String("Update Successful!");
+  
     /** 
      * <p>Construct a new Page bean instance.</p>
      */
@@ -148,36 +148,28 @@ public class EditBannerFooterPage extends VDCBaseBean  implements java.io.Serial
     
     // ACTION METHODS
     public String save_action() {
-        String msg  = SUCCESS_MESSAGE;
-        success = true;
-        //add the success message to the queue for global messages
-        ExceptionMessageWriter.addGlobalMessage(msg);
-        try {
-            if (getVDCRequestBean().getCurrentVDCId() == null) {
-                // this is a save against the network
-                VDCNetwork vdcnetwork = getVDCRequestBean().getVdcNetwork();
-                vdcnetwork.setNetworkPageHeader(banner);
-                vdcnetwork.setNetworkPageFooter(footer);
-                vdcNetworkService.edit(vdcnetwork);
-                getVDCRequestBean().getVdcNetwork().setNetworkPageHeader(banner);
-                getVDCRequestBean().getVdcNetwork().setNetworkPageFooter(footer);
-             } else {
-                VDC vdc = vdcService.find(new Long(getVDCRequestBean().getCurrentVDC().getId()));
-                vdc.setHeader(banner);
-                vdc.setFooter(footer);
-                vdcService.edit(vdc);
-                getVDCRequestBean().getCurrentVDC().setHeader(banner);
-                getVDCRequestBean().getCurrentVDC().setFooter(footer);
-             }
-        } catch (Exception e) {
-            success = false;
-            // remove the queued message from the FacesContext to avoid default FacesMessage logging
-            ExceptionMessageWriter.removeGlobalMessage(SUCCESS_MESSAGE);
-            ExceptionMessageWriter.logException(e);
-            System.out.println("an exception occurred.");
-        } finally {
-            return "result";
+        String forwardPage=null;
+        if (getVDCRequestBean().getCurrentVDCId() == null) {
+            // this is a save against the network
+            VDCNetwork vdcnetwork = getVDCRequestBean().getVdcNetwork();
+            vdcnetwork.setNetworkPageHeader(banner);
+            vdcnetwork.setNetworkPageFooter(footer);
+            vdcNetworkService.edit(vdcnetwork);
+            getVDCRequestBean().getVdcNetwork().setNetworkPageHeader(banner);
+            getVDCRequestBean().getVdcNetwork().setNetworkPageFooter(footer);
+            forwardPage="myNetworkOptions";
+        } else {
+            VDC vdc = vdcService.find(new Long(getVDCRequestBean().getCurrentVDC().getId()));
+            vdc.setHeader(banner);
+            vdc.setFooter(footer);
+            vdcService.edit(vdc);
+            getVDCRequestBean().getCurrentVDC().setHeader(banner);
+            getVDCRequestBean().getCurrentVDC().setFooter(footer);
+            forwardPage="myOptions";
         }
+        getVDCRequestBean().setSuccessMessage("Successfully updated layout branding.");
+        return forwardPage;
+
     }
 
     public String cancel_action(){

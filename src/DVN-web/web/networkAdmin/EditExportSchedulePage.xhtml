@@ -54,9 +54,8 @@
       <ice:form id="form1">
         <input type="hidden" name="pageName" value="EditExportSchedulePage"/>
         <div class="dvn_section">
-          <div jsfc="ice:panelGroup" styleClass="dvnRoundCornerMsgBlock #{(EditExportSchedulePage.success) ? 'dvnSuccessMessage' : 'dvnInformationMessage'}">
+          <div jsfc="ice:panelGroup" styleClass="dvnRoundCornerMsgBlock #{'dvnInformationMessage'}">
             <ice:outputText value="#{bundlePageInfo.exportsHelp}" escape="false"/>
-            <ice:messages layout="list" showDetail="false" showSummary="true" value="Update Successful!"/>
           </div>
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.exportsTitle}"/>
@@ -80,8 +79,8 @@
                   <ice:outputText value="Export Hour of Day (0-23)"/>
                 </div>
                 <div jsfc="ice:panelGroup">
-                  <ice:inputText id="exportHourOfDay" value="#{EditExportSchedulePage.exportHourOfDay}" required="true">
-                    <f:validateLongRange minimum="0" maximum="23"/>
+                  <ice:inputText id="exportHourOfDay" value="#{EditExportSchedulePage.exportHourOfDay}" required="true"  requiredMessage="This field is required.">
+                    <f:validateLongRange minimum="0" maximum="23" message="Please enter a value between 0 and 23"/>
                   </ice:inputText>
                   <ice:message for="exportHourOfDay" styleClass="errorMessage"/>
                 </div>
@@ -94,7 +93,7 @@
                 <div jsfc="ice:panelGroup">
                   <div id="requiredDayOfWeekText">
                     <ice:inputText id="exportDayOfWeek" value="#{EditExportSchedulePage.exportDayOfWeek}" required="true" requiredMessage="This field is required.">
-                      <f:validateLongRange minimum="1" maximum="7"/>
+                      <f:validateLongRange minimum="1" maximum="7"  message="Please enter a value between 1 and 7"/>
                     </ice:inputText>
                     <ice:message for="exportDayOfWeek" styleClass="errorMessage"/>
                   </div>

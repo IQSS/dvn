@@ -16,10 +16,9 @@
       <ice:form id="editContactUsForm">
         <ice:inputHidden rendered="#{VDCRequest.currentVDCId != null}" id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <div class="dvn_section">
-           <div jsfc="ice:panelGroup" styleClass="dvnRoundCornerMsgBlock #{(EditContactUsPage.success) ? 'dvnSuccessMessage' : 'dvnInformationMessage'}">
+           <div jsfc="ice:panelGroup" styleClass="dvnRoundCornerMsgBlock #{'dvnInformationMessage'}">
              <ice:outputText value="#{bundlePageInfo.editDvnNotificationsHelp}" escape="false" rendered="#{VDCRequest.currentVDCId == null}"/>
              <ice:outputText value="#{bundlePageInfo.editDvNotificationsHelp}" escape="false" rendered="#{VDCRequest.currentVDCId != null}"/>
-             <ice:messages layout="list" showDetail="false" showSummary="true"/>
            </div>
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.editDvnNotificationsTitle}" rendered="#{VDCRequest.currentVDCId == null}"/>

@@ -19,6 +19,11 @@
                     <div class="dvn_sectionTitle">
                         <ice:outputText value="#{bundlePageInfo.dvnOptionsTitle}"/>
                     </div>
+                      <div jsfc="ice:panelGroup" styleClass="dvnRoundCornerMsgBlock dvnSuccessMessage" rendered="#{!empty VDCRequest.successMessage }">
+                      <div>
+                        <ice:outputText id="statusMessage" value="#{VDCRequest.successMessage}"/>
+                      </div>
+                    </div>
                     <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
                         <tr><td colspan="2" class="dvnOptionsTableHeader"><ice:outputText value="#{bundlePageInfo.dvsSectionTitle}"/></td></tr>
                         <tr>
@@ -50,6 +55,7 @@
                             <td class="dvnOptionsTableOption">
                                 <ice:outputLink value="/dvn/faces/site/EditHarvestSitePage.xhtml">
                                     <ice:outputText value="#{bundlePageInfo.createHarvestingDvTitle}"/>
+                                    <f:param name="from" value="myNetworkOptions"/>
                                 </ice:outputLink>
                             </td>
                             <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.createHarvestingDvText}"/></td>

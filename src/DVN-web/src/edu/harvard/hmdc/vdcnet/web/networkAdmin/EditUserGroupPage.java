@@ -270,10 +270,6 @@ public class EditUserGroupPage extends VDCBaseBean implements java.io.Serializab
             else {
                 editUserGroupService.setUserDetailBeans(userDetails);
                 editUserGroupService.save(  );
-                StatusMessage msg = new StatusMessage();
-                msg.setMessageText("Successful!");
-                msg.setStyleClass("successMessage");
-                getRequestMap().put("statusMessage",msg);
                 return "result";
             }
         }

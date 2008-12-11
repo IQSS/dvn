@@ -108,11 +108,12 @@ public class EditExportSchedulePage extends VDCBaseBean implements java.io.Seria
                 vdcnetwork.setExportHourOfDay(exportHourOfDay);
                 vdcnetwork.setExportDayOfWeek(exportDayOfWeek);
                 vdcNetworkService.edit(vdcnetwork);
+                getVDCRequestBean().setSuccessMessage("Successfully updated export schedule.");
             } else {
                 ExceptionMessageWriter.removeGlobalMessage(SUCCESS_MESSAGE);
                 success = false;
             }
-            return "result";
+            return "myNetworkOptions";
      
     }
     

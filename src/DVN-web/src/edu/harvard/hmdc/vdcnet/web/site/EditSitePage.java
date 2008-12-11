@@ -292,10 +292,8 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
 
         vdcService.edit(thisVDC);
         getVDCRequestBean().setCurrentVDC(thisVDC);
-        msg = new StatusMessage();
-        msg.setMessageText("Update Successful!");
-        msg.setStyleClass("successMessage");
-        return "editSite";
+        getVDCRequestBean().setSuccessMessage("Successfully updated general settings.");
+         return "myOptions";
     }
     
     public String editScholarDataverse(){
@@ -310,10 +308,8 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
         scholardataverse.setAffiliation(this.affiliation);
         vdcService.edit(scholardataverse);
         getVDCRequestBean().setCurrentVDC(scholardataverse);
-        msg = new StatusMessage();
-        msg.setMessageText("Update Successful!");
-        msg.setStyleClass("successMessage");
-        return "editSite";
+        getVDCRequestBean().setSuccessMessage("Successfully updated general settings.");
+        return "myOptions";
     }
     
     public String cancel(){

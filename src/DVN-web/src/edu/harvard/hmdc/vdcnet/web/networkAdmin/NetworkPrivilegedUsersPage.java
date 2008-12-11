@@ -188,7 +188,7 @@ public class NetworkPrivilegedUsersPage extends VDCBaseBean implements java.io.S
     }   
 
     public String save() {
-         HttpServletRequest request = (HttpServletRequest)this.getExternalContext().getRequest();
+        HttpServletRequest request = (HttpServletRequest)this.getExternalContext().getRequest();
         String hostName=request.getLocalName();
         int port = request.getLocalPort();
         String portStr="";
@@ -197,11 +197,10 @@ public class NetworkPrivilegedUsersPage extends VDCBaseBean implements java.io.S
         }
         // Needed to send an approval email to approved creators
         String creatorUrl = "http://"+hostName+portStr+request.getContextPath()+"/faces/site/AddSitePage.xhtml";
-
         privileges.save(creatorUrl);
-        success=true;
         privileges.init();
-        return "result";  // Return back to current page
+        getVDCRequestBean().setSuccessMessage("Successfully updated network permissions.");
+        return "myNetworkOptions";
     } 
 
     

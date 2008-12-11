@@ -45,7 +45,6 @@ public class EditNetworkDepositUseTermsPage extends VDCBaseBean implements java.
 
     @EJB
     VDCNetworkServiceLocal vdcNetworkService;
-    private String SUCCESS_MESSAGE = new String("Update Successful!");
     private boolean termsOfUseEnabled;
     private String termsOfUse;
 
@@ -66,24 +65,17 @@ public class EditNetworkDepositUseTermsPage extends VDCBaseBean implements java.
     }
 
     public String save_action() {
-        String msg = SUCCESS_MESSAGE;
         success = true;
-        try {
-            if (validateTerms()) {
-                // action code here
-                VDCNetwork vdcNetwork = vdcNetworkService.find();
-                vdcNetwork.setDepositTermsOfUse(termsOfUse);
-                vdcNetwork.setDepositTermsOfUseEnabled(termsOfUseEnabled);
-                vdcNetworkService.edit(vdcNetwork);
-                FacesContext.getCurrentInstance().addMessage("editNetworkDepositUseTermsPage:button1", new FacesMessage(msg));
-            } else {
-                ExceptionMessageWriter.removeGlobalMessage(SUCCESS_MESSAGE);
-                success = false;
-            }
-        } catch (Exception e) {
-            msg = "An error occurred: " + e.getCause().toString();
-            System.out.println(msg);
-        } finally {
+        if (validateTerms()) {
+            // action code here
+            VDCNetwork vdcNetwork = vdcNetworkService.find();
+            vdcNetwork.setDepositTermsOfUse(termsOfUse);
+            vdcNetwork.setDepositTermsOfUseEnabled(termsOfUseEnabled);
+            vdcNetworkService.edit(vdcNetwork);
+            getVDCRequestBean().setSuccessMessage("Successfully updated terms for study creation.");
+            return "myNetworkOptions";
+        } else {
+            success = false;
             return null;
         }
     }

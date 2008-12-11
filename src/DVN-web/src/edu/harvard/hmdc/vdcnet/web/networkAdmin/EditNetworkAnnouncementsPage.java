@@ -126,28 +126,24 @@ public class EditNetworkAnnouncementsPage extends VDCBaseBean implements java.io
     }
     
     public String save_action() {
-        String msg = SUCCESS_MESSAGE;
-        success    = true;
-        try {
-            if (validateAnnouncementsText()) {
-                setChkEnableNetworkAnnouncements(chkEnableNetworkAnnouncements);
-                setNetworkAnnouncements(networkAnnouncements);
-                // Get the Network
-                VDCNetwork vdcnetwork = getVDCRequestBean().getVdcNetwork();
-                vdcnetwork.setDisplayAnnouncements(this.isChkEnableNetworkAnnouncements());
-                vdcnetwork.setAnnouncements(this.getNetworkAnnouncements());
-                vdcNetworkService.edit(vdcnetwork);
-                FacesContext.getCurrentInstance().addMessage("editNetworkAnnouncementsForm:btnSave", new FacesMessage(msg));
-            } else {
-                ExceptionMessageWriter.removeGlobalMessage(SUCCESS_MESSAGE);
-                success = false;
-            }
-        } catch (Exception e) {
-            msg = "An error occurred: " + e.getCause().toString();
-            System.out.println(msg);
-        } finally {
+        success = true;
+        if (validateAnnouncementsText()) {
+            setChkEnableNetworkAnnouncements(chkEnableNetworkAnnouncements);
+            setNetworkAnnouncements(networkAnnouncements);
+            // Get the Network
+            VDCNetwork vdcnetwork = getVDCRequestBean().getVdcNetwork();
+            vdcnetwork.setDisplayAnnouncements(this.isChkEnableNetworkAnnouncements());
+            vdcnetwork.setAnnouncements(this.getNetworkAnnouncements());
+            vdcNetworkService.edit(vdcnetwork);
+
+            getVDCRequestBean().setSuccessMessage("Successfully updated the network description.  Go to the Homepage to see your changes.");
+            return "myNetworkOptions";
+        } else {
+
+            success = false;
             return "result";
         }
+
     }
     
     public String cancel_action(){

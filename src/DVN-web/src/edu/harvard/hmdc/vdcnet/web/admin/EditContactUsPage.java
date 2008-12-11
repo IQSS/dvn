@@ -133,28 +133,24 @@ public class EditContactUsPage extends VDCBaseBean implements java.io.Serializab
     }
     
     public String save_action() {
-        String msg="Update Successful!";
-                success = true;
+        success = true;
+        String forwardPage=null;
         this.setContactUsEmail(contactUsEmail);
-        try {
-            if (getVDCRequestBean().getCurrentVDCId() == null) {
-                // this is a save against the network
-                VDCNetwork vdcnetwork = getVDCRequestBean().getVdcNetwork();
-                System.out.println("the email address is " + this.getContactUsEmail());
-                vdcnetwork.setContactEmail(this.getContactUsEmail());
-                vdcNetworkService.edit(vdcnetwork);
-            } else {
-                VDC vdc = vdcService.find(new Long(getVDCRequestBean().getCurrentVDC().getId()));
-                vdc.setContactEmail(this.getContactUsEmail());
-                vdcService.edit(vdc);
-            }
-        } catch (Exception e) {
-            msg = "An error occurred: " + e.getCause().toString();
-            success = false;
-        } finally {
-            FacesContext.getCurrentInstance().addMessage("editContactUsForm:btnSave", new FacesMessage(msg));
-            return "result";
+        if (getVDCRequestBean().getCurrentVDCId() == null) {
+            // this is a save against the network
+            VDCNetwork vdcnetwork = getVDCRequestBean().getVdcNetwork();
+            System.out.println("the email address is " + this.getContactUsEmail());
+            vdcnetwork.setContactEmail(this.getContactUsEmail());
+            vdcNetworkService.edit(vdcnetwork);
+            forwardPage="myNetworkOptions";
+        } else {
+            VDC vdc = vdcService.find(new Long(getVDCRequestBean().getCurrentVDC().getId()));
+            vdc.setContactEmail(this.getContactUsEmail());
+            vdcService.edit(vdc);
+            forwardPage="myOptions";
         }
+        getVDCRequestBean().setSuccessMessage("Successfully updated E-mail notifications.");
+        return forwardPage;
     }
     
     public String cancel_action(){

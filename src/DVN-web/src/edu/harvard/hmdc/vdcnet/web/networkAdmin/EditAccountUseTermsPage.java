@@ -48,7 +48,6 @@ public class EditAccountUseTermsPage extends VDCBaseBean implements java.io.Seri
     @EJB
     VDCNetworkServiceLocal vdcNetworkService;
     @EJB UserServiceLocal userService;
-    private String SUCCESS_MESSAGE = new String("Update Successful!");
     private boolean termsOfUseEnabled;
     private String termsOfUse;
 
@@ -69,28 +68,22 @@ public class EditAccountUseTermsPage extends VDCBaseBean implements java.io.Seri
     }
 
     public String save_action() {
-        String msg = SUCCESS_MESSAGE;
         success = true;
-        try {
-            if (validateTerms()) {
-                // action code here
-                VDCNetwork vdcNetwork = vdcNetworkService.find();
-                vdcNetwork.setTermsOfUse(termsOfUse);
-                vdcNetwork.setTermsOfUseEnabled(termsOfUseEnabled);
-                vdcNetwork.setTermsOfUseUpdated(new Date());
-                vdcNetworkService.edit(vdcNetwork);
-                userService.clearAgreedTermsOfUse();
-                FacesContext.getCurrentInstance().addMessage("editAccountUseTermsPage:button1", new FacesMessage(msg));
-            } else {
-                ExceptionMessageWriter.removeGlobalMessage(SUCCESS_MESSAGE);
-                success = false;
-            }
-        } catch (Exception e) {
-            msg = "An error occurred: " + e.getCause().toString();
-            System.out.println(msg);
-        } finally {
+        if (validateTerms()) {
+            // action code here
+            VDCNetwork vdcNetwork = vdcNetworkService.find();
+            vdcNetwork.setTermsOfUse(termsOfUse);
+            vdcNetwork.setTermsOfUseEnabled(termsOfUseEnabled);
+            vdcNetwork.setTermsOfUseUpdated(new Date());
+            vdcNetworkService.edit(vdcNetwork);
+            userService.clearAgreedTermsOfUse();
+            getVDCRequestBean().setSuccessMessage("Successfully updated terms for account creation.");
+            return "myNetworkOptions";
+        } else {
+            success = false;
             return null;
         }
+
     }
 
     public String cancel_action() {

@@ -66,24 +66,17 @@ public class EditDepositUseTermsPage extends VDCBaseBean implements java.io.Seri
     }    
     
     public String save_action() {
-        String msg = SUCCESS_MESSAGE;
-        success    = true;
-         try {
-            if (validateTerms()) {
-                // action code here
-                VDC vdc = vdcService.find(new Long(getVDCRequestBean().getCurrentVDC().getId()));
-                vdc.setDepositTermsOfUse(termsOfUse);
-                vdc.setDepositTermsOfUseEnabled(termsOfUseEnabled);
-                vdcService.edit(vdc);
-                FacesContext.getCurrentInstance().addMessage("editUseTermsPage:button1", new FacesMessage(msg));
-            } else {
-                ExceptionMessageWriter.removeGlobalMessage(SUCCESS_MESSAGE);
-                success = false;
-            }
-        } catch (Exception e) {
-            msg = "An error occurred: " + e.getCause().toString();
-            System.out.println(msg);
-        } finally {
+        success = true;
+        if (validateTerms()) {
+            // action code here
+            VDC vdc = vdcService.find(new Long(getVDCRequestBean().getCurrentVDC().getId()));
+            vdc.setDepositTermsOfUse(termsOfUse);
+            vdc.setDepositTermsOfUseEnabled(termsOfUseEnabled);
+            vdcService.edit(vdc);
+            getVDCRequestBean().setSuccessMessage("Successfully updated terms of use for study creation.");
+            return "myOptions";
+        } else {
+            success = false;
             return null;
         }
     }

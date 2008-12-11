@@ -75,30 +75,22 @@ public class EditUseTermsPage extends VDCBaseBean implements java.io.Serializabl
     }    
     
     public String save_action() {
-        String msg = SUCCESS_MESSAGE;
-        success    = true;
-        messageTag.setRendered(true);
-         try {
-            if (validateTerms()) {
-                // action code here
-                VDC vdc = vdcService.find(new Long(getVDCRequestBean().getCurrentVDC().getId()));
-                vdc.setDownloadTermsOfUse(termsOfUse);
-                vdc.setDownloadTermsOfUseEnabled(termsOfUseEnabled);
-                vdcService.edit(vdc);
-                FacesContext.getCurrentInstance().addMessage("editUseTermsPage:button1", new FacesMessage(msg));
-            } else {
-                ExceptionMessageWriter.removeGlobalMessage(SUCCESS_MESSAGE);
-                success = false;
-            }
-        } catch (Exception e) {
-            messageTag.setRendered(false);
-            msg = "An error occurred: " + e.getCause().toString();
-            System.out.println(msg);
-        } finally {
+        if (validateTerms()) {
+            // action code here
+            VDC vdc = vdcService.find(new Long(getVDCRequestBean().getCurrentVDC().getId()));
+            vdc.setDownloadTermsOfUse(termsOfUse);
+            vdc.setDownloadTermsOfUseEnabled(termsOfUseEnabled);
+            vdcService.edit(vdc);
+            getVDCRequestBean().setSuccessMessage("Successfully updated file download terms of use.");
+            return "myOptions";
+        } else {
+            ExceptionMessageWriter.removeGlobalMessage(SUCCESS_MESSAGE);
+            success = false;
             return null;
         }
+
     }
-    
+   
     public String cancel_action(){
             return "cancelVDC";
     }

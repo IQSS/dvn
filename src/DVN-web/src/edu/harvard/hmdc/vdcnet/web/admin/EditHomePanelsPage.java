@@ -161,9 +161,7 @@ public class EditHomePanelsPage extends VDCBaseBean implements java.io.Serializa
     }
     
     public String save_action() {
-        String msg = SUCCESS_MESSAGE;
-        success    = true;
-         try {
+        success = true;
             if (validateAnnouncementsText()) {
                 setChkNetworkAnnouncements(chkNetworkAnnouncements);
                 setChkLocalAnnouncements(chkLocalAnnouncements);
@@ -177,17 +175,13 @@ public class EditHomePanelsPage extends VDCBaseBean implements java.io.Serializa
                 vdc.setAnnouncements(getLocalAnnouncements());
                 vdc.setDisplayNewStudies(this.isChkNewStudies());
                 vdcService.edit(vdc);
-                FacesContext.getCurrentInstance().addMessage("editHomePanelsForm:btnSave", new FacesMessage(msg));
+                getVDCRequestBean().setSuccessMessage("Successfully updated dataverse description.");
+                return "myOptions";
             } else {
                 ExceptionMessageWriter.removeGlobalMessage(SUCCESS_MESSAGE);
                 success = false;
+                return "result";
             }
-        } catch (Exception e) {
-            msg = "An error occurred: " + e.getCause().toString();
-            System.out.println(msg);
-        } finally {
-            return "result";
-        }
     }
     
     public String cancel_action(){

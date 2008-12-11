@@ -15,11 +15,8 @@
       <ice:form id="NetworkPrivilegedUsersPageView">
         <input type="hidden" name="pageName" value="NetworkPrivilegedUsersPage"/>
         <div class="dvn_section">
-          <div jsfc="ice:panelGroup" styleClass="dvnRoundCornerMsgBlock #{(NetworkPrivilegedUsersPage.success) ? 'dvnSuccessMessage' : 'dvnInformationMessage'}">
+          <div jsfc="ice:panelGroup" styleClass="dvnRoundCornerMsgBlock #{'dvnInformationMessage'}">
              <ice:outputText value="#{bundlePageInfo.manageDvnPermissionsHelp}" escape="false"/>
-             <div jsfc="ice:panelGroup" rendered="#{NetworkPrivilegedUsersPage.success}">
-               <ice:outputText value="Update Successful!"/>
-             </div>
           </div>
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.manageDvnPermissionsTitle}"/>

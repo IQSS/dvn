@@ -430,16 +430,9 @@ public class SearchFieldsPage extends VDCBaseBean implements java.io.Serializabl
             thisVDC.setSearchResultFields(newSearchResultsFields);
             vdcService.edit(thisVDC);
         }
-        StatusMessage newMsg = new StatusMessage();
-        String msgText;
-        msgText = "Update Successful!";
-        newMsg.setStyleClass("successMessage");
-        newMsg.setMessageText(msgText);
-        Map m = getRequestMap();
-        m.put("statusMessage",newMsg);
-        msg = newMsg;
-        success = true;
-        return "searchFields";
+     
+        getVDCRequestBean().setSuccessMessage("Successfully updated search fields.");
+        return "myOptions";
     }
     
     private List <StudyField> getDefaultSearchResultsFields(){

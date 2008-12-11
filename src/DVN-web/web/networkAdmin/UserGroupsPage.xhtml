@@ -15,11 +15,8 @@
     <gui:define name="body">
       <ice:form id="form1">
         <div class="dvn_section">
-           <div jsfc="ice:panelGroup" styleClass="dvnRoundCornerMsgBlock #{(UserGroupsPage.statusMessage.messageText) ? 'dvnSuccessMessage' : 'dvnInformationMessage'}">
+           <div jsfc="ice:panelGroup" styleClass="dvnRoundCornerMsgBlock #{'dvnInformationMessage'}">
              <ice:outputText value="#{bundlePageInfo.manageGroupsHelp}" escape="false"/>
-             <div jsfc="ice:panelGroup" rendered="#{!empty UserGroupsPage.statusMessage.messageText}">
-               <ice:outputText id="statusMessage" value="#{UserGroupsPage.statusMessage.messageText}"/>
-             </div>
           </div>
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.manageGroupsTitle}"/>

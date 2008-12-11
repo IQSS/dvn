@@ -277,11 +277,11 @@ public class PrivilegedUsersPage extends VDCBaseBean implements java.io.Serializ
         String contributorUrl = "http://"+hostName+portStr+request.getContextPath()+"/dv/"+getVDCRequestBean().getCurrentVDC().getAlias()+"/faces/admin/OptionsPage.xhtml";
        this.editVDCPrivileges.save(contributorUrl);
         
-        success=true;
+       
         editVDCPrivileges.setVdc(vdc.getId());
         vdc = editVDCPrivileges.getVdc();
-      
-        return "result";  // Go back to the same page
+        getVDCRequestBean().setSuccessMessage("Successfully updated dataverse permissions.");
+        return "myOptions";  
     } 
     
     public void addUser(ActionEvent ae) {

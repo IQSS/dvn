@@ -100,13 +100,13 @@
               </ice:outputLink>
             </div>
           </div>
-          <div jsfc="ice:panelGroup" styleClass="dvnHmpgGroupNoDVs" rendered="#{empty(dvItems.childItems) and dvItems.recordType eq 'group'}">
+          <div jsfc="ice:panelGroup" styleClass="dvnHmpgGroupNoDVs" rendered="#{dvItems.dataModel.rowCount == 0 and dvItems.recordType eq 'group'}">
             <p><ice:outputText value="There are no dataverses to display in this group."/></p>
           </div>
-          <div jsfc="ice:panelGroup" styleClass="dvnHmpgGroupTableWrap" rendered="#{! empty(dvItems.childItems) and dvItems.recordType eq 'group'}">
+          <div jsfc="ice:panelGroup" styleClass="dvnHmpgGroupTableWrap" rendered="#{dvItems.dataModel.rowCount > 0 and dvItems.recordType eq 'group'}">
             <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="2" id="gridPanel2"
                            styleClass="dvnHmpgGroupTableTop" columnClasses="dvnHmpgGroupTotals, dvnPaginatorWrap">
-              <div jsfc="ice:panelGroup" id="groupPanel1" rendered="#{not empty(dvItems.childItems) and VDCRequest.currentVDC == null}">
+              <div jsfc="ice:panelGroup" id="groupPanel1" rendered="#{dvItems.dataModel.rowCount > 0 and VDCRequest.currentVDC == null}">
                 <h:outputText binding="#{NetworkStatsBean.inlineDataverseKey}"
                               effect="#{item.effect}"
                               styleClass="dvn_totalsLabel"
@@ -129,11 +129,15 @@
                   <f:attribute name="itemid" styleClass="dvn_totalsValue" value="item#{dvItems.id}"/>
                 </h:outputText>
               </div>
-              <div jsfc="ice:panelGroup" id="groupPanel2" rendered="#{not empty(dvItems.childItems)}">
-                <!-- <ice:inputHidden binding="#{HomePage.inputStartTime}" value="#{HomePage.startTime}"/> -->                  
-                <ice:dataPaginator id="dataScroll_3" styleClass="dvnPaginatorRight"
-                                   for="dataverseList" paginator="true" fastStep="3"
-                                   paginatorMaxPages="4" renderFacetsIfSinglePage="false">
+              <div jsfc="ice:panelGroup" id="groupPanel2" rendered="#{dvItems.dataModel.rowCount > 0}">
+                <ice:dataPaginator actionListener="#{HomePage.paginate}"
+                                    for="dataverseList"
+                                    id="dataScroll_3"
+                                    paginator="true" fastStep="3"
+                                    paginatorMaxPages="4" 
+                                    renderFacetsIfSinglePage="true"
+                                    rendered="#{dvItems.dataModel.rowCount > 10}"
+                                    styleClass="dvnPaginatorRight">
                   <f:facet name="first">
                     <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-first.gif" title="First Page"/>
                   </f:facet>
@@ -158,18 +162,18 @@
           -->
 
           <!-- Start Browse section (with side panels, if available) -->
-          <div jsfc="ice:panelGroup" rendered="#{not empty(dvItems.childItems) }">
+          <div jsfc="ice:panelGroup" rendered="#{dvItems.dataModel.rowCount > 0}">
 
              
             <ice:dataTable headerClass="groupRow"
                            id="dataverseList"
-                           rendered="#{not empty(dvItems.childItems) }"
+                           rendered="#{dvItems.dataModel.rowCount > 0 }"
                            rowClasses="evenRow oddRow"
                            rows="10" width="100%" columnWidths="35%,35%,10%,10%,10%"
                            sortColumn="#{dvItems.sortColumnName}"
                            sortAscending="#{dvItems.ascending}"
                            styleClass="dvnHmpgGroupDataTable"
-                           value="#{dvItems.childItems}"
+                           value="#{dvItems.dataModel}"
                            var="items">
               <!-- name number -->
               <f:facet name="header">
@@ -246,28 +250,6 @@
                 <!-- <ice:outputText value="#{items.activity}"/> -->
               </ice:column>
             </ice:dataTable>
-
-     
-            <!-- BELIEVE THIS WONT NEED TO BE DISPLAYED BECAUSE OF THE PAGINATION AND DATAVERSE/STUDY/FILE COUNTER
-            <ice:dataPaginator id="dataScroll_2" for="dataverseList"
-                               rowsCountVar="rowsCount"
-                               displayedRowsCountVar="displayedRowsCount"
-                               firstRowIndexVar="firstRowIndex"
-                               lastRowIndexVar="lastRowIndex"
-                               pageCountVar="pageCount"
-                               pageIndexVar="pageIndex">
-              <ice:outputFormat
-                styleClass="standard"
-                value="{0} dataverses found, displaying {1} dataverse(s), from {2} to {3}. Page {4} / {5}.">
-                <f:param value="#{rowsCount}"/>
-                <f:param value="#{displayedRowsCount}"/>
-                <f:param value="#{firstRowIndex}"/>
-                <f:param value="#{lastRowIndex}"/>
-                <f:param value="#{pageIndex}"/>
-                <f:param value="#{pageCount}"/>
-              </ice:outputFormat>
-            </ice:dataPaginator>
-            -->
           </div>
           
         </ice:panelSeries>

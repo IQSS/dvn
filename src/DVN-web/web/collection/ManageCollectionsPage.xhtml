@@ -28,6 +28,11 @@
           </ice:outputLink>
           (There will be a link to create a new collection inside the table, for each collection row)
           -->
+          <div class="dvnManageTableTop">
+            <div jsfc="ice:panelGroup" styleClass="dvnManageTableTotals">
+              <ice:outputText value="Study Collections"/>
+            </div>
+          </div>
           <ice:dataTable id="collectionsDataTbl"
                          var="collUI"
                          value="#{ManageCollectionsPage.collections}"
@@ -75,11 +80,11 @@
           </ice:dataTable>
           <div class="dvnManageTableTop dvnManageSecondTable">
             <div jsfc="ice:panelGroup" styleClass="dvnManageTableTotals">
-              <ice:outputText value="Linked Collections: ManageCollectionsPage.itemBeansSize"/>
+              <ice:outputText value="Linked Collections"/>
             </div>
             <div jsfc="ice:panelGroup" styleClass="dvnManageTableCreateLink">
               <ice:outputLink id="hyperlinkAddLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/collection/AddLinkPage.xhtml">
-                <ice:outputText id="hyperlinkTextAddLink" value="Create Linked Collection"/>
+                <ice:outputText id="hyperlinkTextAddLink" value="Add Collection Link"/>
               </ice:outputLink>
             </div>
           </div>

@@ -100,4 +100,6 @@ public interface VDCServiceLocal extends java.io.Serializable  {
 
     public List getPagedData(Long vdcId, int firstRow, int totalRows, String orderBy, String order);
 
+    public Long getVdcCount(long vdcId);
+
 }

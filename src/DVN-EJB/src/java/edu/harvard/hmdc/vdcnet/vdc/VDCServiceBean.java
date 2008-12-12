@@ -504,6 +504,20 @@ public class VDCServiceBean implements VDCServiceLocal {
       }
     }
 
+    public Long getVdcCount(long vdcGroupId) {
+        String queryString  = (vdcGroupId != 0) ? "Select count(vdcgroup_id) from vdc_group g where vdcgroup_id = " + vdcGroupId + " and vdc_id in (Select id fromj vdc where restricted = false" : "select count(id) from vdc v where restricted = false";
+        Long longValue = null;
+        Query query         = em.createNativeQuery(queryString);
+        try {
+            Object object       = ((List)query.getSingleResult()).get(0);
+            longValue      = (Long)object;
+        } catch (Exception nre) {
+            longValue = new Long("0");
+        } finally {
+            return longValue;
+        }
+    }
+
 
 
 

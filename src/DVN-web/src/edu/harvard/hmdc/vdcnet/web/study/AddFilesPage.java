@@ -211,17 +211,17 @@ public static final Log mLog = LogFactory.getLog(AddFilesPage.class);
       
       // check if the file is in the data table already with the same name, i.e.  
       // hasFileName checks if currentFile name is in getValidationFileNames   
-        boolean b =hasFileName(currentFile, false);
+        boolean b =hasFileName(currentFile.getStudyFile().getFileName(), true);
        if(b){
             str = "File " + currentFile.getStudyFile().getFileName()+ " is already in the table";
             mLog.error(str);
             errorMessage(str);
            
-            return;
-       }else{
-            //add it to the validation names 
-            getValidationFileNames().add(currentFile.getStudyFile().getFileName().trim()); 
+     
        }
+            //add it to the validation names 
+           getValidationFileNames().add(currentFile.getStudyFile().getFileName().trim()); 
+       
        // reference our newly updated file for display purposes and
        // added it to our history file list.
               
@@ -349,7 +349,7 @@ private boolean  hasFileName( StudyFileEditBean inputFileData, boolean remov){
     Iterator<String> iter = getValidationFileNames().iterator();
         while (iter.hasNext()) {
            
-            if (fname.equals(iter.next() ) ) {
+            if (fname.trim().equals(iter.next().trim() ) && !isin) {
                 if(remov) iter.remove();
 		isin = true;
             }
@@ -585,11 +585,12 @@ private boolean  hasFileName( StudyFileEditBean inputFileData, boolean remov){
        if(sz0<=0) return false;
         Collection<String> noDups = new HashSet<String>(getValidationFileNames());
         int sz1 = noDups.size();
-        if(sz0 != sz1){
+        boolean res = sz0 != sz1;
+        if(res){
           getValidationFileNames().clear();
           getValidationFileNames().addAll(noDups);
         }
-        return sz0 != sz1; 
+        return res; 
    }
         
    //find duplitcate file names in the data table list     
@@ -751,7 +752,7 @@ private boolean  hasFileName( StudyFileEditBean inputFileData, boolean remov){
       
         if(fileName.equals("")) return; 
         // check invalid characters 
-     
+        
          mLog.debug(currentFile.getOriginalFileName());
         if (    fileName.contains("\\") ||
                 fileName.contains("/") ||
@@ -776,11 +777,17 @@ private boolean  hasFileName( StudyFileEditBean inputFileData, boolean remov){
           if ( fileName.equals(dummy) ) {
                 errorMessage = "must be unique (a previously existing file already exists with the name).";
                 displayError(context, (UIInput) toValidate, errorMessage);
-               return;
+            return;
                
             }
         }
        }
+         
+         //make sure there are no other files with the same name in the validation list 
+        if(hasFileName(fileName, true)){
+           errorMessage = "must be unique (a previously existing file already exists with the name).";
+           displayError(context, (UIInput) toValidate, errorMessage); 
+        }
         // now add this name to the validation list
        if(!fileName.equals(fname)){
         getCurrentFile().getStudyFile().setFileName(fileName);
@@ -789,10 +796,8 @@ private boolean  hasFileName( StudyFileEditBean inputFileData, boolean remov){
         hasFileName(fname,true);
        } 
         
-       //make sure there are no other files with the same name in the validation list 
-        duplicatesValidationNames();
        
-            
+       
       }
     private void displayError(FacesContext context, UIInput toValidate, String errorMessage){
         

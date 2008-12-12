@@ -11,6 +11,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Temporal;
@@ -61,8 +62,8 @@ public class StudyFileActivity implements Serializable {
         return "edu.harvard.hmdc.vdcnet.study.StudyFileActivity[id=" + id + "]";
     }
     
-    @OneToOne
-    StudyFile studyFile;
+    @OneToOne StudyFile studyFile;
+    @ManyToOne Study study;
     private int downloadCount;
     @Temporal(value = TemporalType.TIMESTAMP)
     private Date lastDownloadTime;
@@ -73,6 +74,14 @@ public class StudyFileActivity implements Serializable {
 
     public void setStudyFile(StudyFile studyFile) {
         this.studyFile = studyFile;
+    }
+
+    public Study getStudy() {
+        return study;
+    }
+
+    public void setStudy(Study study) {
+        this.study = study;
     }
 
     public int getDownloadCount() {

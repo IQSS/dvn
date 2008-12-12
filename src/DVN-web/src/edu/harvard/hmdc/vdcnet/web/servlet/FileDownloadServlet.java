@@ -771,9 +771,11 @@ public class FileDownloadServlet extends HttpServlet {
 
                         }
 
-                    } else {
-                        
+                    } else {                        
 // local file: format conversion case: ver1.4-changes start here ##########
+			File zipFile  = null;
+
+
 
                         dbgLog.fine("***** v1.4 code-block : local file: format conversion case starts here *****");
                         
@@ -791,34 +793,6 @@ public class FileDownloadServlet extends HttpServlet {
                         dbgLog.fine("remote: paramListToR="+paramListToR);
 
 
-/* pre-v1.4 code
-                        // we are going to send a format conversion request to
-                        // the DSB via HTTP.
-
-                        Map parameters = new HashMap();
-                        
-
-                        parameters.put("dtdwnld", formatRequested);
-
-                        String serverPrefix = req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort() + req.getContextPath();
-
-                        parameters.put("uri", generateUrlForDDI(serverPrefix, file.getId()));
-
-                        parameters.put("URLdata", generateUrlForFile(serverPrefix, file.getId()));
-                        parameters.put("fileid", "f" + file.getId().toString());
-
-                        // We are requesting a conversion of the whole datafile.
-                        // I was positive there was a simple way to ask univar (Disseminate)
-                        // for "all" variables; but I'm not so sure anymore. So
-                        // far I've only been able to do this by listing all the
-                        // variables in the datafile and adding them to the request.
-                        // :( -- L.A.
-
-                        List variables = file.getDataTable().getDataVariables();
-                        parameters.put("varbl", generateVariableListForDisseminate(variables));
-                        parameters.put("wholefile", "true");                        
-*/
-                        
                         dataVariables = file.getDataTable().getDataVariables();
                         Map<String, Map<String, String>> vls = getValueTablesForAllRequestedVariables();
                         dbgLog.fine("local: variables(getDataVariableForRequest())="+getDataVariableForRequest()+"\n");
@@ -875,8 +849,6 @@ public class FileDownloadServlet extends HttpServlet {
                             frmtCnvrtdFile = new File(wbDataFileName);
                             if (frmtCnvrtdFile.exists()){
                                 dbgLog.fine("frmtCnvrtdFile:length="+frmtCnvrtdFile.length());
-//                                deleteTempFileList.add(frmtCnvrtdFile);
-//                                zipFileList.add(frmtCnvrtdFile);
 
                             } else {
                                 // the data file was not created
@@ -884,20 +856,80 @@ public class FileDownloadServlet extends HttpServlet {
                                 dbgLog.warning("exiting service: format-converted data file was not transferred");
                                 return;
                             }
+
+			    // now we have to create a README file...
+
+			    String readMeFileName = "README_" + resultInfo.get("PID") +  ".txt";
+			    File readMeFile = new File(System.getProperty("java.io.tmpdir"), readMeFileName);
+                
+			    DvnReplicationREADMEFileWriter rw = new DvnReplicationREADMEFileWriter(resultInfo);
+			    rw.writeREADMEfile(readMeFile);
+
+			    // ... then package both files in a 
+			    // zip archive:
+			    
+			    try {
+				String zipFilePrefix = "zipFile_" + resultInfo.get("PID") + ".zip";
+				zipFile  = new File(System.getProperty("java.io.tmpdir"), zipFilePrefix);
+				// set content type:
+				res.setContentType("application/zip");
+
+				// create zipped output stream:
+
+				FileOutputStream zipFileStream = new FileOutputStream(zipFile);
+				ZipOutputStream zout = new ZipOutputStream(zipFileStream);
+
+				InputStream tmpin = null;
+				byte[] dataBuffer = new byte[8192];
+				int i = 0;
+
+				tmpin = new FileInputStream(resultInfo.get("wbDataFileName"));
+				ZipEntry e = new ZipEntry(frmtCnvrtdFile.getName());
+				zout.putNextEntry(e);
+
+				while ((i = tmpin.read(dataBuffer)) > 0) {
+				    zout.write(dataBuffer, 0, i);
+				    zout.flush();
+				}
+				tmpin.close();
+				zout.closeEntry();
+
+				tmpin = new FileInputStream(resultInfo.get(readMeFile));
+				e = new ZipEntry(readMeFileName);
+				zout.putNextEntry(e);
+
+				while ((i = tmpin.read(dataBuffer)) > 0) {
+				    zout.write(dataBuffer, 0, i);
+				    zout.flush();
+				}
+				tmpin.close();
+				zout.closeEntry();
+
+				zout.close();
+				zipFileStream.close(); 
+
+			    } catch (IOException e){
+				String errorMessage = "An unknown I/O error has occured while trying to perform a format conversion on a locally-stored data file. Unfortunately, no extra diagnostic information on the nature of the problem is available to the application. It is possible that it was caused by a temporary network error as the Application was communicating to the Data Services Broker. Please try again later and if the problem persists, report it to your DVN technical support contact.";
+				createErrorResponseGeneric(res, 0, errorMessage);
+				return; 
+			    }
+			    // TODO: delete temporary files we created!
+			    // end of zipping step
                         }
                        
                         try {
 
 // v1.4 change: start
-                            res.setContentType(formatRequestedMIMEtypeMap.get(formatRequested));
-                            res.setHeader("content-disposition",
-                                "attachment; filename=" +
-                                frmtCnvrtdFile.getName());
-                            InputStream in = new FileInputStream(resultInfo.get("wbDataFileName"));
-// v1.4 change: end
+//                            res.setContentType(formatRequestedMIMEtypeMap.get(formatRequested));
+//                            res.setHeader("content-disposition",
+//                                "attachment; filename=" +
+//                                frmtCnvrtdFile.getName());
 
-                            // send the incoming HTTP stream as the response body
-//                            InputStream in = method.getResponseBodyAsStream();
+			    res.setContentType("application/zip");
+			    String zfname = zipFile.getName();
+			    res.setHeader("content-disposition", "attachment; filename=" + zfname);
+				
+                            InputStream in = new FileInputStream(zipFile);
                             OutputStream out = res.getOutputStream();
 
                             // Also, we want to cache this file for future use:
@@ -916,6 +948,11 @@ public class FileDownloadServlet extends HttpServlet {
                             out.close();
                             fileCachingStream.flush();
                             fileCachingStream.close();
+
+			    // TODO: delete temporary zip file; 
+			    // (or change the whole logic to skip creating
+			    // temporary zip file and write it directly into 
+			    // the cached location)
 
                         } catch (IOException ex) {
                             //ex.printStackTrace();

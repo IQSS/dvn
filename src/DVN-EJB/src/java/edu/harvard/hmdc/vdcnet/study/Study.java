@@ -2137,13 +2137,13 @@ End of deprecated methods section
     }
 
     @OneToMany(mappedBy = "study", cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
-    private StudyFileActivity studyFileActivity;
+    private List<StudyFileActivity> studyFileActivity;
 
-    public StudyFileActivity getStudyFileActivity() {
+    public List<StudyFileActivity> getStudyFileActivity() {
         return studyFileActivity;
     }
 
-    public void setStudyFileActivity(StudyFileActivity studyFileActivity) {
+    public void setStudyFileActivity(List<StudyFileActivity> studyFileActivity) {
         this.studyFileActivity = studyFileActivity;
     }
 

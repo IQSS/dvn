@@ -107,13 +107,22 @@ INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'ManageClas
 -- remove production date from dfault seatch results
 update studyfield set searchresultfield = false where name = 'productionDate';
 
+-- new studyId column (and fk constraint) to studyFileActivity
+ALTER TABLE studyfileactivity ADD COLUMN study_id bigint;
+ALTER TABLE studyfileactivity ALTER COLUMN study_id SET STORAGE PLAIN;
+
+ALTER TABLE studyfileactivity
+  ADD CONSTRAINT fk_studyfileactivity_study_id FOREIGN KEY (study_id)
+      REFERENCES study (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+-- new indices
 create index study_owner_id_index on study(owner_id);
 create index filecategory_id_index on filecategory(id);
 create index studyfile_id_index on studyfile(id);
 create index studyfileactivity_id_index on studyfileactivity(id);
 create index studyfileactivity_studyfile_id_index on studyfileactivity(studyfile_id);
+create index studyfileactivity_study_id_index on studyfileactivity(study_id);
 
--- update production for releasedate
-Update vdc set releasedate = createddate where releasedate IS null and restricted = false;
 
 commit;

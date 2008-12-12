@@ -894,7 +894,7 @@ public class FileDownloadServlet extends HttpServlet {
 				tmpin.close();
 				zout.closeEntry();
 
-				tmpin = new FileInputStream(resultInfo.get(readMeFile));
+				tmpin = new FileInputStream(readMeFile);
 				e = new ZipEntry(readMeFileName);
 				zout.putNextEntry(e);
 

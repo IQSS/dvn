@@ -543,17 +543,19 @@ public class DataverseGrouping extends SortableList {
     public void setPageAction(Boolean bool) {
         this.pageAction = bool;
     }
+
+     boolean isPopulated = false;
      public PagedDataModel getDataModel() {
              StudyServiceLocal studyService = null;
-             VDCServiceLocal vdcService = null;
+             VDCServiceLocal vdcService     = null;
              try {
                     studyService = (StudyServiceLocal) new InitialContext().lookup("java:comp/env/studyService");
-                    vdcService = (VDCServiceLocal) new InitialContext().lookup("java:comp/env/vdcService");
+                    vdcService   = (VDCServiceLocal) new InitialContext().lookup("java:comp/env/vdcService");
              } catch (javax.naming.NamingException ne) {
                  //naming exception
              }
              List resultList = new ArrayList();
-             String field = new String();
+             String field    = new String();
                if (sortColumnName.equals(dateReleasedColumnName))
                    field = "releasedate";
                else if (sortColumnName.equals(lastUpdatedColumnName)) {
@@ -564,26 +566,28 @@ public class DataverseGrouping extends SortableList {
                    field = sortColumnName;
                }
              if (!oldSort.equals(sortColumnName) || oldAscending != ascending){
-               String order = (ascending == true) ? "ASC" : "DESC";
-               resultList = vdcService.getPagedData(this.id, firstRow, rows, field, order);//This is the new sort. TODO: figure out activity sort
+               String order     = (ascending == true) ? "ASC" : "DESC";
+               resultList       = vdcService.getPagedData(this.id, firstRow, rows, field, order);//This is the new sort. TODO: figure out activity sort
                oldSort = sortColumnName;
-               oldAscending = ascending;
-               oldOrder     = order;
-               oldField     = field;
+               oldAscending     = ascending;
+               oldOrder         = order;
+               oldField         = field;
             } else {
-                resultList = vdcService.getPagedData(this.id, firstRow, rows, oldField, oldOrder);
+                resultList      = vdcService.getPagedData(this.id, firstRow, rows, oldField, oldOrder);
             }
              
-             List newList    = new ArrayList();
-             Iterator iterator = resultList.iterator();
-             while (iterator.hasNext()) { // populate the grouplist and pagedDataModel
-                 Vector vector = (Vector)iterator.next();
-                 Long vdcId = new Long(((Integer)vector.get(0)).toString());
-                 Timestamp releaseDate = (Timestamp)vector.get(4);
-                 Timestamp timestamp   = studyService.getLastUpdatedTime(vdcId);
+             List newList       = new ArrayList();
+             Iterator iterator  = resultList.iterator();
+             
+             if (!isPopulated) {
+               while (iterator.hasNext()) { // populate the grouplist and pagedDataModel
+                 Vector vector          = (Vector)iterator.next();
+                 Long vdcId             = new Long(((Integer)vector.get(0)).toString());
+                 Timestamp releaseDate  = (Timestamp)vector.get(4);
+                 Timestamp timestamp    = studyService.getLastUpdatedTime(vdcId);
                  Timestamp lastUpdateTime = (timestamp != null ? timestamp : releaseDate);
-                 Long localActivity       = calculateActivity(vdcId);
-                 String activity          = getActivityClass(localActivity);
+                 Long localActivity     = calculateActivity(vdcId);
+                 String activity        = getActivityClass(localActivity);
                  //String activity = "activitylevelicon al-5"; // for debug purposes only
                  DataverseGrouping grouping = new DataverseGrouping(vdcId);
                  grouping.setName((String)vector.get(1));
@@ -595,25 +599,19 @@ public class DataverseGrouping extends SortableList {
                  grouping.setRecordType("dataverse");
                  grouping.setActivity(activity);
                  newList.add(grouping);
+                 isPopulated = true;
              }
              groupList.clear();
              groupList.addAll(newList);
-             /* TODO: stop multiple instantiation of dataModel - may require phase listener
-             if (dataModel.getOldPage().size() > 0) {
-                 if (((DataverseGrouping)dataModel.getOldPage().get(0)).getId().equals(((DataverseGrouping)newList.get(0)).getId())) {
-                     FacesContext context = FacesContext.getCurrentInstance();
-                     context.renderResponse();
-                 }
-             }
-              * */
+
              dataModel = new PagedDataModel(groupList, dataModelRowCount, 10);
              dataModel.setOldPage(newList);
-             //System.out.println(" data model rowcount is " + dataModel.getRowCount() + "data index is " + dataModel.getRowIndex());
-             if (pageAction == true) {
-                 FacesContext context = FacesContext.getCurrentInstance();
-                 context.renderResponse();
-                 pageAction = false;
-             }
+         }
+         if (pageAction == true) {
+             FacesContext context = FacesContext.getCurrentInstance();
+             context.renderResponse();
+             pageAction = false;
+         }
              
              return dataModel;
      }

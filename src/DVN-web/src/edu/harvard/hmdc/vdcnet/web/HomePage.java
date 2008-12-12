@@ -237,6 +237,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
       public void paginate(ActionEvent action) {
         PaginatorActionEvent pEvent = (PaginatorActionEvent) action;
         DataverseGrouping grouping = (DataverseGrouping)itemBeans.get(0);
+        grouping.isPopulated = false;
         if (DataPaginator.FACET_FIRST.equals(pEvent.getScrollerfacet())) {
             grouping.setFirstRow(0);
             grouping.setPageAction(true);

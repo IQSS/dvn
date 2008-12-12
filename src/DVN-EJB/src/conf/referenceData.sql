@@ -998,7 +998,7 @@ create index studytopicclass_metadata_id_index on studytopicclass(metadata_id);
 create index template_metadata_id_index on template(metadata_id);
 create index studyfileactivity_id_index on studyfileactivity(id);
 create index studyfileactivity_studyfile_id_index on studyfileactivity(studyfile_id);
-
+create index studyfileactivity_study_id_index on studyfileactivity(study_id);
 
 
 

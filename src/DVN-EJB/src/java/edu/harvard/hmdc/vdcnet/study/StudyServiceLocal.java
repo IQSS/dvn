@@ -146,8 +146,8 @@ public interface StudyServiceLocal extends java.io.Serializable {
     public Timestamp getLastUpdatedTime(Long vdcId);
     
     public void updateReviewState(Long studyId, String reviewStateName);
-    
-    public Long getActivityCount(Long vdcId);
 
+    public Long getStudyDownloadCount(Long studyId);
+    public Long getActivityCount(Long vdcId);
     public Long getTotalActivityCount();
 }

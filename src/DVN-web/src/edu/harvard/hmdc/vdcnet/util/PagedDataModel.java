@@ -5,6 +5,7 @@
 
 package edu.harvard.hmdc.vdcnet.util;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.faces.model.DataModel;
 
@@ -72,6 +73,16 @@ public class PagedDataModel extends DataModel {
   
   public void setWrappedData(Object list) {
     this.list = (List) list;
+  }
+
+  private List oldPage = new ArrayList();
+
+  public List getOldPage() {
+      return this.oldPage;
+  }
+
+  public void setOldPage(List oldpage)  {
+      this.oldPage = oldpage;
   }
  
 }

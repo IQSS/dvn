@@ -192,18 +192,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
          parentItem = new DataverseGrouping(new Long("0"), ALL_DATAVERSES_LABEL, "group", itemBeans, true, EXPAND_IMAGE, CONTRACT_IMAGE, null);
          parentItem.setSubclassification(new Long("0"));
          parentItem.setRecordSize(list.size());
-         Iterator iterator = list.iterator();
-         VDC vdc = null;
          List groupList = new ArrayList();
-         while(iterator.hasNext()) {
-            vdc = (VDC)iterator.next();
-            Long parent = new Long("0");
-            Long vdcId  = vdc.getId();
-            if (vdc.getReleaseDate() != null && !vdc.isRestricted()) {
-                childItem = new DataverseGrouping(vdcId);
-                groupList.add(childItem);
-            }
-         }
          dataModel = new PagedDataModel(groupList, list.size(), 10);
          parentItem.setDataModel(dataModel);
          parentItem.setDataModelRowCount(list.size());
@@ -224,19 +213,10 @@ public class HomePage extends VDCBaseBean implements Serializable {
             Long parent     = (vdcgroup.getParent() != null) ? vdcgroup.getParent() : new Long("-1");
             parentItem      = new DataverseGrouping(vdcgroup.getId(), vdcgroup.getName(), "group", itemBeans, true, EXPAND_IMAGE, CONTRACT_IMAGE, parent);
             parentItem.setShortDescription(vdcgroup.getDescription());
-            //parentItem.setSubclassification(new Long("25"));
             List groupList = new ArrayList();
-            while(inneriterator.hasNext()) {
-                VDC vdc     = (VDC)inneriterator.next();
-                Long vdcId  = vdc.getId();
-                if (vdc.getReleaseDate() != null && !vdc.isRestricted()) {
-                    childItem = new DataverseGrouping(vdcId);
-                    groupList.add(childItem);
-                }
-            }
-         dataModel = new PagedDataModel(groupList, innerlist.size(), 10);
-         parentItem.setDataModel(dataModel);
-         parentItem.setDataModelRowCount(innerlist.size());
+            dataModel = new PagedDataModel(groupList, innerlist.size(), 10);
+            parentItem.setDataModel(dataModel);
+            parentItem.setDataModelRowCount(innerlist.size());
      }
 
       //  pagination

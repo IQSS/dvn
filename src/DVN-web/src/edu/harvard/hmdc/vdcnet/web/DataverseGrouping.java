@@ -581,9 +581,9 @@ public class DataverseGrouping extends SortableList {
                  Long vdcId = new Long(((Integer)vector.get(0)).toString());
                  Timestamp releaseDate = (Timestamp)vector.get(4);
                  Timestamp lastUpdateTime = (studyService.getLastUpdatedTime(vdcId) != null ? studyService.getLastUpdatedTime(vdcId) : releaseDate);
-                 Long localActivity       = calculateActivity(vdcId);
-                 String activity          = getActivityClass(localActivity);
-                 //String activity = "activitylevelicon al-5";
+                 //Long localActivity       = calculateActivity(vdcId);
+                 //String activity          = getActivityClass(localActivity);
+                 String activity = "activitylevelicon al-5";
                  DataverseGrouping grouping = new DataverseGrouping(vdcId);
                  grouping.setName((String)vector.get(1));
                  grouping.setAlias((String)vector.get(2));

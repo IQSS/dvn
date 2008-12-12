@@ -135,6 +135,20 @@ public class DvnCitationFileWriter {
         }
     }
 
+    public void writeWholeFileCase(File cf){
+        OutputStream outs = null;
+        try {
+            outs = new BufferedOutputStream(new FileOutputStream(cf));
+            PrintWriter pw = new PrintWriter(new OutputStreamWriter(outs, "utf8"), true);
+            pw.println(title);
+            pw.println(offlineCitation);
+
+           outs.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
     public void write(String citationFilename){
         File cf = new File(citationFilename);
         write(cf);

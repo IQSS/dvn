@@ -73,6 +73,8 @@ public class StudyUI  implements java.io.Serializable {
     private Map studyFields;
     private VDCUser user;
     private UserGroup ipUserGroup;
+
+    private StudyServiceLocal studyService = null;
     
     /** Creates a new instance of StudyUI
      *  this consturctor does not initialize the file category ui list
@@ -121,6 +123,16 @@ public class StudyUI  implements java.io.Serializable {
         initFileCategoryUIList(vdc, user, ipUserGroup);
     }
 
+    private void initStudyService() {
+        if (studyService == null) {
+            try {
+                studyService = (StudyServiceLocal) new InitialContext().lookup("java:comp/env/studyService");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public Long getStudyId() {
         return studyId;
     }
@@ -132,13 +144,7 @@ public class StudyUI  implements java.io.Serializable {
     public Study getStudy() {
         // check to see if study is loaded or if we only have the studyId
         if (study == null) {
-            StudyServiceLocal studyService = null;
-            try {
-                studyService = (StudyServiceLocal) new InitialContext().lookup("java:comp/env/studyService");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            
+            initStudyService();
             study = studyService.getStudyForSearch(studyId, studyFields);
         }
         
@@ -339,15 +345,22 @@ public class StudyUI  implements java.io.Serializable {
         
         return !truncatedAbstracts.equals(abstracts);
     }
-    
+
+    private Boolean isFiles;
+
     public boolean isFiles() {
-        for (Iterator<FileCategory> it = getStudy().getFileCategories().iterator(); it.hasNext();) {
-            if (it.next().getStudyFiles().size() > 0) {
-                return true;
+        if (isFiles == null) {
+            for (Iterator<FileCategory> it = getStudy().getFileCategories().iterator(); it.hasNext();) {
+                if (it.next().getStudyFiles().size() > 0) {
+                    isFiles = true;
+                    break;
+                }
             }
+            
+            isFiles = false;
         }
-        
-        return false;
+
+        return isFiles;
     }
     
     public boolean isSubsettable() {
@@ -917,13 +930,16 @@ public class StudyUI  implements java.io.Serializable {
         }
         
         return false;
-    }    
+    }
+
+    private Long downloadCount = null;
     
-    public int getDownloadCount() {
-        int downloadCount = 0;
-        for (StudyFile sf : study.getStudyFiles() ) {
-            downloadCount += sf.getStudyFileActivity() != null ? sf.getStudyFileActivity().getDownloadCount() : 0;
+    public Long getDownloadCount() {
+        if (downloadCount == null) {
+            initStudyService();
+            downloadCount = studyService.getStudyDownloadCount(studyId);
         }
+
         return downloadCount;
     }
 
@@ -949,4 +965,5 @@ public class StudyUI  implements java.io.Serializable {
     public boolean isStudyRestricted() {
         return getStudy().isStudyRestrictedForUser(user, ipUserGroup);
     }
+
 }

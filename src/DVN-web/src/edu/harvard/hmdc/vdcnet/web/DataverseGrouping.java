@@ -608,6 +608,7 @@ public class DataverseGrouping extends SortableList {
               * */
              dataModel = new PagedDataModel(groupList, dataModelRowCount, 10);
              dataModel.setOldPage(newList);
+             //System.out.println(" data model rowcount is " + dataModel.getRowCount() + "data index is " + dataModel.getRowIndex());
              if (pageAction == true) {
                  FacesContext context = FacesContext.getCurrentInstance();
                  context.renderResponse();

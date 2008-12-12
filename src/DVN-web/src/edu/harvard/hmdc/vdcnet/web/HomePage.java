@@ -53,7 +53,6 @@ import edu.harvard.hmdc.vdcnet.web.common.StatusMessage;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
 import edu.harvard.hmdc.vdcnet.web.study.StudyUI;
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -64,6 +63,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.model.DataModel;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -247,15 +247,24 @@ public class HomePage extends VDCBaseBean implements Serializable {
              grouping.getDataModel();
          }
          else if (DataPaginator.FACET_NEXT.equals(pEvent.getScrollerfacet())) {
-              grouping.setFirstRow(grouping.getFirstRow() + 10);
-              grouping.setPageAction(true);
-              grouping.getDataModel();
+             if (grouping.getFirstRow() + 10 < grouping.getDataModelRowCount()) {
+                grouping.setFirstRow(grouping.getFirstRow() + 10);
+                grouping.setPageAction(true);
+                grouping.getDataModel();
+             } else {
+                FacesContext context = FacesContext.getCurrentInstance();
+                context.renderResponse();
+             }
          } else if (DataPaginator.FACET_LAST.equals(pEvent.getScrollerfacet())) {
-              grouping.setFirstRow(grouping.getDataModelRowCount() - (grouping.getDataModelRowCount() - 10));
+              grouping.setFirstRow(grouping.getDataModelRowCount() - (grouping.getDataModelRowCount() % 10));
               grouping.setPageAction(true);
               grouping.getDataModel();
-         } else {
-              System.out.println("The page event is " + pEvent.getScrollerfacet().toString());
+         } else { // This is a paging event
+              System.out.println("The page event is " + pEvent.getPageIndex());
+              int page = pEvent.getPageIndex();
+              grouping.setFirstRow((page - 1) * 10);
+              grouping.setPageAction(true);
+              grouping.getDataModel();
          }
      }
 

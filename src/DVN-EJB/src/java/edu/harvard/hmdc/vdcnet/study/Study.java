@@ -2136,4 +2136,15 @@ End of deprecated methods section
         this.lastIndexTime = lastIndexTime;
     }
 
+    @OneToMany(mappedBy = "study", cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
+    private StudyFileActivity studyFileActivity;
+
+    public StudyFileActivity getStudyFileActivity() {
+        return studyFileActivity;
+    }
+
+    public void setStudyFileActivity(StudyFileActivity studyFileActivity) {
+        this.studyFileActivity = studyFileActivity;
+    }
+
 }

@@ -533,7 +533,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
                     "from metadata m, study s " +
                     "LEFT OUTER JOIN filecategory fc on s.id = fc.study_id " +
                     "LEFT OUTER JOIN studyfile sf on fc.id = sf.filecategory_id " +
-                    "LEFT OUTER JOIN studyfileactivity sfa on  sf.id = sfa.studyfile_id " +
+                    "LEFT OUTER JOIN studyfileactivity sfa on  s.id = sfa.study_id " +
                     "where s.metadata_id = m.id " +
                     "and s.id in (" + studyIds + ")" +
                     "group by s.id, m.title " +
@@ -1902,13 +1902,27 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         return timestamp;
     }
 
+    public Long getStudyDownloadCount(Long studyId) {
+        String queryString  = "select sum(downloadcount) " +
+                "from studyfileactivity  sfa " +
+                "where sfa.study_id =" + studyId;
+        Long longValue = null;
+        Query query         = em.createNativeQuery(queryString);
+        try {
+            Object object       = ((List)query.getSingleResult()).get(0);
+            longValue      = (Long)object;
+        } catch (Exception nre) {
+            longValue = new Long("0");
+        } finally {
+            return longValue;
+        }
+    }
+
     public Long getActivityCount(Long vdcId) {
-        String queryString  = "select sum(downloadcount) from studyfileactivity  sfa," +
-                " studyfile sf, filecategory fc, study s" +
-                " where sfa.studyfile_id = sf.id" +
-                " and sf.filecategory_id = fc.id" +
-                " and fc.study_id = s.id" +
-                " and s.owner_id=" + vdcId;
+        String queryString  = "select sum(downloadcount) " +
+                "from studyfileactivity  sfa, study s " +
+                "where sfa.study_id = s.id " +
+                "and s.owner_id=" + vdcId;
         Long longValue = null;
         Query query         = em.createNativeQuery(queryString);
         try {
@@ -1922,11 +1936,9 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     }
 
     public Long getTotalActivityCount() {
-        String queryString  = "select sum(downloadcount) from studyfileactivity  sfa," +
-                " studyfile sf, filecategory fc, study s" +
-                " where sfa.studyfile_id = sf.id" +
-                " and sf.filecategory_id = fc.id" +
-                " and fc.study_id = s.id";
+        String queryString  = "select sum(downloadcount) " +
+                "from studyfileactivity  sfa, study s " +
+                "where sfa.study_id = s.id";        
         Query query         = em.createNativeQuery(queryString);
         Object object       = ((List)query.getSingleResult()).get(0);
         Long longValue      = (Long)object;

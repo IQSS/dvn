@@ -580,10 +580,11 @@ public class DataverseGrouping extends SortableList {
                  Vector vector = (Vector)iterator.next();
                  Long vdcId = new Long(((Integer)vector.get(0)).toString());
                  Timestamp releaseDate = (Timestamp)vector.get(4);
-                 Timestamp lastUpdateTime = (studyService.getLastUpdatedTime(vdcId) != null ? studyService.getLastUpdatedTime(vdcId) : releaseDate);
-                 //Long localActivity       = calculateActivity(vdcId);
-                 //String activity          = getActivityClass(localActivity);
-                 String activity = "activitylevelicon al-5";
+                 Timestamp timestamp   = studyService.getLastUpdatedTime(vdcId);
+                 Timestamp lastUpdateTime = (timestamp != null ? timestamp : releaseDate);
+                 Long localActivity       = calculateActivity(vdcId);
+                 String activity          = getActivityClass(localActivity);
+                 //String activity = "activitylevelicon al-5"; // for debug purposes only
                  DataverseGrouping grouping = new DataverseGrouping(vdcId);
                  grouping.setName((String)vector.get(1));
                  grouping.setAlias((String)vector.get(2));
@@ -597,7 +598,16 @@ public class DataverseGrouping extends SortableList {
              }
              groupList.clear();
              groupList.addAll(newList);
+             /* TODO: stop multiple instantiation of dataModel - may require phase listener
+             if (dataModel.getOldPage().size() > 0) {
+                 if (((DataverseGrouping)dataModel.getOldPage().get(0)).getId().equals(((DataverseGrouping)newList.get(0)).getId())) {
+                     FacesContext context = FacesContext.getCurrentInstance();
+                     context.renderResponse();
+                 }
+             }
+              * */
              dataModel = new PagedDataModel(groupList, dataModelRowCount, 10);
+             dataModel.setOldPage(newList);
              if (pageAction == true) {
                  FacesContext context = FacesContext.getCurrentInstance();
                  context.renderResponse();

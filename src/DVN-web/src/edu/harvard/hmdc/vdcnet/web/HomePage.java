@@ -95,7 +95,6 @@ public class HomePage extends VDCBaseBean implements Serializable {
 
     private ArrayList itemBeans;
     private ArrayList dvGroupItemBeans;
-    private List allVdcs        = new ArrayList();
     private List allVdcGroups   = new ArrayList();
 
     DataverseGrouping parentItem = null;
@@ -114,8 +113,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
             itemBeans = new ArrayList();
         }
         initChrome();
-        allVdcs = (List)vdcService.findAll();
-        initAllDataverses(allVdcs);
+        initAllDataverses();
         allVdcGroups = (List)vdcGroupService.findAll();
         initMenu();
      }
@@ -188,14 +186,15 @@ public class HomePage extends VDCBaseBean implements Serializable {
       * @description Prepare the itemBeans
       * @param list
       */
-     private void initAllDataverses(List list) {
+     private void initAllDataverses() {
          parentItem = new DataverseGrouping(new Long("0"), ALL_DATAVERSES_LABEL, "group", itemBeans, true, EXPAND_IMAGE, CONTRACT_IMAGE, null);
          parentItem.setSubclassification(new Long("0"));
-         parentItem.setRecordSize(list.size());
+         long vdcGroupId = 0;
+         Integer groupSize = Integer.parseInt((vdcService.getVdcCount(vdcGroupId)).toString());
          List groupList = new ArrayList();
-         dataModel = new PagedDataModel(groupList, list.size(), 10);
+         dataModel = new PagedDataModel(groupList, groupSize, 10);
          parentItem.setDataModel(dataModel);
-         parentItem.setDataModelRowCount(list.size());
+         parentItem.setDataModelRowCount(groupSize);
      }
 
      private int currentRow;
@@ -511,7 +510,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
             VDCGroup vdcgroup = vdcGroupService.findById(new Long(groupingId));
             initGroupBean(vdcgroup);
         } else {
-            initAllDataverses(allVdcs);
+            initAllDataverses();
 
         }
     }

@@ -66,18 +66,24 @@
               <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
               <ice:inputHidden id="studyId" value="#{AddFilesPage.study.id}"/>
               <input type="hidden" name="pageName" value="AddFilesPage"/>
-              <div class="dvnAddFilesInputBlock">
+           <!--   <div class="dvnAddFilesInputBlock"> -->
+                  <ice:panelGroup id ="inputFile" style="dvnAddFilesInputBlock">
                 <ice:inputFile id="inputFileComponent"
                                progressListener="#{AddFilesPage.fileUploadProgress}"
-                               actionListener="#{AddFilesPage.uploadFile}" binding="#{AddFilesPage.inputFile}">
+                               actionListener="#{AddFilesPage.uploadFile}" 
+                               binding="#{AddFilesPage.inputFile}">
+                            
                   <!-- <ice:commandButton binding="#{AddFilesPage.inputFile}"/> -->
                 </ice:inputFile>
-                <ice:message for="inputFileComponent"/>
-                <ice:outputProgress rendered="true"
-                                    value="#{AddFilesPage.fileProgress}"/>
-                <ice:messages layout="table" globalOnly="false"
-                              showDetail="true" showSummary="false"/>
-              </div>
+             
+                <ice:outputProgress value="#{AddFilesPage.fileProgress}" id="progressbar"
+                                    rendered ="true" label=" "/> 
+                                       <br/>
+                <ice:message layout="table" globalOnly="false" for="inputFileComponent"
+                              showDetail="true" showSummary="false" styleClass="errorMessage"/> 
+           
+         </ice:panelGroup> 
+         <!--     </div> -->
               <!--
               This is a very basic table comprising four columns. Each
               row represents an inventory item.  Each column represents a
@@ -105,7 +111,7 @@
                         <ice:selectBooleanCheckbox id="catCheckbox"  onclick="updateCategory(this);"/>
                         <ice:inputText id="catTextField" size="30" value="#{file.fileCategoryName}" partialSubmit="false"
                                        onfocus="deselectCategory(this);"
-                                        valueChangeListener="#{AddFilesPage.addCategory}"
+                                       valueChangeListener="#{AddFilesPage.addCategory}"             
                                       onblur="iceSubmitPartial(form,this,event);"/> 
                                                                    
                       </ice:panelGroup>
@@ -123,11 +129,12 @@
                         <ice:outputLabel value="File Name"/>
                       </f:facet>
                       <ice:inputText id="input_filename" size="30" value="#{file.studyFile.fileName}" required="true"
-                                     validator="#{AddFilesPage.validateFileName}" partialSubmit="false"
-                                     onchange="iceSubmitPartial(form,this,event);"/> 
+                                     requiredMessage="This field is required."
+                                     validator="#{AddFilesPage.validateFileName}" partialSubmit="false" 
+                                     onblur="iceSubmitPartial(form,this,event);"/> 
                                      <!-- "this.form.submit();"/>
                       <f:param name="fileName" value="#{file.studyFile.fileName}"/> -->
-                      <ice:message errorStyle="errorMessage" for="input_filename"/>
+                      <ice:message for="input_filename" styleClass="errorMessage"/>
                     </ice:column>
                     <ice:column>
                       <f:facet name="header">
@@ -136,7 +143,6 @@
                       <ice:inputTextarea id="description_filename" rows="2"
                                          value="#{file.studyFile.description}" partialSubmit="false"
                                          onchange="iceSubmitPartial(form,this,event);"/> 
-                                         <!-- iceSubmitPartial(form,this,event);"/>-->
                     </ice:column>
                     <ice:column>
                       <f:facet name="header">
@@ -149,7 +155,7 @@
                         <ice:outputLabel value="Remove"/>
                       </f:facet>
                       <ice:commandLink
-                        value="Remove"
+                        value="Remove" id="removeFile" 
                         actionListener="#{AddFilesPage.removeUploadedFile}">
                         <f:param name="fileName" value="#{file.studyFile.fileName}"/>
                       </ice:commandLink>

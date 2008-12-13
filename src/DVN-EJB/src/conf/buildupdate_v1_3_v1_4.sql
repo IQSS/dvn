@@ -116,6 +116,12 @@ ALTER TABLE studyfileactivity
       REFERENCES study (id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION;
 
+-- add populate the new column
+update studyfileactivity sfa set study_id = fc.study_id
+from studyfile sf, filecategory fc
+where sfa.studyfile_id = sf.id
+and sf.filecategory_id = fc.id;
+
 -- new indices
 create index study_owner_id_index on study(owner_id);
 create index filecategory_id_index on filecategory(id);

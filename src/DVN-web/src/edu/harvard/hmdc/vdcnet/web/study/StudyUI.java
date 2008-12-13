@@ -350,17 +350,16 @@ public class StudyUI  implements java.io.Serializable {
 
     public boolean isFiles() {
         if (isFiles == null) {
+            isFiles = Boolean.FALSE;
             for (Iterator<FileCategory> it = getStudy().getFileCategories().iterator(); it.hasNext();) {
                 if (it.next().getStudyFiles().size() > 0) {
-                    isFiles = true;
+                    isFiles = Boolean.TRUE;
                     break;
                 }
             }
-            
-            isFiles = false;
         }
 
-        return isFiles;
+        return isFiles.booleanValue();
     }
     
     public boolean isSubsettable() {

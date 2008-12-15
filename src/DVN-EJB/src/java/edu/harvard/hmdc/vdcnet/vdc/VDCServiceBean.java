@@ -504,6 +504,30 @@ public class VDCServiceBean implements VDCServiceLocal {
       }
     }
 
+    public List getPagedDataByActivity(int firstRow, int totalRows, String order) {
+      List<VDC> list = new ArrayList();
+      try {
+        String queryString  = "SELECT vdc.id, name, alias, affiliation, releasedate, dvndescription, " +
+                "CASE WHEN sum(downloadcount) is null THEN 0 ELSE sum(downloadcount) END " +
+                "FROM vdc " +
+                "LEFT OUTER JOIN study on vdc.id = study.owner_id " +
+                "LEFT OUTER JOIN studyfileactivity on study.id = studyfileactivity.study_id " +
+                "WHERE vdc.restricted = false " +
+                "GROUP BY vdc.id, vdc.name, vdc.alias, vdc.affiliation, vdc.releasedate, vdc.dvndescription " +
+                "ORDER BY " +
+                "CASE WHEN sum(downloadcount) is null THEN 0 ELSE sum(downloadcount) END " + order +
+                " LIMIT " + totalRows +
+                " OFFSET " + firstRow;
+        Query query = em.createNativeQuery(queryString);
+        list        = (List<VDC>)query.getResultList();
+      } catch (Exception e) {
+        //do something here with the exception
+        list = new ArrayList();
+      } finally {
+          return list;
+      }
+    }
+
     public Long getVdcCount(long vdcGroupId) {
         String queryString  = (vdcGroupId != 0) ? "Select count(vdcgroup_id) from vdc_group g where vdcgroup_id = " + vdcGroupId + " and vdc_id in (Select id from vdc where restricted = false" : "select count(id) from vdc v where restricted = false";
         Long longValue = null;

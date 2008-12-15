@@ -90,10 +90,12 @@
         <input type="hidden" name="pageName" value="EditHarvestSitePage"/>
         <ice:inputHidden id="harvestId" value="#{EditHarvestSitePage.harvestId}"/>
         <div class="dvn_section">
-          <div class="dvnRoundCornerMsgBlock #{(EditHarvestSitePage.success) ? 'dvnSuccessMessage' : 'dvnInformationMessage'}">
-            <ice:outputText value="#{bundlePageInfo.createHarvestingDvHelp}" escape="false" />
-            <div jsfc="ice:panelGroup" styleClass="successMessage" rendered="#{EditHarvestSitePage.success}">
-              <ice:outputText value="Update Successful!"/>
+          <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
+            <div class="dvnMsgBlockContainer">
+              <ice:outputText value="#{bundlePageInfo.createHarvestingDvHelp}" escape="false"/>
+              <div jsfc="ice:panelGroup" styleClass="successMessage" rendered="#{EditHarvestSitePage.success}">
+                <ice:outputText value="Update Successful!"/>
+              </div>
             </div>
           </div>
           <div class="dvn_sectionTitle">

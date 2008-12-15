@@ -200,7 +200,7 @@ public static final Log mLog = LogFactory.getLog(AddFilesPage.class);
          if(currentFile==null){
             str = "StudyFileEditBean cannot be created ";
             mLog.error(str); 
-         //   errorMessage(str);
+           errorMessage(str);
             return; 
          }
          if(!currentFile.getOriginalFileName().equals(currentFile.getStudyFile().getFileName())){
@@ -210,13 +210,17 @@ public static final Log mLog = LogFactory.getLog(AddFilesPage.class);
          }
       
       // check if the file is in the data table already with the same name, i.e.  
-      // hasFileName checks if currentFile name is in getValidationFileNames   
-        boolean b =hasFileName(currentFile.getStudyFile().getFileName(), true);
+      // hasFileName checks if currentFile name is in getValidationFileNames  
+      //and if del=true removes it from validation names   
+      boolean del = true;
+      
+       boolean b =hasFileName(currentFile.getStudyFile().getFileName(), del);
        if(b){
             str = "File " + currentFile.getStudyFile().getFileName()+ " is already in the table";
             mLog.error(str);
             errorMessage(str);
-           
+        if(!del)   return;
+     
      
        }
             //add it to the validation names 
@@ -747,10 +751,14 @@ private boolean  hasFileName( StudyFileEditBean inputFileData, boolean remov){
         String or = currentFile.getStudyFile().getFileName().trim();
         String fname = or;
         String fileName =( (String) value).trim();
-         currentFile.getStudyFile().setFileName(fileName);
+        currentFile.getStudyFile().setFileName(fileName);
        // currentFile.setOriginalFileName(fileName);
       
-        if(fileName.equals("")) return; 
+        if(fileName.equals("") || fileName==null) {
+             errorMessage = "Enter a valid file name"; 
+            displayError(context, (UIInput) toValidate, errorMessage);
+           
+        } 
         // check invalid characters 
         
          mLog.debug(currentFile.getOriginalFileName());
@@ -767,36 +775,33 @@ private boolean  hasFileName( StudyFileEditBean inputFileData, boolean remov){
                 fileName.contains("#")) {
             errorMessage = "cannot contain any of the following characters: \\ / : * ? \" < > | ; "; 
             displayError(context, (UIInput) toValidate, errorMessage);
-            return;
-            
+        
         }
      
         // also check prexisting files
        if(errorMessage == null && studyFileNames != null && studyFileNames.length > 0 ){
        for(String dummy: studyFileNames){
           if ( fileName.equals(dummy) ) {
-                errorMessage = "must be unique (a previously existing file already exists with the name).";
+                errorMessage = "must be unique (a previous study file exists with the same name).";
                 displayError(context, (UIInput) toValidate, errorMessage);
-            return;
+                break;
                
             }
         }
        }
          
          //make sure there are no other files with the same name in the validation list 
-        if(hasFileName(fileName, true)){
-           errorMessage = "must be unique (a previously existing file already exists with the name).";
+         //this did not exist when it was working: !fileName.equals(fname) 
+        if(!fileName.equals(fname) && hasFileName(fileName, true) ){
+           errorMessage = "must be unique (a previous file exists with the same name).";
            displayError(context, (UIInput) toValidate, errorMessage); 
         }
         // now add this name to the validation list
-       if(!fileName.equals(fname)){
+     
         getCurrentFile().getStudyFile().setFileName(fileName);
         getValidationFileNames().add(fileName.trim()); 
        //remove the old name from validation names 
-        hasFileName(fname,true);
-       } 
-        
-       
+        hasFileName(fname,true); 
        
       }
     private void displayError(FacesContext context, UIInput toValidate, String errorMessage){

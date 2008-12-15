@@ -40,17 +40,19 @@ import edu.harvard.hmdc.vdcnet.vdc.VDCCollectionServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
 import edu.harvard.hmdc.vdcnet.web.study.StudyUI;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
-import javax.faces.component.UICommand;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.faces.event.ActionEvent;
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * <p>Page bean that corresponds to a similarly named JSP page.  This
@@ -113,6 +115,12 @@ public class EditCollectionPage extends VDCBaseBean implements java.io.Serializa
         if (collIdStr != null) {
             collId = Long.parseLong(collIdStr);
             collection = vdcCollectionService.find(collId);
+            if ( !isCollectionInCurrentVDC() ) {
+                collId = null;
+                collection = null;
+                return;
+            }
+
             if (collection.getParentCollection() != null) {
                 parentId = collection.getParentCollection().getId();
             }
@@ -136,6 +144,26 @@ public class EditCollectionPage extends VDCBaseBean implements java.io.Serializa
         browseCollectionId = getVDCRequestBean().getCurrentVDC().getRootCollection().getId();
         setAvailableStudies(browseCollectionId);
 
+    }
+
+    // this metho checks to see if the collection the user is attempting to edit is in the current vdc;
+    // if not redirect
+    private boolean isCollectionInCurrentVDC() {
+        if (!collection.getOwner().getId().equals(getVDCRequestBean().getCurrentVDCId()) ) {
+            FacesContext fc = javax.faces.context.FacesContext.getCurrentInstance();
+            HttpServletResponse response = (javax.servlet.http.HttpServletResponse) fc.getExternalContext().getResponse();
+            try {
+                response.sendRedirect("/dvn/dv/" + getVDCRequestBean().getCurrentVDC().getAlias() + "/faces/collection/ManageCollectionsPage.xhtml");
+                fc.responseComplete();
+            } catch (IOException ex) {
+                Logger.getLogger(EditCollectionPage.class.getName()).log(Level.SEVERE, null, ex);
+                throw new RuntimeException("IOException thrown while trying to redirect to Manage Collections Page");
+            } finally {
+                return false;
+            }
+        }
+        
+        return true;
     }
 
     public List<SelectItem> getParentCollectionItems() {
@@ -375,9 +403,11 @@ public class EditCollectionPage extends VDCBaseBean implements java.io.Serializa
 
         VDCUser user = getVDCSessionBean().getUser();
         UserGroup ipUserGroup = getVDCSessionBean().getIpUserGroup();
-        
-        for (Study study : collection.getStudies()) {
-            studyUIs.add( new StudyUI(study, user, ipUserGroup, false) );
+
+        if (collection != null) {
+            for (Study study : collection.getStudies()) {
+                studyUIs.add( new StudyUI(study, user, ipUserGroup, false) );
+            }
         }
         
         return studyUIs;

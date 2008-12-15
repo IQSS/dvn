@@ -18,8 +18,10 @@
         <ice:inputHidden value="#{EditOAISetPage.oaiSet.version}"/>
         <input type="hidden" name="pageName" value="EditOAISetPage"/>
         <div class="dvn_section">
-          <div class="dvnRoundCornerMsgBlock dvnInformationMessage">
-            <ice:outputText value="#{bundlePageInfo.editOaiSetHelp}" escape="false" />
+          <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
+            <div class="dvnMsgBlockContainer">
+              <ice:outputText value="#{bundlePageInfo.editOaiSetHelp}" escape="false"/>
+            </div>
           </div>
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.editOaiSetTitle}"/>

@@ -15,8 +15,10 @@
     <gui:define name="body">
       <ice:form id="editNetworkAnnouncementsForm">
         <div class="dvn_section">
-          <div jsfc="ice:panelGroup" styleClass="dvnRoundCornerMsgBlock #{'dvnInformationMessage'}">
-             <ice:outputText value="#{bundlePageInfo.editDvnDescriptionHelp}" escape="false"/>
+          <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
+            <div class="dvnMsgBlockContainer">
+              <ice:outputText value="#{bundlePageInfo.editDvnDescriptionHelp}" escape="false"/>
+            </div>
           </div>
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.editDvnDescriptionTitle}"/>

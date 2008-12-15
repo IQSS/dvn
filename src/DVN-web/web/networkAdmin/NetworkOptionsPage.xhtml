@@ -16,14 +16,14 @@
         <gui:define name="body">
             <ice:form id="form1">
                 <div class="dvn_section">
-                    <div class="dvn_sectionTitle">
-                        <ice:outputText value="#{bundlePageInfo.dvnOptionsTitle}"/>
+                  <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnSuccessMessage" rendered="#{!empty VDCRequest.successMessage}">
+                    <div class="dvnMsgBlockContainer">
+                      <p><ice:outputText id="statusMessage" value="#{VDCRequest.successMessage}"/></p>
                     </div>
-                      <div jsfc="ice:panelGroup" styleClass="dvnRoundCornerMsgBlock dvnSuccessMessage" rendered="#{!empty VDCRequest.successMessage }">
-                      <div>
-                        <ice:outputText id="statusMessage" value="#{VDCRequest.successMessage}"/>
-                      </div>
-                    </div>
+                  </div>
+                  <div class="dvn_sectionTitle">
+                    <ice:outputText value="#{bundlePageInfo.dvnOptionsTitle}"/>
+                  </div>
                     <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
                         <tr><td colspan="2" class="dvnOptionsTableHeader"><ice:outputText value="#{bundlePageInfo.dvsSectionTitle}"/></td></tr>
                         <tr>

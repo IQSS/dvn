@@ -15,8 +15,10 @@
       <ice:form id="NetworkPrivilegedUsersPageView">
         <input type="hidden" name="pageName" value="NetworkPrivilegedUsersPage"/>
         <div class="dvn_section">
-          <div jsfc="ice:panelGroup" styleClass="dvnRoundCornerMsgBlock #{'dvnInformationMessage'}">
-             <ice:outputText value="#{bundlePageInfo.manageDvnPermissionsHelp}" escape="false"/>
+          <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
+            <div class="dvnMsgBlockContainer">
+              <ice:outputText value="#{bundlePageInfo.manageDvnPermissionsHelp}" escape="false"/>
+            </div>
           </div>
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.manageDvnPermissionsTitle}"/>

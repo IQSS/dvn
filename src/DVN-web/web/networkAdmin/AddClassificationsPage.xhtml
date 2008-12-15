@@ -15,9 +15,11 @@
     <gui:param name="pageTitle" value="#{bundlePageInfo.createClassificationTitle}"/>
     <gui:define name="body">
       <ice:form id="AddClassificationsPageForm">
-        <div jsfc="ice:panelGroup" styleClass="dvnRoundCornerMsgBlock #{(addClassificationsPage.result == true) ? 'dvnSuccessMessage' : 'dvnInformationMessage'}">
-          <ice:outputText value="#{bundlePageInfo.createClassificationHelp}" escape="false"/>
-          <ice:messages id="iceMessage" binding="#{addClassificationsPage.iceMessage}" layout="list" showDetail="false" showSummary="true"/>
+        <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound #{(addClassificationsPage.result == true) ? 'dvnSuccessMessage' : 'dvnInformationMessage'}">
+          <div class="dvnMsgBlockContainer">
+            <ice:outputText value="#{bundlePageInfo.createClassificationHelp}" escape="false"/>
+            <ice:messages id="iceMessage" binding="#{addClassificationsPage.iceMessage}" layout="list" showDetail="false" showSummary="true"/>
+          </div>
         </div>
         <div class="dvn_sectionTitle">
           <ice:outputText value="#{bundlePageInfo.createClassificationTitle}"/>

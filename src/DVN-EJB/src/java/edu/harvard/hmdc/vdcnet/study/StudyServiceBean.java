@@ -1115,12 +1115,16 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
 
     public void incrementNumberOfDownloads(Long studyFileId, Date lastDownloadTime) {
         StudyFile sf = getStudyFile(studyFileId);
+        Study study = sf.getFileCategory().getStudy();
         StudyFileActivity sfActivity = sf.getStudyFileActivity();
 
         if (sfActivity == null) {
             sfActivity = new StudyFileActivity();
-            sf.setStudyFileActivity(sfActivity);
             sfActivity.setStudyFile(sf);
+            sfActivity.setStudy(study);
+
+            sf.setStudyFileActivity(sfActivity);
+            study.getStudyFileActivity().add(sfActivity);
         }
 
         sfActivity.setDownloadCount(sfActivity.getDownloadCount() + 1);

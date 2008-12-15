@@ -7,19 +7,16 @@
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:ice="http://www.icesoft.com/icefaces/component">
 <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
-
 <body>
   <gui:composition template="/template.xhtml">
-    <gui:param name="pageTitle" value="DVN - Delete Study" />
+    <gui:param name="pageTitle" value="DVN - Delete Study"/>
     <gui:define name="body">
-
       <ice:form id="form1">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <input type="hidden" name="pageName" value="DeleteStudyPage"/>
         <ice:inputHidden id="studyId" value="#{DeleteStudyPage.study.id}"/>
-
         <div class="dvn_section">
           <div class="dvn_sectionTitle">
             <ice:outputText value="Delete Study"/>
@@ -45,7 +42,6 @@
           </div>
         </div>
       </ice:form>
-
     </gui:define>
   </gui:composition>
 </body>

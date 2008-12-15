@@ -133,32 +133,34 @@
         <ice:inputHidden id="studyId" value="#{studyPage.studyId}"/>
         <ice:inputHidden id="slIndex" value="#{studyPage.studyListingIndex}"/>
         <div class="dvn_section">
-          <div jsfc="ice:panelGroup" styleClass="dvnRoundCornerMsgBlock dvnInformationMessage" rendered="#{studyPage.studyUI.anyFileRestricted or !empty studyPage.studyUI.study.harvestHoldings and studyPage.studyUI.study.isHarvested}">
-            <div jsfc="ice:panelGroup" rendered="#{!empty studyPage.studyUI.study.harvestHoldings and studyPage.studyUI.study.isHarvested}">
-              <p>
-                <ice:outputText value="Files for this study may also be accessed from their "/>
-                <ice:outputLink value="#{studyPage.studyUI.study.harvestHoldings}">
-                  <ice:outputText value="original source."/>
-                </ice:outputLink>
-              </p>
-            </div>
-            <div jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.anyFileRestricted}">
-              <p>
-                <ice:outputText value="Access to some files is restricted, and those files are not available for downloading."/>
-                <ice:outputText value=" No information about the restriction is available." rendered="#{studyPage.termsOfUseIsEmpty}"/>
-                <ice:outputText value=" Check the " rendered="#{!studyPage.termsOfUseIsEmpty}"/>
-                <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=catalog#termsofuse" rendered="#{!studyPage.termsOfUseIsEmpty}">
-                  <ice:outputText value="Terms of Use"/>
-                </ice:outputLink>
-                <ice:outputText value=" for more information." rendered="#{!studyPage.termsOfUseIsEmpty}"/>
-                <ice:outputLink action="#{StudyPage.beginRequestWorkflow}" rendered="#{studyPage.studyUI.study.requestAccess and VDCSession.loginBean!=null}" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/FileRequestPage.xhtml?studyId=#{studyPage.studyId}">
-                  <ice:outputText value=" Send a Request"/>
-                </ice:outputLink>
-                <ice:commandLink action="#{studyPage.beginRequestWorkflow}" rendered="#{studyPage.studyUI.study.requestAccess and VDCSession.loginBean==null}">
-                  <ice:outputText value=" Send a Request"/>
-                </ice:commandLink>
-                <ice:outputText value=" if you would like to access the restricted files in this study." rendered="#{studyPage.studyUI.study.requestAccess}"/>
-              </p>
+          <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage" rendered="#{studyPage.studyUI.anyFileRestricted or !empty studyPage.studyUI.study.harvestHoldings and studyPage.studyUI.study.isHarvested}">
+            <div class="dvnMsgBlockContainer">
+              <div jsfc="ice:panelGroup" rendered="#{!empty studyPage.studyUI.study.harvestHoldings and studyPage.studyUI.study.isHarvested}">
+                <p>
+                  <ice:outputText value="Files for this study may also be accessed from their "/>
+                  <ice:outputLink value="#{studyPage.studyUI.study.harvestHoldings}">
+                    <ice:outputText value="original source."/>
+                  </ice:outputLink>
+                </p>
+              </div>
+              <div jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.anyFileRestricted}">
+                <p>
+                  <ice:outputText value="Access to some files is restricted, and those files are not available for downloading."/>
+                  <ice:outputText value=" No information about the restriction is available." rendered="#{studyPage.termsOfUseIsEmpty}"/>
+                  <ice:outputText value=" Check the " rendered="#{!studyPage.termsOfUseIsEmpty}"/>
+                  <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=catalog#termsofuse" rendered="#{!studyPage.termsOfUseIsEmpty}">
+                    <ice:outputText value="Terms of Use"/>
+                  </ice:outputLink>
+                  <ice:outputText value=" for more information." rendered="#{!studyPage.termsOfUseIsEmpty}"/>
+                  <ice:outputLink action="#{StudyPage.beginRequestWorkflow}" rendered="#{studyPage.studyUI.study.requestAccess and VDCSession.loginBean!=null}" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/FileRequestPage.xhtml?studyId=#{studyPage.studyId}">
+                    <ice:outputText value=" Send a Request"/>
+                  </ice:outputLink>
+                  <ice:commandLink action="#{studyPage.beginRequestWorkflow}" rendered="#{studyPage.studyUI.study.requestAccess and VDCSession.loginBean==null}">
+                    <ice:outputText value=" Send a Request"/>
+                  </ice:commandLink>
+                  <ice:outputText value=" if you would like to access the restricted files in this study." rendered="#{studyPage.studyUI.study.requestAccess}"/>
+                </p>
+              </div>
             </div>
           </div>
           <div class="dvn_sectionTitle">
@@ -201,11 +203,11 @@
                   </ul>
                 </li>
               </ul>
-              <dvn:tooltip tooltipMessage="#{studybundle.addTip}" linkText="#{studybundle.addText}"  eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/AddFilesPage.xhtml?studyId=#{studyPage.studyUI.study.id}" cssClass="vdcTooltipLink"/>
-              <dvn:tooltip tooltipMessage="#{studybundle.permissionsTip}" linkText="#{studybundle.permissionsText}"  eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPermissionsPage.xhtml?studyId=#{studyPage.studyUI.study.id}" cssClass="vdcTooltipLink"/>
-              <dvn:tooltip tooltipMessage="#{studybundle.deleteTip}" linkText="#{studybundle.deleteText}"  eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/DeleteStudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}" cssClass="vdcTooltipLink"/>
+              <dvn:tooltip tooltipMessage="#{studybundle.addTip}" linkText="#{studybundle.addText}" eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/AddFilesPage.xhtml?studyId=#{studyPage.studyUI.study.id}" cssClass="vdcTooltipLink"/>
+              <dvn:tooltip tooltipMessage="#{studybundle.permissionsTip}" linkText="#{studybundle.permissionsText}" eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPermissionsPage.xhtml?studyId=#{studyPage.studyUI.study.id}" cssClass="vdcTooltipLink"/>
+              <dvn:tooltip tooltipMessage="#{studybundle.deleteTip}" linkText="#{studybundle.deleteText}" eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/DeleteStudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}" cssClass="vdcTooltipLink"/>
               <span jsfc="ice:outputText" rendered="#{studyPage.userAuthorizedToRelease}">
-                <dvn:tooltip tooltipMessage="#{studybundle.templateTip}" linkText="#{studybundle.templateText}"  eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/TemplateFormPage.xhtml?studyId=#{studyPage.studyUI.study.id}" cssClass="vdcTooltipLink"/>
+                <dvn:tooltip tooltipMessage="#{studybundle.templateTip}" linkText="#{studybundle.templateText}" eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/TemplateFormPage.xhtml?studyId=#{studyPage.studyUI.study.id}" cssClass="vdcTooltipLink"/>
               </span>
               <ice:commandButton rendered="#{studyPage.studyUI.study.new}" value="Ready for Review" actionListener="#{studyPage.setReadyForReview}"/>
             </div>

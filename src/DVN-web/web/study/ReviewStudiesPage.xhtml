@@ -7,29 +7,25 @@
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:ice="http://www.icesoft.com/icefaces/component">
 <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
-
 <body>
   <gui:composition template="/template.xhtml">
-    <gui:param name="pageTitle" value="DVN - Review Studies" />
+    <gui:param name="pageTitle" value="DVN - Review Studies"/>
     <gui:define name="body">
-
       <ice:form>
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
-
         <div class="dvn_section">
+          <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
+            <div class="dvnMsgBlockContainer">
+              <ice:outputText value="When curators or admins add a study, the study is set to 'In Review' by default. Set it to 'Released' if it's ready for users to see it (once study is released, it's not displayed in this page anymore). A study status is set to 'New' when a contributor adds a study. A curator or admin can set to 'In Review' and, when ready, set it to 'Released'. Click the study name to go to the study page and edit/delete options for that study." escape="false"/>
+            </div>
+          </div>
           <div class="dvn_sectionTitle">
-            <ice:outputText value="Review Studies in #{VDCRequest.currentVDC.name} Dataverse" />
+            <ice:outputText value="Review Studies in #{VDCRequest.currentVDC.name} Dataverse"/>
           </div>
           <div class="dvn_sectionBox">
             <div class="dvn_margin12">
-
-              <div class="vdcHelpText">
-                <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" value="/resources/icon_info.gif"/>
-                <ice:outputText escape="false" value="When curators or admins add a study, the study is set to 'In Review' by default. Set it to 'Released' if it's ready for users to see it (once study is released, it's not displayed in this page anymore). A study status is set to 'New' when a contributor adds a study. A curator or admin can set to 'In Review' and, when ready, set it to 'Released'. Click the study name to go to the study page and edit/delete options for that study."/>
-              </div>
-
               <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                              headerClass="list-header-left vdcColPadded" id="dataTable1" columnClasses="vdcReviewCol1, vdcReviewCol2, vdcReviewCol3, vdcReviewCol4, vdcReviewCol5, vdcReviewCol6"
                              rowClasses="list-row-even vdcColPadded, list-row-odd vdcColPadded" value="#{ReviewStudiesPage.reviewStudies}"
@@ -83,7 +79,6 @@
                   <ice:outputText id="LastModifiedDateText" value="#{currentRow[9]}"/>
                 </ice:column>
               </ice:dataTable>
-
               <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                              headerClass="list-header-left vdcColPadded" columnClasses="vdcReviewCol1, vdcReviewCol2, vdcReviewCol3, vdcReviewCol4, vdcReviewCol5, vdcReviewCol6"
                              rowClasses="list-row-even vdcColPadded, list-row-odd vdcColPadded" value="#{ReviewStudiesPage.newStudies}" rendered="#{ReviewStudiesPage.newStudies.rowCount > 0 }"
@@ -96,7 +91,6 @@
                     <ice:outputText value="#{currentRow[1]} - #{currentRow[2]}"/>
                   </ice:outputLink>
                 </ice:column>
-
                 <ice:column>
                   <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/login/AccountPage.xhtml?userId=#{currentRow[6]}">
                     <ice:outputText value="#{currentRow[4]}"/>
@@ -126,14 +120,12 @@
                   <ice:outputText value="#{currentRow[9]}"/>
                 </ice:column>
               </ice:dataTable>
-
               <div jsfc="ice:panelGroup" styleClass="dvnFormPadding" rendered="#{ReviewStudiesPage.displayNoStudiesText}">
                 <ice:outputText id="noStudiesText" value="There are currently no New studies or studies In Review." styleClass="warnMessage"/>
               </div>
               <div class="dvnFormPadding">
                 <ice:commandButton  id="button1" value="Update" actionListener="#{ReviewStudiesPage.updateStudy}"/>
               </div>
-
             </div>
           </div>
         </div>

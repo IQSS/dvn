@@ -84,8 +84,10 @@
         <ice:inputHidden id="studyId" value="#{EditStudyPage.studyId}"/>
         <ice:inputHidden id="token" value="#{EditStudyPage.token}"/>
         <div class="dvn_section">
-          <div class="dvnRoundCornerMsgBlock dvnInformationMessage">
-             <ice:outputText value="#{bundlePageInfo.editStudyHelp}" escape="false"/>
+          <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
+            <div class="dvnMsgBlockContainer">
+              <ice:outputText value="#{bundlePageInfo.editStudyHelp}" escape="false"/>
+            </div>
           </div>
           <div class="dvn_sectionTitle dvn_sectionTitleLinksL">
             <ice:outputText value="#{EditStudyPage.study.title}"/>

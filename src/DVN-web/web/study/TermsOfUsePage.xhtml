@@ -20,24 +20,30 @@
         <ice:inputHidden id="redirectPage" value="#{TermsOfUsePage.redirectPage}"/>
         <ice:inputHidden id="tou" value="#{TermsOfUsePage.touParam}"/>
         <div class="dvn_section">
+          <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
+            <div class="dvnMsgBlockContainer">
+              <p>
+                <ice:outputText rendered="#{TermsOfUsePage.touTypeDownload}" value="Please agree to the terms of use below before accessing the files for study: "/>
+                <ice:outputText rendered="#{TermsOfUsePage.touTypeDeposit and TermsOfUsePage.studyId!=null}" value="Please agree to the terms of use below before editing study: "/>
+                <ice:outputText styleClass="warnMessage" value="#{TermsOfUsePage.study.title}"/>
+                <ice:outputText rendered="#{TermsOfUsePage.studyId==null}" value="Please agree to the terms of use below before creating a new study."/>
+              </p>
+              <div jsfc="ice:panelGroup" rendered="#{TermsOfUsePage.studyId!=null and TermsOfUsePage.touTypeDownload}">
+                <p>
+                  <ice:outputText value="You may return "/>
+                  <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{TermsOfUsePage.study.id}&amp;tab=files">
+                    <ice:outputText value="back to the Study"/>
+                  </ice:outputLink>
+                  <ice:outputText value=" once you have been prompted to download the file."/>
+                </p>
+              </div>
+            </div>
+          </div>
           <div class="dvn_sectionTitle">
             <ice:outputText value="Terms of Use"/>
           </div>
           <div class="dvn_sectionBox">
             <div class="dvn_margin12">
-              <div class="termsAgreementMessage">
-                <ice:outputText rendered="#{TermsOfUsePage.touTypeDownload}" value="Please agree to the terms of use below before accessing the files for study: "/>
-                <ice:outputText rendered="#{TermsOfUsePage.touTypeDeposit and TermsOfUsePage.studyId!=null}" value="Please agree to the terms of use below before editing study: "/>
-                <ice:outputText styleClass="warnMessage" value="#{TermsOfUsePage.study.title}"/>
-                <ice:outputText rendered="#{TermsOfUsePage.studyId==null}" value="Please agree to the terms of use below before creating a new study."/>
-              </div>
-              <div jsfc="ice:panelGroup" rendered="#{TermsOfUsePage.studyId!=null and TermsOfUsePage.touTypeDownload}" style="padding: .5em 0;">
-                <ice:outputText value="Once you have been prompted to download the file, you may return "/>
-                <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{TermsOfUsePage.study.id}&amp;tab=files">
-                  <ice:outputText value="back to the Study"/>
-                </ice:outputLink>
-                <ice:outputText value="."/>
-              </div>
               <div class="termsAgreementBox">
                 <div jsfc="ice:panelGroup" rendered="#{TermsOfUsePage.touTypeDownload}">
                   <!-- Study Terms of Use -->

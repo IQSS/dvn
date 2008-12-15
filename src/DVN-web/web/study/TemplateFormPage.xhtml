@@ -22,8 +22,10 @@
         <ice:inputHidden id="token" value="#{TemplateFormPage.token}"/>
         <ice:inputHidden immediate="true" binding="#{TemplateFormPage.hiddenStudyId}" id="studyId" value="#{TemplateFormPage.studyId}"/>
         <div class="dvn_section">
-          <div class="dvnRoundCornerMsgBlock dvnInformationMessage">
-             <ice:outputText value="#{bundlePageInfo.editTemplateHelp}" escape="false"/>
+          <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
+            <div class="dvnMsgBlockContainer">
+              <ice:outputText value="#{bundlePageInfo.editTemplateHelp}" escape="false"/>
+            </div>
           </div>
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{EditStudyPage.study.title}"/>

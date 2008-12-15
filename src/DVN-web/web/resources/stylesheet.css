@@ -67,9 +67,11 @@
 
 .dvnFormPadding {
   padding: 1em 0;
+  text-align: left;
 }
 .dvnFormPaddingTop {
   padding-top: 1em;
+  text-align: left;
 }
 .dvnFormMargin input {
   margin-right: 2em;
@@ -96,12 +98,13 @@
 /* GENERAL CONTENT */
 .dvn_hmpgMainMessage {margin-bottom: 1em;}
 
-.dvn_section {margin: 1em 0; width: 100%; text-align: left;}
+.dvn_section {margin: 1em 0; width: 100%; text-align: center;}
 
 .dvn_sectionContent {
 	display: inline;
         width: 75%;
 	float: right;
+        text-align: left;
 }
 
 .dvn_sectionTitle {margin: 0; padding: 0 .65em .25em .65em; font-size: 112% !important; color: #526f76; text-transform: uppercase; text-align: left;}
@@ -219,7 +222,7 @@
 }
 /* END studyPageEditLinks */
 
-.dvn_sectionBox {width: 100%; border-top: 2px solid #91a5a9; border-left: 1px solid #ccc; }
+.dvn_sectionBox {width: 100%; border-top: 2px solid #91a5a9; border-left: 1px solid #ccc; text-align: left;}
 .dvn_sectionBoxNoBorders{width: 100%; padding-top: .75em; clear: both;} 
 
 .dvn_block {margin-bottom: 12px; padding: 6px; background: url(images/blocks_bg.png) no-repeat #f8f8f8; border: 1px solid #e9e5e5;}
@@ -263,7 +266,7 @@ span.disabled {font-weight: bold;}
 .dvnTreeContainer div.iceTree {overflow-x: hidden; overflow-y: hidden; clear: both; width: 100%; padding-bottom: 1.75em;}
 
 /* HEADER */
-.dvn_headerTitle {position: relative;}
+.dvn_headerTitle {position: relative; text-align: left;}
 .dvn_headerTitleLarge {margin: .25em 228px .25em 12px;}
 .dvn_headerTitleLarge a:link span, .dvn_headerTitleLarge a:visited span, .dvn_headerTitleLarge a:hover span, .dvn_headerTitleLarge a:active span {color: #526f76; font-size: 148% !important;}
 a.dvn_headerTitleLrgNetwork:link span, a.dvn_headerTitleLrgNetwork:visited span, a.dvn_headerTitleLrgNetwork:hover span, a.dvn_headerTitleLrgNetwork:active span {color: #c55b28;}
@@ -367,98 +370,82 @@ td.dvnPaginatorWrap table.dvnPaginatorRight {}
 }
 
 /* Style rules for message severity levels */
-
-.infoMessage {
-  color: black;
-}
-div.dvnInformationMsgWrap {
+div.dvnMsgBlockContainer {
+    text-align: left;
     display: table-cell;
     vertical-align: middle;
-    min-height: 8em;
+    border: 1px solid #bfdcf1; /* FIX: IE8 vertical-align: middle */
+}
+div.dvnMsgBlockContainer p {
+  background: transparent;
+  margin: 1em 0;
 }
 div.dvnInformationMessage {
   max-width: 900px;
-  width: 80%; margin: 0 auto 1em auto; padding: 4px; min-height: 40px;
+  width: 80%;
+  margin: 0 auto 1em auto;
+  padding-left: 58px;
   background: url(icon_information.png) #bfdcf1 4px no-repeat;
 }
-/* .dvnInformationMessage p:first-child {padding-top: 0; margin-top: 0;} */
-div.dvnInformationMessage p {
-  margin-left: 48px;
-  background: transparent;
-}
-
 div.dvnSuccessMessage {
   max-width: 900px;
-  width: 80%; margin: 0 auto 1em auto; padding: 4px; min-height: 40px;
-  background: url(icon_success.png) #cee6bb 4px 4px no-repeat;
+  width: 80%;
+  margin: 0 auto 1em auto;
+  padding-left: 58px;
+  background: url(icon_success.png) #cee6bb 4px no-repeat;
 }
-/* div.dvnSuccessMessage p:first-child {padding-top: 0; margin-top: 0;} */
-div.dvnSuccessMessage p {
-  margin-left: 48px;
-  background: transparent;
+div.dvnSuccessMessage div.dvnMsgBlockContainer {
+  border: 1px solid #cee6bb; /* FIX: IE8 vertical-align: middle */
 }
-div.dvnSuccessMessage ul, div.dvnSuccessMessage div {
-  margin-left: 48px;
-  padding-left: 0;
-  list-style: none;
-  background: transparent;
-}
-div.dvnSuccessMessage li, div.dvnSuccessMessage div span {
-  margin: 0;
-  padding: 0;
+div.dvnSuccessMessage span {
   font-weight: bold;
   color: #299a0b;
   background: transparent;
 }
+div.dvnSuccessMessage ul {
+  padding-left: 0;
+  list-style: none;
+  background: transparent;
+}
+div.dvnSuccessMessage li {
+  margin: 0;
+  padding: 0;
+}
 div.dvnSuccessMessage .successMessage {
    background: transparent;
    color: #299a0b;
-   display: inline;
    font-weight: bold;
-   padding: 0;
    text-align: left;
-   width: auto;
-   margin: 0 0 0 48px;
 }
-
 .successMessage {
    background: #f4ebc7;
    color: #c55b28;
-   display: block;
    font-weight: bold;
-   padding: 0.75em;
-   text-align: center;
-   width: 50%;
-   margin: 0 auto 12px auto;
 }
-
 .successMessage a:link, .successMessage a:visited, .successMessage a:hover, .successMessage a:active {
     color: blue;
 }
-
 ul.successMessage, .successMessage ul {
     list-style: none;
 }
-
 ul.successMessage li, .successMessage ul li {
     margin: 0; padding: 0;
 }
-
 .warnMessage {
    color: #8B0404;
 }
-
 .errorMessage {
   color: red;
   font-weight: bold;
 }
-
 .fatalMessage {
   color: red;
   font-style: italic;
   font-weight: bold;
 }
-
+.infoMessage {
+  color: black;
+}
 /* ICEFACE messages NOTE: ice:message component adds a "severity style" to the style class of the tag */
 .errorMessageFatal {color: red; font-weight: bold; padding: 0 .5em;}
 .errorMessageError {color: red; font-weight: bold; padding: 0 .5em;}
@@ -1268,7 +1255,7 @@ td.vdcEditFilesColC{
   margin-top: 1.5em;
 }
 .dvnManageTableTop {
-  border: 1px solid #d9d9d9; border-bottom: 0; overflow: hidden;
+  border: 1px solid #d9d9d9; border-bottom: 0; text-align: left; overflow: hidden;
 }
 .dvnManageTableTotals {float: left; width: 75%; padding: .5em .25em;}
 .dvnManageTableCreateLink {float: right; width: 20%; padding: .5em .25em; text-align: right;}
@@ -1821,7 +1808,6 @@ td.dvnPermissionsTableHeader {padding: .5em 1em; background: gainsboro; color: g
 .dvn_createDvRequest .requestContentFormRight span.reqContentActionTitle {color: #555; font-weight: bold;}
 .dvn_createDvRequest .requestContentFormRight span.agreeCheckbox {padding: 0;}
 .dvn_createDvRequest .requestContinueLink {padding: 2em 0 0 0; text-align: center;}
-.termsAgreementMessage {padding-bottom: 10px;}
 span.termsAgreementMessageTitle {display: block; padding-top: 1em; color: #526f76; font-size: 120% !important; font-weight: bold; text-transform: uppercase;}
 .termsAgreementBox {margin-bottom: 20px; padding: 4px; width: 450px; height: 300px; border: 1px solid #035899; overflow: scroll; overflow-x: auto;}
 .termsAgreementButtons {padding-top: 20px; width: 450px; text-align: center;}

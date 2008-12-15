@@ -16,18 +16,14 @@
       <ice:form id="form1">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <div class="dvn_section">
-          <div class="dvnRoundCornerMsgBlock dvnInformationMessage">
-            <ice:outputText value="#{bundlePageInfo.manageCollectionsHelp}" escape="false"/>
+          <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
+            <div class="dvnMsgBlockContainer">
+              <ice:outputText value="#{bundlePageInfo.manageCollectionsHelp}" escape="false"/>
+            </div>
           </div>
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.manageCollectionsTitle}"/>
           </div>
-          <!--
-          <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/collection/EditCollectionPage.xhtml">
-            <ice:outputText id="hyperlink3Text2" value="Create a New Collection"/>
-          </ice:outputLink>
-          (There will be a link to create a new collection inside the table, for each collection row)
-          -->
           <div class="dvnManageTableTop">
             <div jsfc="ice:panelGroup" styleClass="dvnManageTableTotals">
               <ice:outputText value="Study Collections"/>

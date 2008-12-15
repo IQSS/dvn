@@ -92,8 +92,10 @@
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <ice:inputHidden id="collId" value="#{EditCollectionPage.collId}"/>
         <div class="dvn_section">
-          <div class="dvnRoundCornerMsgBlock dvnInformationMessage">
-            <ice:outputText value="#{bundlePageInfo.editCollectionHelp}" escape="false"/>
+          <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
+            <div class="dvnMsgBlockContainer">
+              <ice:outputText value="#{bundlePageInfo.editCollectionHelp}" escape="false"/>
+            </div>
           </div>
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.editCollectionTitle}"/>

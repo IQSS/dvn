@@ -117,9 +117,9 @@ ALTER TABLE studyfileactivity
       ON UPDATE NO ACTION ON DELETE NO ACTION;
 
 -- add populate the new column
-update studyfileactivity sfa set study_id = fc.study_id
+update studyfileactivity set study_id = fc.study_id
 from studyfile sf, filecategory fc
-where sfa.studyfile_id = sf.id
+where studyfileactivity.studyfile_id = sf.id
 and sf.filecategory_id = fc.id;
 
 -- new indices

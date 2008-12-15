@@ -16,15 +16,17 @@
       <ice:form id="advsearch">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <div class="dvn_section">
+          <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
+            <div class="dvnMsgBlockContainer">
+              <ice:outputText value="#{bundlePageInfo.advancedSearchHelp}" escape="false"/>
+              <ice:outputText value="#{bundlePageInfo.advancedSearchDVCollectionsHelp}" rendered="#{AdvSearchPage.collectionsIncluded}" escape="false"/>
+            </div>
+          </div>
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.advancedSearchTitle}"/>
           </div>
           <div class="dvn_sectionBox">
             <div class="dvn_margin12">
-              <div jsfc="ice:panelGroup" styleClass="dvnRoundCornerMsgBlock dvnInformationMessage">
-                <ice:outputText value="#{bundlePageInfo.advancedSearchHelp}" escape="false"/>
-                <ice:outputText value="#{bundlePageInfo.advancedSearchDVCollectionsHelp}" rendered="#{AdvSearchPage.collectionsIncluded}" escape="false"/>
-              </div>
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="3" width="100%"
                              columnClasses="vdcAdvSearchCol1, vdcAdvSearchCol2, vdcAdvSearchCol3" rowClasses="list-row-odd, list-row-even"
                              id="gridPanel1" styleClass="dvnAdvSearchScopeTable">

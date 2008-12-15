@@ -17,15 +17,14 @@
             <ice:form id="form1">
                 <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>                    
                 <div class="dvn_section">
+                    <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnSuccessMessage" rendered="#{!empty VDCRequest.successMessage }">
+                      <div class="dvnMsgBlockContainer">
+                        <p><ice:outputText id="statusMessage" value="#{VDCRequest.successMessage}"/></p>
+                      </div>
+                    </div>
                     <div class="dvn_sectionTitle">
                         <ice:outputText value="#{bundlePageInfo.dvOptionsTitle}"/>
                     </div>
-                      <div jsfc="ice:panelGroup" styleClass="dvnRoundCornerMsgBlock dvnSuccessMessage" rendered="#{!empty VDCRequest.successMessage }">
-                      <div>
-                        <ice:outputText id="statusMessage" value="#{VDCRequest.successMessage}"/>
-                      </div>
-                    </div>
-                    
                     <div jsfc="ice:panelGroup" rendered="#{VDCSession.loginBean.contributor and not VDCRequest.currentVDC.harvestingDv}">
                         <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
                             <tr><td colspan="2" class="dvnOptionsTableHeader"><ice:outputText value="#{bundlePageInfo.contributorSectionTitle}"/></td></tr>

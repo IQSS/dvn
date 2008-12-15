@@ -16,13 +16,15 @@
       <ice:form id="editBannerFooterForm">
         <ice:inputHidden rendered="#{VDCRequest.currentVDC != null}" id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <div class="dvn_section">
-           <div class="dvnRoundCornerMsgBlock #{(EditBannerFooterPage.success) ? 'dvnSuccessMessage' : 'dvnInformationMessage'}">
-             <ice:outputText value="#{bundlePageInfo.editDvnBrandingHelp}" escape="false" rendered="#{VDCRequest.currentVDC == null}"/>  
-             <ice:outputText value="#{bundlePageInfo.editDvBrandingHelp}" escape="false" rendered="#{VDCRequest.currentVDC != null}"/>
-             <ice:messages layout="list" globalOnly="true" styleClass="successMessage"/>
+          <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
+            <div class="dvnMsgBlockContainer">
+              <ice:outputText value="#{bundlePageInfo.editDvnBrandingHelp}" escape="false" rendered="#{VDCRequest.currentVDC == null}"/>
+              <ice:outputText value="#{bundlePageInfo.editDvBrandingHelp}" escape="false" rendered="#{VDCRequest.currentVDC != null}"/>
+              <ice:messages layout="list" globalOnly="true" styleClass="successMessage"/>
+            </div>
           </div>
           <div class="dvn_sectionTitle">
-            <ice:outputText value="#{bundlePageInfo.editDvnBrandingTitle}" rendered="#{VDCRequest.currentVDC == null}"/>  
+            <ice:outputText value="#{bundlePageInfo.editDvnBrandingTitle}" rendered="#{VDCRequest.currentVDC == null}"/>
             <ice:outputText value="#{bundlePageInfo.editDvBrandingTitle}" rendered="#{VDCRequest.currentVDC != null}"/>
           </div>
           <div class="dvn_sectionBox">

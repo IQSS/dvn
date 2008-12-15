@@ -20,10 +20,9 @@
         <input type="hidden" name="pageName" value="PrivilegedUsersPage"/>
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <div class="dvn_section">
-          <div jsfc="ice:panelGroup" styleClass="dvnRoundCornerMsgBlock #{(PrivilegedUsersPage.success) ? 'dvnSuccessMessage' : 'dvnInformationMessage'}">
-            <ice:outputText value="#{bundlePageInfo.manageDvPermissionsHelp}" escape="false" />
-            <div jsfc="ice:panelGroup" rendered="#{PrivilegedUsersPage.success}">
-              <ice:outputText value="Update Successful!"/>
+          <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
+            <div class="dvnMsgBlockContainer">
+              <ice:outputText value="#{bundlePageInfo.manageDvPermissionsHelp}" escape="false" />
             </div>
           </div>
           <div class="dvn_sectionTitle">

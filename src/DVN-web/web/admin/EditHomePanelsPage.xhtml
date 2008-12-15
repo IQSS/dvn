@@ -16,8 +16,10 @@
       <ice:form id="editHomePanelsForm">
         <ice:inputHidden rendered="#{VDCRequest.currentVDCId != null}" id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <div class="dvn_section">
-           <div jsfc="ice:panelGroup" styleClass="dvnRoundCornerMsgBlock #{'dvnInformationMessage'}">
-             <ice:outputText value="#{bundlePageInfo.editDvDescriptionHelp}" escape="false"/>
+           <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
+             <div class="dvnMsgBlockContainer">
+               <ice:outputText value="#{bundlePageInfo.editDvDescriptionHelp}" escape="false"/>
+             </div>
           </div>
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.editDvDescriptionTitle}"/>

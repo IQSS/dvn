@@ -17,8 +17,10 @@
         <input type="hidden" name="pageName" value="PrivilegedUsersPage"/>
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <div class="dvn_section">
-           <div class="dvnRoundCornerMsgBlock dvnInformationMessage">
-             <ice:outputText value="#{bundlePageInfo.codePromotionalHelp}" escape="false"/>
+           <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
+             <div class="dvnMsgBlockContainer">
+               <ice:outputText value="#{bundlePageInfo.codePromotionalHelp}" escape="false"/>
+             </div>
           </div>
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.codePromotionalTitle}"/>

@@ -72,7 +72,9 @@ public class PagedDataModel extends DataModel {
   }
   
   public void setWrappedData(Object list) {
+    this.oldPage = (List)this.getWrappedData();
     this.list = (List) list;
+    //this.oldPage = (List) list;
   }
 
   private List oldPage = new ArrayList();

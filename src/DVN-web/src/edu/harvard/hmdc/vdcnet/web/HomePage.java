@@ -207,15 +207,15 @@ public class HomePage extends VDCBaseBean implements Serializable {
     
 
       private void initGroupBean(VDCGroup vdcgroup) {
-            List innerlist  = vdcgroup.getVdcs();
-            Iterator inneriterator = innerlist.iterator();
+            Long vdcGroupId = vdcgroup.getId();
+            Integer groupSize = Integer.parseInt(vdcGroupId.toString());
             Long parent     = (vdcgroup.getParent() != null) ? vdcgroup.getParent() : new Long("-1");
             parentItem      = new DataverseGrouping(vdcgroup.getId(), vdcgroup.getName(), "group", itemBeans, true, EXPAND_IMAGE, CONTRACT_IMAGE, parent);
             parentItem.setShortDescription(vdcgroup.getDescription());
             List groupList = new ArrayList();
-            dataModel = new PagedDataModel(groupList, innerlist.size(), 10);
+            dataModel = new PagedDataModel(groupList, groupSize, 10);
             parentItem.setDataModel(dataModel);
-            parentItem.setDataModelRowCount(innerlist.size());
+            parentItem.setDataModelRowCount(groupSize);
      }
 
       //  pagination

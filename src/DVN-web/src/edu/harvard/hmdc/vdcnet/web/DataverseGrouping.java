@@ -500,13 +500,8 @@ public class DataverseGrouping extends SortableList {
   public ArrayList<DataverseGrouping> getChildItems()
     {
         // we only want to sortColumnName if the column or ordering has changed.
-          if (!oldSort.equals(sortColumnName) ||
-                 oldAscending != ascending){
-                 sort();
-                 oldSort = sortColumnName;
-                oldAscending = ascending;
-             }
-            return childItems;
+          checkSort();
+          return childItems;
      }
 
      private int firstRow = 0;
@@ -532,7 +527,7 @@ public class DataverseGrouping extends SortableList {
      }
 
      //fields and methods to support large data sets paging on the home page
-    List<DataverseGrouping> groupList = new ArrayList();
+    
     private boolean pageAction = false;
     String oldOrder;
     String oldField;
@@ -543,8 +538,14 @@ public class DataverseGrouping extends SortableList {
     public void setPageAction(Boolean bool) {
         this.pageAction = bool;
     }
-
+    
+        
      boolean isPopulated = false;
+     private String field = new String();
+     List resultList = new ArrayList();
+     List<DataverseGrouping> groupList = new ArrayList();
+
+     
      public PagedDataModel getDataModel() {
              StudyServiceLocal studyService = null;
              VDCServiceLocal vdcService     = null;
@@ -554,28 +555,32 @@ public class DataverseGrouping extends SortableList {
              } catch (javax.naming.NamingException ne) {
                  //naming exception
              }
-             List resultList = new ArrayList();
-             String field    = new String();
-               if (sortColumnName.equals(dateReleasedColumnName))
-                   field = "releasedate";
-               else if (sortColumnName.equals(lastUpdatedColumnName)) {
-                   field = "createddate";
-               } else if (sortColumnName.equals(activityColumnName)) {
-                   field = "";
-               } else {
-                   field = sortColumnName;
-               }
-             if (!oldSort.equals(sortColumnName) || oldAscending != ascending){
-               String order     = (ascending == true) ? "ASC" : "DESC";
-               resultList       = vdcService.getPagedData(this.id, firstRow, rows, field, order);//This is the new sort. TODO: figure out activity sort
-               oldSort = sortColumnName;
-               oldAscending     = ascending;
-               oldOrder         = order;
-               oldField         = field;
-            } else {
+            String order     = (ascending == true) ? "ASC" : "DESC";
+            if (!oldSort.equals(sortColumnName) || oldAscending != ascending){
+                if (sortColumnName.equals(dateReleasedColumnName)) {
+                       field = "releasedate";
+                } else if (sortColumnName.equals(lastUpdatedColumnName)) {
+                       field = "createddate";
+                } else if (sortColumnName.equals(activityColumnName)) {
+                       field = "activity";
+                } else {
+                       field = sortColumnName;
+                }
+                if (!field.equals("activity"))
+                    resultList       = vdcService.getPagedData(this.id, firstRow, rows, field, order);//This is the new sort. TODO: figure out activity sort
+                else
+                    resultList       = vdcService.getPagedDataByActivity(firstRow, rows, order);
+                oldSort = sortColumnName;
+                oldAscending     = ascending;
+                oldOrder         = order;
+                oldField         = field;
+            } else if (pageAction) {
                 resultList      = vdcService.getPagedData(this.id, firstRow, rows, oldField, oldOrder);
+            } else {
+                resultList      = resultList;
+                isPopulated     = false;
             }
-             
+
              List newList       = new ArrayList();
              Iterator iterator  = resultList.iterator();
              
@@ -603,17 +608,16 @@ public class DataverseGrouping extends SortableList {
              }
              groupList.clear();
              groupList.addAll(newList);
-
+             
              dataModel = new PagedDataModel(groupList, dataModelRowCount, 10);
-             dataModel.setOldPage(newList);
+             
          }
          if (pageAction == true) {
              FacesContext context = FacesContext.getCurrentInstance();
              context.renderResponse();
              pageAction = false;
          }
-             
-             return dataModel;
+         return dataModel;
      }
 
     public void setDataModel(PagedDataModel dataModel) {

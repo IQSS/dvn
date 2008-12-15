@@ -16,8 +16,10 @@
       <ice:form  id="logoutForm">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <div class="dvn_section">
-          <div jsfc="ice:panelGroup" styleClass="dvnRoundCornerMsgBlock dvnSuccessMessage">
-            <ice:outputText styleClass="successMessage" value="You are now logged out."/>
+          <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnSuccessMessage">
+            <div class="dvnMsgBlockContainer">
+              <p><ice:outputText styleClass="successMessage" value="You are now logged out."/></p>
+            </div>
           </div>
           <div class="dvn_sectionTitle">
             <ice:outputText value="Options"/>

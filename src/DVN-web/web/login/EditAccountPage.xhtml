@@ -17,8 +17,10 @@
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <input type="hidden" name="pageName" value="EditAccountPage"/>
         <div class="dvn_section">
-          <div class="dvnRoundCornerMsgBlock dvnInformationMessage">
-            <ice:outputText value="#{bundlePageInfo.editAccountHelp}" escape="false"/>
+          <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
+            <div class="dvnMsgBlockContainer">
+              <ice:outputText value="#{bundlePageInfo.editAccountHelp}" escape="false"/>
+            </div>
           </div>
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.editAccountTitle}"/>

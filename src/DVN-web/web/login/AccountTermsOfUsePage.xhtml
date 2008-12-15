@@ -17,6 +17,11 @@
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <input type="hidden" value="TermsOfUsePage" name="pageName"/>
         <div jsfc="ice:panelGroup" styleClass="#{(LoginWorkflowBean.creatorWorkflow or LoginWorkflowBean.contributorWorkflow) ? 'dvn_createDvRequest dvn_section dvn_overflow' : 'dvn_section'}">
+          <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage" rendered="#{LoginWorkflowBean.plainWorkflow or LoginWorkflowBean.fileAccessWorkflow}">
+            <div class="dvnMsgBlockContainer">
+              <p><ice:outputText value="Please read and agree to the terms of use for the #{VDCRequest.vdcNetwork.name} Dataverse Network. Check the &quot;I agree and accept&quot; box and continue."/></p>
+            </div>
+          </div>
           <div jsfc="ice:panelGroup" styleClass="#{(LoginWorkflowBean.creatorWorkflow or LoginWorkflowBean.contributorWorkflow) ? 'requestHeader dvn_overflow' : 'dvn_sectionTitle'}">
             <ice:outputText value="Terms of Use" rendered="#{LoginWorkflowBean.plainWorkflow}"/>
             <ice:outputText value="Create a New Account" rendered="#{LoginWorkflowBean.fileAccessWorkflow}"/>
@@ -36,19 +41,18 @@
           </div>
           <div jsfc="ice:panelGroup" styleClass="#{(LoginWorkflowBean.creatorWorkflow or LoginWorkflowBean.contributorWorkflow) ? 'requestContent' : 'dvn_sectionBox'}">
             <div jsfc="ice:panelGroup" rendered="#{LoginWorkflowBean.creatorWorkflow or LoginWorkflowBean.contributorWorkflow}" styleClass="requestContentDescLeft">
-              <div class="dvnRoundCornerMsgBlock dvnInformationMessage">
-                <p>
-                  <ice:outputText value="Please read and agree to the terms of use for the "/>
-                  <ice:outputText value="#{VDCRequest.vdcNetwork.name}"/>
-                  <ice:outputText value=" Dataverse Network. Check the 'I agree and accept' box and continue."/>
-                </p>
+              <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
+                <div class="dvnMsgBlockContainer">
+                  <p>
+                    <ice:outputText value="Please read and agree to the terms of use for the "/>
+                    <ice:outputText value="#{VDCRequest.vdcNetwork.name}"/>
+                    <ice:outputText value=" Dataverse Network. Check the 'I agree and accept' box and continue."/>
+                  </p>
+                </div>
               </div>
             </div>
             <div jsfc="ice:panelGroup" styleClass="#{(LoginWorkflowBean.creatorWorkflow or LoginWorkflowBean.contributorWorkflow) ? 'requestContentFormRight' : 'empty'}">
               <div class="dvn_margin12">
-                <div jsfc="ice:panelGroup" styleClass="termsAgreementMessage" rendered="#{LoginWorkflowBean.plainWorkflow or LoginWorkflowBean.fileAccessWorkflow}">
-                  <ice:outputText value="Please read and agree to the terms of use for the #{VDCRequest.vdcNetwork.name} Dataverse Network. Check the &quot;I agree and accept&quot; box and continue."/>
-                </div>
                 <div class="termsAgreementBox">
                   <ice:outputText value="#{AccountTermsOfUsePage.termsOfUse}" escape="false"/>
                 </div>

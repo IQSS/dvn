@@ -14,8 +14,10 @@
     <gui:param name="pageTitle" value="#{bundlePageInfo.createAccountTitle}"/>
     <gui:define name="body">
       <ice:form id="form1">
-        <div jsfc="ice:panelGroup" rendered="#{LoginWorkflowBean.plainWorkflow}" styleClass="dvnRoundCornerMsgBlock dvnInformationMessage">
-          <ice:outputText value="#{bundlePageInfo.createAccountHelp}" escape="false"/>
+        <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage" rendered="#{LoginWorkflowBean.plainWorkflow}">
+          <div class="dvnMsgBlockContainer">
+            <ice:outputText value="#{bundlePageInfo.createAccountHelp}" escape="false"/>
+          </div>
         </div>
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <ice:inputHidden id="studyId" value="#{AddAccountPage.studyId}"/>
@@ -41,8 +43,10 @@
           </div>
           <div jsfc="ice:panelGroup" styleClass="#{(LoginWorkflowBean.creatorWorkflow or LoginWorkflowBean.contributorWorkflow) ? 'requestContent' : 'dvn_sectionBox'}">
             <div jsfc="ice:panelGroup" rendered="#{LoginWorkflowBean.creatorWorkflow or LoginWorkflowBean.contributorWorkflow}" styleClass="requestContentDescLeft">
-              <div class="dvnRoundCornerMsgBlock dvnInformationMessage">
-                <ice:outputText value="#{bundlePageInfo.createAccountHelp}" escape="false"/>
+              <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
+                <div class="dvnMsgBlockContainer">
+                  <ice:outputText value="#{bundlePageInfo.createAccountHelp}" escape="false"/>
+                </div>
               </div>
             </div>
             <div jsfc="ice:panelGroup" styleClass="#{(LoginWorkflowBean.creatorWorkflow or LoginWorkflowBean.contributorWorkflow) ? 'requestContentDescRight' : 'empty'}">

@@ -16,13 +16,8 @@
       <ice:form id="accountForm">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <div class="dvn_section">
-          <!--
-          <div jsfc="ice:panelGroup" styleClass="#{AccountPage.statusMessage.styleClass}" rendered="#{!empty AccountPage.statusMessage.messageText}">
-                <ice:outputText id="statusMessage" value="#{AccountPage.statusMessage.messageText}"/>
-              </div>
-          -->
-          <div jsfc="ice:panelGroup" styleClass="dvnRoundCornerMsgBlock dvnSuccessMessage" rendered="#{!empty AccountPage.statusMessage.messageText}">
-             <div>
+          <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnSuccessMessage" rendered="#{!empty AccountPage.statusMessage.messageText}">
+             <div class="dvnMsgBlockContainer">
                <ice:outputText id="statusMessage" value="#{AccountPage.statusMessage.messageText}"/>
              </div>
           </div>

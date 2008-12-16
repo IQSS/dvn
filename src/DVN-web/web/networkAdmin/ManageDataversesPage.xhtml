@@ -31,8 +31,9 @@
               <ice:outputText styleClass="dvnManageTableEmptyMessage" value="There are no dataverses to display in this group."/>
             </div>
             <div jsfc="ice:panelGroup" rendered="#{dvItems.recordType eq 'group'}">
-              <div jsfc="ice:panelGroup" rendered="#{not empty(dvItems.childItems)}">
-                <div class="dvnManageTableTop">
+                <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="2"
+                               styleClass="dvnManageTableTop" columnClasses="dvnManageTableTotals, dvnPaginatorWrap"
+                               rendered="#{not empty(dvItems.childItems)}">
                   <div jsfc="ice:panelGroup" styleClass="dvnManageTableTotals" rendered="#{not empty(dvItems.childItems)and VDCRequest.currentVDC == null }">
                     <h:outputText binding="#{NetworkStatsBean.inlineDataverseKey}"
                                   effect="#{item.effect}"
@@ -55,11 +56,8 @@
                     </h:outputText>
                   </div>
                   <div jsfc="ice:panelGroup" styleClass="dvnPaginatorWrap" rendered="#{not empty(dvItems.childItems)}">
-                    <ice:dataPaginator id="dataScroll_3"
-                                       for="dataverseList"
-                                       paginator="true"
-                                       fastStep="3"
-                                       paginatorMaxPages="4">
+                    <ice:dataPaginator id="dataScroll_3" for="dataverseList" paginator="true"
+                                       fastStep="3" paginatorMaxPages="4" renderFacetsIfSinglePage="false">
                       <f:facet name="first">
                         <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-first.gif" title="First Page"/>
                       </f:facet>
@@ -72,15 +70,20 @@
                       <f:facet name="last">
                         <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-last.gif" title="Previous"/>
                       </f:facet>
+                      <f:facet name="fastforward">
+                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-ff.gif" title="Fast Forward"/>
+                      </f:facet>
+                      <f:facet name="fastrewind">
+                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-fr.gif" title="Fast Rewind"/>
+                      </f:facet>
                     </ice:dataPaginator>
                   </div>
-                </div>
-              </div>
+                </ice:panelGrid>
             </div>
             <div jsfc="ice:panelGroup" rendered="#{not empty(dvItems.childItems)}">
               <ice:dataTable id="dataverseList" width="100%"
                              rendered="#{not empty(dvItems.childItems)}"
-                             rowClasses="evenRow oddRow" rows="10" headerClass="groupRow"
+                             rowClasses="evenRow oddRow" rows="1" headerClass="groupRow"
                              styleClass="dvnManageTable"
                              columnWidths="20%,20%,10%,10%,10%,10%,10%,10%,10%"
                              sortColumn="#{dvItems.sortColumnName}"

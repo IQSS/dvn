@@ -713,6 +713,10 @@ a.dvnHmpgGroupCreateLink:hover, a.dvnHmpgGroupCreateLink:active {
 .dvnHmpgGroupDataTable span {font-size: 90% !important;}
 .dvnHmpgGroupDataTable th span.iceOutTxt td {font-size: 90% !important;}
 
+.dvnHmpgDvNameLink {float: left;}
+.dvnHmpgMoreInfoLink {float: right;}
+.dvnHmpgDvMoreInfoDesc {clear: both;}
+
 /* STUDYLISTING PAGE */
 .dvnStudyListWrapper {border: 1px solid #dcdddf;}
 .dvnStudyListCollectionNameBlock {padding: .5em .25em; border: 1px solid #dcdddf; border-width: 1px 1px 0 1px; text-align: right;}

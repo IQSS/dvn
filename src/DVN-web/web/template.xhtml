@@ -41,6 +41,18 @@
           jQuery(".vdcStudyDesc").truncate({max_length: 198});
           jQuery(".vdcStudyDataCitation").truncate({max_length: 25, more: "View Data Citation [+]", less: "Collapse [-]"});
           jQuery(".TogglePaneFancy").initTogglePane({headerClassClosed:"TogglePaneFancyHeaderClosed"});
+          
+          jQuery('div.dvnHmpgDvNameBlock:eq(0)> div.dvnHmpgDvMoreInfoDesc').hide();
+          jQuery('div.dvnHmpgDvNameBlock:eq(0)> a.dvnHmpgMoreInfoLink').toggle(function() {
+              jQuery('div.dvnHmpgDvNameBlock:eq(0)> div.dvnHmpgDvMoreInfoDesc').slideDown('fast');
+              jQuery(this).html('<span>more info [-]</span>');
+              return false;
+          }, function() {
+              jQuery('div.dvnHmpgDvNameBlock:eq(0)> div.dvnHmpgDvMoreInfoDesc').slideUp('fast');
+              jQuery(this).html('<span>more info [+]</span>');
+              return false;
+          });
+
       });
       // ]]>
   </script>

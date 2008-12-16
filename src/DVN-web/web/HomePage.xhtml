@@ -187,15 +187,18 @@
                     <ice:outputText value="#{dvItems.nameColumnName}"/>
                   </ice:commandSortHeader>
                 </f:facet>
-                <ice:outputLink id="hideShow" rendered="#{items.shortDescription != null}" value="javascript:void(0);" style="display: inline; float: right;" onclick="getNextSibling(this);">
-                  <ice:outputText id="more_info" value="more info [+]"/>
-                </ice:outputLink>
-                <ice:outputLink id="dataverse_link" value="/dvn/dv/#{items.alias}">
-                  <ice:outputText value="#{items.name}"/>
-                </ice:outputLink>
-                <div id="hideShow_description" style="display:none; width:400px; z-Index:500;">
-                  <ice:outputText value="#{items.shortDescription}"/>
+                <div class="dvnHmpgDvNameBlock">
+                  <ice:outputLink styleClass="dvnHmpgDvNameLink" value="/dvn/dv/#{items.alias}">
+                    <ice:outputText value="#{items.name}"/>
+                  </ice:outputLink>
+                  <ice:outputLink styleClass="dvnHmpgMoreInfoLink" rendered="#{items.shortDescription != null}" value="javascript:void(0);">
+                    <ice:outputText value="more info [+]"/>
+                  </ice:outputLink>
+                  <div class="dvnHmpgDvMoreInfoDesc">
+                    <ice:outputText value="#{items.shortDescription}"/>
+                  </div>
                 </div>
+
               </ice:column>
               <!-- affiliation -->
               <ice:column>

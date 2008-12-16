@@ -575,7 +575,10 @@ public class DataverseGrouping extends SortableList {
                 oldOrder         = order;
                 oldField         = field;
             } else if (pageAction) {
-                resultList      = vdcService.getPagedData(this.id, firstRow, rows, oldField, oldOrder);
+                if (!field.equals("activity"))
+                    resultList      = vdcService.getPagedData(this.id, firstRow, rows, oldField, oldOrder);
+                else
+                    resultList       = vdcService.getPagedDataByActivity(firstRow, rows, order);
             } else {
                 resultList      = resultList;
                 isPopulated     = false;

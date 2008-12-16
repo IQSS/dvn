@@ -208,7 +208,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
 
       private void initGroupBean(VDCGroup vdcgroup) {
             Long vdcGroupId = vdcgroup.getId();
-            Integer groupSize = Integer.parseInt(vdcGroupId.toString());
+            Integer groupSize = Integer.parseInt((vdcService.getVdcCount(vdcGroupId)).toString());
             Long parent     = (vdcgroup.getParent() != null) ? vdcgroup.getParent() : new Long("-1");
             parentItem      = new DataverseGrouping(vdcgroup.getId(), vdcgroup.getName(), "group", itemBeans, true, EXPAND_IMAGE, CONTRACT_IMAGE, parent);
             parentItem.setShortDescription(vdcgroup.getDescription());

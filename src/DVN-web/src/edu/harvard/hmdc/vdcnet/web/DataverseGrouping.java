@@ -569,7 +569,7 @@ public class DataverseGrouping extends SortableList {
                 if (!field.equals("activity"))
                     resultList       = vdcService.getPagedData(this.id, firstRow, rows, field, order);//This is the new sort. TODO: figure out activity sort
                 else
-                    resultList       = vdcService.getPagedDataByActivity(firstRow, rows, order);
+                    resultList       = vdcService.getPagedDataByActivity(this.id, firstRow, rows, order);
                 oldSort = sortColumnName;
                 oldAscending     = ascending;
                 oldOrder         = order;
@@ -578,7 +578,7 @@ public class DataverseGrouping extends SortableList {
                 if (!field.equals("activity"))
                     resultList      = vdcService.getPagedData(this.id, firstRow, rows, oldField, oldOrder);
                 else
-                    resultList       = vdcService.getPagedDataByActivity(firstRow, rows, order);
+                    resultList       = vdcService.getPagedDataByActivity(this.id, firstRow, rows, order);
             } else {
                 resultList      = resultList;
                 isPopulated     = false;

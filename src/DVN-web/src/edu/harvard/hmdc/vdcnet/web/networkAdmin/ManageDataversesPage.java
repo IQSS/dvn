@@ -5,6 +5,8 @@
 
 package edu.harvard.hmdc.vdcnet.web.networkAdmin;
 
+import com.icesoft.faces.component.datapaginator.DataPaginator;
+import com.icesoft.faces.component.datapaginator.PaginatorActionEvent;
 import com.icesoft.faces.component.ext.HtmlCommandLink;
 import com.icesoft.faces.component.ext.HtmlMessages;
 import edu.harvard.hmdc.vdcnet.admin.NetworkRoleServiceLocal;
@@ -17,6 +19,7 @@ import edu.harvard.hmdc.vdcnet.study.StudyDownload;
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.VariableServiceLocal;
 import edu.harvard.hmdc.vdcnet.util.DateUtils;
+import edu.harvard.hmdc.vdcnet.util.PagedDataModel;
 import edu.harvard.hmdc.vdcnet.util.StringUtil;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.vdc.VDCGroupServiceLocal;
@@ -31,7 +34,6 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -40,6 +42,7 @@ import java.util.ResourceBundle;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
 
 /**
  * @author wbossons
@@ -64,6 +67,7 @@ public class ManageDataversesPage extends VDCBaseBean implements Serializable {
     public static final String CHILD_INDENT_STYLE_CLASS = "CHILD_INDENT_STYLE_CLASS";
     public static final String CONTRACT_IMAGE           = "tree_nav_top_close_no_siblings.gif";
     public static final String EXPAND_IMAGE             = "tree_nav_top_open_no_siblings.gif";
+    private String ALL_DATAVERSES_LABEL        = "All Dataverses";
     public String CHILD_ROW_STYLE_CLASS;
 
     //these static variables have a dependency on the Network Stats Server e.g.
@@ -78,10 +82,10 @@ public class ManageDataversesPage extends VDCBaseBean implements Serializable {
     private Long cid;
     private HtmlCommandLink linkDelete = new HtmlCommandLink();
     private boolean result;
-     private String statusMessage;
-     private String SUCCESS_MESSAGE   = new String("Success. The classifications and dataverses operation completed successfully.");
-     private String FAIL_MESSAGE      = new String("Problems occurred during the form submission. Please see error messages below.");
-     private HtmlMessages      iceMessage = new HtmlMessages();
+    private String statusMessage;
+    private String SUCCESS_MESSAGE   = new String("Success. The classifications and dataverses operation completed successfully.");
+    private String FAIL_MESSAGE      = new String("Problems occurred during the form submission. Please see error messages below.");
+    private HtmlMessages      iceMessage = new HtmlMessages();
 
     
     public ManageDataversesPage() {
@@ -99,39 +103,81 @@ public class ManageDataversesPage extends VDCBaseBean implements Serializable {
             itemBeans = new ArrayList();
         }
         initChrome();
-        List list = null;
-        list = (List)vdcService.findAll();
-        initAllDataverses(list);
+        //List list = null;
+        //list = (List)vdcService.findAll();
+        initAllDataverses();
      }
 
-     private void initAllDataverses(List list) {
-         parentItem = new DataverseGrouping(new Long("0"), "", "group", itemBeans, true, EXPAND_IMAGE, CONTRACT_IMAGE, null);
+     private void initAllDataverses() {
+         parentItem = new DataverseGrouping(new Long("0"), ALL_DATAVERSES_LABEL, "group", itemBeans, true, EXPAND_IMAGE, CONTRACT_IMAGE, null);
          parentItem.setSubclassification(new Long("0"));
-         Date date = new Date();
-         Timestamp timeStamp = new Timestamp(date.getTime());
-         parentItem.setCreationDate(timeStamp);
-         Iterator iterator = list.iterator();
-         VDC vdc = null;
-         while(iterator.hasNext()) {
-            //add DataListItems to the list
-            itemBeansSize++;
-            vdc = (VDC)iterator.next();
-            Long parent = new Long("0");
-            Long vdcId  = vdc.getId();
-            Timestamp lastUpdateTime = (studyService.getLastUpdatedTime(vdcId) != null ? studyService.getLastUpdatedTime(vdcId) : vdc.getReleaseDate());
-            String activity          = "0"; //placeholder -- there is no activity for this page.
-            childItem = new DataverseGrouping(vdc.getName(), vdc.getAlias(), vdc.getAffiliation(), vdc.getReleaseDate(), lastUpdateTime, vdc.getDvnDescription(), "dataverse", activity);
-            childItem.setId(vdcId);
-            childItem.setCreationDate(vdc.getCreatedDate());
-            childItem.setNumberOwnedStudies(new Integer(String.valueOf(getOwnedStudies(vdcId))));
-            childItem.setType((vdc.isHarvestingDv()) ? "Harvesting" : vdc.getDtype());
-            childItem.setCreatedBy(getCreatorName(vdc.getCreator().getId()));
-            parentItem.addChildItem(childItem);
-         }
+         long vdcGroupId = 0;
+         Integer groupSize = Integer.parseInt((vdcService.getVdcCount(vdcGroupId)).toString());
+         List groupList = new ArrayList();
+         dataModel = new PagedDataModel(groupList, groupSize, 10);
+         parentItem.setDataModel(dataModel);
+         parentItem.setDataModelRowCount(groupSize);
      }
 
      DataverseGrouping parentItem = null;
      DataverseGrouping childItem  = null;
+
+     private PagedDataModel dataModel;
+
+     public void setDataModel(PagedDataModel datamodel) {
+         this.dataModel = datamodel;
+     }
+
+           //  pagination
+     DataPaginator dataPaginator = new DataPaginator(); //DEBUG test
+     public DataPaginator getDataPaginator() {
+         return this.dataPaginator;
+     }
+
+     public void setDataPaginator(DataPaginator dataPaginator) {
+         this.dataPaginator = dataPaginator;
+     }
+
+     /** paginate
+      * @description the home page pagination is bound to the home page backing
+      * bean so that large data sets can be populated dynamically
+      *
+      * @param action
+      */
+      public void paginate(ActionEvent action) {
+        PaginatorActionEvent pEvent = (PaginatorActionEvent) action;
+        DataverseGrouping grouping = (DataverseGrouping)itemBeans.get(0);
+        grouping.setIsPopulated(false);
+        if (DataPaginator.FACET_FIRST.equals(pEvent.getScrollerfacet())) {
+            grouping.setFirstRow(0);
+            grouping.setPageAction(true);
+            grouping.getManagedDataModel();
+         } else if (DataPaginator.FACET_PREVIOUS.equals(pEvent.getScrollerfacet())) {
+             grouping.setFirstRow(grouping.getFirstRow() - 10);
+             grouping.setPageAction(true);
+             grouping.getManagedDataModel();
+         }
+         else if (DataPaginator.FACET_NEXT.equals(pEvent.getScrollerfacet())) {
+             if (grouping.getFirstRow() + 10 < grouping.getDataModelRowCount()) {
+                grouping.setFirstRow(grouping.getFirstRow() + 10);
+                grouping.setPageAction(true);
+                grouping.getManagedDataModel();
+             } else {
+                FacesContext context = FacesContext.getCurrentInstance();
+                context.renderResponse();
+             }
+         } else if (DataPaginator.FACET_LAST.equals(pEvent.getScrollerfacet())) {
+              grouping.setFirstRow(grouping.getDataModelRowCount() - (grouping.getDataModelRowCount() % 10));
+              grouping.setPageAction(true);
+              grouping.getManagedDataModel();
+         } else { // This is a paging event
+              System.out.println("The page event is " + pEvent.getPageIndex());
+              int page = pEvent.getPageIndex();
+              grouping.setFirstRow((page - 1) * 10);
+              grouping.setPageAction(true);
+              grouping.getManagedDataModel();
+         }
+     }
 
      private void initChrome() {
          msg =  (StatusMessage)getRequestMap().get("statusMessage");

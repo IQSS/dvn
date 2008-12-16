@@ -115,7 +115,7 @@ public class ManageDataversesPage extends VDCBaseBean implements Serializable {
          Integer groupSize = Integer.parseInt((vdcService.getVdcCount(vdcGroupId)).toString());
          List groupList = new ArrayList();
          dataModel = new PagedDataModel(groupList, groupSize, 10);
-         parentItem.setDataModel(dataModel);
+         parentItem.setManagedDataModel(dataModel);
          parentItem.setDataModelRowCount(groupSize);
      }
 

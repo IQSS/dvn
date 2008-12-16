@@ -257,6 +257,7 @@ span.disabled {font-weight: bold;}
   padding: .25em;
   border: 1px solid #DCDDDF;
   position: relative;
+  text-align: left;
 }
 .dvnTreeControls {padding: 0 .25em; overflow: hidden;}
 #dvnTreeOpen {font-size: 90% !important; float: left; cursor: pointer;}
@@ -709,7 +710,7 @@ a.dvnHmpgGroupCreateLink:hover, a.dvnHmpgGroupCreateLink:active {
 .dvnHmpgGroupTableTop {
 }
 .dvnHmpgGroupTotals {text-align: right; width: 100%; padding: 5px .5em;}
-.dvnHmpgGroupDataTable {margin: 0;}
+.dvnHmpgGroupDataTable {margin: 0; width: 100%;}
 .dvnHmpgGroupDataTable span {font-size: 90% !important;}
 .dvnHmpgGroupDataTable th span.iceOutTxt td {font-size: 90% !important;}
 

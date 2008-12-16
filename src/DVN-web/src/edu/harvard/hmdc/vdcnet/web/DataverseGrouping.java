@@ -86,7 +86,7 @@ public class DataverseGrouping extends SortableList {
     private static final String shortDescriptionColumnName   = "Description";
     private static final String subclassificationsColumnName = "Subclassifications";
     private static final String idColumnName                 = "Id";
-    private static final String numberOwnedStudiesColumnName = "Owned Studies";
+    private static final String numOwnedColumnName      = "Owned Studies";
     private static final String typeColumnName          = "Type";
 
     ArrayList parentItems    = new ArrayList();
@@ -418,7 +418,7 @@ public class DataverseGrouping extends SortableList {
                     } else if (sortColumnName.equals(subclassificationsColumnName)) {
                         return ascending ? c1.getSubclassification().compareTo(c2.getSubclassification()) :
                                 c2.getSubclassification().compareTo(c1.getSubclassification());
-                    } else if (sortColumnName.equals(numberOwnedStudiesColumnName)) {
+                    } else if (sortColumnName.equals(numOwnedColumnName)) {
                         return ascending ?
                                 c1.getNumberOwnedStudies().compareTo(c2.getNumberOwnedStudies()) :
                                 c2.getNumberOwnedStudies().compareTo(c1.getNumberOwnedStudies());
@@ -475,8 +475,8 @@ public class DataverseGrouping extends SortableList {
         return subclassificationsColumnName;
     }
 
-    public String getNumberOwnedStudiesColumnName() {
-        return numberOwnedStudiesColumnName;
+    public String getNumOwnedColumnName() {
+        return numOwnedColumnName;
     }
 
     public String getTypeColumnName() {
@@ -546,7 +546,7 @@ public class DataverseGrouping extends SortableList {
      List<DataverseGrouping> groupList = new ArrayList();
 
      
-     public PagedDataModel getDataModel() {
+      public PagedDataModel getDataModel() {
              StudyServiceLocal studyService = null;
              VDCServiceLocal vdcService     = null;
              try {
@@ -586,7 +586,7 @@ public class DataverseGrouping extends SortableList {
 
              List newList       = new ArrayList();
              Iterator iterator  = resultList.iterator();
-             
+
              if (!isPopulated) {
                while (iterator.hasNext()) { // populate the grouplist and pagedDataModel
                  Vector vector          = (Vector)iterator.next();
@@ -611,9 +611,9 @@ public class DataverseGrouping extends SortableList {
              }
              groupList.clear();
              groupList.addAll(newList);
-             
+
              dataModel = new PagedDataModel(groupList, dataModelRowCount, 10);
-             
+
          }
          if (pageAction == true) {
              FacesContext context = FacesContext.getCurrentInstance();
@@ -626,6 +626,115 @@ public class DataverseGrouping extends SortableList {
     public void setDataModel(PagedDataModel dataModel) {
         this.dataModel = dataModel;
     }
+    
+    public PagedDataModel getManagedDataModel() {
+             StudyServiceLocal studyService = null;
+             VDCServiceLocal vdcService     = null;
+             try {
+                    studyService = (StudyServiceLocal) new InitialContext().lookup("java:comp/env/studyService");
+                    vdcService   = (VDCServiceLocal) new InitialContext().lookup("java:comp/env/vdcService");
+             } catch (javax.naming.NamingException ne) {
+                 //naming exception
+             }
+            String order     = (ascending == true) ? "ASC" : "DESC";
+            if (!oldSort.equals(sortColumnName) || oldAscending != ascending){
+                if (sortColumnName.equals(dateReleasedColumnName)) {
+                       field = "releasedate";
+                } else if (sortColumnName.equals(lastUpdatedColumnName)) {
+                       field = "createddate";
+                } else if (sortColumnName.equals(typeColumnName)) { // for managed studies page
+                        field = "dtype";
+                } else if (sortColumnName.equals(dateCreatedColumnName)) {
+                        field = "createddate";
+                } else if (sortColumnName.equals(activityColumnName)) {
+                       field  = "activity";
+                } else if (sortColumnName.equals(createdByColumnName)) { // for managed studies page
+                        field = "username";
+                } else if (sortColumnName.equals(numOwnedColumnName)) { // for managed studies page
+                        field = "owner_id";
+                } else {
+                       field = sortColumnName;
+                }
+                if (field.equals("activity")) {
+                    resultList       = vdcService.getManagedPagedDataByActivity(firstRow, rows, order);
+                } else if (field.equals("owner_id")) {
+                    resultList       = vdcService.getManagedPagedDataByOwnedStudies(firstRow, rows, order);
+                } else {
+                    resultList       = vdcService.getManagedPagedData(firstRow, rows, field, order);//This is the new sort. TODO: figure out activity sort
+                }
+                oldSort          = sortColumnName;
+                oldAscending     = ascending;
+                oldOrder         = order;
+                oldField         = field;
+            } else if (pageAction) {
+                if (field.equals("activity")) {
+                    resultList       = vdcService.getManagedPagedDataByActivity(firstRow, rows, order);
+                } else if (field.equals("owner_id")) {
+                    resultList       = vdcService.getManagedPagedDataByOwnedStudies(firstRow, firstRow, order);
+                } else {
+                    resultList       = vdcService.getManagedPagedData(firstRow, rows, field, order);//This is the new sort. TODO: figure out activity sort
+                }
+            } else {
+                resultList      = resultList;
+                isPopulated     = false;
+            }
+
+             List newList       = new ArrayList();
+             Iterator iterator  = resultList.iterator();
+             
+             if (!isPopulated) {
+               while (iterator.hasNext()) { // populate the grouplist and pagedDataModel
+                 Vector vector          = (Vector)iterator.next();
+                 Long vdcId             = new Long(((Integer)vector.get(0)).toString());
+                 Timestamp releaseDate  = (Timestamp)vector.get(4);
+                 String type            = (String)vector.get(5);
+                 Timestamp createDate  = (Timestamp)vector.get(6);
+                 Timestamp timestamp    = studyService.getLastUpdatedTime(vdcId);
+                 Timestamp lastUpdateTime = (timestamp != null ? timestamp : releaseDate);
+                 Long localActivity     = calculateActivity(vdcId);//activity is used in the sort, but this method uses the algorithm to create the value
+                 String activity        = getActivityClass(localActivity);
+                 //String activity = "activitylevelicon al-5"; // for debug purposes only
+                 DataverseGrouping grouping = new DataverseGrouping(vdcId);
+                 grouping.setId(vdcId);//0
+                 grouping.setName((String)vector.get(1));
+                 grouping.setAlias((String)vector.get(2));
+                 grouping.setAffiliation((String)vector.get(3));
+                 grouping.setReleaseDate(releaseDate);//4
+                 grouping.setType(type);//5
+                 grouping.setCreationDate(createDate);//6
+                 grouping.setShortDescription((String)vector.get(7));
+                 grouping.setCreatedBy((String)vector.get(8));
+                 grouping.setNumberOwnedStudies(Integer.parseInt(((Long)vector.get(9)).toString()));
+                 grouping.setRecordType("dataverse");
+                 grouping.setActivity(activity);//10
+                 grouping.setLastUpdateTime(lastUpdateTime);
+                 newList.add(grouping);
+                 isPopulated = true;
+             }
+             groupList.clear();
+             groupList.addAll(newList);
+             
+             managedDataModel = new PagedDataModel(groupList, dataModelRowCount, 10);
+             
+         }
+         if (pageAction == true) {
+             FacesContext context = FacesContext.getCurrentInstance();
+             context.renderResponse();
+             pageAction = false;
+         }
+         return managedDataModel;
+     }
+
+    /* this is to separate the manage dataverses page from the home page
+     * /
+     */
+    private PagedDataModel managedDataModel = new PagedDataModel();
+
+    public void setManagedDataModel(PagedDataModel managedDataModel) {
+        this.managedDataModel = managedDataModel;
+    }
+
+
 
     // end fields and methods for large data sets and paging on home page.
 
@@ -679,7 +788,6 @@ public class DataverseGrouping extends SortableList {
     private boolean classificationSelect = false;
     private Integer numberOwnedStudies;
     private String type;
-    private int recordSize;
 
 
 
@@ -889,13 +997,14 @@ public class DataverseGrouping extends SortableList {
         this.indentStyleClass = indentstyle;
     }
 
-    public int getRecordSize() {
-        return recordSize;
+    public boolean isIsPopulated() {
+        return isPopulated;
     }
 
-    public void setRecordSize(int recordSize) {
-        this.recordSize = recordSize;
+    public void setIsPopulated(boolean isPopulated) {
+        this.isPopulated = isPopulated;
     }
+
     
 
     //******************* UTILS ***************************

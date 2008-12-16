@@ -546,15 +546,120 @@ public class VDCServiceBean implements VDCServiceLocal {
       }
     }
 
+    /** getManagedPagedDataByOwnedStudies
+     *
+     * used by the manage dataverses page
+     *
+     * @param firstRow
+     * @param totalRows
+     * @param orderBy
+     * @param order
+     * @return list of dataverses ordered by owner
+     */
+    public List getManagedPagedDataByOwnedStudies(int firstRow, int totalRows, String order) {
+        List<VDC> list = new ArrayList();
+        try {
+          String queryString  = "SELECT vdc.id, vdc.name, vdc.alias, vdc.affiliation, vdc.releasedate, " +
+                  "vdc.dtype, vdc.createddate, vdc.dvndescription, username, " +
+                    "CASE WHEN count(owner_id) is null THEN 0 ELSE count(owner_id) END AS owned_studies, " +
+                    "CASE WHEN sum(downloadcount) is null THEN 0 ELSE sum(downloadcount) END AS activity " +
+                    "FROM vdcuser, vdc " +
+                    "LEFT OUTER JOIN study on vdc.id = study.owner_id " +
+                    "LEFT OUTER JOIN studyfileactivity on study.id = studyfileactivity.study_id " +
+                    "WHERE vdc.creator_id = vdcuser.id " +
+                    "GROUP BY vdc.id, vdc.name, vdc.alias, vdc.affiliation, vdc.releasedate, vdc.dtype, vdc.createddate, vdc.dvndescription, username " +
+                    "ORDER BY " +
+                    "CASE WHEN count(owner_id) is null THEN 0 ELSE count(owner_id) END " + order +
+                    " LIMIT " + totalRows +
+                    " OFFSET " + firstRow;
+        Query query = em.createNativeQuery(queryString);
+        list        = (List<VDC>)query.getResultList();
+      } catch (Exception e) {
+        //do something here with the exception
+        list = new ArrayList();
+      } finally {
+          return list;
+      }
+    }
+
+    /** getManagedPagedDataByActivity
+     *
+     * @param firstRow
+     * @param totalRows
+     * @param order
+     * @return list of dataverses ordered by activity
+     */
+    public List getManagedPagedDataByActivity(int firstRow, int totalRows, String order) {
+      List<VDC> list = new ArrayList();
+      try {
+          String queryString  = "SELECT vdc.id, vdc.name, vdc.alias, vdc.affiliation, vdc.releasedate, " +
+                                  "vdc.dtype, vdc.createddate, vdc.dvndescription, username, " +
+                                    "CASE WHEN count(owner_id) is null THEN 0 ELSE count(owner_id) END AS owned_studies, " +
+                                    "CASE WHEN sum(downloadcount) is null THEN 0 ELSE sum(downloadcount) END AS activity " +
+                                    "FROM vdcuser, vdc " +
+                                    "LEFT OUTER JOIN study on vdc.id = study.owner_id " +
+                                    "LEFT OUTER JOIN studyfileactivity on study.id = studyfileactivity.study_id " +
+                                    "WHERE vdc.creator_id = vdcuser.id " +
+                                    "GROUP BY vdc.id, vdc.name, vdc.alias, vdc.affiliation, vdc.releasedate, vdc.dtype, vdc.createddate, vdc.dvndescription, username " +
+                                    "ORDER BY " +
+                                    "CASE WHEN sum(downloadcount) is null THEN 0 ELSE sum(downloadcount) END " + order +
+                                    "LIMIT " + totalRows +
+                                    "OFFSET " + firstRow;
+        Query query = em.createNativeQuery(queryString);
+        list        = (List<VDC>)query.getResultList();
+      } catch (Exception e) {
+        //do something here with the exception
+        list = new ArrayList();
+      } finally {
+          return list;
+      }
+    }
+
+    /** getManagedPageData
+     *
+     * used by the manage dataverses page
+     *
+     * @param firstRow
+     * @param totalRows
+     * @param orderBy
+     * @param order
+     * @return list of dataverses ordered by creator
+     */
+    public List getManagedPagedData(int firstRow, int totalRows, String orderBy, String order) {
+        List<VDC> list = new ArrayList();
+        try {
+          String queryString  = "SELECT vdc.id, vdc.name, vdc.alias, vdc.affiliation, vdc.releasedate, " +
+                  "vdc.dtype, vdc.createddate, vdc.dvndescription, username, " +
+                    "CASE WHEN count(owner_id) is null THEN 0 ELSE count(owner_id) END AS owned_studies, " +
+                    "CASE WHEN sum(downloadcount) is null THEN 0 ELSE sum(downloadcount) END AS activity " +
+                    "FROM vdcuser, vdc " +
+                    "LEFT OUTER JOIN study on vdc.id = study.owner_id " +
+                    "LEFT OUTER JOIN studyfileactivity on study.id = studyfileactivity.study_id " +
+                    "WHERE vdc.creator_id = vdcuser.id " +
+                    "GROUP BY vdc.id, vdc.name, vdc.alias, vdc.affiliation, vdc.releasedate, vdc.dtype, vdc.createddate, vdc.dvndescription, username " +
+                    "ORDER BY LOWER(" + orderBy + ") " + order +
+                    //" CASE WHEN count(owner_id) is null THEN 0 ELSE count(owner_id) END " + order +
+                    " LIMIT " + totalRows +
+                    " OFFSET " + firstRow;
+        Query query = em.createNativeQuery(queryString);
+        list        = (List<VDC>)query.getResultList();
+      } catch (Exception e) {
+        //do something here with the exception
+        list = new ArrayList();
+      } finally {
+          return list;
+      }
+    }
+
     public Long getVdcCount(long vdcGroupId) {
         String queryString  = (vdcGroupId != 0) ? "SELECT count(vdcgroup_id) FROM vdcgroup_vdcs g " +
                 "WHERE g.vdcgroup_id = " + vdcGroupId +
                 " AND g.vdc_id in (SELECT id FROM vdc WHERE restricted = false)" :
                     "SELECT count(id) FROM vdc v WHERE restricted = false";
         Long longValue = null;
-        Query query         = em.createNativeQuery(queryString);
+        Query query        = em.createNativeQuery(queryString);
         try {
-            Object object       = ((List)query.getSingleResult()).get(0);
+            Object object  = ((List)query.getSingleResult()).get(0);
             longValue      = (Long)object;
         } catch (Exception nre) {
             longValue = new Long("0");

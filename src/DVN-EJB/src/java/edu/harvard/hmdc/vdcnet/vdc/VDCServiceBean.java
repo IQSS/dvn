@@ -490,10 +490,16 @@ public class VDCServiceBean implements VDCServiceLocal {
         }
     }
     
-    public List getPagedData(Long vdcId, int firstRow, int totalRows, String orderBy, String order) {
+    public List getPagedData(Long vdcGroupId, int firstRow, int totalRows, String orderBy, String order) {
       List<VDC> list = new ArrayList();
       try {
-        String queryString  = "SELECT id, name, alias, affiliation, releasedate, dvndescription FROM vdc WHERE restricted = false ORDER BY LOWER(" + orderBy + ") " + order + " LIMIT " + totalRows + " OFFSET " + firstRow;
+        String queryString  = (vdcGroupId != 0) ? "SELECT id, name, alias, affiliation, releasedate, dvndescription " +
+                "FROM vdc WHERE restricted = false AND id in (Select vdc_id from vdcgroup_vdcs where vdcgroup_id = " + vdcGroupId +
+                ") ORDER BY LOWER(" + orderBy + ") " + order + " LIMIT " + totalRows + " OFFSET " + firstRow :
+                "SELECT id, name, " +
+                "alias, affiliation, releasedate, dvndescription FROM vdc WHERE restricted = false " +
+                "ORDER BY LOWER(" + orderBy + ") " + order + " LIMIT " + totalRows + " OFFSET " + firstRow;
+        // (vdcGroupId != 0) ? "Select count(vdcgroup_id) from vdc_group g where vdcgroup_id = " + vdcGroupId + " and vdc_id in (Select id from vdc where restricted = false" : "select count(id) from vdc v where restricted = false"
         Query query         = em.createNativeQuery(queryString);
         list = (List<VDC>)query.getResultList();
       } catch (Exception e) {
@@ -504,10 +510,22 @@ public class VDCServiceBean implements VDCServiceLocal {
       }
     }
 
-    public List getPagedDataByActivity(int firstRow, int totalRows, String order) {
+    public List getPagedDataByActivity(Long vdcGroupId, int firstRow, int totalRows, String order) {
       List<VDC> list = new ArrayList();
       try {
-        String queryString  = "SELECT vdc.id, name, alias, affiliation, releasedate, dvndescription, " +
+          String queryString  = (vdcGroupId != 0) ?  "SELECT vdc.id, name, alias, affiliation, releasedate, dvndescription, " +
+                "CASE WHEN sum(downloadcount) is null THEN 0 ELSE sum(downloadcount) END " +
+                "FROM vdc " +
+                "LEFT OUTER JOIN study on vdc.id = study.owner_id " +
+                "LEFT OUTER JOIN studyfileactivity on study.id = studyfileactivity.study_id " +
+                "WHERE vdc.restricted = false " +
+                "AND vdc.id in (Select vdc_id from vdcgroup_vdcs where vdcgroup_id = " + vdcGroupId + ") " +
+                "GROUP BY vdc.id, vdc.name, vdc.alias, vdc.affiliation, vdc.releasedate, vdc.dvndescription " +
+                "ORDER BY " +
+                "CASE WHEN sum(downloadcount) is null THEN 0 ELSE sum(downloadcount) END " + order +
+                " LIMIT " + totalRows +
+                " OFFSET " + firstRow :
+                "SELECT vdc.id, name, alias, affiliation, releasedate, dvndescription, " +
                 "CASE WHEN sum(downloadcount) is null THEN 0 ELSE sum(downloadcount) END " +
                 "FROM vdc " +
                 "LEFT OUTER JOIN study on vdc.id = study.owner_id " +
@@ -529,7 +547,10 @@ public class VDCServiceBean implements VDCServiceLocal {
     }
 
     public Long getVdcCount(long vdcGroupId) {
-        String queryString  = (vdcGroupId != 0) ? "Select count(vdcgroup_id) from vdc_group g where vdcgroup_id = " + vdcGroupId + " and vdc_id in (Select id from vdc where restricted = false" : "select count(id) from vdc v where restricted = false";
+        String queryString  = (vdcGroupId != 0) ? "SELECT count(vdcgroup_id) FROM vdcgroup_vdcs g " +
+                "WHERE g.vdcgroup_id = " + vdcGroupId +
+                " AND g.vdc_id in (SELECT id FROM vdc WHERE restricted = false)" :
+                    "SELECT count(id) FROM vdc v WHERE restricted = false";
         Long longValue = null;
         Query query         = em.createNativeQuery(queryString);
         try {

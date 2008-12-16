@@ -37,9 +37,9 @@
                                    lastRowIndexVar="lastRowIndex"
                                    pageCountVar="pageCount"
                                    pageIndexVar="pageIndex">
-                  <ice:outputFormat rendered="#{rowsCount > displayedRowsCountVar}" value="{0} Studies, displaying {2} to {3}" styleClass="dvn_totalsValue">
-                    <f:param value="#{rowsCount}"/>
-                    <f:param value="#{displayedRowsCountVar}"/>
+                 <ice:outputText value="1 Study" rendered="#{rowsCount == 1}" styleClass="dvn_totalsValue" />
+                  <ice:outputText value="#{rowsCount} Studies" rendered="#{rowsCount > 1}" styleClass="dvn_totalsValue" />
+                  <ice:outputFormat rendered="#{rowsCount > displayedRowsCountVar}" value=", displaying {0} to {1}" styleClass="dvn_totalsValue">
                     <f:param value="#{firstRowIndex}"/>
                     <f:param value="#{lastRowIndex}"/>
                   </ice:outputFormat>

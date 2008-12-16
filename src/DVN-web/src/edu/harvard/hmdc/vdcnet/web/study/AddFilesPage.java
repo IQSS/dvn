@@ -748,14 +748,15 @@ private boolean  hasFileName( StudyFileEditBean inputFileData, boolean remov){
         }
       // if(!flag) return; 
         }
-        String or = currentFile.getStudyFile().getFileName().trim();
+        int inx = getFilesDataTable().getRowIndex();
+      // mLog.debug("I am in row..."+inx+";;;"+fileName);
+        //this is the original file name for the present row in the table
+        String or = fileList.get(inx).getStudyFile().getFileName();
         String fname = or;
+        //the new file name assigned to the same row inx
         String fileName =( (String) value).trim();
-        currentFile.getStudyFile().setFileName(fileName);
-       // currentFile.setOriginalFileName(fileName);
-      
         if(fileName.equals("") || fileName==null) {
-             errorMessage = "Enter a valid file name"; 
+             errorMessage ="Enter a valid file name"; 
             displayError(context, (UIInput) toValidate, errorMessage);
            
         } 
@@ -791,15 +792,26 @@ private boolean  hasFileName( StudyFileEditBean inputFileData, boolean remov){
        }
          
          //make sure there are no other files with the same name in the validation list 
-         //this did not exist when it was working: !fileName.equals(fname) 
+         //assuming that the original file name in the row is different from fileName 
         if(!fileName.equals(fname) && hasFileName(fileName, true) ){
-           errorMessage = "must be unique (a previous file exists with the same name).";
+           errorMessage = "must be unique (a previous file in the table exists with same name).";
            displayError(context, (UIInput) toValidate, errorMessage); 
         }
+      //check if  other rows have the same names, assuming the row file name has not changed
+         int rwcount = getFilesDataTable().getRowCount();
+         if(fileName.equals(fname)){
+            for(int n=0; n <(rwcount-1); ++n) {
+            if(n==inx)continue;
+            String otherfile= fileList.get(n).getStudyFile().getFileName().trim();
+           if(otherfile.equals(fileName)){
+           errorMessage = "must be unique (a previous file in the table exists with same name).";
+           displayError(context, (UIInput) toValidate, errorMessage); 
+            }
+         }
+         }
         // now add this name to the validation list
-     
-        getCurrentFile().getStudyFile().setFileName(fileName);
-        getValidationFileNames().add(fileName.trim()); 
+     fileList.get(inx).getStudyFile().setFileName(fileName);
+     getValidationFileNames().add(fileName.trim()); 
        //remove the old name from validation names 
         hasFileName(fname,true); 
        

@@ -499,6 +499,11 @@ public class IndexServiceBean implements edu.harvard.hmdc.vdcnet.index.IndexServ
 
     private HashSet<Study> getUnindexedStudies() {
         List<Study> studies = (List<Study>) em.createQuery("SELECT s from Study s where s.lastIndexTime < s.lastUpdateTime OR s.lastIndexTime is NULL").getResultList();
+        if (studies!=null) {
+            logger.info("getUnindexedStudies(), found "+studies.size()+" studies.");
+        } else {
+            logger.info("getUnindexedStudies(), no studies found.");
+        }
         return new HashSet(studies);
     }
 

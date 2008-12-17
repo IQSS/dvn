@@ -41,18 +41,6 @@
           jQuery(".vdcStudyDesc").truncate({max_length: 198});
           jQuery(".vdcStudyDataCitation").truncate({max_length: 25, more: "View Data Citation [+]", less: "Collapse [-]"});
           jQuery(".TogglePaneFancy").initTogglePane({headerClassClosed:"TogglePaneFancyHeaderClosed"});
-          
-          jQuery('div.dvnHmpgDvNameBlock:eq(0)> div.dvnHmpgDvMoreInfoDesc').hide();
-          jQuery('div.dvnHmpgDvNameBlock:eq(0)> a.dvnHmpgMoreInfoLink').toggle(function() {
-              jQuery('div.dvnHmpgDvNameBlock:eq(0)> div.dvnHmpgDvMoreInfoDesc').slideDown('fast');
-              jQuery(this).html('<span>more info [-]</span>');
-              return false;
-          }, function() {
-              jQuery('div.dvnHmpgDvNameBlock:eq(0)> div.dvnHmpgDvMoreInfoDesc').slideUp('fast');
-              jQuery(this).html('<span>more info [+]</span>');
-              return false;
-          });
-
       });
       // ]]>
   </script>
@@ -124,7 +112,7 @@
                 jQuery("#editStudyTabSet > ul").tabs();
                 jQuery("#viewStudyTabSet > ul").tabs();
                 jQuery("div.dvn_navblock").corner("10px bottom");
-                jQuery("div.dvn_block, div.dvn_blockTitleBar, div.dvn_searchblock, div.successMessage, div.dvnInformationMessage, dvnSuccessMessage, div.vdcStudyFilesMessage").corner("10px");
+                jQuery("div.dvn_block, div.dvn_blockTitleBar, div.dvn_searchblock, div.dvnMsgBlockRound, div.vdcStudyFilesMessage").corner("10px");
                 jQuery.ifixpng("/dvn/resources/pixel.gif");
                 jQuery("img[@src$=.png], a.requestHmpgSideLink:link, a.requestHmpgSideLink:visited, a.requestHmpgSideLink:hover, a.requestHmpgSideLink:active").ifixpng();
                 jQuery(".vdcStudyDesc").truncate({max_length: 198});

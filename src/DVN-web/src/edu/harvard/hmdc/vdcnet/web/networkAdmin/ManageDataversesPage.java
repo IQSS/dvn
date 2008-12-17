@@ -111,8 +111,7 @@ public class ManageDataversesPage extends VDCBaseBean implements Serializable {
      private void initAllDataverses() {
          parentItem = new DataverseGrouping(new Long("0"), ALL_DATAVERSES_LABEL, "group", itemBeans, true, EXPAND_IMAGE, CONTRACT_IMAGE, null);
          parentItem.setSubclassification(new Long("0"));
-         long vdcGroupId = 0;
-         Integer groupSize = Integer.parseInt((vdcService.getVdcCount(vdcGroupId)).toString());
+         Integer groupSize = Integer.parseInt((vdcService.getVdcCount()).toString());
          List groupList = new ArrayList();
          dataModel = new PagedDataModel(groupList, groupSize, 10);
          parentItem.setManagedDataModel(dataModel);

@@ -139,7 +139,7 @@ insert into templatefield
 SELECT nextval('templatefield_id_seq'), null,1, t.id, tf.studyfield_id, tf.fieldinputlevel_id
 from template t, templatefield tf
 where t.id != 1
-and tf.template_id = 1
+and tf.template_id = 1;
 
 
 commit;

@@ -379,21 +379,36 @@ public class NetworkStatsBean implements NetworkStatsListener, Renderable, Dispo
         Long newTotal;
         long localTotal;
         NetworkStatsState networkStatsState;
-        for (int i = 0; i < searchItemBeans.length; i++) {
-                NetworkStatsItemBean itembean = (NetworkStatsItemBean) searchItemBeans[i];
-                if (itembean.getItemID().equals("item0")) { // increment the top level -- item0;
-                    localTotal = new Long(itembean.getDataverseTotal());
-                    newTotal = localTotal + 1;
-                    networkStatsState = NetworkStatsState.getInstance();
-                    if (null != networkStatsState) {
-                            networkStatsState.fireNetworkStatsEvent(
-                            new ReleaseEvent("item0", newTotal.toString()));
-                            NetworkStatsState.getNetworkStatsMap().put("item0.dataverseTotal", newTotal.toString());
+        if (groups.isEmpty()) {
+            for (int i = 0; i < searchItemBeans.length; i++) {
+                    NetworkStatsItemBean itembean = (NetworkStatsItemBean) searchItemBeans[i];
+                    if (itembean.getItemID().equals("item0")) { // increment the top level -- item0;
+                        localTotal = new Long(itembean.getDataverseTotal());
+                        newTotal = localTotal + 1;
+                        networkStatsState = NetworkStatsState.getInstance();
+                        if (null != networkStatsState) {
+                                networkStatsState.fireNetworkStatsEvent(
+                                new ReleaseEvent("item0", newTotal.toString()));
+                                NetworkStatsState.getNetworkStatsMap().put("item0.dataverseTotal", newTotal.toString());
+                        }
                     }
-                }
-                while (iterator.hasNext()) {
-                    VDCGroup group = (VDCGroup)iterator.next();
-                    itemid = "item" + group.getId().toString();
+            }
+        } else {
+        while (iterator.hasNext()) {
+            VDCGroup group = (VDCGroup)iterator.next();
+            itemid = "item" + group.getId().toString();
+            for (int i = 0; i < searchItemBeans.length; i++) {
+                    NetworkStatsItemBean itembean = (NetworkStatsItemBean) searchItemBeans[i];
+                    if (itembean.getItemID().equals("item0")) { // increment the top level -- item0;
+                        localTotal = new Long(itembean.getDataverseTotal());
+                        newTotal = localTotal + 1;
+                        networkStatsState = NetworkStatsState.getInstance();
+                        if (null != networkStatsState) {
+                                networkStatsState.fireNetworkStatsEvent(
+                                new ReleaseEvent("item0", newTotal.toString()));
+                                NetworkStatsState.getNetworkStatsMap().put("item0.dataverseTotal", newTotal.toString());
+                        }
+                    }
                     if (itembean.getItemID().equals(itemid)){
                         localTotal = new Long(itembean.getDataverseTotal());
                         newTotal = localTotal + 1;
@@ -407,6 +422,7 @@ public class NetworkStatsBean implements NetworkStatsListener, Renderable, Dispo
                 }
             }
         }
+    }
 
     public void restrictAndUpdateInlineDataverseValue(Long id, List<VDCGroup> groups) {
         String dataversevalue;
@@ -415,21 +431,36 @@ public class NetworkStatsBean implements NetworkStatsListener, Renderable, Dispo
         Long newTotal;
         long localTotal;
         NetworkStatsState networkStatsState;
-        for (int i = 0; i < searchItemBeans.length; i++) {
-                NetworkStatsItemBean itembean = (NetworkStatsItemBean) searchItemBeans[i];
-                if (itembean.getItemID().equals("item0")) { // decrement the top level -- item0;
-                    localTotal = new Long(itembean.getDataverseTotal());
-                    newTotal = localTotal - 1;
-                    networkStatsState = NetworkStatsState.getInstance();
-                    if (null != networkStatsState) {
-                            networkStatsState.fireNetworkStatsEvent(
-                            new ReleaseEvent("item0", newTotal.toString()));
-                            NetworkStatsState.getNetworkStatsMap().put("item0.dataverseTotal", newTotal.toString());
+        if (groups.isEmpty()) {
+            for (int i = 0; i < searchItemBeans.length; i++) {
+                    NetworkStatsItemBean itembean = (NetworkStatsItemBean) searchItemBeans[i];
+                    if (itembean.getItemID().equals("item0")) { // decrement the top level -- item0;
+                        localTotal = new Long(itembean.getDataverseTotal());
+                        newTotal = localTotal - 1;
+                        networkStatsState = NetworkStatsState.getInstance();
+                        if (null != networkStatsState) {
+                                networkStatsState.fireNetworkStatsEvent(
+                                new ReleaseEvent("item0", newTotal.toString()));
+                                NetworkStatsState.getNetworkStatsMap().put("item0.dataverseTotal", newTotal.toString());
+                        }
                     }
-                }
-                while (iterator.hasNext()) {
-                    VDCGroup group = (VDCGroup)iterator.next();
-                    itemid = "item" + group.getId().toString();
+            }
+        } else {
+            while (iterator.hasNext()) {
+                VDCGroup group = (VDCGroup)iterator.next();
+                itemid = "item" + group.getId().toString();
+                for (int i = 0; i < searchItemBeans.length; i++) {
+                    NetworkStatsItemBean itembean = (NetworkStatsItemBean) searchItemBeans[i];
+                    if (itembean.getItemID().equals("item0")) { // decrement the top level -- item0;
+                        localTotal = new Long(itembean.getDataverseTotal());
+                        newTotal = localTotal - 1;
+                        networkStatsState = NetworkStatsState.getInstance();
+                        if (null != networkStatsState) {
+                                networkStatsState.fireNetworkStatsEvent(
+                                new ReleaseEvent("item0", newTotal.toString()));
+                                NetworkStatsState.getNetworkStatsMap().put("item0.dataverseTotal", newTotal.toString());
+                        }
+                    }
                     if (itembean.getItemID().equals(itemid)){
                         localTotal = new Long(itembean.getDataverseTotal());
                         newTotal = localTotal - 1;
@@ -442,8 +473,46 @@ public class NetworkStatsBean implements NetworkStatsListener, Renderable, Dispo
                     }
                 }
             }
+          }
         }
 
+    public void releaseAndUpdateInlineStudiesValue(Long id, List<VDCGroup> groups) {
+        //String dataversevalue;
+        String itemid = null;
+        Iterator iterator = groups.iterator();
+        Long newTotal;
+        long localTotal;
+        NetworkStatsState networkStatsState;
+        for (int i = 0; i < searchItemBeans.length; i++) {
+                NetworkStatsItemBean itembean = (NetworkStatsItemBean) searchItemBeans[i];
+                if (itembean.getItemID().equals("item0")) { // increment the top level -- item0;
+                    localTotal = new Long(itembean.getStudyTotal());
+                    newTotal = localTotal + 1;
+                    networkStatsState = NetworkStatsState.getInstance();
+                    if (null != networkStatsState) {
+                            networkStatsState.fireNetworkStatsEvent(
+                            new ReleaseEvent("item0", newTotal.toString()));
+                            NetworkStatsState.getNetworkStatsMap().put("item0.studyTotal", newTotal.toString());
+                    }
+                }
+                while (iterator.hasNext()) {
+                    VDCGroup group = (VDCGroup)iterator.next();
+                    itemid = "item" + group.getId().toString();
+                    if (itembean.getItemID().equals(itemid)){
+                        localTotal = new Long(itembean.getStudyTotal());
+                        newTotal = localTotal + 1;
+                        networkStatsState = NetworkStatsState.getInstance();
+                        if (null != networkStatsState) {
+                            networkStatsState.fireNetworkStatsEvent(
+                            new ReleaseEvent(itemid, newTotal.toString()));
+                            NetworkStatsState.getNetworkStatsMap().put(itemid + ".studyTotal", newTotal.toString());
+                        }
+                    }
+                }
+            }
+        }
+
+    
     public void reRender() {
         if (renderer != null) {
             renderer.requestRender();

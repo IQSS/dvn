@@ -190,7 +190,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
          parentItem = new DataverseGrouping(new Long("0"), ALL_DATAVERSES_LABEL, "group", itemBeans, true, EXPAND_IMAGE, CONTRACT_IMAGE, null);
          parentItem.setSubclassification(new Long("0"));
          long vdcGroupId = 0;
-         Integer groupSize = Integer.parseInt((vdcService.getVdcCount(vdcGroupId)).toString());
+         Integer groupSize = Integer.parseInt((vdcService.getUnrestrictedVdcCount(vdcGroupId)).toString());
          List groupList = new ArrayList();
          dataModel = new PagedDataModel(groupList, groupSize, 10);
          parentItem.setDataModel(dataModel);
@@ -208,7 +208,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
 
       private void initGroupBean(VDCGroup vdcgroup) {
             Long vdcGroupId = vdcgroup.getId();
-            Integer groupSize = Integer.parseInt((vdcService.getVdcCount(vdcGroupId)).toString());
+            Integer groupSize = Integer.parseInt((vdcService.getUnrestrictedVdcCount(vdcGroupId)).toString());
             Long parent     = (vdcgroup.getParent() != null) ? vdcgroup.getParent() : new Long("-1");
             parentItem      = new DataverseGrouping(vdcgroup.getId(), vdcgroup.getName(), "group", itemBeans, true, EXPAND_IMAGE, CONTRACT_IMAGE, parent);
             parentItem.setShortDescription(vdcgroup.getDescription());

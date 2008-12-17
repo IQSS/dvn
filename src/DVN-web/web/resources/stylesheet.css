@@ -4,6 +4,7 @@
 .dvn_wrapper {
     min-width: 700px;
     position: relative;
+    background-color: white;
 }
 
 .dvn_content {

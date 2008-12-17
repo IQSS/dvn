@@ -722,6 +722,7 @@
                 <br />
                 <ice:commandButton  id="edaBttn"
                     binding="#{AnalysisPage.edaButton}" 
+                    onclick="disableThis(this);"
                     disabled="true" 
                     value="#{bundleAnalysis['eda.button.submit']}" 
                     action="#{AnalysisPage.edaAction}"/>
@@ -1132,7 +1133,8 @@
                                     value="#{AnalysisPage.msgAdvStatButtonTxt}"/>
                                 <br />
                                 <ice:commandButton id="advStatBttn" 
-                                    disabled="true" 
+                                    disabled="true"
+                                    onclick="disableThis(this);"
                                     binding="#{AnalysisPage.advStatButton}" 
                                     value="#{bundleAnalysis['advStat.button.submit']}"
                                     action="#{AnalysisPage.advStatAction}" />

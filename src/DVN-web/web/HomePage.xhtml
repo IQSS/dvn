@@ -100,11 +100,11 @@
               </ice:outputLink>
             </div>
           </div>
-          <div jsfc="ice:panelGroup" styleClass="dvnHmpgGroupNoDVs" rendered="#{dvItems.dataModel.rowCount == 0 and dvItems.recordType eq 'group'}">
-            <p><ice:outputText value="There are no dataverses to display in this group."/></p>
-          </div>
           <div jsfc="ice:panelGroup" styleClass="dvnHmpgGroupNoDVs" rendered="#{dvItems.shortDescription != null}">
             <p><ice:outputText value="#{dvItems.shortDescription}"/></p>
+          </div>
+          <div jsfc="ice:panelGroup" styleClass="dvnHmpgGroupNoDVs" rendered="#{dvItems.dataModel.rowCount == 0 and dvItems.recordType eq 'group'}">
+            <p><ice:outputText value="There are no dataverses to display in this group."/></p>
           </div>
           <div jsfc="ice:panelGroup" styleClass="dvnHmpgGroupTableWrap" rendered="#{dvItems.dataModel.rowCount > 0 and dvItems.recordType eq 'group'}">
             <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="2" id="gridPanel2"

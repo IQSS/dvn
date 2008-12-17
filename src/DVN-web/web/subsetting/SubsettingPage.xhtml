@@ -75,7 +75,7 @@
                     if (!isQStableAttached(rowId)){
                         //alert("make an ajax call");
                         var cntxpth = "${request.contextPath}";
-                        var afterCntxpth = "/sumStat" + "\x3F" + "dtId=${param.dtId}";
+                        var afterCntxpth = "/sumStat" + "\x3F" + "dtId=#{AnalysisPage.dtId}";
                         var qsString = cntxpth + afterCntxpth;
                         var ampVId = "\x26" + "varId=";
                         qsString = qsString + ampVId + rowId;

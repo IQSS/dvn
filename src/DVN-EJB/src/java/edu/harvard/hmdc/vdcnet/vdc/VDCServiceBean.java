@@ -691,7 +691,6 @@ public class VDCServiceBean implements VDCServiceLocal {
                     "WHERE vdc.creator_id = vdcuser.id " +
                     "GROUP BY vdc.id, vdc.name, vdc.alias, vdc.affiliation, vdc.releasedate, vdc.dtype, vdc.createddate, vdc.dvndescription, username " +
                     "ORDER BY LOWER(" + orderBy + ") " + order +
-                    //" CASE WHEN count(owner_id) is null THEN 0 ELSE count(owner_id) END " + order +
                     " LIMIT " + totalRows +
                     " OFFSET " + firstRow;
         Query query = em.createNativeQuery(queryString);
@@ -704,11 +703,25 @@ public class VDCServiceBean implements VDCServiceLocal {
       }
     }
 
-    public Long getVdcCount(long vdcGroupId) {
+    public Long getUnrestrictedVdcCount(long vdcGroupId) {
         String queryString  = (vdcGroupId != 0) ? "SELECT count(vdcgroup_id) FROM vdcgroup_vdcs g " +
                 "WHERE g.vdcgroup_id = " + vdcGroupId +
                 " AND g.vdc_id in (SELECT id FROM vdc WHERE restricted = false)" :
                     "SELECT count(id) FROM vdc v WHERE restricted = false";
+        Long longValue = null;
+        Query query        = em.createNativeQuery(queryString);
+        try {
+            Object object  = ((List)query.getSingleResult()).get(0);
+            longValue      = (Long)object;
+        } catch (Exception nre) {
+            longValue = new Long("0");
+        } finally {
+            return longValue;
+        }
+    }
+
+    public Long getVdcCount() {
+        String queryString  = "SELECT count(id) FROM vdc v";
         Long longValue = null;
         Query query        = em.createNativeQuery(queryString);
         try {

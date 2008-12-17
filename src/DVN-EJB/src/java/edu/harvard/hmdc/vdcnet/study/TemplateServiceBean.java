@@ -91,9 +91,7 @@ public class TemplateServiceBean implements edu.harvard.hmdc.vdcnet.study.Templa
        // Template template = new Template();
         Template template = new Template();
         template.setName((new Date()).toString());
-            TemplateField tf = new TemplateField();
-            tf.setDefaultValue("Test String");
-        
+            TemplateField tf = new TemplateField();        
             tf.setTemplate(template);     
             template.setTemplateFields(new ArrayList<TemplateField>());
             template.getTemplateFields().add(tf);

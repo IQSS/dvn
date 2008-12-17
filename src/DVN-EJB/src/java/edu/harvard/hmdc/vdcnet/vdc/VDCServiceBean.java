@@ -493,11 +493,24 @@ public class VDCServiceBean implements VDCServiceLocal {
     public List getPagedData(Long vdcGroupId, int firstRow, int totalRows, String orderBy, String order) {
       List<VDC> list = new ArrayList();
       try {
-        String queryString  = (vdcGroupId != 0) ? "SELECT id, name, alias, affiliation, releasedate, dvndescription " +
-                "FROM vdc WHERE restricted = false AND id in (Select vdc_id from vdcgroup_vdcs where vdcgroup_id = " + vdcGroupId +
-                ") ORDER BY LOWER(" + orderBy + ") " + order + " LIMIT " + totalRows + " OFFSET " + firstRow :
-                "SELECT id, name, " +
-                "alias, affiliation, releasedate, dvndescription FROM vdc WHERE restricted = false " +
+        String queryString  = (vdcGroupId != 0) ? "SELECT vdc.id, name, alias, affiliation, releasedate, dvndescription, " +
+                "CASE WHEN sum(downloadcount) is null THEN 0 ELSE sum(downloadcount) END, " +
+                "CASE WHEN max(lastupdatetime) is null THEN vdc.releasedate ELSE max(lastupdatetime) END as lastupdated " +
+                "FROM vdc " +
+                "LEFT OUTER JOIN study on vdc.id = study.owner_id " +
+                "LEFT OUTER JOIN studyfileactivity on study.id = studyfileactivity.study_id " +
+                "WHERE vdc.restricted = false AND vdc.id in (Select vdc_id from vdcgroup_vdcs where vdcgroup_id = " + vdcGroupId +
+                ") " +
+                "GROUP BY vdc.id, vdc.name, vdc.alias, vdc.affiliation, vdc.releasedate, vdc.dvndescription " +
+                "ORDER BY LOWER(" + orderBy + ") " + order + " LIMIT " + totalRows + " OFFSET " + firstRow :
+                "SELECT vdc.id, name, alias, affiliation, releasedate, dvndescription, " +
+                "CASE WHEN sum(downloadcount) is null THEN 0 ELSE sum(downloadcount) END, " +
+                "CASE WHEN max(lastupdatetime) is null THEN vdc.releasedate ELSE max(lastupdatetime) END as lastupdated " +
+                "FROM vdc " +
+                "LEFT OUTER JOIN study on vdc.id = study.owner_id " +
+                "LEFT OUTER JOIN studyfileactivity on study.id = studyfileactivity.study_id " +
+                "WHERE vdc.restricted = false " +
+                "GROUP BY vdc.id, vdc.name, vdc.alias, vdc.affiliation, vdc.releasedate, vdc.dvndescription " +
                 "ORDER BY LOWER(" + orderBy + ") " + order + " LIMIT " + totalRows + " OFFSET " + firstRow;
         // (vdcGroupId != 0) ? "Select count(vdcgroup_id) from vdc_group g where vdcgroup_id = " + vdcGroupId + " and vdc_id in (Select id from vdc where restricted = false" : "select count(id) from vdc v where restricted = false"
         Query query         = em.createNativeQuery(queryString);
@@ -514,7 +527,8 @@ public class VDCServiceBean implements VDCServiceLocal {
       List<VDC> list = new ArrayList();
       try {
           String queryString  = (vdcGroupId != 0) ?  "SELECT vdc.id, name, alias, affiliation, releasedate, dvndescription, " +
-                "CASE WHEN sum(downloadcount) is null THEN 0 ELSE sum(downloadcount) END " +
+                "CASE WHEN sum(downloadcount) is null THEN 0 ELSE sum(downloadcount) END, " +
+                "CASE WHEN max(lastupdatetime) is null THEN vdc.releasedate ELSE max(lastupdatetime) END as lastupdated " +
                 "FROM vdc " +
                 "LEFT OUTER JOIN study on vdc.id = study.owner_id " +
                 "LEFT OUTER JOIN studyfileactivity on study.id = studyfileactivity.study_id " +
@@ -526,7 +540,8 @@ public class VDCServiceBean implements VDCServiceLocal {
                 " LIMIT " + totalRows +
                 " OFFSET " + firstRow :
                 "SELECT vdc.id, name, alias, affiliation, releasedate, dvndescription, " +
-                "CASE WHEN sum(downloadcount) is null THEN 0 ELSE sum(downloadcount) END " +
+                "CASE WHEN sum(downloadcount) is null THEN 0 ELSE sum(downloadcount) END, " +
+                "CASE WHEN max(lastupdatetime) is null THEN vdc.releasedate ELSE max(lastupdatetime) END as lastupdated " +
                 "FROM vdc " +
                 "LEFT OUTER JOIN study on vdc.id = study.owner_id " +
                 "LEFT OUTER JOIN studyfileactivity on study.id = studyfileactivity.study_id " +
@@ -534,6 +549,44 @@ public class VDCServiceBean implements VDCServiceLocal {
                 "GROUP BY vdc.id, vdc.name, vdc.alias, vdc.affiliation, vdc.releasedate, vdc.dvndescription " +
                 "ORDER BY " +
                 "CASE WHEN sum(downloadcount) is null THEN 0 ELSE sum(downloadcount) END " + order +
+                " LIMIT " + totalRows +
+                " OFFSET " + firstRow;
+        Query query = em.createNativeQuery(queryString);
+        list        = (List<VDC>)query.getResultList();
+      } catch (Exception e) {
+        //do something here with the exception
+        list = new ArrayList();
+      } finally {
+          return list;
+      }
+    }
+
+    public List getPagedDataByLastUpdateTime(Long vdcGroupId, int firstRow, int totalRows, String order) {
+        List<VDC> list = new ArrayList();
+      try {
+          String queryString  = (vdcGroupId != 0) ?  "SELECT vdc.id, name, alias, affiliation, releasedate, dvndescription, " +
+                "CASE WHEN sum(downloadcount) is null THEN 0 ELSE sum(downloadcount) END, " +
+                "CASE WHEN max(lastupdatetime) is null THEN vdc.releasedate ELSE max(lastupdatetime) END as lastupdated " +
+                "FROM vdc " +
+                "LEFT OUTER JOIN study on vdc.id = study.owner_id " +
+                "LEFT OUTER JOIN studyfileactivity on study.id = studyfileactivity.study_id " +
+                "WHERE vdc.restricted = false " +
+                "AND vdc.id in (Select vdc_id from vdcgroup_vdcs where vdcgroup_id = " + vdcGroupId + ") " +
+                "GROUP BY vdc.id, vdc.name, vdc.alias, vdc.affiliation, vdc.releasedate, vdc.dvndescription " +
+                "ORDER BY " +
+                "CASE WHEN max(lastupdatetime) is null THEN vdc.releasedate ELSE max(lastupdatetime) END " + order +
+                " LIMIT " + totalRows +
+                " OFFSET " + firstRow :
+                "SELECT vdc.id, name, alias, affiliation, releasedate, dvndescription, " +
+                "CASE WHEN sum(downloadcount) is null THEN 0 ELSE sum(downloadcount) END, " +
+                "CASE WHEN max(lastupdatetime) is null THEN vdc.releasedate ELSE max(lastupdatetime) END as lastupdated " +
+                "FROM vdc " +
+                "LEFT OUTER JOIN study on vdc.id = study.owner_id " +
+                "LEFT OUTER JOIN studyfileactivity on study.id = studyfileactivity.study_id " +
+                "WHERE vdc.restricted = false " +
+                "GROUP BY vdc.id, vdc.name, vdc.alias, vdc.affiliation, vdc.releasedate, vdc.dvndescription " +
+                "ORDER BY " +
+                "CASE WHEN max(lastupdatetime) is null THEN vdc.releasedate ELSE max(lastupdatetime) END " + order +
                 " LIMIT " + totalRows +
                 " OFFSET " + firstRow;
         Query query = em.createNativeQuery(queryString);
@@ -562,7 +615,7 @@ public class VDCServiceBean implements VDCServiceLocal {
           String queryString  = "SELECT vdc.id, vdc.name, vdc.alias, vdc.affiliation, vdc.releasedate, " +
                   "vdc.dtype, vdc.createddate, vdc.dvndescription, username, " +
                     "CASE WHEN count(owner_id) is null THEN 0 ELSE count(owner_id) END AS owned_studies, " +
-                    "CASE WHEN sum(downloadcount) is null THEN 0 ELSE sum(downloadcount) END AS activity " +
+                    "CASE WHEN max(lastupdatetime) is null THEN vdc.releasedate ELSE max(lastupdatetime) END as lastupdated " +
                     "FROM vdcuser, vdc " +
                     "LEFT OUTER JOIN study on vdc.id = study.owner_id " +
                     "LEFT OUTER JOIN studyfileactivity on study.id = studyfileactivity.study_id " +
@@ -589,22 +642,22 @@ public class VDCServiceBean implements VDCServiceLocal {
      * @param order
      * @return list of dataverses ordered by activity
      */
-    public List getManagedPagedDataByActivity(int firstRow, int totalRows, String order) {
+    public List getManagedPagedDataByLastUpdated(int firstRow, int totalRows, String order) {
       List<VDC> list = new ArrayList();
       try {
           String queryString  = "SELECT vdc.id, vdc.name, vdc.alias, vdc.affiliation, vdc.releasedate, " +
                                   "vdc.dtype, vdc.createddate, vdc.dvndescription, username, " +
                                     "CASE WHEN count(owner_id) is null THEN 0 ELSE count(owner_id) END AS owned_studies, " +
-                                    "CASE WHEN sum(downloadcount) is null THEN 0 ELSE sum(downloadcount) END AS activity " +
+                                    "CASE WHEN max(lastupdatetime) is null THEN vdc.releasedate ELSE max(lastupdatetime) END as lastupdated " +
                                     "FROM vdcuser, vdc " +
                                     "LEFT OUTER JOIN study on vdc.id = study.owner_id " +
                                     "LEFT OUTER JOIN studyfileactivity on study.id = studyfileactivity.study_id " +
                                     "WHERE vdc.creator_id = vdcuser.id " +
                                     "GROUP BY vdc.id, vdc.name, vdc.alias, vdc.affiliation, vdc.releasedate, vdc.dtype, vdc.createddate, vdc.dvndescription, username " +
                                     "ORDER BY " +
-                                    "CASE WHEN sum(downloadcount) is null THEN 0 ELSE sum(downloadcount) END " + order +
-                                    "LIMIT " + totalRows +
-                                    "OFFSET " + firstRow;
+                                    "CASE WHEN max(lastupdatetime) is null THEN vdc.releasedate ELSE max(lastupdatetime) END " + order +
+                                    " LIMIT " + totalRows +
+                                    " OFFSET " + firstRow;
         Query query = em.createNativeQuery(queryString);
         list        = (List<VDC>)query.getResultList();
       } catch (Exception e) {
@@ -631,7 +684,7 @@ public class VDCServiceBean implements VDCServiceLocal {
           String queryString  = "SELECT vdc.id, vdc.name, vdc.alias, vdc.affiliation, vdc.releasedate, " +
                   "vdc.dtype, vdc.createddate, vdc.dvndescription, username, " +
                     "CASE WHEN count(owner_id) is null THEN 0 ELSE count(owner_id) END AS owned_studies, " +
-                    "CASE WHEN sum(downloadcount) is null THEN 0 ELSE sum(downloadcount) END AS activity " +
+                    "CASE WHEN max(lastupdatetime) is null THEN vdc.releasedate ELSE max(lastupdatetime) END as lastupdated " +
                     "FROM vdcuser, vdc " +
                     "LEFT OUTER JOIN study on vdc.id = study.owner_id " +
                     "LEFT OUTER JOIN studyfileactivity on study.id = studyfileactivity.study_id " +

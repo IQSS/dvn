@@ -128,6 +128,8 @@ public class DvnNewJavaFieldCutter {
         dbgLog.fine("out_len=" + OUT_LEN);
 
         Boolean dottednotation = false;
+	Boolean foundData = false; 
+	
 
         // cutting a data file
 
@@ -147,6 +149,8 @@ public class DvnNewJavaFieldCutter {
         int begin = 0;
         int end = 0;
         int blankoffset = 0;
+	int blanktail = 0; 
+	int k; 
 
         try {
             // lc: line counter
@@ -154,7 +158,7 @@ public class DvnNewJavaFieldCutter {
             while (rbc.read(inbuffer) != -1) {
                 // calculate i-th card number
                 lc++;
-                int k = lc % noCardsPerCase;
+                k = lc % noCardsPerCase;
                 if (k == 0) {
                     k = noCardsPerCase;
                 }
@@ -196,8 +200,13 @@ public class DvnNewJavaFieldCutter {
                         outbounds[2 * i + 1] = outoffset + (end - begin);
                         // current position moved to outoffset
                         pos = outoffset;
+
                         dottednotation = false;
+			foundData = false; 
+
                         blankoffset = 0;
+			blanktail = 0; 
+
                         // as position increases
                         while (pos <= (outoffset + (end - begin))) {
 
@@ -217,8 +226,16 @@ public class DvnNewJavaFieldCutter {
 
                             // space:
                             if (line_read[pos] == '\040') {
-                                blankoffset = pos + 1;
-                            }
+				if ( foundData ) {
+				    blanktail = blanktail > 0 ? blanktail : pos - 1; 
+				} else {
+				    blankoffset = pos + 1;
+				}
+                            } else {
+				foundData = true; 
+				blanktail = 0; 
+			    }
+			   
 
                             pos++;
                         }
@@ -230,6 +247,9 @@ public class DvnNewJavaFieldCutter {
                                 // set outbound value to blankoffset
                                 outbounds[2 * i] = blankoffset;
                             }
+			    if (blanktail > 0) {
+				outbounds[2 * i + 1] = blanktail; 
+			    }
                         }
 
                     } catch (BufferUnderflowException bufe) {

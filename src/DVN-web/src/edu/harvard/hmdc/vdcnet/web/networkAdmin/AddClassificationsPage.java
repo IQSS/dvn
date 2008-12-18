@@ -39,7 +39,7 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
     private HtmlInputTextarea descriptionInput  = new HtmlInputTextarea();
     private HtmlInputText     parentInput;
     private HtmlSelectOneMenu parentSelect;
-    private SelectItem[]      parentSelectItems;
+    private ArrayList         parentSelectItems;
     private HtmlMessages      iceMessage = new HtmlMessages();
 
     //rowselection fields
@@ -112,16 +112,18 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
     private void initParentSelectItems() {
         List list             = (List) vdcGroupService.findAll();
         Iterator iterator     = list.iterator();
-        parentSelectItems     = new SelectItem[(list.size() + 1)];
-        parentSelectItems[0]  = new SelectItem(new Long("0"), "Select Classification(s)");
+        parentSelectItems     = new ArrayList();
+        SelectItem parentSelectItem = new SelectItem(new Long("0"), "Select Classification(s)");
+        parentSelectItems.add(parentSelectItem);
         int i = 1;
         while (iterator.hasNext()) {
             VDCGroup vdcgroup = (VDCGroup)iterator.next();
-            //if (cid != null && cid.equals(vdcgroup.getId()))
-                //continue;
-            //else
-                parentSelectItems[i] = new SelectItem(vdcgroup.getId(), vdcgroup.getName());
-            i++;
+            if (cid != null && cid.equals(vdcgroup.getId())) {
+                continue;
+            } else {
+                parentSelectItem = new SelectItem(vdcgroup.getId(), vdcgroup.getName());
+                parentSelectItems.add(parentSelectItem);
+            }
         }
     }
 
@@ -143,7 +145,7 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
         return this.parentSelect;
     }
 
-    public SelectItem[] getParentSelectItems() {
+    public ArrayList getParentSelectItems() {
         return parentSelectItems;
     }
 
@@ -176,7 +178,7 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
         this.parentSelect = parentselect;
     }
 
-    public void setParentSelectItems(SelectItem[] parentselectitems) {
+    public void setParentSelectItems(ArrayList parentselectitems) {
         this.parentSelectItems = parentselectitems;
     }
 

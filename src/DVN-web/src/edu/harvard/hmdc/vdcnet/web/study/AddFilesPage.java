@@ -64,14 +64,19 @@ import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.study.StudyFile;
 import edu.harvard.hmdc.vdcnet.study.TemplateFileCategory;
 import edu.harvard.hmdc.vdcnet.study.FileCategory;
+import edu.harvard.hmdc.vdcnet.study.StudyLock;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.faces.event.ValueChangeEvent;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 
 public class AddFilesPage extends VDCBaseBean implements java.io.Serializable,
 	  Renderable, DisposableBean  {
-    @EJB EditStudyService studyService;
-    @EJB StudyServiceLocal fileSystemNameService;
+    @EJB EditStudyService editStudyService;
+    @EJB StudyServiceLocal studyService;
   
   private static final String COMPONENT_ID="input_filename";
 /**
@@ -247,7 +252,7 @@ public static final Log mLog = LogFactory.getLog(AddFilesPage.class);
         StudyFileEditBean f = null;
         try{
       //  File fstudy = FileUtil.createTempFile(sessionId, file.getName());
-        f = new StudyFileEditBean(file, fileSystemNameService.generateFileSystemNameSequence());
+        f = new StudyFileEditBean(file, studyService.generateFileSystemNameSequence());
         f.setSizeFormatted(file.length());
         f.setFileCategoryName(""); 
         
@@ -415,11 +420,13 @@ private boolean  hasFileName( StudyFileEditBean inputFileData, boolean remov){
    
     public void init() {
         super.init();
-   
+        if (isStudyLocked()) {
+            return;
+        }
         if (isFromPage("AddFilesPage")) {
-           studyService = (EditStudyService) sessionGet(studyService.getClass().getName());
-           study = studyService.getStudy();
-           fileList = studyService.getNewFiles();
+           editStudyService = (EditStudyService) sessionGet(editStudyService.getClass().getName());
+           study = editStudyService.getStudy();
+           fileList = editStudyService.getNewFiles();
        
         }
         else {
@@ -427,11 +434,11 @@ private boolean  hasFileName( StudyFileEditBean inputFileData, boolean remov){
        
             if (studyId != null) {
               
-                studyService.setStudy(studyId);
-                sessionPut( studyService.getClass().getName(), studyService);
+                editStudyService.setStudy(studyId);
+                sessionPut( editStudyService.getClass().getName(), editStudyService);
                 //sessionPut( (studyService.getClass().getName() + "."  + studyId.toString()), studyService);
-                study = studyService.getStudy();
-                fileList = studyService.getNewFiles();
+                study = editStudyService.getStudy();
+                fileList = editStudyService.getNewFiles();
                 
             } else {
                 // WE SHOULD HAVE A STUDY ID, throw an error
@@ -445,6 +452,36 @@ private boolean  hasFileName( StudyFileEditBean inputFileData, boolean remov){
       
       fileCategories = this. buildCategories(); 
     }
+    
+   // this metho checks to see if the collection the user is attempting to edit is in the current vdc;
+    // if not redirect
+    private boolean isStudyLocked() {
+         Study lockedStudy = studyService.getStudy(studyId);
+        StudyLock studyLock = null;
+        if (studyId != null) {
+            Study study = studyService.getStudy(studyId);
+            studyLock = study.getStudyLock();
+        }
+        if (studyLock != null) {
+            
+            String studyLockMessage = "Study upload details: " + lockedStudy.getGlobalId() + " - " + studyLock.getDetail();
+            
+            FacesContext fc = javax.faces.context.FacesContext.getCurrentInstance();
+            HttpServletResponse response = (javax.servlet.http.HttpServletResponse) fc.getExternalContext().getResponse();
+            try {
+                response.sendRedirect("/dvn/dv/" + getVDCRequestBean().getCurrentVDC().getAlias() + "/faces/login/StudyLockedPage.xhtml?message="+studyLockMessage);
+                fc.responseComplete();
+            } catch (IOException ex) {
+                Logger.getLogger(AddFilesPage.class.getName()).log(Level.SEVERE, null, ex);
+                throw new RuntimeException("IOException thrown while trying to redirect to Manage Collections Page");
+            } finally {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     /**
      * Helper function to init: It obtaines the collection of files 
      * stored in the Study and also builds a collection with the names of the files.
@@ -570,8 +607,8 @@ private boolean  hasFileName( StudyFileEditBean inputFileData, boolean remov){
         }
         // now call save
         if (fileList.size() > 0) {
-            studyService.setIngestEmail(ingestEmail);
-            studyService.save(getVDCRequestBean().getCurrentVDCId(), getVDCSessionBean().getLoginBean().getUser().getId());
+            editStudyService.setIngestEmail(ingestEmail);
+            editStudyService.save(getVDCRequestBean().getCurrentVDCId(), getVDCSessionBean().getLoginBean().getUser().getId());
         }
         
         getVDCRequestBean().setStudyId(study.getId());
@@ -620,7 +657,7 @@ private boolean  hasFileName( StudyFileEditBean inputFileData, boolean remov){
     public String cancel_action () {
         //first clean up the temp files  
         removeUploadFiles();
-        studyService.cancel();
+        editStudyService.cancel();
         getVDCRequestBean().setStudyId(study.getId());
         getVDCRequestBean().setSelectedTab("files");
         return "viewStudy";

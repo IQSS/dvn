@@ -172,7 +172,7 @@ public class LoginFilter implements Filter {
                     httpResponse.sendRedirect(httpRequest.getContextPath() + "/faces" + redirectPageDef.getPath());
                 }
             } else {
-                if (isEditStudyPage(pageDef) && studyLockedMessage(pageDef, httpRequest) != null) {
+                if (isCheckLockPage(pageDef) && studyLockedMessage(pageDef, httpRequest) != null) {
 
                     PageDef redirectPageDef = pageDefService.findByName(PageDefServiceLocal.STUDYLOCKED_PAGE);
                     httpResponse.sendRedirect(httpRequest.getContextPath() + "/faces" + redirectPageDef.getPath() + "?message=" + studyLockedMessage(pageDef, httpRequest));
@@ -325,6 +325,14 @@ public class LoginFilter implements Filter {
         return false;
     }
 
+    private boolean isCheckLockPage(PageDef pageDef) {
+         if (pageDef != null &&
+                (pageDef.getName().equals(PageDefServiceLocal.EDIT_STUDY_PAGE) || pageDef.getName().equals(PageDefServiceLocal.EDIT_VARIABLE_PAGE)  || pageDef.getName().equals(PageDefServiceLocal.DELETE_STUDY_PAGE) || pageDef.getName().equals(PageDefServiceLocal.STUDY_PERMISSIONS_PAGE))) {
+            return true;
+        }
+        return false;
+       
+    }
     private boolean isUserStudyCreator(VDCUser user, HttpServletRequest request) {
         boolean ret = false;
         String studyIdParam = getStudyIdFromRequest(request);

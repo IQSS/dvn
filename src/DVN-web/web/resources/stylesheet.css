@@ -135,6 +135,7 @@
     padding: 0;
     display: block;
     z-index: 5;
+    text-align: left;
 }
 .editDropDown li:hover {
     z-index: 10000;
@@ -1063,12 +1064,20 @@ a.vdcStudyFileSubsetAnalysisLink:active, a.vdcStudyFileSubsetAnalysisLink:visite
 
 /* Add Files Page */
 .dvnAddFilesInputBlock {}
-.dvnAddFilesOuterTable {}
-.dvnAddFilesOuterTable td {padding: 0;}
-.dvnAddFilesTable {margin-top: 0; border: 0;}
-.dvnAddFilesTable th.iceDatTblColHdr1 {border-left: 0; border-right: 0;}
+.dvnAddFilesOuterTable {border-left: 0; border-right: 0; border-bottom: 0;}
+.dvnAddFilesOuterTable td {padding: 0; border-left: 0; border-right: 0; border-bottom: 0;}
+.dvnAddFilesOuterTable tr:first-child {border-left: 0;}
+.dvnAddFilesTable {margin-top: 0;}
+.dvnAddFilesOuterTable table.iceDatTbl {
+  margin: 0 0 0 0; border-collapse: collapse;
+}
+.dvnAddFilesOuterTable table.iceDatTbl td {text-align: center; border: 1px solid #dadee0;}
+.dvnAddFilesTable th.iceDatTblColHdr1 {}
+.dvnAddFilesTable td {}
+.dvnAddFilesTable td.iceDatTblCol1 {}
 .dvnAddFilesTableCategory label.iceOutLbl {display: inline;}
 .dvnAddFilesTableCategory select.iceSelOneMnu {display: inline;}
+.dvnAddFilesTableDesc {width: 80%;}
 
 /* Edit Study/Files style rules
 */

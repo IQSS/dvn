@@ -15,8 +15,7 @@
     <gui:define name="body">
       <script type="text/javascript">
           // <![CDATA[
-          // functions to work with category selection
-          // note a few assumptions that these functions have:
+          // functions to work with category selection note a few assumptions that these functions have:
           // the id of the dropdown (including parent nodes); the partial id of the checkboxes;
           // and that the checkbox is two elements before the text field (there is empty text
           // in between, created by the div)
@@ -25,9 +24,9 @@
                   dropdown = document.getElementById("form1:dummy_datatable:0:fileDataTable:catDropdown");
                   textField = (document.getElementById(checkbox.id)).nextSibling;
                   textField.value= dropdown.value;
-                  textField.focus(); 
+                  textField.focus();
                  // document.forms['form1'].elements[textFiled.id].select();
-                  // 
+                  //
                   //alert("text value "+ textField.value);
               }
           }
@@ -42,9 +41,6 @@
                       textField = checkboxes[i].nextSibling;
                       textField.value = dropdown.value;
                       textField.focus();
-                       
-                    
-                    
                   }
               }
           }
@@ -68,28 +64,23 @@
               <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
               <ice:inputHidden id="studyId" value="#{AddFilesPage.study.id}"/>
               <input type="hidden" name="pageName" value="AddFilesPage"/>
-           <!--   <div class="dvnAddFilesInputBlock"> -->
-                  <ice:panelGroup id ="inputFile" style="dvnAddFilesInputBlock">
+              <ice:panelGroup id ="inputFile" style="dvnAddFilesInputBlock">
                 <ice:inputFile id="inputFileComponent"
                                progressListener="#{AddFilesPage.fileUploadProgress}"
-                               actionListener="#{AddFilesPage.uploadFile}" 
+                               actionListener="#{AddFilesPage.uploadFile}"
                                binding="#{AddFilesPage.inputFile}">
-                            
                   <!-- <ice:commandButton binding="#{AddFilesPage.inputFile}"/> -->
                 </ice:inputFile>
-             
                 <ice:outputProgress value="#{AddFilesPage.fileProgress}" id="progressbar"
-                                    rendered ="true" label=" "/> 
-                                       <br/>
+                                    rendered ="true" label=" "/>
+                <br/>
                 <ice:message layout="table" globalOnly="false" for="inputFileComponent"
-                              showDetail="true" showSummary="false" styleClass="errorMessage"/> 
-           
-         </ice:panelGroup> 
-         <!--     </div> -->
+                              showDetail="true" showSummary="false" styleClass="errorMessage"/>
+              </ice:panelGroup>
               <!--
               This is a very basic table comprising four columns. Each
-              row represents an inventory item.  Each column represents a
-              inventory item property.  commandSortHeader components have been
+              row represents an inventory item. Each column represents a
+              inventory item property. commandSortHeader components have been
               added ot the table headers.
 
               The sortAscending and sortColumn attributes are set when a command
@@ -101,21 +92,19 @@
               <ice:dataTable cellpadding="0" cellspacing="0" width="100%" id="dummy_datatable"
                              value="dummy_datatable" styleClass="dvnAddFilesOuterTable">
                 <ice:column>
-                  <ice:dataTable cellpadding="0" cellspacing="0" rendered="true"
-                                 width="100%"
-                                 value="#{AddFilesPage.fileList}" id="fileDataTable" binding="#{AddFilesPage.filesDataTable}"
-                                 styleClass="dvnAddFilesTable"
-                                 var="file">
+                  <ice:dataTable cellpadding="0" cellspacing="0" width="100%" rendered="true"
+                                 id="fileDataTable" styleClass="dvnAddFilesTable"
+                                 columnWidths="20%,20%,40%,10%,10%"
+                                 value="#{AddFilesPage.fileList}" binding="#{AddFilesPage.filesDataTable}" var="file">
                     <ice:column id="catCol">
                       <ice:panelGroup block="true" id="panel1" style="white-space: nowrap;">
                         <!-- note that the Javascript functions currently depends on the placement and ids of these fields (and the dropdown box;
                                           changing them may require corresponding changes in the Javascript  -->
-                        <ice:selectBooleanCheckbox id="catCheckbox"  onclick="updateCategory(this);"/>
+                        <ice:selectBooleanCheckbox id="catCheckbox" onclick="updateCategory(this);"/>
                         <ice:inputText id="catTextField" size="30" value="#{file.fileCategoryName}" partialSubmit="false"
+                                       valueChangeListener="#{AddFilesPage.addCategory}"
                                        onfocus="deselectCategory(this);"
-                                       valueChangeListener="#{AddFilesPage.addCategory}"             
-                                      onblur="iceSubmitPartial(form,this,event);"/> 
-                                                                   
+                                       onblur="iceSubmitPartial(form,this,event);"/>
                       </ice:panelGroup>
                       <f:facet name="header" id="f1">
                         <ice:panelGroup id="catColPanelGroup" styleClass="dvnAddFilesTableCategory">
@@ -132,8 +121,8 @@
                       </f:facet>
                       <ice:inputText id="input_filename" size="30" value="#{file.studyFile.fileName}" required="true"
                                      requiredMessage="This field is required."
-                                     validator="#{AddFilesPage.validateFileName}" partialSubmit="false" 
-                                     onblur="iceSubmitPartial(form,this,event);"/> 
+                                     validator="#{AddFilesPage.validateFileName}" partialSubmit="false"
+                                     onblur="iceSubmitPartial(form,this,event);"/>
                                      <!-- "this.form.submit();"/>
                       <f:param name="fileName" value="#{file.studyFile.fileName}"/> -->
                       <ice:message for="input_filename" styleClass="errorMessage"/>
@@ -142,9 +131,9 @@
                       <f:facet name="header">
                         <ice:outputLabel value="Description"/>
                       </f:facet>
-                      <ice:inputTextarea id="description_filename" rows="2"
+                      <ice:inputTextarea id="description_filename" styleClass="dvnAddFilesTableDesc" rows="2"
                                          value="#{file.studyFile.description}" partialSubmit="false"
-                                         onchange="iceSubmitPartial(form,this,event);"/> 
+                                         onchange="iceSubmitPartial(form,this,event);"/>
                     </ice:column>
                     <ice:column>
                       <f:facet name="header">
@@ -157,7 +146,7 @@
                         <ice:outputLabel value="Remove"/>
                       </f:facet>
                       <ice:commandLink
-                        value="Remove" id="removeFile" 
+                        value="Remove" id="removeFile"
                         actionListener="#{AddFilesPage.removeUploadedFile}">
                         <f:param name="fileName" value="#{file.studyFile.fileName}"/>
                       </ice:commandLink>

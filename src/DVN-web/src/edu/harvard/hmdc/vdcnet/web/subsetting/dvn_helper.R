@@ -873,10 +873,10 @@ univarStatHtml<-function(dtfrm, tmpimgfile, analysisoptn, tmphtmlfile, standalon
                 } else {
                     if (class(statlst$freqtbl)=="table"){
                         rowspan<-paste(" rowspan=\"",nrws,"\"",sep="")
-                        tr1.l<-paste("<td",rowspan," valign=\"top\">\n<p><B><small>The number of categories is more than 10 or equal to 1.<br>Table substitutes for Bar plot</small></B></p>\n</td>\n",sep="")
+                        tr1.l<-paste("<td",rowspan," valign=\"top\">\n<p><B><small>The number of categories is more than 10 or equal to 1.<br />Table substitutes for Bar plot</small></B></p>\n</td>\n",sep="")
                         cmbntn[1]<-1
                     } else {
-                        tr1.l<-paste("<td colspan=\"3\" valign=\"top\">\n<p><B><small>(The number of categories is more than 50 or equal to 1.<br>A bar plot or frequency table is not shown here</small></B></p>\n</td>\n",sep="")
+                        tr1.l<-paste("<td colspan=\"3\" valign=\"top\">\n<p><B><small>(The number of categories is more than 50 or equal to 1.<br />A bar plot or frequency table is not shown here</small></B></p>\n</td>\n",sep="")
                         sprsstr1r<-TRUE
                     }
                 }
@@ -1431,10 +1431,10 @@ univarStatHtmlBody<-function(dtfrm, whtml, analysisoptn, standalone=F){
                 } else {
                     if (class(statlst$freqtbl)=="table"){
                         rowspan<-paste(" rowspan=\"",nrws,"\"",sep="")
-                        tr1.l<-paste("<td",rowspan," valign=\"top\">\n<p><B><small>The number of categories is more than 10 or equal to 1.<br>Table substitutes for Bar plot</small></B></p>\n</td>\n",sep="")
+                        tr1.l<-paste("<td",rowspan," valign=\"top\">\n<p><B><small>The number of categories is more than 10 or equal to 1.<br />Table substitutes for Bar plot</small></B></p>\n</td>\n",sep="")
                         cmbntn[1]<-1
                     } else {
-                        tr1.l<-paste("<td colspan=\"3\" valign=\"top\">\n<p><B><small>(The number of categories is more than 50 or equal to 1.<br>A bar plot or frequency table is not shown here</small></B></p>\n</td>\n",sep="")
+                        tr1.l<-paste("<td colspan=\"3\" valign=\"top\">\n<p><B><small>(The number of categories is more than 50 or equal to 1.<br />A bar plot or frequency table is not shown here</small></B></p>\n</td>\n",sep="")
                         sprsstr1r<-TRUE
                     }
                 }

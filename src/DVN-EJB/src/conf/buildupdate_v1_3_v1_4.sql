@@ -116,7 +116,7 @@ ALTER TABLE studyfileactivity
       REFERENCES study (id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION;
 
--- add populate the new column
+-- populate the new column
 update studyfileactivity set study_id = fc.study_id
 from studyfile sf, filecategory fc
 where studyfileactivity.studyfile_id = sf.id
@@ -140,6 +140,28 @@ SELECT nextval('templatefield_id_seq'), null,1, t.id, tf.studyfield_id, tf.field
 from template t, templatefield tf
 where t.id != 1
 and tf.template_id = 1;
+
+-- update createddate and releasedate on current vdcs
+update vdc
+set createddate = s.createtime
+from (
+select owner_id, min(createtime) as createtime
+from study
+group by study.owner_id
+) s
+where vdc.id = s.owner_id
+and vdc.createddate is null;
+
+update vdc
+set createddate = current_date
+where vdc.createddate is null;
+
+update vdc
+set releasedate = createddate
+where vdc.releasedate is null
+and restricted = false;
+
+
 
 
 commit;

@@ -29,6 +29,7 @@
 
 package edu.harvard.hmdc.vdcnet.web;
 
+import edu.harvard.hmdc.vdcnet.util.PropertyUtil;
 import java.util.Map;
 import javax.faces.context.FacesContext;
 
@@ -47,6 +48,11 @@ public class MainLayoutBean implements java.io.Serializable  {
     private String googleAnalyticsCode;
     private String googleAnalyticsSourceCode;
     private String googleAnalyticsKey;
+
+    public String getBaseUrl() {
+        String hostUrl = PropertyUtil.getHostUrl();
+        return "http://" + hostUrl + "/dvn";
+     }
 
      /**
      * Getter for property googleAnalyticsCode.

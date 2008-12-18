@@ -710,6 +710,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         resetVarSetAdvStat(varCart);
         
         // recode message area
+        resetMsgMoveRecodeVarBttn();
         resetMsgSaveRecodeBttn();
         resetMsg4MoveVar();
         
@@ -755,6 +756,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             msgDwnldButton.setVisible(false);
             
             // recode message area
+            resetMsgMoveRecodeVarBttn();
             resetMsgSaveRecodeBttn();
             resetMsg4MoveVar();
 
@@ -1577,6 +1579,26 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     public void setMoveRecodeVarBttn(HtmlCommandButton hcb) {
         this.moveRecodeVarBttn = hcb;
     }
+    
+    // errormessage for non-selected var case
+    private HtmlOutputText msgMoveRecodeVarBttn =
+        new com.icesoft.faces.component.ext.HtmlOutputText();
+
+    public HtmlOutputText getMsgMoveRecodeVarBttn() {
+        return msgMoveRecodeVarBttn;
+    }
+
+    public void setMsgMoveRecodeVarBttn(HtmlOutputText txt) {
+        this.msgMoveRecodeVarBttn = txt;
+    }
+
+    public void resetMsgMoveRecodeVarBttn() {
+        dbgLog.fine("***** within resetMsgMoveRecodeVarBttn *****");
+        msgMoveRecodeVarBttn.setValue(" ");
+        msgMoveRecodeVarBttn.setRendered(false);
+        
+    }
+
     private HtmlPanelGrid groupPanelRecodeNewVarInfo = 
         new com.icesoft.faces.component.ext.HtmlPanelGrid();
 
@@ -1661,6 +1683,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     public void moveRecodeVariable(ActionEvent acev) {
 
         dbgLog.fine("***** moveRecodeVariable(): begins here *****");
+        resetMsgMoveRecodeVarBttn();
         if (listboxRecode.getValue()!=null){
             dbgLog.fine("listboxRecode.getValue="+listboxRecode.getValue());
         } else {
@@ -1685,6 +1708,12 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             dbgLog.fine("Is this a recoded var?[" + isRecodedVar(varId) + "]");            
         } else {
             dbgLog.fine("recode-variable id is still null");
+            
+            msgMoveRecodeVarBttn.setRendered(true);
+            msgMoveRecodeVarBttn.setValue(
+                "Select one variable as a source variable;<br />"+
+                "and click the start button to set up the recode table"
+                );
             return;
         }
         if (!groupPanelRecodeTableArea.isRendered()){
@@ -2903,6 +2932,39 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         groupPanelRecodeTableHelp.setRendered(false);
         recodeTable.setRendered(false);
         addValueRangeBttn.setRendered(false);
+    }
+    
+    
+    public void clearRecodeTableBlock(){
+        // borrowed from the removeRecodedVariable()
+            dbgLog.fine("***** clearRecodeTableBlock(): starts *****");
+            
+            // clear the table
+            recodeDataList.clear();
+            // reset the current variable Id
+            setCurrentRecodeVariableName(null);
+            setCurrentRecodeVariableId(null);
+
+            // reset variable name and label
+            recodeTargetVarName.resetValue();
+            recodeTargetVarLabel.resetValue();
+            
+            // hide the recode table and add-row button
+            groupPanelRecodeTableHelp.setRendered(false);
+            recodeTable.setRendered(false);
+            addValueRangeBttn.setRendered(false);
+
+            // if no more recoded var, hide the recoded var table
+            if (baseVarToDerivedVar.isEmpty()) {
+                pgRecodedVarTable.setRendered(false);
+            }
+            
+            // reset the recode-woring area
+            groupPanelRecodeTableArea.setRendered(false);
+            groupPanelRecodeInstruction2.setRendered(false);
+            groupPanelRecodeInstruction1.setRendered(true);
+        
+            dbgLog.fine("***** clearRecodeTableBlock(): ends *****");
     }
 
     // recode section ends here
@@ -7024,6 +7086,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
         // remove vars from RHS boxes
         resetMsgDwnldButton();
+        resetMsgMoveRecodeVarBttn();
         resetMsgSaveRecodeBttn();
         resetMsgEdaButton();
         resetMsg4MoveVar();
@@ -7040,11 +7103,12 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         }
 
         Boolean currentState = (Boolean) vce.getNewValue();
-
+        dbgLog.fine("currentState="+currentState);
+        dbgLog.fine("selected="+ varCheckbox.isSelected());
         // update the state of the selected value of this row
 
-        tmpDataLine.set(0, currentState);
         if (currentState) {
+            tmpDataLine.set(0, currentState);
             // put
             // varCart.put(dt4Display.get(cr).getVarId(),
             // dt4Display.get(cr).getVarName());
@@ -7057,7 +7121,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             getVarSetAdvStat().add(
                 new SelectItem((String) tmpDataLine.get(2), (String) tmpDataLine
                     .get(3)));
-            
+            dbgLog.fine("selected(case 1)="+ varCheckbox.isSelected());
+
         } else {
             // remove
 
@@ -7072,13 +7137,23 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 dbgLog.fine("flip the boolean value");
                 // shows the error message
                 msgVariableSelection.setVisible(true);
-                msgVariableSelection
-                    .setValue("The variable ("
-                        + tmpDataLine.get(3)
-                        + ") is used for recoding;<br />Remove its recoded variable(s) first.");
+                
+                dbgLog.fine("selected(case 2)="+ varCheckbox.isSelected());
+                varCheckbox.setValue(Boolean.TRUE);
+                dbgLog.fine("selected(case 2)="+ varCheckbox.isSelected());
 
+
+                msgVariableSelection.setValue(
+                       "The variable (" + tmpDataLine.get(3)+ 
+                        ") is used for recoding;<br />"+
+                        "Check "+tmpDataLine.get(3)+" again <br />"+
+                        "and remove its recoded variable(s) first.");
+                        
                 FacesContext.getCurrentInstance().renderResponse();
+                
             } else {
+                tmpDataLine.set(0, currentState);
+
                 // Case: Not used for recoding
                 // Removes this variable
                 varCart.remove(varId);
@@ -7100,6 +7175,10 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         }
                     }
                 }
+                // clear uncommitted recoding data
+                clearRecodeTableBlock();
+                
+                
                 dbgLog.fine("recoded var is=" + getCurrentRecodeVariableId());
                 dbgLog.fine("checkboxSelectUnselectAll(b)="+
                     checkboxSelectUnselectAll.isSelected());
@@ -7870,6 +7949,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                             .get("recodeVarNameSet");
                     }
                     
+                    resetMsgMoveRecodeVarBttn();
                     // Resets the properties (rendered and text) of
                     // msgSaveRecodeBttn (ice:outputText) that shows
                     // error messages for the action of SaveRecodeBttn

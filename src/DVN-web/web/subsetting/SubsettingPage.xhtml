@@ -357,8 +357,15 @@
                         partialSubmit="true"
                         alt="#{bundleAnalysis['recode.button.moveVar.alt']}"  
                         value="start" />
-                </ice:panelGroup>  
- 
+                <ice:panelGroup>
+                 <ice:outputText id="msgMoveRecodeVarBttn"
+                  binding="#{AnalysisPage.msgMoveRecodeVarBttn}" 
+                  rendered="false"
+                  escape="false"
+                styleClass="errorMessage"/>
+                </ice:panelGroup>
+                </ice:panelGroup>
+
             </ice:panelGrid>
             <!-- end: 1st column -->
 
@@ -1300,7 +1307,7 @@
              binding="#{AnalysisPage.varCheckbox}" 
              value="#{currentRow[0]}" 
              title="#{currentRow[3]}"
-             immediate="true"
+             
              valueChangeListener="#{AnalysisPage.updateCheckBoxState}" 
              partialSubmit="true"/>
     </ice:column>

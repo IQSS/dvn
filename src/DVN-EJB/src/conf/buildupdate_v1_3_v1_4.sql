@@ -104,8 +104,13 @@ update pagedef set path = '/collection/ManageCollectionsPage.xhtml' where path =
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'AddClassificationsPage', '/networkAdmin/AddClassificationsPage.xhtml', null,1 );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'ManageClassificationsPage', '/networkAdmin/ManageClassificationsPage.xhtml', null,1 );
 
--- remove production date from dfault seatch results
+
+-- remove production date from default seatch results (nad current vdcs)
 update studyfield set searchresultfield = false where name = 'productionDate';
+
+delete from search_result_fields
+where study_field_id = (select id from studyfield where name = 'productionDate');
+
 
 -- new studyId column (and fk constraint) to studyFileActivity
 ALTER TABLE studyfileactivity ADD COLUMN study_id bigint;
@@ -116,11 +121,13 @@ ALTER TABLE studyfileactivity
       REFERENCES study (id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION;
 
+
 -- populate the new column
 update studyfileactivity set study_id = fc.study_id
 from studyfile sf, filecategory fc
 where studyfileactivity.studyfile_id = sf.id
 and sf.filecategory_id = fc.id;
+
 
 -- new indices
 create index study_owner_id_index on study(owner_id);
@@ -129,6 +136,7 @@ create index studyfile_id_index on studyfile(id);
 create index studyfileactivity_id_index on studyfileactivity(id);
 create index studyfileactivity_studyfile_id_index on studyfileactivity(studyfile_id);
 create index studyfileactivity_study_id_index on studyfileactivity(study_id);
+
 
 -- fix the templatefield data
 delete from templatefield  where template_id is null;
@@ -140,6 +148,7 @@ SELECT nextval('templatefield_id_seq'), null,1, t.id, tf.studyfield_id, tf.field
 from template t, templatefield tf
 where t.id != 1
 and tf.template_id = 1;
+
 
 -- update createddate and releasedate on current vdcs
 update vdc

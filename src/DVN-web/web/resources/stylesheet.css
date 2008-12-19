@@ -6,7 +6,14 @@
     position: relative;
     background-color: white;
 }
-
+.dvn_wrapperVanilla {
+    min-width: 700px;
+    position: relative;
+    background-color: #eee;
+}
+.dvn_bodyVanilla {
+    background-color: #eee;
+}
 .dvn_content {
     padding: 0 12px 12px 12px;
     color: #464646 !important;
@@ -1808,7 +1815,7 @@ li.affiliationBullet {
 }
 
 /**** Login ****/
-#dvnLoginPageWrap {margin-top: 10%; width: 98%; text-align: center;}
+#dvnLoginPageWrap {padding-top: 10%; width: 100%; text-align: center; background: #eee;}
 #dvnLoginPageWrap form {width: 700px; margin: 0 auto;}
 #dvnLoginPageWrap div.dvnRound {width: 700px; margin: 0 auto; padding: 1em;  background: #fff; border: 1px solid #6E7F90;}
 
@@ -1816,20 +1823,32 @@ li.affiliationBullet {
 #dvnLoginPageHeader .dvnLoginHeadingText {font-size: 160% !important; color: #c55b28; text-transform: uppercase;}
 .dvnLoginPageSubHeader {color: #526f76; font-size: 160% !important; text-transform: uppercase;}
 
-.dvnLoginContent {overflow: hidden; text-align: left;}
-.dvnLoginContentText {float: left; width: 380px; padding-right: 10px;}
+.dvnLoginContent {width: 698px; overflow: hidden; text-align: left;}
+.dvnLoginContentText {float: left; width: 380px; margin-right: 10px; text-align: center;}
 .dvnLoginInputArea {float: right; width: 300px;}
 .dvnLoginInputArea p {text-align: right;}
 .dvnLoginInputArea .dvnLoginFailed {display: block;}
 .dvnLoginInputArea .errorMessageError {display: block; text-align: right; color: red; font-weight: bold;}
-.dvnLoginInputArea fieldset {width: 280px; border: 1px solid #7f9db9; background: #f4ebc7; text-align: center;}
+.dvnLoginInputArea fieldset {border: 1px solid #7f9db9; background: #f4ebc7; text-align: center;}
 .dvnLoginInputArea legend {padding: 0 8px; border: 1px solid #7f9db9; background: #e6ebed; text-transform: uppercase;}
 .dvnLoginInputArea label {margin-top: 1em; padding-right: .5em;}
 .dvnLoginInputArea input {margin-top: 1em;}
 .dvnLoginInputArea fieldset div {margin-top: 1em; text-align: left;}
 .dvnLoginInputArea span fieldset {margin-top: 1em;}
-
 .dvnLoginContentAreaFooter {margin-top: 1em; text-align: center;}
+/* IE FIELDSET BACKGROUND BUG FIX */
+* html .dvnLoginInputArea {
+  padding-top: 1em;
+}
+* html .dvnLoginInputArea fieldset {
+    position: relative;
+    padding: 1em  .75em 1em 1em;
+}
+* html .dvnLoginInputArea legend {
+    position: absolute;
+    top: -.75em;
+    left: .5em;
+}
 
 /**** Network Options Page  + My Options Page ****/
 .dvnOptionsTable {width: 100%;}

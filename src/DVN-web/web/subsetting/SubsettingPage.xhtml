@@ -235,7 +235,7 @@
                     style="vertical-align: bottom" 
                     value="/resources/icon_info.gif" />
 
-                <ice:outputText id="outputText13" 
+                <ice:outputText id="outputText13" style="display: inline;"
                     value="#{bundleAnalysis['dwnld.instruction']}"/>
 
                 <ice:selectOneRadio id="dtdwnld"  
@@ -385,7 +385,7 @@
                         style="vertical-align: bottom" 
                         value="/resources/icon_info.gif" />
 
-                    <ice:outputText id="outputText491" 
+                    <ice:outputText id="outputText491" style="display: inline;"
                         value="#{bundleAnalysis['recode.instruction.line1']}"/>
                     <br />
                 </ice:panelGrid>
@@ -400,9 +400,9 @@
                         styleClass="vdcNoBorders" 
                         style="vertical-align: bottom" 
                         value="/resources/icon_info.gif" />
-                    <ice:outputText id="outputText492" 
+                    <ice:outputText id="outputText492" style="display: inline;"
                         value="#{bundleAnalysis['recode.instruction.line2']}"/>
-                    <ice:outputText id="outputText493" 
+                    <ice:outputText id="outputText493" style="display: inline;"
                         value="#{bundleAnalysis['recode.instruction.line3']}"/>
                     <ice:panelGrid id="requiredfield" 
                         columns="1">
@@ -478,7 +478,7 @@
                             style="vertical-align: bottom" 
                             value="/resources/icon_info.gif" />
 
-                        <ice:outputText id="recodeHowToRecodeInstruction" 
+                        <ice:outputText id="recodeHowToRecodeInstruction" style="display: inline;"
                             value="#{bundleAnalysis['recode.howToRecode.instruction']}"/>
 
                         <ice:graphicImage 
@@ -505,7 +505,7 @@
                             value="/resources/icon_info.gif" />
 
 
-                        <ice:outputText id="recodeHowToSubsetInstruction" 
+                        <ice:outputText id="recodeHowToSubsetInstruction" style="display: inline;"
                             value="#{bundleAnalysis['recode.howToSubset.instruction']}"/>
 
                         <ice:graphicImage 
@@ -531,7 +531,7 @@
                             style="vertical-align: bottom" 
                             value="/resources/icon_info.gif" />
 
-                        <ice:outputText id="recodeHowToEnterConditionInstruction" 
+                        <ice:outputText id="recodeHowToEnterConditionInstruction" style="display: inline;"
                             value="#{bundleAnalysis['recode.howToEnterCondition.instruction']}"/>
 
 
@@ -705,7 +705,7 @@
                     style="vertical-align: bottom" 
                     value="/resources/icon_info.gif" />
 
-                <ice:outputText id="outputText21" 
+                <ice:outputText id="outputText21" style="display: inline;"
                     value="#{bundleAnalysis['eda.instruction']}"/>
                 <ice:selectManyCheckbox id="edaOptionSet"
                     binding="#{AnalysisPage.edaOptionSet}"
@@ -817,7 +817,8 @@
 
                             <ice:outputLink 
                                 value="#{AnalysisPage.modelHelpLinkURL}"
-                                target="_blank">
+                                target="_blank"
+                                style="display: inline;">
                                 <ice:outputText 
                                     value="#{bundleAnalysis['advStat.model.helpInfo.header']}"/>                       
                             </ice:outputLink>
@@ -1178,7 +1179,8 @@
                         styleClass="vdcNoBorders" 
                         style="vertical-align: bottom" 
                         value="/resources/icon_info.gif" />
-                    <ice:outputText id="txtSubsettingInstruction" 
+                    <ice:outputText id="txtSubsettingInstruction"
+                        style="display: inline;"
                         binding="#{AnalysisPage.txtSubsettingInstruction}" 
                         value="#{bundleAnalysis['subsettingInstruction']}" />
                 </ice:panelGrid>
@@ -1240,8 +1242,6 @@
                         <ice:outputText id="linkAction5Text" 
                             value="#{bundleAnalysis['varSearch.displayButton.afterSelected']}"/>
                     </ice:commandLink>
-                    
-                    
                 </ice:panelGrid>
                 <!-- column 2-->
                 <ice:panelGrid id="groupPanel19">
@@ -1252,11 +1252,8 @@
                         value="#{bundleAnalysis['varSearch.button.search']}"
                         rendered="false"/>
                 </ice:panelGrid>
-                
-                
-                    <!-- column 3-->
-                <ice:panelGrid id="groupPanel17" style="margin-left:80%;"  >
-                    
+                <!-- column 3-->
+                <ice:panelGrid id="groupPanel17" style="margin-left:80%;">
                     <ice:panelGroup>
                     <ice:outputLabel id="howManyRowsLabel"
                     value="Show "/>
@@ -1271,13 +1268,42 @@
                     </ice:selectOneMenu>
                     </ice:panelGroup>
                 </ice:panelGrid>
-                
             </ice:panelGrid>
-            
-            
             <!-- data table -->
             <ice:panelGrid id="pgDataTable" style="width:100%">
-                
+<ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="2" id="gridPanel22"
+                               styleClass="dvnManageTableTop" columnClasses="dvnManageTableTotals, dvnPaginatorWrap">
+  <div jsfc="ice:panelGroup" id="groupPanel55">
+    &nbsp;
+  </div>
+  <div jsfc="ice:panelGroup" styleClass="dvnPaginatorWrap">
+    <ice:dataPaginator id="dataScroller1" styleClass="dvnPaginatorRight"
+        binding="#{AnalysisPage.dataScroller1}"
+        actionListener="#{AnalysisPage.processDataScroller1}"
+        for="dataTable1" paginator="true"
+        fastStep="3" paginatorMaxPages="4" renderFacetsIfSinglePage="false">
+        <f:facet name="first">
+            <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-first.gif" title="First Page"/>
+        </f:facet>
+        <f:facet name="last">
+            <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-last.gif" title="Last Page"/>
+        </f:facet>
+        <f:facet name="previous">
+            <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-previous.gif" title="Previous Page"/>
+        </f:facet>
+        <f:facet name="next">
+            <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-next.gif" title="Next Page"/>
+        </f:facet>
+        <f:facet name="fastforward">
+            <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-ff.gif" title="Fast Forward"/>
+        </f:facet>
+        <f:facet name="fastrewind">
+            <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-fr.gif" title="Fast Backwards"/>
+        </f:facet>
+    </ice:dataPaginator>
+  </div>
+</ice:panelgrid>
+
 <ice:dataTable id="dataTable1" 
      binding="#{AnalysisPage.data}"
      var="currentRow" 
@@ -1290,7 +1316,6 @@
      title="Variable Information"
      rowClasses="list-row-odd, list-row-even"  
      width="98%">
-
     <ice:column id="column1">
         <f:facet name="header">
             <ice:selectBooleanCheckbox id="checkboxSelectUnselectAll"
@@ -1302,12 +1327,10 @@
                  partialSubmit="true"
                  title="select or unselect all rows in this view" />
         </f:facet>
-
         <ice:selectBooleanCheckbox id="varCheckbox"
              binding="#{AnalysisPage.varCheckbox}" 
              value="#{currentRow[0]}" 
              title="#{currentRow[3]}"
-             
              valueChangeListener="#{AnalysisPage.updateCheckBoxState}" 
              partialSubmit="true"/>
     </ice:column>
@@ -1323,7 +1346,6 @@
         <f:facet name="header">
             <ice:outputText  id="outputText8"
                 value="#{bundleAnalysis['varTable.colHdr.Id']}" style="visibility:hidden;"/>
-
         </f:facet>
         <ice:outputText id="outputText7"
             value="#{currentRow[2]}" style="visibility:hidden;"/>
@@ -1349,7 +1371,6 @@
             <ice:outputText id="outputText14"
                 value="#{bundleAnalysis['varTable.colHdr.quickSummary']}"/>
         </f:facet>
-
         <ice:commandButton 
             id="showStatistics" 
             onclick="QSrequested(this.id, '#{currentRow[2]}');return false;" 
@@ -1363,54 +1384,8 @@
 </ice:dataTable>
 
 <!-- Paginator with page controls -->
-<div style="margin-left:auto;margin-right:auto;width:50%;">
-<ice:dataPaginator id="dataScroller1"
-    binding="#{AnalysisPage.dataScroller1}"
-    actionListener="#{AnalysisPage.processDataScroller1}"
-    
-    for="dataTable1"
-    paginator="true"
-    fastStep="3"
-    paginatorMaxPages="4">
-    
-    <f:facet name="first">
-        <ice:graphicImage
-            url="./xmlhttp/css/xp/css-images/arrow-first.gif"
-            style="border:none;"
-            title="First Page"/>
-    </f:facet>
-    <f:facet name="last">
-        <ice:graphicImage
-            url="./xmlhttp/css/xp/css-images/arrow-last.gif"
-            style="border:none;"
-            title="Last Page"/>
-    </f:facet>
-    <f:facet name="previous">
-        <ice:graphicImage
-            url="./xmlhttp/css/xp/css-images/arrow-previous.gif"
-            style="border:none;"
-            title="Previous Page"/>
-    </f:facet>
-    <f:facet name="next">
-        <ice:graphicImage
-            url="./xmlhttp/css/xp/css-images/arrow-next.gif"
-            style="border:none;"
-            title="Next Page"/>
-    </f:facet>
-    <f:facet name="fastforward">
-        <ice:graphicImage url="./xmlhttp/css/xp/css-images/arrow-ff.gif"
-            style="border:none;"
-            title="Fast Forward"/>
-    </f:facet>
-    <f:facet name="fastrewind">
-        <ice:graphicImage url="./xmlhttp/css/xp/css-images/arrow-fr.gif"
-            style="border:none;"
-            title="Fast Backwards"/>
-    </f:facet>
-</ice:dataPaginator>
-</div>
-<!-- Display counts about the table and the currently displayed page -->
 
+<!-- Display counts about the table and the currently displayed page -->
 
 <!-- old scroller was here as a footer -->
             </ice:panelGrid><!-- panelGrid pgDataTable -->

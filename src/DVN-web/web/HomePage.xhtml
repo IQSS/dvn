@@ -108,13 +108,16 @@
                 <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="2" id="gridPanel2"
                                styleClass="dvnHmpgGroupTableTop" columnClasses="dvnHmpgGroupTotals, dvnPaginatorWrap">
                   <div jsfc="ice:panelGroup" id="groupPanel1" rendered="#{dvItems.dataModel.rowCount > 0 and VDCRequest.currentVDC == null}">
-                    <h:outputText binding="#{NetworkStatsBean.inlineDataverseKey}"
+                    <h:outputText  styleClass="dvn_totalsLabel" value="Dataverses: #{dvItems.dataModel.rowCount}"/>
+                    <!--h:outputText binding="#{NetworkStatsBean.inlineDataverseKey}"
                                   effect="#{item.effect}"
                                   styleClass="dvn_totalsLabel"
                                   value="#{NetworkStatsBean.inlineDataverseValue}">
+
                       <f:attribute name="itemid" styleClass="dvn_totalsValue" value="item#{dvItems.id}"/>
-                    </h:outputText>
-                    <!-- TODO: For the next two rendered was, #{dvItems.parentClassification == 0} -->
+                    </h:outputText-->
+                    <!-- Removing study and file totals for now-->
+                    <!--
                     <h:outputText binding="#{NetworkStatsBean.inlineStudyKey}"
                                   effect="#{item.effect}"
                                   styleClass="dvn_totalsLabel"
@@ -129,6 +132,7 @@
                                   value="#{NetworkStatsBean.inlineFilesValue}">
                       <f:attribute name="itemid" styleClass="dvn_totalsValue" value="item#{dvItems.id}"/>
                     </h:outputText>
+                    -->
                   </div>
                   <div jsfc="ice:panelGroup" id="groupPanel2" rendered="#{dvItems.dataModel.rowCount > 0}">
                     <ice:dataPaginator actionListener="#{HomePage.paginate}"

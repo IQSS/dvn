@@ -724,7 +724,7 @@ a.dvnHmpgGroupCreateLink:hover, a.dvnHmpgGroupCreateLink:active {
 .dvnHmpgGroupDataTable th span.iceOutTxt td {font-size: 90% !important;}
 
 .dvnHmpgDvNameLink {float: left;}
-.dvnHmpgMoreInfoLink {float: right;}
+.dvnHmpgMoreInfoLink {float: right; display: inline; margin-left: 2em;}
 .dvnHmpgDvMoreInfoDesc {clear: both;}
 
 /* STUDYLISTING PAGE */

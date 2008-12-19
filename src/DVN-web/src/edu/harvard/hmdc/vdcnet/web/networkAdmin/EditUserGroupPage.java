@@ -78,7 +78,7 @@ public class EditUserGroupPage extends VDCBaseBean implements java.io.Serializab
             userDetails = editUserGroupService.getUserDetailBeans();
         } else {
             System.out.println("Putting stateful session bean in request, editUserGroupService =" + editUserGroupService);
-            if (userGroupId==null ) {
+            if (userGroupId.equals(new Long("-1")) ) {
                 editUserGroupService.newUserGroup();
                 sessionPut(editUserGroupService.getClass().getName(),editUserGroupService);
                 group = editUserGroupService.getUserGroup();
@@ -86,15 +86,9 @@ public class EditUserGroupPage extends VDCBaseBean implements java.io.Serializab
                 editUserGroupService.setUserGroup(userGroupId);
                 sessionPut(editUserGroupService.getClass().getName(),editUserGroupService);
                 group = editUserGroupService.getUserGroup();
-                //if it's not a new group, then figure out what type of group it is
-                Iterator iterator = group.getLoginDomains().iterator();
-                if (!iterator.hasNext()) {
-                    this.userGroupType = "usergroup";
-                } else {
-                    this.userGroupType = "ipgroup";
-                }
             }
             userDetails = editUserGroupService.getUserDetailBeans();
+            System.out.println("the user group type is " + userGroupType);
         }       
         initAffiliates();
         initCollections();
@@ -219,7 +213,7 @@ public class EditUserGroupPage extends VDCBaseBean implements java.io.Serializab
                                 htmldatatable.setRowIndex(i);
                                 if (htmldatatable.isRowAvailable()) {
                                     loginaffiliate = (LoginAffiliate)htmldatatable.getRowData();
-                                    if ( (loginaffiliate.getName().equals("") || loginaffiliate.getName() == null ) || ( this.chkAffiliateLoginService == false ) )
+                                    if ( loginaffiliate.getName() == null || loginaffiliate.getName().equals("") || this.chkAffiliateLoginService == false  )
                                         this.editUserGroupService.removeCollectionElement(list, loginaffiliate);
                                 }
                                 htmldatatable.getRowCount();
@@ -248,6 +242,7 @@ public class EditUserGroupPage extends VDCBaseBean implements java.io.Serializab
                 elem.setValid(true);
                 elem.setDuplicate(false);
                 if (elem.getUserName()!=null && !elem.getUserName().trim().equals("")) {
+                    
                     VDCUser user = userService.findByUserName(elem.getUserName());
                     if (user==null) {
                         elem.setValid(false);
@@ -407,10 +402,6 @@ public class EditUserGroupPage extends VDCBaseBean implements java.io.Serializab
         
         public void setUserGroupType(String usergrouptype) {
             this.userGroupType = usergrouptype;
-            if (this.userGroupType.equals("ipgroup"))
-                this.setDisplayAttributes("block");
-            else
-                this.setDisplayAttributes("none");
         }
         
         private String displayAttributes;
@@ -587,19 +578,24 @@ public class EditUserGroupPage extends VDCBaseBean implements java.io.Serializab
             List<UserGroup> userGroups = groupService.findAll();
             Iterator iteratorOuter = userGroups.iterator();
             while (iteratorOuter.hasNext()) {
-                UserGroup elem = (UserGroup) iteratorOuter.next();
-                Iterator iteratorInner = elem.getLoginDomains().iterator();
+                UserGroup elem          = (UserGroup) iteratorOuter.next();
+                Iterator iteratorInner  = elem.getLoginDomains().iterator();
                 while (iteratorInner.hasNext()){
                     LoginDomain logindomain = (LoginDomain)iteratorInner.next();
-                    //this next check will match the input field against the bean value provided it's not this user group
-                    if (logindomain.getIpAddress().equals(loginDomainStr) && logindomain.getUserGroup().getId() != this.group.getId()) { // this is what I want to match against
-                        msg = " already exists in another group. IP user groups must be unique.";
-                        ((UIInput)toValidate).setValid(false);
-                        this.setUserGroupType("ipgroup");//to maintain state for the radio buttons and the group datatable
-                        FacesMessage message = new FacesMessage(loginDomainStr + msg);
-                        context.addMessage(toValidate.getClientId(context), message);
-                        isDuplicate = true;
-                        break;
+                     //this next check will match the input field against the bean value provided it's not this user group
+                    System.out.println("The element user group is " + elem.getId());
+                    if (logindomain.getUserGroup().getId().equals(this.group.getId()) ) {
+                        continue;
+                    } else {
+                        if (logindomain.getIpAddress().equals(loginDomainStr)) { // this is what I want to match against
+                            msg = " already exists in another group. IP user groups must be unique.";
+                            ((UIInput)toValidate).setValid(false);
+                            this.setUserGroupType("ipgroup");//to maintain state for the radio buttons and the group datatable
+                            FacesMessage message = new FacesMessage(loginDomainStr + msg);
+                            context.addMessage(toValidate.getClientId(context), message);
+                            isDuplicate = true;
+                            break;
+                        }
                     }
                 }
             }

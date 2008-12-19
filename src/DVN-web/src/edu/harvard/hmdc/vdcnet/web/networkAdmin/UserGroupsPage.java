@@ -105,15 +105,15 @@ public class UserGroupsPage extends VDCBaseBean implements java.io.Serializable 
     }
 
     /**
-     * Holds value of property goups.
+     * Holds value of property groups.
      */
     List<UserGroupsInfoBean> groups; 
  
     /**
-     * Getter for property goups.
-     * @return Value of property goups.
+     * Getter for property groups.
+     * @return Value of property groups.
      */
-    public  List<UserGroupsInfoBean> getGoups() { 
+    public  List<UserGroupsInfoBean> getGroups() {
         return groups;
     }
 

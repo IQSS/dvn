@@ -74,17 +74,21 @@
                   <ice:message styleClass="errorMessage" for="inputFriendlyGroupName"/>
                 </div>
               </ice:panelGrid>
-                  <div jsfc="ice:panelGroup" rendered="#{EditUserGroupPage.userGroupType == 'none' and param.userGroupId == null}">
-                <ice:selectOneRadio id="userGroupType"  required="true"  requiredMessage="This field is required." onclick="setUserGroupType(this);document.forms[0].submit();" value="#{EditUserGroupPage.userGroupType}">
+                  <div jsfc="ice:panelGroup" rendered="true">
+                <ice:selectOneRadio id="userGroupType"  
+                                    required="true"
+                                    requiredMessage="This field is required."
+                                    partialSubmit="true"
+                                    value="#{EditUserGroupPage.userGroupType}">
                   <f:selectItems value="#{EditUserGroupPage.userGroupTypes}"/>
                 </ice:selectOneRadio>
                 <ice:message styleClass="errorMessage" for="userGroupType"/>               
               </div>
               <br/>
               <!--TBD (wjb) What type of group is this -->
-              <ice:inputHidden valueChangeListener="#{EditUserGroupPage.changeUserGroupType}" value="#{EditUserGroupPage.userGroupType}" id="userGroupType"/> 
+             <!-- <ice:inputHidden valueChangeListener="#{EditUserGroupPage.changeUserGroupType}" value="#{EditUserGroupPage.userGroupType}" id="userGroupType"/>  -->
               <!-- User Groups -->
-              <div jsfc="ice:panelGroup" styleClass="dvnFormPadding" rendered="#{ EditUserGroupPage.userGroupType == 'none' or EditUserGroupPage.userGroupType == 'usergroup'}" id="usergroups">
+              <div jsfc="ice:panelGroup" styleClass="dvnFormPadding" rendered="#{ EditUserGroupPage.userGroupType == 'usergroup'}" id="usergroups">
                 <ice:outputText styleClass="vdcSubHeaderColor" value="Usernames"/>
                 <div jsfc="ice:panelGroup" styleClass="vdcHelpText">
                   <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" value="/resources/icon_info.gif"/>
@@ -107,7 +111,7 @@
                 </ice:dataTable>
               </div>
               <!-- IP Based Users Groups -->
-              <div jsfc="ice:panelGroup" styleClass="dvnFormPadding" rendered="#{ (EditUserGroupPage.userGroupType == 'none' or EditUserGroupPage.userGroupType == 'ipgroup')}" id="ipgroups">
+              <div jsfc="ice:panelGroup" styleClass="dvnFormPadding" rendered="#{EditUserGroupPage.userGroupType == 'ipgroup'}" id="ipgroups">
                 <ice:outputText styleClass="vdcSubHeaderColor" value="IP Addresses/Domains"/>
                 <div jsfc="ice:panelGroup" styleClass="vdcHelpText">
                   <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" value="/resources/icon_info.gif"/>
@@ -128,18 +132,21 @@
                 </ice:dataTable>
               </div>
               <!-- ******************** Affiliate login services for IP Groups ****************** -->
-              <div jsfc="ice:panelGroup" styleClass="dvnFormPadding" rendered="#{(EditUserGroupPage.userGroupType == 'none' or EditUserGroupPage.userGroupType == 'ipgroup')}" id="affiliateLoginServices" style="#{(EditUserGroupPage.userGroupType == 'ipgroup') ? 'display:block;' : 'display:none;'}">
+              <div jsfc="ice:panelGroup" styleClass="dvnFormPadding" rendered="#{EditUserGroupPage.userGroupType == 'ipgroup'}" id="affiliateLoginServices" style="#{(EditUserGroupPage.userGroupType == 'ipgroup') ? 'display:block;' : 'display:none;'}">
                 <ice:outputText styleClass="vdcSubHeaderColor" value="Affiliate Login Service"/>
                 <div jsfc="ice:panelGroup" styleClass="vdcHelpText" style="#{(EditUserGroupPage.chkAffiliateLoginService) ? 'display:block;' : 'display:none;'}">
                   <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" value="/resources/icon_info.gif"/>
                   <ice:outputText value="Enter affiliate names (e.g. MySchool's Pin Service) and urls (http://ez.pinserver.edu) in the field below. Add/remove an entry by clicking the icons next to the input field."/>
                 </div>
-                <ice:selectBooleanCheckbox id="chkAffiliateLoginService" valueChangeListener="#{EditUserGroupPage.changeChkAffiliateLoginService}" onclick="this.form.submit();" immediate="true" value="#{EditUserGroupPage.chkAffiliateLoginService}">
+                <ice:selectBooleanCheckbox id="chkAffiliateLoginService"
+                                        valueChangeListener="#{EditUserGroupPage.changeChkAffiliateLoginService}"
+                                        partialSubmit="true"
+                                        value="#{EditUserGroupPage.chkAffiliateLoginService}">
                   <ice:outputLabel for="chkAffiliateLoginService" value="This IP group has an affiliate login service"/>
                 </ice:selectBooleanCheckbox>
                 <br/>
                 <ice:dataTable styleClass="dvnFormDataTable dvnFormPadding" style="#{(EditUserGroupPage.chkAffiliateLoginService) ? 'display:block;' : 'display:none;'}"
-                               binding="#{EditUserGroupPage.affiliatesTable}" rendered="true" value="#{EditUserGroupPage.group.loginAffiliates}" var="affiliate">
+                               binding="#{EditUserGroupPage.affiliatesTable}" rendered="#{EditUserGroupPage.chkAffiliateLoginService}" value="#{EditUserGroupPage.group.loginAffiliates}" var="affiliate">
                   <ice:column>
                     <f:facet name="header">
                       <ice:outputText value="Affiliate Name"/>

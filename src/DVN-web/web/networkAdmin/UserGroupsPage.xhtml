@@ -25,7 +25,9 @@
           </div>
           <div class="dvnManageTableTop">
             <div class="dvnManageTableCreateLink">
-              <ice:outputLink value="/dvn/faces/networkAdmin/EditUserGroupPage.xhtml?userGroupType=usergroup">
+              <ice:outputLink value="/dvn/faces/networkAdmin/EditUserGroupPage.xhtml">
+                  <f:param name="userGroupId" value="-1"/>
+                  <f:param name="userGroupType" value="usergroup"/>
                 <ice:outputText value="Create Group"/>
               </ice:outputLink>
             </div>
@@ -33,12 +35,14 @@
           <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                          binding="#{UserGroupsPage.dataTable}" id="dataTable1"
                          styleClass="dvnManageTable" columnClasses="vdcColPadded, vdcColPadded" headerClass="list-header-left"
-                         rowClasses="list-row-even,list-row-odd" value="#{UserGroupsPage.goups}" var="currentRow">
+                         rowClasses="list-row-even,list-row-odd" value="#{UserGroupsPage.groups}" var="currentRow">
             <ice:column id="column1">
               <f:facet name="header">
                 <ice:outputText id="column1Header" value="Group"/>
               </f:facet>
-              <ice:outputLink value="/dvn/faces/networkAdmin/EditUserGroupPage.xhtml?userGroupId=#{currentRow.group.id}">
+              <ice:outputLink value="/dvn/faces/networkAdmin/EditUserGroupPage.xhtml">
+                  <f:param name="userGroupId" value="#{currentRow.group.id}"/>
+                  <f:param name="userGroupType" value="#{ empty(currentRow.group.loginDomains) ? 'usergroup' : 'ipgroup'}"/>
                 <ice:outputText value="#{currentRow.group.name}"/>
               </ice:outputLink>
             </ice:column>

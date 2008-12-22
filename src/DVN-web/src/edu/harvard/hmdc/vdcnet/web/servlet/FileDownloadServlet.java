@@ -780,6 +780,8 @@ public class FileDownloadServlet extends HttpServlet {
                                 
                 infc.close();
                 outfc.close();
+		
+		studyService.incrementNumberOfDownloads(file.getId());
 
 
             } catch (IOException ex) {
@@ -842,6 +844,8 @@ public class FileDownloadServlet extends HttpServlet {
 
                             in.close();
                             out.close();
+
+			    studyService.incrementNumberOfDownloads(file.getId());
 
 
                         } catch (IOException ex) {
@@ -1033,6 +1037,8 @@ public class FileDownloadServlet extends HttpServlet {
                             out.close();
                             fileCachingStream.flush();
                             fileCachingStream.close();
+
+			    studyService.incrementNumberOfDownloads(file.getId());
 
                 // TODO: delete temporary zip file; 
                 // (or change the whole logic to skip creating

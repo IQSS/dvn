@@ -14,7 +14,7 @@
     <!-- optional for use with push -->
     <context-param>
         <param-name>com.icesoft.faces.synchronousUpdate</param-name>
-        <param-value>false</param-value>
+        <param-value>true</param-value>
     </context-param>
     <!-- removed asynch config so that default will be used -->
     <!-- end optional for use with push -->
@@ -192,10 +192,25 @@
     </servlet>
     <!-- END DVN SPECIFIC SERVLETS -->
     <!-- ICEFACES MAPPINGS START -->
-   <!-- <servlet-mapping>
+    <!--
+   <servlet-mapping>
         <servlet-name>Grizzly Push Servlet</servlet-name>
         <url-pattern>/block/receive-updated-views/*</url-pattern>
-    </servlet-mapping> -->
+    </servlet-mapping>
+   <servlet>
+
+    <servlet-name>Grizzly Push Servlet</servlet-name>
+
+    <servlet-class>
+
+          com.icesoft.faces.webapp.http.servlet.GrizzlyPushServlet
+
+    </servlet-class>
+
+    <load-on-startup> 1 </load-on-startup>
+
+</servlet>
+ !-->
     <servlet-mapping>
         <servlet-name>Persistent Faces Servlet</servlet-name>
         <url-pattern>/xmlhttp/*</url-pattern>

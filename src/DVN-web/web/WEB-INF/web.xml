@@ -14,24 +14,9 @@
     <!-- optional for use with push -->
     <context-param>
         <param-name>com.icesoft.faces.synchronousUpdate</param-name>
-        <param-value>true</param-value>
+        <param-value>false</param-value>
     </context-param>
-     <context-param>
-         <param-name>com.icesoft.faces.heartbeatInterval</param-name>
-         <param-value>300000</param-value>
-     </context-param>
-     <context-param>
-         <param-name>com.icesoft.faces.heartbeatTimeout</param-name>
-         <param-value>300000</param-value>
-     </context-param>
-     <context-param>
-         <param-name>com.icesoft.faces.connectionTimeout</param-name>
-         <param-value>300000</param-value>
-     </context-param>
-     <context-param>
-         <param-name>com.icesoft.faces.heartbeatRetries</param-name>
-         <param-value>50</param-value>
-     </context-param> 
+    <!-- removed asynch config so that default will be used -->
     <!-- end optional for use with push -->
     <context-param>
         <param-name>com.icesoft.faces.debugDOMUpdate</param-name>

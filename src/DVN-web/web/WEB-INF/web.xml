@@ -14,7 +14,7 @@
     <!-- optional for use with push -->
     <context-param>
         <param-name>com.icesoft.faces.synchronousUpdate</param-name>
-        <param-value>true</param-value>
+        <param-value>false</param-value>
     </context-param>
     <!-- removed asynch config so that default will be used -->
     <!-- end optional for use with push -->

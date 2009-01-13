@@ -38,6 +38,11 @@
         <param-name>com.icesoft.faces.uploadDirectory</param-name>
         <param-value>upload</param-value>
     </context-param>
+    <context-param>
+        <param-name>com.icesoft.faces.connectionTimeout</param-name>
+	<param-value>600000</param-value>
+    </context-param>
+
 	
 <!-- Facelets -->
     <context-param>

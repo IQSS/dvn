@@ -15,6 +15,7 @@
 <body>
   <gui:composition template="/template.xhtml">
     <gui:param name="pageTitle" value="DVN - Study"/>
+    <gui:param name="uniquifier" value="#{studyPage.selectedIndex}"/> 
     <gui:define name="body">
       <script type="text/javascript">
           // <![CDATA[
@@ -104,24 +105,202 @@
               window.location.href = "/dvn#{VDCRequest.currentVDCURL}/FileDownload/study_#{studyPage.studyUI.study.studyId}.zip?fileId=" + fileIdStr +  "#{studyPage.xff}";
               return false;
           }
+          
 
-          jQuery(document).ready(function(){
-              jQuery(".studyFileDownloadAs li, .studyEditLinks li").hover(
-              function(){ jQuery("ul", this).fadeIn("fast"); },
-              function() { }
-          );
-              if (document.all) {
-                  jQuery(".studyFileDownloadAs li, .studyEditLinks li").hoverClass ("sfHover");
-              }
-          });
-          jQuery.fn.hoverClass = function(c) {
-              return this.each(function(){
-                  jQuery(this).hover(
-                  function() { jQuery(this).addClass(c);  },
-                  function() { jQuery(this).removeClass(c); }
-              );
+          //DETECT GECKO/W3 STYLE EVENT SUPPORT
+          if (window.addEventListener || document.addEventListener) {
+                document.addEventListener('load', function (e) {
+                            changeElementsVisibility("UL");
+                    },false);
+                 document.addEventListener('mouseover', function(e) {
+                            var obj = e.target;
+                            if (obj.className.indexOf("downloadasLink") != -1|| (obj.tagName == "LI" && obj.parentNode.className == "studyFileDownloadAs downloadas") ) {
+                                showChildNode(obj.parentNode.parentNode.parentNode, "ul", "studyFileDownloadAs downloadas");
+                                e.stopPropagation();
+                            }
+                        }, true);
+                document.addEventListener('mouseout', function(e) {
+                            var obj = (e.target) ? e.target : window.event.srcElement;
+                            var toElement = (e.relatedTarget) ? e.relatedTarget : e.toElement;
+                            var fromElement = (e.fromElement) ? e.fromElement   : obj;
+                            if (obj.tagName == "LI" && obj.parentNode.className == "studyFileDownloadAs downloadas") { //download as to sibling li and its descendants
+                                if (traverseParents("DIV", "LI", "sfHover", fromElement) != traverseParents("DIV", "LI", "sfHover", toElement)) {
+                                    hideChildNode(obj.parentNode.parentNode, "UL", "studyFileDownloadAs downloadas", obj.tagName + "1");
+                                } //add else for A tag
+                            } else if (obj.parentNode.className == "sfHover" && obj.parentNode.parentNode.className != "myList") { //downloadAs link and UL.myList
+                                if (traverseParents("DIV", "LI", "sfHover", fromElement) != traverseParents("DIV", "LI", "sfHover", toElement)) {
+                                    hideChildNode(obj.parentNode.parentNode.parentNode.parentNode, "UL", "studyFileDownloadAs downloadas", obj.tagName + "1");
+                                } //add else for A tag
+                            } else if (obj.parentNode.parentNode.parentNode.className == "sfHover") { //A inside UL.myList
+                                 if (traverseParents("DIV", "LI", "sfHover", fromElement) != traverseParents("DIV", "LI", "sfHover", toElement)) {
+                                    hideChildNode(obj.parentNode.parentNode.parentNode.parentNode.parentNode, "UL", "studyFileDownloadAs downloadas", obj.tagName + "2");
+                                 }
+                            } else if (obj.parentNode.parentNode.parentNode.parentNode.className == "sfHover") { //SPAN . . . inside UL.myList
+                                 if (traverseParents("DIV", "LI", "sfHover", fromElement) != traverseParents("DIV", "LI", "sfHover", toElement)) {
+                                    hideChildNode(obj.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode, "UL", "studyFileDownloadAs downloadas", obj.tagName + "3");
+                                }
+                            } else if (obj.parentNode.parentNode.parentNode.parentNode.parentNode.className == "sfHover") { // TEXT . . . inside UL.myList (possibly never hit)
+                                if (traverseParents("DIV", "LI", "sfHover", fromElement) != traverseParents("DIV", "LI", "sfHover", toElement)) {
+                                    hideChildNode(obj.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode, "UL", "studyFileDownloadAs downloadas", obj.tagName + "4");
+                                }
+                            }
+                        }, true);
+          // DETECT INTERNET EXPLORER SUPPORT
+          } else if (window.attachEvent)  {
+              window.attachEvent('onload', function () {
+                            changeElementsVisibility("UL");
+                    });
+              document.attachEvent("onmouseover", function () {
+                var obj = window.event.srcElement;
+              if (obj.className.indexOf("downloadasLink") != -1 || (obj.tagName == "LI" && obj.parentNode.className == "studyFileDownloadAs downloadas") ) {
+                    showChildNode(obj.parentNode.parentNode.parentNode, "ul", "studyFileDownloadAs downloadas", window.event);//the parent node to the download link = li. the ul, mylist is a sibling of downloadaslink
+                }
+                window.event.cancelBubble = true;
               });
-          };
+              var element = document.getElementById("dvn_wrapper");
+              element.attachEvent("onmouseout", function () {
+                var obj = window.event.srcElement;
+                    if (obj.className == "sfHover") { //download as to sibling li and its descendants
+                        if (traverseParents("DIV", "LI", "sfHover", window.event.fromElement) != traverseParents("DIV", "LI", "sfHover", window.event.toElement)) {
+                            hideChildNode(obj.parentNode.parentNode, "UL", "studyFileDownloadAs downloadas", obj.tagName + "1");
+                        } //add else for A tag
+                    }
+                    else if (obj.parentNode.className == "sfHover" && obj.parentNode.parentNode.className != "myList") { //download as to sibling li and its descendants
+                        if (traverseParents("DIV", "LI", "sfHover", window.event.fromElement) != traverseParents("DIV", "LI", "sfHover", window.event.toElement)) {
+                            hideChildNode(obj.parentNode.parentNode.parentNode.parentNode, "UL", "studyFileDownloadAs downloadas", obj.tagName + "1");
+                        } //add else for A tag
+                    } else if (obj.parentNode.parentNode.parentNode.className == "sfHover") { //A inside UL.myList
+                         if (traverseParents("DIV", "LI", "sfHover", window.event.fromElement) != traverseParents("DIV", "LI", "sfHover", window.event.toElement)) {
+                            hideChildNode(obj.parentNode.parentNode.parentNode.parentNode.parentNode, "UL", "studyFileDownloadAs downloadas", obj.tagName + "2");
+                         }
+                    } else if (obj.parentNode.parentNode.parentNode.parentNode.className == "sfHover") { //SPAN . . . inside UL.myList
+                         if (traverseParents("DIV", "LI", "sfHover", window.event.fromElement) != traverseParents("DIV", "LI", "sfHover", window.event.toElement)) {
+                            hideChildNode(obj.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode, "UL", "studyFileDownloadAs downloadas", obj.tagName + "3");
+                        }
+                    } else if (obj.parentNode.parentNode.parentNode.parentNode.parentNode.className == "sfHover") { // TEXT . . . inside UL.myList (possibly never hit)
+                        if (traverseParents("DIV", "LI", "sfHover", window.event.fromElement) != traverseParents("DIV", "LI", "sfHover", window.event.toElement)) {
+                            hideChildNode(obj.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode, "UL", "studyFileDownloadAs downloadas", obj.tagName + "4");
+                        }
+                    }
+                  window.event.cancelBubble = true;
+              });
+          }
+
+          /**  traverseParents
+           *
+           *  if the from and to element have the same parent, then return true;
+           *  else return false
+           *
+           * @return isNodeParent boolean
+           *
+           */
+          function traverseParents(stopElement, parentElementName, parentClassName, targetElement) {
+              var isNodeParent = false;
+              counter = 0;
+              while ( (!isNodeParent && targetElement.tagName != stopElement) ) {
+                  counter++;
+                  if (targetElement.tagName == parentElementName && targetElement.className == parentClassName) {
+                        isNodeParent = true;
+                        //break;
+                  } else {
+                      if (targetElement.parentNode != null) {
+                          targetElement = targetElement.parentNode;
+                      } 
+                  }
+                  if (isNodeParent)
+                      break;
+              }
+              return isNodeParent;
+          }
+
+
+          /** showChildNode
+           *
+           * this script shows some child nodes
+           *
+           */
+          function showChildNode(parentNode, targetElementName, className, evt) {
+                if (parentNode.getElementsByTagName) {
+                   var nodes = parentNode.getElementsByTagName(targetElementName); // in this case we want "ul"
+                   var max = nodes.length;
+                   for (var i = 0; i < max;i++) {
+                      var nodeObj = nodes.item(i);
+                      if (nodeObj.className == className) {
+                          childNodes = nodeObj.getElementsByTagName("li");
+                          for (var j = 0; j < childNodes.length; j++) {
+                              var childNodeObj = childNodes[j];
+                              childNodeObj.className = "sfHover";
+                          }
+                        descendantNodes = nodeObj.getElementsByTagName("li")
+                        descendantObj = descendantNodes[0];
+                        descendantNodes = descendantObj.getElementsByTagName("ul");
+                        descendantObj = descendantNodes[0];
+                        if (descendantObj.className == "myList") {
+                            descendantObj.style.display = "block";
+                        }
+                        break;
+                      }
+                   }
+                }
+          }
+
+          /** hideChildNode
+           *
+           *
+           *
+           * this script hides child nodes
+           *
+           *
+           */
+          
+           function hideChildNode(parentNode, targetElementName, className, evt) {
+                if (parentNode.getElementsByTagName) {
+                   var nodes = parentNode.getElementsByTagName(targetElementName); // in this case we want "ul"
+                   var max = nodes.length;
+                   for (var i = 0; i < max;i++) {
+                      var nodeObj = nodes.item(i);
+                      if (nodeObj.className == className) {
+                          childNodes = nodeObj.getElementsByTagName("li");
+                          for (var j = 0; j < childNodes.length; j++) {
+                              var childNodeObj = childNodes[j];
+                              childNodeObj.className = "";
+                          }
+                        descendantNodes = nodeObj.getElementsByTagName("li");
+                        descendantObj = descendantNodes[0];
+                        descendantNodes = descendantObj.getElementsByTagName("ul");
+                        descendantObj = descendantNodes[0];
+                        
+                        if (descendantObj.className == "myList") {
+                            descendantObj.style.display="none";
+                        }
+                        break;
+                      }
+                   }
+                }
+          }
+
+
+          /** changeElementsVisibility
+           *
+           * Hides all of the subnodes of the elementName
+           *
+           * @param elementName - The name of an element targetted for inspection
+           *                        of this node
+           *
+           * @return void
+           */
+            function changeElementsVisibility(elementName){
+                if (document.getElementsByTagName) {
+                   var nodes = document.getElementsByTagName(elementName);
+                   var max = nodes.length;
+                   for (var i = 0; i < max;i++) {
+                      var nodeObj = nodes.item(i);
+                      if (nodeObj.className == "myList") {
+                        nodeObj.style.display="none";
+                      }
+                   }
+                }
+            }
 
           // ]]>
       </script>
@@ -176,7 +355,7 @@
           <div jsfc="ice:panelGroup" styleClass="dvn_sectionTitleLinksR" rendered="#{studyPage.userAuthorizedToEdit or studyPage.studyUI.study.inReview or studyPage.studyUI.study.new}">
             <ice:outputText styleClass="vdcStudyStatus" value="Currently unavailable for editing because file upload is in progress." rendered="#{studyPage.userAuthorizedToEdit and !(studyPage.studyUI.study.studyLock==null)}"/>
             <div jsfc="ice:panelGroup" styleClass="dvn_tooltip" rendered="#{studyPage.userAuthorizedToEdit and studyPage.studyUI.study.studyLock==null}">
-              <script type="text/javascript">
+            <!--  <script type="text/javascript">
                   // <![CDATA[
                   $('.dvn_tooltip a.vdcTooltipLink').tooltip({
                       track: true,
@@ -185,7 +364,7 @@
                       showBody: " - "
                   });
                   // ]]>
-              </script>
+              </script> -->
               <ice:commandButton styleClass="dvnInlineButton" value="Release" actionListener="#{studyPage.setReleased}" rendered="#{studyPage.userAuthorizedToRelease and studyPage.studyUI.study.studyLock==null and studyPage.studyUI.study.inReview}"/>
 
               <ul class="studyEditLinks editDropDown">
@@ -612,8 +791,9 @@
                                       <div jsfc="ice:panelGroup" rendered="#{!studyFileUI.restrictedForUser and studyFileUI.studyFile.subsettable}">
                                         <ul class="studyFileDownloadAs downloadas">
                                           <li>
-                                            <ice:graphicImage styleClass="vdcNoBorders" value="/resources/icon_download.gif" alt="View or download this File."/><a class="downloadasLink">Download as...</a>
-                                            <ul>
+                                            <ice:graphicImage styleClass="vdcNoBorders" value="/resources/icon_download.gif" alt="View or download this File."/>
+                                            <a class="downloadasLink">Download as...</a>
+                                            <ul class="myList">
                                               <gui:repeat value="#{studyFileUI.dataFileFormatTypes}" var="studyDataFileType">
                                                 <li>
                                                   <ice:outputLink value="#{studyFileUI.fileDownloadURL}&amp;downloadOriginalFormat=true" rendered="#{!empty studyDataFileType.value and studyDataFileType.originalFileDataFileFormat}">

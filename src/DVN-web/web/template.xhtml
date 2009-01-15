@@ -26,9 +26,12 @@
   <script type="text/javascript" src="/dvn/resources/sgbeal-togglepane.jquery.js"/>
   <script type="text/javascript" src="/dvn/resources/jcap.js"/>
   <script type="text/javascript" src="/dvn/resources/md5.js"/>
+  <!-- The following script is in place to make sure that the template code is reloaded when a forward happens
+    or when a page goes back to itself but with a different "view" (as with tabs); each page should, if need be,
+    define a uniquifier for each "view" (for example, a tabbed page would just use the selectedIndex of the tabSet) -->
   <script type="text/javascript">
-      // #{pageTitle} - MAGIC!
-  </script>
+      // #{pageTitle} - #{uniquifier}
+  </script> 
   <script type="text/javascript">
       // <![CDATA[
       jQuery.noConflict();
@@ -38,9 +41,9 @@
             ).corner("10px");
           jQuery.ifixpng("/dvn/resources/pixel.gif");
           jQuery("img[@src$=.png], a.requestHmpgSideLink:link, a.requestHmpgSideLink:visited, a.requestHmpgSideLink:hover, a.requestHmpgSideLink:active").ifixpng();
-          // jQuery(".vdcStudyDesc").truncate({max_length: 198});
-          // jQuery(".vdcStudyDataCitation").truncate({max_length: 25, more: "View Data Citation [+]", less: "Collapse [-]"});
-          // jQuery(".TogglePaneFancy").initTogglePane({headerClassClosed:"TogglePaneFancyHeaderClosed"});
+          jQuery(".vdcStudyDesc").truncate({max_length: 198});
+          jQuery(".vdcStudyDataCitation").truncate({max_length: 25, more: "View Data Citation [+]", less: "Collapse [-]"});
+          jQuery(".TogglePaneFancy").initTogglePane({headerClassClosed:"TogglePaneFancyHeaderClosed"});
       });
       // ]]>
   </script>
@@ -64,7 +67,7 @@
             }
             // ]]>
         </script>
-        
+    
         <ice:outputText escape="false"
                     rendered="#{applicationScope.googleAnalyticsKey != null || MainLayoutBean.googleAnalyticsKey != null}"
                     value="#{(applicationScope.googleAnalyticsSourceCode != null) ? applicationScope.googleAnalyticsSourceCode : MainLayoutBean.googleAnalyticsSourceCode}"
@@ -101,6 +104,5 @@
                     rendered="#{applicationScope.googleAnalyticsKey != null || MainLayoutBean.googleAnalyticsKey != null}"
                     value="#{(applicationScope.googleAnalyticsCode != null) ? applicationScope.googleAnalyticsCode : MainLayoutBean.googleAnalyticsCode}"
                     />
-                
 </body>
 </html>

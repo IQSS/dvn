@@ -128,7 +128,6 @@ public class EditCollectionPage extends VDCBaseBean implements java.io.Serializa
             collection = new VDCCollection();
             collection.setStudies(new ArrayList());
             collection.setOwner(getVDCRequestBean().getCurrentVDC());
-            collection.setType("static");
             collection.setLocalScope(true);
 
             String parentIdStr = getRequestParam("parentId");
@@ -422,6 +421,9 @@ public class EditCollectionPage extends VDCBaseBean implements java.io.Serializa
             
         if ( StringUtil.isEmpty(saveButton) ) {
             return; // as this was the result of a partial submit, do not do validation
+        }
+        if (collection.isRootCollection()) {
+            return; // no parent, so no need to check
         }
 
         // to validate we need to know the parent collection

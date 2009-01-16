@@ -88,7 +88,6 @@ public class EditUserGroupPage extends VDCBaseBean implements java.io.Serializab
                 group = editUserGroupService.getUserGroup();
             }
             userDetails = editUserGroupService.getUserDetailBeans();
-            System.out.println("the user group type is " + userGroupType);
         }       
         initAffiliates();
         initCollections();
@@ -262,9 +261,14 @@ public class EditUserGroupPage extends VDCBaseBean implements java.io.Serializab
             if(invalid) {
                 return null;
             }
-            else {
+            else if (this.userGroupType.equals("ipgroup")) {
+                userDetails.clear();
+                editUserGroupService.save();
+                return "result";
+            } else {
+                editUserGroupService.removeLoginDomains();
                 editUserGroupService.setUserDetailBeans(userDetails);
-                editUserGroupService.save(  );
+                editUserGroupService.save();
                 return "result";
             }
         }
@@ -583,7 +587,6 @@ public class EditUserGroupPage extends VDCBaseBean implements java.io.Serializab
                 while (iteratorInner.hasNext()){
                     LoginDomain logindomain = (LoginDomain)iteratorInner.next();
                      //this next check will match the input field against the bean value provided it's not this user group
-                    System.out.println("The element user group is " + elem.getId());
                     if (logindomain.getUserGroup().getId().equals(this.group.getId()) ) {
                         continue;
                     } else {
@@ -612,7 +615,6 @@ public class EditUserGroupPage extends VDCBaseBean implements java.io.Serializab
                     if (loginDomainStr.equals(lastInList.getIpAddress()) ) {
                          msg = " already exists in this list. IP addresses must be unique.";
                        ((UIInput)toValidate).setValid(false);
-                       System.out.println("the uiinput to validate is " + toValidate.getClientId(context));
                         this.setUserGroupType("ipgroup");//to maintain state for the radio buttons and the group datatable
                         FacesMessage message = new FacesMessage(loginDomainStr + msg);
                         context.addMessage(toValidate.getClientId(context), message);

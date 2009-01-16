@@ -48,6 +48,10 @@ import javax.persistence.*;
 @Entity
 public class VDCCollection implements java.io.Serializable {
 
+    public static final String STATIC = "static";
+    public static final String DYNAMIC = "dynamic";
+
+
     private String name;
     @Column(columnDefinition = "TEXT")
     private String description;
@@ -80,6 +84,7 @@ public class VDCCollection implements java.io.Serializable {
 
     /** Creates a new instance of VDCCollection */
     public VDCCollection() {
+        this.type = STATIC;
     }
 
     public String getName() {
@@ -229,7 +234,7 @@ public class VDCCollection implements java.io.Serializable {
     /**
      * Holds value of property studies.
      */
-    @ManyToMany(cascade = {CascadeType.MERGE})
+    @ManyToMany
     @JoinTable(name = "COLL_STUDIES",
     joinColumns = @JoinColumn(name = "vdc_collection_id"),
     inverseJoinColumns = @JoinColumn(name = "study_id"))

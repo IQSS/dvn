@@ -245,26 +245,7 @@
             </div>
             <div jsfc="ice:panelGroup" id="groupPanel55" styleClass="dvn_sectionPanels" rendered="#{StudyListingPage.renderTree}">
               <div jsfc="ice:panelGroup" styleClass="dvnTreeBlock" style="height: #{StudyListingPage.collectionTreeVisibleNodeCount * 1.85 + 4}em;">
-                <script>
-                    // <![CDATA[
-                    jQuery(document).ready(function(){
-                        jQuery("a#dvnTreeOpen").click(function(){
-                            jQuery(".dvnTreeContainer").animate({width: "400%"}, 299 );
-                            jQuery(".dvnTreeContainer").css({overflow: "visible", position: "absolute", top: "-1px", left: "-1px", border: "1px solid #DCDDDF", padding: ".25em"});
-                            jQuery(".iceTree").css({"overflow-x": "auto"});
-                        });
-                        jQuery("a#dvnTreeClose").click(function(){
-                            jQuery(".dvnTreeContainer").animate({width: "100%"}, 299 );
-                            jQuery(".dvnTreeContainer").css({overflow: "hidden", position: "relative", top: "0", left: "0", border: "0", padding: "0"});
-                            jQuery(".iceTree").css({"overflow-x": "hidden"});
-                        });
-                    });
-                    // ]]>
-                </script>
-                <div class="dvnTreeContainer">
-                  <div class="dvnTreeControls">
-                    <a id="dvnTreeOpen" name="open">Expand &#187;</a> <a id="dvnTreeClose" name="close">&#171; Close</a>
-                  </div>
+                <div class="dvnTreeContainer" style="height: #{StudyListingPage.collectionTreeVisibleNodeCount * 1.85 + 3}em;">
                   <ice:tree id="collectionTree"
                             value="#{StudyListingPage.collectionTree}"
                             var="item"

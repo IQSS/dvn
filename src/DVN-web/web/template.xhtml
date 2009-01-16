@@ -24,6 +24,7 @@
   <script type="text/javascript" src="/dvn/resources/jquery.ifixpng.js"/>
   <script type="text/javascript" src="/dvn/resources/jquery.truncator.js"/>
   <script type="text/javascript" src="/dvn/resources/sgbeal-togglepane.jquery.js"/>
+  <script type="text/javascript" src="/dvn/resources/jquery.accordion.js"/>
   <script type="text/javascript" src="/dvn/resources/jcap.js"/>
   <script type="text/javascript" src="/dvn/resources/md5.js"/>
   <!-- The following script is in place to make sure that the template code is reloaded when a forward happens
@@ -44,6 +45,8 @@
           jQuery(".vdcStudyDesc").truncate({max_length: 198});
           jQuery(".vdcStudyDataCitation").truncate({max_length: 25, more: "View Data Citation [+]", less: "Collapse [-]"});
           jQuery(".TogglePaneFancy").initTogglePane({headerClassClosed:"TogglePaneFancyHeaderClosed"});
+          jQuery("ul.theMenu").Accordion({active: "h3.selected", header: "h3.head", alwaysOpen: false, animated: true, showSpeed: 400, hideSpeed: 800});
+          jQuery("ul.xtraMenu").Accordion({active: "h4.selected", header: "h4.head", alwaysOpen: false, animated: true, showSpeed: 400, hideSpeed: 800});
       });
       // ]]>
   </script>

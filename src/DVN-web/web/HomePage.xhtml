@@ -256,26 +256,7 @@
 
           <div jsfc="ice:panelGroup" styleClass="dvn_sectionPanels" rendered="#{HomePage.classificationsSize > 0}">
             <div jsfc="ice:panelGroup" styleClass="dvnTreeBlock" style="height: 65em;">
-                  <script>
-                      // <![CDATA[
-                      jQuery(document).ready(function(){
-                          jQuery("a#dvnTreeOpen").click(function(){
-                              jQuery(".dvnTreeContainer").animate({width: "400%"}, 299 );
-                              jQuery(".dvnTreeContainer").css({overflow: "visible", position: "absolute", top: "-1px", left: "-1px", border: "1px solid #DCDDDF", padding: ".25em"});
-                              jQuery(".iceTree").css({"overflow-x": "auto"});
-                          });
-                          jQuery("a#dvnTreeClose").click(function(){
-                              jQuery(".dvnTreeContainer").animate({width: "100%"}, 299 );
-                              jQuery(".dvnTreeContainer").css({overflow: "hidden", position: "relative", top: "0", left: "0", border: "0", padding: "0"});
-                              jQuery(".iceTree").css({"overflow-x": "hidden"});
-                          });
-                      });
-                      // ]]>
-                  </script>
-                  <div class="dvnTreeContainer">
-                    <div class="dvnTreeControls">
-                      <a id="dvnTreeOpen" name="open">Expand &#187;</a> <a id="dvnTreeClose" name="close">&#171; Close</a>
-                    </div>
+                  <div class="dvnTreeContainer theMenuContainer">
                     <ice:tree id="tree"
                               value="#{HomePage.model}"
                               var="node"
@@ -299,6 +280,61 @@
                         </f:facet>
                       </ice:treeNode>
                     </ice:tree>
+
+                    <!-- <ul class="theMenu">
+                        <li style="position: static;">
+                            <h3 class="head"><a href="javascript:;" class="nochild">All Dataverses</a></h3>
+                        </li>
+                    </ul>
+                    <h3 class="headFilter">Filter by Type</h3>
+                    <ul class="theMenu">
+                        <li style="position: static;">
+                            <h3 class="head"><a href="javascript:;" class="nochild">Large Collections</a></h3>
+                        </li>
+                        <li>
+                            <h3 class="head"><a href="javascript:;" class="nochild">Institutions, Departments and Centers</a></h3>
+                        </li>
+                        <li>
+                            <h3 class="head"><a href="javascript:;" class="nochild">Journal Replication Archives</a></h3>
+                        </li>
+                        <li>
+                            <h3 class="head"><a href="javascript:;" class="nochild">Research Projects</a></h3>
+                        </li>
+                        <li>
+                            <h3 class="head"><a href="javascript:;" class="nochild">Scholars</a></h3>
+                        </li>
+                    </ul>
+                    <h3 class="headFilter">Filter by Organization</h3>
+                    <ul class="theMenu">
+                        <li>
+                            <ul class="xtraMenu">
+                                <li style="position: static;">
+                                    <h4 class="head"><a href="javascript:;">Harvard University</a></h4>
+                                    <ul style="display: none;">
+                                        <li><a href="#">Business School</a></li>
+                                        <li><a href="#">Faculty of Arts and Sciences</a></li>
+                                        <li><a href="#">Kennedy School of Government</a></li>
+                                        <li><a href="#">Law School</a></li>
+                                        <li><a href="#">Medical School</a></li>
+                                        <li><a href="#">School of Public Health</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <h3 class="head"><a href="javascript:;" class="nochild">Association, Society</a></h3>
+                        </li>
+                        <li>
+                            <h3 class="head"><a href="javascript:;" class="nochild">Business, Industry</a></h3>
+                        </li>
+                        <li>
+                            <h3 class="head"><a href="javascript:;" class="nochild">Government</a></h3>
+                        </li>
+                        <li>
+                            <h3 class="head"><a href="javascript:;" class="nochild">School, University (NonHarvard)</a></h3>
+                        </li>
+                    </ul> -->
+
                   </div>
             </div>
           </div>

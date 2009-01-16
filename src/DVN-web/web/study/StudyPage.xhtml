@@ -109,9 +109,9 @@
 
           //DETECT GECKO/W3 STYLE EVENT SUPPORT
           if (window.addEventListener || document.addEventListener) {
-                window.addEventListener('load', function (e) { 
-                            changeElementsVisibility("UL");
-                    },false);
+                //window.addEventListener('load', function (e) {
+                          //  changeElementsVisibility("UL");
+                    //},false);
                  var element = document.getElementById("dvn_wrapper");
                  element.addEventListener('mouseover', function(e) {
                             var obj = (e.target) ? e.target : window.event.srcElement;
@@ -149,9 +149,9 @@
                         }, true);
           // DETECT INTERNET EXPLORER SUPPORT
           } else if (window.attachEvent)  {
-              window.attachEvent('onload', function () {
-                            changeElementsVisibility("UL");
-                    });
+              //window.attachEvent('onload', function () {
+                         //   changeElementsVisibility("UL");
+                   // });
               var element = document.getElementById("dvn_wrapper");
               element.attachEvent("onmouseover", function () {
                     var obj = window.event.srcElement;
@@ -795,7 +795,7 @@
                                           <li>
                                             <ice:graphicImage styleClass="vdcNoBorders" value="/resources/icon_download.gif" alt="View or download this File."/>
                                             <a class="downloadasLink">Download as...</a>
-                                            <ul class="fileList">
+                                            <ul class="fileList" style="display:none;">
                                               <gui:repeat value="#{studyFileUI.dataFileFormatTypes}" var="studyDataFileType">
                                                 <li>
                                                   <ice:outputLink value="#{studyFileUI.fileDownloadURL}&amp;downloadOriginalFormat=true" rendered="#{!empty studyDataFileType.value and studyDataFileType.originalFileDataFileFormat}">

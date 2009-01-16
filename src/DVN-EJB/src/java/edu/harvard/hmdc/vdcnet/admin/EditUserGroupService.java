@@ -72,5 +72,9 @@ public interface EditUserGroupService extends java.io.Serializable  {
     public List<UserDetailBean> getUserDetailBeans();
   
     public void setUserDetailBeans(List<UserDetailBean> userDetailBeans);
+
+    public void removeLoginDomains();
+
+    public UserGroup findById(Long id);
     
 }

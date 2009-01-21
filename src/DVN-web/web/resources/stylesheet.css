@@ -615,6 +615,7 @@ ul.successMessage li, .successMessage ul li {
   margin-left: -12px;
   z-index: 1;
 }
+* html .iceOutConStat {position: absolute;} /* IE HACK */
 .iceOutConStatActv, .iceOutConStatCaution, .iceOutConStatDisconnect {
   width: 25px;
   height: 25px;

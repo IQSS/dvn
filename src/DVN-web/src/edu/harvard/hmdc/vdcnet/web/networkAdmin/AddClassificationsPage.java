@@ -85,7 +85,9 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
          while(iterator.hasNext()) {
              VDC vdc = (VDC)iterator.next();
              DataverseGrouping dataverse = new DataverseGrouping(vdc.getId(), vdc.getName(), vdc.getAffiliation());
+             //add something here to see if its released or not
              dataverse.setSelected(true);
+             dataverse.setRestricted(vdc.isRestricted());
              selectedDataverses.add(dataverse);
              //initialize the members
              Iterator innerIterator = dataverses.iterator();
@@ -105,6 +107,7 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
          while(iterator.hasNext()) {
              VDC vdc = (VDC)iterator.next();
              DataverseGrouping dataversegrouping = new DataverseGrouping(vdc.getId(), vdc.getName(), vdc.getAffiliation());
+             dataversegrouping.setRestricted(vdc.isRestricted());
              dataverses.add(dataversegrouping);
          }
     }

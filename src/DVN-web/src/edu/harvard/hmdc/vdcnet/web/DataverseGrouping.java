@@ -782,6 +782,7 @@ public class DataverseGrouping extends SortableList {
     private boolean classificationSelect = false;
     private Integer numberOwnedStudies;
     private String type;
+    private boolean restricted;
 
 
 
@@ -998,6 +999,16 @@ public class DataverseGrouping extends SortableList {
     public void setIsPopulated(boolean isPopulated) {
         this.isPopulated = isPopulated;
     }
+
+    public boolean isRestricted() {
+        return restricted;
+    }
+
+    public void setRestricted(boolean restricted) {
+        this.restricted = restricted;
+    }
+
+
 
     
 

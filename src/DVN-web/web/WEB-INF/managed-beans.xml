@@ -618,7 +618,7 @@
         <managed-property>
             <property-name>userGroupType</property-name>
             <property-class>java.lang.String</property-class>
-            <value>none</value>
+            <value>#{param.userGroupType}</value>
         </managed-property>
     </managed-bean>
     <managed-bean>

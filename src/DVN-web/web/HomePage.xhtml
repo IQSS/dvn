@@ -349,7 +349,12 @@
           </ice:outputLink>
       
         </div>
-
+ <!-- Start debug -->
+  <ice:inputHidden rendered="#{applicationScope.googleAnalyticsKey != null}"  value="The app scope knows the key:  #{applicationScope.googleAnalyticsKey}"/>
+  <ice:inputHidden rendered="#{MainLayoutBean.googleAnalyticsKey != null}"    value="The Main layout bean knows the key:  #{MainLayoutBean.googleAnalyticsKey}"/>
+  <ice:inputHidden rendered="#{applicationScope.googleAnalyticsCode != null}" value="The app scope knows the code:  #{applicationScope.googleAnalyticsCode}"/>
+  <ice:inputHidden rendered="#{MainLayoutBean.googleAnalyticsCode} != null}"  value="The main layoutbean knows the code: #{MainLayoutBean.googleAnalyticsCode}"/>
+  <!-- end debug -->
       </ice:form>
 
     </gui:define>

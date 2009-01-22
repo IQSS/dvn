@@ -137,8 +137,6 @@ public class MainLayoutBean implements java.io.Serializable  {
     
     public String getJvmOption(String key) {
         String jvmoption = "dvn." + key + ".key";
-        System.out.println("Info: google analytics key is " + jvmoption);
-        System.out.println("Info: the system property, google analytics is " + System.getProperty(jvmoption));
         return System.getProperty(jvmoption);
     }
 }

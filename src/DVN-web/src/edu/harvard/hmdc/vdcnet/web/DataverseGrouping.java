@@ -169,23 +169,7 @@ public class DataverseGrouping extends SortableList {
         this.classificationSelect = false;
     }
 
-    // dataverses
-    public DataverseGrouping(String name, String alias, String affiliation, Timestamp releaseDate, Timestamp lastUpdateTime, String shortDescription, String recordType, String activity) {
-        super(nameColumnName);
-        this.name           = name;
-        this.alias          = alias;
-        this.affiliation    = affiliation;
-        this.releaseDate    = releaseDate;
-        this.lastUpdateTime = lastUpdateTime;
-        this.shortDescription = shortDescription;
-        this.recordType     = recordType;
-        this.activity       = activity;
-        this.indentStyleClass = "childRowIndentStyle";
-        this.classificationSelect = false;
-    }
-
-
-
+   
     public void addChildItem(DataverseGrouping dvGroupRecord) {
         if (this.childItems != null && dvGroupRecord != null) {
             this.childItems.add(dvGroupRecord);

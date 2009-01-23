@@ -19,6 +19,12 @@
     <gui:define name="body">
       <script type="text/javascript">
           // <![CDATA[
+          jQuery(document).ready(function(){
+          jQuery(".vdcStudyDesc").truncate({max_length: 198});
+          jQuery(".vdcStudyDataCitation").truncate({max_length: 25, more: "View Data Citation [+]", less: "Collapse [-]"});
+          jQuery(".TogglePaneFancy").initTogglePane({headerClassClosed:"TogglePaneFancyHeaderClosed"});
+        });
+
           function getElementsByClassName( strClassName, obj ) {
               var ar = arguments[2] || new Array();
               var re = new RegExp("\\b" + strClassName + "\\b", "g");

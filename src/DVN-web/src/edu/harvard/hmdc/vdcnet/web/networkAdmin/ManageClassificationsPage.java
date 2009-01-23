@@ -20,11 +20,7 @@
 
 /** Source File Name:   ManageClassifications.java
  *
- * DvRecordsManager is the backing bean that supports
- * the network home page. It is through this class that the
- * DataverseGrouping parents and children are created and
- * passed onto the view.
- *
+ * 
  *
  */
 

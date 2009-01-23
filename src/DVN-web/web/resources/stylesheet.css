@@ -663,6 +663,7 @@ a.dvn_more:link, a.dvn_more:visited, a.dvn_more:hover, a.dvn_more:active{
 }
 .vdcHelpText img {
     vertical-align: bottom;
+    border: 0;
 }
 .vdcHelpText span {
     padding-left: .5em;

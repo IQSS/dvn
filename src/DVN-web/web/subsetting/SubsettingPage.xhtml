@@ -6,163 +6,155 @@
       xmlns:f="http://java.sun.com/jsf/core" 
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:t="/WEB-INF/tlds/scroller"
-      xmlns:ice="http://www.icesoft.com/icefaces/component"
-      >
+      xmlns:ice="http://www.icesoft.com/icefaces/component">
 <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-
 </head>
-
 <body>
 <gui:composition template="/template.xhtml">
-
-<gui:param name="pageTitle" value="DVN - Analysis and Subsetting" />
-
+<gui:param name="pageTitle" value="DVN - Analysis and Subsetting"/>
   <gui:define name="body">
       <f:loadBundle basename="BundleAnalysis" var="bundleAnalysis"/>
+        <script type="text/javascript">
+          //<![CDATA[
+                // share-remoting related code
+                var req=null;
+                var cellId;
+                var QSrootNodeIdPrefix = "quickSummaryStatTableRootDiv_";
+                //var rx =   /\S+:(\d+):showStatistics$/ ;
+                var timeoutId;
+                function isQStableAttached(rowId){
+                 // this function tells whether a QS table is already
+                 // attached to the cell
+                    //var QSrootId = getQSrootId(imageBttnId);
+                    var QSrootNode = document.getElementById(QSrootNodeIdPrefix+rowId);
 
-    
-    <script type="text/javascript">
-      //<![CDATA[
-            // share-remoting related code
-            var req=null;
-            var cellId;
-            var QSrootNodeIdPrefix = "quickSummaryStatTableRootDiv_";
-            //var rx =   /\S+:(\d+):showStatistics$/ ;
-            var timeoutId;
-            function isQStableAttached(rowId){
-             // this function tells whether a QS table is already
-             // attached to the cell
-                //var QSrootId = getQSrootId(imageBttnId);
-                var QSrootNode = document.getElementById(QSrootNodeIdPrefix+rowId);
-                
-                var attached=false;
-                if (QSrootNode){
-                    attached = true;
-                    //alert("QS table is attached");
-                }
-                return attached;
-            }
-            
-            function getQSrootId(imageBttnId){
-                var tokens = imageBttnId.split(/:/); 
-                var vId = tokens[tokens.length - 2];
-                var QSrootId = imageBttnId.replace(/showStatistics$/, "varSummaryTable");
-                return QSrootId;
-            }
-            
-            function QSrequested(bttnId, rowId){
-                /*
-                var tokens = bttnId.split(/:/); 
-                var vId = tokens[tokens.length - 2];
-                cellId = bttnId.replace(/showStatistics$/, "varSummaryTable");
-                */
-                cellId = getQSrootId(bttnId);
-                var displayRootNode = document.getElementById(cellId);
-                //alert("display attr="+displayRootNode.style.display);
-                if (displayRootNode.style.display == "") {
-                    //alert("display attr is ''");
-                }
-                if (displayRootNode.style.display == undefined) {
-                    //alert("display attr is undefined");
-                }                
-                if ((displayRootNode.style.display == "none") || 
-                    (displayRootNode.style.display == "")){
-                    // show the cell
-                    displayRootNode.style.display = "inline";
-                    // attache the table if not attached
-                    //alert("show case");
-                    if (!isQStableAttached(rowId)){
-                        //alert("make an ajax call");
-                        var cntxpth = "${request.contextPath}";
-                        var afterCntxpth = "/sumStat" + "\x3F" + "dtId=#{AnalysisPage.dtId}";
-                        var qsString = cntxpth + afterCntxpth;
-                        var ampVId = "\x26" + "varId=";
-                        qsString = qsString + ampVId + rowId;
-                        sendRequest(qsString, processQSrequest);
-                    }                    
-                } else if (displayRootNode.style.display == "inline"){
-                    // hide the cell
-                    //alert("hide case");
-                    displayRootNode.style.display = "none";
-                }
-            }
-            
-            function sendRequest(url, handler) {
-                initXHR();
-                if (req) {
-                    try {
-                        req.onreadystatechange = handler;
-                        req.open("GET", url, true);
-                        timeoutId = setTimeout(timesUp, 10000);
-                        req.send(null);
-                    } catch (errv){
-                        alert(
-                            "The browser failed to contact the server.\n"+
-                            "Please try again later.\n"+
-                            "Error message:"+errv.message);
+                    var attached=false;
+                    if (QSrootNode){
+                        attached = true;
+                        //alert("QS table is attached");
                     }
-                } else {
-                    alert("Summary statistics cannot be displayed:\n"+
-                            "Your browser is incapable of remote-scripting.");
+                    return attached;
                 }
-            }
-            
-            function initXHR() {
-                if(window.XMLHttpRequest) {
-                    req = new XMLHttpRequest();
-                }
-                else if(window.ActiveXObject) {
-                    req = new ActiveXObject("Microsoft.XMLHTTP");
-                }
-            }
-            
-            function processQSrequest() {
-                if (req.readyState != 4) {
-                    return;
-                }
-                clearTimeout(timeoutId);
-                if (req.status == 200){
-                    var QStable = req.responseText;
-                    if (QStable){
-                        //alert("returned contents = "+QStable);
-                        document.getElementById(cellId).innerHTML = QStable;
-                    } else {
-                        alert("Summary statistics cannot be displayed.\n"+
-                        "The browser got an empty string from the server");                        
-                    }
-                } else if (req.status == 304){
-                    alert("Summary statistics cannot be displayed: 304 error");
-                } else {
-                    alert("Summary statistics cannot be displayed: status code="+req.status);
-                }
-            }
-            
-            function timesUp (){
-                req.abort();
-                alert("The browser failed to get summary statistics from the server.\n"+
-                      "Please make sure of your internet connection and try again later");
-            }
 
-            function editVariables() {
-                var varList = document.getElementById("form1:tabSet1:0:mListboxDwnld");
-                var dvFilter = "";
-                
-                for (var i=0; i < varList.options.length; i++) {
-                    if (dvFilter == "") {
-                        dvFilter = "&dvFilter=" + varList.options[i].value;
-                    } else {
-                        dvFilter += "," + varList.options[i].value;
+                function getQSrootId(imageBttnId){
+                    var tokens = imageBttnId.split(/:/);
+                    var vId = tokens[tokens.length - 2];
+                    var QSrootId = imageBttnId.replace(/showStatistics$/, "varSummaryTable");
+                    return QSrootId;
+                }
+
+                function QSrequested(bttnId, rowId){
+                    /*
+                    var tokens = bttnId.split(/:/);
+                    var vId = tokens[tokens.length - 2];
+                    cellId = bttnId.replace(/showStatistics$/, "varSummaryTable");
+                    */
+                    cellId = getQSrootId(bttnId);
+                    var displayRootNode = document.getElementById(cellId);
+                    //alert("display attr="+displayRootNode.style.display);
+                    if (displayRootNode.style.display == "") {
+                        //alert("display attr is ''");
+                    }
+                    if (displayRootNode.style.display == undefined) {
+                        //alert("display attr is undefined");
+                    }
+                    if ((displayRootNode.style.display == "none") ||
+                        (displayRootNode.style.display == "")){
+                        // show the cell
+                        displayRootNode.style.display = "inline";
+                        // attache the table if not attached
+                        //alert("show case");
+                        if (!isQStableAttached(rowId)){
+                            //alert("make an ajax call");
+                            var cntxpth = "${request.contextPath}";
+                            var afterCntxpth = "/sumStat" + "\x3F" + "dtId=#{AnalysisPage.dtId}";
+                            var qsString = cntxpth + afterCntxpth;
+                            var ampVId = "\x26" + "varId=";
+                            qsString = qsString + ampVId + rowId;
+                            sendRequest(qsString, processQSrequest);
+                        }
+                    } else if (displayRootNode.style.display == "inline"){
+                        // hide the cell
+                        //alert("hide case");
+                        displayRootNode.style.display = "none";
                     }
                 }
-                
-                window.location.href="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditVariablePage.xhtml?dtId=#{AnalysisPage.dtId}" + dvFilter;
-            }
-       // ]]>      
-        </script>
+
+                function sendRequest(url, handler) {
+                    initXHR();
+                    if (req) {
+                        try {
+                            req.onreadystatechange = handler;
+                            req.open("GET", url, true);
+                            timeoutId = setTimeout(timesUp, 10000);
+                            req.send(null);
+                        } catch (errv){
+                            alert(
+                                "The browser failed to contact the server.\n"+
+                                "Please try again later.\n"+
+                                "Error message:"+errv.message);
+                        }
+                    } else {
+                        alert("Summary statistics cannot be displayed:\n"+
+                                "Your browser is incapable of remote-scripting.");
+                    }
+                }
+
+                function initXHR() {
+                    if(window.XMLHttpRequest) {
+                        req = new XMLHttpRequest();
+                    }
+                    else if(window.ActiveXObject) {
+                        req = new ActiveXObject("Microsoft.XMLHTTP");
+                    }
+                }
+
+                function processQSrequest() {
+                    if (req.readyState != 4) {
+                        return;
+                    }
+                    clearTimeout(timeoutId);
+                    if (req.status == 200){
+                        var QStable = req.responseText;
+                        if (QStable){
+                            //alert("returned contents = "+QStable);
+                            document.getElementById(cellId).innerHTML = QStable;
+                        } else {
+                            alert("Summary statistics cannot be displayed.\n"+
+                            "The browser got an empty string from the server");
+                        }
+                    } else if (req.status == 304){
+                        alert("Summary statistics cannot be displayed: 304 error");
+                    } else {
+                        alert("Summary statistics cannot be displayed: status code="+req.status);
+                    }
+                }
+
+                function timesUp (){
+                    req.abort();
+                    alert("The browser failed to get summary statistics from the server.\n"+
+                          "Please make sure of your internet connection and try again later");
+                }
+
+                function editVariables() {
+                    var varList = document.getElementById("form1:tabSet1:0:mListboxDwnld");
+                    var dvFilter = "";
+
+                    for (var i=0; i < varList.options.length; i++) {
+                        if (dvFilter == "") {
+                            dvFilter = "&dvFilter=" + varList.options[i].value;
+                        } else {
+                            dvFilter += "," + varList.options[i].value;
+                        }
+                    }
+
+                    window.location.href="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditVariablePage.xhtml?dtId=#{AnalysisPage.dtId}" + dvFilter;
+                }
+           // ]]>
+            </script>
      
 <!-- to be renamed to subview -->
-
 
 <!-- f:loadBundle basename="vdcnetwar.analysis.AnalysisResources" var="i18nres"/ -->
 
@@ -228,15 +220,15 @@
 
             <ice:panelGrid id="groupPanel5"
                 columns="1">
-                <ice:graphicImage 
-                    alt="Information" 
-                    title="Information" 
-                    styleClass="vdcNoBorders" 
-                    style="vertical-align: bottom" 
-                    value="/resources/icon_info.gif" />
-
-                <ice:outputText id="outputText13" style="display: inline;"
-                    value="#{bundleAnalysis['dwnld.instruction']}"/>
+                    <ice:column>
+                <ice:panelGroup styleClass="vdcHelpText">
+                    <ice:graphicImage
+                        alt="Information"
+                        title="Information"
+                        value="/resources/icon_info.gif" />
+                    <ice:outputText id="outputText13"
+                        value="#{bundleAnalysis['dwnld.instruction']}"/>
+                </ice:panelGroup>
 
                 <ice:selectOneRadio id="dtdwnld"  
                    binding="#{AnalysisPage.dwnldFileTypeSet}" 
@@ -297,6 +289,8 @@
                     
                     shared="false"/>
                 </ice:panelGrid>
+                    </ice:column>
+
             </ice:panelGrid>
 
         </ice:panelGrid>
@@ -356,54 +350,52 @@
                         style="vertical-align:top"
                         partialSubmit="true"
                         alt="#{bundleAnalysis['recode.button.moveVar.alt']}"  
-                        value="start" />
+                        value="Start" />
+                </ice:panelGroup>
                 <ice:panelGroup>
-                 <ice:outputText id="msgMoveRecodeVarBttn"
-                  binding="#{AnalysisPage.msgMoveRecodeVarBttn}" 
-                  rendered="false"
-                  escape="false"
-                styleClass="errorMessage"/>
+                    <ice:outputText id="msgMoveRecodeVarBttn"
+                        binding="#{AnalysisPage.msgMoveRecodeVarBttn}"
+                        rendered="false"
+                        escape="false"
+                        styleClass="errorMessage"/>
                 </ice:panelGroup>
-                </ice:panelGroup>
-
             </ice:panelGrid>
             <!-- end: 1st column -->
 
             <!-- 2nd column -->
-
             <ice:panelGrid id="groupPanel11" 
                 columns="1">
                 <!-- instruction lines-->
-                <ice:panelGrid id="groupPanelRecodeInstruction1" 
-                    binding="#{AnalysisPage.groupPanelRecodeInstruction1}"
-                    rendered="true" 
-                    layout="block">
-                    <ice:graphicImage 
-                        alt="Information" 
-                        title="Information" 
-                        styleClass="vdcNoBorders" 
-                        style="vertical-align: bottom" 
-                        value="/resources/icon_info.gif" />
-
-                    <ice:outputText id="outputText491" style="display: inline;"
-                        value="#{bundleAnalysis['recode.instruction.line1']}"/>
-                    <br />
-                </ice:panelGrid>
+                <ice:column>
+                    <ice:panelGroup id="groupPanelRecodeInstruction1"
+                        binding="#{AnalysisPage.groupPanelRecodeInstruction1}"
+                        rendered="true"
+                        layout="block">
+                        <ice:panelGroup styleClass="vdcHelpText">
+                            <ice:graphicImage
+                                alt="Information"
+                                title="Information"
+                                value="/resources/icon_info.gif"/>
+                            <ice:outputText id="outputText491"
+                                value="#{bundleAnalysis['recode.instruction.line1']}"/>
+                        </ice:panelGroup>
+                    </ice:panelGroup>
 
                 <ice:panelGrid id="groupPanelRecodeInstruction2" 
                     binding="#{AnalysisPage.groupPanelRecodeInstruction2}"
                     rendered="false"
                     columns="1">
-                    <ice:graphicImage 
-                        alt="Information" 
-                        title="Information" 
-                        styleClass="vdcNoBorders" 
-                        style="vertical-align: bottom" 
-                        value="/resources/icon_info.gif" />
-                    <ice:outputText id="outputText492" style="display: inline;"
-                        value="#{bundleAnalysis['recode.instruction.line2']}"/>
-                    <ice:outputText id="outputText493" style="display: inline;"
-                        value="#{bundleAnalysis['recode.instruction.line3']}"/>
+                    <ice:panelGroup styleClass="vdcHelpText">
+                        <ice:graphicImage 
+                            alt="Information" 
+                            title="Information" 
+                            value="/resources/icon_info.gif"/>
+                        <ice:outputText id="outputText492"
+                                        value="#{bundleAnalysis['recode.instruction.line2']}"/>
+                        <ice:outputText id="outputText493"
+                                        value="#{bundleAnalysis['recode.instruction.line3']}"/>
+                    </ice:panelGroup>
+
                     <ice:panelGrid id="requiredfield" 
                         columns="1">
                         <ice:panelLayout layout="flow">
@@ -425,7 +417,7 @@
                     <ice:panelGrid id="groupPanel15" 
                         cellpadding="0" 
                         cellspacing="10px" 
-                        columns="2" >
+                        columns="2">
 
                         <ice:panelGrid id="groupPanelRecodeNewVarInfo" 
                             binding="#{AnalysisPage.groupPanelRecodeNewVarInfo}" 
@@ -471,23 +463,19 @@
                         binding="#{AnalysisPage.groupPanelRecodeTableHelp}"
                         columns="1">
                         <ice:panelLayout layout="flow">
-                        <ice:graphicImage 
-                            alt="Information" 
-                            title="Information" 
-                            styleClass="vdcNoBorders" 
-                            style="vertical-align: bottom" 
-                            value="/resources/icon_info.gif" />
-
-                        <ice:outputText id="recodeHowToRecodeInstruction" style="display: inline;"
-                            value="#{bundleAnalysis['recode.howToRecode.instruction']}"/>
-
-                        <ice:graphicImage 
-                            alt="Click to show the how-to information" 
-                            title="Click to show/hide how-to information" 
-                            styleClass="vdcNoBorders" 
-                            style="vertical-align: bottom" 
-                            value="/resources/icon_help.gif" 
-                            onclick="return shwNshwTxt('recodeDetail');"/>
+                            <ice:panelGroup styleClass="vdcHelpText">
+                                <ice:graphicImage
+                                    alt="Information"
+                                    title="Information"
+                                    value="/resources/icon_info.gif"/>
+                                <ice:outputText id="recodeHowToRecodeInstruction"
+                                                value="#{bundleAnalysis['recode.howToRecode.instruction']} "/>
+                                <ice:graphicImage
+                                    alt="Click to show the how-to information"
+                                    title="Click to show/hide how-to information"
+                                    value="/resources/icon_help.gif"
+                                    onclick="return shwNshwTxt('recodeDetail');"/>
+                            </ice:panelGroup>
                         </ice:panelLayout>
                         <div id="recodeDetail" 
                             style="display:none">
@@ -497,24 +485,19 @@
                         </div>
                         <br/>
                         <ice:panelLayout layout="flow">
-                        <ice:graphicImage 
-                            alt="Information" 
-                            title="Information" 
-                            styleClass="vdcNoBorders" 
-                            style="vertical-align: bottom" 
-                            value="/resources/icon_info.gif" />
-
-
-                        <ice:outputText id="recodeHowToSubsetInstruction" style="display: inline;"
-                            value="#{bundleAnalysis['recode.howToSubset.instruction']}"/>
-
-                        <ice:graphicImage 
-                            alt="Click to show the how-to information" 
-                            title="Click to show/hide how-to information" 
-                            styleClass="vdcNoBorders" 
-                            style="vertical-align: bottom" 
-                            value="/resources/icon_help.gif" 
-                            onclick="return shwNshwTxt('subsetDetail');"/>
+                            <ice:panelGroup styleClass="vdcHelpText">
+                                <ice:graphicImage
+                                    alt="Information"
+                                    title="Information"
+                                    value="/resources/icon_info.gif"/>
+                                <ice:outputText id="recodeHowToSubsetInstruction"
+                                    value="#{bundleAnalysis['recode.howToSubset.instruction']} "/>
+                                <ice:graphicImage
+                                    alt="Click to show the how-to information"
+                                    title="Click to show/hide how-to information"
+                                    value="/resources/icon_help.gif"
+                                    onclick="return shwNshwTxt('subsetDetail');"/>
+                            </ice:panelGroup>
                         </ice:panelLayout>
                         <div id="subsetDetail" 
                             style="display:none">
@@ -524,24 +507,19 @@
                         </div>
                         <br/>
                         <ice:panelLayout layout="flow">
-                        <ice:graphicImage 
-                            alt="Information" 
-                            title="Information" 
-                            styleClass="vdcNoBorders" 
-                            style="vertical-align: bottom" 
-                            value="/resources/icon_info.gif" />
-
-                        <ice:outputText id="recodeHowToEnterConditionInstruction" style="display: inline;"
-                            value="#{bundleAnalysis['recode.howToEnterCondition.instruction']}"/>
-
-
-                        <ice:graphicImage 
-                            alt="Click to show the how-to information" 
-                            title="Click to show/hide how-to information" 
-                            styleClass="vdcNoBorders" 
-                            style="vertical-align: bottom" 
-                            value="/resources/icon_help.gif" 
-                            onclick="return shwNshwTxt('conditionDetail');"/>
+                            <ice:panelGroup styleClass="vdcHelpText">
+                                <ice:graphicImage
+                                    alt="Information"
+                                    title="Information"
+                                    value="/resources/icon_info.gif"/>
+                                <ice:outputText id="recodeHowToEnterConditionInstruction"
+                                    value="#{bundleAnalysis['recode.howToEnterCondition.instruction']} "/>
+                                <ice:graphicImage
+                                    alt="Click to show the how-to information"
+                                    title="Click to show/hide how-to information"
+                                    value="/resources/icon_help.gif"
+                                    onclick="return shwNshwTxt('conditionDetail');"/>
+                            </ice:panelGroup>
                         </ice:panelLayout>
                         <div id="conditionDetail" 
                             style="display:none">
@@ -549,9 +527,6 @@
                             <ice:outputText id="recodeHowToEnterConditionDetails"
                                 value="#{bundleAnalysis['recode.howToEnterCondition.details']}"/>
                         </div>
-                        <br/>
-
-
                     </ice:panelGrid>
                     <!-- end of help panel -->
                     <!-- recoding table panel -->
@@ -563,7 +538,7 @@
                         cellpadding="0" cellspacing="0" 
                         columnClasses="vdcRecodesColA, vdcRecodesColB, vdcRecodesColB, vdcRecodesColB, vdcRecodesColB, vdcRecodesColB, vdcRecodesColB, vdcRecodesColB" 
                         headerClass="vdcRecodesHeader" 
-                        style="margin-top: 20px" >
+                        style="margin-top: 20px">
 
                         <ice:column id="recodeClDropx">
                             <f:facet name="header">
@@ -576,61 +551,47 @@
                                 value="#{rd[0]}" 
                                 title="#{bundleAnalysis['recode.valueTable.drop.checkbox']}"
                                 immediate="true"/>   
-
                         </ice:column>
                         <ice:column id="recodeClVariable">
                             <f:facet name="header">
                                 <ice:outputText id="recodeHdrVariable" 
                                     value="#{AnalysisPage.currentRecodeVariableName}"/>
                             </f:facet>
-
                             <ice:inputText  id="recodeVariableNameBox"
                                 value="#{rd[3]}" 
                                 size="10"/>
                         </ice:column>
-
-
                         <ice:column id="recodeClArrow">
                             <f:facet name="header">
                             </f:facet>
-
-                        <ice:graphicImage 
-                            alt="Information" 
-                            title="Information" 
-                            styleClass="vdcNoBorders" 
-                            style="vertical-align: middle" 
-                            value="/resources/arrow_right.gif" />
-
-
+                            <ice:graphicImage
+                                alt="Information"
+                                title="Information"
+                                styleClass="vdcNoBorders"
+                                style="vertical-align: middle"
+                                value="/resources/arrow_right.gif"/>
                         </ice:column>
-
-
                         <ice:column id="recodeClValue">
                             <f:facet name="header">
                                 <ice:outputText id="recodeHdrValue" 
                                     value="#{bundleAnalysis['recode.valueTable.value.header']}"/>
                             </f:facet>
-
-                            <ice:inputText  id="recodeValueBox" 
+                            <ice:inputText id="recodeValueBox" 
                                 binding="#{AnalysisPage.recodeValueBox}"
                                 immediate="true"
                                 value="#{rd[1]}"
                                 size="10"/>
-
                         </ice:column>
                         <ice:column id="recodeClValueLabel">
                             <f:facet name="header">
                                 <ice:outputText id="recodeHdrValueLabel" 
                                     value="#{bundleAnalysis['recode.valueTable.valuelabel.header']}"/>
                             </f:facet>
-
-                            <ice:inputText  id="recodeValueLabelBox"
+                            <ice:inputText id="recodeValueLabelBox"
                                 immediate="false"
                                 value="#{rd[2]}" 
                                 size="25"/>
-
                         </ice:column>
-
                     </ice:dataTable>
                     <!-- end of recoding table -->
                     <br />
@@ -639,32 +600,25 @@
                         value="#{bundleAnalysis['recode.button.addValue']}"
                         actionListener="#{AnalysisPage.addValueRange}"
                         rendered ="false"/>
-
                     <ice:panelGrid id="groupPanel18" 
                         columns="1" styleClass="dvnFormPaddingTop">
-
                         <ice:commandButton id="recodeBttn"
                             binding="#{AnalysisPage.recodeButton}" 
                             value="#{bundleAnalysis['recode.button.save']}"
                             actionListener="#{AnalysisPage.saveRecodedVariable}"
                             disabled="true" />
-
                         <ice:outputText id="msgSaveRecodeBttn"
                             binding="#{AnalysisPage.msgSaveRecodeBttn}" 
                             rendered="false"
                             escape="false"
                             styleClass="errorMessage"/>
-
                     </ice:panelGrid>
-
                 </ice:panelGrid><!-- recodeTableArea -->
-
+                </ice:column>
             </ice:panelGrid><!--end 2nd column  -->
         </ice:panelGrid>
     </ice:panelGrid>
     </ice:panelTab>
-                
-                
 <!-- 3. EDA -->
 <ice:panelTab
     id="tabEda"
@@ -693,18 +647,16 @@
                 </ice:selectManyListbox>
             </ice:panelGrid>
 
-
             <ice:panelGrid id="groupPanel4"
                 columns="1">
-                <ice:graphicImage 
-                    alt="Information" 
-                    title="Information" 
-                    styleClass="vdcNoBorders" 
-                    style="vertical-align: bottom" 
-                    value="/resources/icon_info.gif" />
-
-                <ice:outputText id="outputText21" style="display: inline;"
-                    value="#{bundleAnalysis['eda.instruction']}"/>
+                <ice:panelGroup styleClass="vdcHelpText">
+                    <ice:graphicImage
+                        alt="Information"
+                        title="Information"
+                        value="/resources/icon_info.gif"/>
+                    <ice:outputText id="outputText21" 
+                        value="#{bundleAnalysis['eda.instruction']}"/>
+                </ice:panelGroup>
                 <ice:selectManyCheckbox id="edaOptionSet"
                     binding="#{AnalysisPage.edaOptionSet}"
                     value="#{AnalysisPage.edaOptionSelected}"
@@ -731,15 +683,10 @@
                     disabled="true" 
                     value="#{bundleAnalysis['eda.button.submit']}" 
                     action="#{AnalysisPage.edaAction}"/>
-
             </ice:panelGrid>
-
         </ice:panelGrid>
-
     </ice:panelGrid>
 </ice:panelTab>
-                
-                
 <!-- 5. advStat -->
 <ice:panelTab
     id="tabAdvStat"
@@ -799,28 +746,21 @@
                                 value="#{AnalysisApplicationBean.modelMenuOptions}"/>
                         </ice:selectOneMenu>
 
-                        <ice:panelGrid id="modelInfoBox"
+                        <ice:panelGroup id="modelInfoBox" styleClass="vdcHelpText"
                              binding="#{AnalysisPage.gridPanelModelInfoBox}"
-                             cellpadding="0" 
-                             cellspacing="0" 
-                             columns="2" 
-                             rendered="#{AnalysisPage.gridPanelModelInfoBoxRendered}" >
-
+                             rendered="#{AnalysisPage.gridPanelModelInfoBoxRendered}">
                             <ice:graphicImage 
                                 alt="Information" 
                                 title="Information" 
-                                styleClass="vdcNoBorders" 
-                                style="vertical-align: bottom" 
-                                value="/resources/icon_info.gif" />
-
+                                value="/resources/icon_info.gif"/>
                             <ice:outputLink 
                                 value="#{AnalysisPage.modelHelpLinkURL}"
                                 target="_blank"
-                                style="display: inline;">
+                                style="padding-left: .5em;">
                                 <ice:outputText 
                                     value="#{bundleAnalysis['advStat.model.helpInfo.header']}"/>                       
                             </ice:outputLink>
-                        </ice:panelGrid>
+                        </ice:panelGroup>
                     </ice:panelGrid><!-- end: gridPanel8above -->
 
                     <ice:panelGroup id="groupPanel8below" 
@@ -1163,25 +1103,21 @@
             <!-- end of tab block -->
         
         
-            <ice:panelGrid  id="pgSubsettingInstruction"
+            <ice:panelGrid id="pgSubsettingInstruction"
                 columns="1" 
                 cellpadding="0" cellspacing="0"
                 style="margin-left: 8px; margin-top: 10px" width="98%">
                 
-                <ice:panelGrid id="wrapSubsettingInstruction"
-                    columns="1"
-                    rendered="#{AnalysisPage.wrapSubsettingInstructionRendered}" >
+                <ice:panelGroup id="wrapSubsettingInstruction" styleClass="vdcHelpText"
+                    rendered="#{AnalysisPage.wrapSubsettingInstructionRendered}">
                     <ice:graphicImage 
                         alt="Information" 
-                        title="Information" 
-                        styleClass="vdcNoBorders" 
-                        style="vertical-align: bottom" 
+                        title="Information"
                         value="/resources/icon_info.gif" />
                     <ice:outputText id="txtSubsettingInstruction"
-                        style="display: inline;"
                         binding="#{AnalysisPage.txtSubsettingInstruction}" 
                         value="#{bundleAnalysis['subsettingInstruction']}" />
-                </ice:panelGrid>
+                </ice:panelGroup>
                <ice:panelGroup id="wrapNonSubsettingInstruction" 
                    block="true" 
                    styleClass="successMessage"
@@ -1189,7 +1125,7 @@
                    <ice:outputText id="txtNonSubsettingInstruction"
                        binding="#{AnalysisPage.txtNonSubsettingInstruction}"
                        value="#{bundleAnalysis['nonSubsettingInstruction']}" />
-               </ice:panelGroup>                 
+               </ice:panelGroup>
                 
                 <ice:outputText id="msgVariableSelection"
                     binding="#{AnalysisPage.msgVariableSelection}" 
@@ -1198,14 +1134,13 @@
                     styleClass="errorMessage"/>
             </ice:panelGrid>
             
-            
             <!-- search box -->
         
             <ice:panelGrid id="gridPanel9"
                 columns="3"
                 columnClasses="vdcVarHeaderCol1, vdcVarHeaderCol1, vdcVarHeaderCol2"
                 cellpadding="0" cellspacing="0"
-                style="margin-right: 1px; margin-top: 10px;" width="100%">
+                style="margin-top: 1em; margin-bottom: 0;" width="100%">
                 <!--column 1 -->
                 <ice:panelGrid id="groupPanel16"
                     columns="1">
@@ -1268,8 +1203,13 @@
                 </ice:panelGrid>
             </ice:panelGrid>
             <!-- data table -->
-            <ice:panelGrid id="pgDataTable" style="width:100%">
+            <ice:panelGrid id="pgDataTable" styleClass="pgDataTable" style="width: 100%;">
+              <style type="text/css">
+                  .pgDataTable {border-collapse: collapse;}
+                  .pgDataTable td.pgDataTableCol1 {padding: 0;}
+              </style>
               <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="2" id="gridPanel22"
+                                             style="width: 100%; margin-top: 1em;"
                                              styleClass="dvnManageTableTop" columnClasses="dvnManageTableTotals, dvnPaginatorWrap">
                 <div jsfc="ice:panelGroup" id="groupPanel55">
                   &nbsp;
@@ -1307,13 +1247,10 @@
                    var="currentRow"
                    value="#{AnalysisPage.dt4Display}"
                    rows="10"
-                   cellpadding="0"
-                   cellspacing="0"
                    columnClasses="vdcVariablesCol1, vdcVariablesCol2, vdcVariablesCol3, vdcVariablesCol4, vdcVariablesCol5, vdcVariablesCol6"
-                   style="margin: 10px 4px 10px 8px; "
                    title="Variable Information"
                    rowClasses="list-row-odd, list-row-even"
-                   width="98%">
+                   style="width: 100%; margin: 0;">
                   <ice:column id="column1">
                       <f:facet name="header">
                           <ice:selectBooleanCheckbox id="checkboxSelectUnselectAll"
@@ -1404,10 +1341,7 @@
     value="#{AnalysisPage.recodedVarSet}"
     headerClass="list-header"  
     rowClasses="list-row-odd,list-row-even"
-    cellpadding="2px"
-    cellspacing="0"
-    columnClasses="vdcVariablesCol3, vdcVariablesCol4, vdcVariablesCol5, vdcVariablesCol2"
-    style="margin: 10px 4px 10px 8px;">
+    columnClasses="vdcVariablesCol3, vdcVariablesCol4, vdcVariablesCol5, vdcVariablesCol2">
 
     <!-- chekcbox: remove --><!---->
     <ice:column id="RVTcolumn0">

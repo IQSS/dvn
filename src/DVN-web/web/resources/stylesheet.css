@@ -1114,89 +1114,6 @@ a.vdcStudyFileSubsetAnalysisLink:active, a.vdcStudyFileSubsetAnalysisLink:visite
 }
 .vdcStudyDataCitation a.vdcTruncatorLinkLess {display: block; text-align: right;}
 
-/* studyFileDownloadAs */
-.downloadas, .downloadas ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
-.downloadas li {
-    margin: 0;
-    padding: 0;
-    display: block;
-    position: relative;
-}
-.downloadas li:hover {
-    white-space: normal;
-}
-.downloadas li img {
-    border: 0;
-}
-.downloadas li ul {
-    display: block;
-}
-.downloadas li a, .downloadas li a:link, .downloadas li a:active, .downloadas li a:visited {
-    background: transparent;
-    color: #0c54b3;
-    display: block;
-    padding: 0 3px;
-    text-decoration: none;
-    font-size: 90% !important;
-    vertical-align: top;
-}
-.downloadas li a:hover {
-    color: #0c54b3;
-    text-decoration: none;
-}
-.downloadas li a.downloadasLink {
-    display: inline;
-}
-.downloadas li a:hover.downloadasLink {
-    color: #0c54b3;
-    text-decoration: none !important;
-}
-.studyFileDownloadAs li:hover a,
-.studyFileDownloadAs li.sfHover a {
-    color: #0c54b3;
-    font-size: 90% !important;
-}
-.studyFileDownloadAs li:hover ul a:link,
-.studyFileDownloadAs li.sfHover ul a:link,
-.studyFileDownloadAs li:hover ul a:visited,
-.studyFileDownloadAs li.sfHover ul a:visited,
-.studyFileDownloadAs li:hover ul a:active,
-.studyFileDownloadAs li.sfHover ul a:active {
-    color: #0c54b3;
-    font-size: 90% !important;
-    text-decoration: none !important;
-    outline: none;
-}
-.studyFileDownloadAs li:hover ul a:hover,
-.studyFileDownloadAs li.sfHover ul a:hover {
-    color: #c55b28;
-    font-size: 90% !important;
-    text-decoration: underline !important;
-}
-.downloadas ul {
-    list-style: none;
-    margin: 0;
-    width: 80px;
-    position: static;
-    margin-left: 2em;
-}
-.downloadas ul li {
-    border: 0;
-    float: none;
-}
-.downloadas ul a {
-    width: 80px;
-    white-space: nowrap;
-}
-.downloadas ul a:hover {
-    color: #c55b28;
-}
-
-/* OLD studyFileDownloadAs
 .downloadas, .downloadas ul { 
     list-style: none;
     margin: 0;
@@ -1292,7 +1209,7 @@ a.vdcStudyFileSubsetAnalysisLink:active, a.vdcStudyFileSubsetAnalysisLink:visite
 .downloadas ul a:hover {
     background: khaki;
     color: #c55b28;
-} */
+}
 
 /* Add Files Page */
 .dvnAddFilesInputBlock {}

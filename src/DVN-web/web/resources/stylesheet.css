@@ -1443,8 +1443,18 @@ td.vdcEditFilesColC{
 .dvnMngClssTableCount {width: 10%;}
 .dvnMngClssTableDelete {width: 10%;}
 
+.dvnAddClassificationDataversesLabel label {display: inline;}
+.dvnAddClassificationDataversesLabel div.icePnlGrp {display: inline; margin-left: 6em;}
 .dvnAddClassificationBlock {overflow: hidden;}
-.dvnAddClassificationDataverses {margin-right:25px; float:left;}
+.dvnAddClassificationDataverses {float: left; width: 65%;}
+.dvnAddClassificationSelected {float: right; width: 30%;}
+
+table.dvnAddClassificationTable table {width: 100%; margin: 0;}
+.dvnAddClassificationTableColHeader1 {width: 60%;}
+.dvnAddClassificationTableColHeader2 {width: 40%;}
+
+span.dvnAddClassificationDvNotReleased {background: url(icon_notreleased.gif) center right no-repeat; padding-right: 22px;}
+span.dvnAddClassificationDvReleased {}
 
 .dvnAddClassificationDataverses table.iceDatTbl {border: 1px solid #d9d9d9;}
 .dvnAddClassificationDataverses div.iceDatTblScrlSpr table {border: 1px;}
@@ -1479,11 +1489,17 @@ td.vdcEditFilesColC{
     border-left: 0;
     border-right: 0;
 }
-.dvnAddClassificationSelected th.iceDatTblColHdr2 {border-right: 0;}
+.dvnAddClassificationSelected th.iceDatTblColHdr1 {border-right: 0;}
+.dvnAddClassificationSelected th.iceDatTblColHdr2 {border-left: 1px solid #d9d9d9;}
+.dvnAddClassificationSelected tr.iceDatTblRow1 td.dvnAddClassificationDvID,
+.dvnAddClassificationSelected tr.iceDatTblRow2 td.dvnAddClassificationDvID,
 .dvnAddClassificationSelected tr.iceDatTblRow1 td.dvnAddClassificationDvName,
 .dvnAddClassificationSelected tr.iceDatTblRow2 td.dvnAddClassificationDvName {
     border-right: 1px solid #d9d9d9;
 }
+
+.dvnAddClassificationTableColHeader1, .dvnAddClassificationTableColHeader2 {border-top: 0;}
+.dvnAddClassificationTableColHeader1 {border-left: 0;}
 
 /* Add Site Page Style Rules
 */

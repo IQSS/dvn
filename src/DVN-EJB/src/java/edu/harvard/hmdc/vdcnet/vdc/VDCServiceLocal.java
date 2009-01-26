@@ -114,5 +114,10 @@ public interface VDCServiceLocal extends java.io.Serializable  {
 
     public Long getVdcCount();
 
+   public List getOrderedVDCIds (String orderBy);
+   public List getOrderedVDCIds (String letter, String orderBy);
+   public List getOrderedVDCIds (Long classificationId, String orderBy);
+   public List getOrderedVDCIds (Long classificationId, String letter, String orderBy);
+
 
 }

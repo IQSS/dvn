@@ -736,20 +736,20 @@ public class VDCServiceBean implements VDCServiceLocal {
     }
 
    // metho to get an ordered list of vdcIds
-   public List getOrderedVDCIds (String orderBy) {
+   public List<Long> getOrderedVDCIds (String orderBy) {
           return getOrderedVDCIds (null, null, orderBy);
    }
 
-   public List getOrderedVDCIds (String letter, String orderBy) {
+   public List<Long> getOrderedVDCIds (String letter, String orderBy) {
           return getOrderedVDCIds (null, letter, orderBy);
    }
 
 
-   public List getOrderedVDCIds (Long classificationId, String orderBy) {
+   public List<Long> getOrderedVDCIds (Long classificationId, String orderBy) {
           return getOrderedVDCIds (classificationId, null, orderBy);
    }
 
-    public List getOrderedVDCIds (Long classificationId, String letter, String orderBy) {
+    public List<Long> getOrderedVDCIds (Long classificationId, String letter, String orderBy) {
         List<Long> returnList = new ArrayList();
 
         // this query will get all vdcids for the dvn or for a classification (and one level of children, per design)

@@ -50,6 +50,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -734,8 +735,50 @@ public class VDCServiceBean implements VDCServiceLocal {
         }
     }
 
+   // metho to get an ordered list of vdcIds
+   public List getOrderedVDCIds (String orderBy) {
+          return getOrderedVDCIds (null, null, orderBy);
+   }
+
+   public List getOrderedVDCIds (String letter, String orderBy) {
+          return getOrderedVDCIds (null, letter, orderBy);
+   }
 
 
+   public List getOrderedVDCIds (Long classificationId, String orderBy) {
+          return getOrderedVDCIds (classificationId, null, orderBy);
+   }
+
+    public List getOrderedVDCIds (Long classificationId, String letter, String orderBy) {
+        List<Long> returnList = new ArrayList();
+
+        // this query will get all vdcids for the dvn or for a classification (and one level of children, per design)
+        String queryString = "select distinct v.id " +
+        "from vdc v " +
+        (classificationId != null ? ", vdcgroup_vdcs vv " : "") +
+        "where v.restricted = false " +
+        (classificationId != null ? "and v.id = vv.vdc_id " : "") +
+        (letter != null ? "and upper(v.name) like '"  + letter.toUpperCase() + "%' " : "") +
+        (classificationId != null ? "and vv.vdcgroup_id in ( select id from vdcgroup where id = ? or parent = ?) " : "");
+
+        queryString += "order by " + orderBy + ";";
+
+        // we are now ready to create the query
+        Query query = em.createNativeQuery( queryString.toString() );
+
+        if (classificationId != null) {
+            query.setParameter(1, classificationId);
+            query.setParameter(2, classificationId);
+        }
+
+        // since query is native, must parse through Vector results
+        for (Object currentResult : query.getResultList()) {
+            // convert results into Longs
+            returnList.add(new Long(((Integer) ((Vector) currentResult).get(0))).longValue());
+        }
+
+        return returnList;
+    }
 
 
 }

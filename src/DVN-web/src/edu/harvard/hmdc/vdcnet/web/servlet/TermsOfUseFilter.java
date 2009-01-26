@@ -32,7 +32,6 @@ import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.study.StudyFile;
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.VariableServiceLocal;
-import edu.harvard.hmdc.vdcnet.util.StringUtil;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetwork;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
@@ -46,9 +45,9 @@ import java.net.InetAddress;
 import java.net.URLEncoder;
 import java.net.UnknownHostException;
 
+import java.util.StringTokenizer;
 import javax.ejb.EJB;
 
-import javax.servlet.*;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -285,14 +284,28 @@ public class TermsOfUseFilter implements Filter {
         String catId = req.getParameter("catId");
         String studyId = req.getParameter("studyId");
         String requestPath = req.getPathInfo();
-	String imageThumb = req.getParameter("imageThumb");
+        String imageThumb = req.getParameter("imageThumb");
 
         Study study = null;
         if (req.getServletPath().equals("/FileDownload")) {
             if (fileId != null) {
                 try {
-                    StudyFile file = studyService.getStudyFile(new Long(fileId));
-                    study = file.getFileCategory().getStudy();
+                    // a user can now download a comma delimited list of files; so we have to check the study of each of these
+                    // and if any are from a different study, go to error page
+                    StringTokenizer st = new StringTokenizer(fileId,",");
+
+                    while (st.hasMoreTokens()) {
+                        StudyFile file = studyService.getStudyFile(new Long(st.nextToken()));
+                        if (study == null) {
+                            study = file.getFileCategory().getStudy();
+
+                        } else if ( !study.equals(file.getFileCategory().getStudy()) ) {
+                            res.sendRedirect(req.getContextPath() + "/ExceptionHandler?You may not download multiple files from different studies.");
+                            //res.sendRedirect(req.getContextPath() + "/faces/ErrorPage.xhtml");
+                            return true; // don't continue with chain since we are redirecting'
+                        }
+                    }
+
                 } catch (Exception ex) {
                     if (ex.getCause() instanceof IllegalArgumentException) {
                     // do nothing.

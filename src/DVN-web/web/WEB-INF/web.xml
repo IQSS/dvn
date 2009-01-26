@@ -42,8 +42,20 @@
         <param-name>com.icesoft.faces.connectionTimeout</param-name>
 	<param-value>600000</param-value>
     </context-param>
+    <context-param>
+	<param-name>com.icesoft.faces.blockingConnectionTimeout</param-name>
+	<param-value>900000</param-value>
+    </context-param>
+    <context-param>
+		<param-name>com.icesoft.faces.heartbeatRetries</param-name>
+		<param-value>3</param-value>
+   </context-param>
+   <context-param>
+        <param-name>com.icesoft.faces.heartbeatInterval</param-name>
+	<param-value>500000</param-value>
+    </context-param>
 
-	
+
 <!-- Facelets -->
     <context-param>
       <param-name>facelets.DEVELOPMENT</param-name>

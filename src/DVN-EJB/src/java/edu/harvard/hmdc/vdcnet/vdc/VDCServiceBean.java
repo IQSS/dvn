@@ -753,15 +753,15 @@ public class VDCServiceBean implements VDCServiceLocal {
         List<Long> returnList = new ArrayList();
 
         // this query will get all vdcids for the dvn or for a classification (and one level of children, per design)
-        String queryString = "select distinct v.id " +
-        "from vdc v " +
+        String queryString = "select distinct v.id, v." + orderBy +
+        " from vdc v " +
         (classificationId != null ? ", vdcgroup_vdcs vv " : "") +
-        "where v.restricted = false " +
-        (classificationId != null ? "and v.id = vv.vdc_id " : "") +
-        (letter != null ? "and upper(v.name) like '"  + letter.toUpperCase() + "%' " : "") +
-        (classificationId != null ? "and vv.vdcgroup_id in ( select id from vdcgroup where id = ? or parent = ?) " : "");
+        " where v.restricted = false " +
+        (classificationId != null ? " and v.id = vv.vdc_id " : "") +
+        (letter != null ? " and upper(v.name) like '"  + letter.toUpperCase() + "%' " : "") +
+        (classificationId != null ? " and vv.vdcgroup_id in ( select id from vdcgroup where id = ? or parent = ?) " : "");
 
-        queryString += "order by " + orderBy + ";";
+        queryString += " order by " + orderBy + ";";
 
         // we are now ready to create the query
         Query query = em.createNativeQuery( queryString.toString() );

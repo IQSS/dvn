@@ -681,48 +681,58 @@ public class FileDownloadServlet extends HttpServlet {
 		    return;
 		}
 
-		dbgLog.fine("local: paramListToR="+paramListToR);
-		    
-		sro = new DvnRJobRequest(getDataVariableForRequest(), paramListToR, vls);
-		dbgLog.fine("sro dump:\n"+ToStringBuilder.reflectionToString(sro, ToStringStyle.MULTI_LINE_STYLE));
-		
-		// create the service instance
-		DvnRforeignFileConversionServiceImpl dfcs = new DvnRforeignFileConversionServiceImpl();
-
-		// execute the service
-		Map<String, String> resultInfo = new HashMap<String, String>();
-		resultInfo = dfcs.execute(sro);
-            
-		resultInfo.put("offlineCitation", citation);
-		dbgLog.fine("resultInfo="+resultInfo+"\n");
-		
 		File frmtCnvrtdFile = null;
+		Map<String, String> resultInfo = new HashMap<String, String>();
 
-		// check whether a requested file is actually created
+		if ( formatRequested.equals ("D00") ) {
+		    // Another special check: 
+		    // if the *requested* format is TAB-delimited, we don't
+		    // need to call R to do any conversions, we can just 
+		    // send back the TAB file we have just produced. 
 
-		if (resultInfo.get("RexecError").equals("true")){
-		    dbgLog.fine("exiting dwnldAction() due to an R-runtime error");
-		    // TODO: clean error response needed!
-		    return; 
+		    frmtCnvrtdFile = inFile;
+
 		} else {
-		    // (2)The format-converted subset data file
-		    // get the path-name of the data-file to be delivered 
-		    String wbDataFileName = resultInfo.get("wbDataFileName");
-		    dbgLog.fine("wbDataFileName="+wbDataFileName);
-			
-		    frmtCnvrtdFile = new File(wbDataFileName);
+		    dbgLog.fine("local: paramListToR="+paramListToR);
+		    
+		    sro = new DvnRJobRequest(getDataVariableForRequest(), paramListToR, vls);
+		    dbgLog.fine("sro dump:\n"+ToStringBuilder.reflectionToString(sro, ToStringStyle.MULTI_LINE_STYLE));
+		    
+		    // create the service instance
+		    DvnRforeignFileConversionServiceImpl dfcs = new DvnRforeignFileConversionServiceImpl();
+		    
+		    // execute the service
+		    resultInfo = dfcs.execute(sro);
 
-		    if (frmtCnvrtdFile.exists()){
-			dbgLog.fine("frmtCnvrtdFile:length="+frmtCnvrtdFile.length());
-		    } else {
-			// the data file was not created
-			dbgLog.fine("frmtCnvrtdFile does not exist");
-			dbgLog.warning("exiting service: format-converted data file was not transferred");
+		    resultInfo.put("offlineCitation", citation);
+		    dbgLog.fine("resultInfo="+resultInfo+"\n");
+		
+		    // check whether a requested file is actually created
+
+		    if (resultInfo.get("RexecError").equals("true")){
+			dbgLog.fine("exiting dwnldAction() due to an R-runtime error");
 			// TODO: clean error response needed!
-			return;
+			return; 
+		    } else {
+			// (2)The format-converted subset data file
+			// get the path-name of the data-file to be delivered 
+			String wbDataFileName = resultInfo.get("wbDataFileName");
+			dbgLog.fine("wbDataFileName="+wbDataFileName);
+			
+			frmtCnvrtdFile = new File(wbDataFileName);
+			
+			if (frmtCnvrtdFile.exists()){
+			    dbgLog.fine("frmtCnvrtdFile:length="+frmtCnvrtdFile.length());
+			} else {
+			    // the data file was not created
+			    dbgLog.fine("frmtCnvrtdFile does not exist");
+			    dbgLog.warning("exiting service: format-converted data file was not transferred");
+			    // TODO: clean error response needed!
+			    return;
+			}
 		    }
 		}
-
+		    
 		// now we have to create a README file...
 		// TODO: do we need to do this for a TAB conversion? 
 

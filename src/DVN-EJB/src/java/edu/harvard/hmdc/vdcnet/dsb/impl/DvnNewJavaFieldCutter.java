@@ -60,9 +60,9 @@ public class DvnNewJavaFieldCutter {
                 collength = cargSeti.getValue().get(i).get(1) - cargSeti.getValue().get(i).get(0) +2;
                 colwidth += collength;
             }
-            out.println("key = "+ cargSeti.getKey() + ":colwidth"+colwidth);
+            //out.println("key = "+ cargSeti.getKey() + ":colwidth"+colwidth);
         }
-        out.println("colwidth="+colwidth);
+        //out.println("colwidth="+colwidth);
     }
 
 
@@ -168,7 +168,7 @@ public class DvnNewJavaFieldCutter {
                 byte[] junk = new byte[REC_LEN];
                 byte[] line_final = new byte[OUT_LEN];
 
-                out.println("READ: " + offset);
+                //out.println("READ: " + offset);
                 inbuffer.rewind();
 
                 offset = 0;
@@ -177,16 +177,16 @@ public class DvnNewJavaFieldCutter {
                 // how many variables are cut from this k-th card
                 int noColumns = cargSet.get(Long.valueOf(k)).size();
 
-                out.println("noColumns=" + noColumns);
-                out.println("cargSet k =" + cargSet.get(Long.valueOf(k)));
+                //out.println("noColumns=" + noColumns);
+                //out.println("cargSet k =" + cargSet.get(Long.valueOf(k)));
 
                 for (int i = 0; i < noColumns; i++) {
-                    out.println("**** " + i +"-th col ****");
+                    //out.println("**** " + i +"-th col ****");
                     begin = cargSet.get(Long.valueOf(k)).get(i)
                             .get(0); // bounds[2 * i];
                     end = cargSet.get(Long.valueOf(k)).get(i).get(1); // bounds[2 * i + 1];
 
-                    out.println("i: begin: " + begin + "\ti: end:" + end);
+                    //out.println("i: begin: " + begin + "\ti: end:" + end);
 
                     try {
                         // throw away offect bytes
@@ -211,7 +211,7 @@ public class DvnNewJavaFieldCutter {
                         while (pos <= (outoffset + (end - begin))) {
 
 
-                            out.println("pos=" + pos + "\tline_read[pos]=" +
+                            //out.println("pos=" + pos + "\tline_read[pos]=" +
                                 new String(line_read).replace("\000", "\052"));
                             
                             // decimal octal
@@ -264,7 +264,7 @@ public class DvnNewJavaFieldCutter {
                 for (int i = 0; i < noColumns; i++) {
                     begin = outbounds[2 * i];
                     end = outbounds[2 * i + 1];
-                    out.println("begin=" + begin + "\t end=" + end);
+                    //out.println("begin=" + begin + "\t end=" + end);
                     for (int j = begin; j <= end; j++) {
                         line_final[outoffset++] = line_read[j];
                     }
@@ -279,7 +279,7 @@ public class DvnNewJavaFieldCutter {
                         }
                     }
                 }
-                out.println("line_final=" +
+                //out.println("line_final=" +
                     new String(line_final).replace("\000", "\052"));
                 outbuffer = ByteBuffer.wrap(line_final, 0, outoffset);
                 outc.write(outbuffer);
@@ -340,15 +340,14 @@ public class DvnNewJavaFieldCutter {
 
             }
             colwidth += collength;
-            out.println("map=" + cargSet);
-            out.println("card no=" + col[0] + "\begin=" + be[0] + "\tend=" +
-                be[1]);
-            out.println("collength=" + collength);
+            //out.println("map=" + cargSet);
+            //out.println("card no=" + col[0] + "\begin=" + be[0] + "\tend=" + be[1]);
+            //out.println("collength=" + collength);
 
         }
         noVars = vars.length;
-        out.println("no vars=" + noVars);
-        out.println("no of cols required=" + colwidth);
+        //out.println("no vars=" + noVars);
+        //out.println("no of cols required=" + colwidth);
     }
 
 

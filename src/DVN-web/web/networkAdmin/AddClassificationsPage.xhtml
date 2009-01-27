@@ -75,14 +75,12 @@
             <ice:panelGroup styleClass="clearer"/>
               <ice:panelGroup styleClass="dvnAddClassificationBlock">
                 <!-- DataTable with RowSelector Component -->
+                <ice:panelGroup styleClass="dvnAddClassificationMessage">
+                    <ice:graphicImage value="/resources/icon_warning.18.png" styleClass="dvn_icon"/>
+                    <ice:outputText value=" Indicates a dataverse is not released."/>
+                </ice:panelGroup>
                 <ice:panelGroup styleClass="dvnAddClassificationDataverses">
-                  <ice:panelGroup styleClass="dvnAddClassificationDataversesLabel">
-                      <ice:outputLabel id="list" value="Dataverses"/>
-                      <ice:panelGroup>
-                          <ice:graphicImage value="/resources/icon_notreleased.gif"/>
-                          <ice:outputText value="Indicates a dataverse is not released."/>
-                      </ice:panelGroup>
-                  </ice:panelGroup>
+                  <ice:outputLabel id="list" value="All Dataverses"/>
                   <ice:dataTable id="dataverseList"
                                  var="dataverse" columns="2"
                                  scrollable="true" scrollHeight="400px"
@@ -130,7 +128,7 @@
                         <ice:outputText id="selectedColumn1" value="Name"/>
                       </f:facet>
                       <ice:panelGroup>
-                          <ice:outputText id="selectedName" value="#{dataverse.name}" 
+                          <ice:outputText id="selectedName" value="#{dataverse.name}"
                                 styleClass="#{(!dataverse.restricted) ? 'dvnAddClassificationDvNotReleased' : 'dvnAddClassificationDvReleased'}"/>
                         </ice:panelGroup>
                     </ice:column>

@@ -72,6 +72,10 @@
 .dvn_indent {
   margin-left: 2em;
 }
+.dvn_icon {
+  border: 0;
+  vertical-align: bottom;
+}
 
 .dvnFormPadding {
   padding: 1em 0;
@@ -1443,17 +1447,16 @@ td.vdcEditFilesColC{
 .dvnMngClssTableCount {width: 10%;}
 .dvnMngClssTableDelete {width: 10%;}
 
-.dvnAddClassificationDataversesLabel label {display: inline;}
-.dvnAddClassificationDataversesLabel div.icePnlGrp {display: inline; margin-left: 6em;}
 .dvnAddClassificationBlock {overflow: hidden;}
-.dvnAddClassificationDataverses {float: left; width: 65%;}
-.dvnAddClassificationSelected {float: right; width: 30%;}
+.dvnAddClassificationMessage {margin-bottom: .5em;}
+.dvnAddClassificationDataverses {float: left; width: 48%;}
+.dvnAddClassificationSelected {float: right; width: 48%;}
 
 table.dvnAddClassificationTable table {width: 100%; margin: 0;}
 .dvnAddClassificationTableColHeader1 {width: 60%;}
 .dvnAddClassificationTableColHeader2 {width: 40%;}
 
-span.dvnAddClassificationDvNotReleased {background: url(icon_notreleased.gif) center right no-repeat; padding-right: 22px;}
+span.dvnAddClassificationDvNotReleased {background: url(icon_warning.18.png) center right no-repeat; padding-right: 22px !important;}
 span.dvnAddClassificationDvReleased {}
 
 .dvnAddClassificationDataverses table.iceDatTbl {border: 1px solid #d9d9d9;}

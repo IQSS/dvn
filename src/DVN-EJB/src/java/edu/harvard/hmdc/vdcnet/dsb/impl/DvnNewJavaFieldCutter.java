@@ -212,7 +212,7 @@ public class DvnNewJavaFieldCutter {
 
 
                             //out.println("pos=" + pos + "\tline_read[pos]=" +
-                                new String(line_read).replace("\000", "\052"));
+                            //    new String(line_read).replace("\000", "\052"));
                             
                             // decimal octal
                             // 48 =>0 60
@@ -280,7 +280,7 @@ public class DvnNewJavaFieldCutter {
                     }
                 }
                 //out.println("line_final=" +
-                    new String(line_final).replace("\000", "\052"));
+                //    new String(line_final).replace("\000", "\052"));
                 outbuffer = ByteBuffer.wrap(line_final, 0, outoffset);
                 outc.write(outbuffer);
                 inbuffer.clear();

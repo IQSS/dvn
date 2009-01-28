@@ -359,11 +359,25 @@ public class FileDownloadServlet extends HttpServlet {
             // the file, we need to pass the "noVarHeader"
             // argument along:
 
-            if (noVarHeader != null) {
-            if (remoteFileUrl.matches(".*FileDownload.*")) {
-                remoteFileUrl = remoteFileUrl + "&noVarHeader=1";
+	    if (remoteFileUrl.matches(".*FileDownload.*")) {
+		if (noVarHeader != null) {
+		    remoteFileUrl = remoteFileUrl + "&noVarHeader=1";
+		} else {
+		    // and if we are retreiving this tab file in order
+		    // to convert it to another format locally, we also 
+		    // have to add the noVarHeader flag, otherwise the
+		    // header will be treated as a line of data!
+		    
+		    if (formatRequested != null) {
+			remoteFileUrl = remoteFileUrl + "&noVarHeader=1";
+			// TODO -- ? -- do we need to check if this is 
+			// a tab-delimited file? in theory, this could 
+			// be a fixed field from another DVN... or could it?
+		    }
+		}
             }
-            }
+
+
 
             // See if remote authentication is required;
 

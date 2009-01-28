@@ -171,7 +171,7 @@ and restricted = false;
 
 -- populate the new vdcactivity table
 insert into vdcactivity
-SELECT nextval('vdcactivity_id_seq'), 0, null, id
+SELECT nextval('vdcactivity_id_seq'), 0, 0, 0, null, id
 from vdc;
 
 commit;

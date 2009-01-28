@@ -108,13 +108,7 @@ public class LoginFilter implements Filter {
 
     private void doBeforeProcessing(ServletRequest request, ServletResponse response)
             throws IOException, ServletException {
-    /*VDCRequestBean requestBean = (VDCRequestBean)request.getAttribute("VDCRequest");
-    VDC currentVDC = null;
-    if (requestBean!=null) {
-    currentVDC = requestBean.getCurrentVDC();
-    }
-    System.out.println("currentVDC="+currentVDC);
-     */
+ 
 
 
 
@@ -273,6 +267,12 @@ public class LoginFilter implements Filter {
         if (loginBean != null) {
             user = loginBean.getUser();
         }
+        
+        if (user!=null && user.getNetworkRole() != null && user.getNetworkRole().getName().equals(NetworkRoleServiceLocal.ADMIN)) {
+            // If you are network admin, you can do anything!
+            return true;
+        }
+        
         VDC currentVDC = vdcService.getVDCFromRequest(request);
         if (currentVDC != null && !isTermsOfUsePage(pageDef) && isVdcRestricted(pageDef, request) ) {
             if (currentVDC.isVDCRestrictedForUser(user, ipUserGroup)) {

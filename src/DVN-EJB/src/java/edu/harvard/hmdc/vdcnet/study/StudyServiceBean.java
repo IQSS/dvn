@@ -42,9 +42,11 @@ import edu.harvard.hmdc.vdcnet.util.FileUtil;
 import edu.harvard.hmdc.vdcnet.util.StringUtil;
 import edu.harvard.hmdc.vdcnet.vdc.ReviewState;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
+import edu.harvard.hmdc.vdcnet.vdc.VDCActivity;
 import edu.harvard.hmdc.vdcnet.vdc.VDCCollection;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetwork;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
+import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -79,7 +81,6 @@ import javax.jms.QueueConnectionFactory;
 import javax.jms.QueueSender;
 import javax.jms.QueueSession;
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.xml.bind.JAXBException;
@@ -124,7 +125,8 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     StudyServiceLocal studyService; // used to force new transaction during import
     @EJB
     HarvestStudyServiceLocal harvestStudyService;
-
+    @EJB
+    VDCServiceLocal vdcService;
     /**
      * Creates a new instance of StudyServiceBean
      */
@@ -1110,10 +1112,18 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     }
 
     public void incrementNumberOfDownloads(Long studyFileId) {
-        incrementNumberOfDownloads( studyFileId, new Date() );
+        incrementNumberOfDownloads( studyFileId, null, new Date() );
     }
 
     public void incrementNumberOfDownloads(Long studyFileId, Date lastDownloadTime) {
+        incrementNumberOfDownloads( studyFileId, null, lastDownloadTime );
+    }
+
+    public void incrementNumberOfDownloads(Long studyFileId, Long currentVDCId) {
+        incrementNumberOfDownloads( studyFileId, currentVDCId, new Date() );
+    }
+
+    public void incrementNumberOfDownloads(Long studyFileId, Long currentVDCId, Date lastDownloadTime) {
         StudyFile sf = getStudyFile(studyFileId);
         Study study = sf.getFileCategory().getStudy();
         StudyFileActivity sfActivity = sf.getStudyFileActivity();
@@ -1129,6 +1139,18 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
 
         sfActivity.setDownloadCount(sfActivity.getDownloadCount() + 1);
         sfActivity.setLastDownloadTime( lastDownloadTime );
+
+        if (currentVDCId == null || currentVDCId.equals(study.getOwner().getId()) ) {
+            VDCActivity vdcActivity = study.getOwner().getVDCActivity();
+            vdcActivity.setLocalStudyLocalDownloadCount( vdcActivity.getLocalStudyLocalDownloadCount() + 1);
+        } else {
+            VDCActivity vdcActivity1 = study.getOwner().getVDCActivity();
+            vdcActivity1.setLocalStudyForeignDownloadCount( vdcActivity1.getLocalStudyForeignDownloadCount() + 1);
+
+            VDCActivity vdcActivity2 = vdcService.findById(currentVDCId).getVDCActivity();
+            vdcActivity2.setForeignStudyLocalDownloadCount( vdcActivity2.getForeignStudyLocalDownloadCount() + 1);
+        }
+
     }
 
     public RemoteAccessAuth lookupRemoteAuthByHost (String hostName) {

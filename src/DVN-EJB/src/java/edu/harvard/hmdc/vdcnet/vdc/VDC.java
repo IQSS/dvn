@@ -145,7 +145,9 @@ public class VDC implements java.io.Serializable  {
    
     /** Creates a new instance of VDC */
     public VDC() {
-        
+        VDCActivity vdcActivity = new VDCActivity();
+        this.setVDCActivity(vdcActivity);
+        vdcActivity.setVDC(this);
     }
 
     public boolean isTermsOfUseEnabled() {
@@ -1067,6 +1069,18 @@ public class VDC implements java.io.Serializable  {
 
     public void setDvnDescription(String dvnDescription) {
         this.dvnDescription = dvnDescription;
+    }
+
+
+    @OneToOne(mappedBy = "vdc", cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
+    private VDCActivity vdcActivity;
+
+    public VDCActivity getVDCActivity() {
+        return vdcActivity;
+    }
+
+    public void setVDCActivity(VDCActivity vdcActivity) {
+        this.vdcActivity = vdcActivity;
     }
     
 }

@@ -114,9 +114,9 @@
 
 .dvn_sectionContent {
 	display: inline;
-        width: 75%;
+    width: 75%;
 	float: right;
-        text-align: left;
+    text-align: left;
 }
 
 .dvn_sectionTitle {margin: 0; padding: 0 .65em .25em .65em; font-size: 112% !important; color: #526f76; text-transform: uppercase; text-align: left;}
@@ -2015,9 +2015,9 @@ table.dvnCreateDvClassificationTable div {border-top: 0px;}
 table.dvnCreateDvClassificationTable table {width: 100%; border-top: 1px solid #dcdddf;}
 
 /**** Dataverse Analysis Results ****/
-.dvn_analysisResultContainer {padding: 10px; border: 1px solid #6e7f90; clear: both;}
+.dvn_analysisResultContainer {padding: 10px; border: 1px solid #6e7f90; text-align: left; clear: both;}
 .dvn_analysisResultContainer .dvAnalysisHeader {display: block; padding: 3px 0; width: 100%; background: #e6ebed; font-size: 140% !important; font-weight: bold; text-align: center;}
-.dvn_analysisResultContainer .dvAnalysisResults {padding: 10px;}
+.dvn_analysisResultContainer .dvAnalysisResults {padding: 10px; text-align: left;}
 .dvn_analysisResultContainer .dvAnalysisInfoMessage {margin-bottom: 1em;}
 
 .dvAnalysisResults p.resultsNewWindowLink {margin-top: 0; padding-top: 0; text-align: right;}

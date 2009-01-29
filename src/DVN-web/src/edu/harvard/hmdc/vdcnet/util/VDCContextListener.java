@@ -33,11 +33,11 @@ import edu.harvard.hmdc.vdcnet.harvest.HarvesterServiceLocal;
 import edu.harvard.hmdc.vdcnet.index.IndexServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.HarvestingDataverseServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
+import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkStatsServiceLocal;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
 import javax.ejb.EJB;
 import javax.ejb.EJBs;
 import javax.naming.InitialContext;
-import javax.servlet.ServletContextAttributeEvent;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.ServletRequestAttributeEvent;
@@ -51,6 +51,7 @@ import javax.servlet.ServletRequestAttributeListener;
  @EJB(name="harvesterService", beanInterface=edu.harvard.hmdc.vdcnet.harvest.HarvesterServiceLocal.class),
  @EJB(name="harvestingDataverseService", beanInterface=edu.harvard.hmdc.vdcnet.vdc.HarvestingDataverseServiceLocal.class),
  @EJB(name="vdcNetworkService", beanInterface=edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal.class),
+ @EJB(name="vdcNetworkStatsService", beanInterface=edu.harvard.hmdc.vdcnet.vdc.VDCNetworkStatsServiceLocal.class),
  @EJB(name="indexService", beanInterface=edu.harvard.hmdc.vdcnet.index.IndexServiceLocal.class)
 })
 public class VDCContextListener implements ServletContextListener,ServletRequestAttributeListener, java.io.Serializable  {
@@ -64,8 +65,8 @@ public class VDCContextListener implements ServletContextListener,ServletRequest
        
         HarvesterServiceLocal harvesterService = null;
         HarvestingDataverseServiceLocal harvestingDataverseService = null;
-
         IndexServiceLocal indexService = null;
+        VDCNetworkStatsServiceLocal vdcNetworkStatsService= null;
          
         try {
             harvesterService=(HarvesterServiceLocal)new InitialContext().lookup("java:comp/env/harvesterService");
@@ -87,14 +88,21 @@ public class VDCContextListener implements ServletContextListener,ServletRequest
         VDCNetworkServiceLocal vdcNetworkService=null;
         
         try {
-            System.out.println("VDContextListener, scheduling export now....");
-                    
-            vdcNetworkService = (VDCNetworkServiceLocal)new InitialContext().lookup("java:comp/env/vdcNetworkService");
+             vdcNetworkService = (VDCNetworkServiceLocal)new InitialContext().lookup("java:comp/env/vdcNetworkService");
             vdcNetworkService.updateExportTimer();
         } catch(Exception e) {
             e.printStackTrace();
         }
-        
+
+
+      
+         try {
+             vdcNetworkStatsService = (VDCNetworkStatsServiceLocal)new InitialContext().lookup("java:comp/env/vdcNetworkStatsService");
+             vdcNetworkStatsService.updateStats();
+            vdcNetworkStatsService.createStatsTimer();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }     
      
 
     }

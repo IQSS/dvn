@@ -79,7 +79,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
     @EJB NetworkRoleServiceLocal networkRoleService;
     @EJB RoleRequestServiceLocal roleRequestService;
     @EJB UserServiceLocal        userService;
-
+    @EJB VDCNetworkStatsServiceLocal vdcNetworkStatsService;
     
     private boolean isInit;
 
@@ -285,6 +285,11 @@ public class HomePage extends VDCBaseBean implements Serializable {
             varService.determineStudiesFromVariables(variables, studies, variableMap);
 
         } else {
+            try {
+            Thread t = new Thread();
+            t.sleep(120000);  // sleep for two minutes
+            } catch(Exception e) {
+            }
             studies         = indexService.search(getVDCRequestBean().getCurrentVDC(), searchTerms);
         }
 
@@ -734,5 +739,8 @@ public void dispose() {
 
             itemBeans.clear();
         }
+    }
+    public VDCNetworkStats getNetworkStats() {
+        return vdcNetworkStatsService.getVDCNetworkStats();
     }
 }

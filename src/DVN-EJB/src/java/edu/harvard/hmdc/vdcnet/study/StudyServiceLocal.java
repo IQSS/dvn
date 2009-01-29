@@ -86,7 +86,9 @@ public interface StudyServiceLocal extends java.io.Serializable {
     public void incrementNumberOfDownloads(Long studyFileId, Date lastDownloadTime);
     public void incrementNumberOfDownloads(Long studyFileId, Long currentVDCId);
     public void incrementNumberOfDownloads(Long studyFileId, Long currentVDCId, Date lastDownloadTime);
-    
+
+    RemoteAccessAuth lookupRemoteAuthByHost(String remoteHost);
+
     List<DataFileFormatType> getDataFileFormatTypes();
 
     void addIngestedFiles(Long studyId, List fileBeans, Long userId);

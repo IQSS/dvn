@@ -812,7 +812,11 @@ public class FileDownloadServlet extends HttpServlet {
 
 		    if ( formatRequested.equals ("D00") ) {
 			res.setContentType("text/tab-separated-values");
-			res.setHeader("content-disposition", "attachment; filename=" + inFile.getName());
+			if ( file.getFileName() != null ) {
+			    res.setHeader("content-disposition", "attachment; filename=" + file.getFileName() + ".tab");
+			} else {
+			    res.setHeader("content-disposition", "attachment; filename=" + inFile.getName());
+			}
 			infc = new FileInputStream(inFile);
 		    } else {
 			res.setContentType("application/zip");

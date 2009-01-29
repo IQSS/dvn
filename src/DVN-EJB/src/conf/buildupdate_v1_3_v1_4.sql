@@ -168,6 +168,7 @@ set releasedate = createddate
 where vdc.releasedate is null
 and restricted = false;
 
+INSERT INTO vdcnetworkstats (id,studycount,filecount) values (1,0,0);
 
 -- populate the new vdcactivity table
 insert into vdcactivity

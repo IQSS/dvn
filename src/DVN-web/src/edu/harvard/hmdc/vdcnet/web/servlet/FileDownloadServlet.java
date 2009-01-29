@@ -352,7 +352,7 @@ public class FileDownloadServlet extends HttpServlet {
         try {
 
             if (remoteFileUrl != null) {
-            remoteFileUrl = remoteFileUrl.replaceAll(" ", "+");
+		remoteFileUrl = remoteFileUrl.replaceAll(" ", "+");
             }
 
             // If it's another DVN from which we are getting
@@ -698,15 +698,11 @@ public class FileDownloadServlet extends HttpServlet {
 		File frmtCnvrtdFile = null;
 		Map<String, String> resultInfo = new HashMap<String, String>();
 
-		if ( formatRequested.equals ("D00") ) {
-		    // Another special check: 
+		if ( !(formatRequested.equals ("D00")) ) {
 		    // if the *requested* format is TAB-delimited, we don't
 		    // need to call R to do any conversions, we can just 
 		    // send back the TAB file we have just produced. 
 
-		    frmtCnvrtdFile = inFile;
-
-		} else {
 		    dbgLog.fine("local: paramListToR="+paramListToR);
 		    
 		    sro = new DvnRJobRequest(getDataVariableForRequest(), paramListToR, vls);
@@ -745,106 +741,108 @@ public class FileDownloadServlet extends HttpServlet {
 			    return;
 			}
 		    }
+
+		    // now we have to create a README file...
+
+		    String readMeFileName = "README_" + resultInfo.get("PID") +  ".txt";
+		    File readMeFile = new File(System.getProperty("java.io.tmpdir"), readMeFileName);
+                
+		    //DvnReplicationREADMEFileWriter rw = new DvnReplicationREADMEFileWriter(resultInfo);
+		    //rw.writeREADMEfile(readMeFile);
+		    DvnCitationFileWriter dcfw = new DvnCitationFileWriter(resultInfo);
+		    dcfw.writeWholeFileCase(readMeFile);
+
+		    // ... then package both files in a 
+		    // zip archive:
+                
+		    try /* zipping */ {
+			String zipFilePrefix = "zipFile_" + resultInfo.get("PID") + ".zip";
+			zipFile  = new File(System.getProperty("java.io.tmpdir"), zipFilePrefix);
+			// create zipped output stream:
+		    
+			FileOutputStream zipFileStream = new FileOutputStream(zipFile);
+			ZipOutputStream zout = new ZipOutputStream(zipFileStream);
+			
+			InputStream tmpin = null;
+			byte[] dataBuffer = new byte[8192];
+			int i = 0;
+			
+			tmpin = new FileInputStream(resultInfo.get("wbDataFileName"));
+			ZipEntry e = new ZipEntry(frmtCnvrtdFile.getName());
+			zout.putNextEntry(e);
+                
+			while ((i = tmpin.read(dataBuffer)) > 0) {
+			    zout.write(dataBuffer, 0, i);
+			    zout.flush();
+			}
+			tmpin.close();
+			zout.closeEntry();
+
+			tmpin = new FileInputStream(readMeFile);
+			e = new ZipEntry(readMeFileName);
+			zout.putNextEntry(e);
+                
+			while ((i = tmpin.read(dataBuffer)) > 0) {
+			    zout.write(dataBuffer, 0, i);
+			    zout.flush();
+			}
+			tmpin.close();
+			zout.closeEntry();
+                
+			zout.close();
+			zipFileStream.close(); 
+			
+		    } catch (IOException e){
+			String errorMessage = "An unknown I/O error has occured while trying to create a ZIP archive for an otherwise successful format conversion on a remote data file. Please try again later and if the problem persists, report it to your DVN technical support contact.";
+			createErrorResponseGeneric(res, 0, errorMessage);
+			return; 
+		    }
 		}
 		    
-		// now we have to create a README file...
-		// TODO: do we need to do this for a TAB conversion? 
-
-		String readMeFileName = "README_" + resultInfo.get("PID") +  ".txt";
-		File readMeFile = new File(System.getProperty("java.io.tmpdir"), readMeFileName);
-                
-		//DvnReplicationREADMEFileWriter rw = new DvnReplicationREADMEFileWriter(resultInfo);
-		//rw.writeREADMEfile(readMeFile);
-		DvnCitationFileWriter dcfw = new DvnCitationFileWriter(resultInfo);
-		dcfw.writeWholeFileCase(readMeFile);
-
-		// ... then package both files in a 
-		// zip archive:
-                
-		try /* zipping */ {
-		    String zipFilePrefix = "zipFile_" + resultInfo.get("PID") + ".zip";
-		    zipFile  = new File(System.getProperty("java.io.tmpdir"), zipFilePrefix);
-		    // create zipped output stream:
-		    
-		    FileOutputStream zipFileStream = new FileOutputStream(zipFile);
-		    ZipOutputStream zout = new ZipOutputStream(zipFileStream);
-			
-		    InputStream tmpin = null;
-		    byte[] dataBuffer = new byte[8192];
-		    int i = 0;
-
-		    tmpin = new FileInputStream(resultInfo.get("wbDataFileName"));
-		    ZipEntry e = new ZipEntry(frmtCnvrtdFile.getName());
-		    zout.putNextEntry(e);
-                
-		    while ((i = tmpin.read(dataBuffer)) > 0) {
-			zout.write(dataBuffer, 0, i);
-			zout.flush();
-		    }
-		    tmpin.close();
-		    zout.closeEntry();
-
-		    tmpin = new FileInputStream(readMeFile);
-		    e = new ZipEntry(readMeFileName);
-		    zout.putNextEntry(e);
-                
-		    while ((i = tmpin.read(dataBuffer)) > 0) {
-			zout.write(dataBuffer, 0, i);
-			zout.flush();
-		    }
-		    tmpin.close();
-		    zout.closeEntry();
-                
-		    zout.close();
-		    zipFileStream.close(); 
-			
-		} catch (IOException e){
-		    String errorMessage = "An unknown I/O error has occured while trying to create a ZIP archive for an otherwise successful format conversion on a remote data file. Please try again later and if the problem persists, report it to your DVN technical support contact.";
-		    createErrorResponseGeneric(res, 0, errorMessage);
-		    return; 
-		}
-
 		// TODO: delete temporary files we created!
 		// end of zipping step
 
-		try /* streaming zipped package */ {
+		try /* streaming zipped package (or a TAB file) */ {
 		    //res.setContentType(formatRequestedMIMEtypeMap.get(formatRequested));
 		    //res.setHeader("content-disposition",
 		    // "attachment; filename=" +
 		    // frmtCnvrtdFile.getName());
 		    //InputStream infc = new FileInputStream(resultInfo.get("wbDataFileName"));
-		    
-		    res.setContentType("application/zip");
-		    String zfname = zipFile.getName();
-		    res.setHeader("content-disposition", "attachment; filename=" + zfname);
+		    InputStream infc = null; 
+
+		    if ( formatRequested.equals ("D00") ) {
+			res.setContentType("text/tab-separated-values");
+			res.setHeader("content-disposition", "attachment; filename=" + inFile.getName());
+			infc = new FileInputStream(inFile);
+		    } else {
+			res.setContentType("application/zip");
+			res.setHeader("content-disposition", "attachment; filename=" + zipFile.getName());
                 
-		    InputStream infc = new FileInputStream(zipFile);
+			infc = new FileInputStream(zipFile);
+		    }
 		    OutputStream outfc = res.getOutputStream();
                                 
 		    byte[] dataReadBuffer = new byte[8192 * 4];
                               
-		    /* Not sure if this still needs to be done;
-		       needs to be investigated. 
-		       
-		       // One special case:
-		       // With fixed-field files we support requesting the
-		       // file in tab-delimited format. And for tab files
-		       // we always want to add the variable names header
-		       // line:
+		    // One more special case:
+		    // With fixed-field files we support requesting the
+		    // file in tab-delimited format. And for tab files
+		    // we always want to add the variable names header
+		    // line:
 
-		       String varHeaderLine = null;
 
-		       if (formatRequested.equals("D00") && noVarHeader == null) {
-		       List dataVariables = file.getDataTable().getDataVariables();
-		       varHeaderLine = generateVariableHeader(dataVariables);
-		       if (varHeaderLine != null) {
-		       byte[] varHeaderBuffer = null;
-		       varHeaderBuffer = varHeaderLine.getBytes();
-		       out.write(varHeaderBuffer);
-		       out.flush();
-		       }
-		       }
-		    */ 
+		    if (formatRequested.equals("D00") && noVarHeader == null) {
+
+			String varHeaderLine = null;
+			List dataVariables = file.getDataTable().getDataVariables();
+			varHeaderLine = generateVariableHeader(dataVariables);
+			if (varHeaderLine != null) {
+			    byte[] varHeaderBuffer = null;
+			    varHeaderBuffer = varHeaderLine.getBytes();
+			    outfc.write(varHeaderBuffer);
+			    outfc.flush();
+			}
+		    }
 		    
 		    int i = 0;
 		    while ((i = infc.read(dataReadBuffer)) > 0) {

@@ -14,10 +14,12 @@
     <gui:param name="pageTitle" value="#{bundlePageInfo.createAccountTitle}"/>
     <gui:define name="body">
       <ice:form id="form1">
-        <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage" rendered="#{LoginWorkflowBean.plainWorkflow}">
-          <div class="dvnMsgBlockContainer">
-            <ice:outputText value="#{bundlePageInfo.createAccountHelp}" escape="false"/>
-          </div>
+        <div jsfc="ice:panelGroup" rendered="#{LoginWorkflowBean.plainWorkflow}" styleClass="#{(LoginWorkflowBean.plainWorkflow) ? 'dvn_section' : 'dvn_nostyle'}">
+            <div class="dvnMsgBlockRound dvnInformationMessage">
+              <div class="dvnMsgBlockContainer">
+                <ice:outputText value="#{bundlePageInfo.createAccountHelp}" escape="false"/>
+              </div>
+            </div>
         </div>
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <ice:inputHidden id="studyId" value="#{AddAccountPage.studyId}"/>

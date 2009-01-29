@@ -15,10 +15,12 @@
     <gui:define name="body">
       <ice:form id="addsiteform">
         <ice:outputText id="statusMessage" styleClass="#{AddSitePage.msg.styleClass}" value="#{AddSitePage.msg.messageText}"/>
-        <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage" rendered="#{LoginWorkflowBean.plainWorkflow}">
-          <div class="dvnMsgBlockContainer">
-            <ice:outputText value="#{bundlePageInfo.createDvHelp}" escape="false"/>
-          </div>
+        <div jsfc="ice:panelGroup" rendered="#{LoginWorkflowBean.plainWorkflow}" styleClass="#{(LoginWorkflowBean.plainWorkflow) ? 'dvn_section' : 'dvn_nostyle'}">
+            <div class="dvnMsgBlockRound dvnInformationMessage">
+              <div class="dvnMsgBlockContainer">
+                <ice:outputText value="#{bundlePageInfo.createDvHelp}" escape="false"/>
+              </div>
+            </div>
         </div>
         <script type="text/javascript">
             //<![CDATA[

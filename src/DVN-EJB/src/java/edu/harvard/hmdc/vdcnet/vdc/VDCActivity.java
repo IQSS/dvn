@@ -74,9 +74,9 @@ public class VDCActivity implements Serializable {
     private int localStudyForeignDownloadCount;
     @Column(nullable=false)
     private int foreignStudyLocalDownloadCount;
+    @Column(nullable=false)
+    private int localStudyNetworkDownloadCount;
 
-    @Temporal(value = TemporalType.TIMESTAMP)
-    private Date lastStudyUpdateTime;
 
 
     public VDC getVDC() {
@@ -111,12 +111,12 @@ public class VDCActivity implements Serializable {
         this.foreignStudyLocalDownloadCount = foreignStudyLocalDownloadCount;
     }
 
-    public Date getLastStudyUpdateTime() {
-        return lastStudyUpdateTime;
+    public int getLocalStudyNetworkDownloadCount() {
+        return localStudyNetworkDownloadCount;
     }
 
-    public void setLastStudyUpdateTime(Date lastStudyUpdateTime) {
-        this.lastStudyUpdateTime = lastStudyUpdateTime;
+    public void setLocalStudyNetworkDownloadCount(int localStudyNetworkDownloadCount) {
+        this.localStudyNetworkDownloadCount = localStudyNetworkDownloadCount;
     }
 
 }

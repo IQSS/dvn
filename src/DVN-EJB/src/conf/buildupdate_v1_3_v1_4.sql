@@ -168,11 +168,12 @@ set releasedate = createddate
 where vdc.releasedate is null
 and restricted = false;
 
+-- populate new vdcnetworkstats table
 INSERT INTO vdcnetworkstats (id,studycount,filecount) values (1,0,0);
 
--- populate the new vdcactivity table
-insert into vdcactivity
-SELECT nextval('vdcactivity_id_seq'), 0, 0, 0, null, id
+-- populate  new vdcactivity table
+insert into vdcactivity ( id, localstudylocaldownloadcount, localstudynetworkdownloadcount, localstudyforeigndownloadcount, foreignstudylocaldownloadcount, vdc_id )
+SELECT nextval('vdcactivity_id_seq'), 0, 0, 0, 0, id
 from vdc;
 
 commit;

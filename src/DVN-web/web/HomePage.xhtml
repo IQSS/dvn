@@ -93,8 +93,6 @@
                   <ice:outputText rendered="#{dvItems.recordType eq 'group'}" styleClass="dvnHmpgGroupHeader" value="#{dvItems.name}"/>
                 </div>
                 <div jsfc="ice:panelGroup" styleClass="dvnHmpgGroupCreateBlock" id="createDataverse" rendered="#{dvItems.recordType eq 'group' and HomePage.showRequestCreator}">
-                   <ice:outputText styleClass="dvn_totalsLabel" value ="Studies: "/><ice:outputText styleClass="dvn_totalsValue" value="#{HomePage.networkStats.studyCount}"/>
-                   <ice:outputText styleClass="dvn_totalsLabel" value="Files: " /><ice:outputText styleClass="dvn_totalsValue" value="#{HomePage.networkStats.fileCount}"/>
                   <ice:outputLink styleClass="dvnHmpgGroupCreateLink" value="/dvn/faces/login/CreatorRequestInfoPage.xhtml">
                     <ice:outputText value="Create your own Dataverse" escape="false"/>
                   </ice:outputLink>
@@ -110,31 +108,9 @@
                 <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="2" id="gridPanel2"
                                styleClass="dvnHmpgGroupTableTop" columnClasses="dvnHmpgGroupTotals, dvnPaginatorWrap">
                   <div jsfc="ice:panelGroup" id="groupPanel1" rendered="#{dvItems.dataModel.rowCount > 0 and VDCRequest.currentVDC == null}">
-                    <h:outputText  styleClass="dvn_totalsLabel" value="Dataverses: #{dvItems.dataModel.rowCount}"/>
-                    <!--h:outputText binding="#{NetworkStatsBean.inlineDataverseKey}"
-                                  effect="#{item.effect}"
-                                  styleClass="dvn_totalsLabel"
-                                  value="#{NetworkStatsBean.inlineDataverseValue}">
-
-                      <f:attribute name="itemid" styleClass="dvn_totalsValue" value="item#{dvItems.id}"/>
-                    </h:outputText-->
-                    <!-- Removing study and file totals for now-->
-                    <!--
-                    <h:outputText binding="#{NetworkStatsBean.inlineStudyKey}"
-                                  effect="#{item.effect}"
-                                  styleClass="dvn_totalsLabel"
-                                  rendered="true"
-                                  value="#{NetworkStatsBean.inlineStudyValue}">
-                      <f:attribute name="itemid" styleClass="dvn_totalsValue" value="item#{dvItems.id}"/>
-                    </h:outputText>
-                    <h:outputText binding="#{NetworkStatsBean.inlineFilesKey}"
-                                  effect="#{item.effect}"
-                                  styleClass="dvn_totalsLabel"
-                                  rendered="true"
-                                  value="#{NetworkStatsBean.inlineFilesValue}">
-                      <f:attribute name="itemid" styleClass="dvn_totalsValue" value="item#{dvItems.id}"/>
-                    </h:outputText>
-                    -->
+                    <ice:outputText styleClass="dvn_totalsLabel" value ="Dataverses: "/><ice:outputText styleClass="dvn_totalsValue" value="#{dvItems.dataModel.rowCount}"/>
+                    <ice:outputText styleClass="dvn_totalsLabel" value ="Studies: "/><ice:outputText styleClass="dvn_totalsValue" value="#{HomePage.networkStats.studyCount}"/>
+                    <ice:outputText styleClass="dvn_totalsLabel" value="Files: " /><ice:outputText styleClass="dvn_totalsValue" value="#{HomePage.networkStats.fileCount}"/>
                   </div>
                   <div jsfc="ice:panelGroup" id="groupPanel2" rendered="#{dvItems.dataModel.rowCount > 0}">
                     <ice:dataPaginator actionListener="#{HomePage.paginate}"

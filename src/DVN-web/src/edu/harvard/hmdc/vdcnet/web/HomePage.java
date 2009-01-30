@@ -285,11 +285,13 @@ public class HomePage extends VDCBaseBean implements Serializable {
             varService.determineStudiesFromVariables(variables, studies, variableMap);
 
         } else {
+            /*
             try {
             Thread t = new Thread();
             t.sleep(120000);  // sleep for two minutes
             } catch(Exception e) {
             }
+             */
             studies         = indexService.search(getVDCRequestBean().getCurrentVDC(), searchTerms);
         }
 

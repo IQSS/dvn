@@ -66,13 +66,11 @@
               <input type="hidden" name="pageName" value="AddFilesPage"/>
               <ice:panelGroup id ="inputFile" style="dvnAddFilesInputBlock">
                 <ice:inputFile id="inputFileComponent"
-                               progressListener="#{AddFilesPage.fileUploadProgress}"
+                               submitOnUpload="postUpload"
                                actionListener="#{AddFilesPage.uploadFile}"
                                binding="#{AddFilesPage.inputFile}">
                   <!-- <ice:commandButton binding="#{AddFilesPage.inputFile}"/> -->
                 </ice:inputFile>
-                <ice:outputProgress value="#{AddFilesPage.fileProgress}" id="progressbar"
-                                    rendered ="true" label=" "/>
                 <br/>
                 <ice:message layout="table" globalOnly="false" for="inputFileComponent"
                               showDetail="true" showSummary="false" styleClass="errorMessage"/>

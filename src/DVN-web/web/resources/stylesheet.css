@@ -590,6 +590,24 @@ ul.successMessage, .successMessage ul {
 ul.successMessage li, .successMessage ul li {
     margin: 0; padding: 0;
 }
+div.dvnWarningMessage {
+  max-width: 900px;
+  width: 80%;
+  margin: 0 auto 1em auto;
+  padding-left: 58px;
+  background: url(icon_warning.png) #e95a5a 4px no-repeat;
+}
+div.dvnWarningMessage div.dvnMsgBlockContainer {
+  border: 1px solid #e95a5a; /* FIX: IE8 vertical-align: middle */
+}
+div.dvnWarningMessage a:link, div.dvnWarningMessage a:visited, div.dvnWarningMessage a:hover, div.dvnWarningMessage a:active {
+    color: #0c54b3;
+}
+div.dvnWarningMessage span {
+  font-weight: bold;
+  color: #252525;
+  background: transparent;
+}
 .warnMessage {
    color: #8B0404;
 }

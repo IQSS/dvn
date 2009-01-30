@@ -93,8 +93,8 @@
                   <ice:outputText rendered="#{dvItems.recordType eq 'group'}" styleClass="dvnHmpgGroupHeader" value="#{dvItems.name}"/>
                 </div>
                 <div jsfc="ice:panelGroup" styleClass="dvnHmpgGroupCreateBlock" id="createDataverse" rendered="#{dvItems.recordType eq 'group' and HomePage.showRequestCreator}">
-                   <ice:outputText styleClass="dvn_totalsValue"
-                   value ="Studies: #{HomePage.networkStats.studyCount} Files: #{HomePage.networkStats.fileCount}"/>
+                   <ice:outputText styleClass="dvn_totalsLabel" value ="Studies: "/><ice:outputText styleClass="dvn_totalsValue" value="#{HomePage.networkStats.studyCount}"/>
+                   <ice:outputText styleClass="dvn_totalsLabel" value="Files: " /><ice:outputText styleClass="dvn_totalsValue" value="#{HomePage.networkStats.fileCount}"/>
                   <ice:outputLink styleClass="dvnHmpgGroupCreateLink" value="/dvn/faces/login/CreatorRequestInfoPage.xhtml">
                     <ice:outputText value="Create your own Dataverse" escape="false"/>
                   </ice:outputLink>

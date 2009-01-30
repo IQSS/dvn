@@ -1140,9 +1140,14 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         sfActivity.setDownloadCount(sfActivity.getDownloadCount() + 1);
         sfActivity.setLastDownloadTime( lastDownloadTime );
 
-        if (currentVDCId == null || currentVDCId.equals(study.getOwner().getId()) ) {
+        if (currentVDCId == null) {
+            VDCActivity vdcActivity = study.getOwner().getVDCActivity();
+            vdcActivity.setLocalStudyLocalDownloadCount( vdcActivity.getLocalStudyNetworkDownloadCount() + 1);
+
+        } else if ( currentVDCId.equals(study.getOwner().getId()) ) {
             VDCActivity vdcActivity = study.getOwner().getVDCActivity();
             vdcActivity.setLocalStudyLocalDownloadCount( vdcActivity.getLocalStudyLocalDownloadCount() + 1);
+
         } else {
             VDCActivity vdcActivity1 = study.getOwner().getVDCActivity();
             vdcActivity1.setLocalStudyForeignDownloadCount( vdcActivity1.getLocalStudyForeignDownloadCount() + 1);

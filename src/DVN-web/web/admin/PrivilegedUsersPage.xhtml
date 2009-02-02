@@ -152,13 +152,15 @@
               <tr><td colspan="2" class="dvnPermissionsTableHeader"><ice:outputText value="Dataverse File Permission Settings"/></td></tr>
               <tr>
                 <td class="dvnPermissionsTableOption">
-                  <ice:outputText value="File Permissions"/>
+                  <ice:outputText value="Restrict ALL files in this dataverse"/>
                 </td>
                 <td>
                   <ice:selectOneMenu id="dropdown3" value="#{PrivilegedUsersPage.vdc.filesRestricted}" onchange="checkSubsetting(true)">
-                    <f:selectItem itemLabel="Public" itemValue="false"/>
-                    <f:selectItem itemLabel="Restricted" itemValue="true"/>
+                    <f:selectItem itemLabel="Not Selected" itemValue="false"/>
+                    <f:selectItem itemLabel="Yes" itemValue="true"/>
                   </ice:selectOneMenu>
+                   <br/>
+                  <ice:outputText styleClass="vdcHelpText" value="Choose 'Yes' to restrict ALL files in this dataverse.  To restrict files individually, go to the Study Permissions page of the study containing the file."/>
                 </td>
               </tr>
               <tr>

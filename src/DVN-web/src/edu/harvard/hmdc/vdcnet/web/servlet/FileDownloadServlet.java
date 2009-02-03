@@ -566,7 +566,7 @@ public class FileDownloadServlet extends HttpServlet {
 			    //String remoteFileUrl = file.getFileSystemLocation();
 			    createRedirectResponse(res, remoteFileUrl);
 			    //studyService.incrementNumberOfDownloads(file.getFileCategory().getStudy().getId());
-			    studyService.incrementNumberOfDownloads(file.getId());
+			    studyService.incrementNumberOfDownloads(file.getId(), vdc.getId());
 			    method.releaseConnection();
 			    return;
 			}
@@ -596,7 +596,7 @@ public class FileDownloadServlet extends HttpServlet {
 		in.close();
 		out.close();
 
-		studyService.incrementNumberOfDownloads(file.getId());
+		studyService.incrementNumberOfDownloads(file.getId(), vdc.getId());
 		    
 	    } catch (IOException ex) {
 		// catches exceptions that may have occured while trying
@@ -857,7 +857,7 @@ public class FileDownloadServlet extends HttpServlet {
 		    infc.close();
 		    outfc.close();
 		
-		    studyService.incrementNumberOfDownloads(file.getId());
+		    studyService.incrementNumberOfDownloads(file.getId(), vdc.getId());
 		    
 
 		} catch (IOException ex) {
@@ -930,7 +930,7 @@ public class FileDownloadServlet extends HttpServlet {
                             in.close();
                             out.close();
 
-			    studyService.incrementNumberOfDownloads(file.getId());
+			    studyService.incrementNumberOfDownloads(file.getId(), vdc.getId());
 
 
                         } catch (IOException ex) {
@@ -1123,7 +1123,7 @@ public class FileDownloadServlet extends HttpServlet {
                             fileCachingStream.flush();
                             fileCachingStream.close();
 
-			    studyService.incrementNumberOfDownloads(file.getId());
+			    studyService.incrementNumberOfDownloads(file.getId(), vdc.getId());
 
                 // TODO: delete temporary zip file; 
                 // (or change the whole logic to skip creating
@@ -1283,7 +1283,7 @@ public class FileDownloadServlet extends HttpServlet {
                         out.close();
 
                         if (imageThumb == null || (!dbContentType.substring(0, 6).equalsIgnoreCase("image/"))) {
-                            studyService.incrementNumberOfDownloads(file.getId());
+                            studyService.incrementNumberOfDownloads(file.getId(), vdc.getId());
                         }
                     } catch (IOException ex) {
                         //ex.printStackTrace();
@@ -1381,6 +1381,8 @@ public class FileDownloadServlet extends HttpServlet {
                 // send the file as the response
 
                 List nameList = new ArrayList(); // used to check for duplicates
+		List successList = new ArrayList(); 
+
                 iter = files.iterator();
 
                 while (iter.hasNext()) {
@@ -1495,7 +1497,8 @@ public class FileDownloadServlet extends HttpServlet {
                         fileManifest = fileManifest + file.getFileName() + " (" + dbContentType + ") " + fileSize + " bytes.\r\n";
 
                         if (fileSize > 0) {
-                            studyService.incrementNumberOfDownloads(file.getId());
+                            //studyService.incrementNumberOfDownloads(file.getId(), vdc.getId());
+			    successList.add ( file.getId() ); 
                         }
 
                         // if this was a remote stream, let's close
@@ -1518,6 +1521,16 @@ public class FileDownloadServlet extends HttpServlet {
                 zout.closeEntry();
 
                 zout.close();
+
+		// and finally finally, we can now increment the download
+		// counts on all the files successfully zipped: 
+
+		Iterator it = successList.iterator();
+		while (it.hasNext()) {
+                    Long fid = (Long) it.next();
+		    studyService.incrementNumberOfDownloads(fid, vdc.getId());
+		}
+
 
             } catch (IOException ex) {
                 // if we caught an exception *here*, it means something

@@ -113,8 +113,6 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
         if (this.dataverseType == null && getVDCRequestBean().getCurrentVDC().getDtype() != null) {
             this.setDataverseType(getVDCRequestBean().getCurrentVDC().getDtype());
         }
-        //what kind of vdc is this, basic or scholar
-        try {
             if ( (this.dataverseType == null || this.dataverseType.equals("Scholar")) ) {
                 //set the default values for the fields
                 VDC scholardataverse = (VDC)vdcService.findScholarDataverseByAlias(thisVDC.getAlias());
@@ -141,9 +139,12 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
                 aliasText.setValue(thisVDC.getAlias());
                 setShortDescription(thisVDC.getDvnDescription());
             }
-        } catch (Exception nfe) {
-            System.out.println("An error occurred " + nfe.toString());
-        }
+            // initialize the select
+           for (ClassificationUI classUI: classificationList.getClassificationUIs()) {
+                if (classUI.getVdcGroup().getVdcs().contains(thisVDC)) {
+                    classUI.setSelected(true);
+                }
+           }
 
     }
 
@@ -264,6 +265,24 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
     public void destroy() {
     }
     
+    ClassificationList classificationList = null;
+
+    public ClassificationList getClassificationList() {
+        return classificationList;
+    }
+
+    public void setClassificationList(ClassificationList classificationList) {
+        this.classificationList = classificationList;
+    }
+     private void saveClassifications(VDC vdc) {
+         vdc.getVdcGroups().clear();
+        for (ClassificationUI classUI: classificationList.getClassificationUIs()) {
+            if (classUI.isSelected()) {
+                vdc.getVdcGroups().add(classUI.getVdcGroup());
+            }
+        }
+    }
+   
     public String edit(){
         VDC thisVDC = getVDCRequestBean().getCurrentVDC();
         String dataversetype = dataverseType;
@@ -275,42 +294,19 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
         if (dataverseType.equals("Scholar")) {
             thisVDC.setFirstName(this.firstName);
             thisVDC.setLastName(this.lastName);
-            if (thisVDC.getVdcGroups().size() != 0) {
-                //remove the group relationships.
-                Iterator iterator = thisVDC.getVdcGroups().iterator();
-                while (iterator.hasNext()) {
-                    VDCGroup vdcgroup = (VDCGroup)iterator.next();
-                    iterator.remove();
-                    vdcGroupService.updateVdcGroup(vdcgroup);
-                }
-                
-            }
+           
         } else {
             thisVDC.setFirstName(null);
             thisVDC.setLastName(null);
         }
-
+        saveClassifications(thisVDC);
         vdcService.edit(thisVDC);
         getVDCRequestBean().setCurrentVDC(thisVDC);
         getVDCRequestBean().setSuccessMessage("Successfully updated general settings.");
          return "myOptions";
     }
     
-    public String editScholarDataverse(){
-        VDC thisVDC = getVDCRequestBean().getCurrentVDC();
-        VDC scholardataverse = (VDC)thisVDC;
-        String dataversetype = dataverseType;
-        scholardataverse.setDtype(dataversetype);
-        scholardataverse.setName((String)dataverseName.getValue());
-        scholardataverse.setAlias((String)dataverseAlias.getValue());
-        scholardataverse.setFirstName(this.firstName);
-        scholardataverse.setLastName(this.lastName);
-        scholardataverse.setAffiliation(this.affiliation);
-        vdcService.edit(scholardataverse);
-        getVDCRequestBean().setCurrentVDC(scholardataverse);
-        getVDCRequestBean().setSuccessMessage("Successfully updated general settings.");
-        return "myOptions";
-    }
+   
     
     public String cancel(){
         return "myOptions";

@@ -369,14 +369,29 @@
         </managed-property>
     </managed-bean>
     <managed-bean>
+        <managed-bean-name>ClassificationList</managed-bean-name>
+        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.site.ClassificationList</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>   
+    <managed-bean>
         <managed-bean-name>AddSitePage</managed-bean-name>
         <managed-bean-class>edu.harvard.hmdc.vdcnet.web.site.AddSitePage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
+        <managed-property>
+            <property-name>classificationList</property-name>
+            <property-class>edu.harvard.hmdc.vdcnet.web.site.ClassificationList</property-class>
+            <value>#{ClassificationList}</value>
+        </managed-property>
     </managed-bean>
     <managed-bean>
         <managed-bean-name>EditSitePage</managed-bean-name>
         <managed-bean-class>edu.harvard.hmdc.vdcnet.web.site.EditSitePage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
+        <managed-property>
+            <property-name>classificationList</property-name>
+            <property-class>edu.harvard.hmdc.vdcnet.web.site.ClassificationList</property-class>
+            <value>#{ClassificationList}</value>
+        </managed-property>
     </managed-bean>
     <managed-bean>
         <managed-bean-name>HarvestSitesPage</managed-bean-name>

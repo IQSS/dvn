@@ -178,6 +178,29 @@
                   <ice:outputText styleClass="vdcHelpText" value="Short description to appear on the network home page with your dataverse listing."/>
                   <ice:message for="dataverseShortDescription" showSummary="true" showDetail="false" styleClass="errorMessage"/>
                 </div>
+                  <div jsfc="ice:panelGroup">
+                    <ice:outputLabel for="selectedGroup" id="selectedGroupLabel">
+                      <ice:outputText id="selectedGroupText" value="Classification"/>
+                    </ice:outputLabel>
+                  </div>
+                  <div jsfc="ice:panelGroup">
+                    <ice:outputText styleClass="vdcHelpText" for="selectedGroup" value="#{bundle.groupSelect}"/>
+                    <ice:dataTable id="dataverseList" styleClass="dvnCreateDvClassificationTable" cellspacing="0" cellpadding="0" columns="2" width="100%"
+                                   headerClass="groupRow" rowClasses="evenRow,oddRow" columnWidths="5%,95%"
+                                   scrollable="true"
+                                   value="#{AddSitePage.classificationList.classificationUIs}" var="classUI">
+                      <!-- controls -->
+                      <ice:column styleClass="dvnCreateDvClassificationSelectColumn">
+                        <ice:selectBooleanCheckbox partialSubmit="true" value="#{classUI.selected}"/>
+                      </ice:column>
+                      <!-- classification name -->
+                      <ice:column styleClass="dvnCreateDvClassificationNameColumn">
+
+                        <ice:outputText styleClass="indentStyleClass" value="#{classUI.vdcGroup.name}"/>
+                      </ice:column>
+                    </ice:dataTable>
+                  </div>
+                     
               </ice:panelGrid>
               <div class="dvnFormPadding dvnFormMargin">
                 <ice:commandButton binding="#{EditSitePage.button1}" id="button1" value="Save" action="#{EditSitePage.edit}"/>

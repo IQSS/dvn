@@ -198,20 +198,16 @@
                     <ice:outputText styleClass="vdcHelpText" for="selectedGroup" value="#{bundle.groupSelect}"/>
                     <ice:dataTable id="dataverseList" styleClass="dvnCreateDvClassificationTable" cellspacing="0" cellpadding="0" columns="2" width="100%"
                                    headerClass="groupRow" rowClasses="evenRow,oddRow" columnWidths="5%,95%"
-                                   scrollable="true" sortColumn="#{dvItems.sortColumnName}" sortAscending="#{dvItems.ascending}"
-                                   value="#{AddSitePage.itemBeans}" var="dvItems">
+                                   scrollable="true" 
+                                   value="#{AddSitePage.classificationList.classificationUIs}" var="classUI">
                       <!-- controls -->
                       <ice:column styleClass="dvnCreateDvClassificationSelectColumn">
-                        <ice:selectBooleanCheckbox partialSubmit="true"
-                                                   value="#{dvItems.classificationSelect}"
-                                                   valueChangeListener="#{dvItems.changeClassificationSelect}">
-                          <f:attribute name="cid" value="#{dvItems.id}"/>
-                        </ice:selectBooleanCheckbox>
+                        <ice:selectBooleanCheckbox partialSubmit="true" value="#{classUI.selected}"/>
                       </ice:column>
                       <!-- classification name -->
                       <ice:column styleClass="dvnCreateDvClassificationNameColumn">
-                        <f:param name="cid" value="#{dvItems.id}"/>
-                        <ice:outputText styleClass="#{dvItems.indentStyleClass}" value="#{dvItems.name}"/>
+                     
+                        <ice:outputText styleClass="indentStyleClass" value="#{classUI.vdcGroup.name}"/>
                       </ice:column>
                     </ice:dataTable>
                   </div>

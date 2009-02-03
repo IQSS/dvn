@@ -333,36 +333,6 @@
         <ice:inputHidden id="studyId" value="#{studyPage.studyId}"/>
         <ice:inputHidden id="slIndex" value="#{studyPage.studyListingIndex}"/>
         <div class="dvn_section">
-          <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage" rendered="#{studyPage.studyUI.anyFileRestricted or !empty studyPage.studyUI.study.harvestHoldings and studyPage.studyUI.study.isHarvested}">
-            <div class="dvnMsgBlockContainer">
-              <div jsfc="ice:panelGroup" rendered="#{!empty studyPage.studyUI.study.harvestHoldings and studyPage.studyUI.study.isHarvested}">
-                <p>
-                  <ice:outputText value="Files for this study may also be accessed from their "/>
-                  <ice:outputLink value="#{studyPage.studyUI.study.harvestHoldings}">
-                    <ice:outputText value="original source."/>
-                  </ice:outputLink>
-                </p>
-              </div>
-              <div jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.anyFileRestricted}">
-                <p>
-                  <ice:outputText value="Access to some files is restricted, and those files are not available for downloading."/>
-                  <ice:outputText value=" No information about the restriction is available." rendered="#{studyPage.termsOfUseIsEmpty}"/>
-                  <ice:outputText value=" Check the " rendered="#{!studyPage.termsOfUseIsEmpty}"/>
-                  <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=catalog#termsofuse" rendered="#{!studyPage.termsOfUseIsEmpty}">
-                    <ice:outputText value="Terms of Use"/>
-                  </ice:outputLink>
-                  <ice:outputText value=" for more information." rendered="#{!studyPage.termsOfUseIsEmpty}"/>
-                  <ice:outputLink action="#{StudyPage.beginRequestWorkflow}" rendered="#{studyPage.studyUI.study.requestAccess and VDCSession.loginBean!=null}" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/FileRequestPage.xhtml?studyId=#{studyPage.studyId}">
-                    <ice:outputText value=" Send a Request"/>
-                  </ice:outputLink>
-                  <ice:commandLink action="#{studyPage.beginRequestWorkflow}" rendered="#{studyPage.studyUI.study.requestAccess and VDCSession.loginBean==null}">
-                    <ice:outputText value=" Send a Request"/>
-                  </ice:commandLink>
-                  <ice:outputText value=" if you would like to access the restricted files in this study." rendered="#{studyPage.studyUI.study.requestAccess}"/>
-                </p>
-              </div>
-            </div>
-          </div>
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{studyPage.studyUI.study.title}"/>
             <ice:outputText styleClass="vdcStudyStatus" value=" (In Review)" rendered="#{studyPage.studyUI.study.inReview}"/>
@@ -746,20 +716,48 @@
                   <div jsfc="ice:panelGroup" id="noFilesPanel4b" styleClass="vdcStudyFilesMessage" rendered="#{studyPage.userAuthorizedToEdit and !(studyPage.studyUI.study.studyLock==null) and !empty studyPage.studyUI.study.fileCategories}">
                     <ice:outputText styleClass="warnMessage" value="One or more data files are being uploaded..."/>
                   </div>
-                  <div jsfc="ice:panelGroup" id="layoutPanel3" panelLayout="flow" styleClass="vdcStudyFilesContent" rendered="#{!empty studyPage.studyUI.study.fileCategories}">
-                    <ice:panelGrid columns="2" cellspacing="0" cellpadding="0" styleClass="vdcStudyFilesDownloadAll">
-                      <div class="vdcStudyFilesDownloadAllButton">
-                        <input type="button" onclick="downloadSelectedFiles();" value="Download All Selected Files"/>
+                  <div jsfc="ice:panelGroup" id="layoutPanel3" panelLayout="flow" styleClass="vdcStudyFilesContent" rendered="#{!empty studyPage.studyUI.study.fileCategories}">                    
+                    <div>
+                        <ice:graphicImage value="/resources/icon_info.gif" styleClass="dvn_icon"/>
+                        <ice:outputText value=" Use the checkboxes next to the file name to download multiple files. You can also download all the files in a category by checking the box next to the category name. You will be prompted to save a single archive file. Study files that have restricted access will not be downloaded. Data files will be downloaded in their default format."/>
+                    </div>
+                    <div jsfc="ice:panelGroup" rendered="#{!empty studyPage.studyUI.study.harvestHoldings and studyPage.studyUI.study.isHarvested}">
                         <p>
-                          <ice:selectBooleanCheckbox id="studyCheckBox" styleClass="studyCheckBox" onclick="toggleCheckBoxes(this)" disabled="#{!studyPage.studyUI.anyFileUnrestricted}"/> <ice:outputText value=" Select all files"/>
+                            <ice:graphicImage value="/resources/icon_warning.18.png" styleClass="dvn_icon"/>
+                            <ice:outputText value=" Files for this study may also be accessed from their "/>
+                            <ice:outputLink value="#{studyPage.studyUI.study.harvestHoldings}">
+                                <ice:outputText value="original source."/>
+                            </ice:outputLink>
                         </p>
-                      </div>
-                      <div class="vdcStudyFilesDownloadAllInfo">
-                        DOWNLOAD INSTRUCTIONS<br/>
-                        <p>Use the checkboxes next to the file name to download multiple files. You can also download all the files in a category by checking the box next to the category name.</p>
-                        <p>Note: You will be prompted to save a single archive file. Study files that have restricted access will not be downloaded. Data files will be downloaded in their default format.</p>
-                      </div>
+                    </div>
+                    <div jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.anyFileRestricted}">
+                        <p>
+                            <ice:graphicImage value="/resources/icon_warning.18.png" styleClass="dvn_icon"/>
+                            <ice:outputText value=" Access to some files is restricted, and those files are not available for downloading."/>
+                            <ice:outputText value=" No information about the restriction is available." rendered="#{studyPage.termsOfUseIsEmpty}"/>
+                            <ice:outputText value=" Check the " rendered="#{!studyPage.termsOfUseIsEmpty}"/>
+                            <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=catalog#termsofuse" rendered="#{!studyPage.termsOfUseIsEmpty}">
+                                <ice:outputText value="Terms of Use"/>
+                            </ice:outputLink>
+                            <ice:outputText value=" for more information." rendered="#{!studyPage.termsOfUseIsEmpty}"/>
+                            <ice:outputLink action="#{StudyPage.beginRequestWorkflow}" rendered="#{studyPage.studyUI.study.requestAccess and VDCSession.loginBean!=null}" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/FileRequestPage.xhtml?studyId=#{studyPage.studyId}">
+                                <ice:outputText value=" Send a Request"/>
+                            </ice:outputLink>
+                            <ice:commandLink action="#{studyPage.beginRequestWorkflow}" rendered="#{studyPage.studyUI.study.requestAccess and VDCSession.loginBean==null}">
+                                <ice:outputText value=" Send a Request"/>
+                            </ice:commandLink>
+                            <ice:outputText value=" if you would like to access the restricted files in this study." rendered="#{studyPage.studyUI.study.requestAccess}"/>
+                        </p>
+                    </div>
+                    <ice:panelGrid columns="2" columnClasses="vdcStudyFilesDownloadAllSelect,vdcStudyFilesDownloadAllButton" width="100%" styleClass="vdcStudyFilesDownloadAll">
+                      <ice:column>
+                        <ice:selectBooleanCheckbox id="studyCheckBox" styleClass="studyCheckBox" onclick="toggleCheckBoxes(this)" disabled="#{!studyPage.studyUI.anyFileUnrestricted}"/> <ice:outputText value=" Select all files"/>
+                      </ice:column>
+                      <ice:column>
+                        <input type="button" onclick="downloadSelectedFiles();" value="Download All Selected Files"/>
+                      </ice:column>
                     </ice:panelGrid>
+                    
                     <ice:dataTable cellpadding="0" cellspacing="0" value="#{studyPage.studyUI.categoryUIList}" id="catDataTable" var="catUI" width="100%">
                       <ice:column id="catColumn">
                         <div class="TogglePaneFancy">

@@ -1032,18 +1032,16 @@ div.vdcStudyFilesMessage a:link, div.vdcStudyFilesMessage a:visited, div.vdcStud
     font-weight: bold;
 }
 
-.vdcStudyFilesDownloadAll {width: 100%; background: #f5f6bd;}
-.vdcStudyFilesDownloadAll td {background: #f5f6bd;}
-.vdcStudyFilesDownloadAllInfo, .vdcStudyFilesDownloadAllButton {padding: .5em 1em; background: inherit;}
-.vdcStudyFilesDownloadAllInfo {font-weight: bold;}
-.vdcStudyFilesDownloadAllInfo p {font-weight: normal; font-size: 90% !important;}
+.vdcStudyFilesDownloadAll {width: 100%; margin-bottom: 0.5em;}
+td.vdcStudyFilesDownloadAllSelect {width: 40%;}
+td.vdcStudyFilesDownloadAllButton {width: 60%;}
 
 .vdcStudyFilesCat {
    background-color: #d2d2d2;
    border-bottom-color: #ffffff;
    border-bottom-style: solid;
    border-bottom-width: 1px;
-   padding: 2px 0;
+   padding: 2px .25em;
    height: 1.5em;
 }
 
@@ -1056,19 +1054,19 @@ div.vdcStudyFilesMessage a:link, div.vdcStudyFilesMessage a:visited, div.vdcStud
 
 .vdcStudyFilesCatLabel {
    font-weight: bold;
-   padding-left: 22px;
-   padding-right: 8px;
+   padding-left: 1px;
+   padding-right: 1px;
 }
 
 .TogglePaneFancyHeader {
 	background-image: url(icon_expand.gif);
 	background-repeat: no-repeat;
-	background-position: .25em .25em;
+	background-position: right .25em;
 }
 .TogglePaneFancyHeaderClosed {
 	background-image: url(icon_contract.gif);
 	background-repeat: no-repeat;
-	background-position: .25em .25em;
+	background-position: right .25em;
 }
 a.vdcTruncatorLinkMore:link, a.vdcTruncatorLinkMore:hover, a.vdcTruncatorLinkMore:active, a.vdcTruncatorLinkMore:visited,
 a.vdcTruncatorLinkLess:link, a.vdcTruncatorLinkLess:hover, a.vdcTruncatorLinkLess:active, a.vdcTruncatorLinkLess:visited {font-size: 90% !important;}

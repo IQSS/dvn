@@ -775,7 +775,7 @@ public class VDCServiceBean implements VDCServiceLocal {
             orderingClause = "order by count(owner_id) desc ";
 
 
-        } else if ("lastStudyUpdatedTime".equals(orderBy)) {
+        } else if ("lastStudyUpdateTime".equals(orderBy)) {
             selectClause += ", max(lastupdatetime) ";
             fromClause += "LEFT OUTER JOIN study on v.id = study.owner_id ";
             orderingClause = "group by v.id ";

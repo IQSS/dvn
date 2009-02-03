@@ -566,7 +566,12 @@ public class FileDownloadServlet extends HttpServlet {
 			    //String remoteFileUrl = file.getFileSystemLocation();
 			    createRedirectResponse(res, remoteFileUrl);
 			    //studyService.incrementNumberOfDownloads(file.getFileCategory().getStudy().getId());
-			    studyService.incrementNumberOfDownloads(file.getId(), vdc.getId());
+			    if ( vdc != null ) {
+				studyService.incrementNumberOfDownloads(file.getId(), vdc.getId());
+			    } else {
+				studyService.incrementNumberOfDownloads(file.getId(), (Long)null);
+			    }
+
 			    method.releaseConnection();
 			    return;
 			}
@@ -596,7 +601,12 @@ public class FileDownloadServlet extends HttpServlet {
 		in.close();
 		out.close();
 
-		studyService.incrementNumberOfDownloads(file.getId(), vdc.getId());
+		if ( vdc != null ) {
+		    studyService.incrementNumberOfDownloads(file.getId(), vdc.getId());
+		} else {
+		    studyService.incrementNumberOfDownloads(file.getId(), (Long)null);
+		}
+
 		    
 	    } catch (IOException ex) {
 		// catches exceptions that may have occured while trying
@@ -857,7 +867,12 @@ public class FileDownloadServlet extends HttpServlet {
 		    infc.close();
 		    outfc.close();
 		
-		    studyService.incrementNumberOfDownloads(file.getId(), vdc.getId());
+		    if ( vdc != null ) {
+			studyService.incrementNumberOfDownloads(file.getId(), vdc.getId());
+		    } else {
+			studyService.incrementNumberOfDownloads(file.getId(), (Long)null);
+		    }
+
 		    
 
 		} catch (IOException ex) {
@@ -930,7 +945,12 @@ public class FileDownloadServlet extends HttpServlet {
                             in.close();
                             out.close();
 
-			    studyService.incrementNumberOfDownloads(file.getId(), vdc.getId());
+			    if ( vdc != null ) {
+				studyService.incrementNumberOfDownloads(file.getId(), vdc.getId());
+			    } else {
+				studyService.incrementNumberOfDownloads(file.getId(), (Long)null);
+			    }
+		    
 
 
                         } catch (IOException ex) {
@@ -1123,7 +1143,12 @@ public class FileDownloadServlet extends HttpServlet {
                             fileCachingStream.flush();
                             fileCachingStream.close();
 
-			    studyService.incrementNumberOfDownloads(file.getId(), vdc.getId());
+			    if ( vdc != null ) {
+				studyService.incrementNumberOfDownloads(file.getId(), vdc.getId());
+			    } else {
+				studyService.incrementNumberOfDownloads(file.getId(), (Long)null);
+			    }
+
 
                 // TODO: delete temporary zip file; 
                 // (or change the whole logic to skip creating
@@ -1283,7 +1308,11 @@ public class FileDownloadServlet extends HttpServlet {
                         out.close();
 
                         if (imageThumb == null || (!dbContentType.substring(0, 6).equalsIgnoreCase("image/"))) {
-                            studyService.incrementNumberOfDownloads(file.getId(), vdc.getId());
+			    if ( vdc != null ) {
+				studyService.incrementNumberOfDownloads(file.getId(), vdc.getId());
+			    } else {
+				studyService.incrementNumberOfDownloads(file.getId(), (Long)null);
+			    }
                         }
                     } catch (IOException ex) {
                         //ex.printStackTrace();
@@ -1497,7 +1526,6 @@ public class FileDownloadServlet extends HttpServlet {
                         fileManifest = fileManifest + file.getFileName() + " (" + dbContentType + ") " + fileSize + " bytes.\r\n";
 
                         if (fileSize > 0) {
-                            //studyService.incrementNumberOfDownloads(file.getId(), vdc.getId());
 			    successList.add ( file.getId() ); 
                         }
 
@@ -1528,7 +1556,11 @@ public class FileDownloadServlet extends HttpServlet {
 		Iterator it = successList.iterator();
 		while (it.hasNext()) {
                     Long fid = (Long) it.next();
-		    studyService.incrementNumberOfDownloads(fid, vdc.getId());
+		    if ( vdc != null ) {
+			studyService.incrementNumberOfDownloads(fid, vdc.getId());
+		    } else {
+			studyService.incrementNumberOfDownloads(fid, (Long)null);
+		    }
 		}
 
 

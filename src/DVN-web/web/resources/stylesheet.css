@@ -1263,6 +1263,9 @@ a.vdcStudyFileSubsetAnalysisLink:active, a.vdcStudyFileSubsetAnalysisLink:visite
 
 span.vdcEditStudyFormatExample {display: inline;}
 
+table.vdcEditStudyTableLegend {margin-left: 8%;}
+.vdcEditStudyTableLegend td.vdcEditStudyTableLegendCol1 {width: 10%; vertical-align: top; text-transform: uppercase;}
+.vdcEditStudyTableLegend span.vdcHelpText {font-size: 90% !important;}
 .vdcEditStudyTableLegend div {margin-bottom: .25em;}
 .vdcEditStudyTableLegend img {vertical-align: middle;}
 .vdcEditStudyTableLegend span {margin-left: .25em;}

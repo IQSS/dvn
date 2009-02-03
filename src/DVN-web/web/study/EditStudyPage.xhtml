@@ -87,6 +87,29 @@
           <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
             <div class="dvnMsgBlockContainer">
               <ice:outputText value="#{bundlePageInfo.editStudyHelp}" escape="false"/>
+
+              <ice:panelGrid columns="2" styleClass="vdcEditStudyTableLegend">
+                  <ice:column>
+                      <ice:outputText styleClass="vdcHelpText" value="Legend"/>
+                  </ice:column>
+                  <ice:column>
+                      <div jsfc="ice:panelGroup">
+                          <ice:graphicImage value="/resources/icon_required.gif"/> <ice:outputText styleClass="vdcHelpText vdcEditStudyLegendMargin" value="Required Fields"/>
+                          <ice:graphicImage value="/resources/icon_recommended.gif"/> <ice:outputText styleClass="vdcHelpText" value="Recommended Fields"/>
+                      </div>
+                      <div jsfc="ice:panelGroup">
+                          <ice:graphicImage value="/resources/icon_htmlformat.gif"/> <ice:outputText styleClass="vdcHelpText" value="#{bundle.htmlHelpText}"/>
+                      </div>
+                      <div jsfc="ice:panelGroup">
+                          <ice:graphicImage  value="/resources/icon_dateformat.gif"/> <ice:outputText styleClass="vdcHelpText" value="Light Orange field indicates that Date format is required (YYYY or YYYY-MM or YYYY-MM-DD)"/>
+                      </div>
+                      <div jsfc="ice:panelGroup">
+                          <ice:graphicImage value="/resources/icon_add.gif"/> <ice:outputText styleClass="vdcHelpText vdcEditStudyLegendMargin" value="Add a new row (e.g., multiple authors)"/>
+                          <ice:graphicImage value="/resources/icon_remove.gif"/> <ice:outputText styleClass="vdcHelpText" value="Remove an existing row"/>
+                      </div>
+                  </ice:column>
+              </ice:panelGrid>
+
             </div>
           </div>
           <div class="dvn_sectionTitle dvn_sectionTitleLinksL">
@@ -113,32 +136,16 @@
                         <!-- hidden button that is clicked by select menu's onchange action -->
                         <ice:commandButton id="templateButton"  visible="false" value="Change" action="#{EditStudyPage.changeTemplateAction}"/>
                         <br/>
-                     <!--
+                        <!--
                         <input checked="checked" type="radio" id="hideRadio" name="hideShowRadio" value="hide" onclick="updateHideShow(this);"/> Show Required and Recommended Fields
                         <input type="radio" id="showRadio" name="hideShowRadio" value="show" onclick="updateHideShow(this);"/> Show All Fields
-                       -->                        
+                        -->
                         <ice:selectOneRadio partialSubmit="true" value ="#{EditStudyPage.showAll}">
                           <f:selectItem itemLabel="Show Required and Recommended Fields" itemValue="false"/>
                           <f:selectItem itemLabel="Show All Fields" itemValue="true"/>
                         </ice:selectOneRadio>                      
                       </div>
-                      <div jsfc="ice:panelGroup" styleClass="vdcEditStudyTableLegend">
-                        <div jsfc="ice:panelGroup">
-                          <ice:graphicImage value="/resources/icon_required.gif"/> <ice:outputText styleClass="vdcHelpText vdcEditStudyLegendMargin" value="Required Fields"/>
-                          <ice:graphicImage value="/resources/icon_recommended.gif"/> <ice:outputText styleClass="vdcHelpText" value="Recommended Fields"/>
-                        </div>
-                        <div jsfc="ice:panelGroup">
-                          <ice:graphicImage value="/resources/icon_htmlformat.gif"/> <ice:outputText styleClass="vdcHelpText" value="#{bundle.htmlHelpText}"/>
-                        </div>
-                        <div jsfc="ice:panelGroup">
-                          <ice:graphicImage  value="/resources/icon_dateformat.gif"/> <ice:outputText styleClass="vdcHelpText" value="Light Orange field indicates that Date format is required (YYYY or YYYY-MM or YYYY-MM-DD)"/>
-                        </div>
-                        <div jsfc="ice:panelGroup">
-                        <ice:graphicImage value="/resources/icon_add.gif"/> <ice:outputText styleClass="vdcHelpText vdcEditStudyLegendMargin" value="Add a new row (e.g., multiple authors)"/>
-                        <ice:graphicImage value="/resources/icon_remove.gif"/> <ice:outputText styleClass="vdcHelpText" value="Remove an existing row"/>
-                      </div>
-                    </div>
-                  </ice:panelGrid>
+                    </ice:panelGrid>
                   <div jsfc="ice:panelGroup" id="groupPanel9" styleClass="vdcStudyInfoHeader">
                     <ice:outputText id="outputText26" value="Citation Information"/>
                   </div>

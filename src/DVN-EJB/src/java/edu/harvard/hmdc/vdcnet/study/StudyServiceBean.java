@@ -1111,14 +1111,6 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         }
     }
 
-    public void incrementNumberOfDownloads(Long studyFileId) {
-        incrementNumberOfDownloads( studyFileId, null, new Date() );
-    }
-
-    public void incrementNumberOfDownloads(Long studyFileId, Date lastDownloadTime) {
-        incrementNumberOfDownloads( studyFileId, null, lastDownloadTime );
-    }
-
     public void incrementNumberOfDownloads(Long studyFileId, Long currentVDCId) {
         incrementNumberOfDownloads( studyFileId, currentVDCId, new Date() );
     }
@@ -1142,7 +1134,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
 
         if (currentVDCId == null) {
             VDCActivity vdcActivity = study.getOwner().getVDCActivity();
-            vdcActivity.setLocalStudyLocalDownloadCount( vdcActivity.getLocalStudyNetworkDownloadCount() + 1);
+            vdcActivity.setLocalStudyNetworkDownloadCount( vdcActivity.getLocalStudyNetworkDownloadCount() + 1);
 
         } else if ( currentVDCId.equals(study.getOwner().getId()) ) {
             VDCActivity vdcActivity = study.getOwner().getVDCActivity();

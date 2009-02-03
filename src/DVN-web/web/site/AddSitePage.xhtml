@@ -171,6 +171,23 @@
                     <br/>
                     <ice:outputText styleClass="vdcHelpText" value="Short name used to build the URL for this dataverse, e.g., http://.../dv/'alias'. It is case sensitive."/>
                   </div>
+                      <div jsfc="ice:panelGroup">
+                  <ice:outputLabel  for="shortDescriptionInput" id="shortDescriptionLabel">
+                    <ice:outputText
+                                    id="shortDescriptionLabelText"
+                                    value="Network Home Page Description"/>
+                  </ice:outputLabel>
+                </div>
+                <div jsfc="ice:panelGroup">
+                  <ice:inputTextarea id="dataverseShortDescription"
+                                     required="false"
+                                     validator="#{AddSitePage.validateShortDescription}"
+                                     value="#{AddSitePage.shortDescription}"/>
+                  <br/>
+                  <ice:outputText styleClass="vdcHelpText" value="Short description to appear on the network home page with your dataverse listing."/>
+                  <ice:message for="dataverseShortDescription" showSummary="true" showDetail="false" styleClass="errorMessage"/>
+                </div>
+
                   <!-- Group Assignment -->
                   <div jsfc="ice:panelGroup">
                     <ice:outputLabel for="selectedGroup" id="selectedGroupLabel">

@@ -605,6 +605,7 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
         String newValue = (String)value;
         if (newValue != null && newValue.trim().length() > 0) {
             if (newValue.length() > 255) {
+                ((UIInput)toValidate).setValid(false);
                 FacesMessage message = new FacesMessage("The field cannot be more than 255 characters in length.");
                 context.addMessage(toValidate.getClientId(context), message);
             }

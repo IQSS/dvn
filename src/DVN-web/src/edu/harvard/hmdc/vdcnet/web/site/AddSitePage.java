@@ -453,19 +453,18 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
             }
         }
         VDC createdVDC = vdcService.findByAlias(alias);
-        ExternalContext extContext = FacesContext.getCurrentInstance().getExternalContext();
-        getVDCRequestBean().setCurrentVDC(createdVDC);
-        //  add default values to the VDC table and commit/set the vdc bean props
-        getVDCRequestBean().getCurrentVDC().setDtype(dataverseType);
-        getVDCRequestBean().getCurrentVDC().setDisplayNetworkAnnouncements(getVDCRequestBean().getVdcNetwork().isDisplayAnnouncements());
-        getVDCRequestBean().getCurrentVDC().setDisplayAnnouncements(getVDCRequestBean().getVdcNetwork().isDisplayVDCAnnouncements());
-        getVDCRequestBean().getCurrentVDC().setAnnouncements(getVDCRequestBean().getVdcNetwork().getDefaultVDCAnnouncements());
-        getVDCRequestBean().getCurrentVDC().setDisplayNewStudies(getVDCRequestBean().getVdcNetwork().isDisplayVDCRecentStudies());
-        getVDCRequestBean().getCurrentVDC().setAboutThisDataverse(getVDCRequestBean().getVdcNetwork().getDefaultVDCAboutText());
-        getVDCRequestBean().getCurrentVDC().setContactEmail(getVDCSessionBean().getLoginBean().getUser().getEmail());
-        if (getAffiliation() != null && !getAffiliation().equals("") )
-            getVDCRequestBean().getCurrentVDC().setAffiliation(getAffiliation());
+        createdVDC.setDtype(dataverseType);
+        createdVDC.setDisplayNetworkAnnouncements(getVDCRequestBean().getVdcNetwork().isDisplayAnnouncements());
+        createdVDC.setDisplayAnnouncements(getVDCRequestBean().getVdcNetwork().isDisplayVDCAnnouncements());
+        createdVDC.setAnnouncements(getVDCRequestBean().getVdcNetwork().getDefaultVDCAnnouncements());
+        createdVDC.setDisplayNewStudies(getVDCRequestBean().getVdcNetwork().isDisplayVDCRecentStudies());
+        createdVDC.setAboutThisDataverse(getVDCRequestBean().getVdcNetwork().getDefaultVDCAboutText());
+        createdVDC.setContactEmail(getVDCSessionBean().getLoginBean().getUser().getEmail());      
+        createdVDC.setAffiliation(affiliation);
+        createdVDC.setDvnDescription(shortDescription);
         vdcService.edit(createdVDC);
+        getVDCRequestBean().setCurrentVDC(createdVDC);
+
         // Refresh User object in LoginBean so it contains the user's new role of VDC administrator.
         getVDCRequestBean().getCurrentVDCURL();
         StatusMessage msg = new StatusMessage();
@@ -490,9 +489,7 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
 
     public String createScholarDataverse() {
         String dataversetype = dataverseType;
-        String firstname = firstName;
-        String lastname = lastName;
-        String affiliated = affiliation;
+     
         String name = (String) dataverseName.getValue();
         String alias = (String) dataverseAlias.getValue();
         Long userId = getVDCSessionBean().getLoginBean().getUser().getId();
@@ -521,18 +518,18 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
 
         }
         VDC createdScholarDataverse = vdcService.findScholarDataverseByAlias(alias);
-        ExternalContext extContext = FacesContext.getCurrentInstance().getExternalContext();
-        getVDCRequestBean().setCurrentVDC(createdScholarDataverse);
         //  add default values to the VDC table and commit/set the vdc bean props
-        getVDCRequestBean().getCurrentVDC().setDisplayNetworkAnnouncements(getVDCRequestBean().getVdcNetwork().isDisplayAnnouncements());
-        getVDCRequestBean().getCurrentVDC().setDisplayAnnouncements(getVDCRequestBean().getVdcNetwork().isDisplayVDCAnnouncements());
-        getVDCRequestBean().getCurrentVDC().setAnnouncements(getVDCRequestBean().getVdcNetwork().getDefaultVDCAnnouncements());
-        getVDCRequestBean().getCurrentVDC().setDisplayNewStudies(getVDCRequestBean().getVdcNetwork().isDisplayVDCRecentStudies());
-        getVDCRequestBean().getCurrentVDC().setAboutThisDataverse(getVDCRequestBean().getVdcNetwork().getDefaultVDCAboutText());
-        getVDCRequestBean().getCurrentVDC().setContactEmail(getVDCSessionBean().getLoginBean().getUser().getEmail());
+        createdScholarDataverse.setDisplayNetworkAnnouncements(getVDCRequestBean().getVdcNetwork().isDisplayAnnouncements());
+        createdScholarDataverse.setDisplayAnnouncements(getVDCRequestBean().getVdcNetwork().isDisplayVDCAnnouncements());
+        createdScholarDataverse.setAnnouncements(getVDCRequestBean().getVdcNetwork().getDefaultVDCAnnouncements());
+        createdScholarDataverse.setDisplayNewStudies(getVDCRequestBean().getVdcNetwork().isDisplayVDCRecentStudies());
+        createdScholarDataverse.setAboutThisDataverse(getVDCRequestBean().getVdcNetwork().getDefaultVDCAboutText());
+        createdScholarDataverse.setContactEmail(getVDCSessionBean().getLoginBean().getUser().getEmail());
+        createdScholarDataverse.setDvnDescription(shortDescription);
         vdcService.edit(createdScholarDataverse);
-        // Refresh User object in LoginBean so it contains the user's new role of VDC administrator.
-        getVDCRequestBean().getCurrentVDCURL();
+        getVDCRequestBean().setCurrentVDC(createdScholarDataverse);
+          // Refresh User object in LoginBean so it contains the user's new role of VDC administrator.
+    
         StatusMessage msg = new StatusMessage();
 
         String hostUrl = PropertyUtil.getHostUrl();
@@ -558,6 +555,19 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
     public String cancel() {
         return "cancel";
     }
+    
+    public void validateShortDescription(FacesContext context,
+                UIComponent toValidate,
+                Object value) {
+            String newValue = (String)value;
+            if (newValue != null && newValue.trim().length() > 0) {
+                if (newValue.length() > 255) {
+                    ((UIInput)toValidate).setValid(false);
+                    FacesMessage message = new FacesMessage("The field cannot be more than 255 characters in length.");
+                    context.addMessage(toValidate.getClientId(context), message);
+                }
+            }
+        }
 
     public void validateName(FacesContext context,
             UIComponent toValidate,
@@ -737,6 +747,14 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
         return this.affiliation;
     }
 
+    public String getShortDescription() {
+        return shortDescription;
+    }
+
+    public void setShortDescription(String shortDescription) {
+        this.shortDescription = shortDescription;
+    }
+
     /**
      * Setter for property affiliation.
      * @param affiliation New value of property affiliation.
@@ -744,6 +762,8 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
     public void setAffiliation(String affiliation) {
         this.affiliation = affiliation;
     }
+
+    String shortDescription;
     /**
      *
      * Add group select

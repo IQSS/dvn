@@ -528,6 +528,9 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             String query = "SELECT s.id FROM Study s WHERE s.id in (" + studyIds + ") ORDER BY s.metadata.title";
             return (List) em.createQuery(query).getResultList();
 
+        } else if (orderBy.equals("lastUpdateTime")) {
+            String query = "SELECT s.id FROM Study s WHERE s.id in (" + studyIds + ") ORDER BY s.lastupdatetime desc";
+            return (List) em.createQuery(query).getResultList();
             
         } else if (orderBy.equals("downloadCount")) {  
             // this query runs fine in Postgres, but will need to be tested with other DBs if they are used

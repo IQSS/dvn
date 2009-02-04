@@ -42,6 +42,7 @@ import edu.harvard.hmdc.vdcnet.study.StudyFieldServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.Template;
 import edu.harvard.hmdc.vdcnet.util.DateUtil;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
@@ -826,11 +827,11 @@ public class VDCServiceBean implements VDCServiceLocal {
     public double getMaxDownloadCount() {
         String queryString = "SELECT max( localstudylocaldownloadcount + localstudynetworkdownloadcount + " +
                 "(.5 * localstudyforeigndownloadcount) + (.5 * foreignstudylocaldownloadcount) ) " +
-                "FROM vdcactivity v";
+                "FROM vdcactivity";
         Query query = em.createNativeQuery(queryString);
 
         Object object = ((List) query.getSingleResult()).get(0);
-        return ((Double) object).doubleValue();
+        return ((BigDecimal) object).doubleValue();
 
     }
 }

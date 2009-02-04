@@ -99,7 +99,7 @@ public class VDCUIList extends SortableList {
                 }
             }
 
-            double maxDownloadCount = vdcService.getMaxDownloadCount();
+            double maxDownloadCount = Math.max( 1, vdcService.getMaxDownloadCount() ); // minimum of 1, to avoid divide my zero issues
             vdcUIList = new ArrayList<VDCUI>();
             for (Object vdcId : vdcIds) {
                 vdcUIList.add( new VDCUI( (Long)vdcId, maxDownloadCount ) );

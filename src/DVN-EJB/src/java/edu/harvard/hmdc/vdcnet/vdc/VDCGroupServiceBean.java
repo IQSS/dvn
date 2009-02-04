@@ -42,6 +42,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 /**
  *
@@ -90,8 +91,14 @@ public class VDCGroupServiceBean implements VDCGroupServiceLocal {
      *          of this VDCGroup of param id.
      */
     public List<VDCGroup> findByParentId(Long id) {
-        String query = "SELECT object(o) FROM VDCGroup AS o WHERE o.parent = :fieldName ORDER BY o.displayOrder";
-        List<VDCGroup> vdcgroups = (List<VDCGroup>)em.createQuery(query).setParameter("fieldName", id).getResultList();
+        Query query = null;
+        if (id==null) {
+            query = em.createQuery("SELECT object(o) FROM VDCGroup AS o WHERE o.parent is null ORDER BY o.displayOrder");
+        } else {
+            query = em.createQuery("SELECT object(o) FROM VDCGroup AS o WHERE o.parent = :fieldName ORDER BY o.displayOrder");
+            query.setParameter("fieldName", id);
+        }
+        List<VDCGroup> vdcgroups = (List<VDCGroup>)query.getResultList();
         return vdcgroups;
     }
 

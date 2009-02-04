@@ -529,21 +529,19 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             return (List) em.createQuery(query).getResultList();
 
         } else if (orderBy.equals("lastUpdateTime")) {
-            String query = "SELECT s.id FROM Study s WHERE s.id in (" + studyIds + ") ORDER BY s.lastupdatetime desc";
+            String query = "SELECT s.id FROM Study s WHERE s.id in (" + studyIds + ") ORDER BY s.lastUpdateTime desc";
             return (List) em.createQuery(query).getResultList();
             
         } else if (orderBy.equals("downloadCount")) {  
             // this query runs fine in Postgres, but will need to be tested with other DBs if they are used
             String queryStr = "select s.id " +
                     "from metadata m, study s " +
-                    "LEFT OUTER JOIN filecategory fc on s.id = fc.study_id " +
-                    "LEFT OUTER JOIN studyfile sf on fc.id = sf.filecategory_id " +
                     "LEFT OUTER JOIN studyfileactivity sfa on  s.id = sfa.study_id " +
                     "where s.metadata_id = m.id " +
                     "and s.id in (" + studyIds + ")" +
                     "group by s.id, m.title " +
                     "order by " +
-                    "(CASE WHEN count(sf) = 0 THEN -1 WHEN sum(downloadcount) is null THEN 0 ELSE sum(downloadcount) END) desc, m.title" ;
+                    "(CASE WHEN sum(downloadcount) is null THEN -1 ELSE sum(downloadcount) END) desc, m.title" ;
             Query query = em.createNativeQuery(queryStr);
             List<Long> returnList = new ArrayList<Long>();
             // since query is native, must parse through Vector results

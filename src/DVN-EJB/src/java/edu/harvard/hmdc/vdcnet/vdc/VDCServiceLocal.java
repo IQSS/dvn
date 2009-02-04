@@ -121,5 +121,6 @@ public interface VDCServiceLocal extends java.io.Serializable  {
    public List<Long> getOrderedVDCIds (Long classificationId, String letter, String orderBy);
    public List<Long> getOrderedVDCIds (Long classificationId, String letter, String orderBy, boolean hideRestrictedVDCs);
 
+   public double getMaxDownloadCount();
 
 }

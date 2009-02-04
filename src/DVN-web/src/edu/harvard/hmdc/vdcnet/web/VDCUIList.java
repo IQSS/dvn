@@ -98,9 +98,11 @@ public class VDCUIList extends SortableList {
                     vdcIds = vdcService.getOrderedVDCIds(vdcGroupId, orderBy);
                 }
             }
+
+            double maxDownloadCount = vdcService.getMaxDownloadCount();
             vdcUIList = new ArrayList<VDCUI>();
             for (Object vdcId : vdcIds) {
-                vdcUIList.add(new VDCUI((Long)vdcId));
+                vdcUIList.add( new VDCUI( (Long)vdcId, maxDownloadCount ) );
             }
     }
 

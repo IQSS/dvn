@@ -52,10 +52,7 @@ public interface VDCCollectionServiceLocal extends java.io.Serializable  {
     public List findSubCollections(Long id);
 
     java.util.List findSubCollections(Long id, boolean getAllCollections);
-    
-    public java.util.List<Study> getOrderedStudiesByCollection(Long collectionId);
-    
-    public java.util.List<Long> getOrderedStudyIdsByCollection(Long collectionId);
+
 
     public VDCCollection findByNameWithinDataverse(String name, VDC dataverse);
     

@@ -28,6 +28,8 @@ sub check_TempDirectory {
 	{
 	    return 0 unless mkdir $dir; 
 	}
+
+	chmod 0775, $dir; 
     }
 
     1; 

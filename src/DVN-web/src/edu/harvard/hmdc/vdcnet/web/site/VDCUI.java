@@ -152,7 +152,7 @@ public class VDCUI  implements java.io.Serializable {
     }
     
 
-    public long getActivity() {
+    public Long getActivity() {
         if (activity == -1) {
             if ( getDownloadCount() == 0) {
                 activity = 0;
@@ -163,10 +163,26 @@ public class VDCUI  implements java.io.Serializable {
                     maxDownloadCount = vdcService.getMaxDownloadCount();
                 }
                 activity = Math.round( 4 * (getDownloadCount() / maxDownloadCount) ) + 1;
-                activity = Math.max( 5, activity );
+                activity = Math.min( 5, activity );
             }
         }
         
         return activity;
     }
+
+    private String activityClass;
+    public String getActivityClass() {
+        activityClass = String.valueOf(getActivity());
+        switch (Integer.parseInt(activityClass)) {
+           case 0: activityClass =  "activitylevelicon al-0"; break;
+           case 1: activityClass =  "activitylevelicon al-1"; break;
+           case 2: activityClass =  "activitylevelicon al-2"; break;
+           case 3: activityClass =  "activitylevelicon al-3"; break;
+           case 4: activityClass =  "activitylevelicon al-4"; break;
+           case 5: activityClass =  "activitylevelicon al-5"; break;
+       }
+        return activityClass;
+     }
+
 }
+

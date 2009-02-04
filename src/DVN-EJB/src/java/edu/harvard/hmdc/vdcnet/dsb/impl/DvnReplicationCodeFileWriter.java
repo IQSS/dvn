@@ -142,13 +142,13 @@ public class DvnReplicationCodeFileWriter {
     public String generateEdaLines() {
         String template =
             "aol<-c(1,1,0)\n" +
-            "dir.create('./Zlg_${PID}')\n" +
+            "try(dir.create('./Zlg_${PID}'))\n" +
             "htmlsink<-HTMLInitFile(outdir = './Zlg_${PID}', filename='Rout_${PID}', \n" +
             "extension='html', CSSFile='R2HTML.css', Title ='Dataverse Analysis: Request #${PID}')\n" +
             "hdrContents <- '<h1>Dataverse Analysis</h1><h2>Results</h2><p>Study\n" +
             " Title:testDataForDSB</p><hr />'\n"+
             "HTML(file=htmlsink,hdrContents)\n" +
-            "dir.create('./Zlg_${PID}/visuals')\n" +
+            "try(dir.create('./Zlg_${PID}/visuals'))\n" +
             "try(${dvn_dataframe}<-univarStat(dtfrm=${dvn_dataframe}))\n"+
             "try({${dvn_dataframe}<-univarChart(dtfrm=${dvn_dataframe}, analysisoptn=aol,\n" +
             "imgflprfx='./Zlg_${PID}/visuals/Rvls.${PID}',standalone=F)})\n"+
@@ -165,7 +165,7 @@ public class DvnReplicationCodeFileWriter {
     public String generateXtabLines() {
         String template =
             "aol<-c(0,0,1)\n" +
-            "dir.create('./Zlg_${PID}')\n" +
+            "try(dir.create('./Zlg_${PID}'))\n" +
             "htmlsink<-HTMLInitFile(outdir = './Zlg_${PID}', filename='Rout_${PID}', \n" +
             "extension='html', CSSFile='R2HTML.css', Title ='Dataverse Analysis: Request #${PID}')\n" +
             "hdrContents <- '<h1>Dataverse Analysis</h1><h2>Results</h2><p>Study\n" +

@@ -874,10 +874,9 @@ a.dvnHmpgGroupCreateLink:hover, a.dvnHmpgGroupCreateLink:active {
 }
 .dvnHmpgGroupNoDVs {
     margin-top: .25em;
-    padding: 0 1em;
+    padding: 0 1em 0 1em;
     border: 1px solid #dcdddf;
     text-align: center;
-    clear: both;
 }
 .dvnHmpgGroupTableWrap {
     margin-top: .25em;
@@ -1263,9 +1262,6 @@ a.vdcStudyFileSubsetAnalysisLink:active, a.vdcStudyFileSubsetAnalysisLink:visite
 
 span.vdcEditStudyFormatExample {display: inline;}
 
-table.vdcEditStudyTableLegend {margin-left: 8%;}
-.vdcEditStudyTableLegend td.vdcEditStudyTableLegendCol1 {width: 10%; vertical-align: top; text-transform: uppercase;}
-.vdcEditStudyTableLegend span.vdcHelpText {font-size: 90% !important;}
 .vdcEditStudyTableLegend div {margin-bottom: .25em;}
 .vdcEditStudyTableLegend img {vertical-align: middle;}
 .vdcEditStudyTableLegend span {margin-left: .25em;}

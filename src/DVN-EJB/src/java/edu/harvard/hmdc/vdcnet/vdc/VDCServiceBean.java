@@ -822,4 +822,15 @@ public class VDCServiceBean implements VDCServiceLocal {
 
         return returnList;
     }
+
+    public double getMaxDownloadCount() {
+        String queryString = "SELECT max( localstudylocaldownloadcount + localstudynetworkdownloadcount + " +
+                "(.5 * localstudyforeigndownloadcount) + (.5 * foreignstudylocaldownloadcount) ) " +
+                "FROM vdcactivity v";
+        Query query = em.createNativeQuery(queryString);
+
+        Object object = ((List) query.getSingleResult()).get(0);
+        return ((Double) object).doubleValue();
+
+    }
 }

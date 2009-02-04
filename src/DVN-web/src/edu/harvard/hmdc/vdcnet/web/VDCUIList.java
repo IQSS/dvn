@@ -119,7 +119,6 @@ public class VDCUIList extends SortableList {
 
 
     public List<VDCUI> getVdcUIList() {
-        System.out.println("getting VDCUIList");
         if (vdcUIList == null) {
             initVdcService();
             sort();

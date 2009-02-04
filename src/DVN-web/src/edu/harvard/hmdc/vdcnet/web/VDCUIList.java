@@ -61,7 +61,6 @@ public class VDCUIList extends SortableList {
             if (sortColumnName == null) {
                 return;
             }
-            System.out.println("the sort column is " + sortColumnName);
             if (sortColumnName.equals(NAME_COLUMN_NAME)) {
                 orderBy = NAME_COLUMN_NAME;
             } else if (sortColumnName.equals(AFFILIATION_COLUMN_NAME)) {
@@ -77,29 +76,22 @@ public class VDCUIList extends SortableList {
             }
 
             List vdcIds = null;
-           
-            // TODO: Adapt this to the all dataverses/grouped dataverses world
-            if (orderBy.equals("lastupdatetime")) {
-                // TODO: implement this
-                //vdcIds = vdcService.getOrderedVdcIdsByLastUpdateTime(vdcGroupId);
-            } else if (orderBy.equals("activity")) {
-                // TODO: implement this
+
+            if (orderBy.equals("activity")) {
+                vdcIds = vdcService.getOrderedVDCIds(vdcGroupId, alphaCharacter, orderBy);
             } else {
-                // TODO: rework this to account for the above orderby sql queries
-                // to be both for all dataverses and for classified dataverses.
                 if (alphaCharacter != null && vdcGroupId != null) {
                     vdcIds = vdcService.getOrderedVDCIds(vdcGroupId, alphaCharacter, orderBy);
                 } else if (alphaCharacter != null && vdcGroupId == null) {
                     vdcIds = vdcService.getOrderedVDCIds(alphaCharacter, orderBy);
                 } else if (vdcGroupId == null) {
-                    System.out.println("The ordering will be by " + orderBy);
                     vdcIds = vdcService.getOrderedVDCIds(orderBy);
                 } else {
                     vdcIds = vdcService.getOrderedVDCIds(vdcGroupId, orderBy);
                 }
             }
 
-            double maxDownloadCount = Math.max( 1, vdcService.getMaxDownloadCount() ); // minimum of 1, to avoid divide my zero issues
+            double maxDownloadCount = Math.max( 1.0, vdcService.getMaxDownloadCount() ); // minimum of 1, to avoid divide my zero issues
             vdcUIList = new ArrayList<VDCUI>();
             for (Object vdcId : vdcIds) {
                 vdcUIList.add( new VDCUI( (Long)vdcId, maxDownloadCount ) );
@@ -119,6 +111,7 @@ public class VDCUIList extends SortableList {
 
 
     public List<VDCUI> getVdcUIList() {
+        System.out.println("getting VDCUIList");
         if (vdcUIList == null) {
             initVdcService();
             sort();

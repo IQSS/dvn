@@ -176,4 +176,11 @@ insert into vdcactivity ( id, localstudylocaldownloadcount, localstudynetworkdow
 SELECT nextval('vdcactivity_id_seq'), 0, 0, 0, 0, id
 from vdc;
 
+-- and studyfileactivity (for nonexisting files)
+insert into studyfileactivity ( id, downloadcount, study_id, studyfile_id )
+SELECT nextval('studyfileactivity_id_seq'), 0, fc.study_id, sf.id
+from studyfile sf, filecategory fc
+where fc.id = sf.filecategory_id
+and sf.id not in (select studyfile_id from studyfileactivity);
+
 commit;

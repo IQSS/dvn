@@ -29,9 +29,9 @@
 
 package edu.harvard.hmdc.vdcnet.web.site;
 
-import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
+import edu.harvard.hmdc.vdcnet.vdc.VDCActivity;
 import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
 import edu.harvard.hmdc.vdcnet.web.LocalizedDate;
 import edu.harvard.hmdc.vdcnet.web.collection.CollectionUI;
@@ -46,16 +46,21 @@ import javax.naming.InitialContext;
  * @author wbossons
  */
 public class VDCUI  implements java.io.Serializable {
-    
+
+    private VDCServiceLocal vdcService = null;
+
     private Long vdcId;
     private VDC vdc;
-    private VDCServiceLocal vdcService = null;
+
+    private double maxDownloadCount = -1;
+    private long activity = -1;
     
     /** Creates a new instance of VDCUI */
     
     // TODO: change this to be more like StudyUI
-    public VDCUI(Long vdcId) {
+    public VDCUI(Long vdcId, double maxDownloadCount) {
         this.vdcId = vdcId;
+        this.maxDownloadCount = maxDownloadCount;
         //System.out.println("The vdc is " + getVdc().getName());
     }
 
@@ -138,5 +143,30 @@ public class VDCUI  implements java.io.Serializable {
                vdc.getRootCollection().getSubCollections().size() == 0 &&
                new CollectionUI(vdc.getRootCollection()).getStudyIds().size() == 0;
 
+    }
+
+    public double getDownloadCount() {
+        VDCActivity vda = getVdc().getVDCActivity();
+        return ( vda.getLocalStudyLocalDownloadCount() + vda.getLocalStudyNetworkDownloadCount() +
+                (.5 * vda.getLocalStudyForeignDownloadCount()) + (.5 * vda.getForeignStudyLocalDownloadCount()) );
+    }
+    
+
+    public long getActivity() {
+        if (activity == -1) {
+            if ( getDownloadCount() == 0) {
+                activity = 0;
+            } else {
+
+                if (maxDownloadCount == -1) {
+                    initVdcService();
+                    maxDownloadCount = vdcService.getMaxDownloadCount();
+                }
+                activity = Math.round( 4 * (getDownloadCount() / maxDownloadCount) ) + 1;
+                activity = Math.max( 5, activity );
+            }
+        }
+        
+        return activity;
     }
 }

@@ -134,22 +134,10 @@ public class VDCCollectionServiceBean implements VDCCollectionServiceLocal {
 
     }
 
-    public java.util.List<Study> getOrderedStudiesByCollection(Long collectionId) {
-        String queryStr = "SELECT s FROM VDCCollection c JOIN c.studies s where c.id = " + collectionId + " ORDER BY s.metadata.title";
+    private java.util.List<Long> getStudyIdsByCollection(Long collectionId) {
+        String queryStr = "SELECT s.id FROM VDCCollection c JOIN c.studies s where c.id = " + collectionId;
         Query query = em.createQuery(queryStr);
-        List<Study> studies = query.getResultList();
-
-        return studies;
-
-    }
-
-    public java.util.List<Long> getOrderedStudyIdsByCollection(Long collectionId) {
-        String queryStr = "SELECT s.id FROM VDCCollection c JOIN c.studies s where c.id = " + collectionId + " ORDER BY s.metadata.title";
-        Query query = em.createQuery(queryStr);
-
         return query.getResultList();
-
-
     }
 
     public List<Long> getStudyIds(VDCCollection coll) {
@@ -168,7 +156,7 @@ public class VDCCollectionServiceBean implements VDCCollectionServiceLocal {
             String query = coll.isLocalScope() ? "dvOwnerId:" + coll.getOwner().getId() + " AND (" + coll.getQuery() + ")": coll.getQuery();
             studyIds.addAll(indexService.query( query ));
         } else {
-            studyIds.addAll(getOrderedStudyIdsByCollection(coll.getId()));
+            studyIds.addAll(getStudyIdsByCollection(coll.getId()));
         }
 
         if (includeSubCollections) {

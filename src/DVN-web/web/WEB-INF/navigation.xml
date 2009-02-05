@@ -431,7 +431,7 @@
         <from-view-id>/networkAdmin/AddClassificationsPage.xhtml</from-view-id>
         <navigation-case>
             <from-outcome>result</from-outcome>
-            <to-view-id>/networkAdmin/AddClassificationsPage.xhtml</to-view-id>
+            <to-view-id>/networkAdmin/ManageClassificationsPage.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
     <navigation-rule>

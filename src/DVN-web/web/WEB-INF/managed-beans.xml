@@ -679,6 +679,12 @@
             <property-name>cid</property-name>
             <value>#{param.cid}</value>
         </managed-property>
+        <managed-property>
+            <property-name>classificationList</property-name>
+            <property-class>edu.harvard.hmdc.vdcnet.web.site.ClassificationList</property-class>
+            <value>#{ClassificationList}</value>
+        </managed-property>
+        
     </managed-bean>
     <managed-bean>
         <managed-bean-name>manageClassificationsPage</managed-bean-name>

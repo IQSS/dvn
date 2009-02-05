@@ -52,7 +52,8 @@
               <ice:panelGroup>
                 <ice:selectOneMenu binding="#{addClassificationsPage.parentSelect}"
                                    id="parentSelect"
-                                   value="#{addClassificationsPage.selectedParent}">
+                                   value="#{addClassificationsPage.selectedParent}"
+                                   partialSubmit="true">
                   <f:selectItems value="#{addClassificationsPage.parentSelectItems}" id="parentSelectItems"/>
                 </ice:selectOneMenu>
               </ice:panelGroup>
@@ -70,7 +71,7 @@
               </ice:panelGroup>
             </ice:panelGrid>
             <!-- ***************************** Add/Remove Dataverses to/from Classifications page. ************************************ -->
-            <ice:panelGroup styleClass="componentBox">
+            <ice:panelGroup styleClass="componentBox" rendered="#{addClassificationsPage.selectedParent!=null}">
             <!-- Multiple Selection Checkbox -->
             <ice:panelGroup styleClass="clearer"/>
               <ice:panelGroup styleClass="dvnAddClassificationBlock">

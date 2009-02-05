@@ -17,6 +17,8 @@ import edu.harvard.hmdc.vdcnet.vdc.VDCGroupServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
 import edu.harvard.hmdc.vdcnet.web.DataverseGrouping;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
+import edu.harvard.hmdc.vdcnet.web.site.ClassificationList;
+import edu.harvard.hmdc.vdcnet.web.site.ClassificationUI;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -50,6 +52,7 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
     private HtmlInputHidden multiRowSelector;
     private Long cid;
     private Long selectedParent;
+    private ClassificationList classificationList;
 
     private boolean result;
     private String statusMessage;
@@ -68,6 +71,14 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
             initSelectedItemBeans();
         }
         result = false;
+    }
+
+    public ClassificationList getClassificationList() {
+        return classificationList;
+    }
+
+    public void setClassificationList(ClassificationList classificationList) {
+        this.classificationList = classificationList;
     }
 
     private void initClassificationBean() {
@@ -113,17 +124,20 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
     }
 
     private void initParentSelectItems() {
-        List list             = (List) vdcGroupService.findAll();
-        Iterator iterator     = list.iterator();
+       
+        Iterator iterator     = classificationList.getClassificationUIs().iterator();
         parentSelectItems     = new ArrayList();
         SelectItem parentSelectItem = new SelectItem(new Long("0"), "Select Classification(s)");
         parentSelectItems.add(parentSelectItem);
-        int i = 1;
+ 
         while (iterator.hasNext()) {
-            VDCGroup vdcgroup = (VDCGroup)iterator.next();
+            ClassificationUI classUI =(ClassificationUI)iterator.next();
+            VDCGroup vdcgroup = classUI.getVdcGroup();
             if (cid != null && cid.equals(vdcgroup.getId())) {
                 continue;
-            } else {
+            }else if (classUI.getLevel()==2){
+                continue;
+            }else {
                 parentSelectItem = new SelectItem(vdcgroup.getId(), vdcgroup.getName());
                 parentSelectItems.add(parentSelectItem);
             }
@@ -322,7 +336,7 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
             //msgiterator.remove();
         statusMessage = SUCCESS_MESSAGE;
         result = true;
-        try {
+ 
             Long[] vdcs         = new Long[selectedDataverses.size()];
             Iterator iterator   = selectedDataverses.iterator();
             int count           = 0;
@@ -337,21 +351,19 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
             Long selectedValue = (Long)parentSelect.getValue();
             if (selectedValue.equals(new Long("0"))) {
                 vdcgroup.setParent(null);
+                vdcgroup.getVdcs().clear();
+                vdcGroupService.updateVdcGroup(vdcgroup);
+
             } else {
                 vdcgroup.setParent((Long)parentSelect.getValue());
+                vdcGroupService.updateVdcGroup(vdcgroup);
+                vdcGroupService.updateWithVdcs(vdcgroup, vdcs);
             }
-            vdcGroupService.updateVdcGroup(vdcgroup);
-            vdcGroupService.updateWithVdcs(vdcgroup, vdcs);
-        } catch (Exception e) {
-            statusMessage = FAIL_MESSAGE;
-        } finally {
-            //Iterator iterator = FacesContext.getCurrentInstance().getMessages("AddClassificationsPageForm");
-            //while (iterator.hasNext()) {
-                //iterator.remove();
-            //}
-            FacesContext.getCurrentInstance().addMessage("AddClassificationsPageForm", new FacesMessage(statusMessage));
+            
+      
+           
             return "result";
-        }
+        
     }
 
     // **************** VALIDATORS ****************** -->

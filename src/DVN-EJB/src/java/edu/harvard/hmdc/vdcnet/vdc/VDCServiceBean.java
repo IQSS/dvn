@@ -784,8 +784,8 @@ public class VDCServiceBean implements VDCServiceLocal {
 
 
         } else if ("name".equals(orderBy.toLowerCase())) {
-            selectClause += ", upper( (CASE WHEN dtype = 'Scholar' THEN lastname || ', ' || firstname ELSE name END) ) ";
-            orderingClause += " order by upper( (CASE WHEN dtype = 'Scholar' THEN lastname || ', ' || firstname ELSE name END) ) ";
+            selectClause += ", upper( (CASE WHEN dtype = 'Scholar' THEN lastname || ', ' || firstname ELSE name END) ) as sortname ";
+            orderingClause += " order by sortname ";
 
         } else if ("affiliation".equals(orderBy.toLowerCase())) {
             selectClause += ", upper(affiliation) ";

@@ -31,29 +31,33 @@ public class VDCUIList extends SortableList {
 
     private Long vdcGroupId;
     private String alphaCharacter;
+    
+    
+    private void init() {
+        sortColumnName = NAME_COLUMN_NAME;
+        ascending = true;
+        oldSort = "";
+        // make sure sortColumnName on first render
+        oldAscending = ascending;        
+        initVdcService();               
+    }
 
     public VDCUIList() {
-        super(NAME_COLUMN_NAME);
-        initVdcService();
-        sort();
-        isRefreshed = true;
+        init();      
     }
 
     public VDCUIList(Long vdcGroupId) {
-        super(NAME_COLUMN_NAME);
+        init();
         this.vdcGroupId = vdcGroupId;
-        initVdcService();
-        sort();
-        isRefreshed = true;
+      
+       
     }
 
-    public VDCUIList(Long vdcGroupId, String alphaCharacter) {
-        super(NAME_COLUMN_NAME);
+    public VDCUIList(Long vdcGroupId, String alphaCharacter) {     
+        init();
         this.vdcGroupId = vdcGroupId;
-        this.alphaCharacter = alphaCharacter;
-        initVdcService();
-        sort();
-        isRefreshed = true;
+        this.alphaCharacter = alphaCharacter;        
+
     }
 
     private void initVdcService() {
@@ -119,25 +123,18 @@ public class VDCUIList extends SortableList {
     public String getLastUpdatedColumnName()  { return LASTUPDATED_COLUMN_NAME; }
     public String getActivityColumnName()     { return ACTIVITY_COLUMN_NAME; }
 
-    /*if (!oldSort.equals(sortColumnName) ||
-                oldAscending != ascending){
-                sort();
-                oldSort = sortColumnName;
-                oldAscending = ascending;
-     * */
+ 
 
-    private boolean isRefreshed;
-    public List<VDCUI> getVdcUIList() {
-        if (!isRefreshed) {
-            if (oldSort.equals(sortColumnName) ) {
-                //System.out.println("the sort column name is " + sortColumnName + " oldSort is " + oldSort + " Ascending " + " Ascending " + ascending + " oldAscending " + oldAscending);
-                Collections.reverse(vdcUIList);
-                oldSort = sortColumnName;
-            } else {
+    
+    public List<VDCUI> getVdcUIList() {     
+            if (!oldSort.equals(sortColumnName) ) {
                 sort();
+                oldSort = sortColumnName;
             }
-            isRefreshed = true;
-        }
+            else if (oldAscending!=ascending) {
+                Collections.reverse(vdcUIList);
+                oldAscending=ascending;
+            }
         return vdcUIList;
     }
 
@@ -149,7 +146,7 @@ public class VDCUIList extends SortableList {
     public void setAscending(boolean ascending) {
         oldAscending = this.ascending;
         this.ascending = ascending;
-        isRefreshed = false;
+       
     }
 
     /**
@@ -160,7 +157,6 @@ public class VDCUIList extends SortableList {
     public void setSortColumnName(String sortColumnName) {
         oldSort = this.sortColumnName;
         this.sortColumnName = sortColumnName;
-        isRefreshed = false;
     }
 
     public void setVdcUIList(List<VDCUI> vdcUIList) {

@@ -135,7 +135,7 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
             VDCGroup vdcgroup = classUI.getVdcGroup();
             if (cid != null && cid.equals(vdcgroup.getId())) {
                 continue;
-            }else if (classUI.getLevel()==2){
+            }else if (classUI.getLevel()==3){
                 continue;
             }else {
                 parentSelectItem = new SelectItem(vdcgroup.getId(), vdcgroup.getName());
@@ -349,10 +349,14 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
             vdcgroup.setName((String)nameInput.getValue());
             vdcgroup.setDescription((String)descriptionInput.getValue());
             Long selectedValue = (Long)parentSelect.getValue();
+            // If the VDCGroup has no parent, then this is a top level classification,
+            // which should contain no dataverses.
             if (selectedValue.equals(new Long("0"))) {
                 vdcgroup.setParent(null);
                 vdcgroup.getVdcs().clear();
                 vdcGroupService.updateVdcGroup(vdcgroup);
+                vdcs = new Long[0];
+                vdcGroupService.updateWithVdcs(vdcgroup, vdcs);               
 
             } else {
                 vdcgroup.setParent((Long)parentSelect.getValue());

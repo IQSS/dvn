@@ -71,7 +71,7 @@
               </ice:panelGroup>
             </ice:panelGrid>
             <!-- ***************************** Add/Remove Dataverses to/from Classifications page. ************************************ -->
-            <ice:panelGroup styleClass="componentBox" rendered="#{addClassificationsPage.selectedParent!=null}">
+            <ice:panelGroup styleClass="componentBox" rendered="#{addClassificationsPage.selectedParent!=null and addClassificationsPage.selectedParent!=0}">
             <!-- Multiple Selection Checkbox -->
             <ice:panelGroup styleClass="clearer"/>
               <ice:panelGroup styleClass="dvnAddClassificationBlock">
@@ -99,7 +99,7 @@
                       </f:facet>
                       <ice:panelGroup>
                           <ice:outputText id="Name" value="#{dataverse.name}"
-                                styleClass="#{(!dataverse.restricted) ? 'dvnAddClassificationDvNotReleased' : 'dvnAddClassificationDvReleased'}"/>
+                                styleClass="#{(dataverse.restricted) ? 'dvnAddClassificationDvNotReleased' : 'dvnAddClassificationDvReleased'}"/>
                       </ice:panelGroup>
                     </ice:column>
                     <ice:column>
@@ -130,7 +130,7 @@
                       </f:facet>
                       <ice:panelGroup>
                           <ice:outputText id="selectedName" value="#{dataverse.name}"
-                                styleClass="#{(!dataverse.restricted) ? 'dvnAddClassificationDvNotReleased' : 'dvnAddClassificationDvReleased'}"/>
+                                styleClass="#{(dataverse.restricted) ? 'dvnAddClassificationDvNotReleased' : 'dvnAddClassificationDvReleased'}"/>
                         </ice:panelGroup>
                     </ice:column>
                     <ice:column>
@@ -158,7 +158,7 @@
             <div class="dvnFormPadding dvnFormMargin">
               <ice:commandButton id="btnUpdate" rendered="#{addClassificationsPage.cid != null}" value="#{bundle.saveButtonLabel}" action="#{addClassificationsPage.update_action}"/>
               <ice:commandButton id="btnCreate" rendered="#{addClassificationsPage.cid == null}" value="#{bundle.saveButtonLabel}" action="#{addClassificationsPage.add_action}"/>
-              <ice:commandButton id="btnCancel" immediate="true" value="#{bundle.cancelButtonLabel}" action="#{EditAboutPage.cancel_action}"/>
+              <ice:commandButton id="btnCancel" immediate="true" value="#{bundle.cancelButtonLabel}" action="cancel"/>
             </div>
           </div>
         </div>

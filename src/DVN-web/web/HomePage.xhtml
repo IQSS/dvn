@@ -276,7 +276,8 @@
               <ice:dataTable headerClass="groupRow" id="dataverseList"
                                rendered="#{ !empty(HomePage.vdcUIList.vdcUIList) }"
                                rowClasses="evenRow oddRow" rows="10" width="100%" columnWidths="35%,35%,10%,10%,10%"
-                               sortColumn="#{HomePage.vdcUIList.sortColumnName}" sortAscending="#{HomePage.vdcUIList.ascending}"
+                               sortColumn="#{HomePage.vdcUIList.sortColumnName}"
+                               sortAscending="#{HomePage.vdcUIList.ascending}"
                                styleClass="dvnHmpgGroupDataTable"
                                value="#{HomePage.vdcUIList.vdcUIList}" var="item"><!-- this is a list of vdcs -->
                   <!-- name number -->

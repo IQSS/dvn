@@ -783,9 +783,13 @@ public class VDCServiceBean implements VDCServiceLocal {
             orderingClause = "order by (CASE WHEN max(lastupdatetime) IS NULL THEN 1 ELSE 0 END), max(lastupdatetime) desc ";
 
 
-        } else if ("name".equals(orderBy.toLowerCase()) || "affiliation".equals(orderBy.toLowerCase())) {
-            selectClause += ", upper(" + orderBy + ") ";
-            orderingClause += " order by upper(" + orderBy + ") ";
+        } else if ("name".equals(orderBy.toLowerCase())) {
+            selectClause += ", upper( (CASE WHEN dtype = 'Scholar' THEN lastname || ', ' || firstname ELSE name END) ) ";
+            orderingClause += " order by upper( (CASE WHEN dtype = 'Scholar' THEN lastname || ', ' || firstname ELSE name END) ) ";
+
+        } else if ("affiliation".equals(orderBy.toLowerCase())) {
+            selectClause += ", upper(affiliation) ";
+            orderingClause += " order by upper(affiliation) ";
 
         } else if ("releasedate".equals(orderBy.toLowerCase())) {
             selectClause += ", " + orderBy + " ";
@@ -802,7 +806,8 @@ public class VDCServiceBean implements VDCServiceLocal {
             whereClause += "and vv.vdcgroup_id in ( select id from vdcgroup where id = ? or parent = ?) ";
         }
         if (letter != null) {
-            whereClause += "and upper(v.name) like '" + letter.toUpperCase() + "%' ";
+            whereClause += "and ((dtype != 'Scholar' and upper(v.name) like '" + letter.toUpperCase() + "%') ";
+            whereClause += "or (dtype = 'Scholar' and upper(v.lastname) like '" + letter.toUpperCase() + "%')) ";
         }
 
         String queryString = selectClause + fromClause + whereClause + orderingClause;

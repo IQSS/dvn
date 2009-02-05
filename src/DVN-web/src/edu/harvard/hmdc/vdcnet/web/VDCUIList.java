@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.ejb.EJB;
+import javax.faces.context.FacesContext;
 import javax.naming.InitialContext;
 
 /**
@@ -122,8 +123,14 @@ public class VDCUIList extends SortableList {
             initVdcService();
             sort();
         } else {
-            Collections.reverse(vdcUIList);
-            //checkSort();
+            //System.out.println("the sort column name is " + sortColumnName + " oldSort is " + oldSort + " Ascending " + " Ascending " + ascending + " oldAscending " + oldAscending);
+            if (!oldSort.equals(sortColumnName)) {
+                sort();
+            } else if (oldAscending != ascending){
+                Collections.reverse(vdcUIList);
+            }
+            oldSort = sortColumnName;
+            oldAscending = ascending;
         }
         return vdcUIList;
     }

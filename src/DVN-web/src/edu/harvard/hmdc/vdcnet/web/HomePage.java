@@ -277,8 +277,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
             group = vdcGroupService.findById(groupId);
             setGroupName(group.getName());
         }
-        vdcUIList.sort();
-        FacesContext.getCurrentInstance().renderResponse();
+        vdcUIList.getVdcUIList();
     }
 
     

@@ -34,17 +34,26 @@ public class VDCUIList extends SortableList {
 
     public VDCUIList() {
         super(NAME_COLUMN_NAME);
+        initVdcService();
+        sort();
+        isRefreshed = true;
     }
 
     public VDCUIList(Long vdcGroupId) {
         super(NAME_COLUMN_NAME);
         this.vdcGroupId = vdcGroupId;
+        initVdcService();
+        sort();
+        isRefreshed = true;
     }
 
     public VDCUIList(Long vdcGroupId, String alphaCharacter) {
         super(NAME_COLUMN_NAME);
         this.vdcGroupId = vdcGroupId;
         this.alphaCharacter = alphaCharacter;
+        initVdcService();
+        sort();
+        isRefreshed = true;
     }
 
     private void initVdcService() {
@@ -102,7 +111,6 @@ public class VDCUIList extends SortableList {
 
     public boolean isDefaultAscending(String columnName) {
         return true;
-
     }
 
     public String getNameColumnName()         { return NAME_COLUMN_NAME; }
@@ -118,21 +126,41 @@ public class VDCUIList extends SortableList {
                 oldAscending = ascending;
      * */
 
+    private boolean isRefreshed;
     public List<VDCUI> getVdcUIList() {
-        if (vdcUIList == null) {
-            initVdcService();
-            sort();
-        } else {
-            //System.out.println("the sort column name is " + sortColumnName + " oldSort is " + oldSort + " Ascending " + " Ascending " + ascending + " oldAscending " + oldAscending);
-            if (!oldSort.equals(sortColumnName)) {
-                sort();
-            } else if (oldAscending != ascending){
+        if (!isRefreshed) {
+            if (oldSort.equals(sortColumnName) ) {
+                //System.out.println("the sort column name is " + sortColumnName + " oldSort is " + oldSort + " Ascending " + " Ascending " + ascending + " oldAscending " + oldAscending);
                 Collections.reverse(vdcUIList);
+                oldSort = sortColumnName;
+            } else {
+                sort();
             }
-            oldSort = sortColumnName;
-            oldAscending = ascending;
+            isRefreshed = true;
         }
         return vdcUIList;
+    }
+
+    /**
+     * Set sortColumnName type.
+     *
+     * @param ascending true for ascending sortColumnName, false for desending sortColumnName.
+     */
+    public void setAscending(boolean ascending) {
+        oldAscending = this.ascending;
+        this.ascending = ascending;
+        isRefreshed = false;
+    }
+
+    /**
+     * Sets the sortColumnName column
+     *
+     * @param sortColumnName column to sortColumnName
+     */
+    public void setSortColumnName(String sortColumnName) {
+        oldSort = this.sortColumnName;
+        this.sortColumnName = sortColumnName;
+        isRefreshed = false;
     }
 
     public void setVdcUIList(List<VDCUI> vdcUIList) {

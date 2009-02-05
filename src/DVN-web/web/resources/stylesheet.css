@@ -424,6 +424,17 @@ ul.xtraMenu ul li a:link, ul.xtraMenu ul li a:active, ul.xtraMenu ul li a:hover,
     font-weight: bold;
 }
 
+/* alpha browse/filter */
+ul.alphaBrowse li {
+    list-style-type:none;
+    float:left;
+    padding:2px 5px 2px 5px;
+    border: thin solid #0c54b3;
+    opacity:.7;
+    background-color:#eeeeee;
+}
+
+
 /* HEADER */
 .dvn_headerTitle {position: relative; text-align: left;}
 .dvn_headerTitleLarge {margin: .25em 228px .25em 12px;}

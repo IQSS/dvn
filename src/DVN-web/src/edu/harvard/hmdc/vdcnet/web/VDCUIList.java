@@ -121,12 +121,9 @@ public class VDCUIList extends SortableList {
         if (vdcUIList == null) {
             initVdcService();
             sort();
-        } else { //TODO: why is the activity behaving differently
-            if (!sortColumnName.equals("Activity"))
-                Collections.reverse(vdcUIList);
-            else
-                checkSort();
-                
+        } else {
+            Collections.reverse(vdcUIList);
+            //checkSort();
         }
         return vdcUIList;
     }

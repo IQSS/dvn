@@ -5,10 +5,10 @@
 
 package edu.harvard.hmdc.vdcnet.web;
 
-import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
 import edu.harvard.hmdc.vdcnet.web.site.VDCUI;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.naming.InitialContext;
@@ -61,6 +61,7 @@ public class VDCUIList extends SortableList {
             if (sortColumnName == null) {
                 return;
             }
+            
             if (sortColumnName.equals(NAME_COLUMN_NAME)) {
                 orderBy = NAME_COLUMN_NAME;
             } else if (sortColumnName.equals(AFFILIATION_COLUMN_NAME)) {
@@ -109,14 +110,23 @@ public class VDCUIList extends SortableList {
     public String getLastUpdatedColumnName()  { return LASTUPDATED_COLUMN_NAME; }
     public String getActivityColumnName()     { return ACTIVITY_COLUMN_NAME; }
 
+    /*if (!oldSort.equals(sortColumnName) ||
+                oldAscending != ascending){
+                sort();
+                oldSort = sortColumnName;
+                oldAscending = ascending;
+     * */
 
     public List<VDCUI> getVdcUIList() {
-        System.out.println("getting VDCUIList");
         if (vdcUIList == null) {
             initVdcService();
             sort();
-        } else {
-            checkSort();
+        } else { //TODO: why is the activity behaving differently
+            if (!sortColumnName.equals("Activity"))
+                Collections.reverse(vdcUIList);
+            else
+                checkSort();
+                
         }
         return vdcUIList;
     }

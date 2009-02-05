@@ -191,7 +191,7 @@
                                    value="#{AddSitePage.classificationList.classificationUIs}" var="classUI">
                       <!-- controls -->
                       <ice:column styleClass="dvnCreateDvClassificationSelectColumn">
-                        <ice:selectBooleanCheckbox partialSubmit="true" value="#{classUI.selected}"/>
+                        <ice:selectBooleanCheckbox partialSubmit="true" value="#{classUI.selected}" rendered="#{classUI.level >1}"/>
                       </ice:column>
                       <!-- classification name -->
                       <ice:column styleClass="dvnCreateDvClassificationNameColumn">

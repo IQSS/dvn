@@ -13,12 +13,16 @@ import edu.harvard.hmdc.vdcnet.vdc.VDCGroup;
  */
 public class ClassificationUI {
     
-    public ClassificationUI(VDCGroup vdcGroup) {
+    public ClassificationUI(VDCGroup vdcGroup, int level ) {
         this.vdcGroup = vdcGroup;
+         this.level = level;
     }
+
+  
 
     private VDCGroup vdcGroup;
     private boolean selected;
+    private int level;
 
     public boolean isSelected() {
         return selected;
@@ -34,16 +38,24 @@ public class ClassificationUI {
 
     public void setVdcGroup(VDCGroup vdcGroup) {
         this.vdcGroup = vdcGroup;
+       
     }
 
-    public int getIndentLevel() {
-        if (getVdcGroup().getParent()==null) {
-            return 0;
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }  
+
+    public String getIndentStyle() {
+        String indentStyle="";
+        if (level>1) {
+            indentStyle = ".childRowIndentStyle";
         }
-        return 1;
+        return indentStyle;
     }
-
-    
-    
+     
 
 }

@@ -201,13 +201,13 @@
                                    scrollable="true" 
                                    value="#{AddSitePage.classificationList.classificationUIs}" var="classUI">
                       <!-- controls -->
-                      <ice:column styleClass="dvnCreateDvClassificationSelectColumn">
-                        <ice:selectBooleanCheckbox partialSubmit="true" value="#{classUI.selected}"/>
+                      <ice:column styleClass="dvnCreateDvClassificationSelectColumn" >
+                        <ice:selectBooleanCheckbox partialSubmit="true" value="#{classUI.selected}" rendered="#{classUI.level >1}" />
                       </ice:column>
                       <!-- classification name -->
                       <ice:column styleClass="dvnCreateDvClassificationNameColumn">
                      
-                        <ice:outputText styleClass="indentStyleClass" value="#{classUI.vdcGroup.name}"/>
+                        <ice:outputText styleClass="classUI.indentStyle" value="#{classUI.vdcGroup.name}"/>
                       </ice:column>
                     </ice:dataTable>
                   </div>

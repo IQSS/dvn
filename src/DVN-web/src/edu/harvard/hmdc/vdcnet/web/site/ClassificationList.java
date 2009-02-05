@@ -27,13 +27,13 @@ public class ClassificationList {
         classificationUIs = new ArrayList<ClassificationUI>();
         Collection<VDCGroup> allTopGroups = vdcGroupService.findByParentId(null);
         for (VDCGroup group : allTopGroups) {
-            classificationUIs.add(new ClassificationUI(group));
+            classificationUIs.add(new ClassificationUI(group,1));
             Collection<VDCGroup> childGroups = vdcGroupService.findByParentId(group.getId());
             for (VDCGroup child : childGroups) {
-                classificationUIs.add(new ClassificationUI(child));
+                classificationUIs.add(new ClassificationUI(child,2));
                 Collection<VDCGroup> grandChildGroups = vdcGroupService.findByParentId(child.getId());
                 for (VDCGroup grandChild : grandChildGroups) {
-                    classificationUIs.add(new ClassificationUI(grandChild));
+                    classificationUIs.add(new ClassificationUI(grandChild,3));
                 }
             }
         }

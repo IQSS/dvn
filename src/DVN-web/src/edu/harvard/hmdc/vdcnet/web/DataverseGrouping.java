@@ -91,6 +91,7 @@ public class DataverseGrouping extends SortableList {
 
     ArrayList parentItems    = new ArrayList();
     ArrayList childItems     = new ArrayList();
+    ArrayList xtraItems      = new ArrayList();
     PagedDataModel dataModel = new PagedDataModel();
 
     public DataverseGrouping() {
@@ -182,11 +183,24 @@ public class DataverseGrouping extends SortableList {
         }
     }
 
+    public void addXtraItem(DataverseGrouping dvGroupRecord) {
+        if (this.xtraItems != null && dvGroupRecord != null) {
+            this.xtraItems.add(dvGroupRecord);
+        }
+    }
+
     public void removeChildItem(DataverseGrouping dvGroupRecord) {
         if (this.childItems != null && dvGroupRecord != null) {
             this.childItems.remove(dvGroupRecord);
         }
     }
+
+    public void removeXtraItem(DataverseGrouping dvGroupRecord) {
+        if (this.xtraItems != null && dvGroupRecord != null) {
+            this.xtraItems.remove(dvGroupRecord);
+        }
+    }
+
 
 
     //TODO: removeChildItem from the lists when action toggled.
@@ -486,6 +500,14 @@ public class DataverseGrouping extends SortableList {
         // we only want to sortColumnName if the column or ordering has changed.
           checkSort();
           return childItems;
+     }
+
+   @SuppressWarnings("unchecked")
+  public ArrayList<DataverseGrouping> getXtraItems()
+    {
+        // we only want to sortColumnName if the column or ordering has changed.
+          checkSort();
+          return xtraItems;
      }
 
      private int firstRow = 0;

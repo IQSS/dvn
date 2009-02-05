@@ -133,7 +133,7 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
         while (iterator.hasNext()) {
             ClassificationUI classUI =(ClassificationUI)iterator.next();
             VDCGroup vdcgroup = classUI.getVdcGroup();
-            if (cid != null && cid.equals(vdcgroup.getId())) {
+            if ( cid != null && ( cid.equals(vdcgroup.getId()) || cid.equals(vdcgroup.getParent()) ) ) {
                 continue;
             }else if (classUI.getLevel()==3){
                 continue;

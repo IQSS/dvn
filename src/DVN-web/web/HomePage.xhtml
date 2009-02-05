@@ -104,16 +104,8 @@
                   <div class="dvnTreeContainer theMenuContainer">
 
                     <!-- START ACCORDION -->
+                     <!-- All Dataverses -->
 
-                    <ice:panelSeries rendered="#{HomePage.accordionItemBeans!=null}"
-                                value="#{HomePage.accordionItemBeans}"
-                                var="menuItems">
-
-                        <h3 class="headFilter">
-                                <ice:outputText value="Filter by #{menuItems.name}"/>
-                        </h3>
-                        <!-- All Dataverses -->
-                        
                         <ul class="theMenu">
                             <li><!-- restore  style="position: static;" -->
                                         <h3 class="head">
@@ -126,6 +118,14 @@
                                         </h3>
                             </li>
                         </ul>
+                    <ice:panelSeries rendered="#{HomePage.accordionItemBeans!=null}"
+                                value="#{HomePage.accordionItemBeans}"
+                                var="menuItems">
+
+                        <h3 class="headFilter">
+                                <ice:outputText value="Filter by #{menuItems.name}"/>
+                        </h3>
+                       
                         <gui:repeat rendered="#{menuItems != null}"
                                 value="#{menuItems.childItems}"
                                 var="item">

@@ -783,13 +783,13 @@ public class VDCServiceBean implements VDCServiceLocal {
             orderingClause = "order by (CASE WHEN max(lastupdatetime) IS NULL THEN 1 ELSE 0 END), max(lastupdatetime) desc ";
 
 
-        } else if ("name".equals(orderBy) || "affiliation".equals(orderBy)) {
-            selectClause += ", " + orderBy + " ";
-            orderingClause += "upper(" + orderBy + ") ";
+        } else if ("name".equals(orderBy.toLowerCase()) || "affiliation".equals(orderBy.toLowerCase())) {
+            selectClause += ", upper(" + orderBy + ") ";
+            orderingClause += " order by upper(" + orderBy + ") ";
 
-        } else if ("releaseDate".equals(orderBy)) {
+        } else if ("releasedate".equals(orderBy.toLowerCase())) {
             selectClause += ", " + orderBy + " ";
-            orderingClause += orderBy + " desc ";
+            orderingClause += " order by " + orderBy + " desc ";
         }
 
         // now additional clauses based on parameters
@@ -814,7 +814,7 @@ public class VDCServiceBean implements VDCServiceLocal {
             query.setParameter(1, classificationId);
             query.setParameter(2, classificationId);
         }
-
+        System.out.println(queryString);
         // since query is native, must parse through Vector results
         for (Object currentResult : query.getResultList()) {
             // convert results into Longs

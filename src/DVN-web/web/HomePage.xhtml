@@ -204,15 +204,15 @@
                     <div jsfc="ice:panelGroup"
                         rendered="#{!empty(HomePage.vdcUIList.vdcUIList) and VDCRequest.currentVDC == null}"
                         style="display:block; margin-right:10px; float:right;">
-                  <ul>
-                      <li style="list-style-type:none; float:left; padding:3px 3px 3px 3px; border: thin solid #0c54b3; opacity:0.7; background-color: #EEF3FB;">
+                  <ul class="alphaBrowse">
+                      <li>
                             <ice:commandLink  onclick="setHiddenValues(-1,'All');">
                                 <ice:outputText value="ALL"/>
                             </ice:commandLink>
                       </li>
                       <gui:repeat value="#{HomePage.alphaCharacterList}"
                                     var="item">
-                      <li style="list-style-type:none; float:left; padding:3px 3px 3px 3px; border: thin solid #0c54b3; opacity:0.7; background-color: #EEF3FB;">
+                      <li>
                             <ice:commandLink  onclick="setHiddenValues(document.getElementById('HomePageForm:groupId').value, '#{item}');">
                                 <ice:outputText value="#{item}"/>
                                 <f:attribute name="groupId" value="#{item.id}"/>

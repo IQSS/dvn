@@ -709,8 +709,10 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
 
 
     public boolean isDateItem(String s) {
-        boolean retVal = s != null && (s.equalsIgnoreCase("Production Date") || s.equalsIgnoreCase("Distribution Date") || s.equalsIgnoreCase("Date of Deposit") || s.startsWith("Time Period Covered"));
-        return retVal;
+        // there is an issue with the date items, so for the time being, we are treating all fields as non date
+        //boolean retVal = s != null && (s.equalsIgnoreCase("Production Date") || s.equalsIgnoreCase("Distribution Date") || s.equalsIgnoreCase("Date of Deposit") || s.startsWith("Time Period Covered"));
+        //return retVal;
+        return false;
     }
 
     public boolean isDateItem1() {

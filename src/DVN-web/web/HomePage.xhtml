@@ -27,9 +27,11 @@
       });
           function setHiddenValues(groupid) {
             if (arguments.length > 1) {
-               document.getElementById('HomePageForm:alphaCharacter').value=arguments[1];
+                
+                document.getElementById('HomePageForm:alphaCharacter').value = arguments[1];
             } else {
-               document.getElementById('HomePageForm:groupId').value=arguments[0];
+                
+                document.getElementById('HomePageForm:groupId').value = arguments[0];
             }
           }
 
@@ -215,8 +217,10 @@
                                     value="javascript:void(0);">
                       <ice:outputText id="more_info" value="more info [+]"/>
                     </ice:outputLink>
+
                     <ice:outputLink id="dataverse_link" value="/dvn/dv/#{item.vdc.alias}">
-                      <ice:outputText value="#{item.vdc.name}"/>
+                      <ice:outputText rendered="#{item.vdc.dtype != 'Scholar'}" value="#{item.vdc.name}"/>
+                      <ice:outputText rendered="#{item.vdc.dtype == 'Scholar'}" value="#{item.vdc.lastName}, #{item.vdc.firstName}"/>
                     </ice:outputLink>
                     <div id="hideShow_description" class="dvnHmpgDvMoreInfoDesc" style="display: none;">
                       <ice:outputText rendered="#{item.vdc.dvnDescription != null}" value="#{item.vdc.dvnDescription}"/>
@@ -365,6 +369,8 @@
                                     id="groupId"
                                     valueChangeListener="#{HomePage.changeGroupId}"
                                     />
+                
+
           <ice:messages></ice:messages>
           <!-- Dataverse Homepage -->
       

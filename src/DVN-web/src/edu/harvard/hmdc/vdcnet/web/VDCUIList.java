@@ -130,6 +130,7 @@ public class VDCUIList extends SortableList {
             if (!oldSort.equals(sortColumnName) ) {
                 sort();
                 oldSort = sortColumnName;
+                oldAscending=ascending;
             }
             else if (oldAscending!=ascending) {
                 Collections.reverse(vdcUIList);

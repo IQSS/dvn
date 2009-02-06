@@ -98,96 +98,7 @@
         <!-- ***************** NETWORK HOMEPAGE CONTENT *************************  -->
 
         <div jsfc="ice:panelGroup" styleClass="#{!empty(HomePage.accordionItemBeans ) ? 'dvn_section dvn_overflow' : 'dvn_section'}">
-            <!-- START THE MENU -->
-            <div jsfc="ice:panelGroup" styleClass="dvn_sectionPanels" rendered="#{!empty(HomePage.accordionItemBeans)}">
-            <div jsfc="ice:panelGroup" styleClass="dvnTreeBlock" style="height: 65em;">
-                  <div class="dvnTreeContainer theMenuContainer">
-
-                    <!-- START ACCORDION -->
-                     <!-- All Dataverses -->
-
-                        <ul class="theMenu">
-                            <li><!-- restore  style="position: static;" -->
-                                        <h3 class="head">
-                                            <ice:commandLink onclick="setHiddenValues(-1);"
-                                                            partialSubmit="true"
-                                                            styleClass="noChild">
-                                                <ice:outputText value="Show All Dataverses"/>
-                                                <f:attribute name="groupId" value="-1"/>
-                                            </ice:commandLink>
-                                        </h3>
-                            </li>
-                        </ul>
-                    <ice:panelSeries rendered="#{HomePage.accordionItemBeans!=null}"
-                                value="#{HomePage.accordionItemBeans}"
-                                var="menuItems">
-
-                        <h3 class="headFilter">
-                                <ice:outputText value="Filter by #{menuItems.name}"/>
-                        </h3>
-                       
-                        <gui:repeat rendered="#{menuItems != null}"
-                                value="#{menuItems.childItems}"
-                                var="item">
-                            <ul class="theMenu">
-                                <!-- HAS SUBNODE DESCENDANTS -->
-
-                                <gui:fragment rendered="#{ !empty(item.xtraItems)}">
-                                  <li>
-                                    <ul class="xtraMenu">
-                                            <li><!-- restore  style="position: static;" -->
-                                                <h4 class="head">
-                                                    <ice:commandLink onclick="setHiddenValues(#{item.id});"
-                                                                        partialSubmit="true">
-                                                        <ice:outputText value="#{item.name}"/>
-                                                        <f:attribute name="groupId" value="#{item.id}"/>
-                                                     </ice:commandLink>
-                                                </h4>
-                                                <ul><!-- TODO: CHANGE TO DISPLAY:NONE; -->
-
-                                                    <gui:repeat rendered="#{item.xtraItems != null}"
-                                                                value="#{item.xtraItems}"
-                                                                var="xtraItems">
-
-                                                        <li>
-                                                            <ice:commandLink onclick="setHiddenValues(#{xtraItems.id});"
-                                                                                partialSubmit="true">
-                                                                <ice:outputText value="#{xtraItems.name}"/>
-                                                                <f:attribute name="groupId" value="#{xtraItems.id}"/>
-                                                            </ice:commandLink>
-                                                        </li>
-
-                                                    </gui:repeat>
-
-                                                 </ul>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                  </gui:fragment>
-                                <!-- END HAS SUBNODE DESCENDANTS -->
-
-                                <!-- HAS NO SUBNODE DESCENDANTS -->
-                                <gui:fragment rendered="#{ empty(item.xtraItems)}">
-                                    <li><!-- restore  style="position: static;" -->
-                                                <h3 class="head">
-                                                    <ice:commandLink onclick="setHiddenValues(#{item.id});"
-                                                                    partialSubmit="true"
-                                                                    styleClass="noChild">
-                                                        <ice:outputText value="#{item.name}"/>
-                                                        <f:attribute name="groupId" value="#{item.id}"/>
-                                                    </ice:commandLink>
-                                                </h3>
-                                    </li>
-                                </gui:fragment>
-                                <!-- END HAS NO SUBNODE DESCENDANTS -->
-
-                            </ul>
-                        </gui:repeat>
-                    </ice:panelSeries>
-                  </div>
-            </div>
-          </div>
-          <!-- END THE MENU -->
+            
           <!-- MAIN CONTENT AREA -->
           <div jsfc="ice:panelGroup" styleClass="#{ !empty(HomePage.accordionItemBeans) ? 'dvn_sectionContent' : 'dvn_sectionContentNoPanels'}">
               <div jsfc="ice:panelGroup" 
@@ -354,20 +265,106 @@
               </div>
          <!-- </gui:repeat> -->
           <!-- DEBUG END - new data table for dbs -->
+
               </div>
+              <!-- START THE MENU -->
+            <div jsfc="ice:panelGroup" styleClass="dvn_sectionPanels" rendered="#{!empty(HomePage.accordionItemBeans)}">
+            <div jsfc="ice:panelGroup" styleClass="dvnTreeBlock" style="height: 65em;">
+                  <div class="dvnTreeContainer theMenuContainer">
+
+                    <!-- START ACCORDION -->
+                     <!-- All Dataverses -->
+
+                        <ul class="theMenu">
+                            <li><!-- restore  style="position: static;" -->
+                                        <h3 class="head">
+                                            <ice:commandLink onclick="setHiddenValues(-1);"
+                                                            partialSubmit="true"
+                                                            styleClass="noChild">
+                                                <ice:outputText value="Show All Dataverses"/>
+                                                <f:attribute name="groupId" value="-1"/>
+                                            </ice:commandLink>
+                                        </h3>
+                            </li>
+                        </ul>
+                    <ice:panelSeries rendered="#{HomePage.accordionItemBeans!=null}"
+                                value="#{HomePage.accordionItemBeans}"
+                                var="menuItems">
+
+                        <h3 class="headFilter">
+                                <ice:outputText value="Filter by #{menuItems.name}"/>
+                        </h3>
+
+                        <gui:repeat rendered="#{menuItems != null}"
+                                value="#{menuItems.childItems}"
+                                var="item">
+                            <ul class="theMenu">
+                                <!-- HAS SUBNODE DESCENDANTS -->
+
+                                <gui:fragment rendered="#{ !empty(item.xtraItems)}">
+                                  <li>
+                                    <ul class="xtraMenu">
+                                            <li><!-- restore  style="position: static;" -->
+                                                <h4 class="head">
+                                                    <ice:commandLink onclick="setHiddenValues(#{item.id});"
+                                                                        partialSubmit="true">
+                                                        <ice:outputText value="#{item.name}"/>
+                                                        <f:attribute name="groupId" value="#{item.id}"/>
+                                                     </ice:commandLink>
+                                                </h4>
+                                                <ul><!-- TODO: CHANGE TO DISPLAY:NONE; -->
+
+                                                    <gui:repeat rendered="#{item.xtraItems != null}"
+                                                                value="#{item.xtraItems}"
+                                                                var="xtraItems">
+
+                                                        <li>
+                                                            <ice:commandLink onclick="setHiddenValues(#{xtraItems.id});"
+                                                                                partialSubmit="true">
+                                                                <ice:outputText value="#{xtraItems.name}"/>
+                                                                <f:attribute name="groupId" value="#{xtraItems.id}"/>
+                                                            </ice:commandLink>
+                                                        </li>
+
+                                                    </gui:repeat>
+
+                                                 </ul>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                  </gui:fragment>
+                                <!-- END HAS SUBNODE DESCENDANTS -->
+
+                                <!-- HAS NO SUBNODE DESCENDANTS -->
+                                <gui:fragment rendered="#{ empty(item.xtraItems)}">
+                                    <li><!-- restore  style="position: static;" -->
+                                                <h3 class="head">
+                                                    <ice:commandLink onclick="setHiddenValues(#{item.id});"
+                                                                    partialSubmit="true"
+                                                                    styleClass="noChild">
+                                                        <ice:outputText value="#{item.name}"/>
+                                                        <f:attribute name="groupId" value="#{item.id}"/>
+                                                    </ice:commandLink>
+                                                </h3>
+                                    </li>
+                                </gui:fragment>
+                                <!-- END HAS NO SUBNODE DESCENDANTS -->
+
+                            </ul>
+                        </gui:repeat>
+                    </ice:panelSeries>
+                  </div>
+            </div>
+          </div>
+          <!-- END THE MENU -->
               <ice:inputHidden  binding="#{HomePage.hiddenAlphaCharacter}"
                                     id="alphaCharacter"
                                     valueChangeListener="#{HomePage.changeAlphaCharacter}"
                                     />
-                   <ice:inputHidden  binding="#{HomePage.hiddenGroupId}"
-                                        id="groupId"
-                                        valueChangeListener="#{HomePage.changeGroupId}"
-                                        />
-
-
-          <!-- OLD MENU -->
-          <!-- moved because the new menu causes layout to shift when there is no dataverse to display -->
-          <!-- END OLD MENU -->
+               <ice:inputHidden  binding="#{HomePage.hiddenGroupId}"
+                                    id="groupId"
+                                    valueChangeListener="#{HomePage.changeGroupId}"
+                                    />
           <ice:messages></ice:messages>
           <!-- Dataverse Homepage -->
       

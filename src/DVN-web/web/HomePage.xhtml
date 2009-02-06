@@ -97,9 +97,9 @@
 
         <!-- ***************** NETWORK HOMEPAGE CONTENT *************************  -->
 
-        <div jsfc="ice:panelGroup" styleClass="#{!empty(HomePage.vdcUIList.vdcUIList) ? 'dvn_section dvn_overflow' : 'dvn_section'}">
+        <div jsfc="ice:panelGroup" styleClass="#{!empty(HomePage.accordionItemBeans ) ? 'dvn_section dvn_overflow' : 'dvn_section'}">
             <!-- START THE MENU -->
-            <div jsfc="ice:panelGroup" styleClass="dvn_sectionPanels" rendered="#{HomePage.classificationsSize > 0}">
+            <div jsfc="ice:panelGroup" styleClass="dvn_sectionPanels" rendered="#{!empty(HomePage.accordionItemBeans)}">
             <div jsfc="ice:panelGroup" styleClass="dvnTreeBlock" style="height: 65em;">
                   <div class="dvnTreeContainer theMenuContainer">
 
@@ -189,51 +189,52 @@
           </div>
           <!-- END THE MENU -->
           <!-- MAIN CONTENT AREA -->
-          <div jsfc="ice:panelGroup" styleClass="#{!empty(HomePage.vdcUIList.vdcUIList) ? 'dvn_sectionContent' : 'dvn_sectionContentNoPanels'}">
+          <div jsfc="ice:panelGroup" styleClass="#{ !empty(HomePage.accordionItemBeans) ? 'dvn_sectionContent' : 'dvn_sectionContentNoPanels'}">
               <div jsfc="ice:panelGroup" 
                     styleClass="dvnHmpgGroupHeaderBlock"
                     id="createDataverse"
                     rendered="#{HomePage.showRequestCreator}"
-                    style="display:block; float:right;">
+                    style="display:block; float:right; padding-right: 5px;">
                <ice:outputLink styleClass="dvnHmpgGroupCreateLink" value="/dvn/faces/login/CreatorRequestInfoPage.xhtml">
                  <ice:outputText value="Create your own Dataverse" escape="false"/>
                </ice:outputLink>
              </div>
              <div class="dvnHmpgGroupTableHeaderBlock"
                     style="clear:both;">
-                  
                     <div class="dvnHmpgGroupHeaderBlock">
                       <ice:outputText styleClass="dvnHmpgGroupHeader" value="#{HomePage.groupName}"/>
                     </div>
                     <div jsfc="ice:panelGroup"
                         rendered="#{!empty(HomePage.vdcUIList.vdcUIList) and VDCRequest.currentVDC == null}"
                         style="display:block; margin-right:10px; float:right;">
-                  <ul class="alphaBrowse">
-                      <li>
-                            <ice:commandLink  onclick="setHiddenValues(-1,'All');">
-                                <ice:outputText value="ALL"/>
-                            </ice:commandLink>
-                      </li>
-                      <gui:repeat value="#{HomePage.alphaCharacterList}"
-                                    var="item">
-                      <li>
-                            <ice:commandLink  onclick="setHiddenValues(document.getElementById('HomePageForm:groupId').value, '#{item}');">
-                                <ice:outputText value="#{item}"/>
-                                <f:attribute name="groupId" value="#{item.id}"/>
-                                <f:attribute name="alphaCharacter" value="#{item}"/>
-                            </ice:commandLink>
-                      </li>
-                      </gui:repeat>
-                  </ul>
-                  </div>
+                      <ul class="alphaBrowse">
+                          <li>
+                                <ice:commandLink  onclick="setHiddenValues(-1,'All');">
+                                    <ice:outputText value="ALL"/>
+                                </ice:commandLink>
+                          </li>
+                          <gui:repeat value="#{HomePage.alphaCharacterList}"
+                                        var="item">
+                          <li>
+                                <ice:commandLink  onclick="setHiddenValues(document.getElementById('HomePageForm:groupId').value, '#{item}');">
+                                    <ice:outputText value="#{item}"/>
+                                    <f:attribute name="groupId" value="#{item.id}"/>
+                                    <f:attribute name="alphaCharacter" value="#{item}"/>
+                                </ice:commandLink>
+                          </li>
+                          </gui:repeat>
+                      </ul>
+                     </div>
+                      
               </div>
-             <div jsfc="ice:panelGroup" styleClass="dvnHmpgGroupNoDVs" rendered="#{HomePage.group.description != null and HomePage.group.description != ''}">
-                    <p><ice:outputText value="#{HomePage.group.description}"/></p>
-              </div>
-              <div jsfc="ice:panelGroup" style="padding-left:25px;" styleClass="dvnHmpgGroupNoDVs" rendered="#{ HomePage.vdcUIListSize == 0 }">
-                    <p><ice:outputText value="There are no dataverses to display for the selected filter. Please select again."/></p>
-              </div>
+                 <div jsfc="ice:panelGroup" styleClass="dvnHmpgGroupNoDVs" rendered="#{HomePage.group.description != null and HomePage.group.description != ''}">
+                        <p><ice:outputText value="#{HomePage.group.description}"/></p>
+                 </div>
+                 <div jsfc="ice:panelGroup" style="padding-left:25px;" styleClass="dvnHmpgGroupNoDVs" rendered="#{ HomePage.vdcUIListSize == 0 }">
+                      <p><ice:outputText value="There are no dataverses to display for the selected filter. Please select again."/></p>
+                 </div>
 
+              
               <div jsfc="ice:panelGroup" rendered="#{ !empty(HomePage.vdcUIList.vdcUIList) }" styleClass="dvnHmpgGroupTableWrap">
 
                 <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="2" id="gridPanel2"

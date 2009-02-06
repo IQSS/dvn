@@ -205,7 +205,7 @@
                       <ice:outputText styleClass="dvnHmpgGroupHeader" value="#{HomePage.groupName}"/>
                     </div>
                     <div jsfc="ice:panelGroup"
-                        rendered="#{!empty(HomePage.vdcUIList.vdcUIList) and VDCRequest.currentVDC == null}"
+                        rendered="#{VDCRequest.currentVDC == null}"
                         style="display:block; margin-right:10px; float:right;">
                       <ul class="alphaBrowse">
                           <li>

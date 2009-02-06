@@ -190,13 +190,17 @@
           <!-- END THE MENU -->
           <!-- MAIN CONTENT AREA -->
           <div jsfc="ice:panelGroup" styleClass="#{!empty(HomePage.vdcUIList.vdcUIList) ? 'dvn_sectionContent' : 'dvn_sectionContentNoPanels'}">
-
-             <div jsfc="ice:panelGroup" styleClass="dvnHmpgGroupHeaderBlock" id="createDataverse" rendered="#{HomePage.showRequestCreator}">
+              <div jsfc="ice:panelGroup" 
+                    styleClass="dvnHmpgGroupHeaderBlock"
+                    id="createDataverse"
+                    rendered="#{HomePage.showRequestCreator}"
+                    style="display:block; float:right;">
                <ice:outputLink styleClass="dvnHmpgGroupCreateLink" value="/dvn/faces/login/CreatorRequestInfoPage.xhtml">
                  <ice:outputText value="Create your own Dataverse" escape="false"/>
                </ice:outputLink>
              </div>
-             <div class="dvnHmpgGroupTableHeaderBlock">
+             <div class="dvnHmpgGroupTableHeaderBlock"
+                    style="clear:both;">
                   
                     <div class="dvnHmpgGroupHeaderBlock">
                       <ice:outputText styleClass="dvnHmpgGroupHeader" value="#{HomePage.groupName}"/>

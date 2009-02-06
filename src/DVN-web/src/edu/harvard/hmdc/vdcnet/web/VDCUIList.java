@@ -34,7 +34,7 @@ public class VDCUIList extends SortableList {
     
     
     private void init() {
-        sortColumnName = NAME_COLUMN_NAME;
+        sortColumnName = DATERELEASED_COLUMN_NAME;
         ascending = true;
         oldSort = "";
         // make sure sortColumnName on first render

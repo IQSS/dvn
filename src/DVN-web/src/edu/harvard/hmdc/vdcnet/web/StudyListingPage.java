@@ -90,8 +90,9 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
     // data members
     private StudyListing studyListing;
     private DefaultTreeModel collectionTree;
-    private UIData studyTable; // no longer bound on page (can probably be removed)
+    private UIData studyTable;
     private DataPaginator paginator;
+    private DataPaginator paginator2;
     private String searchField;
     private String searchValue;
     private Integer searchFilter;
@@ -283,14 +284,15 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
             List sortedStudies = studyService.getOrderedStudies(studyListing.getStudyIds(), sortBy);
             studyListing.setStudyIds(sortedStudies);
             resetScroller();
-
-
         }
     }
 
     private void resetScroller() {
         if (paginator != null) {
             paginator.gotoFirstPage();
+        }
+        if (paginator2 != null) {
+            paginator2.gotoFirstPage();
         }
     }
 
@@ -641,6 +643,14 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
 
     public void setPaginator(DataPaginator paginator) {
         this.paginator = paginator;
+    }
+
+    public DataPaginator getPaginator2() {
+        return paginator2;
+    }
+
+    public void setPaginator2(DataPaginator paginator2) {
+        this.paginator2 = paginator2;
     }
 
     public Map getStudyFields() {

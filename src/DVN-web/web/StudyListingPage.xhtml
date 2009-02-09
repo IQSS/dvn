@@ -110,6 +110,7 @@
                   </div>
                   <div jsfc="ice:panelGroup" id="groupPanel4" rendered="#{StudyListingPage.renderScroller}">
                     <ice:dataPaginator id="studyListingPaginatorTop" styleClass="dvnPaginatorRight"
+                                       binding="#{StudyListingPage.paginator}"
                                        for="studyListTable1" paginator="true" partialSubmit="true"
                                        fastStep="3" paginatorMaxPages="4" renderFacetsIfSinglePage="false">
                       <f:facet name="first">
@@ -134,6 +135,7 @@
                   </div>
                 </ice:panelGrid>
                 <ice:dataTable rows="10" headerClass="list-header" id="studyListTable1" width="99%"
+                               binding="#{StudyListingPage.studyTable}"
                                styleClass="dvnStudyListTable" rowClasses="list-row-odd, list-row-even" columnClasses="dvnStudyListTableColInfo, dvnStudyListTableColID" value="#{StudyListingPage.studies}" var="studyUI">
                   <ice:column id="column1">
                     <div class="dvnStudyListStudyInfo">
@@ -227,7 +229,7 @@
                   </div>
                   <div jsfc="ice:panelGroup" id="groupPanel44" rendered="#{StudyListingPage.renderScroller}" styleClass="dvnPaginatorWrap">
                     <ice:dataPaginator id="studyListingPaginatorBottom" styleClass="dvnPaginatorRight"
-                                       binding="#{StudyListingPage.paginator}"
+                                       binding="#{StudyListingPage.paginator2}"
                                        for="studyListTable1" paginator="true" partialSubmit="true"
                                        fastStep="3" paginatorMaxPages="4" renderFacetsIfSinglePage="false">
                       <f:facet name="first">

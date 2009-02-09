@@ -922,13 +922,18 @@ a.dvnStudyListContributorLink:hover, a.dvnStudyListContributorLink:active {
 td.dvn_StudyListTotals {text-align: right; width: 100%; padding: 0 .5em;}
 td.dvn_StudyListSort {padding: .25em;}
 
-.dvnStudyListStudyInfo {float: left; width: 77%; background: inherit;}
+.dvnStudyListStudyInfo {background: inherit;}
 span.dvnStudyListStudyAuthor {font-size: 90% !important;}
-.dvnStudyListIDDownloads {float: right; padding: 0 10px; border-left: 1px solid #dcdddf !important;}
+.dvnStudyListIDDownloads {padding: 0 10px; border-left: 1px solid #dcdddf !important;}
 .dvnStudyListIDDownloads span {font-size: 90% !important; color: grey;}
 span.dvnStudyListGlobalId {color: black;}
 
-.dvnStudyListTableColumn {
+.dvnStudyListTableColInfo {
+   width: 90%;
+   background-color: inherit !important;
+}
+.dvnStudyListTableColID {
+   width: 10%;
    background-color: inherit !important;
 }
 

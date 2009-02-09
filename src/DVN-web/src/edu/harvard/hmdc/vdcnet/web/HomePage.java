@@ -227,50 +227,70 @@ public class HomePage extends VDCBaseBean implements Serializable {
         this.hiddenAlphaCharacter = hiddenAlphaCharacter;
     }
 
+    private HtmlInputHidden hiddenFilterType = new HtmlInputHidden();
+
+    public HtmlInputHidden getHiddenFilterType() {
+        return hiddenFilterType;
+    }
+
+    public void setHiddenFilterType(HtmlInputHidden hiddenFilterType) {
+        this.hiddenFilterType = hiddenFilterType;
+    }
+
+
+
     public void changeGroupId(ValueChangeEvent event) {
-        Long newValue = new Long(((Object)event.getNewValue()).toString());
-        Long oldValue = null;
-        if (event.getOldValue() != null) {
-            oldValue = new Long(((Object)event.getOldValue()).toString());
-        }
-        if ( !newValue.toString().isEmpty()) {
-            hiddenGroupId.setValue(newValue);
-            groupId = newValue;
-            if (oldValue != null && oldValue.equals(newValue))
-                System.out.println("nothing to do . . . ");
-            else
-                populateVDCUIList(false);
+        String changedValue = event.getNewValue().toString();
+        if (!changedValue.equals("")) {
+            Long newValue = new Long(changedValue);
+            Long oldValue = null;
+            if (event.getOldValue() != null && !event.getOldValue().equals("")) {
+                oldValue = new Long(((Object)event.getOldValue()).toString());
+            }
+            if ( !newValue.toString().isEmpty()) {
+                hiddenGroupId.setValue(newValue);
+                groupId = newValue;
+                if (oldValue != null && oldValue.equals(newValue) && hiddenFilterType.getValue().equals("alphabetic") && !hiddenAlphaCharacter.getValue().equals("All"))
+                    populateVDCUIList(true);
+                else
+                    populateVDCUIList(false);
+            }
         }
     }
 
     public void changeAlphaCharacter(ValueChangeEvent event) {
         String newValue = (String)event.getNewValue();
+        String oldValue = (String)event.getOldValue();
         if (!newValue.isEmpty()) {
             if (newValue.equals("All")) {
                 populateVDCUIList(false);
             } else {
                 hiddenAlphaCharacter.setValue(newValue);
                 populateVDCUIList(true);
+
             }
         }
+    }
+
+    public void changeFilterType(ValueChangeEvent event) {
+        String newValue = (String)event.getNewValue();
     }
 
     private Long vdcUIListSize;
     private VDCGroup group;
     private void populateVDCUIList(boolean isAlphaSort) {
         if (!isAlphaSort) {
-            if (hiddenGroupId.getValue() == null || hiddenGroupId.getValue() == "" || hiddenGroupId.getValue().toString().equals("-1")) {
+            if (hiddenGroupId.getValue() == null || hiddenGroupId.getValue().equals("") || hiddenGroupId.getValue().toString().equals("-1")) {
                 vdcUIList = new VDCUIList();
             } else {
                 vdcUIList = new VDCUIList(groupId);
             }
-        } else if (groupId != null) {
+        } else if (groupId != null && !groupId.equals("") && !groupId.equals(new Long("-1"))) {
             vdcUIList = new VDCUIList(groupId, (String)hiddenAlphaCharacter.getValue());
         } else {
             vdcUIList = new VDCUIList();
             vdcUIList.setAlphaCharacter((String)hiddenAlphaCharacter.getValue());
         }
-        vdcUIListSize = new Long(String.valueOf(vdcUIList.getVdcUIList().size()));
         if (groupId == null || groupId.equals(new Long("-1")) ) {
             setGroupName("All Dataverses");
         } else {
@@ -278,6 +298,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
             setGroupName(group.getName());
         }
         vdcUIList.getVdcUIList();
+        vdcUIListSize = new Long(String.valueOf(vdcUIList.getVdcUIList().size()));
     }
 
     

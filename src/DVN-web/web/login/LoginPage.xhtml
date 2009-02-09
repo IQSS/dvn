@@ -64,6 +64,7 @@
               <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
                 <div class="dvnMsgBlockContainer">
                   <ice:outputText value="#{bundlePageInfo.loginHelp}" escape="false" rendered="#{LoginPage.redirect == null}"/>
+                  <ice:outputText value="#{bundlePageInfo.loginAffiliateHelp}" escape="false" rendered="#{LoginPage.isAffiliates != null}"/>
                   <ice:outputText value="#{bundlePageInfo.loginRestrictedHelp}" escape="false" rendered="#{LoginPage.redirect != null}"/>
                 </div>
               </div>

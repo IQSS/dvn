@@ -424,17 +424,6 @@ ul.xtraMenu ul li a:link, ul.xtraMenu ul li a:active, ul.xtraMenu ul li a:hover,
     font-weight: bold;
 }
 
-/* alpha browse/filter */
-ul.alphaBrowse li {
-    list-style-type:none;
-    float:left;
-    padding:2px 5px 2px 5px;
-    border: thin solid #0c54b3;
-    opacity:.7;
-    background-color:#eeeeee;
-}
-
-
 /* HEADER */
 .dvn_headerTitle {position: relative; text-align: left;}
 .dvn_headerTitleLarge {margin: .25em 228px .25em 12px;}
@@ -499,6 +488,8 @@ td.dvnPaginatorWrap table.dvnPaginatorRight {}
 
 .dvnPaginatorRight {}
 .dvnPaginatorRight img {border: 0;}
+
+.dvnPaginatorFloatRight {float: right;}
 
 /* ANALYSIS PAGE */
 .dvn_preFileTitle{ font-weight: bold; font-style: normal; color: #000;}
@@ -876,13 +867,14 @@ a.vdcSiteMapLink:link, a.vdcSiteMapLink:visited, a.vdcSiteMapLink:hover, a.vdcSi
 
 /* NETWORK HOMEPAGE */
 .dvnHmpgGroupTableHeaderBlock {overflow: hidden;}
-.dvnHmpgGroupHeaderBlock {float: left;}
-span.dvnHmpgGroupHeader {font-size: 150% !important; font-weight: bold;}
+.dvnHmpgGroupHeaderBlock {width: 100%; overflow: hidden;}
+span.dvnHmpgGroupHeader {float: left; font-size: 150% !important; font-weight: bold;}
 .dvnHmpgGroupCreateBlock {float: right;}
 a.dvnHmpgGroupCreateLink:link, a.dvnHmpgGroupCreateLink:visited,
 a.dvnHmpgGroupCreateLink:hover, a.dvnHmpgGroupCreateLink:active {
     padding-right: 28px; color: #c55b28; background: url(start-arrows.gif) 100% 52% no-repeat; font-size: 95%; text-decoration: none;
 }
+.dvnHmpgClassificationDesc {margin-top: .25em; clear: both;}
 .dvnHmpgGroupNoDVs {
     margin-top: .25em;
     padding: 0 1em 0 1em;
@@ -893,11 +885,27 @@ a.dvnHmpgGroupCreateLink:hover, a.dvnHmpgGroupCreateLink:active {
     margin-top: .25em;
     border: 1px solid #dcdddf;
     border-bottom: 0;
-    clear: both;
+    overflow: hidden;
 }
 .dvnHmpgGroupTableTop {
+    margin-top: .25em;
+    width: 99%;
 }
-.dvnHmpgGroupTotals {text-align: right; width: 100%; padding: 5px .5em;}
+.dvnHmpgGroupAlphaSortBlock {margin: .5em 0 0 .5em; overflow: hidden; clear: both;}
+.dvnHmpgGroupAlphaSort {}
+ul.dvnAlphaBrowse {
+    margin: 0;
+    padding: 0;
+    float: left;
+}
+ul.dvnAlphaBrowse li {
+    list-style-type: none;
+    float: left;
+    padding: 2px 5px 2px 5px;
+    border: 1px solid #0c54b3;
+    background: #eee;
+}
+.dvnHmpgGroupTotals {padding: 5px .5em;}
 .dvnHmpgGroupDataTable {margin: 0; width: 100%;}
 .dvnHmpgGroupDataTable span {font-size: 90% !important;}
 .dvnHmpgGroupDataTable th span.iceOutTxt td {font-size: 90% !important;}

@@ -27,10 +27,10 @@
       });
           function setHiddenValues(groupid) {
             if (arguments.length > 1) {
-                
+                document.getElementById('HomePageForm:filterType').value = 'alphabetic';
                 document.getElementById('HomePageForm:alphaCharacter').value = arguments[1];
             } else {
-                
+                document.getElementById('HomePageForm:filterType').value = 'numeric';
                 document.getElementById('HomePageForm:groupId').value = arguments[0];
             }
           }
@@ -361,6 +361,10 @@
             </div>
           </div>
           <!-- END THE MENU -->
+              <ice:inputHidden  binding="#{HomePage.hiddenFilterType}"
+                        id="filterType"
+                        valueChangeListener="#{HomePage.changeFilterType}"
+                        />
               <ice:inputHidden  binding="#{HomePage.hiddenAlphaCharacter}"
                                     id="alphaCharacter"
                                     valueChangeListener="#{HomePage.changeAlphaCharacter}"
@@ -369,8 +373,6 @@
                                     id="groupId"
                                     valueChangeListener="#{HomePage.changeGroupId}"
                                     />
-                
-
           <ice:messages></ice:messages>
           <!-- Dataverse Homepage -->
       

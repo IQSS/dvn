@@ -207,7 +207,7 @@
                     </f:facet>
                     <ice:outputLink id="hideShow" 
                                     onclick="getNextSibling(this);"
-                                    rendered="#{item.vdc.dvnDescription != null}"
+                                    rendered="#{!empty item.vdc.dvnDescription}"
                                     styleClass="dvnHmpgMoreInfoLink"
                                     value="javascript:void(0);">
                       <ice:outputText id="more_info" value="more info [+]"/>

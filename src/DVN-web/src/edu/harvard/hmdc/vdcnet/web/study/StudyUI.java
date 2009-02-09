@@ -53,6 +53,7 @@ import edu.harvard.hmdc.vdcnet.study.StudyTopicClass;
 import edu.harvard.hmdc.vdcnet.util.DvnDate;
 import edu.harvard.hmdc.vdcnet.util.StringUtil;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -75,6 +76,8 @@ public class StudyUI  implements java.io.Serializable {
     private UserGroup ipUserGroup;
 
     private StudyServiceLocal studyService = null;
+
+    private static DateFormat dateFormatter = DateFormat.getDateInstance(DateFormat.MEDIUM);
     
     /** Creates a new instance of StudyUI
      *  this consturctor does not initialize the file category ui list
@@ -963,6 +966,10 @@ public class StudyUI  implements java.io.Serializable {
     
     public boolean isStudyRestricted() {
         return getStudy().isStudyRestrictedForUser(user, ipUserGroup);
+    }
+
+    public String getLastUpdateTime() {
+        return dateFormatter.format( getStudy().getLastUpdateTime() );
     }
 
 }

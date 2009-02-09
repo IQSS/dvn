@@ -171,7 +171,6 @@ public class VDCUIList extends SortableList {
         this.vdcGroupId = vdcGroupId;
     }
 
-
     private VDCUI vdcui;
 
     public VDCUI getVdcui() {

@@ -43,7 +43,7 @@ public class VDCUIList extends SortableList {
     }
 
     public VDCUIList() {
-        init();      
+        init();
     }
 
     public VDCUIList(Long vdcGroupId) {
@@ -126,16 +126,15 @@ public class VDCUIList extends SortableList {
  
 
     
-    public List<VDCUI> getVdcUIList() {     
-            if (!oldSort.equals(sortColumnName) ) {
-                sort();
-                oldSort = sortColumnName;
-                oldAscending=ascending;
-            }
-            else if (oldAscending!=ascending) {
-                Collections.reverse(vdcUIList);
-                oldAscending=ascending;
-            }
+    public List<VDCUI> getVdcUIList() {
+        if (!oldSort.equals(sortColumnName) || alphaCharacter != null ) {
+            sort();
+            oldSort = sortColumnName;
+            oldAscending=ascending;
+        } else if (oldAscending!=ascending) {
+            Collections.reverse(vdcUIList);
+            oldAscending=ascending;
+        }
         return vdcUIList;
     }
 
@@ -189,7 +188,5 @@ public class VDCUIList extends SortableList {
 
     public void setAlphaCharacter(String alphaCharacter) {
         this.alphaCharacter = alphaCharacter;
-    }
-
-    
+    }    
 }

@@ -677,10 +677,14 @@ public class VDCServiceBean implements VDCServiceLocal {
      * @param order
      * @return list of dataverses ordered by creator
      */
-    public List getManagedPagedData(int firstRow, int totalRows, String orderBy, String order) {
+
+     public List getManagedPagedData(int firstRow, int totalRows, String orderBy, String order) {
         List<VDC> list = new ArrayList();
+        orderBy = (orderBy.toLowerCase().equals("name"))  ? "CASE WHEN dtype='Scholar' THEN Lower(vdc.lastname) ELSE Lower(vdc.name) END" : "Lower(" + orderBy + ")";
         try {
-            String queryString = "SELECT vdc.id, vdc.name, vdc.alias, vdc.affiliation, vdc.releasedate, " +
+            String queryString = "SELECT vdc.id, " +
+                    "CASE WHEN dtype = 'Scholar' THEN vdc.lastname || ', ' || vdc.firstname ELSE name END AS sortname, " +
+                    "vdc.alias, vdc.affiliation, vdc.releasedate, " +
                     "vdc.dtype, vdc.createddate, vdc.dvndescription, username, " +
                     "CASE WHEN count(owner_id) is null THEN 0 ELSE count(owner_id) END AS owned_studies, " +
                     "CASE WHEN max(lastupdatetime) is null THEN vdc.releasedate ELSE max(lastupdatetime) END as lastupdated " +
@@ -688,8 +692,8 @@ public class VDCServiceBean implements VDCServiceLocal {
                     "LEFT OUTER JOIN study on vdc.id = study.owner_id " +
                     "LEFT OUTER JOIN studyfileactivity on study.id = studyfileactivity.study_id " +
                     "WHERE vdc.creator_id = vdcuser.id " +
-                    "GROUP BY vdc.id, vdc.name, vdc.alias, vdc.affiliation, vdc.releasedate, vdc.dtype, vdc.createddate, vdc.dvndescription, username " +
-                    "ORDER BY LOWER(" + orderBy + ") " + order +
+                    "GROUP BY vdc.id, vdc.name, vdc.lastname, sortname, vdc.alias, vdc.affiliation, vdc.releasedate, vdc.dtype, vdc.createddate, vdc.dvndescription, username " +
+                    "ORDER BY " + orderBy + " " + order +
                     " LIMIT " + totalRows +
                     " OFFSET " + firstRow;
             Query query = em.createNativeQuery(queryString);
@@ -819,7 +823,6 @@ public class VDCServiceBean implements VDCServiceLocal {
             query.setParameter(1, classificationId);
             query.setParameter(2, classificationId);
         }
-        System.out.println(queryString);
         // since query is native, must parse through Vector results
         for (Object currentResult : query.getResultList()) {
             // convert results into Longs

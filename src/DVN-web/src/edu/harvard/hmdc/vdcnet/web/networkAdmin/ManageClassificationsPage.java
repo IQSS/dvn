@@ -261,6 +261,7 @@ public class ManageClassificationsPage extends VDCBaseBean implements Serializab
              parentItem.setIndentStyleClass("childRowIndentStyle"); //deprecate in favor of inline indent
              parentItem.setTextIndent(indent);
              parentItem.setSubclassification(new Long(Integer.toString(vdcGroupService.findByParentId(vdcgroup.getId()).size())));
+             parentItem.setShortDescription(vdcgroup.getDescription());
              parentitem.addChildItem(parentItem);
              if (itemBeans.contains(parentItem))
                   itemBeans.remove(parentItem);

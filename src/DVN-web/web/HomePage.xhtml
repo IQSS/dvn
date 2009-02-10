@@ -145,8 +145,10 @@
                                 id="groupPanel1"
                                 rendered="#{!empty(HomePage.vdcUIList.vdcUIList) and VDCRequest.currentVDC == null}">
                         <ice:outputText styleClass="dvn_totalsLabel" value ="Dataverses: "/><ice:outputText styleClass="dvn_totalsValue" value="#{HomePage.vdcUIListSize}"/>
-                        <ice:outputText styleClass="dvn_totalsLabel" value ="Studies: "/><ice:outputText styleClass="dvn_totalsValue" value="#{HomePage.networkStats.studyCount}"/>
-                        <ice:outputText styleClass="dvn_totalsLabel" value="Files: " /><ice:outputText styleClass="dvn_totalsValue" value="#{HomePage.networkStats.fileCount}"/>
+                    <ice:outputText rendered="#{HomePage.groupName == 'All Dataverses'}" styleClass="dvn_totalsLabel" value ="Studies: "/>
+                    <ice:outputText rendered="#{HomePage.groupName == 'All Dataverses'}" styleClass="dvn_totalsValue" value="#{HomePage.networkStats.studyCount}"/>
+                    <ice:outputText rendered="#{HomePage.groupName == 'All Dataverses'}" styleClass="dvn_totalsLabel" value="Files: " />
+                    <ice:outputText rendered="#{HomePage.groupName == 'All Dataverses'}" styleClass="dvn_totalsValue" value="#{HomePage.networkStats.fileCount}"/>
                       </div>
                       <div jsfc="ice:panelGroup"
                             id="groupPanel2"
@@ -312,11 +314,9 @@
                                                      </ice:commandLink>
                                                 </h4>
                                                 <ul><!-- TODO: CHANGE TO DISPLAY:NONE; -->
-
                                                     <gui:repeat rendered="#{item.xtraItems != null}"
                                                                 value="#{item.xtraItems}"
                                                                 var="xtraItems">
-
                                                         <li>
                                                             <ice:commandLink onclick="setHiddenValues(#{xtraItems.id});"
                                                                                 partialSubmit="true">
@@ -324,9 +324,7 @@
                                                                 <f:attribute name="groupId" value="#{xtraItems.id}"/>
                                                             </ice:commandLink>
                                                         </li>
-
                                                     </gui:repeat>
-
                                                  </ul>
                                             </li>
                                         </ul>

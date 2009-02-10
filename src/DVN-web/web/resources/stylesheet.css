@@ -938,11 +938,11 @@ span.dvnStudyListStudyAuthor {font-size: 90% !important;}
 span.dvnStudyListGlobalId {color: black;}
 
 .dvnStudyListTableColInfo {
-   width: 90%;
+   width: 80%;
    background-color: inherit !important;
 }
 .dvnStudyListTableColID {
-   width: 10%;
+   width: 20%;
    background-color: inherit !important;
 }
 

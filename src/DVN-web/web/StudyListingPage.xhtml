@@ -217,7 +217,7 @@
                       <ice:outputText styleClass="dvnStudyListGlobalId" value="#{studyUI.study.globalId}"/>
                       <ice:outputText value="#{studyUI.downloadCount} downloads" rendered="#{studyUI.files and studyUI.downloadCount != 1}"/>
                       <ice:outputText value="#{studyUI.downloadCount} download" rendered="#{studyUI.files and studyUI.downloadCount == 1}"/>
-                      <ice:outputText value="Updated: "/><ice:outputText value="#{studyUI.lastUpdateTime} "/>
+                      <ice:outputText value="Updated: #{studyUI.lastUpdateTime}"/>
                     </div>
                   </ice:column>
                 </ice:dataTable>

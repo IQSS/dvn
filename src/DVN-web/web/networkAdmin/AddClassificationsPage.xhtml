@@ -63,11 +63,14 @@
                                  value="Description"/>
               </ice:panelGroup>
               <ice:panelGroup>
-                <ice:inputTextarea name="description"
+                <ice:inputTextarea id="description"
+                                   name="description"
                                    rows="4"
                                    cols="20"
                                    binding="#{addClassificationsPage.descriptionInput}">
+                    <f:validator validatorId="PlainTextValidator"/>
                 </ice:inputTextarea>
+                <ice:message styleClass="errorMessage" for="description"/>
               </ice:panelGroup>
             </ice:panelGrid>
             <!-- ***************************** Add/Remove Dataverses to/from Classifications page. ************************************ -->

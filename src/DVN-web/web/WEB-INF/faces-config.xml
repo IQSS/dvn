@@ -71,10 +71,14 @@
       <validator-class>edu.harvard.hmdc.vdcnet.util.EmailValidator</validator-class>
   </validator>
   <validator>
+      <validator-id>PlainTextValidator</validator-id>
+      <validator-class>edu.harvard.hmdc.vdcnet.util.PlainTextValidator</validator-class>
+  </validator>
+  <validator>
       <validator-id>UrlValidator</validator-id>
       <validator-class>edu.harvard.hmdc.vdcnet.util.UrlValidator</validator-class>
   </validator>
-    <validator>
+  <validator>
       <validator-id>XhtmlValidator</validator-id>
       <validator-class>edu.harvard.hmdc.vdcnet.util.XhtmlValidator</validator-class>
   </validator>

@@ -139,11 +139,11 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
                 setFiles(editStudyService.getCurrentFiles());
             } else {
                 Long vdcId = getVDCRequestBean().getCurrentVDC().getId();
-                Long templateId = getVDCRequestBean().getCurrentVDC().getDefaultTemplate().getId();
-                editStudyService.newStudy(vdcId, getVDCSessionBean().getLoginBean().getUser().getId(), templateId);
+                selectTemplateId = getVDCRequestBean().getCurrentVDC().getDefaultTemplate().getId();
+                editStudyService.newStudy(vdcId, getVDCSessionBean().getLoginBean().getUser().getId(), selectTemplateId);
                 study = editStudyService.getStudy();
                 studyId = SessionCounter.getNext();
-               
+
 
                  study.setStudyId(studyService.generateStudyIdSequence(study.getProtocol(),study.getAuthority()));
                 // prefill date of deposit
@@ -154,7 +154,6 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
              initStudyMap();
              // Add empty first element to subcollections, so the input text fields will be visible
             initCollections();
-            selectTemplateId = getVDCRequestBean().getCurrentVDC().getDefaultTemplate().getId();
           //  initDvnDates();
             
         }
@@ -336,8 +335,12 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
    
     
     public boolean getShowTemplateList() {
-          return (!getTemplatesMap().isEmpty() && getTemplatesMap().size() >1 && editStudyService.isNewStudy());
-        
+        if ( editStudyService.isNewStudy() ) {
+            Map templatesMap = getTemplatesMap();
+            return templatesMap != null && templatesMap.size() > 1;
+        }
+
+        return false;
     }
     
        public String changeTemplateAction() {
@@ -404,6 +407,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
       }
     }
       public Map getTemplatesMap() {
+        // getVdcTemplatesMap is called with currentVDCId, since for a new study the current VDC IS the owner
         return vdcService.getVdcTemplatesMap(getVDCRequestBean().getCurrentVDCId());
     }
     

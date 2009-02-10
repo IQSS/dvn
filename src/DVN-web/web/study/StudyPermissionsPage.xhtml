@@ -50,6 +50,8 @@
                     <f:selectItem itemLabel="Restricted" itemValue="Restricted"/>
                     <f:selectItem itemLabel="Public" itemValue="Public"/>
                   </ice:selectOneMenu>
+
+                  <ice:outputText styleClass="vdcHelpText" value="If this setting is public, files can still be restricted below"/>
                 </td>
               </tr>
               <tr>
@@ -102,7 +104,7 @@
                 </td>
                 <td>
                   <ice:selectBooleanCheckbox value="#{StudyPermissionsPage.editStudyPermissions.study.requestAccess}"/>
-                  <ice:outputText value=" Allow users to request access to restricted files for this study by creating an account."/>
+                  <ice:outputText value=" Allow users to request access to restricted files for this study (you will get an email notification for each request)."/>
                 </td>
               </tr>
             </table>

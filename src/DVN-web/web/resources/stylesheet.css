@@ -266,6 +266,7 @@ span.disabled {font-weight: bold;}
 .iceTreeRow .icePnlGrp {display: inline;}
 .dvnTreeBlock {
   width: 100%;
+  height: 36em;
   padding: 0; border: 0;
   text-align: left;
 }

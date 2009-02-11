@@ -254,28 +254,32 @@ public class FileUtil implements java.io.Serializable  {
             if (!tempDir.exists()) {
                 tempDir.mkdirs();
             }
-            
-            // now create the file
-            String tempFileName = originalFileName;
-            File file = new File(tempDir, tempFileName);
-            int fileSuffix = 1;
 
-            while (!file.createNewFile()) {
-                int extensionIndex = originalFileName.lastIndexOf(".");
-                if (extensionIndex != -1 ) {
-                    tempFileName = originalFileName.substring(0, extensionIndex) + "_" + fileSuffix++ + originalFileName.substring(extensionIndex);
-                }  else {
-                    tempFileName = originalFileName + "_" + fileSuffix++;
-                }
-                file = new File(tempDir, tempFileName);
-            } 
-            
-            return file;
-            
+            return createTempFile(tempDir, originalFileName);
+           
         } else {
             throw new Exception("System property \"vdc.temp.file.dir\" has not been set.");
         }
 
+     }
+
+     public static File createTempFile(File dir, String originalFileName) throws Exception{ 
+        // now create the file
+        String tempFileName = originalFileName;
+        File file = new File(dir, tempFileName);
+        int fileSuffix = 1;
+
+        while (!file.createNewFile()) {
+            int extensionIndex = originalFileName.lastIndexOf(".");
+            if (extensionIndex != -1 ) {
+                tempFileName = originalFileName.substring(0, extensionIndex) + "_" + fileSuffix++ + originalFileName.substring(extensionIndex);
+            }  else {
+                tempFileName = originalFileName + "_" + fileSuffix++;
+            }
+            file = new File(dir, tempFileName);
+        }
+
+        return file;
      }
     
 }

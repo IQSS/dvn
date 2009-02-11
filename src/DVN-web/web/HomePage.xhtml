@@ -26,7 +26,10 @@
           jQuery("ul.xtraMenu").Accordion({active: "h4.selected", header: "h4.head", alwaysOpen: false, animated: true, showSpeed: 400, hideSpeed: 800});
       });
           function setHiddenValues(groupid) {
-            if (arguments.length > 1) {
+            if (arguments[0] == "All") {
+                document.getElementById('HomePageForm:filterType').value = 'numeric';
+                //document.getElementById('HomePageForm:alphaCharacter').value = arguments[1];
+            } else if (arguments.length > 1) {
                 document.getElementById('HomePageForm:filterType').value = 'alphabetic';
                 document.getElementById('HomePageForm:alphaCharacter').value = arguments[1];
             } else {
@@ -121,7 +124,7 @@
                 <div jsfc="ice:panelGroup" styleClass="dvnHmpgGroupAlphaSortBlock" rendered="#{VDCRequest.currentVDC == null}">
                     <ul class="dvnAlphaBrowse">
                         <li>
-                            <ice:commandLink  onclick="setHiddenValues(-1,'All');">
+                            <ice:commandLink  onclick="setHiddenValues('All');">
                                 <ice:outputText value="ALL"/>
                             </ice:commandLink>
                         </li>

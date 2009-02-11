@@ -144,6 +144,8 @@
                           <ice:outputText id="hyperlink3Text" value="#{studyUI.study.title}"/>
                         </ice:outputLink>
                         <ice:outputText id="outputText13" styleClass="dvnStudyListStudyAuthor" value="by #{studyUI.authors}" rendered="#{studyUI.authors != null and studyUI.authors != ''}"/>
+                        <ice:outputText value="(OPEN)" rendered="#{studyUI.study.restricted and !studyUI.studyRestricted}"/>
+                        <ice:outputText value="(CLOSED)" rendered="#{studyUI.study.restricted and studyUI.studyRestricted}"/>
                       </div>
                       <!--
                               NO FILES NEED TO GO SOMEWHERE ELSE

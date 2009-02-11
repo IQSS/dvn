@@ -753,6 +753,9 @@ public class VDC implements java.io.Serializable  {
      * @param affiliation New value of property affiliation.
      */
     public void setAffiliation(String affiliation) {
+        if (affiliation==null ) {
+            affiliation="";
+        }
         this.affiliation = affiliation;
     }
     

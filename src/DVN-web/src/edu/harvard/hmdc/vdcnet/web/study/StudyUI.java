@@ -80,7 +80,7 @@ public class StudyUI  implements java.io.Serializable {
     private static DateFormat dateFormatter = DateFormat.getDateInstance(DateFormat.MEDIUM);
     
     /** Creates a new instance of StudyUI
-     *  this consturctor does not initialize the file category ui list
+     *  this constructor does not initialize the file category ui list
      *  and is meant to be used in places where you do not need them
      *  e.g. the StudyListingPage or the CollectionTree
      */
@@ -96,6 +96,13 @@ public class StudyUI  implements java.io.Serializable {
     public StudyUI(Long sid, Map studyFields) {
         this.studyId = sid;
         this.studyFields = studyFields;
+    }
+
+    public StudyUI(Long sid, Map studyFields, VDCUser user, UserGroup ipUserGroup) {
+        this.studyId = sid;
+        this.studyFields = studyFields;
+        this.user = user;
+        this.ipUserGroup = ipUserGroup;
     }
         
     public StudyUI(Long sid, VDCUser user, UserGroup ipUserGroup, boolean selected) {

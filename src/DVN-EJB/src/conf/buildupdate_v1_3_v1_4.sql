@@ -184,4 +184,6 @@ from studyfile sf, filecategory fc
 where fc.id = sf.filecategory_id
 and sf.id not in (select studyfile_id from studyfileactivity);
 
+update vdc set affiliation = '' where affiliation is null;
+
 commit;

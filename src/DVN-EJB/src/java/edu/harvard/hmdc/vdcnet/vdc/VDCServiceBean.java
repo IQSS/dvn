@@ -614,12 +614,13 @@ public class VDCServiceBean implements VDCServiceLocal {
             String queryString = "SELECT vdc.id, vdc.name, vdc.alias, vdc.affiliation, vdc.releasedate, " +
                     "vdc.dtype, vdc.createddate, vdc.dvndescription, username, " +
                     "CASE WHEN count(owner_id) is null THEN 0 ELSE count(owner_id) END AS owned_studies, " +
-                    "CASE WHEN max(lastupdatetime) is null THEN vdc.releasedate ELSE max(lastupdatetime) END as lastupdated " +
+                    "CASE WHEN max(lastupdatetime) is null THEN vdc.releasedate ELSE max(lastupdatetime) END as lastupdated, " +
+                    "vdc.restricted " +
                     "FROM vdcuser, vdc " +
                     "LEFT OUTER JOIN study on vdc.id = study.owner_id " +
                     "LEFT OUTER JOIN studyfileactivity on study.id = studyfileactivity.study_id " +
                     "WHERE vdc.creator_id = vdcuser.id " +
-                    "GROUP BY vdc.id, vdc.name, vdc.alias, vdc.affiliation, vdc.releasedate, vdc.dtype, vdc.createddate, vdc.dvndescription, username " +
+                    "GROUP BY vdc.id, vdc.name, vdc.alias, vdc.affiliation, vdc.releasedate, vdc.dtype, vdc.createddate, vdc.dvndescription, username, vdc.restricted " +
                     "ORDER BY " +
                     "CASE WHEN count(owner_id) is null THEN 0 ELSE count(owner_id) END " + order +
                     " LIMIT " + totalRows +
@@ -647,12 +648,13 @@ public class VDCServiceBean implements VDCServiceLocal {
             String queryString = "SELECT vdc.id, vdc.name, vdc.alias, vdc.affiliation, vdc.releasedate, " +
                     "vdc.dtype, vdc.createddate, vdc.dvndescription, username, " +
                     "CASE WHEN count(owner_id) is null THEN 0 ELSE count(owner_id) END AS owned_studies, " +
-                    "CASE WHEN max(lastupdatetime) is null THEN vdc.releasedate ELSE max(lastupdatetime) END as lastupdated " +
+                    "CASE WHEN max(lastupdatetime) is null THEN vdc.releasedate ELSE max(lastupdatetime) END as lastupdated, " +
+                    "vdc.restricted " +
                     "FROM vdcuser, vdc " +
                     "LEFT OUTER JOIN study on vdc.id = study.owner_id " +
                     "LEFT OUTER JOIN studyfileactivity on study.id = studyfileactivity.study_id " +
                     "WHERE vdc.creator_id = vdcuser.id " +
-                    "GROUP BY vdc.id, vdc.name, vdc.alias, vdc.affiliation, vdc.releasedate, vdc.dtype, vdc.createddate, vdc.dvndescription, username " +
+                    "GROUP BY vdc.id, vdc.name, vdc.alias, vdc.affiliation, vdc.releasedate, vdc.dtype, vdc.createddate, vdc.dvndescription, username, vdc.restricted " +
                     "ORDER BY " +
                     "CASE WHEN max(lastupdatetime) is null THEN vdc.releasedate ELSE max(lastupdatetime) END " + order +
                     " LIMIT " + totalRows +
@@ -687,12 +689,13 @@ public class VDCServiceBean implements VDCServiceLocal {
                     "vdc.alias, vdc.affiliation, vdc.releasedate, " +
                     "vdc.dtype, vdc.createddate, vdc.dvndescription, username, " +
                     "CASE WHEN count(owner_id) is null THEN 0 ELSE count(owner_id) END AS owned_studies, " +
-                    "CASE WHEN max(lastupdatetime) is null THEN vdc.releasedate ELSE max(lastupdatetime) END as lastupdated " +
+                    "CASE WHEN max(lastupdatetime) is null THEN vdc.releasedate ELSE max(lastupdatetime) END as lastupdated, " +
+                    "vdc.restricted " +
                     "FROM vdcuser, vdc " +
                     "LEFT OUTER JOIN study on vdc.id = study.owner_id " +
                     "LEFT OUTER JOIN studyfileactivity on study.id = studyfileactivity.study_id " +
                     "WHERE vdc.creator_id = vdcuser.id " +
-                    "GROUP BY vdc.id, vdc.name, vdc.lastname, sortname, vdc.alias, vdc.affiliation, vdc.releasedate, vdc.dtype, vdc.createddate, vdc.dvndescription, username " +
+                    "GROUP BY vdc.id, vdc.name, vdc.lastname, sortname, vdc.alias, vdc.affiliation, vdc.releasedate, vdc.dtype, vdc.createddate, vdc.dvndescription, username, vdc.restricted " +
                     "ORDER BY " + orderBy + " " + order +
                     " LIMIT " + totalRows +
                     " OFFSET " + firstRow;

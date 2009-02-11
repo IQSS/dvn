@@ -266,13 +266,13 @@ span.disabled {font-weight: bold;}
 .iceTreeRow .icePnlGrp {display: inline;}
 .dvnTreeBlock {
   width: 100%;
-  height: 36em;
+  height: 38em;
   padding: 0; border: 0;
   text-align: left;
 }
 .dvnTreeContainer {
     width: 100%;
-    height: 30em;
+    height: 34em;
     border-top: solid 1px #BBB;
     border-left: solid 1px #BBB;
     border-bottom: solid 1px #FFF;
@@ -357,7 +357,7 @@ ul.xtraMenu ul li a:link, ul.xtraMenu ul li a:active, ul.xtraMenu ul li a:hover,
 }
 /* Header links styling */
 .theMenuContainer h3.headFilter {
-    padding: 0 .5em;
+    padding: 1em .5em .5em .5em;
 }
 .theMenuContainer h3, .theMenuContainer h4 {
     font-size: 90% !important;
@@ -402,12 +402,14 @@ ul.xtraMenu ul li a:link, ul.xtraMenu ul li a:active, ul.xtraMenu ul li a:hover,
     display: block;
     background: url(menudown.gif) no-repeat;
     background-position: 98% 50%;
+    padding-right: 20px;
     font-size: 90% !important;
 }
 .theMenuContainer h4.head a:hover {
     text-decoration: underline;
     background: url(menudown.gif) no-repeat;
     background-position: 98% 50%;
+    padding-right: 20px;
     font-size: 90% !important;
 }
 .theMenuContainer h4.selected {
@@ -416,6 +418,7 @@ ul.xtraMenu ul li a:link, ul.xtraMenu ul li a:active, ul.xtraMenu ul li a:hover,
 .theMenuContainer h4.selected a:link, .theMenuContainer h4.selected a:visited, .theMenuContainer h4.selected a:active {
     background: url(menuup.gif) no-repeat;
     background-position: 98% 50%;
+    padding-right: 20px;
     text-decoration: none;
     font-size: 90% !important;
     color: white;
@@ -423,6 +426,7 @@ ul.xtraMenu ul li a:link, ul.xtraMenu ul li a:active, ul.xtraMenu ul li a:hover,
 .theMenuContainer h4.selected a:hover {
     background: url(menuup.gif) no-repeat;
     background-position: 98% 50%;
+    padding-right: 20px;
     text-decoration: underline;
     font-size: 90% !important;
 }

@@ -292,7 +292,7 @@
                                      value="#{HomePage.accordionItemBeans}"
                                      var="menuItems">
                         <h3 class="headFilter">
-                            <ice:outputText value="Filter by #{menuItems.name}"/>
+                            <ice:outputText value="#{menuItems.name}"/>
                         </h3>
                         <gui:repeat rendered="#{menuItems != null}"
                                     value="#{menuItems.childItems}"

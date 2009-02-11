@@ -120,12 +120,14 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
 
     public Collection getStudies() {
         List studyUIList = new ArrayList();
+        VDCUser user = getVDCSessionBean().getUser();
+        UserGroup usergroup = getVDCSessionBean().getIpUserGroup();
 
         if (studyListing != null && studyListing.getStudyIds() != null) {
             Iterator iter = studyListing.getStudyIds().iterator();
             while (iter.hasNext()) {
                 Long sid = (Long) iter.next();
-                StudyUI sui = new StudyUI(sid, getStudyFields());
+                StudyUI sui = new StudyUI(sid, getStudyFields(), user, usergroup);
                 if (studyListing.getVariableMap() != null) {
                     List dvList = (List) studyListing.getVariableMap().get(sid);
                     sui.setFoundInVariables(dvList);
@@ -328,10 +330,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
     private void initStudies() {
         if (studyListing.getStudyIds() != null) {
             VDC vdc = getVDCRequestBean().getCurrentVDC();
-            VDCUser user = getVDCSessionBean().getUser();
-            UserGroup usergroup = getVDCSessionBean().getIpUserGroup();
-            Long passThroughVdcId = null;
-
+            
             // first filter the visible studies; visible studies are those that are released
             // and not from a restricted VDC (unless you are in that VDC)
             studyListing.getStudyIds().retainAll(studyService.getVisibleStudies(
@@ -339,10 +338,16 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
                     vdc != null ? vdc.getId() : null));
 
 
+            /*
             // next determine user role:
-            // if networkAdmin, skip viewable filter (alter studies are viewable)
-            // if vdc admin or curator, allow vdc's owened studies to pass through filter (by sending vdcId)
-            if (user != null) {
+            // if networkAdmin, skip viewable filter (all studies are viewable)
+            // if vdc admin or curator, allow vdc's owned studies to pass through filter (by sending vdcId)
+
+            VDCUser user = getVDCSessionBean().getUser();
+            UserGroup usergroup = getVDCSessionBean().getIpUserGroup();
+            Long passThroughVdcId = null;
+
+             if (user != null) {
                 if (user.getNetworkRole() != null && user.getNetworkRole().getName().equals(NetworkRoleServiceLocal.ADMIN)) {
                     return;
 
@@ -360,6 +365,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
                     (user != null ? user.getId() : null),
                     (usergroup != null ? usergroup.getId() : null),
                     passThroughVdcId ) );
+            */
         }
     }
 

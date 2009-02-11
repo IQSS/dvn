@@ -707,6 +707,7 @@ public class DataverseGrouping extends SortableList {
                  grouping.setCreatedBy((String)vector.get(8));//username
                  grouping.setNumberOwnedStudies(Integer.parseInt(((Long)vector.get(9)).toString()));//9
                  grouping.setLastUpdateTime((Timestamp)vector.get(10));
+                 grouping.setRestricted((Boolean)vector.get(11));
                  grouping.setRecordType("dataverse");
                  newList.add(grouping);
                  isPopulated = true;

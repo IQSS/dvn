@@ -164,7 +164,8 @@ public class ManageDataversesPage extends VDCBaseBean implements Serializable {
         } else if (DataPaginator.FACET_FAST_FORWARD.equals(pEvent.getScrollerfacet())) {
             checkForwardPaging(grouping,30);
         } else if (DataPaginator.FACET_LAST.equals(pEvent.getScrollerfacet())) {
-            grouping.setFirstRow(grouping.getDataModelRowCount() - (grouping.getDataModelRowCount() % 10));
+            int dvRemainder = grouping.getDataModelRowCount() % 10;
+            grouping.setFirstRow( grouping.getDataModelRowCount() - (dvRemainder != 0 ? dvRemainder : 10) );
             grouping.setPageAction(true);
             grouping.getManagedDataModel();
         } else { // This is a paging event

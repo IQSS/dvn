@@ -29,16 +29,15 @@ public class VDCUIList extends SortableList {
     private static final String LASTUPDATED_COLUMN_NAME     = "Last Updated";
     private static final String ACTIVITY_COLUMN_NAME        = "Activity";
 
-    private Long vdcGroupId;
+    private Long   vdcGroupId;
     private String alphaCharacter;
-    
     
     private void init() {
         sortColumnName = DATERELEASED_COLUMN_NAME;
         ascending = true;
         oldSort = "";
         // make sure sortColumnName on first render
-        oldAscending = ascending;        
+        oldAscending = ascending;
         initVdcService();               
     }
 
@@ -49,8 +48,6 @@ public class VDCUIList extends SortableList {
     public VDCUIList(Long vdcGroupId) {
         init();
         this.vdcGroupId = vdcGroupId;
-      
-       
     }
 
     public VDCUIList(Long vdcGroupId, String alphaCharacter) {     
@@ -75,7 +72,6 @@ public class VDCUIList extends SortableList {
             if (sortColumnName == null) {
                 return;
             }
-            
             if (sortColumnName.equals(NAME_COLUMN_NAME)) {
                 orderBy = NAME_COLUMN_NAME;
             } else if (sortColumnName.equals(AFFILIATION_COLUMN_NAME)) {
@@ -89,17 +85,16 @@ public class VDCUIList extends SortableList {
             } else {
                 throw new RuntimeException("Unknown sortColumnName: " + sortColumnName);
             }
-
             List vdcIds = null;
 
             if (orderBy.equals("activity")) {
                 vdcIds = vdcService.getOrderedVDCIds(vdcGroupId, alphaCharacter, orderBy);
             } else {
-                if (alphaCharacter != null && vdcGroupId != null) {
+                if (alphaCharacter != null && vdcGroupId != null && !vdcGroupId.equals(new Long("-1"))) {
                     vdcIds = vdcService.getOrderedVDCIds(vdcGroupId, alphaCharacter, orderBy);
-                } else if (alphaCharacter != null && vdcGroupId == null) {
+                } else if (alphaCharacter != null && (vdcGroupId == null || vdcGroupId.equals(new Long("-1")))) {
                     vdcIds = vdcService.getOrderedVDCIds(alphaCharacter, orderBy);
-                } else if (vdcGroupId == null) {
+                } else if (vdcGroupId == null || vdcGroupId.equals(new Long("-1"))) {
                     vdcIds = vdcService.getOrderedVDCIds(orderBy);
                 } else {
                     vdcIds = vdcService.getOrderedVDCIds(vdcGroupId, orderBy);
@@ -127,13 +122,13 @@ public class VDCUIList extends SortableList {
 
     
     public List<VDCUI> getVdcUIList() {
-        if (!oldSort.equals(sortColumnName) || alphaCharacter != null ) {
+        if (!oldSort.equals(sortColumnName) ) {
             sort();
-            oldSort = sortColumnName;
-            oldAscending=ascending;
-        } else if (oldAscending!=ascending) {
+            oldSort         = sortColumnName;
+            oldAscending    = ascending;
+        } else if (oldAscending != ascending) {
             Collections.reverse(vdcUIList);
-            oldAscending=ascending;
+            oldAscending    = ascending;
         }
         return vdcUIList;
     }
@@ -141,7 +136,7 @@ public class VDCUIList extends SortableList {
     /**
      * Set sortColumnName type.
      *
-     * @param ascending true for ascending sortColumnName, false for desending sortColumnName.
+     * @param ascending true for ascending sortColumnName, false for descending sortColumnName.
      */
     public void setAscending(boolean ascending) {
         oldAscending = this.ascending;

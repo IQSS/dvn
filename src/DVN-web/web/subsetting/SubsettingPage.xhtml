@@ -396,17 +396,14 @@
                                         value="#{bundleAnalysis['recode.instruction.line3']}"/>
                     </ice:panelGroup>
 
-                    <ice:panelGrid id="requiredfield" 
-                        columns="1">
-                        <ice:panelLayout layout="flow">
-                            <ice:outputText id="rfb" escape="false" value="(" />
-                            <ice:graphicImage value="/resources/icon_required.gif" />
-                            <ice:outputText id="rfa" style="vdcHelpText"
-                                value="indicates a required field.)" />
-                        </ice:panelLayout>
-                    </ice:panelGrid>
+                    <ice:panelGroup styleClass="vdcHelpText">
+                        <ice:outputText id="rfb" escape="false" value="(" />
+                        <ice:graphicImage value="/resources/icon_required.gif" />
+                        <ice:outputText id="rfa"
+                            value="indicates a required field.)" />
+                    </ice:panelGroup>
                 </ice:panelGrid>
-                <br />
+                
                 <!-- recoding working area -->
                 <ice:panelGrid id="groupPanelRecodeTableArea" 
                     binding="#{AnalysisPage.groupPanelRecodeTableArea}"
@@ -459,10 +456,9 @@
                     </ice:panelGrid>
                     <!-- end of variable name/label boxes-->
                     <!-- help pane -->
-                    <ice:panelGrid id="recodeTableHelpPanel" 
-                        binding="#{AnalysisPage.groupPanelRecodeTableHelp}"
-                        columns="1">
-                        <ice:panelLayout layout="flow">
+                    <ice:panelGroup id="recodeTableHelpPanel"
+                        binding="#{AnalysisPage.groupPanelRecodeTableHelp}">
+                        
                             <ice:panelGroup styleClass="vdcHelpText">
                                 <ice:graphicImage
                                     alt="Information"
@@ -475,16 +471,14 @@
                                     title="Click to show/hide how-to information"
                                     value="/resources/icon_help.gif"
                                     onclick="return shwNshwTxt('recodeDetail');"/>
-                            </ice:panelGroup>
-                        </ice:panelLayout>
-                        <div id="recodeDetail" 
-                            style="display:none">
-                            <br/>
-                            <ice:outputText id="recodeHowToRecodeDetails"
-                                value="#{bundleAnalysis['recode.howToRecode.details']}"/>
-                        </div>
-                        <br/>
-                        <ice:panelLayout layout="flow">
+                                <div id="recodeDetail"
+                                     style="display:none">
+                                    <ice:outputText id="recodeHowToRecodeDetails"
+                                                    value="#{bundleAnalysis['recode.howToRecode.details']}"/>
+                                </div>
+                            </ice:panelGroup>                        
+                        
+                        
                             <ice:panelGroup styleClass="vdcHelpText">
                                 <ice:graphicImage
                                     alt="Information"
@@ -497,16 +491,13 @@
                                     title="Click to show/hide how-to information"
                                     value="/resources/icon_help.gif"
                                     onclick="return shwNshwTxt('subsetDetail');"/>
+                                <div id="subsetDetail"
+                                     style="display:none">
+                                    <ice:outputText id="recodeHowToSubsetDetails"
+                                                    value="#{bundleAnalysis['recode.howToSubset.details']}"/>
+                                </div>
                             </ice:panelGroup>
-                        </ice:panelLayout>
-                        <div id="subsetDetail" 
-                            style="display:none">
-                            <br/>
-                            <ice:outputText id="recodeHowToSubsetDetails"
-                                value="#{bundleAnalysis['recode.howToSubset.details']}"/>
-                        </div>
-                        <br/>
-                        <ice:panelLayout layout="flow">
+                        
                             <ice:panelGroup styleClass="vdcHelpText">
                                 <ice:graphicImage
                                     alt="Information"
@@ -519,15 +510,13 @@
                                     title="Click to show/hide how-to information"
                                     value="/resources/icon_help.gif"
                                     onclick="return shwNshwTxt('conditionDetail');"/>
+                                <div id="conditionDetail"
+                                     style="display:none">
+                                    <ice:outputText id="recodeHowToEnterConditionDetails"
+                                                    value="#{bundleAnalysis['recode.howToEnterCondition.details']}"/>
+                                </div>
                             </ice:panelGroup>
-                        </ice:panelLayout>
-                        <div id="conditionDetail" 
-                            style="display:none">
-                            <br/>
-                            <ice:outputText id="recodeHowToEnterConditionDetails"
-                                value="#{bundleAnalysis['recode.howToEnterCondition.details']}"/>
-                        </div>
-                    </ice:panelGrid>
+                    </ice:panelGroup>
                     <!-- end of help panel -->
                     <!-- recoding table panel -->
                     <ice:dataTable id="recodeTable" 

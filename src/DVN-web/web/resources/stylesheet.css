@@ -293,6 +293,13 @@ span.disabled {font-weight: bold;}
     padding: 0;
     font-size: 90% !important;
 }
+.theMenu a:link, .theMenu a:visited, .theMenu a:hover, .theMenu a:active {
+    outline: 0;
+}
+.theMenu li { border-top: 1px solid white; /*HACK*/
+    margin: 0;
+    padding: 0;
+}
 .theMenuContainer ul {
     margin: 0;
     list-style-type: none;
@@ -312,23 +319,28 @@ ul.xtraMenu {
     padding: 0;
 }
 ul.xtraMenu li {
-    margin-left: 0;
+    margin: 0;
+    padding: 0;
+}
+ul.xtraMenu ul {
+    margin: 0;
+    padding: 0;
 }
 ul.xtraMenu ul li {
-    margin-left: 0;
+    margin: 0;
+    padding: 0;
 }
 ul.xtraMenu ul li a:link, ul.xtraMenu ul li a:active, ul.xtraMenu ul li a:hover, ul.xtraMenu ul li a:visited {
     font-size: 90% !important;
+    padding-left: 1.25em;
 }
 .theMenuContainer ul ul li a {
     display: block;
     text-decoration: none;
-    padding: 0px 6px;
 }
 .theMenuContainer ul ul li a:hover {
     display: block;
     text-decoration: underline;
-    padding: 0px 6px;
 }
 /* For the xtra menu */
 .theMenuContainer ul ul ul li {
@@ -338,91 +350,81 @@ ul.xtraMenu ul li a:link, ul.xtraMenu ul li a:active, ul.xtraMenu ul li a:hover,
 .theMenuContainer ul ul ul li a {
     display: block;
     text-decoration: none;
-    padding: 0px 6px;
 }
 .theMenuContainer ul ul ul li a:hover {
     display: block;
     text-decoration: underline;
-    padding: 0px 6px;
 }
 /* Header links styling */
 .theMenuContainer h3.headFilter {
+    padding: 0 .5em;
+}
+.theMenuContainer h3, .theMenuContainer h4 {
     font-size: 90% !important;
-    padding: 0px 6px;
-    color: darkgrey;
+    color: black;
+    margin: 0;
+    padding: 0 .5em;
+    background: none;
 }
 .theMenuContainer h3.head {
-    font-size: 90% !important;
-    padding: 0px 6px;
-    color: darkgrey;
+    background: white;
 }
 .theMenuContainer h3.head a {
     text-decoration: none;
     display: block;
-    background: url(menudown.gif) no-repeat;
-    background-position: 98% 50%;
     font-size: 100% !important;
-    font-weight: normal;
 }
 .theMenuContainer h3.head a:hover {
-    text-decoration: underline;
-    background: url(menudown.gif) no-repeat;
     background-position: 98% 50%;
     font-size: 100% !important;
-    font-weight: normal;
 }
-.theMenuContainer h3.selected a {
-    background: url(menuup.gif) no-repeat;
-    background-position: 98% 50%;
+.theMenuContainer h3.selected {
+    background: silver;
+}
+.theMenuContainer h3.selected a:link, .theMenuContainer h3.selected a:visited, .theMenuContainer h3.selected a:active {
     text-decoration: none;
     font-size: 100% !important;
-    font-weight: bold;
+    color: white;
 }
 .theMenuContainer h3.selected a:hover {
-    background: url(menuup.gif) no-repeat;
-    background-position: 98% 50%;
     text-decoration: underline;
     font-size: 100% !important;
-    font-weight: bold;
 }
 .theMenuContainer h3.head a.nochild, .theMenuContainer h3.selected a.nochild {
     background-image: none;
 }
 /* Xtra Header links styling */
-.theMenuContainer h4.head, .theMenuContainer h4.selected {
-    margin: 0;
-    padding: 0;
+.theMenuContainer h4.head {
+    background: white;
 }
 .theMenuContainer h4.head a {
     text-decoration: none;
     display: block;
     background: url(menudown.gif) no-repeat;
     background-position: 98% 50%;
-    padding: 0px 6px;
     font-size: 90% !important;
-    font-weight: normal;
 }
 .theMenuContainer h4.head a:hover {
     text-decoration: underline;
     background: url(menudown.gif) no-repeat;
     background-position: 98% 50%;
     font-size: 90% !important;
-    font-weight: normal;
 }
-.theMenuContainer h4.selected a {
+.theMenuContainer h4.selected {
+    background: silver;
+}
+.theMenuContainer h4.selected a:link, .theMenuContainer h4.selected a:visited, .theMenuContainer h4.selected a:active {
     background: url(menuup.gif) no-repeat;
     background-position: 98% 50%;
     text-decoration: none;
-    padding: 0px 6px;
     font-size: 90% !important;
-    font-weight: bold;
+    color: white;
 }
 .theMenuContainer h4.selected a:hover {
     background: url(menuup.gif) no-repeat;
     background-position: 98% 50%;
     text-decoration: underline;
     font-size: 90% !important;
-    font-weight: bold;
 }
 
 /* HEADER */

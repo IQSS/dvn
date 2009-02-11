@@ -278,19 +278,34 @@ public class HomePage extends VDCBaseBean implements Serializable {
 
     private Long vdcUIListSize;
     private VDCGroup group;
+
     private void populateVDCUIList(boolean isAlphaSort) {
-        if (!isAlphaSort) {
-            if (hiddenGroupId.getValue() == null || hiddenGroupId.getValue().equals("") || hiddenGroupId.getValue().toString().equals("-1")) {
-                vdcUIList = new VDCUIList();
-            } else {
-                vdcUIList = new VDCUIList(groupId);
-            }
-        } else if (groupId != null && !groupId.equals("") && !groupId.equals(new Long("-1"))) {
-            vdcUIList = new VDCUIList(groupId, (String)hiddenAlphaCharacter.getValue());
-        } else {
-            vdcUIList = new VDCUIList();
-            vdcUIList.setAlphaCharacter((String)hiddenAlphaCharacter.getValue());
+        boolean isNewGroup = false;
+        if ( hiddenGroupId.getValue() == null || (vdcUIList != null &&
+                ( (vdcUIList.getVdcGroupId() != null &&
+                        !vdcUIList.getVdcGroupId().equals(groupId)) ||
+                                    vdcUIList.getVdcGroupId() == null)) ) {
+            isNewGroup = true;
         }
+        if (groupId == null || hiddenGroupId.getValue() == null || hiddenGroupId.getValue().equals("") || hiddenGroupId.getValue().toString().equals("-1")) {
+            groupId = new Long("-1");
+        }
+        if (!isAlphaSort) {
+            if (isNewGroup || vdcUIList != null && vdcUIList.getAlphaCharacter() != null && !vdcUIList.getAlphaCharacter().equals("")) {
+                vdcUIList = new VDCUIList(groupId);
+            } else {
+                vdcUIList.setAlphaCharacter("");
+                vdcUIList.getVdcUIList();
+                vdcUIListSize = new Long(String.valueOf(vdcUIList.getVdcUIList().size()));
+            }
+        } else {
+            if (isNewGroup && groupId != null) {
+                vdcUIList = new VDCUIList(groupId, (String)hiddenAlphaCharacter.getValue());
+            } else if (!((String)hiddenAlphaCharacter.getValue()).equals(vdcUIList.getAlphaCharacter())) {
+                vdcUIList.setAlphaCharacter((String)hiddenAlphaCharacter.getValue());
+                vdcUIList.oldSort = "";
+            }
+        } 
         if (groupId == null || groupId.equals(new Long("-1")) ) {
             setGroupName("All Dataverses");
         } else {

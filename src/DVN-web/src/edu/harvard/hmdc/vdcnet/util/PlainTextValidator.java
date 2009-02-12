@@ -56,8 +56,8 @@ public class PlainTextValidator implements Validator, java.io.Serializable  {
                         matched = "&#60";
                     else
                         matched = "&#62;";
-                    msg = "Found an html character(s) starting with:  " + matched + ".  The match was found at position " + (matcher.start()+1);
-                    msg += " This field is only eligible for text entry, not html.";
+                    msg = "Found an html character(s) starting with:  " + matched + ".  The match was found at position " + (matcher.start()+1) + ".  ";
+                    msg += "This field is only eligible for text entry, not html.";
                 }
         } catch (Exception e) {
             throw new FacesException(e);

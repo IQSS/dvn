@@ -394,10 +394,10 @@ ul.xtraMenu ul li a:link, ul.xtraMenu ul li a:active, ul.xtraMenu ul li a:hover,
     background-image: none;
 }
 /* Xtra Header links styling */
-.theMenuContainer h4.head {
+.xtraMenu h3.head {
     background: white;
 }
-.theMenuContainer h4.head a {
+.xtraMenu h3.head a {
     text-decoration: none;
     display: block;
     background: url(menudown.gif) no-repeat;
@@ -405,17 +405,17 @@ ul.xtraMenu ul li a:link, ul.xtraMenu ul li a:active, ul.xtraMenu ul li a:hover,
     padding-right: 20px;
     font-size: 90% !important;
 }
-.theMenuContainer h4.head a:hover {
+.xtraMenu h3.head a:hover {
     text-decoration: underline;
     background: url(menudown.gif) no-repeat;
     background-position: 98% 50%;
     padding-right: 20px;
     font-size: 90% !important;
 }
-.theMenuContainer h4.selected {
+.xtraMenu h3.selected {
     background: silver;
 }
-.theMenuContainer h4.selected a:link, .theMenuContainer h4.selected a:visited, .theMenuContainer h4.selected a:active {
+.xtraMenu h3.selected a:link, .xtraMenu h3.selected a:visited, .xtraMenu h3.selected a:active {
     background: url(menuup.gif) no-repeat;
     background-position: 98% 50%;
     padding-right: 20px;
@@ -423,12 +423,24 @@ ul.xtraMenu ul li a:link, ul.xtraMenu ul li a:active, ul.xtraMenu ul li a:hover,
     font-size: 90% !important;
     color: white;
 }
-.theMenuContainer h4.selected a:hover {
+.xtraMenu h3.selected a:hover {
     background: url(menuup.gif) no-repeat;
     background-position: 98% 50%;
     padding-right: 20px;
     text-decoration: underline;
     font-size: 90% !important;
+}
+.xtraMenu h4.selected {
+    background: silver;
+}
+.xtraMenu h4.selected a:link, .xtraMenu h4.selected a:visited, .xtraMenu h4.selected a:active {
+    text-decoration: none;
+    font-size: 100% !important;
+    color: white;
+}
+.xtraMenu h4.selected a:hover {
+    text-decoration: underline;
+    font-size: 100% !important;
 }
 
 /* HEADER */

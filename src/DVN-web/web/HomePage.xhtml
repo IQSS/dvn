@@ -20,11 +20,11 @@
       <f:loadBundle basename="BundleAnalysis" var="bundleAnalysis"/>
       <script type="text/javascript">
           // <![CDATA[
-
           jQuery(document).ready(function(){
           jQuery("ul.theMenu").Accordion({active: "h3.selected", header: "h3.head", alwaysOpen: false, animated: true, showSpeed: 400, hideSpeed: 800});
-          jQuery("ul.xtraMenu").Accordion({active: "h4.selected", header: "h4.head", alwaysOpen: false, animated: true, showSpeed: 400, hideSpeed: 800});
-      });
+          jQuery("ul.xtraMenu").Accordion({active: "h3.selected", header: "h3.head", alwaysOpen: false, animated: true, showSpeed: 400, hideSpeed: 800});
+          jQuery("ul.xtraMenu").Accordion({active: "h4.selected", header: "h4.head"});
+          });
           function setHiddenValues(groupid) {
             if (arguments[0] == "All") {
                 document.getElementById('HomePageForm:filterType').value = 'numeric';
@@ -37,7 +37,6 @@
                 document.getElementById('HomePageForm:groupId').value = arguments[0];
             }
           }
-
           // ]]>
       </script>
 
@@ -314,23 +313,25 @@
                                     <li>
                                         <ul class="xtraMenu">
                                             <li><!-- restore style="position: static;" -->
-                                                <h4 class="head">
+                                                <h3 class="head">
                                                     <ice:commandLink onclick="setHiddenValues(#{item.id});"
                                                                      partialSubmit="true">
                                                         <ice:outputText value="#{item.name}"/>
                                                         <f:attribute name="groupId" value="#{item.id}"/>
                                                     </ice:commandLink>
-                                                </h4>
+                                                </h3>
                                                 <ul><!-- TODO: CHANGE TO DISPLAY:NONE; -->
                                                     <gui:repeat rendered="#{item.xtraItems != null}"
                                                             value="#{item.xtraItems}"
                                                                 var="xtraItems">
                                                         <li>
-                                                            <ice:commandLink onclick="setHiddenValues(#{xtraItems.id});"
-                                                                             partialSubmit="true">
-                                                                <ice:outputText value="#{xtraItems.name}"/>
-                                                                <f:attribute name="groupId" value="#{xtraItems.id}"/>
-                                                            </ice:commandLink>
+                                                            <h4 class="head">
+                                                                <ice:commandLink onclick="setHiddenValues(#{xtraItems.id});"
+                                                                                 partialSubmit="true">
+                                                                    <ice:outputText value="#{xtraItems.name}"/>
+                                                                    <f:attribute name="groupId" value="#{xtraItems.id}"/>
+                                                                </ice:commandLink>
+                                                            </h4>
                                                         </li>
                                                     </gui:repeat>
                                                 </ul>

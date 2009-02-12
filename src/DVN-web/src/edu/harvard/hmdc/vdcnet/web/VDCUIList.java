@@ -87,19 +87,17 @@ public class VDCUIList extends SortableList {
             }
             List vdcIds = null;
 
-            if (orderBy.equals("activity")) {
+
+            if (alphaCharacter != null && vdcGroupId != null && !vdcGroupId.equals(new Long("-1"))) {
                 vdcIds = vdcService.getOrderedVDCIds(vdcGroupId, alphaCharacter, orderBy);
+            } else if (alphaCharacter != null && (vdcGroupId == null || vdcGroupId.equals(new Long("-1")))) {
+                vdcIds = vdcService.getOrderedVDCIds(alphaCharacter, orderBy);
+            } else if (vdcGroupId == null || vdcGroupId.equals(new Long("-1"))) {
+                vdcIds = vdcService.getOrderedVDCIds(orderBy);
             } else {
-                if (alphaCharacter != null && vdcGroupId != null && !vdcGroupId.equals(new Long("-1"))) {
-                    vdcIds = vdcService.getOrderedVDCIds(vdcGroupId, alphaCharacter, orderBy);
-                } else if (alphaCharacter != null && (vdcGroupId == null || vdcGroupId.equals(new Long("-1")))) {
-                    vdcIds = vdcService.getOrderedVDCIds(alphaCharacter, orderBy);
-                } else if (vdcGroupId == null || vdcGroupId.equals(new Long("-1"))) {
-                    vdcIds = vdcService.getOrderedVDCIds(orderBy);
-                } else {
-                    vdcIds = vdcService.getOrderedVDCIds(vdcGroupId, orderBy);
-                }
+                vdcIds = vdcService.getOrderedVDCIds(vdcGroupId, orderBy);
             }
+
 
             double maxDownloadCount = Math.max( 1.0, vdcService.getMaxDownloadCount() ); // minimum of 1, to avoid divide my zero issues
             vdcUIList = new ArrayList<VDCUI>();

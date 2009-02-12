@@ -147,18 +147,20 @@
                                 id="groupPanel1"
                                 rendered="#{!empty(HomePage.vdcUIList.vdcUIList) and VDCRequest.currentVDC == null}">
                             <ice:outputText styleClass="dvn_totalsLabel" value ="Dataverses: "/>
-                                <ice:outputText escape="false"
-                                            rendered="#{HomePage.groupName == 'All Dataverses'}"
-                                            styleClass="dvn_totalsValue"
-                                            value="#{HomePage.vdcUIListSize}&lt;span class=&#34;dvn_totalsLabel&#34; style=&#34;opacity:.8;&#34;&gt;, &lt;/span&gt;"/>
-                                 <ice:outputText rendered="#{HomePage.groupName != 'All Dataverses'}"
-                                            styleClass="dvn_totalsValue"
+                                <ice:outputText styleClass="dvn_totalsValue"
                                             value="#{HomePage.vdcUIListSize}"/>
+                                 <ice:outputText escape="false"
+                                            rendered="#{HomePage.groupName == 'All Dataverses'}"
+                                            styleClass="dvn_totalsLabel"
+                                            value=", "/>
                             <ice:outputText rendered="#{HomePage.groupName == 'All Dataverses'}" styleClass="dvn_totalsLabel" value ="Studies: "/>
-                                <ice:outputText escape="false"
-                                                rendered="#{HomePage.groupName == 'All Dataverses'}"
+                                <ice:outputText rendered="#{HomePage.groupName == 'All Dataverses'}"
                                                 styleClass="dvn_totalsValue"
-                                                value="#{HomePage.networkStats.studyCount}&lt;span class=&#34;dvn_totalsLabel&#34; style=&#34;opacity:.8;&#34;&gt;, &lt;/span&gt;"/>
+                                                value="#{HomePage.networkStats.studyCount}"/>
+                            <ice:outputText escape="false"
+                                            rendered="#{HomePage.groupName == 'All Dataverses'}"
+                                            styleClass="dvn_totalsLabel"
+                                            value=", "/>
                             <ice:outputText rendered="#{HomePage.groupName == 'All Dataverses'}" styleClass="dvn_totalsLabel" value="Files: " />
                             <ice:outputText rendered="#{HomePage.groupName == 'All Dataverses'}" styleClass="dvn_totalsValue" value="#{HomePage.networkStats.fileCount}"/>
                       </div>

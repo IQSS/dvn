@@ -5,13 +5,14 @@
 
 package edu.harvard.hmdc.vdcnet.web;
 
+import edu.harvard.hmdc.vdcnet.vdc.VDCGroup;
+import edu.harvard.hmdc.vdcnet.vdc.VDCGroupServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
 import edu.harvard.hmdc.vdcnet.web.site.VDCUI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.ejb.EJB;
-import javax.faces.context.FacesContext;
 import javax.naming.InitialContext;
 
 /**
@@ -20,6 +21,7 @@ import javax.naming.InitialContext;
  */
 public class VDCUIList extends SortableList {
     private @EJB VDCServiceLocal vdcService;
+    private @EJB VDCGroupServiceLocal vdcGroupService;
     private List<VDCUI> vdcUIList;
 
     // dataTable Columns to sort by:
@@ -30,6 +32,7 @@ public class VDCUIList extends SortableList {
     private static final String ACTIVITY_COLUMN_NAME        = "Activity";
 
     private Long   vdcGroupId;
+    private int    vdcGroupSize;
     private String alphaCharacter;
     
     private void init() {
@@ -38,7 +41,9 @@ public class VDCUIList extends SortableList {
         oldSort = "";
         // make sure sortColumnName on first render
         oldAscending = ascending;
-        initVdcService();               
+        initVdcService();
+        initVdcGroupService();
+        vdcGroupSize = (vdcGroupId != null && !vdcGroupId.equals(new Long("-1"))) ? ((VDCGroup)vdcGroupService.findById(vdcGroupId)).getVdcs().size() : vdcService.findAll().size();
     }
 
     public VDCUIList() {
@@ -46,21 +51,31 @@ public class VDCUIList extends SortableList {
     }
 
     public VDCUIList(Long vdcGroupId) {
-        init();
         this.vdcGroupId = vdcGroupId;
+        init();
+        
     }
 
     public VDCUIList(Long vdcGroupId, String alphaCharacter) {     
-        init();
         this.vdcGroupId = vdcGroupId;
+        init();
         this.alphaCharacter = alphaCharacter;        
-
     }
 
     private void initVdcService() {
         if (vdcService == null) {
             try {
                 vdcService = (VDCServiceLocal) new InitialContext().lookup("java:comp/env/vdcService");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void initVdcGroupService() {
+        if (vdcGroupService == null) {
+            try {
+                vdcGroupService = (VDCGroupServiceLocal) new InitialContext().lookup("java:comp/env/vdcGroupService");
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -180,5 +195,15 @@ public class VDCUIList extends SortableList {
 
     public void setAlphaCharacter(String alphaCharacter) {
         this.alphaCharacter = alphaCharacter;
-    }    
+    }
+
+    public int getVdcGroupSize() {
+        return vdcGroupSize;
+    }
+
+    public void setVdcGroupSize(int vdcGroupSize) {
+        this.vdcGroupSize = vdcGroupSize;
+    }
+
+
 }

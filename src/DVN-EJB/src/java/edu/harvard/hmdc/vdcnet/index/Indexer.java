@@ -168,8 +168,8 @@ public class Indexer implements java.io.Serializable  {
         addText(1.0f,  doc,"studyId", study.getStudyId());
 //        addText(1.0f,  doc,"owner",study.getOwner().getName());
         addText(1.0f, doc, "dvOwnerId", Long.toString(study.getOwner().getId()));
-        addKeyword(doc,"productionDate", study.getProductionDate());
-        addKeyword(doc,"distributionDate", study.getDistributionDate());
+        addDate(1.0f, doc,"productionDate", study.getProductionDate());
+        addDate(1.0f, doc,"distributionDate", study.getDistributionDate());
         Collection <StudyKeyword> keywords = study.getStudyKeywords();
         for (Iterator it = keywords.iterator(); it.hasNext();) {
             StudyKeyword elem = (StudyKeyword) it.next();
@@ -184,7 +184,7 @@ public class Indexer implements java.io.Serializable  {
         for (Iterator it = abstracts.iterator(); it.hasNext();) {
             StudyAbstract elem = (StudyAbstract) it.next();
             addText(2.0f,  doc,"abstractText",elem.getText());
-            addKeyword(doc,"abstractDate",elem.getDate());
+            addDate(1.0f, doc,"abstractDate",elem.getDate());
 
         }
         Collection <StudyAuthor> studyAuthors = study.getStudyAuthors();
@@ -219,7 +219,7 @@ public class Indexer implements java.io.Serializable  {
         addText(1.0f,  doc,"distributorContact",study.getDistributorContact());
         addText(1.0f,  doc,"distributorContactAffiliation",study.getDistributorContactAffiliation());
         addText(1.0f,  doc,"distributorContactEmail",study.getDistributorContactEmail());
-        addKeyword(doc,"dateOfDeposit",study.getDateOfDeposit());
+        addDate(1.0f, doc,"dateOfDeposit",study.getDateOfDeposit());
         addText(1.0f,  doc,"depositor",study.getDepositor());
         addText(1.0f,  doc,"seriesName",study.getSeriesName());
         addText(1.0f,  doc,"seriesInformation",study.getSeriesInformation());
@@ -233,10 +233,10 @@ public class Indexer implements java.io.Serializable  {
         addText(1.0f,  doc,"kindOfData", study.getKindOfData());
         addText(1.0f,  doc,"geographicCoverage",study.getGeographicCoverage());
         addText(1.0f,  doc,"geographicUnit",study.getGeographicUnit());
-        addKeyword(doc,"timePeriodCoveredEnd",study.getTimePeriodCoveredEnd());
-        addKeyword(doc,"timePeriodCoveredStart",study.getTimePeriodCoveredStart());
-        addKeyword(doc,"dateOfCollection",study.getDateOfCollectionStart());
-        addKeyword(doc,"dateOfCollectionEnd",study.getDateOfCollectionEnd());
+        addDate(1.0f, doc,"timePeriodCoveredEnd",study.getTimePeriodCoveredEnd());
+        addDate(1.0f, doc,"timePeriodCoveredStart",study.getTimePeriodCoveredStart());
+        addDate(1.0f, doc,"dateOfCollection",study.getDateOfCollectionStart());
+        addDate(1.0f, doc,"dateOfCollectionEnd",study.getDateOfCollectionEnd());
         addKeyword(doc,"country",study.getCountry());
         addText(1.0f,  doc,"country",study.getCountry());
         addKeyword(doc,"timeMethod",study.getTimeMethod());
@@ -354,6 +354,11 @@ public class Indexer implements java.io.Serializable  {
         return new DVNAnalyzer();
     }
 
+    protected void addDate(float boost, Document doc,String key, String value){
+        addText( 1.0f, doc, key, value );
+        addKeyword( doc,key, value );
+    }
+    
     protected void addKeyword(Document doc,String key, String value){
         if (value != null && value.length()>0){
             doc.add(new Field(key,value.toLowerCase().trim(), Field.Store.YES, Field.Index.UN_TOKENIZED));

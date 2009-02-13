@@ -139,13 +139,11 @@
                                styleClass="dvnStudyListTable" rowClasses="list-row-odd, list-row-even" columnClasses="dvnStudyListTableColInfo, dvnStudyListTableColID" value="#{StudyListingPage.studies}" var="studyUI">
                   <ice:column id="column1">
                     <div class="dvnStudyListStudyInfo">
-                      <div jsfc="ice:panelGroup" id="groupPanel1">
+                      <div jsfc="ice:panelGroup" styleClass="#{!studyUI.study.restricted ? 'dvn_nostyle' : (studyUI.studyRestricted ? 'dvnStudyRestricted' : 'dvnStudyPublic')}" id="groupPanel1">
                         <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyUI.study.id}&amp;studyListingIndex=#{StudyListingPage.studyListingIndex}" id="hyperlink3">
                           <ice:outputText id="hyperlink3Text" value="#{studyUI.study.title}"/>
                         </ice:outputLink>
                         <ice:outputText id="outputText13" styleClass="dvnStudyListStudyAuthor" value="by #{studyUI.authors}" rendered="#{studyUI.authors != null and studyUI.authors != ''}"/>
-                        <ice:outputText value="(OPEN)" rendered="#{studyUI.study.restricted and !studyUI.studyRestricted}"/>
-                        <ice:outputText value="(CLOSED)" rendered="#{studyUI.study.restricted and studyUI.studyRestricted}"/>
                       </div>
                       <!--
                               NO FILES NEED TO GO SOMEWHERE ELSE

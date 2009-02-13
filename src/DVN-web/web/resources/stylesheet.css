@@ -616,17 +616,17 @@ div.dvnWarningMessage {
   width: 80%;
   margin: 0 auto 1em auto;
   padding-left: 58px;
-  background: url(icon_warning.png) #e95a5a 4px no-repeat;
+  background: url(icon_warning.png) #e6e4d3 4px no-repeat;
 }
 div.dvnWarningMessage div.dvnMsgBlockContainer {
-  border: 1px solid #e95a5a; /* FIX: IE8 vertical-align: middle */
+  border: 1px solid #e6e4d3; /* FIX: IE8 vertical-align: middle */
 }
 div.dvnWarningMessage a:link, div.dvnWarningMessage a:visited, div.dvnWarningMessage a:hover, div.dvnWarningMessage a:active {
     color: #0c54b3;
 }
 div.dvnWarningMessage span {
   font-weight: bold;
-  color: #252525;
+  color: #000;
   background: transparent;
 }
 .warnMessage {
@@ -962,11 +962,11 @@ span.dvnStudyListStudyAuthor {font-size: 90% !important;}
 span.dvnStudyListGlobalId {color: black;}
 
 .dvnStudyListTableColInfo {
-   width: 75%;
+   width: 77%;
    background-color: inherit !important;
 }
 .dvnStudyListTableColID {
-   width: 25%;
+   width: 22%;
    background-color: inherit !important;
 }
 
@@ -1002,6 +1002,18 @@ span.dvnStudyListSearchResultsMessage {
 
 /* Style rules for Study Page (Cataloging Info and Files)
 */
+.dvnStudyRestricted {
+    background-image: url(icon_restricted.18.png);
+	background-repeat: no-repeat;
+	background-position: left .25em;
+    padding-left: 22px;
+}
+.dvnStudyPublic {
+    background-image: url(icon_public.18.png);
+	background-repeat: no-repeat;
+	background-position: left .25em;
+    padding-left: 22px;
+}
 
 .vdcStudyStatus {
    font-weight: bold;

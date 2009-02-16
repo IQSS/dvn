@@ -29,6 +29,8 @@
 
 package edu.harvard.hmdc.vdcnet.study;
 
+import org.apache.commons.lang.builder.*;
+
 /**
  *
  * @author Ellen Kraffmiller
@@ -82,5 +84,10 @@ public class WeightedVarRelationshipId implements java.io.Serializable {
     public void setWeightedVariableId(Long weightedVariableId) {
         this.weightedVariableId = weightedVariableId;
     }
-    
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this,
+            ToStringStyle.MULTI_LINE_STYLE);
+    }
 }

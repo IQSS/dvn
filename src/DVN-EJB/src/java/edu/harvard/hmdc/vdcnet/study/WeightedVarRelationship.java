@@ -36,6 +36,8 @@ import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import org.apache.commons.lang.builder.*;
+
 /**
  *
  * @author Ellen Kraffmiller
@@ -101,7 +103,10 @@ public class WeightedVarRelationship  implements java.io.Serializable {
         this.weightedVariable = weightedVariable;
     }
     
-   
-        
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this,
+            ToStringStyle.MULTI_LINE_STYLE);
+    }
     
 }

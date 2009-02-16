@@ -37,6 +37,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.*;
 
+import org.apache.commons.lang.builder.*;
 
 /**
  *
@@ -183,5 +184,9 @@ public class FileCategory implements Comparable, java.io.Serializable {
         return alphaNumericComparator.compare(this.getName(),fc.getName());
         
     }
-    
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this,
+            ToStringStyle.MULTI_LINE_STYLE);
+    }
 }

@@ -37,6 +37,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 
+import org.apache.commons.lang.builder.*;
+
 /**
  *
  * @author Ellen Kraffmiller
@@ -184,5 +186,10 @@ public class VariableRange implements java.io.Serializable {
         if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) return false;
         return true;
     }
-   
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this,
+            ToStringStyle.MULTI_LINE_STYLE);
+    }
 }

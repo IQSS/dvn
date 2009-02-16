@@ -38,6 +38,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 
+import org.apache.commons.lang.builder.*;
+
 /**
  *
  * @author Ellen Kraffmiller
@@ -192,5 +194,12 @@ public class VariableCategory implements Comparable, java.io.Serializable {
         VariableCategory ss = (VariableCategory)obj;     
         return alphaNumericComparator.compare(this.getValue(),ss.getValue());
         
-    }    
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this,
+            ToStringStyle.MULTI_LINE_STYLE);
+    }
+ 
 }

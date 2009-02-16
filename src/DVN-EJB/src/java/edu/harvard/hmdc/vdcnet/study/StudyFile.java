@@ -46,6 +46,10 @@ import javax.persistence.Persistence;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.*;
 
+import java.util.logging.*;
+import org.apache.commons.lang.builder.*;
+
+
 /**
  *
  * @author Ellen Kraffmiller
@@ -496,5 +500,11 @@ public class StudyFile implements Serializable {
 
     public void setStudyFileActivity(StudyFileActivity studyFileActivity) {
         this.studyFileActivity = studyFileActivity;
+    }
+    
+    @Override
+    public String toString() {
+            return ToStringBuilder.reflectionToString(this,
+                ToStringStyle.MULTI_LINE_STYLE);
     }
 }

@@ -26,7 +26,6 @@
  * To change this template, choose Tools | Template Manager
  * and open the template in the editor.
  */
-
 package edu.harvard.hmdc.vdcnet.study;
 
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
@@ -39,68 +38,81 @@ import java.util.Iterator;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+import java.util.logging.*;
+import org.apache.commons.lang.builder.*;
+
 /**
  *
  * @author gdurand
  */
-public class StudyFileEditBean implements Serializable{
-    
+public class StudyFileEditBean implements Serializable {
+
+    private static Logger dbgLog = Logger.getLogger(StudyFileEditBean.class.getPackage().getName());
+
     /** Creates a new instance of StudyFileEditBean */
     public StudyFileEditBean(StudyFile sf) {
         this.studyFile = sf;
     }
 
     public StudyFileEditBean(File file, String fileSystemName) throws IOException {
+        dbgLog.fine("***** within StudyFileEditBean: constructor: start *****");
+        dbgLog.fine("reached before studyFile constructor");
         this.studyFile = new StudyFile();
-        this.setOriginalFileName(file.getName() );
-        this.getStudyFile().setFileType( FileUtil.determineFileType(file) );
-        this.getStudyFile().setSubsettable(this.getStudyFile().getFileType().equals("application/x-stata") || 
-                                        this.getStudyFile().getFileType().equals("application/x-spss-por") || 
-                                        this.getStudyFile().getFileType().equals("application/x-spss-sav") );
-                                        // not yet supported as subsettable
-                                        //this.getStudyFile().getFileType().equals("application/x-rlang-transport") );
 
-          // replace extension with ".tab" if subsettable
-        this.getStudyFile().setFileName(this.getStudyFile().isSubsettable() ? FileUtil.replaceExtension(this.getOriginalFileName()): this.getOriginalFileName());  
+        dbgLog.fine("reached before original filename");
+        this.setOriginalFileName(file.getName());
 
-        this.setTempSystemFileLocation( file.getAbsolutePath() );
+        dbgLog.fine("originalFileName=" + originalFileName);
+
+        this.getStudyFile().setFileType(FileUtil.determineFileType(file));
+        dbgLog.fine("after setFileType");
+
+        this.getStudyFile().setSubsettable(this.getStudyFile().getFileType().equals("application/x-stata") ||
+            this.getStudyFile().getFileType().equals("application/x-spss-por") ||
+            this.getStudyFile().getFileType().equals("application/x-spss-sav"));
+        // not yet supported as subsettable
+        //this.getStudyFile().getFileType().equals("application/x-rlang-transport") );
+        dbgLog.fine("before setFileName");
+        // replace extension with ".tab" if subsettable
+        this.getStudyFile().setFileName(this.getStudyFile().isSubsettable() ? FileUtil.replaceExtension(this.getOriginalFileName()) : this.getOriginalFileName());
+        dbgLog.fine("before tempsystemfilelocation");
+        this.setTempSystemFileLocation(file.getAbsolutePath());
         this.getStudyFile().setFileSystemName(fileSystemName);
-    }    
-   
+        dbgLog.fine("StudyFileEditBean: contents:\n" + this.toString());
+
+        dbgLog.fine("***** within StudyFileEditBean: constructor: end *****");
+
+    }
     private StudyFile studyFile;
-    
     private String fileCategoryName;
     private String originalFileName;
     private String tempSystemFileLocation;
     private String controlCardSystemFileLocation;
-    private String ingestedSystemFileLocation;    
+    private String ingestedSystemFileLocation;
     private boolean deleteFlag;
-    
-   
     private Long sizeFormatted = null;
-   
-     
+
     //end of EV additions
     public StudyFile getStudyFile() {
         return studyFile;
     }
-    
+
     public void setStudyFile(StudyFile studyFile) {
         this.studyFile = studyFile;
-}    
-    
+    }
+
     public String getFileCategoryName() {
         return fileCategoryName;
     }
-    
+
     public void setFileCategoryName(String fileCategoryName) {
         this.fileCategoryName = fileCategoryName.trim();
     }
-    
+
     public String getOriginalFileName() {
         return originalFileName;
     }
-    
+
     public void setOriginalFileName(String originalFileName) {
         this.originalFileName = originalFileName;
     }
@@ -119,8 +131,8 @@ public class StudyFileEditBean implements Serializable{
 
     public void setControlCardSystemFileLocation(String controlCardSystemFileLocation) {
         this.controlCardSystemFileLocation = controlCardSystemFileLocation;
-    }    
-    
+    }
+
     public String getIngestedSystemFileLocation() {
         return ingestedSystemFileLocation;
     }
@@ -128,58 +140,64 @@ public class StudyFileEditBean implements Serializable{
     public void setIngestedSystemFileLocation(String ingestedSystemFileLocation) {
         this.ingestedSystemFileLocation = ingestedSystemFileLocation;
     }
-   
-    
+
     public boolean isDeleteFlag() {
         return deleteFlag;
     }
-    
+
     public void setDeleteFlag(boolean deleteFlag) {
         this.deleteFlag = deleteFlag;
-    }    
+    }
 
     public void addFileToCategory(Study s) {
         StudyFile file = this.getStudyFile();
         String catName = this.getFileCategoryName() != null ? this.getFileCategoryName() : "";
-        
+
         Iterator iter = s.getFileCategories().iterator();
         while (iter.hasNext()) {
             FileCategory cat = (FileCategory) iter.next();
-            if ( cat.getName().equals( catName ) ) {
+            if (cat.getName().equals(catName)) {
                 file.setFileCategory(cat);
                 cat.getStudyFiles().add(file);
                 return;
             }
-        }   
+        }
 
         // category was not found, so we create a new file category
         FileCategory cat = new FileCategory();
         cat.setStudy(s);
-        s.getFileCategories().add(cat);       
-        cat.setName( catName );
+        s.getFileCategories().add(cat);
+        cat.setName(catName);
         cat.setStudyFiles(new ArrayList());
 
         // link cat to file
         file.setFileCategory(cat);
         cat.getStudyFiles().add(file);
-    }    
-    
-     public String getUserFriendlyFileType() {
-         return FileUtil.getUserFriendlyFileType(studyFile);
-     }    
-//EV added for compatibility with icefaces
-      /**
+    }
+
+    public String getUserFriendlyFileType() {
+        return FileUtil.getUserFriendlyFileType(studyFile);
+    }
+    //EV added for compatibility with icefaces
+
+    /**
      * Method to return the file size as a formatted string
      * For example, 4000 bytes would be returned as 4kb
      *
      *@return formatted file size
      */
     public Long getSizeFormatted() {
-       
-        return sizeFormatted; 
+
+        return sizeFormatted;
     }
-  public void setSizeFormatted(Long s){
-      sizeFormatted = s; 
-  }
-  
+
+    public void setSizeFormatted(Long s) {
+        sizeFormatted = s;
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this,
+            ToStringStyle.MULTI_LINE_STYLE);
+    }
 }

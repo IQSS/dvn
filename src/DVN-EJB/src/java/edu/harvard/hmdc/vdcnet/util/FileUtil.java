@@ -46,12 +46,17 @@ import java.util.ResourceBundle;
 import javax.activation.MimetypesFileTypeMap;
 import javax.ejb.EJBException;
 
+import java.util.logging.*;
+import org.apache.commons.lang.builder.*;
+
 /**
  *
  * @author Ellen Kraffmiller
  */
 public class FileUtil implements java.io.Serializable  {
     
+    private static Logger dbgLog = Logger.getLogger(FileUtil.class.getPackage().getName());   
+
     private static final String[] SUBSETTABLE_FORMAT_SET = {"POR", "SAV", "DTA"};
 
     private static Map<String, String> STATISTICAL_SYNTAX_FILE_EXTENSION = new HashMap<String, String>();
@@ -119,21 +124,29 @@ public class FileUtil implements java.io.Serializable  {
     
     private static String determineFileType(File f, String fileName) throws IOException{
         String fileType = null;
-
+        dbgLog.fine("***** within determineFileType(File, String) ******");
+        
         // step 1: check whether the file is subsettable
+        dbgLog.fine("before constructor");
         SubsettableFileChecker sfchk = new SubsettableFileChecker(SUBSETTABLE_FORMAT_SET);
+        
+        dbgLog.fine("before fileType: here the source of the error");
+        dbgLog.fine("f: abs pathf="+f.getAbsolutePath());
         fileType = sfchk.detectSubsettableFormat(f);
-
+        
+        dbgLog.fine("before jhove");
         // step 2: check the mime type of this file with Jhove
         if (fileType == null){
             JhoveWrapper jw = new JhoveWrapper();
             fileType = jw.getFileMimeType(f);
         }
-    
+        dbgLog.fine("after jhove");
         // step 3: handle Jhove fileType (if we have an extension)
         // if text/plain and syntax file, replace the "plain" part
         // if application/octet-stream, check for mime type by extension
         String fileExtension = getFileExtension(fileName);
+        dbgLog.fine("after file ext");
+        
         if ( fileExtension != null) {
             if (fileType.startsWith("text/plain")){
                 if (( fileExtension != null) && (STATISTICAL_SYNTAX_FILE_EXTENSION.containsKey(fileExtension))) {
@@ -143,17 +156,19 @@ public class FileUtil implements java.io.Serializable  {
             } else if (fileType.equals("application/octet-stream")) {
                 fileType = determineFileType(fileName);
             }
+        } else {
+            dbgLog.fine("file ext is null");
         }
         
         return fileType;
     }
         
    public static String getFileExtension(String fileName){
-    	String ext = null;
-    	if ( fileName.lastIndexOf(".") != -1){
-    		ext = (fileName.substring( fileName.lastIndexOf(".") + 1 )).toLowerCase();
-    	}
-    	return ext;
+        String ext = null;
+        if ( fileName.lastIndexOf(".") != -1){
+            ext = (fileName.substring( fileName.lastIndexOf(".") + 1 )).toLowerCase();
+        }
+        return ext;
     } 
 
     public static String replaceExtension(String originalName) {

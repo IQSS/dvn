@@ -65,12 +65,16 @@ import org.apache.commons.httpclient.methods.multipart.StringPart;
 
 import edu.harvard.hmdc.vdcnet.util.unf.*;
 import java.security.NoSuchAlgorithmException;
+
+import java.util.logging.Logger;
+
 /**
  *
  * @author gdurand
  */
 public class DSBWrapper implements java.io.Serializable  {
     
+    private static Logger dbgLog = Logger.getLogger(DSBWrapper.class.getPackage().getName());
     private HttpClient client = null;
     
     public static final String DSB_ANALYZE = "Analyze";
@@ -212,6 +216,8 @@ public class DSBWrapper implements java.io.Serializable  {
     }
     
     public String ingest(StudyFileEditBean file) throws IOException{
+        dbgLog.fine("***** DSBWrapper: ingest(): start *****\n");
+
         BufferedReader rd = null;
         PostMethod method = null;
         
@@ -219,6 +225,11 @@ public class DSBWrapper implements java.io.Serializable  {
             // create method
             method = new PostMethod(generateUrl(DSB_INGEST));
             File tempFile = new File(file.getTempSystemFileLocation());
+            
+            
+            dbgLog.fine("data file(tempFile): abs path:\n"+file.getTempSystemFileLocation());
+            dbgLog.fine("mimeType :\n"+file.getStudyFile().getFileType());
+            
             
             if (file.getControlCardSystemFileLocation() == null) {
                 Part[] parts = {
@@ -254,6 +265,7 @@ public class DSBWrapper implements java.io.Serializable  {
             if (!newDir.exists()) {
                 newDir.mkdirs();
             }
+            dbgLog.fine("newDir: abs path:\n"+newDir.getAbsolutePath());
             
             rd = new BufferedReader(new InputStreamReader(method.getResponseBodyAsStream()  ));
             String boundary = "=vdc-ingest-multipart";
@@ -272,18 +284,25 @@ public class DSBWrapper implements java.io.Serializable  {
                     
                     if ( contentType.equals("text/tab-separated-values") ) {
                         File newFile = new File( newDir, tempFile.getName() );
+                        
+                        dbgLog.fine("newFile: abs path:\n"+newFile.getAbsolutePath());
+                        
                         BufferedWriter out = new BufferedWriter(new FileWriter(newFile));
                         while ( !line.startsWith("--" + boundary) ) {
                             out.write(line + "\n");
                             line = rd.readLine();
                         }
                         file.setIngestedSystemFileLocation(newFile.getAbsolutePath());
+                        dbgLog.fine("IngestedSystemFileLocation:\n"+
+                            file.getIngestedSystemFileLocation());
                         out.close();
                     } else if ( contentType.equals("text/xml") ) {
                         while ( !line.startsWith("--" + boundary) ) {
                             xmlToParse += line + "\n";
                             line = rd.readLine();
                         }
+                        
+                        dbgLog.fine("xmlToParse:\n"+xmlToParse);
                     }
                     
                 } else {
@@ -291,6 +310,9 @@ public class DSBWrapper implements java.io.Serializable  {
                 }
             }
             xmlToParse += "</codeBook>";
+            dbgLog.fine("StudyFileEditBean:\n"+file.toString());
+            
+            dbgLog.fine("***** DSBWrapper: ingest(): end *****\n");
             return xmlToParse;
             
         } finally {
@@ -514,7 +536,7 @@ public class DSBWrapper implements java.io.Serializable  {
             // vdc.dsb.host isn't set; 
             // fall back to the old-style option: 
             dsbHost = System.getProperty("vdc.dsb.url");
-        }		   
+        }          
 
 
         if ( dsbHost.equals(req.getRemoteHost()) ) {

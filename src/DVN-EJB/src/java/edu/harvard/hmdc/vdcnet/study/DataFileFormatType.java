@@ -33,6 +33,8 @@ import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+import org.apache.commons.lang.builder.*;
+
 /**
  *
  * @author Gustavo
@@ -80,5 +82,9 @@ public class DataFileFormatType implements Serializable {
         return ( ORIGINAL_FILE_DATA_FILE_FORMAT.equals(value) );
     }
     
-    
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this,
+            ToStringStyle.MULTI_LINE_STYLE);
+    }
 }

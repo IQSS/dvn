@@ -37,6 +37,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Version;
 import javax.persistence.*;
+
+import org.apache.commons.lang.builder.*;
+
 /**
  *
  * @author Ellen Kraffmiller
@@ -225,5 +228,10 @@ public class DataTable implements java.io.Serializable {
         if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) return false;
         return true;
     }  
-        
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this,
+            ToStringStyle.MULTI_LINE_STYLE);
+    }
 }

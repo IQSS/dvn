@@ -41,6 +41,8 @@ import javax.persistence.Column;
 import javax.persistence.OneToMany;
 import javax.persistence.Version;
 
+import org.apache.commons.lang.builder.*;
+
 /**
  *
  * @author Ellen Kraffmiller
@@ -581,5 +583,11 @@ public class DataVariable implements java.io.Serializable{
     public void setVersion(Long version) {
         this.version = version;
     }        
-    
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this,
+            ToStringStyle.MULTI_LINE_STYLE);
+    }
+
 }

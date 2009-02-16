@@ -44,6 +44,8 @@ import java.util.List;
 import javax.ejb.EJBException;
 import javax.persistence.*;
 
+import org.apache.commons.lang.builder.*;
+
 /**
  *
  * @author Ellen Kraffmiller
@@ -2145,6 +2147,12 @@ End of deprecated methods section
 
     public void setStudyFileActivity(List<StudyFileActivity> studyFileActivity) {
         this.studyFileActivity = studyFileActivity;
+    }
+    
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this,
+            ToStringStyle.MULTI_LINE_STYLE);
     }
 
 }

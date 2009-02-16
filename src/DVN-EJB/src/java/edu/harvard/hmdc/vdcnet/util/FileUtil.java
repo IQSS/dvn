@@ -124,14 +124,13 @@ public class FileUtil implements java.io.Serializable  {
     
     private static String determineFileType(File f, String fileName) throws IOException{
         String fileType = null;
-        dbgLog.fine("***** within determineFileType(File, String) ******");
+        dbgLog.fine("***** within FileUtil: determineFileType(File, String) ******");
         
         // step 1: check whether the file is subsettable
-        dbgLog.fine("before constructor");
+        dbgLog.fine("before SubsettableFileChecker constructor");
         SubsettableFileChecker sfchk = new SubsettableFileChecker(SUBSETTABLE_FORMAT_SET);
         
-        dbgLog.fine("before fileType: here the source of the error");
-        dbgLog.fine("f: abs pathf="+f.getAbsolutePath());
+        dbgLog.fine("f: abs path="+f.getAbsolutePath());
         fileType = sfchk.detectSubsettableFormat(f);
         
         dbgLog.fine("before jhove");
@@ -145,7 +144,7 @@ public class FileUtil implements java.io.Serializable  {
         // if text/plain and syntax file, replace the "plain" part
         // if application/octet-stream, check for mime type by extension
         String fileExtension = getFileExtension(fileName);
-        dbgLog.fine("after file ext");
+        dbgLog.fine("fileExtension="+fileExtension);
         
         if ( fileExtension != null) {
             if (fileType.startsWith("text/plain")){
@@ -156,8 +155,9 @@ public class FileUtil implements java.io.Serializable  {
             } else if (fileType.equals("application/octet-stream")) {
                 fileType = determineFileType(fileName);
             }
+            dbgLog.fine("non-null fileType="+fileType);
         } else {
-            dbgLog.fine("file ext is null");
+            dbgLog.fine("fileExtension is null");
         }
         
         return fileType;

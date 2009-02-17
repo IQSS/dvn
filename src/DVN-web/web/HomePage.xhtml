@@ -20,11 +20,41 @@
       <f:loadBundle basename="BundleAnalysis" var="bundleAnalysis"/>
       <script type="text/javascript">
           // <![CDATA[
-          jQuery(document).ready(function(){
-          jQuery("ul.theMenu").Accordion({active: "h3.selected", header: "h3.head", alwaysOpen: false, animated: true, showSpeed: 400, hideSpeed: 800});
-          jQuery("ul.xtraMenu").Accordion({active: "h3.selected", header: "h3.head", alwaysOpen: false, animated: true, showSpeed: 400, hideSpeed: 800});
-          jQuery("ul.xtraMenu").Accordion({active: "h4.selected", header: "h4.head"});
-          });
+         /* jQuery(document).ready(function(){
+              jQuery('#theMenu').Accordion({
+                active: 'h3.selected',
+                header: 'h3.head',
+                alwaysOpen: false,
+                animated: true,
+                showSpeed: 400,
+                hideSpeed: 800
+            });*/
+            //jQuery('#xtraMenu').Accordion({
+                //active: 'h4.selected',
+                //header: 'h4.head',
+                //alwaysOpen: false,
+                //animated: true,
+                //showSpeed: 400,
+                //hideSpeed: 800
+           // });
+            // jQuery('#navigation').Accordion({
+             //   active: false,
+             //   header: 'a.head',
+             //   navigation: true,
+             //   event: 'click',
+             //   fillSpace: true,
+             //   animated: true,
+             //   showSpeed: 400,
+             //   hideSpeed: 800
+              //  });
+                /*jQuery('#navigation .head').click(function() {
+                    jQuery(this).next().toggle();
+                }).next().hide();*/
+             //});
+
+
+            
+
           function setHiddenValues(groupid) {
             if (arguments[0] == "All") {
                 document.getElementById('HomePageForm:filterType').value = 'numeric';
@@ -39,6 +69,10 @@
           }
           // ]]>
       </script>
+
+      <ice:outputText escape="false"
+                      value="#{HomePage.accordionJavascript}"
+                    />
 
       <ice:form id="HomePageForm">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
@@ -287,78 +321,202 @@
             <div jsfc="ice:panelGroup" styleClass="dvnTreeBlock">
                 <div class="dvnTreeContainer theMenuContainer">
                 <!-- START ACCORDION -->
+                <!-- nested version -->
+  <!--   <ul id="theMenu">
+			<li>
+				<h3 class="head"><a href="javascript:;">Title 1</a></h3>
+				<ul>
+					<li><a href="index-multi.php">Content 1 1</a></li>
+					<li><a href="index-multi.php">Content 1 2</a></li>
+					<li><a href="index-multi.php">Content 1 3</a></li>
+				</ul>
+			</li>
+			<li>
+				<h3 class="head"><a href="javascript:;">Organization</a></h3>
+				<ul>
+					<li>
+                    	<ul id="xtraMenu">
+                        	<li>
+                                <h4 class="head"><a href="javascript:;">Harvard University</a></h4>
+                                <ul>
+                                    <li><a href="index-multi.php">Harvard Business School</a></li>
+                                    <li><a href="index-multi.php">Content 2 1 2</a></li>
+                                    <li><a href="index-multi.php">Content 2 1 3</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <h4 class="head"><a href="javascript:;">Content xtra 2 1b</a></h4>
+                                <ul>
+                                    <li><a href="index-multi.php">Content 2 2 1</a></li>
+                                    <li><a href="index-multi.php">Content 2 2 2</a></li>
+                                    <li><a href="index-multi.php">Content 2 2 3</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+					<li><a href="index-multi.php">Content 2 2</a></li>
+					<li><a href="index-multi.php">Content 2 3</a></li>
+				</ul>
+			</li>
+			<li>
+				<h3 class="head"><a href="javascript:;">Title 3</a></h3>
+				<ul>
+					<li><a href="index-multi.php">Content 3 1</a></li>
+					<li><a href="index-multi.php">Content 3 2</a></li>
+					<li><a href="index-multi.php">Content 3 3</a></li>
+				</ul>
+			</li>
+			<li>
+				<h3 class="head"><a href="javascript:;">Title 4</a></h3>
+				<ul>
+					<li><a href="index-multi.php">Content 4 1</a></li>
+					<li><a href="index-multi.php">Content 4 2</a></li>
+					<li><a href="index-multi.php">Content 4 3</a></li>
+				</ul>
+			</li>
+			<li>
+				<h3 class="head"><a href="javascript:;">Title 5</a></h3>
+				<ul>
+					<li><a href="index-multi.php">Content 5 1</a></li>
+					<li><a href="index-multi.php">Content 5 2</a></li>
+					<li><a href="index-multi.php">Content 5 3</a></li>
+				</ul>
+			</li>
+		</ul> -->
+                <!-- end nested version -->
                 <!-- All Dataverses -->
-                    <ul class="theMenu">
-                        <li><!-- restore style="position: static;" -->
+                 <ul id="theMenu">
+                        <li>
                             <h3 class="head">
-                                <ice:commandLink onclick="setHiddenValues(-1);"
+                            <ice:commandLink onclick="setHiddenValues(-1);"
                                                  partialSubmit="true"
-                                                 styleClass="noChild">
+                                                 styleClass="head noChild"
+                                                 style="color:white;">
                                     <ice:outputText value="Show All Dataverses"/>
                                     <f:attribute name="groupId" value="-1"/>
-                                </ice:commandLink>
+                            </ice:commandLink>
                             </h3>
                         </li>
-                    </ul>
-                    <ice:panelSeries rendered="#{HomePage.accordionItemBeans!=null}"
-                                     value="#{HomePage.accordionItemBeans}"
-                                     var="menuItems">
-                        <h3 class="headFilter">
-                            <ice:outputText value="#{menuItems.name}"/>
-                        </h3>
-                        <gui:repeat rendered="#{menuItems != null}"
-                                    value="#{menuItems.childItems}"
-                                    var="item">
-                            <ul class="theMenu">
-                                <!-- HAS SUBNODE DESCENDANTS -->
-                                <gui:fragment rendered="#{!empty(item.xtraItems)}">
-                                    <li>
-                                        <ul class="xtraMenu">
-                                            <li><!-- restore style="position: static;" -->
-                                                <h3 class="head">
-                                                    <ice:commandLink onclick="setHiddenValues(#{item.id});"
-                                                                     partialSubmit="true">
+                        
+                        <gui:repeat rendered="#{HomePage.accordionItemBeans != null}"
+                                    value="#{HomePage.accordionItemBeans}"
+                                    var="menuItems"
+                                    >
+                           <li>
+                            <h3 class="head">
+                                <ice:outputLink styleClass="head noChild"  style="color:white;">
+                                    <ice:outputText value="#{menuItems.name}"/>
+                                </ice:outputLink>
+                            </h3>
+                            <ul>
+                                <li>
+                                    <ul id="xtraMenu">
+                                        
+                                <gui:repeat rendered="#{menuItems != null}"
+                                        value="#{menuItems.childItems}"
+                                        var="item">
+                                    <!-- HAS SUBNODE DESCENDANTS -->
+                                   <gui:fragment rendered="#{!empty(item.xtraItems)}">
+                                       
+                                                <li id="xtraMenu#{item.id}">
+                                                    <h4 class="head">
+                                                        <ice:commandLink onclick="setHiddenValues(#{item.id});"
+                                                                         partialSubmit="true"
+                                                                         stylClass="head noChild">
                                                         <ice:outputText value="#{item.name}"/>
-                                                        <f:attribute name="groupId" value="#{item.id}"/>
-                                                    </ice:commandLink>
-                                                </h3>
-                                                <ul><!-- TODO: CHANGE TO DISPLAY:NONE; -->
-                                                    <gui:repeat rendered="#{item.xtraItems != null}"
-                                                            value="#{item.xtraItems}"
-                                                                var="xtraItems">
-                                                        <li>
-                                                            <h4 class="head">
-                                                                <ice:commandLink onclick="setHiddenValues(#{xtraItems.id});"
-                                                                                 partialSubmit="true">
-                                                                    <ice:outputText value="#{xtraItems.name}"/>
-                                                                    <f:attribute name="groupId" value="#{xtraItems.id}"/>
-                                                                </ice:commandLink>
-                                                            </h4>
-                                                        </li>
-                                                    </gui:repeat>
-                                                </ul>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                </gui:fragment>
-                                <!-- END HAS SUBNODE DESCENDANTS -->
-                                <!-- HAS NO SUBNODE DESCENDANTS -->
-                                <gui:fragment rendered="#{empty(item.xtraItems)}">
-                                    <li><!-- restore style="position: static;" -->
-                                        <h3 class="head">
-                                            <ice:commandLink onclick="setHiddenValues(#{item.id});"
-                                                             partialSubmit="true"
-                                                             styleClass="noChild">
-                                                <ice:outputText value="#{item.name}"/>
-                                                <f:attribute name="groupId" value="#{item.id}"/>
-                                            </ice:commandLink>
-                                        </h3>
-                                    </li>
-                                </gui:fragment>
-                                <!-- END HAS NO SUBNODE DESCENDANTS -->
-                            </ul>
-                        </gui:repeat>
-                    </ice:panelSeries>
+                                                            <f:attribute name="groupId" value="#{item.id}"/>
+                                                        </ice:commandLink>
+                                                     </h4>
+                                                     <gui:fragment rendered="#{item.xtraItems != null and !empty(item.xtraItems)}">
+                                                        <ul>
+                                                            <gui:repeat rendered="#{item.xtraItems != null}"
+                                                                    value="#{item.xtraItems}"
+                                                                        var="xtraItems">
+                                                                <li>
+                                                                        <ice:commandLink onclick="setHiddenValues(#{xtraItems.id});"
+                                                                                         partialSubmit="true">
+                                                                            <ice:outputText value="#{xtraItems.name}"/>
+                                                                            <f:attribute name="groupId" value="#{xtraItems.id}"/>
+                                                                        </ice:commandLink>
+                                                                </li>
+                                                            </gui:repeat>
+                                                        </ul>
+                                                     </gui:fragment>
+                                                      <gui:fragment rendered="#{item.xtraItems == null or empty(item.xtraItems)}">
+                                                        <gui:repeat rendered="#{item.xtraItems == null}"
+                                                                value="#{item.xtraItems}"
+                                                                    var="xtraItems">
+                                                            <li>
+                                                                    <ice:commandLink onclick="setHiddenValues(#{xtraItems.id});"
+                                                                                     partialSubmit="true">
+                                                                        <ice:outputText value="#{xtraItems.name}"/>
+                                                                        <f:attribute name="groupId" value="#{xtraItems.id}"/>
+                                                                    </ice:commandLink>
+                                                            </li>
+                                                        </gui:repeat>
+                                                      </gui:fragment>
+                                                </li>
+                                       
+                                    </gui:fragment>
+                                    <!-- END HAS SUBNODE DESCENDANTS -->
+                                    <!-- HAS NO SUBNODE DESCENDANTS -->
+                                    <gui:fragment rendered="#{empty(item.xtraItems)}">
+                                        <li><h4 class="head">
+                                                <ice:commandLink onclick="setHiddenValues(#{item.id});"
+                                                                 partialSubmit="true"
+                                                                 >
+                                                    <ice:outputText value="#{item.name}"/>
+                                                    <f:attribute name="groupId" value="#{item.id}"/>
+                                                </ice:commandLink>
+                                                </h4>
+                                         </li>
+                                    </gui:fragment>
+                                    <!-- END HAS NO SUBNODE DESCENDANTS -->
+                            </gui:repeat>
+                                 
+                              </ul>
+                            </li>
+                         </ul>
+                         </li>
+                         </gui:repeat>
+
+                    </ul>
+<!--
+		<ul id="navigation">
+				<li>
+					<a class="head" href="?p=1.1.1">Guitar</a>
+					<ul>
+						<li><a href="?p=1.1.1.1">Electric</a></li>
+						<li><a href="?p=1.1.1.2">Acoustic</a></li>
+						<li><a href="?p=1.1.1.3">Amps</a></li>
+						<li><a href="?p=1.1.1.4.1">Effects A</a></li>
+						<li><a href="?p=1.1.1.4.2">Effects B</a></li>
+						<li><a href="?p=1.1.1.4.3">Effects C</a></li>
+						<li><a href="?p=1.1.1.4.4">Effects D</a></li>
+						<li><a href="?p=1.1.1.5">Accessories</a></li>
+					</ul>
+				</li>
+				<li>
+					<a class="head" href="?p=1.1.2">Bass</a>
+					<ul>
+						<li><a href="?p=1.1.2.1">Electric</a></li>
+						<li><a href="?p=1.1.2.2">Acoustic</a></li>
+						<li><a href="?p=1.1.2.3">Amps</a></li>
+						<li><a href="?p=1.1.2.4">Effects</a></li>
+						<li><a href="?p=1.1.2.5">Accessories</a></li>
+					</ul>
+				</li>
+				<li>
+					<a class="head" href="?p=1.1.3">Drums</a>
+					<ul>
+						<li><a href="?p=1.1.3.2">Acoustic Drums</a></li>
+						<li><a href="?p=1.1.3.3">Electronic Drums</a></li>
+						<li><a href="?p=1.1.3.4">Cymbals</a></li>
+						<li><a href="?p=1.1.3.5">Hardware</a></li>
+						<li><a href="?p=1.1.3.6">Accessories</a></li>
+					</ul>
+				</li>
+			</ul> -->
                 </div>
             </div>
           </div>
@@ -377,7 +535,11 @@
                                     />
           <ice:messages></ice:messages>
           <!-- Dataverse Homepage -->
+          <!-- begin accordion example -->
+    <div  style="height:250px;margin-bottom:1em;">
       
+		</div> 
+<!-- end accordion example -->
         </div>
       </ice:form>
 

@@ -2094,6 +2094,7 @@ table.dvnCreateDvClassificationTable table {width: 100%; border-top: 1px solid #
 .dvn_analysisResultContainer {padding: 10px; border: 1px solid #6e7f90; text-align: left; clear: both;}
 .dvn_analysisResultContainer .dvAnalysisHeader {display: block; padding: 3px 0; width: 100%; background: #e6ebed; font-size: 140% !important; font-weight: bold; text-align: center;}
 .dvn_analysisResultContainer .dvAnalysisResults {padding: 10px; text-align: left;}
+* html .dvAnalysisResults {width: 100%;}
 .dvn_analysisResultContainer .dvAnalysisInfoMessage {margin-bottom: 1em;}
 
 .dvAnalysisResults p.resultsNewWindowLink {margin-top: 0; padding-top: 0; text-align: right;}

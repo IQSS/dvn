@@ -79,6 +79,7 @@ import edu.harvard.hmdc.vdcnet.admin.VDCUser;
 import edu.harvard.hmdc.vdcnet.admin.GroupServiceLocal;
 
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
+import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
 
 import edu.harvard.hmdc.vdcnet.dsb.DSBWrapper;
 
@@ -113,6 +114,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     private DvnDSBTimerServiceLocal dvnDSBTimerService;
     @EJB
     private DVNVersionServiceLocal dvnVersionService;
+    @EJB
+    private VDCServiceLocal vdcService;
+
     /**
      * getter for the injected VariableServiceLocal
      * 
@@ -1056,10 +1060,11 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             // Step 0. Locate the data file and its attributes
     
             String fileId = sf.getId().toString();
+	    VDC vdc = vdcService.getVDCFromRequest(req);
             //String fileURL = serverPrefix + "/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1";
-            String fileURL = "http://localhost:" + req.getServerPort() + "/dvn" + "/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1";
+            String fileURL = "http://localhost:" + req.getServerPort() + "/dvn" + "/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1&vdcId=" + vdc.getId();
 
-            dbgLog.fine("fileURL="+fileURL);
+	    dbgLog.fine("fileURL="+fileURL);
             
             String fileloc = sf.getFileSystemLocation();
             String tabflnm = sf.getFileName();
@@ -3191,9 +3196,11 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             // Step 0. Locate the data file and its attributes
     
             String fileId = sf.getId().toString();
+	    VDC vdc = vdcService.getVDCFromRequest(req);
+
             //String fileURL = serverPrefix + "/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1";
             //String fileURL = "http://dvn-alpha.hmdc.harvard.edu" + "/dvn/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1";
-            String fileURL = "http://localhost:" + req.getServerPort() + "/dvn" + "/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1";
+            String fileURL = "http://localhost:" + req.getServerPort() + "/dvn" + "/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1&vdcId=" + vdc.getId();
             
             dbgLog.fine("fileURL="+fileURL);
             
@@ -5875,8 +5882,10 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             // Step 0. Locate the data file and its attributes
     
             String fileId = sf.getId().toString();
+	    VDC vdc = vdcService.getVDCFromRequest(req);
+
             //String fileURL = serverPrefix + "/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1";
-            String fileURL = "http://localhost:" + req.getServerPort() + "/dvn" + "/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1";
+            String fileURL = "http://localhost:" + req.getServerPort() + "/dvn" + "/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1&vdcId=" + vdc.getId();
 
             
             dbgLog.fine("fileURL="+fileURL);
@@ -7608,8 +7617,10 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 HttpServletRequest request = 
                     (HttpServletRequest)this.getExternalContext().getRequest();
 
-                if (sf.isSubsetRestrictedForUser(user, vdc, 
-                    getVDCSessionBean().getIpUserGroup())) {
+                if ((sf.isSubsetRestrictedForUser(user, vdc, 
+						  getVDCSessionBean().getIpUserGroup()))
+		    || sf.isFileRestrictedForUser(user, vdc, 
+						getVDCSessionBean().getIpUserGroup())) {
                         dbgLog.fine("restricted=yes: this user "+
                             "does not have the subsetting permission");
                     subsettingPageAccess = Boolean.FALSE;

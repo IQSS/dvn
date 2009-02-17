@@ -25,28 +25,6 @@
           <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
             <div class="dvnMsgBlockContainer">
               <ice:outputText value="#{bundlePageInfo.editTemplateHelp}" escape="false"/>
-
-              <ice:panelGrid columns="2" styleClass="vdcEditStudyTableLegend">
-                  <ice:column>
-                      <ice:outputText styleClass="vdcHelpText" value="Legend"/>
-                  </ice:column>
-                  <ice:column>
-                      <div jsfc="ice:panelGroup">
-                          <ice:graphicImage value="/resources/icon_required.gif"/> <ice:outputText styleClass="vdcHelpText vdcEditStudyLegendMargin" value="Required Fields"/>
-                          <ice:graphicImage value="/resources/icon_recommended.gif"/> <ice:outputText styleClass="vdcHelpText" value="Recommended Fields"/>
-                      </div>
-                      <div jsfc="ice:panelGroup">
-                          <ice:graphicImage value="/resources/icon_htmlformat.gif"/> <ice:outputText styleClass="vdcHelpText" value="#{bundle.htmlHelpText}"/>
-                      </div>
-                      <div jsfc="ice:panelGroup">
-                          <ice:graphicImage  value="/resources/icon_dateformat.gif"/> <ice:outputText styleClass="vdcHelpText" value="Light Orange field indicates that Date format is required (YYYY or YYYY-MM or YYYY-MM-DD)"/>
-                      </div>
-                      <div jsfc="ice:panelGroup">
-                          <ice:graphicImage value="/resources/icon_add.gif"/> <ice:outputText styleClass="vdcHelpText vdcEditStudyLegendMargin" value="Add a new row (e.g., multiple authors)"/>
-                          <ice:graphicImage value="/resources/icon_remove.gif"/> <ice:outputText styleClass="vdcHelpText" value="Remove an existing row"/>
-                      </div>
-                  </ice:column>
-              </ice:panelGrid>
             </div>
           </div>
           <div class="dvn_sectionTitle">

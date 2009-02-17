@@ -149,12 +149,23 @@
           <div jsfc="ice:panelGroup">
             <table class="dvnPermissionsTable" cellspacing="0" cellpadding="0" border="0">
               <tr><td colspan="2" class="dvnPermissionsTableHeader"><ice:outputText value="Individual File Permission Settings"/></td></tr>
-              <tr><td colspan="2" ><ice:outputText styleClass="vdcHelpText" rendered="#{VDCRequest.currentVDC.filesRestricted}" value="Note: The files have been restricted at the dataverse level. Restrictions defined here will be overridden by the dataverse level restriction." escape="false"/></td></tr>
               <tr>
                 <td class="dvnPermissionsTableOption dvnPermissionsStackedCells">
                   <ice:outputText value="Restricted File User Access"/>
                 </td>
                 <td class="dvnPermissionsStackedCells">
+                  <div>
+                    <p>
+                        <ice:graphicImage value="/resources/icon_info.gif" styleClass="dvn_icon"/>
+                        <ice:outputText styleClass="vdcHelpText" value=" Select file and enter username/group to allow restricted file access, or set the file permission. (The single update button works for either field.) Select multiple users/groups by checking the boxes under User/Group Restricted File Access."/>
+                    </p>
+                  </div>
+                  <div jsfc="ice:panelGroup" rendered="#{VDCRequest.currentVDC.filesRestricted}">
+                    <p>
+                        <ice:graphicImage value="/resources/icon_warning.18.png" styleClass="dvn_icon"/>
+                        <ice:outputText styleClass="vdcHelpText" value=" The files have been restricted at the dataverse level. Restrictions defined here will be overridden by the dataverse level restriction." escape="false"/>
+                    </p>
+                  </div>
                   <ice:outputText value="Username: "/>
                   <ice:inputText value="#{StudyPermissionsPage.newFileUser}" id="newFileUser" binding="#{StudyPermissionsPage.fileUserInputText}"/>
                   <br/>
@@ -166,14 +177,11 @@
                   </ice:selectOneMenu>
                   <ice:commandButton value="Update" actionListener="#{StudyPermissionsPage.addFilePermission}"/>
                   <ice:message styleClass="errorMessage" for="newFileUser"/>
-                  <br/>
-                  <ice:outputText styleClass="vdcHelpText" value="Select file and enter username/group to allow restricted file access, or set the file permission. (The single update button works for either field.)"/>
                 </td>
               </tr>
               <tr>
                 <td colspan="2">
                   <ice:commandButton value="Remove" actionListener="#{StudyPermissionsPage.removeFilePermissions}"/>
-                  <ice:outputText styleClass="vdcHelpText" value=" Select multiple users/groups by checking the boxes under User/Group Restricted File Access."/>
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                                  headerClass="list-header-left" columnClasses="vdcColPadded, vdcColPadded, vdcColPadded, vdcColPadded, vdcColPadded"
                                  styleClass="dvnStudyPermissionsFileDetails" rowClasses="list-row-even, list-row-odd"

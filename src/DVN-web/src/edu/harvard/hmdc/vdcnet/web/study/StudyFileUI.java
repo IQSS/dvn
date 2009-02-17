@@ -44,6 +44,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
 import javax.naming.InitialContext;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.FileUtils;
@@ -178,7 +179,7 @@ public class StudyFileUI implements java.io.Serializable {
     }
     
 
-    public List getDataFileFormatTypes() {
+    public List<DataFileFormatType> getDataFileFormatTypes() {
 
         List dataFileFormatTypes = new ArrayList();
         String tabDelimitedValue = "";
@@ -219,7 +220,24 @@ public class StudyFileUI implements java.io.Serializable {
 
         return dataFileFormatTypes;
     }
-    
+
+    public List getDataFileFormatTypeSelectItems() {
+        List selectItems = new ArrayList();
+        for (DataFileFormatType formatType : getDataFileFormatTypes()) {
+            String value = getFileDownloadURL();
+            if ( !StringUtil.isEmpty( formatType.getValue() ) ) {
+                if ( formatType.isOriginalFileDataFileFormat() ) {
+                    value += "&downloadOriginalFormat=true";
+                } else {
+                    value += "&format=" + formatType.getValue();
+                }
+            }
+            selectItems.add( new SelectItem(value,formatType.getName()) );
+        }
+
+        return selectItems;
+    }
+
     public String getFileSize() {
         File pFile = new File (studyFile.getFileSystemLocation()); 
         return FileUtils.byteCountToDisplaySize( pFile.length() );

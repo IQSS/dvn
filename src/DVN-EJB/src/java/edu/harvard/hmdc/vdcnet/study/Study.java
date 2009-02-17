@@ -370,9 +370,8 @@ public class Study implements java.io.Serializable {
     /**
      * Holds value of property id.
      */
-    @Id @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="study_gen")
-    @SequenceGenerator(name="study_gen", sequenceName="study_id_seq")
-    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
     /**

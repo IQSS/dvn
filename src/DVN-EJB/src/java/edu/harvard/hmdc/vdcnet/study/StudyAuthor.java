@@ -54,8 +54,8 @@ public class StudyAuthor implements java.io.Serializable {
 
    
     
-    @Id @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="studyauthor_gen") 
-    @SequenceGenerator(name="studyauthor_gen", sequenceName="studyauthor_id_seq")
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
    private Long id;
 
     /**

@@ -54,9 +54,9 @@ public class StudyOtherRef implements java.io.Serializable {
 
    
     
-    @Id @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="studyotherref_gen") 
-    @SequenceGenerator(name="studyotherref_gen", sequenceName="studyotherref_id_seq")
-   private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     /**
      * Getter for property id.

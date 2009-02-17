@@ -49,8 +49,8 @@ import javax.persistence.TemporalType;
 @Entity
 public class StudyLock implements Serializable {
 
-    @Id @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="studylock_gen") 
-    @SequenceGenerator(name="studylock_gen", sequenceName="studylock_id_seq")
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
     /** Creates a new instance of StudyLock */

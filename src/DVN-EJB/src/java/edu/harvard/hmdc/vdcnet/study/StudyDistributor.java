@@ -50,8 +50,8 @@ public class StudyDistributor implements java.io.Serializable {
     /**
      * Holds value of property id.
      */
-   @SequenceGenerator(name="studydistributor_gen", sequenceName="studydistributor_id_seq")
-    @Id @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="studydistributor_gen")     
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /**

@@ -54,8 +54,8 @@ public class StudyAbstract implements java.io.Serializable {
 
    
     
-    @Id @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="studyabstract_gen") 
-    @SequenceGenerator(name="studyabstract_gen", sequenceName="studyabstract_id_seq")
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
    private Long id;
 
     /**

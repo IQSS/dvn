@@ -54,8 +54,8 @@ public class StudyNote implements java.io.Serializable {
 
    
     
-    @Id @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="studynote_gen") 
-    @SequenceGenerator(name="studynote_gen", sequenceName="studynote_id_seq")
+   @Id
+   @GeneratedValue(strategy = GenerationType.IDENTITY)
    private Long id;
 
     /**

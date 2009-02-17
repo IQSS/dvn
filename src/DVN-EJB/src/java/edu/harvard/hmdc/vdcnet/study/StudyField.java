@@ -102,8 +102,8 @@ public class StudyField {
     /**
      * Holds value of property id.
      */
-   @SequenceGenerator(name="studyfield_gen", sequenceName="studyfield_id_seq")
-    @Id @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="studyfield_gen") 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /**

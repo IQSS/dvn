@@ -50,8 +50,8 @@ public class StudyKeyword implements java.io.Serializable {
     /**
      * Holds value of property id.
      */
-   @SequenceGenerator(name="studykeyword_gen", sequenceName="studykeyword_id_seq")
-    @Id @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="studykeyword_gen")     
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /**

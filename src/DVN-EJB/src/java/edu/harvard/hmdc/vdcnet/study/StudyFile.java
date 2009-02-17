@@ -169,9 +169,8 @@ public class StudyFile implements Serializable {
     /**
      * Holds value of property id.
      */
-    @SequenceGenerator(name = "studyfile_gen", sequenceName = "studyfile_id_seq")
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "studyfile_gen")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /**

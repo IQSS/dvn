@@ -45,8 +45,8 @@ import javax.persistence.SequenceGenerator;
 @Entity
 public class StudyDownload implements Serializable {
 
-    @Id @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="studydownload_gen") 
-    @SequenceGenerator(name="studydownload_gen", sequenceName="studydownload_id_seq")
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     

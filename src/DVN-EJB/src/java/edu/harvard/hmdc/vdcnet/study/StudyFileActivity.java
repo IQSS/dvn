@@ -25,8 +25,8 @@ import javax.persistence.TemporalType;
 public class StudyFileActivity implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @Id @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="studyfileactivity_gen") 
-    @SequenceGenerator(name="studyfileactivity_gen", sequenceName="studyfileactivity_id_seq")    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     public Long getId() {

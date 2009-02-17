@@ -46,8 +46,8 @@ public class StudyGeoBounding implements java.io.Serializable {
     
     
     
-    @Id @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="studygeobounding_gen")
-    @SequenceGenerator(name="studygeobounding_gen", sequenceName="studygeobounding_id_seq")
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
     /**

@@ -54,9 +54,9 @@ public class StudyRelMaterial implements java.io.Serializable {
 
    
     
-    @Id @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="studyrelmaterial_gen") 
-    @SequenceGenerator(name="studyrelmaterial_gen", sequenceName="studyrelmaterial_id_seq")
-   private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     /**
      * Getter for property id.

@@ -1060,9 +1060,10 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             // Step 0. Locate the data file and its attributes
     
             String fileId = sf.getId().toString();
-	    VDC vdc = vdcService.getVDCFromRequest(req);
+	    //VDC vdc = vdcService.getVDCFromRequest(req);
             //String fileURL = serverPrefix + "/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1";
-            String fileURL = "http://localhost:" + req.getServerPort() + "/dvn" + "/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1&vdcId=" + vdc.getId();
+            //String fileURL = "http://localhost:" + req.getServerPort() + "/dvn" + "/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1&vdcId=" + vdc.getId();
+	    String fileURL = "http://localhost:" + req.getServerPort() + "/dvn" + "/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1&vdcId=" + getVDCRequestBean().getCurrentVDCId();
 
 	    dbgLog.fine("fileURL="+fileURL);
             
@@ -3196,11 +3197,12 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             // Step 0. Locate the data file and its attributes
     
             String fileId = sf.getId().toString();
-	    VDC vdc = vdcService.getVDCFromRequest(req);
+	    //VDC vdc = vdcService.getVDCFromRequest(req);
 
             //String fileURL = serverPrefix + "/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1";
             //String fileURL = "http://dvn-alpha.hmdc.harvard.edu" + "/dvn/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1";
-            String fileURL = "http://localhost:" + req.getServerPort() + "/dvn" + "/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1&vdcId=" + vdc.getId();
+            //String fileURL = "http://localhost:" + req.getServerPort() + "/dvn" + "/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1&vdcId=" + vdc.getId();
+	    String fileURL = "http://localhost:" + req.getServerPort() + "/dvn" + "/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1&vdcId=" + getVDCRequestBean().getCurrentVDCId();
             
             dbgLog.fine("fileURL="+fileURL);
             
@@ -5882,10 +5884,11 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             // Step 0. Locate the data file and its attributes
     
             String fileId = sf.getId().toString();
-	    VDC vdc = vdcService.getVDCFromRequest(req);
+	    //VDC vdc = vdcService.getVDCFromRequest(req);
 
             //String fileURL = serverPrefix + "/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1";
-            String fileURL = "http://localhost:" + req.getServerPort() + "/dvn" + "/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1&vdcId=" + vdc.getId();
+            //String fileURL = "http://localhost:" + req.getServerPort() + "/dvn" + "/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1&vdcId=" + vdc.getId();
+	    String fileURL = "http://localhost:" + req.getServerPort() + "/dvn" + "/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1&vdcId=" + getVDCRequestBean().getCurrentVDCId();
 
             
             dbgLog.fine("fileURL="+fileURL);

@@ -91,6 +91,13 @@
               return id.substring(startIndex, endIndex);
           }
 
+          function downloadSingleFile(button) {
+              // this function assumes that the dropdown is the element right before the button; if the order
+              // changes, this method will need to change
+              fileDropdown = document.getElementById(button.id).previousSibling;
+              window.location.href = fileDropdown.options[ fileDropdown.selectedIndex ].value;
+          }
+
           function downloadSelectedFiles() {
               fileIdStr = "";
 
@@ -808,27 +815,10 @@
                                         </ice:outputLink>
                                       </div>
                                       <div jsfc="ice:panelGroup" rendered="#{!studyFileUI.restrictedForUser and studyFileUI.studyFile.subsettable}">
-                                        <ul class="studyFileDownloadAs downloadas">
-                                          <li>
-                                            <ice:graphicImage styleClass="vdcNoBorders" value="/resources/icon_download.gif" alt="View or download this File."/>
-                                            <a class="downloadasLink">Download as...</a>
-                                            <ul class="fileList" style="display:none;">
-                                              <gui:repeat value="#{studyFileUI.dataFileFormatTypes}" var="studyDataFileType">
-                                                <li>
-                                                  <ice:outputLink value="#{studyFileUI.fileDownloadURL}&amp;downloadOriginalFormat=true" rendered="#{!empty studyDataFileType.value and studyDataFileType.originalFileDataFileFormat}">
-                                                    <ice:outputText value="#{studyDataFileType.name}"/>
-                                                  </ice:outputLink>
-                                                  <ice:outputLink value="#{studyFileUI.fileDownloadURL}&amp;format=#{studyDataFileType.value}" rendered="#{!empty studyDataFileType.value and !studyDataFileType.originalFileDataFileFormat}">
-                                                    <ice:outputText value="#{studyDataFileType.name}"/>
-                                                  </ice:outputLink>
-                                                  <ice:outputLink value="#{studyFileUI.fileDownloadURL}" rendered="#{empty studyDataFileType.value}">
-                                                    <ice:outputText value="#{studyDataFileType.name}"/>
-                                                  </ice:outputLink>
-                                                </li>
-                                              </gui:repeat>
-                                            </ul>
-                                          </li>
-                                        </ul>
+                                         <ice:selectOneMenu id="downloadList" >
+                                            <f:selectItems value= "#{studyFileUI.dataFileFormatTypeSelectItems}" />
+                                        </ice:selectOneMenu>
+                                        <input id="downloadButton" type="button" onclick="downloadSingleFile(this);" value="Download" />
                                       </div>
                                     </ice:column>
                                     <ice:column id="column13">

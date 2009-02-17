@@ -418,7 +418,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
                 renderTree = true;
             }
 
-            renderSearchCollectionFilter = true;
+            renderSearchCollectionFilter = renderTree;
             renderDescription = getVDCRequestBean().getCurrentVDC().isDisplayAnnouncements();
 
             LoginBean loginBean = getVDCSessionBean().getLoginBean();

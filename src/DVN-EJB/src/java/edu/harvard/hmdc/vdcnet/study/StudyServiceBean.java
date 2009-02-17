@@ -244,7 +244,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
 
     }
 
-    // these delete queires seem to take too long, so we are currently trying testing something different for deleting variables
+    /* these delete queires seem to take too long, so we are currently trying testing something different for deleting variables
     private static final String DELETE_VARIABLE_CATEGORIES = " delete from variablecategory where datavariable_id in ( " +
             "select dv.id from study s, filecategory fc, studyfile sf, datatable dt, datavariable dv" +
             " where s.id= ? " +
@@ -280,46 +280,66 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             " and fc.id= sf.filecategory_id " +
             " and sf.id=dt.studyfile_id " +
             " and dt.id= dv.datatable_id )";
-
     private static final String SELECT_DATAVARIABLE_IDS = "select dv.id from study s, filecategory fc, studyfile sf, datatable dt, datavariable dv" +
             " where s.id= ? " +
             " and s.id = fc.study_id " +
             " and fc.id= sf.filecategory_id " +
             " and sf.id=dt.studyfile_id " +
             " and dt.id= dv.datatable_id ";
-
+    */
+    
     private static final String DELETE_VARIABLE_CATEGORIES_PREFIX = "delete from variablecategory where datavariable_id in ";
     private static final String DELETE_SUMMARY_STATISTICS_PREFIX = " delete from summarystatistic where datavariable_id in ";
     private static final String DELETE_VARIABLE_RANGE_ITEMS_PREFIX = " delete from variablerangeitem where datavariable_id in ";
     private static final String DELETE_VARIABLE_RANGES_PREFIX = "delete from variablerange where datavariable_id in ";
     private static final String DELETE_DATA_VARIABLES_PREFIX = "delete from datavariable where id in ";
 
+    private static final String SELECT_DATATABLE_IDS = "select dt.id from study s, filecategory fc, studyfile sf, datatable dt " +
+            "where s.id= ? " +
+            "and s.id = fc.study_id " +
+            "and fc.id= sf.filecategory_id " +
+            "and sf.id=dt.studyfile_id ";
 
+    private static final String SELECT_DATAVARIABLE_IDS_PREFIX = "select dv.id from datavariable dv where dv.datatable_id in ";
+    
     public void deleteDataVariables(Long studyId) {
-        List varList = new ArrayList();
-        Query query = em.createNativeQuery(SELECT_DATAVARIABLE_IDS).setParameter(1, studyId);
-        // since query is native, must parse through Vector results
+        // because the delte was taking a while, we tested spearate queires to get the info and it seemed to work much
+        // faster, so now this delete goes in steps
+
+        // step 1: determine dtIds
+        List dtIdList = new ArrayList();
+        Query query = em.createNativeQuery(SELECT_DATATABLE_IDS).setParameter(1, studyId);
         for (Object currentResult : query.getResultList()) {
-            // convert results into Longs
-            varList.add(new Long(((Integer) ((Vector) currentResult).get(0))).longValue());
+            // since query is native, must parse through Vector results and convert to Long
+            dtIdList.add(new Long(((Integer) ((Vector) currentResult).get(0))).longValue());
         }
 
+        if ( !dtIdList.isEmpty() ) {
+            // step 2: determine variables
+            List varList = new ArrayList();
+            query = em.createNativeQuery(SELECT_DATAVARIABLE_IDS_PREFIX + "(" + generateIdString(dtIdList) + ")");
+            for (Object currentResult : query.getResultList()) {
+                varList.add(new Long(((Integer) ((Vector) currentResult).get(0))).longValue());
+            }
 
-        if ( !varList.isEmpty() ) {
-            String varString = "(" + generateIdString(varList) + ")";
+            if ( !varList.isEmpty() ) {
+                // step 3: delete!
+                String varString = "(" + generateIdString(varList) + ")";
 
-            em.createNativeQuery(DELETE_VARIABLE_CATEGORIES_PREFIX + varString).executeUpdate();
-            em.createNativeQuery(DELETE_SUMMARY_STATISTICS_PREFIX + varString).executeUpdate();
-            em.createNativeQuery(DELETE_VARIABLE_RANGE_ITEMS_PREFIX + varString).executeUpdate();
-            em.createNativeQuery(DELETE_VARIABLE_RANGES_PREFIX + varString).executeUpdate();
-            em.createNativeQuery(DELETE_DATA_VARIABLES_PREFIX + varString).executeUpdate();
+                em.createNativeQuery(DELETE_VARIABLE_CATEGORIES_PREFIX + varString).executeUpdate();
+                em.createNativeQuery(DELETE_SUMMARY_STATISTICS_PREFIX + varString).executeUpdate();
+                em.createNativeQuery(DELETE_VARIABLE_RANGE_ITEMS_PREFIX + varString).executeUpdate();
+                em.createNativeQuery(DELETE_VARIABLE_RANGES_PREFIX + varString).executeUpdate();
+                em.createNativeQuery(DELETE_DATA_VARIABLES_PREFIX + varString).executeUpdate();
 
-            //em.createNativeQuery(DELETE_VARIABLE_CATEGORIES).setParameter(1, studyId).executeUpdate();
-            //em.createNativeQuery(DELETE_SUMMARY_STATISTICS).setParameter(1, studyId).executeUpdate();
-            //em.createNativeQuery(DELETE_VARIABLE_RANGE_ITEMS).setParameter(1, studyId).executeUpdate();
-            //em.createNativeQuery(DELETE_VARIABLE_RANGES).setParameter(1, studyId).executeUpdate();
-            //em.createNativeQuery(DELETE_DATA_VARIABLES).setParameter(1, studyId).executeUpdate();
+            }
         }
+
+        //em.createNativeQuery(DELETE_VARIABLE_CATEGORIES).setParameter(1, studyId).executeUpdate();
+        //em.createNativeQuery(DELETE_SUMMARY_STATISTICS).setParameter(1, studyId).executeUpdate();
+        //em.createNativeQuery(DELETE_VARIABLE_RANGE_ITEMS).setParameter(1, studyId).executeUpdate();
+        //em.createNativeQuery(DELETE_VARIABLE_RANGES).setParameter(1, studyId).executeUpdate();
+        //em.createNativeQuery(DELETE_DATA_VARIABLES).setParameter(1, studyId).executeUpdate();
     }
 
     /**

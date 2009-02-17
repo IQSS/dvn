@@ -984,7 +984,7 @@ public class FileDownloadServlet extends HttpServlet {
 
                         dataVariables = file.getDataTable().getDataVariables();
                         Map<String, Map<String, String>> vls = getValueTablesForAllRequestedVariables();
-                        dbgLog.fine("local: variables(getDataVariableForRequest())="+getDataVariableForRequest()+"\n");
+                        /*dbgLog.fine("local: variables(getDataVariableForRequest())="+getDataVariableForRequest()+"\n");*/
                         dbgLog.fine("local: value table(vls)="+vls+"\n");
                         
                         File inFile = new File(file.getFileSystemLocation());

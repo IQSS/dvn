@@ -50,8 +50,8 @@ public class TemplateFieldSelectValue implements java.io.Serializable {
     /**
      * Holds value of property id.
      */
-    @SequenceGenerator(name="templatefieldselectvalue_gen", sequenceName="templatefieldselectvalue_id_seq")
-    @Id @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="templatefieldselectvalue_gen")     
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /**

@@ -44,8 +44,8 @@ public class VDCRole implements java.io.Serializable  {
       /**
      * Holds value of property id.
      */
-    @SequenceGenerator(name="vdcrole_gen", sequenceName="vdcrole_id_seq")
-    @Id @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="vdcrole_gen")
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
     /**

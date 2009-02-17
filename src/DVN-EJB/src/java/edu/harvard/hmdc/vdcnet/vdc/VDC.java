@@ -398,8 +398,8 @@ public class VDC implements java.io.Serializable  {
     /**
      * Holds value of property id.
      */
-    @SequenceGenerator(name="vdc_gen", sequenceName="vdc_id_seq")
-    @Id @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="vdc_gen")
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Long id;
     
     /**

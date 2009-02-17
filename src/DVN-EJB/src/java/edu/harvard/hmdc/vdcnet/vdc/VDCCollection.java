@@ -158,7 +158,7 @@ public class VDCCollection implements java.io.Serializable {
     /**
      * Holds value of property id.
      */
-//    @SequenceGenerator(name = "vdccollection_gen", sequenceName = "vdccollection_id_seq", allocationSize=1)
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -61,8 +61,8 @@ public class TermsOfUse implements java.io.Serializable  {
     /**
      * Holds value of property id.
      */
-    @SequenceGenerator(name="termsofuse_gen", sequenceName="termsofuse_id_seq")
-    @Id @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="termsofuse_gen")    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /**

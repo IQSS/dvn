@@ -134,8 +134,8 @@ public class TemplateField implements java.io.Serializable {
     /**
      * Holds value of property id.
      */
-    @SequenceGenerator(name="templatefield_gen", sequenceName="templatefield_id_seq")
-    @Id @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="templatefield_gen")     
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /**

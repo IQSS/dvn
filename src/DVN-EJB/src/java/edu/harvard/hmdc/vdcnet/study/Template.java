@@ -65,8 +65,8 @@ public class Template implements java.io.Serializable {
     /**
      * Holds value of property id.
      */
-    @SequenceGenerator(name="template_gen", sequenceName="template_id_seq")
-    @Id @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="template_gen") 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /**

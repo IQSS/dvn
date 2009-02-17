@@ -55,8 +55,8 @@ public class VariableCategory implements Comparable, java.io.Serializable {
        /**
      * Holds value of property id.
      */
-   @SequenceGenerator(name="VariableCategory_gen", sequenceName="VariableCategory_id_seq")
-    @Id @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="VariableCategory_gen")     
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /**

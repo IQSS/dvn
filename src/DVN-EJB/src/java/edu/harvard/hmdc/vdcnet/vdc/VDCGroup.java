@@ -64,9 +64,8 @@ public class VDCGroup implements Serializable {
     /**
      * Holds value of property id.
      */
-   @SequenceGenerator(name="vdcgroup_gen", sequenceName="vdcgroup_id_seq")
-    @Id @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="vdcgroup_gen")    
-    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /**

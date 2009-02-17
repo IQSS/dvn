@@ -53,8 +53,8 @@ public class VariableRange implements java.io.Serializable {
        /**
      * Holds value of property id.
      */
-   @SequenceGenerator(name="variablerange_gen", sequenceName="variablerange_id_seq")
-    @Id @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="variablerange_gen")     
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /**

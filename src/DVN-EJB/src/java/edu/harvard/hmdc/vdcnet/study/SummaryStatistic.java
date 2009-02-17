@@ -52,8 +52,8 @@ public class SummaryStatistic implements java.io.Serializable {
        /**
      * Holds value of property id.
      */
-   @SequenceGenerator(name="summarystatistic_gen", sequenceName="summarystatistic_id_seq")
-    @Id @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="summarystatistic_gen")     
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /**

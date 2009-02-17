@@ -169,8 +169,8 @@ public class VDCUser implements java.io.Serializable  {
     /**
      * Holds value of property id.
      */
-    @SequenceGenerator(name="vdcuser_gen", sequenceName="vdcuser_id_seq")
-    @Id @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="vdcuser_gen")       
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /**

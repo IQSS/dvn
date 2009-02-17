@@ -93,8 +93,8 @@ public class VDCNetwork implements java.io.Serializable  {
     /**
      * Holds value of property id.
      */
-    @SequenceGenerator(name="vdcnetwork_gen", sequenceName="vdcnetwork_id_seq")
-    @Id @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="vdcnetwork_gen")       
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /**

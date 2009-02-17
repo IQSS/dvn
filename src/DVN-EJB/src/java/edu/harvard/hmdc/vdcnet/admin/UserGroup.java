@@ -82,8 +82,8 @@ public class UserGroup implements java.io.Serializable  {
     /**
      * Holds value of property id.
      */
-   @SequenceGenerator(name="usergroup_gen", sequenceName="usergroup_id_seq")
-    @Id @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="usergroup_gen")        
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /**

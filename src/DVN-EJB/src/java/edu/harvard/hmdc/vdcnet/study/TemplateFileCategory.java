@@ -49,8 +49,8 @@ public class TemplateFileCategory implements java.io.Serializable {
     /**
      * Holds value of property id.
      */
-    @SequenceGenerator(name="templatefilecategory_gen", sequenceName="templatefilecategory_id_seq")
-    @Id @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="templatefilecategory_gen")         
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /**

@@ -43,8 +43,8 @@ public class Role implements java.io.Serializable  {
     public Role() {
     }
 
-   @SequenceGenerator(name="role_gen", sequenceName="role_id_seq")
-    @Id @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="role_gen")        
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     public String getName() {

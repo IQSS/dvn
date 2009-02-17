@@ -66,8 +66,8 @@ public class ReviewState implements java.io.Serializable  {
     /**
      * Holds value of property id.
      */
-    @SequenceGenerator(name="reviewstate_gen", sequenceName="reviewstate_id_seq")
-    @Id @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="reviewstate_gen")    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /**

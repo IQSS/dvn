@@ -57,8 +57,8 @@ public class ContactSubject implements java.io.Serializable  {
     /**
      * Holds value of property id.
      */
-    @SequenceGenerator(name="contactsubject_gen", sequenceName="contactsubject_id_seq")
-    @Id @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="contactsubject_gen")    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /**

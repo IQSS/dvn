@@ -34,7 +34,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
+
 
 /**
  * Entity class HandlePrefix
@@ -44,8 +44,8 @@ import javax.persistence.SequenceGenerator;
 @Entity
 public class HandlePrefix implements Serializable {
 
-    @SequenceGenerator(name="handleprefix_gen", sequenceName="handleprefix_id_seq")
-    @Id @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="handleprefix_gen")
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
     /** Creates a new instance of HandlePrefix */

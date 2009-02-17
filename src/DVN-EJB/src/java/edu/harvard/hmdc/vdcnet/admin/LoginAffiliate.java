@@ -49,8 +49,8 @@ public class LoginAffiliate  implements java.io.Serializable  {
     /**
      * Holds value of property id.
      */
-   @SequenceGenerator(name="loginaffiliate_gen", sequenceName="loginaffiliate_id_seq")
-    @Id @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="loginaffiliate_gen")        
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /**

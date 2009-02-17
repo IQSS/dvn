@@ -105,8 +105,8 @@ public class OAISet implements Serializable {
   /**
      * Holds value of property id.
      */
-    @SequenceGenerator(name="oaiset_gen", sequenceName="oaiset_id_seq")
-    @Id @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="oaiset_gen")
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
     /**

@@ -51,8 +51,8 @@ public class PageDef implements java.io.Serializable  {
     /**
      * Holds value of property id.
      */
-   @SequenceGenerator(name="pagedef_gen", sequenceName="pagedef_id_seq")
-    @Id @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="pagedef_gen")        
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /**

@@ -42,9 +42,8 @@ public class Metadata implements java.io.Serializable {
     /**
      * Holds value of property id.
      */
-    @Id @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="metadata_gen")
-    @SequenceGenerator(name="metadata_gen", sequenceName="metadata_id_seq")
-    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
  
   

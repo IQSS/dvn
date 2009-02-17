@@ -275,10 +275,11 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
         String logFileName = FileUtil.getImportFileDir() + File.separator + "harvest_" + dataverse.getVdc().getAlias() + logTimestamp + ".log";
         FileHandler fileHandler = new FileHandler(logFileName);
         hdLogger.addHandler(fileHandler);
+        List<Long> harvestedStudyIds = null;
+        List<String> failedIdentifiers = new ArrayList<String>();
         try {
             boolean harvestingNow = dataverse.isHarvestingNow();
-            List<Long> harvestedStudyIds = null;
-            List<String> failedIdentifiers = new ArrayList<String>();
+        
             if (harvestingNow) {
                 harvestErrorOccurred.setValue(true);
                 hdLogger.log(Level.SEVERE, "Cannot begin harvesting, Dataverse " + dataverse.getVdc().getName() + " is currently being harvested.");
@@ -319,7 +320,17 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
                 }
             }
             mailService.sendHarvestNotification(vdcNetworkService.find().getContactEmail(), dataverse.getVdc().getName(), logFileName, logTimestamp, harvestErrorOccurred.booleanValue(), harvestedStudyIds.size(), failedIdentifiers);
+          } catch (Throwable e) {
+            harvestErrorOccurred.setValue(true);
+            String message = "Exception processing harvest, server= " + dataverse.getServerUrl() + ",format=" + dataverse.getHarvestFormatType().getMetadataPrefix() + " " + e.getClass().getName() + " " + e.getMessage();
+            hdLogger.log(Level.SEVERE, message);
+            logException(e, hdLogger);
+            hdLogger.log(Level.INFO, "HARVEST NOT COMPLETED DUE TO UNEXPECTED ERROR.");
+            harvestingDataverseService.setHarvestFailure(dataverse.getId(), harvestedStudyIds.size(), failedIdentifiers.size());
+              
+          
         } finally {
+            harvestingDataverseService.setHarvestingNow(dataverse.getId(), false);
             fileHandler.close();
             hdLogger.removeHandler(fileHandler);
         }
@@ -333,33 +344,20 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
      * @param harvestErrorOccurred  have we encountered any errors during harvest?
      * @param failedIdentifiers     Study Identifiers for failed "GetRecord" requests
      */
-    private List<Long> harvestOAI(HarvestingDataverse dataverse, Logger hdLogger, String from, String until, MutableBoolean harvestErrorOccurred, List<String> failedIdentifiers) {
+    private List<Long> harvestOAI(HarvestingDataverse dataverse, Logger hdLogger, String from, String until, MutableBoolean harvestErrorOccurred, List<String> failedIdentifiers)
+            throws IOException, ParserConfigurationException,SAXException, TransformerException, JAXBException {
    
         List<Long> harvestedStudyIds = new ArrayList<Long>();
    
-        try {
 
             ResumptionTokenType resumptionToken = null;
 
             do {
-                resumptionToken = harvesterService.harvestFromIdentifiers(hdLogger, resumptionToken, dataverse, from, until, harvestedStudyIds, failedIdentifiers, harvestErrorOccurred);
+                resumptionToken = harvesterService.harvestFromIdentifiers(hdLogger, resumptionToken, dataverse, from, until, harvestedStudyIds, failedIdentifiers, harvestErrorOccurred);        
             } while (resumptionToken != null && !resumptionToken.equals(""));
 
             hdLogger.log(Level.INFO, "COMPLETED HARVEST, oaiUrl=" + dataverse.getServerUrl() + ",set=" + dataverse.getHarvestingSet() + ", metadataPrefix=" + dataverse.getHarvestFormatType().getMetadataPrefix() + ", from=" + from + ", until=" + until);
-             
-          
-        } catch (Throwable e) {
-            harvestErrorOccurred.setValue(true);
-            String message = "Exception processing harvest, oaiServer= " + dataverse.getServerUrl() + ",from=" + from + ",until=" + until + ",encodedSet=" + dataverse.getHarvestingSet() + ",format=" + dataverse.getHarvestFormatType().getMetadataPrefix() + " " + e.getClass().getName() + " " + e.getMessage();
-            hdLogger.log(Level.SEVERE, message);
-            logException(e, hdLogger);
-            hdLogger.log(Level.INFO, "HARVEST NOT COMPLETED DUE TO UNEXPECTED ERROR.");
-            harvestingDataverseService.setHarvestFailure(dataverse.getId(), harvestedStudyIds.size(), failedIdentifiers.size());
-          
-        } finally {
-            harvestingDataverseService.setHarvestingNow(dataverse.getId(), false);
-        }
-
+           
         return harvestedStudyIds;
      
     }
@@ -643,13 +641,13 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
         return hft;
     }
     
-    private List<Long> harvestNesstar(HarvestingDataverse dataverse, Logger hdLogger, MutableBoolean harvestErrorOccurred, List<String> failedIdentifiers) {
+    private List<Long> harvestNesstar(HarvestingDataverse dataverse, Logger hdLogger, MutableBoolean harvestErrorOccurred, List<String> failedIdentifiers) throws MalformedURLException {
         VDCUser networkAdmin = vdcNetworkService.find().getDefaultNetworkAdmin();
         int count = 0;
 
         List<Long> harvestedStudyIds = new ArrayList<Long>();
 
-        try {
+      
 
             hdLogger.log(Level.INFO, "BEGIN HARVEST..., nesstarServer=" + dataverse.getServerUrl() + ", metadataPrefix=" + dataverse.getHarvestFormatType().getMetadataPrefix());
 
@@ -681,19 +679,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
             }
             
      
-        } catch (Throwable e) {
-            harvestErrorOccurred.setValue(true);
-            String message = "Exception processing harvest, nesstarServer= " + dataverse.getServerUrl() + ",format=" + dataverse.getHarvestFormatType().getMetadataPrefix() + " " + e.getClass().getName() + " " + e.getMessage();
-            hdLogger.log(Level.SEVERE, message);
-            logException(e, hdLogger);
-            hdLogger.log(Level.INFO, "HARVEST NOT COMPLETED DUE TO UNEXPECTED ERROR.");
-            harvestingDataverseService.setHarvestFailure(dataverse.getId(), harvestedStudyIds.size(), failedIdentifiers.size());
-              
-          
-        } finally {
-            harvestingDataverseService.setHarvestingNow(dataverse.getId(), false);
-        }
-
+      
         return harvestedStudyIds;
 
     }

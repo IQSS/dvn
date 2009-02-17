@@ -96,8 +96,8 @@ public class FileCategory implements Comparable, java.io.Serializable {
         this.displayOrder = displayOrder;
     }
     
-    @SequenceGenerator(name="filecategory_gen", sequenceName="filecategory_id_seq")
-    @Id @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="filecategory_gen")
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
     public Long getId() {

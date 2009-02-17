@@ -41,8 +41,8 @@ import javax.persistence.TemporalType;
 public class RemoteAccessAuth implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @Id @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="remoteaccessauth_gen") 
-    @SequenceGenerator(name="remoteaccessauth_gen", sequenceName="remoteaccessauth_id_seq")    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     public Long getId() {

@@ -49,8 +49,8 @@ public class LoginDomain implements java.io.Serializable  {
     /**
      * Holds value of property id.
      */
-   @SequenceGenerator(name="logindomain_gen", sequenceName="logindomain_id_seq")
-    @Id @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="logindomain_gen")        
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /**

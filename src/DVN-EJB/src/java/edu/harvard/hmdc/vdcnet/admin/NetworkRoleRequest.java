@@ -44,8 +44,8 @@ import javax.persistence.SequenceGenerator;
 @Entity
 public class NetworkRoleRequest implements Serializable {
 
-    @SequenceGenerator(name="networkrolerequest_gen", sequenceName="networkrolerequest_id_seq") 
-    @Id @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="networkrolerequest_gen")       
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
     /** Creates a new instance of RoleRequest */

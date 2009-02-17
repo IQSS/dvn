@@ -44,8 +44,8 @@ public class NetworkRole implements java.io.Serializable  {
     public NetworkRole() {
     }
 
-   @SequenceGenerator(name="networkrole_gen", sequenceName="networkrole_id_seq")
-    @Id @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="networkrole_gen")        
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     public String getName() {

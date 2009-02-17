@@ -77,8 +77,8 @@ public class HarvestingDataverse implements Serializable {
     /**
      * Holds value of property id.
      */
-    @SequenceGenerator(name="harvestdataverse_gen", sequenceName="harvestdataverse_id_seq")
-    @Id @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="harvestdataverse_gen")
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
     /**

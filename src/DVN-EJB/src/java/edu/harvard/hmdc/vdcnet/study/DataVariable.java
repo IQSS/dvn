@@ -79,9 +79,8 @@ public class DataVariable implements java.io.Serializable{
     /**
      * Holds value of property id.
      */
-    @SequenceGenerator(name="datavariable_gen", sequenceName="datavariable_id_seq")
-    @Id @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="datavariable_gen") 
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /**

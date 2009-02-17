@@ -33,8 +33,8 @@ public class HarvestStudy implements Serializable {
     
     private static final long serialVersionUID = 1L;
 
-    @SequenceGenerator(name="harveststudy_gen", sequenceName="harveststudy_id_seq")
-    @Id @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="harveststudy_gen") 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     public Long getId() {

@@ -416,6 +416,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
                     populateDescendants(vdcgroup, true);
                 }
         }
+        writeJavascript();
     }
 
       //Manage classification
@@ -453,6 +454,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
                 Iterator inneriterator  = innerlist.iterator();
                 DataverseGrouping xtraItem;
                 childItem.xtraItems = new ArrayList();
+                this.childItemBeans.add(childItem.getId());
                 while (inneriterator.hasNext()) {
                     VDCGroup innergroup = (VDCGroup)inneriterator.next();
                     xtraItem = new DataverseGrouping(innergroup.getId(), innergroup.getName(), "subgroup", isExpanded, "", "", parentId);
@@ -461,6 +463,59 @@ public class HomePage extends VDCBaseBean implements Serializable {
             }
          }
       }
+      
+      private void writeJavascript() {
+          accordionJavascript +=  "<script type=\"text/javascript\">"  + "\n\r" +
+                "// <![CDATA[ " +  "\n\r" +
+                "jQuery(document).ready(function(){" + "\n\r" +
+                      "jQuery('#theMenu').Accordion({ " +
+                        "active: 'h3.selected', " +
+                        "header: 'h3.head', " +
+                        "alwaysOpen: false, " +
+                        "animated: true, " +
+                        "showSpeed: 400, " +
+                        "hideSpeed: 800 " +
+                "});" + "\n\r" +
+                "jQuery('#xtraMenu').Accordion({" +
+                "active: 'h4.selected'," +
+                "header: 'h4.head', " +
+                "alwaysOpen: false, " +
+                "animated: true, " +
+                "showSpeed: 400, " +
+                "hideSpeed: 800 " +
+                "});" + "\n\r";
+        Iterator iterator = childItemBeans.iterator();
+        while (iterator.hasNext()) {
+            String grouping = (String)iterator.next();
+            String divId = "xtraMenu" + grouping;
+                accordionJavascript += "jQuery('#" + divId + "').Accordion({" + 
+                "active: 'h4.selected'," +
+                "header: 'h4.head', " +
+                "alwaysOpen: false, " +
+                "animated: true, " +
+                "showSpeed: 400, " +
+                "hideSpeed: 800 " +
+                "});" + "\n\r";
+        }
+        accordionJavascript += "  });"  + "\n\r" +
+              "// ]] >"  + "\n\r" + "</" + "script>";
+      }
+
+      private ArrayList childItemBeans = new ArrayList();
+      private String accordionJavascript = new String("");
+
+    public String getAccordionJavascript() {
+        return accordionJavascript;
+    }
+
+    public void setAccordionJavascript(String accordionJavascript) {
+        this.accordionJavascript = accordionJavascript;
+    }
+
+
+
+
+
 
      /** paginate
       * @description the home page pagination is bound to the home page backing

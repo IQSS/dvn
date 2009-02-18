@@ -716,7 +716,7 @@ public class FileDownloadServlet extends HttpServlet {
 		    dbgLog.fine("local: paramListToR="+paramListToR);
 		    
 		    sro = new DvnRJobRequest(getDataVariableForRequest(), paramListToR, vls);
-		    dbgLog.fine("sro dump:\n"+ToStringBuilder.reflectionToString(sro, ToStringStyle.MULTI_LINE_STYLE));
+//		    dbgLog.fine("sro dump:\n"+ToStringBuilder.reflectionToString(sro, ToStringStyle.MULTI_LINE_STYLE));
 		    
 		    // create the service instance
 		    DvnRforeignFileConversionServiceImpl dfcs = new DvnRforeignFileConversionServiceImpl();
@@ -1015,7 +1015,7 @@ public class FileDownloadServlet extends HttpServlet {
                         dbgLog.fine("local: paramListToR="+paramListToR);
                         
                         sro = new DvnRJobRequest(getDataVariableForRequest(), paramListToR, vls);
-                        dbgLog.fine("sro dump:\n"+ToStringBuilder.reflectionToString(sro, ToStringStyle.MULTI_LINE_STYLE));
+//                        dbgLog.fine("sro dump:\n"+ToStringBuilder.reflectionToString(sro, ToStringStyle.MULTI_LINE_STYLE));
                         
                         // create the service instance
                         DvnRforeignFileConversionServiceImpl dfcs = new DvnRforeignFileConversionServiceImpl();

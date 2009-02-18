@@ -315,10 +315,6 @@ span.disabled {font-weight: bold;}
     outline: 0;
 }
 .xtraMenu {background-color: white;}
-.xtraMenu ul li a:link, .xtraMenu ul li a:active, .xtraMenu ul li a:hover, .xtraMenu ul li a:visited {
-    padding-left: 1.25em;
-    display: block;
-}
 
 /* Header links styling */
 h3.head a {
@@ -374,6 +370,15 @@ h4.selected a:hover {
 h3.noSubNode, h3.noSubNode a, h3.noSubNode a:hover,
 h4.noSubNode, h4.noSubNode a, h4.noSubNode a:hover {
     background-image: none;
+}
+
+.xtraMenu ul li a:link, .xtraMenu ul li a:active, .xtraMenu ul li a:hover, .xtraMenu ul li a:visited {
+    padding-left: 1.25em;
+    display: block;
+}
+.xtraMenu ul li a:hover {
+    background: #c55b28;
+    color: white;
 }
 
 /* HEADER */

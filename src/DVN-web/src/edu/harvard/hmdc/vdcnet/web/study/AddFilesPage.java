@@ -268,7 +268,11 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable,
                 dir.mkdir();
             }
             File file = FileUtil.createTempFile(dir, inputFile.getFile().getName());
-            inputFile.getFile().renameTo(file);
+            if (!inputFile.getFile().renameTo(file)) {
+                // in windows environment, rename doesn't work, so we will copy the file instead
+                FileUtil.copyFile(inputFile.getFile(), file);
+                inputFile.getFile().delete();
+            }
 
             //  File fstudy = FileUtil.createTempFile(sessionId, file.getName());
             f = new StudyFileEditBean(file, studyService.generateFileSystemNameSequence());

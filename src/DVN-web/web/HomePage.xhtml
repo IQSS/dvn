@@ -24,8 +24,7 @@
           function setHiddenValues(groupid) {
             if (arguments[0] == "All") {
                 document.getElementById('HomePageForm:filterType').value = 'numeric';
-                document.getElementById('HomePageForm:groupId').value = '-1';
-                //document.getElementById('HomePageForm:alphaCharacter').value = arguments[1];
+                // document.getElementById('HomePageForm:groupId').value = '-1';
             } else if (arguments.length > 1) {
                 document.getElementById('HomePageForm:filterType').value = 'alphabetic';
                 document.getElementById('HomePageForm:alphaCharacter').value = arguments[1];

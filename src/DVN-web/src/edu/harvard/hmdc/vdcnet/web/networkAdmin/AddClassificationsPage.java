@@ -313,6 +313,7 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
             vdcgroup.setName((String)nameInput.getValue());
             vdcgroup.setDescription((String)descriptionInput.getValue());
             vdcgroup.setParent((Long)parentSelect.getValue());
+            vdcgroup.setDisplayOrder(100);
             vdcGroupService.create(vdcgroup);
             classificationId.setValue(vdcgroup.getId());
             update_action();

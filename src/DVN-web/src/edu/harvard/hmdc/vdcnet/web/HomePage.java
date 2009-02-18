@@ -477,7 +477,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
                         "showSpeed: 400, " +
                         "hideSpeed: 800 " +
                 "});" + "\n\r" +
-                "jQuery('#xtraMenu').Accordion({" +
+                "jQuery('.xtraMenu').Accordion({" +
                 "active: 'h4.selected'," +
                 "header: 'h4.head', " +
                 "alwaysOpen: false, " +

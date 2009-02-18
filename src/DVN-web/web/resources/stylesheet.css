@@ -133,14 +133,14 @@
 /* studyPageEditLinks */
 .studyEditLinks {
   margin-left: 2em;
-  width: 3em;
+  /* width: 3em; removed because it causes strange output in Opera and removing doesn't appear to affect the display otherwise '*/
   float: left;
 }
 .editDropDown, .editDropDown ul {
     list-style: none;
     margin: 0;
     padding: 0;
-}
+} 
 .editDropDown li {
     margin: 0;
     padding: 0;
@@ -166,7 +166,10 @@
     margin: 0;
     text-decoration: none;
     vertical-align: top;
-}
+} 
+
+
+
 .editDropDown li a:hover {
     background: khaki;
     color: #0c54b3;
@@ -180,7 +183,7 @@
     margin: 0;
     color: #0c54b3;
     text-decoration: none !important;
-}
+} 
 .studyEditLinks li:hover a,
 .studyEditLinks li.sfHover a {
     background: khaki;
@@ -223,16 +226,16 @@
 .editDropDown ul li {
     border: 0;
     float: none;
-}
+} 
 .editDropDown ul a {
     width: 18.5em;
     white-space: nowrap;
-}
+} 
 .editDropDown ul a:hover {
     margin: 0;
     background: khaki;
     color: #c55b28;
-}
+} 
 /* END studyPageEditLinks */
 
 .dvn_sectionBox {width: 100%; border-top: 2px solid #91a5a9; border-left: 1px solid #ccc; text-align: left;}

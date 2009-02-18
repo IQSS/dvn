@@ -115,7 +115,8 @@ public class PrivilegedUsersPage extends VDCBaseBean implements java.io.Serializ
         } else {
             siteRestriction="Public";
         }
-       
+        
+        setFilesRestricted(vdc.isFilesRestricted());       
     }
     
    
@@ -237,6 +238,14 @@ public class PrivilegedUsersPage extends VDCBaseBean implements java.io.Serializ
             }
             vdc.setRestricted(true);
         }
+
+        if (filesRestricted != vdc.isFilesRestricted()) {
+            vdc.setFilesRestricted(filesRestricted);
+            if (vdc.getHarvestingDataverse() != null) {
+                vdc.getHarvestingDataverse().setSubsetRestricted(filesRestricted);
+            }
+        }
+        
         // If the user has added a vdcUser to the privileged list, but hasn't assigned
         // a role for the vdcUser, delete the vdcUser from the list before saving changes.
         Collection removeRoles = new ArrayList();
@@ -715,6 +724,24 @@ public class PrivilegedUsersPage extends VDCBaseBean implements java.io.Serializ
      */
     public void setFileGroupInputText(HtmlInputText fileGroupInputText) {
         this.fileGroupInputText = fileGroupInputText;
+    }
+
+    private boolean filesRestricted;
+
+    /**
+     * Getter for property restricted.
+     * @return Value of property restricted.
+     */
+    public boolean isFilesRestricted() {
+        return this.filesRestricted;
+    }
+
+    /**
+     * Setter for property restricted.
+     * @param restricted New value of property restricted.
+     */
+    public void setFilesRestricted(boolean filesRestricted) {
+        this.filesRestricted = filesRestricted;
     }
 
 }

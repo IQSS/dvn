@@ -120,218 +120,27 @@
               window.location.href = "/dvn#{VDCRequest.currentVDCURL}/FileDownload/study_#{studyPage.studyUI.study.studyId}.zip?fileId=" + fileIdStr +  "#{studyPage.xff}";
               return false;
           }
-          
 
-          //DETECT GECKO/W3 STYLE EVENT SUPPORT
-          if (window.addEventListener || document.addEventListener) {
-                //window.addEventListener('load', function (e) {
-                          //  changeElementsVisibility("UL");
-                    //},false);
-                 var element = document.getElementById("dvn_wrapper");
-                 element.addEventListener('mouseover', function(e) {
-                            var obj = (e.target) ? e.target : window.event.srcElement;
-
-                            if (obj.className.indexOf("downloadasLink") != -1|| (obj.tagName == "LI" && obj.parentNode.className == "studyFileDownloadAs downloadas") ) {
-                                showChildNode(obj.parentNode.parentNode.parentNode, "ul", "studyFileDownloadAs downloadas");
-                                e.stopPropagation();
-                            }
-                        }, true);
-                 element.addEventListener('mouseout', function(e) {
-                          var obj = (e.target) ? e.target : window.event.srcElement;
-                          if (obj.className == "vdcInlineHelpLink") {
-                            hideInlineHelp();
-                          } else if (obj.className == 'vdcTooltipLink') {
-                            hideTooltip();
-                          } else {
-                            var toElement = (e.relatedTarget) ? e.relatedTarget : e.toElement;
-                            var fromElement = (e.fromElement) ? e.fromElement   : obj;
-                            if (obj.tagName == "LI" && obj.parentNode.className == "studyFileDownloadAs downloadas") { //download as to sibling li and its descendants
-                                if (traverseParents("DIV", "LI", "sfHover", fromElement) != traverseParents("DIV", "LI", "sfHover", toElement)) {
-                                    hideChildNode(obj.parentNode.parentNode, "UL", "studyFileDownloadAs downloadas", obj.tagName + "1");
-                                } 
-                            } else if (obj.parentNode.className == "sfHover" && obj.parentNode.parentNode.className != "fileList") { //downloadAs link and UL.fileList
-                                if (traverseParents("DIV", "LI", "sfHover", fromElement) != traverseParents("DIV", "LI", "sfHover", toElement)) {
-                                    hideChildNode(obj.parentNode.parentNode.parentNode.parentNode, "UL", "studyFileDownloadAs downloadas", obj.tagName + "1");
-                                } 
-                            } else if (obj.parentNode.parentNode.parentNode.className == "sfHover") { //A inside UL.fileList
-                                 if (traverseParents("DIV", "LI", "sfHover", fromElement) != traverseParents("DIV", "LI", "sfHover", toElement)) {
-                                    hideChildNode(obj.parentNode.parentNode.parentNode.parentNode.parentNode, "UL", "studyFileDownloadAs downloadas", obj.tagName + "2");
-                                 }
-                            } else if (obj.parentNode.parentNode.parentNode.parentNode.className == "sfHover") { //SPAN . . . inside UL.fileList
-                                 if (traverseParents("DIV", "LI", "sfHover", fromElement) != traverseParents("DIV", "LI", "sfHover", toElement)) {
-                                    hideChildNode(obj.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode, "UL", "studyFileDownloadAs downloadas", obj.tagName + "3");
-                                }
-                            } else if (obj.parentNode.parentNode.parentNode.parentNode.parentNode.className == "sfHover") { // TEXT . . . inside UL.fileList (possibly never hit)
-                                if (traverseParents("DIV", "LI", "sfHover", fromElement) != traverseParents("DIV", "LI", "sfHover", toElement)) {
-                                    hideChildNode(obj.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode, "UL", "studyFileDownloadAs downloadas", obj.tagName + "4");
-                                }
-                            }
-                          }
-                          e.stopPropagation();
-                        }, true);
-          // DETECT INTERNET EXPLORER SUPPORT
-          } else if (window.attachEvent)  {
-              //window.attachEvent('onload', function () {
-                         //   changeElementsVisibility("UL");
-                   // });
-              var element = document.getElementById("dvn_wrapper");
-              element.attachEvent("onmouseover", function () {
-                    var obj = window.event.srcElement;
-                    if (obj.className.indexOf("downloadasLink") != -1 || (obj.tagName == "LI" && obj.parentNode.className == "studyFileDownloadAs downloadas") ) {
-                        showChildNode(obj.parentNode.parentNode.parentNode, "ul", "studyFileDownloadAs downloadas", window.event);//the parent node to the download link = li. the ul, fileList is a sibling of downloadaslink
-                    }
-                    window.event.cancelBubble = true;
-              });
-              element.attachEvent("onmouseout", function () {
-                var obj = window.event.srcElement;
-                  if (obj.className == "vdcInlineHelpLink") {
-                    hideInlineHelp();
-                  } else if (obj.className == 'vdcTooltipLink') {
-                    hideTooltip();
-                  } else {
-                    if (obj.className == "sfHover") { //download as to sibling li and its descendants
-                        if (traverseParents("DIV", "LI", "sfHover", window.event.fromElement) != traverseParents("DIV", "LI", "sfHover", window.event.toElement)) {
-                            hideChildNode(obj.parentNode.parentNode, "UL", "studyFileDownloadAs downloadas", obj.tagName + "1");
-                        } 
-                    }
-                    else if (obj.parentNode.className == "sfHover" && obj.parentNode.parentNode.className != "fileList") { //download as to sibling li and its descendants
-                        if (traverseParents("DIV", "LI", "sfHover", window.event.fromElement) != traverseParents("DIV", "LI", "sfHover", window.event.toElement)) {
-                            hideChildNode(obj.parentNode.parentNode.parentNode.parentNode, "UL", "studyFileDownloadAs downloadas", obj.tagName + "1");
-                        } //add else for A tag
-                    } else if (obj.parentNode.parentNode.parentNode.className == "sfHover") { //A inside UL.fileList
-                         if (traverseParents("DIV", "LI", "sfHover", window.event.fromElement) != traverseParents("DIV", "LI", "sfHover", window.event.toElement)) {
-                            hideChildNode(obj.parentNode.parentNode.parentNode.parentNode.parentNode, "UL", "studyFileDownloadAs downloadas", obj.tagName + "2");
-                         }
-                    } else if (obj.parentNode.parentNode.parentNode.parentNode.className == "sfHover") { //SPAN . . . inside UL.fileList
-                         if (traverseParents("DIV", "LI", "sfHover", window.event.fromElement) != traverseParents("DIV", "LI", "sfHover", window.event.toElement)) {
-                            hideChildNode(obj.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode, "UL", "studyFileDownloadAs downloadas", obj.tagName + "3");
-                        }
-                    } else if (obj.parentNode.parentNode.parentNode.parentNode.parentNode.className == "sfHover") { // TEXT . . . inside UL.fileList (possibly never hit)
-                        if (traverseParents("DIV", "LI", "sfHover", window.event.fromElement) != traverseParents("DIV", "LI", "sfHover", window.event.toElement)) {
-                            hideChildNode(obj.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode, "UL", "studyFileDownloadAs downloadas", obj.tagName + "4");
-                        }
-                    }
-                  }
-                  window.event.cancelBubble = true;
-              });
+          function showEditLinks(element) {
+                if (window.event && (navigator.userAgent.indexOf("MSIE") != -1 || navigator.userAgent.indexOf("Opera") != -1)) {
+                    elem = element.childNodes(1).nextSibling;
+                    elem.style.position        = 'absolute';
+                    elem.style.left            = 5;
+                    elem.style.top             = 15;
+                    elem.style.background      = 'khaki';
+                    elem.style.color           = '#0c54b3';
+                    elem.style.opacity         = '.99';
+                }
           }
 
-          /**  traverseParents
-           *
-           *  if the from and to element have the same parent, then return true;
-           *  else return false
-           *
-           * @return isNodeParent boolean
-           *
-           */
-          function traverseParents(stopElement, parentElementName, parentClassName, targetElement) {
-              var isNodeParent = false;
-              counter = 0;
-              while ( (!isNodeParent && targetElement.tagName != stopElement) ) {
-                  counter++;
-                  if (targetElement.tagName == parentElementName && targetElement.className == parentClassName) {
-                        isNodeParent = true;
-                        //break;
-                  } else {
-                      if (targetElement.parentNode != null) {
-                          targetElement = targetElement.parentNode;
-                      } 
-                  }
-                  if (isNodeParent)
-                      break;
+          function hideEditLinks(element) {
+              if (window.event && (navigator.userAgent.indexOf("MSIE") != -1 || navigator.userAgent.indexOf("Opera") != -1)) {
+                   elem = element.childNodes(1).nextSibling;
+                   elem.style.left = '-1px';
+                   elem.style.top  = '-999px';
               }
-              return isNodeParent;
           }
-
-
-          /** showChildNode
-           *
-           * this script shows some child nodes
-           *
-           */
-          function showChildNode(parentNode, targetElementName, className, evt) {
-                if (parentNode.getElementsByTagName) {
-                   var nodes = parentNode.getElementsByTagName(targetElementName); // in this case we want "ul"
-                   var max = nodes.length;
-                   for (var i = 0; i < max;i++) {
-                      var nodeObj = nodes.item(i);
-                      if (nodeObj.className == className) {
-                          childNodes = nodeObj.getElementsByTagName("li");
-                          for (var j = 0; j < childNodes.length; j++) {
-                              var childNodeObj = childNodes[j];
-                              childNodeObj.className = "sfHover";
-                          }
-                        descendantNodes = nodeObj.getElementsByTagName("li")
-                        descendantObj = descendantNodes[0];
-                        descendantNodes = descendantObj.getElementsByTagName("ul");
-                        descendantObj = descendantNodes[0];
-                        if (descendantObj.className == "fileList") {
-                            descendantObj.style.display = "block";
-                        }
-                        break;
-                      }
-                   }
-                }
-          }
-
-          /** hideChildNode
-           *
-           *
-           *
-           * this script hides child nodes
-           *
-           *
-           */
-          
-           function hideChildNode(parentNode, targetElementName, className, evt) {
-                if (parentNode.getElementsByTagName) {
-                   var nodes = parentNode.getElementsByTagName(targetElementName); // in this case we want "ul"
-                   var max = nodes.length;
-                   for (var i = 0; i < max;i++) {
-                      var nodeObj = nodes.item(i);
-                      if (nodeObj.className == className) {
-                          childNodes = nodeObj.getElementsByTagName("li");
-                          for (var j = 0; j < childNodes.length; j++) {
-                              var childNodeObj = childNodes[j];
-                              childNodeObj.className = "";
-                          }
-                        descendantNodes = nodeObj.getElementsByTagName("li");
-                        descendantObj = descendantNodes[0];
-                        descendantNodes = descendantObj.getElementsByTagName("ul");
-                        descendantObj = descendantNodes[0];
-                        
-                        if (descendantObj.className == "fileList") {
-                            descendantObj.style.display="none";
-                        }
-                        break;
-                      }
-                   }
-                }
-          }
-
-
-          /** changeElementsVisibility
-           *
-           * Hides all of the subnodes of the elementName
-           *
-           * @param elementName - The name of an element targetted for inspection
-           *                        of this node
-           *
-           * @return void
-           */
-            function changeElementsVisibility(elementName){
-                if (document.getElementsByTagName) {
-                   var nodes = document.getElementsByTagName(elementName);
-                   var max = nodes.length;
-                   for (var i = 0; i < max;i++) {
-                      var nodeObj = nodes.item(i);
-                      if (nodeObj.className == "fileList") {
-                        nodeObj.style.display="none";
-                      }
-                   }
-                }
-            }
-
+         
           // ]]>
       </script>
       <f:loadBundle basename="StudyBundle" var="studybundle"/>
@@ -365,17 +174,21 @@
                   });
                   // ]]>
               </script> -->
-              <ice:commandButton styleClass="dvnInlineButton" value="Release" actionListener="#{studyPage.setReleased}" rendered="#{studyPage.userAuthorizedToRelease and studyPage.studyUI.study.studyLock==null and studyPage.studyUI.study.inReview}"/>
-
+              <ice:commandButton styleClass="dvnInlineButton" 
+                                    value="Release"
+                                    actionListener="#{studyPage.setReleased}" rendered="#{studyPage.userAuthorizedToRelease and studyPage.studyUI.study.studyLock==null and studyPage.studyUI.study.inReview}"/>
+              
               <ul class="studyEditLinks editDropDown">
-                <li>
+                <li onmouseover="showEditLinks(this);" onmouseout="hideEditLinks(this);">
                   <a class="editDropDownLink">Edit...</a>
                   <ul>
                     <li>
-                      <ice:outputLink rendered="#{studyPage.userAuthorizedToEdit and studyPage.studyUI.study.studyLock==null}" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=catalog">
+                      <ice:outputLink rendered="#{studyPage.userAuthorizedToEdit and studyPage.studyUI.study.studyLock==null}"
+                                        value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=catalog">
                         <ice:outputText value="Edit Cataloging Information"/>
                       </ice:outputLink>
-                      <ice:outputLink rendered="#{studyPage.userAuthorizedToEdit and studyPage.studyUI.study.studyLock==null and !empty studyPage.studyUI.study.fileCategories}" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=files">
+                      <ice:outputLink rendered="#{studyPage.userAuthorizedToEdit and studyPage.studyUI.study.studyLock==null and !empty studyPage.studyUI.study.fileCategories}"
+                                        value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=files">
                         <ice:outputText value="Edit Documentation Data and Analysis"/>
                       </ice:outputLink>
                     </li>

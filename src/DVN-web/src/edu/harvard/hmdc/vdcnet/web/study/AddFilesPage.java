@@ -706,7 +706,7 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable,
      */
     public String cancel_action() {
         //first clean up the temp files  
-        removeUploadFiles();
+        //removeUploadFiles();
         editStudyService.cancel();
         getVDCRequestBean().setStudyId(study.getId());
         getVDCRequestBean().setSelectedTab("files");

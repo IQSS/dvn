@@ -186,17 +186,17 @@
                                  <ice:outputText escape="false"
                                             rendered="#{HomePage.groupName == 'All Dataverses'}"
                                             styleClass="dvn_totalsLabel"
-                                            value=", "/>
+                                            value="| "/>
                             <ice:outputText rendered="#{HomePage.groupName == 'All Dataverses'}" styleClass="dvn_totalsLabel" value ="Studies: "/>
                                 <ice:outputText rendered="#{HomePage.groupName == 'All Dataverses'}"
                                                 styleClass="dvn_totalsValue"
-                                                value="#{HomePage.networkStats.studyCount}"/>
+                                                value="#{HomePage.studyCount}"/>
                             <ice:outputText escape="false"
                                             rendered="#{HomePage.groupName == 'All Dataverses'}"
                                             styleClass="dvn_totalsLabel"
-                                            value=", "/>
-                            <ice:outputText rendered="#{HomePage.groupName == 'All Dataverses'}" styleClass="dvn_totalsLabel" value="Files: " />
-                            <ice:outputText rendered="#{HomePage.groupName == 'All Dataverses'}" styleClass="dvn_totalsValue" value="#{HomePage.networkStats.fileCount}"/>
+                                            value="| "/>
+                            <ice:outputText rendered="#{HomePage.groupName == 'All Dataverses' }" styleClass="dvn_totalsLabel" value="Files: " />
+                            <ice:outputText rendered="#{HomePage.groupName == 'All Dataverses' }" styleClass="dvn_totalsValue" value="#{HomePage.fileCount}"/>
                       </div>
                       <div jsfc="ice:panelGroup"
                             id="groupPanel2"

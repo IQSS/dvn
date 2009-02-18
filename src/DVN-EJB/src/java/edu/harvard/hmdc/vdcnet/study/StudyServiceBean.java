@@ -179,21 +179,21 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
 
     public void deleteStudy(Long studyId, boolean deleteFromIndex) {
         long start = new Date().getTime();
-        System.out.println("DEBUG: 0\t - deleteStudy - BEGIN");
+        //System.out.println("DEBUG: 0\t - deleteStudy - BEGIN");
         Study study = em.find(Study.class, studyId);
         if (study == null) {
             return;
         }
-        System.out.println("DEBUG: " + (new Date().getTime() - start) + "\t - deleteStudy - remove from collections");
+        //System.out.println("DEBUG: " + (new Date().getTime() - start) + "\t - deleteStudy - remove from collections");
         for (Iterator<VDCCollection> it = study.getStudyColls().iterator(); it.hasNext();) {
             VDCCollection elem = it.next();
             elem.getStudies().remove(study);
 
         }
-        System.out.println("DEBUG: " + (new Date().getTime() - start) + "\t - deleteStudy - delete data variables");
+        //System.out.println("DEBUG: " + (new Date().getTime() - start) + "\t - deleteStudy - delete data variables");
         studyService.deleteDataVariables(study.getId());
 
-        System.out.println("DEBUG: " + (new Date().getTime() - start) + "\t - deleteStudy - delete relationships");
+        //System.out.println("DEBUG: " + (new Date().getTime() - start) + "\t - deleteStudy - delete relationships");
         study.getAllowedGroups().clear();
         study.getAllowedUsers().clear();
         if (study.getOwner() != null) {
@@ -209,7 +209,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             }
         }
 
-        System.out.println("DEBUG: " + (new Date().getTime() - start) + "\t - deleteStudy - delete physical files");
+        //System.out.println("DEBUG: " + (new Date().getTime() - start) + "\t - deleteStudy - delete physical files");
         File studyDir = new File(FileUtil.getStudyFileDir() + File.separator + study.getAuthority() + File.separator + study.getStudyId());
         if (studyDir.exists()) {
             File[] files = studyDir.listFiles();
@@ -224,21 +224,21 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
 
 
         // remove from HarvestStudy table
-        System.out.println("DEBUG: " + (new Date().getTime() - start) + "\t - deleteStudy - delete from HarvestStudy");
+        //System.out.println("DEBUG: " + (new Date().getTime() - start) + "\t - deleteStudy - delete from HarvestStudy");
         harvestStudyService.markHarvestStudiesAsRemoved( harvestStudyService.findHarvestStudiesByGlobalId( study.getGlobalId() ), new Date() );
 
-        System.out.println("DEBUG: " + (new Date().getTime() - start) + "\t - deleteStudy - delete from DB and gnrs");
+        //System.out.println("DEBUG: " + (new Date().getTime() - start) + "\t - deleteStudy - delete from DB and gnrs");
         em.remove(study);
         gnrsService.delete(study.getAuthority(), study.getStudyId());
 
-        System.out.println("DEBUG: " + (new Date().getTime() - start) + "\t - deleteStudy - delete from Index");
+        //System.out.println("DEBUG: " + (new Date().getTime() - start) + "\t - deleteStudy - delete from Index");
         if (deleteFromIndex) {
             indexService.deleteStudy(studyId);
         }
 
-        System.out.println("DEBUG: " + (new Date().getTime() - start) + "\t - deleteStudy - right before flush");
+        //System.out.println("DEBUG: " + (new Date().getTime() - start) + "\t - deleteStudy - right before flush");
         em.flush();  // Force study deletion to the database, for cases when we are calling this before deleting the owning Dataverse
-        System.out.println("DEBUG: " + (new Date().getTime() - start) + "\t - deleteStudy - FINISH");
+        //System.out.println("DEBUG: " + (new Date().getTime() - start) + "\t - deleteStudy - FINISH");
         logger.log(Level.INFO, "Successfully deleted Study " + studyId + "!");
 
 

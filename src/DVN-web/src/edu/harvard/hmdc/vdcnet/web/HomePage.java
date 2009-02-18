@@ -115,6 +115,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
     public static final String CONTRACT_IMAGE   = "tree_nav_top_close_no_siblings.gif";
     public static final String EXPAND_IMAGE     = "tree_nav_top_open_no_siblings.gif";
     StatusMessage msg;
+    private boolean isAlphaSort;
 
         
     
@@ -139,7 +140,18 @@ public class HomePage extends VDCBaseBean implements Serializable {
         initAccordionMenu();
         initAlphabeticFilter();
         populateVDCUIList(false);
+        isAlphaSort = false;
      }
+
+    public boolean isIsAlphaSort() {
+        return isAlphaSort;
+    }
+
+    public void setIsAlphaSort(boolean isAlphaSort) {
+        this.isAlphaSort = isAlphaSort;
+    }
+
+     
 
          /**
      * <p>Callback method that is called after the component tree has been
@@ -236,9 +248,12 @@ public class HomePage extends VDCBaseBean implements Serializable {
 
     public void setHiddenFilterType(HtmlInputHidden hiddenFilterType) {
         this.hiddenFilterType = hiddenFilterType;
+        if (hiddenFilterType.getValue() != null && hiddenFilterType.getValue().toString().equals("alphabetic")) {
+            isAlphaSort = true;
+        } else {
+            isAlphaSort = false;
+        }
     }
-
-
 
     public void changeGroupId(ValueChangeEvent event) {
         String changedValue = event.getNewValue().toString();
@@ -275,6 +290,11 @@ public class HomePage extends VDCBaseBean implements Serializable {
 
     public void changeFilterType(ValueChangeEvent event) {
         String newValue = (String)event.getNewValue();
+        if (newValue != null && newValue.equals("alphabetic")) {
+            isAlphaSort = true;
+        } else {
+            isAlphaSort = false;
+        }
     }
 
     private Long vdcUIListSize;

@@ -91,11 +91,13 @@
               return id.substring(startIndex, endIndex);
           }
 
-          function downloadSingleFile(button) {
-              // this function assumes that the dropdown is the element right before the button; if the order
-              // changes, this method will need to change
-              fileDropdown = document.getElementById(button.id).previousSibling;
-              window.location.href = fileDropdown.options[ fileDropdown.selectedIndex ].value;
+          function downloadSingleFile(fileDropdown) {
+              downloadUrl = fileDropdown.options[ fileDropdown.selectedIndex ].value;
+              fileDropdown.selectedIndex = 0;
+              
+              if (downloadUrl != "") {
+                window.location.href = downloadUrl;
+              }
           }
 
           function downloadSelectedFiles() {
@@ -816,11 +818,10 @@
                                       </div>
                                       <div jsfc="ice:panelGroup" rendered="#{!studyFileUI.restrictedForUser and studyFileUI.studyFile.subsettable}">
                                         <ice:graphicImage styleClass="vdcStudyFileRowFileDownloadAsIcon" value="/resources/icon_download.gif" alt="Download"/>
-                                        <ice:selectOneMenu styleClass="vdcStudyFileRowFileDownloadAsList" id="downloadList">
+                                        <ice:selectOneMenu styleClass="vdcStudyFileRowFileDownloadAsList" id="downloadList" onchange="downloadSingleFile(this);">
                                             <f:selectItem itemLabel="Download as..." itemValue=""/>
                                             <f:selectItems value="#{studyFileUI.dataFileFormatTypeSelectItems}"/>
                                         </ice:selectOneMenu>
-                                        <input id="downloadButton" type="button" onclick="downloadSingleFile(this);" value="Download"/>
                                       </div>
                                     </ice:column>
                                     <ice:column id="column13">

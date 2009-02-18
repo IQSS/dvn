@@ -1256,7 +1256,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     
                     sro = new DvnRJobRequest(getDataVariableForRequest(), mpl, vls, recodeSchema);
 
-                    dbgLog.fine("sro dump:\n"+ToStringBuilder.reflectionToString(sro, ToStringStyle.MULTI_LINE_STYLE));
+//                    dbgLog.fine("sro dump:\n"+ToStringBuilder.reflectionToString(sro, ToStringStyle.MULTI_LINE_STYLE));
                     
                 // Step 4. Creates an instance of the the implemented 
                     // data-analysis-service class 
@@ -3386,7 +3386,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     
                     sro = new DvnRJobRequest(getDataVariableForRequest(), mpl, vls, recodeSchema);
 
-                    dbgLog.fine("sro dump:\n"+ToStringBuilder.reflectionToString(sro, ToStringStyle.MULTI_LINE_STYLE));
+//                    dbgLog.fine("sro dump:\n"+ToStringBuilder.reflectionToString(sro, ToStringStyle.MULTI_LINE_STYLE));
                     
                 // Step 4. Creates an instance of the the implemented 
                     // data-analysis-service class 
@@ -6076,7 +6076,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
                     sro = new DvnRJobRequest(getDataVariableForRequest(), mpl, vls, recodeSchema, modelSpec);
                     
-                    dbgLog.fine("Prepared sro dump:\n"+ToStringBuilder.reflectionToString(sro, ToStringStyle.MULTI_LINE_STYLE));
+//                    dbgLog.fine("Prepared sro dump:\n"+ToStringBuilder.reflectionToString(sro, ToStringStyle.MULTI_LINE_STYLE));
                     
                 // Step 4. Creates an instance of the the implemented 
                     // data-analysis-service class 

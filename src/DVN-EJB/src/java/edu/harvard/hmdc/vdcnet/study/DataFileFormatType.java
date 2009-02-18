@@ -82,9 +82,9 @@ public class DataFileFormatType implements Serializable {
         return ( ORIGINAL_FILE_DATA_FILE_FORMAT.equals(value) );
     }
     
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this,
-            ToStringStyle.MULTI_LINE_STYLE);
-    }
+//    @Override
+//    public String toString() {
+//        return ToStringBuilder.reflectionToString(this,
+//            ToStringStyle.MULTI_LINE_STYLE);
+//    }
 }

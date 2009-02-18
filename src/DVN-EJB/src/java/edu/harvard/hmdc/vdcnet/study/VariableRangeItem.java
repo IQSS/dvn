@@ -124,10 +124,10 @@ public class VariableRangeItem implements java.io.Serializable {
         return true;
     }
 
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this,
-            ToStringStyle.MULTI_LINE_STYLE);
-    }
+//    @Override
+//    public String toString() {
+//        return ToStringBuilder.reflectionToString(this,
+//            ToStringStyle.MULTI_LINE_STYLE);
+//    }
     
 }

@@ -196,10 +196,10 @@ public class VariableCategory implements Comparable, java.io.Serializable {
         
     }
 
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this,
-            ToStringStyle.MULTI_LINE_STYLE);
-    }
+//    @Override
+//    public String toString() {
+//        return ToStringBuilder.reflectionToString(this,
+//            ToStringStyle.MULTI_LINE_STYLE);
+//    }
  
 }

@@ -94,10 +94,10 @@ public class SummaryStatisticType implements java.io.Serializable {
         if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) return false;
         return true;
     }
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this,
-            ToStringStyle.MULTI_LINE_STYLE);
-    }
+//    @Override
+//    public String toString() {
+//        return ToStringBuilder.reflectionToString(this,
+//            ToStringStyle.MULTI_LINE_STYLE);
+//    }
     
 }

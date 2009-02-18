@@ -195,9 +195,9 @@ public class StudyFileEditBean implements Serializable {
         sizeFormatted = s;
     }
 
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this,
-            ToStringStyle.MULTI_LINE_STYLE);
-    }
+//    @Override
+//    public String toString() {
+//        return ToStringBuilder.reflectionToString(this,
+//            ToStringStyle.MULTI_LINE_STYLE);
+//    }
 }

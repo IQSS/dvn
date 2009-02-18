@@ -184,9 +184,9 @@ public class FileCategory implements Comparable, java.io.Serializable {
         return alphaNumericComparator.compare(this.getName(),fc.getName());
         
     }
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this,
-            ToStringStyle.MULTI_LINE_STYLE);
-    }
+//    @Override
+//    public String toString() {
+//        return ToStringBuilder.reflectionToString(this,
+//            ToStringStyle.MULTI_LINE_STYLE);
+//    }
 }

@@ -51,6 +51,7 @@ import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
 import edu.harvard.hmdc.vdcnet.web.study.StudyUI;
 import java.io.Serializable;
 import java.lang.String;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -772,7 +773,15 @@ public void dispose() {
             itemBeans.clear();
         }
     }
-    public VDCNetworkStats getNetworkStats() {
-        return vdcNetworkStatsService.getVDCNetworkStats();
+    
+
+    public String getStudyCount() {
+        Long count = vdcNetworkStatsService.getVDCNetworkStats().getStudyCount();
+        return NumberFormat.getIntegerInstance().format(count);
+    }
+
+      public String getFileCount() {
+        Long count = vdcNetworkStatsService.getVDCNetworkStats().getFileCount();
+        return NumberFormat.getIntegerInstance().format(count);
     }
 }

@@ -215,10 +215,10 @@
                   <ice:column id="column2">
                     <div class="dvnStudyListIDDownloads">
                       <ice:outputText styleClass="dvnStudyListGlobalId" value="#{studyUI.study.globalId}"/>
-                      <ice:outputText value="#{studyUI.downloadCount} download" rendered="#{studyUI.downloadCount == 1 and !studyUI.subsettable}"/>
-                      <ice:outputText value="#{studyUI.downloadCount} download/analysis" rendered="#{studyUI.downloadCount == 1 and studyUI.subsettable}"/>
-                      <ice:outputText value="#{studyUI.downloadCount} downloads" rendered="#{studyUI.downloadCount != 1 and !studyUI.subsettable}"/>
-                      <ice:outputText value="#{studyUI.downloadCount} downloads + analyses" rendered="#{studyUI.downloadCount != 1 and studyUI.subsettable}"/>
+                      <ice:outputText styleClass="dvnStudyListIDDownloadsNonSubsettable" value="#{studyUI.downloadCount} download" rendered="#{studyUI.downloadCount == 1 and !studyUI.subsettable}"/>
+                      <ice:outputText styleClass="dvnStudyListIDDownloadsSubsettable" value="#{studyUI.downloadCount} download/analysis" rendered="#{studyUI.downloadCount == 1 and studyUI.subsettable}"/>
+                      <ice:outputText styleClass="dvnStudyListIDDownloadsNonSubsettable" value="#{studyUI.downloadCount} downloads" rendered="#{studyUI.files and studyUI.downloadCount != 1 and !studyUI.subsettable}"/>
+                      <ice:outputText styleClass="dvnStudyListIDDownloadsSubsettable" value="#{studyUI.downloadCount} downloads + analyses" rendered="#{studyUI.files and studyUI.downloadCount != 1 and studyUI.subsettable}"/>
                       <ice:outputText value="Updated: #{studyUI.lastUpdateTime}"/>
                     </div>
                   </ice:column>

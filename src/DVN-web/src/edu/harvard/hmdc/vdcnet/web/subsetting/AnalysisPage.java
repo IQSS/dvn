@@ -7620,8 +7620,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 HttpServletRequest request = 
                     (HttpServletRequest)this.getExternalContext().getRequest();
 
-                if ((sf.isSubsetRestrictdForUser(user, vdc, 
-						 getVDCSessionBean().getIpUserGroup()))){
+                if (sf.isSubsetRestrictedForUser(user, vdc,
+						 getVDCSessionBean().getIpUserGroup())){
 		    dbgLog.fine("restricted=yes: this user "+
 				"does not have the subsetting permission");
                     subsettingPageAccess = Boolean.FALSE;

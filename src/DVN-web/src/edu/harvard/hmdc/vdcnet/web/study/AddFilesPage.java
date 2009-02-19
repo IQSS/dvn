@@ -1028,7 +1028,6 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable,
 
     public void addCategory(ValueChangeEvent e) {
         currentFile.setFileCategoryName(((String) e.getNewValue()).trim());
-        currentFile.addFileToCategory(study);
 
     }
 }

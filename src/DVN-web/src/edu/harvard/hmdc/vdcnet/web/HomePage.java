@@ -292,6 +292,9 @@ public class HomePage extends VDCBaseBean implements Serializable {
         String newValue = (String)event.getNewValue();
         if (newValue != null && newValue.equals("alphabetic")) {
             isAlphaSort = true;
+        } else if (newValue != null && newValue.equals("all")) {
+            isAlphaSort = false;
+            populateVDCUIList(false);
         } else {
             isAlphaSort = false;
         }

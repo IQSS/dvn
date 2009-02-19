@@ -902,7 +902,7 @@ td.dvn_StudyListSort {padding: .25em;}
 span.dvnStudyListStudyAuthor {font-size: 90% !important;}
 .dvnStudyListIDDownloads {padding: 0 10px; border-left: 1px solid #dcdddf !important;}
 .dvnStudyListIDDownloads span {font-size: 90% !important; color: grey;}
-.dvnStudyListIDDownloads span.dvnStudyListIDDownloadsSubsettable {padding-left: 24px !important; line-height: 1.1em !important; background: url(icon_analyze.gif) no-repeat;}
+.dvnStudyListIDDownloads span.dvnStudyListIDDownloadsSubsettable {padding-left: 24px !important; line-height: 1.2em !important; background: url(icon_analyze.gif) no-repeat;}
 .dvnStudyListIDDownloads span.dvnStudyListIDDownloadsNonSubsettable {padding-left: 24px !important; line-height: 1.3em !important; background: url(icon_download.gif) no-repeat;}
 span.dvnStudyListGlobalId {color: black;}
 

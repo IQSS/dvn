@@ -23,14 +23,14 @@
 
           function setHiddenValues(groupid) {
             if (arguments[0] == "All") {
-                document.getElementById('HomePageForm:filterType').value = 'numeric';
-                // document.getElementById('HomePageForm:groupId').value = '-1';
+                document.getElementById('HomePageForm:filterType').value = 'all';
             } else if (arguments.length > 1) {
                 document.getElementById('HomePageForm:filterType').value = 'alphabetic';
                 document.getElementById('HomePageForm:alphaCharacter').value = arguments[1];
             } else {
                 document.getElementById('HomePageForm:filterType').value = 'numeric';
                 document.getElementById('HomePageForm:groupId').value = arguments[0];
+                oldGroupId = arguments[0];
             }
           }
           // ]]>
@@ -152,7 +152,7 @@
                                  <ice:outputText escape="false"
                                             rendered="#{HomePage.groupName == 'All Dataverses' and HomePage.isAlphaSort == false}"
                                             styleClass="dvn_totalsLabel"
-                                            value="| "/>
+                                            value=" | "/>
                             <ice:outputText rendered="#{HomePage.groupName == 'All Dataverses' and HomePage.isAlphaSort == false}"
                                             styleClass="dvn_totalsLabel"
                                             value ="Studies: "/>
@@ -162,7 +162,7 @@
                             <ice:outputText escape="false"
                                             rendered="#{HomePage.groupName == 'All Dataverses' and HomePage.isAlphaSort == false}"
                                             styleClass="dvn_totalsLabel"
-                                            value="| "/>
+                                            value=" | "/>
                             <ice:outputText rendered="#{HomePage.groupName == 'All Dataverses' and HomePage.isAlphaSort == false }"
                                             styleClass="dvn_totalsLabel"
                                             value="Files: " />
@@ -306,6 +306,7 @@
                          <gui:repeat rendered="#{HomePage.accordionItemBeans != null}"
                                      value="#{HomePage.accordionItemBeans}"
                                      var="menuItems">
+                             <gui:fragment rendered="#{!empty(menuItems.childItems)}">
                              <li>
                                  <h3 class="head">
                                      <ice:outputLink styleClass="head">
@@ -378,6 +379,7 @@
                                      </li>
                                  </ul>
                              </li>
+                             </gui:fragment>
                          </gui:repeat>
                      </ul>
                 </div>

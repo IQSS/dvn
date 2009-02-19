@@ -311,6 +311,11 @@ span.disabled {font-weight: bold;}
     padding: 0;
     border-top: 1px solid white; /*HACK*/
 }
+#theMenu li ul li ul li ul li {
+    margin: 0;
+    padding: 0;
+    border-bottom: 1px solid white; /*HACK*/
+}
 .theMenuContainer a {
     outline: 0;
 }

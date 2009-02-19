@@ -21,11 +21,7 @@ public class LocalizedDate
 
     public String getLocalizedDate(Timestamp timestamp, int datestyle)
     {
-        Calendar calendar = Calendar.getInstance();
-        Locale locale = null;
-        if(locale == null)
-            locale = FacesContext.getCurrentInstance().getViewRoot().getLocale();
-        DateFormat dateformat = DateFormat.getDateInstance(datestyle, locale);
+        DateFormat dateformat = DateFormat.getDateInstance(datestyle);
         String localizedDateString = dateformat.format(timestamp);
         return localizedDateString;
     }

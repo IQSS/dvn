@@ -132,9 +132,9 @@
                 </ice:dataTable>
               </div>
               <!-- ******************** Affiliate login services for IP Groups ****************** -->
-              <div jsfc="ice:panelGroup" styleClass="dvnFormPadding" rendered="#{EditUserGroupPage.userGroupType == 'ipgroup'}" id="affiliateLoginServices" style="#{(EditUserGroupPage.userGroupType == 'ipgroup') ? 'display:block;' : 'display:none;'}">
+              <div jsfc="ice:panelGroup" styleClass="dvnFormPadding" rendered="#{EditUserGroupPage.userGroupType == 'ipgroup'}" id="affiliateLoginServices">
                 <ice:outputText styleClass="vdcSubHeaderColor" value="Affiliate Login Service"/>
-                <div jsfc="ice:panelGroup" styleClass="vdcHelpText" style="#{(EditUserGroupPage.chkAffiliateLoginService) ? 'display:block;' : 'display:none;'}">
+                <div jsfc="ice:panelGroup" styleClass="vdcHelpText" >
                   <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" value="/resources/icon_info.gif"/>
                   <ice:outputText value="Enter affiliate names (e.g. MySchool's Pin Service) and urls (http://ez.pinserver.edu) in the field below. Add/remove an entry by clicking the icons next to the input field."/>
                 </div>
@@ -145,19 +145,19 @@
                   <ice:outputLabel for="chkAffiliateLoginService" value="This IP group has an affiliate login service"/>
                 </ice:selectBooleanCheckbox>
                 <br/>
-                <ice:dataTable styleClass="dvnFormDataTable dvnFormPadding" style="#{(EditUserGroupPage.chkAffiliateLoginService) ? 'display:block;' : 'display:none;'}"
+                <ice:dataTable styleClass="dvnFormDataTable dvnFormPadding" 
                                binding="#{EditUserGroupPage.affiliatesTable}" rendered="#{EditUserGroupPage.chkAffiliateLoginService}" value="#{EditUserGroupPage.group.loginAffiliates}" var="affiliate">
                   <ice:column>
                     <f:facet name="header">
                       <ice:outputText value="Affiliate Name"/>
                     </f:facet>
-                    <ice:inputText id="affiliateName" value="#{affiliate.name}"/>
+                    <ice:inputText id="affiliateName" value="#{affiliate.name}" required="true"/>
                   </ice:column>
                   <ice:column>
                     <f:facet name="header">
                       <ice:outputText value="Affiliate URL"/>
                     </f:facet>
-                    <ice:inputText id="affiliateURL" value="#{affiliate.url}"/>
+                    <ice:inputText id="affiliateURL" value="#{affiliate.url}" required="true"/>
                   </ice:column>
                   <ice:column>
                     <ice:commandButton image="/resources/icon_add.gif" actionListener="#{EditUserGroupPage.addAffiliateRow}"/>

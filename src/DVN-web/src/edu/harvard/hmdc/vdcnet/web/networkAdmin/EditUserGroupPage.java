@@ -162,13 +162,13 @@ public class EditUserGroupPage extends VDCBaseBean implements java.io.Serializab
                 htmldatatable.setRowIndex(0);
                 LoginDomain logindomain = (LoginDomain)htmldatatable.getRowData();
                 
-                if (logindomain.getIpAddress() != null && logindomain.getIpAddress().equals("")){
+             /*   if (logindomain.getIpAddress() != null && logindomain.getIpAddress().equals("")){
                     FacesContext facesContext = FacesContext.getCurrentInstance();
                     this.setUserGroupType("ipgroup");//to maintain state for the radio buttons and the group datatable
                     FacesMessage message = new FacesMessage("There must be at least one domain listed in order to save an ip group.");
-                    facesContext.addMessage(htmldatatable.getClientId(facesContext) + ":iptable", message);
+                 //   facesContext.addMessage(htmldatatable.getClientId(facesContext) + ":iptable", message);
                     return true;
-                }
+                } */
                 //if we passed the first check, now check for empty fields and remove them from the collection
                 if (group.getLoginDomains().size() > 0) {
                     List data = Collections.synchronizedList((List)group.getLoginDomains());
@@ -201,7 +201,7 @@ public class EditUserGroupPage extends VDCBaseBean implements java.io.Serializab
                             FacesMessage message = new FacesMessage("There must be at least one login service listed in order to save an affiliate.");
                             facesContext.addMessage(htmldatatable.getClientId(facesContext) + ":affiliateName", message);
                             return true;
-                        }
+                        } 
                         //if we passed the first check, now check for empty fields and remove them from the collection
                         if (group.getLoginAffiliates().size() > 0) {
                             //remove the loginaffiliates from the table
@@ -579,6 +579,13 @@ public class EditUserGroupPage extends VDCBaseBean implements java.io.Serializab
             boolean isDuplicate = false;
             String msg = new String();
             String loginDomainStr = (String)value;
+            if (loginDomainStr==null || loginDomainStr=="") {
+                   ((UIInput)toValidate).setValid(false);
+                    this.setUserGroupType("ipgroup");//to maintain state for the radio buttons and the group datatable
+                   FacesMessage message = new FacesMessage("IP Address is a required field.");
+                   context.addMessage(toValidate.getClientId(context), message);
+                   return;
+            }
             List<UserGroup> userGroups = groupService.findAll();
             Iterator iteratorOuter = userGroups.iterator();
             while (iteratorOuter.hasNext()) {

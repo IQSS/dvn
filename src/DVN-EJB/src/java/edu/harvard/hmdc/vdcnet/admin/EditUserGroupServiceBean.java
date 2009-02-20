@@ -223,17 +223,13 @@ public class EditUserGroupServiceBean implements  EditUserGroupService {
     }
 
     public void removeLoginDomains() {
-        UserGroup group = findById(userGroup.getId());
-        Collection collection = group.getLoginDomains();
-        Iterator iterator = collection.iterator();
+        Iterator iterator = userGroup.getLoginDomains().iterator();
         while (iterator.hasNext()) {
             LoginDomain elem = (LoginDomain)iterator.next();
-            if (elem.getUserGroup() == group) {
-                elem.setUserGroup(null);
-            }
+            em.remove(elem);
             iterator.remove();
         }
-        em.persist(group);
+       
     }
 
     public UserGroup findById(Long id) {

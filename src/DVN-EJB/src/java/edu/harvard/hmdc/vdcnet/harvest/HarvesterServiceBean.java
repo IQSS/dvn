@@ -480,12 +480,15 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
                 
         }
 
-        // If we got an Error from the OAI server or an exception happened
-        // during import, then set recordErrorOccurred to true
+        // If we got an Error from the OAI server or an exception happened during import, then
+        // set recordErrorOccurred to true (if recordErrorOccurred is being used)
+        // otherwise throw an exception (if recordErrorOccurred is not used, i.e null)
         if (errMessage != null) {
-          
-            recordErrorOccurred.setValue(true);        
-            
+            if (recordErrorOccurred  != null) {
+                recordErrorOccurred.setValue(true);
+            } else {
+                throw new EJBException(errMessage);
+            }
         }
 
         return harvestedStudy != null ? harvestedStudy.getId() : null;

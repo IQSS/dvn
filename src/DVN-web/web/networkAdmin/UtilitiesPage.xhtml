@@ -250,9 +250,10 @@
                 <ice:outputText value="To delete arbitrary studies, input the study ids and click on the button below:"/>
                 <div>
                   <ice:inputTextarea value="#{UtilitiesPage.deleteStudyIds}" rows="8" cols="80"/>
-                  <ice:commandButton value="Delete Studies" action="#{UtilitiesPage.deleteStudies_action}" onclick="return confirm('Please confirm this DELETE request. This change CANNOT be undone.');"/>
-                </div>
-              </ice:panelGrid>
+                  <ice:commandButton value="Delete Studies" action="#{UtilitiesPage.deleteStudies_action}"
+                                     onclick="if(!confirm('Please confirm this DELETE request. This change CANNOT be undone.')){ return false; };"/>
+              </div>
+          </ice:panelGrid>
             </div>
           </div>
         </div>

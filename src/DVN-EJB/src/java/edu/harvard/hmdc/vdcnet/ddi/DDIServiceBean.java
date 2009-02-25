@@ -1314,10 +1314,12 @@ public class DDIServiceBean implements DDIServiceLocal {
     }
 
     private void createExtLink(XMLStreamWriter xmlw, String uri, String role) throws XMLStreamException {
-        xmlw.writeEmptyElement("ExtLink");
-        writeAttribute( xmlw, "URI", uri );
-        if (role != null) {
-            writeAttribute( xmlw, "role", role );
+        if ( !StringUtil.isEmpty(uri) ) {
+            xmlw.writeEmptyElement("ExtLink");
+            writeAttribute( xmlw, "URI", uri );
+            if (role != null) {
+                writeAttribute( xmlw, "role", role );
+            }
         }
     }
 
@@ -1329,7 +1331,6 @@ public class DDIServiceBean implements DDIServiceLocal {
 }
 
     private void writeAttribute(XMLStreamWriter xmlw, String name, String value) throws XMLStreamException {
-        // only write attribute if value is a valid date
         if ( !StringUtil.isEmpty(value) ) {
             xmlw.writeAttribute(name, value);
         }

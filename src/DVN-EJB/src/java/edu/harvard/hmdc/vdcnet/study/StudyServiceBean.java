@@ -1394,57 +1394,22 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             }
         }
 
-        // then clear collections
+        // then delete files
         clearCollection(study.getFileCategories());
-        clearCollection(study.getStudyAbstracts());
-        clearCollection(study.getStudyAuthors());
-        clearCollection(study.getStudyDistributors());
-        clearCollection(study.getStudyGeoBoundings());
-        clearCollection(study.getStudyGrants());
-        clearCollection(study.getStudyKeywords());
-        clearCollection(study.getStudyNotes());
-        clearCollection(study.getStudyOtherIds());
-        clearCollection(study.getStudyOtherRefs());
-        clearCollection(study.getStudyProducers());
-        clearCollection(study.getStudyRelMaterials());
-        clearCollection(study.getStudyRelPublications());
-        clearCollection(study.getStudyRelStudies());
-        clearCollection(study.getStudySoftware());
-        clearCollection(study.getStudyTopicClasses());
 
-        // and metatdata
+        // now create new, empty metadata object and delete old one
         Metadata m = new Metadata();
-        em.persist(m); 
+        em.persist(m); // persist because otherwise update study can fail with non null metadata id exception
         em.remove(study.getMetadata());
         study.setMetadata(m);
-        
-        //study.setHarvestDVNTermsOfUse(null); // metadata
-        //study.setHarvestDVTermsOfUse(null); // metadata
-        //study.setHarvestHoldings(null);  //metadata
 
-        //study.setHarvestIdentifier(null);
+        // clear global id componenents
         study.setProtocol(null);
         study.setAuthority(null);
         study.setStudyId(null);
 
-
-        //study.setCreateTime(null);
-        //study.setCreator(null);
-        //study.setDefaultFileCategory(null);
-        //study.setId(null);
-        //study.setIsHarvested(null);
-        //study.setLastExportTime(null);
-        //study.setLastUpdateTime(null);
-        //study.setLastUpdater(null);
-        //study.setNumberOfDownloads(null);
-        //study.setNumberOfFiles(null);
-        //study.setOwner(null);
-        //study.setRequestAccess(null);
-        //study.setRestricted(restricted)s(null);
-        //study.setReviewState(null);
-        //study.setReviewer(null);
-        //study.setTemplate(null);
-        //study.setVersion(null);
+        // finally, flush, so that everything is removed and new objects get properly created
+        em.flush();
     }
 
 
@@ -1761,7 +1726,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
 
     private Study doImportStudy(File xmlFile, Long harvestFormatTypeId, Long vdcId, Long userId, String harvestIdentifier, List<StudyFileEditBean> filesToUpload) {
         logger.info("Begin doImportStudy");
-
+        
         Study study = null;
         boolean newStudy = true;
         boolean isHarvest = (harvestIdentifier != null);

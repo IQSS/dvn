@@ -361,13 +361,7 @@ public class StudyUI  implements java.io.Serializable {
 
     public boolean isFiles() {
         if (isFiles == null) {
-            isFiles = Boolean.FALSE;
-            for (Iterator<FileCategory> it = getStudy().getFileCategories().iterator(); it.hasNext();) {
-                if (it.next().getStudyFiles().size() > 0) {
-                    isFiles = Boolean.TRUE;
-                    break;
-                }
-            }
+            initFileFlags();
         }
 
         return isFiles.booleanValue();
@@ -375,19 +369,21 @@ public class StudyUI  implements java.io.Serializable {
     
     public boolean isSubsettable() {
         if (isSubsettable == null) {
-            isSubsettable = Boolean.FALSE;
-            for (Iterator<FileCategory> it = getStudy().getFileCategories().iterator(); it.hasNext();) {
-                for (Iterator<StudyFile> fit = it.next().getStudyFiles().iterator(); fit.hasNext();) {
-                    if (fit.next().isSubsettable()) {
-                        isSubsettable = Boolean.TRUE;
-                        break;
-                    }
-                }
-            }
+            initFileFlags();
         }
+
         return isSubsettable.booleanValue();
     }
-    
+
+    private void initFileFlags() {
+        initStudyService();
+
+        Boolean doesStudyHaveSubsettableFiles = studyService.doesStudyHaveSubsettableFiles(studyId);
+        isFiles = (doesStudyHaveSubsettableFiles != null);
+        isSubsettable = (doesStudyHaveSubsettableFiles != null && doesStudyHaveSubsettableFiles);
+    }
+
+    // TODO: is the methos still being used; if not, we should remove
     public boolean isNonSubsettable() {
         for (Iterator<FileCategory> it = getStudy().getFileCategories().iterator(); it.hasNext();) {
             for (Iterator<StudyFile> fit = it.next().getStudyFiles().iterator(); fit.hasNext();) {

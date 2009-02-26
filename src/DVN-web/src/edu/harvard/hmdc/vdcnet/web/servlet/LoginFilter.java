@@ -130,6 +130,9 @@ public class LoginFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         String requestPath = httpRequest.getPathInfo();
+        if (requestPath.endsWith(".jsp")) {
+              httpResponse.sendRedirect(httpRequest.getContextPath() + "/faces/NotFoundPage.xhtml" );          
+        }
         PageDef pageDef = pageDefService.findByPath(requestPath);
         VDC currentVDC = vdcService.getVDCFromRequest(httpRequest);
 

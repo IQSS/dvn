@@ -357,6 +357,7 @@ public class StudyUI  implements java.io.Serializable {
     }
 
     private Boolean isFiles;
+    private Boolean isSubsettable;
 
     public boolean isFiles() {
         if (isFiles == null) {
@@ -373,15 +374,18 @@ public class StudyUI  implements java.io.Serializable {
     }
     
     public boolean isSubsettable() {
-        for (Iterator<FileCategory> it = getStudy().getFileCategories().iterator(); it.hasNext();) {
-            for (Iterator<StudyFile> fit = it.next().getStudyFiles().iterator(); fit.hasNext();) {
-                if (fit.next().isSubsettable()) {
-                    return true;
+        if (isSubsettable == null) {
+            isSubsettable = Boolean.FALSE;
+            for (Iterator<FileCategory> it = getStudy().getFileCategories().iterator(); it.hasNext();) {
+                for (Iterator<StudyFile> fit = it.next().getStudyFiles().iterator(); fit.hasNext();) {
+                    if (fit.next().isSubsettable()) {
+                        isSubsettable = Boolean.TRUE;
+                        break;
+                    }
                 }
             }
         }
-        
-        return false;
+        return isSubsettable.booleanValue();
     }
     
     public boolean isNonSubsettable() {

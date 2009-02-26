@@ -132,7 +132,7 @@ public class LoginFilter implements Filter {
         String requestPath = httpRequest.getPathInfo();
         VDC currentVDC = vdcService.getVDCFromRequest(httpRequest);
         
-        if (requestPath.endsWith(".jsp")) {
+        if (requestPath!=null && requestPath.endsWith(".jsp")) {
               String redirectURL = httpRequest.getContextPath();
               if (currentVDC!=null) {
                   redirectURL+="/dv/"+currentVDC.getAlias();

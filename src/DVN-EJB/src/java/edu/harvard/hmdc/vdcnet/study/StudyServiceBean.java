@@ -1980,4 +1980,34 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         return longValue;
     }
 
+    public Boolean doesStudyHaveSubsettableFiles(Long studyId) {
+        // step 1: get categories
+        List fcList = new ArrayList();
+        Query query = em.createNativeQuery("select id from filecategory where study_id = ?").setParameter(1, studyId);
+        for (Object currentResult : query.getResultList()) {
+            // since query is native, must parse through Vector results and convert to Long
+            fcList.add(new Long(((Integer) ((Vector) currentResult).get(0))).longValue());
+        }
+
+        if ( !fcList.isEmpty() ) {
+            // step 2: get files (only subsettable flag)
+            List<Boolean> subsettableList = new ArrayList();
+            query = em.createNativeQuery("select subsettable from studyfile where filecategory_id in (" + generateIdString(fcList) + ")");
+            for (Object currentResult : query.getResultList()) {
+                subsettableList.add( ((Boolean) ((Vector) currentResult).get(0)) );
+            }
+
+            if ( !subsettableList.isEmpty() ) {
+                for (Boolean subsettable : subsettableList) {
+                    if (subsettable.booleanValue())
+                        return Boolean.TRUE;
+                }
+
+                return Boolean.FALSE;
+            }
+        }
+
+        return null;
+    }
+
 }

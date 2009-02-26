@@ -2,6 +2,15 @@
 <web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
     <display-name>DVN webapp</display-name>
     <session-config><session-timeout>480</session-timeout></session-config>
+    <!-- this error page mapping is not used yet, but kept here when we can catch exceptions from Icefaces ViewHandler -->
+    <!--error-page>
+        <exception-type>javax.faces.FacesException</exception-type>
+       <location>/faces/NotFoundPage.xhtml</location>
+    </error-page-->
+       <error-page>
+        <error-code>404</error-code>
+       <location>/faces/NotFoundPage.xhtml</location>
+    </error-page>
     <!-- ICEFACES START -->
     <!-- remove if this does not work delegateNonIface-->
    <context-param>
@@ -78,10 +87,6 @@
     <context-param>
     <param-name>javax.faces.DEFAULT_SUFFIX</param-name>
     <param-value>.xhtml</param-value>
-  </context-param>
-  <context-param>
-    <param-name>facelets.VIEW_MAPPINGS</param-name>
-    <param-value>*.jsp</param-value>
   </context-param>
     <context-param>
         <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
@@ -218,14 +223,7 @@
 
 </servlet>
  !-->
-    <servlet-mapping>
-        <servlet-name>Persistent Faces Servlet</servlet-name>
-        <url-pattern>/xmlhttp/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>Persistent Faces Servlet</servlet-name>
-        <url-pattern>*.iface</url-pattern>
-    </servlet-mapping>
+   
     <servlet-mapping>
         <servlet-name>Blocking Servlet</servlet-name>
         <url-pattern>/block/*</url-pattern>

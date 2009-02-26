@@ -108,7 +108,7 @@
 .iceSelOneRb tr, .iceSelOneRb td {border: 0;}
 
 /* GENERAL CONTENT */
-.dvn_hmpgMainMessage {margin-bottom: 1em;}
+.dvn_hmpgMainMessage {margin-bottom: 1em; text-align: left;}
 
 .dvn_section {margin: 1em 0; width: 100%; text-align: center;}
 
@@ -140,7 +140,7 @@
     list-style: none;
     margin: 0;
     padding: 0;
-} 
+}
 .editDropDown li {
     margin: 0;
     padding: 0;
@@ -166,7 +166,7 @@
     margin: 0;
     text-decoration: none;
     vertical-align: top;
-} 
+}
 
 
 
@@ -183,7 +183,7 @@
     margin: 0;
     color: #0c54b3;
     text-decoration: none !important;
-} 
+}
 .studyEditLinks li:hover a,
 .studyEditLinks li.sfHover a {
     background: khaki;
@@ -226,20 +226,20 @@
 .editDropDown ul li {
     border: 0;
     float: none;
-} 
+}
 .editDropDown ul a {
     width: 18.5em;
     white-space: nowrap;
-} 
+}
 .editDropDown ul a:hover {
     margin: 0;
     background: khaki;
     color: #c55b28;
-} 
+}
 /* END studyPageEditLinks */
 
 .dvn_sectionBox {width: 100%; border-top: 2px solid #91a5a9; border-left: 1px solid #ccc; text-align: left;}
-.dvn_sectionBoxNoBorders{width: 100%; padding-top: .75em; clear: both;} 
+.dvn_sectionBoxNoBorders {width: 100%; padding-top: .75em; clear: both; text-align: left;}
 
 .dvn_block {margin-bottom: 12px; padding: 6px; background: url(images/blocks_bg.png) no-repeat #f8f8f8; border: 1px solid #e9e5e5;}
 .dvn_block span {margin: 0; padding: 0; color: #526f76; font-weight: bold; text-transform: uppercase;}
@@ -253,7 +253,7 @@
 span.disabled {font-weight: bold;}
 
 /* MAIN SECTION */
-#dvn_mainSection {position: relative; width: 100%;}
+#dvn_mainSection {position: relative; width: 100%; text-align: center;}
 
 /* SIDE SECTION PANELS */
 .dvn_sectionPanels {display: inline; position: relative; float: left; margin-right: 2%; width: 22%;}
@@ -398,19 +398,20 @@ a.dvn_headerTitleLrgNetwork:link span, a.dvn_headerTitleLrgNetwork:visited span,
 /* NAV MENU */
 div.dvn_navblock {margin-bottom: 12px; padding: 0 10px 0 10px; background: #dadee0; border-top: 2px solid #91a5a9;}
 div.dvn_navblockNetwork {background: #dadee0; border-top: 2px solid #c55b28;}
-.dvn_navblockLinks {white-space:nowrap /*IE hack*/; border:none;} /*Color navigation bar normal mode*/
-.dvn_navblockLinks:after {content:"."; display:block; height:0; clear:both; visibility:hidden;} /*Clear floats*/
-.dvn_navblockLinks ul {margin: 0; padding: 0; list-style-type: none !important;}
+
+.dvn_navblockLinks {overflow:hidden; width:100%;} /*Clear floats*/
+
+.dvn_navblockLinks ul {margin: 0; padding: 0; float:left; list-style-type: none !important;}
 .dvn_navblockLinks ul li {float:left; z-index:auto !important /*Non-IE6*/; z-index:1000 /*IE6*/; margin: 0; padding: 0;}
-.dvn_navblockLinks ul li a:link, .dvn_navblockLinks ul li a:visited, .dvn_navblockLinks ul li a:hover, .dvn_navblockLinks ul li a:active {float:none !important /*Non-IE6*/; float:left /*IE-6*/; display:block; height:1.75em; line-height:1.75em; padding:.1em .5em 0 .5em; text-decoration:none;}
+.dvn_navblockLinks ul li a:link, .dvn_navblockLinks ul li a:visited, .dvn_navblockLinks ul li a:hover, .dvn_navblockLinks ul li a:active {float:none !important /*Non-IE6*/; float:left /*IE-6*/; display:block; padding:.2em .5em; text-decoration:none;}
 .dvn_navblockLinks ul li:hover {position:relative;} /*Sylvain IE hack*/
 .dvn_navblockLinks ul li:hover a:link, .dvn_navblockLinks ul li:hover a:visited, .dvn_navblockLinks ul li:hover a:hover, .dvn_navblockLinks ul li:hover a:active {background-color: #c55b28; text-decoration:underline;} /*Color main cells hovering mode*/
 .dvn_navblockLinks ul li a:hover {position:relative /*Sylvain IE hack*/; z-index:1000 /*Sylvain IE hack*/; background-color: #c55b28; color: #fff; text-decoration:underline;} /*Color main cells hovering mode*/
 
-.dvn_navUserName {float: right;}
+.dvn_navUserName {float:right;}
 .dvn_navUserName div {float:left; z-index:auto !important /*Non-IE6*/; z-index:1000 /*IE6*/;}
-.dvn_navUserName div.textUserName  {height:1.75em; line-height:1.75em; padding:.1em .5em 0 .5em;}
-.dvn_navUserName div a:link, .dvn_navUserName div a:visited, .dvn_navUserName div a:hover, .dvn_navUserName div a:active {float:none !important /*Non-IE6*/; float:left /*IE-6*/; display:block; height:1.75em; line-height:1.75em; padding:.1em .5em 0 .5em; color:#c55b28; text-decoration:none;}
+.dvn_navUserName div.textUserName {padding:0 .5em;}
+.dvn_navUserName div a:link, .dvn_navUserName div a:visited, .dvn_navUserName div a:hover, .dvn_navUserName div a:active {float:none !important /*Non-IE6*/; float:left /*IE-6*/; display:block; padding:.2em .5em; color:#c55b28; text-decoration:none;}
 .dvn_navUserName div:hover {position:relative;} /*Sylvain IE hack*/
 .dvn_navUserName div:hover a:link, .dvn_navUserName div:hover a:visited, .dvn_navUserName div:hover a:hover, .dvn_navUserName div:hover a:active {background-color: #c55b28; text-decoration:underline;} /*Color main cells hovering mode*/
 .dvn_navUserName div a:hover {position:relative /*Sylvain IE hack*/; z-index:1000 /*Sylvain IE hack*/; background-color: #c55b28; color: #fff; text-decoration:underline;} /*Color main cells hovering mode*/
@@ -422,7 +423,7 @@ div.dvn_navblockNetwork {background: #dadee0; border-top: 2px solid #c55b28;}
 .dvn_navNetworkName a:link, .dvn_navNetworkName a:visited, .dvn_navNetworkName a:hover, .dvn_navNetworkName a:active {font-weight: normal;}
 
 /* SEARCH */
-div.dvn_searchblock {margin-bottom: 12px; padding: 4px 12px 4px 12px; background: #e6ebed; border: 1px solid #ddd;}
+div.dvn_searchblock {margin-bottom: 12px; padding: 4px 12px 4px 12px; background: #e6ebed; border: 1px solid #ddd; text-align: left;}
 .dvn_searchBoxContent {overflow: hidden;}
 .dvn_searchTitle {}
 .dvn_searchTitle a {color: #526f76; font-size: 90% !important;}
@@ -706,7 +707,7 @@ a.dvn_more:link, a.dvn_more:visited, a.dvn_more:hover, a.dvn_more:active{
     padding-bottom: 0px;
     z-index: 500;
 }
-
+* html .vdcTooltip {width: 16em;}
 .vdcTooltipLink {
     margin-left:15px;
     margin-right:15px;
@@ -849,16 +850,18 @@ a.dvnHmpgGroupCreateLink:hover, a.dvnHmpgGroupCreateLink:active {
 }
 * html .dvnHmpgGroupTableWrap {width: 100%;} /* IE HACK */
 .dvnHmpgGroupTableTop {
-    width: 99%;
-    margin-bottom: .5em;
+    width: 100%;
+}
+.dvnHmpgGroupTableTop td.dvnHmpgGroupTableTopCol {
+    padding-bottom: .5em;
 }
 .dvnHmpgGroupAlphaSortBlock {
     margin: .5em 0 0 .5em;
     padding-bottom: .5em;
     white-space: nowrap; /*IE hack*/
+    overflow:auto;
+    width:100%;
 }
-.dvnHmpgGroupAlphaSortBlock:after {content:"."; display:block; height:0; clear:both; visibility:hidden;} /*Clear floats*/
-* html .dvnHmpgGroupAlphaSortBlock {width: 100%;} /* IE HACK */
 ul.dvnAlphaBrowse {
     margin: 0;
     padding: 0;
@@ -895,7 +898,8 @@ a.dvnStudyListContributorLink:hover, a.dvnStudyListContributorLink:active {
 
 .dvnStudyListResultsTop {border-bottom: 1px solid #dcdddf;}
 .dvnStudyListResultsBottom {border-top: 1px solid #dcdddf;}
-td.dvn_StudyListTotals {text-align: right; width: 100%; padding: 0 .5em;}
+.dvnStudyListResultsBottom .dvnPaginatorWrap {padding: .25em 0;}
+td.dvn_StudyListTotals {text-align: right; width: 100%; padding: .5em;}
 td.dvn_StudyListSort {padding: .25em;}
 
 .dvnStudyListStudyInfo {background: inherit;}
@@ -1356,6 +1360,7 @@ td.vdcEditFilesColC{
 
 /* Manage Studies Page */
 .dvnManageStudiesTableTop {border: 1px solid #d9d9d9; border-bottom: 0; width: 100%;}
+.dvnManageStudiesTableTop .dvnPaginatorWrap {padding: .5em 0;}
 .dvnManageStudiesTableBlock {width: 100%; overflow: auto;}
 .dvnManageStudiesTable {margin-top: 0;}
 .dvnManageStudiesTable span.iceOutTxt {font-size: 90% !important;}
@@ -2056,6 +2061,7 @@ table.dvnCreateDvClassificationTable table {width: 100%; border-top: 1px solid #
 .dvAnalysisResults #citationInfo blockquote a {font-family: Courier !important; font-size: 85% !important;}
 
 /**** Dataverse Promotional Link + Search Box ****/
+.dvnPromotionalLinks {text-align: left;}
 .dvnPromotionalLinks .dvnPromotionalLinksInstructions {padding-bottom: 1em;}
 .dvnPromotionalLinks .dvnPromotionalLinksInstructions img {vertical-align: bottom;}
 .dvnPromotionalLinks .dvnPromotionalLinksBlock {width: 100%; overflow: hidden;}

@@ -45,26 +45,6 @@
       });
       // ]]>
   </script>
-   <script type="text/javascript">
-            // <![CDATA[
-            //TODO: change this so that the div is free floating and positioned relative to the mouseX and mouseY
-            function getNextSibling (elem) {
-                isTarget = false;
-                while (!isTarget) {
-                    elem = elem.nextSibling;
-                    if (elem.id != undefined && elem.id.indexOf("hideShow_description") != -1) {
-                        isTarget = true;
-                        if (elem.style.display == 'none') {
-                            elem.style.display = 'block';
-                        } else {
-                            elem.style.display = 'none';
-                        }
-                    }
-                    if (isTarget) break;
-                }
-            }
-            // ]]>
-        </script>
     
         <ice:outputText escape="false"
                     rendered="#{applicationScope.googleAnalyticsKey != null || MainLayoutBean.googleAnalyticsKey != null}"

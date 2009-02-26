@@ -33,6 +33,17 @@
                 oldGroupId = arguments[0];
             }
           }
+
+          jQuery.noConflict();
+          jQuery(document).ready(function() {
+              jQuery('div.dvnHmpgDvMoreInfoDesc').hide();
+              jQuery('a.dvnHmpgMoreInfoLink').click(function() {
+                  jQuery(this).next().slideToggle(500);
+                  var toggleLabelText = (jQuery(this).children('span.iceOutTxt').text() == 'more info [+]') ? 'less info [-]' : 'more info [+]';
+                  jQuery(this).children('span.iceOutTxt').text(toggleLabelText);
+                  return false;
+              });
+          });
           // ]]>
       </script>
 
@@ -140,7 +151,7 @@
                     </ul>
                 </div>
                 <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="2" id="gridPanel2"
-                               styleClass="dvnHmpgGroupTableTop" 
+                               styleClass="dvnHmpgGroupTableTop"
                                columnClasses="dvnHmpgGroupTotals, dvnPaginatorWrap"
                                rendered="#{!empty(HomePage.vdcUIList.vdcUIList)}">
                       <div jsfc="ice:panelGroup"
@@ -227,19 +238,16 @@
                         <ice:outputText value="#{HomePage.vdcUIList.nameColumnName}"/>
                       </ice:commandSortHeader>
                     </f:facet>
-                    <ice:outputLink id="hideShow" 
-                                    onclick="getNextSibling(this);"
-                                    rendered="#{!empty item.vdc.dvnDescription}"
-                                    styleClass="dvnHmpgMoreInfoLink"
-                                    value="javascript:void(0);">
-                      <ice:outputText id="more_info" value="more info [+]"/>
-                    </ice:outputLink>
-
-                    <ice:outputLink id="dataverse_link" value="/dvn/dv/#{item.vdc.alias}">
+                    <ice:outputLink styleClass="dvnHmpgDvNameLink" id="dataverse_link" value="/dvn/dv/#{item.vdc.alias}">
                       <ice:outputText rendered="#{item.vdc.dtype != 'Scholar'}" value="#{item.vdc.name}"/>
                       <ice:outputText rendered="#{item.vdc.dtype == 'Scholar'}" value="#{item.vdc.lastName}, #{item.vdc.firstName}"/>
                     </ice:outputLink>
-                    <div id="hideShow_description" class="dvnHmpgDvMoreInfoDesc" style="display: none;">
+                    <ice:outputLink rendered="#{!empty item.vdc.dvnDescription}"
+                                    styleClass="dvnHmpgMoreInfoLink"
+                                    value="#">
+                      <ice:outputText value="more info [+]"/>
+                    </ice:outputLink>
+                    <div jsfc="ice:panelGroup" styleClass="dvnHmpgDvMoreInfoDesc">
                       <ice:outputText rendered="#{item.vdc.dvnDescription != null}" value="#{item.vdc.dvnDescription}"/>
                     </div>
                   </ice:column>

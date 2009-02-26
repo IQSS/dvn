@@ -2,11 +2,9 @@
      xmlns:gui="http://java.sun.com/jsf/facelets"
      xmlns:h="http://java.sun.com/jsf/html"
      xmlns:f="http://java.sun.com/jsf/core"
-     xmlns:ice="http://www.icesoft.com/icefaces/component"
-     >
+     xmlns:ice="http://www.icesoft.com/icefaces/component">
   <div class="dvn_headerTitle">
-    <div class="dvn_headerTitleR">
-     
+    <div class="dvn_headerTitleR">     
       <a href="http://thedata.org" target="_blank" title="Link to the Dataverse Network Project">
         <img alt="Powered by the Dataverse Network Project" src="/dvn/resources/dvnPoweredByLogo.gif"/>
       </a>
@@ -28,7 +26,7 @@
   </div>      
   <div jsfc="ice:panelGroup" id="navblockDiv" styleClass="#{(VDCRequest.currentVDC == null) ? 'dvn_navblock dvn_navblockNetwork' : 'dvn_navblock'}">
     <div class="dvn_navblockLinks">
-      <ul class="dvn_floatL">
+      <ul>
         <li>
           <ice:outputLink value="/dvn" title="Browse and Search #{VDCRequest.vdcNetwork.name} Dataverse Network" rendered="#{VDCRequest.currentVDC == null}">
             <ice:outputText value="#{bundle.homeLabel}"/>

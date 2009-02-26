@@ -232,6 +232,14 @@
         <servlet-name>uploadServlet</servlet-name>
         <url-pattern>/uploadHtml</url-pattern>
     </servlet-mapping>
+       <servlet-mapping>
+        <servlet-name>Persistent Faces Servlet</servlet-name>
+        <url-pattern>/xmlhttp/*</url-pattern>
+    </servlet-mapping>
+      <servlet-mapping>
+        <servlet-name>Persistent Faces Servlet</servlet-name>
+        <url-pattern>*.iface</url-pattern>
+    </servlet-mapping>
 <!-- DVN SPECIFIC SERVLET MAPPINGS START -->
      <servlet-mapping>
         <servlet-name>Persistent Faces Servlet</servlet-name>

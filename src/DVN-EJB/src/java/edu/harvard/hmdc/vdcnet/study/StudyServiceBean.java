@@ -1598,14 +1598,17 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     }
 
     private String generateIdString(List idList) {
-        String ids = "";
+        StringBuffer sb = new StringBuffer();
         Iterator iter = idList.iterator();
         while (iter.hasNext()) {
             Long id = (Long) iter.next();
-            ids += id + (iter.hasNext() ? "," : "");
+            sb.append(id);
+            if (iter.hasNext()) {
+                sb.append(",");
+            }
         }
 
-        return ids;
+        return sb.toString();
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)

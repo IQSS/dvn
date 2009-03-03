@@ -34,16 +34,15 @@
             }
           }
 
-          jQuery.noConflict();
-          jQuery(document).ready(function() {
-              jQuery('div.dvnHmpgDvMoreInfoDesc').hide();
-              jQuery('a.dvnHmpgMoreInfoLink').click(function() {
-                  jQuery(this).next().slideToggle(500);
-                  var toggleLabelText = (jQuery(this).children('span.iceOutTxt').text() == 'more info [+]') ? 'less info [-]' : 'more info [+]';
-                  jQuery(this).children('span.iceOutTxt').text(toggleLabelText);
-                  return false;
-              });
-          });
+         jQuery.noConflict();
+
+         function toggleMoreInfo(moreInfo) {
+            jQuery(moreInfo).next().slideToggle(500);
+            var toggleLabelText = (jQuery(moreInfo).children('span.iceOutTxt').text() == 'more info [+]') ? 'less info [-]' : 'more info [+]';
+            jQuery(moreInfo).children('span.iceOutTxt').text(toggleLabelText);
+            return false;
+         };
+
           // ]]>
       </script>
 
@@ -244,10 +243,11 @@
                     </ice:outputLink>
                     <ice:outputLink rendered="#{!empty item.vdc.dvnDescription}"
                                     styleClass="dvnHmpgMoreInfoLink"
-                                    value="#">
+                                    value="#"
+                                    onclick="return toggleMoreInfo(this)">
                       <ice:outputText value="more info [+]"/>
                     </ice:outputLink>
-                    <div jsfc="ice:panelGroup" styleClass="dvnHmpgDvMoreInfoDesc">
+                    <div jsfc="ice:panelGroup" styleClass="dvnHmpgDvMoreInfoDesc" style="display: none;">
                       <ice:outputText rendered="#{item.vdc.dvnDescription != null}" value="#{item.vdc.dvnDescription}"/>
                     </div>
                   </ice:column>

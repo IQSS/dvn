@@ -5,6 +5,7 @@
 
 package edu.harvard.hmdc.vdcnet.web;
 
+import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.vdc.VDCGroup;
 import edu.harvard.hmdc.vdcnet.vdc.VDCGroupServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
@@ -96,23 +97,23 @@ public class VDCUIList extends SortableList {
                 return;
             }
             if (sortColumnName.equals(NAME_COLUMN_NAME)) {
-                orderBy = NAME_COLUMN_NAME;
+                orderBy = VDC.ORDER_BY_NAME;
             } else if (sortColumnName.equals(ACTIVITY_COLUMN_NAME)) {
-                orderBy = "activity";
+                orderBy = VDC.ORDER_BY_ACTIVITY;
             } else if (sortColumnName.equals(AFFILIATION_COLUMN_NAME)) {
-                orderBy = AFFILIATION_COLUMN_NAME;
+                orderBy = VDC.ORDER_BY_AFFILIATION;
             } else if (sortColumnName.equals(DATECREATED_COLUMN_NAME)){
-                orderBy = "createddate";
+                orderBy = VDC.ORDER_BY_CREATE_DATE;
             } else if (sortColumnName.equals(TYPE_COLUMN_NAME)) {
-                orderBy = "dtype";
+                orderBy = VDC.ORDER_BY_TYPE;
             } else if (sortColumnName.equals(LASTUPDATED_COLUMN_NAME)) {
-                orderBy = "lastupdatetime";
+                orderBy = VDC.ORDER_BY_LAST_STUDY_UPDATE_TIME;
             } else if (sortColumnName.equals(OWNEDSTUDIES_COLUMN_NAME)){
-                orderBy = "ownedStudies";
+                orderBy = VDC.ORDER_BY_OWNED_STUDIES;
             } else if (sortColumnName.equals(DATERELEASED_COLUMN_NAME)){
-                orderBy = "releasedate";
+                orderBy = VDC.ORDER_BY_RELEASE_DATE;
             } else if (sortColumnName.equals(CREATEDBY_COLUMN_NAME)){
-                orderBy = "username";
+                orderBy = VDC.ORDER_BY_CREATOR;
             } else {
                 throw new RuntimeException("Unknown sortColumnName: " + sortColumnName);
             }

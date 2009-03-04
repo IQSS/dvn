@@ -54,6 +54,17 @@ import javax.persistence.*;
  */
 @Entity
 public class VDC implements java.io.Serializable  {
+
+    public static final String ORDER_BY_ACTIVITY = "activity";
+    public static final String ORDER_BY_OWNED_STUDIES = "ownedStudies";
+    public static final String ORDER_BY_LAST_STUDY_UPDATE_TIME = "lastStudyUpdateTime";
+    public static final String ORDER_BY_NAME = "name";
+    public static final String ORDER_BY_CREATOR = "creator";
+    public static final String ORDER_BY_CREATE_DATE = "createddate";
+    public static final String ORDER_BY_RELEASE_DATE = "releasedate";
+    public static final String ORDER_BY_AFFILIATION = "affiliation";
+    public static final String ORDER_BY_TYPE = "dtype";
+
     private String name;
     private String description;
     private String visibility;

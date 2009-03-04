@@ -83,27 +83,21 @@ public class HomePage extends VDCBaseBean implements Serializable {
     private boolean isInit;
     private boolean showRequestCreator;
     private int classificationsSize  = 0;
-    int currentItemIndex = 0;
     private int currentRow;
-    private long totalStudyDownloads = -1;
+    
 
-    //Classes
-    private ArrayList itemBeans;
-    private ArrayList dvGroupItemBeans;
+    //Objects
     private ArrayList accordionItemBeans;
-    private DataModel pagedDataModel;
-    DataPaginator dataPaginator     = new DataPaginator();
     DataverseGrouping parentItem    = null;
     DataverseGrouping childItem     = null;
     private DataverseGroupingObject selectedUserObject;
     private HtmlDataTable dataverseList = new HtmlDataTable();
     private HtmlInputHidden hiddenGroupId = new HtmlInputHidden();
     private HtmlInputHidden hiddenAlphaCharacter = new HtmlInputHidden();
-    private List allVdcGroups       = new ArrayList();
     List descendants                = new ArrayList();
     private List recentStudies;
     private Long groupId;
-    private PagedDataModel dataModel;
+    private long totalStudyDownloads = -1;
     private String ALL_DATAVERSES_LABEL = "All Dataverses";
     private String defaultVdcPath;
     private String groupName;
@@ -112,15 +106,9 @@ public class HomePage extends VDCBaseBean implements Serializable {
     private String searchField;
     private String searchValue;
     private boolean showRequestContributor;
-    public static final String CONTRACT_IMAGE   = "tree_nav_top_close_no_siblings.gif";
-    public static final String EXPAND_IMAGE     = "tree_nav_top_open_no_siblings.gif";
     StatusMessage msg;
     private boolean isAlphaSort;
 
-        
-    
-
-    
     
     public HomePage() {
     }
@@ -128,15 +116,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
      @SuppressWarnings("unchecked")
     public void init() {
         super.init();
-        // initialize the list
-        if (itemBeans != null) {
-            itemBeans.clear();
-        } else {
-            itemBeans = new ArrayList();
-        }
         initChrome();
-        initAllDataverses();
-        allVdcGroups = (List)vdcGroupService.findAll();
         initAccordionMenu();
         initAlphabeticFilter();
         populateVDCUIList(false);
@@ -383,44 +363,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
         this.group = group;
     }
 
-    
-
-    
-    
-
-     // END DEBUG
-
-
-
-
-     /**
-      * @description Prepare the itemBeans
-      * @param list
-      */
-     private void initAllDataverses() {
-         parentItem = new DataverseGrouping(new Long("0"), ALL_DATAVERSES_LABEL, "group", itemBeans, true, EXPAND_IMAGE, CONTRACT_IMAGE, null);
-         parentItem.setSubclassification(new Long("0"));
-         long vdcGroupId = 0;
-         Integer groupSize = Integer.parseInt((vdcService.getUnrestrictedVdcCount(vdcGroupId)).toString());
-         List groupList = new ArrayList();
-         dataModel = new PagedDataModel(groupList, groupSize, 10);
-         parentItem.setDataModel(dataModel);
-         parentItem.setDataModelRowCount(groupSize);
-     }
-
-      private void initGroupBean(VDCGroup vdcgroup) {
-            Long vdcGroupId = vdcgroup.getId();
-            Integer groupSize = Integer.parseInt((vdcService.getUnrestrictedVdcCount(vdcGroupId)).toString());
-            Long parent     = (vdcgroup.getParent() != null) ? vdcgroup.getParent() : new Long("-1");
-            parentItem      = new DataverseGrouping(vdcgroup.getId(), vdcgroup.getName(), "group", itemBeans, true, EXPAND_IMAGE, CONTRACT_IMAGE, parent);
-            parentItem.setShortDescription(vdcgroup.getDescription());
-            List groupList = new ArrayList();
-            dataModel = new PagedDataModel(groupList, groupSize, 10);
-            parentItem.setDataModel(dataModel);
-            parentItem.setDataModelRowCount(groupSize);
-     }
-
-      protected void initAccordionMenu() {
+    protected void initAccordionMenu() {
         if (accordionItemBeans != null) {
             accordionItemBeans.clear();
         } else {
@@ -445,11 +388,9 @@ public class HomePage extends VDCBaseBean implements Serializable {
 
       //Manage classification
      protected void populateTopNode(VDCGroup vdcgroup, String indentStyle) {
-         String expandImage     = EXPAND_IMAGE;
-         String contractImage   = CONTRACT_IMAGE;
          boolean isExpanded     = false;
          synchronized(accordionItemBeans) {
-            parentItem  = new DataverseGrouping(vdcgroup.getId(), vdcgroup.getName(), "group", accordionItemBeans, isExpanded, expandImage, contractImage, new Long("-1"));
+            parentItem  = new DataverseGrouping(vdcgroup.getId(), vdcgroup.getName(), "group", accordionItemBeans, isExpanded, "", "", new Long("-1"));
          }
          parentItem.setShortDescription(vdcgroup.getDescription());
          //parentItem.setSubclassification(new Long(list.size()));
@@ -538,49 +479,6 @@ public class HomePage extends VDCBaseBean implements Serializable {
 
 
 
-
-
-
-     /** paginate
-      * @description the home page pagination is bound to the home page backing
-      * bean so that large data sets can be populated dynamically
-      * 
-      * @param action
-      */
-      public void paginate(ActionEvent action) {
-        PaginatorActionEvent pEvent = (PaginatorActionEvent) action;
-        DataverseGrouping grouping = (DataverseGrouping)itemBeans.get(0);
-        grouping.isPopulated = false;
-        if (DataPaginator.FACET_FIRST.equals(pEvent.getScrollerfacet())) {
-            grouping.setFirstRow(0);
-            grouping.setPageAction(true);
-            grouping.getDataModel();
-         } else if (DataPaginator.FACET_PREVIOUS.equals(pEvent.getScrollerfacet())) {
-             grouping.setFirstRow(grouping.getFirstRow() - 10);
-             grouping.setPageAction(true);
-             grouping.getDataModel();
-         }
-         else if (DataPaginator.FACET_NEXT.equals(pEvent.getScrollerfacet())) {
-             if (grouping.getFirstRow() + 10 < grouping.getDataModelRowCount()) {
-                grouping.setFirstRow(grouping.getFirstRow() + 10);
-                grouping.setPageAction(true);
-                grouping.getDataModel();
-             } else {
-                FacesContext context = FacesContext.getCurrentInstance();
-                context.renderResponse();
-             }
-         } else if (DataPaginator.FACET_LAST.equals(pEvent.getScrollerfacet())) {
-              grouping.setFirstRow(grouping.getDataModelRowCount() - (grouping.getDataModelRowCount() % 10));
-              grouping.setPageAction(true);
-              grouping.getDataModel();
-         } else { // This is a paging event
-              int page = pEvent.getPageIndex();
-              grouping.setFirstRow((page - 1) * 10);
-              grouping.setPageAction(true);
-              grouping.getDataModel();
-         }
-     }
-
       //actions and actionListeners
 
     public String search_action() {
@@ -611,49 +509,8 @@ public class HomePage extends VDCBaseBean implements Serializable {
     }
 
      
-
-
-    /** public String parseLocalAnnouncements
-     *
-     * @description This utility method checks a string
-     * for a regexp pattern and then parses off the remainder.
-     *
-     *
-     *@return parsed announcements
-     *
-     */
-    public String parseAnnouncements(String announcements, boolean isLocal) {
-        String truncatedAnnouncements = StringUtil.truncateString(announcements, 1000);
-        if ( truncatedAnnouncements != null && !truncatedAnnouncements.equals(announcements) ) {
-            ResourceBundle resourceBundle = ResourceBundle.getBundle("Bundle");
-            if (isLocal) {
-                truncatedAnnouncements += "<a href=\"/dvn/faces/AnnouncementsPage.xhtml?vdcId=" + getVDCRequestBean().getCurrentVDC().getId() + "\" title=\"" + resourceBundle.getString("moreLocalAnnouncementsTip") + "\" class=\"dvn_more\" >more >></a>";
-            } else {
-                truncatedAnnouncements += "<a href=\"/dvn/faces/AnnouncementsPage.xhtml\" title=\"" + resourceBundle.getString("moreNetworkAnnouncementsTip") + "\" class=\"dvn_more\" >more >></a>";
-            }
-        }
-        return truncatedAnnouncements;
-    }
-
-
-  protected void sort(List alldescendants) {
-        Comparator comparator = new Comparator() {
-            public int compare(Object o1, Object o2) {
-                VDCGroup c1 = (VDCGroup) o1;
-                VDCGroup c2 = (VDCGroup) o2;
-                if (c1.getParent() == null) return 1;
-                else if (c2.getParent() == null) return -1;
-                else return c1.getParent().compareTo(c2.getParent());
-            }
-        };
-        Collections.sort(alldescendants, comparator);
-    }
-
   //getters
 
-
-
-  //Accordion items
     public ArrayList getAccordionItemBeans() {
         return accordionItemBeans;
     }
@@ -662,11 +519,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
         return this.classificationsSize;
     }
 
-    public DataPaginator getDataPaginator() {
-         return this.dataPaginator;
-     }
-
-     public HtmlDataTable getDataverseList() {
+    public HtmlDataTable getDataverseList() {
        return this.dataverseList;
    }
 
@@ -674,16 +527,8 @@ public class HomePage extends VDCBaseBean implements Serializable {
         return defaultVdcPath;
     }
 
-      public ArrayList getDvGroupItemBeans() {
-        return dvGroupItemBeans;
-    }
-
     public Long getGroupId() {
         return groupId;
-    }
-
-    public ArrayList getItemBeans() {
-       return itemBeans;
     }
 
     public StatusMessage getMsg(){
@@ -726,21 +571,20 @@ public class HomePage extends VDCBaseBean implements Serializable {
         return this.showRequestCreator;
     }
 
-   //setters
-   
-    public DataverseGroupingObject getSelectedUserObject() {
-        return selectedUserObject;
+    public String getStudyCount() {
+        Long count = vdcNetworkStatsService.getVDCNetworkStats().getStudyCount();
+        return NumberFormat.getIntegerInstance().format(count);
     }
 
-    public void setDataModel(PagedDataModel datamodel) {
-         this.dataModel = datamodel;
-     }
+      public String getFileCount() {
+        Long count = vdcNetworkStatsService.getVDCNetworkStats().getFileCount();
+        return NumberFormat.getIntegerInstance().format(count);
+    }
 
-     public void setDataPaginator(DataPaginator dataPaginator) {
-         this.dataPaginator = dataPaginator;
-     }
 
-     public void setDataverseList(HtmlDataTable dataverselist) {
+   //setters
+ 
+   public void setDataverseList(HtmlDataTable dataverselist) {
        this.dataverseList = dataverselist;
    }
 
@@ -764,7 +608,6 @@ public class HomePage extends VDCBaseBean implements Serializable {
         this.searchField = searchField;
     }
 
-
    /**
      * Setter for property showRequestCreator.
      * @param showRequestCreator New value of property showRequestCreator.
@@ -777,34 +620,30 @@ public class HomePage extends VDCBaseBean implements Serializable {
         this.searchValue = searchValue;
     }
 
-
-     // ******************** END TREE ******************************
-
-        // utility props and methods
-public void dispose() {
-        isInit = false;
-        if(itemBeans != null) {
-            DataverseGrouping dataversegrouping;
-            ArrayList tempList;
-            for(int i = 0; i < itemBeans.size(); i++) {
-                dataversegrouping = (DataverseGrouping)itemBeans.get(i);
-                tempList = dataversegrouping.getChildItems();
-                if(tempList != null)
-                    tempList.clear();
+    //utils
+     /** public String parseLocalAnnouncements
+     *
+     * @description This utility method checks a string
+     * for a regexp pattern and then parses off the remainder.
+     *
+     *
+     *@return parsed announcements
+     *
+     */
+    public String parseAnnouncements(String announcements, boolean isLocal) {
+        String truncatedAnnouncements = StringUtil.truncateString(announcements, 1000);
+        if ( truncatedAnnouncements != null && !truncatedAnnouncements.equals(announcements) ) {
+            ResourceBundle resourceBundle = ResourceBundle.getBundle("Bundle");
+            if (isLocal) {
+                truncatedAnnouncements += "<a href=\"/dvn/faces/AnnouncementsPage.xhtml?vdcId=" + getVDCRequestBean().getCurrentVDC().getId() + "\" title=\"" + resourceBundle.getString("moreLocalAnnouncementsTip") + "\" class=\"dvn_more\" >more >></a>";
+            } else {
+                truncatedAnnouncements += "<a href=\"/dvn/faces/AnnouncementsPage.xhtml\" title=\"" + resourceBundle.getString("moreNetworkAnnouncementsTip") + "\" class=\"dvn_more\" >more >></a>";
             }
-
-            itemBeans.clear();
         }
+        return truncatedAnnouncements;
     }
+
+
+ 
     
-
-    public String getStudyCount() {
-        Long count = vdcNetworkStatsService.getVDCNetworkStats().getStudyCount();
-        return NumberFormat.getIntegerInstance().format(count);
-    }
-
-      public String getFileCount() {
-        Long count = vdcNetworkStatsService.getVDCNetworkStats().getFileCount();
-        return NumberFormat.getIntegerInstance().format(count);
-    }
 }

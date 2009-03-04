@@ -780,7 +780,7 @@ public class VDCServiceBean implements VDCServiceLocal {
             selectClause += ", count(owner_id) ";
             fromClause += "LEFT OUTER JOIN study on v.id = study.owner_id ";
             orderingClause = "group by v.id ";
-            orderingClause = "order by count(owner_id) desc ";
+            orderingClause += "order by count(owner_id) desc ";
 
 
         } else if ("lastStudyUpdateTime".equals(orderBy)) {
@@ -789,7 +789,16 @@ public class VDCServiceBean implements VDCServiceLocal {
             orderingClause = "group by v.id ";
             orderingClause = "order by (CASE WHEN max(lastupdatetime) IS NULL THEN 1 ELSE 0 END), max(lastupdatetime) desc ";
 
+        } else if ("createddate".equals(orderBy)) {
+            selectClause += ", " + orderBy + " ";
+            orderingClause += " order by " + orderBy + " desc ";
 
+        } else if ("creator".equals(orderBy)) {
+            selectClause   += ", " + orderBy + " ";
+            whereClause    += "WHERE vdc.creator_id = vdcuser.id ";
+            orderingClause += "GROUP BY v.id ";
+            orderingClause += " order by " + orderBy;
+            
         } else if ("name".equals(orderBy.toLowerCase())) {
             selectClause += ", upper( (CASE WHEN dtype = 'Scholar' THEN lastname || ', ' || firstname ELSE name END) ) as sortname ";
             orderingClause += " order by sortname ";
@@ -821,7 +830,6 @@ public class VDCServiceBean implements VDCServiceLocal {
 
         // we are now ready to create the query
         Query query = em.createNativeQuery(queryString.toString());
-
         if (classificationId != null) {
             query.setParameter(1, classificationId);
             query.setParameter(2, classificationId);
@@ -831,7 +839,6 @@ public class VDCServiceBean implements VDCServiceLocal {
             // convert results into Longs
             returnList.add(new Long(((Integer) ((Vector) currentResult).get(0))).longValue());
         }
-
         return returnList;
     }
 

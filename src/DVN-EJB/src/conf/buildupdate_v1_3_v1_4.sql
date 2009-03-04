@@ -24,12 +24,13 @@ ALTER TABLE harvestingdataverse RENAME COLUMN oaiserver TO serverurl;
 
 drop table deletedstudy;
 
-alter table oaiset
-alter column definition type text;
+alter table oaiset alter column definition type text;
 
 alter table oaiset alter column name type text;
 alter table oaiset alter column spec type text;
 alter table oaiset alter column description type text;
+
+ALTER TABLE variablecategory ALTER COLUMN value type text;
 
 -- Column: parent
 -- ALTER TABLE vdcgroup DROP COLUMN parent;

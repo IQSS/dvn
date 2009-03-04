@@ -122,7 +122,7 @@ public class VDCUIList extends SortableList {
             if (alphaCharacter != null && vdcGroupId != null && !vdcGroupId.equals(new Long("-1"))) {
                 vdcIds = vdcService.getOrderedVDCIds(vdcGroupId, alphaCharacter, orderBy);
             } else if (alphaCharacter != null && (vdcGroupId == null || vdcGroupId.equals(new Long("-1")))) {
-                vdcIds = vdcService.getOrderedVDCIds(alphaCharacter, orderBy);
+                vdcIds = vdcService.getOrderedVDCIds(alphaCharacter, NAME_COLUMN_NAME);
             } else if (vdcGroupId == null || vdcGroupId.equals(new Long("-1"))) {
                 vdcIds = vdcService.getOrderedVDCIds(orderBy);
             } else {

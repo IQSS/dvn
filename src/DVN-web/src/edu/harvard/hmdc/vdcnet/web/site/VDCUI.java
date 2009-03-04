@@ -29,6 +29,8 @@
 
 package edu.harvard.hmdc.vdcnet.web.site;
 
+import edu.harvard.hmdc.vdcnet.admin.UserServiceLocal;
+import edu.harvard.hmdc.vdcnet.admin.VDCUser;
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.vdc.VDCActivity;
@@ -47,13 +49,17 @@ import javax.naming.InitialContext;
  */
 public class VDCUI  implements java.io.Serializable {
 
-    private VDCServiceLocal vdcService = null;
-
-    private Long vdcId;
-    private VDC vdc;
 
     private double maxDownloadCount = -1;
     private long activity = -1;
+    private Long numberOwnedStudies;
+    private Long vdcId;
+    private String activityClass;
+    private String creator;
+    private String type;
+    private VDC vdc;
+    private VDCServiceLocal vdcService = null;
+
     
     /** Creates a new instance of VDCUI */
     
@@ -79,78 +85,8 @@ public class VDCUI  implements java.io.Serializable {
         }
     }
 
-    public VDC getVdc() {
-        // check to see if study is loaded or if we only have the studyId
-        if (vdc == null) {
-            initVdcService();
-            vdc = vdcService.findById(vdcId);
-        }
 
-        return vdc;
-    }
-
-    public void setVdc(VDC vdc) {
-        this.vdc = vdc;
-    }
-
-    public String getName() {
-        return vdc.getName();
-    }
-
-    
-    public String getLastUpdateTime() {
-        //TODO: implement this
-        // study has a column lastupdatetime, and will we use the release date or the created date or some other date as an alternate.
-        StudyServiceLocal studyService = null;
-        try {
-            studyService = (StudyServiceLocal) new InitialContext().lookup("java:comp/env/studyService");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        Long vdcId = vdc.getId();
-        Timestamp lastUpdateTime = studyService.getLastUpdatedTime(vdc.getId());
-        if (lastUpdateTime == null)
-            lastUpdateTime = vdc.getReleaseDate();
-        LocalizedDate localizedDate = new LocalizedDate();
-        if (lastUpdateTime != null)
-            return localizedDate.getLocalizedDate(lastUpdateTime, DateFormat.MEDIUM);
-        else
-            return "--";
-    }
-
-    public String getReleaseDate() {
-        Timestamp releaseDate = vdc.getReleaseDate();
-        LocalizedDate localizedDate = new LocalizedDate();
-        if(releaseDate != null)
-            return localizedDate.getLocalizedDate(releaseDate, DateFormat.MEDIUM);
-        else
-            return "--";
-    }
-
-    /* old fields -- these supposedly are no longer used, however
-     * references still exist in the codebase, so remove with caution . . .
-     */
-    public List getLinkedCollections() {
-        return getLinkedCollections(false);
-    }
-    
-    public List getLinkedCollections(boolean getHiddenCollections) {
-        // getHiddenCollections no longer used
-        return vdc.getLinkedCollections();
-    }
-    public boolean containsOnlyLinkedCollections() {
-        return vdc.getLinkedCollections().size() > 0 &&
-               vdc.getRootCollection().getSubCollections().size() == 0 &&
-               new CollectionUI(vdc.getRootCollection()).getStudyIds().size() == 0;
-
-    }
-
-    public double getDownloadCount() {
-        VDCActivity vda = getVdc().getVDCActivity();
-        return ( vda.getLocalStudyLocalDownloadCount() + vda.getLocalStudyNetworkDownloadCount() +
-                (.5 * vda.getLocalStudyForeignDownloadCount()) + (.5 * vda.getForeignStudyLocalDownloadCount()) );
-    }
-    
+    // getters
 
     public Long getActivity() {
         if (activity == -1) {
@@ -170,7 +106,6 @@ public class VDCUI  implements java.io.Serializable {
         return activity;
     }
 
-    private String activityClass;
     public String getActivityClass() {
         activityClass = String.valueOf(getActivity());
         switch (Integer.parseInt(activityClass)) {
@@ -183,6 +118,115 @@ public class VDCUI  implements java.io.Serializable {
        }
         return activityClass;
      }
+
+    public String getCreator() {
+        UserServiceLocal userService = null;
+        try {
+            userService = (UserServiceLocal) new InitialContext().lookup("java:comp/env/vdcUserService");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        VDCUser vdcUser = vdc.getCreator();
+        if (vdcUser == null) {
+            return "--";
+        } else {
+        return vdcUser.getUserName();
+        }
+    }
+
+    public String getCreatedDate() {
+        Timestamp createdDate = vdc.getCreatedDate();
+        LocalizedDate localizedDate = new LocalizedDate();
+        if(createdDate != null)
+            return localizedDate.getLocalizedDate(createdDate, DateFormat.MEDIUM);
+        else
+            return "--";
+    }
+
+    public double getDownloadCount() {
+        VDCActivity vda = getVdc().getVDCActivity();
+        return ( vda.getLocalStudyLocalDownloadCount() + vda.getLocalStudyNetworkDownloadCount() +
+                (.5 * vda.getLocalStudyForeignDownloadCount()) + (.5 * vda.getForeignStudyLocalDownloadCount()) );
+    }
+
+    public String getLastUpdateTime() {
+        // study has a column lastupdatetime, and will we use the release date or the created date or some other date as an alternate.
+        StudyServiceLocal studyService = null;
+        try {
+            studyService = (StudyServiceLocal) new InitialContext().lookup("java:comp/env/studyService");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        //Long vdcId = vdc.getId();
+        Timestamp lastUpdateTime = studyService.getLastUpdatedTime(vdc.getId());
+        LocalizedDate localizedDate = new LocalizedDate();
+        if (lastUpdateTime != null)
+            return localizedDate.getLocalizedDate(lastUpdateTime, DateFormat.MEDIUM);
+        else
+            return "--";
+    }
+
+    public String getName() {
+        return vdc.getName();
+    }
+
+
+    public Long getNumberOwnedStudies() {
+        numberOwnedStudies = Long.parseLong(String.valueOf(vdc.getOwnedStudies().size()));
+        return numberOwnedStudies;
+    }
+
+    public String getReleaseDate() {
+        Timestamp releaseDate = vdc.getReleaseDate();
+        LocalizedDate localizedDate = new LocalizedDate();
+        if(releaseDate != null)
+            return localizedDate.getLocalizedDate(releaseDate, DateFormat.MEDIUM);
+        else
+            return "--";
+    }
+
+    public String getType() {
+        if (vdc.getDtype().equals(" ")) {
+           return "--";
+        } else {
+            return vdc.getDtype();
+        }
+    }
+
+    public VDC getVdc() {
+        // check to see if study is loaded or if we only have the studyId
+        if (vdc == null) {
+            initVdcService();
+            vdc = vdcService.findById(vdcId);
+        }
+
+        return vdc;
+    }
+
+
+    //setters
+    
+    public void setVdc(VDC vdc) {
+        this.vdc = vdc;
+    }
+
+     /* old fields -- these supposedly are no longer used, however
+     * references still exist in the codebase, so remove with caution . . .
+     */
+    public List getLinkedCollections() {
+        return getLinkedCollections(false);
+    }
+
+    public List getLinkedCollections(boolean getHiddenCollections) {
+        // getHiddenCollections no longer used
+        return vdc.getLinkedCollections();
+    }
+    public boolean containsOnlyLinkedCollections() {
+        return vdc.getLinkedCollections().size() > 0 &&
+               vdc.getRootCollection().getSubCollections().size() == 0 &&
+               new CollectionUI(vdc.getRootCollection()).getStudyIds().size() == 0;
+
+    }
 
 }
 

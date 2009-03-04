@@ -24,179 +24,152 @@
             <div class="dvn_sectionTitle">
                 <ice:outputText value="#{bundlePageInfo.manageDvsTitle}"/>
             </div>
-            <ice:panelSeries value="#{manageDataversesPage.itemBeans}"
-                             var="dvItems"
-                             rendered="#{VDCRequest.currentVDC == null}">
-            <div jsfc="ice:panelGroup" styleClass="dvnManageTableEmpty" rendered="#{dvItems.managedDataModel.rowCount == 0 and dvItems.recordType eq 'group'}">
+          
+            <div jsfc="ice:panelGroup" styleClass="dvnManageTableEmpty" rendered="#{empty(manageDataversesPage.vdcUIList.vdcUIList)}">
                 <ice:outputText styleClass="dvnManageTableEmptyMessage" value="There are no dataverses to display in this group."/>
             </div>
-            <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="2" width="100%"
-                           styleClass="dvnManageTableTop" columnClasses="dvnManageTableTotals, dvnPaginatorWrap"
-                           rendered="#{dvItems.recordType eq 'group' and dvItems.managedDataModel.rowCount > 0 }">
-                <div jsfc="ice:panelGroup" styleClass="dvnManageTableTotals" rendered="#{dvItems.managedDataModel.rowCount > 0 and VDCRequest.currentVDC == null }">
-                    <h:outputText binding="#{NetworkStatsBean.inlineDataverseKey}"
-                                  effect="#{item.effect}"
-                                  styleClass="dvn_totalsLabel"
-                                  value="#{NetworkStatsBean.inlineDataverseValue}">
-                        <f:attribute name="itemid" styleClass="dvn_totalsValue" value="item#{dvItems.id}"/>
-                    </h:outputText>
-                    <!-- TODO: For the next two rendered was, #{dvItems.parentClassification == 0} -->
-                <h:outputText binding="#{NetworkStatsBean.inlineStudyKey}"
-                              effect="#{item.effect}"
-                              rendered="true"
-                                  value="#{NetworkStatsBean.inlineStudyValue}">
-                        <f:attribute name="itemid" value="item#{dvItems.id}"/>
-                    </h:outputText>
-                    <h:outputText binding="#{NetworkStatsBean.inlineFilesKey}"
-                                  effect="#{item.effect}"
-                                  rendered="true"
-                                  value="#{NetworkStatsBean.inlineFilesValue}">
-                        <f:attribute name="itemid" value="item#{dvItems.id}"/>
-                    </h:outputText>
-                    <div>
-                        <ice:graphicImage value="/resources/icon_warning.18.png" styleClass="dvn_icon"/>
-                        <ice:outputText value=" Indicates a dataverse is not released."/>
-                    </div>
-                </div>
+
+          <ice:panelGrid  border="0" 
+                            cellpadding="0"
+                            cellspacing="0"
+                            columns="2"
+                            columnClasses="dvnManageTableTotals, dvnPaginatorWrap"
+                            rendered="#{!empty(manageDataversesPage.vdcUIList.vdcUIList)}"
+                            styleClass="dvnManageTableTop"
+                            width="100%"
+                            >
                 <div jsfc="ice:panelGroup" styleClass="dvnPaginatorWrap">
-                    <ice:dataPaginator   actionListener="#{manageDataversesPage.paginate}"
-                                         id="dataScroll_3"
-                                         for="dataverseList"
-                                         paginator="true"
-                                         fastStep="3"
-                                         paginatorMaxPages="4"
-                                         renderFacetsIfSinglePage="false">
-                        <f:facet name="first">
-                            <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-first.gif" title="First Page"/>
-                        </f:facet>
-                        <f:facet name="fastrewind">
-                            <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-fr.gif" title="Fast Backward"/>
-                        </f:facet>
-                        <f:facet name="previous">
-                            <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-previous.gif" title="Previous"/>
-                        </f:facet>
-                        <f:facet name="next">
-                            <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-next.gif" title="Previous"/>
-                        </f:facet>
-                        <f:facet name="fastforward">
-                            <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-ff.gif" title="Fast Forward"/>
-                        </f:facet>
-                        <f:facet name="last">
-                            <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-last.gif" title="Previous"/>
-                        </f:facet>
-                        <!-- Not sure what these are doing in here were they part of the original design?
-                  <f:facet name="fastforward">
-                    <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-ff.gif" title="Fast Forward"/>
-                  </f:facet>
-                  <f:facet name="fastrewind">
-                    <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-fr.gif" title="Fast Rewind"/>
-                  </f:facet>
-                   end comment -->
+                    <ice:dataPaginator for="dataverseList"
+                                       id="dataScroller"
+                                       paginator="true" fastStep="3"
+                                       paginatorMaxPages="4"
+                                       renderFacetsIfSinglePage="false"
+                                       styleClass="dvnPaginatorRight">
+                      <f:facet name="first">
+                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-first.gif" title="First Page"/>
+                      </f:facet>
+                      <f:facet name="fastrewind">
+                          <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-fr.gif" title="Fast Backward"/>
+                      </f:facet>
+                      <f:facet name="previous">
+                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-previous.gif" title="Previous"/>
+                      </f:facet>
+                      <f:facet name="next">
+                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-next.gif" title="Previous"/>
+                      </f:facet>
+                      <f:facet name="fastforward">
+                          <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-ff.gif" title="Fast Forward"/>
+                      </f:facet>
+                      <f:facet name="last">
+                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-last.gif" title="Previous"/>
+                      </f:facet>
                     </ice:dataPaginator>
                 </div>
             </ice:panelGrid>
-            <div jsfc="ice:panelGroup" rendered="#{dvItems.managedDataModel.rowCount > 0}">
+            <div jsfc="ice:panelGroup">
+                
                 <ice:dataTable id="dataverseList" width="100%"
-                               rendered="#{dvItems.managedDataModel.rowCount > 0}"
-                               rowClasses="evenRow oddRow" rows="10" headerClass="groupRow"
-                               styleClass="dvnManageTable"
                                columnWidths="20%,20%,10%,10%,10%,10%,10%,10%,10%"
-                               sortColumn="#{dvItems.sortColumnName}"
-                               sortAscending="#{dvItems.ascending}"
-                               value="#{dvItems.managedDataModel}"
-                               var="items">
+                               headerClass="groupRow"
+                               rendered="#{!empty(manageDataversesPage.vdcUIList.vdcUIList)}"
+                               rowClasses="evenRow oddRow" rows="10"
+                               styleClass="dvnManageTable"
+                               sortColumn="#{manageDataversesPage.vdcUIList.sortColumnName}"
+                               sortAscending="#{manageDataversesPage.vdcUIList.ascending}"
+                               value="#{manageDataversesPage.vdcUIList.vdcUIList}"
+                               var="item">
                 <!-- name number -->
                 <f:facet name="header">
                 </f:facet>
                 <ice:column>
                 <f:facet name="header">
                     <ice:commandSortHeader
-                        columnName="#{dvItems.nameColumnName}"
+                        columnName="#{manageDataversesPage.vdcUIList.nameColumnName}"
                         arrow="true">
-                    <ice:outputText value="#{dvItems.nameColumnName}"/>
+                    <ice:outputText value="#{manageDataversesPage.vdcUIList.nameColumnName}"/>
                     </ice:commandSortHeader>
                 </f:facet>
-                <ice:outputLink id="dataverse_link" value="/dvn/dv/#{items.alias}">
-                    <ice:outputText value="#{items.name}"
-                        styleClass="#{(items.restricted) ? 'dvnAddClassificationDvNotReleased' : 'dvnAddClassificationDvReleased'}" />
+                <ice:outputLink id="dataverse_link" value="/dvn/dv/#{item.vdc.alias}">
+                    <ice:outputText value="#{item.vdc.name}"
+                        styleClass="#{(item.vdc.restricted) ? 'dvnAddClassificationDvNotReleased' : 'dvnAddClassificationDvReleased'}" />
                 </ice:outputLink>
                 </ice:column>
                 <!-- Affiliation -->
                 <ice:column>
                 <f:facet name="header">
                     <ice:commandSortHeader
-                        columnName="#{dvItems.affiliationColumnName}"
+                        columnName="#{manageDataversesPage.vdcUIList.affiliationColumnName}"
                         arrow="true">
-                    <ice:outputText value="#{dvItems.affiliationColumnName}"/>
+                    <ice:outputText value="#{manageDataversesPage.vdcUIList.affiliationColumnName}"/>
                     </ice:commandSortHeader>
                 </f:facet>
-                <ice:outputText value="#{items.affiliation}"/>
+                <ice:outputText value="#{item.vdc.affiliation}"/>
                 </ice:column>
                 <!-- Type -->
                 <ice:column>
                 <f:facet name="header">
                     <ice:commandSortHeader
-                        columnName="#{dvItems.typeColumnName}"
+                        columnName="#{manageDataversesPage.vdcUIList.typeColumnName}"
                         arrow="true">
-                    <ice:outputText value="#{dvItems.typeColumnName}"/>
+                    <ice:outputText value="#{manageDataversesPage.vdcUIList.typeColumnName}"/>
                     </ice:commandSortHeader>
                 </f:facet>
-                <ice:outputText value="#{items.type}"/>
+                <ice:outputText value="#{item.vdc.dtype}"/>
                 </ice:column>
                 <!-- Created -->
                 <ice:column>
                 <f:facet name="header">
                     <ice:commandSortHeader
-                        columnName="#{dvItems.dateCreatedColumnName}"
+                        columnName="#{manageDataversesPage.vdcUIList.dateCreatedColumnName}"
                         arrow="true">
-                    <ice:outputText value="#{dvItems.dateCreatedColumnName}"/>
+                    <ice:outputText value="#{manageDataversesPage.vdcUIList.dateCreatedColumnName}"/>
                     </ice:commandSortHeader>
                 </f:facet>
-                <ice:outputText value="#{items.creationDate}"/>
+                <ice:outputText value="#{item.createdDate}"/>
                 </ice:column>
                 <!-- Creator -->
                 <ice:column>
                 <f:facet name="header">
                     <ice:commandSortHeader
-                        columnName="#{dvItems.createdByColumnName}"
+                        columnName="#{manageDataversesPage.vdcUIList.createdByColumnName}"
                         arrow="true">
-                    <ice:outputText value="#{dvItems.createdByColumnName}"/>
+                    <ice:outputText value="#{manageDataversesPage.vdcUIList.createdByColumnName}"/>
                     </ice:commandSortHeader>
                 </f:facet>
-                <ice:outputText value="#{items.createdBy}"/>
+                <ice:outputText value="#{item.creator}"/>
                 </ice:column>
                 <!-- Released -->
                 <ice:column>
                 <f:facet name="header">
                     <ice:commandSortHeader
-                        columnName="#{dvItems.dateReleasedColumnName}"
+                        columnName="#{manageDataversesPage.vdcUIList.dateReleasedColumnName}"
                         arrow="true">
-                    <ice:outputText value="#{dvItems.dateReleasedColumnName}"/>
+                    <ice:outputText value="#{manageDataversesPage.vdcUIList.dateReleasedColumnName}"/>
                     </ice:commandSortHeader>
                 </f:facet>
-                <ice:outputText value="#{items.releaseDate}"/>
+                <ice:outputText value="#{item.releaseDate}"/>
                 </ice:column>
                 <!-- Studies -->
                 <ice:column>
                 <f:facet name="header">
                     <ice:commandSortHeader
-                        columnName="#{dvItems.numOwnedColumnName}"
+                        columnName="#{manageDataversesPage.vdcUIList.ownedStudiesColumnName}"
                         arrow="true">
-                    <ice:outputText value="#{dvItems.numOwnedColumnName}"/>
+                    <ice:outputText value="#{manageDataversesPage.vdcUIList.ownedStudiesColumnName}"/>
                     </ice:commandSortHeader>
                 </f:facet>
-                <ice:outputText value="#{items.numberOwnedStudies}"/>
+                <ice:outputText value="#{item.numberOwnedStudies}"/>
                 </ice:column>
                 <!-- Last Update -->
                 <ice:column>
                 <f:facet name="header">
                     <ice:commandSortHeader
-                        columnName="#{dvItems.lastUpdatedColumnName}"
+                        columnName="#{manageDataversesPage.vdcUIList.lastUpdatedColumnName}"
                         arrow="true">
-                    <ice:outputText value="#{dvItems.lastUpdatedColumnName}"/>
+                    <ice:outputText value="#{manageDataversesPage.vdcUIList.lastUpdatedColumnName}"/>
                     </ice:commandSortHeader>
                 </f:facet>
-                <ice:outputText value="#{items.lastUpdateTime}"/>
+                <ice:outputText value="#{item.lastUpdateTime}"/>
                 </ice:column>
                 <!-- Delete -->
                 <ice:column>
@@ -204,14 +177,14 @@
                         <ice:outputText value="Delete"/>
                     </f:facet>
                     <ice:outputLink value="/dvn/faces/site/DeleteDataversePage.xhtml">
-                        <f:param name="deleteId" value="#{items.id}" />
+                        <f:param name="deleteId" value="#{item.vdc.id}" />
                         <f:param name="from" value="manageDataverses"/>
                         <ice:outputText value="Delete"/>
                     </ice:outputLink>
                 </ice:column>
                 </ice:dataTable>
             </div>
-            </ice:panelSeries>
+            
         </div>
         </ice:form>
         </gui:define>

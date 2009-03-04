@@ -20,9 +20,15 @@ import javax.naming.InitialContext;
  * @author wbossons
  */
 public class VDCUIList extends SortableList {
+    
     private @EJB VDCServiceLocal vdcService;
     private @EJB VDCGroupServiceLocal vdcGroupService;
+
+    private int    vdcGroupSize;
     private List<VDCUI> vdcUIList;
+    private Long   vdcGroupId;
+    private String alphaCharacter;
+    private VDCUI vdcui;
 
     // dataTable Columns to sort by:
     private static final String NAME_COLUMN_NAME            = "Name";
@@ -30,10 +36,12 @@ public class VDCUIList extends SortableList {
     private static final String DATERELEASED_COLUMN_NAME    = "Released";
     private static final String LASTUPDATED_COLUMN_NAME     = "Last Updated";
     private static final String ACTIVITY_COLUMN_NAME        = "Activity";
-
-    private Long   vdcGroupId;
-    private int    vdcGroupSize;
-    private String alphaCharacter;
+    // network admin fields
+    private static final String CREATEDBY_COLUMN_NAME     = "Creator";
+    private static final String DATECREATED_COLUMN_NAME   = "Created";
+    private static final String OWNEDSTUDIES_COLUMN_NAME      = "Owned Studies";
+    private static final String TYPE_COLUMN_NAME          = "Type";
+    
     
     private void init() {
         sortColumnName = DATERELEASED_COLUMN_NAME;
@@ -89,14 +97,22 @@ public class VDCUIList extends SortableList {
             }
             if (sortColumnName.equals(NAME_COLUMN_NAME)) {
                 orderBy = NAME_COLUMN_NAME;
-            } else if (sortColumnName.equals(AFFILIATION_COLUMN_NAME)) {
-                orderBy = AFFILIATION_COLUMN_NAME;
-            } else if (sortColumnName.equals(DATERELEASED_COLUMN_NAME)){
-                orderBy = "releasedate";
-            } else if (sortColumnName.equals(LASTUPDATED_COLUMN_NAME)) {
-                orderBy = "lastupdatetime";
             } else if (sortColumnName.equals(ACTIVITY_COLUMN_NAME)) {
                 orderBy = "activity";
+            } else if (sortColumnName.equals(AFFILIATION_COLUMN_NAME)) {
+                orderBy = AFFILIATION_COLUMN_NAME;
+            } else if (sortColumnName.equals(DATECREATED_COLUMN_NAME)){
+                orderBy = "createddate";
+            } else if (sortColumnName.equals(TYPE_COLUMN_NAME)) {
+                orderBy = "dtype";
+            } else if (sortColumnName.equals(LASTUPDATED_COLUMN_NAME)) {
+                orderBy = "lastupdatetime";
+            } else if (sortColumnName.equals(OWNEDSTUDIES_COLUMN_NAME)){
+                orderBy = "ownedStudies";
+            } else if (sortColumnName.equals(DATERELEASED_COLUMN_NAME)){
+                orderBy = "releasedate";
+            } else if (sortColumnName.equals(CREATEDBY_COLUMN_NAME)){
+                orderBy = "username";
             } else {
                 throw new RuntimeException("Unknown sortColumnName: " + sortColumnName);
             }
@@ -121,8 +137,15 @@ public class VDCUIList extends SortableList {
             }
     }
 
+
+    //getters
+
     public boolean isDefaultAscending(String columnName) {
         return true;
+    }
+
+    public String getAlphaCharacter() {
+        return alphaCharacter;
     }
 
     public String getNameColumnName()         { return NAME_COLUMN_NAME; }
@@ -130,10 +153,21 @@ public class VDCUIList extends SortableList {
     public String getDateReleasedColumnName() { return DATERELEASED_COLUMN_NAME; }
     public String getLastUpdatedColumnName()  { return LASTUPDATED_COLUMN_NAME; }
     public String getActivityColumnName()     { return ACTIVITY_COLUMN_NAME; }
+    //NETWORK ADMIN FIELDS
+    public String getCreatedByColumnName()    { return CREATEDBY_COLUMN_NAME; }
+    public String getDateCreatedColumnName()  { return DATECREATED_COLUMN_NAME; }
+    public String getOwnedStudiesColumnName() { return OWNEDSTUDIES_COLUMN_NAME; }
+    public String getTypeColumnName()         { return TYPE_COLUMN_NAME; }
 
  
+   public Long getVdcGroupId() {
+        return vdcGroupId;
+    }
 
-    
+   public VDCUI getVdcui() {
+        return vdcui;
+    }
+
     public List<VDCUI> getVdcUIList() {
         if (!oldSort.equals(sortColumnName) ) {
             sort();
@@ -146,6 +180,12 @@ public class VDCUIList extends SortableList {
         return vdcUIList;
     }
 
+    public int getVdcGroupSize() {
+        return vdcGroupSize;
+    }
+
+
+    //setters
     /**
      * Set sortColumnName type.
      *
@@ -171,34 +211,16 @@ public class VDCUIList extends SortableList {
         this.vdcUIList = vdcUIList;
     }
 
-    public Long getVdcGroupId() {
-        return vdcGroupId;
-    }
-
     public void setVdcGroupId(Long vdcGroupId) {
         this.vdcGroupId = vdcGroupId;
-    }
-
-    private VDCUI vdcui;
-
-    public VDCUI getVdcui() {
-        return vdcui;
     }
 
     public void setVdcui(VDCUI vdcUI) {
         this.vdcui = vdcUI;
     }
 
-    public String getAlphaCharacter() {
-        return alphaCharacter;
-    }
-
     public void setAlphaCharacter(String alphaCharacter) {
         this.alphaCharacter = alphaCharacter;
-    }
-
-    public int getVdcGroupSize() {
-        return vdcGroupSize;
     }
 
     public void setVdcGroupSize(int vdcGroupSize) {

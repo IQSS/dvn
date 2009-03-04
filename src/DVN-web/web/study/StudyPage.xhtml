@@ -174,10 +174,9 @@
                   });
                   // ]]>
               </script> -->
-              <ice:commandButton styleClass="dvnInlineButton" 
+              <ice:commandButton styleClass="dvnStudyPageInlineReleaseButton"
                                     value="Release"
                                     actionListener="#{studyPage.setReleased}" rendered="#{studyPage.userAuthorizedToRelease and studyPage.studyUI.study.studyLock==null and studyPage.studyUI.study.inReview}"/>
-              
               <ul class="studyEditLinks editDropDown">
                 <li onmouseover="showEditLinks(this);" onmouseout="hideEditLinks(this);">
                   <a class="editDropDownLink">Edit...</a>

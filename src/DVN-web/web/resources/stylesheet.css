@@ -88,10 +88,6 @@
 .dvnFormMargin input {
   margin-right: 2em;
 }
-.dvnInlineButton {
-  float: left;
-  margin-right: 2em;
-}
 .dvnFormDataTable {
     border: 0;
     margin: 0 0 0 0;
@@ -129,114 +125,6 @@
 .dvn_sectionTitleLinksL {float: left;}
 .dvn_sectionTitleLinksR  {float: right;}
 .dvn_sectionTitleLinksR a:link, .dvn_sectionTitleLinksR a:visited, .dvn_sectionTitleLinksR a:hover, .dvn_sectionTitleLinksR a:active {margin-left: 2em;}
-
-/* studyPageEditLinks */
-.studyEditLinks {
-  margin-left: 2em;
-  /* width: 3em; removed because it causes strange output in Opera and removing doesn't appear to affect the display otherwise '*/
-  float: left;
-}
-.editDropDown, .editDropDown ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
-.editDropDown li {
-    margin: 0;
-    padding: 0;
-    display: block;
-    position: relative;
-    z-index: 5;
-    text-align: left;
-}
-.editDropDown li:hover {
-    z-index: 10000;
-    white-space: normal;
-}
-.editDropDown li ul {
-    /* z-index: 100; */
-    opacity: 0.9999;
-    display: block;
-}
-.editDropDown li a, .editDropDown li a:link, .editDropDown li a:active, .editDropDown li a:visited {
-    background: inherit;
-    color: #0c54b3;
-    display: block;
-    padding: 0 .25em;
-    margin: 0;
-    text-decoration: none;
-    vertical-align: top;
-}
-
-
-
-.editDropDown li a:hover {
-    background: khaki;
-    color: #0c54b3;
-    text-decoration: none;
-}
-.editDropDown li a.editDropDownLink {
-    display: inline;
-    margin: 0;
-}
-.editDropDown li a:hover.editDropDownLink {
-    margin: 0;
-    color: #0c54b3;
-    text-decoration: none !important;
-}
-.studyEditLinks li:hover a,
-.studyEditLinks li.sfHover a {
-    background: khaki;
-    color: #0c54b3;
-}
-.studyEditLinks li:hover ul a:link,
-.studyEditLinks li.sfHover ul a:link,
-.studyEditLinks li:hover ul a:visited,
-.studyEditLinks li.sfHover ul a:visited,
-.studyEditLinks li:hover ul a:active,
-.studyEditLinks li.sfHover ul a:active {
-    background: khaki;
-    color: #0c54b3;
-    padding: .5em .25em 0 .25em;
-    text-decoration: none !important;
-    outline: none;
-}
-.studyEditLinks li:hover ul a:hover,
-.studyEditLinks li.sfHover ul a:hover {
-    background: khaki;
-    color: #c55b28;
-    padding: .5em .25em 0 .25em;
-    text-decoration: underline !important;
-}
-.editDropDown ul {
-    list-style: none;
-    margin: 0;
-    width: 18.5em;
-    position: absolute;
-    top: -999em;
-    left: -1px;
-    z-index: 10;
-}
-.editDropDown li:hover ul,
-.editDropDown li.sfHover ul {
-    top: 1.2em;
-    left: 1em;
-    border: 0;
-}
-.editDropDown ul li {
-    border: 0;
-    float: none;
-}
-.editDropDown ul a {
-    width: 18.5em;
-    white-space: nowrap;
-}
-.editDropDown ul a:hover {
-    margin: 0;
-    background: khaki;
-    color: #c55b28;
-}
-/* END studyPageEditLinks */
 
 .dvn_sectionBox {width: 100%; border-top: 2px solid #91a5a9; border-left: 1px solid #ccc; text-align: left;}
 .dvn_sectionBoxNoBorders {width: 100%; padding-top: .75em; clear: both; text-align: left;}
@@ -579,6 +467,11 @@ div.dvnWarningMessage span {
 .errorMessage {
   color: red;
   font-weight: bold;
+}
+.errorMessageBlock {
+  color: red;
+  font-weight: bold;
+  display: block;
 }
 .fatalMessage {
   color: red;
@@ -948,6 +841,110 @@ span.dvnStudyListSearchResultsMessage {
   padding: 0 1em;
   text-align: center;
 }
+
+/* studyPageInlineReleaseButton */
+.dvnStudyPageInlineReleaseButton {
+  margin-right: 2em;
+  display: inline;
+  vertical-align: middle;
+}
+/* studyPageEditLinks */
+.editDropDown, .editDropDown li, .editDropDown ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+ul.editDropDown {
+	display: inline;
+}
+.editDropDown li {
+    display: inline;
+    position: relative;
+    z-index: 5;
+    text-align: left;
+}
+* html .editDropDown li {
+    position: static;
+}
+.editDropDown li a:hover {
+    text-decoration: none;
+}
+.editDropDown ul {
+    width: 20em;
+    display: block;
+    position: absolute;
+    top: -999em;
+    left: -1px;
+    z-index: 10;
+    opacity: 0.9999;
+}
+.editDropDown li:hover ul,
+.editDropDown li.sfHover ul {
+    top: 1.5em;
+    left: 0;
+}
+.editDropDown li:hover li,
+.editDropDown li.sfHover li {
+    display: block;
+	padding-bottom: .25em;
+}
+.editDropDown ul li:hover {
+    z-index: 10000;
+}
+.editDropDown ul li a,
+.editDropDown ul li a:link,
+.editDropDown ul li a:active,
+.editDropDown ul li a:visited {
+    display: block;
+    text-align: left;
+    white-space: nowrap;
+}
+.editDropDown li:hover ul a,
+.editDropDown li.sfHover ul a,
+.editDropDown li:hover ul a:link,
+.editDropDown li.sfHover ul a:link,
+.editDropDown li:hover ul a:visited,
+.editDropDown li.sfHover ul a:visited,
+.editDropDown li:hover ul a:active,
+.editDropDown li.sfHover ul a:active {
+    padding: .5em 0 0 0;
+    text-decoration: none !important;
+    outline: none;
+}
+.editDropDown a.editDropDownLink {
+	margin: 0;
+    padding: 0 .25em .5em .25em;
+	color: #0c54b3;
+}
+.editDropDown a.editDropDownLink:hover {
+    margin: 0;
+    text-decoration: none;
+}
+
+.studyEditLinks li a {
+	color: #0c54b3;
+}
+.studyEditLinks li:hover a.editDropDownLink,
+.studyEditLinks li:hover li,
+.studyEditLinks li.sfHover li {
+    background: khaki;
+}
+.studyEditLinks li:hover ul a,
+.studyEditLinks li.sfHover ul a,
+.studyEditLinks li:hover ul a:link,
+.studyEditLinks li.sfHover ul a:link,
+.studyEditLinks li:hover ul a:visited,
+.studyEditLinks li.sfHover ul a:visited,
+.studyEditLinks li:hover ul a:active,
+.studyEditLinks li.sfHover ul a:active {
+    text-decoration: none !important;
+}
+.studyEditLinks li:hover ul a:hover,
+.studyEditLinks li.sfHover ul a:hover {
+    color: #c55b28;
+    text-decoration: underline !important;
+}
+/* END studyPageEditLinks */
 
 /* Style rules for Study Page (Cataloging Info and Files)
 */
@@ -2037,6 +2034,8 @@ span.termsAgreementMessageTitle {display: block; padding-top: 1em; color: #526f7
 .requestContentSucess ul {margin-left: 1.5em; list-style: disc;}
 .dvnCreateDvClassificationTable td span.iceOutTxt {font-size: 90% !important;}
 .dvnCreateDvClassificationTable td.dvnCreateDvClassificationSelectColumn {border-right: 0px;}
+.dvnCreateDvClassificationTableChild2 {margin-left: 0; padding-left: 0;}
+.dvnCreateDvClassificationTableChild3 {margin-left: .5em; padding-left: 18px !important; background: url(/dvn/resources/icefaces/dvn_rime/css-images/tree_line_last_node.gif) 0 0 no-repeat;}
 
 table.dvnCreateDvClassificationTable div {border-top: 0px;}
 table.dvnCreateDvClassificationTable table {width: 100%; border-top: 1px solid #dcdddf;}

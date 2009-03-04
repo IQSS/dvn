@@ -153,6 +153,8 @@
                   <ice:message styleClass="errorMessage" for="dataverseServer"/>
                   <br/>
                   <ice:outputText styleClass="vdcHelpText" value="Enter server name, e.g., http://dvn.iq.harvard.edu/dvn/OAIHandler."/>
+                  <ice:outputText styleClass="errorMessageBlock" value="This Server does not support sets. If you are harvesting another DVN and a set is not specified, all studies owned by that DVN will be harvested (without including studies harvested by that DVN)."
+                                  rendered="#{EditHarvestSitePage.editHarvestSiteService.harvestingSets==null and EditHarvestSitePage.harvestingDataverse.serverUrl !=null}"/>
                 </div>
                 <div jsfc="ice:panelGroup" rendered="#{not empty EditHarvestSitePage.editHarvestSiteService.harvestingSets}">
                   <ice:outputText value="Harvesting Set"/>
@@ -164,10 +166,6 @@
                   </ice:selectOneMenu>
                   <br/>
                   <ice:outputText styleClass="vdcHelpText" value="Select the set you would like to harvest. If you are harvesting another DVN and a set is not specified, all studies owned by that DVN will be harvested (without including studies harvested by that DVN)."/>
-                </div>
-                <div jsfc="ice:panelGroup" rendered="#{EditHarvestSitePage.editHarvestSiteService.harvestingSets==null and EditHarvestSitePage.harvestingDataverse.serverUrl !=null}">
-                  <br/>
-                  <ice:outputText value="This Server does not support sets. If you are harvesting another DVN and a set is not specified, all studies owned by that DVN will be harvested (without including studies harvested by that DVN)."/>
                 </div>
                 <div jsfc="ice:panelGroup" rendered="#{not empty EditHarvestSitePage.editHarvestSiteService.metadataFormats}">
                   <ice:outputText value="Harvesting Format"/>

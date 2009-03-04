@@ -194,20 +194,25 @@
                       <ice:outputText id="selectedGroupText" value="Classification"/>
                     </ice:outputLabel>
                   </div>
-                  <div jsfc="ice:panelGroup">
+                  <div jsfc="ice:panelGroup" rendered="#{empty AddSitePage.classificationList.classificationUIs}">
+                      <ice:outputText styleClass="vdcHelpText" value="There are no classifications set up for this dataverse network."/>
+                  </div>
+                  <div jsfc="ice:panelGroup" rendered="#{!empty AddSitePage.classificationList.classificationUIs}">
                     <ice:outputText styleClass="vdcHelpText" for="selectedGroup" value="#{bundle.groupSelect}"/>
                     <ice:dataTable id="dataverseList" styleClass="dvnCreateDvClassificationTable" cellspacing="0" cellpadding="0" columns="2" width="100%"
-                                   headerClass="groupRow" rowClasses="evenRow,oddRow" columnWidths="5%,95%"
+                                   headerClass="groupRow" rowClasses="evenRow,oddRow" columnWidths="2%,98%"
                                    scrollable="true" 
                                    value="#{AddSitePage.classificationList.classificationUIs}" var="classUI">
                       <!-- controls -->
-                      <ice:column styleClass="dvnCreateDvClassificationSelectColumn" >
-                        <ice:selectBooleanCheckbox partialSubmit="true" value="#{classUI.selected}" rendered="#{classUI.level >1}" />
+                      <ice:column styleClass="dvnCreateDvClassificationSelectColumn">
+                        <ice:selectBooleanCheckbox partialSubmit="true" value="#{classUI.selected}" rendered="#{classUI.level > 1}"/>
                       </ice:column>
                       <!-- classification name -->
-                      <ice:column styleClass="dvnCreateDvClassificationNameColumn">
-                     
-                        <ice:outputText styleClass="classUI.indentStyle" value="#{classUI.vdcGroup.name}"/>
+                      <ice:column styleClass="dvnCreateDvClassificationNameColumn" rendered="#{classUI.level == 1}">
+                        <ice:outputText value="#{classUI.vdcGroup.name}"/>
+                      </ice:column>
+                      <ice:column styleClass="dvnCreateDvClassificationNameColumn" rendered="#{classUI.level > 1}">
+                        <ice:outputText styleClass="dvnCreateDvClassificationTableChild#{classUI.level}" value="#{classUI.vdcGroup.name}"/>
                       </ice:column>
                     </ice:dataTable>
                   </div>

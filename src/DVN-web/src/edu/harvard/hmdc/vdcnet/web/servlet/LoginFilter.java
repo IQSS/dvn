@@ -80,7 +80,8 @@ import javax.servlet.http.HttpSession;
 @EJB(name = "oaiSetService", beanInterface = edu.harvard.hmdc.vdcnet.vdc.OAISetServiceLocal.class),
 @EJB(name = "harvestStudyService", beanInterface = edu.harvard.hmdc.vdcnet.harvest.HarvestStudyServiceLocal.class),
 @EJB(name = "vdcGroupService", beanInterface = edu.harvard.hmdc.vdcnet.vdc.VDCGroupServiceLocal.class),
-@EJB(name = "vdcService", beanInterface = edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal.class)
+@EJB(name = "vdcService", beanInterface = edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal.class),
+@EJB(name = "vdcUserService", beanInterface = edu.harvard.hmdc.vdcnet.admin.UserServiceLocal.class)
 })
 public class LoginFilter implements Filter {
 
@@ -108,10 +109,6 @@ public class LoginFilter implements Filter {
 
     private void doBeforeProcessing(ServletRequest request, ServletResponse response)
             throws IOException, ServletException {
- 
-
-
-
     }
 
     /**

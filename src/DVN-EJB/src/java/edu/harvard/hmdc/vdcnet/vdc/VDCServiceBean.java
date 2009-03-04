@@ -787,7 +787,7 @@ public class VDCServiceBean implements VDCServiceLocal {
             selectClause += ", max(lastupdatetime) ";
             fromClause += "LEFT OUTER JOIN study on v.id = study.owner_id ";
             orderingClause = "group by v.id ";
-            orderingClause = "order by (CASE WHEN max(lastupdatetime) IS NULL THEN 1 ELSE 0 END), max(lastupdatetime) desc ";
+            orderingClause += "order by (CASE WHEN max(lastupdatetime) IS NULL THEN 1 ELSE 0 END), max(lastupdatetime) desc ";
 
         } else if ("createddate".equals(orderBy)) {
             selectClause += ", " + orderBy + " ";
@@ -796,7 +796,6 @@ public class VDCServiceBean implements VDCServiceLocal {
         } else if ("creator".equals(orderBy)) {
             selectClause   += ", " + orderBy + " ";
             whereClause    += "WHERE vdc.creator_id = vdcuser.id ";
-            orderingClause += "GROUP BY v.id ";
             orderingClause += " order by " + orderBy;
             
         } else if ("name".equals(orderBy.toLowerCase())) {

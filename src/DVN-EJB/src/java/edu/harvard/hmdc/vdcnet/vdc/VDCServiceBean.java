@@ -770,46 +770,43 @@ public class VDCServiceBean implements VDCServiceLocal {
         String orderingClause = "";
 
         // handle orderBy
-        if ("activity".equals(orderBy)) {
+        if (VDC.ORDER_BY_ACTIVITY.equals(orderBy)) {
             selectClause += ", (localstudylocaldownloadcount + localstudynetworkdownloadcount + (.5 * localstudyforeigndownloadcount) + (.5 * foreignstudylocaldownloadcount) ) as dlcount ";
             fromClause += ", vdcactivity va ";
             whereClause += "and v.id = va.vdc_id ";
             orderingClause = "order by dlcount desc ";
 
-        } else if ("ownedStudies".equals(orderBy)) {
+        } else if (VDC.ORDER_BY_OWNED_STUDIES.equals(orderBy)) {
             selectClause += ", count(owner_id) ";
             fromClause += "LEFT OUTER JOIN study on v.id = study.owner_id ";
             orderingClause = "group by v.id ";
             orderingClause += "order by count(owner_id) desc ";
 
-
-        } else if ("lastStudyUpdateTime".equals(orderBy)) {
-            selectClause += ", max(lastupdatetime) ";
+        } else if (VDC.ORDER_BY_LAST_STUDY_UPDATE_TIME.equals(orderBy)) {
+            selectClause += ", (CASE WHEN max(lastupdatetime) IS NULL THEN 0 ELSE 1 END) as updated, max(lastupdatetime) ";
             fromClause += "LEFT OUTER JOIN study on v.id = study.owner_id ";
             orderingClause = "group by v.id ";
-            orderingClause += "order by (CASE WHEN max(lastupdatetime) IS NULL THEN 1 ELSE 0 END), max(lastupdatetime) desc ";
-
-        } else if ("createddate".equals(orderBy)) {
-            selectClause += ", " + orderBy + " ";
-            orderingClause += " order by " + orderBy + " desc ";
-
-        } else if ("creator".equals(orderBy)) {
-            selectClause   += ", " + orderBy + " ";
-            whereClause    += "WHERE vdc.creator_id = vdcuser.id ";
-            orderingClause += " order by " + orderBy;
+            orderingClause += "order by updated desc, max(lastupdatetime) desc ";
             
-        } else if ("name".equals(orderBy.toLowerCase())) {
+        } else if (VDC.ORDER_BY_NAME.equals(orderBy)) {
             selectClause += ", upper( (CASE WHEN dtype = 'Scholar' THEN lastname || ', ' || firstname ELSE name END) ) as sortname ";
             orderingClause += " order by sortname ";
 
-        } else if ("affiliation".equals(orderBy.toLowerCase())) {
-            selectClause += ", upper(affiliation) ";
-            orderingClause += " order by upper(affiliation) ";
+        } else if (VDC.ORDER_BY_CREATOR.equals(orderBy)) {
+            selectClause   += ", upper(username) ";
+            fromClause += ", vdcuser vu ";
+            whereClause    += "and vdc.creator_id = vu.id ";
+            orderingClause += " order by upper(username)";
 
-        } else if ("releasedate".equals(orderBy.toLowerCase())) {
+        } else if (VDC.ORDER_BY_AFFILIATION.equals(orderBy) || VDC.ORDER_BY_TYPE.equals(orderBy) ) {
+            selectClause += ", upper(" + orderBy + ") ";
+            orderingClause += " order by upper(" + orderBy + ") ";
+
+        } else if (VDC.ORDER_BY_RELEASE_DATE.equals(orderBy) || VDC.ORDER_BY_CREATE_DATE.equals(orderBy)) {
             selectClause += ", " + orderBy + " ";
             orderingClause += " order by " + orderBy + " desc ";
         }
+
 
         // now additional clauses based on parameters
         if (hideRestrictedVDCs) {
@@ -850,5 +847,5 @@ public class VDCServiceBean implements VDCServiceLocal {
         BigDecimal maxDLCount = (BigDecimal) ((List) query.getSingleResult()).get(0);
         return (maxDLCount != null ? maxDLCount.doubleValue() : 0);
 
-    }
+    }  
 }

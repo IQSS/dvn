@@ -774,12 +774,12 @@ public class VDCServiceBean implements VDCServiceLocal {
             selectClause += ", (localstudylocaldownloadcount + localstudynetworkdownloadcount + (.5 * localstudyforeigndownloadcount) + (.5 * foreignstudylocaldownloadcount) ) as dlcount ";
             fromClause += ", vdcactivity va ";
             whereClause += "and v.id = va.vdc_id ";
-            orderingClause = "order by dlcount desc ";
+            orderingClause += "order by dlcount desc ";
 
         } else if (VDC.ORDER_BY_OWNED_STUDIES.equals(orderBy)) {
             selectClause += ", count(owner_id) ";
             fromClause += "LEFT OUTER JOIN study on v.id = study.owner_id ";
-            orderingClause = "group by v.id ";
+            orderingClause += "group by v.id ";
             orderingClause += "order by count(owner_id) desc ";
 
         } else if (VDC.ORDER_BY_LAST_STUDY_UPDATE_TIME.equals(orderBy)) {
@@ -788,25 +788,28 @@ public class VDCServiceBean implements VDCServiceLocal {
             orderingClause = "group by v.id ";
             orderingClause += "order by updated desc, max(lastupdatetime) desc ";
             
+        } else if (VDC.ORDER_BY_CREATOR.equals(orderBy)) {
+            selectClause   += ", u." + orderBy + " as " + orderBy + " ";
+            fromClause     += ", vdcuser u ";
+            whereClause    += "AND v.creator_id = u.id ";
+            orderingClause += " ORDER BY " + orderBy;
+
         } else if (VDC.ORDER_BY_NAME.equals(orderBy)) {
             selectClause += ", upper( (CASE WHEN dtype = 'Scholar' THEN lastname || ', ' || firstname ELSE name END) ) as sortname ";
             orderingClause += " order by sortname ";
 
-        } else if (VDC.ORDER_BY_CREATOR.equals(orderBy)) {
-            selectClause   += ", upper(username) ";
-            fromClause += ", vdcuser vu ";
-            whereClause    += "and vdc.creator_id = vu.id ";
-            orderingClause += " order by upper(username)";
-
-        } else if (VDC.ORDER_BY_AFFILIATION.equals(orderBy) || VDC.ORDER_BY_TYPE.equals(orderBy) ) {
-            selectClause += ", upper(" + orderBy + ") ";
-            orderingClause += " order by upper(" + orderBy + ") ";
+        } else if (VDC.ORDER_BY_AFFILIATION.equals(orderBy)) {
+            selectClause   += ", upper(affiliation) ";
+            orderingClause += " order by upper(affiliation) ";
 
         } else if (VDC.ORDER_BY_RELEASE_DATE.equals(orderBy) || VDC.ORDER_BY_CREATE_DATE.equals(orderBy)) {
             selectClause += ", " + orderBy + " ";
             orderingClause += " order by " + orderBy + " desc ";
-        }
 
+        } else if (VDC.ORDER_BY_TYPE.equals(orderBy)) {
+            selectClause   += ", " + orderBy + " ";
+            orderingClause += " order by " + orderBy;
+        }
 
         // now additional clauses based on parameters
         if (hideRestrictedVDCs) {

@@ -5,6 +5,7 @@
 package edu.harvard.hmdc.vdcnet.web.networkAdmin;
 
 import com.icesoft.faces.component.ext.HtmlCommandLink;
+import com.icesoft.faces.component.ext.HtmlInputHidden;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
 import edu.harvard.hmdc.vdcnet.web.VDCUIList;
@@ -16,6 +17,7 @@ import java.util.Iterator;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ValueChangeEvent;
 
 /**
  * @author wbossons
@@ -46,15 +48,70 @@ public class ManageDataversesPage extends VDCBaseBean implements Serializable {
 
     public void init() {
         super.init();
+        initAlphabeticFilter();
         populateVDCUIList(false);
     }
 
     private void populateVDCUIList(boolean isAlphaSort) {
-        boolean isNewGroup = false;
-        vdcUIList = new VDCUIList(groupId);
+        // new logic for alpha sort
+        if (!isAlphaSort) {
+            if (vdcUIList == null || (vdcUIList.getAlphaCharacter() != null && ((String)hiddenAlphaCharacter.getValue()).equals("All")) ) {
+                vdcUIList = new VDCUIList(groupId);
+                vdcUIList.setAlphaCharacter(new String(""));
+           }
+        } else {
+            if (!((String)hiddenAlphaCharacter.getValue()).equals(vdcUIList.getAlphaCharacter())) {
+                vdcUIList = new VDCUIList(groupId, (String)hiddenAlphaCharacter.getValue());
+                vdcUIList.setAlphaCharacter((String)hiddenAlphaCharacter.getValue());
+                vdcUIList.setOldSort(new String(""));
+                vdcUIList.setSortColumnName(vdcUIList.getNameColumnName());
+            }
+        }
         vdcUIList.getVdcUIList();
         vdcUIListSize = new Long(String.valueOf(vdcUIList.getVdcUIList().size()));
     }
+
+   
+    private HtmlInputHidden hiddenAlphaCharacter;
+    public HtmlInputHidden getHiddenAlphaCharacter() {
+        return hiddenAlphaCharacter;
+    }
+
+    public void setHiddenAlphaCharacter(HtmlInputHidden hiddenAlphaCharacter) {
+        this.hiddenAlphaCharacter = hiddenAlphaCharacter;
+    }
+
+    public void changeAlphaCharacter(ValueChangeEvent event) {
+        String newValue = (String)event.getNewValue();
+        String oldValue = (String)event.getOldValue();
+        if (!newValue.isEmpty()) {
+            if (newValue.equals("All")) {
+                populateVDCUIList(false);
+            } else {
+                hiddenAlphaCharacter.setValue(newValue);
+                populateVDCUIList(true);
+            }
+        }
+    }
+
+    private ArrayList alphaCharacterList;
+    private void initAlphabeticFilter() {
+        if (alphaCharacterList == null) {
+            alphaCharacterList = new ArrayList();
+            for ( char ch = 'A';  ch <= 'Z';  ch++ ) {
+              alphaCharacterList.add(String.valueOf(ch));
+            }
+        }
+    }
+
+    public ArrayList getAlphaCharacterList() {
+        return this.alphaCharacterList;
+    }
+
+    public void setAlphaCharacterList(ArrayList list) {
+        this.alphaCharacterList = list;
+    }
+    /* END TODO: add alpha sort */
 
     //action methods
     public String delete_action() {

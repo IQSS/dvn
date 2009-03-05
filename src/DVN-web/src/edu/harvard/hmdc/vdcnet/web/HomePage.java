@@ -303,12 +303,12 @@ public class HomePage extends VDCBaseBean implements Serializable {
                 vdcUIListSize = new Long(String.valueOf(vdcUIList.getVdcUIList().size()));
             }
         } else {
-            if (isNewGroup && groupId != null) {
-                vdcUIList = new VDCUIList(groupId, (String)hiddenAlphaCharacter.getValue());
-            } else if (!((String)hiddenAlphaCharacter.getValue()).equals(vdcUIList.getAlphaCharacter())) {
+            vdcUIList = new VDCUIList(groupId, (String)hiddenAlphaCharacter.getValue());
+            if (!((String)hiddenAlphaCharacter.getValue()).equals(vdcUIList.getAlphaCharacter())) {
                 vdcUIList.setAlphaCharacter((String)hiddenAlphaCharacter.getValue());
                 vdcUIList.oldSort = "";
             }
+            vdcUIList.setSortColumnName(vdcUIList.getNameColumnName());
         } 
         if (groupId == null || groupId.equals(new Long("-1")) ) {
             setGroupName("All Dataverses");

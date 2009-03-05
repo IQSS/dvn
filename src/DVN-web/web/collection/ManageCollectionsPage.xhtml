@@ -29,11 +29,10 @@
               <ice:outputText value="Study Collections"/>
             </div>
           </div>
-          <ice:dataTable id="collectionsDataTbl"
-                         var="collUI"
-                         value="#{ManageCollectionsPage.collections}"
-                         columnWidths="70%,10%,10%,10%"
-                         styleClass="dvnManageCollectionsTable">
+          <ice:dataTable id="collectionsDataTbl" styleClass="dvnManageCollectionsTable"
+                         var="collUI" value="#{ManageCollectionsPage.collections}"
+                         columnWidths="60%,10%,14%,16%" rowClasses="list-row-even vdcColPadded, list-row-odd vdcColPadded"
+                         headerClass="list-header-left vdcColPadded">
             <ice:column>
               <f:facet name="header">
                 <ice:outputText id="nameCol" value="Collection Name"/>
@@ -84,11 +83,10 @@
               </ice:outputLink>
             </div>
           </div>
-          <ice:dataTable id="linksDataTbl"
-                         styleClass="dvnManageTable"
-                         var="collUI"
-                         value="#{ManageCollectionsPage.linkedCollections}"
-                         columnWidths="60%,30%,10%">
+          <ice:dataTable id="linksDataTbl" styleClass="dvnManageTable"
+                         var="collUI" value="#{ManageCollectionsPage.linkedCollections}"
+                         columnWidths="60%,30%,10%" rowClasses="list-row-even vdcColPadded, list-row-odd vdcColPadded"
+                         headerClass="list-header-left vdcColPadded">
             <ice:column>
               <f:facet name="header">
                 <ice:outputText id="linknameCol" value="Collection Name"/>

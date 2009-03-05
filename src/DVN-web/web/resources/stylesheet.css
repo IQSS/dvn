@@ -2069,5 +2069,5 @@ table.dvnCreateDvClassificationTable table {width: 100%; border-top: 1px solid #
 .dvnPromotionalLinks .dvnPromotionalSample {float: left; width: 25.333%;}
 .dvnPromotionalLinks .dvnPromotionalCode {float: left; width: 36.333%;}
 .dvnPromotionalLinks .dvnPromotionalTip {float: left; width: 36.333%;}
-.dvnPromotionalSample span, .dvnPromotionalCode span, .dvnPromotionalTip span {color: silver;}
+.dvnPromotionalSample span, .dvnPromotionalCode span, .dvnPromotionalTip span {color: grey;}
 .dvnPromotionalSample textarea, .dvnPromotionalCode textarea, .dvnPromotionalTip textarea {width: 90%; border: 1px solid #6e7f90; overflow: scroll;}

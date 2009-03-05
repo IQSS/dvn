@@ -276,13 +276,27 @@
                 </ice:panelGroup>
                 <!-- Dynamic Query textarea -->
                 <div jsfc="ice:panelGroup" styleClass="dynamic">
-                  <div class="vdcFieldTitle dvnFormPaddingTop">Enter query:</div>
-                  <ice:inputTextarea id="input_collectionQuery" cols="60" rows="6" value="#{EditCollectionPage.collection.query}"/>
-                  <br/>
-                  <ice:selectBooleanCheckbox id="onlyYourDataverse2"
-                                             value="#{EditCollectionPage.collection.localScope}"/>
-                  <ice:outputLabel for="multipleSelection"
-                                   value="Only your dataverse"/>
+                  <style type="text/css">
+                      .cell1 {width: 45%; vertical-align: top;}
+                      .cell2 {width: 55%; padding-left: 1em; vertical-align: top;}
+                  </style>
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%" columnClasses="cell1, cell2">
+                      <ice:column>
+                          <div class="vdcFieldTitle dvnFormPaddingTop">Enter query:</div>
+                          <ice:inputTextarea id="input_collectionQuery" cols="60" rows="6" value="#{EditCollectionPage.collection.query}"/>
+                          <br/>
+                          <ice:selectBooleanCheckbox id="onlyYourDataverse2"
+                                                     value="#{EditCollectionPage.collection.localScope}"/>
+                          <ice:outputLabel for="multipleSelection"
+                                           value="Only your dataverse"/>
+                      </ice:column>
+                      <ice:column>
+                          <div class="vdcFieldTitle dvnFormPaddingTop">Query Examples:</div>
+                          <p>authorName:"Smith" AND title:"Nation"</p>
+                          <p>title:"State Policy" OR abstractText:"State Policy"</p>
+                          <p><span class="vdcHelpText">Common Dataverse Query Fields:</span><br/>title, authorName, globalId, otherId, abstractText, keywordValue, keywordVocabulary, topicClassValue, topicClassVocabulary, producerName, distributorName, fundingAgency, productionDate, distributionDate, dateOfDeposit, timePeriodCoveredStart, timePeriodCoveredEnd, country, geographicCoverage, geographicUnit, universe, kindOfData, variable</p>
+                      </ice:column>
+                  </ice:panelGrid>
                 </div>
               </div>
               <div class="dvnFormPadding dvnFormMargin">

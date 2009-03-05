@@ -61,8 +61,7 @@ public class VDCUIList extends SortableList {
 
     public VDCUIList(Long vdcGroupId) {
         this.vdcGroupId = vdcGroupId;
-        init();
-        
+        init();  
     }
 
     public VDCUIList(Long vdcGroupId, String alphaCharacter) {     
@@ -123,7 +122,7 @@ public class VDCUIList extends SortableList {
             if (alphaCharacter != null && vdcGroupId != null && !vdcGroupId.equals(new Long("-1"))) {
                 vdcIds = vdcService.getOrderedVDCIds(vdcGroupId, alphaCharacter, orderBy);
             } else if (alphaCharacter != null && (vdcGroupId == null || vdcGroupId.equals(new Long("-1")))) {
-                vdcIds = vdcService.getOrderedVDCIds(alphaCharacter, NAME_COLUMN_NAME);
+                vdcIds = vdcService.getOrderedVDCIds(alphaCharacter, orderBy);
             } else if (vdcGroupId == null || vdcGroupId.equals(new Long("-1"))) {
                 vdcIds = vdcService.getOrderedVDCIds(orderBy);
             } else {
@@ -207,6 +206,16 @@ public class VDCUIList extends SortableList {
         oldSort = this.sortColumnName;
         this.sortColumnName = sortColumnName;
     }
+
+    /**
+     * Sets the oldSort field
+     *
+     * @param oldSort set to value
+     */
+    public void setOldSort(String oldsort) {
+        oldSort = oldsort;
+    }
+
 
     public void setVdcUIList(List<VDCUI> vdcUIList) {
         this.vdcUIList = vdcUIList;

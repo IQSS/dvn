@@ -14,7 +14,18 @@
         <gui:composition template="/template.xhtml">
         <gui:param name="pageTitle" value="#{bundlePageInfo.manageDvsTitle}"/>
         <gui:define name="body">
-        <ice:form>
+            <script type="text/javascript">
+          // <![CDATA[
+            function setHiddenValues(alphaKey) {
+                document.getElementById('manageDataversesForm:alphaCharacter').value = arguments[0];
+              }
+           // ]]>
+         </script>
+        <ice:form id="manageDataversesForm">
+             <ice:inputHidden  binding="#{manageDataversesPage.hiddenAlphaCharacter}"
+                                    id="alphaCharacter"
+                                    valueChangeListener="#{manageDataversesPage.changeAlphaCharacter}"
+                                    />
         <div class="dvn_section">
             <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
                 <div class="dvnMsgBlockContainer">
@@ -24,20 +35,33 @@
             <div class="dvn_sectionTitle">
                 <ice:outputText value="#{bundlePageInfo.manageDvsTitle}"/>
             </div>
-          
-            <div jsfc="ice:panelGroup" styleClass="dvnManageTableEmpty" rendered="#{empty(manageDataversesPage.vdcUIList.vdcUIList)}">
-                <ice:outputText styleClass="dvnManageTableEmptyMessage" value="There are no dataverses to display in this group."/>
-            </div>
-
           <ice:panelGrid  border="0" 
                             cellpadding="0"
                             cellspacing="0"
                             columns="2"
                             columnClasses="dvnManageTableTotals, dvnPaginatorWrap"
-                            rendered="#{!empty(manageDataversesPage.vdcUIList.vdcUIList)}"
                             styleClass="dvnManageTableTop"
                             width="100%"
                             >
+                <div jsfc="ice:panelGroup" styleClass="dvnHmpgGroupAlphaSortBlock" rendered="#{VDCRequest.currentVDC == null}">
+                    <ul class="dvnAlphaBrowse">
+                        <li>
+                            <ice:commandLink  onclick="setHiddenValues('All');">
+                                <ice:outputText value="ALL"/>
+                            </ice:commandLink>
+                        </li>
+                        <gui:repeat value="#{manageDataversesPage.alphaCharacterList}"
+                                    var="item">
+                            <li>
+                                <ice:commandLink onclick="setHiddenValues('#{item}');">
+                                    <ice:outputText value="#{item}"/>
+                                    <f:attribute name="groupId" value="#{item.id}"/>
+                                    <f:attribute name="alphaCharacter" value="#{item}"/>
+                                </ice:commandLink>
+                            </li>
+                        </gui:repeat>
+                    </ul>
+                </div>
                 <div jsfc="ice:panelGroup" styleClass="dvnPaginatorWrap">
                     <ice:dataPaginator for="dataverseList"
                                        id="dataScroller"
@@ -67,7 +91,9 @@
                 </div>
             </ice:panelGrid>
             <div jsfc="ice:panelGroup">
-                
+                <div jsfc="ice:panelGroup" styleClass="dvnManageTableEmpty" rendered="#{empty(manageDataversesPage.vdcUIList.vdcUIList)}">
+                    <ice:outputText styleClass="dvnManageTableEmptyMessage" value="There are no results to display. Select &#34;All&#34; or another letter to continue."/>
+                </div>
                 <ice:dataTable id="dataverseList" width="100%"
                                columnWidths="20%,20%,10%,10%,10%,10%,10%,10%,10%"
                                headerClass="groupRow"

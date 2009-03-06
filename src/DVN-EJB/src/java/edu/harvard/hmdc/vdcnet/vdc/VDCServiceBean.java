@@ -802,13 +802,17 @@ public class VDCServiceBean implements VDCServiceLocal {
             selectClause   += ", upper(affiliation) ";
             orderingClause += " order by upper(affiliation) ";
 
-        } else if (VDC.ORDER_BY_RELEASE_DATE.equals(orderBy) || VDC.ORDER_BY_CREATE_DATE.equals(orderBy)) {
+        } else if (VDC.ORDER_BY_CREATE_DATE.equals(orderBy)) {
             selectClause += ", " + orderBy + " ";
             orderingClause += " order by " + orderBy + " desc ";
 
+        } else if (VDC.ORDER_BY_RELEASE_DATE.equals(orderBy)) {
+            selectClause += ",(CASE WHEN releasedate IS NULL THEN 0 ELSE 1 END) as released, releasedate ";
+            orderingClause += " order by released desc, releasedate desc ";
+
         } else if (VDC.ORDER_BY_TYPE.equals(orderBy)) {
-            selectClause   += ", " + orderBy + " ";
-            orderingClause += " order by " + orderBy;
+            selectClause   += ", (CASE WHEN harvestingdataverse_id IS NOT NULL THEN 'Harvesting' ELSE dtype END) as vdcType ";
+            orderingClause += " order by vdcType";
         }
 
         // now additional clauses based on parameters

@@ -31,6 +31,7 @@ public class ManageDataversesPage extends VDCBaseBean implements Serializable {
 
     private ArrayList vdcUI;
     private boolean result;
+    private boolean hideRestricted = false;
     private Long vdcUIListSize;
     private Long cid;
     private Long groupId = new Long("-1");
@@ -56,12 +57,12 @@ public class ManageDataversesPage extends VDCBaseBean implements Serializable {
         // new logic for alpha sort
         if (!isAlphaSort) {
             if (vdcUIList == null || (vdcUIList.getAlphaCharacter() != null && ((String)hiddenAlphaCharacter.getValue()).equals("All")) ) {
-                vdcUIList = new VDCUIList(groupId);
+                vdcUIList = new VDCUIList(groupId, hideRestricted);
                 vdcUIList.setAlphaCharacter(new String(""));
            }
         } else {
             if (!((String)hiddenAlphaCharacter.getValue()).equals(vdcUIList.getAlphaCharacter())) {
-                vdcUIList = new VDCUIList(groupId, (String)hiddenAlphaCharacter.getValue());
+                vdcUIList = new VDCUIList(groupId, (String)hiddenAlphaCharacter.getValue(), hideRestricted);
                 vdcUIList.setAlphaCharacter((String)hiddenAlphaCharacter.getValue());
                 vdcUIList.setOldSort(new String(""));
                 vdcUIList.setSortColumnName(vdcUIList.getNameColumnName());

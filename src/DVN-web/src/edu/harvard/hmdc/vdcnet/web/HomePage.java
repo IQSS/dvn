@@ -108,6 +108,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
     private boolean showRequestContributor;
     StatusMessage msg;
     private boolean isAlphaSort;
+    private boolean hideRestricted = true; //show only restricted if set to false wjb
 
     
     public HomePage() {
@@ -296,14 +297,14 @@ public class HomePage extends VDCBaseBean implements Serializable {
         }
         if (!isAlphaSort) {
             if (isNewGroup || vdcUIList != null && vdcUIList.getAlphaCharacter() != null && !vdcUIList.getAlphaCharacter().equals("")) {
-                vdcUIList = new VDCUIList(groupId);
+                vdcUIList = new VDCUIList(groupId, hideRestricted);
             } else {
                 vdcUIList.setAlphaCharacter("");
                 vdcUIList.getVdcUIList();
                 vdcUIListSize = new Long(String.valueOf(vdcUIList.getVdcUIList().size()));
             }
         } else {
-            vdcUIList = new VDCUIList(groupId, (String)hiddenAlphaCharacter.getValue());
+            vdcUIList = new VDCUIList(groupId, (String)hiddenAlphaCharacter.getValue(), hideRestricted);
             if (!((String)hiddenAlphaCharacter.getValue()).equals(vdcUIList.getAlphaCharacter())) {
                 vdcUIList.setAlphaCharacter((String)hiddenAlphaCharacter.getValue());
                 vdcUIList.oldSort = "";

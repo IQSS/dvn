@@ -32,6 +32,7 @@ package edu.harvard.hmdc.vdcnet.web.site;
 import edu.harvard.hmdc.vdcnet.admin.UserServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
+import edu.harvard.hmdc.vdcnet.vdc.HarvestingDataverseServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.vdc.VDCActivity;
 import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
@@ -59,6 +60,8 @@ public class VDCUI  implements java.io.Serializable {
     private String type;
     private VDC vdc;
     private VDCServiceLocal vdcService = null;
+
+    private static final String HARVESTING_DATAVERSE_LABEL = "Harvesting"; //constant to use when returning the dtype for this type of dataverse wjb
 
     
     /** Creates a new instance of VDCUI */
@@ -188,6 +191,8 @@ public class VDCUI  implements java.io.Serializable {
     public String getType() {
         if (vdc.getDtype().equals(" ")) {
            return "--";
+        } else if (vdc.getHarvestingDataverse() != null) {
+            return HARVESTING_DATAVERSE_LABEL;
         } else {
             return vdc.getDtype();
         }

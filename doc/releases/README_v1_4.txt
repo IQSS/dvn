@@ -15,6 +15,7 @@ Files needed for Fresh installation:
 
 (follow instructions for a fresh installation from http://thedata.org)
 
+______________________________________________________________________________
 
 Files needed for an upgrade from v1.3:
 
@@ -25,11 +26,13 @@ Files needed for an upgrade from v1.3:
 (to set up Google Analytics, follow instruction from http://thedata.org)
 
 
-Note: the schema for organizing dataverses into groups has changed in 1.4.
+Notes:
+
+1) the schema for organizing dataverses into groups has changed in 1.4.
 In the new schema, top level groups cannot contain dataverses, only sub-groups.
 (The dataverse groups are called "classifications" in DVN Network Options.)
 
-If you have existing dataverse groups, you can add them to a default top level group
+If you have existing dataverse groups, you should add them to a default top level group
 by running the following sql:
 
 	insert into vdcgroup (id, description, displayorder, version, parent, name) values
@@ -38,6 +41,15 @@ by running the following sql:
 	update vdcgroup set parent = (select id from vdcgroup where name = 'Filter by Type')
 	where name != 'Filter by Type';
 
-
 If you already have a group named 'Filter by Type', or you want your top level group 
 to be another name, substitute 'Filter by Type' in the given sql with your preferred name.
+
+
+2) A modification was made to the way date fields are indexed for a study. In order to get
+more accurate results when searching on these date fields, you should reindex all studies
+from the DVN Utilities Page.
+
+
+3) A modification was made to the way locally owned (i.e. not harvested) studies are exported.
+You should re-export all locally owned studies (for example, by dataverse) from the DVN Utilities
+Page.

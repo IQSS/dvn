@@ -25,6 +25,7 @@ public class VDCUIList extends SortableList {
     private @EJB VDCServiceLocal vdcService;
     private @EJB VDCGroupServiceLocal vdcGroupService;
 
+    private boolean hideRestricted; //show unrestricted and restricted dataverses
     private int    vdcGroupSize;
     private List<VDCUI> vdcUIList;
     private Long   vdcGroupId;
@@ -59,13 +60,15 @@ public class VDCUIList extends SortableList {
         init();
     }
 
-    public VDCUIList(Long vdcGroupId) {
+    public VDCUIList(Long vdcGroupId, boolean hideRestricted) {
         this.vdcGroupId = vdcGroupId;
+        this.hideRestricted    = hideRestricted;
         init();  
     }
 
-    public VDCUIList(Long vdcGroupId, String alphaCharacter) {     
+    public VDCUIList(Long vdcGroupId, String alphaCharacter, boolean hideRestricted) {
         this.vdcGroupId = vdcGroupId;
+        this.hideRestricted    = hideRestricted;
         init();
         this.alphaCharacter = alphaCharacter;        
     }
@@ -118,15 +121,16 @@ public class VDCUIList extends SortableList {
             }
             List vdcIds = null;
 
-
+            String thisObj = toString();
+            System.out.println(thisObj);
             if (alphaCharacter != null && vdcGroupId != null && !vdcGroupId.equals(new Long("-1"))) {
-                vdcIds = vdcService.getOrderedVDCIds(vdcGroupId, alphaCharacter, orderBy);
+                vdcIds = vdcService.getOrderedVDCIds(vdcGroupId, alphaCharacter, orderBy, hideRestricted);
             } else if (alphaCharacter != null && (vdcGroupId == null || vdcGroupId.equals(new Long("-1")))) {
-                vdcIds = vdcService.getOrderedVDCIds(alphaCharacter, orderBy);
+                vdcIds = vdcService.getOrderedVDCIds(null, alphaCharacter, orderBy, hideRestricted);
             } else if (vdcGroupId == null || vdcGroupId.equals(new Long("-1"))) {
-                vdcIds = vdcService.getOrderedVDCIds(orderBy);
+                vdcIds = vdcService.getOrderedVDCIds(null, null, orderBy, hideRestricted);
             } else {
-                vdcIds = vdcService.getOrderedVDCIds(vdcGroupId, orderBy);
+                vdcIds = vdcService.getOrderedVDCIds(vdcGroupId, null, orderBy, hideRestricted);
             }
 
 
@@ -237,5 +241,12 @@ public class VDCUIList extends SortableList {
         this.vdcGroupSize = vdcGroupSize;
     }
 
-
+    //utils
+    public String toString() {
+        String tostring = " [ Groupid: " + this.vdcGroupId +
+                "; alphaCharacter: " + this.alphaCharacter +
+                "; orderBy: " + this.sortColumnName +
+                "; hideRestricted: " +  this.hideRestricted + " ]";
+        return tostring;
+    }
 }

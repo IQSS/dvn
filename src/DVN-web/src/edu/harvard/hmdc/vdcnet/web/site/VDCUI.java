@@ -62,6 +62,7 @@ public class VDCUI  implements java.io.Serializable {
     private VDCServiceLocal vdcService = null;
 
     private static final String HARVESTING_DATAVERSE_LABEL = "Harvesting"; //constant to use when returning the dtype for this type of dataverse wjb
+    private static final String SCHOLAR_DTYPE_LABEL        = "Scholar";
 
     
     /** Creates a new instance of VDCUI */
@@ -160,7 +161,6 @@ public class VDCUI  implements java.io.Serializable {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        //Long vdcId = vdc.getId();
         Timestamp lastUpdateTime = studyService.getLastUpdatedTime(vdc.getId());
         LocalizedDate localizedDate = new LocalizedDate();
         if (lastUpdateTime != null)
@@ -170,7 +170,10 @@ public class VDCUI  implements java.io.Serializable {
     }
 
     public String getName() {
-        return vdc.getName();
+        if (vdc.getDtype().toLowerCase().equals(SCHOLAR_DTYPE_LABEL.toLowerCase()))
+            return vdc.getLastName() + ", " + vdc.getFirstName();
+        else
+            return vdc.getName();
     }
 
 

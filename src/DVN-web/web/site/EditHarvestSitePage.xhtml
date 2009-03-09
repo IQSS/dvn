@@ -141,6 +141,16 @@
                   <ice:message styleClass="errorMessage" for="dataverseAlias"/>
                   <br/>
                   <ice:outputText styleClass="vdcHelpText" value="Short name used to build the URL for this dataverse, e.g., http://.../dv/'alias'. It is case sensitive."/>
+                </div><div>
+                  <ice:outputLabel for="componentLabel3" id="componentLabel3">
+                    <ice:outputText id="componentLabel3Text" value="Affiliation"/>
+                  </ice:outputLabel>
+                </div>
+                <div>
+                  <ice:inputText id="dataverseAffiliation" value="#{EditHarvestSitePage.dataverseAffiliation}"/>
+                  <ice:message styleClass="errorMessage" for="dataverseAffiliation"/>
+                  <br/>
+                  <ice:outputText styleClass="vdcHelpText" value="University, center, or research project."/>
                 </div>
                 <div>
                   <ice:outputText value="Server URL"/>

@@ -136,6 +136,7 @@ public class EditHarvestSitePage extends VDCBaseBean implements java.io.Serializ
                 if (harvestingDataverse.getVdc()!=null) {
                     dataverseName = harvestingDataverse.getVdc().getName();
                     dataverseAlias = harvestingDataverse.getVdc().getAlias();
+                    dataverseAffiliation = harvestingDataverse.getVdc().getAffiliation();
                     filesRestricted = harvestingDataverse.getVdc().isFilesRestricted();
                 }
                 try {
@@ -255,7 +256,7 @@ public class EditHarvestSitePage extends VDCBaseBean implements java.io.Serializ
              editHarvestSiteService.getHarvestingDataverse().setScheduleDayOfWeek(null);
         }
         
-        editHarvestSiteService.save(userId, dataverseName,dataverseAlias, filesRestricted, _HARVEST_DTYPE);
+        editHarvestSiteService.save(userId, dataverseName, dataverseAlias, filesRestricted, _HARVEST_DTYPE, dataverseAffiliation);
 
         this.getVDCRequestBean().setSuccessMessage("Successfully created a harvest dataverse.");
         return from;
@@ -326,6 +327,27 @@ public class EditHarvestSitePage extends VDCBaseBean implements java.io.Serializ
      */
     public void setDataverseAlias(String dataverseAlias) {
         this.dataverseAlias = dataverseAlias;
+    }
+
+    /**
+     * Holds value of property dataverseAffiliation.
+     */
+    private String dataverseAffiliation;
+
+    /**
+     * Getter for property dataverseAffiliation.
+     * @return Value of property dataverseAffiliation.
+     */
+    public String getdataverseAffiliation() {
+        return this.dataverseAffiliation;
+    }
+
+    /**
+     * Setter for property dataverseAffiliation.
+     * @param dataverseAffiliation New value of property dataverseAffiliation.
+     */
+    public void setdataverseAffiliation(String dataverseAffiliation) {
+        this.dataverseAffiliation = dataverseAffiliation;
     }
     
     /**

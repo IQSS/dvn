@@ -126,9 +126,14 @@ public class EditHarvestSiteServiceBean implements EditHarvestSiteService  {
     public  HarvestingDataverse getHarvestingDataverse() {
         return harvestingDataverse;
     }
-    
+
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void save(Long userId, String name, String alias, boolean filesRestricted, String dtype) {
+        save ( userId,  name,  alias,  filesRestricted,  dtype);
+    }
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void save(Long userId, String name, String alias, boolean filesRestricted, String dtype, String affiliation) {
         VDC vdc = null;
         if (harvestingDataverse.getVdc()==null) {
             vdcService.create(userId, name, alias, dtype);
@@ -142,7 +147,9 @@ public class EditHarvestSiteServiceBean implements EditHarvestSiteService  {
             vdc.setName(name);
             vdc.setAlias(alias);
         }
-        
+
+        vdc.setAffiliation(affiliation);
+
         vdc.setFilesRestricted(filesRestricted);
         vdc.setAllowedFileGroups(allowedFileGroups);
         vdc.setAllowedFileUsers(allowedFileUsers);

@@ -92,6 +92,8 @@
                 </div>
                 <div jsfc="ice:panelGroup">
                   <ice:inputText id="firstName"
+                                 required="#{(EditSitePage.dataverseType == 'Scholar') ? true : false}"
+                                 requiredMessage="This field is required."
                                  value="#{EditSitePage.firstName}"
                                  valueChangeListener="#{EditSitePage.changeFirstName}"
                                  validator="#{EditSitePage.validateIsEmpty}"/>
@@ -106,6 +108,8 @@
                 </div>
                 <div jsfc="ice:panelGroup">
                   <ice:inputText id="lastName"
+                                 required="#{(EditSitePage.dataverseType == 'Scholar') ? true : false}"
+                                 requiredMessage="This field is required."
                                  value="#{EditSitePage.lastName}"
                                  valueChangeListener="#{EditSitePage.changeLastName}"
                                  validator="#{EditSitePage.validateIsEmpty}"/>

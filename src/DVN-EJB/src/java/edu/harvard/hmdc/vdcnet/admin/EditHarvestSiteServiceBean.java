@@ -129,7 +129,7 @@ public class EditHarvestSiteServiceBean implements EditHarvestSiteService  {
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void save(Long userId, String name, String alias, boolean filesRestricted, String dtype) {
-        save ( userId,  name,  alias,  filesRestricted,  dtype);
+        save ( userId,  name,  alias,  filesRestricted,  dtype, "");
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)

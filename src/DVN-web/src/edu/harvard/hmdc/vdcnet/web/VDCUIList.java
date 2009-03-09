@@ -121,11 +121,9 @@ public class VDCUIList extends SortableList {
             }
             List vdcIds = null;
 
-            String thisObj = toString();
-            System.out.println(thisObj);
             if (alphaCharacter != null && vdcGroupId != null && !vdcGroupId.equals(new Long("-1"))) {
                 vdcIds = vdcService.getOrderedVDCIds(vdcGroupId, alphaCharacter, orderBy, hideRestricted);
-            } else if (alphaCharacter != null && (vdcGroupId == null || vdcGroupId.equals(new Long("-1")))) {
+            } else if (alphaCharacter != null && !alphaCharacter.equals("") && (vdcGroupId == null || vdcGroupId.equals(new Long("-1")))) {
                 vdcIds = vdcService.getOrderedVDCIds(null, alphaCharacter, orderBy, hideRestricted);
             } else if (vdcGroupId == null || vdcGroupId.equals(new Long("-1"))) {
                 vdcIds = vdcService.getOrderedVDCIds(null, null, orderBy, hideRestricted);

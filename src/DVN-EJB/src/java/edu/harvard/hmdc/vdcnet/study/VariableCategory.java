@@ -30,15 +30,13 @@
 package edu.harvard.hmdc.vdcnet.study;
 
 import edu.harvard.hmdc.vdcnet.util.AlphaNumericComparator;
-import java.math.BigDecimal;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
 
-import org.apache.commons.lang.builder.*;
 
 /**
  *
@@ -91,6 +89,7 @@ public class VariableCategory implements Comparable, java.io.Serializable {
     /**
      * Holds value of property label.
      */
+    @Column(columnDefinition = "TEXT")
     private String label;
 
     /**

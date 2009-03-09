@@ -62,6 +62,7 @@ public interface EditHarvestSiteService extends java.io.Serializable  {
    
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void save(Long userId, String name, String alias, boolean filesRestricted, String dtype);
+    public void save(Long userId, String name, String alias, boolean filesRestricted, String dtype, String affiliation);
 
    
     public void removeAllowedFileGroup(Long groupId);

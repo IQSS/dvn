@@ -32,6 +32,7 @@ import edu.harvard.hmdc.vdcnet.web.common.StatusMessage;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
 import javax.ejb.EJB;
 import com.icesoft.faces.component.ext.HtmlInputText;
+import edu.harvard.hmdc.vdcnet.web.common.VDCRequestBean;
 
 /**
  * <p>Page bean that corresponds to a similarly named JSP page.  This
@@ -132,6 +133,8 @@ public class EditNetworkNamePage extends VDCBaseBean  implements java.io.Seriali
         String newName = (String)textField1.getValue();
         thisVdcNetwork.setName((String)textField1.getValue());
         vdcNetworkService.edit(thisVdcNetwork);
+
+        getVDCRequestBean().setVdcNetwork(thisVdcNetwork);
         this.getVDCRequestBean().setSuccessMessage("Successfully updated network name.");
         return "myNetworkOptions";
     }

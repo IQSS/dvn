@@ -319,6 +319,7 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
         if (name != null && name.trim().length() == 0) {
             FacesMessage message = new FacesMessage("The dataverse name field must have a value.");
             context.addMessage(toValidate.getClientId(context), message);
+            ((UIInput)toValidate).setValid(false);
         }
         VDC thisVDC = getVDCRequestBean().getCurrentVDC();
         if (!name.equals(thisVDC.getName())){
@@ -354,7 +355,6 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
                 
                 if (aliasFound) {
                     ((UIInput)toValidate).setValid(false);
-                    
                     FacesMessage message = new FacesMessage("This alias is already taken.");
                     context.addMessage(toValidate.getClientId(context), message);
                 }
@@ -592,6 +592,7 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
          if (newValue == null || newValue.trim().length() == 0)  {
             FacesMessage message = new FacesMessage("The field must have a value.");
             context.addMessage(toValidate.getClientId(context), message);
+            ((UIInput)toValidate).setValid(false);
         }
     }
 

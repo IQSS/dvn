@@ -31,6 +31,7 @@ package edu.harvard.hmdc.vdcnet.admin;
 
 import edu.harvard.hmdc.vdcnet.harvest.SetDetailBean;
 import edu.harvard.hmdc.vdcnet.vdc.HarvestingDataverse;
+import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import java.util.List;
 import javax.ejb.Remove;
 import javax.ejb.TransactionAttribute;
@@ -61,7 +62,6 @@ public interface EditHarvestSiteService extends java.io.Serializable  {
     public void setSelectedMetadataPrefixId(Long selectedMetadataPrefixId);
    
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void save(Long userId, String name, String alias, boolean filesRestricted, String dtype);
     public void save(Long userId, String name, String alias, boolean filesRestricted, String dtype, String affiliation);
 
    

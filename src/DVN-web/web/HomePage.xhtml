@@ -238,8 +238,7 @@
                       </ice:commandSortHeader>
                     </f:facet>
                     <ice:outputLink styleClass="dvnHmpgDvNameLink" id="dataverse_link" value="/dvn/dv/#{item.vdc.alias}">
-                      <ice:outputText rendered="#{item.vdc.dtype != 'Scholar'}" value="#{item.vdc.name}"/>
-                      <ice:outputText rendered="#{item.vdc.dtype == 'Scholar'}" value="#{item.vdc.lastName}, #{item.vdc.firstName}"/>
+                      <ice:outputText value="#{item.name}"/>
                     </ice:outputLink>
                     <ice:outputLink rendered="#{!empty item.vdc.dvnDescription}"
                                     styleClass="dvnHmpgMoreInfoLink"

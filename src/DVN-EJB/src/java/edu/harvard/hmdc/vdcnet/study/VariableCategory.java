@@ -60,6 +60,7 @@ public class VariableCategory implements Comparable, java.io.Serializable {
     /**
      * Holds value of property balue.
      */
+    @Column(columnDefinition = "TEXT")
     private String value;
 
     /**
@@ -89,7 +90,6 @@ public class VariableCategory implements Comparable, java.io.Serializable {
     /**
      * Holds value of property label.
      */
-    @Column(columnDefinition = "TEXT")
     private String label;
 
     /**

@@ -88,7 +88,15 @@ public class StudyUI  implements java.io.Serializable {
         this.study = s;
         this.studyId = s.getId();
     }
-    
+    /**
+     *  Used in View Study Page - user is required to determine permissions
+     */
+    public StudyUI(Study s, VDCUser u) {
+        this.study = s;
+        this.user = u;
+        this.studyId = s.getId();
+    }
+
     public StudyUI(Long sid) {
         this.studyId = sid;
     }
@@ -118,7 +126,18 @@ public class StudyUI  implements java.io.Serializable {
         this.user = user;
         this.ipUserGroup = ipUserGroup;        
         this.selected = selected;
-    }     
+    }
+
+    /**
+     * Used for  Manage Studies page - to determine
+     * if user is authorized to Edit or change the state
+     * @param sid
+     * @param user
+     */
+    public StudyUI(Long sid, VDCUser user) {
+        this.studyId = sid;
+        this.user = user;
+    }
     
     /**
      * Creates a new instance of StudyUI
@@ -979,4 +998,20 @@ public class StudyUI  implements java.io.Serializable {
         return dateFormatter.format( getStudy().getLastUpdateTime() );
     }
 
+   public boolean isUserAuthorizedToEdit() {
+        boolean authorized = false;
+        if (user != null) {
+            authorized = getStudy().isUserAuthorizedToEdit(user);
+        }
+        return authorized;
+    }
+
+    public boolean isUserAuthorizedToRelease() {
+        boolean authorized = false;
+        if (user != null) {
+            authorized = getStudy().isUserAuthorizedToRelease(user);
+        }
+        return authorized;
+    }    
+    
 }

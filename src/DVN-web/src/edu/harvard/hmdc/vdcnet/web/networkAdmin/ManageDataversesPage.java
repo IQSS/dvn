@@ -59,6 +59,7 @@ public class ManageDataversesPage extends VDCBaseBean implements Serializable {
             if (vdcUIList == null || (vdcUIList.getAlphaCharacter() != null && ((String)hiddenAlphaCharacter.getValue()).equals("All")) ) {
                 vdcUIList = new VDCUIList(groupId, hideRestricted);
                 vdcUIList.setAlphaCharacter(new String(""));
+                vdcUIList.setSortColumnName(vdcUIList.getDateCreatedColumnName());
            }
         } else {
             if (!((String)hiddenAlphaCharacter.getValue()).equals(vdcUIList.getAlphaCharacter())) {

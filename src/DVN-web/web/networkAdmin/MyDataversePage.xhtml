@@ -23,11 +23,15 @@
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.myDvsTitle}"/>
           </div>
-          <div>
-              <ice:outputLink value="/dvn/faces/site/AddSitePage.xhtml" rendered="#{VDCSession.loginBean.networkCreator}">
-                  <ice:outputText value="#{bundlePageInfo.createDvTitle}"/>
-              </ice:outputLink>
-          </div>
+          <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="1"
+                         styleClass="dvnMyDataverseTableTop" columnClasses="dvn1"
+                         rendered="#{VDCSession.loginBean.networkCreator}">
+              <div jsfc="ice:panelGroup">
+                  <ice:outputLink value="/dvn/faces/site/AddSitePage.xhtml">
+                      <ice:outputText value="#{bundlePageInfo.createDvTitle}"/>
+                  </ice:outputLink>
+              </div>
+          </ice:panelGrid>
           <ice:dataTable cellpadding="0" cellspacing="0" columns="2" width="100%"
                          styleClass="dvnDataTable" id="gridPanel2"
                          columnClasses="dvnMyDataverseTableName, dvnMyDataverseTableRole"

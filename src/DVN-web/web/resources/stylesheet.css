@@ -1782,7 +1782,8 @@ span.dvnAddClassificationDvReleased {}
         
 
 
-.childRowIndentStyle {text-indent:15px;}
+.childRowIndentStyle {text-indent: 1em;}
+.grandchildRowIndentStyle {text-indent: 1.5em;}
 .activityColumn {text-align: center;}
 .activity {width: 48px; margin: 0 auto;}
 .activitylevelicon {vertical-align: middle; width: 48px; height: 8px; background: url(/dvn/resources/activity-icons.png) no-repeat;}
@@ -1898,7 +1899,11 @@ li.affiliationBullet {
 .groupEditFooter        { width:98%; background-color:#d9e7f0; padding:0px; text-align:right;  }
 
 /**** My Dataverse Page ****/
-
+.dvnMyDataverseTableTop {
+  border: 1px solid #d9d9d9; border-bottom: 0; width: 100%;
+}
+.dvnMyDataverseTableTop td {text-align: right;}
+.dvnMyDataverseTableTop td div {padding: .5em .25em;}
 .dvnMyDataverseTableName {
   width: 70%;
   padding-bottom: 3px;
@@ -1970,7 +1975,7 @@ div.dvnOptionsTableLicense {padding-top: .5em;}
 .dvnPermissionsTable td {padding: .5em 2em; border-bottom: 1px solid lightgray;}
 .dvnPermissionsTable td.dvnPermissionsStackedCells {border-bottom: none;}
 td.dvnPermissionsTableHeader {padding: .5em 1em; background: gainsboro; color: grey; text-transform: uppercase;}
-.dvnPermissionsTableOption {width: 240px;}
+td.dvnPermissionsTableOption {width: 240px; padding-top: .75em; padding-bottom: .75em; display: table-cell; vertical-align: top;}
 .dvnPermissionsTable .dvnPermissionsEmpty {text-align: center;}
 .dvnPermissionsTable .dvnPermissionsEmpty span.iceOutTxt {color: grey;}
 

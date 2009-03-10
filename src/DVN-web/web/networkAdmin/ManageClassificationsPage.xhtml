@@ -50,7 +50,7 @@
             </f:facet>
             <!-- contract/expand column -->
             <ice:column>
-              <ice:panelGroup style="text-indent: #{dvItems.textIndent}px !important;">
+              <ice:panelGroup>
                 <!-- Render the expand/contract if there is an image -->
                 <ice:commandLink actionListener="#{manageClassificationsPage.toggleChildren}">
                   <ice:graphicImage id="expandContractImage"
@@ -74,7 +74,7 @@
                   <ice:outputText value="#{manageClassificationsPage.nameColumnName}"/>
                 </ice:commandSortHeader>
               </f:facet>
-              <ice:outputLink value="/dvn/faces/networkAdmin/AddClassificationsPage.xhtml">
+              <ice:outputLink style="text-indent: #{dvItems.textIndent}em !important;" value="/dvn/faces/networkAdmin/AddClassificationsPage.xhtml">
                 <f:param name="cid" value="#{dvItems.id}"/>
                 <ice:outputText styleClass="#{dvItems.indentStyleClass}" value="#{dvItems.name}"/>
               </ice:outputLink>

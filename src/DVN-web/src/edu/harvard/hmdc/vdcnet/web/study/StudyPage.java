@@ -315,8 +315,8 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
                 if ("files".equals(tab)) {
                     initStudyUIWithFiles();
                   
-                } else {
-                    studyUI = new StudyUI(studyService.getStudyDetail(studyId));
+                } else {                
+                        studyUI = new StudyUI(studyService.getStudyDetail(studyId),getVDCSessionBean().getUser());
                 }
 
 
@@ -472,59 +472,16 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
         this.studyUI = studyUI;
     }
 
-    public boolean isUserAuthorizedToEdit() {
-        boolean authorized = false;
-        if (getVDCSessionBean().getUser() != null) {
-            authorized = studyUI.getStudy().isUserAuthorizedToEdit(getVDCSessionBean().getUser());
-        }
-        return authorized;
-    }
-
-    public boolean isUserAuthorizedToRelease() {
-        boolean authorized = false;
-        if (getVDCSessionBean().getUser() != null) {
-            authorized = studyUI.getStudy().isUserAuthorizedToRelease(getVDCSessionBean().getUser());
-        }
-        return authorized;
-    }
+   
 
     public void setReadyForReview(ActionEvent ae) {
-        ReviewState inReview = this.reviewStateService.findByName(ReviewStateServiceLocal.REVIEW_STATE_IN_REVIEW);
-        studyUI.getStudy().setReviewState(inReview);
-        studyService.updateReviewState(studyUI.getStudy().getId(),ReviewStateServiceLocal.REVIEW_STATE_IN_REVIEW);
-
-        Study study = studyUI.getStudy();
-        VDCUser user = getVDCSessionBean().getLoginBean().getUser();
-        // If the user adding the study is a Contributor, send notification to all Curators in this VDC
-        // and send an email to the Contributor about the status of the study
-
-        if (user.getVDCRole(study.getOwner()) != null && user.getVDCRole(study.getOwner()).getRole().getName().equals(RoleServiceLocal.CONTRIBUTOR)) {
-            mailService.sendStudyInReviewNotification(user.getEmail(), study.getTitle());
-
-            // Notify all curators and admins that study is in review
-            for (Iterator it = study.getOwner().getVdcRoles().iterator(); it.hasNext();) {
-                VDCRole elem = (VDCRole) it.next();
-                if (elem.getRole().getName().equals(RoleServiceLocal.CURATOR) || elem.getRole().getName().equals(RoleServiceLocal.ADMIN)) {
-
-                    mailService.sendStudyAddedCuratorNotification(elem.getVdcUser().getEmail(), user.getUserName(), study.getTitle(), study.getOwner().getName());
-                }
-            }
-
-        }
+        studyService.setReadyForReview(studyUI.getStudy().getId());
+        studyUI.setStudy(studyService.getStudy(studyId));
     }
 
     public void setReleased(ActionEvent ae) {
-      
-        
-        ReviewState released = this.reviewStateService.findByName(ReviewStateServiceLocal.REVIEW_STATE_RELEASED);
-        studyUI.getStudy().setReviewState(released);
-        studyService.updateReviewState(studyUI.getStudy().getId(),ReviewStateServiceLocal.REVIEW_STATE_RELEASED);
-    
-        VDCRole studyCreatorRole = studyUI.getStudy().getCreator().getVDCRole(studyUI.getStudy().getOwner());
-
-        if (studyCreatorRole != null && studyCreatorRole.getRole().getName().equals(RoleServiceLocal.CONTRIBUTOR)) {
-            mailService.sendStudyReleasedNotification(studyUI.getStudy().getCreator().getEmail(), studyUI.getStudy().getTitle(), studyUI.getStudy().getOwner().getName());
-        }
+        studyService.setReleased(studyUI.getStudy().getId());
+        studyUI.setStudy(studyService.getStudy(studyId));
     }
 
     public String requestFileAccess() {

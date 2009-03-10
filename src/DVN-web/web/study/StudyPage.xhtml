@@ -161,9 +161,9 @@
               <ice:outputText value="&lt; View Previous Study Listing"/>
             </ice:outputLink>
           </div>
-          <div jsfc="ice:panelGroup" styleClass="dvn_sectionTitleLinksR" rendered="#{studyPage.userAuthorizedToEdit or studyPage.studyUI.study.inReview or studyPage.studyUI.study.new}">
-            <ice:outputText styleClass="vdcStudyStatus" value="Currently unavailable for editing because file upload is in progress." rendered="#{studyPage.userAuthorizedToEdit and !(studyPage.studyUI.study.studyLock==null)}"/>
-            <div jsfc="ice:panelGroup" styleClass="dvn_tooltip" rendered="#{studyPage.userAuthorizedToEdit and studyPage.studyUI.study.studyLock==null}">
+          <div jsfc="ice:panelGroup" styleClass="dvn_sectionTitleLinksR" rendered="#{studyPage.studyUI.userAuthorizedToEdit or studyPage.studyUI.study.inReview or studyPage.studyUI.study.new}">
+            <ice:outputText styleClass="vdcStudyStatus" value="Currently unavailable for editing because file upload is in progress." rendered="#{studyPage.studyUI.userAuthorizedToEdit and !(studyPage.studyUI.study.studyLock==null)}"/>
+            <div jsfc="ice:panelGroup" styleClass="dvn_tooltip" rendered="#{studyPage.studyUI.userAuthorizedToEdit and studyPage.studyUI.study.studyLock==null}">
             <!--  <script type="text/javascript">
                   // <![CDATA[
                   $('.dvn_tooltip a.vdcTooltipLink').tooltip({
@@ -176,17 +176,17 @@
               </script> -->
               <ice:commandButton styleClass="dvnStudyPageInlineReleaseButton"
                                     value="Release"
-                                    actionListener="#{studyPage.setReleased}" rendered="#{studyPage.userAuthorizedToRelease and studyPage.studyUI.study.studyLock==null and studyPage.studyUI.study.inReview}"/>
+                                    actionListener="#{studyPage.setReleased}" rendered="#{studyPage.studyUI.userAuthorizedToRelease and studyPage.studyUI.study.studyLock==null and studyPage.studyUI.study.inReview}"/>
               <ul class="studyEditLinks editDropDown">
                 <li onmouseover="showEditLinks(this);" onmouseout="hideEditLinks(this);">
                   <a class="editDropDownLink">Edit...</a>
                   <ul>
                     <li>
-                      <ice:outputLink rendered="#{studyPage.userAuthorizedToEdit and studyPage.studyUI.study.studyLock==null}"
+                      <ice:outputLink rendered="#{studyPage.studyUI.userAuthorizedToEdit and studyPage.studyUI.study.studyLock==null}"
                                         value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=catalog">
                         <ice:outputText value="Edit Cataloging Information"/>
                       </ice:outputLink>
-                      <ice:outputLink rendered="#{studyPage.userAuthorizedToEdit and studyPage.studyUI.study.studyLock==null and !empty studyPage.studyUI.study.fileCategories}"
+                      <ice:outputLink rendered="#{studyPage.studyUI.userAuthorizedToEdit and studyPage.studyUI.study.studyLock==null and !empty studyPage.studyUI.study.fileCategories}"
                                         value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=files">
                         <ice:outputText value="Edit Documentation Data and Analysis"/>
                       </ice:outputLink>
@@ -197,7 +197,7 @@
               <dvn:tooltip tooltipMessage="#{studybundle.addTip}" linkText="#{studybundle.addText}" eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/AddFilesPage.xhtml?studyId=#{studyPage.studyUI.study.id}" cssClass="vdcTooltipLink"/>
               <dvn:tooltip tooltipMessage="#{studybundle.permissionsTip}" linkText="#{studybundle.permissionsText}" eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPermissionsPage.xhtml?studyId=#{studyPage.studyUI.study.id}" cssClass="vdcTooltipLink"/>
               <dvn:tooltip tooltipMessage="#{studybundle.deleteTip}" linkText="#{studybundle.deleteText}" eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/DeleteStudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}" cssClass="vdcTooltipLink"/>
-              <span jsfc="ice:outputText" rendered="#{studyPage.userAuthorizedToRelease and VDCRequest.currentVDC != null}">
+              <span jsfc="ice:outputText" rendered="#{studyPage.studyUI.userAuthorizedToRelease and VDCRequest.currentVDC != null}">
                 <dvn:tooltip tooltipMessage="#{studybundle.templateTip}" linkText="#{studybundle.templateText}" eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/TemplateFormPage.xhtml?studyId=#{studyPage.studyUI.study.id}" cssClass="vdcTooltipLink"/>
               </span>
               <ice:commandButton rendered="#{studyPage.studyUI.study.new}" value="Ready for Review" actionListener="#{studyPage.setReadyForReview}"/>
@@ -524,17 +524,17 @@
               <ice:panelTab id="files" label="Documentation, Data and Analysis" url="#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=files#{studyPage.studyListingIndexAsParameter}">
                 <div jsfc="ice:panelGroup" id="layoutPanel2" panelLayout="flow" styleClass="vdcStudyFilesPage">
                   <div jsfc="ice:panelGroup" id="noFilesPanel1" panelLayout="flow" styleClass="vdcStudyFilesEmpty" rendered="#{empty studyPage.studyUI.study.fileCategories}">
-                    <div jsfc="ice:panelGroup" id="noFilesPanel2" styleClass="vdcStudyFilesEmptyMessage" rendered="#{!studyPage.userAuthorizedToEdit}">
+                    <div jsfc="ice:panelGroup" id="noFilesPanel2" styleClass="vdcStudyFilesEmptyMessage" rendered="#{!studyPage.studyUI.userAuthorizedToEdit}">
                       <ice:outputText value="No files have been provided for this study."/>
                     </div>
-                    <div jsfc="ice:panelGroup" id="noFilesPanel3" styleClass="vdcStudyFilesEmptyMessage" rendered="#{studyPage.userAuthorizedToEdit and (studyPage.studyUI.study.studyLock==null)}">
+                    <div jsfc="ice:panelGroup" id="noFilesPanel3" styleClass="vdcStudyFilesEmptyMessage" rendered="#{studyPage.studyUI.userAuthorizedToEdit and (studyPage.studyUI.study.studyLock==null)}">
                       <ice:outputText value="No files have been uploaded to this study. To add a file, follow the 'Add File(s)' link on the top right of this page."/>
                     </div>
-                    <div jsfc="ice:panelGroup" id="noFilesPanel4a" styleClass="vdcStudyFilesEmptyMessage" rendered="#{studyPage.userAuthorizedToEdit and !(studyPage.studyUI.study.studyLock==null)}">
+                    <div jsfc="ice:panelGroup" id="noFilesPanel4a" styleClass="vdcStudyFilesEmptyMessage" rendered="#{studyPage.studyUI.userAuthorizedToEdit and !(studyPage.studyUI.study.studyLock==null)}">
                       <ice:outputText styleClass="warnMessage" value="One or more data files are being uploaded..."/>
                     </div>
                   </div>
-                  <div jsfc="ice:panelGroup" id="noFilesPanel4b" styleClass="vdcStudyFilesMessage" rendered="#{studyPage.userAuthorizedToEdit and !(studyPage.studyUI.study.studyLock==null) and !empty studyPage.studyUI.study.fileCategories}">
+                  <div jsfc="ice:panelGroup" id="noFilesPanel4b" styleClass="vdcStudyFilesMessage" rendered="#{studyPage.studyUI.userAuthorizedToEdit and !(studyPage.studyUI.study.studyLock==null) and !empty studyPage.studyUI.study.fileCategories}">
                     <ice:outputText styleClass="warnMessage" value="One or more data files are being uploaded..."/>
                   </div>
                   <div jsfc="ice:panelGroup" id="layoutPanel3" panelLayout="flow" styleClass="vdcStudyFilesContent" rendered="#{!empty studyPage.studyUI.study.fileCategories}">                    

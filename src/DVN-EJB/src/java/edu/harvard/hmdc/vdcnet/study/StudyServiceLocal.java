@@ -153,4 +153,8 @@ public interface StudyServiceLocal extends java.io.Serializable {
     public Long getTotalActivityCount();
 
     public Boolean doesStudyHaveSubsettableFiles(Long studyId);
+    
+    public void setReadyForReview(Long studyId);
+    public void setReleased(Long studyId);
+
 }

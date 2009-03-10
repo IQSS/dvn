@@ -28,7 +28,9 @@
  */
 package edu.harvard.hmdc.vdcnet.study;
 
+import edu.harvard.hmdc.vdcnet.admin.RoleServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.UserServiceLocal;
+import edu.harvard.hmdc.vdcnet.admin.VDCRole;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
 import edu.harvard.hmdc.vdcnet.ddi.DDIServiceLocal;
 import edu.harvard.hmdc.vdcnet.dsb.DSBIngestMessage;
@@ -144,6 +146,44 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         study.setReviewState(state);
      
     }
+    
+    public void setReadyForReview(Long studyId) {
+        Study study = em.find(Study.class, studyId);
+        ReviewState inReview = this.reviewStateService.findByName(ReviewStateServiceLocal.REVIEW_STATE_IN_REVIEW);
+        study.setReviewState(inReview);
+            
+        VDCUser user = study.getCreator();
+        // If the user adding the study is a Contributor, send notification to all Curators in this VDC
+        // and send an email to the Contributor about the status of the study
+
+        if (user.getVDCRole(study.getOwner()) != null && user.getVDCRole(study.getOwner()).getRole().getName().equals(RoleServiceLocal.CONTRIBUTOR)) {
+            mailService.sendStudyInReviewNotification(user.getEmail(), study.getTitle());
+
+            // Notify all curators and admins that study is in review
+            for (Iterator it = study.getOwner().getVdcRoles().iterator(); it.hasNext();) {
+                VDCRole elem = (VDCRole) it.next();
+                if (elem.getRole().getName().equals(RoleServiceLocal.CURATOR) || elem.getRole().getName().equals(RoleServiceLocal.ADMIN)) {
+                    mailService.sendStudyAddedCuratorNotification(elem.getVdcUser().getEmail(), user.getUserName(), study.getTitle(), study.getOwner().getName());
+                }
+            }
+
+        }
+    }
+         
+     public void setReleased(Long studyId) {
+      
+        Study study = em.find(Study.class, studyId);
+        ReviewState released = this.reviewStateService.findByName(ReviewStateServiceLocal.REVIEW_STATE_RELEASED);
+        study.setReviewState(released);
+     
+        VDCRole studyCreatorRole = study.getCreator().getVDCRole(study.getOwner());
+
+        if (studyCreatorRole != null && studyCreatorRole.getRole().getName().equals(RoleServiceLocal.CONTRIBUTOR)) {
+            mailService.sendStudyReleasedNotification(study.getCreator().getEmail(), study.getTitle(), study.getOwner().getName());
+        }
+    }
+
+     
     public Study getStudyByHarvestInfo(VDC dataverse, String harvestIdentifier) {
         String queryStr = "SELECT s FROM Study s WHERE s.owner.id = '" + dataverse.getId() + "' and s.harvestIdentifier = '" + harvestIdentifier + "'";
         Query query = em.createQuery(queryStr);
@@ -2012,5 +2052,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
 
         return null;
     }
+    
+
 
 }

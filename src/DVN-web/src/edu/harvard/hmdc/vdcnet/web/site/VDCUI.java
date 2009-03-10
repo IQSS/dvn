@@ -54,6 +54,7 @@ public class VDCUI  implements java.io.Serializable {
     private double maxDownloadCount = -1;
     private long activity = -1;
     private Long numberOwnedStudies;
+    private String lastUpdateTimeString;
     private Long vdcId;
     private String activityClass;
     private String creator;
@@ -124,12 +125,6 @@ public class VDCUI  implements java.io.Serializable {
      }
 
     public String getCreator() {
-        UserServiceLocal userService = null;
-        try {
-            userService = (UserServiceLocal) new InitialContext().lookup("java:comp/env/vdcUserService");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         VDCUser vdcUser = vdc.getCreator();
         if (vdcUser == null) {
             return "--";
@@ -154,19 +149,23 @@ public class VDCUI  implements java.io.Serializable {
     }
 
     public String getLastUpdateTime() {
-        // study has a column lastupdatetime, and will we use the release date or the created date or some other date as an alternate.
-        StudyServiceLocal studyService = null;
-        try {
-            studyService = (StudyServiceLocal) new InitialContext().lookup("java:comp/env/studyService");
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (lastUpdateTimeString == null) {
+        // use date of most recently updated owned study
+            StudyServiceLocal studyService = null;
+            try {
+                studyService = (StudyServiceLocal) new InitialContext().lookup("java:comp/env/studyService");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            Timestamp lastUpdateTime = studyService.getLastUpdatedTime(vdc.getId());
+            LocalizedDate localizedDate = new LocalizedDate();
+            if (lastUpdateTime != null)
+                lastUpdateTimeString = localizedDate.getLocalizedDate(lastUpdateTime, DateFormat.MEDIUM);
+            else
+                lastUpdateTimeString =  "--";
         }
-        Timestamp lastUpdateTime = studyService.getLastUpdatedTime(vdc.getId());
-        LocalizedDate localizedDate = new LocalizedDate();
-        if (lastUpdateTime != null)
-            return localizedDate.getLocalizedDate(lastUpdateTime, DateFormat.MEDIUM);
-        else
-            return "--";
+
+        return lastUpdateTimeString;
     }
 
     public String getName() {
@@ -178,7 +177,11 @@ public class VDCUI  implements java.io.Serializable {
 
 
     public Long getNumberOwnedStudies() {
-        numberOwnedStudies = Long.parseLong(String.valueOf(vdc.getOwnedStudies().size()));
+        if (numberOwnedStudies == null) {
+            initVdcService();
+            numberOwnedStudies = vdcService.getOwnedStudyCount(vdcId);
+        }
+
         return numberOwnedStudies;
     }
 

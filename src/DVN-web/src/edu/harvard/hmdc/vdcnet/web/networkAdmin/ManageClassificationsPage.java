@@ -111,11 +111,22 @@ public class ManageClassificationsPage extends VDCBaseBean implements Serializab
         while(outeriterator.hasNext()) {
             classificationsSize++;
             VDCGroup vdcgroup = (VDCGroup)outeriterator.next();
-                String indentStyle = (vdcgroup.getParent() == null) ? "groupRowIndentStyle" : "childRowIndentStyle";
-                if (vdcgroup.getParent() == null) {
-                    populateParentClassification(vdcgroup, indentStyle);
+            String indentStyle = "";
+            if (vdcgroup.getParent() == null) {
+                   indentStyle= "groupRowIndentStyle";
+                }
+            else {
+                VDCGroup parent = vdcGroupService.findById(vdcgroup.getParent());
+                if (parent.getParent() == null) {
+                    indentStyle = "childRowIndentStyle";
+                } else {
+                    indentStyle = "grandchildRowIndentStyle";
                 }
             }
+            if (vdcgroup.getParent() == null) {
+                populateParentClassification(vdcgroup, indentStyle);
+            }
+        }
     }
 
 
@@ -252,7 +263,7 @@ public class ManageClassificationsPage extends VDCBaseBean implements Serializab
          String contractImage   = CONTRACT_IMAGE;
          boolean isExpanded     = false;
          Iterator iterator = children.iterator();
-         indent = parentitem.getTextIndent() + 5;
+         indent = parentitem.getTextIndent() + 1;
          while(iterator.hasNext()) {
              VDCGroup vdcgroup = (VDCGroup)iterator.next();
             synchronized(itemBeans) {

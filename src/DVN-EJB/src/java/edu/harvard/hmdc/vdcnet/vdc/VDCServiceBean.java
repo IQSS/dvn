@@ -789,7 +789,7 @@ public class VDCServiceBean implements VDCServiceLocal {
             orderingClause += "order by updated desc, max(lastupdatetime) desc ";
             
         } else if (VDC.ORDER_BY_CREATOR.equals(orderBy)) {
-            selectClause   += ", u." + orderBy + " as " + orderBy + " ";
+            selectClause   += ", upper(u." + orderBy + ") as " + orderBy + " ";
             fromClause     += ", vdcuser u ";
             whereClause    += "AND v.creator_id = u.id ";
             orderingClause += " ORDER BY " + orderBy;
@@ -799,8 +799,8 @@ public class VDCServiceBean implements VDCServiceLocal {
             orderingClause += " order by sortname ";
 
         } else if (VDC.ORDER_BY_AFFILIATION.equals(orderBy)) {
-            selectClause   += ", upper(affiliation) ";
-            orderingClause += " order by upper(affiliation) ";
+            selectClause   += ", (CASE WHEN affiliation IS NULL or affiliation = '' THEN 1 ELSE 0 END) as isempty,  upper(affiliation) ";
+            orderingClause += " order by isempty, upper(affiliation) ";
 
         } else if (VDC.ORDER_BY_CREATE_DATE.equals(orderBy)) {
             selectClause += ", " + orderBy + " ";

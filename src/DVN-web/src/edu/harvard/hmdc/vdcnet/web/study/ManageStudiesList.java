@@ -5,12 +5,15 @@
 
 package edu.harvard.hmdc.vdcnet.web.study;
 
+import com.icesoft.faces.component.ext.HtmlDataTable;
+import edu.harvard.hmdc.vdcnet.admin.VDCUser;
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
 import edu.harvard.hmdc.vdcnet.web.SortableList;
 import edu.harvard.hmdc.vdcnet.web.common.LoginBean;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
+import javax.faces.event.ActionEvent;
 
 
 
@@ -37,6 +40,22 @@ public class ManageStudiesList extends SortableList {
     private Long vdcId;
     private LoginBean loginBean;
     
+    /**
+     * Holds value of property harvestDataTable.
+     */
+    private HtmlDataTable studyDataTable;
+
+    /**
+     * Getter for property siteDataTable.
+     * @return Value of property siteDataTable.
+     */
+    public HtmlDataTable getStudyDataTable() {
+        return this.studyDataTable;
+    }  
+    public void setStudyDataTable(HtmlDataTable studyDataTable) {
+        this.studyDataTable = studyDataTable;
+    }  
+   
     public ManageStudiesList() {
         super(ID_COLUMN);
    
@@ -72,8 +91,9 @@ public class ManageStudiesList extends SortableList {
                 studyIds = studyService.getDvOrderedStudyIds(vdcId, orderBy, ascending);
             }
             studyUIList = new ArrayList<StudyUI>();
+            VDCUser user = loginBean == null ? null : loginBean.getUser();
             for (Object studyId: studyIds) {
-                studyUIList.add(new StudyUI((Long)studyId));
+                studyUIList.add(new StudyUI((Long)studyId,user));
             }
 }
 
@@ -120,5 +140,19 @@ public class ManageStudiesList extends SortableList {
         this.vdcId = vdcId;
     }
     
+     public void doSetReleased(ActionEvent ae) {
+        StudyUI studyUI = (StudyUI) this.studyDataTable.getRowData();
+        studyService.setReleased(studyUI.getStudyId());
+        // set list to null, to force a fresh retrieval of data
+        studyUIList=null;
+    }
+
+    public void doSetInReview(ActionEvent ae) {
+        StudyUI studyUI = (StudyUI) this.studyDataTable.getRowData();
+        studyService.setReadyForReview(studyUI.getStudyId());                 
+        // set list to null, to force a fresh retrieval of data
+        studyUIList=null;
+    }
+ 
 
 }

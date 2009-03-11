@@ -61,6 +61,7 @@ public class LoginPage extends VDCBaseBean implements java.io.Serializable  {
     
     
     private Boolean clearWorkflow=true;
+    String refererUrl = new String("");
  
     public void init() {
         super.init();
@@ -68,31 +69,25 @@ public class LoginPage extends VDCBaseBean implements java.io.Serializable  {
             LoginWorkflowBean lwf = (LoginWorkflowBean)getBean("LoginWorkflowBean");
             lwf.clearWorkflowState();
         }
-        setAffiliateNames();
         HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-        String refererUrl = new String("");
         String protocol = request.getProtocol().substring(0, request.getProtocol().indexOf("/")).toLowerCase();
         String defaultPage = new String("");
         String serverPort = new String((request.getServerPort() != 80 ? ":" + request.getServerPort() : ""));
         if (getVDCRequestBean().getCurrentVDC() != null) {
-            defaultPage = protocol + "://" + request.getServerName() + serverPort + request.getContextPath() + "/dv/" + getVDCRequestBean().getCurrentVDC().getAlias() + request.getServletPath();
+            defaultPage = protocol + "://" + request.getServerName() + serverPort + request.getContextPath() + "/dv/" + getVDCRequestBean().getCurrentVDC().getAlias();
         } else {
-            defaultPage = protocol + "://" + request.getServerName() + serverPort + request.getContextPath() + request.getServletPath() + "/dvn";
+            defaultPage = protocol + "://" + request.getServerName() + serverPort + request.getContextPath();
         }
-        // Set referer needed by loginAffiliate -- must be passed on the querystring to the EZProxy
-        if (sessionGet("refererUrl") == null) {
-            if (request.getHeader("referer") != null && !request.getHeader("referer").equals("")) {
-                if (request.getHeader("referer").indexOf("/login/") != -1 || request.getHeader("referer").contains("/admin/") || request.getHeader("referer").contains("/networkAdmin/")) {
-                    refererUrl = defaultPage;
-                } else {
-                    refererUrl = request.getHeader("referer");
-                }
-            } else {
+        if (request.getHeader("referer") != null && !request.getHeader("referer").equals("")) {
+            if (request.getHeader("referer").indexOf("/login/") != -1 || request.getHeader("referer").contains("/admin/") || request.getHeader("referer").contains("/networkAdmin/")) {
                 refererUrl = defaultPage;
+            } else {
+                refererUrl = request.getHeader("referer");
             }
-
-            sessionPut("refererUrl", refererUrl);
+        } else {
+            refererUrl = defaultPage;
         }
+        setAffiliateNames();
     }
 
     /** 
@@ -104,10 +99,6 @@ public class LoginPage extends VDCBaseBean implements java.io.Serializable  {
   
 
     public String login() {
-        if (sessionGet("refererUrl") != null) //remove loginAffiliate related session vars, wjb Sept 2007
-        {
-            sessionRemove("refererUrl");
-        }
         boolean activeOnly = true;
         VDCUser user = userService.findByUserName(userName.trim(), activeOnly);
         if (user == null || !userService.validatePassword(user.getId(),password)) {
@@ -202,21 +193,7 @@ public class LoginPage extends VDCBaseBean implements java.io.Serializable  {
         this.redirect = redirect;
     }
 
-    /* properties and methods to support
-     * ezproxy login
-     *
-     *
-     * @author wbossons
-     */
-    public void loginAffiliate() {
-        try {
-            FacesContext.getCurrentInstance().getExternalContext().redirect(this.getAffiliateName() + "?url=" + sessionGet("refererUrl"));
-        } catch (IOException ioe) {
-            throw new FacesException(ioe);
-        } finally {
-            sessionRemove("refererUrl");
-        }
-    }
+    
     /**
      * Holds value of property affiliateName.
      */
@@ -242,15 +219,21 @@ public class LoginPage extends VDCBaseBean implements java.io.Serializable  {
     private void setAffiliateNames() {
         List list = (List) groupService.findAllLoginAffiliates();
         Iterator iterator = list.iterator();
-        affiliateNames = new SelectItem[list.size()];
+        affiliateNames = new SelectItem[(list.size() + 1)];
         int i = 0;
         while (iterator.hasNext()) {
-            //now populate this
+            if (i == 0) {
+                SelectItem selectitem = new SelectItem();
+                selectitem.setLabel(new String("Select One"));
+                selectitem.setValue(new String(""));
+                affiliateNames[i] = selectitem;
+                i++;
+            }
+            SelectItem selectitem = new SelectItem();
             this.setIsAffiliates("true");
             LoginAffiliate loginaffiliate = (LoginAffiliate) iterator.next();
-            SelectItem selectitem = new SelectItem();
             selectitem.setLabel((String) loginaffiliate.getName());
-            selectitem.setValue((String) loginaffiliate.getUrl());
+            selectitem.setValue((String) loginaffiliate.getUrl() + "?url=" + refererUrl);
             affiliateNames[i] = selectitem;
             i++;
         }

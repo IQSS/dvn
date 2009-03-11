@@ -74,9 +74,9 @@
                   <ice:outputText value="#{manageClassificationsPage.nameColumnName}"/>
                 </ice:commandSortHeader>
               </f:facet>
-              <ice:outputLink style="text-indent: #{dvItems.textIndent}em !important;" value="/dvn/faces/networkAdmin/AddClassificationsPage.xhtml">
+              <ice:outputLink value="/dvn/faces/networkAdmin/AddClassificationsPage.xhtml">
                 <f:param name="cid" value="#{dvItems.id}"/>
-                <ice:outputText styleClass="#{dvItems.indentStyleClass}" value="#{dvItems.name}"/>
+                <ice:outputText styleClass="#{dvItems.indentStyleClass}" style="padding-left: #{dvItems.textIndent}em; background-position: #{dvItems.textIndent - 1.5}em;" value="#{dvItems.name}"/>
               </ice:outputLink>
             </ice:column>
             <!-- description -->

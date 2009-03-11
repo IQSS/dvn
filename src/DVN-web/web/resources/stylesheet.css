@@ -1782,8 +1782,7 @@ span.dvnAddClassificationDvReleased {}
         
 
 
-.childRowIndentStyle {text-indent: 1em;}
-.grandchildRowIndentStyle {text-indent: 1.5em;}
+.childRowIndentStyle {background: url(/dvn/resources/icefaces/dvn_rime/css-images/tree_line_last_node.gif) 0 0 no-repeat;}
 .activityColumn {text-align: center;}
 .activity {width: 48px; margin: 0 auto;}
 .activitylevelicon {vertical-align: middle; width: 48px; height: 8px; background: url(/dvn/resources/activity-icons.png) no-repeat;}

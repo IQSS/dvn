@@ -1934,6 +1934,7 @@ li.affiliationBullet {
 .dvnLoginInputArea fieldset div {margin-top: 1em; text-align: left;}
 .dvnLoginInputArea span fieldset {margin-top: 1em;}
 .dvnLoginContentAreaFooter {margin-top: 1em; text-align: center;}
+fieldset.dvnLoginPageAffiliate input.iceCmdBtn {display:block; float:right;}
 /* IE FIELDSET BACKGROUND BUG FIX */
 * html .dvnLoginInputArea {
   padding-top: 1em;

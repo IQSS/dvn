@@ -56,14 +56,14 @@
                           }
                      // ]]>
                  </script>
-                <fieldset>
+                <fieldset class="dvnLoginPageAffiliate">
                   <legend>Affiliate</legend>
                   <label for="username">Affiliate Name</label>
                   <ice:selectOneMenu id="affiliateName">
                     <f:selectItems value="#{LoginPage.affiliateNames}"/>
                   </ice:selectOneMenu>
                   <ice:message for="affiliateName" styleClass="errorMessage"/>
-                  <input type="button" class="iceCmdBtn" style="display:block; float:right;" onclick="loginAffiliate('vanillaLoginForm:affiliateName')" value="Log in"/>
+                  <input type="button" class="iceCmdBtn" onclick="loginAffiliate('vanillaLoginForm:affiliateName')" value="Log in"/>
                 </fieldset>
               </div>
               <!-- ************* end affiliate login section *************** -->

@@ -45,23 +45,25 @@
               <div jsfc="h:panelGroup" rendered="#{LoginPage.isAffiliates != null}">
                 <script type="text/javascript">
                     // <![CDATA[
-
-                          function loginAffiliate(obj) {
-                              downloadUrl = obj.options[obj.selectedIndex ].value + document.referrer;
+                          function loginAffiliate(objId) {
+                              var obj     = eval("document.getElementById('" + objId + "')");
+                              downloadUrl = obj.options[obj.selectedIndex].value;
                               if (downloadUrl != "") {
+                                alert("settting ...");
                                 window.location.href = downloadUrl;
                               }
+                              alert(window.location.href);
                           }
-
                      // ]]>
                  </script>
                 <fieldset>
                   <legend>Affiliate</legend>
                   <label for="username">Affiliate Name</label>
-                  <ice:selectOneMenu onchange="loginAffiliate(this)" id="affiliateName" value="#{LoginPage.affiliateName}">
+                  <ice:selectOneMenu id="affiliateName">
                     <f:selectItems value="#{LoginPage.affiliateNames}"/>
                   </ice:selectOneMenu>
                   <ice:message for="affiliateName" styleClass="errorMessage"/>
+                  <input type="button" class="iceCmdBtn" style="display:block; float:right;" onclick="loginAffiliate('vanillaLoginForm:affiliateName')" value="Log in"/>
                 </fieldset>
               </div>
               <!-- ************* end affiliate login section *************** -->

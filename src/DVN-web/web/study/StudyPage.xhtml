@@ -17,11 +17,20 @@
     <gui:param name="pageTitle" value="DVN - Study"/>
     <gui:param name="uniquifier" value="#{studyPage.selectedIndex}"/> 
     <gui:define name="body">
-      <script type="text/javascript">
+        <script type="text/javascript">
+          // <![CDATA[
+          function toggleMoreInfo(moreInfo) {
+            jQuery(moreInfo).next().slideToggle(500);
+            var toggleLabelText = (jQuery(moreInfo).children('span.iceOutTxt').text() == 'View Data Citation [+]') ? 'Collapse Data Citation [+]' : 'View Data Citation [+]';
+            jQuery(moreInfo).children('span.iceOutTxt').text(toggleLabelText);
+            return false;
+          };
+          // ]]>
+        </script>
+        <script type="text/javascript">
           // <![CDATA[
           jQuery(document).ready(function(){
           jQuery(".vdcStudyDesc").truncate({max_length: 198});
-          jQuery(".vdcStudyDataCitation").truncate({max_length: 25, more: "View Data Citation [+]", less: "Collapse Data Citation [-]"});
           jQuery(".TogglePaneFancy").initTogglePane({headerClassClosed:"TogglePaneFancyHeaderClosed"});
         });
 
@@ -673,7 +682,14 @@
                                     </ice:column>
                                     <ice:column id="column23">
                                       <div jsfc="ice:panelGroup" styleClass="vdcStudyDataCitationContainer">
-                                        <ice:outputText styleClass="vdcStudyDataCitation" escape="false" value="&lt;span&gt;View Data Citation&lt;/span&gt;&lt;br /&gt;#{studyPage.studyUI.study.citation} #{studyFileUI.studyFile.fileName} [fileDscr/fileName (DDI)]" />
+                                          <ice:outputLink styleClass="vdcStudyDataCitation"
+                                                          value="#"
+                                                          onclick="return toggleMoreInfo(this)">
+                                              <ice:outputText value="View Data Citation [+]"/>
+                                          </ice:outputLink>
+                                          <div jsfc="ice:panelGroup" style="display: none;">
+                                              <ice:outputText escape="false" value="#{studyPage.studyUI.study.citation} #{studyFileUI.studyFile.fileName} [fileDscr/fileName (DDI)]"/>
+                                          </div>
                                       </div>
                                     </ice:column>
                                   </ice:panelGrid>

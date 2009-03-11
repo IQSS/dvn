@@ -1116,31 +1116,18 @@ select.vdcStudyFileRowFileDownloadAsList {margin-left: .5em;}
 .vdcStudyFileSubset table.vdcStudyFileSubsetTable td {border: 1px solid #c55b28; padding: 0 .5em;}
 .vdcStudyFileSubset table.vdcStudyFileSubsetTable td span {text-transform: uppercase; font-size: 90% !important;}
 .vdcStudyFileSubset table.vdcStudyFileSubsetTable td a {font-size: 100% !important;}
-.vdcStudyFileSubsetAnalysis {}
-.vdcStudyFileSubsetAnalysis a:hover, .vdcStudyFileSubsetAnalysis a:active {color: #c55b28; text-decoration: underline;}
 
-a.vdcStudyFileSubsetAnalysisLink:link, a.vdcStudyFileSubsetAnalysisLink:hover, 
+.vdcStudyFileSubsetAnalysis a:hover, .vdcStudyFileSubsetAnalysis a:active {color: #c55b28; text-decoration: underline;}
+a.vdcStudyFileSubsetAnalysisLink:link, a.vdcStudyFileSubsetAnalysisLink:hover,
 a.vdcStudyFileSubsetAnalysisLink:active, a.vdcStudyFileSubsetAnalysisLink:visited {padding-left: 24px; padding-bottom: 2px; padding-top: 2px; background: url(icon_analyze.gif) no-repeat; font-size: 90% !important; vertical-align: top;}
 
 .vdcStudyDataCitationContainer {width: 90%; padding: 0 0.25em;}
-.vdcStudyDataCitation {}
-.vdcStudyDataCitation a.vdcTruncatorLinkMore {
-        padding-left: 24px;
-        padding-bottom: 2px;
-        padding-top: 2px;
-        background-image: url(icon_citation.gif);
-	background-repeat: no-repeat;
-        margin: 0;
-}
 .vdcStudyDataCitation span {
-        padding-left: 24px;
-        padding-bottom: 2px;
-        padding-top: 2px;
-        background-image: url(icon_citation.gif);
-	background-repeat: no-repeat;
+        padding: 0 0 2px 24px !important;
+        display: inline !important;
+        background: url(icon_citation.gif) no-repeat;
         font-size: 90% !important;
 }
-.vdcStudyDataCitation a.vdcTruncatorLinkLess {display: block; text-align: right;}
 
 .downloadas, .downloadas ul { 
     list-style: none;

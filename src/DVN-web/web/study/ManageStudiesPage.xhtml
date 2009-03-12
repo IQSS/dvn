@@ -73,7 +73,7 @@
             </ice:panelGrid>
             <div jsfc="ice:panelGroup" styleClass="dvnManageStudiesTableBlock" rendered="#{!empty (ManageStudiesList.studyUIList)}">
               <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
-                             binding ="#{ManageStudiesList.studyDataTable}"
+                             binding="#{ManageStudiesList.studyDataTable}"
                              rows="10" id="studyData" styleClass="dvnManageStudiesTable" headerClass="groupRow" rowClasses="evenRow oddRow"
                              rendered="#{not empty(ManageStudiesList.studyUIList)}"
                              sortColumn="#{ManageStudiesList.sortColumnName}" sortAscending="#{ManageStudiesList.ascending}"
@@ -124,7 +124,7 @@
                   </f:facet>
                   <ice:outputText value="#{studyUI.study.createTime}"/>
                 </ice:column>
-                <ice:column>
+                <ice:column styleClass="dvnManageStudiesTableStatus">
                   <f:facet name="header">
                     <ice:commandSortHeader
                       columnName="#{ManageStudiesList.statusColumn}"
@@ -132,13 +132,11 @@
                       <ice:outputText value="#{bundle.MSStatusColumn}"/>
                     </ice:commandSortHeader>
                   </f:facet>
-                    <ice:outputText value="#{studyUI.study.reviewState.name}"/>
-                    <ice:commandButton value="Set to 'Released'" rendered="#{studyUI.userAuthorizedToRelease and studyUI.study.studyLock==null and studyUI.study.inReview}"
-                     actionListener="#{ManageStudiesList.doSetReleased }"/>
-                    <ice:commandButton rendered="#{studyUI.study.new}" value="set to 'In Review'" actionListener="#{ManageStudiesList.doSetInReview}"/>
-                    <ice:commandButton rendered="#{studyUI.userAuthorizedToRelease and studyUI.study.studyLock==null and studyUI.study.released}" value="set to 'In Review'" actionListener="#{ManageStudiesList.doSetInReview}"/>
-
-               </ice:column>
+                  <ice:outputText value="#{studyUI.study.reviewState.name}"/>
+                  <ice:commandButton value="&#187; Release" rendered="#{studyUI.userAuthorizedToRelease and studyUI.study.studyLock==null and studyUI.study.inReview}" actionListener="#{ManageStudiesList.doSetReleased}"/>
+                  <ice:commandButton value="&#187; Review" rendered="#{studyUI.study.new}" actionListener="#{ManageStudiesList.doSetInReview}"/>
+                  <ice:commandButton value="&#187; Unrelease" rendered="#{studyUI.userAuthorizedToRelease and studyUI.study.studyLock==null and studyUI.study.released}" actionListener="#{ManageStudiesList.doSetInReview}"/>
+                </ice:column>
                 <ice:column>
                   <f:facet name="header">
                     <ice:commandSortHeader

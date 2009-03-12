@@ -127,7 +127,7 @@ public class AddClassificationsPage extends VDCBaseBean implements Serializable 
        
         Iterator iterator     = classificationList.getClassificationUIs().iterator();
         parentSelectItems     = new ArrayList();
-        SelectItem parentSelectItem = new SelectItem(new Long("0"), "Select Classification(s)");
+        SelectItem parentSelectItem = new SelectItem(new Long("0"), "Select Classification");
         parentSelectItems.add(parentSelectItem);
  
         while (iterator.hasNext()) {

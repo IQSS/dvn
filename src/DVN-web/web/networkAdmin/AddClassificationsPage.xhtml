@@ -21,7 +21,8 @@
           </div>
         </div>
         <div class="dvn_sectionTitle">
-          <ice:outputText value="#{bundlePageInfo.createClassificationTitle}"/>
+          <ice:outputText value="#{bundlePageInfo.createClassificationTitle}" rendered="#{addClassificationsPage.cid==null}"/>
+          <ice:outputText value="#{bundlePageInfo.editClassificationTitle}" rendered="#{addClassificationsPage.cid!=null}"/>
         </div>
         <div class="dvn_sectionBox">
           <div class="dvn_margin12">
@@ -71,7 +72,11 @@
                 </ice:inputTextarea>
                 <ice:message styleClass="errorMessage" for="description"/>
               </ice:panelGroup>
-            </ice:panelGrid>
+            
+           </ice:panelGrid>
+           <ice:panelGroup>
+                  <ice:outputText rendered="#{addClassificationsPage.selectedParent==null or addClassificationsPage.selectedParent==0}" value="Note: Top-level classifications (classifications that don't have a parent) cannot contain dataverses, only subclassifications."/>
+           </ice:panelGroup>
             <!-- ***************************** Add/Remove Dataverses to/from Classifications page. ************************************ -->
             <ice:panelGroup styleClass="componentBox" rendered="#{addClassificationsPage.selectedParent!=null and addClassificationsPage.selectedParent!=0}">
             <!-- Multiple Selection Checkbox -->

@@ -755,20 +755,71 @@ a.dvnHmpgGroupCreateLink:hover, a.dvnHmpgGroupCreateLink:active {
     overflow:auto;
     width:100%;
 }
-ul.dvnAlphaBrowse {
-    margin: 0;
-    padding: 0;
+
+ul.dvnAlphaBrowseBlock {
     float: left;
+    padding: 0px 0px 0px 0px;
+    border: 1px solid #0c54b3;
+    background: #eee;
 }
-ul.dvnAlphaBrowse li {
+li.dvnAlphaBrowse {
     list-style-type: none;
     float: left;
-    padding: 2px 5px 2px 5px;
-    border: 1px solid #0c54b3;
+    padding: 0px 0px 0px 0px;
+    border-left: 1px solid #0c54b3;
+    border-right:  1px solid #0c54b3;
     background: #eee;
     z-index: auto !important; /*Non-IE6*/
     z-index: 1000; /*IE6*/
 }
+
+li.dvnAlphaBrowseHover {
+    list-style-type: none;
+    float: left;
+    padding: 0px 0px 0px 0px;
+    border-left: 1px solid #0c54b3;
+    border-right:  1px solid #0c54b3;
+    background: #c55b28;
+    z-index: auto !important; /*Non-IE6*/
+    z-index: 1000; /*IE6*/
+}
+
+li.dvnAlphaBrowseSelected {
+    list-style-type: none;
+    float: left;
+    padding: 0px 0px 0px 0px;
+    border-left: 1px solid #0c54b3;
+    border-right:  1px solid #0c54b3;
+    background: #cccccc;
+    z-index: auto !important; /*Non-IE6*/
+    z-index: 1000; /*IE6*/
+}
+
+
+li.dvnAlphaBrowse  a {
+    padding: 2px 5px 2px 5px;
+    font-weight:bold;
+    color:#0c54b3;
+}
+li.dvnAlphaBrowse  a:hover {
+    padding: 2px 5px 2px 5px;
+    color: white;
+}
+li.dvnAlphaBrowseHover  a {
+    padding: 2px 5px 2px 5px;
+    font-weight: bold;
+}
+li.dvnAlphaBrowseHover  a:hover {
+    padding: 2px 5px 2px 5px;
+    color: white;
+}
+
+li.dvnAlphaBrowseSelected  a {
+    padding: 2px 5px 2px 5px;
+    font-weight:bold;
+    color:white;
+}
+
 .dvnHmpgGroupTotals {padding: 0 .5em;}
 .dvnHmpgGroupDataTable {margin: 0; width: 100%;}
 .dvnHmpgGroupDataTable span {font-size: 90% !important;}

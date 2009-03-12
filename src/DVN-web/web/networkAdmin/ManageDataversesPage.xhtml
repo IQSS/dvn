@@ -37,21 +37,41 @@
             </div>
           <div jsfc="ice:panelGroup" styleClass="dvnManageTableTop">
                 <div jsfc="ice:panelGroup" styleClass="dvnHmpgGroupAlphaSortBlock" rendered="#{VDCRequest.currentVDC == null}">
-                    <ul class="dvnAlphaBrowse">
-                        <li>
-                            <ice:commandLink  onclick="setHiddenValues('All');">
-                                <ice:outputText value="ALL"/>
-                            </ice:commandLink>
-                        </li>
-                        <gui:repeat value="#{manageDataversesPage.alphaCharacterList}"
-                                    var="item">
-                            <li>
-                                <ice:commandLink onclick="setHiddenValues('#{item}');">
-                                    <ice:outputText value="#{item}"/>
-                                    <f:attribute name="groupId" value="#{item.id}"/>
-                                    <f:attribute name="alphaCharacter" value="#{item}"/>
+                    <ul class="dvnAlphaBrowseBlock">
+                        <gui:fragment rendered="#{(manageDataversesPage.vdcUIList.alphaCharacter == '' or manageDataversesPage.vdcUIList.alphaCharacter == null)}">
+                            <li class="dvnAlphaBrowseSelected" onmouseover="this.className='dvnAlphaBrowseHover'" onmouseout="this.className='dvnAlphaBrowseSelected'">
+                                <ice:commandLink  onclick="setHiddenValues('All');">
+                                        <ice:outputText value="ALL"/>
                                 </ice:commandLink>
                             </li>
+                        </gui:fragment>
+                        <gui:fragment rendered="#{(manageDataversesPage.vdcUIList.alphaCharacter != '' and manageDataversesPage.vdcUIList.alphaCharacter != null)}">
+                            <li class="dvnAlphaBrowse" onmouseover="this.className='dvnAlphaBrowseHover'" onmouseout="this.className='dvnAlphaBrowse'">
+                                <ice:commandLink  onclick="setHiddenValues('All');">
+                                        <ice:outputText value="ALL"/>
+                                </ice:commandLink>
+                            </li>
+                        </gui:fragment>
+                        <gui:repeat value="#{manageDataversesPage.alphaCharacterList}"
+                                    var="item">
+                            <gui:fragment rendered="#{(manageDataversesPage.vdcUIList.alphaCharacter == item)}">
+                                <li class="dvnAlphaBrowseSelected" onmouseover="this.className='dvnAlphaBrowseHover'" onmouseout="this.className='dvnAlphaBrowseSelected'">
+                                    <ice:commandLink onclick="setHiddenValues(document.getElementById('#{item}');">
+                                        <ice:outputText value="#{item}"/>
+                                        <f:attribute name="groupId" value="#{item.id}"/>
+                                        <f:attribute name="alphaCharacter" value="#{item}"/>
+                                    </ice:commandLink>
+                                </li>
+                            </gui:fragment>
+                            <gui:fragment rendered="#{(manageDataversesPage.vdcUIList.alphaCharacter != item)}">
+                                <li class="dvnAlphaBrowse" onmouseover="this.className='dvnAlphaBrowseHover'" onmouseout="this.className='dvnAlphaBrowse'">
+                                    <ice:commandLink onclick="setHiddenValues('#{item}');">
+                                        <ice:outputText value="#{item}"/>
+                                        <f:attribute name="groupId" value="#{item.id}"/>
+                                        <f:attribute name="alphaCharacter" value="#{item}"/>
+                                    </ice:commandLink>
+                                </li>
+                            </gui:fragment>
                         </gui:repeat>
                     </ul>
                 </div>

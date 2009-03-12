@@ -130,22 +130,43 @@
                  <p><ice:outputText value="#{HomePage.group.description}"/></p>
              </div>
              <div jsfc="ice:panelGroup" styleClass="dvnHmpgGroupTableWrap">
+                
                 <div jsfc="ice:panelGroup" styleClass="dvnHmpgGroupAlphaSortBlock" rendered="#{VDCRequest.currentVDC == null}">
-                    <ul class="dvnAlphaBrowse">
-                        <li>
-                            <ice:commandLink  onclick="setHiddenValues('All');">
-                                <ice:outputText value="ALL"/>
-                            </ice:commandLink>
-                        </li>
-                        <gui:repeat value="#{HomePage.alphaCharacterList}"
-                                    var="item">
-                            <li>
-                                <ice:commandLink onclick="setHiddenValues(document.getElementById('HomePageForm:groupId').value, '#{item}');">
-                                    <ice:outputText value="#{item}"/>
-                                    <f:attribute name="groupId" value="#{item.id}"/>
-                                    <f:attribute name="alphaCharacter" value="#{item}"/>
+                    <ul class="dvnAlphaBrowseBlock">
+                        <gui:fragment rendered="#{(HomePage.vdcUIList.alphaCharacter == '' or HomePage.vdcUIList.alphaCharacter == null)}">
+                            <li class="dvnAlphaBrowseSelected" onmouseover="this.className='dvnAlphaBrowseHover'" onmouseout="this.className='dvnAlphaBrowseSelected'">
+                                <ice:commandLink  onclick="setHiddenValues('All');">
+                                        <ice:outputText value="ALL"/>
                                 </ice:commandLink>
                             </li>
+                        </gui:fragment>
+                        <gui:fragment rendered="#{(HomePage.vdcUIList.alphaCharacter != '' and HomePage.vdcUIList.alphaCharacter != null)}">
+                            <li class="dvnAlphaBrowse" onmouseover="this.className='dvnAlphaBrowseHover'" onmouseout="this.className='dvnAlphaBrowse'">
+                                <ice:commandLink  onclick="setHiddenValues('All');">
+                                        <ice:outputText value="ALL"/>
+                                </ice:commandLink>
+                            </li>
+                        </gui:fragment>
+                        <gui:repeat value="#{HomePage.alphaCharacterList}"
+                                    var="item">
+                            <gui:fragment rendered="#{(HomePage.vdcUIList.alphaCharacter == item)}">
+                                <li class="dvnAlphaBrowseSelected" onmouseover="this.className='dvnAlphaBrowseHover'" onmouseout="this.className='dvnAlphaBrowseSelected'">
+                                    <ice:commandLink onclick="setHiddenValues(document.getElementById('HomePageForm:groupId').value, '#{item}');">
+                                        <ice:outputText value="#{item}"/>
+                                        <f:attribute name="groupId" value="#{item.id}"/>
+                                        <f:attribute name="alphaCharacter" value="#{item}"/>
+                                    </ice:commandLink>
+                                </li>
+                            </gui:fragment>
+                            <gui:fragment rendered="#{(HomePage.vdcUIList.alphaCharacter != item)}">
+                                <li class="dvnAlphaBrowse" onmouseover="this.className='dvnAlphaBrowseHover'" onmouseout="this.className='dvnAlphaBrowse'">
+                                    <ice:commandLink onclick="setHiddenValues(document.getElementById('HomePageForm:groupId').value, '#{item}');">
+                                        <ice:outputText value="#{item}"/>
+                                        <f:attribute name="groupId" value="#{item.id}"/>
+                                        <f:attribute name="alphaCharacter" value="#{item}"/>
+                                    </ice:commandLink>
+                                </li>
+                            </gui:fragment>
                         </gui:repeat>
                     </ul>
                 </div>
@@ -332,7 +353,7 @@
                                                          <h4 class="head">
                                                              <ice:commandLink onclick="setHiddenValues(#{item.id});"
                                                                               partialSubmit="true"
-                                                                              stylClass="head">
+                                                                              styleClass="head">
                                                                  <ice:outputText value="#{item.name}"/>
                                                                  <f:attribute name="groupId" value="#{item.id}"/>
                                                              </ice:commandLink>

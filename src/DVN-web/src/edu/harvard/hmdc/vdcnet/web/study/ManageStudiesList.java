@@ -118,7 +118,6 @@ public class ManageStudiesList extends SortableList {
     public String getUpdatedColumn() { return DATE_UPDATED_COLUMN; }
 
     public List<StudyUI> getStudyUIList() {     
-        System.out.println("getting StudyUIList");
         if (studyUIList==null) {
           
             sort();

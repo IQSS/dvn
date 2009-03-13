@@ -67,7 +67,7 @@
     <context-param>
 	<param-name>facelets.LIBRARIES</param-name>
 	<param-value>
-		/WEB-INF/creator.taglib.xml;/WEB-INF/dvn.taglib.xml;/WEB-INF/scroller.taglib.xml
+		/WEB-INF/dvn.taglib.xml;/WEB-INF/scroller.taglib.xml
 	</param-value>
      </context-param>
     <!-- JSF -->

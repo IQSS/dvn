@@ -394,14 +394,10 @@ public class HomePage extends VDCBaseBean implements Serializable {
             parentItem  = new DataverseGrouping(vdcgroup.getId(), vdcgroup.getName(), "group", accordionItemBeans, isExpanded, "", "", new Long("-1"));
          }
          parentItem.setShortDescription(vdcgroup.getDescription());
-         //parentItem.setSubclassification(new Long(list.size()));
          parentItem.setTextIndent(0);
 
          if (!indentStyle.equals(""))
              parentItem.setIndentStyleClass(indentStyle);
-         //if (sortColumnName == null) {
-             //initColumnNames(parentItem);
-         //}
      }
 
       protected void populateDescendants(VDCGroup vdcgroup, boolean isExpanded) {
@@ -412,15 +408,13 @@ public class HomePage extends VDCBaseBean implements Serializable {
          while (iterator.hasNext()) {
             VDCGroup group = (VDCGroup)iterator.next();
             childItem = new DataverseGrouping(group.getId(), group.getName(), "subgroup", isExpanded, "", "", parentId);
-            parentItem.addChildItem(childItem);
-            //this next piece won't work. I'll have to add a listener to the class to show the children -- see ManageClassifications for this
+            parentItem.addItem(childItem);
+            parentItem.setIsAccordion(true);
             if (vdcGroupService.findByParentId(group.getId()) != null) {
-                //populateDescendants(group, false);
                 List innerlist       = vdcGroupService.findByParentId(group.getId());
                 Iterator inneriterator  = innerlist.iterator();
                 DataverseGrouping xtraItem;
-                childItem.xtraItems = new ArrayList();
-                this.childItemBeans.add(childItem.getId());
+                childItem.setXtraItems(new ArrayList());
                 while (inneriterator.hasNext()) {
                     VDCGroup innergroup = (VDCGroup)inneriterator.next();
                     xtraItem = new DataverseGrouping(innergroup.getId(), innergroup.getName(), "subgroup", isExpanded, "", "", parentId);

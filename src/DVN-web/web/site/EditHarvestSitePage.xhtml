@@ -165,7 +165,7 @@
                         <ice:commandButton value="Validate"/>
                         <ice:message styleClass="errorMessage" for="dataverseServer"/>
                         <br/>
-                        <ice:outputText styleClass="vdcHelpText" value="Enter server name, e.g., http://dvn.iq.harvard.edu/dvn/OAIHandler."/>
+                        <ice:outputText styleClass="vdcHelpText" value="Enter server name, e.g., http://dvn.iq.harvard.edu/dvn/OAIHandler"/>
                         <ice:outputText styleClass="errorMessageBlock" value="This Server does not support sets. If you are harvesting another DVN and a set is not specified, all studies owned by that DVN will be harvested (without including studies harvested by that DVN)."
                                         rendered="#{EditHarvestSitePage.editHarvestSiteService.harvestingSets==null and EditHarvestSitePage.harvestingDataverse.serverUrl !=null}"/>
                     </td>

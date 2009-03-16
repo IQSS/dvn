@@ -446,7 +446,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
      * @return the ID of the requested study
      */
    public Long getStudyId() {
-        return studyId;
+        return dataTable.getStudyFile().getFileCategory().getStudy().getId();
     }
     
     /**
@@ -1038,7 +1038,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             dbgLog.fine("citation info to be sent:\n" + citation);
 
             mpl.put("studytitle", Arrays.asList(studyTitle));
-            mpl.put("studyno", Arrays.asList(studyId.toString()));
+            dbgLog.fine("studyId="+getStudyId().toString());
+            mpl.put("studyno", Arrays.asList(getStudyId().toString()));
             mpl.put("studyURL", Arrays.asList(studyURL));
             mpl.put("browserType", Arrays.asList(browserType));
 
@@ -3175,7 +3176,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 //                    + req.getServerPort() + req.getContextPath()));
                 
                 mpl.put("studytitle", Arrays.asList(studyTitle));
-                mpl.put("studyno", Arrays.asList(studyId.toString()));
+                dbgLog.fine("studyId from attribute="+studyId.toString());
+                dbgLog.fine("studyId from get method="+getStudyId().toString());
+                mpl.put("studyno", Arrays.asList(getStudyId().toString()));
                 mpl.put("studyURL", Arrays.asList(studyURL));
                 mpl.put("browserType", Arrays.asList(browserType));
                 
@@ -5865,7 +5868,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 //                    ":"+ req.getServerPort() + req.getContextPath()));
 
                 mpl.put("studytitle", Arrays.asList(studyTitle));
-                mpl.put("studyno", Arrays.asList(studyId.toString()));
+                dbgLog.fine("alt studyId="+getStudyId().toString());
+                mpl.put("studyno", Arrays.asList(getStudyId().toString()));
                 mpl.put("studyURL", Arrays.asList(studyURL));
                 mpl.put("browserType", Arrays.asList(browserType));
                 

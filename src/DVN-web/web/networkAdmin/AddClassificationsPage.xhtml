@@ -74,8 +74,11 @@
               </ice:panelGroup>
             
            </ice:panelGrid>
-           <ice:panelGroup>
-                  <ice:outputText rendered="#{addClassificationsPage.selectedParent==null or addClassificationsPage.selectedParent==0}" value="Note: Top-level classifications (classifications that don't have a parent) cannot contain dataverses, only subclassifications."/>
+           <ice:panelGroup rendered="#{addClassificationsPage.selectedParent==null or addClassificationsPage.selectedParent==0}">
+               <p>
+                   <ice:graphicImage value="/resources/icon_warning.18.png" styleClass="dvn_icon"/>
+                   <ice:outputText value=" You cannot add a dataverse to a top-level classification (a classification that does not have a parent). You can add dataverses to subclassifications only."/>
+               </p>
            </ice:panelGroup>
             <!-- ***************************** Add/Remove Dataverses to/from Classifications page. ************************************ -->
             <ice:panelGroup styleClass="componentBox" rendered="#{addClassificationsPage.selectedParent!=null and addClassificationsPage.selectedParent!=0}">
@@ -84,8 +87,10 @@
               <ice:panelGroup styleClass="dvnAddClassificationBlock">
                 <!-- DataTable with RowSelector Component -->
                 <ice:panelGroup styleClass="dvnAddClassificationMessage">
-                    <ice:graphicImage value="/resources/icon_warning.18.png" styleClass="dvn_icon"/>
-                    <ice:outputText value=" Indicates a dataverse is not released."/>
+                        <p>
+                            <ice:graphicImage value="/resources/icon_warning.18.png" styleClass="dvn_icon"/>
+                            <ice:outputText value=" Indicates a dataverse is not released."/>
+                        </p>
                 </ice:panelGroup>
                 <ice:panelGroup styleClass="dvnAddClassificationDataverses">
                   <ice:outputLabel id="list" value="All Dataverses"/>

@@ -55,17 +55,19 @@
                     </ice:outputLink>
                     <ice:outputText value=" to administer your dataverse "/>
                   </li>
-                  <li>
-                    <ice:outputText value=" Begin "/>
-                    <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml">
-                      <ice:outputText value="adding studies and uploading files"/>
-                    </ice:outputLink>
-                    <ice:outputText value=" or "/>
-                    <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/collection/ManageCollectionsPage.xhtml">
-                      <ice:outputText value="creating collections"/>
-                    </ice:outputLink>
-                    <ice:outputText value=" of data from other dataverses."/>
-                  </li>
+                  <gui:fragment rendered="#{!VDCRequest.currentVDC.harvestingDv}">
+                      <li>
+                        <ice:outputText value=" Begin "/>
+                        <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml">
+                          <ice:outputText value="adding studies and uploading files"/>
+                        </ice:outputLink>
+                        <ice:outputText value=" or "/>
+                        <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/collection/ManageCollectionsPage.xhtml">
+                          <ice:outputText value="creating collections"/>
+                        </ice:outputLink>
+                        <ice:outputText value=" of data from other dataverses."/>
+                      </li>
+                  </gui:fragment>
                   <li>
                     <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditBannerFooterPage.xhtml">
                       <ice:outputText value="Customize the layout"/>

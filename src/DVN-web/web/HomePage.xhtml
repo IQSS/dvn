@@ -206,6 +206,7 @@
                             rendered="#{HomePage.vdcUIListSize > 10 and VDCRequest.currentVDC == null}">
                         <div class="dvnPaginatorFloatRight">
                         <ice:dataPaginator for="dataverseList"
+                                           binding="#{HomePage.vdcUIList.paginator}"
                                            id="dataScroll_3"
                                            paginator="true" fastStep="3"
                                            paginatorMaxPages="4"

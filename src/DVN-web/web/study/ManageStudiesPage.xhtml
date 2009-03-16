@@ -30,6 +30,7 @@
                            rendered="#{not empty(ManageStudiesList.studyUIList)}">
               <div jsfc="ice:panelGroup" id="groupPanel3" styleClass="dvn_StudyListTotals">
                 <ice:dataPaginator id="scroll_2"
+                                   binding="#{ManageStudiesList.paginator}"
                                    for="studyData"
                                    rowsCountVar="rowsCount"
                                    displayedRowsCountVar="displayedRowsCountVar"

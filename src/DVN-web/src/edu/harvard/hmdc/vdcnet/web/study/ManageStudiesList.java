@@ -5,6 +5,7 @@
 
 package edu.harvard.hmdc.vdcnet.web.study;
 
+import com.icesoft.faces.component.datapaginator.DataPaginator;
 import com.icesoft.faces.component.ext.HtmlDataTable;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
@@ -34,12 +35,21 @@ public class ManageStudiesList extends SortableList {
     private static final String DATE_CREATED_COLUMN = "dateCreated";
     private static final String STATUS_COLUMN = "status";
     private static final String TEMPLATE_COLUMN = "template";
-    private static final String DATE_UPDATED_COLUMN = "lastUpdated";
-    
- 
+    private static final String DATE_UPDATED_COLUMN = "lastUpdated";    
+    private DataPaginator paginator;
+   
     private Long vdcId;
     private LoginBean loginBean;
     
+       public DataPaginator getPaginator() {
+        return paginator;
+    }
+
+    public void setPaginator(DataPaginator paginator) {
+        this.paginator = paginator;
+    }
+
+     
     /**
      * Holds value of property harvestDataTable.
      */
@@ -57,7 +67,7 @@ public class ManageStudiesList extends SortableList {
     }  
    
     public ManageStudiesList() {
-        super(ID_COLUMN);
+        super(DATE_CREATED_COLUMN);
    
     }
     
@@ -66,7 +76,7 @@ public class ManageStudiesList extends SortableList {
             if (sortColumnName == null) {
                 return;
             }
-            
+            paginator.gotoFirstPage();
             if (sortColumnName.equals(TITLE_COLUMN)) {
                 orderBy = "metadata.title";
             } else if (sortColumnName.equals(ID_COLUMN)) {

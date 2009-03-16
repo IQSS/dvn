@@ -5,6 +5,7 @@
 
 package edu.harvard.hmdc.vdcnet.web;
 
+import com.icesoft.faces.component.datapaginator.DataPaginator;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.vdc.VDCGroup;
 import edu.harvard.hmdc.vdcnet.vdc.VDCGroupServiceLocal;
@@ -31,7 +32,10 @@ public class VDCUIList extends SortableList {
     private Long   vdcGroupId;
     private String alphaCharacter;
     private VDCUI vdcui;
+    private DataPaginator paginator;
 
+   
+ 
     // dataTable Columns to sort by:
     private static final String NAME_COLUMN_NAME            = "Name";
     private static final String AFFILIATION_COLUMN_NAME     = "Affiliation";
@@ -92,7 +96,13 @@ public class VDCUIList extends SortableList {
             }
         }
     }
+    public DataPaginator getPaginator() {
+        return paginator;
+    }
 
+    public void setPaginator(DataPaginator paginator) {
+        this.paginator = paginator;
+    }
     protected void sort() {
             String orderBy = null;
             if (sortColumnName == null) {
@@ -172,10 +182,18 @@ public class VDCUIList extends SortableList {
 
     public List<VDCUI> getVdcUIList() {
         if (!oldSort.equals(sortColumnName) ) {
+            // Check for null paginator because this method first
+            // gets called from Hompage.init(), before paginator is initialized
+            if (paginator!=null) {
+                paginator.gotoFirstPage();
+            }
             sort();
             oldSort         = sortColumnName;
             oldAscending    = ascending;
         } else if (oldAscending != ascending) {
+            if (paginator!=null) {
+                paginator.gotoFirstPage();
+            }
             Collections.reverse(vdcUIList);
             oldAscending    = ascending;
         }

@@ -166,10 +166,7 @@ public class EditHarvestSiteServiceBean implements EditHarvestSiteService  {
         }
         
         harvesterService.updateHarvestTimer(harvestingDataverse);
-        em.flush();
-        
-        // Now the dataverse has been created, so any future changes will be an update.
-        editMode= EDIT_MODE_UPDATE;
+        em.flush();        
     }
     
   

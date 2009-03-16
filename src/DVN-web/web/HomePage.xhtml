@@ -246,7 +246,7 @@
                                sortColumn="#{HomePage.vdcUIList.sortColumnName}"
                                sortAscending="#{HomePage.vdcUIList.ascending}"
                                styleClass="dvnHmpgGroupDataTable"
-                               value="#{HomePage.vdcUIList.vdcUIList}" var="item"><!-- this is a list of vdcs -->
+                               value="#{HomePage.vdcUIList.vdcUIList}" var="vdcUI"><!-- this is a list of vdcs -->
                   <!-- name number -->
                   <f:facet name="header">
 
@@ -259,17 +259,17 @@
                         <ice:outputText value="#{HomePage.vdcUIList.nameColumnName}"/>
                       </ice:commandSortHeader>
                     </f:facet>
-                    <ice:outputLink styleClass="dvnHmpgDvNameLink" id="dataverse_link" value="/dvn/dv/#{item.vdc.alias}">
-                      <ice:outputText value="#{item.name}"/>
+                    <ice:outputLink styleClass="dvnHmpgDvNameLink" id="dataverse_link" value="/dvn/dv/#{vdcUI.vdc.alias}">
+                      <ice:outputText value="#{vdcUI.name}"/>
                     </ice:outputLink>
-                    <ice:outputLink rendered="#{!empty item.vdc.dvnDescription}"
+                    <ice:outputLink rendered="#{!empty vdcUI.vdc.dvnDescription}"
                                     styleClass="dvnHmpgMoreInfoLink"
                                     value="#"
                                     onclick="return toggleMoreInfo(this)">
                       <ice:outputText value="View Info [+]"/>
                     </ice:outputLink>
                     <div jsfc="ice:panelGroup" styleClass="dvnHmpgDvMoreInfoDesc" style="display: none;">
-                      <ice:outputText rendered="#{item.vdc.dvnDescription != null}" value="#{item.vdc.dvnDescription}"/>
+                      <ice:outputText rendered="#{vdcUI.vdc.dvnDescription != null}" value="#{vdcUI.vdc.dvnDescription}"/>
                     </div>
                   </ice:column>
                   <!-- affiliation -->
@@ -281,7 +281,7 @@
                         <ice:outputText value="#{HomePage.vdcUIList.affiliationColumnName}"/>
                       </ice:commandSortHeader>
                     </f:facet>
-                    <ice:outputText value="#{item.vdc.affiliation}"/>
+                    <ice:outputText value="#{vdcUI.vdc.affiliation}"/>
                   </ice:column>
                 
                   <!-- DateReleased  -->
@@ -293,7 +293,7 @@
                         <ice:outputText value="#{HomePage.vdcUIList.dateReleasedColumnName}"/>
                       </ice:commandSortHeader>
                     </f:facet>
-                    <ice:outputText value="#{item.releaseDate}"/>
+                    <ice:outputText value="#{vdcUI.releaseDate}"/>
                   </ice:column>
 
                   <!-- Activity -->
@@ -306,7 +306,7 @@
                       </ice:commandSortHeader>
                     </f:facet>
                     <div class="activity">
-                      <div jsfc="ice:panelGroup" styleClass="#{item.activityClass}">
+                      <div jsfc="ice:panelGroup" styleClass="#{vdcUI.activityClass}">
                         <span class="numbervalue">0</span>
                       </div>
                     </div>

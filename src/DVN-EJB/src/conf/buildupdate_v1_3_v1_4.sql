@@ -145,8 +145,8 @@ delete from templatefield  where template_id is null;
 
 update templatefield set version = 1 where template_id = 1;
 
-insert into templatefield
-SELECT nextval('templatefield_id_seq'), null,1, t.id, tf.studyfield_id, tf.fieldinputlevel_id
+insert into templatefield (id, version, template_id, studyfield_id, fieldinputlevel_id)
+SELECT nextval('templatefield_id_seq'), 1, t.id, tf.studyfield_id, tf.fieldinputlevel_id
 from template t, templatefield tf
 where t.id != 1
 and tf.template_id = 1;

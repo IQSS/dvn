@@ -395,7 +395,11 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     public String getStudyUIclassName() {
         return studyUIclassName;
     }
-    
+    /**
+     * reference to the current study
+     */
+    private Study thisStudy;
+
     /** The citation information as a String */
     private String citation;
 
@@ -405,7 +409,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
      * @return    the citation information of the requested data file
      */
     public String getCitation() {
-        return citation;
+        return thisStudy.getCitation(false);
     }
     /**
      * Setter for property citation
@@ -425,7 +429,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
      * @return    the title of the requested study
      */
     public String getStudyTitle() {
-        return studyTitle;
+        return thisStudy.getTitle();
     }
     
     /**
@@ -446,7 +450,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
      * @return the ID of the requested study
      */
    public Long getStudyId() {
-        return dataTable.getStudyFile().getFileCategory().getStudy().getId();
+        return thisStudy.getId();
     }
     
     /**
@@ -1327,7 +1331,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             // add stuy-metadata to the resultInfo map
             resultInfo.put("offlineCitation", citation);
             resultInfo.put("studyTitle", studyTitle);
-            resultInfo.put("studyNo", studyId.toString());
+            resultInfo.put("studyNo", getStudyId().toString());
             resultInfo.put("dtId", dtId.toString());
             resultInfo.put("studyURL", studyURL);
             resultInfo.put("R_min_verion_no",resultInfo.get("Rversion").substring(2));
@@ -3176,7 +3180,6 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 //                    + req.getServerPort() + req.getContextPath()));
                 
                 mpl.put("studytitle", Arrays.asList(studyTitle));
-                dbgLog.fine("studyId from attribute="+studyId.toString());
                 dbgLog.fine("studyId from get method="+getStudyId().toString());
                 mpl.put("studyno", Arrays.asList(getStudyId().toString()));
                 mpl.put("studyURL", Arrays.asList(studyURL));
@@ -3456,7 +3459,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
             resultInfo.put("offlineCitation", citation);
             resultInfo.put("studyTitle", studyTitle);
-            resultInfo.put("studyNo", studyId.toString());
+            resultInfo.put("studyNo", getStudyId().toString());
             resultInfo.put("dtId", dtId.toString());
             resultInfo.put("studyURL", studyURL);
             resultInfo.put("R_min_verion_no",resultInfo.get("Rversion").substring(2));
@@ -6151,7 +6154,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
             resultInfo.put("offlineCitation", citation);
             resultInfo.put("studyTitle", studyTitle);
-            resultInfo.put("studyNo", studyId.toString());
+            resultInfo.put("studyNo", getStudyId().toString());
             resultInfo.put("dtId", dtId.toString());
             resultInfo.put("studyURL", studyURL);
             resultInfo.put("R_min_verion_no",resultInfo.get("Rversion").substring(2));
@@ -8027,23 +8030,14 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             }
 
             // Stores the title, ID, and citation data of the requested study
-            if (sessionMap.containsKey(getStudyUIclassName())) {
-
-                StudyUI sui = (StudyUI) sessionMap.get(getStudyUIclassName());
-
-                // Stores the title, Id, and Citation of the requested study
-                setStudyTitle(sui.getStudy().getTitle());
-                setStudyId(sui.getStudy().getId());
-                setCitation(sui.getStudy().getCitation(false));
-                
-                    dbgLog.fine("StudyUIclassName was found"+
-                        " in the session Map");
+                thisStudy = dataTable.getStudyFile().getFileCategory().getStudy();
+                setStudyTitle(thisStudy.getTitle());
+                setStudyId(thisStudy.getId());
+                setCitation(thisStudy.getCitation(false));
                     dbgLog.fine("Study Title="+studyTitle);
                     dbgLog.fine("Study Id="+studyId);
                     dbgLog.fine("Ciation="+citation);
-            } else {
-                    dbgLog.fine("StudyUIclassName was not in the session Map");
-            }
+
             
                 dbgLog.finer("\nSpec Map:\n"+
                     getAnalysisApplicationBean().getSpecMap());

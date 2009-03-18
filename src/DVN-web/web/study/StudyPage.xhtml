@@ -130,25 +130,6 @@
               return false;
           }
 
-          function showEditLinks(element) {
-                if (window.event && (navigator.userAgent.indexOf("MSIE") != -1 || navigator.userAgent.indexOf("Opera") != -1)) {
-                    elem = element.childNodes(1).nextSibling;
-                    elem.style.position        = 'absolute';
-                    elem.style.left            = 5;
-                    elem.style.top             = 15;
-                    elem.style.background      = 'khaki';
-                    elem.style.color           = '#0c54b3';
-                    elem.style.opacity         = '.99';
-                }
-          }
-
-          function hideEditLinks(element) {
-              if (window.event && (navigator.userAgent.indexOf("MSIE") != -1 || navigator.userAgent.indexOf("Opera") != -1)) {
-                   elem = element.childNodes(1).nextSibling;
-                   elem.style.left = '-1px';
-                   elem.style.top  = '-999px';
-              }
-          }
          
           // ]]>
       </script>
@@ -186,23 +167,11 @@
               <ice:commandButton styleClass="dvnStudyPageInlineReleaseButton"
                                     value="Release"
                                     actionListener="#{studyPage.setReleased}" rendered="#{studyPage.studyUI.userAuthorizedToRelease and studyPage.studyUI.study.studyLock==null and studyPage.studyUI.study.inReview}"/>
-              <ul class="studyEditLinks editDropDown">
-                <li onmouseover="showEditLinks(this);" onmouseout="hideEditLinks(this);">
-                  <a class="editDropDownLink">Edit...</a>
-                  <ul>
-                    <li>
-                      <ice:outputLink rendered="#{studyPage.studyUI.userAuthorizedToEdit and studyPage.studyUI.study.studyLock==null}"
-                                        value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=catalog">
-                        <ice:outputText value="Edit Cataloging Information"/>
-                      </ice:outputLink>
-                      <ice:outputLink rendered="#{studyPage.studyUI.userAuthorizedToEdit and studyPage.studyUI.study.studyLock==null and !empty studyPage.studyUI.study.fileCategories}"
-                                        value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=files">
-                        <ice:outputText value="Edit Documentation Data and Analysis"/>
-                      </ice:outputLink>
-                    </li>
-                  </ul>
-                </li>
-              </ul>
+              <dvn:tooltip tooltipMessage="#{ (studyPage.selectedIndex == 0) ? studybundle.editStudyTip : studybundle.editFilesTip}" 
+                            linkText="#{ (studyPage.selectedIndex == 0) ? studybundle.editStudyText : studybundle.editFilesText}"
+                            eventType="mouseover"
+                            linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=#{ (studyPage.selectedIndex == 0) ? 'catalog' : 'files' }"
+                            cssClass="vdcTooltipLink"/>
               <dvn:tooltip tooltipMessage="#{studybundle.addTip}" linkText="#{studybundle.addText}" eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/AddFilesPage.xhtml?studyId=#{studyPage.studyUI.study.id}" cssClass="vdcTooltipLink"/>
               <dvn:tooltip tooltipMessage="#{studybundle.permissionsTip}" linkText="#{studybundle.permissionsText}" eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPermissionsPage.xhtml?studyId=#{studyPage.studyUI.study.id}" cssClass="vdcTooltipLink"/>
               <dvn:tooltip tooltipMessage="#{studybundle.deleteTip}" linkText="#{studybundle.deleteText}" eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/DeleteStudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}" cssClass="vdcTooltipLink"/>

@@ -49,10 +49,13 @@ public class VDCUIList extends SortableList {
     private static final String TYPE_COLUMN_NAME          = "Type";
     
     
-    private void init() {
+    public void init() {
         sortColumnName = DATERELEASED_COLUMN_NAME;
         ascending = true;
         oldSort = "";
+        if (paginator!=null) {
+            paginator.gotoFirstPage();
+        }
         // make sure sortColumnName on first render
         oldAscending = ascending;
         initVdcService();

@@ -749,16 +749,16 @@ a.dvnHmpgGroupCreateLink:hover, a.dvnHmpgGroupCreateLink:active {
     padding-bottom: .5em;
 }
 .dvnHmpgGroupAlphaSortBlock {
-    margin: .5em 0 0 .5em;
-    padding-bottom: .5em;
-    white-space: nowrap; /*IE hack*/
-    overflow:auto;
-    width:100%;
+    margin: .5em .5em 0 .5em;
+    overflow: auto;
+    width: 100%;
 }
+* html .dvnHmpgGroupAlphaSortBlock {padding-bottom: 1em; white-space: nowrap; overflow: hidden;} /*IE hack*/
 
 ul.dvnAlphaBrowseBlock {
     float: left;
-    padding: 0px 0px 0px 0px;
+    margin: .5em 0 1em 0;
+    padding: 0 0 0 0;
     border: 1px solid #0c54b3;
     background: #eee;
 }
@@ -849,9 +849,9 @@ td.dvn_StudyListSort {padding: .25em;}
 .dvnStudyListStudyInfo {background: inherit;}
 span.dvnStudyListStudyAuthor {font-size: 90% !important;}
 .dvnStudyListIDDownloads {padding: 0 10px; border-left: 1px solid #dcdddf !important;}
-.dvnStudyListIDDownloads span {font-size: 90% !important; color: grey;}
-.dvnStudyListIDDownloads span.dvnStudyListIDDownloadsSubsettable {padding-left: 24px !important; line-height: 1.2em !important; background: url(icon_analyze.gif) no-repeat; white-space: nowrap; display: inline !important;}
-.dvnStudyListIDDownloads span.dvnStudyListIDDownloadsNonSubsettable {padding-left: 24px !important; line-height: 1.3em !important; background: url(icon_download.gif) no-repeat; white-space: nowrap; display: inline !important;}
+.dvnStudyListIDDownloads span {font-size: 90% !important; color: gray;}
+.dvnStudyListIDDownloads span.dvnStudyListIDDownloadsSubsettable {width: 14em; padding-left: 24px !important; line-height: 1.2em !important; background: url(icon_analyze.gif) no-repeat; white-space: nowrap; display: inline !important;}
+.dvnStudyListIDDownloads span.dvnStudyListIDDownloadsNonSubsettable {width: 14em; padding-left: 24px !important; line-height: 1.3em !important; background: url(icon_download.gif) no-repeat; white-space: nowrap; display: inline !important;}
 td.dvnStudyListTableColID {vertical-align: top;}
 span.dvnStudyListGlobalId {color: black;}
 
@@ -871,10 +871,10 @@ span.dvnStudyListGlobalId {color: black;}
     padding-right: 0px;
 }
 .dvnStudyListTableAbstract div, .dvnStudyListTableAbstract p {margin: 0; padding: 0; display: inline;}
-span.dvnStudyListTableAbstract {color: grey; font-size: 90% !important;}
+span.dvnStudyListTableAbstract {color: gray; font-size: 90% !important;}
 .dvnStudyListTableAbstract p {color: black; font-size: 90% !important;}
 .dvnStudyListTableOptionalField span.iceOutTxt {font-size: 90% !important; display: inline !important;}
-span.dvnStudyListTableOptionalFieldLabel {color: grey;}
+span.dvnStudyListTableOptionalFieldLabel {color: gray;}
 .dvnStudyListTableOptionalField table.iceDatTbl span.iceOutTxt {font-size: 90% !important;}
 
 /* NEW STYLES: STUDY LIST + STUDIES TREE (these override IceFace styles) */
@@ -1153,7 +1153,7 @@ a.vdcTruncatorLinkLess:link, a.vdcTruncatorLinkLess:hover, a.vdcTruncatorLinkLes
 .vdcStudyFileRowFileInfo {overflow: hidden; padding: 0 .25em;}
 .vdcStudyFileRowFileThumb {float: left; padding: .25em;}
 .vdcStudyFileRowFileName {}
-span.vdcStudyFileRowFileDetails {font-size: 90% !important; color: darkgray;  white-space: nowrap;}
+span.vdcStudyFileRowFileDetails {font-size: 90% !important; color: darkgray; white-space: nowrap;}
 .vdcStudyFileRowFileDownload {padding: .25em 0;}
 
 a.vdcStudyFileRowFileDownloadLink:link, a.vdcStudyFileRowFileDownloadLink:hover, 
@@ -2006,7 +2006,7 @@ fieldset.dvnLoginPageAffiliate input.iceCmdBtn {display:block; float:right;}
 /**** Network Options Page  + My Options Page ****/
 .dvnOptionsTable {width: 100%;}
 .dvnOptionsTable td {padding: .5em 2em; border-bottom: 1px solid lightgray;}
-td.dvnOptionsTableHeader {padding: .5em 1em; background: gainsboro; color: grey; text-transform: uppercase;}
+td.dvnOptionsTableHeader {padding: .5em 1em; background: gainsboro; color: gray; text-transform: uppercase;}
 .dvnOptionsTableOption {width: 240px;}
 span.dvnOptionsTableNote {font-size: 90% !important;}
 div.dvnOptionsTableLicense {padding-top: .5em;}
@@ -2015,10 +2015,10 @@ div.dvnOptionsTableLicense {padding-top: .5em;}
 .dvnPermissionsTable {width: 100%;}
 .dvnPermissionsTable td {padding: .5em 2em; border-bottom: 1px solid lightgray;}
 .dvnPermissionsTable td.dvnPermissionsStackedCells {border-bottom: none;}
-td.dvnPermissionsTableHeader {padding: .5em 1em; background: gainsboro; color: grey; text-transform: uppercase;}
+td.dvnPermissionsTableHeader {padding: .5em 1em; background: gainsboro; color: gray; text-transform: uppercase;}
 td.dvnPermissionsTableOption {width: 240px; padding-top: .75em; padding-bottom: .75em; display: table-cell; vertical-align: top;}
 .dvnPermissionsTable .dvnPermissionsEmpty {text-align: center;}
-.dvnPermissionsTable .dvnPermissionsEmpty span.iceOutTxt {color: grey;}
+.dvnPermissionsTable .dvnPermissionsEmpty span.iceOutTxt {color: gray;}
 
 .dvnPermissionsTable fieldset.iceSelOneRb-dis {border: 0; padding: 0; background: none;}
 .dvnPermissionsTable table.iceSelOneRb-dis td {padding: 0 .25em; border: 0;}
@@ -2110,10 +2110,10 @@ table.dvnCreateDvClassificationTable table {width: 100%; border-top: 1px solid #
 .dvnPromotionalLinks .dvnPromotionalLinksInstructions {padding-bottom: 1em;}
 .dvnPromotionalLinks .dvnPromotionalLinksInstructions img {vertical-align: bottom;}
 .dvnPromotionalLinks .dvnPromotionalLinksBlock {width: 100%; overflow: hidden;}
-.dvnPromotionalLinks .dvnPromotionalLinksHeader {width: 100%; padding: .5em 1em; background: gainsboro; color: grey; text-transform: uppercase;}
+.dvnPromotionalLinks .dvnPromotionalLinksHeader {width: 100%; padding: .5em 1em; background: gainsboro; color: gray; text-transform: uppercase;}
 .dvnPromotionalLinks .dvnPromotionalSampleBlock {padding: 1em; overflow: hidden;}
 .dvnPromotionalLinks .dvnPromotionalSample {float: left; width: 25.333%;}
 .dvnPromotionalLinks .dvnPromotionalCode {float: left; width: 36.333%;}
 .dvnPromotionalLinks .dvnPromotionalTip {float: left; width: 36.333%;}
-.dvnPromotionalSample span, .dvnPromotionalCode span, .dvnPromotionalTip span {color: grey;}
+.dvnPromotionalSample span, .dvnPromotionalCode span, .dvnPromotionalTip span {color: gray;}
 .dvnPromotionalSample textarea, .dvnPromotionalCode textarea, .dvnPromotionalTip textarea {width: 90%; border: 1px solid #6e7f90; overflow: scroll;}

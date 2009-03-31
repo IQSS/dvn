@@ -321,7 +321,18 @@
                 <div class="theMenuContainer">
                 <!-- START ACCORDION -->
                 <!-- All Dataverses -->
-                     <ul id="theMenu">
+                <script type="text/javascript">
+                  // <![CDATA[
+                  function highlight_active_sidebar_links(obj) {
+                      jQuery("a.lastNodeActive").each(function(){
+                        jQuery(this).removeClass("lastNodeActive");
+                      });
+                      obj.className = "lastNodeActive";
+                    }
+
+                  // ]]>
+          </script>
+                <ul id="theMenu">
                          <li>
                              <h3 class="head selected noSubNode">
                                  <ice:commandLink onclick="setHiddenValues(-1);"
@@ -365,8 +376,9 @@
                                                                              value="#{item.xtraItems}"
                                                                              var="xtraItems">
                                                                      <li>
-                                                                         <ice:commandLink onclick="setHiddenValues(#{xtraItems.id});"
-                                                                                          partialSubmit="true">
+                                                                         <ice:commandLink onclick="highlight_active_sidebar_links(this);setHiddenValues(#{xtraItems.id});"
+                                                                                          partialSubmit="true"
+                                                                                          styleClass="lastNode">
                                                                              <ice:outputText value="#{xtraItems.name}"/>
                                                                              <f:attribute name="groupId" value="#{xtraItems.id}"/>
                                                                          </ice:commandLink>

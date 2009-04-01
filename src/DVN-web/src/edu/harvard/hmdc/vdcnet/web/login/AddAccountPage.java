@@ -183,7 +183,14 @@ public class AddAccountPage extends VDCBaseBean implements java.io.Serializable 
     
     public String cancel() {
         editUserService.cancel();
-        return "home";
+
+        // if at vdc level, this should be the contributor workflow; return to home
+        // at network level, user is network admin creating new account, return to network options
+        if (getVDCRequestBean().getCurrentVDC() != null) {
+            return "dvHome";
+        } else {
+            return "cancelNetwork";
+        }        
     }
     
     /**

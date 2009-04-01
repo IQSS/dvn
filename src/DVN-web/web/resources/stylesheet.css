@@ -1402,6 +1402,7 @@ td.vdcEditFilesColC{
 .dvnManageStudiesTableTop {border: 1px solid #d9d9d9; border-bottom: 0; width: 100%;}
 .dvnManageStudiesTableTop .dvnPaginatorWrap {padding: .5em 0;}
 .dvnManageStudiesTableBlock {width: 100%; overflow: auto;}
+* html .dvnManageStudiesTableBlock {overflow: visible; overflow-x: auto; overflow-y: hidden; padding-bottom: 17px;} /* IE hack */
 .dvnManageStudiesTable {margin-top: 0;}
 .dvnManageStudiesTable span.iceOutTxt {font-size: 90% !important;}
 .dvnManageStudiesTable th span.iceOutTxt {font-size: 100% !important;}

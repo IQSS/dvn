@@ -286,9 +286,9 @@
                           <ice:inputTextarea id="input_collectionQuery" cols="60" rows="6" value="#{EditCollectionPage.collection.query}"/>
                           <br/>
                           <ice:selectBooleanCheckbox id="onlyYourDataverse2"
-                                                     value="#{EditCollectionPage.collection.localScope}"/>
-                          <ice:outputLabel for="multipleSelection"
-                                           value="Only your dataverse"/>
+                                                     value="#{EditCollectionPage.collection.localScope}"
+                                                     rendered="#{!EditCollectionPage.collection.rootCollection}"/>
+                          <ice:outputLabel for="multipleSelection" value="Only your dataverse" rendered="#{!EditCollectionPage.collection.rootCollection}"/>
                       </ice:column>
                       <ice:column>
                           <div class="vdcFieldTitle dvnFormPaddingTop">Query Examples:</div>

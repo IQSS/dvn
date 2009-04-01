@@ -36,17 +36,18 @@ import edu.harvard.hmdc.vdcnet.vdc.*;
 import edu.harvard.hmdc.vdcnet.web.DataverseGrouping;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
 
+import edu.harvard.hmdc.vdcnet.web.site.ClassificationList;
+import edu.harvard.hmdc.vdcnet.web.site.ClassificationUI;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import javax.ejb.EJB;
-import javax.faces.application.NavigationHandler;
-import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpServletRequest;
+import javax.faces.model.DataModel;
 
 public class ManageClassificationsPage extends VDCBaseBean implements Serializable {
     @EJB StudyServiceLocal studyService;
@@ -55,240 +56,51 @@ public class ManageClassificationsPage extends VDCBaseBean implements Serializab
 
     private Long cid;
     private int itemBeansSize       = 0; //used to output the number of classifications
-    private int classificationsSize = 0;
-
     private boolean result;
     private String statusMessage;
     private String SUCCESS_MESSAGE   = new String("Success. The classifications and dataverses operation completed successfully.");
     private String FAIL_MESSAGE      = new String("Problems occurred during the form submission. Please see error messages below.");
-     
-    private boolean isInit;
-    
-    private final ArrayList itemBeans = new ArrayList();
-
-    public String CHILD_ROW_STYLE_CLASS;
-    public static final String GROUP_INDENT_STYLE_CLASS = "GROUP_INDENT_STYLE_CLASS";
-    public static final String GROUP_ROW_STYLE_CLASS    = "groupRow";
-    public static final String CHILD_INDENT_STYLE_CLASS = "CHILD_INDENT_STYLE_CLASS";
-    public static final String CONTRACT_IMAGE           = "tree_nav_top_close_no_siblings.gif";
-    public static final String EXPAND_IMAGE             = "tree_nav_top_open_no_siblings.gif";
-
     private HtmlDataTable mainTable   = new HtmlDataTable();
     private HtmlMessages   iceMessage = new HtmlMessages();
     private HtmlOutputText linkDelete = new HtmlOutputText();
-
     private DataverseGrouping parentItem = null;
     private DataverseGrouping childItem  = null;
 
     public ManageClassificationsPage() {
-        //init();
-        CHILD_ROW_STYLE_CLASS = "";
     }
 
      @SuppressWarnings("unchecked")
     public void init() {
         super.init();
-        // initialize the list
-        if (itemBeans != null) {
-            itemBeans.clear();
-        }
-        mainTable.setSortAscending(true);
-        ascending = mainTable.isSortAscending();
-        List list = (List)vdcGroupService.findAll();
-        initMenu();
-     }
-
-    // ***************** DEBUG START *****************
-
-    protected void initMenu() {
-        if (itemBeans != null) {
-            itemBeans.clear();
-        }
-
         List list = (List)vdcGroupService.findAll();
         itemBeansSize = list.size();
-        Iterator outeriterator = list.iterator();
-        while(outeriterator.hasNext()) {
-            classificationsSize++;
-            VDCGroup vdcgroup = (VDCGroup)outeriterator.next();
-                String indentStyle = (vdcgroup.getParent() == null) ? "groupRowIndentStyle" : "childRowIndentStyle";
-                if (vdcgroup.getParent() == null) {
-                    populateParentClassification(vdcgroup, indentStyle);
-                }
-            }
-    }
-
-
-    //Manage classification
-     private void populateParentClassification(VDCGroup vdcgroup, String indentStyle) {
-         Long parent = (vdcgroup.getParent() != null) ? vdcgroup.getParent() : new Long("-1");
-         List list              = vdcGroupService.findByParentId(vdcgroup.getId());
-         Iterator iterator      = list.iterator();
-         String expandImage     = EXPAND_IMAGE;
-         String contractImage   = CONTRACT_IMAGE;
-         boolean isExpanded     = false;
-         synchronized(itemBeans) {
-            parentItem  = new DataverseGrouping(vdcgroup.getId(), vdcgroup.getName(), "group", itemBeans, isExpanded, expandImage, contractImage, parent);
-         }
-         parentItem.setShortDescription(vdcgroup.getDescription());
-         parentItem.setSubclassification(new Long(list.size()));
-         parentItem.setTextIndent(0);
-         if (!indentStyle.equals(""))
-             parentItem.setIndentStyleClass(indentStyle);
-         if (sortColumnName == null) {
-             initColumnNames(parentItem);
-         }
+        initClassifications();
      }
 
+     ClassificationList list = null;
 
+     protected void initClassifications() {
+         if (list == null) {
+             list = new ClassificationList();
+         }
+         list.getClassificationUIs(new Long("-1"));
+     }
 
      /**
      * Toggles the expanded state of this dataverse group.
      *
      * @param event
      */
-    public void sort(javax.faces.event.ActionEvent event) {
-        ascending = !ascending;
-        Iterator iterator = itemBeans.iterator();
-        List childrenlist = new ArrayList();
-        DataverseGrouping dvgrouping;
-        while(iterator.hasNext()) {
-            synchronized(itemBeans){
-                dvgrouping = (DataverseGrouping)iterator.next();
-                //ascending = !dvgrouping.isAscending();
-                dvgrouping.setAscending(ascending);
-                dvgrouping.setIsExpanded(false);
-                if (dvgrouping.getParentClassification() == -1) {
-                    childrenlist.add(dvgrouping);
-                }
-            }
-        }
-        sort(mainTable.getSortColumn());
-        iterator = childrenlist.iterator();
-        while(iterator.hasNext()) {
-            dvgrouping = (DataverseGrouping)iterator.next();
-            List<VDCGroup> children = (List<VDCGroup>)vdcGroupService.findByParentId(new Long(dvgrouping.getId()));
-            contractSubClassification(children, dvgrouping);
-        }
-
-    }
-
-
-    String sortColumnName;
-    // dataTableColumn Names
-    String nameColumnName;
-    // network admin fields
-    String shortDescriptionColumnName;
-    String subclassificationsColumnName;
-    boolean ascending = true;
-
-    private void initColumnNames(DataverseGrouping grouping) {
-        sortColumnName                  = grouping.getSortColumnName();
-        nameColumnName                  = grouping.getNameColumnName();
-        shortDescriptionColumnName      = grouping.getShortDescriptionColumnName();
-        subclassificationsColumnName    = grouping.getSubclassificationsColumnName();
-    }
-
-    protected void sort(String name) {
-        Comparator comparator = new Comparator() {
-            public int compare(Object o1, Object o2) {
-                DataverseGrouping c1 = (DataverseGrouping) o1;
-                DataverseGrouping c2 = (DataverseGrouping) o2;
-                if (sortColumnName == null) {
-                    return 0;
-                }
-                if (sortColumnName.equals(nameColumnName)) {
-                    return ascending ?
-                            new String(c1.getName().toUpperCase()).compareTo(new String(c2.getName().toUpperCase())) :
-                            new String(c2.getName().toUpperCase()).compareTo(new String(c1.getName().toUpperCase()));
-                } else if (sortColumnName.equals(shortDescriptionColumnName)) {
-                    return ascending ? c1.getShortDescription().toUpperCase().compareTo(c2.getShortDescription().toUpperCase()) :
-                            c2.getShortDescription().toUpperCase().compareTo(c1.getShortDescription().toUpperCase());
-                } else if (sortColumnName.equals(subclassificationsColumnName)) {
-                    return ascending ? c1.getSubclassification().compareTo(c2.getSubclassification()) :
-                            c2.getSubclassification().compareTo(c1.getSubclassification());
-                } else if (sortColumnName.equals(shortDescriptionColumnName)) {
-                    return ascending ? c1.getType().compareTo(c2.getType()) :
-                        c2.getType().compareTo(c1.getType());
-                } else {
-                    return 0;
-                }
-            }
-        };
-            Collections.sort(itemBeans, comparator);
-    }
-
-    /**
-     * Toggles the expanded state of this dataverse group.
-     *
-     * @param event
-     */
     public void toggleChildren(javax.faces.event.ActionEvent event) {
-        Long parentId = new Long(toggleImage.getAttributes().get("groupingId").toString());
-        Iterator iterator = itemBeans.iterator();
-        DataverseGrouping parentitem = null;
-        while (iterator.hasNext()) {
-            parentitem = (DataverseGrouping)iterator.next();
-            if (parentitem.getId().equals(toggleImage.getAttributes().get("groupingId").toString())) {
-                break;
-            }
-        }
-        if (!parentitem.isIsExpanded()) {
-            expandSubClassification(vdcGroupService.findByParentId(parentId), parentitem);
-            parentitem.setIsExpanded(true);
-        } else {
-            contractSubClassification(vdcGroupService.findByParentId(parentId), parentitem);
-            parentitem.setIsExpanded(false);
-        }
+        Long parentNodeId = new Long(toggleImage.getAttributes().get("groupingId").toString());
+        list.getClassificationUIs(parentNodeId);  
     }
 
+    public ClassificationList getList() {
+        return list;
+    }
 
-
-    int indent = 10; //initialize primitive
-
-    private void expandSubClassification(List<VDCGroup> children, DataverseGrouping parentitem) {
-
-         String expandImage     = EXPAND_IMAGE;
-         String contractImage   = CONTRACT_IMAGE;
-         boolean isExpanded     = false;
-         Iterator iterator = children.iterator();
-         indent = parentitem.getTextIndent() + 2;
-         while(iterator.hasNext()) {
-             VDCGroup vdcgroup = (VDCGroup)iterator.next();
-            synchronized(itemBeans) {
-                parentItem  = new DataverseGrouping(vdcgroup.getId(), vdcgroup.getName(), "group", itemBeans, isExpanded, expandImage, contractImage, new Long(parentitem.getId()));
-             }
-             parentItem.setIndentStyleClass("childRowIndentStyle"); //deprecate in favor of inline indent
-             parentItem.setTextIndent(indent);
-             parentItem.setSubclassification(new Long(Integer.toString(vdcGroupService.findByParentId(vdcgroup.getId()).size())));
-             parentItem.setShortDescription(vdcgroup.getDescription());
-             parentitem.addChildItem(parentItem);
-             if (itemBeans.contains(parentItem))
-                  itemBeans.remove(parentItem);
-             itemBeans.add(itemBeans.indexOf(parentitem) + 1, parentItem);
-
-         }
-     }
-
-    private void contractSubClassification(List<VDCGroup> children, DataverseGrouping parentitem) {
-         String expandImage     = EXPAND_IMAGE;
-         String contractImage   = CONTRACT_IMAGE;
-         boolean isExpanded     = false;
-         Iterator iterator      = children.iterator();
-         Iterator itemsIterator = itemBeans.iterator();
-         while(iterator.hasNext()) {
-             VDCGroup vdcgroup = (VDCGroup)iterator.next();
-             while (itemsIterator.hasNext()) {
-                 DataverseGrouping grouping = (DataverseGrouping)itemsIterator.next();
-                 if (new Long(grouping.getId()).equals(vdcgroup.getId())) {
-                     itemsIterator.remove();
-                 }
-             }
-         }
-         parentitem.recurseAndContractNodeAction();
-     }
-
-    private HtmlGraphicImage toggleImage = new HtmlGraphicImage();
+   private HtmlGraphicImage toggleImage = new HtmlGraphicImage();
 
     public HtmlGraphicImage getToggleImage() {
         return toggleImage;
@@ -296,56 +108,6 @@ public class ManageClassificationsPage extends VDCBaseBean implements Serializab
 
     public void setToggleImage(HtmlGraphicImage toggleImage) {
         this.toggleImage = toggleImage;
-    }
-
-
-
-
-
-
-
-     // ******************** END DEBUG ******************************
-
-
-
-
-    public void dispose() {
-        isInit = false;
-        if(itemBeans != null) {
-            DataverseGrouping dataversegrouping;
-            ArrayList tempList;
-            for(int i = 0; i < itemBeans.size(); i++) {
-                dataversegrouping = (DataverseGrouping)itemBeans.get(i);
-                tempList = dataversegrouping.getChildItems();
-                if(tempList != null)
-                    tempList.clear();
-            }
-            itemBeans.clear();
-        }
-    }
-
-    public ArrayList getItemBeans() {
-        return itemBeans;
-    }
-
-    public int getItemBeansSize() {
-        return itemBeansSize;
-    }
-
-    private String getLastUpdatedTime(Long vdcId) {
-        Timestamp timestamp = null;
-        timestamp = studyService.getLastUpdatedTime(vdcId);
-        //TODO: convert this to n (hours, months days) time ago
-        String timestampString = DateUtils.getTimeInterval(timestamp.getTime());
-        return timestampString;
-    }
-
-    public String getCHILD_ROW_STYLE_CLASS() {
-        return CHILD_ROW_STYLE_CLASS;
-    }
-
-    public void setCHILD_ROW_STYLE_CLASS(String CHILD_ROW_STYLE_CLASS) {
-        this.CHILD_ROW_STYLE_CLASS = CHILD_ROW_STYLE_CLASS;
     }
 
     public String getFAIL_MESSAGE() {
@@ -404,41 +166,13 @@ public class ManageClassificationsPage extends VDCBaseBean implements Serializab
         this.mainTable = mainTable;
     }
 
-    public String getSortColumnName() {
-        return sortColumnName;
+    public int getItemBeansSize() {
+        return itemBeansSize;
     }
 
-    public void setSortColumnName(String sortColumnName) {
-        this.sortColumnName = sortColumnName;
-    }
+    
 
-
-
-    public String getNameColumnName() {
-        return nameColumnName;
-    }
-
-    public void setNameColumnName(String nameColumnName) {
-        this.nameColumnName = nameColumnName;
-    }
-
-    public String getShortDescriptionColumnName() {
-        return shortDescriptionColumnName;
-    }
-
-    public void setShortDescriptionColumnName(String shortDescriptionColumnName) {
-        this.shortDescriptionColumnName = shortDescriptionColumnName;
-    }
-
-    public String getSubclassificationsColumnName() {
-        return subclassificationsColumnName;
-    }
-
-    public void setSubclassificationsColumnName(String subclassificationsColumnName) {
-        this.subclassificationsColumnName = subclassificationsColumnName;
-    }
-
-
+   
     /**
      * <p>Callback method that is called after the component tree has been
      * restored, but before any event processing takes place.  This method

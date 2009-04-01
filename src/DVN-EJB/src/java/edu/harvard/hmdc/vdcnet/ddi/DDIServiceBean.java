@@ -219,15 +219,16 @@ public class DDIServiceBean implements DDIServiceLocal {
                     if (line.indexOf("<stdyDscr>") != -1) {
                         out.write( line.substring(0, line.indexOf("<stdyDscr>") ) );
                         out.write(System.getProperty("line.separator"));
-
+                        out.flush();
+                        
                         // now create DocDscr element (using StAX)
                         javax.xml.stream.XMLOutputFactory xmlof = javax.xml.stream.XMLOutputFactory.newInstance();
                         //xmlof.setProperty("javax.xml.stream.isPrefixDefaulting", java.lang.Boolean.TRUE);
                         xmlw = xmlof.createXMLStreamWriter(os);
                         createDocDscr(xmlw, s);
-                        out.write(System.getProperty("line.separator"));
                         xmlw.close();
 
+                        out.write(System.getProperty("line.separator"));
                         out.write( line.substring(line.indexOf("<stdyDscr>") ) );
                         out.write(System.getProperty("line.separator"));
                         out.flush();

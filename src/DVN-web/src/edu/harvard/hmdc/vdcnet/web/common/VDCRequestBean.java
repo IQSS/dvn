@@ -30,12 +30,11 @@ import edu.harvard.hmdc.vdcnet.admin.PageDefServiceLocal;
 import edu.harvard.hmdc.vdcnet.util.PropertyUtil;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetwork;
-import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
-import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
 import edu.harvard.hmdc.vdcnet.web.StudyListing;
 import javax.ejb.EJB;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 /**
  * <p>Request scope data bean for your application.  Create properties
@@ -234,12 +233,5 @@ public class VDCRequestBean extends VDCBaseBean implements java.io.Serializable 
         }
     }
 
-    public String defaultCancelPage() {
-        if (getCurrentVDC() != null) {
-            return "cancelVDC";
-        } else {
-            return "cancelNetwork";
-        }
-    }
-    
+
 }

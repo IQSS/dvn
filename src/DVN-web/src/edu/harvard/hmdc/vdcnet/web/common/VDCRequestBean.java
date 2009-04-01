@@ -233,5 +233,13 @@ public class VDCRequestBean extends VDCBaseBean implements java.io.Serializable 
             return "home";
         }
     }
+
+    public String defaultCancelPage() {
+        if (getCurrentVDC() != null) {
+            return "cancelVDC";
+        } else {
+            return "cancelNetwork";
+        }
+    }
     
 }

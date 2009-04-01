@@ -42,8 +42,9 @@
                          styleClass="dvnManageClassificationsTable"
                          rowClasses="evenRow, oddRow" headerClass="groupRow"
                          columnClasses="dvnMngClssTableSelect,dvnMngClssTableName,dvnMngClssTableDesc,dvnMngClssTableCount,dvnMngClssTableDelete"
-                         sortColumn="#{manageClassificationsPage.sortColumnName}"
-                         value="#{manageClassificationsPage.itemBeans}" var="dvItems">
+                         sortAscending="#{manageClassificationsPage.list.ascending}"
+                         sortColumn="#{manageClassificationsPage.list.sortColumnName}"
+                         value="#{manageClassificationsPage.list.classificationUIs}" var="dvItems">
             <!-- name number -->
             <f:facet name="header">
               
@@ -55,8 +56,9 @@
                 <ice:commandLink actionListener="#{manageClassificationsPage.toggleChildren}">
                   <ice:graphicImage id="expandContractImage"
                                     binding="#{manageClassificationsPage.toggleImage}"
-                                    value="#{dvItems.expandContractImage}">
-                    <f:attribute name="groupingId" value="#{dvItems.id}"/>
+                                    rendered="#{dvItems.expandContractImage != null and dvItems.level != 3}"
+                                    value="#{dvItems.expandContractImage}"><!--  -->
+                    <f:attribute name="groupingId" value="#{dvItems.vdcGroup.id}"/>
                   </ice:graphicImage>
                 </ice:commandLink>
                 <ice:outputText escape="false"
@@ -68,40 +70,42 @@
             <ice:column>
               <f:facet name="header">
                 <ice:commandSortHeader
-                  columnName="#{manageClassificationsPage.nameColumnName}"
-                  arrow="true"
-                  actionListener="#{manageClassificationsPage.sort}">
-                  <ice:outputText value="#{manageClassificationsPage.nameColumnName}"/>
+                  columnName="#{manageClassificationsPage.list.nameColumnName}"
+                  arrow="true">
+                  <ice:outputText value="#{manageClassificationsPage.list.nameColumnName}"/>
                 </ice:commandSortHeader>
               </f:facet>
-              <ice:outputLink value="/dvn/faces/networkAdmin/AddClassificationsPage.xhtml">
-                <f:param name="cid" value="#{dvItems.id}"/>
-                <ice:outputText styleClass="#{dvItems.indentStyleClass}" style="padding-left: #{dvItems.textIndent}em; background-position: #{dvItems.textIndent - 1.5}em;" value="#{dvItems.name}"/>
+              <ice:outputLink
+                  value="/dvn/faces/networkAdmin/AddClassificationsPage.xhtml">
+                <f:param name="cid" value="#{dvItems.vdcGroup.id}"/>
+                <ice:outputText styleClass="#{dvItems.indentStyle}"
+                                style="padding-left: #{dvItems.textIndent}em; background-position: #{dvItems.textIndent - 1.5}em;"
+                                value="#{dvItems.vdcGroup.name}"/>
               </ice:outputLink>
             </ice:column>
             <!-- description -->
             <ice:column>
               <f:facet name="header">
                 <ice:commandSortHeader
-                  columnName="#{manageClassificationsPage.shortDescriptionColumnName}"
+                  columnName="#{manageClassificationsPage.list.descriptionColumnName}"
                   arrow="true"
-                  actionListener="#{manageClassificationsPage.sort}">
-                  <ice:outputText value="#{manageClassificationsPage.shortDescriptionColumnName}"/>
+                  >
+                  <ice:outputText value="#{manageClassificationsPage.list.descriptionColumnName}"/>
                 </ice:commandSortHeader>
               </f:facet>
-              <ice:outputText value="#{dvItems.shortDescription}"/>
+              <ice:outputText value="#{dvItems.vdcGroup.description}"/>
             </ice:column>
             <!-- subclassifications  -->
             <ice:column>
               <f:facet name="header">
                 <ice:commandSortHeader
-                  columnName="#{manageClassificationsPage.subclassificationsColumnName}"
+                  columnName="#{manageClassificationsPage.list.subclassificationsColumnName}"
                   arrow="true"
-                  actionListener="#{manageClassificationsPage.sort}">
-                  <ice:outputText value="#{manageClassificationsPage.subclassificationsColumnName}"/>
+                  >
+                  <ice:outputText value="#{manageClassificationsPage.list.subclassificationsColumnName}"/>
                 </ice:commandSortHeader>
               </f:facet>
-              <ice:outputText value="#{dvItems.subclassification}"/>
+              <ice:outputText value="#{dvItems.totalSubclassifications}"/>
             </ice:column>
             <!-- controls -->
             <ice:column>
@@ -109,18 +113,11 @@
                 <ice:outputText escape="false" value="Delete"/>
               </f:facet>
               <ice:outputLink value="/dvn/faces/networkAdmin/DeleteClassificationsPage.xhtml">
-                <f:param name="cid" value="#{dvItems.id}"/>
+                <f:param name="cid" value="#{dvItems.vdcGroup.id}"/>
                 <ice:outputText value="Delete"/>
               </ice:outputLink>
             </ice:column>
           </ice:dataTable>
-          <!-- ******************* TEST ******************
-            <ice:panelSeries styleClass="dvn_networkHomePanel"
-                  value="#{manageClassificationsPage.itemBeans}"
-                  var="dvItems"
-                  rendered="#{VDCRequest.currentVDC == null}">
-                  <ice:outputText value="#{dvItems.strToString}"/>
-           </ice:panelSeries> -->
         </div>
       </ice:form>
     </gui:define>

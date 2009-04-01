@@ -68,8 +68,10 @@
                 <ice:inputFile id="inputFileComponent"
                                submitOnUpload="postUpload"
                                actionListener="#{AddFilesPage.uploadFile}"
-                               binding="#{AddFilesPage.inputFile}">
+                               binding="#{AddFilesPage.inputFile}"
+                               styleClass="dvnAddFilesInput">
                   <!-- <ice:commandButton binding="#{AddFilesPage.inputFile}"/> -->
+                  <ice:outputStyle rel="stylesheet" type="text/css" href="/resources/stylesheet.css"/>
                 </ice:inputFile>
                 <br/>
                 <ice:message layout="table" globalOnly="false" for="inputFileComponent"

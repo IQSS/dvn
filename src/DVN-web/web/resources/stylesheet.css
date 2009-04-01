@@ -1283,7 +1283,19 @@ a.vdcStudyFileSubsetAnalysisLink:active, a.vdcStudyFileSubsetAnalysisLink:visite
 }
 
 /* Add Files Page */
-.dvnAddFilesInputBlock {}
+* html .dvnAddFilesInputBtn { /* IE hack for different button sizes */
+    margin: 2px;
+    padding: 2px;
+    padding-top: 4px;
+    font-family: "HelveticaNeue", Helvetica, Arial, sans-serif;
+    line-height: 9px;
+    height: 22px;
+}
+* html .iceInpFileTxt { /* IE hack for different button sizes */
+    margin: 2px;
+    padding: 2px;
+    font-family: "HelveticaNeue", Helvetica, Arial, sans-serif;
+}
 .dvnAddFilesOuterTable {border-left: 0; border-right: 0; border-bottom: 0;}
 .dvnAddFilesOuterTable td {padding: 0; border-left: 0; border-right: 0; border-bottom: 0;}
 .dvnAddFilesOuterTable tr:first-child {border-left: 0;}

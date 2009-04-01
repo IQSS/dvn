@@ -1003,6 +1003,6 @@ create index studyfileactivity_study_id_index on studyfileactivity(study_id);
 
 
 
-insert into dvnversion( id, buildnumber,versionnumber) values (1,4,1);
+insert into dvnversion( id, buildnumber,versionnumber) values (1,5,1);
 
 INSERT INTO vdcnetworkstats (id,studycount,filecount) values (1,0,0);

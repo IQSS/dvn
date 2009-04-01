@@ -19,10 +19,10 @@
                     <div class="requestHeader dvn_overflow">
                         <ice:outputText value="Success! &lt;span&gt;&gt; Become a Contributor&lt;/span&gt;" escape="false"/>
                     </div>
-                    <div jsfc="ice:panelGroup" rendered="#{LoginWorkflowBean.contributorWorkflow}" styleClass="requestTimeline" style="background-position: -93px -12px;">
-                        <div class="requestTimelinePoint" style="left: 144px;"><img src="/dvn/resources/lrg-blue-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong style="color:#035899;">Create Account</strong></div>
-                        <div class="requestTimelinePoint" style="left: 347px;"><img src="/dvn/resources/lrg-blue-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong style="color:#035899;">Terms of Use</strong></div>
-                        <div class="requestTimelinePoint" style="left: 554px;"><img src="/dvn/resources/lrg-blue-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong style="color:#035899; font-weight:bold;">Success!</strong></div>
+                    <div jsfc="ice:panelGroup" rendered="#{LoginWorkflowBean.contributorWorkflow}" styleClass="requestTimeline contributorTimelineStep3">
+                        <div class="requestTimelinePoint contributorWorkflowStep1"><img src="/dvn/resources/lrg-blue-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong class="requestWorkflowCompleted">Create Account</strong></div>
+                        <div class="requestTimelinePoint contributorWorkflowStep2"><img src="/dvn/resources/lrg-blue-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong class="requestWorkflowCompleted">Terms of Use</strong></div>
+                        <div class="requestTimelinePoint contributorWorkflowStep3"><img src="/dvn/resources/lrg-blue-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong class="requestWorkflowCurrent">Success!</strong></div>
                     </div>
                     <div class="requestContent">
                         <div class="requestContentDescLeft">
@@ -32,7 +32,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="requestContentDescRight requestContentSucess">
+                        <div class="requestContentFormRight requestContentSucess">
                             <div class="dvn_margin12">
                                 <p><ice:outputText value="As a contributor, you can:"/> </p>
                                 <ul>

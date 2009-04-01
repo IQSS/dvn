@@ -177,7 +177,7 @@ span.disabled {font-weight: bold;}
     border-bottom: solid 1px #FFF;
     border-right: solid 1px #FFF;
     background: #FFF;
-    overflow: scroll;
+    overflow: auto; overflow-x: scroll; overflow-y: hidden;
     padding: .25em;
 }
 

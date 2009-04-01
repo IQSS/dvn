@@ -183,14 +183,18 @@ public class AddAccountPage extends VDCBaseBean implements java.io.Serializable 
     
     public String cancel() {
         editUserService.cancel();
-
+ 
         // if user is logged in return to the appropriate options page
         // if not logged in, to the appropriate home page
         if (getVDCSessionBean().getLoginBean() != null) {
-            return getVDCRequestBean().defaultCancelPage();
+            if (getVDCRequestBean().getCurrentVDC() != null) {
+                return "cancelVDC";
+            } else {
+                return "cancelNetwork";
+            }
         } else {
             return getVDCRequestBean().home();
-        }       
+        }
     }
     
     /**

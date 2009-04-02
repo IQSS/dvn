@@ -316,9 +316,9 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
             } else {
                 // we need to create a new studyListing
                 initNewStudyListing();
-                initStudies();
             }
-
+            
+            initStudies();
             initPageComponents(studyListing.getMode());
             if (renderTree) {
                 initCollectionTree();

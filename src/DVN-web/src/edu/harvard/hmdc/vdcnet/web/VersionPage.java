@@ -12,6 +12,8 @@ package edu.harvard.hmdc.vdcnet.web;
 import edu.harvard.hmdc.vdcnet.admin.DVNVersion;
 import edu.harvard.hmdc.vdcnet.admin.DVNVersionServiceLocal;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
 
@@ -50,6 +52,15 @@ public class VersionPage extends VDCBaseBean  implements java.io.Serializable {
         String buildString = null;
         String buildStr = ResourceBundle.getBundle("BuildNumber").getString("build.number");
         return buildStr != null? buildStr : "00";
+    }
+
+    public String getServerName() {
+        try {
+            return InetAddress.getLocalHost().getCanonicalHostName();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
 }

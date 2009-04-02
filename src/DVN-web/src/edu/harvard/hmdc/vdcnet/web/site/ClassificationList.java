@@ -39,7 +39,6 @@ public class ClassificationList extends SortableList {
 
 
     private void init() {
-        // make sure sortColumnName on first render
         Long vdcgroupId   = null;
         Long childGroupId = null;
         initVdcGroupService(); // TODO - remove this in favor of managed bean and @EJB
@@ -89,7 +88,6 @@ public class ClassificationList extends SortableList {
             init();
         }
         checkSort();
-        //ascending = !ascending;
         return visibleClassificationUIs;
     }
 

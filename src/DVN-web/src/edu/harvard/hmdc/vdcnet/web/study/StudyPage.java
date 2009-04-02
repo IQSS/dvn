@@ -281,17 +281,6 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
 
     public void init() {
         super.init();
-
-        // check for studyListingIndex param
-        if (getRequestParam("studyListingIndex") != null) {
-            studyListingIndex = getRequestParam("studyListingIndex");
-            // check if index from this session
-            String sessionId = ((HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false)).getId();
-            if (!sessionId.equals(studyListingIndex.substring(studyListingIndex.indexOf("_") + 1))) {
-                studyListingIndex = null;
-            }
-        }
-
         // set tab if it was it was sent as pamameter or part of request bean
         initSelectedTabIndex();
 
@@ -555,20 +544,7 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
     public void setXFF(String xff) {
         this.xff = xff;
     }
-    private String studyListingIndex;
-
-    public String getStudyListingIndex() {
-        return studyListingIndex;
-    }
-
-    public void setStudyListingIndex(String studyListingIndex) {
-        this.studyListingIndex = studyListingIndex;
-    }
-
-    public String getStudyListingIndexAsParameter() {
-        return studyListingIndex != null ? "&studyListingIndex=" + studyListingIndex : "";
-    }
-    
+   
     public String beginRequestWorkflow() {
             LoginWorkflowBean lwf = (LoginWorkflowBean) getBean("LoginWorkflowBean");       
             return lwf.beginFileAccessWorkflow(studyId);

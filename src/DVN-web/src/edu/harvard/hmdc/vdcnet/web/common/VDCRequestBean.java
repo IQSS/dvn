@@ -234,4 +234,27 @@ public class VDCRequestBean extends VDCBaseBean implements java.io.Serializable 
     }
 
 
+    String studyListingIndex;
+
+    public String getStudyListingIndex() {
+        return studyListingIndex;
+    }
+
+    public void setStudyListingIndex(String studyListingIndex) {
+        if (studyListingIndex != null) {
+            // check if index from this session
+            String sessionId = ((HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false)).getId();
+            if (!sessionId.equals(studyListingIndex.substring(studyListingIndex.indexOf("_") + 1))) {
+                this.studyListingIndex = null;
+            } else {
+                this.studyListingIndex = studyListingIndex;
+            }
+        }
+    }
+
+
+    public String getStudyListingIndexAsParameter() {
+        //String studyListingIndex = getVDCRequestBean().getStudyListingIndex();
+        return studyListingIndex != null ? "&studyListingIndex=" + studyListingIndex : "";
+    }
 }

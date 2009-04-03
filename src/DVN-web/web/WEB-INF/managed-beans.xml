@@ -228,6 +228,16 @@
         <managed-bean-name>AddFilesPage</managed-bean-name>
         <managed-bean-class>edu.harvard.hmdc.vdcnet.web.study.AddFilesPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
+        <managed-property>
+            <property-name>ingestEmail</property-name>
+            <property-class>java.lang.String</property-class>
+            <value>#{VDCSession.loginBean.user.email}</value>
+        </managed-property>
+ <!-- ****** EV : Managed beans for AddFilesPage with IceFaces ****** -->
+        <managed-property>
+        <property-name>renderManager</property-name>
+        <value>#{renderMgr}</value>
+       </managed-property>
     </managed-bean>
  <!-- **************** EV ***************** -->
     <managed-bean>
@@ -749,10 +759,5 @@
             <property-name>renderManager</property-name>
             <value>#{renderMgr}</value>
         </managed-property>
-    </managed-bean>
-    <managed-bean>
-        <managed-bean-name>GPDPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.GPDPage</managed-bean-class>
-        <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
 </faces-config>

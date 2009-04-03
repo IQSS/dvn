@@ -43,6 +43,7 @@ import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.DataFileFormatType;
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -56,7 +57,6 @@ import javax.ejb.Remove;
 import javax.ejb.Stateful;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.faces.context.FacesContext;
 import javax.jms.Queue;
 import javax.jms.QueueConnectionFactory;
 import javax.persistence.EntityManager;
@@ -475,6 +475,9 @@ public class EditStudyServiceBean implements edu.harvard.hmdc.vdcnet.study.EditS
         // Copy Template Metadata into Study Metadata
         newTemplate.getMetadata().copyMetadata(study.getMetadata());
         study.setTemplate(newTemplate);
+
+        // prefill date of deposit
+        study.setDateOfDeposit(  new SimpleDateFormat("yyyy-MM-dd").format(study.getCreateTime()) );
     }
     
     private void clearCollection(Collection collection) {

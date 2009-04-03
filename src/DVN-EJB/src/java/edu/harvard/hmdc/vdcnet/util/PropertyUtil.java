@@ -39,6 +39,21 @@ public class PropertyUtil implements java.io.Serializable  {
             }
             return hostUrl;
         }
+    /**
+     * Returns the value of JVM property dvn.timerServer
+     * The default value of this property is true (so that in a simple single server
+     * configuration, the single server is automatically the "timer server" )
+     * @return
+     */
+    public static boolean isTimerServer() {
+        boolean isTimerServer = true;
+        String timerServer = System.getProperty("dvn.timerServer");
+        if (timerServer!=null) {
+            isTimerServer = Boolean.parseBoolean(timerServer);
+        }
+        return isTimerServer;
+
+    }
     public PropertyUtil() {
       
     }

@@ -89,15 +89,15 @@ public class EditTemplateServiceBean implements edu.harvard.hmdc.vdcnet.study.Ed
      
     }
     public void  newTemplate(Long vdcId, Long studyId) {
-        newTemplate=true;   
+        newTemplate=true;
         template = new Template();
-      
-       initTemplate( vdcId);       
+
+        initTemplate( vdcId);
         Study study = em.find(Study.class, studyId);
         study.getMetadata().copyMetadata(template.getMetadata());
-          System.out.println("Persist after init");
-   
-      em.persist(template);
+        template.getMetadata().setDateOfDeposit("");
+
+        em.persist(template);
         createdFromStudyId=studyId;
       
     }

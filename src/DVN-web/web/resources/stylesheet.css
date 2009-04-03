@@ -1,0 +1,2166 @@
+/* DVN SPECIFIC STYLE CLASSES */
+
+/* MAIN LAYOUT */
+.dvn_wrapper {
+    width: 100%;
+    min-width: 724px;
+    position: relative;
+    background-color: #fff;
+}
+.dvn_wrapperVanilla {
+    width: 100%;
+    min-width: 724px;
+    position: relative;
+    background-color: #eee;
+}
+.dvn_bodyVanilla {
+    background-color: #eee;
+}
+.dvn_content {
+    padding: 0 12px 12px 12px;
+    color: #464646 !important;
+    text-align: left;
+    display: block;
+}
+
+/* IE min-width hack */
+* html .dvn_wrapper {border-right:724px solid #fff;}
+* html .dvn_wrapperVanilla {border-right:724px solid #eee;}
+* html .dvn_content {display:inline-block; position:relative; margin-right:-724px;}
+/* IE min-width hack */
+
+.dvn_content div, .dvn_content span, .dvn_content p, .dvn_content li, .dvn_content caption, 
+.dvn_content table, .dvn_content tbody, .dvn_content tfoot, .dvn_content thead, .dvn_content tr, .dvn_content th, .dvn_content td {
+    font-family: "HelveticaNeue", Helvetica, Arial, sans-serif !important;
+    font-size: 12px !important;
+    line-height: 18px !important;
+}
+
+.dvn_content span, .dvn_content p {
+    background-color: transparent;
+}
+
+.dvn_content h1, .dvn_content h2, .dvn_content h3, .dvn_content h4, .dvn_content h5, .dvn_content h6 {
+    font-family: "HelveticaNeue", Helvetica, Arial, sans-serif !important;
+    font-weight: bold !important;
+    font-style: normal !important;
+}
+
+.dvn_content a, .dvn_content a:link, .dvn_content a:visited, .dvn_content a:hover, .dvn_content a:active {
+    font-family: "HelveticaNeue", Helvetica, Arial, sans-serif !important;
+    font-size: 12px !important;
+    line-height: 18px !important;
+}
+
+.dvn_content a:link, .dvn_content a:visited {
+        color: #0c54b3;
+        text-decoration: none !important;
+}
+ .dvn_content a:hover, .dvn_content a:active {
+        color: #c55b28;
+        text-decoration: underline !important;
+}
+
+.dvn_content img {margin: 0 !important; padding: 0 !important; border: 0 !important; display: inline !important;}
+.dvn_content textarea {width: 40em;}
+.dvn_content ul {list-style-image: none;}
+
+.dvn_floatL {
+	float: left;
+}
+.dvn_floatR {
+	float: right;
+}
+.dvn_overflow {
+  overflow: hidden;
+}
+.dvn_clear {
+  clear: both;
+}
+.dvn_indent {
+  margin-left: 2em;
+}
+.dvn_icon {
+  border: 0;
+  vertical-align: bottom;
+}
+
+.dvnFormPadding {
+  padding: 1em 0;
+  text-align: left;
+}
+.dvnFormPaddingTop {
+  padding-top: 1em;
+  text-align: left;
+}
+.dvnFormMargin input {
+  margin-right: 2em;
+}
+.dvnFormDataTable {
+    border: 0;
+    margin: 0 0 0 0;
+}
+.dvnFormDataTable tr {border: 0; padding: 0 0 0 0;}
+.dvnFormDataTable td, .dvnFormDataTable th {border: 0; padding: 4px 0; text-align: left;}
+
+.dvnDataTable {
+  margin-top: 0;
+  width: 100%;
+}
+
+/* ICEFACES OVERWRITE */
+.iceSelOneRb tr, .iceSelOneRb td {border: 0;}
+
+/* GENERAL CONTENT */
+.dvn_hmpgMainMessage {margin-bottom: 1em; text-align: left;}
+
+.dvn_section {margin: 1em 0; width: 100%; text-align: center;}
+
+.dvn_sectionContent {
+	display: inline;
+    width: 75%;
+	float: right;
+    text-align: left;
+}
+
+.dvn_sectionTitle {margin: 0; padding: 0 .65em .25em .65em; font-size: 112% !important; color: #526f76; text-transform: uppercase; text-align: left;}
+.dvn_sectionTitle a {font-size: inherit !important; font-size: 100% !important;}
+.dvn_sectionTitle a:hover, .dvn_sectionTitle a:active {font-size: inherit !important; font-size: 100% !important; color: #526f76; text-decoration: none !important; cursor: text;}
+.dvn_sectionTitleL {float: left; padding: 0 0 0.25em 0; color: #526f76; font-size: 112% !important; font-weight: bold; text-transform: uppercase; text-align: left;}
+.dvn_sectionTitleR  {float: right; padding: 0 0 0.25em 0; }
+.dvn_sectionTitleR a:link, .dvn_sectionTitleR a:visited, .dvn_sectionTitleR a:hover, .dvn_sectionTitleR a:active {margin-left: 2em;}
+
+.dvn_sectionTitleLinksL {float: left;}
+.dvn_sectionTitleLinksR  {float: right;}
+.dvn_sectionTitleLinksR a:link, .dvn_sectionTitleLinksR a:visited, .dvn_sectionTitleLinksR a:hover, .dvn_sectionTitleLinksR a:active {margin-left: 2em;}
+
+.dvn_sectionBox {width: 100%; border-top: 2px solid #91a5a9; border-left: 1px solid #ccc; text-align: left;}
+.dvn_sectionBoxNoBorders {width: 100%; padding-top: .75em; clear: both; text-align: left;}
+
+.dvn_block {margin-bottom: 12px; padding: 6px; background: url(images/blocks_bg.png) no-repeat #f8f8f8; border: 1px solid #e9e5e5;}
+.dvn_block span {margin: 0; padding: 0; color: #526f76; font-weight: bold; text-transform: uppercase;}
+.dvn_blockTitleBar {margin-bottom: 12px; padding: 6px; background: #e6ebed; border: 1px solid #ddd; font-style: italic; text-align: center;}
+
+.dvn_margin12 {
+   margin: 1em 0em 0em 1em; padding-bottom: 2em;
+   line-height: inherit ;
+}
+
+span.disabled {font-weight: bold;}
+
+/* MAIN SECTION */
+#dvn_mainSection {position: relative; width: 100%; text-align: center;}
+
+/* SIDE SECTION PANELS */
+.dvn_sectionPanels {display: inline; position: relative; float: left; margin-right: 2%; width: 22%;}
+.dvn_sectionPanelTitle {padding: .25em 0; border-bottom: 2px solid #91a5a9; color: #555; font-weight: bold;}
+.dvn_sectionPanels div.dvn_sectionPanelText {margin-bottom: 1em; padding: .5em; }
+.dvn_sectionPanels ul {margin-left: 2em; list-style-image: url(icon_bullet.gif);}
+.dvn_sectionPanels li {margin: 0.5em 0;}
+
+.dvn_sectionPanels .TreeContent a:link, .dvn_sectionPanels .TreeContent a:visited, .dvn_sectionPanels .TreeContent a:hover, .dvn_sectionPanels .TreeContent a:active {font-size: 90% !important;}
+
+/* ICEFACES TREE */
+.iceTreeRow a span.iceOutTxt {font-size: 90% !important;}
+.iceTreeRow .icePnlGrp {display: inline;}
+.dvnTreeBlock {
+  width: 100%;
+  height: 38em;
+  padding: 0; border: 0;
+  text-align: left;
+}
+.dvnTreeContainer {
+    width: 100%;
+    height: 34em;
+    border-top: solid 1px #BBB;
+    border-left: solid 1px #BBB;
+    border-bottom: solid 1px #FFF;
+    border-right: solid 1px #FFF;
+    background: #FFF;
+    overflow: auto; overflow-x: scroll; overflow-y: hidden;
+    padding: .25em;
+}
+
+/* JQUERY CLASSIFICATIONS ACCORDION MENU */
+.theMenuContainer {
+    text-align: left;
+}
+.theMenuContainer ul, .theMenuContainer li {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    list-style-image: none;
+}
+.theMenuContainer h3, .theMenuContainer h4 {
+    margin: 0;
+    padding: 0;
+}
+#theMenu {
+    margin: 0;
+    padding: 0;
+    text-indent: 0;
+    background-color: silver;
+    width: 100%;
+}
+#theMenu ul, #theMenu li {
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid white; /*HACK*/
+}
+#theMenu li ul li ul li ul li {
+    margin: 0;
+    padding: 0;
+    border-bottom: 1px solid white; /*HACK*/
+}
+.theMenuContainer a {
+    outline: 0;
+}
+.xtraMenu {background-color: white;}
+
+/* Header links styling */
+h3.head a {
+    display: block;
+    background: #dadee0 url(menudown.gif) no-repeat;
+    background-position: 98% 50%;
+    padding: .5em 26px .5em .5em;
+}
+h3.head a:hover {
+    background: #c55b28 url(menudown.gif) no-repeat;
+    background-position: 98% 50%;
+    padding: .5em 26px .5em .5em;
+    color: white;
+}
+h3.selected a {
+    background: silver url(menuup.gif) no-repeat;
+    background-position: 98% 50%;
+    padding: .5em 26px .5em .5em;
+}
+h3.selected a:hover {
+    background: #c55b28 url(menuup.gif) no-repeat;
+    background-position: 98% 50%;
+    padding: .5em 26px .5em .5em;
+    color: white;
+}
+
+/* Xtra Header links styling */
+h4.head a {
+    display: block;
+    background: transparent url(menudown.gif) no-repeat;
+    padding: 0 26px 0 .5em;
+    background-position: 98% 50%;
+}
+h4.head a:hover {
+    background: #c55b28 url(menudown.gif) no-repeat;
+    background-position: 98% 50%;
+    padding: 0 26px 0 .5em;
+    color: white;
+}
+h4.selected a {
+    background: transparent url(menuup.gif) no-repeat;
+    background-position: 98% 50%;
+    padding: 0 26px 0 .5em;
+    font-weight: bold;
+}
+h4.selected a:hover {
+    background: #c55b28 url(menuup.gif) no-repeat;
+    background-position: 98% 50%;
+    padding: 0 26px 0 .5em;
+    color: white;
+}
+
+h3.noSubNode, h3.noSubNode a, h3.noSubNode a:hover,
+h4.noSubNode, h4.noSubNode a, h4.noSubNode a:hover {
+    background-image: none;
+}
+
+.xtraMenu ul li a:link, .xtraMenu ul li a:active, .xtraMenu ul li a:hover, .xtraMenu ul li a:visited {
+    padding-left: 1.25em;
+    display: block;
+}
+.xtraMenu ul li a:hover {
+    background: #c55b28;
+    color: white;
+}
+
+/* HEADER */
+.dvn_headerTitle {position: relative; text-align: left;}
+.dvn_headerTitleLarge {margin: .25em 228px .25em 12px;}
+.dvn_headerTitleLarge a:link span, .dvn_headerTitleLarge a:visited span, .dvn_headerTitleLarge a:hover span, .dvn_headerTitleLarge a:active span {color: #526f76; font-size: 148% !important;}
+a.dvn_headerTitleLrgNetwork:link span, a.dvn_headerTitleLrgNetwork:visited span, a.dvn_headerTitleLrgNetwork:hover span, a.dvn_headerTitleLrgNetwork:active span {color: #c55b28;}
+.dvn_headerTitleL {margin: 0 12px;}
+.dvn_headerTitleL a:link span, .dvn_headerTitleL a:visited span, .dvn_headerTitleL a:hover span, .dvn_headerTitleL a:active span {color: #c55b28; font-size: 90% !important;}
+.dvn_headerTitleR {position: absolute; right: 12px; top: 0;}
+
+/* NAV MENU */
+div.dvn_navblock {margin-bottom: 12px; padding: 0 10px 0 10px; background: #dadee0; border-top: 2px solid #91a5a9;}
+div.dvn_navblockNetwork {background: #dadee0; border-top: 2px solid #c55b28;}
+
+.dvn_navblockLinks {overflow:hidden; width:100%;} /*Clear floats*/
+
+.dvn_navblockLinks ul {margin: 0; padding: 0; float:left; list-style-type: none !important;}
+.dvn_navblockLinks ul li {float:left; z-index:auto !important /*Non-IE6*/; z-index:1000 /*IE6*/; margin: 0; padding: 0;}
+.dvn_navblockLinks ul li a:link, .dvn_navblockLinks ul li a:visited, .dvn_navblockLinks ul li a:hover, .dvn_navblockLinks ul li a:active {float:none !important /*Non-IE6*/; float:left /*IE-6*/; display:block; padding:.2em .5em; text-decoration:none;}
+.dvn_navblockLinks ul li:hover {position:relative;} /*Sylvain IE hack*/
+.dvn_navblockLinks ul li:hover a:link, .dvn_navblockLinks ul li:hover a:visited, .dvn_navblockLinks ul li:hover a:hover, .dvn_navblockLinks ul li:hover a:active {background-color: #c55b28; text-decoration:underline;} /*Color main cells hovering mode*/
+.dvn_navblockLinks ul li a:hover {position:relative /*Sylvain IE hack*/; z-index:1000 /*Sylvain IE hack*/; background-color: #c55b28; color: #fff; text-decoration:underline;} /*Color main cells hovering mode*/
+
+.dvn_navUserName {float:right;}
+.dvn_navUserName div {float:left; z-index:auto !important /*Non-IE6*/; z-index:1000 /*IE6*/;}
+.dvn_navUserName div.textUserName {padding:0 .5em;}
+.dvn_navUserName div a:link, .dvn_navUserName div a:visited, .dvn_navUserName div a:hover, .dvn_navUserName div a:active {float:none !important /*Non-IE6*/; float:left /*IE-6*/; display:block; padding:.2em .5em; color:#c55b28; text-decoration:none;}
+.dvn_navUserName div:hover {position:relative;} /*Sylvain IE hack*/
+.dvn_navUserName div:hover a:link, .dvn_navUserName div:hover a:visited, .dvn_navUserName div:hover a:hover, .dvn_navUserName div:hover a:active {background-color: #c55b28; text-decoration:underline;} /*Color main cells hovering mode*/
+.dvn_navUserName div a:hover {position:relative /*Sylvain IE hack*/; z-index:1000 /*Sylvain IE hack*/; background-color: #c55b28; color: #fff; text-decoration:underline;} /*Color main cells hovering mode*/
+
+.dvn_navUserOptions {font-weight:bold;}
+
+.dvn_navUserName a:hover {position:relative /*Sylvain IE hack*/; z-index:1000 /*Sylvain IE hack*/; background-color: #c55b28; color: #fff; text-decoration:underline;} /*Color main cells hovering mode*/
+
+.dvn_navNetworkName a:link, .dvn_navNetworkName a:visited, .dvn_navNetworkName a:hover, .dvn_navNetworkName a:active {font-weight: normal;}
+
+/* SEARCH */
+div.dvn_searchblock {margin-bottom: 12px; padding: 4px 12px 4px 12px; background: #e6ebed; border: 1px solid #ddd; text-align: left;}
+.dvn_searchBoxContent {overflow: hidden;}
+.dvn_searchTitle {}
+.dvn_searchTitle a {color: #526f76; font-size: 90% !important;}
+.dvn_searchTitle a:hover, .dvn_searchTitle a:active {color: #526f76; font-size: 90% !important; text-decoration: none !important; cursor: text;}
+.dvn_searchBoxContent fieldset {float: left;}
+.dvn_searchLinks {float: right;}
+.dvn_searchLinks a span.iceOutTxt {margin: 0; font-size: 90% !important;}
+.dvn_searchBoxContent {position: relative; width: 100%;}
+.dvn_searchBoxContent fieldset {margin: 0; padding: 0; border: 0;}
+.dvn_searchBoxContent label {float: left;}
+.dvn_searchBoxContent span {margin-right: 12px; line-height: 224% !important;}
+.dvn_searchBoxContent input, .dvn_searchBoxContent select {margin: 2px 6px 2px 0;}
+.dvnSearchBoxCheckbox, .dvnSearchBoxCheckbox select {margin-top: 0; margin-bottom: 0;}
+.dvnSearchBoxCheckbox span.iceOutTxt {font-size: 90% !important;}
+
+/* MAIN SECTION: DATAVERSE LIST + STUDIES TREE */
+#dvn_hmpgMainSection {position: relative;}
+#dvn_MainSectionCount {position: absolute; top: 0; right: 0;}
+
+/* PAGINATOR */
+td.dvnPaginatorWrap, div.dvnPaginatorWrap {padding: 0 0;}
+
+td.dvnPaginatorWrap div.icePnlGrp {}
+td.dvnPaginatorWrap table.dvnPaginatorRight {}
+
+.dvnPaginatorRight {}
+.dvnPaginatorRight img {border: 0;}
+
+.dvnPaginatorFloatRight {float: right;}
+
+/* ANALYSIS PAGE */
+.dvn_preFileTitle{ font-weight: bold; font-style: normal; color: #000;}
+.dvn_fileTitle{ font-weight: normal; font-style: normal; color: #000;}
+
+/* GENERAL DEFAULT THEME STYLES (from Creator) */
+/* Style rules to make data tables look better */
+
+.list-header {
+   font-weight: bold
+}
+.list-header-left {
+   background-color: #dadee0;
+   font-weight: bold;
+   text-align: left
+}
+.list-paging-header {
+  background-color: white;
+}
+
+.list-paging-footer {
+  background-color: white;
+}
+
+.list-row-even {
+  background-color: #e6ebed;
+}
+.list-row-even td {
+  background-color: #e6ebed;
+  border-bottom: 1px solid #dddfde;
+}
+
+.list-row-odd { 
+  background-color: #fff;
+}
+.list-row-odd td { 
+  background-color: #fff;
+  border-bottom: 1px solid #dddfde;
+}
+
+/* Style rules for message severity levels */
+div.dvnMsgBlockContainer {
+    text-align: left;
+    display: table-cell;
+    vertical-align: middle;
+    border: 1px solid #bfdcf1; /* FIX: IE8 vertical-align: middle */
+}
+div.dvnMsgBlockContainer p {
+  background: transparent;
+  margin: 1em 0 1em 58px;
+}
+div.dvnInformationMessage {
+  max-width: 900px;
+  width: 80%;
+  margin: 0 auto 1em auto;
+  background: url(icon_information.png) #bfdcf1 4px no-repeat;
+}
+div.dvnSuccessMessage {
+  max-width: 900px;
+  width: 80%;
+  margin: 0 auto 1em auto;
+  background: url(icon_success.png) #cee6bb 4px no-repeat;
+}
+div.dvnSuccessMessage div.dvnMsgBlockContainer {
+  border: 1px solid #cee6bb; /* FIX: IE8 vertical-align: middle */
+}
+div.dvnSuccessMessage span {
+  font-weight: bold;
+  color: #299a0b;
+  background: transparent;
+}
+div.dvnSuccessMessage ul {
+  padding-left: 0;
+  list-style: none;
+  background: transparent;
+}
+div.dvnSuccessMessage li {
+  margin: 0;
+  padding: 0;
+}
+div.dvnSuccessMessage .successMessage {
+   background: transparent;
+   color: #299a0b;
+   font-weight: bold;
+   text-align: left;
+}
+.successMessage {
+   background: #f4ebc7;
+   color: #c55b28;
+   font-weight: bold;
+}
+.successMessage a:link, .successMessage a:visited, .successMessage a:hover, .successMessage a:active {
+    color: blue;
+}
+ul.successMessage, .successMessage ul {
+    list-style: none;
+}
+ul.successMessage li, .successMessage ul li {
+    margin: 0; padding: 0;
+}
+div.dvnWarningMessage {
+  max-width: 900px;
+  width: 80%;
+  margin: 0 auto 1em auto;
+  padding-left: 58px;
+  background: url(icon_warning.png) #e6e4d3 4px no-repeat;
+}
+div.dvnWarningMessage div.dvnMsgBlockContainer {
+  border: 1px solid #e6e4d3; /* FIX: IE8 vertical-align: middle */
+}
+div.dvnWarningMessage a:link, div.dvnWarningMessage a:visited, div.dvnWarningMessage a:hover, div.dvnWarningMessage a:active {
+    color: #0c54b3;
+}
+div.dvnWarningMessage span {
+  font-weight: bold;
+  color: #000;
+  background: transparent;
+}
+.warnMessage {
+   color: #8B0404;
+}
+.errorMessage {
+  color: red;
+  font-weight: bold;
+}
+.errorMessageBlock {
+  color: red;
+  font-weight: bold;
+  display: block;
+}
+.fatalMessage {
+  color: red;
+  font-style: italic;
+  font-weight: bold;
+}
+.infoMessage {
+  color: black;
+}
+/* ICEFACE messages NOTE: ice:message component adds a "severity style" to the style class of the tag */
+.errorMessageFatal {color: red; font-weight: bold; padding: 0 .5em;}
+.errorMessageError {color: red; font-weight: bold; padding: 0 .5em;}
+.errorMessageWarn {color: red; font-weight: bold; padding: 0 .5em;}
+.errorMessageInfo {color: red; font-weight: bold; padding: 0 .5em;}
+
+.iceOutConStat {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  margin-top: -12px;
+  margin-left: -12px;
+  z-index: 1;
+}
+* html .iceOutConStat {position: absolute;} /* IE HACK */
+.iceOutConStatActv, .iceOutConStatCaution, .iceOutConStatDisconnect {
+  width: 25px;
+  height: 25px;
+}
+
+/* GENERAL STYLES*/
+
+.dvn_more{
+  font-style: italic;
+  color: #6D0609;
+}
+a.dvn_more:link, a.dvn_more:visited, a.dvn_more:hover, a.dvn_more:active{
+  color: #6D0609;
+ }
+
+.dvn_threedots{
+    color: #666;
+}
+.formHtmlEnabled {
+    background-color: #E4F9F9;
+    border: 1px solid #7f9db9;
+    padding: .15em;
+}
+
+.formDateFormat {
+    background-color: #F9E0BD;
+    border: 1px solid #7f9db9;
+    padding: .15em;
+}
+
+.vdcTextWrap {
+    white-space: normal;
+}
+.vdcTextNoWrap {
+    white-space: nowrap;
+}
+.vdcTextStandOut {
+   color: #820024;
+   font-weight: bold;
+}
+
+.vdcHelpText {
+    color: #666;
+    margin-bottom: 1em;
+}
+.vdcHelpText img {
+    vertical-align: bottom;
+    border: 0;
+}
+.vdcHelpText span {
+    padding-left: .5em;
+}
+
+/* start inline help support */
+.vdcInlineHelp {
+    position: absolute;
+    display:block;
+    width: 300px;
+    background-image: url(tooltipcallout.gif);
+    background-repeat: no-repeat;
+    padding-top: 10px;
+    padding-left: 0px;
+    padding-right: 0px;
+    padding-bottom: 0px;
+    z-Index:500;
+}
+
+.vdcInlineHelpLink {
+    color: #006699;
+    text-decoration: none;
+}
+
+.vdcInlineHelpContents {
+    height: 100%;
+    background-color: #dadee0;
+    margin-top: 5px;
+    padding: 3px 3px 3px 10px;
+    margin-bottom: 0px;
+    display: block;
+    text-align:left;
+    color: #000000;
+    font-weight: normal;
+}
+
+.vdcInlineHelpWrapper {
+    border-left: 1px solid #cccccc; 
+    border-right: 1px solid #cccccc; 
+    border-bottom: 1px solid #cccccc;
+    background-image: url(solidrectangle.gif);
+    font-weight: 800;
+}
+/* end inline help support */
+
+/* start tooltip component support */
+.vdcTooltip {
+    position: absolute;
+    min-width: 80px;
+    max-width: 240px;
+    padding-top: 8px;
+    padding-left: 0px;
+    padding-right: 0px;
+    padding-bottom: 0px;
+    z-index: 500;
+}
+* html .vdcTooltip {width: 16em;}
+.vdcTooltipLink {
+    margin-left:15px;
+    margin-right:15px;
+    color: #006699;
+    text-decoration: none;
+}
+
+p.vdcTooltipContents {
+    display: block;
+    height: 100%;
+    border: 1px solid #cccccc;
+    background-color: #ffffcc;
+    margin-top: 5px;
+    margin-bottom: 0px;
+    padding: 6px 3px;
+    text-align: left;
+    color: #000000;
+}
+
+.vdcTooltipWrapper {
+    /*border-left: 1px solid #cccccc; 
+    border-right: 1px solid #cccccc; 
+    border-bottom: 1px solid #cccccc;
+    background-color:#ffffcc;*/
+    font-weight: 800;
+}
+/* end tooltip support */
+
+/* start popup component support */
+.vdcPopup {
+    position: absolute;
+    width: 400px;
+    padding-top: 8px;
+    padding-left: 0px;
+    padding-right: 0px;
+    padding-bottom: 0px;
+    z-Index: 1000;
+}
+
+.vdcPopupLink {
+    color: #006699;
+    text-decoration: none;
+}
+
+.vdcPopupContents {
+    display: block;
+    height: 100%;
+    border:1px solid #cccccc;
+    background-color: #ffffcc;
+    margin-top: 5px;
+    margin-bottom: 0px;
+    padding: 3px 3px 3px 10px;
+    text-align:left;
+    color: #000000;
+}
+
+.vdcPopupWrapper {
+    /*border-left: 1px solid #cccccc; 
+    border-right: 1px solid #cccccc; 
+    border-bottom: 1px solid #cccccc;
+    background-color:#ffffcc;*/
+    font-weight: 800;
+}
+/* end popup support */
+
+.vdcNoBorders {
+   border-bottom-style: none;
+   border-left-style: none;
+   border-right-style: none;
+   border-top-style: none
+}
+
+.vdcSubHeader {
+   font-weight: bold;
+   display: block;
+}
+.vdcSubHeaderColor {
+   color: #0b3b6b;
+   font-weight: bold;
+   display: block;
+}
+.vdcSubHeaderPadding {
+  padding-top: 1.5em;
+}
+.vdcSubHeaderIndent {
+  margin-left: 3em;
+  padding-top: 1.5em;
+}
+
+.vdcFieldTitle {
+   font-weight: bold
+}
+.vdcTextRight {
+   padding-right: 4px;
+   text-align: right;
+}
+
+.vdcColPadded {
+   padding-bottom: 3px;
+   padding-left: 4px;
+   padding-top: 3px;
+   text-align: left;
+   vertical-align: top;
+}
+
+.vdcSmallButton{
+   color: #000099;
+   height: 20px
+}
+
+.vdcTextLarger { }
+
+.vdcSpace {
+    margin-left: 20px; 
+}
+
+a.vdcSiteMapLink:link, a.vdcSiteMapLink:visited, a.vdcSiteMapLink:hover, a.vdcSiteMapLink:active  {
+  text-decoration: underline;
+}
+
+/* NETWORK HOMEPAGE */
+.dvnHmpgGroupTableHeaderBlock {overflow: hidden;}
+.dvnHmpgGroupHeaderBlock {width: 100%; margin-bottom: .25em; overflow: hidden;}
+span.dvnHmpgGroupHeader {float: left; font-size: 150% !important; font-weight: bold;}
+.dvnHmpgGroupCreateBlock {float: right;}
+a.dvnHmpgGroupCreateLink:link, a.dvnHmpgGroupCreateLink:visited,
+a.dvnHmpgGroupCreateLink:hover, a.dvnHmpgGroupCreateLink:active {
+    padding-right: 28px; color: #c55b28; background: url(start-arrows.gif) 100% 52% no-repeat; font-size: 95%; text-decoration: none;
+}
+.dvnHmpgClassificationDesc {margin-bottom: .25em; width: 100%;}
+.dvnHmpgGroupNoDVs {
+    padding: 0 1em 0 1em;
+    border: 1px solid #dcdddf;
+    text-align: center;
+    clear: both;
+}
+.dvnHmpgGroupTableWrap {
+    border: 1px solid #dcdddf;
+    border-bottom: 0;
+}
+* html .dvnHmpgGroupTableWrap {width: 100%;} /* IE HACK */
+.dvnHmpgGroupTableTop {
+    width: 100%;
+}
+.dvnHmpgGroupTableTop td.dvnHmpgGroupTableTopCol {
+    padding-bottom: .5em;
+}
+.dvnHmpgGroupAlphaSortBlock {
+    margin: .5em .5em 0 .5em;
+    overflow: auto;
+    width: 100%;
+}
+* html .dvnHmpgGroupAlphaSortBlock {padding-bottom: 1em; white-space: nowrap; overflow: hidden;} /*IE hack*/
+
+ul.dvnAlphaBrowseBlock {
+    float: left;
+    margin: .5em 0 1em 0;
+    padding: 0 0 0 0;
+    border: 1px solid #0c54b3;
+    background: #eee;
+}
+li.dvnAlphaBrowse {
+    list-style-type: none;
+    float: left;
+    padding: 0px 0px 0px 0px;
+    border-left: 1px solid #0c54b3;
+    border-right:  1px solid #0c54b3;
+    background: #eee;
+    z-index: auto !important; /*Non-IE6*/
+    z-index: 1000; /*IE6*/
+}
+
+li.dvnAlphaBrowseHover {
+    list-style-type: none;
+    float: left;
+    padding: 0px 0px 0px 0px;
+    border-left: 1px solid #0c54b3;
+    border-right:  1px solid #0c54b3;
+    background: #c55b28;
+    z-index: auto !important; /*Non-IE6*/
+    z-index: 1000; /*IE6*/
+}
+
+li.dvnAlphaBrowseSelected {
+    list-style-type: none;
+    float: left;
+    padding: 0px 0px 0px 0px;
+    border-left: 1px solid #0c54b3;
+    border-right:  1px solid #0c54b3;
+    background: #cccccc;
+    z-index: auto !important; /*Non-IE6*/
+    z-index: 1000; /*IE6*/
+}
+
+
+li.dvnAlphaBrowse  a {
+    padding: 2px 5px 2px 5px;
+    font-weight:bold;
+    color:#0c54b3;
+}
+li.dvnAlphaBrowse  a:hover {
+    padding: 2px 5px 2px 5px;
+    color: white;
+}
+li.dvnAlphaBrowseHover  a {
+    padding: 2px 5px 2px 5px;
+    font-weight: bold;
+}
+li.dvnAlphaBrowseHover  a:hover {
+    padding: 2px 5px 2px 5px;
+    color: white;
+}
+
+li.dvnAlphaBrowseSelected  a {
+    padding: 2px 5px 2px 5px;
+    font-weight:bold;
+    color:white;
+}
+
+.dvnHmpgGroupTotals {padding: 0 .5em;}
+.dvnHmpgGroupDataTable {margin: 0; width: 100%;}
+.dvnHmpgGroupDataTable span {font-size: 90% !important;}
+.dvnHmpgGroupDataTable th span.iceOutTxt td {font-size: 90% !important;}
+
+.dvnHmpgDvNameLink {float: left;}
+.dvnHmpgMoreInfoLink {float: right; display: inline; margin-left: 2em;}
+.dvnHmpgDvMoreInfoDesc {clear: both;}
+
+/* STUDYLISTING PAGE */
+.dvnStudyListWrapper {border: 1px solid #dcdddf;}
+.dvnStudyListCollectionNameBlock {padding: .5em .25em; border: 1px solid #dcdddf; border-width: 1px 1px 0 1px; text-align: right;}
+.dvnStudyListCollectionName {clear: left; text-align: left;}
+.dvnStudyListCollectionName span {font-size: 140% !important; font-weight: bold;}
+.dvnStudyListContributorBlock {padding-bottom: .25em;}
+a.dvnStudyListContributorLink:link, a.dvnStudyListContributorLink:visited,
+a.dvnStudyListContributorLink:hover, a.dvnStudyListContributorLink:active {
+    padding-right: 28px; color: #c55b28; background: url(start-arrows.gif) 100% 52% no-repeat; font-size: 95%; text-decoration: none;
+}
+
+.dvnStudyListResultsTop {border-bottom: 1px solid #dcdddf;}
+.dvnStudyListResultsBottom {border-top: 1px solid #dcdddf;}
+.dvnStudyListResultsBottom .dvnPaginatorWrap {padding: .25em 0;}
+td.dvn_StudyListTotals {text-align: right; width: 100%; padding: .5em;}
+td.dvn_StudyListSort {padding: .25em;}
+
+.dvnStudyListStudyInfo {background: inherit;}
+span.dvnStudyListStudyAuthor {font-size: 90% !important;}
+.dvnStudyListIDDownloads {padding: 0 10px; border-left: 1px solid #dcdddf !important;}
+.dvnStudyListIDDownloads span {font-size: 90% !important; color: gray;}
+.dvnStudyListIDDownloads span.dvnStudyListIDDownloadsSubsettable {width: 14em; padding-left: 24px !important; line-height: 1.2em !important; background: url(icon_analyze.gif) no-repeat; white-space: nowrap; display: inline !important;}
+.dvnStudyListIDDownloads span.dvnStudyListIDDownloadsNonSubsettable {width: 14em; padding-left: 24px !important; line-height: 1.3em !important; background: url(icon_download.gif) no-repeat; white-space: nowrap; display: inline !important;}
+td.dvnStudyListTableColID {vertical-align: top;}
+span.dvnStudyListGlobalId {color: black;}
+
+.dvnStudyListTableColInfo {
+   width: 77%;
+   background-color: inherit !important;
+}
+.dvnStudyListTableColID {
+   width: 22%;
+   background-color: inherit !important;
+}
+
+.dvnStudyListTableAbstract {
+    padding-top: 3px; 
+    padding-bottom: 3px;
+    padding-left: 0px;
+    padding-right: 0px;
+}
+.dvnStudyListTableAbstract div, .dvnStudyListTableAbstract p {margin: 0; padding: 0; display: inline;}
+span.dvnStudyListTableAbstract {color: gray; font-size: 90% !important;}
+.dvnStudyListTableAbstract p {color: black; font-size: 90% !important;}
+.dvnStudyListTableOptionalField span.iceOutTxt {font-size: 90% !important; display: inline !important;}
+span.dvnStudyListTableOptionalFieldLabel {color: gray;}
+.dvnStudyListTableOptionalField table.iceDatTbl span.iceOutTxt {font-size: 90% !important;}
+
+/* NEW STYLES: STUDY LIST + STUDIES TREE (these override IceFace styles) */
+.dvnStudyListTable {border: 0; margin: 0 0 0 0;}
+.dvnStudyListTable tr {border-left: 0;}
+.dvnStudyListTable td {border: 0;}
+.dvnStudyListTable div {border-width: 0 0 0 0;}
+
+/* StudyListingPage Search Results
+*/
+span.dvnStudyListSearchResultsMessage {
+  font-size: 100% !important;
+  font-weight: normal;
+}
+.dvnStudyListNoStudies {
+  padding: 0 1em;
+  text-align: center;
+}
+
+/* studyPageInlineReleaseButton */
+.dvnStudyPageInlineReleaseButton {
+  margin-right: 2em;
+  display: inline;
+  vertical-align: middle;
+}
+/* studyPageEditLinks */
+.editDropDown, .editDropDown li, .editDropDown ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+ul.editDropDown {
+	display: inline;
+}
+.editDropDown li {
+    display: inline;
+    position: relative;
+    z-index: 5;
+    text-align: left;
+}
+* html .editDropDown li {
+    position: static;
+}
+.editDropDown li a:hover {
+    text-decoration: none;
+}
+.editDropDown ul {
+    width: 20em;
+    display: block;
+    position: absolute;
+    top: -999em;
+    left: -1px;
+    z-index: 10;
+    opacity: 0.9999;
+}
+.editDropDown li:hover ul,
+.editDropDown li.sfHover ul {
+    top: 1.5em;
+    left: 0;
+}
+.editDropDown li:hover li,
+.editDropDown li.sfHover li {
+    display: block;
+	padding-bottom: .25em;
+}
+.editDropDown ul li:hover {
+    z-index: 10000;
+}
+.editDropDown ul li a,
+.editDropDown ul li a:link,
+.editDropDown ul li a:active,
+.editDropDown ul li a:visited {
+    display: block;
+    text-align: left;
+    white-space: nowrap;
+}
+.editDropDown li:hover ul a,
+.editDropDown li.sfHover ul a,
+.editDropDown li:hover ul a:link,
+.editDropDown li.sfHover ul a:link,
+.editDropDown li:hover ul a:visited,
+.editDropDown li.sfHover ul a:visited,
+.editDropDown li:hover ul a:active,
+.editDropDown li.sfHover ul a:active {
+    padding: .5em 0 0 0;
+    text-decoration: none !important;
+    outline: none;
+}
+.editDropDown a.editDropDownLink {
+	margin: 0;
+    padding: 0 .25em .5em .25em;
+	color: #0c54b3;
+}
+.editDropDown a.editDropDownLink:hover {
+    margin: 0;
+    text-decoration: none;
+}
+
+.studyEditLinks li a {
+	color: #0c54b3;
+}
+.studyEditLinks li:hover a.editDropDownLink,
+.studyEditLinks li:hover li,
+.studyEditLinks li.sfHover li {
+    background: khaki;
+}
+.studyEditLinks li:hover ul a,
+.studyEditLinks li.sfHover ul a,
+.studyEditLinks li:hover ul a:link,
+.studyEditLinks li.sfHover ul a:link,
+.studyEditLinks li:hover ul a:visited,
+.studyEditLinks li.sfHover ul a:visited,
+.studyEditLinks li:hover ul a:active,
+.studyEditLinks li.sfHover ul a:active {
+    text-decoration: none !important;
+}
+.studyEditLinks li:hover ul a:hover,
+.studyEditLinks li.sfHover ul a:hover {
+    color: #c55b28;
+    text-decoration: underline !important;
+}
+/* END studyPageEditLinks */
+
+/* Style rules for Study Page (Cataloging Info and Files)
+*/
+.dvnStudyRestricted {
+    background-image: url(icon_restricted.18.png);
+	background-repeat: no-repeat;
+	background-position: left .25em;
+    padding-left: 22px;
+}
+.dvnStudyPublic {
+    background-image: url(icon_public.18.png);
+	background-repeat: no-repeat;
+	background-position: left .25em;
+    padding-left: 22px;
+}
+
+.vdcStudyStatus {
+   font-weight: bold;
+   color: black;
+   font-style: italic;
+   color: #8B0404;
+}
+
+.vdcStudyInfoHeader {
+   background-color: #dadee0;
+   font-weight: bold;
+   text-align: center;
+   padding-top: 3px;
+   padding-bottom: 3px;
+   margin-top: -1px;
+   margin-bottom: 4px;
+   width: 100%;
+}
+
+.vdcStudyInfoCol1 {
+   border-bottom-color: #dadee0;
+   border-bottom-style: solid;
+   border-bottom-width: 1px;
+   /* font-weight: bold; */
+   padding-bottom: 5px;
+   padding-left: 0px;
+   padding-right: 10px;
+   padding-top: 5px;
+   text-align: left;
+   width: 200px;
+}
+.vdcStudyInfoCol2 {
+   border-bottom-color: #dadee0;
+   border-bottom-style: solid;
+   border-bottom-width: 1px;
+   font-weight: normal;
+   padding-bottom: 5px;
+   padding-top: 5px;
+   text-align: left;
+}
+
+.vdcStudyInfoDownload {
+   font-weight: bold;
+   padding-top: 10px;
+   text-align: center;
+}
+
+/* STUDY FILES
+*/
+
+.vdcStudyFilesPage {width: 100%; text-align: center;}
+.vdcStudyFilesContent {text-align: left;}
+.vdcStudyFilesEmpty {padding: 20px 0;}
+.vdcStudyFilesEmpty div.vdcStudyFilesEmptyMessage {text-align: center;}
+div.vdcStudyFilesUploadingMsg {
+    width: 60%;
+    padding: 0.75em;
+    margin: 0 auto 12px auto;
+    text-align: center;
+    font-weight: normal;
+}
+div.vdcStudyFilesMessage {
+    width: 60%;
+    padding: 0.75em;
+    margin: 0 auto 12px auto;
+    text-align: center;
+    font-weight: normal;
+    background-color: #f4ebc7; 
+    color: #c55b28;
+}
+div.vdcStudyFilesMessage span {
+    display: block;
+    padding: .5em 0;
+}
+div.vdcStudyFilesMessage a:link, div.vdcStudyFilesMessage a:visited, div.vdcStudyFilesMessage a:hover, div.vdcStudyFilesMessage a:active {
+    font-weight: bold;
+}
+
+.vdcStudyFilesDownloadAll {width: 100%; margin-bottom: 0.5em;}
+td.vdcStudyFilesDownloadAllSelect {width: 40%;}
+td.vdcStudyFilesDownloadAllButton {width: 60%;}
+
+.vdcStudyFilesCat {
+   background-color: #d2d2d2;
+   border-bottom-color: #ffffff;
+   border-bottom-style: solid;
+   border-bottom-width: 1px;
+   padding: 2px .25em;
+   height: 1.5em;
+}
+
+.vdcStudyFilesCatLabel input.iceSelBoolChkbx, .vdcStudyFilesCatLabel input.iceSelBoolChkbx-dis {
+    margin: 0 .5em 0 0;
+    padding: 0;
+    vertical-align: middle;
+}
+.vdcStudyFilesCatLabel span.iceOutTxt {display: inline;}
+
+.vdcStudyFilesCatLabel {
+   font-weight: bold;
+   padding-left: 1px;
+   padding-right: 1px;
+}
+
+.TogglePaneFancyHeader {
+	background-image: url(icon_expand.gif);
+	background-repeat: no-repeat;
+	background-position: right .25em;
+}
+.TogglePaneFancyHeaderClosed {
+	background-image: url(icon_contract.gif);
+	background-repeat: no-repeat;
+	background-position: right .25em;
+}
+a.vdcTruncatorLinkMore:link, a.vdcTruncatorLinkMore:hover, a.vdcTruncatorLinkMore:active, a.vdcTruncatorLinkMore:visited,
+a.vdcTruncatorLinkLess:link, a.vdcTruncatorLinkLess:hover, a.vdcTruncatorLinkLess:active, a.vdcTruncatorLinkLess:visited {font-size: 90% !important;}
+
+/* STUDY FILES PAGE ICEFACES OVERWRITE */
+.vdcStudyFileRowFileName span.iceOutTxt, .vdcStudyFileRowFileDownload span.iceOutTxt,
+.vdcStudyFilesCatLabel span.iceOutTxt, .vdcStudyFileSubsetAnalysisLink span.iceOutTxt {
+    overflow: visible !important; display: inline !important; padding: 0 !important;
+}
+.vdcStudyFileRowFileDownloadLink span.iceOutTxt, .vdcStudyFileSubsetAnalysisLink span.iceOutTxt,
+.studyFileDownloadAs span.iceOutTxt, .vdcStudyFileSubsetTable span.iceOutTxt {
+    font-size: 100% !important;
+}
+.vdcStudyFilesContent table.iceDatTbl, .vdcStudyFilesContent table.iceDatTbl tr, .vdcStudyFilesContent table.iceDatTbl td {
+  border: 0; margin: 0 0 0 0; padding: 0 0 0 0;
+}
+
+/* STUDY FILES PAGE */
+.vdcStudyFileTableWrap {}
+.vdcStudyFileTableWrap table.iceDatTbl, .vdcStudyFileTableWrap table.icePnlGrd {margin: 0; padding: 0;}
+.vdcStudyFileCheckBox, .vdcStudyFileSpacer {vertical-align: top; width: 24px;}
+.vdcStudyFileInfo, .vdcStudyFileSubsetting {vertical-align: top; width: 40%;}
+.vdcStudyFileDownload, .vdcStudyFileAnalysis {vertical-align: top; width: 150px;}
+.vdcStudyFileDesc, .vdcStudyFileCitation {vertical-align: top; width: 35%;}
+
+.vdcStudyFileRowFileInfo {overflow: hidden; padding: 0 .25em;}
+.vdcStudyFileRowFileThumb {float: left; padding: .25em;}
+.vdcStudyFileRowFileName {}
+span.vdcStudyFileRowFileDetails {font-size: 90% !important; color: darkgray; white-space: nowrap;}
+.vdcStudyFileRowFileDownload {padding: .25em 0;}
+
+a.vdcStudyFileRowFileDownloadLink:link, a.vdcStudyFileRowFileDownloadLink:hover, 
+a.vdcStudyFileRowFileDownloadLink:active, a.vdcStudyFileRowFileDownloadLink:visited {padding-left: 24px; padding-bottom: 4px; padding-top: 4px; background: url(icon_download.gif) no-repeat; font-size: 90% !important; vertical-align: top;}
+span.vdcStudyFileRowFileDownloadRestricted {margin-left: 3px; font-size: 90% !important; color: darkgray; vertical-align: top;}
+img.vdcStudyFileRowFileDownloadAsIcon {border: 0; vertical-align: middle;}
+select.vdcStudyFileRowFileDownloadAsList {margin-left: .5em;}
+.vdcStudyDesc a.vdcTruncatorLinkLess {display: block; text-align: right;}
+
+.vdcStudyFileSubset {padding: 0 .25em;}
+.vdcStudyFileSubset table.vdcStudyFileSubsetTable {margin: .5em 0; border-collapse: collapse;}
+.vdcStudyFileSubset table.vdcStudyFileSubsetTable td {border: 1px solid #c55b28; padding: 0 .5em;}
+.vdcStudyFileSubset table.vdcStudyFileSubsetTable td span {text-transform: uppercase; font-size: 90% !important;}
+.vdcStudyFileSubset table.vdcStudyFileSubsetTable td a {font-size: 100% !important;}
+
+.vdcStudyFileSubsetAnalysis a:hover, .vdcStudyFileSubsetAnalysis a:active {color: #c55b28; text-decoration: underline;}
+a.vdcStudyFileSubsetAnalysisLink:link, a.vdcStudyFileSubsetAnalysisLink:hover,
+a.vdcStudyFileSubsetAnalysisLink:active, a.vdcStudyFileSubsetAnalysisLink:visited {padding-left: 24px; padding-bottom: 2px; padding-top: 2px; background: url(icon_analyze.gif) no-repeat; font-size: 90% !important; vertical-align: top;}
+
+.vdcStudyDataCitationContainer {width: 90%; padding: 0 0.25em;}
+.vdcStudyDataCitation span {
+        padding: 0 0 2px 24px !important;
+        display: inline !important;
+        background: url(icon_citation.gif) no-repeat;
+        font-size: 90% !important;
+}
+
+.downloadas, .downloadas ul { 
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.downloadas li {
+    margin: 0;
+    padding: 0;
+    display: block;
+    position: relative;
+    z-index: 5;
+}
+.downloadas li:hover {
+    z-index: 10000;
+    white-space: normal;
+}
+.downloadas li img {
+    border: 0;
+}
+.downloadas li ul {
+    opacity: 0.9999;
+    display: block;
+}
+.downloadas li a, .downloadas li a:link, .downloadas li a:active, .downloadas li a:visited {
+    background: inherit;
+    color: #0c54b3;
+    display: block;
+    padding: 0 3px;
+    text-decoration: none;
+    font-size: 90% !important;
+    vertical-align: top;
+}
+.downloadas li a:hover {
+    background: khaki;
+    color: #0c54b3;
+    text-decoration: none;
+}
+.downloadas li a.downloadasLink {
+    display: inline;
+}
+.downloadas li a:hover.downloadasLink {
+    color: #0c54b3;
+    text-decoration: none !important;
+}
+.studyFileDownloadAs li:hover a, 
+.studyFileDownloadAs li.sfHover a {
+    background: khaki;
+    color: #0c54b3;
+    font-size: 90% !important;
+}
+.studyFileDownloadAs li:hover ul a:link, 
+.studyFileDownloadAs li.sfHover ul a:link, 
+.studyFileDownloadAs li:hover ul a:visited, 
+.studyFileDownloadAs li.sfHover ul a:visited,
+.studyFileDownloadAs li:hover ul a:active, 
+.studyFileDownloadAs li.sfHover ul a:active {
+    background: khaki;
+    color: #0c54b3;
+    font-size: 90% !important;
+    text-decoration: none !important;
+    outline: none;
+}
+.studyFileDownloadAs li:hover ul a:hover, 
+.studyFileDownloadAs li.sfHover ul a:hover {
+    background: khaki;
+    color: #c55b28;
+    font-size: 90% !important;
+    text-decoration: underline !important;
+}
+.downloadas ul {
+    list-style: none;
+    margin: 0;
+    width: 80px;
+    position: absolute;
+    top: -999em;
+    left: -1px;
+    z-index: 10;
+}
+.downloadas li:hover ul,
+.downloadas li.sfHover ul {
+    top: 16px;
+    left: 25px;
+    border: 0;
+}
+.downloadas ul li {
+    border: 0;
+    float: none;
+}
+.downloadas ul a {
+    width: 80px;
+    white-space: nowrap;
+}
+.downloadas ul a:hover {
+    background: khaki;
+    color: #c55b28;
+}
+
+/* Add Files Page */
+* html .dvnAddFilesInputBtn { /* IE hack for different button sizes */
+    margin: 2px;
+    padding: 2px;
+    padding-top: 4px;
+    font-family: "HelveticaNeue", Helvetica, Arial, sans-serif;
+    line-height: 9px;
+    height: 22px;
+}
+* html .iceInpFileTxt { /* IE hack for different button sizes */
+    margin: 2px;
+    padding: 2px;
+    font-family: "HelveticaNeue", Helvetica, Arial, sans-serif;
+}
+.dvnAddFilesOuterTable {border-left: 0; border-right: 0; border-bottom: 0;}
+.dvnAddFilesOuterTable td {padding: 0; border-left: 0; border-right: 0; border-bottom: 0;}
+.dvnAddFilesOuterTable tr:first-child {border-left: 0;}
+.dvnAddFilesTable {margin-top: 0;}
+.dvnAddFilesOuterTable table.iceDatTbl {
+  margin: 0 0 0 0; border-collapse: collapse;
+}
+.dvnAddFilesOuterTable table.iceDatTbl td {text-align: center; border: 1px solid #dadee0;}
+.dvnAddFilesTableCategory label.iceOutLbl {display: inline;}
+.dvnAddFilesTableCategory select.iceSelOneMnu {display: inline;}
+.dvnAddFilesTableDesc {width: 80%;}
+
+/* Edit Study/Files style rules
+*/
+.vdcStudyTemplateFormTable {width: 98%; border: 1px solid #6E7F90; padding: 10px; margin-top: 1em;}
+
+.vdcEditStudyTable {border: 0; margin: 0 0 0 0;}
+.vdcEditStudyTable tr {border-width: 0 0 1px 0; padding: 0 0 0 0;}
+.vdcEditStudyTable td {border-bottom: 1px solid #dadee0; border-width: 0 0 1px 0; padding: 4px 0;}
+.vdcEditStudyTable div {border-width: 0 0 0 0; padding: 0 0 0 0;}
+.vdcEditStudyTableRow table {border-width: 0 0 0 0; margin: 0 0 0 0;}
+.vdcEditStudyTableRow table td {border-width: 0 0 0 0; padding: 0 0 0 0;}
+.vdcEditStudyInnerTable, .vdcEditStudyInnerTable tr, .vdcEditStudyInnerTable td {border-width: 0 0 0 0; padding: 0 0 0 0; margin: 0 0 0 0;}
+
+span.vdcEditStudyFormatExample {display: inline;}
+
+.vdcEditStudyTableLegend div {margin-bottom: .25em;}
+.vdcEditStudyTableLegend img {vertical-align: middle;}
+.vdcEditStudyTableLegend span {margin-left: .25em;}
+.vdcEditStudyTableLegend span.vdcEditStudyLegendMargin {margin-right: 1em;}
+
+.vdcEditStudyFieldFloatWrap {overflow: hidden}
+.vdcEditStudyFieldFloat1 {float: left;}
+.vdcEditStudyFieldFloat2 {float: left; margin-left: 1em;}
+.vdcEditStudyFieldFloat3 {clear: left;}
+
+.vdcEditStudyOuterTable, .vdcEditStudyOuterTable td {padding: 0; margin: 0;}
+.vdcEditStudyInnerTable {margin: 0;}
+.vdcEditStudyInnerTable div {white-space: nowrap;}
+.vdcEditStudyInnerTable textarea {width: auto;}
+.vdcEditStudyInnerTable td.vdcEditFilesColA img.iceGphImg {display: inline; vertical-align: middle;}
+.vdcEditStudyInnerTable td.vdcEditFilesColA span.iceOutTxt {margin-left: .5em; display: inline;}
+
+td.vdcEditFilesColA{
+   width: 26%;
+   padding: 1em .25em;
+   vertical-align:  top;
+}
+td.vdcEditFilesColB{
+   width: 41%;
+   padding: 1em .25em;
+   vertical-align: top;
+}
+td.vdcEditFilesColC{
+   width: 7%;
+   padding: 1em .25em;
+   text-align: center;
+}
+
+.vdcEditFilesHeader{
+   font-weight: bold;
+   text-align: left;
+   border-right: 0;
+}
+.vdcEditFilesHeader:first-child {border-left: 0;}
+.vdcEditFilesHeader div.icePnlGrp span.iceOutTxt, .vdcEditFilesHeader div.icePnlGrp select.iceSelOneMnu {display: inline;}
+.vdcEditStudyCol1 {
+   font-weight: normal;
+   padding: 4px 0;
+   text-align: left;
+   vertical-align: top;
+   width: 220px;
+   border-bottom: 1px solid #dadee0;
+}
+.vdcEditStudyCol1b {
+   font-weight: normal;
+   padding: 4px 0;
+   text-align: left;
+   vertical-align: top;
+   width: 220px;
+   border-bottom: 1px solid #dadee0;
+}
+.vdcEditStudyCol2 {
+   font-weight: normal;
+   padding: 4px 0;
+   text-align: left;
+   vertical-align: middle;
+   white-space: normal;
+   border-bottom: 1px solid #dadee0;
+}
+.vdcEditStudyCol3{
+   font-weight: normal;
+   padding: 4px 0;
+   text-align: right;
+   width: 50px;
+   vertical-align: top;
+   border-bottom: 1px solid #dadee0;
+}
+.vdcEditStudyField{
+   padding-top: 6px;
+   padding-bottom: 6px;
+}
+.vdcEditStudyGroupField{
+    white-space: nowrap;
+}
+
+.vdcEditStudyIconLegend{
+    float: left;
+    margin-left: 2em;
+}
+
+/* Manage Studies Page */
+.dvnManageStudiesTableTop {border: 1px solid #d9d9d9; border-bottom: 0; width: 100%;}
+.dvnManageStudiesTableTop .dvnPaginatorWrap {padding: .5em 0;}
+.dvnManageStudiesTableBlock {width: 100%; overflow: auto;}
+* html .dvnManageStudiesTableBlock {overflow: visible; overflow-x: auto; overflow-y: hidden; padding-bottom: 17px;} /* IE hack */
+.dvnManageStudiesTable {margin-top: 0;}
+.dvnManageStudiesTable span.iceOutTxt {font-size: 90% !important;}
+.dvnManageStudiesTable th span.iceOutTxt {font-size: 100% !important;}
+.dvnManageStudiesTable th table td {font-size: 100% !important; font-weight: bold;}
+.dvnManageStudiesTable tbody td.iceDatTblCol1, .dvnManageStudiesTable tbody td.iceDatTblCol2 {padding: .75em;}
+.dvnManageStudiesTable tbody span.iceOutTxt {display: inline; white-space: nowrap;}
+.dvnManageStudiesTableEmpty {border: 1px solid #d9d9d9; padding: 1em; text-align: center;}
+.dvnManageStudiesTableStatus {white-space: nowrap;}
+.dvnManageStudiesTableStatus input.iceCmdBtn {margin-left: 1em; font-size: 90% !important;}
+
+/* Advanced Search Style Rules */
+.dvnAdvSearchScopeTable {
+  max-width: 900px;
+  margin: auto;
+}
+.dvnAdvSearchScopeTable tr.list-row-even td {
+  background-color: #fff;
+}
+.vdcAdvSearchCol1{
+   padding-bottom: 2px;
+   padding-left: 10px;
+   padding-top: 2px;
+   vertical-align: bottom;
+}
+.vdcAdvSearchCol2{
+   padding-bottom: 2px;
+   padding-left: 10px;
+   padding-top: 2px;
+   vertical-align: bottom;
+}
+.vdcAdvSearchCol3{
+   padding-bottom: 2px;
+   padding-left: 10px;
+   padding-top: 2px;
+   vertical-align: bottom;
+}
+.dvnAdvSearchCollectionsTable {
+   max-width: 900px;
+   margin: auto;
+   border-top: 1px solid #d9d9d9;
+}
+.dvnAdvSearchCollectionsTableParent {
+  display: inline;
+}
+.dvnAdvSearchCollectionsTableChild {
+  display: inline; padding-left: 18px; background: url(/dvn/resources/icefaces/dvn_rime/css-images/tree_line_last_node.gif) 0 0 no-repeat;
+}
+
+/* Add/Manage Collection Style Rules*/
+.dvnManageCollectionsTable {
+  width: 100%; margin-top: 0;
+}
+.dvnManageCollectionsTableChild {
+  padding-left: 18px; background: url(/dvn/resources/icefaces/dvn_rime/css-images/tree_line_last_node.gif) 0 0 no-repeat;
+}
+
+.dvnEditCollectionStudySelectedList {border: 1px solid #dcdddf; margin: 0; padding: 0;}
+.dvnEditCollectionStudySelectedList .iceDatTbl {margin: 0; padding: 0; width: 100%; border-left: 0px;}
+.dvnEditCollectionStudySelectedList .iceDatTbl table {margin: 0; padding: 0; width: 100%; border: 0;}
+.dvnEditCollectionStudySelectedList .iceDatTbl td, .dvnEditCollectionStudySelectedList .iceDatTbl div {margin: 0; border: 0;}
+.dvnEditCollectionStudySelectedList .iceDatTbl tr {border: 1px solid #ccc; border-width: 0 0 1px 0;}
+.dvnEditCollectionStudySelectedList .iceDatTblScrlSpr {display: none;}
+.dvnEditCollectionStudyList {border: 1px solid #dcdddf; margin: 0; padding: 0;}
+.dvnEditCollectionStudyList .dvnEditCollectionStudyListSelect {padding: .25em 1em;}
+.dvnEditCollectionStudyListID {width: 16%;}
+.dvnEditCollectionStudyListTitle {width: 56%;}
+.dvnEditCollectionStudyListOwner {width: 28%;}
+.dvnEditCollectionStudySelectionList .iceDatTbl {margin: 0; border: 1px solid #ccc; border-width: 1px 0 0 0;}
+.dvnEditCollectionStudySelectionList .iceDatTbl td, .dvnEditCollectionStudySelectionList .iceDatTbl div {margin: 0; border: 0;}
+.dvnEditCollectionStudySelectionList .iceDatTbl tr {border: 1px solid #ccc; border-width: 0 0 1px 0;}
+
+.vdcAddCollectionCol1{
+   padding-bottom: 4px;
+   padding-left: 20px;
+   padding-top: 4px;
+   width: 250px
+}
+.vdcAddCollectionCol2{
+   padding-bottom: 4px;
+   padding-left: 20px;
+   padding-top: 4px;
+}
+/* Manage Study Templates */
+.dvnManageTable {
+  width: 100%; margin: 0;
+}
+.dvnManageSecondTable {
+  margin-top: 1.5em;
+}
+.dvnManageTableTop {
+  border: 1px solid #d9d9d9; border-bottom: 0; text-align: left; overflow: hidden;
+}
+.dvnManageTableTotals {width: 75%; padding: .5em .25em;}
+.dvnManageTableCreateLink {width: 20%; padding: .5em .25em; text-align: right;}
+
+.dvnManageTableEmpty {padding: 20px 0;}
+.dvnManageTableEmpty div.dvnManageTableEmptyMessage, .dvnManageTableEmpty span.dvnManageTableEmptyMessage {text-align: center;}
+
+/* Add/Manage Classification Style Rules*/
+.dvnManageClassificationsTable {
+  width: 100%; margin: 0;
+}
+.dvnManageClassificationsTable img {border: 0;}
+.dvnManageClassificationsTableTop {
+  border: 1px solid #d9d9d9; border-bottom: 0; overflow: hidden;
+}
+.dvnManageClassificationsTableTotals {float: left; width: 75%; padding: .5em .25em;}
+.dvnManageClassificationsTableCreateLink {float: right; width: 20%; padding: .5em .25em; text-align: right;}
+.dvnMngClssTableSelect {width: 1%;}
+.dvnMngClssTableName {width: 40%;}
+.dvnMngClssTableDesc {width: 35%;}
+.dvnMngClssTableCount {width: 10%;}
+.dvnMngClssTableDelete {width: 10%;}
+
+.dvnAddClassificationBlock {overflow: hidden;}
+.dvnAddClassificationMessage {margin-bottom: .5em;}
+.dvnAddClassificationDataverses {float: left; width: 48%;}
+.dvnAddClassificationSelected {float: right; width: 48%;}
+
+table.dvnAddClassificationTable table {width: 100%; margin: 0;}
+.dvnAddClassificationTableColHeader1 {width: 60%;}
+.dvnAddClassificationTableColHeader2 {width: 40%;}
+
+span.dvnAddClassificationDvNotReleased {background: url(icon_warning.18.png) center right no-repeat; padding-right: 22px !important;}
+span.dvnAddClassificationDvReleased {}
+
+.dvnAddClassificationDataverses table.iceDatTbl {border: 1px solid #d9d9d9;}
+.dvnAddClassificationDataverses div.iceDatTblScrlSpr table {border: 1px;}
+.dvnAddClassificationDataverses table.iceDatTbl div.iceDatTblScrlSpr {border: 0;}
+.dvnAddClassificationDataverses tr.iceDatTblRow1,
+.dvnAddClassificationDataverses tr.iceDatTblRow2 {
+    border: 0;
+}
+.dvnAddClassificationDataverses tr.iceDatTblRow1 td,
+.dvnAddClassificationDataverses tr.iceDatTblRow2 td {
+    border-left: 0;
+    border-right: 0;
+}
+.dvnAddClassificationDataverses th.iceDatTblColHdr1 {border-right: 0;}
+.dvnAddClassificationDataverses th.iceDatTblColHdr2 {border-left: 1px solid #d9d9d9;}
+.dvnAddClassificationDataverses tr.iceDatTblRow1 td.dvnAddClassificationDvID,
+.dvnAddClassificationDataverses tr.iceDatTblRow2 td.dvnAddClassificationDvID,
+.dvnAddClassificationDataverses tr.iceDatTblRow1 td.dvnAddClassificationDvName,
+.dvnAddClassificationDataverses tr.iceDatTblRow2 td.dvnAddClassificationDvName {
+    border-right: 1px solid #d9d9d9;
+}
+
+.dvnAddClassificationSelected table.iceDatTbl {border: 1px solid #d9d9d9;}
+.dvnAddClassificationSelected div.iceDatTblScrlSpr table {border: 1px;}
+.dvnAddClassificationSelected table.iceDatTbl div.iceDatTblScrlSpr {border: 0;}
+.dvnAddClassificationSelected tr.iceDatTblRow1,
+.dvnAddClassificationSelected tr.iceDatTblRow2 {
+    border: 0;
+}
+.dvnAddClassificationSelected tr.iceDatTblRow1 td,
+.dvnAddClassificationSelected tr.iceDatTblRow2 td {
+    border-left: 0;
+    border-right: 0;
+}
+.dvnAddClassificationSelected th.iceDatTblColHdr1 {border-right: 0;}
+.dvnAddClassificationSelected th.iceDatTblColHdr2 {border-left: 1px solid #d9d9d9;}
+.dvnAddClassificationSelected tr.iceDatTblRow1 td.dvnAddClassificationDvID,
+.dvnAddClassificationSelected tr.iceDatTblRow2 td.dvnAddClassificationDvID,
+.dvnAddClassificationSelected tr.iceDatTblRow1 td.dvnAddClassificationDvName,
+.dvnAddClassificationSelected tr.iceDatTblRow2 td.dvnAddClassificationDvName {
+    border-right: 1px solid #d9d9d9;
+}
+
+.dvnAddClassificationTableColHeader1, .dvnAddClassificationTableColHeader2 {border-top: 0;}
+.dvnAddClassificationTableColHeader1 {border-left: 0;}
+
+/* Add Site Page Style Rules
+*/
+.vdcAddSiteCol1{
+   padding-bottom: 4px;
+   padding-top: 4px;
+   vertical-align: top;
+   white-space: nowrap;
+}
+.vdcAddSiteCol2{
+   padding-bottom: 4px;
+   padding-left: 10px;
+   padding-top: 4px;
+   vertical-align: top;
+}
+
+/* Analysis Page Style Rules
+*/
+.vdcVariablesCol1{
+/*   width: 24px;*/
+   padding-left: 2px;
+   padding-right: 2px;
+}
+.vdcVariablesCol2{
+   padding-left: 2px;
+   padding-right: 2px;
+/*   width: 100px*/
+}
+.vdcVariablesCol3{
+   padding-left: 2px;
+   padding-right: 2px;
+/*   width: 50px*/
+}
+.vdcVariablesCol4{
+   padding-left: 2px;
+   padding-right: 2px;
+/*   width: 100px;*/
+}
+.vdcVariablesCol5{
+   padding-left: 2px;
+   padding-right: 2px;
+/*   width: 200px;*/
+}
+.vdcVariablesCol6{
+   padding-left: 2px;
+   padding-right: 2px;
+/*   width: 250px;*/
+}
+
+.vdcAnalysisCol1 {
+   padding-left: 4px;
+   padding-right: 4px;
+   padding-top: 4px;
+   vertical-align: top;
+   width: 200px
+}
+.vdcAnalysisCol2 {
+   padding-left: 4px;
+   padding-right: 4px;
+   padding-top: 20px;
+   text-align: left;
+   vertical-align: top
+}
+
+.vdcVarSummaryCol1{
+   color: #003366;
+   font-weight: bold;
+   padding-right: 2px;
+   width: 50px
+}
+.vdcVarSummaryCol2{
+   padding-right: 2px
+}
+
+.vdcAdvAnalysisCol1{
+   padding-top: 10px;
+   text-align: left;
+   vertical-align: top
+}
+.vdcAdvAnalysisCol2{
+   padding-left: 20px;
+   padding-top: 10px;
+   text-align: left;
+   vertical-align: top
+}
+.vdcVarHeaderCol1{
+   background-color: #dadee0;
+   padding-bottom: 5px;
+   padding-left: 20px;
+   padding-top: 10px
+}
+.vdcVarHeaderCol2{
+   background-color: #dadee0;
+   padding-bottom: 5px;
+   padding-top: 10px;
+   padding-right: 4px;
+   text-align: right
+}
+
+.vdcRecodesColA{
+   padding-left: 4px;
+   padding-right: 4px;
+   width: 20px
+}
+.vdcRecodesColB{
+   padding-left: 4px;
+   padding-right: 4px;
+}
+.vdcRecodesHeader{
+   font-weight: bold;
+   text-align: center
+}
+
+.MnuStdOptGrp {
+   color:#000000; 
+   background-color:#ffffff;
+}
+
+/* Scrollable div for terms  of use
+*/
+.vdcScrollDivTermsUse {
+    width: 400px;
+    height: 250px;
+    overflow: auto;
+    background-color: #eeeeee;
+    border-color: #CCCCCC #990000 #990000 #CCCCCC;
+    border-width: 1px; 
+    border-style: solid; 
+    padding: 10px;
+}
+.vdcTermsUseColumn {
+    text-align: left;
+}
+
+.vdcTermsUseField {
+    text-align: left;
+    color: #666666;
+    font-weight: bold;
+}
+
+/* Rules for Studies Review and My Studies pages
+*/
+.vdcReviewCol1 {
+   padding-left: 2px;
+   padding-right: 2px;
+}
+.vdcReviewCol2 {
+   padding-left: 2px;
+   padding-right: 2px;
+   width: 70px;
+}
+.vdcReviewCol3 {
+   padding-left: 2px;
+   padding-right: 2px;
+   width: 100px;
+}
+.vdcReviewCol4 {
+   padding-left: 2px;
+   padding-right: 2px;
+   width: 100px;
+}
+.vdcReviewCol5 {
+   padding-left: 2px;
+   padding-right: 2px;
+   width: 70px;
+}
+.vdcReviewCol6 {
+   padding-left: 2px;
+   padding-right: 2px;
+   width: 70px;
+}
+
+.vdcMyStudiesCol1 {
+   padding-left: 2px;
+   padding-right: 2px;
+   padding-top: 4px;
+   padding-bottom: 4px;
+}
+.vdcMyStudiesCol2 {
+   padding-left: 2px;
+   padding-right: 2px;
+   width: 70px;
+   padding-top: 4px;
+   padding-bottom: 4px;
+}
+.vdcMyStudiesCol3 {
+   padding-left: 2px;
+   padding-right: 2px;
+   width: 70px;
+  padding-top: 4px;
+   padding-bottom: 4px;
+}
+.vdcMyStudiesCol4 {
+   padding-left: 2px;
+   padding-right: 2px;
+   width: 70px;
+   padding-top: 4px;
+   padding-bottom: 4px;
+}
+
+/* subsetting page: summary statistics: starts here */
+
+	div.statbox{
+		/* used in varListBox.js */
+		background-color:#e6e6fa;
+		padding:3px;
+		margin:3px;
+		border-style:outset;
+		border-width:1px;
+		float:right;
+	}
+
+
+	table.viTblinx {
+		/* used in varListBox.js */
+		border:2px #e6e6fa solid;
+		background-color:#f5f5f5;
+		color:#000080;
+		text-align:left;
+		margin:0px;
+		padding:0px;
+	}
+	
+	table.viTblinx td {
+		/* used in varListBox.js */
+		border:0px none #ffffff;
+		background-color:#f5f5f5;
+		color:#000080; 
+		text-align:left;
+		margin:0px;
+		padding:2px;
+	}
+	
+	table.viTblinx th {
+		/* used in varListBox.js */
+		background-color:#e6e6fa;
+		font-weight:bolder;
+		margin:0px;
+		padding:2px;
+		border:0px none #ffffff;
+	}
+
+	table.viTblinx  td.viUNF {
+		font-size:6.5pt;
+		font-family:monospace;
+	}
+/* subsetting page: summary statistics: ends here */
+
+/* *************** dvn network homepage page specific ***************** */
+        /*
+        v1.4 styles
+        */
+        
+
+
+.childRowIndentStyle {background: url(/dvn/resources/icefaces/dvn_rime/css-images/tree_line_last_node.gif) 0 0 no-repeat;}
+.activityColumn {text-align: center;}
+.activity {width: 48px; margin: 0 auto;}
+.activitylevelicon {vertical-align: middle; width: 48px; height: 8px; background: url(/dvn/resources/activity-icons.png) no-repeat;}
+.al-0 {background-position: -50 0;}
+.al-1 {background-position: -40 0;}
+.al-2 {background-position: -30 0;}
+.al-3 {background-position: -20 0;}
+.al-4 {background-position: -10 0;}
+.al-5 {background-position: 0 0;}
+.numbervalue {display: none;}
+
+.dvnNetworkHmpgDvListNav div {font-size: 90% !important; text-align: left;}
+.dvnNetworkHmpgDvListNav ul {margin-top: .5em; margin-left: 0em; padding-left: 0em; list-style: none;}
+.dvnNetworkHmpgDvListNav ul li {margin-left: 0em; padding-left: 22px; background: url(/dvn/resources/icefaces/dvn_rime/css-images/tree_folder_closed.gif) 0 .25em no-repeat;}
+.dvnNetworkHmpgDvListNav ul li a:link, .dvnNetworkHmpgDvListNav ul li a:visited, .dvnNetworkHmpgDvListNav ul li a:active, .dvnNetworkHmpgDvListNav ul li a:hover {font-size: 90% !important;}
+.dvnNetworkHmpgDvListNav ul li.hmpgDvGroupSelected {background: url(/dvn/resources/icefaces/dvn_rime/css-images/tree_folder_close.gif) 0 0 no-repeat;}
+li.hmpgDvGroupSelected a:link, li.hmpgDvGroupSelected a:visited, li.hmpgDvGroupSelected a:active, li.hmpgDvGroupSelected a:hover {font-weight: bold;}
+
+/* end v1.4 styles */
+            
+.dvn_Totals {position: absolute; top: .75em; right: .75em;}
+.dvn_totalsLabel {color: #526f76; font-size: 112%;}
+.dvn_totalsValue {color: #c55b28; font-weight: bold;}
+
+.dvnLineSpacer   { visibility:hidden; }
+.dvnChildColumn  { width: 25%; vertical-align: top;}
+.dvnChildTable { width: 98%; border-collapse: collapse; }
+.dvnChildTable ul, .dvnChildTable ol { list-style: none; margin: 0; padding: 0; }
+.dvnMainColumn   { width: 100%;}
+.dvnMainPanel    {
+   background-color: #e6ebed;
+   font-weight: bold;
+   text-align: center;
+   padding-top: 3px;
+   padding-bottom: 3px;
+   width: 100%;
+   display: block;
+}
+
+.dvnDisabled {
+    color:#cccccc;
+}
+
+.dvnLinkWrapper {
+    margin-right:15px;
+    margin-bottom:25px;
+    margin-left:15px;
+    
+}
+.dvnPrevious {
+    float:left; text-align:left;
+}
+
+.dvnNext {
+    float:right; text-align:right;
+}
+
+li.activeBullet a {
+list-style-type: none; /* removes default bullet */
+background: url(icon_activebullet.gif) no-repeat 0 .2em; /* ONE bullet only, .45em from top (vertical) */
+padding-left: 1.4em; /* space between bullet and text */
+}
+
+li.inActiveBullet a {
+list-style-type: none; /* removes default bullet */
+background: url(icon_inactivebullet.gif) no-repeat 0 .2em; /* ONE bullet only, .45em from top (vertical) */
+padding-left: 1.4em; /* space between bullet and text */
+}
+/* li.activeBullet {
+    list-style-image: url(icon_activebullet.gif);
+    padding-left: 2px;
+    height: 1.4em;
+} */
+ul.affiliationBullet {
+margin-left: 2.6em;
+}
+li.affiliationBullet {
+    list-style-type: square;
+    list-style-image: none;
+    color: #999999;
+    font-size: 90% !important;
+}
+
+/**************** NetworkAdmin VDCGroup styles *********************/
+.shadedRow              { background-color:#eeeeee; }
+.whiteRow               { background-color:#ffffff; }
+#vdcGroupPageForm:VDCGroups:dataTableCaption {font-size:1.2em; }/*overrides the default theme */
+.Lst { max-width:700px; overflow:scroll; }
+
+.dvGroupAdminLayout     { margin-left:auto; margin-right:auto; margin-top:25px; border-width:1px 1px 1px 1px; border-style:solid; border-color:silver; }
+.dvGroupAdminTable      { width:98%; padding:0px; }
+#dvGroupAdminCaption    { border-left:1px solid silver; border-right:1px solid silver; font-size:1.2em; }
+.dvGroupAdminFooter     { width:98%; background-color: #d9e7f0; }
+.groupAdminHeader       { background-color: #d9e7f0; padding:0 0.3em; }
+.groupAdminOrderColumn  { width:5px; border:1px solid silver; text-align:center; }
+.groupAdminNameColumn   { width:30%; border:1px solid silver; text-align:left; padding-left: 0.3em; }
+.groupAdminDescriptionColumn   { width:60%; border:1px solid silver; text-align:left; }
+.groupAdminDeleteColumn { width:5%; border:1px solid silver; text-align:center; }
+.groupAdminOrderInput   { text-align:center; }
+
+#dvGroupNoneCaption    { border-left:1px solid silver; border-right:1px solid silver; font-size:1.2em; }
+#dataNoneCaption        {font-size:1.2em; }/*overrides the default theme */
+.groupAdminNoneColumn   { width:98%; border:1px solid silver; text-align:center; }
+
+.groupAdminOrderFooter  { width:5%; border:0px; text-align:right; padding:0px 6px 0px 0px; }
+.groupAdminNameFooter   { width:30%; border:0px; padding-left:5px; text-align:left; text-decoration:underline; color:#006699; }
+.groupAdminDescriptionFooter   { width:60%; border:0px; text-align:left; padding:0px 0px 0px 6px; }
+.groupAdminDeleteFooter { width:5%; background-color:#d9e7f0; padding:0px; }
+
+.groupEditHeader        { background-color: #d9e7f0; padding:0px; }
+.groupEditNameColumn    { width:30%; vertical-align:top; border:1px solid silver; text-align:left; }
+.groupEditDescriptionColumn   { width:70%; border:1px solid silver; text-align:left; }
+.groupEditFooter        { width:98%; background-color:#d9e7f0; padding:0px; text-align:right;  }
+
+/**** My Dataverse Page ****/
+.dvnMyDataverseTableTop {
+  border: 1px solid #d9d9d9; border-bottom: 0; width: 100%;
+}
+.dvnMyDataverseTableTop td {text-align: right;}
+.dvnMyDataverseTableTop td div {padding: .5em .25em;}
+.dvnMyDataverseTableName {
+  width: 70%;
+  padding-bottom: 3px;
+  padding-left: 4px;
+  padding-top: 3px;
+  text-align: left;
+  vertical-align: top;
+}
+.dvnMyDataverseTableRole {
+  width: 30%;
+  padding-bottom: 3px;
+  padding-left: 4px;
+  padding-top: 3px;
+  text-align: center;
+  vertical-align: top;
+}
+
+/**** Manage Harvest Dataverses ****/
+.dvnHarvestSitesTable {
+  margin-top: 0;
+}
+
+/**** Login ****/
+#dvnLoginPageWrap {padding-top: 10%; width: 100%; text-align: center; background: #eee;}
+#dvnLoginPageWrap form {width: 700px; margin: 0 auto;}
+#dvnLoginPageWrap div.dvnRound {width: 700px; margin: 0 auto; padding: 1em;  background: #fff; border: 1px solid #6E7F90;}
+
+#dvnLoginPageHeader {width: 100%; padding: .25em 0; margin-bottom: 2em; background: #dadee0; text-align: center; vertical-align: middle;}
+#dvnLoginPageHeader .dvnLoginHeadingText {font-size: 160% !important; color: #c55b28; text-transform: uppercase;}
+.dvnLoginPageSubHeader {color: #526f76; font-size: 160% !important; text-transform: uppercase;}
+
+.dvnLoginContent {width: 698px; overflow: hidden; text-align: left;}
+.dvnLoginContentText {float: left; width: 380px; margin-right: 10px; text-align: center;}
+.dvnLoginInputArea {float: right; width: 300px;}
+.dvnLoginInputArea p {text-align: right;}
+.dvnLoginInputArea .dvnLoginFailed {display: block;}
+.dvnLoginInputArea .errorMessageError {display: block; text-align: right; color: red; font-weight: bold;}
+.dvnLoginInputArea fieldset {border: 1px solid #7f9db9; background: #f4ebc7; text-align: center;}
+.dvnLoginInputArea legend {padding: 0 8px; border: 1px solid #7f9db9; background: #e6ebed; text-transform: uppercase;}
+.dvnLoginInputArea label {margin-top: 1em; padding-right: .5em;}
+.dvnLoginInputArea input {margin-top: 1em;}
+.dvnLoginInputArea fieldset div {margin-top: 1em; text-align: left;}
+.dvnLoginInputArea span fieldset {margin-top: 1em;}
+.dvnLoginContentAreaFooter {margin-top: 1em; text-align: center;}
+fieldset.dvnLoginPageAffiliate input.iceCmdBtn {display:block; float:right;}
+/* IE FIELDSET BACKGROUND BUG FIX */
+* html .dvnLoginInputArea {
+  padding-top: 1em;
+}
+* html .dvnLoginInputArea fieldset {
+    position: relative;
+    padding: 1em  .75em 1em 1em;
+}
+* html .dvnLoginInputArea legend {
+    position: absolute;
+    top: -.75em;
+    left: .5em;
+}
+
+/**** Network Options Page  + My Options Page ****/
+.dvnOptionsTable {width: 100%;}
+.dvnOptionsTable td {padding: .5em 2em; border-bottom: 1px solid lightgray;}
+td.dvnOptionsTableHeader {padding: .5em 1em; background: gainsboro; color: gray; text-transform: uppercase;}
+.dvnOptionsTableOption {width: 240px;}
+span.dvnOptionsTableNote {font-size: 90% !important;}
+div.dvnOptionsTableLicense {padding-top: .5em;}
+
+/**** Manage Permissions Page (PrivilegedUsersPage) ****/
+.dvnPermissionsTable {width: 100%;}
+.dvnPermissionsTable td {padding: .5em 2em; border-bottom: 1px solid lightgray;}
+.dvnPermissionsTable td.dvnPermissionsStackedCells {border-bottom: none;}
+td.dvnPermissionsTableHeader {padding: .5em 1em; background: gainsboro; color: gray; text-transform: uppercase;}
+td.dvnPermissionsTableOption {width: 240px; padding-top: .75em; padding-bottom: .75em; display: table-cell; vertical-align: top;}
+.dvnPermissionsTable .dvnPermissionsEmpty {text-align: center;}
+.dvnPermissionsTable .dvnPermissionsEmpty span.iceOutTxt {color: gray;}
+
+.dvnPermissionsTable fieldset.iceSelOneRb-dis {border: 0; padding: 0; background: none;}
+.dvnPermissionsTable table.iceSelOneRb-dis td {padding: 0 .25em; border: 0;}
+.dvnPermissionsTable label.iceSelOneRb-dis-dis {font-size: 90% !important;}
+
+.dvnPermissionsTable fieldset.iceSelOneRb {border: 0; padding: 0; background: none;}
+.dvnPermissionsTable table.iceSelOneRb td {padding: 0 .25em; border: 0;}
+.dvnPermissionsTable label.iceSelOneRb {font-size: 90% !important;}
+
+.dvnPermissionsTable .iceDatTbl span {font-size: 90% !important;}
+
+/**** Study Permissions Page ****/
+.dvnStudyPermissionsFileDetails th:first-child {
+   width: 10%;
+   text-align: center;
+}
+.dvnStudyPermissionsFileDetails table.iceDatTbl {
+    margin-top: 0;
+    border-top: 1px solid #d9d9d9;
+}
+.dvnStudyPermissionsFileDetails table.iceDatTbl,
+.dvnStudyPermissionsFileDetails table.iceDatTbl td.iceDatTblCol1,
+.dvnStudyPermissionsFileDetails table.iceDatTbl td.iceDatTblCol2,
+.dvnStudyPermissionsFileDetails table.iceDatTbl tr.iceDatTblRow1,
+.dvnStudyPermissionsFileDetails table.iceDatTbl tr.iceDatTblRow2 {
+  border-left: 0;
+  border-right: 0;
+}
+
+/**** Create a Dataverse ****/
+.dvn_createDvRequest {text-align: center;}
+.dvn_createDvRequest .requestHeader {margin-left: auto; margin-right: auto; width: 676px; color: #c55b28; font-size: 160% !important; text-transform: uppercase; text-align: left;}
+.dvn_createDvRequest .requestHeader .requestContentTitle {float: left; width: 330px; padding: 0 0 6px 0; color: #c55b28; font-size: 100% !important; font-weight: normal; text-transform: uppercase;}
+.dvn_createDvRequest .requestHeader span {color: #ccc; font-size: 100% !important;}
+.dvn_createDvRequest .requestContentDescRight {float: left; width: 324px; padding: 0 10px 6px 10px; border-left: 1px solid #ccc; color: #555; text-transform: none; text-align: left;}
+.dvn_createDvRequest .requestIntroSteps {margin-top: 30px; margin-left: auto; margin-right: auto; width: 676px;}
+.dvn_createDvRequest .requestIntroStepsContributor {margin-top: 30px; margin-left: auto; margin-right: auto; width: 521px;}
+.dvn_createDvRequest .requestIntroStepCard {position: relative; width: 161px; height: 170px; float: left; text-align: left;}
+.dvn_createDvRequest .requestIntroStepCard h3 {margin: 1.1em 0 1em 2.1em !important; font-size: 150% !important; font-weight: normal !important; color: #c55b28 !important; text-transform: uppercase !important;}
+.dvn_createDvRequest .requestIntroStepCard p {margin: 1em; font-size: 124% !important; font-weight: bold;}
+.dvn_createDvRequest .requestIntroStepCard div.stepCardBtm {position: absolute; top: 162px; left: 0; width: 183px; height: 8px; background: #fff url(request-intro-rndbtm.png) no-repeat;}
+.dvn_createDvRequest .contributorSuccess {position: relative; width: 402px; height: 170px; float: left; text-align: left;}
+#requestIntroCont {margin: 0 auto; width: 676px; text-align: right;}
+#requestIntroCont .requestIntroContLink {padding-right: 28px; background: url(start-arrows.gif) 100% 52% no-repeat; color: #c55b28; font-size: 160% !important; text-transform: uppercase;}
+#requestIntroCont .requestIntroContLinkNote {font-size: 90% !important; line-height: 224% !important;}
+.dvn_createDvRequest .requestTimeline {position: relative; margin: 20px auto 60px auto; width: 676px; height: 4px; background: #035899 url(fourpoint-timeline.gif) no-repeat;}
+.dvn_createDvRequest .requestIntroTimeline {margin-bottom:12px; background-image:none; background-color:#ccc;}
+.creatorTimelineStep1 {background-position: -16px 0 !important;}
+.creatorTimelineStep2 {background-position: -24px -4px !important;}
+.creatorTimelineStep3 {background-position: -53px -8px !important;}
+.creatorTimelineStep4 {background-position: -78px -12px !important;}
+.contributorTimelineStep1 {background-position: 61px 0 !important;}
+.contributorTimelineStep2 {background-position: 49px -4px !important;}
+.contributorTimelineStep3 {background-position: -169px -12px !important;}
+.dvn_createDvRequest .requestTimelinePoint {position: absolute; top: -6px; text-align: center;}
+.creatorIntroStep1 {left:72px;}
+.creatorIntroStep2 {left:243px;}
+.creatorIntroStep3 {left:414px;}
+.creatorIntroStep4 {left:585px;}
+.contributorIntroStep1 {left:149px;}
+.contributorIntroStep2 {left:320px;}
+.contributorIntroStep3 {left:491px;}
+.requestIntroCard1 {margin-right:10px; background:#f4ebc7 url(request-intro-rndtop1.png) no-repeat;}
+.requestIntroCard2 {margin-right:10px; background:#f4ebc7 url(request-intro-rndtop2.png) no-repeat;}
+.requestIntroCard3 {margin-right:10px; background:#f4ebc7 url(request-intro-rndtop3.png) no-repeat;}
+.requestIntroCard4 {background:#f4ebc7 url(request-intro-rndtop4.png) no-repeat;}
+.requestIntroCard4 h3 {line-height:1.85;}
+.creatorWorkflowStep1 {left:36px;}
+.creatorWorkflowStep2 {left:214px;}
+.creatorWorkflowStep3 {left:376px;}
+.creatorWorkflowStep4 {left:568px;}
+.contributorWorkflowStep1 {left: 113px;}
+.contributorWorkflowStep2 {left: 291px;}
+.contributorWorkflowStep3 {left: 476px;}
+strong.requestWorkflowCurrent {color: #035899 !important; font-weight: bold !important;}
+strong.requestWorkflowCompleted {color: #035899 !important; font-weight: bold !important;}
+.dvn_createDvRequest .requestTimelinePoint strong {color: #ccc; font-weight: normal; line-height: 3.5;}
+.dvn_createDvRequest .requestContent {margin: 30px auto; width: 676px; border-top: 1px solid #ccc;}
+.dvn_createDvRequest .requestContentDescLeft {float: left; width: 228px; padding: 12px 12px 12px 0; text-align: left;}
+.requestContentDescLeft .dvnInformationMessage, .requestContentDescLeft .dvnSuccessMessage {width: 100%;}
+.dvn_createDvRequest .requestContentFormRight {float: left; width: 411px; padding: 0 0 20px 0; border-left: 1px solid #ccc; text-align: left;}
+.dvn_createDvRequest .requestContentFormRight span.reqContentActionTitle {color: #555; font-weight: bold;}
+.dvn_createDvRequest .requestContentFormRight span.agreeCheckbox {padding: 0;}
+.dvn_createDvRequest .requestContentFormRight td.vdcAddSiteCol1 {width: 34%; white-space: normal;}
+.dvn_createDvRequest .requestContentFormRight textarea {width: 22.5em;}
+.dvn_createDvRequest .requestContinueLink {padding: 2em 0 0 0; text-align: center;}
+span.termsAgreementMessageTitle {display: block; padding-top: 1em; color: #526f76; font-size: 120% !important; font-weight: bold; text-transform: uppercase;}
+.termsAgreementBox {margin-bottom: 20px; padding: 4px; width: 380px; height: 300px; border: 1px solid #035899; overflow: scroll; overflow-x: auto;}
+.requestContentSucess a {font-weight: bold;}
+.requestContentSucess ul {margin-left: 1.5em; list-style: disc;}
+.dvnCreateDvClassificationTable td span.iceOutTxt {font-size: 90% !important;}
+.dvnCreateDvClassificationTable td.dvnCreateDvClassificationSelectColumn {border-right: 0px;}
+.dvnCreateDvClassificationTableChild2 {margin-left: 0; padding-left: 0;}
+.dvnCreateDvClassificationTableChild3 {margin-left: .5em; padding-left: 18px !important; background: url(/dvn/resources/icefaces/dvn_rime/css-images/tree_line_last_node.gif) 0 0 no-repeat;}
+
+table.dvnCreateDvClassificationTable div {border-top: 0px;}
+table.dvnCreateDvClassificationTable table {width: 100%; border-top: 1px solid #dcdddf;}
+
+/**** Dataverse Analysis Results ****/
+.dvn_analysisResultContainer {padding: 10px; border: 1px solid #6e7f90; text-align: left; clear: both;}
+.dvn_analysisResultContainer .dvAnalysisHeader {display: block; padding: 3px 0; width: 100%; background: #e6ebed; font-size: 140% !important; font-weight: bold; text-align: center;}
+.dvn_analysisResultContainer .dvAnalysisResults {padding: 10px; text-align: left;}
+* html .dvAnalysisResults {width: 100%;}
+.dvn_analysisResultContainer .dvAnalysisInfoMessage {margin-bottom: 1em;}
+
+.dvAnalysisResults p.resultsNewWindowLink {margin-top: 0; padding-top: 0; text-align: right;}
+.dvAnalysisResults iframe {width: 100%; height: 440px; border: 1px solid #6e7f90;}
+.dvAnalysisResults #dvAnalysisReplicationMsg {clear: left;}
+.dvAnalysisResults #rWrkspButton {float: left; width: auto; padding-top: .5em;}
+.dvAnalysisResults #rWrkspMessage {float: left; width: auto; padding-top: .5em; padding-left: 1em;}
+.dvAnalysisResults #rWrkspMessage #rZeligInfo {font-size: 90% !important;}
+.dvAnalysisResults #rWrkspMessage #rZeligInfo span {font-size: 100% !important; color: silver;}
+.dvAnalysisResults #rWrkspMessage #rZeligInfo a {font-size: 100% !important;}
+.dvAnalysisResults #citationInfo  {width: 98%; padding: 4px; border: 1px solid #6e7f90;}
+.dvAnalysisResults #citationInfo blockquote {font-family: Courier !important; font-size: 85% !important;}
+.dvAnalysisResults #citationInfo blockquote a {font-family: Courier !important; font-size: 85% !important;}
+
+/**** Dataverse Promotional Link + Search Box ****/
+.dvnPromotionalLinks {text-align: left;}
+.dvnPromotionalLinks .dvnPromotionalLinksInstructions {padding-bottom: 1em;}
+.dvnPromotionalLinks .dvnPromotionalLinksInstructions img {vertical-align: bottom;}
+.dvnPromotionalLinks .dvnPromotionalLinksBlock {width: 100%; overflow: hidden;}
+.dvnPromotionalLinks .dvnPromotionalLinksHeader {width: 100%; padding: .5em 1em; background: gainsboro; color: gray; text-transform: uppercase;}
+.dvnPromotionalLinks .dvnPromotionalSampleBlock {padding: 1em; overflow: hidden;}
+.dvnPromotionalLinks .dvnPromotionalSample {float: left; width: 25.333%;}
+.dvnPromotionalLinks .dvnPromotionalCode {float: left; width: 36.333%;}
+.dvnPromotionalLinks .dvnPromotionalTip {float: left; width: 36.333%;}
+.dvnPromotionalSample span, .dvnPromotionalCode span, .dvnPromotionalTip span {color: gray;}
+.dvnPromotionalSample textarea, .dvnPromotionalCode textarea, .dvnPromotionalTip textarea {width: 90%; border: 1px solid #6e7f90; overflow: scroll;}

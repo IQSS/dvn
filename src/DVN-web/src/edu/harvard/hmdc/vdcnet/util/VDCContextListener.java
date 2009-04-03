@@ -35,6 +35,7 @@ import edu.harvard.hmdc.vdcnet.vdc.HarvestingDataverseServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkStatsServiceLocal;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.EJBs;
 import javax.naming.InitialContext;
@@ -54,63 +55,64 @@ import javax.servlet.ServletRequestAttributeListener;
  @EJB(name="vdcNetworkStatsService", beanInterface=edu.harvard.hmdc.vdcnet.vdc.VDCNetworkStatsServiceLocal.class),
  @EJB(name="indexService", beanInterface=edu.harvard.hmdc.vdcnet.index.IndexServiceLocal.class)
 })
-public class VDCContextListener implements ServletContextListener,ServletRequestAttributeListener, java.io.Serializable  {
-  
+public class VDCContextListener implements ServletContextListener,ServletRequestAttributeListener, java.io.Serializable   {
 
     public void contextDestroyed(ServletContextEvent event) {
     
     }
     
     public void contextInitialized(ServletContextEvent event) {
-       
+            
+        if (PropertyUtil.isTimerServer()) {
+            System.out.println("dvn.timerServer== true, Setting DVN timers.");
+            initTimers();
+           
+        } else {
+            System.out.println("dvn.timerServer== false; DVN Timers not set.");
+        }
+    }
+     
+    
+    private void initTimers() {
+    
         HarvesterServiceLocal harvesterService = null;
         HarvestingDataverseServiceLocal harvestingDataverseService = null;
         IndexServiceLocal indexService = null;
         VDCNetworkStatsServiceLocal vdcNetworkStatsService= null;
+        VDCNetworkServiceLocal vdcNetworkService=null;
          
         try {
             harvesterService=(HarvesterServiceLocal)new InitialContext().lookup("java:comp/env/harvesterService");
             harvestingDataverseService=(HarvestingDataverseServiceLocal)new InitialContext().lookup("java:comp/env/harvestingDataverseService");
+            vdcNetworkService = (VDCNetworkServiceLocal)new InitialContext().lookup("java:comp/env/vdcNetworkService");        
             indexService=(IndexServiceLocal)new InitialContext().lookup("java:comp/env/indexService");
+            vdcNetworkStatsService = (VDCNetworkStatsServiceLocal)new InitialContext().lookup("java:comp/env/vdcNetworkStatsService");
            
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
-        try {
+       
             harvestingDataverseService.resetAllHarvestingStatus();         
             harvesterService.createScheduledHarvestTimers();
+            
             indexService.createIndexTimer();
             indexService.createIndexNotificationTimer();
+    
+            vdcNetworkService.updateExportTimer();
+            
+            vdcNetworkStatsService.updateStats();
+            vdcNetworkStatsService.createStatsTimer();
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
         
-        VDCNetworkServiceLocal vdcNetworkService=null;
+     
         
-        try {
-             vdcNetworkService = (VDCNetworkServiceLocal)new InitialContext().lookup("java:comp/env/vdcNetworkService");
-            vdcNetworkService.updateExportTimer();
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
+   
 
 
       
-         try {
-             vdcNetworkStatsService = (VDCNetworkStatsServiceLocal)new InitialContext().lookup("java:comp/env/vdcNetworkStatsService");
-             vdcNetworkStatsService.updateStats();
-            vdcNetworkStatsService.createStatsTimer();
-        } catch(Exception e) {
-            e.printStackTrace();
-        }     
-     
-
+              
     }
-    /** Creates a new instance of VDCContextListener */
-    public VDCContextListener() {
-    }
-     
-    
   public void attributeAdded(ServletRequestAttributeEvent event) {
       Object value = event.getValue();
         if (value != null) {

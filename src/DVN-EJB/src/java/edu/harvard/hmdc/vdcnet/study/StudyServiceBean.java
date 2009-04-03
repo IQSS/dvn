@@ -135,7 +135,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     public StudyServiceBean() {
     }
 
-   
+
     public void updateStudy(Study detachedStudy) {
         em.merge(detachedStudy);
     }
@@ -144,7 +144,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         Study study = em.find(Study.class, studyId);
         ReviewState state = this.reviewStateService.findByName(reviewStateName);
         study.setReviewState(state);
-     
+
     }
     
     public void setReadyForReview(Long studyId) {
@@ -327,7 +327,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             " and sf.id=dt.studyfile_id " +
             " and dt.id= dv.datatable_id ";
     */
-    
+
     private static final String DELETE_VARIABLE_CATEGORIES_PREFIX = "delete from variablecategory where datavariable_id in ";
     private static final String DELETE_SUMMARY_STATISTICS_PREFIX = " delete from summarystatistic where datavariable_id in ";
     private static final String DELETE_VARIABLE_RANGE_ITEMS_PREFIX = " delete from variablerangeitem where datavariable_id in ";
@@ -341,7 +341,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             "and sf.id=dt.studyfile_id ";
 
     private static final String SELECT_DATAVARIABLE_IDS_PREFIX = "select dv.id from datavariable dv where dv.datatable_id in ";
-    
+
     public void deleteDataVariables(Long studyId) {
         // because the delte was taking a while, we tested spearate queires to get the info and it seemed to work much
         // faster, so now this delete goes in steps
@@ -578,9 +578,9 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
 
         return returnList;
     }
-    
 
-    
+
+
     public List<Long> getAllNonHarvestedStudyIds() {
         String queryStr = "select id from study where isharvested='false'";
         Query query = em.createNativeQuery(queryStr);
@@ -599,12 +599,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             return studyIdList;
         }
 
-        String studyIds = "";
-        Iterator iter = studyIdList.iterator();
-        while (iter.hasNext()) {
-            Long id = (Long) iter.next();
-            studyIds += id + (iter.hasNext() ? "," : "");
-        }
+        String studyIds = generateIdString(studyIdList);
 
         if (orderBy.equals("globalId")) {
             String query = "SELECT s.id FROM Study s WHERE s.id in (" + studyIds + ") ORDER BY s.protocol, s.authority, s.studyId";
@@ -617,8 +612,8 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
         } else if (orderBy.equals("lastUpdateTime")) {
             String query = "SELECT s.id FROM Study s WHERE s.id in (" + studyIds + ") ORDER BY s.lastUpdateTime desc";
             return (List) em.createQuery(query).getResultList();
-            
-        } else if (orderBy.equals("downloadCount")) {  
+
+        } else if (orderBy.equals("downloadCount")) {
             // this query runs fine in Postgres, but will need to be tested with other DBs if they are used
             String queryStr = "select s.id " +
                     "from metadata m, study s " +
@@ -637,29 +632,29 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             }
 
             return returnList;
-            
-            
+
+
         } else {
-            return studyIdList;   
+            return studyIdList;
         }
-        
+
     }
 
        public List getDvOrderedStudyIds(Long vdcId, String orderBy, boolean ascending ) {
           String query = "SELECT s.id FROM Study s WHERE s.owner.id = " + vdcId + " ORDER BY s."+orderBy;
           if (!ascending) {
               query+= " desc";
-          }    
+          }
             return (List) em.createQuery(query).getResultList();
         }
         public List getDvOrderedStudyIdsByCreator(Long vdcId, Long creatorId, String orderBy, boolean ascending ) {
           String query = "SELECT s.id FROM Study s WHERE s.owner.id = " + vdcId + " and s.creator.id = " +creatorId+" ORDER BY s."+orderBy;
           if (!ascending) {
               query+= " desc";
-          }    
+          }
             return (List) em.createQuery(query).getResultList();
-        }    
-    
+        }
+
     public List<Study> getReviewerStudies(Long vdcId) {
         String query = "SELECT s FROM Study s WHERE s.reviewState.name = 'In Review' AND s.owner.id = " + vdcId;
         List<Study> studies = em.createQuery(query).getResultList();
@@ -1559,7 +1554,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     public List getViewableStudies(List<Long> studyIds) {
         return getViewableStudies(studyIds, null, null, null);
     }
-    
+
     // viewable studies are those that are defined as not restricted to the user
     public List getViewableStudies(List<Long> studyIds, Long userId, Long ipUserGroupId, Long vdcId) {
         List returnList = new ArrayList();
@@ -1571,9 +1566,9 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
             boolean groupJoinAdded = false;
 
             if (vdcId != null) { // if this parameter is passed, the user is an admin or curator of this vdc
-                whereClause.append("or owner_id = ? ");    
+                whereClause.append("or owner_id = ? ");
             }
-            
+
             if (userId != null) {
                 queryString.append("left join study_vdcuser su on (s.id = su.studies_id) ");
                 queryString.append("left join study_usergroup sg on (s.id = sg.studies_id ) ");
@@ -1608,11 +1603,11 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
 
             // now set parameters
             int parameterCount = 1;
-            
+
             if (vdcId != null) {
-                query.setParameter(parameterCount++, vdcId);    
+                query.setParameter(parameterCount++, vdcId);
             }
-            
+
             if (userId != null) {
                 query.setParameter(parameterCount++, userId);
                 query.setParameter(parameterCount++, userId);
@@ -1769,7 +1764,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
 
     private Study doImportStudy(File xmlFile, Long harvestFormatTypeId, Long vdcId, Long userId, String harvestIdentifier, List<StudyFileEditBean> filesToUpload) {
         logger.info("Begin doImportStudy");
-        
+
         Study study = null;
         boolean newStudy = true;
         boolean isHarvest = (harvestIdentifier != null);
@@ -2016,7 +2011,7 @@ public class StudyServiceBean implements edu.harvard.hmdc.vdcnet.study.StudyServ
     public Long getTotalActivityCount() {
         String queryString  = "select sum(downloadcount) " +
                 "from studyfileactivity  sfa, study s " +
-                "where sfa.study_id = s.id";        
+                "where sfa.study_id = s.id";
         Query query         = em.createNativeQuery(queryString);
         Object object       = ((List)query.getSingleResult()).get(0);
         Long longValue      = (Long)object;

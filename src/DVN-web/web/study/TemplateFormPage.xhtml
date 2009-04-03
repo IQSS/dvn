@@ -544,10 +544,7 @@
                   <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.dateOfDeposit].recommended}"/>
                 </div>
                 <div jsfc="ice:panelGroup" id="groupPanel28" styleClass="vdcEditStudyField #{TemplateFormPage.studyMap[sfc.dateOfDeposit].templateField.fieldInputLevel.name}">
-                  <ice:inputText id="input_dateOfDeposit" styleClass="formDateFormat" value="#{TemplateFormPage.template.metadata.dateOfDeposit}"  required="#{TemplateFormPage.studyMap[sfc.dateOfDeposit].required}">
-
-                  </ice:inputText>
-                  <ice:outputText value=" (YYYY or YYYY-MM or YYYY-MM-DD)"/>
+                  <ice:outputText value="&lt;#{editstudybundle.depositDateLabel} cannot be set in a template&gt;"/>
                   <ice:message styleClass="errorMessage" for="input_dateOfDeposit"/>
                 </div>
               </ice:panelGrid>

@@ -87,7 +87,13 @@ public class ClassificationList extends SortableList {
         if (classificationUIs == null) {
             init();
         }
-        checkSort();
+        return classificationUIs;
+    }
+
+    public Collection<ClassificationUI> getVisibleClassificationUIs() {
+        if (classificationUIs == null) {
+            init();
+        }
         return visibleClassificationUIs;
     }
 

@@ -7,10 +7,7 @@
         <exception-type>javax.faces.FacesException</exception-type>
        <location>/faces/NotFoundPage.xhtml</location>
     </error-page-->
-       <error-page>
-        <error-code>404</error-code>
-       <location>/faces/NotFoundPage.xhtml</location>
-    </error-page>
+     
     <!-- ICEFACES START -->
     <!-- remove if this does not work delegateNonIface-->
    <context-param>
@@ -58,7 +55,7 @@
 <!-- Facelets -->
     <context-param>
       <param-name>facelets.DEVELOPMENT</param-name>
-      <param-value>true</param-value>
+      <param-value>false</param-value>
     </context-param>
     <context-param>
         <param-name>facelets.SKIP_COMMENTS</param-name>
@@ -147,11 +144,7 @@
    <servlet>
         <servlet-name>Persistent Faces Servlet</servlet-name>
             <servlet-class>com.icesoft.faces.webapp.xmlhttp.PersistentFacesServlet</servlet-class>
-            <init-param>
-              <param-name>errorPage</param-name>
-              <param-value>/ExceptionHandler</param-value>
-            </init-param>
-            <load-on-startup>1</load-on-startup>
+           
       </servlet>
         <servlet>
             <servlet-name>Blocking Servlet</servlet-name>
@@ -167,11 +160,7 @@
     <servlet>
         <servlet-name>Faces Servlet</servlet-name>
         <servlet-class>edu.harvard.hmdc.vdcnet.web.servlet.VDCFacesServlet</servlet-class>
-        <init-param>
-          <param-name>errorPage</param-name>
-          <param-value>/ExceptionHandler</param-value>
-        </init-param>
-        <load-on-startup>1</load-on-startup>
+        
     </servlet>
     <servlet>
         <servlet-name>Default Faces Servlet</servlet-name>
@@ -313,4 +302,20 @@
         <url-pattern>/sumStat</url-pattern>
     </servlet-mapping>
     <!-- DVN SPECIFIC SERVLET MAPPINGS END -->
+    
+      <error-page>
+        <error-code>404</error-code>
+       <location>/faces/NotFoundPage.xhtml</location>
+    </error-page>
+    <!--
+    <error-page>
+        <error-code>500</error-code>
+       <location>/faces/ErrorPage.xhtml</location>
+    </error-page>
+    
+    <error-page>
+        <exception-type>Exception</exception-type>
+        <location>/faces/NotFoundPage.xhtml</location>
+    </error-page>
+    -->
 </web-app>

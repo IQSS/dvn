@@ -282,6 +282,11 @@ h4.noSubNode, h4.noSubNode a, h4.noSubNode a:hover {
     color: white;
 }
 
+a.lastNodeActive:link {
+    font-weight:bold;
+}
+
+
 /* HEADER */
 .dvn_headerTitle {position: relative; text-align: left;}
 .dvn_headerTitleLarge {margin: .25em 228px .25em 12px;}

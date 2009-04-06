@@ -43,10 +43,13 @@
           jQuery.ifixpng("/dvn/resources/pixel.gif");
           jQuery("img[@src$=.png], a.requestHmpgSideLink:link, a.requestHmpgSideLink:visited, a.requestHmpgSideLink:hover, a.requestHmpgSideLink:active").ifixpng();
       });
+
+      
       // ]]>
   </script>
     
         <ice:outputText escape="false"
+                        nospan="true"
                     rendered="#{applicationScope.googleAnalyticsKey != null || MainLayoutBean.googleAnalyticsKey != null}"
                     value="#{(applicationScope.googleAnalyticsSourceCode != null) ? applicationScope.googleAnalyticsSourceCode : MainLayoutBean.googleAnalyticsSourceCode}"
                     />
@@ -78,6 +81,7 @@
     <gui:include src="views/CustomFooter.xhtml"/>
   </gui:insert>
    <ice:outputText escape="false"
+                   nospan="true"
                     rendered="#{applicationScope.googleAnalyticsKey != null || MainLayoutBean.googleAnalyticsKey != null}"
                     value="#{(applicationScope.googleAnalyticsCode != null) ? applicationScope.googleAnalyticsCode : MainLayoutBean.googleAnalyticsCode}"
                     />

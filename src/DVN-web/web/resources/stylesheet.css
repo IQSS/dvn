@@ -856,8 +856,9 @@ td.dvn_StudyListSort {padding: .25em;}
 span.dvnStudyListStudyAuthor {font-size: 90% !important;}
 .dvnStudyListIDDownloads {padding: 0 10px; border-left: 1px solid #dcdddf !important;}
 .dvnStudyListIDDownloads span {font-size: 90% !important; color: gray;}
-.dvnStudyListIDDownloads span.dvnStudyListIDDownloadsSubsettable {width: 14em; padding-left: 24px !important; line-height: 1.2em !important; background: url(icon_analyze.gif) no-repeat; white-space: nowrap; display: inline !important;}
-.dvnStudyListIDDownloads span.dvnStudyListIDDownloadsNonSubsettable {width: 14em; padding-left: 24px !important; line-height: 1.3em !important; background: url(icon_download.gif) no-repeat; white-space: nowrap; display: inline !important;}
+.dvnStudyListIDDownloads .dvnStudyListDownloadCount {white-space: nowrap;}
+.dvnStudyListIDDownloads span.dvnStudyListIDDownloadsSubsettable {width: 14em; margin-left: 4px !important; white-space: nowrap; display: inline !important;}
+.dvnStudyListIDDownloads span.dvnStudyListIDDownloadsNonSubsettable {width: 14em; margin-left: 4px !important; white-space: nowrap; display: inline !important;}
 td.dvnStudyListTableColID {vertical-align: top;}
 span.dvnStudyListGlobalId {color: black;}
 

@@ -174,9 +174,9 @@ public class DeleteDataversePage extends VDCBaseBean implements java.io.Serializ
 
     private String getFriendlyLinkName() {
         if (result.indexOf("ManageDataversesPage") != -1)
-            return "Manage Dataverses Page";
+            return "Manage Dataverses";
         else if (result.indexOf("HarvestSitesPage") != -1)
-            return "Harvest Sites Page";
+            return "Manage Harvesting";
         else
             return "";
     }

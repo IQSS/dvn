@@ -29,14 +29,14 @@
 
 package edu.harvard.hmdc.vdcnet.mail;
 
-import edu.harvard.hmdc.vdcnet.admin.RoleServiceLocal;
-import edu.harvard.hmdc.vdcnet.admin.VDCRole;
 import edu.harvard.hmdc.vdcnet.study.StudyFileEditBean;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
+import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import javax.annotation.Resource;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -46,19 +46,22 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+
 /**
  *
  * @author roberttreacy
  */
 @Stateless
-public class MailServiceBean implements edu.harvard.hmdc.vdcnet.mail.MailServiceLocal {
-    
+public class MailServiceBean implements edu.harvard.hmdc.vdcnet.mail.MailServiceLocal, java.io.Serializable {
+
+    @EJB VDCNetworkServiceLocal vdcNetworkService;
+
     /**
      * Creates a new instance of MailServiceBean
      */
     public MailServiceBean() {
     }
-    
+
     public void sendMail(String host, String from, String to, String subject, String messageText) {
         Properties props = System.getProperties(  );
         props.put("mail.smtp.host", host);
@@ -203,7 +206,7 @@ public class MailServiceBean implements edu.harvard.hmdc.vdcnet.mail.MailService
     public void sendAddSiteNotification(String dataverseCreatorEmail, String siteName, String siteAddress){
         String subject = "Dataverse Network: Your dataverse has been created";
         String messageText = "Hello, \nYour new dataverse named '"+siteName+"' was"
-               + " created in the IQSS Dataverse Network. You can access your dataverse"
+               + " created in the " + vdcNetworkService.find().getName() + " Dataverse Network. You can access your dataverse"
                + " directly by entering this URL:\n" 
                + "http://"+siteAddress+"\n"
                + "Your dataverse is set to Not Released by default. You can do the"

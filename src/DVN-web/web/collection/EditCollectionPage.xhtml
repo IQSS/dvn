@@ -11,7 +11,7 @@
 </head>
 <body>
   <gui:composition template="/template.xhtml">
-    <gui:param name="pageTitle" value="#{bundlePageInfo.editCollectionTitle}"/>
+    <gui:param name="pageTitle" value="#{(EditCollectionPage.collection.rootCollection) ? bundlePageInfo.editRootCollectionTitle : bundlePageInfo.editCollectionTitle}"/>
     <gui:define name="body">
       <script type="text/javascript">
           // <![CDATA[
@@ -94,11 +94,13 @@
         <div class="dvn_section">
           <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
             <div class="dvnMsgBlockContainer">
-              <ice:outputText value="#{bundlePageInfo.editCollectionHelp}" escape="false"/>
+              <ice:outputText value="#{bundlePageInfo.editCollectionHelp}" escape="false" rendered="#{! EditCollectionPage.collection.rootCollection}"/>
+              <ice:outputText value="#{bundlePageInfo.editRootCollectionHelp}" escape="false" rendered="#{EditCollectionPage.collection.rootCollection}"/>
             </div>
           </div>
           <div class="dvn_sectionTitle">
-            <ice:outputText value="#{bundlePageInfo.editCollectionTitle}"/>
+            <ice:outputText value="#{bundlePageInfo.editCollectionTitle}" rendered="#{! EditCollectionPage.collection.rootCollection}"/>
+            <ice:outputText value="#{bundlePageInfo.editRootCollectionTitle}" rendered="#{EditCollectionPage.collection.rootCollection}"/>
           </div>
           <div class="dvn_sectionBox">
             <div class="dvn_margin12">

@@ -157,7 +157,7 @@ public class DeleteClassificationsPage extends VDCBaseBean implements Serializab
 
     private String getFriendlyLinkName() {
         if (result.indexOf("ManageClassificationsPage") != -1)
-            return "Manage Classifications Page";
+            return "Manage Classifications";
         else
             return "";
     }

@@ -51,9 +51,11 @@ public interface PageDefServiceLocal extends java.io.Serializable  {
     public static final String STUDY_PERMISSIONS_PAGE = "StudyPermissionsPage";
     public static final String DELETE_STUDY_PAGE = "DeleteStudyPage";
     public static final String CONTRIBUTOR_REQUEST_ACCOUNT_PAGE = "ContributorRequestAccountPage";
+    public static final String CONTRIBUTOR_REQUEST_INFO_PAGE = "ContributorRequestInfoPage";
     public static final String CONTRIBUTOR_REQUEST_SUCCESS_PAGE = "ContributorRequestSuccessPage";
     public static final String CONTRIBUTOR_REQUEST_PAGE = "ContributorRequestPage";
     public static final String CREATOR_REQUEST_ACCOUNT_PAGE = "CreatorRequestAccountPage";
+    public static final String CREATOR_REQUEST_INFO_PAGE = "CreatorRequestInfoPage";
     public static final String CREATOR_REQUEST_SUCCESS_PAGE = "CreatorRequestSuccessPage";
     public static final String CREATOR_REQUEST_PAGE = "CreatorRequestPage";
     public static final String FILE_REQUEST_ACCOUNT_PAGE = "FileRequestAccountPage";

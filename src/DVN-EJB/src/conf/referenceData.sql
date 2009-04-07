@@ -288,7 +288,9 @@ INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditAccoun
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'LoginPage', '/login/LoginPage.xhtml', null,null );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'ForgotPasswordPage', '/login/ForgotPasswordPage.xhtml', null,null );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'ContributorRequestPage', '/login/ContributorRequestPage.xhtml', null,null );
+INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'ContributorRequestInfoPage', '/login/ContributorRequestInfoPage.xhtml', null,null );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'CreatorRequestPage','/login/CreatorRequestPage.xhtml', null,null );
+INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'CreatorRequestInfoPage','/login/CreatorRequestInfoPage.xhtml', null,null );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'TermsOfUsePage','/login/TermsOfUsePage.xhtml', null,null );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'AccountTermsOfUsePage','/login/AccountTermsOfUsePage.xhtml', null,null );
 

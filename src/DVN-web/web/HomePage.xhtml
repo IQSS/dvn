@@ -330,6 +330,13 @@
                       obj.className = "lastNodeActive";
                     }
 
+
+                    function deselect_active_children(obj) {
+                                jQuery("a.lastNodeActive").each(function(){
+                                    jQuery(this).removeClass("lastNodeActive");
+                                });
+                    }
+
                   // ]]>
           </script>
                 <ul id="theMenu">
@@ -363,7 +370,7 @@
                                                  <gui:fragment rendered="#{!empty(item.xtraItems)}">
                                                      <li id="xtraMenu#{item.id}">
                                                          <h4 class="head">
-                                                             <ice:commandLink onclick="setHiddenValues(#{item.id});"
+                                                             <ice:commandLink onclick="deselect_active_children(this);setHiddenValues(#{item.id});"
                                                                               partialSubmit="true"
                                                                               styleClass="head">
                                                                  <ice:outputText value="#{item.name}"/>

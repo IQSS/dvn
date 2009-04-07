@@ -474,7 +474,23 @@ public class LoginFilter implements Filter {
             originalUrl += queryString;
 
         }
-        if (requestURI.indexOf(".xhtml") > -1 && requestURI.indexOf(PageDefServiceLocal.LOGIN_PAGE) == -1 && requestURI.indexOf(PageDefServiceLocal.LOGOUT_PAGE) == -1 && requestURI.indexOf(PageDefServiceLocal.ADD_ACCOUNT_PAGE) == -1 && requestURI.indexOf(PageDefServiceLocal.EDIT_ACCOUNT_PAGE) == -1 && requestURI.indexOf(PageDefServiceLocal.UNAUTHORIZED_PAGE) == -1 && requestURI.indexOf(PageDefServiceLocal.CONTRIBUTOR_REQUEST_ACCOUNT_PAGE) == -1 && requestURI.indexOf(PageDefServiceLocal.CONTRIBUTOR_REQUEST_SUCCESS_PAGE) == -1 && requestURI.indexOf(PageDefServiceLocal.CONTRIBUTOR_REQUEST_PAGE) == -1 && requestURI.indexOf(PageDefServiceLocal.CREATOR_REQUEST_ACCOUNT_PAGE) == -1 && requestURI.indexOf(PageDefServiceLocal.CREATOR_REQUEST_SUCCESS_PAGE) == -1 && requestURI.indexOf(PageDefServiceLocal.CREATOR_REQUEST_PAGE) == -1 && requestURI.indexOf(PageDefServiceLocal.FILE_REQUEST_ACCOUNT_PAGE) == -1 && requestURI.indexOf(PageDefServiceLocal.FILE_REQUEST_SUCCESS_PAGE) == -1 && requestURI.indexOf(PageDefServiceLocal.FILE_REQUEST_PAGE) == -1 && request.getMethod().equals("GET")) {
+        if (requestURI.indexOf(".xhtml") > -1 
+                && requestURI.indexOf(PageDefServiceLocal.LOGIN_PAGE) == -1
+                && requestURI.indexOf(PageDefServiceLocal.LOGOUT_PAGE) == -1
+                && requestURI.indexOf(PageDefServiceLocal.ADD_ACCOUNT_PAGE) == -1
+                && requestURI.indexOf(PageDefServiceLocal.EDIT_ACCOUNT_PAGE) == -1
+                && requestURI.indexOf(PageDefServiceLocal.UNAUTHORIZED_PAGE) == -1
+                && requestURI.indexOf(PageDefServiceLocal.CONTRIBUTOR_REQUEST_ACCOUNT_PAGE) == -1
+                && requestURI.indexOf(PageDefServiceLocal.CONTRIBUTOR_REQUEST_SUCCESS_PAGE) == -1
+                && requestURI.indexOf(PageDefServiceLocal.CONTRIBUTOR_REQUEST_INFO_PAGE) == -1
+                && requestURI.indexOf(PageDefServiceLocal.CONTRIBUTOR_REQUEST_PAGE) == -1
+                && requestURI.indexOf(PageDefServiceLocal.CREATOR_REQUEST_ACCOUNT_PAGE) == -1
+                && requestURI.indexOf(PageDefServiceLocal.CREATOR_REQUEST_SUCCESS_PAGE) == -1
+                && requestURI.indexOf(PageDefServiceLocal.CREATOR_REQUEST_INFO_PAGE) == -1
+                && requestURI.indexOf(PageDefServiceLocal.CREATOR_REQUEST_PAGE) == -1
+                && requestURI.indexOf(PageDefServiceLocal.FILE_REQUEST_ACCOUNT_PAGE) == -1
+                && requestURI.indexOf(PageDefServiceLocal.FILE_REQUEST_SUCCESS_PAGE) == -1
+                && requestURI.indexOf(PageDefServiceLocal.FILE_REQUEST_PAGE) == -1 && request.getMethod().equals("GET")) {
             request.getSession().setAttribute("ORIGINAL_URL", originalUrl);
         }
 

@@ -234,8 +234,11 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable, 
             // check to make sure delete is complete (temp nfs files may still exist)
             if (deleteSucceded && indexDir.list().length > 0) {
                 deleteSucceded = false;
-                for (int count = 0; count < 60; count++) {
-                System.out.println("*** INDEX ALL - files still exist in the index dir - sleep for a second");
+                Date now = new Date();
+                for (int count = 0; count < 300; count++) {
+                    System.out.println("*** INDEX ALL - files still exist in the index dir - sleep for a second");
+                    System.out.println("*** Milliseconds from start: " + (new Date().getTime() - now.getTime()) );
+                    System.out.println("*** (" + count + ") - " + printArray(indexDir.list()));
                     Thread.sleep(1000);
                     if ( indexDir.list().length == 0 ) {
                         deleteSucceded = true;
@@ -256,7 +259,15 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable, 
         } 
        
         return null;
-    }   
+    }
+
+    private String printArray(String[] list) {
+        String returnString = "{";
+        for (int i = 0; i < list.length; i++) {
+            returnString += list[i] + ";";
+        }
+        return returnString + "}";
+    }
     
     public String indexDV_action() {
         try {

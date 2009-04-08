@@ -331,18 +331,28 @@
                     }
 
 
-                    function deselect_active_children(obj) {
-                                jQuery("a.lastNodeActive").each(function(){
-                                    jQuery(this).removeClass("lastNodeActive");
-                                });
-                    }
+                   function deselect_active_children(obj) {
+                       if (arguments.length > 1) {
+                           var parentNode = obj.parentNode.parentNode.parentNode;
+                           var nodes = parentNode.getElementsByTagName("H4");
+                           for (var i = 0; i < nodes.length; i++) {
+                               var nodeObj = nodes.item(i);
+                               if (nodeObj.className.indexOf('selected') != -1) {
+                                   jQuery(nodeObj).removeClass("selected");
+                               }
+                           }
+                       }
+                       jQuery("a.lastNodeActive").each(function(){
+                           jQuery(this).removeClass("lastNodeActive");
+                       });
+                   } 
 
                   // ]]>
           </script>
                 <ul id="theMenu">
                          <li>
                              <h3 class="head selected noSubNode">
-                                 <ice:commandLink onclick="setHiddenValues(-1);"
+                                 <ice:commandLink onclick="deselect_active_children(this, 'true');setHiddenValues(-1);"
                                                   partialSubmit="true"
                                                   styleClass="head">
                                      <ice:outputText value="Show All Dataverses"/>

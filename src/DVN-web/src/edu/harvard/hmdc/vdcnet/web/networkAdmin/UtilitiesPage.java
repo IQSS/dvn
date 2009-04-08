@@ -233,9 +233,9 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable, 
 
             // check to make sure delete is complete (temp nfs files may still exist)
             if (deleteSucceded && indexDir.list().length > 0) {
-                System.out.println("*** INDEX ALL - files still exist in the index dir - sleep for a second");
                 deleteSucceded = false;
                 for (int count = 0; count < 60; count++) {
+                System.out.println("*** INDEX ALL - files still exist in the index dir - sleep for a second");
                     Thread.sleep(1000);
                     if ( indexDir.list().length == 0 ) {
                         deleteSucceded = true;

@@ -76,7 +76,8 @@
                   }
               }
           }
-          function hideScheduling(harvestType) {
+          function hideScheduling() {
+              harvestType = getRadioValue("harvestType");
               if (harvestType  == 'oai') {
                   document.getElementById("scheduleBlock").style.display='';
               } else {
@@ -112,7 +113,7 @@
                         <ice:selectOneRadio id="harvestType"
                                             layout="pageDirection"
                                             binding="#{EditHarvestSitePage.inputHarvestType}"
-                                            onchange="hideScheduling(this.value)"
+                                            onclick="hideScheduling()"
                                             value="#{EditHarvestSitePage.harvestingDataverse.harvestType}"
                                             required="true"
                                             requiredMessage="This field is required.">
@@ -216,7 +217,7 @@
                   </tr>
               </table>
           </div>
-          <div class="dvnFormPadding">
+          <div id="scheduleBlock" class="dvnFormPadding">
               <table class="dvnPermissionsTable" cellspacing="0" cellpadding="0" border="0">
                   <tr><td colspan="2" class="dvnPermissionsTableHeader"><ice:outputText value="Schedule Settings"/></td></tr>
                   <tr>
@@ -401,7 +402,7 @@
           // initial call to disable subsetting Restricted (if needed)
           checkSubsetting( false );
           updateScheduleInput();
-          hideScheduling( getRadioValue("harvestType"));
+          hideScheduling();
       </script>
     </gui:define>
   </gui:composition>

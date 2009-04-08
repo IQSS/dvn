@@ -251,6 +251,7 @@ public class EditHarvestSitePage extends VDCBaseBean implements java.io.Serializ
                  editHarvestSiteService.getHarvestingDataverse().setScheduleDayOfWeek(null);
             }     
         } else {
+             editHarvestSiteService.getHarvestingDataverse().setScheduled(false);
              editHarvestSiteService.getHarvestingDataverse().setSchedulePeriod(null); 
              editHarvestSiteService.getHarvestingDataverse().setScheduleHourOfDay(null);
              editHarvestSiteService.getHarvestingDataverse().setScheduleDayOfWeek(null);
@@ -775,9 +776,9 @@ public void validateSchedulePeriod(FacesContext context,
             Object value) {
         
         boolean valid=true;
-       
+
          
-        if (scheduledCheckbox.getLocalValue().equals(Boolean.TRUE))
+        if (isOai() && scheduledCheckbox.getLocalValue().equals(Boolean.TRUE))
             if ( ((String)value).equals("notSelected")  ) {
             valid=false;
         }
@@ -796,7 +797,7 @@ public void validateHourOfDay(FacesContext context,
         boolean valid=true;
        
          
-        if (schedulePeriod!=null && schedulePeriod.getLocalValue()!=null &&(schedulePeriod.getLocalValue().equals("daily") || schedulePeriod.getLocalValue().equals("weekly"))) {
+        if (isOai() && schedulePeriod!=null && schedulePeriod.getLocalValue()!=null &&(schedulePeriod.getLocalValue().equals("daily") || schedulePeriod.getLocalValue().equals("weekly"))) {
             if ( value==null || ((Integer)value).equals(new Integer(-1))) {
                 valid=false;
             }
@@ -816,7 +817,7 @@ public void validateDayOfWeek(FacesContext context,
         boolean valid=true;
        
          
-        if (schedulePeriod!=null&& schedulePeriod.getLocalValue()!=null && schedulePeriod.getLocalValue().equals("weekly") ) {
+        if (isOai() && schedulePeriod!=null&& schedulePeriod.getLocalValue()!=null && schedulePeriod.getLocalValue().equals("weekly") ) {
                if ( value==null || ((Integer)value).equals(new Integer(-1))) {
                 valid=false;
             }
@@ -827,6 +828,10 @@ public void validateDayOfWeek(FacesContext context,
             context.addMessage(toValidate.getClientId(context), message);
         }
         
+    }
+
+    private boolean isOai() {
+        return (inputHarvestType != null && inputHarvestType.getLocalValue().equals("oai"));
     }
 
     public HtmlSelectBooleanCheckbox getScheduledCheckbox() {

@@ -1428,7 +1428,8 @@ td.vdcEditFilesColC{
 .dvnManageStudiesTable tbody span.iceOutTxt {display: inline; white-space: nowrap;}
 .dvnManageStudiesTableEmpty {border: 1px solid #d9d9d9; padding: 1em; text-align: center;}
 .dvnManageStudiesTableStatus {white-space: nowrap;}
-.dvnManageStudiesTableStatus input.iceCmdBtn {margin-left: 1em; font-size: 90% !important;}
+.dvnManageStudiesTableStatus span.dvnManageStudiesTableStatusLabel {width: 5em; display: -moz-inline-box !important; display: inline-block !important; vertical-align: middle;}
+.dvnManageStudiesTableStatus input.iceCmdBtn {font-size: 90% !important;}
 
 /* Advanced Search Style Rules */
 .dvnAdvSearchScopeTable {

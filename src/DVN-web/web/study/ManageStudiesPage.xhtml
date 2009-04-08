@@ -133,7 +133,7 @@
                       <ice:outputText value="#{bundle.MSStatusColumn}"/>
                     </ice:commandSortHeader>
                   </f:facet>
-                  <ice:outputText value="#{studyUI.study.reviewState.name}"/>
+                  <ice:outputText value="#{studyUI.study.reviewState.name}" styleClass="dvnManageStudiesTableStatusLabel"/>
                   <ice:commandButton value="&#187; Release" rendered="#{studyUI.userAuthorizedToRelease and studyUI.study.studyLock==null and studyUI.study.inReview}" actionListener="#{ManageStudiesList.doSetReleased}"/>
                   <ice:commandButton value="&#187; Review" rendered="#{studyUI.study.new}" actionListener="#{ManageStudiesList.doSetInReview}"/>
                   <ice:commandButton value="&#187; Unrelease" rendered="#{studyUI.userAuthorizedToRelease and studyUI.study.studyLock==null and studyUI.study.released}" actionListener="#{ManageStudiesList.doSetInReview}"/>

@@ -222,16 +222,29 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable, 
     public String indexAll_action() {
         try {
             //first delete files
-            boolean deleteFailed = false;
+            boolean deleteSucceded = true;
             File indexDir = new File( Indexer.getInstance().getIndexDir() );
             File[] files = indexDir.listFiles();
             for (int i = 0; i < files.length; i++) {
                 if ( !files[i].delete() ) {
-                    deleteFailed = true;
+                    deleteSucceded = false;
                 }
             }
 
-            if (!deleteFailed) {
+            // check to make sure delete is complete (temp nfs files may still exist)
+            if (deleteSucceded && indexDir.list().length > 0) {
+                System.out.println("*** INDEX ALL - files still exist in the index dir - sleep for a second");
+                deleteSucceded = false;
+                for (int count = 0; count < 60; count++) {
+                    Thread.sleep(1000);
+                    if ( indexDir.list().length == 0 ) {
+                        deleteSucceded = true;
+                        break;
+                    }
+                }
+            }
+
+            if (deleteSucceded) {
                 indexService.indexAll();
                  addMessage( "indexMessage", "Reindexing completed." );
             } else {

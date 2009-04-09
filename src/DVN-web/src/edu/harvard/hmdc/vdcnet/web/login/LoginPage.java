@@ -31,12 +31,12 @@ import edu.harvard.hmdc.vdcnet.admin.UserServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
-import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import javax.ejb.EJB;
-import javax.faces.FacesException;
 import com.icesoft.faces.component.ext.HtmlInputHidden;
+import edu.harvard.hmdc.vdcnet.admin.NetworkRoleServiceLocal;
+import edu.harvard.hmdc.vdcnet.util.PropertyUtil;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
@@ -62,6 +62,7 @@ public class LoginPage extends VDCBaseBean implements java.io.Serializable  {
     
     private Boolean clearWorkflow=true;
     String refererUrl = new String("");
+    String errMessage;
  
     public void init() {
         super.init();
@@ -103,14 +104,24 @@ public class LoginPage extends VDCBaseBean implements java.io.Serializable  {
         VDCUser user = userService.findByUserName(userName.trim(), activeOnly);
         if (user == null || !userService.validatePassword(user.getId(),password)) {
             loginFailed = true;
+            errMessage = "Login failed. Please check your username and password and try again.";
             return null;
-        } else {
+        } else if (PropertyUtil.isTimerServer() && user.getNetworkRole()!=null && user.getNetworkRole().getName().equals(NetworkRoleServiceLocal.ADMIN)) {
+           loginFailed = true;
+           errMessage = "Login failed.  Users with Network Admin privileges must log into the timer server.";
+           return null;
+        }
+        else{
             String forward = null;
               LoginWorkflowBean loginWorkflowBean = (LoginWorkflowBean)this.getBean("LoginWorkflowBean");
               forward = loginWorkflowBean.processLogin(user,studyId);
         
             return forward;
         }
+    }
+
+    public String getErrMessage() {
+        return errMessage;
     }
     /**
      * Holds value of property userName.

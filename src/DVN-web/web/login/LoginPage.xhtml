@@ -24,7 +24,7 @@
               <fieldset>
                 <legend>Dataverse Account</legend>
                 <div jsfc="h:panelGroup" styleClass="dvnLoginFailed" rendered="#{LoginPage.loginFailed}">
-                  <ice:outputText styleClass="errorMessage" value="Login failed. Please check your username and password and try again."/>
+                  <ice:outputText styleClass="errorMessage" value="#{LoginPage.errMessage}"/>
                 </div>
                 <label for="username">Username</label>
                 <ice:inputText tabindex="1" id="username" name="username" value="#{LoginPage.userName}" required="true" requiredMessage="This field is required."/>

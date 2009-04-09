@@ -222,7 +222,7 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable, 
     public String indexAll_action() {
         try {
             File indexDir = new File( Indexer.getInstance().getIndexDir() );
-            if (indexDir.list().length == 0) {
+            if (!indexDir.exists() || indexDir.list().length == 0) {
                 indexService.indexAll();
                  addMessage( "indexMessage", "Reindexing completed." );
             } else {

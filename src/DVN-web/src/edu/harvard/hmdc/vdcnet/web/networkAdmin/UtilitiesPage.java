@@ -221,37 +221,12 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable, 
     
     public String indexAll_action() {
         try {
-            //first delete files
-            boolean deleteSucceded = true;
             File indexDir = new File( Indexer.getInstance().getIndexDir() );
-            File[] files = indexDir.listFiles();
-            for (int i = 0; i < files.length; i++) {
-                if ( !files[i].delete() ) {
-                    deleteSucceded = false;
-                }
-            }
-
-            // check to make sure delete is complete (temp nfs files may still exist)
-            if (deleteSucceded && indexDir.list().length > 0) {
-                deleteSucceded = false;
-                Date now = new Date();
-                for (int count = 0; count < 300; count++) {
-                    System.out.println("*** INDEX ALL - files still exist in the index dir - sleep for a second");
-                    System.out.println("*** Milliseconds from start: " + (new Date().getTime() - now.getTime()) );
-                    System.out.println("*** (" + count + ") - " + printArray(indexDir.list()));
-                    Thread.sleep(1000);
-                    if ( indexDir.list().length == 0 ) {
-                        deleteSucceded = true;
-                        break;
-                    }
-                }
-            }
-
-            if (deleteSucceded) {
+            if (indexDir.list().length == 0) {
                 indexService.indexAll();
                  addMessage( "indexMessage", "Reindexing completed." );
             } else {
-                addMessage( "indexMessage", "Reindexing failed: There was a problem deleting the files. Please fix this manually, then try again." );
+                addMessage( "indexMessage", "Reindexing failed: The index directory must be empty before 'index all' can be run." );
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -259,14 +234,6 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable, 
         } 
        
         return null;
-    }
-
-    private String printArray(String[] list) {
-        String returnString = "{";
-        for (int i = 0; i < list.length; i++) {
-            returnString += list[i] + ";";
-        }
-        return returnString + "}";
     }
     
     public String indexDV_action() {

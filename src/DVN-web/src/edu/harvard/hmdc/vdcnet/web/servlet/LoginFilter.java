@@ -48,8 +48,8 @@ import java.io.*;
 import java.util.Enumeration;
 import java.util.Iterator;
 import javax.ejb.EJB;
+import javax.ejb.EJBException;
 import javax.ejb.EJBs;
-import javax.servlet.*;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -138,7 +138,29 @@ public class LoginFilter implements Filter {
               return;
         }
         PageDef pageDef = pageDefService.findByPath(requestPath);
-     
+
+        // check for invalid study Id
+        // for right now, do this with a sendRedirect, though we should try to figure out a solution
+        // with a forward isntead; that way the user can fix the issue in the URL and easily try again
+        if ( isViewStudyPage(pageDef) || isEditStudyPage(pageDef) ) {
+            Long studyId = determineStudyId(pageDef, httpRequest);
+            if (studyId != null && studyId > 0 ) {
+                try {
+                    Study study = studyService.getStudy(studyId);
+                } catch (EJBException e) {
+                    if (e.getCause() instanceof IllegalArgumentException) {
+                        String redirectURL = httpRequest.getContextPath();
+                        if (currentVDC!=null) {
+                            redirectURL+="/dv/"+currentVDC.getAlias();
+                        }
+                        httpResponse.sendRedirect(redirectURL + "/faces/IdDoesNotExistPage.xhtml" );
+                        return;
+                    } else {
+                        throw e;
+                    }
+                }
+            }
+        }
 
         setOriginalUrl(httpRequest, httpResponse, currentVDC);
 

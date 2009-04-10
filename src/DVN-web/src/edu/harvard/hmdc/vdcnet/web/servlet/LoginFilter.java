@@ -232,7 +232,8 @@ public class LoginFilter implements Filter {
                 } else {
                     return false;
                 }
-            }
+            } else
+                return false;
 
         }
         // If this page has a VDC Role, and it is being requested in a VDC Context,

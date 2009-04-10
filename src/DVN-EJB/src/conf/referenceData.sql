@@ -323,13 +323,14 @@ INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'Promotiona
 -- Pages that require Network Role authorization
 -- Creator Role 
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'AddSitePage', '/site/AddSitePage.xhtml', null,1 );
-INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditHarvestSitePage', '/site/EditHarvestSitePage.xhtml', null,1 );
-INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'HarvestSitesPage', '/site/HarvestSitesPage.xhtml', null,1 );
-INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'NetworkOptionsPage', '/networkAdmin/NetworkOptionsPage.xhtml', null,1 );
 -- Admin Role
-INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'AddClassificationsPage', '/networkAdmin/AddClassificationsPage.xhtml', null,1 );
-INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'ManageClassificationsPage', '/networkAdmin/ManageClassificationsPage.xhtml', null,1 );
-INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'ManageDataversesPage', '/networkAdmin/ManageDataversesPage.xhtml', null,1 );
+INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'NetworkOptionsPage', '/networkAdmin/NetworkOptionsPage.xhtml', null,2 );
+INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'HarvestSitesPage', '/site/HarvestSitesPage.xhtml', null,2 );
+INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'AddClassificationsPage', '/networkAdmin/AddClassificationsPage.xhtml', null,2 );
+INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'ManageClassificationsPage', '/networkAdmin/ManageClassificationsPage.xhtml', null,2 );
+INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'ManageDataversesPage', '/networkAdmin/ManageDataversesPage.xhtml', null,2 );
+INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditHarvestSitePage', '/site/EditHarvestSitePage.xhtml', null,2 );
+INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditNetworkNamePage', '/networkAdmin/EditNetworkNamePage.xhtml', null,2 );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'NetworkPrivilegedUsersPage', '/networkAdmin/NetworkPrivilegedUsersPage.xhtml', null,2 );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'AllUsersPage', '/networkAdmin/AllUsersPage.xhtml', null,2 );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditNetworkAnnouncementsPage', '/networkAdmin/EditNetworkAnnouncementsPage.xhtml', null,2 );

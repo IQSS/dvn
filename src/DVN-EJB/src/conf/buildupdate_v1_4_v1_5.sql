@@ -19,6 +19,11 @@ INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'CreatorReq
 update pagedef set networkrole_id = 2 where name = 'EditHarvestSitePage';
 update pagedef set networkrole_id = 2 where name =  'NetworkOptionsPage';
 update pagedef set networkrole_id = 2 where name =  'HarvestSitesPage';
+update pagedef set networkrole_id = 2 where name =  'AddClassificationsPage';
+update pagedef set networkrole_id = 2 where name =  'ManageClassificationsPage';
+update pagedef set networkrole_id = 2 where name =  'ManageDataversesPage';
+
+INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditNetworkNamePage', '/networkAdmin/EditNetworkNamePage.xhtml', null,2 );
 
 -- remove date of deposit from templates
 update metadata set dateofdeposit = '' where id in (select metadata_id from template);

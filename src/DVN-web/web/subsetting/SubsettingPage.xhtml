@@ -232,17 +232,21 @@
 
                 <ice:selectOneRadio id="dtdwnld"  
                    binding="#{AnalysisPage.dwnldFileTypeSet}" 
-                   valueChangeListener="#{AnalysisPage.processDwnldFileType}"
-                   immediate="true"
                    value="#{AnalysisPage.dwnldFileTypeSelected}"
                    partialSubmit="true"
+                   immediate="true"
+                   onclick="setHiddenField(this);"
                    layout="pageDirection">
                     <f:selectItem id="dwnldFileTypeText"  itemLabel="#{bundleAnalysis['dwnld.fileType.text']}" itemValue="#{AnalysisPage.dwnldFileTypeItems[0]}"/>
                     <f:selectItem id="dwnldFileTypeRdata" itemLabel="#{bundleAnalysis['dwnld.fileType.Rdata']}" itemValue="#{AnalysisPage.dwnldFileTypeItems[1]}"/>
                     <f:selectItem id="dwnldFileTypeSplus" itemLabel="#{bundleAnalysis['dwnld.fileType.Splus']}" itemValue="#{AnalysisPage.dwnldFileTypeItems[2]}"/>
                     <f:selectItem id="dwnldFileTypeStata" itemLabel="#{bundleAnalysis['dwnld.fileType.stata']}" itemValue="#{AnalysisPage.dwnldFileTypeItems[3]}"/>
                 </ice:selectOneRadio>
-
+                        <!--  binding="#{AnalysisPage.hiddenSelectedFileType}" -->
+                        <ice:inputHidden id="hiddenDataDownload"
+                                         binding="#{AnalysisPage.hiddenSelectedFileType}"
+                                         value="#{AnalysisPage.dwnldFileTypeSelected}"
+                                         valueChangeListener="#{AnalysisPage.processDwnldFileType}"/>
                 <!-- message block submit button -->
                 <ice:panelGrid
                     id="dwnldButtonArea">
@@ -270,10 +274,10 @@
                     <br />
 
                     <ice:commandButton id="dwnldBttn"
-                        binding="#{AnalysisPage.dwnldButton}" 
-                        type="submit" 
-                        disabled="true" 
+                        binding="#{AnalysisPage.dwnldButton}"
+                        disabled="true"
                         onclick="disableThis(this);"
+                        type="submit" 
                         style="margin-top:10px"
                         value="#{bundleAnalysis['dwnld.button.submit']}" 
                         action="#{AnalysisPage.dwnldAction}" >
@@ -286,7 +290,6 @@
                     value="Download Replication-ZIP File" 
                     fileName="#{AnalysisPage.zipFileName}" 
                     type="button" 
-                    
                     shared="false"/>
                 </ice:panelGrid>
                     </ice:column>
@@ -1465,6 +1468,26 @@ function shwNshwTxt(id) {
 // disable this element onclick
 function disableThis(el) {
     el.disabled = "disabled";
+}
+
+//This method resets the hidden field values to address a fix
+// made for Opera where the value change event was not being
+// fired by the radio buttons under specific conditions
+var originalSelection = "";
+function setHiddenField(obj) {
+    selections = document.getElementById(obj.id).getElementsByTagName("INPUT");
+    for (var i = 0; selections[i]; i++) {
+        if (selections[i].checked == true && selections[i].value != originalSelection) {
+            originalSelection = selections[i];
+            document.getElementById('form1:tabSet1:0:hiddenDataDownload').value=selections[i].value;
+            break;
+        } 
+    }
+    for (var i = 0; selections[i]; i++) {
+        if (selections[i].value != originalSelection) {
+            selections[i].checked = false;
+        }
+    }
 }
 
 

@@ -55,33 +55,26 @@ import javax.faces.event.*;
 import javax.faces.context.*;
 import javax.faces.FacesException;
 import javax.faces.model.SelectItem;
-import javax.faces.model.SelectItemGroup;
 import javax.faces.render.ResponseStateManager;
 
 // new VDCRequestBean VDCRequestBean
 import javax.ejb.EJB;
 
-import edu.harvard.hmdc.vdcnet.study.DataTable;
 import edu.harvard.hmdc.vdcnet.study.VariableServiceLocal;
 import edu.harvard.hmdc.vdcnet.study.DataVariable;
 import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.study.SummaryStatistic;
-import edu.harvard.hmdc.vdcnet.study.SummaryStatisticType;
 import edu.harvard.hmdc.vdcnet.study.VariableCategory;
 import edu.harvard.hmdc.vdcnet.study.StudyFile;
 
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
-import edu.harvard.hmdc.vdcnet.web.study.StudyUI;
-import edu.harvard.hmdc.vdcnet.admin.DVNVersion;
 import edu.harvard.hmdc.vdcnet.admin.DVNVersionServiceLocal;
 
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
-import edu.harvard.hmdc.vdcnet.admin.GroupServiceLocal;
 
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
 
-import edu.harvard.hmdc.vdcnet.dsb.DSBWrapper;
 
 import edu.harvard.hmdc.vdcnet.dsb.*;
 import edu.harvard.hmdc.vdcnet.dsb.impl.*;
@@ -95,7 +88,6 @@ import java.util.zip.*;
 
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.builder.*;
 
 import com.icesoft.faces.component.paneltabset.*;
 import com.icesoft.faces.context.ByteArrayResource;
@@ -969,6 +961,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         if (vce.getOldValue() == null){
             dbgLog.fine("old value is null and this must be the initial case");
         } else {
+            dwnldFileTypeSelected = (String)vce.getNewValue();
             if (vce.getNewValue().equals(vce.getOldValue())){
                 dbgLog.fine("new value is the same as before");
             } else {
@@ -979,6 +972,30 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         }
         dbgLog.fine("***** within processDwnldFileType: end *****");
     }
+
+    //TODO: hiddenSelectedFileType -- debug
+    protected HtmlInputHidden hiddenSelectedFileType;
+
+    /**
+     * Get the value of hiddenSelectedFileType
+     *
+     * @return the value of hiddenSelectedFileType
+     */
+    public HtmlInputHidden getHiddenSelectedFileType() {
+        return hiddenSelectedFileType;
+    }
+
+    /**
+     * Set the value of hiddenSelectedFileType
+     *
+     * @param hiddenSelectedFileType new value of hiddenSelectedFileType
+     */
+    public void setHiddenSelectedFileType(HtmlInputHidden hiddenSelectedFileType) {
+        this.hiddenSelectedFileType = hiddenSelectedFileType;
+    }
+
+
+    // END TODO
     
     // end of download section -----------------------------------------------
     // </editor-fold>

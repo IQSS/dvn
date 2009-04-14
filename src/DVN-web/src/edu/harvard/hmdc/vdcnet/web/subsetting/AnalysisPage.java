@@ -2585,7 +2585,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             // .getSessionMap().put("recodeVariableLabel",recodeVariableLabel);
             //
 
-            FacesContext.getCurrentInstance().renderResponse();
+            //FacesContext.getCurrentInstance().renderResponse();
 
         } else {
             dbgLog.fine("value-label table of this var [" + newVarId
@@ -2635,7 +2635,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 recodeTargetVarName.setValue((String) rvs.get(0));
                 recodeTargetVarLabel.setValue((String) rvs.get(1));
 
-                FacesContext.getCurrentInstance().renderResponse();
+                //FacesContext.getCurrentInstance().renderResponse();
 
             } else {
                 dbgLog.fine("value-label table of this var [" + newVarId
@@ -3784,6 +3784,19 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         gridPanelModelInfoBoxRendered = rndrd;
     }
     private String modelSelectionInstruction = "Choose a Statistical Model";
+
+    // storage for dropdown1 value
+    private String advModelDropdownValue = modelSelectionInstruction;
+
+    public String getAdvModelDropdownValue() {
+        return advModelDropdownValue;
+    }
+
+    public void setAdvModelDropdownValue(String advModelDropdownValue) {
+        this.advModelDropdownValue = advModelDropdownValue;
+
+    }
+    
     // dropDown1: @valueChangeListener
     public void dropDown1_processValueChange(ValueChangeEvent vce) {
         dbgLog.fine("\n\n***** dropDown1_processValueChange:start *****");        
@@ -3947,7 +3960,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             .getSessionMap().put("groupPanel8belowRendered", 
             groupPanel8belowRendered);
         dbgLog.fine("groupPanel8belowRendered=" + groupPanel8belowRendered);
-        cntxt.renderResponse();
+        //cntxt.renderResponse();
         dbgLog.fine("***** dropDown1_processValueChange:end *****\n");
     }
 
@@ -5162,7 +5175,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             dbgLog.fine("groupPanelSimTypeChoice(rendered?)="+groupPanelSimTypeChoice.isRendered());
         }
 
-        FacesContext.getCurrentInstance().renderResponse();
+        //FacesContext.getCurrentInstance().renderResponse();
         dbgLog.fine("***** showHideSimulationsOptPanel: ends here *****");
     }
 
@@ -5264,7 +5277,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             groupPanelSimNonDefault.setRendered(false);
         }
         
-        cntxt.renderResponse();
+        //cntxt.renderResponse();
         dbgLog.fine("***** within showHideSimCndtnOptPanel(): ends here *****");
     }
 
@@ -6555,7 +6568,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         data.setRows(newNoRows);
         dbgLog.fine("first row to be shown=" + data.getFirst());
         dbgLog.fine("current Row Index(2)=" + data.getRowIndex());
-        FacesContext.getCurrentInstance().renderResponse();
+        //FacesContext.getCurrentInstance().renderResponse();
         howManyVarsChecked();
         FacesContext.getCurrentInstance().getExternalContext()
             .getSessionMap().put("selectedNoRows", selectedNoRows);
@@ -7185,7 +7198,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         "Check "+tmpDataLine.get(3)+" again <br />"+
                         "and remove its recoded variable(s) first.");
                         
-                FacesContext.getCurrentInstance().renderResponse();
+                //FacesContext.getCurrentInstance().renderResponse();
                 
             } else {
                 tmpDataLine.set(0, currentState);
@@ -7221,7 +7234,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 if (checkboxSelectUnselectAll.isSelected()){
                     checkboxSelectUnselectAll.setSelected(false);
                     checkboxSelectUnselectAllSelected=false;
-                    FacesContext.getCurrentInstance().renderResponse();
+                    //FacesContext.getCurrentInstance().renderResponse();
                     dbgLog.fine("checkboxSelectUnselectAll(a)="+
                     checkboxSelectUnselectAll.isSelected());
                 }

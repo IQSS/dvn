@@ -49,10 +49,6 @@ public class MainLayoutBean implements java.io.Serializable  {
     private String googleAnalyticsSourceCode;
     private String googleAnalyticsKey;
 
-    public String getBaseUrl() {
-        String hostUrl = PropertyUtil.getHostUrl();
-        return "http://" + hostUrl + "/dvn";
-     }
 
      /**
      * Getter for property googleAnalyticsCode.

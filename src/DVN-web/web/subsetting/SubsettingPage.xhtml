@@ -730,7 +730,8 @@
                         columns="1" >
 
                         <ice:selectOneMenu id="dropDown1"
-                            binding="#{AnalysisPage.dropDown1}"  
+                            binding="#{AnalysisPage.dropDown1}"
+                            value="#{AnalysisPage.advModelDropdownValue}"
                             valueChangeListener="#{AnalysisPage.dropDown1_processValueChange}"
                             immediate="true"
                             partialSubmit="true">

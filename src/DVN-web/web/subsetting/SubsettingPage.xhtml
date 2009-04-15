@@ -1196,14 +1196,11 @@
                 </ice:panelGrid>
             </ice:panelGrid>
             <!-- data table -->
-            <ice:panelGrid id="pgDataTable" styleClass="pgDataTable" style="width: 100%;">
-              <style type="text/css">
-                  .pgDataTable {border-collapse: collapse;}
-                  .pgDataTable td.pgDataTableCol1 {padding: 0;}
-              </style>
+            <ice:panelGrid id="pgDataTable" styleClass="pgDataTable">
               <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="2" id="gridPanel22"
                                              style="width: 100%; margin-top: 1em;"
-                                             styleClass="dvnManageTableTop" columnClasses="dvnManageTableTotals, dvnPaginatorWrap">
+                                             styleClass="dvnManageTableTop" columnClasses="dvnManageTableTotals, dvnPaginatorWrap"
+                                             rendered="#{!empty(AnalysisPage.dataScroller1)}">
                 <div jsfc="ice:panelGroup" id="groupPanel55">
                   &nbsp;
                 </div>
@@ -1240,6 +1237,7 @@
                    var="currentRow"
                    value="#{AnalysisPage.dt4Display}"
                    rows="10"
+                   headerClasses="vdcVariablesColHdr1, vdcVariablesColHdr2, vdcVariablesColHdr3, vdcVariablesColHdr4, vdcVariablesColHdr5, vdcVariablesColHdr6"
                    columnClasses="vdcVariablesCol1, vdcVariablesCol2, vdcVariablesCol3, vdcVariablesCol4, vdcVariablesCol5, vdcVariablesCol6"
                    title="Variable Information"
                    rowClasses="list-row-odd, list-row-even"

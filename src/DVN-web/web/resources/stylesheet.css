@@ -1609,6 +1609,10 @@ span.dvnAddClassificationDvReleased {}
 
 /* Analysis Page Style Rules
 */
+.pgDataTable {border-collapse: collapse; width: 100%;}
+.pgDataTable td.pgDataTableCol1 {padding: 0;}
+.pgDataTable .dvnPaginatorWrap {padding: .25em 0;}
+
 .vdcVariablesCol1{
 /*   width: 24px;*/
    padding-left: 2px;
@@ -1620,9 +1624,13 @@ span.dvnAddClassificationDvReleased {}
 /*   width: 100px*/
 }
 .vdcVariablesCol3{
-   padding-left: 2px;
+/* padding-left: 2px;
    padding-right: 2px;
-/*   width: 50px*/
+   width: 50px*/
+   display: none;
+}
+.vdcVariablesColHdr3{
+   display: none;
 }
 .vdcVariablesCol4{
    padding-left: 2px;

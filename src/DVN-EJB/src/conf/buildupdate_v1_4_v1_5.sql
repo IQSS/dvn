@@ -23,6 +23,7 @@ update pagedef set networkrole_id = 2 where name =  'AddClassificationsPage';
 update pagedef set networkrole_id = 2 where name =  'ManageClassificationsPage';
 update pagedef set networkrole_id = 2 where name =  'ManageDataversesPage';
 
+DELETE FROM pagedef where name = 'EditNetworkNamePage';
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditNetworkNamePage', '/networkAdmin/EditNetworkNamePage.xhtml', null,2 );
 
 -- remove date of deposit from templates

@@ -62,7 +62,7 @@
                     if ((displayRootNode.style.display == "none") ||
                         (displayRootNode.style.display == "")){
                         // show the cell
-                        displayRootNode.style.display = "inline";
+                        displayRootNode.style.display = "block";
                         // attache the table if not attached
                         //alert("show case");
                         if (!isQStableAttached(rowId)){
@@ -74,7 +74,7 @@
                             qsString = qsString + ampVId + rowId;
                             sendRequest(qsString, processQSrequest);
                         }
-                    } else if (displayRootNode.style.display == "inline"){
+                    } else if (displayRootNode.style.display == "block"){
                         // hide the cell
                         //alert("hide case");
                         displayRootNode.style.display = "none";
@@ -317,7 +317,7 @@
 <ice:panelTab
     id="tabRecode"
     label="#{bundleAnalysis['recode.tab.text']}"
-    title="Rocoding and Case Selection">
+    title="Recoding and Case Selection">
     <ice:panelGrid id="layoutPanel2"
         columns="1"
         style="width: 100%;">
@@ -1199,10 +1199,9 @@
             <ice:panelGrid id="pgDataTable" styleClass="pgDataTable">
               <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="2" id="gridPanel22"
                                              style="width: 100%; margin-top: 1em;"
-                                             styleClass="dvnManageTableTop" columnClasses="dvnManageTableTotals, dvnPaginatorWrap"
-                                             rendered="#{!empty(AnalysisPage.dataScroller1)}">
+                                             styleClass="dvnManageTableTop" columnClasses="dvnManageTableTotals, dvnPaginatorWrap">
                 <div jsfc="ice:panelGroup" id="groupPanel55">
-                  &nbsp;
+                  <span class="dvnVariableInfoTableHdr">Variable Information Table</span>
                 </div>
                 <div jsfc="ice:panelGroup" styleClass="dvnPaginatorWrap">
                   <ice:dataPaginator id="dataScroller1" styleClass="dvnPaginatorRight"
@@ -1270,7 +1269,7 @@
                   </ice:column>
                   <ice:column id="column3">
                       <f:facet name="header">
-                          <ice:outputText  id="outputText8"
+                          <ice:outputText id="outputText8"
                               value="#{bundleAnalysis['varTable.colHdr.Id']}" style="visibility:hidden;"/>
                       </f:facet>
                       <ice:outputText id="outputText7"
@@ -1278,7 +1277,7 @@
                   </ice:column>
                   <ice:column id="column4">
                       <f:facet name="header">
-                          <ice:outputText  id="outputText10"
+                          <ice:outputText id="outputText10"
                               value="#{bundleAnalysis['varTable.colHdr.varName']}"/>
                       </f:facet>
                       <ice:outputText id="outputText9"
@@ -1286,7 +1285,7 @@
                   </ice:column>
                   <ice:column id="column5">
                       <f:facet name="header">
-                          <ice:outputText  id="outputText12"
+                          <ice:outputText id="outputText12"
                               value="#{bundleAnalysis['varTable.colHdr.varLabel']}"/>
                       </f:facet>
                       <ice:outputText id="outputText11"
@@ -1303,9 +1302,9 @@
                           alt="Click to show descriptive statistics"
                           title="Click to show/hide descriptive statistics"
                           image="/resources/icon_variables.gif"
-                          type="submit" />
+                          type="submit"/>
                       <ice:outputText id="varSummaryTable"
-                          escape="false" value="#{currentRow[5]}"  />
+                          escape="false" value="#{currentRow[5]}"/>
                   </ice:column>
               </ice:dataTable>
 
@@ -1315,24 +1314,26 @@
 
 <!-- old scroller was here as a footer -->
             </ice:panelGrid><!-- panelGrid pgDataTable -->
-            <ice:panelGrid id="belowDT">
+            <ice:panelGrid id="belowDT" styleClass="vdcListRecodeVarTable"
+                           columns="1" cellpadding="0" cellspacing="0">
                 
-                <ice:panelGrid id="pgRecodedVarTable"
+                <ice:panelGrid id="pgRecodedVarTable" styleClass="dvnFormPaddingTop"
                     binding="#{AnalysisPage.pgRecodedVarTable}"
-                    columns="1"
+                    columns="1" cellpadding="0" cellspacing="0"
                     rendered="false">
                     
-                    <ice:outputText id="recodedVarTableTitle" 
+                    <ice:outputText id="recodedVarTableTitle"
                         binding="#{AnalysisPage.recodedVarTableTitle}"
                         value="#{bundleAnalysis['recodedVarTable.title']}"/>
                         
-<ice:dataTable id="recodedVarTable"
+<ice:dataTable id="recodedVarTable" styleClass="recodedVarTable"
     binding="#{AnalysisPage.recodedVarTable}" 
     var="rcw"
     value="#{AnalysisPage.recodedVarSet}"
     headerClass="list-header"  
     rowClasses="list-row-odd,list-row-even"
-    columnClasses="vdcVariablesCol3, vdcVariablesCol4, vdcVariablesCol5, vdcVariablesCol2">
+    columnClasses="vdcRecodeVariablesCol0, vdcRecodeVariablesCol1, vdcRecodeVariablesCol2, vdcRecodeVariablesCol3, vdcRecodeVariablesCol4"
+    headerClasses="vdcRecodeVariablesColHdr0, vdcRecodeVariablesColHdr1, vdcRecodeVariablesColHdr2, vdcRecodeVariablesColHdr3, vdcRecodeVariablesColHdr4">
 
     <!-- chekcbox: remove --><!---->
     <ice:column id="RVTcolumn0">
@@ -1340,7 +1341,6 @@
             <ice:outputText id="RVThdr0" 
                 value="#{bundleAnalysis['recodedVarTable.colHdr.remove']}"/>
         </f:facet>
-
 
         <ice:commandLink id="removeRecodedVariable"
             actionListener="#{AnalysisPage.removeRecodedVariable}"
@@ -1350,7 +1350,6 @@
             <ice:outputText 
                 value="#{bundleAnalysis['recodedVarTable.hyperLink.title.remove']}"/>
         </ice:commandLink>
-
     </ice:column>
 
     <!-- variable name --><!---->
@@ -1385,11 +1384,10 @@
             immediate="true" 
             title="#{bundleAnalysis['recodedVarTable.hyperLink.title.modify']}" 
             toolTip="#{bundleAnalysis['recodedVarTable.tooltip.modify']}"
-            visible="false"/> 
-
+            visible="false"/>
     </ice:column>
     <!-- variable Id  --><!---->
-    <ice:column id="RVTcolumn4" >
+    <ice:column id="RVTcolumn4">
         <f:facet name="header">
             <ice:outputText id="RVThdr4" 
                 value=""/>
@@ -1403,14 +1401,11 @@
                 </ice:panelGrid>
             </ice:panelGrid>
             
-            
-            
         </div>
     </div>
         
     </ice:form>
 <!-- hr / -->
-
        
     <script type="text/javascript">
       //<![CDATA[
@@ -1496,7 +1491,6 @@ function setHiddenField(obj) {
 <input type="button" id="monitorBttn" style="display:none" value="show monitor block" onclick="shwNshwLnk('monitorBlock', 'monitorBttn', 'monitor block');"/>
 <div id="monitorBlock" style="display:none">
 </div>
-
 
 <!-- to be renamed to subview -->
 </gui:define>

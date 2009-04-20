@@ -370,10 +370,10 @@
                 columns="1">
                 <!-- instruction lines-->
                 <ice:column>
-                    <ice:panelGroup id="groupPanelRecodeInstruction1"
+                    <ice:panelGrid id="groupPanelRecodeInstruction1"
                         binding="#{AnalysisPage.groupPanelRecodeInstruction1}"
                         rendered="true"
-                        layout="block">
+                        columns="1">
                         <ice:panelGroup styleClass="vdcHelpText">
                             <ice:graphicImage
                                 alt="Information"
@@ -382,7 +382,7 @@
                             <ice:outputText id="outputText491"
                                 value="#{bundleAnalysis['recode.instruction.line1']}"/>
                         </ice:panelGroup>
-                    </ice:panelGroup>
+                    </ice:panelGrid>
 
                 <ice:panelGrid id="groupPanelRecodeInstruction2" 
                     binding="#{AnalysisPage.groupPanelRecodeInstruction2}"
@@ -459,7 +459,7 @@
                     </ice:panelGrid>
                     <!-- end of variable name/label boxes-->
                     <!-- help pane -->
-                    <ice:panelGroup id="recodeTableHelpPanel"
+                    <ice:panelGrid id="recodeTableHelpPanel" columns="1"
                         binding="#{AnalysisPage.groupPanelRecodeTableHelp}">
                         
                             <ice:panelGroup styleClass="vdcHelpText">
@@ -519,7 +519,7 @@
                                                     value="#{bundleAnalysis['recode.howToEnterCondition.details']}"/>
                                 </div>
                             </ice:panelGroup>
-                    </ice:panelGroup>
+                    </ice:panelGrid>
                     <!-- end of help panel -->
                     <!-- recoding table panel -->
                     <ice:dataTable id="recodeTable" 
@@ -739,7 +739,8 @@
                                 value="#{AnalysisApplicationBean.modelMenuOptions}"/>
                         </ice:selectOneMenu>
 
-                        <ice:panelGroup id="modelInfoBox" styleClass="vdcHelpText"
+                        <ice:panelGrid id="modelInfoBox" styleClass="vdcHelpText"
+                             columns="1"
                              binding="#{AnalysisPage.gridPanelModelInfoBox}"
                              rendered="#{AnalysisPage.gridPanelModelInfoBoxRendered}">
                             <ice:graphicImage 
@@ -753,7 +754,7 @@
                                 <ice:outputText 
                                     value="#{bundleAnalysis['advStat.model.helpInfo.header']}"/>                       
                             </ice:outputLink>
-                        </ice:panelGroup>
+                        </ice:panelGrid>
                     </ice:panelGrid><!-- end: gridPanel8above -->
 
                     <ice:panelGroup id="groupPanel8below" 

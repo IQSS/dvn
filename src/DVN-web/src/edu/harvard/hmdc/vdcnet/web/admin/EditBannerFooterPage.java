@@ -25,13 +25,16 @@
  */
 package edu.harvard.hmdc.vdcnet.web.admin;
 
-import edu.harvard.hmdc.vdcnet.util.ExceptionMessageWriter;
+import com.icesoft.faces.component.ext.HtmlInputHidden;
+import com.icesoft.faces.component.ext.HtmlInputTextarea;
 import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetwork;
 import edu.harvard.hmdc.vdcnet.vdc.VDCNetworkServiceLocal;
 import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
 import edu.harvard.hmdc.vdcnet.web.common.VDCBaseBean;
 import javax.ejb.EJB;
+import javax.faces.context.FacesContext;
+import javax.faces.event.ValueChangeEvent;
 
 /**
  * <p>Page bean that corresponds to a similarly named JSP page.  This
@@ -58,6 +61,7 @@ public class EditBannerFooterPage extends VDCBaseBean  implements java.io.Serial
             setBanner( (getVDCRequestBean().getCurrentVDCId() == null) ? getVDCRequestBean().getVdcNetwork().getNetworkPageHeader(): getVDCRequestBean().getCurrentVDC().getHeader());
             setFooter( (getVDCRequestBean().getCurrentVDCId() == null) ? getVDCRequestBean().getVdcNetwork().getNetworkPageFooter(): getVDCRequestBean().getCurrentVDC().getFooter());
         }
+        combinedTextField.setValue(banner + footer);
     }
     
     
@@ -183,5 +187,67 @@ public class EditBannerFooterPage extends VDCBaseBean  implements java.io.Serial
             return "cancelVDC";
         }
     }
+
+    protected HtmlInputTextarea bannerTextField = new HtmlInputTextarea();
+
+    /**
+     * Get the value of bannerTextField
+     *
+     * @return the value of bannerTextField
+     */
+    public HtmlInputTextarea getBannerTextField() {
+        return bannerTextField;
+    }
+
+    /**
+     * Set the value of bannerTextField
+     *
+     * @param bannerTextField new value of bannerTextField
+     */
+    public void setBannerTextField(HtmlInputTextarea bannerTextField) {
+        this.bannerTextField = bannerTextField;
+    }
+
+    protected HtmlInputTextarea footerTextField = new HtmlInputTextarea();
+
+    /**
+     * Get the value of footerTextarea
+     *
+     * @return the value of footerTextarea
+     */
+    public HtmlInputTextarea getFooterTextField() {
+        return footerTextField;
+    }
+
+    /**
+     * Set the value of footerTextarea
+     *
+     * @param footerTextarea new value of footerTextarea
+     */
+    public void setFooterTextField(HtmlInputTextarea footerTextField) {
+        this.footerTextField = footerTextField;
+    }
+
+    protected HtmlInputHidden combinedTextField = new HtmlInputHidden();
+
+    /**
+     * Get the value of inputHidden
+     *
+     * @return the value of inputHidden
+     */
+    public HtmlInputHidden getCombinedTextField() {
+       
+        return combinedTextField;
+    }
+
+    /**
+     * Set the value of inputHidden
+     *
+     * @param inputHidden new value of inputHidden
+     */
+    public void setCombinedTextField(HtmlInputHidden combinedTextField) {
+        this.combinedTextField = combinedTextField;
+    }
+
 }
 

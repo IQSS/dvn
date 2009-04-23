@@ -29,9 +29,9 @@
 
 package edu.harvard.hmdc.vdcnet.util;
 
+import com.icesoft.faces.component.ext.HtmlInputTextarea;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.util.regex.Pattern;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
@@ -40,22 +40,12 @@ import javax.faces.validator.Validator;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 /**
  *
  * @author wbossons
  */
 public class XhtmlValidator implements Validator, java.io.Serializable  {
     private static String msg = new String();
-
-    public String partOneClientId = new String("editBannerFooterForm:banner");
-    public String partTwoClientId = new String("editBannerFooterForm:footer");
-    
-    private static String partOneString = new String("");
-    private static String partTwoString = new String("");
-    private boolean isCombinedString    = false;
     
     /** Creates a new instance of XhtmlValidator */
     public XhtmlValidator() {
@@ -64,28 +54,16 @@ public class XhtmlValidator implements Validator, java.io.Serializable  {
     public void validate(FacesContext context, UIComponent component, 
                             Object value) {
         String htmlString = new String("");
-        if ( component.getClientId(context).equals(partOneClientId) || component.getClientId(context).equals(partTwoClientId) ) {
-            htmlString = getHeaderString(context, component, value);
-            if (htmlString.equals(""))
-                return;
-        } else {
-            if (value != null)
+        if (value != null)
             htmlString = (String) value;
-        }
-        if (htmlString.equals("") || value == null) 
+        else
             return;
-            
         try {
             if ( isStructuralTag(htmlString) || (htmlString.indexOf("<") != -1 && !validateXhtml(htmlString)) ) {
                 FacesMessage message = new FacesMessage(msg);
                 message.setSeverity(FacesMessage.SEVERITY_ERROR);
                 ((UIInput)component).setValid(false);
-                if (isCombinedString) {
-                    context.addMessage("editBannerFooterForm:combined", message);
-                    isCombinedString = false;
-                } else {
-                    context.addMessage(component.getClientId(context), message);
-                }
+                context.addMessage(component.getClientId(context), message);
                 context.renderResponse();
             }
         } catch (Exception e) {
@@ -93,7 +71,7 @@ public class XhtmlValidator implements Validator, java.io.Serializable  {
         } 
     }
     
-    private static boolean validateXhtml (String htmlString)
+    public static boolean validateXhtml (String htmlString)
         throws javax.xml.parsers.ParserConfigurationException, java.io.UnsupportedEncodingException, 
             org.xml.sax.SAXException, java.io.IOException {
       boolean isValidXhtml = true;
@@ -114,15 +92,15 @@ public class XhtmlValidator implements Validator, java.io.Serializable  {
       } catch (org.xml.sax.SAXException se) {
           String cause = new String();
           if (se.toString().indexOf("element type \"validate\" must be terminated") != -1)
-              cause = "Found a closing html tag (ex. </tagname...) without a starting html tag (ex. <tagname...).";
+              cause = "Found a closing html tag (ex. &lt;/tagname...) without a starting html tag (ex. &lt;tagname...).";
           else if (se.toString().indexOf("element type \"br\" must be terminated") != -1)
-              cause = "Please check that all \"br\" tags are formatted properly. Change all \"<br>\" to  \"<br />\".";
+              cause = "Please check that all \"br\" tags are formatted properly. Change all \"<br>\" to  \"&lt;br /&gt;\".";
           else if (se.toString().indexOf("element type \"image\" must be terminated") != -1)
-              cause = "Please check that all \"img\" tags are formatted properly. Make sure that the end of the tag is closed: \"<img />\".";    
+              cause = "Please check that all \"img\" tags are formatted properly. Make sure that the end of the tag is closed: \"&lt;img /&gt;\".";
           else if (se.toString().indexOf("The entity name must immediately follow the '&' in the entity") !=-1)
               cause = "Please check that all \"&\" tags are properly escaped. Change \"&\" to \"&amp;\".";  
           else
-              cause = se.toString().substring(se.toString().indexOf(":")+1, se.toString().length());
+              cause = se.toString().substring(se.toString().indexOf(":")+1, se.toString().length()) + "&#160;&#160;It's possible the end tag is missing, or the markup is unbalanced.";
           System.out.println( "HTML Error . . . " + cause);
           msg = "HTML Error . . . " + cause;
           isValidXhtml = false;
@@ -142,27 +120,5 @@ public class XhtmlValidator implements Validator, java.io.Serializable  {
             isStructuralTag = true;
         }
         return isStructuralTag;
-    }
-    
-    /**
-     *
-     * fix for banner/footer needed to validate as one
-     * 
-     * @author Wendy Bossons
-     *
-     */
-    private String getHeaderString(FacesContext context, UIComponent component, Object value) {
-        String htmlString = new String("");
-        if (component.getClientId(context).equals(partOneClientId)) {
-            partOneString = (String) value;
-        }
-        if (component.getClientId(context).equals(partTwoClientId)) {
-            partTwoString = (String) value;
-        }
-        if (!partOneString.equals("") && !partTwoString.equals("")) {
-            htmlString = partOneString + partTwoString;
-            isCombinedString = true;
-        }
-        return htmlString;
     }
 }

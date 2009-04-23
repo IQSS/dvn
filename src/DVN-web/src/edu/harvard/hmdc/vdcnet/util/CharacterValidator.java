@@ -74,7 +74,7 @@ public class CharacterValidator implements Validator, java.io.Serializable  {
                 Matcher matcher          = pattern.matcher(characterString);
                 isInvalidChars             = matcher.find();
                 if (isInvalidChars)
-                    msg = "Found an illegal character(s) starting with:  " + characterString.charAt(matcher.start()) + "The match was found at position " + (matcher.start()+1);
+                    msg = "Found an illegal character(s) starting with:  " + characterString.charAt(matcher.start()) + "The match was found at position " + (matcher.start()+1) + ".";
         } catch (Exception e) {
             throw new FacesException(e);
         } finally {

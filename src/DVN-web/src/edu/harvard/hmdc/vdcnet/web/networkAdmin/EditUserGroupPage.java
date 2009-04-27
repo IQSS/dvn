@@ -299,18 +299,27 @@ public class EditUserGroupPage extends VDCBaseBean implements java.io.Serializab
             if (dataTable== this.dataTableIpAddresses) {
                 LoginDomain loginDomain = new LoginDomain();
                 loginDomain.setUserGroup(group);
+                loginDomain.setIpAddress(""); 
                 group.getLoginDomains().add(loginDomain);
             }
         }
         
-       
         public void removeIpRow(ActionEvent ae) {
             HtmlDataTable dataTable = (HtmlDataTable)ae.getComponent().getParent().getParent();
-            if (dataTable== this.dataTableIpAddresses) {
+            if (dataTable == this.dataTableIpAddresses) {
                 // we are removing a row from ipaddress list
-                if (dataTable.getRowCount()>1) {
-                    List data = (List)dataTable.getValue();
-                    this.editUserGroupService.removeCollectionElement(data,dataTable.getRowData());
+                if (dataTable.getRowCount() > 1) {
+                    List data         = (List)dataTable.getValue();
+                    Iterator iterator = this.group.getLoginDomains().iterator();
+                    String ipaddress  = ((LoginDomain)dataTable.getRowData()).getIpAddress();
+                    while (iterator.hasNext()) {
+                        LoginDomain logindomain = (LoginDomain)iterator.next();
+                        if (logindomain.getIpAddress().equals(ipaddress)) {
+                            this.editUserGroupService.removeCollectionElement(this.group.getLoginDomains(), logindomain);
+                            dataTable.setValue(this.group.getLoginDomains());
+                            break;
+                        }
+                    }
                 } else {
                     LoginDomain loginDomain = (LoginDomain)dataTable.getRowData();
                     loginDomain.setIpAddress("");
@@ -557,7 +566,17 @@ public class EditUserGroupPage extends VDCBaseBean implements java.io.Serializab
         public void removeAffiliateRow(ActionEvent ae) {
             if (affiliatesTable.getRowCount() > 1) {
                 List data = (List)affiliatesTable.getValue();
-                this.editUserGroupService.removeCollectionElement(data, affiliatesTable.getRowData());
+                Iterator iterator = this.group.getLoginAffiliates().iterator();
+                String affiliatename = ((LoginAffiliate)affiliatesTable.getRowData()).getName();
+                String affiliateurl = ((LoginAffiliate)affiliatesTable.getRowData()).getUrl();
+                while (iterator.hasNext()) {
+                    LoginAffiliate loginaffiliate = (LoginAffiliate)iterator.next();
+                    if (loginaffiliate.getName().equals(affiliatename) && loginaffiliate.getUrl().equals(affiliateurl)) {
+                        this.editUserGroupService.removeCollectionElement(this.group.getLoginAffiliates(), loginaffiliate);
+                        affiliatesTable.setValue(this.group.getLoginAffiliates());
+                        break;
+                    }
+                }
             } else {
                 LoginAffiliate loginaffiliate = (LoginAffiliate)affiliatesTable.getRowData();
                 loginaffiliate.setName("");
@@ -648,5 +667,29 @@ public class EditUserGroupPage extends VDCBaseBean implements java.io.Serializab
                 context.addMessage(toValidate.getClientId(context), message);
             }
         }
+
+        public void changeAffiliateTable(ValueChangeEvent event) {
+            LoginAffiliate loginaffiliate = (LoginAffiliate)affiliatesTable.getRowData();
+            String elementName = (String)event.getComponent().getClientId(FacesContext.getCurrentInstance());
+            if (elementName.indexOf("affiliateName") != -1)
+                loginaffiliate.setName((String)event.getNewValue());
+            else
+                loginaffiliate.setUrl((String)event.getNewValue());
+            System.out.println("The origin of the event was the component " + event.getComponent().getClientId(FacesContext.getCurrentInstance()));
+            System.out.println("in the value change event . . . ");
+            System.out.println("The event to string value is " + event.getNewValue());
+        }
+
+        public void changeIpTable(ValueChangeEvent event) {
+            LoginDomain logindomain = (LoginDomain)this.dataTableIpAddresses.getRowData();
+            System.out.print(((LoginDomain)this.dataTableIpAddresses.getRowData()).getIpAddress());
+            logindomain.setIpAddress((String)event.getNewValue());
+            
+            System.out.println("The origin of the event was the component " + event.getComponent().getClientId(FacesContext.getCurrentInstance()));
+            System.out.println("in the value change event . . . ");
+            System.out.println("The event to string value is " + event.getNewValue());
+        }
+
+
 }
     

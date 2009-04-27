@@ -70,7 +70,11 @@
                   <ice:graphicImage value="/resources/icon_required.gif"/>
                 </div>
                 <div jsfc="ice:panelGroup">
-                  <ice:inputText id="inputFriendlyGroupName" size="40" value="#{EditUserGroupPage.group.friendlyName}" required="true" requiredMessage="This field is required." onkeypress="if (window.event) return processEvent('', 'form1:btnSave'); else return processEvent(event, 'form1:btnSave');"/>
+                  <ice:inputText id="inputFriendlyGroupName" 
+                                 size="40"
+                                 value="#{EditUserGroupPage.group.friendlyName}"
+                                 required="true" requiredMessage="This field is required."
+                                 onkeypress="if (window.event) return processEvent('', 'form1:btnSave'); else return processEvent(event, 'form1:btnSave');"/>
                   <ice:message styleClass="errorMessage" for="inputFriendlyGroupName"/>
                 </div>
               </ice:panelGrid>
@@ -117,10 +121,20 @@
                   <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" value="/resources/icon_info.gif"/>
                   <ice:outputText value="Enter IP addresses (192.168.2.1) and/or domain names (www.host.edu) in the field below. Wildcards are acceptable. Add/remove an entry by clicking the icons next to the username field."/>
                 </div>
-                <ice:dataTable styleClass="dvnFormDataTable" cellpadding="0" cellspacing="0"
-                               binding="#{EditUserGroupPage.dataTableIpAddresses}" var="currentIpRow" value="#{EditUserGroupPage.group.loginDomains}">
+                <ice:dataTable styleClass="dvnFormDataTable" 
+                               cellpadding="0"
+                               cellspacing="0"
+                               binding="#{EditUserGroupPage.dataTableIpAddresses}"
+                               immediate="true"
+                               partialSubmit="true"
+                               onblur="submit()"
+                               var="currentIpRow"
+                               value="#{EditUserGroupPage.group.loginDomains}">
                   <ice:column>
-                    <ice:inputText id="iptable" immediate="true" validator="#{EditUserGroupPage.validateLoginDomain}" value="#{currentIpRow.ipAddress}"/>
+                    <ice:inputText id="iptable"
+                                   validator="#{EditUserGroupPage.validateLoginDomain}"
+                                   value="#{currentIpRow.ipAddress}"
+                                   valueChangeListener="#{EditUserGroupPage.changeIpTable}"/>
                   </ice:column>
                   <ice:column>
                     <ice:commandButton image="/resources/icon_add.gif" actionListener="#{EditUserGroupPage.addIpRow}"/>
@@ -146,18 +160,28 @@
                 </ice:selectBooleanCheckbox>
                 <br/>
                 <ice:dataTable styleClass="dvnFormDataTable dvnFormPadding" 
-                               binding="#{EditUserGroupPage.affiliatesTable}" rendered="#{EditUserGroupPage.chkAffiliateLoginService}" value="#{EditUserGroupPage.group.loginAffiliates}" var="affiliate">
+                               binding="#{EditUserGroupPage.affiliatesTable}"
+                               immediate="true"
+                               partialSubmit="true"
+                               onblur="submit()"
+                               rendered="#{EditUserGroupPage.chkAffiliateLoginService}"
+                               value="#{EditUserGroupPage.group.loginAffiliates}"
+                               var="affiliate">
                   <ice:column>
                     <f:facet name="header">
                       <ice:outputText value="Affiliate Name"/>
                     </f:facet>
-                    <ice:inputText id="affiliateName" value="#{affiliate.name}" required="true"/>
+                    <ice:inputText id="affiliateName"
+                                   value="#{affiliate.name}"
+                                   valueChangeListener="#{EditUserGroupPage.changeAffiliateTable}"/>
                   </ice:column>
                   <ice:column>
                     <f:facet name="header">
                       <ice:outputText value="Affiliate URL"/>
                     </f:facet>
-                    <ice:inputText id="affiliateURL" value="#{affiliate.url}" required="true"/>
+                    <ice:inputText id="affiliateURL"
+                                   value="#{affiliate.url}"
+                                   valueChangeListener="#{EditUserGroupPage.changeAffiliateTable}"/>
                   </ice:column>
                   <ice:column>
                     <ice:commandButton image="/resources/icon_add.gif" actionListener="#{EditUserGroupPage.addAffiliateRow}"/>

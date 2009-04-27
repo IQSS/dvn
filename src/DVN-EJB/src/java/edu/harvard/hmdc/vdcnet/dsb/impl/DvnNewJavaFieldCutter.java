@@ -162,8 +162,7 @@ public class DvnNewJavaFieldCutter {
                 if (k == 0) {
                     k = noCardsPerCase;
                 }
-                out
-                    .println("***** " +lc+ "-th line, recod k=" + k + " *****");
+                //out.println("***** " +lc+ "-th line, recod k=" + k + " *****");
                 byte[] line_read = new byte[OUT_LEN];
                 byte[] junk = new byte[REC_LEN];
                 byte[] line_final = new byte[OUT_LEN];

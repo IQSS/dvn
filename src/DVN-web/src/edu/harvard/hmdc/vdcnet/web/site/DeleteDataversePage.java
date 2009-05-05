@@ -76,7 +76,7 @@ public class DeleteDataversePage extends VDCBaseBean implements java.io.Serializ
      * <p>Construct a new Page bean instance.</p>
      */
     public DeleteDataversePage() {
-        System.out.println("-------------------------DeleteDataverse Constructor");
+   
         
     }
     /**

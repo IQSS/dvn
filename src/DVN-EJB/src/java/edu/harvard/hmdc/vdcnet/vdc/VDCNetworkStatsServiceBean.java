@@ -22,12 +22,14 @@ package edu.harvard.hmdc.vdcnet.vdc;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.Timeout;
+import javax.ejb.Timer;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -44,6 +46,18 @@ public class VDCNetworkStatsServiceBean implements VDCNetworkStatsServiceLocal {
     private static final String STATS_TIMER = "StatsTimer";
     private static final Logger logger = Logger.getLogger("edu.harvard.hmdc.vdcnet.index.VDCNetworkStatsServiceBean");
     public void createStatsTimer() {
+
+        // Clear dataverse timer, if one exists
+        for (Iterator it = timerService.getTimers().iterator(); it.hasNext();) {
+            Timer timer = (Timer) it.next();
+            if (timer.getInfo().equals(STATS_TIMER) ) {
+                    // Cancelling pre-existing timer
+                    timer.cancel();
+
+            }
+        }
+
+
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.MINUTE, 5);
      

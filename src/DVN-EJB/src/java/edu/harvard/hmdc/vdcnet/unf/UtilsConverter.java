@@ -12,7 +12,7 @@
  *   @author evillalon : Elena Villalon          
  *              
  */
-package edu.harvard.hmdc.vdcnet.util.unf;
+package edu.harvard.hmdc.vdcnet.unf;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

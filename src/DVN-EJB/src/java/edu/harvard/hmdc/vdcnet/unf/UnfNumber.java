@@ -19,7 +19,7 @@
  *
  *              
  */
-package edu.harvard.hmdc.vdcnet.util.unf;
+package edu.harvard.hmdc.vdcnet.unf;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;

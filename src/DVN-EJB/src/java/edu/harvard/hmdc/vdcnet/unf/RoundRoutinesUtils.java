@@ -2,7 +2,7 @@
  * Complements the class RounRoutines.java with some utility methods
  * @author evillalon@iq.harvard.edu
  */
-package  edu.harvard.hmdc.vdcnet.util.unf;
+package  edu.harvard.hmdc.vdcnet.unf;
 
 import java.util.Locale;
 import java.util.logging.Logger;

@@ -1,7 +1,7 @@
 /**
  * Exception class of type UNF
  */
-package  edu.harvard.hmdc.vdcnet.util.unf;
+package  edu.harvard.hmdc.vdcnet.unf;
 
 public class UnfException extends Exception{
 	/**

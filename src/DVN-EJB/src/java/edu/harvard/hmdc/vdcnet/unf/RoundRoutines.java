@@ -35,7 +35,7 @@
  * <a heref= email: evillalon@iq.harvard.edu/>
  *       
  */
-package edu.harvard.hmdc.vdcnet.util.unf;
+package edu.harvard.hmdc.vdcnet.unf;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;

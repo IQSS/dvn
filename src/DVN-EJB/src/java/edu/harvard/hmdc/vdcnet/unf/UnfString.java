@@ -18,7 +18,7 @@
  * ** default encoding to read the bytes is in UnfCons, UTF-8
  *              
  */
-package edu.harvard.hmdc.vdcnet.util.unf;
+package edu.harvard.hmdc.vdcnet.unf;
 
 
 import java.io.UnsupportedEncodingException;

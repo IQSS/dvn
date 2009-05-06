@@ -3,7 +3,7 @@
  * represents them as in Micah's code
  * @author evillalon
  */
-package edu.harvard.hmdc.vdcnet.util.unf;
+package edu.harvard.hmdc.vdcnet.unf;
 import java.util.*;
 import java.text.*;
 

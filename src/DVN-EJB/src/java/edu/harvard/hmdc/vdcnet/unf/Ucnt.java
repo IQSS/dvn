@@ -4,7 +4,7 @@
  *  email:evillalon@iq.harvard.edu
  *  
  */
-package  edu.harvard.hmdc.vdcnet.util.unf;
+package  edu.harvard.hmdc.vdcnet.unf;
 
 public enum Ucnt {
 	dot('\u002E'), //decimal separator "."

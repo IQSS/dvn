@@ -2,7 +2,7 @@
  * Description complements the methods in class UnfDigest
  * @author evillalon@iq.harvard.edu
  */
-package  edu.harvard.hmdc.vdcnet.util.unf;
+package  edu.harvard.hmdc.vdcnet.unf;
 
 import java.util.ArrayList;
 import java.util.Arrays;

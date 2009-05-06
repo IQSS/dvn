@@ -2,7 +2,7 @@
  * Global constants used in unf classes
  * 
  */
-package  edu.harvard.hmdc.vdcnet.util.unf;
+package  edu.harvard.hmdc.vdcnet.unf;
 
 import java.nio.ByteOrder;
 import java.util.logging.Logger;

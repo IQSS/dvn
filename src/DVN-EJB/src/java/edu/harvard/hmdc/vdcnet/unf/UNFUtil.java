@@ -14,7 +14,7 @@
  * @author evillalon@iq.harvard.edu               
  */
 
-package edu.harvard.hmdc.vdcnet.util.unf;
+package edu.harvard.hmdc.vdcnet.unf;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;

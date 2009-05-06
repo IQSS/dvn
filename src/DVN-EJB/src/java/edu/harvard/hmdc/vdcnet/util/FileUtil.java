@@ -29,8 +29,8 @@
 
 package edu.harvard.hmdc.vdcnet.util;
 
-import edu.harvard.hmdc.vdcnet.dsb.JhoveWrapper;
-import edu.harvard.hmdc.vdcnet.dsb.SubsettableFileChecker;
+import edu.harvard.hmdc.vdcnet.ingest.dsb.JhoveWrapper;
+import edu.harvard.hmdc.vdcnet.ingest.dsb.SubsettableFileChecker;
 import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.study.StudyFile;
 import java.io.File;

@@ -29,7 +29,7 @@ package edu.harvard.hmdc.vdcnet.web.servlet;
 import edu.harvard.hmdc.vdcnet.admin.NetworkRoleServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
 import edu.harvard.hmdc.vdcnet.ddi.DDIServiceLocal;
-import edu.harvard.hmdc.vdcnet.dsb.DSBWrapper;
+import edu.harvard.hmdc.vdcnet.ingest.dsb.DSBWrapper;
 import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.study.StudyFile;
 import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;

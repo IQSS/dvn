@@ -27,12 +27,12 @@
  * and open the template in the editor.
  */
 
-package edu.harvard.hmdc.vdcnet.util;
+package edu.harvard.hmdc.vdcnet.core.util;
 
 import edu.harvard.hmdc.vdcnet.ingest.dsb.JhoveWrapper;
 import edu.harvard.hmdc.vdcnet.ingest.dsb.SubsettableFileChecker;
-import edu.harvard.hmdc.vdcnet.study.Study;
-import edu.harvard.hmdc.vdcnet.study.StudyFile;
+import edu.harvard.hmdc.vdcnet.core.study.Study;
+import edu.harvard.hmdc.vdcnet.core.study.StudyFile;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

@@ -27,7 +27,7 @@
  * and open the template in the editor.
  */
 
-package edu.harvard.hmdc.vdcnet.util;
+package edu.harvard.hmdc.vdcnet.core.util;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

@@ -29,14 +29,14 @@
 
 package edu.harvard.hmdc.vdcnet.ingest.dsb;
 
-import edu.harvard.hmdc.vdcnet.ddi.DDIServiceLocal;
-import edu.harvard.hmdc.vdcnet.index.IndexServiceLocal;
-import edu.harvard.hmdc.vdcnet.mail.MailServiceLocal;
-import edu.harvard.hmdc.vdcnet.study.DataTable;
-import edu.harvard.hmdc.vdcnet.study.Study;
-import edu.harvard.hmdc.vdcnet.study.StudyFile;
-import edu.harvard.hmdc.vdcnet.study.StudyFileEditBean;
-import edu.harvard.hmdc.vdcnet.study.StudyServiceLocal;
+import edu.harvard.hmdc.vdcnet.core.ddi.DDIServiceLocal;
+import edu.harvard.hmdc.vdcnet.core.index.IndexServiceLocal;
+import edu.harvard.hmdc.vdcnet.core.mail.MailServiceLocal;
+import edu.harvard.hmdc.vdcnet.core.study.DataTable;
+import edu.harvard.hmdc.vdcnet.core.study.Study;
+import edu.harvard.hmdc.vdcnet.core.study.StudyFile;
+import edu.harvard.hmdc.vdcnet.core.study.StudyFileEditBean;
+import edu.harvard.hmdc.vdcnet.core.study.StudyServiceLocal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;

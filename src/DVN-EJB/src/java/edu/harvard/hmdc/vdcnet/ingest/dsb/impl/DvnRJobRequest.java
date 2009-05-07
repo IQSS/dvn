@@ -10,7 +10,7 @@ package edu.harvard.hmdc.vdcnet.ingest.dsb.impl;
  * @author asone
  */
 import edu.harvard.hmdc.vdcnet.ingest.dsb.*;
-import edu.harvard.hmdc.vdcnet.study.*;
+import edu.harvard.hmdc.vdcnet.core.study.*;
 import static java.lang.System.*;
 import java.util.*;
 import java.util.logging.*;

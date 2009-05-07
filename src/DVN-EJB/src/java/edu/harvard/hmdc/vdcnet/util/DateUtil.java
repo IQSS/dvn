@@ -27,7 +27,7 @@
  * and open the template in the editor.
  */
 
-package edu.harvard.hmdc.vdcnet.util;
+package edu.harvard.hmdc.vdcnet.core.util;
 
 import java.sql.Timestamp;
 import java.text.ParseException;

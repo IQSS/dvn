@@ -10,7 +10,7 @@ package edu.harvard.hmdc.vdcnet.ingest.dsb;
  * @author asone
  */
 import java.util.*;
-import edu.harvard.hmdc.vdcnet.study.*;
+import edu.harvard.hmdc.vdcnet.core.study.*;
 
 
 public interface ServiceRequest {

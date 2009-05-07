@@ -29,7 +29,7 @@
 
 package edu.harvard.hmdc.vdcnet.ingest.dsb;
 
-import edu.harvard.hmdc.vdcnet.admin.VDCUser;
+import edu.harvard.hmdc.vdcnet.core.admin.VDCUser;
 import java.io.Serializable;
 import java.util.List;
 

@@ -31,11 +31,11 @@ package edu.harvard.hmdc.vdcnet.ingest.dsb;
 
 import edu.harvard.hmdc.vdcnet.unf.UnfException;
 import edu.harvard.hmdc.vdcnet.unf.UNFUtil;
-import edu.harvard.hmdc.vdcnet.study.DataVariable;
-import edu.harvard.hmdc.vdcnet.study.Study;
-import edu.harvard.hmdc.vdcnet.study.StudyFile;
-import edu.harvard.hmdc.vdcnet.study.StudyFileEditBean;
-import edu.harvard.hmdc.vdcnet.util.WebStatisticsSupport;
+import edu.harvard.hmdc.vdcnet.core.study.DataVariable;
+import edu.harvard.hmdc.vdcnet.core.study.Study;
+import edu.harvard.hmdc.vdcnet.core.study.StudyFile;
+import edu.harvard.hmdc.vdcnet.core.study.StudyFileEditBean;
+import edu.harvard.hmdc.vdcnet.core.util.WebStatisticsSupport;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;

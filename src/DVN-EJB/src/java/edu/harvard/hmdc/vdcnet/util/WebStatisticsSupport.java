@@ -30,7 +30,7 @@
  * site statistics application.
  */
 
-package edu.harvard.hmdc.vdcnet.util;
+package edu.harvard.hmdc.vdcnet.core.util;
 
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;

@@ -20,7 +20,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee web-jsptaglibrary_2_1.xsd"
   <tag>
     <name>scroller</name>
     <!-- tag-class>com.sun.javaee.blueprints.components.ui.tag.ScrollerTag</tag-class -->
-    <tag-class>edu.harvard.hmdc.vdcnet.web.customComponent.scroller.ScrollerTag</tag-class>
+    <tag-class>edu.harvard.iq.dvn.core.web.customComponent.scroller.ScrollerTag</tag-class>
     <body-content>JSP</body-content>
     <description>
     Render a set of hyperlinks to enable navigation over results that span
@@ -36,7 +36,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee web-jsptaglibrary_2_1.xsd"
       <required>false</required>
       <deferred-value>
         <!--type>com.sun.javaee.blueprints.components.ui.components.ScrollerComponent</type -->
-        <type>edu.harvard.hmdc.vdcnet.web.customComponent.scroller.ScrollerComponent</type>
+        <type>edu.harvard.iq.dvn.core.web.customComponent.scroller.ScrollerComponent</type>
     </deferred-value>
     </attribute>
     <attribute>

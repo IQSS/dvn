@@ -99,8 +99,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.*;
 
-import edu.harvard.hmdc.vdcnet.dsb.*;
-import edu.harvard.hmdc.vdcnet.dsb.impl.*;
+import edu.harvard.hmdc.vdcnet.ingest.dsb.*;
+import edu.harvard.hmdc.vdcnet.ingest.dsb.impl.*;
 import java.io.BufferedOutputStream;
 import java.util.logging.Logger;
 

@@ -25,11 +25,11 @@
  */
 package edu.harvard.hmdc.vdcnet.web.subsetting;
 
-import edu.harvard.hmdc.vdcnet.dsb.AdvancedStatGUIdata;
+import edu.harvard.hmdc.vdcnet.ingest.dsb.AdvancedStatGUIdata;
 import com.sun.rave.web.ui.appbase.AbstractApplicationBean;
 import javax.faces.FacesException;
 
-import edu.harvard.hmdc.vdcnet.dsb.DSBWrapper;
+import edu.harvard.hmdc.vdcnet.ingest.dsb.DSBWrapper;
 
 import javax.xml.bind.*;
 
@@ -43,14 +43,14 @@ import java.math.*;
 import java.io.IOException;
 
 // zelig-config class
-import edu.harvard.hmdc.vdcnet.dsb.zelig.*;
+import edu.harvard.hmdc.vdcnet.ingest.dsb.zelig.*;
 
 // zelig-menu option
 import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
 
-import edu.harvard.hmdc.vdcnet.dsb.*;
-import edu.harvard.hmdc.vdcnet.dsb.impl.*;
+import edu.harvard.hmdc.vdcnet.ingest.dsb.*;
+import edu.harvard.hmdc.vdcnet.ingest.dsb.impl.*;
 import edu.harvard.hmdc.vdcnet.web.common.*;
 
 /**
@@ -117,7 +117,7 @@ public class AnalysisApplicationBean extends VDCApplicationBean
         try {
             // create a JAXBContext capable of handling classes generated into
             // the r.zelig package
-            JAXBContext jc = JAXBContext.newInstance("edu.harvard.hmdc.vdcnet.dsb.zelig");
+            JAXBContext jc = JAXBContext.newInstance("edu.harvard.hmdc.vdcnet.ingest.dsb.zelig");
 
             // create an Unmarshaller
             Unmarshaller u = jc.createUnmarshaller();
@@ -175,7 +175,7 @@ public class AnalysisApplicationBean extends VDCApplicationBean
 
         try {
             // create a JAXBContext
-            JAXBContext jc = JAXBContext.newInstance("edu.harvard.hmdc.vdcnet.dsb.zelig");
+            JAXBContext jc = JAXBContext.newInstance("edu.harvard.hmdc.vdcnet.ingest.dsb.zelig");
 
             // create an Unmarshaller
             Unmarshaller u = jc.createUnmarshaller();

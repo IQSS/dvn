@@ -76,8 +76,8 @@ import edu.harvard.hmdc.vdcnet.vdc.VDC;
 import edu.harvard.hmdc.vdcnet.vdc.VDCServiceLocal;
 
 
-import edu.harvard.hmdc.vdcnet.dsb.*;
-import edu.harvard.hmdc.vdcnet.dsb.impl.*;
+import edu.harvard.hmdc.vdcnet.ingest.dsb.*;
+import edu.harvard.hmdc.vdcnet.ingest.dsb.impl.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;

@@ -8,7 +8,7 @@ package edu.harvard.hmdc.vdcnet.web.servlet;
 
 import edu.harvard.hmdc.vdcnet.admin.NetworkRoleServiceLocal;
 import edu.harvard.hmdc.vdcnet.admin.VDCUser;
-import edu.harvard.hmdc.vdcnet.dsb.DSBIngestMessage;
+import edu.harvard.hmdc.vdcnet.ingest.dsb.DSBIngestMessage;
 import edu.harvard.hmdc.vdcnet.study.FileCategory;
 import edu.harvard.hmdc.vdcnet.study.Study;
 import edu.harvard.hmdc.vdcnet.study.StudyFile;

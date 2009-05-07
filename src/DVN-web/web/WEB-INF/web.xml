@@ -105,16 +105,16 @@
         <listener-class>com.icesoft.faces.util.event.servlet.ContextEventRepeater</listener-class>
     </listener>
     <listener>
-        <listener-class>edu.harvard.hmdc.vdcnet.util.VDCContextListener</listener-class>
+        <listener-class>edu.harvard.iq.dvn.core.web.util.VDCContextListener</listener-class>
     </listener>
    <!-- EV: to clean the temporary directory with the uploaded files -->
     <listener>
- <listener-class>edu.harvard.hmdc.vdcnet.util.InputFileSessionCleaner</listener-class>
+ <listener-class>edu.harvard.iq.dvn.core.web.util.InputFileSessionCleaner</listener-class>
     </listener>
     <!-- login filter -->
     <filter>
         <filter-name>LoginFilter</filter-name>
-        <filter-class>edu.harvard.hmdc.vdcnet.web.servlet.LoginFilter</filter-class>
+        <filter-class>edu.harvard.iq.dvn.core.web.servlet.LoginFilter</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>LoginFilter</filter-name>
@@ -126,7 +126,7 @@
     <!-- terms of use filter -->
    <filter>
         <filter-name>TermsOfUseFilter</filter-name>
-        <filter-class>edu.harvard.hmdc.vdcnet.web.servlet.TermsOfUseFilter</filter-class>
+        <filter-class>edu.harvard.iq.dvn.core.web.servlet.TermsOfUseFilter</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>TermsOfUseFilter</filter-name>
@@ -159,7 +159,7 @@
         <!-- DVN SPECIFIC SERVLETS -->
     <servlet>
         <servlet-name>Faces Servlet</servlet-name>
-        <servlet-class>edu.harvard.hmdc.vdcnet.web.servlet.VDCFacesServlet</servlet-class>
+        <servlet-class>edu.harvard.iq.dvn.core.web.servlet.VDCFacesServlet</servlet-class>
         
     </servlet>
     <servlet>
@@ -168,24 +168,24 @@
     </servlet>
     <servlet>
         <servlet-name>ErrorPageServlet</servlet-name>
-        <servlet-class>edu.harvard.hmdc.vdcnet.web.servlet.ErrorPageServlet</servlet-class>
+        <servlet-class>edu.harvard.iq.dvn.core.web.servlet.ErrorPageServlet</servlet-class>
         <load-on-startup>3</load-on-startup>
     </servlet>
     <servlet>
         <servlet-name>FileDownloadServlet</servlet-name>
-        <servlet-class>edu.harvard.hmdc.vdcnet.web.servlet.FileDownloadServlet</servlet-class>
+        <servlet-class>edu.harvard.iq.dvn.core.web.servlet.FileDownloadServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>VDCServlet</servlet-name>
-        <servlet-class>edu.harvard.hmdc.vdcnet.web.servlet.VDCServlet</servlet-class>
+        <servlet-class>edu.harvard.iq.dvn.core.web.servlet.VDCServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>DDIExportServlet</servlet-name>
-        <servlet-class>edu.harvard.hmdc.vdcnet.web.servlet.DDIExportServlet</servlet-class>
+        <servlet-class>edu.harvard.iq.dvn.core.web.servlet.DDIExportServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>VDCHandleRegistrationServlet</servlet-name>
-        <servlet-class>edu.harvard.hmdc.vdcnet.web.servlet.VDCHandleRegistrationServlet</servlet-class>
+        <servlet-class>edu.harvard.iq.dvn.core.web.servlet.VDCHandleRegistrationServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>OAIHandler</servlet-name>
@@ -269,7 +269,7 @@
     </servlet-mapping>
     <servlet>
         <servlet-name>StudyGlobalIdServlet</servlet-name>
-        <servlet-class>edu.harvard.hmdc.vdcnet.web.servlet.StudyGlobalIdServlet</servlet-class>
+        <servlet-class>edu.harvard.iq.dvn.core.web.servlet.StudyGlobalIdServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>StudyGlobalIdServlet</servlet-name>
@@ -279,7 +279,7 @@
 
     <servlet>
         <servlet-name>CensusRepositoryServlet</servlet-name>
-        <servlet-class>edu.harvard.hmdc.vdcnet.web.servlet.CensusRepositoryServlet</servlet-class>
+        <servlet-class>edu.harvard.iq.dvn.core.web.servlet.CensusRepositoryServlet</servlet-class>
     </servlet>     
     <servlet-mapping>
     <servlet-name>CensusRepositoryServlet</servlet-name>
@@ -287,7 +287,7 @@
     </servlet-mapping> 
     <servlet>
         <servlet-name>VDCIngestServlet</servlet-name>
-        <servlet-class>edu.harvard.hmdc.vdcnet.web.servlet.VDCIngestServlet</servlet-class>
+        <servlet-class>edu.harvard.iq.dvn.core.web.servlet.VDCIngestServlet</servlet-class>
     </servlet>     
     <servlet-mapping>
     <servlet-name>VDCIngestServlet</servlet-name>
@@ -295,7 +295,7 @@
     </servlet-mapping>       
     <servlet>
         <servlet-name>VDCSummaryStatisticsServlet</servlet-name>
-        <servlet-class>edu.harvard.hmdc.vdcnet.web.servlet.VDCSummaryStatisticsServlet</servlet-class>
+        <servlet-class>edu.harvard.iq.dvn.core.web.servlet.VDCSummaryStatisticsServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>VDCSummaryStatisticsServlet</servlet-name>

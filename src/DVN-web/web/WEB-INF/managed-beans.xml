@@ -2,12 +2,12 @@
 <faces-config version="1.2" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_1_2.xsd">
     <managed-bean>
         <managed-bean-name>sfc</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.study.StudyFieldConstant</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.study.StudyFieldConstant</managed-bean-class>
         <managed-bean-scope>application</managed-bean-scope>
     </managed-bean>
     <managed-bean>
         <managed-bean-name>VDCRequest</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.common.VDCRequestBean</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.common.VDCRequestBean</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
         <managed-property>
             <property-name>studyListingIndex</property-name>
@@ -17,49 +17,49 @@
     </managed-bean>
     <managed-bean>
         <managed-bean-name>VDCSession</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.common.VDCSessionBean</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.common.VDCSessionBean</managed-bean-class>
         <managed-bean-scope>session</managed-bean-scope>
     </managed-bean>
     <managed-bean>
         <managed-bean-name>VDCApplication</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.common.VDCApplicationBean</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.common.VDCApplicationBean</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
     <!-- End User Pages -->
     <managed-bean>
         <managed-bean-name>ErrorPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.ErrorPage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.ErrorPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
     <managed-bean>
         <managed-bean-name>StudyListingPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.StudyListingPage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.StudyListingPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
     <managed-bean>
         <managed-bean-name>AdvSearchPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.AdvSearchPage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.AdvSearchPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
     <managed-bean>
         <managed-bean-name>ContactUsPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.ContactUsPage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.ContactUsPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
     <managed-bean>
         <managed-bean-name>AnnouncementsPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.AnnouncementsPage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.AnnouncementsPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
     <managed-bean>
         <managed-bean-name>AboutPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.AboutPage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.AboutPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
     <!-- **************** Analysis and Subsetting ***************** -->
     <managed-bean>
         <managed-bean-name>AnalysisPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.subsetting.AnalysisPage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.subsetting.AnalysisPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
         <managed-property>
             <property-name>dtId</property-name>
@@ -69,25 +69,25 @@
     </managed-bean>
     <managed-bean>
         <managed-bean-name>AnalysisApplicationBean</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.subsetting.AnalysisApplicationBean</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.subsetting.AnalysisApplicationBean</managed-bean-class>
         <managed-bean-scope>application</managed-bean-scope>
     </managed-bean>
     <managed-bean>
         <managed-bean-name>AnalysisResultsPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.subsetting.AnalysisResultsPage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.subsetting.AnalysisResultsPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>        
     
     <!-- **************** Login ***************** -->
      <managed-bean>
         <managed-bean-name>ForgotPasswordPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.login.ForgotPasswordPage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.login.ForgotPasswordPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
       
     </managed-bean>
     <managed-bean>
         <managed-bean-name>AddAccountPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.login.AddAccountPage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.login.AddAccountPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
         <managed-property>
             <property-name>workflow</property-name>
@@ -97,7 +97,7 @@
     </managed-bean>
     <managed-bean>
         <managed-bean-name>EditAccountPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.login.EditAccountPage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.login.EditAccountPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
         <managed-property>
             <property-name>userId</property-name>
@@ -107,7 +107,7 @@
     </managed-bean>
     <managed-bean>
         <managed-bean-name>EditPasswordPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.login.EditPasswordPage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.login.EditPasswordPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
         <managed-property>
             <property-name>userId</property-name>
@@ -117,7 +117,7 @@
     </managed-bean>    
     <managed-bean>
         <managed-bean-name>LoginPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.login.LoginPage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.login.LoginPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
         <managed-property>
             <property-name>redirect</property-name>
@@ -137,18 +137,18 @@
     </managed-bean>
     <managed-bean>
         <managed-bean-name>LogoutPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.login.LogoutPage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.login.LogoutPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
    
    <managed-bean>
         <managed-bean-name>AccountTermsOfUsePage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.login.AccountTermsOfUsePage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.login.AccountTermsOfUsePage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>    
     <managed-bean>
         <managed-bean-name>FileRequestPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.login.FileRequestPage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.login.FileRequestPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
         <managed-property>
             <property-name>studyId</property-name>
@@ -161,7 +161,7 @@
     <!-- *******************  Study Management *********************** -->
     <managed-bean>
         <managed-bean-name>studyPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.study.StudyPage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.study.StudyPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
         <managed-property>
             <property-name>studyId</property-name>
@@ -176,7 +176,7 @@
     </managed-bean>
     <managed-bean>
         <managed-bean-name>TermsOfUsePage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.study.TermsOfUsePage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.study.TermsOfUsePage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
         <managed-property>
             <property-name>redirectPage</property-name>
@@ -191,7 +191,7 @@
     </managed-bean>
     <managed-bean>
         <managed-bean-name>EditStudyPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.study.EditStudyPage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.study.EditStudyPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
         <managed-property>
             <property-name>studyId</property-name>
@@ -206,7 +206,7 @@
     </managed-bean>
   <managed-bean>
         <managed-bean-name>EditTemplatePage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.study.EditTemplatePage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.study.EditTemplatePage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
         <managed-property>
             <property-name>studyId</property-name>
@@ -216,7 +216,7 @@
     </managed-bean>    
     <managed-bean>
         <managed-bean-name>DeleteStudyPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.study.DeleteStudyPage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.study.DeleteStudyPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
         <managed-property>
             <property-name>studyId</property-name>
@@ -226,7 +226,7 @@
     </managed-bean>
     <managed-bean>
         <managed-bean-name>AddFilesPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.study.AddFilesPage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.study.AddFilesPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
         <managed-property>
             <property-name>ingestEmail</property-name>
@@ -242,17 +242,17 @@
  <!-- **************** EV ***************** -->
     <managed-bean>
         <managed-bean-name>PrivilegedUsersPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.admin.PrivilegedUsersPage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.admin.PrivilegedUsersPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
     <managed-bean>
         <managed-bean-name>EditStudyTemplatePage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.study.EditStudyTemplatePage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.study.EditStudyTemplatePage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
     <managed-bean>
         <managed-bean-name>AccountPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.login.AccountPage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.login.AccountPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
         <managed-property>
             <property-name>userId</property-name>
@@ -262,7 +262,7 @@
     </managed-bean>
     <managed-bean>
         <managed-bean-name>TemplateFormPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.study.TemplateFormPage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.study.TemplateFormPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
         <managed-property>
             <property-name>templateId</property-name>
@@ -277,7 +277,7 @@
     </managed-bean>
         <managed-bean>
         <managed-bean-name>DeleteTemplatePage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.study.DeleteTemplatePage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.study.DeleteTemplatePage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
         <managed-property>
             <property-name>templateId</property-name>
@@ -288,17 +288,17 @@
 
     <managed-bean>
         <managed-bean-name>MyStudiesPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.study.MyStudiesPage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.study.MyStudiesPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
     <managed-bean>
         <managed-bean-name>RestrictedStudyUsersPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.study.RestrictedStudyUsersPage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.study.RestrictedStudyUsersPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
     <managed-bean>
         <managed-bean-name>ManageStudiesList</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.study.ManageStudiesList</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.study.ManageStudiesList</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
        <managed-property>
             <property-name>vdcId</property-name>
@@ -307,14 +307,14 @@
         </managed-property>       
         <managed-property>
             <property-name>loginBean</property-name>
-            <property-class>edu.harvard.hmdc.vdcnet.web.common.LoginBean</property-class>
+            <property-class>edu.harvard.iq.dvn.core.web.common.LoginBean</property-class>
             <value>#{VDCSession.loginBean}</value>
         </managed-property>       
 
     </managed-bean>
     <managed-bean>
         <managed-bean-name>StudyPermissionsPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.study.StudyPermissionsPage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.study.StudyPermissionsPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
         <managed-property>
             <property-name>studyId</property-name>
@@ -324,7 +324,7 @@
     </managed-bean>
     <managed-bean>
         <managed-bean-name>VariablePage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.study.VariablePage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.study.VariablePage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
         <managed-property>
             <property-name>dvId</property-name>
@@ -334,7 +334,7 @@
     </managed-bean>
     <managed-bean>
         <managed-bean-name>EditVariablePage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.study.EditVariablePage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.study.EditVariablePage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
         <managed-property>
             <property-name>dtId</property-name>
@@ -350,7 +350,7 @@
     <!-- **************** Collection and Site Management  ****************  -->
       <managed-bean>
         <managed-bean-name>DeleteDataversePage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.site.DeleteDataversePage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.site.DeleteDataversePage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
         <managed-property>
             <property-name>deleteId</property-name>
@@ -365,7 +365,7 @@
     </managed-bean>
     <managed-bean>
         <managed-bean-name>DeleteClassificationsPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.networkAdmin.DeleteClassificationsPage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.networkAdmin.DeleteClassificationsPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
         <managed-property>
             <property-name>cid</property-name>
@@ -375,37 +375,37 @@
     </managed-bean>
     <managed-bean>
         <managed-bean-name>ClassificationList</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.site.ClassificationList</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.site.ClassificationList</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>   
     <managed-bean>
         <managed-bean-name>AddSitePage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.site.AddSitePage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.site.AddSitePage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
         <managed-property>
             <property-name>classificationList</property-name>
-            <property-class>edu.harvard.hmdc.vdcnet.web.site.ClassificationList</property-class>
+            <property-class>edu.harvard.iq.dvn.core.web.site.ClassificationList</property-class>
             <value>#{ClassificationList}</value>
         </managed-property>
     </managed-bean>
     <managed-bean>
         <managed-bean-name>EditSitePage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.site.EditSitePage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.site.EditSitePage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
         <managed-property>
             <property-name>classificationList</property-name>
-            <property-class>edu.harvard.hmdc.vdcnet.web.site.ClassificationList</property-class>
+            <property-class>edu.harvard.iq.dvn.core.web.site.ClassificationList</property-class>
             <value>#{ClassificationList}</value>
         </managed-property>
     </managed-bean>
     <managed-bean>
         <managed-bean-name>HarvestSitesPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.site.HarvestSitesPage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.site.HarvestSitesPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
     <managed-bean>
         <managed-bean-name>EditHarvestSitePage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.site.EditHarvestSitePage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.site.EditHarvestSitePage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
         <managed-property>
             <property-name>harvestId</property-name>
@@ -420,33 +420,33 @@
     </managed-bean>
     <managed-bean>
         <managed-bean-name>AddLinkPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.collection.AddLinkPage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.collection.AddLinkPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
     <managed-bean>
         <managed-bean-name>EditCollectionPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.collection.EditCollectionPage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.collection.EditCollectionPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
     <managed-bean>
         <managed-bean-name>ManageCollectionsPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.collection.ManageCollectionsPage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.collection.ManageCollectionsPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
     <!-- **************** Admin  ****************  -->
     <managed-bean>
         <managed-bean-name>ManageTemplatesPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.admin.ManageTemplatesPage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.admin.ManageTemplatesPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
     <managed-bean>
         <managed-bean-name>SearchFieldsPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.admin.SearchFieldsPage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.admin.SearchFieldsPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
     <managed-bean>
         <managed-bean-name>EditAboutPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.admin.EditAboutPage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.admin.EditAboutPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
         <managed-property>
             <property-name>aboutThisDataverse</property-name>
@@ -455,12 +455,12 @@
     </managed-bean>
     <managed-bean>
         <managed-bean-name>EditBannerFooterPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.admin.EditBannerFooterPage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.admin.EditBannerFooterPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
     <managed-bean>
         <managed-bean-name>EditContactUsPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.admin.EditContactUsPage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.admin.EditContactUsPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
         <managed-property>
             <property-name>contactUsEmail</property-name>
@@ -469,7 +469,7 @@
     </managed-bean>
     <managed-bean>
         <managed-bean-name>EditHomePanelsPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.admin.EditHomePanelsPage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.admin.EditHomePanelsPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
         <managed-property>
             <property-name>chkNetworkAnnouncements</property-name>
@@ -490,7 +490,7 @@
     </managed-bean>
     <managed-bean>
         <managed-bean-name>EditUseTermsPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.admin.EditUseTermsPage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.admin.EditUseTermsPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
         <managed-property>
             <property-name>termsOfUse</property-name>
@@ -503,7 +503,7 @@
     </managed-bean>
     <managed-bean>
         <managed-bean-name>EditDepositUseTermsPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.admin.EditDepositUseTermsPage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.admin.EditDepositUseTermsPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
         <managed-property>
             <property-name>termsOfUse</property-name>
@@ -516,7 +516,7 @@
     </managed-bean>
         <managed-bean>
         <managed-bean-name>EditNetworkDownloadUseTermsPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.networkAdmin.EditNetworkDownloadUseTermsPage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.networkAdmin.EditNetworkDownloadUseTermsPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
         <managed-property>
             <property-name>termsOfUse</property-name>
@@ -530,23 +530,23 @@
 
     <managed-bean>
         <managed-bean-name>WebStatisticsPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.admin.WebStatisticsPage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.admin.WebStatisticsPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
     <!-- **************** Network Admin  ****************  -->
      <managed-bean>
         <managed-bean-name>MyDataversePage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.networkAdmin.MyDataversePage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.networkAdmin.MyDataversePage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
    <managed-bean>
         <managed-bean-name>EditNetworkAboutPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.networkAdmin.EditNetworkAboutPage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.networkAdmin.EditNetworkAboutPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
    <managed-bean>
         <managed-bean-name>EditAccountUseTermsPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.networkAdmin.EditAccountUseTermsPage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.networkAdmin.EditAccountUseTermsPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
         <managed-property>
             <property-name>termsOfUse</property-name>
@@ -559,7 +559,7 @@
     </managed-bean>
     <managed-bean>
         <managed-bean-name>EditNetworkDepositUseTermsPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.networkAdmin.EditNetworkDepositUseTermsPage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.networkAdmin.EditNetworkDepositUseTermsPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
         <managed-property>
             <property-name>termsOfUse</property-name>
@@ -573,12 +573,12 @@
   
     <managed-bean>
         <managed-bean-name>AllUsersPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.networkAdmin.AllUsersPage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.networkAdmin.AllUsersPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
     <managed-bean>
         <managed-bean-name>EditNetworkAnnouncementsPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.networkAdmin.EditNetworkAnnouncementsPage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.networkAdmin.EditNetworkAnnouncementsPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
         <managed-property>
             <property-name>chkEnableNetworkAnnouncements</property-name>
@@ -591,12 +591,12 @@
     </managed-bean>
    <managed-bean>
         <managed-bean-name>OAISetsPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.networkAdmin.OAISetsPage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.networkAdmin.OAISetsPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
     <managed-bean>
         <managed-bean-name>EditOAISetPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.networkAdmin.EditOAISetPage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.networkAdmin.EditOAISetPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
         <managed-property>
             <property-name>oaiSetId</property-name>
@@ -605,12 +605,12 @@
     </managed-bean>    
         <managed-bean>
         <managed-bean-name>EditExportSchedulePage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.networkAdmin.EditExportSchedulePage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.networkAdmin.EditExportSchedulePage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
     <managed-bean>
         <managed-bean-name>EditNetworkBannerFooterPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.networkAdmin.EditNetworkBannerFooterPage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.networkAdmin.EditNetworkBannerFooterPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
         <managed-property>
             <property-name>networkBanner</property-name>
@@ -623,12 +623,12 @@
     </managed-bean>
     <managed-bean>
         <managed-bean-name>EditNetworkNamePage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.networkAdmin.EditNetworkNamePage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.networkAdmin.EditNetworkNamePage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
     <managed-bean>
         <managed-bean-name>EditUserGroupPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.networkAdmin.EditUserGroupPage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.networkAdmin.EditUserGroupPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
         <managed-property>
             <property-name>userGroupId</property-name>
@@ -643,7 +643,7 @@
     </managed-bean>
     <managed-bean>
         <managed-bean-name>ViewUserGroupPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.networkAdmin.ViewUserGroupPage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.networkAdmin.ViewUserGroupPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
         <managed-property>
             <property-name>userGroupId</property-name>
@@ -653,17 +653,17 @@
     </managed-bean>
     <managed-bean>
         <managed-bean-name>NetworkPrivilegedUsersPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.networkAdmin.NetworkPrivilegedUsersPage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.networkAdmin.NetworkPrivilegedUsersPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
     <managed-bean>
         <managed-bean-name>UserGroupsPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.networkAdmin.UserGroupsPage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.networkAdmin.UserGroupsPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
     <managed-bean>
         <managed-bean-name>UtilitiesPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.networkAdmin.UtilitiesPage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.networkAdmin.UtilitiesPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
         <managed-property>
             <property-name>selectedPanel</property-name>
@@ -678,7 +678,7 @@
     </managed-bean>
     <managed-bean>
         <managed-bean-name>addClassificationsPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.networkAdmin.AddClassificationsPage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.networkAdmin.AddClassificationsPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
         <managed-property>
             <property-name>cid</property-name>
@@ -686,52 +686,52 @@
         </managed-property>
         <managed-property>
             <property-name>classificationList</property-name>
-            <property-class>edu.harvard.hmdc.vdcnet.web.site.ClassificationList</property-class>
+            <property-class>edu.harvard.iq.dvn.core.web.site.ClassificationList</property-class>
             <value>#{ClassificationList}</value>
         </managed-property>
         
     </managed-bean>
     <managed-bean>
         <managed-bean-name>manageClassificationsPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.networkAdmin.ManageClassificationsPage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.networkAdmin.ManageClassificationsPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
     <managed-bean>
         <managed-bean-name>manageDataversesPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.networkAdmin.ManageDataversesPage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.networkAdmin.ManageDataversesPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
     <!-- utility beans -->
     <managed-bean>
         <managed-bean-name>CollectionTreeBuilder</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.util.CollectionTreeBuilder</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.util.CollectionTreeBuilder</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
     <managed-bean>
         <managed-bean-name>MainLayoutBean</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.MainLayoutBean</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.MainLayoutBean</managed-bean-class>
         <managed-bean-scope>application</managed-bean-scope>
     </managed-bean>
     <managed-bean>
         <managed-bean-name>VersionPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.VersionPage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.VersionPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
     <!-- rem'd the tiles classes -->
     <managed-bean>
         <managed-bean-name>LoginWorkflowBean</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.login.LoginWorkflowBean</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.login.LoginWorkflowBean</managed-bean-class>
         <managed-bean-scope>session</managed-bean-scope>
     </managed-bean>
     <!-- Network Home Page Manager Bean -->
     <managed-bean>
         <managed-bean-name>HomePage</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.HomePage</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.HomePage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
     <managed-bean>
         <managed-bean-name>dvRecordsManager</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.DvRecordsManager</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.DvRecordsManager</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
     <!-- IceFaces Push -->
@@ -753,7 +753,7 @@
     <managed-bean>
         <description>Bean for pushing out network stats changes</description>
         <managed-bean-name>NetworkStatsBean</managed-bean-name>
-        <managed-bean-class>edu.harvard.hmdc.vdcnet.web.push.beans.NetworkStatsBean</managed-bean-class>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.push.beans.NetworkStatsBean</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
         <managed-property>
             <property-name>renderManager</property-name>

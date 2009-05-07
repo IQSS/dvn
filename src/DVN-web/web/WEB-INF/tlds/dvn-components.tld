@@ -6,7 +6,7 @@
     <tag>
       <description>This is a simple inlinehelp component</description>
       <name>inlinehelp</name>
-      <tag-class>edu.harvard.hmdc.vdcnet.web.component.DvnInlineHelpTag</tag-class>
+      <tag-class>edu.harvard.iq.dvn.core.web.component.DvnInlineHelpTag</tag-class>
       <attribute>
           <name>rendered</name>
       </attribute>
@@ -51,7 +51,7 @@
   <tag>
     <description>This is a simple tag support component</description>
     <name>inlinehelpsupport</name>
-    <tag-class>edu.harvard.hmdc.vdcnet.web.component.DvnInlineHelpSupportTag</tag-class>
+    <tag-class>edu.harvard.iq.dvn.core.web.component.DvnInlineHelpSupportTag</tag-class>
     <attribute>
           <name>writeTipDiv</name>
       </attribute>
@@ -68,7 +68,7 @@
   <tag>
       <description>This is a simple tooltip component</description>
       <name>tooltip</name>
-      <tag-class>edu.harvard.hmdc.vdcnet.web.component.DvnTooltipTag</tag-class>
+      <tag-class>edu.harvard.iq.dvn.core.web.component.DvnTooltipTag</tag-class>
       <attribute>
           <name>rendered</name>
       </attribute>

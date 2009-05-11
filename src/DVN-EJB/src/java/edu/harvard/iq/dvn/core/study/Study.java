@@ -81,6 +81,9 @@ public class Study implements java.io.Serializable {
     private Metadata metadata;
     @Temporal(value = TemporalType.TIMESTAMP)
     private Date lastIndexTime;
+    @OneToMany
+    private List<StudyComment> studyComments;
+
     
     public Study () {
         metadata = new Metadata();
@@ -2147,7 +2150,21 @@ End of deprecated methods section
     public void setStudyFileActivity(List<StudyFileActivity> studyFileActivity) {
         this.studyFileActivity = studyFileActivity;
     }
-    
+
+    /**
+     * @return the studyComments
+     */
+    public List<StudyComment> getStudyComments() {
+        return studyComments;
+    }
+
+    /**
+     * @param studyComments the studyComments to set
+     */
+    public void setStudyComments(List<StudyComment> studyComments) {
+        this.studyComments = studyComments;
+    }
+
 //    @Override
 //    public String toString() {
 //        return ToStringBuilder.reflectionToString(this,

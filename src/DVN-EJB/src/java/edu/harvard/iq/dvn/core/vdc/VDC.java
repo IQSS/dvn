@@ -152,6 +152,9 @@ public class VDC implements java.io.Serializable  {
     private VDCUser reviewer;
     
     
+    private boolean allowStudyComments;
+    private boolean generateNotifications;
+    private String commentNotificationEmail;
     
    
     /** Creates a new instance of VDC */
@@ -1095,6 +1098,48 @@ public class VDC implements java.io.Serializable  {
 
     public void setVDCActivity(VDCActivity vdcActivity) {
         this.vdcActivity = vdcActivity;
+    }
+
+    /**
+     * @return the allowStudyComments
+     */
+    public boolean isAllowStudyComments() {
+        return allowStudyComments;
+    }
+
+    /**
+     * @param allowStudyComments the allowStudyComments to set
+     */
+    public void setAllowStudyComments(boolean allowStudyComments) {
+        this.allowStudyComments = allowStudyComments;
+    }
+
+    /**
+     * @return the generateNotifications
+     */
+    public boolean isGenerateNotifications() {
+        return generateNotifications;
+    }
+
+    /**
+     * @param generateNotifications the generateNotifications to set
+     */
+    public void setGenerateNotifications(boolean generateNotifications) {
+        this.generateNotifications = generateNotifications;
+    }
+
+    /**
+     * @return the commentNotificationEmail
+     */
+    public String getCommentNotificationEmail() {
+        return commentNotificationEmail;
+    }
+
+    /**
+     * @param commentNotificationEmail the commentNotificationEmail to set
+     */
+    public void setCommentNotificationEmail(String commentNotificationEmail) {
+        this.commentNotificationEmail = commentNotificationEmail;
     }
     
 }

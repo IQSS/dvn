@@ -44,9 +44,11 @@ public class StudyCommentServiceBean implements StudyCommentService {
     private EntityManager em;
     
     @Override
-    public void flagStudyCommentAbuse(Long abusiveStudyCommentId){
+    public void flagStudyCommentAbuse(Long abusiveStudyCommentId, Long flaggerId){
         StudyComment flaggedStudyComment = em.find(StudyComment.class, abusiveStudyCommentId);
         flaggedStudyComment.setStatus(StudyComment.Status.FLAGGED);
+        VDCUser flagger = em.find(VDCUser.class, flaggerId);
+        flaggedStudyComment.getFlaggedByUsers().add(flagger);
         em.persist(flaggedStudyComment);
     }
 

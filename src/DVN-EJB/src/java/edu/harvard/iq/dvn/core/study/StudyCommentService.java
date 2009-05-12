@@ -30,7 +30,7 @@ import javax.ejb.Local;
 @Local
 public interface StudyCommentService {
 
-    public void flagStudyCommentAbuse(Long abusiveStudyCommentId);
+    public void flagStudyCommentAbuse(Long abusiveStudyCommentId, Long flaggerId);
 
     public List<StudyComment> getAbusiveStudyComments();
 

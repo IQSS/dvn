@@ -22,7 +22,6 @@ package edu.harvard.iq.dvn.core.study;
 
 import edu.harvard.iq.dvn.core.admin.UserServiceLocal;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
-import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -36,11 +35,11 @@ import javax.persistence.PersistenceContext;
 @Stateless
 public class StudyCommentServiceBean implements StudyCommentService {
     
-    @EJB
+/*    @EJB
     StudyServiceLocal studyService;
     @EJB
     UserServiceLocal userService;
-
+*/
     @PersistenceContext(unitName="VDCNet-ejbPU")
     private EntityManager em;
     
@@ -56,6 +55,7 @@ public class StudyCommentServiceBean implements StudyCommentService {
         return findByStatus(StudyComment.Status.FLAGGED);
     }
 
+
     @Override
     public List <StudyComment> getStudyComments(){
         List <StudyComment> displayStudies = findByStatus(StudyComment.Status.OK);
@@ -63,10 +63,11 @@ public class StudyCommentServiceBean implements StudyCommentService {
         return displayStudies;
     }
 
-    public void ignoreFlaggedComment(Long flaggedCommentId){
-        StudyComment flaggedComment = em.find(StudyComment.class, flaggedCommentId);
-        flaggedComment.setStatus(StudyComment.Status.OK);
-        em.persist(flaggedComment);
+    @Override
+    public void okComment(Long commentId){
+        StudyComment comment = em.find(StudyComment.class, commentId);
+        comment.setStatus(StudyComment.Status.OK);
+        em.persist(comment);
     }
 
     @Override

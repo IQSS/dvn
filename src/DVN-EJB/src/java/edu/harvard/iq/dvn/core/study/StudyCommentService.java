@@ -42,6 +42,6 @@ public interface StudyCommentService {
 
     public java.util.List<StudyComment> findByStatus(StudyComment.Status status);
 
-    public void ignoreFlaggedComment(Long flaggedCommentId);
+    public void okComment(Long commentId);
     
 }

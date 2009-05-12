@@ -27,6 +27,7 @@
 package edu.harvard.iq.dvn.core.admin;
 
 import edu.harvard.iq.dvn.core.study.Study;
+import edu.harvard.iq.dvn.core.study.StudyComment;
 import edu.harvard.iq.dvn.core.study.StudyFile;
 import edu.harvard.iq.dvn.core.study.StudyLock;
 import edu.harvard.iq.dvn.core.vdc.VDC;
@@ -83,6 +84,11 @@ public class VDCUser implements java.io.Serializable  {
     @OneToMany(mappedBy="vdcUser", cascade={CascadeType.PERSIST, CascadeType.REMOVE})
     private Collection<VDCRole> vdcRoles;
     
+    @ManyToMany (cascade={ CascadeType.PERSIST })
+    private List<StudyComment> flaggedStudyComments;
+
+    @OneToMany(mappedBy="commentCreator", cascade={CascadeType.PERSIST, CascadeType.REMOVE})
+    private List<StudyComment> studyComments;
     /**
      * Creates a new instance of VDCUser
      */
@@ -432,6 +438,34 @@ public class VDCUser implements java.io.Serializable  {
      */
     public void setAllowedFileVdcs(java.util.List<VDC> memberVdcs) {
         this.allowedFileVdcs = memberVdcs;
-    }    
+    }
+
+    /**
+     * @return the studyComments
+     */
+    public Collection<StudyComment> getStudyComments() {
+        return studyComments;
+    }
+
+    /**
+     * @param studyComments the studyComments to set
+     */
+    public void setStudyComments(List<StudyComment> studyComments) {
+        this.studyComments = studyComments;
+    }
+
+    /**
+     * @return the flaggedStudyComments
+     */
+    public List<StudyComment> getFlaggedStudyComments() {
+        return flaggedStudyComments;
+    }
+
+    /**
+     * @param flaggedStudyComments the flaggedStudyComments to set
+     */
+    public void setFlaggedStudyComments(List<StudyComment> flaggedStudyComments) {
+        this.flaggedStudyComments = flaggedStudyComments;
+    }
         
 }

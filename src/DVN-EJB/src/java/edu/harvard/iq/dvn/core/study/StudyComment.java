@@ -22,12 +22,15 @@ package edu.harvard.iq.dvn.core.study;
 
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
@@ -39,6 +42,20 @@ import javax.persistence.TemporalType;
  */
 @Entity
 public class StudyComment implements Serializable {
+
+    /**
+     * @return the flaggedByUsers
+     */
+    public Collection<VDCUser> getFlaggedByUsers() {
+        return flaggedByUsers;
+    }
+
+    /**
+     * @param flaggedByUsers the flaggedByUsers to set
+     */
+    public void setFlaggedByUsers(Collection<VDCUser> flaggedByUsers) {
+        this.flaggedByUsers = flaggedByUsers;
+    }
     public enum Status { OK, FLAGGED, DELETED };
     private static final long serialVersionUID = 1L;
     @Id
@@ -46,7 +63,7 @@ public class StudyComment implements Serializable {
     private Long id;
 
     private String comment;
-    @OneToOne
+    @ManyToOne
     private VDCUser commentCreator;
     @Temporal(value = TemporalType.TIMESTAMP)
     private Date createTime;
@@ -54,6 +71,8 @@ public class StudyComment implements Serializable {
     @ManyToOne
     @JoinColumn(nullable=false)
     private Study study;
+    @ManyToMany (mappedBy="flaggedStudyComments",cascade={CascadeType.PERSIST } )
+    private Collection<VDCUser> flaggedByUsers;
 
     public StudyComment(){
         this.createTime = new Date();

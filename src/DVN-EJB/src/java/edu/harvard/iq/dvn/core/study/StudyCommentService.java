@@ -40,6 +40,8 @@ public interface StudyCommentService {
 
     public java.util.List<StudyComment> getStudyComments();
 
-    public java.util.List<StudyComment> findByStatus(edu.harvard.iq.dvn.core.study.StudyComment.Status status);
+    public java.util.List<StudyComment> findByStatus(StudyComment.Status status);
+
+    public void ignoreFlaggedComment(Long flaggedCommentId);
     
 }

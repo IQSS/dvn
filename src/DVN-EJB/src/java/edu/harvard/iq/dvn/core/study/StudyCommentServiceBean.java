@@ -58,7 +58,15 @@ public class StudyCommentServiceBean implements StudyCommentService {
 
     @Override
     public List <StudyComment> getStudyComments(){
-        return findByStatus(StudyComment.Status.OK);
+        List <StudyComment> displayStudies = findByStatus(StudyComment.Status.OK);
+        displayStudies.addAll(findByStatus(StudyComment.Status.FLAGGED));
+        return displayStudies;
+    }
+
+    public void ignoreFlaggedComment(Long flaggedCommentId){
+        StudyComment flaggedComment = em.find(StudyComment.class, flaggedCommentId);
+        flaggedComment.setStatus(StudyComment.Status.OK);
+        em.persist(flaggedComment);
     }
 
     @Override

@@ -21,6 +21,7 @@ begin;
 
 
 update dvnversion set buildnumber=0, versionnumber=2;
-
+update vdc set allowstudycomments=true;
+update vdc set generatenotifications=true;
 
 commit;

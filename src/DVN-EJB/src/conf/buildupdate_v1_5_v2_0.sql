@@ -13,6 +13,4 @@ ALTER TABLE vdc ALTER COLUMN allowstudycomments SET STORAGE PLAIN;
 begin;
 
 
-update vdc set allowstudycomments=true;
-
 commit;

@@ -488,6 +488,13 @@
             <value>#{VDCRequest.currentVDC.displayNewStudies}</value>
         </managed-property>
     </managed-bean>
+    <!-- Edit Study Comments Page -->
+    <managed-bean>
+        <managed-bean-name>EditStudyCommentsPage</managed-bean-name>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.admin.EditStudyCommentsPage</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+    <!-- End Edit Study Comments Page -->
     <managed-bean>
         <managed-bean-name>EditUseTermsPage</managed-bean-name>
         <managed-bean-class>edu.harvard.iq.dvn.core.web.admin.EditUseTermsPage</managed-bean-class>

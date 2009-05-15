@@ -128,6 +128,16 @@
                                 </td>
                                 <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.editDvDescriptionText}"/></td>
                             </tr>
+                            <!-- study comments -->
+                            <tr>
+                                <td class="dvnOptionsTableOption">
+                                    <ice:outputLink id="studycommentslink" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditStudyCommentsPage.xhtml">
+                                        <ice:outputText id="studycommentslinktext" value="#{bundlePageInfo.editStudyCommentsTitle}"/>
+                                    </ice:outputLink>
+                                </td>
+                                <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.editStudyCommentsText}"/></td>
+                            </tr>
+                            <!-- end study comments -->
                             <tr>
                                 <td class="dvnOptionsTableOption">
                                     <ice:outputLink id="hyperlink17" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditContactUsPage.xhtml">

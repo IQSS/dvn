@@ -151,7 +151,6 @@ public class VDC implements java.io.Serializable  {
     @ManyToOne
     private VDCUser reviewer;
 
-    @Column(columnDefinition="bool default true")
     private boolean allowStudyComments = true;
     
    

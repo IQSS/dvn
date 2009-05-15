@@ -46,7 +46,7 @@ public class EditStudyCommentsPage extends VDCBaseBean implements Serializable {
     }
 
     public String cancel() {
-        return "cancel";
+        return "cancelVDC";
     }
 
     /* getters and setters */

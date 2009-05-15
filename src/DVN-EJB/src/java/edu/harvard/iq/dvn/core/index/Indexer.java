@@ -36,6 +36,8 @@ import edu.harvard.iq.dvn.core.study.StudyAbstract;
 import edu.harvard.iq.dvn.core.study.StudyAuthor;
 import edu.harvard.iq.dvn.core.study.StudyDistributor;
 import edu.harvard.iq.dvn.core.study.StudyFile;
+import edu.harvard.iq.dvn.core.study.StudyGeoBounding;
+import edu.harvard.iq.dvn.core.study.StudyGrant;
 import edu.harvard.iq.dvn.core.study.StudyKeyword;
 import edu.harvard.iq.dvn.core.study.StudyNote;
 import edu.harvard.iq.dvn.core.study.StudyOtherId;
@@ -44,6 +46,7 @@ import edu.harvard.iq.dvn.core.study.StudyProducer;
 import edu.harvard.iq.dvn.core.study.StudyRelMaterial;
 import edu.harvard.iq.dvn.core.study.StudyRelPublication;
 import edu.harvard.iq.dvn.core.study.StudyRelStudy;
+import edu.harvard.iq.dvn.core.study.StudySoftware;
 import edu.harvard.iq.dvn.core.study.StudyTopicClass;
 import java.io.File;
 import java.io.IOException;
@@ -162,9 +165,7 @@ public class Indexer implements java.io.Serializable  {
         Document doc = new Document();
         logger.info("Start indexing study "+study.getStudyId());
         addText(4.0f,  doc,"title",study.getTitle());
-        addKeyword(doc,"title",study.getTitle());
         addKeyword(doc,"id",study.getId().toString());
-        addKeyword(doc,"studyId", study.getStudyId());
         addText(1.0f,  doc,"studyId", study.getStudyId());
 //        addText(1.0f,  doc,"owner",study.getOwner().getName());
         addText(1.0f, doc, "dvOwnerId", Long.toString(study.getOwner().getId()));
@@ -179,6 +180,7 @@ public class Indexer implements java.io.Serializable  {
         for (Iterator it = topicClassifications.iterator(); it.hasNext();) {
             StudyTopicClass elem = (StudyTopicClass) it.next();
             addText(1.0f,  doc,"topicClassValue", elem.getValue());
+            addText(1.0f,  doc,"topicVocabClassURI", elem.getVocabURI());
         }
         Collection <StudyAbstract> abstracts = study.getStudyAbstracts();
         for (Iterator it = abstracts.iterator(); it.hasNext();) {
@@ -191,7 +193,7 @@ public class Indexer implements java.io.Serializable  {
         for (Iterator it = studyAuthors.iterator(); it.hasNext();) {
             StudyAuthor elem = (StudyAuthor) it.next();
             addText(3.0f,  doc,"authorName",elem.getName());
-            addKeyword(doc,"authorName",elem.getName());
+            addText(1.0f, doc,"authorName",elem.getName());
             addText(1.0f,  doc,"authorAffiliation", elem.getAffiliation());
         }
         Collection <StudyProducer> studyProducers = study.getStudyProducers();
@@ -201,6 +203,8 @@ public class Indexer implements java.io.Serializable  {
             addText(1.0f,  doc,"producerName", studyProducer.getAbbreviation());
             addText(1.0f,  doc,"producerName", studyProducer.getLogo());
             addText(1.0f,  doc,"producerName", studyProducer.getUrl());
+            addText(1.0f,  doc,"producerName", studyProducer.getAffiliation());
+            addText(1.0f,  doc,"producerName", studyProducer.getMetadata().getProductionPlace());
         }
         Collection <StudyDistributor> studyDistributors = study.getStudyDistributors();
         for (Iterator it = studyDistributors.iterator(); it.hasNext();) {
@@ -209,11 +213,13 @@ public class Indexer implements java.io.Serializable  {
             addText(1.0f,  doc,"distributorName", studyDistributor.getAbbreviation());
             addText(1.0f,  doc,"distributorName", studyDistributor.getLogo());
             addText(1.0f,  doc,"distributorName", studyDistributor.getUrl());
+            addText(1.0f,  doc,"distributorName", studyDistributor.getAffiliation());
         }
         Collection <StudyOtherId> otherIds = study.getStudyOtherIds();
         for (Iterator it = otherIds.iterator(); it.hasNext();) {
             StudyOtherId elem = (StudyOtherId) it.next();
             addText(1.0f,  doc,"otherId", elem.getOtherId());
+            addText(1.0f,  doc,"otherIdAgency", elem.getAgency());
         }
         addText(1.0f,  doc,"fundingAgency",study.getFundingAgency());
         addText(1.0f,  doc,"distributorContact",study.getDistributorContact());
@@ -223,12 +229,13 @@ public class Indexer implements java.io.Serializable  {
         addText(1.0f,  doc,"depositor",study.getDepositor());
         addText(1.0f,  doc,"seriesName",study.getSeriesName());
         addText(1.0f,  doc,"seriesInformation",study.getSeriesInformation());
-        addKeyword(doc,"studyVersion",study.getStudyVersion());
+        addText(1.0f, doc,"studyVersion",study.getStudyVersion());
+        addText(1.0f, doc,"versionDate",study.getVersionDate());
         addText(1.0f,  doc,"originOfSources",study.getOriginOfSources());
         addText(1.0f,  doc,"dataSources",study.getDataSources());
-        addKeyword(doc,"frequencyOfDataCollection",study.getFrequencyOfDataCollection());
+        addText(1.0f, doc,"frequencyOfDataCollection",study.getFrequencyOfDataCollection());
         addText(1.0f,  doc,"universe",study.getUniverse());
-        addKeyword(doc,"unitOfAnalysis",study.getUnitOfAnalysis());
+        addText(1.0f, doc,"unitOfAnalysis",study.getUnitOfAnalysis());
         addText(1.0f,  doc,"dataCollector",study.getDataCollector());
         addText(1.0f,  doc,"kindOfData", study.getKindOfData());
         addText(1.0f,  doc,"geographicCoverage",study.getGeographicCoverage());
@@ -237,13 +244,12 @@ public class Indexer implements java.io.Serializable  {
         addDate(1.0f, doc,"timePeriodCoveredStart",study.getTimePeriodCoveredStart());
         addDate(1.0f, doc,"dateOfCollection",study.getDateOfCollectionStart());
         addDate(1.0f, doc,"dateOfCollectionEnd",study.getDateOfCollectionEnd());
-        addKeyword(doc,"country",study.getCountry());
-        addText(1.0f,  doc,"country",study.getCountry());
-        addKeyword(doc,"timeMethod",study.getTimeMethod());
-        addKeyword(doc,"samplingProcedure",study.getSamplingProcedure());
-        addKeyword(doc,"deviationsFromSampleDesign",study.getDeviationsFromSampleDesign());
-        addKeyword(doc,"collectionMode",study.getCollectionMode());
-        addKeyword(doc,"researchInstrument",study.getResearchInstrument());
+        addText(1.0f, doc,"country",study.getCountry());
+        addText(1.0f, doc,"timeMethod",study.getTimeMethod());
+        addText(1.0f, doc,"samplingProcedure",study.getSamplingProcedure());
+        addText(1.0f, doc,"deviationsFromSampleDesign",study.getDeviationsFromSampleDesign());
+        addText(1.0f, doc,"collectionMode",study.getCollectionMode());
+        addText(1.0f, doc,"researchInstrument",study.getResearchInstrument());
         addText(1.0f,  doc,"characteristicOfSources",study.getCharacteristicOfSources());
         addText(1.0f,  doc,"accessToSources",study.getAccessToSources());
         addText(1.0f,  doc,"dataCollectionSituation",study.getDataCollectionSituation());
@@ -259,14 +265,14 @@ public class Indexer implements java.io.Serializable  {
             addText(1.0f,  doc, "studyNoteSubject", elem.getSubject());
             addText(1.0f,  doc, "studyNoteText", elem.getText());
         }
-        addKeyword(doc,"responseRate",study.getResponseRate());
-        addKeyword(doc,"samplingErrorEstimate",study.getSamplingErrorEstimate());
+        addText(1.0f, doc,"responseRate",study.getResponseRate());
+        addText(1.0f, doc,"samplingErrorEstimate",study.getSamplingErrorEstimate());
         addText(1.0f,  doc,"otherDataAppraisal",study.getOtherDataAppraisal());
         addText(1.0f,  doc,"placeOfAccess",study.getPlaceOfAccess());
         addText(1.0f,  doc,"originalArchive",study.getOriginalArchive());
-        addKeyword(doc,"availabilityStatus",study.getAvailabilityStatus());
-        addKeyword(doc,"collectionSize",study.getCollectionSize());
-        addKeyword(doc,"studyCompletion",study.getStudyCompletion());
+        addText(1.0f, doc,"availabilityStatus",study.getAvailabilityStatus());
+        addText(1.0f, doc,"collectionSize",study.getCollectionSize());
+        addText(1.0f, doc,"studyCompletion",study.getStudyCompletion());
         addText(1.0f,  doc,"confidentialityDeclaration",study.getConfidentialityDeclaration());
         addText(1.0f,  doc,"specialPermissions",study.getSpecialPermissions());
         addText(1.0f,  doc,"restrictions",study.getRestrictions());
@@ -305,20 +311,47 @@ public class Indexer implements java.io.Serializable  {
         for (Iterator it = studyKeywords.iterator(); it.hasNext();) {
             StudyKeyword elem = (StudyKeyword) it.next();
             addText(1.0f,  doc,"keywordVocabulary",elem.getVocab());
-        }
-        List <StudyTopicClass> studyTopicClasses =study.getStudyTopicClasses();
-        for (Iterator it = studyTopicClasses.iterator(); it.hasNext();) {
-            StudyTopicClass elem = (StudyTopicClass) it.next();
-            addText(1.0f,  doc,"topicClassVocabulary", elem.getVocab());
+            addText(1.0f,  doc,"keywordVocabulary",elem.getVocabURI());
         }
         addText(1.0f,  doc,"protocol",study.getProtocol());
         addText(1.0f,  doc,"authority",study.getAuthority());
         addText(1.0f,  doc,"globalId",study.getGlobalId());
+        List <StudySoftware> studySoftware = study.getMetadata().getStudySoftware();
+        for (Iterator it = studySoftware.iterator(); it.hasNext();) {
+            StudySoftware elem = (StudySoftware) it.next();
+            addText(1.0f,  doc,"studySoftware", elem.getName());
+            addText(1.0f,  doc,"studySoftwareVersion", elem.getSoftwareVersion());
+        }
+        List <StudyGrant> studyGrants = study.getMetadata().getStudyGrants();
+        for (Iterator it = studyGrants.iterator(); it.hasNext();) {
+            StudyGrant elem = (StudyGrant) it.next();
+            addText(1.0f,  doc,"studyGrantNumber", elem.getNumber());
+            addText(1.0f,  doc,"studyGrantNumberAgency", elem.getAgency());
+        }
+        addText(1.0f,  doc, "replicationFor", study.getReplicationFor());
+        List <StudyGeoBounding> studyGeoBounding = study.getMetadata().getStudyGeoBoundings();
+        for (Iterator it = studyGeoBounding.iterator(); it.hasNext();) {
+            StudyGeoBounding elem = (StudyGeoBounding) it.next();
+            addText(1.0f,  doc,"studyEastLongitude", elem.getEastLongitude());
+            addText(1.0f,  doc,"studyWestLongitude", elem.getWestLongitude());
+            addText(1.0f,  doc,"studyNorthLatitude", elem.getNorthLatitude());
+            addText(1.0f,  doc,"studySouthLatitude", elem.getSouthLatitude());
+        }
+        List <FileCategory> fileCategories = study.getFileCategories();
+        for (int i = 0; i < fileCategories.size(); i++) {
+            FileCategory fileCategory = fileCategories.get(i);
+            Collection<StudyFile> studyFiles = fileCategory.getStudyFiles();
+            for (Iterator it = studyFiles.iterator(); it.hasNext();) {
+                StudyFile elem = (StudyFile) it.next();
+                DataTable dataTable = elem.getDataTable();
+                addText(1.0f, doc, "fileDescription",elem.getDescription());
+            }
+        }
+        addText(1.0f,  doc,"unf", study.getUNF());
         writer = new IndexWriter(dir, true, getAnalyzer(), isIndexEmpty());
         writer.setUseCompoundFile(true);
         writer.addDocument(doc);
         writer.close();
-        List <FileCategory> fileCategories = study.getFileCategories();
         writerVar = new IndexWriter(dir, getAnalyzer(), isIndexEmpty());
         for (int i = 0; i < fileCategories.size(); i++) {
             FileCategory fileCategory = fileCategories.get(i);
@@ -999,13 +1032,25 @@ public class Indexer implements java.io.Serializable  {
         anyTerms.add(buildAnyTerm("otherReferences",string));
         anyTerms.add(buildAnyTerm("subtitle",string));
         anyTerms.add(buildAnyTerm("keywordVocabulary",string));
-        anyTerms.add(buildAnyTerm("topicClassVocabulary",string));
+        anyTerms.add(buildAnyTerm("topicVocabClassURI",string));
         anyTerms.add(buildAnyTerm("keywordValue",string));
         anyTerms.add(buildAnyTerm("topicClassValue",string));
         anyTerms.add(buildAnyTerm("protocol",string));
         anyTerms.add(buildAnyTerm("authority",string));
         anyTerms.add(buildAnyTerm("globalId",string));
         anyTerms.add(buildAnyTerm("otherId",string));
+        anyTerms.add(buildAnyTerm("versionDate",string));
+        anyTerms.add(buildAnyTerm("studySoftware",string));
+        anyTerms.add(buildAnyTerm("studySoftwareVersion",string));
+        anyTerms.add(buildAnyTerm("studyGrantNumber",string));
+        anyTerms.add(buildAnyTerm("studyGrantNumberAgency",string));
+        anyTerms.add(buildAnyTerm("replicationFor",string));
+        anyTerms.add(buildAnyTerm("studyEastLongitude",string));
+        anyTerms.add(buildAnyTerm("studyWestLongitude",string));
+        anyTerms.add(buildAnyTerm("studyNorthLatitude",string));
+        anyTerms.add(buildAnyTerm("studySouthLatitude",string));
+        anyTerms.add(buildAnyTerm("fileDescription",string));
+        anyTerms.add(buildAnyTerm("unf",string));
 
         return orPhraseQuery(anyTerms);
     }

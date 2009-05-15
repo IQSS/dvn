@@ -314,6 +314,7 @@ INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditSitePa
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditBannerFooterPage','/admin/EditBannerFooterPage.xhtml',3,2 );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditContactUsPage','/admin/EditContactUsPage.xhtml',3,2 );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditHomePanelsPage','/admin/EditHomePanelsPage.xhtml',3,null );
+INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditStudyCommentsPage', '/admin/EditStudyCommentsPage.xhtml', 3,null );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditUserTermsPage','/admin/EditUseTermsPage.xhtml',3,null );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditDepositUseTermsPage','/admin/EditDepositUseTermsPage.xhtml',3,null );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'PrivilegedUsersPage','/admin/PrivilegedUsersPage.xhtml',3,null );

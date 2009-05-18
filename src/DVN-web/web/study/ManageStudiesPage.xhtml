@@ -25,6 +25,30 @@
             <ice:outputText value="#{bundlePageInfo.manageStudiesTitle}"/>
           </div>
           <div jsfc="ice:panelGroup">
+            <script type="text/javascript">
+                // <![CDATA[
+                jQuery.noConflict();
+                jQuery(function(jQuery) {
+                  jQuery.fn.fixOverflow = function () {
+                    if (jQuery.browser.msie) {
+                      return this.each(function () {
+                        if (this.scrollWidth > this.offsetWidth) {
+                          jQuery(this).css({ 'padding-bottom' : '20px', 'overflow-y' : 'hidden' });
+                        }
+                      });
+                    } else {
+                      return this;
+                    }
+                  };
+                });
+
+                jQuery(document).ready(function(){
+                     var $div = jQuery(".dvnManageStudiesTable");
+                     y = $div.outerHeight() + 17;
+                     jQuery(".dvnManageStudiesTableBlock").css("height", y);
+                });
+                // ]]>
+            </script>
             <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="2"
                            styleClass="dvnManageStudiesTableTop" columnClasses="dvn_StudyListTotals, dvnPaginatorWrap"
                            rendered="#{not empty(ManageStudiesList.studyUIList)}">

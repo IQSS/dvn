@@ -62,7 +62,7 @@
 }
 
 .dvn_content img {margin: 0 !important; padding: 0 !important; border: 0 !important; display: inline !important;}
-.dvn_content textarea {width: 40em;}
+/* .dvn_content textarea {width: 40em;} */
 .dvn_content ul {list-style-image: none;}
 
 .dvn_floatL {
@@ -1418,8 +1418,9 @@ td.vdcEditFilesColC{
 /* Manage Studies Page */
 .dvnManageStudiesTableTop {border: 1px solid #d9d9d9; border-bottom: 0; width: 100%;}
 .dvnManageStudiesTableTop .dvnPaginatorWrap {padding: .5em 0;}
-.dvnManageStudiesTableBlock {width: 100%; overflow: auto;}
-* html .dvnManageStudiesTableBlock {overflow: visible; overflow-x: auto; overflow-y: hidden; padding-bottom: 17px;} /* IE hack */
+.dvnManageStudiesTableBlock {position: relative; width: 100%; overflow: auto;}
+.dvnManageStudiesTable {position: absolute; top: 0; left: 0;}
+
 .dvnManageStudiesTable {margin-top: 0;}
 .dvnManageStudiesTable span.iceOutTxt {font-size: 90% !important;}
 .dvnManageStudiesTable th span.iceOutTxt {font-size: 100% !important;}

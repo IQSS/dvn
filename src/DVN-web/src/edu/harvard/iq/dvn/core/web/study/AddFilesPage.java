@@ -247,7 +247,7 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable,
         synchronized (fileList) {
             fileList.add(currentFile);
         }
-
+        /* removed this so that Add Files will work with Icefaces 1.8
         try {
             if (persistentFacesState != null) {
                 persistentFacesState.executeAndRender();
@@ -255,7 +255,7 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable,
         } catch (RenderingException ee) {
             mLog.error(ee.getMessage());
         }
-
+        */
 
     }
 

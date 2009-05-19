@@ -32,6 +32,7 @@ package edu.harvard.iq.dvn.core.index;
 import edu.harvard.iq.dvn.core.mail.MailServiceLocal;
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
+import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -56,7 +57,7 @@ import javax.jms.ObjectMessage;
 })
 public class IndexMessage implements MessageListener, java.io.Serializable {
     @EJB StudyServiceLocal studyService;
-//    @EJB VDCServiceLocal vdcService;
+    @EJB VDCNetworkServiceLocal vdcNetworkService;
     @EJB MailServiceLocal mailService;
     private static final Logger logger = Logger.getLogger("edu.harvard.iq.dvn.core.index.IndexMessage");
 
@@ -119,10 +120,7 @@ public class IndexMessage implements MessageListener, java.io.Serializable {
             
         }
         Indexer indexer = Indexer.getInstance();
-        String indexAdminMail = System.getProperty("dvn.indexadmin");
-        if (indexAdminMail == null){
-            indexAdminMail = "dataverse@lists.hmdc.harvard.edu";
-        }
+       
         try {
             indexer.addDocument(study);
             try {
@@ -133,7 +131,7 @@ public class IndexMessage implements MessageListener, java.io.Serializable {
         } catch (IOException ex) {
             ex.printStackTrace();
             try {
-                mailService.sendDoNotReplyMail(indexAdminMail,"IO problem", "Check index write lock "+InetAddress.getLocalHost().getHostAddress() + " , studyId " + studyId);
+                mailService.sendDoNotReplyMail(vdcNetworkService.find().getContactEmail(),"IO problem", "Check index write lock "+InetAddress.getLocalHost().getHostAddress() + " , studyId " + studyId);
             } catch (UnknownHostException u) {
                 u.printStackTrace();
             }

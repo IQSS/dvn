@@ -240,10 +240,7 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
         Date indexTime = new Date();
         Study study = studyService.getStudy(studyId);
         Indexer indexer = Indexer.getInstance();
-        String indexAdminMail = System.getProperty("dvn.indexadmin");
-        if (indexAdminMail == null) {
-            indexAdminMail = "dataverse@lists.hmdc.harvard.edu";
-        }
+        
         try {
             indexer.addDocument(study);
             try {
@@ -259,7 +256,7 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
              */
             ex.printStackTrace();
             try {
-                mailService.sendDoNotReplyMail(indexAdminMail, "IO problem", "Check index write lock " + InetAddress.getLocalHost().getHostAddress() + " , study id " + studyId);
+                mailService.sendDoNotReplyMail(vdcNetworkService.find().getContactEmail(), "IO problem", "Check index write lock " + InetAddress.getLocalHost().getHostAddress() + " , study id " + studyId);
             } catch (UnknownHostException u) {
                 u.printStackTrace();
             }

@@ -257,4 +257,12 @@ public class VDCRequestBean extends VDCBaseBean implements java.io.Serializable 
         //String studyListingIndex = getVDCRequestBean().getStudyListingIndex();
         return studyListingIndex != null ? "&studyListingIndex=" + studyListingIndex : "";
     }
+
+    public String getDataversePageTitle() {
+        String title = this.getVdcNetwork().getName()+ " Dataverse Network";
+        if (this.getCurrentVDC()!=null) {
+            title = getCurrentVDC().getName() + " Dataverse - " + title;
+        }
+        return title;
+    }
 }

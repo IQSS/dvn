@@ -11,7 +11,7 @@
 </head>
 <body>
   <gui:composition template="/template.xhtml">
-    <gui:param name="pageTitle" value="#{bundlePageInfo.advancedSearchTitle}"/>
+    <gui:param name="pageTitle" value="#{bundlePageInfo.advancedSearchTitle} - #{VDCRequest.dataversePageTitle}"/>
     <gui:define name="body">
       <ice:form id="advsearch">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>

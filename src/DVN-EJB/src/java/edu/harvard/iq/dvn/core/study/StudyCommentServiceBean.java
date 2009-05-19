@@ -59,7 +59,7 @@ public class StudyCommentServiceBean implements StudyCommentService {
     @Override
     public List <StudyComment> getStudyComments(Long studyId){
         String studyCommentsByStudyIdQuery = "Select c from StudyComment c where c.study.studyId = :commentStudyId";
-        List<StudyComment> studyComments = em.createQuery(studyCommentsByStudyIdQuery).setParameter("commentStudyId", studyId).getResultList();
+        List<StudyComment> studyComments = em.createQuery(studyCommentsByStudyIdQuery).setParameter("commentStudyId", studyId.toString()).getResultList();
         return studyComments;
     }
 

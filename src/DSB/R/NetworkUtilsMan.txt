@@ -1,0 +1,118 @@
+This file contains a list of functions and example uses for the NetworkUtils
+backend.
+
+Assume that "g" is an igraph graph object.
+
+Basic
+=====
+
+Vertex Count:
+-------------
+Usage:
+    vcount(g)
+
+Arguments:
+    g: The graph object.
+
+Returns:
+    The number of vertices in the graph as an integer.
+
+Edge Count:
+-----------
+Usage:
+    ecount(g)
+
+Arguments:
+    g: The graph object.
+
+Returns:
+    The number of edges in the graph as an integer.
+
+List Vertex Attributes:
+-----------------------
+Usage:
+    list.vertex.attributes(g)
+
+Arguments:
+    g: The graph object.
+
+Returns:
+    A vector of strings containing the names of the attributes of the vertices
+    in g.
+
+List Edge Attributes:
+---------------------
+Usage:
+    list.edge.attributes(g)
+
+Arguments:
+    g: The grpah object.
+
+Returns:
+    A vector of strings containing the names of the attributes of the edges in
+    g.
+
+Subsetting
+==========
+
+Subset by Vertices:
+-------------------
+Usage:
+    vertex_subset(g, subset_str)
+
+Arguments:
+    g: The graph object.
+    subset_str: A boolean expression as a string. May contain names of vertex
+        attributes as variables.
+
+Returns:
+    An igraph object containing only vertices whose attributes satisfy the
+    expression in subset_str. Only edges that are incident to the remaining
+    vertices are retained.
+
+Example:
+    #Overwrites g with a graph only containing vertices whose zipcode is
+    #02139.
+    g <- vertex_subset(g, "zipcode==\"02139\"")
+
+Subset by Edges:
+----------------
+Usage:
+    edge_subset(g, subset_str, drop_disconnected)
+
+Arguments:
+    g: The graph object.
+    subset_str: A boolean expression as a string. May contain names of edge
+        attributes as variables.
+    drop_disconnected: A bool controlling whether or not to drop vertices that
+        are disconnected (not incident to any edge) after edges are subsetted.
+        Set to FALSE by default, thus returning a graph with the same number
+        of vertices as the original.
+
+Returns:
+    An igraph object containing only edges whose attributes satisfy the
+    expression in subset_str. Depending on the value of drop_disconnected, the
+    returned object may no longer contain disconnected vertices.
+
+Example:
+    #Overwrites g with a graph containing only edges corresponding to
+    #collaborations earlier than 2001. Because the drop_disconnected argument
+    #is omitted, no vertices will be dropped even if they are disconnected after
+    #subsetting, but the number of edges does drop as expected.
+    vcount(g)
+    ecount(g)
+    g <- edge_subset(g, "appyear <= 2001")
+    vcount(g)
+    ecount(g)
+
+    #This time the disconnected vertices get dropped and the vertex
+    g <- edge_subset(g, "appyear <= 2001", drop_disconnected=TRUE)
+    vcount(g)
+
+Intelligent Subsetting
+======================
+TODO
+
+Adding Measures
+===============
+TODO

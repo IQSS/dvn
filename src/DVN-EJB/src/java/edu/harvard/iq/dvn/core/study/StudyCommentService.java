@@ -43,5 +43,7 @@ public interface StudyCommentService {
     public java.util.List<StudyComment> findByStatus(StudyComment.Status status);
 
     public void okComment(Long commentId);
+
+    public List<StudyComment> getStudyComments(Long studyId);
     
 }

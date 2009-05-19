@@ -20,10 +20,8 @@
 
 package edu.harvard.iq.dvn.core.study;
 
-import edu.harvard.iq.dvn.core.admin.UserServiceLocal;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import java.util.List;
-import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -57,6 +55,13 @@ public class StudyCommentServiceBean implements StudyCommentService {
         return findByStatus(StudyComment.Status.FLAGGED);
     }
 
+
+    @Override
+    public List <StudyComment> getStudyComments(Long studyId){
+        String studyCommentsByStudyIdQuery = "Select c from StudyComment c where c.study.studyId = :commentStudyId";
+        List<StudyComment> studyComments = em.createQuery(studyCommentsByStudyIdQuery).setParameter("commentStudyId", studyId).getResultList();
+        return studyComments;
+    }
 
     @Override
     public List <StudyComment> getStudyComments(){

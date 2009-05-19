@@ -111,8 +111,47 @@ Example:
 
 Intelligent Subsetting
 ======================
-TODO
+
+Component Extraction:
+---------------------
+Usage:
+    component(g, num)
+
+Arguments:
+    g: The graph object.
+    num: The number of the component to be extracted, where 1 is the biggest,
+        2 is the second biggest, etc, where size is measured by number of
+        vertices in the component. Ties are broken arbitrarily.
+
+Returns:
+    An igraph object which contains the largest component of the input graph.
 
 Adding Measures
 ===============
-TODO
+
+Degree:
+-------
+Usage:
+    add_degree(g)
+
+Arguments:
+    g: The graph object.
+
+Returns:
+    An igrpah object 
+
+PageRank:
+---------
+Usage:
+    add_pagerank(g, d)
+
+Arguments:
+    g: The graph object.
+    d: The damping parameter in PageRank. It determines the baseline
+        importance of an individual independent of their connectedness in the
+        graph. 
+
+Returns:
+    An igraph object identical to the input graph but with an additional vertex
+    attribute corresponding to the PageRank of the vertex.
+

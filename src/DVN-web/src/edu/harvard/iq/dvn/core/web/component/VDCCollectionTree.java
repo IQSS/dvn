@@ -394,9 +394,9 @@ public class VDCCollectionTree implements java.io.Serializable  {
     } 
     
 
-    private static final String XP_BRANCH_CONTRACTED_ICON = "./resources/icefaces/dvn_rime/css-images/tree_folder_close.gif";
-    private static final String XP_BRANCH_EXPANDED_ICON = "./resources/icefaces/dvn_rime/css-images/tree_folder_open.gif";
-    private static final String XP_BRANCH_LEAF_ICON = "./resources/icefaces/dvn_rime/css-images/tree_document.gif";
+    private static final String XP_BRANCH_CONTRACTED_ICON = "../resources/icefaces/dvn_rime/css-images/tree_folder_close.gif";
+    private static final String XP_BRANCH_EXPANDED_ICON = "../resources/icefaces/dvn_rime/css-images/tree_folder_open.gif";
+    private static final String XP_BRANCH_LEAF_ICON = "../resources/icefaces/dvn_rime/css-images/tree_document.gif";
 
     public class UrlNodeUserObject extends IceUserObject {
 

@@ -12,7 +12,7 @@
 </head>
 <body>
   <gui:composition template="/template.xhtml">
-    <gui:param name="pageTitle" value="#{bundlePageInfo.createClassificationTitle}"/>
+    <gui:param name="pageTitle" value="#{bundlePageInfo.createClassificationTitle} - #{VDCRequest.dataversePageTitle}"/>
     <gui:define name="body">
       <ice:form id="AddClassificationsPageForm">
         <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound #{(addClassificationsPage.result == true) ? 'dvnSuccessMessage' : 'dvnInformationMessage'}">

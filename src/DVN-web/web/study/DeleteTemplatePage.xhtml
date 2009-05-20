@@ -11,14 +11,14 @@
 </head>
 <body>
   <gui:composition template="/template.xhtml">
-    <gui:param name="pageTitle" value="DVN - Delete Template"/>
+    <gui:param name="pageTitle" value="Delete Study Template - #{VDCRequest.dataversePageTitle}"/>
     <gui:define name="body">
       <ice:form id="form1">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <ice:inputHidden id="templateId" value="#{DeleteTemplatePage.templateId}"/>
         <div class="dvn_section">
           <div class="dvn_sectionTitle">
-            <ice:outputText value="Delete Template"/>
+            <ice:outputText value="Delete Study Template"/>
           </div>
           <div class="dvn_sectionBox">
             <div class="dvn_margin12">

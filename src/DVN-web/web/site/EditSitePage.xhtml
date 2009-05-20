@@ -11,7 +11,7 @@
 </head>
 <body>
   <gui:composition template="/template.xhtml">
-    <gui:param name="pageTitle"  value="#{bundlePageInfo.editDvSettingsTitle}"/>
+    <gui:param name="pageTitle"  value="#{bundlePageInfo.editDvSettingsTitle} - #{VDCRequest.dataversePageTitle}"/>
     <gui:define name="body">
       <ice:form id="editsiteform">
         <script type="text/javascript">

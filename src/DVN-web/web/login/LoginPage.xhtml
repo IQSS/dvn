@@ -11,7 +11,7 @@
 </head>
 <body>
   <gui:composition template="/vanilla_template.xhtml">
-    <gui:param name="pageTitle" value="#{bundlePageInfo.loginTitle}"/>
+    <gui:param name="pageTitle" value="#{bundlePageInfo.loginTitle} - #{VDCRequest.dataversePageTitle}"/>
     <gui:define name="body">
       <div id="dvnLoginPageWrap">
       <div class="dvnRound">

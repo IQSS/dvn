@@ -11,7 +11,7 @@
 </head>
 <body>
     <gui:composition template="/template.xhtml">
-        <gui:param name="pageTitle" value="DVN - Request to Create a Dataverse"/>
+        <gui:param name="pageTitle" value="Request to Create a Dataverse - #{VDCRequest.dataversePageTitle}"/>
         <gui:define name="body">
             <f:loadBundle basename="Bundle" var="bundle"/>
             <ice:form  id="ContributorRequestForm">

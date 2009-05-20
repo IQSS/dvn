@@ -11,7 +11,7 @@
 </head>
 <body>
   <gui:composition template="/template.xhtml">
-    <gui:param name="pageTitle" value="DVN - User Account"/>
+    <gui:param name="pageTitle" value="User Account - #{VDCRequest.dataversePageTitle}"/>
     <gui:define name="body">
       <ice:form id="accountForm">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>

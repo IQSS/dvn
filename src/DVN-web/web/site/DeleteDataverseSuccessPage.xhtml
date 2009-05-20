@@ -11,7 +11,7 @@
 </head>
 <body>
   <gui:composition template="/template.xhtml">
-    <gui:param name="pageTitle" value="#{bundlePageInfo.deleteDataverseTitle}"/>
+    <gui:param name="pageTitle" value="#{bundlePageInfo.deleteDataverseTitle} - #{VDCRequest.dataversePageTitle}"/>
     <gui:define name="body">
       <h:form id="form1">
         <input type="hidden" name="pageName" value="DeleteSuccessPage"/>

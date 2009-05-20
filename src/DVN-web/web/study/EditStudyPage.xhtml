@@ -13,7 +13,7 @@
 </head>
 <body>
   <gui:composition template="/template.xhtml">
-    <gui:param name="pageTitle" value="#{bundlePageInfo.editStudyTitle}"/>
+    <gui:param name="pageTitle" value="#{bundlePageInfo.editStudyTitle} - #{VDCRequest.dataversePageTitle}"/>
     <gui:define name="body">
       <f:loadBundle basename="EditStudyBundle" var="editstudybundle"/>
       <script type="text/javascript">

@@ -11,7 +11,7 @@
 </head>
 <body>
   <gui:composition template="/template.xhtml">
-    <gui:param name="pageTitle" value="DVN - Study Locked"/>
+    <gui:param name="pageTitle" value="Study Locked - #{VDCRequest.dataversePageTitle}"/>
     <gui:define name="body">
       <ice:form id="studyLockedForm">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>

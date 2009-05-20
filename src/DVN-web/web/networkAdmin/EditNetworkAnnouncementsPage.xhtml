@@ -11,7 +11,7 @@
 </head>
 <body>
   <gui:composition template="/template.xhtml">
-    <gui:param name="pageTitle" value="#{bundlePageInfo.editDvnDescriptionTitle}"/>
+    <gui:param name="pageTitle" value="#{bundlePageInfo.editDvnDescriptionTitle} - #{VDCRequest.dataversePageTitle}"/>
     <gui:define name="body">
       <ice:form id="editNetworkAnnouncementsForm">
         <div class="dvn_section">

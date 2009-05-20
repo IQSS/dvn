@@ -11,7 +11,7 @@
 </head>
 <body>
   <gui:composition template="/template.xhtml">
-    <gui:param name="pageTitle" value="#{bundlePageInfo.manageTemplatesTitle}"/>
+    <gui:param name="pageTitle" value="#{bundlePageInfo.manageTemplatesTitle} - #{VDCRequest.dataversePageTitle}"/>
     <gui:define name="body">
       <script type="text/javascript">
           // <![CDATA[

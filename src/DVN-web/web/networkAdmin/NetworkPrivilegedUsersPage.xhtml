@@ -10,7 +10,7 @@
 </head>
 <body>
   <gui:composition template="/template.xhtml">
-    <gui:param name="pageTitle" value="#{bundlePageInfo.manageDvnPermissionsTitle}"/>
+    <gui:param name="pageTitle" value="#{bundlePageInfo.manageDvnPermissionsTitle} - #{VDCRequest.dataversePageTitle}"/>
     <gui:define name="body">
       <ice:form id="NetworkPrivilegedUsersPageView">
         <input type="hidden" name="pageName" value="NetworkPrivilegedUsersPage"/>

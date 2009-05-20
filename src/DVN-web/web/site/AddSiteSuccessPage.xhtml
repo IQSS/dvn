@@ -11,7 +11,7 @@
 </head>
 <body>
   <gui:composition template="/template.xhtml">
-    <gui:param name="pageTitle" value="DVN - Dataverse Creation Success"/>
+    <gui:param name="pageTitle" value="Dataverse Creation Success - #{VDCRequest.dataversePageTitle}"/>
     <gui:define name="body">
       <ice:form id="creatorRequestForm">
         <input type="hidden" name="pageName" value="CreatorRequestPage"/>

@@ -14,7 +14,7 @@
 
 <body>
   <gui:composition template="/template.xhtml">
-    <gui:param name="pageTitle" value="DVN - Study"/>
+    <gui:param name="pageTitle" value="#{studyPage.studyUI.study.title} - #{VDCRequest.dataversePageTitle}"/>
     <gui:param name="uniquifier" value="#{studyPage.selectedIndex}"/> 
     <gui:define name="body">
         <script type="text/javascript">

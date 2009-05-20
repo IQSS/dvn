@@ -13,7 +13,7 @@
 
 <body>
   <gui:composition template="/template.xhtml">
-    <gui:param name="pageTitle" value="DVN - #{StudyListingPage.listHeader}"/>
+    <gui:param name="pageTitle" value="#{VDCRequest.dataversePageTitle}"/>
     <gui:define name="body">
       <ice:form id="form1">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>

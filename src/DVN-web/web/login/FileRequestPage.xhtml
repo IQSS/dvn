@@ -11,7 +11,7 @@
 </head>
 <body>
   <gui:composition template="/template.xhtml">
-    <gui:param name="pageTitle" value="DVN - Request Access to File"/>
+    <gui:param name="pageTitle" value="Request Access to File - #{VDCRequest.dataversePageTitle}"/>
     <gui:define name="body">
       <ice:form id="fileRequestForm">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>

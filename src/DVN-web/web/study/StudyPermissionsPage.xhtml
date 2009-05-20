@@ -11,7 +11,7 @@
 </head>
 <body>
   <gui:composition template="/template.xhtml">
-    <gui:param name="pageTitle" value="#{bundlePageInfo.manageStudyPermissionsTitle}" />
+    <gui:param name="pageTitle" value="#{bundlePageInfo.manageStudyPermissionsTitle} - #{VDCRequest.dataversePageTitle}"/>
     <gui:define name="body">
       <script type="text/javascript">
           // <![CDATA[

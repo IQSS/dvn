@@ -11,7 +11,7 @@
 </head>
 <body>
     <gui:composition template="/template.xhtml">
-        <gui:param name="pageTitle" value="DVN - Analysis Results"/>
+        <gui:param name="pageTitle" value="Analysis Results - #{VDCRequest.dataversePageTitle}"/>
         <gui:define name="body">
             <h:form id="form">
                 <div jsfc="ice:panelGroup" styleClass="dvn_section">

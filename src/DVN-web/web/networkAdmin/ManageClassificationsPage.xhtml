@@ -12,7 +12,7 @@
 </head>
 <body>
   <gui:composition template="/template.xhtml">
-    <gui:param name="pageTitle" value="#{bundlePageInfo.manageClassificationsTitle}"/>
+    <gui:param name="pageTitle" value="#{bundlePageInfo.manageClassificationsTitle} - #{VDCRequest.dataversePageTitle}"/>
     <gui:define name="body">
       <ice:form>
         <div class="dvn_section">

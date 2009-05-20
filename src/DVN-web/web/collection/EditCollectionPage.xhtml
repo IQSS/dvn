@@ -11,7 +11,7 @@
 </head>
 <body>
   <gui:composition template="/template.xhtml">
-    <gui:param name="pageTitle" value="#{(EditCollectionPage.collection.rootCollection) ? bundlePageInfo.editRootCollectionTitle : bundlePageInfo.editCollectionTitle}"/>
+    <gui:param name="pageTitle" value="#{(EditCollectionPage.collection.rootCollection) ? bundlePageInfo.editRootCollectionTitle : bundlePageInfo.editCollectionTitle} - #{VDCRequest.dataversePageTitle}"/>
     <gui:define name="body">
       <script type="text/javascript">
           // <![CDATA[

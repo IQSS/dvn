@@ -51,7 +51,7 @@ public class VDCSummaryStatisticsServlet extends HttpServlet {
         return variableService;
     }
     
-    private static String imgPrefix = "<img src='/dvn/resources/headerblue.png' height='10px' hspace='2px' width='";
+    private static String imgPrefix = "<img src='/dvn/resources/images/headerblue.png' height='10px' hspace='2px' width='";
     
     private List<DataVariable> dataVariables = new ArrayList<DataVariable>();
     /**
@@ -103,10 +103,10 @@ public class VDCSummaryStatisticsServlet extends HttpServlet {
 
     public String getHtmlTableFragment(Map mp, String hdrKey, String hdrValue, String varId) {
         //StringBuilder sb = new StringBuilder("<table border='1px'><tr><td>"+hdrKey+"</td><td>"+hdrValue+"</td></tr>");
-        // /resources/headerblue.png
+        // /resources/images/headerblue.png
 
         // <img src="./headerblue.png" height="10" hspace="2" width="157">
-        // <img src='/resources/headerblue.png' height='10px' hspace='2px' width='157'>
+        // <img src='/resources/images/headerblue.png' height='10px' hspace='2px' width='157'>
 
         StringBuilder sb = new StringBuilder(
             "<div id='"+summaryStatTableRootTagIdPrefix+ varId +"' class='statbox'>"

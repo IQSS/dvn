@@ -149,12 +149,12 @@
                               NO FILES NEED TO GO SOMEWHERE ELSE
                               <div>
                                 <ice:graphicImage alt="This study contains no files." rendered="#{!studyUI.files}"
-                                                  title="This study contains no files." value="/resources/icon_nofiles.gif" />
+                                                  title="This study contains no files." value="/resources/images/icon_nofiles.gif" />
                                 <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyUI.study.id}&amp;tab=files&amp;studyListingIndex=#{StudyListingPage.studyListingIndex}" rendered="#{studyUI.files}">
                                   <ice:graphicImage styleClass="vdcNoBorders" alt="This study contains subsettable files." rendered="#{studyUI.subsettable}"
-                                                    title="This study contains subsettable files." value="/resources/icon_subsettable.gif" />
+                                                    title="This study contains subsettable files." value="/resources/images/icon_subsettable.gif" />
                                   <ice:graphicImage styleClass="vdcNoBorders" alt="This study contains only non-subsettable files." rendered="#{!studyUI.subsettable}"
-                                                    title="This study contains only non-subsettable files." value="/resources/icon_files.gif" />
+                                                    title="This study contains only non-subsettable files." value="/resources/images/icon_files.gif" />
                                 </ice:outputLink>
                               </div>
                               -->
@@ -217,8 +217,8 @@
                       <ice:outputText styleClass="dvnStudyListGlobalId" value="#{studyUI.study.globalId}"/>
                       <div class="dvnStudyListDownloadCount">
                       <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyUI.study.id}&amp;tab=files&amp;studyListingIndex=#{StudyListingPage.studyListingIndex}">
-                          <ice:graphicImage url="/resources/icon_analyze.gif" title="View study files" style="vertical-align: middle;" rendered="#{studyUI.files and studyUI.subsettable}"/>
-                          <ice:graphicImage url="/resources/icon_download.gif" title="View study files" style="vertical-align: middle;" rendered="#{studyUI.files and !studyUI.subsettable}"/>
+                          <ice:graphicImage url="/resources/images/icon_analyze.gif" title="View study files" style="vertical-align: middle;" rendered="#{studyUI.files and studyUI.subsettable}"/>
+                          <ice:graphicImage url="/resources/images/icon_download.gif" title="View study files" style="vertical-align: middle;" rendered="#{studyUI.files and !studyUI.subsettable}"/>
                       </ice:outputLink>
                       <ice:outputText styleClass="dvnStudyListIDDownloadsNonSubsettable" value="#{studyUI.downloadCount} download" rendered="#{studyUI.downloadCount == 1 and !studyUI.subsettable}"/>
                       <ice:outputText styleClass="dvnStudyListIDDownloadsSubsettable" value="#{studyUI.downloadCount} download/analysis" rendered="#{studyUI.downloadCount == 1 and studyUI.subsettable}"/>

@@ -137,7 +137,7 @@
 .dvn_sectionBox {width: 100%; border-top: 2px solid #91a5a9; border-left: 1px solid #ccc; text-align: left;}
 .dvn_sectionBoxNoBorders {width: 100%; padding-top: .75em; clear: both; text-align: left;}
 
-.dvn_block {margin-bottom: 12px; padding: 6px; background: url(images/blocks_bg.png) no-repeat #f8f8f8; border: 1px solid #e9e5e5;}
+.dvn_block {margin-bottom: 12px; padding: 6px; background: url(/dvn/resources/images/blocks_bg.png) no-repeat #f8f8f8; border: 1px solid #e9e5e5;}
 .dvn_block span {margin: 0; padding: 0; color: #526f76; font-weight: bold; text-transform: uppercase;}
 .dvn_blockTitleBar {margin-bottom: 12px; padding: 6px; background: #e6ebed; border: 1px solid #ddd; font-style: italic; text-align: center;}
 
@@ -155,7 +155,7 @@ span.disabled {font-weight: bold;}
 .dvn_sectionPanels {display: inline; position: relative; float: left; margin-right: 2%; width: 22%;}
 .dvn_sectionPanelTitle {padding: .25em 0; border-bottom: 2px solid #91a5a9; color: #555; font-weight: bold;}
 .dvn_sectionPanels div.dvn_sectionPanelText {margin-bottom: 1em; padding: .5em; }
-.dvn_sectionPanels ul {margin-left: 2em; list-style-image: url(icon_bullet.gif);}
+.dvn_sectionPanels ul {margin-left: 2em; list-style-image: url(/dvn/resources/images/icon_bullet.gif);}
 .dvn_sectionPanels li {margin: 0.5em 0;}
 
 .dvn_sectionPanels .TreeContent a:link, .dvn_sectionPanels .TreeContent a:visited, .dvn_sectionPanels .TreeContent a:hover, .dvn_sectionPanels .TreeContent a:active {font-size: 90% !important;}
@@ -220,23 +220,23 @@ span.disabled {font-weight: bold;}
 /* Header links styling */
 h3.head a {
     display: block;
-    background: #dadee0 url(menudown.gif) no-repeat;
+    background: #dadee0 url(/dvn/resources/images/menudown.gif) no-repeat;
     background-position: 98% 50%;
     padding: .5em 26px .5em .5em;
 }
 h3.head a:hover {
-    background: #c55b28 url(menudown.gif) no-repeat;
+    background: #c55b28 url(/dvn/resources/images/menudown.gif) no-repeat;
     background-position: 98% 50%;
     padding: .5em 26px .5em .5em;
     color: white;
 }
 h3.selected a {
-    background: silver url(menuup.gif) no-repeat;
+    background: silver url(/dvn/resources/images/menuup.gif) no-repeat;
     background-position: 98% 50%;
     padding: .5em 26px .5em .5em;
 }
 h3.selected a:hover {
-    background: #c55b28 url(menuup.gif) no-repeat;
+    background: #c55b28 url(/dvn/resources/images/menuup.gif) no-repeat;
     background-position: 98% 50%;
     padding: .5em 26px .5em .5em;
     color: white;
@@ -245,24 +245,24 @@ h3.selected a:hover {
 /* Xtra Header links styling */
 h4.head a {
     display: block;
-    background: transparent url(menudown.gif) no-repeat;
+    background: transparent url(/dvn/resources/images/menudown.gif) no-repeat;
     padding: 0 26px 0 .5em;
     background-position: 98% 50%;
 }
 h4.head a:hover {
-    background: #c55b28 url(menudown.gif) no-repeat;
+    background: #c55b28 url(/dvn/resources/images/menudown.gif) no-repeat;
     background-position: 98% 50%;
     padding: 0 26px 0 .5em;
     color: white;
 }
 h4.selected a {
-    background: transparent url(menuup.gif) no-repeat;
+    background: transparent url(/dvn/resources/images/menuup.gif) no-repeat;
     background-position: 98% 50%;
     padding: 0 26px 0 .5em;
     font-weight: bold;
 }
 h4.selected a:hover {
-    background: #c55b28 url(menuup.gif) no-repeat;
+    background: #c55b28 url(/dvn/resources/images/menuup.gif) no-repeat;
     background-position: 98% 50%;
     padding: 0 26px 0 .5em;
     color: white;
@@ -409,13 +409,13 @@ div.dvnInformationMessage {
   max-width: 900px;
   width: 80%;
   margin: 0 auto 1em auto;
-  background: url(icon_information.png) #bfdcf1 4px no-repeat;
+  background: url(/dvn/resources/images/icon_information.png) #bfdcf1 4px no-repeat;
 }
 div.dvnSuccessMessage {
   max-width: 900px;
   width: 80%;
   margin: 0 auto 1em auto;
-  background: url(icon_success.png) #cee6bb 4px no-repeat;
+  background: url(/dvn/resources/images/icon_success.png) #cee6bb 4px no-repeat;
 }
 div.dvnSuccessMessage div.dvnMsgBlockContainer {
   border: 1px solid #cee6bb; /* FIX: IE8 vertical-align: middle */
@@ -459,7 +459,7 @@ div.dvnWarningMessage {
   width: 80%;
   margin: 0 auto 1em auto;
   padding-left: 58px;
-  background: url(icon_warning.png) #e6e4d3 4px no-repeat;
+  background: url(/dvn/resources/images/icon_warning.png) #e6e4d3 4px no-repeat;
 }
 div.dvnWarningMessage div.dvnMsgBlockContainer {
   border: 1px solid #e6e4d3; /* FIX: IE8 vertical-align: middle */
@@ -565,7 +565,7 @@ a.dvn_more:link, a.dvn_more:visited, a.dvn_more:hover, a.dvn_more:active{
     position: absolute;
     display:block;
     width: 300px;
-    background-image: url(tooltipcallout.gif);
+    background-image: url(/dvn/resources/images/tooltipcallout.gif);
     background-repeat: no-repeat;
     padding-top: 10px;
     padding-left: 0px;
@@ -595,7 +595,7 @@ a.dvn_more:link, a.dvn_more:visited, a.dvn_more:hover, a.dvn_more:active{
     border-left: 1px solid #cccccc; 
     border-right: 1px solid #cccccc; 
     border-bottom: 1px solid #cccccc;
-    background-image: url(solidrectangle.gif);
+    background-image: url(/dvn/resources/images/solidrectangle.gif);
     font-weight: 800;
 }
 /* end inline help support */
@@ -739,7 +739,7 @@ span.dvnHmpgGroupHeader {float: left; font-size: 150% !important; font-weight: b
 .dvnHmpgGroupCreateBlock {float: right;}
 a.dvnHmpgGroupCreateLink:link, a.dvnHmpgGroupCreateLink:visited,
 a.dvnHmpgGroupCreateLink:hover, a.dvnHmpgGroupCreateLink:active {
-    padding-right: 28px; color: #c55b28; background: url(start-arrows.gif) 100% 52% no-repeat; font-size: 95%; text-decoration: none;
+    padding-right: 28px; color: #c55b28; background: url(/dvn/resources/images/start-arrows.gif) 100% 52% no-repeat; font-size: 95%; text-decoration: none;
 }
 .dvnHmpgClassificationDesc {margin-bottom: .25em; width: 100%;}
 .dvnHmpgGroupNoDVs {
@@ -848,7 +848,7 @@ li.dvnAlphaBrowseSelected  a {
 .dvnStudyListContributorBlock {padding-bottom: .25em;}
 a.dvnStudyListContributorLink:link, a.dvnStudyListContributorLink:visited,
 a.dvnStudyListContributorLink:hover, a.dvnStudyListContributorLink:active {
-    padding-right: 28px; color: #c55b28; background: url(start-arrows.gif) 100% 52% no-repeat; font-size: 95%; text-decoration: none;
+    padding-right: 28px; color: #c55b28; background: url(/dvn/resources/images/start-arrows.gif) 100% 52% no-repeat; font-size: 95%; text-decoration: none;
 }
 
 .dvnStudyListResultsTop {border-bottom: 1px solid #dcdddf;}
@@ -1013,13 +1013,13 @@ ul.editDropDown {
 /* Style rules for Study Page (Cataloging Info and Files)
 */
 .dvnStudyRestricted {
-    background-image: url(icon_restricted.18.png);
+    background-image: url(/dvn/resources/images/icon_restricted.18.png);
 	background-repeat: no-repeat;
 	background-position: left .25em;
     padding-left: 22px;
 }
 .dvnStudyPublic {
-    background-image: url(icon_public.18.png);
+    background-image: url(/dvn/resources/images/icon_public.18.png);
 	background-repeat: no-repeat;
 	background-position: left .25em;
     padding-left: 22px;
@@ -1129,12 +1129,12 @@ td.vdcStudyFilesDownloadAllButton {width: 60%;}
 }
 
 .TogglePaneFancyHeader {
-	background-image: url(icon_expand.gif);
+	background-image: url(/dvn/resources/images/icon_expand.gif);
 	background-repeat: no-repeat;
 	background-position: right .25em;
 }
 .TogglePaneFancyHeaderClosed {
-	background-image: url(icon_contract.gif);
+	background-image: url(/dvn/resources/images/icon_contract.gif);
 	background-repeat: no-repeat;
 	background-position: right .25em;
 }
@@ -1169,7 +1169,7 @@ span.vdcStudyFileRowFileDetails {font-size: 90% !important; color: darkgray; whi
 .vdcStudyFileRowFileDownload {padding: .25em 0;}
 
 a.vdcStudyFileRowFileDownloadLink:link, a.vdcStudyFileRowFileDownloadLink:hover, 
-a.vdcStudyFileRowFileDownloadLink:active, a.vdcStudyFileRowFileDownloadLink:visited {padding-left: 24px; padding-bottom: 4px; padding-top: 4px; background: url(icon_download.gif) no-repeat; font-size: 90% !important; vertical-align: top;}
+a.vdcStudyFileRowFileDownloadLink:active, a.vdcStudyFileRowFileDownloadLink:visited {padding-left: 24px; padding-bottom: 4px; padding-top: 4px; background: url(/dvn/resources/images/icon_download.gif) no-repeat; font-size: 90% !important; vertical-align: top;}
 span.vdcStudyFileRowFileDownloadRestricted {margin-left: 3px; font-size: 90% !important; color: darkgray; vertical-align: top;}
 img.vdcStudyFileRowFileDownloadAsIcon {border: 0; vertical-align: middle;}
 select.vdcStudyFileRowFileDownloadAsList {margin-left: .5em;}
@@ -1183,13 +1183,13 @@ select.vdcStudyFileRowFileDownloadAsList {margin-left: .5em;}
 
 .vdcStudyFileSubsetAnalysis a:hover, .vdcStudyFileSubsetAnalysis a:active {color: #c55b28; text-decoration: underline;}
 a.vdcStudyFileSubsetAnalysisLink:link, a.vdcStudyFileSubsetAnalysisLink:hover,
-a.vdcStudyFileSubsetAnalysisLink:active, a.vdcStudyFileSubsetAnalysisLink:visited {padding-left: 24px; padding-bottom: 2px; padding-top: 2px; background: url(icon_analyze.gif) no-repeat; font-size: 90% !important; vertical-align: top;}
+a.vdcStudyFileSubsetAnalysisLink:active, a.vdcStudyFileSubsetAnalysisLink:visited {padding-left: 24px; padding-bottom: 2px; padding-top: 2px; background: url(/dvn/resources/images/icon_analyze.gif) no-repeat; font-size: 90% !important; vertical-align: top;}
 
 .vdcStudyDataCitationContainer {width: 90%; padding: 0 0.25em;}
 .vdcStudyDataCitation span {
         padding: 0 0 2px 24px !important;
         display: inline !important;
-        background: url(icon_citation.gif) no-repeat;
+        background: url(/dvn/resources/images/icon_citation.gif) no-repeat;
         font-size: 90% !important;
 }
 
@@ -1545,7 +1545,7 @@ table.dvnAddClassificationTable table {width: 100%; margin: 0;}
 .dvnAddClassificationTableColHeader1 {width: 60%;}
 .dvnAddClassificationTableColHeader2 {width: 40%;}
 
-span.dvnAddClassificationDvNotReleased {background: url(icon_warning.18.png) center right no-repeat; padding-right: 22px !important;}
+span.dvnAddClassificationDvNotReleased {background: url(/dvn/resources/images/icon_warning.18.png) center right no-repeat; padding-right: 22px !important;}
 span.dvnAddClassificationDvReleased {}
 
 .dvnAddClassificationDataverses table.iceDatTbl {border: 1px solid #d9d9d9;}
@@ -1842,7 +1842,7 @@ span.dvnAddClassificationDvReleased {}
 .childRowIndentStyle {background: url(/dvn/resources/icefaces/dvn_rime/css-images/tree_line_last_node.gif) 0 0 no-repeat;}
 .activityColumn {text-align: center;}
 .activity {width: 48px; margin: 0 auto;}
-.activitylevelicon {vertical-align: middle; width: 48px; height: 8px; background: url(/dvn/resources/activity-icons.png) no-repeat;}
+.activitylevelicon {vertical-align: middle; width: 48px; height: 8px; background: url(/dvn/resources/images/activity-icons.png) no-repeat;}
 .al-0 {background-position: -50 0;}
 .al-1 {background-position: -40 0;}
 .al-2 {background-position: -30 0;}
@@ -1899,17 +1899,17 @@ li.hmpgDvGroupSelected a:link, li.hmpgDvGroupSelected a:visited, li.hmpgDvGroupS
 
 li.activeBullet a {
 list-style-type: none; /* removes default bullet */
-background: url(icon_activebullet.gif) no-repeat 0 .2em; /* ONE bullet only, .45em from top (vertical) */
+background: url(/dvn/resources/images/icon_activebullet.gif) no-repeat 0 .2em; /* ONE bullet only, .45em from top (vertical) */
 padding-left: 1.4em; /* space between bullet and text */
 }
 
 li.inActiveBullet a {
 list-style-type: none; /* removes default bullet */
-background: url(icon_inactivebullet.gif) no-repeat 0 .2em; /* ONE bullet only, .45em from top (vertical) */
+background: url(/dvn/resources/images/icon_inactivebullet.gif) no-repeat 0 .2em; /* ONE bullet only, .45em from top (vertical) */
 padding-left: 1.4em; /* space between bullet and text */
 }
 /* li.activeBullet {
-    list-style-image: url(icon_activebullet.gif);
+    list-style-image: url(/dvn/resources/images/icon_activebullet.gif);
     padding-left: 2px;
     height: 1.4em;
 } */
@@ -2075,12 +2075,12 @@ td.dvnPermissionsTableOption {width: 240px; padding-top: .75em; padding-bottom: 
 .dvn_createDvRequest .requestIntroStepCard {position: relative; width: 161px; height: 170px; float: left; text-align: left;}
 .dvn_createDvRequest .requestIntroStepCard h3 {margin: 1.1em 0 1em 2.1em !important; font-size: 150% !important; font-weight: normal !important; color: #c55b28 !important; text-transform: uppercase !important;}
 .dvn_createDvRequest .requestIntroStepCard p {margin: 1em; font-size: 124% !important; font-weight: bold;}
-.dvn_createDvRequest .requestIntroStepCard div.stepCardBtm {position: absolute; top: 162px; left: 0; width: 183px; height: 8px; background: #fff url(request-intro-rndbtm.png) no-repeat;}
+.dvn_createDvRequest .requestIntroStepCard div.stepCardBtm {position: absolute; top: 162px; left: 0; width: 183px; height: 8px; background: #fff url(/dvn/resources/images/request-intro-rndbtm.png) no-repeat;}
 .dvn_createDvRequest .contributorSuccess {position: relative; width: 402px; height: 170px; float: left; text-align: left;}
 #requestIntroCont {margin: 0 auto; width: 676px; text-align: right;}
-#requestIntroCont .requestIntroContLink {padding-right: 28px; background: url(start-arrows.gif) 100% 52% no-repeat; color: #c55b28; font-size: 160% !important; text-transform: uppercase;}
+#requestIntroCont .requestIntroContLink {padding-right: 28px; background: url(/dvn/resources/images/start-arrows.gif) 100% 52% no-repeat; color: #c55b28; font-size: 160% !important; text-transform: uppercase;}
 #requestIntroCont .requestIntroContLinkNote {font-size: 90% !important; line-height: 224% !important;}
-.dvn_createDvRequest .requestTimeline {position: relative; margin: 20px auto 60px auto; width: 676px; height: 4px; background: #035899 url(fourpoint-timeline.gif) no-repeat;}
+.dvn_createDvRequest .requestTimeline {position: relative; margin: 20px auto 60px auto; width: 676px; height: 4px; background: #035899 url(/dvn/resources/images/fourpoint-timeline.gif) no-repeat;}
 .dvn_createDvRequest .requestIntroTimeline {margin-bottom:12px; background-image:none; background-color:#ccc;}
 .creatorTimelineStep1 {background-position: -16px 0 !important;}
 .creatorTimelineStep2 {background-position: -24px -4px !important;}
@@ -2097,10 +2097,10 @@ td.dvnPermissionsTableOption {width: 240px; padding-top: .75em; padding-bottom: 
 .contributorIntroStep1 {left:149px;}
 .contributorIntroStep2 {left:320px;}
 .contributorIntroStep3 {left:491px;}
-.requestIntroCard1 {margin-right:10px; background:#f4ebc7 url(request-intro-rndtop1.png) no-repeat;}
-.requestIntroCard2 {margin-right:10px; background:#f4ebc7 url(request-intro-rndtop2.png) no-repeat;}
-.requestIntroCard3 {margin-right:10px; background:#f4ebc7 url(request-intro-rndtop3.png) no-repeat;}
-.requestIntroCard4 {background:#f4ebc7 url(request-intro-rndtop4.png) no-repeat;}
+.requestIntroCard1 {margin-right:10px; background:#f4ebc7 url(/dvn/resources/images/request-intro-rndtop1.png) no-repeat;}
+.requestIntroCard2 {margin-right:10px; background:#f4ebc7 url(/dvn/resources/images/request-intro-rndtop2.png) no-repeat;}
+.requestIntroCard3 {margin-right:10px; background:#f4ebc7 url(/dvn/resources/images/request-intro-rndtop3.png) no-repeat;}
+.requestIntroCard4 {background:#f4ebc7 url(/dvn/resources/images/request-intro-rndtop4.png) no-repeat;}
 .requestIntroCard4 h3 {line-height:1.85;}
 .creatorWorkflowStep1 {left:36px;}
 .creatorWorkflowStep2 {left:214px;}

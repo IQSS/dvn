@@ -60,11 +60,11 @@ public class DvnInlineHelpSupport extends UIComponentBase implements java.io.Ser
         //the source javascript
             writer.startElement("script", this);
             writer.writeAttribute("type", "text/javascript", null);
-            writer.writeAttribute("src", "/dvn/resources/PopupWindow.js", null);
+            writer.writeAttribute("src", "/dvn/resources/javascript/PopupWindow.js", null);
             writer.endElement("script");
             writer.startElement("script", this);
             writer.writeAttribute("type", "text/javascript", null);
-            writer.writeAttribute("src", "/dvn/resources/popupSupport.js", null);
+            writer.writeAttribute("src", "/dvn/resources/javascript/popupSupport.js", null);
             writer.endElement("script");
     }
     

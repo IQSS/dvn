@@ -134,8 +134,8 @@
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                     <div jsfc="ice:panelGroup" id="groupPanel37" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.titleHelp}" linkText="#{editstudybundle.titleLabel}" heading="#{editstudybundle.titleHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                      <ice:graphicImage id="image39" value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.title].required}" />
-                      <ice:graphicImage id="image40" value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.title].recommended}"/>
+                      <ice:graphicImage id="image39" value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.title].required}" />
+                      <ice:graphicImage id="image40" value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.title].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup" id="groupPanel16">
                       <ice:inputText binding="#{EditStudyPage.inputTitle}" id="input_title" size="90" value="#{EditStudyPage.study.title}" />
@@ -148,8 +148,8 @@
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.subtitleHelp}" linkText="#{editstudybundle.subtitleLabel}" heading="#{editstudybundle.subtitleHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                      <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.subTitle].required}" />
-                      <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.subTitle].recommended}"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.subTitle].required}" />
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.subTitle].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputText id="input_subtitle" size="90" value="#{EditStudyPage.study.subTitle}" required="#{EditStudyPage.studyMap[sfc.subTitle].required}"/>
@@ -163,8 +163,8 @@
                                  columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.studyidHelp}" linkText="#{editstudybundle.studyidLabel}" heading="#{editstudybundle.studyidHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                      <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.studyId].required and EditStudyPage.study.id==null}"/>
-                      <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.studyId].recommended and EditStudyPage.study.id==null}"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.studyId].required and EditStudyPage.study.id==null}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.studyId].recommended and EditStudyPage.study.id==null}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:outputText value="#{EditStudyPage.study.protocol}:#{EditStudyPage.study.authority}/" rendered="#{EditStudyPage.study.id==null}" />
@@ -187,8 +187,8 @@
                         <ice:column>
                           <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                             <dvn:inlinehelp helpMessage="#{editstudybundle.otheridHelp}" linkText="#{editstudybundle.otheridLabel}" heading="#{editstudybundle.otheridHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                            <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.otherId].required}"/>
-                            <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.otherId].recommended}"/>
+                            <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.otherId].required}"/>
+                            <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.otherId].recommended}"/>
                           </div>
                         </ice:column>
                         <ice:column>
@@ -209,8 +209,8 @@
                           </div>
                         </ice:column>
                         <ice:column id="groupPanel61">
-                          <ice:commandButton partialSubmit="true" image="/resources/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/>
-                          <ice:commandButton partialSubmit="true" rendered="#{EditStudyPage.dataTableOtherIds.rowCount gt 1}" image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" />
+                          <ice:commandButton partialSubmit="true" image="/resources/images/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/>
+                          <ice:commandButton partialSubmit="true" rendered="#{EditStudyPage.dataTableOtherIds.rowCount gt 1}" image="/resources/images/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" />
                         </ice:column>
                       </ice:dataTable>
                     </ice:column>
@@ -228,8 +228,8 @@
                           <ice:column>
                             <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                               <dvn:inlinehelp helpMessage="#{editstudybundle.authorHelp}" linkText="#{editstudybundle.authorLabel}" heading="#{editstudybundle.authorHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                              <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.authorName].required}"/>
-                              <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.authorName].recommended}"/>
+                              <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.authorName].required}"/>
+                              <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.authorName].recommended}"/>
                             </div>
                           </ice:column>
                           <ice:column>
@@ -262,8 +262,8 @@
                             </div>
                           </ice:column>
                           <ice:column>
-                            <ice:commandButton image="/resources/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/>
-                            <ice:commandButton rendered="#{EditStudyPage.dataTableAuthors.rowCount gt 1}" image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" />
+                            <ice:commandButton image="/resources/images/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/>
+                            <ice:commandButton rendered="#{EditStudyPage.dataTableAuthors.rowCount gt 1}" image="/resources/images/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" />
                           </ice:column>
                         </ice:dataTable>
                       </ice:column>
@@ -282,8 +282,8 @@
                         <ice:column>
                           <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                             <dvn:inlinehelp helpMessage="#{editstudybundle.producerHelp}" linkText="#{editstudybundle.producerLabel}" heading="#{editstudybundle.producerHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                            <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.producerName].required}"/>
-                            <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.producerName].recommended}"/>
+                            <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.producerName].required}"/>
+                            <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.producerName].recommended}"/>
                           </div>
                         </ice:column>
                         <ice:column>
@@ -342,8 +342,8 @@
                           </div>
                         </ice:column>
                         <ice:column>
-                          <ice:commandButton image="/resources/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/>
-                          <ice:commandButton rendered="#{EditStudyPage.dataTableProducers.rowCount gt 1}" image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" />
+                          <ice:commandButton image="/resources/images/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/>
+                          <ice:commandButton rendered="#{EditStudyPage.dataTableProducers.rowCount gt 1}" image="/resources/images/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" />
                         </ice:column>
                       </ice:dataTable>
                     </ice:column>
@@ -354,8 +354,8 @@
                                  visible="#{EditStudyPage.studyMap[sfc.productionDate].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" id="groupPanel42" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.productionDateHelp}" linkText="#{editstudybundle.productionDateLabel}" heading="#{editstudybundle.productionDateHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                      <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.productionDate].required}"/>
-                      <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.productionDate].recommended}"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.productionDate].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.productionDate].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup" id="groupPanel19">
                       <ice:inputText id="input_productionDate" styleClass="formDateFormat" value="#{EditStudyPage.study.productionDate}"  required="#{EditStudyPage.studyMap[sfc.productionDate].required}">
@@ -372,8 +372,8 @@
                                  visible="#{EditStudyPage.studyMap[sfc.productionPlace].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" id="groupPanel43"   styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.productionPlaceHelp}" linkText="#{editstudybundle.productionPlaceLabel}" heading="#{editstudybundle.productionPlaceHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                      <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.productionPlace].required}"/>
-                      <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.productionPlace].recommended}"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.productionPlace].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.productionPlace].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup" id="groupPanel20">
                       <ice:inputText id="input_productionPlace" size="45" value="#{EditStudyPage.study.productionPlace}" required="#{EditStudyPage.studyMap[sfc.productionPlace].required}"/>
@@ -394,8 +394,8 @@
                         <ice:column>
                           <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                             <dvn:inlinehelp helpMessage="#{editstudybundle.softwareNameHelp}" linkText="#{editstudybundle.softwareNameLabel}" heading="#{editstudybundle.softwareNameHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                            <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.softwareName].required}"/>
-                            <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.softwareName].recommended}"/>
+                            <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.softwareName].required}"/>
+                            <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.softwareName].recommended}"/>
                           </div>
                         </ice:column>
                         <ice:column>
@@ -415,8 +415,8 @@
                           </div>
                         </ice:column>
                         <ice:column>
-                          <ice:commandButton image="/resources/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/>
-                          <ice:commandButton rendered="#{EditStudyPage.dataTableSoftware.rowCount gt 1}" image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" />
+                          <ice:commandButton image="/resources/images/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/>
+                          <ice:commandButton rendered="#{EditStudyPage.dataTableSoftware.rowCount gt 1}" image="/resources/images/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" />
                         </ice:column>
                       </ice:dataTable>
                     </ice:column>
@@ -428,8 +428,8 @@
                                  visible="#{EditStudyPage.studyMap[sfc.fundingAgency].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.fundingAgencyHelp}" linkText="#{editstudybundle.fundingAgencyLabel}" heading="#{editstudybundle.fundingAgencyHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                      <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.fundingAgency].required}"/>
-                      <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.fundingAgency].recommended}"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.fundingAgency].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.fundingAgency].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputText id="input_fundingAgency" size="45" value="#{EditStudyPage.study.fundingAgency}" required="#{EditStudyPage.studyMap[sfc.fundingAgency].required}"/>
@@ -449,8 +449,8 @@
                         <ice:column>
                           <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                             <dvn:inlinehelp helpMessage="#{editstudybundle.grantNumberHelp}" linkText="#{editstudybundle.grantNumberLabel}" heading="#{editstudybundle.grantNumberHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                            <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.grantNumber].required}"/>
-                            <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.grantNumber].recommended}"/>
+                            <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.grantNumber].required}"/>
+                            <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.grantNumber].recommended}"/>
                           </div>
                         </ice:column>
                         <ice:column>
@@ -470,8 +470,8 @@
                           </div>
                         </ice:column>
                         <ice:column>
-                          <ice:commandButton image="/resources/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/>
-                          <ice:commandButton rendered="#{EditStudyPage.dataTableGrants.rowCount gt 1}" image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" />
+                          <ice:commandButton image="/resources/images/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/>
+                          <ice:commandButton rendered="#{EditStudyPage.dataTableGrants.rowCount gt 1}" image="/resources/images/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" />
                         </ice:column>
                       </ice:dataTable>
                     </ice:column>
@@ -489,8 +489,8 @@
                         <ice:column>
                           <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                             <dvn:inlinehelp helpMessage="#{editstudybundle.distributorHelp}" linkText="#{editstudybundle.distributorLabel}" heading="#{editstudybundle.distributorHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                            <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.distributorName].required}"/>
-                            <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.distributorName].recommended}"/>
+                            <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.distributorName].required}"/>
+                            <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.distributorName].recommended}"/>
                           </div>
                         </ice:column>
                         <ice:column>
@@ -550,8 +550,8 @@
                           </div>
                         </ice:column>
                         <ice:column>
-                          <ice:commandButton image="/resources/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/>
-                          <ice:commandButton rendered="#{EditStudyPage.dataTableDistributors.rowCount gt 1}" image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" />
+                          <ice:commandButton image="/resources/images/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/>
+                          <ice:commandButton rendered="#{EditStudyPage.dataTableDistributors.rowCount gt 1}" image="/resources/images/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" />
                         </ice:column>
                       </ice:dataTable>
                     </ice:column>
@@ -563,8 +563,8 @@
                                  visible="#{EditStudyPage.studyMap[sfc.distributorContact].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.distributorContactHelp}" linkText="#{editstudybundle.distributorContactLabel}" heading="#{editstudybundle.distributorContactHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                      <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.distributorContact].required}"/>
-                      <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.distributorContact].recommended}"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.distributorContact].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.distributorContact].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloatWrap">
                       <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1">
@@ -601,8 +601,8 @@
                                  visible="#{EditStudyPage.studyMap[sfc.distributionDate].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" id="groupPanel49" styleClass="vdcEditStudyField" >
                       <dvn:inlinehelp helpMessage="#{editstudybundle.distributionDateHelp}" linkText="#{editstudybundle.distributionDateLabel}" heading="#{editstudybundle.distributionDateHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                      <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.distributionDate].required}"/>
-                      <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.distributionDate].recommended}"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.distributionDate].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.distributionDate].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup" id="groupPanel26" >
                       <ice:inputText id="input_distributionDate" styleClass="formDateFormat" value="#{EditStudyPage.study.distributionDate}" required="#{EditStudyPage.studyMap[sfc.distributionDate].required}">
@@ -619,8 +619,8 @@
                                  visible="#{EditStudyPage.studyMap[sfc.depositor].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" id="groupPanel50"  styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.depositorHelp}" linkText="#{editstudybundle.depositorLabel}" heading="#{editstudybundle.depositorHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                      <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.depositor].required}"/>
-                      <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.depositor].recommended}"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.depositor].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.depositor].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup" id="groupPanel27" >
                       <ice:inputText id="input_depositor" size="45"  value="#{EditStudyPage.study.depositor}" required="#{EditStudyPage.studyMap[sfc.depositor].required}"/>
@@ -634,8 +634,8 @@
                                  visible="#{EditStudyPage.studyMap[sfc.dateOfDeposit].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" id="groupPanel51"  styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.depositDateHelp}" linkText="#{editstudybundle.depositDateLabel}" heading="#{editstudybundle.depositDateHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                      <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.dateOfDeposit].required}"/>
-                      <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.dateOfDeposit].recommended}"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.dateOfDeposit].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.dateOfDeposit].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup" id="groupPanel28" styleClass="vdcEditStudyField">
                       <ice:inputText id="input_dateOfDeposit" styleClass="formDateFormat" value="#{EditStudyPage.study.dateOfDeposit}" required="#{EditStudyPage.studyMap[sfc.dateOfDeposit].required}">
@@ -652,8 +652,8 @@
                                  visible="#{EditStudyPage.studyMap[sfc.seriesName].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" id="groupPanel52"  styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.seriesHelp}" linkText="#{editstudybundle.seriesLabel}" heading="#{editstudybundle.seriesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                      <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.seriesName].required}"/>
-                      <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.seriesName].recommended}"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.seriesName].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.seriesName].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
                       <div jsfc="ice:panelGroup" id="groupPanel29" styleClass="vdcEditStudyField">
@@ -689,8 +689,8 @@
                                  visible="#{EditStudyPage.studyMap[sfc.studyVersion].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" id="groupPanel53">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.seriesVersionHelp}" linkText="#{editstudybundle.seriesVersionLabel}" heading="#{editstudybundle.seriesVersionHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                      <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.studyVersion].required }"/>
-                      <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.studyVersion].recommended }"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.studyVersion].required }"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.studyVersion].recommended }"/>
                     </div>
                     <div jsfc="ice:panelGroup" id="groupPanel30">
                       <div jsfc="ice:panelGroup" >
@@ -717,8 +717,8 @@
                                  visible="#{EditStudyPage.studyMap[sfc.replicationFor].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.replicationForHelp}" linkText="#{editstudybundle.replicationForLabel}" heading="#{editstudybundle.replicationForHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                      <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.replicationFor].required}"/>
-                      <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.replicationFor].recommended}"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.replicationFor].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.replicationFor].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup" >
                       <ice:inputTextarea cols="90" rows="4"
@@ -748,8 +748,8 @@
                         <ice:column>
                           <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                             <dvn:inlinehelp helpMessage="#{editstudybundle.abstractHelp}" linkText="#{editstudybundle.abstractLabel}" heading="#{editstudybundle.abstractHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                            <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.abstractText].required}"/>
-                            <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.abstractText].recommended}"/>
+                            <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.abstractText].required}"/>
+                            <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.abstractText].recommended}"/>
                           </div>
                         </ice:column>
                         <ice:column>
@@ -781,8 +781,8 @@
                           </div>
                         </ice:column>
                         <ice:column>
-                          <ice:commandButton image="/resources/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/>
-                          <ice:commandButton rendered="#{EditStudyPage.dataTableAbstracts.rowCount gt 1}" image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" />
+                          <ice:commandButton image="/resources/images/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/>
+                          <ice:commandButton rendered="#{EditStudyPage.dataTableAbstracts.rowCount gt 1}" image="/resources/images/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" />
                         </ice:column>
                       </ice:dataTable>
                     </ice:column>
@@ -800,8 +800,8 @@
                         <ice:column>
                           <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                             <dvn:inlinehelp helpMessage="#{editstudybundle.keywordHelp}" linkText="#{editstudybundle.keywordLabel}" heading="#{editstudybundle.keywordHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                            <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.keywordValue].required}"/>
-                            <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.keywordValue].recommended }"/>
+                            <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.keywordValue].required}"/>
+                            <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.keywordValue].recommended }"/>
                           </div>
                         </ice:column>
                         <ice:column>
@@ -836,8 +836,8 @@
                           </div>
                         </ice:column>
                         <ice:column>
-                          <ice:commandButton image="/resources/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/>
-                          <ice:commandButton rendered="#{EditStudyPage.dataTableKeywords.rowCount gt 1}" image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" />
+                          <ice:commandButton image="/resources/images/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/>
+                          <ice:commandButton rendered="#{EditStudyPage.dataTableKeywords.rowCount gt 1}" image="/resources/images/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" />
                         </ice:column>
                       </ice:dataTable>
                     </ice:column>
@@ -856,8 +856,8 @@
                         <ice:column>
                           <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                             <dvn:inlinehelp helpMessage="#{editstudybundle.topicClassificationHelp}" linkText="#{editstudybundle.topicClassificationLabel}" heading="#{editstudybundle.topicClassificationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                            <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.topicClassValue].required}"/>
-                            <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.topicClassValue].recommended}"/>
+                            <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.topicClassValue].required}"/>
+                            <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.topicClassValue].recommended}"/>
                           </div>
                         </ice:column>
                         <ice:column>
@@ -892,8 +892,8 @@
                           </div>
                         </ice:column>
                         <ice:column>
-                          <ice:commandButton image="/resources/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/>
-                          <ice:commandButton rendered="#{EditStudyPage.dataTableTopicClass.rowCount gt 1}" image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" />
+                          <ice:commandButton image="/resources/images/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/>
+                          <ice:commandButton rendered="#{EditStudyPage.dataTableTopicClass.rowCount gt 1}" image="/resources/images/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" />
                         </ice:column>
                       </ice:dataTable>
                     </ice:column>
@@ -911,8 +911,8 @@
                         <ice:column>
                           <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                             <dvn:inlinehelp helpMessage="#{editstudybundle.relatedPublicationsHelp}" linkText="#{editstudybundle.relatedPublicationsLabel}" heading="#{editstudybundle.relatedPublicationsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                            <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.relatedPublications].required}"/>
-                            <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.relatedPublications].recommended}"/>
+                            <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.relatedPublications].required}"/>
+                            <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.relatedPublications].recommended}"/>
                           </div>
                         </ice:column>
                         <ice:column>
@@ -929,8 +929,8 @@
                           </div>
                         </ice:column>
                         <ice:column>
-                          <ice:commandButton image="/resources/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/>
-                          <ice:commandButton rendered="#{EditStudyPage.dataTableRelPublications.rowCount gt 1}" image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" />
+                          <ice:commandButton image="/resources/images/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/>
+                          <ice:commandButton rendered="#{EditStudyPage.dataTableRelPublications.rowCount gt 1}" image="/resources/images/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" />
                         </ice:column>
                       </ice:dataTable>
                     </ice:column>
@@ -948,8 +948,8 @@
                         <ice:column>
                           <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                             <dvn:inlinehelp helpMessage="#{editstudybundle.relatedMaterialHelp}" linkText="#{editstudybundle.relatedMaterialLabel}" heading="#{editstudybundle.relatedMaterialHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                            <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.relatedMaterial].required}"/>
-                            <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.relatedMaterial].recommended}"/>
+                            <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.relatedMaterial].required}"/>
+                            <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.relatedMaterial].recommended}"/>
                           </div>
                         </ice:column>
                         <ice:column>
@@ -966,8 +966,8 @@
                           </div>
                         </ice:column>
                         <ice:column>
-                          <ice:commandButton image="/resources/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/>
-                          <ice:commandButton rendered="#{EditStudyPage.dataTableRelMaterials.rowCount gt 1}" image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" />
+                          <ice:commandButton image="/resources/images/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/>
+                          <ice:commandButton rendered="#{EditStudyPage.dataTableRelMaterials.rowCount gt 1}" image="/resources/images/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" />
                         </ice:column>
                       </ice:dataTable>
                     </ice:column>
@@ -985,8 +985,8 @@
                         <ice:column>
                           <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                             <dvn:inlinehelp helpMessage="#{editstudybundle.relatedStudiesHelp}" linkText="#{editstudybundle.relatedStudiesLabel}" heading="#{editstudybundle.relatedStudiesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                            <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.relatedStudies].required}"/>
-                            <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.relatedStudies].recommended}"/>
+                            <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.relatedStudies].required}"/>
+                            <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.relatedStudies].recommended}"/>
                           </div>
                         </ice:column>
                         <ice:column>
@@ -1003,8 +1003,8 @@
                           </div>
                         </ice:column>
                         <ice:column>
-                          <ice:commandButton image="/resources/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/>
-                          <ice:commandButton rendered="#{EditStudyPage.dataTableRelStudies.rowCount gt 1}" image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" />
+                          <ice:commandButton image="/resources/images/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/>
+                          <ice:commandButton rendered="#{EditStudyPage.dataTableRelStudies.rowCount gt 1}" image="/resources/images/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" />
                         </ice:column>
                       </ice:dataTable>
                     </ice:column>
@@ -1023,8 +1023,8 @@
                         <ice:column>
                           <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                             <dvn:inlinehelp helpMessage="#{editstudybundle.otherReferencesHelp}" linkText="#{editstudybundle.otherReferencesLabel}" heading="#{editstudybundle.otherReferencesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                            <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.otherReferences].required}"/>
-                            <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.otherReferences].recommended}"/>
+                            <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.otherReferences].required}"/>
+                            <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.otherReferences].recommended}"/>
                           </div>
                         </ice:column>
                         <ice:column>
@@ -1041,8 +1041,8 @@
                           </div>
                         </ice:column>
                         <ice:column>
-                          <ice:commandButton image="/resources/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/>
-                          <ice:commandButton rendered="#{EditStudyPage.dataTableOtherReferences.rowCount gt 1}" image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" />
+                          <ice:commandButton image="/resources/images/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/>
+                          <ice:commandButton rendered="#{EditStudyPage.dataTableOtherReferences.rowCount gt 1}" image="/resources/images/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" />
                         </ice:column>
                       </ice:dataTable>
                     </ice:column>
@@ -1054,8 +1054,8 @@
                                  visible="#{EditStudyPage.studyMap[sfc.timePeriodCoveredStart].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField" >
                       <dvn:inlinehelp helpMessage="#{editstudybundle.timePeriodStartHelp}" linkText="#{editstudybundle.timePeriodStartLabel}" heading="#{editstudybundle.timePeriodStartHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                      <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.timePeriodCoveredStart].required}"/>
-                      <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.timePeriodCoveredStart].recommended}"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.timePeriodCoveredStart].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.timePeriodCoveredStart].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputText id="input_timePeriodCoveredStart" styleClass="formDateFormat" value="#{EditStudyPage.study.timePeriodCoveredStart}" required="#{EditStudyPage.studyMap[sfc.timePeriodCoveredStart].required}">
@@ -1072,8 +1072,8 @@
                                  visible="#{EditStudyPage.studyMap[sfc.timePeriodCoveredEnd].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.timePeriodEndHelp}" linkText="#{editstudybundle.timePeriodEndLabel}" heading="#{editstudybundle.timePeriodEndHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                      <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.timePeriodCoveredEnd].required}"/>
-                      <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.timePeriodCoveredEnd].recommended}"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.timePeriodCoveredEnd].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.timePeriodCoveredEnd].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputText id="input_timePeriodCoveredEnd" styleClass="formDateFormat" value="#{EditStudyPage.study.timePeriodCoveredEnd}" required="#{EditStudyPage.studyMap[sfc.timePeriodCoveredEnd].required}">
@@ -1090,8 +1090,8 @@
                                  visible="#{EditStudyPage.studyMap[sfc.dateOfCollectionStart].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.collectionDateStartHelp}" linkText="#{editstudybundle.collectionDateStartLabel}" heading="#{editstudybundle.collectionDateStartHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                      <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.dateOfCollectionStart].required}"/>
-                      <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.dateOfCollectionStart].recommended}"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.dateOfCollectionStart].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.dateOfCollectionStart].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputText id="input_dateOfCollectionStart" styleClass="formDateFormat" value="#{EditStudyPage.study.dateOfCollectionStart}"  required="#{EditStudyPage.studyMap[sfc.dateOfCollectionStart].required}">
@@ -1108,8 +1108,8 @@
                                  visible="#{EditStudyPage.studyMap[sfc.dateOfCollectionEnd].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.collectionDateEndHelp}" linkText="#{editstudybundle.collectionDateEndLabel}" heading="#{editstudybundle.collectionDateEndHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                      <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.dateOfCollectionEnd].required}"/>
-                      <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.dateOfCollectionEnd].recommended}"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.dateOfCollectionEnd].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.dateOfCollectionEnd].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputText id="input_dateOfCollectionEnd" styleClass="formDateFormat" value="#{EditStudyPage.study.dateOfCollectionEnd}"  required="#{EditStudyPage.studyMap[sfc.dateOfCollectionEnd].required}">
@@ -1126,8 +1126,8 @@
                                  visible="#{EditStudyPage.studyMap[sfc.country].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.countryHelp}" linkText="#{editstudybundle.countryLabel}" heading="#{editstudybundle.countryHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                      <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.country].required}"/>
-                      <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.country].recommended}"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.country].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.country].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup" >
                       <ice:inputText id="input_country" size="45" value="#{EditStudyPage.study.country}" required="#{EditStudyPage.studyMap[sfc.country].required}"/>
@@ -1141,8 +1141,8 @@
                                  visible="#{EditStudyPage.studyMap[sfc.geographicCoverage].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.geographicCoverageHelp}" linkText="#{editstudybundle.geographicCoverageLabel}" heading="#{editstudybundle.geographicCoverageHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                      <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.geographicCoverage].required}"/>
-                      <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.geographicCoverage].recommended}"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.geographicCoverage].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.geographicCoverage].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputText id="input_geographicCoverage" size="45"  value="#{EditStudyPage.study.geographicCoverage}" required="#{EditStudyPage.studyMap[sfc.geographicCoverage].required}"/>
@@ -1156,8 +1156,8 @@
                                  visible="#{EditStudyPage.studyMap[sfc.geographicUnit].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.geographicUnitHelp}" linkText="#{editstudybundle.geographicUnitLabel}" heading="#{editstudybundle.geographicUnitHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                      <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.geographicUnit].required}"/>
-                      <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.geographicUnit].recommended}"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.geographicUnit].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.geographicUnit].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputText id="input_geographicUnit" size="45"  value="#{EditStudyPage.study.geographicUnit}" required="#{EditStudyPage.studyMap[sfc.geographicUnit].required}"/>
@@ -1171,8 +1171,8 @@
                                  visible="#{EditStudyPage.studyMap[sfc.westLongitude].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.geographicBoundingBoxHelp}" linkText="#{editstudybundle.geographicBoundingBoxLabel}" heading="#{editstudybundle.geographicBoundingBoxHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                      <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.westLongitude].required}"/>
-                      <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.westLongitude].recommended}"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.westLongitude].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.westLongitude].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloatWrap">
                       <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 vdcEditStudyGroupField">
@@ -1212,8 +1212,8 @@
                                  visible="#{EditStudyPage.studyMap[sfc.unitOfAnalysis].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.unitOfAnalysisHelp}" linkText="#{editstudybundle.unitOfAnalysisLabel}" heading="#{editstudybundle.unitOfAnalysisHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                      <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.unitOfAnalysis].required}"/>
-                      <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.unitOfAnalysis].recommended}"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.unitOfAnalysis].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.unitOfAnalysis].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputTextarea id="input_unitOfAnalysis" cols="90" rows="2" value="#{EditStudyPage.study.unitOfAnalysis}" required="#{EditStudyPage.studyMap[sfc.unitOfAnalysis].required}" styleClass="formHtmlEnabled">
@@ -1229,8 +1229,8 @@
                                  visible="#{EditStudyPage.studyMap[sfc.universe].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.universeHelp}" linkText="#{editstudybundle.universeLabel}" heading="#{editstudybundle.universeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                      <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.universe].required}"/>
-                      <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.universe].recommended}"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.universe].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.universe].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputTextarea id="input_universe" cols="90" rows="2"  value="#{EditStudyPage.study.universe}" required="#{EditStudyPage.studyMap[sfc.universe].required}" styleClass="formHtmlEnabled">
@@ -1246,8 +1246,8 @@
                                  visible="#{EditStudyPage.studyMap[sfc.kindOfData].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.kindOfDataHelp}" linkText="#{editstudybundle.kindOfDataLabel}" heading="#{editstudybundle.kindOfDataHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                      <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.kindOfData].required}"/>
-                      <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.kindOfData].recommended}"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.kindOfData].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.kindOfData].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputText id="input_kindOfData" size="45" value="#{EditStudyPage.study.kindOfData}" required="#{EditStudyPage.studyMap[sfc.kindOfData].required}"/>
@@ -1268,8 +1268,8 @@
                                  visible="#{EditStudyPage.studyMap[sfc.timeMethod].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.timeMethodHelp}" linkText="#{editstudybundle.timeMethodLabel}" heading="#{editstudybundle.timeMethodHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                      <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.timeMethod].required}"/>
-                      <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.timeMethod].recommended}"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.timeMethod].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.timeMethod].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputText id="input_timeMethod" size="90"
@@ -1287,8 +1287,8 @@
                                  visible="#{EditStudyPage.studyMap[sfc.dataCollector].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.dataCollectorHelp}" linkText="#{editstudybundle.dataCollectorLabel}" heading="#{editstudybundle.dataCollectorHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                      <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.dataCollector].required}"/>
-                      <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.dataCollector].recommended}"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.dataCollector].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.dataCollector].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputText id="input_dataCollector" size="90"
@@ -1307,8 +1307,8 @@
                                  visible="#{EditStudyPage.studyMap[sfc.frequencyOfDataCollection].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.frequencyHelp}" linkText="#{editstudybundle.frequencyLabel}" heading="#{editstudybundle.frequencyHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                      <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.frequencyOfDataCollection].required}"/>
-                      <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.frequencyOfDataCollection].recommended}"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.frequencyOfDataCollection].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.frequencyOfDataCollection].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputText id="input_frequencyOfDataCollection" size="90"
@@ -1327,8 +1327,8 @@
                                  visible="#{EditStudyPage.studyMap[sfc.samplingProcedure].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.samplingProcedureHelp}" linkText="#{editstudybundle.samplingProcedureLabel}" heading="#{editstudybundle.samplingProcedureHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                      <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.samplingProcedure].required}"/>
-                      <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.samplingProcedure].recommended}"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.samplingProcedure].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.samplingProcedure].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputTextarea id="input_samplingProcedure"
@@ -1348,8 +1348,8 @@
                                  visible="#{EditStudyPage.studyMap[sfc.deviationsFromSampleDesign].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.majorDeviationsHelp}" linkText="#{editstudybundle.majorDeviationsLabel}" heading="#{editstudybundle.majorDeviationsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                      <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.deviationsFromSampleDesign].required}"/>
-                      <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.deviationsFromSampleDesign].recommended}"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.deviationsFromSampleDesign].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.deviationsFromSampleDesign].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputTextarea cols="90" rows="4"
@@ -1369,8 +1369,8 @@
                                  visible="#{EditStudyPage.studyMap[sfc.collectionMode].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.collectionModeHelp}" linkText="#{editstudybundle.collectionModeLabel}" heading="#{editstudybundle.collectionModeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                      <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.collectionMode].required}"/>
-                      <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.collectionMode].recommended}"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.collectionMode].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.collectionMode].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputText id="input_collectionMode" size="90"
@@ -1389,8 +1389,8 @@
                                  visible="#{EditStudyPage.studyMap[sfc.researchInstrument].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.researchInstrumentHelp}" linkText="#{editstudybundle.researchInstrumentLabel}" heading="#{editstudybundle.researchInstrumentHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                      <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.researchInstrument].required}"/>
-                      <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.researchInstrument].recommended}"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.researchInstrument].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.researchInstrument].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputText id="input_researchInstrument" size="90"
@@ -1409,8 +1409,8 @@
                                  visible="#{EditStudyPage.studyMap[sfc.dataSources].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.dataSourcesHelp}" linkText="#{editstudybundle.dataSourcesLabel}" heading="#{editstudybundle.dataSourcesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                      <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.dataSources].required}"/>
-                      <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.dataSources].recommended}"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.dataSources].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.dataSources].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputText id="input_dataSources" size="90"
@@ -1429,8 +1429,8 @@
                                  visible="#{EditStudyPage.studyMap[sfc.originOfSources].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.originOfSourcesHelp}" linkText="#{editstudybundle.originOfSourcesLabel}" heading="#{editstudybundle.originOfSourcesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                      <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.originOfSources].required}"/>
-                      <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.originOfSources].recommended}"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.originOfSources].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.originOfSources].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputText id="input_originOfSources" size="90"
@@ -1449,8 +1449,8 @@
                                  visible="#{EditStudyPage.studyMap[sfc.characteristicOfSources].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.sourceCharacteristicsHelp}" linkText="#{editstudybundle.sourceCharacteristicsLabel}" heading="#{editstudybundle.sourceCharacteristicsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                      <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.characteristicOfSources].required}"/>
-                      <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.characteristicOfSources].recommended}"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.characteristicOfSources].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.characteristicOfSources].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputText id="input_characteristicOfSources" size="90"
@@ -1469,8 +1469,8 @@
                                  visible="#{EditStudyPage.studyMap[sfc.accessToSources].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.sourceDocumentationHelp}" linkText="#{editstudybundle.sourceDocumentationLabel}" heading="#{editstudybundle.sourceDocumentationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                      <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.accessToSources].required}"/>
-                      <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.accessToSources].recommended}"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.accessToSources].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.accessToSources].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputTextarea cols="90" rows="4"
@@ -1490,8 +1490,8 @@
                                  visible="#{EditStudyPage.studyMap[sfc.dataCollectionSituation].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.dataCollectionCharacteristicsHelp}" linkText="#{editstudybundle.dataCollectionCharacteristicsLabel}" heading="#{editstudybundle.dataCollectionCharacteristicsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                      <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.dataCollectionSituation].required}"/>
-                      <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.dataCollectionSituation].recommended}"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.dataCollectionSituation].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.dataCollectionSituation].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputText id="input_dataCollectionSituation" size="90"
@@ -1510,8 +1510,8 @@
                                  visible="#{EditStudyPage.studyMap[sfc.actionsToMinimizeLoss].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.minimizeActionsHelp}" linkText="#{editstudybundle.minimizeActionsLabel}" heading="#{editstudybundle.minimizeActionsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                      <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.actionsToMinimizeLoss].required}"/>
-                      <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.actionsToMinimizeLoss].recommended}"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.actionsToMinimizeLoss].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.actionsToMinimizeLoss].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputText id="input_actionsToMinimizeLoss" size="90"
@@ -1530,8 +1530,8 @@
                                  visible="#{EditStudyPage.studyMap[sfc.controlOperations].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.controlOperationsHelp}" linkText="#{editstudybundle.controlOperationsLabel}" heading="#{editstudybundle.controlOperationsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                      <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.controlOperations].required}"/>
-                      <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.controlOperations].recommended}"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.controlOperations].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.controlOperations].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputText id="input_controlOperations" size="90"
@@ -1550,8 +1550,8 @@
                                  visible="#{EditStudyPage.studyMap[sfc.weighting].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.weightingHelp}" linkText="#{editstudybundle.weightingLabel}" heading="#{editstudybundle.weightingHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                      <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.weighting].required}"/>
-                      <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.weighting].recommended}"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.weighting].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.weighting].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputText id="input_weighting" size="90"
@@ -1570,8 +1570,8 @@
                                   visible="#{EditStudyPage.studyMap[sfc.cleaningOperations].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.cleaningOperationsHelp}" linkText="#{editstudybundle.cleaningOperationsLabel}" heading="#{editstudybundle.cleaningOperationsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                      <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.cleaningOperations].required}"/>
-                      <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.cleaningOperations].recommended}"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.cleaningOperations].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.cleaningOperations].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputText id="input_cleaningOperations" size="90"
@@ -1590,8 +1590,8 @@
                                  visible="#{EditStudyPage.studyMap[sfc.studyLevelErrorNotes].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.studyLevelErrorNotesHelp}" linkText="#{editstudybundle.studyLevelErrorNotesLabel}" heading="#{editstudybundle.studyLevelErrorNotesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                      <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.studyLevelErrorNotes].required}"/>
-                      <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.studyLevelErrorNotes].recommended}"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.studyLevelErrorNotes].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.studyLevelErrorNotes].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputText id="input_studyLevelErrorNotes" size="90"
@@ -1610,8 +1610,8 @@
                                  visible="#{EditStudyPage.studyMap[sfc.studyLevelErrorNotes].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.responseRateHelp}" linkText="#{editstudybundle.responseRateLabel}" heading="#{editstudybundle.responseRateHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                      <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.responseRate].required}"/>
-                      <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.responseRate].recommended}"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.responseRate].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.responseRate].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputText id="input_responseRate" size="90"
@@ -1630,8 +1630,8 @@
                                  visible="#{EditStudyPage.studyMap[sfc.samplingErrorEstimates].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.samplingErrorHelp}" linkText="#{editstudybundle.samplingErrorLabel}" heading="#{editstudybundle.samplingErrorHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                      <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.samplingErrorEstimates].required}"/>
-                      <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.samplingErrorEstimates].recommended}"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.samplingErrorEstimates].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.samplingErrorEstimates].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputText id="input_samplingErrorEstimates" size="90"
@@ -1650,8 +1650,8 @@
                                  visible="#{EditStudyPage.studyMap[sfc.otherDataAppraisal].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.otherDataAppraisalHelp}" linkText="#{editstudybundle.otherDataAppraisalLabel}" heading="#{editstudybundle.otherDataAppraisalHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                      <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.otherDataAppraisal].required}"/>
-                      <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.otherDataAppraisal].recommended}"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.otherDataAppraisal].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.otherDataAppraisal].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputText id="input_otherDataAppraisal" size="90"
@@ -1677,8 +1677,8 @@
                                  visible="#{EditStudyPage.studyMap[sfc.placeOfAccess].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.dataAccessPlaceHelp}" linkText="#{editstudybundle.dataAccessPlaceLabel}" heading="#{editstudybundle.dataAccessPlaceHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                      <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.placeOfAccess].required}"/>
-                      <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.placeOfAccess].recommended}"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.placeOfAccess].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.placeOfAccess].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputText id="input_placeOfAccess" size="90"
@@ -1697,8 +1697,8 @@
                                  visible="#{EditStudyPage.studyMap[sfc.originalArchive].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.originalArchiveHelp}" linkText="#{editstudybundle.originalArchiveLabel}" heading="#{editstudybundle.originalArchiveHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                      <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.originalArchive].required}"/>
-                      <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.originalArchive].recommended}"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.originalArchive].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.originalArchive].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputText id="input_originalArchive" size="90"
@@ -1717,8 +1717,8 @@
                                  visible="#{EditStudyPage.studyMap[sfc.availabilityStatus].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.availabilityHelp}" linkText="#{editstudybundle.availabilityLabel}" heading="#{editstudybundle.availabilityHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                      <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.availabilityStatus].required}"/>
-                      <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.availabilityStatus].recommended}"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.availabilityStatus].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.availabilityStatus].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputText id="input_availabilityStatus" size="90"
@@ -1737,8 +1737,8 @@
                                  visible="#{EditStudyPage.studyMap[sfc.collectionSize].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.collectionSizeHelp}" linkText="#{editstudybundle.collectionSizeLabel}" heading="#{editstudybundle.collectionSizeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                      <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.collectionSize].required}"/>
-                      <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.collectionSize].recommended}"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.collectionSize].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.collectionSize].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputText id="input_collectionSize" size="90"
@@ -1757,8 +1757,8 @@
                                  visible="#{EditStudyPage.studyMap[sfc.studyCompletion].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.studyCompletionHelp}" linkText="#{editstudybundle.studyCompletionLabel}" heading="#{editstudybundle.studyCompletionHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                      <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.studyCompletion].required}"/>
-                      <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.studyCompletion].recommended}"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.studyCompletion].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.studyCompletion].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputText size="90" id="input_studyCompletion"
@@ -1783,8 +1783,8 @@
                                  visible="#{EditStudyPage.studyMap[sfc.confidentialityDeclaration].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.confidentialityHelp}" linkText="#{editstudybundle.confidentialityLabel}" heading="#{editstudybundle.confidentialityHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                      <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.confidentialityDeclaration].required}"/>
-                      <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.confidentialityDeclaration].recommended}"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.confidentialityDeclaration].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.confidentialityDeclaration].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputTextarea cols="90" rows="4"
@@ -1804,8 +1804,8 @@
                                  visible="#{EditStudyPage.studyMap[sfc.specialPermissions].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.specialPermissionsHelp}" linkText="#{editstudybundle.specialPermissionsLabel}" heading="#{editstudybundle.specialPermissionsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                      <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.specialPermissions].required}"/>
-                      <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.specialPermissions].recommended}"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.specialPermissions].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.specialPermissions].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputTextarea cols="90" rows="4" id="input_specialPermissions"
@@ -1824,8 +1824,8 @@
                                  visible="#{EditStudyPage.studyMap[sfc.restrictions].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.restrictionsHelp}" linkText="#{editstudybundle.restrictionsLabel}" heading="#{editstudybundle.restrictionsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                      <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.restrictions].required}"/>
-                      <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.restrictions].recommended}"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.restrictions].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.restrictions].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputTextarea cols="90" rows="4"
@@ -1845,8 +1845,8 @@
                                  visible="#{EditStudyPage.studyMap[sfc.contact].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.contactHelp}" linkText="#{editstudybundle.contactLabel}" heading="#{editstudybundle.contactHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                      <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.contact].required}"/>
-                      <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.contact].recommended}"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.contact].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.contact].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputText id="input_contact" size="90"
@@ -1865,8 +1865,8 @@
                                  visible="#{EditStudyPage.studyMap[sfc.citationRequirements].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.citationRequirementsHelp}" linkText="#{editstudybundle.citationRequirementsLabel}" heading="#{editstudybundle.citationRequirementsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                      <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.citationRequirements].required}"/>
-                      <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.citationRequirements].recommended}"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.citationRequirements].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.citationRequirements].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputTextarea cols="90" rows="4" id="input_citationRequirements"
@@ -1885,8 +1885,8 @@
                                  visible="#{EditStudyPage.studyMap[sfc.depositorRequirements].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.depositorRequirementsHelp}" linkText="#{editstudybundle.depositorRequirementsLabel}" heading="#{editstudybundle.depositorRequirementsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                      <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.depositorRequirements].required}"/>
-                      <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.depositorRequirements].recommended}"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.depositorRequirements].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.depositorRequirements].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputTextarea cols="90" rows="4"
@@ -1906,8 +1906,8 @@
                                  visible="#{EditStudyPage.studyMap[sfc.conditions].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.conditionsHelp}" linkText="#{editstudybundle.conditionsLabel}" heading="#{editstudybundle.conditionsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                      <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.conditions].required}"/>
-                      <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.conditions].recommended}"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.conditions].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.conditions].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputTextarea cols="90" rows="4"
@@ -1927,8 +1927,8 @@
                                  visible="#{EditStudyPage.studyMap[sfc.disclaimer].recommended or EditStudyPage.showAll}">
                     <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                       <dvn:inlinehelp helpMessage="#{editstudybundle.disclaimerHelp}" linkText="#{editstudybundle.disclaimerLabel}" heading="#{editstudybundle.disclaimerHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                      <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.disclaimer].required}"/>
-                      <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.disclaimer].recommended}"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.disclaimer].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.disclaimer].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputTextarea cols="90" rows="4"
@@ -1959,8 +1959,8 @@
                         <ice:column>
                           <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                             <dvn:inlinehelp helpMessage="#{editstudybundle.notesTypeHelp}" linkText="#{editstudybundle.notesTypeLabel}" heading="#{editstudybundle.notesTypeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                            <ice:graphicImage value="/resources/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.notesInformationType].required}"/>
-                            <ice:graphicImage value="/resources/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.notesInformationType].recommended}"/>
+                            <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.notesInformationType].required}"/>
+                            <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.notesInformationType].recommended}"/>
                           </div>
                         </ice:column>
                         <ice:column>
@@ -2006,8 +2006,8 @@
                           </div>
                         </ice:column>
                         <ice:column>
-                          <ice:commandButton image="/resources/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/>
-                          <ice:commandButton rendered="#{EditStudyPage.dataTableNotes.rowCount gt 1}" image="/resources/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" />
+                          <ice:commandButton image="/resources/images/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/>
+                          <ice:commandButton rendered="#{EditStudyPage.dataTableNotes.rowCount gt 1}" image="/resources/images/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" />
                         </ice:column>
                       </ice:dataTable>
                     </ice:column>
@@ -2049,7 +2049,7 @@
                         <ice:column id="column10">
                           <ice:inputText id="input_fileName" size="30" value="#{file.studyFile.fileName}" required="true" requiredMessage="This field is required."  validator="#{EditStudyPage.validateFileName}" />
                           <ice:message styleClass="errorMessage" for="input_fileName"/><br/>
-                          <ice:graphicImage rendered="#{file.studyFile.subsettable}" id="imagefs" styleClass="vdcNoBorders" value="/resources/icon_subsettable.gif"/>
+                          <ice:graphicImage rendered="#{file.studyFile.subsettable}" id="imagefs" styleClass="vdcNoBorders" value="/resources/images/icon_subsettable.gif"/>
                           <ice:outputText id="outputText17" value="#{file.userFriendlyFileType}"/>
                           <f:facet name="header">
                             <ice:outputText id="outputText13" value="File Name"/>

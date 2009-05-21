@@ -50,14 +50,14 @@
           <div class="dvn_sectionBox">
             <div class="dvn_margin12">
               <div jsfc="ice:panelGroup" styleClass="vdcHelpText">
-                <ice:graphicImage value="/resources/icon_required.gif"/> <ice:outputText value="Indicates a required field."/>
+                <ice:graphicImage value="/resources/images/icon_required.gif"/> <ice:outputText value="Indicates a required field."/>
               </div>
               <!-- group name -->
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="2"
                              columnClasses="vdcColPadded, vdcColPadded" id="gridPanel2">
                 <div jsfc="ice:panelGroup" id="groupPanel1">
                   <ice:outputText value="Group Name"/>
-                  <ice:graphicImage id="image1" value="/resources/icon_required.gif"/>
+                  <ice:graphicImage id="image1" value="/resources/images/icon_required.gif"/>
                 </div>
                 <div jsfc="ice:panelGroup">
                   <ice:inputText id="inputGroupName" size="40" value="#{EditUserGroupPage.group.name}" required="true" requiredMessage="This field is required." onkeypress="if (window.event) return processEvent('', 'form1:btnSave'); else return processEvent(event, 'form1:btnSave');">
@@ -67,7 +67,7 @@
                 </div>
                 <div jsfc="ice:panelGroup" id="groupPanelFriendlyName">
                   <ice:outputText value="Friendly Group Name"/>
-                  <ice:graphicImage value="/resources/icon_required.gif"/>
+                  <ice:graphicImage value="/resources/images/icon_required.gif"/>
                 </div>
                 <div jsfc="ice:panelGroup">
                   <ice:inputText id="inputFriendlyGroupName" 
@@ -95,7 +95,7 @@
               <div jsfc="ice:panelGroup" styleClass="dvnFormPadding" rendered="#{ EditUserGroupPage.userGroupType == 'usergroup'}" id="usergroups">
                 <ice:outputText styleClass="vdcSubHeaderColor" value="Usernames"/>
                 <div jsfc="ice:panelGroup" styleClass="vdcHelpText">
-                  <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" value="/resources/icon_info.gif"/>
+                  <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" value="/resources/images/icon_info.gif"/>
                   <ice:outputText value="Enter usernames in the field below. Add/remove a user by clicking the icons next to the username field."/>
                 </div>
                 <ice:dataTable styleClass="dvnFormDataTable" cellpadding="0" cellspacing="0"
@@ -104,8 +104,8 @@
                     <ice:inputText id="usertable" value="#{currentRow.userName}" validator="#{EditUserGroupPage.validateUserName}" immediate="true"/>
                   </ice:column>
                   <ice:column>
-                    <ice:commandButton image="/resources/icon_add.gif" actionListener="#{EditUserGroupPage.addRow}"/>
-                    <ice:commandButton image="/resources/icon_remove.gif" actionListener="#{EditUserGroupPage.removeRow}"/>
+                    <ice:commandButton image="/resources/images/icon_add.gif" actionListener="#{EditUserGroupPage.addRow}"/>
+                    <ice:commandButton image="/resources/images/icon_remove.gif" actionListener="#{EditUserGroupPage.removeRow}"/>
                   </ice:column>
                   <ice:column>
                     <ice:message for="usertable" styleClass="errorMessage"/>
@@ -118,7 +118,7 @@
               <div jsfc="ice:panelGroup" styleClass="dvnFormPadding" rendered="#{EditUserGroupPage.userGroupType == 'ipgroup'}" id="ipgroups">
                 <ice:outputText styleClass="vdcSubHeaderColor" value="IP Addresses/Domains"/>
                 <div jsfc="ice:panelGroup" styleClass="vdcHelpText">
-                  <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" value="/resources/icon_info.gif"/>
+                  <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" value="/resources/images/icon_info.gif"/>
                   <ice:outputText value="Enter IP addresses (192.168.2.1) and/or domain names (www.host.edu) in the field below. Wildcards are acceptable. Add/remove an entry by clicking the icons next to the username field."/>
                 </div>
                 <ice:dataTable styleClass="dvnFormDataTable" 
@@ -137,8 +137,8 @@
                                    valueChangeListener="#{EditUserGroupPage.changeIpTable}"/>
                   </ice:column>
                   <ice:column>
-                    <ice:commandButton image="/resources/icon_add.gif" actionListener="#{EditUserGroupPage.addIpRow}"/>
-                    <ice:commandButton image="/resources/icon_remove.gif" actionListener="#{EditUserGroupPage.removeIpRow}"/>
+                    <ice:commandButton image="/resources/images/icon_add.gif" actionListener="#{EditUserGroupPage.addIpRow}"/>
+                    <ice:commandButton image="/resources/images/icon_remove.gif" actionListener="#{EditUserGroupPage.removeIpRow}"/>
                   </ice:column>
                   <ice:column>
                     <ice:message for="iptable" styleClass="errorMessage"/>
@@ -149,7 +149,7 @@
               <div jsfc="ice:panelGroup" styleClass="dvnFormPadding" rendered="#{EditUserGroupPage.userGroupType == 'ipgroup'}" id="affiliateLoginServices">
                 <ice:outputText styleClass="vdcSubHeaderColor" value="Affiliate Login Service"/>
                 <div jsfc="ice:panelGroup" styleClass="vdcHelpText" >
-                  <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" value="/resources/icon_info.gif"/>
+                  <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" value="/resources/images/icon_info.gif"/>
                   <ice:outputText value="Enter affiliate names (e.g. MySchool's Pin Service) and urls (http://ez.pinserver.edu) in the field below. Add/remove an entry by clicking the icons next to the input field."/>
                 </div>
                 <ice:selectBooleanCheckbox id="chkAffiliateLoginService"
@@ -184,8 +184,8 @@
                                    valueChangeListener="#{EditUserGroupPage.changeAffiliateTable}"/>
                   </ice:column>
                   <ice:column>
-                    <ice:commandButton image="/resources/icon_add.gif" actionListener="#{EditUserGroupPage.addAffiliateRow}"/>
-                    <ice:commandButton image="/resources/icon_remove.gif" actionListener="#{EditUserGroupPage.removeAffiliateRow}"/>
+                    <ice:commandButton image="/resources/images/icon_add.gif" actionListener="#{EditUserGroupPage.addAffiliateRow}"/>
+                    <ice:commandButton image="/resources/images/icon_remove.gif" actionListener="#{EditUserGroupPage.removeAffiliateRow}"/>
                   </ice:column>
                   <ice:column>
                     <ice:message for="affiliateName" styleClass="errorMessage"/>

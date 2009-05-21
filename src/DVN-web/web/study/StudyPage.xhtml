@@ -187,8 +187,8 @@
                 <div jsfc="ice:panelGroup" id="layoutPanel1" panelLayout="flow" style="width: 98%">
                   <div jsfc="ice:panelGroup"  id="groupPanel11" styleClass="vdcStudyInfoHeader" style="margin-top: 5px;">
                     <ice:outputText id="outputText11" value="Citation Information"/>
-                    <ice:commandButton id="commandButtonCitationInfoContract" image="/resources/icon_expand.gif" title="Hide fields in this section" rendered="#{studyPage.studyUI.citationInformationPanelIsRendered}" actionListener="#{studyPage.updateCitationInfoDisplay}" />
-                    <ice:commandButton id="commandButtonCitationInfoExpand" image="/resources/icon_contract.gif" title="Show fields in this section" rendered="#{!studyPage.studyUI.citationInformationPanelIsRendered}" actionListener="#{studyPage.updateCitationInfoDisplay}"/>
+                    <ice:commandButton id="commandButtonCitationInfoContract" image="/resources/images/icon_expand.gif" title="Hide fields in this section" rendered="#{studyPage.studyUI.citationInformationPanelIsRendered}" actionListener="#{studyPage.updateCitationInfoDisplay}" />
+                    <ice:commandButton id="commandButtonCitationInfoExpand" image="/resources/images/icon_contract.gif" title="Show fields in this section" rendered="#{!studyPage.studyUI.citationInformationPanelIsRendered}" actionListener="#{studyPage.updateCitationInfoDisplay}"/>
                   </div>
                   <ice:panelGrid binding="#{studyPage.citationInformationPanel}" id="panelGridCitationInfo" cellpadding="0" cellspacing="0"
                                  columnClasses="vdcStudyInfoCol1, vdcStudyInfoCol2" columns="2" width="100%" rendered="#{studyPage.studyUI.citationInformationPanelIsRendered}" >
@@ -273,8 +273,8 @@
                   </ice:panelGrid>
                   <div jsfc="ice:panelGroup"  id="groupPanel12" styleClass="vdcStudyInfoHeader" rendered="#{!studyPage.abstractAndScopePanelIsEmpty}" >
                     <ice:outputText   id="AbstractAndScopeText" value="Abstract and Scope"/>
-                    <ice:commandButton id="commandButtonAbstractScopeContract"  image="/resources/icon_expand.gif" title="Hide fields in this section" rendered="#{studyPage.studyUI.abstractAndScopePanelIsRendered }" actionListener="#{studyPage.updateAbstractScopeDisplay}"/>
-                    <ice:commandButton id="commandButtonAbstractScopeExpand" image="/resources/icon_contract.gif" title="Show fields in this section"  rendered="#{!studyPage.studyUI.abstractAndScopePanelIsRendered }" actionListener="#{studyPage.updateAbstractScopeDisplay}"/>
+                    <ice:commandButton id="commandButtonAbstractScopeContract"  image="/resources/images/icon_expand.gif" title="Hide fields in this section" rendered="#{studyPage.studyUI.abstractAndScopePanelIsRendered }" actionListener="#{studyPage.updateAbstractScopeDisplay}"/>
+                    <ice:commandButton id="commandButtonAbstractScopeExpand" image="/resources/images/icon_contract.gif" title="Show fields in this section"  rendered="#{!studyPage.studyUI.abstractAndScopePanelIsRendered }" actionListener="#{studyPage.updateAbstractScopeDisplay}"/>
                     <!--ice:outputText   value="(This section is empty)" rendered="#{studyPage.abstractAndScopePanelIsEmpty}" /-->
                   </div>
                   <ice:panelGrid   binding="#{studyPage.abstractAndScopePanel}"  cellpadding="0" cellspacing="0"
@@ -333,8 +333,8 @@
                   </ice:panelGrid>
                   <div jsfc="ice:panelGroup"   id="groupPanel13" styleClass="vdcStudyInfoHeader" rendered="#{!studyPage.dataCollectionIsEmpty}">
                     <ice:outputText  id="outputText78" value="Data Collection / Methodology"/>
-                    <ice:commandButton id="commandButtondataCollectionoContract" image="/resources/icon_expand.gif" title="Hide fields in this section" rendered="#{studyPage.studyUI.dataCollectionPanelIsRendered}" actionListener="#{studyPage.updateDataCollectionDisplay}" />
-                    <ice:commandButton id="commandButtondataCollectionExpand" image="/resources/icon_contract.gif" title="Show fields in this section" rendered="#{!studyPage.studyUI.dataCollectionPanelIsRendered}" actionListener="#{studyPage.updateDataCollectionDisplay}"/>
+                    <ice:commandButton id="commandButtondataCollectionoContract" image="/resources/images/icon_expand.gif" title="Hide fields in this section" rendered="#{studyPage.studyUI.dataCollectionPanelIsRendered}" actionListener="#{studyPage.updateDataCollectionDisplay}" />
+                    <ice:commandButton id="commandButtondataCollectionExpand" image="/resources/images/icon_contract.gif" title="Show fields in this section" rendered="#{!studyPage.studyUI.dataCollectionPanelIsRendered}" actionListener="#{studyPage.updateDataCollectionDisplay}"/>
                   </div>
                   <ice:panelGrid   binding="#{studyPage.dataCollectionPanel}" cellpadding="0" cellspacing="0"
                                    columnClasses="vdcStudyInfoCol1, vdcStudyInfoCol2" columns="2" id="gridPanelDataCollection"
@@ -401,8 +401,8 @@
                   </ice:panelGrid>
                   <div jsfc="ice:panelGroup" id="groupPanel14a" styleClass="vdcStudyInfoHeader" rendered="#{!studyPage.dataAvailIsEmpty}">
                     <ice:outputText id="outputText115a" value="Data Set Availability"/>
-                    <ice:commandButton id="commandButtonDataAvailContract" image="/resources/icon_expand.gif" title="Hide fields in this section" rendered="#{studyPage.studyUI.dataAvailPanelIsRendered}" actionListener="#{studyPage.updateDataAvailDisplay}" />
-                    <ice:commandButton id="commandButtonDataAvailExpand" image="/resources/icon_contract.gif" title="Show fields in this section" rendered="#{!studyPage.studyUI.dataAvailPanelIsRendered}" actionListener="#{studyPage.updateDataAvailDisplay}"/>
+                    <ice:commandButton id="commandButtonDataAvailContract" image="/resources/images/icon_expand.gif" title="Hide fields in this section" rendered="#{studyPage.studyUI.dataAvailPanelIsRendered}" actionListener="#{studyPage.updateDataAvailDisplay}" />
+                    <ice:commandButton id="commandButtonDataAvailExpand" image="/resources/images/icon_contract.gif" title="Show fields in this section" rendered="#{!studyPage.studyUI.dataAvailPanelIsRendered}" actionListener="#{studyPage.updateDataAvailDisplay}"/>
                   </div>
                   <ice:panelGrid binding="#{studyPage.dataAvailPanel}" cellpadding="0" cellspacing="0"
                                  columnClasses="vdcStudyInfoCol1, vdcStudyInfoCol2" columns="2" id="gridPanelDataAvail" rendered="#{studyPage.studyUI.dataAvailPanelIsRendered}"
@@ -428,8 +428,8 @@
                   <div jsfc="ice:panelGroup" id="groupPanel14b" styleClass="vdcStudyInfoHeader" rendered="#{!studyPage.termsOfUseIsEmpty}">
                     <a name="termsofuse"><!--TERMS OF USE--></a>
                     <ice:outputText id="outputText115" value="Terms of Use"/>
-                    <ice:commandButton id="commandButtonTermsOfUseContract" image="/resources/icon_expand.gif" title="Hide fields in this section" rendered="#{studyPage.studyUI.termsOfUsePanelIsRendered}" actionListener="#{studyPage.updateTermsOfUseDisplay}" />
-                    <ice:commandButton id="commandButtonTermsOfUseExpand" image="/resources/icon_contract.gif" title="Show fields in this section" rendered="#{!studyPage.studyUI.termsOfUsePanelIsRendered}" actionListener="#{studyPage.updateTermsOfUseDisplay}"/>
+                    <ice:commandButton id="commandButtonTermsOfUseContract" image="/resources/images/icon_expand.gif" title="Hide fields in this section" rendered="#{studyPage.studyUI.termsOfUsePanelIsRendered}" actionListener="#{studyPage.updateTermsOfUseDisplay}" />
+                    <ice:commandButton id="commandButtonTermsOfUseExpand" image="/resources/images/icon_contract.gif" title="Show fields in this section" rendered="#{!studyPage.studyUI.termsOfUsePanelIsRendered}" actionListener="#{studyPage.updateTermsOfUseDisplay}"/>
                   </div>
                   <ice:panelGrid binding="#{studyPage.termsOfUsePanel}" cellpadding="0" cellspacing="0"
                                  columnClasses="vdcStudyInfoCol1, vdcStudyInfoCol2" columns="2" id="gridPanelTermsOfUse"  rendered="#{studyPage.studyUI.termsOfUsePanelIsRendered}"
@@ -475,8 +475,8 @@
                   </ice:panelGrid>
                   <div jsfc="ice:panelGroup" id="groupPanel15" styleClass="vdcStudyInfoHeader" rendered="#{!studyPage.notesIsEmpty}">
                     <ice:outputText id="outputText144" value="Other Information"/>
-                    <ice:commandButton id="commandButtonNotesContract" image="/resources/icon_expand.gif" title="Hide fields in this section" rendered="#{studyPage.studyUI.notesPanelIsRendered}" actionListener="#{studyPage.updateNotesDisplay}" />
-                    <ice:commandButton id="commandButtonNotesExpand" image="/resources/icon_contract.gif" title="Show fields in this section" rendered="#{!studyPage.studyUI.notesPanelIsRendered}" actionListener="#{studyPage.updateNotesDisplay}"/>
+                    <ice:commandButton id="commandButtonNotesContract" image="/resources/images/icon_expand.gif" title="Hide fields in this section" rendered="#{studyPage.studyUI.notesPanelIsRendered}" actionListener="#{studyPage.updateNotesDisplay}" />
+                    <ice:commandButton id="commandButtonNotesExpand" image="/resources/images/icon_contract.gif" title="Show fields in this section" rendered="#{!studyPage.studyUI.notesPanelIsRendered}" actionListener="#{studyPage.updateNotesDisplay}"/>
                   </div>
                   <ice:panelGrid  binding="#{studyPage.notesPanel}" cellpadding="0" cellspacing="0"
                                   columnClasses="vdcStudyInfoCol1, vdcStudyInfoCol2" columns="2" id="gridPanelNotes" rendered="#{studyPage.studyUI.notesPanelIsRendered}"
@@ -517,12 +517,12 @@
                   </div>
                   <div jsfc="ice:panelGroup" id="layoutPanel3" panelLayout="flow" styleClass="vdcStudyFilesContent" rendered="#{!empty studyPage.studyUI.study.fileCategories}">                    
                     <div>
-                        <ice:graphicImage value="/resources/icon_info.gif" styleClass="dvn_icon"/>
+                        <ice:graphicImage value="/resources/images/icon_info.gif" styleClass="dvn_icon"/>
                         <ice:outputText value=" Use the check boxes next to the file name to download multiple files. Data files will be downloaded in their default format. You can also download all the files in a category by checking the box next to the category name. You will be prompted to save a single archive file. Study files that have restricted access will not be downloaded."/>
                     </div>
                     <div jsfc="ice:panelGroup" rendered="#{!empty studyPage.studyUI.study.harvestHoldings and studyPage.studyUI.study.isHarvested}">
                         <p>
-                            <ice:graphicImage value="/resources/icon_warning.18.png" styleClass="dvn_icon"/>
+                            <ice:graphicImage value="/resources/images/icon_warning.18.png" styleClass="dvn_icon"/>
                             <ice:outputText value=" Files for this study may also be accessed from their "/>
                             <ice:outputLink value="#{studyPage.studyUI.study.harvestHoldings}">
                                 <ice:outputText value="original source."/>
@@ -531,7 +531,7 @@
                     </div>
                     <div jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.anyFileRestricted}">
                         <p>
-                            <ice:graphicImage value="/resources/icon_warning.18.png" styleClass="dvn_icon"/>
+                            <ice:graphicImage value="/resources/images/icon_warning.18.png" styleClass="dvn_icon"/>
                             <ice:outputText value=" Access to some files is restricted, and those files are not available for downloading."/>
                             <ice:outputText value=" No information about the restriction is available." rendered="#{studyPage.termsOfUseIsEmpty}"/>
                             <ice:outputText value=" Check the " rendered="#{!studyPage.termsOfUseIsEmpty}"/>
@@ -600,14 +600,14 @@
                                     </ice:column>
                                     <ice:column id="column12">
                                       <div jsfc="ice:panelGroup" styleClass="vdcStudyFileRowFileDownload">
-                                        <ice:graphicImage styleClass="vdcNoBorders" value="/resources/icon_download_locked.gif" rendered="#{studyFileUI.restrictedForUser}" alt="You do not have permissions to access this file."/>
+                                        <ice:graphicImage styleClass="vdcNoBorders" value="/resources/images/icon_download_locked.gif" rendered="#{studyFileUI.restrictedForUser}" alt="You do not have permissions to access this file."/>
                                         <ice:outputText styleClass="vdcStudyFileRowFileDownloadRestricted" value=" Restricted Access" rendered="#{studyFileUI.restrictedForUser}"/>
                                         <ice:outputLink styleClass="vdcStudyFileRowFileDownloadLink" value="#{studyFileUI.fileDownloadURL}" rendered="#{!studyFileUI.restrictedForUser and !studyFileUI.studyFile.subsettable}">
                                           <ice:outputText value="Download" rendered="#{!studyFileUI.restrictedForUser and !studyFileUI.studyFile.subsettable}"/>
                                         </ice:outputLink>
                                       </div>
                                       <div jsfc="ice:panelGroup" rendered="#{!studyFileUI.restrictedForUser and studyFileUI.studyFile.subsettable}">
-                                        <ice:graphicImage styleClass="vdcStudyFileRowFileDownloadAsIcon" value="/resources/icon_download.gif" alt="Download"/>
+                                        <ice:graphicImage styleClass="vdcStudyFileRowFileDownloadAsIcon" value="/resources/images/icon_download.gif" alt="Download"/>
                                         <ice:selectOneMenu styleClass="vdcStudyFileRowFileDownloadAsList" id="downloadList" onchange="downloadSingleFile(this);">
                                             <f:selectItem itemLabel="Download as..." itemValue=""/>
                                             <f:selectItems value="#{studyFileUI.dataFileFormatTypeSelectItems}"/>

@@ -303,10 +303,10 @@ public class VDCCollectionTree implements java.io.Serializable  {
         
         ImageComponent image = new ImageComponent();
         if (vdc.isRestricted()) {
-            image.setUrl("/resources/icon_lock.gif");
+            image.setUrl("/resources/images/icon_lock.gif");
             image.setAlt("Restricted Dataverse");
         } else {
-            image.setUrl("/resources/icon_dataverse.gif");
+            image.setUrl("/resources/images/icon_dataverse.gif");
             image.setAlt("Dataverse");
             
         }

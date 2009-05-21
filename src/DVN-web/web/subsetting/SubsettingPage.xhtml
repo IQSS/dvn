@@ -225,7 +225,7 @@
                     <ice:graphicImage
                         alt="Information"
                         title="Information"
-                        value="/resources/icon_info.gif" />
+                        value="/resources/images/icon_info.gif" />
                     <ice:outputText id="outputText13"
                         value="#{bundleAnalysis['dwnld.instruction']}"/>
                 </ice:panelGroup>
@@ -260,7 +260,7 @@
                             title="Error" 
                             styleClass="vdcNoBorders" 
                             style="vertical-align: middle" 
-                            value="/resources/error_small.gif"
+                            value="/resources/images/error_small.gif"
                             rendered="false"/>
                         <ice:outputText id="msgDwnldButton"
                             binding="#{AnalysisPage.msgDwnldButton}" 
@@ -378,7 +378,7 @@
                             <ice:graphicImage
                                 alt="Information"
                                 title="Information"
-                                value="/resources/icon_info.gif"/>
+                                value="/resources/images/icon_info.gif"/>
                             <ice:outputText id="outputText491"
                                 value="#{bundleAnalysis['recode.instruction.line1']}"/>
                         </ice:panelGroup>
@@ -392,7 +392,7 @@
                         <ice:graphicImage 
                             alt="Information" 
                             title="Information" 
-                            value="/resources/icon_info.gif"/>
+                            value="/resources/images/icon_info.gif"/>
                         <ice:outputText id="outputText492"
                                         value="#{bundleAnalysis['recode.instruction.line2']}"/>
                         <ice:outputText id="outputText493"
@@ -401,7 +401,7 @@
 
                     <ice:panelGroup styleClass="vdcHelpText">
                         <ice:outputText id="rfb" escape="false" value="(" />
-                        <ice:graphicImage value="/resources/icon_required.gif" />
+                        <ice:graphicImage value="/resources/images/icon_required.gif" />
                         <ice:outputText id="rfa"
                             value="indicates a required field.)" />
                     </ice:panelGroup>
@@ -430,7 +430,7 @@
                                 <ice:panelGroup>    
                                 <ice:outputText id="recodeNewVarName" 
                                     value="#{bundleAnalysis['recode.newVar.name']}"/>
-                                <ice:graphicImage  value="/resources/icon_required.gif"/>
+                                <ice:graphicImage  value="/resources/images/icon_required.gif"/>
                                 </ice:panelGroup>
                             
                             <ice:panelGroup>
@@ -466,13 +466,13 @@
                                 <ice:graphicImage
                                     alt="Information"
                                     title="Information"
-                                    value="/resources/icon_info.gif"/>
+                                    value="/resources/images/icon_info.gif"/>
                                 <ice:outputText id="recodeHowToRecodeInstruction"
                                                 value="#{bundleAnalysis['recode.howToRecode.instruction']} "/>
                                 <ice:graphicImage
                                     alt="Click to show the how-to information"
                                     title="Click to show/hide how-to information"
-                                    value="/resources/icon_help.gif"
+                                    value="/resources/images/icon_help.gif"
                                     onclick="return shwNshwTxt('recodeDetail');"/>
                                 <div id="recodeDetail"
                                      style="display:none">
@@ -486,13 +486,13 @@
                                 <ice:graphicImage
                                     alt="Information"
                                     title="Information"
-                                    value="/resources/icon_info.gif"/>
+                                    value="/resources/images/icon_info.gif"/>
                                 <ice:outputText id="recodeHowToSubsetInstruction"
                                     value="#{bundleAnalysis['recode.howToSubset.instruction']} "/>
                                 <ice:graphicImage
                                     alt="Click to show the how-to information"
                                     title="Click to show/hide how-to information"
-                                    value="/resources/icon_help.gif"
+                                    value="/resources/images/icon_help.gif"
                                     onclick="return shwNshwTxt('subsetDetail');"/>
                                 <div id="subsetDetail"
                                      style="display:none">
@@ -505,13 +505,13 @@
                                 <ice:graphicImage
                                     alt="Information"
                                     title="Information"
-                                    value="/resources/icon_info.gif"/>
+                                    value="/resources/images/icon_info.gif"/>
                                 <ice:outputText id="recodeHowToEnterConditionInstruction"
                                     value="#{bundleAnalysis['recode.howToEnterCondition.instruction']} "/>
                                 <ice:graphicImage
                                     alt="Click to show the how-to information"
                                     title="Click to show/hide how-to information"
-                                    value="/resources/icon_help.gif"
+                                    value="/resources/images/icon_help.gif"
                                     onclick="return shwNshwTxt('conditionDetail');"/>
                                 <div id="conditionDetail"
                                      style="display:none">
@@ -561,7 +561,7 @@
                                 title="Information"
                                 styleClass="vdcNoBorders"
                                 style="vertical-align: middle"
-                                value="/resources/arrow_right.gif"/>
+                                value="/resources/images/arrow_right.gif"/>
                         </ice:column>
                         <ice:column id="recodeClValue">
                             <f:facet name="header">
@@ -645,7 +645,7 @@
                     <ice:graphicImage
                         alt="Information"
                         title="Information"
-                        value="/resources/icon_info.gif"/>
+                        value="/resources/images/icon_info.gif"/>
                     <ice:outputText id="outputText21" 
                         value="#{bundleAnalysis['eda.instruction']}"/>
                 </ice:panelGroup>
@@ -746,7 +746,7 @@
                             <ice:graphicImage 
                                 alt="Information" 
                                 title="Information" 
-                                value="/resources/icon_info.gif"/>
+                                value="/resources/images/icon_info.gif"/>
                             <ice:outputLink 
                                 value="#{AnalysisPage.modelHelpLinkURL}"
                                 target="_blank"
@@ -1107,7 +1107,7 @@
                     <ice:graphicImage 
                         alt="Information" 
                         title="Information"
-                        value="/resources/icon_info.gif" />
+                        value="/resources/images/icon_info.gif" />
                     <ice:outputText id="txtSubsettingInstruction"
                         binding="#{AnalysisPage.txtSubsettingInstruction}" 
                         value="#{bundleAnalysis['subsettingInstruction']}" />
@@ -1302,7 +1302,7 @@
                           onclick="QSrequested(this.id, '#{currentRow[2]}');return false;"
                           alt="Click to show descriptive statistics"
                           title="Click to show/hide descriptive statistics"
-                          image="/resources/icon_variables.gif"
+                          image="/resources/images/icon_variables.gif"
                           type="submit"/>
                       <ice:outputText id="varSummaryTable"
                           escape="false" value="#{currentRow[5]}"/>

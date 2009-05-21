@@ -33,7 +33,7 @@
                 <ice:outputLabel for="classification"
                                  styleClass="vdcFieldTitle"
                                  value="Name"/>
-                <ice:graphicImage id="image1" value="/resources/icon_required.gif"/>
+                <ice:graphicImage id="image1" value="/resources/images/icon_required.gif"/>
               </ice:panelGroup>
               <ice:panelGroup>
                 <ice:inputText type="text"
@@ -77,7 +77,7 @@
            </ice:panelGrid>
            <ice:panelGroup rendered="#{addClassificationsPage.selectedParent==null or addClassificationsPage.selectedParent==0}">
                <p>
-                   <ice:graphicImage value="/resources/icon_warning.18.png" styleClass="dvn_icon"/>
+                   <ice:graphicImage value="/resources/images/icon_warning.18.png" styleClass="dvn_icon"/>
                    <ice:outputText value=" You cannot add a dataverse to a top-level classification (a classification that does not have a parent). You can add dataverses to subclassifications only."/>
                </p>
            </ice:panelGroup>
@@ -89,7 +89,7 @@
                 <!-- DataTable with RowSelector Component -->
                 <ice:panelGroup styleClass="dvnAddClassificationMessage">
                         <p>
-                            <ice:graphicImage value="/resources/icon_warning.18.png" styleClass="dvn_icon"/>
+                            <ice:graphicImage value="/resources/images/icon_warning.18.png" styleClass="dvn_icon"/>
                             <ice:outputText value=" Indicates a dataverse is not released."/>
                         </p>
                 </ice:panelGroup>

@@ -14,5 +14,6 @@ INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditStudyC
 --
 begin;
 
+update dvnversion set buildnumber=0, versionnumber=2;
 
 commit;

@@ -11,11 +11,14 @@ package edu.harvard.iq.dvn.core.ddi;
 
 import edu.harvard.iq.dvn.core.study.DataTable;
 import edu.harvard.iq.dvn.core.study.DataVariable;
+import edu.harvard.iq.dvn.core.study.FileCategory;
+import edu.harvard.iq.dvn.core.study.OtherFile;
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyAbstract;
 import edu.harvard.iq.dvn.core.study.StudyAuthor;
 import edu.harvard.iq.dvn.core.study.StudyDistributor;
 import edu.harvard.iq.dvn.core.study.StudyFile;
+import edu.harvard.iq.dvn.core.study.StudyFileActivity;
 import edu.harvard.iq.dvn.core.study.StudyFileEditBean;
 import edu.harvard.iq.dvn.core.study.StudyGeoBounding;
 import edu.harvard.iq.dvn.core.study.StudyGrant;
@@ -31,6 +34,7 @@ import edu.harvard.iq.dvn.core.study.StudySoftware;
 import edu.harvard.iq.dvn.core.study.StudyTopicClass;
 import edu.harvard.iq.dvn.core.study.SummaryStatistic;
 import edu.harvard.iq.dvn.core.study.SummaryStatisticType;
+import edu.harvard.iq.dvn.core.study.TabularDataFile;
 import edu.harvard.iq.dvn.core.study.VariableCategory;
 import edu.harvard.iq.dvn.core.study.VariableFormatType;
 import edu.harvard.iq.dvn.core.study.VariableIntervalType;
@@ -165,7 +169,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         }
     }
 
-    public void exportDataFile(StudyFile sf, OutputStream os)  {
+    public void exportDataFile(TabularDataFile sf, OutputStream os)  {
         XMLStreamWriter xmlw = null;
         try {
             javax.xml.stream.XMLOutputFactory xmlof = javax.xml.stream.XMLOutputFactory.newInstance();
@@ -277,8 +281,8 @@ public class DDIServiceBean implements DDIServiceLocal {
         // iterate through files, saving other material files for the end
         List<StudyFile> otherMatFiles = new ArrayList();
         for (StudyFile sf : study.getStudyFiles()) {
-            if ( sf.isSubsettable() ) {
-                createFileDscr(xmlw, sf);
+            if ( sf instanceof TabularDataFile ) {
+                createFileDscr(xmlw, (TabularDataFile) sf);
             } else {
                 otherMatFiles.add(sf);
             }
@@ -1039,22 +1043,22 @@ public class DDIServiceBean implements DDIServiceLocal {
         }
     }
 
-    private void createFileDscr(XMLStreamWriter xmlw, StudyFile sf) throws XMLStreamException {
-        DataTable dt = sf.getDataTable();
+    private void createFileDscr(XMLStreamWriter xmlw, TabularDataFile tdf) throws XMLStreamException {
+        DataTable dt = tdf.getDataTable();
 
         xmlw.writeStartElement("fileDscr");
-        writeAttribute( xmlw, "ID", "f" + sf.getId().toString() );
-        writeAttribute( xmlw, "URI", determineFileURI(sf) );
+        writeAttribute( xmlw, "ID", "f" + tdf.getId().toString() );
+        writeAttribute( xmlw, "URI", determineFileURI(tdf) );
 
         // fileTxt
         xmlw.writeStartElement("fileTxt");
 
         xmlw.writeStartElement("fileName");
-        xmlw.writeCharacters( sf.getFileName() );
+        xmlw.writeCharacters( tdf.getFileName() );
         xmlw.writeEndElement(); // fileName
 
         xmlw.writeStartElement("fileCont");
-        xmlw.writeCharacters( sf.getDescription() );
+        xmlw.writeCharacters( tdf.getDescription() );
         xmlw.writeEndElement(); // fileCont
 
         // dimensions
@@ -1081,7 +1085,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         }
 
         xmlw.writeStartElement("fileType");
-        xmlw.writeCharacters( sf.getFileType() );
+        xmlw.writeCharacters( tdf.getFileType() );
         xmlw.writeEndElement(); // fileType
 
         xmlw.writeEndElement(); // fileTxt
@@ -1096,7 +1100,7 @@ public class DDIServiceBean implements DDIServiceLocal {
 
         xmlw.writeStartElement("notes");
         writeAttribute( xmlw, "type", "vdc:category" );
-        xmlw.writeCharacters( sf.getFileCategory().getName() );
+        xmlw.writeCharacters( tdf.getFileCategory().getName() );
         xmlw.writeEndElement(); // notes
 
         // THIS IS OLD CODE FROM JAXB, but a reminder that we may want to add original fileType
@@ -1156,10 +1160,11 @@ public class DDIServiceBean implements DDIServiceLocal {
         boolean dataDscrAdded = false;
 
         for (StudyFile sf : study.getStudyFiles()) {
-            if ( sf.isSubsettable() ) {
-                if ( sf.getDataTable().getDataVariables().size() > 0 ) {
+            if ( sf instanceof TabularDataFile ) {
+                TabularDataFile tdf = (TabularDataFile) sf;
+                if ( tdf.getDataTable().getDataVariables().size() > 0 ) {
                     dataDscrAdded = checkParentElement(xmlw, "dataDscr", dataDscrAdded);
-                    Iterator varIter = varService.getDataVariablesByFileOrder( sf.getDataTable().getId() ).iterator();
+                    Iterator varIter = varService.getDataVariablesByFileOrder( tdf.getDataTable().getId() ).iterator();
                     while (varIter.hasNext()) {
                         DataVariable dv = (DataVariable) varIter.next();
                         createVar(xmlw, dv);
@@ -1174,14 +1179,17 @@ public class DDIServiceBean implements DDIServiceLocal {
 
     private void createDataDscr(XMLStreamWriter xmlw, StudyFile sf) throws XMLStreamException {
         // this version is to produce the dataDscr for just one file
-        if ( sf.isSubsettable() && sf.getDataTable().getDataVariables().size() > 0 ) {
-            xmlw.writeStartElement("dataDscr");
-            Iterator varIter = varService.getDataVariablesByFileOrder( sf.getDataTable().getId() ).iterator();
-            while (varIter.hasNext()) {
-                DataVariable dv = (DataVariable) varIter.next();
-                createVar(xmlw, dv);
+        if ( sf instanceof TabularDataFile ) {
+            TabularDataFile tdf = (TabularDataFile) sf;
+            if (tdf.getDataTable().getDataVariables().size() > 0 ) {
+                xmlw.writeStartElement("dataDscr");
+                Iterator varIter = varService.getDataVariablesByFileOrder( tdf.getDataTable().getId() ).iterator();
+                while (varIter.hasNext()) {
+                    DataVariable dv = (DataVariable) varIter.next();
+                    createVar(xmlw, dv);
+                }
+                xmlw.writeEndElement(); // dataDscr
             }
-            xmlw.writeEndElement(); // dataDscr
         }
     }
 
@@ -1416,6 +1424,7 @@ public class DDIServiceBean implements DDIServiceLocal {
     private void initializeCollections(Study study) {
         // initialize the collections
         study.setFileCategories( new ArrayList() );
+        study.setStudyFiles( new ArrayList() );
         study.setStudyAbstracts( new ArrayList() );
         study.setStudyAuthors( new ArrayList() );
         study.setStudyDistributors( new ArrayList() );
@@ -1964,7 +1973,7 @@ public class DDIServiceBean implements DDIServiceLocal {
     }
 
     private void processFileDscr(XMLStreamReader xmlr, Study study, Map filesMap) throws XMLStreamException {
-        StudyFile sf = new StudyFile();
+        StudyFile sf = new OtherFile(study); // until we connect the sf and dt, we have to assume it's an other file
         DataTable dt = new DataTable();
         dt.setDataVariables( new ArrayList() );
 
@@ -1985,7 +1994,9 @@ public class DDIServiceBean implements DDIServiceLocal {
                 else if (xmlr.getLocalName().equals("notes")) {
                     String noteType = xmlr.getAttributeValue(null, "type");
                     if (NOTE_TYPE_UNF.equalsIgnoreCase(noteType) ) {
-                        dt.setUnf( parseUNF( parseText(xmlr) ) );
+                        String unf = parseUNF( parseText(xmlr) );
+                        sf.setUnf(unf);
+                        dt.setUnf(unf);
                     } else if ("vdc:category".equalsIgnoreCase(noteType) ) {
                         catName = parseText(xmlr);
                     } else if ("icpsr:category".equalsIgnoreCase(noteType) ) {
@@ -2079,25 +2090,9 @@ public class DDIServiceBean implements DDIServiceLocal {
         dv.setName( xmlr.getAttributeValue(null, "name") );
 
         // associate dv with the correct file
-        if ( xmlr.getAttributeValue(null, "files") != null ) {
-            List filesMapEntry = (List) filesMap.get( xmlr.getAttributeValue(null, "files" ) );
-            if (filesMapEntry != null) {
-                StudyFile sf = (StudyFile) filesMapEntry.get(0);
-                DataTable dt = (DataTable) filesMapEntry.get(1);
-                if (!sf.isSubsettable()) {
-                    // first time with this file, so attach the dt to the file and set as subsettable)
-                    dt.setStudyFile(sf);
-                    sf.setDataTable(dt);
-                    sf.setSubsettable(true);
-                    sf.setFileType( FileUtil.determineSubsettableFileType( sf ) ); // redetermine file type, now that we know it's subsettable
-                }
-
-                // set fileOrder to size of list (pre add, since indexes start at 0)
-                dv.setFileOrder( dt.getDataVariables().size() );
-
-                dv.setDataTable(dt);
-                dt.getDataVariables().add(dv);
-            }
+        String fileId = xmlr.getAttributeValue(null, "files");
+        if ( fileId != null ) {
+            linkDataVariableToDatable(filesMap, xmlr.getAttributeValue(null, "fileid"), dv );
         }
 
         // interval type (DB value may be different than DDI value)
@@ -2149,24 +2144,7 @@ public class DDIServiceBean implements DDIServiceLocal {
     private void processLocation(XMLStreamReader xmlr, DataVariable dv, Map filesMap) throws XMLStreamException {
         // associate dv with the correct file
         if ( dv.getDataTable() == null ) {
-            List filesMapEntry = (List) filesMap.get( xmlr.getAttributeValue(null, "fileid" ) );
-            if (filesMapEntry != null) {
-                StudyFile sf = (StudyFile) filesMapEntry.get(0);
-                DataTable dt = (DataTable) filesMapEntry.get(1);
-                if (!sf.isSubsettable()) {
-                    // first time with this file, so attach the dt to the file and set as subsettable)
-                    dt.setStudyFile(sf);
-                    sf.setDataTable(dt);
-                    sf.setSubsettable(true);
-                    sf.setFileType( FileUtil.determineSubsettableFileType( sf ) ); // redetermine file type, now that we know it's subsettable
-                }
-
-                // set fileOrder to size of list (pre add, since indexes start at 0)
-                dv.setFileOrder( dt.getDataVariables().size() );
-
-                dv.setDataTable(dt);
-                dt.getDataVariables().add(dv);
-            }
+            linkDataVariableToDatable(filesMap, xmlr.getAttributeValue(null, "fileid"), dv );
         }
 
         // fileStartPos, FileEndPos, and RecSegNo
@@ -2181,6 +2159,61 @@ public class DDIServiceBean implements DDIServiceLocal {
             dv.setRecordSegmentNumber( new Long( xmlr.getAttributeValue(null, "RecSegNo") ) );
         } catch (NumberFormatException ex) {}
     }
+
+    private void linkDataVariableToDatable(Map filesMap, String fileId, DataVariable dv) {
+        List filesMapEntry = (List) filesMap.get( fileId );
+        if (filesMapEntry != null) {
+            StudyFile sf = (StudyFile) filesMapEntry.get(0);
+            DataTable dt = (DataTable) filesMapEntry.get(1);
+            if (sf instanceof OtherFile) {
+                // first time with this file, so attach the dt to the file and set as subsettable)
+                TabularDataFile tdf = converOtherFileToTabularDataFile( (OtherFile) sf);
+                filesMapEntry.set(0, tdf);
+
+                dt.setStudyFile(tdf);
+                tdf.setDataTable(dt);
+                tdf.setFileType( FileUtil.determineTabularDataFileType( tdf ) ); // redetermine file type, now that we know it's subsettable
+            }
+
+            // set fileOrder to size of list (pre add, since indexes start at 0)
+            dv.setFileOrder( dt.getDataVariables().size() );
+
+            dv.setDataTable(dt);
+            dt.getDataVariables().add(dv);
+        }
+    }
+
+    private TabularDataFile converOtherFileToTabularDataFile(OtherFile of) {
+        TabularDataFile tdf = new TabularDataFile();
+
+        tdf.setFileName( of.getFileName() );
+        tdf.setFileType( of.getFileType() );
+        tdf.setFileSystemLocation( of.getFileSystemLocation() );
+        tdf.setUnf( of.getUnf() );
+        tdf.setDescription( of.getDescription() );
+        // not sure if these fields are set in the mapping, but just in case!
+        tdf.setGlobalId( of.getGlobalId() );
+        tdf.setLabel( of.getLabel() );
+        tdf.setOriginalFileType( of.getOriginalFileType() );
+        tdf.setDisplayOrder( of.getDisplayOrder() );
+
+        Study study = of.getStudy();
+        tdf.setStudy( study );
+        study.getStudyFiles().remove(of);
+        study.getStudyFiles().add(tdf);
+
+        FileCategory fc = of.getFileCategory();
+        tdf.setFileCategory( fc );
+        fc.getStudyFiles().remove(of);
+        fc.getStudyFiles().add(tdf);
+
+        StudyFileActivity sfa = of.getStudyFileActivity();
+        tdf.setStudyFileActivity(sfa);
+        sfa.setStudyFile(tdf);
+
+        return tdf;
+    }
+
 
     private void processInvalrng(XMLStreamReader xmlr, DataVariable dv) throws XMLStreamException {
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
@@ -2285,7 +2318,7 @@ public class DDIServiceBean implements DDIServiceLocal {
     }
 
     private void processOtherMat(XMLStreamReader xmlr, Study study) throws XMLStreamException {
-        StudyFile sf = new StudyFile();
+        StudyFile sf = new OtherFile(study);
         sf.setFileSystemLocation( xmlr.getAttributeValue(null, "URI"));
 
 

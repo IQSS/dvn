@@ -7,7 +7,14 @@
 ALTER TABLE vdc ADD COLUMN allowstudycomments bool default true;
 ALTER TABLE vdc ALTER COLUMN allowstudycomments SET STORAGE PLAIN;
 
-INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditStudyCommentsPage', '/admin/EditStudyCommentsPage.xhtml', 3,null );
+ALTER TABLE studyfile ADD COLUMN fileclass character varying(255);
+ALTER TABLE studyfile ALTER COLUMN fileclass SET STORAGE EXTENDED;
+
+ALTER TABLE studyfile ADD COLUMN study_id bigint;
+ALTER TABLE studyfile ALTER COLUMN study_id SET STORAGE PLAIN;
+
+ALTER TABLE studyfile ADD COLUMN unf character varying(255);
+ALTER TABLE studyfile ALTER COLUMN unf SET STORAGE EXTENDED;
 
 --
 -- and now DML
@@ -15,5 +22,13 @@ INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditStudyC
 begin;
 
 update dvnversion set buildnumber=0, versionnumber=2;
+
+INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditStudyCommentsPage', '/admin/EditStudyCommentsPage.xhtml', 3,null );
+
+update studyfile set fileclass='TabularDataFile' where subsettable = true;
+update studyfile set fileclass='OtherFile' where subsettable = false;
+
+update studyfile sf set unf = dt.unf from datatable dt where sf.id = dt.studyfile_id;
+update studyfile sf set study_id = fc.study_id from filecategory fc where sf.filecategory_id = fc.id;
 
 commit;

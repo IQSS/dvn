@@ -439,6 +439,19 @@ public class Study implements java.io.Serializable {
     public void setFileCategories(java.util.List<edu.harvard.iq.dvn.core.study.FileCategory> fileCategories) {
         this.fileCategories = fileCategories;
     }
+
+    @OneToMany(mappedBy="study", cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
+    private java.util.List<edu.harvard.iq.dvn.core.study.StudyFile> studyFiles;
+
+    public List<StudyFile> getStudyFiles() {
+        return studyFiles;
+    }
+
+    public void setStudyFiles(List<StudyFile> studyFiles) {
+        this.studyFiles = studyFiles;
+    }
+
+    
     
     /**
      * Holds value of property version.
@@ -1826,17 +1839,6 @@ I left in for now because I want to make sure that using new code doesn't break 
 End of deprecated methods section
 *********************************************************************/
 
-
-    public List<StudyFile> getStudyFiles() {
-        List files = new ArrayList();
-        
-        Iterator iter = getFileCategories().iterator();
-        while (iter.hasNext()) {
-            FileCategory cat = (FileCategory) iter.next();
-            files.addAll(cat.getStudyFiles());
-        }
-        return files;
-    }
     
     public boolean isTermsOfUseEnabled() {
         // we might make this a true boolean stored in the db at some point;

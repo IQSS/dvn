@@ -34,20 +34,12 @@ import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.vdc.HarvestingDataverse;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.Persistence;
-import javax.persistence.SequenceGenerator;
+import java.util.List;
 import javax.persistence.*;
 
-import java.util.logging.*;
-import org.apache.commons.lang.builder.*;
 
 
 /**
@@ -55,22 +47,37 @@ import org.apache.commons.lang.builder.*;
  * @author Ellen Kraffmiller
  */
 @Entity
-public class StudyFile implements Serializable {
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name="fileClass")
+public abstract class StudyFile implements Serializable {
 
     private String globalId;
     private String fileName;
     private String fileType;
-    private boolean subsettable;
     private String fileSystemLocation;
     private String label;
     private String originalFileType;
     @Column(columnDefinition = "TEXT")
     private String description;
+    private String unf;
+
+
+    public StudyFile() {
+    }
 
     /**
      * Creates a new instance of StudyFile
      */
-    public StudyFile() {
+    public StudyFile(Study study) {
+        this.setStudy( study );
+        study.getStudyFiles().add(this);
+        
+        StudyFileActivity sfActivity = new StudyFileActivity();
+        this.setStudyFileActivity(sfActivity);
+        sfActivity.setStudyFile(this);
+        sfActivity.setStudy(this.getStudy());
+        //TODO: add both sides of relationship here
+        //this.getStudy().getStudyFileActivity().add(sfActivity);
     }
 
     public String getGlobalId() {
@@ -95,14 +102,6 @@ public class StudyFile implements Serializable {
 
     public void setFileType(String fileType) {
         this.fileType = fileType;
-    }
-
-    public boolean isSubsettable() {
-        return subsettable;
-    }
-
-    public void setSubsettable(boolean subsettable) {
-        this.subsettable = subsettable;
     }
 
     public String getFileSystemLocation() {
@@ -136,6 +135,19 @@ public class StudyFile implements Serializable {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    private Study study;
+
+    public Study getStudy() {
+        return study;
+    }
+
+    public void setStudy(Study study) {
+        this.study = study;
+    }
+
+
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private FileCategory fileCategory;
 
@@ -316,23 +328,15 @@ public class StudyFile implements Serializable {
     /**
      * Holds value of property dataTable.
      */
-    @OneToOne(mappedBy = "studyFile", cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
-    private DataTable dataTable;
+    @OneToMany(mappedBy = "studyFile", cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
+    private List<DataTable> dataTables;
 
-    /**
-     * Getter for property studyFile.
-     * @return Value of property studyFile.
-     */
-    public DataTable getDataTable() {
-        return this.dataTable;
+    protected List<DataTable> getDataTables() {
+        return dataTables;
     }
 
-    /**
-     * Setter for property studyFile.
-     * @param studyFile New value of property studyFile.
-     */
-    public void setDataTable(DataTable dataTable) {
-        this.dataTable = dataTable;
+    protected void setDataTables(List<DataTable> dataTables) {
+        this.dataTables = dataTables;
     }
 
     public boolean isSubsetRestrictedForUser(VDCUser user, VDC vdc, UserGroup ipUserGroup) {
@@ -499,6 +503,26 @@ public class StudyFile implements Serializable {
 
     public void setStudyFileActivity(StudyFileActivity studyFileActivity) {
         this.studyFileActivity = studyFileActivity;
+    }
+
+     public String getUnf() {
+        return this.unf;
+    }
+
+    public void setUnf(String unf) {
+        this.unf = unf;
+    }
+
+    public abstract boolean isSubsettable();
+
+    public abstract boolean isUNFable();
+
+    public void clearData() {
+         for (DataTable elem : this.getDataTables()) {
+            if (elem != null && elem.getDataVariables() != null) {
+                elem.getDataVariables().clear();
+            }
+        }
     }
     
 //    @Override

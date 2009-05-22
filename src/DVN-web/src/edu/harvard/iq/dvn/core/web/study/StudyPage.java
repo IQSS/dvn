@@ -281,9 +281,9 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
 
     public void init() {
         super.init();
+        allowUserComments = getVDCRequestBean().getCurrentVDC().isAllowStudyComments();
         // set tab if it was it was sent as pamameter or part of request bean
         initSelectedTabIndex();
-
         if (isFromPage("StudyPage")) {
             setStudyUI((StudyUI) sessionGet(StudyUI.class.getName()));
             setStudyId(studyUI.getStudy().getId());
@@ -544,6 +544,27 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
     public void setXFF(String xff) {
         this.xff = xff;
     }
+
+    protected boolean allowUserComments;
+
+    /**
+     * Get the value of allowUserComments
+     *
+     * @return the value of allowUserComments
+     */
+    public boolean isAllowUserComments() {
+        return allowUserComments;
+    }
+
+    /**
+     * Set the value of allowUserComments
+     *
+     * @param allowUserComments new value of allowUserComments
+     */
+    public void setAllowUserComments(boolean allowUserComments) {
+        this.allowUserComments = allowUserComments;
+    }
+
    
     public String beginRequestWorkflow() {
             LoginWorkflowBean lwf = (LoginWorkflowBean) getBean("LoginWorkflowBean");       
@@ -566,7 +587,9 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
                 selectedIndex=0;
             } else if (tab.equals("files")) {
                 selectedIndex=1;
-            } 
+            } else if (tab.equals("comments")) {
+                selectedIndex=2;
+            }
         }
     }
     
@@ -595,6 +618,7 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
         }
      
     }
+
 
 
     

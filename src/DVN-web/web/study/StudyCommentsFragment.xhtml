@@ -1,0 +1,182 @@
+                <div xmlns:gui="http://java.sun.com/jsf/facelets"
+                      xmlns:h="http://java.sun.com/jsf/html"
+                      xmlns:f="http://java.sun.com/jsf/core"
+                      xmlns:jsp="http://java.sun.com/JSP/Page"
+                      xmlns:ice="http://www.icesoft.com/icefaces/component"
+                      xmlns:dvn="/WEB-INF/tlds/dvn-components"
+                      xmlns:ui="http://www.sun.com/web/ui"
+                      jsfc="ice:panelGroup"
+                      id="layoutPanelComments"
+                      panelLayout="flow"
+                      styleClass="vdcStudyFilesPage">
+                  <!-- rendered="#{StudyPageFragment.user != null}" -->
+                  <div jsfc="ice:panelGroup"
+                       id="commentContentPanel"
+                       panelLayout="flow"
+                       >
+                      <!-- !empty StudyCommentsFragment.studyComments} -->
+                       <div jsfc="ice:panelGroup"  id="groupPanel11" styleClass="vdcStudyInfoHeader" style="margin-top: 5px;">
+                            <ice:outputText id="outputText11" value="Comments"/>
+                       </div>
+                      <div jsfc="ice:panelGroup"
+                       id="noCommentsPanel"
+                       panelLayout="flow"
+                       styleClass="vdcStudyFilesEmpty"
+                       rendered="#{empty StudyCommentsFragment.studyComments}">
+                    <div jsfc="ice:panelGroup"
+                         id="noCommentsUploadedPanel"
+                         styleClass="vdcStudyFilesEmptyMessage"
+                         >
+<!-- TODO: restore this: #{StudyCommentsFragment.study.userAuthorizedToEdit and (StudyCommentsFragment.study.studyLock==null)} -->
+                        <ice:outputText value="No comments have been added to this study. "/>
+                    </div>
+                  </div>
+                      <ice:dataTable rendered="true"
+                                     cellpadding="0"
+                                     cellspacing="0"
+                                     id="commentsDataTable"
+                                     rowClasses="list-row-odd"
+                                     styleClass="vdcStudyCommentDataTable"
+                                     value="#{StudyCommentsFragment.studyComments}"
+                                     var="item"
+                                     width="100%">
+                            <!-- inline border def'n because icefaces defaults the column borders otherwise -->
+                            <ice:column id="commentDetails"
+                                        styleClass="vdcStudyCommentDetailsColumn"
+                                        style="border-left: 0px; border-right:0px;">
+                              <ice:panelGroup rendered="#{item.status == 'OK' or item.status == 'FLAGGED'}">
+                              <ice:outputText nospan="true"
+                                              value="#{item.commentCreator.userName}" />
+                              <ice:outputText styleClass="vdcStudyCommentDetails"
+                                              value="posted on #{item.createTime}" />
+                                   <div jsfc="ice:panelGroup"
+                                        rendered="#{StudyCommentsFragment.user != null}"
+                                        styleClass="dvn_navblockLinks">
+                                      <ul>
+                                        <li>
+                                            <ice:outputText rendered="#{item.status == 'FLAGGED'}"
+                                                            style="padding-top:.3em;padding-right:.5em;"
+                                                            value="Reported"/>
+                                              <ice:commandLink binding="#{StudyCommentsFragment.reportAbuseLink}"
+                                                               actionListener="#{StudyCommentsFragment.togglePopup}"
+                                                               rendered="#{item.status == 'OK'}"
+                                                               >
+                                                <f:attribute name="commentId" value="#{item.id}" />
+                                                <ice:outputText rendered="#{StudyCommentsFragment.user != item.commentCreator}"
+                                                                value="Report Abuse"/>
+                                              </ice:commandLink>
+                                        </li>
+                                        <li>
+                                              <ice:commandLink binding="#{StudyCommentsFragment.deleteCommentLink}"
+                                                               action="#{StudyCommentsFragment.deleteFlaggedComment}"
+                                                               rendered="#{StudyCommentsFragment.authorizedToDeleteComment or item.commentCreator == StudyCommentsFragment.user}"
+                                                               >
+                                                <f:attribute name="commentId" value="#{item.id}" />
+                                                <ice:outputText value="Delete"/>
+                                              </ice:commandLink>
+                                        </li>
+                                         <li>
+                                            <ice:commandLink binding="#{StudyCommentsFragment.ignoreCommentFlagLink}"
+                                                          action="#{StudyCommentsFragment.ignoreCommentFlag}"
+                                                          rendered="#{StudyCommentsFragment.authorizedToIgnoreFlag}"
+                                                          ><!-- and item.status == 'FLAGGED' -->
+                                                <f:attribute name="commentId" value="#{item.id}" />
+                                                <ice:outputText value="Ignore"/>
+                                             </ice:commandLink>
+                                      </li>
+                                      </ul>
+                                  </div>
+                              </ice:panelGroup>
+                            </ice:column>
+                            <ice:column id="commentContent"
+                                        rendered="#{item.status == 'OK' or item.status == 'FLAGGED'}"
+                                        styleClass="vdcStudyCommentContentColumn"
+                                        style="border-left: 0px; border-right:0px;">
+                                  <ice:outputText value="#{item.comment}"/>
+                            </ice:column>
+                      </ice:dataTable>
+                      <ice:outputText rendered="#{StudyCommentsFragment.user == null}"
+                                      styleClass="vdcStudyCommentsSubheading"
+                                      value="Please log in to add a comment"/>
+                      
+                  <!-- The popup panel code -->
+                      <ice:panelPopup id="reportPopup"
+                                        draggable="false"
+                                        visible="#{StudyCommentsFragment.showPopup}"
+                                        autoCentre="true"
+                                        modal="true"
+                                        style="z-index:1000; width:300px; height:150px;">
+
+                        <f:facet name="header">
+                            <ice:panelGrid id="autoCentPanelGrid"
+                                           width="100%" cellpadding="0"
+                                           cellspacing="0" columns="2"
+                                           columnClasses="none, popupButton">
+                                <ice:outputText value="Report Abuse"/>
+                                <ice:commandLink id="autoCentPopupClose"
+                                                   actionListener="#{StudyCommentsFragment.togglePopup}"
+                                                   style="float:right; cursor:pointer;">
+                                    <ice:graphicImage value="/resources/icon_close.gif"/>
+                                </ice:commandLink>
+                            </ice:panelGrid>
+                        </f:facet>
+
+                        <f:facet name="body">
+                            <ice:panelGrid id="autoCentContent"
+                                           width="100%" cellpadding="0"
+                                           cellspacing="0" columns="1"
+                                           styleClass="popupModalBody">
+                                <ice:outputText value="You are about to report this comment as abusive because of inappropriate language, tone, or other violation of the study terms of use."/>
+                                <ice:outputText value="Do you want to continue?"/>
+                                <div jsfc="ice:panelGroup">
+                                <ice:commandButton id="autoCentPopupOk"
+                                                   actionListener="#{StudyCommentsFragment.reportAbuse}"
+                                                   value="OK"
+                                                   style="cursor: pointer;"/>
+                                <ice:outputText nospan="true" escape="false" value="&#160;&#160;&#160;"/>
+                                <ice:commandButton id="autoCentPopupCancel"
+                                                   actionListener="#{StudyCommentsFragment.togglePopup}"
+                                                   value="Cancel"
+                                                   style="display:inline; cursor: pointer;"/>
+                                </div>
+                            </ice:panelGrid>
+                        </f:facet>
+
+                    </ice:panelPopup>
+              <!-- end the popup panel code -->
+              
+                    </div>
+                    <div jsfc="ice:panelGroup"
+                           rendered="#{StudyCommentsFragment.user != null}">
+                          <ice:outputLabel for="studyComments" id="studyCommentsLabel">
+                            <ice:outputText rendered="#{StudyCommentsFragment.user != null}"
+                                      styleClass="vdcStudyCommentsSubheading"
+                                      value="Add a Comment"/>
+                          </ice:outputLabel>
+
+                          <ice:message id="studyCommentsMsg"
+                                       for="studyComments"
+                                       styleClass="errorMessage"/>
+                          <br />
+                          <br />
+                            <ice:inputTextarea id="studyComments"
+                                               binding="#{StudyCommentsFragment.commentsTextarea}"
+                                               cols="100"
+                                               rows="15"
+                                               styleClass="formHtmlEnabled"
+                                               style="display:block; float:left;">
+                              <f:validator validatorId="XhtmlValidator"/>
+                            </ice:inputTextarea>
+                      </div>
+                      <div jsfc="ice:panelGroup"
+                           rendered="#{StudyCommentsFragment.user != null}"
+                           styleClass="dvnFormPadding dvnFormMargin"
+                           style="clear:both;">
+                            <ice:commandButton id="button1"
+                                               value="Save"
+                                               action="#{StudyCommentsFragment.save}"/>
+                            <ice:commandButton id="button2"
+                                               value="Cancel"
+                                               action="#{StudyCommentsFragment.cancel}"/>
+                      </div>
+                </div>

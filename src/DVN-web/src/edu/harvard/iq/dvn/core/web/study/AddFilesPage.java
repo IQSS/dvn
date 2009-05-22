@@ -275,7 +275,7 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable,
             }
 
             //  File fstudy = FileUtil.createTempFile(sessionId, file.getName());
-            f = new StudyFileEditBean(file, studyService.generateFileSystemNameSequence());
+            f = new StudyFileEditBean(file, studyService.generateFileSystemNameSequence(),study);
             f.setSizeFormatted(file.length());
             f.setFileCategoryName("");
 

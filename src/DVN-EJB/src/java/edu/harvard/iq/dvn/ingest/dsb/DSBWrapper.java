@@ -66,6 +66,14 @@ import org.apache.commons.httpclient.methods.multipart.Part;
 import org.apache.commons.httpclient.methods.multipart.StringPart;
 
 
+import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.*;
+import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.metadata.*;
+import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.data.*;
+
+
+import java.io.BufferedInputStream;
+import java.io.FileOutputStream;
+import java.nio.channels.FileChannel;
 import java.security.NoSuchAlgorithmException;
 
 import java.util.logging.Logger;
@@ -220,10 +228,98 @@ public class DSBWrapper implements java.io.Serializable  {
     public String ingest(StudyFileEditBean file) throws IOException{
         dbgLog.fine("***** DSBWrapper: ingest(): start *****\n");
 
+
+
+       if (file.getStudyFile().getFileType().equals("application/x-stata")){
+       
+
+       BufferedInputStream infile = null;
+
+       try {
+
+            // ingest-source file
+            File tempFile = new File(file.getTempSystemFileLocation()); // keep
+
+            infile = new BufferedInputStream(new FileInputStream(tempFile));
+
+            SDIOData sd = StatDataIO.read(infile);
+            SDIOMetadata smd = sd.getMetadata();
+            // tab-file: source file
+            String tabDelimitedDataFileLocation =
+                    smd.getFileInformation().get("tabDelimitedDataFileLocation").toString();
+
+            dbgLog.fine("tabDelimitedDataFileLocation="+tabDelimitedDataFileLocation);
+
+            dbgLog.fine("data file(tempFile): abs path:\n"+file.getTempSystemFileLocation());
+            dbgLog.fine("mimeType :\n"+file.getStudyFile().getFileType());
+
+
+
+            infile.close();
+                        // parse the response
+                        StudyFile f = file.getStudyFile();
+
+                        // first, check dir
+            // create a sub-directory "ingested"
+            File newDir = new File(tempFile.getParentFile(), "ingested");
+
+            if (!newDir.exists()) {
+                newDir.mkdirs();
+            }
+                        dbgLog.fine("newDir: abs path:\n"+newDir.getAbsolutePath());
+            /*
+
+            */
+            // tab-file case: destination
+            File newFile = new File( newDir, tempFile.getName() );
+
+            FileInputStream fis = new FileInputStream(tabDelimitedDataFileLocation);
+            FileOutputStream fos = new FileOutputStream(newFile);
+            FileChannel fcin = fis.getChannel();
+            FileChannel fcout = fos.getChannel();
+            fcin.transferTo(0, fcin.size(), fcout);
+            fcin.close();
+            fcout.close();
+            fis.close();
+            fos.close();
+
+            dbgLog.fine("newFile: abs path:\n"+newFile.getAbsolutePath());
+            /*
+
+            */
+            // store the tab-file location
+            file.setIngestedSystemFileLocation(newFile.getAbsolutePath());
+            /*
+
+            */
+            return smd.generateDDI();
+
+
+            //            return xmlToParse;
+
+                    } finally {
+            /*
+
+            */
+                    }
+
+
+
+
+
+
+
+
+
+
+
+
+        } else {
         BufferedReader rd = null;
         PostMethod method = null;
-        
         try {
+
+
             // create method
             method = new PostMethod(generateUrl(DSB_INGEST));
             File tempFile = new File(file.getTempSystemFileLocation());
@@ -323,6 +419,8 @@ public class DSBWrapper implements java.io.Serializable  {
                 if (rd != null) { rd.close(); }
             } catch (IOException ex) {
             }
+        }
+
         }
     }
     

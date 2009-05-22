@@ -35,6 +35,7 @@ import edu.harvard.iq.dvn.core.study.DataVariable;
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyFile;
 import edu.harvard.iq.dvn.core.study.StudyFileEditBean;
+import edu.harvard.iq.dvn.core.study.TabularDataFile;
 import edu.harvard.iq.dvn.core.util.WebStatisticsSupport;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -429,8 +430,8 @@ public class DSBWrapper implements java.io.Serializable  {
         Iterator iter = s.getStudyFiles().iterator();
         while (iter.hasNext()) {
             StudyFile temp = (StudyFile) iter.next();
-            if (temp.isSubsettable()) {
-                unfs.add(temp.getDataTable().getUnf());
+            if (temp.isUNFable()) {
+                unfs.add(temp.getUnf());
             }
         }
         
@@ -497,10 +498,10 @@ public class DSBWrapper implements java.io.Serializable  {
         }
     }
     
-    public void disseminate(HttpServletResponse res, StudyFile sf, String serverPrefix, String formatType) throws IOException{
+    public void disseminate(HttpServletResponse res, TabularDataFile tdf, String serverPrefix, String formatType) throws IOException{
         Map parameters = new HashMap();
-        List variables = sf.getDataTable().getDataVariables();
-        disseminate(res, parameters, sf, serverPrefix, variables, formatType );
+        List variables = tdf.getDataTable().getDataVariables();
+        disseminate(res, parameters, tdf, serverPrefix, variables, formatType );
     }
     
     public void disseminate(HttpServletResponse res, Map parameters, StudyFile sf, String serverPrefix, List variables, String formatType) throws IOException{

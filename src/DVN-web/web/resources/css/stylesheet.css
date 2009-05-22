@@ -1415,6 +1415,13 @@ td.vdcEditFilesColC{
     margin-left: 2em;
 }
 
+/* Study Comments */
+.vdcStudyCommentsDataTable     { border: 0px 0px 1px 0px; }
+.vdcStudyCommentDetailsColumn { width:25% !important; vertical-align:top; }
+.vdcStudyCommentContentColumn { width:75% !important; vertical-align:top; overflow: hidden; padding: 0 .25em;}
+span.vdcStudyCommentDetails   { font-size:90% !important; font-weight:bold; color:rgb(169,169,169); white-space:nowrap;}
+.vdcStudyCommentsSubheading   { vertical-align:top; padding-top:5px; float:left; }
+
 /* Manage Studies Page */
 .dvnManageStudiesTableTop {border: 1px solid #d9d9d9; border-bottom: 0; width: 100%;}
 .dvnManageStudiesTableTop .dvnPaginatorWrap {padding: .5em 0;}

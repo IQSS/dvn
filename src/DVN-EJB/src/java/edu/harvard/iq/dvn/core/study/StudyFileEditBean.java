@@ -54,10 +54,23 @@ public class StudyFileEditBean implements Serializable {
         this.studyFile = sf;
     }
 
-    public StudyFileEditBean(File file, String fileSystemName) throws IOException {
+
+    public StudyFileEditBean(File file, String fileSystemName, Study study) throws IOException {
         dbgLog.fine("***** within StudyFileEditBean: constructor: start *****");
         dbgLog.fine("reached before studyFile constructor");
-        this.studyFile = new StudyFile();
+
+        String fileType = FileUtil.determineFileType(file);
+
+        if (fileType.equals("application/x-stata") ||
+            fileType.equals("application/x-spss-por") ||
+            fileType.equals("application/x-spss-sav") ) {
+            this.studyFile = new TabularDataFile(); // do not yet attach to study, as it has to be ingested
+        } else {
+            this.studyFile = new OtherFile(study);
+        }
+
+
+        this.getStudyFile().setFileType( fileType );
 
         dbgLog.fine("reached before original filename");
         this.setOriginalFileName(file.getName());
@@ -67,9 +80,6 @@ public class StudyFileEditBean implements Serializable {
         this.getStudyFile().setFileType(FileUtil.determineFileType(file));
         dbgLog.fine("after setFileType");
 
-        this.getStudyFile().setSubsettable(this.getStudyFile().getFileType().equals("application/x-stata") ||
-            this.getStudyFile().getFileType().equals("application/x-spss-por") ||
-            this.getStudyFile().getFileType().equals("application/x-spss-sav"));
         // not yet supported as subsettable
         //this.getStudyFile().getFileType().equals("application/x-rlang-transport") );
         dbgLog.fine("before setFileName");
@@ -147,6 +157,20 @@ public class StudyFileEditBean implements Serializable {
 
     public void setDeleteFlag(boolean deleteFlag) {
         this.deleteFlag = deleteFlag;
+    }
+
+    public void addFiletoStudy(Study s) {
+        StudyFile file = this.getStudyFile();
+        file.setStudy(s);
+        s.getStudyFiles().add(file);
+        
+        addFileToCategory(s);
+
+        // also create study file activity object
+        StudyFileActivity sfActivity = new StudyFileActivity();
+        file.setStudyFileActivity(sfActivity);
+        sfActivity.setStudyFile(file);
+        sfActivity.setStudy(s);
     }
 
     public void addFileToCategory(Study s) {

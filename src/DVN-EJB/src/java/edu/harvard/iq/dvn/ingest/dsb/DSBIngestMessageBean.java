@@ -37,6 +37,7 @@ import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyFile;
 import edu.harvard.iq.dvn.core.study.StudyFileEditBean;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
+import edu.harvard.iq.dvn.core.study.TabularDataFile;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -85,7 +86,7 @@ public class DSBIngestMessageBean implements MessageListener {
                 StudyFileEditBean fileBean = (StudyFileEditBean) iter.next();
                 
                 try {
-                    parseXML( new DSBWrapper().ingest(fileBean) , fileBean.getStudyFile() );
+                    parseXML( new DSBWrapper().ingest(fileBean) , (TabularDataFile) fileBean.getStudyFile() );
                     successfuleFiles.add(fileBean);
                 } catch (Exception ex) {
                     ex.printStackTrace();
@@ -126,15 +127,18 @@ public class DSBIngestMessageBean implements MessageListener {
         }
     }
     
-    private void parseXML(String xmlToParse, StudyFile file) {
+    private void parseXML(String xmlToParse, TabularDataFile file) {
         // now map and get dummy dataTable
         Study dummyStudy = new Study();
         ddiService.mapDDI(xmlToParse, dummyStudy);
-        DataTable dt = dummyStudy.getFileCategories().iterator().next().getStudyFiles().iterator().next().getDataTable();
+        TabularDataFile tdf = (TabularDataFile) dummyStudy.getStudyFiles().iterator().next();
+        DataTable dt = tdf.getDataTable();
 
-        // set to actual file
+        // set to actual file (and copy over the UNF)
         file.setDataTable( dt );
         dt.setStudyFile(file);
+        file.setUnf(dt.getUnf());
+
     }
     
 }

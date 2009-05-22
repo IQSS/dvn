@@ -33,10 +33,10 @@ import edu.harvard.iq.dvn.ingest.dsb.DSBWrapper;
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyFile;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
+import edu.harvard.iq.dvn.core.study.TabularDataFile;
 import edu.harvard.iq.dvn.core.util.FileUtil;
 import java.io.*;
 import javax.ejb.EJB;
-import javax.ejb.EJBException;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -85,11 +85,11 @@ public class DDIExportServlet extends HttpServlet {
                     try {
                         StudyFile sf = studyService.getStudyFile( new Long( fileId ) );
 
-                        if (!sf.isSubsettable()) {
-                            createErrorResponse(res, "The file you requested is NOT a datafile.");
+                        if (!(sf instanceof TabularDataFile)) {
+                            createErrorResponse(res, "The file you requested is NOT a tabular data file.");
                         } else {
                             res.setContentType("text/xml");
-                            ddiService.exportDataFile(sf, out );
+                            ddiService.exportDataFile( (TabularDataFile) sf, out );
                         }
                     } catch (Exception ex) {
                         if (ex.getCause() instanceof IllegalArgumentException) {

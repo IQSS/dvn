@@ -37,6 +37,7 @@ import edu.harvard.iq.dvn.core.study.StudyFile;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.study.RemoteAccessAuth;
 import edu.harvard.iq.dvn.core.study.DataVariable;
+import edu.harvard.iq.dvn.core.study.TabularDataFile;
 import edu.harvard.iq.dvn.core.study.VariableCategory;
 
 import edu.harvard.iq.dvn.core.vdc.VDC;
@@ -333,7 +334,7 @@ public class FileDownloadServlet extends HttpServlet {
             paramListToR.put("studyURL", Arrays.asList(studyURL));
             paramListToR.put("requestType", Arrays.asList("Download"));
 
-            dataVariables = file.getDataTable().getDataVariables();
+            dataVariables = ((TabularDataFile) file).getDataTable().getDataVariables();
             vls = getValueTablesForAllRequestedVariables();
             dbgLog.fine("remote: variables(getDataVariableForRequest())="+getDataVariableForRequest()+"\n");
             dbgLog.warning("remote: value table(vls)="+vls+"\n");
@@ -670,7 +671,7 @@ public class FileDownloadServlet extends HttpServlet {
 			
 		    // subsetting: 
 
-		    Long noRecords = file.getDataTable().getRecordsPerCase();
+		    Long noRecords = ((TabularDataFile) file).getDataTable().getRecordsPerCase();
 		    Map<Long, List<List<Integer>>> varMetaSet = getSubsettingMetaData(noRecords); 
 		    DvnNewJavaFieldCutter fc = new DvnNewJavaFieldCutter(varMetaSet);
 		    
@@ -848,7 +849,7 @@ public class FileDownloadServlet extends HttpServlet {
 		    if (formatRequested.equals("D00") && noVarHeader == null) {
 
 			String varHeaderLine = null;
-			List dataVariables = file.getDataTable().getDataVariables();
+			List dataVariables = ((TabularDataFile) file).getDataTable().getDataVariables();
 			varHeaderLine = generateVariableHeader(dataVariables);
 			if (varHeaderLine != null) {
 			    byte[] varHeaderBuffer = null;
@@ -982,7 +983,7 @@ public class FileDownloadServlet extends HttpServlet {
                         dbgLog.fine("remote: paramListToR="+paramListToR);
 
 
-                        dataVariables = file.getDataTable().getDataVariables();
+                        dataVariables = ((TabularDataFile) file).getDataTable().getDataVariables();
                         Map<String, Map<String, String>> vls = getValueTablesForAllRequestedVariables();
                         /*dbgLog.fine("local: variables(getDataVariableForRequest())="+getDataVariableForRequest()+"\n");*/
                         dbgLog.fine("local: value table(vls)="+vls+"\n");
@@ -1217,7 +1218,7 @@ public class FileDownloadServlet extends HttpServlet {
                                 inFile = new File(inFile.getParent(), "_" + file.getFileSystemName());
                             } else {
                                 if (dbContentType != null && dbContentType.equals("text/tab-separated-values")  && file.isSubsettable() && noVarHeader == null) {
-                                    List datavariables = file.getDataTable().getDataVariables();
+                                    List datavariables = ((TabularDataFile) file).getDataTable().getDataVariables();
                                     varHeaderLine = generateVariableHeader(datavariables);
                                 }
                             }
@@ -1426,7 +1427,7 @@ public class FileDownloadServlet extends HttpServlet {
                     String dbContentType = file.getFileType();
 
                     if (dbContentType != null && dbContentType.equals("text/tab-separated-values") && file.isSubsettable()) {
-                        List datavariables = file.getDataTable().getDataVariables();
+                        List datavariables = ((TabularDataFile) file).getDataTable().getDataVariables();
                         varHeaderLine = generateVariableHeader(datavariables);
                     }
 

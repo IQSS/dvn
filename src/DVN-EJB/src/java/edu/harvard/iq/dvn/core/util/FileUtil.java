@@ -33,6 +33,7 @@ import edu.harvard.iq.dvn.ingest.dsb.JhoveWrapper;
 import edu.harvard.iq.dvn.ingest.dsb.SubsettableFileChecker;
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyFile;
+import edu.harvard.iq.dvn.core.study.TabularDataFile;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -47,7 +48,6 @@ import javax.activation.MimetypesFileTypeMap;
 import javax.ejb.EJBException;
 
 import java.util.logging.*;
-import org.apache.commons.lang.builder.*;
 
 /**
  *
@@ -98,8 +98,9 @@ public class FileUtil implements java.io.Serializable  {
     }      
     
     public static String determineFileType(StudyFile sf) throws IOException{
-      if (sf.isSubsettable()) {
-            return determineSubsettableFileType(sf);
+        //TODO: networkDataFile
+      if (sf instanceof TabularDataFile) {
+            return determineTabularDataFileType((TabularDataFile) sf);
         } else {            
             if ( sf.isRemote() ) {
                 return FileUtil.determineFileType( sf.getFileName() );  
@@ -109,8 +110,8 @@ public class FileUtil implements java.io.Serializable  {
         }
     }
     
-    public static String determineSubsettableFileType(StudyFile sf) {
-            if ( sf.getDataTable().getRecordsPerCase() != null )  {
+    public static String determineTabularDataFileType(TabularDataFile tdf) {
+            if ( tdf.getDataTable().getRecordsPerCase() != null )  {
                 return "text/x-fixed-field";
             } else {
                 return "text/tab-separated-values";

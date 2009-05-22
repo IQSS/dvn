@@ -48,6 +48,7 @@ import edu.harvard.iq.dvn.core.study.StudyRelPublication;
 import edu.harvard.iq.dvn.core.study.StudyRelStudy;
 import edu.harvard.iq.dvn.core.study.StudySoftware;
 import edu.harvard.iq.dvn.core.study.StudyTopicClass;
+import edu.harvard.iq.dvn.core.study.TabularDataFile;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
@@ -343,7 +344,6 @@ public class Indexer implements java.io.Serializable  {
             Collection<StudyFile> studyFiles = fileCategory.getStudyFiles();
             for (Iterator it = studyFiles.iterator(); it.hasNext();) {
                 StudyFile elem = (StudyFile) it.next();
-                DataTable dataTable = elem.getDataTable();
                 addText(1.0f, doc, "fileDescription",elem.getDescription());
             }
         }
@@ -358,19 +358,23 @@ public class Indexer implements java.io.Serializable  {
             Collection<StudyFile> studyFiles = fileCategory.getStudyFiles();
             for (Iterator it = studyFiles.iterator(); it.hasNext();) {
                 StudyFile elem = (StudyFile) it.next();
-                DataTable dataTable = elem.getDataTable();
-                if (dataTable != null) {
-                    List<DataVariable> dataVariables = dataTable.getDataVariables();
-                    for (int j = 0; j < dataVariables.size(); j++) {
-                        Document docVariables = new Document();
-                        addText(1.0f, docVariables, "varStudyId", study.getId().toString());
-                        addText(1.0f, docVariables, "varStudyFileId", elem.getId().toString());
-                        DataVariable dataVariable = dataVariables.get(j);
-                        addText(1.0f, docVariables, "varId", dataVariable.getId().toString());
-                        addText(1.0f, docVariables, "varName", dataVariable.getName());
-                        addText(1.0f, docVariables, "varLabel", dataVariable.getLabel());
-                        addText(1.0f, docVariables, "varId", dataVariable.getId().toString());
-                        writerVar.addDocument(docVariables);
+
+                //TODO: networkDataFile
+                if (elem instanceof TabularDataFile) {
+                    DataTable dataTable = ((TabularDataFile) elem).getDataTable();
+                    if (dataTable != null) {
+                        List<DataVariable> dataVariables = dataTable.getDataVariables();
+                        for (int j = 0; j < dataVariables.size(); j++) {
+                            Document docVariables = new Document();
+                            addText(1.0f, docVariables, "varStudyId", study.getId().toString());
+                            addText(1.0f, docVariables, "varStudyFileId", elem.getId().toString());
+                            DataVariable dataVariable = dataVariables.get(j);
+                            addText(1.0f, docVariables, "varId", dataVariable.getId().toString());
+                            addText(1.0f, docVariables, "varName", dataVariable.getName());
+                            addText(1.0f, docVariables, "varLabel", dataVariable.getLabel());
+                            addText(1.0f, docVariables, "varId", dataVariable.getId().toString());
+                            writerVar.addDocument(docVariables);
+                        }
                     }
                 }
             }

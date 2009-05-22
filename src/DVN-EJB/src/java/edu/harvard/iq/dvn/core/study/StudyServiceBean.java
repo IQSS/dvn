@@ -244,9 +244,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
             StudyFile elem = it.next();
             elem.getAllowedGroups().clear();
             elem.getAllowedUsers().clear();
-            if (elem.getDataTable() != null && elem.getDataTable().getDataVariables() != null) {
-                elem.getDataTable().getDataVariables().clear();
-            }
+            elem.clearData();
         }
 
         //System.out.println("DEBUG: " + (new Date().getTime() - start) + "\t - deleteStudy - delete physical files");
@@ -860,7 +858,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
                 StudyFile f = fileBean.getStudyFile();
                 String originalFileType = f.getFileType();
                 // attach file to study
-                fileBean.addFileToCategory(study);
+                fileBean.addFiletoStudy(study);
 
                 // move ingest-created file
                 File tempIngestedFile = new File(fileBean.getIngestedSystemFileLocation());
@@ -887,7 +885,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
                     throw new EJBException(ex);
                 }
             } else {
-                fileBean.getStudyFile().setSubsettable(true);
+                //fileBean.getStudyFile().setSubsettable(true);
                 em.merge(fileBean.getStudyFile());
             }
         }
@@ -932,7 +930,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         // Note: This ordering is case-sensitive, so names beginning with upperclass chars will appear first.
         // (I tried using UPPER(f.name) to make the sorting case-insensitive, but the EJB query language doesn't seem
         // to like this.)
-        String queryStr = "SELECT f FROM StudyFile f LEFT JOIN FETCH f.dataTable JOIN FETCH f.fileCategory WHERE f.fileCategory.study.id = " + studyId + " ORDER BY f.fileCategory.name, f.fileName";
+        String queryStr = "SELECT f FROM StudyFile f LEFT JOIN FETCH f.dataTables JOIN FETCH f.fileCategory WHERE f.fileCategory.study.id = " + studyId + " ORDER BY f.fileCategory.name, f.fileName";
         Query query = em.createQuery(queryStr);
         List<StudyFile> studyFiles = query.getResultList();
 
@@ -1400,9 +1398,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         deleteDataVariables(study.getId());
 
         for (StudyFile elem : study.getStudyFiles()) {
-            if (elem.getDataTable() != null && elem.getDataTable().getDataVariables() != null) {
-                elem.getDataTable().getDataVariables().clear();
-            }
+            elem.clearData();
         }
 
         // then delete files
@@ -2011,15 +2007,15 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
 
         if ( !fcList.isEmpty() ) {
             // step 2: get files (only subsettable flag)
-            List<Boolean> subsettableList = new ArrayList();
-            query = em.createNativeQuery("select subsettable from studyfile where filecategory_id in (" + generateIdString(fcList) + ")");
+            List<String> subsettableList = new ArrayList();
+            query = em.createNativeQuery("select fileclass from studyfile where filecategory_id in (" + generateIdString(fcList) + ")");
             for (Object currentResult : query.getResultList()) {
-                subsettableList.add( ((Boolean) ((Vector) currentResult).get(0)) );
+                subsettableList.add( ((String) ((Vector) currentResult).get(0)) );
             }
 
             if ( !subsettableList.isEmpty() ) {
-                for (Boolean subsettable : subsettableList) {
-                    if (subsettable.booleanValue())
+                for (String fclass : subsettableList) {
+                    if ("TabularDataFile".equals(fclass))
                         return Boolean.TRUE;
                 }
 

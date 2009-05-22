@@ -81,7 +81,7 @@ public class Study implements java.io.Serializable {
     private Metadata metadata;
     @Temporal(value = TemporalType.TIMESTAMP)
     private Date lastIndexTime;
-    @OneToMany
+    @OneToMany(cascade=(CascadeType.PERSIST))
     private List<StudyComment> studyComments;
 
     

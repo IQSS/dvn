@@ -13,10 +13,9 @@ import edu.harvard.iq.dvn.core.study.FileCategory;
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyFile;
 import edu.harvard.iq.dvn.core.study.StudyFileEditBean;
-import edu.harvard.iq.dvn.core.study.StudyFileEditBean;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
+import edu.harvard.iq.dvn.core.study.TabularDataFile;
 import java.io.*;
-import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Resource;
@@ -139,7 +138,9 @@ public class VDCIngestServlet extends HttpServlet {
             Long controlCardFileId = new Long( req.getParameter("controlCardFileId") );
             
             StudyFileEditBean fileBean = new StudyFileEditBean( studyService.getStudyFile(dataFileId) );
-            fileBean.getStudyFile().getDataTable(); // this is to instantiate lazy relationship, before serializing
+            if (fileBean.getStudyFile() instanceof TabularDataFile) {
+                ((TabularDataFile) fileBean.getStudyFile()).getDataTable(); // this is to instantiate lazy relationship, before serializing
+            }
             fileBean.setTempSystemFileLocation( fileBean.getStudyFile().getFileSystemLocation() );
             fileBean.setControlCardSystemFileLocation( studyService.getStudyFile(controlCardFileId).getFileSystemLocation() );
             

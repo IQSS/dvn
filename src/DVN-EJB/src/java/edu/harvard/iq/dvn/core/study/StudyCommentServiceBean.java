@@ -91,6 +91,7 @@ public class StudyCommentServiceBean implements StudyCommentService {
             VDCUser commenter = em.find(VDCUser.class, commenterId);
             if (commenter != null){
                 StudyComment studyComment = new StudyComment(comment, commenter, study);
+                studyComment.setStatus(StudyComment.Status.OK);
                 study.getStudyComments().add(studyComment);
                 em.persist(study);
             }

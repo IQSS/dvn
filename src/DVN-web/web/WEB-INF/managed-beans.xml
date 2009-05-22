@@ -175,6 +175,16 @@
         </managed-property>
     </managed-bean>
     <managed-bean>
+        <managed-bean-name>StudyCommentsFragment</managed-bean-name>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.study.StudyCommentsFragment</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+        <managed-property>
+            <property-name>studyId</property-name>
+            <property-class>java.lang.Long</property-class>
+            <value>#{param.studyId}</value>
+        </managed-property>
+    </managed-bean>
+    <managed-bean>
         <managed-bean-name>TermsOfUsePage</managed-bean-name>
         <managed-bean-class>edu.harvard.iq.dvn.core.web.study.TermsOfUsePage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>

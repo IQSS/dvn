@@ -130,6 +130,17 @@
             <to-view-id>/study/StudyList.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
+     <navigation-rule>
+        <from-view-id>/*</from-view-id>
+        <navigation-case>
+            <from-outcome>cancelStudyComment</from-outcome>
+            <to-view-id>/study/StudyPage.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>viewStudyComments</from-outcome>
+            <to-view-id>/study/StudyPage.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
       <navigation-rule>
         <from-view-id>/*</from-view-id>
         <navigation-case>

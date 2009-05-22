@@ -662,7 +662,7 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable, 
                         importLogger.info("Found study directory: " + studyDir.getName());
                         
                         File xmlFile = null;
-                        List<StudyFileEditBean> filesToUpload = new ArrayList<StudyFileEditBean>();
+                        List<File> filesToUpload = new ArrayList();
                         
                         for (int j=0; j < studyDir.listFiles().length; j++ ) {
                             File file = studyDir.listFiles()[j];
@@ -673,8 +673,7 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable, 
                             } else {
                                 File tempFile = FileUtil.createTempFile( sessionId, file.getName() );                               
                                 FileUtil.copyFile(file, tempFile);
-                                StudyFileEditBean fileBean = new StudyFileEditBean( tempFile, studyService.generateFileSystemNameSequence() );                                
-                                filesToUpload.add(fileBean);
+                                filesToUpload.add(tempFile);
                             }
                         }
                         
@@ -688,8 +687,15 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable, 
                                 studiesToIndex.add(study.getId());
                                 
                                 if ( !filesToUpload.isEmpty() ) {
+
+                                    List<StudyFileEditBean> fileBeans = new ArrayList();
+                                    for (File file : filesToUpload) {
+                                        StudyFileEditBean fileBean = new StudyFileEditBean( file, studyService.generateFileSystemNameSequence(), study );
+                                        fileBeans.add(fileBean);
+                                    }
+
                                     try {
-                                        studyService.addFiles( study, filesToUpload, getVDCSessionBean().getLoginBean().getUser() );
+                                        studyService.addFiles( study, fileBeans, getVDCSessionBean().getLoginBean().getUser() );
                                         studyService.updateStudy(study); // for now, must call this to persist the new files
                                         importLogger.info("File upload succeeded.");
                                     } catch (Exception e) {

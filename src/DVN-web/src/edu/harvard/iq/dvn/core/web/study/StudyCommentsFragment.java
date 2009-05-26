@@ -102,15 +102,21 @@ public class StudyCommentsFragment extends VDCBaseBean implements Serializable {
          studyCommentService.deleteComment(flaggedCommentId);
          //cleanup
          flaggedCommentId = new Long("0");
-         getVDCRequestBean().setStudyId(study.getId());
+         getVDCRequestBean().setStudyId(studyId);
          getVDCRequestBean().setSelectedTab("comments");
          studyComments = null;
      }
 
-     /* TODO: implement this */
-     public String ignoreCommentFlag() {
-         // ignore shows only if LoginBean.isNetworkAdmin();
-         return "viewStudyComments";
+     public void ignoreCommentFlag(ActionEvent event) {
+         if (ignoreCommentFlagLink.getAttributes().get("commentId") != null) {
+             flaggedCommentId = new Long(ignoreCommentFlagLink.getAttributes().get("commentId").toString());
+         }
+         studyCommentService.okComment(flaggedCommentId);
+         //cleanup
+         flaggedCommentId = new Long("0");
+         getVDCRequestBean().setStudyId(studyId);
+         getVDCRequestBean().setSelectedTab("comments");
+         studyComments = null;
      }
 
      public void save(ActionEvent event) {
@@ -188,16 +194,7 @@ public class StudyCommentsFragment extends VDCBaseBean implements Serializable {
      */
     public List<StudyComment> getStudyComments() {
         if (studyComments == null) {
-            study = studyService.getStudy(studyId);
-            studyIdForComments = new Long(study.getStudyId());
-            studyComments = studyCommentService.getStudyComments(studyIdForComments);
-            Iterator iterator = studyComments.iterator();
-            while (iterator.hasNext()) {
-                StudyComment studyComment = (StudyComment)iterator.next();
-                if (studyComment.getStatus().equals(StudyComment.Status.DELETED)) {
-                    iterator.remove();
-                }
-            }
+            studyComments = studyCommentService.getStudyComments(studyId);
         }
         return studyComments;
     }

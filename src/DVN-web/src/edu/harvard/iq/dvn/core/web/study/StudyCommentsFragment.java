@@ -18,12 +18,12 @@ import edu.harvard.iq.dvn.core.util.PropertyUtil;
 import edu.harvard.iq.dvn.core.web.common.LoginBean;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -45,16 +45,6 @@ public class StudyCommentsFragment extends VDCBaseBean implements Serializable {
 
      public void init() {
         super.init();
-        study = studyService.getStudy(studyId);
-        studyIdForComments = new Long(study.getStudyId());
-        studyComments = studyCommentService.getStudyComments(studyIdForComments);
-        Iterator iterator = studyComments.iterator();
-        while (iterator.hasNext()) {
-            StudyComment studyComment = (StudyComment)iterator.next();
-            if (studyComment.getStatus().equals(StudyComment.Status.DELETED)) {
-                iterator.remove();
-            }
-        }
         if (getVDCSessionBean().getUser() != null) {
             user = getVDCSessionBean().getUser();
         }
@@ -83,7 +73,7 @@ public class StudyCommentsFragment extends VDCBaseBean implements Serializable {
       * @param event
       * @return string indicating sucess or failure - used in navigation.
       */
-     public String reportAbuse(javax.faces.event.ActionEvent event) {
+     public String reportAbuse(ActionEvent event) {
          studyCommentService.flagStudyCommentAbuse(flaggedCommentId, user.getId());
          mailService.sendMail(user.getEmail(), getVDCRequestBean().getVdcNetwork().getContactEmail(), "Study Comment Abuse Reported", "A study comment " +
                                 "has been reported for abuse.  Please review the details below. " +
@@ -99,12 +89,13 @@ public class StudyCommentsFragment extends VDCBaseBean implements Serializable {
                                 "Flagged comments can be reviewed and acted on at:  " +
                                 getCancelLink());
          showPopup = !showPopup;
+         studyComments = null;
          // cleanup
          flaggedCommentId = new Long("0");
          return "done";
      }
 
-     public String deleteFlaggedComment() {
+     public void deleteFlaggedComment(ActionEvent event) {
          if (deleteCommentLink.getAttributes().get("commentId") != null) {
              flaggedCommentId = new Long(deleteCommentLink.getAttributes().get("commentId").toString());
          }
@@ -113,7 +104,7 @@ public class StudyCommentsFragment extends VDCBaseBean implements Serializable {
          flaggedCommentId = new Long("0");
          getVDCRequestBean().setStudyId(study.getId());
          getVDCRequestBean().setSelectedTab("comments");
-         return "viewStudyComments";
+         studyComments = null;
      }
 
      /* TODO: implement this */
@@ -122,9 +113,10 @@ public class StudyCommentsFragment extends VDCBaseBean implements Serializable {
          return "viewStudyComments";
      }
 
-     public String save() {
+     public void save(ActionEvent event) {
          studyCommentService.addComment(commentsTextarea.getValue().toString(), user.getId(), studyId);
-         return "viewStudyComments";
+         studyComments = null;
+         commentsTextarea.setValue("");
      }
 
      public String cancel() {
@@ -195,6 +187,18 @@ public class StudyCommentsFragment extends VDCBaseBean implements Serializable {
      * @return the value of studyComments
      */
     public List<StudyComment> getStudyComments() {
+        if (studyComments == null) {
+            study = studyService.getStudy(studyId);
+            studyIdForComments = new Long(study.getStudyId());
+            studyComments = studyCommentService.getStudyComments(studyIdForComments);
+            Iterator iterator = studyComments.iterator();
+            while (iterator.hasNext()) {
+                StudyComment studyComment = (StudyComment)iterator.next();
+                if (studyComment.getStatus().equals(StudyComment.Status.DELETED)) {
+                    iterator.remove();
+                }
+            }
+        }
         return studyComments;
     }
 

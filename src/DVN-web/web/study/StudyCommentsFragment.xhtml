@@ -77,7 +77,7 @@
                                         </li>
                                          <li>
                                             <ice:commandLink binding="#{StudyCommentsFragment.ignoreCommentFlagLink}"
-                                                          action="#{StudyCommentsFragment.ignoreCommentFlag}"
+                                                          actionListener="#{StudyCommentsFragment.ignoreCommentFlag}"
                                                           rendered="#{StudyCommentsFragment.authorizedToIgnoreFlag}"
                                                           ><!-- and item.status == 'FLAGGED' -->
                                                 <f:attribute name="commentId" value="#{item.id}" />

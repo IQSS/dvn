@@ -25,6 +25,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 /**
  *
@@ -58,8 +59,11 @@ public class StudyCommentServiceBean implements StudyCommentService {
 
     @Override
     public List <StudyComment> getStudyComments(Long studyId){
-        String studyCommentsByStudyIdQuery = "Select c from StudyComment c where c.study.id = :commentStudyId";
-        List<StudyComment> studyComments = em.createQuery(studyCommentsByStudyIdQuery).setParameter("commentStudyId", studyId.toString()).getResultList();
+        String studyCommentsByStudyIdQuery = "Select c from StudyComment c where c.study.id = :commentStudyId and c.status <> :deleted";
+        Query query = em.createQuery(studyCommentsByStudyIdQuery);
+        query.setParameter("commentStudyId", studyId.toString());
+        query.setParameter("deleted",StudyComment.Status.DELETED);
+        List<StudyComment> studyComments = query.getResultList();
         return studyComments;
     }
 

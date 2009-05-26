@@ -78,7 +78,7 @@
                                          <li>
                                             <ice:commandLink binding="#{StudyCommentsFragment.ignoreCommentFlagLink}"
                                                           actionListener="#{StudyCommentsFragment.ignoreCommentFlag}"
-                                                          rendered="#{StudyCommentsFragment.authorizedToIgnoreFlag}"
+                                                          rendered="#{StudyCommentsFragment.authorizedToIgnoreFlag and item.status == 'FLAGGED'}"
                                                           ><!-- and item.status == 'FLAGGED' -->
                                                 <f:attribute name="commentId" value="#{item.id}" />
                                                 <ice:outputText value="Ignore"/>
@@ -174,7 +174,7 @@
                            style="clear:both;">
                             <ice:commandButton id="button1"
                                                value="Save"
-                                               actionListener="#{StudyCommentsFragment.save}"/>
+                                               action="#{StudyCommentsFragment.save}"/>
                             <ice:commandButton id="button2"
                                                value="Cancel"
                                                action="#{StudyCommentsFragment.cancel}"/>

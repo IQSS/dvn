@@ -182,7 +182,7 @@ public class Indexer implements java.io.Serializable  {
             StudyTopicClass elem = (StudyTopicClass) it.next();
             addText(1.0f,  doc,"topicClassValue", elem.getValue());
             addText(1.0f,  doc,"topicVocabClassURI", elem.getVocabURI());
-        }
+            addText(1.0f,  doc,"topicClassVocabulary", elem.getVocab());        }
         Collection <StudyAbstract> abstracts = study.getStudyAbstracts();
         for (Iterator it = abstracts.iterator(); it.hasNext();) {
             StudyAbstract elem = (StudyAbstract) it.next();
@@ -1038,6 +1038,7 @@ public class Indexer implements java.io.Serializable  {
         anyTerms.add(buildAnyTerm("keywordVocabulary",string));
         anyTerms.add(buildAnyTerm("topicVocabClassURI",string));
         anyTerms.add(buildAnyTerm("keywordValue",string));
+        anyTerms.add(buildAnyTerm("topicClassVocabulary",string));
         anyTerms.add(buildAnyTerm("topicClassValue",string));
         anyTerms.add(buildAnyTerm("protocol",string));
         anyTerms.add(buildAnyTerm("authority",string));

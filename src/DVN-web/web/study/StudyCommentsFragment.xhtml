@@ -68,7 +68,7 @@
                                         </li>
                                         <li>
                                               <ice:commandLink binding="#{StudyCommentsFragment.deleteCommentLink}"
-                                                               action="#{StudyCommentsFragment.deleteFlaggedComment}"
+                                                               actionListener="#{StudyCommentsFragment.deleteFlaggedComment}"
                                                                rendered="#{StudyCommentsFragment.authorizedToDeleteComment or item.commentCreator == StudyCommentsFragment.user}"
                                                                >
                                                 <f:attribute name="commentId" value="#{item.id}" />
@@ -174,7 +174,7 @@
                            style="clear:both;">
                             <ice:commandButton id="button1"
                                                value="Save"
-                                               action="#{StudyCommentsFragment.save}"/>
+                                               actionListener="#{StudyCommentsFragment.save}"/>
                             <ice:commandButton id="button2"
                                                value="Cancel"
                                                action="#{StudyCommentsFragment.cancel}"/>

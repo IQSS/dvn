@@ -61,7 +61,7 @@ public class StudyCommentServiceBean implements StudyCommentService {
     public List <StudyComment> getStudyComments(Long studyId){
         String studyCommentsByStudyIdQuery = "Select c from StudyComment c where c.study.id = :commentStudyId and c.status <> :deleted";
         Query query = em.createQuery(studyCommentsByStudyIdQuery);
-        query.setParameter("commentStudyId", studyId.toString());
+        query.setParameter("commentStudyId", studyId);
         query.setParameter("deleted",StudyComment.Status.DELETED);
         List<StudyComment> studyComments = query.getResultList();
         return studyComments;

@@ -127,6 +127,7 @@ public class StudyCommentsFragment extends VDCBaseBean implements Serializable {
      }
 
      public String cancel() {
+         commentsTextarea.setValue("");
          return "cancelStudyComment";
      }
 

@@ -26,11 +26,16 @@
  */
 package edu.harvard.iq.dvn.core.web.networkAdmin;
 
+import com.icesoft.faces.component.ext.HtmlSelectOneMenu;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import edu.harvard.iq.dvn.core.web.util.ExceptionMessageWriter;
 import edu.harvard.iq.dvn.core.vdc.VDCNetwork;
 import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
+import javax.faces.component.UIInput;
+import javax.faces.context.FacesContext;
 
 /**
  * <p>Page bean that corresponds to a similarly named JSP page.  This
@@ -58,7 +63,7 @@ public class EditExportSchedulePage extends VDCBaseBean implements java.io.Seria
         success = false;
            if (!isFromPage("EditExportSchedulePage")) {
                VDCNetwork vdcNetwork = this.getVDCRequestBean().getVdcNetwork();
-               exportPeriod=vdcNetwork.getExportPeriod();
+               exportPeriod.setValue( vdcNetwork.getExportPeriod());
                exportHourOfDay=vdcNetwork.getExportHourOfDay();
                exportDayOfWeek = vdcNetwork.getExportDayOfWeek();
            } 
@@ -104,7 +109,7 @@ public class EditExportSchedulePage extends VDCBaseBean implements java.io.Seria
             if (true) {
                 // Get the Network
                 VDCNetwork vdcnetwork = getVDCRequestBean().getVdcNetwork();
-                vdcnetwork.setExportPeriod(exportPeriod);
+                vdcnetwork.setExportPeriod(exportPeriod.toString());
                 vdcnetwork.setExportHourOfDay(exportHourOfDay);
                 vdcnetwork.setExportDayOfWeek(exportDayOfWeek);
                 vdcNetworkService.edit(vdcnetwork);
@@ -150,15 +155,15 @@ public class EditExportSchedulePage extends VDCBaseBean implements java.io.Seria
         this.success = success;
     }
     
-    String exportPeriod;
+    HtmlSelectOneMenu exportPeriod;
     Integer exportDayOfWeek;
      Integer exportHourOfDay;
 
-    public String getExportPeriod() {
+    public HtmlSelectOneMenu getExportPeriod() {
         return exportPeriod;
     }
 
-    public void setExportPeriod(String exportPeriod) {
+    public void setExportPeriod(HtmlSelectOneMenu exportPeriod) {
         this.exportPeriod = exportPeriod;
     }
 
@@ -177,9 +182,65 @@ public class EditExportSchedulePage extends VDCBaseBean implements java.io.Seria
     public void setExportHourOfDay(Integer exportHourOfDay) {
         this.exportHourOfDay = exportHourOfDay;
     }
- 
-  
-   
+
+    public void validateHourOfDay(FacesContext context,
+            UIComponent toValidate,
+            Object value) {
+
+        boolean valid = true;
+
+
+        if (exportPeriod.getLocalValue() != null && (exportPeriod.getLocalValue().equals("daily") || exportPeriod.getLocalValue().equals("weekly"))) {
+            if (value == null || ((Integer) value).equals(new Integer(-1))) {
+                valid = false;
+            }
+        }
+        if (!valid) {
+            ((UIInput) toValidate).setValid(false);
+            FacesMessage message = new FacesMessage("This field is required.");
+            context.addMessage(toValidate.getClientId(context), message);
+        }
+
+    }
+
+    public void validateDayOfWeek(FacesContext context,
+            UIComponent toValidate,
+            Object value) {
+
+        boolean valid = true;
+
+
+        if (exportPeriod != null && exportPeriod.getLocalValue() != null && exportPeriod.getLocalValue().equals("weekly")) {
+            if (value == null || ((Integer) value).equals(new Integer(-1))) {
+                valid = false;
+            }
+        }
+        if (!valid) {
+            ((UIInput) toValidate).setValid(false);
+            FacesMessage message = new FacesMessage("This field is required.");
+            context.addMessage(toValidate.getClientId(context), message);
+        }
+
+    }
+
+    public void validateExportPeriod(FacesContext context,
+            UIComponent toValidate,
+            Object value) {
+
+        boolean valid = true;
+
+
+        if (((String) value).equals("notSelected")) {
+            valid = false;
+        }
+        if (!valid) {
+            ((UIInput) toValidate).setValid(false);
+            FacesMessage message = new FacesMessage("This field is required.");
+            context.addMessage(toValidate.getClientId(context), message);
+        }
+
+    }
+
     
 }
 

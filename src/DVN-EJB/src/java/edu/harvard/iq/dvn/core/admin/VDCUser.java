@@ -457,6 +457,7 @@ public class VDCUser implements java.io.Serializable  {
     /**
      * @return the flaggedStudyComments
      */
+    @ManyToMany(mappedBy ="flaggedByUsers")
     public List<StudyComment> getFlaggedStudyComments() {
         return flaggedStudyComments;
     }

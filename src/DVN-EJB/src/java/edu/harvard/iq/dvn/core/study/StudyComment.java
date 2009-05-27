@@ -30,6 +30,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
@@ -56,6 +57,20 @@ public class StudyComment implements Serializable {
     public void setFlaggedByUsers(Collection<VDCUser> flaggedByUsers) {
         this.flaggedByUsers = flaggedByUsers;
     }
+
+    /**
+     * @return the study
+     */
+    public Study getStudy() {
+        return study;
+    }
+
+    /**
+     * @param study the study to set
+     */
+    public void setStudy(Study study) {
+        this.study = study;
+    }
     public enum Status { OK, FLAGGED, DELETED };
     private static final long serialVersionUID = 1L;
     @Id
@@ -71,7 +86,10 @@ public class StudyComment implements Serializable {
     @ManyToOne
     @JoinColumn(nullable=false)
     private Study study;
-    @ManyToMany (mappedBy="flaggedStudyComments",cascade={CascadeType.PERSIST } )
+    @ManyToMany
+    @JoinTable(name = "FLAGGED_STUDY_COMMENTS",
+    joinColumns = @JoinColumn(name = "study_comment_id"),
+    inverseJoinColumns = @JoinColumn(name = "user_id"))
     private Collection<VDCUser> flaggedByUsers;
 
     public StudyComment(){

@@ -12,7 +12,7 @@ load_and_clear <- function(filename){
     load(filename, envir=parent.frame())
 }
 
-dump_graphml <- function(g, filename){
-    write.graph(filename, file=filename, format="graphml")
+dump_graphml <- function(tmp_g, filename){
+    write.graph(tmp_g, file=filename, format="graphml")
     return(filename)
 }

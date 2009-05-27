@@ -1,25 +1,33 @@
-vertex_subset <- function(g, subset_str){
+vertex_subset <- function(tmp_g, subset_str){
     subset_str <- clean_subset(subset_str)
-    vs <- V(g)[eval(parse(text=subset_str))]
-    return(subgraph(g, vs))
+    vs <- V(tmp_g)[eval(parse(text=subset_str))]
+    tmp_g <- subgraph(g, vs)
+
+    g <<- tmp_g
+
+    return(c(vcount(tmp_g), ecount(tmp_g)))
 }
     
 
 #Like subgraph, but takes an edgeset and returns a graph that only contains those edges
 #and vertices incident to those edges.
-edge_subset <- function(g, subset_str, drop_disconnected=FALSE){
+edge_subset <- function(tmp_g, subset_str, drop_disconnected=FALSE){
     subset_str <- clean_subset(subset_str)
     if(drop_disconnected){
-        es <- E(g)[eval(parse(text=subset_str))]
-        e <- get.edges(g, es)
+        es <- E(tmp_g)[eval(parse(text=subset_str))]
+        e <- get.edges(tmp_g, es)
         gc()
-        vset <- V(g)[unique(c(e[,1],e[,2]))]
-        return(subgraph(g,vset))
+        vset <- V(tmp_g)[unique(c(e[,1],e[,2]))]
+        tmp_g <- subgraph(tmp_g, vset)
     }
     else{
-        es <- E(g)[eval(parse(text=paste("!(",subset_str,")")))]
-        return(delete.edges(g, es))
+        es <- E(tmp_g)[eval(parse(text=paste("!(",subset_str,")")))]
+        tmp_g <- delete.edges(tmp_g, es)
     }
+
+    g <<- tmp_g
+
+    return(c(vcount(tmp_g), ecount(tmp_g)))
 }
 
 clean_subset <- function(subset_str){

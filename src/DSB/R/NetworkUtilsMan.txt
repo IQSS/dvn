@@ -3,6 +3,55 @@ backend.
 
 Assume that "g" is an igraph graph object.
 
+Ingest
+======
+
+Convert a graphml file to an RData file:
+----------------------------------------
+Usage:
+    ingest_graphml(filename)
+
+Arguments:
+    filename: The name of the graphml file to ingest.
+
+Returns:
+    The name of the RData file that the function generates.
+
+Side Effects:
+    The function parses the graphml file and creates an igraph object which it
+    dumps to a file with the same name but with a ".RData" extension instead.
+
+Load a dumped RData file and reset the workspace:
+-------------------------------------------------
+Usage:
+    load_and_clear(filename)
+
+Arguments:
+    filename: Name of the RData file to load.
+
+Returns:
+    Nothing.
+
+Side Effects:
+    Clears all global variables in the workspace and loads a graph
+    "g" from the named RData file.
+
+Dump an igraph object to a graphml file:
+----------------------------------------
+Usage:
+    dump_graphml(g, filename)
+
+Arguments:
+    g: The graph object.
+    filename: Name of the graphml file to create.
+
+Returns:
+    The filename provided.
+
+Side Effects:
+    Dumps a graphml representation of the graph g to a file of the name
+    provided.
+
 Basic
 =====
 
@@ -28,30 +77,6 @@ Arguments:
 Returns:
     The number of edges in the graph as an integer.
 
-List Vertex Attributes:
------------------------
-Usage:
-    list.vertex.attributes(g)
-
-Arguments:
-    g: The graph object.
-
-Returns:
-    A vector of strings containing the names of the attributes of the vertices
-    in g.
-
-List Edge Attributes:
----------------------
-Usage:
-    list.edge.attributes(g)
-
-Arguments:
-    g: The grpah object.
-
-Returns:
-    A vector of strings containing the names of the attributes of the edges in
-    g.
-
 Subsetting
 ==========
 
@@ -66,14 +91,14 @@ Arguments:
         attributes as variables.
 
 Returns:
-    An igraph object containing only vertices whose attributes satisfy the
-    expression in subset_str. Only edges that are incident to the remaining
-    vertices are retained.
+    A 2-element integer vector. The first element is the number of vertices
+    left in the graph; the second is the number of edges.
 
-Example:
-    #Overwrites g with a graph only containing vertices whose zipcode is
-    #02139.
-    g <- vertex_subset(g, "zipcode==\"02139\"")
+Side Effects:
+    "g" in the global environment is overwritten with an igraph object
+    containing only vertices whose attributes satisfy the expression in
+    subset_str. Only edges that are incident to the remaining vertices are
+    retained.
 
 Subset by Edges:
 ----------------
@@ -90,24 +115,14 @@ Arguments:
         of vertices as the original.
 
 Returns:
-    An igraph object containing only edges whose attributes satisfy the
-    expression in subset_str. Depending on the value of drop_disconnected, the
-    returned object may no longer contain disconnected vertices.
+    A 2-element integer vector. The first element is the number of vertices
+    left in the graph; the second is the number of edges.
 
-Example:
-    #Overwrites g with a graph containing only edges corresponding to
-    #collaborations earlier than 2001. Because the drop_disconnected argument
-    #is omitted, no vertices will be dropped even if they are disconnected after
-    #subsetting, but the number of edges does drop as expected.
-    vcount(g)
-    ecount(g)
-    g <- edge_subset(g, "appyear <= 2001")
-    vcount(g)
-    ecount(g)
-
-    #This time the disconnected vertices get dropped and the vertex
-    g <- edge_subset(g, "appyear <= 2001", drop_disconnected=TRUE)
-    vcount(g)
+Side Effects:
+    "g" in the global environment is overwritten with an igraph object
+    containing only edges whose attributes satisfy the expression in subset_str.
+    Depending on the value of drop_disconnected, the returned object may no
+    longer contain disconnected vertices.
 
 Intelligent Subsetting
 ======================
@@ -124,7 +139,12 @@ Arguments:
         vertices in the component. Ties are broken arbitrarily.
 
 Returns:
-    An igraph object which contains the largest component of the input graph.
+    A 2-element integer vector. The first element is the number of vertices
+    left in the graph; the second is the number of edges.
+
+Side Effects:
+    "g" in the global environment is overwritten with an igraph object which
+    contains the largest component of the input graph.
 
 Adding Measures
 ===============
@@ -138,20 +158,28 @@ Arguments:
     g: The graph object.
 
 Returns:
-    An igrpah object 
+    The name of the new attribute column added to "g" in the global
+    environment. 
+
+Side Effects:
+    Adds a column "degree_x" to g where x is the number of times add_degree has
+    been called on g.
 
 PageRank:
 ---------
 Usage:
-    add_pagerank(g, d)
+    add_pagerank(g, damping)
 
 Arguments:
     g: The graph object.
-    d: The damping parameter in PageRank. It determines the baseline
+    damping: The damping parameter in PageRank. It determines the baseline
         importance of an individual independent of their connectedness in the
         graph. 
 
 Returns:
-    An igraph object identical to the input graph but with an additional vertex
-    attribute corresponding to the PageRank of the vertex.
+    The name of the new attribute column added to "g" in the global
+    environment. 
 
+Side Effects:
+    Adds a column "pagerank_x" to g where x is the number of times
+    add_pagerank has been called on g.

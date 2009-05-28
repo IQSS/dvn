@@ -1,0 +1,135 @@
+/* CSS Document */
+/* DESCRIPTION */
+.dvn_hmpgMainMessage{margin-bottom:1em;text-align:left}
+.dvn_more{font-style:italic;color:#6D0609}
+a.dvn_more:link,a.dvn_more:visited,a.dvn_more:hover,a.dvn_more:active{color:#6D0609}
+/* SEARCH */
+div.dvn_searchblock{margin-bottom:12px;padding:4px 12px;background:#e6ebed;border:1px solid #ddd;text-align:left}
+.dvn_searchBoxContent{overflow:hidden}
+.dvn_searchTitle a{color:#526f76;font-size:90% !important}
+.dvn_searchTitle a:hover,.dvn_searchTitle a:active{color:#526f76;font-size:90% !important;text-decoration:none !important;cursor:text}
+.dvn_searchBoxContent fieldset{float:left}
+.dvn_searchLinks{float:right}
+.dvn_searchLinks a span.iceOutTxt{margin:0;font-size:90% !important}
+.dvn_searchBoxContent{position:relative;width:100%}
+.dvn_searchBoxContent fieldset{margin:0;padding:0;border:0}
+.dvn_searchBoxContent label{float:left}
+.dvn_searchBoxContent span{margin-right:12px;line-height:224% !important}
+.dvn_searchBoxContent input,.dvn_searchBoxContent select{margin:2px 6px 2px 0}
+.dvnSearchBoxCheckbox,.dvnSearchBoxCheckbox select{margin-top:0;margin-bottom:0}
+.dvnSearchBoxCheckbox span.iceOutTxt{font-size:90% !important}
+/* SECTION PANELS + ACCORDION + TREE */
+#dvn_mainSection{position:relative;width:100%;text-align:center}
+.dvn_sectionContent{display:inline;width:75%;float:right;text-align:left}
+.dvn_sectionPanels{display:inline;position:relative;float:left;margin-right:2%;width:22%}
+.dvn_sectionPanelTitle{padding:.25em 0;border-bottom:2px solid #91a5a9;color:#555;font-weight:700}
+.dvn_sectionPanels div.dvn_sectionPanelText{margin-bottom:1em;padding:.5em}
+.dvn_sectionPanels ul{margin-left:2em;list-style-image:url(/dvn/resources/images/icon_bullet.gif)}
+.dvn_sectionPanels li{margin:0.5em 0}
+.dvn_sectionPanels .TreeContent a:link,.dvn_sectionPanels .TreeContent a:visited,.dvn_sectionPanels .TreeContent a:hover,.dvn_sectionPanels .TreeContent a:active{font-size:90% !important}
+.iceTreeRow a span.iceOutTxt{font-size:90% !important}
+.iceTreeRow .icePnlGrp{display:inline}
+.dvnTreeBlock{width:100%;height:38em;padding:0;border:0;text-align:left}
+.dvnTreeContainer{width:100%;height:34em;border-top:solid 1px #BBB;border-left:solid 1px #BBB;border-bottom:solid 1px #FFF;border-right:solid 1px #FFF;background:#FFF;overflow:auto;overflow-x:scroll;overflow-y:hidden;padding:.25em}
+.theMenuContainer{text-align:left}
+.theMenuContainer ul,.theMenuContainer li{margin:0;padding:0;list-style-type:none;list-style-image:none}
+.theMenuContainer h3,.theMenuContainer h4{margin:0;padding:0}
+#theMenu{margin:0;padding:0;text-indent:0;background-color:silver;width:100%}
+#theMenu ul,#theMenu li{margin:0;padding:0;border-top:1px solid white}
+#theMenu li ul li ul li ul li{margin:0;padding:0;border-bottom:1px solid white}
+.theMenuContainer a{outline:0}
+.xtraMenu{background-color:white}
+h3.head a{display:block;background:#dadee0 url(/dvn/resources/images/menudown.gif) no-repeat;background-position:98% 50%;padding:.5em 26px .5em .5em}
+h3.head a:hover{background:#c55b28 url(/dvn/resources/images/menudown.gif) no-repeat;background-position:98% 50%;padding:.5em 26px .5em .5em;color:white}
+h3.selected a{background:silver url(/dvn/resources/images/menuup.gif) no-repeat;background-position:98% 50%;padding:.5em 26px .5em .5em}
+h3.selected a:hover{background:#c55b28 url(/dvn/resources/images/menuup.gif) no-repeat;background-position:98% 50%;padding:.5em 26px .5em .5em;color:white}
+h4.head a{display:block;background:transparent url(/dvn/resources/images/menudown.gif) no-repeat;padding:0 26px 0 .5em;background-position:98% 50%}
+h4.head a:hover{background:#c55b28 url(/dvn/resources/images/menudown.gif) no-repeat;background-position:98% 50%;padding:0 26px 0 .5em;color:white}
+h4.selected a{background:transparent url(/dvn/resources/images/menuup.gif) no-repeat;background-position:98% 50%;padding:0 26px 0 .5em;font-weight:700}
+h4.selected a:hover{background:#c55b28 url(/dvn/resources/images/menuup.gif) no-repeat;background-position:98% 50%;padding:0 26px 0 .5em;color:white}
+h3.noSubNode,h3.noSubNode a,h3.noSubNode a:hover,h4.noSubNode,h4.noSubNode a,h4.noSubNode a:hover{background-image:none}
+.xtraMenu ul li a:link,.xtraMenu ul li a:active,.xtraMenu ul li a:hover,.xtraMenu ul li a:visited{padding-left:1.25em;display:block}
+.xtraMenu ul li a:hover{background:#c55b28;color:white}
+a.lastNodeActive:link{font-weight:700}
+/* DATAVERSE LIST TABLE + ALPHA SORT */
+.dvnHmpgGroupHeaderBlock{width:100%;margin-bottom:.25em;overflow:hidden}
+span.dvnHmpgGroupHeader{float:left;font-size:150% !important;font-weight:700}
+.dvnHmpgGroupCreateBlock{float:right}
+a.dvnHmpgGroupCreateLink:link,a.dvnHmpgGroupCreateLink:visited,a.dvnHmpgGroupCreateLink:hover,a.dvnHmpgGroupCreateLink:active{padding-right:28px;color:#c55b28;background:url(/dvn/resources/images/start-arrows.gif) 100% 52% no-repeat;font-size:95%;text-decoration:none}
+.dvnHmpgClassificationDesc{margin-bottom:.25em;width:100%}
+.dvnHmpgGroupNoDVs{padding:0 1em;border:1px solid #dcdddf;text-align:center;clear:both}
+.dvnHmpgGroupTableWrap{border:1px solid #dcdddf;border-bottom:0}
+.dvnHmpgGroupTableTop{width:100%}
+.dvnHmpgGroupTableTop td.dvnHmpgGroupTableTopCol{padding-bottom:.5em}
+.dvnHmpgGroupAlphaSortBlock{margin:.5em .5em 0;overflow:auto;width:100%}
+.dvnHmpgGroupTotals{padding:0 .5em}
+.dvnHmpgGroupDataTable{margin:0;width:100%}
+.dvnHmpgGroupDataTable span{font-size:90% !important}
+.dvnHmpgGroupDataTable th span.iceOutTxt td{font-size:90% !important}
+.dvnHmpgDvNameLink{float:left}
+.dvnHmpgMoreInfoLink{float:right;display:inline;margin-left:2em}
+.dvnHmpgDvMoreInfoDesc{clear:both}
+.childRowIndentStyle{background:url(/dvn/resources/icefaces/dvn_rime/css-images/tree_line_last_node.gif) 0 0 no-repeat}
+.activityColumn{text-align:center}
+.activity{width:48px;margin:0 auto}
+.activitylevelicon{vertical-align:middle;width:48px;height:8px;background:url(/dvn/resources/images/activity-icons.png) no-repeat}
+.al-0{background-position:-50 0}
+.al-1{background-position:-40 0}
+.al-2{background-position:-30 0}
+.al-3{background-position:-20 0}
+.al-4{background-position:-10 0}
+.al-5{background-position:0 0}
+.numbervalue{display:none}
+.dvnNetworkHmpgDvListNav div{font-size:90% !important;text-align:left}
+.dvnNetworkHmpgDvListNav ul{margin-top:.5em;margin-left:0em;padding-left:0em;list-style:none}
+.dvnNetworkHmpgDvListNav ul li{margin-left:0em;padding-left:22px;background:url(/dvn/resources/icefaces/dvn_rime/css-images/tree_folder_closed.gif) 0 .25em no-repeat}
+.dvnNetworkHmpgDvListNav ul li a:link,.dvnNetworkHmpgDvListNav ul li a:visited,.dvnNetworkHmpgDvListNav ul li a:active,.dvnNetworkHmpgDvListNav ul li a:hover{font-size:90% !important}
+.dvnNetworkHmpgDvListNav ul li.hmpgDvGroupSelected{background:url(/dvn/resources/icefaces/dvn_rime/css-images/tree_folder_close.gif) 0 0 no-repeat}
+li.hmpgDvGroupSelected a:link,li.hmpgDvGroupSelected a:visited,li.hmpgDvGroupSelected a:active,li.hmpgDvGroupSelected a:hover{font-weight:700}
+/* STUDY LISTING */
+.dvnStudyListWrapper{border:1px solid #dcdddf}
+.dvnStudyListCollectionNameBlock{padding:.5em .25em;border:1px solid #dcdddf;border-width:1px 1px 0 1px;text-align:right}
+.dvnStudyListCollectionName{clear:left;text-align:left}
+.dvnStudyListCollectionName span{font-size:140% !important;font-weight:700}
+.dvnStudyListContributorBlock{padding-bottom:.25em}
+a.dvnStudyListContributorLink:link,a.dvnStudyListContributorLink:visited,a.dvnStudyListContributorLink:hover,a.dvnStudyListContributorLink:active{padding-right:28px;color:#c55b28;background:url(/dvn/resources/images/start-arrows.gif) 100% 52% no-repeat;font-size:95%;text-decoration:none}
+.dvnStudyListResultsTop{border-bottom:1px solid #dcdddf}
+.dvnStudyListResultsBottom{border-top:1px solid #dcdddf}
+.dvnStudyListResultsBottom .dvnPaginatorWrap{padding:.25em 0}
+td.dvn_StudyListTotals{text-align:right;width:100%;padding:.5em}
+td.dvn_StudyListSort{padding:.25em}
+.dvnStudyListStudyInfo{background:inherit}
+span.dvnStudyListStudyAuthor{font-size:90% !important}
+.dvnStudyRestricted{background-image:url(/dvn/resources/images/icon_restricted.18.png);background-repeat:no-repeat;background-position:left .25em;padding-left:22px}
+.dvnStudyPublic{background-image:url(/dvn/resources/images/icon_public.18.png);background-repeat:no-repeat;background-position:left .25em;padding-left:22px}
+.dvnStudyListIDDownloads{padding:0 10px;border-left:1px solid #dcdddf !important}
+.dvnStudyListIDDownloads span{font-size:90% !important;color:gray}
+.dvnStudyListIDDownloads .dvnStudyListDownloadCount{white-space:nowrap}
+.dvnStudyListIDDownloads span.dvnStudyListIDDownloadsSubsettable{width:14em;margin-left:4px !important;white-space:nowrap;display:inline !important}
+.dvnStudyListIDDownloads span.dvnStudyListIDDownloadsNonSubsettable{width:14em;margin-left:4px !important;white-space:nowrap;display:inline !important}
+td.dvnStudyListTableColID{vertical-align:top}
+span.dvnStudyListGlobalId{color:black}
+.dvnStudyListTableColInfo{width:77%;background-color:inherit !important}
+.dvnStudyListTableColID{width:22%;background-color:inherit !important}
+.dvnStudyListTableAbstract{padding-top:3px;padding-bottom:3px;padding-left:0px;padding-right:0px}
+.dvnStudyListTableAbstract div,.dvnStudyListTableAbstract p{margin:0;padding:0;display:inline}
+span.dvnStudyListTableAbstract{color:gray;font-size:90% !important}
+.dvnStudyListTableAbstract p{color:black;font-size:90% !important}
+.dvnStudyListTableOptionalField span.iceOutTxt{font-size:90% !important;display:inline !important}
+span.dvnStudyListTableOptionalFieldLabel{color:gray}
+.dvnStudyListTableOptionalField table.iceDatTbl span.iceOutTxt{font-size:90% !important}
+.dvnStudyListTable{border:0;margin:0}
+.dvnStudyListTable tr{border-left:0}
+.dvnStudyListTable td{border:0}
+.dvnStudyListTable div{border-width:0 0 0 0}
+span.dvnStudyListSearchResultsMessage{font-size:100% !important;font-weight:400}
+.dvnStudyListNoStudies{padding:0 1em;text-align:center}
+/* ADVANCED SEARCH */
+.dvnAdvSearchScopeTable{max-width:900px;margin:auto}
+.dvnAdvSearchScopeTable tr.list-row-even td{background-color:#fff}
+.vdcAdvSearchCol1{padding-bottom:2px;padding-left:10px;padding-top:2px;vertical-align:bottom}
+.vdcAdvSearchCol2{padding-bottom:2px;padding-left:10px;padding-top:2px;vertical-align:bottom}
+.vdcAdvSearchCol3{padding-bottom:2px;padding-left:10px;padding-top:2px;vertical-align:bottom}
+.dvnAdvSearchCollectionsTable{max-width:900px;margin:auto;border-top:1px solid #d9d9d9}
+.dvnAdvSearchCollectionsTableParent{display:inline}
+.dvnAdvSearchCollectionsTableChild{display:inline;padding-left:18px;background:url(/dvn/resources/icefaces/dvn_rime/css-images/tree_line_last_node.gif) 0 0 no-repeat}

@@ -21,6 +21,7 @@
 package edu.harvard.iq.dvn.core.study;
 
 import edu.harvard.iq.dvn.core.admin.VDCUser;
+import java.util.Iterator;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -105,6 +106,12 @@ public class StudyCommentServiceBean implements StudyCommentService {
     public List<StudyComment> findByStatus(StudyComment.Status status){
         String statusStudyCommentsQuery = "Select c from StudyComment c where c.status = :commentstatus";
         List<StudyComment> studyComments = em.createQuery(statusStudyCommentsQuery).setParameter("commentstatus", status).getResultList();
+        Iterator iterator = studyComments.iterator();
+        while (iterator.hasNext()) {
+            StudyComment studyComment = (StudyComment)iterator.next();
+            studyComment.getFlaggedByUsers().size(); // required to load the list from the join table. Otherwise it may not be instantiated.
+            studyComment.getFlaggedByUsers();
+        }
         return studyComments;
     }
 }

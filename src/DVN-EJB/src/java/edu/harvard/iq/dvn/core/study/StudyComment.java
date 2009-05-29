@@ -24,8 +24,8 @@ import edu.harvard.iq.dvn.core.admin.VDCUser;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -33,7 +33,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -44,33 +43,7 @@ import javax.persistence.TemporalType;
 @Entity
 public class StudyComment implements Serializable {
 
-    /**
-     * @return the flaggedByUsers
-     */
-    public Collection<VDCUser> getFlaggedByUsers() {
-        return flaggedByUsers;
-    }
-
-    /**
-     * @param flaggedByUsers the flaggedByUsers to set
-     */
-    public void setFlaggedByUsers(Collection<VDCUser> flaggedByUsers) {
-        this.flaggedByUsers = flaggedByUsers;
-    }
-
-    /**
-     * @return the study
-     */
-    public Study getStudy() {
-        return study;
-    }
-
-    /**
-     * @param study the study to set
-     */
-    public void setStudy(Study study) {
-        this.study = study;
-    }
+   
     public enum Status { OK, FLAGGED, DELETED };
     private static final long serialVersionUID = 1L;
     @Id
@@ -103,6 +76,39 @@ public class StudyComment implements Serializable {
         this.createTime = new Date();
     }
 
+     /**
+     * @return the flaggedByUsers
+     */
+    public Collection<VDCUser> getFlaggedByUsers() {
+        return flaggedByUsers;
+    }
+
+    /**
+     * @param flaggedByUsers the flaggedByUsers to set
+     */
+    public void setFlaggedByUsers(Collection<VDCUser> flaggedByUsers) {
+        this.flaggedByUsers = flaggedByUsers;
+    }
+
+    public VDCUser getFlaggedByUser() {
+        VDCUser flaggedByUser = ((VDCUser)flaggedByUsers.toArray()[0]);
+        return flaggedByUser;
+    }
+
+    /**
+     * @return the study
+     */
+    public Study getStudy() {
+        return study;
+    }
+
+    /**
+     * @param study the study to set
+     */
+    public void setStudy(Study study) {
+        this.study = study;
+    }
+    
     public Long getId() {
         return id;
     }
@@ -192,6 +198,4 @@ public class StudyComment implements Serializable {
     public void setCommentCreator(VDCUser commentCreator) {
         this.commentCreator = commentCreator;
     }
-
-
 }

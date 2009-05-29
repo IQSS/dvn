@@ -59,7 +59,7 @@
                                                             value="Reported"/>
                                               <ice:commandLink binding="#{StudyCommentsFragment.reportAbuseLink}"
                                                                actionListener="#{StudyCommentsFragment.togglePopup}"
-                                                               rendered="#{item.status == 'OK'}"
+                                                               rendered="#{item.status == 'OK' and !StudyCommentFragment.authorizedToDeleteComment}"
                                                                >
                                                 <f:attribute name="commentId" value="#{item.id}" />
                                                 <ice:outputText rendered="#{StudyCommentsFragment.user != item.commentCreator}"

@@ -424,7 +424,7 @@ public class StudyCommentsFragment extends VDCBaseBean implements Serializable {
         FacesContext context            = FacesContext.getCurrentInstance();
         ExternalContext externalContext = context.getExternalContext();
         HttpServletRequest request      = (HttpServletRequest) externalContext.getRequest();
-        cancelLink = request.getProtocol().substring(0, request.getProtocol().indexOf("/")).toLowerCase() + "://" + getHostUrl() + request.getContextPath() + getVDCRequestBean().getCurrentVDCURL() + "/faces/admin/OptionsPage.xhtml";
+        cancelLink = request.getProtocol().substring(0, request.getProtocol().indexOf("/")).toLowerCase() + "://" + getHostUrl() + request.getContextPath() + getVDCRequestBean().getCurrentVDCURL() + "/faces/networkAdmin/CommentReviewPage.xhtml";
         return cancelLink;
     }
 

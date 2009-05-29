@@ -36,12 +36,10 @@
             <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="2"
                            styleClass="dvnManageStudiesTableTop" columnClasses="dvn_StudyListTotals, dvnPaginatorWrap">
               <div jsfc="ice:panelGroup" styleClass="dvn_StudyListTotals">
-                <!-- <ice:dataPaginator id="scroll_2" for="dvnManageTable"
+                <!-- <ice:dataPaginator id="scroll_2" for="commentReviewData"
                                    rowsCountVar="rowsCount" displayedRowsCountVar="displayedRowsCountVar"
                                    firstRowIndexVar="firstRowIndex" lastRowIndexVar="lastRowIndex"
                                    pageCountVar="pageCount" pageIndexVar="pageIndex">
-                  <ice:outputText value="Notifications: " />
-                  <ice:outputText value="19" />
                   <ice:outputFormat rendered="#{rowsCount > displayedRowsCountVar}" value=", displaying {0} to {1}" styleClass="dvn_totalsValue">
                     <f:param value="#{firstRowIndex}"/>
                     <f:param value="#{lastRowIndex}"/>
@@ -49,7 +47,7 @@
                 </ice:dataPaginator> -->
               </div>
               <div jsfc="ice:panelGroup" styleClass="dvnPaginatorWrap">
-                <!-- <ice:dataPaginator id="scroll_1" styleClass="dvnPaginatorRight" for="dvnManageTable" fastStep="3"
+                <!-- <ice:dataPaginator id="scroll_1" styleClass="dvnPaginatorRight" for="commentReviewData" fastStep="3"
                                    pageCountVar="pageCount" pageIndexVar="pageIndex"
                                    paginator="true" paginatorMaxPages="4" renderFacetsIfSinglePage="false">
                   <f:facet name="first">
@@ -74,25 +72,29 @@
               </div>
             </ice:panelGrid>
           </div>
+          <ice:outputText style="float:left; vertical-align:top;"
+                          value="#{bundlePageInfo.commentReviewSubheading}:  #{CommentReviewPage.totalNotifications}">
+          </ice:outputText>
           <div>
+              
               <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                              styleClass="dvnManageTable"
-                             headerClass="list-header-left vdcColPadded" id="dataTable1"
+                             headerClass="list-header-left vdcColPadded" id="commentReviewData"
                              rowClasses="list-row-even vdcColPadded, list-row-odd vdcColPadded"
                              columnClasses="dvnCommentReviewCol1,dvnCommentReviewCol2,dvnCommentReviewCol3,dvnCommentReviewCol4,dvnCommentReviewCol5,dvnCommentReviewCol6"
-                             value="" var="currentRow">
+                             value="#{CommentReviewPage.commentsForReview}" var="currentRow">
                 <ice:column>
                   <f:facet name="header">
-                    <ice:outputText value="Study ID"/>
+                    <ice:outputText value="Global ID"/>
                   </f:facet>
-                  <ice:outputText value="hdl:1902.1/RESUDVYWPE"/>
+                  <ice:outputText value="#{currentRow.studyComment.study.globalId}"/>
                 </ice:column>
                 <ice:column>
                   <f:facet name="header">
                     <ice:outputText value="Comment"/>
                   </f:facet>
                   <ice:outputLink value="#">
-                    <ice:outputText value="&quot;Buy replica watches made in Mexico online with prices so low that you won't believe your...&quot;"/>
+                    <ice:outputText value="#{currentRow.studyComment.comment}"/>
                   </ice:outputLink>
                 </ice:column>
                 <ice:column>
@@ -100,33 +102,39 @@
                     <ice:outputText value="Posted By"/>
                   </f:facet>
                   <ice:outputLink value="#">
-                    <ice:outputText value="gdurand"/>
+                    <ice:outputText value="#{currentRow.studyComment.commentCreator.userName}"/>
                   </ice:outputLink>
                 </ice:column>
                 <ice:column>
                   <f:facet name="header">
                     <ice:outputText value="Posted Date"/>
                   </f:facet>
-                  <ice:outputText value="Oct 19, 2007"/>
+                  <ice:outputText value="#{currentRow.studyComment.createTime}"/>
                 </ice:column>
                 <ice:column>
                   <f:facet name="header">
                     <ice:outputText value="Reported By"/>
                   </f:facet>
-                  <ice:outputLink value="#">
-                    <ice:outputText value="ekraffmiller"/>
-                  </ice:outputLink>
+                 <ice:outputLink value="#">
+                    <ice:outputText value="#{currentRow.flaggedByUserNames}"/>
+                 </ice:outputLink>
                 </ice:column>
                 <ice:column>
                   <f:facet name="header">
                     <ice:outputText value="Action"/>
                   </f:facet>
-                  <ice:outputLink value="#">
-                    <ice:outputText value="Ignore"/>
-                  </ice:outputLink>
-                  <ice:outputLink value="#">
+                <ice:commandLink binding="#{CommentReviewPage.deleteCommentLink}"
+                                 actionListener="#{CommentReviewPage.deleteFlaggedComment}"
+                                 >
+                    <f:attribute name="commentId" value="#{currentRow.StudyComment.id}" />
                     <ice:outputText value="Delete"/>
-                  </ice:outputLink>
+                  </ice:commandLink>
+                <ice:commandLink binding="#{CommentReviewPage.ignoreCommentFlagLink}"
+                                 actionListener="#{CommentReviewPage.ignoreCommentFlag}"
+                                 >
+                    <f:attribute name="commentId" value="#{currentRow.StudyComment.id}" />
+                    <ice:outputText value="Ignore"/>
+                 </ice:commandLink>
                 </ice:column>
               </ice:dataTable>
             </div>

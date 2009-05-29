@@ -384,6 +384,11 @@
         </managed-property>
     </managed-bean>
     <managed-bean>
+        <managed-bean-name>CommentReviewPage</managed-bean-name>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.networkAdmin.CommentReviewPage</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
         <managed-bean-name>ClassificationList</managed-bean-name>
         <managed-bean-class>edu.harvard.iq.dvn.core.web.site.ClassificationList</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>

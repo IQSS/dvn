@@ -18,6 +18,7 @@ import edu.harvard.iq.dvn.core.util.PropertyUtil;
 import edu.harvard.iq.dvn.core.web.common.LoginBean;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import javax.ejb.EJB;
@@ -38,7 +39,7 @@ public class StudyCommentsFragment extends VDCBaseBean implements Serializable {
     @EJB
     private MailServiceLocal mailService;
 
-    protected List<StudyComment> studyComments;
+    protected List<StudyCommentUI> studyComments;
     protected Long studyId = null;  // corresponds to the primary key in the table, id
     protected Long studyIdForComments = null;  // corresponds to the foreign key int he table, studyId ex. 10001
     private VDCUser user = null;
@@ -187,26 +188,33 @@ public class StudyCommentsFragment extends VDCBaseBean implements Serializable {
     }
 
 
-    
-
-    /**
-     * Get the value of studyComments
+     /**
+     * Get the studyComments wrapper
      *
-     * @return the value of studyComments
+     * @return an array list of studyComments
      */
-    public List<StudyComment> getStudyComments() {
+    public List<StudyCommentUI> getStudyComments() {
         if (studyComments == null) {
-            studyComments = studyCommentService.getStudyComments(studyId);
+            studyComments = new ArrayList();
+            List<StudyComment> tempStudyComments = studyCommentService.getStudyComments(studyId);
+            Iterator iterator = tempStudyComments.iterator();
+            while (iterator.hasNext()) {
+                StudyComment studyComment     = (StudyComment)iterator.next();
+                StudyCommentUI studyCommentUI = new StudyCommentUI(studyComment);
+                studyComments.add(studyCommentUI);
+            }
         }
         return studyComments;
     }
+
+    // end example.
 
     /**
      * Set the value of studyComments
      *
      * @param studyComments new value of studyComments
      */
-    public void setStudyComments(List<StudyComment> studyComments) {
+    public void setStudyComments(List<StudyCommentUI> studyComments) {
         this.studyComments = studyComments;
     }
 

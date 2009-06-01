@@ -1391,6 +1391,25 @@ public class FileDownloadServlet extends HttpServlet {
                 return;
             }
 
+	    Long sizeLimit = Long.valueOf(100 * 2^20); //new Long (100 * 2^20); 
+	    Long sizeTotal = Long.valueOf(0); 
+
+	    // this is the total limit of the size of all the files we
+	    // are packaging. if exceeded, we stop packaging files and add 
+	    // a note to the manifest explaining what happened. 
+	    // the value above is the default. a different value can 
+	    // be set with a JVM option. 
+
+	    String sizeLimitOption = System.getProperty("dvn.batchdownload.limit");
+
+	    if ( sizeLimitOption != null ) {
+		Long sizeOptionValue = new Long(sizeLimitOption); 
+		if ( sizeOptionValue > 0 ) {
+		    sizeLimit = sizeOptionValue; 
+		}
+	    }
+
+
             // an HTTP GET method for remote files;
             // we want it defined here so that it can be closed
             // properly if an exception is caught.
@@ -1419,127 +1438,132 @@ public class FileDownloadServlet extends HttpServlet {
                     int fileSize = 0;
                     StudyFile file = (StudyFile) iter.next();
 
-                    InputStream in = null;
-                    //ReadableByteChannel in = null;
+		    if ( sizeTotal < sizeLimit ) { 
+			InputStream in = null;
+			//ReadableByteChannel in = null;
 
 
-                    String varHeaderLine = null;
-                    String dbContentType = file.getFileType();
+			String varHeaderLine = null;
+			String dbContentType = file.getFileType();
 
-                    if (dbContentType != null && dbContentType.equals("text/tab-separated-values") && file.isSubsettable()) {
-                        List datavariables = ((TabularDataFile) file).getDataTable().getDataVariables();
-                        varHeaderLine = generateVariableHeader(datavariables);
-                    }
+			if (dbContentType != null && dbContentType.equals("text/tab-separated-values") && file.isSubsettable()) {
+			    List datavariables = ((TabularDataFile) file).getDataTable().getDataVariables();
+			    varHeaderLine = generateVariableHeader(datavariables);
+			}
+			
+			Boolean Success = true;
 
-                    Boolean Success = true;
+			try {
+			    if (file.isRemote()) {
 
-                    try {
-                        if (file.isRemote()) {
+				// do the http magic
 
-                            // do the http magic
+				int status = 200;
 
-                            int status = 200;
+				method = new GetMethod(file.getFileSystemLocation());
+				status = getClient().executeMethod(method);
 
-                            method = new GetMethod(file.getFileSystemLocation());
-                            status = getClient().executeMethod(method);
+				if (status != 200) {
 
-                            if (status != 200) {
+				    if (method != null) {
+					method.releaseConnection();
+				    }
 
-                                if (method != null) {
-                                    method.releaseConnection();
-                                }
+				} else {
 
-                            } else {
+				    // the incoming HTTP stream is the source of
+				    // the current chunk of the zip stream we are
+				    // creating.
+				    
+				    in = method.getResponseBodyAsStream();
+				}
 
-                                // the incoming HTTP stream is the source of
-                                // the current chunk of the zip stream we are
-                                // creating.
+				// well, yes, the logic above will result in
+				// adding an empty file to the zip archive in
+				// case the remote object is not accessible.
 
-                                in = method.getResponseBodyAsStream();
-                            }
+				// I can't think of a better solution right now,
+				// but it should work for now.
+				
+			    } else {
+				// local file.
+				in = new FileInputStream(new File(file.getFileSystemLocation()));
+			    }
+			} catch (IOException ex) {
+			    Success = false;
 
-                        // well, yes, the logic above will result in
-                        // adding an empty file to the zip archive in
-                        // case the remote object is not accessible.
+			    if (dbContentType == null) {
+				dbContentType = "unknown filetype;";
+			    }
 
-                        // I can't think of a better solution right now,
-                        // but it should work for now.
+			    fileManifest = fileManifest + file.getFileName() + " (" + dbContentType + ") COULD NOT be downloaded because an I/O error has occured. \r\n";
 
-                        } else {
-                            // local file.
-                            in = new FileInputStream(new File(file.getFileSystemLocation()));
-                        }
-                    } catch (IOException ex) {
-                        Success = false;
+			    if (in != null) {
+				in.close();
+			    }
 
-                        if (dbContentType == null) {
-                            dbContentType = "unknown filetype;";
-                        }
+			    // if this was a remote stream, let's close
+			    // the connection properly:
 
-                        fileManifest = fileManifest + file.getFileName() + " (" + dbContentType + ") COULD NOT be downloaded because an I/O error has occured. \r\n";
+			    if (file.isRemote()) {
+				if (method != null) {
+				    method.releaseConnection();
+				}
+			    }
+			}
+			
+			if (Success) {
+			    String zipEntryName = file.getFileName();
+			    if (createDirectoriesForCategories) {
+				String catName = new FileCategoryUI(file.getFileCategory()).getDownloadName();
+				zipEntryName = catName + "/" + zipEntryName;
+			    }
+			    zipEntryName = checkZipEntryName(zipEntryName, nameList);
+			    ZipEntry e = new ZipEntry(zipEntryName);
+			    
+			    zout.putNextEntry(e);
 
-                        if (in != null) {
-                            in.close();
-                        }
+			    if (varHeaderLine != null) {
+				byte[] headerBuffer = varHeaderLine.getBytes();
+				zout.write(headerBuffer);
+				fileSize += (headerBuffer.length);
+			    }
 
-                        // if this was a remote stream, let's close
-                        // the connection properly:
+			    byte[] dataBuffer = new byte[8192];
 
-                        if (file.isRemote()) {
-                            if (method != null) {
-                                method.releaseConnection();
-                            }
-                        }
-                    }
+			    int i = 0;
+			    while ((i = in.read(dataBuffer)) > 0) {
+				zout.write(dataBuffer, 0, i);
+				fileSize += i;
+				out.flush();
+			    }
+			    in.close();
+			    zout.closeEntry();
+			    
+			    if (dbContentType == null) {
+				dbContentType = "unknown filetype;";
+			    }
 
-                    if (Success) {
-                        String zipEntryName = file.getFileName();
-                        if (createDirectoriesForCategories) {
-                            String catName = new FileCategoryUI(file.getFileCategory()).getDownloadName();
-                            zipEntryName = catName + "/" + zipEntryName;
-                        }
-                        zipEntryName = checkZipEntryName(zipEntryName, nameList);
-                        ZipEntry e = new ZipEntry(zipEntryName);
+			    fileManifest = fileManifest + file.getFileName() + " (" + dbContentType + ") " + fileSize + " bytes.\r\n";
+			    
+			    if (fileSize > 0) {
+				successList.add ( file.getId() ); 
+				sizeTotal += Long.valueOf(fileSize); 
+			    }
 
-                        zout.putNextEntry(e);
+			    // if this was a remote stream, let's close
+			    // the connection properly:
 
-                        if (varHeaderLine != null) {
-                            byte[] headerBuffer = varHeaderLine.getBytes();
-                            zout.write(headerBuffer);
-                            fileSize += (headerBuffer.length);
-                        }
-
-                        byte[] dataBuffer = new byte[8192];
-
-                        int i = 0;
-                        while ((i = in.read(dataBuffer)) > 0) {
-                            zout.write(dataBuffer, 0, i);
-                            fileSize += i;
-                            out.flush();
-                        }
-                        in.close();
-                        zout.closeEntry();
-
-                        if (dbContentType == null) {
-                            dbContentType = "unknown filetype;";
-                        }
-
-                        fileManifest = fileManifest + file.getFileName() + " (" + dbContentType + ") " + fileSize + " bytes.\r\n";
-
-                        if (fileSize > 0) {
-			    successList.add ( file.getId() ); 
-                        }
-
-                        // if this was a remote stream, let's close
-                        // the connection properly:
-
-                        if (file.isRemote()) {
-                            if (method != null) {
-                                method.releaseConnection();
-                            }
-                        }
-                    }
-                }
+			    if (file.isRemote()) {
+				if (method != null) {
+				    method.releaseConnection();
+				}
+			    }
+			}
+		    } else { 
+			fileManifest = fileManifest + file.getFileName() + " skipped because the total size of the download bundle exceeded the limit of " + sizeLimit + " bytes.\r\n";
+		    }
+		}
 
                 // finally, let's create the manifest entry:
 

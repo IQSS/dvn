@@ -44,43 +44,43 @@
                             <ice:column id="commentDetails"
                                         styleClass="vdcStudyCommentDetailsColumn"
                                         style="border-left: 0px; border-right:0px;">
-                              <ice:panelGroup rendered="#{item.status == 'OK' or item.status == 'FLAGGED'}">
+                              <ice:panelGroup rendered="#{item.studyComment.status == 'OK' or item.studyComment.status == 'FLAGGED'}">
                               <ice:outputText nospan="true"
-                                              value="#{item.commentCreator.userName}" />
+                                              value="#{item.studyComment.commentCreator.userName}" />
                               <ice:outputText styleClass="vdcStudyCommentDetails"
-                                              value="posted on #{item.createTime}" />
+                                              value="posted on #{item.studyComment.createTime}" />
                                    <div jsfc="ice:panelGroup"
                                         rendered="#{StudyCommentsFragment.user != null}"
                                         styleClass="dvn_navblockLinks">
                                       <ul>
                                         <li>
-                                            <ice:outputText rendered="#{item.status == 'FLAGGED'}"
+                                            <ice:outputText rendered="#{item.studyComment.status == 'FLAGGED'}"
                                                             style="padding-top:.3em;padding-right:.5em;"
                                                             value="Reported"/>
                                               <ice:commandLink binding="#{StudyCommentsFragment.reportAbuseLink}"
                                                                actionListener="#{StudyCommentsFragment.togglePopup}"
-                                                               rendered="#{item.status == 'OK' and !StudyCommentFragment.authorizedToDeleteComment}"
+                                                               rendered="#{item.studyComment.status == 'OK' and !StudyCommentFragment.authorizedToDeleteComment}"
                                                                >
-                                                <f:attribute name="commentId" value="#{item.id}" />
-                                                <ice:outputText rendered="#{StudyCommentsFragment.user != item.commentCreator}"
+                                                <f:attribute name="commentId" value="#{item.studyComment.id}" />
+                                                <ice:outputText rendered="#{StudyCommentsFragment.user != item.studyComment.commentCreator}"
                                                                 value="Report Abuse"/>
                                               </ice:commandLink>
                                         </li>
                                         <li>
                                               <ice:commandLink binding="#{StudyCommentsFragment.deleteCommentLink}"
                                                                actionListener="#{StudyCommentsFragment.deleteFlaggedComment}"
-                                                               rendered="#{StudyCommentsFragment.authorizedToDeleteComment or item.commentCreator == StudyCommentsFragment.user}"
+                                                               rendered="#{StudyCommentsFragment.authorizedToDeleteComment or item.studyComment.commentCreator == StudyCommentsFragment.user}"
                                                                >
-                                                <f:attribute name="commentId" value="#{item.id}" />
+                                                <f:attribute name="commentId" value="#{item.studyComment.id}" />
                                                 <ice:outputText value="Delete"/>
                                               </ice:commandLink>
                                         </li>
                                          <li>
                                             <ice:commandLink binding="#{StudyCommentsFragment.ignoreCommentFlagLink}"
                                                           actionListener="#{StudyCommentsFragment.ignoreCommentFlag}"
-                                                          rendered="#{StudyCommentsFragment.authorizedToIgnoreFlag and item.status == 'FLAGGED'}"
-                                                          ><!-- and item.status == 'FLAGGED' -->
-                                                <f:attribute name="commentId" value="#{item.id}" />
+                                                          rendered="#{StudyCommentsFragment.authorizedToIgnoreFlag and item.studyComment.status == 'FLAGGED'}"
+                                                          ><!-- and item.studyComment.status == 'FLAGGED' -->
+                                                <f:attribute name="commentId" value="#{item.studyComment.id}" />
                                                 <ice:outputText value="Ignore"/>
                                              </ice:commandLink>
                                       </li>
@@ -89,10 +89,10 @@
                               </ice:panelGroup>
                             </ice:column>
                             <ice:column id="commentContent"
-                                        rendered="#{item.status == 'OK' or item.status == 'FLAGGED'}"
+                                        rendered="#{item.studyComment.status == 'OK' or item.studyComment.status == 'FLAGGED'}"
                                         styleClass="vdcStudyCommentContentColumn"
                                         style="border-left: 0px; border-right:0px;">
-                                  <ice:outputText value="#{item.comment}"/>
+                                  <ice:outputText value="#{item.studyComment.comment}"/>
                             </ice:column>
                       </ice:dataTable>
                       <ice:outputText rendered="#{StudyCommentsFragment.user == null}"

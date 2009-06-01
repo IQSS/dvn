@@ -23,6 +23,7 @@ package edu.harvard.iq.dvn.ingest.statdataio.impl.plugins.por;
 
 import java.util.*;
 import static java.lang.System.*;
+import org.apache.commons.lang.builder.*;
 import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.metadata.*;
 
 /**
@@ -32,7 +33,7 @@ import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.metadata.*;
 public class PORMetadata extends SDIOMetadata{
 
     private static String[] POR_FILE_INFORMATION_ITEMS= {
-        "releaseNo", "byteOrder", "OSByteOrder"};
+        "releaseNo", "byteOrder", "OSByteOrder", "document"};
 
     /**
      *
@@ -42,7 +43,7 @@ public class PORMetadata extends SDIOMetadata{
 
 
     /**
-     *
+     * 
      */
     protected Map<String, Map<String, String>> valueLabelTable;
 
@@ -70,18 +71,8 @@ public class PORMetadata extends SDIOMetadata{
     }
 
     @Override
-    public Map<String, Object> getFileInformation(){
-        return fileInformation;
-    }
-
-    @Override
-    public void setValueLabelTable(Map<String, Map<String, String>>
-        valueLabelTable){
-        this.valueLabelTable = valueLabelTable;
-    }
-    
-    @Override
-    public Map<String, Map<String, String>> getValueLabelTable() {
-        return valueLabelTable;
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this,
+            ToStringStyle.MULTI_LINE_STYLE);
     }
 }

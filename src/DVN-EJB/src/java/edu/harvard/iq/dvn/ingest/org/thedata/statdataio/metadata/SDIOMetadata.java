@@ -25,26 +25,38 @@ package edu.harvard.iq.dvn.ingest.org.thedata.statdataio.metadata;
 
 import java.util.*;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.*;
 
 /**
  *
- * @author Akio Sone
+ * @author Akio Sone at UNC-Odum
  */
 public class SDIOMetadata {
 
+    /**
+     *
+     */
     protected String nativeMetadataFormatName = null;
 
+    /**
+     *
+     * @return
+     */
     public String getNativeMetadataFormatName() {
         return nativeMetadataFormatName;
     }
 
+    /**
+     *
+     */
     public static String[] COMMON_FILE_INFORMATION_ITEMS= {
         "fileID", "varQnty", "caseQnty", "recPrCas", "charset","mimeType",
         "fileType ", "fileFormat", "fileUNF", "fileDate", "fileTime",
         "tabDelimitedDataFileLocation"};
 
-    public static Map<String, Integer> variableTypeNumber =
+    /** this field is available for Stata DTA format only */
+    private static Map<String, Integer> variableTypeNumber =
             new LinkedHashMap<String, Integer>();
 
     static {
@@ -56,9 +68,15 @@ public class SDIOMetadata {
         variableTypeNumber.put("String",  0);
     }
 
+    /**
+     *
+     */
     public SDIOMetadata() {
     }
 
+    /**
+     *
+     */
     protected String[] variableName;
 
     /**
@@ -78,14 +96,17 @@ public class SDIOMetadata {
     public void setVariableName(String[] variableName) {
         this.variableName = variableName;
     }
-    protected String[] variableLabel;
+    /**
+     *
+     */
+    protected Map<String, String> variableLabel;
 
     /**
      * Get the value of variableLabel
      *
      * @return the value of variableLabel
      */
-    public String[] getVariableLabel() {
+    public Map<String, String> getVariableLabel() {
         return variableLabel;
     }
 
@@ -94,28 +115,156 @@ public class SDIOMetadata {
      *
      * @param variableLabel new value of variableLabel
      */
-    public void setVariableLabel(String[] variableLabel) {
+    public void setVariableLabel(Map<String, String> variableLabel) {
         this.variableLabel = variableLabel;
     }
+
+    
+    /** This field is available for Stata DTA file*/
+    private String[] variableStorageType;
+
+    /**
+     *
+     * @return
+     */
+    public String[] getVariableStorageType() {
+        return variableStorageType;
+    }
+
+    /**
+     *
+     * @param variableStorageType
+     */
+    public void setVariableStorageType(String[] variableStorageType) {
+        this.variableStorageType = variableStorageType;
+    }
+    
+    /** minimal dichotomous (string v. numeric) classification used 
+        by SPSS SAV and POR formats. Zero(0) is numeric and positive 
+        integer is string
+    */
+    private int[] variableTypeMinimal;
+
+    /**
+     *
+     * @return
+     */
+    public int[] getVariableTypeMinimal() {
+        return variableTypeMinimal;
+    }
+
+    /**
+     *
+     * @param variableTypeMinimal
+     */
+    public void setVariableTypeMinimal(int[] variableTypeMinimal) {
+        this.variableTypeMinimal = variableTypeMinimal;
+    }
+    
+    
+
+
+    /** */
     protected VariableType[] variableType;
 
     /**
      * Get the value of variableType
+     * This method provides unified type information based on format-specific
+     * type information found in an ingested file
      *
      * @return the value of variableType
      */
     public VariableType[] getVariableType() {
+
+
+        if ((variableStorageType != null) && (variableStorageType.length >0)){
+            // Stata DTA case
+
+        } else if ((variableTypeMinimal != null)&&( variableTypeMinimal.length>0)){
+            // SPSS POR/SAV cases
+
+        }
         return variableType;
     }
+
+    /**
+     *
+     * @return
+     */
+    public boolean[] isStringVariable(){
+        boolean [] stringYes = new boolean[variableName.length];
+
+        if ((variableStorageType != null) && (variableStorageType.length >0)){
+            // Stata DTA case
+            for (int i =0; i< variableName.length;i++){
+
+                stringYes[i] = variableStorageType[i].equals("String") ? true : false;
+            }
+        } else if ((variableTypeMinimal != null)&&( variableTypeMinimal.length>0)){
+            // SPSS POR/SAV cases
+            for (int i=0;i<variableName.length;i++){
+                stringYes[i] = variableTypeMinimal[i] > 0 ? true : false;
+            }
+        }
+        return stringYes;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public boolean[] isContinuousVariable(){
+        boolean[] continuousYes = new boolean[variableName.length];
+        if ((variableStorageType != null) && (variableStorageType.length >0)){
+            // Stata DTA case
+            for (int i =0; i< variableName.length;i++){
+                continuousYes[i] = 
+                    variableTypeNumber.get(variableStorageType[i]) == 2 ? true : false;
+            }
+        } else if (decimalVariables != null){
+            // SPSS POR/SAV cases
+            if ( decimalVariables.size()>0){
+                for (int i=0;i<variableName.length;i++){
+                    continuousYes[i] = decimalVariables.contains(i) ? true : false;
+                }
+            } else {
+                Arrays.fill(continuousYes, false);
+            }
+        }
+        return continuousYes;
+    }
+
+    /**
+     *
+     */
+    protected Set<Integer> decimalVariables;
+
+    /**
+     *
+     * @return
+     */
+    public Set<Integer> getDecimalVariables() {
+        return decimalVariables;
+    }
+
+    /**
+     *
+     * @param decimalVariables
+     */
+    public void setDecimalVariables(Set<Integer> decimalVariables) {
+        this.decimalVariables = decimalVariables;
+    }
+
+
 
     /**
      * Set the value of variableType
      *
      * @param variableType new value of variableType
      */
-    public void setVariableType(VariableType[] variableType) {
-        this.variableType = variableType;
-    }
+//    public void setVariableType(VariableType[] variableType) {
+//        this.variableType = variableType;
+//    }
 
     protected VariableFormat[] variableFormat;
 
@@ -136,6 +285,9 @@ public class SDIOMetadata {
     public void setVariableFormat(VariableFormat[] variableFormat) {
         this.variableFormat = variableFormat;
     }
+    /**
+     *
+     */
     protected VariableFormatName[] variableFormatName;
 
     /**
@@ -155,30 +307,35 @@ public class SDIOMetadata {
     public void setVariableFormatName(VariableFormatName[] variableFormatName) {
         this.variableFormatName = variableFormatName;
     }
-
-    protected String[] variableStorageType;
-
-    public String[] getVariableStorageType() {
-        return variableStorageType;
-    }
-
-    public void setVariableStorageType(String[] variableStorageType) {
-        this.variableStorageType = variableStorageType;
-    }
-
     
 
+
+
+    /**
+     *
+     */
     protected String[] variableUNF;
 
+    /**
+     *
+     * @return
+     */
     public String[] getVariableUNF() {
         return variableUNF;
     }
 
+    /**
+     *
+     * @param variableUNF
+     */
     public void setVariableUNF(String[] variableUNF) {
         this.variableUNF = variableUNF;
     }
     
 
+    /**
+     *
+     */
     protected Map<String, Object> fileInformation =
         new LinkedHashMap<String, Object>();
 
@@ -192,6 +349,9 @@ public class SDIOMetadata {
         return this.fileInformation;
     }
     
+    /**
+     *
+     */
     protected Map<String, Map<String, String>> valueLabelTable =
         new LinkedHashMap<String,Map<String, String>>();
 
@@ -213,132 +373,53 @@ public class SDIOMetadata {
         this.valueLabelTable = valueLabelTable;
     }
 
-    public Map<Integer, Object> summaryStatisticsTable =
-        new LinkedHashMap<Integer, Object>();
 
-    public Map<Integer, Object> getSummaryStatisticsTable() {
+    /**
+     *
+     */
+    protected Map<String, List<String>> missingValueTable =
+        new LinkedHashMap<String, List<String>>();
+
+    /**
+     *
+     * @return
+     */
+    public Map<String, List<String>> getMissingValueTable() {
+        return missingValueTable;
+    }
+
+    /**
+     *
+     * @param missingValueTable
+     */
+    public void setMissingValueTable(Map<String, List<String>> missingValueTable) {
+        this.missingValueTable = missingValueTable;
+    }
+
+
+    /**
+     *
+     */
+    public Map<Integer, Object[]> summaryStatisticsTable =
+        new LinkedHashMap<Integer, Object[]>();
+
+    /**
+     *
+     * @return
+     */
+    public Map<Integer, Object[]> getSummaryStatisticsTable() {
         return summaryStatisticsTable;
     }
 
-    public void setSummaryStatisticsTable(Map<Integer, Object>
+    /**
+     *
+     * @param summaryStatisticsTable
+     */
+    public void setSummaryStatisticsTable(Map<Integer, Object[]>
         summaryStatisticsTable) {
         this.summaryStatisticsTable = summaryStatisticsTable;
     }
 
-
-    public String generateDDI(){
-        StringBuilder sb = new StringBuilder();
-        sb.append(generateDDISection1());
-        //sb.append(generateDDISection2());
-        sb.append(generateDDISection3());
-        sb.append(generateDDISection4());
-        return sb.toString();
-    }
-
-    private String generateDDISection1(){
-        
-        String defaultEncoding = "UTF-8";
-        
-        String fileEncoding = (String)getFileInformation().get("charset");
-
-        String encoding_attr = !fileEncoding.equals("") ?
-                       " encoding=\""+fileEncoding+"\"" :
-                       " encoding=\""+defaultEncoding+"\"";
-
-        StringBuilder sb =
-            new StringBuilder( "<?xml version=\"1.0\"" + encoding_attr +"?>\n");
-        sb.append("<codeBook xmlns=\"http://www.icpsr.umich.edu/DDI\">\n");
-        return sb.toString();
-    }
-
-    private String generateDDISection2(){
-        StringBuilder sb = new StringBuilder(
-            "<docDscr/>\n"+
-            "<stdyDscr>\n\t<citation>\n\t\t<titlStmt>\n"+
-            "\t\t\t<titl/>\n\t\t\t<IDNo agency=\"\"/>\n\t\t</titlStmt>\n"+
-            "\t</citation>\n</stdyDscr>\n");
-        return sb.toString();
-    }
-
-    private String generateDDISection3(){
-        String charset = (String)getFileInformation().get("charset");
-        String nobs = getFileInformation().get("caseQnty").toString();
-        String nvar = getFileInformation().get("varQnty").toString();
-        String mimeType = (String)getFileInformation().get("mimeType");
-
-        System.out.println("charset="+charset);
-        System.out.println("nobs="+nobs);
-        System.out.println("nvar="+nvar);
-        System.out.println("mimeType="+mimeType);
-        //String recPrCas = (String)getFileInformation().get("recPrCas");
-        //String fileType = (String)getFileInformation().get("fileType");
-        //String fileFormat = (String)getFileInformation().get("fileFormat");
-        
-        String recPrCasTag = "";
-        String fileFormatTag ="";
-        
-        String fileUNF = (String)getFileInformation().get("fileUNF");
-        System.out.println("fileUNF="+fileUNF);
-        String fileNoteUNF = 
-            "\t<notes subject=\"Universal Numeric Fingerprint\" level=\"file\" "+
-            "source=\"archive\" type=\"VDC:UNF\">" + fileUNF + "</notes>\n";
-        
-        String fileNoteFileType =
-            "\t<notes subject=\"original file format\" level=\"file\" "+
-            "source=\"archive\" type=\"VDC:MIME\">" +  mimeType + "</notes>\n";
-
-        StringBuilder sb = 
-            new StringBuilder("<fileDscr ID=\"file1\" URI=\"\">\n" + "\t<fileTxt>\n"+
-        "\t\t<dimensns>\n\t\t\t<caseQnty>"+nobs+"</caseQnty>\n"+
-        "\t\t\t<varQnty>" + nvar +"</varQnty>\n"+
-        recPrCasTag + "\t\t</dimensns>\n"+
-        "\t\t<fileType charset=\""+ charset + "\">" + mimeType +"</fileType>\n"+
-        fileFormatTag+"\t</fileTxt>\n"+
-        fileNoteUNF+ fileNoteFileType+"</fileDscr>\n");
-
-        return sb.toString();
-    }
-    private String generateDDISection4(){
-        // String[] variableName
-        // String[] variableLabel
-        // 
-       
-        StringBuilder sb = new StringBuilder("<dataDscr>\n");
-        for (int i=0; i<variableName.length;i++){
-            // <var
-
-            String intrvlType = variableTypeNumber.get(variableStorageType[i])
-                    > 1 ? "contin": "discrete" ;
-            String intrvlAttr = variableTypeNumber.get(variableStorageType[i])
-                    > 0 ? "intrvl=\""+intrvlType + "\" " : "";
-
-            sb.append("\t<var ID=\"v1." + i + "\" name=\"" +
-                 StringEscapeUtils.escapeXml(variableName[i]) + "\" "+
-                 intrvlAttr +">\n");
-                 
-            sb.append("\t\t<location fileid=\"file1\"/>\n");
-            
-            // label
-            if ((variableLabel[i] != null) && (!variableLabel[i].equals(""))) {
-                sb.append("\t\t<labl level=\"variable\">" +
-                    StringEscapeUtils.escapeXml(variableLabel[i])+"</labl>\n");
-            }
-            // format
-            String formatTye = variableTypeNumber.get(variableStorageType[i])
-                    > 0 ? "numeric": "character";
-            sb.append("\t\t<varFormat type=\""+formatTye+"\"/>\n");
-            // note: UNF
-            sb.append("\t\t<notes subject=\"Universal Numeric Fingerprint\" "+
-                "level=\"variable\" source=\"archive\" type=\"VDC:UNF\">"+
-                StringEscapeUtils.escapeXml(variableUNF[i])
-                +"</notes>\n");
-            // closing 
-            sb.append("\t</var>\n");
-        }
-        sb.append("</dataDscr>\n");
-        sb.append("</codeBook>\n");
-        return sb.toString();
-    }
 
     @Override
     public String toString() {

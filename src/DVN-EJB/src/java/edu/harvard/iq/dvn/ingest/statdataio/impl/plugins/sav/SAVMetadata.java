@@ -23,6 +23,7 @@ package edu.harvard.iq.dvn.ingest.statdataio.impl.plugins.sav;
 
 import java.util.*;
 import static java.lang.System.*;
+import org.apache.commons.lang.builder.*;
 import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.metadata.*;
 
 /**
@@ -35,7 +36,7 @@ public class SAVMetadata extends SDIOMetadata{
         "releaseNo", "byteOrder", "OSByteOrder"};
 
     /**
-     *
+     * 
      */
     protected Map<String, Object> fileInformation =
         new LinkedHashMap<String, Object>();
@@ -69,5 +70,9 @@ public class SAVMetadata extends SDIOMetadata{
         }
     }
 
-
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this,
+            ToStringStyle.MULTI_LINE_STYLE);
+    }
 }

@@ -27,31 +27,31 @@ import java.nio.*;
 import java.nio.channels.*;
 import java.security.NoSuchAlgorithmException;
 import java.util.logging.*;
-import javax.imageio.IIOException;
+
 import static java.lang.System.*;
 import java.util.*;
 import java.lang.reflect.*;
 import java.util.regex.*;
 
+import org.apache.commons.lang.*;
 import org.apache.commons.lang.builder.*;
 import org.apache.commons.io.*;
 import org.apache.commons.io.input.*;
 
-import org.apache.commons.lang.StringUtils;
 import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.*;
 import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.spi.*;
 import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.metadata.*;
 import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.data.*;
 import edu.harvard.iq.dvn.unf.*;
 
-import org.apache.commons.lang.*;
+
 
 import edu.harvard.iq.dvn.ingest.statdataio.impl.plugins.util.*;
 
 
 /**
  *
- * @author asone
+ * @author Akio Sone at UNC-Odum
  */
 public class DTAFileReader extends StatDataFileReader{
 
@@ -264,7 +264,6 @@ public class DTAFileReader extends StatDataFileReader{
         }
     }
     
-    //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
     // instance fields -------------------------------------------------------//
 
     private static Logger dbgLog = Logger.getLogger(DTAFileReader.class.getPackage().getName());
@@ -311,8 +310,10 @@ public class DTAFileReader extends StatDataFileReader{
     String[] unfValues = null;
     
     String fileUnfValue = null;
-    
-    //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
+
+    List<String> variableNameList = new ArrayList<String>();
+
+    Map<String, String> variableLabelMap = new LinkedHashMap<String, String>();
 
     // Constructor -----------------------------------------------------------//
 
@@ -325,7 +326,6 @@ public class DTAFileReader extends StatDataFileReader{
     }
 
 
-    //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
     // Methods ---------------------------------------------------------------//
     /**
      * initializes the contant set
@@ -385,6 +385,7 @@ public class DTAFileReader extends StatDataFileReader{
 
             try {
                 // invoke this method
+                dbgLog.fine("method Name="+mthd.getName());
 
                 if (mthd.getName().equals("decodeExpansionFields")){
                     if (release_number == 104){
@@ -394,7 +395,6 @@ public class DTAFileReader extends StatDataFileReader{
                 }
 
                 mthd.invoke(this, stream);
-                dbgLog.fine("method Name="+mthd.getName());
 
             } catch (InvocationTargetException e) {
                 Throwable cause = e.getCause();
@@ -424,7 +424,7 @@ public class DTAFileReader extends StatDataFileReader{
     protected void decodeHeader(BufferedInputStream stream){
         dbgLog.fine("***** decodeHeader(): start *****");
 
-      if (stream ==null){
+        if (stream ==null){
             throw new IllegalArgumentException("stream == null!");
         }
 
@@ -438,10 +438,10 @@ public class DTAFileReader extends StatDataFileReader{
             if (nbytes == 0){
                 throw new IOException();
             }
-//            dbgLog.fine("header: hex dump");
-//            for (int i = 0; i < magic_number.length; ++i) {
-//                out.printf("%2d\t0x%02X\n", i, magic_number[i]);
-//            }
+        //            dbgLog.fine("header: hex dump");
+        //            for (int i = 0; i < magic_number.length; ++i) {
+        //                out.printf("%2d\t0x%02X\n", i, magic_number[i]);
+        //            }
 
         } catch (IOException ioe) {
             ioe.printStackTrace();
@@ -582,6 +582,11 @@ public class DTAFileReader extends StatDataFileReader{
     protected void decodeDescriptors(BufferedInputStream stream){
 
         dbgLog.fine("***** decodeDescriptors(): start *****");
+        
+        if (stream ==null){
+            throw new IllegalArgumentException("stream == null!");
+        }
+        
         // part 1: variable type list
         int nvar = (Integer)smd.getFileInformation().get("varQnty");
         byte[] typeList = new byte[nvar];
@@ -670,17 +675,20 @@ public class DTAFileReader extends StatDataFileReader{
         
         dbgLog.fine("variableTypelList="+variableTypelList);
         dbgLog.fine("StringVariableTable="+StringVariableTable);
+        
         smd.setVariableStorageType(variableTypelList);
+        
+        
         // part 2: Variable_Name List
         // name length= 9(release 105) or 33 (release 111) each null terminated
         int length_var_name = constant_table.get("NAME");
         int length_var_name_list = length_var_name*nvar;
         dbgLog.fine("length_var_name_list="+length_var_name_list);
 
-        byte[] variableNameList = new byte[length_var_name_list];
-        String[] variableNames = new String[nvar];
+        byte[] variableNameBytes = new byte[length_var_name_list];
+        //String[] variableNames = new String[nvar];
         try {
-            int nbytes = stream.read(variableNameList, 0, length_var_name_list);
+            int nbytes = stream.read(variableNameBytes, 0, length_var_name_list);
 
             //printHexDump(variableNameList, "variable name list");
             if (nbytes == 0){
@@ -690,18 +698,18 @@ public class DTAFileReader extends StatDataFileReader{
             int offset_end = 0;
             for (int i= 0; i< nvar; i++){
                 offset_end += length_var_name;
-                String vari = new String(Arrays.copyOfRange(variableNameList, offset_start,
+                String vari = new String(Arrays.copyOfRange(variableNameBytes, offset_start,
                     offset_end),"US-ASCII");
-                variableNames[i] = vari.substring(0, vari.indexOf(0));
-                dbgLog.fine(i+"-th name=["+variableNames[i]+"]");
+                variableNameList.add(vari.substring(0, vari.indexOf(0)));
+                dbgLog.fine(i+"-th name=["+variableNameList.get(i)+"]");
                 offset_start = offset_end;
             }
-            dbgLog.fine("variableNames=\n"+StringUtils.join(variableNames, ",\n")+"\n");
+            dbgLog.fine("variableNameList=\n"+StringUtils.join(variableNameList, ",\n")+"\n");
         } catch (IOException ex) {
             ex.printStackTrace();
         }
 
-        smd.setVariableName(variableNames);
+        smd.setVariableName(variableNameList.toArray(new String[variableNameList.size()]));
 
         // Part 3: variable sort list
         // length of this field = short(2bytes)*(nvar +1)
@@ -816,16 +824,21 @@ public class DTAFileReader extends StatDataFileReader{
     protected void decodeVariableLabels(BufferedInputStream stream){
 
         dbgLog.fine("***** decodeVariableLabels(): start *****");
+        
+        if (stream ==null){
+            throw new IllegalArgumentException("stream == null!");
+        }
+        
         // variable label length (32 or 81 bytes)*nvar, each null-terminated
         int nvar = (Integer)smd.getFileInformation().get("varQnty");
         int length_var_label = constant_table.get("LABEL");
         int length_var_label_list = length_var_label*nvar;
         dbgLog.fine("length_label_name="+length_var_label_list);
 
-        byte[] variableLabelList = new byte[length_var_label_list];
+        byte[] variableLabelBytes = new byte[length_var_label_list];
         String[] variableLabels = new String[nvar];
         try {
-            int nbytes = stream.read(variableLabelList, 0, length_var_label_list);
+            int nbytes = stream.read(variableLabelBytes, 0, length_var_label_list);
 
             //printHexDump(variableLabelList, "variableLabelList");
             if (nbytes == 0){
@@ -835,18 +848,18 @@ public class DTAFileReader extends StatDataFileReader{
             int offset_end = 0;
             for (int i= 0; i< nvar; i++){
                 offset_end += length_var_label;
-                String vari = new String(Arrays.copyOfRange(variableLabelList, offset_start,
+                String vari = new String(Arrays.copyOfRange(variableLabelBytes, offset_start,
                     offset_end),"US-ASCII");
-                variableLabels[i] = vari.substring(0, vari.indexOf(0));
+                variableLabelMap.put(variableNameList.get(i), vari.substring(0, vari.indexOf(0)));
                 dbgLog.fine(i+"-th label=["+variableLabels[i]+"]");
                 offset_start = offset_end;
             }
-            dbgLog.fine("variableLabels=\n"+StringUtils.join(variableLabels, ",\n")+"\n");
+            dbgLog.fine("variableLabelMap=\n"+variableLabelMap.toString() +"\n");
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-        
-        smd.setVariableLabel(variableLabels);
+
+        smd.setVariableLabel(variableLabelMap);
         
         dbgLog.fine("smd dump (variable label):\n"+smd.toString());
         dbgLog.fine("***** decodeVariableLabels(): end *****");
@@ -859,11 +872,16 @@ public class DTAFileReader extends StatDataFileReader{
      */
     protected void decodeExpansionFields(BufferedInputStream stream){
 
-
         dbgLog.fine("***** decodeExpansionFields(): start *****");
+        
+        if (stream ==null){
+            throw new IllegalArgumentException("stream == null!");
+        }
+        
         // Added since release 105
         // [1-byte byte_field][short(2)/int(4)_field][variable_field whose
         // length is specified by the previous short/int field]
+        
         int int_type_expansion_field = constant_table.get("EXPANSION");
         dbgLog.fine("int_type_expansion_field="+int_type_expansion_field);
         while(true){
@@ -922,6 +940,11 @@ public class DTAFileReader extends StatDataFileReader{
     protected void decodeData(BufferedInputStream stream){
 
         dbgLog.fine("\n***** decodeData(): start *****");
+        
+        if (stream ==null){
+            throw new IllegalArgumentException("stream == null!");
+        }
+        
         int nvar = (Integer)smd.getFileInformation().get("varQnty");
         int nobs = (Integer)smd.getFileInformation().get("caseQnty");
         dbgLog.fine("data diminsion[rxc]=("+nobs+","+nvar+")");
@@ -987,7 +1010,7 @@ public class DTAFileReader extends StatDataFileReader{
                     switch( varType != null ? varType: 256){
                         case -5:
                             // Byte case
-                            out.print("\tbyte case:"+columnCounter+"th var");
+                            //out.print("\tbyte case:"+columnCounter+"th var");
                             // note: 1 byte signed
                             byte byte_datum = dataRowBytes[byte_offset];
                             
@@ -999,7 +1022,7 @@ public class DTAFileReader extends StatDataFileReader{
                             break;
                         case -4:
                             // Stata-int (=java's short: 2byte) case
-                            out.print("\tstata int case");
+                            //out.print("\tstata int case");
                             
                             // note: 2-byte signed int, not java's int
                             ByteBuffer int_buffer = 
@@ -1018,7 +1041,7 @@ public class DTAFileReader extends StatDataFileReader{
                             break;
                         case -3:
                             // stata-Long (= java's int: 4 byte) case
-                            out.print("\tstata long case");
+                            //out.print("\tstata long case");
                             // note: 4-byte singed, not java's long
                             ByteBuffer long_buffer = 
                                 ByteBuffer.wrap(dataRowBytes, byte_offset, 4);
@@ -1036,7 +1059,7 @@ public class DTAFileReader extends StatDataFileReader{
                             break;
                         case -2:
                             // float case
-                            out.print("\tfloat case");
+                            //out.print("\tfloat case");
                             // note: 4-byte
                             ByteBuffer float_buffer =
                                 ByteBuffer.wrap(dataRowBytes, byte_offset, 4);
@@ -1054,7 +1077,7 @@ public class DTAFileReader extends StatDataFileReader{
                             break;
                         case -1:
                             // double case
-                            out.print("\tdouble case");
+                            //out.print("\tdouble case");
                             // note: 8-byte
                             ByteBuffer double_buffer =
                                 ByteBuffer.wrap(dataRowBytes, byte_offset, 8);
@@ -1073,7 +1096,7 @@ public class DTAFileReader extends StatDataFileReader{
                         case  0:
                             // String case
                             int strVarLength = StringVariableTable.get(columnCounter);
-                            out.print("\t"+columnCounter+"-th string var length="+strVarLength);
+                            //out.print("\t"+columnCounter+"-th string var length="+strVarLength);
 
                             String raw_datum = new String(Arrays.copyOfRange(dataRowBytes, byte_offset,
                                 (byte_offset+strVarLength)), "US-ASCII");
@@ -1182,6 +1205,12 @@ public class DTAFileReader extends StatDataFileReader{
     protected void decodeValueLabels(BufferedInputStream stream){
 
         dbgLog.fine("***** decodeValueLabels(): start *****");
+        
+        if (stream ==null){
+            throw new IllegalArgumentException("stream == null!");
+        }
+        
+        
         try {
             if (stream.available() != 0) {
                 if ((Integer) smd.getFileInformation().get("releaseNumber") <= 105) {
@@ -1195,8 +1224,11 @@ public class DTAFileReader extends StatDataFileReader{
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+        
        dbgLog.fine("***** decodeValueLabels(): end *****");
     }
+    
+    
     /**
      *
      * @param stream
@@ -1204,6 +1236,10 @@ public class DTAFileReader extends StatDataFileReader{
     protected void parseValueLabelsRelease105(BufferedInputStream stream){
 
         dbgLog.fine("***** parseValueLabelsRelease105(): start *****");
+        
+        if (stream ==null){
+            throw new IllegalArgumentException("stream == null!");
+        }
         
         int nvar = (Integer)smd.getFileInformation().get("varQnty");
         int length_label_name = constant_table.get("NAME") + 1;
@@ -1367,6 +1403,8 @@ public class DTAFileReader extends StatDataFileReader{
         } // for-loop
         
         dbgLog.fine("valueLabelTable:\n"+valueLabelTable);
+        
+        
         smd.setValueLabelTable(valueLabelTable);
         
         
@@ -1381,6 +1419,10 @@ public class DTAFileReader extends StatDataFileReader{
     protected void parseValueLabelsReleasel108(BufferedInputStream stream){
 
         dbgLog.fine("***** parseValueLabelsRelease108(): start *****");
+        
+        if (stream ==null){
+            throw new IllegalArgumentException("stream == null!");
+        }
         
         int nvar = (Integer)smd.getFileInformation().get("varQnty");
         int length_label_name = constant_table.get("NAME");
@@ -1582,7 +1624,9 @@ public class DTAFileReader extends StatDataFileReader{
             
         }  // for loop
         dbgLog.fine("valueLabelTable:\n"+valueLabelTable);
+        
         smd.setValueLabelTable(valueLabelTable);
+        
         dbgLog.fine("***** parseValueLabelsRelease108(): end *****");
     }
 
@@ -1617,7 +1661,7 @@ public class DTAFileReader extends StatDataFileReader{
                 unfValue = UNFUtil.calculateUNF(bdata, unfVersionNumber);
 
                 smd.getSummaryStatisticsTable().put(variablePosition, 
-                    StatHelper.calculateSummaryStatistics(bdata));
+                    ArrayUtils.toObject(StatHelper.calculateSummaryStatistics(bdata)));
 
                 break;
             case -4:
@@ -1630,7 +1674,7 @@ public class DTAFileReader extends StatDataFileReader{
                 unfValue = UNFUtil.calculateUNF(sdata, unfVersionNumber);
 
                 smd.getSummaryStatisticsTable().put(variablePosition, 
-                    StatHelper.calculateSummaryStatistics(sdata));
+                    ArrayUtils.toObject(StatHelper.calculateSummaryStatistics(sdata)));
 
                 break;
             case -3:
@@ -1643,7 +1687,7 @@ public class DTAFileReader extends StatDataFileReader{
                 unfValue = UNFUtil.calculateUNF(idata, unfVersionNumber);
 
                 smd.getSummaryStatisticsTable().put(variablePosition, 
-                    StatHelper.calculateSummaryStatistics(idata));
+                    ArrayUtils.toObject(StatHelper.calculateSummaryStatistics(idata)));
 
                 break;
             case -2:
@@ -1655,9 +1699,8 @@ public class DTAFileReader extends StatDataFileReader{
                         
                 unfValue = UNFUtil.calculateUNF(fdata, unfVersionNumber);
 
-                double[] fresult = StatHelper.calculateSummaryStatistics(fdata);
-
-                smd.getSummaryStatisticsTable().put(variablePosition, fresult);
+                smd.getSummaryStatisticsTable().put(variablePosition,
+                    ArrayUtils.toObject(StatHelper.calculateSummaryStatistics(fdata)));
 
                 break;
             case -1:
@@ -1671,7 +1714,7 @@ public class DTAFileReader extends StatDataFileReader{
                 unfValue = UNFUtil.calculateUNF(ddata, unfVersionNumber);
                 
                 smd.getSummaryStatisticsTable().put(variablePosition,
-                    StatHelper.calculateSummaryStatistics(ddata));
+                    ArrayUtils.toObject(StatHelper.calculateSummaryStatistics(ddata)));
               
                 break;
             case  0:

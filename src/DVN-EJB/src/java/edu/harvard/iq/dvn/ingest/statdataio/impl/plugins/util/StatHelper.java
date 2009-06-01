@@ -32,7 +32,7 @@ import cern.jet.stat.Descriptive;
 
 /**
  *
- * @author Akio Sone
+ * @author Akio Sone at UNC-Odum
  */
 
 
@@ -92,7 +92,7 @@ public class StatHelper {
     }
 
     /**
-     * 
+     *
      * @param x
      * @return
      */
@@ -280,13 +280,185 @@ public class StatHelper {
      * @return
      */
     public static String getMode(String[] x){
-        String mode = "";
-
-        if (removeEmptyElements(x).length == 0) {
-            return mode;
+        String mode = null;
+        int nobs = removeEmptyElements(x).length;
+        if ((nobs == 0) || (nobs == x.length)) {
+            mode ="";
         } else {
-          // To be complted later probably with help of suitable Java packages
+            Map<String, Integer> frqTbl = getFrequencyTable(x);
+            if (frqTbl.keySet().size() < nobs){
+                mode= getMode(frqTbl);
+            } else {
+                mode = "";
+            }
         }
         return mode;
     }
+    
+    /**
+     *
+     * @param FrequencyTable
+     * @return
+     */
+    public static String getMode(Map<String, Integer> FrequencyTable) {
+        ArrayList<Map.Entry<String, Integer>> entries =
+            new ArrayList<Map.Entry<String, Integer>>(FrequencyTable.entrySet());
+        sortMapEntryListByValue(entries);
+
+        return entries.get(0).getKey();
+    }
+
+    /**
+     * 
+     * @param FrequencyTable
+     * @return
+     */
+    public static int getMaxResponse(Map<String, Integer> FrequencyTable) {
+        ArrayList<Map.Entry<String, Integer>> entries =
+            new ArrayList<Map.Entry<String, Integer>>(FrequencyTable.entrySet());
+        sortMapEntryListByValue(entries);
+
+        return entries.get(0).getValue();
+    }
+    /**
+     *
+     * @param entries
+     */
+    public static void sortMapEntryListByValue(
+        List<Map.Entry<String, Integer>> entries){
+        sortMapEntryListByValue(entries, true);
+    }
+
+    /**
+     *
+     * @param entries
+     * @param descending
+     */
+    public static void sortMapEntryListByValue(
+        List<Map.Entry<String, Integer>> entries, boolean descending){
+        final int order = descending ? -1 : 1;
+        Collections.sort(entries,
+            new Comparator<Map.Entry<String, Integer>>(){
+                public int compare(Map.Entry<String, Integer> e1,
+                                      Map.Entry<String, Integer> e2){
+                    Integer e1Value =  e1.getValue();
+                    Integer e2Value =  e2.getValue();
+                    return order*(e1Value.compareTo(e2Value));
+                }
+                public boolean equals(Object obj){
+                      return super.equals(obj);
+                }
+            }
+        );
+        //return entries;
+    }
+
+    /**
+     *
+     * @param x
+     * @return
+     */
+    public static Map<String, Integer>getFrequencyTable(byte[] x){
+        Map<String, Integer> tbl = new TreeMap<String, Integer>();
+        for (Byte entry : x) {
+            String sentry = String.valueOf(entry);
+            Integer freq = tbl.get(sentry);
+            tbl.put(sentry, (freq == null ? 1 : freq + 1));
+        }
+        return tbl;
+    }
+
+    /**
+     *
+     * @param x
+     * @return
+     */
+    public static Map<String, Integer>getFrequencyTable(short[] x){
+        Map<String, Integer> tbl = new TreeMap<String, Integer>();
+        for (Short entry : x) {
+            String sentry = String.valueOf(entry);
+            Integer freq = tbl.get(sentry);
+            tbl.put(sentry, (freq == null ? 1 : freq + 1));
+        }
+        return tbl;
+    }
+
+    /**
+     *
+     * @param x
+     * @return
+     */
+    public static Map<String, Integer>getFrequencyTable(int[] x){
+        Map<String, Integer> tbl = new TreeMap<String, Integer>();
+        for (Integer entry : x) {
+            String sentry = String.valueOf(entry);
+            Integer freq = tbl.get(sentry);
+            tbl.put(sentry, (freq == null ? 1 : freq + 1));
+        }
+        return tbl;
+    }
+
+    /**
+     *
+     * @param x
+     * @return
+     */
+    public static Map<String, Integer>getFrequencyTable(long[] x){
+        Map<String, Integer> tbl = new TreeMap<String, Integer>();
+        for (Long entry : x) {
+            String sentry = String.valueOf(entry);
+            Integer freq = tbl.get(sentry);
+            tbl.put(sentry, (freq == null ? 1 : freq + 1));
+        }
+        return tbl;
+    }
+
+    /**
+     *
+     * @param x
+     * @return
+     */
+    public static Map<String, Integer>getFrequencyTable(float[] x){
+        Map<String, Integer> tbl = new TreeMap<String, Integer>();
+        for (Float entry : x) {
+            String sentry = String.valueOf(entry);
+            Integer freq = tbl.get(sentry);
+            tbl.put(sentry, (freq == null ? 1 : freq + 1));
+        }
+        return tbl;
+    }
+
+
+    /**
+     *
+     * @param x
+     * @return
+     */
+    public static Map<String, Integer>getFrequencyTable(double[] x){
+        Map<String, Integer> tbl = new TreeMap<String, Integer>();
+        for (Double entry : x) {
+            String sentry = String.valueOf(entry);
+            Integer freq = tbl.get(sentry);
+            tbl.put(sentry, (freq == null ? 1 : freq + 1));
+        }
+        return tbl;
+    }
+
+    /**
+     *
+     * @param x
+     * @return
+     */
+    public static Map<String, Integer>getFrequencyTable(String[] x){
+        Map<String, Integer> tbl = new TreeMap<String, Integer>();
+        for (String sentry : x) {
+            if (sentry == null){
+                continue;
+            }
+            Integer freq = tbl.get(sentry);
+            tbl.put(sentry, (freq == null ? 1 : freq + 1));
+        }
+        return tbl;
+    }
+   
 }

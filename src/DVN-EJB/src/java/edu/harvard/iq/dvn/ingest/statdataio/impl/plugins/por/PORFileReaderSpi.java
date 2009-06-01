@@ -32,7 +32,7 @@ import static java.lang.System.*;
 
 /**
  *
- * @author akio sone
+ * @author Akio Sone
  */
 
 public class PORFileReaderSpi extends StatDataFileReaderSpi{
@@ -41,7 +41,7 @@ public class PORFileReaderSpi extends StatDataFileReaderSpi{
     private static int POR_HEADER_SIZE = 500;
     
     /**
-     *
+     * 
      */
     public static int POR_MARK_POSITION_DEFAULT = 461;
     /**

@@ -231,7 +231,7 @@ public class DSBWrapper implements java.io.Serializable  {
 
 
 
-       if (file.getStudyFile().getFileType().equals("application/x-stata")){
+//       if (file.getStudyFile().getFileType().equals("application/x-stata")){
        
 
        BufferedInputStream infile = null;
@@ -257,10 +257,10 @@ public class DSBWrapper implements java.io.Serializable  {
 
 
             infile.close();
-                        // parse the response
-                        StudyFile f = file.getStudyFile();
+            // parse the response
+            StudyFile f = file.getStudyFile();
 
-                        // first, check dir
+            // first, check dir
             // create a sub-directory "ingested"
             File newDir = new File(tempFile.getParentFile(), "ingested");
 
@@ -285,144 +285,128 @@ public class DSBWrapper implements java.io.Serializable  {
             fos.close();
 
             dbgLog.fine("newFile: abs path:\n"+newFile.getAbsolutePath());
-            /*
 
-            */
             // store the tab-file location
             file.setIngestedSystemFileLocation(newFile.getAbsolutePath());
-            /*
 
-            */
-            return smd.generateDDI();
-
-
-            //            return xmlToParse;
-
-                    } finally {
-            /*
-
-            */
-                    }
-
-
-
-
-
-
-
-
-
-
-
-
-        } else {
-        BufferedReader rd = null;
-        PostMethod method = null;
-        try {
-
-
-            // create method
-            method = new PostMethod(generateUrl(DSB_INGEST));
-            File tempFile = new File(file.getTempSystemFileLocation());
-            
-            
-            dbgLog.fine("data file(tempFile): abs path:\n"+file.getTempSystemFileLocation());
-            dbgLog.fine("mimeType :\n"+file.getStudyFile().getFileType());
-            
-            
-            if (file.getControlCardSystemFileLocation() == null) {
-                Part[] parts = {
-                    new FilePart( "dataFile0", tempFile ),
-                    new StringPart( "dataFileMime0", file.getStudyFile().getFileType() )
-                };
-                
-                method.setRequestEntity(
-                        new MultipartRequestEntity(parts, method.getParams())
-                        );
-            } else {
-                File controlCardFile = new File(file.getControlCardSystemFileLocation() );
-                
-                Part[] parts = {
-                    new FilePart( "dataFile0", tempFile ),
-                    new StringPart( "dataFileMime0", file.getStudyFile().getFileType() ),
-                    new FilePart( "controlCard0", controlCardFile )
-                };
-                
-                method.setRequestEntity(
-                        new MultipartRequestEntity(parts, method.getParams())
-                        );
-            }
-            
-            // execute
-            executeMethod(method);
-            
-            // parse the response
-            StudyFile f = file.getStudyFile();
-            
-            // first, check dir
-            File newDir = new File(tempFile.getParentFile(), "ingested");
-            if (!newDir.exists()) {
-                newDir.mkdirs();
-            }
-            dbgLog.fine("newDir: abs path:\n"+newDir.getAbsolutePath());
-            
-            rd = new BufferedReader(new InputStreamReader(method.getResponseBodyAsStream()  ));
-            String boundary = "=vdc-ingest-multipart";
-            String xmlToParse = "<codeBook xmlns=\"http://www.icpsr.umich.edu/DDI\">\n";
-            String line = rd.readLine();
-            while (line != null) {
-                if (line.equals("--" + boundary + "--")) {
-                    break; // this is the last line of the file
-                    
-                } else if (line.equals("--" + boundary)) {
-                    // we are at the beginning of a part
-                    line = rd.readLine(); // second line should be content type
-                    String contentType = line.substring( line.indexOf("Content-Type: ") + 14 );
-                    line = rd.readLine(); // next line is blank
-                    line = rd.readLine(); // now begin reading this part
-                    
-                    if ( contentType.equals("text/tab-separated-values") ) {
-                        File newFile = new File( newDir, tempFile.getName() );
-                        
-                        dbgLog.fine("newFile: abs path:\n"+newFile.getAbsolutePath());
-                        
-                        BufferedWriter out = new BufferedWriter(new FileWriter(newFile));
-                        while ( !line.startsWith("--" + boundary) ) {
-                            out.write(line + "\n");
-                            line = rd.readLine();
-                        }
-                        file.setIngestedSystemFileLocation(newFile.getAbsolutePath());
-                        dbgLog.fine("IngestedSystemFileLocation:\n"+
-                            file.getIngestedSystemFileLocation());
-                        out.close();
-                    } else if ( contentType.equals("text/xml") ) {
-                        while ( !line.startsWith("--" + boundary) ) {
-                            xmlToParse += line + "\n";
-                            line = rd.readLine();
-                        }
-                        
-                        dbgLog.fine("xmlToParse:\n"+xmlToParse);
-                    }
-                    
-                } else {
-                    line = rd.readLine();
-                }
-            }
-            xmlToParse += "</codeBook>";
-            dbgLog.fine("StudyFileEditBean:\n"+file.toString());
-            
-            dbgLog.fine("***** DSBWrapper: ingest(): end *****\n");
-            return xmlToParse;
-            
+            // return xmlToParse;
+            DDIWriter dw = new DDIWriter(smd);
+            return dw.generateDDI();
         } finally {
-            if (method != null) { method.releaseConnection(); }
-            try {
-                if (rd != null) { rd.close(); }
-            } catch (IOException ex) {
-            }
-        }
 
         }
+
+
+
+
+//        } else {
+//        BufferedReader rd = null;
+//        PostMethod method = null;
+//        try {
+//
+//
+//            // create method
+//            method = new PostMethod(generateUrl(DSB_INGEST));
+//            File tempFile = new File(file.getTempSystemFileLocation());
+//
+//
+//            dbgLog.fine("data file(tempFile): abs path:\n"+file.getTempSystemFileLocation());
+//            dbgLog.fine("mimeType :\n"+file.getStudyFile().getFileType());
+//
+//
+//            if (file.getControlCardSystemFileLocation() == null) {
+//                Part[] parts = {
+//                    new FilePart( "dataFile0", tempFile ),
+//                    new StringPart( "dataFileMime0", file.getStudyFile().getFileType() )
+//                };
+//
+//                method.setRequestEntity(
+//                        new MultipartRequestEntity(parts, method.getParams())
+//                        );
+//            } else {
+//                File controlCardFile = new File(file.getControlCardSystemFileLocation() );
+//
+//                Part[] parts = {
+//                    new FilePart( "dataFile0", tempFile ),
+//                    new StringPart( "dataFileMime0", file.getStudyFile().getFileType() ),
+//                    new FilePart( "controlCard0", controlCardFile )
+//                };
+//
+//                method.setRequestEntity(
+//                        new MultipartRequestEntity(parts, method.getParams())
+//                        );
+//            }
+//
+//            // execute
+//            executeMethod(method);
+//
+//            // parse the response
+//            StudyFile f = file.getStudyFile();
+//
+//            // first, check dir
+//            File newDir = new File(tempFile.getParentFile(), "ingested");
+//            if (!newDir.exists()) {
+//                newDir.mkdirs();
+//            }
+//            dbgLog.fine("newDir: abs path:\n"+newDir.getAbsolutePath());
+//
+//            rd = new BufferedReader(new InputStreamReader(method.getResponseBodyAsStream()  ));
+//            String boundary = "=vdc-ingest-multipart";
+//            String xmlToParse = "<codeBook xmlns=\"http://www.icpsr.umich.edu/DDI\">\n";
+//            String line = rd.readLine();
+//            while (line != null) {
+//                if (line.equals("--" + boundary + "--")) {
+//                    break; // this is the last line of the file
+//
+//                } else if (line.equals("--" + boundary)) {
+//                    // we are at the beginning of a part
+//                    line = rd.readLine(); // second line should be content type
+//                    String contentType = line.substring( line.indexOf("Content-Type: ") + 14 );
+//                    line = rd.readLine(); // next line is blank
+//                    line = rd.readLine(); // now begin reading this part
+//
+//                    if ( contentType.equals("text/tab-separated-values") ) {
+//                        File newFile = new File( newDir, tempFile.getName() );
+//
+//                        dbgLog.fine("newFile: abs path:\n"+newFile.getAbsolutePath());
+//
+//                        BufferedWriter out = new BufferedWriter(new FileWriter(newFile));
+//                        while ( !line.startsWith("--" + boundary) ) {
+//                            out.write(line + "\n");
+//                            line = rd.readLine();
+//                        }
+//                        file.setIngestedSystemFileLocation(newFile.getAbsolutePath());
+//                        dbgLog.fine("IngestedSystemFileLocation:\n"+
+//                            file.getIngestedSystemFileLocation());
+//                        out.close();
+//                    } else if ( contentType.equals("text/xml") ) {
+//                        while ( !line.startsWith("--" + boundary) ) {
+//                            xmlToParse += line + "\n";
+//                            line = rd.readLine();
+//                        }
+//
+//                        dbgLog.fine("xmlToParse:\n"+xmlToParse);
+//                    }
+//
+//                } else {
+//                    line = rd.readLine();
+//                }
+//            }
+//            xmlToParse += "</codeBook>";
+//            dbgLog.fine("StudyFileEditBean:\n"+file.toString());
+//
+//            dbgLog.fine("***** DSBWrapper: ingest(): end *****\n");
+//            return xmlToParse;
+//
+//        } finally {
+//            if (method != null) { method.releaseConnection(); }
+//            try {
+//                if (rd != null) { rd.close(); }
+//            } catch (IOException ex) {
+//            }
+//        }
+//
+//        }
     }
     
     public String calculateUNF(Study s) throws IOException {

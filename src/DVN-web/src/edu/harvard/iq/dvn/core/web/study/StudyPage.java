@@ -281,7 +281,7 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
 
     public void init() {
         super.init();
-        allowUserComments = getVDCRequestBean().getCurrentVDC().isAllowStudyComments();
+       
         // set tab if it was it was sent as pamameter or part of request bean
         initSelectedTabIndex();
         if (isFromPage("StudyPage")) {
@@ -324,7 +324,7 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
                 System.out.println("ERROR: in StudyPage, without a serviceBean or a studyId");
             }
         }
-
+        allowUserComments = studyUI.getStudy().getOwner().isAllowStudyComments();
 
     }
 

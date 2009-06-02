@@ -200,7 +200,7 @@ public class StudyCommentsFragment extends VDCBaseBean implements Serializable {
             Iterator iterator = tempStudyComments.iterator();
             while (iterator.hasNext()) {
                 StudyComment studyComment     = (StudyComment)iterator.next();
-                StudyCommentUI studyCommentUI = new StudyCommentUI(studyComment);
+                StudyCommentUI studyCommentUI = new StudyCommentUI(studyComment, user);
                 studyComments.add(studyCommentUI);
             }
         }

@@ -55,13 +55,17 @@
                                       <ul>
                                         <li>
                                             <ice:outputText rendered="#{ (item.studyComment.status == 'FLAGGED' and
-                                                            StudyCommentsFragment.authorizedToDeleteComment) or (item.inFlaggedByUsers)}"
+                                                            StudyCommentsFragment.authorizedToDeleteComment) or (!item.reportAbuseEnabled)}"
                                                             style="padding-top:.3em;padding-right:.5em;"
                                                             value="Reported"/>
+                                            <!-- debug -->
+                                         <!--   <ice:outputText value="ReportAbuseEnabled = #{item.reportAbuseEnabled}"/>
+                                            <ice:outputText value="AuthorizedToDeleteComment = #{StudyCommentsFragment.authorizedToDeleteComment}"/> -->
+                                            <!-- end debug -->
                                               <ice:commandLink binding="#{StudyCommentsFragment.reportAbuseLink}"
                                                                actionListener="#{StudyCommentsFragment.togglePopup}"
-                                                               rendered="#{(item.reportAbuseEnabled and !StudyCommentsFragment.authorizedToDeleteComment)}"
-                                                               ><!-- item.reportAbuseEnabled or  -->
+                                                               rendered="#{(item.reportAbuseEnabled || authorizedToDeleteComment)}"
+                                                               ><!--  || !StudyCommentsFragment.authorizedToDeleteComment  -->
                                                 <f:attribute name="commentId" value="#{item.studyComment.id}" />
                                                 <ice:outputText rendered="#{StudyCommentsFragment.user != item.studyComment.commentCreator}"
                                                                 value="Report Abuse"/>

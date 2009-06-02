@@ -54,13 +54,14 @@
                                         styleClass="dvn_navblockLinks">
                                       <ul>
                                         <li>
-                                            <ice:outputText rendered="#{item.studyComment.status == 'FLAGGED'}"
+                                            <ice:outputText rendered="#{ (item.studyComment.status == 'FLAGGED' and
+                                                            StudyCommentsFragment.authorizedToDeleteComment) or (item.inFlaggedByUsers)}"
                                                             style="padding-top:.3em;padding-right:.5em;"
                                                             value="Reported"/>
                                               <ice:commandLink binding="#{StudyCommentsFragment.reportAbuseLink}"
                                                                actionListener="#{StudyCommentsFragment.togglePopup}"
-                                                               rendered="#{item.studyComment.status == 'OK' and !StudyCommentFragment.authorizedToDeleteComment}"
-                                                               >
+                                                               rendered="#{(item.reportAbuseEnabled and !StudyCommentsFragment.authorizedToDeleteComment)}"
+                                                               ><!-- item.reportAbuseEnabled or  -->
                                                 <f:attribute name="commentId" value="#{item.studyComment.id}" />
                                                 <ice:outputText rendered="#{StudyCommentsFragment.user != item.studyComment.commentCreator}"
                                                                 value="Report Abuse"/>

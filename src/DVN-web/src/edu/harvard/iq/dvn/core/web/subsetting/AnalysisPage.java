@@ -1117,73 +1117,80 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
                 // Step 1. temporarily store the whole data set in a temp directory
 
-                    // Create a URL for the data file
-                    URL url = new URL(fileURL);
+		    // temp subset file that stores requested variables 
+		    tmpsbfl = File.createTempFile("tempsubsetfile.", ".tab");
+		    deleteTempFileList.add(tmpsbfl);
 
-                    // temp data file that stores incoming data from the above URL
-                    File tmpfl = File.createTempFile("tempTabfile.", ".tab");
-                    deleteTempFileList.add(tmpfl);
-                    // temp subset file that stores requested variables 
-                    tmpsbfl = File.createTempFile("tempsubsetfile.", ".tab");
-                    deleteTempFileList.add(tmpsbfl);
-                    //zipFileList.add(tmpsbfl);
-                    
-                    // Typical file-copy idiom 
-                    // incoming/outgoing streams
-                    InputStream inb = new BufferedInputStream(url.openStream());
-                    OutputStream outb = new BufferedOutputStream(new FileOutputStream(tmpfl));
-
-                    int bufsize;
-                    byte [] bffr = new byte[8192];
-                    while ((bufsize = inb.read(bffr))!=-1) {
-                        outb.write(bffr, 0, bufsize);
-                    }
-                    
-                    inb.close();
-                    outb.close();
-                    
-                    // Checks the obtained data file
-                    if (tmpfl.exists()){
-                        Long wholeFileSize = tmpfl.length();
-                        dbgLog.fine("whole file:length="+wholeFileSize);
-                        dbgLog.fine("tmp file:name="+tmpfl.getAbsolutePath());
-                        
-                        if (wholeFileSize <= 0){
-                            // subset file exists but it is empty
-                        
-                            msgDwnldButton.setValue("* an data file is empty");
-                            msgDwnldButton.setVisible(true);
-                            dbgLog.warning("exiting dwnldAction() due to a file access error:"+
-                            "a data file is empty"
-                            );
-                            getVDCRequestBean().setSelectedTab("tabDwnld");
-                            dvnDSBTimerService.createTimer(deleteTempFileList, TEMP_FILE_LIFETIME);
-                            return "failure";
-                        }
-                        
-                    } else {
-                        // file was not created/downloaded
-                        msgDwnldButton.setValue("* a data file was not created");
-                        msgDwnldButton.setVisible(true);
-                        dbgLog.warning("exiting dwnldAction() due to a file access error:"+
-                        "a data file was not created"
-                        );
-                        getVDCRequestBean().setSelectedTab("tabDwnld");
-
-                        return "failure";
-                    }
-
-                    // source data file: full-path name
-                    String cutOp1 = tmpfl.getAbsolutePath();
-
-                    // result(subset) data file: full-path name
+                    String cutOp1 = null;
+		    // result(subset) data file: full-path name
                     String cutOp2 = tmpsbfl.getAbsolutePath();
-                    
+
                     // check whether a source file is tab-delimited or not
                     boolean fieldcut = true;
                     if ((noRecords != null) && (noRecords >=1)){
                         fieldcut = false;
                     }
+
+		    if (sf.isRemote()) {			
+			// Create a URL for the data file
+			URL url = new URL(fileURL);
+
+			// temp data file that stores incoming data from the above URL
+			File tmpfl = File.createTempFile("tempTabfile.", ".tab");
+			deleteTempFileList.add(tmpfl);
+			//zipFileList.add(tmpsbfl);
+                    
+			// Typical file-copy idiom 
+			// incoming/outgoing streams
+			InputStream inb = new BufferedInputStream(url.openStream());
+			OutputStream outb = new BufferedOutputStream(new FileOutputStream(tmpfl));
+
+			int bufsize;
+			byte [] bffr = new byte[8192];
+			while ((bufsize = inb.read(bffr))!=-1) {
+			    outb.write(bffr, 0, bufsize);
+			}
+			
+			inb.close();
+			outb.close();
+                    
+			// Checks the obtained data file
+			if (tmpfl.exists()){
+			    Long wholeFileSize = tmpfl.length();
+			    dbgLog.fine("whole file:length="+wholeFileSize);
+			    dbgLog.fine("tmp file:name="+tmpfl.getAbsolutePath());
+                        
+			    if (wholeFileSize <= 0){
+				// subset file exists but it is empty
+				
+				msgDwnldButton.setValue("* an data file is empty");
+				msgDwnldButton.setVisible(true);
+				dbgLog.warning("exiting dwnldAction() due to a file access error:"+
+					       "a data file is empty"
+					       );
+				getVDCRequestBean().setSelectedTab("tabDwnld");
+				dvnDSBTimerService.createTimer(deleteTempFileList, TEMP_FILE_LIFETIME);
+				return "failure";
+			    }
+                        
+			} else {
+			    // file was not created/downloaded
+			    msgDwnldButton.setValue("* a data file was not created");
+			    msgDwnldButton.setVisible(true);
+			    dbgLog.warning("exiting dwnldAction() due to a file access error:"+
+					   "a data file was not created"
+					   );
+			    getVDCRequestBean().setSelectedTab("tabDwnld");
+			    
+			    return "failure";
+			}
+
+			// source data file: full-path name
+			cutOp1 = tmpfl.getAbsolutePath();
+                    
+		    } else {
+			cutOp1 = sf.getFileSystemLocation(); 			
+		    }
 
                     if (fieldcut){
                 // Step 2.a. Set-up parameters for subsetting: cutting requested fields of data

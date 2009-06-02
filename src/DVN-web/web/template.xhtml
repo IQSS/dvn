@@ -8,7 +8,6 @@
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:ice="http://www.icesoft.com/icefaces/component"
       xmlns:dvn="/WEB-INF/tlds/dvn-components">
-
 <head>
   <!-- page title param passed in by param -->
   <title><h:outputText value="#{pageTitle}"/></title>
@@ -20,9 +19,11 @@
   <link rel="stylesheet" type="text/css" href="/dvn/resources/css/dvnspecific.css"/>
   <link rel="stylesheet" type="text/css" href="/dvn/resources/css/dvnhome.css"/>
   <link rel="stylesheet" type="text/css" href="/dvn/resources/css/dvnstudy.css"/>
-  <!--[if lte IE 8]>
-	<link rel="stylesheet" type="text/css" href="/dvn/resources/css/iefix.css"/>
-  <![endif]-->
+  <!-- IE SPECIFIC STYLESHEET -->
+  <ice:outputText escape="false" nospan="true"
+    value="&#60;!--[if lte IE 8]&#62;
+	&#60;link rel=&#34;stylesheet&#34; type=&#34;text/css&#34; href=&#34;/dvn/resources/css/iefix.css&#34;/&#62;
+    &#60;![endif]--&#62;"/>
   <script type="text/javascript" src="/dvn/resources/javascript/EventCapture.js"/>
   <script type="text/javascript" src="/dvn/resources/javascript/jquery.js"/>
   <script type="text/javascript" src="/dvn/resources/javascript/jquery.corner.pack.js"/>
@@ -38,7 +39,7 @@
     define a uniquifier for each "view" (for example, a tabbed page would just use the selectedIndex of the tabSet) -->
   <script type="text/javascript">
       // #{pageTitle} - #{uniquifier}
-  </script> 
+  </script>
   <script type="text/javascript">
       // <![CDATA[
       jQuery.noConflict();
@@ -49,46 +50,38 @@
           jQuery.ifixpng("/dvn/resources/images/pixel.gif");
           jQuery("img[@src$=.png], a.requestHmpgSideLink:link, a.requestHmpgSideLink:visited, a.requestHmpgSideLink:hover, a.requestHmpgSideLink:active").ifixpng();
       });
-
-      
       // ]]>
   </script>
-    
-        <ice:outputText escape="false"
-                        nospan="true"
-                    rendered="#{applicationScope.googleAnalyticsKey != null || MainLayoutBean.googleAnalyticsKey != null}"
-                    value="#{(applicationScope.googleAnalyticsSourceCode != null) ? applicationScope.googleAnalyticsSourceCode : MainLayoutBean.googleAnalyticsSourceCode}"
-                    />
+  <ice:outputText escape="false" nospan="true"
+                  rendered="#{applicationScope.googleAnalyticsKey != null || MainLayoutBean.googleAnalyticsKey != null}"
+                  value="#{(applicationScope.googleAnalyticsSourceCode != null) ? applicationScope.googleAnalyticsSourceCode : MainLayoutBean.googleAnalyticsSourceCode}"/>
 </head>
 <!--  this template is example 4.3 in the Facelets Shortcut -->
 <body>
-  <f:loadBundle basename="Bundle" var="bundle"/>
-  <f:loadBundle basename="BundlePageInfo" var="bundlePageInfo"/>
-  <gui:insert name="title">
-    <!--  ****** THIS IS THE HEADER ******** -->
-    <gui:include src="views/CustomBanner.xhtml"/>
-    <!-- <gui:include src="views/ConnectedBanner.xhtml"/> -->
-  </gui:insert>
-  
- <div class="dvn_wrapper" id="dvn_wrapper">
-    <div class="dvn_content" id="content-frame">
-      <!-- required to fix a bug in firefox where the connection status box can be displayed erroneously -->
-      <ice:outputConnectionStatus showPopupOnDisconnect="false"/>
-      <gui:insert name="title">
-        <!-- *** MENUBAR (Included from template) *** -->
-        <gui:include src="views/Menubar.xhtml"/>
-      </gui:insert>
-      <gui:insert name="body">Default Body</gui:insert>
-      <div class="dvn_clear"></div>
+    <f:loadBundle basename="Bundle" var="bundle"/>
+    <f:loadBundle basename="BundlePageInfo" var="bundlePageInfo"/>
+    <gui:insert name="title">
+        <!--  ****** THIS IS THE HEADER ******** -->
+        <gui:include src="views/CustomBanner.xhtml"/>
+        <!-- <gui:include src="views/ConnectedBanner.xhtml"/> -->
+    </gui:insert>
+    <div class="dvn_wrapper" id="dvn_wrapper">
+        <div class="dvn_content" id="content-frame">
+            <!-- required to fix a bug in firefox where the connection status box can be displayed erroneously -->
+            <ice:outputConnectionStatus showPopupOnDisconnect="false"/>
+            <gui:insert name="title">
+                <!-- *** MENUBAR (Included from template) *** -->
+                <gui:include src="views/Menubar.xhtml"/>
+            </gui:insert>
+            <gui:insert name="body">Default Body</gui:insert>
+            <div class="dvn_clear"></div>
+        </div>
     </div>
-  </div>
-  <gui:insert name="footer">
-    <gui:include src="views/CustomFooter.xhtml"/>
-  </gui:insert>
-   <ice:outputText escape="false"
-                   nospan="true"
+    <gui:insert name="footer">
+        <gui:include src="views/CustomFooter.xhtml"/>
+    </gui:insert>
+    <ice:outputText escape="false" nospan="true"
                     rendered="#{applicationScope.googleAnalyticsKey != null || MainLayoutBean.googleAnalyticsKey != null}"
-                    value="#{(applicationScope.googleAnalyticsCode != null) ? applicationScope.googleAnalyticsCode : MainLayoutBean.googleAnalyticsCode}"
-                    />
+                    value="#{(applicationScope.googleAnalyticsCode != null) ? applicationScope.googleAnalyticsCode : MainLayoutBean.googleAnalyticsCode}"/>
 </body>
 </html>

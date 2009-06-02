@@ -16,17 +16,22 @@
  <link rel="stylesheet" type="text/css" href="/dvn/resources/icefaces/dvn_rime/dvn_rime.css"/>
  <link rel="stylesheet" type="text/css" href="/dvn/resources/css/dvngeneral.css"/>
  <link rel="stylesheet" type="text/css" href="/dvn/resources/css/dvnspecific.css"/>
+ <!-- IE SPECIFIC STYLESHEET -->
+ <ice:outputText escape="false" nospan="true"
+   value="&#60;!--[if lte IE 8]&#62;
+   &#60;link rel=&#34;stylesheet&#34; type=&#34;text/css&#34; href=&#34;/dvn/resources/css/iefix.css&#34;/&#62;
+   &#60;![endif]--&#62;"/>
  <script type="text/javascript" src="/dvn/resources/javascript/EventCapture.js"/>
  <script type="text/javascript" src="/dvn/resources/javascript/jquery.js"/>
  <script type="text/javascript" src="/dvn/resources/javascript/jquery.corner.pack.js"/>
  <script type="text/javascript">
-      // <![CDATA[
-      jQuery.noConflict();
-      jQuery(document).ready(function(){
-          jQuery("div.dvnRound, div.dvnMsgBlockRound").corner("10px");
-      });
-      // ]]>
-  </script>
+   // <![CDATA[
+   jQuery.noConflict();
+   jQuery(document).ready(function(){
+      jQuery("div.dvnRound, div.dvnMsgBlockRound").corner("10px");
+   });
+   // ]]>
+ </script>
  <script type="text/javascript">
      // <![CDATA[
      var isChild = true;

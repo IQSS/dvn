@@ -2,6 +2,7 @@
 .dvn_wrapper{border-right:724px solid #fff}
 .dvn_wrapperVanilla{border-right:724px solid #eee}
 .dvn_content{display:inline-block;position:relative;margin-right:-724px}
+.dvn_content form {margin:0;padding:0;}
 .iceOutConStat{position:absolute}
 .vdcTooltip{width:16em}
 .dvnHmpgGroupTableWrap{width:100%}
@@ -13,4 +14,3 @@
 .dvnLoginInputArea fieldset{position:relative;padding:1em .75em 1em 1em}
 .dvnLoginInputArea legend{position:absolute;top:-.75em;left:.5em}
 .dvAnalysisResults{width:100%}
-

@@ -101,7 +101,12 @@ public class StudyCommentsFragment extends VDCBaseBean implements Serializable {
          if (deleteCommentLink.getAttributes().get("commentId") != null) {
              flaggedCommentId = new Long(deleteCommentLink.getAttributes().get("commentId").toString());
          }
-         studyCommentService.deleteComment(flaggedCommentId);
+         String deletedMessage = "You reported as abusive a comment in the study titled, " +
+                                getFlaggedStudyTitle() + ". " + "\n" +
+                                "The comment was, \"" + getFlaggedStudyComment() + "\". " + "\n" +
+                                "This comment was deleted in accordance with the " +
+                                "study comments terms of use.";
+         studyCommentService.deleteComment(flaggedCommentId, deletedMessage);
          //cleanup
          flaggedCommentId = new Long("0");
          getVDCRequestBean().setStudyId(studyId);
@@ -113,7 +118,13 @@ public class StudyCommentsFragment extends VDCBaseBean implements Serializable {
          if (ignoreCommentFlagLink.getAttributes().get("commentId") != null) {
              flaggedCommentId = new Long(ignoreCommentFlagLink.getAttributes().get("commentId").toString());
          }
-         studyCommentService.okComment(flaggedCommentId);
+         String okMessage = "You reported as abusive a comment in the study titled, " +
+                                getFlaggedStudyTitle() + ". " + "\n" +
+                                "The comment was, \"" + getFlaggedStudyComment() + "\". " + "\n" +
+                                "According to the terms of use of this study, the " +
+                                "reported comment is not an abuse. This comment will remain posted, and will " +
+                                "no longer appear to you as reported.";
+         studyCommentService.okComment(flaggedCommentId, okMessage);
          //cleanup
          flaggedCommentId = new Long("0");
          getVDCRequestBean().setStudyId(studyId);
@@ -144,6 +155,19 @@ public class StudyCommentsFragment extends VDCBaseBean implements Serializable {
              }
          }
          return comment;
+     }
+
+      protected String getFlaggedStudyTitle() {
+         String title = new String("");
+         Iterator iterator = studyComments.iterator();
+         while (iterator.hasNext()) {
+             StudyCommentUI studycommentui = (StudyCommentUI)iterator.next();
+             if (studycommentui.getStudyComment().getId().equals(flaggedCommentId)) {
+                 title = studycommentui.getStudyComment().getStudy().getTitle();
+                 break;
+             }
+         }
+         return title;
      }
 
     protected Long flaggedCommentId;

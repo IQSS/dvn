@@ -36,13 +36,13 @@ public interface StudyCommentService {
 
     public void addComment(String studyComment, Long commenterId, Long studyId);
 
-    public void deleteComment(Long deletedStudyCommentId);
+    public void deleteComment(Long deletedStudyCommentId, String deletedMessage);
 
     public java.util.List<StudyComment> getStudyComments();
 
     public java.util.List<StudyComment> findByStatus(StudyComment.Status status);
 
-    public void okComment(Long commentId);
+    public void okComment(Long commentId, String okMessage);
 
     public List<StudyComment> getStudyComments(Long studyId);
     

@@ -21,8 +21,10 @@
 package edu.harvard.iq.dvn.core.study;
 
 import edu.harvard.iq.dvn.core.admin.VDCUser;
+import edu.harvard.iq.dvn.core.mail.MailServiceLocal;
 import java.util.Iterator;
 import java.util.List;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -34,7 +36,8 @@ import javax.persistence.Query;
  */
 @Stateless
 public class StudyCommentServiceBean implements StudyCommentService {
-    
+    @EJB
+    MailServiceLocal mailService;
 /*    @EJB
     StudyServiceLocal studyService;
     @EJB
@@ -76,17 +79,49 @@ public class StudyCommentServiceBean implements StudyCommentService {
     }
 
     @Override
-    public void okComment(Long commentId){
+    public void okComment(Long commentId, String okMessage){
         StudyComment comment = em.find(StudyComment.class, commentId);
         comment.setStatus(StudyComment.Status.OK);
         em.persist(comment);
+        // send mail to flaggedByUsers
+        List<VDCUser> flaggedByUsers = (List<VDCUser>)comment.getFlaggedByUsers();
+        Iterator iterator = flaggedByUsers.iterator();
+        String flaggedByUserEmails= new String("");
+        while (iterator.hasNext()) {
+            VDCUser vdcuser = (VDCUser)iterator.next();
+            if (flaggedByUsers.indexOf(vdcuser) > 0)
+                flaggedByUserEmails += ", ";
+            flaggedByUserEmails += vdcuser.getEmail();
+        }
+        if (!flaggedByUserEmails.isEmpty()) {
+            mailService.sendDoNotReplyMail(flaggedByUserEmails, "Study Comment Action Ignored", okMessage);
+        }
+        // clear the list from the flaggedByUser table
+        Iterator newIterator = flaggedByUsers.iterator();
+        while (newIterator.hasNext()) {
+            newIterator.next();
+            newIterator.remove();
+        }
     }
 
     @Override
-    public void deleteComment(Long deletedStudyCommentId){
+    public void deleteComment(Long deletedStudyCommentId, String deletedMessage){
         StudyComment deletedComment = em.find(StudyComment.class,deletedStudyCommentId);
         deletedComment.setStatus(StudyComment.Status.DELETED);
         em.persist(deletedComment);
+        // send mail to flaggedByUsers
+        List<VDCUser> flaggedByUsers = (List<VDCUser>)deletedComment.getFlaggedByUsers();
+        Iterator iterator = flaggedByUsers.iterator();
+        String flaggedByUserEmails= new String("");
+        while (iterator.hasNext()) {
+            VDCUser vdcuser = (VDCUser)iterator.next();
+            if (flaggedByUsers.indexOf(vdcuser) > 0)
+                flaggedByUserEmails += ", ";
+            flaggedByUserEmails += vdcuser.getEmail();
+        }
+        if (!flaggedByUserEmails.isEmpty()) { 
+            mailService.sendDoNotReplyMail(flaggedByUserEmails, "Study Comment Action Deleted", deletedMessage);
+        }
     }
 
     @Override

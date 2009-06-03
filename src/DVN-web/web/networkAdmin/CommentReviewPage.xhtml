@@ -126,13 +126,13 @@
                 <ice:commandLink binding="#{CommentReviewPage.deleteCommentLink}"
                                  actionListener="#{CommentReviewPage.deleteFlaggedComment}"
                                  >
-                    <f:attribute name="commentId" value="#{currentRow.StudyComment.id}" />
+                    <f:attribute name="commentId" value="#{currentRow.studyComment.id}" />
                     <ice:outputText value="Delete"/>
                   </ice:commandLink>
                 <ice:commandLink binding="#{CommentReviewPage.ignoreCommentFlagLink}"
                                  actionListener="#{CommentReviewPage.ignoreCommentFlag}"
                                  >
-                    <f:attribute name="commentId" value="#{currentRow.StudyComment.id}" />
+                    <f:attribute name="commentId" value="#{currentRow.studyComment.id}" />
                     <ice:outputText value="Ignore"/>
                  </ice:commandLink>
                 </ice:column>

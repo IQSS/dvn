@@ -59,12 +59,13 @@
                                                             style="padding-top:.3em;padding-right:.5em;"
                                                             value="Reported"/>
                                             <!-- debug -->
-                                         <!--   <ice:outputText value="ReportAbuseEnabled = #{item.reportAbuseEnabled}"/>
+                                       <!--     <ice:outputText value="Item status is  = #{item.studyComment.status}"/>
+                                             <ice:outputText value="ReportAbuseEnabled = #{item.reportAbuseEnabled}"/>
                                             <ice:outputText value="AuthorizedToDeleteComment = #{StudyCommentsFragment.authorizedToDeleteComment}"/> -->
                                             <!-- end debug -->
                                               <ice:commandLink binding="#{StudyCommentsFragment.reportAbuseLink}"
                                                                actionListener="#{StudyCommentsFragment.togglePopup}"
-                                                               rendered="#{(item.reportAbuseEnabled || authorizedToDeleteComment)}"
+                                                               rendered="#{ (StudyCommentsFragment.authorizedToDeleteComment == false and item.reportAbuseEnabled)}"
                                                                ><!--  || !StudyCommentsFragment.authorizedToDeleteComment  -->
                                                 <f:attribute name="commentId" value="#{item.studyComment.id}" />
                                                 <ice:outputText rendered="#{StudyCommentsFragment.user != item.studyComment.commentCreator}"

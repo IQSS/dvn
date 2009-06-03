@@ -9,11 +9,11 @@ import edu.harvard.iq.dvn.core.study.StudyComment;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import edu.harvard.iq.dvn.core.study.StudyCommentService;
 import edu.harvard.iq.dvn.core.web.study.StudyCommentUI;
-import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import javax.ejb.EJB;
+import javax.faces.event.ActionEvent;
 
 /**
  *
@@ -37,7 +37,12 @@ public class CommentReviewPage extends VDCBaseBean implements java.io.Serializab
          if (deleteCommentLink.getAttributes().get("commentId") != null) {
              flaggedCommentId = new Long(deleteCommentLink.getAttributes().get("commentId").toString());
          }
-         studyCommentService.deleteComment(flaggedCommentId);
+         String deletedMessage = "You reported as abusive a comment in the study titled, " +
+                                getFlaggedStudyTitle() + ". " + "\n" +
+                                "The comment was, \"" + getFlaggedStudyComment() + "\". " + "\n" +
+                               "This comment was deleted in accordance with the " +
+                                "study comments terms of use.";
+         studyCommentService.deleteComment(flaggedCommentId, deletedMessage);
          //cleanup
          flaggedCommentId = new Long("0");
          commentsForReview = null;
@@ -47,7 +52,13 @@ public class CommentReviewPage extends VDCBaseBean implements java.io.Serializab
          if (ignoreCommentFlagLink.getAttributes().get("commentId") != null) {
              flaggedCommentId = new Long(ignoreCommentFlagLink.getAttributes().get("commentId").toString());
          }
-         studyCommentService.okComment(flaggedCommentId);
+         String okMessage = "You reported as abusive a comment in the study titled, " +
+                                getFlaggedStudyTitle() + ". " + "\n" +
+                                "The comment was, \"" + getFlaggedStudyComment() + "\". " + "\n" +
+                                "According to the terms of use of this study, the " +
+                                "reported comment is not an abuse. This comment will remain posted, and will " +
+                                "no longer appear to you as reported.";
+         studyCommentService.okComment(flaggedCommentId, okMessage);
          //cleanup
          flaggedCommentId = new Long("0");
          commentsForReview = null;
@@ -142,6 +153,32 @@ public class CommentReviewPage extends VDCBaseBean implements java.io.Serializab
         this.totalNotifications = totalNotifications;
     }
 
+    // getters and setters
+     protected String getFlaggedStudyComment() {
+         String comment = new String("");
+         Iterator iterator = commentsForReview.iterator();
+         while (iterator.hasNext()) {
+             StudyCommentUI studycommentui = (StudyCommentUI)iterator.next();
+             if (studycommentui.getStudyComment().getId().equals(flaggedCommentId)) {
+                 comment = studycommentui.getStudyComment().getComment();
+                 break;
+             }
+         }
+         return comment;
+     }
 
+     // getters and setters
+     protected String getFlaggedStudyTitle() {
+         String title = new String("");
+         Iterator iterator = commentsForReview.iterator();
+         while (iterator.hasNext()) {
+             StudyCommentUI studycommentui = (StudyCommentUI)iterator.next();
+             if (studycommentui.getStudyComment().getId().equals(flaggedCommentId)) {
+                 title = studycommentui.getStudyComment().getStudy().getTitle();
+                 break;
+             }
+         }
+         return title;
+     }
 
 }

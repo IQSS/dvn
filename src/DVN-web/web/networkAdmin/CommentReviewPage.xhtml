@@ -24,11 +24,23 @@
     .dvnCommentReviewCol6 a, .dvnCommentReviewCol6 span {display: inline !important;}
 </style>
         <div class="dvn_section">
-          <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
+          <div jsfc="ice:panelGroup" rendered="#{CommentReviewPage.actionComplete == false}" styleClass="dvnMsgBlockRound dvnInformationMessage">
             <div class="dvnMsgBlockContainer">
               <ice:outputText value="#{bundlePageInfo.commentReviewHelp}" escape="false"/>
             </div>
           </div>
+            <div jsfc="ice:panelGroup"
+                       id="messagePanel"
+                       panelLayout="flow"
+                       rendered="#{CommentReviewPage.actionComplete}"
+                       styleClass="dvnMsgBlockRound dvnSuccessMessage"
+                       >
+                      <div class="dvnMsgBlockContainer">
+                          <p>
+                            <ice:messages layout="table" styleClass="dvnMsgBlockContainer"/>
+                          </p>
+                      </div>
+                  </div>
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.commentReviewTitle}"/>
           </div>
@@ -87,13 +99,15 @@
                   <f:facet name="header">
                     <ice:outputText value="Global ID"/>
                   </f:facet>
-                  <ice:outputText value="#{currentRow.studyComment.study.globalId}"/>
+                    <ice:outputLink value="#{currentRow.studyTabLink}">
+                        <ice:outputText value="#{currentRow.studyComment.study.globalId}"/>
+                    </ice:outputLink>
                 </ice:column>
                 <ice:column>
                   <f:facet name="header">
                     <ice:outputText value="Comment"/>
                   </f:facet>
-                  <ice:outputLink value="#">
+                  <ice:outputLink id="comment#{currentRow.studyComment.id}" value="#{currentRow.commentsTabLink}">
                     <ice:outputText value="#{currentRow.studyComment.comment}"/>
                   </ice:outputLink>
                 </ice:column>

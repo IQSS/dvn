@@ -77,7 +77,12 @@
         <managed-bean-class>edu.harvard.iq.dvn.core.web.subsetting.AnalysisResultsPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>        
-    
+
+    <managed-bean>
+        <managed-bean-name>NetworkDataAnalysisPage</managed-bean-name>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.subsetting.NetworkDataAnalysisPage</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
     <!-- **************** Login ***************** -->
      <managed-bean>
         <managed-bean-name>ForgotPasswordPage</managed-bean-name>

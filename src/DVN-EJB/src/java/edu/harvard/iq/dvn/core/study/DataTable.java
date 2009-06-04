@@ -46,7 +46,10 @@ import org.apache.commons.lang.builder.*;
  */
 @Entity
 public class DataTable implements java.io.Serializable {
-    
+
+    public static String TYPE_VERTEX = "vertex";
+    public static String TYPE_EDGE = "edge";
+
     /** Creates a new instance of DataTable */
     public DataTable() {
     }
@@ -227,7 +230,18 @@ public class DataTable implements java.io.Serializable {
         DataTable other = (DataTable)object;
         if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) return false;
         return true;
-    }  
+    }
+
+    private String type;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+    
 
 //    @Override
 //    public String toString() {

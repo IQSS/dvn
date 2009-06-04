@@ -153,6 +153,9 @@
           </div>
           <div jsfc="ice:panelGroup" styleClass="dvn_sectionTitleLinksR" rendered="#{studyPage.studyUI.userAuthorizedToEdit or studyPage.studyUI.study.inReview or studyPage.studyUI.study.new}">
             <ice:outputText styleClass="vdcStudyStatus" value="Currently unavailable for editing because file upload is in progress." rendered="#{studyPage.studyUI.userAuthorizedToEdit and !(studyPage.studyUI.study.studyLock==null)}"/>
+            <ice:outputLink styleClass="vdcStudyStatus" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=#{studyPage.tab}#{vdcRequest.studyListingIndexAsParameter}" rendered="#{studyPage.studyUI.userAuthorizedToEdit and !(studyPage.studyUI.study.studyLock==null)}">
+                <ice:outputText styleClass="dvn_sectionTitleLinksR" value="Refresh"/>
+            </ice:outputLink>
             <div jsfc="ice:panelGroup" styleClass="dvn_tooltip" rendered="#{studyPage.studyUI.userAuthorizedToEdit and studyPage.studyUI.study.studyLock==null}">
             <!--  <script type="text/javascript">
                   // <![CDATA[
@@ -629,23 +632,31 @@
                                       <div jsfc="ice:panelGroup" styleClass="vdcStudyFileSubset">
                                         <ice:panelGrid styleClass="vdcStudyFileSubsetTable" columns="3" cellpadding="2" cellspacing="0" border="0">
                                           <ice:column id="column1">
-                                            <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/SubsettingPage.xhtml?dtId=#{studyFileUI.studyFile.dataTable.id}">
+                                            <ice:outputLink rendered="#{studyFileUI.tabularDataFile}" value="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/SubsettingPage.xhtml?dtId=#{studyFileUI.studyFile.dataTable.id}">
+                                              <span>Subsetting</span>
+                                            </ice:outputLink>
+                                            <ice:outputLink rendered="#{studyFileUI.networkDataFile}" value="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/NetworkDataAnalysisPage.xhtml?fileId=#{studyFileUI.studyFile.id}">
                                               <span>Subsetting</span>
                                             </ice:outputLink>
                                           </ice:column>
                                           <ice:column id="column2">
-                                            <ice:outputText value="#{studyFileUI.studyFile.dataTable.caseQuantity} Cases"/>
+                                            <ice:outputText rendered="#{studyFileUI.tabularDataFile}" value="#{studyFileUI.studyFile.dataTable.caseQuantity} Cases"/>
+                                            <ice:outputText rendered="#{studyFileUI.networkDataFile}" value="#{studyFileUI.studyFile.vertexDataTable.caseQuantity} Vertices"/>
                                           </ice:column>
                                           <ice:column id="column3">
-                                            <ice:outputText value="#{studyFileUI.studyFile.dataTable.varQuantity} Variables"/>
+                                            <ice:outputText rendered="#{studyFileUI.tabularDataFile}" value="#{studyFileUI.studyFile.dataTable.varQuantity} Variables"/>
+                                            <ice:outputText rendered="#{studyFileUI.networkDataFile}" value="#{studyFileUI.studyFile.edgeDataTable.caseQuantity} Edges"/>
                                           </ice:column>
                                         </ice:panelGrid>
                                       </div>
                                     </ice:column>
                                     <ice:column id="column22">
                                       <div jsfc="ice:panelGroup" styleClass="vdcStudyFileSubsetAnalysis">
-                                        <ice:outputLink id="fileSubset2" styleClass="vdcStudyFileSubsetAnalysisLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/SubsettingPage.xhtml?dtId=#{studyFileUI.studyFile.dataTable.id}">
+                                        <ice:outputLink rendered="#{studyFileUI.tabularDataFile}" id="fileSubset2" styleClass="vdcStudyFileSubsetAnalysisLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/SubsettingPage.xhtml?dtId=#{studyFileUI.studyFile.dataTable.id}">
                                           <ice:outputText value="Access Subset/Analysis"/>
+                                        </ice:outputLink>
+                                        <ice:outputLink rendered="#{studyFileUI.networkDataFile}" id="fileSubset2" styleClass="vdcStudyFileSubsetAnalysisLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/NetworkDataAnalysisPage.xhtml?fileId=#{studyFileUI.studyFile.id}">
+                                          <ice:outputText value="Access Network Subset/Analysis"/>
                                         </ice:outputLink>
                                       </div>
                                     </ice:column>

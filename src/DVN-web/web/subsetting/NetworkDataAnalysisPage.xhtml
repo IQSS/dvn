@@ -14,94 +14,68 @@
 <gui:composition template="/template.xhtml">
 <gui:param name="pageTitle" value="Network Data Analysis - #{VDCRequest.dataversePageTitle}"/>
 <gui:define name="body">
-      <script type="text/javascript">
-          // <![CDATA[
-
-          function getElementsByClassName( strClassName, obj ) {
-              var ar = arguments[2] || new Array();
-              var re = new RegExp("\\b" + strClassName + "\\b", "g");
-              if ( re.test(obj.className) ) {
-                  ar.push( obj );
-              }
-              for ( var i = 0; i < obj.childNodes.length; i++ )
-                  getElementsByClassName( strClassName, obj.childNodes[i], ar );
-              return ar;
+    <script type="text/javascript">
+      // <![CDATA[
+      function getElementsByClassName( strClassName, obj ) {
+          var ar = arguments[2] || new Array();
+          var re = new RegExp("\\b" + strClassName + "\\b", "g");
+          if ( re.test(obj.className) ) {
+              ar.push( obj );
           }
-
-          function getRadioValue( id ) {
-              elements=document.getElementsByTagName("input");
-              for(i=0; i < elements.length; i++) {
-                  if (elements[i].id.indexOf(id) != -1 ) {
-                      if (elements[i].checked) {
-                          return elements[i].value;
-                      }
+          for ( var i = 0; i < obj.childNodes.length; i++ )
+              getElementsByClassName( strClassName, obj.childNodes[i], ar );
+          return ar;
+      }
+      function getRadioValue( id ) {
+          elements=document.getElementsByTagName("input");
+          for(i=0; i < elements.length; i++) {
+              if (elements[i].id.indexOf(id) != -1 ) {
+                  if (elements[i].checked) {
+                      return elements[i].value;
                   }
               }
           }
-          function changeAction() {
-              disableElements( getElementsByClassName("manualQuery", document.body) );
-              disableElements( getElementsByClassName("automaticQuery", document.body) );
-              disableElements( getElementsByClassName("networkMeasure", document.body) );
-
-              actionType = getRadioValue("form1:analysisActions");
-              elements = getElementsByClassName(actionType, document.body);
-              for(i=0; i < elements.length; i++) {
-                elements[i].disabled = false;
-              }
+      }
+      function changeAction() {
+          disableElements( getElementsByClassName("manualQuery", document.body) );
+          disableElements( getElementsByClassName("automaticQuery", document.body) );
+          disableElements( getElementsByClassName("networkMeasure", document.body) );
+          actionType = getRadioValue("form1:analysisActions");
+          elements = getElementsByClassName(actionType, document.body);
+          for(i=0; i < elements.length; i++) {
+            elements[i].disabled = false;
           }
-
-          function disableElements(elements) {
-              for(i=0; i < elements.length; i++) {
-                elements[i].disabled = true;
-              }
+      }
+      function disableElements(elements) {
+          for(i=0; i < elements.length; i++) {
+            elements[i].disabled = true;
           }
-
-          function addToManualQuery() {
-              attribute = document.getElementById("form1:attribute").value;
-              operator = document.getElementById("form1:operator").value;
-              value = document.getElementById("form1:value").value;
-
-              if (attribute == "" || operator == "" || value == "") {
-                  alert("You must select an attribute, an operator and a value to add to the query workspace.");
-                  return;
-              }
-
-              queryWorkspace = document.getElementById("form1:queryWorkspace");
-              if (queryWorkspace.value != "") {
-                  logicalOperatorRadioCount = 0;
-                  while ( !document.getElementById("form1:queryLogicalOperator:_" + logicalOperatorRadioCount).checked ) {
-                    logicalOperatorRadioCount++;
-                  }
-
-                  logicalOperator = document.getElementById("form1:queryLogicalOperator:_" + logicalOperatorRadioCount).value;
-                  queryWorkspace.value += " " + logicalOperator + " ";
-              }
-              
-              queryWorkspace.value += attribute + " " + operator + " \"" + value + "\"";
+      }
+      function addToManualQuery() {
+          attribute = document.getElementById("form1:attribute").value;
+          operator = document.getElementById("form1:operator").value;
+          value = document.getElementById("form1:value").value;
+          if (attribute == "" || operator == "" || value == "") {
+              alert("You must select an attribute, an operator and a value to add to the query workspace.");
+              return;
           }
-
-
-          // ]]>
-      </script>
-
+          queryWorkspace = document.getElementById("form1:queryWorkspace");
+          if (queryWorkspace.value != "") {
+              logicalOperatorRadioCount = 0;
+              while ( !document.getElementById("form1:queryLogicalOperator:_" + logicalOperatorRadioCount).checked ) {
+                logicalOperatorRadioCount++;
+              }
+              logicalOperator = document.getElementById("form1:queryLogicalOperator:_" + logicalOperatorRadioCount).value;
+              queryWorkspace.value += " " + logicalOperator + " ";
+          }
+          queryWorkspace.value += attribute + " " + operator + " \"" + value + "\"";
+      }
+      // ]]>
+    </script>
 <f:loadBundle basename="BundleAnalysis" var="bundleAnalysis"/>
 <ice:form id="form1">
 <input type="hidden" name="fileId" value="${param.fileId}"/>
 <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
-<style type="text/css">
-    .dvn_sectionBoxNoBorders {width: 700px;}
-
-    .dvnNetDataAnlsTbl td {vertical-align: top;}
-
-    .dvnNetDataAnlsCol1 {width: 20%; vertical-align: top;}
-    .dvnNetDataAnlsCol2 {width: 80%;}
-
-    .dvnNtwkDataSubsetHistCol1 {width: 20%;}
-    .dvnNtwkDataSubsetHistCol2 {width: 14%;}
-    .dvnNtwkDataSubsetHistCol3 {width: 42%;}
-    .dvnNtwkDataSubsetHistCol4 {width: 12%;}
-    .dvnNtwkDataSubsetHistCol5 {width: 12%;}
-</style>
     <div class="dvn_section">
         <span class="dvn_sectionTitleR">
             <ice:outputLink
@@ -116,19 +90,20 @@
             <span class="dvn_preFileTitle">Data File: </span>
             <ice:outputText styleClass="dvn_fileTitle" value="#{NetworkDataAnalysisPage.file.fileName}"/>
         </div>
-        <div class="dvn_sectionBoxNoBorders">
+        <div class="dvn_sectionBoxNoBorders dvnNetworkDataBlock">
             <ice:selectOneRadio id="analysisActions" layout="spread" value="manualQuery" onclick="changeAction()">
-                <f:selectItem itemValue="manualQuery" itemLabel="Manual Query" />
+                <f:selectItem itemValue="manualQuery" itemLabel="Manual Query"/>
                 <f:selectItem itemValue="automaticQuery" itemLabel="Automatic Query"/>
                 <f:selectItem itemValue="networkMeasure" itemLabel="Network Measure"/>
             </ice:selectOneRadio>
-            <ice:panelGrid id="groupPanel1" columns="1" cellpadding="0" cellspacing="0" width="100%" style="border: 1px solid lightgray;">
+            <ice:panelGrid id="groupPanel1" styleClass="dvnNetDataAnlsSubTblWrap" columns="1" cellpadding="0" cellspacing="0" width="100%">
                 <ice:panelGrid id="groupPanel2" cellpadding="0" cellspacing="0" width="100%"
                                columns="2" columnClasses="dvnNetDataAnlsCol1,dvnNetDataAnlsCol2">
                     <fieldset>
                         <ice:radio for="analysisActions" index="0"/>
                     </fieldset>
-                    <ice:panelGrid id="groupPanel3" styleClass="dvnNetDataAnlsTbl" columns="3" cellpadding="0" cellspacing="0" border="0" width="100%">
+                    <ice:panelGrid id="groupPanel3" styleClass="dvnNetDataAnlsTbl" columns="3" cellpadding="0" cellspacing="0" border="0" width="100%"
+                                   columnClasses="dvnNetDataAnlsTbl1,dvnNetDataAnlsTbl2,dvnNetDataAnlsTbl3">
                         <fieldset>
                             <label for="attributeSet">Attribute Set</label><br/>
                             <ice:selectOneMenu styleClass="manualQuery" id="attributeSet" name="attributeSet" value="#{NetworkDataAnalysisPage.manualQueryType}" partialSubmit="true">
@@ -147,10 +122,9 @@
                         </fieldset>
                     </ice:panelGrid>
                 </ice:panelGrid>
-                <ice:panelGrid id="groupPanel4" styleClass="dvnNetDataAnlsTbl" cellpadding="0" cellspacing="0" width="100%"
-                               style="margin: 1em;"
+                <ice:panelGrid id="groupPanel4" styleClass="dvnNetDataAnlsQryBldrWrap" cellpadding="0" cellspacing="0" width="100%"
                                columns="2" columnClasses="dvnNetDataAnlsCol1,dvnNetDataAnlsCol2">
-                    <ice:panelGrid id="groupPanel5" columns="1" cellpadding="0" cellspacing="0" border="0" style="border: 1px solid lightgray;">
+                    <ice:panelGrid id="groupPanel5" styleClass="dvnNetDataAnlsSubTblWrap" columns="1" cellpadding="0" cellspacing="0" border="0">
                         <ice:selectOneRadio styleClass="manualQuery" id="queryLogicalOperator" layout="spread" value="&amp;&amp;">
                             <f:selectItem styleClass="manualQuery"  itemValue="&amp;&amp;" itemLabel="And"/>
                             <f:selectItem styleClass="manualQuery"  itemValue="||" itemLabel="Or"/>
@@ -186,18 +160,20 @@
                             </fieldset>
                         </ice:panelGrid>
                     </ice:panelGrid>
-                    <div style="background: #d2e3ff; margin-left: 1em; width: 80%; padding: .5em;">
-                        <div style="text-align: center; margin-top: 1em;"><strong>Manual Query Builder</strong></div>
+                    <div class="dvnNetDataAnlsAddQryInfoBlk">
+                        <div class="dvnNetDataAnlsAddQryInfoTitle"><strong>Manual Query Builder</strong></div>
                         <p>Use these attribute and operator selectors to build a query string.</p>
-                        <div style="text-align: center;"><input type="button" class="manualQuery" value="Add to Query" onclick="addToManualQuery()"/></div>
+                        <div class="dvnNetDataAnlsAddQryInfoBtn"><input type="button" class="manualQuery" value="Add to Query" onclick="addToManualQuery()"/></div>
                     </div>
                 </ice:panelGrid>
+                <hr class="dvnNetDataAnlsHrzLn" noshade="noshade" size="1"/>
                 <ice:panelGrid id="groupPanel8" cellpadding="0" cellspacing="0" width="100%"
                                columns="2" columnClasses="dvnNetDataAnlsCol1,dvnNetDataAnlsCol2">
                     <fieldset>
                         <ice:radio for="analysisActions" index="1"/>
                     </fieldset>
-                    <ice:panelGrid id="groupPanel9" styleClass="dvnNetDataAnlsTbl" columns="3" cellpadding="0" cellspacing="0" border="0" width="100%">
+                    <ice:panelGrid id="groupPanel9" styleClass="dvnNetDataAnlsTbl" columns="3" cellpadding="0" cellspacing="0" border="0" width="100%"
+                                   columnClasses="dvnNetDataAnlsTbl1,dvnNetDataAnlsTbl2,dvnNetDataAnlsTbl3">
                         <fieldset>
                             <label for="function">Function</label><br/>
                             <ice:selectOneMenu styleClass="automaticQuery" id="function" name="function" value="#{NetworkDataAnalysisPage.automaticQueryType}">
@@ -206,7 +182,7 @@
                             </ice:selectOneMenu>
                         </fieldset>
                         <fieldset>
-                            <label for="nth">N<span style="font-size: 80% !important; vertical-align: top;">th</span></label><br/>
+                            <label for="nth">N<span class="dvnLittleLetters">th</span></label><br/>
                             <ice:inputText styleClass="automaticQuery" id="nth" value="#{NetworkDataAnalysisPage.automaticQueryNthValue}"/>
                         </fieldset>
                         <fieldset>
@@ -214,12 +190,14 @@
                         </fieldset>
                     </ice:panelGrid>
                 </ice:panelGrid>
+                <hr class="dvnNetDataAnlsHrzLn" noshade="noshade" size="1"/>
                 <ice:panelGrid id="groupPanel10" cellpadding="0" cellspacing="0" width="100%"
                                columns="2" columnClasses="dvnNetDataAnlsCol1,dvnNetDataAnlsCol2">
                     <fieldset>
                         <ice:radio for="analysisActions" index="2"/>
                     </fieldset>
-                    <ice:panelGrid id="groupPanel11" styleClass="dvnNetDataAnlsTbl" columns="3" cellpadding="0" cellspacing="0" border="0" width="100%">
+                    <ice:panelGrid id="groupPanel11" styleClass="dvnNetDataAnlsTbl" columns="3" cellpadding="0" cellspacing="0" border="0" width="100%"
+                                   columnClasses="dvnNetDataAnlsTbl1,dvnNetDataAnlsTbl2,dvnNetDataAnlsTbl3">
                         <fieldset>
                             <label for="attributes">Attributes</label><br/>
                             <ice:selectOneMenu styleClass="networkMeasure" id="attributes" name="attributes" value="#{NetworkDataAnalysisPage.networkMeasureType}"  partialSubmit="true" valueChangeListener="#{NetworkDataAnalysisPage.networkMeasureSelect_action}">
@@ -228,12 +206,11 @@
                             </ice:selectOneMenu>
                         </fieldset>
                         <fieldset>
-                            <label for="nth">Parameters</label><br/>
-                            <div style="height: 4em; overflow: auto;">
-                                <ice:dataTable id="networkMeasureParamterList" cellpadding="0" cellspacing="0" width="100%"
-                                style="margin-top: 0;" value="#{NetworkDataAnalysisPage.networkMeasureParameterList}" var="parameter"
-                                               headerClass="list-header" rowClasses="list-row-odd,list-row-even"
-                                               columnClasses="dvnNtwkDataSubsetHistCol1,dvnNtwkDataSubsetHistCol2,dvnNtwkDataSubsetHistCol3,dvnNtwkDataSubsetHistCol4,dvnNtwkDataSubsetHistCol5">
+                            <label>Parameters</label><br/>
+                            <div class="dvnNetDataAnlsPrmtrWrp">
+                                <ice:dataTable id="networkMeasureParamterList" styleClass="dvnNetDataAnlsPrmtrTbl" cellpadding="0" cellspacing="0" width="100%"
+                                               value="#{NetworkDataAnalysisPage.networkMeasureParameterList}" var="parameter"
+                                               rowClasses="list-row-odd,list-row-even">
                                     <ice:column>
                                         <ice:outputText value="#{parameter.name}"/>
                                     </ice:column>
@@ -241,7 +218,6 @@
                                          <ice:inputText value="#{parameter.value}"/>
                                     </ice:column>
                                 </ice:dataTable>
-
                             </div>
                         </fieldset>
                         <fieldset>
@@ -250,9 +226,9 @@
                     </ice:panelGrid>
                 </ice:panelGrid>
             </ice:panelGrid>
-            <div style="font-weight: bold; margin-top: 1em;">Subset History</div>
-            <ice:dataTable id="dvnNtwkDataSubsetHistory" cellpadding="0" cellspacing="0" width="100%"
-            style="margin-top: 0;" value="#{NetworkDataAnalysisPage.events}" var="event"
+            <div class="dvnNetDataAnlsSubTitle">Subset History</div>
+            <ice:dataTable id="dvnNtwkDataSubsetHistory" styleClass="dvnNetDataAnlsSubTable" cellpadding="0" cellspacing="0" width="100%"
+                           value="#{NetworkDataAnalysisPage.events}" var="event"
                            headerClass="list-header" rowClasses="list-row-odd,list-row-even"
                            columnClasses="dvnNtwkDataSubsetHistCol1,dvnNtwkDataSubsetHistCol2,dvnNtwkDataSubsetHistCol3,dvnNtwkDataSubsetHistCol4,dvnNtwkDataSubsetHistCol5">
                 <ice:column>
@@ -286,18 +262,16 @@
                     <ice:outputText value="#{event.edges}"/>
                 </ice:column>
             </ice:dataTable>
-            <ice:panelGrid id="groupPanel12" columns="1" cellpadding="0" cellspacing="0" width="100%"
-                           style="border: 1px solid lightgray; border-top: 0;">
+            <ice:panelGrid id="groupPanel12" styleClass="dvnNetDataAnlsSubTblBtmWrp" columns="1" cellpadding="0" cellspacing="0" width="100%">
                 <ice:column>
-                    <div style="text-align: right; padding: .25em;">
-                        <label for="downloadSubsetResults" style="margin-right: .5em;">Download the last set of subsetting results.</label>
+                    <div class="dvnNetDataAnlsSubTblBtm">
+                        <label for="downloadSubsetResults" class="dvnNetDataAnlsSubTblBtmLbl">Download the last set of subsetting results.</label>
                         <ice:commandButton type="submit" name="downloadSubsetResults" value="Download Results" />
                     </div>
                 </ice:column>
             </ice:panelGrid>
         </div>
     </div>
-
 </ice:form>
       <script type="text/javascript">
           changeAction();

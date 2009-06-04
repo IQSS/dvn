@@ -32,9 +32,16 @@ public class DvnRGraphServiceImpl{
 
     public static String DVN_TMP_DIR=null;
     public static String DSB_TMP_DIR=null;
-    public static String WEB_TMP_DIR=null;
+
+    private static String GRAPHML_FILE_NAME = "iGraph";
+    public static String GRAPHML_FILE_EXT =".xml";
+
+    private static String RDATA_FILE_NAME = "iGraph";
+    public static String RDATA_FILE_EXT =".RData";
+
     private static String TMP_DATA_FILE_NAME = "susetfile4Rjob";
     public static String TMP_DATA_FILE_EXT =".tab";
+
     private static String RSERVE_HOST = null;
     private static String RSERVE_USER = null;
     private static String RSERVE_PWD = null;    
@@ -55,7 +62,6 @@ public class DvnRGraphServiceImpl{
             
             DVN_TMP_DIR ="/tmp/VDC";
             DSB_TMP_DIR = DVN_TMP_DIR + "/DSB";
-            WEB_TMP_DIR = DVN_TMP_DIR + "/webtemp";
             
         }
         
@@ -85,16 +91,14 @@ public class DvnRGraphServiceImpl{
 
     }
 
-    static String VDC_R_STARTUP_FILE="dvn_graph_startup.R";
-    //static String VDC_R_STARTUP = "/usr/local/VDC/R/library/vdc_startup.R";
-
-    static String librarySetup= "source('"+ VDC_R_STARTUP_FILE + "');";
+    static String librarySetup= "library('NetworkUtils');";
     boolean DEBUG = true;
     
     // ----------------------------------------------------- instance filelds
     public String IdSuffix = null;
     public String tempFileName = null;
-    public String tempFileNameNew = null;
+    public String GraphMLfileNameRemote = null;    
+    public String RDataFileName = null;
     public String wrkdir = null;
     public String requestdir = null;
     public List<String> historyEntry = new ArrayList<String>();
@@ -112,20 +116,31 @@ public class DvnRGraphServiceImpl{
         
         tempFileName = DSB_TMP_DIR + "/" + TMP_DATA_FILE_NAME
                  +"." + IdSuffix + TMP_DATA_FILE_EXT;
-        
-        tempFileNameNew = wrkdir + "/" + TMP_DATA_FILE_NAME
-                 +"." + IdSuffix + TMP_DATA_FILE_EXT;
+	
+	RDataFileName = DSB_TMP_DIR + "/" + RDATA_FILE_NAME
+                 +"." + IdSuffix + RDATA_FILE_EXT;
+
+	GraphMLfileNameRemote = DSB_TMP_DIR + "/" + GRAPHML_FILE_NAME
+                 + "." + IdSuffix + GRAPHML_FILE_EXT;
+	
     }
 
 
     public void setupWorkingDirectories(RConnection c){
         try{
+
             // set up the working directory
-            // parent dir
+            // parent dir;
+
+	    // the 4 lines below are R code being sent over to Rserve;
+	    // it looks kinda messy, true.
+
             String checkWrkDir = "if (file_test('-d', '"+DSB_TMP_DIR+"')) {Sys.chmod('"+
             DVN_TMP_DIR+"', mode = '0777'); Sys.chmod('"+DSB_TMP_DIR+"', mode = '0777');} else {dir.create('"+DSB_TMP_DIR+"', showWarnings = FALSE, recursive = TRUE);Sys.chmod('"+DVN_TMP_DIR+"', mode = '0777');Sys.chmod('"+
             DSB_TMP_DIR+"', mode = '0777');}";
+
             dbgLog.fine("w permission="+checkWrkDir);
+
             c.voidEval(checkWrkDir);
 
             // wrkdir
@@ -144,10 +159,13 @@ public class DvnRGraphServiceImpl{
         try{
             // set up the working directory
             // parent dir
+
             String checkWrkDir = "if (file_test('-d', '"+DSB_TMP_DIR+"')) {Sys.chmod('"+
             DVN_TMP_DIR+"', mode = '0777'); Sys.chmod('"+DSB_TMP_DIR+"', mode = '0777');} else {dir.create('"+DSB_TMP_DIR+"', showWarnings = FALSE, recursive = TRUE);Sys.chmod('"+DVN_TMP_DIR+"', mode = '0777');Sys.chmod('"+
             DSB_TMP_DIR+"', mode = '0777');}";
+
             dbgLog.fine("w permission="+checkWrkDir);
+
             c.voidEval(checkWrkDir);
         
         } catch (RserveException rse) {
@@ -158,7 +176,7 @@ public class DvnRGraphServiceImpl{
     
     
     /** *************************************************************
-     * Execute an R-based dvn statistical analysis request 
+     * Execute an R-based dvn analysis request on a Graph object
      *
      * @param sro    a DvnRJobRequest object that contains various parameters
      * @return    a Map that contains various information about results
@@ -190,7 +208,6 @@ public class DvnRGraphServiceImpl{
             String infile = sro.getSubsetFileName();
             InputStream inb = new BufferedInputStream(
                     new FileInputStream(infile));
-
             int bufsize;
             byte[] bffr = new byte[1024];
 
@@ -201,18 +218,18 @@ public class DvnRGraphServiceImpl{
             }
             os.close();
             inb.close();
-            
+	            
             // Rserve code starts here
 
             dbgLog.fine("wrkdir="+wrkdir);
             historyEntry.add(librarySetup);
             c.voidEval(librarySetup);
-            
+
             // check working directories
             setupWorkingDirectories(c);
             
             // subsetting 
-            
+
             List<String> scLst = sro.getSubsetConditions();
             if (scLst != null){
                 for (String sci : scLst){
@@ -226,14 +243,16 @@ public class DvnRGraphServiceImpl{
              String RexecDate = c.eval("as.character(as.POSIXct(Sys.time()))").asString();
             
             // save workspace as a replication data set
-            
-            String RdataFileName = "DVNdataFrame."+IdSuffix+".RData";
+
+            String RdataFileName = "DVNdataFrame." + IdSuffix + ".RData"; 
+
             result.put("Rdata", "/"+requestdir+ "/" + RdataFileName);
-            
+
             String saveWS = "save('dvnData', file='"+ wrkdir +"/"+ RdataFileName +"')";
+
             dbgLog.fine("save the workspace="+saveWS);
             c.voidEval(saveWS);
-            
+
             // write back the R workspace to the dvn 
             
             String wrkspFileName = wrkdir +"/"+ RdataFileName;
@@ -243,6 +262,7 @@ public class DvnRGraphServiceImpl{
             
             File wsfl = writeBackFileToDvn(c, wrkspFileName, RWRKSP_FILE_PREFIX,"RData", wrkspflSize);
             
+
             result.put("dvn_RData_FileName",wsfl.getName());
             
             if (wsfl != null){
@@ -311,6 +331,143 @@ public class DvnRGraphServiceImpl{
 
             result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
             result.put("option",sro.getRequestType().toLowerCase());
+
+            result.put("RexecError", "true");
+            return result;
+        }
+        
+        return result;
+        
+}
+    
+
+    /** *************************************************************
+     * Execute an R-based "ingest" of a GraphML file
+     *
+     * @param graphMLfileName;
+     * @param cachedRDatafileName;
+     * @return    a Map that contains various information about results
+     */    
+    
+     public Map<String, String> ingestGraphML (String graphMLfileName, 
+					      String cachedRDatafileName) {
+
+        Map<String, String> result = new HashMap<String, String>();
+        
+	try {
+
+            // Set up an Rserve connection
+            
+            dbgLog.fine("RSERVE_USER="+RSERVE_USER+"[default=rserve]");
+            dbgLog.fine("RSERVE_PWD="+RSERVE_PWD+"[default=rserve]");
+            dbgLog.fine("RSERVE_PORT="+RSERVE_PORT+"[default=6311]");
+
+            RConnection c = new RConnection(RSERVE_HOST, RSERVE_PORT);
+            dbgLog.fine("hostname="+RSERVE_HOST);
+
+            c.login(RSERVE_USER, RSERVE_PWD);
+
+            dbgLog.fine(">" + c.eval("R.version$version.string").asString() + "<");
+
+            // send the graphML to the Rserve side
+
+            InputStream inb = new BufferedInputStream(new FileInputStream(graphMLfileName));
+
+            int bufsize;
+            byte[] bffr = new byte[1024];
+
+            RFileOutputStream os = c.createFile(GraphMLfileNameRemote);
+
+            while ((bufsize = inb.read(bffr)) != -1) {
+                    os.write(bffr, 0, bufsize);
+            }
+            os.close();
+            inb.close();
+            
+            historyEntry.add(librarySetup);
+            c.voidEval(librarySetup);
+
+            this.setupWorkingDirectories(c);
+
+            // ingest itself:
+
+	    String ingestCommand = "ingest_graphml('" + GraphMLfileNameRemote + "')";
+	    dbgLog.fine(ingestCommand);
+	    historyEntry.add(ingestCommand);
+	    c.voidEval(ingestCommand);
+
+            
+	     
+            int fileSize = getFileSize(c,RDataFileName);
+            
+	    OutputStream outbr = new BufferedOutputStream(new FileOutputStream(new File(cachedRDatafileName)));
+	    RFileInputStream ris = c.openFile(RDataFileName);
+
+	    if (fileSize < 64*1024*1024){
+		bufsize = fileSize;
+	    } else {
+		bufsize = 64*1024*1024; 
+	    }
+
+	    byte[] obuf = new byte[bufsize];
+
+	    while ( ris.read(obuf) != -1 ) {
+		outbr.write(obuf, 0, bufsize);
+	    }
+
+	    ris.close();
+	    outbr.close();
+
+
+	    String RexecDate = c.eval("as.character(as.POSIXct(Sys.time()))").asString();
+	    String RversionLine = "R.Version()$version.string";
+            String Rversion = c.eval(RversionLine).asString();
+            
+            result.put("dsbHost", RSERVE_HOST);
+            result.put("dsbPort", DSB_HOST_PORT);
+            result.put("IdSuffix", IdSuffix);
+
+            result.put("Rversion", Rversion);
+            result.put("RexecDate", RexecDate);
+            result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
+            
+            dbgLog.fine("result object (before closing the Rserve):\n"+result);
+                    
+            c.close();
+        
+        } catch (RserveException rse) {
+            result.put("IdSuffix", IdSuffix);
+            result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
+            
+            result.put("RexecError", "true");
+	    result.put("RexecErrorMessage", rse.getMessage()); 
+	    result.put("RexecErrorDescription", rse.getRequestErrorDescription()); 
+            return result;
+
+        } catch (REXPMismatchException mme) {
+            result.put("IdSuffix", IdSuffix);
+            result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
+
+            result.put("RexecError", "true");
+            return result;
+
+        } catch (FileNotFoundException fe){
+            result.put("IdSuffix", IdSuffix);
+            result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
+            result.put("RexecError", "true");
+	    result.put("RexecErrorDescription", "File Not Found"); 
+            return result;
+
+	} catch (IOException ie){
+            result.put("IdSuffix", IdSuffix);
+            result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
+
+            result.put("RexecError", "true");
+            return result;
+            
+        } catch (Exception ex){
+            result.put("IdSuffix", IdSuffix);
+            result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
 
             result.put("RexecError", "true");
             return result;

@@ -157,12 +157,13 @@ public class DDIWriter {
 
             String intrvlType = sdioMetadata.isContinuousVariable()[i]
                      ? "contin": "discrete" ;
-            String intrvlAttr = sdioMetadata.isContinuousVariable()[i] ?
-                "intrvl=\""+intrvlType + "\" " : "";
+//            String intrvlAttr = sdioMetadata.isContinuousVariable()[i] ?
+//                "intrvl=\""+intrvlType + "\" " : "";
+            String intrvlAttr = "intrvl=\""+intrvlType + "\" " ;
 
-            sb.append("\t<var ID=\"v1." + i + "\" name=\"" +
+            sb.append("\t<var ID=\"v1." + (i+1) + "\" name=\"" +
                  StringEscapeUtils.escapeXml(sdioMetadata.variableName[i]) + "\" "+
-                 intrvlAttr +">\n");
+                 intrvlAttr +">\n");  // id counter starst from 1 not 0
 
             sb.append("\t\t<location fileid=\"file1\"/>\n");
 

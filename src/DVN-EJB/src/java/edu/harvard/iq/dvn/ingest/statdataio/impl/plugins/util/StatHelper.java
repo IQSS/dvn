@@ -38,13 +38,14 @@ import cern.jet.stat.Descriptive;
 
 public class StatHelper {
 
+     public static final int MAX_CATEGORIES = 50;
 
     /**
      *
      * @param x
      * @return
      */
-    public static double[] byte2double(byte[] x){
+    public static double[] byteToDouble(byte[] x){
         double[] z= new double[x.length];
         for (int i=0; i<x.length;i++){
             z[i] = (double)x[i];
@@ -57,7 +58,7 @@ public class StatHelper {
      * @param x
      * @return
      */
-    public static double[] short2double(short[] x){
+    public static double[] shortToDouble(short[] x){
         double[] z= new double[x.length];
         for (int i=0; i<x.length;i++){
             z[i] = (double)x[i];
@@ -70,7 +71,7 @@ public class StatHelper {
      * @param x
      * @return
      */
-    public static double[] int2double(int[] x){
+    public static double[] intToDouble(int[] x){
         double[] z= new double[x.length];
         for (int i=0; i<x.length;i++){
             z[i] = (double)x[i];
@@ -83,10 +84,14 @@ public class StatHelper {
      * @param x
      * @return
      */
-    public static double[] long2double(long[] x){
+    public static double[] longToDouble(long[] x){
         double[] z= new double[x.length];
         for (int i=0; i<x.length;i++){
-            z[i] = (double)x[i];
+            if (x[i] == Long.MAX_VALUE){
+                z[i] = Double.NaN;
+            } else {
+                z[i] = (double)x[i];
+            }
         }
         return z;
     }
@@ -96,7 +101,7 @@ public class StatHelper {
      * @param x
      * @return
      */
-    public static double[] float2double(float[] x){
+    public static double[] floatToDouble(float[] x){
         double[] z= new double[x.length];
         for (int i=0; i<x.length;i++){
             z[i] = (double)x[i];
@@ -141,7 +146,7 @@ public class StatHelper {
      * @return
      */
     public static double[] calculateSummaryStatistics(byte[] x){
-        double[] z = byte2double(x);
+        double[] z = byteToDouble(x);
         return calculateSummaryStatistics(z);
     }
 
@@ -151,7 +156,7 @@ public class StatHelper {
      * @return
      */
     public static double[] calculateSummaryStatistics(short[] x){
-        double[] z = short2double(x);
+        double[] z = shortToDouble(x);
         return calculateSummaryStatistics(z);
     }
 
@@ -161,7 +166,7 @@ public class StatHelper {
      * @return
      */
     public static double[] calculateSummaryStatistics(int[] x){
-        double[] z = int2double(x);
+        double[] z = intToDouble(x);
         return calculateSummaryStatistics(z);
     }
 
@@ -172,7 +177,9 @@ public class StatHelper {
      * @return
      */
     public static double[] calculateSummaryStatistics(long[] x){
-        double[] z = long2double(x);
+        Map<String, Integer> freqTable = calculateCategoryStatistics(x);
+        //out.println(freqTable);
+        double[] z = longToDouble(x);
         return calculateSummaryStatistics(z);
     }
 
@@ -181,8 +188,53 @@ public class StatHelper {
      * @param x
      * @return
      */
+    public static Map<String, Integer> calculateCategoryStatistics(long[] x){
+        //double[] z = longToDouble(x);
+        Map<String, Integer> frqTbl=null;
+        int nobs =x.length;
+        if ((nobs == 0) ) {
+            frqTbl =null;
+        } else {
+            frqTbl = getFrequencyTable(x);
+            //out.println("frequency Table="+frqTbl);
+            if (frqTbl.keySet().size() > MAX_CATEGORIES){
+                frqTbl = null;
+            }
+        }
+
+        return frqTbl;
+    }
+
+
+    /**
+     *
+     * @param x
+     * @return
+     */
+    public static Map<String, Integer> calculateCategoryStatistics(String[] x){
+        //double[] z = longToDouble(x);
+        Map<String, Integer> frqTbl=null;
+        int nobs =x.length;
+        if ((nobs == 0) ) {
+            frqTbl =null;
+        } else {
+            frqTbl = getFrequencyTable(x);
+            //out.println("frequency Table="+frqTbl);
+            if (frqTbl.keySet().size() > MAX_CATEGORIES){
+                frqTbl = null;
+            }
+        }
+
+        return frqTbl;
+    }
+
+    /**
+     *
+     * @param x
+     * @return
+     */
     public static double[] calculateSummaryStatistics(float[] x){
-        double[] z = float2double(x);
+        double[] z = floatToDouble(x);
         return calculateSummaryStatistics(z);
     }
 
@@ -410,6 +462,8 @@ public class StatHelper {
             Integer freq = tbl.get(sentry);
             tbl.put(sentry, (freq == null ? 1 : freq + 1));
         }
+        //out.println("x="+Arrays.toString(x));
+        //out.println("tbl(getFrequencyTable):"+tbl);
         return tbl;
     }
 

@@ -400,7 +400,7 @@ public class SDIOMetadata {
     /**
      *
      */
-    public Map<Integer, Object[]> summaryStatisticsTable =
+    protected Map<Integer, Object[]> summaryStatisticsTable =
         new LinkedHashMap<Integer, Object[]>();
 
     /**
@@ -419,6 +419,20 @@ public class SDIOMetadata {
         summaryStatisticsTable) {
         this.summaryStatisticsTable = summaryStatisticsTable;
     }
+
+
+    protected Map<Integer, Map<String, Integer>>categoryStatisticsTable =
+            new LinkedHashMap<Integer, Map<String,Integer>>();
+
+    public Map<Integer, Map<String, Integer>> getCategoryStatisticsTable() {
+        return categoryStatisticsTable;
+    }
+
+    public void setCategoryStatisticsTable(Map<Integer,
+            Map<String, Integer>> categoryStatisticsTable) {
+        this.categoryStatisticsTable = categoryStatisticsTable;
+    }
+
 
 
     @Override

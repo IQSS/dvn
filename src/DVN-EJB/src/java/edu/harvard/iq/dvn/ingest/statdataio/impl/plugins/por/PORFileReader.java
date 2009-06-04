@@ -209,7 +209,8 @@ public class PORFileReader extends StatDataFileReader{
     NumberFormat doubleNumberFormatter = new DecimalFormat();
 
             Object[][] dataTable2 = null;
-    
+            
+    int[] variableTypeFinal= null;
     
     // Constructor -----------------------------------------------------------//
 
@@ -1303,13 +1304,9 @@ public class PORFileReader extends StatDataFileReader{
         }
         
         // contents (variable) checker concering decimals
-        int[] checkVariableType= new int[varQnty];
-        Arrays.fill(checkVariableType, 0);
-//        for (int el : checkVariableType){
-//            el=0;
-//        }
-        
-        
+        variableTypeFinal= new int[varQnty];
+        Arrays.fill(variableTypeFinal, 0);
+
         
         // raw-case counter
         int j = 0; // case 
@@ -1347,7 +1344,7 @@ public class PORFileReader extends StatDataFileReader{
                         // String
                         dbgLog.fine(i+"-th var is String variable case");
 
-                        checkVariableType[i]=-1;
+                        variableTypeFinal[i]=-1;
 
                         String buffer = "";
                         char[] tmp = new char[1];
@@ -1442,7 +1439,7 @@ public class PORFileReader extends StatDataFileReader{
                                 if (i == 0){
                                     // the reader has passed the last case
                                     // subtract 1 from the j counter
-
+                                    dbgLog.fine("Z-mark was detected");
                                     caseQnty = j-1;
                                     break FBLOCK;
                                 }
@@ -1496,10 +1493,10 @@ public class PORFileReader extends StatDataFileReader{
                             
                                 
                             // decimal-point check (varialbe is integer or not)
-                            if (checkVariableType[i]==0){
+                            if (variableTypeFinal[i]==0){
                                 if (datumNumericBase10.indexOf(".") >=0){
                                     dbgLog.fine("decimal data= "+ datumNumericBase10);
-                                    checkVariableType[i] = 1;
+                                    variableTypeFinal[i] = 1;
                                     numberOfDecimalVariables++;
                                 }
                             }
@@ -1542,15 +1539,15 @@ public class PORFileReader extends StatDataFileReader{
         // exit processing
         
         // save a decimal-type variable's number
-        for (int l=0; l< checkVariableType.length;l++){
-            if (checkVariableType[l]>0){
+        for (int l=0; l< variableTypeFinal.length;l++){
+            if (variableTypeFinal[l]>0){
                 decimalVariableSet.add(l);
             }
         }
 
         smd.setDecimalVariables(decimalVariableSet);
         
-        dbgLog.fine("checkVariableType="+ArrayUtils.toString(checkVariableType));
+        dbgLog.fine("variableTypeFinal="+ArrayUtils.toString(variableTypeFinal));
         dbgLog.fine("numberOfDecimalVariables="+numberOfDecimalVariables);
         dbgLog.fine("decimalVariableSet="+decimalVariableSet);
 
@@ -1560,6 +1557,8 @@ public class PORFileReader extends StatDataFileReader{
 
 
         dbgLog.fine("caseQnty="+caseQnty);
+        // store data in column(variable)-wise for calculating variable-wise
+        // statistics
         dataTable2 = new Object[varQnty][caseQnty];
 
         for (int jl=0; jl<caseQnty;jl++){
@@ -1570,9 +1569,9 @@ public class PORFileReader extends StatDataFileReader{
            }
         }
 
-        print2Darray(dataTable2, "dataTable2");
+//        print2Darray(dataTable2, "dataTable2");
 
-
+        out.println("dataTable2:\n"+Arrays.deepToString(dataTable2));
 
 
 
@@ -1582,13 +1581,14 @@ public class PORFileReader extends StatDataFileReader{
         unfValues = new String[varQnty];
 
         for (int k=0;k<varQnty; k++){
-            int variableTypeNumer = variableTypelList.get(k);
+            int variableTypeNumer = variableTypeFinal[k];
             
-            if (variableTypeNumer >0){
-                variableTypeNumer = 1;
-            } else {
-                variableTypeNumer= 0;
-            }
+//            if (variableTypeNumer >0){
+//                variableTypeNumer = 1;
+//            } else {
+//                variableTypeNumer= 0;
+//            }
+            
             try {
                 unfValues[k] = getUNF(dataTable2[k], variableTypeNumer,
                     unfVersionNumber, k);
@@ -1633,26 +1633,6 @@ public class PORFileReader extends StatDataFileReader{
         dbgLog.fine("unf values:\n"+unfValues);
         
         porDataSection.setData(dataTable2);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
         
@@ -1892,21 +1872,50 @@ public class PORFileReader extends StatDataFileReader{
         }
     }    
     
-       private String getUNF(Object[] varData, int variableType, 
-            String unfVersionNumber, int variablePosition)
-            throws NumberFormatException, UnfException,
-            IOException, NoSuchAlgorithmException{
-            String unfValue = null;
-    
-            dbgLog.fine("varData:\n"+ReflectionToStringBuilder.toString(varData));
-            dbgLog.fine("variableType="+variableType);
-            dbgLog.fine("unfVersionNumber="+unfVersionNumber);
-            dbgLog.fine("variablePosition="+variablePosition);
+    private String getUNF(Object[] varData, int variableType, 
+        String unfVersionNumber, int variablePosition)
+        throws NumberFormatException, UnfException,
+        IOException, NoSuchAlgorithmException{
+        String unfValue = null;
+
+        dbgLog.fine("varData:\n"+ReflectionToStringBuilder.toString(varData));
+        dbgLog.fine("variableType="+variableType);
+        dbgLog.fine("unfVersionNumber="+unfVersionNumber);
+        dbgLog.fine("variablePosition="+variablePosition);
     
         switch(variableType){
 
-
             case 0:
+                // integer case
+                dbgLog.fine("integer case");
+                // data are stored as storing
+
+                long[] ldata = new long[varData.length];
+                for (int i=0;i<varData.length;i++){
+                    if (((String)varData[i]).equals("NaN")){
+                        ldata[i] = Long.MAX_VALUE;
+                    } else {
+                        ldata[i] = Long.parseLong((String)varData[i]);
+                    }
+                }
+
+                unfValue = UNFUtil.calculateUNF(ldata, unfVersionNumber);
+
+                dbgLog.finer("sumstat:long case="+Arrays.deepToString(
+                        ArrayUtils.toObject(StatHelper.calculateSummaryStatistics(ldata))));
+                        
+                smd.getSummaryStatisticsTable().put(variablePosition,
+                    ArrayUtils.toObject(StatHelper.calculateSummaryStatistics(ldata)));
+
+
+                Map<String, Integer> catStat = StatHelper.calculateCategoryStatistics(ldata);
+                out.println("catStat="+catStat);
+
+                smd.getCategoryStatisticsTable().put(variablePosition, catStat);
+
+
+                break;
+            case 1:
                 // double case
                 dbgLog.fine("double case");
                 // data are store as storing
@@ -1926,7 +1935,7 @@ public class PORFileReader extends StatDataFileReader{
                     ArrayUtils.toObject(StatHelper.calculateSummaryStatistics(ddata)));
 
                 break;
-            case  1:
+            case  -1:
                 // String case
                 dbgLog.fine("string case");
 
@@ -1938,6 +1947,11 @@ public class PORFileReader extends StatDataFileReader{
 
                 smd.getSummaryStatisticsTable().put(variablePosition,
                     StatHelper.calculateSummaryStatistics(strdata));
+
+                Map<String, Integer> StrCatStat = StatHelper.calculateCategoryStatistics(strdata);
+                out.println("catStat="+StrCatStat);
+
+                smd.getCategoryStatisticsTable().put(variablePosition, StrCatStat);
 
                 break;
             default:

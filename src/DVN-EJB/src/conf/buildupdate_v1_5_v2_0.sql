@@ -16,6 +16,9 @@ ALTER TABLE studyfile ALTER COLUMN study_id SET STORAGE PLAIN;
 ALTER TABLE studyfile ADD COLUMN unf character varying(255);
 ALTER TABLE studyfile ALTER COLUMN unf SET STORAGE EXTENDED;
 
+ALTER TABLE datatable ADD COLUMN "type" character varying(255);
+ALTER TABLE datatable ALTER COLUMN "type" SET STORAGE EXTENDED;
+
 --
 -- and now DML
 --

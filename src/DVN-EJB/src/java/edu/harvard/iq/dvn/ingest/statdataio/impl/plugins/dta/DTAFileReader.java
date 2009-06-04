@@ -540,7 +540,7 @@ public class DTAFileReader extends StatDataFileReader{
             dbgLog.fine("data_label=["+data_label+"]");
             dbgLog.fine("loation of the null character="+data_label.indexOf(0));
 
-            String dataLabel = data_label.substring(0, data_label.indexOf(0));
+            String dataLabel = getNullStrippedString(data_label);
             dbgLog.fine("data_label_length="+dataLabel.length());
             dbgLog.fine("data_label=["+dataLabel+"]");
 
@@ -556,7 +556,7 @@ public class DTAFileReader extends StatDataFileReader{
                 dbgLog.fine("time_stamp=["+time_stamp+"]");
                 dbgLog.fine("loation of the null character="+time_stamp.indexOf(0));
 
-                String timeStamp = time_stamp.substring(0, time_stamp.indexOf(0));
+                String timeStamp = getNullStrippedString(time_stamp);
                 dbgLog.fine("timeStamp_length="+timeStamp.length());
                 dbgLog.fine("timeStamp=["+timeStamp+"]");
 
@@ -700,7 +700,7 @@ public class DTAFileReader extends StatDataFileReader{
                 offset_end += length_var_name;
                 String vari = new String(Arrays.copyOfRange(variableNameBytes, offset_start,
                     offset_end),"US-ASCII");
-                variableNameList.add(vari.substring(0, vari.indexOf(0)));
+                variableNameList.add(getNullStrippedString(vari));
                 dbgLog.fine(i+"-th name=["+variableNameList.get(i)+"]");
                 offset_start = offset_end;
             }
@@ -769,7 +769,7 @@ public class DTAFileReader extends StatDataFileReader{
                 offset_end += length_var_format;
                 String vari = new String(Arrays.copyOfRange(variableFormatList, offset_start,
                     offset_end),"US-ASCII");
-                variableFormats[i] = vari.substring(0, vari.indexOf(0));
+                variableFormats[i] = getNullStrippedString(vari);
                 dbgLog.fine(i+"-th format=["+variableFormats[i]+"]");
                 offset_start = offset_end;
             }
@@ -802,7 +802,7 @@ public class DTAFileReader extends StatDataFileReader{
                 offset_end += length_label_name;
                 String vari = new String(Arrays.copyOfRange(labelNameList, offset_start,
                     offset_end),"US-ASCII");
-                labelNames[i] = vari.substring(0, vari.indexOf(0));
+                labelNames[i] = getNullStrippedString(vari);
                 dbgLog.fine(i+"-th label=["+labelNames[i]+"]");
                 offset_start = offset_end;
             }
@@ -850,7 +850,7 @@ public class DTAFileReader extends StatDataFileReader{
                 offset_end += length_var_label;
                 String vari = new String(Arrays.copyOfRange(variableLabelBytes, offset_start,
                     offset_end),"US-ASCII");
-                variableLabelMap.put(variableNameList.get(i), vari.substring(0, vari.indexOf(0)));
+                variableLabelMap.put(variableNameList.get(i), getNullStrippedString(vari));
                 dbgLog.fine(i+"-th label=["+variableLabels[i]+"]");
                 offset_start = offset_end;
             }
@@ -1097,11 +1097,22 @@ public class DTAFileReader extends StatDataFileReader{
                             // String case
                             int strVarLength = StringVariableTable.get(columnCounter);
                             //out.print("\t"+columnCounter+"-th string var length="+strVarLength);
-
+                            //out.println("byte_offset="+byte_offset);
                             String raw_datum = new String(Arrays.copyOfRange(dataRowBytes, byte_offset,
                                 (byte_offset+strVarLength)), "US-ASCII");
-                            String string_datum = raw_datum.substring(0, raw_datum.indexOf(0));
-                            
+                            //out.println("raw_datum="+raw_datum);
+//                            int null_position = raw_datum.indexOf(0);
+//                            String string_datum=null;
+//                            if (null_position >= 0){
+//                                // string is terminated by the null
+//                                string_datum = raw_datum.substring(0, null_position);
+//                            } else {
+//                                // not null-termiated (sometimes space-paddded, instead)
+//                                // get up to the length and
+//                                // then trim spaces ("x20") form the end
+//                                string_datum = StringUtils.stripEnd(raw_datum.substring(0, strVarLength)," ");
+//                            }
+                            String string_datum = StringUtils.stripEnd(getNullStrippedString(raw_datum), " ");
                             //out.println(string_datum);
 
                             dataRow[columnCounter] = string_datum;
@@ -1480,7 +1491,7 @@ public class DTAFileReader extends StatDataFileReader{
                                    value_label_table_length,
                                   (value_label_table_length+length_label_name)),
                                   "US-ASCII");
-                String labelName = rawLabelName.substring(0, rawLabelName.indexOf(0));
+                String labelName = getNullStrippedString(rawLabelName);
 
                 dbgLog.fine("label name = "+labelName+"\n");
 
@@ -1742,5 +1753,20 @@ public class DTAFileReader extends StatDataFileReader{
         dbgLog.fine("unfvalue(last)="+unfValue);
         return unfValue;
     }
+
+    private String getNullStrippedString(String rawString){
+        String nullRemovedString = null;
+        int null_position = rawString.indexOf(0);
+        if (null_position >= 0){
+            // string is terminated by the null
+            nullRemovedString = rawString.substring(0, null_position);
+        } else {
+            // not null-termiated (sometimes space-paddded, instead)
+            // get up to the length
+            nullRemovedString = rawString.substring(0, rawString.length());
+        }
+        return nullRemovedString;
+    }
+
 
 }

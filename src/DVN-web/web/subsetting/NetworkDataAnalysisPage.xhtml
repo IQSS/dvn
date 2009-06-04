@@ -14,9 +14,79 @@
 <gui:composition template="/template.xhtml">
 <gui:param name="pageTitle" value="Network Data Analysis - #{VDCRequest.dataversePageTitle}"/>
 <gui:define name="body">
+      <script type="text/javascript">
+          // <![CDATA[
+
+          function getElementsByClassName( strClassName, obj ) {
+              var ar = arguments[2] || new Array();
+              var re = new RegExp("\\b" + strClassName + "\\b", "g");
+              if ( re.test(obj.className) ) {
+                  ar.push( obj );
+              }
+              for ( var i = 0; i < obj.childNodes.length; i++ )
+                  getElementsByClassName( strClassName, obj.childNodes[i], ar );
+              return ar;
+          }
+
+          function getRadioValue( id ) {
+              elements=document.getElementsByTagName("input");
+              for(i=0; i < elements.length; i++) {
+                  if (elements[i].id.indexOf(id) != -1 ) {
+                      if (elements[i].checked) {
+                          return elements[i].value;
+                      }
+                  }
+              }
+          }
+          function changeAction() {
+              disableElements( getElementsByClassName("manualQuery", document.body) );
+              disableElements( getElementsByClassName("automaticQuery", document.body) );
+              disableElements( getElementsByClassName("networkMeasure", document.body) );
+
+              actionType = getRadioValue("form1:analysisActions");
+              elements = getElementsByClassName(actionType, document.body);
+              for(i=0; i < elements.length; i++) {
+                elements[i].disabled = false;
+              }
+          }
+
+          function disableElements(elements) {
+              for(i=0; i < elements.length; i++) {
+                elements[i].disabled = true;
+              }
+          }
+
+          function addToManualQuery() {
+              attribute = document.getElementById("form1:attribute").value;
+              operator = document.getElementById("form1:operator").value;
+              value = document.getElementById("form1:value").value;
+
+              if (attribute == "" || operator == "" || value == "") {
+                  alert("You must select an attribute, an operator and a value to add to the query workspace.");
+                  return;
+              }
+
+              queryWorkspace = document.getElementById("form1:queryWorkspace");
+              if (queryWorkspace.value != "") {
+                  logicalOperatorRadioCount = 0;
+                  while ( !document.getElementById("form1:queryLogicalOperator:_" + logicalOperatorRadioCount).checked ) {
+                    logicalOperatorRadioCount++;
+                  }
+
+                  logicalOperator = document.getElementById("form1:queryLogicalOperator:_" + logicalOperatorRadioCount).value;
+                  queryWorkspace.value += " " + logicalOperator + " ";
+              }
+              
+              queryWorkspace.value += attribute + " " + operator + " \"" + value + "\"";
+          }
+
+
+          // ]]>
+      </script>
+
 <f:loadBundle basename="BundleAnalysis" var="bundleAnalysis"/>
 <ice:form id="form1">
-<input type="hidden" name="dtId" value="${param.dtId}"/>
+<input type="hidden" name="fileId" value="${param.fileId}"/>
 <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
 <style type="text/css">
     .dvn_sectionBoxNoBorders {width: 700px;}
@@ -35,20 +105,20 @@
     <div class="dvn_section">
         <span class="dvn_sectionTitleR">
             <ice:outputLink
-                value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{AnalysisPage.studyId}&amp;tab=files">
+                value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{NetworkDataAnalysisPage.file.study.id}&amp;tab=files">
             <ice:outputText
                 value="Back to Study"/>
             </ice:outputLink>
         </span>
         <div class="dvn_sectionTitle">
-            <ice:outputText value="#{AnalysisPage.studyTitle}"/>
+            <ice:outputText value="#{NetworkDataAnalysisPage.file.study.metadata.title}"/>
             <br/>
             <span class="dvn_preFileTitle">Data File: </span>
-            <ice:outputText styleClass="dvn_fileTitle" value="#{AnalysisPage.fileName}"/>
+            <ice:outputText styleClass="dvn_fileTitle" value="#{NetworkDataAnalysisPage.file.fileName}"/>
         </div>
         <div class="dvn_sectionBoxNoBorders">
-            <ice:selectOneRadio id="analysisActions" layout="spread" value="">
-                <f:selectItem itemValue="manualQuery" itemLabel="Manual Query"/>
+            <ice:selectOneRadio id="analysisActions" layout="spread" value="manualQuery" onclick="changeAction()">
+                <f:selectItem itemValue="manualQuery" itemLabel="Manual Query" />
                 <f:selectItem itemValue="automaticQuery" itemLabel="Automatic Query"/>
                 <f:selectItem itemValue="networkMeasure" itemLabel="Network Measure"/>
             </ice:selectOneRadio>
@@ -61,20 +131,19 @@
                     <ice:panelGrid id="groupPanel3" styleClass="dvnNetDataAnlsTbl" columns="3" cellpadding="0" cellspacing="0" border="0" width="100%">
                         <fieldset>
                             <label for="attributeSet">Attribute Set</label><br/>
-                            <ice:selectOneMenu id="attributeSet" name="attributeSet" value="">
-                                <f:selectItem id="item0" itemLabel="Select one..." itemValue="0" />
-                                <f:selectItem id="item1" itemLabel="Vertex" itemValue="1" />
-                                <f:selectItem id="item2" itemLabel="Edge" itemValue="2" />
+                            <ice:selectOneMenu styleClass="manualQuery" id="attributeSet" name="attributeSet" value="#{NetworkDataAnalysisPage.manualQueryType}" partialSubmit="true">
+                                <f:selectItem id="item1" itemLabel="Vertex" itemValue="vertex" />
+                                <f:selectItem id="item2" itemLabel="Edge" itemValue="edge" />
                             </ice:selectOneMenu>
                         </fieldset>
                         <fieldset>
                             <label for="values">Query Workspace</label><br/>
-                            <ice:inputTextarea cols="36" rows="5" id="queryWorkspace"/>
+                            <ice:inputTextarea styleClass="manualQuery" cols="36" rows="5" id="queryWorkspace" value="#{NetworkDataAnalysisPage.manualQuery}" onchange="checkLogicalOperatorInput()"/>
                             <br/>
-                            <ice:selectBooleanCheckbox id="eliminate" /><label for="eliminate">Eliminate disconnected vertices</label>
+                            <ice:selectBooleanCheckbox styleClass="manualQuery" id="eliminate" value="#{NetworkDataAnalysisPage.eliminateDisconnectedVertices}" /><label for="eliminate">Eliminate disconnected vertices</label>
                         </fieldset>
                         <fieldset>
-                            <ice:commandButton type="submit" value="Run" />
+                            <ice:commandButton styleClass="manualQuery" type="submit" value="Run" action="#{NetworkDataAnalysisPage.manualQuery_action}" />
                         </fieldset>
                     </ice:panelGrid>
                 </ice:panelGrid>
@@ -82,51 +151,45 @@
                                style="margin: 1em;"
                                columns="2" columnClasses="dvnNetDataAnlsCol1,dvnNetDataAnlsCol2">
                     <ice:panelGrid id="groupPanel5" columns="1" cellpadding="0" cellspacing="0" border="0" style="border: 1px solid lightgray;">
-                        <ice:selectOneRadio id="queryLogicalOperators" layout="spread" value="">
-                            <f:selectItem itemValue="manualQuery" itemLabel="And"/>
-                            <f:selectItem itemValue="automaticQuery" itemLabel="Or"/>
+                        <ice:selectOneRadio styleClass="manualQuery" id="queryLogicalOperator" layout="spread" value="&amp;&amp;">
+                            <f:selectItem styleClass="manualQuery"  itemValue="&amp;&amp;" itemLabel="And"/>
+                            <f:selectItem styleClass="manualQuery"  itemValue="||" itemLabel="Or"/>
                         </ice:selectOneRadio>
                         <ice:panelGrid id="groupPanel6" columns="2" cellpadding="0" cellspacing="0" border="0">
                             <fieldset>
-                                <ice:radio for="queryLogicalOperators" index="0"/>
+                                <ice:radio for="queryLogicalOperator" index="0"/>
                             </fieldset>
                             <fieldset>
-                                <ice:radio for="queryLogicalOperators" index="1"/>
+                                <ice:radio for="queryLogicalOperator" index="1"/>
                             </fieldset>
                         </ice:panelGrid>
                         <ice:panelGrid id="groupPanel7" columns="3" cellpadding="0" cellspacing="0" border="0">
                             <fieldset>
-                                <label for="attributes">Attributes</label><br/>
-                                <select class="iceSelMnyLb" multiple="multiple" name="attributes" size="5">
-                                    <option value="1">Attribute Name 1</option>
-                                    <option value="2">Attribute Name 2</option>
-                                    <option value="3">Attribute Name 3</option>
-                                    <option value="4">Attribute Name 4</option>
-                                    <option value="5">Attribute Name 5</option>
-                                    <option value="6">Attribute Name 6</option>
-                                    <option value="7">Attribute Name 7</option>
-                                </select>
+                                <label for="attribute">Attributes</label><br/>
+                                <ice:selectOneListbox styleClass="manualQuery" id="attribute" size="5">
+                                    <f:selectItems value="#{NetworkDataAnalysisPage.attributeSelectItems}"/>
+                                </ice:selectOneListbox>
                             </fieldset>
                             <fieldset>
-                                <label for="operators">Operators</label><br/>
-                                <ice:selectOneMenu id="operators" name="operators" value="">
-                                    <f:selectItem id="item0" itemLabel="Select one..." itemValue="0" />
-                                    <f:selectItem id="item1" itemLabel="Less than, &gt;" itemValue="1" />
-                                    <f:selectItem id="item2" itemLabel="Greater than, &lt;" itemValue="2" />
-                                    <f:selectItem id="item3" itemLabel="Equal to, ==" itemValue="3" />
-                                    <f:selectItem id="item4" itemLabel="Not equal to, !=" itemValue="4" />
+                                <label for="operator">Operators</label><br/>
+                                <ice:selectOneMenu styleClass="manualQuery" id="operator" name="operators" value="">
+                                    <f:selectItem id="item0" itemLabel="Select one..." itemValue="" />
+                                    <f:selectItem id="item1" itemLabel="Less than, &lt;" itemValue="&lt;" />
+                                    <f:selectItem id="item2" itemLabel="Greater than, &gt;" itemValue="&gt;" />
+                                    <f:selectItem id="item3" itemLabel="Equal to, ==" itemValue="==" />
+                                    <f:selectItem id="item4" itemLabel="Not equal to, !=" itemValue="!=" />
                                 </ice:selectOneMenu>
                             </fieldset>
                             <fieldset>
-                                <label for="values">Values</label><br/>
-                                <ice:inputText id="values" />
+                                <label for="value">Values</label><br/>
+                                <ice:inputText styleClass="manualQuery" id="value" />
                             </fieldset>
                         </ice:panelGrid>
                     </ice:panelGrid>
                     <div style="background: #d2e3ff; margin-left: 1em; width: 80%; padding: .5em;">
                         <div style="text-align: center; margin-top: 1em;"><strong>Manual Query Builder</strong></div>
                         <p>Use these attribute and operator selectors to build a query string.</p>
-                        <div style="text-align: center;"><ice:commandButton type="submit" value="Add to Query" /></div>
+                        <div style="text-align: center;"><input type="button" class="manualQuery" value="Add to Query" onclick="addToManualQuery()"/></div>
                     </div>
                 </ice:panelGrid>
                 <ice:panelGrid id="groupPanel8" cellpadding="0" cellspacing="0" width="100%"
@@ -137,18 +200,17 @@
                     <ice:panelGrid id="groupPanel9" styleClass="dvnNetDataAnlsTbl" columns="3" cellpadding="0" cellspacing="0" border="0" width="100%">
                         <fieldset>
                             <label for="function">Function</label><br/>
-                            <ice:selectOneMenu id="function" name="function" value="">
-                                <f:selectItem id="item0" itemLabel="Select one..." itemValue="0" />
-                                <f:selectItem id="item1" itemLabel="Function 1" itemValue="1" />
-                                <f:selectItem id="item2" itemLabel="Function 2" itemValue="2" />
+                            <ice:selectOneMenu styleClass="automaticQuery" id="function" name="function" value="#{NetworkDataAnalysisPage.automaticQueryType}">
+                                <f:selectItem id="item0" itemLabel="Select one..." itemValue="" />
+                                <f:selectItems value="#{NetworkDataAnalysisPage.automaticQuerySelectItem}"/>
                             </ice:selectOneMenu>
                         </fieldset>
                         <fieldset>
                             <label for="nth">N<span style="font-size: 80% !important; vertical-align: top;">th</span></label><br/>
-                            <ice:inputText id="nth" />
+                            <ice:inputText styleClass="automaticQuery" id="nth" value="#{NetworkDataAnalysisPage.automaticQueryNthValue}"/>
                         </fieldset>
                         <fieldset>
-                            <ice:commandButton type="submit" value="Run" />
+                            <ice:commandButton styleClass="automaticQuery" type="submit" value="Run" action="#{NetworkDataAnalysisPage.automaticQuery_action}"/>
                         </fieldset>
                     </ice:panelGrid>
                 </ice:panelGrid>
@@ -160,77 +222,68 @@
                     <ice:panelGrid id="groupPanel11" styleClass="dvnNetDataAnlsTbl" columns="3" cellpadding="0" cellspacing="0" border="0" width="100%">
                         <fieldset>
                             <label for="attributes">Attributes</label><br/>
-                            <ice:selectOneMenu id="attributes" name="attributes" value="">
-                                <f:selectItem id="item0" itemLabel="Select one..." itemValue="0" />
-                                <f:selectItem id="item1" itemLabel="Degree" itemValue="1" />
-                                <f:selectItem id="item2" itemLabel="Page Rank" itemValue="2" />
+                            <ice:selectOneMenu styleClass="networkMeasure" id="attributes" name="attributes" value="#{NetworkDataAnalysisPage.networkMeasureType}"  partialSubmit="true" valueChangeListener="#{NetworkDataAnalysisPage.networkMeasureSelect_action}">
+                                <f:selectItem id="item0" itemLabel="Select one..." itemValue="" />
+                                <f:selectItems value="#{NetworkDataAnalysisPage.networkMeasureSelectItems}"/>
                             </ice:selectOneMenu>
                         </fieldset>
                         <fieldset>
                             <label for="nth">Parameters</label><br/>
                             <div style="height: 4em; overflow: auto;">
-                              <table class="icePnlGrd" width="100%" cellpadding="0" cellspacing="0" border="0">
-                                <tbody>
-                                  <tr class="iceDatTblRow list-row-odd">
-                                    <td>Level A</td>
-                                    <td><input class="iceInpTxt" type="text" value="" name="" size="5"/></td>
-                                  </tr>
-                                  <tr class="iceDatTblRow list-row-even">
-                                    <td>Level B</td>
-                                    <td><input class="iceInpTxt" type="text" value="" name="" size="5"/></td>
-                                  </tr>
-                                  <tr class="iceDatTblRow list-row-odd">
-                                    <td>Level C</td>
-                                    <td><input class="iceInpTxt" type="text" value="" name="" size="5"/></td>
-                                  </tr>
-                                  <tr class="iceDatTblRow list-row-even">
-                                    <td>Level D</td>
-                                    <td><input class="iceInpTxt" type="text" value="" name="" size="5"/></td>
-                                  </tr>
-                                </tbody>
-                              </table>
+                                <ice:dataTable id="networkMeasureParamterList" cellpadding="0" cellspacing="0" width="100%"
+                                style="margin-top: 0;" value="#{NetworkDataAnalysisPage.networkMeasureParameterList}" var="parameter"
+                                               headerClass="list-header" rowClasses="list-row-odd,list-row-even"
+                                               columnClasses="dvnNtwkDataSubsetHistCol1,dvnNtwkDataSubsetHistCol2,dvnNtwkDataSubsetHistCol3,dvnNtwkDataSubsetHistCol4,dvnNtwkDataSubsetHistCol5">
+                                    <ice:column>
+                                        <ice:outputText value="#{parameter.name}"/>
+                                    </ice:column>
+                                    <ice:column>
+                                         <ice:inputText value="#{parameter.value}"/>
+                                    </ice:column>
+                                </ice:dataTable>
+
                             </div>
                         </fieldset>
                         <fieldset>
-                            <ice:commandButton type="submit" value="Run" />
+                            <ice:commandButton styleClass="networkMeasure" type="submit" value="Run" action="#{NetworkDataAnalysisPage.networkMeasure_action}"/>
                         </fieldset>
                     </ice:panelGrid>
                 </ice:panelGrid>
             </ice:panelGrid>
             <div style="font-weight: bold; margin-top: 1em;">Subset History</div>
             <ice:dataTable id="dvnNtwkDataSubsetHistory" cellpadding="0" cellspacing="0" width="100%"
-                           style="margin-top: 0;"
+            style="margin-top: 0;" value="#{NetworkDataAnalysisPage.events}" var="event"
                            headerClass="list-header" rowClasses="list-row-odd,list-row-even"
                            columnClasses="dvnNtwkDataSubsetHistCol1,dvnNtwkDataSubsetHistCol2,dvnNtwkDataSubsetHistCol3,dvnNtwkDataSubsetHistCol4,dvnNtwkDataSubsetHistCol5">
                 <ice:column>
                     <f:facet name="header">
                         <ice:outputText value="Label"/>
                     </f:facet>
-                    <ice:outputText value="Original Data Set"/>
+                    <ice:outputText value="#{event.label}"/>
                 </ice:column>
                 <ice:column>
                     <f:facet name="header">
                         <ice:outputText value="Attribute Set"/>
                     </f:facet>
-                    <ice:outputText value="N/A"/>
+                    <ice:outputText value="#{event.attributeSet}"/>
                 </ice:column>
                 <ice:column>
                     <f:facet name="header">
                         <ice:outputText value="Query"/>
                     </f:facet>
-                    <ice:outputText value="(empty)"/>
+                    <ice:outputText value="#{event.query}"/>
                 </ice:column>
                 <ice:column>
                     <f:facet name="header">
                         <ice:outputText value="Vertices"/>
                     </f:facet>
-                    <ice:outputText value="6400"/>
+                    <ice:outputText value="#{event.vertices}"/>
                 </ice:column>
                 <ice:column>
                     <f:facet name="header">
                         <ice:outputText value="Edges"/>
                     </f:facet>
-                    <ice:outputText value="8724"/>
+                    <ice:outputText value="#{event.edges}"/>
                 </ice:column>
             </ice:dataTable>
             <ice:panelGrid id="groupPanel12" columns="1" cellpadding="0" cellspacing="0" width="100%"
@@ -246,7 +299,9 @@
     </div>
 
 </ice:form>
-
+      <script type="text/javascript">
+          changeAction();
+      </script>
 </gui:define>
 </gui:composition>
 </body>

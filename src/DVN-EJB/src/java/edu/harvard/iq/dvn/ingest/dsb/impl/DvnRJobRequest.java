@@ -120,6 +120,22 @@ public class DvnRJobRequest {
 
     }
 
+    /**
+     * Constructor for Graph/Network Rserve request
+     *
+     */
+
+    public DvnRJobRequest(String RDataFile, 
+        Map<String, List<String>> listParams){
+        
+        listParametersForRequest = listParams;
+        savedRworkSpace = RDataFile; 
+
+        dbgLog.fine("***** DvnRJobRequest: Network call constructor ends here *****");
+    }
+
+
+
     // ----------------------------------------------------- fields
     
     public boolean IsOutcomeVarRecoded = false;
@@ -129,6 +145,9 @@ public class DvnRJobRequest {
     
     /** list-type (one-to-many) parameter */
     private Map<String, List<String>> listParametersForRequest;
+
+    /** R work space, saved and cached on the Application side **/ 
+    private String savedRworkSpace; 
 
     /**  */
     

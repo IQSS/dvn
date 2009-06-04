@@ -7,8 +7,12 @@ package edu.harvard.iq.dvn.core.web.study;
 
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.study.StudyComment;
+import edu.harvard.iq.dvn.core.util.PropertyUtil;
 import java.util.Iterator;
 import java.util.List;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  *
@@ -33,18 +37,53 @@ public class StudyCommentUI {
 
     public String getFlaggedByUserNames() {
         List<VDCUser> vdcUsers = (List<VDCUser>)studyComment.getFlaggedByUsers();
-        Iterator iterator = vdcUsers.iterator();
+        Iterator iterator      = vdcUsers.iterator();
         while (iterator.hasNext()) {
             VDCUser vdcuser = (VDCUser)iterator.next();
-            flaggedByUserNames += vdcuser.getUserName();
-            if (vdcUsers.indexOf(vdcuser) > 0 && vdcUsers.indexOf(vdcuser) < vdcUsers.size()-1)
+            if (vdcUsers.indexOf(vdcuser) > 0)
                 flaggedByUserNames += ", ";
+            flaggedByUserNames += vdcuser.getUserName();
         }
         return flaggedByUserNames;
     }
 
     public StudyComment getStudyComment() {
         return this.studyComment;
+    }
+
+    public String getStudyPageLink() {
+        String studyPageLink = new String("");
+        FacesContext context            = FacesContext.getCurrentInstance();
+        ExternalContext externalContext = context.getExternalContext();
+        HttpServletRequest request      = (HttpServletRequest) externalContext.getRequest();
+        studyPageLink = request.getProtocol().substring(0, request.getProtocol().indexOf("/")).toLowerCase() + "://" +
+                            getHostUrl() + request.getContextPath() + "/dv/" +
+                            studyComment.getStudy().getOwner().getAlias() +
+                            "/faces/study/StudyPage.xhtml?studyId=" +
+                            studyComment.getStudy().getId();
+        return studyPageLink;
+    }
+
+    protected String studyTabLink = new String();
+    
+    public String getStudyTabLink() {
+        studyTabLink = getStudyPageLink() + "&tab=catalog";
+        return studyTabLink;
+    }
+
+    protected String commentsTabLink = new String();
+
+     public String getCommentsTabLink() {
+        commentsTabLink = getStudyPageLink() + "&tab=comments#comment" + studyComment.getId();
+        return commentsTabLink;
+    }
+
+     /**
+     *  for url of dataverse home page.
+     * @return hostUrl (based on inet Address)
+     */
+    private String getHostUrl() {
+        return PropertyUtil.getHostUrl();
     }
 
 

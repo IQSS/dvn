@@ -31,8 +31,10 @@ package edu.harvard.iq.dvn.core.web.study;
 import edu.harvard.iq.dvn.core.admin.UserGroup;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.study.DataFileFormatType;
+import edu.harvard.iq.dvn.core.study.NetworkDataFile;
 import edu.harvard.iq.dvn.core.study.StudyFile;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
+import edu.harvard.iq.dvn.core.study.TabularDataFile;
 import edu.harvard.iq.dvn.core.util.FileUtil;
 import edu.harvard.iq.dvn.core.util.StringUtil;
 import edu.harvard.iq.dvn.core.util.WebStatisticsSupport;
@@ -182,42 +184,61 @@ public class StudyFileUI implements java.io.Serializable {
     public List<DataFileFormatType> getDataFileFormatTypes() {
 
         List dataFileFormatTypes = new ArrayList();
-        String tabDelimitedValue = "";
+        if (isTabularDataFile()) {
 
-        // first check for fixed field
-        if ("text/x-fixed-field".equals(studyFile.getFileType())) {
-            DataFileFormatType fixedFileType = new DataFileFormatType();
-            fixedFileType.setName("Fixed-Field");
-            fixedFileType.setValue("");
-            dataFileFormatTypes.add(fixedFileType);
+            String tabDelimitedValue = "";
 
-            tabDelimitedValue = "D00";
+            // first check for fixed field
+            if ("text/x-fixed-field".equals(studyFile.getFileType())) {
+                DataFileFormatType fixedFileType = new DataFileFormatType();
+                fixedFileType.setName("Fixed-Field");
+                fixedFileType.setValue("");
+                dataFileFormatTypes.add(fixedFileType);
+
+                tabDelimitedValue = "D00";
+            }
+
+            // now add tab delimited
+            DataFileFormatType tabDelimitedType = new DataFileFormatType();
+            tabDelimitedType.setName("Tab Delimited");
+            tabDelimitedType.setValue(tabDelimitedValue);
+            dataFileFormatTypes.add(tabDelimitedType);
+
+            // and original file
+            if ( !StringUtil.isEmpty( studyFile.getOriginalFileType() ) ) {
+                DataFileFormatType originalFileType = new DataFileFormatType();
+                originalFileType.setName("Original File");
+                originalFileType.setValue(DataFileFormatType.ORIGINAL_FILE_DATA_FILE_FORMAT);
+                dataFileFormatTypes.add(originalFileType);
+            }
+
+            // finally, add types from db
+            StudyServiceLocal studyService = null;
+            try {
+                studyService = (StudyServiceLocal) new InitialContext().lookup("java:comp/env/studyService");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            dataFileFormatTypes.addAll(studyService.getDataFileFormatTypes());
+
+        } else if(isNetworkDataFile()) {
+            // now add tab delimited
+            DataFileFormatType tabDelimitedType = new DataFileFormatType();
+            tabDelimitedType.setName("GraphML");
+            tabDelimitedType.setValue("");
+            dataFileFormatTypes.add(tabDelimitedType);
+
+            // and original file
+            if ( !StringUtil.isEmpty( studyFile.getOriginalFileType() ) ) {
+                DataFileFormatType originalFileType = new DataFileFormatType();
+                originalFileType.setName("Original File");
+                originalFileType.setValue(DataFileFormatType.ORIGINAL_FILE_DATA_FILE_FORMAT);
+                dataFileFormatTypes.add(originalFileType);
+            }
+
+            // TODO: need to RData as download
         }
-
-        // now add tab delimited
-        DataFileFormatType tabDelimitedType = new DataFileFormatType();
-        tabDelimitedType.setName("Tab Delimited");
-        tabDelimitedType.setValue(tabDelimitedValue);
-        dataFileFormatTypes.add(tabDelimitedType);
-
-        // and original file
-        if ( !StringUtil.isEmpty( studyFile.getOriginalFileType() ) ) {
-            DataFileFormatType originalFileType = new DataFileFormatType();
-            originalFileType.setName("Original File");
-            originalFileType.setValue(DataFileFormatType.ORIGINAL_FILE_DATA_FILE_FORMAT);
-            dataFileFormatTypes.add(originalFileType);
-        }    
-        
-        // finally, add types from db
-        StudyServiceLocal studyService = null;
-        try {
-            studyService = (StudyServiceLocal) new InitialContext().lookup("java:comp/env/studyService");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        dataFileFormatTypes.addAll(studyService.getDataFileFormatTypes());
-
         return dataFileFormatTypes;
     }
 
@@ -246,5 +267,13 @@ public class StudyFileUI implements java.io.Serializable {
     
     public int getDownloadCount() {
         return studyFile.getStudyFileActivity() != null ? studyFile.getStudyFileActivity().getDownloadCount() : 0;
-    }    
+    }
+
+    public boolean isTabularDataFile() {
+        return studyFile instanceof TabularDataFile;
+    }
+
+    public boolean isNetworkDataFile() {
+        return studyFile instanceof NetworkDataFile;
+    }
 }

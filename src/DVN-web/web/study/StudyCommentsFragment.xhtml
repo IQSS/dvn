@@ -11,6 +11,18 @@
                       styleClass="vdcStudyFilesPage">
                   <!-- rendered="#{StudyPageFragment.user != null}" -->
                   <div jsfc="ice:panelGroup"
+                       id="messagePanel"
+                       panelLayout="flow"
+                       rendered="#{StudyCommentsFragment.actionComplete}"
+                       styleClass="dvnMsgBlockRound dvnSuccessMessage"
+                       >
+                      <div class="dvnMsgBlockContainer">
+                          <p>
+                            <ice:messages layout="table" styleClass="dvnMsgBlockContainer"/>
+                          </p>
+                      </div>
+                  </div>
+                  <div jsfc="ice:panelGroup"
                        id="commentContentPanel"
                        panelLayout="flow"
                        >
@@ -98,6 +110,9 @@
                                         rendered="#{item.studyComment.status == 'OK' or item.studyComment.status == 'FLAGGED'}"
                                         styleClass="vdcStudyCommentContentColumn"
                                         style="border-left: 0px; border-right:0px;">
+                                <gui:fragment>
+                                    <a name="comment#{item.studyComment.id}"></a>
+                                </gui:fragment>
                                   <ice:outputText value="#{item.studyComment.comment}"/>
                             </ice:column>
                       </ice:dataTable>
@@ -159,10 +174,6 @@
                                       styleClass="vdcStudyCommentsSubheading"
                                       value="Add a Comment"/>
                           </ice:outputLabel>
-
-                          <ice:message id="studyCommentsMsg"
-                                       for="studyComments"
-                                       styleClass="errorMessage"/>
                           <br />
                           <br />
                             <ice:inputTextarea id="studyComments"
@@ -180,7 +191,7 @@
                            style="clear:both;">
                             <ice:commandButton id="button1"
                                                value="Save"
-                                               action="#{StudyCommentsFragment.save}"/>
+                                               actionListener="#{StudyCommentsFragment.save}"/>
                             <ice:commandButton id="button2"
                                                value="Cancel"
                                                action="#{StudyCommentsFragment.cancel}"/>

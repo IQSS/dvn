@@ -8,12 +8,17 @@ import com.icesoft.faces.component.ext.HtmlCommandLink;
 import edu.harvard.iq.dvn.core.study.StudyComment;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import edu.harvard.iq.dvn.core.study.StudyCommentService;
+import edu.harvard.iq.dvn.core.util.PropertyUtil;
 import edu.harvard.iq.dvn.core.web.study.StudyCommentUI;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  *
@@ -30,7 +35,6 @@ public class CommentReviewPage extends VDCBaseBean implements java.io.Serializab
     public void init() {
         super.init();
         getCommentsForReview();
-        System.out.println("The total notifications are: " + totalNotifications);
      }
 
      public void deleteFlaggedComment(ActionEvent event) {
@@ -43,9 +47,14 @@ public class CommentReviewPage extends VDCBaseBean implements java.io.Serializab
                                "This comment was deleted in accordance with the " +
                                 "study comments terms of use.";
          studyCommentService.deleteComment(flaggedCommentId, deletedMessage);
+         String truncatedComment = (getFlaggedStudyComment().length() <= 25) ? getFlaggedStudyComment() : getFlaggedStudyComment().substring(0, 25);
+         truncatedComment += "...";
+         FacesContext context = FacesContext.getCurrentInstance();
+         context.addMessage(event.getComponent().getClientId(context), new FacesMessage("Success!  The comment, " + truncatedComment + ", was deleted."));
          //cleanup
-         flaggedCommentId = new Long("0");
+         flaggedCommentId  = new Long("0");
          commentsForReview = null;
+         actionComplete    = true;
      }
 
      public void ignoreCommentFlag(ActionEvent event) {
@@ -59,9 +68,14 @@ public class CommentReviewPage extends VDCBaseBean implements java.io.Serializab
                                 "reported comment is not an abuse. This comment will remain posted, and will " +
                                 "no longer appear to you as reported.";
          studyCommentService.okComment(flaggedCommentId, okMessage);
+         String truncatedComment = (getFlaggedStudyComment().length() <= 25) ? getFlaggedStudyComment() : getFlaggedStudyComment().substring(0, 25);
+         truncatedComment += "...";
+         FacesContext context = FacesContext.getCurrentInstance();
+         context.addMessage(event.getComponent().getClientId(context), new FacesMessage("Success!  The comment, " + truncatedComment + ", was reset to OK."));
          //cleanup
-         flaggedCommentId = new Long("0");
+         flaggedCommentId  = new Long("0");
          commentsForReview = null;
+         actionComplete    = true;
      }
 
     /**
@@ -159,6 +173,8 @@ public class CommentReviewPage extends VDCBaseBean implements java.io.Serializab
          Iterator iterator = commentsForReview.iterator();
          while (iterator.hasNext()) {
              StudyCommentUI studycommentui = (StudyCommentUI)iterator.next();
+             //debug remove this
+
              if (studycommentui.getStudyComment().getId().equals(flaggedCommentId)) {
                  comment = studycommentui.getStudyComment().getComment();
                  break;
@@ -180,5 +196,27 @@ public class CommentReviewPage extends VDCBaseBean implements java.io.Serializab
          }
          return title;
      }
+
+     
+
+    protected boolean actionComplete = false;
+
+    /**
+     * Get the value of actionComplete
+     *
+     * @return the value of actionComplete
+     */
+    public boolean isActionComplete() {
+        return actionComplete;
+    }
+
+    /**
+     * Set the value of actionComplete
+     *
+     * @param actionComplete new value of actionComplete
+     */
+    public void setActionComplete(boolean actionComplete) {
+        this.actionComplete = actionComplete;
+    }
 
 }

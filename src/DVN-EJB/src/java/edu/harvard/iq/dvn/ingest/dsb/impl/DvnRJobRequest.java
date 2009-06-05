@@ -126,9 +126,9 @@ public class DvnRJobRequest {
      */
 
     public DvnRJobRequest(String RDataFile, 
-        Map<String, List<String>> listParams){
+        Map<String, Object> listParams){
         
-        listParametersForRequest = listParams;
+        mapParametersForGraphSubset = listParams;
         savedRworkSpace = RDataFile; 
 
         dbgLog.fine("***** DvnRJobRequest: Network call constructor ends here *****");
@@ -145,6 +145,10 @@ public class DvnRJobRequest {
     
     /** list-type (one-to-many) parameter */
     private Map<String, List<String>> listParametersForRequest;
+
+    /** list-type (one-to-many) parameter */
+    private Map<String, Object> mapParametersForGraphSubset; 
+
 
     /** R work space, saved and cached on the Application side **/ 
     private String savedRworkSpace; 
@@ -174,11 +178,21 @@ public class DvnRJobRequest {
     /**
      * Getter for property listParametersForRequest
      *
-     * @return    
+     * @return     
      */
      
     public Map<String, List<String>> getListParametersForRequest(){
         return this.listParametersForRequest;
+    }
+
+    /**
+     * Getter for property mapParametersForGraphSubset
+     *
+     * @return     
+     */
+     
+    public Map<String, Object> getParametersForGraphSubset(){
+        return this.mapParametersForGraphSubset;
     }
 
     /**
@@ -195,6 +209,10 @@ public class DvnRJobRequest {
         return subsetRecodeConditions.get("subset");
     }
     
+    public String getCachedRworkSpace(){
+	return this.savedRworkSpace; 
+    }
+
     public String getSubsetConditionsForCitation(){
         dbgLog.fine("subsetForCitation"+subsetRecodeConditions.get("subsetForCitation"));
         return  StringUtils.join(subsetRecodeConditions.get("subsetForCitation"), " & ") ;

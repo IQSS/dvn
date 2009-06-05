@@ -32,6 +32,8 @@ public class DvnRGraphServiceImpl{
 
     // - constants for defining the subset queries: 
 
+    public static String RSUBSETFUNCTION = "RSUBSETFUNCTION";
+
     public static String MANUAL_QUERY = "MANUAL_QUERY";
     public static String ELIMINATE_DISCONNECTED = "ELIMINATE_DISCONNECTED";
     public static String AUTOMATIC_QUERY = "AUTOMATIC_QUERY";
@@ -42,6 +44,9 @@ public class DvnRGraphServiceImpl{
     public static String EDGE_ATTRIBUTE = "EDGE_ATTRIBUTE";
 
 
+    public static String SAVED_RWORK_SPACE = "SAVED_RWORK_SPACE";
+    public static String NUMBER_OF_VERTICES = "NUMBER_OF_VERTICES"; 
+    public static String NUMBER_OF_EDGES = "NUMBER_OF_EDGES"; 
 
     public static String DVN_TMP_DIR=null;
     public static String DSB_TMP_DIR=null;
@@ -213,29 +218,39 @@ public class DvnRGraphServiceImpl{
 
             c.login(RSERVE_USER, RSERVE_PWD);
             dbgLog.fine(">" + c.eval("R.version$version.string").asString() + "<");
-
-
-            // save the data file at the Rserve side
-            String infile = sro.getSubsetFileName();
-            InputStream inb = new BufferedInputStream(
-                    new FileInputStream(infile));
-            int bufsize;
-            byte[] bffr = new byte[1024];
-
-            RFileOutputStream os = 
-                 c.createFile(tempFileName);
-            while ((bufsize = inb.read(bffr)) != -1) {
-                    os.write(bffr, 0, bufsize);
-            }
-            os.close();
-            inb.close();
-	            
-            // Rserve code starts here
-
             dbgLog.fine("wrkdir="+wrkdir);
             historyEntry.add(librarySetup);
             c.voidEval(librarySetup);
 
+	    String CachedRworkSpace = sro.getCachedRworkSpace(); 
+	    Map <String, Object> SubsetParameters = sro.getParametersForGraphSubset(); 
+
+	    if ( CachedRworkSpace != null ) {
+		// send data file to the Rserve side 
+
+		InputStream inb = new BufferedInputStream(new FileInputStream(CachedRworkSpace));
+		int bufsize;
+		byte[] bffr = new byte[1024];
+
+		RFileOutputStream os = 
+		    c.createFile(tempFileName);
+		while ((bufsize = inb.read(bffr)) != -1) {
+                    os.write(bffr, 0, bufsize);
+		}
+		os.close();
+		inb.close();
+	    } else {
+		String SavedRworkSpace = (String) SubsetParameters.get(SAVED_RWORK_SPACE); 
+
+		if ( SavedRworkSpace != null ) {
+		    tempFileName = SavedRworkSpace; 
+		}
+	    }
+		
+            dbgLog.fine("RDataFile="+tempFileName);
+            historyEntry.add("load('"+tempFileName+"')");
+            c.voidEval("load('"+tempFileName+"')");
+	            
             // check working directories
             setupWorkingDirectories(c);
             

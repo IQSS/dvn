@@ -330,10 +330,20 @@ public class DvnRGraphServiceImpl{
 			} else if ( networkMeasureType.equals(NETWORK_MEASURE_RANK) ) {
 			    String networkMeasureParam = (String) SubsetParameters.get(NETWORK_MEASURE_PARAMETER); 
 			    if ( networkMeasureParam != null ) {
-				networkMeasureCommand = "add_rank(g, "+networkMeasureParam;
+				networkMeasureCommand = "add_rank(g, "+networkMeasureParam+")";
 			    }
 			}
 		    }
+
+		    if ( networkMeasureCommand == null ) {
+			result.put("RexecError", "true");
+			result.put("RexecErrorDescription", "ILLEGAL OR UNSUPPORTED NETWORK MEASURE QUERY"); 
+			return result;
+		    }
+
+		    dbgLog.fine("networkMeasureCommand="+networkMeasureCommand);
+		    historyEntry.add(networkMeasureCommand);
+		    c.voidEval(networkMeasureCommand);
 		    
 		} else if ( GraphSubsetType.equals(AUTOMATIC_QUERY_SUBSET) ) {
 		    String automaticQueryType = (String) SubsetParameters.get(AUTOMATIC_QUERY_TYPE); 

@@ -13,6 +13,7 @@ import edu.harvard.iq.dvn.core.study.StudyFileEditBean;
 import edu.harvard.iq.dvn.core.study.VariableServiceLocal;
 import edu.harvard.iq.dvn.core.util.FileUtil;
 import edu.harvard.iq.dvn.ingest.dsb.impl.DvnRGraphServiceImpl;
+import edu.harvard.iq.dvn.ingest.dsb.impl.DvnRJobRequest;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -50,46 +51,92 @@ public class NetworkDataServiceBean implements NetworkDataServiceLocal, java.io.
     private static Logger dbgLog = Logger.getLogger(NetworkDataServiceBean.class.getPackage().getName());
     @EJB VariableServiceLocal varService;
 
-    public String initAnalysis() {
-        return null;
-    }
-
-    public NetworkDataSubsetResult runManualQuery(String RDataFileName, String attributeSet, String query, Boolean eliminateDisconnectedVertices) {
-        /*
-        Map<String, Object> mpl = new HashMap<String, Object>();
+    public String initAnalysis(String fileLocation) {
         Map<String, String> resultInfo = new HashMap<String, String>();
 
-        mpl.put("rFunction","manualQuery");
-        mpl.put("attributeSet",attributeSet);
-        mpl.put("query", query);
-        mpl.put("eliminate",eliminateDisconnectedVertices);
-
-        DvnRJobRequest rjr = new DvnRJobRequest(RDataFileName, mpl);
+        DvnRJobRequest rjr = new DvnRJobRequest(fileLocation, null);
         DvnRGraphServiceImpl dgs = new DvnRGraphServiceImpl();
         resultInfo = dgs.execute(rjr);
 
-        if (resultInfo.get("RexecError").equals("true")){
-            // throw exception
+        checkForError(resultInfo);
+        return resultInfo.get(DvnRGraphServiceImpl.SAVED_RWORK_SPACE);
+    }
+
+    public NetworkDataSubsetResult runManualQuery(String rWorkspace, String attributeSet, String query, boolean eliminateDisconnectedVertices) {
+
+        Map<String, Object> subsetParameters = new HashMap<String, Object>();
+        Map<String, String> resultInfo = new HashMap<String, String>();
+
+        subsetParameters.put( DvnRGraphServiceImpl.SAVED_RWORK_SPACE, rWorkspace);
+        subsetParameters.put( DvnRGraphServiceImpl.RSUBSETFUNCTION, DvnRGraphServiceImpl.MANUAL_QUERY_SUBSET );
+
+        if (DataTable.TYPE_VERTEX.equals(attributeSet)) {
+            subsetParameters.put( DvnRGraphServiceImpl.MANUAL_QUERY_TYPE, DvnRGraphServiceImpl.VERTEX_SUBSET );
+        } else if (DataTable.TYPE_EDGE.equals(attributeSet)) {
+             subsetParameters.put( DvnRGraphServiceImpl.MANUAL_QUERY_TYPE, DvnRGraphServiceImpl.EDGE_SUBSET );
+        }
+
+        subsetParameters.put( DvnRGraphServiceImpl.MANUAL_QUERY, query );
+
+        if (eliminateDisconnectedVertices) {
+            subsetParameters.put( DvnRGraphServiceImpl.ELIMINATE_DISCONNECTED, "true" ); // default is false
+        }
+
+        DvnRJobRequest rjr = new DvnRJobRequest(null, subsetParameters);
+        DvnRGraphServiceImpl dgs = new DvnRGraphServiceImpl();
+        resultInfo = dgs.execute(rjr);
+
+        checkForError(resultInfo);
+        NetworkDataSubsetResult result = new NetworkDataSubsetResult();
+        result.setVertices( Long.parseLong( resultInfo.get(DvnRGraphServiceImpl.NUMBER_OF_VERTICES) ) );
+        result.setEdges( Long.parseLong( resultInfo.get(DvnRGraphServiceImpl.NUMBER_OF_EDGES) ) );
+        return result;
+    }
+
+    public NetworkDataSubsetResult runAutomaticQuery(String rWorkspace, String automaticQuery, String nValue) {
+        Map<String, Object> mpl = new HashMap<String, Object>();
+        Map<String, String> resultInfo = new HashMap<String, String>();
+
+        mpl.put(DvnRGraphServiceImpl.SAVED_RWORK_SPACE, rWorkspace);
+        mpl.put(DvnRGraphServiceImpl.RSUBSETFUNCTION, DvnRGraphServiceImpl.AUTOMATIC_QUERY_SUBSET);
+        mpl.put(DvnRGraphServiceImpl.AUTOMATIC_QUERY_TYPE, automaticQuery);
+        mpl.put(DvnRGraphServiceImpl.AUTOMATIC_QUERY_N_VALUE, nValue);
+
+        DvnRJobRequest rjr = new DvnRJobRequest(rWorkspace, mpl);
+        DvnRGraphServiceImpl dgs = new DvnRGraphServiceImpl();
+        resultInfo = dgs.execute(rjr);
+
+        checkForError(resultInfo);
+        NetworkDataSubsetResult result = new NetworkDataSubsetResult();
+        result.setVertices( Long.parseLong( resultInfo.get(DvnRGraphServiceImpl.NUMBER_OF_VERTICES) ) );
+        result.setEdges( Long.parseLong( resultInfo.get(DvnRGraphServiceImpl.NUMBER_OF_EDGES) ) );
+        return result;
+    }
+
+    public String runNetworkMeasure(String rWorkspace, String networkMeasure, Map<String,String> parameters) {
+        Map<String, Object> mpl = new HashMap<String, Object>();
+        Map<String, String> resultInfo = new HashMap<String, String>();
+
+        mpl.put(DvnRGraphServiceImpl.SAVED_RWORK_SPACE, rWorkspace);
+        mpl.put(DvnRGraphServiceImpl.RSUBSETFUNCTION, DvnRGraphServiceImpl.NETWORK_MEASURE);
+        mpl.put(DvnRGraphServiceImpl.NETWORK_MEASURE_TYPE, networkMeasure);
+        // TODO: Parameters
+
+        DvnRJobRequest rjr = new DvnRJobRequest(rWorkspace, mpl);
+        DvnRGraphServiceImpl dgs = new DvnRGraphServiceImpl();
+        resultInfo = dgs.execute(rjr);
+
+        checkForError(resultInfo);
+        return networkMeasure;
+    }
+
+    private void checkForError(Map<String, String> resultInfo) {
+        if (resultInfo.get("RexecError") != null && resultInfo.get("RexecError").equals("true")){
+            throw new EJBException(resultInfo.get("RexecErrorDescription") + ": " + resultInfo.get("RexecErrorMessage"));
             // resultInfo.get("RexecErrorDescription") -- error condition;
             // resultInfo.get("RexecErrorMessage") -- more detailed error
             //					  message, if available
         }
-        */
-        NetworkDataSubsetResult result = new NetworkDataSubsetResult();
-        //result.setVertices( Long.parseLong( resultInfo.get("numVertices") ) );
-        //result.setEdges( Long.parseLong( resultInfo.get("numEdges") ) );
-        return result;
-    }
-
-    public NetworkDataSubsetResult runAutomaticQuery() {
-        NetworkDataSubsetResult result = new NetworkDataSubsetResult();
-        //result.setVertices( Long.parseLong( resultInfo.get("numVertices") ) );
-        //result.setEdges( Long.parseLong( resultInfo.get("numEdges") ) );
-        return result;
-    }
-
-    public String runNetworkMeasure() {
-        return null;
     }
 
 

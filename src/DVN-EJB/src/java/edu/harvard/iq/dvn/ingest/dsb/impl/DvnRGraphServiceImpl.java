@@ -49,6 +49,8 @@ public class DvnRGraphServiceImpl{
 
     public static String NETWORK_MEASURE = "NETWORK_MEASURE"; 
     public static String NETWORK_MEASURE_TYPE = "NETWORK_MEASURE_TYPE"; 
+    public static String NETWORK_MEASURE_DEGREE = "NETWORK_MEASURE_DEGREE"; 
+    public static String NETWORK_MEASURE_RANK = "NETWORK_MEASURE_RANK"; 
     public static String NETWORK_MEASURE_PARAMETER = "NETWORK_MEASURE_PARAMETER";
 
 
@@ -209,9 +211,16 @@ public class DvnRGraphServiceImpl{
         Map<String, String> result = new HashMap<String, String>();
         
         try {
+	    if ( sro != null ) {
+		dbgLog.fine("sro dump:\n"+ToStringBuilder.reflectionToString(sro, ToStringStyle.MULTI_LINE_STYLE));
+            } else {
+		result.put("RexecError", "true");
+		result.put("RexecErrorDescription", "NULL R JOB OBJECT"); 
+		return result;
+	    }
+
             // Set up an Rserve connection
-            dbgLog.fine("sro dump:\n"+ToStringBuilder.reflectionToString(sro, ToStringStyle.MULTI_LINE_STYLE));
-            
+
             dbgLog.fine("RSERVE_USER="+RSERVE_USER+"[default=rserve]");
             dbgLog.fine("RSERVE_PWD="+RSERVE_PWD+"[default=rserve]");
             dbgLog.fine("RSERVE_PORT="+RSERVE_PORT+"[default=6311]");
@@ -225,14 +234,14 @@ public class DvnRGraphServiceImpl{
             historyEntry.add(librarySetup);
             c.voidEval(librarySetup);
 
+	    String SavedRworkSpace = null;  
+
+	    String CachedRworkSpace = sro.getCachedRworkSpace(); 
+
 	    Map <String, Object> SubsetParameters = sro.getParametersForGraphSubset(); 
-
-	    String SavedRworkSpace = (String) SubsetParameters.get(SAVED_RWORK_SPACE); 
-
-	    String CachedRworkSpace = null; 
-
-	    if ( sro != null ) {		
-		CachedRworkSpace = sro.getCachedRworkSpace(); 
+	    
+	    if ( SubsetParameters != null ) {
+		SavedRworkSpace = (String) SubsetParameters.get(SAVED_RWORK_SPACE);
 	    }
 
 	    if ( SavedRworkSpace != null ) {
@@ -316,6 +325,14 @@ public class DvnRGraphServiceImpl{
 		    
 		} else if ( GraphSubsetType.equals(NETWORK_MEASURE) ) {
 		    String networkMeasureType = (String) SubsetParameters.get(NETWORK_MEASURE_TYPE); 
+		    String networkMeasureCommand = null; 
+		    if ( networkMeasureType != null ) {
+			if ( networkMeasureType.equals(NETWORK_MEASURE_DEGREE) ) {
+			    networkMeasureCommand = "add_degree"; 
+			} else if ( networkMeasureType.equals(NETWORK_MEASURE_RANK) ) {
+			    networkMeasureCommand = "add_rank";
+			}
+		    }
 		    
 		} else if ( GraphSubsetType.equals(AUTOMATIC_QUERY) ) {
 		    int n = Integer.parseInt((String) SubsetParameters.get(N_VALUE)); 
@@ -373,7 +390,6 @@ public class DvnRGraphServiceImpl{
             
             result.put("IdSuffix", IdSuffix);
             result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
-            result.put("option",sro.getRequestType().toLowerCase());
             
             result.put("RexecError", "true");
 	    result.put("RexecErrorMessage", rse.getMessage()); 
@@ -385,7 +401,6 @@ public class DvnRGraphServiceImpl{
             // REXP mismatch exception (what we got differs from what we expected)
             result.put("IdSuffix", IdSuffix);
             result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
-            result.put("option",sro.getRequestType().toLowerCase());
 
             result.put("RexecError", "true");
             return result;
@@ -394,7 +409,6 @@ public class DvnRGraphServiceImpl{
             
             result.put("IdSuffix", IdSuffix);
             result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
-            result.put("option",sro.getRequestType().toLowerCase());
 
             result.put("RexecError", "true");
             return result;
@@ -404,7 +418,6 @@ public class DvnRGraphServiceImpl{
             result.put("IdSuffix", IdSuffix);
 
             result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
-            result.put("option",sro.getRequestType().toLowerCase());
 
             result.put("RexecError", "true");
             return result;

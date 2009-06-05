@@ -5,11 +5,14 @@
 
 package edu.harvard.iq.dvn.core.web.subsetting;
 
+import edu.harvard.iq.dvn.core.analysis.NetworkDataServiceLocal;
+import edu.harvard.iq.dvn.core.analysis.NetworkDataSubsetResult;
 import edu.harvard.iq.dvn.core.study.DataTable;
 import edu.harvard.iq.dvn.core.study.DataVariable;
 import edu.harvard.iq.dvn.core.study.NetworkDataFile;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
+import edu.harvard.iq.dvn.ingest.dsb.impl.DvnRGraphServiceImpl;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -29,8 +32,12 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
     @EJB
     StudyServiceLocal studyService;
 
+    @EJB
+    NetworkDataServiceLocal networkDataService;
+
     private Long fileId;
     private NetworkDataFile file;
+    private String rWorkspace;
 
     public NetworkDataFile getFile() {
         return file;
@@ -56,6 +63,8 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
         if (fileIdStr != null) {
             fileId = Long.parseLong(fileIdStr);
             file = (NetworkDataFile) studyService.getStudyFile(fileId);
+
+            rWorkspace = networkDataService.initAnalysis(file.getFileSystemLocation() + ".RData");
 
             NetworkDataAnalysisEvent initialEvent = new NetworkDataAnalysisEvent();
             initialEvent.setLabel("Initial State");
@@ -194,8 +203,8 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
         // TODO: we will eventually have to read all this from xml
         if (automaticQuerySelectItems == null) {
             automaticQuerySelectItems = new ArrayList();
-            automaticQuerySelectItems.add(new SelectItem("largestGraph", "Largest Graph"));
-            automaticQuerySelectItems.add(new SelectItem("biconnectedGraph", "Biconnected Graph"));
+            automaticQuerySelectItems.add(new SelectItem(DvnRGraphServiceImpl.AUTOMATIC_QUERY_NTHLARGEST, "Largest Graph"));
+            automaticQuerySelectItems.add(new SelectItem(DvnRGraphServiceImpl.AUTOMATIC_QUERY_BICONNECTED, "Biconnected Graph"));
 
         }
 
@@ -206,8 +215,8 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
         // TODO: we will eventually have to read all this from xml
         if (networkMeasureSelectItems == null) {
             networkMeasureSelectItems = new ArrayList();
-            networkMeasureSelectItems.add(new SelectItem("pageRank", "Page Rank"));
-            networkMeasureSelectItems.add(new SelectItem("degree", "Degree"));
+            networkMeasureSelectItems.add(new SelectItem(DvnRGraphServiceImpl.NETWORK_MEASURE_RANK, "Page Rank"));
+            networkMeasureSelectItems.add(new SelectItem(DvnRGraphServiceImpl.NETWORK_MEASURE_DEGREE, "Degree"));
         }
 
         return networkMeasureSelectItems;
@@ -231,45 +240,49 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
 
 
     public String manualQuery_action() {
+
+        NetworkDataSubsetResult result = networkDataService.runManualQuery(rWorkspace, manualQueryType, manualQuery, eliminateDisconnectedVertices );
+
         NetworkDataAnalysisEvent event = new NetworkDataAnalysisEvent();
         event.setLabel("Manual Query");
-        event.setAttributeSet(getManualQueryType());
+        event.setAttributeSet(manualQueryType);
         event.setQuery(manualQuery);
-        event.setVertices( getLastEvent().getVertices() );
-        event.setEdges( getLastEvent().getEdges() );
+        event.setVertices( result.getVertices() );
+        event.setEdges( result.getEdges() );
         events.add(event);
-
-        // TODO: CALL R
-        test();
 
         return null;
     }
 
     public String automaticQuery_action() {
+
+        NetworkDataSubsetResult result = networkDataService.runAutomaticQuery(rWorkspace, automaticQueryType, automaticQueryNthValue);
+
         NetworkDataAnalysisEvent event = new NetworkDataAnalysisEvent();
         event.setLabel("Automatic Query");
-        //event.setAttributeSet(getManualQueryType());
+        event.setAttributeSet("N/A");
         event.setQuery(automaticQueryType + "(" + automaticQueryNthValue + ")");
-        event.setVertices( getLastEvent().getVertices() );
-        event.setEdges( getLastEvent().getEdges() );
+        event.setVertices( result.getVertices() );
+        event.setEdges( result.getEdges() );
         events.add(event);
-        // TODO: CALL R
-        test();
 
         return null;
     }
 
     public String networkMeasure_action() {
+
+        String result = networkDataService.runNetworkMeasure(rWorkspace, networkMeasureType, null);
+
         NetworkDataAnalysisEvent event = new NetworkDataAnalysisEvent();
         event.setLabel("Network Measure");
-        //event.setAttributeSet();
+        event.setAttributeSet("N/A");
         event.setQuery(networkMeasureType + "("+ listString(getNetworkMeasureParameterList()) + ")");
         event.setVertices( getLastEvent().getVertices() );
         event.setEdges( getLastEvent().getEdges() );
         events.add(event);
 
         // add measure to attributeList
-        vertexAttributeSelectItems.add(new SelectItem(networkMeasureType));
+        vertexAttributeSelectItems.add(new SelectItem(result));
         
         return null;
     }
@@ -289,18 +302,6 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
         return events.get( events.size() - 1);
     }
 
-    private void test() {
-        NetworkDataAnalysisEvent event = getLastEvent();
-
-        if ( DataTable.TYPE_VERTEX.equals(event.getAttributeSet()) ) {
-            event.setVertices( event.getVertices() / 2);
-        } else if ( DataTable.TYPE_EDGE.equals(event.getAttributeSet()) ) {
-            event.setEdges( event.getEdges() / 2);
-        } else {
-            event.setVertices( event.getVertices() / 2);
-            event.setEdges( event.getEdges() / 2);
-        }
-    }
 
 
     public class NetworkMeasureParameter {

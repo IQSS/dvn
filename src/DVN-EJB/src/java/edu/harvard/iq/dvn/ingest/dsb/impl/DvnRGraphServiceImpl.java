@@ -308,13 +308,13 @@ public class DvnRGraphServiceImpl{
 			if (manualQueryType.equals(EDGE_SUBSET)) {
 			    String dropDisconnected = (String) SubsetParameters.get(ELIMINATE_DISCONNECTED); 
 			    if ( dropDisconnected != null ) {
-				subsetCommand = "edge_subset(g, "+manualQuery+", "+dropDisconnected+")"; 
+				subsetCommand = "edge_subset(g, '"+manualQuery+"', "+dropDisconnected+")"; 
 			    } else {
-				subsetCommand = "edge_subset(g, "+manualQuery+", "+")"; 
+				subsetCommand = "edge_subset(g, '"+manualQuery+"', "+")"; 
 			    }
 
 			} else if (manualQueryType.equals(VERTEX_SUBSET)){
-			    subsetCommand = "edge_subset(g, "+manualQuery+")"; 
+			    subsetCommand = "vertex_subset(g, '"+manualQuery+"')"; 
 			}
 
 			dbgLog.fine("manualQuerySubset="+subsetCommand);

@@ -48,7 +48,7 @@ public class DvnRGraphServiceImpl{
     public static String NTH_LARGEST = "NTH_LARGEST";
 
     public static String NETWORK_MEASURE = "NETWORK_MEASURE"; 
-
+    public static String NETWORK_MEASURE_TYPE = "NETWORK_MEASURE_TYPE"; 
 
 
 
@@ -68,9 +68,6 @@ public class DvnRGraphServiceImpl{
 
     private static String RDATA_FILE_NAME = "iGraph";
     public static String RDATA_FILE_EXT =".RData";
-
-    private static String TMP_DATA_FILE_NAME = "susetfile4Rjob";
-    public static String TMP_DATA_FILE_EXT =".tab";
 
     private static String RSERVE_HOST = null;
     private static String RSERVE_USER = null;
@@ -316,6 +313,7 @@ public class DvnRGraphServiceImpl{
 		    }
 		    
 		} else if ( GraphSubsetType.equals(NETWORK_MEASURE) ) {
+
 		    
 		} else if ( GraphSubsetType.equals(AUTOMATIC_QUERY) ) {
 		    int n = Integer.parseInt((String) SubsetParameters.get(N_VALUE)); 
@@ -370,7 +368,6 @@ public class DvnRGraphServiceImpl{
         
         } catch (RserveException rse) {
             // RserveException (Rserve not running?)
-            rse.printStackTrace();
             
             result.put("IdSuffix", IdSuffix);
             result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
@@ -384,8 +381,6 @@ public class DvnRGraphServiceImpl{
         } catch (REXPMismatchException mme) {
         
             // REXP mismatch exception (what we got differs from what we expected)
-            mme.printStackTrace();
-            
             result.put("IdSuffix", IdSuffix);
             result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
             result.put("option",sro.getRequestType().toLowerCase());
@@ -394,7 +389,6 @@ public class DvnRGraphServiceImpl{
             return result;
 
         } catch (IOException ie){
-            ie.printStackTrace();
             
             result.put("IdSuffix", IdSuffix);
             result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
@@ -404,7 +398,6 @@ public class DvnRGraphServiceImpl{
             return result;
             
         } catch (Exception ex){
-            ex.printStackTrace();
             
             result.put("IdSuffix", IdSuffix);
 
@@ -473,9 +466,7 @@ public class DvnRGraphServiceImpl{
 	    String ingestCommand = "ingest_graphml('" + GraphMLfileNameRemote + "')";
 	    dbgLog.fine(ingestCommand);
 	    historyEntry.add(ingestCommand);
-	    c.voidEval(ingestCommand);
-
-            
+	    c.voidEval(ingestCommand);            
 	     
             int fileSize = getFileSize(c,RDataFileName);
             
@@ -694,68 +685,6 @@ public class DvnRGraphServiceImpl{
             dbgLog.fine("results:\n"+vnl);
         }
         return vnl;
-    }
-    
-    /** *************************************************************
-     * 
-     *
-     * @param     
-     * @return    
-     */
-    public File writeBackFileToDvn(RConnection c, String targetFilename,
-        String tmpFilePrefix, String tmpFileExt, int fileSize){
-        
-        // set up a temp file
-        File tmprsltfl = null;
-        String resultFile =  tmpFilePrefix + IdSuffix + "." + tmpFileExt;
-        
-        RFileInputStream ris = null;
-        OutputStream outbr   = null;
-
-        try {
-	    tmprsltfl = new File(TEMP_DIR, resultFile);
-
-            outbr = new BufferedOutputStream(new FileOutputStream(tmprsltfl));
-
-            ris = c.openFile(targetFilename);
-
-	    // what's going on here? 
-
-            if (fileSize < 1024*1024*500){
-                int bfsize = fileSize;
-		byte[] obuf = new byte[bfsize];
-		ris.read(obuf);
-		outbr.write(obuf, 0, bfsize);
-            }
-
-            ris.close();
-            outbr.close();
-            return tmprsltfl;
-
-        } catch (FileNotFoundException fe){
-            fe.printStackTrace();
-            dbgLog.fine("FileNotFound exception occurred");
-            return tmprsltfl;
-        } catch (IOException ie){
-            ie.printStackTrace();
-            dbgLog.fine("IO exception occurred");
-        } finally {
-            if (ris != null){
-                try {
-                    ris.close();
-                } catch (IOException e){
-                }
-            }            
-            if (outbr != null){
-                try {
-                    outbr.close();
-                } catch (IOException e){
-                
-                }
-            }
-        
-        }
-        return tmprsltfl;
     }
     
     /** *************************************************************

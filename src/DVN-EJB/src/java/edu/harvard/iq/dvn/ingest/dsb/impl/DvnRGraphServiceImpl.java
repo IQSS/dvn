@@ -49,12 +49,11 @@ public class DvnRGraphServiceImpl{
 
     public static String NETWORK_MEASURE = "NETWORK_MEASURE"; 
     public static String NETWORK_MEASURE_TYPE = "NETWORK_MEASURE_TYPE"; 
-
+    public static String NETWORK_MEASURE_PARAMETER = "NETWORK_MEASURE_PARAMETER";
 
 
     // - arguments for the subset functions above: 
 
-    public static String NETWORK_MEASURE_PARAMETER = "NETWORK_MEASURE_PARAMETER";
 
     public static String SAVED_RWORK_SPACE = "SAVED_RWORK_SPACE";
     public static String NUMBER_OF_VERTICES = "NUMBER_OF_VERTICES"; 
@@ -74,7 +73,6 @@ public class DvnRGraphServiceImpl{
     private static String RSERVE_PWD = null;    
     private static int RSERVE_PORT;
     private static String DSB_HOST_PORT= null;
-    public static String RWRKSP_FILE_PREFIX = "dvnGraphRData_";
 
     private static Map<String, Method> runMethods = new HashMap<String, Method>();
     private static String regexForRunMethods = "^run(\\w+)Request$" ;
@@ -227,10 +225,15 @@ public class DvnRGraphServiceImpl{
             historyEntry.add(librarySetup);
             c.voidEval(librarySetup);
 
-	    String CachedRworkSpace = sro.getCachedRworkSpace(); 
 	    Map <String, Object> SubsetParameters = sro.getParametersForGraphSubset(); 
 
 	    String SavedRworkSpace = (String) SubsetParameters.get(SAVED_RWORK_SPACE); 
+
+	    String CachedRworkSpace = null; 
+
+	    if ( sro != null ) {		
+		CachedRworkSpace = sro.getCachedRworkSpace(); 
+	    }
 
 	    if ( SavedRworkSpace != null ) {
 		RDataFileName = SavedRworkSpace; 
@@ -262,9 +265,8 @@ public class DvnRGraphServiceImpl{
 
 		return result; 
 
-	    } else {
-	    }
-		
+	    } 
+
             dbgLog.fine("RDataFile="+RDataFileName);
             historyEntry.add("load_and_clear('"+RDataFileName+"')");
             c.voidEval("load_and_clear('"+RDataFileName+"')");
@@ -313,7 +315,7 @@ public class DvnRGraphServiceImpl{
 		    }
 		    
 		} else if ( GraphSubsetType.equals(NETWORK_MEASURE) ) {
-
+		    String networkMeasureType = (String) SubsetParameters.get(NETWORK_MEASURE_TYPE); 
 		    
 		} else if ( GraphSubsetType.equals(AUTOMATIC_QUERY) ) {
 		    int n = Integer.parseInt((String) SubsetParameters.get(N_VALUE)); 

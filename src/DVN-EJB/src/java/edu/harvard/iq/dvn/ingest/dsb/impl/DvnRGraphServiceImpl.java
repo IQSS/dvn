@@ -126,7 +126,6 @@ public class DvnRGraphServiceImpl{
     
     // ----------------------------------------------------- instance filelds
     public String IdSuffix = null;
-    public String tempFileName = null;
     public String GraphMLfileNameRemote = null;    
     public String RDataFileName = null;
     public String wrkdir = null;
@@ -144,9 +143,6 @@ public class DvnRGraphServiceImpl{
         
         wrkdir = DSB_TMP_DIR + "/" + requestdir;
         
-        tempFileName = DSB_TMP_DIR + "/" + TMP_DATA_FILE_NAME
-                 +"." + IdSuffix + TMP_DATA_FILE_EXT;
-	
 	RDataFileName = DSB_TMP_DIR + "/" + RDATA_FILE_NAME
                  +"." + IdSuffix + RDATA_FILE_EXT;
 
@@ -237,7 +233,12 @@ public class DvnRGraphServiceImpl{
 	    String CachedRworkSpace = sro.getCachedRworkSpace(); 
 	    Map <String, Object> SubsetParameters = sro.getParametersForGraphSubset(); 
 
-	    if ( CachedRworkSpace != null ) {
+	    String SavedRworkSpace = (String) SubsetParameters.get(SAVED_RWORK_SPACE); 
+
+	    if ( SavedRworkSpace != null ) {
+		RDataFileName = SavedRworkSpace; 
+
+	    } else if ( CachedRworkSpace != null ) {
 		// send data file to the Rserve side 
 
 		InputStream inb = new BufferedInputStream(new FileInputStream(CachedRworkSpace));
@@ -245,16 +246,16 @@ public class DvnRGraphServiceImpl{
 		byte[] bffr = new byte[1024];
 
 		RFileOutputStream os = 
-		    c.createFile(tempFileName);
+		    c.createFile(RDataFileName);
 		while ((bufsize = inb.read(bffr)) != -1) {
                     os.write(bffr, 0, bufsize);
 		}
 		os.close();
 		inb.close();
 
-		c.voidEval("load_and_clear('"+tempFileName+"')");
+		c.voidEval("load_and_clear('"+RDataFileName+"')");
 
-		result.put(SAVED_RWORK_SPACE, tempFileName);
+		result.put(SAVED_RWORK_SPACE, RDataFileName);
 
 		result.put("dsbHost", RSERVE_HOST);
 		result.put("dsbPort", DSB_HOST_PORT);
@@ -265,16 +266,11 @@ public class DvnRGraphServiceImpl{
 		return result; 
 
 	    } else {
-		String SavedRworkSpace = (String) SubsetParameters.get(SAVED_RWORK_SPACE); 
-
-		if ( SavedRworkSpace != null ) {
-		    tempFileName = SavedRworkSpace; 
-		}
 	    }
 		
-            dbgLog.fine("RDataFile="+tempFileName);
-            historyEntry.add("load_and_clear('"+tempFileName+"')");
-            c.voidEval("load_and_clear('"+tempFileName+"')");
+            dbgLog.fine("RDataFile="+RDataFileName);
+            historyEntry.add("load_and_clear('"+RDataFileName+"')");
+            c.voidEval("load_and_clear('"+RDataFileName+"')");
 	            
             // check working directories
             setupWorkingDirectories(c);
@@ -346,12 +342,12 @@ public class DvnRGraphServiceImpl{
             
             // save workspace as a replication data set
 
-            String saveWS = "save(g, file='"+ tempFileName +"')";
+            String saveWS = "save(g, file='"+ RDataFileName +"')";
             dbgLog.fine("save the workspace="+saveWS);
             c.voidEval(saveWS);
 
 
-	    result.put( SAVED_RWORK_SPACE, tempFileName ); 
+	    result.put( SAVED_RWORK_SPACE, RDataFileName ); 
 
 	    // we're done; let's add some potentially useful 
 	    // information to the result and return: 

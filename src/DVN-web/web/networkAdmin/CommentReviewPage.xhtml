@@ -24,9 +24,11 @@
     .dvnCommentReviewCol6 a, .dvnCommentReviewCol6 span {display: inline !important;}
 </style>
         <div class="dvn_section">
-          <div jsfc="ice:panelGroup" rendered="#{CommentReviewPage.actionComplete == false}" styleClass="dvnMsgBlockRound dvnInformationMessage">
+          <div jsfc="ice:panelGroup" 
+               rendered="#{CommentReviewPage.actionComplete == false}"
+               styleClass="dvnMsgBlockRound dvnInformationMessage">
             <div class="dvnMsgBlockContainer">
-              <ice:outputText value="#{bundlePageInfo.commentReviewHelp}" escape="false"/>
+              <ice:outputText style="width:95%;float:right;" value="#{bundlePageInfo.commentReviewHelp}" escape="false"/>
             </div>
           </div>
             <div jsfc="ice:panelGroup"
@@ -48,18 +50,20 @@
             <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="2"
                            styleClass="dvnManageStudiesTableTop" columnClasses="dvn_StudyListTotals, dvnPaginatorWrap">
               <div jsfc="ice:panelGroup" styleClass="dvn_StudyListTotals">
-                <!-- <ice:dataPaginator id="scroll_2" for="commentReviewData"
+                <ice:dataPaginator id="scroll_2" for="commentReviewData"
                                    rowsCountVar="rowsCount" displayedRowsCountVar="displayedRowsCountVar"
                                    firstRowIndexVar="firstRowIndex" lastRowIndexVar="lastRowIndex"
                                    pageCountVar="pageCount" pageIndexVar="pageIndex">
+                 <ice:outputText value="1 Comment for Review" rendered="#{rowsCount == 1}" styleClass="dvn_totalsValue" />
+                  <ice:outputText value="#{rowsCount} Comments for Review" rendered="#{rowsCount > 1}" styleClass="dvn_totalsValue" />
                   <ice:outputFormat rendered="#{rowsCount > displayedRowsCountVar}" value=", displaying {0} to {1}" styleClass="dvn_totalsValue">
                     <f:param value="#{firstRowIndex}"/>
                     <f:param value="#{lastRowIndex}"/>
                   </ice:outputFormat>
-                </ice:dataPaginator> -->
+                </ice:dataPaginator>
               </div>
               <div jsfc="ice:panelGroup" styleClass="dvnPaginatorWrap">
-                <!-- <ice:dataPaginator id="scroll_1" styleClass="dvnPaginatorRight" for="commentReviewData" fastStep="3"
+                <ice:dataPaginator id="scroll_1" styleClass="dvnPaginatorRight" for="commentReviewData" fastStep="3"
                                    pageCountVar="pageCount" pageIndexVar="pageIndex"
                                    paginator="true" paginatorMaxPages="4" renderFacetsIfSinglePage="false">
                   <f:facet name="first">
@@ -80,19 +84,21 @@
                   <f:facet name="fastrewind">
                     <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-fr.gif"/>
                   </f:facet>
-                </ice:dataPaginator> -->
+                </ice:dataPaginator>
               </div>
             </ice:panelGrid>
           </div>
-          <ice:outputText style="float:left; vertical-align:top;"
-                          value="#{bundlePageInfo.commentReviewSubheading}:  #{CommentReviewPage.totalNotifications}">
-          </ice:outputText>
+          
           <div>
-              
+              <ice:outputText style="float:left; vertical-align:top;"
+                          value="#{bundlePageInfo.commentReviewSubheading}  #{CommentReviewPage.totalNotifications}">
+          </ice:outputText>
+              <br />
               <ice:dataTable binding="#{CommentReviewPage.mainDataTable}"
                              cellpadding="0" cellspacing="0" width="100%"
                              styleClass="dvnManageTable"
                              headerClass="list-header-left vdcColPadded" id="commentReviewData"
+                             rows="10"
                              rowClasses="list-row-even vdcColPadded, list-row-odd vdcColPadded"
                              columnClasses="dvnCommentReviewCol1,dvnCommentReviewCol2,dvnCommentReviewCol3,dvnCommentReviewCol4,dvnCommentReviewCol5,dvnCommentReviewCol6"
                              value="#{CommentReviewPage.commentsForReview}" var="currentRow">
@@ -108,9 +114,12 @@
                   <f:facet name="header">
                     <ice:outputText value="Comment"/>
                   </f:facet>
-                  <ice:outputLink id="comment#{currentRow.studyComment.id}" value="#{currentRow.commentsTabLink}">
-                    <ice:outputText value="#{currentRow.studyComment.comment}"/>
-                  </ice:outputLink>
+                  <ice:commandLink actionListener="#{CommentReviewPage.goToCommentsTab}"
+                                   binding="#{CommentReviewPage.goToCommentsLink}"
+                                   id="goToCommentsButton"
+                                   value="CommandLink: #{currentRow.studyComment.comment}">
+                      <f:attribute name="commentId" value="#{currentRow.studyComment.id}"/>
+                  </ice:commandLink>
                 </ice:column>
                 <ice:column>
                   <f:facet name="header">

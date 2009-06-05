@@ -56,13 +56,14 @@ public class DvnRGraphServiceImpl{
     public static String NETWORK_MEASURE_RANK = "NETWORK_MEASURE_RANK"; 
     public static String NETWORK_MEASURE_PARAMETER = "NETWORK_MEASURE_PARAMETER";
 
-
     // - arguments for the subset functions above: 
 
 
     public static String SAVED_RWORK_SPACE = "SAVED_RWORK_SPACE";
     public static String NUMBER_OF_VERTICES = "NUMBER_OF_VERTICES"; 
     public static String NUMBER_OF_EDGES = "NUMBER_OF_EDGES"; 
+    public static String NETWORK_MEASURE_NEW_COLUMN = "NETWORK_MEASURE_NEW_COLUMN";
+    public static String GRAPHML_FILE_EXPORTED  = "GRAPHML_FILE_EXPORTED"; 
 
     public static String DVN_TMP_DIR=null;
     public static String DSB_TMP_DIR=null;
@@ -205,7 +206,7 @@ public class DvnRGraphServiceImpl{
      * Execute an R-based dvn analysis request on a Graph object
      *
      * @param sro    a DvnRJobRequest object that contains various parameters
-     * @return    a Map that contains various information about results
+     * @return    a Map that contains various information about the results
      */    
     
     public Map<String, String> execute(DvnRJobRequest sro) {
@@ -327,11 +328,13 @@ public class DvnRGraphServiceImpl{
 		    if ( networkMeasureType != null ) {
 			if ( networkMeasureType.equals(NETWORK_MEASURE_DEGREE) ) {
 			    networkMeasureCommand = "add_degree(g)"; 
+
 			} else if ( networkMeasureType.equals(NETWORK_MEASURE_RANK) ) {
 			    String networkMeasureParam = (String) SubsetParameters.get(NETWORK_MEASURE_PARAMETER); 
 			    if ( networkMeasureParam != null ) {
 				networkMeasureCommand = "add_rank(g, "+networkMeasureParam+")";
 			    }
+
 			}
 		    }
 
@@ -343,7 +346,14 @@ public class DvnRGraphServiceImpl{
 
 		    dbgLog.fine("networkMeasureCommand="+networkMeasureCommand);
 		    historyEntry.add(networkMeasureCommand);
-		    c.voidEval(networkMeasureCommand);
+		    String addedColumn = c.eval(networkMeasureCommand).asString();
+		    if ( addedColumn != null ) {
+			result.put(NETWORK_MEASURE_NEW_COLUMN, addedColumn);
+		    } else {
+			result.put("RexecError", "true");
+			result.put("RexecErrorDescription", "FAILED TO READ ADDED COLUMN NAME"); 
+			return result;
+		    }
 		    
 		} else if ( GraphSubsetType.equals(AUTOMATIC_QUERY_SUBSET) ) {
 		    String automaticQueryType = (String) SubsetParameters.get(AUTOMATIC_QUERY_TYPE); 
@@ -457,7 +467,7 @@ public class DvnRGraphServiceImpl{
      *
      * @param graphMLfileName;
      * @param cachedRDatafileName;
-     * @return    a Map that contains various information about results
+     * @return    a Map that contains various information about the results
      */    
     
      public Map<String, String> ingestGraphML (String graphMLfileName, 
@@ -527,6 +537,130 @@ public class DvnRGraphServiceImpl{
 	    ris.close();
 	    outbr.close();
 
+
+	    String RexecDate = c.eval("as.character(as.POSIXct(Sys.time()))").asString();
+	    String RversionLine = "R.Version()$version.string";
+            String Rversion = c.eval(RversionLine).asString();
+            
+            result.put("dsbHost", RSERVE_HOST);
+            result.put("dsbPort", DSB_HOST_PORT);
+            result.put("IdSuffix", IdSuffix);
+
+            result.put("Rversion", Rversion);
+            result.put("RexecDate", RexecDate);
+            result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
+            
+            dbgLog.fine("result object (before closing the Rserve):\n"+result);
+                    
+            c.close();
+        
+        } catch (RserveException rse) {
+            result.put("IdSuffix", IdSuffix);
+            result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
+            
+            result.put("RexecError", "true");
+	    result.put("RexecErrorMessage", rse.getMessage()); 
+	    result.put("RexecErrorDescription", rse.getRequestErrorDescription()); 
+            return result;
+
+        } catch (REXPMismatchException mme) {
+            result.put("IdSuffix", IdSuffix);
+            result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
+
+            result.put("RexecError", "true");
+            return result;
+
+        } catch (FileNotFoundException fe){
+            result.put("IdSuffix", IdSuffix);
+            result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
+            result.put("RexecError", "true");
+	    result.put("RexecErrorDescription", "File Not Found"); 
+            return result;
+
+	} catch (IOException ie){
+            result.put("IdSuffix", IdSuffix);
+            result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
+
+            result.put("RexecError", "true");
+            return result;
+            
+        } catch (Exception ex){
+            result.put("IdSuffix", IdSuffix);
+            result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
+
+            result.put("RexecError", "true");
+            return result;
+        }
+        
+        return result;
+        
+    }
+    
+    /** *************************************************************
+     * Export a saved RData file as a GraphML file
+     *
+     * @param savedRDatafile;
+     * @return    a Map that contains various information about the results
+     */    
+    
+     public Map<String, String> exportAsGraphML (String savedRDataFile) {
+
+        Map<String, String> result = new HashMap<String, String>();
+        
+	try {
+
+            // Set up an Rserve connection
+            
+            dbgLog.fine("RSERVE_USER="+RSERVE_USER+"[default=rserve]");
+            dbgLog.fine("RSERVE_PWD="+RSERVE_PWD+"[default=rserve]");
+            dbgLog.fine("RSERVE_PORT="+RSERVE_PORT+"[default=6311]");
+
+            RConnection c = new RConnection(RSERVE_HOST, RSERVE_PORT);
+            dbgLog.fine("hostname="+RSERVE_HOST);
+
+            c.login(RSERVE_USER, RSERVE_PWD);
+
+            dbgLog.fine(">" + c.eval("R.version$version.string").asString() + "<");
+
+	    historyEntry.add(librarySetup);
+            c.voidEval(librarySetup);
+	    historyEntry.add("load_and_clear('"+savedRDataFile+"')");
+	    c.voidEval("load_and_clear('"+savedRDataFile+"')");
+
+            // export:
+
+	    String exportCommand = "dump_graphml(g, '" + GraphMLfileNameRemote + "')";
+	    dbgLog.fine(exportCommand);
+	    historyEntry.add(exportCommand);
+	    c.voidEval(exportCommand);            
+	     
+	    String tempGraphMLfileNameLocal = 
+		TEMP_DIR + "/" + GRAPHML_FILE_NAME + 
+		"." + IdSuffix + GRAPHML_FILE_EXT;
+
+
+	    OutputStream outbr = new BufferedOutputStream(new FileOutputStream(new File(tempGraphMLfileNameLocal)));
+	    RFileInputStream ris = c.openFile(GraphMLfileNameRemote);
+
+            int fileSize = getFileSize(c,GraphMLfileNameRemote);
+            
+            int bufsize;
+	    if (fileSize < 64*1024*1024){
+		bufsize = fileSize;
+	    } else {
+		bufsize = 64*1024*1024; 
+	    }
+
+	    byte[] obuf = new byte[bufsize];
+
+	    while ( ris.read(obuf) != -1 ) {
+		outbr.write(obuf, 0, bufsize);
+	    }
+
+	    ris.close();
+	    outbr.close();
+
+	    result.put(GRAPHML_FILE_EXPORTED, tempGraphMLfileNameLocal); 
 
 	    String RexecDate = c.eval("as.character(as.POSIXct(Sys.time()))").asString();
 	    String RversionLine = "R.Version()$version.string";

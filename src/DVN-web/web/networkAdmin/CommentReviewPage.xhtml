@@ -89,7 +89,8 @@
           </ice:outputText>
           <div>
               
-              <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
+              <ice:dataTable binding="#{CommentReviewPage.mainDataTable}"
+                             cellpadding="0" cellspacing="0" width="100%"
                              styleClass="dvnManageTable"
                              headerClass="list-header-left vdcColPadded" id="commentReviewData"
                              rowClasses="list-row-even vdcColPadded, list-row-odd vdcColPadded"
@@ -115,7 +116,7 @@
                   <f:facet name="header">
                     <ice:outputText value="Posted By"/>
                   </f:facet>
-                  <ice:outputLink value="#">
+                  <ice:outputLink value="#{currentRow.userAccountPageLink}">
                     <ice:outputText value="#{currentRow.studyComment.commentCreator.userName}"/>
                   </ice:outputLink>
                 </ice:column>
@@ -129,9 +130,7 @@
                   <f:facet name="header">
                     <ice:outputText value="Reported By"/>
                   </f:facet>
-                 <ice:outputLink value="#">
-                    <ice:outputText value="#{currentRow.flaggedByUserNames}"/>
-                 </ice:outputLink>
+                    <ice:outputText escape="false" value="#{currentRow.flaggedByAccountLinks}"/>
                 </ice:column>
                 <ice:column>
                   <f:facet name="header">

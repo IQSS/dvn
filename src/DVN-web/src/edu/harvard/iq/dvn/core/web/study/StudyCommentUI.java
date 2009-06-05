@@ -5,6 +5,7 @@
 
 package edu.harvard.iq.dvn.core.web.study;
 
+import com.icesoft.faces.component.ext.HtmlOutputLink;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.study.StudyComment;
 import edu.harvard.iq.dvn.core.util.PropertyUtil;
@@ -47,21 +48,55 @@ public class StudyCommentUI {
         return flaggedByUserNames;
     }
 
+    protected String flaggedByAccountLinks = new String();
+
+    public String getFlaggedByAccountLinks() {
+        List<VDCUser> vdcUsers = (List<VDCUser>)studyComment.getFlaggedByUsers();
+        Iterator iterator      = vdcUsers.iterator();
+        while (iterator.hasNext()) {
+            VDCUser vdcuser = (VDCUser)iterator.next();
+            if (vdcUsers.indexOf(vdcuser) > 0)
+                flaggedByAccountLinks += ", ";
+            flaggedByAccountLinks += "<a href=\"" + baseUrl + "/faces/login/AccountPage.xhtml?userId=" +
+                                        vdcuser.getId() + "&vdcId=" + 
+                                        studyComment.getStudy().getOwner().getId() + "\">" +
+                                        vdcuser.getUserName() +
+                                        "</a>";
+        }
+        return flaggedByAccountLinks;
+    }
+
     public StudyComment getStudyComment() {
         return this.studyComment;
     }
 
-    public String getStudyPageLink() {
-        String studyPageLink = new String("");
+    protected String baseUrl = new String();
+
+    public String getBaseUrl() {
         FacesContext context            = FacesContext.getCurrentInstance();
         ExternalContext externalContext = context.getExternalContext();
         HttpServletRequest request      = (HttpServletRequest) externalContext.getRequest();
-        studyPageLink = request.getProtocol().substring(0, request.getProtocol().indexOf("/")).toLowerCase() + "://" +
-                            getHostUrl() + request.getContextPath() + "/dv/" +
+        baseUrl = request.getProtocol().substring(0, request.getProtocol().indexOf("/")).toLowerCase() + "://" +
+                            getHostUrl() + request.getContextPath();
+        return baseUrl;
+    }
+
+    public String getStudyPageLink() {
+        String studyPageLink = new String("");
+        studyPageLink = getBaseUrl() + "/dv/" +
                             studyComment.getStudy().getOwner().getAlias() +
                             "/faces/study/StudyPage.xhtml?studyId=" +
                             studyComment.getStudy().getId();
         return studyPageLink;
+    }
+    
+    protected String userAccountPageLink = new String();
+
+    public String getUserAccountPageLink() {
+        userAccountPageLink = getBaseUrl() + "/faces/login/AccountPage.xhtml?userId=" +
+                                studyComment.getCommentCreator().getId() +
+                                "&vdcId=" + studyComment.getStudy().getOwner().getId();
+        return userAccountPageLink;
     }
 
     protected String studyTabLink = new String();

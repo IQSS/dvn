@@ -34,14 +34,28 @@ public class DvnRGraphServiceImpl{
 
     public static String RSUBSETFUNCTION = "RSUBSETFUNCTION";
 
+    // - different kinds of subset functions: 
+
+    public static String MANUAL_QUERY_SUBSET = "MANUAL_QUERY_SUBSET";
+    public static String MANUAL_QUERY_TYPE = "MANUAL_QUERY_TYPE";
     public static String MANUAL_QUERY = "MANUAL_QUERY";
-    public static String ELIMINATE_DISCONNECTED = "ELIMINATE_DISCONNECTED";
+
     public static String AUTOMATIC_QUERY = "AUTOMATIC_QUERY";
+    public static String NETWORK_MEASURE = "NETWORK_MEASURE"; 
+
+    public static String EDGE_SUBSET = "EDGE_SUBSET";
+    public static String VERTEX_SUBSET = "VERTEX_SUBSET";
+
+    // - eliminate disconnected boolean option
+
+    public static String ELIMINATE_DISCONNECTED = "ELIMINATE_DISCONNECTED";
 
     public static String NTH_LARGEST = "NTH_LARGEST";
-    public static String N_VALUE = "N_VALUE";
 
-    public static String NETWORK_MEASURE = "NETWORK_MEASURE"; 
+
+    // - arguments for the subset functions above: 
+
+    public static String N_VALUE = "N_VALUE";
     public static String NETWORK_MEASURE_PARAMETER = "NETWORK_MEASURE_PARAMETER";
     public static String VERTEX_ATTRIBUTE = "VERTEX_ATTRIBUTE"; 
     public static String EDGE_ATTRIBUTE = "EDGE_ATTRIBUTE";
@@ -283,6 +297,27 @@ public class DvnRGraphServiceImpl{
 		    dbgLog.fine("componentFunction="+componentFunction);
 		    historyEntry.add(componentFunction);
 		    c.voidEval(componentFunction);
+		    
+		} else if ( GraphSubsetType.equals(MANUAL_QUERY_SUBSET) ) {
+
+		    String manualQueryType  = (String) SubsetParameters.get(MANUAL_QUERY_TYPE); 
+		    String manualQuery = (String) SubsetParameters.get(MANUAL_QUERY); 
+
+		    String subsetCommand = null; 
+
+		    if ( manualQueryType != null ) {
+			if (manualQueryType.equals(EDGE_SUBSET)) {
+			    String dropDisconnected = (String) SubsetParameters.get(ELIMINATE_DISCONNECTED); 
+			    if ( dropDisconnected != null ) {
+				subsetCommand = "edge_subset(g, "+manualQuery+", "+dropDisconnected+")"; 
+			    } else {
+				subsetCommand = "edge_subset(g, "+manualQuery+", "+")"; 
+			    }
+
+			} else if (manualQueryType.equals(VERTEX_SUBSET)){
+			    subsetCommand = "edge_subset(g, "+manualQuery+")"; 
+			}
+		    }
 		    
 		}
 	    }

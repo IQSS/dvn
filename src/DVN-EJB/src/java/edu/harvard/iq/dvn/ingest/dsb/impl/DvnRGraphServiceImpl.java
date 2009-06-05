@@ -39,27 +39,22 @@ public class DvnRGraphServiceImpl{
     public static String MANUAL_QUERY_SUBSET = "MANUAL_QUERY_SUBSET";
     public static String MANUAL_QUERY_TYPE = "MANUAL_QUERY_TYPE";
     public static String MANUAL_QUERY = "MANUAL_QUERY";
-
-    public static String AUTOMATIC_QUERY = "AUTOMATIC_QUERY";
-    public static String NETWORK_MEASURE = "NETWORK_MEASURE"; 
-
+    public static String ELIMINATE_DISCONNECTED = "ELIMINATE_DISCONNECTED";
     public static String EDGE_SUBSET = "EDGE_SUBSET";
     public static String VERTEX_SUBSET = "VERTEX_SUBSET";
 
-    // - eliminate disconnected boolean option
-
-    public static String ELIMINATE_DISCONNECTED = "ELIMINATE_DISCONNECTED";
-
+    public static String AUTOMATIC_QUERY = "AUTOMATIC_QUERY";
+    public static String N_VALUE = "N_VALUE";
     public static String NTH_LARGEST = "NTH_LARGEST";
+
+    public static String NETWORK_MEASURE = "NETWORK_MEASURE"; 
+
+
 
 
     // - arguments for the subset functions above: 
 
-    public static String N_VALUE = "N_VALUE";
     public static String NETWORK_MEASURE_PARAMETER = "NETWORK_MEASURE_PARAMETER";
-    public static String VERTEX_ATTRIBUTE = "VERTEX_ATTRIBUTE"; 
-    public static String EDGE_ATTRIBUTE = "EDGE_ATTRIBUTE";
-
 
     public static String SAVED_RWORK_SPACE = "SAVED_RWORK_SPACE";
     public static String NUMBER_OF_VERTICES = "NUMBER_OF_VERTICES"; 
@@ -317,9 +312,25 @@ public class DvnRGraphServiceImpl{
 			} else if (manualQueryType.equals(VERTEX_SUBSET)){
 			    subsetCommand = "edge_subset(g, "+manualQuery+")"; 
 			}
+
+			dbgLog.fine("manualQuerySubset="+subsetCommand);
+			historyEntry.add(subsetCommand);
+			c.voidEval(subsetCommand);
+			
 		    }
 		    
+		} else if ( GraphSubsetType.equals(NETWORK_MEASURE) ) {
+		    
+		} else if ( GraphSubsetType.equals(AUTOMATIC_QUERY) ) {
+		    int n = Integer.parseInt((String) SubsetParameters.get(N_VALUE)); 
+		    String componentFunction = "component(g, " + n + ")";
+
+		    dbgLog.fine("componentFunction="+componentFunction);
+		    historyEntry.add(componentFunction);
+		    c.voidEval(componentFunction);
+
 		}
+
 	    }
 
 	    // get the vertices and edges counts: 

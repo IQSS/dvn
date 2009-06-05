@@ -866,13 +866,26 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
                 try {
                     FileUtil.copyFile(tempIngestedFile, newIngestedLocationFile);
                     tempIngestedFile.delete();
-                    f.setFileType("text/tab-separated-values");
+                    if (f instanceof TabularDataFile ){
+                        f.setFileType("text/tab-separated-values");
+                    }
                     f.setFileSystemLocation(newIngestedLocationFile.getAbsolutePath());
 
                 } catch (IOException ex) {
                     throw new EJBException(ex);
                 }
-
+                // If this is a NetworkDataFile,  move the RData file from the temp Ingested location to the system location
+                if (f instanceof NetworkDataFile) {
+                    File tempRDataFile = new File(FileUtil.replaceExtension(fileBean.getIngestedSystemFileLocation(), "RData"));
+                    File newRDataFile = new File(newDir, f.getFileSystemName()+".RData");
+                    try {
+                        FileUtil.copyFile(tempRDataFile, newRDataFile);
+                        tempRDataFile.delete();
+                        f.setOriginalFileType(originalFileType);
+                    } catch (IOException ex) {
+                        throw new EJBException(ex);
+                    }
+                }
 
                 // also move original file for archiving
                 File tempOriginalFile = new File(fileBean.getTempSystemFileLocation());
@@ -933,7 +946,9 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         String queryStr = "SELECT f FROM StudyFile f JOIN FETCH f.fileCategory WHERE f.fileCategory.study.id = " + studyId + " ORDER BY f.fileCategory.name, f.fileName";
         Query query = em.createQuery(queryStr);
         List<StudyFile> studyFiles = query.getResultList();
-
+   //     for (StudyFile sf: studyFiles) {
+   //         sf.getDataTables().size();
+   //     }
         return studyFiles;
     }
 

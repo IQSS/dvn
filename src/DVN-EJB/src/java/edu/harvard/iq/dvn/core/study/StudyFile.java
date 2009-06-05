@@ -331,11 +331,11 @@ public abstract class StudyFile implements Serializable {
     @OneToMany(mappedBy = "studyFile", cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
     private List<DataTable> dataTables;
 
-    protected List<DataTable> getDataTables() {
+    public List<DataTable> getDataTables() {
         return dataTables;
     }
 
-    protected void setDataTables(List<DataTable> dataTables) {
+    public void setDataTables(List<DataTable> dataTables) {
         this.dataTables = dataTables;
     }
 

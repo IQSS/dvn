@@ -65,7 +65,11 @@ public class StudyFileEditBean implements Serializable {
             fileType.equals("application/x-spss-por") ||
             fileType.equals("application/x-spss-sav") ) {
             this.studyFile = new TabularDataFile(); // do not yet attach to study, as it has to be ingested
-        } else {
+        } else if (fileType.equals("application/xml") ||
+                   fileType.equals("text/xml")) {
+            // Ellen TODO: also test the schema type of this file - it should be GraphML
+            this.studyFile = new NetworkDataFile();
+        } else    {
             this.studyFile = new OtherFile(study);
         }
 

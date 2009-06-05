@@ -173,15 +173,17 @@ public class FileUtil implements java.io.Serializable  {
     } 
 
     public static String replaceExtension(String originalName) {
-        int extensionIndex = originalName.lastIndexOf(".");
-        if (extensionIndex != -1 ) {
-            return originalName.substring(0, extensionIndex) + ".tab" ;
-        } else {
-            return originalName + ".tab";    
-        }
+       return replaceExtension(originalName, "tab");
     }   
     
-    
+    public static String replaceExtension(String originalName, String newExtension) {
+        int extensionIndex = originalName.lastIndexOf(".");
+        if (extensionIndex != -1 ) {
+            return originalName.substring(0, extensionIndex) + "."+newExtension ;
+        } else {
+            return originalName +"."+newExtension ;
+        }
+    }
      public static String getUserFriendlyFileType(StudyFile sf) {
         String tempFileType = sf.getFileType();
         

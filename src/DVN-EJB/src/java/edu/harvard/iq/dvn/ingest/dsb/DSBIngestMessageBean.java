@@ -29,12 +29,13 @@
 
 package edu.harvard.iq.dvn.ingest.dsb;
 
+import edu.harvard.iq.dvn.core.analysis.NetworkDataServiceLocal;
 import edu.harvard.iq.dvn.core.ddi.DDIServiceLocal;
 import edu.harvard.iq.dvn.core.index.IndexServiceLocal;
 import edu.harvard.iq.dvn.core.mail.MailServiceLocal;
 import edu.harvard.iq.dvn.core.study.DataTable;
+import edu.harvard.iq.dvn.core.study.NetworkDataFile;
 import edu.harvard.iq.dvn.core.study.Study;
-import edu.harvard.iq.dvn.core.study.StudyFile;
 import edu.harvard.iq.dvn.core.study.StudyFileEditBean;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.study.TabularDataFile;
@@ -61,6 +62,7 @@ public class DSBIngestMessageBean implements MessageListener {
     @EJB StudyServiceLocal studyService;
     @EJB MailServiceLocal mailService;
     @EJB IndexServiceLocal indexService;
+    @EJB NetworkDataServiceLocal networkDataService;
 
     
     /**
@@ -86,8 +88,14 @@ public class DSBIngestMessageBean implements MessageListener {
                 StudyFileEditBean fileBean = (StudyFileEditBean) iter.next();
                 
                 try {
-                    parseXML( new DSBWrapper().ingest(fileBean) , (TabularDataFile) fileBean.getStudyFile() );
-                    successfuleFiles.add(fileBean);
+                    if (fileBean.getStudyFile() instanceof NetworkDataFile ) {
+                        // ELLEN TODO:  move this logic into SDIOReader component
+                        networkDataService.ingest(fileBean);
+                        successfuleFiles.add(fileBean);
+                    } else {
+                        parseXML( new DSBWrapper().ingest(fileBean) , (TabularDataFile) fileBean.getStudyFile() );
+                        successfuleFiles.add(fileBean);
+                    }
                 } catch (Exception ex) {
                     ex.printStackTrace();
                     problemFiles.add(fileBean);
@@ -140,5 +148,6 @@ public class DSBIngestMessageBean implements MessageListener {
         file.setUnf(dt.getUnf());
 
     }
+ 
     
 }

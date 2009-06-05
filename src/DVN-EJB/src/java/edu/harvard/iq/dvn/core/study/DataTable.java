@@ -150,7 +150,7 @@ public class DataTable implements java.io.Serializable {
     /**
      * Holds value of property study.
      */
-    @OneToOne 
+    @ManyToOne
     private StudyFile studyFile;
 
     /**

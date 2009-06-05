@@ -5,20 +5,18 @@
 
 package edu.harvard.iq.dvn.core.web.networkAdmin;
 import com.icesoft.faces.component.ext.HtmlCommandLink;
+import com.icesoft.faces.component.ext.HtmlDataTable;
 import edu.harvard.iq.dvn.core.study.StudyComment;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import edu.harvard.iq.dvn.core.study.StudyCommentService;
-import edu.harvard.iq.dvn.core.util.PropertyUtil;
 import edu.harvard.iq.dvn.core.web.study.StudyCommentUI;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
-import javax.servlet.http.HttpServletRequest;
 
 /**
  *
@@ -219,4 +217,23 @@ public class CommentReviewPage extends VDCBaseBean implements java.io.Serializab
         this.actionComplete = actionComplete;
     }
 
+    protected HtmlDataTable mainDataTable;
+
+    /**
+     * Get the value of mainDataTable
+     *
+     * @return the value of mainDataTable
+     */
+    public HtmlDataTable getMainDataTable() {
+        return mainDataTable;
+    }
+
+    /**
+     * Set the value of mainDataTable
+     *
+     * @param mainDataTable new value of mainDataTable
+     */
+    public void setMainDataTable(HtmlDataTable mainDataTable) {
+        this.mainDataTable = mainDataTable;
+    }
 }

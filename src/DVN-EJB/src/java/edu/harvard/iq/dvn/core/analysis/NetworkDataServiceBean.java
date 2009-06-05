@@ -26,9 +26,20 @@ import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
+import javax.xml.XMLConstants;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.transform.Source;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 /**
  *
@@ -87,10 +98,14 @@ public class NetworkDataServiceBean implements NetworkDataServiceLocal, java.io.
         dbgLog.fine("Begin ingest() ");
         // Initialize NetworkDataFile with new DataTable objects
         NetworkDataFile ndf = (NetworkDataFile)editBean.getStudyFile();
+        
         DataTable vertexTable = new DataTable();
+        vertexTable.setStudyFile(ndf);
         vertexTable.setDataVariables(new ArrayList<DataVariable>());
         ndf.setVertexDataTable(vertexTable);
+
         DataTable edgeTable = new DataTable();
+        edgeTable.setStudyFile(ndf);
         edgeTable.setDataVariables(new ArrayList<DataVariable>());
         ndf.setEdgeDataTable(edgeTable);
 
@@ -119,6 +134,9 @@ public class NetworkDataServiceBean implements NetworkDataServiceLocal, java.io.
         XMLStreamReader xmlr = xmlif.createXMLStreamReader(fileReader);
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
+                if (xmlr.getLocalName().equals("graphml")) {
+                    dbgLog.fine("schema = "+xmlr.getAttributeValue(null, "schemaLocation"));
+                }
                 if (xmlr.getLocalName().equals("key")) processKey(xmlr, ndf);
                 else if (xmlr.getLocalName().equals("graph")) processGraph(xmlr, ndf);
 
@@ -153,8 +171,11 @@ public class NetworkDataServiceBean implements NetworkDataServiceLocal, java.io.
 
         if (xmlr.getAttributeValue(null, "for").equals("node")) {
             ndf.getVertexDataTable().getDataVariables().add(dataVariable);
+            dataVariable.setDataTable(ndf.getVertexDataTable());
         } else {
             ndf.getEdgeDataTable().getDataVariables().add(dataVariable);
+            dataVariable.setDataTable(ndf.getEdgeDataTable());
+
         }
     }
 
@@ -260,6 +281,30 @@ public class NetworkDataServiceBean implements NetworkDataServiceLocal, java.io.
        DataTable edgeTable = ndf.getEdgeDataTable();
 
        System.out.println("done!");
+
+     /*
+        // parse an XML document into a DOM tree
+    DocumentBuilder parser = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+    Document document = parser.parse(new File("instance.xml"));
+    document.get
+
+    // create a SchemaFactory capable of understanding WXS schemas
+    SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+
+    // load a WXS schema, represented by a Schema instance
+    Source schemaFile = new StreamSource(new File("mySchema.xsd"));
+    Schema schema = factory.newSchema(schemaFile);
+
+    // create a Validator instance, which can be used to validate an instance document
+    Validator validator = schema.newValidator();
+
+    // validate the DOM tree
+    try {
+        validator.validate(new DOMSource(document));
+    } catch (SAXException e) {
+        // instance document is invalid!
+    }
+*/
 
    }
 

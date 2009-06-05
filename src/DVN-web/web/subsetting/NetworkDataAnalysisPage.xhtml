@@ -97,6 +97,11 @@
                 <f:selectItem itemValue="networkMeasure" itemLabel="Network Measure"/>
             </ice:selectOneRadio>
             <ice:panelGrid id="groupPanel1" styleClass="dvnNetDataAnlsSubTblWrap" columns="1" cellpadding="0" cellspacing="0" width="100%">
+                <ice:panelGroup styleClass="vdcHelpText dvn_spacing">
+                    <ice:graphicImage value="/resources/images/icon_info.gif" alt="Information" title="Information"/>
+                    <ice:outputText id="outputText1"
+                                    value="Subset the network data by creating a manual query or using an automatic query. Or add attributes by running a network measure."/>
+                </ice:panelGroup>
                 <ice:panelGrid id="groupPanel2" cellpadding="0" cellspacing="0" width="100%"
                                columns="2" columnClasses="dvnNetDataAnlsCol1,dvnNetDataAnlsCol2">
                     <fieldset>

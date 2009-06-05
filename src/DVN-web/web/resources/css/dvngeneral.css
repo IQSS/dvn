@@ -39,6 +39,7 @@
 .dvn_block span{margin:0;padding:0;color:#526f76;font-weight:bold;text-transform:uppercase}
 .dvn_blockTitleBar{margin-bottom:12px;padding:6px;background:#e6ebed;border:1px solid #ddd;font-style:italic;text-align:center}
 .dvn_margin12{margin:1em 0em 0em 1em;padding-bottom:2em;line-height:inherit}
+.dvn_spacing{margin:1em;}
 span.disabled{font-weight:700}
 /* HEADER */
 .dvn_headerTitle{position:relative;text-align:left}

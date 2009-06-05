@@ -315,7 +315,10 @@ public class DvnRGraphServiceImpl{
 
 			} else if (manualQueryType.equals(VERTEX_SUBSET)){
 			    subsetCommand = "vertex_subset(g, '"+manualQuery+"')"; 
-			}
+			} else {
+			    result.put("RexecError", "true");
+			    return result;
+			}		       
 
 			dbgLog.fine("manualQuerySubset="+subsetCommand);
 			historyEntry.add(subsetCommand);
@@ -349,12 +352,12 @@ public class DvnRGraphServiceImpl{
 	    // get the vertices and edges counts: 
 
 	    String countCommand = "vcount(g)";
-	    String countResponse = c.eval(countCommand).asString(); 
-	    result.put(NUMBER_OF_VERTICES, countResponse); 
+	    int countResponse = c.eval(countCommand).asInteger(); 
+	    result.put(NUMBER_OF_VERTICES, Integer.toString(countResponse)); 
 
 	    countCommand = "ecount(g)";
-	    countResponse = c.eval(countCommand).asString(); 
-	    result.put(NUMBER_OF_EDGES, countResponse); 
+	    countResponse = c.eval(countCommand).asInteger(); 
+	    result.put(NUMBER_OF_EDGES, Integer.toString(countResponse)); 
 
             
             // save workspace as a replication data set

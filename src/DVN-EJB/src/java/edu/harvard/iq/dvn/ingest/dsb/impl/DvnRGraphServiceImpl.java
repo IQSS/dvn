@@ -43,9 +43,12 @@ public class DvnRGraphServiceImpl{
     public static String EDGE_SUBSET = "EDGE_SUBSET";
     public static String VERTEX_SUBSET = "VERTEX_SUBSET";
 
-    public static String AUTOMATIC_QUERY = "AUTOMATIC_QUERY";
-    public static String N_VALUE = "N_VALUE";
-    public static String NTH_LARGEST = "NTH_LARGEST";
+    public static String AUTOMATIC_QUERY_SUBSET = "AUTOMATIC_QUERY_SUBSET";
+    public static String AUTOMATIC_QUERY_TYPE = "AUTOMATIC_QUERY_TYPE";
+    public static String AUTOMATIC_QUERY_NTHLARGEST = "AUTOMATIC_QUERY_NTHLARGEST";
+    public static String AUTOMATIC_QUERY_BICONNECTED = "AUTOMATIC_QUERY_BICONNECTED";
+    public static String AUTOMATIC_QUERY_N_VALUE = "AUTOMATIC_QUERY_N_VALUE";
+
 
     public static String NETWORK_MEASURE = "NETWORK_MEASURE"; 
     public static String NETWORK_MEASURE_TYPE = "NETWORK_MEASURE_TYPE"; 
@@ -289,15 +292,7 @@ public class DvnRGraphServiceImpl{
 
 	    if ( GraphSubsetType != null ) {
 		
-		if ( GraphSubsetType.equals(NTH_LARGEST) ) {
-		    int n = Integer.parseInt((String) SubsetParameters.get(N_VALUE)); 
-		    String componentFunction = "component(g, " + n + ")";
-
-		    dbgLog.fine("componentFunction="+componentFunction);
-		    historyEntry.add(componentFunction);
-		    c.voidEval(componentFunction);
-		    
-		} else if ( GraphSubsetType.equals(MANUAL_QUERY_SUBSET) ) {
+		if ( GraphSubsetType.equals(MANUAL_QUERY_SUBSET) ) {
 
 		    String manualQueryType  = (String) SubsetParameters.get(MANUAL_QUERY_TYPE); 
 		    String manualQuery = (String) SubsetParameters.get(MANUAL_QUERY); 
@@ -331,20 +326,36 @@ public class DvnRGraphServiceImpl{
 		    String networkMeasureCommand = null; 
 		    if ( networkMeasureType != null ) {
 			if ( networkMeasureType.equals(NETWORK_MEASURE_DEGREE) ) {
-			    networkMeasureCommand = "add_degree"; 
+			    networkMeasureCommand = "add_degree(g)"; 
 			} else if ( networkMeasureType.equals(NETWORK_MEASURE_RANK) ) {
-			    networkMeasureCommand = "add_rank";
+			    String networkMeasureParam = (String) SubsetParameters.get(NETWORK_MEASURE_PARAMETER); 
+			    if ( networkMeasureParam != null ) {
+				networkMeasureCommand = "add_rank(g, "+networkMeasureParam;
+			    }
 			}
 		    }
 		    
-		} else if ( GraphSubsetType.equals(AUTOMATIC_QUERY) ) {
-		    int n = Integer.parseInt((String) SubsetParameters.get(N_VALUE)); 
-		    String componentFunction = "component(g, " + n + ")";
+		} else if ( GraphSubsetType.equals(AUTOMATIC_QUERY_SUBSET) ) {
+		    String automaticQueryType = (String) SubsetParameters.get(AUTOMATIC_QUERY_TYPE); 
+		    String autoQueryCommand = null; 
+		    if ( automaticQueryType != null ) {
+			if ( automaticQueryType.equals(AUTOMATIC_QUERY_NTHLARGEST) ) {
+			    int n = Integer.parseInt((String) SubsetParameters.get(AUTOMATIC_QUERY_N_VALUE)); 
+			    autoQueryCommand = "component(g, " + n + ")";
 
-		    dbgLog.fine("componentFunction="+componentFunction);
-		    historyEntry.add(componentFunction);
-		    c.voidEval(componentFunction);
+			} 
+		    }
 
+		    if ( autoQueryCommand == null ) {
+			result.put("RexecError", "true");
+			result.put("RexecErrorDescription", "NULL OR UNSUPPORTED AUTO QUERY"); 
+			return result;
+
+		    }
+
+		    dbgLog.fine("autoQueryCommand="+autoQueryCommand);
+		    historyEntry.add(autoQueryCommand);
+		    c.voidEval(autoQueryCommand);
 		}
 
 	    }

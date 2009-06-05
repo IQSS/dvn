@@ -26,9 +26,22 @@ import org.apache.commons.lang.builder.*;
 
 public class DvnRGraphServiceImpl{
 
-    // ----------------------------------------------------- static filelds
+    // - static filelds
     
     private static Logger dbgLog = Logger.getLogger(DvnRGraphServiceImpl.class.getPackage().getName());
+
+    // - constants for defining the subset queries: 
+
+    public static String MANUAL_QUERY = "MANUAL_QUERY";
+    public static String ELIMINATE_DISCONNECTED = "ELIMINATE_DISCONNECTED";
+    public static String AUTOMATIC_QUERY = "AUTOMATIC_QUERY";
+    public static String N_VALUE = "N_VALUE";
+    public static String NETWORK_MEASURE = "NETWORK_MEASURE"; 
+    public static String NETWORK_MEASURE_PARAMETER = "NETWORK_MEASURE_PARAMETER";
+    public static String VERTEX_ATTRIBUTE = "VERTEX_ATTRIBUTE"; 
+    public static String EDGE_ATTRIBUTE = "EDGE_ATTRIBUTE";
+
+
 
     public static String DVN_TMP_DIR=null;
     public static String DSB_TMP_DIR=null;
@@ -186,8 +199,6 @@ public class DvnRGraphServiceImpl{
     
         // set the return object
         Map<String, String> result = new HashMap<String, String>();
-        // temporary result
-        Map<String, String> tmpResult = new HashMap<String, String>();
         
         try {
             // Set up an Rserve connection
@@ -237,7 +248,6 @@ public class DvnRGraphServiceImpl{
                     historyEntry.add(sci);
                     c.voidEval(sci);
                 }
-                tmpResult.put("subset", "T");
             }
 
              String RexecDate = c.eval("as.character(as.POSIXct(Sys.time()))").asString();
@@ -283,7 +293,6 @@ public class DvnRGraphServiceImpl{
             result.put("RexecDate", RexecDate);
             result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
             
-            result.putAll(tmpResult);
 
             dbgLog.fine("result object (before closing the Rserve):\n"+result);
                     

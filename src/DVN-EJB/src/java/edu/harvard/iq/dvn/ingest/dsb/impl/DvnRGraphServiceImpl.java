@@ -37,7 +37,10 @@ public class DvnRGraphServiceImpl{
     public static String MANUAL_QUERY = "MANUAL_QUERY";
     public static String ELIMINATE_DISCONNECTED = "ELIMINATE_DISCONNECTED";
     public static String AUTOMATIC_QUERY = "AUTOMATIC_QUERY";
+
+    public static String NTH_LARGEST = "NTH_LARGEST";
     public static String N_VALUE = "N_VALUE";
+
     public static String NETWORK_MEASURE = "NETWORK_MEASURE"; 
     public static String NETWORK_MEASURE_PARAMETER = "NETWORK_MEASURE_PARAMETER";
     public static String VERTEX_ATTRIBUTE = "VERTEX_ATTRIBUTE"; 
@@ -239,6 +242,19 @@ public class DvnRGraphServiceImpl{
 		}
 		os.close();
 		inb.close();
+
+		c.voidEval("load_and_clear('"+tempFileName+"')");
+
+		result.put(SAVED_RWORK_SPACE, tempFileName);
+
+		result.put("dsbHost", RSERVE_HOST);
+		result.put("dsbPort", DSB_HOST_PORT);
+		result.put("IdSuffix", IdSuffix);
+		
+		c.close();
+
+		return result; 
+
 	    } else {
 		String SavedRworkSpace = (String) SubsetParameters.get(SAVED_RWORK_SPACE); 
 
@@ -248,56 +264,53 @@ public class DvnRGraphServiceImpl{
 	    }
 		
             dbgLog.fine("RDataFile="+tempFileName);
-            historyEntry.add("load('"+tempFileName+"')");
-            c.voidEval("load('"+tempFileName+"')");
+            historyEntry.add("load_and_clear('"+tempFileName+"')");
+            c.voidEval("load_and_clear('"+tempFileName+"')");
 	            
             // check working directories
             setupWorkingDirectories(c);
             
             // subsetting 
 
-            List<String> scLst = sro.getSubsetConditions();
-            if (scLst != null){
-                for (String sci : scLst){
-                    dbgLog.fine("sci:"+ sci);
-                    historyEntry.add(sci);
-                    c.voidEval(sci);
-                }
-            }
+	    String GraphSubsetType = (String) SubsetParameters.get(RSUBSETFUNCTION); 
 
-             String RexecDate = c.eval("as.character(as.POSIXct(Sys.time()))").asString();
+	    if ( GraphSubsetType != null ) {
+		
+		if ( GraphSubsetType.equals(NTH_LARGEST) ) {
+		    int n = Integer.parseInt((String) SubsetParameters.get(N_VALUE)); 
+		    String componentFunction = "component(g, " + n + ")";
+
+		    dbgLog.fine("componentFunction="+componentFunction);
+		    historyEntry.add(componentFunction);
+		    c.voidEval(componentFunction);
+		    
+		}
+	    }
+
+	    // get the vertices and edges counts: 
+
+	    String countCommand = "vcount(g)";
+	    String countResponse = c.eval(countCommand).asString(); 
+	    result.put(NUMBER_OF_VERTICES, countResponse); 
+
+	    countCommand = "ecount(g)";
+	    countResponse = c.eval(countCommand).asString(); 
+	    result.put(NUMBER_OF_EDGES, countResponse); 
+
             
             // save workspace as a replication data set
 
-            String RdataFileName = "DVNdataFrame." + IdSuffix + ".RData"; 
-
-            result.put("Rdata", "/"+requestdir+ "/" + RdataFileName);
-
-            String saveWS = "save('dvnData', file='"+ wrkdir +"/"+ RdataFileName +"')";
-
+            String saveWS = "save(g, file='"+ tempFileName +"')";
             dbgLog.fine("save the workspace="+saveWS);
             c.voidEval(saveWS);
 
-            // write back the R workspace to the dvn 
-            
-            String wrkspFileName = wrkdir +"/"+ RdataFileName;
-            dbgLog.fine("wrkspFileName="+wrkspFileName);
-            
-            int wrkspflSize = getFileSize(c,wrkspFileName);
-            
-            File wsfl = writeBackFileToDvn(c, wrkspFileName, RWRKSP_FILE_PREFIX,"RData", wrkspflSize);
-            
 
-            result.put("dvn_RData_FileName",wsfl.getName());
-            
-            if (wsfl != null){
-                result.put("wrkspFileName", wsfl.getAbsolutePath());
-                dbgLog.fine("wrkspFileName="+wsfl.getAbsolutePath());
-            } else {
-                dbgLog.fine("wrkspFileName is null");
-            }
-            
+	    result.put( SAVED_RWORK_SPACE, tempFileName ); 
 
+	    // we're done; let's add some potentially useful 
+	    // information to the result and return: 
+
+	    String RexecDate = c.eval("as.character(as.POSIXct(Sys.time()))").asString();
 	    String RversionLine = "R.Version()$version.string";
             String Rversion = c.eval(RversionLine).asString();
             

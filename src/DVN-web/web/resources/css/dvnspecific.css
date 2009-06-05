@@ -98,7 +98,6 @@ td.vdcEditFilesColC{width:7%;padding:1em .25em;text-align:center}
 .dvnAddFilesOuterTable table.iceDatTbl td{text-align:center;border:1px solid #dadee0}
 .dvnAddFilesTableCategory label.iceOutLbl{display:inline}
 .dvnAddFilesTableCategory select.iceSelOneMnu{display:inline}
-.dvnAddFilesTableDesc{width:80%}
 /* MANAGE + EDIT COLLECTIONS */
 .dvnManageCollectionsTable{width:100%;margin-top:0}
 .dvnManageCollectionsTableChild{padding-left:18px;background:url(/dvn/resources/icefaces/dvn_rime/css-images/tree_line_last_node.gif) 0 0 no-repeat}

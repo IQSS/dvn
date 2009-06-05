@@ -18,6 +18,7 @@ ul.editDropDown{display:inline}
 .studyEditLinks li:hover ul a,.studyEditLinks li.sfHover ul a,.studyEditLinks li:hover ul a:link,.studyEditLinks li.sfHover ul a:link,.studyEditLinks li:hover ul a:visited,.studyEditLinks li.sfHover ul a:visited,.studyEditLinks li:hover ul a:active,.studyEditLinks li.sfHover ul a:active{text-decoration:none !important}
 .studyEditLinks li:hover ul a:hover,.studyEditLinks li.sfHover ul a:hover{color:#c55b28;text-decoration:underline !important}
 .vdcStudyStatus{font-weight:700;font-style:italic;color:#8B0404}
+a.vdcStudyStatus:link,a.vdcStudyStatus:visited,a.vdcStudyStatus:hover,a.vdcStudyStatus:active{margin:0;}
 .vdcStudyInfoHeader{background-color:#dadee0;font-weight:700;text-align:center;padding-top:3px;padding-bottom:3px;margin-top:-1px;margin-bottom:4px;width:100%}
 .vdcStudyInfoCol1{border-bottom-color:#dadee0;border-bottom-style:solid;border-bottom-width:1px;padding-bottom:5px;padding-left:0px;padding-right:10px;padding-top:5px;text-align:left;width:200px}
 .vdcStudyInfoCol2{border-bottom-color:#dadee0;border-bottom-style:solid;border-bottom-width:1px;font-weight:400;padding-bottom:5px;padding-top:5px;text-align:left}

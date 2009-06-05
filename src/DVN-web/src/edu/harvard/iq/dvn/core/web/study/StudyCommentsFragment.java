@@ -50,6 +50,9 @@ public class StudyCommentsFragment extends VDCBaseBean implements Serializable {
         if (getVDCSessionBean().getUser() != null) {
             user = getVDCSessionBean().getUser();
         }
+        if (studyId == null && getVDCRequestBean().getStudyId() != null) {
+            studyId = getVDCRequestBean().getStudyId();
+        }
      }
 
      /** togglePopup

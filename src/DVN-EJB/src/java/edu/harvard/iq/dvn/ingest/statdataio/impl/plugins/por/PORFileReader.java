@@ -1571,7 +1571,7 @@ public class PORFileReader extends StatDataFileReader{
 
 //        print2Darray(dataTable2, "dataTable2");
 
-        out.println("dataTable2:\n"+Arrays.deepToString(dataTable2));
+        //out.println("dataTable2:\n"+Arrays.deepToString(dataTable2));
 
 
 
@@ -1909,7 +1909,7 @@ public class PORFileReader extends StatDataFileReader{
 
 
                 Map<String, Integer> catStat = StatHelper.calculateCategoryStatistics(ldata);
-                out.println("catStat="+catStat);
+                //out.println("catStat="+catStat);
 
                 smd.getCategoryStatisticsTable().put(variablePosition, catStat);
 
@@ -1949,7 +1949,7 @@ public class PORFileReader extends StatDataFileReader{
                     StatHelper.calculateSummaryStatistics(strdata));
 
                 Map<String, Integer> StrCatStat = StatHelper.calculateCategoryStatistics(strdata);
-                out.println("catStat="+StrCatStat);
+                //out.println("catStat="+StrCatStat);
 
                 smd.getCategoryStatisticsTable().put(variablePosition, StrCatStat);
 

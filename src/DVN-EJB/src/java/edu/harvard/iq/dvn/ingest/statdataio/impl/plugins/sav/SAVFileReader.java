@@ -1804,7 +1804,7 @@ OBSERVATION: while(true){
                         LinkedList<Object> newDataLine = new LinkedList<Object>();
 
                         for (int jl=0; jl<dataLine.size();jl++){
-                            out.println(jl+"-th= "+dataLine.get(jl));
+                            //out.println(jl+"-th= "+dataLine.get(jl));
                             if (!removeJset.contains(jl) ){
 //                                if (dataLine.get(jl)==null){
 //                                    out.println(jl+"="+dataLine.get(jl));
@@ -2235,7 +2235,7 @@ pwout.close();
 
 
                 // dump the line to the tab-delimited file
-                out.println(caseIndex+"-th:"+StringUtils.join(dataLine, "\t"));
+                //out.println(caseIndex+"-th:"+StringUtils.join(dataLine, "\t"));
                 pwout.println(StringUtils.join(dataLine, "\t"));
                 
                 for (int ij=0; ij<varQnty;ij++ ){

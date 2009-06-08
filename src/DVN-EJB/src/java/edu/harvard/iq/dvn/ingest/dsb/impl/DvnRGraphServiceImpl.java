@@ -6,6 +6,8 @@
 package edu.harvard.iq.dvn.ingest.dsb.impl;
 
 import edu.harvard.iq.dvn.ingest.dsb.*;
+import edu.harvard.iq.dvn.core.analysis.NetworkMeasureParameter; 
+
 import java.io.*;
 import static java.lang.System.*;
 import java.util.*;
@@ -329,11 +331,25 @@ public class DvnRGraphServiceImpl{
 			    networkMeasureCommand = "add_degree(g)"; 
 
 			} else if ( networkMeasureType.equals(NETWORK_MEASURE_RANK) ) {
-			    String networkMeasureParam = (String) SubsetParameters.get(NETWORK_MEASURE_PARAMETER); 
-			    if ( networkMeasureParam != null ) {
-				networkMeasureCommand = "add_rank(g, "+networkMeasureParam+")";
-			    }
+			    String networkMeasureParam = null; 
 
+			    List<NetworkMeasureParameter> networkMeasureParameterList = (List<NetworkMeasureParameter>)SubsetParameters.get(NETWORK_MEASURE_PARAMETER);
+			    if ( networkMeasureParameterList != null ) {
+								
+				// we only have 1 parameter as of now;
+				
+				int i = 0; 
+
+				while ( networkMeasureParam == null && networkMeasureParameterList.get(i) != null ) {
+				    NetworkMeasureParameter nparameter = networkMeasureParameterList.get(i); 
+				    networkMeasureParam = nparameter.getValue();
+				    i++; 
+				}
+
+				if ( networkMeasureParam != null ) {
+				    networkMeasureCommand = "add_rank(g, "+networkMeasureParam+")";
+				}
+			    }
 			}
 		    }
 

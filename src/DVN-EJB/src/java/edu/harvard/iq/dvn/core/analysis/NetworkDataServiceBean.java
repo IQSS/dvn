@@ -22,25 +22,15 @@ import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
-import javax.xml.XMLConstants;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import javax.xml.transform.Source;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
-import javax.xml.validation.Validator;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
 /**
  *
@@ -113,14 +103,14 @@ public class NetworkDataServiceBean implements NetworkDataServiceLocal, java.io.
         return result;
     }
 
-    public String runNetworkMeasure(String rWorkspace, String networkMeasure, Map<String,String> parameters) {
+    public String runNetworkMeasure(String rWorkspace, String networkMeasure, List<NetworkMeasureParameter> parameters) {
         Map<String, Object> subsetParameters = new HashMap<String, Object>();
         Map<String, String> resultInfo = new HashMap<String, String>();
 
         subsetParameters.put(DvnRGraphServiceImpl.SAVED_RWORK_SPACE, rWorkspace);
         subsetParameters.put(DvnRGraphServiceImpl.RSUBSETFUNCTION, DvnRGraphServiceImpl.NETWORK_MEASURE);
         subsetParameters.put(DvnRGraphServiceImpl.NETWORK_MEASURE_TYPE, networkMeasure);
-        // TODO: Parameters
+        subsetParameters.put(DvnRGraphServiceImpl.NETWORK_MEASURE_PARAMETER, parameters);
 
         DvnRJobRequest rjr = new DvnRJobRequest(rWorkspace, subsetParameters);
         DvnRGraphServiceImpl dgs = new DvnRGraphServiceImpl();

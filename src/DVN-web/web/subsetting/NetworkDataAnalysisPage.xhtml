@@ -271,7 +271,7 @@
                 <ice:column>
                     <div class="dvnNetDataAnlsSubTblBtm">
                         <label for="downloadSubsetResults" class="dvnNetDataAnlsSubTblBtmLbl">Download the last set of subsetting results.</label>
-                        <ice:commandButton type="submit" name="downloadSubsetResults" value="Download Results" />
+                        <ice:outputResource label="Download Results" type="button" resource="#{NetworkDataAnalysisPage.subsetFile}" />
                     </div>
                 </ice:column>
             </ice:panelGrid>

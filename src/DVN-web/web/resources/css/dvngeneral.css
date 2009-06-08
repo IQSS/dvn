@@ -80,7 +80,7 @@ div.dvnSuccessMessage .successMessage{background:transparent;color:#299a0b;font-
 .successMessage a:link,.successMessage a:visited,.successMessage a:hover,.successMessage a:active{color:blue}
 ul.successMessage,.successMessage ul{list-style:none}
 ul.successMessage li,.successMessage ul li{margin:0;padding:0}
-div.dvnWarningMessage{max-width:900px;width:80%;margin:0 auto 1em;padding-left:58px;background:url(/dvn/resources/images/icon_warning.png) #e6e4d3 4px no-repeat}
+div.dvnWarningMessage{max-width:900px;width:80%;margin:0 auto 1em;background:url(/dvn/resources/images/icon_warning.png) #e6e4d3 4px no-repeat}
 div.dvnWarningMessage div.dvnMsgBlockContainer{border:1px solid #e6e4d3}
 div.dvnWarningMessage a:link,div.dvnWarningMessage a:visited,div.dvnWarningMessage a:hover,div.dvnWarningMessage a:active{color:#0c54b3}
 div.dvnWarningMessage span{font-weight:bold;color:#000;background:transparent}

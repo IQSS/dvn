@@ -41,8 +41,7 @@ public interface UnfCons {
 	 /** whether to append the null byte ('\0') at the end of each vector 
 	  * element and at the end of string representing the vector*/
     static boolean nullbyte=true;
-    /** to control verbose output */
-    static boolean DEBUG = false;
+  
     /**whether to create the object unfClass 
      * when the static method unf is invoked*/
     static boolean unfObj = true;

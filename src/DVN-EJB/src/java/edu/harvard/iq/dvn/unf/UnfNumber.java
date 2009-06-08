@@ -33,7 +33,7 @@ import java.util.logging.Logger;
 
 public class UnfNumber<T extends Number> implements UnfCons{
 	
-	private static Logger mLog = Logger.getLogger(UnfNumber.class.getName());
+	private static Logger mLog = Logger.getLogger(UnfNumber.class.getCanonicalName());
 	/** the starting encoding */
 	private String orencoding=null;
 	/** the final encoding */
@@ -51,8 +51,7 @@ public class UnfNumber<T extends Number> implements UnfCons{
 	 * Constructor
 	 */
 	public UnfNumber(){
-		if(!DEBUG)
-			mLog.setLevel(Level.WARNING);
+		
 		if(orencoding==null)
 			orencoding = textencoding;
 		try{
@@ -69,8 +68,7 @@ public class UnfNumber<T extends Number> implements UnfCons{
 	 * @exception NoSuchAlgorithmException 
 	 */
 	public UnfNumber(String algor){
-		if(!DEBUG)
-			mLog.setLevel(Level.WARNING);
+		
 		mdalgor = algor;
 		try{
 		//another algor different form md5
@@ -206,13 +204,13 @@ public class UnfNumber<T extends Number> implements UnfCons{
 	   Integer []res =result.toArray(new Integer[16]);
 	  
 	   //make sure is in big-endian order
-	   mLog.info("Base64 encoding in BIG-ENDIAN");
+	   mLog.fine("Base64 encoding in BIG-ENDIAN");
 	   String tobase64 = Base64Encoding.tobase64(inthash,false);
 	   String hexstr = UtilsConverter.getHexStrng(hash);
 	   hex.append(hexstr);
-	   mLog.info("hex "+hex);
+	   mLog.fine("hex "+hex);
 	   if((hash.length > 16) && mdalgor.equals("MD5") )
-		   mLog.info("unfNumber: hash has more than 16 bytes.."+hash.length); 
+		   mLog.fine("unfNumber: hash has more than 16 bytes.."+hash.length);
 	  
 	   
 	   for(int n=0; n <tobase64.length(); ++n)
@@ -244,7 +242,7 @@ public class UnfNumber<T extends Number> implements UnfCons{
 			   mLog.severe("UNF3: Genround returns null");
 			   return previous;
 		   }else
-			   mLog.info("UNF3: Genround: "+tmps);
+			   mLog.fine("UNF3: Genround: "+tmps);
 		   /** add the null byte */
 		   int sz = tmps.length();
 		   if(nullbyte && !(tmps.charAt(sz-1)== zeroscape)) tmps+=zeroscape;
@@ -274,7 +272,7 @@ public class UnfNumber<T extends Number> implements UnfCons{
 		  String tmp0="";
 		  for(int n=0; n < bint.length; ++n)
 			  tmp0=tmp0+ "\t"+ bint[n]; 
-	    	  mLog.info("after "+ tmp0);
+	    	  mLog.fine("after "+ tmp0);
 		  previous.update(bint);
 	   } 
 	  

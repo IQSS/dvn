@@ -32,7 +32,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class UnfString<T extends CharSequence> implements UnfCons{
-	private static Logger mLog = Logger.getLogger(UnfString.class.getName());
+	private static Logger mLog = Logger.getLogger(UnfString.class.getCanonicalName());
 	/** the staring encoding */
 	private String orencoding=null;
 	/** the final encoding */
@@ -47,8 +47,7 @@ public class UnfString<T extends CharSequence> implements UnfCons{
 	 * Constructor
 	 */
 	public UnfString(){
-		if(!DEBUG)
-			mLog.setLevel(Level.WARNING);
+		
 		if(orencoding==null)
 			orencoding = textencoding;
 		try{
@@ -65,8 +64,7 @@ public class UnfString<T extends CharSequence> implements UnfCons{
 	 * @exception NoSuchAlgorithmException 
 	 */
 	public UnfString(String algor){
-		if(!DEBUG)
-			mLog.setLevel(Level.WARNING);
+		
 		mdalgor = algor;
 		try{
 		//another algor different form md5
@@ -200,8 +198,8 @@ public class UnfString<T extends CharSequence> implements UnfCons{
 	   int k=0;
 	   for(k=0; k < nv; ++k ){
 		   //md5_append is called with UNF3
-		   mLog.info(""+v[k]+";");
-		   mLog.info(digits+";"+md+";");
+		   mLog.fine(""+v[k]+";");
+		   mLog.fine(digits+";"+md+";");
 		   boolean m; 
 		   if(miss==null)  
 		       md = UNF3(v[k],digits,md,false);
@@ -212,7 +210,7 @@ public class UnfString<T extends CharSequence> implements UnfCons{
 	   byte [] hash = md.digest();
 	   md.reset();
 	   if(hash.length > 16 )
-		   mLog.info("unfString: hash has more than 16 bytes.."+hash.length); 
+		   mLog.fine("unfString: hash has more than 16 bytes.."+hash.length);
 	   for(k=0; k < hash.length; ++k)
 		   result.add(hash[k] & 0xFF);
 	   String  rtobase64 = Base64Encoding.tobase64(hash,false);
@@ -220,7 +218,7 @@ public class UnfString<T extends CharSequence> implements UnfCons{
 	   hex.append(hexstr);
 	   for(int n=0; n <rtobase64.length(); ++n)
 		   base64[n] = new Character(rtobase64.charAt(n));
-	   mLog.info(rtobase64);
+	   mLog.fine(rtobase64);
 	   return rtobase64;
 	   }
 		   
@@ -240,7 +238,7 @@ public class UnfString<T extends CharSequence> implements UnfCons{
 		   MessageDigest previous, boolean miss)
    throws UnsupportedEncodingException, NoSuchAlgorithmException {
 	   if(!miss){
-		   mLog.info(obj.toString());
+		   mLog.fine(obj.toString());
 		   String res="";
 		   if(!obj.equals(""))
 		      res = RoundRoutines.Genround(obj,digits, false);
@@ -248,7 +246,7 @@ public class UnfString<T extends CharSequence> implements UnfCons{
 			   res+=creturn;
 			   if(nullbyte)res+=zeroscape;
 		   }
-		   mLog.info(res); 
+		   mLog.fine(res);
 		   if(res==null || (res.equals("") && !obj.equals(obj))) {
 			   mLog.severe("UNF3: Genround returns null or empty String");
 			   return previous;
@@ -278,7 +276,7 @@ public class UnfString<T extends CharSequence> implements UnfCons{
 				  cnt++;
 				  if(cnt %10 == 0) tmp0+= "\n"; 
 			  }
-		    	  mLog.info("after "+ tmp0);
+		    	  mLog.fine("after "+ tmp0);
 		   //md5_append in Micah code
 		   md.update(bint);
 	   } 

@@ -34,7 +34,7 @@ import java.util.logging.Logger;
 
 
 public class UnfDigest implements UnfCons{
-private static Logger mLog = Logger.getLogger(UnfDigest.class.getName());
+private static Logger mLog = Logger.getLogger(UnfDigest.class.getCanonicalName());
 /**last version of unf supported*/
 private static final double lastVersion=4.1d;
 /** current version */
@@ -65,8 +65,7 @@ private static boolean buildunfObj = new Boolean(unfObj);
  * Constructor 
  */
 public UnfDigest(){
-	if(!DEBUG||!debug)
-		mLog.setLevel(Level.WARNING);
+
 	
 }
 
@@ -147,8 +146,6 @@ public static void setUnfObj(boolean obj){
  * @param version float unf version number
  */
 public static void dowarnings(int ndigits, int cdigits, float version){
-	if(!DEBUG )
-		mLog.setLevel(Level.WARNING);
 	if(version < 3f)
 		mLog.warning("Older versions "+ version +" are not recommended use >= "+3);
     if(ndigits != 0 && (ndigits < NDGTS_BNDS[0] || ndigits > NDGTS_BNDS[1]))
@@ -486,14 +483,14 @@ public static void dowarnings(int ndigits, int cdigits, float version){
 	   for(String str: b64){
 		 //String tosplit=  "UNF:"+versString()+":";
 		 String tosplit =":"; 
-		 mLog.info(tosplit);
+		 mLog.fine(tosplit);
 		 String res[] =  str.split(tosplit);
 		 
 		 if(res.length >=3 && str.startsWith("UNF:")){
-			 mLog.info("toadd..."+res[1]);
+			 mLog.fine("toadd..."+res[1]);
 		     combo.add(res[2].trim());
 		 }else{
-			 mLog.info("toadd..."+res[0]);
+			 mLog.fine("toadd..."+res[0]);
 			 combo.add(res[0].trim()); 
 	   
 	      }

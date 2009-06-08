@@ -14,14 +14,12 @@ import java.util.logging.Logger;
 public class UnfDigestUtils implements UnfCons{
 	/** the following symbols represent missing values*/
 	private static final String nasymb[] = nastrings; 
-	private static Logger mLog = Logger.getLogger(UnfDigestUtils.class.getName());
+	private static Logger mLog = Logger.getLogger(UnfDigestUtils.class.getCanonicalName());
 	/**
 	 * Constructor
 	 */
 	public UnfDigestUtils(){
-		if(!DEBUG)
-			mLog.setLevel(Level.WARNING);
-	    }
+    }
 	 /**
 	  * Finds the length first index (rows) of two-dimensional array
 	  * Second index length may be obtained as data[0].length;
@@ -67,13 +65,11 @@ public class UnfDigestUtils implements UnfCons{
      * @param obj bi-dimensional array of class T
      * @return transpose array 
      */
-    public static<T extends Object> Object[][] transArray(final T[][]obj){
-    	if(!DEBUG)
-    		mLog.setLevel(Level.WARNING);
+    public static<T extends Object> Object[][] transArray(final T[][]obj){    	
     	int ncol = obj[0].length;
     	int nrow = countRows(obj);
     	Object[][] objtrans=new Object[ncol][nrow];
-    	mLog.info("rows= "+nrow +"; cols= "+ ncol);
+    	mLog.fine("rows= "+nrow +"; cols= "+ ncol);
     	for(int c=0; c < ncol; ++c)
     		for(int r=0; r <nrow; ++r){
     			objtrans[c][r]= obj[r][c];

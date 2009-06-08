@@ -101,7 +101,7 @@
                         <!-- note that the Javascript functions currently depends on the placement and ids of these fields (and the dropdown box;
                                           changing them may require corresponding changes in the Javascript  -->
                         <ice:selectBooleanCheckbox id="catCheckbox" onclick="updateCategory(this);"/>
-                        <ice:inputText id="catTextField" size="30" value="#{file.fileCategoryName}" partialSubmit="false"
+                        <ice:inputText id="catTextField" size="28" value="#{file.fileCategoryName}" partialSubmit="false"
                                        valueChangeListener="#{AddFilesPage.addCategory}"
                                        onfocus="deselectCategory(this);"
                                        onblur="iceSubmitPartial(form,this,event);"/>
@@ -119,7 +119,7 @@
                       <f:facet name="header">
                         <ice:outputLabel value="File Name"/>
                       </f:facet>
-                      <ice:inputText id="input_filename" size="30" value="#{file.studyFile.fileName}" required="true"
+                      <ice:inputText id="input_filename" size="24" value="#{file.studyFile.fileName}" required="true"
                                      requiredMessage="This field is required."
                                      validator="#{AddFilesPage.validateFileName}" partialSubmit="false"
                                      onblur="iceSubmitPartial(form,this,event);"/>
@@ -131,7 +131,7 @@
                       <f:facet name="header">
                         <ice:outputLabel value="Description"/>
                       </f:facet>
-                      <ice:inputTextarea id="description_filename" styleClass="dvnTextareaAuto" cols="40" rows="2"
+                      <ice:inputTextarea id="description_filename" styleClass="dvnTextareaAuto" cols="38" rows="2"
                                          value="#{file.studyFile.description}" partialSubmit="false"
                                          onchange="iceSubmitPartial(form,this,event);"/>
                     </ice:column>

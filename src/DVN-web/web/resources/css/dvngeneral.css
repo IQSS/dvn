@@ -156,3 +156,4 @@ li.dvnAlphaBrowseSelected a{padding:2px 5px;font-weight:bold;color:white}
 .dvnManageTableEmpty div.dvnManageTableEmptyMessage,.dvnManageTableEmpty span.dvnManageTableEmptyMessage{text-align:center}
 /* ICEFACES */
 .iceSelOneRb tr,.iceSelOneRb td{border:0}
+.MidMid a{padding-right:4px !important}

@@ -7,28 +7,20 @@ package edu.harvard.iq.dvn.core.web.subsetting;
 
 import com.icesoft.faces.context.FileResource;
 import com.icesoft.faces.context.Resource;
-import com.icesoft.faces.context.StringResource;
-import com.sun.corba.se.impl.resolver.FileResolverImpl;
 import edu.harvard.iq.dvn.core.analysis.NetworkDataServiceLocal;
 import edu.harvard.iq.dvn.core.analysis.NetworkDataSubsetResult;
+import edu.harvard.iq.dvn.core.analysis.NetworkMeasureParameter;
 import edu.harvard.iq.dvn.core.study.DataTable;
 import edu.harvard.iq.dvn.core.study.DataVariable;
 import edu.harvard.iq.dvn.core.study.NetworkDataFile;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import edu.harvard.iq.dvn.ingest.dsb.impl.DvnRGraphServiceImpl;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.Reader;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
@@ -242,7 +234,7 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
 
         // TODO: we will eventually have to read all this from xml
         networkMeasureParamterList = new ArrayList();
-        if ( "pageRank".equals( e.getNewValue().toString() ) ) {
+        if ( DvnRGraphServiceImpl.NETWORK_MEASURE_RANK.equals( e.getNewValue().toString() ) ) {
             NetworkMeasureParameter d = new NetworkMeasureParameter();
             d.setName("d");
             networkMeasureParamterList.add(d);
@@ -283,12 +275,12 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
 
     public String networkMeasure_action() {
 
-        String result = networkDataService.runNetworkMeasure(rWorkspace, networkMeasureType, null);
+        String result = networkDataService.runNetworkMeasure(rWorkspace, networkMeasureType, networkMeasureParamterList);
 
         NetworkDataAnalysisEvent event = new NetworkDataAnalysisEvent();
         event.setLabel("Network Measure");
         event.setAttributeSet("N/A");
-        event.setQuery(networkMeasureType + "("+ listString(getNetworkMeasureParameterList()) + ")");
+        event.setQuery(networkMeasureType + "("+ getNetworkMeasureParametersAsString(networkMeasureParamterList) + ")");
         event.setVertices( getLastEvent().getVertices() );
         event.setEdges( getLastEvent().getEdges() );
         events.add(event);
@@ -306,7 +298,7 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
 
     }
 
-    private String listString(List<NetworkMeasureParameter> paramterList) {
+    private String getNetworkMeasureParametersAsString(List<NetworkMeasureParameter> paramterList) {
         String returnString = "";
         for (NetworkMeasureParameter parameter : paramterList) {
             if (!"".equals(returnString)) {
@@ -321,30 +313,6 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
         return events.get( events.size() - 1);
     }
 
-
-
-    public class NetworkMeasureParameter {
-
-        private String name;
-        private String value;
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public String getValue() {
-            return value;
-        }
-
-        public void setValue(String value) {
-            this.value = value;
-        }
-
-    }
 
     public class NetworkDataAnalysisEvent {
 

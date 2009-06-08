@@ -27,15 +27,13 @@ import org.apache.commons.codec.net.BCodec;
 public class Base64Encoding implements UnfCons{
 	private static String DEFAULT_CHAR_ENCODING ="UTF-8";
 
-	private static Logger mLog = Logger.getLogger(Base64Encoding.class.getName());
+	private static Logger mLog = Logger.getLogger(Base64Encoding.class.getCanonicalName());
 	
 	/** default byte order */
 	private static ByteOrder border = ByteOrder.BIG_ENDIAN;
 	
 	public Base64Encoding(){
-		if(!DEBUG)
-			mLog.setLevel(Level.WARNING);
-	}
+    }
 	public Base64Encoding(ByteOrder ord){
 		border =ord;
 	}
@@ -60,7 +58,7 @@ public class Base64Encoding implements UnfCons{
 		   byte[] tobase64 = null;
 		   ByteOrder local = ByteOrder.nativeOrder();
 		   String ordbyte = local.toString();
-		   mLog.info("Native byte order is: "+ordbyte);
+		   mLog.fine("Native byte order is: "+ordbyte);
 		   ByteBuffer btstream = ByteBuffer.wrap(digest);
 		   btstream.order(ByteOrder.BIG_ENDIAN);
 		   byte [] revdigest=null;
@@ -138,7 +136,7 @@ public static String tobase641(byte[]digest, String cset){
 		 
 		   
 		   }catch(EncoderException err){
-			   mLog.info("base64Encoding: exception"+ err.getMessage());
+			   mLog.severe("base64Encoding: exception"+ err.getMessage());
 		   }
 	return tobase64;
 }

@@ -56,8 +56,7 @@ public class DvnRGraphServiceImpl{
     public static String NETWORK_MEASURE_RANK = "NETWORK_MEASURE_RANK"; 
     public static String NETWORK_MEASURE_PARAMETER = "NETWORK_MEASURE_PARAMETER";
 
-    // - arguments for the subset functions above: 
-
+    // - return result fields:
 
     public static String SAVED_RWORK_SPACE = "SAVED_RWORK_SPACE";
     public static String NUMBER_OF_VERTICES = "NUMBER_OF_VERTICES"; 
@@ -304,9 +303,9 @@ public class DvnRGraphServiceImpl{
 			if (manualQueryType.equals(EDGE_SUBSET)) {
 			    String dropDisconnected = (String) SubsetParameters.get(ELIMINATE_DISCONNECTED); 
 			    if ( dropDisconnected != null ) {
-				subsetCommand = "edge_subset(g, '"+manualQuery+"', "+dropDisconnected+")"; 
+				subsetCommand = "edge_subset(g, '"+manualQuery+"', TRUE)"; 
 			    } else {
-				subsetCommand = "edge_subset(g, '"+manualQuery+"', "+")"; 
+				subsetCommand = "edge_subset(g, '"+manualQuery+"')"; 
 			    }
 
 			} else if (manualQueryType.equals(VERTEX_SUBSET)){

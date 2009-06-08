@@ -5,6 +5,10 @@
 
 package edu.harvard.iq.dvn.core.web.subsetting;
 
+import com.icesoft.faces.context.FileResource;
+import com.icesoft.faces.context.Resource;
+import com.icesoft.faces.context.StringResource;
+import com.sun.corba.se.impl.resolver.FileResolverImpl;
 import edu.harvard.iq.dvn.core.analysis.NetworkDataServiceLocal;
 import edu.harvard.iq.dvn.core.analysis.NetworkDataSubsetResult;
 import edu.harvard.iq.dvn.core.study.DataTable;
@@ -13,10 +17,18 @@ import edu.harvard.iq.dvn.core.study.NetworkDataFile;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import edu.harvard.iq.dvn.ingest.dsb.impl.DvnRGraphServiceImpl;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
@@ -285,6 +297,13 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
         vertexAttributeSelectItems.add(new SelectItem(result));
         
         return null;
+    }
+    
+
+    public Resource getSubsetFile() {
+        File subsetFile = networkDataService.getSubsetExport(rWorkspace);
+        return new FileResource( subsetFile );
+
     }
 
     private String listString(List<NetworkMeasureParameter> paramterList) {

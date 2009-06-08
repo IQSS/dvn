@@ -94,15 +94,15 @@ public class NetworkDataServiceBean implements NetworkDataServiceLocal, java.io.
     }
 
     public NetworkDataSubsetResult runAutomaticQuery(String rWorkspace, String automaticQuery, String nValue) {
-        Map<String, Object> mpl = new HashMap<String, Object>();
+        Map<String, Object> subsetParameters = new HashMap<String, Object>();
         Map<String, String> resultInfo = new HashMap<String, String>();
 
-        mpl.put(DvnRGraphServiceImpl.SAVED_RWORK_SPACE, rWorkspace);
-        mpl.put(DvnRGraphServiceImpl.RSUBSETFUNCTION, DvnRGraphServiceImpl.AUTOMATIC_QUERY_SUBSET);
-        mpl.put(DvnRGraphServiceImpl.AUTOMATIC_QUERY_TYPE, automaticQuery);
-        mpl.put(DvnRGraphServiceImpl.AUTOMATIC_QUERY_N_VALUE, nValue);
+        subsetParameters.put(DvnRGraphServiceImpl.SAVED_RWORK_SPACE, rWorkspace);
+        subsetParameters.put(DvnRGraphServiceImpl.RSUBSETFUNCTION, DvnRGraphServiceImpl.AUTOMATIC_QUERY_SUBSET);
+        subsetParameters.put(DvnRGraphServiceImpl.AUTOMATIC_QUERY_TYPE, automaticQuery);
+        subsetParameters.put(DvnRGraphServiceImpl.AUTOMATIC_QUERY_N_VALUE, nValue);
 
-        DvnRJobRequest rjr = new DvnRJobRequest(rWorkspace, mpl);
+        DvnRJobRequest rjr = new DvnRJobRequest(rWorkspace, subsetParameters);
         DvnRGraphServiceImpl dgs = new DvnRGraphServiceImpl();
         resultInfo = dgs.execute(rjr);
 
@@ -114,20 +114,30 @@ public class NetworkDataServiceBean implements NetworkDataServiceLocal, java.io.
     }
 
     public String runNetworkMeasure(String rWorkspace, String networkMeasure, Map<String,String> parameters) {
-        Map<String, Object> mpl = new HashMap<String, Object>();
+        Map<String, Object> subsetParameters = new HashMap<String, Object>();
         Map<String, String> resultInfo = new HashMap<String, String>();
 
-        mpl.put(DvnRGraphServiceImpl.SAVED_RWORK_SPACE, rWorkspace);
-        mpl.put(DvnRGraphServiceImpl.RSUBSETFUNCTION, DvnRGraphServiceImpl.NETWORK_MEASURE);
-        mpl.put(DvnRGraphServiceImpl.NETWORK_MEASURE_TYPE, networkMeasure);
+        subsetParameters.put(DvnRGraphServiceImpl.SAVED_RWORK_SPACE, rWorkspace);
+        subsetParameters.put(DvnRGraphServiceImpl.RSUBSETFUNCTION, DvnRGraphServiceImpl.NETWORK_MEASURE);
+        subsetParameters.put(DvnRGraphServiceImpl.NETWORK_MEASURE_TYPE, networkMeasure);
         // TODO: Parameters
 
-        DvnRJobRequest rjr = new DvnRJobRequest(rWorkspace, mpl);
+        DvnRJobRequest rjr = new DvnRJobRequest(rWorkspace, subsetParameters);
         DvnRGraphServiceImpl dgs = new DvnRGraphServiceImpl();
         resultInfo = dgs.execute(rjr);
 
         checkForError(resultInfo);
         return resultInfo.get(DvnRGraphServiceImpl.NETWORK_MEASURE_NEW_COLUMN);
+    }
+
+    public File getSubsetExport(String rWorkspace) {
+        Map<String, String> resultInfo = new HashMap<String, String>();
+
+        DvnRGraphServiceImpl dgs = new DvnRGraphServiceImpl();
+        resultInfo = dgs.exportAsGraphML(rWorkspace);
+
+        checkForError(resultInfo);
+        return new File( resultInfo.get(DvnRGraphServiceImpl.GRAPHML_FILE_EXPORTED) );
     }
 
     private void checkForError(Map<String, String> resultInfo) {

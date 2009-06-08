@@ -82,8 +82,7 @@ private static Logger mLog = Logger.getLogger(RoundRoutines.class.getName());
      */
    
 	public RoundRoutines(){
-		if(!DEBUG)
-			mLog.setLevel(Level.WARNING);
+		
 		this.digits=DEF_NDGTS;
 		this.symb = new FormatNumbSymbols();
 		

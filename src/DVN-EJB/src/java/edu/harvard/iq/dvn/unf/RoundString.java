@@ -32,8 +32,7 @@ public class RoundString implements UnfCons{
 	     * Default constructor
 	     */
 	    public RoundString(){
-	    	if(!DEBUG)
-	    		mLog.setLevel(Level.WARNING);
+	    	
 	    }
 	    /**
 	     * Constructor

@@ -127,7 +127,7 @@ public class NetworkDataServiceBean implements NetworkDataServiceLocal, java.io.
         resultInfo = dgs.execute(rjr);
 
         checkForError(resultInfo);
-        return networkMeasure;
+        return resultInfo.get(DvnRGraphServiceImpl.NETWORK_MEASURE_NEW_COLUMN);
     }
 
     private void checkForError(Map<String, String> resultInfo) {

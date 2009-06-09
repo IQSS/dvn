@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
@@ -261,22 +262,27 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
 
 
     public String manualQuery_action() {
+        try {
+            NetworkDataSubsetResult result = networkDataService.runManualQuery(rWorkspace, manualQueryType, manualQuery, eliminateDisconnectedVertices );
 
-        NetworkDataSubsetResult result = networkDataService.runManualQuery(rWorkspace, manualQueryType, manualQuery, eliminateDisconnectedVertices );
+            NetworkDataAnalysisEvent event = new NetworkDataAnalysisEvent();
+            event.setLabel("Manual Query");
+            event.setAttributeSet(manualQueryType);
+            event.setQuery(manualQuery);
+            event.setVertices( result.getVertices() );
+            event.setEdges( result.getEdges() );
+            events.add(event);
 
-        NetworkDataAnalysisEvent event = new NetworkDataAnalysisEvent();
-        event.setLabel("Manual Query");
-        event.setAttributeSet(manualQueryType);
-        event.setQuery(manualQuery);
-        event.setVertices( result.getVertices() );
-        event.setEdges( result.getEdges() );
-        events.add(event);
+        } catch (Exception e) {
+            FacesMessage message = new FacesMessage(e.getMessage());
+            getFacesContext().addMessage(null, message);
+        }
 
         return null;
     }
 
     public String automaticQuery_action() {
-
+        try {
             NetworkDataSubsetResult result = networkDataService.runAutomaticQuery(rWorkspace, automaticQueryType, automaticQueryNthValue);
 
             NetworkDataAnalysisEvent event = new NetworkDataAnalysisEvent();
@@ -286,25 +292,36 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
             event.setVertices( result.getVertices() );
             event.setEdges( result.getEdges() );
             events.add(event);
+            
+        } catch (Exception e) {
+                FacesMessage message = new FacesMessage(e.getMessage());
+                getFacesContext().addMessage(null, message);
+        }
+
 
         return null;
     }
 
     public String networkMeasure_action() {
+        try {
+            String result = networkDataService.runNetworkMeasure(rWorkspace, networkMeasureType, networkMeasureParamterList);
 
-        String result = networkDataService.runNetworkMeasure(rWorkspace, networkMeasureType, networkMeasureParamterList);
+            NetworkDataAnalysisEvent event = new NetworkDataAnalysisEvent();
+            event.setLabel("Network Measure");
+            event.setAttributeSet("N/A");
+            event.setQuery(networkMeasureType + "("+ getNetworkMeasureParametersAsString(networkMeasureParamterList) + ")");
+            event.setVertices( getLastEvent().getVertices() );
+            event.setEdges( getLastEvent().getEdges() );
+            events.add(event);
 
-        NetworkDataAnalysisEvent event = new NetworkDataAnalysisEvent();
-        event.setLabel("Network Measure");
-        event.setAttributeSet("N/A");
-        event.setQuery(networkMeasureType + "("+ getNetworkMeasureParametersAsString(networkMeasureParamterList) + ")");
-        event.setVertices( getLastEvent().getVertices() );
-        event.setEdges( getLastEvent().getEdges() );
-        events.add(event);
+            // add measure to attributeList
+            vertexAttributeSelectItems.add(new SelectItem(result));
 
-        // add measure to attributeList
-        vertexAttributeSelectItems.add(new SelectItem(result));
-        
+        } catch (Exception e) {
+                FacesMessage message = new FacesMessage(e.getMessage());
+                getFacesContext().addMessage(null, message);
+        }
+
         return null;
     }
 

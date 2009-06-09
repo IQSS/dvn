@@ -90,7 +90,7 @@
                     <div jsfc="ice:panelGroup" rendered="#{VDCSession.loginBean.admin == true or VDCSession.loginBean.networkAdmin == true}">
                         <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
                             <tr><td colspan="2" class="dvnOptionsTableHeader"><ice:outputText value="#{bundlePageInfo.dvSettingsSectionTitle}"/></td></tr>
-                            <gui:fragment rendered="#{not VDCRequest.currentVDC.harvestingDv}">
+                            <gui:fragment rendered="#{not VDCRequest.currentVDC.harvestingDv or (VDCSession.loginBean.networkAdmin == false and VDCRequest.currentVDC.harvestingDv)}">
                                 <tr>
                                     <td class="dvnOptionsTableOption">
                                         <ice:outputLink id="hyperlink15a" value="/dvn#{VDCRequest.currentVDCURL}/faces/site/EditSitePage.xhtml">
@@ -100,7 +100,7 @@
                                     <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.editDvSettingsText}"/></td>
                                 </tr>
                             </gui:fragment>
-                            <gui:fragment rendered="#{VDCRequest.currentVDC.harvestingDv}">
+                            <gui:fragment rendered="#{VDCRequest.currentVDC.harvestingDv  and VDCSession.loginBean.networkAdmin == true}">
                                 <tr>
                                     <td class="dvnOptionsTableOption">
                                         <ice:outputLink id="hyperlink15b" value="/dvn#{VDCRequest.currentVDCURL}/faces/site/EditHarvestSitePage.xhtml">

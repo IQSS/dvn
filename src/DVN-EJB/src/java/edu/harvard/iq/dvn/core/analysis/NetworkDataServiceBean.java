@@ -181,9 +181,7 @@ public class NetworkDataServiceBean implements NetworkDataServiceLocal, java.io.
         XMLStreamReader xmlr = xmlif.createXMLStreamReader(fileReader);
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
-                if (xmlr.getLocalName().equals("graphml")) {
-                    dbgLog.fine("schema = "+xmlr.getAttributeValue(null, "schemaLocation"));
-                }
+                
                 if (xmlr.getLocalName().equals("key")) processKey(xmlr, ndf);
                 else if (xmlr.getLocalName().equals("graph")) processGraph(xmlr, ndf);
 
@@ -195,7 +193,7 @@ public class NetworkDataServiceBean implements NetworkDataServiceLocal, java.io.
 
         // If #nodes and #edges is not set, then go thru list to count them
     }
-    /**
+    /**"
      * If this key element is for a node, add a DataVariable to the
      * vertexDataTable, else add a DataVariable to edgeDataTable
      * @param xmlr

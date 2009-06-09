@@ -67,7 +67,7 @@ public class ManageTemplatesPage extends VDCBaseBean implements java.io.Serializ
         templateList.add(0, networkTemplate);
         networkTemplateId = networkTemplate.getId();
         defaultTemplateId= getVDCRequestBean().getCurrentVDC().getDefaultTemplate().getId();
-        templateService.createTemplate(getVDCRequestBean().getCurrentVDCId());
+     
 
     }
     

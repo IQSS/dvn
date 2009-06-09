@@ -56,6 +56,7 @@ public class DvnRGraphServiceImpl{
     public static String NETWORK_MEASURE_TYPE = "NETWORK_MEASURE_TYPE"; 
     public static String NETWORK_MEASURE_DEGREE = "NETWORK_MEASURE_DEGREE"; 
     public static String NETWORK_MEASURE_RANK = "NETWORK_MEASURE_RANK"; 
+    public static String NETWORK_MEASURE_IN_LARGEST = "NETWORK_MEASURE_IN_LARGEST"; 
     public static String NETWORK_MEASURE_PARAMETER = "NETWORK_MEASURE_PARAMETER";
 
     // - return result fields:
@@ -330,6 +331,9 @@ public class DvnRGraphServiceImpl{
 			if ( networkMeasureType.equals(NETWORK_MEASURE_DEGREE) ) {
 			    networkMeasureCommand = "add_degree(g)"; 
 
+			} else if ( networkMeasureType.equals(NETWORK_MEASURE_IN_LARGEST) ) {
+			    networkMeasureCommand = "add_in_largest_component(g)"; 
+
 			} else if ( networkMeasureType.equals(NETWORK_MEASURE_RANK) ) {
 			    String networkMeasureParam = null; 
 
@@ -362,6 +366,8 @@ public class DvnRGraphServiceImpl{
 		    dbgLog.info("networkMeasureCommand="+networkMeasureCommand);
 		    historyEntry.add(networkMeasureCommand);
 		    String addedColumn = c.eval(networkMeasureCommand).asString();
+		    dbgLog.info("added column="+addedColumn);
+
 		    if ( addedColumn != null ) {
 			result.put(NETWORK_MEASURE_NEW_COLUMN, addedColumn);
 		    } else {
@@ -378,6 +384,10 @@ public class DvnRGraphServiceImpl{
 			    int n = Integer.parseInt((String) SubsetParameters.get(AUTOMATIC_QUERY_N_VALUE)); 
 			    autoQueryCommand = "component(g, " + n + ")";
 
+			} else if ( automaticQueryType.equals(AUTOMATIC_QUERY_BICONNECTED) ) {
+			    int n = Integer.parseInt((String) SubsetParameters.get(AUTOMATIC_QUERY_N_VALUE)); 
+			    autoQueryCommand = "biconnected_component(g, " + n + ")";
+
 			} 
 		    }
 
@@ -388,7 +398,7 @@ public class DvnRGraphServiceImpl{
 
 		    }
 
-		    dbgLog.fine("autoQueryCommand="+autoQueryCommand);
+		    dbgLog.info("autoQueryCommand="+autoQueryCommand);
 		    historyEntry.add(autoQueryCommand);
 		    c.voidEval(autoQueryCommand);
 		}
@@ -406,7 +416,7 @@ public class DvnRGraphServiceImpl{
 	    result.put(NUMBER_OF_EDGES, Integer.toString(countResponse)); 
 
             
-            // save workspace as a replication data set
+            // save workspace:
 
             String saveWS = "save(g, file='"+ RDataFileName +"')";
             dbgLog.fine("save the workspace="+saveWS);

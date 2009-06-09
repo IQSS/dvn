@@ -347,7 +347,7 @@ public class DvnRGraphServiceImpl{
 				}
 
 				if ( networkMeasureParam != null ) {
-				    networkMeasureCommand = "add_rank(g, "+networkMeasureParam+")";
+				    networkMeasureCommand = "add_pagerank(g, "+networkMeasureParam+")";
 				}
 			    }
 			}

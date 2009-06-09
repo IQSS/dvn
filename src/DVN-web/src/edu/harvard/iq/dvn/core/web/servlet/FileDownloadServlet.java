@@ -444,54 +444,54 @@ public class FileDownloadServlet extends HttpServlet {
             // mechanism, (hopefully) making them and not us liable
             // for it.
 
-            if (status == 302) {
-            // this is a redirect.
+            if (status == 302 || status == 301) {
+		// this is a redirect.
             
-            // let's see where it is redirecting us; if it looks like
-            // DVN TermsOfUse page, we'll "click" and submit the form,
-            // then we'll hopefully be able to download the file.
-            // If it's no the TOU page, we are just going to try to
-            // follow the redirect and hope for the best.
-            // (A good real life example is the Census archive: the
-            // URLs for their objects that they give us are actually
-            // aliases that are 302-redirected to the actual locations)
+		// let's see where it is redirecting us; if it looks like
+		// DVN TermsOfUse page, we'll "click" and submit the form,
+		// then we'll hopefully be able to download the file.
+		// If it's no the TOU page, we are just going to try to
+		// follow the redirect and hope for the best.
+		// (A good real life example is the Census archive: the
+		// URLs for their objects that they give us are actually
+		// aliases that are 302-redirected to the actual locations)
 
-            String redirectLocation = null;
+		String redirectLocation = null;
                 
-            for (int i = 0; i < method.getResponseHeaders().length; i++) {
-                String headerName = method.getResponseHeaders()[i].getName();
-                if (headerName.equals("Location")) {
-                redirectLocation = method.getResponseHeaders()[i].getValue();
-                }
+		for (int i = 0; i < method.getResponseHeaders().length; i++) {
+		    String headerName = method.getResponseHeaders()[i].getName();
+		    if (headerName.equals("Location")) {
+			redirectLocation = method.getResponseHeaders()[i].getValue();
+		    }
+		}
+
+		if (redirectLocation.matches(".*TermsOfUsePage.*")) {
+		    
+		    // Accept the TOU agreement:
+		    
+		    method = remoteAccessTOU(redirectLocation, jsessionid, remoteFileUrl);
+
+		    // If everything has worked right
+		    // we should be redirected to the final
+		    // download URL, and the method returned is
+		    // an established download connection;
+
+		    if (method != null) {
+			status = method.getStatusCode();
+		    } else {
+			// but if something went wrong in the progress,
+			// we just report that we couldn't find
+			// the file:
+			status = 404;
+		    }
+                
+		} else {
+		    // just try again (and hope for the best!)
+		    method = new GetMethod(redirectLocation);
+		    status = getClient().executeMethod(method);
+		}
             }
 
-            if (redirectLocation.matches(".*TermsOfUsePage.*")) {
-                
-                // Accept the TOU agreement:
-
-                method = remoteAccessTOU(redirectLocation, jsessionid, remoteFileUrl);
-
-                // If everything has worked right
-                // we should be redirected to the final
-                // download URL, and the method returned is
-                // an established download connection;
-
-                if (method != null) {
-                status = method.getStatusCode();
-                } else {
-                // but if something went wrong in the progress,
-                // we just report that we couldn't find
-                // the file:
-                status = 404;
-                }
-                
-            } else {
-                // just try again (and hope for the best!)
-                method = new GetMethod(redirectLocation);
-                status = getClient().executeMethod(method);
-            }
-            }
-            
         } catch (IOException ex) {
             // return 404
             // and generate a FILE NOT FOUND message

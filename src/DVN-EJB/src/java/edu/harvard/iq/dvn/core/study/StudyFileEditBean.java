@@ -28,18 +28,19 @@
  */
 package edu.harvard.iq.dvn.core.study;
 
-import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.util.FileUtil;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
 
 import java.util.logging.*;
-import org.apache.commons.lang.builder.*;
+import javax.ejb.EJBException;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 
 /**
  *
@@ -47,7 +48,7 @@ import org.apache.commons.lang.builder.*;
  */
 public class StudyFileEditBean implements Serializable {
 
-    private static Logger dbgLog = Logger.getLogger(StudyFileEditBean.class.getPackage().getName());
+    private static Logger dbgLog = Logger.getLogger(StudyFileEditBean.class.getCanonicalName());
 
     /** Creates a new instance of StudyFileEditBean */
     public StudyFileEditBean(StudyFile sf) {
@@ -65,9 +66,7 @@ public class StudyFileEditBean implements Serializable {
             fileType.equals("application/x-spss-por") ||
             fileType.equals("application/x-spss-sav") ) {
             this.studyFile = new TabularDataFile(); // do not yet attach to study, as it has to be ingested
-        } else if (fileType.equals("application/xml") ||
-                   fileType.equals("text/xml")) {
-            // Ellen TODO: also test the schema type of this file - it should be GraphML
+        } else if (fileType.equals("text/xml") && isGraphMLFile(file)) {
             this.studyFile = new NetworkDataFile();
         } else    {
             this.studyFile = new OtherFile(study);
@@ -87,8 +86,8 @@ public class StudyFileEditBean implements Serializable {
         // not yet supported as subsettable
         //this.getStudyFile().getFileType().equals("application/x-rlang-transport") );
         dbgLog.fine("before setFileName");
-        // replace extension with ".tab" if subsettable
-        this.getStudyFile().setFileName(this.getStudyFile().isSubsettable() ? FileUtil.replaceExtension(this.getOriginalFileName()) : this.getOriginalFileName());
+        // replace extension with ".tab" if this we are going to convert this to a tabular data file
+        this.getStudyFile().setFileName(this.getStudyFile() instanceof TabularDataFile ? FileUtil.replaceExtension(this.getOriginalFileName()) : this.getOriginalFileName());
         dbgLog.fine("before tempsystemfilelocation");
         this.setTempSystemFileLocation(file.getAbsolutePath());
         this.getStudyFile().setFileSystemName(fileSystemName);
@@ -223,6 +222,40 @@ public class StudyFileEditBean implements Serializable {
         sizeFormatted = s;
     }
 
+    private boolean isGraphMLFile(File file) {
+        boolean isGraphML = false;
+        try{
+            FileReader fileReader = new FileReader(file);
+            javax.xml.stream.XMLInputFactory xmlif = javax.xml.stream.XMLInputFactory.newInstance();
+            xmlif.setProperty("javax.xml.stream.isCoalescing", java.lang.Boolean.TRUE);
+      
+            XMLStreamReader xmlr = xmlif.createXMLStreamReader(fileReader);
+            for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
+                if (event == XMLStreamConstants.START_ELEMENT) {
+                    if (xmlr.getLocalName().equals("graphml")) {
+                        dbgLog.fine("schema = "+xmlr.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance", "schemaLocation"));
+                        // to determine file - this attribute should have value "http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd"
+                        int count = xmlr.getAttributeCount();
+                        for (int i=0; i<count; i++) {
+                            dbgLog.fine("attrib["+i+"]="+xmlr.getAttributeName(i));
+                        }
+                        String schema = xmlr.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance", "schemaLocation");
+                        if (schema!=null && schema.indexOf("http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd")!=-1){
+                            isGraphML = true;
+                            break;
+                        }
+                    }
+                } 
+            }
+        } catch(XMLStreamException e) {
+            this.dbgLog.fine("XML error - this is not a valid graphML file.");
+            isGraphML = false;
+        } catch(IOException e) {
+            throw new EJBException(e);
+        }
+
+        return isGraphML;
+    }
 //    @Override
 //    public String toString() {
 //        return ToStringBuilder.reflectionToString(this,

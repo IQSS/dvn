@@ -183,6 +183,16 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
         sendMessage(op);
     }
 
+    private void handleIOProblems(boolean ioProblem, Long ioProblemCount) {
+        if (ioProblem) {
+            try {
+                mailService.sendDoNotReplyMail(vdcNetworkService.find().getContactEmail(), "IO problem", ioProblemCount +" studies may not have been indexed" + InetAddress.getLocalHost().getHostAddress());
+            } catch (UnknownHostException ex) {
+                Logger.getLogger(IndexServiceBean.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
     private void indexProblemNotify() {
         List<Study> studies = (List<Study>) em.createQuery("SELECT s from Study s where s.lastIndexTime < s.lastUpdateTime OR s.lastIndexTime is NULL").getResultList();
         if (studies.size() > 0) {
@@ -236,30 +246,16 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
         sendMessage(op);
     }
 
-    private void addDocument(final long studyId) {
+    private void addDocument(final long studyId) throws IOException {
         Date indexTime = new Date();
         Study study = studyService.getStudy(studyId);
         Indexer indexer = Indexer.getInstance();
-        
+
+        indexer.addDocument(study);
         try {
-            indexer.addDocument(study);
-            try {
-                studyService.setIndexTime(studyId, indexTime);
-            } catch (Exception e) {
-                e.printStackTrace(); // print stacktrace, but continue processing
-            }
-        } catch (IOException ex) {
-            /*
-            IndexStudy s = new IndexStudy();
-            s.setStudyId(studyId);
-            em.persist(s);
-             */
-            ex.printStackTrace();
-            try {
-                mailService.sendDoNotReplyMail(vdcNetworkService.find().getContactEmail(), "IO problem", "Check index write lock " + InetAddress.getLocalHost().getHostAddress() + " , study id " + studyId);
-            } catch (UnknownHostException u) {
-                u.printStackTrace();
-            }
+            studyService.setIndexTime(studyId, indexTime);
+        } catch (Exception e) {
+            e.printStackTrace(); // print stacktrace, but continue processing
         }
     }
 
@@ -270,6 +266,8 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
     }
 
     public void indexAll() {
+        boolean ioProblem = false;
+        long ioProblemCount = 0;
         Indexer indexer = Indexer.getInstance();
         /*
         try {
@@ -281,11 +279,20 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
         List<Study> studies = studyService.getStudies();
         for (Iterator it = studies.iterator(); it.hasNext();) {
             Study elem = (Study) it.next();
-            addDocument(elem.getId().longValue());
+            try {
+                addDocument(elem.getId().longValue());
+            } catch (IOException ex) {
+                ioProblem = true;
+                ioProblemCount++;
+                Logger.getLogger(IndexServiceBean.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
+        handleIOProblems(ioProblem,ioProblemCount);
     }
 
     public void indexList(List<Long> studyIds) {
+        long ioProblemCount = 0;
+        boolean ioProblem = false;
         Indexer indexer = Indexer.getInstance();
         /*
         try {
@@ -296,11 +303,20 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
          */
         for (Iterator it = studyIds.iterator(); it.hasNext();) {
             Long elem = (Long) it.next();
-            addDocument(elem.longValue());
+            try {
+                addDocument(elem.longValue());
+            } catch (IOException ex) {
+                ioProblem = true;
+                ioProblemCount++;
+                Logger.getLogger(IndexServiceBean.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
+        handleIOProblems(ioProblem, ioProblemCount);
     }
 
     public void updateIndexList(List<Long> studyIds) {
+        long ioProblemCount = 0;
+        boolean ioProblem = false;
         Indexer indexer = Indexer.getInstance();
         /*
         try {
@@ -313,7 +329,13 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
             Long elem = (Long) it.next();
             try {
                 deleteDocument(elem.longValue());
-                addDocument(elem.longValue());
+                try {
+                    addDocument(elem.longValue());
+                } catch (IOException ex) {
+                    ioProblem = true;
+                    ioProblemCount++;
+                    Logger.getLogger(IndexServiceBean.class.getName()).log(Level.SEVERE, null, ex);
+                }
             } catch (EJBException e) {
                 if (e.getCause() instanceof IllegalArgumentException) {
                     System.out.println("Study id " + elem.longValue() + " not found");
@@ -323,6 +345,8 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
                 }
             }
         }
+        handleIOProblems(ioProblem,ioProblemCount);
+
     }
 
     public void deleteIndexList(List<Long> studyIds) {
@@ -505,11 +529,20 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
     }
 
     public void indexBatch() {
+        long ioProblemCount = 0;
+        boolean ioProblem = false;
         HashSet s = getUnindexedStudies();
         for (Iterator it = s.iterator(); it.hasNext();) {
             Study study = (Study) it.next();
-            addDocument(study.getId().longValue());
+            try {
+                addDocument(study.getId().longValue());
+            } catch (IOException ex) {
+                Logger.getLogger(IndexServiceBean.class.getName()).log(Level.SEVERE, null, ex);
+                ioProblemCount++;
+                ioProblem = true;
+            }
         }
+        handleIOProblems(ioProblem, ioProblemCount);
     }
     
     private List<Long> getStudiesforCollections(List<VDCCollection> searchCollections) {

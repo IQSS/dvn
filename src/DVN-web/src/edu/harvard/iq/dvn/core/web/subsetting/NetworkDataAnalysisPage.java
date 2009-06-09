@@ -237,6 +237,7 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
             networkMeasureSelectItems = new ArrayList();
             networkMeasureSelectItems.add(new SelectItem(DvnRGraphServiceImpl.NETWORK_MEASURE_RANK, "Page Rank"));
             networkMeasureSelectItems.add(new SelectItem(DvnRGraphServiceImpl.NETWORK_MEASURE_DEGREE, "Degree"));
+            networkMeasureSelectItems.add(new SelectItem(DvnRGraphServiceImpl.NETWORK_MEASURE_IN_LARGEST, "In Largest Componenet"));
         }
 
         return networkMeasureSelectItems;
@@ -276,15 +277,15 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
 
     public String automaticQuery_action() {
 
-        NetworkDataSubsetResult result = networkDataService.runAutomaticQuery(rWorkspace, automaticQueryType, automaticQueryNthValue);
+            NetworkDataSubsetResult result = networkDataService.runAutomaticQuery(rWorkspace, automaticQueryType, automaticQueryNthValue);
 
-        NetworkDataAnalysisEvent event = new NetworkDataAnalysisEvent();
-        event.setLabel("Automatic Query");
-        event.setAttributeSet("N/A");
-        event.setQuery(automaticQueryType + "(" + automaticQueryNthValue + ")");
-        event.setVertices( result.getVertices() );
-        event.setEdges( result.getEdges() );
-        events.add(event);
+            NetworkDataAnalysisEvent event = new NetworkDataAnalysisEvent();
+            event.setLabel("Automatic Query");
+            event.setAttributeSet("N/A");
+            event.setQuery(automaticQueryType + "(" + automaticQueryNthValue + ")");
+            event.setVertices( result.getVertices() );
+            event.setEdges( result.getEdges() );
+            events.add(event);
 
         return null;
     }

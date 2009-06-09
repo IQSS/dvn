@@ -16,41 +16,6 @@
 <gui:define name="body">
     <script type="text/javascript">
       // <![CDATA[
-      function getElementsByClassName( strClassName, obj ) {
-          var ar = arguments[2] || new Array();
-          var re = new RegExp("\\b" + strClassName + "\\b", "g");
-          if ( re.test(obj.className) ) {
-              ar.push( obj );
-          }
-          for ( var i = 0; i < obj.childNodes.length; i++ )
-              getElementsByClassName( strClassName, obj.childNodes[i], ar );
-          return ar;
-      }
-      function getRadioValue( id ) {
-          elements=document.getElementsByTagName("input");
-          for(i=0; i < elements.length; i++) {
-              if (elements[i].id.indexOf(id) != -1 ) {
-                  if (elements[i].checked) {
-                      return elements[i].value;
-                  }
-              }
-          }
-      }
-      function changeAction() {
-          disableElements( getElementsByClassName("manualQuery", document.body) );
-          disableElements( getElementsByClassName("automaticQuery", document.body) );
-          disableElements( getElementsByClassName("networkMeasure", document.body) );
-          actionType = getRadioValue("form1:analysisActions");
-          elements = getElementsByClassName(actionType, document.body);
-          for(i=0; i < elements.length; i++) {
-            elements[i].disabled = false;
-          }
-      }
-      function disableElements(elements) {
-          for(i=0; i < elements.length; i++) {
-            elements[i].disabled = true;
-          }
-      }
       function addToManualQuery() {
           attribute = document.getElementById("form1:attribute").value;
           operator = document.getElementById("form1:operator").value;
@@ -91,7 +56,7 @@
             <ice:outputText styleClass="dvn_fileTitle" value="#{NetworkDataAnalysisPage.file.fileName}"/>
         </div>
         <div class="dvn_sectionBoxNoBorders dvnNetworkDataBlock">
-            <ice:selectOneRadio id="analysisActions" layout="spread" value="manualQuery" onclick="changeAction()">
+            <ice:selectOneRadio id="analysisActions" layout="spread" value="#{NetworkDataAnalysisPage.actionType}" partialSubmit="true">
                 <f:selectItem itemValue="manualQuery" itemLabel="Manual Query"/>
                 <f:selectItem itemValue="automaticQuery" itemLabel="Automatic Query"/>
                 <f:selectItem itemValue="networkMeasure" itemLabel="Network Measure"/>
@@ -111,28 +76,28 @@
                                    columnClasses="dvnNetDataAnlsTbl1,dvnNetDataAnlsTbl2,dvnNetDataAnlsTbl3">
                         <fieldset>
                             <label for="attributeSet">Attribute Set</label><br/>
-                            <ice:selectOneMenu styleClass="manualQuery" id="attributeSet" name="attributeSet" value="#{NetworkDataAnalysisPage.manualQueryType}" partialSubmit="true">
+                            <ice:selectOneMenu disabled="#{!NetworkDataAnalysisPage.manualQueryAction}" id="attributeSet" name="attributeSet" value="#{NetworkDataAnalysisPage.manualQueryType}" partialSubmit="true">
                                 <f:selectItem id="item1" itemLabel="Vertex" itemValue="vertex" />
                                 <f:selectItem id="item2" itemLabel="Edge" itemValue="edge" />
                             </ice:selectOneMenu>
                         </fieldset>
                         <fieldset>
                             <label for="values">Query Workspace</label><br/>
-                            <ice:inputTextarea styleClass="manualQuery dvnTextareaAuto" cols="36" rows="5" id="queryWorkspace" value="#{NetworkDataAnalysisPage.manualQuery}" onchange="checkLogicalOperatorInput()"/>
+                            <ice:inputTextarea disabled="#{!NetworkDataAnalysisPage.manualQueryAction}" cols="36" rows="5" id="queryWorkspace" value="#{NetworkDataAnalysisPage.manualQuery}" onchange="checkLogicalOperatorInput()"/>
                             <br/>
-                            <ice:selectBooleanCheckbox styleClass="manualQuery" id="eliminate" value="#{NetworkDataAnalysisPage.eliminateDisconnectedVertices}" /><label for="eliminate">Eliminate disconnected vertices</label>
+                            <ice:selectBooleanCheckbox disabled="#{!NetworkDataAnalysisPage.manualQueryAction}" id="eliminate" value="#{NetworkDataAnalysisPage.eliminateDisconnectedVertices}" /><label for="eliminate">Eliminate disconnected vertices</label>
                         </fieldset>
                         <fieldset>
-                            <ice:commandButton styleClass="manualQuery" type="submit" value="Run" action="#{NetworkDataAnalysisPage.manualQuery_action}" />
+                            <ice:commandButton disabled="#{!NetworkDataAnalysisPage.manualQueryAction}" type="submit" value="Run" action="#{NetworkDataAnalysisPage.manualQuery_action}" />
                         </fieldset>
                     </ice:panelGrid>
                 </ice:panelGrid>
                 <ice:panelGrid id="groupPanel4" styleClass="dvnNetDataAnlsQryBldrWrap" cellpadding="0" cellspacing="0" width="100%"
                                columns="2" columnClasses="dvnNetDataAnlsCol1,dvnNetDataAnlsCol2">
                     <ice:panelGrid id="groupPanel5" styleClass="dvnNetDataAnlsSubTblWrap" columns="1" cellpadding="0" cellspacing="0" border="0">
-                        <ice:selectOneRadio styleClass="manualQuery" id="queryLogicalOperator" layout="spread" value="&amp;&amp;">
-                            <f:selectItem styleClass="manualQuery"  itemValue="&amp;&amp;" itemLabel="And"/>
-                            <f:selectItem styleClass="manualQuery"  itemValue="||" itemLabel="Or"/>
+                        <ice:selectOneRadio disabled="#{!NetworkDataAnalysisPage.manualQueryAction}" id="queryLogicalOperator" layout="spread" value="&amp;&amp;">
+                            <f:selectItem  itemValue="&amp;&amp;" itemLabel="And"/>
+                            <f:selectItem  itemValue="||" itemLabel="Or"/>
                         </ice:selectOneRadio>
                         <ice:panelGrid id="groupPanel6" columns="2" cellpadding="0" cellspacing="0" border="0">
                             <fieldset>
@@ -145,30 +110,34 @@
                         <ice:panelGrid id="groupPanel7" columns="3" cellpadding="0" cellspacing="0" border="0">
                             <fieldset>
                                 <label for="attribute">Attributes</label><br/>
-                                <ice:selectOneListbox styleClass="manualQuery" id="attribute" size="5">
+                                <ice:selectOneListbox disabled="#{!NetworkDataAnalysisPage.manualQueryAction}" id="attribute" size="5">
                                     <f:selectItems value="#{NetworkDataAnalysisPage.attributeSelectItems}"/>
                                 </ice:selectOneListbox>
                             </fieldset>
                             <fieldset>
                                 <label for="operator">Operators</label><br/>
-                                <ice:selectOneMenu styleClass="manualQuery" id="operator" name="operators" value="">
+                                <ice:selectOneMenu disabled="#{!NetworkDataAnalysisPage.manualQueryAction}" id="operator" name="operators" value="">
                                     <f:selectItem id="item0" itemLabel="Select one..." itemValue="" />
-                                    <f:selectItem id="item1" itemLabel="Less than, &lt;" itemValue="&lt;" />
-                                    <f:selectItem id="item2" itemLabel="Greater than, &gt;" itemValue="&gt;" />
                                     <f:selectItem id="item3" itemLabel="Equal to, ==" itemValue="==" />
                                     <f:selectItem id="item4" itemLabel="Not equal to, !=" itemValue="!=" />
+                                    <f:selectItem id="item1" itemLabel="Less than, &lt;" itemValue="&lt;" />
+                                    <f:selectItem id="item1" itemLabel="Less than or equal to, &lt;=" itemValue="&lt;=" />
+                                    <f:selectItem id="item2" itemLabel="Greater than, &gt;" itemValue="&gt;" />
+                                    <f:selectItem id="item2" itemLabel="Greater than or equal to, &gt;" itemValue="&gt;=" />
                                 </ice:selectOneMenu>
                             </fieldset>
                             <fieldset>
                                 <label for="value">Values</label><br/>
-                                <ice:inputText styleClass="manualQuery" id="value" />
+                                <ice:inputText disabled="#{!NetworkDataAnalysisPage.manualQueryAction}" id="value" />
                             </fieldset>
                         </ice:panelGrid>
                     </ice:panelGrid>
                     <div class="dvnNetDataAnlsAddQryInfoBlk">
                         <div class="dvnNetDataAnlsAddQryInfoTitle"><strong>Manual Query Builder</strong></div>
                         <p>Use these attribute and operator selectors to build a query string.</p>
-                        <div class="dvnNetDataAnlsAddQryInfoBtn"><input type="button" class="manualQuery" value="Add to Query" onclick="addToManualQuery()"/></div>
+                        <div class="dvnNetDataAnlsAddQryInfoBtn" rendered="#{NetworkDataAnalysisPage.manualQueryAction}">
+                            <ice:commandButton  value="Add to Query"  disabled="#{!NetworkDataAnalysisPage.manualQueryAction}" onclick="addToManualQuery();return false;" />
+                            </div>
                     </div>
                 </ice:panelGrid>
                 <hr class="dvnNetDataAnlsHrzLn" noshade="noshade" size="1"/>
@@ -181,17 +150,17 @@
                                    columnClasses="dvnNetDataAnlsTbl1,dvnNetDataAnlsTbl2,dvnNetDataAnlsTbl3">
                         <fieldset>
                             <label for="function">Function</label><br/>
-                            <ice:selectOneMenu styleClass="automaticQuery" id="function" name="function" value="#{NetworkDataAnalysisPage.automaticQueryType}">
+                            <ice:selectOneMenu styleClass="automaticQuery" disabled="#{!NetworkDataAnalysisPage.automaticQueryAction}" id="function" name="function" value="#{NetworkDataAnalysisPage.automaticQueryType}">
                                 <f:selectItem id="item0" itemLabel="Select one..." itemValue="" />
                                 <f:selectItems value="#{NetworkDataAnalysisPage.automaticQuerySelectItem}"/>
                             </ice:selectOneMenu>
                         </fieldset>
                         <fieldset>
                             <label for="nth">N<span class="dvnLittleLetters">th</span></label><br/>
-                            <ice:inputText styleClass="automaticQuery" id="nth" value="#{NetworkDataAnalysisPage.automaticQueryNthValue}"/>
+                            <ice:inputText styleClass="automaticQuery" disabled="#{!NetworkDataAnalysisPage.automaticQueryAction}" id="nth" value="#{NetworkDataAnalysisPage.automaticQueryNthValue}"/>
                         </fieldset>
                         <fieldset>
-                            <ice:commandButton styleClass="automaticQuery" type="submit" value="Run" action="#{NetworkDataAnalysisPage.automaticQuery_action}"/>
+                            <ice:commandButton disabled="#{!NetworkDataAnalysisPage.automaticQueryAction}" type="submit" value="Run" action="#{NetworkDataAnalysisPage.automaticQuery_action}"/>
                         </fieldset>
                     </ice:panelGrid>
                 </ice:panelGrid>
@@ -205,7 +174,7 @@
                                    columnClasses="dvnNetDataAnlsTbl1,dvnNetDataAnlsTbl2,dvnNetDataAnlsTbl3">
                         <fieldset>
                             <label for="attributes">Attributes</label><br/>
-                            <ice:selectOneMenu styleClass="networkMeasure" id="attributes" name="attributes" value="#{NetworkDataAnalysisPage.networkMeasureType}"  partialSubmit="true" valueChangeListener="#{NetworkDataAnalysisPage.networkMeasureSelect_action}">
+                            <ice:selectOneMenu disabled="#{!NetworkDataAnalysisPage.networkMeasureAction}" id="attributes" name="attributes" value="#{NetworkDataAnalysisPage.networkMeasureType}"  partialSubmit="true" valueChangeListener="#{NetworkDataAnalysisPage.networkMeasureSelect_action}">
                                 <f:selectItem id="item0" itemLabel="Select one..." itemValue="" />
                                 <f:selectItems value="#{NetworkDataAnalysisPage.networkMeasureSelectItems}"/>
                             </ice:selectOneMenu>
@@ -220,13 +189,13 @@
                                         <ice:outputText value="#{parameter.name}"/>
                                     </ice:column>
                                     <ice:column>
-                                         <ice:inputText value="#{parameter.value}"/>
+                                         <ice:inputText disabled="#{!NetworkDataAnalysisPage.networkMeasureAction}" value="#{parameter.value}"/>
                                     </ice:column>
                                 </ice:dataTable>
                             </div>
                         </fieldset>
                         <fieldset>
-                            <ice:commandButton styleClass="networkMeasure" type="submit" value="Run" action="#{NetworkDataAnalysisPage.networkMeasure_action}"/>
+                            <ice:commandButton disabled="#{!NetworkDataAnalysisPage.networkMeasureAction}" type="submit" value="Run" action="#{NetworkDataAnalysisPage.networkMeasure_action}"/>
                         </fieldset>
                     </ice:panelGrid>
                 </ice:panelGrid>
@@ -271,16 +240,16 @@
                 <ice:column>
                     <div class="dvnNetDataAnlsSubTblBtm">
                         <label for="downloadSubsetResults" class="dvnNetDataAnlsSubTblBtmLbl">Download the last set of subsetting results.</label>
-                        <ice:outputResource label="Download Results" type="button" resource="#{NetworkDataAnalysisPage.subsetFile}" />
+                        <ice:outputResource label="Download Results" type="button"
+                        fileName="#{NetworkDataAnalysisPage.subsetFileName}" mimeType="text/xml"
+                        resource="#{NetworkDataAnalysisPage.subsetResource}" shared="false"/>
                     </div>
                 </ice:column>
             </ice:panelGrid>
         </div>
     </div>
 </ice:form>
-      <script type="text/javascript">
-          changeAction();
-      </script>
+
 </gui:define>
 </gui:composition>
 </body>

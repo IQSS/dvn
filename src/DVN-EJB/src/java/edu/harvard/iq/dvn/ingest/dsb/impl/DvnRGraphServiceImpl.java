@@ -359,7 +359,7 @@ public class DvnRGraphServiceImpl{
 			return result;
 		    }
 
-		    dbgLog.fine("networkMeasureCommand="+networkMeasureCommand);
+		    dbgLog.info("networkMeasureCommand="+networkMeasureCommand);
 		    historyEntry.add(networkMeasureCommand);
 		    String addedColumn = c.eval(networkMeasureCommand).asString();
 		    if ( addedColumn != null ) {

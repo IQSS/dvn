@@ -132,10 +132,10 @@ public class NetworkDataServiceBean implements NetworkDataServiceLocal, java.io.
 
     private void checkForError(Map<String, String> resultInfo) {
         if (resultInfo.get("RexecError") != null && resultInfo.get("RexecError").equals("true")){
-            throw new EJBException(resultInfo.get("RexecErrorDescription") + ": " + resultInfo.get("RexecErrorMessage"));
-            // resultInfo.get("RexecErrorDescription") -- error condition;
-            // resultInfo.get("RexecErrorMessage") -- more detailed error
-            //					  message, if available
+            String errorMessage = resultInfo.get("RexecErrorDescription");
+            errorMessage += resultInfo.get("RexecErrorMessage") != null ? ": " + resultInfo.get("RexecErrorMessage") : "";
+            
+            throw new EJBException(errorMessage);
         }
     }
 

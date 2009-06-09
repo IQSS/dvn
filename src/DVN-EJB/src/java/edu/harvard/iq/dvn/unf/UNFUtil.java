@@ -212,7 +212,7 @@ throws UnfException, NoSuchAlgorithmException, IOException{
 	if(spres.length >= 3 && chr[0].startsWith("UNF:")){
 	  return UnfDigest.addUNFs(chr);
 	}
-	if(spres.length>1)throw new UnfException("UNFUtil: Malformed unf");
+	//if(spres.length>1)throw new UnfException("UNFUtil: Malformed unf");
 	CharSequence[][] chseq = new CharSequence[1][chr.length];
 	UnfDigest.setTrnps(false);
 	int cnt = 0;

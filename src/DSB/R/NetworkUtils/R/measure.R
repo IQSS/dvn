@@ -1,4 +1,7 @@
 add_pagerank <- function(tmp_g, damping=0.85){
+    e <- simpleError("Out of bounds error.")
+    if(damping < 0 || damping > 1)
+        stop("Damping parameter is a probability and must be between 0 and 1.")
     tryCatch(pagerank_num <<- pagerank_num+1,
              error=function(e){pagerank_num <<- 1})
     meas_name <- paste("pagerank",pagerank_num, sep="_")

@@ -69,7 +69,7 @@ public class NetworkDataServiceBean implements NetworkDataServiceLocal, java.io.
         subsetParameters.put( DvnRGraphServiceImpl.MANUAL_QUERY, query );
 
         if (eliminateDisconnectedVertices) {
-            subsetParameters.put( DvnRGraphServiceImpl.ELIMINATE_DISCONNECTED, "true" ); // default is false
+            subsetParameters.put( DvnRGraphServiceImpl.ELIMINATE_DISCONNECTED, "TRUE" ); // default is false
         }
 
         DvnRJobRequest rjr = new DvnRJobRequest(null, subsetParameters);

@@ -60,6 +60,7 @@ public class EditExportSchedulePage extends VDCBaseBean implements java.io.Seria
      */
     public void init() {
         super.init();
+        exportPeriod  = new HtmlSelectOneMenu();
         success = false;
            if (!isFromPage("EditExportSchedulePage")) {
                VDCNetwork vdcNetwork = this.getVDCRequestBean().getVdcNetwork();
@@ -109,8 +110,11 @@ public class EditExportSchedulePage extends VDCBaseBean implements java.io.Seria
             if (true) {
                 // Get the Network
                 VDCNetwork vdcnetwork = getVDCRequestBean().getVdcNetwork();
-                vdcnetwork.setExportPeriod(exportPeriod.toString());
+                vdcnetwork.setExportPeriod(exportSchedulePeriod);
                 vdcnetwork.setExportHourOfDay(exportHourOfDay);
+                if (exportDayOfWeek != null && exportDayOfWeek.intValue()==-1){
+                    exportDayOfWeek = null;
+                }
                 vdcnetwork.setExportDayOfWeek(exportDayOfWeek);
                 vdcNetworkService.edit(vdcnetwork);
                 getVDCRequestBean().setSuccessMessage("Successfully updated export schedule.");
@@ -154,7 +158,8 @@ public class EditExportSchedulePage extends VDCBaseBean implements java.io.Seria
     public void setSuccess(boolean success) {
         this.success = success;
     }
-    
+
+    private String exportSchedulePeriod;
     HtmlSelectOneMenu exportPeriod;
     Integer exportDayOfWeek;
      Integer exportHourOfDay;
@@ -231,6 +236,7 @@ public class EditExportSchedulePage extends VDCBaseBean implements java.io.Seria
 
 
         if (((String) value).equals("notSelected")) {
+            exportPeriod.setValue("notSelected");
             valid = false;
         }
         if (!valid) {
@@ -239,6 +245,20 @@ public class EditExportSchedulePage extends VDCBaseBean implements java.io.Seria
             context.addMessage(toValidate.getClientId(context), message);
         }
 
+    }
+
+    /**
+     * @return the exportSchedulePeriod
+     */
+    public String getExportSchedulePeriod() {
+        return exportSchedulePeriod;
+    }
+
+    /**
+     * @param exportSchedulePeriod the exportSchedulePeriod to set
+     */
+    public void setExportSchedulePeriod(String exportSchedulePeriod) {
+        this.exportSchedulePeriod = exportSchedulePeriod;
     }
 
     

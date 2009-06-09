@@ -70,13 +70,13 @@
                   <ice:outputText value="Export Period"/>
                 </div>
                 <div jsfc="ice:panelGroup">
-                  <ice:selectOneMenu binding="#{EditExportSchedulePage.exportPeriod}" validator="#{EditExportSchedulePage.validateExportPeriod}" id="exportPeriod" value="#{EditExportSchedulePage.exportPeriod}"  onchange='updateExportInput();' >
+                  <ice:selectOneMenu binding="#{EditExportSchedulePage.exportPeriod}" validator="#{EditExportSchedulePage.validateExportPeriod}" id="exportPeriod" value="#{EditExportSchedulePage.exportSchedulePeriod}"  onchange='updateExportInput();' >
 <!--                  <ice:selectOneMenu id="exportPeriod" value="#{EditExportSchedulePage.exportPeriod}" onchange='updateExportInput();'> -->
                     <f:selectItem itemValue="notSelected" itemLabel="Not Selected"/>
                     <f:selectItem itemValue="daily" itemLabel="Export daily"/>
                     <f:selectItem itemValue="weekly" itemLabel="Export weekly"/>
                   </ice:selectOneMenu>
-                  <ice:message styleClass="errorMessage" for="exportPeriod"/>
+                  <ice:message styleClass="errorMessage" for="exportPeriod" />
                 </div>
                 <div jsfc="ice:panelGroup">
                   <ice:outputText value="Export Hour of Day"/>
@@ -110,7 +110,7 @@
                             <f:selectItem itemValue="22" itemLabel="10:00 PM"/>
                             <f:selectItem itemValue="23" itemLabel="11:00 PM"/>
                         </ice:selectOneMenu>
-                        <ice:message id="selectScheduleHourOfDayMsg" styleClass="errorMessage" for="exportHourOfDay"/>
+                        <ice:message  styleClass="errorMessage" for="exportHourOfDay"/>
                     <!--
                   <ice:inputText id="exportHourOfDay" value="#{EditExportSchedulePage.exportHourOfDay}" required="true"  requiredMessage="This field is required.">
                     <f:validateLongRange minimum="0" maximum="23" message="Please enter a value between 0 and 23"/>
@@ -136,7 +136,7 @@
                             <f:selectItem itemValue="6" itemLabel="Friday"/>
                             <f:selectItem itemValue="7" itemLabel="Saturday"/>
                         </ice:selectOneMenu>
-                        <ice:message id="selectScheduleDayOfWeekMsg" styleClass="errorMessage" for="exportDayOfWeek"/>
+                        <ice:message  styleClass="errorMessage" for="exportDayOfWeek"/>
                      <!--
                     <ice:inputText id="exportDayOfWeek" value="#{EditExportSchedulePage.exportDayOfWeek}" required="true" requiredMessage="This field is required.">
                       <f:validateLongRange minimum="1" maximum="7"  message="Please enter a value between 1 and 7"/>

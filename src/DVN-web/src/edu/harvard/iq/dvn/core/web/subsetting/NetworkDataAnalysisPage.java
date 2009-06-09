@@ -5,7 +5,6 @@
 
 package edu.harvard.iq.dvn.core.web.subsetting;
 
-import com.icesoft.faces.context.FileResource;
 import com.icesoft.faces.context.Resource;
 import edu.harvard.iq.dvn.core.analysis.NetworkDataServiceLocal;
 import edu.harvard.iq.dvn.core.analysis.NetworkDataSubsetResult;
@@ -14,12 +13,16 @@ import edu.harvard.iq.dvn.core.study.DataTable;
 import edu.harvard.iq.dvn.core.study.DataVariable;
 import edu.harvard.iq.dvn.core.study.NetworkDataFile;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
+import edu.harvard.iq.dvn.core.util.FileUtil;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import edu.harvard.iq.dvn.ingest.dsb.impl.DvnRGraphServiceImpl;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.context.FacesContext;
@@ -92,7 +95,7 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
 
     }
 
-    private String actionType;
+    private String actionType = "manualQuery";
     private String manualQueryType = DataTable.TYPE_VERTEX;
     private String manualQuery;
     private boolean eliminateDisconnectedVertices;
@@ -114,6 +117,19 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
 
     public void setActionType(String actionType) {
         this.actionType = actionType;
+    }
+
+    // helper methods for checking action type
+    public boolean isManualQueryAction() {
+        return "manualQuery".equals(actionType);
+    }
+
+    public boolean isAutomaticQueryAction() {
+        return "automaticQuery".equals(actionType);
+    }
+
+    public boolean isNetworkMeasureAction() {
+        return "networkMeasure".equals(actionType);
     }
 
     public String getManualQueryType() {
@@ -290,12 +306,13 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
         
         return null;
     }
-    
 
-    public Resource getSubsetFile() {
-        File subsetFile = networkDataService.getSubsetExport(rWorkspace);
-        return new FileResource( subsetFile );
+    public Resource getSubsetResource() {
+        return new RFileResource();
+    }
 
+    public String getSubsetFileName() {
+        return "subset_" + FileUtil.replaceExtension(file.getFileName(),"xml");
     }
 
     private String getNetworkMeasureParametersAsString(List<NetworkMeasureParameter> paramterList) {
@@ -363,5 +380,27 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
         }
     }
 
+    // resource class which doesn't create the file (called via R) until the open method is called (ie the download button is pressed)
+    class RFileResource implements Resource, Serializable{
+        File file;
 
+        public RFileResource() {
+        }
+
+        public String calculateDigest() {
+            return file != null ? file.getPath() : null;
+        }
+
+        public Date lastModified() {
+            return file != null ? new Date(file.lastModified()) : null;
+        }
+
+        public InputStream open() throws IOException {
+            file = networkDataService.getSubsetExport(rWorkspace);
+            return new FileInputStream(file);
+        }
+
+        public void withOptions(Options arg0) throws IOException {
+        }
+    }
 }

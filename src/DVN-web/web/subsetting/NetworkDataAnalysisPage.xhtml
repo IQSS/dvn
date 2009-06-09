@@ -66,6 +66,7 @@
                     <ice:graphicImage value="/resources/images/icon_info.gif" alt="Information" title="Information"/>
                     <ice:outputText id="outputText1"
                                     value="Subset the network data by creating a manual query or using an automatic query. Or add attributes by running a network measure."/>
+                    <ice:messages layout="table" styleClass="errorMessage"/>
                 </ice:panelGroup>
                 <ice:panelGrid id="groupPanel2" cellpadding="0" cellspacing="0" width="100%"
                                columns="2" columnClasses="dvnNetDataAnlsCol1,dvnNetDataAnlsCol2">
@@ -117,13 +118,12 @@
                             <fieldset>
                                 <label for="operator">Operators</label><br/>
                                 <ice:selectOneMenu disabled="#{!NetworkDataAnalysisPage.manualQueryAction}" id="operator" name="operators" value="">
-                                    <f:selectItem id="item0" itemLabel="Select one..." itemValue="" />
                                     <f:selectItem id="item3" itemLabel="Equal to, ==" itemValue="==" />
                                     <f:selectItem id="item4" itemLabel="Not equal to, !=" itemValue="!=" />
                                     <f:selectItem id="item1" itemLabel="Less than, &lt;" itemValue="&lt;" />
                                     <f:selectItem id="item1" itemLabel="Less than or equal to, &lt;=" itemValue="&lt;=" />
                                     <f:selectItem id="item2" itemLabel="Greater than, &gt;" itemValue="&gt;" />
-                                    <f:selectItem id="item2" itemLabel="Greater than or equal to, &gt;" itemValue="&gt;=" />
+                                    <f:selectItem id="item2" itemLabel="Greater than or equal to, &gt;=" itemValue="&gt;=" />
                                 </ice:selectOneMenu>
                             </fieldset>
                             <fieldset>
@@ -151,7 +151,6 @@
                         <fieldset>
                             <label for="function">Function</label><br/>
                             <ice:selectOneMenu styleClass="automaticQuery" disabled="#{!NetworkDataAnalysisPage.automaticQueryAction}" id="function" name="function" value="#{NetworkDataAnalysisPage.automaticQueryType}">
-                                <f:selectItem id="item0" itemLabel="Select one..." itemValue="" />
                                 <f:selectItems value="#{NetworkDataAnalysisPage.automaticQuerySelectItem}"/>
                             </ice:selectOneMenu>
                         </fieldset>
@@ -175,7 +174,6 @@
                         <fieldset>
                             <label for="attributes">Attributes</label><br/>
                             <ice:selectOneMenu disabled="#{!NetworkDataAnalysisPage.networkMeasureAction}" id="attributes" name="attributes" value="#{NetworkDataAnalysisPage.networkMeasureType}"  partialSubmit="true" valueChangeListener="#{NetworkDataAnalysisPage.networkMeasureSelect_action}">
-                                <f:selectItem id="item0" itemLabel="Select one..." itemValue="" />
                                 <f:selectItems value="#{NetworkDataAnalysisPage.networkMeasureSelectItems}"/>
                             </ice:selectOneMenu>
                         </fieldset>

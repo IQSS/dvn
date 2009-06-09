@@ -172,7 +172,7 @@ public class MailServiceBean implements edu.harvard.iq.dvn.core.mail.MailService
             Iterator iter = problemFiles.iterator();
             while (iter.hasNext()) {
                 StudyFileEditBean fileBean = (StudyFileEditBean) iter.next();
-                msgText += "  " + fileBean.getStudyFile().getFileName() +"\n"; 
+                msgText += "  " + fileBean.getStudyFile().getFileName() +" (File Type: " + fileBean.getStudyFile().getFileType() + "; File Size: " + fileBean.getSizeFormatted() +")\n";
             }
         }
         

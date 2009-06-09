@@ -66,6 +66,7 @@ import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.SummaryStatistic;
 import edu.harvard.iq.dvn.core.study.VariableCategory;
 import edu.harvard.iq.dvn.core.study.StudyFile;
+import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import edu.harvard.iq.dvn.core.admin.DVNVersionServiceLocal;
@@ -106,6 +107,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     private DvnDSBTimerServiceLocal dvnDSBTimerService;
     @EJB
     private DVNVersionServiceLocal dvnVersionService;
+    @EJB
+    private StudyServiceLocal studyService;
     @EJB
     private VDCServiceLocal vdcService;
 
@@ -1189,7 +1192,16 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 			cutOp1 = tmpfl.getAbsolutePath();
                     
 		    } else {
-			cutOp1 = sf.getFileSystemLocation(); 			
+			cutOp1 = sf.getFileSystemLocation();
+			VDC vdc = vdcService.getVDCFromRequest(req);
+
+			if ( vdc != null ) {
+			    studyService.incrementNumberOfDownloads(sf.getId(), vdc.getId());
+			} else {
+			    studyService.incrementNumberOfDownloads(sf.getId(), (Long)null);
+			}
+
+			
 		    }
 
                     if (fieldcut){

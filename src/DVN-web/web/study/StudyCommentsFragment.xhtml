@@ -10,18 +10,6 @@
                       panelLayout="flow"
                       styleClass="vdcStudyFilesPage">
                   <div jsfc="ice:panelGroup"
-                       id="messagePanel"
-                       panelLayout="flow"
-                       rendered="#{StudyCommentsFragment.actionComplete}"
-                       styleClass="dvnMsgBlockRound dvnSuccessMessage"
-                       >
-                      <div class="dvnMsgBlockContainer">
-                          <p>
-                            <ice:messages layout="table" styleClass="dvnMsgBlockContainer"/>
-                          </p>
-                      </div>
-                  </div>
-                  <div jsfc="ice:panelGroup"
                        id="commentContentPanel"
                        panelLayout="flow"
                        >
@@ -69,11 +57,6 @@
                                                             StudyCommentsFragment.authorizedToDeleteComment) or (!item.reportAbuseEnabled)}"
                                                             style="padding-top:.3em;padding-right:.5em;"
                                                             value="Reported"/>
-                                            <!-- debug -->
-                                       <!--     <ice:outputText value="Item status is  = #{item.studyComment.status}"/>
-                                             <ice:outputText value="ReportAbuseEnabled = #{item.reportAbuseEnabled}"/>
-                                            <ice:outputText value="AuthorizedToDeleteComment = #{StudyCommentsFragment.authorizedToDeleteComment}"/> -->
-                                            <!-- end debug -->
                                               <ice:commandLink binding="#{StudyCommentsFragment.reportAbuseLink}"
                                                                actionListener="#{StudyCommentsFragment.togglePopup}"
                                                                rendered="#{ (StudyCommentsFragment.authorizedToDeleteComment == false and item.reportAbuseEnabled)}"
@@ -129,12 +112,14 @@
                                         style="z-index:1000; width:300px; height:150px;">
 
                         <f:facet name="header">
-                            <ice:panelGrid id="autoCentPanelGrid"
-                                           width="100%" cellpadding="0"
-                                           cellspacing="0" columns="2"
+                            <ice:panelGrid id="autoCentReportPanelGrid"
+                                           width="100%"
+                                           cellpadding="0"
+                                           cellspacing="0"
+                                           columns="2"
                                            columnClasses="none, popupButton">
                                 <ice:outputText value="Report Abuse"/>
-                                <ice:commandLink id="autoCentPopupClose"
+                                <ice:commandLink id="autoCentReportPopupClose"
                                                    actionListener="#{StudyCommentsFragment.togglePopup}"
                                                    style="float:right; cursor:pointer;">
                                     <ice:graphicImage value="/resources/images/icon_close.gif"/>
@@ -143,19 +128,21 @@
                         </f:facet>
 
                         <f:facet name="body">
-                            <ice:panelGrid id="autoCentContent"
-                                           width="100%" cellpadding="0"
-                                           cellspacing="0" columns="1"
+                            <ice:panelGrid id="autoCentReportContent"
+                                           width="100%"
+                                           cellpadding="0"
+                                           cellspacing="0"
+                                           columns="1"
                                            styleClass="popupModalBody">
                                 <ice:outputText value="You are about to report this comment as abusive because of inappropriate language, tone, or other violation of the study terms of use."/>
                                 <ice:outputText value="Do you want to continue?"/>
                                 <div jsfc="ice:panelGroup">
-                                <ice:commandButton id="autoCentPopupOk"
+                                <ice:commandButton id="autoCentReportPopupOk"
                                                    actionListener="#{StudyCommentsFragment.reportAbuse}"
                                                    value="OK"
                                                    style="cursor: pointer;"/>
                                 <ice:outputText nospan="true" escape="false" value="&#160;&#160;&#160;"/>
-                                <ice:commandButton id="autoCentPopupCancel"
+                                <ice:commandButton id="autoCentReportPopupCancel"
                                                    actionListener="#{StudyCommentsFragment.togglePopup}"
                                                    value="Cancel"
                                                    style="display:inline; cursor: pointer;"/>

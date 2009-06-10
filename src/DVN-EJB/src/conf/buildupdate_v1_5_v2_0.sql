@@ -34,4 +34,7 @@ update studyfile set fileclass='OtherFile' where subsettable = false;
 update studyfile sf set unf = dt.unf from datatable dt where sf.id = dt.studyfile_id;
 update studyfile sf set study_id = fc.study_id from filecategory fc where sf.filecategory_id = fc.id;
 
+-- Remove erroneous templates
+delete from templatefield where template_id in(select id from template where vdc_id is null and id != 1);
+delete from template  where vdc_id is null and id != 1;
 commit;

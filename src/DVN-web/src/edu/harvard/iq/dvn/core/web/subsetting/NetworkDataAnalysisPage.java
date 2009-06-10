@@ -241,7 +241,7 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
             networkMeasureSelectItems = new ArrayList();
             networkMeasureSelectItems.add(new SelectItem(DvnRGraphServiceImpl.NETWORK_MEASURE_RANK, "Page Rank"));
             networkMeasureSelectItems.add(new SelectItem(DvnRGraphServiceImpl.NETWORK_MEASURE_DEGREE, "Degree"));
-            networkMeasureSelectItems.add(new SelectItem(DvnRGraphServiceImpl.NETWORK_MEASURE_IN_LARGEST, "In Largest Componenet"));
+            networkMeasureSelectItems.add(new SelectItem(DvnRGraphServiceImpl.NETWORK_MEASURE_IN_LARGEST, "In Largest Component"));
         }
 
         return networkMeasureSelectItems;

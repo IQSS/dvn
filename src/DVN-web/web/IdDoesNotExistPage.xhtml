@@ -14,13 +14,13 @@
     <gui:composition template="/template.xhtml">
         <gui:param name="pageTitle" value="Study Not Found - #{VDCRequest.dataversePageTitle}"/>
         <gui:define name="body">
-            <ice:form id="aboutUsForm">
+            <ice:form>
                 <ice:inputHidden rendered="#{VDCRequest.currentVDCId != null}" id="vdcId" value="#{VDCRequest.currentVDCId}"/>
                 <div class="dvn_section">
                     <div class="dvn_sectionBoxNoBorders">
                         <div class="dvn_margin12">
-                            <h1>Study not found</h1>
-                            <ice:outputText escape="false" value="The study that you requested does not exist."/>
+                            <h1><ice:outputText value= "#{param.type != null ? param.type : 'Study'} not found"/></h1>
+                            <ice:outputText escape="false" value="The #{param.type != null ? param.type : 'Study'} that you requested does not exist."/>
                         </div>
                     </div>
                 </div>

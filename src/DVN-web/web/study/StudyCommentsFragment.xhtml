@@ -9,7 +9,6 @@
                       id="layoutPanelComments"
                       panelLayout="flow"
                       styleClass="vdcStudyFilesPage">
-                  <!-- rendered="#{StudyPageFragment.user != null}" -->
                   <div jsfc="ice:panelGroup"
                        id="messagePanel"
                        panelLayout="flow"
@@ -86,7 +85,7 @@
                                         </li>
                                         <li>
                                               <ice:commandLink binding="#{StudyCommentsFragment.deleteCommentLink}"
-                                                               actionListener="#{StudyCommentsFragment.deleteFlaggedComment}"
+                                                               actionListener="#{StudyCommentsFragment.toggleDeletePopup}"
                                                                rendered="#{StudyCommentsFragment.authorizedToDeleteComment or item.studyComment.commentCreator == StudyCommentsFragment.user}"
                                                                >
                                                 <f:attribute name="commentId" value="#{item.studyComment.id}" />
@@ -121,6 +120,7 @@
                                       value="Please log in to add a comment"/>
                       
                   <!-- The popup panel code -->
+                  <!-- report abuse popup -->
                       <ice:panelPopup id="reportPopup"
                                         draggable="false"
                                         visible="#{StudyCommentsFragment.showPopup}"
@@ -164,6 +164,52 @@
                         </f:facet>
 
                     </ice:panelPopup>
+
+                  <!-- delete popup -->
+                      <ice:panelPopup id="deletePopup"
+                                        draggable="false"
+                                        visible="#{StudyCommentsFragment.showDeletePopup}"
+                                        autoCentre="true"
+                                        modal="true"
+                                        style="z-index:1000; width:300px; height:150px;">
+
+                        <f:facet name="header">
+                            <ice:panelGrid id="autoCentPanelGrid"
+                                           width="100%" cellpadding="0"
+                                           cellspacing="0" columns="2"
+                                           columnClasses="none, popupButton">
+                                <ice:outputText value="Delete Comment"/>
+                                <ice:commandLink id="autoCentPopupClose"
+                                                   actionListener="#{StudyCommentsFragment.toggleDeletePopup}"
+                                                   style="float:right; cursor:pointer;">
+                                    <ice:graphicImage value="/resources/images/icon_close.gif"/>
+                                </ice:commandLink>
+                            </ice:panelGrid>
+                        </f:facet>
+
+                        <f:facet name="body">
+                            <ice:panelGrid id="autoCentContent"
+                                           width="100%" cellpadding="0"
+                                           cellspacing="0" columns="1"
+                                           styleClass="popupModalBody">
+                                <ice:outputText value="You are about to delete a comment. This comment will no longer be visible to any users."/>
+                                <ice:outputText value="Do you want to continue?"/>
+                                <div jsfc="ice:panelGroup">
+                                <ice:commandButton id="autoCentPopupOk"
+                                                   actionListener="#{StudyCommentsFragment.deleteFlaggedComment}"
+                                                   value="OK"
+                                                   style="cursor: pointer;"/>
+                                <ice:outputText nospan="true" escape="false" value="&#160;&#160;&#160;"/>
+                                <ice:commandButton id="autoCentPopupCancel"
+                                                   actionListener="#{StudyCommentsFragment.toggleDeletePopup}"
+                                                   value="Cancel"
+                                                   style="display:inline; cursor: pointer;"/>
+                                </div>
+                            </ice:panelGrid>
+                        </f:facet>
+
+                    </ice:panelPopup>
+                  <!-- end delete -->
               <!-- end the popup panel code -->
               
                     </div>

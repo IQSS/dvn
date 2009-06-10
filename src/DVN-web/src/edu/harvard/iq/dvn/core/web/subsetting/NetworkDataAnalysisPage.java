@@ -14,6 +14,7 @@ import edu.harvard.iq.dvn.core.study.DataVariable;
 import edu.harvard.iq.dvn.core.study.NetworkDataFile;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.util.FileUtil;
+import edu.harvard.iq.dvn.core.util.StringUtil;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import edu.harvard.iq.dvn.ingest.dsb.impl.DvnRGraphServiceImpl;
 import java.io.File;
@@ -66,43 +67,45 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
     public void init() {
         super.init();
 
-        String fileIdStr = getRequestParam("fileId");
-
-        if (fileIdStr != null) {
-            fileId = Long.parseLong(fileIdStr);
+        try {
+            fileId = Long.parseLong( getRequestParam("fileId") );
             file = (NetworkDataFile) studyService.getStudyFile(fileId);
-
-            rWorkspace = networkDataService.initAnalysis(file.getFileSystemLocation() + ".RData");
-
-            NetworkDataAnalysisEvent initialEvent = new NetworkDataAnalysisEvent();
-            initialEvent.setLabel("Initial State");
-            initialEvent.setVertices(file.getVertexDataTable().getCaseQuantity());
-            initialEvent.setEdges(file.getEdgeDataTable().getCaseQuantity());
-            events.add(initialEvent);
-
-        } else {
-            FacesContext fc = javax.faces.context.FacesContext.getCurrentInstance();
-            HttpServletResponse response = (javax.servlet.http.HttpServletResponse) fc.getExternalContext().getResponse();
-            try {
-                response.sendRedirect("/dvn/dv/" + getVDCRequestBean().getCurrentVDC().getAlias() + "/faces/IdDoesNotExistPage.xhtml");
-                fc.responseComplete();
-            } catch (IOException ex) {
-                //Logger.getLogger(EditCollectionPage.class.getName()).log(Level.SEVERE, null, ex);
-                throw new RuntimeException("IOException thrown while trying to redirect to Manage Collections Page");
-            }
-
+        } catch (Exception e) { // id not a long, or file is not a NetworkDataFile (TODO: redirect to a different page if not network data file)
+            redirectToIdNotFoundPage();
+            return;
         }
 
+        //init workspace and page fields
+        rWorkspace = networkDataService.initAnalysis(file.getFileSystemLocation() + ".RData");
 
+        setNetworkMeasureParamters(networkMeasureType);
+
+        NetworkDataAnalysisEvent initialEvent = new NetworkDataAnalysisEvent();
+        initialEvent.setLabel("Initial State");
+        initialEvent.setVertices(file.getVertexDataTable().getCaseQuantity());
+        initialEvent.setEdges(file.getEdgeDataTable().getCaseQuantity());
+        events.add(initialEvent);
     }
+
+    private void redirectToIdNotFoundPage() {
+        FacesContext fc = javax.faces.context.FacesContext.getCurrentInstance();
+        HttpServletResponse response = (javax.servlet.http.HttpServletResponse) fc.getExternalContext().getResponse();
+        try {
+            response.sendRedirect("/dvn/dv/" + getVDCRequestBean().getCurrentVDC().getAlias() + "/faces/IdDoesNotExistPage.xhtml?type=File");
+            fc.responseComplete();
+        } catch (IOException ex) {
+            throw new RuntimeException("IOException thrown while trying to redirect toID Does Not Exist Page");
+        }
+    }
+
 
     private String actionType = "manualQuery";
     private String manualQueryType = DataTable.TYPE_VERTEX;
     private String manualQuery;
-    private boolean eliminateDisconnectedVertices;
-    private String automaticQueryType;
+    private boolean eliminateDisconnectedVertices = false;
+    private String automaticQueryType = DvnRGraphServiceImpl.AUTOMATIC_QUERY_NTHLARGEST;
     private String automaticQueryNthValue;
-    private String networkMeasureType;
+    private String networkMeasureType = DvnRGraphServiceImpl.NETWORK_MEASURE_RANK;
 
     private List<NetworkDataAnalysisEvent> events = new ArrayList();
     private List<NetworkMeasureParameter> networkMeasureParamterList = new ArrayList();
@@ -249,15 +252,18 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
     }
 
     public void networkMeasureSelect_action(ValueChangeEvent e) {
+        setNetworkMeasureParamters(e.getNewValue().toString());
+    }
 
+    private void setNetworkMeasureParamters(String networkMeasure) {
         // TODO: we will eventually have to read all this from xml
         networkMeasureParamterList = new ArrayList();
-        if ( DvnRGraphServiceImpl.NETWORK_MEASURE_RANK.equals( e.getNewValue().toString() ) ) {
+        if ( DvnRGraphServiceImpl.NETWORK_MEASURE_RANK.equals( networkMeasure ) ) {
             NetworkMeasureParameter d = new NetworkMeasureParameter();
             d.setName("d");
+            d.setDefaultValue(".85");
             networkMeasureParamterList.add(d);
         }
-
     }
 
 
@@ -339,7 +345,8 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
             if (!"".equals(returnString)) {
                 returnString += "; ";
             }
-            returnString += parameter.getName() + "=" + parameter.getValue();
+            returnString += parameter.getName() + " = ";
+            returnString += !StringUtil.isEmpty(parameter.getValue()) ? parameter.getValue() : parameter.getDefaultValue();
         }
         return returnString;
     }

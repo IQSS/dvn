@@ -13,6 +13,7 @@ public class NetworkMeasureParameter {
 
     private String name;
     private String value;
+    private String defaultValue;
 
     public String getName() {
         return name;
@@ -29,5 +30,14 @@ public class NetworkMeasureParameter {
     public void setValue(String value) {
         this.value = value;
     }
+
+    public String getDefaultValue() {
+        return defaultValue;
+    }
+
+    public void setDefaultValue(String defaultValue) {
+        this.defaultValue = defaultValue;
+    }
+
 
 }

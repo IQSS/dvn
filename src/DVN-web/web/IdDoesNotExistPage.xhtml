@@ -12,7 +12,7 @@
 
 <body>
     <gui:composition template="/template.xhtml">
-        <gui:param name="pageTitle" value="Study Not Found - #{VDCRequest.dataversePageTitle}"/>
+        <gui:param name="pageTitle" value="#{param.type != null ? param.type : 'Study'} Not Found - #{VDCRequest.dataversePageTitle}"/>
         <gui:define name="body">
             <ice:form>
                 <ice:inputHidden rendered="#{VDCRequest.currentVDCId != null}" id="vdcId" value="#{VDCRequest.currentVDCId}"/>

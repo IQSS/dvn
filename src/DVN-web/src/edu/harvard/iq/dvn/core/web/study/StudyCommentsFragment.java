@@ -111,10 +111,6 @@ public class StudyCommentsFragment extends VDCBaseBean implements Serializable {
                                 "Flagged comments can be reviewed and acted on at:  " +
                                 getCancelLink());
          showPopup = !showPopup;
-         String truncatedComment = (getFlaggedStudyComment().length() <= 25) ? getFlaggedStudyComment() : getFlaggedStudyComment().substring(0, 25);
-         truncatedComment += "...";
-         FacesContext context = FacesContext.getCurrentInstance();
-         context.addMessage(event.getComponent().getClientId(context), new FacesMessage("Success!  The comment, " + truncatedComment + ", was flagged for abuse."));
          actionComplete = true;
          studyComments = null;
          // cleanup
@@ -134,8 +130,6 @@ public class StudyCommentsFragment extends VDCBaseBean implements Serializable {
          studyCommentService.deleteComment(flaggedCommentId, deletedMessage);
          String truncatedComment = (getFlaggedStudyComment().length() <= 25) ? getFlaggedStudyComment() : getFlaggedStudyComment().substring(0, 25);
          truncatedComment += "...";
-         FacesContext context = FacesContext.getCurrentInstance();
-         context.addMessage(event.getComponent().getClientId(context), new FacesMessage("Success!  The comment, " + truncatedComment + ", was deleted."));
          actionComplete = true;
          showDeletePopup = !showDeletePopup;
           //cleanup
@@ -156,10 +150,6 @@ public class StudyCommentsFragment extends VDCBaseBean implements Serializable {
                                 "reported comment is not an abuse. This comment will remain posted, and will " +
                                 "no longer appear to you as reported.";
          studyCommentService.okComment(flaggedCommentId, okMessage);
-         String truncatedComment = (getFlaggedStudyComment().length() <= 25) ? getFlaggedStudyComment() : getFlaggedStudyComment().substring(0, 25);
-         truncatedComment += "...";
-         FacesContext context = FacesContext.getCurrentInstance();
-         context.addMessage(event.getComponent().getClientId(context), new FacesMessage("Success!  The comment, " + truncatedComment + ", was reset to OK."));
          actionComplete = true;
          //cleanup
          flaggedCommentId = new Long("0");
@@ -172,8 +162,6 @@ public class StudyCommentsFragment extends VDCBaseBean implements Serializable {
          studyCommentService.addComment(commentsTextarea.getValue().toString(), user.getId(), studyId);
          String truncatedComment = (commentsTextarea.getValue().toString().length() <= 25) ? commentsTextarea.getValue().toString() : commentsTextarea.getValue().toString().substring(0, 25);
          truncatedComment += "...";
-         FacesContext context = FacesContext.getCurrentInstance();
-         context.addMessage(event.getComponent().getClientId(context), new FacesMessage("Success!  The comment, " + truncatedComment + ", was saved."));
          actionComplete = true;
          studyComments = null;
          commentsTextarea.setValue("");

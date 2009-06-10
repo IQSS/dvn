@@ -70,6 +70,21 @@ public class StudyCommentsFragment extends VDCBaseBean implements Serializable {
          actionComplete = false;
      }
 
+      /** toggleDeletePopup
+      * actionListener method for hiding
+      * and showing the popup
+      *
+      * @param ActionEvent
+      *
+      */
+     public void toggleDeletePopup(javax.faces.event.ActionEvent event) {
+          if (deleteCommentLink.getAttributes().get("commentId") != null) {
+             flaggedCommentId = new Long(deleteCommentLink.getAttributes().get("commentId").toString());
+         }
+         showDeletePopup = !showDeletePopup;
+         actionComplete = false;
+     }
+
 
      /** reportAbuse
       *
@@ -122,6 +137,7 @@ public class StudyCommentsFragment extends VDCBaseBean implements Serializable {
          FacesContext context = FacesContext.getCurrentInstance();
          context.addMessage(event.getComponent().getClientId(context), new FacesMessage("Success!  The comment, " + truncatedComment + ", was deleted."));
          actionComplete = true;
+         showDeletePopup = !showDeletePopup;
           //cleanup
          flaggedCommentId = new Long("0");
          getVDCRequestBean().setStudyId(studyId);
@@ -325,6 +341,27 @@ public class StudyCommentsFragment extends VDCBaseBean implements Serializable {
     public void setShowPopup(boolean showPopup) {
         this.showPopup = showPopup;
     }
+
+    protected boolean showDeletePopup = false;
+
+    /**
+     * Get the value of showDeletePopup
+     *
+     * @return the value of showDeletePopup
+     */
+    public boolean isShowDeletePopup() {
+        return showDeletePopup;
+    }
+
+    /**
+     * Set the value of showDeletePopup
+     *
+     * @param showDeletePopup new value of showDeletePopup
+     */
+    public void setShowDeletePopup(boolean showDeletePopup) {
+        this.showDeletePopup = showDeletePopup;
+    }
+
 
     protected HtmlCommandLink reportAbuseLink = new HtmlCommandLink();
 

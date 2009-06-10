@@ -184,7 +184,7 @@
                                                value="#{NetworkDataAnalysisPage.networkMeasureParameterList}" var="parameter"
                                                rowClasses="list-row-odd,list-row-even">
                                     <ice:column>
-                                        <ice:outputText value="#{parameter.name}"/>
+                                        <ice:outputText value="#{parameter.name}"/><ice:outputText rendered="#{parameter.defaultValue != null}" value=" (default = #{parameter.defaultValue})"/>
                                     </ice:column>
                                     <ice:column>
                                          <ice:inputText disabled="#{!NetworkDataAnalysisPage.networkMeasureAction}" value="#{parameter.value}"/>

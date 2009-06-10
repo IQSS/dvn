@@ -96,6 +96,13 @@ fieldset {
     padding: 1px;
 }
 
+label.iceSelOneRb {
+    padding: 2px;
+    margin: 0 5px 2px 2px;
+    border: none;
+    vertical-align: middle;
+}
+
 .iceInpTxt, .iceInpSecrt {
     margin: 2px;
     padding: 3px;
@@ -1947,23 +1954,21 @@ table.iceSelInpDate tbody tr td table{
 }
 
 .iceInpTxt-dis, .iceInpSecrt-dis {
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: .95em;
+    font: 11px tahoma;
     color: #ABABAB;
     border: 1px dotted #CCCCCC;
     cursor: default;
     margin: 2px;
-    padding: 2px;
+    padding: 3px;
 }
 
 .iceInpTxtArea-dis {
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: .95em;
+    font: 11px tahoma;
     color: #ABABAB;
     border: 1px dotted #CCCCCC;
     cursor: default;
     margin: 2px;
-    padding: 2px;
+    padding: 3px;
 }
 
 .iceSelMnyCb-dis {
@@ -1976,21 +1981,28 @@ table.iceSelInpDate tbody tr td table{
 }
 
 .iceSelOneMnu-dis, .iceSelMnyLb-dis, .iceSelMnyMnu-dis, .iceSelOneLb-dis {
-    font-family: Arial, Helvetica, sans-serif;
+    margin: 2px;
+    padding: 3px;
+    font: 11px tahoma;
     color: #CCCCCC;
-    padding: 2px;
-    font-size: .95em;
+    border: 1px solid #d9d9d9;
     cursor: default;
-    border: none;
 }
 
 .iceSelOneRb-dis {
-    background-color: #CCCCCC;
+    /*background-color: #CCCCCC;*/
     padding: 2px;
-    margin: 2px;
+    margin: 0 5px 2px 2px;
     cursor: default;
     color: #CCCCCC;
     border: none;
+    vertical-align: middle;
+}
+
+.iceSelBoolChkbx-dis {
+    margin: 0 5px 2px 2px;
+    padding: 2px;
+    vertical-align: middle;
 }
 
 .iceInpFileTxt-dis {
@@ -2782,4 +2794,5 @@ Disabled classes for the calendar controls
     margin: 0 5px 2px 2px;
     padding: 2px;
     vertical-align: middle;
+    border: none;
 }

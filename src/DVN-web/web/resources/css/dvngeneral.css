@@ -11,7 +11,7 @@
 .dvn_content a:hover,.dvn_content a:active{color:#c55b28;text-decoration:underline !important}
 .dvn_content img{margin:0 !important;padding:0 !important;border:0 !important;display:inline !important}
 .dvn_content textarea{width:40em}
-.dvn_content textarea.dvnTextareaAuto{width:auto}
+.dvn_content textarea.dvnTextareaAuto,.dvn_content textarea.dvnTextareaAuto-dis{width:auto}
 .dvn_content ul{list-style-image:none}
 .dvn_floatL{float:left}
 .dvn_floatR{float:right}

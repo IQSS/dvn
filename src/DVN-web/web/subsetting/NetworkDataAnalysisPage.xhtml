@@ -84,7 +84,7 @@
                         </fieldset>
                         <fieldset>
                             <label for="values">Query Workspace</label><br/>
-                            <ice:inputTextarea disabled="#{!NetworkDataAnalysisPage.manualQueryAction}" cols="36" rows="5" id="queryWorkspace" value="#{NetworkDataAnalysisPage.manualQuery}"/>
+                            <ice:inputTextarea disabled="#{!NetworkDataAnalysisPage.manualQueryAction}" cols="40" rows="5" id="queryWorkspace" styleClass="dvnTextareaAuto" value="#{NetworkDataAnalysisPage.manualQuery}"/>
                             <br/>
                             <ice:selectBooleanCheckbox disabled="#{!NetworkDataAnalysisPage.manualQueryAction}" id="eliminate" value="#{NetworkDataAnalysisPage.eliminateDisconnectedVertices}" /><label for="eliminate">Eliminate disconnected vertices</label>
                         </fieldset>

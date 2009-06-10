@@ -324,7 +324,7 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
                 System.out.println("ERROR: in StudyPage, without a serviceBean or a studyId");
             }
         }
-        allowUserComments = studyUI.getStudy().getOwner().isAllowStudyComments();
+        allowStudyComments = studyUI.getStudy().getOwner().isAllowStudyComments();
 
     }
 
@@ -545,24 +545,24 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
         this.xff = xff;
     }
 
-    protected boolean allowUserComments;
+    protected boolean allowStudyComments = true;
 
     /**
-     * Get the value of allowUserComments
+     * Get the value of allowStudyComments
      *
-     * @return the value of allowUserComments
+     * @return the value of allowStudyComments
      */
-    public boolean isAllowUserComments() {
-        return allowUserComments;
+    public boolean isAllowStudyComments() {
+        return allowStudyComments;
     }
 
     /**
-     * Set the value of allowUserComments
+     * Set the value of allowStudyComments
      *
-     * @param allowUserComments new value of allowUserComments
+     * @param allowStudyComments new value of allowStudyComments
      */
-    public void setAllowUserComments(boolean allowUserComments) {
-        this.allowUserComments = allowUserComments;
+    public void setAllowStudyComments(boolean allowStudyComments) {
+        this.allowStudyComments = allowStudyComments;
     }
 
    

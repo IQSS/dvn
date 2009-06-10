@@ -178,13 +178,13 @@
                             </ice:selectOneMenu>
                         </fieldset>
                         <fieldset>
-                            <label>Parameters</label><br/>
+                            <label>Parameters (default value)</label><br/>
                             <div class="dvnNetDataAnlsPrmtrWrp">
                                 <ice:dataTable id="networkMeasureParamterList" styleClass="dvnNetDataAnlsPrmtrTbl" cellpadding="0" cellspacing="0" width="100%"
                                                value="#{NetworkDataAnalysisPage.networkMeasureParameterList}" var="parameter"
                                                rowClasses="list-row-odd,list-row-even">
                                     <ice:column>
-                                        <ice:outputText value="#{parameter.name}"/><ice:outputText rendered="#{parameter.defaultValue != null}" value=" (default = #{parameter.defaultValue})"/>
+                                        <ice:outputText value="#{parameter.name}"/><ice:outputText rendered="#{parameter.defaultValue != null}" value=" (#{parameter.defaultValue})"/>
                                     </ice:column>
                                     <ice:column>
                                          <ice:inputText disabled="#{!NetworkDataAnalysisPage.networkMeasureAction}" value="#{parameter.value}"/>

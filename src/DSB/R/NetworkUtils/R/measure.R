@@ -1,30 +1,36 @@
+next_measure_name <- function(g, measure){
+    vattrs <- list.vertex.attributes(g)
+    matches <- vattrs[grep(paste('\\b',measure,'_[0-9]+\\b',sep=''), vattrs)]
+    if(!length(matches))
+        next_num <- 1
+    else {
+        next_num <- max(
+                      unlist(
+                        lapply(strsplit(matches, "_"), function(x) as.numeric(x[length(x)]))
+                      )
+                    ) + 1
+    }
+    return(paste(measure, next_num, sep='_'))
+}
+
 add_pagerank <- function(tmp_g, damping=0.85){
-    e <- simpleError("Out of bounds error.")
-    if(damping < 0 || damping > 1)
-        stop("Damping parameter is a probability and must be between 0 and 1.")
-    tryCatch(pagerank_num <<- pagerank_num+1,
-             error=function(e){pagerank_num <<- 1})
-    meas_name <- paste("pagerank",pagerank_num, sep="_")
+    meas_name <- next_measure_name(tmp_g, "pagerank") 
     tmp_g <- set.vertex.attribute(tmp_g, meas_name, V(tmp_g), page.rank(tmp_g, damping=damping)$vector)
     g <<- tmp_g
     return(meas_name)
 }
 
 add_degree <- function(tmp_g){
-    tryCatch(degree_num <<- degree_num+1,
-             error=function(e){degree_num <<- 1})
-    meas_name <- paste("degree",degree_num, sep="_")
+    meas_name <- next_measure_name(tmp_g, "degree")
     tmp_g <- set.vertex.attribute(tmp_g, meas_name, V(tmp_g), degree(tmp_g, V(tmp_g)))
     g <<- tmp_g
     return(meas_name)
 }
 
 add_in_largest_component <- function(tmp_g){
-    tryCatch(in_largest_component_num <<- in_largest_component_num+1,
-             error=function(e){in_largest_component_num <<- 1})
-    meas_name <- paste("in_largest_component",in_largest_component_num,sep="_")
-    k <- clusters(tmp_g)
+    meas_name <- next_measure_name(tmp_g, "in_largest_component") 
 
+    k <- clusters(tmp_g)
     big_comp <- which(k$csize==max(k$csize))-1
     in_big_comp <- which(k$membership==big_comp)-1
     

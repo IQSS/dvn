@@ -684,9 +684,9 @@
                 </div>
               </ice:panelTab>
               <!-- Study comments -->
-              <!-- TODO: implement this rendered=StudyPage.allowUserComments}" -->
               <ice:panelTab id="comments" 
                             label="User Comments"
+                            rendered="#{studyPage.allowStudyComments}"
                             url="#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=comments#{studyPage.studyListingIndexAsParameter}">
                   <f:param name="studyId" value="#{param.studyId}"/>
                   <gui:include src="StudyCommentsFragment.xhtml">

@@ -94,7 +94,7 @@
                     </ice:panelGrid>
                 </ice:panelGrid>
                 <ice:panelGrid id="groupPanel4" styleClass="dvnNetDataAnlsQryBldrWrap" cellpadding="0" cellspacing="0" width="80%"
-                               columns="1" columnClasses="dvnNetDataAnlsCol1,dvnNetDataAnlsCol2">
+                               columns="1" columnClasses="dvnNetDataAnlsCol1">
                     <div class="dvnNetDataAnlsAddQryInfoTitle">Manual Query Builder</div>
                     <ice:panelGrid id="groupPanel5" styleClass="dvnNetDataAnlsSubTblWrap" columns="1" cellpadding="0" cellspacing="0" border="0">
                         <ice:panelGroup styleClass="vdcHelpText dvn_spacing">
@@ -115,7 +115,7 @@
                                 <ice:radio for="queryLogicalOperator" index="1"/>
                             </fieldset>
                         </ice:panelGrid>
-                        <ice:panelGrid id="groupPanel7" columns="4" cellpadding="0" cellspacing="0" border="0">
+                        <ice:panelGrid id="groupPanel7" columns="4" cellpadding="0" cellspacing="0" border="0" width="100%">
                             <fieldset>
                                 <label for="attribute">Attributes</label><br/>
                                 <ice:selectOneListbox disabled="#{!NetworkDataAnalysisPage.manualQueryAction}" id="attribute" size="5">
@@ -142,13 +142,6 @@
                             </fieldset>
                         </ice:panelGrid>
                     </ice:panelGrid>
-                    <!--<div class="dvnNetDataAnlsAddQryInfoBlk">
-                        
-                        <p></p>
-                        <div class="dvnNetDataAnlsAddQryInfoBtn" rendered="#{NetworkDataAnalysisPage.manualQueryAction}">
-                            
-                        </div>
-                    </div>-->
                 </ice:panelGrid>
                 <hr class="dvnNetDataAnlsHrzLn" noshade="noshade" size="1"/>
                 <ice:panelGrid id="groupPanel8" cellpadding="0" cellspacing="0" width="100%"

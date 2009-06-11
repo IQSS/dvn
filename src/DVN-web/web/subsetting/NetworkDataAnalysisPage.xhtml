@@ -65,7 +65,7 @@
                 <ice:panelGroup styleClass="vdcHelpText dvn_spacing">
                     <ice:graphicImage value="/resources/images/icon_info.gif" alt="Information" title="Information"/>
                     <ice:outputText id="outputText1"
-                                    value="Subset this network data by filtering on vertex or edge attributes (Manual Query) or choosing parts of the network based on structural properties (Automatic Query). Or generate new network-based attributes for the vertices by running a Network Measure."/>
+                                    value="Subset this network data by filtering on vertex or edge attributes (&lt;b&gt;Manual Query&lt;/b&gt;) or choosing parts of the network based on structural properties (&lt;b&gt;Automatic Query&lt;/b&gt;). Or generate new network-based attributes for the vertices by running a &lt;b&gt;Network Measure&lt;/b&gt;." escape="false"/>
                     <ice:messages layout="table" styleClass="errorMessage"/>
                 </ice:panelGroup>
                 <ice:panelGrid id="groupPanel2" cellpadding="0" cellspacing="0" width="100%"
@@ -93,9 +93,16 @@
                         </fieldset>
                     </ice:panelGrid>
                 </ice:panelGrid>
-                <ice:panelGrid id="groupPanel4" styleClass="dvnNetDataAnlsQryBldrWrap" cellpadding="0" cellspacing="0" width="100%"
-                               columns="2" columnClasses="dvnNetDataAnlsCol1,dvnNetDataAnlsCol2">
+                <ice:panelGrid id="groupPanel4" styleClass="dvnNetDataAnlsQryBldrWrap" cellpadding="0" cellspacing="0" width="80%"
+                               columns="1" columnClasses="dvnNetDataAnlsCol1,dvnNetDataAnlsCol2">
+                    <div class="dvnNetDataAnlsAddQryInfoTitle">Manual Query Builder</div>
                     <ice:panelGrid id="groupPanel5" styleClass="dvnNetDataAnlsSubTblWrap" columns="1" cellpadding="0" cellspacing="0" border="0">
+                        <ice:panelGroup styleClass="vdcHelpText dvn_spacing">
+                            <ice:graphicImage value="/resources/images/icon_info.gif" alt="Information" title="Information"/>
+                            <ice:outputText id="outputText1"
+                                            value="Use these attribute and operator selectors to build a query string in the Query Workspace." escape="false"/>
+                            <ice:messages layout="table" styleClass="errorMessage"/>
+                        </ice:panelGroup>
                         <ice:selectOneRadio disabled="#{!NetworkDataAnalysisPage.manualQueryAction}" id="queryLogicalOperator" layout="spread" value="&amp;&amp;">
                             <f:selectItem  itemValue="&amp;&amp;" itemLabel="And"/>
                             <f:selectItem  itemValue="||" itemLabel="Or"/>
@@ -108,7 +115,7 @@
                                 <ice:radio for="queryLogicalOperator" index="1"/>
                             </fieldset>
                         </ice:panelGrid>
-                        <ice:panelGrid id="groupPanel7" columns="3" cellpadding="0" cellspacing="0" border="0">
+                        <ice:panelGrid id="groupPanel7" columns="4" cellpadding="0" cellspacing="0" border="0">
                             <fieldset>
                                 <label for="attribute">Attributes</label><br/>
                                 <ice:selectOneListbox disabled="#{!NetworkDataAnalysisPage.manualQueryAction}" id="attribute" size="5">
@@ -130,15 +137,18 @@
                                 <label for="value">Values</label><br/>
                                 <ice:inputText disabled="#{!NetworkDataAnalysisPage.manualQueryAction}" id="value" />
                             </fieldset>
+                            <fieldset>
+                                <ice:commandButton  value="Add to Query"  disabled="#{!NetworkDataAnalysisPage.manualQueryAction}" onclick="addToManualQuery();return false;" />
+                            </fieldset>
                         </ice:panelGrid>
                     </ice:panelGrid>
-                    <div class="dvnNetDataAnlsAddQryInfoBlk">
-                        <div class="dvnNetDataAnlsAddQryInfoTitle"><strong>Manual Query Builder</strong></div>
-                        <p>Use these attribute and operator selectors to build a query string.</p>
+                    <!--<div class="dvnNetDataAnlsAddQryInfoBlk">
+                        
+                        <p></p>
                         <div class="dvnNetDataAnlsAddQryInfoBtn" rendered="#{NetworkDataAnalysisPage.manualQueryAction}">
-                            <ice:commandButton  value="Add to Query"  disabled="#{!NetworkDataAnalysisPage.manualQueryAction}" onclick="addToManualQuery();return false;" />
-                            </div>
-                    </div>
+                            
+                        </div>
+                    </div>-->
                 </ice:panelGrid>
                 <hr class="dvnNetDataAnlsHrzLn" noshade="noshade" size="1"/>
                 <ice:panelGrid id="groupPanel8" cellpadding="0" cellspacing="0" width="100%"
@@ -182,12 +192,12 @@
                             <div class="dvnNetDataAnlsPrmtrWrp">
                                 <ice:dataTable id="networkMeasureParamterList" styleClass="dvnNetDataAnlsPrmtrTbl" cellpadding="0" cellspacing="0" width="100%"
                                                value="#{NetworkDataAnalysisPage.networkMeasureParameterList}" var="parameter"
-                                               rowClasses="list-row-odd,list-row-even">
+                                               columnClasses="dvnNetDataAnlsPrmtrTblCol1,dvnNetDataAnlsPrmtrTblCol2" rowClasses="list-row-odd,list-row-even">
                                     <ice:column>
                                         <ice:outputText value="#{parameter.name}"/><ice:outputText rendered="#{parameter.defaultValue != null}" value=" (#{parameter.defaultValue})"/>
                                     </ice:column>
                                     <ice:column>
-                                         <ice:inputText disabled="#{!NetworkDataAnalysisPage.networkMeasureAction}" value="#{parameter.value}"/>
+                                         <ice:inputText disabled="#{!NetworkDataAnalysisPage.networkMeasureAction}" value="#{parameter.value}" size="10"/>
                                     </ice:column>
                                 </ice:dataTable>
                             </div>

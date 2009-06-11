@@ -133,12 +133,12 @@ table.viTblinx th{background-color:#e6e6fa;font-weight:700;margin:0px;padding:2p
 .dvAnalysisResults #citationInfo blockquote a{font-family:Courier !important;font-size:85% !important}
 /* NETWORK DATA */
 .dvnNetworkDataBlock{width:700px}
-.dvnNetDataAnlsSubTblWrap{border:1px solid lightgray;}
+.dvnNetDataAnlsSubTblWrap{border:1px solid lightgray}
 .dvnNetDataAnlsSubTblWrapCol1{text-align:center}
 .dvnNetDataAnlsSubTblWrapCol1 .vdcHelpText{text-align:left}
 .dvnNetDataAnlsSubTblWrapCol1 table.icePnlGrd td{vertical-align:top;text-align:left}
 .dvnNetDataAnlsQryBldrWrap{margin:0 auto 1em auto}
-.dvnNetDataAnlsAddQryInfoBlk{width:85%;margin-left:1em;padding:1em 0;background:#d2e3ff }
+.dvnNetDataAnlsAddQryInfoBlk{width:85%;margin-left:1em;padding:1em 0;background:#d2e3ff}
 .dvnNetDataAnlsAddQryInfoBlk div,.dvnNetDataAnlsAddQryInfoBlk p{padding:0 1em;}
 .dvnNetDataAnlsAddQryInfoTitle{text-align:left}
 .dvnNetDataAnlsAddQryInfoBtn{text-align:center}
@@ -153,13 +153,13 @@ table.viTblinx th{background-color:#e6e6fa;font-weight:700;margin:0px;padding:2p
 .dvnNetDataAnlsTbl td{vertical-align:top}
 .dvnNetDataAnlsTbl1{width:30%}
 .dvnNetDataAnlsTbl2{width:45%}
-.dvnNetDataAnlsTbl3{width:20%;text-align:right}
+.dvnNetDataAnlsTbl3{width:20%}
+.dvnNetDataAnlsTbl3 fieldset{text-align:right}
 .dvnNetDataAnlsTbl3 input{margin-right:2px}
-.dvnNetDataAnlsCol1{}
 .dvnNetDataAnlsCol1 .iceSelOneRb,.dvnNetDataAnlsCol1 .iceSelOneRb-dis{font-weight:bold;vertical-align:top}
 .dvnNetDataAnlsCol1 .dvnNetDataAnlsSubTblWrap .iceSelOneRb{font-weight:normal}
 .dvnNetDataAnlsPrmtrWrp{height:5em;overflow:auto;border:1px solid #7F9DB9}
-.dvnNetDataAnlsPrmtrTbl{margin-top:0;}
+.dvnNetDataAnlsPrmtrTbl{margin-top:0}
 .dvnNetDataAnlsPrmtrTblCol1{width:35%}
 .dvnNetDataAnlsPrmtrTblCol2{width:65%}
 .dvnNetDataAnlsPrmtrTbl span.iceOutTxt{display:inline !important;vertical-align:middle}

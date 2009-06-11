@@ -21,6 +21,7 @@
 
 package edu.harvard.iq.dvn.ingest.org.thedata.statdataio.metadata;
 
+import java.util.*;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 
@@ -49,6 +50,8 @@ public class DDIWriter {
         this.MISSING_VALUE_TOKEN = userDefinedMissingValue;
     }
 
+//    protected List<CategoricalStatistic> mergedCategoricalStatisticsTable =
+//        new ArrayList<CategoricalStatistic>();
 
     /**
      *
@@ -56,10 +59,13 @@ public class DDIWriter {
      */
     public DDIWriter(SDIOMetadata sdioMetadata) {
         this.sdioMetadata = sdioMetadata;
+//        init();
     }
 
-
-
+    // valuLabeli, catStati, missingValuei
+//    public void init(){
+//
+//    }
 
 
 
@@ -152,8 +158,27 @@ public class DDIWriter {
         StringBuilder sb = new StringBuilder("<dataDscr>\n");
 
         String[] sumStatLabels3 = {"vald", "invd", "mode"};
+
+
+
+
+
+
+
         for (int i=0; i<sdioMetadata.variableName.length;i++){
-            // <var
+
+            // prepare catStat
+            String variableNamei = sdioMetadata.variableName[i];
+            
+            // valuLabeli, catStati, missingValuei
+             List<CategoricalStatistic> mergedCatStatTable =
+                metadataUtil.getMergedResult(
+                sdioMetadata.valueLabelTable.get(variableNamei),
+                sdioMetadata.categoryStatisticsTable.get(variableNamei),
+                sdioMetadata.missingValueTable.get(variableNamei)
+                );
+
+            // <var tag
 
             String intrvlType = sdioMetadata.isContinuousVariable()[i]
                      ? "contin": "discrete" ;
@@ -193,6 +218,35 @@ public class DDIWriter {
                         sumStatLabels8[j]+"\">"+statistic+"</sumStat>\n");
                 }
             }
+            // cat stat
+            /*
+                <catgry missing="N">
+                    <catValu>2</catValu>
+                    <labl level="category">JA,NEBEN 2</labl>
+                    <catStat type="freq">16</catStat>
+                </catgry>
+            */
+            if ((mergedCatStatTable != null) && (!mergedCatStatTable.isEmpty())){
+                for (CategoricalStatistic cs: mergedCatStatTable){
+                    // first line
+                    if (cs.isMissingValue()){
+                        sb.append("\t\t<catgry missing=\"Y\">\n");
+                    } else {
+                        sb.append("\t\t<catgry>\n");
+                    }
+                    // value
+                    sb.append("\t\t\t<catValu>"+cs.getValue()+"</catValu>\n");
+                    // label
+                    if ((cs.getLabel()!=null) && (!cs.getLabel().equals(""))){
+                        sb.append("\t\t\t<labl level=\"category\">"+cs.getLabel()+"</labl>\n");
+                    }
+                    // frequency
+
+                    sb.append("\t\t\t<catStat type=\"freq\">"+cs.getFrequency()+"</catStat>\n");
+                    sb.append("\t\t</catgry>\n");
+                }
+            }
+
             //System.out.println(StringUtils.join(sumStat,","));
             // format
             String formatTye = sdioMetadata.isStringVariable()[i] ? "character" : "numeric";

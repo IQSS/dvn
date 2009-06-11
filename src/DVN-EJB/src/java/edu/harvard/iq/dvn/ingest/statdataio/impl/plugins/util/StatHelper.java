@@ -23,12 +23,16 @@ package edu.harvard.iq.dvn.ingest.statdataio.impl.plugins.util;
 
 import static java.lang.System.*;
 import java.util.*;
+import java.util.logging.*;
 
 import org.apache.commons.lang.*;
 import org.apache.commons.lang.builder.*;
 import org.apache.commons.math.stat.*;
 import cern.colt.list.*;
 import cern.jet.stat.Descriptive;
+import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.metadata.CategoricalStatistic;
+
+
 
 /**
  *
@@ -38,8 +42,13 @@ import cern.jet.stat.Descriptive;
 
 public class StatHelper {
 
-     public static final int MAX_CATEGORIES = 50;
+    /**
+     *
+     */
+    public static final int MAX_CATEGORIES = 50;
 
+   private static Logger dbgLog =
+       Logger.getLogger(StatHelper.class.getPackage().getName());
     /**
      *
      * @param x
@@ -514,5 +523,6 @@ public class StatHelper {
         }
         return tbl;
     }
-   
+
+
 }

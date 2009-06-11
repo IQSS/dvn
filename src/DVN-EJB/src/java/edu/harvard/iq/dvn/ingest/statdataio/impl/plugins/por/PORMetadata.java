@@ -38,14 +38,14 @@ public class PORMetadata extends SDIOMetadata{
     /**
      *
      */
-    protected Map<String, Object> fileInformation =
-        new LinkedHashMap<String, Object>();
+    //protected Map<String, Object> fileInformation =
+    //    new LinkedHashMap<String, Object>();
 
 
     /**
      * 
      */
-    protected Map<String, Map<String, String>> valueLabelTable;
+    //protected Map<String, Map<String, String>> valueLabelTable;
 
     static {
 

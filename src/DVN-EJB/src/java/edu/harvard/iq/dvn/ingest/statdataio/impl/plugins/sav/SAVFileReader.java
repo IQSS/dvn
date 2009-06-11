@@ -72,7 +72,6 @@ public class SAVFileReader extends StatDataFileReader{
     private static String SAV_FILE_SIGNATURE = "$FL2";
 
     
-    
     // Record Type 1 fields
     private static final int LENGTH_RECORDTYPE1 = 172;
     
@@ -138,7 +137,7 @@ public class SAVFileReader extends StatDataFileReader{
     private static final int LENGTH_RT999_FILLER        =  4;
 
     
-    
+    private static final List<String> RecordType7SubType4Fields= new ArrayList<String>();
     private static final Set<Integer> validMissingValueCodeSet = new HashSet<Integer>();
     private static final Map<Integer, Integer> missingValueCodeUnits = new HashMap<Integer, Integer>();
 
@@ -178,7 +177,10 @@ public class SAVFileReader extends StatDataFileReader{
         missingValueCodeUnits.put(-2,2);
         missingValueCodeUnits.put(-3, 3);
         missingValueCodeUnits.put(0, 0);
-        
+
+        RecordType7SubType4Fields.add("SYSMIS");
+        RecordType7SubType4Fields.add("HIGHEST");
+        RecordType7SubType4Fields.add("LOWEST");
     }
 
 
@@ -240,6 +242,7 @@ public class SAVFileReader extends StatDataFileReader{
     
     Map<String, Map<String, String>> valueLabelTable =
             new LinkedHashMap<String, Map<String, String>>();
+    Map<String, String> valueVariableMappingTable = new LinkedHashMap<String, String>();
 
     String[] unfValues = null;
     
@@ -263,16 +266,29 @@ public class SAVFileReader extends StatDataFileReader{
     String StringMissingValue =" ";
     String NumericMissingValue=".";
     Map<String, String> OBStypeIfomation = new LinkedHashMap<String, String>();
-    String[] OBStypes = { "SYSMIS", "HIGHEST", "LOWEST"};
+    //String[] OBStypes = { "SYSMIS", "HIGHEST", "LOWEST"};
     
     NumberFormat doubleNumberFormatter = new DecimalFormat();
 
-    
+
     Set<Integer> decimalVariableSet = new HashSet<Integer>();
 
     int[] variableTypeFinal= null;
     Object[][] dataTable2 = null;
+
+
+    // RecordType 7 
+    // Subtype 3
+    List<Integer> releaseMachineSpecificInfo = new ArrayList<Integer>();
+    List<String> releaseMachineSpecificInfoHex = new ArrayList<String>();
     
+    // Subytpe 4
+    Map<String, Double> OBSTypeValue = new LinkedHashMap<String, Double>();
+    Map<String, String> OBSTypeHexValue = new LinkedHashMap<String, String>();    
+    //Subtype 11
+    List<Integer> measurementLevel = new ArrayList<Integer>();
+    List<Integer> columnWidth = new ArrayList<Integer>();
+    List<Integer> alignment = new ArrayList<Integer>();
     
     // Constructor -----------------------------------------------------------//
 
@@ -1176,6 +1192,13 @@ while(true ){
             
             dbgLog.fine("valueLabelTable="+valueLabelTable);
             
+            // create a mapping table that finds the key variable for this mapping table
+            String keyVariableName = OBSIndexToVariableName.get(variableIndex[0]-1);
+            for (int vn : variableIndex){
+                valueVariableMappingTable.put(OBSIndexToVariableName.get(vn - 1), keyVariableName);
+            }
+            
+            dbgLog.fine("valueVariableMappingTable:\n"+valueVariableMappingTable);            
         } catch (IOException ex){
             ex.printStackTrace();
         }
@@ -1283,6 +1306,7 @@ while(true ){
     protected void decodeRecordType7(BufferedInputStream stream){
         dbgLog.fine("***** decodeRecordType7(): start *****");
         int counter=0;
+        int[] headerSection = new int[2];
     while(true){
         try {
             if (stream ==null){
@@ -1341,45 +1365,218 @@ while(true ){
             
             switch (subTypeCode) {
                 case 3:
-                    parseRT7SubTypefield(stream);
+                    // 3: Release andMachine-Specific Integer Information
+                    
+                    //parseRT7SubTypefield(stream);
+                    
+                    
+                    headerSection = parseRT7SubTypefieldHeader(stream);
+                    if (headerSection != null){
+                        int unitLength = headerSection[0];
+                        int numberOfUnits = headerSection[1];
+                        
+                        
+                        for (int i=0; i<numberOfUnits; i++){
+                            dbgLog.finer(i+"-th fieldData");
+                            byte[] work = new byte[unitLength];
+
+                            int nb = stream.read(work);
+                            dbgLog.finer("raw bytes in Hex:"+ new String(Hex.encodeHex(work)));
+                            ByteBuffer bb_field = ByteBuffer.wrap(work);
+                            if (isLittleEndian){
+                                bb_field.order(ByteOrder.LITTLE_ENDIAN);
+                            }
+                            String dataInHex = new String(Hex.encodeHex(bb_field.array()));
+                            releaseMachineSpecificInfoHex.add(dataInHex);
+                            
+                            dbgLog.finer("raw bytes in Hex:"+ dataInHex);
+                            if (unitLength==4){
+                                int fieldData = bb_field.getInt();
+                                dbgLog.finer("fieldData(int)="+fieldData);
+                                dbgLog.finer("fieldData in Hex=0x"+Integer.toHexString(fieldData));
+                                releaseMachineSpecificInfo.add(fieldData);
+                            }
+                            
+                        }
+                       
+                        dbgLog.fine("releaseMachineSpecificInfo="+releaseMachineSpecificInfo);
+                        dbgLog.fine("releaseMachineSpecificInfoHex="+releaseMachineSpecificInfoHex);
+                       
+                    } else {
+                        // throw new IOException
+                    }
+                    
+                    
+                    dbgLog.fine("***** end of subType 3 ***** \n");
+                    
                     break;
                 case 4: 
-                    List<byte[]> obsTypeInfo = new ArrayList<byte[]>();
-                    obsTypeInfo = getRT7SubTypefieldData(stream);
-                    
-                    for (int ik = 0; ik< obsTypeInfo.size();ik++){
-                                
-                            String dphex = new String(Hex.encodeHex(
-                                    obsTypeInfo.get(ik) ));
-                          dbgLog.fine(ik+"-th item("+OBStypes[ik]+") ="+ dphex);
-                          OBStypeIfomation.put(OBStypes[ik], dphex);
+                    // Release andMachine-SpecificOBS-Type Information
+//                    List<byte[]> obsTypeInfo = new ArrayList<byte[]>();
+//                    obsTypeInfo = getRT7SubTypefieldData(stream);
+//
+//                    for (int ik = 0; ik< obsTypeInfo.size();ik++){
+//
+//                            String dphex = new String(Hex.encodeHex(
+//                                    obsTypeInfo.get(ik) ));
+//                          out.println(ik+"-th item("+OBStypes[ik]+") ="+ dphex);
+//                          OBStypeIfomation.put(OBStypes[ik], dphex);
+//                    }
+//                    parseRT7SubTypefield(stream);
+                    headerSection = parseRT7SubTypefieldHeader(stream);
+                    if (headerSection != null){
+                        int unitLength = headerSection[0];
+                        int numberOfUnits = headerSection[1];
+
+
+                        for (int i=0; i<numberOfUnits; i++){
+                            dbgLog.finer(i+"-th fieldData:"+RecordType7SubType4Fields.get(i));
+                            byte[] work = new byte[unitLength];
+
+                            int nb = stream.read(work);
+
+                            dbgLog.finer("raw bytes in Hex:"+ new String(Hex.encodeHex(work)));
+                            ByteBuffer bb_field = ByteBuffer.wrap(work);
+                            dbgLog.finer("byte order="+bb_field.order().toString());
+                            if (isLittleEndian){
+                                bb_field.order(ByteOrder.LITTLE_ENDIAN);
+                            }
+                            ByteBuffer bb_field_dup = bb_field.duplicate();
+                            OBSTypeHexValue.put(RecordType7SubType4Fields.get(i),
+                                new String(Hex.encodeHex(bb_field.array())) );
+                            dbgLog.finer("raw bytes in Hex:"+
+                                OBSTypeHexValue.get(RecordType7SubType4Fields.get(i)));
+                            if (unitLength==8){
+                                double fieldData = bb_field.getDouble();
+                                OBSTypeValue.put(RecordType7SubType4Fields.get(i), fieldData);
+                                dbgLog.finer("fieldData(double)="+fieldData);
+                                dbgLog.finer("fieldData in Hex=0x"+Double.toHexString(fieldData));
+                            }
+                        }
+                        dbgLog.fine("OBSTypeValue="+OBSTypeValue);
+                        dbgLog.fine("OBSTypeHexValue="+OBSTypeHexValue);
+
+                    } else {
+                        // throw new IOException
                     }
+                    
+
+                    dbgLog.fine("***** end of subType 4 ***** \n");
                     break;
                 case 5:
+                    // Variable Sets Information
+                    parseRT7SubTypefield(stream);
+                    break;
+                case 6:
+                    // Trends date information
                     parseRT7SubTypefield(stream);
                     break;
                 case 7:
+                    // Multiple response groups
                     parseRT7SubTypefield(stream);
                     break;
                 case 8:
+                    // Windows Data Entry data
                     parseRT7SubTypefield(stream);
                     break;
                 case 9:
+                    //
                     parseRT7SubTypefield(stream);
                     break;
                 case 10:
+                    // TextSmart data
                     parseRT7SubTypefield(stream);
                     break;
                 case 11:
+                    // Msmt level, col width, & alignment
+                    //parseRT7SubTypefield(stream);
+
+                    headerSection = parseRT7SubTypefieldHeader(stream);
+                    if (headerSection != null){
+                        int unitLength = headerSection[0];
+                        int numberOfUnits = headerSection[1];
+
+                        for (int i=0; i<numberOfUnits; i++){
+                            dbgLog.finer(i+"-th fieldData");
+                            byte[] work = new byte[unitLength];
+
+                            int nb = stream.read(work);
+                            dbgLog.finer("raw bytes in Hex:"+ new String(Hex.encodeHex(work)));
+                            ByteBuffer bb_field = ByteBuffer.wrap(work);
+                            if (isLittleEndian){
+                                bb_field.order(ByteOrder.LITTLE_ENDIAN);
+                            }
+                            dbgLog.finer("raw bytes in Hex:"+ new String(Hex.encodeHex(bb_field.array())));
+                            
+                            if (unitLength==4){
+                                int fieldData = bb_field.getInt();
+                                dbgLog.finer("fieldData(int)="+fieldData);
+                                dbgLog.finer("fieldData in Hex=0x"+Integer.toHexString(fieldData));
+                                
+                                int remainder = i%3;
+                                dbgLog.finer("remainder="+remainder);
+                                if (remainder == 0){
+                                    measurementLevel.add(fieldData);
+                                } else if (remainder == 1){
+                                    columnWidth.add(fieldData);
+                                } else if (remainder == 2){
+                                    alignment.add(fieldData);
+                                }
+                            }
+
+                        }
+
+                    } else {
+                        // throw new IOException
+                    }
+                    dbgLog.fine("measurementLevel="+measurementLevel);
+                    dbgLog.fine("columnWidth="+columnWidth);
+                    dbgLog.fine("alignment="+alignment);
+                    dbgLog.fine("***** end of subType 11 ***** \n");
+
+                    break;
+                case 12:
+                    // Windows Data Entry GUID
                     parseRT7SubTypefield(stream);
                     break;
                 case 13:
+                    // Extended variable names
+                    parseRT7SubTypefield(stream);
+                    break;
+                case 14:
+                    // Extended strings
+                    parseRT7SubTypefield(stream);
+                    break;
+                case 15:
+                    // Clementine Metadata
                     parseRT7SubTypefield(stream);
                     break;
                 case 16:
+                    // 64 bit N of cases
+                    parseRT7SubTypefield(stream);
+                    break;
+                case 17:
+                    // File level attributes
+                    parseRT7SubTypefield(stream);
+                    break;
+                case 18:
+                    // Variable attributes
+                    parseRT7SubTypefield(stream);
+                    break;
+                case 19:
+                    // Extended multiple response groups
                     parseRT7SubTypefield(stream);
                     break;
                 case 20:
+                    // Encoding, aka code page
+                    parseRT7SubTypefield(stream);
+                    break;
+                case 21:
+                    // Value labels for long strings
+                    parseRT7SubTypefield(stream);
+                    break;
+                case 22:
+                    // Missing values for long strings
                     parseRT7SubTypefield(stream);
                     break;
                 default:
@@ -1387,21 +1584,7 @@ while(true ){
             }
 
             
-//            // 7.2 read 80-char-long lines
-//            String[] documentRecord = new String[howManyLinesRt7];
-//
-//            for (int i=0;i<howManyLinesRt7; i++){
-//
-//                byte[] line = new byte[80];
-//                int nbytes_rt7_line = stream.read(line);
-//
-//                documentRecord[i] = StringUtils.stripEnd(new
-//                    String(Arrays.copyOfRange(line,
-//                    0, LENGTH_RT7_DOCUMENT_LINE),"US-ASCII"), " ");
-//
-//                dbgLog.fine(i+"-th line ="+documentRecord[i]+"<-");
-//            }
-//            dbgLog.fine("documentRecord:\n"+StringUtils.join(documentRecord, "\n"));
+
 
 
         } catch (IOException ex){
@@ -2235,7 +2418,7 @@ pwout.close();
 
 
                 // dump the line to the tab-delimited file
-                //out.println(caseIndex+"-th:"+StringUtils.join(dataLine, "\t"));
+                dbgLog.finer(caseIndex+"-th:"+StringUtils.join(dataLine, "\t"));
                 pwout.println(StringUtils.join(dataLine, "\t"));
                 
                 for (int ij=0; ij<varQnty;ij++ ){
@@ -2339,6 +2522,49 @@ pwout.close();
         return adjustedLength;
     }
     
+    
+    private int[] parseRT7SubTypefieldHeader(BufferedInputStream stream){
+        int length_unit_length = 4;
+        int length_number_of_units = 4;
+        int storage_size = length_unit_length + length_number_of_units;
+        
+        int[] headerSection = new int[2];
+        
+        byte[] byteStorage = new byte[storage_size];
+
+        try{
+            int nbytes = stream.read(byteStorage);
+            // to-do check against nbytes
+
+            //printHexDump(byteStorage, "RT7:storage");
+
+            ByteBuffer bb_data_type = ByteBuffer.wrap(byteStorage,
+                       0, length_unit_length);
+            if (isLittleEndian){
+                bb_data_type.order(ByteOrder.LITTLE_ENDIAN);
+            }
+
+            int unitLength = bb_data_type.getInt();
+            dbgLog.fine("parseRT7 SubTypefield: unitLength="+unitLength);
+
+            ByteBuffer bb_number_of_units = ByteBuffer.wrap(byteStorage,
+                       length_unit_length, length_number_of_units);
+            if (isLittleEndian){
+                bb_number_of_units.order(ByteOrder.LITTLE_ENDIAN);
+            }
+
+            int numberOfUnits = bb_number_of_units.getInt();
+            dbgLog.fine("parseRT7 SubTypefield: numberOfUnits="+numberOfUnits);
+
+            headerSection[0] = unitLength;
+            headerSection[1] = numberOfUnits;
+            return headerSection;
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+    
     private void parseRT7SubTypefield(BufferedInputStream stream){
         int length_unit_length = 4;
         int length_number_of_units = 4;
@@ -2361,7 +2587,7 @@ pwout.close();
             }
 
             int unitLength = bb_data_type.getInt();
-            dbgLog.fine("parseRT7SubTypefield: unitLength="+unitLength);
+            dbgLog.fine("parseRT7 SubTypefield: unitLength="+unitLength);
 
             ByteBuffer bb_number_of_units = ByteBuffer.wrap(byteStorage,
                        length_unit_length, length_number_of_units);
@@ -2370,17 +2596,34 @@ pwout.close();
             }
 
             int numberOfUnits = bb_number_of_units.getInt();
-            dbgLog.fine("parseRT7SubTypefield: numberOfUnits="+numberOfUnits);
+            dbgLog.fine("parseRT7 SubTypefield: numberOfUnits="+numberOfUnits);
 
             headerSection[0] = unitLength;
             headerSection[1] = numberOfUnits;
-
+            
             for (int i=0; i<numberOfUnits; i++){
                 byte[] work = new byte[unitLength];
+                
                 int nb = stream.read(work);
-                //out.print(new String(Hex.encodeHex(work)));
+                dbgLog.finer("raw bytes in Hex:"+ new String(Hex.encodeHex(work)));
+                ByteBuffer bb_field = ByteBuffer.wrap(work);
+                if (isLittleEndian){
+                    bb_field.order(ByteOrder.LITTLE_ENDIAN);
+                }
+                dbgLog.finer("raw bytes in Hex:"+ new String(Hex.encodeHex(bb_field.array())));
+                if (unitLength==4){
+                    int fieldData = bb_field.getInt();
+                    dbgLog.finer(i+"-th fieldData="+fieldData);
+                    dbgLog.finer("fieldData in Hex="+Integer.toHexString(fieldData));
+                } else if (unitLength==8){
+                    double fieldData = bb_field.getDouble();
+                    dbgLog.finer(i+"-th fieldData="+fieldData);
+                    dbgLog.finer("fieldData in Hex="+Double.toHexString(fieldData));
+                
+                }
+                dbgLog.finer("");
             }
-            
+           
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -2456,6 +2699,7 @@ pwout.close();
         dbgLog.fine("variableType="+variableType);
         dbgLog.finer("unfVersionNumber="+unfVersionNumber);
         dbgLog.fine("variablePosition="+variablePosition);
+        dbgLog.fine("variableName="+variableNameList.get(variablePosition));
         dbgLog.fine("varData:\n"+ReflectionToStringBuilder.toString(varData));
 
         switch(variableType){
@@ -2499,7 +2743,11 @@ pwout.close();
                 Map<String, Integer> catStat = StatHelper.calculateCategoryStatistics(ldata);
                 //out.println("catStat="+catStat);
 
-                smd.getCategoryStatisticsTable().put(variablePosition, catStat);
+                smd.getCategoryStatisticsTable().put(variableNameList.get(variablePosition), catStat);
+                String keyVariableName = valueVariableMappingTable.get(variableNameList.get(variablePosition));
+
+                //mergeCatStatWithValueLabel(catStat, valueLabelTable.get(keyVariableName));
+
                 break;
 
             case 1:
@@ -2533,7 +2781,7 @@ pwout.close();
                 dbgLog.finer("double:unfValue="+unfValue);
                 smd.getSummaryStatisticsTable().put(variablePosition,
                     ArrayUtils.toObject(StatHelper.calculateSummaryStatistics(ddata)));
-              
+
                 break;
             case  -1:
                 // String case
@@ -2557,7 +2805,10 @@ pwout.close();
                 Map<String, Integer> StrCatStat = StatHelper.calculateCategoryStatistics(strdata);
                 //out.println("catStat="+StrCatStat);
 
-                smd.getCategoryStatisticsTable().put(variablePosition, StrCatStat);
+                String keyStrVariableName = valueVariableMappingTable.get(variableNameList.get(variablePosition));
+                //mergeCatStatWithValueLabel(StrCatStat, valueLabelTable.get(keyStrVariableName));
+                
+                smd.getCategoryStatisticsTable().put(variableNameList.get(variablePosition), StrCatStat);
 
                 break;
             default:
@@ -2571,5 +2822,6 @@ pwout.close();
         dbgLog.fine("unfvalue(last)="+unfValue);
         return unfValue;
     }
-    
+
+
 }

@@ -1221,10 +1221,10 @@ public class PORFileReader extends StatDataFileReader{
             ex.printStackTrace();
         }
 
-        dbgLog.fine(ToStringBuilder.reflectionToString(valueLabelTable));
-        dbgLog.fine(ToStringBuilder.reflectionToString(valueLabelSet));
+        dbgLog.fine("valueLabelTable:\n"+valueLabelTable);
+        dbgLog.fine("valueLabelSet:\n"+valueLabelSet);
 
-        dbgLog.fine(ToStringBuilder.reflectionToString(valueVariableMappingTable));
+        dbgLog.fine("valueVariableMappingTable:\n"+valueVariableMappingTable);
         
         
         dbgLog.fine("***** decodeValueLabel(): end *****");
@@ -1521,7 +1521,7 @@ public class PORFileReader extends StatDataFileReader{
                 }// loop-i (variable)
 
                 dataTableList.add(casewiseRecord);
-                dbgLog.fine(j+"-th:"+StringUtils.join(casewiseRecord, "\t"));
+                dbgLog.finer(j+"-th:"+StringUtils.join(casewiseRecord, "\t"));
                 // print the i-th case
                 pwout.println(StringUtils.join(casewiseRecord, "\t"));
 
@@ -1909,9 +1909,9 @@ public class PORFileReader extends StatDataFileReader{
 
 
                 Map<String, Integer> catStat = StatHelper.calculateCategoryStatistics(ldata);
-                //out.println("catStat="+catStat);
+                dbgLog.fine("catStat="+catStat);
 
-                smd.getCategoryStatisticsTable().put(variablePosition, catStat);
+                smd.getCategoryStatisticsTable().put(variableNameList.get(variablePosition), catStat);
 
 
                 break;
@@ -1949,9 +1949,9 @@ public class PORFileReader extends StatDataFileReader{
                     StatHelper.calculateSummaryStatistics(strdata));
 
                 Map<String, Integer> StrCatStat = StatHelper.calculateCategoryStatistics(strdata);
-                //out.println("catStat="+StrCatStat);
+                dbgLog.fine("catStat="+StrCatStat);
 
-                smd.getCategoryStatisticsTable().put(variablePosition, StrCatStat);
+                smd.getCategoryStatisticsTable().put(variableNameList.get(variablePosition), StrCatStat);
 
                 break;
             default:

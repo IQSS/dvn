@@ -132,7 +132,7 @@ table.viTblinx th{background-color:#e6e6fa;font-weight:700;margin:0px;padding:2p
 .dvAnalysisResults #citationInfo blockquote{font-family:Courier !important;font-size:85% !important}
 .dvAnalysisResults #citationInfo blockquote a{font-family:Courier !important;font-size:85% !important}
 /* NETWORK DATA */
-.dvnNetworkDataBlock{width:700px;margin:0 auto;text-align:center}
+.dvnNetworkDataBlock{width:100%;margin:0 auto;text-align:center}
 .dvnNetDataAnlsSubTblWrap{border:1px solid #D9D9D9}
 .dvnNetDataAnlsSubTblWrapCol1{text-align:center}
 .dvnNetDataAnlsSubTblWrapCol1 .vdcHelpText{text-align:left}

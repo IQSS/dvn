@@ -44,6 +44,11 @@ public class DDIWriter {
 
     /**
      *
+     */
+    public String MISSING_VALUE_DISCRETE ="9223372036854775807";
+
+    /**
+     *
      * @param userDefinedMissingValue
      */
     public void setMISSING_VALUE_TOKEN(String userDefinedMissingValue) {
@@ -229,13 +234,19 @@ public class DDIWriter {
             if ((mergedCatStatTable != null) && (!mergedCatStatTable.isEmpty())){
                 for (CategoricalStatistic cs: mergedCatStatTable){
                     // first line
-                    if (cs.isMissingValue()){
+                    if (cs.isMissingValue() || cs.getValue().equals(MISSING_VALUE_DISCRETE)){
                         sb.append("\t\t<catgry missing=\"Y\">\n");
                     } else {
                         sb.append("\t\t<catgry>\n");
                     }
                     // value
-                    sb.append("\t\t\t<catValu>"+cs.getValue()+"</catValu>\n");
+                    String catStatValueString = null;
+                    if (cs.getValue().equals(MISSING_VALUE_DISCRETE)){
+                        catStatValueString=MISSING_VALUE_TOKEN;
+                    } else {
+                        catStatValueString= cs.getValue();
+                    }
+                    sb.append("\t\t\t<catValu>"+catStatValueString+"</catValu>\n");
                     // label
                     if ((cs.getLabel()!=null) && (!cs.getLabel().equals(""))){
                         sb.append("\t\t\t<labl level=\"category\">"+cs.getLabel()+"</labl>\n");

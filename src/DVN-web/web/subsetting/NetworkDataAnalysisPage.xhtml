@@ -41,7 +41,7 @@
 <ice:form id="form1">
 <input type="hidden" name="fileId" value="${param.fileId}"/>
 <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
-    <div class="dvn_section">
+    <div class="dvn_section dvnNetworkDataBlock">
         <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
           <div class="dvnMsgBlockContainer">
             <ice:outputText value="&lt;p&gt;Subset this network data by filtering on vertex or edge attributes (&lt;b&gt;Manual Query&lt;/b&gt;) or choosing parts of the network based on structural properties (&lt;b&gt;Automatic Query&lt;/b&gt;). Or generate new network-based attributes for the vertices by running a &lt;b&gt;Network Measure&lt;/b&gt;.&lt;/p&gt;" escape="false"/>
@@ -60,7 +60,7 @@
             <span class="dvn_preFileTitle">Data File: </span>
             <ice:outputText styleClass="dvn_fileTitle" value="#{NetworkDataAnalysisPage.file.fileName}"/>
         </div>
-        <div class="dvn_sectionBoxNoBorders dvnNetworkDataBlock">
+        <div class="dvn_sectionBoxNoBorders">
             <ice:selectOneRadio id="analysisActions" layout="spread" value="#{NetworkDataAnalysisPage.actionType}" partialSubmit="true">
                 <f:selectItem itemValue="manualQuery" itemLabel="Manual Query"/>
                 <f:selectItem itemValue="automaticQuery" itemLabel="Automatic Query"/>

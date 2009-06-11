@@ -508,7 +508,7 @@ public class FileDownloadServlet extends HttpServlet {
             // generate an HTML-ized response with a correct
             // 403/FORBIDDEN code
             
-            createErrorResponse403(res);
+            createErrorResponse403Remote(res);
             if (method != null) {
             method.releaseConnection();
             }
@@ -1661,6 +1661,10 @@ public class FileDownloadServlet extends HttpServlet {
         createErrorResponseGeneric(res, res.SC_FORBIDDEN, "You do not have permission to download this file.");
     }
 
+    private void createErrorResponse403Remote(HttpServletResponse res) {
+        createErrorResponseGeneric(res, res.SC_FORBIDDEN, "You do not have permission to download this remote file.");
+    }
+
     private void createErrorResponse200(HttpServletResponse res) {
         createErrorResponseGeneric(res, 200, "You do not have permission to download this file.");
     }
@@ -2044,33 +2048,33 @@ public class FileDownloadServlet extends HttpServlet {
     }
 
     private GetMethod remoteAccessTOU(String TOUurl, String jsessionid, String downloadURL) {
-    DvnTermsOfUseAccess dvnTOU = new DvnTermsOfUseAccess();
+	DvnTermsOfUseAccess dvnTOU = new DvnTermsOfUseAccess();
+    
+	jsessionid = dvnTOU.dvnAcceptRemoteTOU ( TOUurl, jsessionid, downloadURL ); 
 
-    jsessionid = dvnTOU.dvnAcceptRemoteTOU ( TOUurl, jsessionid, downloadURL ); 
+	GetMethod finalGetMethod = null; 
+	int status = 0; 
 
-    GetMethod finalGetMethod = null; 
-    int status = 0; 
-
-    try {
-        finalGetMethod = new GetMethod ( downloadURL );
-        finalGetMethod.setFollowRedirects(false);
-        finalGetMethod.addRequestHeader("Cookie", "JSESSIONID=" + jsessionid ); 
-        status = getClient().executeMethod(finalGetMethod);
+	try {
+	    finalGetMethod = new GetMethod ( downloadURL );
+	    finalGetMethod.setFollowRedirects(false);
+	    finalGetMethod.addRequestHeader("Cookie", "JSESSIONID=" + jsessionid ); 
+	    status = getClient().executeMethod(finalGetMethod);
         
-    } catch (IOException ex) {
-        if (finalGetMethod != null) { 
-        finalGetMethod.releaseConnection(); 
-        }
-    }
+	} catch (IOException ex) {
+	    if (finalGetMethod != null) { 
+		finalGetMethod.releaseConnection(); 
+	    }
+	}
 
-    if (status != 200) {
-        if (finalGetMethod != null) { 
-        finalGetMethod.releaseConnection(); 
-        }
-        return null;
-    }
-
-    return finalGetMethod; 
+	if (status != 200) {
+	    if (finalGetMethod != null) { 
+		finalGetMethod.releaseConnection(); 
+	    }
+	    //return null;
+	}
+	
+	return finalGetMethod; 
     }
     
     

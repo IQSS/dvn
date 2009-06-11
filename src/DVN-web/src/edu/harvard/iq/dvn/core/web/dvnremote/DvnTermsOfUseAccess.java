@@ -30,6 +30,7 @@ package edu.harvard.iq.dvn.core.web.dvnremote;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import java.util.logging.*;
 import java.text.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern; 
@@ -49,7 +50,11 @@ import org.apache.commons.httpclient.methods.multipart.StringPart;
  */
 public class DvnTermsOfUseAccess {
 
+    private static Logger dbgLog = Logger.getLogger(DvnTermsOfUseAccess.class.getPackage().getName());
+
     private HttpClient client = null;
+
+
     
     /* Simple constructor:  */
     public DvnTermsOfUseAccess() {
@@ -90,53 +95,95 @@ public class DvnTermsOfUseAccess {
 		TOUgetMethod.addRequestHeader("Cookie", "JSESSIONID=" + jsessionid ); 
 	    }
 
+	    String icesession     = null; 
+	    String viewstate      = null; 
+	    String studyid        = null; 
+	    String remotefileid   = null; 
+	    String remotehost     = null; 
+
+	    String iceFacesUpdate = null; 
+
+	    String regexpRemoteFileId = "(/FileDownload.*)";
+	    String regexpJsession = "JSESSIONID=([^;]*);"; 
+	    String regexpRemoteHost = "(http://[^/]*/)";
+
+	    String regexpIceSession = "session: \'([^\']*)\'"; 
+	    String regexpIceViewState = "view: ([^,]*),"; 
+	    String regexpStudyId = "studyId\"[^>]*value=\"([0-9]*)\""; 
+	    //String regexpRemoteFileId = "(/FileDownload.*fileId=[0-9]*)";
+	    String regexpOldStyleForm = "content:termsOfUsePageView:";
+
+
+	    Pattern patternJsession = Pattern.compile(regexpJsession); 
+	    Pattern patternRemoteFileId = Pattern.compile(regexpRemoteFileId); 
+	    Pattern patternRemoteHost = Pattern.compile(regexpRemoteHost); 
+
+	    Pattern patternIceSession= Pattern.compile(regexpIceSession); 
+	    Pattern patternIceViewState= Pattern.compile(regexpIceViewState); 
+	    Pattern patternStudyId = Pattern.compile(regexpStudyId); 
+	    Pattern patternOldStyleForm = Pattern.compile(regexpOldStyleForm); 
+			    
+
+	    Matcher matcher = null; 
+
+
 	    int status = getClient().executeMethod(TOUgetMethod);
+
+	    for (int i = 0; i < TOUgetMethod.getResponseHeaders().length; i++) {
+		String headerName = TOUgetMethod.getResponseHeaders()[i].getName();
+		//dbgLog.info("TOU found header: "+headerName); 
+		    
+		if (headerName.equals("Set-Cookie")) {
+		    dbgLog.info("TOU found cookie header;"); 
+
+		    String cookieHeader = TOUgetMethod.getResponseHeaders()[i].getValue();
+		    matcher = patternJsession.matcher(cookieHeader);
+		    if ( matcher.find() ) {
+			jsessionid = matcher.group(1); 
+			dbgLog.info("TOU found jsessionid: "+jsessionid); 
+		    }
+		}
+	    }
+	    
+
 	    
 	    InputStream in = TOUgetMethod.getResponseBodyAsStream(); 
 	    BufferedReader rd = new BufferedReader(new InputStreamReader(in)); 
 	    
 	    String line = null;
 	    
-	    String viewstate      = null; 
-	    String studyid        = null; 
-	    String remotefileid   = null; 
-
-	    String regexpJsession = "jsessionid=([^\"?&]*)"; 
-	    String regexpViewState = "ViewState\" value=\"([^\"]*)\""; 
-	    String regexpStudyId = "studyId\" value=\"([0-9]*)\""; 
-	    //String regexpRemoteFileId = "(/FileDownload.*fileId=[0-9]*)";
-	    String regexpRemoteFileId = "(/FileDownload.*)";
-	    String regexpOldStyleForm = "content:termsOfUsePageView:";
-
-
-	    Pattern patternJsession = Pattern.compile(regexpJsession); 
-	    Pattern patternViewState= Pattern.compile(regexpViewState); 
-	    Pattern patternStudyId = Pattern.compile(regexpStudyId); 
-	    Pattern patternRemoteFileId = Pattern.compile(regexpRemoteFileId); 
-	    Pattern patternOldStyleForm = Pattern.compile(regexpOldStyleForm); 
-			    
-
-	    Matcher matcher = null; 
 
 	    if ( downloadURL != null ) {
 		matcher = patternRemoteFileId.matcher(downloadURL);
 		if ( matcher.find() ) {
 		    remotefileid = matcher.group(1); 
+		    dbgLog.info("TOU found remotefileid: "+remotefileid); 
+		}
+		matcher = patternRemoteHost.matcher(downloadURL);
+		if ( matcher.find() ) {
+		    remotehost = matcher.group(1); 
+		    iceFacesUpdate = remotehost + "dvn/block/send-receive-updates"; 
+		    dbgLog.info("TOU found remotehost: "+remotehost); 
+
 		}
 	    }
 
+
 	    while ( ( line = rd.readLine () ) != null ) {
-		matcher = patternJsession.matcher(line);
+		matcher = patternIceSession.matcher(line);
 		if ( matcher.find() ) {
-		    jsessionid = matcher.group(1); 
+		    icesession = matcher.group(1); 
+		    dbgLog.info("TOU found icesession: "+icesession); 
 		}
-		matcher = patternViewState.matcher(line);
+		matcher = patternIceViewState.matcher(line);
 		if ( matcher.find() ) {
 		    viewstate = matcher.group(1); 
+		    dbgLog.info("TOU found view state: "+viewstate); 
 		}
 		matcher = patternStudyId.matcher(line);
 		if ( matcher.find() ) {
 		    studyid = matcher.group(1); 
+		    dbgLog.info("TOU found study id: "+studyid); 
 		}
 		if ( !compatibilityMode ) {
 		    matcher = patternOldStyleForm.matcher(line);
@@ -146,9 +193,9 @@ public class DvnTermsOfUseAccess {
 		}		    
 	    }
 
-	    if ( compatibilityMode ) {
-		compatibilityPrefix = "content:termsOfUsePageView:";
-	    }
+	    //if ( compatibilityMode ) {
+	    //	compatibilityPrefix = "content:termsOfUsePageView:";
+	    //}
 
 
 
@@ -164,21 +211,31 @@ public class DvnTermsOfUseAccess {
 		// to the Terms of Use;
 		// it has to be a POST method: 
 
-		TOUurl = TOUurl.substring(0, TOUurl.indexOf( "?" )); 
-		TOUpostMethod = new PostMethod( TOUurl + ";jsessionid=" + jsessionid ); 
+		//TOUurl = TOUurl.substring(0, TOUurl.indexOf( "?" )); 
+		//TOUpostMethod = new PostMethod( TOUurl + ";jsessionid=" + jsessionid ); 
+		TOUpostMethod = new PostMethod( iceFacesUpdate ); 
 		TOUpostMethod.setFollowRedirects(false);
 
 				
 		Part[] parts = {
-		    new StringPart( compatibilityPrefix + "form1:vdcId", "" ),
+		    new StringPart( "javax.faces.ViewState", viewstate ), 
+		    new StringPart( "javax.faces.RenderKitId", "ICEfacesRenderKit" ),
+		    new StringPart( "ice.submit.partial", "false" ),
+		    new StringPart( "icefacesCssUpdates", "" ),
+		    new StringPart( "ice.session", icesession ),
+		    new StringPart( "ice.view", viewstate ),
+		    new StringPart( "ice.focus", "form1:termsButton" ), 
+
 		    new StringPart( "pageName", "TermsOfUsePage" ),
-		    new StringPart( compatibilityPrefix + "form1:studyId", studyid ),
-		    new StringPart( compatibilityPrefix + "form1:redirectPage", remotefileid ),
-		    new StringPart( compatibilityPrefix + "form1:tou", "download" ),
-		    new StringPart( compatibilityPrefix + "form1:termsAccepted", "on" ),
-		    new StringPart( compatibilityPrefix + "form1:termsButton", "Continue" ),
-		    new StringPart( compatibilityPrefix + "form1_hidden", compatibilityPrefix + "form1_hidden'" ),
-		    new StringPart( "javax.faces.ViewState", viewstate )
+
+		    new StringPart( "form1", "form1" ),
+
+		    new StringPart( "form1:vdcId", "" ),
+		    new StringPart( "form1:studyId", studyid ),
+		    new StringPart( "form1:redirectPage", remotefileid ),
+		    new StringPart( "form1:tou", "download" ),
+		    new StringPart( "form1:termsAccepted", "on" ),
+		    new StringPart( "form1:termsButton", "Continue" )
 		};
 
 		// TODO: 
@@ -189,6 +246,8 @@ public class DvnTermsOfUseAccess {
 		TOUpostMethod.setRequestEntity(new MultipartRequestEntity(parts, TOUpostMethod.getParams()));
 		TOUpostMethod.addRequestHeader("Cookie", "JSESSIONID=" + jsessionid ); 
 		status = getClient().executeMethod(TOUpostMethod);
+
+		dbgLog.info ( "TOU Post status: "+status ); 
 
 		// Now the TOU system is going to redirect
 		// us to the actual download URL. 
@@ -210,6 +269,21 @@ public class DvnTermsOfUseAccess {
 			    redirectLocation = TOUpostMethod.getResponseHeaders()[i].getValue(); 
 			}
 		    }
+		} else if ( status == 200 ) {
+		    for (int i = 0; i < TOUpostMethod.getResponseHeaders().length; i++) {
+			String headerName = TOUpostMethod.getResponseHeaders()[i].getName();
+			dbgLog.info("TOU post header: "+headerName+"="+TOUpostMethod.getResponseHeaders()[i].getValue()); 
+		    }
+		    dbgLog.info ( "TOU trying to read output of the post method;" ); 
+		    InputStream pin = TOUpostMethod.getResponseBodyAsStream(); 
+		    BufferedReader prd = new BufferedReader(new InputStreamReader(pin)); 
+	    
+		    String pline = null;
+		    
+		    while ( ( pline = prd.readLine () ) != null ) {
+			dbgLog.info ("TOU read line: "+pline); 
+		    }
+		    prd.close();
 		}
 
 		TOUpostMethod.releaseConnection();
@@ -245,6 +319,8 @@ public class DvnTermsOfUseAccess {
 	    if (TOUpostMethod != null) { TOUpostMethod.releaseConnection(); }
 	    return null; 
 	}
+
+	dbgLog.info("returning jsessionid="+jsessionid);
 
 	return jsessionid; 
     }

@@ -1391,7 +1391,9 @@ public class FileDownloadServlet extends HttpServlet {
                 return;
             }
 
-	    Long sizeLimit = Long.valueOf(100 * 2^20); //new Long (100 * 2^20); 
+	    Long sizeLimit = Long.valueOf(104857600); 
+	    // that's the default of 100 MB.
+	                                              
 	    Long sizeTotal = Long.valueOf(0); 
 
 	    // this is the total limit of the size of all the files we

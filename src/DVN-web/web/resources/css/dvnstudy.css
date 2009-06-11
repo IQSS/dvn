@@ -137,11 +137,12 @@ table.viTblinx th{background-color:#e6e6fa;font-weight:700;margin:0px;padding:2p
 .dvnNetDataAnlsSubTblWrapCol1{text-align:center}
 .dvnNetDataAnlsSubTblWrapCol1 .vdcHelpText{text-align:left}
 .dvnNetDataAnlsSubTblWrapCol1 table.icePnlGrd td{vertical-align:top;text-align:left}
-.dvnNetDataAnlsQryBldrWrap{margin:0 auto 1em auto}
+.dvnNetDataAnlsCol1{width:25%}
+.dvnNetDataAnlsQryBldrWrap{margin:0 .75em 1em .75em}
 .dvnNetDataAnlsAddQryInfoBlk{width:85%;margin-left:1em;padding:1em 0;background:#d2e3ff}
 .dvnNetDataAnlsAddQryInfoBlk div,.dvnNetDataAnlsAddQryInfoBlk p{padding:0 1em;}
 .dvnNetDataAnlsAddQryInfoTitle{text-align:left}
-.dvnNetDataAnlsAddQryInfoBtn{text-align:center}
+.dvnNetDataAnlsQryBldrAddButton{text-align:right}
 .dvnLittleLetters{font-size:80% !important;vertical-align:top;line-height:2}
 .dvnNetDataAnlsSubTitle{font-weight:bold;margin-top:1em}
 .dvnNetDataAnlsSubTable{margin-top:0}
@@ -157,7 +158,7 @@ table.viTblinx th{background-color:#e6e6fa;font-weight:700;margin:0px;padding:2p
 .dvnNetDataAnlsTbl3 fieldset{text-align:right}
 .dvnNetDataAnlsTbl3 input{margin-right:2px}
 .dvnNetDataAnlsCol1 .iceSelOneRb,.dvnNetDataAnlsCol1 .iceSelOneRb-dis{font-weight:bold;vertical-align:top}
-.dvnNetDataAnlsCol1 .dvnNetDataAnlsSubTblWrap .iceSelOneRb{font-weight:normal}
+.dvnNetDataAnlsQryBldrWrapCol1 .iceSelOneRb{font-weight:normal}
 .dvnNetDataAnlsPrmtrWrp{height:5em;overflow:auto;border:1px solid #7F9DB9}
 .dvnNetDataAnlsPrmtrTbl{margin-top:0}
 .dvnNetDataAnlsPrmtrTblCol1{width:35%}

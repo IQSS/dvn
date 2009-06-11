@@ -91,57 +91,67 @@
                             <ice:commandButton disabled="#{!NetworkDataAnalysisPage.manualQueryAction}" type="submit" value="Run" action="#{NetworkDataAnalysisPage.manualQuery_action}" />
                         </fieldset>
                     </ice:panelGrid>
-                </ice:panelGrid>
-                <ice:panelGrid id="groupPanel4" styleClass="dvnNetDataAnlsQryBldrWrap" cellpadding="0" cellspacing="0" width="80%"
-                               columns="1" columnClasses="dvnNetDataAnlsCol1">
-                    <div class="dvnNetDataAnlsAddQryInfoTitle">Manual Query Builder</div>
-                    <ice:panelGrid id="groupPanel5" styleClass="dvnNetDataAnlsSubTblWrap" columns="1" cellpadding="0" cellspacing="0" border="0">
-                        <ice:panelGroup styleClass="vdcHelpText dvn_spacing">
-                            <ice:graphicImage value="/resources/images/icon_info.gif" alt="Information" title="Information"/>
-                            <ice:outputText id="outputText1"
-                                            value="Use these attribute and operator selectors to build a query string in the Query Workspace." escape="false"/>
-                            <ice:messages layout="table" styleClass="errorMessage"/>
-                        </ice:panelGroup>
-                        <ice:selectOneRadio disabled="#{!NetworkDataAnalysisPage.manualQueryAction}" id="queryLogicalOperator" layout="spread" value="&amp;&amp;">
-                            <f:selectItem  itemValue="&amp;&amp;" itemLabel="And"/>
-                            <f:selectItem  itemValue="||" itemLabel="Or"/>
-                        </ice:selectOneRadio>
-                        <ice:panelGrid id="groupPanel6" columns="2" cellpadding="0" cellspacing="0" border="0">
-                            <fieldset>
-                                <ice:radio for="queryLogicalOperator" index="0"/>
-                            </fieldset>
-                            <fieldset>
-                                <ice:radio for="queryLogicalOperator" index="1"/>
-                            </fieldset>
-                        </ice:panelGrid>
-                        <ice:panelGrid id="groupPanel7" columns="4" cellpadding="0" cellspacing="0" border="0" width="100%">
-                            <fieldset>
-                                <label for="attribute">Attributes</label><br/>
-                                <ice:selectOneListbox disabled="#{!NetworkDataAnalysisPage.manualQueryAction}" id="attribute" size="5">
-                                    <f:selectItems value="#{NetworkDataAnalysisPage.attributeSelectItems}"/>
-                                </ice:selectOneListbox>
-                            </fieldset>
-                            <fieldset>
-                                <label for="operator">Operators</label><br/>
-                                <ice:selectOneMenu disabled="#{!NetworkDataAnalysisPage.manualQueryAction}" id="operator" name="operators" value="">
-                                    <f:selectItem id="item3" itemLabel="Equal to, ==" itemValue="==" />
-                                    <f:selectItem id="item4" itemLabel="Not equal to, !=" itemValue="!=" />
-                                    <f:selectItem id="item1" itemLabel="Less than, &lt;" itemValue="&lt;" />
-                                    <f:selectItem id="item1" itemLabel="Less than or equal to, &lt;=" itemValue="&lt;=" />
-                                    <f:selectItem id="item2" itemLabel="Greater than, &gt;" itemValue="&gt;" />
-                                    <f:selectItem id="item2" itemLabel="Greater than or equal to, &gt;=" itemValue="&gt;=" />
-                                </ice:selectOneMenu>
-                            </fieldset>
-                            <fieldset>
-                                <label for="value">Values</label><br/>
-                                <ice:inputText disabled="#{!NetworkDataAnalysisPage.manualQueryAction}" id="value" />
-                            </fieldset>
-                            <fieldset>
-                                <ice:commandButton  value="Add to Query"  disabled="#{!NetworkDataAnalysisPage.manualQueryAction}" onclick="addToManualQuery();return false;" />
-                            </fieldset>
+                    <div>
+                        &#160;
+                    </div>
+                    <ice:panelGrid id="groupPanel4" styleClass="dvnNetDataAnlsQryBldrWrap" cellpadding="0" cellspacing="0" width="95%"
+                                   columns="1" columnClasses="dvnNetDataAnlsQryBldrWrapCol1">
+                        <div class="dvnNetDataAnlsAddQryInfoTitle">Manual Query Builder</div>
+                        <ice:panelGrid id="groupPanel5" styleClass="dvnNetDataAnlsSubTblWrap" columns="1" cellpadding="0" cellspacing="0" border="0">
+                            <ice:panelGroup styleClass="vdcHelpText dvn_spacing">
+                                <ice:graphicImage value="/resources/images/icon_info.gif" alt="Information" title="Information"/>
+                                <ice:outputText id="outputText1"
+                                                value="Use these attribute and operator selectors to build a query string in the Query Workspace." escape="false"/>
+                                <ice:messages layout="table" styleClass="errorMessage"/>
+                            </ice:panelGroup>
+                            <ice:selectOneRadio disabled="#{!NetworkDataAnalysisPage.manualQueryAction}" id="queryLogicalOperator" layout="spread" value="&amp;&amp;">
+                                <f:selectItem  itemValue="&amp;&amp;" itemLabel="And"/>
+                                <f:selectItem  itemValue="||" itemLabel="Or"/>
+                            </ice:selectOneRadio>
+                            <ice:panelGrid id="groupPanel6" columns="2" cellpadding="0" cellspacing="0" border="0">
+                                <fieldset>
+                                    <ice:radio for="queryLogicalOperator" index="0"/>
+                                </fieldset>
+                                <fieldset>
+                                    <ice:radio for="queryLogicalOperator" index="1"/>
+                                </fieldset>
+                            </ice:panelGrid>
+                            <ice:panelGrid id="groupPanel7" columns="3" cellpadding="0" cellspacing="0" border="0" width="100%">
+                                <fieldset>
+                                    <label for="attribute">Attributes</label><br/>
+                                    <ice:selectOneListbox disabled="#{!NetworkDataAnalysisPage.manualQueryAction}" id="attribute" size="5">
+                                        <f:selectItems value="#{NetworkDataAnalysisPage.attributeSelectItems}"/>
+                                    </ice:selectOneListbox>
+                                </fieldset>
+                                <fieldset>
+                                    <label for="operator">Operators</label><br/>
+                                    <ice:selectOneMenu disabled="#{!NetworkDataAnalysisPage.manualQueryAction}" id="operator" name="operators" value="">
+                                        <f:selectItem id="item3" itemLabel="Equal to, ==" itemValue="==" />
+                                        <f:selectItem id="item4" itemLabel="Not equal to, !=" itemValue="!=" />
+                                        <f:selectItem id="item1" itemLabel="Less than, &lt;" itemValue="&lt;" />
+                                        <f:selectItem id="item1" itemLabel="Less than or equal to, &lt;=" itemValue="&lt;=" />
+                                        <f:selectItem id="item2" itemLabel="Greater than, &gt;" itemValue="&gt;" />
+                                        <f:selectItem id="item2" itemLabel="Greater than or equal to, &gt;=" itemValue="&gt;=" />
+                                    </ice:selectOneMenu>
+                                </fieldset>
+                                <fieldset>
+                                    <label for="value">Values</label><br/>
+                                    <ice:inputText disabled="#{!NetworkDataAnalysisPage.manualQueryAction}" id="value" />
+                                </fieldset>
+                                <div>
+                                    &#160;
+                                </div>
+                                <div>
+                                    &#160;
+                                </div>
+                                <fieldset class="dvnNetDataAnlsQryBldrAddButton">
+                                    <ice:commandButton  value="Add to Query"  disabled="#{!NetworkDataAnalysisPage.manualQueryAction}" onclick="addToManualQuery();return false;" />
+                                </fieldset>
+                            </ice:panelGrid>
                         </ice:panelGrid>
                     </ice:panelGrid>
                 </ice:panelGrid>
+                
                 <hr class="dvnNetDataAnlsHrzLn" noshade="noshade" size="1"/>
                 <ice:panelGrid id="groupPanel8" cellpadding="0" cellspacing="0" width="100%"
                                columns="2" columnClasses="dvnNetDataAnlsCol1,dvnNetDataAnlsCol2">

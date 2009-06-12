@@ -27,6 +27,7 @@ begin;
 update dvnversion set buildnumber=0, versionnumber=2;
 
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditStudyCommentsPage', '/admin/EditStudyCommentsPage.xhtml', 3,null );
+INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'CommentReviewPage', '/networkAdmin/CommentReviewPage.xhtml', null, 2 );
 
 update studyfile set fileclass='TabularDataFile' where subsettable = true;
 update studyfile set fileclass='OtherFile' where subsettable = false;

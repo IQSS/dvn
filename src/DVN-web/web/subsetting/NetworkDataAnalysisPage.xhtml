@@ -43,11 +43,6 @@
 <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
     <div class="dvn_section">
         <div class="dvnNetworkDataBlock">
-            <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
-                <div class="dvnMsgBlockContainer">
-                    <ice:outputText value="&lt;p&gt;Subset this network data by filtering on vertex or edge attributes (&lt;b&gt;Manual Query&lt;/b&gt;) or choosing parts of the network based on structural properties (&lt;b&gt;Automatic Query&lt;/b&gt;). Or generate new network-based attributes for the vertices by running a &lt;b&gt;Network Measure&lt;/b&gt;.&lt;/p&gt;" escape="false"/>
-                </div>
-            </div>
             <ice:messages layout="table" styleClass="errorMessage"/>
             <span class="dvn_sectionTitleR">
                 <ice:outputLink
@@ -69,6 +64,11 @@
                     <f:selectItem itemValue="networkMeasure" itemLabel="Network Measure"/>
                 </ice:selectOneRadio>
                 <ice:panelGrid id="groupPanel1" styleClass="dvnNetDataAnlsSubTblWrap" columns="1" cellpadding="0" cellspacing="0" width="100%">
+                    <ice:panelGroup styleClass="vdcHelpText dvn_spacing">
+                        <ice:graphicImage value="/resources/images/icon_info.gif" alt="Information" title="Information"/>
+                        <ice:outputText id="outputText1"
+                                        value="Write a Manual Query to subset this network data by filtering on vertex or edge attributes." escape="false"/>
+                    </ice:panelGroup>
                     <ice:panelGrid id="groupPanel2" cellpadding="0" cellspacing="0" width="100%"
                                    columns="2" columnClasses="dvnNetDataAnlsCol1,dvnNetDataAnlsCol2">
                         <fieldset>
@@ -152,8 +152,12 @@
                             </ice:panelGrid>
                         </ice:panelGrid>
                     </ice:panelGrid>
-
                     <hr class="dvnNetDataAnlsHrzLn" noshade="noshade" size="1"/>
+                    <ice:panelGroup styleClass="vdcHelpText dvn_spacing">
+                        <ice:graphicImage value="/resources/images/icon_info.gif" alt="Information" title="Information"/>
+                        <ice:outputText id="outputText1"
+                                        value="Subset with an Automatic Query to choose parts of the network based on structural properties." escape="false"/>
+                    </ice:panelGroup>
                     <ice:panelGrid id="groupPanel8" cellpadding="0" cellspacing="0" width="100%"
                                    columns="2" columnClasses="dvnNetDataAnlsCol1,dvnNetDataAnlsCol2">
                         <fieldset>
@@ -177,6 +181,11 @@
                         </ice:panelGrid>
                     </ice:panelGrid>
                     <hr class="dvnNetDataAnlsHrzLn" noshade="noshade" size="1"/>
+                    <ice:panelGroup styleClass="vdcHelpText dvn_spacing">
+                        <ice:graphicImage value="/resources/images/icon_info.gif" alt="Information" title="Information"/>
+                        <ice:outputText id="outputText1"
+                                        value="Run a Network Measure to generate new network-based attributes for the vertices." escape="false"/>
+                    </ice:panelGroup>
                     <ice:panelGrid id="groupPanel10" cellpadding="0" cellspacing="0" width="100%"
                                    columns="2" columnClasses="dvnNetDataAnlsCol1,dvnNetDataAnlsCol2">
                         <fieldset>

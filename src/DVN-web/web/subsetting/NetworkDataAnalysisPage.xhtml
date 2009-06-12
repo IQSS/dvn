@@ -43,7 +43,6 @@
 <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
     <div class="dvn_section">
         <div class="dvnNetworkDataBlock">
-            <ice:messages layout="table" styleClass="errorMessage"/>
             <span class="dvn_sectionTitleR">
                 <ice:outputLink
                     value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{NetworkDataAnalysisPage.file.study.id}&amp;tab=files">
@@ -68,6 +67,8 @@
                         <ice:graphicImage value="/resources/images/icon_info.gif" alt="Information" title="Information"/>
                         <ice:outputText id="outputText1"
                                         value="Write a Manual Query to subset this network data by filtering on vertex or edge attributes." escape="false"/>
+                        <ice:inputHidden id="manualQueryError"  binding="#{NetworkDataAnalysisPage.manualQueryError}"/>
+                        <br/><ice:message layout="table" for="manualQueryError" styleClass="errorMessage"/>
                     </ice:panelGroup>
                     <ice:panelGrid id="groupPanel2" cellpadding="0" cellspacing="0" width="100%"
                                    columns="2" columnClasses="dvnNetDataAnlsCol1,dvnNetDataAnlsCol2">
@@ -157,6 +158,8 @@
                         <ice:graphicImage value="/resources/images/icon_info.gif" alt="Information" title="Information"/>
                         <ice:outputText id="outputText1"
                                         value="Subset with an Automatic Query to choose parts of the network based on structural properties." escape="false"/>
+                        <ice:inputHidden id="automaticQueryError"  binding="#{NetworkDataAnalysisPage.automaticQueryError}"/>
+                        <br/><ice:message layout="table" for="automaticQueryError" styleClass="errorMessage"/>
                     </ice:panelGroup>
                     <ice:panelGrid id="groupPanel8" cellpadding="0" cellspacing="0" width="100%"
                                    columns="2" columnClasses="dvnNetDataAnlsCol1,dvnNetDataAnlsCol2">
@@ -185,6 +188,8 @@
                         <ice:graphicImage value="/resources/images/icon_info.gif" alt="Information" title="Information"/>
                         <ice:outputText id="outputText1"
                                         value="Run a Network Measure to generate new network-based attributes for the vertices." escape="false"/>
+                        <ice:inputHidden id="networkMeasureError"  binding="#{NetworkDataAnalysisPage.networkMeasureError}"/>
+                        <br/><ice:message layout="table" for="networkMeasureError" styleClass="errorMessage"/>
                     </ice:panelGroup>
                     <ice:panelGrid id="groupPanel10" cellpadding="0" cellspacing="0" width="100%"
                                    columns="2" columnClasses="dvnNetDataAnlsCol1,dvnNetDataAnlsCol2">

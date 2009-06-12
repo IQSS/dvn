@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
@@ -98,7 +99,6 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
         }
     }
 
-
     private String actionType = "manualQuery";
     private String manualQueryType = DataTable.TYPE_VERTEX;
     private String manualQuery;
@@ -114,6 +114,11 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
     private List<SelectItem> edgeAttributeSelectItems;
     private List<SelectItem> automaticQuerySelectItems;
     private List<SelectItem> networkMeasureSelectItems;
+
+    // used for displaying errros
+    private UIComponent manualQueryError;
+    private UIComponent automaticQueryError;
+    private UIComponent networkMeasureError;
 
     public String getActionType() {
         return actionType;
@@ -186,6 +191,32 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
         this.networkMeasureType = networkMeasureType;
     }
 
+    public UIComponent getAutomaticQueryError() {
+        return automaticQueryError;
+    }
+
+    public void setAutomaticQueryError(UIComponent automaticQueryError) {
+        this.automaticQueryError = automaticQueryError;
+    }
+
+    public UIComponent getManualQueryError() {
+        return manualQueryError;
+    }
+
+    public void setManualQueryError(UIComponent manualQueryError) {
+        this.manualQueryError = manualQueryError;
+    }
+
+    public UIComponent getNetworkMeasureError() {
+        return networkMeasureError;
+    }
+
+    public void setNetworkMeasureError(UIComponent networkMeasureError) {
+        this.networkMeasureError = networkMeasureError;
+    }
+
+
+ 
 
     public List<NetworkDataAnalysisEvent> getEvents() {
         return events;
@@ -281,7 +312,7 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
 
         } catch (Exception e) {
             FacesMessage message = new FacesMessage(e.getMessage());
-            getFacesContext().addMessage(null, message);
+            getFacesContext().addMessage(manualQueryError.getClientId(getFacesContext()), message);
         }
 
         return null;
@@ -301,7 +332,7 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
             
         } catch (Exception e) {
                 FacesMessage message = new FacesMessage(e.getMessage());
-                getFacesContext().addMessage(null, message);
+                getFacesContext().addMessage(automaticQueryError.getClientId(getFacesContext()), message);
         }
 
 
@@ -325,7 +356,7 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
 
         } catch (Exception e) {
                 FacesMessage message = new FacesMessage(e.getMessage());
-                getFacesContext().addMessage(null, message);
+                getFacesContext().addMessage(networkMeasureError.getClientId(getFacesContext()), message);
         }
 
         return null;

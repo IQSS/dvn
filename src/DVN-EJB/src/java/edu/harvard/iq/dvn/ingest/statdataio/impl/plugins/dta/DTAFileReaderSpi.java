@@ -30,6 +30,10 @@ import java.util.logging.*;
 import javax.imageio.IIOException;
 import static java.lang.System.*;
 import java.util.*;
+
+import org.apache.commons.codec.binary.Hex;
+
+
 /**
  *
  * @author akio sone
@@ -116,7 +120,8 @@ public class DTAFileReaderSpi extends StatDataFileReaderSpi{
 //                out.printf("%d\t%02X\n", i, b[i]);
 //            }
 //        }
-
+       dbgLog.info("hex dump: 1st 4bytes =>" +
+                new String(Hex.encodeHex(b)) + "<-");
 
         if (b[2] != 1) {
             dbgLog.fine("3rd byte is not 1: given file is not stata-dta type");
@@ -132,7 +137,7 @@ public class DTAFileReaderSpi extends StatDataFileReaderSpi{
         } else {
             dbgLog.fine("this file is stata-dta type: " +
                     DTAFileReaderSpi.stataReleaseNumber.get(b[0]) +
-                    "(No in HEX=" + b[0] + ")");
+                    "(No in byte=" + b[0] + ")");
             return true;
         }
     }
@@ -163,12 +168,13 @@ public class DTAFileReaderSpi extends StatDataFileReaderSpi{
 
         boolean DEBUG=false;
         
-        if (DEBUG) {
-            for (int i = 0; i < b.length; ++i) {
-                out.printf("%d\t%02X\n", i, b[i]);
-            }
-        }
-
+//        if (DEBUG) {
+//            for (int i = 0; i < b.length; ++i) {
+//                out.printf("%d\t%02X\n", i, b[i]);
+//            }
+//        }
+       dbgLog.info("hex dump: 1st 4bytes =>" +
+                new String(Hex.encodeHex(b)) + "<-");
 
         if (b[2] != 1) {
             dbgLog.fine("3rd byte is not 1: given file is not stata-dta type");
@@ -223,6 +229,8 @@ public class DTAFileReaderSpi extends StatDataFileReaderSpi{
 //                out.printf("%d\t%02X\n", i, hdr4[i]);
 //            }
 //        }
+       dbgLog.info("hex dump: 1st 4bytes =>" +
+                new String(Hex.encodeHex(hdr4)) + "<-");
 
         if (hdr4[2] != 1) {
             dbgLog.fine("3rd byte is not 1: given file is not stata-dta type");

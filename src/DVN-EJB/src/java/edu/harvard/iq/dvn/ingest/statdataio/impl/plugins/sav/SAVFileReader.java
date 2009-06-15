@@ -72,6 +72,7 @@ public class SAVFileReader extends StatDataFileReader{
     private static String SAV_FILE_SIGNATURE = "$FL2";
 
     
+    
     // Record Type 1 fields
     private static final int LENGTH_RECORDTYPE1 = 172;
     
@@ -327,7 +328,7 @@ public class SAVFileReader extends StatDataFileReader{
 
     public SDIOData read(BufferedInputStream stream) throws IOException{
 
-        dbgLog.fine("***** SAVFileReader: read() start *****");
+        dbgLog.info("***** SAVFileReader: read() start *****");
 
         for (Method mthd : decodeMethods){
 
@@ -353,7 +354,7 @@ public class SAVFileReader extends StatDataFileReader{
         if (sdiodata == null){
             sdiodata = new SDIOData(smd, savDataSection);
         }
-        dbgLog.fine("***** SAVFileReader: read() end *****");
+        dbgLog.info("***** SAVFileReader: read() end *****");
         return sdiodata;
 
     }
@@ -786,22 +787,29 @@ public class SAVFileReader extends StatDataFileReader{
 
 
             // 2.2: print/write formats: 4-byte each = 8 bytes
-                ByteBuffer[] bb_record_type2_formats = new ByteBuffer[2];
-                bb_record_type2_formats[0] = ByteBuffer.wrap(
-                    recordType2Fixed, offset, LENGTH_PRINT_FORMAT_CODE);
-                offset +=LENGTH_PRINT_FORMAT_CODE;
 
-                //printHexDump(bb_record_type2_formats[0].array(),"printFormat:hex");
-                bb_record_type2_formats[1] = ByteBuffer.wrap(
-                    recordType2Fixed, offset, LENGTH_WRITE_FORMAT_CODE);
+                byte[] printFormt = Arrays.copyOfRange(recordType2Fixed, offset, offset+
+                    LENGTH_PRINT_FORMAT_CODE);
+                dbgLog.fine("printFrmt="+new String (Hex.encodeHex(printFormt)));
+
+
+                offset +=LENGTH_PRINT_FORMAT_CODE;
+                int formatCode = printFormt[3] == 0x00 ? printFormt[2] : printFormt[1];
+
+                dbgLog.fine("format code{5=F, 1=A[String]}="+formatCode);
+                byte[] writeFormt = Arrays.copyOfRange(recordType2Fixed, offset, offset+
+                    LENGTH_WRITE_FORMAT_CODE);
+
+                dbgLog.fine("writeFrmt="+new String (Hex.encodeHex(writeFormt)));
+                if (writeFormt[3] != 0x00){
+                    out.println("byte-order(write format): reversal required");
+                }
+
+
                 offset +=LENGTH_WRITE_FORMAT_CODE;
 
-                //printHexDump(bb_record_type2_formats[1].array(),"writeFormat:hex");
-                if (isLittleEndian){
-                    for (ByteBuffer bb: bb_record_type2_formats){
-                        bb.order(ByteOrder.LITTLE_ENDIAN);
-                    }
-                }
+
+
 
             // 2.3 variable name: 8 byte(space[x20]-padded)
 
@@ -2744,7 +2752,7 @@ pwout.close();
                 //out.println("catStat="+catStat);
 
                 smd.getCategoryStatisticsTable().put(variableNameList.get(variablePosition), catStat);
-                String keyVariableName = valueVariableMappingTable.get(variableNameList.get(variablePosition));
+                //String keyVariableName = valueVariableMappingTable.get(variableNameList.get(variablePosition));
 
                 //mergeCatStatWithValueLabel(catStat, valueLabelTable.get(keyVariableName));
 
@@ -2804,9 +2812,6 @@ pwout.close();
 
                 Map<String, Integer> StrCatStat = StatHelper.calculateCategoryStatistics(strdata);
                 //out.println("catStat="+StrCatStat);
-
-                String keyStrVariableName = valueVariableMappingTable.get(variableNameList.get(variablePosition));
-                //mergeCatStatWithValueLabel(StrCatStat, valueLabelTable.get(keyStrVariableName));
                 
                 smd.getCategoryStatisticsTable().put(variableNameList.get(variablePosition), StrCatStat);
 

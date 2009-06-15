@@ -26,6 +26,8 @@ import java.nio.channels.*;
 import java.util.logging.*;
 import static java.lang.System.*;
 
+import org.apache.commons.codec.binary.Hex;
+
 import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.*;
 import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.spi.*;
 
@@ -84,7 +86,8 @@ public class SAVFileReaderSpi extends StatDataFileReaderSpi{
             throw new IOException();
         }
         //printHexDump(b, "hex dump of the byte-array");
-
+        dbgLog.info("hex dump of the 1st 4 bytes[$FL2 == 24 46 4C 32]="+
+                new String(Hex.encodeHex(b)));
         if (stream.markSupported()){
             stream.reset();
         }
@@ -110,7 +113,7 @@ public class SAVFileReaderSpi extends StatDataFileReaderSpi{
             throw new IllegalArgumentException("stream == null!");
         }
 
-        dbgLog.fine("applying the sav test: inputstream case\n");
+        dbgLog.fine("\napplying the sav test: inputstream case\n");
 
         byte[] b = new byte[SAV_HEADER_SIZE];
         
@@ -122,7 +125,10 @@ public class SAVFileReaderSpi extends StatDataFileReaderSpi{
         if (nbytes == 0){
             throw new IOException();
         }
-        printHexDump(b, "hex dump of the byte-array");
+        //printHexDump(b, "hex dump of the byte-array");
+        dbgLog.info("hex dump of the 1st 4 bytes[$FL2 == 24 46 4C 32]="+
+                (new String (Hex.encodeHex(b))).toUpperCase());
+
 
         if (stream.markSupported()){
             stream.reset();
@@ -159,7 +165,9 @@ public class SAVFileReaderSpi extends StatDataFileReaderSpi{
         // create a read-only MappedByteBuffer
         MappedByteBuffer buff = srcChannel.map(FileChannel.MapMode.READ_ONLY, 0, SAV_HEADER_SIZE);
 
-        printHexDump(buff, "hex dump of the byte-buffer");
+        //printHexDump(buff, "hex dump of the byte-buffer");
+        dbgLog.info("hex dump of the 1st 4 bytes[$FL2 == 24 46 4C 32]="+
+                new String(Hex.encodeHex(buff.array())));
 
         buff.rewind();
 

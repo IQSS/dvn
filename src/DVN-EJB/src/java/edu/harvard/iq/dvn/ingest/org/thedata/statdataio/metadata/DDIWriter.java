@@ -55,8 +55,6 @@ public class DDIWriter {
         this.MISSING_VALUE_TOKEN = userDefinedMissingValue;
     }
 
-//    protected List<CategoricalStatistic> mergedCategoricalStatisticsTable =
-//        new ArrayList<CategoricalStatistic>();
 
     /**
      *
@@ -66,13 +64,6 @@ public class DDIWriter {
         this.sdioMetadata = sdioMetadata;
 //        init();
     }
-
-    // valuLabeli, catStati, missingValuei
-//    public void init(){
-//
-//    }
-
-
 
     /**
      *
@@ -165,11 +156,6 @@ public class DDIWriter {
         String[] sumStatLabels3 = {"vald", "invd", "mode"};
 
 
-
-
-
-
-
         for (int i=0; i<sdioMetadata.variableName.length;i++){
 
             // prepare catStat
@@ -187,8 +173,7 @@ public class DDIWriter {
 
             String intrvlType = sdioMetadata.isContinuousVariable()[i]
                      ? "contin": "discrete" ;
-//            String intrvlAttr = sdioMetadata.isContinuousVariable()[i] ?
-//                "intrvl=\""+intrvlType + "\" " : "";
+
             String intrvlAttr = "intrvl=\""+intrvlType + "\" " ;
 
             sb.append("\t<var ID=\"v1." + (i+1) + "\" name=\"" +
@@ -244,12 +229,13 @@ public class DDIWriter {
                     if (cs.getValue().equals(MISSING_VALUE_DISCRETE)){
                         catStatValueString=MISSING_VALUE_TOKEN;
                     } else {
-                        catStatValueString= cs.getValue();
+                        catStatValueString= StringEscapeUtils.escapeXml(cs.getValue());
                     }
                     sb.append("\t\t\t<catValu>"+catStatValueString+"</catValu>\n");
                     // label
                     if ((cs.getLabel()!=null) && (!cs.getLabel().equals(""))){
-                        sb.append("\t\t\t<labl level=\"category\">"+cs.getLabel()+"</labl>\n");
+                        sb.append("\t\t\t<labl level=\"category\">"+
+                            StringEscapeUtils.escapeXml(cs.getLabel())+"</labl>\n");
                     }
                     // frequency
 

@@ -29,6 +29,7 @@ import java.nio.channels.*;
 import java.util.logging.*;
 import static java.lang.System.*;
 
+import org.apache.commons.codec.binary.Hex;
 
 /**
  *
@@ -197,8 +198,8 @@ public class PORFileReaderSpi extends StatDataFileReaderSpi{
         buff.get(pormark, 0, 8);
         String pormarks = new String(pormark);
 
-        dbgLog.fine("pormark =>" + pormarks + "<-");
-
+        dbgLog.fine("pormark[hex: 53 50 53 53 50 4F 52 54 == SPSSPORT] =>" +
+                new String(Hex.encodeHex(pormark)) + "<-");
 
         if (pormarks.equals(POR_MARK)) {
             dbgLog.fine("this file is spss-por type");
@@ -335,8 +336,9 @@ public class PORFileReaderSpi extends StatDataFileReaderSpi{
         buff.get(pormark, 0, 8);
         String pormarks = new String(pormark);
 
-        dbgLog.fine("pormark =>" + pormarks + "<-");
-        
+        //dbgLog.fine("pormark =>" + pormarks + "<-");
+        dbgLog.fine("pormark[hex: 53 50 53 53 50 4F 52 54 == SPSSPORT] =>" +
+                new String(Hex.encodeHex(pormark)) + "<-");
 
         if (pormarks.equals(POR_MARK)) {
             dbgLog.fine("this file is spss-por type");

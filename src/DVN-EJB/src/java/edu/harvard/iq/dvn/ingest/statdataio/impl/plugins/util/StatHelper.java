@@ -22,6 +22,7 @@
 package edu.harvard.iq.dvn.ingest.statdataio.impl.plugins.util;
 
 import static java.lang.System.*;
+import java.io.*;
 import java.util.*;
 import java.util.logging.*;
 
@@ -30,7 +31,7 @@ import org.apache.commons.lang.builder.*;
 import org.apache.commons.math.stat.*;
 import cern.colt.list.*;
 import cern.jet.stat.Descriptive;
-import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.metadata.CategoricalStatistic;
+
 
 
 
@@ -41,6 +42,17 @@ import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.metadata.CategoricalStat
 
 
 public class StatHelper {
+
+
+    private static final byte STATA_MISSING_VALUE_BIAS = 26;
+//    private static byte BYTE_MISSING_VALUE = Byte.MAX_VALUE - STATA_MISSING_VALUE_BIAS;
+//    private static short SHORT_MISSIG_VALUE = Short.MAX_VALUE - STATA_MISSING_VALUE_BIAS;
+//    private static int INT_MISSING_VALUE = Integer.MAX_VALUE - STATA_MISSING_VALUE_BIAS;
+//    private static long LONG_MISSING_VALUE = Long.MAX_VALUE - STATA_MISSING_VALUE_BIAS;
+    private static byte BYTE_MISSING_VALUE = Byte.MAX_VALUE;
+    private static short SHORT_MISSIG_VALUE = Short.MAX_VALUE;
+    private static int INT_MISSING_VALUE = Integer.MAX_VALUE;
+    private static long LONG_MISSING_VALUE = Long.MAX_VALUE;
 
     /**
      *
@@ -57,7 +69,7 @@ public class StatHelper {
     public static double[] byteToDouble(byte[] x){
         double[] z= new double[x.length];
         for (int i=0; i<x.length;i++){
-            z[i] = (double)x[i];
+            z[i] = x[i] == BYTE_MISSING_VALUE ? Double.NaN : (double)x[i];
         }
         return z;
     }
@@ -70,7 +82,7 @@ public class StatHelper {
     public static double[] shortToDouble(short[] x){
         double[] z= new double[x.length];
         for (int i=0; i<x.length;i++){
-            z[i] = (double)x[i];
+            z[i] = x[i] == SHORT_MISSIG_VALUE ? Double.NaN : (double)x[i];
         }
         return z;
     }
@@ -83,7 +95,7 @@ public class StatHelper {
     public static double[] intToDouble(int[] x){
         double[] z= new double[x.length];
         for (int i=0; i<x.length;i++){
-            z[i] = (double)x[i];
+            z[i] = x[i] == INT_MISSING_VALUE ? Double.NaN : (double)x[i];
         }
         return z;
     }
@@ -96,11 +108,7 @@ public class StatHelper {
     public static double[] longToDouble(long[] x){
         double[] z= new double[x.length];
         for (int i=0; i<x.length;i++){
-            if (x[i] == Long.MAX_VALUE){
-                z[i] = Double.NaN;
-            } else {
-                z[i] = (double)x[i];
-            }
+            z[i] = x[i] == Long.MAX_VALUE ? Double.NaN : (double)x[i];
         }
         return z;
     }
@@ -113,7 +121,7 @@ public class StatHelper {
     public static double[] floatToDouble(float[] x){
         double[] z= new double[x.length];
         for (int i=0; i<x.length;i++){
-            z[i] = (double)x[i];
+            z[i] =  x[i] == Float.NaN ? Double.NaN : (double)x[i];
         }
         return z;
     }
@@ -197,14 +205,105 @@ public class StatHelper {
      * @param x
      * @return
      */
-    public static Map<String, Integer> calculateCategoryStatistics(long[] x){
-        //double[] z = longToDouble(x);
+    public static Map<String, Integer> calculateCategoryStatistics(byte[] x){
         Map<String, Integer> frqTbl=null;
         int nobs =x.length;
         if ((nobs == 0) ) {
             frqTbl =null;
         } else {
             frqTbl = getFrequencyTable(x);
+            //out.println("frequency Table="+frqTbl);
+            String MissingValueKey = Byte.toString(Byte.MAX_VALUE);
+            if (frqTbl.keySet().contains(MissingValueKey)){
+                frqTbl.put(".", frqTbl.get(MissingValueKey));
+                frqTbl.remove(MissingValueKey);
+            }
+
+            if (frqTbl.keySet().size() > MAX_CATEGORIES){
+                frqTbl = null;
+            }
+        }
+
+        return frqTbl;
+    }
+
+    /**
+     *
+     * @param x
+     * @return
+     */
+    public static Map<String, Integer> calculateCategoryStatistics(short[] x){
+        Map<String, Integer> frqTbl=null;
+        int nobs =x.length;
+        if ((nobs == 0) ) {
+            frqTbl =null;
+        } else {
+            frqTbl = getFrequencyTable(x);
+            String MissingValueKey = Short.toString(Short.MAX_VALUE);
+            if (frqTbl.keySet().contains(MissingValueKey)){
+                frqTbl.put(".", frqTbl.get(MissingValueKey));
+                frqTbl.remove(MissingValueKey);
+            }
+
+            //out.println("frequency Table="+frqTbl);
+            if (frqTbl.keySet().size() > MAX_CATEGORIES){
+                frqTbl = null;
+            }
+        }
+
+        return frqTbl;
+    }
+
+
+    /**
+     *
+     * @param x
+     * @return
+     */
+    public static Map<String, Integer> calculateCategoryStatistics(int[] x){
+        Map<String, Integer> frqTbl=null;
+        int nobs =x.length;
+        if ((nobs == 0) ) {
+            frqTbl =null;
+        } else {
+            frqTbl = getFrequencyTable(x);
+            String MissingValueKey = Integer.toString(Integer.MAX_VALUE);
+            if (frqTbl.keySet().contains(MissingValueKey)){
+                frqTbl.put(".", frqTbl.get(MissingValueKey));
+                frqTbl.remove(MissingValueKey);
+            }
+            //out.println("frequency Table="+frqTbl);
+            if (frqTbl.keySet().size() > MAX_CATEGORIES){
+                frqTbl = null;
+            }
+        }
+
+        return frqTbl;
+    }
+
+
+
+
+    /**
+     *
+     * @param x
+     * @return
+     */
+    public static Map<String, Integer> calculateCategoryStatistics(long[] x){
+
+        Map<String, Integer> frqTbl=null;
+        int nobs =x.length;
+        if ((nobs == 0) ) {
+            frqTbl =null;
+        } else {
+            frqTbl = getFrequencyTable(x);
+
+            String MissingValueKey = Long.toString(Long.MAX_VALUE);
+            if (frqTbl.keySet().contains(MissingValueKey)){
+                frqTbl.put(".", frqTbl.get(MissingValueKey));
+                frqTbl.remove(MissingValueKey);
+            }
+
             //out.println("frequency Table="+frqTbl);
             if (frqTbl.keySet().size() > MAX_CATEGORIES){
                 frqTbl = null;
@@ -525,4 +624,122 @@ public class StatHelper {
     }
 
 
+    /**
+     * 
+     * @param data
+     * @return
+     */
+    public static byte[] toByteArrays(byte data) {
+        return new byte[]{data};
+    }
+
+    /**
+     *
+     * @param data
+     * @return
+     */
+    public static byte[] toByteArrays(short data) {
+        return new byte[] {
+            (byte)((data >> 8) & 0xff),
+            (byte)((data >> 0) & 0xff),
+        };
+    }
+
+    /**
+     *
+     * @param data
+     * @return
+     */
+    public static byte[] toByteArrays(char data) {
+        return new byte[] {
+            (byte)((data >> 8) & 0xff),
+            (byte)((data >> 0) & 0xff),
+        };
+    }
+
+    /**
+     *
+     * @param data
+     * @return
+     */
+    public static byte[] toByteArrays(int data) {
+        return new byte[] {
+            (byte)((data >> 24) & 0xff),
+            (byte)((data >> 16) & 0xff),
+            (byte)((data >> 8) & 0xff),
+            (byte)((data >> 0) & 0xff),
+        };
+    }
+
+
+    /**
+     *
+     * @param data
+     * @return
+     */
+    public static byte[] toByteArrays(long data) {
+        return new byte[] {
+            (byte)((data >> 56) & 0xff),
+            (byte)((data >> 48) & 0xff),
+            (byte)((data >> 40) & 0xff),
+            (byte)((data >> 32) & 0xff),
+            (byte)((data >> 24) & 0xff),
+            (byte)((data >> 16) & 0xff),
+            (byte)((data >> 8) & 0xff),
+            (byte)((data >> 0) & 0xff),
+        };
+    }
+
+
+    /**
+     *
+     * @param data
+     * @return
+     */
+    public static byte[] toByteArrays(float data) {
+        return toByteArrays(Float.floatToRawIntBits(data));
+    }
+
+
+    /**
+     *
+     * @param data
+     * @return
+     */
+    public static byte[] toByteArrays(double data) {
+        return toByteArrays(Double.doubleToRawLongBits(data));
+    }
+
+
+    /**
+     *
+     * @param data
+     * @return
+     */
+    public static byte[] toByteArrays(boolean data) {
+        return new byte[]{(byte)(data ? 0x01 : 0x00)}; // bool -> {1 byte}
+    }
+
+
+    /**
+     *
+     * @param data
+     * @return
+     */
+    public static byte[] toByteArrays(String data) {
+        return (data == null) ? null : data.getBytes();
+    }
+
+
+    /**
+     *
+     * @param data
+     * @param charsetName
+     * @return
+     * @throws java.io.UnsupportedEncodingException
+     */
+    public static byte[] toByteArrays(String data, String charsetName)
+        throws UnsupportedEncodingException {
+        return (data == null) ? null : data.getBytes(charsetName);
+    }
 }

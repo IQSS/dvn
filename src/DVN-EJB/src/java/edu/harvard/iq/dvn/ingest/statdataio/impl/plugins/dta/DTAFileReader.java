@@ -37,6 +37,7 @@ import org.apache.commons.lang.*;
 import org.apache.commons.lang.builder.*;
 import org.apache.commons.io.*;
 import org.apache.commons.io.input.*;
+import org.apache.commons.codec.binary.Hex;
 
 import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.*;
 import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.spi.*;
@@ -252,6 +253,39 @@ public class DTAFileReader extends StatDataFileReader{
 
     private static String unfVersionNumber = "3";
 
+    private static int MISSING_VALUE_BIAS = 26;
+
+    private static byte BYTE_MISSING_VALUE = Byte.MAX_VALUE;
+    private static short INT_MISSIG_VALUE = Short.MAX_VALUE;
+    private static int LONG_MISSING_VALUE = Integer.MAX_VALUE;
+    
+    private static float FLOAT_MISSING_VALUE = Float.MAX_VALUE;
+    private static double DOUBLE_MISSING_VALUE = Double.MAX_VALUE;
+
+
+    private static final List<Float> FLOAT_MISSING_VALUES = Arrays.asList(
+        0x1.000p127f, 0x1.001p127f, 0x1.002p127f, 0x1.003p127f,
+        0x1.004p127f, 0x1.005p127f, 0x1.006p127f, 0x1.007p127f,
+        0x1.008p127f, 0x1.009p127f, 0x1.00ap127f, 0x1.00bp127f,
+        0x1.00cp127f, 0x1.00dp127f, 0x1.00ep127f, 0x1.00fp127f,
+        0x1.010p127f, 0x1.011p127f, 0x1.012p127f, 0x1.013p127f,
+        0x1.014p127f, 0x1.015p127f, 0x1.016p127f, 0x1.017p127f,
+        0x1.018p127f, 0x1.019p127f, 0x1.01ap127f);
+
+    Set<Float> FLOAT_MISSING_VALUE_SET =
+        new HashSet<Float>(FLOAT_MISSING_VALUES);
+
+    private static final List<Double> DOUBLE_MISSING_VALUE_LIST = Arrays.asList(
+        0x1.000p1023, 0x1.001p1023, 0x1.002p1023, 0x1.003p1023, 0x1.004p1023,
+        0x1.005p1023, 0x1.006p1023, 0x1.007p1023, 0x1.008p1023, 0x1.009p1023,
+        0x1.00ap1023, 0x1.00bp1023, 0x1.00cp1023, 0x1.00dp1023, 0x1.00ep1023,
+        0x1.00fp1023, 0x1.010p1023, 0x1.011p1023, 0x1.012p1023, 0x1.013p1023,
+        0x1.014p1023, 0x1.015p1023, 0x1.016p1023, 0x1.017p1023, 0x1.018p1023,
+        0x1.019p1023, 0x1.01ap1023);
+
+    Set<Double> DOUBLE_MISSING_VALUE_SET =
+        new HashSet<Double>(DOUBLE_MISSING_VALUE_LIST);
+
 
     static {
 
@@ -262,8 +296,26 @@ public class DTAFileReader extends StatDataFileReader{
                 }
             }
         }
+
     }
-    
+    /*
+
+        # little endian Hex and decimals: missing values
+        string: ""
+        byte:   0x7f = 127
+        int :   0xff7f = 32,767
+        long:   0xffffff7f = 2,147, 483, 647
+        float:  0x0000007f = 2**127
+        double: 0x000000000000e07f = 2**1023
+
+    */
+   
+
+
+
+
+
+
     // instance fields -------------------------------------------------------//
 
     private static Logger dbgLog = Logger.getLogger(DTAFileReader.class.getPackage().getName());
@@ -346,6 +398,9 @@ public class DTAFileReader extends StatDataFileReader{
             type_offset_table = release111type;
             variableTypeTable = variableTypeTable111;
             byteLengthTable = byteLengthTable111;
+            BYTE_MISSING_VALUE   -= MISSING_VALUE_BIAS;
+            INT_MISSIG_VALUE     -= MISSING_VALUE_BIAS;
+            LONG_MISSING_VALUE   -= MISSING_VALUE_BIAS;
         }
         
         if (release_number <= 105){
@@ -379,7 +434,7 @@ public class DTAFileReader extends StatDataFileReader{
      */
     public SDIOData read(BufferedInputStream stream) throws IOException{
         ;
-        dbgLog.fine("***** DTAFileReader: read() start *****");
+        dbgLog.info("***** DTAFileReader: read() start *****");
 
         for (Method mthd : decodeMethods){
 
@@ -408,7 +463,7 @@ public class DTAFileReader extends StatDataFileReader{
         if (sdiodata == null){
             sdiodata = new SDIOData(smd, stataDataSection);
         }
-        dbgLog.fine("***** DTAFileReader: read() end *****");
+        dbgLog.info("***** DTAFileReader: read() end *****");
         return sdiodata;
     }
 
@@ -442,6 +497,10 @@ public class DTAFileReader extends StatDataFileReader{
         //            for (int i = 0; i < magic_number.length; ++i) {
         //                out.printf("%2d\t0x%02X\n", i, magic_number[i]);
         //            }
+
+       dbgLog.info("hex dump: 1st 4bytes =>" +
+                new String(Hex.encodeHex(magic_number)) + "<-");
+
 
         } catch (IOException ioe) {
             ioe.printStackTrace();
@@ -1001,9 +1060,10 @@ public class DTAFileReader extends StatDataFileReader{
                 int byte_offset = 0;
                 for (int columnCounter = 0;
                     columnCounter<variableTypelList.length; columnCounter++){
-                    String variable_id = "v"+ Integer.toString(columnCounter);
+                    //String variable_id = "v"+ Integer.toString(columnCounter);
                     Integer varType = 
                         variableTypeMap.get(variableTypelList[columnCounter]);
+
                     //out.print(columnCounter+"th varType="+varType);
                     //out.print("\tcurrent byte offset value="+byte_offset);
 
@@ -1015,9 +1075,19 @@ public class DTAFileReader extends StatDataFileReader{
                             byte byte_datum = dataRowBytes[byte_offset];
                             
                             //out.println(byte_datum);
-                            
-                            dataRow[columnCounter] = byte_datum;
-                            dataTable2[columnCounter][i] = byte_datum;
+                            dbgLog.finer(i+"-th row "+columnCounter+
+                                    "=th column byte ="+byte_datum);
+                            if (byte_datum >= BYTE_MISSING_VALUE){
+                                dbgLog.finer(i+"-th row "+columnCounter+
+                                    "=th column byte MV="+byte_datum);
+                                dataRow[columnCounter] = ".";
+                                dataTable2[columnCounter][i] = Byte.MAX_VALUE;
+                            } else {
+                                dataRow[columnCounter] = byte_datum;
+                                dataTable2[columnCounter][i] = byte_datum;
+                            }
+
+
                             byte_offset++;
                             break;
                         case -4:
@@ -1034,9 +1104,19 @@ public class DTAFileReader extends StatDataFileReader{
                             short short_datum = int_buffer.getShort();
                             
                             //out.println(short_datum);
-                            
-                            dataTable2[columnCounter][i] = short_datum;
-                            dataRow[columnCounter] = short_datum;
+
+                            dbgLog.finer(i+"-th row "+columnCounter+
+                                    "=th column stata int ="+short_datum);
+                            if (short_datum >= INT_MISSIG_VALUE){
+                                dbgLog.finer(i+"-th row "+columnCounter+
+                                    "=th column stata long missing value="+short_datum);
+                                dataRow[columnCounter] = ".";
+                                dataTable2[columnCounter][i] = Short.MAX_VALUE;
+                            } else {
+                                dataTable2[columnCounter][i] = short_datum;
+                                dataRow[columnCounter] = short_datum;
+                            }
+
                             byte_offset += 2;
                             break;
                         case -3:
@@ -1051,10 +1131,18 @@ public class DTAFileReader extends StatDataFileReader{
                             }
                             int int_datum = long_buffer.getInt();
                             //out.println(int_datum);
-                            
-                            dataTable2[columnCounter][i] = int_datum;
-                            dataRow[columnCounter] = int_datum;
 
+                            dbgLog.finer(i+"-th row "+columnCounter+
+                                    "=th column stata long ="+int_datum);
+                            if (int_datum >=LONG_MISSING_VALUE){
+                                dbgLog.finer(i+"-th row "+columnCounter+
+                                    "=th column stata long missing value="+int_datum);
+                                dataRow[columnCounter] = ".";
+                                dataTable2[columnCounter][i] = Integer.MAX_VALUE;
+                            } else {
+                                dataTable2[columnCounter][i] = int_datum;
+                                dataRow[columnCounter] = int_datum;
+                            }
                             byte_offset += 4;
                             break;
                         case -2:
@@ -1067,12 +1155,20 @@ public class DTAFileReader extends StatDataFileReader{
                                 float_buffer.order(ByteOrder.LITTLE_ENDIAN);
                                 //dbgLog.fine("float: byte reversed");
                             }
-                            float float_datum = float_buffer.getInt();
+                            float float_datum = float_buffer.getFloat();
                             
                             //out.println(float_datum);
-                            
-                            dataTable2[columnCounter][i] = float_datum;
-                            dataRow[columnCounter] = float_datum;
+                            dbgLog.finer(i+"-th row "+columnCounter+
+                                    "=th column float ="+float_datum);
+                            if (FLOAT_MISSING_VALUE_SET.contains(float_datum)){
+                                dbgLog.finer(i+"-th row "+columnCounter+
+                                    "=th column float missing value="+float_datum);
+                                dataRow[columnCounter] = ".";
+                                dataTable2[columnCounter][i] = Float.NaN;
+                            } else {
+                                dataTable2[columnCounter][i] = float_datum;
+                                dataRow[columnCounter] = float_datum;
+                            }
                             byte_offset += 4;
                             break;
                         case -1:
@@ -1085,12 +1181,24 @@ public class DTAFileReader extends StatDataFileReader{
                                 double_buffer.order(ByteOrder.LITTLE_ENDIAN);
                                 //dbgLog.fine("double: byte reversed");
                             }
-                            double double_datum = double_buffer.getInt();
-                            
-                            //out.println(double_datum);
+                            double double_datum = double_buffer.getDouble();
 
-                            dataTable2[columnCounter][i] = double_datum;
-                            dataRow[columnCounter] = double_datum;
+//                            dbgLog.finer(i+"-th row "+columnCounter+
+//                                    "=th column double ="+double_datum);
+//                            dbgLog.finer(i+"-th row "+columnCounter+
+//                                    "=th column double ="+Double.toHexString(double_datum));
+//                            String double_datum_hex = new String (Hex.encodeHex(StatHelper.toByteArrays(double_datum)));
+//                            dbgLog.finer("double_datum="+double_datum_hex);
+
+                            if (DOUBLE_MISSING_VALUE_SET.contains(double_datum)){
+                                dbgLog.finer(i+"-th row "+columnCounter+
+                                    "=th column double missing value="+double_datum);
+                                dataRow[columnCounter] = ".";
+                                dataTable2[columnCounter][i] = Double.NaN;
+                            } else {
+                                dataTable2[columnCounter][i] = double_datum;
+                                dataRow[columnCounter] = double_datum;
+                            }
                             byte_offset += 8;
                             break;
                         case  0:
@@ -1114,11 +1222,17 @@ public class DTAFileReader extends StatDataFileReader{
 //                            }
                             String string_datum = StringUtils.stripEnd(getNullStrippedString(raw_datum), " ");
                             //out.println(string_datum);
-
-                            dataRow[columnCounter] = string_datum;
-                            
-                            dataTable2[columnCounter][i] = string_datum;
-                            
+                            dbgLog.finer(i+"-th row "+columnCounter+
+                                    "=th column string ="+string_datum);
+                            if (string_datum.equals("")){
+                                dbgLog.finer(i+"-th row "+columnCounter+
+                                    "=th column string missing value="+string_datum);
+                                dataRow[columnCounter] = "";
+                                dataTable2[columnCounter][i] = "";
+                            } else {
+                                dataRow[columnCounter] = string_datum;
+                                dataTable2[columnCounter][i] = string_datum;
+                            }
                             byte_offset +=strVarLength;
                             break;
                         default:
@@ -1655,12 +1769,12 @@ public class DTAFileReader extends StatDataFileReader{
         IOException, NoSuchAlgorithmException{
         String unfValue = null;
 //                for (int j=0; j<nvar;j++){
-        dbgLog.fine("varData:\n"+ReflectionToStringBuilder.toString(varData));
+        dbgLog.fine("varData:\n"+Arrays.deepToString(varData));
         dbgLog.fine("variableType="+variableType);
         dbgLog.fine("unfVersionNumber="+unfVersionNumber);
         Integer var_Type = variableTypeMap.get(variableType);
         dbgLog.fine("var_Type="+var_Type);
-
+        Map<String, Integer> catStat = null;
         switch( var_Type != null ? var_Type: 256){
             case -5:
                 // Byte case
@@ -1674,6 +1788,9 @@ public class DTAFileReader extends StatDataFileReader{
                 smd.getSummaryStatisticsTable().put(variablePosition, 
                     ArrayUtils.toObject(StatHelper.calculateSummaryStatistics(bdata)));
 
+                catStat = StatHelper.calculateCategoryStatistics(bdata);
+                smd.getCategoryStatisticsTable().put(variableNameList.get(variablePosition), catStat);
+                
                 break;
             case -4:
                 // Stata-int (=java's short: 2byte) case
@@ -1687,6 +1804,9 @@ public class DTAFileReader extends StatDataFileReader{
                 smd.getSummaryStatisticsTable().put(variablePosition, 
                     ArrayUtils.toObject(StatHelper.calculateSummaryStatistics(sdata)));
 
+                catStat = StatHelper.calculateCategoryStatistics(sdata);
+                smd.getCategoryStatisticsTable().put(variableNameList.get(variablePosition), catStat);
+
                 break;
             case -3:
                 // stata-Long (= java's int: 4 byte) case
@@ -1699,7 +1819,9 @@ public class DTAFileReader extends StatDataFileReader{
 
                 smd.getSummaryStatisticsTable().put(variablePosition, 
                     ArrayUtils.toObject(StatHelper.calculateSummaryStatistics(idata)));
-
+                    
+                catStat = StatHelper.calculateCategoryStatistics(idata);
+                smd.getCategoryStatisticsTable().put(variableNameList.get(variablePosition), catStat);
                 break;
             case -2:
                 // float case
@@ -1707,7 +1829,7 @@ public class DTAFileReader extends StatDataFileReader{
                 // note: 4-byte
                 float[] fdata = ArrayUtils.toPrimitive(
                         Arrays.asList(varData).toArray(new Float[varData.length]));
-                        
+
                 unfValue = UNFUtil.calculateUNF(fdata, unfVersionNumber);
 
                 smd.getSummaryStatisticsTable().put(variablePosition,
@@ -1740,7 +1862,12 @@ public class DTAFileReader extends StatDataFileReader{
 
                 smd.getSummaryStatisticsTable().put(variablePosition,
                     StatHelper.calculateSummaryStatistics(strdata));
-
+                    
+                Map<String, Integer> StrCatStat = StatHelper.calculateCategoryStatistics(strdata);
+                //out.println("catStat="+StrCatStat);
+                
+                smd.getCategoryStatisticsTable().put(variableNameList.get(variablePosition), StrCatStat);
+                    
                 break;
             default:
                 dbgLog.fine("unknown variable type found");

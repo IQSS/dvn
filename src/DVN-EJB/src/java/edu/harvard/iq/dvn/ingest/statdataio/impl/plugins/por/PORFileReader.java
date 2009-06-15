@@ -36,6 +36,7 @@ import org.apache.commons.lang.*;
 import org.apache.commons.lang.builder.*;
 import org.apache.commons.io.*;
 import org.apache.commons.io.input.*;
+import org.apache.commons.codec.binary.Hex;
 
 import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.*;
 import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.spi.*;
@@ -233,7 +234,7 @@ public class PORFileReader extends StatDataFileReader{
 
     public SDIOData read(BufferedInputStream stream) throws IOException{
 
-        dbgLog.fine("***** PORFileReader: read() start *****");
+        dbgLog.info("***** PORFileReader: read() start *****");
 
         decodeHeader(stream);
 
@@ -327,7 +328,7 @@ public class PORFileReader extends StatDataFileReader{
         if (sdiodata == null){
             sdiodata = new SDIOData(smd, porDataSection);
         }
-        dbgLog.fine("***** PORFileReader: read() end *****");
+        dbgLog.info("***** PORFileReader: read() end *****");
         return sdiodata;
     }
     
@@ -482,8 +483,9 @@ public class PORFileReader extends StatDataFileReader{
         buff.get(pormark, 0, 8);
         String pormarks = new String(pormark);
 
-        dbgLog.fine("pormark =>" + pormarks + "<-");
-        
+        //dbgLog.fine("pormark =>" + pormarks + "<-");
+        dbgLog.fine("pormark[hex: 53 50 53 53 50 4F 52 54 == SPSSPORT] =>" +
+                new String(Hex.encodeHex(pormark)) + "<-");
 
         if (pormarks.equals(POR_MARK)) {
             dbgLog.fine("POR ID toke test: Passed");

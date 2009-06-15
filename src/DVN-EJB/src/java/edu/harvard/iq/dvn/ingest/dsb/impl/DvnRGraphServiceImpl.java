@@ -352,7 +352,7 @@ public class DvnRGraphServiceImpl{
 
 				while ( networkMeasureParam == null && networkMeasureParameterList.get(i) != null ) {
 				    NetworkMeasureParameter nparameter = networkMeasureParameterList.get(i); 
-				    if ( "d".equals(networkMeasureParameterList.get(i)) ) {
+				    if ( "d".equals(nparameter.getName()) ) {
 					networkMeasureParam = nparameter.getValue();
 				    }
 				    i++; 

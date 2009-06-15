@@ -1,4 +1,5 @@
 vertex_subset <- function(tmp_g, subset_str){
+    g_last <<- tmp_g
     subset_str <- clean_subset(subset_str)
     vs <- V(tmp_g)[eval(parse(text=subset_str))]
     tmp_g <- subgraph(g, vs)
@@ -7,11 +8,11 @@ vertex_subset <- function(tmp_g, subset_str){
 
     return(c(vcount(tmp_g), ecount(tmp_g)))
 }
-    
 
 #Like subgraph, but takes an edgeset and returns a graph that only contains those edges
 #and vertices incident to those edges.
 edge_subset <- function(tmp_g, subset_str, drop_disconnected=FALSE){
+    g_last <<- tmp_g
     subset_str <- clean_subset(subset_str)
     es <- E(tmp_g)[eval(parse(text=paste("!(",subset_str,")")))]
     tmp_g <- delete.edges(tmp_g, es)

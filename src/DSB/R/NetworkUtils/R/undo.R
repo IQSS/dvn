@@ -3,6 +3,6 @@ undo <- function(){
     return(c(vcount(g), ecount(g)))
 }
 
-can_undo <- function(g){
+can_undo <- function(){
     return(!identical(g, g_last))
 }

@@ -340,18 +340,33 @@ public class DvnRGraphServiceImpl{
 			    List<NetworkMeasureParameter> networkMeasureParameterList = (List<NetworkMeasureParameter>)SubsetParameters.get(NETWORK_MEASURE_PARAMETER);
 			    if ( networkMeasureParameterList != null ) {
 								
-				// we only have 1 parameter as of now;
-				
 				int i = 0; 
+
+				// Page Rank takes one parameter, d (for "damping");
+				// it is hard-coded below. We will add a better
+				// system for keeping track of the parameters
+				// that different functions take; either by
+				// specifying them as constants in this class,
+				// or, if it gets complicated, keeping an XML
+				// config file somewhere. 
 
 				while ( networkMeasureParam == null && networkMeasureParameterList.get(i) != null ) {
 				    NetworkMeasureParameter nparameter = networkMeasureParameterList.get(i); 
-				    networkMeasureParam = nparameter.getValue();
+				    if ( "d".equals(networkMeasureParameterList.get(i)) ) {
+					networkMeasureParam = nparameter.getValue();
+				    }
 				    i++; 
 				}
 
 				if ( networkMeasureParam != null ) {
 				    networkMeasureCommand = "add_pagerank(g, "+networkMeasureParam+")";
+				} else {
+				    // this "damping" parameter isn't 
+				    // mandatory; if the function is envoked 
+				    // with one argument, the value of d=0.85
+				    // is used. 
+				    networkMeasureCommand = "add_pagerank(g)";
+
 				}
 			    }
 			}
@@ -400,7 +415,10 @@ public class DvnRGraphServiceImpl{
 
 		    dbgLog.info("autoQueryCommand="+autoQueryCommand);
 		    historyEntry.add(autoQueryCommand);
-		    c.voidEval(autoQueryCommand);
+		    //c.voidEval(autoQueryCommand);
+		    String cEval = c.eval(autoQueryCommand).asString();
+		    dbgLog.info("auto query eval: "+cEval);
+
 		}
 
 	    }
@@ -445,14 +463,15 @@ public class DvnRGraphServiceImpl{
             c.close();
         
         } catch (RserveException rse) {
-            // RserveException (Rserve not running?)
-            
             result.put("IdSuffix", IdSuffix);
             result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
             
             result.put("RexecError", "true");
 	    result.put("RexecErrorMessage", rse.getMessage()); 
 	    result.put("RexecErrorDescription", rse.getRequestErrorDescription()); 
+	    
+	    dbgLog.info("rserve exception message: "+rse.getMessage());
+	    dbgLog.info("rserve exception description: "+rse.getRequestErrorDescription());
             return result;
 
         } catch (REXPMismatchException mme) {

@@ -367,6 +367,50 @@ public class DTAFileReader extends StatDataFileReader{
 
     Map<String, String> variableLabelMap = new LinkedHashMap<String, String>();
 
+
+    /**
+     *
+     */
+    protected String MissingValueForTextDataFileNumeric = "NA";
+
+    /**
+     *
+     * @return
+     */
+    public String getMissingValueForTextDataFileNumeric() {
+        return MissingValueForTextDataFileNumeric;
+    }
+
+    /**
+     *
+     * @param MissingValueToken
+     */
+    public void setMissingValueForTextDataFileNumeric(String MissingValueToken) {
+        this.MissingValueForTextDataFileNumeric = MissingValueToken;
+    }
+
+
+    /**
+     *
+     */
+    protected String MissingValueForTextDataFileString = "";
+
+    /**
+     * 
+     * @return
+     */
+    public String getMissingValueForTextDataFileString() {
+        return MissingValueForTextDataFileString;
+    }
+
+    /**
+     *
+     * @param MissingValueToken
+     */
+    public void setMissingValueForTextDataFileString(String MissingValueToken) {
+        this.MissingValueForTextDataFileString = MissingValueToken;
+    }
+
     // Constructor -----------------------------------------------------------//
 
     /**
@@ -1080,7 +1124,7 @@ public class DTAFileReader extends StatDataFileReader{
                             if (byte_datum >= BYTE_MISSING_VALUE){
                                 dbgLog.finer(i+"-th row "+columnCounter+
                                     "=th column byte MV="+byte_datum);
-                                dataRow[columnCounter] = ".";
+                                dataRow[columnCounter] = MissingValueForTextDataFileNumeric;
                                 dataTable2[columnCounter][i] = Byte.MAX_VALUE;
                             } else {
                                 dataRow[columnCounter] = byte_datum;
@@ -1110,7 +1154,7 @@ public class DTAFileReader extends StatDataFileReader{
                             if (short_datum >= INT_MISSIG_VALUE){
                                 dbgLog.finer(i+"-th row "+columnCounter+
                                     "=th column stata long missing value="+short_datum);
-                                dataRow[columnCounter] = ".";
+                                dataRow[columnCounter] = MissingValueForTextDataFileNumeric;
                                 dataTable2[columnCounter][i] = Short.MAX_VALUE;
                             } else {
                                 dataTable2[columnCounter][i] = short_datum;
@@ -1137,7 +1181,7 @@ public class DTAFileReader extends StatDataFileReader{
                             if (int_datum >=LONG_MISSING_VALUE){
                                 dbgLog.finer(i+"-th row "+columnCounter+
                                     "=th column stata long missing value="+int_datum);
-                                dataRow[columnCounter] = ".";
+                                dataRow[columnCounter] = MissingValueForTextDataFileNumeric;
                                 dataTable2[columnCounter][i] = Integer.MAX_VALUE;
                             } else {
                                 dataTable2[columnCounter][i] = int_datum;
@@ -1163,7 +1207,7 @@ public class DTAFileReader extends StatDataFileReader{
                             if (FLOAT_MISSING_VALUE_SET.contains(float_datum)){
                                 dbgLog.finer(i+"-th row "+columnCounter+
                                     "=th column float missing value="+float_datum);
-                                dataRow[columnCounter] = ".";
+                                dataRow[columnCounter] = MissingValueForTextDataFileNumeric;
                                 dataTable2[columnCounter][i] = Float.NaN;
                             } else {
                                 dataTable2[columnCounter][i] = float_datum;
@@ -1193,7 +1237,7 @@ public class DTAFileReader extends StatDataFileReader{
                             if (DOUBLE_MISSING_VALUE_SET.contains(double_datum)){
                                 dbgLog.finer(i+"-th row "+columnCounter+
                                     "=th column double missing value="+double_datum);
-                                dataRow[columnCounter] = ".";
+                                dataRow[columnCounter] =  MissingValueForTextDataFileNumeric;
                                 dataTable2[columnCounter][i] = Double.NaN;
                             } else {
                                 dataTable2[columnCounter][i] = double_datum;
@@ -1227,7 +1271,7 @@ public class DTAFileReader extends StatDataFileReader{
                             if (string_datum.equals("")){
                                 dbgLog.finer(i+"-th row "+columnCounter+
                                     "=th column string missing value="+string_datum);
-                                dataRow[columnCounter] = "";
+                                dataRow[columnCounter] =  MissingValueForTextDataFileString;
                                 dataTable2[columnCounter][i] = "";
                             } else {
                                 dataRow[columnCounter] = string_datum;

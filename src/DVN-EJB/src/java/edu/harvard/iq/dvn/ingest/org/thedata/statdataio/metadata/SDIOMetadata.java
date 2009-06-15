@@ -444,6 +444,28 @@ public class SDIOMetadata {
         this.categoryStatisticsTable = categoryStatisticsTable;
     }
 
+    /**
+     * 
+     */
+    protected Map<String, String> shortToLongVarialbeNameTable =
+            new LinkedHashMap<String, String>();
+
+    /**
+     *
+     * @return
+     */
+    public Map<String, String> getShortToLongVarialbeNameTable() {
+        return shortToLongVarialbeNameTable;
+    }
+
+    /**
+     *
+     * @param shortToLongVarialbeNameTable
+     */
+    public void setShortToLongVarialbeNameTable(Map<String, String> shortToLongVarialbeNameTable) {
+        this.shortToLongVarialbeNameTable = shortToLongVarialbeNameTable;
+    }
+
 
 
     @Override

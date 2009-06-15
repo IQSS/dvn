@@ -212,7 +212,29 @@ public class PORFileReader extends StatDataFileReader{
             Object[][] dataTable2 = null;
             
     int[] variableTypeFinal= null;
-    
+
+
+    protected String MissingValueForTextDataFileNumeric = "NA";
+
+    public String getMissingValueForTextDataFileNumeric() {
+        return MissingValueForTextDataFileNumeric;
+    }
+
+    public void setMissingValueForTextDataFileNumeric(String MissingValueToken) {
+        this.MissingValueForTextDataFileNumeric = MissingValueToken;
+    }
+
+
+    protected String MissingValueForTextDataFileString = "";
+
+    public String getMissingValueForTextDataFileString() {
+        return MissingValueForTextDataFileString;
+    }
+
+    public void setMissingValueForTextDataFileString(String MissingValueToken) {
+        this.MissingValueForTextDataFileString = MissingValueToken;
+    }
+
     // Constructor -----------------------------------------------------------//
 
 

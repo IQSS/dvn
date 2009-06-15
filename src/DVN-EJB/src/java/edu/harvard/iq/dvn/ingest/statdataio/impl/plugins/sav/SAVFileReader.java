@@ -266,6 +266,8 @@ public class SAVFileReader extends StatDataFileReader{
     
     String StringMissingValue =" ";
     String NumericMissingValue=".";
+
+
     Map<String, String> OBStypeIfomation = new LinkedHashMap<String, String>();
     //String[] OBStypes = { "SYSMIS", "HIGHEST", "LOWEST"};
     
@@ -290,7 +292,32 @@ public class SAVFileReader extends StatDataFileReader{
     List<Integer> measurementLevel = new ArrayList<Integer>();
     List<Integer> columnWidth = new ArrayList<Integer>();
     List<Integer> alignment = new ArrayList<Integer>();
-    
+
+    Map<String, String> shortToLongVarialbeNameTable = new LinkedHashMap<String, String>();
+
+
+    protected String MissingValueForTextDataFileNumeric = "NA";
+
+    public String getMissingValueForTextDataFileNumeric() {
+        return MissingValueForTextDataFileNumeric;
+    }
+
+    public void setMissingValueForTextDataFileNumeric(String MissingValueToken) {
+        this.MissingValueForTextDataFileNumeric = MissingValueToken;
+    }
+
+
+    protected String MissingValueForTextDataFileString = "";
+
+    public String getMissingValueForTextDataFileString() {
+        return MissingValueForTextDataFileString;
+    }
+
+    public void setMissingValueForTextDataFileString(String MissingValueToken) {
+        this.MissingValueForTextDataFileString = MissingValueToken;
+    }
+
+
     // Constructor -----------------------------------------------------------//
 
 
@@ -1549,7 +1576,38 @@ while(true ){
                     break;
                 case 13:
                     // Extended variable names
-                    parseRT7SubTypefield(stream);
+                    // parseRT7SubTypefield(stream);
+                    headerSection = parseRT7SubTypefieldHeader(stream);
+
+                    if (headerSection != null){
+                        int unitLength = headerSection[0];
+                        dbgLog.fine("unitLength="+unitLength);
+                        int numberOfUnits = headerSection[1];
+                        dbgLog.fine("numberOfUnits="+numberOfUnits);
+                        byte[] work = new byte[unitLength*numberOfUnits];
+                        int nbtyes13 = stream.read(work);
+
+                        String[] variableShortLongNamePairs = new String(work,"US-ASCII").split("\t");
+
+                        for (int i=0; i<variableShortLongNamePairs.length; i++){
+                            dbgLog.fine(i+"-th pair"+variableShortLongNamePairs[i]);
+                            String[] pair = variableShortLongNamePairs[i].split("=");
+                            shortToLongVarialbeNameTable.put(pair[0], pair[1]);
+                        }
+
+                        dbgLog.fine("shortToLongVarialbeNameTable"+
+                                shortToLongVarialbeNameTable);
+                        smd.setShortToLongVarialbeNameTable(shortToLongVarialbeNameTable);
+                    } else {
+                        // throw new IOException
+                    }
+
+
+
+
+
+
+
                     break;
                 case 14:
                     // Extended strings

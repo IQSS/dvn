@@ -2030,7 +2030,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
 
             if ( !subsettableList.isEmpty() ) {
                 for (String fclass : subsettableList) {
-                    if ("TabularDataFile".equals(fclass))
+                    if ("TabularDataFile".equals(fclass) || "NetworkDataFile".equals(fclass))
                         return Boolean.TRUE;
                 }
 

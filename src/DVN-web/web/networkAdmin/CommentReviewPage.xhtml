@@ -109,12 +109,9 @@
                   <f:facet name="header">
                     <ice:outputText value="Comment"/>
                   </f:facet>
-                  <ice:commandLink actionListener="#{CommentReviewPage.goToCommentsTab}"
-                                   binding="#{CommentReviewPage.goToCommentsLink}"
-                                   id="goToCommentsButton"
-                                   value="CommandLink: #{currentRow.studyComment.comment}">
-                      <f:attribute name="commentId" value="#{currentRow.studyComment.id}"/>
-                  </ice:commandLink>
+                   <ice:outputLink value="#{currentRow.commentsTabLink}">
+                      <ice:outputText value="#{currentRow.studyComment.comment}"/>
+                  </ice:outputLink>
                 </ice:column>
                 <ice:column>
                   <f:facet name="header">

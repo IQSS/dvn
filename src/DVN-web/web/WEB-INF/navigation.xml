@@ -256,6 +256,15 @@
             <to-view-id>/HomePage.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
+    <!-- add account from study comments -->
+    <navigation-rule>
+         <from-view-id>/*</from-view-id>
+        <navigation-case>
+            <from-outcome>studyPage</from-outcome>
+            <to-view-id>/study/StudyPage.xhtml</to-view-id>
+        </navigation-case>
+     </navigation-rule>
+     <!-- end add accoutn from study comments -->
 <navigation-rule>
         <from-view-id>/site/AddSitePage.xhtml</from-view-id>
         <navigation-case>
@@ -562,5 +571,11 @@
         </to-view-id>
     </navigation-case>
 </navigation-rule>
-    
+<navigation-rule>
+    <from-view-id>/networkAdmin/CommentReviewPage.xhtml</from-view-id>
+    <navigation-case>
+        <from-outcome>goToComments</from-outcome>
+        <to-view-id>/study/StudyPage.xhtml</to-view-id>
+    </navigation-case>
+</navigation-rule>
 </faces-config>

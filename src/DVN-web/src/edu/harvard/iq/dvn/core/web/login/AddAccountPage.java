@@ -25,7 +25,6 @@
  */
 package edu.harvard.iq.dvn.core.web.login;
 
-import com.icesoft.faces.component.ext.HtmlSelectOneMenu;
 import edu.harvard.iq.dvn.core.admin.EditUserService;
 import edu.harvard.iq.dvn.core.admin.UserServiceLocal;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
@@ -41,11 +40,10 @@ import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
-import javax.faces.component.UISelectItems;
 import com.icesoft.faces.component.ext.HtmlInputHidden;
 import com.icesoft.faces.component.ext.HtmlInputSecret;
-import com.icesoft.faces.component.ext.HtmlSelectManyCheckbox;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * <p>Page bean that corresponds to a similarly named JSP page.  This
@@ -103,7 +101,11 @@ public class AddAccountPage extends VDCBaseBean implements java.io.Serializable 
             sessionPut( editUserService.getClass().getName(), editUserService);
             //sessionPut( (studyService.getClass().getName() + "."  + studyId.toString()), studyService);
             user = editUserService.getUser();
-            if (this.getRequestParam("studyId")!=null) {
+            HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
+            if (request.getAttribute("studyId") != null) {
+                studyId = new Long(request.getAttribute("studyId").toString());
+                editUserService.setRequestStudyId(studyId);
+            } else if (this.getRequestParam("studyId") != null) {
                 studyId = new Long(Long.parseLong(getRequestParam("studyId")));
                 editUserService.setRequestStudyId(studyId);
             }

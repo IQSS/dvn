@@ -26,7 +26,6 @@
                          id="noCommentsUploadedPanel"
                          styleClass="vdcStudyFilesEmptyMessage"
                          >
-<!-- TODO: restore this: #{StudyCommentsFragment.study.userAuthorizedToEdit and (StudyCommentsFragment.study.studyLock==null)} -->
                         <ice:outputText value="No comments have been added to this study. "/>
                     </div>
                   </div>
@@ -98,9 +97,24 @@
                                   <ice:outputText value="#{item.studyComment.comment}"/>
                             </ice:column>
                       </ice:dataTable>
-                      <ice:outputText rendered="#{StudyCommentsFragment.user == null}"
+                      <div jsfc="ice:panelGroup" rendered="#{StudyCommentsFragment.user == null}">
+                      <ice:outputText nospan="true"
                                       styleClass="vdcStudyCommentsSubheading"
-                                      value="Please log in to add a comment"/>
+                                      value="Please "/>
+                      <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/login/LoginPage.xhtml">
+                          <f:param name="vdcId" value="#{VDCRequest.currentVDCId}"/>
+                          <f:param name="studyId" value="#{StudyCommentsFragment.studyId}"/>
+                          <f:param name="tab" value="comments"/>
+                          <ice:outputText nospan="true" value="Log In"/>
+                      </ice:outputLink>
+                      <ice:outputText nospan="true"
+                                      value=" or "/>
+                      <ice:commandLink action="#{StudyCommentsFragment.addAccount}"
+                                       value="Register">
+                      </ice:commandLink>
+                      <ice:outputText nospan="true"
+                                      value=" to add your comments."/>
+                      </div>
                       
                   <!-- The popup panel code -->
                   <!-- report abuse popup -->

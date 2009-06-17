@@ -23,6 +23,8 @@ public interface NetworkDataServiceLocal extends java.io.Serializable {
     public NetworkDataSubsetResult runAutomaticQuery(String rWorkspace, String automaticQuery, String nValue);
     public String runNetworkMeasure(String rWorkspace, String networkMeasure, List<NetworkMeasureParameter> parameters);
 
+    public void undoLastEvent(String rWorkspace);
+            
     public File getSubsetExport(String rWorkspace);
 
     public void ingest(StudyFileEditBean editBean);

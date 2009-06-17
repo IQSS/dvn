@@ -149,17 +149,8 @@ public class EditCollectionPage extends VDCBaseBean implements java.io.Serializa
     // if not redirect
     private boolean isCollectionInCurrentVDC() {
         if (!collection.getOwner().getId().equals(getVDCRequestBean().getCurrentVDCId()) ) {
-            FacesContext fc = javax.faces.context.FacesContext.getCurrentInstance();
-            HttpServletResponse response = (javax.servlet.http.HttpServletResponse) fc.getExternalContext().getResponse();
-            try {
-                response.sendRedirect("/dvn/dv/" + getVDCRequestBean().getCurrentVDC().getAlias() + "/faces/collection/ManageCollectionsPage.xhtml");
-                fc.responseComplete();
-            } catch (IOException ex) {
-                Logger.getLogger(EditCollectionPage.class.getName()).log(Level.SEVERE, null, ex);
-                throw new RuntimeException("IOException thrown while trying to redirect to Manage Collections Page");
-            } finally {
-                return false;
-            }
+            redirect("/faces/collection/ManageCollectionsPage.xhtml");
+            return false;
         }
         
         return true;

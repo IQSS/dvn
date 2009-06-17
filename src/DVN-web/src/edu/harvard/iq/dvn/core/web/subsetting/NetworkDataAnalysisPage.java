@@ -74,7 +74,7 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
             fileId = Long.parseLong( getRequestParam("fileId") );
             file = (NetworkDataFile) studyService.getStudyFile(fileId);
         } catch (Exception e) { // id not a long, or file is not a NetworkDataFile (TODO: redirect to a different page if not network data file)
-            redirectToIdNotFoundPage();
+            redirect("/faces/IdDoesNotExistPage.xhtml?type=File");
             return;
         }
 
@@ -82,17 +82,6 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
         rWorkspace = networkDataService.initAnalysis(file.getFileSystemLocation() + ".RData");
         events.add(getInitialEvent());
         setNetworkMeasureParamters(networkMeasureType);
-    }
-
-    private void redirectToIdNotFoundPage() {
-        FacesContext fc = javax.faces.context.FacesContext.getCurrentInstance();
-        HttpServletResponse response = (javax.servlet.http.HttpServletResponse) fc.getExternalContext().getResponse();
-        try {
-            response.sendRedirect("/dvn/dv/" + getVDCRequestBean().getCurrentVDC().getAlias() + "/faces/IdDoesNotExistPage.xhtml?type=File");
-            fc.responseComplete();
-        } catch (IOException ex) {
-            throw new RuntimeException("IOException thrown while trying to redirect toID Does Not Exist Page");
-        }
     }
 
     private NetworkDataAnalysisEvent getInitialEvent() {
@@ -364,7 +353,7 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
             NetworkDataAnalysisEvent event = new NetworkDataAnalysisEvent();
             event.setLabel("Automatic Query");
             event.setAttributeSet("N/A");
-            event.setQuery(automaticQueryType + "(" + automaticQueryNthValue + ")");
+            event.setQuery(automaticQueryType + "(" + (StringUtil.isEmpty(automaticQueryNthValue) ? "1" : automaticQueryNthValue) + ")");
             event.setVertices( result.getVertices() );
             event.setEdges( result.getEdges() );
             events.add(event);

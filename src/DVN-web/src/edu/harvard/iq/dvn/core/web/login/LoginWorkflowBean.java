@@ -34,6 +34,7 @@ public class LoginWorkflowBean extends VDCBaseBean implements java.io.Serializab
     public static String WORKFLOW_TYPE_CONTRIBUTOR = "contributor";
     public static String WORKFLOW_TYPE_CREATOR = "creator";
     public static String WORKFLOW_TYPE_FILE_ACCESS = "fileAccess";
+    public static String WORKFLOW_TYPE_COMMENTS = "comments";
 
     /** Creates a new instance of LoginWorkflowBean */
     public LoginWorkflowBean() {
@@ -56,6 +57,14 @@ public class LoginWorkflowBean extends VDCBaseBean implements java.io.Serializab
               nextPage = "fileRequest"; 
         }
   
+        return nextPage;
+    }
+
+    public String beginCommentsWorkflow(Long studyId) {
+        clearWorkflowState();
+        workflowType = WORKFLOW_TYPE_COMMENTS;
+        this.studyId=studyId;
+        String nextPage = "addAccount";
         return nextPage;
     }
     
@@ -111,7 +120,7 @@ public class LoginWorkflowBean extends VDCBaseBean implements java.io.Serializab
 
     public String processLogin(VDCUser user, Long studyId) {
         this.user = user;
-        if (studyId!=null) {
+        if (studyId != null) {
             this.studyId = studyId;
         }
         String nextPage = null;
@@ -125,11 +134,31 @@ public class LoginWorkflowBean extends VDCBaseBean implements java.io.Serializab
         return nextPage;
     }
 
+    //TODO: test to see if this fixes the tab argument issue
+    private String tab = new String("");
+
+    public String processLogin(VDCUser user, Long studyId, String selectedTab) {
+        this.user = user;
+        if (studyId != null) {
+            this.studyId = studyId;
+        }
+        if (selectedTab != null) {
+            tab = "&tab=" + selectedTab;
+        }
+        String nextPage = null;
+        if (user.isAgreedTermsOfUse() || !vdcNetworkService.find().isTermsOfUseEnabled()) {
+            updateSessionAndRedirect();
+            nextPage = "home";
+        } else {
+
+            nextPage = "accountTermsOfUse";
+        }
+        return nextPage;
+    }
+
     public String processAddAccount(VDCUser newUser) {
         user = newUser;
         String nextPage = null;
-        
-        
         if (workflowType == null) {
             getRequestMap().put("fromPage", "AddAccountPage");
             getRequestMap().put("userId", user.getId());
@@ -137,7 +166,6 @@ public class LoginWorkflowBean extends VDCBaseBean implements java.io.Serializab
         } else if (vdcNetworkService.find().isTermsOfUseEnabled()) {
             nextPage = "accountTermsOfUse";
         } else {
-      
             if (workflowType.equals(WORKFLOW_TYPE_CONTRIBUTOR)) {
                 nextPage = "contributorSuccess";
             } else if (workflowType.equals(WORKFLOW_TYPE_CREATOR)) {
@@ -145,14 +173,14 @@ public class LoginWorkflowBean extends VDCBaseBean implements java.io.Serializab
             } else if (workflowType.equals(WORKFLOW_TYPE_FILE_ACCESS)) {
                getRequestMap().put("studyId", studyId);
                nextPage = "fileRequest";
+            } else if (workflowType.equals(WORKFLOW_TYPE_COMMENTS)) {
+               getRequestMap().put("studyId", studyId);
+               nextPage = "studyPage";
+               //TODO: add the tab/selectedIndex argument for the comments
             }
             updateSessionForLogin();
-      
         }
-
-     
-
-         return nextPage;
+        return nextPage;
     }
 
     public String processTermsOfUse(boolean termsAccepted) {
@@ -248,7 +276,7 @@ public class LoginWorkflowBean extends VDCBaseBean implements java.io.Serializab
             }
         } else {
             if (sessionMap.get("ORIGINAL_URL") != null) {
-                sessionMap.put("LOGIN_REDIRECT", sessionMap.get("ORIGINAL_URL"));
+                sessionMap.put("LOGIN_REDIRECT", sessionMap.get("ORIGINAL_URL") + tab);
                 sessionMap.remove("ORIGINAL_URL");
             } else {
                 //  HttpServletRequest request = this.getExternalContext().getRequestContextPath()

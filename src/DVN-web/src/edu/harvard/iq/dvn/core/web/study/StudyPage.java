@@ -30,20 +30,14 @@ package edu.harvard.iq.dvn.core.web.study;
 
 import com.icesoft.faces.component.paneltabset.TabChangeEvent;
 import com.sun.jsfcl.data.DefaultTableDataModel;
-import edu.harvard.iq.dvn.core.admin.RoleServiceLocal;
-import edu.harvard.iq.dvn.core.admin.VDCRole;
-import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.mail.MailServiceLocal;
 import edu.harvard.iq.dvn.core.study.DataFileFormatType;
 import edu.harvard.iq.dvn.core.study.ReviewStateServiceLocal;
-import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.util.WebStatisticsSupport;
-import edu.harvard.iq.dvn.core.vdc.ReviewState;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import edu.harvard.iq.dvn.core.web.login.LoginWorkflowBean;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.component.html.HtmlPanelGrid;
@@ -52,7 +46,6 @@ import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ActionEvent;
 import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -281,7 +274,10 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
 
     public void init() {
         super.init();
-       
+        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        if (request.getHeader("referer") != null && ((String)request.getHeader("referer")).indexOf("CommentReview") != -1) {
+            setTab("comments");
+        }
         // set tab if it was it was sent as pamameter or part of request bean
         initSelectedTabIndex();
         if (isFromPage("StudyPage")) {
@@ -298,7 +294,7 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
                 studyId = getVDCRequestBean().getStudyId();
             }
             // we need to create the studyServiceBean
-            HttpServletRequest request = (HttpServletRequest) this.getExternalContext().getRequest();
+            //request = (HttpServletRequest) this.getExternalContext().getRequest();
             if (studyId != null) {
 
                 if ("files".equals(tab)) {
@@ -408,7 +404,7 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
     }
 
     public void setTab(String tab) {
-        if (tab == null || tab.equals("files") || tab.equals("catalog")) {
+        if (tab == null || tab.equals("files") || tab.equals("catalog") || tab.equals("comments")) {
             this.tab = tab;
         }
     }
@@ -609,6 +605,11 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
         
         // If the user clicks on the files tab,
         // make sure the StudyUI object contains file details.
+        if (tabChangeEvent.getNewTabIndex() == 2) {
+            HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
+            request.setAttribute("tab", "comments");
+            getVDCRequestBean().setSelectedTab(tab);
+        }
         if ( tabChangeEvent.getNewTabIndex()==1) {
             initStudyUIWithFiles();
         }

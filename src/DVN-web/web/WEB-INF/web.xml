@@ -35,7 +35,7 @@
     </context-param>
     <context-param>
        <param-name>com.icesoft.faces.uploadMaxFileSize</param-name>
-        <param-value>1500000000</param-value>
+        <param-value>2147483648</param-value>
    </context-param> 
     <context-param>
         <param-name>com.sun.faces.enableRestoreView11Compatibility</param-name>

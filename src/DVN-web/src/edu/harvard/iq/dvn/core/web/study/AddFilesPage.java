@@ -483,8 +483,6 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable,
         fileCategories = this.buildCategories();
     }
 
-    // this metho checks to see if the collection the user is attempting to edit is in the current vdc;
-    // if not redirect
     private boolean isStudyLocked() {
         Study lockedStudy = studyService.getStudy(studyId);
         StudyLock studyLock = null;
@@ -495,18 +493,8 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable,
         if (studyLock != null) {
 
             String studyLockMessage = "Study upload details: " + lockedStudy.getGlobalId() + " - " + studyLock.getDetail();
-
-            FacesContext fc = javax.faces.context.FacesContext.getCurrentInstance();
-            HttpServletResponse response = (javax.servlet.http.HttpServletResponse) fc.getExternalContext().getResponse();
-            try {
-                response.sendRedirect("/dvn/dv/" + getVDCRequestBean().getCurrentVDC().getAlias() + "/faces/login/StudyLockedPage.xhtml?message=" + studyLockMessage);
-                fc.responseComplete();
-            } catch (IOException ex) {
-                Logger.getLogger(AddFilesPage.class.getName()).log(Level.SEVERE, null, ex);
-                throw new RuntimeException("IOException thrown while trying to redirect to Manage Collections Page");
-            } finally {
-                return true;
-            }
+            redirect("/faces/login/StudyLockedPage.xhtml?message=" + studyLockMessage);
+            return true;
         }
 
         return false;

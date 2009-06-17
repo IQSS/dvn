@@ -5,15 +5,13 @@
 
 package edu.harvard.iq.dvn.ingest.dsb.impl;
 
-import edu.harvard.iq.dvn.ingest.dsb.*;
 import edu.harvard.iq.dvn.core.analysis.NetworkMeasureParameter; 
 
+import edu.harvard.iq.dvn.core.util.StringUtil;
 import java.io.*;
-import static java.lang.System.*;
 import java.util.*;
 import java.util.logging.*;
 import java.lang.reflect.*;
-import java.util.regex.*;
 
 import org.rosuda.REngine.*;
 import org.rosuda.REngine.Rserve.*;
@@ -47,18 +45,22 @@ public class DvnRGraphServiceImpl{
 
     public static String AUTOMATIC_QUERY_SUBSET = "AUTOMATIC_QUERY_SUBSET";
     public static String AUTOMATIC_QUERY_TYPE = "AUTOMATIC_QUERY_TYPE";
-    public static String AUTOMATIC_QUERY_NTHLARGEST = "AUTOMATIC_QUERY_NTHLARGEST";
-    public static String AUTOMATIC_QUERY_BICONNECTED = "AUTOMATIC_QUERY_BICONNECTED";
+    public static String AUTOMATIC_QUERY_NTHLARGEST = "component";
+    public static String AUTOMATIC_QUERY_BICONNECTED = "biconnected_component";
+    public static String AUTOMATIC_QUERY_NEIGHBORHOOD = "add_neighborhood";
     public static String AUTOMATIC_QUERY_N_VALUE = "AUTOMATIC_QUERY_N_VALUE";
 
 
     public static String NETWORK_MEASURE = "NETWORK_MEASURE"; 
     public static String NETWORK_MEASURE_TYPE = "NETWORK_MEASURE_TYPE"; 
-    public static String NETWORK_MEASURE_DEGREE = "NETWORK_MEASURE_DEGREE"; 
-    public static String NETWORK_MEASURE_RANK = "NETWORK_MEASURE_RANK"; 
-    public static String NETWORK_MEASURE_IN_LARGEST = "NETWORK_MEASURE_IN_LARGEST"; 
+    public static String NETWORK_MEASURE_DEGREE = "add_degree";
+    public static String NETWORK_MEASURE_UNIQUE_DEGREE = "add_unique_degree";
+    public static String NETWORK_MEASURE_RANK = "add_pagerank";
+    public static String NETWORK_MEASURE_IN_LARGEST = "add_in_largest_component";
+    public static String NETWORK_MEASURE_BONACICH_CENTRALITY = "add_bonacich_centrality";
     public static String NETWORK_MEASURE_PARAMETER = "NETWORK_MEASURE_PARAMETER";
 
+    public static String UNDO = "UNDO";
     // - return result fields:
 
     public static String SAVED_RWORK_SPACE = "SAVED_RWORK_SPACE";
@@ -270,6 +272,10 @@ public class DvnRGraphServiceImpl{
 
 		c.voidEval("load_and_clear('"+RDataFileName+"')");
 
+        String saveWS = "save.image(file='"+ RDataFileName +"')";
+        dbgLog.fine("save the workspace="+saveWS);
+        c.voidEval(saveWS);
+
 		result.put(SAVED_RWORK_SPACE, RDataFileName);
 
 		result.put("dsbHost", RSERVE_HOST);
@@ -283,9 +289,9 @@ public class DvnRGraphServiceImpl{
 	    } 
 
             dbgLog.fine("RDataFile="+RDataFileName);
-            historyEntry.add("load_and_clear('"+RDataFileName+"')");
-            c.voidEval("load_and_clear('"+RDataFileName+"')");
-	            
+            historyEntry.add("load('"+RDataFileName+"')");
+            c.voidEval("load('"+RDataFileName+"')");
+
             // check working directories
             setupWorkingDirectories(c);
             
@@ -328,8 +334,14 @@ public class DvnRGraphServiceImpl{
 		    String networkMeasureType = (String) SubsetParameters.get(NETWORK_MEASURE_TYPE); 
 		    String networkMeasureCommand = null; 
 		    if ( networkMeasureType != null ) {
+			    List<NetworkMeasureParameter> networkMeasureParameterList = (List<NetworkMeasureParameter>)SubsetParameters.get(NETWORK_MEASURE_PARAMETER);
+                networkMeasureCommand = networkMeasureType + "(g" + buildParameterComponent(networkMeasureParameterList) + ")";
+            /*
 			if ( networkMeasureType.equals(NETWORK_MEASURE_DEGREE) ) {
 			    networkMeasureCommand = "add_degree(g)"; 
+
+			} else if ( networkMeasureType.equals(NETWORK_MEASURE_UNIQUE_DEGREE) ) {
+			    networkMeasureCommand = "add_unique_degree(g)";
 
 			} else if ( networkMeasureType.equals(NETWORK_MEASURE_IN_LARGEST) ) {
 			    networkMeasureCommand = "add_in_largest_component(g)"; 
@@ -370,6 +382,7 @@ public class DvnRGraphServiceImpl{
 				}
 			    }
 			}
+            */
 		    }
 
 		    if ( networkMeasureCommand == null ) {
@@ -395,15 +408,23 @@ public class DvnRGraphServiceImpl{
 		    String automaticQueryType = (String) SubsetParameters.get(AUTOMATIC_QUERY_TYPE); 
 		    String autoQueryCommand = null; 
 		    if ( automaticQueryType != null ) {
+            String n = (String) SubsetParameters.get(AUTOMATIC_QUERY_N_VALUE);
+            autoQueryCommand = automaticQueryType + "(g, " + n + ")";
+            /*
 			if ( automaticQueryType.equals(AUTOMATIC_QUERY_NTHLARGEST) ) {
-			    int n = Integer.parseInt((String) SubsetParameters.get(AUTOMATIC_QUERY_N_VALUE)); 
+			    int n = Integer.parseInt((String) SubsetParameters.get(AUTOMATIC_QUERY_N_VALUE));
 			    autoQueryCommand = "component(g, " + n + ")";
 
 			} else if ( automaticQueryType.equals(AUTOMATIC_QUERY_BICONNECTED) ) {
-			    int n = Integer.parseInt((String) SubsetParameters.get(AUTOMATIC_QUERY_N_VALUE)); 
+			    int n = Integer.parseInt((String) SubsetParameters.get(AUTOMATIC_QUERY_N_VALUE));
 			    autoQueryCommand = "biconnected_component(g, " + n + ")";
 
-			} 
+			} else if ( automaticQueryType.equals(AUTOMATIC_QUERY_NEIGHBORHOOD) ) {
+			    int n = Integer.parseInt((String) SubsetParameters.get(AUTOMATIC_QUERY_N_VALUE));
+			    autoQueryCommand = "add_neighborhood(g, " + n + ")";
+
+			}
+            */
 		    }
 
 		    if ( autoQueryCommand == null ) {
@@ -419,7 +440,9 @@ public class DvnRGraphServiceImpl{
 		    String cEval = c.eval(autoQueryCommand).asString();
 		    dbgLog.info("auto query eval: "+cEval);
 
-		}
+		} else if ( GraphSubsetType.equals(UNDO) ) {
+            c.voidEval("undo()");
+        }
 
 	    }
 
@@ -436,7 +459,7 @@ public class DvnRGraphServiceImpl{
             
             // save workspace:
 
-            String saveWS = "save(g, file='"+ RDataFileName +"')";
+            String saveWS = "save.image(file='"+ RDataFileName +"')";
             dbgLog.fine("save the workspace="+saveWS);
             c.voidEval(saveWS);
 
@@ -504,8 +527,19 @@ public class DvnRGraphServiceImpl{
         return result;
         
 }
-    
 
+    private String buildParameterComponent(List<NetworkMeasureParameter> parameters) {
+        String returnString = "";
+        if (parameters != null) {
+            for (NetworkMeasureParameter param : parameters) {
+                if ( !StringUtil.isEmpty(param.getValue()) ) {
+                    returnString += ", " + param.getName() + "=" + param.getValue();
+                }
+            }
+        }
+        return returnString;
+    }
+    
     /** *************************************************************
      * Execute an R-based "ingest" of a GraphML file
      *

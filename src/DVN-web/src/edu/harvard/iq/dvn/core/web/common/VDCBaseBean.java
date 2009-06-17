@@ -29,6 +29,7 @@ package edu.harvard.iq.dvn.core.web.common;
 
 import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
@@ -36,6 +37,7 @@ import javax.ejb.EJB;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  *
@@ -209,5 +211,17 @@ public class VDCBaseBean  implements java.io.Serializable  {
 
         return FacesContext.getCurrentInstance().getApplication().getVariableResolver().resolveVariable(FacesContext.getCurrentInstance(), name);
 
+    }
+
+
+    public void redirect(String url) {
+        FacesContext fc = javax.faces.context.FacesContext.getCurrentInstance();
+        HttpServletResponse response = (javax.servlet.http.HttpServletResponse) fc.getExternalContext().getResponse();
+        try {
+            response.sendRedirect("/dvn" + getVDCRequestBean().getCurrentVDCURL() + url);
+            fc.responseComplete();
+        } catch (IOException ex) {
+            throw new RuntimeException("IOException thrown while trying to redirect to " + url);
+        }
     }
 }

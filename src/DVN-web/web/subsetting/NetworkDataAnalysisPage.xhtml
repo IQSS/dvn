@@ -65,8 +65,7 @@
                 <ice:panelGrid id="groupPanel1" styleClass="dvnNetDataAnlsSubTblWrap" columns="1" cellpadding="0" cellspacing="0" width="100%">
                     <ice:panelGroup styleClass="vdcHelpText dvn_spacing">
                         <ice:graphicImage value="/resources/images/icon_info.gif" alt="Information" title="Information"/>
-                        <ice:outputText id="outputText1"
-                                        value="Write a Manual Query to subset this network data by filtering on vertex or edge attributes." escape="false"/>
+                        <ice:outputText value="Write a Manual Query to subset this network data by filtering on vertex or edge attributes." escape="false"/>
                         <ice:inputHidden id="manualQueryError"  binding="#{NetworkDataAnalysisPage.manualQueryError}"/>
                         <br/><ice:message layout="table" for="manualQueryError" styleClass="errorMessage"/>
                     </ice:panelGroup>
@@ -103,8 +102,7 @@
                             <ice:panelGrid id="groupPanel5" styleClass="dvnNetDataAnlsSubTblWrap" columns="1" cellpadding="0" cellspacing="0" border="0">
                                 <ice:panelGroup styleClass="vdcHelpText dvn_spacing">
                                     <ice:graphicImage value="/resources/images/icon_info.gif" alt="Information" title="Information"/>
-                                    <ice:outputText id="outputText1"
-                                                    value="Use these attribute and operator selectors to build a query string in the Query Workspace." escape="false"/>
+                                    <ice:outputText value="Use these attribute and operator selectors to build a query string in the Query Workspace." escape="false"/>
                                 </ice:panelGroup>
                                 <ice:selectOneRadio disabled="#{!NetworkDataAnalysisPage.manualQueryAction}" id="queryLogicalOperator" layout="spread" value="&amp;&amp;">
                                     <f:selectItem  itemValue="&amp;&amp;" itemLabel="And"/>
@@ -156,8 +154,7 @@
                     <hr class="dvnNetDataAnlsHrzLn" noshade="noshade" size="1"/>
                     <ice:panelGroup styleClass="vdcHelpText dvn_spacing">
                         <ice:graphicImage value="/resources/images/icon_info.gif" alt="Information" title="Information"/>
-                        <ice:outputText id="outputText1"
-                                        value="Subset with an Automatic Query to choose parts of the network based on structural properties." escape="false"/>
+                        <ice:outputText value="Subset with an Automatic Query to choose parts of the network based on structural properties." escape="false"/>
                         <ice:inputHidden id="automaticQueryError"  binding="#{NetworkDataAnalysisPage.automaticQueryError}"/>
                         <br/><ice:message layout="table" for="automaticQueryError" styleClass="errorMessage"/>
                     </ice:panelGroup>
@@ -186,8 +183,7 @@
                     <hr class="dvnNetDataAnlsHrzLn" noshade="noshade" size="1"/>
                     <ice:panelGroup styleClass="vdcHelpText dvn_spacing">
                         <ice:graphicImage value="/resources/images/icon_info.gif" alt="Information" title="Information"/>
-                        <ice:outputText id="outputText1"
-                                        value="Run a Network Measure to generate new network-based attributes for the vertices." escape="false"/>
+                        <ice:outputText value="Run a Network Measure to generate new network-based attributes for the vertices." escape="false"/>
                         <ice:inputHidden id="networkMeasureError"  binding="#{NetworkDataAnalysisPage.networkMeasureError}"/>
                         <br/><ice:message layout="table" for="networkMeasureError" styleClass="errorMessage"/>
                     </ice:panelGroup>
@@ -226,7 +222,8 @@
                     </ice:panelGrid>
                 </ice:panelGrid>
                 <div class="dvnNetDataAnlsSubTitle">Subset History</div>
-                <ice:dataTable id="dvnNtwkDataSubsetHistory" styleClass="dvnNetDataAnlsSubTable" cellpadding="0" cellspacing="0" width="100%"
+                <ice:dataTable id="dvnNtwkDataSubsetHistory" binding="#{NetworkDataAnalysisPage.eventTable}"
+                               styleClass="dvnNetDataAnlsSubTable" cellpadding="0" cellspacing="0" width="100%"
                                value="#{NetworkDataAnalysisPage.events}" var="event"
                                headerClass="list-header" rowClasses="list-row-odd,list-row-even"
                                columnClasses="dvnNtwkDataSubsetHistCol1,dvnNtwkDataSubsetHistCol2,dvnNtwkDataSubsetHistCol3,dvnNtwkDataSubsetHistCol4,dvnNtwkDataSubsetHistCol5">
@@ -260,11 +257,15 @@
                         </f:facet>
                         <ice:outputText value="#{event.edges}"/>
                     </ice:column>
+                    <ice:column>
+                        <ice:commandButton  type="submit" value="Restart" action="#{NetworkDataAnalysisPage.restart_action}" rendered="#{NetworkDataAnalysisPage.eventTable.rowIndex == 0}"/>
+                        <ice:commandButton  type="submit" value="Undo"  action="#{NetworkDataAnalysisPage.undo_action}" rendered="#{NetworkDataAnalysisPage.canUndo and NetworkDataAnalysisPage.eventTable.rowIndex == NetworkDataAnalysisPage.eventTable.rowCount - 1}" />
+                    </ice:column>
                 </ice:dataTable>
                 <ice:panelGrid id="groupPanel12" styleClass="dvnNetDataAnlsSubTblBtmWrp" columns="1" cellpadding="0" cellspacing="0" width="100%">
                     <ice:column>
                         <div class="dvnNetDataAnlsSubTblBtm">
-                            <label for="downloadSubsetResults" class="dvnNetDataAnlsSubTblBtmLbl">Download the last set of subsetting results.</label>
+                            <label for="downloadSubsetResults" class="dvnNetDataAnlsSubTblBtmLbl">Download the last subset.</label>
                             <ice:outputResource label="Download Results" type="button"
                             fileName="#{NetworkDataAnalysisPage.subsetFileName}" mimeType="text/xml"
                             resource="#{NetworkDataAnalysisPage.subsetResource}" shared="false"/>

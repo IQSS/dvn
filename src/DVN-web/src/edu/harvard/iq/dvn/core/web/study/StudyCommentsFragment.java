@@ -17,12 +17,12 @@ import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.util.PropertyUtil;
 import edu.harvard.iq.dvn.core.web.common.LoginBean;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
+import edu.harvard.iq.dvn.core.web.login.LoginWorkflowBean;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import javax.ejb.EJB;
-import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
@@ -171,6 +171,16 @@ public class StudyCommentsFragment extends VDCBaseBean implements Serializable {
          commentsTextarea.setValue("");
          actionComplete = false;
          return "cancelStudyComment";
+     }
+
+     public String addAccount() {
+         HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+         request.setAttribute("selectedTab", "comments");
+         request.setAttribute("studyId", studyId);
+         LoginWorkflowBean loginworkflowbean = (LoginWorkflowBean) getBean("LoginWorkflowBean");
+         String addAccount = loginworkflowbean.beginCommentsWorkflow(studyId);
+         actionComplete = false;
+         return addAccount;
      }
 
      // getters and setters
@@ -510,6 +520,27 @@ public class StudyCommentsFragment extends VDCBaseBean implements Serializable {
     public void setActionComplete(boolean actionComplete) {
         this.actionComplete = actionComplete;
     }
+
+    protected HtmlCommandLink addAccountLink;
+
+    /**
+     * Get the value of addAccountLink
+     *
+     * @return the value of addAccountLink
+     */
+    public HtmlCommandLink getAddAccountLink() {
+        return addAccountLink;
+    }
+
+    /**
+     * Set the value of addAccountLink
+     *
+     * @param addAccountLink new value of addAccountLink
+     */
+    public void setAddAccountLink(HtmlCommandLink addAccountLink) {
+        this.addAccountLink = addAccountLink;
+    }
+
 
 
 

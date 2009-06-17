@@ -90,6 +90,7 @@ div.dvnWarningMessage span{font-weight:bold;color:#000;background:transparent}
 .fatalMessage{color:red;font-style:italic;font-weight:700}
 .infoMessage{color:black}
 .errorMessageFatal,.errorMessageError,.errorMessageWarn,.errorMessageInfo{color:red;font-weight:bold;padding:0 .5em}
+.errorMessageBlockFatal,.errorMessageBlockError,.errorMessageBlockWarn,.errorMessageBlockInfo{color:red;font-weight:bold;padding:0 .5em;display:block}
 /* HELP TEXT, TIPS, POP UPS */
 .vdcHelpText{color:#666;margin-bottom:1em}
 .vdcHelpText img{vertical-align:bottom;border:0}

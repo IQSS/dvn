@@ -173,9 +173,10 @@ public class LoginFilter implements Filter {
                     ((HttpServletRequest) request).getSession(false);
         }
 
-        if (httpRequest.getSession().getAttribute("LOGIN_REDIRECT") != null) {
-            httpResponse.sendRedirect((String) httpRequest.getSession().getAttribute("LOGIN_REDIRECT"));
+        String loginURI = (String) httpRequest.getSession().getAttribute("LOGIN_REDIRECT");
+        if (loginURI != null) {
             httpRequest.getSession().removeAttribute("LOGIN_REDIRECT");
+            httpResponse.sendRedirect(loginURI);
         } else {
             boolean authorized = false;
             if (isRolePage(pageDef, httpRequest)) {

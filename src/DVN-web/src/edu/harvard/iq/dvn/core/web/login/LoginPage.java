@@ -114,7 +114,10 @@ public class LoginPage extends VDCBaseBean implements java.io.Serializable  {
         else{
             String forward = null;
               LoginWorkflowBean loginWorkflowBean = (LoginWorkflowBean)this.getBean("LoginWorkflowBean");
-              forward = loginWorkflowBean.processLogin(user,studyId);
+              if (tab != null)
+                forward = loginWorkflowBean.processLogin(user, studyId, tab);
+              else
+                forward = loginWorkflowBean.processLogin(user, studyId);
         
             return forward;
         }
@@ -298,6 +301,27 @@ public class LoginPage extends VDCBaseBean implements java.io.Serializable  {
     public void setStudyId(Long studyId) {
         this.studyId = studyId;
     }
+
+    protected String tab;
+
+    /**
+     * Get the value of tab
+     *
+     * @return the value of tab
+     */
+    public String getTab() {
+        return tab;
+    }
+
+    /**
+     * Set the value of tab
+     *
+     * @param tab new value of tab
+     */
+    public void setTab(String tab) {
+        this.tab = tab;
+    }
+
     /**
      * Holds value of property hiddenStudyId.
      */

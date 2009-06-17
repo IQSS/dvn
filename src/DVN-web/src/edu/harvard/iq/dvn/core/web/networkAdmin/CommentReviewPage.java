@@ -17,7 +17,6 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.application.NavigationHandler;
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 
@@ -36,6 +35,7 @@ public class CommentReviewPage extends VDCBaseBean implements java.io.Serializab
     @Override
     public void init() {
         super.init();
+        getVDCRequestBean().setSelectedTab("comments");
         getCommentsForReview();
      }
 
@@ -78,29 +78,6 @@ public class CommentReviewPage extends VDCBaseBean implements java.io.Serializab
          flaggedCommentId  = new Long("0");
          commentsForReview = null;
          actionComplete    = true;
-     }
-
-     public void goToCommentsTab(ActionEvent event){
-         if (goToCommentsLink.getAttributes().get("commentId") != null) {
-                 flaggedCommentId = new Long(goToCommentsLink.getAttributes().get("commentId").toString());
-         }
-         Iterator iterator = commentsForReview.iterator();
-         String theUrl = new String();
-         while (iterator.hasNext()) {
-            StudyCommentUI studyCommentUI     = (StudyCommentUI)iterator.next();
-            if (studyCommentUI.getStudyComment().getId().equals(flaggedCommentId)) {
-                theUrl = studyCommentUI.getCommentsTabLink();
-                getVDCRequestBean().setSelectedTab("comments");
-                getVDCRequestBean().setStudyId(studyCommentUI.getStudyComment().getStudy().getId());
-                getVDCRequestBean().setCurrentVDC(studyCommentUI.getStudyComment().getStudy().getOwner());
-
-                break;
-            }
-          }
-         FacesContext fc = FacesContext.getCurrentInstance();
-         ExternalContext context = fc.getExternalContext();
-         NavigationHandler navigationHandler = fc.getApplication().getNavigationHandler();
-         navigationHandler.handleNavigation(fc, null, "goToComments");
      }
 
     protected HtmlCommandLink goToCommentsLink;

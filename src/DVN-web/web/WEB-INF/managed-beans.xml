@@ -139,6 +139,11 @@
             <property-class>boolean</property-class>
             <value>#{param.clearWorkflow}</value>
         </managed-property>
+        <managed-property>
+            <property-name>tab</property-name>
+            <property-class>java.lang.String</property-class>
+            <value>#{param.tab}</value>
+        </managed-property>
     </managed-bean>
     <managed-bean>
         <managed-bean-name>LogoutPage</managed-bean-name>

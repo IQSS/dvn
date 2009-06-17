@@ -5,6 +5,7 @@
 
 package edu.harvard.iq.dvn.core.web.subsetting;
 
+import com.icesoft.faces.component.ext.HtmlDataTable;
 import com.icesoft.faces.context.Resource;
 import edu.harvard.iq.dvn.core.analysis.NetworkDataServiceLocal;
 import edu.harvard.iq.dvn.core.analysis.NetworkDataSubsetResult;
@@ -16,6 +17,7 @@ import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.util.FileUtil;
 import edu.harvard.iq.dvn.core.util.StringUtil;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
+import edu.harvard.iq.dvn.core.web.common.VDCRequestBean;
 import edu.harvard.iq.dvn.ingest.dsb.impl.DvnRGraphServiceImpl;
 import java.io.File;
 import java.io.FileInputStream;
@@ -78,14 +80,8 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
 
         //init workspace and page fields
         rWorkspace = networkDataService.initAnalysis(file.getFileSystemLocation() + ".RData");
-
+        events.add(getInitialEvent());
         setNetworkMeasureParamters(networkMeasureType);
-
-        NetworkDataAnalysisEvent initialEvent = new NetworkDataAnalysisEvent();
-        initialEvent.setLabel("Initial State");
-        initialEvent.setVertices(file.getVertexDataTable().getCaseQuantity());
-        initialEvent.setEdges(file.getEdgeDataTable().getCaseQuantity());
-        events.add(initialEvent);
     }
 
     private void redirectToIdNotFoundPage() {
@@ -97,6 +93,14 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
         } catch (IOException ex) {
             throw new RuntimeException("IOException thrown while trying to redirect toID Does Not Exist Page");
         }
+    }
+
+    private NetworkDataAnalysisEvent getInitialEvent() {
+        NetworkDataAnalysisEvent initialEvent = new NetworkDataAnalysisEvent();
+        initialEvent.setLabel("Initial State");
+        initialEvent.setVertices(file.getVertexDataTable().getCaseQuantity());
+        initialEvent.setEdges(file.getEdgeDataTable().getCaseQuantity());
+        return initialEvent;
     }
 
     private String actionType = "manualQuery";
@@ -115,10 +119,13 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
     private List<SelectItem> automaticQuerySelectItems;
     private List<SelectItem> networkMeasureSelectItems;
 
+    private boolean canUndo = false;
+
     // used for displaying errros
     private UIComponent manualQueryError;
     private UIComponent automaticQueryError;
     private UIComponent networkMeasureError;
+    private HtmlDataTable eventTable;
 
     public String getActionType() {
         return actionType;
@@ -191,6 +198,16 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
         this.networkMeasureType = networkMeasureType;
     }
 
+    public boolean isCanUndo() {
+        return canUndo;
+    }
+
+    public void setCanUndo(boolean canUndo) {
+        this.canUndo = canUndo;
+    }
+
+
+
     public UIComponent getAutomaticQueryError() {
         return automaticQueryError;
     }
@@ -213,6 +230,14 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
 
     public void setNetworkMeasureError(UIComponent networkMeasureError) {
         this.networkMeasureError = networkMeasureError;
+    }
+
+    public HtmlDataTable getEventTable() {
+        return eventTable;
+    }
+
+    public void setEventTable(HtmlDataTable eventTable) {
+        this.eventTable = eventTable;
     }
 
 
@@ -260,6 +285,7 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
             automaticQuerySelectItems = new ArrayList();
             automaticQuerySelectItems.add(new SelectItem(DvnRGraphServiceImpl.AUTOMATIC_QUERY_NTHLARGEST, "Largest Graph"));
             automaticQuerySelectItems.add(new SelectItem(DvnRGraphServiceImpl.AUTOMATIC_QUERY_BICONNECTED, "Biconnected Graph"));
+            automaticQuerySelectItems.add(new SelectItem(DvnRGraphServiceImpl.AUTOMATIC_QUERY_NEIGHBORHOOD, "Neighborhood"));
 
         }
 
@@ -272,7 +298,9 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
             networkMeasureSelectItems = new ArrayList();
             networkMeasureSelectItems.add(new SelectItem(DvnRGraphServiceImpl.NETWORK_MEASURE_RANK, "Page Rank"));
             networkMeasureSelectItems.add(new SelectItem(DvnRGraphServiceImpl.NETWORK_MEASURE_DEGREE, "Degree"));
+            networkMeasureSelectItems.add(new SelectItem(DvnRGraphServiceImpl.NETWORK_MEASURE_UNIQUE_DEGREE, "Unique Degree"));
             networkMeasureSelectItems.add(new SelectItem(DvnRGraphServiceImpl.NETWORK_MEASURE_IN_LARGEST, "In Largest Component"));
+            networkMeasureSelectItems.add(new SelectItem(DvnRGraphServiceImpl.NETWORK_MEASURE_BONACICH_CENTRALITY, "Bonacich Centrality"));
         }
 
         return networkMeasureSelectItems;
@@ -294,6 +322,16 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
             d.setName("d");
             d.setDefaultValue(".85");
             networkMeasureParamterList.add(d);
+        } else if ( DvnRGraphServiceImpl.NETWORK_MEASURE_BONACICH_CENTRALITY.equals( networkMeasure ) ) {
+            NetworkMeasureParameter p1 = new NetworkMeasureParameter();
+            p1.setName("alpha");
+            p1.setDefaultValue("1");
+            networkMeasureParamterList.add(p1);
+
+            NetworkMeasureParameter p2 = new NetworkMeasureParameter();
+            p2.setName("exo");
+            p2.setDefaultValue("0");
+            networkMeasureParamterList.add(p2);
         }
     }
 
@@ -309,6 +347,7 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
             event.setVertices( result.getVertices() );
             event.setEdges( result.getEdges() );
             events.add(event);
+            canUndo=true;
 
         } catch (Exception e) {
             FacesMessage message = new FacesMessage(e.getMessage());
@@ -329,6 +368,7 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
             event.setVertices( result.getVertices() );
             event.setEdges( result.getEdges() );
             events.add(event);
+            canUndo = true;
             
         } catch (Exception e) {
                 FacesMessage message = new FacesMessage(e.getMessage());
@@ -349,10 +389,12 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
             event.setQuery(networkMeasureType + "("+ getNetworkMeasureParametersAsString(networkMeasureParamterList) + ")");
             event.setVertices( getLastEvent().getVertices() );
             event.setEdges( getLastEvent().getEdges() );
+            event.setAddedAttribute(result); // in case we need to undo later
             events.add(event);
 
             // add measure to attributeList
             vertexAttributeSelectItems.add(new SelectItem(result));
+            canUndo = true;
 
         } catch (Exception e) {
                 FacesMessage message = new FacesMessage(e.getMessage());
@@ -362,8 +404,37 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
         return null;
     }
 
+    public String restart_action() {
+        //reinit workspace and clear events
+        rWorkspace = networkDataService.initAnalysis(file.getFileSystemLocation() + ".RData");
+        events.clear();
+        events.add(getInitialEvent());
+        canUndo = false;
+
+        return null;
+    }
+
+    public String undo_action() {
+        networkDataService.undoLastEvent(rWorkspace);
+        NetworkDataAnalysisEvent lastEvent = getLastEvent();
+        if (lastEvent.getAddedAttribute() != null) {
+            for (SelectItem selectItem : vertexAttributeSelectItems) {
+                if (lastEvent.getAddedAttribute().equals( selectItem.getValue() ) ) {
+                    vertexAttributeSelectItems.remove(selectItem);
+                    break;
+                }
+
+            }
+        }
+        
+        events.remove( getLastEvent() );
+        canUndo = false;
+
+        return null;
+    }
+
     public Resource getSubsetResource() {
-        return new RFileResource();
+        return new RFileResource( getVDCRequestBean().getCurrentVDCId() );
     }
 
     public String getSubsetFileName() {
@@ -387,6 +458,7 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
     }
 
 
+
     public class NetworkDataAnalysisEvent {
 
         private String label;
@@ -394,6 +466,7 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
         private String query;
         private long edges;
         private long vertices;
+        private String addedAttribute;
 
         public String getAttributeSet() {
             return attributeSet;
@@ -434,13 +507,25 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
         public void setVertices(long vertices) {
             this.vertices = vertices;
         }
+
+        public String getAddedAttribute() {
+            return addedAttribute;
+        }
+
+        public void setAddedAttribute(String addedAttribute) {
+            this.addedAttribute = addedAttribute;
+        }
+
+        
     }
 
     // resource class which doesn't create the file (called via R) until the open method is called (ie the download button is pressed)
     class RFileResource implements Resource, Serializable{
         File file;
+        Long vdcId;
 
-        public RFileResource() {
+        public RFileResource(Long vdcId) {
+            this.vdcId = vdcId;
         }
 
         public String calculateDigest() {
@@ -453,6 +538,9 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
 
         public InputStream open() throws IOException {
             file = networkDataService.getSubsetExport(rWorkspace);
+
+            studyService.incrementNumberOfDownloads(fileId, vdcId);
+
             return new FileInputStream(file);
         }
 

@@ -120,6 +120,20 @@ public class NetworkDataServiceBean implements NetworkDataServiceLocal, java.io.
         return resultInfo.get(DvnRGraphServiceImpl.NETWORK_MEASURE_NEW_COLUMN);
     }
 
+    public void undoLastEvent(String rWorkspace) {
+        Map<String, Object> subsetParameters = new HashMap<String, Object>();
+        Map<String, String> resultInfo = new HashMap<String, String>();
+
+        subsetParameters.put(DvnRGraphServiceImpl.SAVED_RWORK_SPACE, rWorkspace);
+        subsetParameters.put(DvnRGraphServiceImpl.RSUBSETFUNCTION, DvnRGraphServiceImpl.UNDO);
+
+        DvnRJobRequest rjr = new DvnRJobRequest(rWorkspace, subsetParameters);
+        DvnRGraphServiceImpl dgs = new DvnRGraphServiceImpl();
+        resultInfo = dgs.execute(rjr);
+
+        checkForError(resultInfo);
+    }
+
     public File getSubsetExport(String rWorkspace) {
         Map<String, String> resultInfo = new HashMap<String, String>();
 

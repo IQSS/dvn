@@ -5,10 +5,10 @@
 
 package edu.harvard.iq.dvn.core.web.study;
 
-import com.icesoft.faces.component.ext.HtmlOutputLink;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.study.StudyComment;
 import edu.harvard.iq.dvn.core.util.PropertyUtil;
+import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import java.util.Iterator;
 import java.util.List;
 import javax.faces.context.ExternalContext;
@@ -33,7 +33,7 @@ public class StudyCommentUI {
 
     public StudyCommentUI(StudyComment studyComment, VDCUser currentUser) {
         this.studyComment = studyComment;
-        this.user         = currentUser;
+        this.user         = VDCBaseBean.getVDCSessionBean().getUser();
     }
 
     public String getFlaggedByUserNames() {
@@ -129,7 +129,7 @@ public class StudyCommentUI {
      * @return the value of InFlaggedByUsers
      */
     public boolean isInFlaggedByUsers() {
-        if (getFlaggedByUserNames().indexOf(user.getUserName()) != -1) {
+        if (getFlaggedByUserNames().indexOf(VDCBaseBean.getVDCSessionBean().getUser().getUserName()) != -1) {
             return true;
         } else {
             return false;

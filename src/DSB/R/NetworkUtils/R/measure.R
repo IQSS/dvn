@@ -15,6 +15,9 @@ next_measure_name <- function(g, measure){
 
 add_pagerank <- function(tmp_g, damping=0.85){
     g_last <<- tmp_g
+    e <- simpleError("Out of Bounds Error.")
+    if(damping < 0 || damping > 1)
+        stop(e, "Damping parameter is a probability and must be between 0 and 1")
     meas_name <- next_measure_name(tmp_g, "pagerank") 
     tmp_g <- set.vertex.attribute(tmp_g, meas_name, V(tmp_g), page.rank(tmp_g, damping=damping)$vector)
     g <<- tmp_g
@@ -54,6 +57,14 @@ add_in_largest_component <- function(tmp_g){
 add_bonacich_centrality <- function(tmp_g, alpha=0, exo=1){
     g_last <<- tmp_g
     meas_name <- next_measure_name(tmp_g, "bonacich_centrality")
+
+    alpha <- as.numeric(alpha)
+    exo <- as.numeric(exo)
+    e <- simpleError("Type Error.")
+    if(is.na(alpha))
+        stop(e, "alpha must be a number.")
+    if(is.na(exo))
+        stop(e, "exo must be a number or numeric vector.")
 
     tmp_g <- set.vertex.attribute(tmp_g, meas_name, V(tmp_g),
                 alpha.centrality.sparse(tmp_g, alpha=alpha, exo=exo))

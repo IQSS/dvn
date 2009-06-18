@@ -228,9 +228,11 @@
                                                cols="100"
                                                rows="15"
                                                styleClass="formHtmlEnabled"
-                                               style="display:block; float:left;">
-                              <f:validator validatorId="XhtmlValidator"/>
+                                               style="display:block; float:left;"
+                                               value="#{StudyCommentsFragment.studyCommentsText}">
+                                   <f:validator validatorId="PlainTextValidator"/>
                             </ice:inputTextarea>
+                          <ice:message for="studyComments" styleClass="errorMessage"/>
                       </div>
                       <div jsfc="ice:panelGroup"
                            rendered="#{VDCSession.user != null}"

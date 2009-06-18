@@ -43,13 +43,10 @@ public class StudyCommentsFragment extends VDCBaseBean implements Serializable {
     protected List<StudyCommentUI> studyComments;
     protected Long studyId = null;  // corresponds to the primary key in the table, id
     protected Long studyIdForComments = null;  // corresponds to the foreign key int he table, studyId ex. 10001
-    private VDCUser user = null;
+    
 
      public void init() {
-        super.init();
-        if (getVDCSessionBean().getUser() != null) {
-            user = getVDCSessionBean().getUser();
-        }
+        super.init();        
         if (studyId == null && getVDCRequestBean().getStudyId() != null) {
             studyId = getVDCRequestBean().getStudyId();
         }
@@ -95,9 +92,9 @@ public class StudyCommentsFragment extends VDCBaseBean implements Serializable {
       * @return string indicating sucess or failure - used in navigation.
       */
      public String reportAbuse(ActionEvent event) {
-         studyCommentService.flagStudyCommentAbuse(flaggedCommentId, user.getId());
+         studyCommentService.flagStudyCommentAbuse(flaggedCommentId, getVDCSessionBean().getUser().getId());
          study = studyService.getStudy(studyId);
-         mailService.sendMail(user.getEmail(), getVDCRequestBean().getVdcNetwork().getContactEmail(), "Study Comment Abuse Reported", "A study comment " +
+         mailService.sendMail(getVDCSessionBean().getUser().getEmail(), getVDCRequestBean().getVdcNetwork().getContactEmail(), "Study Comment Abuse Reported", "A study comment " +
                                 "has been reported for abuse.  Please review the details below. " +
                                 "\n\r" + "\n\r" +
                                 "Study Name: " + study.getTitle() +
@@ -159,7 +156,7 @@ public class StudyCommentsFragment extends VDCBaseBean implements Serializable {
      }
 
      public void save(ActionEvent event) {
-         studyCommentService.addComment(commentsTextarea.getValue().toString(), user.getId(), studyId);
+         studyCommentService.addComment(commentsTextarea.getValue().toString(), getVDCSessionBean().getUser().getId(), studyId);
          String truncatedComment = (commentsTextarea.getValue().toString().length() <= 25) ? commentsTextarea.getValue().toString() : commentsTextarea.getValue().toString().substring(0, 25);
          truncatedComment += "...";
          actionComplete = true;
@@ -255,7 +252,7 @@ public class StudyCommentsFragment extends VDCBaseBean implements Serializable {
      /**
      * Get the studyComments wrapper
      *
-     * @return an array list of studyComments
+     * @return an array list of studyCommentUIs
      */
     public List<StudyCommentUI> getStudyComments() {
         if (studyComments == null) {
@@ -264,7 +261,7 @@ public class StudyCommentsFragment extends VDCBaseBean implements Serializable {
             Iterator iterator = tempStudyComments.iterator();
             while (iterator.hasNext()) {
                 StudyComment studyComment     = (StudyComment)iterator.next();
-                StudyCommentUI studyCommentUI = new StudyCommentUI(studyComment, user);
+                StudyCommentUI studyCommentUI = new StudyCommentUI(studyComment, getVDCSessionBean().getUser());
                 studyComments.add(studyCommentUI);
             }
         }
@@ -379,14 +376,6 @@ public class StudyCommentsFragment extends VDCBaseBean implements Serializable {
      */
     public void setReportAbuseLink(HtmlCommandLink reportAbuseLink) {
         this.reportAbuseLink = reportAbuseLink;
-    }
-
-    public VDCUser getUser() {
-        return user;
-    }
-
-    public void setUser(VDCUser user) {
-        this.user = user;
     }
 
     protected HtmlInputTextarea commentsTextarea;

@@ -114,10 +114,7 @@ public class LoginPage extends VDCBaseBean implements java.io.Serializable  {
         else{
             String forward = null;
               LoginWorkflowBean loginWorkflowBean = (LoginWorkflowBean)this.getBean("LoginWorkflowBean");
-              if (tab != null)
-                forward = loginWorkflowBean.processLogin(user, studyId, tab);
-              else
-                forward = loginWorkflowBean.processLogin(user, studyId);
+              forward = loginWorkflowBean.processLogin(user, studyId);
         
             return forward;
         }

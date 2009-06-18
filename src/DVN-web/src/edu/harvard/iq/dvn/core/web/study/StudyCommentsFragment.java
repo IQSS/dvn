@@ -8,7 +8,6 @@ package edu.harvard.iq.dvn.core.web.study;
 import com.icesoft.faces.component.ext.HtmlCommandLink;
 import com.icesoft.faces.component.ext.HtmlInputTextarea;
 import com.icesoft.faces.component.panelpopup.PanelPopup;
-import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.mail.MailServiceLocal;
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyComment;
@@ -18,11 +17,15 @@ import edu.harvard.iq.dvn.core.util.PropertyUtil;
 import edu.harvard.iq.dvn.core.web.common.LoginBean;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import edu.harvard.iq.dvn.core.web.login.LoginWorkflowBean;
+import edu.harvard.iq.dvn.core.web.util.PlainTextValidator;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
+import javax.faces.component.UIInput;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
@@ -156,12 +159,22 @@ public class StudyCommentsFragment extends VDCBaseBean implements Serializable {
      }
 
      public void save(ActionEvent event) {
-         studyCommentService.addComment(commentsTextarea.getValue().toString(), getVDCSessionBean().getUser().getId(), studyId);
-         String truncatedComment = (commentsTextarea.getValue().toString().length() <= 25) ? commentsTextarea.getValue().toString() : commentsTextarea.getValue().toString().substring(0, 25);
-         truncatedComment += "...";
-         actionComplete = true;
-         studyComments = null;
-         commentsTextarea.setValue("");
+         String value = commentsTextarea.getValue().toString();
+         if (value == null || (value.toString()).trim().isEmpty()) {
+                FacesMessage message = new FacesMessage("Blank comments are not allowed. Please enter a comment to continue.");
+                message.setSeverity(FacesMessage.SEVERITY_ERROR);
+                ((UIInput)commentsTextarea).setValid(false);
+                FacesContext context = FacesContext.getCurrentInstance();
+                context.addMessage(commentsTextarea.getClientId(context), message);
+                context.renderResponse();
+         } else {
+             studyCommentService.addComment(commentsTextarea.getValue().toString(), getVDCSessionBean().getUser().getId(), studyId);
+             String truncatedComment = (commentsTextarea.getValue().toString().length() <= 25) ? commentsTextarea.getValue().toString() : commentsTextarea.getValue().toString().substring(0, 25);
+             truncatedComment += "...";
+             actionComplete = true;
+             studyComments = null;
+             commentsTextarea.setValue("");
+         }
      }
 
      public String cancel() {
@@ -530,7 +543,25 @@ public class StudyCommentsFragment extends VDCBaseBean implements Serializable {
         this.addAccountLink = addAccountLink;
     }
 
+    protected String studyCommentsText = new String("");
 
+    /**
+     * Get the value of studyCommentsText
+     *
+     * @return the value of studyCommentsText
+     */
+    public String getStudyCommentsText() {
+        return studyCommentsText;
+    }
+
+    /**
+     * Set the value of studyCommentsText
+     *
+     * @param studyCommentsText new value of studyCommentsText
+     */
+    public void setStudyCommentsText(String studyCommentsText) {
+        this.studyCommentsText = studyCommentsText;
+    }
 
 
 
@@ -548,7 +579,7 @@ public class StudyCommentsFragment extends VDCBaseBean implements Serializable {
         FacesContext context            = FacesContext.getCurrentInstance();
         ExternalContext externalContext = context.getExternalContext();
         HttpServletRequest request      = (HttpServletRequest) externalContext.getRequest();
-        cancelLink = request.getProtocol().substring(0, request.getProtocol().indexOf("/")).toLowerCase() + "://" + getHostUrl() + request.getContextPath() + getVDCRequestBean().getCurrentVDCURL() + "/faces/networkAdmin/CommentReviewPage.xhtml";
+        cancelLink = request.getProtocol().substring(0, request.getProtocol().indexOf("/")).toLowerCase() + "://" + getHostUrl() + request.getContextPath() + "/faces/networkAdmin/CommentReviewPage.xhtml";
         return cancelLink;
     }
 

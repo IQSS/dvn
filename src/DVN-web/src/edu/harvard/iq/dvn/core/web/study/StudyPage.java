@@ -296,22 +296,17 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
             // we need to create the studyServiceBean
             //request = (HttpServletRequest) this.getExternalContext().getRequest();
             if (studyId != null) {
-
                 if ("files".equals(tab)) {
                     initStudyUIWithFiles();
-                  
                 } else {                
                         studyUI = new StudyUI(studyService.getStudyDetail(studyId),getVDCSessionBean().getUser());
                 }
-
-
                 // flag added to start with all file categories closed
                 if (getRequestParam("renderFiles") != null && getRequestParam("renderFiles").equals("false")) {
                     for (FileCategoryUI catUI : studyUI.getCategoryUIList()) {
                         catUI.setRendered(false);
                     }
                 }
-
                 sessionPut(studyUI.getClass().getName(), studyUI);
                 initPanelDisplay();
 
@@ -574,11 +569,10 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
      *  tab name.
      */
     private void initSelectedTabIndex() {
-              
-        if (tab==null && getVDCRequestBean().getSelectedTab() != null) {
+        if (tab == null && getVDCRequestBean().getSelectedTab() != null) {
             tab = getVDCRequestBean().getSelectedTab();
         }
-        if (tab!=null) {
+        if (tab != null) {
             if (tab.equals("catalog")) {
                 selectedIndex=0;
             } else if (tab.equals("files")) {
@@ -586,11 +580,10 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
             } else if (tab.equals("comments")) {
                 selectedIndex=2;
             }
-        }
+        } 
     }
     
     private void initStudyUIWithFiles() {
-          
           if (!studyUIContainsFileDetails) {
              studyUI = new StudyUI(
                             studyService.getStudyDetail(studyId),
@@ -602,25 +595,22 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
     }
 
     public void processTabChange(TabChangeEvent tabChangeEvent) throws AbortProcessingException {
-        
         // If the user clicks on the files tab,
         // make sure the StudyUI object contains file details.
         if (tabChangeEvent.getNewTabIndex() == 2) {
-            HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
-            request.setAttribute("tab", "comments");
-            getVDCRequestBean().setSelectedTab(tab);
+            getVDCRequestBean().setSelectedTab("comments");
+            setTab("comments");
         }
-        if ( tabChangeEvent.getNewTabIndex()==1) {
+        if ( tabChangeEvent.getNewTabIndex() == 1) {
             initStudyUIWithFiles();
+            getVDCRequestBean().setSelectedTab("files");
+            setTab("files");
         }
         // If user clicks on the catalog tab, reset the open/closed settings for each section
-        if (tabChangeEvent.getNewTabIndex()==0) {
+        if (tabChangeEvent.getNewTabIndex() == 0) {
             initPanelDisplay();
+            getVDCRequestBean().setSelectedTab("catalog");
+            setTab("catalog");
         }
-     
     }
-
-
-
-    
 }

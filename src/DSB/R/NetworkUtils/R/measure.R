@@ -58,7 +58,7 @@ add_bonacich_centrality <- function(tmp_g, alpha=0, exo=1){
     g_last <<- tmp_g
 
     mc <- match.call()
-    cat(paste(deparse(mc), "\n", sep=''), file="debug_file.txt", append=T)
+    stop(paste("This is the call:", deparse(mc)))
     meas_name <- next_measure_name(tmp_g, "bonacich_centrality")
 
     alpha <- as.numeric(alpha)
@@ -68,6 +68,8 @@ add_bonacich_centrality <- function(tmp_g, alpha=0, exo=1){
         stop(e, "alpha must be a number.")
     if(is.na(exo))
         stop(e, "exo must be a number or numeric vector.")
+
+    alpha <- alpha * 1/evcent(tmp_g)$value
 
     tmp_g <- set.vertex.attribute(tmp_g, meas_name, V(tmp_g),
                 alpha.centrality.sparse(tmp_g, alpha=alpha, exo=exo))
@@ -82,11 +84,9 @@ alpha.centrality.sparse <-
     function(graph, alpha=1, exo=1, loops=F, rescale=T, tol=.Machine$double.eps){
 
     mc <- match.call()
-    ev <- evcent(g)$value
+
     if(alpha >= 1)
         stop("alpha must be greater than or equal to 0 and strictly less than 1.")
-    if(alpha > 1/ev)
-        warning(sprintf("alpha values larger than the inverse of the dominant eigenvalue cause unpredictable behavior. Consider trying a value between 0 and %f.", 1/ev)) 
     else if(alpha < 0)
         stop("alpha must be between 0 and 1.")
 

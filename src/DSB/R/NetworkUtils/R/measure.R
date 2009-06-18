@@ -58,7 +58,8 @@ add_bonacich_centrality <- function(tmp_g, alpha=0, exo=1){
     g_last <<- tmp_g
 
     mc <- match.call()
-    stop(paste("This is the call:", deparse(mc)))
+    #stop(paste("This is the call:", deparse(mc)))
+    #stop(R.version.string)
     meas_name <- next_measure_name(tmp_g, "bonacich_centrality")
 
     alpha <- as.numeric(alpha)

@@ -56,6 +56,9 @@ add_in_largest_component <- function(tmp_g){
 
 add_bonacich_centrality <- function(tmp_g, alpha=0, exo=1){
     g_last <<- tmp_g
+
+    mc <- match.call()
+    cat(paste(deparse(mc), "\n", sep=''), file="debug_file.txt", append=T)
     meas_name <- next_measure_name(tmp_g, "bonacich_centrality")
 
     alpha <- as.numeric(alpha)
@@ -78,6 +81,7 @@ add_bonacich_centrality <- function(tmp_g, alpha=0, exo=1){
 alpha.centrality.sparse <-
     function(graph, alpha=1, exo=1, loops=F, rescale=T, tol=.Machine$double.eps){
 
+    mc <- match.call()
     ev <- evcent(g)$value
     if(alpha >= 1)
         stop("alpha must be greater than or equal to 0 and strictly less than 1.")
@@ -92,6 +96,7 @@ alpha.centrality.sparse <-
         graph <- simplify(graph, remove.multiple=F, remove.loops=T)
     }
 
+    #exo <- rep(exo, length=vcount(g))
     exo <- rep(exo, vcount(g))
     exo <- as.matrix(exo, nc=1)
 

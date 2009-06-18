@@ -48,7 +48,7 @@
                               <ice:outputText styleClass="vdcStudyCommentDetails"
                                               value="posted on #{item.studyComment.createTime}" />
                                    <div jsfc="ice:panelGroup"
-                                        rendered="#{StudyCommentsFragment.user != null}"
+                                        rendered="#{VDCSession.user != null}"
                                         styleClass="dvn_navblockLinks">
                                       <ul>
                                         <li>
@@ -61,14 +61,14 @@
                                                                rendered="#{ (StudyCommentsFragment.authorizedToDeleteComment == false and item.reportAbuseEnabled)}"
                                                                ><!--  || !StudyCommentsFragment.authorizedToDeleteComment  -->
                                                 <f:attribute name="commentId" value="#{item.studyComment.id}" />
-                                                <ice:outputText rendered="#{StudyCommentsFragment.user != item.studyComment.commentCreator}"
+                                                <ice:outputText rendered="#{VDCSession.user != item.studyComment.commentCreator}"
                                                                 value="Report Abuse"/>
                                               </ice:commandLink>
                                         </li>
                                         <li>
                                               <ice:commandLink binding="#{StudyCommentsFragment.deleteCommentLink}"
                                                                actionListener="#{StudyCommentsFragment.toggleDeletePopup}"
-                                                               rendered="#{StudyCommentsFragment.authorizedToDeleteComment or item.studyComment.commentCreator == StudyCommentsFragment.user}"
+                                                               rendered="#{StudyCommentsFragment.authorizedToDeleteComment or item.studyComment.commentCreator == VDCSession.user}"
                                                                >
                                                 <f:attribute name="commentId" value="#{item.studyComment.id}" />
                                                 <ice:outputText value="Delete"/>
@@ -97,7 +97,7 @@
                                   <ice:outputText value="#{item.studyComment.comment}"/>
                             </ice:column>
                       </ice:dataTable>
-                      <div jsfc="ice:panelGroup" rendered="#{StudyCommentsFragment.user == null}">
+                      <div jsfc="ice:panelGroup" rendered="#{VDCSession.user == null}">
                       <ice:outputText nospan="true"
                                       styleClass="vdcStudyCommentsSubheading"
                                       value="Please "/>
@@ -215,9 +215,9 @@
               
                     </div>
                     <div jsfc="ice:panelGroup"
-                           rendered="#{StudyCommentsFragment.user != null}">
+                           rendered="#{VDCSession.user != null}"><!-- the dataTable needs StudyCommentsFragment.user to refresh the table? but session bean alone okay here? -->
                           <ice:outputLabel for="studyComments" id="studyCommentsLabel">
-                            <ice:outputText rendered="#{StudyCommentsFragment.user != null}"
+                            <ice:outputText
                                       styleClass="vdcStudyCommentsSubheading"
                                       value="Add a Comment"/>
                           </ice:outputLabel>
@@ -233,7 +233,7 @@
                             </ice:inputTextarea>
                       </div>
                       <div jsfc="ice:panelGroup"
-                           rendered="#{StudyCommentsFragment.user != null}"
+                           rendered="#{VDCSession.user != null}"
                            styleClass="dvnFormPadding dvnFormMargin"
                            style="clear:both;">
                             <ice:commandButton id="button1"

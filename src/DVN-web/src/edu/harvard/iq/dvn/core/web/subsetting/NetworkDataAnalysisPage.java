@@ -314,12 +314,12 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
         } else if ( DvnRGraphServiceImpl.NETWORK_MEASURE_BONACICH_CENTRALITY.equals( networkMeasure ) ) {
             NetworkMeasureParameter p1 = new NetworkMeasureParameter();
             p1.setName("alpha");
-            p1.setDefaultValue("1");
+            p1.setDefaultValue("0");
             networkMeasureParamterList.add(p1);
 
             NetworkMeasureParameter p2 = new NetworkMeasureParameter();
             p2.setName("exo");
-            p2.setDefaultValue("0");
+            p2.setDefaultValue("1");
             networkMeasureParamterList.add(p2);
         }
     }

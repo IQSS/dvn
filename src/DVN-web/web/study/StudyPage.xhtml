@@ -185,7 +185,7 @@
             </div>
           </div>
           <div class="dvn_sectionBoxNoBorders">
-            <ice:panelTabSet selectedIndex="#{studyPage.selectedIndex}" tabChangeListener="#{studyPage.processTabChange}">
+              <ice:panelTabSet selectedIndex="#{studyPage.selectedIndex}" tabChangeListener="#{studyPage.processTabChange}">
               <ice:panelTab id="catalog" label="Cataloging Information" url="#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=catalog#{studyPage.studyListingIndexAsParameter}">
                 <div jsfc="ice:panelGroup" id="layoutPanel1" panelLayout="flow" style="width: 98%">
                   <div jsfc="ice:panelGroup"  id="groupPanel11" styleClass="vdcStudyInfoHeader" style="margin-top: 5px;">
@@ -503,7 +503,8 @@
               </ice:panelTab>
               <!-- FILES -->
               <ice:panelTab id="files" label="Documentation, Data and Analysis" url="#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=files#{studyPage.studyListingIndexAsParameter}">
-                <div jsfc="ice:panelGroup" id="layoutPanel2" panelLayout="flow" styleClass="vdcStudyFilesPage">
+                <f:param name="tab" value="files"/>
+                  <div jsfc="ice:panelGroup" id="layoutPanel2" panelLayout="flow" styleClass="vdcStudyFilesPage">
                   <div jsfc="ice:panelGroup" id="noFilesPanel1" panelLayout="flow" styleClass="vdcStudyFilesEmpty" rendered="#{empty studyPage.studyUI.study.fileCategories}">
                     <div jsfc="ice:panelGroup" id="noFilesPanel2" styleClass="vdcStudyFilesEmptyMessage" rendered="#{!studyPage.studyUI.userAuthorizedToEdit}">
                       <ice:outputText value="No files have been provided for this study."/>
@@ -687,8 +688,7 @@
               <ice:panelTab id="comments" 
                             label="User Comments"
                             rendered="#{studyPage.allowStudyComments}"
-                            url="#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=comments#{studyPage.studyListingIndexAsParameter}">
-                  <f:param name="studyId" value="#{param.studyId}"/>
+                            >
                   <gui:include src="StudyCommentsFragment.xhtml">
                   </gui:include>
               </ice:panelTab>

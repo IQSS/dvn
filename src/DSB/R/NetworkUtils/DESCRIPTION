@@ -6,6 +6,6 @@ Date: 2009-05-18
 Author: Alexander D'Amour 
 Maintainer: <adamour@iq.harvard.edu>
 Description: Uses igraph as a backend to support manual vertex and edge queries, component-based subsetting, and measure generation. 
-Depends: igraph (>= 0.5)
+Depends: igraph (>= 0.5), Matrix
 License: GPL 
 LazyLoad: yes

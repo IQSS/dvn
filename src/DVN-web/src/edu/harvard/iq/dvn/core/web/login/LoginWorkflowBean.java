@@ -134,29 +134,7 @@ public class LoginWorkflowBean extends VDCBaseBean implements java.io.Serializab
         return nextPage;
     }
 
-    //TODO: test to see if this fixes the tab argument issue
-    private String tab = new String("");
-
-    public String processLogin(VDCUser user, Long studyId, String selectedTab) {
-        this.user = user;
-        if (studyId != null) {
-            this.studyId = studyId;
-        }
-        if (selectedTab != null) {
-            tab = "&tab=" + selectedTab;
-        }
-        String nextPage = null;
-        if (user.isAgreedTermsOfUse() || !vdcNetworkService.find().isTermsOfUseEnabled()) {
-            updateSessionAndRedirect();
-            nextPage = "home";
-        } else {
-
-            nextPage = "accountTermsOfUse";
-        }
-        return nextPage;
-    }
-
-    public String processAddAccount(VDCUser newUser) {
+  public String processAddAccount(VDCUser newUser) {
         user = newUser;
         String nextPage = null;
         if (workflowType == null) {
@@ -176,7 +154,6 @@ public class LoginWorkflowBean extends VDCBaseBean implements java.io.Serializab
             } else if (workflowType.equals(WORKFLOW_TYPE_COMMENTS)) {
                getRequestMap().put("studyId", studyId);
                nextPage = "studyPage";
-               //TODO: add the tab/selectedIndex argument for the comments
             }
             updateSessionForLogin();
         }
@@ -232,11 +209,8 @@ public class LoginWorkflowBean extends VDCBaseBean implements java.io.Serializab
         loginBean.getTermsfUseMap().putAll(vdcSessionBean.getTermsfUseMap());
         // then clear the sessions version
         vdcSessionBean.getTermsfUseMap().clear();
-
-        // celar the studylistings from prelogin
+        // clear the studylistings from prelogin
         StudyListing.clearStudyListingMap(sessionMap);
-   
-
      }
     
      public void clearWorkflowState() {
@@ -276,7 +250,7 @@ public class LoginWorkflowBean extends VDCBaseBean implements java.io.Serializab
             }
         } else {
             if (sessionMap.get("ORIGINAL_URL") != null) {
-                sessionMap.put("LOGIN_REDIRECT", sessionMap.get("ORIGINAL_URL") + tab);
+                sessionMap.put("LOGIN_REDIRECT", sessionMap.get("ORIGINAL_URL"));
                 sessionMap.remove("ORIGINAL_URL");
             } else {
                 //  HttpServletRequest request = this.getExternalContext().getRequestContextPath()

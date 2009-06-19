@@ -74,6 +74,16 @@ public class SDIOMetadata {
     public SDIOMetadata() {
     }
 
+    protected String caseWeightVariableName;
+
+    public String getCaseWeightVariableName() {
+        return caseWeightVariableName;
+    }
+
+    public void setCaseWeightVariableName(String caseWeightVariableName) {
+        this.caseWeightVariableName = caseWeightVariableName;
+    }
+
     /**
      *
      */
@@ -266,14 +276,14 @@ public class SDIOMetadata {
 //        this.variableType = variableType;
 //    }
 
-    protected VariableFormat[] variableFormat;
+    protected List<Integer> variableFormat;
 
     /**
      * Get the value of variableFormat
      *
      * @return the value of variableFormat
      */
-    public VariableFormat[] getVariableFormat() {
+    public List<Integer> getVariableFormat() {
         return variableFormat;
     }
 
@@ -282,20 +292,20 @@ public class SDIOMetadata {
      *
      * @param variableFormat new value of variableFormat
      */
-    public void setVariableFormat(VariableFormat[] variableFormat) {
+    public void setVariableFormat(List<Integer> variableFormat) {
         this.variableFormat = variableFormat;
     }
     /**
      *
      */
-    protected VariableFormatName[] variableFormatName;
+    protected Map<String, String> variableFormatName;
 
     /**
      * Get the value of variableFormatName
      *
      * @return the value of variableFormatName
      */
-    public VariableFormatName[] getVariableFormatName() {
+    public Map<String, String> getVariableFormatName() {
         return variableFormatName;
     }
 
@@ -304,7 +314,7 @@ public class SDIOMetadata {
      *
      * @param variableFormatName new value of variableFormatName
      */
-    public void setVariableFormatName(VariableFormatName[] variableFormatName) {
+    public void setVariableFormatName(Map<String, String> variableFormatName) {
         this.variableFormatName = variableFormatName;
     }
     
@@ -395,6 +405,18 @@ public class SDIOMetadata {
     public void setMissingValueTable(Map<String, List<String>> missingValueTable) {
         this.missingValueTable = missingValueTable;
     }
+
+    protected  Map<String, InvalidData> invalidDataTable;
+
+    public Map<String, InvalidData> getInvalidDataTable() {
+        return invalidDataTable;
+    }
+
+    public void setInvalidDataTable(Map<String, InvalidData> invalidDataTable) {
+        this.invalidDataTable = invalidDataTable;
+    }
+
+    
 
 
     /**

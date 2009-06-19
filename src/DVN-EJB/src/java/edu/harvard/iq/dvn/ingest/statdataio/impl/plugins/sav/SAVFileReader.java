@@ -152,6 +152,12 @@ public class SAVFileReader extends StatDataFileReader{
 
     private static List<Method> decodeMethods  = new ArrayList<Method>();
 
+    private static String unfVersionNumber = "3";
+
+    private static double SYSMIS_LITTLE =0xFFFFFFFFFFFFEFFFL;
+    private static double SYSMIS_BIG =0xFFEFFFFFFFFFFFFFL;
+    
+
     static {
         // initialize method name list
         for (String n: decodeMethodNames){
@@ -182,13 +188,10 @@ public class SAVFileReader extends StatDataFileReader{
         RecordType7SubType4Fields.add("SYSMIS");
         RecordType7SubType4Fields.add("HIGHEST");
         RecordType7SubType4Fields.add("LOWEST");
+        
+        
+
     }
-
-
-    private static String unfVersionNumber = "3";
-
-    private static double SYSMIS_LITTLE =0xFFFFFFFFFFFFEFFFL;
-    private static double SYSMIS_BIG =0xFFEFFFFFFFFFFFFFL;
 
 
    // instance fields -------------------------------------------------------//
@@ -235,6 +238,10 @@ public class SAVFileReader extends StatDataFileReader{
     List<Integer> variableTypelList= new ArrayList<Integer>();
     List<Integer> OBSwiseTypelList= new ArrayList<Integer>();
 
+    List<Integer> printFormatList = new ArrayList<Integer>();
+    Map<String, String> printFormatTable = new LinkedHashMap<String, String>();
+    Map<String, String> printFormatNameTable = new LinkedHashMap<String, String>();
+
     //Map<String, Integer> StringVariableTable = new LinkedHashMap<String, Integer>();
     Set<Integer> obsStringVariableSet = new LinkedHashSet<Integer>();
     Set<Integer> obsNonVariableBlockSet = new LinkedHashSet<Integer>();
@@ -255,6 +262,8 @@ public class SAVFileReader extends StatDataFileReader{
     Map<String, String> variableLabelMap = new LinkedHashMap<String, String>();
     
     Map<String, List<String>> missingValueTable = new LinkedHashMap<String, List<String>>();
+
+    Map<String, InvalidData> invalidDataTable = new LinkedHashMap<String, InvalidData>();
     
     int caseQnty=0;
     
@@ -375,7 +384,8 @@ public class SAVFileReader extends StatDataFileReader{
             }
 
             smd.setValueLabelTable(valueLabelTable);
-
+            smd.setVariableFormat(printFormatList);
+            smd.setVariableFormatName(printFormatNameTable);
 
         }
         if (sdiodata == null){
@@ -573,7 +583,7 @@ public class SAVFileReader extends StatDataFileReader{
             smd.getFileInformation().put("compressedData", compression_switch);
 
             // 1.5 4-byte Case-Weight Variable Index
-            
+            // warning: this variable index starts from 1, not 0
             
             offset_start = offset_end;
             offset_end += LENGTH_CASE_WEIGHT_VARIABLE_INDEX; // 4 byte
@@ -593,7 +603,7 @@ public class SAVFileReader extends StatDataFileReader{
                 hasCaseWeightVariable = false;
                 dbgLog.info("caseWeightVariableIndex is not specified [none-weighted data]");
             } else {
-                dbgLog.info("caseWeightVariableIndex is specified"+caseWeightVariableOBSIndex);
+                dbgLog.info("caseWeightVariableIndex is specified="+caseWeightVariableOBSIndex);
                 hasCaseWeightVariable = true;
             }
             
@@ -811,8 +821,12 @@ public class SAVFileReader extends StatDataFileReader{
                 boolean hasMissingValues = (validMissingValueCodeSet.contains(
                     recordType2FixedPart1[3]) && (recordType2FixedPart1[3] !=0)) ?
                         true : false;
-
-
+                InvalidData invalidDataInfo = null;
+                if (recordType2FixedPart1[3] !=0){
+                   invalidDataInfo = new InvalidData(recordType2FixedPart1[3]);
+                   dbgLog.fine("missing value type="+invalidDataInfo.getType());
+                }
+                
             // 2.2: print/write formats: 4-byte each = 8 bytes
 
                 byte[] printFormt = Arrays.copyOfRange(recordType2Fixed, offset, offset+
@@ -821,15 +835,26 @@ public class SAVFileReader extends StatDataFileReader{
 
 
                 offset +=LENGTH_PRINT_FORMAT_CODE;
-                int formatCode = printFormt[3] == 0x00 ? printFormt[2] : printFormt[1];
-
+                int formatCode = isLittleEndian ? printFormt[2] : printFormt[1];
+                int formatWidth = isLittleEndian ? printFormt[1] : printFormt[2];
+                int formatDecimalPointPosition = isLittleEndian ? printFormt[0] : printFormt[3];
                 dbgLog.fine("format code{5=F, 1=A[String]}="+formatCode);
+                
+                
+
+                if (!SPSSConstants.FORMAT_CODE_TABLE_SAV.containsKey(formatCode)){
+                    throw new IOException("Unknown format code was found = "
+                        + formatCode);
+                } else{
+                    printFormatList.add(formatCode);
+                }
+
                 byte[] writeFormt = Arrays.copyOfRange(recordType2Fixed, offset, offset+
                     LENGTH_WRITE_FORMAT_CODE);
 
                 dbgLog.fine("writeFrmt="+new String (Hex.encodeHex(writeFormt)));
                 if (writeFormt[3] != 0x00){
-                    out.println("byte-order(write format): reversal required");
+                    dbgLog.fine("byte-order(write format): reversal required");
                 }
 
 
@@ -856,13 +881,37 @@ public class SAVFileReader extends StatDataFileReader{
                 if (j == (caseWeightVariableOBSIndex -1)){
                     caseWeightVariableName = variableName;
                     caseWeightVariableIndex = variableCounter;
+
+                    smd.setCaseWeightVariableName(caseWeightVariableName);
+                    smd.getFileInformation().put("caseWeightVariableIndex", caseWeightVariableIndex);
                 }
                 OBSIndexToVariableName.put(j, variableName);
-
-
                 dbgLog.fine("\nvariable name="+variableName+"<-");
                 dbgLog.fine(j+"-th variable name="+variableName+"<-");
                 variableNameList.add(variableName);
+
+
+
+
+
+                if (!SPSSConstants.ORDINARY_FORMAT_CODE_SET.contains(formatCode)){
+                    StringBuilder sb = new StringBuilder(
+                        SPSSConstants.FORMAT_CODE_TABLE_SAV.get(formatCode)+
+                        formatWidth);
+                    if (formatDecimalPointPosition > 0){
+                        sb.append("."+ formatDecimalPointPosition);
+                    }
+                    printFormatNameTable.put(variableName, sb.toString());
+                    
+                }
+                printFormatTable.put(variableName, SPSSConstants.FORMAT_CODE_TABLE_SAV.get(formatCode));
+                
+                
+                
+                
+                
+                
+                
 
             // 2.4 [optional]The length of a variable label followed: 4-byte int
             // 3rd element of 2.1 indicates whether this field exists
@@ -911,6 +960,7 @@ public class SAVFileReader extends StatDataFileReader{
                 if (hasMissingValues){
                     dbgLog.fine("decoding missing value: type="+recordType2FixedPart1[3]);
                     int howManyMissingValueUnits = missingValueCodeUnits.get(recordType2FixedPart1[3]);
+                    //int howManyMissingValueUnits = recordType2FixedPart1[3] > 0 ? recordType2FixedPart1[3] :  0;
 
                     dbgLog.fine("howManyMissingValueUnits="+howManyMissingValueUnits);
 
@@ -927,13 +977,14 @@ public class SAVFileReader extends StatDataFileReader{
                     if (isNumericVariable){
 
                         double[] missingValues = new double[howManyMissingValueUnits];
+                        //List<String> mvp = new ArrayList<String>();
                         List<String> mv = new ArrayList<String>();
 
                         ByteBuffer[] bb_missig_value_code = 
                             new ByteBuffer[howManyMissingValueUnits];
 
                         int offset_start = 0;
-
+                        
                         for (int i= 0; i < howManyMissingValueUnits;i++ ){
 
                             bb_missig_value_code[i]  =
@@ -946,14 +997,41 @@ public class SAVFileReader extends StatDataFileReader{
                             }
                             ByteBuffer temp = bb_missig_value_code[i].duplicate();
 
+
                             missingValues[i] = bb_missig_value_code[i].getDouble();
-                            mv.add(doubleNumberFormatter.format(missingValues[i]));
+                            if (Double.toHexString(missingValues[i]).equals("-0x1.ffffffffffffep1023")){
+                                dbgLog.fine("1st value is LOWEST");
+                                mv.add(Double.toHexString(missingValues[i]));
+                            } else if (Double.valueOf(missingValues[i]).equals(Double.MAX_VALUE)){
+                                dbgLog.fine("2nd value is HIGHEST");
+                                mv.add(Double.toHexString(missingValues[i]));
+                            } else {
+                                mv .add(doubleNumberFormatter.format(missingValues[i]));
+                            }
                             dbgLog.fine(i+"-th missing value="+Double.toHexString(missingValues[i]));
                         }
-
-                        missingValueTable.put(variableName, mv);
+                        dbgLog.fine("variableName="+variableName);
+                        if (recordType2FixedPart1[3] > 0) {
+                            // point cases only
+                            dbgLog.fine("mv(>0)="+mv);
+                            missingValueTable.put(variableName, mv);
+                            invalidDataInfo.setInvalidValues(mv);
+                        } else if (recordType2FixedPart1[3]== -2) {
+                            dbgLog.fine("mv(-2)="+mv);
+                            // range
+                            invalidDataInfo.setInvalidRange(mv);
+                        } else if (recordType2FixedPart1[3]== -3){
+                            // mixed case
+                            dbgLog.fine("mv(-3)="+mv);
+                            invalidDataInfo.setInvalidRange(mv.subList(0, 2));
+                            invalidDataInfo.setInvalidValues(mv.subList(2, 3));
+                            missingValueTable.put(variableName, mv.subList(2, 3));
+                        }
+                        
                         dbgLog.fine("missing value="+
                             StringUtils.join(missingValueTable.get(variableName),"|"));
+                        dbgLog.fine("invalidDataInfo(Numeric):\n"+invalidDataInfo);
+                        invalidDataTable.put(variableName, invalidDataInfo);
                     } else {
                         // string variable case
                         String[] missingValues = new String[howManyMissingValueUnits];
@@ -969,14 +1047,19 @@ public class SAVFileReader extends StatDataFileReader{
 
                             offset_start = offset_end;
                             offset_end +=LENGTH_SAV_OBS_BLOCK;
+
+
                             mv.add(missingValues[i]);
                         }
-
+                        invalidDataInfo.setInvalidValues(mv);
                         missingValueTable.put(variableName, mv);
-
+                        invalidDataTable.put(variableName, invalidDataInfo);
                         dbgLog.fine("missing value(str)="+
                             StringUtils.join(missingValueTable.get(variableName),"|"));
+                        dbgLog.fine("invalidDataInfo(String):\n"+invalidDataInfo);
+
                     } // string case
+                    dbgLog.fine("invalidDataTable:\n"+invalidDataTable);
                 } // if msv
 
 
@@ -1477,15 +1560,17 @@ while(true ){
                                 bb_field.order(ByteOrder.LITTLE_ENDIAN);
                             }
                             ByteBuffer bb_field_dup = bb_field.duplicate();
-                            OBSTypeHexValue.put(RecordType7SubType4Fields.get(i),
-                                new String(Hex.encodeHex(bb_field.array())) );
+//                            OBSTypeHexValue.put(RecordType7SubType4Fields.get(i),
+//                                new String(Hex.encodeHex(bb_field.array())) );
                             dbgLog.finer("raw bytes in Hex:"+
                                 OBSTypeHexValue.get(RecordType7SubType4Fields.get(i)));
                             if (unitLength==8){
                                 double fieldData = bb_field.getDouble();
                                 OBSTypeValue.put(RecordType7SubType4Fields.get(i), fieldData);
                                 dbgLog.finer("fieldData(double)="+fieldData);
-                                dbgLog.finer("fieldData in Hex=0x"+Double.toHexString(fieldData));
+                                OBSTypeHexValue.put(RecordType7SubType4Fields.get(i),
+                                    Double.toHexString(fieldData));
+                                dbgLog.fine("fieldData in Hex="+Double.toHexString(fieldData));
                             }
                         }
                         dbgLog.fine("OBSTypeValue="+OBSTypeValue);
@@ -1733,6 +1818,28 @@ while(true ){
                 throw new IOException("RT999: failed to detect the end mark(0): value="+rt999filler);
             }
 
+            // missing value processing concerning HIGHEST/LOWEST values
+
+            Set<Map.Entry<String,InvalidData>> msvlc = invalidDataTable.entrySet();
+            for (Iterator<Map.Entry<String,InvalidData>> itc = msvlc.iterator(); itc.hasNext();){
+                Map.Entry<String, InvalidData> et = itc.next();
+                String variable = et.getKey();
+                dbgLog.fine("variable="+variable);
+                InvalidData invalidDataInfo = et.getValue();
+
+                if (invalidDataInfo.getInvalidRange() != null &&
+                    !invalidDataInfo.getInvalidRange().isEmpty()){
+                    if (invalidDataInfo.getInvalidRange().get(0).equals(OBSTypeHexValue.get("LOWEST"))){
+                        dbgLog.fine("1st value is LOWEST");
+                        invalidDataInfo.getInvalidRange().set(0, "LOWEST");
+                    } else if (invalidDataInfo.getInvalidRange().get(1).equals(OBSTypeHexValue.get("HIGHEST"))){
+                        dbgLog.fine("2nd value is HIGHEST");
+                        invalidDataInfo.getInvalidRange().set(1,"HIGHEST");
+                    }
+                }
+            }
+            dbgLog.fine("invalidDataTable:\n"+invalidDataTable);
+            smd.setInvalidDataTable(invalidDataTable);
         } catch (IOException ex){
             ex.printStackTrace();
             exit(1);
@@ -2114,7 +2221,35 @@ OBSERVATION: while(true){
                         }
                         
                         if (!dataLine.get(k).equals("NaN")){
-                            // to do date conversion 
+                            // to do date conversion
+                        //    out.println("i="+i+"-th ii="+ii+"th formatCode="+k+"\t"+variableNameList.get(k));
+                            
+                            String variableFormatType = SPSSConstants.FORMAT_CATEGORY_TABLE.get(printFormatTable.get(variableNameList.get(k)));
+                        //    out.println("k="+k+"th variable format="+variableFormatType);
+                            
+                            if (variableFormatType.equals("date")){
+                        //        out.println("date case");
+                                
+                            } else if (variableFormatType.equals("time")) {
+                       //         out.println("time case");
+                            
+                            } else if (variableFormatType.equals("other")){
+                      //          out.println("other");
+                            
+                                if (printFormatTable.get(variableNameList.get(k)).equals("WKDAY")){
+                                    // day of week
+                       //             out.println("wkday");
+                                } else if (printFormatTable.get(variableNameList.get(k)).equals("MONTH")){
+                                    // month
+                       //             out.println("month");
+                                }
+                            }
+
+
+
+
+
+
                         
                         }
                     
@@ -2475,7 +2610,29 @@ pwout.close();
                         
                         if (!dataLine.get(k).equals("NaN")){
                             // to do date conversion 
-                        
+                            // to do date conversion
+                            out.println("i="+i+"-th ii="+ii+"th formatCode="+k+"\t"+variableNameList.get(k));
+                            
+                            String variableFormatType = SPSSConstants.FORMAT_CATEGORY_TABLE.get(printFormatTable.get(variableNameList.get(k)));
+                            out.println("k="+k+"th variable format="+variableFormatType);
+                            
+                            if (variableFormatType.equals("date")){
+                                out.println("date case");
+                                
+                            } else if (variableFormatType.equals("time")) {
+                                out.println("time case");
+                            
+                            } else if (variableFormatType.equals("other")){
+                                out.println("other");
+                            
+                                if (printFormatTable.get(variableNameList.get(k)).equals("WKDAY")){
+                                    // day of week
+                                    out.println("wkday");
+                                } else if (printFormatTable.get(variableNameList.get(k)).equals("MONTH")){
+                                    // month
+                                    out.println("month");
+                                }
+                            }
                         }
                     
                     

@@ -154,7 +154,21 @@ public class DDIWriter {
         StringBuilder sb = new StringBuilder("<dataDscr>\n");
 
         String[] sumStatLabels3 = {"vald", "invd", "mode"};
-
+        boolean hasCaseWeightVariable = false;
+        int caseWeightVariableIndex = 0;
+        String wgtVarAttr = null;
+        if ((sdioMetadata.caseWeightVariableName != null) &&
+            (!sdioMetadata.caseWeightVariableName.equals(""))){
+            hasCaseWeightVariable = true;
+            for (int iw = 0; iw < sdioMetadata.variableName.length; iw++){
+                if (sdioMetadata.variableName[iw].equals(sdioMetadata.caseWeightVariableName)){
+                    caseWeightVariableIndex = iw;
+                }
+            }
+            wgtVarAttr = "wgt-var=\"v1."+ (caseWeightVariableIndex+1)  +"\" ";
+        } else {
+            wgtVarAttr="";
+        }
 
         for (int i=0; i<sdioMetadata.variableName.length;i++){
 
@@ -175,10 +189,23 @@ public class DDIWriter {
                      ? "contin": "discrete" ;
 
             String intrvlAttr = "intrvl=\""+intrvlType + "\" " ;
-
+            String weightAttr = null;
+            if (hasCaseWeightVariable) {
+                if (i == caseWeightVariableIndex){
+                    // weight variable's token
+                    weightAttr = "wgt=\"wgt\" ";
+                } else {
+                    // non-weight variable's token
+                    weightAttr = wgtVarAttr;
+                }
+            } else {
+               
+                weightAttr = "";
+            }
+            
             sb.append("\t<var ID=\"v1." + (i+1) + "\" name=\"" +
                  StringEscapeUtils.escapeXml(sdioMetadata.variableName[i]) + "\" "+
-                 intrvlAttr +">\n");  // id counter starst from 1 not 0
+                 intrvlAttr + weightAttr+">\n");  // id counter starst from 1 not 0
 
             sb.append("\t\t<location fileid=\"file1\"/>\n");
 
@@ -189,6 +216,11 @@ public class DDIWriter {
                     StringEscapeUtils.escapeXml(
                     sdioMetadata.variableLabel.get(sdioMetadata.variableName[i]))+"</labl>\n");
             }
+
+            if (sdioMetadata.invalidDataTable.containsKey(sdioMetadata.variableName[i])){
+                sb.append(sdioMetadata.invalidDataTable.get(sdioMetadata.variableName[i]).toDDItag());
+            }
+
             // summaryStatistics
             Object[] sumStat = sdioMetadata.summaryStatisticsTable.get(i);
             if (sumStat.length == 3){

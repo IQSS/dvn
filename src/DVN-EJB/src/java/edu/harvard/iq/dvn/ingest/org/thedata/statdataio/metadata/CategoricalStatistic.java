@@ -29,42 +29,86 @@ import org.apache.commons.lang.builder.ToStringStyle;
  */
 public class CategoricalStatistic {
 
+    /**
+     *
+     */
     protected String value;
 
+    /**
+     *
+     */
     protected String label;
 
+    /**
+     *
+     */
     protected int frequency;
 
+    /**
+     *
+     */
     protected boolean missingValue=false;
 
+    /**
+     *
+     * @return
+     */
     public int getFrequency() {
         return frequency;
     }
 
+    /**
+     *
+     * @param frequency
+     */
     public void setFrequency(int frequency) {
         this.frequency = frequency;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isMissingValue() {
         return missingValue;
     }
 
+    /**
+     *
+     * @param isMissingValue
+     */
     public void setMissingValue(boolean isMissingValue) {
         this.missingValue = isMissingValue;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getLabel() {
         return label;
     }
 
+    /**
+     * 
+     * @param label
+     */
     public void setLabel(String label) {
         this.label = label;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getValue() {
         return value;
     }
 
+    /**
+     *
+     * @param value
+     */
     public void setValue(String value) {
         this.value = value;
     }

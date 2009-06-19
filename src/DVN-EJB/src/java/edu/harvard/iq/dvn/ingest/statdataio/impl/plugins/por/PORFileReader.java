@@ -134,6 +134,8 @@ public class PORFileReader extends StatDataFileReader{
                 }
             }
         }
+
+
         
     }
 
@@ -164,6 +166,12 @@ public class PORFileReader extends StatDataFileReader{
 
     List<Integer> variableTypelList = new ArrayList<Integer>();
 
+    List<Integer> printFormatList = new ArrayList<Integer>();
+    
+    Map<String, String> printFormatTable = new LinkedHashMap<String, String>();
+    
+    Map<String, String> printFormatNameTable = new LinkedHashMap<String, String>();
+    
     Map<String, Integer> StringVariableTable = new LinkedHashMap<String, Integer>();
     
     int value_label_table_length;
@@ -197,6 +205,8 @@ public class PORFileReader extends StatDataFileReader{
     
     // variableName=> missingValue type[field code]
     Map<String, List<String>> missingValueCodeTable = new LinkedHashMap<String, List<String>>();
+    
+    Map<String, InvalidData> invalidDataTable = new LinkedHashMap<String, InvalidData>();
     
     int caseQnty=0;
     
@@ -291,7 +301,12 @@ public class PORFileReader extends StatDataFileReader{
                     throw new IOException("reading failure: wrong headerId(Z) here");
                 }
                 
-                
+                if (headerId.equals("F")) {
+                    // missing value
+                    if ((missingValueTable !=null) && (missingValueTable.size()>0)){
+                        processMissingValueData();
+                    }
+                }
                 
                 
                 if (headerId.equals("8") && isCurrentVariableString){
@@ -326,12 +341,17 @@ public class PORFileReader extends StatDataFileReader{
             smd.setVariableLabel(variableLabelMap);
             // missing-value table
             smd.setMissingValueTable(missingValueTable);
-
+            dbgLog.finer("*************** missingValueCodeTable ***************:\n"+missingValueCodeTable);
+            smd.setInvalidDataTable(invalidDataTable);
             smd.setValueLabelTable(valueLabelTable);
 
             smd.setVariableTypeMinimal(ArrayUtils.toPrimitive(
                 variableTypelList.toArray(new Integer[variableTypelList.size()])));
 
+            smd.setVariableFormat(printFormatList);
+            smd.setVariableFormatName(printFormatNameTable);
+
+            
         } catch (FileNotFoundException ex){
             err.println("file is not found");
             ex.printStackTrace();
@@ -802,7 +822,7 @@ public class PORFileReader extends StatDataFileReader{
             ex.printStackTrace();
         }
         smd.getFileInformation().put("caseWeightVariableName", weightVariableName);
-        
+        smd.setCaseWeightVariableName(weightVariableName);
         dbgLog.fine("caseWeightVariableName="+weightVariableName);
         dbgLog.fine("***** decodeWeightVariable(): end *****");
     }
@@ -855,11 +875,31 @@ public class PORFileReader extends StatDataFileReader{
                 printWriteFormatTable[i]= parseNumericField(reader);
             }
             
-            dbgLog.fine("printWriteFormatTable="+printWriteFormatTable);
-            
-            // TO DO
-            
-            // save data
+            dbgLog.fine("printWriteFormatTable="+Arrays.deepToString(
+                ArrayUtils.toObject(printWriteFormatTable)));
+            int formatCode = printWriteFormatTable[0];
+
+            int formatWidth = printWriteFormatTable[1];
+            int formatDecimalPointPosition = printWriteFormatTable[2];
+            if (!SPSSConstants.FORMAT_CODE_TABLE_POR.containsKey(formatCode)){
+                    throw new IOException("Unknown format code was found = "
+                        + formatCode);
+            } else {
+                printFormatList.add(printWriteFormatTable[0]);
+            }
+
+            if (!SPSSConstants.ORDINARY_FORMAT_CODE_SET.contains(formatCode)){
+                StringBuilder sb = new StringBuilder(
+                    SPSSConstants.FORMAT_CODE_TABLE_POR.get(formatCode)+
+                    formatWidth);
+                if (formatDecimalPointPosition > 0){
+                    sb.append("."+ formatDecimalPointPosition);
+                }
+                printFormatNameTable.put(variableName, sb.toString());
+            }
+                printFormatTable.put(variableName, SPSSConstants.FORMAT_CODE_TABLE_SAV.get(formatCode));
+
+
             
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -1018,10 +1058,12 @@ public class PORFileReader extends StatDataFileReader{
         
         if (missingValueTable.containsKey(currentVariableName)){
             // already stored
+            (missingValueTable.get(currentVariableName)).add("LOWEST");
             (missingValueTable.get(currentVariableName)).add(missingValueRangeLOtype);
         } else {
             // no missing value stored
             List<String> mv = new ArrayList<String>();
+            mv.add("LOWEST");
             mv.add(missingValueRangeLOtype);
             missingValueTable.put(currentVariableName, mv);
         }
@@ -1072,11 +1114,13 @@ public class PORFileReader extends StatDataFileReader{
         if (missingValueTable.containsKey(currentVariableName)){
             // already stored
             (missingValueTable.get(currentVariableName)).add(missingValueRangeHItype);
+            (missingValueTable.get(currentVariableName)).add("HIGHEST");
         } else {
             // no missing value stored
-            List<String> mv = new ArrayList<String>();
-            mv.add(missingValueRangeHItype);
-            missingValueTable.put(currentVariableName, mv);
+           List<String> mv = new ArrayList<String>();
+           mv.add(missingValueRangeHItype);
+           mv.add("HIGHEST");
+           missingValueTable.put(currentVariableName, mv);
         }
         
         
@@ -1142,9 +1186,9 @@ public class PORFileReader extends StatDataFileReader{
         } else {
             // no missing value stored
             List<String> mv = new ArrayList<String>();
-            mv.add(missingValueRange[0]);
-            mv.add(missingValueRange[1]);
-            missingValueTable.put(currentVariableName, mv);
+           mv.add(missingValueRange[0]);
+           mv.add(missingValueRange[1]);
+           missingValueTable.put(currentVariableName, mv);
         }
         
         
@@ -1499,7 +1543,7 @@ public class PORFileReader extends StatDataFileReader{
 
                             if (matcher.matches()){
                                 // integer case
-                                datumNumericBase10 = Integer.valueOf(datumNumericBase30, 30).toString();
+                                datumNumericBase10 = Long.valueOf(datumNumericBase30, 30).toString();
                             } else {
                                 // double case
                                 datumNumericBase10 = doubleNumberFormatter.format(
@@ -1512,7 +1556,31 @@ public class PORFileReader extends StatDataFileReader{
                             
                             // date/time case : TO DO
                             
+                           // to do date conversion 
+                            // to do date conversion
+                            out.println("i="+i+"-th variable ="+variableNameList.get(i));
                             
+                            String variableFormatType = 
+                                    SPSSConstants.FORMAT_CATEGORY_TABLE.get(printFormatTable.get(variableNameList.get(i)));
+                            out.println("i="+i+"th variable format="+variableFormatType);
+                            
+                            if (variableFormatType.equals("date")){
+                                out.println("date case");
+                                
+                            } else if (variableFormatType.equals("time")) {
+                                out.println("time case");
+                            
+                            } else if (variableFormatType.equals("other")){
+                                out.println("other");
+                            
+                                if (printFormatTable.get(variableNameList.get(i)).equals("WKDAY")){
+                                    // day of week
+                                    out.println("wkday");
+                                } else if (printFormatTable.get(variableNameList.get(i)).equals("MONTH")){
+                                    // month
+                                    out.println("month");
+                                }
+                            }
                             
                             
                                 
@@ -1664,7 +1732,126 @@ public class PORFileReader extends StatDataFileReader{
     }
     
     
-    
+    private void processMissingValueData(){
+        /*
+
+         POR's missing-value storage differs form the counterpart of SAV;
+         this method transforms the POR-native storage to the SAV-type
+         after this process, missingValueTable contains point-type
+         missing values for later catStat/sumStat processing;
+         range and mixed type cases are stored in invalidDataTable
+
+         missingValueCodeTable=
+            {VAR1=[9], VAR2=[A], VAR3=[9, 8], VAR4=[A, 8],
+             VAR5=[8, 8, 8], VAR6=[B], VAR7=[B, 8]}
+
+         missingValueTable=
+            {VAR1=[-1], VAR2=[-1], VAR3=[-2, -1], VAR4=[-1, -2],
+             VAR5=[-1, -2, -3], VAR6=[-2, -1], VAR7=[-3, -2, -1]}
+
+
+         missingValueTable={VAR1=[], VAR2=[], VAR3=[-1], VAR4=[-2],
+             VAR5=[-1, -2, -3], VAR6=[], VAR7=[-2]}
+
+         */
+
+        dbgLog.fine("missingValueCodeTable="+missingValueCodeTable);
+        Set<Map.Entry<String,List<String>>> msvlc = missingValueCodeTable.entrySet();
+        for (Iterator<Map.Entry<String,List<String>>> itc = msvlc.iterator(); itc.hasNext();){
+            Map.Entry<String, List<String>> et = itc.next();
+            String variable = et.getKey();
+            dbgLog.fine("variable="+variable);
+            List<String> codeList = et.getValue();
+            List<String> valueList = missingValueTable.get(variable);
+            dbgLog.fine("codeList="+codeList);
+            dbgLog.fine("valueList="+valueList);
+            int type;
+            InvalidData invalidDataInfo = null;
+            if (valueList.size() == 3){
+                if (codeList.get(0).equals("8") && codeList.get(1).equals("8") &&
+                        codeList.get(2).equals("8") ){
+                    type = 3;
+                    invalidDataInfo = new InvalidData(type);
+                    invalidDataInfo.setInvalidValues(valueList);
+                } else if (codeList.get(0).equals("9") && codeList.get(1).equals("8")){
+                    type = -3;
+
+                    invalidDataInfo = new InvalidData(type);
+                    invalidDataInfo.setInvalidValues(valueList.subList(2, 3));
+                    invalidDataInfo.setInvalidRange(valueList.subList(0, 2));
+
+                } else if (codeList.get(0).equals("A") && codeList.get(1).equals("8")){
+                    type = -3;
+                    invalidDataInfo = new InvalidData(type);
+                    invalidDataInfo.setInvalidValues(valueList.subList(2, 3));
+                    invalidDataInfo.setInvalidRange(valueList.subList(0, 2));
+                } else if (codeList.get(0).equals("B") && codeList.get(1).equals("8")){
+                    type = -3;
+                    invalidDataInfo = new InvalidData(type);
+                    invalidDataInfo.setInvalidValues(valueList.subList(2, 3));
+                    invalidDataInfo.setInvalidRange(valueList.subList(0, 2));
+                } else {
+                   dbgLog.severe("unkown missing-value combination(3 values)");
+                }
+                
+            } else if (valueList.size() == 2){
+                if (codeList.get(0).equals("8") && codeList.get(1).equals("8")){
+                    type = 2;
+                    invalidDataInfo = new InvalidData(type);
+                    invalidDataInfo.setInvalidValues(valueList);
+
+                } else if (codeList.get(0).equals("9")){
+                    type = -2;
+                    invalidDataInfo = new InvalidData(type);
+                    invalidDataInfo.setInvalidRange(valueList.subList(0, 2));
+
+                } else if (codeList.get(0).equals("A")){
+                    type = -2;
+                    invalidDataInfo = new InvalidData(type);
+                    invalidDataInfo.setInvalidRange(valueList.subList(0, 2));
+                } else if (codeList.get(0).equals("B")){
+                    type = -2;
+                    invalidDataInfo = new InvalidData(type);
+                    invalidDataInfo.setInvalidRange(valueList.subList(0, 2));
+
+                } else {
+                    dbgLog.severe("unknown missing value combination(2 values)");
+                }
+            } else if (valueList.size() == 1){
+                if (codeList.get(0).equals("8")){
+                    type = 1;
+                    invalidDataInfo = new InvalidData(type);
+                    invalidDataInfo.setInvalidValues(valueList);
+                } else {
+                    dbgLog.severe("unknown missing value combination(2 values)");
+                }
+            }
+            invalidDataTable.put(variable, invalidDataInfo);
+        }
+
+        dbgLog.fine("invalidDataTable="+invalidDataTable);
+
+
+        Set<Map.Entry<String,List<String>>> msvl = missingValueTable.entrySet();
+        for (Iterator<Map.Entry<String,List<String>>> it = msvl.iterator(); it.hasNext();){
+            Map.Entry<String, List<String>> et = it.next();
+
+            String variable = et.getKey();
+            List<String> valueList = et.getValue();
+
+            List<String> codeList = missingValueCodeTable.get(variable);
+
+            dbgLog.finer("var="+variable+"\tvalue="+valueList+"\t code"+ codeList);
+            List<String> temp = new ArrayList<String>();
+            for (int j=0; j<codeList.size(); j++){
+                if (codeList.get(j).equals("8")){
+                  temp.add(valueList.get(j));
+                }
+            }
+            missingValueTable.put(variable, temp);
+        }
+        dbgLog.fine("missingValueTable="+missingValueTable);
+    }
     
     
     
@@ -1684,9 +1871,9 @@ public class PORFileReader extends StatDataFileReader{
             //temp = sb.toString();//new String(tmp);
         }
         String base30numberString = sb.toString();
-        dbgLog.fine("base30numberString="+base30numberString);
+        dbgLog.finer("base30numberString="+base30numberString);
         int base10equivalent = Integer.valueOf(base30numberString, 30);
-        dbgLog.fine("base10equivalent="+base10equivalent);
+        dbgLog.finer("base10equivalent="+base10equivalent);
         return base10equivalent;
     }
 
@@ -1711,7 +1898,7 @@ public class PORFileReader extends StatDataFileReader{
         char[] stringBody = new char[base10equivalent];
         reader.read(stringBody);
         String stringData = new String(stringBody);
-        dbgLog.fine("stringData="+stringData);
+        dbgLog.finer("stringData="+stringData);
         return stringData;
     }
 
@@ -1731,7 +1918,7 @@ public class PORFileReader extends StatDataFileReader{
             //temp = sb.toString();//new String(tmp);
         }
         String base30numberString = sb.toString();
-        dbgLog.fine("base30numberString="+base30numberString);
+        dbgLog.finer("base30numberString="+base30numberString);
 
         return base30numberString;
     }

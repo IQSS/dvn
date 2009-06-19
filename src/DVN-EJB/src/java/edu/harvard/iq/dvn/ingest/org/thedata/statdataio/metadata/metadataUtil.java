@@ -28,8 +28,6 @@ import java.util.logging.*;
 import org.apache.commons.lang.*;
 import org.apache.commons.lang.builder.*;
 
-import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.metadata.CategoricalStatistic;
-
 
 /**
  *

@@ -175,21 +175,21 @@
                                columnClasses="dvnHmpgGroupTotals, dvnPaginatorWrap"
                                rendered="#{!empty(HomePage.vdcUIList.vdcUIList)}">
                       <div jsfc="ice:panelGroup"
-                                id="groupPanel1"
-                                rendered="#{!empty(HomePage.vdcUIList.vdcUIList) and VDCRequest.currentVDC == null}">
+                           id="groupPanel1"
+                           rendered="#{!empty(HomePage.vdcUIList.vdcUIList) and VDCRequest.currentVDC == null}">
                             <ice:outputText styleClass="dvn_totalsLabel" value ="Dataverses: "/>
-                                <ice:outputText styleClass="dvn_totalsValue"
+                            <ice:outputText styleClass="dvn_totalsValue"
                                             value="#{HomePage.vdcUIListSize}"/>
-                                 <ice:outputText escape="false"
+                            <ice:outputText escape="false"
                                             rendered="#{HomePage.groupName == 'All Dataverses' and HomePage.isAlphaSort == false}"
                                             styleClass="dvn_totalsLabel"
                                             value=" | "/>
                             <ice:outputText rendered="#{HomePage.groupName == 'All Dataverses' and HomePage.isAlphaSort == false}"
                                             styleClass="dvn_totalsLabel"
                                             value ="Studies: "/>
-                                <ice:outputText rendered="#{HomePage.groupName == 'All Dataverses' and HomePage.isAlphaSort == false}"
-                                                styleClass="dvn_totalsValue"
-                                                value="#{HomePage.studyCount}"/>
+                            <ice:outputText rendered="#{HomePage.groupName == 'All Dataverses' and HomePage.isAlphaSort == false}"
+                                            styleClass="dvn_totalsValue"
+                                            value="#{HomePage.studyCount}"/>
                             <ice:outputText escape="false"
                                             rendered="#{HomePage.groupName == 'All Dataverses' and HomePage.isAlphaSort == false}"
                                             styleClass="dvn_totalsLabel"

@@ -13,6 +13,8 @@ import java.util.*;
 import java.util.logging.*;
 import java.lang.reflect.*;
 
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 import org.rosuda.REngine.*;
 import org.rosuda.REngine.Rserve.*;
 
@@ -484,17 +486,17 @@ public class DvnRGraphServiceImpl{
             dbgLog.fine("result object (before closing the Rserve):\n"+result);
                     
             c.close();
-        
+
         } catch (RserveException rse) {
             result.put("IdSuffix", IdSuffix);
             result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
             
             result.put("RexecError", "true");
-	    result.put("RexecErrorMessage", rse.getMessage()); 
-	    result.put("RexecErrorDescription", rse.getRequestErrorDescription()); 
-	    
-	    dbgLog.info("rserve exception message: "+rse.getMessage());
-	    dbgLog.info("rserve exception description: "+rse.getRequestErrorDescription());
+            result.put("RexecErrorMessage", rse.getMessage());
+            result.put("RexecErrorDescription", rse.getRequestErrorDescription());
+
+            dbgLog.info("rserve exception message: "+rse.getMessage());
+            dbgLog.info("rserve exception description: "+rse.getRequestErrorDescription());
             return result;
 
         } catch (REXPMismatchException mme) {
@@ -705,20 +707,40 @@ public class DvnRGraphServiceImpl{
 	    historyEntry.add("load_and_clear('"+savedRDataFile+"')");
 	    c.voidEval("load_and_clear('"+savedRDataFile+"')");
 
-            // export:
-
+        // export: GraphML
 	    String exportCommand = "dump_graphml(g, '" + GraphMLfileNameRemote + "')";
 	    dbgLog.fine(exportCommand);
 	    historyEntry.add(exportCommand);
 	    c.voidEval(exportCommand);            
-	     
-	    String tempGraphMLfileNameLocal = 
-		TEMP_DIR + "/" + GRAPHML_FILE_NAME + 
+
+        // export: tab files for vertices and edges
+	    exportCommand = "dump_tab(g, '" + DSB_TMP_DIR + "/temp_" + IdSuffix + ".tab')";
+	    dbgLog.fine(exportCommand);
+	    historyEntry.add(exportCommand);
+	    c.voidEval(exportCommand);
+
+
+        File zipFile  = new File(TEMP_DIR, "subset_" + IdSuffix + ".zip");
+        FileOutputStream zipFileStream = new FileOutputStream(zipFile);
+        ZipOutputStream zout = new ZipOutputStream( new FileOutputStream(zipFile) );
+
+        addZipEntry(c, zout, GraphMLfileNameRemote, "data/subset.xml");
+        addZipEntry(c, zout, DSB_TMP_DIR + "/temp_" + IdSuffix + "_verts.tab", "data/vertices.tab");
+        addZipEntry(c, zout, DSB_TMP_DIR + "/temp_" + IdSuffix + "_edges.tab", "data/edges.tab");
+
+        zout.close();
+        zipFileStream.close();
+
+        result.put(GRAPHML_FILE_EXPORTED, zipFile.getAbsolutePath());
+
+        /* this is the code for ONLY exporting the grapML file
+	    String tempGraphMLfileNameLocal =
+		TEMP_DIR + "/" + GRAPHML_FILE_NAME +
 		"." + IdSuffix + GRAPHML_FILE_EXT;
 
 
 	    OutputStream outbr = new BufferedOutputStream(new FileOutputStream(new File(tempGraphMLfileNameLocal)));
-	    RFileInputStream ris = c.openFile(GraphMLfileNameRemote);
+        RFileInputStream ris = c.openFile(GraphMLfileNameRemote);
 
             int fileSize = getFileSize(c,GraphMLfileNameRemote);
             
@@ -738,8 +760,9 @@ public class DvnRGraphServiceImpl{
 	    ris.close();
 	    outbr.close();
 
-	    result.put(GRAPHML_FILE_EXPORTED, tempGraphMLfileNameLocal); 
-
+	    result.put(GRAPHML_FILE_EXPORTED, tempGraphMLfileNameLocal);
+        */
+        
 	    String RexecDate = c.eval("as.character(as.POSIXct(Sys.time()))").asString();
 	    String RversionLine = "R.Version()$version.string";
             String Rversion = c.eval(RversionLine).asString();
@@ -797,6 +820,22 @@ public class DvnRGraphServiceImpl{
         return result;
         
     }
+
+     private void addZipEntry(RConnection c, ZipOutputStream zout, String inputFileName, String outputFileName) throws IOException{
+        RFileInputStream tmpin = c.openFile(inputFileName);
+        byte[] dataBuffer = new byte[8192];
+        int i = 0;
+
+        ZipEntry e = new ZipEntry(outputFileName);
+        zout.putNextEntry(e);
+
+        while ((i = tmpin.read(dataBuffer)) > 0) {
+            zout.write(dataBuffer, 0, i);
+            zout.flush();
+        }
+        tmpin.close();
+        zout.closeEntry();
+     }
     
 
     // -- utilitiy methods

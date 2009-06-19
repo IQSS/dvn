@@ -88,7 +88,7 @@ li.hmpgDvGroupSelected a:link,li.hmpgDvGroupSelected a:visited,li.hmpgDvGroupSel
 /* STUDY LISTING */
 .dvnStudyListWrapper{border:1px solid #dcdddf}
 .dvnStudyListCollectionNameBlock{padding:.5em .25em;border:1px solid #dcdddf;border-width:1px 1px 0 1px;text-align:right}
-.dvnStudyListCollectionName{clear:left;text-align:left}
+.dvnStudyListCollectionName{text-align:left}
 .dvnStudyListCollectionName span{font-size:140% !important;font-weight:700}
 .dvnStudyListContributorBlock{padding-bottom:.25em}
 a.dvnStudyListContributorLink:link,a.dvnStudyListContributorLink:visited,a.dvnStudyListContributorLink:hover,a.dvnStudyListContributorLink:active{padding-right:28px;color:#c55b28;background:url(/dvn/resources/images/start-arrows.gif) 100% 52% no-repeat;font-size:95%;text-decoration:none}
@@ -104,6 +104,7 @@ span.dvnStudyListStudyAuthor{font-size:90% !important}
 .dvnStudyListIDDownloads{padding:0 10px;border-left:1px solid #dcdddf !important}
 .dvnStudyListIDDownloads span{font-size:90% !important;color:gray}
 .dvnStudyListIDDownloads .dvnStudyListDownloadCount{white-space:nowrap}
+.dvnStudyListIDDownloads .dvnStudyListDownloadCount img{vertical-align: middle;}
 .dvnStudyListIDDownloads span.dvnStudyListIDDownloadsSubsettable{width:14em;margin-left:4px !important;white-space:nowrap;display:inline !important}
 .dvnStudyListIDDownloads span.dvnStudyListIDDownloadsNonSubsettable{width:14em;margin-left:4px !important;white-space:nowrap;display:inline !important}
 td.dvnStudyListTableColID{vertical-align:top}

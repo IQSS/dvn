@@ -116,7 +116,7 @@ table.viTblinx th{background-color:#e6e6fa;font-weight:700;margin:0px;padding:2p
 .MnuStdOptGrp{color:#000;background-color:#fff}
 .dvn_preFileTitle{font-weight:700;font-style:normal;color:#000}
 .dvn_fileTitle{font-weight:400;font-style:normal;color:#000}
-.dvn_analysisResultContainer{padding:10px;border:1px solid #6e7f90;text-align:left;clear:both}
+.dvn_analysisResultContainer{padding:10px;border:1px solid #6e7f90;text-align:left;float:left}
 .dvn_analysisResultContainer .dvAnalysisHeader{display:block;padding:3px 0;width:100%;background:#e6ebed;font-size:140% !important;font-weight:700;text-align:center}
 .dvn_analysisResultContainer .dvAnalysisResults{padding:10px;text-align:left}
 .dvn_analysisResultContainer .dvAnalysisInfoMessage{margin-bottom:1em}

@@ -61,12 +61,14 @@ public class StudyFileEditBean implements Serializable {
         dbgLog.fine("reached before studyFile constructor");
 
         String fileType = FileUtil.determineFileType(file);
-
+        dbgLog.fine("return from FileUtil.determineFileType(file), fileType="+fileType);
         if (fileType.equals("application/x-stata") ||
             fileType.equals("application/x-spss-por") ||
             fileType.equals("application/x-spss-sav") ) {
+            dbgLog.fine("tablularFile");
             this.studyFile = new TabularDataFile(); // do not yet attach to study, as it has to be ingested
         } else if (fileType.equals("text/xml") && isGraphMLFile(file)) {
+            dbgLog.fine("isGraphMLFile = true");
             this.studyFile = new NetworkDataFile();
         } else    {
             this.studyFile = new OtherFile(study);
@@ -244,6 +246,7 @@ public class StudyFileEditBean implements Serializable {
                             isGraphML = true;
                             break;
                         }
+                        break;
                     }
                 } 
             }

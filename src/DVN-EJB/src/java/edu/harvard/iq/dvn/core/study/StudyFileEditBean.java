@@ -226,6 +226,7 @@ public class StudyFileEditBean implements Serializable {
 
     private boolean isGraphMLFile(File file) {
         boolean isGraphML = false;
+        dbgLog.fine("begin isGraphMLFile()");
         try{
             FileReader fileReader = new FileReader(file);
             javax.xml.stream.XMLInputFactory xmlif = javax.xml.stream.XMLInputFactory.newInstance();
@@ -235,19 +236,14 @@ public class StudyFileEditBean implements Serializable {
             for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
                 if (event == XMLStreamConstants.START_ELEMENT) {
                     if (xmlr.getLocalName().equals("graphml")) {
-                        dbgLog.fine("schema = "+xmlr.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance", "schemaLocation"));
-                        // to determine file - this attribute should have value "http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd"
-                        int count = xmlr.getAttributeCount();
-                        for (int i=0; i<count; i++) {
-                            dbgLog.fine("attrib["+i+"]="+xmlr.getAttributeName(i));
-                        }
                         String schema = xmlr.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance", "schemaLocation");
+                        dbgLog.fine("schema = "+schema);
                         if (schema!=null && schema.indexOf("http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd")!=-1){
+                            dbgLog.fine("graphML is true");
                             isGraphML = true;
-                            break;
                         }
-                        break;
                     }
+                    break;
                 } 
             }
         } catch(XMLStreamException e) {
@@ -256,7 +252,7 @@ public class StudyFileEditBean implements Serializable {
         } catch(IOException e) {
             throw new EJBException(e);
         }
-
+        dbgLog.fine("end isGraphML()");
         return isGraphML;
     }
 //    @Override

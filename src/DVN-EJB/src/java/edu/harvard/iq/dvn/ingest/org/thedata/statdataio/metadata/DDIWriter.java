@@ -217,7 +217,8 @@ public class DDIWriter {
                     sdioMetadata.variableLabel.get(sdioMetadata.variableName[i]))+"</labl>\n");
             }
 
-            if (sdioMetadata.invalidDataTable.containsKey(sdioMetadata.variableName[i])){
+            if((sdioMetadata.invalidDataTable !=null) &&
+                    (sdioMetadata.invalidDataTable.containsKey(sdioMetadata.variableName[i]))){
                 sb.append(sdioMetadata.invalidDataTable.get(sdioMetadata.variableName[i]).toDDItag());
             }
 

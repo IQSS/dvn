@@ -49,10 +49,7 @@ public class CommentReviewPage extends VDCBaseBean implements java.io.Serializab
                                "This comment was deleted in accordance with the " +
                                 "study comments terms of use.";
          studyCommentService.deleteComment(flaggedCommentId, deletedMessage);
-         String truncatedComment = (getFlaggedStudyComment().length() <= 25) ? getFlaggedStudyComment() : getFlaggedStudyComment().substring(0, 25);
-         truncatedComment += "...";
-         FacesContext context = FacesContext.getCurrentInstance();
-         context.addMessage(event.getComponent().getClientId(context), new FacesMessage("Success!  The comment, " + truncatedComment + ", was deleted."));
+         getVDCRequestBean().setSuccessMessage("Successfully deleted the flagged comment.");
          //cleanup
          flaggedCommentId  = new Long("0");
          commentsForReview = null;
@@ -70,10 +67,7 @@ public class CommentReviewPage extends VDCBaseBean implements java.io.Serializab
                                 "reported comment is not an abuse. This comment will remain posted, and will " +
                                 "no longer appear to you as reported.";
          studyCommentService.okComment(flaggedCommentId, okMessage);
-         String truncatedComment = (getFlaggedStudyComment().length() <= 25) ? getFlaggedStudyComment() : getFlaggedStudyComment().substring(0, 25);
-         truncatedComment += "...";
-         FacesContext context = FacesContext.getCurrentInstance();
-         context.addMessage(event.getComponent().getClientId(context), new FacesMessage("Success!  The comment, " + truncatedComment + ", was reset to OK."));
+         getVDCRequestBean().setSuccessMessage("Successfully ignored the flagged comment.");
          //cleanup
          flaggedCommentId  = new Long("0");
          commentsForReview = null;
@@ -261,4 +255,6 @@ public class CommentReviewPage extends VDCBaseBean implements java.io.Serializab
     public void setMainDataTable(HtmlDataTable mainDataTable) {
         this.mainDataTable = mainDataTable;
     }
+
+    
 }

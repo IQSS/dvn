@@ -227,12 +227,12 @@ public class LoginFilter implements Filter {
         VDCUser user = loginBean.getUser();
 
         VDCRole userRole = null;
-        String userRoleName = null;
+        String userVDCRoleName = null;
         if (currentVDC != null) {
             userRole = loginBean.getVDCRole(currentVDC);
         }
         if (userRole != null) {
-            userRoleName = userRole.getRole().getName();
+            userVDCRoleName = userRole.getRole().getName();
         }
 
 
@@ -246,9 +246,10 @@ public class LoginFilter implements Filter {
             return isAuthorizedToEditStudy(pageDef, user, request, currentVDC);
         }
 
-        // If this page has a network role, and it is being requested in a network context,
-        // (that is, there is no current vdc), authorize the user if his network role matches the page role.
-        if (pageDef != null && pageDef.getNetworkRole() != null && currentVDC == null) {
+        // If this page has only has a network role, or if it has both network and vdc roles, but no current vdc,
+        // do authorization based on network role.
+        if (pageDef != null && (pageDef.getNetworkRole() != null && pageDef.getRole()==null)
+             || (pageDef.getNetworkRole() != null && pageDef.getRole()!=null && currentVDC==null)) {
             if (user.getNetworkRole() != null) {
                 if (user.getNetworkRole().getId().equals(pageDef.getNetworkRole().getId())) {
                     return true;
@@ -259,29 +260,34 @@ public class LoginFilter implements Filter {
                 return false;
 
         }
-        // If this page has a VDC Role, and it is being requested in a VDC Context,
-        // authorize the user if his Role has the required privileges
-        if (pageDef != null && pageDef.getRole() != null && currentVDC != null) {
-            String pageRoleName = pageDef.getRole().getName();
-            if (userRoleName == null && !isUserStudyCreator(user, request)) {
+        // If this page only has a VDC Role,  or if it has both roles and  currentVDC exists,
+        // do authorization based on VDC role.
+      if (pageDef != null && (pageDef.getRole() != null && pageDef.getNetworkRole()==null)
+             || (pageDef.getNetworkRole() != null && pageDef.getRole()!=null && currentVDC!=null)){
+            if (currentVDC==null) {
                 return false;
             }
+            String pageRoleName = pageDef.getRole().getName();
+            if (userVDCRoleName == null && !isUserStudyCreator(user, request)) {
+                return false;
+            }
+            
             if (pageRoleName.equals(RoleServiceLocal.ADMIN)) {
-                if (userRoleName.equals(RoleServiceLocal.ADMIN)) {
+                if (userVDCRoleName.equals(RoleServiceLocal.ADMIN)) {
                     return true;
                 } else {
                     return false;
                 }
             }
             if (pageRoleName.equals(RoleServiceLocal.CURATOR)) {
-                if (userRoleName.equals(RoleServiceLocal.CURATOR) || userRoleName.equals(RoleServiceLocal.ADMIN) || isUserStudyCreator(user, request)) {
+                if (userVDCRoleName.equals(RoleServiceLocal.CURATOR) || userVDCRoleName.equals(RoleServiceLocal.ADMIN) || isUserStudyCreator(user, request)) {
                     return true;
                 } else {
                     return false;
                 }
             }
             if (pageRoleName.equals(RoleServiceLocal.CONTRIBUTOR)) {
-                if (userRoleName.equals(RoleServiceLocal.CONTRIBUTOR) || userRoleName.equals(RoleServiceLocal.CURATOR) || userRoleName.equals(RoleServiceLocal.ADMIN)) {
+                if (userVDCRoleName.equals(RoleServiceLocal.CONTRIBUTOR) || userVDCRoleName.equals(RoleServiceLocal.CURATOR) || userVDCRoleName.equals(RoleServiceLocal.ADMIN)) {
                     return true;
                 } else {
                     return false;
@@ -290,8 +296,9 @@ public class LoginFilter implements Filter {
 
         }
 
-        return true;
+        return false;
     }
+
 
     private boolean isUserAuthorizedForNonRolePage(PageDef pageDef, HttpServletRequest request, LoginBean loginBean, UserGroup ipUserGroup) {
         VDCUser user = null;

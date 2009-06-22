@@ -226,11 +226,12 @@
                             <ice:inputTextarea id="studyComments"
                                                binding="#{StudyCommentsFragment.commentsTextarea}"
                                                cols="100"
+                                               immediate="true"
+                                               partialSubmit="true"
                                                rows="15"
-                                               styleClass="formHtmlEnabled"
                                                style="display:block; float:left;"
-                                               value="#{StudyCommentsFragment.studyCommentsText}">
-                                   <f:validator validatorId="PlainTextValidator"/>
+                                               value="#{StudyCommentsFragment.studyCommentsText}"
+                                               >
                             </ice:inputTextarea>
                           <ice:message for="studyComments" styleClass="errorMessage"/>
                       </div>

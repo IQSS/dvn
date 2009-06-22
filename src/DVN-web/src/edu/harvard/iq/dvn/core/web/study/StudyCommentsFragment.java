@@ -160,13 +160,22 @@ public class StudyCommentsFragment extends VDCBaseBean implements Serializable {
 
      public void save(ActionEvent event) {
          String value = commentsTextarea.getValue().toString();
-         if (value == null || (value.toString()).trim().isEmpty()) {
+         boolean isValidText = true;
+         FacesContext context   = FacesContext.getCurrentInstance();
+         UIComponent toValidate = (UIComponent)commentsTextarea;
+         Object objValue        = commentsTextarea.getValue();
+         PlainTextValidator validator = new PlainTextValidator();
+         if (!validator.isValidTextEntry(context, toValidate, value)) {
+            isValidText = false;
+            context.renderResponse();
+         } else if (value == null || (value.toString()).trim().isEmpty()) {
                 FacesMessage message = new FacesMessage("Blank comments are not allowed. Please enter a comment to continue.");
                 message.setSeverity(FacesMessage.SEVERITY_ERROR);
                 ((UIInput)commentsTextarea).setValid(false);
-                FacesContext context = FacesContext.getCurrentInstance();
+                context = FacesContext.getCurrentInstance();
                 context.addMessage(commentsTextarea.getClientId(context), message);
                 context.renderResponse();
+                
          } else {
              studyCommentService.addComment(commentsTextarea.getValue().toString(), getVDCSessionBean().getUser().getId(), studyId);
              String truncatedComment = (commentsTextarea.getValue().toString().length() <= 25) ? commentsTextarea.getValue().toString() : commentsTextarea.getValue().toString().substring(0, 25);
@@ -178,6 +187,16 @@ public class StudyCommentsFragment extends VDCBaseBean implements Serializable {
      }
 
      public String cancel() {
+         FacesContext context   = FacesContext.getCurrentInstance();
+         UIComponent toValidate = (UIComponent)commentsTextarea;
+         Object value           = commentsTextarea.getValue();
+         PlainTextValidator validator = new PlainTextValidator();
+         validator.validate(context, toValidate, value);
+         Iterator iterator = context.getMessages(toValidate.getClientId(context));
+         while (iterator.hasNext()) {
+             FacesMessage message = (FacesMessage)iterator.next();
+             iterator.remove();
+         }
          commentsTextarea.setValue("");
          actionComplete = false;
          return "cancelStudyComment";
@@ -562,7 +581,6 @@ public class StudyCommentsFragment extends VDCBaseBean implements Serializable {
     public void setStudyCommentsText(String studyCommentsText) {
         this.studyCommentsText = studyCommentsText;
     }
-
 
 
     /* utils */

@@ -338,6 +338,17 @@ public class EditStudyServiceBean implements edu.harvard.iq.dvn.core.study.EditS
                 }
             }
         }
+
+        // persist new categories and flush
+        // this is done here, because, since a study file could change categories, we need the new category to get persisted
+        // before the old categoy gets deleted (otherwise the persistence layer will attempt to set the category_id on the study file
+        // to null when the delete happens throwing a SQL not null exception)
+        for (FileCategory cat : study.getFileCategories()) {
+            if (cat.getId() == null) {
+                em.persist(cat);
+            }
+        }
+        em.flush();
         
         // now delete categories that no longer have files
         Iterator catIter = study.getFileCategories().iterator();

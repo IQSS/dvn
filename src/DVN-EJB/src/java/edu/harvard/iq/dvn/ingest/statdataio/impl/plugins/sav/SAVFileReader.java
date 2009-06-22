@@ -305,23 +305,45 @@ public class SAVFileReader extends StatDataFileReader{
     Map<String, String> shortToLongVarialbeNameTable = new LinkedHashMap<String, String>();
 
 
+    /**
+     *
+     */
     protected String MissingValueForTextDataFileNumeric = "NA";
 
+    /**
+     *
+     * @return
+     */
     public String getMissingValueForTextDataFileNumeric() {
         return MissingValueForTextDataFileNumeric;
     }
 
+    /**
+     *
+     * @param MissingValueToken
+     */
     public void setMissingValueForTextDataFileNumeric(String MissingValueToken) {
         this.MissingValueForTextDataFileNumeric = MissingValueToken;
     }
 
 
+    /**
+     *
+     */
     protected String MissingValueForTextDataFileString = "";
 
+    /**
+     *
+     * @return
+     */
     public String getMissingValueForTextDataFileString() {
         return MissingValueForTextDataFileString;
     }
 
+    /**
+     *
+     * @param MissingValueToken
+     */
     public void setMissingValueForTextDataFileString(String MissingValueToken) {
         this.MissingValueForTextDataFileString = MissingValueToken;
     }
@@ -340,18 +362,8 @@ public class SAVFileReader extends StatDataFileReader{
     }
     
     private void init(){
-        //
-//        out.println("######### gourping #########"+
-//            doubleNumberFormatter.isGroupingUsed());
         
         doubleNumberFormatter.setGroupingUsed(false);
-
-//        out.println("####################### faction #########"+
-//            doubleNumberFormatter.getMinimumFractionDigits());
-//        out.println("####################### int #########"+
-//            doubleNumberFormatter.FRACTION_FIELD);
-//        out.println("####################### int #########"+
-//            doubleNumberFormatter.getMinimumIntegerDigits());
     }
     
     // Accessor Methods  ----------------------------------------------------//
@@ -1530,17 +1542,6 @@ while(true ){
                     break;
                 case 4: 
                     // Release andMachine-SpecificOBS-Type Information
-//                    List<byte[]> obsTypeInfo = new ArrayList<byte[]>();
-//                    obsTypeInfo = getRT7SubTypefieldData(stream);
-//
-//                    for (int ik = 0; ik< obsTypeInfo.size();ik++){
-//
-//                            String dphex = new String(Hex.encodeHex(
-//                                    obsTypeInfo.get(ik) ));
-//                          out.println(ik+"-th item("+OBStypes[ik]+") ="+ dphex);
-//                          OBStypeIfomation.put(OBStypes[ik], dphex);
-//                    }
-//                    parseRT7SubTypefield(stream);
                     headerSection = parseRT7SubTypefieldHeader(stream);
                     if (headerSection != null){
                         int unitLength = headerSection[0];
@@ -1687,12 +1688,6 @@ while(true ){
                         // throw new IOException
                     }
 
-
-
-
-
-
-
                     break;
                 case 14:
                     // Extended strings
@@ -1734,10 +1729,6 @@ while(true ){
                     parseRT7SubTypefield(stream);
             }
 
-            
-
-
-
         } catch (IOException ex){
             ex.printStackTrace();
         }
@@ -1748,8 +1739,6 @@ while(true ){
             break;
         }
     }
-
-        
         
         dbgLog.fine("***** decodeRecordType7(): end *****");
     }
@@ -1961,28 +1950,45 @@ while(true ){
         boolean hasStringVarContinuousBlock = 
             obsNonVariableBlockSet.size() > 0 ? true : false;
         dbgLog.fine("hasStringVarContinuousBlock="+hasStringVarContinuousBlock);
+        
         int ii = 0;
+        
         int OBS = LENGTH_SAV_OBS_BLOCK;
         int nOBS = OBSUnitsPerCase;
+        
         dbgLog.fine("OBSUnitsPerCase="+OBSUnitsPerCase);
+        
         int caseIndex = 0;
 
         variableTypeFinal = new int[varQnty];
-
         Arrays.fill(variableTypeFinal, 0);
 
         int numberOfDecimalVariables = 0;
         
-        LinkedList<Object> dataLine = new LinkedList<Object>();
+        //LinkedList<Object> dataLine = new LinkedList<Object>();
+        List<Object> dataLine = new ArrayList<Object>();
         
+        // Sets for NA-string-to-NaN conversion
+        Set<Integer> NaNlocationNumeric = new LinkedHashSet<Integer>();
+        Set<Integer> NaNlocationString = new LinkedHashSet<Integer>();
+        // missing values are written to the tab-delimited file by
+        // using the default or user-specified missing-value  strings;
+        // however, to calculate UNF/summary statistics,
+        // classes for these calculations require their specific 
+        // missing values that differ from the above missing-value
+        // strings; therefore, after row data for the tab-delimited 
+        // file are written, missing values in a row are changed to
+        // UNF/summary-statistics-OK ones.
         
+        // data-storage object for sumStat
         dataTable2 = new Object[varQnty][caseQnty];
         
         try {
             // this compression is applied only to non-float data, i.e. integer;
             // 8-byte float datum is kept in tact
-        boolean hasReachedEOF = false;
-OBSERVATION: while(true){
+            boolean hasReachedEOF = false;
+            
+        OBSERVATION: while(true){
             dbgLog.finer("ii="+ii+"-th iteration");
 
             byte[] octate = new byte[LENGTH_SAV_OBS_BLOCK];
@@ -1994,7 +2000,6 @@ OBSERVATION: while(true){
 
             String dphex = new String(Hex.encodeHex(octate));
             //dbgLog.finer("dphex="+ dphex);
-
 
             
             for (int i = 0; i < LENGTH_SAV_OBS_BLOCK; i++) {
@@ -2014,11 +2019,13 @@ OBSERVATION: while(true){
                         hasReachedEOF = true;
                         break;
                     case 253:
-                        // FD uncompressed data follows after this octete
+                        // FD: uncompressed data follows after this octate
                         // long string datum or float datum
+                        // read the following octate
                         byte[] uncompressedByte = new byte[LENGTH_SAV_OBS_BLOCK];
                         int ucbytes = stream.read(uncompressedByte);
                         int typeIndex = (ii*OBS + i)%nOBS;
+                        
                         if ((OBSwiseTypelList.get(typeIndex) > 0)||
                             (OBSwiseTypelList.get(typeIndex)== -1)){
                             // code= >0 |-1: string or its conitiguous block
@@ -2027,6 +2034,7 @@ OBSERVATION: while(true){
                                 Arrays.copyOfRange(uncompressedByte,
                                 0, LENGTH_SAV_OBS_BLOCK),"US-ASCII");
                             //out.println("str_datum="+strdatum+"<-");
+                            // add this non-missing-value string datum 
                             dataLine.add(strdatum);
                             //out.println("dataLine(String)="+dataLine);
                         } else if (OBSwiseTypelList.get(typeIndex)==0){
@@ -2039,13 +2047,15 @@ OBSERVATION: while(true){
                             }
 
                             Double ddatum  = bb_double.getDouble();
-                            //dbgLog.finer("ddatum="+ddatum);
+                            // out.println("ddatum="+ddatum);
+                            // add this non-missing-value numeric datum
                             dataLine.add(doubleNumberFormatter.format(ddatum)) ;
 
                         } else {
                             throw new IOException("out-of-range value was found");
                         }
-                        // EOF check 
+                        
+                        // EOF-check after reading this octate
                         if (stream.available() == 0){
                             hasReachedEOF = true;
                             dbgLog.fine(
@@ -2062,17 +2072,18 @@ OBSERVATION: while(true){
                         // string variable does not accept space-only data
                         // cf: uncompressed case
                         // 20 20 20 20 20 20 20 20
-                    
+                        // add the string missing value
+                        // out.println("254: String missing data");
                         dataLine.add(" ");
+ 
                         break;
                     case 255:
                         // FF: system missing value for numeric variables
                         // cf: uncompressed case (sysmis)
                         // FF FF FF FF FF FF eF FF(little endian)
-                        
-                        dataLine.add("NaN");
-                        //dataLine.add(systemMissingValue);
-//                        dataLine.add(doubleNumberFormatter.format(Double.NaN));// this return "?"
+                        // add the numeric missing value
+                        dataLine.add(MissingValueForTextDataFileNumeric);
+
                         break;
                     case 0:
                         // 00: do nothing
@@ -2082,45 +2093,49 @@ OBSERVATION: while(true){
                         if ((byteCode > 0) && (byteCode < 252)) {
                             // datum is compressed
                             //Integer unCompressed = Integer.valueOf(byteCode -100);
+                            // add this uncompressed numeric datum
                             Double unCompressed = Double.valueOf(byteCode -100);
                             dataLine.add(doubleNumberFormatter.format(unCompressed));
-                            //dbgLog.finer("uncompressed="+unCompressed);
-                            //dbgLog.finer("dataline="+dataLine);
+                            // out.println("uncompressed="+unCompressed);
+                            // out.println("dataline="+dataLine);
                         }
-                }// switch
+                }// end of switch
                 
-                //dbgLog.finer("end of switch");
+                // out.println("end of switch");
+                
                 
                 // The-end-of-a-case(row)-processing
                 int varCounter = (ii*OBS + i +1)%nOBS;
                 dbgLog.finer("variable counter="+varCounter+"(ii="+ii+")");
-                if ((ii*OBS + i +1)%nOBS == 0){
                 
-                    //dbgLog.finer("all variables in a case are parsed == nOBS");
-                    //dbgLog.finer("hasStringVarContinuousBlock="+hasStringVarContinuousBlock);
-                    
-                    // String-variable's continuous block exits
-                    if (hasStringVarContinuousBlock){
-                    // continuous blocks: string case
-                    // concatenating process
-                        //dbgLog.fine("concatenating process starts");
+                if ((ii*OBS + i +1)%nOBS == 0){
+                    //out.println("dataLine(before)="+dataLine);
 
-                        //dbgLog.fine("dataLine(before)="+dataLine);
-                        //dbgLog.fine("dataLine(before:size)="+dataLine.size());
+                    // out.println("all variables in a case are parsed == nOBS");
+                    // out.println("hasStringVarContinuousBlock="+hasStringVarContinuousBlock);
+                    
+                    // check whether a string-variable's continuous block exits
+                    // if so, they must be joined
+                    if (hasStringVarContinuousBlock){
+                    // string-variable's continuous-block-concatenating-processing
+                    
+                        //out.println("concatenating process starts");
+                        //out.println("dataLine(before)="+dataLine);
+                        //out.println("dataLine(before:size)="+dataLine.size());
 
                         StringBuilder sb = new StringBuilder("");
                         int firstPosition = 0;
-                        List<Integer> removeJ = new ArrayList<Integer>();
+                        
                         Set<Integer> removeJset = new HashSet<Integer>();
                         for (int j=0; j< nOBS; j++){
-                            //dbgLog.fine("j="+j+"-th type ="+OBSwiseTypelList.get(j));
+                            dbgLog.finer("j="+j+"-th type ="+OBSwiseTypelList.get(j));
                             if (OBSwiseTypelList.get(j) == -1){
                                 // String continued fount at j-th 
                                 // look back the j-1 
                                 firstPosition = j-1;
                                 int lastJ = j;
                                 String concatanated = null;
-                                removeJ.add(j);
+                               
                                 removeJset.add(j);
                                 sb.append(dataLine.get(j-1));
                                 sb.append(dataLine.get(j));
@@ -2133,66 +2148,67 @@ OBSERVATION: while(true){
                                        break;
                                     } else {
                                         sb.append(dataLine.get(j+jc));
-                                        removeJ.add(j+jc);
                                         removeJset.add(j+jc);
                                     }
                                 }
                                 dataLine.set(j-1, concatanated); 
                                 
-                                
-                                
-                                
                                 //out.println(j-1+"th concatanated="+concatanated);
                                 j = lastJ -1; 
                            
-                            }
-                        } // loop-j
-                        for (int jr = (removeJ.size()-1); jr>=0;jr--){
-                            //out.println(removeJ.get(jr)+"th removed");
-                            dataLine.remove(removeJ.get(jr));
-                        }
-//                        for (int jr = (removeJ.size()-1); jr>=0;jr--){
-//                            out.println(removeJ.get(jr)+"th removed?");
-//                            if (dataLine.get(removeJ.get(jr)).equals("")){
-//                                out.println("null yes");
-//                            }
-//                        }
-                        LinkedList<Object> newDataLine = new LinkedList<Object>();
-
+                            } // end-of-if: continuous-OBS only
+                        } // end of loop-j
+                        
+                        //out.println("removeJset="+removeJset);
+                        
+                        // a new list that stores a new case with concatanated string data
+                        List<Object> newDataLine = new ArrayList<Object>();
+                        
                         for (int jl=0; jl<dataLine.size();jl++){
-                            //out.println(jl+"-th= "+dataLine.get(jl));
+                            //out.println("jl="+jl+"-th datum =["+dataLine.get(jl)+"]");
+                            
                             if (!removeJset.contains(jl) ){
-//                                if (dataLine.get(jl)==null){
-//                                    out.println(jl+"="+dataLine.get(jl));
+                            
+//                                if (dataLine.get(jl).equals(MissingValueForTextDataFileString)){
+//                                    out.println("NA-S jl= "+jl+"=["+dataLine.get(jl)+"]");
+//                                } else if (dataLine.get(jl).equals(MissingValueForTextDataFileNumeric)){
+//                                    out.println("NA-N jl= "+jl+"=["+dataLine.get(jl)+"]");
+//                                } else if (dataLine.get(jl)==null){
+//                                    out.println("null case jl="+jl+"=["+dataLine.get(jl)+"]");
 //                                } else if (dataLine.get(jl).equals("NaN")){
-//                                    out.println("NaN jl= "+jl+"="+dataLine.get(jl));
+//                                    out.println("NaN jl= "+jl+"=["+dataLine.get(jl)+"]");
 //                                } else if (dataLine.get(jl).equals("")){
-//                                    out.println("NaN jl= "+jl+"="+dataLine.get(jl));
+//                                    out.println("blank jl= "+jl+"=["+dataLine.get(jl)+"]");
+//                                } else if (dataLine.get(jl).equals(" ")){
+//                                    out.println("space jl= "+jl+"=["+dataLine.get(jl)+"]");
 //                                }
+                                
                                 newDataLine.add(dataLine.get(jl));
+                            } else {
+//                                out.println("Excluded: jl="+jl+"-th datum=["+dataLine.get(jl)+"]");
                             }
-                        }
+                        }  // end of loop-jl
 
-//                        dbgLog.finer("new dataLine="+newDataLine);
-//                        dbgLog.finer("new dataLine(size)="+newDataLine.size());
+                        //out.println("new dataLine="+newDataLine);
+                        //out.println("new dataLine(size)="+newDataLine.size());
 
                         dataLine = newDataLine;
 
-                    }// stringContinuousVar
+                    } // end-if: stringContinuousVar-exist case
 
-                    
+                    // caseIndex starts from 1 not 0
                     caseIndex = (ii*OBS + i + 1)/nOBS;
-                    dbgLog.finer("caseIndex="+caseIndex);
+                    //dbgLog.finer("caseIndex="+caseIndex);
+                    
                     for (int k=0; k<dataLine.size(); k++){
-                        //dbgLog.fine("k="+k+"-th iteration");
-
-                        //dbgLog.fine("variableTypelList.get(k)="+variableTypelList.get(k));
+                        
+                        // out.println("k="+k+"-th variableTypelList="+variableTypelList.get(k));
 
                         if (variableTypelList.get(k)>0){
-                        
+                            // String variable case: set to  -1
                             variableTypeFinal[k] = -1;
                             
-                            // extract the string up to its length (no padding)
+                            // shorten the string up to its length (no padding)
                             
                             if ((dataLine.get(k)).toString().length() > variableTypelList.get(k)){
                                 dataLine.set(k,
@@ -2208,57 +2224,118 @@ OBSERVATION: while(true){
                             
                             if (trimmed.equals(".")){
                                 // missing value
-                                dataLine.set(k, StringMissingValue);
+                                // old dataLine.set(k, StringMissingValue);
+                                dataLine.set(k, MissingValueForTextDataFileString);
+
+                                // add this index to NaN-to-NA-replacement sentinel
+                                NaNlocationString.add(k);
                             } else if (dataLine.get(k).equals(" ") && trimmed.equals("")) {
                                 // space-missing value
-                                dataLine.set(k, StringMissingValue);
+                                // old dataLine.set(k, StringMissingValue);
+                                dataLine.set(k, MissingValueForTextDataFileString);
+
+                                // add this index to NaN-to-NA-replacement sentinel
+                                NaNlocationString.add(k);
                             } else {
                                 // padding removed
                                 String paddRemoved = StringUtils.stripEnd(dataLine.get(k).toString(), null);
                                 //dbgLog.fine("paddRemoved="+paddRemoved);
                                 dataLine.set(k,paddRemoved);
-                            }
-                        }
+                            } 
+                            
+                            // end of String var case
                         
-                        if (!dataLine.get(k).equals("NaN")){
-                            // to do date conversion
+                        } else {
+                            // numeric var case
+                            if (dataLine.get(k).equals(MissingValueForTextDataFileNumeric)){
+                                // out.println("NA-N k= "+k+"=["+dataLine.get(k)+"]");
+                                // add this index to NaN-to-NA-replacement sentinel
+                                NaNlocationNumeric.add(k);
+                            }
+
+                        } // end of variable-type check
+                        
+                        
+                        //out.println("NaNlocationNumeric="+NaNlocationNumeric);
+                        //out.println("NaNlocationString="+NaNlocationString);
+
+                        
+                        // old if (!dataLine.get(k).equals("NaN")){
+                        if (!dataLine.get(k).equals(MissingValueForTextDataFileNumeric)){
+                        
+// to do date conversion
                         //    out.println("i="+i+"-th ii="+ii+"th formatCode="+k+"\t"+variableNameList.get(k));
                             
                             String variableFormatType = SPSSConstants.FORMAT_CATEGORY_TABLE.get(printFormatTable.get(variableNameList.get(k)));
                         //    out.println("k="+k+"th variable format="+variableFormatType);
                             
                             if (variableFormatType.equals("date")){
-                        //        out.println("date case");
+                                //out.println("date case");
                                 
                             } else if (variableFormatType.equals("time")) {
-                       //         out.println("time case");
+                                //out.println("time case");
                             
                             } else if (variableFormatType.equals("other")){
-                      //          out.println("other");
+                                //out.println("other non-date/time case");
                             
                                 if (printFormatTable.get(variableNameList.get(k)).equals("WKDAY")){
                                     // day of week
-                       //             out.println("wkday");
+                                    //out.println("wkday");
                                 } else if (printFormatTable.get(variableNameList.get(k)).equals("MONTH")){
                                     // month
-                       //             out.println("month");
+                                    //out.println("month");
                                 }
-                            }
-
-
-
-
-
+                            } 
 
                         
-                        }
+                        } // end: date-time-datum check
                     
                     
-                    } // loop-k
+                    } // end: loop-k(2nd: variablte-wise-check)
                     
-                    // dump the line to the tab-delimited file
-                    dbgLog.finer(caseIndex+"-th:"+StringUtils.join(dataLine, "\t"));
+                    // dump the line to the tab-delimited file first
+                    // then replace the missing value token with those for
+                    // calculating UNF/summary statistic
+                    // out.println("tab-data: caseIndex="+caseIndex+"-th:"+StringUtils.join(dataLine, "\t"));
+
+                    
                     pwout.println(StringUtils.join(dataLine, "\t"));
+                    
+                    // replace NA-strings for a tab-limited file with
+                    // those for UNF/summaryStatistics 
+                    // numeric variable
+                    
+                    if (NaNlocationNumeric.size() > 0){
+                        // NA-String to NaN conversion
+                        for (int el : NaNlocationNumeric){
+                            //out.println("replaced="+el+"th element="+dataLine.get(el));
+                            if (dataLine.get(el).equals(MissingValueForTextDataFileNumeric)){
+                                dataLine.set(el, Double.toHexString(systemMissingValue));
+                                //out.println("replaced="+el+"th element="+dataLine.get(el));
+                            }
+
+                        }
+                        //out.println(caseIndex+"-th case:(after NA processing[N]):"+StringUtils.join(dataLine, "\t"));
+
+                    }
+                    // string variable
+                    if (NaNlocationString.size() > 0){
+                        // NaN-String to NaN conversion
+                        for (int el : NaNlocationString){
+
+                            if (dataLine.get(el).equals(MissingValueForTextDataFileString)){
+                               dataLine.set(el, Double.toHexString(systemMissingValue));
+                                //out.println("replaced="+el+"th element="+dataLine.get(el));
+                            }
+                        }
+                        //out.println(caseIndex+"-th case:(after NA processing[S]):"+StringUtils.join(dataLine, "\t"));
+
+                    }
+                    
+                    
+                    //out.println(caseIndex+"-th case:(after NA processing):"+StringUtils.join(dataLine, "\t")+"\n\n");
+                    
+                    
                     
                     for (int ij=0; ij<varQnty;ij++ ){
                         dataTable2[ij][caseIndex-1] = dataLine.get(ij);
@@ -2275,9 +2352,11 @@ OBSERVATION: while(true){
                         }
                     }
                     
+                    // reset the case-wise working objects
+
+                    NaNlocationNumeric.clear();
+                    NaNlocationString.clear();
                     dataLine.clear();
-                    //dbgLog.finer("dataLine:size="+dataLine.size());
-                    
                     
                     if (hasReachedEOF){
                         break;
@@ -2288,37 +2367,37 @@ OBSERVATION: while(true){
 
             } // loop-i (OBS unit)
             
-    if ( (hasReachedEOF) ||(stream.available() == 0)){
-        // reached the end of this file
-        // do exit-processing
-        
-        // check the actual number of cases
-        if (caseQnty == -1){
-            // caseQnty is unknown case
-            caseQnty = caseIndex;
+            if ( (hasReachedEOF) ||(stream.available() == 0)){
+                // reached the end of this file
+                // do exit-processing
 
-        } else if (caseQnty == caseIndex){
-            // header's case information was correct
-            dbgLog.fine("recorded number of cases is the same as the actual number");
-        } else {
-            // header's case information disagree with the actual one
-            // take the actual one
-            caseQnty = caseIndex;
-        }
-        
-        
-        dbgLog.fine("***** reached the end of the file at "+ii
-            +"th iteration *****");
-            
-            
-        break OBSERVATION;
-    }
-            
-    ii++;
-            
-} // while loop
+                // check the actual number of cases
+                if (caseQnty == -1){
+                    // caseQnty is unknown case
+                    caseQnty = caseIndex;
 
-pwout.close();
+                } else if (caseQnty == caseIndex){
+                    // header's case information was correct
+                    dbgLog.fine("recorded number of cases is the same as the actual number");
+                } else {
+                    // header's case information disagree with the actual one
+                    // take the actual one
+                    caseQnty = caseIndex;
+                }
+
+
+                dbgLog.fine("***** reached the end of the file at "+ii
+                    +"th iteration *****");
+
+
+                break OBSERVATION;
+            }
+
+            ii++;
+            
+        } // while loop
+
+            pwout.close();
         } catch (IOException ex) {
            
         }
@@ -2337,8 +2416,8 @@ pwout.close();
         dbgLog.fine("numberOfDecimalVariables="+numberOfDecimalVariables);
         dbgLog.fine("decimalVariableSet="+decimalVariableSet);
         //out.println("variableTypelList=\n"+ variableTypelList.toString());
-        //print2Darray(dataTable2, "dataTable2");
-        
+
+        // out.println("dataTable2:\n"+Arrays.deepToString(dataTable2));
         dbgLog.fine("***** decodeRecordTypeDataCompressed(): end *****");
     }
 
@@ -2392,20 +2471,24 @@ pwout.close();
         dbgLog.fine("OBSUnitsPerCase="+OBSUnitsPerCase);
         
         int caseIndex = 0;
+        
         variableTypeFinal = new int[varQnty];
         Arrays.fill(variableTypeFinal, 0);
 
         int numberOfDecimalVariables = 0;
         
-
-
-        LinkedList<Object> dataLine = new LinkedList<Object>();
-
+        List<Object> dataLine = new ArrayList<Object>();
+        
+        // Sets for NA-string-to-NaN conversion
+        Set<Integer> NaNlocationNumeric = new LinkedHashSet<Integer>();
+        Set<Integer> NaNlocationString = new LinkedHashSet<Integer>();
+        
+        // data-storage object for sumStat
         dataTable2 = new Object[varQnty][caseQnty];
 
 
         try {
-            for (int i=0; ;i++){
+            for (int i=0; ;i++){  // case-wise loop
                 
                 byte[] buffer = new byte[OBS*nOBS];
                 
@@ -2415,7 +2498,7 @@ pwout.close();
 
                 for (int k=0;k<nOBS; k++){
                     int offset= OBS*k;
-                    // to do : sysmiss check:
+
                     // uncompressed case
                     // numeric missing value == sysmis
                     // FF FF FF FF FF FF eF FF(little endian)
@@ -2431,31 +2514,30 @@ pwout.close();
                     if (isNumeric){
                         dbgLog.fine(k+"-th variable is numeric");
                         // interprete as double
-                            ByteBuffer bb_double = ByteBuffer.wrap(
-                                buffer, offset , LENGTH_SAV_OBS_BLOCK);
-                            if (isLittleEndian){
-                                bb_double.order(ByteOrder.LITTLE_ENDIAN);
-                            }
-                            //char[] hexpattern =
-                            String dphex = new String(Hex.encodeHex(
-                                    Arrays.copyOfRange(bb_double.array(),
-                                    offset, offset+LENGTH_SAV_OBS_BLOCK)));
-                            dbgLog.fine("dphex="+ dphex);
+                        ByteBuffer bb_double = ByteBuffer.wrap(
+                            buffer, offset , LENGTH_SAV_OBS_BLOCK);
+                        if (isLittleEndian){
+                            bb_double.order(ByteOrder.LITTLE_ENDIAN);
+                        }
+                        //char[] hexpattern =
+                        String dphex = new String(Hex.encodeHex(
+                                Arrays.copyOfRange(bb_double.array(),
+                                offset, offset+LENGTH_SAV_OBS_BLOCK)));
+                        dbgLog.fine("dphex="+ dphex);
                             
-                            //if (dphex.equals(OBStypeIfomation.get("SYSMIS"))){
-                            if ((dphex.equals("ffffffffffffefff"))||
-                                (dphex.equals("ffefffffffffffff"))){
-                                //dataLine.add(systemMissingValue);
-                                dataLine.add("NaN");
-                            } else {
-                                Double ddatum  = bb_double.getDouble();
-                                dbgLog.fine("ddatum="+ddatum);
-                                //dataLine.add(ddatum);
-                                dataLine.add(doubleNumberFormatter.format(ddatum)) ;
+                        //if (dphex.equals(OBStypeIfomation.get("SYSMIS"))){
+                        if ((dphex.equals("ffffffffffffefff"))||
+                            (dphex.equals("ffefffffffffffff"))){
+                            //dataLine.add(systemMissingValue);
+                            // add the numeric missing value
+                            dataLine.add(MissingValueForTextDataFileNumeric);
+                        } else {
+                            Double ddatum  = bb_double.getDouble();
+                            dbgLog.fine("ddatum="+ddatum);
 
-                            }
-                            
-
+                            // add this non-missing-value numeric datum
+                            dataLine.add(doubleNumberFormatter.format(ddatum)) ;
+                        }
                     
                     } else {
                         dbgLog.fine(k+"-th variable is string");
@@ -2466,183 +2548,242 @@ pwout.close();
                         // "20 20 20 20 20 20 20 20"
                         
                         
-                        
                         String strdatum = new String(
                             Arrays.copyOfRange(buffer,
                             offset, (offset+LENGTH_SAV_OBS_BLOCK)),"US-ASCII");
                         dbgLog.fine("str_datum="+strdatum);
-                        
+                        // add this non-missing-value string datum 
                         dataLine.add(strdatum);
-                        
 
-                    
-                    
                     } // if isNumeric
                 
 
                 
                 } // k-loop
                 
-                dbgLog.fine("all variables in a case are parsed == nOBS");
-                dbgLog.fine("hasStringVarContinuousBlock="+hasStringVarContinuousBlock);
+                //dbgLog.fine("all variables in a case(row) are parsed == nOBS");
+                //dbgLog.fine("hasStringVarContinuousBlock="+hasStringVarContinuousBlock);
 
+                // out.println("i="+i+"th dataLine(before)="+dataLine);
 
-                    // String-variable's continuous block exits
-                    if (hasStringVarContinuousBlock){
-                    // continuous blocks: string case
-                    // concatenating process
-                        dbgLog.fine("concatenating process starts");
+                // String-variable's continuous block exits
+                if (hasStringVarContinuousBlock){
+                // continuous blocks: string case
+                // concatenating process
+                    //dbgLog.fine("concatenating process starts");
 
-                        dbgLog.fine("dataLine(before)="+dataLine);
-                        dbgLog.fine("dataLine(before:size)="+dataLine.size());
+                    //dbgLog.fine("dataLine(before)="+dataLine);
+                    //dbgLog.fine("dataLine(before:size)="+dataLine.size());
 
-                        StringBuilder sb = new StringBuilder("");
-                        int firstPosition = 0;
-                        List<Integer> removeJ = new ArrayList<Integer>();
-                        Set<Integer> removeJset = new HashSet<Integer>();
-                        for (int j=0; j< nOBS; j++){
-                            dbgLog.fine("j="+j+"-th type ="+OBSwiseTypelList.get(j));
-                            if (OBSwiseTypelList.get(j) == -1){
-                                // String continued fount at j-th 
-                                // look back the j-1 
-                                firstPosition = j-1;
-                                int lastJ = j;
-                                String concatanated = null;
-                                removeJ.add(j);
-                                removeJset.add(j);
-                                sb.append(dataLine.get(j-1));
-                                sb.append(dataLine.get(j));
-                                for (int jc =1; ; jc++ ){
-                                    if (OBSwiseTypelList.get(j+jc) != -1){
-                                    // j is the end unit of this string variable
-                                        concatanated = sb.toString();
-                                        sb.setLength(0);
-                                       lastJ = j+jc;
-                                       break;
-                                    } else {
-                                        sb.append(dataLine.get(j+jc));
-                                        removeJ.add(j+jc);
-                                        removeJset.add(j+jc);
-                                    }
+                    StringBuilder sb = new StringBuilder("");
+                    int firstPosition = 0;
+
+                    Set<Integer> removeJset = new HashSet<Integer>();
+                    for (int j=0; j< nOBS; j++){
+                        dbgLog.finer("j="+j+"-th type ="+OBSwiseTypelList.get(j));
+                        if (OBSwiseTypelList.get(j) == -1){
+                            // String continued fount at j-th 
+                            // look back the j-1 
+                            firstPosition = j-1;
+                            int lastJ = j;
+                            String concatanated = null;
+
+                            removeJset.add(j);
+                            sb.append(dataLine.get(j-1));
+                            sb.append(dataLine.get(j));
+                            for (int jc =1; ; jc++ ){
+                                if (OBSwiseTypelList.get(j+jc) != -1){
+                                // j is the end unit of this string variable
+                                    concatanated = sb.toString();
+                                    sb.setLength(0);
+                                   lastJ = j+jc;
+                                   break;
+                                } else {
+                                    sb.append(dataLine.get(j+jc));
+                                    removeJset.add(j+jc);
                                 }
-                                dataLine.set(j-1, concatanated); 
-                                
-                                //out.println(j-1+"th concatanated="+concatanated);
-                                j = lastJ -1; 
-                           
                             }
-                        } // loop-j
-                        for (int jr = (removeJ.size()-1); jr>=0;jr--){
-                            //out.println(removeJ.get(jr)+"th removed");
-                            dataLine.remove(removeJ.get(jr));
-                        }
-//                        for (int jr = (removeJ.size()-1); jr>=0;jr--){
-//                            out.println(removeJ.get(jr)+"th removed?");
-//                            if (dataLine.get(removeJ.get(jr)).equals("")){
-//                                out.println("null yes");
+                            dataLine.set(j-1, concatanated); 
+
+                            //out.println(j-1+"th concatanated="+concatanated);
+                            j = lastJ -1; 
+
+                        } // end-of-if: continuous-OBS only
+                    } // end of loop-j
+
+                    //out.println("removeJset="+removeJset);
+                    // a new list that stores a new case with concatanated string data
+                    List<Object> newDataLine = new ArrayList<Object>();
+                    
+                    for (int jl=0; jl<dataLine.size();jl++){
+                        //out.println("jl="+jl+"-th datum =["+dataLine.get(jl)+"]");
+                        
+                        if (!removeJset.contains(jl) ){
+                        
+//                            if (dataLine.get(jl).equals(MissingValueForTextDataFileString)){
+//                                out.println("NA-S jl= "+jl+"=["+dataLine.get(jl)+"]");
+//                            } else if (dataLine.get(jl).equals(MissingValueForTextDataFileNumeric)){
+//                                out.println("NA-N jl= "+jl+"=["+dataLine.get(jl)+"]");
+//                            } else if (dataLine.get(jl)==null){
+//                                out.println("null case jl="+jl+"=["+dataLine.get(jl)+"]");
+//                            } else if (dataLine.get(jl).equals("NaN")){
+//                                out.println("NaN jl= "+jl+"=["+dataLine.get(jl)+"]");
+//                            } else if (dataLine.get(jl).equals("")){
+//                                out.println("blank jl= "+jl+"=["+dataLine.get(jl)+"]");
+//                            } else if (dataLine.get(jl).equals(" ")){
+//                                out.println("space jl= "+jl+"=["+dataLine.get(jl)+"]");
 //                            }
-//                        }
-                        LinkedList<Object> newDataLine = new LinkedList<Object>();
-
-                        for (int jl=0; jl<dataLine.size();jl++){
-                            //out.println(jl+"-th= "+dataLine.get(jl));
-                            if (!removeJset.contains(jl) ){
-                               
-//                                if (dataLine.get(jl)==null){
-//                                    out.println(jl+"="+dataLine.get(jl));
-//                                } else if (dataLine.get(jl).equals("NaN")){
-//                                    out.println("NaN jl= "+jl+"="+dataLine.get(jl));
-//                                } else if (dataLine.get(jl).equals("")){
-//                                    out.println("NaN jl= "+jl+"="+dataLine.get(jl));
-//                                }
-                                newDataLine.add(dataLine.get(jl));
-                            }
+                                
+                            newDataLine.add(dataLine.get(jl));
+                        } else {
+//                            out.println("Excluded: jl="+jl+"-th datum=["+dataLine.get(jl)+"]");
                         }
 
-                        //dbgLog.fine("dataLine(after)="+dataLine);
-                        //dbgLog.fine("dataLine(after:size)="+dataLine.size());
+                    }
 
-                        dbgLog.fine("new dataLine="+newDataLine);
-                        dbgLog.fine("new dataLine(size)="+newDataLine.size());
-                        dataLine = newDataLine;
+                    dbgLog.fine("new dataLine="+newDataLine);
+                    dbgLog.fine("new dataLine(size)="+newDataLine.size());
+                    
+                    dataLine = newDataLine;
 
-                    }// stringContinuousVar
+                } // end-if: stringContinuousVar-exist case
 
                 
                 caseIndex++;
-                dbgLog.fine("caseIndex="+caseIndex);
+                dbgLog.finer("caseIndex="+caseIndex);
                 
+                for (int k=0; k<dataLine.size(); k++){
+                    
+                    //out.println("k="+k+"-th variableTypelList="+variableTypelList.get(k));
 
+                    if (variableTypelList.get(k)>0){
+                        // String variable case: set to  -1
+                        variableTypeFinal[k] = -1;
 
-                    for (int k=0; k<dataLine.size(); k++){
-                        //dbgLog.fine("k="+k+"-th iteration");
+                        // shorten the string up to its length (no padding)
 
-                        //dbgLog.fine("variableTypelList.get(k)="+variableTypelList.get(k));
-
-                        if (variableTypelList.get(k)>0){
-                        
-                            variableTypeFinal[k] = -1;
-                            
-                            // extract the string up to its length (no padding)
-                            
-                            if ((dataLine.get(k)).toString().length() > variableTypelList.get(k)){
-                                dataLine.set(k,
-                                    (StringUtils.substring(dataLine.get(k).toString(), 0,
-                                    variableTypelList.get(k))));
-                            } else if (variableTypelList.get(k) < dataLine.get(k).toString().length() ){
-                                throw new IOException("string-reading error: at "+k+"th variable");
-                            }
-                            
-                            // check '.' dot
-                            String trimmed = StringUtils.strip(dataLine.get(k).toString());
-                            //dbgLog.fine("trimed="+trimmed);
-                            
-                            if (trimmed.equals(".")){
-                                // missing value
-                                dataLine.set(k, StringMissingValue);
-                            } else {
-                                // padding removed
-                                String paddRemoved = StringUtils.stripEnd(dataLine.get(k).toString(), null);
-                                //dbgLog.fine("paddRemoved="+paddRemoved);
-                                dataLine.set(k,paddRemoved);
-                            }
+                        if ((dataLine.get(k)).toString().length() > variableTypelList.get(k)){
+                            dataLine.set(k,
+                                (StringUtils.substring(dataLine.get(k).toString(), 0,
+                                variableTypelList.get(k))));
+                        } else if (variableTypelList.get(k) < dataLine.get(k).toString().length() ){
+                            throw new IOException("string-reading error: at "+k+"th variable");
                         }
-                        
-                        if (!dataLine.get(k).equals("NaN")){
-                            // to do date conversion 
-                            // to do date conversion
-                            out.println("i="+i+"-th ii="+ii+"th formatCode="+k+"\t"+variableNameList.get(k));
-                            
-                            String variableFormatType = SPSSConstants.FORMAT_CATEGORY_TABLE.get(printFormatTable.get(variableNameList.get(k)));
-                            out.println("k="+k+"th variable format="+variableFormatType);
-                            
-                            if (variableFormatType.equals("date")){
-                                out.println("date case");
-                                
-                            } else if (variableFormatType.equals("time")) {
-                                out.println("time case");
-                            
-                            } else if (variableFormatType.equals("other")){
-                                out.println("other");
-                            
-                                if (printFormatTable.get(variableNameList.get(k)).equals("WKDAY")){
-                                    // day of week
-                                    out.println("wkday");
-                                } else if (printFormatTable.get(variableNameList.get(k)).equals("MONTH")){
-                                    // month
-                                    out.println("month");
-                                }
-                            }
+
+                        // check '.' dot
+                        String trimmed = StringUtils.strip(dataLine.get(k).toString());
+                        //dbgLog.fine("trimed="+trimmed);
+
+                        if (trimmed.equals(".")){
+                            // missing value
+                            // old dataLine.set(k, StringMissingValue);
+                            dataLine.set(k, MissingValueForTextDataFileString);
+
+                            // add this index to NaN-to-NA-replacement sentinel
+                            NaNlocationString.add(k);
+
+                         } else if (dataLine.get(k).equals(" ") && trimmed.equals("")) {
+                            // space-missing value
+                            // old dataLine.set(k, StringMissingValue);
+                            dataLine.set(k, MissingValueForTextDataFileString);
+
+                            // add this index to NaN-to-NA-replacement sentinel
+                            NaNlocationString.add(k);
+
+                        } else {
+                            // padding removed
+                            String paddRemoved = StringUtils.stripEnd(dataLine.get(k).toString(), null);
+                            //dbgLog.fine("paddRemoved="+paddRemoved);
+                            dataLine.set(k,paddRemoved);
+                        }
+                        // end of String var case
+
+                    } else {
+                        // numeric var case
+                        if (dataLine.get(k).equals(MissingValueForTextDataFileNumeric)){
+                            //out.println("NA-N k= "+k+"=["+dataLine.get(k)+"]");
+                            // add this index to NaN-to-NA-replacement sentinel
+                            NaNlocationNumeric.add(k);
                         }
                     
+                    } // end of variable-type check
+
+                    //out.println("NaNlocationNumeric="+NaNlocationNumeric);
+                    //out.println("NaNlocationString="+NaNlocationString);
+
                     
-                    } // loop-k
+                    if (!dataLine.get(k).equals(MissingValueForTextDataFileNumeric)){
+                        
+// to do date conversion
+                        //out.println("i="+i+"-th ii="+ii+"th formatCode="+k+"\t"+variableNameList.get(k));
+
+                        String variableFormatType = SPSSConstants.FORMAT_CATEGORY_TABLE.get(printFormatTable.get(variableNameList.get(k)));
+                        //out.println("k="+k+"th variable format="+variableFormatType);
+
+                        if (variableFormatType.equals("date")){
+                            //out.println("date case");
+
+                        } else if (variableFormatType.equals("time")) {
+                            //out.println("time case");
+
+                        } else if (variableFormatType.equals("other")){
+                            //out.println("other non-date/time case");
+
+                            if (printFormatTable.get(variableNameList.get(k)).equals("WKDAY")){
+                                // day of week
+                                //out.println("wkday");
+                            } else if (printFormatTable.get(variableNameList.get(k)).equals("MONTH")){
+                                // month
+                                //out.println("month");
+                            }
+                        } 
+// end of date/time block
+                    } // end: date-time-datum check
+
+                } // end: loop-k(2nd: variablte-wise-check)
 
 
 
-                // dump the line to the tab-delimited file
-                dbgLog.finer(caseIndex+"-th:"+StringUtils.join(dataLine, "\t"));
+                // dump the line to the tab-delimited file first
+                // then replace the missing value token with those for
+                // calculating UNF/summary statistic
+                // out.println("tab-data: caseIndex="+caseIndex+"-th:"+StringUtils.join(dataLine, "\t"));
+
                 pwout.println(StringUtils.join(dataLine, "\t"));
+                
+                // replace NA-strings for a tab-limited file with
+                // those for UNF/summaryStatistics 
+                // numeric variable
+                
+                if (NaNlocationNumeric.size() > 0){
+                    // NA-String to NaN conversion
+                    for (int el : NaNlocationNumeric){
+                        //out.println("replaced="+el+"th element="+dataLine.get(el));
+                        if (dataLine.get(el).equals(MissingValueForTextDataFileNumeric)){
+                            dataLine.set(el, Double.toHexString(systemMissingValue));
+                            //out.println("replaced="+el+"th element="+dataLine.get(el));                            
+                        }
+
+                    }
+                    //out.println(caseIndex+"-th case:(after NA processing[N]):"+StringUtils.join(dataLine, "\t"));
+
+                }
+                // string variable
+                if (NaNlocationString.size() > 0){
+                    // NaN-String to NaN conversion
+                    for (int el : NaNlocationString){
+
+                        if (dataLine.get(el).equals(MissingValueForTextDataFileString)){
+                           dataLine.set(el, Double.toHexString(systemMissingValue));
+                            //out.println("replaced="+el+"th element="+dataLine.get(el));                            
+
+                        }
+                    }
+                    //out.println(caseIndex+"-th case:(after NA processing[S]):"+StringUtils.join(dataLine, "\t"));
+                }
+                
+                //out.println(caseIndex+"-th case:(after NA processing):"+StringUtils.join(dataLine, "\t")+"\n\n");
+                
                 
                 for (int ij=0; ij<varQnty;ij++ ){
                     dataTable2[ij][caseIndex-1] = dataLine.get(ij);
@@ -2659,10 +2800,10 @@ pwout.close();
                     }
                 }
                 
-                // clear the linkelist
+                // reset the case-wise working objects
+                NaNlocationNumeric.clear();
+                NaNlocationString.clear();
                 dataLine.clear();
-                
-                
                 
                 if (stream.available() == 0){
                     // reached the end of this file
@@ -2675,10 +2816,11 @@ pwout.close();
 
                     } else if (caseQnty == caseIndex){
                         // header's case information was correct
-                        dbgLog.fine("recorded number of cases is the same as the actual number");
+                        dbgLog.info("recorded number of cases is the same as the actual number");
                     } else {
                         // header's case information disagree with the actual one
                         // take the actual one
+                        dbgLog.info("recorded number of cases in the header is not the same as the actual number:"+caseIndex);
                         caseQnty = caseIndex;
                     }
 
@@ -2689,7 +2831,7 @@ pwout.close();
                     break;
                 } // if eof processing
 
-            } //i-loop
+            } //i-loop: case(row) iteration
 
             // close the writer
             pwout.close();
@@ -2708,13 +2850,11 @@ pwout.close();
         }
         smd.getFileInformation().put("caseQnty", caseQnty);
         smd.setDecimalVariables(decimalVariableSet);
+        
         // contents check
         dbgLog.fine("variableType="+ArrayUtils.toString(variableTypeFinal));
         dbgLog.fine("numberOfDecimalVariables="+numberOfDecimalVariables);
         dbgLog.fine("decimalVariableSet="+decimalVariableSet);
-
-        //print2Darray(dataTable2, "dataTable2");
-
 
         dbgLog.fine("***** decodeRecordTypeDataUnCompressed(): end *****");
     }
@@ -2933,13 +3073,6 @@ pwout.close();
                 // numeric (double) data are now String objects
 
                 dbgLog.fine("Integar case");
-//                 if (varData[0] instanceof Double){
-//                     dbgLog.fine("double");
-//                 } else if (varData[0] instanceof Integer){
-//                     dbgLog.fine("integer");
-//                 } else{
-//                     dbgLog.fine(varData[0].getClass().getName());
-//                 }
                  long[] ldata = new long[varData.length];
                     for (int i=0;i<varData.length;i++){
                         //dbgLog.finer("double: i th case ="+i+" "+varData[i]);
@@ -2967,9 +3100,6 @@ pwout.close();
                 //out.println("catStat="+catStat);
 
                 smd.getCategoryStatisticsTable().put(variableNameList.get(variablePosition), catStat);
-                //String keyVariableName = valueVariableMappingTable.get(variableNameList.get(variablePosition));
-
-                //mergeCatStatWithValueLabel(catStat, valueLabelTable.get(keyVariableName));
 
                 break;
 
@@ -2980,13 +3110,6 @@ pwout.close();
                 // numeric (double) data are now String objects
 
                 dbgLog.finer("double case");
-//                 if (varData[0] instanceof Double){
-//                     dbgLog.fine("double");
-//                 } else if (varData[0] instanceof Integer){
-//                     dbgLog.fine("integer");
-//                 } else{
-//                     dbgLog.fine(varData[0].getClass().getName());
-//                 }
                  double[] ddata = new double[varData.length];
                     for (int i=0;i<varData.length;i++){
                         //dbgLog.finer("double: i th case ="+i+" "+varData[i]);

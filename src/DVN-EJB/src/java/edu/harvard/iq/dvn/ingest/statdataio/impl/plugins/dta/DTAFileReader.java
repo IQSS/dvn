@@ -299,8 +299,8 @@ public class DTAFileReader extends StatDataFileReader{
 
     }
     /*
-
-        # little endian Hex and decimals: missing values
+        // note: stata-missing value(old version)
+        // little endian Hex and decimals: missing values
         string: ""
         byte:   0x7f = 127
         int :   0xff7f = 32,767
@@ -310,11 +310,6 @@ public class DTAFileReader extends StatDataFileReader{
 
     */
    
-
-
-
-
-
 
     // instance fields -------------------------------------------------------//
 

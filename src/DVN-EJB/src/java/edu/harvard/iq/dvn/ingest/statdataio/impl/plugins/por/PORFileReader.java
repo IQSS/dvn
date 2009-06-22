@@ -214,33 +214,54 @@ public class PORFileReader extends StatDataFileReader{
     
     Set<Integer> decimalVariableSet = new HashSet<Integer>();
     
-    
     // DecimalFormat for doubles
     // may need more setXXXX() to handle scientific data
     NumberFormat doubleNumberFormatter = new DecimalFormat();
 
-            Object[][] dataTable2 = null;
+    Object[][] dataTable2 = null;
             
     int[] variableTypeFinal= null;
 
 
+    /**
+     *
+     */
     protected String MissingValueForTextDataFileNumeric = "NA";
 
+    /**
+     *
+     * @return
+     */
     public String getMissingValueForTextDataFileNumeric() {
         return MissingValueForTextDataFileNumeric;
     }
 
+    /**
+     *
+     * @param MissingValueToken
+     */
     public void setMissingValueForTextDataFileNumeric(String MissingValueToken) {
         this.MissingValueForTextDataFileNumeric = MissingValueToken;
     }
 
 
+    /**
+     *
+     */
     protected String MissingValueForTextDataFileString = "";
 
+    /**
+     *
+     * @return
+     */
     public String getMissingValueForTextDataFileString() {
         return MissingValueForTextDataFileString;
     }
 
+    /**
+     *
+     * @param MissingValueToken
+     */
     public void setMissingValueForTextDataFileString(String MissingValueToken) {
         this.MissingValueForTextDataFileString = MissingValueToken;
     }
@@ -906,16 +927,6 @@ public class PORFileReader extends StatDataFileReader{
         }
 
 
-
-
-
-
-
-
-
-
-
-
         
         dbgLog.fine("***** decodeVariableInformation(): end *****");
     }
@@ -1383,34 +1394,44 @@ public class PORFileReader extends StatDataFileReader{
         
         int numberOfDecimalVariables = 0;
         
-        // for writing a tab-delimited observation
-        //StringBuilder sb_CasewiseRecord = new StringBuilder("");
-
-
         boolean isMissingValue = false;
         
         StringBuilder sb_StringLengthBase30 = new StringBuilder("");
         StringBuilder sb_datumNumericBase30 = new StringBuilder("");
+        
 
         List<String[]> dataTableList = new ArrayList<String[]>();
         
         int StringLengthBase10=0;
+        // Sets for NA-string-to-NaN conversion
+        Set<Integer> NaNlocationNumeric = new LinkedHashSet<Integer>();
+        Set<Integer> NaNlocationString = new LinkedHashSet<Integer>();
         
         try{
-            // use while because the number of cases (observations) is usually unknown
+            // use while instead for because the number of cases (observations) is usually unknown
+            
             FBLOCK: while(true){
                 j++;
+                
+                // case(row)-wise storage object; to be updated after each row-reading 
+
                 String[] casewiseRecord = new String[varQnty];
+                // warning: the above object is later shallow-copied to the 
+                // data object for calculating a UNF value/summary statistics
+                //
+                
                 for (int i=0; i<varQnty; i++){
+                
                     // check the type of this variable
                     boolean isStringType = 
                         variableTypeTable.get(variableNameList.get(i)) > 0 ? true : false;
                     
-
+                    
+                    
 
                     if (isStringType){
-                        // String
-                        dbgLog.fine(i+"-th var is String variable case");
+                        // String case
+                        dbgLog.finer(i+"-th var is String variable case");
 
                         variableTypeFinal[i]=-1;
 
@@ -1436,20 +1457,24 @@ public class PORFileReader extends StatDataFileReader{
                             //dbgLog.fine("sb_StringLengthBase30="+sb_StringLengthBase30.toString());
 
                         }
+                        
                         if (nint == 0){
+                            // no more data to be read (reached the eof)
                             //dbgLog.fine("reached to the eof");
                             caseQnty = j -1;
                             break FBLOCK;
                         }
                         
 
-                        dbgLog.fine(j+"-th case "+i+"=th var:datum length=" +sb_StringLengthBase30.toString());
+                        dbgLog.finer(j+"-th case "+i+"=th var:datum length=" +sb_StringLengthBase30.toString());
+                        
                         // this length value should be a positive integer
                         Matcher mtr = pattern4positiveInteger.matcher(sb_StringLengthBase30.toString());
                         if (mtr.matches()){
                             StringLengthBase10 = Integer.valueOf(sb_StringLengthBase30.toString(), 30);
                             dbgLog.fine("length of the string (StringLengthBase10)="+StringLengthBase10);
                         } else{
+                            // reading error case
                             throw new IOException("reading F(data) section: "+
                                             "string: length is not integer");
                         }
@@ -1459,37 +1484,37 @@ public class PORFileReader extends StatDataFileReader{
                         reader.read(char_datumString);
 
                         String datumString = new String(char_datumString);
-                        dbgLog.fine("string data="+datumString);
+                        dbgLog.finer("string data="+datumString);
 
-                        if ((StringLengthBase10==1)&&(datumString.equals(" "))){
-                            datumString = Double.toHexString(systemMissingValue);
+                        // missing-value processing
+                        if (StringLengthBase10==1){
+                            if ((datumString.equals(" ")) ||
+                                (datumString.equals(".")) ){
+                                
+                                datumString = MissingValueForTextDataFileString;
+                                
+                                // add this index to NaN-to-NA-replacement sentinel
+                                NaNlocationString.add(i);
+                            }
                         }
                         
-                        
-                        
-//dataTable2[i][j-1] = datumString;
-
-                        
-                        // tab-delimited file processing
-                        //if (i == lastVariable){
-                            //sb_CasewiseRecord.append(datumString);
+                        // string variable case
+                        // store this datum in the case-wise-storage object
                         casewiseRecord[i]= datumString;
-                        //} else {
-                         //   sb_CasewiseRecord.append(datumString + "\t");
-                        //}
-
+                        
 
 
                         // reset working objects
                         StringLengthBase10=0;
-
+                        // reset the number-building StringBuilder
                         sb_StringLengthBase30.setLength(0);
-
+                        
+                        // end ofstring case
                     } else {
                     
                     // numeric case
                     
-                        dbgLog.fine(i+"th variable is numeric");
+                        dbgLog.finer(i+"th variable is numeric");
                         
                         int MissingValue = 0;
                         isMissingValue = false;
@@ -1512,31 +1537,38 @@ public class PORFileReader extends StatDataFileReader{
                                     break FBLOCK;
                                 }
                             } else if (buffer.equals("*")) {
-                                datumNumericBase10 = Double.toHexString(systemMissingValue);
+                                // '*' is the first character of the 
+                                // system missing value
+                                //datumNumericBase10 = Double.toHexString(systemMissingValue);
+                                datumNumericBase10 = MissingValueForTextDataFileNumeric;
                                 isMissingValue = true;
+                                // add this index to NaN-to-NA-replacement sentinel
+                                 NaNlocationNumeric.add(i);
+
                                 
-                                // read next char '.' as part of missing value
+                                // read next char '.' as part of the missing value
                                 reader.read(tmp);
                                 buffer = Character.toString(tmp[0]);
                                 break;
                             }
-                            //dbgLog.fine("buffer(numeric ase)="+buffer);
-                            //dbgLog.fine("sb_datumNumericBase30="+sb_datumNumericBase30.toString());
+                            //dbgLog.finer("buffer(numeric ase)="+buffer);
+                            //dbgLog.finer("sb_datumNumericBase30="+sb_datumNumericBase30.toString());
                         }
                         if (nint == 0){
+                            // no more data to be read; reached the eof
                             //dbgLog.fine("reached to the eof");
                             caseQnty = j -1;
                             break FBLOCK;
                         }
                         //dbgLog.fine("buffer(numeric case)="+buffer);
-                        dbgLog.fine(j+"-th case "+i+"=th var:(N:base-30)=" +sb_datumNumericBase30.toString());
+                        dbgLog.finer(j+"-th case "+i+"=th var:(N:base-30)=" +sb_datumNumericBase30.toString());
                         
+                        // decode a numeric datum as String
                         String datumNumericBase30 = sb_datumNumericBase30.toString();
                         
-                        
-                        
+                        // follow-up process for non-missing-values
                         if (!isMissingValue){
-                        
+                            // trimming unncessary '0'
                             // integer-test by regex 
 
                             Matcher matcher = pattern4Integer.matcher(datumNumericBase30);
@@ -1550,76 +1582,106 @@ public class PORFileReader extends StatDataFileReader{
                                     base30Tobase10Conversion(datumNumericBase30));
                             }
                             
-                            dbgLog.fine(j+"th case"+i+"-th var(base-10)="+datumNumericBase10);
+                            dbgLog.finer(j+"th case"+i+"-th var(base-10)="+datumNumericBase10);
                             
+// TO DO date/time case : start 
                             
-                            
-                            // date/time case : TO DO
-                            
-                           // to do date conversion 
-                            // to do date conversion
-                            out.println("i="+i+"-th variable ="+variableNameList.get(i));
+                            // to do date conversion 
+                            //out.println("i="+i+"-th variable ="+variableNameList.get(i));
                             
                             String variableFormatType = 
                                     SPSSConstants.FORMAT_CATEGORY_TABLE.get(printFormatTable.get(variableNameList.get(i)));
-                            out.println("i="+i+"th variable format="+variableFormatType);
+                            //out.println("i="+i+"th variable format="+variableFormatType);
                             
                             if (variableFormatType.equals("date")){
-                                out.println("date case");
+                                //out.println("date case");
                                 
                             } else if (variableFormatType.equals("time")) {
-                                out.println("time case");
+                                //out.println("time case");
                             
                             } else if (variableFormatType.equals("other")){
-                                out.println("other");
+                                //out.println("other");
                             
                                 if (printFormatTable.get(variableNameList.get(i)).equals("WKDAY")){
                                     // day of week
                                     out.println("wkday");
                                 } else if (printFormatTable.get(variableNameList.get(i)).equals("MONTH")){
                                     // month
-                                    out.println("month");
+                                    //out.println("month");
                                 }
                             }
                             
+// TO DO date/time case : end
                             
                                 
                             // decimal-point check (varialbe is integer or not)
                             if (variableTypeFinal[i]==0){
                                 if (datumNumericBase10.indexOf(".") >=0){
-                                    dbgLog.fine("decimal data= "+ datumNumericBase10);
+                                    dbgLog.finer("decimal data= "+ datumNumericBase10);
                                     variableTypeFinal[i] = 1;
                                     numberOfDecimalVariables++;
                                 }
                             }
                         }
                         
-                        
- //dataTable2[i][j-1] = datumNumericBase10;
+                        // numeric variable case
+                        // store this datum in the case-wise-storage object
                         casewiseRecord[i]= datumNumericBase10;
-//                        if (i == lastVariable){
-//                            sb_CasewiseRecord.append(datumNumericBase10);
-//                        } else {
-//                            sb_CasewiseRecord.append(datumNumericBase10 + "\t");
-//                        }
-
+                        
+                        // reset working objects
                         isMissingValue = false ;
-
-                        // reset the number-building stringBuilder
+                        // reset the number-building StringBuilder
                         sb_datumNumericBase30.setLength(0);
+                        
+                        // end of numeric variable case
+                    } // end: if: string vs numeric variable
 
-                    } // if: string vs numeric
+                } // end:for-loop-i (variable-wise loop)
 
-                }// loop-i (variable)
-
-                dataTableList.add(casewiseRecord);
-                dbgLog.finer(j+"-th:"+StringUtils.join(casewiseRecord, "\t"));
+                
+                
+                dbgLog.fine(j+"-th:for tabfile: "+StringUtils.join(casewiseRecord, "\t"));
                 // print the i-th case
+                // use casewiseRecord to dump the current case to the 
+                // tab-delimited file
                 pwout.println(StringUtils.join(casewiseRecord, "\t"));
 
-                // reset the case builder
-                //sb_CasewiseRecord.setLength(0);
-            } // while-block
+                
+                if (NaNlocationNumeric.size() > 0){
+                    // NA-String to NaN conversion
+                    for (int el : NaNlocationNumeric){
+                    
+                        if (casewiseRecord[el].equals(MissingValueForTextDataFileNumeric)){
+                            casewiseRecord[el]= Double.toHexString(systemMissingValue);
+                        }
+                    }
+                    dbgLog.finer(j+"-th:(after NA processing[N]):"+StringUtils.join(casewiseRecord, "\t"));
+                    
+                }
+                if (NaNlocationString.size() > 0){
+                    // NaN-String to NaN conversion
+                    for (int el : NaNlocationString){
+                    
+                        if (casewiseRecord[el].equals(MissingValueForTextDataFileString)){
+                           casewiseRecord[el]= Double.toHexString(systemMissingValue);
+                        }
+                    }
+                    dbgLog.finer(j+"-th:(after NA processing[S]):"+StringUtils.join(casewiseRecord, "\t"));
+                    
+                }
+                dbgLog.finer(j+"-th:(after NA processing):"+StringUtils.join(casewiseRecord, "\t"));
+
+
+                // store the current case-holder object to the data object
+                // for later operations such as UNF/summary statistics
+                dataTableList.add(casewiseRecord);
+
+                // reset the case-wise working objects
+                
+                NaNlocationNumeric.clear();
+                NaNlocationString.clear();
+
+            } // end: while-block
 
             // close the print writer
             pwout.close();
@@ -1660,26 +1722,14 @@ public class PORFileReader extends StatDataFileReader{
               dataTable2[jk][jl] = dataTableList.get(jl)[jk] ;
            }
         }
-
-//        print2Darray(dataTable2, "dataTable2");
-
+        
         //out.println("dataTable2:\n"+Arrays.deepToString(dataTable2));
-
-
-
-
-
 
         unfValues = new String[varQnty];
 
         for (int k=0;k<varQnty; k++){
             int variableTypeNumer = variableTypeFinal[k];
             
-//            if (variableTypeNumer >0){
-//                variableTypeNumer = 1;
-//            } else {
-//                variableTypeNumer= 0;
-//            }
             
             try {
                 unfValues[k] = getUNF(dataTable2[k], variableTypeNumer,

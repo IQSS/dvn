@@ -165,6 +165,11 @@ public class DeleteStudyPage extends VDCBaseBean implements java.io.Serializable
     public String delete() {
        //editStudyService.deleteStudy();
         studyService.deleteStudy(study.getId());
+
+        // now redirect to delete success page (workaround since through icefaces navigation it seems  make a GET call
+        // to the DeletePage and since the study no longer exists, goes to the IDDoesNotExistPage)
+        redirect("/faces/study/DeleteSuccessPage.xhtml?studyListingIndex=" + getVDCRequestBean().getStudyListingIndex());
+
         return "success";
     }
     

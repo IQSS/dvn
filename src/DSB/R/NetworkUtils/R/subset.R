@@ -1,6 +1,6 @@
 vertex_subset <- function(tmp_g, subset_str){
-    g_last <<- tmp_g
     subset_str <- clean_subset(subset_str)
+    g_last <<- tmp_g
     vs <- V(tmp_g)[eval(parse(text=subset_str))]
     tmp_g <- subgraph(g, vs)
 
@@ -12,8 +12,8 @@ vertex_subset <- function(tmp_g, subset_str){
 #Like subgraph, but takes an edgeset and returns a graph that only contains those edges
 #and vertices incident to those edges.
 edge_subset <- function(tmp_g, subset_str, drop_disconnected=FALSE){
-    g_last <<- tmp_g
     subset_str <- clean_subset(subset_str)
+    g_last <<- tmp_g
     es <- E(tmp_g)[eval(parse(text=paste("!(",subset_str,")")))]
     tmp_g <- delete.edges(tmp_g, es)
 
@@ -32,7 +32,7 @@ edge_subset <- function(tmp_g, subset_str, drop_disconnected=FALSE){
 clean_subset <- function(subset_str){
     subset_str <- gsub("||","|",subset_str, fixed=T)
 
-    evil_keywords <- c("system(", "eval(", ";", "]")
+    evil_keywords <- c("system(", "eval(", ";")
     e <- simpleError("Bad query error.")
     sapply(evil_keywords, function(k){
                             if(length(grep(k, subset_str, fixed=T)))

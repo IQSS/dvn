@@ -42,6 +42,25 @@ public class PlainTextValidator implements Validator, java.io.Serializable  {
             System.out.println("An exception was thrown ... " + e.toString());
         }
     }
+
+    public boolean isValidTextEntry(FacesContext context, UIComponent component,
+                        Object value) {
+        boolean isValid = true;
+        if (value == null) return isValid;
+        String characterString = (String) value;
+        try {
+            if ( validateChars(characterString) ) {
+                isValid = false;
+                FacesMessage message = new FacesMessage(msg);
+                message.setSeverity(FacesMessage.SEVERITY_ERROR);
+                ((UIInput)component).setValid(false);
+                context.addMessage(component.getClientId(context), message);
+            } 
+        } catch (Exception e) {
+            System.out.println("An exception was thrown ... " + e.toString());
+        }
+        return isValid;
+    }
     
     private static boolean validateChars (String characterString) {
        boolean isInvalidChars = false;

@@ -31,18 +31,11 @@
               <ice:outputText style="width:95%;float:right;" value="#{bundlePageInfo.commentReviewHelp}" escape="false"/>
             </div>
           </div>
-            <div jsfc="ice:panelGroup"
-                       id="messagePanel"
-                       panelLayout="flow"
-                       rendered="#{CommentReviewPage.actionComplete}"
-                       styleClass="dvnMsgBlockRound dvnSuccessMessage"
-                       >
-                      <div class="dvnMsgBlockContainer">
-                          <p>
-                            <ice:messages layout="table" styleClass="dvnMsgBlockContainer"/>
-                          </p>
-                      </div>
-                  </div>
+          <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnSuccessMessage" rendered="#{!empty VDCRequest.successMessage}">
+              <div class="dvnMsgBlockContainer">
+                  <p><ice:outputText id="statusMessage" value="#{VDCRequest.successMessage}"/></p>
+              </div>
+          </div>
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.commentReviewTitle}"/>
           </div>

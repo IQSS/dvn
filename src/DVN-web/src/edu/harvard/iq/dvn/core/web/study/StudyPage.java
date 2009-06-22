@@ -595,6 +595,19 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
     }
 
     public void processTabChange(TabChangeEvent tabChangeEvent) throws AbortProcessingException {
+
+        // workaround t solve the problem where the tabs don't switch after login
+        String tab;
+        switch (tabChangeEvent.getNewTabIndex()) {
+            case 0: tab="catalog"; break;
+            case 1: tab="files"; break;
+            case 2: tab="comments"; break;
+            default: tab="catalog"; break;
+        }
+
+        redirect("/faces/study/StudyPage.xhtml?studyId=" + studyId + "&tab=" + tab + getVDCRequestBean().getStudyListingIndexAsParameter());
+
+        /*
         // If the user clicks on the files tab,
         // make sure the StudyUI object contains file details.
         if (tabChangeEvent.getNewTabIndex() == 2) {
@@ -612,5 +625,6 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
             getVDCRequestBean().setSelectedTab("catalog");
             setTab("catalog");
         }
+         * */
     }
 }

@@ -54,7 +54,7 @@ add_in_largest_component <- function(tmp_g){
     return(meas_name)
 }
 
-add_bonacich_centrality <- function(tmp_g, alpha=0, exo=1){
+add_bonacich_centrality <- function(tmp_g, alpha=1, exo=1){
     g_last <<- tmp_g
 
     mc <- match.call()

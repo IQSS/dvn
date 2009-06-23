@@ -62,12 +62,13 @@ public class StudyFileEditBean implements Serializable {
 
         String fileType = FileUtil.determineFileType(file);
         dbgLog.fine("return from FileUtil.determineFileType(file), fileType="+fileType);
+
         if (fileType.equals("application/x-stata") ||
             fileType.equals("application/x-spss-por") ||
             fileType.equals("application/x-spss-sav") ) {
             dbgLog.fine("tablularFile");
             this.studyFile = new TabularDataFile(); // do not yet attach to study, as it has to be ingested
-        } else if (fileType.equals("text/xml") && isGraphMLFile(file)) {
+        } else if (fileType.equals("text/xml-graphml")) {
             dbgLog.fine("isGraphMLFile = true");
             this.studyFile = new NetworkDataFile();
         } else    {
@@ -80,8 +81,7 @@ public class StudyFileEditBean implements Serializable {
         dbgLog.fine("reached before original filename");
         this.setOriginalFileName(file.getName());
 
-        dbgLog.fine("originalFileName=" + originalFileName);
-
+       
         this.getStudyFile().setFileType(fileType);
         dbgLog.fine("after setFileType");
 
@@ -224,37 +224,7 @@ public class StudyFileEditBean implements Serializable {
         sizeFormatted = s;
     }
 
-    private boolean isGraphMLFile(File file) {
-        boolean isGraphML = false;
-        dbgLog.fine("begin isGraphMLFile()");
-        try{
-            FileReader fileReader = new FileReader(file);
-            javax.xml.stream.XMLInputFactory xmlif = javax.xml.stream.XMLInputFactory.newInstance();
-            xmlif.setProperty("javax.xml.stream.isCoalescing", java.lang.Boolean.TRUE);
-      
-            XMLStreamReader xmlr = xmlif.createXMLStreamReader(fileReader);
-            for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
-                if (event == XMLStreamConstants.START_ELEMENT) {
-                    if (xmlr.getLocalName().equals("graphml")) {
-                        String schema = xmlr.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance", "schemaLocation");
-                        dbgLog.fine("schema = "+schema);
-                        if (schema!=null && schema.indexOf("http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd")!=-1){
-                            dbgLog.fine("graphML is true");
-                            isGraphML = true;
-                        }
-                    }
-                    break;
-                } 
-            }
-        } catch(XMLStreamException e) {
-            this.dbgLog.fine("XML error - this is not a valid graphML file.");
-            isGraphML = false;
-        } catch(IOException e) {
-            throw new EJBException(e);
-        }
-        dbgLog.fine("end isGraphML()");
-        return isGraphML;
-    }
+ 
 //    @Override
 //    public String toString() {
 //        return ToStringBuilder.reflectionToString(this,

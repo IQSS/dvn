@@ -81,7 +81,7 @@ public class PORFileReader extends StatDataFileReader{
     /**
      *
      */
-    public static final int LENGTH_SECTION_2_OFFSET = 481;
+    public static final int LENGTH_SECTION_2_OFFSET = 473;
     /**
      *
      */
@@ -614,6 +614,11 @@ public class PORFileReader extends StatDataFileReader{
 
     /**
      *
+     *
+     *  skip first 473-byte block up to "SPSSPORT" signature
+     *  adjust the offset position by detecting the signature
+     *  read next 19 bytes: 'A8/' + 8-character + '6/' + 6-charaxters
+     *
      * @param reader
      */
     protected void decodeSec2(BufferedReader reader){
@@ -621,33 +626,125 @@ public class PORFileReader extends StatDataFileReader{
         if (reader ==null){
             throw new IllegalArgumentException("decodeSec2: stream == null!");
         }
-        // skip first 481-byte block thru "SPSSPORT"
-        // read next 19 bytes
-        // 2-byte + '/' + 8-character +
-
-
-        char[] Sec2_bytes = new char[LENGTH_SECTION_2];
 
         try {
-
+            // a 64-bit machine may not save the first 400 + 
+            // bytes in a way as a 32-bit machine does;
+            // for a 32-bit windows machine,
+            // 481 is the offset whereas a 64-bit linux machines
+            // takes 482 bytes, i.e., 
+            //     01234567
+            // 32: SPSSPORT
+            // 64: 0SPSSPOR
             reader.skip(LENGTH_SECTION_2_OFFSET);
             
             if (reader.markSupported()){
                 reader.mark(100000);
             }
+            int length_leader = 8;
+            char[] sec2_leader = new char[length_leader];
             
-            dbgLog.fine("reached here");
-            int nbytes_sec2 = reader.read(Sec2_bytes, 0, LENGTH_SECTION_2);
+            int nbytes_sec2_leader = reader.read(sec2_leader, 0, length_leader);
+            
+            String leader_string = new String(sec2_leader);
+            dbgLog.info("format signature decoded[excpected: SPSSPORT]="+leader_string);
+
+            int signature_position_bias=0;
+
+            String overReadSegment = null;
+
+            if (leader_string.equals("SPSSPORT")){
+                dbgLog.info("signature was correctly detected");
+            
+            } else {
+                dbgLog.info("signature was NOT correctly detected: adjust the starting offset");
+
+                int last_zero_position = leader_string.lastIndexOf("0");
+                dbgLog.fine("last_zero_position="+last_zero_position);
+                if (last_zero_position >= 0){
+                    dbgLog.info("0 was found: need to read "+
+                        (last_zero_position+1)+" more bytes to reach the signature");
+                    // read addtional (last_zero_position+1) bytes
+                    // 01234567
+                    // 0SPSSPOR T     0 + 1 more byte
+                    // 00SPSSPO RT    1 + 1 more byte
+                    // 000SPSSP ORT   2 + 1 more bytes
+                    // 0000SPSS PORT  3 + 1 more bytes
+                
+                    char[] moreBytes = new char[last_zero_position+1];
+                    int nbytes_moreBytes = reader.read(moreBytes);
+                    String leader_string_remaining = new String(moreBytes);
+                    dbgLog.fine("leader_string_remaining="+leader_string_remaining);
+                    String whole_leader_string = leader_string.substring(last_zero_position+1) +
+                           leader_string_remaining ;
+                    dbgLog.fine("whole_leader_string="+whole_leader_string);
+                    if (whole_leader_string.equals("SPSSPORT")){
+                        dbgLog.info("reading offset for the Section2 was correctly adjusted");
+                    } else {
+                        dbgLog.severe("format signature was not found within 8-character adjustment: under-read case");
+                        throw new IOException("decodeSec2: failed to find the signature string again");
+                    }
+                
+                } else {
+                    dbgLog.info("0 was not found: the skipped offset passed the siginature position");
+                    // find the position of "A"
+                    // possible case: shorter header
+                    // "SPSSPORTA8/xxxxxxxx"
+                    //  01234567
+                    // "PSSPORTA" 1 less case
+                    // "SSPORTA8" 2 less case
+                    // "SPORTA8/" 3 less case
+                    // "PORTA8/X" 4 less case
+                    // "ORTA8/XX" 5 less case
+                    // "RTA8/XXX" 6 less case
+                    // "TA8/XXXX" 7 less case
+                    // "A8/XXXXX" 8 less case
+
+                    int A_position = leader_string.indexOf("A");
+                    dbgLog.fine("A_position="+A_position);
+                    signature_position_bias = 8- A_position;
+
+                    dbgLog.fine("signature_position_bias(updated)="+signature_position_bias);
+                    if (A_position >= 0){
+                        overReadSegment = leader_string.substring(A_position);
+                        dbgLog.fine("overReadSegment="+overReadSegment);
+                    } else {
+                         dbgLog.severe("the signature position was not found within 8-character adjustment: over-read case");
+                        throw new IOException("decodeSec2: failed to find the signature string");
+                    }
+                
+                }
+            
+            }
+            
+            
+            int adjusted_length_section_2 = LENGTH_SECTION_2 - signature_position_bias;
+            
+            char[] Sec2_bytes = new char[adjusted_length_section_2];
+           
+            int nbytes_sec2 = reader.read(Sec2_bytes, 0, adjusted_length_section_2);
 
             if (nbytes_sec2 == 0){
                 throw new IOException("decodeSec2: reading error");
             } else {
                 dbgLog.fine("bytes read="+nbytes_sec2);
             }
-            //printHexDump(Sec2_bytes, "Section 2 header");
 
-            String sec2 = new String(Sec2_bytes);
-            dbgLog.fine(sec2);
+            String sec2 = null;
+
+            if (overReadSegment != null){
+                sec2 = overReadSegment + new String(Sec2_bytes);
+            } else {
+                sec2 = new String(Sec2_bytes);
+            }
+            dbgLog.fine("sec2="+sec2);
+
+            // sec2
+            //       0123456789012345678
+            //       A8/YYYYMMDD6/HHMMSS
+            // thus
+            // section2 should has 3 elements
+
             String[] section2 = StringUtils.split(sec2, '/');
 
             dbgLog.fine("section2="+StringUtils.join(section2, "|"));
@@ -657,6 +754,9 @@ public class PORFileReader extends StatDataFileReader{
             if ((section2.length == 3)&& (section2[0].startsWith("A"))){
                 fileCreationDate = section2[1].substring(0,7);
                 fileCreationTime = section2[2];
+            } else {
+                dbgLog.severe("decodeSec2: file creation date/time were not correctly detected");
+                throw new IOException("decodeSec2: file creation date/time were not correctly detected");
             }
             dbgLog.fine("fileCreationDate="+fileCreationDate);
             

@@ -82,7 +82,7 @@ public class StudyFileEditBean implements Serializable {
 
         dbgLog.fine("originalFileName=" + originalFileName);
 
-        this.getStudyFile().setFileType(FileUtil.determineFileType(file));
+        this.getStudyFile().setFileType(fileType);
         dbgLog.fine("after setFileType");
 
         // not yet supported as subsettable

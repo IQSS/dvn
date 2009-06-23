@@ -37,6 +37,7 @@ import edu.harvard.iq.dvn.core.study.TabularDataFile;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.nio.channels.WritableByteChannel;
@@ -48,6 +49,9 @@ import javax.activation.MimetypesFileTypeMap;
 import javax.ejb.EJBException;
 
 import java.util.logging.*;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 
 /**
  *
@@ -55,7 +59,7 @@ import java.util.logging.*;
  */
 public class FileUtil implements java.io.Serializable  {
     
-    private static Logger dbgLog = Logger.getLogger(FileUtil.class.getPackage().getName());   
+    private static Logger dbgLog = Logger.getLogger(FileUtil.class.getCanonicalName());
 
     private static final String[] SUBSETTABLE_FORMAT_SET = {"POR", "SAV", "DTA"};
 
@@ -134,8 +138,14 @@ public class FileUtil implements java.io.Serializable  {
         dbgLog.fine("f: abs path="+f.getAbsolutePath());
         fileType = sfchk.detectSubsettableFormat(f);
         
+        // step 2: If not found, check if graphml
+        if (fileType==null) {
+            if (isGraphMLFile(f))  {
+                fileType = "text/xml-graphml";
+            }
+        }
         dbgLog.fine("before jhove");
-        // step 2: check the mime type of this file with Jhove
+        // step 3: check the mime type of this file with Jhove
         if (fileType == null){
             JhoveWrapper jw = new JhoveWrapper();
             fileType = jw.getFileMimeType(f);
@@ -160,7 +170,7 @@ public class FileUtil implements java.io.Serializable  {
         } else {
             dbgLog.fine("fileExtension is null");
         }
-        
+        dbgLog.fine("returning fileType "+fileType);
         return fileType;
     }
         
@@ -299,5 +309,37 @@ public class FileUtil implements java.io.Serializable  {
 
         return file;
      }
+
+       private static boolean isGraphMLFile(File file) {
+        boolean isGraphML = false;
+        dbgLog.fine("begin isGraphMLFile()");
+        try{
+            FileReader fileReader = new FileReader(file);
+            javax.xml.stream.XMLInputFactory xmlif = javax.xml.stream.XMLInputFactory.newInstance();
+            xmlif.setProperty("javax.xml.stream.isCoalescing", java.lang.Boolean.TRUE);
+
+            XMLStreamReader xmlr = xmlif.createXMLStreamReader(fileReader);
+            for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
+                if (event == XMLStreamConstants.START_ELEMENT) {
+                    if (xmlr.getLocalName().equals("graphml")) {
+                        String schema = xmlr.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance", "schemaLocation");
+                        dbgLog.fine("schema = "+schema);
+                        if (schema!=null && schema.indexOf("http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd")!=-1){
+                            dbgLog.fine("graphML is true");
+                            isGraphML = true;
+                        }
+                    }
+                    break;
+                }
+            }
+        } catch(XMLStreamException e) {
+            dbgLog.fine("XML error - this is not a valid graphML file.");
+            isGraphML = false;
+        } catch(IOException e) {
+            throw new EJBException(e);
+        }
+        dbgLog.fine("end isGraphML()");
+        return isGraphML;
+    }
     
 }

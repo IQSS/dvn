@@ -28,6 +28,7 @@
  */
 package edu.harvard.iq.dvn.core.web.study;
 
+import com.icesoft.faces.component.paneltabset.PanelTabSet;
 import com.icesoft.faces.component.paneltabset.TabChangeEvent;
 import com.sun.jsfcl.data.DefaultTableDataModel;
 import edu.harvard.iq.dvn.core.mail.MailServiceLocal;
@@ -69,6 +70,26 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
     public void setSelectedIndex(int selectedIndex) {
         this.selectedIndex = selectedIndex;
       
+    }
+
+    private PanelTabSet tabSet1 = new PanelTabSet();
+
+    /**
+     * Getter for component tabSet1
+     *
+     * @return    the main tab-set component
+     */
+    public PanelTabSet getTabSet1() {
+        return tabSet1;
+    }
+
+    /**
+     * Setter for component tabSet1
+     *
+     * @param ts    the main tab-set component
+     */
+    public void setTabSet1(PanelTabSet tabSet1) {
+        this.tabSet1 = tabSet1;
     }
 
 
@@ -596,18 +617,7 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
 
     public void processTabChange(TabChangeEvent tabChangeEvent) throws AbortProcessingException {
 
-        // workaround t solve the problem where the tabs don't switch after login
-        String tab;
-        switch (tabChangeEvent.getNewTabIndex()) {
-            case 0: tab="catalog"; break;
-            case 1: tab="files"; break;
-            case 2: tab="comments"; break;
-            default: tab="catalog"; break;
-        }
-
-        redirect("/faces/study/StudyPage.xhtml?studyId=" + studyId + "&tab=" + tab + getVDCRequestBean().getStudyListingIndexAsParameter());
-
-        /*
+        
         // If the user clicks on the files tab,
         // make sure the StudyUI object contains file details.
         if (tabChangeEvent.getNewTabIndex() == 2) {
@@ -625,6 +635,6 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
             getVDCRequestBean().setSelectedTab("catalog");
             setTab("catalog");
         }
-         * */
+         
     }
 }

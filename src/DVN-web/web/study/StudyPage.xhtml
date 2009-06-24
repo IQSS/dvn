@@ -185,7 +185,7 @@
             </div>
           </div>
           <div class="dvn_sectionBoxNoBorders">
-              <ice:panelTabSet selectedIndex="#{studyPage.selectedIndex}" tabChangeListener="#{studyPage.processTabChange}">
+              <ice:panelTabSet id="tabSet1" binding="#{studyPage.tabSet1}" tabChangeListener="#{studyPage.processTabChange}" >
               <ice:panelTab id="catalog" label="Cataloging Information" url="#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=catalog#{studyPage.studyListingIndexAsParameter}">
                 <div jsfc="ice:panelGroup" id="layoutPanel1" panelLayout="flow" style="width: 98%">
                   <div jsfc="ice:panelGroup"  id="groupPanel11" styleClass="vdcStudyInfoHeader" style="margin-top: 5px;">

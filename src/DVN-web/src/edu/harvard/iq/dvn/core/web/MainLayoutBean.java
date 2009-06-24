@@ -29,9 +29,9 @@
 
 package edu.harvard.iq.dvn.core.web;
 
-import edu.harvard.iq.dvn.core.util.PropertyUtil;
 import java.util.Map;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  *
@@ -135,4 +135,28 @@ public class MainLayoutBean implements java.io.Serializable  {
         String jvmoption = "dvn." + key + ".key";
         return System.getProperty(jvmoption);
     }
+
+    protected boolean writeStudyCommentsPopups = false;
+
+    /**
+     * Get the value of writeStudyCommentsPopups
+     *
+     * @return the value of writeStudyCommentsPopups
+     */
+    public boolean isWriteStudyCommentsPopups() {
+        HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        System.out.println("study comments tab is " + request.getRequestURI());
+        writeStudyCommentsPopups = request.getRequestURI().indexOf("StudyPage.xhtml") != -1;
+        return writeStudyCommentsPopups;
+    }
+
+    /**
+     * Set the value of writeStudyCommentsPopups
+     *
+     * @param writeStudyCommentsPopups new value of writeStudyCommentsPopups
+     */
+    public void setWriteStudyCommentsPopups(boolean writeStudyCommentsPopups) {
+        this.writeStudyCommentsPopups = writeStudyCommentsPopups;
+    }
+
 }

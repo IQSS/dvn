@@ -268,7 +268,7 @@ public class NetworkDataServiceBean implements NetworkDataServiceLocal, java.io.
 
     private void copyFile(StudyFileEditBean editBean) throws IOException {
         File tempFile = new File(editBean.getTempSystemFileLocation());
-
+        dbgLog.fine("begin copyFile()");
         // create a sub-directory "ingested"
         File newDir = new File(tempFile.getParentFile(), "ingested");
 
@@ -300,6 +300,7 @@ public class NetworkDataServiceBean implements NetworkDataServiceLocal, java.io.
 
 
     private void saveRDataFile(StudyFileEditBean editBean) {
+        dbgLog.fine("begin saveRDataFile");
         DvnRGraphServiceImpl dgs = new DvnRGraphServiceImpl();
 
 
@@ -312,13 +313,14 @@ public class NetworkDataServiceBean implements NetworkDataServiceLocal, java.io.
         }
         String rDataFileName = FileUtil.replaceExtension(temploc.getName(),"RData");
         File rDataFile = new File(ingestedDir,rDataFileName);
+        dbgLog.fine("before call to ingestGraphML");
         resultInfo = dgs.ingestGraphML(editBean.getTempSystemFileLocation(), rDataFile.getAbsolutePath());
 
         // for cachedRDataFileName we may use the name of the graphML file in
         // the study directory, with the ".RData" extension?
 
         // error diagnostics:
-
+        dbgLog.fine("return from ingestGraphML, resultInfo ="+resultInfo);
         if (resultInfo!=null && resultInfo.get("RexecError")!=null && resultInfo.get("RexecError").equals("true")) {
             String err = resultInfo.get("RexecErrorDescription");// -- error condition;
             err += " "+ resultInfo.get("RexecErrorMessage"); //more detailed error message, if available
@@ -341,29 +343,7 @@ public class NetworkDataServiceBean implements NetworkDataServiceLocal, java.io.
 
        System.out.println("done!");
 
-     /*
-        // parse an XML document into a DOM tree
-    DocumentBuilder parser = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-    Document document = parser.parse(new File("instance.xml"));
-    document.get
-
-    // create a SchemaFactory capable of understanding WXS schemas
-    SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-
-    // load a WXS schema, represented by a Schema instance
-    Source schemaFile = new StreamSource(new File("mySchema.xsd"));
-    Schema schema = factory.newSchema(schemaFile);
-
-    // create a Validator instance, which can be used to validate an instance document
-    Validator validator = schema.newValidator();
-
-    // validate the DOM tree
-    try {
-        validator.validate(new DOMSource(document));
-    } catch (SAXException e) {
-        // instance document is invalid!
-    }
-*/
+  
 
    }
 

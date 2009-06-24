@@ -77,11 +77,6 @@ public class PORFileReader extends StatDataFileReader{
     public static final int LENGTH_SECTION_HEADER = 1;
 
     // section 2
-    // POR_MARK ends at 481
-    /**
-     *
-     */
-    public static final int LENGTH_SECTION_2_OFFSET = 473;
     /**
      *
      */
@@ -297,7 +292,7 @@ public class PORFileReader extends StatDataFileReader{
         
         try {
             
-
+            String tempPORfileNameTest = "c:\\ahome\\tempPORfile.000.por";
             bfReader = new BufferedReader(new InputStreamReader(
                        new FileInputStream(tempPORfileName), "US-ASCII"));
             if (bfReader == null){
@@ -582,10 +577,19 @@ public class PORFileReader extends StatDataFileReader{
 
             porScanner = new Scanner(stream);
 
+            // Because 64-bit and 32-bit machines decode POR's first 40-byte
+            // sequence differently, the first 5 leader lines are skipped from
+            // the new-line-stripped file
+
+            int lineCounter= 0;
             while(porScanner.hasNextLine()){
-                //String line = porScanner.nextLine().toString();
-                //dbgLog.fine(line.length()+"\t"+line);
-                fileWriter.write(porScanner.nextLine().toString());
+                lineCounter++;
+                if (lineCounter<=5){
+                    String line = porScanner.nextLine().toString();
+                    dbgLog.fine("line="+lineCounter+":"+line.length()+":"+line);
+                } else {
+                    fileWriter.write(porScanner.nextLine().toString());
+                }
             }
 
         } catch (FileNotFoundException ex) {
@@ -628,28 +632,46 @@ public class PORFileReader extends StatDataFileReader{
         }
 
         try {
-            // a 64-bit machine may not save the first 400 + 
-            // bytes in a way as a 32-bit machine does;
-            // for a 32-bit windows machine,
-            // 481 is the offset whereas a 64-bit linux machines
-            // takes 482 bytes, i.e., 
-            //     01234567
-            // 32: SPSSPORT
-            // 64: 0SPSSPOR
-            reader.skip(LENGTH_SECTION_2_OFFSET);
-            
+            // Because a 64-bit machine may not save the first 40
+            // bytes of a POR file in a way as a 32-bit machine does,
+            // the first 5 lines of a POR file is excluded from the read-back
+            // file and the new 1st line contains the format mark "SPSSPORT"
+            // somewhere in it.
+
+            // mark the start position for the later rewind
             if (reader.markSupported()){
                 reader.mark(100000);
             }
-            int length_leader = 8;
-            char[] sec2_leader = new char[length_leader];
             
-            int nbytes_sec2_leader = reader.read(sec2_leader, 0, length_leader);
-            
-            String leader_string = new String(sec2_leader);
-            dbgLog.info("format signature decoded[excpected: SPSSPORT]="+leader_string);
 
-            int signature_position_bias=0;
+            char[] sixthLineCharArray = new char[80];
+            int nbytes_sixthLine = reader.read(sixthLineCharArray);
+            
+            String sixthLine = new String(sixthLineCharArray);
+            dbgLog.info("sixthLineCharArray="+
+                Arrays.deepToString(ArrayUtils.toObject(sixthLineCharArray)));
+            int signatureLocation = sixthLine.indexOf(POR_MARK);
+
+            if (signatureLocation >= 0){
+                dbgLog.info("format signature was found at:"+signatureLocation);
+            } else {
+                dbgLog.severe("signature string was not found");
+                throw new IOException("signature string was not found");
+            }
+
+            // rewind the position to the beginning
+            reader.reset();
+
+            // skip bytes up to the signature string
+            long skippedBytes = reader.skip(signatureLocation);
+
+            char[] sec2_leader = new char[POR_MARK.length()];
+            int nbytes_sec2_leader = reader.read(sec2_leader);
+
+            String leader_string = new String(sec2_leader);
+
+            dbgLog.info("format signature [SPSSPORT] detected="+leader_string);
+
 
             String overReadSegment = null;
 
@@ -657,87 +679,26 @@ public class PORFileReader extends StatDataFileReader{
                 dbgLog.info("signature was correctly detected");
             
             } else {
-                dbgLog.info("signature was NOT correctly detected: adjust the starting offset");
-
-                int last_zero_position = leader_string.lastIndexOf("0");
-                dbgLog.fine("last_zero_position="+last_zero_position);
-                if (last_zero_position >= 0){
-                    dbgLog.info("0 was found: need to read "+
-                        (last_zero_position+1)+" more bytes to reach the signature");
-                    // read addtional (last_zero_position+1) bytes
-                    // 01234567
-                    // 0SPSSPOR T     0 + 1 more byte
-                    // 00SPSSPO RT    1 + 1 more byte
-                    // 000SPSSP ORT   2 + 1 more bytes
-                    // 0000SPSS PORT  3 + 1 more bytes
-                
-                    char[] moreBytes = new char[last_zero_position+1];
-                    int nbytes_moreBytes = reader.read(moreBytes);
-                    String leader_string_remaining = new String(moreBytes);
-                    dbgLog.fine("leader_string_remaining="+leader_string_remaining);
-                    String whole_leader_string = leader_string.substring(last_zero_position+1) +
-                           leader_string_remaining ;
-                    dbgLog.fine("whole_leader_string="+whole_leader_string);
-                    if (whole_leader_string.equals("SPSSPORT")){
-                        dbgLog.info("reading offset for the Section2 was correctly adjusted");
-                    } else {
-                        dbgLog.severe("format signature was not found within 8-character adjustment: under-read case");
-                        throw new IOException("decodeSec2: failed to find the signature string again");
-                    }
-                
-                } else {
-                    dbgLog.info("0 was not found: the skipped offset passed the siginature position");
-                    // find the position of "A"
-                    // possible case: shorter header
-                    // "SPSSPORTA8/xxxxxxxx"
-                    //  01234567
-                    // "PSSPORTA" 1 less case
-                    // "SSPORTA8" 2 less case
-                    // "SPORTA8/" 3 less case
-                    // "PORTA8/X" 4 less case
-                    // "ORTA8/XX" 5 less case
-                    // "RTA8/XXX" 6 less case
-                    // "TA8/XXXX" 7 less case
-                    // "A8/XXXXX" 8 less case
-
-                    int A_position = leader_string.indexOf("A");
-                    dbgLog.fine("A_position="+A_position);
-                    signature_position_bias = 8- A_position;
-
-                    dbgLog.fine("signature_position_bias(updated)="+signature_position_bias);
-                    if (A_position >= 0){
-                        overReadSegment = leader_string.substring(A_position);
-                        dbgLog.fine("overReadSegment="+overReadSegment);
-                    } else {
-                         dbgLog.severe("the signature position was not found within 8-character adjustment: over-read case");
-                        throw new IOException("decodeSec2: failed to find the signature string");
-                    }
-                
-                }
-            
+                dbgLog.severe(
+                "the format signature is not found at the previously located column");
+                throw new IOException("decodeSec2: failed to find the signature string");
             }
             
+            int length_section_2 = LENGTH_SECTION_2;
             
-            int adjusted_length_section_2 = LENGTH_SECTION_2 - signature_position_bias;
-            
-            char[] Sec2_bytes = new char[adjusted_length_section_2];
+            char[] Sec2_bytes = new char[length_section_2];
            
-            int nbytes_sec2 = reader.read(Sec2_bytes, 0, adjusted_length_section_2);
+            int nbytes_sec2 = reader.read(Sec2_bytes);
 
             if (nbytes_sec2 == 0){
+                dbgLog.severe("decodeSec2: reading error");
                 throw new IOException("decodeSec2: reading error");
             } else {
                 dbgLog.fine("bytes read="+nbytes_sec2);
             }
 
-            String sec2 = null;
-
-            if (overReadSegment != null){
-                sec2 = overReadSegment + new String(Sec2_bytes);
-            } else {
-                sec2 = new String(Sec2_bytes);
-            }
-            dbgLog.fine("sec2="+sec2);
+            String sec2 = new String(Sec2_bytes);
+            dbgLog.fine("sec2[creation date/time]="+sec2);
 
             // sec2
             //       0123456789012345678
@@ -759,7 +720,7 @@ public class PORFileReader extends StatDataFileReader{
                 throw new IOException("decodeSec2: file creation date/time were not correctly detected");
             }
             dbgLog.fine("fileCreationDate="+fileCreationDate);
-            
+            dbgLog.fine("fileCreationTime="+fileCreationTime);
             smd.getFileInformation().put("fileCreationDate", fileCreationDate);
             smd.getFileInformation().put("fileCreationTime", fileCreationTime);
             
@@ -1018,8 +979,8 @@ public class PORFileReader extends StatDataFileReader{
                 }
                 printFormatNameTable.put(variableName, sb.toString());
             }
-                printFormatTable.put(variableName, SPSSConstants.FORMAT_CODE_TABLE_SAV.get(formatCode));
 
+            printFormatTable.put(variableName, SPSSConstants.FORMAT_CODE_TABLE_POR.get(formatCode));
 
             
         } catch (IOException ex) {
@@ -1692,6 +1653,7 @@ public class PORFileReader extends StatDataFileReader{
                             String variableFormatType = 
                                     SPSSConstants.FORMAT_CATEGORY_TABLE.get(printFormatTable.get(variableNameList.get(i)));
                             //out.println("i="+i+"th variable format="+variableFormatType);
+
                             
                             if (variableFormatType.equals("date")){
                                 //out.println("date case");

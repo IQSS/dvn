@@ -617,24 +617,15 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
 
     public void processTabChange(TabChangeEvent tabChangeEvent) throws AbortProcessingException {
 
-        
         // If the user clicks on the files tab,
         // make sure the StudyUI object contains file details.
-        if (tabChangeEvent.getNewTabIndex() == 2) {
-            getVDCRequestBean().setSelectedTab("comments");
-            setTab("comments");
-        }
-        if ( tabChangeEvent.getNewTabIndex() == 1) {
+        if ( tabChangeEvent.getNewTabIndex()==1) {
             initStudyUIWithFiles();
-            getVDCRequestBean().setSelectedTab("files");
-            setTab("files");
         }
         // If user clicks on the catalog tab, reset the open/closed settings for each section
-        if (tabChangeEvent.getNewTabIndex() == 0) {
+        if (tabChangeEvent.getNewTabIndex()==0) {
             initPanelDisplay();
-            getVDCRequestBean().setSelectedTab("catalog");
-            setTab("catalog");
         }
-         
+
     }
 }

@@ -19,7 +19,7 @@ ul.editDropDown{display:inline}
 .studyEditLinks li:hover ul a:hover,.studyEditLinks li.sfHover ul a:hover{color:#c55b28;text-decoration:underline !important}
 .vdcStudyStatus{font-weight:700;font-style:italic;color:#8B0404}
 a.vdcStudyStatus:link,a.vdcStudyStatus:visited,a.vdcStudyStatus:hover,a.vdcStudyStatus:active{margin:0;}
-.vdcStudyInfoHeader{background-color:#dadee0;font-weight:700;text-align:center;padding-top:3px;padding-bottom:3px;margin-top:-1px;margin-bottom:4px;width:100%}
+.vdcStudyInfoHeader{background:#dadee0;font-weight:700;text-align:center;padding:3px 0;width:100%}
 .vdcStudyInfoCol1{border-bottom-color:#dadee0;border-bottom-style:solid;border-bottom-width:1px;padding-bottom:5px;padding-left:0px;padding-right:10px;padding-top:5px;text-align:left;width:200px}
 .vdcStudyInfoCol2{border-bottom-color:#dadee0;border-bottom-style:solid;border-bottom-width:1px;font-weight:400;padding-bottom:5px;padding-top:5px;text-align:left}
 .vdcStudyInfoDownload{font-weight:700;padding-top:10px;text-align:center}
@@ -86,11 +86,23 @@ a.vdcStudyFileSubsetAnalysisLink:link,a.vdcStudyFileSubsetAnalysisLink:hover,a.v
 .downloadas ul a{width:80px;white-space:nowrap}
 .downloadas ul a:hover{background:khaki;color:#c55b28}
 /* STUDY COMMENTS */
-.vdcStudyCommentsDataTable{border:0px 0px 1px 0px}
-.vdcStudyCommentDetailsColumn{width:25% !important;vertical-align:top}
-.vdcStudyCommentContentColumn{width:75% !important;vertical-align:top;overflow:hidden;padding:0 .25em}
-span.vdcStudyCommentDetails{font-size:90% !important;font-weight:700;color:#a9a9a9;white-space:nowrap}
-.vdcStudyCommentsSubheading{vertical-align:top;padding-top:5px;float:left}
+.vdcStudyCommentsBlock{width:100%;text-align:left}
+.vdcStudyCommentsDataTable{margin:0}
+.vdcStudyCommentDetailsColumn{width:25%;border-right:0;vertical-align:top;padding-right:2em}
+.vdcStudyCommentContentColumn{width:65%;border-left:0;vertical-align:top;overflow:hidden}
+span.vdcStudyCommentDetails{font-size:90% !important;color:#a9a9a9;white-space:nowrap}
+.vdcStudyCommentsSubheading{display:block;padding-top:1em;vertical-align:top}
+.dvnReportCommentsLinks{overflow:hidden;width:100%}
+.dvnReportCommentsLinks span{padding:0 !important}
+.dvnReportCommentsLinks ul{margin:0;padding:0;float:left;list-style-type:none !important}
+.dvnReportCommentsLinks ul li{float:left;z-index:1000;margin:0;padding:0}
+.dvnReportCommentsLinks ul li a:link,.dvnReportCommentsLinks ul li a:visited,.dvnReportCommentsLinks ul li a:hover,.dvnReportCommentsLinks ul li a:active{float:left;display:block;padding:.2em 1em .2em 0;text-decoration:none}
+.dvnReportCommentsLinks ul li:hover{position:relative}
+.dvnReportCommentsLinks ul li:hover a:link,.dvnReportCommentsLinks ul li:hover a:visited,.dvnReportCommentsLinks ul li:hover a:hover,.dvnReportCommentsLinks ul li:hover a:active{text-decoration:underline}
+.dvnReportCommentsLinks ul li a:hover{position:relative;z-index:1000;text-decoration:underline}
+.dvnReportCommentsLinks span.dvnReportCommentsFlag{padding:.2em 1em .2em 0 !important}
+.vdcStudyCommentLoginRegister{padding-top:.5em}
+.vdcStudyCommentsBlock .errorMessageFatal,.vdcStudyCommentsBlock .errorMessageError,.vdcStudyCommentsBlock .errorMessageWarn,.vdcStudyCommentsBlock .errorMessageInfo{padding-left:0 !important}
 /* SUBSETTING + ANALYSIS RESULTS */
 .vdcAnalysisCol1{padding-left:4px;padding-right:4px;padding-top:4px;vertical-align:top;width:200px}
 .vdcAnalysisCol2{padding-left:4px;padding-right:4px;padding-top:20px;text-align:left;vertical-align:top}

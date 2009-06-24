@@ -15,20 +15,12 @@
     <gui:define name="body">
       <ice:form id="templateForm">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
-<style type="text/css">
-    .dvnManageTable th {text-align: center;}
-    .dvnManageTable th span {white-space: nowrap !important;}
-    .dvnCommentReviewCol4 span {white-space: nowrap !important;}
-    .dvnCommentReviewCol6 {width: 15%; text-align: center;}
-    .dvnCommentReviewCol6 a.iceOutLnk {margin-right: .5em;}
-    .dvnCommentReviewCol6 a, .dvnCommentReviewCol6 span {display: inline !important;}
-</style>
         <div class="dvn_section">
           <div jsfc="ice:panelGroup" 
                rendered="#{CommentReviewPage.actionComplete == false}"
                styleClass="dvnMsgBlockRound dvnInformationMessage">
             <div class="dvnMsgBlockContainer">
-              <ice:outputText style="width:95%;float:right;" value="#{bundlePageInfo.commentReviewHelp}" escape="false"/>
+              <ice:outputText value="#{bundlePageInfo.commentReviewHelp}" escape="false"/>
             </div>
           </div>
           <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnSuccessMessage" rendered="#{!empty VDCRequest.successMessage}">
@@ -84,7 +76,7 @@
           <div>
               <ice:dataTable binding="#{CommentReviewPage.mainDataTable}"
                              cellpadding="0" cellspacing="0" width="100%"
-                             styleClass="dvnManageTable"
+                             styleClass="dvnManageTable dvnCommentReviewTable"
                              headerClass="list-header-left vdcColPadded" id="commentReviewData"
                              rows="10"
                              rowClasses="list-row-even vdcColPadded, list-row-odd vdcColPadded"

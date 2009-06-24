@@ -103,6 +103,13 @@ span.vdcStudyCommentDetails{font-size:90% !important;color:#a9a9a9;white-space:n
 .dvnReportCommentsLinks span.dvnReportCommentsFlag{padding:.2em 1em .2em 0 !important}
 .vdcStudyCommentLoginRegister{padding-top:.5em}
 .vdcStudyCommentsBlock .errorMessageFatal,.vdcStudyCommentsBlock .errorMessageError,.vdcStudyCommentsBlock .errorMessageWarn,.vdcStudyCommentsBlock .errorMessageInfo{padding-left:0 !important}
+.icePnlPop{z-index:1000;width:300px;height:160px}
+.icePnlPopHdr .iceOutTxt{font-family:"HelveticaNeue", Helvetica, Arial, sans-serif !important;font-size:12px !important;}
+.popupModalClose{float:right;cursor:pointer}
+.popupModalClose img{border:0}
+.popupModalBodyRow2 td{padding-top:.5em}
+.popupModalBody .iceOutTxt{font-family:"HelveticaNeue", Helvetica, Arial, sans-serif !important;font-size:12px !important;}
+.popupModalBody .dvnFormPadding input{display:inline;cursor:pointer}
 /* SUBSETTING + ANALYSIS RESULTS */
 .vdcAnalysisCol1{padding-left:4px;padding-right:4px;padding-top:4px;vertical-align:top;width:200px}
 .vdcAnalysisCol2{padding-left:4px;padding-right:4px;padding-top:20px;text-align:left;vertical-align:top}

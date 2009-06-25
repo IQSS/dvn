@@ -1,8 +1,20 @@
 undo <- function(){
-    g <<- g_last
+    #g <<- g_last
+    e <- simpleError("Undo Error.")
+    if(!undo_on)
+        stop(e, "Already at last undo.")
+    #else
+    load(paste(g$filestub, "_last.RData", sep=''), envir=parent.frame())
+    undo_on <<- FALSE
     return(c(vcount(g), ecount(g)))
 }
 
 can_undo <- function(){
-    return(!identical(g, g_last))
+    return(undo_on)
+}
+
+cache_g <- function(){
+    #g_last <<- g
+    save(g, file=paste(g$filestub, "_last.RData", sep=''))
+    undo_on <<- TRUE 
 }

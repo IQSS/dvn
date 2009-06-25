@@ -1,6 +1,6 @@
 vertex_subset <- function(tmp_g, subset_str){
     subset_str <- clean_subset(subset_str)
-    g_last <<- tmp_g
+    cache_g()
     vs <- V(tmp_g)[eval(parse(text=subset_str))]
     tmp_g <- subgraph(g, vs)
 
@@ -13,7 +13,7 @@ vertex_subset <- function(tmp_g, subset_str){
 #and vertices incident to those edges.
 edge_subset <- function(tmp_g, subset_str, drop_disconnected=FALSE){
     subset_str <- clean_subset(subset_str)
-    g_last <<- tmp_g
+    cache_g()
     es <- E(tmp_g)[eval(parse(text=paste("!(",subset_str,")")))]
     tmp_g <- delete.edges(tmp_g, es)
 

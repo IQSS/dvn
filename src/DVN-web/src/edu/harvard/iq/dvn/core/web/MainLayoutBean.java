@@ -145,7 +145,6 @@ public class MainLayoutBean implements java.io.Serializable  {
      */
     public boolean isWriteStudyCommentsPopups() {
         HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
-        System.out.println("study comments tab is " + request.getRequestURI());
         writeStudyCommentsPopups = request.getRequestURI().indexOf("StudyPage.xhtml") != -1;
         return writeStudyCommentsPopups;
     }

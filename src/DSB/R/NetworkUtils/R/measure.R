@@ -72,7 +72,7 @@ add_bonacich_centrality <- function(tmp_g, alpha=1, exo=1){
         stop(e, "exo must be a number or numeric vector.")
 
     if(alpha > 1 || alpha < -1)
-        stop("alpha must be between 0 and 1, inclusive.")
+        stop("alpha must be between -1 and 1, inclusive.")
 
     alpha <- alpha * 1/evcent(tmp_g)$value
 

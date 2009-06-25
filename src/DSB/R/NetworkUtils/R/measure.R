@@ -14,7 +14,7 @@ next_measure_name <- function(g, measure){
 }
 
 add_pagerank <- function(tmp_g, damping=0.85){
-    g_last <<- tmp_g
+    cache_g()
     e <- simpleError("Out of Bounds Error.")
     if(damping < 0 || damping > 1)
         stop(e, "Damping parameter is a probability and must be between 0 and 1")
@@ -25,7 +25,7 @@ add_pagerank <- function(tmp_g, damping=0.85){
 }
 
 add_degree <- function(tmp_g){
-    g_last <<- tmp_g
+    cache_g()
     meas_name <- next_measure_name(tmp_g, "degree")
     tmp_g <- set.vertex.attribute(tmp_g, meas_name, V(tmp_g), degree(tmp_g, V(tmp_g)))
     g <<- tmp_g
@@ -33,7 +33,7 @@ add_degree <- function(tmp_g){
 }
 
 add_unique_degree <- function(tmp_g){
-    g_last <<- tmp_g
+    cache_g()
     meas_name <- next_measure_name(tmp_g, "unique_degree")
     tmp_g <- set.vertex.attribute(tmp_g, meas_name, V(tmp_g), degree(simplify(tmp_g), V(tmp_g)))
     g <<- tmp_g
@@ -41,7 +41,7 @@ add_unique_degree <- function(tmp_g){
 }
 
 add_in_largest_component <- function(tmp_g){
-    g_last <<- tmp_g
+    cache_g()
     meas_name <- next_measure_name(tmp_g, "in_largest_component") 
 
     k <- clusters(tmp_g)
@@ -55,7 +55,7 @@ add_in_largest_component <- function(tmp_g){
 }
 
 add_bonacich_centrality <- function(tmp_g, alpha=1, exo=1){
-    g_last <<- tmp_g
+    cache_g()
 
     mc <- match.call()
     #stop(paste("This is the call:", deparse(mc)))

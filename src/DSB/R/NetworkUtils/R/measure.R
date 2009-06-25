@@ -63,12 +63,16 @@ add_bonacich_centrality <- function(tmp_g, alpha=1, exo=1){
     meas_name <- next_measure_name(tmp_g, "bonacich_centrality")
 
     alpha <- as.numeric(alpha)
-    exo <- as.numeric(exo)
+        exo <- as.numeric(exo)
+
     e <- simpleError("Type Error.")
     if(is.na(alpha))
         stop(e, "alpha must be a number.")
     if(is.na(exo))
         stop(e, "exo must be a number or numeric vector.")
+
+    if(alpha > 1 || alpha < -1)
+        stop("alpha must be between 0 and 1, inclusive.")
 
     alpha <- alpha * 1/evcent(tmp_g)$value
 
@@ -85,11 +89,6 @@ alpha.centrality.sparse <-
     function(graph, alpha=1, exo=1, loops=F, rescale=T, tol=.Machine$double.eps){
 
     mc <- match.call()
-
-    if(alpha >= 1)
-        stop("alpha must be greater than or equal to 0 and strictly less than 1.")
-    else if(alpha < 0)
-        stop("alpha must be between 0 and 1.")
 
     require(Matrix)
     

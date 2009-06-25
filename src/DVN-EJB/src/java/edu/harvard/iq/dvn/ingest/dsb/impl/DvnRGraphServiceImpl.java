@@ -32,7 +32,7 @@ public class DvnRGraphServiceImpl{
     
     private static Logger dbgLog = Logger.getLogger(DvnRGraphServiceImpl.class.getPackage().getName());
 
-    private static RConnection rc = null; 
+    private RConnection rc = null; 
 
     // - constants for defining the subset queries: 
 
@@ -222,10 +222,21 @@ public class DvnRGraphServiceImpl{
             rc.voidEval(librarySetup);
 
 	    String SavedRworkSpace = null;  
-
 	    String CachedRworkSpace = sro.getCachedRworkSpace(); 
 
-	    if ( CachedRworkSpace != null ) {
+	    Map <String, Object> SubsetParameters = sro.getParametersForGraphSubset(); 
+
+	    if ( SubsetParameters != null ) {
+		SavedRworkSpace = (String) SubsetParameters.get(SAVED_RWORK_SPACE);
+	    }
+
+	    if ( SavedRworkSpace != null ) {
+		RDataFileName = SavedRworkSpace; 
+		dbgLog.fine("RDataFile="+RDataFileName);
+		historyEntry.add("load('"+RDataFileName+"')");
+		String cmdResponse = safeEval(rc, "load('"+RDataFileName+"')").asString();
+
+	    } else if ( CachedRworkSpace != null ) {
 		// send data file to the Rserve side 
 
 		InputStream inb = new BufferedInputStream(new FileInputStream(CachedRworkSpace));
@@ -253,17 +264,18 @@ public class DvnRGraphServiceImpl{
 		dbgLog.fine("save the workspace="+saveWS);
 		rc.voidEval(saveWS);
 
-		result.put(SAVED_RWORK_SPACE, RDataFileName);
-
-		result.put("dsbHost", RSERVE_HOST);
-		result.put("dsbPort", DSB_HOST_PORT);
-		result.put("IdSuffix", IdSuffix);
-		
 	    } else {
 		result.put("RexecError", "true");
-		result.put("RexecErrorDescription", "Initialize method called without the cached RData file supplied"); 
+		result.put("RexecErrorDescription", "Initialize method called without either local or remote RData file"); 
 		return result;
 	    }
+
+	    result.put(SAVED_RWORK_SPACE, RDataFileName);
+
+	    result.put("dsbHost", RSERVE_HOST);
+	    result.put("dsbPort", DSB_HOST_PORT);
+	    result.put("IdSuffix", IdSuffix);
+		
 
 	} catch (RException re) {
 	    result.put("IdSuffix", IdSuffix);
@@ -342,6 +354,22 @@ public class DvnRGraphServiceImpl{
 	}
 	
 	return result;
+
+    }
+
+    /** *************************************************************
+     * checks on the RServe connection status;
+     *
+     * @return  boolean
+     */    
+    
+    public boolean isAlive() {
+    
+	if ( rc == null ) {
+	    return false; 
+	} 
+	
+	return rc.isConnected();
 
     }
 
@@ -518,21 +546,7 @@ public class DvnRGraphServiceImpl{
 		    if ( automaticQueryType != null ) {
             String n = (String) SubsetParameters.get(AUTOMATIC_QUERY_N_VALUE);
             autoQueryCommand = automaticQueryType + "(g, " + n + ")";
-            /*
-			if ( automaticQueryType.equals(AUTOMATIC_QUERY_NTHLARGEST) ) {
-			    int n = Integer.parseInt((String) SubsetParameters.get(AUTOMATIC_QUERY_N_VALUE));
-			    autoQueryCommand = "component(g, " + n + ")";
 
-			} else if ( automaticQueryType.equals(AUTOMATIC_QUERY_BICONNECTED) ) {
-			    int n = Integer.parseInt((String) SubsetParameters.get(AUTOMATIC_QUERY_N_VALUE));
-			    autoQueryCommand = "biconnected_component(g, " + n + ")";
-
-			} else if ( automaticQueryType.equals(AUTOMATIC_QUERY_NEIGHBORHOOD) ) {
-			    int n = Integer.parseInt((String) SubsetParameters.get(AUTOMATIC_QUERY_N_VALUE));
-			    autoQueryCommand = "add_neighborhood(g, " + n + ")";
-
-			}
-            */
 		    }
 
 		    if ( autoQueryCommand == null ) {
@@ -564,12 +578,10 @@ public class DvnRGraphServiceImpl{
 
             
             // save workspace:
-	    // i don't need to do this anymore, do i? 
 
-            //String saveWS = "save.image(file='"+ RDataFileName +"')";
-            //dbgLog.fine("LCE: save the workspace="+saveWS);
-            //rc.voidEval(saveWS);
-
+            String saveWS = "save.image(file='"+ RDataFileName +"')";
+            dbgLog.fine("LCE: save the workspace="+saveWS);
+            rc.voidEval(saveWS);
 
 	    result.put( SAVED_RWORK_SPACE, RDataFileName ); 
 

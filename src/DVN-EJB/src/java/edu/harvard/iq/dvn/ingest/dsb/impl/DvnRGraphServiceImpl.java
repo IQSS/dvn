@@ -47,19 +47,11 @@ public class DvnRGraphServiceImpl{
 
     public static String AUTOMATIC_QUERY_SUBSET = "AUTOMATIC_QUERY_SUBSET";
     public static String AUTOMATIC_QUERY_TYPE = "AUTOMATIC_QUERY_TYPE";
-    public static String AUTOMATIC_QUERY_NTHLARGEST = "component";
-    public static String AUTOMATIC_QUERY_BICONNECTED = "biconnected_component";
-    public static String AUTOMATIC_QUERY_NEIGHBORHOOD = "add_neighborhood";
     public static String AUTOMATIC_QUERY_N_VALUE = "AUTOMATIC_QUERY_N_VALUE";
 
 
     public static String NETWORK_MEASURE = "NETWORK_MEASURE"; 
     public static String NETWORK_MEASURE_TYPE = "NETWORK_MEASURE_TYPE"; 
-    public static String NETWORK_MEASURE_DEGREE = "add_degree";
-    public static String NETWORK_MEASURE_UNIQUE_DEGREE = "add_unique_degree";
-    public static String NETWORK_MEASURE_RANK = "add_pagerank";
-    public static String NETWORK_MEASURE_IN_LARGEST = "add_in_largest_component";
-    public static String NETWORK_MEASURE_BONACICH_CENTRALITY = "add_bonacich_centrality";
     public static String NETWORK_MEASURE_PARAMETER = "NETWORK_MEASURE_PARAMETER";
 
     public static String UNDO = "UNDO";

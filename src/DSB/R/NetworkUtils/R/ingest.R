@@ -23,7 +23,7 @@ load_and_clear <- function(filename){
     save(g_orig, file=paste(g$filestub, "_orig.RData", sep=''))
     rm(g_orig); gc()
 
-    save(g, file=paste(g$filestub, "_last.RData", sep=''))
+    #save(g, file=paste(g$filestub, "_last.RData", sep=''))
 
     undo_on <<- FALSE
 }

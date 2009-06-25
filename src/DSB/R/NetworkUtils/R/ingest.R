@@ -1,6 +1,6 @@
 ingest_graphml <- function(filename){
     g <- read.graph(filename, format="graphml")
-    #e <- simpleError("Namespace Error")
+    #e <- simpleError("Namespace Error.")
     #if("DVN_internal_uid" %in% list.vertex.attributes(g))
     #    stop(e, "An input graph cannot have a vertex attribute called \"DVN_internal_uid\".")
     split_file <- unlist(strsplit(filename, '.', fixed=T))
@@ -13,12 +13,24 @@ ingest_graphml <- function(filename){
 
 load_and_clear <- function(filename){
     rm(list=ls(envir=parent.frame()),envir=parent.frame())
+
     load(filename, envir=parent.frame())
-    g_orig <<- g_last <<- g
+
+    split_file <- unlist(strsplit(filename, '.', fixed=T))
+    g$filestub <<- paste(split_file[-length(split_file)], collapse='.')
+
+    g_orig <- g
+    save(g_orig, file=paste(g$filestub, "_orig.RData", sep=''))
+    rm(g_orig); gc()
+
+    save(g, file=paste(g$filestub, "_last.RData", sep=''))
+
+    undo_on <<- FALSE
 }
 
 dump_graphml <- function(tmp_g, filename){
     #tmp_g <- remove.vertex.attribute(tmp_g, "DVN_internal_uid")
+    g$filestub <- NULL
     write.graph(tmp_g, file=filename, format="graphml")
     return(filename)
 }

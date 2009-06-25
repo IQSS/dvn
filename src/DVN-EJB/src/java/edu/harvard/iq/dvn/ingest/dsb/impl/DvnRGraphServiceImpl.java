@@ -188,25 +188,6 @@ public class DvnRGraphServiceImpl{
 
     }
     
-    public void setupWorkingDirectory(RConnection c){
-        try{
-            // set up the working directory
-            // parent dir
-
-            String checkWrkDir = "if (file_test('-d', '"+DSB_TMP_DIR+"')) {Sys.chmod('"+
-            DVN_TMP_DIR+"', mode = '0777'); Sys.chmod('"+DSB_TMP_DIR+"', mode = '0777');} else {dir.create('"+DSB_TMP_DIR+"', showWarnings = FALSE, recursive = TRUE);Sys.chmod('"+DVN_TMP_DIR+"', mode = '0777');Sys.chmod('"+
-            DSB_TMP_DIR+"', mode = '0777');}";
-
-            dbgLog.fine("w permission="+checkWrkDir);
-
-            c.voidEval(checkWrkDir);
-        
-        } catch (RserveException rse) {
-            rse.printStackTrace();
-        }
-    }
-    
-    
     
     /** *************************************************************
      * Execute an R-based dvn analysis request on a Graph object
@@ -395,7 +376,7 @@ public class DvnRGraphServiceImpl{
 
 		    dbgLog.info("networkMeasureCommand="+networkMeasureCommand);
 		    historyEntry.add(networkMeasureCommand);
-		    String addedColumn = c.eval(networkMeasureCommand).asString();
+		    String addedColumn = safeEval(c,networkMeasureCommand).asString();
 		    dbgLog.info("added column="+addedColumn);
 
 		    if ( addedColumn != null ) {
@@ -439,7 +420,7 @@ public class DvnRGraphServiceImpl{
 		    dbgLog.info("autoQueryCommand="+autoQueryCommand);
 		    historyEntry.add(autoQueryCommand);
 		    //c.voidEval(autoQueryCommand);
-		    String cEval = c.eval(autoQueryCommand).asString();
+		    String cEval = safeEval(c, autoQueryCommand).asString();
 		    dbgLog.info("auto query eval: "+cEval);
 
 		} else if ( GraphSubsetType.equals(UNDO) ) {
@@ -451,11 +432,11 @@ public class DvnRGraphServiceImpl{
 	    // get the vertices and edges counts: 
 
 	    String countCommand = "vcount(g)";
-	    int countResponse = c.eval(countCommand).asInteger(); 
+	    int countResponse = safeEval(c, countCommand).asInteger(); 
 	    result.put(NUMBER_OF_VERTICES, Integer.toString(countResponse)); 
 
 	    countCommand = "ecount(g)";
-	    countResponse = c.eval(countCommand).asInteger(); 
+	    countResponse = safeEval(c, countCommand).asInteger(); 
 	    result.put(NUMBER_OF_EDGES, Integer.toString(countResponse)); 
 
             
@@ -486,6 +467,17 @@ public class DvnRGraphServiceImpl{
             dbgLog.fine("result object (before closing the Rserve):\n"+result);
                     
             c.close();
+
+	} catch (RException re) {
+	    result.put("IdSuffix", IdSuffix);
+	    result.put("RCommandHistory",  StringUtils.join(historyEntry,"\n"));
+	    result.put("RexecError", "true");
+	    result.put("RexecErrorMessage", re.getMessage());
+	    result.put("RexecErrorDescription", "R runtime Error");
+
+	    dbgLog.info("rserve exception message: "+ re.getMessage());
+	    dbgLog.info("rserve exception description: "+ "R runtime Error");
+	    return result;
 
         } catch (RserveException rse) {
             result.put("IdSuffix", IdSuffix);
@@ -595,7 +587,7 @@ public class DvnRGraphServiceImpl{
 	    String ingestCommand = "ingest_graphml('" + GraphMLfileNameRemote + "')";
 	    dbgLog.fine(ingestCommand);
 	    historyEntry.add(ingestCommand);
-	    c.voidEval(ingestCommand);            
+	    String responseVoid = safeEval(c,ingestCommand).asString();
 	     
             int fileSize = getFileSize(c,RDataFileName);
             
@@ -634,6 +626,16 @@ public class DvnRGraphServiceImpl{
                     
             c.close();
         
+	} catch (RException re) {
+	    result.put("IdSuffix", IdSuffix);
+	    result.put("RCommandHistory",  StringUtils.join(historyEntry,"\n"));
+	    result.put("RexecError", "true");
+	    result.put("RexecErrorMessage", re.getMessage());
+	    result.put("RexecErrorDescription", "R runtime Error");
+
+	    dbgLog.info("rserve exception message: "+ re.getMessage());
+	    dbgLog.info("rserve exception description: "+ "R runtime Error");
+	    return result;
         } catch (RserveException rse) {
             result.put("IdSuffix", IdSuffix);
             result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
@@ -717,7 +719,7 @@ public class DvnRGraphServiceImpl{
 	    exportCommand = "dump_tab(g, '" + DSB_TMP_DIR + "/temp_" + IdSuffix + ".tab')";
 	    dbgLog.fine(exportCommand);
 	    historyEntry.add(exportCommand);
-	    c.voidEval(exportCommand);
+	    String responseVoid = safeEval(c, exportCommand).asString();
 
 
         File zipFile  = new File(TEMP_DIR, "subset_" + IdSuffix + ".zip");
@@ -779,6 +781,16 @@ public class DvnRGraphServiceImpl{
                     
             c.close();
         
+	} catch (RException re) {
+	    result.put("IdSuffix", IdSuffix);
+	    result.put("RCommandHistory",  StringUtils.join(historyEntry,"\n"));
+	    result.put("RexecError", "true");
+	    result.put("RexecErrorMessage", re.getMessage());
+	    result.put("RexecErrorDescription", "R runtime Error");
+
+	    dbgLog.info("rserve exception message: "+ re.getMessage());
+	    dbgLog.info("rserve exception description: "+ "R runtime Error");
+	    return result;
         } catch (RserveException rse) {
             result.put("IdSuffix", IdSuffix);
             result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
@@ -996,4 +1008,22 @@ public class DvnRGraphServiceImpl{
         }
         return fileSize;
     }
+
+    public class RException extends Exception {
+
+	public RException(String msg) {
+	    super("\"" + msg + "\"");
+	}
+    }
+
+    private REXP safeEval(RConnection c, String s) throws  
+RserveException,
+	RException, REXPMismatchException {
+	REXP r = c.eval("try({" + s + "}, silent=TRUE)");
+	if (r.inherits("try-error")) {
+	    throw new RException(r.asString());
+	}
+	return r;
+    }
+
 }

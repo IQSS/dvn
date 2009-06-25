@@ -32,6 +32,8 @@ public class DvnRGraphServiceImpl{
     
     private static Logger dbgLog = Logger.getLogger(DvnRGraphServiceImpl.class.getPackage().getName());
 
+    private static RConnection rc = null; 
+
     // - constants for defining the subset queries: 
 
     public static String RSUBSETFUNCTION = "RSUBSETFUNCTION";
@@ -180,6 +182,460 @@ public class DvnRGraphServiceImpl{
 
     }
     
+    
+    /** *************************************************************
+     * initialize the RServe connection and load the graph;
+     * keep the open connection.
+     *
+     * @param sro    a DvnRJobRequest object that contains various parameters
+     * @return    a Map that contains various information about the results
+     */    
+    
+    public Map<String, String> initializeConnection(DvnRJobRequest sro) {
+    
+        // set the return object
+        Map<String, String> result = new HashMap<String, String>();
+        
+        try {
+
+	    if ( sro != null ) {
+		dbgLog.fine("sro dump:\n"+ToStringBuilder.reflectionToString(sro, ToStringStyle.MULTI_LINE_STYLE));
+            } else {
+		result.put("RexecError", "true");
+		result.put("RexecErrorDescription", "NULL R JOB OBJECT"); 
+		return result;
+	    }
+
+            // Set up an Rserve connection
+
+            dbgLog.fine("RSERVE_USER="+RSERVE_USER+"[default=rserve]");
+            dbgLog.fine("RSERVE_PWD="+RSERVE_PWD+"[default=rserve]");
+            dbgLog.fine("RSERVE_PORT="+RSERVE_PORT+"[default=6311]");
+
+            rc = new RConnection(RSERVE_HOST, RSERVE_PORT);
+            dbgLog.fine("hostname="+RSERVE_HOST);
+
+            rc.login(RSERVE_USER, RSERVE_PWD);
+            dbgLog.fine(">" + rc.eval("R.version$version.string").asString() + "<");
+            dbgLog.fine("wrkdir="+wrkdir);
+            historyEntry.add(librarySetup);
+            rc.voidEval(librarySetup);
+
+	    String SavedRworkSpace = null;  
+
+	    String CachedRworkSpace = sro.getCachedRworkSpace(); 
+
+	    if ( CachedRworkSpace != null ) {
+		// send data file to the Rserve side 
+
+		InputStream inb = new BufferedInputStream(new FileInputStream(CachedRworkSpace));
+		int bufsize;
+		byte[] bffr = new byte[1024];
+
+		RFileOutputStream os = 
+		    rc.createFile(RDataFileName);
+		while ((bufsize = inb.read(bffr)) != -1) {
+                    os.write(bffr, 0, bufsize);
+		}
+		os.close();
+		inb.close();
+
+		// Using "safeEval" for the next operation, loading 
+		// the RData file, to catch any possible error messages
+		// in case R refuses to load it:
+
+		String cmdResponse = safeEval(rc,"load_and_clear('"+RDataFileName+"')").asString();
+
+		// not sure if this extra "save.image" is still necessary;
+		// will double-check with Alex. 
+
+		String saveWS = "save.image(file='"+ RDataFileName +"')";
+		dbgLog.fine("save the workspace="+saveWS);
+		rc.voidEval(saveWS);
+
+		result.put(SAVED_RWORK_SPACE, RDataFileName);
+
+		result.put("dsbHost", RSERVE_HOST);
+		result.put("dsbPort", DSB_HOST_PORT);
+		result.put("IdSuffix", IdSuffix);
+		
+	    } else {
+		result.put("RexecError", "true");
+		result.put("RexecErrorDescription", "Initialize method called without the cached RData file supplied"); 
+		return result;
+	    }
+
+	} catch (RException re) {
+	    result.put("IdSuffix", IdSuffix);
+	    result.put("RCommandHistory",  StringUtils.join(historyEntry,"\n"));
+	    result.put("RexecError", "true");
+	    result.put("RexecErrorMessage", re.getMessage());
+	    result.put("RexecErrorDescription", "init failed: R runtime Error");
+
+	    dbgLog.info("rserve exception message: "+ re.getMessage());
+	    dbgLog.info("rserve exception description: "+ "init failed: R runtime Error");
+	    return result;
+
+        } catch (RserveException rse) {
+            result.put("IdSuffix", IdSuffix);
+            result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
+            
+            result.put("RexecError", "true");
+            result.put("RexecErrorMessage", rse.getMessage());
+            result.put("RexecErrorDescription", rse.getRequestErrorDescription());
+
+            dbgLog.info("rserve exception message: "+rse.getMessage());
+            dbgLog.info("rserve exception description: "+rse.getRequestErrorDescription());
+            return result;
+
+        } catch (REXPMismatchException mme) {
+        
+            // REXP mismatch exception (what we got differs from what we expected)
+            result.put("IdSuffix", IdSuffix);
+            result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
+
+            result.put("RexecError", "true");
+            return result;
+
+        } catch (IOException ie){
+            
+            result.put("IdSuffix", IdSuffix);
+            result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
+
+            result.put("RexecError", "true");
+            return result;
+            
+        } catch (Exception ex){
+            
+            result.put("IdSuffix", IdSuffix);
+
+            result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
+
+            result.put("RexecError", "true");
+            return result;
+        }
+        
+        return result;
+        
+    }
+
+
+    /** *************************************************************
+     * close RServe connection;
+     * (should I remove the saved workspace(s) on the server side? 
+     *
+     * @return    a Map that contains diagnostics information 
+     * in case of an error. 
+     */    
+    
+    public Map<String, String> closeConnection() {
+    
+        // set the return object
+        Map<String, String> result = new HashMap<String, String>();
+        
+	if ( rc == null ) {
+	    dbgLog.fine("close method called on null connection!");
+	    result.put("RexecError", "true");
+	    result.put("RexecErrorDescription", "CLOSE CALLED ON NULL CONNECTION"); 
+	} else {
+	    rc.close(); 
+	}
+	
+	return result;
+
+    }
+
+
+    /** *************************************************************
+     * Execute an R-based dvn analysis request on a Graph object
+     * using an open connection created during the Initialize call. 
+     *
+     * @param sro    a DvnRJobRequest object that contains various parameters
+     * @return    a Map that contains various information about the results
+     */    
+    
+    public Map<String, String> liveConnectionExecute(DvnRJobRequest sro) {
+    
+        // set the return object
+        Map<String, String> result = new HashMap<String, String>();
+        
+        try {
+	    if ( rc == null ) {
+		dbgLog.fine("LCE method called on null connection!");
+		result.put("RexecError", "true");
+		result.put("RexecErrorDescription", "CLOSE CALLED ON NULL CONNECTION"); 
+		return result;
+	    }
+
+            // Check if there's an Rserve connection: 
+
+
+	    if ( sro != null ) {
+		dbgLog.fine("LCE sro dump:\n"+ToStringBuilder.reflectionToString(sro, ToStringStyle.MULTI_LINE_STYLE));
+            } else {
+		result.put("RexecError", "true");
+		result.put("RexecErrorDescription", "LCE: NULL R JOB OBJECT"); 
+		return result;
+	    }
+
+	    // (if we have a non-null connection that's stale/closed, 
+	    // Rserve will throw an exception below). 
+
+	    String SavedRworkSpace = null;  
+
+	    Map <String, Object> SubsetParameters = sro.getParametersForGraphSubset(); 
+	    
+	    if ( SubsetParameters != null ) {
+		SavedRworkSpace = (String) SubsetParameters.get(SAVED_RWORK_SPACE);
+	    } else {
+		result.put("RexecError", "true");
+		result.put("RexecErrorDescription", "LCE: NULL PARAMETERS OBJECT"); 
+		return result;
+	    }
+
+	    /*
+	    if ( SavedRworkSpace != null ) {
+		RDataFileName = SavedRworkSpace; 
+	    } else {
+		result.put("RexecError", "true");
+		result.put("RexecErrorDescription", "LCE: NULL R JOB OBJECT"); 
+		return result;
+	    }		
+	    */
+
+            // subsetting 
+
+	    String GraphSubsetType = (String) SubsetParameters.get(RSUBSETFUNCTION); 
+
+	    if ( GraphSubsetType != null ) {
+		
+		if ( GraphSubsetType.equals(MANUAL_QUERY_SUBSET) ) {
+
+		    String manualQueryType  = (String) SubsetParameters.get(MANUAL_QUERY_TYPE); 
+		    String manualQuery = (String) SubsetParameters.get(MANUAL_QUERY); 
+
+		    String subsetCommand = null; 
+
+		    if ( manualQueryType != null ) {
+			if (manualQueryType.equals(EDGE_SUBSET)) {
+			    String dropDisconnected = (String) SubsetParameters.get(ELIMINATE_DISCONNECTED); 
+			    if ( dropDisconnected != null ) {
+				subsetCommand = "edge_subset(g, '"+manualQuery+"', TRUE)"; 
+			    } else {
+				subsetCommand = "edge_subset(g, '"+manualQuery+"')"; 
+			    }
+
+			} else if (manualQueryType.equals(VERTEX_SUBSET)){
+			    subsetCommand = "vertex_subset(g, '"+manualQuery+"')"; 
+			} else {
+			    result.put("RexecError", "true");
+			    return result;
+			}		       
+
+			dbgLog.fine("LCE: manualQuerySubset="+subsetCommand);
+			historyEntry.add(subsetCommand);
+			String cmdResponse = safeEval(rc,subsetCommand).asString();
+			
+		    }
+		    
+		} else if ( GraphSubsetType.equals(NETWORK_MEASURE) ) {
+		    String networkMeasureType = (String) SubsetParameters.get(NETWORK_MEASURE_TYPE); 
+		    String networkMeasureCommand = null; 
+		    if ( networkMeasureType != null ) {
+			    List<NetworkMeasureParameter> networkMeasureParameterList = (List<NetworkMeasureParameter>)SubsetParameters.get(NETWORK_MEASURE_PARAMETER);
+                networkMeasureCommand = networkMeasureType + "(g" + buildParameterComponent(networkMeasureParameterList) + ")";
+            /*
+			if ( networkMeasureType.equals(NETWORK_MEASURE_DEGREE) ) {
+			    networkMeasureCommand = "add_degree(g)"; 
+
+			} else if ( networkMeasureType.equals(NETWORK_MEASURE_UNIQUE_DEGREE) ) {
+			    networkMeasureCommand = "add_unique_degree(g)";
+
+			} else if ( networkMeasureType.equals(NETWORK_MEASURE_IN_LARGEST) ) {
+			    networkMeasureCommand = "add_in_largest_component(g)"; 
+
+			} else if ( networkMeasureType.equals(NETWORK_MEASURE_RANK) ) {
+			    String networkMeasureParam = null; 
+
+			    List<NetworkMeasureParameter> networkMeasureParameterList = (List<NetworkMeasureParameter>)SubsetParameters.get(NETWORK_MEASURE_PARAMETER);
+			    if ( networkMeasureParameterList != null ) {
+								
+				int i = 0; 
+
+				// Page Rank takes one parameter, d (for "damping");
+				// it is hard-coded below. We will add a better
+				// system for keeping track of the parameters
+				// that different functions take; either by
+				// specifying them as constants in this class,
+				// or, if it gets complicated, keeping an XML
+				// config file somewhere. 
+
+				while ( networkMeasureParam == null && networkMeasureParameterList.get(i) != null ) {
+				    NetworkMeasureParameter nparameter = networkMeasureParameterList.get(i); 
+				    if ( "d".equals(nparameter.getName()) ) {
+					networkMeasureParam = nparameter.getValue();
+				    }
+				    i++; 
+				}
+
+				if ( networkMeasureParam != null ) {
+				    networkMeasureCommand = "add_pagerank(g, "+networkMeasureParam+")";
+				} else {
+				    // this "damping" parameter isn't 
+				    // mandatory; if the function is envoked 
+				    // with one argument, the value of d=0.85
+				    // is used. 
+				    networkMeasureCommand = "add_pagerank(g)";
+
+				}
+			    }
+			}
+            */
+		    }
+
+		    if ( networkMeasureCommand == null ) {
+			result.put("RexecError", "true");
+			result.put("RexecErrorDescription", "ILLEGAL OR UNSUPPORTED NETWORK MEASURE QUERY"); 
+			return result;
+		    }
+
+		    dbgLog.info("LCE: networkMeasureCommand="+networkMeasureCommand);
+		    historyEntry.add(networkMeasureCommand);
+		    String addedColumn = safeEval(rc,networkMeasureCommand).asString();
+		    dbgLog.info("LCE: added column="+addedColumn);
+
+		    if ( addedColumn != null ) {
+			result.put(NETWORK_MEASURE_NEW_COLUMN, addedColumn);
+		    } else {
+			result.put("RexecError", "true");
+			result.put("RexecErrorDescription", "FAILED TO READ ADDED COLUMN NAME"); 
+			return result;
+		    }
+		    
+		} else if ( GraphSubsetType.equals(AUTOMATIC_QUERY_SUBSET) ) {
+		    String automaticQueryType = (String) SubsetParameters.get(AUTOMATIC_QUERY_TYPE); 
+		    String autoQueryCommand = null; 
+		    if ( automaticQueryType != null ) {
+            String n = (String) SubsetParameters.get(AUTOMATIC_QUERY_N_VALUE);
+            autoQueryCommand = automaticQueryType + "(g, " + n + ")";
+            /*
+			if ( automaticQueryType.equals(AUTOMATIC_QUERY_NTHLARGEST) ) {
+			    int n = Integer.parseInt((String) SubsetParameters.get(AUTOMATIC_QUERY_N_VALUE));
+			    autoQueryCommand = "component(g, " + n + ")";
+
+			} else if ( automaticQueryType.equals(AUTOMATIC_QUERY_BICONNECTED) ) {
+			    int n = Integer.parseInt((String) SubsetParameters.get(AUTOMATIC_QUERY_N_VALUE));
+			    autoQueryCommand = "biconnected_component(g, " + n + ")";
+
+			} else if ( automaticQueryType.equals(AUTOMATIC_QUERY_NEIGHBORHOOD) ) {
+			    int n = Integer.parseInt((String) SubsetParameters.get(AUTOMATIC_QUERY_N_VALUE));
+			    autoQueryCommand = "add_neighborhood(g, " + n + ")";
+
+			}
+            */
+		    }
+
+		    if ( autoQueryCommand == null ) {
+			result.put("RexecError", "true");
+			result.put("RexecErrorDescription", "NULL OR UNSUPPORTED AUTO QUERY"); 
+			return result;
+
+		    }
+
+		    dbgLog.info("LCE: autoQueryCommand="+autoQueryCommand);
+		    historyEntry.add(autoQueryCommand);
+		    String cEval = safeEval(rc, autoQueryCommand).asString();
+		    dbgLog.info("LCE: auto query eval: "+cEval);
+
+		} else if ( GraphSubsetType.equals(UNDO) ) {
+		    String cEval = safeEval(rc, "undo()").asString();
+		}
+	    }
+
+	    // get the vertices and edges counts: 
+
+	    String countCommand = "vcount(g)";
+	    int countResponse = safeEval(rc, countCommand).asInteger(); 
+	    result.put(NUMBER_OF_VERTICES, Integer.toString(countResponse)); 
+
+	    countCommand = "ecount(g)";
+	    countResponse = safeEval(rc, countCommand).asInteger(); 
+	    result.put(NUMBER_OF_EDGES, Integer.toString(countResponse)); 
+
+            
+            // save workspace:
+	    // i don't need to do this anymore, do i? 
+
+            //String saveWS = "save.image(file='"+ RDataFileName +"')";
+            //dbgLog.fine("LCE: save the workspace="+saveWS);
+            //rc.voidEval(saveWS);
+
+
+	    result.put( SAVED_RWORK_SPACE, RDataFileName ); 
+
+	    // we're done; let's add some potentially useful 
+	    // information to the result and return: 
+
+	    String RexecDate = rc.eval("as.character(as.POSIXct(Sys.time()))").asString();
+	    String RversionLine = "R.Version()$version.string";
+            String Rversion = rc.eval(RversionLine).asString();
+            
+            result.put("dsbHost", RSERVE_HOST);
+            result.put("dsbPort", DSB_HOST_PORT);
+            result.put("IdSuffix", IdSuffix);
+            result.put("Rversion", Rversion);
+            result.put("RexecDate", RexecDate);
+            result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
+            
+
+            dbgLog.fine("LCE: result object (before closing the Rserve):\n"+result);
+                    
+	} catch (RException re) {
+	    result.put("IdSuffix", IdSuffix);
+	    result.put("RCommandHistory",  StringUtils.join(historyEntry,"\n"));
+	    result.put("RexecError", "true");
+	    result.put("RexecErrorMessage", re.getMessage());
+	    result.put("RexecErrorDescription", "R runtime Error");
+
+	    dbgLog.info("LCE: rserve exception message: "+ re.getMessage());
+	    dbgLog.info("LCE: rserve exception description: "+ "R runtime Error");
+	    return result;
+
+        } catch (RserveException rse) {
+            result.put("IdSuffix", IdSuffix);
+            result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
+            
+            result.put("RexecError", "true");
+            result.put("RexecErrorMessage", rse.getMessage());
+            result.put("RexecErrorDescription", rse.getRequestErrorDescription());
+
+            dbgLog.info("LCE: rserve exception message: "+rse.getMessage());
+            dbgLog.info("LCE: rserve exception description: "+rse.getRequestErrorDescription());
+            return result;
+
+        } catch (REXPMismatchException mme) {
+        
+            // REXP mismatch exception (what we got differs from what we expected)
+            result.put("IdSuffix", IdSuffix);
+            result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
+
+            result.put("RexecError", "true");
+            return result;
+
+        } catch (Exception ex){
+            
+            result.put("IdSuffix", IdSuffix);
+
+            result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
+
+            result.put("RexecError", "true");
+            return result;
+        }
+        
+        return result;
+        
+    }
+
     
     /** *************************************************************
      * Execute an R-based dvn analysis request on a Graph object
@@ -365,6 +821,7 @@ public class DvnRGraphServiceImpl{
 			result.put("RexecErrorDescription", "ILLEGAL OR UNSUPPORTED NETWORK MEASURE QUERY"); 
 			return result;
 		    }
+
 
 		    dbgLog.info("networkMeasureCommand="+networkMeasureCommand);
 		    historyEntry.add(networkMeasureCommand);

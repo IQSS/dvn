@@ -38,4 +38,7 @@ update studyfile sf set study_id = fc.study_id from filecategory fc where sf.fil
 -- Remove erroneous templates
 delete from templatefield where template_id in(select id from template where vdc_id is null and id != 1);
 delete from template  where vdc_id is null and id != 1;
+
+-- Fix authorization for My Dataverses page
+update pagedef set role_id = null, networkrole_id = null where name = 'MyDataversePage';
 commit;

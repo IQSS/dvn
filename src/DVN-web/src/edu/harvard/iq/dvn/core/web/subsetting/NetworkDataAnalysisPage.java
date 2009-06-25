@@ -17,7 +17,6 @@ import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.util.FileUtil;
 import edu.harvard.iq.dvn.core.util.StringUtil;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
-import edu.harvard.iq.dvn.core.web.common.VDCRequestBean;
 import edu.harvard.iq.dvn.ingest.dsb.impl.DvnRGraphServiceImpl;
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,20 +25,30 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  *
  * @author gdurand
  */
 public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable {
+
+    public static String AUTOMATIC_QUERY_NTHLARGEST = "component";
+    public static String AUTOMATIC_QUERY_BICONNECTED = "biconnected_component";
+    public static String AUTOMATIC_QUERY_NEIGHBORHOOD = "add_neighborhood";
+
+    public static String NETWORK_MEASURE_DEGREE = "add_degree";
+    public static String NETWORK_MEASURE_UNIQUE_DEGREE = "add_unique_degree";
+    public static String NETWORK_MEASURE_RANK = "add_pagerank";
+    public static String NETWORK_MEASURE_IN_LARGEST = "add_in_largest_component";
+    public static String NETWORK_MEASURE_BONACICH_CENTRALITY = "add_bonacich_centrality";
 
     @EJB
     StudyServiceLocal studyService;
@@ -50,6 +59,125 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
     private Long fileId;
     private NetworkDataFile file;
     private String rWorkspace;
+
+    private String actionType = "manualQuery";
+    private String manualQueryType = DataTable.TYPE_VERTEX;
+    private String manualQuery;
+    private boolean eliminateDisconnectedVertices = false;
+    private String automaticQueryType = AUTOMATIC_QUERY_NTHLARGEST;
+    private String automaticQueryNthValue;
+    private String networkMeasureType = NETWORK_MEASURE_RANK;
+
+    private List<NetworkDataAnalysisEvent> events = new ArrayList();
+    private List<NetworkMeasureParameter> networkMeasureParamterList = new ArrayList();
+    private Map<String,String> friendlyNameMap;
+    private Map<String,List> networkMeasureParameterMap;
+
+    private List<SelectItem> vertexAttributeSelectItems;
+    private List<SelectItem> edgeAttributeSelectItems;
+    private List<SelectItem> automaticQuerySelectItems;
+    private List<SelectItem> networkMeasureSelectItems;
+
+    private boolean canUndo = false;
+
+    // used for displaying errros
+    private UIComponent manualQueryError;
+    private UIComponent automaticQueryError;
+    private UIComponent networkMeasureError;
+    private HtmlDataTable eventTable;
+
+
+    public void init() {
+        super.init();
+
+        try {
+            fileId = Long.parseLong( getRequestParam("fileId") );
+            file = (NetworkDataFile) studyService.getStudyFile(fileId);
+        } catch (Exception e) { // id not a long, or file is not a NetworkDataFile (TODO: redirect to a different page if not network data file)
+            redirect("/faces/IdDoesNotExistPage.xhtml?type=File");
+            return;
+        }
+
+        //init workspace and page components
+        rWorkspace = networkDataService.initAnalysis(file.getFileSystemLocation() + ".RData");
+        initComponents();
+    }
+
+    private void initComponents() {
+        vertexAttributeSelectItems =  new ArrayList();
+        edgeAttributeSelectItems = new ArrayList();
+        automaticQuerySelectItems = new ArrayList();
+        networkMeasureSelectItems = new ArrayList();
+        friendlyNameMap = new HashMap();
+        networkMeasureParameterMap = new HashMap();
+
+
+        // start with manual query atribute lists
+        for (DataVariable dv : file.getVertexDataTable().getDataVariables()) {
+            vertexAttributeSelectItems.add(new SelectItem(dv.getName()) );
+        }
+
+        for (DataVariable dv : file.getEdgeDataTable().getDataVariables()) {
+            edgeAttributeSelectItems.add(new SelectItem(dv.getName()) );
+        }
+        
+        // TODO: we will eventually have to read all the queries and network measures from xml
+        // add automatic queries
+        friendlyNameMap.put(AUTOMATIC_QUERY_NTHLARGEST, "Largest Graph");
+        automaticQuerySelectItems.add(new SelectItem(AUTOMATIC_QUERY_NTHLARGEST, friendlyNameMap.get(AUTOMATIC_QUERY_NTHLARGEST)));
+
+        friendlyNameMap.put(AUTOMATIC_QUERY_BICONNECTED, "Biconnected Graph");
+        automaticQuerySelectItems.add(new SelectItem(AUTOMATIC_QUERY_BICONNECTED, friendlyNameMap.get(AUTOMATIC_QUERY_BICONNECTED)));
+
+        friendlyNameMap.put(AUTOMATIC_QUERY_NEIGHBORHOOD, "Neighborhood");
+        automaticQuerySelectItems.add(new SelectItem(AUTOMATIC_QUERY_NEIGHBORHOOD, friendlyNameMap.get(AUTOMATIC_QUERY_NEIGHBORHOOD)));
+
+        // and network measures
+        friendlyNameMap.put(NETWORK_MEASURE_RANK, "Page Rank");
+        networkMeasureSelectItems.add(new SelectItem(NETWORK_MEASURE_RANK, friendlyNameMap.get(NETWORK_MEASURE_RANK)));
+        List parameters = new ArrayList();
+        NetworkMeasureParameter d = new NetworkMeasureParameter();
+        d.setName("d");
+        d.setDefaultValue(".85");
+        parameters.add(d);
+        networkMeasureParameterMap.put(NETWORK_MEASURE_RANK, parameters);
+                
+        friendlyNameMap.put(NETWORK_MEASURE_DEGREE, "Degree");
+        networkMeasureSelectItems.add(new SelectItem(NETWORK_MEASURE_DEGREE, friendlyNameMap.get(NETWORK_MEASURE_DEGREE)));
+
+        friendlyNameMap.put(NETWORK_MEASURE_UNIQUE_DEGREE, "Unique Degree");
+        networkMeasureSelectItems.add(new SelectItem(NETWORK_MEASURE_UNIQUE_DEGREE, friendlyNameMap.get(NETWORK_MEASURE_UNIQUE_DEGREE)));
+
+        friendlyNameMap.put(NETWORK_MEASURE_IN_LARGEST, "In Largest Component");
+        networkMeasureSelectItems.add(new SelectItem(NETWORK_MEASURE_IN_LARGEST, friendlyNameMap.get(NETWORK_MEASURE_IN_LARGEST)));
+
+        friendlyNameMap.put(NETWORK_MEASURE_BONACICH_CENTRALITY, "Bonacich Centrality");
+        networkMeasureSelectItems.add(new SelectItem(NETWORK_MEASURE_BONACICH_CENTRALITY, friendlyNameMap.get(NETWORK_MEASURE_BONACICH_CENTRALITY)));
+        parameters = new ArrayList();
+        NetworkMeasureParameter p1 = new NetworkMeasureParameter();
+        p1.setName("alpha");
+        p1.setDefaultValue("1");
+        parameters.add(p1);
+
+        NetworkMeasureParameter p2 = new NetworkMeasureParameter();
+        p2.setName("exo");
+        p2.setDefaultValue("1");
+        parameters.add(p2);
+        networkMeasureParameterMap.put(NETWORK_MEASURE_BONACICH_CENTRALITY, parameters);
+
+        networkMeasureParamterList = networkMeasureParameterMap.get(networkMeasureType);
+
+        // and finally, add the initial event
+        events.add(getInitialEvent());
+    }
+
+    private NetworkDataAnalysisEvent getInitialEvent() {
+        NetworkDataAnalysisEvent initialEvent = new NetworkDataAnalysisEvent();
+        initialEvent.setLabel("Initial State");
+        initialEvent.setVertices(file.getVertexDataTable().getCaseQuantity());
+        initialEvent.setEdges(file.getEdgeDataTable().getCaseQuantity());
+        return initialEvent;
+    }
 
     public NetworkDataFile getFile() {
         return file;
@@ -66,55 +194,6 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
     public void setFileId(Long fileId) {
         this.fileId = fileId;
     }
-
-    public void init() {
-        super.init();
-
-        try {
-            fileId = Long.parseLong( getRequestParam("fileId") );
-            file = (NetworkDataFile) studyService.getStudyFile(fileId);
-        } catch (Exception e) { // id not a long, or file is not a NetworkDataFile (TODO: redirect to a different page if not network data file)
-            redirect("/faces/IdDoesNotExistPage.xhtml?type=File");
-            return;
-        }
-
-        //init workspace and page fields
-        rWorkspace = networkDataService.initAnalysis(file.getFileSystemLocation() + ".RData");
-        events.add(getInitialEvent());
-        setNetworkMeasureParamters(networkMeasureType);
-    }
-
-    private NetworkDataAnalysisEvent getInitialEvent() {
-        NetworkDataAnalysisEvent initialEvent = new NetworkDataAnalysisEvent();
-        initialEvent.setLabel("Initial State");
-        initialEvent.setVertices(file.getVertexDataTable().getCaseQuantity());
-        initialEvent.setEdges(file.getEdgeDataTable().getCaseQuantity());
-        return initialEvent;
-    }
-
-    private String actionType = "manualQuery";
-    private String manualQueryType = DataTable.TYPE_VERTEX;
-    private String manualQuery;
-    private boolean eliminateDisconnectedVertices = false;
-    private String automaticQueryType = DvnRGraphServiceImpl.AUTOMATIC_QUERY_NTHLARGEST;
-    private String automaticQueryNthValue;
-    private String networkMeasureType = DvnRGraphServiceImpl.NETWORK_MEASURE_RANK;
-
-    private List<NetworkDataAnalysisEvent> events = new ArrayList();
-    private List<NetworkMeasureParameter> networkMeasureParamterList = new ArrayList();
-
-    private List<SelectItem> vertexAttributeSelectItems;
-    private List<SelectItem> edgeAttributeSelectItems;
-    private List<SelectItem> automaticQuerySelectItems;
-    private List<SelectItem> networkMeasureSelectItems;
-
-    private boolean canUndo = false;
-
-    // used for displaying errros
-    private UIComponent manualQueryError;
-    private UIComponent automaticQueryError;
-    private UIComponent networkMeasureError;
-    private HtmlDataTable eventTable;
 
     public String getActionType() {
         return actionType;
@@ -244,20 +323,6 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
 
 
     public List<SelectItem> getAttributeSelectItems() {
-        if (vertexAttributeSelectItems == null) {
-            // initialize lists
-            vertexAttributeSelectItems =  new ArrayList();
-            edgeAttributeSelectItems = new ArrayList();
-
-            for (DataVariable dv : file.getVertexDataTable().getDataVariables()) {
-                vertexAttributeSelectItems.add(new SelectItem(dv.getName()) );
-            }
-
-            for (DataVariable dv : file.getEdgeDataTable().getDataVariables()) {
-                edgeAttributeSelectItems.add(new SelectItem(dv.getName()) );
-            }
-        }
-
         if (DataTable.TYPE_VERTEX.equals(manualQueryType)) {
             return vertexAttributeSelectItems;
         } else if (DataTable.TYPE_EDGE.equals(manualQueryType)) {
@@ -265,33 +330,13 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
         }
 
         return new ArrayList();
-
     }
 
     public List<SelectItem> getAutomaticQuerySelectItem() {
-        // TODO: we will eventually have to read all this from xml
-        if (automaticQuerySelectItems == null) {
-            automaticQuerySelectItems = new ArrayList();
-            automaticQuerySelectItems.add(new SelectItem(DvnRGraphServiceImpl.AUTOMATIC_QUERY_NTHLARGEST, "Largest Graph"));
-            automaticQuerySelectItems.add(new SelectItem(DvnRGraphServiceImpl.AUTOMATIC_QUERY_BICONNECTED, "Biconnected Graph"));
-            automaticQuerySelectItems.add(new SelectItem(DvnRGraphServiceImpl.AUTOMATIC_QUERY_NEIGHBORHOOD, "Neighborhood"));
-
-        }
-
         return automaticQuerySelectItems;
     }
 
     public List<SelectItem> getNetworkMeasureSelectItems() {
-        // TODO: we will eventually have to read all this from xml
-        if (networkMeasureSelectItems == null) {
-            networkMeasureSelectItems = new ArrayList();
-            networkMeasureSelectItems.add(new SelectItem(DvnRGraphServiceImpl.NETWORK_MEASURE_RANK, "Page Rank"));
-            networkMeasureSelectItems.add(new SelectItem(DvnRGraphServiceImpl.NETWORK_MEASURE_DEGREE, "Degree"));
-            networkMeasureSelectItems.add(new SelectItem(DvnRGraphServiceImpl.NETWORK_MEASURE_UNIQUE_DEGREE, "Unique Degree"));
-            networkMeasureSelectItems.add(new SelectItem(DvnRGraphServiceImpl.NETWORK_MEASURE_IN_LARGEST, "In Largest Component"));
-            networkMeasureSelectItems.add(new SelectItem(DvnRGraphServiceImpl.NETWORK_MEASURE_BONACICH_CENTRALITY, "Bonacich Centrality"));
-        }
-
         return networkMeasureSelectItems;
     }
 
@@ -299,31 +344,10 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
         return networkMeasureParamterList;
     }
 
+
     public void networkMeasureSelect_action(ValueChangeEvent e) {
-        setNetworkMeasureParamters(e.getNewValue().toString());
+        networkMeasureParamterList = networkMeasureParameterMap.get(e.getNewValue().toString());
     }
-
-    private void setNetworkMeasureParamters(String networkMeasure) {
-        // TODO: we will eventually have to read all this from xml
-        networkMeasureParamterList = new ArrayList();
-        if ( DvnRGraphServiceImpl.NETWORK_MEASURE_RANK.equals( networkMeasure ) ) {
-            NetworkMeasureParameter d = new NetworkMeasureParameter();
-            d.setName("d");
-            d.setDefaultValue(".85");
-            networkMeasureParamterList.add(d);
-        } else if ( DvnRGraphServiceImpl.NETWORK_MEASURE_BONACICH_CENTRALITY.equals( networkMeasure ) ) {
-            NetworkMeasureParameter p1 = new NetworkMeasureParameter();
-            p1.setName("alpha");
-            p1.setDefaultValue("1");
-            networkMeasureParamterList.add(p1);
-
-            NetworkMeasureParameter p2 = new NetworkMeasureParameter();
-            p2.setName("exo");
-            p2.setDefaultValue("1");
-            networkMeasureParamterList.add(p2);
-        }
-    }
-
 
     public String manualQuery_action() {
         try {
@@ -353,7 +377,7 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
             NetworkDataAnalysisEvent event = new NetworkDataAnalysisEvent();
             event.setLabel("Automatic Query");
             event.setAttributeSet("N/A");
-            event.setQuery(automaticQueryType + "(" + (StringUtil.isEmpty(automaticQueryNthValue) ? "1" : automaticQueryNthValue) + ")");
+            event.setQuery(friendlyNameMap.get(automaticQueryType) + " (" + (StringUtil.isEmpty(automaticQueryNthValue) ? "1" : automaticQueryNthValue) + ")");
             event.setVertices( result.getVertices() );
             event.setEdges( result.getEdges() );
             events.add(event);
@@ -375,7 +399,7 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
             NetworkDataAnalysisEvent event = new NetworkDataAnalysisEvent();
             event.setLabel("Network Measure");
             event.setAttributeSet("N/A");
-            event.setQuery(networkMeasureType + "("+ getNetworkMeasureParametersAsString(networkMeasureParamterList) + ")");
+            event.setQuery(friendlyNameMap.get(networkMeasureType) + " ("+ getNetworkMeasureParametersAsString(networkMeasureParamterList) + ")");
             event.setVertices( getLastEvent().getVertices() );
             event.setEdges( getLastEvent().getEdges() );
             event.setAddedAttribute(result); // in case we need to undo later
@@ -430,14 +454,16 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
         return "subset_" + FileUtil.replaceExtension(file.getFileName(),"zip");
     }
 
-    private String getNetworkMeasureParametersAsString(List<NetworkMeasureParameter> paramterList) {
+    private String getNetworkMeasureParametersAsString(List<NetworkMeasureParameter> parameterLists) {
         String returnString = "";
-        for (NetworkMeasureParameter parameter : paramterList) {
-            if (!"".equals(returnString)) {
-                returnString += "; ";
+        if (parameterLists != null) {
+            for (NetworkMeasureParameter parameter : parameterLists) {
+                if (!"".equals(returnString)) {
+                    returnString += "; ";
+                }
+                returnString += parameter.getName() + " = ";
+                returnString += !StringUtil.isEmpty(parameter.getValue()) ? parameter.getValue() : parameter.getDefaultValue();
             }
-            returnString += parameter.getName() + " = ";
-            returnString += !StringUtil.isEmpty(parameter.getValue()) ? parameter.getValue() : parameter.getDefaultValue();
         }
         return returnString;
     }

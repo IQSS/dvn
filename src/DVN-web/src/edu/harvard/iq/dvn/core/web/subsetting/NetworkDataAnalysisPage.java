@@ -17,7 +17,6 @@ import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.util.FileUtil;
 import edu.harvard.iq.dvn.core.util.StringUtil;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
-import edu.harvard.iq.dvn.ingest.dsb.impl.DvnRGraphServiceImpl;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -28,16 +27,21 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
+import javax.naming.Context;
+import javax.naming.InitialContext;
 
 /**
  *
  * @author gdurand
  */
+@EJB(name="networkData", beanInterface=edu.harvard.iq.dvn.core.analysis.NetworkDataServiceLocal.class)
 public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable {
 
     public static String AUTOMATIC_QUERY_NTHLARGEST = "component";
@@ -53,7 +57,6 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
     @EJB
     StudyServiceLocal studyService;
 
-    @EJB
     NetworkDataServiceLocal networkDataService;
 
     private Long fileId;
@@ -99,7 +102,14 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
         }
 
         //init workspace and page components
-        rWorkspace = networkDataService.initAnalysis(file.getFileSystemLocation() + ".RData");
+        Context ctx;
+        try {
+            ctx = new InitialContext();
+            networkDataService = (NetworkDataServiceLocal) ctx.lookup("java:comp/env/networkData");
+            rWorkspace = networkDataService.initAnalysis(file.getFileSystemLocation() + ".RData");
+        } catch (Exception ex) {
+            Logger.getLogger(NetworkDataAnalysisPage.class.getName()).log(Level.SEVERE, null, ex);
+        }
         initComponents();
     }
 
@@ -417,7 +427,7 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
         return null;
     }
 
-    public String restart_action() {
+    public String restart_action() throws Exception {
         //reinit workspace and clear events
         rWorkspace = networkDataService.initAnalysis(file.getFileSystemLocation() + ".RData");
         events.clear();
@@ -427,7 +437,7 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
         return null;
     }
 
-    public String undo_action() {
+    public String undo_action() throws Exception {
         networkDataService.undoLastEvent(rWorkspace);
         NetworkDataAnalysisEvent lastEvent = getLastEvent();
         if (lastEvent.getAddedAttribute() != null) {
@@ -439,7 +449,7 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
 
             }
         }
-        
+
         events.remove( getLastEvent() );
         canUndo = false;
 
@@ -552,11 +562,16 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
         }
 
         public InputStream open() throws IOException {
-            file = networkDataService.getSubsetExport(rWorkspace);
+            try {
+                file = networkDataService.getSubsetExport(rWorkspace);
+            } catch (Exception ex) {
+                Logger.getLogger(NetworkDataAnalysisPage.class.getName()).log(Level.SEVERE, null, ex);
+                throw new IOException("There was a problem attempting to get the export file");
+            }
 
             studyService.incrementNumberOfDownloads(fileId, vdcId);
 
-            return new FileInputStream(file);
+            return new FileInputStream(file);  
         }
 
         public void withOptions(Options arg0) throws IOException {

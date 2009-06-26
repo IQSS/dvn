@@ -656,7 +656,7 @@ public class DvnRGraphServiceImpl{
      * @return    a Map that contains various information about the results
      */    
     
-     public Map<String, String> liveConnectionExportGraphML (String savedRDataFile) {
+     public Map<String, String> liveConnectionExport (String savedRDataFile) {
 
         Map<String, String> result = new HashMap<String, String>();
         

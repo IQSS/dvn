@@ -26,16 +26,6 @@
  */
 package edu.harvard.iq.dvn.core.web.networkAdmin;
 
-import edu.harvard.iq.dvn.core.admin.EditUserGroupService;
-import edu.harvard.iq.dvn.core.admin.GroupServiceLocal;
-import edu.harvard.iq.dvn.core.admin.LoginAffiliate;
-import edu.harvard.iq.dvn.core.admin.LoginDomain;
-import edu.harvard.iq.dvn.core.admin.UserDetailBean;
-import edu.harvard.iq.dvn.core.admin.UserGroup;
-import edu.harvard.iq.dvn.core.admin.UserServiceLocal;
-import edu.harvard.iq.dvn.core.admin.VDCUser;
-import edu.harvard.iq.dvn.core.web.common.StatusMessage;
-import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -46,6 +36,18 @@ import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import com.icesoft.faces.component.ext.HtmlDataTable;
+import com.icesoft.faces.component.ext.HtmlInputText;
+import edu.harvard.iq.dvn.core.admin.EditUserGroupService;
+import edu.harvard.iq.dvn.core.admin.GroupServiceLocal;
+import edu.harvard.iq.dvn.core.admin.LoginAffiliate;
+import edu.harvard.iq.dvn.core.admin.LoginDomain;
+import edu.harvard.iq.dvn.core.admin.UserDetailBean;
+import edu.harvard.iq.dvn.core.admin.UserGroup;
+import edu.harvard.iq.dvn.core.admin.UserServiceLocal;
+import edu.harvard.iq.dvn.core.admin.VDCUser;
+import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
@@ -439,7 +441,28 @@ public class EditUserGroupPage extends VDCBaseBean implements java.io.Serializab
         public void changeUserGroupType(ValueChangeEvent event){
             String newValue = (String)event.getNewValue();
             setUserGroupType(newValue);
-        } 
+        }
+
+    protected HtmlInputText inputLoginDomains = new HtmlInputText();
+
+    /**
+     * Get the value of inputLoginDomains
+     *
+     * @return the value of inputLoginDomains
+     */
+    public HtmlInputText getInputLoginDomains() {
+        return inputLoginDomains;
+    }
+
+    /**
+     * Set the value of inputLoginDomains
+     *
+     * @param inputLoginDomains new value of inputLoginDomains
+     */
+    public void setInputLoginDomains(HtmlInputText inputLoginDomains) {
+        this.inputLoginDomains = inputLoginDomains;
+    }
+
         
         /** methods to support the affiliated login services
          *
@@ -591,63 +614,84 @@ public class EditUserGroupPage extends VDCBaseBean implements java.io.Serializab
          *
          * @author wbossons
          */
-         
-        public void validateLoginDomain (FacesContext context, 
+
+        public void validateLoginDomain (FacesContext context,
                           UIComponent toValidate,
                           Object value) {
             boolean isDuplicate = false;
             String msg = new String();
             String loginDomainStr = (String)value;
-            if (loginDomainStr==null || loginDomainStr=="") {
+            FacesMessage message = null;
+            if (loginDomainStr == null || loginDomainStr.trim().equals("")) {
                    ((UIInput)toValidate).setValid(false);
-                    this.setUserGroupType("ipgroup");//to maintain state for the radio buttons and the group datatable
-                   FacesMessage message = new FacesMessage("IP Address is a required field.");
-                   context.addMessage(toValidate.getClientId(context), message);
-                   return;
-            }
-            List<UserGroup> userGroups = groupService.findAll();
-            Iterator iteratorOuter = userGroups.iterator();
-            while (iteratorOuter.hasNext()) {
-                UserGroup elem          = (UserGroup) iteratorOuter.next();
-                Iterator iteratorInner  = elem.getLoginDomains().iterator();
-                while (iteratorInner.hasNext()){
-                    LoginDomain logindomain = (LoginDomain)iteratorInner.next();
-                     //this next check will match the input field against the bean value provided it's not this user group
-                    if (logindomain.getUserGroup().getId().equals(this.group.getId()) ) {
-                        continue;
-                    } else {
-                        if (logindomain.getIpAddress().equals(loginDomainStr)) { // this is what I want to match against
-                            msg = " already exists in another group. IP user groups must be unique.";
-                            ((UIInput)toValidate).setValid(false);
-                            this.setUserGroupType("ipgroup");//to maintain state for the radio buttons and the group datatable
-                            FacesMessage message = new FacesMessage(loginDomainStr + msg);
-                            context.addMessage(toValidate.getClientId(context), message);
-                            isDuplicate = true;
-                            break;
+                   msg = "IP Address is a required field.";
+            } else {
+                List<UserGroup> userGroups = groupService.findAll();
+                Iterator iteratorOuter = userGroups.iterator();
+                while (iteratorOuter.hasNext()) {
+                    UserGroup usergroup          = (UserGroup) iteratorOuter.next();
+                    Iterator iteratorInner  = usergroup.getLoginDomains().iterator();
+                    while (iteratorInner.hasNext()){
+                        LoginDomain logindomain = (LoginDomain)iteratorInner.next();
+                        String existingAddress = getRange(logindomain.getIpAddress());
+                        String newAddress      = getRange(loginDomainStr);
+                        if (logindomain.getUserGroup().getId().equals(this.group.getId()) ) {
+                            continue;
+                        } else {
+                            if (existingAddress.equals(newAddress)) { 
+                                ((UIInput)toValidate).setValid(false);
+                                msg = loginDomainStr + " already exists in another group. IP user groups must be unique.";
+                                ((UIInput)toValidate).setValid(false);
+                                break;
+                            } else {
+                                if (!isNewRangeValid(existingAddress, newAddress)) {
+                                        ((UIInput)toValidate).setValid(false);
+                                        msg = "Entry overlaps with a range found in another ip group, " +
+                                                logindomain.getUserGroup().getFriendlyName() +
+                                                ". Ip addresses and/or ip address ranges must be unique to each group.";
+                                        break;
+                                 }
+                            }
                         }
                     }
                 }
             }
             //finally loop through the whole list to check for duplicates.
             //if there is more than one of a configured address then throw an error and break.
-            if (!isDuplicate) {
+            if (((UIInput)toValidate).isValid()) {
                 UserGroup usergroup = editUserGroupService.getUserGroup();
                 List list = (List)usergroup.getLoginDomains();
-                int tablesize = this.dataTableIpAddresses.getRowCount();
-                int j = this.dataTableIpAddresses.getRowIndex();
-                Object[] logindomainArray = list.toArray();
-                if (j > 0) {
-                    LoginDomain lastInList = (LoginDomain)logindomainArray[j-1];
-                    if (loginDomainStr.equals(lastInList.getIpAddress()) ) {
-                         msg = " already exists in this list. IP addresses must be unique.";
-                       ((UIInput)toValidate).setValid(false);
-                        this.setUserGroupType("ipgroup");//to maintain state for the radio buttons and the group datatable
-                        FacesMessage message = new FacesMessage(loginDomainStr + msg);
-                        context.addMessage(toValidate.getClientId(context), message);
-                    } 
+                Iterator listIterator = list.iterator();
+                System.out.println("the row index is " + dataTableIpAddresses.getRowIndex() + " the count is " + dataTableIpAddresses.getRowCount());
+                if (dataTableIpAddresses.getRowIndex() == dataTableIpAddresses.getRowCount()-1) {
+                    for (int j = 1; j < dataTableIpAddresses.getRowCount(); j++) {
+                        LoginDomain logindomain = (LoginDomain)list.get(j-1);
+                        String existingAddress = getRange(logindomain.getIpAddress());
+                        String newAddress      = getRange(loginDomainStr);
+                        if (existingAddress.equals(newAddress)) {
+                                    ((UIInput)toValidate).setValid(false);
+                                    msg = loginDomainStr + " already exists in this group. IP user groups must be unique.";
+                                    ((UIInput)toValidate).setValid(false);
+                                    break;
+                        } else {
+                            if (!isNewRangeValid(existingAddress, newAddress)) {
+                                    ((UIInput)toValidate).setValid(false);
+                                    msg = "Entry overlaps with a range already found in this group, " +
+                                            logindomain.getUserGroup().getFriendlyName() +
+                                            ". Ip addresses and/or ip address ranges must be unique within each group.";
+                                    break;
+                             }
+                        }
+                    }
                 }
+            } //end if toValidate.isValid() ...
+            if (!((UIInput)toValidate).isValid()) {
+                message = new FacesMessage(msg);
+                context.addMessage(toValidate.getClientId(context), message);
             }
+             this.setUserGroupType("ipgroup");//to maintain state for the radio buttons and the group datatable
         }
+
         
         /**
          * a method to validate the usernames
@@ -675,21 +719,208 @@ public class EditUserGroupPage extends VDCBaseBean implements java.io.Serializab
                 loginaffiliate.setName((String)event.getNewValue());
             else
                 loginaffiliate.setUrl((String)event.getNewValue());
-            System.out.println("The origin of the event was the component " + event.getComponent().getClientId(FacesContext.getCurrentInstance()));
-            System.out.println("in the value change event . . . ");
-            System.out.println("The event to string value is " + event.getNewValue());
         }
 
         public void changeIpTable(ValueChangeEvent event) {
             LoginDomain logindomain = (LoginDomain)this.dataTableIpAddresses.getRowData();
-            System.out.print(((LoginDomain)this.dataTableIpAddresses.getRowData()).getIpAddress());
             logindomain.setIpAddress((String)event.getNewValue());
-            
-            System.out.println("The origin of the event was the component " + event.getComponent().getClientId(FacesContext.getCurrentInstance()));
-            System.out.println("in the value change event . . . ");
-            System.out.println("The event to string value is " + event.getNewValue());
         }
 
+        protected String getRange(String ipaddress) {
+            String addressRange    = new String(""); // make this the new range
+            if (ipaddress.indexOf("*") == -1) {
+                if (ipaddress.indexOf("-") != -1) {
+                    return ipaddress;
+                } else {
+                    addressRange = ipaddress + "-" + ipaddress;
+                }
+            } else {
+                InternetAddressValidator validAddress = new InternetAddressValidator();
+                addressRange  = validAddress.getNumericFromWildcardedIp(ipaddress.trim());
+            }
+            return addressRange;
+        }
 
+        // utils
+        public boolean isNewRangeValid(String existingIpRange, String newIpRange) {
+            String[] newSubnets       = existingIpRange.split("-");
+            InternetAddressValidator validAddress = new InternetAddressValidator();
+            String strRangeBegin   = validAddress.toBinaryFormat(validAddress.getNumericFromWildcard(newSubnets[0].trim(), true));
+            validAddress.lowRange  = validAddress.makeMeDecimal(strRangeBegin);
+            String strRangeEnd     = validAddress.toBinaryFormat(validAddress.getNumericFromWildcard(newSubnets[1].trim(), false));
+            validAddress.highRange = validAddress.makeMeDecimal(strRangeEnd);
+            String[] existingRange = newIpRange.split("-");
+            boolean isValid        = true;
+            String strInOut        = null;
+            int i                  = 0;
+            for (i = 0; i < existingRange.length; i++) {
+                strInOut        = validAddress.toBinaryFormat(existingRange[i].trim());
+                validAddress.clientIp  = validAddress.makeMeDecimal(strInOut);
+                if ( (validAddress.lowRange <= validAddress.clientIp && validAddress.clientIp <= validAddress.highRange) ||
+                        (validAddress.lowRange == 0.0 && validAddress.highRange == 0.0) || (validAddress.lowRange > validAddress.highRange) ) {
+                    isValid = false;
+                    break;
+                } 
+            } // end for loop
+            return isValid;
+    }
+
+         /**
+         *
+         * @author wbossons
+         */
+        public static class InternetAddressValidator {
+
+            private double lowRange   = 0;
+            private double highRange  = 0;
+            private double clientIp   = 0;
+            private boolean inRange   = false;
+
+
+            InternetAddressValidator() {
+                // default constructor
+            }
+
+          private char ipClass (byte[] ip) {
+            int highByte = 0xff & ip[0];
+            return (highByte < 128) ? 'A' : (highByte < 192) ? 'B' :
+              (highByte < 224) ? 'C' : (highByte < 240) ? 'D' : 'E';
+          }
+
+          /** printRemoteAddress
+           * A simple utility to show some information about the machine
+           *
+           * @param name
+           */
+          private void printRemoteAddress (String name) {
+            try {
+              System.out.println ("Looking up " + name + "...");
+              InetAddress machine = InetAddress.getByName (name);
+              System.out.println ("Host name : " + machine.getHostName ());
+              System.out.println ("Host IP : " + machine.getHostAddress ());
+              System.out.println ("Host class : " + ipClass(machine.getAddress()));
+            } catch (UnknownHostException ex) {
+              System.out.println ("Failed to lookup " + name);
+            }
+          }
+
+          int base = 10;
+          private String toBinaryFormat(String ipaddress) {
+              String binaryIpAddress    = new String("");
+              String[] stringArray      = ipaddress.split("\\.");
+              String[] binaryArray      = new String[stringArray.length];
+              String localString        = new String("");
+              int decimalValue          = 0;
+              for (int i = 0; i < stringArray.length; i++) {
+                  int networkPart = Integer.parseInt(stringArray[i]);
+                  localString = Integer.toBinaryString(networkPart);
+                  // add any zeroes needed to make each octet 8 bits
+                  if (localString.length() < 8) {
+                      StringBuffer buffer = new StringBuffer(localString);
+                      buffer = buffer.reverse();
+                      String reverseString = buffer.toString();
+                      for (int j = 0; j < 8 - localString.length(); j++) {
+                          reverseString += "0";
+                      }
+                      buffer = new StringBuffer(reverseString);
+                      buffer = buffer.reverse();
+                      localString = buffer.toString();
+                  }
+                  binaryIpAddress = binaryIpAddress + localString;
+              }
+              return binaryIpAddress;
+          }
+
+
+          private double makeMeDecimal(String binaryString) {
+              int strLength = binaryString.length();
+              double j = 0;
+              double result = j;
+              int charIndex = 0;
+              // do the binary math
+              int pos = 0;
+              for (int i = (strLength - 1); i >= 0; i--) {
+                  j = Math.pow(2, i);
+              // find either 1 or 0
+              Character binarychar = binaryString.charAt(pos);
+              pos++;
+              result += Math.abs(j * Integer.parseInt(binarychar.toString()));
+              }
+              return result;
+          }
+
+          /** return an ip range from a wildcarded single ip
+           *
+           * @param subnetAddress
+           * @return
+           */
+          private String getNumericFromWildcardedIp(String subnetAddress) {
+              int firstOctet   = 0;
+                int secondOctet  = 0;
+                int thirdOctet   = 0;
+                int fourthOctet  = 0;
+                String startRange = new String("");
+                String endRange   = new String("");
+                    String[] subnets = subnetAddress.split("\\.");
+                    for (int i = 0; i < 4; i++) {
+                        // System.out.println("The octet is " + subnets[i]);
+                       if (i == 0) {
+                            startRange += Integer.valueOf(subnets[i].substring(0, subnets[i].length()));
+                            endRange   += Integer.valueOf(subnets[i].substring(0, subnets[i].length()));
+                       } else  {
+                           if ( (i >= subnets.length) || (subnets[i].indexOf("*") != -1) ) {
+                            startRange +=  ".0";
+                            endRange   +=  ".255";
+                            } else {
+                                startRange += "." + Integer.parseInt(subnets[i]);
+                                endRange   += "." + Integer.parseInt(subnets[i]);
+                           }
+                       }
+
+                    }
+                    return startRange + " - " + endRange;
+
+                }
+              
+
+          private String getNumericFromWildcard(String subnetAddress, boolean isStartRange) {
+                String ipaddress = new String("");
+                if (subnetAddress.indexOf("*") == -1) {
+                    return subnetAddress;
+                } else {
+                    String[] subnets = subnetAddress.split("\\.");
+                    for (int i = 0; i < 4; i++) {
+                        // System.out.println("The octet is " + subnets[i]);
+                       if (i == 0) {
+                            ipaddress += Integer.valueOf(subnets[i].substring(0, subnets[i].length()));
+                       } else  {
+                           if ( (i >= subnets.length) || (subnets[i].indexOf("*") != -1) ) {
+                                ipaddress += (isStartRange) ? ".0" : ".255";
+                            } else {
+                                ipaddress += "." + Integer.parseInt(subnets[i]);
+                           }
+                       }
+                    }
+                }
+              return ipaddress;
+          }
+
+            public void setHighRange(double highRange) {
+                this.highRange = highRange;
+            }
+
+            public void setClientIp(double clientIp) {
+                this.clientIp = clientIp;
+            }
+
+            public void setLowRange(double lowRange) {
+                this.lowRange = lowRange;
+            }
+
+            public boolean isInRange() {
+                return inRange;
+            }
+
+        }
 }
     

@@ -388,6 +388,7 @@ public class DvnRGraphServiceImpl{
         Map<String, String> result = new HashMap<String, String>();
         
         try {
+            // Check if there's an Rserve connection: 
 	    if ( rc == null ) {
 		dbgLog.fine("LCE method called on null connection!");
 		result.put("RexecError", "true");
@@ -395,7 +396,6 @@ public class DvnRGraphServiceImpl{
 		return result;
 	    }
 
-            // Check if there's an Rserve connection: 
 
 
 	    if ( sro != null ) {
@@ -638,6 +638,125 @@ public class DvnRGraphServiceImpl{
             
             result.put("IdSuffix", IdSuffix);
 
+            result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
+
+            result.put("RexecError", "true");
+            return result;
+        }
+        
+        return result;
+        
+    }
+
+    /** *************************************************************
+     * Export a saved RData file as a GraphML file, using the existing
+     * open connection
+     *
+     * @param savedRDatafile;
+     * @return    a Map that contains various information about the results
+     */    
+    
+     public Map<String, String> liveConnectionExportGraphML (String savedRDataFile) {
+
+        Map<String, String> result = new HashMap<String, String>();
+        
+	try {
+            // Check if there's an Rserve connection: 
+	    if ( rc == null ) {
+		dbgLog.fine("LC export method called on null connection!");
+		result.put("RexecError", "true");
+		result.put("RexecErrorDescription", "EXPOPRT CALLED ON NULL CONNECTION"); 
+		return result;
+	    }
+
+	    // Check if the connection is alive: 
+	    if ( !rc.isConnected() ) {
+		dbgLog.fine("LC export method called on a closed connection!");
+		result.put("RexecError", "true");
+		result.put("RexecErrorDescription", "EXPOPRT CALLED ON CLOSED CONNECTION"); 
+		return result;
+	    }
+
+	    String exportCommand = "dump_graphml(g, '" + GraphMLfileNameRemote + "')";
+	    dbgLog.fine(exportCommand);
+	    historyEntry.add(exportCommand);
+	    String cmdResponse = safeEval(rc, exportCommand).asString(); 
+
+	    exportCommand = "dump_tab(g, '" + DSB_TMP_DIR + "/temp_" + IdSuffix + ".tab')";
+	    dbgLog.fine(exportCommand);
+	    historyEntry.add(exportCommand);
+	    cmdResponse = safeEval(rc, exportCommand).asString();
+
+
+	    File zipFile  = new File(TEMP_DIR, "subset_" + IdSuffix + ".zip");
+	    FileOutputStream zipFileStream = new FileOutputStream(zipFile);
+	    ZipOutputStream zout = new ZipOutputStream( new FileOutputStream(zipFile) );
+
+	    addZipEntry(rc, zout, GraphMLfileNameRemote, "data/subset.xml");
+	    addZipEntry(rc, zout, DSB_TMP_DIR + "/temp_" + IdSuffix + "_verts.tab", "data/vertices.tab");
+	    addZipEntry(rc, zout, DSB_TMP_DIR + "/temp_" + IdSuffix + "_edges.tab", "data/edges.tab");
+
+	    zout.close();
+	    zipFileStream.close();
+
+	    result.put(GRAPHML_FILE_EXPORTED, zipFile.getAbsolutePath());
+
+	    String RexecDate = rc.eval("as.character(as.POSIXct(Sys.time()))").asString();
+	    String RversionLine = "R.Version()$version.string";
+            String Rversion = rc.eval(RversionLine).asString();
+            
+            result.put("dsbHost", RSERVE_HOST);
+            result.put("dsbPort", DSB_HOST_PORT);
+            result.put("IdSuffix", IdSuffix);
+
+            result.put("Rversion", Rversion);
+            result.put("RexecDate", RexecDate);
+            result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
+            
+            dbgLog.fine("result object (before closing the Rserve):\n"+result);
+        
+	} catch (RException re) {
+	    result.put("IdSuffix", IdSuffix);
+	    result.put("RCommandHistory",  StringUtils.join(historyEntry,"\n"));
+	    result.put("RexecError", "true");
+	    result.put("RexecErrorMessage", re.getMessage());
+	    result.put("RexecErrorDescription", "R runtime Error");
+
+	    dbgLog.info("rserve exception message: "+ re.getMessage());
+	    dbgLog.info("rserve exception description: "+ "R runtime Error");
+	    return result;
+        } catch (RserveException rse) {
+            result.put("IdSuffix", IdSuffix);
+            result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
+            
+            result.put("RexecError", "true");
+	    result.put("RexecErrorMessage", rse.getMessage()); 
+	    result.put("RexecErrorDescription", rse.getRequestErrorDescription()); 
+            return result;
+
+        } catch (REXPMismatchException mme) {
+            result.put("IdSuffix", IdSuffix);
+            result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
+
+            result.put("RexecError", "true");
+            return result;
+
+        } catch (FileNotFoundException fe){
+            result.put("IdSuffix", IdSuffix);
+            result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
+            result.put("RexecError", "true");
+	    result.put("RexecErrorDescription", "File Not Found"); 
+            return result;
+
+	} catch (IOException ie){
+            result.put("IdSuffix", IdSuffix);
+            result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
+
+            result.put("RexecError", "true");
+            return result;
+            
+        } catch (Exception ex){
+            result.put("IdSuffix", IdSuffix);
             result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
 
             result.put("RexecError", "true");
@@ -1183,49 +1302,19 @@ public class DvnRGraphServiceImpl{
 	    String responseVoid = safeEval(c, exportCommand).asString();
 
 
-        File zipFile  = new File(TEMP_DIR, "subset_" + IdSuffix + ".zip");
-        FileOutputStream zipFileStream = new FileOutputStream(zipFile);
-        ZipOutputStream zout = new ZipOutputStream( new FileOutputStream(zipFile) );
+	    File zipFile  = new File(TEMP_DIR, "subset_" + IdSuffix + ".zip");
+	    FileOutputStream zipFileStream = new FileOutputStream(zipFile);
+	    ZipOutputStream zout = new ZipOutputStream( new FileOutputStream(zipFile) );
 
-        addZipEntry(c, zout, GraphMLfileNameRemote, "data/subset.xml");
-        addZipEntry(c, zout, DSB_TMP_DIR + "/temp_" + IdSuffix + "_verts.tab", "data/vertices.tab");
-        addZipEntry(c, zout, DSB_TMP_DIR + "/temp_" + IdSuffix + "_edges.tab", "data/edges.tab");
+	    addZipEntry(c, zout, GraphMLfileNameRemote, "data/subset.xml");
+	    addZipEntry(c, zout, DSB_TMP_DIR + "/temp_" + IdSuffix + "_verts.tab", "data/vertices.tab");
+	    addZipEntry(c, zout, DSB_TMP_DIR + "/temp_" + IdSuffix + "_edges.tab", "data/edges.tab");
 
-        zout.close();
-        zipFileStream.close();
+	    zout.close();
+	    zipFileStream.close();
 
-        result.put(GRAPHML_FILE_EXPORTED, zipFile.getAbsolutePath());
-
-        /* this is the code for ONLY exporting the grapML file
-	    String tempGraphMLfileNameLocal =
-		TEMP_DIR + "/" + GRAPHML_FILE_NAME +
-		"." + IdSuffix + GRAPHML_FILE_EXT;
-
-
-	    OutputStream outbr = new BufferedOutputStream(new FileOutputStream(new File(tempGraphMLfileNameLocal)));
-        RFileInputStream ris = c.openFile(GraphMLfileNameRemote);
-
-            int fileSize = getFileSize(c,GraphMLfileNameRemote);
-            
-            int bufsize;
-	    if (fileSize < 64*1024*1024){
-		bufsize = fileSize;
-	    } else {
-		bufsize = 64*1024*1024; 
-	    }
-
-	    byte[] obuf = new byte[bufsize];
-
-	    while ( ris.read(obuf) != -1 ) {
-		outbr.write(obuf, 0, bufsize);
-	    }
-
-	    ris.close();
-	    outbr.close();
-
-	    result.put(GRAPHML_FILE_EXPORTED, tempGraphMLfileNameLocal);
-        */
-        
+	    result.put(GRAPHML_FILE_EXPORTED, zipFile.getAbsolutePath());
+	    
 	    String RexecDate = c.eval("as.character(as.POSIXct(Sys.time()))").asString();
 	    String RversionLine = "R.Version()$version.string";
             String Rversion = c.eval(RversionLine).asString();

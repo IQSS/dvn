@@ -17,17 +17,17 @@ import javax.ejb.Local;
 @Local
 public interface NetworkDataServiceLocal extends java.io.Serializable {
 
-    public String initAnalysis(String fileLocation);
+    public String initAnalysis(String fileLocation) throws Exception;
     
-    public NetworkDataSubsetResult runManualQuery(String rWorkspace, String attributeSet, String query, boolean eliminateDisconnectedVertices);
-    public NetworkDataSubsetResult runAutomaticQuery(String rWorkspace, String automaticQuery, String nValue);
-    public String runNetworkMeasure(String rWorkspace, String networkMeasure, List<NetworkMeasureParameter> parameters);
+    public NetworkDataSubsetResult runManualQuery(String rWorkspace, String attributeSet, String query, boolean eliminateDisconnectedVertices) throws Exception;
+    public NetworkDataSubsetResult runAutomaticQuery(String rWorkspace, String automaticQuery, String nValue) throws Exception;
+    public String runNetworkMeasure(String rWorkspace, String networkMeasure, List<NetworkMeasureParameter> parameters) throws Exception;
 
-    public void undoLastEvent(String rWorkspace);
+    public void undoLastEvent(String rWorkspace) throws Exception;
             
-    public File getSubsetExport(String rWorkspace);
+    public File getSubsetExport(String rWorkspace) throws Exception;
 
-    public void ingest(StudyFileEditBean editBean);
-    
+    public void ingest(StudyFileEditBean editBean) throws Exception;
+   
     
 }

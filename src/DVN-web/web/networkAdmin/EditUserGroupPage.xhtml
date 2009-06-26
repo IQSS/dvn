@@ -125,16 +125,15 @@
                                cellpadding="0"
                                cellspacing="0"
                                binding="#{EditUserGroupPage.dataTableIpAddresses}"
-                               immediate="true"
-                               partialSubmit="true"
-                               onblur="submit()"
                                var="currentIpRow"
                                value="#{EditUserGroupPage.group.loginDomains}">
                   <ice:column>
                     <ice:inputText id="iptable"
+                                   binding="#{EditUserGroupPage.inputLoginDomains}"
                                    validator="#{EditUserGroupPage.validateLoginDomain}"
                                    value="#{currentIpRow.ipAddress}"
-                                   valueChangeListener="#{EditUserGroupPage.changeIpTable}"/>
+                                   valueChangeListener="#{EditUserGroupPage.changeIpTable}"
+                                   />
                   </ice:column>
                   <ice:column>
                     <ice:commandButton image="/resources/images/icon_add.gif" actionListener="#{EditUserGroupPage.addIpRow}"/>

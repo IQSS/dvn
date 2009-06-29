@@ -737,6 +737,8 @@ public class DvnRGraphServiceImpl{
 		throw new DvnRGraphException("Could not execute query: connection lost");
 	    }
 
+	    Date now = new Date(); 	   
+	    drc.setLastQueryTime(now.getTime()); 
 	    drc.unlockConnection(); 
 
 	} catch (DvnRGraphException dre) {

@@ -179,7 +179,7 @@ public class UNFUtil {
 
         double[] toret = new double[numb.length];
         for (int k = 0; k < numb.length; ++k) {
-           if (numb[k] == Double.NaN){
+           if (numb[k] == Integer.MAX_VALUE){
                 toret[k] = Double.NaN;
             } else {
                 toret[k] = (double) numb[k];

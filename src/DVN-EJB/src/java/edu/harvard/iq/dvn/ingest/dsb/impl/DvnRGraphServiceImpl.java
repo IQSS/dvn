@@ -33,6 +33,10 @@ public class DvnRGraphServiceImpl{
     private static Logger dbgLog = Logger.getLogger(DvnRGraphServiceImpl.class.getPackage().getName());
 
     private RConnection rc = null; 
+    private static DvnRConnection RConnectionStack[];
+
+    private int numberOfConnections = 10; 
+    private int myConnection = 0; 
 
     // - constants for defining the subset queries: 
 
@@ -182,6 +186,183 @@ public class DvnRGraphServiceImpl{
 
     }
     
+    private RConnection openNewConnection () throws RserveException {
+	RConnection rc = null; 
+
+	try {
+
+	    dbgLog.fine("RSERVE_USER="+RSERVE_USER+"[default=rserve]");
+	    dbgLog.fine("RSERVE_PWD="+RSERVE_PWD+"[default=rserve]");
+	    dbgLog.fine("RSERVE_PORT="+RSERVE_PORT+"[default=6311]");
+	    
+	    rc = new RConnection(RSERVE_HOST, RSERVE_PORT);
+	    dbgLog.fine("hostname="+RSERVE_HOST);
+	
+	    rc.login(RSERVE_USER, RSERVE_PWD);
+
+	    // set up the NetworkUtils + dependencies; 
+	    // this needst to be done on all new connections. 
+
+	    rc.voidEval(librarySetup);
+        } catch (RserveException rse) {
+	    throw rse; 
+	}
+
+	return rc; 
+
+    }
+
+    private void loadWorkSpace (RConnection rc, String workSpace) throws RException, RserveException, REXPMismatchException  {
+	
+	try {
+	    String cmdResponse = safeEval(rc, "load('"+workSpace+"')").asString();
+        } catch (RException re) {
+	    throw re; 
+        } catch (RserveException rse) {
+	    throw rse; 
+        } catch (REXPMismatchException rexpm) {
+	    throw rexpm; 
+	}
+
+    }
+
+    private void loadAndClearWorkSpace (RConnection rc, String workSpace) throws RException, RserveException, REXPMismatchException {
+	try {
+	    String cmdResponse = safeEval(rc, "load_and_clear('"+workSpace+"')").asString();
+        } catch (RException re) {
+	    throw re; 
+        } catch (RserveException rse) {
+	    throw rse; 
+        } catch (REXPMismatchException rexpm) {
+	    throw rexpm; 
+	}
+
+    }
+
+    private int getConnection ( String workSpace, boolean reestablishConnection ) throws DvnRGraphException {
+
+        try {
+            // Obtain an Rserve connection: 
+
+	    DvnRConnection drc = null; 
+	    
+	    for ( int i =0; i < numberOfConnections; i++ ) {
+		drc = RConnectionStack[i];
+		
+		if ( drc == null ) {
+		    RConnectionStack[i] = new DvnRConnection(); 
+		    drc.Rcon = openNewConnection(); 
+
+		    myConnection = i + 1; 
+		}
+	    }
+
+	    if ( drc == null ) {
+		// we've gone through the pool of the connections, and 
+		// they are all open. 
+		// we'll have to go through the pool one more time, select
+		// the most idle (unlocked) connection, and recycle it. 
+
+		int mostIdleConnection = 0; 
+		long leastRecentTimeStamp = 0; 
+
+		for ( int i =0; i < numberOfConnections; i++ ) {
+		     drc = RConnectionStack[i];
+
+		     if ( drc != null && ( ! drc.isLocked() ) ) {
+			 long timeStamp = drc.getLastQueryTime(); 
+			 if ( leastRecentTimeStamp != 0 ) {
+			     if ( timeStamp < leastRecentTimeStamp ) {
+				 leastRecentTimeStamp = timeStamp; 
+				 mostIdleConnection = i+1;
+			     }
+			 } else {
+			     leastRecentTimeStamp = timeStamp; 
+			     mostIdleConnection = i+1;
+
+			 }
+		     }
+		}
+
+		if ( mostIdleConnection > 1 ) {
+		    // steal this connection!
+		    drc = RConnectionStack[mostIdleConnection-1];
+		    drc.Rcon.close(); 
+			 
+		    drc.Rcon = openNewConnection(); 
+		    myConnection = mostIdleConnection-1; 
+		} else {
+		    // all connections are busy AND locked. 
+		    // just return an error (for now)
+
+		    throw new DvnRGraphException ("init: All available connections are busy AND locked"); 
+
+		}
+		
+	    }
+
+	    // load the workspace: 
+
+	    drc.lockConnection(); 
+	    
+	    if ( reestablishConnection ) {
+		loadWorkSpace ( drc.Rcon, workSpace  ); 
+	    } else {
+		// we are creating a brand new connection; i.e., there's 
+		// no saved workspace file on the R server side. so 
+		// we need to first send the file over,
+		// then attempt to load it as the workspace. 
+
+		InputStream inb = new BufferedInputStream(new FileInputStream(workSpace));
+		int bufsize;
+		byte[] bffr = new byte[1024];
+
+		RFileOutputStream os = 
+		    drc.Rcon.createFile(RDataFileName);
+		while ((bufsize = inb.read(bffr)) != -1) {
+		    os.write(bffr, 0, bufsize);
+		}
+		os.close();
+		inb.close();
+
+		loadAndClearWorkSpace ( drc.Rcon, workSpace ); 
+
+		// not sure if this extra "save.image" is necessary? 
+
+		String saveWS = "save.image(file='"+ workSpace +"')";
+		drc.Rcon.voidEval(saveWS);
+		
+	    }
+	    drc.setWorkSpace ( workSpace ); 
+
+	    drc.unlockConnection(); 
+
+	} catch (RException re) {
+	    //result.put("IdSuffix", IdSuffix);
+	    //result.put("RCommandHistory",  StringUtils.join(historyEntry,"\n"));
+	    //result.put("RexecError", "true");
+	    //result.put("RexecErrorMessage", re.getMessage());
+	    //result.put("RexecErrorDescription", "init failed: R runtime Error");
+
+	    //dbgLog.info("rserve exception message: "+ re.getMessage());
+	    //dbgLog.info("rserve exception description: "+ "init failed: R runtime Error");
+	    //return result;
+	    throw new DvnRGraphException ("init: R runtime error: " + re.getMessage()); 
+
+        } catch (RserveException rse) {
+            dbgLog.info("rserve exception message: "+rse.getMessage());
+            dbgLog.info("rserve exception description: "+rse.getRequestErrorDescription());
+            //return result;
+
+	    throw new DvnRGraphException ("init: RServe error: "+rse.getMessage()); 
+        } catch (REXPMismatchException mme) {
+ 	    throw new DvnRGraphException ("init: REXP exception");
+        } catch (Exception ex){
+	    throw new DvnRGraphException ("init: unknown exception"); 
+        }
+        
+	return myConnection; 
+    }
     
     /** *************************************************************
      * initialize the RServe connection and load the graph;
@@ -191,35 +372,18 @@ public class DvnRGraphServiceImpl{
      * @return    a Map that contains various information about the results
      */    
     
-    public Map<String, String> initializeConnection(DvnRJobRequest sro) {
+    public Map<String, String> initializeConnection(DvnRJobRequest sro) throws DvnRGraphException {
     
         // set the return object
         Map<String, String> result = new HashMap<String, String>();
-        
+
         try {
 
 	    if ( sro != null ) {
 		dbgLog.fine("sro dump:\n"+ToStringBuilder.reflectionToString(sro, ToStringStyle.MULTI_LINE_STYLE));
             } else {
-		result.put("RexecError", "true");
-		result.put("RexecErrorDescription", "NULL R JOB OBJECT"); 
-		return result;
+		throw new DvnRGraphException ("init: NULL R JOB OBJECT"); 
 	    }
-
-            // Set up an Rserve connection
-
-            dbgLog.fine("RSERVE_USER="+RSERVE_USER+"[default=rserve]");
-            dbgLog.fine("RSERVE_PWD="+RSERVE_PWD+"[default=rserve]");
-            dbgLog.fine("RSERVE_PORT="+RSERVE_PORT+"[default=6311]");
-
-            rc = new RConnection(RSERVE_HOST, RSERVE_PORT);
-            dbgLog.fine("hostname="+RSERVE_HOST);
-
-            rc.login(RSERVE_USER, RSERVE_PWD);
-            dbgLog.fine(">" + rc.eval("R.version$version.string").asString() + "<");
-            dbgLog.fine("wrkdir="+wrkdir);
-            historyEntry.add(librarySetup);
-            rc.voidEval(librarySetup);
 
 	    String SavedRworkSpace = null;  
 	    String CachedRworkSpace = sro.getCachedRworkSpace(); 
@@ -229,45 +393,21 @@ public class DvnRGraphServiceImpl{
 	    if ( SubsetParameters != null ) {
 		SavedRworkSpace = (String) SubsetParameters.get(SAVED_RWORK_SPACE);
 	    }
-
+		    
 	    if ( SavedRworkSpace != null ) {
+		myConnection = getConnection ( SavedRworkSpace, true ); 
 		RDataFileName = SavedRworkSpace; 
-		dbgLog.fine("RDataFile="+RDataFileName);
-		historyEntry.add("load('"+RDataFileName+"')");
-		String cmdResponse = safeEval(rc, "load('"+RDataFileName+"')").asString();
-
+		dbgLog.fine("RDataFile="+SavedRworkSpace);
 	    } else if ( CachedRworkSpace != null ) {
-		// send data file to the Rserve side 
-
-		InputStream inb = new BufferedInputStream(new FileInputStream(CachedRworkSpace));
-		int bufsize;
-		byte[] bffr = new byte[1024];
-
-		RFileOutputStream os = 
-		    rc.createFile(RDataFileName);
-		while ((bufsize = inb.read(bffr)) != -1) {
-                    os.write(bffr, 0, bufsize);
-		}
-		os.close();
-		inb.close();
-
-		// Using "safeEval" for the next operation, loading 
-		// the RData file, to catch any possible error messages
-		// in case R refuses to load it:
-
-		String cmdResponse = safeEval(rc,"load_and_clear('"+RDataFileName+"')").asString();
-
-		// not sure if this extra "save.image" is still necessary;
-		// will double-check with Alex. 
-
-		String saveWS = "save.image(file='"+ RDataFileName +"')";
-		dbgLog.fine("save the workspace="+saveWS);
-		rc.voidEval(saveWS);
-
+		myConnection = getConnection ( RDataFileName, false ); 
+		dbgLog.fine("RDataFile="+RDataFileName);
 	    } else {
-		result.put("RexecError", "true");
-		result.put("RexecErrorDescription", "Initialize method called without either local or remote RData file"); 
-		return result;
+		throw new DvnRGraphException ("Initialize method called without either local or remote RData file"); 
+
+	    }
+
+	    if ( myConnection == 0 ) {
+		throw new DvnRGraphException ("failed to obtain an R connection"); 
 	    }
 
 	    result.put(SAVED_RWORK_SPACE, RDataFileName);
@@ -275,56 +415,8 @@ public class DvnRGraphServiceImpl{
 	    result.put("dsbHost", RSERVE_HOST);
 	    result.put("dsbPort", DSB_HOST_PORT);
 	    result.put("IdSuffix", IdSuffix);
-		
-
-	} catch (RException re) {
-	    result.put("IdSuffix", IdSuffix);
-	    result.put("RCommandHistory",  StringUtils.join(historyEntry,"\n"));
-	    result.put("RexecError", "true");
-	    result.put("RexecErrorMessage", re.getMessage());
-	    result.put("RexecErrorDescription", "init failed: R runtime Error");
-
-	    dbgLog.info("rserve exception message: "+ re.getMessage());
-	    dbgLog.info("rserve exception description: "+ "init failed: R runtime Error");
-	    return result;
-
-        } catch (RserveException rse) {
-            result.put("IdSuffix", IdSuffix);
-            result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
-            
-            result.put("RexecError", "true");
-            result.put("RexecErrorMessage", rse.getMessage());
-            result.put("RexecErrorDescription", rse.getRequestErrorDescription());
-
-            dbgLog.info("rserve exception message: "+rse.getMessage());
-            dbgLog.info("rserve exception description: "+rse.getRequestErrorDescription());
-            return result;
-
-        } catch (REXPMismatchException mme) {
-        
-            // REXP mismatch exception (what we got differs from what we expected)
-            result.put("IdSuffix", IdSuffix);
-            result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
-
-            result.put("RexecError", "true");
-            return result;
-
-        } catch (IOException ie){
-            
-            result.put("IdSuffix", IdSuffix);
-            result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
-
-            result.put("RexecError", "true");
-            return result;
-            
-        } catch (Exception ex){
-            
-            result.put("IdSuffix", IdSuffix);
-
-            result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
-
-            result.put("RexecError", "true");
-            return result;
+	} catch (DvnRGraphException dre) {
+	    throw dre; 
         }
         
         return result;
@@ -378,7 +470,7 @@ public class DvnRGraphServiceImpl{
      * Execute an R-based dvn analysis request on a Graph object
      * using an open connection created during the Initialize call. 
      *
-     * @param sro    a DvnRJobRequest object that contains various parameters
+     * @param sro    a DvnJobRequest object that contains various parameters
      * @return    a Map that contains various information about the results
      */    
     
@@ -386,48 +478,74 @@ public class DvnRGraphServiceImpl{
     
         // set the return object
         Map<String, String> result = new HashMap<String, String>();
+
+	if ( sro != null ) {
+	    dbgLog.fine("LCE sro dump:\n"+ToStringBuilder.reflectionToString(sro, ToStringStyle.MULTI_LINE_STYLE));
+	} else {
+	    throw new DvnRGraphException("execute method called with a NULL job ob ject.");
+
+	}
+	
+	String SavedRworkSpace = null;  
+
+	Map <String, Object> SubsetParameters = sro.getParametersForGraphSubset(); 
+	    
+	if ( SubsetParameters != null ) {
+	    SavedRworkSpace = (String) SubsetParameters.get(SAVED_RWORK_SPACE);
+	} else {
+	    throw new DvnRGraphException("execute method called with a null parameters object");
+
+	}
+
+
         
         try {
             // Check if there's an Rserve connection: 
-	    if ( rc == null ) {
-		dbgLog.fine("LCE method called on null connection!");
-		//result.put("RexecError", "true");
-		//result.put("RexecErrorDescription", "EXECUTE CALLED ON NULL CONNECTION"); 
-		//return result;
+	    // ( rc == null ) {
+	    //	dbgLog.fine("LCE method called on null connection!");
+	    //	//result.put("RexecError", "true");
+	    //	//result.put("RexecErrorDescription", "EXECUTE CALLED ON NULL CONNECTION"); 
+	    //	//return result;
+	    //
+	    //	throw new DvnRGraphException("execute method called on null connection");
+	    //}
 
-		throw new DvnRGraphException("execute method called on null connection");
-	    }
+	    // let's see if we have a connection that we can use: 
 
+	    if ( myConnection == 0 ) {
+		throw new DvnRGraphException("execute method called without creating a connection first");
+	    } 
 
+	    DvnRConnection drc = RConnectionStack[myConnection-1];
 
-	    if ( sro != null ) {
-		dbgLog.fine("LCE sro dump:\n"+ToStringBuilder.reflectionToString(sro, ToStringStyle.MULTI_LINE_STYLE));
-            } else {
-		//result.put("RexecError", "true");
-		//result.put("RexecErrorDescription", "LCE: NULL R JOB OBJECT"); 
-		//return result;
+	    // check if the connection exists, if it's alive, and if it's still ours
 
-		throw new DvnRGraphException("execute method called with a NULL job ob ject.");
+	    boolean needNewConnection = false; 
 
-	    }
-
-	    // (if we have a non-null connection that's stale/closed, 
-	    // Rserve will throw an exception below). 
-
-	    String SavedRworkSpace = null;  
-
-	    Map <String, Object> SubsetParameters = sro.getParametersForGraphSubset(); 
-	    
-	    if ( SubsetParameters != null ) {
-		SavedRworkSpace = (String) SubsetParameters.get(SAVED_RWORK_SPACE);
+	    if ( drc != null ) {
+		String wspace = drc.getWorkSpace(); 
+		if ( wspace != null ) {
+		    if ( !wspace.equals(SavedRworkSpace) ) {
+			needNewConnection = true; 
+		    }
+		} else {
+		    needNewConnection = true; 
+		}
+	    } else if ( !drc.Rcon.isConnected() ) {
+		needNewConnection = true; 
 	    } else {
-		//result.put("RexecError", "true");
-		//result.put("RexecErrorDescription", "LCE: NULL PARAMETERS OBJECT"); 
-		//return result;
-		throw new DvnRGraphException("execute method called with a null parameters object");
-
+		needNewConnection = true; 
 	    }
 
+	    if ( needNewConnection ) {
+		myConnection = getConnection ( SavedRworkSpace, true ); 
+		drc = RConnectionStack[myConnection-1];
+
+		if ( drc == null ) {
+		    throw new DvnRGraphException("execute: could not obtain R connection");
+		}
+	    }
+		
 	    /*
 	    if ( SavedRworkSpace != null ) {
 		RDataFileName = SavedRworkSpace; 
@@ -440,6 +558,8 @@ public class DvnRGraphServiceImpl{
 
             // subsetting 
 
+
+	    drc.lockConnection (); 
 	    String GraphSubsetType = (String) SubsetParameters.get(RSUBSETFUNCTION); 
 
 	    if ( GraphSubsetType != null ) {
@@ -471,7 +591,7 @@ public class DvnRGraphServiceImpl{
 
 			dbgLog.fine("LCE: manualQuerySubset="+subsetCommand);
 			historyEntry.add(subsetCommand);
-			String cmdResponse = safeEval(rc,subsetCommand).asString();
+			String cmdResponse = safeEval(drc.Rcon,subsetCommand).asString();
 			
 		    }
 		    
@@ -594,16 +714,16 @@ public class DvnRGraphServiceImpl{
 
             String saveWS = "save.image(file='"+ RDataFileName +"')";
             dbgLog.fine("LCE: save the workspace="+saveWS);
-            rc.voidEval(saveWS);
+            drc.Rcon.voidEval(saveWS);
 
 	    result.put( SAVED_RWORK_SPACE, RDataFileName ); 
 
 	    // we're done; let's add some potentially useful 
 	    // information to the result and return: 
 
-	    String RexecDate = rc.eval("as.character(as.POSIXct(Sys.time()))").asString();
+	    String RexecDate = drc.Rcon.eval("as.character(as.POSIXct(Sys.time()))").asString();
 	    String RversionLine = "R.Version()$version.string";
-            String Rversion = rc.eval(RversionLine).asString();
+            String Rversion = drc.Rcon.eval(RversionLine).asString();
             
             result.put("dsbHost", RSERVE_HOST);
             result.put("dsbPort", DSB_HOST_PORT);
@@ -611,21 +731,22 @@ public class DvnRGraphServiceImpl{
             result.put("Rversion", Rversion);
             result.put("RexecDate", RexecDate);
             result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
-            
 
-            dbgLog.fine("LCE: result object (before closing the Rserve):\n"+result);
-                    
+	    drc.unlockConnection(); 
+
+	} catch (DvnRGraphException dre) {
+	    throw dre; 
 	} catch (RException re) {
-	    //result.put("IdSuffix", IdSuffix);
-	    //result.put("RCommandHistory",  StringUtils.join(historyEntry,"\n"));
-	    //result.put("RexecError", "true");
-	    //result.put("RexecErrorMessage", re.getMessage());
-	    //result.put("RexecErrorDescription", "R runtime Error");
+            //result.put("IdSuffix", IdSuffix);
+            //result.put("RCommandHistory",  StringUtils.join(historyEntry,"\n"));
+            //result.put("RexecError", "true");
+            //result.put("RexecErrorMessage", re.getMessage());
+            //result.put("RexecErrorDescription", "R runtime Error");
 
-	    dbgLog.info("LCE: rserve exception message: "+ re.getMessage());
-	    dbgLog.info("LCE: rserve exception description: "+ "R runtime Error");
-	    //return result;
-	    throw new DvnRGraphException("R failed to process the input; Error  message: " +re.getMessage());
+            dbgLog.info("LCE: rserve exception message: "+ re.getMessage());
+            dbgLog.info("LCE: rserve exception description: "+ "R runtime Error");
+            //return result;
+            throw new DvnRGraphException("R run-time error: " +re.getMessage());
 
         } catch (RserveException rse) {
             //result.put("IdSuffix", IdSuffix);
@@ -637,19 +758,16 @@ public class DvnRGraphServiceImpl{
 
             dbgLog.info("LCE: rserve exception message: "+rse.getMessage());
             dbgLog.info("LCE: rserve exception description: "+rse.getRequestErrorDescription());
-            //return result;
-	    throw new DvnRGraphException("RServe failure; Error message: "+rse.getMessage());
-
+            throw new DvnRGraphException("RServe failure: "+rse.getMessage());
+	    
         } catch (REXPMismatchException mme) {
         
-            // REXP mismatch exception (what we got differs from what we expected)
             //result.put("IdSuffix", IdSuffix);
             //result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
 
             //result.put("RexecError", "true");
             //return result;
-	    throw new DvnRGraphException("REXPmismatchException occured");
-
+            throw new DvnRGraphException("REXPmismatchException occured");
 
         } catch (Exception ex){
             
@@ -659,11 +777,11 @@ public class DvnRGraphServiceImpl{
 
             //result.put("RexecError", "true");
             //return result;
-	    throw new DvnRGraphException("Unknown exception occured: " +ex.getMessage());
+            throw new DvnRGraphException("Unknown exception occured: " +ex.getMessage());
 
         }
         
-        return result;
+	return result;
         
     }
 
@@ -675,54 +793,76 @@ public class DvnRGraphServiceImpl{
      * @return    a Map that contains various information about the results
      */    
     
-     public Map<String, String> liveConnectionExport (String savedRDataFile) {
+     public Map<String, String> liveConnectionExport (String savedRDataFile) throws DvnRGraphException {
 
         Map<String, String> result = new HashMap<String, String>();
         
 	try {
-            // Check if there's an Rserve connection: 
-	    if ( rc == null ) {
-		dbgLog.fine("LC export method called on null connection!");
-		result.put("RexecError", "true");
-		result.put("RexecErrorDescription", "EXPOPRT CALLED ON NULL CONNECTION"); 
-		return result;
+
+	    // let's see if we have a connection that we can use: 
+
+	    if ( myConnection == 0 ) {
+		throw new DvnRGraphException("execute method called without creating a connection first");
+	    } 
+
+	    DvnRConnection drc = RConnectionStack[myConnection-1];
+
+	    // check if the connection exists, if it's alive, and if it's still ours
+
+	    boolean needNewConnection = false; 
+
+	    if ( drc != null ) {
+		String wspace = drc.getWorkSpace(); 
+		if ( wspace != null ) {
+		    if ( !wspace.equals(savedRDataFile) ) {
+			needNewConnection = true; 
+		    }
+		} else {
+		    needNewConnection = true; 
+		}
+	    } else if ( !drc.Rcon.isConnected() ) {
+		needNewConnection = true; 
+	    } else {
+		needNewConnection = true; 
 	    }
 
-	    // Check if the connection is alive: 
-	    if ( !rc.isConnected() ) {
-		dbgLog.fine("LC export method called on a closed connection!");
-		result.put("RexecError", "true");
-		result.put("RexecErrorDescription", "EXPOPRT CALLED ON CLOSED CONNECTION"); 
-		return result;
+	    if ( needNewConnection ) {
+		myConnection = getConnection ( savedRDataFile, true ); 
+		drc = RConnectionStack[myConnection-1];
+
+		if ( drc == null ) {
+		    throw new DvnRGraphException("execute: could not obtain R connection");
+		}
 	    }
+
 
 	    String exportCommand = "dump_graphml(g, '" + GraphMLfileNameRemote + "')";
 	    dbgLog.fine(exportCommand);
 	    historyEntry.add(exportCommand);
-	    String cmdResponse = safeEval(rc, exportCommand).asString(); 
+	    String cmdResponse = safeEval(drc.Rcon, exportCommand).asString(); 
 
 	    exportCommand = "dump_tab(g, '" + DSB_TMP_DIR + "/temp_" + IdSuffix + ".tab')";
 	    dbgLog.fine(exportCommand);
 	    historyEntry.add(exportCommand);
-	    cmdResponse = safeEval(rc, exportCommand).asString();
+	    cmdResponse = safeEval(drc.Rcon, exportCommand).asString();
 
 
 	    File zipFile  = new File(TEMP_DIR, "subset_" + IdSuffix + ".zip");
 	    FileOutputStream zipFileStream = new FileOutputStream(zipFile);
 	    ZipOutputStream zout = new ZipOutputStream( new FileOutputStream(zipFile) );
 
-	    addZipEntry(rc, zout, GraphMLfileNameRemote, "data/subset.xml");
-	    addZipEntry(rc, zout, DSB_TMP_DIR + "/temp_" + IdSuffix + "_verts.tab", "data/vertices.tab");
-	    addZipEntry(rc, zout, DSB_TMP_DIR + "/temp_" + IdSuffix + "_edges.tab", "data/edges.tab");
+	    addZipEntry(drc.Rcon, zout, GraphMLfileNameRemote, "data/subset.xml");
+	    addZipEntry(drc.Rcon, zout, DSB_TMP_DIR + "/temp_" + IdSuffix + "_verts.tab", "data/vertices.tab");
+	    addZipEntry(drc.Rcon, zout, DSB_TMP_DIR + "/temp_" + IdSuffix + "_edges.tab", "data/edges.tab");
 
 	    zout.close();
 	    zipFileStream.close();
 
 	    result.put(GRAPHML_FILE_EXPORTED, zipFile.getAbsolutePath());
 
-	    String RexecDate = rc.eval("as.character(as.POSIXct(Sys.time()))").asString();
+	    String RexecDate = drc.Rcon.eval("as.character(as.POSIXct(Sys.time()))").asString();
 	    String RversionLine = "R.Version()$version.string";
-            String Rversion = rc.eval(RversionLine).asString();
+            String Rversion = drc.Rcon.eval(RversionLine).asString();
             
             result.put("dsbHost", RSERVE_HOST);
             result.put("dsbPort", DSB_HOST_PORT);
@@ -733,55 +873,24 @@ public class DvnRGraphServiceImpl{
             result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
             
             dbgLog.fine("result object (before closing the Rserve):\n"+result);
-        
+
+	} catch (DvnRGraphException dre) {
+	    throw dre; 
 	} catch (RException re) {
-	    result.put("IdSuffix", IdSuffix);
-	    result.put("RCommandHistory",  StringUtils.join(historyEntry,"\n"));
-	    result.put("RexecError", "true");
-	    result.put("RexecErrorMessage", re.getMessage());
-	    result.put("RexecErrorDescription", "R runtime Error");
-
-	    dbgLog.info("rserve exception message: "+ re.getMessage());
-	    dbgLog.info("rserve exception description: "+ "R runtime Error");
-	    return result;
+            dbgLog.info("LCE: rserve exception message: "+ re.getMessage());
+            dbgLog.info("LCE: rserve exception description: "+ "R runtime Error");
+            throw new DvnRGraphException("R run-time error: " +re.getMessage());
         } catch (RserveException rse) {
-            result.put("IdSuffix", IdSuffix);
-            result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
-            
-            result.put("RexecError", "true");
-	    result.put("RexecErrorMessage", rse.getMessage()); 
-	    result.put("RexecErrorDescription", rse.getRequestErrorDescription()); 
-            return result;
-
+            dbgLog.info("LCE: rserve exception message: "+rse.getMessage());
+            dbgLog.info("LCE: rserve exception description: "+rse.getRequestErrorDescription());
+            throw new DvnRGraphException("RServe failure: "+rse.getMessage());
+	    
         } catch (REXPMismatchException mme) {
-            result.put("IdSuffix", IdSuffix);
-            result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
+            throw new DvnRGraphException("REXPmismatchException occured");
 
-            result.put("RexecError", "true");
-            return result;
-
-        } catch (FileNotFoundException fe){
-            result.put("IdSuffix", IdSuffix);
-            result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
-            result.put("RexecError", "true");
-	    result.put("RexecErrorDescription", "File Not Found"); 
-            return result;
-
-	} catch (IOException ie){
-            result.put("IdSuffix", IdSuffix);
-            result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
-
-            result.put("RexecError", "true");
-            return result;
-            
         } catch (Exception ex){
-            result.put("IdSuffix", IdSuffix);
-            result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
-
-            result.put("RexecError", "true");
-            return result;
+            throw new DvnRGraphException("Unknown exception occured: " +ex.getMessage());
         }
-        
         return result;
         
     }
@@ -1603,6 +1712,47 @@ RserveException,
 	}
     }
 
+    public class DvnRConnection {
+	// constructor 
+	public DvnRConnection(){}
+
+	private boolean Locked = false; 
+
+	public RConnection Rcon = null;
+
+	private String SavedRworkSpace = null;  
+	
+	private long lastQueryTimeStamp; 
+
+	public boolean isLocked () {
+	    return Locked; 
+	}
+
+	public void lockConnection () {
+	    Locked = true; 
+	}
+
+	public void unlockConnection () {
+	    Locked = false; 
+	}
+
+	public String getWorkSpace () {
+	    return SavedRworkSpace; 
+	}
+
+	public void setWorkSpace ( String workSpace ) {
+	    SavedRworkSpace = workSpace; 
+	}
+
+	public long getLastQueryTime () {
+	    return lastQueryTimeStamp; 
+	}
+
+	public void setLastQueryTime (long timeStamp) {
+	    lastQueryTimeStamp = timeStamp; 
+	}
+
+    }
 
 
 }

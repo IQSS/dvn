@@ -71,6 +71,12 @@ public final class SPSSConstants {
     public static final Set<Integer> ORDINARY_FORMAT_CODE_SET =
             new LinkedHashSet<Integer>(ORDINARY_FORMAT_CODE);
 
+    public static String[] WEEKDAYS = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
+    public static String[] MONTHS  = {"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
+    
+    public static final Map<Integer, String> WEEKDAY_LIST= new LinkedHashMap<Integer, String>();
+    public static final Map<Integer, String> MONTH_LIST= new LinkedHashMap<Integer, String>();
+
     static{
         for (int i=0; i< FORMAT_KEYS_SAV.length; i++){
             FORMAT_CODE_TABLE_SAV.put(FORMAT_KEYS_SAV[i], FORMAT_VALUES[i]);
@@ -78,6 +84,14 @@ public final class SPSSConstants {
             FORMAT_CATEGORY_TABLE.put(FORMAT_VALUES[i], FORMAT_CATEGORIES[i]);
 
         }
+        
+        for (int i=0; i< WEEKDAYS.length;i++){
+            WEEKDAY_LIST.put(i, WEEKDAYS[i]);
+        }
+        for (int i=0; i< MONTHS.length;i++){
+            MONTH_LIST.put(i, MONTHS[i]);
+        }
+        
     }
 
 

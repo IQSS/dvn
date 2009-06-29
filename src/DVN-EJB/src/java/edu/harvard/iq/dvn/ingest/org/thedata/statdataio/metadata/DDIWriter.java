@@ -83,6 +83,7 @@ public class DDIWriter {
         String defaultEncoding = "UTF-8";
 
         String fileEncoding = (String)sdioMetadata.fileInformation.get("charset");
+        
 
         if(sdioMetadata.fileInformation.get("charset")== null){
             fileEncoding ="";
@@ -149,6 +150,7 @@ public class DDIWriter {
         // String[] variableName
         // String[] variableLabel
         //
+        String varFormatSchema = (String)sdioMetadata.fileInformation.get("varFormat_schema");
         String[] sumStatLabels8 =
              {"mean", "medn", "mode", "vald", "invd", "min", "max", "stdev"};
         StringBuilder sb = new StringBuilder("<dataDscr>\n");
@@ -202,9 +204,11 @@ public class DDIWriter {
                
                 weightAttr = "";
             }
-            
+
+            String ultimateVariableName = getUtimateVariableName(sdioMetadata.variableName[i]);
+ 
             sb.append("\t<var ID=\"v1." + (i+1) + "\" name=\"" +
-                 StringEscapeUtils.escapeXml(sdioMetadata.variableName[i]) + "\" "+
+                 StringEscapeUtils.escapeXml(ultimateVariableName) + "\" "+
                  intrvlAttr + weightAttr+">\n");  // id counter starst from 1 not 0
 
             sb.append("\t\t<location fileid=\"file1\"/>\n");
@@ -280,7 +284,21 @@ public class DDIWriter {
             //System.out.println(StringUtils.join(sumStat,","));
             // format
             String formatTye = sdioMetadata.isStringVariable()[i] ? "character" : "numeric";
-            sb.append("\t\t<varFormat type=\""+formatTye+"\"/>\n");
+            String formatName = null;
+            String formatCategory = null;
+            String formatSchema = null;
+            if ((sdioMetadata.variableFormatName.containsKey(variableNamei)) && 
+                (  (sdioMetadata.variableFormatName.get(variableNamei)!=null)
+                && (!sdioMetadata.variableFormatName.get(variableNamei).equals("")))){
+                formatSchema = "schema=\""+varFormatSchema+"\" ";
+                formatName= "formatname=\""+sdioMetadata.variableFormatName.get(variableNamei) +"\" ";
+                formatCategory = "category=\""+sdioMetadata.variableFormatCategory.get(variableNamei) +"\"";
+            } else {
+                formatSchema="";
+                formatName="";
+                formatCategory ="";
+            }
+            sb.append("\t\t<varFormat type=\""+formatTye+"\" "+formatSchema+ formatName+formatCategory+"/>\n");
             // note: UNF
             sb.append("\t\t<notes subject=\"Universal Numeric Fingerprint\" "+
                 "level=\"variable\" source=\"archive\" type=\"VDC:UNF\">"+
@@ -292,5 +310,21 @@ public class DDIWriter {
         sb.append("</dataDscr>\n");
         sb.append("</codeBook>\n");
         return sb.toString();
+    }
+
+    private String getUtimateVariableName(String variableName){
+        String ultimateVariableName = null;
+        if ((sdioMetadata.shortToLongVarialbeNameTable != null) &&
+            (sdioMetadata.shortToLongVarialbeNameTable.containsKey(variableName))){
+             if((sdioMetadata.shortToLongVarialbeNameTable.get(variableName) !=null) &&
+                (!sdioMetadata.shortToLongVarialbeNameTable.get(variableName).equals(""))) {
+                 ultimateVariableName = sdioMetadata.shortToLongVarialbeNameTable.get(variableName);
+             } else {
+                 ultimateVariableName = variableName;
+             }
+        } else {
+            ultimateVariableName = variableName;
+        }
+        return ultimateVariableName;
     }
 }

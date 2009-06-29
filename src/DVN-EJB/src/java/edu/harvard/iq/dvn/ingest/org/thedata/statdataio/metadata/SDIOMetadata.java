@@ -318,6 +318,18 @@ public class SDIOMetadata {
         this.variableFormatName = variableFormatName;
     }
     
+    /**
+     *
+     */
+    protected Map<String, String> variableFormatCategory;
+
+    public Map<String, String> getVariableFormatCategory() {
+        return variableFormatCategory;
+    }
+
+    public void setVariableFormatCategory(Map<String, String> variableFormatCategory) {
+        this.variableFormatCategory = variableFormatCategory;
+    }
 
 
 

@@ -110,6 +110,8 @@ public class PORFileReader extends StatDataFileReader{
     private static Pattern pattern4positiveInteger = Pattern.compile("[0-9A-T]+");
     private static Pattern pattern4Integer = Pattern.compile("[-]?[0-9A-T]+");
 
+    private static Calendar GCO = new GregorianCalendar();
+
     static {
 
         for (int i=0; i< decodeMethodNames.length;i++){
@@ -130,10 +132,22 @@ public class PORFileReader extends StatDataFileReader{
             }
         }
 
-
+        // set the origin of GCO to 1582-10-15
+        GCO.set(1, 1582);// year
+        GCO.set(2, 9); // month
+        GCO.set(5, 15);// day of month
+        GCO.set(9, 0);// AM(0) or PM(1)
+        GCO.set(10, 0);// hh
+        GCO.set(12, 0);// mm
+        GCO.set(13, 0);// ss
+        GCO.set(14, 0); // SS millisecond
+        GCO.set(15, 0);// z
         
     }
+    private static long SPSS_DATE_BIAS = 60*60*24*1000;
 
+    private static long SPSS_DATE_OFFSET = SPSS_DATE_BIAS + Math.abs(GCO.getTimeInMillis());
+    
     private static String unfVersionNumber = "3";
 
     // instance fields -------------------------------------------------------//
@@ -166,6 +180,9 @@ public class PORFileReader extends StatDataFileReader{
     Map<String, String> printFormatTable = new LinkedHashMap<String, String>();
     
     Map<String, String> printFormatNameTable = new LinkedHashMap<String, String>();
+    
+    Map<String, String> formatCategoryTable = new LinkedHashMap<String, String>();
+
     
     Map<String, Integer> StringVariableTable = new LinkedHashMap<String, Integer>();
     
@@ -261,6 +278,13 @@ public class PORFileReader extends StatDataFileReader{
         this.MissingValueForTextDataFileString = MissingValueToken;
     }
 
+    // date/time data format
+    SimpleDateFormat sdf_ymd    = new SimpleDateFormat("yyyy-MM-dd");
+    SimpleDateFormat sdf_ymdhms = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    SimpleDateFormat sdf_dhms   = new SimpleDateFormat("DDD HH:mm:ss");
+    SimpleDateFormat sdf_hms    = new SimpleDateFormat("HH:mm:ss");
+
+
     // Constructor -----------------------------------------------------------//
 
 
@@ -273,6 +297,12 @@ public class PORFileReader extends StatDataFileReader{
     }
 
     private void init(){
+    
+        sdf_ymd.setTimeZone(TimeZone.getTimeZone("GMT"));
+        sdf_ymdhms.setTimeZone(TimeZone.getTimeZone("GMT"));
+        sdf_dhms.setTimeZone(TimeZone.getTimeZone("GMT"));
+        sdf_hms.setTimeZone(TimeZone.getTimeZone("GMT"));
+    
         //
         doubleNumberFormatter.setGroupingUsed(false);
         
@@ -366,6 +396,7 @@ public class PORFileReader extends StatDataFileReader{
 
             smd.setVariableFormat(printFormatList);
             smd.setVariableFormatName(printFormatNameTable);
+            smd.setVariableFormatCategory(formatCategoryTable);
 
             
         } catch (FileNotFoundException ex){
@@ -723,6 +754,7 @@ public class PORFileReader extends StatDataFileReader{
             dbgLog.fine("fileCreationTime="+fileCreationTime);
             smd.getFileInformation().put("fileCreationDate", fileCreationDate);
             smd.getFileInformation().put("fileCreationTime", fileCreationTime);
+            smd.getFileInformation().put("varFormat_schema", "SPSS");
             
         } catch (IOException ex){
             ex.printStackTrace();
@@ -1477,6 +1509,7 @@ public class PORFileReader extends StatDataFileReader{
                 // case(row)-wise storage object; to be updated after each row-reading 
 
                 String[] casewiseRecord = new String[varQnty];
+                String[] casewiseRecordForTabFile = new String[varQnty];
                 // warning: the above object is later shallow-copied to the 
                 // data object for calculating a UNF value/summary statistics
                 //
@@ -1546,23 +1579,28 @@ public class PORFileReader extends StatDataFileReader{
 
                         String datumString = new String(char_datumString);
                         dbgLog.finer("string data="+datumString);
-
+                        String datumString2 = new String(char_datumString);
                         // missing-value processing
                         if (StringLengthBase10==1){
                             if ((datumString.equals(" ")) ||
                                 (datumString.equals(".")) ){
                                 
-                                datumString = MissingValueForTextDataFileString;
+                                datumString  = MissingValueForTextDataFileString;
+                                datumString2 = Double.toHexString(systemMissingValue);
                                 
+
                                 // add this index to NaN-to-NA-replacement sentinel
                                 NaNlocationString.add(i);
                             }
+                            
+                            
+                            
                         }
                         
                         // string variable case
                         // store this datum in the case-wise-storage object
-                        casewiseRecord[i]= datumString;
-                        
+                        casewiseRecord[i]= datumString2;
+                        casewiseRecordForTabFile[i] = datumString;
 
 
                         // reset working objects
@@ -1580,6 +1618,8 @@ public class PORFileReader extends StatDataFileReader{
                         int MissingValue = 0;
                         isMissingValue = false;
                         String datumNumericBase10 = null;
+                        String datumNumeric2Base10 = null;
+                        
                         String buffer = "";
                         char[] tmp = new char[1];
                         int nint;
@@ -1601,7 +1641,11 @@ public class PORFileReader extends StatDataFileReader{
                                 // '*' is the first character of the 
                                 // system missing value
                                 //datumNumericBase10 = Double.toHexString(systemMissingValue);
+                                
                                 datumNumericBase10 = MissingValueForTextDataFileNumeric;
+                                datumNumeric2Base10 = Double.toHexString(systemMissingValue);
+                                
+                                
                                 isMissingValue = true;
                                 // add this index to NaN-to-NA-replacement sentinel
                                  NaNlocationNumeric.add(i);
@@ -1645,6 +1689,8 @@ public class PORFileReader extends StatDataFileReader{
                             
                             dbgLog.finer(j+"th case"+i+"-th var(base-10)="+datumNumericBase10);
                             
+                            datumNumeric2Base10 = new String(datumNumericBase10);
+                            
 // TO DO date/time case : start 
                             
                             // to do date conversion 
@@ -1658,18 +1704,106 @@ public class PORFileReader extends StatDataFileReader{
                             if (variableFormatType.equals("date")){
                                 //out.println("date case");
                                 
+                                long dateDatum = Long.parseLong(datumNumericBase10)*1000L- SPSS_DATE_OFFSET;
+                                
+                                String newDatum = sdf_ymd.format(new Date(dateDatum));
+                                dbgLog.finer("i="+i+":"+newDatum);
+                                datumNumericBase10 = newDatum;
+                                formatCategoryTable.put(variableNameList.get(i), "date");
+                                
                             } else if (variableFormatType.equals("time")) {
-                                //out.println("time case");
+                                dbgLog.finer("time case");
+                                formatCategoryTable.put(variableNameList.get(i), "time");
+                                
+                                
+                                
+                                if (printFormatTable.get(variableNameList.get(i)).equals("DTIME")){
+
+                                    if (datumNumericBase10.indexOf(".") < 0){
+                                        long dateDatum  = Long.parseLong(datumNumericBase10)*1000L - SPSS_DATE_BIAS;
+                                        String newDatum = sdf_dhms.format(new Date(dateDatum));
+                                        dbgLog.finer("i="+i+":"+newDatum);
+                                        datumNumericBase10 = newDatum;
+                                    } else {
+                                        // decimal point included
+                                        String[] timeData = datumNumericBase10.split("\\.");
+
+                                        dbgLog.finer(StringUtils.join(timeData, "|"));
+                                        long dateDatum = Long.parseLong(timeData[0])*1000L - SPSS_DATE_BIAS;
+                                        StringBuilder sb_time = new StringBuilder(
+                                            sdf_dhms.format(new Date(dateDatum)));
+                                        
+                                        sb_time.append("."+timeData[1]);
+                                        dbgLog.finer("i="+i+":"+sb_time.toString());
+                                        datumNumericBase10 = sb_time.toString();
+                                    }
+                                } else if (printFormatTable.get(variableNameList.get(i)).equals("DATETIME")){
+
+                                    if (datumNumericBase10.indexOf(".") < 0){
+                                        long dateDatum  = Long.parseLong(datumNumericBase10)*1000L - SPSS_DATE_OFFSET;
+                                        String newDatum = sdf_ymdhms.format(new Date(dateDatum));
+                                        dbgLog.finer("i="+i+":"+newDatum);
+                                        datumNumericBase10 = newDatum;
+                                    } else {
+                                        // decimal point included
+                                        String[] timeData = datumNumericBase10.split("\\.");
+
+                                        //dbgLog.finer(StringUtils.join(timeData, "|"));
+                                        long dateDatum = Long.parseLong(timeData[0])*1000L- SPSS_DATE_OFFSET;
+                                        StringBuilder sb_time = new StringBuilder(
+                                            sdf_ymdhms.format(new Date(dateDatum)));
+                                        //dbgLog.finer(sb_time.toString());
+                                        sb_time.append("."+timeData[1]);
+                                        dbgLog.finer("i="+i+":"+sb_time.toString());
+                                        datumNumericBase10 = sb_time.toString();
+                                    }
+                                } else if (printFormatTable.get(variableNameList.get(i)).equals("TIME")){
+                                    if (datumNumericBase10.indexOf(".") < 0){
+                                        long dateDatum = Long.parseLong(datumNumericBase10)*1000L;
+                                        String newDatum = sdf_hms.format(new Date(dateDatum));
+                                        dbgLog.finer("i="+i+":"+newDatum);
+                                        
+                                        datumNumericBase10 = newDatum;
+                                    } else {
+                                        // decimal point included
+                                        String[] timeData = datumNumericBase10.split("\\.");
+
+                                        //dbgLog.finer(StringUtils.join(timeData, "|"));
+                                        long dateDatum = Long.parseLong(timeData[0])*1000L;
+                                        StringBuilder sb_time = new StringBuilder(
+                                            sdf_hms.format(new Date(dateDatum)));
+                                        //dbgLog.finer(sb_time.toString());
+                                        sb_time.append("."+timeData[1]);
+                                        dbgLog.finer("i="+i+":"+sb_time.toString());
+                                        datumNumericBase10 = sb_time.toString();
+                                    }
+                                }
+
+                                
+                                
+                                
+                                
                             
                             } else if (variableFormatType.equals("other")){
-                                //out.println("other");
+                                //dbgLog.finer("other");
                             
                                 if (printFormatTable.get(variableNameList.get(i)).equals("WKDAY")){
                                     // day of week
-                                    out.println("wkday");
+                                    dbgLog.finer("wkday");
+                                    
+                                    dbgLog.finer("data i="+i+":"+datumNumericBase10);
+                                    dbgLog.finer("data i="+i+":"+SPSSConstants.WEEKDAY_LIST.get(Integer.valueOf(datumNumericBase10)-1));
+                                    datumNumericBase10 = SPSSConstants.WEEKDAY_LIST.get(Integer.valueOf(datumNumericBase10)-1);
+                                    dbgLog.finer("wkday:i="+i+":"+datumNumericBase10);
+                                    
+                                    
                                 } else if (printFormatTable.get(variableNameList.get(i)).equals("MONTH")){
                                     // month
-                                    //out.println("month");
+                                    dbgLog.finer("month");
+                                    dbgLog.finer("data i="+i+":"+SPSSConstants.MONTH_LIST.get(Integer.valueOf(datumNumericBase10)-1));
+                                    datumNumericBase10 = SPSSConstants.MONTH_LIST.get(Integer.valueOf(datumNumericBase10)-1);
+                                    dbgLog.finer("month:i="+i+":"+datumNumericBase10);
+                                    
                                 }
                             }
                             
@@ -1678,7 +1812,7 @@ public class PORFileReader extends StatDataFileReader{
                                 
                             // decimal-point check (varialbe is integer or not)
                             if (variableTypeFinal[i]==0){
-                                if (datumNumericBase10.indexOf(".") >=0){
+                                if (datumNumeric2Base10.indexOf(".") >=0){
                                     dbgLog.finer("decimal data= "+ datumNumericBase10);
                                     variableTypeFinal[i] = 1;
                                     numberOfDecimalVariables++;
@@ -1688,8 +1822,8 @@ public class PORFileReader extends StatDataFileReader{
                         
                         // numeric variable case
                         // store this datum in the case-wise-storage object
-                        casewiseRecord[i]= datumNumericBase10;
-                        
+                        casewiseRecordForTabFile[i]= datumNumericBase10;
+                        casewiseRecord[i]= datumNumeric2Base10;
                         // reset working objects
                         isMissingValue = false ;
                         // reset the number-building StringBuilder
@@ -1702,11 +1836,11 @@ public class PORFileReader extends StatDataFileReader{
 
                 
                 
-                dbgLog.fine(j+"-th:for tabfile: "+StringUtils.join(casewiseRecord, "\t"));
+                dbgLog.finer(j+"-th:for tabfile: "+StringUtils.join(casewiseRecordForTabFile, "\t"));
                 // print the i-th case
                 // use casewiseRecord to dump the current case to the 
                 // tab-delimited file
-                pwout.println(StringUtils.join(casewiseRecord, "\t"));
+                pwout.println(StringUtils.join(casewiseRecordForTabFile, "\t"));
 
                 
                 if (NaNlocationNumeric.size() > 0){
@@ -1767,10 +1901,7 @@ public class PORFileReader extends StatDataFileReader{
         dbgLog.fine("numberOfDecimalVariables="+numberOfDecimalVariables);
         dbgLog.fine("decimalVariableSet="+decimalVariableSet);
 
-
         smd.getFileInformation().put("caseQnty", caseQnty);
-
-
 
         dbgLog.fine("caseQnty="+caseQnty);
         // store data in column(variable)-wise for calculating variable-wise

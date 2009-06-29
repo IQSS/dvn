@@ -95,7 +95,7 @@ public class SAVFileReaderSpi extends StatDataFileReaderSpi{
         boolean DEBUG = false;
 
         String hdr4sav = new String(b);
-        dbgLog.fine("from string=" + hdr4sav);
+        dbgLog.fine("from string[$FL2 == 24 46 4C 32]=" + new String(Hex.encodeHex(b)).toUpperCase());
 
         if (hdr4sav.equals(SAV_FILE_SIGNATURE)) {
             dbgLog.fine("this file is spss-sav type");
@@ -137,7 +137,8 @@ public class SAVFileReaderSpi extends StatDataFileReaderSpi{
         boolean DEBUG = false;
 
         String hdr4sav = new String(b);
-        dbgLog.fine("from string=" + hdr4sav);
+        dbgLog.fine("from string[$FL2 == 24 46 4C 32]=" + new String(Hex.encodeHex(b)).toUpperCase());
+
 
         if (hdr4sav.equals(SAV_FILE_SIGNATURE)) {
             dbgLog.fine("this file is spss-sav type");
@@ -176,7 +177,7 @@ public class SAVFileReaderSpi extends StatDataFileReaderSpi{
         byte[] hdr4 = new byte[4];
         buff.get(hdr4, 0, 4);
         String hdr4sav = new String(hdr4);
-        dbgLog.fine("from string=" + hdr4sav);
+        dbgLog.fine("from string[hdr4]=" + new String(Hex.encodeHex(hdr4)).toUpperCase());
         
         if (hdr4sav.equals("$FL2")) {
             dbgLog.fine("this file is spss-sav type");

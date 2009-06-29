@@ -157,6 +157,7 @@ public class SAVFileReader extends StatDataFileReader{
     private static double SYSMIS_LITTLE =0xFFFFFFFFFFFFEFFFL;
     private static double SYSMIS_BIG =0xFFEFFFFFFFFFFFFFL;
     
+    private static Calendar GCO = new GregorianCalendar();
 
     static {
         // initialize method name list
@@ -189,10 +190,20 @@ public class SAVFileReader extends StatDataFileReader{
         RecordType7SubType4Fields.add("HIGHEST");
         RecordType7SubType4Fields.add("LOWEST");
         
-        
-
+        // set the origin of GCO to 1582-10-15
+        GCO.set(1, 1582);// year
+        GCO.set(2, 9); // month
+        GCO.set(5, 15);// day of month
+        GCO.set(9, 0);// AM(0) or PM(1)
+        GCO.set(10, 0);// hh
+        GCO.set(12, 0);// mm
+        GCO.set(13, 0);// ss
+        GCO.set(14, 0); // SS millisecond
+        GCO.set(15, 0);// z
     }
+    private static long SPSS_DATE_BIAS = 60*60*24*1000;
 
+    private static long SPSS_DATE_OFFSET = SPSS_DATE_BIAS + Math.abs(GCO.getTimeInMillis());
 
    // instance fields -------------------------------------------------------//
 
@@ -241,6 +252,9 @@ public class SAVFileReader extends StatDataFileReader{
     List<Integer> printFormatList = new ArrayList<Integer>();
     Map<String, String> printFormatTable = new LinkedHashMap<String, String>();
     Map<String, String> printFormatNameTable = new LinkedHashMap<String, String>();
+    
+    Map<String, String> formatCategoryTable = new LinkedHashMap<String, String>();
+    
 
     //Map<String, Integer> StringVariableTable = new LinkedHashMap<String, Integer>();
     Set<Integer> obsStringVariableSet = new LinkedHashSet<Integer>();
@@ -304,6 +318,11 @@ public class SAVFileReader extends StatDataFileReader{
 
     Map<String, String> shortToLongVarialbeNameTable = new LinkedHashMap<String, String>();
 
+    // date/time data format
+    SimpleDateFormat sdf_ymd    = new SimpleDateFormat("yyyy-MM-dd");
+    SimpleDateFormat sdf_ymdhms = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    SimpleDateFormat sdf_dhms   = new SimpleDateFormat("DDD HH:mm:ss");
+    SimpleDateFormat sdf_hms    = new SimpleDateFormat("HH:mm:ss");
 
     /**
      *
@@ -362,6 +381,13 @@ public class SAVFileReader extends StatDataFileReader{
     }
     
     private void init(){
+        sdf_ymd.setTimeZone(TimeZone.getTimeZone("GMT"));
+        sdf_ymdhms.setTimeZone(TimeZone.getTimeZone("GMT"));
+        sdf_dhms.setTimeZone(TimeZone.getTimeZone("GMT"));
+        sdf_hms.setTimeZone(TimeZone.getTimeZone("GMT"));
+        
+
+
         
         doubleNumberFormatter.setGroupingUsed(false);
     }
@@ -398,7 +424,7 @@ public class SAVFileReader extends StatDataFileReader{
             smd.setValueLabelTable(valueLabelTable);
             smd.setVariableFormat(printFormatList);
             smd.setVariableFormatName(printFormatNameTable);
-
+            smd.setVariableFormatCategory(formatCategoryTable);
         }
         if (sdiodata == null){
             sdiodata = new SDIOData(smd, savDataSection);
@@ -675,8 +701,8 @@ public class SAVFileReader extends StatDataFileReader{
             offset_start    = offset_end;
             offset_end += LENGTH_FILE_CREATION_INFO; // 84 bytes
             
-            String fileCreationInfo = new String(Arrays.copyOfRange(recordType1, offset_start,
-                offset_end),"US-ASCII");
+            String fileCreationInfo = getNullStrippedString(new String(Arrays.copyOfRange(recordType1, offset_start,
+                offset_end),"US-ASCII"));
                 
             dbgLog.fine("fileCreationInfo:\n"+fileCreationInfo+"\n");
             
@@ -694,7 +720,7 @@ public class SAVFileReader extends StatDataFileReader{
             smd.getFileInformation().put("fileDate", fileCreationDate);
             smd.getFileInformation().put("fileTime", fileCreationTime);
             smd.getFileInformation().put("fileNote", fileCreationNote);
-            
+            smd.getFileInformation().put("varFormat_schema", "SPSS");
             
             // add the info to the fileInfo
             
@@ -1965,9 +1991,9 @@ while(true ){
 
         int numberOfDecimalVariables = 0;
         
-        //LinkedList<Object> dataLine = new LinkedList<Object>();
-        List<Object> dataLine = new ArrayList<Object>();
-        
+        List<String> dataLine = new ArrayList<String>();
+        List<String> dataLine2 = new ArrayList<String>();
+
         // Sets for NA-string-to-NaN conversion
         Set<Integer> NaNlocationNumeric = new LinkedHashSet<Integer>();
         Set<Integer> NaNlocationString = new LinkedHashSet<Integer>();
@@ -2162,7 +2188,7 @@ while(true ){
                         //out.println("removeJset="+removeJset);
                         
                         // a new list that stores a new case with concatanated string data
-                        List<Object> newDataLine = new ArrayList<Object>();
+                        List<String> newDataLine = new ArrayList<String>();
                         
                         for (int jl=0; jl<dataLine.size();jl++){
                             //out.println("jl="+jl+"-th datum =["+dataLine.get(jl)+"]");
@@ -2196,6 +2222,18 @@ while(true ){
 
                     } // end-if: stringContinuousVar-exist case
 
+
+
+
+                    for (int el=0; el< dataLine.size(); el++){
+                        dataLine2.add(new String(dataLine.get(el)));
+                    }
+
+
+
+
+
+
                     // caseIndex starts from 1 not 0
                     caseIndex = (ii*OBS + i + 1)/nOBS;
                     //dbgLog.finer("caseIndex="+caseIndex);
@@ -2211,9 +2249,11 @@ while(true ){
                             // shorten the string up to its length (no padding)
                             
                             if ((dataLine.get(k)).toString().length() > variableTypelList.get(k)){
+                            
                                 dataLine.set(k,
                                     (StringUtils.substring(dataLine.get(k).toString(), 0,
                                     variableTypelList.get(k))));
+                                    
                             } else if (variableTypelList.get(k) < dataLine.get(k).toString().length() ){
                                 throw new IOException("string-reading error: at "+k+"th variable");
                             }
@@ -2243,6 +2283,9 @@ while(true ){
                                 dataLine.set(k,paddRemoved);
                             } 
                             
+                            // deep-copy the above change to dataLine2 for stats
+                            dataLine2.set(k,new String(dataLine.get(k)));
+                            
                             // end of String var case
                         
                         } else {
@@ -2252,7 +2295,7 @@ while(true ){
                                 // add this index to NaN-to-NA-replacement sentinel
                                 NaNlocationNumeric.add(k);
                             }
-
+                            
                         } // end of variable-type check
                         
                         
@@ -2264,26 +2307,102 @@ while(true ){
                         if (!dataLine.get(k).equals(MissingValueForTextDataFileNumeric)){
                         
 // to do date conversion
-                        //    out.println("i="+i+"-th ii="+ii+"th formatCode="+k+"\t"+variableNameList.get(k));
+                        //out.println("i="+i+"-th ii="+ii+"th formatCode="+k+"\t"+variableNameList.get(k));
                             
                             String variableFormatType = SPSSConstants.FORMAT_CATEGORY_TABLE.get(printFormatTable.get(variableNameList.get(k)));
-                        //    out.println("k="+k+"th variable format="+variableFormatType);
+                        //out.println("k="+k+"th variable format="+variableFormatType);
+                            dbgLog.finer("k="+k+"th printFormatTable format="+printFormatTable.get(variableNameList.get(k)));
                             
                             if (variableFormatType.equals("date")){
-                                //out.println("date case");
+                                dbgLog.finer("date case");
                                 
+                                long dateDatum = Long.parseLong(dataLine.get(k).toString())*1000L- SPSS_DATE_OFFSET;
+                                
+                                String newDatum = sdf_ymd.format(new Date(dateDatum));
+                                dbgLog.finer("k="+k+":"+newDatum);
+                                
+                                dataLine.set(k, newDatum);
+                                formatCategoryTable.put(variableNameList.get(k), "date");
                             } else if (variableFormatType.equals("time")) {
-                                //out.println("time case");
+                                dbgLog.finer("time case:DTIME or DATETIME or TIME");
+                                formatCategoryTable.put(variableNameList.get(k), "time");
+                            
+                                if (printFormatTable.get(variableNameList.get(k)).equals("DTIME")){
+
+                                    if (dataLine.get(k).toString().indexOf(".") < 0){
+                                        long dateDatum  = Long.parseLong(dataLine.get(k).toString())*1000L - SPSS_DATE_BIAS;
+                                        String newDatum = sdf_dhms.format(new Date(dateDatum));
+                                        dbgLog.finer("k="+k+":"+newDatum);
+                                        dataLine.set(k, newDatum);
+                                    } else {
+                                        // decimal point included
+                                        String[] timeData = dataLine.get(k).toString().split("\\.");
+
+                                        dbgLog.finer(StringUtils.join(timeData, "|"));
+                                        long dateDatum = Long.parseLong(timeData[0])*1000L - SPSS_DATE_BIAS;
+                                        StringBuilder sb_time = new StringBuilder(
+                                            sdf_dhms.format(new Date(dateDatum)));
+                                        dbgLog.finer(sb_time.toString());
+                                        sb_time.append("."+timeData[1]);
+                                        dbgLog.finer("k="+k+":"+sb_time.toString());
+                                        dataLine.set(k, sb_time.toString());
+                                    }
+                                } else if (printFormatTable.get(variableNameList.get(k)).equals("DATETIME")){
+
+                                    if (dataLine.get(k).toString().indexOf(".") < 0){
+                                        long dateDatum  = Long.parseLong(dataLine.get(k).toString())*1000L - SPSS_DATE_OFFSET;
+                                        String newDatum = sdf_ymdhms.format(new Date(dateDatum));
+                                        dbgLog.finer("k="+k+":"+newDatum);
+                                        dataLine.set(k, newDatum);
+                                    } else {
+                                        // decimal point included
+                                        String[] timeData = dataLine.get(k).toString().split("\\.");
+
+                                        //dbgLog.finer(StringUtils.join(timeData, "|"));
+                                        long dateDatum = Long.parseLong(timeData[0])*1000L- SPSS_DATE_OFFSET;
+                                        StringBuilder sb_time = new StringBuilder(
+                                            sdf_ymdhms.format(new Date(dateDatum)));
+                                        //dbgLog.finer(sb_time.toString());
+                                        sb_time.append("."+timeData[1]);
+                                        dbgLog.finer("k="+k+":"+sb_time.toString());
+                                        dataLine.set(k, sb_time.toString());
+                                    }
+                                } else if (printFormatTable.get(variableNameList.get(k)).equals("TIME")){
+                                    if (dataLine.get(k).toString().indexOf(".") < 0){
+                                        long dateDatum = Long.parseLong(dataLine.get(k).toString())*1000L;
+                                        String newDatum = sdf_hms.format(new Date(dateDatum));
+                                        dbgLog.finer("k="+k+":"+newDatum);
+                                        dataLine.set(k, newDatum);
+                                    } else {
+                                        // decimal point included
+                                        String[] timeData = dataLine.get(k).toString().split("\\.");
+
+                                        //dbgLog.finer(StringUtils.join(timeData, "|"));
+                                        long dateDatum = Long.parseLong(timeData[0])*1000L;
+                                        StringBuilder sb_time = new StringBuilder(
+                                            sdf_hms.format(new Date(dateDatum)));
+                                        //dbgLog.finer(sb_time.toString());
+                                        sb_time.append("."+timeData[1]);
+                                        dbgLog.finer("k="+k+":"+sb_time.toString());
+                                        dataLine.set(k, sb_time.toString());
+                                    }
+                                }
                             
                             } else if (variableFormatType.equals("other")){
-                                //out.println("other non-date/time case");
+                                dbgLog.finer("other non-date/time case:="+i);
                             
                                 if (printFormatTable.get(variableNameList.get(k)).equals("WKDAY")){
                                     // day of week
-                                    //out.println("wkday");
+                                    dbgLog.finer("data k="+k+":"+dataLine.get(k));
+                                    dbgLog.finer("data k="+k+":"+SPSSConstants.WEEKDAY_LIST.get(Integer.valueOf(dataLine.get(k).toString())-1));
+                                    dataLine.set(k, SPSSConstants.WEEKDAY_LIST.get(Integer.valueOf(dataLine.get(k).toString())-1));
+                                    dbgLog.finer("wkday:k="+k+":"+dataLine.get(k));
                                 } else if (printFormatTable.get(variableNameList.get(k)).equals("MONTH")){
                                     // month
-                                    //out.println("month");
+                                    dbgLog.finer("data k="+k+":"+dataLine.get(k));
+                                    dbgLog.finer("data k="+k+":"+SPSSConstants.MONTH_LIST.get(Integer.valueOf(dataLine.get(k).toString())-1));
+                                    dataLine.set(k, SPSSConstants.MONTH_LIST.get(Integer.valueOf(dataLine.get(k).toString())-1));
+                                    dbgLog.finer("month:k="+k+":"+dataLine.get(k));
                                 }
                             } 
 
@@ -2291,12 +2410,12 @@ while(true ){
                         } // end: date-time-datum check
                     
                     
-                    } // end: loop-k(2nd: variablte-wise-check)
+                    } // end: loop-k(2nd: variable-wise-check)
                     
                     // dump the line to the tab-delimited file first
                     // then replace the missing value token with those for
                     // calculating UNF/summary statistic
-                    // out.println("tab-data: caseIndex="+caseIndex+"-th:"+StringUtils.join(dataLine, "\t"));
+                    // dbgLog.finer("tab-data: caseIndex="+caseIndex+"-th:"+StringUtils.join(dataLine, "\t"));
 
                     
                     pwout.println(StringUtils.join(dataLine, "\t"));
@@ -2310,7 +2429,7 @@ while(true ){
                         for (int el : NaNlocationNumeric){
                             //out.println("replaced="+el+"th element="+dataLine.get(el));
                             if (dataLine.get(el).equals(MissingValueForTextDataFileNumeric)){
-                                dataLine.set(el, Double.toHexString(systemMissingValue));
+                                dataLine2.set(el, Double.toHexString(systemMissingValue));
                                 //out.println("replaced="+el+"th element="+dataLine.get(el));
                             }
 
@@ -2324,7 +2443,7 @@ while(true ){
                         for (int el : NaNlocationString){
 
                             if (dataLine.get(el).equals(MissingValueForTextDataFileString)){
-                               dataLine.set(el, Double.toHexString(systemMissingValue));
+                               dataLine2.set(el, Double.toHexString(systemMissingValue));
                                 //out.println("replaced="+el+"th element="+dataLine.get(el));
                             }
                         }
@@ -2338,7 +2457,7 @@ while(true ){
                     
                     
                     for (int ij=0; ij<varQnty;ij++ ){
-                        dataTable2[ij][caseIndex-1] = dataLine.get(ij);
+                        dataTable2[ij][caseIndex-1] = dataLine2.get(ij);
                     }
                     
                     // numeric contents-check
@@ -2357,7 +2476,7 @@ while(true ){
                     NaNlocationNumeric.clear();
                     NaNlocationString.clear();
                     dataLine.clear();
-                    
+                    dataLine2.clear();
                     if (hasReachedEOF){
                         break;
                     }
@@ -2477,7 +2596,8 @@ while(true ){
 
         int numberOfDecimalVariables = 0;
         
-        List<Object> dataLine = new ArrayList<Object>();
+        List<String> dataLine = new ArrayList<String>();
+        List<String>  dataLine2 = new ArrayList<String>();
         
         // Sets for NA-string-to-NaN conversion
         Set<Integer> NaNlocationNumeric = new LinkedHashSet<Integer>();
@@ -2613,7 +2733,7 @@ while(true ){
 
                     //out.println("removeJset="+removeJset);
                     // a new list that stores a new case with concatanated string data
-                    List<Object> newDataLine = new ArrayList<Object>();
+                    List<String> newDataLine = new ArrayList<String>();
                     
                     for (int jl=0; jl<dataLine.size();jl++){
                         //out.println("jl="+jl+"-th datum =["+dataLine.get(jl)+"]");
@@ -2648,13 +2768,25 @@ while(true ){
 
                 } // end-if: stringContinuousVar-exist case
 
+
+
+
+
+                for (int el=0; el< dataLine.size(); el++){
+                    dataLine2.add(new String(dataLine.get(el)));
+                }
+
+
+
+
+
                 
                 caseIndex++;
                 dbgLog.finer("caseIndex="+caseIndex);
                 
                 for (int k=0; k<dataLine.size(); k++){
                     
-                    //out.println("k="+k+"-th variableTypelList="+variableTypelList.get(k));
+                    //dbgLog.fine("k="+k+"-th variableTypelList="+variableTypelList.get(k));
 
                     if (variableTypelList.get(k)>0){
                         // String variable case: set to  -1
@@ -2696,6 +2828,10 @@ while(true ){
                             //dbgLog.fine("paddRemoved="+paddRemoved);
                             dataLine.set(k,paddRemoved);
                         }
+                        
+                        // deep-copy the above change to dataLine2 for stats
+                        dataLine2.set(k,new String(dataLine.get(k)));
+                        
                         // end of String var case
 
                     } else {
@@ -2721,20 +2857,100 @@ while(true ){
                         //out.println("k="+k+"th variable format="+variableFormatType);
 
                         if (variableFormatType.equals("date")){
-                            //out.println("date case");
+                            dbgLog.finer("date case");
 
+                            long dateDatum = Long.parseLong(dataLine.get(k).toString())*1000L- SPSS_DATE_OFFSET;
+
+                            String newDatum = sdf_ymd.format(new Date(dateDatum));
+                            dbgLog.finer("k="+k+":"+newDatum);
+
+                            dataLine.set(k, newDatum);
+                            formatCategoryTable.put(variableNameList.get(k), "date");
                         } else if (variableFormatType.equals("time")) {
-                            //out.println("time case");
+                            dbgLog.finer("time case:DTIME or DATETIME or TIME");
+                            formatCategoryTable.put(variableNameList.get(k), "time");
+                            
+                            if (printFormatTable.get(variableNameList.get(k)).equals("DTIME")){
+
+                                if (dataLine.get(k).toString().indexOf(".") < 0){
+                                    long dateDatum  = Long.parseLong(dataLine.get(k).toString())*1000L - SPSS_DATE_BIAS;
+                                    String newDatum = sdf_dhms.format(new Date(dateDatum));
+                                    dbgLog.finer("k="+k+":"+newDatum);
+                                    dataLine.set(k, newDatum);
+                                } else {
+                                    // decimal point included
+                                    String[] timeData = dataLine.get(k).toString().split("\\.");
+
+                                    dbgLog.finer(StringUtils.join(timeData, "|"));
+                                    long dateDatum = Long.parseLong(timeData[0])*1000L - SPSS_DATE_BIAS;
+                                    StringBuilder sb_time = new StringBuilder(
+                                        sdf_dhms.format(new Date(dateDatum)));
+                                    
+                                    sb_time.append("."+timeData[1]);
+                                    dbgLog.finer("k="+k+":"+sb_time.toString());
+                                    dataLine.set(k, sb_time.toString());
+                                }
+                            } else if (printFormatTable.get(variableNameList.get(k)).equals("DATETIME")){
+
+                                if (dataLine.get(k).toString().indexOf(".") < 0){
+                                    long dateDatum  = Long.parseLong(dataLine.get(k).toString())*1000L - SPSS_DATE_OFFSET;
+                                    String newDatum = sdf_ymdhms.format(new Date(dateDatum));
+                                    dbgLog.finer("k="+k+":"+newDatum);
+                                    dataLine.set(k, newDatum);
+                                } else {
+                                    // decimal point included
+                                    String[] timeData = dataLine.get(k).toString().split("\\.");
+
+                                    //dbgLog.finer(StringUtils.join(timeData, "|"));
+                                    long dateDatum = Long.parseLong(timeData[0])*1000L- SPSS_DATE_OFFSET;
+                                    StringBuilder sb_time = new StringBuilder(
+                                        sdf_ymdhms.format(new Date(dateDatum)));
+                                    //dbgLog.finer(sb_time.toString());
+                                    sb_time.append("."+timeData[1]);
+                                    dbgLog.finer("k="+k+":"+sb_time.toString());
+                                    dataLine.set(k, sb_time.toString());
+                                }
+                            } else if (printFormatTable.get(variableNameList.get(k)).equals("TIME")){
+                                if (dataLine.get(k).toString().indexOf(".") < 0){
+                                    long dateDatum = Long.parseLong(dataLine.get(k).toString())*1000L;
+                                    String newDatum = sdf_hms.format(new Date(dateDatum));
+                                    dbgLog.finer("k="+k+":"+newDatum);
+                                    dataLine.set(k, newDatum);
+                                } else {
+                                    // decimal point included
+                                    String[] timeData = dataLine.get(k).toString().split("\\.");
+
+                                    //dbgLog.finer(StringUtils.join(timeData, "|"));
+                                    long dateDatum = Long.parseLong(timeData[0])*1000L;
+                                    StringBuilder sb_time = new StringBuilder(
+                                        sdf_hms.format(new Date(dateDatum)));
+                                    //dbgLog.finer(sb_time.toString());
+                                    sb_time.append("."+timeData[1]);
+                                    dbgLog.finer("k="+k+":"+sb_time.toString());
+                                    dataLine.set(k, sb_time.toString());
+                                }
+                            }
+                            
+                            
 
                         } else if (variableFormatType.equals("other")){
-                            //out.println("other non-date/time case");
+                            dbgLog.finer("other non-date/time case");
 
                             if (printFormatTable.get(variableNameList.get(k)).equals("WKDAY")){
                                 // day of week
-                                //out.println("wkday");
+                                dbgLog.finer("data k="+k+":"+dataLine.get(k));
+                                dbgLog.finer("data k="+k+":"+SPSSConstants.WEEKDAY_LIST.get(Integer.valueOf(dataLine.get(k).toString())-1));
+                                dataLine.set(k, SPSSConstants.WEEKDAY_LIST.get(Integer.valueOf(dataLine.get(k).toString())-1));
+                                dbgLog.finer("wkday:k="+k+":"+dataLine.get(k));
                             } else if (printFormatTable.get(variableNameList.get(k)).equals("MONTH")){
                                 // month
-                                //out.println("month");
+                                dbgLog.finer("data k="+k+":"+dataLine.get(k));
+                                dbgLog.finer("data k="+k+":"+SPSSConstants.MONTH_LIST.get(Integer.valueOf(dataLine.get(k).toString())-1));
+                                dataLine.set(k, SPSSConstants.MONTH_LIST.get(Integer.valueOf(dataLine.get(k).toString())-1));
+                                dbgLog.finer("month:k="+k+":"+dataLine.get(k));
+                                
+                                
+                                
                             }
                         } 
 // end of date/time block
@@ -2747,7 +2963,7 @@ while(true ){
                 // dump the line to the tab-delimited file first
                 // then replace the missing value token with those for
                 // calculating UNF/summary statistic
-                // out.println("tab-data: caseIndex="+caseIndex+"-th:"+StringUtils.join(dataLine, "\t"));
+                // dbgLog.finer("tab-data: caseIndex="+caseIndex+"-th:"+StringUtils.join(dataLine, "\t"));
 
                 pwout.println(StringUtils.join(dataLine, "\t"));
                 
@@ -2760,7 +2976,7 @@ while(true ){
                     for (int el : NaNlocationNumeric){
                         //out.println("replaced="+el+"th element="+dataLine.get(el));
                         if (dataLine.get(el).equals(MissingValueForTextDataFileNumeric)){
-                            dataLine.set(el, Double.toHexString(systemMissingValue));
+                            dataLine2.set(el, Double.toHexString(systemMissingValue));
                             //out.println("replaced="+el+"th element="+dataLine.get(el));                            
                         }
 
@@ -2774,7 +2990,7 @@ while(true ){
                     for (int el : NaNlocationString){
 
                         if (dataLine.get(el).equals(MissingValueForTextDataFileString)){
-                           dataLine.set(el, Double.toHexString(systemMissingValue));
+                           dataLine2.set(el, Double.toHexString(systemMissingValue));
                             //out.println("replaced="+el+"th element="+dataLine.get(el));                            
 
                         }
@@ -2786,7 +3002,7 @@ while(true ){
                 
                 
                 for (int ij=0; ij<varQnty;ij++ ){
-                    dataTable2[ij][caseIndex-1] = dataLine.get(ij);
+                    dataTable2[ij][caseIndex-1] = dataLine2.get(ij);
                 }
                 
                 // numeric contents-check
@@ -2804,6 +3020,7 @@ while(true ){
                 NaNlocationNumeric.clear();
                 NaNlocationString.clear();
                 dataLine.clear();
+                dataLine2.clear();
                 
                 if (stream.available() == 0){
                     // reached the end of this file
@@ -3063,7 +3280,7 @@ while(true ){
         dbgLog.finer("unfVersionNumber="+unfVersionNumber);
         dbgLog.fine("variablePosition="+variablePosition);
         dbgLog.fine("variableName="+variableNameList.get(variablePosition));
-        dbgLog.fine("varData:\n"+ReflectionToStringBuilder.toString(varData));
+        dbgLog.fine("varData:\n"+Arrays.deepToString(varData));
 
         switch(variableType){
             case 0:

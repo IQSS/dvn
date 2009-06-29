@@ -58,7 +58,6 @@ public abstract class StatDataFileReader {
     public void dispose() {
     }
     
-    // template pattern 
     
     /**
      *
@@ -105,4 +104,24 @@ public abstract class StatDataFileReader {
         }
         out.println();
     }
+
+    /**
+     * 
+     * @param rawString
+     * @return
+     */
+    protected String getNullStrippedString(String rawString){
+        String nullRemovedString = null;
+        int null_position = rawString.indexOf(0);
+        if (null_position >= 0){
+            // string is terminated by the null
+            nullRemovedString = rawString.substring(0, null_position);
+        } else {
+            // not null-termiated (sometimes space-paddded, instead)
+            // get up to the length
+            nullRemovedString = rawString.substring(0, rawString.length());
+        }
+        return nullRemovedString;
+    }
+
 }

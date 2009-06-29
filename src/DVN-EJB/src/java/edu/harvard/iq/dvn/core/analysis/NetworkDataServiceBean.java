@@ -13,6 +13,7 @@ import edu.harvard.iq.dvn.core.study.StudyFileEditBean;
 import edu.harvard.iq.dvn.core.study.VariableServiceLocal;
 import edu.harvard.iq.dvn.core.util.FileUtil;
 import edu.harvard.iq.dvn.ingest.dsb.impl.DvnRGraphServiceImpl;
+import edu.harvard.iq.dvn.ingest.dsb.impl.DvnRGraphServiceImpl.DvnRGraphException;
 import edu.harvard.iq.dvn.ingest.dsb.impl.DvnRJobRequest;
 import java.io.File;
 import java.io.FileInputStream;
@@ -25,7 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
@@ -74,30 +74,27 @@ public class NetworkDataServiceBean implements NetworkDataServiceLocal, java.io.
         checkForError(resultInfo);
     }
 
-    public String initAnalysis(String fileLocation) throws Exception{
+    public String initAnalysis(String fileLocation) throws DvnRGraphException{
         dbgLog.fine("INITIALIZE: " + this);
         DvnRJobRequest rjr = new DvnRJobRequest(fileLocation, null);
         Map<String, String> resultInfo = dgs.initializeConnection(rjr);
 
-        checkForError(resultInfo);
         rWorkspace = resultInfo.get(DvnRGraphServiceImpl.SAVED_RWORK_SPACE);
         return rWorkspace;
     }
 
-    private void reinitAnalysis() throws Exception{
+    private void reinitAnalysis() throws DvnRGraphException{
         dbgLog.fine("REINITIALIZE: " + this);
         if (rWorkspace != null) {
             Map<String, Object> subsetParameters = new HashMap<String, Object>();
             subsetParameters.put( DvnRGraphServiceImpl.SAVED_RWORK_SPACE, rWorkspace);
 
             DvnRJobRequest rjr = new DvnRJobRequest(null, subsetParameters);
-            Map<String, String>  resultInfo = dgs.initializeConnection(rjr);
-
-            checkForError(resultInfo);
+            dgs.initializeConnection(rjr);
         }
     }
 
-    public NetworkDataSubsetResult runManualQuery(String rWorkspace, String attributeSet, String query, boolean eliminateDisconnectedVertices) throws Exception{
+    public NetworkDataSubsetResult runManualQuery(String rWorkspace, String attributeSet, String query, boolean eliminateDisconnectedVertices) throws DvnRGraphException{
 
         Map<String, Object> subsetParameters = new HashMap<String, Object>();
         subsetParameters.put( DvnRGraphServiceImpl.SAVED_RWORK_SPACE, rWorkspace);
@@ -118,14 +115,13 @@ public class NetworkDataServiceBean implements NetworkDataServiceLocal, java.io.
         DvnRJobRequest rjr = new DvnRJobRequest(null, subsetParameters);
         Map<String, String> resultInfo = dgs.liveConnectionExecute(rjr);
 
-        checkForError(resultInfo);
         NetworkDataSubsetResult result = new NetworkDataSubsetResult();
         result.setVertices( Long.parseLong( resultInfo.get(DvnRGraphServiceImpl.NUMBER_OF_VERTICES) ) );
         result.setEdges( Long.parseLong( resultInfo.get(DvnRGraphServiceImpl.NUMBER_OF_EDGES) ) );
         return result;
     }
 
-    public NetworkDataSubsetResult runAutomaticQuery(String rWorkspace, String automaticQuery, String nValue) throws Exception{
+    public NetworkDataSubsetResult runAutomaticQuery(String rWorkspace, String automaticQuery, String nValue) throws DvnRGraphException{
         Map<String, Object> subsetParameters = new HashMap<String, Object>();
         subsetParameters.put(DvnRGraphServiceImpl.SAVED_RWORK_SPACE, rWorkspace);
         subsetParameters.put(DvnRGraphServiceImpl.RSUBSETFUNCTION, DvnRGraphServiceImpl.AUTOMATIC_QUERY_SUBSET);
@@ -135,7 +131,6 @@ public class NetworkDataServiceBean implements NetworkDataServiceLocal, java.io.
         DvnRJobRequest rjr = new DvnRJobRequest(rWorkspace, subsetParameters);
         Map<String, String> resultInfo = dgs.liveConnectionExecute(rjr);
 
-        checkForError(resultInfo);
         NetworkDataSubsetResult result = new NetworkDataSubsetResult();
         result.setVertices( Long.parseLong( resultInfo.get(DvnRGraphServiceImpl.NUMBER_OF_VERTICES) ) );
         result.setEdges( Long.parseLong( resultInfo.get(DvnRGraphServiceImpl.NUMBER_OF_EDGES) ) );
@@ -143,7 +138,7 @@ public class NetworkDataServiceBean implements NetworkDataServiceLocal, java.io.
         return result;
     }
 
-    public String runNetworkMeasure(String rWorkspace, String networkMeasure, List<NetworkMeasureParameter> parameters) throws Exception{
+    public String runNetworkMeasure(String rWorkspace, String networkMeasure, List<NetworkMeasureParameter> parameters) throws DvnRGraphException{
         Map<String, Object> subsetParameters = new HashMap<String, Object>();
         subsetParameters.put(DvnRGraphServiceImpl.SAVED_RWORK_SPACE, rWorkspace);
         subsetParameters.put(DvnRGraphServiceImpl.RSUBSETFUNCTION, DvnRGraphServiceImpl.NETWORK_MEASURE);
@@ -153,19 +148,16 @@ public class NetworkDataServiceBean implements NetworkDataServiceLocal, java.io.
         DvnRJobRequest rjr = new DvnRJobRequest(rWorkspace, subsetParameters);
         Map<String, String> resultInfo = dgs.liveConnectionExecute(rjr);
 
-        checkForError(resultInfo);
         return resultInfo.get(DvnRGraphServiceImpl.NETWORK_MEASURE_NEW_COLUMN);
     }
 
-    public void undoLastEvent(String rWorkspace) throws Exception {
+    public void undoLastEvent(String rWorkspace) throws DvnRGraphException {
         Map<String, Object> subsetParameters = new HashMap<String, Object>();
         subsetParameters.put(DvnRGraphServiceImpl.SAVED_RWORK_SPACE, rWorkspace);
         subsetParameters.put(DvnRGraphServiceImpl.RSUBSETFUNCTION, DvnRGraphServiceImpl.UNDO);
 
         DvnRJobRequest rjr = new DvnRJobRequest(rWorkspace, subsetParameters);
         Map<String, String> resultInfo = dgs.liveConnectionExecute(rjr);
-
-        checkForError(resultInfo);
     }
 
     public File getSubsetExport(String rWorkspace) throws Exception {

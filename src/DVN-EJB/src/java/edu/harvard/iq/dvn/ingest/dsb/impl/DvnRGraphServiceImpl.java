@@ -751,7 +751,8 @@ public class DvnRGraphServiceImpl{
             dbgLog.info("LCE: rserve exception message: "+ re.getMessage());
             dbgLog.info("LCE: rserve exception description: "+ "R runtime Error");
             //return result;
-            throw new DvnRGraphException("R run-time error: " +re.getMessage());
+            //throw new DvnRGraphException("R run-time error: "+re.getMessage());
+	    throw new DvnRGraphException(re.getMessage());
 
         } catch (RserveException rse) {
             //result.put("IdSuffix", IdSuffix);
@@ -1713,7 +1714,7 @@ RserveException,
     public class DvnRGraphException extends Exception {
 
 	public DvnRGraphException(String msg) {
-	    super("DVN RGraph Communication exception: \"" + msg + "\"");
+	    super(msg);
 	}
     }
 

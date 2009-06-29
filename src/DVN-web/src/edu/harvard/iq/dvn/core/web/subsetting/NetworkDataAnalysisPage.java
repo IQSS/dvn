@@ -17,6 +17,7 @@ import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.util.FileUtil;
 import edu.harvard.iq.dvn.core.util.StringUtil;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
+import edu.harvard.iq.dvn.ingest.dsb.impl.DvnRGraphServiceImpl.DvnRGraphException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -36,6 +37,7 @@ import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 import javax.naming.Context;
 import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 /**
  *
@@ -107,7 +109,9 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
             ctx = new InitialContext();
             networkDataService = (NetworkDataServiceLocal) ctx.lookup("java:comp/env/networkData");
             rWorkspace = networkDataService.initAnalysis(file.getFileSystemLocation() + ".RData");
-        } catch (Exception ex) {
+        } catch (NamingException ex) {
+            Logger.getLogger(NetworkDataAnalysisPage.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (DvnRGraphException ex) {
             Logger.getLogger(NetworkDataAnalysisPage.class.getName()).log(Level.SEVERE, null, ex);
         }
         initComponents();
@@ -372,7 +376,7 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
             events.add(event);
             canUndo=true;
 
-        } catch (Exception e) {
+        } catch (DvnRGraphException e) {
             FacesMessage message = new FacesMessage(e.getMessage());
             getFacesContext().addMessage(manualQueryError.getClientId(getFacesContext()), message);
         }
@@ -393,7 +397,7 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
             events.add(event);
             canUndo = true;
             
-        } catch (Exception e) {
+        } catch (DvnRGraphException e) {
                 FacesMessage message = new FacesMessage(e.getMessage());
                 getFacesContext().addMessage(automaticQueryError.getClientId(getFacesContext()), message);
         }
@@ -419,7 +423,7 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
             vertexAttributeSelectItems.add(new SelectItem(result));
             canUndo = true;
 
-        } catch (Exception e) {
+        } catch (DvnRGraphException e) {
                 FacesMessage message = new FacesMessage(e.getMessage());
                 getFacesContext().addMessage(networkMeasureError.getClientId(getFacesContext()), message);
         }

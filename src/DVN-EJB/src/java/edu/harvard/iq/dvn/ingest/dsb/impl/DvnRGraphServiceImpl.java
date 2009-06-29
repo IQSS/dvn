@@ -732,6 +732,11 @@ public class DvnRGraphServiceImpl{
             result.put("RexecDate", RexecDate);
             result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
 
+	    
+	    if ( !SavedRworkSpace.equals(drc.getWorkSpace()) ) {
+		throw new DvnRGraphException("Could not execute query: connection lost");
+	    }
+
 	    drc.unlockConnection(); 
 
 	} catch (DvnRGraphException dre) {

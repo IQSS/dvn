@@ -1005,9 +1005,23 @@ public class VDC implements java.io.Serializable  {
     
        public boolean areFilesRestrictedForUser(VDCUser user, UserGroup ipUserGroup) {
         if (this.filesRestricted) {
-            if (user!=null && user.getNetworkRole()!=null && user.getNetworkRole().getName().equals(NetworkRoleServiceLocal.ADMIN)) {
-                return false;
+            if (user!=null) {
+                // check network role
+                if (user.getNetworkRole()!=null && user.getNetworkRole().getName().equals(NetworkRoleServiceLocal.ADMIN))
+                {
+                    return false;
+                }
+
+                // check vdc role
+                VDCRole userRole = user.getVDCRole(this);
+                if (userRole != null) {
+                    String userRoleName = userRole.getRole().getName();
+                    if (userRoleName.equals(RoleServiceLocal.ADMIN) || userRoleName.equals(RoleServiceLocal.CURATOR)) {
+                        return false;
+                    }
+                }
             }
+
             if (!allowedFileUsers.contains(user) ) {
                 boolean foundUserInGroup=false;
                 for (Iterator it = allowedFileGroups.iterator(); it.hasNext();) {

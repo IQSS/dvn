@@ -382,7 +382,7 @@ public class DvnRGraphServiceImpl{
      * @return    a Map that contains various information about the results
      */    
     
-    public Map<String, String> liveConnectionExecute(DvnRJobRequest sro) {
+    public Map<String, String> liveConnectionExecute(DvnRJobRequest sro) throws DvnRGraphException {
     
         // set the return object
         Map<String, String> result = new HashMap<String, String>();
@@ -391,9 +391,11 @@ public class DvnRGraphServiceImpl{
             // Check if there's an Rserve connection: 
 	    if ( rc == null ) {
 		dbgLog.fine("LCE method called on null connection!");
-		result.put("RexecError", "true");
-		result.put("RexecErrorDescription", "CLOSE CALLED ON NULL CONNECTION"); 
-		return result;
+		//result.put("RexecError", "true");
+		//result.put("RexecErrorDescription", "EXECUTE CALLED ON NULL CONNECTION"); 
+		//return result;
+
+		throw new DvnRGraphException("execute method called on null connection");
 	    }
 
 
@@ -401,9 +403,12 @@ public class DvnRGraphServiceImpl{
 	    if ( sro != null ) {
 		dbgLog.fine("LCE sro dump:\n"+ToStringBuilder.reflectionToString(sro, ToStringStyle.MULTI_LINE_STYLE));
             } else {
-		result.put("RexecError", "true");
-		result.put("RexecErrorDescription", "LCE: NULL R JOB OBJECT"); 
-		return result;
+		//result.put("RexecError", "true");
+		//result.put("RexecErrorDescription", "LCE: NULL R JOB OBJECT"); 
+		//return result;
+
+		throw new DvnRGraphException("execute method called with a NULL job ob ject.");
+
 	    }
 
 	    // (if we have a non-null connection that's stale/closed, 
@@ -416,9 +421,11 @@ public class DvnRGraphServiceImpl{
 	    if ( SubsetParameters != null ) {
 		SavedRworkSpace = (String) SubsetParameters.get(SAVED_RWORK_SPACE);
 	    } else {
-		result.put("RexecError", "true");
-		result.put("RexecErrorDescription", "LCE: NULL PARAMETERS OBJECT"); 
-		return result;
+		//result.put("RexecError", "true");
+		//result.put("RexecErrorDescription", "LCE: NULL PARAMETERS OBJECT"); 
+		//return result;
+		throw new DvnRGraphException("execute method called with a null parameters object");
+
 	    }
 
 	    /*
@@ -456,8 +463,10 @@ public class DvnRGraphServiceImpl{
 			} else if (manualQueryType.equals(VERTEX_SUBSET)){
 			    subsetCommand = "vertex_subset(g, '"+manualQuery+"')"; 
 			} else {
-			    result.put("RexecError", "true");
-			    return result;
+			    //result.put("RexecError", "true");
+			    //return result;
+			    throw new DvnRGraphException("execute: unsupported manual query subset");
+
 			}		       
 
 			dbgLog.fine("LCE: manualQuerySubset="+subsetCommand);
@@ -522,9 +531,11 @@ public class DvnRGraphServiceImpl{
 		    }
 
 		    if ( networkMeasureCommand == null ) {
-			result.put("RexecError", "true");
-			result.put("RexecErrorDescription", "ILLEGAL OR UNSUPPORTED NETWORK MEASURE QUERY"); 
-			return result;
+			//result.put("RexecError", "true");
+			//result.put("RexecErrorDescription", "ILLEGAL OR UNSUPPORTED NETWORK MEASURE QUERY"); 
+			//return result;
+			throw new DvnRGraphException("ILLEGAL OR UNSUPPORTED NETWORK MEASURE QUERY");
+
 		    }
 
 		    dbgLog.info("LCE: networkMeasureCommand="+networkMeasureCommand);
@@ -535,9 +546,11 @@ public class DvnRGraphServiceImpl{
 		    if ( addedColumn != null ) {
 			result.put(NETWORK_MEASURE_NEW_COLUMN, addedColumn);
 		    } else {
-			result.put("RexecError", "true");
-			result.put("RexecErrorDescription", "FAILED TO READ ADDED COLUMN NAME"); 
-			return result;
+			//result.put("RexecError", "true");
+			//result.put("RexecErrorDescription", "FAILED TO READ ADDED COLUMN NAME"); 
+			//return result;
+			throw new DvnRGraphException("FAILED TO READ ADDED COLUMN NAME");
+
 		    }
 		    
 		} else if ( GraphSubsetType.equals(AUTOMATIC_QUERY_SUBSET) ) {
@@ -550,10 +563,10 @@ public class DvnRGraphServiceImpl{
 		    }
 
 		    if ( autoQueryCommand == null ) {
-			result.put("RexecError", "true");
-			result.put("RexecErrorDescription", "NULL OR UNSUPPORTED AUTO QUERY"); 
-			return result;
-
+			//result.put("RexecError", "true");
+			//result.put("RexecErrorDescription", "NULL OR UNSUPPORTED AUTO QUERY"); 
+			//return result;
+			throw new DvnRGraphException("NULL OR UNSUPPORTED AUTO QUERY");
 		    }
 
 		    dbgLog.info("LCE: autoQueryCommand="+autoQueryCommand);
@@ -603,45 +616,51 @@ public class DvnRGraphServiceImpl{
             dbgLog.fine("LCE: result object (before closing the Rserve):\n"+result);
                     
 	} catch (RException re) {
-	    result.put("IdSuffix", IdSuffix);
-	    result.put("RCommandHistory",  StringUtils.join(historyEntry,"\n"));
-	    result.put("RexecError", "true");
-	    result.put("RexecErrorMessage", re.getMessage());
-	    result.put("RexecErrorDescription", "R runtime Error");
+	    //result.put("IdSuffix", IdSuffix);
+	    //result.put("RCommandHistory",  StringUtils.join(historyEntry,"\n"));
+	    //result.put("RexecError", "true");
+	    //result.put("RexecErrorMessage", re.getMessage());
+	    //result.put("RexecErrorDescription", "R runtime Error");
 
 	    dbgLog.info("LCE: rserve exception message: "+ re.getMessage());
 	    dbgLog.info("LCE: rserve exception description: "+ "R runtime Error");
-	    return result;
+	    //return result;
+	    throw new DvnRGraphException("R failed to process the input; Error  message: " +re.getMessage());
 
         } catch (RserveException rse) {
-            result.put("IdSuffix", IdSuffix);
-            result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
+            //result.put("IdSuffix", IdSuffix);
+            //result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
             
-            result.put("RexecError", "true");
-            result.put("RexecErrorMessage", rse.getMessage());
-            result.put("RexecErrorDescription", rse.getRequestErrorDescription());
+            //result.put("RexecError", "true");
+            //result.put("RexecErrorMessage", rse.getMessage());
+            //result.put("RexecErrorDescription", rse.getRequestErrorDescription());
 
             dbgLog.info("LCE: rserve exception message: "+rse.getMessage());
             dbgLog.info("LCE: rserve exception description: "+rse.getRequestErrorDescription());
-            return result;
+            //return result;
+	    throw new DvnRGraphException("RServe failure; Error message: "+rse.getMessage());
 
         } catch (REXPMismatchException mme) {
         
             // REXP mismatch exception (what we got differs from what we expected)
-            result.put("IdSuffix", IdSuffix);
-            result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
+            //result.put("IdSuffix", IdSuffix);
+            //result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
 
-            result.put("RexecError", "true");
-            return result;
+            //result.put("RexecError", "true");
+            //return result;
+	    throw new DvnRGraphException("REXPmismatchException occured");
+
 
         } catch (Exception ex){
             
-            result.put("IdSuffix", IdSuffix);
+            //result.put("IdSuffix", IdSuffix);
 
-            result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
+            //result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
 
-            result.put("RexecError", "true");
-            return result;
+            //result.put("RexecError", "true");
+            //return result;
+	    throw new DvnRGraphException("Unknown exception occured: " +ex.getMessage());
+
         }
         
         return result;
@@ -1566,6 +1585,7 @@ public class DvnRGraphServiceImpl{
 	}
     }
 
+
     private REXP safeEval(RConnection c, String s) throws  
 RserveException,
 	RException, REXPMismatchException {
@@ -1575,5 +1595,14 @@ RserveException,
 	}
 	return r;
     }
+
+    public class DvnRGraphException extends Exception {
+
+	public DvnRGraphException(String msg) {
+	    super("DVN RGraph Communication exception: \"" + msg + "\"");
+	}
+    }
+
+
 
 }

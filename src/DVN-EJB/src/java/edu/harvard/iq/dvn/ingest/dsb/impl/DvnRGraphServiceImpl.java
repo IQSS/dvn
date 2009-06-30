@@ -26,11 +26,11 @@ import org.apache.commons.lang.builder.*;
  * @author landreev
  */
 
-public class DvnRGraphServiceImpl{
+public class DvnRGraphServiceImpl implements java.io.Serializable {
 
     // - static filelds
     
-    private Logger dbgLog = Logger.getLogger(DvnRGraphServiceImpl.class.getPackage().getName());
+    private static Logger dbgLog = Logger.getLogger(DvnRGraphServiceImpl.class.getPackage().getName());
 
     private RConnection rc = null; // this is still used for Ingest.
 
@@ -292,14 +292,14 @@ public class DvnRGraphServiceImpl{
 		if ( drc == null ) {
 		    throw new DvnRGraphException ("failed to obtain an R connection"); 
 		} else {
-		    // set the connectio time stamp: 
+		    // set the connection time stamp: 
 		    Date now = new Date();
 		    drc.setLastQueryTime(now.getTime()); 
 		    drc.unlockConnection(); 
 		}
 	    }
 		    
-
+	    dbgLog.info ("Initialize: obtained connection "+myConnection); 
 
 	    result.put(SAVED_RWORK_SPACE, RDataFileName);
 
@@ -309,7 +309,8 @@ public class DvnRGraphServiceImpl{
 	} catch (DvnRGraphException dre) {
 	    throw dre; 
         }
-        
+
+
         return result;
         
     }
@@ -406,6 +407,8 @@ public class DvnRGraphServiceImpl{
 	    } 
 
 	    myConnection = RConnectionPool.securePooledConnection ( SavedRworkSpace, null, true, myConnection ); 
+	    dbgLog.info ("Execute: obtained connection "+myConnection); 
+
 
 	    DvnRConnection drc = RConnectionPool.getConnection(myConnection);
 
@@ -622,6 +625,8 @@ public class DvnRGraphServiceImpl{
 	    } 
 
 	    myConnection = RConnectionPool.securePooledConnection ( savedRDataFile, null, true, myConnection ); 
+	    dbgLog.info ("Export: obtained connection "+myConnection); 
+
 
 	    DvnRConnection drc = RConnectionPool.getConnection(myConnection);
 
@@ -1456,7 +1461,7 @@ RserveException,
 
 	private DvnRConnection[] RConnectionStack;
 	private int numberOfConnections = 0; 
-	private Logger dbgLog = Logger.getLogger(DvnRConnectionPool.class.getPackage().getName());
+	//private Logger dbgLog = Logger.getLogger(DvnRConnectionPool.class.getPackage().getName());
 
 	public DvnRConnectionPool(int n) {
 	    RConnectionStack = new DvnRConnection[n];
@@ -1482,13 +1487,93 @@ RserveException,
 	 * @return index of the pooled connection secured and locked for the requestor.
 	 */    
 
-	public synchronized int securePooledConnection ( String workSpaceRemote, String workSpaceLocal, boolean reestablishConnection, int existingConnection ) throws DvnRGraphException {	    
+	public int securePooledConnection ( String workSpaceRemote, String workSpaceLocal, boolean reestablishConnection, int existingConnection ) throws DvnRGraphException {	    
 
 	    DvnRConnection drc = null; 
 
 	    // return value: index of the secured connection
 	    int retConnectionNumber = 0; 
+
+	    try {
+		retConnectionNumber = openPooledConnection ( workSpaceRemote, existingConnection ); 
 	    
+		drc = RConnectionStack[retConnectionNumber-1];
+		
+
+		// We got a connection; it needs to be set up 
+		// for this R session, by loading the R 
+		// work space saved on the server side. 
+	    
+		if ( reestablishConnection ) {
+		    loadWorkSpace ( drc.Rcon, workSpaceRemote  ); 
+		    drc.setWorkSpace ( workSpaceRemote ); 
+		    
+		} else {
+		    // we are creating a brand new connection; i.e., there's 
+		    // no saved workspace file on the R server side. so 
+		    // we need to first send the file over,
+		    // then attempt to load it as the workspace. 
+		    
+		    InputStream inb = new BufferedInputStream(new FileInputStream(workSpaceLocal));
+		    int bufsize;
+		    byte[] bffr = new byte[1024];
+
+		    RFileOutputStream os = 
+			drc.Rcon.createFile(workSpaceRemote);
+		    while ((bufsize = inb.read(bffr)) != -1) {
+			os.write(bffr, 0, bufsize);
+		    }
+		    os.close();
+		    inb.close();
+
+		    loadAndClearWorkSpace ( drc.Rcon, workSpaceRemote ); 
+		
+		    // not sure if this extra "save.image" is necessary? 
+		    // probably not, as "load_and_clear" method must be 
+		    // creating all the necessary backup/undo copies. 
+
+		    String saveWS = "save.image(file='"+ workSpaceRemote +"')";
+		    drc.Rcon.voidEval(saveWS);
+		    drc.setWorkSpace ( workSpaceRemote ); 
+
+		}
+
+		drc.unlockConnection(); 
+
+	    } catch (RException re) {
+		//result.put("IdSuffix", IdSuffix);
+		//result.put("RCommandHistory",  StringUtils.join(historyEntry,"\n"));
+		//result.put("RexecError", "true");
+		//result.put("RexecErrorMessage", re.getMessage());
+		//result.put("RexecErrorDescription", "init failed: R runtime Error");
+
+		//dbgLog.info("rserve exception message: "+ re.getMessage());
+		//dbgLog.info("rserve exception description: "+ "init failed: R runtime Error");
+		//return result;
+		throw new DvnRGraphException ("init: R runtime error: " + re.getMessage()); 
+
+	    } catch (DvnRGraphException dge) {
+		throw dge; 
+	    } catch (RserveException rse) {
+		//dbgLog.info("rserve exception message: "+rse.getMessage());
+		//dbgLog.info("rserve exception description: "+rse.getRequestErrorDescription());
+		//return result;
+
+		throw new DvnRGraphException ("init: RServe error: "+rse.getMessage()); 
+	    } catch (REXPMismatchException mme) {
+		throw new DvnRGraphException ("init: REXP exception");
+	    } catch (Exception ex){
+		throw new DvnRGraphException ("init: unknown exception"); 
+	    }
+        
+	    return retConnectionNumber; 
+	}
+
+	public synchronized int openPooledConnection ( String workSpaceRemote, int existingConnection ) throws DvnRGraphException {	    
+
+	    DvnRConnection drc = null; 
+
+	    int retConnectionNumber = 0; 	    
 
 	    try {
 		// This is a request to use a connection previously opened 
@@ -1606,84 +1691,29 @@ RserveException,
 		
 		}
 
-
-		// OK, we got ourselves a connection. 
-		drc.lockConnection(); 
-
-		// set the connection time stamp: 
-
-		Date now = new Date(); 	   
-		drc.setLastQueryTime(now.getTime()); 
-
-
-		// It needs to be set up for this R session.
-		// Let's try and load the workspace: 
-
-
-	    
-		if ( reestablishConnection ) {
-		    loadWorkSpace ( drc.Rcon, workSpaceRemote  ); 
-		    drc.setWorkSpace ( workSpaceRemote ); 
+		if ( retConnectionNumber > 0 
+		     && drc != null 
+		     && drc.Rcon.isConnected() ) {
 		    
-		} else {
-		    // we are creating a brand new connection; i.e., there's 
-		    // no saved workspace file on the R server side. so 
-		    // we need to first send the file over,
-		    // then attempt to load it as the workspace. 
-		    
-		    InputStream inb = new BufferedInputStream(new FileInputStream(workSpaceLocal));
-		    int bufsize;
-		    byte[] bffr = new byte[1024];
+		    // OK, we got ourselves a connection. 
 
-		    RFileOutputStream os = 
-			drc.Rcon.createFile(workSpaceRemote);
-		    while ((bufsize = inb.read(bffr)) != -1) {
-			os.write(bffr, 0, bufsize);
-		    }
-		    os.close();
-		    inb.close();
+		    drc.lockConnection(); 
 
-		    loadAndClearWorkSpace ( drc.Rcon, workSpaceRemote ); 
-		
-		    // not sure if this extra "save.image" is necessary? 
-		    // probably not, as "load_and_clear" method must be 
-		    // creating all the necessary backup/undo copies. 
-
-		    String saveWS = "save.image(file='"+ workSpaceRemote +"')";
-		    drc.Rcon.voidEval(saveWS);
-		    drc.setWorkSpace ( workSpaceRemote ); 
-
+		    // set the connection time stamp: 
+		    Date now = new Date(); 	   
+		    drc.setLastQueryTime(now.getTime()); 
+		} else { 
+		    throw new DvnRGraphException ("Failed to reestablish a connection to the R server."); 
 		}
 
-		drc.unlockConnection(); 
-
-	    } catch (RException re) {
-		//result.put("IdSuffix", IdSuffix);
-		//result.put("RCommandHistory",  StringUtils.join(historyEntry,"\n"));
-		//result.put("RexecError", "true");
-		//result.put("RexecErrorMessage", re.getMessage());
-		//result.put("RexecErrorDescription", "init failed: R runtime Error");
-
-		//dbgLog.info("rserve exception message: "+ re.getMessage());
-		//dbgLog.info("rserve exception description: "+ "init failed: R runtime Error");
-		//return result;
-		throw new DvnRGraphException ("init: R runtime error: " + re.getMessage()); 
-
 	    } catch (RserveException rse) {
-		dbgLog.info("rserve exception message: "+rse.getMessage());
-		dbgLog.info("rserve exception description: "+rse.getRequestErrorDescription());
-		//return result;
-
 		throw new DvnRGraphException ("init: RServe error: "+rse.getMessage()); 
-	    } catch (REXPMismatchException mme) {
-		throw new DvnRGraphException ("init: REXP exception");
 	    } catch (Exception ex){
 		throw new DvnRGraphException ("init: unknown exception"); 
 	    }
         
 	    return retConnectionNumber; 
 	}
-	
 
     }
 

@@ -50,48 +50,13 @@ public class NetworkDataServiceBean implements NetworkDataServiceLocal, java.io.
     String rWorkspace;
     DvnRGraphServiceImpl dgs = new DvnRGraphServiceImpl();
 
-    @PrePassivate
-    public void passivate() throws Exception{
-        dbgLog.fine("PASSIVATE: " + this);
-        closeConnection();
-    }
-
-    @PreDestroy
-    public void destroy() throws Exception{
-        dbgLog.fine("DESTROY: " + this);
-        closeConnection();
-    }
-
-    @PostActivate
-    public void activate() throws Exception{
-        dbgLog.fine("ACTIVATE: " + this);
-        reinitAnalysis();
-    }
-
-
-    private void closeConnection() throws Exception{
-        Map<String, String> resultInfo = dgs.closeConnection();
-        checkForError(resultInfo);
-    }
 
     public String initAnalysis(String fileLocation) throws DvnRGraphException{
-        dbgLog.fine("INITIALIZE: " + this);
         DvnRJobRequest rjr = new DvnRJobRequest(fileLocation, null);
         Map<String, String> resultInfo = dgs.initializeConnection(rjr);
 
         rWorkspace = resultInfo.get(DvnRGraphServiceImpl.SAVED_RWORK_SPACE);
         return rWorkspace;
-    }
-
-    private void reinitAnalysis() throws DvnRGraphException{
-        dbgLog.fine("REINITIALIZE: " + this);
-        if (rWorkspace != null) {
-            Map<String, Object> subsetParameters = new HashMap<String, Object>();
-            subsetParameters.put( DvnRGraphServiceImpl.SAVED_RWORK_SPACE, rWorkspace);
-
-            DvnRJobRequest rjr = new DvnRJobRequest(null, subsetParameters);
-            dgs.initializeConnection(rjr);
-        }
     }
 
     public NetworkDataSubsetResult runManualQuery(String rWorkspace, String attributeSet, String query, boolean eliminateDisconnectedVertices) throws DvnRGraphException{
@@ -160,16 +125,14 @@ public class NetworkDataServiceBean implements NetworkDataServiceLocal, java.io.
         Map<String, String> resultInfo = dgs.liveConnectionExecute(rjr);
     }
 
-    public File getSubsetExport(String rWorkspace) throws Exception {
+    public File getSubsetExport(String rWorkspace) throws DvnRGraphException {
         Map<String, String> resultInfo = dgs.liveConnectionExport(rWorkspace);
-
-        checkForError(resultInfo);
         return new File( resultInfo.get(DvnRGraphServiceImpl.GRAPHML_FILE_EXPORTED) );
     }
 
 
     @Remove
-    public void ingest(StudyFileEditBean editBean) throws Exception {
+    public void ingest(StudyFileEditBean editBean) {
         dbgLog.fine("Begin ingest() ");
         // Initialize NetworkDataFile with new DataTable objects
         NetworkDataFile ndf = (NetworkDataFile)editBean.getStudyFile();
@@ -313,7 +276,7 @@ public class NetworkDataServiceBean implements NetworkDataServiceLocal, java.io.
     }
 
 
-    private void saveRDataFile(StudyFileEditBean editBean) throws Exception{
+    private void saveRDataFile(StudyFileEditBean editBean){
         dbgLog.fine("begin saveRDataFile");
 
         Map<String, String> resultInfo = new HashMap<String, String>();
@@ -336,7 +299,7 @@ public class NetworkDataServiceBean implements NetworkDataServiceLocal, java.io.
         checkForError(resultInfo);
     }
 
-    private void checkForError(Map<String, String> resultInfo) throws Exception{
+    private void checkForError(Map<String, String> resultInfo) {
         if (resultInfo.get("RexecError") != null && resultInfo.get("RexecError").equals("true")){
             String errorMessage = resultInfo.get("RexecErrorDescription");
             errorMessage += resultInfo.get("RexecErrorMessage") != null ? ": " + resultInfo.get("RexecErrorMessage") : "";

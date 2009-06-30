@@ -234,7 +234,6 @@ public class PORFileReader extends StatDataFileReader{
             
     int[] variableTypeFinal= null;
 
-
     /**
      *
      */
@@ -397,6 +396,7 @@ public class PORFileReader extends StatDataFileReader{
             smd.setVariableFormat(printFormatList);
             smd.setVariableFormatName(printFormatNameTable);
             smd.setVariableFormatCategory(formatCategoryTable);
+            smd.setValueLabelMappingTable(valueVariableMappingTable);
 
             
         } catch (FileNotFoundException ex){

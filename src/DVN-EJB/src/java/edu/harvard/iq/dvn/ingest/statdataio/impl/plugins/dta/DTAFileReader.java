@@ -469,6 +469,7 @@ public class DTAFileReader extends StatDataFileReader{
     
     Map<String, String> formatNameTable = new LinkedHashMap<String, String>();
 
+    Map<String, String> valueLabelSchemeMappingTable = new LinkedHashMap<String, String>();
 
     NumberFormat twoDigitFormatter = new DecimalFormat("00");
 
@@ -572,6 +573,7 @@ public class DTAFileReader extends StatDataFileReader{
         
         smd.setVariableFormatName(formatNameTable);
         smd.setVariableFormatCategory(formatCategoryTable);
+        smd.setValueLabelMappingTable(valueLabelSchemeMappingTable);
         
         if (sdiodata == null){
             sdiodata = new SDIOData(smd, stataDataSection);
@@ -985,9 +987,14 @@ public class DTAFileReader extends StatDataFileReader{
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-            
+        for (int i=0; i <nvar; i++){
+            if ((labelNames[i] != null) && (!labelNames[i].equals(""))){
+                valueLabelSchemeMappingTable.put(variableNameList.get(i), labelNames[i]);
+            }
+        }
+        dbgLog.fine("valueLabelSchemeMappingTable:\n"+valueLabelSchemeMappingTable);
+        
         dbgLog.fine("smd dump (Descriptor):\n"+smd.toString());
-
         dbgLog.fine("***** decodeDescriptors(): end *****");
 
     }

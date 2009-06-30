@@ -727,7 +727,7 @@ public class SAVFileReader extends StatDataFileReader{
             smd.getFileInformation().put("mimeType", MIME_TYPE[0]);
             smd.getFileInformation().put("fileFormat", MIME_TYPE[0]);
             
-            
+            smd.setValueLabelMappingTable(valueVariableMappingTable);
             
             
         } catch (IOException ex) {

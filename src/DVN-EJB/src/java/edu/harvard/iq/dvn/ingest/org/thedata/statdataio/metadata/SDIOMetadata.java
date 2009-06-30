@@ -74,12 +74,23 @@ public class SDIOMetadata {
     public SDIOMetadata() {
     }
 
+    /**
+     *
+     */
     protected String caseWeightVariableName;
 
+    /**
+     *
+     * @return
+     */
     public String getCaseWeightVariableName() {
         return caseWeightVariableName;
     }
 
+    /**
+     *
+     * @param caseWeightVariableName
+     */
     public void setCaseWeightVariableName(String caseWeightVariableName) {
         this.caseWeightVariableName = caseWeightVariableName;
     }
@@ -323,10 +334,18 @@ public class SDIOMetadata {
      */
     protected Map<String, String> variableFormatCategory;
 
+    /**
+     *
+     * @return
+     */
     public Map<String, String> getVariableFormatCategory() {
         return variableFormatCategory;
     }
 
+    /**
+     *
+     * @param variableFormatCategory
+     */
     public void setVariableFormatCategory(Map<String, String> variableFormatCategory) {
         this.variableFormatCategory = variableFormatCategory;
     }
@@ -418,12 +437,23 @@ public class SDIOMetadata {
         this.missingValueTable = missingValueTable;
     }
 
+    /**
+     *
+     */
     protected  Map<String, InvalidData> invalidDataTable;
 
+    /**
+     *
+     * @return
+     */
     public Map<String, InvalidData> getInvalidDataTable() {
         return invalidDataTable;
     }
 
+    /**
+     * 
+     * @param invalidDataTable
+     */
     public void setInvalidDataTable(Map<String, InvalidData> invalidDataTable) {
         this.invalidDataTable = invalidDataTable;
     }
@@ -500,6 +530,27 @@ public class SDIOMetadata {
         this.shortToLongVarialbeNameTable = shortToLongVarialbeNameTable;
     }
 
+
+    /**
+     *
+     */
+    public Map<String, String> valueLabelMappingTable = new LinkedHashMap<String, String>();
+
+    /**
+     *
+     * @return
+     */
+    public Map<String, String> getValueLabelMappingTable() {
+        return valueLabelMappingTable;
+    }
+
+    /**
+     *
+     * @param valueLabelMappingTable
+     */
+    public void setValueLabelMappingTable(Map<String, String> valueLabelMappingTable) {
+        this.valueLabelMappingTable = valueLabelMappingTable;
+    }
 
 
     @Override

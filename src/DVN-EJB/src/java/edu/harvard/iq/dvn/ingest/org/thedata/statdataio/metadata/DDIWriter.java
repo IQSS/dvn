@@ -158,6 +158,11 @@ public class DDIWriter {
         StringBuilder sb = new StringBuilder("<dataDscr>\n");
 
         String[] sumStatLabels3 = {"vald", "invd", "mode"};
+        
+        
+
+        
+        
         boolean hasCaseWeightVariable = false;
         int caseWeightVariableIndex = 0;
         String wgtVarAttr = null;
@@ -180,14 +185,18 @@ public class DDIWriter {
             // prepare catStat
             String variableNamei = sdioMetadata.variableName[i];
             
+            
+            String valueLabelTableName = sdioMetadata.valueLabelMappingTable.get(variableNamei);
+            
+            
             // valuLabeli, catStati, missingValuei
              List<CategoricalStatistic> mergedCatStatTable =
                 metadataUtil.getMergedResult(
-                sdioMetadata.valueLabelTable.get(variableNamei),
+                sdioMetadata.valueLabelTable.get(valueLabelTableName),
                 sdioMetadata.categoryStatisticsTable.get(variableNamei),
                 sdioMetadata.missingValueTable.get(variableNamei)
                 );
-
+                
             // <var tag
 
             String intrvlType = sdioMetadata.isContinuousVariable()[i]
@@ -310,7 +319,8 @@ public class DDIWriter {
             if ((mergedCatStatTable != null) && (!mergedCatStatTable.isEmpty())){
                 for (CategoricalStatistic cs: mergedCatStatTable){
                     // first line
-                    if (cs.isMissingValue() || cs.getValue().equals(MISSING_VALUE_DISCRETE)){
+                    if (cs.isMissingValue() || cs.getValue().equals(MISSING_VALUE_DISCRETE) || 
+                    cs.getValue().equals(MISSING_VALUE_TOKEN)){
                         sb.append("\t\t<catgry missing=\"Y\">\n");
                     } else {
                         sb.append("\t\t<catgry>\n");

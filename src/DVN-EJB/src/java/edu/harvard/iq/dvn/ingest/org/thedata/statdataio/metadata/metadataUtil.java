@@ -87,6 +87,7 @@ public class metadataUtil {
         
         // merged result
         List<CategoricalStatistic> merged = new ArrayList<CategoricalStatistic>();
+        Set<String> included = new TreeSet<String>();
 
 
         switch (caseTypeNumber){
@@ -102,6 +103,7 @@ public class metadataUtil {
 
                     if (mvs.contains(kv)){
                         cs.setMissingValue(true);
+                        included.add(kv);
                     }
                     merged.add(cs);
                 }
@@ -113,6 +115,7 @@ public class metadataUtil {
                     cs.setFrequency(catStati.get(kv));
                     if (mvs.contains(kv)){
                         cs.setMissingValue(true);
+                        included.add(kv);
                     }
                     merged.add(cs);
                 }
@@ -133,6 +136,7 @@ public class metadataUtil {
                     cs.setFrequency(catStati.get(kv));
                     if (mvs.contains(kv)){
                         cs.setMissingValue(true);
+                        included.add(kv);
                     }
                     merged.add(cs);
                 }
@@ -148,6 +152,7 @@ public class metadataUtil {
                     cs.setFrequency(0);
                     if (mvs.contains(kv)){
                         cs.setMissingValue(true);
+                        included.add(kv);
                     }
                     merged.add(cs);
                 }
@@ -164,6 +169,7 @@ public class metadataUtil {
                     cs.setFrequency(catStati.get(kv));
                     if (mvs.contains(kv)){
                         cs.setMissingValue(true);
+                        included.add(kv);
                     }
                     merged.add(cs);
                 }
@@ -181,6 +187,7 @@ public class metadataUtil {
                     cs.setFrequency(0);
                     if (mvs.contains(kv)){
                         cs.setMissingValue(true);
+                        included.add(kv);
                     }
                     merged.add(cs);
                 }
@@ -193,6 +200,7 @@ public class metadataUtil {
                     cs.setFrequency(catStati.get(kv));
                     if (mvs.contains(kv)){
                         cs.setMissingValue(true);
+                        included.add(kv);
                     }
 
                     merged.add(cs);
@@ -211,6 +219,7 @@ public class metadataUtil {
                     cs.setFrequency(catStati.get(kv));
                     if (mvs.contains(kv)){
                         cs.setMissingValue(true);
+                        included.add(kv);
                     }
                     merged.add(cs);
                 }
@@ -223,6 +232,7 @@ public class metadataUtil {
                     cs.setFrequency(catStati.get(kv));
                     if (mvs.contains(kv)){
                         cs.setMissingValue(true);
+                        included.add(kv);
                     }
                     merged.add(cs);
                 }
@@ -241,6 +251,7 @@ public class metadataUtil {
 
                     if (mvs.contains(kv)){
                         cs.setMissingValue(true);
+                        included.add(kv);
                     }
                     merged.add(cs);
                 }
@@ -258,6 +269,7 @@ public class metadataUtil {
                     cs.setFrequency(catStati.get(kv));
                     if (mvs.contains(kv)){
                         cs.setMissingValue(true);
+                        included.add(kv);
                     }
 
                     merged.add(cs);
@@ -276,6 +288,7 @@ public class metadataUtil {
 
                     if (mvs.contains(kv)){
                         cs.setMissingValue(true);
+                        included.add(kv);
                     }
                     merged.add(cs);
                 }
@@ -283,6 +296,21 @@ public class metadataUtil {
             default:
 
         }  // end of switch
+        // missing values
+
+        mvs.removeAll(included);
+        dbgLog.fine("not called missing values:"+mvs);
+        if (!mvs.isEmpty()){
+            for (String mv: mvs){
+                CategoricalStatistic csmv = new CategoricalStatistic();
+                csmv.setValue(mv);
+                csmv.setLabel(null);
+                csmv.setFrequency(0);
+                csmv.setMissingValue(true);
+                merged.add(csmv);
+            }
+        }
+        
         dbgLog.fine("merged"+merged);
         return merged;
     }

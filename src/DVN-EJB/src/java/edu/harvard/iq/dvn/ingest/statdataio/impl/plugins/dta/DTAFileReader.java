@@ -2011,6 +2011,9 @@ public class DTAFileReader extends StatDataFileReader{
                 smd.getSummaryStatisticsTable().put(variablePosition,
                     ArrayUtils.toObject(StatHelper.calculateSummaryStatistics(fdata)));
 
+                catStat = StatHelper.calculateCategoryStatistics(fdata);
+                smd.getCategoryStatisticsTable().put(variableNameList.get(variablePosition), catStat);
+
                 break;
             case -1:
                 // double case
@@ -2024,7 +2027,10 @@ public class DTAFileReader extends StatDataFileReader{
                 
                 smd.getSummaryStatisticsTable().put(variablePosition,
                     ArrayUtils.toObject(StatHelper.calculateSummaryStatistics(ddata)));
-              
+
+                catStat = StatHelper.calculateCategoryStatistics(ddata);
+                smd.getCategoryStatisticsTable().put(variableNameList.get(variablePosition), catStat);
+
                 break;
             case  0:
                 // String case

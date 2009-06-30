@@ -319,6 +319,32 @@ public class StatHelper {
      * @param x
      * @return
      */
+    public static Map<String, Integer> calculateCategoryStatistics(float[] x){
+        long[] ftol = new long[x.length];
+        for (int i=0; i< x.length; i++){
+            ftol[i] = Float.valueOf(x[i]).longValue();
+        }
+        return calculateCategoryStatistics(ftol);
+    }
+
+    /**
+     *
+     * @param x
+     * @return
+     */
+    public static Map<String, Integer> calculateCategoryStatistics(double[] x){
+        long[] dtol = new long[x.length];
+        for (int i=0; i< x.length; i++){
+            dtol[i] = Double.valueOf(x[i]).longValue();
+        }
+        return calculateCategoryStatistics(dtol);
+    }
+
+    /**
+     *
+     * @param x
+     * @return
+     */
     public static Map<String, Integer> calculateCategoryStatistics(String[] x){
         //double[] z = longToDouble(x);
         Map<String, Integer> frqTbl=null;

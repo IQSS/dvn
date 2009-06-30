@@ -22,6 +22,8 @@
 package edu.harvard.iq.dvn.ingest.org.thedata.statdataio.metadata;
 
 import java.util.*;
+import java.util.regex.*;
+
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 
@@ -171,7 +173,8 @@ public class DDIWriter {
         } else {
             wgtVarAttr="";
         }
-
+        String uncessaryZeros = "([\\+\\-]?[0-9]+)(\\.0*$)";
+        Pattern pattern = Pattern.compile(uncessaryZeros);
         for (int i=0; i<sdioMetadata.variableName.length;i++){
 
             // prepare catStat
@@ -233,30 +236,67 @@ public class DDIWriter {
                     String statistic = (sumStat[j].toString()).equals("NaN")
                         || (sumStat[j].toString()).equals("")
                         ? MISSING_VALUE_TOKEN : sumStat[j].toString();
-                    sb.append("\t\t<sumStat type=\""+
-                        sumStatLabels3[j]+"\">"+statistic+"</sumStat>\n");
+//                    sb.append("\t\t<sumStat type=\""+
+//                        sumStatLabels3[j]+"\">"+statistic+"</sumStat>\n");
+
+                            String wholePart = null;
+                            Matcher matcher = pattern.matcher(statistic);
+                            if (matcher.find()){
+                                wholePart = matcher.group(1);
+                            } else{
+                                wholePart = statistic;
+                            }
+                            sb.append("\t\t<sumStat type=\""+
+                            sumStatLabels3[j]+"\">"+wholePart+"</sumStat>\n");
+
+
                 }
             } else if (sumStat.length== 8) {
                 for (int j=0; j<sumStat.length;j++){
                     String statistic = (sumStat[j].toString()).equals("NaN")
                         || (sumStat[j].toString()).equals("")
                         ? MISSING_VALUE_TOKEN : sumStat[j].toString();
-                    if (sumStatLabels8[j].equals("vald") ||
-                        (sumStatLabels8[j].equals("invd"))){
-                        String wholePart = null;
-                        if (statistic.endsWith(".0")){
-                            wholePart = statistic.substring(0,
-                                statistic.lastIndexOf(".0")
-                                );
-                        } else{
-                            wholePart = statistic;
+
+                    if (!sdioMetadata.isContinuousVariable()[i]){
+                        // discrete case: remove the decimal point
+                        // and the trailing zero(s)
+                        if ((j != 0) && (j!=7)){
+
+                            String wholePart = null;
+                            Matcher matcher = pattern.matcher(statistic);
+                            if (matcher.find()){
+                                wholePart = matcher.group(1);
+                            } else{
+                                wholePart = statistic;
+                            }
+                            sb.append("\t\t<sumStat type=\""+
+                            sumStatLabels8[j]+"\">"+wholePart+"</sumStat>\n");
+
+                        } else {
+                            sb.append("\t\t<sumStat type=\""+
+                            sumStatLabels8[j]+"\">"+statistic+"</sumStat>\n");
                         }
-                        sb.append("\t\t<sumStat type=\""+
-                        sumStatLabels8[j]+"\">"+wholePart+"</sumStat>\n");
-                    } else{
-                        sb.append("\t\t<sumStat type=\""+
-                        sumStatLabels8[j]+"\">"+statistic+"</sumStat>\n");
+
+                    } else {
+                        // valid/invalid are integers
+                        if ((j == 3) || (j == 4)){
+
+                            String wholePart = null;
+                            Matcher matcher = pattern.matcher(statistic);
+                            if (matcher.find()){
+                                wholePart = matcher.group(1);
+                            } else{
+                                wholePart = statistic;
+                            }
+                            sb.append("\t\t<sumStat type=\""+
+                            sumStatLabels8[j]+"\">"+wholePart+"</sumStat>\n");
+
+                        } else {
+                            sb.append("\t\t<sumStat type=\""+
+                            sumStatLabels8[j]+"\">"+statistic+"</sumStat>\n");
+                        }
                     }
+
                 }
             }
             // cat stat

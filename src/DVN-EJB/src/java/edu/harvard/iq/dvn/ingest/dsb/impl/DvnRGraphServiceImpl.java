@@ -281,19 +281,25 @@ public class DvnRGraphServiceImpl{
 
 	    } else if ( CachedRworkSpace != null ) {
 		myConnection = RConnectionPool.securePooledConnection ( RDataFileName, CachedRworkSpace, false, 0 ); 
-		if ( myConnection > 0 ) {
-		    DvnRConnection drc = RConnectionPool.getConnection(myConnection);
-		}
-		    
 	    } else {
 		throw new DvnRGraphException ("Initialize method called without either local or remote RData file"); 
 	    }
 
-
-
 	    if ( myConnection == 0 ) {
 		throw new DvnRGraphException ("failed to obtain an R connection"); 
+	    } else {
+		DvnRConnection drc = RConnectionPool.getConnection(myConnection);
+		if ( drc == null ) {
+		    throw new DvnRGraphException ("failed to obtain an R connection"); 
+		} else {
+		    // set the connectio time stamp: 
+		    Date now = new Date();
+		    drc.setLastQueryTime(now.getTime()); 
+		    drc.unlockConnection(); 
+		}
 	    }
+		    
+
 
 	    result.put(SAVED_RWORK_SPACE, RDataFileName);
 
@@ -1602,10 +1608,18 @@ RserveException,
 
 
 		// OK, we got ourselves a connection. 
+		drc.lockConnection(); 
+
+		// set the connection time stamp: 
+
+		Date now = new Date(); 	   
+		drc.setLastQueryTime(now.getTime()); 
+
+
 		// It needs to be set up for this R session.
 		// Let's try and load the workspace: 
 
-		drc.lockConnection(); 
+
 	    
 		if ( reestablishConnection ) {
 		    loadWorkSpace ( drc.Rcon, workSpaceRemote  ); 

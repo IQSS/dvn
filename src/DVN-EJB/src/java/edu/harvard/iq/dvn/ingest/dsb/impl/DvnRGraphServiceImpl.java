@@ -1500,11 +1500,11 @@ RserveException,
 		drc = RConnectionStack[retConnectionNumber-1];
 		
 
-		// We got a connection; it needs to be set up 
-		// for this R session, by loading the R 
+		// We got a connection; if it's new, it needs to be 
+		// set up for this R session, by loading the R 
 		// work space saved on the server side. 
 	    
-		if ( reestablishConnection ) {
+		if ( reestablishConnection && (drc.getWorkSpace() == null) ) {
 		    loadWorkSpace ( drc.Rcon, workSpaceRemote  ); 
 		    drc.setWorkSpace ( workSpaceRemote ); 
 		    
@@ -1698,6 +1698,7 @@ RserveException,
 		    // OK, we got ourselves a connection. 
 
 		    drc.lockConnection(); 
+		    drc.setWorkSpace(null); 
 
 		    // set the connection time stamp: 
 		    Date now = new Date(); 	   

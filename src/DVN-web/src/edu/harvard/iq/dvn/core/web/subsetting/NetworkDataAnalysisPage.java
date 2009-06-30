@@ -568,7 +568,7 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
         public InputStream open() throws IOException {
             try {
                 file = networkDataService.getSubsetExport(rWorkspace);
-            } catch (Exception ex) {
+            } catch (DvnRGraphException ex) {
                 Logger.getLogger(NetworkDataAnalysisPage.class.getName()).log(Level.SEVERE, null, ex);
                 throw new IOException("There was a problem attempting to get the export file");
             }

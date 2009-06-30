@@ -36,7 +36,7 @@ public class DvnRGraphServiceImpl implements java.io.Serializable {
 
     private static DvnRConnectionPool RConnectionPool = null; 
 
-    private int numberOfConnections = 10; 
+    private int numberOfConnections = 15;
     private int myConnection = 0; 
 
     // - constants for defining the subset 

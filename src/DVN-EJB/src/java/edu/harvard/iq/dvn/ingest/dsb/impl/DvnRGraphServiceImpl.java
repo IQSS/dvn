@@ -30,15 +30,16 @@ public class DvnRGraphServiceImpl{
 
     // - static filelds
     
-    private static Logger dbgLog = Logger.getLogger(DvnRGraphServiceImpl.class.getPackage().getName());
+    private Logger dbgLog = Logger.getLogger(DvnRGraphServiceImpl.class.getPackage().getName());
 
-    private RConnection rc = null; 
-    private static DvnRConnection RConnectionStack[];
+    private RConnection rc = null; // this is still used for Ingest.
+
+    private static DvnRConnectionPool RConnectionPool = null; 
 
     private int numberOfConnections = 10; 
     private int myConnection = 0; 
 
-    // - constants for defining the subset queries: 
+    // - constants for defining the subset 
 
     public static String RSUBSETFUNCTION = "RSUBSETFUNCTION";
 
@@ -153,6 +154,10 @@ public class DvnRGraphServiceImpl{
 
 	GraphMLfileNameRemote = DSB_TMP_DIR + "/" + GRAPHML_FILE_NAME
                  + "." + IdSuffix + GRAPHML_FILE_EXT;
+
+	if ( RConnectionPool == null ) {
+	    RConnectionPool = new DvnRConnectionPool ( numberOfConnections ); 
+	}
 	
     }
 
@@ -239,130 +244,6 @@ public class DvnRGraphServiceImpl{
 
     }
 
-    private int getConnection ( String workSpace, boolean reestablishConnection ) throws DvnRGraphException {
-
-        try {
-            // Obtain an Rserve connection: 
-
-	    DvnRConnection drc = null; 
-	    
-	    for ( int i =0; i < numberOfConnections; i++ ) {
-		drc = RConnectionStack[i];
-		
-		if ( drc == null ) {
-		    RConnectionStack[i] = new DvnRConnection(); 
-		    drc.Rcon = openNewConnection(); 
-
-		    myConnection = i + 1; 
-		}
-	    }
-
-	    if ( drc == null ) {
-		// we've gone through the pool of the connections, and 
-		// they are all open. 
-		// we'll have to go through the pool one more time, select
-		// the most idle (unlocked) connection, and recycle it. 
-
-		int mostIdleConnection = 0; 
-		long leastRecentTimeStamp = 0; 
-
-		for ( int i =0; i < numberOfConnections; i++ ) {
-		     drc = RConnectionStack[i];
-
-		     if ( drc != null && ( ! drc.isLocked() ) ) {
-			 long timeStamp = drc.getLastQueryTime(); 
-			 if ( leastRecentTimeStamp != 0 ) {
-			     if ( timeStamp < leastRecentTimeStamp ) {
-				 leastRecentTimeStamp = timeStamp; 
-				 mostIdleConnection = i+1;
-			     }
-			 } else {
-			     leastRecentTimeStamp = timeStamp; 
-			     mostIdleConnection = i+1;
-
-			 }
-		     }
-		}
-
-		if ( mostIdleConnection > 1 ) {
-		    // steal this connection!
-		    drc = RConnectionStack[mostIdleConnection-1];
-		    drc.Rcon.close(); 
-			 
-		    drc.Rcon = openNewConnection(); 
-		    myConnection = mostIdleConnection-1; 
-		} else {
-		    // all connections are busy AND locked. 
-		    // just return an error (for now)
-
-		    throw new DvnRGraphException ("init: All available connections are busy AND locked"); 
-
-		}
-		
-	    }
-
-	    // load the workspace: 
-
-	    drc.lockConnection(); 
-	    
-	    if ( reestablishConnection ) {
-		loadWorkSpace ( drc.Rcon, workSpace  ); 
-	    } else {
-		// we are creating a brand new connection; i.e., there's 
-		// no saved workspace file on the R server side. so 
-		// we need to first send the file over,
-		// then attempt to load it as the workspace. 
-
-		InputStream inb = new BufferedInputStream(new FileInputStream(workSpace));
-		int bufsize;
-		byte[] bffr = new byte[1024];
-
-		RFileOutputStream os = 
-		    drc.Rcon.createFile(RDataFileName);
-		while ((bufsize = inb.read(bffr)) != -1) {
-		    os.write(bffr, 0, bufsize);
-		}
-		os.close();
-		inb.close();
-
-		loadAndClearWorkSpace ( drc.Rcon, workSpace ); 
-
-		// not sure if this extra "save.image" is necessary? 
-
-		String saveWS = "save.image(file='"+ workSpace +"')";
-		drc.Rcon.voidEval(saveWS);
-		
-	    }
-	    drc.setWorkSpace ( workSpace ); 
-
-	    drc.unlockConnection(); 
-
-	} catch (RException re) {
-	    //result.put("IdSuffix", IdSuffix);
-	    //result.put("RCommandHistory",  StringUtils.join(historyEntry,"\n"));
-	    //result.put("RexecError", "true");
-	    //result.put("RexecErrorMessage", re.getMessage());
-	    //result.put("RexecErrorDescription", "init failed: R runtime Error");
-
-	    //dbgLog.info("rserve exception message: "+ re.getMessage());
-	    //dbgLog.info("rserve exception description: "+ "init failed: R runtime Error");
-	    //return result;
-	    throw new DvnRGraphException ("init: R runtime error: " + re.getMessage()); 
-
-        } catch (RserveException rse) {
-            dbgLog.info("rserve exception message: "+rse.getMessage());
-            dbgLog.info("rserve exception description: "+rse.getRequestErrorDescription());
-            //return result;
-
-	    throw new DvnRGraphException ("init: RServe error: "+rse.getMessage()); 
-        } catch (REXPMismatchException mme) {
- 	    throw new DvnRGraphException ("init: REXP exception");
-        } catch (Exception ex){
-	    throw new DvnRGraphException ("init: unknown exception"); 
-        }
-        
-	return myConnection; 
-    }
     
     /** *************************************************************
      * initialize the RServe connection and load the graph;
@@ -395,16 +276,20 @@ public class DvnRGraphServiceImpl{
 	    }
 		    
 	    if ( SavedRworkSpace != null ) {
-		myConnection = getConnection ( SavedRworkSpace, true ); 
+		myConnection = RConnectionPool.securePooledConnection ( SavedRworkSpace, null, true, 0 ); 
 		RDataFileName = SavedRworkSpace; 
-		dbgLog.fine("RDataFile="+SavedRworkSpace);
+
 	    } else if ( CachedRworkSpace != null ) {
-		myConnection = getConnection ( RDataFileName, false ); 
-		dbgLog.fine("RDataFile="+RDataFileName);
+		myConnection = RConnectionPool.securePooledConnection ( RDataFileName, CachedRworkSpace, false, 0 ); 
+		if ( myConnection > 0 ) {
+		    DvnRConnection drc = RConnectionPool.getConnection(myConnection);
+		}
+		    
 	    } else {
 		throw new DvnRGraphException ("Initialize method called without either local or remote RData file"); 
-
 	    }
+
+
 
 	    if ( myConnection == 0 ) {
 		throw new DvnRGraphException ("failed to obtain an R connection"); 
@@ -497,8 +382,6 @@ public class DvnRGraphServiceImpl{
 
 	}
 
-
-        
         try {
             // Check if there's an Rserve connection: 
 	    // ( rc == null ) {
@@ -516,36 +399,11 @@ public class DvnRGraphServiceImpl{
 		throw new DvnRGraphException("execute method called without creating a connection first");
 	    } 
 
-	    DvnRConnection drc = RConnectionStack[myConnection-1];
+	    myConnection = RConnectionPool.securePooledConnection ( SavedRworkSpace, null, true, myConnection ); 
 
-	    // check if the connection exists, if it's alive, and if it's still ours
+	    DvnRConnection drc = RConnectionPool.getConnection(myConnection);
 
-	    boolean needNewConnection = false; 
 
-	    if ( drc != null ) {
-		String wspace = drc.getWorkSpace(); 
-		if ( wspace != null ) {
-		    if ( !wspace.equals(SavedRworkSpace) ) {
-			needNewConnection = true; 
-		    }
-		} else {
-		    needNewConnection = true; 
-		}
-	    } else if ( !drc.Rcon.isConnected() ) {
-		needNewConnection = true; 
-	    } else {
-		needNewConnection = true; 
-	    }
-
-	    if ( needNewConnection ) {
-		myConnection = getConnection ( SavedRworkSpace, true ); 
-		drc = RConnectionStack[myConnection-1];
-
-		if ( drc == null ) {
-		    throw new DvnRGraphException("execute: could not obtain R connection");
-		}
-	    }
-		
 	    /*
 	    if ( SavedRworkSpace != null ) {
 		RDataFileName = SavedRworkSpace; 
@@ -556,10 +414,10 @@ public class DvnRGraphServiceImpl{
 	    }		
 	    */
 
-            // subsetting 
+            // subsetting 	    
 
 
-	    drc.lockConnection (); 
+	    drc.lockConnection(); 
 	    String GraphSubsetType = (String) SubsetParameters.get(RSUBSETFUNCTION); 
 
 	    if ( GraphSubsetType != null ) {
@@ -601,67 +459,15 @@ public class DvnRGraphServiceImpl{
 		    if ( networkMeasureType != null ) {
 			    List<NetworkMeasureParameter> networkMeasureParameterList = (List<NetworkMeasureParameter>)SubsetParameters.get(NETWORK_MEASURE_PARAMETER);
                 networkMeasureCommand = networkMeasureType + "(g" + buildParameterComponent(networkMeasureParameterList) + ")";
-            /*
-			if ( networkMeasureType.equals(NETWORK_MEASURE_DEGREE) ) {
-			    networkMeasureCommand = "add_degree(g)"; 
-
-			} else if ( networkMeasureType.equals(NETWORK_MEASURE_UNIQUE_DEGREE) ) {
-			    networkMeasureCommand = "add_unique_degree(g)";
-
-			} else if ( networkMeasureType.equals(NETWORK_MEASURE_IN_LARGEST) ) {
-			    networkMeasureCommand = "add_in_largest_component(g)"; 
-
-			} else if ( networkMeasureType.equals(NETWORK_MEASURE_RANK) ) {
-			    String networkMeasureParam = null; 
-
-			    List<NetworkMeasureParameter> networkMeasureParameterList = (List<NetworkMeasureParameter>)SubsetParameters.get(NETWORK_MEASURE_PARAMETER);
-			    if ( networkMeasureParameterList != null ) {
-								
-				int i = 0; 
-
-				// Page Rank takes one parameter, d (for "damping");
-				// it is hard-coded below. We will add a better
-				// system for keeping track of the parameters
-				// that different functions take; either by
-				// specifying them as constants in this class,
-				// or, if it gets complicated, keeping an XML
-				// config file somewhere. 
-
-				while ( networkMeasureParam == null && networkMeasureParameterList.get(i) != null ) {
-				    NetworkMeasureParameter nparameter = networkMeasureParameterList.get(i); 
-				    if ( "d".equals(nparameter.getName()) ) {
-					networkMeasureParam = nparameter.getValue();
-				    }
-				    i++; 
-				}
-
-				if ( networkMeasureParam != null ) {
-				    networkMeasureCommand = "add_pagerank(g, "+networkMeasureParam+")";
-				} else {
-				    // this "damping" parameter isn't 
-				    // mandatory; if the function is envoked 
-				    // with one argument, the value of d=0.85
-				    // is used. 
-				    networkMeasureCommand = "add_pagerank(g)";
-
-				}
-			    }
-			}
-            */
 		    }
 
 		    if ( networkMeasureCommand == null ) {
-			//result.put("RexecError", "true");
-			//result.put("RexecErrorDescription", "ILLEGAL OR UNSUPPORTED NETWORK MEASURE QUERY"); 
-			//return result;
 			throw new DvnRGraphException("ILLEGAL OR UNSUPPORTED NETWORK MEASURE QUERY");
 
 		    }
 
-		    dbgLog.info("LCE: networkMeasureCommand="+networkMeasureCommand);
 		    historyEntry.add(networkMeasureCommand);
-		    String addedColumn = safeEval(rc,networkMeasureCommand).asString();
-		    dbgLog.info("LCE: added column="+addedColumn);
+		    String addedColumn = safeEval(drc.Rcon,networkMeasureCommand).asString();
 
 		    if ( addedColumn != null ) {
 			result.put(NETWORK_MEASURE_NEW_COLUMN, addedColumn);
@@ -689,24 +495,22 @@ public class DvnRGraphServiceImpl{
 			throw new DvnRGraphException("NULL OR UNSUPPORTED AUTO QUERY");
 		    }
 
-		    dbgLog.info("LCE: autoQueryCommand="+autoQueryCommand);
 		    historyEntry.add(autoQueryCommand);
-		    String cEval = safeEval(rc, autoQueryCommand).asString();
-		    dbgLog.info("LCE: auto query eval: "+cEval);
+		    String cEval = safeEval(drc.Rcon, autoQueryCommand).asString();
 
 		} else if ( GraphSubsetType.equals(UNDO) ) {
-		    String cEval = safeEval(rc, "undo()").asString();
+		    String cEval = safeEval(drc.Rcon, "undo()").asString();
 		}
 	    }
 
 	    // get the vertices and edges counts: 
 
 	    String countCommand = "vcount(g)";
-	    int countResponse = safeEval(rc, countCommand).asInteger(); 
+	    int countResponse = safeEval(drc.Rcon, countCommand).asInteger(); 
 	    result.put(NUMBER_OF_VERTICES, Integer.toString(countResponse)); 
 
 	    countCommand = "ecount(g)";
-	    countResponse = safeEval(rc, countCommand).asInteger(); 
+	    countResponse = safeEval(drc.Rcon, countCommand).asInteger(); 
 	    result.put(NUMBER_OF_EDGES, Integer.toString(countResponse)); 
 
             
@@ -750,8 +554,6 @@ public class DvnRGraphServiceImpl{
             //result.put("RexecErrorMessage", re.getMessage());
             //result.put("RexecErrorDescription", "R runtime Error");
 
-            dbgLog.info("LCE: rserve exception message: "+ re.getMessage());
-            dbgLog.info("LCE: rserve exception description: "+ "R runtime Error");
             //return result;
             //throw new DvnRGraphException("R run-time error: "+re.getMessage());
 	    throw new DvnRGraphException(re.getMessage());
@@ -785,7 +587,7 @@ public class DvnRGraphServiceImpl{
 
             //result.put("RexecError", "true");
             //return result;
-            throw new DvnRGraphException("Unknown exception occured: " +ex.getMessage());
+            throw new DvnRGraphException("Execute: unknown exception occured: " +ex.getMessage());
 
         }
         
@@ -813,35 +615,10 @@ public class DvnRGraphServiceImpl{
 		throw new DvnRGraphException("execute method called without creating a connection first");
 	    } 
 
-	    DvnRConnection drc = RConnectionStack[myConnection-1];
+	    myConnection = RConnectionPool.securePooledConnection ( savedRDataFile, null, true, myConnection ); 
 
-	    // check if the connection exists, if it's alive, and if it's still ours
+	    DvnRConnection drc = RConnectionPool.getConnection(myConnection);
 
-	    boolean needNewConnection = false; 
-
-	    if ( drc != null ) {
-		String wspace = drc.getWorkSpace(); 
-		if ( wspace != null ) {
-		    if ( !wspace.equals(savedRDataFile) ) {
-			needNewConnection = true; 
-		    }
-		} else {
-		    needNewConnection = true; 
-		}
-	    } else if ( !drc.Rcon.isConnected() ) {
-		needNewConnection = true; 
-	    } else {
-		needNewConnection = true; 
-	    }
-
-	    if ( needNewConnection ) {
-		myConnection = getConnection ( savedRDataFile, true ); 
-		drc = RConnectionStack[myConnection-1];
-
-		if ( drc == null ) {
-		    throw new DvnRGraphException("execute: could not obtain R connection");
-		}
-	    }
 
 
 	    String exportCommand = "dump_graphml(g, '" + GraphMLfileNameRemote + "')";
@@ -885,8 +662,6 @@ public class DvnRGraphServiceImpl{
 	} catch (DvnRGraphException dre) {
 	    throw dre; 
 	} catch (RException re) {
-            dbgLog.info("LCE: rserve exception message: "+ re.getMessage());
-            dbgLog.info("LCE: rserve exception description: "+ "R runtime Error");
             throw new DvnRGraphException("R run-time error: " +re.getMessage());
         } catch (RserveException rse) {
             dbgLog.info("LCE: rserve exception message: "+rse.getMessage());
@@ -1034,53 +809,6 @@ public class DvnRGraphServiceImpl{
 		    if ( networkMeasureType != null ) {
 			    List<NetworkMeasureParameter> networkMeasureParameterList = (List<NetworkMeasureParameter>)SubsetParameters.get(NETWORK_MEASURE_PARAMETER);
                 networkMeasureCommand = networkMeasureType + "(g" + buildParameterComponent(networkMeasureParameterList) + ")";
-            /*
-			if ( networkMeasureType.equals(NETWORK_MEASURE_DEGREE) ) {
-			    networkMeasureCommand = "add_degree(g)"; 
-
-			} else if ( networkMeasureType.equals(NETWORK_MEASURE_UNIQUE_DEGREE) ) {
-			    networkMeasureCommand = "add_unique_degree(g)";
-
-			} else if ( networkMeasureType.equals(NETWORK_MEASURE_IN_LARGEST) ) {
-			    networkMeasureCommand = "add_in_largest_component(g)"; 
-
-			} else if ( networkMeasureType.equals(NETWORK_MEASURE_RANK) ) {
-			    String networkMeasureParam = null; 
-
-			    List<NetworkMeasureParameter> networkMeasureParameterList = (List<NetworkMeasureParameter>)SubsetParameters.get(NETWORK_MEASURE_PARAMETER);
-			    if ( networkMeasureParameterList != null ) {
-								
-				int i = 0; 
-
-				// Page Rank takes one parameter, d (for "damping");
-				// it is hard-coded below. We will add a better
-				// system for keeping track of the parameters
-				// that different functions take; either by
-				// specifying them as constants in this class,
-				// or, if it gets complicated, keeping an XML
-				// config file somewhere. 
-
-				while ( networkMeasureParam == null && networkMeasureParameterList.get(i) != null ) {
-				    NetworkMeasureParameter nparameter = networkMeasureParameterList.get(i); 
-				    if ( "d".equals(nparameter.getName()) ) {
-					networkMeasureParam = nparameter.getValue();
-				    }
-				    i++; 
-				}
-
-				if ( networkMeasureParam != null ) {
-				    networkMeasureCommand = "add_pagerank(g, "+networkMeasureParam+")";
-				} else {
-				    // this "damping" parameter isn't 
-				    // mandatory; if the function is envoked 
-				    // with one argument, the value of d=0.85
-				    // is used. 
-				    networkMeasureCommand = "add_pagerank(g)";
-
-				}
-			    }
-			}
-            */
 		    }
 
 		    if ( networkMeasureCommand == null ) {
@@ -1090,11 +818,8 @@ public class DvnRGraphServiceImpl{
 		    }
 
 
-		    dbgLog.info("networkMeasureCommand="+networkMeasureCommand);
 		    historyEntry.add(networkMeasureCommand);
 		    String addedColumn = safeEval(c,networkMeasureCommand).asString();
-		    dbgLog.info("added column="+addedColumn);
-
 		    if ( addedColumn != null ) {
 			result.put(NETWORK_MEASURE_NEW_COLUMN, addedColumn);
 		    } else {
@@ -1133,11 +858,9 @@ public class DvnRGraphServiceImpl{
 
 		    }
 
-		    dbgLog.info("autoQueryCommand="+autoQueryCommand);
 		    historyEntry.add(autoQueryCommand);
 		    //c.voidEval(autoQueryCommand);
 		    String cEval = safeEval(c, autoQueryCommand).asString();
-		    dbgLog.info("auto query eval: "+cEval);
 
 		} else if ( GraphSubsetType.equals(UNDO) ) {
             c.voidEval("undo()");
@@ -1191,8 +914,8 @@ public class DvnRGraphServiceImpl{
 	    result.put("RexecErrorMessage", re.getMessage());
 	    result.put("RexecErrorDescription", "R runtime Error");
 
-	    dbgLog.info("rserve exception message: "+ re.getMessage());
-	    dbgLog.info("rserve exception description: "+ "R runtime Error");
+	    dbgLog.info("R exception message: "+ re.getMessage());
+	    dbgLog.info("R exception description: "+ "R runtime Error");
 	    return result;
 
         } catch (RserveException rse) {
@@ -1720,10 +1443,239 @@ RserveException,
 	}
     }
 
+
+    // connection pooling implementation class:
+
+    public class DvnRConnectionPool {
+
+	private DvnRConnection[] RConnectionStack;
+	private int numberOfConnections = 0; 
+	private Logger dbgLog = Logger.getLogger(DvnRConnectionPool.class.getPackage().getName());
+
+	public DvnRConnectionPool(int n) {
+	    RConnectionStack = new DvnRConnection[n];
+	    numberOfConnections = n;
+	}
+
+	public DvnRConnection getConnection (int n) {
+	    return RConnectionStack[n-1]; 
+	}
+	    
+	/** *************************************************************
+	 * this method _secures_ a pooled connection for the caller.
+	 * this can be an existing connection that the thread has been using;
+	 * or a brand new connection created and placed in an empty spot on 
+	 * position on the stack; or a connection created and put in place of 
+	 * an existing connection that was deemed "the least recent". 
+	 *
+	 * @param workSpaceRemote saved R space ("remote" means saved on the server side)
+	 * @param workSpaceLocal  R work space saved on the application side
+	 * @param reestablishConnection boolean indicating if this is an attempt to open a connection for an ongoing R/Graph subsetting session;
+	 * @param existingConnecton index of a connection already on the stack 
+         * 
+	 * @return index of the pooled connection secured and locked for the requestor.
+	 */    
+
+	public synchronized int securePooledConnection ( String workSpaceRemote, String workSpaceLocal, boolean reestablishConnection, int existingConnection ) throws DvnRGraphException {	    
+
+	    DvnRConnection drc = null; 
+
+	    // return value: index of the secured connection
+	    int retConnectionNumber = 0; 
+	    
+
+	    try {
+		// This is a request to use a connection previously opened 
+		// for this instance. We may or may not be able to use it again.
+		// We need to check if it's still alive, and if it still 
+		// belongs to this session. 
+
+		if ( existingConnection > 0 ) {
+		    
+		    drc = RConnectionStack[existingConnection-1];
+
+		    // check if the connection exists, if it's alive, and if it's still ours
+
+		    boolean needNewConnection = false; 
+
+		    if ( drc != null ) {
+
+			String wspace = drc.getWorkSpace(); 
+
+			if ( wspace != null ) {
+
+			    if ( !wspace.equals(workSpaceRemote) ) {
+
+				needNewConnection = true; 
+			    } 
+			} else {
+			    needNewConnection = true; 
+			}
+
+			if ( drc.Rcon == null || !drc.Rcon.isConnected() ) {
+			    needNewConnection = true; 
+			}
+
+		    } else {
+			needNewConnection = true; 
+		    }
+
+		    if ( !needNewConnection ) {
+			drc.lockConnection(); 
+			return existingConnection; 
+		    }
+
+		    // nope, we'll have to create a new one. 
+		}
+
+
+		// Obtain a new Rserve connection and put it on the stack; 
+		// either in one of the available spots, or in place of the 
+		// "least recent" connection.
+		
+		drc = null; 
+	    
+		int i = 0; 
+		
+		while ( i < numberOfConnections && drc == null ) {
+		
+		    if ( RConnectionStack[i] == null ) { 
+			RConnectionStack[i] = new DvnRConnection(); 
+			drc = RConnectionStack[i];
+
+			if ( drc.Rcon == null ) {
+			    RConnectionStack[i].Rcon = openNewConnection(); 
+			} 
+			
+			//drc = RConnectionStack[i];
+
+			
+			retConnectionNumber = i + 1; 
+
+		    } 
+		    i++;
+		}
+	    
+		if ( retConnectionNumber == 0 ) {
+
+		    // we've gone through the connections on the stack, 
+		    // and there are no unused ones.
+		    // we'll have to go through the pool one more time, select
+		    // the most idle (unlocked) connection, and recycle it. 
+
+		    int mostIdleConnection = 0; 
+		    long leastRecentTimeStamp = 0; 
+
+		    for ( i =0; i < numberOfConnections; i++ ) {
+			drc = RConnectionStack[i];
+
+			if ( drc.Rcon != null && ( ! drc.isLocked() ) ) {
+			    long timeStamp = drc.getLastQueryTime(); 
+			    if ( leastRecentTimeStamp != 0 ) {
+				if ( timeStamp < leastRecentTimeStamp ) {
+				    leastRecentTimeStamp = timeStamp; 
+				    mostIdleConnection = i+1;
+				}
+			    } else {
+				leastRecentTimeStamp = timeStamp; 
+				mostIdleConnection = i+1;
+			    }
+			}
+		    }
+		
+		    if ( mostIdleConnection > 0 ) {
+			// steal this connection!
+			drc = RConnectionStack[mostIdleConnection-1];
+			drc.Rcon.close(); 
+		    
+			drc.Rcon = openNewConnection(); 
+			retConnectionNumber = mostIdleConnection; 
+		    } else {
+			// all connections are busy AND locked. 
+			// just return an error (for now)
+		    
+			throw new DvnRGraphException ("Could not connect to R: all available connections are busy."); 
+		    
+		    }
+		
+		}
+
+
+		// OK, we got ourselves a connection. 
+		// It needs to be set up for this R session.
+		// Let's try and load the workspace: 
+
+		drc.lockConnection(); 
+	    
+		if ( reestablishConnection ) {
+		    loadWorkSpace ( drc.Rcon, workSpaceRemote  ); 
+		    drc.setWorkSpace ( workSpaceRemote ); 
+		    
+		} else {
+		    // we are creating a brand new connection; i.e., there's 
+		    // no saved workspace file on the R server side. so 
+		    // we need to first send the file over,
+		    // then attempt to load it as the workspace. 
+		    
+		    InputStream inb = new BufferedInputStream(new FileInputStream(workSpaceLocal));
+		    int bufsize;
+		    byte[] bffr = new byte[1024];
+
+		    RFileOutputStream os = 
+			drc.Rcon.createFile(workSpaceRemote);
+		    while ((bufsize = inb.read(bffr)) != -1) {
+			os.write(bffr, 0, bufsize);
+		    }
+		    os.close();
+		    inb.close();
+
+		    loadAndClearWorkSpace ( drc.Rcon, workSpaceRemote ); 
+		
+		    // not sure if this extra "save.image" is necessary? 
+		    // probably not, as "load_and_clear" method must be 
+		    // creating all the necessary backup/undo copies. 
+
+		    String saveWS = "save.image(file='"+ workSpaceRemote +"')";
+		    drc.Rcon.voidEval(saveWS);
+		    drc.setWorkSpace ( workSpaceRemote ); 
+
+		}
+
+		drc.unlockConnection(); 
+
+	    } catch (RException re) {
+		//result.put("IdSuffix", IdSuffix);
+		//result.put("RCommandHistory",  StringUtils.join(historyEntry,"\n"));
+		//result.put("RexecError", "true");
+		//result.put("RexecErrorMessage", re.getMessage());
+		//result.put("RexecErrorDescription", "init failed: R runtime Error");
+
+		//dbgLog.info("rserve exception message: "+ re.getMessage());
+		//dbgLog.info("rserve exception description: "+ "init failed: R runtime Error");
+		//return result;
+		throw new DvnRGraphException ("init: R runtime error: " + re.getMessage()); 
+
+	    } catch (RserveException rse) {
+		dbgLog.info("rserve exception message: "+rse.getMessage());
+		dbgLog.info("rserve exception description: "+rse.getRequestErrorDescription());
+		//return result;
+
+		throw new DvnRGraphException ("init: RServe error: "+rse.getMessage()); 
+	    } catch (REXPMismatchException mme) {
+		throw new DvnRGraphException ("init: REXP exception");
+	    } catch (Exception ex){
+		throw new DvnRGraphException ("init: unknown exception"); 
+	    }
+        
+	    return retConnectionNumber; 
+	}
+	
+
+    }
+
     public class DvnRConnection {
 	// constructor 
 	public DvnRConnection(){}
-
 	private boolean Locked = false; 
 
 	public RConnection Rcon = null;

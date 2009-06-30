@@ -26,9 +26,9 @@ public interface NetworkDataServiceLocal extends java.io.Serializable {
 
     public void undoLastEvent(String rWorkspace) throws DvnRGraphException;
             
-    public File getSubsetExport(String rWorkspace) throws Exception;
+    public File getSubsetExport(String rWorkspace) throws DvnRGraphException;
 
-    public void ingest(StudyFileEditBean editBean) throws Exception;
+    public void ingest(StudyFileEditBean editBean);
    
     
 }

@@ -241,8 +241,22 @@ public class DDIWriter {
                     String statistic = (sumStat[j].toString()).equals("NaN")
                         || (sumStat[j].toString()).equals("")
                         ? MISSING_VALUE_TOKEN : sumStat[j].toString();
-                    sb.append("\t\t<sumStat type=\""+
+                    if (sumStatLabels8[j].equals("vald") ||
+                        (sumStatLabels8[j].equals("invd"))){
+                        String wholePart = null;
+                        if (statistic.endsWith(".0")){
+                            wholePart = statistic.substring(0,
+                                statistic.lastIndexOf(".0")
+                                );
+                        } else{
+                            wholePart = statistic;
+                        }
+                        sb.append("\t\t<sumStat type=\""+
+                        sumStatLabels8[j]+"\">"+wholePart+"</sumStat>\n");
+                    } else{
+                        sb.append("\t\t<sumStat type=\""+
                         sumStatLabels8[j]+"\">"+statistic+"</sumStat>\n");
+                    }
                 }
             }
             // cat stat

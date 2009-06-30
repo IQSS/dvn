@@ -1504,9 +1504,11 @@ RserveException,
 		// set up for this R session, by loading the R 
 		// work space saved on the server side. 
 	    
-		if ( reestablishConnection && (drc.getWorkSpace() == null) ) {
-		    loadWorkSpace ( drc.Rcon, workSpaceRemote  ); 
-		    drc.setWorkSpace ( workSpaceRemote ); 
+		if ( reestablishConnection ) { 
+		    if (drc.getWorkSpace() == null) {
+			loadWorkSpace ( drc.Rcon, workSpaceRemote  ); 
+			drc.setWorkSpace ( workSpaceRemote ); 
+		    }
 		    
 		} else {
 		    // we are creating a brand new connection; i.e., there's 

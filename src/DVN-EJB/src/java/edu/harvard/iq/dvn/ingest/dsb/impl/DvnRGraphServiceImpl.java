@@ -1461,7 +1461,7 @@ RserveException,
 
 	private DvnRConnection[] RConnectionStack;
 	private int numberOfConnections = 0; 
-	//private Logger dbgLog = Logger.getLogger(DvnRConnectionPool.class.getPackage().getName());
+	private Logger dbgLog = Logger.getLogger(DvnRConnectionPool.class.getPackage().getName());
 
 	public DvnRConnectionPool(int n) {
 	    RConnectionStack = new DvnRConnection[n];
@@ -1516,6 +1516,7 @@ RserveException,
 		    // we need to first send the file over,
 		    // then attempt to load it as the workspace. 
 		    
+		    
 		    InputStream inb = new BufferedInputStream(new FileInputStream(workSpaceLocal));
 		    int bufsize;
 		    byte[] bffr = new byte[1024];
@@ -1529,13 +1530,6 @@ RserveException,
 		    inb.close();
 
 		    loadAndClearWorkSpace ( drc.Rcon, workSpaceRemote ); 
-		
-		    // not sure if this extra "save.image" is necessary? 
-		    // probably not, as "load_and_clear" method must be 
-		    // creating all the necessary backup/undo copies. 
-
-		    String saveWS = "save.image(file='"+ workSpaceRemote +"')";
-		    drc.Rcon.voidEval(saveWS);
 		    drc.setWorkSpace ( workSpaceRemote ); 
 
 		}
@@ -1703,12 +1697,13 @@ RserveException,
 		    drc.setWorkSpace(null); 
 
 		    // set the connection time stamp: 
-		    Date now = new Date(); 	   
+		    Date now = new Date(); 
 		    drc.setLastQueryTime(now.getTime()); 
 		} else { 
 		    throw new DvnRGraphException ("Failed to reestablish a connection to the R server."); 
 		}
-
+	    } catch (DvnRGraphException dge) {
+		throw dge; 
 	    } catch (RserveException rse) {
 		throw new DvnRGraphException ("init: RServe error: "+rse.getMessage()); 
 	    } catch (Exception ex){

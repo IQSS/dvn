@@ -525,9 +525,9 @@ public class DvnRGraphServiceImpl implements java.io.Serializable {
             
             // save workspace:
 
-            String saveWS = "save.image(file='"+ RDataFileName +"')";
-            dbgLog.fine("LCE: save the workspace="+saveWS);
-            drc.Rcon.voidEval(saveWS);
+            //String saveWS = "save.image(file='"+ RDataFileName +"')";
+            //dbgLog.fine("LCE: save the workspace="+saveWS);
+            //drc.Rcon.voidEval(saveWS);
 
 	    result.put( SAVED_RWORK_SPACE, RDataFileName ); 
 
@@ -1504,6 +1504,8 @@ RserveException,
 		// set up for this R session, by loading the R 
 		// work space saved on the server side. 
 	    
+		dbgLog.info("send the file over; "+workSpaceRemote); 
+
 		if ( reestablishConnection ) { 
 		    if (drc.getWorkSpace() == null) {
 			loadWorkSpace ( drc.Rcon, workSpaceRemote  ); 
@@ -1673,6 +1675,15 @@ RserveException,
 		    if ( mostIdleConnection > 0 ) {
 			// steal this connection!
 			drc = RConnectionStack[mostIdleConnection-1];
+			
+			// save their workspace: 
+			
+			
+			String saveIdleWS = "save.image(file='"+ drc.getWorkSpace() +"')";
+			drc.Rcon.voidEval(saveIdleWS);
+
+			// close it: 
+
 			drc.Rcon.close(); 
 		    
 			drc.Rcon = openNewConnection(); 

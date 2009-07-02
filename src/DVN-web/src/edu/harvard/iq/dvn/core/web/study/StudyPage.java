@@ -601,6 +601,8 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
             } else if (tab.equals("comments")) {
                 selectedIndex=2;
             }
+            
+            tabSet1.setSelectedIndex(selectedIndex);
         } 
     }
     

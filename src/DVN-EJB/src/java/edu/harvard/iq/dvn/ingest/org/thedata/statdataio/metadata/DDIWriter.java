@@ -57,6 +57,12 @@ public class DDIWriter {
         this.MISSING_VALUE_TOKEN = userDefinedMissingValue;
     }
 
+//    private static Set<Integer> EXCLUDE_IF_DISCRETE = new HashSet<Integer>();
+//    private int[] excluded_number = {0, 7};
+
+    static {
+
+    }
 
     /**
      *
@@ -261,7 +267,16 @@ public class DDIWriter {
 
                 }
             } else if (sumStat.length== 8) {
+
                 for (int j=0; j<sumStat.length;j++){
+
+//                    if (!sdioMetadata.isContinuousVariable()[i]){
+//                        if ((j == 0)|| (j== 7)) {
+//                            continue;
+//                        }
+//                    }
+
+
                     String statistic = (sumStat[j].toString()).equals("NaN")
                         || (sumStat[j].toString()).equals("")
                         ? MISSING_VALUE_TOKEN : sumStat[j].toString();
@@ -319,15 +334,20 @@ public class DDIWriter {
             if ((mergedCatStatTable != null) && (!mergedCatStatTable.isEmpty())){
                 for (CategoricalStatistic cs: mergedCatStatTable){
                     // first line
-                    if (cs.isMissingValue() || cs.getValue().equals(MISSING_VALUE_DISCRETE) || 
-                    cs.getValue().equals(MISSING_VALUE_TOKEN)){
+                    if (cs.isMissingValue() ||
+                        cs.getValue().equals(MISSING_VALUE_DISCRETE) ||
+                        cs.getValue().equals(MISSING_VALUE_TOKEN) ||
+                        cs.getValue().equals("")){
                         sb.append("\t\t<catgry missing=\"Y\">\n");
                     } else {
                         sb.append("\t\t<catgry>\n");
                     }
                     // value
                     String catStatValueString = null;
-                    if (cs.getValue().equals(MISSING_VALUE_DISCRETE)){
+                    if (cs.getValue().equals(MISSING_VALUE_DISCRETE)
+                        || cs.getValue().equals(MISSING_VALUE_TOKEN)
+                        || cs.getValue().equals("")
+                        ){
                         catStatValueString=MISSING_VALUE_TOKEN;
                     } else {
                         catStatValueString= StringEscapeUtils.escapeXml(cs.getValue());

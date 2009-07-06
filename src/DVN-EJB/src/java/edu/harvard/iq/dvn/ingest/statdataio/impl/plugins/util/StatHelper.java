@@ -383,13 +383,13 @@ public class StatHelper {
         //("mean", "medn", "mode", "vald", "invd", "min", "max", "stdev");
 
         nx[0] = StatUtils.mean(newx);
-        nx[1] = StatUtils.percentile(x, 50);
-        nx[2] = getMode(x);
+        nx[1] = StatUtils.percentile(newx, 50);
+        nx[2] = getMode(newx);
         nx[4] = countNaNs(x);//countNaNs(x);
         nx[3] = x.length - nx[4];
 
-        nx[5] = StatUtils.min(x);
-        nx[6] = StatUtils.max(x);
+        nx[5] = StatUtils.min(newx);
+        nx[6] = StatUtils.max(newx);
         nx[7] = Math.sqrt(StatUtils.variance(newx));
         return nx;
     }

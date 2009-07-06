@@ -233,6 +233,10 @@ public class PORFileReader extends StatDataFileReader{
     Object[][] dataTable2 = null;
             
     int[] variableTypeFinal= null;
+    
+    String[] variableFormatTypeList= null;
+    
+    List<Integer> formatDecimalPointPositionList= new ArrayList<Integer>();
 
     /**
      *
@@ -304,7 +308,7 @@ public class PORFileReader extends StatDataFileReader{
     
         //
         doubleNumberFormatter.setGroupingUsed(false);
-        
+        doubleNumberFormatter.setMaximumFractionDigits(16);
     }
 
     // Methods ---------------------------------------------------------------//
@@ -995,6 +999,7 @@ public class PORFileReader extends StatDataFileReader{
 
             int formatWidth = printWriteFormatTable[1];
             int formatDecimalPointPosition = printWriteFormatTable[2];
+            formatDecimalPointPositionList.add(formatDecimalPointPosition);
             if (!SPSSConstants.FORMAT_CODE_TABLE_POR.containsKey(formatCode)){
                     throw new IOException("Unknown format code was found = "
                         + formatCode);
@@ -1474,7 +1479,22 @@ public class PORFileReader extends StatDataFileReader{
         } catch (IOException ex){
             ex.printStackTrace();
         }
-        
+
+
+        dbgLog.fine("printFormatTable:\n"+printFormatTable);
+
+        dbgLog.fine("printFormatNameTable:\n"+printFormatNameTable);
+        variableFormatTypeList = new String[varQnty];
+
+        for (int i=0; i<varQnty;i++){
+            variableFormatTypeList[i]=SPSSConstants.FORMAT_CATEGORY_TABLE.get(
+                    printFormatTable.get(variableNameList.get(i)));
+            dbgLog.fine("variableFormatTypeList="+variableFormatTypeList[i]);
+            formatCategoryTable.put(variableNameList.get(i), variableFormatTypeList[i]);
+        }
+        dbgLog.fine("variableFormatType:\n"+Arrays.deepToString(variableFormatTypeList));
+        dbgLog.fine("formatCategoryTable:\n"+formatCategoryTable);
+
         // contents (variable) checker concering decimals
         variableTypeFinal= new int[varQnty];
         Arrays.fill(variableTypeFinal, 0);
@@ -1520,7 +1540,7 @@ public class PORFileReader extends StatDataFileReader{
                     boolean isStringType = 
                         variableTypeTable.get(variableNameList.get(i)) > 0 ? true : false;
                     
-                    
+                    int formatDecimalPointPosition = formatDecimalPointPositionList.get(i);
                     
 
                     if (isStringType){
@@ -1696,9 +1716,9 @@ public class PORFileReader extends StatDataFileReader{
                             // to do date conversion 
                             //out.println("i="+i+"-th variable ="+variableNameList.get(i));
                             
-                            String variableFormatType = 
-                                    SPSSConstants.FORMAT_CATEGORY_TABLE.get(printFormatTable.get(variableNameList.get(i)));
-                            //out.println("i="+i+"th variable format="+variableFormatType);
+                            String variableFormatType = variableFormatTypeList[i];
+                            
+                            dbgLog.fine("i="+i+"th variable format="+variableFormatType);
 
                             
                             if (variableFormatType.equals("date")){
@@ -1707,13 +1727,17 @@ public class PORFileReader extends StatDataFileReader{
                                 long dateDatum = Long.parseLong(datumNumericBase10)*1000L- SPSS_DATE_OFFSET;
                                 
                                 String newDatum = sdf_ymd.format(new Date(dateDatum));
+                                
                                 dbgLog.finer("i="+i+":"+newDatum);
+                                
                                 datumNumericBase10 = newDatum;
-                                formatCategoryTable.put(variableNameList.get(i), "date");
+                                
+                                //formatCategoryTable.put(variableNameList.get(i), "date");
                                 
                             } else if (variableFormatType.equals("time")) {
+                            
                                 dbgLog.finer("time case");
-                                formatCategoryTable.put(variableNameList.get(i), "time");
+                                //formatCategoryTable.put(variableNameList.get(i), "time");
                                 
                                 
                                 
@@ -1733,27 +1757,34 @@ public class PORFileReader extends StatDataFileReader{
                                         StringBuilder sb_time = new StringBuilder(
                                             sdf_dhms.format(new Date(dateDatum)));
                                         
-                                        sb_time.append("."+timeData[1]);
+                                        if (formatDecimalPointPosition > 0){
+                                            sb_time.append("."+timeData[1].substring(0,formatDecimalPointPosition));
+                                        }
+                                        
                                         dbgLog.finer("i="+i+":"+sb_time.toString());
                                         datumNumericBase10 = sb_time.toString();
                                     }
                                 } else if (printFormatTable.get(variableNameList.get(i)).equals("DATETIME")){
-
+                                    out.println("datum(datetime)="+datumNumericBase10);
                                     if (datumNumericBase10.indexOf(".") < 0){
                                         long dateDatum  = Long.parseLong(datumNumericBase10)*1000L - SPSS_DATE_OFFSET;
                                         String newDatum = sdf_ymdhms.format(new Date(dateDatum));
-                                        dbgLog.finer("i="+i+":"+newDatum);
+                                        out.println("i="+i+":"+newDatum);
                                         datumNumericBase10 = newDatum;
                                     } else {
                                         // decimal point included
                                         String[] timeData = datumNumericBase10.split("\\.");
 
-                                        //dbgLog.finer(StringUtils.join(timeData, "|"));
+                                        out.println(StringUtils.join(timeData, "|"));
                                         long dateDatum = Long.parseLong(timeData[0])*1000L- SPSS_DATE_OFFSET;
                                         StringBuilder sb_time = new StringBuilder(
                                             sdf_ymdhms.format(new Date(dateDatum)));
-                                        //dbgLog.finer(sb_time.toString());
-                                        sb_time.append("."+timeData[1]);
+                                        out.println(sb_time.toString());
+                                        
+                                        if (formatDecimalPointPosition > 0){
+                                            sb_time.append("."+timeData[1].substring(0,formatDecimalPointPosition));
+                                        }
+                                        
                                         dbgLog.finer("i="+i+":"+sb_time.toString());
                                         datumNumericBase10 = sb_time.toString();
                                     }
@@ -1773,7 +1804,11 @@ public class PORFileReader extends StatDataFileReader{
                                         StringBuilder sb_time = new StringBuilder(
                                             sdf_hms.format(new Date(dateDatum)));
                                         //dbgLog.finer(sb_time.toString());
-                                        sb_time.append("."+timeData[1]);
+                                        
+                                        if (formatDecimalPointPosition > 0){
+                                            sb_time.append("."+timeData[1].substring(0,formatDecimalPointPosition));
+                                        }
+                                        
                                         dbgLog.finer("i="+i+":"+sb_time.toString());
                                         datumNumericBase10 = sb_time.toString();
                                     }
@@ -1823,7 +1858,13 @@ public class PORFileReader extends StatDataFileReader{
                         // numeric variable case
                         // store this datum in the case-wise-storage object
                         casewiseRecordForTabFile[i]= datumNumericBase10;
-                        casewiseRecord[i]= datumNumeric2Base10;
+
+                        if (variableFormatTypeList[i].equals("date") ||
+                            variableFormatTypeList[i].equals("time")){
+                            casewiseRecord[i]= datumNumericBase10;
+                        } else {
+                            casewiseRecord[i]= datumNumeric2Base10;
+                        }
                         // reset working objects
                         isMissingValue = false ;
                         // reset the number-building StringBuilder
@@ -1848,12 +1889,22 @@ public class PORFileReader extends StatDataFileReader{
                     for (int el : NaNlocationNumeric){
                     
                         if (casewiseRecord[el].equals(MissingValueForTextDataFileNumeric)){
-                            casewiseRecord[el]= Double.toHexString(systemMissingValue);
+
+                            if (variableFormatTypeList[el].equals("date") ||
+                                variableFormatTypeList[el].equals("time")){
+                                casewiseRecord[el]= MissingValueForTextDataFileString;
+                            } else{ 
+                                casewiseRecord[el]= Double.toHexString(systemMissingValue);
+                            }
+                            
                         }
+            
                     }
                     dbgLog.finer(j+"-th:(after NA processing[N]):"+StringUtils.join(casewiseRecord, "\t"));
                     
                 }
+                
+                
                 if (NaNlocationString.size() > 0){
                     // NaN-String to NaN conversion
                     for (int el : NaNlocationString){
@@ -1893,6 +1944,10 @@ public class PORFileReader extends StatDataFileReader{
             if (variableTypeFinal[l]>0){
                 decimalVariableSet.add(l);
             }
+            if (variableFormatTypeList[l].equals("date") || 
+                variableFormatTypeList[l].equals("time")){
+                variableTypeFinal[l]=-1;
+            }
         }
 
         smd.setDecimalVariables(decimalVariableSet);
@@ -1916,7 +1971,7 @@ public class PORFileReader extends StatDataFileReader{
            }
         }
         
-        //out.println("dataTable2:\n"+Arrays.deepToString(dataTable2));
+        //dbgLog.finer("dataTable2:\n"+Arrays.deepToString(dataTable2));
 
         unfValues = new String[varQnty];
 
@@ -1941,7 +1996,7 @@ public class PORFileReader extends StatDataFileReader{
         }
         
 
-        dbgLog.fine("unf set:\n"+ReflectionToStringBuilder.toString(unfValues));
+        dbgLog.fine("unf set:\n"+Arrays.deepToString(unfValues));
         
         try {
             fileUnfValue = UNFUtil.calculateUNF(unfValues,unfVersionNumber);
@@ -2332,7 +2387,7 @@ public class PORFileReader extends StatDataFileReader{
         IOException, NoSuchAlgorithmException{
         String unfValue = null;
 
-        dbgLog.fine("varData:\n"+ReflectionToStringBuilder.toString(varData));
+        dbgLog.fine("varData:\n"+Arrays.deepToString(varData));
         dbgLog.fine("variableType="+variableType);
         dbgLog.fine("unfVersionNumber="+unfVersionNumber);
         dbgLog.fine("variablePosition="+variablePosition);

@@ -75,7 +75,7 @@ public class metadataUtil {
             dbgLog.finer("valueLabeliKeys="+valueLabeliKeys);
             // get the set-operation case number
             caseTypeNumber = getRelationsBetweenTwoSets(catStatiKeys, valueLabeliKeys);
-            dbgLog.fine("caseTypeNumber="+caseTypeNumber +"\n\n");
+            dbgLog.finer("caseTypeNumber="+caseTypeNumber +"\n\n");
         } else if (valueLabeli == null){
             catStatiKeys= new TreeSet(catStati.keySet());
             caseTypeNumber = 6;
@@ -299,7 +299,7 @@ public class metadataUtil {
         // missing values
 
         mvs.removeAll(included);
-        dbgLog.fine("not called missing values:"+mvs);
+        dbgLog.finer("not called missing values:"+mvs);
         if (!mvs.isEmpty()){
             for (String mv: mvs){
                 CategoricalStatistic csmv = new CategoricalStatistic();
@@ -311,7 +311,7 @@ public class metadataUtil {
             }
         }
         
-        dbgLog.fine("merged"+merged);
+        dbgLog.finer("merged"+merged);
         return merged;
     }
 

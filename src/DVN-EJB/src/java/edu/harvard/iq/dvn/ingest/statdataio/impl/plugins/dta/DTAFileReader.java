@@ -401,6 +401,9 @@ public class DTAFileReader extends StatDataFileReader{
     Map<Byte, String> variableTypeTable;
 
     String[] variableTypelList=null;
+    
+    String[] variableTypelListFinal= null;
+    boolean[] isDateTimeDatumList = null;
 
     Map<Integer, Integer> StringVariableTable = new LinkedHashMap<Integer, Integer>();
     
@@ -532,7 +535,7 @@ public class DTAFileReader extends StatDataFileReader{
         //out.format("%e\n", missing_value_double);
 
         doubleNumberFormatter.setGroupingUsed(false);
-
+        doubleNumberFormatter.setMaximumFractionDigits(7);
 
     }
 
@@ -574,6 +577,9 @@ public class DTAFileReader extends StatDataFileReader{
         smd.setVariableFormatName(formatNameTable);
         smd.setVariableFormatCategory(formatCategoryTable);
         smd.setValueLabelMappingTable(valueLabelSchemeMappingTable);
+        
+        smd.setVariableStorageType(variableTypelListFinal);
+
         
         if (sdiodata == null){
             sdiodata = new SDIOData(smd, stataDataSection);
@@ -853,7 +859,11 @@ public class DTAFileReader extends StatDataFileReader{
 
         dbgLog.fine("StringVariableTable="+StringVariableTable);
         
-        smd.setVariableStorageType(variableTypelList);
+        variableTypelListFinal = new String[nvar];
+        for (int i=0; i< variableTypelList.length; i++){
+            variableTypelListFinal[i] = new String(variableTypelList[i]);
+        }
+        
         
         
         // part 2: Variable_Name List
@@ -933,6 +943,7 @@ public class DTAFileReader extends StatDataFileReader{
 
         byte[] variableFormatList = new byte[length_var_format_list];
         variableFormats = new String[nvar];
+        isDateTimeDatumList = new boolean[nvar];
         try {
             int nbytes = stream.read(variableFormatList, 0, length_var_format_list);
 
@@ -948,12 +959,47 @@ public class DTAFileReader extends StatDataFileReader{
                     offset_end),"US-ASCII");
                 variableFormats[i] = getNullStrippedString(vari);
                 dbgLog.fine(i+"-th format=["+variableFormats[i]+"]");
+                
+                
+                
+                
+
+
+
+                String variableFormat = variableFormats[i];
+                String variableFormatKey= null;
+                if (variableFormat.startsWith("%t")){
+                    variableFormatKey = variableFormat.substring(0, 3);
+                } else {
+                    variableFormatKey = variableFormat.substring(0, 2);
+                }
+                dbgLog.fine(i+" th variableFormatKey="+variableFormatKey);
+
+                if (DATE_TIME_FORMAT_TABLE.containsKey(variableFormatKey)){
+                
+                    formatNameTable.put(variableNameList.get(i), variableFormat);
+                    
+                    formatCategoryTable.put(variableNameList.get(i) , DATE_TIME_FORMAT_TABLE.get(variableFormatKey));
+                    
+                    isDateTimeDatumList[i] = true;
+                    dbgLog.fine(i+"th var: category="+
+                        DATE_TIME_FORMAT_TABLE.get(variableFormatKey)
+                        );
+                        
+                    variableTypelListFinal[i]="String";
+                } else {
+                    isDateTimeDatumList[i] = false;
+                }
+
+
+                
                 offset_start = offset_end;
             }
             dbgLog.fine("variableFormats=\n"+StringUtils.join(variableFormats, ",\n")+"\n");
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+
 
         //smd.setVariableFormat(variableFormats);
 
@@ -1188,25 +1234,10 @@ public class DTAFileReader extends StatDataFileReader{
                         variableTypeMap.get(variableTypelList[columnCounter]);
                     //out.print(columnCounter+"th varType="+varType);
                     //out.println(columnCounter+"th variableFormats="+variableFormats[columnCounter]);
+
                     String variableFormat = variableFormats[columnCounter];
-                    String variableFormatKey= null;
-                    if (variableFormat.startsWith("%t")){
-                        variableFormatKey = variableFormat.substring(0, 3);
-                    } else {
-                        variableFormatKey = variableFormat.substring(0, 2);
-                    }
-                    dbgLog.fine(columnCounter+" th variableFormatKey="+variableFormatKey);
-                    boolean isDateTimeDatum = false;
-                    if (DATE_TIME_FORMAT_TABLE.containsKey(variableFormatKey)){
-                        formatNameTable.put(variableNameList.get(columnCounter), variableFormat);
-                        formatCategoryTable.put(variableNameList.get(columnCounter) , DATE_TIME_FORMAT_TABLE.get(variableFormatKey));
-                        dbgLog.fine(columnCounter+"th var: category="+
-                            DATE_TIME_FORMAT_TABLE.get(variableFormatKey)
-                            );
-                            
-                            isDateTimeDatum = true;
-                    }
-                    //out.print("\tcurrent byte offset value="+byte_offset);
+
+                    boolean isDateTimeDatum = isDateTimeDatumList[columnCounter];
 
                     switch( varType != null ? varType: 256){
                         case -5:
@@ -1251,20 +1282,26 @@ public class DTAFileReader extends StatDataFileReader{
                             if (short_datum >= INT_MISSIG_VALUE){
                                 dbgLog.finer(i+"-th row "+columnCounter+
                                     "=th column stata long missing value="+short_datum);
-                                dataRow[columnCounter] = MissingValueForTextDataFileNumeric;
-                                dataTable2[columnCounter][i] = Short.MAX_VALUE;
+                                    
+                                if (isDateTimeDatum){
+                                    dataRow[columnCounter] =  MissingValueForTextDataFileString;
+                                    dataTable2[columnCounter][i] = "";
+                                } else {
+                                    dataRow[columnCounter] = MissingValueForTextDataFileNumeric;
+                                    dataTable2[columnCounter][i] = Short.MAX_VALUE;
+                                }
                             } else {
                             
-                            
                                 if (isDateTimeDatum){
-                                    dataTable2[columnCounter][i] = short_datum;
-                                    dataRow[columnCounter] = decodeDateTimeData("short",variableFormat, Short.toString(short_datum));//short_datum;
+                                    //dataTable2[columnCounter][i] = short_datum;
+                                    dataRow[columnCounter] = decodeDateTimeData("short",variableFormat, Short.toString(short_datum));
+                                    dataTable2[columnCounter][i] = dataRow[columnCounter];
+
                                 } else {
                                     dataTable2[columnCounter][i] = short_datum;
                                     dataRow[columnCounter] = short_datum;
                                 }
                             }
-
                             byte_offset += 2;
                             break;
                         case -3:
@@ -1285,14 +1322,22 @@ public class DTAFileReader extends StatDataFileReader{
                             if (int_datum >=LONG_MISSING_VALUE){
                                 dbgLog.finer(i+"-th row "+columnCounter+
                                     "=th column stata long missing value="+int_datum);
-                                dataRow[columnCounter] = MissingValueForTextDataFileNumeric;
-                                dataTable2[columnCounter][i] = Integer.MAX_VALUE;
+                                if (isDateTimeDatum){
+                                    dataRow[columnCounter] =  MissingValueForTextDataFileString;
+                                    dataTable2[columnCounter][i] = "";
+                                } else {
+                                    dataRow[columnCounter] = MissingValueForTextDataFileNumeric;
+                                    dataTable2[columnCounter][i] = Integer.MAX_VALUE;
+                                }
                             } else {
 
-
+                                //out.println("columnCounter="+columnCounter+"\t"+int_datum);
                                 if (isDateTimeDatum){
-                                    dataTable2[columnCounter][i] = int_datum;
-                                    dataRow[columnCounter] = decodeDateTimeData("int",variableFormat, Integer.toString(int_datum));//short_datum;
+                                    //dataTable2[columnCounter][i] = int_datum;
+                                    dataRow[columnCounter] = decodeDateTimeData("int",variableFormat, Integer.toString(int_datum));
+                                    
+                                    dataTable2[columnCounter][i] = dataRow[columnCounter];
+                                    //out.println("columnCounter="+columnCounter+"\t"+dataTable2[columnCounter][i]);
                                 } else {
                                     dataTable2[columnCounter][i] = int_datum;
                                     dataRow[columnCounter] = int_datum;
@@ -1319,22 +1364,25 @@ public class DTAFileReader extends StatDataFileReader{
                             if (FLOAT_MISSING_VALUE_SET.contains(float_datum)){
                                 dbgLog.finer(i+"-th row "+columnCounter+
                                     "=th column float missing value="+float_datum);
-                                dataRow[columnCounter] = MissingValueForTextDataFileNumeric;
-                                dataTable2[columnCounter][i] = Float.NaN;
+                                    
+                                if (isDateTimeDatum){
+                                    dataRow[columnCounter] =  MissingValueForTextDataFileString;
+                                    dataTable2[columnCounter][i] = "";
+                                } else {
+                                    dataRow[columnCounter] = MissingValueForTextDataFileNumeric;
+                                    dataTable2[columnCounter][i] = Float.NaN;
+                                }
+                                
                             } else {
 
-
-
-
                                 if (isDateTimeDatum){
-                                    dataTable2[columnCounter][i] = float_datum;
-                                    dataRow[columnCounter] = decodeDateTimeData("float",variableFormat, doubleNumberFormatter.format(float_datum));//short_datum;
+                                    //dataTable2[columnCounter][i] = float_datum;
+                                    dataRow[columnCounter] = decodeDateTimeData("float",variableFormat, doubleNumberFormatter.format(float_datum));
+                                    dataTable2[columnCounter][i] = dataRow[columnCounter];
                                 } else {
                                     dataTable2[columnCounter][i] = float_datum;
                                     dataRow[columnCounter] = doubleNumberFormatter.format(float_datum);
                                 }
-
-
 
                             }
                             byte_offset += 4;
@@ -1361,18 +1409,25 @@ public class DTAFileReader extends StatDataFileReader{
                             if (DOUBLE_MISSING_VALUE_SET.contains(double_datum)){
                                 dbgLog.finer(i+"-th row "+columnCounter+
                                     "=th column double missing value="+double_datum);
-                                dataRow[columnCounter] =  MissingValueForTextDataFileNumeric;
-                                dataTable2[columnCounter][i] = Double.NaN;
+                                if (isDateTimeDatum){
+                                    dataRow[columnCounter] =  MissingValueForTextDataFileString;
+                                    dataTable2[columnCounter][i] = "";
+                                } else {
+                                    dataRow[columnCounter] =  MissingValueForTextDataFileNumeric;
+                                    dataTable2[columnCounter][i] = Double.NaN;
+                                }
                             } else {
 
                                 if (isDateTimeDatum){
-                                    dataTable2[columnCounter][i] = double_datum;
-                                    dataRow[columnCounter] = decodeDateTimeData("double",variableFormat, doubleNumberFormatter.format(double_datum));//short_datum;
+                                    
+                                    //dataTable2[columnCounter][i] = double_datum;
+                                    
+                                    dataRow[columnCounter] = decodeDateTimeData("double",variableFormat, doubleNumberFormatter.format(double_datum));
+                                    dataTable2[columnCounter][i] = dataRow[columnCounter];
                                 } else {
                                     dataTable2[columnCounter][i] = double_datum;
                                     dataRow[columnCounter] = doubleNumberFormatter.format(double_datum);
                                 }
-
 
                             }
                             byte_offset += 8;
@@ -1442,11 +1497,12 @@ public class DTAFileReader extends StatDataFileReader{
         //out.println(Arrays.deepToString(dataTable2));
 
         dbgLog.fine("variableTypelList:\n"+Arrays.deepToString(variableTypelList));
-
+        dbgLog.fine("variableTypelListFinal:\n"+Arrays.deepToString(variableTypelListFinal));
         unfValues = new String[nvar];
 
         for (int j=0;j<nvar; j++){
-           String variableType_j =  variableTypelList[j];
+           //String variableType_j =  variableTypelList[j];
+           String variableType_j =  variableTypelListFinal[j];
             try {
                 unfValues[j] = getUNF(dataTable2[j], variableType_j,
                     unfVersionNumber, j);
@@ -1463,7 +1519,7 @@ public class DTAFileReader extends StatDataFileReader{
             }
         }
         
-        dbgLog.fine("unf set:\n"+ReflectionToStringBuilder.toString(unfValues));
+        dbgLog.fine("unf set:\n"+Arrays.deepToString(unfValues));
         
         try {
             fileUnfValue = UNFUtil.calculateUNF(unfValues,unfVersionNumber);
@@ -2011,7 +2067,9 @@ public class DTAFileReader extends StatDataFileReader{
                 smd.getSummaryStatisticsTable().put(variablePosition,
                     ArrayUtils.toObject(StatHelper.calculateSummaryStatistics(fdata)));
 
-                catStat = StatHelper.calculateCategoryStatistics(fdata);
+                if (valueLabelSchemeMappingTable.containsKey(variableNameList.get(variablePosition))){
+                    catStat = StatHelper.calculateCategoryStatistics(fdata);
+                }
                 smd.getCategoryStatisticsTable().put(variableNameList.get(variablePosition), catStat);
 
                 break;
@@ -2028,7 +2086,9 @@ public class DTAFileReader extends StatDataFileReader{
                 smd.getSummaryStatisticsTable().put(variablePosition,
                     ArrayUtils.toObject(StatHelper.calculateSummaryStatistics(ddata)));
 
-                catStat = StatHelper.calculateCategoryStatistics(ddata);
+                if (valueLabelSchemeMappingTable.containsKey(variableNameList.get(variablePosition))){
+                    catStat = StatHelper.calculateCategoryStatistics(ddata);
+                }
                 smd.getCategoryStatisticsTable().put(variableNameList.get(variablePosition), catStat);
 
                 break;
@@ -2038,7 +2098,7 @@ public class DTAFileReader extends StatDataFileReader{
 
                 String[] strdata = Arrays.asList(varData).toArray(
                     new String[varData.length]);
-                
+                dbgLog.fine("strdata="+Arrays.deepToString(strdata));
                 unfValue = UNFUtil.calculateUNF(strdata, unfVersionNumber);
                 dbgLog.fine("string:unfValue"+unfValue);
 
@@ -2121,21 +2181,22 @@ public class DTAFileReader extends StatDataFileReader{
             } else {
                 years = weekYears/52L;
             }
-
+// alterantive decoding 1: ISO style YYYY-Www-D
             String week = null;
 
             if (left == 52L){
                 left = 0L;
             }
+            
             Long weekdata = (left+1);
             week = "-W"+twoDigitFormatter.format(weekdata).toString();
             long year  = 1960L + years;
             String weekYear = Long.valueOf(year).toString() + week;
             dbgLog.finer("rawDatum="+rawDatum+": weekYear="+weekYear);
 
-            decodedDateTime = weekYear;
-
-// alterantive decoding
+            //decodedDateTime = weekYear;
+            
+// alterantive decoding 2: for R
             Calendar wyr = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
             wyr.set(1, (int)year);// year
             wyr.set(3,weekdata.intValue());
@@ -2146,9 +2207,11 @@ public class DTAFileReader extends StatDataFileReader{
             wyr.set(14, 0); // SS millisecond
             dbgLog.finer("rawDatum="+rawDatum+" date="+
             sdf_yw.format(new Date(wyr.getTimeInMillis()))+"\n");
-
+            
+            decodedDateTime = sdf_ymd.format(new Date(wyr.getTimeInMillis()));
+            
         } else if (FormatType.matches("^%t?m(\\w|[:\\.])*")){
-
+            // month 
             long monthYears = Long.parseLong(rawDatum);
             long left = Math.abs(monthYears)%12L;
             long years;
@@ -2240,7 +2303,7 @@ public class DTAFileReader extends StatDataFileReader{
             String halfYear = Long.valueOf(year).toString() + half;
             dbgLog.finer("rawDatum="+rawDatum+": halfYear="+halfYear);
             
-            decodedDateTime = halfYear;            
+            decodedDateTime = halfYear;
             dbgLog.finer("th:"+decodedDateTime);
             
         } else if (FormatType.matches("^%t?y(\\w|[:\\.])*")){

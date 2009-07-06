@@ -239,8 +239,17 @@ public class SDIOMetadata {
         if ((variableStorageType != null) && (variableStorageType.length >0)){
             // Stata DTA case
             for (int i =0; i< variableName.length;i++){
-                continuousYes[i] = 
-                    variableTypeNumber.get(variableStorageType[i]) == 2 ? true : false;
+                if ( variableTypeNumber.get(variableStorageType[i]) == 2  ){
+                    if (valueLabelTable.containsKey(valueLabelMappingTable.get(variableName[i]))){
+                        
+                        continuousYes[i] = false;
+                    } else {
+                        continuousYes[i] = true;
+                    }
+                    
+                } else {
+                    continuousYes[i] = false;
+                }
             }
         } else if (decimalVariables != null){
             // SPSS POR/SAV cases

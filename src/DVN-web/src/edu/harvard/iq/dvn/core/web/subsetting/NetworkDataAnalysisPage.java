@@ -104,17 +104,15 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
         }
 
         //init workspace and page components
-        Context ctx;
         try {
-            ctx = new InitialContext();
+            Context ctx = new InitialContext();
             networkDataService = (NetworkDataServiceLocal) ctx.lookup("java:comp/env/networkData");
             rWorkspace = networkDataService.initAnalysis(file.getFileSystemLocation() + ".RData");
-        } catch (NamingException ex) {
+            initComponents();
+        } catch (Exception ex) {
             Logger.getLogger(NetworkDataAnalysisPage.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (DvnRGraphException ex) {
-            Logger.getLogger(NetworkDataAnalysisPage.class.getName()).log(Level.SEVERE, null, ex);
+            redirect("/faces/ErrorPage.xhtml?errorMsg=" + ex.getMessage());
         }
-        initComponents();
     }
 
     private void initComponents() {

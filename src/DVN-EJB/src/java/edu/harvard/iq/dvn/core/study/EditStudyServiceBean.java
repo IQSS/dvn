@@ -327,7 +327,7 @@ public class EditStudyServiceBean implements edu.harvard.iq.dvn.core.study.EditS
                 f.getAllowedGroups().clear();
                 f.getAllowedUsers().clear();
                 removeCollectionElement(f.getFileCategory().getStudyFiles(),f);
-                recalculateStudyUNF = f.isSubsettable() ? true : recalculateStudyUNF;
+                recalculateStudyUNF = f.isUNFable() ? true : recalculateStudyUNF;
                 filesToBeDeleted.add(f);
                 
             } else {

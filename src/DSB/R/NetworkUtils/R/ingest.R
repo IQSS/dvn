@@ -28,6 +28,19 @@ load_and_clear <- function(filename){
     undo_on <<- FALSE
 }
 
+reset <- function(filename){
+    rm(list=ls(envir=parent.frame()), envir=parent.frame())
+
+    split_file <- unlist(strsplit(filename, '.', fixed=T))
+    filestub <- paste(split_file[-length(split_file)], collapse='.')
+
+    load(paste(filestub, "_orig.RData", sep=''))
+    g <<- g_orig
+    rm(g_orig); gc()
+
+    undo_on <<- FALSE
+}
+
 dump_graphml <- function(tmp_g, filename){
     #tmp_g <- remove.vertex.attribute(tmp_g, "DVN_internal_uid")
     g$filestub <- NULL

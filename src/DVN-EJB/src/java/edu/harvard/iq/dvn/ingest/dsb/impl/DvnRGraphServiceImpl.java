@@ -32,14 +32,7 @@ public class DvnRGraphServiceImpl implements java.io.Serializable {
     
     private static Logger dbgLog = Logger.getLogger(DvnRGraphServiceImpl.class.getPackage().getName());
 
-    // private RConnection rc = null; // this is still used for Ingest.
-
     private static DvnRConnectionPool RConnectionPool = null; 
-
-    // the number of connections can be set as a JVM option;
-    // the value below is the default:
-
-    //private int numberOfConnections = 10; 
 
     
     private int myConnection = 0; 
@@ -67,6 +60,8 @@ public class DvnRGraphServiceImpl implements java.io.Serializable {
     public static String NETWORK_MEASURE_PARAMETER = "NETWORK_MEASURE_PARAMETER";
 
     public static String UNDO = "UNDO";
+    public static String RESET = "RESET"; 
+
     // - return result fields:
 
     public static String SAVED_RWORK_SPACE = "SAVED_RWORK_SPACE";
@@ -482,6 +477,11 @@ public class DvnRGraphServiceImpl implements java.io.Serializable {
 
 		} else if ( GraphSubsetType.equals(UNDO) ) {
 		    String cEval = safeEval(drc.Rcon, "undo()").asString();
+		} else if ( GraphSubsetType.equals(RESET) ) {
+		    String origWorkSpace = SavedRworkSpace.replace(".RData", "_orig.RData");
+		    dbgLog.info("resetting the workspace; using "+origWorkSpace);
+		    
+		    String cEval = safeEval(drc.Rcon, "load('"+origWorkSpace+"')").asString();
 		}
 	    }
 

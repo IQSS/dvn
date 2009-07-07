@@ -32,11 +32,16 @@ public class DvnRGraphServiceImpl implements java.io.Serializable {
     
     private static Logger dbgLog = Logger.getLogger(DvnRGraphServiceImpl.class.getPackage().getName());
 
-    private RConnection rc = null; // this is still used for Ingest.
+    // private RConnection rc = null; // this is still used for Ingest.
 
     private static DvnRConnectionPool RConnectionPool = null; 
 
-    private int numberOfConnections = 15;
+    // the number of connections can be set as a JVM option;
+    // the value below is the default:
+
+    //private int numberOfConnections = 10; 
+
+    
     private int myConnection = 0; 
 
     // - constants for defining the subset 
@@ -83,6 +88,7 @@ public class DvnRGraphServiceImpl implements java.io.Serializable {
     private static String RSERVE_USER = null;
     private static String RSERVE_PWD = null;    
     private static int RSERVE_PORT;
+    private static int RSERVE_CONNECTION_POOLSIZE; 
     private static String DSB_HOST_PORT= null;
 
     private static Map<String, Method> runMethods = new HashMap<String, Method>();
@@ -106,6 +112,7 @@ public class DvnRGraphServiceImpl implements java.io.Serializable {
         if (DSB_HOST_PORT == null){
             DSB_HOST_PORT= "80";
         }
+
                 
         RSERVE_USER = System.getProperty("vdc.dsb.rserve.user");
         if (RSERVE_USER == null){
@@ -123,8 +130,12 @@ public class DvnRGraphServiceImpl implements java.io.Serializable {
         } else {
             RSERVE_PORT = Integer.parseInt(System.getProperty("vdc.dsb.rserve.port"));
         }
-        
 
+	if (System.getProperty("dvn.rserve.poolsize") == null) {
+	    RSERVE_CONNECTION_POOLSIZE = 10; 
+	} else {
+	    RSERVE_CONNECTION_POOLSIZE = Integer.parseInt(System.getProperty("dvn.rserve.poolsize")); 
+	}
     }
 
     static String librarySetup= "library('NetworkUtils');";
@@ -156,7 +167,8 @@ public class DvnRGraphServiceImpl implements java.io.Serializable {
                  + "." + IdSuffix + GRAPHML_FILE_EXT;
 
 	if ( RConnectionPool == null ) {
-	    RConnectionPool = new DvnRConnectionPool ( numberOfConnections ); 
+	    dbgLog.info ("number of RServe connections: "+RSERVE_CONNECTION_POOLSIZE); 
+	    RConnectionPool = new DvnRConnectionPool ( RSERVE_CONNECTION_POOLSIZE ); 
 	}
 	
     }
@@ -165,9 +177,8 @@ public class DvnRGraphServiceImpl implements java.io.Serializable {
     public void setupWorkingDirectories(RConnection c){
         try{
 
-            // set up the working directory
-            // parent dir;
-
+            // set up the working directory in the designated temp directory
+	    // location;
 	    // the 4 lines below are R code being sent over to Rserve;
 	    // it looks kinda messy, true.
 
@@ -206,7 +217,7 @@ public class DvnRGraphServiceImpl implements java.io.Serializable {
 	    rc.login(RSERVE_USER, RSERVE_PWD);
 
 	    // set up the NetworkUtils + dependencies; 
-	    // this needst to be done on all new connections. 
+	    // this needs to be done on all new connections. 
 
 	    rc.voidEval(librarySetup);
         } catch (RserveException rse) {
@@ -323,20 +334,14 @@ public class DvnRGraphServiceImpl implements java.io.Serializable {
      * @return    a Map that contains diagnostics information 
      * in case of an error. 
      */    
+
+    // do we still need this method? 
     
     public Map<String, String> closeConnection() {
     
         // set the return object
         Map<String, String> result = new HashMap<String, String>();
         
-	if ( rc == null ) {
-	    dbgLog.fine("close method called on null connection!");
-	    result.put("RexecError", "true");
-	    result.put("RexecErrorDescription", "CLOSE CALLED ON NULL CONNECTION"); 
-	} else {
-	    rc.close(); 
-	}
-	
 	return result;
 
     }
@@ -347,14 +352,11 @@ public class DvnRGraphServiceImpl implements java.io.Serializable {
      * @return  boolean
      */    
     
+    // do we still need this method? 
+
     public boolean isAlive() {
     
-	if ( rc == null ) {
-	    return false; 
-	} 
-	
-	return rc.isConnected();
-
+	return false; 
     }
 
 
@@ -389,44 +391,23 @@ public class DvnRGraphServiceImpl implements java.io.Serializable {
 
 	}
 
-        try {
-            // Check if there's an Rserve connection: 
-	    // ( rc == null ) {
-	    //	dbgLog.fine("LCE method called on null connection!");
-	    //	//result.put("RexecError", "true");
-	    //	//result.put("RexecErrorDescription", "EXECUTE CALLED ON NULL CONNECTION"); 
-	    //	//return result;
-	    //
-	    //	throw new DvnRGraphException("execute method called on null connection");
-	    //}
+	DvnRConnection drc = null;
 
+
+        try {
 	    // let's see if we have a connection that we can use: 
 
 	    if ( myConnection == 0 ) {
-		throw new DvnRGraphException("execute method called without creating a connection first");
+		throw new DvnRGraphException("execute method called without securing a connection first");
 	    } 
 
 	    myConnection = RConnectionPool.securePooledConnection ( SavedRworkSpace, null, true, myConnection ); 
 	    dbgLog.info ("Execute: obtained connection "+myConnection); 
 
 
-	    DvnRConnection drc = RConnectionPool.getConnection(myConnection);
+	    drc = RConnectionPool.getConnection(myConnection);
 
 
-	    /*
-	    if ( SavedRworkSpace != null ) {
-		RDataFileName = SavedRworkSpace; 
-	    } else {
-		result.put("RexecError", "true");
-		result.put("RexecErrorDescription", "LCE: NULL R JOB OBJECT"); 
-		return result;
-	    }		
-	    */
-
-            // subsetting 	    
-
-
-	    drc.lockConnection(); 
 	    String GraphSubsetType = (String) SubsetParameters.get(RSUBSETFUNCTION); 
 
 	    if ( GraphSubsetType != null ) {
@@ -450,8 +431,6 @@ public class DvnRGraphServiceImpl implements java.io.Serializable {
 			} else if (manualQueryType.equals(VERTEX_SUBSET)){
 			    subsetCommand = "vertex_subset(g, '"+manualQuery+"')"; 
 			} else {
-			    //result.put("RexecError", "true");
-			    //return result;
 			    throw new DvnRGraphException("execute: unsupported manual query subset");
 
 			}		       
@@ -481,9 +460,6 @@ public class DvnRGraphServiceImpl implements java.io.Serializable {
 		    if ( addedColumn != null ) {
 			result.put(NETWORK_MEASURE_NEW_COLUMN, addedColumn);
 		    } else {
-			//result.put("RexecError", "true");
-			//result.put("RexecErrorDescription", "FAILED TO READ ADDED COLUMN NAME"); 
-			//return result;
 			throw new DvnRGraphException("FAILED TO READ ADDED COLUMN NAME");
 
 		    }
@@ -498,9 +474,6 @@ public class DvnRGraphServiceImpl implements java.io.Serializable {
 		    }
 
 		    if ( autoQueryCommand == null ) {
-			//result.put("RexecError", "true");
-			//result.put("RexecErrorDescription", "NULL OR UNSUPPORTED AUTO QUERY"); 
-			//return result;
 			throw new DvnRGraphException("NULL OR UNSUPPORTED AUTO QUERY");
 		    }
 
@@ -523,12 +496,6 @@ public class DvnRGraphServiceImpl implements java.io.Serializable {
 	    result.put(NUMBER_OF_EDGES, Integer.toString(countResponse)); 
 
             
-            // save workspace:
-
-            //String saveWS = "save.image(file='"+ RDataFileName +"')";
-            //dbgLog.fine("LCE: save the workspace="+saveWS);
-            //drc.Rcon.voidEval(saveWS);
-
 	    result.put( SAVED_RWORK_SPACE, RDataFileName ); 
 
 	    // we're done; let's add some potentially useful 
@@ -550,30 +517,12 @@ public class DvnRGraphServiceImpl implements java.io.Serializable {
 		throw new DvnRGraphException("Could not execute query: connection lost");
 	    }
 
-	    Date now = new Date(); 	   
-	    drc.setLastQueryTime(now.getTime()); 
-	    drc.unlockConnection(); 
-
 	} catch (DvnRGraphException dre) {
 	    throw dre; 
 	} catch (RException re) {
-            //result.put("IdSuffix", IdSuffix);
-            //result.put("RCommandHistory",  StringUtils.join(historyEntry,"\n"));
-            //result.put("RexecError", "true");
-            //result.put("RexecErrorMessage", re.getMessage());
-            //result.put("RexecErrorDescription", "R runtime Error");
-
-            //return result;
-            //throw new DvnRGraphException("R run-time error: "+re.getMessage());
 	    throw new DvnRGraphException(re.getMessage());
 
         } catch (RserveException rse) {
-            //result.put("IdSuffix", IdSuffix);
-            //result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
-            
-            //result.put("RexecError", "true");
-            //result.put("RexecErrorMessage", rse.getMessage());
-            //result.put("RexecErrorDescription", rse.getRequestErrorDescription());
 
             dbgLog.info("LCE: rserve exception message: "+rse.getMessage());
             dbgLog.info("LCE: rserve exception description: "+rse.getRequestErrorDescription());
@@ -581,24 +530,21 @@ public class DvnRGraphServiceImpl implements java.io.Serializable {
 	    
         } catch (REXPMismatchException mme) {
         
-            //result.put("IdSuffix", IdSuffix);
-            //result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
-
-            //result.put("RexecError", "true");
-            //return result;
             throw new DvnRGraphException("REXPmismatchException occured");
 
         } catch (Exception ex){
             
-            //result.put("IdSuffix", IdSuffix);
-
-            //result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
-
-            //result.put("RexecError", "true");
-            //return result;
             throw new DvnRGraphException("Execute: unknown exception occured: " +ex.getMessage());
 
-        }
+        } finally {
+	    if ( drc != null ) {
+		// set the connection time stamp: 
+		Date now = new Date();
+		drc.setLastQueryTime(now.getTime()); 
+
+		drc.unlockConnection(); 
+	    }
+	}
         
 	return result;
         
@@ -615,6 +561,9 @@ public class DvnRGraphServiceImpl implements java.io.Serializable {
      public Map<String, String> liveConnectionExport (String savedRDataFile) throws DvnRGraphException {
 
         Map<String, String> result = new HashMap<String, String>();
+
+	DvnRConnection drc = null;
+
         
 	try {
 
@@ -628,8 +577,7 @@ public class DvnRGraphServiceImpl implements java.io.Serializable {
 	    dbgLog.info ("Export: obtained connection "+myConnection); 
 
 
-	    DvnRConnection drc = RConnectionPool.getConnection(myConnection);
-
+	    drc = RConnectionPool.getConnection(myConnection);
 
 
 	    String exportCommand = "dump_graphml(g, '" + GraphMLfileNameRemote + "')";
@@ -684,294 +632,19 @@ public class DvnRGraphServiceImpl implements java.io.Serializable {
 
         } catch (Exception ex){
             throw new DvnRGraphException("Unknown exception occured: " +ex.getMessage());
-        }
+        } finally {
+	    if ( drc != null ) {
+		// set the connection time stamp: 
+		Date now = new Date();
+		drc.setLastQueryTime(now.getTime()); 
+
+		drc.unlockConnection(); 
+	    }
+	}
         return result;
         
     }
-
     
-    /** *************************************************************
-     * Execute an R-based dvn analysis request on a Graph object
-     *
-     * @param sro    a DvnRJobRequest object that contains various parameters
-     * @return    a Map that contains various information about the results
-     */    
-    
-    public Map<String, String> execute(DvnRJobRequest sro) {
-    
-        // set the return object
-        Map<String, String> result = new HashMap<String, String>();
-        
-        try {
-	    if ( sro != null ) {
-		dbgLog.fine("sro dump:\n"+ToStringBuilder.reflectionToString(sro, ToStringStyle.MULTI_LINE_STYLE));
-            } else {
-		result.put("RexecError", "true");
-		result.put("RexecErrorDescription", "NULL R JOB OBJECT"); 
-		return result;
-	    }
-
-            // Set up an Rserve connection
-
-            dbgLog.fine("RSERVE_USER="+RSERVE_USER+"[default=rserve]");
-            dbgLog.fine("RSERVE_PWD="+RSERVE_PWD+"[default=rserve]");
-            dbgLog.fine("RSERVE_PORT="+RSERVE_PORT+"[default=6311]");
-
-            RConnection c = new RConnection(RSERVE_HOST, RSERVE_PORT);
-            dbgLog.fine("hostname="+RSERVE_HOST);
-
-            c.login(RSERVE_USER, RSERVE_PWD);
-            dbgLog.fine(">" + c.eval("R.version$version.string").asString() + "<");
-            dbgLog.fine("wrkdir="+wrkdir);
-            historyEntry.add(librarySetup);
-            c.voidEval(librarySetup);
-
-	    String SavedRworkSpace = null;  
-
-	    String CachedRworkSpace = sro.getCachedRworkSpace(); 
-
-	    Map <String, Object> SubsetParameters = sro.getParametersForGraphSubset(); 
-	    
-	    if ( SubsetParameters != null ) {
-		SavedRworkSpace = (String) SubsetParameters.get(SAVED_RWORK_SPACE);
-	    }
-
-	    if ( SavedRworkSpace != null ) {
-		RDataFileName = SavedRworkSpace; 
-
-	    } else if ( CachedRworkSpace != null ) {
-		// send data file to the Rserve side 
-
-		InputStream inb = new BufferedInputStream(new FileInputStream(CachedRworkSpace));
-		int bufsize;
-		byte[] bffr = new byte[1024];
-
-		RFileOutputStream os = 
-		    c.createFile(RDataFileName);
-		while ((bufsize = inb.read(bffr)) != -1) {
-                    os.write(bffr, 0, bufsize);
-		}
-		os.close();
-		inb.close();
-
-		c.voidEval("load_and_clear('"+RDataFileName+"')");
-
-        String saveWS = "save.image(file='"+ RDataFileName +"')";
-        dbgLog.fine("save the workspace="+saveWS);
-        c.voidEval(saveWS);
-
-		result.put(SAVED_RWORK_SPACE, RDataFileName);
-
-		result.put("dsbHost", RSERVE_HOST);
-		result.put("dsbPort", DSB_HOST_PORT);
-		result.put("IdSuffix", IdSuffix);
-		
-		c.close();
-
-		return result; 
-
-	    } 
-
-            dbgLog.fine("RDataFile="+RDataFileName);
-            historyEntry.add("load('"+RDataFileName+"')");
-            c.voidEval("load('"+RDataFileName+"')");
-
-            // check working directories
-            setupWorkingDirectories(c);
-            
-            // subsetting 
-
-	    String GraphSubsetType = (String) SubsetParameters.get(RSUBSETFUNCTION); 
-
-	    if ( GraphSubsetType != null ) {
-		
-		if ( GraphSubsetType.equals(MANUAL_QUERY_SUBSET) ) {
-
-		    String manualQueryType  = (String) SubsetParameters.get(MANUAL_QUERY_TYPE); 
-		    String manualQuery = (String) SubsetParameters.get(MANUAL_QUERY); 
-
-		    String subsetCommand = null; 
-
-		    if ( manualQueryType != null ) {
-			if (manualQueryType.equals(EDGE_SUBSET)) {
-			    String dropDisconnected = (String) SubsetParameters.get(ELIMINATE_DISCONNECTED); 
-			    if ( dropDisconnected != null ) {
-				subsetCommand = "edge_subset(g, '"+manualQuery+"', TRUE)"; 
-			    } else {
-				subsetCommand = "edge_subset(g, '"+manualQuery+"')"; 
-			    }
-
-			} else if (manualQueryType.equals(VERTEX_SUBSET)){
-			    subsetCommand = "vertex_subset(g, '"+manualQuery+"')"; 
-			} else {
-			    result.put("RexecError", "true");
-			    return result;
-			}		       
-
-			dbgLog.fine("manualQuerySubset="+subsetCommand);
-			historyEntry.add(subsetCommand);
-			c.voidEval(subsetCommand);
-			
-		    }
-		    
-		} else if ( GraphSubsetType.equals(NETWORK_MEASURE) ) {
-		    String networkMeasureType = (String) SubsetParameters.get(NETWORK_MEASURE_TYPE); 
-		    String networkMeasureCommand = null; 
-		    if ( networkMeasureType != null ) {
-			    List<NetworkMeasureParameter> networkMeasureParameterList = (List<NetworkMeasureParameter>)SubsetParameters.get(NETWORK_MEASURE_PARAMETER);
-                networkMeasureCommand = networkMeasureType + "(g" + buildParameterComponent(networkMeasureParameterList) + ")";
-		    }
-
-		    if ( networkMeasureCommand == null ) {
-			result.put("RexecError", "true");
-			result.put("RexecErrorDescription", "ILLEGAL OR UNSUPPORTED NETWORK MEASURE QUERY"); 
-			return result;
-		    }
-
-
-		    historyEntry.add(networkMeasureCommand);
-		    String addedColumn = safeEval(c,networkMeasureCommand).asString();
-		    if ( addedColumn != null ) {
-			result.put(NETWORK_MEASURE_NEW_COLUMN, addedColumn);
-		    } else {
-			result.put("RexecError", "true");
-			result.put("RexecErrorDescription", "FAILED TO READ ADDED COLUMN NAME"); 
-			return result;
-		    }
-		    
-		} else if ( GraphSubsetType.equals(AUTOMATIC_QUERY_SUBSET) ) {
-		    String automaticQueryType = (String) SubsetParameters.get(AUTOMATIC_QUERY_TYPE); 
-		    String autoQueryCommand = null; 
-		    if ( automaticQueryType != null ) {
-            String n = (String) SubsetParameters.get(AUTOMATIC_QUERY_N_VALUE);
-            autoQueryCommand = automaticQueryType + "(g, " + n + ")";
-            /*
-			if ( automaticQueryType.equals(AUTOMATIC_QUERY_NTHLARGEST) ) {
-			    int n = Integer.parseInt((String) SubsetParameters.get(AUTOMATIC_QUERY_N_VALUE));
-			    autoQueryCommand = "component(g, " + n + ")";
-
-			} else if ( automaticQueryType.equals(AUTOMATIC_QUERY_BICONNECTED) ) {
-			    int n = Integer.parseInt((String) SubsetParameters.get(AUTOMATIC_QUERY_N_VALUE));
-			    autoQueryCommand = "biconnected_component(g, " + n + ")";
-
-			} else if ( automaticQueryType.equals(AUTOMATIC_QUERY_NEIGHBORHOOD) ) {
-			    int n = Integer.parseInt((String) SubsetParameters.get(AUTOMATIC_QUERY_N_VALUE));
-			    autoQueryCommand = "add_neighborhood(g, " + n + ")";
-
-			}
-            */
-		    }
-
-		    if ( autoQueryCommand == null ) {
-			result.put("RexecError", "true");
-			result.put("RexecErrorDescription", "NULL OR UNSUPPORTED AUTO QUERY"); 
-			return result;
-
-		    }
-
-		    historyEntry.add(autoQueryCommand);
-		    //c.voidEval(autoQueryCommand);
-		    String cEval = safeEval(c, autoQueryCommand).asString();
-
-		} else if ( GraphSubsetType.equals(UNDO) ) {
-            c.voidEval("undo()");
-        }
-
-	    }
-
-	    // get the vertices and edges counts: 
-
-	    String countCommand = "vcount(g)";
-	    int countResponse = safeEval(c, countCommand).asInteger(); 
-	    result.put(NUMBER_OF_VERTICES, Integer.toString(countResponse)); 
-
-	    countCommand = "ecount(g)";
-	    countResponse = safeEval(c, countCommand).asInteger(); 
-	    result.put(NUMBER_OF_EDGES, Integer.toString(countResponse)); 
-
-            
-            // save workspace:
-
-            String saveWS = "save.image(file='"+ RDataFileName +"')";
-            dbgLog.fine("save the workspace="+saveWS);
-            c.voidEval(saveWS);
-
-
-	    result.put( SAVED_RWORK_SPACE, RDataFileName ); 
-
-	    // we're done; let's add some potentially useful 
-	    // information to the result and return: 
-
-	    String RexecDate = c.eval("as.character(as.POSIXct(Sys.time()))").asString();
-	    String RversionLine = "R.Version()$version.string";
-            String Rversion = c.eval(RversionLine).asString();
-            
-            result.put("dsbHost", RSERVE_HOST);
-            result.put("dsbPort", DSB_HOST_PORT);
-            result.put("IdSuffix", IdSuffix);
-            result.put("Rversion", Rversion);
-            result.put("RexecDate", RexecDate);
-            result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
-            
-
-            dbgLog.fine("result object (before closing the Rserve):\n"+result);
-                    
-            c.close();
-
-	} catch (RException re) {
-	    result.put("IdSuffix", IdSuffix);
-	    result.put("RCommandHistory",  StringUtils.join(historyEntry,"\n"));
-	    result.put("RexecError", "true");
-	    result.put("RexecErrorMessage", re.getMessage());
-	    result.put("RexecErrorDescription", "R runtime Error");
-
-	    dbgLog.info("R exception message: "+ re.getMessage());
-	    dbgLog.info("R exception description: "+ "R runtime Error");
-	    return result;
-
-        } catch (RserveException rse) {
-            result.put("IdSuffix", IdSuffix);
-            result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
-            
-            result.put("RexecError", "true");
-            result.put("RexecErrorMessage", rse.getMessage());
-            result.put("RexecErrorDescription", rse.getRequestErrorDescription());
-
-            dbgLog.info("rserve exception message: "+rse.getMessage());
-            dbgLog.info("rserve exception description: "+rse.getRequestErrorDescription());
-            return result;
-
-        } catch (REXPMismatchException mme) {
-        
-            // REXP mismatch exception (what we got differs from what we expected)
-            result.put("IdSuffix", IdSuffix);
-            result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
-
-            result.put("RexecError", "true");
-            return result;
-
-        } catch (IOException ie){
-            
-            result.put("IdSuffix", IdSuffix);
-            result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
-
-            result.put("RexecError", "true");
-            return result;
-            
-        } catch (Exception ex){
-            
-            result.put("IdSuffix", IdSuffix);
-
-            result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
-
-            result.put("RexecError", "true");
-            return result;
-        }
-        
-        return result;
-        
-}
-
     private String buildParameterComponent(List<NetworkMeasureParameter> parameters) {
         String returnString = "";
         if (parameters != null) {
@@ -1128,131 +801,6 @@ public class DvnRGraphServiceImpl implements java.io.Serializable {
         
     }
     
-    /** *************************************************************
-     * Export a saved RData file as a GraphML file
-     *
-     * @param savedRDatafile;
-     * @return    a Map that contains various information about the results
-     */    
-    
-     public Map<String, String> exportAsGraphML (String savedRDataFile) {
-
-        Map<String, String> result = new HashMap<String, String>();
-        
-	try {
-
-            // Set up an Rserve connection
-            
-            dbgLog.fine("RSERVE_USER="+RSERVE_USER+"[default=rserve]");
-            dbgLog.fine("RSERVE_PWD="+RSERVE_PWD+"[default=rserve]");
-            dbgLog.fine("RSERVE_PORT="+RSERVE_PORT+"[default=6311]");
-
-            RConnection c = new RConnection(RSERVE_HOST, RSERVE_PORT);
-            dbgLog.fine("hostname="+RSERVE_HOST);
-
-            c.login(RSERVE_USER, RSERVE_PWD);
-
-            dbgLog.fine(">" + c.eval("R.version$version.string").asString() + "<");
-
-	    historyEntry.add(librarySetup);
-            c.voidEval(librarySetup);
-	    historyEntry.add("load_and_clear('"+savedRDataFile+"')");
-	    c.voidEval("load_and_clear('"+savedRDataFile+"')");
-
-        // export: GraphML
-	    String exportCommand = "dump_graphml(g, '" + GraphMLfileNameRemote + "')";
-	    dbgLog.fine(exportCommand);
-	    historyEntry.add(exportCommand);
-	    c.voidEval(exportCommand);            
-
-        // export: tab files for vertices and edges
-	    exportCommand = "dump_tab(g, '" + DSB_TMP_DIR + "/temp_" + IdSuffix + ".tab')";
-	    dbgLog.fine(exportCommand);
-	    historyEntry.add(exportCommand);
-	    String responseVoid = safeEval(c, exportCommand).asString();
-
-
-	    File zipFile  = new File(TEMP_DIR, "subset_" + IdSuffix + ".zip");
-	    FileOutputStream zipFileStream = new FileOutputStream(zipFile);
-	    ZipOutputStream zout = new ZipOutputStream( new FileOutputStream(zipFile) );
-
-	    addZipEntry(c, zout, GraphMLfileNameRemote, "data/subset.xml");
-	    addZipEntry(c, zout, DSB_TMP_DIR + "/temp_" + IdSuffix + "_verts.tab", "data/vertices.tab");
-	    addZipEntry(c, zout, DSB_TMP_DIR + "/temp_" + IdSuffix + "_edges.tab", "data/edges.tab");
-
-	    zout.close();
-	    zipFileStream.close();
-
-	    result.put(GRAPHML_FILE_EXPORTED, zipFile.getAbsolutePath());
-	    
-	    String RexecDate = c.eval("as.character(as.POSIXct(Sys.time()))").asString();
-	    String RversionLine = "R.Version()$version.string";
-            String Rversion = c.eval(RversionLine).asString();
-            
-            result.put("dsbHost", RSERVE_HOST);
-            result.put("dsbPort", DSB_HOST_PORT);
-            result.put("IdSuffix", IdSuffix);
-
-            result.put("Rversion", Rversion);
-            result.put("RexecDate", RexecDate);
-            result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
-            
-            dbgLog.fine("result object (before closing the Rserve):\n"+result);
-                    
-            c.close();
-        
-	} catch (RException re) {
-	    result.put("IdSuffix", IdSuffix);
-	    result.put("RCommandHistory",  StringUtils.join(historyEntry,"\n"));
-	    result.put("RexecError", "true");
-	    result.put("RexecErrorMessage", re.getMessage());
-	    result.put("RexecErrorDescription", "R runtime Error");
-
-	    dbgLog.info("rserve exception message: "+ re.getMessage());
-	    dbgLog.info("rserve exception description: "+ "R runtime Error");
-	    return result;
-        } catch (RserveException rse) {
-            result.put("IdSuffix", IdSuffix);
-            result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
-            
-            result.put("RexecError", "true");
-	    result.put("RexecErrorMessage", rse.getMessage()); 
-	    result.put("RexecErrorDescription", rse.getRequestErrorDescription()); 
-            return result;
-
-        } catch (REXPMismatchException mme) {
-            result.put("IdSuffix", IdSuffix);
-            result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
-
-            result.put("RexecError", "true");
-            return result;
-
-        } catch (FileNotFoundException fe){
-            result.put("IdSuffix", IdSuffix);
-            result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
-            result.put("RexecError", "true");
-	    result.put("RexecErrorDescription", "File Not Found"); 
-            return result;
-
-	} catch (IOException ie){
-            result.put("IdSuffix", IdSuffix);
-            result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
-
-            result.put("RexecError", "true");
-            return result;
-            
-        } catch (Exception ex){
-            result.put("IdSuffix", IdSuffix);
-            result.put("RCommandHistory", StringUtils.join(historyEntry,"\n"));
-
-            result.put("RexecError", "true");
-            return result;
-        }
-        
-        return result;
-        
-    }
-
      private void addZipEntry(RConnection c, ZipOutputStream zout, String inputFileName, String outputFileName) throws IOException{
         RFileInputStream tmpin = c.openFile(inputFileName);
         byte[] dataBuffer = new byte[8192];
@@ -1536,26 +1084,14 @@ RserveException,
 
 		}
 
-		drc.unlockConnection(); 
+		//drc.unlockConnection(); 
 
 	    } catch (RException re) {
-		//result.put("IdSuffix", IdSuffix);
-		//result.put("RCommandHistory",  StringUtils.join(historyEntry,"\n"));
-		//result.put("RexecError", "true");
-		//result.put("RexecErrorMessage", re.getMessage());
-		//result.put("RexecErrorDescription", "init failed: R runtime Error");
-
-		//dbgLog.info("rserve exception message: "+ re.getMessage());
-		//dbgLog.info("rserve exception description: "+ "init failed: R runtime Error");
-		//return result;
 		throw new DvnRGraphException ("init: R runtime error: " + re.getMessage()); 
 
 	    } catch (DvnRGraphException dge) {
 		throw dge; 
 	    } catch (RserveException rse) {
-		//dbgLog.info("rserve exception message: "+rse.getMessage());
-		//dbgLog.info("rserve exception description: "+rse.getRequestErrorDescription());
-		//return result;
 
 		throw new DvnRGraphException ("init: RServe error: "+rse.getMessage()); 
 	    } catch (REXPMismatchException mme) {

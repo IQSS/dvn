@@ -431,7 +431,7 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
 
     public String restart_action() throws Exception {
         //reinit workspace and clear events
-        rWorkspace = networkDataService.initAnalysis(file.getFileSystemLocation() + ".RData");
+        networkDataService.resetAnalysis(rWorkspace);
         events.clear();
         events.add(getInitialEvent());
         canUndo = false;

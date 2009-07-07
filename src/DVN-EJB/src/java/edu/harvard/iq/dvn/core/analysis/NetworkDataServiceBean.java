@@ -122,7 +122,16 @@ public class NetworkDataServiceBean implements NetworkDataServiceLocal, java.io.
         subsetParameters.put(DvnRGraphServiceImpl.RSUBSETFUNCTION, DvnRGraphServiceImpl.UNDO);
 
         DvnRJobRequest rjr = new DvnRJobRequest(rWorkspace, subsetParameters);
-        Map<String, String> resultInfo = dgs.liveConnectionExecute(rjr);
+        dgs.liveConnectionExecute(rjr);
+    }
+
+    public void resetAnalysis(String rWorkspace) throws DvnRGraphException {
+        Map<String, Object> subsetParameters = new HashMap<String, Object>();
+        subsetParameters.put(DvnRGraphServiceImpl.SAVED_RWORK_SPACE, rWorkspace);
+        subsetParameters.put(DvnRGraphServiceImpl.RSUBSETFUNCTION, DvnRGraphServiceImpl.RESET);
+
+        DvnRJobRequest rjr = new DvnRJobRequest(rWorkspace, subsetParameters);
+        dgs.liveConnectionExecute(rjr);
     }
 
     public File getSubsetExport(String rWorkspace) throws DvnRGraphException {

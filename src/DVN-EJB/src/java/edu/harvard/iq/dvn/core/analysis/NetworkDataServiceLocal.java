@@ -25,6 +25,7 @@ public interface NetworkDataServiceLocal extends java.io.Serializable {
     public String runNetworkMeasure(String rWorkspace, String networkMeasure, List<NetworkMeasureParameter> parameters) throws DvnRGraphException;
 
     public void undoLastEvent(String rWorkspace) throws DvnRGraphException;
+    public void resetAnalysis(String rWorkspace) throws DvnRGraphException;
             
     public File getSubsetExport(String rWorkspace) throws DvnRGraphException;
 

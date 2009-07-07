@@ -170,10 +170,10 @@
               <ice:commandButton styleClass="dvnStudyPageInlineReleaseButton"
                                     value="Release"
                                     actionListener="#{studyPage.setReleased}" rendered="#{studyPage.studyUI.userAuthorizedToRelease and studyPage.studyUI.study.studyLock==null and studyPage.studyUI.study.inReview}"/>
-              <dvn:tooltip tooltipMessage="#{ (studyPage.selectedIndex == 0) ? studybundle.editStudyTip : studybundle.editFilesTip}" 
-                            linkText="#{ (studyPage.selectedIndex == 0) ? studybundle.editStudyText : studybundle.editFilesText}"
+              <dvn:tooltip tooltipMessage="#{ (studyPage.tabSet1.selectedIndex != 1) ? studybundle.editStudyTip : studybundle.editFilesTip}"
+                            linkText="#{ (studyPage.tabSet1.selectedIndex != 1) ? studybundle.editStudyText : studybundle.editFilesText}"
                             eventType="mouseover"
-                            linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=#{ (studyPage.selectedIndex == 0) ? 'catalog' : 'files' }#{VDCRequest.studyListingIndexAsParameter}"
+                            linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=#{ (studyPage.tabSet1.selectedIndex != 1) ? 'catalog' : 'files' }#{VDCRequest.studyListingIndexAsParameter}"
                             cssClass="vdcTooltipLink"/>
               <dvn:tooltip tooltipMessage="#{studybundle.addTip}" linkText="#{studybundle.addText}" eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/AddFilesPage.xhtml?studyId=#{studyPage.studyUI.study.id}#{VDCRequest.studyListingIndexAsParameter}" cssClass="vdcTooltipLink"/>
               <dvn:tooltip tooltipMessage="#{studybundle.permissionsTip}" linkText="#{studybundle.permissionsText}" eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPermissionsPage.xhtml?studyId=#{studyPage.studyUI.study.id}#{VDCRequest.studyListingIndexAsParameter}" cssClass="vdcTooltipLink"/>

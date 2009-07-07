@@ -478,11 +478,13 @@ public class DvnRGraphServiceImpl implements java.io.Serializable {
 		} else if ( GraphSubsetType.equals(UNDO) ) {
 		    String cEval = safeEval(drc.Rcon, "undo()").asString();
 		} else if ( GraphSubsetType.equals(RESET) ) {
-		    String origWorkSpace = SavedRworkSpace.replace(".RData", "_orig.RData");
-		    dbgLog.info("resetting the workspace; using "+origWorkSpace);
+		    dbgLog.info("resetting the workspace; using reset("+SavedRworkSpace+")");
 		    
-		    String cEval = safeEval(drc.Rcon, "load('"+origWorkSpace+"')").asString();
+		    String cEval = safeEval(drc.Rcon, "reset('"+SavedRworkSpace+"')").asString();
+
+
 		}
+
 	    }
 
 	    // get the vertices and edges counts: 

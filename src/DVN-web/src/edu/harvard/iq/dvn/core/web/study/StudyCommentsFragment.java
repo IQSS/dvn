@@ -190,8 +190,8 @@ public class StudyCommentsFragment extends VDCBaseBean implements Serializable {
          FacesContext context   = FacesContext.getCurrentInstance();
          UIComponent toValidate = (UIComponent)commentsTextarea;
          Object value           = commentsTextarea.getValue();
-         PlainTextValidator validator = new PlainTextValidator();
-         validator.validate(context, toValidate, value);
+         //PlainTextValidator validator = new PlainTextValidator();
+         //validator.validate(context, toValidate, value);
          Iterator iterator = context.getMessages(toValidate.getClientId(context));
          while (iterator.hasNext()) {
              FacesMessage message = (FacesMessage)iterator.next();

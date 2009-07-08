@@ -102,7 +102,7 @@ span.vdcStudyCommentDetails{font-size:90% !important;color:#a9a9a9;white-space:n
 .dvnReportCommentsLinks ul li a:hover{position:relative;z-index:1000;text-decoration:underline}
 .dvnReportCommentsLinks span.dvnReportCommentsFlag{padding:.2em 1em .2em 0 !important}
 .vdcStudyCommentLoginRegister{padding-top:.5em}
-.vdcStudyCommentsBlock .errorMessageFatal,.vdcStudyCommentsBlock .errorMessageError,.vdcStudyCommentsBlock .errorMessageWarn,.vdcStudyCommentsBlock .errorMessageInfo{padding-left:0 !important}
+.vdcStudyCommentsBlock .errorMessageFatal,.vdcStudyCommentsBlock .errorMessageError,.vdcStudyCommentsBlock .errorMessageWarn,.vdcStudyCommentsBlock .errorMessageInfo{padding-left:0 !important;display:block}
 .icePnlPop{z-index:1000;width:300px;height:160px}
 .icePnlPopHdr .iceOutTxt{font-family:"HelveticaNeue", Helvetica, Arial, sans-serif !important;font-size:12px !important;}
 .popupModalClose{float:right;cursor:pointer}

@@ -1,0 +1,280 @@
+README for the StatDataIO API
+last update: 2009-07-XX
+Akio Sone
+
+BACKGROUND KNOWLEGE
+    Before you code-read the StatData I/O API source files,
+    you need preparations as follows:
+    A. Required:
+        * Standsards
+            IEEE 754-1985 Standard (floating-point arithmetic)
+            ISO 8601 - Numeric representation of dates and time
+        * Java packages/classes
+            JSE
+                java.lang.Double, Float, Long, Integer, Short, Byte
+                java.lang.reflect.* (esp. Method)
+                java.nio.* (esp. ByteBuffer)
+                java.util.calendar, GregorianCalendar, date
+                java.util.ServiceLoader
+                javax.imageio.* and its reference inplementation
+                    com.sun.imageio.plugins.* (see REFERENCES-URIs)
+           Achace Commons Lang
+                org.apache.commons.lang.* (esp. ArrayUtils, StringUtils)
+
+    B. Desirable:
+        Java packages/classes
+           Apache Commons Math
+                org.apache.commons.math.stat.StatUtils
+
+
+SOURCE-FILE STRUCTURE
+
+    The StatData I/O API is designed after the Image I/O API, epsecially, emulating
+    the service loader mechanism available in JSE6
+    (java.util.ServiceLoader class).
+    
+    A. Package Structure
+    
+        1. Public API
+        ../src/DVN-EJB/src/edu/harvard/iq/dvn/ingest/
+        org/thedata/statdataio          [entry point classs and others]
+        org/thedata/statdataio/data     [stores decoded data]
+        org/thedata/statdataio/metadata [stores decoded metadata]
+        org/thedata/statdataio/spi      [service provider interface (SPI)-
+                                        related classes]
+
+        2. Dataverse-implementations
+        ../src/DVN-EJB/src/edu/harvard/iq/dvn/ingest/
+        
+        File-reading classes are organized by their format type:
+
+        statdataio/impl/plugins/dta     [STATA Dta]
+        statdataio/impl/plugins/por     [SPSS Portable(POR)]
+        statdataio/impl/plugins/sav     [SPSS System(SAV)]
+        statdataio/impl/plugins/util    [utitly classes]
+
+        3. Service-Provider Information
+        ../src/DVN-EJB/src/java/META-INF/services/
+        edu.harvard.iq.dvn.ingest.org.thedata.statdataio.spi.StatDataFileReaderSpi
+
+USAGE
+        Similar to JSE's image-IO API, the StatDataIO AP has a convenience, 
+        entry class called "StatDataIO" and its typical usage can be found in
+        the following DVN source file:
+        
+        ../src/DVN-EJB/src/java/edu/harvard/iq/dvn/ingest/dsb/DSBWrapper.java
+       
+        // excerpt from the ingest method of DSBWrapper.java (partially edited)
+        // -------------------------------------------------------------------//
+        
+        BufferedInputStream infile = null;
+        try {
+            // to-be-ingested-source file
+            File tempFile = new File(file.getTempSystemFileLocation());
+
+            infile = new BufferedInputStream(new FileInputStream(tempFile));
+            
+            // read the statistical data file and return ingested results
+            SDIOData sd = StatDataIO.read(infile);
+            
+            // get the metadata only from the ingested results
+            SDIOMetadata smd = sd.getMetadata();
+            
+            // get the location information of the saved tab-delimited-file
+            String tabDelimitedDataFileLocation =
+                    smd.getFileInformation().get("tabDelimitedDataFileLocation").toString();
+
+            infile.close();
+        
+            // how to get the ingested metadata in DDI form
+            // get a DDIWriter instance first
+            DDIWriter dw = new DDIWriter(smd);
+            
+            // then use generateDDI() method to get the metadata in DDI form
+            String metadataInDDI = dw.generateDDI();
+            
+        } catch (IOException e) {
+        
+        }
+        
+        // -------------------------------------------------------------------//
+        // end of the code-excerpt
+
+FIlE READER CLASSES
+
+    A. Decoding Logic
+    
+    A typical statistical data file usually consists of 3 blocks:
+
+    (1) header
+    (2) metadata
+    (3) data
+
+    The first two have their sub-units that start from their specific
+    marker.  The data section is usually case(observation)-wise just like a
+    typical spread sheet. The existing three plug-in file-reader classess
+    (DTAFileReader, PORFileReader, and SAVFileReader) of the StatDataIO package
+    detect each of these unit makers and apply an appropriate method coded for
+    each unit by JSE's reflection framework.
+
+    More specificaly, there is the following unifom method naming convention for
+    FileReader classes:
+
+    (1) Read() method of each reader class contains the above reflection
+    mechanism
+    (2) Read() method calls a method that is coded for a specific unit and
+    its name is "decode"+ unit name.
+
+    Decoded metadata and data are stored in an instance of SDIOData class,
+    metatadata are stored in its metadata field and data are store in data
+    field.
+
+    B.
+
+    C.
+
+    X1. Descriptive Summary/UNF statistics
+    When or After the data section of a statistica data file is decoded, a given
+    set of descriptive summary/UNF statistics are calculated by calling classes
+    external to the StataDataIO package.
+
+    X2. Data/Time variable
+    In order to avoid losing the original definition of a date or
+    time variable, its data are stored in String rather than its internal
+    numeric representation scheme (integer or float).  The variable formats that
+    follows this rule is listed in each FileReader class or its auxiliary class.
+
+
+    data themselves are stored in an instance of SDIOD
+
+FUTURE IMPLEMENTATIONS AND EXTENSIONS
+    * How to add a new FileReader class
+    A fileReader for a new file format other than STATA DTA, SPSS SAV, SPSS POR
+    can be added to the StatDataIO package without touching the API side; just
+    add it source files to a newly creadted subdirectory under the following
+    directory
+
+        ../src/DVN-EJB/src/edu/harvard/iq/dvn/ingest/
+            statdataio/impl/plugins/
+
+    also add its full class name to the follwing file:
+
+
+        ../src/DVN-EJB/src/java/META-INF/services/
+
+      edu.harvard.iq.dvn.ingest.org.thedata.statdataio.spi.StatDataFileReaderSpi
+
+        # service providers by the dvn statdataio implementation
+        edu.harvard.iq.dvn.ingest.statdataio.impl.plugins.dta.DTAFileReaderSpi
+        edu.harvard.iq.dvn.ingest.statdataio.impl.plugins.por.PORFileReaderSpi
+        edu.harvard.iq.dvn.ingest.statdataio.impl.plugins.sav.SAVFileReaderSpi
+
+        edu.harvard.iq.dvn.ingest.statdataio.impl.plugins.newFormat.NewFormatFil
+        eReaderSpi
+
+    * writer side [currently stub code only]
+
+POSSIBLE MAINTENANCE/BREAKING POINTS IN THE FUTURE
+
+    * the calling point can be shifted to further upstream of the call hierarchy.
+    
+    * the length of a field may become longer
+
+    * Unicode(non-ASCII representation) Strings in label and data fields
+
+REFERENCES
+
+    * URIs (all websites listed below were last accessed on 2009-07-08)
+
+        // pluggable application frameworks: JSE ServiceLoader API and others
+
+        Creating Extensible Applications With the Java Platform
+        http://java.sun.com/developer/technicalArticles/javase/extensible/
+
+        // JSE ImageIO API
+
+        JavaTM Image I/O Technology
+        http://java.sun.com/javase/6/docs/technotes/guides/imageio/index.html
+
+        JavaTM Image I/O API Guide
+        http://java.sun.com/javase/6/docs/technotes/guides/imageio/spec/
+        title.fm.html
+
+        // ImageIO tutorial
+        PCX Meets Image I/O: Creating an Image-Reading Java Plug-in
+        http://www.informit.com/articles/article.aspx?p=684049
+        [esp. page 3 for organizing source files]
+
+        // JDK's ImageIO reference implementation
+        download the latest OpenJDK 6 source archive from the follwing site
+
+        http://download.java.net/openjdk/jdk6/
+
+        Sun's ImageIO reference-implementation source files are found in the
+        following directory and subdirectories in the archived file:
+
+        ../src/share/classes/com/sun/imageio/plugins/
+
+        // STATA
+        Stata help for dta
+        http://www.stata.com/help.cgi?dta
+
+        // SPSS
+        Wotsit.org (the programmer's file and data format resource)
+        http://www.wotsit.org/
+        [SPSS-SAV format spec document is available from this site]
+
+        PSPP (PSPP is a program for statistical analysis of sampled data. It is
+        a free replacement for the proprietary program SPSS
+        [format information available from the site may be out-of-dated])
+        http://savannah.gnu.org/projects/pspp
+        http://git.savannah.gnu.org/cgit/pspp.git/tree/doc/dev/portable-file-
+        format.texi [POR format information]
+
+        http://git.savannah.gnu.org/cgit/pspp.git/tree/doc/dev/system-file-
+        format.texi [SAV format information]
+
+        // SAS: XPORT format
+        TS-140 THE RECORD LAYOUT OF A DATA SET IN SAS TRANSPORT (XPORT) FORMAT
+        http://support.sas.com/techsup/technote/ts140.html
+        http://support.sas.com/techsup/technote/ts140.pdf
+
+
+        // ISO date and time-related standard
+        Numeric representation of Dates and Time
+        http://www.iso.org/iso/support/faqs/faqs_widely_used_standards/
+        widely_used_standards_other/date_and_time_format.htm
+
+
+    * Documents included in this directory
+
+        SPSS_POR_format_layout.pdf .... Diagram of the SPSS POR format structure
+
+        SPSS_SAV_format_layout.pdf .... Diagram of the SPSS SAV format structure
+
+        SPSSS_format_definition.pdf ... SPSS document (?) about the SAV format
+                                        (published in 1990s?)
+
+        STATA_DTA_format_spec.pdf  .... Manual page (STATA DTA format
+                                        specification)
+
+                                        by STATA
+        SPSS_SAV_data_compression.pdf ... Diagram of How data in a SAV file are
+                                          compressed by SPSS
+
+        catStat_HowToMerge.pdf ........ Diagram of how to merge meta-data
+                                        (value label) stored in a statistical
+                                        data file
+                                        with calculated summary statistics
+        catStat_Merge_logic.pdf ....... flow-chart of how to merge meta-data
+                                        (value label) stored in a statistical
+                                        data file
+
+        ISO_8601.pdf .................. ISO 8601 Numeric representation of dates
+                                        and time (summary)
+
+
+        spss_date_conversion_help.pdf   An Excerpt from the SPSS manual page
+                                        concerning its date-type data
+
+

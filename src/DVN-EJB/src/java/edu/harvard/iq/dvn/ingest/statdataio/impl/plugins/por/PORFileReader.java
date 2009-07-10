@@ -59,28 +59,15 @@ public class PORFileReader extends StatDataFileReader{
 
     private static final int POR_HEADER_SIZE = 500;
     
-    /**
-     *
-     */
-    public static final int POR_MARK_POSITION_DEFAULT = 461;
-    /**
-     *
-     */
-    public static String POR_MARK = "SPSSPORT";
+    private static final int POR_MARK_POSITION_DEFAULT = 461;
+
+    private static String POR_MARK = "SPSSPORT";
     
     private boolean windowsNewLine = true;
     
-    // 
-    /**
-     *
-     */
-    public static final int LENGTH_SECTION_HEADER = 1;
+    private static final int LENGTH_SECTION_HEADER = 1;
 
-    // section 2
-    /**
-     *
-     */
-    public static final int LENGTH_SECTION_2 = 19;
+    private static final int LENGTH_SECTION_2 = 19;
     
     
     private static String[] FORMAT_NAMES = {"por", "POR"};
@@ -152,7 +139,7 @@ public class PORFileReader extends StatDataFileReader{
 
     // instance fields -------------------------------------------------------//
 
-   private static Logger dbgLog =
+    private static Logger dbgLog =
        Logger.getLogger(PORFileReader.class.getPackage().getName());
 
     SDIOMetadata smd = new PORMetadata();
@@ -241,7 +228,7 @@ public class PORFileReader extends StatDataFileReader{
     /**
      *
      */
-    protected String MissingValueForTextDataFileNumeric = "NA";
+    String MissingValueForTextDataFileNumeric = "NA";
 
     /**
      *
@@ -263,7 +250,7 @@ public class PORFileReader extends StatDataFileReader{
     /**
      *
      */
-    protected String MissingValueForTextDataFileString = "";
+    String MissingValueForTextDataFileString = "";
 
     /**
      *
@@ -325,7 +312,7 @@ public class PORFileReader extends StatDataFileReader{
         
         try {
             
-            String tempPORfileNameTest = "c:\\ahome\\tempPORfile.000.por";
+            
             bfReader = new BufferedReader(new InputStreamReader(
                        new FileInputStream(tempPORfileName), "US-ASCII"));
             if (bfReader == null){
@@ -416,6 +403,10 @@ public class PORFileReader extends StatDataFileReader{
             } catch (IOException ex){
                 ex.printStackTrace();
             }
+
+            if (tempPORfile.exists()){
+                tempPORfile.delete();
+            }
         }
 
         if (sdiodata == null){
@@ -425,11 +416,8 @@ public class PORFileReader extends StatDataFileReader{
         return sdiodata;
     }
     
-    /**
-     *
-     * @param stream
-     */
-    public void decodeHeader(BufferedInputStream stream){
+
+    void decodeHeader(BufferedInputStream stream){
         dbgLog.fine("***** decodeHeader(): start *****");
 
         if (stream  == null){
@@ -651,16 +639,8 @@ public class PORFileReader extends StatDataFileReader{
     }
 
 
-    /**
-     *
-     *
-     *  skip first 473-byte block up to "SPSSPORT" signature
-     *  adjust the offset position by detecting the signature
-     *  read next 19 bytes: 'A8/' + 8-character + '6/' + 6-charaxters
-     *
-     * @param reader
-     */
-    protected void decodeSec2(BufferedReader reader){
+
+    void decodeSec2(BufferedReader reader){
         dbgLog.fine("***** decodeSec2(): start *****");
         if (reader ==null){
             throw new IllegalArgumentException("decodeSec2: stream == null!");
@@ -768,11 +748,7 @@ public class PORFileReader extends StatDataFileReader{
     }
 
 
-    /**
-     *
-     * @param reader
-     */
-    protected void decodeProductName(BufferedReader reader){
+    void decodeProductName(BufferedReader reader){
         dbgLog.fine("***** 1: decodeProductName(): start *****");
         if (reader ==null){
             throw new IllegalArgumentException("decodeProductName: reader == null!");
@@ -789,11 +765,7 @@ public class PORFileReader extends StatDataFileReader{
     }
 
 
-    /**
-     *
-     * @param reader
-     */
-    protected void decodeLicensee(BufferedReader reader){
+    void decodeLicensee(BufferedReader reader){
         dbgLog.fine("***** 2: decodeLicensee(): start *****");
         
         if (reader ==null){
@@ -813,11 +785,7 @@ public class PORFileReader extends StatDataFileReader{
     }
 
 
-    /**
-     *
-     * @param reader
-     */
-    protected void decodeFileLabel(BufferedReader reader){
+    void decodeFileLabel(BufferedReader reader){
         dbgLog.fine("***** 3: decodeFileLabel(): start *****");
         
         
@@ -841,11 +809,7 @@ public class PORFileReader extends StatDataFileReader{
     }
 
 
-    /**
-     *
-     * @param reader
-     */
-    protected void decodeNumberOfVariables(BufferedReader reader){
+    void decodeNumberOfVariables(BufferedReader reader){
         dbgLog.fine("***** 4: decodeNumberOfVariables(): start *****");
         
         
@@ -896,11 +860,7 @@ public class PORFileReader extends StatDataFileReader{
     }
 
 
-    /**
-     *
-     * @param reader
-     */
-    protected void decodeFieldNo5(BufferedReader reader){
+    void decodeFieldNo5(BufferedReader reader){
         dbgLog.fine("***** 5: decodeFieldNo5(): start *****");
     
         if (reader ==null){
@@ -921,11 +881,7 @@ public class PORFileReader extends StatDataFileReader{
     }
 
 
-    /**
-     *
-     * @param reader
-     */
-    protected void decodeWeightVariable(BufferedReader reader){
+    void decodeWeightVariable(BufferedReader reader){
         dbgLog.fine("***** 6: decodeWeightVariable(): start *****");
         
         if (reader ==null){
@@ -946,11 +902,7 @@ public class PORFileReader extends StatDataFileReader{
     }
 
 
-    /**
-     *
-     * @param reader
-     */
-    protected void decodeVariableInformation(BufferedReader reader){
+    void decodeVariableInformation(BufferedReader reader){
         dbgLog.fine("***** 7: decodeVariableInformation(): start *****");
         
         if (reader ==null){
@@ -1030,11 +982,7 @@ public class PORFileReader extends StatDataFileReader{
     }
 
 
-    /**
-     *
-     * @param reader
-     */
-    protected void decodeMissValuePointNumeric(BufferedReader reader){
+    void decodeMissValuePointNumeric(BufferedReader reader){
         dbgLog.fine("***** 8: decodeMissValuePointNumeric(): start *****");
         if (reader ==null){
             throw new IllegalArgumentException("decodeMissValuePointNumeric: reader == null!");
@@ -1081,11 +1029,7 @@ public class PORFileReader extends StatDataFileReader{
     }
 
 
-    /**
-     *
-     * @param reader
-     */
-    protected void decodeMissValuePointString(BufferedReader reader){
+    void decodeMissValuePointString(BufferedReader reader){
         dbgLog.fine("***** 8S: decodeMissValuePointString(): start *****");
         //dbgLog.fine("***** 8S: decodeMissValuePointString(): start *****");
         if (reader ==null){
@@ -1125,11 +1069,7 @@ public class PORFileReader extends StatDataFileReader{
     }
 
 
-    /**
-     * 
-     * @param reader
-     */
-    protected void decodeMissValueRangeLow(BufferedReader reader){
+    void decodeMissValueRangeLow(BufferedReader reader){
         dbgLog.fine("***** 9: decodeMissValueRangeLow(): start *****");
         
         if (reader ==null){
@@ -1181,11 +1121,7 @@ public class PORFileReader extends StatDataFileReader{
     }
 
 
-    /**
-     *
-     * @param reader
-     */
-    protected void decodeMissValueRangeHigh(BufferedReader reader){
+    void decodeMissValueRangeHigh(BufferedReader reader){
         dbgLog.fine("***** A: decodeMissValueRangeHigh(): start *****");
         
         if (reader ==null){
@@ -1238,11 +1174,7 @@ public class PORFileReader extends StatDataFileReader{
     }
     
     
-    /**
-     *
-     * @param reader
-     */
-    protected void decodeMissValueRange(BufferedReader reader){
+    void decodeMissValueRange(BufferedReader reader){
         dbgLog.fine("***** B: decodeMissValueRange(): start *****");
 
         if (reader ==null){
@@ -1306,11 +1238,7 @@ public class PORFileReader extends StatDataFileReader{
     }
     
 
-    /**
-     *
-     * @param reader
-     */
-    protected void decodeVariableLabel(BufferedReader reader){
+    void decodeVariableLabel(BufferedReader reader){
         dbgLog.fine("***** C: decodeVariableLabel(): start *****");
                 
         if (reader ==null){
@@ -1332,11 +1260,7 @@ public class PORFileReader extends StatDataFileReader{
     }
     
     
-    /**
-     *
-     * @param reader
-     */
-    protected void decodeValueLabel(BufferedReader reader){
+    void decodeValueLabel(BufferedReader reader){
         dbgLog.fine("***** D: decodeValueLabel(): start *****");
 
         dbgLog.fine("variableTypeTable="+(variableTypeTable));
@@ -1408,11 +1332,7 @@ public class PORFileReader extends StatDataFileReader{
     }
 
 
-    /**
-     *
-     * @param reader
-     */
-    protected void decodeDocument(BufferedReader reader){
+    void decodeDocument(BufferedReader reader){
         dbgLog.fine("***** E: decodeDocument(): start *****");
         
         
@@ -1447,12 +1367,7 @@ public class PORFileReader extends StatDataFileReader{
     }
 
 
-    /**
-     *
-     * @param reader
-     * @throws java.io.IOException
-     */
-    protected void decodeData(BufferedReader reader) throws IOException{
+    void decodeData(BufferedReader reader) throws IOException{
         dbgLog.fine("***** F: decodeData(): start *****");
         
         // set-up for dumping data as a tab-delimited file
@@ -2222,12 +2137,7 @@ public class PORFileReader extends StatDataFileReader{
     }
 
 
-    /**
-     *
-     * @param base30String
-     * @return
-     */
-    public static double base30Tobase10Conversion(String base30String){
+    double base30Tobase10Conversion(String base30String){
 
         // new base(radix) number
         int oldBase = 30;

@@ -21,13 +21,13 @@
 
 package edu.harvard.iq.dvn.ingest.statdataio.impl.plugins.util;
 
-import static java.lang.System.*;
+
 import java.io.*;
 import java.util.*;
 import java.util.logging.*;
+//import static java.lang.System.*;
 
 import org.apache.commons.lang.*;
-import org.apache.commons.lang.builder.*;
 import org.apache.commons.math.stat.*;
 import cern.colt.list.*;
 import cern.jet.stat.Descriptive;
@@ -36,6 +36,10 @@ import cern.jet.stat.Descriptive;
 
 
 /**
+ * StatHelper provides static methods for computing descriptive statistics and
+ * frequency tables based on data stored in primitive arrays and for converting
+ * a primitive, non-double array into a double array and for encoding a primitive
+ * and String object into a sequence of bytes.
  *
  * @author Akio Sone at UNC-Odum
  */
@@ -43,28 +47,28 @@ import cern.jet.stat.Descriptive;
 
 public class StatHelper {
 
-
+    // static fields ---------------------------------------------------------//
     private static final byte STATA_MISSING_VALUE_BIAS = 26;
-//    private static byte BYTE_MISSING_VALUE = Byte.MAX_VALUE - STATA_MISSING_VALUE_BIAS;
-//    private static short SHORT_MISSIG_VALUE = Short.MAX_VALUE - STATA_MISSING_VALUE_BIAS;
-//    private static int INT_MISSING_VALUE = Integer.MAX_VALUE - STATA_MISSING_VALUE_BIAS;
-//    private static long LONG_MISSING_VALUE = Long.MAX_VALUE - STATA_MISSING_VALUE_BIAS;
+
     private static byte BYTE_MISSING_VALUE = Byte.MAX_VALUE;
     private static short SHORT_MISSIG_VALUE = Short.MAX_VALUE;
     private static int INT_MISSING_VALUE = Integer.MAX_VALUE;
     private static long LONG_MISSING_VALUE = Long.MAX_VALUE;
 
     /**
-     *
+     * The maximum number of categories in a frequency table to be returned
      */
     public static final int MAX_CATEGORIES = 50;
 
    private static Logger dbgLog =
        Logger.getLogger(StatHelper.class.getPackage().getName());
+
+    // static Methods --------------------------------------------------------//
     /**
+     * Converts an array of primitive bytes to doubles
      *
-     * @param x
-     * @return
+     * @param x    a byte array
+     * @return     a double array
      */
     public static double[] byteToDouble(byte[] x){
         double[] z= new double[x.length];
@@ -75,9 +79,10 @@ public class StatHelper {
     }
 
     /**
+     * Converts an array of primitive shorts to doubles
      *
-     * @param x
-     * @return
+     * @param x     a short array
+     * @return      a double array
      */
     public static double[] shortToDouble(short[] x){
         double[] z= new double[x.length];
@@ -88,9 +93,10 @@ public class StatHelper {
     }
 
     /**
+     * Converts an array of primitive ints to doubles
      *
-     * @param x
-     * @return
+     * @param x     an int array
+     * @return      a double array
      */
     public static double[] intToDouble(int[] x){
         double[] z= new double[x.length];
@@ -101,9 +107,10 @@ public class StatHelper {
     }
 
     /**
+     * Converts an array of primitive longs to doubles
      *
-     * @param x
-     * @return
+     * @param x     a long array
+     * @return      a double array
      */
     public static double[] longToDouble(long[] x){
         double[] z= new double[x.length];
@@ -114,9 +121,10 @@ public class StatHelper {
     }
 
     /**
+     * Converts an array of primitive floats to doubles
      *
-     * @param x
-     * @return
+     * @param x     a float array
+     * @return      a double array
      */
     public static double[] floatToDouble(float[] x){
         double[] z= new double[x.length];
@@ -127,9 +135,10 @@ public class StatHelper {
     }
 
     /**
+     * Returns a new double array of non-Double.NaN values only
      *
-     * @param x
-     * @return
+     * @param x     a double array
+     * @return      a double array
      */
     public static double[] removeNaNs(double[] x){
         List<Double> dl = new ArrayList<Double>();
@@ -143,9 +152,9 @@ public class StatHelper {
     }
 
     /**
-     *
-     * @param x
-     * @return
+     * Returns a new String array of non-empty data only
+     * @param x     a String array
+     * @return      a String array
      */
     public static String[] removeEmptyElements(String[] x){
         List<String> sl = new ArrayList<String>();
@@ -158,9 +167,10 @@ public class StatHelper {
     }
 
     /**
+     * Returns a double array of descriptive statistics from a byte array
      *
-     * @param x
-     * @return
+     * @param x     a byte array
+     * @return      a double array
      */
     public static double[] calculateSummaryStatistics(byte[] x){
         double[] z = byteToDouble(x);
@@ -168,9 +178,9 @@ public class StatHelper {
     }
 
     /**
-     *
+     * Returns a double array of descriptive statistics from a short array
      * @param x
-     * @return
+     * @return      a double array
      */
     public static double[] calculateSummaryStatistics(short[] x){
         double[] z = shortToDouble(x);
@@ -178,9 +188,10 @@ public class StatHelper {
     }
 
     /**
+     * Returns a double array of descriptive statistics from an int array
      *
-     * @param x
-     * @return
+     * @param x     an int array
+     * @return      a double array
      */
     public static double[] calculateSummaryStatistics(int[] x){
         double[] z = intToDouble(x);
@@ -189,9 +200,10 @@ public class StatHelper {
 
 
     /**
+     *  Returns a double array of descriptive statistics from a long array
      *
-     * @param x
-     * @return
+     * @param x     a long array
+     * @return      a double array
      */
     public static double[] calculateSummaryStatistics(long[] x){
         Map<String, Integer> freqTable = calculateCategoryStatistics(x);
@@ -201,9 +213,12 @@ public class StatHelper {
     }
 
     /**
-     *
-     * @param x
-     * @return
+     * Returns a Map whose keys are the set of responses within a byte array,
+     * and whose values are the corresponding frequencies.  If the number of
+     * categories is more than MAX_CATEGORIES, returns null.
+     * 
+     * @param x     a byte array
+     * @return      a Map as a categorical statistical table
      */
     public static Map<String, Integer> calculateCategoryStatistics(byte[] x){
         Map<String, Integer> frqTbl=null;
@@ -228,9 +243,12 @@ public class StatHelper {
     }
 
     /**
+     * Returns a Map whose keys are the set of responses within a short array,
+     * and whose values are the corresponding frequencies.  If the number of
+     * categories is more than MAX_CATEGORIES, returns null.
      *
-     * @param x
-     * @return
+     * @param x a short array
+     * @return  a Map as a categorical statistical table
      */
     public static Map<String, Integer> calculateCategoryStatistics(short[] x){
         Map<String, Integer> frqTbl=null;
@@ -256,9 +274,12 @@ public class StatHelper {
 
 
     /**
-     *
-     * @param x
-     * @return
+     * Returns a Map whose keys are the set of responses within an int array,
+     * and whose values are the corresponding frequencies.  If the number of
+     * categories is more than MAX_CATEGORIES, returns null.
+     * 
+     * @param x an int array
+     * @return  a Map as a categorical statistical table
      */
     public static Map<String, Integer> calculateCategoryStatistics(int[] x){
         Map<String, Integer> frqTbl=null;
@@ -285,9 +306,12 @@ public class StatHelper {
 
 
     /**
+     * Returns a Map whose keys are the set of responses within a long array,
+     * and whose values are the corresponding frequencies.  If the number of
+     * categories is more than MAX_CATEGORIES, returns null.
      *
-     * @param x
-     * @return
+     * @param x a long array
+     * @return  a Map as a categorical statistical table
      */
     public static Map<String, Integer> calculateCategoryStatistics(long[] x){
 
@@ -315,9 +339,14 @@ public class StatHelper {
 
 
     /**
+     * <p>Returns a Map whose keys are the set of responses within a float array,
+     * and whose values are the corresponding frequencies.</p>
      *
-     * @param x
-     * @return
+     * <p>This methods is for a date or time variable whose storage type is not
+     * integer-type but float.</p>
+     *
+     * @param x a float array
+     * @return  a Map as a categorical statistical table
      */
     public static Map<String, Integer> calculateCategoryStatistics(float[] x){
         long[] ftol = new long[x.length];
@@ -328,9 +357,14 @@ public class StatHelper {
     }
 
     /**
+     * <p>Returns a Map whose keys are the set of responses within a double array,
+     * and whose values are the corresponding frequencies.</p>
      *
-     * @param x
-     * @return
+     * <p>This methods is for a date or time variable whose storage type is not
+     * integer-type but double.</p>
+     *
+     * @param x a double array
+     * @return  a Map as a categorical statistical table
      */
     public static Map<String, Integer> calculateCategoryStatistics(double[] x){
         long[] dtol = new long[x.length];
@@ -341,9 +375,12 @@ public class StatHelper {
     }
 
     /**
+     * Returns a Map whose keys are the set of responses within a String array,
+     * and whose values are the corresponding frequencies. If the number of
+     * categories is more than MAX_CATEGORIES, returns null.
      *
-     * @param x
-     * @return
+     * @param x a String array
+     * @return  a Map as a categorical statistical table
      */
     public static Map<String, Integer> calculateCategoryStatistics(String[] x){
         //double[] z = longToDouble(x);
@@ -363,9 +400,10 @@ public class StatHelper {
     }
 
     /**
+     * Returns a double array of descriptive statistics from a float array
      *
-     * @param x
-     * @return
+     * @param x     a float array
+     * @return      a double array
      */
     public static double[] calculateSummaryStatistics(float[] x){
         double[] z = floatToDouble(x);
@@ -373,9 +411,10 @@ public class StatHelper {
     }
 
     /**
+     * Returns a double array of descriptive statistics from a double array
      *
-     * @param x
-     * @return
+     * @param x     a float array
+     * @return      a double array
      */
     public static double[] calculateSummaryStatistics(double[] x){
         double[] newx = removeNaNs(x);
@@ -395,9 +434,10 @@ public class StatHelper {
     }
 
     /**
+     * Returns a String array of descriptive statistics from a String array
      *
-     * @param x
-     * @return
+     * @param x     a String array
+     * @return      a String array
      */
     public static String[] calculateSummaryStatistics(String[] x){
         
@@ -413,9 +453,10 @@ public class StatHelper {
 
 
     /**
+     * Returns the number of Double.NaNs in a double-type array
      *
-     * @param x
-     * @return
+     * @param x a double array
+     * @return  the number of Double.NaNs
      */
     public static int countNaNs(double[] x){
         int NaNcounter=0;
@@ -428,9 +469,10 @@ public class StatHelper {
     }
 
     /**
+     * Returns the mode statistic of a double variable
      *
-     * @param x
-     * @return
+     * @param x     a double array
+     * @return      the mode value as double
      */
     public static double getMode(double[] x){
         double mode = Double.NaN;
@@ -461,9 +503,10 @@ public class StatHelper {
     }
 
     /**
+     * Returns the mode statistic of a String variable
      *
-     * @param x
-     * @return
+     * @param x     a String array
+     * @return      the mode value as String
      */
     public static String getMode(String[] x){
         String mode = null;
@@ -482,9 +525,14 @@ public class StatHelper {
     }
     
     /**
-     *
-     * @param FrequencyTable
-     * @return
+     * Returns the mode statistic (String) of a frequency table as a Map object
+     * whose responses (keys) are String and their corresponding frequencies are
+     * Integers
+     * 
+     * @param FrequencyTable    the Map whose keys are String and values are
+     *                           Integers
+     * @return                  the mode statistic of the frequency table as a
+     *                           String
      */
     public static String getMode(Map<String, Integer> FrequencyTable) {
         ArrayList<Map.Entry<String, Integer>> entries =
@@ -495,9 +543,14 @@ public class StatHelper {
     }
 
     /**
-     * 
-     * @param FrequencyTable
-     * @return
+     * Returns the mode statistic (int) of a frequency table as a Map object
+     * whose responses (keys) are String and their corresponding frequencies are
+     * Integers
+     *
+     * @param FrequencyTable    the Map whose keys are String and values are
+     *                           Integers
+     * @return                  the mode statistic of the frequency table as
+     *                           an int
      */
     public static int getMaxResponse(Map<String, Integer> FrequencyTable) {
         ArrayList<Map.Entry<String, Integer>> entries =
@@ -506,9 +559,11 @@ public class StatHelper {
 
         return entries.get(0).getValue();
     }
+
     /**
+     * Sorts a List of Map.Entry into descending order by value
      *
-     * @param entries
+     * @param entries   a List of Map.Etnry objects
      */
     public static void sortMapEntryListByValue(
         List<Map.Entry<String, Integer>> entries){
@@ -516,9 +571,10 @@ public class StatHelper {
     }
 
     /**
+     * Sorts a List of Map.Entry into descending or ascending order by value
      *
-     * @param entries
-     * @param descending
+     * @param entries       a List of Map.Etnry objects
+     * @param descending    sort order
      */
     public static void sortMapEntryListByValue(
         List<Map.Entry<String, Integer>> entries, boolean descending){
@@ -540,9 +596,11 @@ public class StatHelper {
     }
 
     /**
+     * Returns a frequency table constructed from a byte array
      *
-     * @param x
-     * @return
+     * @param x     a byte array
+     * @return      a Map whose keys are the set of responses in the byte array,
+     *               and whose values are the corresponding frequencies
      */
     public static Map<String, Integer>getFrequencyTable(byte[] x){
         Map<String, Integer> tbl = new TreeMap<String, Integer>();
@@ -555,9 +613,11 @@ public class StatHelper {
     }
 
     /**
+     * Returns a frequency table constructed from a short array
      *
-     * @param x
-     * @return
+     * @param x     a short array
+     * @return      a Map whose keys are the set of responses in the short array,
+     *               and whose values are the corresponding frequencies
      */
     public static Map<String, Integer>getFrequencyTable(short[] x){
         Map<String, Integer> tbl = new TreeMap<String, Integer>();
@@ -570,9 +630,11 @@ public class StatHelper {
     }
 
     /**
+     * Returns a frequency table constructed from an int array
      *
-     * @param x
-     * @return
+     * @param x     an int array
+     * @return      a Map whose keys are the set of responses in the int array,
+     *               and whose values are the corresponding frequencies
      */
     public static Map<String, Integer>getFrequencyTable(int[] x){
         Map<String, Integer> tbl = new TreeMap<String, Integer>();
@@ -585,9 +647,11 @@ public class StatHelper {
     }
 
     /**
+     * Returns a frequency table constructed from a long array
      *
-     * @param x
-     * @return
+     * @param x     a long array
+     * @return      a Map whose keys are the set of responses in the long array,
+     *               and whose values are the corresponding frequencies
      */
     public static Map<String, Integer>getFrequencyTable(long[] x){
         Map<String, Integer> tbl = new TreeMap<String, Integer>();
@@ -602,9 +666,11 @@ public class StatHelper {
     }
 
     /**
+     * Returns a frequency table constructed from a float array
      *
-     * @param x
-     * @return
+     * @param x     a float array
+     * @return      a Map whose keys are the set of responses in the float array,
+     *               and whose values are the corresponding frequencies
      */
     public static Map<String, Integer>getFrequencyTable(float[] x){
         Map<String, Integer> tbl = new TreeMap<String, Integer>();
@@ -618,9 +684,11 @@ public class StatHelper {
 
 
     /**
+     * Returns a frequency table constructed from a double array
      *
-     * @param x
-     * @return
+     * @param x     a double array
+     * @return      a Map whose keys are the set of responses in the double array,
+     *               and whose values are the corresponding frequencies
      */
     public static Map<String, Integer>getFrequencyTable(double[] x){
         Map<String, Integer> tbl = new TreeMap<String, Integer>();
@@ -633,9 +701,11 @@ public class StatHelper {
     }
 
     /**
+     * Returns a frequency table constructed from a String array
      *
-     * @param x
-     * @return
+     * @param x     a String array
+     * @return      a Map whose keys are the set of responses in the String array,
+     *               and whose values are the corresponding frequencies
      */
     public static Map<String, Integer>getFrequencyTable(String[] x){
         Map<String, Integer> tbl = new TreeMap<String, Integer>();
@@ -651,18 +721,20 @@ public class StatHelper {
 
 
     /**
-     * 
-     * @param data
-     * @return
+     * Converts a primitive byte into an array of bytes
+     *
+     * @param data  a primitive byte
+     * @return      a byte array
      */
     public static byte[] toByteArrays(byte data) {
         return new byte[]{data};
     }
 
     /**
+     * Converts a primitive short into an array of bytes
      *
-     * @param data
-     * @return
+     * @param data      a primitive short
+     * @return          a byte array
      */
     public static byte[] toByteArrays(short data) {
         return new byte[] {
@@ -672,9 +744,10 @@ public class StatHelper {
     }
 
     /**
+     * Converts a primitive char into an array of bytes
      *
-     * @param data
-     * @return
+     * @param data      a primitive char
+     * @return          a byte array
      */
     public static byte[] toByteArrays(char data) {
         return new byte[] {
@@ -684,9 +757,10 @@ public class StatHelper {
     }
 
     /**
+     * Converts a primitive int into an array of bytes
      *
-     * @param data
-     * @return
+     * @param data      a primitive int
+     * @return          a byte array
      */
     public static byte[] toByteArrays(int data) {
         return new byte[] {
@@ -699,9 +773,10 @@ public class StatHelper {
 
 
     /**
+     * Converts a primitive long into an array of bytes
      *
-     * @param data
-     * @return
+     * @param data      a primitive long
+     * @return          a byte array
      */
     public static byte[] toByteArrays(long data) {
         return new byte[] {
@@ -718,9 +793,10 @@ public class StatHelper {
 
 
     /**
+     * Converts a primitive float into an array of bytes
      *
-     * @param data
-     * @return
+     * @param data      a primitive float
+     * @return          a byte array
      */
     public static byte[] toByteArrays(float data) {
         return toByteArrays(Float.floatToRawIntBits(data));
@@ -728,9 +804,10 @@ public class StatHelper {
 
 
     /**
+     * Converts a primitive double into an array of bytes
      *
-     * @param data
-     * @return
+     * @param data      a primitive double
+     * @return          a byte array
      */
     public static byte[] toByteArrays(double data) {
         return toByteArrays(Double.doubleToRawLongBits(data));
@@ -738,9 +815,10 @@ public class StatHelper {
 
 
     /**
+     * Converts a primitive boolean into an array of bytes
      *
-     * @param data
-     * @return
+     * @param data      a primitive boolean
+     * @return          a byte array
      */
     public static byte[] toByteArrays(boolean data) {
         return new byte[]{(byte)(data ? 0x01 : 0x00)}; // bool -> {1 byte}
@@ -748,9 +826,11 @@ public class StatHelper {
 
 
     /**
+     * Converts a String into an array of bytes using the platform's default
+     * charset
      *
-     * @param data
-     * @return
+     * @param data      a String
+     * @return          a byte array
      */
     public static byte[] toByteArrays(String data) {
         return (data == null) ? null : data.getBytes();
@@ -758,10 +838,11 @@ public class StatHelper {
 
 
     /**
+     * Converts a String into an array of bytes using the named charset
      *
-     * @param data
-     * @param charsetName
-     * @return
+     * @param data          a String
+     * @param charsetName   the name of a supported charset
+     * @return              a byte array
      * @throws java.io.UnsupportedEncodingException
      */
     public static byte[] toByteArrays(String data, String charsetName)

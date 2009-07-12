@@ -44,6 +44,7 @@ reset <- function(filename){
 dump_graphml <- function(tmp_g, filename){
     #tmp_g <- remove.vertex.attribute(tmp_g, "DVN_internal_uid")
     g$filestub <- NULL
+    g <- remove.vertex.attribute(g, "id")
     write.graph(tmp_g, file=filename, format="graphml")
     return(filename)
 }

@@ -2,17 +2,17 @@
  * Dataverse Network - A web application to distribute, share and
  * analyze quantitative data.
  * Copyright (C) 2009
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation; either version 3 of the License,
  * or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  *  along with this program; if not, see http://www.gnu.org/licenses
  * or write to the Free Software Foundation,Inc., 51 Franklin Street,
@@ -25,18 +25,15 @@ import static java.lang.System.*;
 import java.util.*;
 import java.util.logging.*;
 
-import org.apache.commons.lang.*;
-import org.apache.commons.lang.builder.*;
-
 
 /**
  *
  * @author Akio Sone
  */
-public class metadataUtil {
+public class MetadataHelper {
 
    private static Logger dbgLog =
-       Logger.getLogger(metadataUtil.class.getPackage().getName());
+       Logger.getLogger(MetadataHelper.class.getPackage().getName());
 
     /**
      *
@@ -79,12 +76,12 @@ public class metadataUtil {
         } else if (valueLabeli == null){
             catStatiKeys= new TreeSet(catStati.keySet());
             caseTypeNumber = 6;
-            
+
         } else if (catStati == null){
             valueLabeliKeys= new TreeSet(valueLabeli.keySet());
              caseTypeNumber = 7;
         }
-        
+
         // merged result
         List<CategoricalStatistic> merged = new ArrayList<CategoricalStatistic>();
         Set<String> included = new TreeSet<String>();
@@ -310,7 +307,7 @@ public class metadataUtil {
                 merged.add(csmv);
             }
         }
-        
+
         dbgLog.finer("merged"+merged);
         return merged;
     }
@@ -387,3 +384,4 @@ public class metadataUtil {
     }
 
 }
+

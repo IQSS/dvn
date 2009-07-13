@@ -197,7 +197,7 @@ public class DDIWriter {
             
             // valuLabeli, catStati, missingValuei
              List<CategoricalStatistic> mergedCatStatTable =
-                metadataUtil.getMergedResult(
+                MetadataHelper.getMergedResult(
                 sdioMetadata.valueLabelTable.get(valueLabelTableName),
                 sdioMetadata.categoryStatisticsTable.get(variableNamei),
                 sdioMetadata.missingValueTable.get(variableNamei)

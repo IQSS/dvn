@@ -226,25 +226,48 @@ public class DSBWrapper implements java.io.Serializable  {
         }
     }
     
-    public String ingest(StudyFileEditBean file) throws IOException{
+    public String ingest(StudyFileEditBean file){
         dbgLog.fine("***** DSBWrapper: ingest(): start *****\n");
 
-
-
-//       if (file.getStudyFile().getFileType().equals("application/x-stata")){
-       
+       String mime_type = file.getStudyFile().getFileType(); 
+       String ddi = null;
 
        BufferedInputStream infile = null;
 
        try {
 
             // ingest-source file
-            File tempFile = new File(file.getTempSystemFileLocation()); // keep
+            File tempFile = new File(file.getTempSystemFileLocation()); // 
 
             infile = new BufferedInputStream(new FileInputStream(tempFile));
 
-            SDIOData sd = StatDataIO.read(infile);
+            dbgLog.fine("\nfile mimeType="+mime_type+"\n\n");
+
+            // get available FileReaders for this MIME-type
+            Iterator<StatDataFileReader> itr =
+                StatDataIO.getStatDataFileReadersByMIMEType(mime_type);
+
+            if (!itr.hasNext()){
+                throw new ClassNotFoundException("No FileReader Class found" +
+                    " for this mime type="+ mime_type);
+            }
+            // use the first reader
+            StatDataFileReader sdioReader = itr.next();
+
+            dbgLog.fine("reader class name="+sdioReader.getClass().getName());
+
+            SDIOData sd = null;
+            if (mime_type != null){
+                sd = sdioReader.read(infile);
+            } else {
+                // fail-safe block if mime_type is null
+                // check the format type again and then read the file
+                dbgLog.info("mime-type was null: use the back-up method");
+                sd = StatDataIO.read(infile);
+            }
+            
             SDIOMetadata smd = sd.getMetadata();
+
             // tab-file: source file
             String tabDelimitedDataFileLocation =
                     smd.getFileInformation().get("tabDelimitedDataFileLocation").toString();
@@ -255,8 +278,10 @@ public class DSBWrapper implements java.io.Serializable  {
             dbgLog.fine("mimeType :\n"+file.getStudyFile().getFileType());
 
 
+            if (infile != null){
+                infile.close();
+            }
 
-            infile.close();
             // parse the response
             StudyFile f = file.getStudyFile();
 
@@ -267,13 +292,12 @@ public class DSBWrapper implements java.io.Serializable  {
             if (!newDir.exists()) {
                 newDir.mkdirs();
             }
-                        dbgLog.fine("newDir: abs path:\n"+newDir.getAbsolutePath());
-            /*
+            dbgLog.fine("newDir: abs path:\n"+newDir.getAbsolutePath());
 
-            */
             // tab-file case: destination
             File newFile = new File( newDir, tempFile.getName() );
 
+            // nio-based file-copying idiom
             FileInputStream fis = new FileInputStream(tabDelimitedDataFileLocation);
             FileOutputStream fos = new FileOutputStream(newFile);
             FileChannel fcin = fis.getChannel();
@@ -291,12 +315,21 @@ public class DSBWrapper implements java.io.Serializable  {
 
             // return xmlToParse;
             DDIWriter dw = new DDIWriter(smd);
-            return dw.generateDDI();
+            ddi = dw.generateDDI();
+
+        } catch (IOException e){
+            dbgLog.severe("DSBWrapper:ingest(): IOException");
+            e.printStackTrace();
+        } catch (ClassNotFoundException ec){
+            dbgLog.severe("DSBWrapper:ingest(): ClassNotFoundException");
+            ec.printStackTrace();
+        } catch (Exception ex){
+            ex.printStackTrace();
         } finally {
 
         }
 
-
+        return ddi;
 
 
 //        } else {

@@ -407,6 +407,10 @@ REFERENCES
         (2) Statistical Data Formats
 
         SPSS_POR_format_layout.pdf .... Diagram of the SPSS POR format structure
+        
+        SPSS_POR_format_for_perl.pdf .. Memo for Perl programmers about SPSS
+                                        POR-format structure and how to read it
+                                        by Perl
 
         SPSS_SAV_format_layout.pdf .... Diagram of the SPSS SAV format structure
 

@@ -31,24 +31,42 @@ import static java.lang.System.*;
 import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.spi.*;
 
 /**
- *
- * @author akio sone
+ * An entry-point class of the StatData I/O API and contains
+ * static convenience methods that locate <code>StatDataFileReader</code>s and
+ * <code>StatDataFileWriter</code>s, and read and write a statistical data file.
+ * 
+ * @author akio sone at UNC-Odum
+ * @version $Revision$($Date$)
  */
 public final class StatDataIO {
 
     private static Logger dbgLog = Logger.getLogger(StatDataIO.class.getPackage().getName());
 
+    /**
+     * The static registry serves as a singleton that prevents
+     * duplicated loading of plug-in classes.  The singleton 
+     * attribute of <code>theRegistry</code> is implemented by the
+     * <code>edu.harvard.iq.dvn.ingest.org.thedata.statdataio.spi.Regsitry</code> class.
+     */
     private static final SDIORegistry theRegistry =
         SDIORegistry.getDefaultInstance();
         
         
     /**
-     *
+     * Scans for StatDataIO-plug-ins on the application class path, 
+     * loads their service provider classes, and registers
+     * a service provider instance for each of those found with the 
+     * <code>SDIORegistry</code>.
+     * 
+     * The application class path is scanned only on the first invocation
+     * of this API and theRegistry is a singleton.
      */
     public static void scanForPlugins() {
         theRegistry.registerApplicationClasspathSpis();
     }
-    
+    /**
+     * Constructor is private to avoid instantiation.
+     */
     private StatDataIO() {
     }
 
@@ -101,24 +119,34 @@ public final class StatDataIO {
     // Readers
 
     /**
+     * Returns a <code>String</code> array that lists all of
+     * the format names understood by 
+     * the currently registered readers
      *
-     * @return
+     * @return a <code>String</code> array
      */
     public static String[] getReaderFormatNames() {
         return getReaderWriterInfo(StatDataFileReaderSpi.class, SpiInfo.FORMAT_NAMES);
     }
 
     /**
+     * Returns a <code>String</code> array that lists all of
+     * the MIME types understood by 
+     * the currently registered readers
      *
-     * @return
+     * @return a <code>String</code> array
      */
     public static String[] getReaderMIMETypes() {
         return getReaderWriterInfo(StatDataFileReaderSpi.class, SpiInfo.MIME_TYPES);
     }
 
     /**
+     * Returns a <code>String</code> array that lists all of
+     * the file extensions
+     * associated with the formats understood by 
+     * the currently registered readers
      *
-     * @return
+     * @return a <code>String</code> array
      */
     public static String[] getReaderFileSuffixes() {
         return getReaderWriterInfo(StatDataFileReaderSpi.class, SpiInfo.FILE_SUFFIXES);
@@ -187,7 +215,6 @@ public final class StatDataIO {
 
                     canDecode = spi.canDecodeInput(stream);
 
-
                     dbgLog.fine(spi.getClass().getName()+": canDecode="+canDecode);
 
                     if (stream != null) {
@@ -208,8 +235,6 @@ public final class StatDataIO {
                     
                 }
                     return canDecode;
-
-
                 
             } catch (IOException e) {
                 return false;
@@ -243,9 +268,23 @@ public final class StatDataIO {
 
 
     /**
+     * Returns an <code>Iterator</code> that contains all of the 
+     * currently registered <code>StatDataFileReader</code>s that
+     * claim to read the supplied <code>Object</code>,
+     * usually <code>BufferedInputStream</code>
      *
-     * @param input
-     * @return
+     * <p>The position of the stream is set back to the initial position
+     * upon exit from this method
+     * 
+     * @param input a <code>BufferedInputStream</code> or other
+     * <code>Object</code> that contains statistical data.
+     *
+     * @return an <code>Iterator</code> that contains
+     * <code>StatDataFileReader</code>
+     *
+     * @exception IllegalArgumentException if <code>input</code> is
+     * <code>null</code>.
+     * 
      */
     public static Iterator<StatDataFileReader> getStatDataFileReaders(Object input) {
         dbgLog.fine("********** within getStatDataFileReaders **********");
@@ -269,7 +308,6 @@ public final class StatDataIO {
         } catch (IllegalArgumentException e) {
             return  new HashSet().iterator();
         }
-
 
         return new StatDataFileReaderIterator(iter);
     }
@@ -303,13 +341,21 @@ public final class StatDataIO {
 
 
     /**
+     * Returns an <code>Iterator</code> that contains all of the
+     * currently registered <code>StatDataFileReader</code>s that
+     * claims to read the named format.
      *
-     * @param formatName
-     * @return
+     * @param formatName a <code>String</code> that contains the 
+     * conventional name of a format (<i>e.g.</i>, "dta" or "sav").
+     
+     * @return an <code>Iterator</code> that contains 
+     * <code>StatDataFileReader</code>s.
+     * 
+     * @exception IllegalArgumentException if <code>formatName</code>
+     * is <code>null</code>
      */
     public static Iterator<StatDataFileReader>
-        getStatDataFileReadersByFormatName(String formatName)
-    {
+        getStatDataFileReadersByFormatName(String formatName){
         if (formatName == null) {
             throw new IllegalArgumentException("formatName == null!");
         }
@@ -328,13 +374,21 @@ public final class StatDataIO {
 
 
     /**
+     * Returns an <code>Iterator</code> that contains all of the 
+     * currently registered <code>StatDataFileReader</code>s that
+     * claim to read files with the given file extension.
+     * 
+     * @param fileSuffix a <code>String</code> that contains a file
+     * extension (<i>e.g.</i>, "dta" or "sav").
      *
-     * @param fileSuffix
-     * @return
+     * @return an <code>Iterator</code> that contains 
+     * <code>StatDataFileReader</code>s.
+     * 
+     * @exception IllegalArgumentException if <code>fileSuffix</code>
+     * is <code>null</code>
      */
     public static Iterator<StatDataFileReader>
-        getStatDataFileReadersBySuffix(String fileSuffix)
-    {
+        getStatDataFileReadersBySuffix(String fileSuffix){
         if (fileSuffix == null) {
             throw new IllegalArgumentException("fileSuffix == null!");
         }
@@ -355,13 +409,22 @@ public final class StatDataIO {
 
 
     /**
+     * Returns an <code>Iterator</code> that contains all of the
+     * currently registered <code>StatDataFileReader</code>s that
+     * claim to read files with the given MIME type.
      *
-     * @param MIMEType
-     * @return
+     * @param MIMEType a <code>String</code> that contains a MIME-
+     * type string (<i>e.g.</i>, "application/x-stata" or
+     * "application/x-spss-sav").
+     * 
+     * @return an <code>Iterator</code> that contains
+     * <code>StatDataFileReader</code>
+     *
+     * @exception IllegalArgumentException if <code>MIMEType</code>
+     * is <code>null</code>
      */
     public static Iterator<StatDataFileReader>
-        getStatDataFileReadersByMIMEType(String MIMEType)
-    {
+        getStatDataFileReadersByMIMEType(String MIMEType){
         if (MIMEType == null) {
             throw new IllegalArgumentException("MIMEType == null!");
         }
@@ -380,14 +443,14 @@ public final class StatDataIO {
 
 
 
-
-
     // Writers
 
-
     /**
-     *
-     * @return
+     * Returns a <code>String</code> array that lists all of
+     * the MIME types understood by 
+     * the currently registered writers
+     * 
+     * @return a <code>String</code> array.
      */
     public static String[] getWriterFormatNames() {
         return getReaderWriterInfo(StatDataFileWriterSpi.class, 
@@ -396,8 +459,11 @@ public final class StatDataIO {
 
 
     /**
+     * Returns a <code>String</code> array that lists all of
+     * the MIME types understood by 
+     * the currently registered writers
      *
-     * @return
+     * @return a <code>String</code> array.
      */
     public static String[] getWriterMIMETypes() {
         return getReaderWriterInfo(StatDataFileWriterSpi.class, 
@@ -406,22 +472,17 @@ public final class StatDataIO {
 
 
     /**
+     * Returns a <code>String</code> array that lists all of
+     * the file extensions
+     * associated with the formats understood by 
+     * the currently registered writers
      *
-     * @return
+     * @return a <code>String</code> array.
      */
     public static String[] getWriterFileSuffixes() {
         return getReaderWriterInfo(StatDataFileWriterSpi.class, 
         SpiInfo.FILE_SUFFIXES);
     }
-
-
-
-
-
-
-
-
-
 
 
     static class StatDataFileWriterIterator implements
@@ -465,9 +526,18 @@ public final class StatDataIO {
     }
 
     /**
+     * Returns an <code>Iterator</code> that contains all of the
+     * currently registered <code>StatDataFileWriter</code>s that
+     * claims to write the named format.
      *
-     * @param formatName
-     * @return
+     * @param formatName a <code>String</code> that contains the 
+     * conventional name of a format (<i>e.g.</i>, "dta" or "sav").
+     
+     * @return an <code>Iterator</code> that contains 
+     * <code>StatDataFileWriter</code>s.
+     * 
+     * @exception IllegalArgumentException if <code>formatName</code>
+     * is <code>null</code>
      */
     public static Iterator<StatDataFileWriter>
             getStatDataFileWritersByFormatName(String formatName){
@@ -489,9 +559,18 @@ public final class StatDataIO {
 
 
     /**
+     * Returns an <code>Iterator</code> that contains all of the 
+     * currently registered <code>StatDataFileWriter</code>s that
+     * claim to write files with the given file extension.
      * 
-     * @param fileSuffix
-     * @return
+     * @param fileSuffix a <code>String</code> that contains a file
+     * extension (<i>e.g.</i>, "dta" or "sav").
+     *
+     * @return an <code>Iterator</code> that contains 
+     * <code>StatDataFileWriter</code>s.
+     * 
+     * @exception IllegalArgumentException if <code>fileSuffix</code>
+     * is <code>null</code>
      */
     public static Iterator<StatDataFileWriter>
             getStatDataFileWritersBySuffix(String fileSuffix){
@@ -513,13 +592,22 @@ public final class StatDataIO {
 
 
     /**
+     * Returns an <code>Iterator</code> that contains all of the
+     * currently registered <code>StatDataFileWriter</code>s that
+     * claim to write files with the given MIME type.
      *
-     * @param MIMEType
-     * @return
+     * @param MIMEType a <code>String</code> that contains a MIME-
+     * type string (<i>e.g.</i>, "application/x-stata" or
+     * "application/x-spss-sav").
+     * 
+     * @return an <code>Iterator</code> that contains
+     * <code>StatDataFileWriter</code>
+     *
+     * @exception IllegalArgumentException if <code>MIMEType</code>
+     * is <code>null</code>
      */
     public static Iterator<StatDataFileWriter>
-    getStatDataFileWritersByMIMEType(String MIMEType)
-    {
+        getStatDataFileWritersByMIMEType(String MIMEType){
         if (MIMEType == null) {
             throw new IllegalArgumentException("MIMEType == null!");
         }
@@ -538,9 +626,17 @@ public final class StatDataIO {
 
 
     /**
+     * Returns <code>StatDataFileWriter</code> corresponding to the given
+     * <code>StatDataFileReader</code> instance if there is one, or 
+     * <code>null</code> if information of this correspondence is not 
+     * available.
      *
-     * @param reader
-     * @return
+     * @param reader an instance of a registered <code>StatDataFileReader</code>.
+     *
+     * @return a <code>StatDataFileWriter</code> instance, or null.
+     *
+     * @exception IllegalArgumentException if <code>writer</code> is
+     * <code>null</code>.
      */
     public static StatDataFileWriter getStatDataFileWriter(
             StatDataFileReader reader) {
@@ -603,33 +699,18 @@ public final class StatDataIO {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     /**
+     * Returns <code>StatDataFileReader</code> corresponding to the given
+     * <code>StatDataFileWriter</code> instance if there is one, or 
+     * <code>null</code> if information of this correspondence is not 
+     * available.
+     * 
+     * @param writer an instance of a registered <code>StatDataFileWriter</code>.
      *
-     * @param writer
-     * @return
+     * @return a <code>StatDataFileReader</code> instance, or null.
+     *
+     * @exception IllegalArgumentException if <code>writer</code> is
+     * <code>null</code>.
      */
     public static StatDataFileReader getStatDataFileReader(StatDataFileWriter writer) {
         if (writer == null) {
@@ -690,16 +771,22 @@ public final class StatDataIO {
     }
 
 
-
-
     // All-in-one methods
 
     // read() methods: 3 varities (File, InputStream, URL)
+    
     /**
-     *
-     * @param input
-     * @return
-     * @throws java.io.IOException
+     * Returns a <code>SDIOData</code> instance as the result of reading
+     * a given <code>File</code> with a <code>StatDataFileReader</code>
+     * that is automatically selected from among those currently
+     * registered.
+     * 
+     * @param input a <code>File</code>instance to read from.
+     * 
+     * @return a <code>SDIOData</code> that contains the reading results of
+     * the input, or <code>null</code>.
+     * 
+     * @throws java.io.IOException if a reading error is detected.
      */
     public static SDIOData read(File input) throws IOException {
         dbgLog.fine("\n\n***** within read: file case *****");
@@ -725,10 +812,17 @@ public final class StatDataIO {
 
 
     /**
+     * Returns a <code>SDIOData</code> instance as the result of reading
+     * a given <code>BufferedInputStream</code> 
+     * with an <code>StatDataFileReader</code> that is automatically 
+     * selected from among those currently registered.
      *
-     * @param input
-     * @return
-     * @throws java.io.IOException
+     * @param input a <code>BufferedInputStream</code> instance to read from
+     *
+     * @return a <code>SDIOData</code> that contains the reading results of
+     * the input, or <code>null</code>.
+     *
+     * @throws java.io.IOException if a reading error is detected.
      */
     public static SDIOData read(BufferedInputStream input) throws IOException {
         dbgLog.fine("\n\n***** within read: bis case *****");
@@ -756,10 +850,20 @@ public final class StatDataIO {
 
 
     /**
+     * Returns a <code>SDIOData</code> instance as the result of reading
+     * a given <code>URL</code> with an <code>StatDataFileReader</code>
+     * that is automatically selected from among those currently registered.
+     * A <code>BufferedInputStream</code> instance is obtained from the 
+     * <code>URL</code>. If there is no registered <code>StatDataFileReader</code>
+     * that is supposed to be able to read the resulting stream, 
+     * <code>null</code> is returned.
      *
-     * @param input
-     * @return
-     * @throws java.io.IOException
+     * @param input a <code>URL</code> instance to read from.
+     *
+     * @return a <code>SDIOData</code> that contains the reading results of
+     * the input, or <code>null</code>.
+     *
+     * @throws java.io.IOException if a reading error is detected.
      */
     public static SDIOData read(URL input) throws IOException {
         dbgLog.fine("***** within read: URL case *****");
@@ -787,17 +891,26 @@ public final class StatDataIO {
     }
 
 
-
     // write(): two varieties File and Outputstream
 
-
     /**
+     * Writes a statistical data  using an <code>StatDataFileWriter</code>
+     * supporting the given file format to a <code>File</code> instance.
+     * if this <code>File</code> instance already exists, it is overwritten.
+     * 
+     * @param sd a <code>SDIOData</code> instance that contains the data and metadata
+     * to be saved
+     * 
+     * @param formatName    a<code>String</code> that contains the conventional
+     * name of the format
      *
-     * @param sd
-     * @param formatName
-     * @param output
-     * @return
-     * @throws java.io.IOException
+     * @param output a <code>File</code> instance to be written to.
+     * 
+     * @return <code>false</code> if an appropriate writer is not found.
+     *
+     * @exception IllegalArgumentException if any parameter is <code>null</code>.
+     *
+     * @throws java.io.IOException  if a writing error is detected.
      */
     public static boolean write(SDIOData sd,
                                 String formatName,
@@ -824,12 +937,25 @@ public final class StatDataIO {
 
 
     /**
+     * Writes a statistical data  using an <code>StatDataFileWriter</code>
+     * supporting the given file format to a <code>OutputStream</code> instance.
      *
-     * @param sd
-     * @param formatName
-     * @param stream
-     * @return
-     * @throws java.io.IOException
+     * <p>This method <em>does not</em> close the supplied <code>OutputStream</code>
+     * after the writer finishes writing.</p>
+     * 
+     * @param sd a <code>SDIOData</code> instance that contains the data and metadata
+     * to be saved
+     * 
+     * @param formatName    a<code>String</code> that contains the conventional
+     * name of the format
+     * 
+     * @param stream an <code>OutputStream</code> instance to be written to.
+     *
+     * @return <code>false</code> if an appropriate writer is not found.
+     *
+     * @exception IllegalArgumentException if any parameter is <code>null</code>.
+     *
+     * @throws java.io.IOException  if a writing error is detected.
      */
     public static boolean write(SDIOData sd,
                                 String formatName,

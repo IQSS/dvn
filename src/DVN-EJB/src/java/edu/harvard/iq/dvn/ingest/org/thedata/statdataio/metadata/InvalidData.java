@@ -24,56 +24,109 @@ import java.util.*;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 /**
- *
+ * A class that stores information about a variables' invalid data.
+ * 
  * @author asone
  */
 public class InvalidData {
 
 
+    /**
+     * Constructs an <code>InvalidData</code> object with the given
+     * type as an <code>int</code> value.
+     * 
+     * @param type an <code>int</code> value representing the type of
+     * invalid datum.
+     */
     public InvalidData(int type) {
         this.type = type;
-//        if (type > 0){
-//            invalidValues = new ArrayList<String>(type);
-//        } else if (type == -2){
-//            invalidRange = new ArrayList<String>(2);
-//        } else if (type == -3){
-//            invalidValues = new ArrayList<String>(1);
-//            invalidRange = new ArrayList<String>(2);
-//        }
     }
 
-    protected int type;
+    /**
+     * The type of a <code>InvalidData</code> object represented by 
+     * <code>int</code> following the coding scheme of SPSS SAV foramt.
+     * 
+     */
+    int type;
 
+    /**
+     * Returns the value of the type field.
+     * 
+     * @return the value of the type field.
+     */
     public int getType() {
         return type;
     }
 
+    /**
+     * Sets the value of the type field.
+     * 
+     * @param type new value of the type field.
+     */
     public void setType(int type) {
         this.type = type;
     }
 
-    protected List<String> invalidValues;
+    /**
+     * A <code>List</code> object that stores invalid values,
+     * usually missing values.
+     */
+    List<String> invalidValues;
 
+    /**
+     * Returns the value of the invalidValues field.
+     * 
+     * @return a <code>List</code> object that holds invalid values.
+     */
     public List<String> getInvalidValues() {
         return invalidValues;
     }
 
+    /**
+     * Sets the value of the invalidValues field.
+     
+     * @param invalidValues a <code>List</code> object
+     * that holds invalid values.
+     */
+    
     public void setInvalidValues(List<String> invalidValues) {
         this.invalidValues = invalidValues;
     }
 
-    protected List<String> invalidRange;
+    /**
+     * A <code>List</code> object that stores information about 
+     * the invalid range.
+     */
+    List<String> invalidRange;
 
+    /**
+     * Returns the value of the invalidRange field.
+     * 
+     * @return a <code>List</code> object that holds data 
+     * about the invalid range.
+     */
     public List<String> getInvalidRange() {
         return invalidRange;
     }
 
+    /**
+     * Sets the value of the invalidRange field.
+     * 
+     * @param invalidRange a <code>List</code> object
+     * that holds data about the invalid range.
+     */
     public void setInvalidRange(List<String> invalidRange) {
         this.invalidRange = invalidRange;
     }
 
 
 
+    /**
+     * Returns a string representation of this instance as
+     * an invalrng tag of the DDI format.
+     * 
+     * @return a string as an invalrng tag of the DDI format.
+     */
     public String toDDItag(){
         StringBuilder sb = new StringBuilder();
 
@@ -118,6 +171,11 @@ public class InvalidData {
         return sb.toString();
     }
 
+    /**
+     * Returns a string representation of this instance.
+     * 
+     * @return a string representing this instance.
+     */
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this,

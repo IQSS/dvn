@@ -22,15 +22,26 @@ package edu.harvard.iq.dvn.ingest.org.thedata.statdataio.spi;
 
 import java.util.*;
 import java.security.*;
-import static java.lang.System.*;
+import java.util.logging.*;
 
 
 /**
- *
- * @author Akio Sone
+ * A registry class for StatData I/O service provider instances.
+ * This class is coded after javax.imageio.spi.IIORegistry of OpenJDK 6.0.
+ * Wth the <code>Registry</code> class in the package, an instance of 
+ * this class remains singleton.
+ * 
+ * @author Akio Sone at UNC-Odum
  */
 public final class SDIORegistry extends ServiceRegistry{
 
+   private static Logger dbgLog =
+       Logger.getLogger(SDIORegistry.class.getPackage().getName());
+       
+    /**
+     * A <code>Vector</code> that contains the valid SDIO registry
+     * categories (reader and writer only) to be used in the constructor. 
+     */    
     private static final Vector initialCategories = new Vector(2);
 
     static {
@@ -39,17 +50,24 @@ public final class SDIORegistry extends ServiceRegistry{
     }
 
     /**
-     *
+     * Sets up the valid provider categories (reader and writer) and 
+     * automatically register all (those in initialCategories, 
+     * those hardwired here, and those on the application class path )
+     * available service provider classes.
      */
-    protected SDIORegistry() {
+    SDIORegistry() {
         super(initialCategories.iterator());
+        
         registerStandardSpis();
         registerApplicationClasspathSpis();
     }
 
     /**
-     *
-     * @return
+     * Returns the default <code>SDIORegistry</code> instance used by 
+     * the StatData I/O API.  The instance is created only if it is not 
+     * registered in Registry REGISTRY.
+     * 
+     * @return the default resistry
      */
     public static SDIORegistry getDefaultInstance() {
 
@@ -62,29 +80,52 @@ public final class SDIORegistry extends ServiceRegistry{
     }
 
     private void registerStandardSpis() {
-        // Hardwire standard SPIs
-        //out.println("within registerStandardSpis");
-        //registerServiceProvider(new DTAFileReaderSpi());
-        //registerServiceProvider(new DTAFileWriterSpi());
+        // No Hardwired standard SPIs
+        dbgLog.fine("within registerStandardSpis");
         registerInstalledProviders();
     }
 
+    private void registerInstalledProviders() {
+        dbgLog.fine("+++++ registerInstalledProviders: begins +++++");
+        PrivilegedAction doRegistration =
+            new PrivilegedAction() {
+                public Object run() {
+                    Iterator categories = getCategories();
+                    while (categories.hasNext()) {
+                        Class<SDIOServiceProvider> c = (Class)categories.next();
+                        dbgLog.fine("c="+c.getName());
+                        for (SDIOServiceProvider p : ServiceLoader.loadInstalled(c)) {
+                            // the following method found in ServiceRegistry class
+                            registerServiceProvider(p);
+                        }
+                    }
+                    return this;
+                }
+            };
+        AccessController.doPrivileged(doRegistration);
+        dbgLog.fine("+++++ registerInstalledProviders: ends +++++");
+    }
+
     /**
-     * 
+     * Registers all available service provider classes found on the
+     * application class path, using the default <code>ClassLoader</code>.
+     * This method is usually invoked by the 
+     * <code>StatDataIO.scanForPlugins</code> method.
      */
     public void registerApplicationClasspathSpis() {
-        //out.println("within registerApplicationClassthSpis");
+        dbgLog.fine("+++++ SDIORegistry.registerApplicationClassthSpis: start");
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
 
         Iterator categories = getCategories();
         while (categories.hasNext()) {
             Class<SDIOServiceProvider> c = (Class)categories.next();
-            //out.println("category class="+c);
+            dbgLog.fine("category class="+c);
             Iterator<SDIOServiceProvider> riter =
                     ServiceLoader.load(c, loader).iterator();
             while (riter.hasNext()) {
                 try {
                     SDIOServiceProvider r = riter.next();
+                    // the following method found in ServiceRegistry class
                     registerServiceProvider(r);
                 } catch (ServiceConfigurationError err) {
                     if (System.getSecurityManager() != null) {
@@ -95,25 +136,9 @@ public final class SDIORegistry extends ServiceRegistry{
                 }
             }
         }
+        dbgLog.fine("+++++ SDIORegistry.registerApplicationClassthSpis: end");
     }
 
-    private void registerInstalledProviders() {
-        //out.println("+++++ registerInstalledProviders: begins +++++");
-        PrivilegedAction doRegistration =
-            new PrivilegedAction() {
-                public Object run() {
-                    Iterator categories = getCategories();
-                    while (categories.hasNext()) {
-                        Class<SDIOServiceProvider> c = (Class)categories.next();
-                        //out.println("c="+c.getName());
-                        for (SDIOServiceProvider p : ServiceLoader.loadInstalled(c)) {
-                            registerServiceProvider(p);
-                        }
-                    }
-                    return this;
-                }
-            };
-        AccessController.doPrivileged(doRegistration);
-    }
+
 
 }

@@ -22,11 +22,24 @@
 package edu.harvard.iq.dvn.ingest.org.thedata.statdataio.data;
 
 /**
+ * This enum provides constants of the three common
+ * dataset organizations: tabular, hierachical, and network.
  *
- * @author Akio Sone
+ * @author Akio Sone at UNC-Odum
  */
 public enum RecognizedDataTypes {
+    /**
+     * Spreadsheet-like format, row and column are variables and cases or
+     * <i>vice versa</i>.
+     */
     TABULAR,
+    /**
+     * Tree-like format
+     */
     HIERACHICAL,
+    /**
+     * Consists of data for the arcs and nodes of a network.
+     * Used for the Social Network Analysis (SNA)
+     */
     NETWORK;
 }

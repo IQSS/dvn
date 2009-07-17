@@ -30,7 +30,7 @@ import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.metadata.*;
 
 /**
  *
- * @author Akio Sone
+ * @author Akio Sone at UNC-Odum
  */
 public class DTAMetadata extends SDIOMetadata{
 
@@ -40,14 +40,9 @@ public class DTAMetadata extends SDIOMetadata{
     public static String[] DTA_FILE_INFORMATION_ITEMS= {
         "releaseNumber", "byteOrder", "OSByteOrder"};
 
-    static {
-
-
-        
-    }
 
     /**
-     * 
+     * Constructs a <code>DTAMetadata</code> object. 
      */
     public DTAMetadata() {
         super();
@@ -64,21 +59,6 @@ public class DTAMetadata extends SDIOMetadata{
             fileInformation.put(it, "");
         }
     }
-
-    /**
-     *
-     */
-    protected Map<String, Object> process_record =
-            new LinkedHashMap<String, Object>();
-
-    /**
-     *
-     * @return
-     */
-    public Map<String, Object> getProcess_record() {
-        return process_record;
-    }
-
 
     @Override
     public String toString() {

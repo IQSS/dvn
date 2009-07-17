@@ -28,44 +28,48 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 
 /**
- *
+ * A writer that renders a <code>SDIOMetadata</code> object in 
+ * <a href="http://www.ddialliance.org/">Data Documentation Initiative
+ * </a>(DDI) format.
+ * 
  * @author Akio Sone at UNC-Odum
  */
 public class DDIWriter {
 
 
     /**
-     *
+     * A <code>SDIOMetadata</code> object to be rendered in DDI format
+     * 
      */
     protected SDIOMetadata sdioMetadata;
 
     /**
-     *
+     * The default missing value string ('\u002E').
      */
     public String MISSING_VALUE_TOKEN =".";
 
     /**
-     *
+     * The missing value (Long.MAX_VALUE) for a discrete variable
+     * as <code>String</code>
      */
     public String MISSING_VALUE_DISCRETE ="9223372036854775807";
 
     /**
-     *
-     * @param userDefinedMissingValue
+     * Sets the value of MISSING_VALUE_TOKEN
+     * @param userDefinedMissingValue user-selected missing value
      */
     public void setMISSING_VALUE_TOKEN(String userDefinedMissingValue) {
         this.MISSING_VALUE_TOKEN = userDefinedMissingValue;
     }
 
-//    private static Set<Integer> EXCLUDE_IF_DISCRETE = new HashSet<Integer>();
-//    private int[] excluded_number = {0, 7};
 
     static {
 
     }
 
     /**
-     *
+     * Constructs  a DDIWriter instance with the given <code>SDIOMetadata</code> object.
+     * 
      * @param sdioMetadata
      */
     public DDIWriter(SDIOMetadata sdioMetadata) {
@@ -74,8 +78,10 @@ public class DDIWriter {
     }
 
     /**
-     *
-     * @return
+     * Renders the given <code>SDIOMetadata</code> object as a <code>String</code>
+     * according to the DDI specification 2.0.
+     * 
+     * @return an XML representation of the <code>SDIOMetadata</code> object.
      */
     public String generateDDI(){
         StringBuilder sb = new StringBuilder();

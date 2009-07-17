@@ -27,6 +27,8 @@ import java.io.*;
 import java.nio.*;
 import java.nio.channels.*;
 import java.util.logging.*;
+import java.util.Locale;
+
 import static java.lang.System.*;
 
 import org.apache.commons.codec.binary.Hex;
@@ -69,6 +71,18 @@ public class PORFileReaderSpi extends StatDataFileReaderSpi{
             mimeType,
             PORFileReaderSpi.class.getName());
        dbgLog.fine(PORFileReaderSpi.class.getName()+"is called");
+    }
+
+    /**
+     * Returns the value of the description of the corresponding
+     * PORFileReader class.
+     *
+     * @param locale
+     * @return the value of the description of the corresponding
+     * PORFileReader class
+     */
+    public String getDescription(Locale locale) {
+        return "HU-IQSS-DVN-project SPSS Portable File Reader";
     }
 
     @Override

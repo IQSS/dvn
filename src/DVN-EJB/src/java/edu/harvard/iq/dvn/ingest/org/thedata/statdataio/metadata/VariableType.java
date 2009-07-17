@@ -22,11 +22,22 @@
 package edu.harvard.iq.dvn.ingest.org.thedata.statdataio.metadata;
 
 /**
- *
+ * This enum provides constants of the three common
+ * variable types: continuous, discrete, and character.
  * @author Akio Sone
  */
 public enum VariableType {
+    /**
+     * numeric variable usually represented by <code>Float</code> or <code>Double</code>.
+     */
     CONTINUOUS,
+    /**
+     * numeric variable usually represented by <code>Long</code>, <code>Integer</code>, 
+     * <code>Short</code>, or <code>Byte</code>.
+     */
     DISCRETE,
+    /**
+     * character variable usually represented by <code>String</code>.
+     */
     CHARACTER;
 }

@@ -22,10 +22,57 @@
 package edu.harvard.iq.dvn.ingest.org.thedata.statdataio.data;
 
 /**
- *
+ * A superclass for representing data in a statistical data file.
+ * 
  * @author Akio Sone
  */
-public abstract class Data {
+public class Data {
+
+    /**
+     * A <code>Sring</code> array that contains each variable's UNF values.
+     */
+    String[] unf;
+
+    /**
+     * Sets the value of unf
+     * @param unf new value of unf
+     */
+    public void setUnf(String[] unf){
+        this.unf = unf;
+    }
+
+    /**
+     * Gets the value of unf
+     *
+     * @return the value of unf
+     */
+    public String[] getUnf(){
+        return unf;
+    }
+
+    /**
+     * A <code>Sring</code> contains the UNF value of this file.
+     */
+    String fileUnf;
 
 
+    /**
+     * Sets the value of fileUNF
+     *
+     * @param fileUNF new value of fileUNF
+     */
+    public void setFileUnf(String fileUNF){
+        this.fileUnf = fileUNF;
+    }
+
+
+    /**
+     * Gets the value of fileUNF
+     *
+     * @return the value of fileUNF
+     */
+    public String getFileUnf(){
+        return fileUnf;
+    }
+    
 }

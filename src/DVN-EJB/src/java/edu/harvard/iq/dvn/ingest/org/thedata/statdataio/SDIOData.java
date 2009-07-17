@@ -24,64 +24,78 @@ import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.data.*;
 import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.metadata.*;
 
 /**
- *
+ * A class that represents a statistical data file with a pair of a metadata and 
+ * data fields.
+ * 
  * @author akio sone
  */
 public class SDIOData {
 
     /**
-     *
+     * The <code>metadata</code> field of a <code>SDIOData</code> object
+     * represented by an instance of <code>SDIOMetadata</code>
      */
     protected SDIOMetadata metadata;
 
     /**
-     *
+     * The <code>data</code> field of a <code>SDIOData</code> object 
+     * represented by an instance of <code>DataTable</code>,
      */
-    protected DataTable data;
+    protected Data data;
 
     /**
-     *
+     * Creates a new <code>SDIOData</code> object without initialization.
      */
     public SDIOData(){
 
     }
     /**
-     *
-     * @param metadata
-     * @param data
+     * Constructs an new <code>SDIOData</code> object using the given
+     * <code>metadata</code> and <code>data</code> field values.
+     * 
+     * @param metadata an instance of <code>SDIOMetadata</code>
+     * @param data an instance of <code>DataTable</code>
      */
-    public SDIOData(SDIOMetadata metadata, DataTable data) {
+    public SDIOData(SDIOMetadata metadata, Data data) {
         this.metadata = metadata;
         this.data = data;
     }
 
     /**
-     *
-     * @return
+     * Returns an object of <code>DataTable</code> as the data
+     * field of the given <code>SDIOData</code> object.
+     * 
+     * @return an DataTable object 
      */
-    public DataTable getData() {
+    public Data getData() {
         return data;
     }
 
     /**
+     * set the <code>data</code> field of the given <code>SDIOData</code> 
+     * object with the given <code>DataTable</code>.
      *
-     * @param data
+     * @param data an object of <code>DataTable</code>
      */
-    public void setData(DataTable data) {
+    public void setData(Data data) {
         this.data = data;
     }
 
     /**
+     * Returns an object of <code>SDIOMetadata</code> as the metadata
+     * field of the given <code>SDIOData</code> object.
      *
-     * @return
+     * @return an object of <code>SDIOMetadata</code>.
      */
     public SDIOMetadata getMetadata() {
         return metadata;
     }
 
     /**
-     * 
-     * @param metadata
+     * set the <code>metadata</code> field of the given <code>SDIOData</code> 
+     * object with the given <code>SDIOMetadata</code>.
+     *
+     * @param metadata an object of <code>SDIOMetadata</code>
      */
     public void setMetadata(SDIOMetadata metadata) {
         this.metadata = metadata;

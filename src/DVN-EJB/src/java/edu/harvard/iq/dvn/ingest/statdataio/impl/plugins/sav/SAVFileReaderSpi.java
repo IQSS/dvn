@@ -24,6 +24,8 @@ import java.io.*;
 import java.nio.*;
 import java.nio.channels.*;
 import java.util.logging.*;
+import java.util.Locale;
+
 import static java.lang.System.*;
 
 import org.apache.commons.codec.binary.Hex;
@@ -33,7 +35,7 @@ import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.spi.*;
 
 /**
  *
- * @author asone
+ * @author akio sone at UNC-Odum
  */
 public class SAVFileReaderSpi extends StatDataFileReaderSpi{
 
@@ -56,6 +58,18 @@ public class SAVFileReaderSpi extends StatDataFileReaderSpi{
             "0.1",
             formatNames, extensions, mimeType, SAVFileReaderSpi.class.getName());
         dbgLog.fine(SAVFileReaderSpi.class.getName()+" is called");
+    }
+
+    /**
+     * Returns the value of the description of the corresponding
+     * SAVFileReader class.
+     *
+     * @param locale
+     * @return the value of the description of the corresponding
+     * SAVFileReader class
+     */
+    public String getDescription(Locale locale) {
+        return "HU-IQSS-DVN-project SPSS System File Reader";
     }
 
     @Override

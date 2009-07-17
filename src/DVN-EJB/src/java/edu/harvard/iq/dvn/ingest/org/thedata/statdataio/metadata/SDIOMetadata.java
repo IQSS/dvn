@@ -29,26 +29,28 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.*;
 
 /**
- *
+ *  A class to represents the metadata component of a statistical data file.
+ * 
  * @author Akio Sone at UNC-Odum
  */
 public class SDIOMetadata {
 
     /**
-     *
+     * The name of the native metadata format for this object.
      */
     protected String nativeMetadataFormatName = null;
 
     /**
-     *
-     * @return
+     * Returns the name of the native metadata format for this object.
+     * 
+     * @return the name of the native metadata format, or <code>null</code>.
      */
     public String getNativeMetadataFormatName() {
         return nativeMetadataFormatName;
     }
 
     /**
-     *
+     * Key terms used in the mapping table of file information
      */
     public static String[] COMMON_FILE_INFORMATION_ITEMS= {
         "fileID", "varQnty", "caseQnty", "recPrCas", "charset","mimeType",
@@ -69,39 +71,42 @@ public class SDIOMetadata {
     }
 
     /**
-     *
+     * Constructs an empty <code>SDIOMetadata</code> object. 
      */
     public SDIOMetadata() {
     }
 
     /**
-     *
+     * The name of the case-weighting variable of the given
+     * statistical data file.
      */
     protected String caseWeightVariableName;
 
     /**
-     *
-     * @return
+     * Return the name of the case-weighting variable.
+     * @return the name of the case-weighting variable.
      */
     public String getCaseWeightVariableName() {
         return caseWeightVariableName;
     }
 
     /**
-     *
-     * @param caseWeightVariableName
+     * Sets the name of the case-weighting variable
+     * 
+     * @param caseWeightVariableName the name of the case-weighting variable.
      */
     public void setCaseWeightVariableName(String caseWeightVariableName) {
         this.caseWeightVariableName = caseWeightVariableName;
     }
 
     /**
-     *
+     * A <code>String</code> array that holds the set of variable Names 
+     * in the given statistical data file.
      */
     protected String[] variableName;
 
     /**
-     * Get the value of variableName
+     * Gets the value of variableName
      *
      * @return the value of variableName
      */
@@ -110,7 +115,7 @@ public class SDIOMetadata {
     }
 
     /**
-     * Set the value of variableName
+     * Sets the value of variableName
      *
      * @param variableName new value of variableName
      */
@@ -118,12 +123,12 @@ public class SDIOMetadata {
         this.variableName = variableName;
     }
     /**
-     *
+     * A mapping table from a variable name to its variable label.
      */
     protected Map<String, String> variableLabel;
 
     /**
-     * Get the value of variableLabel
+     * Gets the value of variableLabel
      *
      * @return the value of variableLabel
      */
@@ -132,7 +137,7 @@ public class SDIOMetadata {
     }
 
     /**
-     * Set the value of variableLabel
+     * Sets the value of variableLabel
      *
      * @param variableLabel new value of variableLabel
      */
@@ -145,16 +150,17 @@ public class SDIOMetadata {
     private String[] variableStorageType;
 
     /**
-     *
-     * @return
+     * Gets the value of variableStorageType
+     * 
+     * @return the value of variableStorageType
      */
     public String[] getVariableStorageType() {
         return variableStorageType;
     }
 
     /**
-     *
-     * @param variableStorageType
+     * Sets the value of variableStorageType
+     * @param variableStorageType new value of variableStorageType
      */
     public void setVariableStorageType(String[] variableStorageType) {
         this.variableStorageType = variableStorageType;
@@ -167,25 +173,26 @@ public class SDIOMetadata {
     private int[] variableTypeMinimal;
 
     /**
-     *
-     * @return
+     * Gets the value of variableTypeMinimal.
+     * 
+     * @return the value of variableTypeMinimal.
      */
     public int[] getVariableTypeMinimal() {
         return variableTypeMinimal;
     }
 
     /**
-     *
-     * @param variableTypeMinimal
+     * Sets the value of variableTypeMinimal.
+     * @param variableTypeMinimal the value of variableTypeMinimal.
      */
     public void setVariableTypeMinimal(int[] variableTypeMinimal) {
         this.variableTypeMinimal = variableTypeMinimal;
     }
     
     
-
-
-    /** */
+    /** 
+     * An array of <code>VariableType</code>s of variables
+     */
     protected VariableType[] variableType;
 
     /**
@@ -209,8 +216,9 @@ public class SDIOMetadata {
     }
 
     /**
-     *
-     * @return
+     * Tells whether or not each of the variables is string.
+     * 
+     * @return a <code>boolean</code> array, true if a variable is string.
      */
     public boolean[] isStringVariable(){
         boolean [] stringYes = new boolean[variableName.length];
@@ -231,8 +239,9 @@ public class SDIOMetadata {
     }
 
     /**
-     *
-     * @return
+     * Tells whether or not each of the variables is continuous.
+     * 
+     * @return a <code>boolean</code> array, true if a variable is continuous.
      */
     public boolean[] isContinuousVariable(){
         boolean[] continuousYes = new boolean[variableName.length];
@@ -265,21 +274,23 @@ public class SDIOMetadata {
     }
 
     /**
-     *
+     * A set that contains the position number of a decimal variable.
      */
     protected Set<Integer> decimalVariables;
 
     /**
-     *
-     * @return
+     * Gets the value of the decimalVariables field.
+     * 
+     * @return the value of decimalVariables field.
      */
     public Set<Integer> getDecimalVariables() {
         return decimalVariables;
     }
 
     /**
-     *
-     * @param decimalVariables
+     * Sets the value of the decimalVariables field.
+     * 
+     * @param decimalVariables the new value of the decimalVariables field.
      */
     public void setDecimalVariables(Set<Integer> decimalVariables) {
         this.decimalVariables = decimalVariables;
@@ -288,7 +299,7 @@ public class SDIOMetadata {
 
 
     /**
-     * Set the value of variableType
+     * Sets the value of variableType
      *
      * @param variableType new value of variableType
      */
@@ -296,10 +307,14 @@ public class SDIOMetadata {
 //        this.variableType = variableType;
 //    }
 
+    /**
+     * A <code>List</code> object of each variable's format number.
+     *
+     */
     protected List<Integer> variableFormat;
 
     /**
-     * Get the value of variableFormat
+     * Gets the value of variableFormat
      *
      * @return the value of variableFormat
      */
@@ -308,7 +323,7 @@ public class SDIOMetadata {
     }
 
     /**
-     * Set the value of variableFormat
+     * Sets the value of variableFormat
      *
      * @param variableFormat new value of variableFormat
      */
@@ -316,7 +331,7 @@ public class SDIOMetadata {
         this.variableFormat = variableFormat;
     }
     /**
-     *
+     * A mapping table from a variable name to its format name.
      */
     protected Map<String, String> variableFormatName;
 
@@ -339,21 +354,23 @@ public class SDIOMetadata {
     }
     
     /**
-     *
+     * A mapping table from a variable name to its format category.
      */
     protected Map<String, String> variableFormatCategory;
 
     /**
-     *
-     * @return
+     * Returns the value of the variableFormatCategory field.
+     * 
+     * @return the value of the variableFormatCategory field
      */
     public Map<String, String> getVariableFormatCategory() {
         return variableFormatCategory;
     }
 
     /**
+     * Sets the new value of the variableFormatCategory field.
      *
-     * @param variableFormatCategory
+     * @param variableFormatCategory the new value of the variableFormatCategory field.
      */
     public void setVariableFormatCategory(Map<String, String> variableFormatCategory) {
         this.variableFormatCategory = variableFormatCategory;
@@ -362,21 +379,23 @@ public class SDIOMetadata {
 
 
     /**
-     *
+     * A <code>String</code> array that holds each variable's UNF value.
      */
     protected String[] variableUNF;
 
     /**
+     * Returns the value of the variableUNF field.
      *
-     * @return
+     * @return the value of the variableUNF field.
      */
     public String[] getVariableUNF() {
         return variableUNF;
     }
 
     /**
-     *
-     * @param variableUNF
+     * Sets the new value of the variableUNF field.
+     * 
+     * @param variableUNF the new value of the variableUNF field.
      */
     public void setVariableUNF(String[] variableUNF) {
         this.variableUNF = variableUNF;
@@ -384,14 +403,14 @@ public class SDIOMetadata {
     
 
     /**
-     *
+     * A mapping table that stores various file-related information.
      */
     protected Map<String, Object> fileInformation =
         new LinkedHashMap<String, Object>();
 
 
     /**
-     * Get the value of fileInformation
+     * Gets the value of fileInformation
      *
      * @return the value of fileInformation
      */
@@ -400,13 +419,13 @@ public class SDIOMetadata {
     }
     
     /**
-     *
+     * 
      */
     protected Map<String, Map<String, String>> valueLabelTable =
         new LinkedHashMap<String,Map<String, String>>();
 
     /**
-     * Get the value of valueLabelTable
+     * Gets the value of valueLabelTable
      *
      * @return the value of valueLabelTable
      */
@@ -415,7 +434,7 @@ public class SDIOMetadata {
     }
 
     /**
-     * Set the value of valueLabelTable
+     * Sets the value of valueLabelTable
      * @param valueLabelTable
      */
     public  void setValueLabelTable(Map<String, Map<String, String>>
@@ -425,68 +444,70 @@ public class SDIOMetadata {
 
 
     /**
-     *
+     * A mapping table from a variable name to its <code>List</code> of missig values.
      */
     protected Map<String, List<String>> missingValueTable =
         new LinkedHashMap<String, List<String>>();
 
     /**
-     *
-     * @return
+     * Returns the value of the missingValueTable field.
+     * 
+     * @return the value of the missingValueTable field.
      */
     public Map<String, List<String>> getMissingValueTable() {
         return missingValueTable;
     }
 
     /**
-     *
-     * @param missingValueTable
+     * Sets the new value of the missingValueTable field.
+     * @param missingValueTable the new value of the missingValueTable field.
      */
     public void setMissingValueTable(Map<String, List<String>> missingValueTable) {
         this.missingValueTable = missingValueTable;
     }
 
     /**
-     *
+     * A mapping table from a variable name to its InvalidData object.
      */
     protected  Map<String, InvalidData> invalidDataTable;
 
     /**
-     *
-     * @return
+     * Returns the value of the invalidDataTable field.
+     * @return the value of the invalidDataTable field.
      */
     public Map<String, InvalidData> getInvalidDataTable() {
         return invalidDataTable;
     }
 
     /**
-     * 
-     * @param invalidDataTable
+     * Sets the new value of the invalidDataTable field.
+     * @param invalidDataTable the new value of the invalidDataTable field.
      */
     public void setInvalidDataTable(Map<String, InvalidData> invalidDataTable) {
         this.invalidDataTable = invalidDataTable;
     }
 
-    
-
 
     /**
-     *
+     * A mapping table from a variable position number to its
+     * table of summary statistics.
      */
     protected Map<Integer, Object[]> summaryStatisticsTable =
         new LinkedHashMap<Integer, Object[]>();
 
     /**
-     *
-     * @return
+     * Returns the value of the summaryStatisticsTable field.
+     * 
+     * @return the value of the summaryStatisticsTable field.
      */
     public Map<Integer, Object[]> getSummaryStatisticsTable() {
         return summaryStatisticsTable;
     }
 
     /**
-     *
-     * @param summaryStatisticsTable
+     * Sets the new value of the summaryStatisticsTable field.
+     * @param summaryStatisticsTable  the new value of 
+     * the summaryStatisticsTable field.
      */
     public void setSummaryStatisticsTable(Map<Integer, Object[]>
         summaryStatisticsTable) {
@@ -495,22 +516,25 @@ public class SDIOMetadata {
 
 
     /**
-     * 
+     * A mapping table from a variable name to its table of categorical statistics.
      */
     protected Map<String, Map<String, Integer>>categoryStatisticsTable =
             new LinkedHashMap<String, Map<String,Integer>>();
 
     /**
-     *
-     * @return
+     * Returns the value of the categoryStatisticsTable field.
+     * 
+     * @return the value of the categoryStatisticsTable field.
      */
     public Map<String, Map<String, Integer>> getCategoryStatisticsTable() {
         return categoryStatisticsTable;
     }
 
     /**
+     * Sets the new value of the categoryStatisticsTable field.
      *
-     * @param categoryStatisticsTable
+     * @param categoryStatisticsTable the new value of the 
+     * categoryStatisticsTable field.
      */
     public void setCategoryStatisticsTable(Map<String,
             Map<String, Integer>> categoryStatisticsTable) {
@@ -518,50 +542,58 @@ public class SDIOMetadata {
     }
 
     /**
-     * 
+     * A mapping table from a short variable name to its long one.
      */
     protected Map<String, String> shortToLongVarialbeNameTable =
             new LinkedHashMap<String, String>();
 
     /**
-     *
-     * @return
+     * Returns the value of the shortToLongVarialbeNameTable field.
+     *  
+     * @return the value of the shortToLongVarialbeNameTable field.
      */
     public Map<String, String> getShortToLongVarialbeNameTable() {
         return shortToLongVarialbeNameTable;
     }
 
     /**
-     *
-     * @param shortToLongVarialbeNameTable
+     * Sets the new value of the shortToLongVarialbeNameTable field.
+     * 
+     * @param shortToLongVarialbeNameTable the new value of 
+     * the shortToLongVarialbeNameTable field.
      */
-    public void setShortToLongVarialbeNameTable(Map<String, String> shortToLongVarialbeNameTable) {
+    public void setShortToLongVarialbeNameTable(Map<String, String> 
+        shortToLongVarialbeNameTable) {
         this.shortToLongVarialbeNameTable = shortToLongVarialbeNameTable;
     }
 
 
     /**
-     *
+     * A mapping table from variable name to its value-label-table id.
      */
     public Map<String, String> valueLabelMappingTable = new LinkedHashMap<String, String>();
 
     /**
-     *
-     * @return
+     * Returns the value of the valueLabelMappingTable field.
+     * @return the value of the valueLabelMappingTable field.
      */
     public Map<String, String> getValueLabelMappingTable() {
         return valueLabelMappingTable;
     }
 
     /**
-     *
-     * @param valueLabelMappingTable
+     * Sets the new value of the valueLabelMappingTable field.
+     * @param valueLabelMappingTable the new value of the valueLabelMappingTable field.
      */
     public void setValueLabelMappingTable(Map<String, String> valueLabelMappingTable) {
         this.valueLabelMappingTable = valueLabelMappingTable;
     }
 
-
+    /**
+     * Returns a string representation of this instance.
+     * 
+     * @return a string representing this instance.
+     */
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this,

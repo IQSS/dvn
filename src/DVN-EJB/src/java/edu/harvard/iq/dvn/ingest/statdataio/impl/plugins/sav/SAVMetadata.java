@@ -35,26 +35,9 @@ public class SAVMetadata extends SDIOMetadata{
     private static String[] SAV_FILE_INFORMATION_ITEMS= {
         "releaseNo", "byteOrder", "OSByteOrder"};
 
-    /**
-     * 
-     */
-    //protected Map<String, Object> fileInformation =
-    //    new LinkedHashMap<String, Object>();
-
-
-    /**
-     *
-     */
-    //protected Map<String, Map<String, String>> valueLabelTable;
-
-    static {
-
-
-        
-    }
     
     /**
-     *
+     * Constructs a <code>SAVMetadata</code> object. 
      */
     public SAVMetadata() {
         super();

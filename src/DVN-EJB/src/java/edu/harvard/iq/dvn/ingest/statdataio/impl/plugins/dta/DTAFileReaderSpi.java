@@ -27,6 +27,7 @@ import java.io.*;
 import java.nio.*;
 import java.nio.channels.*;
 import java.util.logging.*;
+
 import javax.imageio.IIOException;
 import static java.lang.System.*;
 import java.util.*;
@@ -36,7 +37,7 @@ import org.apache.commons.codec.binary.Hex;
 
 /**
  *
- * @author akio sone
+ * @author akio sone at UNC-Odum
  */
 public class DTAFileReaderSpi extends StatDataFileReaderSpi{
 
@@ -78,9 +79,12 @@ public class DTAFileReaderSpi extends StatDataFileReaderSpi{
     }
 
     /**
-     *
+     * Returns the value of the description of the corresponding
+     * DTAFileReader class.
+     * 
      * @param locale
-     * @return
+     * @return the value of the description of the corresponding
+     * DTAFileReader class
      */
     public String getDescription(Locale locale) {
         return "HU-IQSS-DVN-project Stata File Reader";
@@ -113,13 +117,6 @@ public class DTAFileReaderSpi extends StatDataFileReaderSpi{
             stream.reset();
         }
 
-//        boolean DEBUG=false;
-//
-//        if (DEBUG) {
-//            for (int i = 0; i < b.length; ++i) {
-//                out.printf("%d\t%02X\n", i, b[i]);
-//            }
-//        }
        dbgLog.info("hex dump: 1st 4bytes =>" +
                 new String(Hex.encodeHex(b)) + "<-");
 
@@ -168,11 +165,6 @@ public class DTAFileReaderSpi extends StatDataFileReaderSpi{
 
         boolean DEBUG=false;
         
-//        if (DEBUG) {
-//            for (int i = 0; i < b.length; ++i) {
-//                out.printf("%d\t%02X\n", i, b[i]);
-//            }
-//        }
        dbgLog.info("hex dump: 1st 4bytes =>" +
                 new String(Hex.encodeHex(b)) + "<-");
 
@@ -217,18 +209,12 @@ public class DTAFileReaderSpi extends StatDataFileReaderSpi{
         buff.rewind();
 
         boolean result = false;
-//        boolean DEBUG = false;
 
         dbgLog.fine("applying the dta test\n");
 
         byte[] hdr4 = new byte[4];
         buff.get(hdr4, 0, 4);
 
-//        if (DEBUG) {
-//            for (int i = 0; i < hdr4.length; ++i) {
-//                out.printf("%d\t%02X\n", i, hdr4[i]);
-//            }
-//        }
        dbgLog.info("hex dump: 1st 4bytes =>" +
                 new String(Hex.encodeHex(hdr4)) + "<-");
 

@@ -12,80 +12,98 @@ import java.io.*;
 import static java.lang.System.*;
 
 /**
+ * An abstract superclass for reading and writing of a statistical data file.
+ * A class that implements a reader in the context of StatData I/O
+ * framework must subclasse this superclass.
  *
  * @author akio sone
  */
 public abstract class StatDataFileReader {
 
     /**
-     *
+     * StatData I/O API version number as a <code>String</code>
      */
     public static String SDIO_VERSION = "0.1";
 
 
     /**
-     *
+     * The <code>StatDataFileReaderSpi</code> object that instantiated this 
+     * object, or  <code>null</code> if its identity is not known or none
+     * exists.  By default it is initially set to <code>null</code>.
      */
     protected StatDataFileReaderSpi originatingProvider;
 
     /**
-     *
-     * @param originatingProvider
+     * Constructs an <code>StatDataFileReader</code> and sets its 
+     * <code>originatingProvider</code> field to the given value.
+     * 
+     * @param originatingProvider the <code>StatDataFileReaderSpi</code>
+     * that invokes this constructor, or <code>null</code>.
      */
     protected StatDataFileReader(StatDataFileReaderSpi originatingProvider){
         this.originatingProvider = originatingProvider;
     }
 
     /**
-     *
-     * @return
+     * Returns the <code>StatDataFileReaderSpi</code> that was supplied to the
+     * the constructor. This value may be <code>null</code>.
+     * 
+     * @return <code>StatDataFileReaderSpi</code>, or <code>null</code>.
      */
     public StatDataFileReaderSpi getOriginatingProvider() {
         return originatingProvider;
     }
     
     /**
-     *
-     * @return
-     * @throws java.io.IOException
+     * Returns a <code>String</code> that identifies the format of 
+     * the input source
+     * 
+     * @return the format name as a <code>String</code>.
+     * 
+     * @throws java.io.IOException if a reading error occurs.
      */
     public String getFormatName() throws IOException {
         return originatingProvider.getFormatNames()[0];
     }
+    
     /**
-     *
+     * Releases any resources held by this instance.
+     * 
+     * <p>The current default implementation does not take any
+     * action.
      */
     public void dispose() {
+    
     }
     
     
     /**
+     * Reads the statistical data file from a supplied
+     * <code>BufferedInputStream</code> and 
+     * returns its contents as a <code>SDIOData</code>.
+     * using a provided
+     * 
+     * @param stream  a <code>BufferedInputStream</code>
+     * where a statistical data file is connected.
      *
-     * @param stream
-     * @return
-     * @throws java.io.IOException
+     * @return reading results as a <code>SDIOData</code>
+     *
+     * @throws java.io.IOException if a reading error occurs.
      */
-    public SDIOData read(BufferedInputStream stream) throws IOException{
-        SDIOData sd = null;
-//        SDIOMetadata metadata = readHeader(stream);
-//        readMetadata(stream, metadata);
-//        SDIOData sd = readData(stream, metadata);
-        return sd;
-    }
-    
-//    public abstract SDIOMetadata readHeader(BufferedInputStream stream);
-//
-//    public abstract void readMetadata(BufferedInputStream stream, SDIOMetadata metadata);
-//
-//    public abstract SDIOData readData(BufferedInputStream stream, SDIOMetadata metadata);
+    public abstract SDIOData read(BufferedInputStream stream)
+        throws IOException;
+
+
+    // Utility methods
 
 
     /**
-     * dump the data buffer in HEX
+     * Writes the contents of the given <code>byte</code> array 
+     * as a hexadecimal string
      *
-         * @param buff
-         * @param hdr
-         */
+     * @param buff a <code>byte</code> array
+     * @param hdr  a <code>String</code> line before the hexadecimal string
+     */
     public void printHexDump(byte[] buff, String hdr) {
         int counter = 0;
         if (hdr != null) {
@@ -106,9 +124,12 @@ public abstract class StatDataFileReader {
     }
 
     /**
+     * Returns a new null-character-free <code>String</code> object 
+     * from an original <code>String</code> one that may contains
+     * null characters.
      * 
-     * @param rawString
-     * @return
+     * @param rawString a<code>String</code> object
+     * @return a new, null-character-free <code>String</code> object
      */
     protected String getNullStrippedString(String rawString){
         String nullRemovedString = null;

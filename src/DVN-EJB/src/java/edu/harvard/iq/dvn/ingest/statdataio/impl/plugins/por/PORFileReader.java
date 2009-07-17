@@ -50,7 +50,9 @@ import edu.harvard.iq.dvn.ingest.statdataio.impl.plugins.util.*;
 
 
 /**
- *
+ * A DVN-Project-implementation of <code>StatDataFileReader</code> for the 
+ * SPSS portable (POR) format.
+ * 
  * @author Akio Sone at UNC-Odum
  */
 public class PORFileReader extends StatDataFileReader{
@@ -226,21 +228,29 @@ public class PORFileReader extends StatDataFileReader{
     List<Integer> formatDecimalPointPositionList= new ArrayList<Integer>();
 
     /**
-     *
+     * The <code>String</code> that represents the numeric missing value 
+     * for a tab-delimited data file, initially "NA" 
+     * after R's missing value.
      */
     String MissingValueForTextDataFileNumeric = "NA";
 
     /**
-     *
-     * @return
+     * Returns the value of the
+     * <code>MissingValueForTextDataFileNumeric</code> field.
+     * 
+     * @return the value of the
+     * <code>MissingValueForTextDataFileNumeric</code> field.
      */
     public String getMissingValueForTextDataFileNumeric() {
         return MissingValueForTextDataFileNumeric;
     }
 
     /**
-     *
-     * @param MissingValueToken
+     * Sets the new value of 
+     * the <code>setMissingValueForTextDataFileNumeric</code> field.
+     * 
+     * @param MissingValueToken the new value of the
+     * <code>setMissingValueForTextDataFileNumeric</code> field.
      */
     public void setMissingValueForTextDataFileNumeric(String MissingValueToken) {
         this.MissingValueForTextDataFileNumeric = MissingValueToken;
@@ -248,21 +258,28 @@ public class PORFileReader extends StatDataFileReader{
 
 
     /**
-     *
+     * The <code>String</code> that represents the string missing value 
+     * for a tab-delimited data file, initially "".
      */
     String MissingValueForTextDataFileString = "";
 
     /**
-     *
-     * @return
+     * Returns the value of the
+     * <code>MissingValueForTextDataFileString</code> field.
+     * 
+     * @return the value of the
+     * <code>MissingValueForTextDataFileString</code> field.
      */
     public String getMissingValueForTextDataFileString() {
         return MissingValueForTextDataFileString;
     }
 
     /**
-     *
-     * @param MissingValueToken
+     * Sets the new value of 
+     * the <code>MissingValueForTextDataFileString</code> field.
+     * 
+     * @param MissingValueToken the new value of the
+     * <code>MissingValueForTextDataFileString</code> field.
      */
     public void setMissingValueForTextDataFileString(String MissingValueToken) {
         this.MissingValueForTextDataFileString = MissingValueToken;
@@ -278,11 +295,13 @@ public class PORFileReader extends StatDataFileReader{
     // Constructor -----------------------------------------------------------//
 
 
-            /**
-             *
-             * @param originator
-             */
-            public PORFileReader(StatDataFileReaderSpi originator){
+    /**
+     * Constructs a <code>PORFileReader</code> instance with a 
+     * <code>StatDataFileReaderSpi</code> object.
+     * 
+     * @param originator a <code>StatDataFileReaderSpi</code> object.
+     */
+    public PORFileReader(StatDataFileReaderSpi originator){
         super(originator);
     }
 
@@ -299,7 +318,17 @@ public class PORFileReader extends StatDataFileReader{
     }
 
     // Methods ---------------------------------------------------------------//
-
+    
+    /**
+     * Read the given SPSS POR-format file via a <code>BufferedInputStream</code>
+     * object.  This method calls an appropriate method associated with the given 
+     * field header by reflection.
+     * 
+     * @param stream a <code>BufferedInputStream</code>.
+     * @return an <code>SDIOData</code> object
+     * @throws java.io.IOException if an reading error occurs.
+     */
+    @Override
     public SDIOData read(BufferedInputStream stream) throws IOException{
 
         dbgLog.info("***** PORFileReader: read() start *****");

@@ -24,46 +24,47 @@ package edu.harvard.iq.dvn.ingest.org.thedata.statdataio.data;
 import cern.colt.list.*;
 
 /**
- *
+ * <code>DataFrame</code> represents a tabular data in a statistical
+ * data file by <code>ObjectArrayList</code> of Colt-list package.
+ * 
  * @author Akio Sone
  */
 public class DataFrame extends Data{
 
-    protected ObjectArrayList data;
+    /**
+     * Tabular data of a statistical data file
+     * represented by <code>ObjectArrayList</code> of Colt-list package
+     */
+    ObjectArrayList data;
 
-    protected String[] columnNames;
-
-    protected String[] unf;
-
-
-    public static RecognizedDataTypes organization = RecognizedDataTypes.TABULAR;
-
-    public DataFrame() {
-    }
-
-    public String[] getColumnNames(){
-        return columnNames;
-    }
-
-    public ObjectArrayList getData(){
-        return data;
-    }
-
-    public String[] getUnf(){
-        return unf;
-    }
-
-    public void setUnf(String[] unf){
-        this.unf = unf;
-    }
-
-    public void setColumnNames(String[] columnNames) {
-        this.columnNames = columnNames;
-    }
-
+    /**
+     * Sets the value of data
+     *
+     * @param data new value of data
+     */
     public void setData(ObjectArrayList data) {
         this.data = data;
     }
 
+    /**
+     * Gets the value of data
+     * 
+     * @return the value of data
+     */
+    public ObjectArrayList getData(){
+        return data;
+    }
+
+    /**
+     * The data type of this class.
+     */
+    public static final RecognizedDataTypes organization = RecognizedDataTypes.TABULAR;
+
+    /**
+     * Constructs a <code>DataFrame</code> object  without initialization
+     */
+    public DataFrame() {
+    
+    }
 
 }

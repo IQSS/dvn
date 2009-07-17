@@ -52,6 +52,8 @@ import edu.harvard.iq.dvn.ingest.statdataio.impl.plugins.util.*;
 
 
 /**
+ * A DVN-Project-implementation of <code>StatDataFileReader</code> for the 
+ * Stata DTA format.
  *
  * @author Akio Sone at UNC-Odum
  */
@@ -424,21 +426,29 @@ public class DTAFileReader extends StatDataFileReader{
 
 
     /**
-     *
+     * The <code>String</code> that represents the numeric missing value 
+     * for a tab-delimited data file, initially "NA" 
+     * after R's missing value.
      */
-    protected String MissingValueForTextDataFileNumeric = "NA";
+    String MissingValueForTextDataFileNumeric = "NA";
 
     /**
-     *
-     * @return
+     * Returns the value of the
+     * <code>MissingValueForTextDataFileNumeric</code> field.
+     * 
+     * @return the value of the
+     * <code>MissingValueForTextDataFileNumeric</code> field.
      */
     public String getMissingValueForTextDataFileNumeric() {
         return MissingValueForTextDataFileNumeric;
     }
 
     /**
-     *
-     * @param MissingValueToken
+     * Sets the new value of 
+     * the <code>setMissingValueForTextDataFileNumeric</code> field.
+     * 
+     * @param MissingValueToken the new value of the
+     * <code>setMissingValueForTextDataFileNumeric</code> field.
      */
     public void setMissingValueForTextDataFileNumeric(String MissingValueToken) {
         this.MissingValueForTextDataFileNumeric = MissingValueToken;
@@ -446,27 +456,34 @@ public class DTAFileReader extends StatDataFileReader{
 
 
     /**
-     *
+     * The <code>String</code> that represents the string missing value 
+     * for a tab-delimited data file, initially "".
      */
-    protected String MissingValueForTextDataFileString = "";
+    String MissingValueForTextDataFileString = "";
 
     /**
+     * Returns the value of the
+     * <code>MissingValueForTextDataFileString</code> field.
      * 
-     * @return
+     * @return the value of the
+     * <code>MissingValueForTextDataFileString</code> field.
      */
     public String getMissingValueForTextDataFileString() {
         return MissingValueForTextDataFileString;
     }
 
     /**
-     *
-     * @param MissingValueToken
+     * Sets the new value of 
+     * the <code>MissingValueForTextDataFileString</code> field.
+     * 
+     * @param MissingValueToken the new value of the
+     * <code>MissingValueForTextDataFileString</code> field.
      */
     public void setMissingValueForTextDataFileString(String MissingValueToken) {
         this.MissingValueForTextDataFileString = MissingValueToken;
     }
 
-    protected String[] variableFormats = null;
+    String[] variableFormats = null;
 
     Map<String, String> formatCategoryTable = new LinkedHashMap<String, String>();
     
@@ -479,8 +496,10 @@ public class DTAFileReader extends StatDataFileReader{
     // Constructor -----------------------------------------------------------//
 
     /**
-     *
-     * @param originator
+     * Constructs a <code>DTAFileReader</code> instance with a 
+     * <code>StatDataFileReaderSpi</code> object.
+     * 
+     * @param originator a <code>StatDataFileReaderSpi</code> object.
      */
     public DTAFileReader(StatDataFileReaderSpi originator){
         super(originator);
@@ -488,13 +507,7 @@ public class DTAFileReader extends StatDataFileReader{
 
 
     // Methods ---------------------------------------------------------------//
-    /**
-     * initializes the contant set
-     *
-     *
-     * @param stream
-     * @return
-     */
+
     private void init(){
         //
         dbgLog.fine("release number="+release_number);
@@ -540,13 +553,16 @@ public class DTAFileReader extends StatDataFileReader{
     }
 
     /**
-     *
-     * @param stream
-     * @return
-     * @throws java.io.IOException
+     * Read the given Stata DTA-format file via a <code>BufferedInputStream</code>
+     * object.  This method calls an appropriate method associated with the given 
+     * field header by reflection.
+     * 
+     * @param stream a <code>BufferedInputStream</code>.
+     * @return an <code>SDIOData</code> object
+     * @throws java.io.IOException if an reading error occurs.
      */
+    @Override
     public SDIOData read(BufferedInputStream stream) throws IOException{
-        ;
         dbgLog.info("***** DTAFileReader: read() start *****");
 
         for (Method mthd : decodeMethods){
@@ -589,15 +605,8 @@ public class DTAFileReader extends StatDataFileReader{
     }
 
 
-    /**
-     *
-     * Header segment 1: 4 byte-length
-     * Header segment 2: 60 byte-length (<= Rel. 5) or 109 bytes (> rel. 6)
-     *
-     *
-     * @param stream
-     */
-    protected void decodeHeader(BufferedInputStream stream){
+
+    void decodeHeader(BufferedInputStream stream){
         dbgLog.fine("***** decodeHeader(): start *****");
 
         if (stream ==null){
@@ -757,11 +766,8 @@ public class DTAFileReader extends StatDataFileReader{
     }
 
 
-    /**
-     *
-     * @param stream
-     */
-    protected void decodeDescriptors(BufferedInputStream stream){
+
+    void decodeDescriptors(BufferedInputStream stream){
 
         dbgLog.fine("***** decodeDescriptors(): start *****");
         
@@ -962,10 +968,6 @@ public class DTAFileReader extends StatDataFileReader{
                 
                 
                 
-                
-
-
-
                 String variableFormat = variableFormats[i];
                 String variableFormatKey= null;
                 if (variableFormat.startsWith("%t")){
@@ -1045,11 +1047,8 @@ public class DTAFileReader extends StatDataFileReader{
 
     }
     
-    /**
-     *
-     * @param stream
-     */
-    protected void decodeVariableLabels(BufferedInputStream stream){
+
+    void decodeVariableLabels(BufferedInputStream stream){
 
         dbgLog.fine("***** decodeVariableLabels(): start *****");
         
@@ -1094,11 +1093,8 @@ public class DTAFileReader extends StatDataFileReader{
 
     }
     
-    /**
-     *
-     * @param stream
-     */
-    protected void decodeExpansionFields(BufferedInputStream stream){
+
+    void decodeExpansionFields(BufferedInputStream stream){
 
         dbgLog.fine("***** decodeExpansionFields(): start *****");
         
@@ -1161,11 +1157,8 @@ public class DTAFileReader extends StatDataFileReader{
 
     }
     
-    /**
-     *
-     * @param stream
-     */
-    protected void decodeData(BufferedInputStream stream){
+
+    void decodeData(BufferedInputStream stream){
 
         dbgLog.fine("\n***** decodeData(): start *****");
         
@@ -1559,7 +1552,7 @@ public class DTAFileReader extends StatDataFileReader{
      *
      * @param stream
      */
-    protected void decodeValueLabels(BufferedInputStream stream){
+    void decodeValueLabels(BufferedInputStream stream){
 
         dbgLog.fine("***** decodeValueLabels(): start *****");
         
@@ -1586,11 +1579,7 @@ public class DTAFileReader extends StatDataFileReader{
     }
     
     
-    /**
-     *
-     * @param stream
-     */
-    protected void parseValueLabelsRelease105(BufferedInputStream stream){
+    void parseValueLabelsRelease105(BufferedInputStream stream){
 
         dbgLog.fine("***** parseValueLabelsRelease105(): start *****");
         
@@ -1769,11 +1758,8 @@ public class DTAFileReader extends StatDataFileReader{
 
     }
 
-    /**
-     *
-     * @param stream
-     */
-    protected void parseValueLabelsReleasel108(BufferedInputStream stream){
+
+    private void parseValueLabelsReleasel108(BufferedInputStream stream){
 
         dbgLog.fine("***** parseValueLabelsRelease108(): start *****");
         
@@ -1977,8 +1963,6 @@ public class DTAFileReader extends StatDataFileReader{
 
             }
 
-
-            
         }  // for loop
         dbgLog.fine("valueLabelTable:\n"+valueLabelTable);
         

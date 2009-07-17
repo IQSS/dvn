@@ -24,95 +24,111 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
 /**
+ * A class that stores categorical statistics of a variable 
+ * for rendering the metadata of a data file in DDI
+ * (Data Documentation Initiative) format.
  *
  * @author Akio Sone at UNC-Odum
  */
 public class CategoricalStatistic {
 
     /**
-     *
+     * value of the value field.
      */
-    protected String value;
+     String value;
 
     /**
-     *
-     */
-    protected String label;
-
-    /**
-     *
-     */
-    protected int frequency;
-
-    /**
-     *
-     */
-    protected boolean missingValue=false;
-
-    /**
-     *
-     * @return
-     */
-    public int getFrequency() {
-        return frequency;
-    }
-
-    /**
-     *
-     * @param frequency
-     */
-    public void setFrequency(int frequency) {
-        this.frequency = frequency;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public boolean isMissingValue() {
-        return missingValue;
-    }
-
-    /**
-     *
-     * @param isMissingValue
-     */
-    public void setMissingValue(boolean isMissingValue) {
-        this.missingValue = isMissingValue;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public String getLabel() {
-        return label;
-    }
-
-    /**
-     * 
-     * @param label
-     */
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    /**
-     *
-     * @return
+     * Returns the value of the value field.
+     * @return the value of the value field.
      */
     public String getValue() {
         return value;
     }
 
     /**
-     *
-     * @param value
+     * Sets the new value of the value field.
+     * 
+     * @param value the new value of the value field.
      */
     public void setValue(String value) {
         this.value = value;
     }
+    
+    /**
+     * value of the label field.
+     */
+    String label;
 
+    /**
+     * Returns the value of the label field.
+     * 
+     * @return the value of the label field.
+     */
+    public String getLabel() {
+        return label;
+    }
+
+    /**
+     *  Sets the new value of the label field.
+     * @param label the new value of the label field.
+     */
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    /**
+     * value of the frequency field.
+     */
+    int frequency;
+
+    /**
+     * Returns the frequency of this value.
+     *
+     * @return the frequency of this value.
+     */
+    public int getFrequency() {
+        return frequency;
+    }
+
+    /**
+     * Sets the frequency of this value.
+     * 
+     * @param frequency the frequency of this value.
+     */
+    public void setFrequency(int frequency) {
+        this.frequency = frequency;
+    }
+
+    /**
+     * whether or not this value is a missing value,
+     * by default, false.
+     */
+     boolean missingValue=false;
+
+    /**
+     * Tells whether or not this value is a missing value
+     * 
+     * @return true if this value is missing value.
+     */
+    public boolean isMissingValue() {
+        return missingValue;
+    }
+
+    /**
+     * Sets the new value of the missingValue field.
+     * 
+     * @param isMissingValue the new value of the missingValue field.
+     */
+    public void setMissingValue(boolean isMissingValue) {
+        this.missingValue = isMissingValue;
+    }
+
+
+    /**
+     * Returns a string representation of this instance.
+     * 
+     * @return a string representing this instance.
+     */
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this,

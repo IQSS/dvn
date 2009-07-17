@@ -36,7 +36,7 @@ import cern.jet.stat.Descriptive;
 
 
 /**
- * StatHelper provides static methods for computing descriptive statistics and
+ * <code>StatHelper</code> provides static methods for computing descriptive statistics and
  * frequency tables based on data stored in primitive arrays and for converting
  * a primitive, non-double array into a double array and for encoding a primitive
  * and String object into a sequence of bytes.

@@ -25,97 +25,78 @@ import static java.lang.System.*;
 import org.apache.commons.lang.*;
 
 /**
- *
+ * <code>DataTable</code> represents a tabular data of a statistical
+ * data file by two-dimensional <code>Object</code> array.
+ * 
  * @author Akio Sone
  */
-public class DataTable {
+public class DataTable extends Data {
 
-    protected String[] columnNames;
 
-    protected Object[][] data;
+    /**
+     * A tabular data of a statistical data file
+     * represented by two-dimensional <code>Object</code> array.
+     * <p>Note: data are stored in variable-wise for convenience of
+     * calculating variable-wise statistics.
+     * 
+     */
+    Object[][] data;
 
-    protected String[] unf;
 
-    protected String fileUnf;
-
-    public static RecognizedDataTypes organization = RecognizedDataTypes.TABULAR;
-
-    public DataTable() {
+    /**
+     * Sets the value of data
+     *
+     * @param data new value of data
+     */
+    public void setData(Object[][] data) {
+        this.data = data;
     }
-
-    public String[] getColumnNames(){
-        return columnNames;
-    }
-
+    
+    /**
+     * Gets the value of data
+     * 
+     * @return the value of data
+     */
     public Object[][] getData(){
         return data;
     }
 
-    public String[] getUnf(){
-        if (unf == null){
-            unf = calculateUnf();
-        }
-        return unf;
+    /**
+     * The data type of this class.
+     */
+    public static final RecognizedDataTypes organization = RecognizedDataTypes.TABULAR;
+
+    /**
+     *  Constructs a <code>DataFrame</code> object  without initialization
+     */
+    public DataTable() {
     }
 
-    public void setUnf(String[] unf){
-        this.unf = unf;
-    }
-    
-    public String getFileUnf(){
-        if (fileUnf == null){
-            fileUnf = calculateFileUnf();
-        }
-        return fileUnf;
-    }
 
-    public void setFileUnf(String unf){
-        this.fileUnf = unf;
-    }
-
-    public void setColumnNames(String[] columnNames) {
-        this.columnNames = columnNames;
-    }
-
-    public void setData(Object[][] data) {
-        this.data = data;
-    }
-
+    /**
+     * Prints the data field of a <code>DataTable</code> object.
+     * @param title a labeling<code>String</code>
+     * @param separator a <code>String</code> that separates each
+     * datum,  "|" is used if it is null.
+     */
     public void printData(String title, String separator){
+        if (separator == null){
+            separator ="|";
+        }
         out.println(title);
         for (int i=0; i< this.data.length; i++){
             out.println(StringUtils.join(this.data[i], separator));
         }
     }
 
-    public void printData(String title){
-        String separator = "|";
-        printData(title, separator);
-    }
-
+    /**
+     * Prints the data field of a <code>DataTable</code> object 
+     * with the default settings (default separator is "|").
+     */
     public void printData(){
         String title = "Contents of the DataTable instance";
         String separator = "|";
         printData(title, separator);
     }
 
-    private String[] calculateUnf(){
-        String[] var_unf_set=null;
-        int nrow = data.length;
-        int ncol = data[0].length;
-
-        for (int j=0;j<ncol; j++){
-            
-            for (int i=0;i<nrow;i++){
-                //data[i][j];
-            }
-        }
-
-        return  var_unf_set;
-    }
-    private String calculateFileUnf(){
-        String file_unf = null;
-
-        return file_unf;
-    }
 }

@@ -22,8 +22,10 @@
 package edu.harvard.iq.dvn.ingest.org.thedata.statdataio.metadata;
 
 /**
+ * This enum provides constants of recognized variable type names.
+ * <p>To be implemented.
  *
- * @author Akio Sone
+ * @author Akio Sone at UNC-Odum
  */
 public enum VariableFormatName {
 

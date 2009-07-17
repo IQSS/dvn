@@ -36,24 +36,7 @@ public class PORMetadata extends SDIOMetadata{
         "releaseNo", "byteOrder", "OSByteOrder", "document"};
 
     /**
-     *
-     */
-    //protected Map<String, Object> fileInformation =
-    //    new LinkedHashMap<String, Object>();
-
-
-    /**
-     * 
-     */
-    //protected Map<String, Map<String, String>> valueLabelTable;
-
-    static {
-
-
-        
-    }
-    /**
-     *
+     * Constructs a <code>PORMetadata</code> object. 
      */
     public PORMetadata() {
         super();

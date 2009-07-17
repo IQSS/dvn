@@ -49,7 +49,9 @@ import java.text.*;
 import org.apache.commons.codec.binary.Hex;
 
 /**
- *
+ * A DVN-Project-implementation of <code>StatDataFileReader</code> for the 
+ * SPSS System file (SAV) format.
+ * 
  * @author Akio Sone at UNC-Odum
  */
 public class SAVFileReader extends StatDataFileReader{
@@ -331,21 +333,29 @@ public class SAVFileReader extends StatDataFileReader{
     SimpleDateFormat sdf_hms    = new SimpleDateFormat("HH:mm:ss");
 
     /**
-     *
+     * The <code>String</code> that represents the numeric missing value 
+     * for a tab-delimited data file, initially "NA" 
+     * after R's missing value.
      */
-    protected String MissingValueForTextDataFileNumeric = "NA";
+    String MissingValueForTextDataFileNumeric = "NA";
 
     /**
-     *
-     * @return
+     * Returns the value of the
+     * <code>MissingValueForTextDataFileNumeric</code> field.
+     * 
+     * @return the value of the
+     * <code>MissingValueForTextDataFileNumeric</code> field.
      */
     public String getMissingValueForTextDataFileNumeric() {
         return MissingValueForTextDataFileNumeric;
     }
 
     /**
-     *
-     * @param MissingValueToken
+     * Sets the new value of 
+     * the <code>setMissingValueForTextDataFileNumeric</code> field.
+     * 
+     * @param MissingValueToken the new value of the
+     * <code>setMissingValueForTextDataFileNumeric</code> field.
      */
     public void setMissingValueForTextDataFileNumeric(String MissingValueToken) {
         this.MissingValueForTextDataFileNumeric = MissingValueToken;
@@ -353,21 +363,27 @@ public class SAVFileReader extends StatDataFileReader{
 
 
     /**
-     *
+     * The <code>String</code> that represents the string missing value 
+     * for a tab-delimited data file, initially "".
      */
-    protected String MissingValueForTextDataFileString = "";
+    String MissingValueForTextDataFileString = "";
 
     /**
-     *
-     * @return
-     */
+     * Returns the value of the
+     * <code>MissingValueForTextDataFileString</code> field.
+     * 
+     * @return the value of the
+     * <code>MissingValueForTextDataFileString</code> field.     */
     public String getMissingValueForTextDataFileString() {
         return MissingValueForTextDataFileString;
     }
 
     /**
-     *
-     * @param MissingValueToken
+     * Sets the new value of 
+     * the <code>MissingValueForTextDataFileString</code> field.
+     * 
+     * @param MissingValueToken the new value of the
+     * <code>MissingValueForTextDataFileString</code> field.
      */
     public void setMissingValueForTextDataFileString(String MissingValueToken) {
         this.MissingValueForTextDataFileString = MissingValueToken;
@@ -378,8 +394,10 @@ public class SAVFileReader extends StatDataFileReader{
 
 
     /**
-     *
-     * @param originator
+     * Constructs a <code>SAVFileReader</code> instance with a 
+     * <code>StatDataFileReaderSpi</code> object.
+     * 
+     * @param originator a <code>StatDataFileReaderSpi</code> object.
      */
     public SAVFileReader(StatDataFileReaderSpi originator) {
         super(originator);
@@ -406,7 +424,16 @@ public class SAVFileReader extends StatDataFileReader{
  
  
     // Methods ---------------------------------------------------------------//
-
+    /**
+     * Read the given SPSS SAV-format file via a <code>BufferedInputStream</code>
+     * object.  This method calls an appropriate method associated with the given 
+     * field header by reflection.
+     * 
+     * @param stream a <code>BufferedInputStream</code>.
+     * @return an <code>SDIOData</code> object
+     * @throws java.io.IOException if an reading error occurs.
+     */
+    @Override
     public SDIOData read(BufferedInputStream stream) throws IOException{
 
         dbgLog.info("***** SAVFileReader: read() start *****");
@@ -442,12 +469,7 @@ public class SAVFileReader extends StatDataFileReader{
     }
     
     
-    
-    /**
-     *
-     * @param stream
-     */
-    public void decodeHeader(BufferedInputStream stream){
+    void decodeHeader(BufferedInputStream stream){
         dbgLog.fine("***** decodeHeader(): start *****");
         
         if (stream ==null){
@@ -498,11 +520,7 @@ public class SAVFileReader extends StatDataFileReader{
 
 
 
-    /**
-     * 
-     * @param stream
-     */
-    protected void decodeRecordType1(BufferedInputStream stream){
+    void decodeRecordType1(BufferedInputStream stream){
         dbgLog.fine("***** decodeRecordType1(): start *****");
         if (stream ==null){
             throw new IllegalArgumentException("stream == null!");
@@ -745,12 +763,7 @@ public class SAVFileReader extends StatDataFileReader{
     }
     
     
-    
-    /**
-     *
-     * @param stream
-     */
-    protected void decodeRecordType2(BufferedInputStream stream){
+    void decodeRecordType2(BufferedInputStream stream){
         dbgLog.fine("***** decodeRecordType2(): start *****");
         if (stream ==null){
             throw new IllegalArgumentException("stream == null!");
@@ -1137,11 +1150,7 @@ public class SAVFileReader extends StatDataFileReader{
     }
     
     
-    /**
-     *
-     * @param stream
-     */
-    protected void decodeRecordType3and4(BufferedInputStream stream){
+    void decodeRecordType3and4(BufferedInputStream stream){
         dbgLog.fine("***** decodeRecordType3and4(): start *****");
         int safteyCounter = 0;
 while(true ){
@@ -1382,11 +1391,8 @@ while(true ){
     
     
     
-    /**
-     *
-     * @param stream
-     */
-    protected void decodeRecordType6(BufferedInputStream stream){
+
+    void decodeRecordType6(BufferedInputStream stream){
         dbgLog.fine("***** decodeRecordType6(): start *****");
         try {
             if (stream ==null){
@@ -1463,11 +1469,8 @@ while(true ){
     }
     
     
-    /**
-     *
-     * @param stream
-     */
-    protected void decodeRecordType7(BufferedInputStream stream){
+
+    void decodeRecordType7(BufferedInputStream stream){
         dbgLog.fine("***** decodeRecordType7(): start *****");
         int counter=0;
         int[] headerSection = new int[2];
@@ -1778,11 +1781,7 @@ while(true ){
     }
     
     
-    /**
-     *
-     * @param stream
-     */
-    protected void decodeRecordType999(BufferedInputStream stream){
+    void decodeRecordType999(BufferedInputStream stream){
         dbgLog.fine("***** decodeRecordType999(): start *****");
         try {
             if (stream ==null){
@@ -1872,11 +1871,8 @@ while(true ){
     }
     
     
-    /**
-     *
-     * @param stream
-     */
-    protected void decodeRecordTypeData(BufferedInputStream stream){
+
+    void decodeRecordTypeData(BufferedInputStream stream){
         dbgLog.fine("***** decodeRecordTypeData(): start *****");
         if (stream ==null){
             throw new IllegalArgumentException("stream == null!");
@@ -1947,11 +1943,7 @@ while(true ){
     }
 
 
-    /**
-     *
-     * @param stream
-     */
-    protected void decodeRecordTypeDataCompressed(BufferedInputStream stream){
+    void decodeRecordTypeDataCompressed(BufferedInputStream stream){
         dbgLog.fine("***** decodeRecordTypeDataCompressed(): start *****");
         if (stream ==null){
             throw new IllegalArgumentException("decodeRecordTypeDataCompressed: stream == null!");
@@ -2585,11 +2577,7 @@ while(true ){
     }
 
 
-    /**
-     *
-     * @param stream
-     */
-    protected void decodeRecordTypeDataUnCompressed(BufferedInputStream stream){
+    void decodeRecordTypeDataUnCompressed(BufferedInputStream stream){
         dbgLog.fine("***** decodeRecordTypeDataUnCompressed(): start *****");
 
         if (stream ==null){

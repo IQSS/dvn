@@ -27,7 +27,10 @@ import java.util.logging.*;
 
 
 /**
- *
+ * A helper class that combines value-label data in a data file with 
+ * missing-value data and actual tabulation results and creates a 
+ * unified value-label table.
+ * 
  * @author Akio Sone
  */
 public class MetadataHelper {
@@ -36,11 +39,18 @@ public class MetadataHelper {
        Logger.getLogger(MetadataHelper.class.getPackage().getName());
 
     /**
+     * Returns the merged results from the given value-label data, 
+     * missing-value data, and tabulation results.
+     * 
+     * @param valueLabeli a given variable's value-label table recorded
+     * in the given data file.
      *
-     * @param valueLabeli
-     * @param catStati
-     * @param missingValuei
-     * @return
+     * @param catStati a given variable's frequency table.
+     *
+     * @param missingValuei a given variabl's missing-value data.
+     *
+     * @return a unified value-label table as a <code>List</code> of 
+     * <code>CategoricalStatistic</code> objects.
      */
     public static List<CategoricalStatistic> getMergedResult(
         Map<String, String> valueLabeli,
@@ -317,10 +327,15 @@ public class MetadataHelper {
 
 
     /**
+     * Returns the relationship between the recorded value-label table
+     * and actual tabulation in <code>integer</code> ranging from 0 to 7.
+     * 
+     * @param setC  the set of values of the tallied frequency table
      *
-     * @param setC
-     * @param setV
-     * @return
+     * @param setV  the set of values of the value-label table recoded in the
+     * data file
+     * 
+     * @return an <code>integer</code> value between 0 and 7.
      */
     public static int getRelationsBetweenTwoSets(Set<String> setC, Set<String> setV){
         int relation = 0;

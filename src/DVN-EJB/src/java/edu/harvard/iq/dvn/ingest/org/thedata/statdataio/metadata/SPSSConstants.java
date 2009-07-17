@@ -24,7 +24,9 @@ package edu.harvard.iq.dvn.ingest.org.thedata.statdataio.metadata;
 import java.util.*;
 
 /**
- *
+ * This class lists various data-format-related contants shared by 
+ * SPSS SAV and POR formats.
+ * 
  * @author Akio Sone
  */
 public final class SPSSConstants {
@@ -57,24 +59,57 @@ public final class SPSSConstants {
     "time","time","date","date","time","other","other","date","date","date",
     "other","other","currency","currency","currency","currency","currency","date","date"};
 
+    /**
+     * A mapping table from a <code>Integer</code> value to 
+     * SPSS SAV data-format code.
+     */
     public static Map<Integer, String> FORMAT_CODE_TABLE_SAV =
             new LinkedHashMap<Integer, String>();
             
+    /**
+     * A mapping table from a <code>Integer</code> value to 
+     * SPSS POR data-format code.
+     * <p>Note: after 17, SPSS POR and SAV formats no longer
+     * coincide.
+     */
     public static Map<Integer, String> FORMAT_CODE_TABLE_POR =
             new LinkedHashMap<Integer, String>();
             
+    /**
+     * A mapping table that groups data-formats into three categories
+     * (date, time, adn other).
+     */
     public static Map<String, String> FORMAT_CATEGORY_TABLE =
             new LinkedHashMap<String, String>();
 
     private static List<Integer> ORDINARY_FORMAT_CODE = Arrays.asList(0, 1, 5);
 
+    /**
+     * A <code>Set</code> instance that tells whether a given format code
+     * is not a date/time type.
+     */
     public static final Set<Integer> ORDINARY_FORMAT_CODE_SET =
             new LinkedHashSet<Integer>(ORDINARY_FORMAT_CODE);
 
+    /**
+     * A <code>String</code> array of short weekday names in English 
+     */
     public static String[] WEEKDAYS = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
+    
+    /**
+     * A <code>String</code> array of short month names in English 
+     */
     public static String[] MONTHS  = {"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
     
+    /**
+     * A mapping table from an <code>Integer</code> to
+     * a short-weekday name in English.
+     */
     public static final Map<Integer, String> WEEKDAY_LIST= new LinkedHashMap<Integer, String>();
+    /**
+     * A mapping table from an <code>Integer</code> to
+     * a short-month name in English.
+     */
     public static final Map<Integer, String> MONTH_LIST= new LinkedHashMap<Integer, String>();
 
     static{

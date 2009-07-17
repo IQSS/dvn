@@ -21,35 +21,77 @@
 package edu.harvard.iq.dvn.ingest.org.thedata.statdataio.spi;
 
 import java.nio.MappedByteBuffer;
-import java.util.logging.Logger;
+import java.util.logging.*;
 import static java.lang.System.*;
 
 /**
- *
- * @author akio sone
+ * A superclass that contains fields and methods common to 
+ * <code>StatDataFileReaderSpi</code> and <code>StatDataFileWriterSpi</code>.
+ * 
+ * @author akio sone at UNC-Odum
  */
 public abstract class StatDataFileReaderWriterSpi extends SDIOServiceProvider{
 
-    private static Logger dbgLog = Logger.getLogger(StatDataFileReaderWriterSpi.class.getPackage().getName());
+    private static Logger dbgLog = 
+    Logger.getLogger(StatDataFileReaderWriterSpi.class.getPackage().getName());
     /**
-     *
+     * A <code>String</code> array that contains human-readable format names
+     * and are used by the <code>StatDataFileReader</code> or 
+     * <code>StatDataFileWriter</code> implementation related to this
+     * class.
      */
     protected String[] names = null;
+
     /**
-     *
+     * Gets the value of names.
+     * @return the value of names.
+     */
+    public String[] getFormatNames() {
+        return (String[])names.clone();
+    }
+
+    /**
+     * A <code>String</code> array that contains format extensions 
+     *  and are used by the <code>StatDataFileReader</code> or 
+     * <code>StatDataFileWriter</code> implementation related to this
+     * class.
      */
     protected String[] suffixes = null;
+    
     /**
+     * Gets the value of suffixes
      *
+     * @return the value of suffixes
+     */
+    public String[] getFileSuffixes() {
+        return suffixes == null ? null : (String[])suffixes.clone();
+    }
+    
+    
+    /**
+     * A <code>String</code> array that contains MIME types 
+     * and are used by the <code>StatDataFileReader</code> or 
+     * <code>StatDataFileWriter</code> implementation related to this
+     * class.
      */
     protected String[] MIMETypes = null;
+    
     /**
-     * 
+     * Gets the value of MIMETypes
+     *
+     * @return the value of MIMETypes
+     */
+    public String[] getMIMETypes() {
+        return MIMETypes == null ? null : (String[])MIMETypes.clone();
+    }
+    
+    /**
+     * A <code>String</code> that contains the name of the plug-in class.
      */
     protected String pluginClassName = null;
 
     /**
-     * Get the value of pluginClassName
+     * Gets the value of pluginClassName
      *
      * @return the value of pluginClassName
      */
@@ -58,59 +100,25 @@ public abstract class StatDataFileReaderWriterSpi extends SDIOServiceProvider{
     }
 
     /**
-     * Get the value of MIMETypes
-     *
-     * @return the value of MIMETypes
+     * Constructs an empty <code>StatDataFileReaderWriterSpi</code> instance.
+     * The subclasses are to initialize instance fields and/or override
+     * methods.
      */
-    public String[] getMIMETypes() {
-        return MIMETypes == null ? null : (String[])MIMETypes.clone();
-    }
-
-    /**
-     * Get the value of suffixes
-     *
-     * @return the value of suffixes
-     */
-    public String[] getSuffixes() {
-        return suffixes == null ? null : (String[])suffixes.clone();
-    }
-
-
-    /**
-     *
-     * @return
-     */
-    public String[] getFormatNames() {
-        return (String[])names.clone();
-    }
-
-    /**
-     *
-     * @return
-     */
-    public String[] getFileSuffixes() {
-        return suffixes == null ? null : (String[])suffixes.clone();
-    }
-
-    /**
-     * Get the value of names
-     *
-     */
-//    public String[] getNames() {
-//        return (String[])names.clone();
-//    }
-
     public StatDataFileReaderWriterSpi() {
     }
 
     /**
-     *
-     * @param vendorName
-     * @param version
-     * @param names
-     * @param suffixes
-     * @param MIMETypes
-     * @param pluginClassName
+     * Constructs an empty <code>StatDataFileReaderWriterSpi</code> instance
+     * with given values.
+     * 
+     * @param vendorName  the vendor name.
+     * @param version     a version identifier.
+     * @param names       at least one format name or more.
+     * @param suffixes    at least one format extensions or more.
+     * @param MIMETypes   at least one format's MIME type or more.
+     * @param pluginClassName the fully qualified name of the associated
+     * <code>StatDataFileReaderSpi</code> or 
+     * <code>StatDataFileWriterSpi</code> class.
      */
     public StatDataFileReaderWriterSpi(
             String vendorName,
@@ -122,7 +130,7 @@ public abstract class StatDataFileReaderWriterSpi extends SDIOServiceProvider{
             ) {
         super(vendorName, version);
 
-        //out.println("StatDataFileReaderWriterSpi is called");
+        dbgLog.fine("StatDataFileReaderWriterSpi is called");
 
         if (names == null) {
             throw new IllegalArgumentException("names is null!");
@@ -148,11 +156,11 @@ public abstract class StatDataFileReaderWriterSpi extends SDIOServiceProvider{
     }
 
     /**
-     * dump the data buffer in HEX
+     * Writes a <code>MappedByteBuffer</code> object in hexadecimal.
      *
-         * @param buff
-         * @param hdr 
-         */
+     * @param buff a MappedByteBuffer object.
+     * @param hdr the title string.
+     */
     public void printHexDump(MappedByteBuffer buff, String hdr) {
         int counter = 0;
         if (hdr != null) {
@@ -173,11 +181,11 @@ public abstract class StatDataFileReaderWriterSpi extends SDIOServiceProvider{
         buff.rewind();
     }
     /**
-     * dump the data buffer in HEX
+     * Writes the <code>byte</code> array in hexadecimal.
      *
-         * @param buff
-         * @param hdr
-         */
+     * @param buff a <code>byte</code> array.
+     * @param hdr the title string.
+     */
     public void printHexDump(byte[] buff, String hdr) {
         int counter = 0;
         if (hdr != null) {

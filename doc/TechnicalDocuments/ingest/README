@@ -6,11 +6,11 @@ BACKGROUND KNOWLEGE
     Before you code-read the StatData I/O API source files,
     you need preparations as follows:
     A. Required:
-        * Standsards
+        * Standards
             IEEE 754-1985 Standard (floating-point arithmetic)
             ISO 8601 - Numeric representation of dates and time
         * Java packages/classes
-            JSE
+            JSE6
                 java.lang.Double, Float, Long, Integer, Short, Byte
                 java.lang.reflect.* (esp. Method)
                 java.nio.* (esp. ByteBuffer)
@@ -18,7 +18,7 @@ BACKGROUND KNOWLEGE
                 java.util.ServiceLoader
                 javax.imageio.* and its reference inplementation
                     com.sun.imageio.plugins.* (see REFERENCES-URIs)
-           Achace Commons Lang
+           Apache Commons Lang
                 org.apache.commons.lang.* (esp. ArrayUtils, StringUtils)
 
     B. Desirable:
@@ -29,12 +29,13 @@ BACKGROUND KNOWLEGE
 
 SOURCE-FILE STRUCTURE
 
-    The StatData I/O API is designed after the Image I/O API, epsecially, emulating
+    The StatData I/O API is designed after the Image I/O API, epsecially,
+    emulating
     the service loader mechanism available in JSE6
     (java.util.ServiceLoader class).
-    
+
     A. Package Structure
-    
+
         1. Public API
         ../src/DVN-EJB/src/edu/harvard/iq/dvn/ingest/
         org/thedata/statdataio          [entry point classs and others]
@@ -45,7 +46,7 @@ SOURCE-FILE STRUCTURE
 
         2. Dataverse-implementations
         ../src/DVN-EJB/src/edu/harvard/iq/dvn/ingest/
-        
+
         File-reading classes are organized by their format type:
 
         statdataio/impl/plugins/dta     [STATA Dta]
@@ -55,23 +56,26 @@ SOURCE-FILE STRUCTURE
 
         3. Service-Provider Information
         ../src/DVN-EJB/src/java/META-INF/services/
-        edu.harvard.iq.dvn.ingest.org.thedata.statdataio.spi.StatDataFileReaderSpi
+
+        edu.harvard.iq.dvn.ingest.org.thedata.statdataio.spi.StatDataFileReaderS
+        pi
 
 USAGE
-        Similar to JSE's image-IO API, the StatDataIO AP has a convenience, 
+        Similar to JSE's image-IO API, the StatDataIO AP has a convenience,
         entry class called "StatDataIO"; Two use cases are shown below:
-        
-        
+
+
         ../src/DVN-EJB/src/java/edu/harvard/iq/dvn/ingest/dsb/DSBWrapper.java
-       
-        /* excerpt from the ingest method of DSBWrapper.java 
-            ../src/DVN-EJB/src/java/edu/harvard/iq/dvn/ingest/dsb/DSBWrapper.java
+
+        /* excerpt from the ingest method of DSBWrapper.java
+            ../src/DVN-
+            EJB/src/java/edu/harvard/iq/dvn/ingest/dsb/DSBWrapper.java
         */
-        
+
         // -------------------------------------------------------------------//
         // get the mime-type : file == an instance of StudyFileEditBean
         String mime_type = file.getStudyFile().getFileType();
-        
+
         String ddi = null;
 
         BufferedInputStream infile = null;
@@ -79,7 +83,7 @@ USAGE
         try {
 
             // ingest-source file
-            File tempFile = new File(file.getTempSystemFileLocation()); // 
+            File tempFile = new File(file.getTempSystemFileLocation()); //
 
             infile = new BufferedInputStream(new FileInputStream(tempFile));
 
@@ -107,16 +111,20 @@ USAGE
                 dbgLog.info("mime-type was null: use the back-up method");
                 sd = StatDataIO.read(infile);
             }
-            
+
             SDIOMetadata smd = sd.getMetadata();
 
             // tab-file: source file
             String tabDelimitedDataFileLocation =
-                    smd.getFileInformation().get("tabDelimitedDataFileLocation").toString();
+                smd.getFileInformation().get("tabDelimitedDataFileLocation")
+                    .toString();
 
-            dbgLog.fine("tabDelimitedDataFileLocation="+tabDelimitedDataFileLocation);
 
-            dbgLog.fine("data file(tempFile): abs path:\n"+file.getTempSystemFileLocation());
+            dbgLog.fine("tabDelimitedDataFileLocation="+tabDelimitedDataFileLoca
+            tion);
+
+            dbgLog.fine("data file(tempFile): abs
+            path:\n"+file.getTempSystemFileLocation());
             dbgLog.fine("mimeType :\n"+file.getStudyFile().getFileType());
 
 
@@ -140,7 +148,8 @@ USAGE
             File newFile = new File( newDir, tempFile.getName() );
 
             // nio-based file-copying idiom
-            FileInputStream fis = new FileInputStream(tabDelimitedDataFileLocation);
+            FileInputStream fis = new
+            FileInputStream(tabDelimitedDataFileLocation);
             FileOutputStream fos = new FileOutputStream(newFile);
             FileChannel fcin = fis.getChannel();
             FileChannel fcout = fos.getChannel();
@@ -172,15 +181,15 @@ USAGE
         }
 
         return ddi;
-        
+
         // -------------------------------------------------------------------//
         // end of the code-excerpt
 
 
-FIlE READER CLASSES
+FILE READER CLASSES
 
     A. Decoding Logic
-    
+
     A typical statistical data file usually consists of 3 blocks:
 
     (1) header
@@ -194,39 +203,69 @@ FIlE READER CLASSES
     detect each of these unit makers and apply an appropriate method coded for
     each unit by JSE's reflection framework.
 
-    More specificaly, there is the following unifom method naming convention for
-    FileReader classes:
+    More specifically, there is the following uniform method naming convention
+    for FileReader classes:
 
     (1) Read() method of each reader class contains the above reflection
-    mechanism
+        mechanism
     (2) Read() method calls a method that is coded for a specific unit and
-    its name is "decode"+ unit name.
+        its name is "decode"+ unit name.
 
     Decoded metadata and data are stored in an instance of SDIOData class,
-    metatadata are stored in its metadata field and data are store in data
+    metadata are stored in its metadata field and data are store in data
     field.
 
-    B.
-
-    C.
-
-    X1. Descriptive Summary/UNF statistics
-    When or After the data section of a statistica data file is decoded, a given
-    set of descriptive summary/UNF statistics are calculated by calling classes
-    external to the StataDataIO package.
-
-    X2. Data/Time variable
-    In order to avoid losing the original definition of a date or
-    time variable, its data are stored in String rather than its internal
-    numeric representation scheme (integer or float).  The variable formats that
-    follows this rule is listed in each FileReader class or its auxiliary class.
 
 
-    data themselves are stored in an instance of SDIOD
+    B. Fine Print: Important decoding rules that are coded in source files
+
+    1. Common to all formats:
+
+        * When data are saved in a tab-delimited file, the default numeric
+          missing value is "NA" whereas the default string missing value is "".
+          Floats are written with the following two format settings:
+
+            setGroupingUsed(false)
+            setMaximumFractionDigits(16)
+
+        * The missing value token used in the DDI (decoding result to be
+          returned as an XML string) is the period ('\u002E').
+
+        * In order to avoid losing the original definition of a date or
+          time variable, its data are stored in String rather than its
+          internal numeric representation scheme (usually integer or float).
+          The variable formats that follows this rule is listed in each
+          FileReader class or its auxiliary class.
+
+
+    2. Format-specific:
+
+        * STATA DTA
+            For each storage type, its missing value to be used for the UNF
+            calculation is as follows:
+
+            Byte        Byte.MAX_VALUE
+            Short       Byte.MAX_VALUE
+            Integer     Byte.MAX_VALUE
+            Long        Long.MAX_VALUE
+            Float       Float.NaN
+            Double      Double.NaN
+
+    C. Descriptive Summary/UNF statistics
+
+       When or after the data section of a statistica data file is decoded,
+       a given set of descriptive summary/UNF statistics are calculated by
+       calling classes external to the StataDataIO package.
+       While these calculations are not required for their decoding,
+       if they are calculated separately from the decoding, numerical errors
+       would be inevitably added, and thus they are included in the decoding
+       process.
 
 FUTURE IMPLEMENTATIONS AND EXTENSIONS
+
     A. How to add a new FileReader class
-    A fileReader for a new file format other than STATA DTA, SPSS SAV, SPSS POR
+
+    A file reader for a new file format other than STATA DTA, SPSS SAV, SPSS POR
     can be added to the StatDataIO package without touching the API side; just
     add it source files to a newly creadted subdirectory under the following
     directory
@@ -234,7 +273,7 @@ FUTURE IMPLEMENTATIONS AND EXTENSIONS
         ../src/DVN-EJB/src/edu/harvard/iq/dvn/ingest/
             statdataio/impl/plugins/
 
-    also add its full class name to the follwing file:
+    also add its full class name to the following file:
 
 
         ../src/DVN-EJB/src/java/META-INF/services/
@@ -246,40 +285,49 @@ FUTURE IMPLEMENTATIONS AND EXTENSIONS
         edu.harvard.iq.dvn.ingest.statdataio.impl.plugins.por.PORFileReaderSpi
         edu.harvard.iq.dvn.ingest.statdataio.impl.plugins.sav.SAVFileReaderSpi
 
-        edu.harvard.iq.dvn.ingest.statdataio.impl.plugins.newFormat.NewFormatFil
-        eReaderSpi
+        # new addition
+        edu.harvard.iq.dvn.ingest.statdataio.impl.plugins.newFormat.
+        NewFormatFileReaderSpi
 
-    B. Where to move the new-ingest block to an earlier stage of the ingest call 
-       [i.e., how to disard the ingest() method of DSBWrapper class]
-       
-       The contents of ingest() method of DSBWrapper can be moved to 
+    A new file-reader implementation for STATA DTA, or SPSS SAV, or SPSS POR can
+    be added as shown above.  One difference is that because there are plural
+    reader implementations of a given format, if you want to use a particular
+    implementation, you must choose it among available readers.
+
+    B. Where to move the new-ingest block to an earlier stage of the ingest call
+       [i.e., how to discard the ingest() method of DSBWrapper class]
+
+       The contents of ingest() method of DSBWrapper can be moved to
        onMessage() method of DSBIngestMessageBean class as follows:
-       
-       // current 
-       parseXML( new DSBWrapper().ingest(fileBean) , (TabularDataFile) fileBean.getStudyFile() );
+
+       // current
+       parseXML( new DSBWrapper().ingest(fileBean) , (TabularDataFile)
+       fileBean.getStudyFile() );
 
 
        // possible revision
-       
+
        BufferedInputStream infile = null;
 
        try {
             // ingest-source file
-            File tempFile = new File(fileBean.getTempSystemFileLocation()); 
+            File tempFile = new File(fileBean.getTempSystemFileLocation());
 
             infile = new BufferedInputStream(new FileInputStream(tempFile));
 
             SDIOData sd = StatDataIO.read(infile);
             SDIOMetadata smd = sd.getMetadata();
-            
+
             // tab-file: source file
             String tabDelimitedDataFileLocation =
-                    smd.getFileInformation().get("tabDelimitedDataFileLocation").toString();
+
+                    smd.getFileInformation().get("tabDelimitedDataFileLocation")
+                    .toString();
 
             if (infile != null){
                 infile.close();
             }
-            
+
             // parse the response
             StudyFile f = fileBean.getStudyFile();
 
@@ -295,7 +343,8 @@ FUTURE IMPLEMENTATIONS AND EXTENSIONS
             File newFile = new File( newDir, tempFile.getName() );
 
             // jse-nio-based file-copy idiom
-            FileInputStream fis = new FileInputStream(tabDelimitedDataFileLocation);
+            FileInputStream fis = new
+            FileInputStream(tabDelimitedDataFileLocation);
             FileOutputStream fos = new FileOutputStream(newFile);
             FileChannel fcin = fis.getChannel();
             FileChannel fcout = fos.getChannel();
@@ -311,23 +360,26 @@ FUTURE IMPLEMENTATIONS AND EXTENSIONS
             // return xmlToParse;
             DDIWriter dw = new DDIWriter(smd);
 
-            parseXML(dw.generateDDI(), (TabularDataFile) fileBean.getStudyFile());
-            
-            
+            parseXML(dw.generateDDI(), (TabularDataFile)
+            fileBean.getStudyFile());
+
+
         } catch (IOException e) {
-        
+
         }
         // end ****************************************************************
-    
+
     D. writer side [currently stub code only]
 
 POSSIBLE MAINTENANCE/BREAKING POINTS IN THE FUTURE
 
-    * the calling point can be shifted to further upstream of the call hierarchy.
-    
-    * the length of a field may become longer
+    * the calling point can be shifted to further upstream of the call
+    hierarchy.
 
-    * Unicode(non-ASCII representation) Strings in label and data fields
+    * the length of a field may become longer and static values must be updated.
+
+    * Unicode(non-ASCII representation) Strings may appear in label and data
+      fields for the SPSS SAV format in the future
 
 REFERENCES
 
@@ -394,20 +446,22 @@ REFERENCES
 
 
     B. Documents included in this directory
-        
+
         (1) StatDataIO Package
-        
-        StatDataIO_package_diagram.pdf  UML package Diagram of StatDataIO package
+
+        StatDataIO_package_diagram.pdf  UML package Diagram of StatDataIO
+        package
 
         StatDataIO_class_diagram.pdf    UML class diagram of StatDataIO package
-        
-        DSBWrapper_ingest_sequence_diagram.pdf  UML sequence diagram that shows 
-                                        how StatDataIO classes works in the ingest
+
+        DSBWrapper_ingest_sequence_diagram.pdf  UML sequence diagram that shows
+                                        how StatDataIO classes works in the
+                                        ingest
                                         stage
         (2) Statistical Data Formats
 
         SPSS_POR_format_layout.pdf .... Diagram of the SPSS POR format structure
-        
+
         SPSS_POR_format_for_perl.pdf .. Memo for Perl programmers about SPSS
                                         POR-format structure and how to read it
                                         by Perl
@@ -438,3 +492,4 @@ REFERENCES
 
         spss_date_conversion_help.pdf   An Excerpt from the SPSS manual page
                                         concerning its date-type data
+

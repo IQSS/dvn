@@ -226,11 +226,12 @@ public class LoginWorkflowBean extends VDCBaseBean implements java.io.Serializab
             } 
             else if (workflowType.equals(WORKFLOW_TYPE_CONTRIBUTOR)) {
                   userService.makeContributor(user.getId(),getVDCRequestBean().getCurrentVDCId());
-                  // Update detached user object with updated user from cache
-                  user = userService.find(user.getId());
+                  
             } else if  (workflowType.equals(WORKFLOW_TYPE_FILE_ACCESS)) {
                 // give study file permission
             }
+            // Update detached user object with updated user from database
+            user = userService.find(user.getId());
         }
     }
 

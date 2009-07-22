@@ -25,7 +25,6 @@
 		        <xsl:choose>
 		         <xsl:when test='starts-with(.,"hdl:")'>handle</xsl:when>
 			 <xsl:when test='starts-with(.,"http://hdl.handle.net/")'>handle</xsl:when>
-		         <xsl:otherwise>producer</xsl:otherwise>
 		        </xsl:choose>
 		        </xsl:attribute>
 		        <xsl:choose>

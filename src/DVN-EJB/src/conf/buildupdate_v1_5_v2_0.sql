@@ -19,6 +19,7 @@ ALTER TABLE studyfile ALTER COLUMN unf SET STORAGE EXTENDED;
 ALTER TABLE datatable ADD COLUMN "type" character varying(255);
 ALTER TABLE datatable ALTER COLUMN "type" SET STORAGE EXTENDED;
 
+ALTER TABLE studyotherid ALTER COLUMN otherid type text;
 --
 -- and now DML
 --

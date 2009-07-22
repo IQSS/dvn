@@ -157,6 +157,7 @@ public class StudyOtherId implements java.io.Serializable {
     /**
      * Holds value of property otherId.
      */
+     @Column(columnDefinition="TEXT")
     private String otherId;
 
     /**

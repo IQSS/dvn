@@ -588,10 +588,12 @@ public class StudyUI  implements java.io.Serializable {
         String str = "";
         for (Iterator<StudyOtherId> it = getStudy().getStudyOtherIds().iterator(); it.hasNext();) {
             StudyOtherId elem = it.next();
-            if (!StringUtil.isEmpty(elem.getAgency())) {
+            if (!StringUtil.isEmpty(elem.getAgency()) || !StringUtil.isEmpty(elem.getOtherId())) {
                 if (str != "") {
                     str += "; ";
                 }
+            }
+            if (!StringUtil.isEmpty(elem.getAgency())){
                 str += elem.getAgency();
                 if (elem.getAgency() != null) {
                     str += ": ";

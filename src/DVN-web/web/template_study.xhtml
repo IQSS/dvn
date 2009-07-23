@@ -83,6 +83,92 @@
     <ice:outputText escape="false" nospan="true"
                     rendered="#{applicationScope.googleAnalyticsKey != null || MainLayoutBean.googleAnalyticsKey != null}"
                     value="#{(applicationScope.googleAnalyticsCode != null) ? applicationScope.googleAnalyticsCode : MainLayoutBean.googleAnalyticsCode}"/>
-
+    <!-- fix for the comments modal dialog being affected by customization -->
+    <ice:form id="StudyCommentsPopup" rendered="#{MainLayoutBean.writeStudyCommentsPopups}">
+        <!-- The popup panel code -->
+        <!-- report abuse popup -->
+        <ice:panelPopup id="reportPopup"
+                        draggable="false"
+                        visible="#{StudyCommentsFragment.showPopup}"
+                        autoCentre="true"
+                        modal="true">
+            <f:facet name="header">
+                <ice:panelGrid id="autoCentReportPanelGrid"
+                               width="100%"
+                               cellpadding="0"
+                               cellspacing="0"
+                               columns="2"
+                               columnClasses="none, popupButton">
+                    <ice:outputText value="Report Abuse"/>
+                    <ice:commandLink id="autoCentReportPopupClose"
+                                     actionListener="#{StudyCommentsFragment.togglePopup}"
+                                     styleClass="popupModalClose">
+                        <ice:graphicImage value="/resources/images/icon_close.gif"/>
+                    </ice:commandLink>
+                </ice:panelGrid>
+            </f:facet>
+            <f:facet name="body">
+                <ice:panelGrid id="autoCentReportContent"
+                               width="100%"
+                               cellpadding="0"
+                               cellspacing="0"
+                               columns="1"
+                               styleClass="popupModalBody">
+                    <ice:outputText value="You are about to report this comment as abusive because of inappropriate language, tone, or other violation of the study terms of use."/>
+                    <ice:outputText value="Do you want to continue?"/>
+                    <div jsfc="ice:panelGroup" styleClass="dvnFormPadding">
+                        <ice:commandButton id="autoCentReportPopupOk"
+                                           actionListener="#{StudyCommentsFragment.reportAbuse}"
+                                           value="OK"/>
+                        <ice:outputText nospan="true" escape="false" value="&#160;&#160;&#160;"/>
+                        <ice:commandButton id="autoCentReportPopupCancel"
+                                           actionListener="#{StudyCommentsFragment.togglePopup}"
+                                           value="Cancel"/>
+                    </div>
+                </ice:panelGrid>
+            </f:facet>
+        </ice:panelPopup>
+        <!-- delete popup -->
+        <ice:panelPopup id="deletePopup"
+                        draggable="false"
+                        visible="#{StudyCommentsFragment.showDeletePopup}"
+                        autoCentre="true"
+                        modal="true">
+            <f:facet name="header">
+                <ice:panelGrid id="autoCentPanelGrid"
+                               width="100%" cellpadding="0"
+                               cellspacing="0" columns="2"
+                               columnClasses="none,popupButton">
+                    <ice:outputText value="Delete Comment"/>
+                    <ice:commandLink id="autoCentPopupClose"
+                                     actionListener="#{StudyCommentsFragment.toggleDeletePopup}"
+                                     styleClass="popupModalClose">
+                        <ice:graphicImage value="/resources/images/icon_close.gif"/>
+                    </ice:commandLink>
+                </ice:panelGrid>
+            </f:facet>
+            <f:facet name="body">
+                <ice:panelGrid id="autoCentContent"
+                               width="100%" cellpadding="0"
+                               cellspacing="0" columns="1"
+                               styleClass="popupModalBody">
+                    <ice:outputText value="You are about to delete a comment. This comment will no longer be visible to any users."/>
+                    <ice:outputText value="Do you want to continue?"/>
+                    <div jsfc="ice:panelGroup" styleClass="dvnFormPadding">
+                        <ice:commandButton id="autoCentPopupOk"
+                                           actionListener="#{StudyCommentsFragment.deleteFlaggedComment}"
+                                           value="OK"/>
+                        <ice:outputText nospan="true" escape="false" value="&#160;&#160;&#160;"/>
+                        <ice:commandButton id="autoCentPopupCancel"
+                                           actionListener="#{StudyCommentsFragment.toggleDeletePopup}"
+                                           value="Cancel"/>
+                    </div>
+                </ice:panelGrid>
+            </f:facet>
+        </ice:panelPopup>
+        <!-- end delete -->
+              <!-- end the popup panel code -->
+    </ice:form>
+    <!-- end fix for the comments modal dialog being affected by customization -->
 </body>
 </html>

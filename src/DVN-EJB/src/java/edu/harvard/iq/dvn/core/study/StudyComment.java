@@ -57,7 +57,6 @@ public class StudyComment implements Serializable {
     private Date createTime;
 
     @ManyToOne
-    @JoinColumn(nullable=false)
     private Study study;
     @ManyToMany
     @JoinTable(name = "FLAGGED_STUDY_COMMENTS",

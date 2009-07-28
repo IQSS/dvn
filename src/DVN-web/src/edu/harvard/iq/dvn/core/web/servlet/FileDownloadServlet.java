@@ -2004,7 +2004,9 @@ public class FileDownloadServlet extends HttpServlet {
                 loginPostMethod.releaseConnection();
                 int counter = 0;
 
-                while (status == 302 && counter < 10) {
+		int redirectLimit = 20; // number of redirects we are willing to follow before we give up. 
+
+                while (status == 302 && counter < redirectLimit) {
 
                     if (counter > 0) {
                         for (int i = 0; i < loginGetMethod.getResponseHeaders().length; i++) {

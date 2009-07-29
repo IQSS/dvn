@@ -77,6 +77,10 @@ public class DvnTermsOfUseAccess {
     */
 
     public String dvnAcceptRemoteTOU ( String TOUurl, String jsessionid, String downloadURL ) {
+	return dvnAcceptRemoteTOU ( TOUurl, jsessionid, downloadURL, null ); 
+    }
+
+    public String dvnAcceptRemoteTOU ( String TOUurl, String jsessionid, String downloadURL, String extraCookies ) {
 	
 	GetMethod TOUgetMethod = null; 
 	PostMethod TOUpostMethod = null; 
@@ -91,6 +95,9 @@ public class DvnTermsOfUseAccess {
 	    TOUgetMethod = new GetMethod ( TOUurl );
 	    if ( jsessionid != null ) {
 		TOUgetMethod.addRequestHeader("Cookie", "JSESSIONID=" + jsessionid ); 
+	    }
+	    if ( extraCookies != null ) {
+		TOUgetMethod.addRequestHeader("Cookie", extraCookies); 
 	    }
 
 	    String icesession     = null; 
@@ -215,6 +222,10 @@ public class DvnTermsOfUseAccess {
 		dbgLog.fine("icefaces url: "+iceFacesUpdate); 
 
 		TOUpostMethod.addRequestHeader("Cookie", "JSESSIONID=" + jsessionid ); 
+		if ( extraCookies != null ) {
+		    TOUpostMethod.addRequestHeader("Cookie", extraCookies); 
+		}
+
 		TOUpostMethod.setFollowRedirects(false);
 
 				
@@ -298,6 +309,10 @@ public class DvnTermsOfUseAccess {
 		    redirectGetMethod = new GetMethod ( redirectLocation );
 		    redirectGetMethod.setFollowRedirects(false);
 		    redirectGetMethod.addRequestHeader("Cookie", "JSESSIONID=" + jsessionid ); 
+		    if ( extraCookies != null ) {
+			redirectGetMethod.addRequestHeader("Cookie", extraCookies); 
+		    }
+
 		    status = getClient().executeMethod(redirectGetMethod);
 		    
 		    if ( status == 302 ) {

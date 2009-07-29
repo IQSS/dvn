@@ -397,26 +397,26 @@ public class FileDownloadServlet extends HttpServlet {
             String remoteAuthType = remoteAuthRequired(remoteHost);
             
             if (remoteAuthType != null) {
-            if (remoteAuthType.equals("httpbasic")) {
-                // get the basic HTTP auth credentials
-                // (password and username) from the database:
-
-                remoteAuthHeader = getRemoteAuthCredentials(remoteHost);
-            } else if (remoteAuthType.equals("dvn")) {
-                // Authenticate with the remote DVN:
-                
-                jsessionid = dvnRemoteAuth(remoteHost);
-            }
+		if (remoteAuthType.equals("httpbasic")) {
+		    // get the basic HTTP auth credentials
+		    // (password and username) from the database:
+		    
+		    remoteAuthHeader = getRemoteAuthCredentials(remoteHost);
+		} else if (remoteAuthType.equals("dvn")) {
+		    // Authenticate with the remote DVN:
+		    
+		    jsessionid = dvnRemoteAuth(remoteHost);
+		}
             }
 
             method = new GetMethod(remoteFileUrl);
             
             if (jsessionid != null) {
-            method.addRequestHeader("Cookie", "JSESSIONID=" + jsessionid);
+		method.addRequestHeader("Cookie", "JSESSIONID=" + jsessionid);
             }
 
             if (remoteAuthHeader != null) {
-            method.addRequestHeader("Authorization", remoteAuthHeader);
+		method.addRequestHeader("Authorization", remoteAuthHeader);
             }
 
             // normally, the HTTP client follows redirects
@@ -457,11 +457,24 @@ public class FileDownloadServlet extends HttpServlet {
 		// aliases that are 302-redirected to the actual locations)
 
 		String redirectLocation = null;
+		String extraCookies = null; 
                 
 		for (int i = 0; i < method.getResponseHeaders().length; i++) {
 		    String headerName = method.getResponseHeaders()[i].getName();
 		    if (headerName.equals("Location")) {
 			redirectLocation = method.getResponseHeaders()[i].getValue();
+		    }
+		    
+		    String regexCookie = "^([^;]*;)"; 
+		    Pattern patternCookie = Pattern.compile (regexCookie); 
+		    
+		    if (headerName.equals("Set-Cookie") || 
+			headerName.equals("Set-cookie")) {
+			String cookieHeader = method.getResponseHeaders()[i].getValue();
+			Matcher cookieMatcher = patternCookie.matcher(cookieHeader);
+			if ( cookieMatcher.find() ) {
+			    extraCookies = cookieMatcher.group(1); 
+			}
 		    }
 		}
 
@@ -469,7 +482,7 @@ public class FileDownloadServlet extends HttpServlet {
 		    
 		    // Accept the TOU agreement:
 		    
-		    method = remoteAccessTOU(redirectLocation, jsessionid, remoteFileUrl);
+		    method = remoteAccessTOU(redirectLocation, jsessionid, remoteFileUrl, extraCookies);
 
 		    // If everything has worked right
 		    // we should be redirected to the final
@@ -2020,7 +2033,7 @@ public class FileDownloadServlet extends HttpServlet {
                     // try following redirects until we get a static page,
                     // or until we exceed the hoop limit.
                     if (redirectLocation.matches(".*TermsOfUsePage.*")) {
-                        loginGetMethod = remoteAccessTOU(redirectLocation + "&clicker=downloadServlet", remoteJsessionid, null);
+                        loginGetMethod = remoteAccessTOU(redirectLocation + "&clicker=downloadServlet", remoteJsessionid, null, null);
                         if (loginGetMethod != null) {
                             status = loginGetMethod.getStatusCode();
                         }
@@ -2051,10 +2064,10 @@ public class FileDownloadServlet extends HttpServlet {
         return remoteJsessionid;
     }
 
-    private GetMethod remoteAccessTOU(String TOUurl, String jsessionid, String downloadURL) {
+    private GetMethod remoteAccessTOU(String TOUurl, String jsessionid, String downloadURL, String extraCookies) {
 	DvnTermsOfUseAccess dvnTOU = new DvnTermsOfUseAccess();
     
-	jsessionid = dvnTOU.dvnAcceptRemoteTOU ( TOUurl, jsessionid, downloadURL ); 
+	jsessionid = dvnTOU.dvnAcceptRemoteTOU ( TOUurl, jsessionid, downloadURL, extraCookies ); 
 
 	GetMethod finalGetMethod = null; 
 	int status = 0; 
@@ -2062,7 +2075,12 @@ public class FileDownloadServlet extends HttpServlet {
 	try {
 	    finalGetMethod = new GetMethod ( downloadURL );
 	    finalGetMethod.setFollowRedirects(false);
-	    finalGetMethod.addRequestHeader("Cookie", "JSESSIONID=" + jsessionid ); 
+	    
+	    finalGetMethod.addRequestHeader("Cookie", "JSESSIONID=" + jsessionid); 
+
+	    if ( extraCookies != null ) {
+		finalGetMethod.addRequestHeader("Cookie", extraCookies); 
+	    }
 	    status = getClient().executeMethod(finalGetMethod);
         
 	} catch (IOException ex) {

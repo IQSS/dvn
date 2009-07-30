@@ -38,8 +38,13 @@ package edu.harvard.iq.dvn.unf;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class UNFUtil {
 
@@ -64,7 +69,8 @@ public class UNFUtil {
             mat[0][n] = numb[n];
         }
         UnfDigest.setTrnps(false);
-        String[] res = UnfDigest.unf(mat, vers);
+//        String[] res = UnfDigest.unf(mat, vers);
+        String[] res = UnfDigest.unf(mat, version);
 
         return res[0];
     }
@@ -270,11 +276,39 @@ public class UNFUtil {
             chseq[0][cnt] = (CharSequence) str;
             cnt++;
         }
-        String[] res = UnfDigest.unf(chseq, vers);
+        String[] res = UnfDigest.unf(chseq, version);
         return res[0];
     }
 
-    /**
+     public static String calculateUNF(final String[] chr, final String[] sdfFormat, String version)
+            throws UnfException, NoSuchAlgorithmException, IOException {
+        float vers = (float) Double.parseDouble(version);
+        String tosplit = ":";
+        String spres[] = chr[0].split(tosplit);
+        if (spres.length >= 3 && chr[0].startsWith("UNF:")) {
+            return UnfDigest.addUNFs(chr);
+        }
+        if (spres.length > 1) {
+            //throw new UnfException("UNFUtil: Malformed unf");
+        }
+        CharSequence[][] chseq = new CharSequence[1][chr.length];
+        UnfDigest.setTrnps(false);
+        int cnt = 0;
+        for (String str : chr) {
+            SimpleDateFormat sdf  = new SimpleDateFormat(sdfFormat[cnt]);
+            try {
+                Date d = sdf.parse(str);
+            } catch (ParseException ex) {
+                Logger.getLogger(UNFUtil.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            chseq[0][cnt] = (CharSequence) str;
+            cnt++;
+        }
+        String[] res = UnfDigest.unf(chseq, version);
+        return res[0];
+    }
+
+   /**
      * Calculates unf's of two-dimensional array of double
      * along second index (columns) and add them
      * Note that if data set contains number and String this method
@@ -301,8 +335,7 @@ public class UNFUtil {
                 pass[r][c] = numb[r][c];
             }
         }
-        float v = (float) Double.parseDouble(version);
-        String[] unfs = UnfDigest.unf(pass, v);
+        String[] unfs = UnfDigest.unf(pass, version);
         return calculateUNF(unfs, version);
     }
 
@@ -334,7 +367,7 @@ public class UNFUtil {
             }
         }
         float v = (float) Double.parseDouble(version);
-        String[] unfs = UnfDigest.unf(pass, v);
+        String[] unfs = UnfDigest.unf(pass, version);
         return calculateUNF(unfs, version);
     }
 }

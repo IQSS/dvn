@@ -60,7 +60,8 @@ public class UnfDigest implements UnfCons {
     /**last version of unf supported*/
     private static final double lastVersion = 4.1d;
     /** current version */
-    private static float currentVersion = 3f;
+   //private static float currentVersion = 3f;
+    private static String currentVersion = "3";
     /** the MessageDigest algor associated with current version*/
     private static final String algor3 = "MD5";
     /** the MessageDigest algor associated with lastVersion*/
@@ -95,21 +96,18 @@ public class UnfDigest implements UnfCons {
 
     /**
      *
-     * @return float with current unf version
+     * @return String with current unf version
      */
-    public static float getVersion() {
+    public static String getVersion() {
         return currentVersion;
     }
 
     /**
      *
-     * @param vv float to set the unf version
+     * @param vv String to set the unf version
      */
-    public void setVersion(float vv) {
-        this.currentVersion = (vv <= 4.1f && vv >= 3f) ? vv : 3f;
-        if (vv > lastVersion) {
-            mLog.info("Unsupported version using 3");
-        }
+    public void setVersion(String vv){
+        this.currentVersion = vv;
     }
 
     /**
@@ -176,11 +174,11 @@ public class UnfDigest implements UnfCons {
      * @param cdigits integer number of significant characters
      * @param version float unf version number
      */
-    public static void dowarnings(int ndigits, int cdigits, float version) {
+    public static void dowarnings(int ndigits, int cdigits, String version) {
         if (!DEBUG) {
             mLog.setLevel(Level.WARNING);
         }
-        if (version < 3f) {
+        if (Integer.parseInt(version.substring(0,1)) < 3) {
             mLog.warning("Older versions " + version + " are not recommended use >= " + 3);
         }
         if (ndigits != 0 && (ndigits < NDGTS_BNDS[0] || ndigits > NDGTS_BNDS[1])) {
@@ -213,7 +211,7 @@ public class UnfDigest implements UnfCons {
      * Calculate UNF's for bi-dimensional array of numeric values
      * 
      * @param <T> Generic type that extends Number
-     * @param vers float with the unf version number
+     * @param vers String with the unf version number
      * @param obj bi-dimensional array of generic class T that extends Number
      * @param digits varargs with array of Integer 
      * @return array of String with base64 encoding for each column of obj
@@ -221,7 +219,7 @@ public class UnfDigest implements UnfCons {
      * @throws UnsupportedEncodingException
      * @throws IOException
      */
-    public static <T extends Number> String[] unf(final T[][] obj, float vers, Integer... digits) throws
+     public static <T extends Number> String[] unf(final T[][] obj, String vers, Integer... digits) throws
             NoSuchAlgorithmException, UnsupportedEncodingException,
             IOException, UnfException {
         if (obj == null) {
@@ -252,8 +250,8 @@ public class UnfDigest implements UnfCons {
             nrow = tobj[0].length;
             topass = obj;
         }
-        String algor = (vers <= 3) ? algor3 : algor4;
-        String enc = (vers <= 4) ? encod3y4 : encod4p1;
+        String algor = (Float.parseFloat(vers.substring(0, 1)) <= 3) ? algor3 : algor4;
+        String enc = (Float.parseFloat(vers.substring(0, 1)) <= 4) ? encod3y4 : encod4p1;
         if (buildunfObj) {
             signature = new UnfClass(cdigits, ndigits, getVersion(), algor, enc);
         }
@@ -294,7 +292,7 @@ public class UnfDigest implements UnfCons {
      * @throws UnsupportedEncodingException
      * @throws IOException
      */
-    public static <T extends CharSequence> String[] unf(final T[][] obj, float vers,
+    public static <T extends CharSequence> String[] unf(final T[][] obj, String vers,
             Integer... digits) throws
             NoSuchAlgorithmException, UnsupportedEncodingException,
             IOException, UnfException {
@@ -325,8 +323,8 @@ public class UnfDigest implements UnfCons {
             nrow = tobj[0].length;
             topass = obj;
         }
-        String algor = (vers <= 3) ? algor3 : algor4;
-        String enc = (vers <= 4) ? encod3y4 : encod4p1;
+        String algor = (Float.parseFloat(vers) <= 3) ? algor3 : algor4;
+        String enc = (Float.parseFloat(vers) <= 4) ? encod3y4 : encod4p1;
         if (buildunfObj) {
             signature = new UnfClass(cdigits, ndigits, getVersion(), algor, enc);
         }
@@ -368,7 +366,7 @@ public class UnfDigest implements UnfCons {
      * @throws IOException
      */
     public static <T extends Number> String unfV(final T[] obj,
-            int ndg, float vers, UnfClass signature) throws
+            int ndg, String vers, UnfClass signature) throws
             NoSuchAlgorithmException, UnsupportedEncodingException,
             IOException, UnfException {
         UnfNumber<T> unfno = new UnfNumber<T>();
@@ -381,7 +379,7 @@ public class UnfDigest implements UnfCons {
         assnMDEnc(vers, unfno);
         String b64 = unfno.RUNF3(obj, ndg, fingerp, base64, hex);
 
-        b64 = "UNF:" + versString() + ":" + b64;
+        b64 = "UNF:" + getVersion() + ":" + b64;
         if (buildunfObj && signature != null) {
             buildUnfClass(fingerp, hex, b64, signature);
         }
@@ -396,19 +394,19 @@ public class UnfDigest implements UnfCons {
      *@param unfno unfNumber<T> class to assign the 
      * message digest algor and encoding according to unf version number 	
      */
-    private static <T extends Number> void assnMDEnc(float vers, UnfNumber<T> unfno)
+    private static <T extends Number> void assnMDEnc(String vers, UnfNumber<T> unfno)
             throws UnfException {
 
-        if (vers <= 3) {
+        if (vers.equals("3")) {
             unfno.setMdalgor(algor3);
-        } else if (vers > 3 && vers % 4 <= 0.1) {
+        } else if (vers.startsWith("4") || vers.startsWith("5")) {
             unfno.setMdalgor(algor4);
         } else {
             throw new UnfException("unfDigest:Version not supported");
         }
-        if (vers <= 4) {
+        if (Float.parseFloat(vers) <= 4) {
             unfno.setEncoding(encod3y4);
-        } else if (vers > 4 & vers % 4 <= 0.1) {
+        } else if (Float.parseFloat(vers) > 4 ) {
             unfno.setEncoding(encod4p1);
         } else {
             throw new UnfException("unfDigest:Version not supported");
@@ -438,14 +436,14 @@ public class UnfDigest implements UnfCons {
      * @param <T> Generic array that extends CharSequence
      * @param obj one-dimensional array of generic class T that extends CharSequence
      * @param cdg integer with number of chars to keep
-     * @param vers float with unf version
+     * @param vers String with unf version
      * @return String with base64 encoding
      * @throws NoSuchAlgorithmException
      * @throws UnsupportedEncodingException
      * @throws IOException
      */
     public static <T extends CharSequence> String unfV(final T[] obj, int cdg,
-            float vers, UnfClass signature) throws
+            String vers, UnfClass signature) throws
             NoSuchAlgorithmException, UnsupportedEncodingException,
             IOException, UnfException {
         UnfString<T> unfno = new UnfString<T>();
@@ -459,9 +457,9 @@ public class UnfDigest implements UnfCons {
         StringBuilder hex = new StringBuilder();
         /**Define encoding and mdalgor according to version (vers)*/
         assnMDEnc(vers, unfno);
-        String b64 = unfno.RUNF3((CharSequence[]) obj, b, cdg, fingerp, base64, hex);
+        String b64 = vers.equals("5")?unfno.RUNF5((CharSequence[]) obj, b, cdg, fingerp, base64, hex):unfno.RUNF3((CharSequence[]) obj, b, cdg, fingerp, base64, hex);
         fingerprint.add(fingerp);
-        b64 = "UNF:" + versString() + ":" + b64;
+        b64 = "UNF:" + getVersion() + ":" + b64;
         if (buildunfObj && signature != null) {
             buildUnfClass(fingerp, hex, b64, signature);
         }
@@ -472,22 +470,22 @@ public class UnfDigest implements UnfCons {
      * Utility helper method
      * 
      * @param <T> Generic CharSequence
-     * @param vers float for unf version number
+     * @param vers String for unf version number
      * @param unfno unfString<T> to assign encoding 
      *  and algorithm according to unf version (vers)
      */
-    private static <T extends CharSequence> void assnMDEnc(float vers, UnfString<T> unfno)
+    private static <T extends CharSequence> void assnMDEnc(String vers, UnfString<T> unfno)
             throws UnfException {
-        if (vers <= 3) {
+        if (vers.equals("3")) {
             unfno.setMdalgor(algor3);
-        } else if (vers > 3 && vers % 4 <= 0.1) {
+        } else if (vers.startsWith("4")|| vers.startsWith("5")) {
             unfno.setMdalgor(algor4);
         } else {
             throw new UnfException("unfDigest:Version not supported");
         }
-        if (vers <= 4) {
+        if (Float.parseFloat(vers.substring(0, 1)) <= 4) {
             unfno.setEncoding(encod3y4);
-        } else if (vers > 4 && vers % 4 <= 0.1) {
+        } else if (Float.parseFloat(vers.substring(0, 1)) > 4) {
             unfno.setEncoding(encod4p1);
         } else {
             throw new UnfException("unfDigest:Version not supported");
@@ -520,20 +518,6 @@ public class UnfDigest implements UnfCons {
         signature.setB64(tmp0);
     }
 
-    /**
-     *
-     * @return String representation of unf version number
-     */
-    private static String versString() {
-        float vrs = getVersion();
-        String vch = "";
-        if (vrs % Math.round(vrs) <= 0) {
-            vch += (int) Math.round(vrs);
-        } else {
-            vch += vrs;
-        }
-        return vch;
-    }
 
     /**
      * Add the combine unf's of all columns in data set

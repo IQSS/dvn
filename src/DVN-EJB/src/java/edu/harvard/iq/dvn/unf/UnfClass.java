@@ -47,7 +47,7 @@ public class UnfClass {
      * */
     private List<Integer[]> fingerprints = new ArrayList<Integer[]>();
     /** the unf version*/
-    private float version = 3f;
+    private String version = "3";
     /**
      * the hexadecimal string for columns of data matrix as obtained
      * from the byte arrays of every column
@@ -74,9 +74,9 @@ public class UnfClass {
      * Constructor
      * @param cd integer with number of characters
      * @param nd integer with number decimal digits
-     * @param vers float the unf version
+     * @param vers String the unf version
      */
-    public UnfClass(int cd, int nd, float vers) {
+    public UnfClass(int cd, int nd, String vers) {
         cdigits = cd;
         ndigits = nd;
         version = vers;
@@ -86,11 +86,11 @@ public class UnfClass {
      * Constructor
      * @param cd integer with number of characters
      * @param nd integer with number decimal digits
-     * @param vers float the unf version
+     * @param vers String the unf version
      * @param md String with MessageDigest algor
      * @param enc String with encoding
      */
-    public UnfClass(int cd, int nd, float vers, String md, String enc) {
+    public UnfClass(int cd, int nd, String vers, String md, String enc) {
         this(cd, nd, vers);
         mdalgor = md;
         encoding = enc;
@@ -130,17 +130,17 @@ public class UnfClass {
 
     /**
      *
-     * @return float with unf version
+     * @return String with unf version
      */
-    public float getVersion() {
+    public String getVersion() {
         return version;
     }
 
     /**
      *
-     * @param v float for unf version
+     * @param v String for unf version
      */
-    public void setVersion(float v) {
+    public void setVersion(String v) {
         version = v;
     }
 

@@ -457,7 +457,7 @@ public class UnfDigest implements UnfCons {
         StringBuilder hex = new StringBuilder();
         /**Define encoding and mdalgor according to version (vers)*/
         assnMDEnc(vers, unfno);
-        String b64 = vers.equals("5")?unfno.RUNF5((CharSequence[]) obj, b, cdg, fingerp, base64, hex):unfno.RUNF3((CharSequence[]) obj, b, cdg, fingerp, base64, hex);
+        String b64 = unfno.RUNF3((CharSequence[]) obj, b, cdg, fingerp, base64, hex);
         fingerprint.add(fingerp);
         b64 = "UNF:" + getVersion() + ":" + b64;
         if (buildunfObj && signature != null) {

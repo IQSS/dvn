@@ -721,7 +721,7 @@ public class DTAFileReader extends StatDataFileReader{
             dbgLog.fine("data_label_length="+data_label_length);
 
             String data_label = new String(Arrays.copyOfRange(header, dl_offset,
-                (dl_offset+data_label_length)), "US-ASCII");
+                (dl_offset+data_label_length)), "ISO-8859-1");
 
 
 
@@ -740,7 +740,7 @@ public class DTAFileReader extends StatDataFileReader{
             if (release_number > 104){
                 int ts_offset = dl_offset + data_label_length;
                 String time_stamp = new String(Arrays.copyOfRange(header, ts_offset,
-                    ts_offset+TIME_STAMP_LENGTH),"US-ASCII");
+                    ts_offset+TIME_STAMP_LENGTH),"ISO-8859-1");
                 dbgLog.fine("time_stamp_length="+time_stamp.length());
                 //dbgLog.fine("time_stamp=["+time_stamp+"]");
                 dbgLog.fine("loation of the null character="+time_stamp.indexOf(0));
@@ -892,7 +892,7 @@ public class DTAFileReader extends StatDataFileReader{
             for (int i= 0; i< nvar; i++){
                 offset_end += length_var_name;
                 String vari = new String(Arrays.copyOfRange(variableNameBytes, offset_start,
-                    offset_end),"US-ASCII");
+                    offset_end),"ISO-8859-1");
                 variableNameList.add(getNullStrippedString(vari));
                 dbgLog.fine(i+"-th name=["+variableNameList.get(i)+"]");
                 offset_start = offset_end;
@@ -962,7 +962,7 @@ public class DTAFileReader extends StatDataFileReader{
             for (int i= 0; i< nvar; i++){
                 offset_end += length_var_format;
                 String vari = new String(Arrays.copyOfRange(variableFormatList, offset_start,
-                    offset_end),"US-ASCII");
+                    offset_end),"ISO-8859-1");
                 variableFormats[i] = getNullStrippedString(vari);
                 dbgLog.fine(i+"-th format=["+variableFormats[i]+"]");
                 
@@ -1026,7 +1026,7 @@ public class DTAFileReader extends StatDataFileReader{
             for (int i= 0; i< nvar; i++){
                 offset_end += length_label_name;
                 String vari = new String(Arrays.copyOfRange(labelNameList, offset_start,
-                    offset_end),"US-ASCII");
+                    offset_end),"ISO-8859-1");
                 labelNames[i] = getNullStrippedString(vari);
                 dbgLog.fine(i+"-th label=["+labelNames[i]+"]");
                 offset_start = offset_end;
@@ -1050,7 +1050,7 @@ public class DTAFileReader extends StatDataFileReader{
 
     void decodeVariableLabels(BufferedInputStream stream){
 
-        dbgLog.fine("***** decodeVariableLabels(): start *****");
+        dbgLog.info("***** decodeVariableLabels(): start *****");
         
         if (stream ==null){
             throw new IllegalArgumentException("stream == null!");
@@ -1060,7 +1060,7 @@ public class DTAFileReader extends StatDataFileReader{
         int nvar = (Integer)smd.getFileInformation().get("varQnty");
         int length_var_label = constant_table.get("LABEL");
         int length_var_label_list = length_var_label*nvar;
-        dbgLog.fine("length_label_name="+length_var_label_list);
+        dbgLog.info("length_label_name="+length_var_label_list);
 
         byte[] variableLabelBytes = new byte[length_var_label_list];
         String[] variableLabels = new String[nvar];
@@ -1076,20 +1076,20 @@ public class DTAFileReader extends StatDataFileReader{
             for (int i= 0; i< nvar; i++){
                 offset_end += length_var_label;
                 String vari = new String(Arrays.copyOfRange(variableLabelBytes, offset_start,
-                    offset_end),"US-ASCII");
+                    offset_end),"ISO-8859-1");
                 variableLabelMap.put(variableNameList.get(i), getNullStrippedString(vari));
-                dbgLog.fine(i+"-th label=["+variableLabels[i]+"]");
+                dbgLog.info(i+"-th label=["+variableLabels[i]+"]");
                 offset_start = offset_end;
             }
-            dbgLog.fine("variableLabelMap=\n"+variableLabelMap.toString() +"\n");
+            dbgLog.info("variableLabelMap=\n"+variableLabelMap.toString() +"\n");
         } catch (IOException ex) {
             ex.printStackTrace();
         }
 
         smd.setVariableLabel(variableLabelMap);
         
-        dbgLog.fine("smd dump (variable label):\n"+smd.toString());
-        dbgLog.fine("***** decodeVariableLabels(): end *****");
+        dbgLog.info("smd dump (variable label):\n"+smd.toString());
+        dbgLog.info("***** decodeVariableLabels(): end *****");
 
     }
     
@@ -1431,7 +1431,7 @@ public class DTAFileReader extends StatDataFileReader{
                             //out.print("\t"+columnCounter+"-th string var length="+strVarLength);
                             //out.println("byte_offset="+byte_offset);
                             String raw_datum = new String(Arrays.copyOfRange(dataRowBytes, byte_offset,
-                                (byte_offset+strVarLength)), "US-ASCII");
+                                (byte_offset+strVarLength)), "ISO-8859-1");
                             //out.println("raw_datum="+raw_datum);
 //                            int null_position = raw_datum.indexOf(0);
 //                            String string_datum=null;
@@ -1642,7 +1642,7 @@ public class DTAFileReader extends StatDataFileReader{
                                     valueLabelHeader,
                                    value_label_table_length,
                                   (value_label_table_length+length_label_name)),
-                                  "US-ASCII");
+                                  "ISO-8859-1");
 
                 dbgLog.fine("rawLabelName(length)="+rawLabelName.length());
                 String labelName = rawLabelName.substring(0, rawLabelName.indexOf(0));
@@ -1704,7 +1704,7 @@ public class DTAFileReader extends StatDataFileReader{
 
 
                     String string_l = new String(Arrays.copyOfRange(valueLabelTable_i, offset_start,
-                        offset_end),"US-ASCII");
+                        offset_end),"ISO-8859-1");
 
                     int null_position = string_l.indexOf(0);
                     if (null_position != -1){
@@ -1822,7 +1822,7 @@ public class DTAFileReader extends StatDataFileReader{
                                     valueLabelHeader,
                                    value_label_table_length,
                                   (value_label_table_length+length_label_name)),
-                                  "US-ASCII");
+                                  "ISO-8859-1");
                 String labelName = getNullStrippedString(rawLabelName);
 
                 dbgLog.fine("label name = "+labelName+"\n");
@@ -1931,7 +1931,7 @@ public class DTAFileReader extends StatDataFileReader{
                 String label_segment = new String(
                                 Arrays.copyOfRange(valueLabelTable_i,
                                 offset_value,
-                                (length_label_segment+offset_value)), "US-ASCII");
+                                (length_label_segment+offset_value)), "ISO-8859-1");
 
                 String[] labelList = label_segment.split("\0");
 

@@ -176,6 +176,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         
         chkbxAdvStatOutputXtbOpt.setValue(new String[]{"xtb_Totals", "xtb_Statistics", 
                 "xtb_Percentages",});
+
+	
         
         // Advanced Statistics: checkbox group for the output option pane(xtab)
 //        checkboxGroupXtbOptions.setOptions(
@@ -3957,6 +3959,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             chkbxAdvStatOutputOpt.setRendered(false);
 
             chkbxAdvStatOutputXtbOpt.setRendered(true);
+	    chkbxAdvStatOutputXtbOpt.setValue(new String[]{"xtb_Totals", "xtb_Statistics", 
+                "xtb_Percentages",});
+
             analysisOptionPanel.setRendered(false);
             
         } else {

@@ -1203,6 +1203,7 @@ public class DTAFileReader extends StatDataFileReader{
         // for later variable-wise calculations of statistics
         // dataTable2 sotres cut-out data columnwise
         Object[][] dataTable2 = new Object[nvar][nobs];
+        String[][] dateFormat = new String[nvar][nobs];
         
         for (int i=0; i< nobs; i++){
             byte[] dataRowBytes = new byte[bytes_per_row];
@@ -1287,7 +1288,10 @@ public class DTAFileReader extends StatDataFileReader{
                             
                                 if (isDateTimeDatum){
                                     //dataTable2[columnCounter][i] = short_datum;
-                                    dataRow[columnCounter] = decodeDateTimeData("short",variableFormat, Short.toString(short_datum));
+                                    DecodedDateTime ddt = decodeDateTimeData("short",variableFormat, Short.toString(short_datum));
+                                    dbgLog.finer(i+"-th row , decodedDateTime "+ddt.decodedDateTime+", format="+ddt.format);
+                                    dataRow[columnCounter] = ddt.decodedDateTime;
+                                    dateFormat[columnCounter][i] = ddt.format;
                                     dataTable2[columnCounter][i] = dataRow[columnCounter];
 
                                 } else {
@@ -1327,10 +1331,12 @@ public class DTAFileReader extends StatDataFileReader{
                                 //out.println("columnCounter="+columnCounter+"\t"+int_datum);
                                 if (isDateTimeDatum){
                                     //dataTable2[columnCounter][i] = int_datum;
-                                    dataRow[columnCounter] = decodeDateTimeData("int",variableFormat, Integer.toString(int_datum));
-                                    
+                                    DecodedDateTime ddt = decodeDateTimeData("int",variableFormat, Integer.toString(int_datum));
+                                    dbgLog.finer(i+"-th row , decodedDateTime "+ddt.decodedDateTime+", format="+ddt.format);
+                                    dataRow[columnCounter] = ddt.decodedDateTime;
+                                    dateFormat[columnCounter][i] = ddt.format;
                                     dataTable2[columnCounter][i] = dataRow[columnCounter];
-                                    //out.println("columnCounter="+columnCounter+"\t"+dataTable2[columnCounter][i]);
+
                                 } else {
                                     dataTable2[columnCounter][i] = int_datum;
                                     dataRow[columnCounter] = int_datum;
@@ -1370,7 +1376,10 @@ public class DTAFileReader extends StatDataFileReader{
 
                                 if (isDateTimeDatum){
                                     //dataTable2[columnCounter][i] = float_datum;
-                                    dataRow[columnCounter] = decodeDateTimeData("float",variableFormat, doubleNumberFormatter.format(float_datum));
+                                   DecodedDateTime ddt = decodeDateTimeData("float",variableFormat, doubleNumberFormatter.format(float_datum));
+                                    dbgLog.finer(i+"-th row , decodedDateTime "+ddt.decodedDateTime+", format="+ddt.format);
+                                    dataRow[columnCounter] = ddt.decodedDateTime;
+                                    dateFormat[columnCounter][i] = ddt.format;
                                     dataTable2[columnCounter][i] = dataRow[columnCounter];
                                 } else {
                                     dataTable2[columnCounter][i] = float_datum;
@@ -1414,8 +1423,10 @@ public class DTAFileReader extends StatDataFileReader{
                                 if (isDateTimeDatum){
                                     
                                     //dataTable2[columnCounter][i] = double_datum;
-                                    
-                                    dataRow[columnCounter] = decodeDateTimeData("double",variableFormat, doubleNumberFormatter.format(double_datum));
+                                   DecodedDateTime ddt = decodeDateTimeData("double",variableFormat, doubleNumberFormatter.format(double_datum));
+                                    dbgLog.finer(i+"-th row , decodedDateTime "+ddt.decodedDateTime+", format="+ddt.format);
+                                    dataRow[columnCounter] = ddt.decodedDateTime;
+                                    dateFormat[columnCounter][i] = ddt.format;
                                     dataTable2[columnCounter][i] = dataRow[columnCounter];
                                 } else {
                                     dataTable2[columnCounter][i] = double_datum;
@@ -1486,8 +1497,10 @@ public class DTAFileReader extends StatDataFileReader{
         
         pwout.close();
 
-        //out.println("\ndataTable2(variable-wise):\n");
-        //out.println(Arrays.deepToString(dataTable2));
+        dbgLog.finer("\ndataTable2(variable-wise):\n");
+        dbgLog.finer(Arrays.deepToString(dataTable2));
+        dbgLog.finer("\ndateFormat(variable-wise):\n");
+        dbgLog.finer(Arrays.deepToString(dateFormat));
 
         dbgLog.fine("variableTypelList:\n"+Arrays.deepToString(variableTypelList));
         dbgLog.fine("variableTypelListFinal:\n"+Arrays.deepToString(variableTypelListFinal));
@@ -1497,7 +1510,7 @@ public class DTAFileReader extends StatDataFileReader{
            //String variableType_j =  variableTypelList[j];
            String variableType_j =  variableTypelListFinal[j];
             try {
-                unfValues[j] = getUNF(dataTable2[j], variableType_j,
+                unfValues[j] = getUNF(dataTable2[j], dateFormat[j], variableType_j,
                     unfVersionNumber, j);
                 dbgLog.fine(j+"th unf value"+unfValues[j]);
 
@@ -1979,7 +1992,7 @@ public class DTAFileReader extends StatDataFileReader{
         }
     }
 
-    private String getUNF(Object[] varData, String variableType, 
+    private String getUNF(Object[] varData, String[] dateFormat, String variableType,
         String unfVersionNumber, int variablePosition)
         throws NumberFormatException, UnfException,
         IOException, NoSuchAlgorithmException{
@@ -2079,13 +2092,13 @@ public class DTAFileReader extends StatDataFileReader{
             case  0:
                 // String case
                 dbgLog.fine("string case");
-
                 String[] strdata = Arrays.asList(varData).toArray(
-                    new String[varData.length]);
-                dbgLog.fine("strdata="+Arrays.deepToString(strdata));
-                unfValue = UNFUtil.calculateUNF(strdata, unfVersionNumber);
+                        new String[varData.length]);
+                    dbgLog.fine("strdata="+Arrays.deepToString(strdata));
+                    unfValue = UNFUtil.calculateUNF(strdata, dateFormat, unfVersionNumber);
+                
                 dbgLog.fine("string:unfValue"+unfValue);
-
+                // Shoud summary statistics be calculated on dates?
                 smd.getSummaryStatisticsTable().put(variablePosition,
                     StatHelper.calculateSummaryStatistics(strdata));
                     
@@ -2121,8 +2134,12 @@ public class DTAFileReader extends StatDataFileReader{
 //        return nullRemovedString;
 //    }
 
+    private class DecodedDateTime {
+        String format;
+        String decodedDateTime;
+    }
 
-    private String decodeDateTimeData(String storageType, String FormatType, String rawDatum){
+    private DecodedDateTime decodeDateTimeData(String storageType, String FormatType, String rawDatum){
 
         dbgLog.finer("(storageType, FormatType, rawDatum)=("+
         storageType +", " +FormatType +", " +rawDatum+")");
@@ -2136,6 +2153,7 @@ public class DTAFileReader extends StatDataFileReader{
         
         long milliSeconds;
         String decodedDateTime=null;
+        String format = null;
 
         if (FormatType.matches("^%tc(\\w|[:\\.])*")){
             // tc is a relatively new format
@@ -2143,14 +2161,16 @@ public class DTAFileReader extends StatDataFileReader{
 
             milliSeconds = Long.parseLong(rawDatum)+ STATA_BIAS_TO_EPOCH;
             decodedDateTime = sdf_ymdhmsS.format(new Date(milliSeconds));
-            dbgLog.finer("tc: result="+decodedDateTime);
+            format = sdf_ymdhmsS.toPattern();
+            dbgLog.finer("tc: result="+decodedDateTime+", format = "+format);
             
         } else if (FormatType.matches("^%t?d(\\w|[:\\.])*")){
             milliSeconds = Long.parseLong(rawDatum)*SECONDS_PER_YEAR + STATA_BIAS_TO_EPOCH;
             dbgLog.finer("milliSeconds="+milliSeconds);
             
             decodedDateTime = sdf_ymd.format(new Date(milliSeconds));
-            dbgLog.finer("td:"+decodedDateTime);
+            format = sdf_ymd.toPattern();
+            dbgLog.finer("td:"+decodedDateTime+", format = "+format);
 
         } else if (FormatType.matches("^%t?w(\\w|[:\\.])*")){
 
@@ -2193,7 +2213,9 @@ public class DTAFileReader extends StatDataFileReader{
             sdf_yw.format(new Date(wyr.getTimeInMillis()))+"\n");
             
             decodedDateTime = sdf_ymd.format(new Date(wyr.getTimeInMillis()));
-            
+            format = sdf_ymd.toPattern();
+            dbgLog.finer("tw:"+decodedDateTime+", format = "+format);
+          
         } else if (FormatType.matches("^%t?m(\\w|[:\\.])*")){
             // month 
             long monthYears = Long.parseLong(rawDatum);
@@ -2219,7 +2241,8 @@ public class DTAFileReader extends StatDataFileReader{
             dbgLog.finer("rawDatum="+rawDatum+": monthYear="+monthYear);
             
             decodedDateTime = monthYear;
-            dbgLog.finer("tm:"+decodedDateTime);
+            format = "yyyy-MM-dd";
+            dbgLog.finer("tm:"+decodedDateTime+", format:"+format);
 
         } else if (FormatType.matches("^%t?q(\\w|[:\\.])*")){
             // quater
@@ -2256,7 +2279,8 @@ public class DTAFileReader extends StatDataFileReader{
             dbgLog.finer("rawDatum="+rawDatum+": quaterYear="+quaterYear);
 
             decodedDateTime = quaterYear;
-            dbgLog.finer("tq:"+decodedDateTime);
+            format = "yyyy-MM-dd";
+            dbgLog.finer("tq:"+decodedDateTime+", format:"+format);
 
         } else if (FormatType.matches("^%t?h(\\w|[:\\.])*")){
             // half year
@@ -2288,16 +2312,22 @@ public class DTAFileReader extends StatDataFileReader{
             dbgLog.finer("rawDatum="+rawDatum+": halfYear="+halfYear);
             
             decodedDateTime = halfYear;
-            dbgLog.finer("th:"+decodedDateTime);
+            format = "yyyy-MM-dd";
+            dbgLog.finer("th:"+decodedDateTime+", format:"+format);
             
         } else if (FormatType.matches("^%t?y(\\w|[:\\.])*")){
             // year type's origin is 0 AD
             decodedDateTime = rawDatum;
+            format = "yyyy";
             dbgLog.finer("th:"+decodedDateTime);
         } else {
             decodedDateTime = rawDatum;
+            format=null;
         }
-        return decodedDateTime;
+        DecodedDateTime retValue = new DecodedDateTime();
+        retValue.decodedDateTime = decodedDateTime;
+        retValue.format = format;
+        return retValue;
     }
 
 }

@@ -1,0 +1,36 @@
+If you need to replicate a UNF:3 for a Stata or SPSS data
+set, please follow these steps: 
+
+Download the DSB rpm version 1.5, archived <here>. [insert
+URL once we freeze and archive the rpm]
+
+Install R package UNF version 3 available <here>. [insert
+URL] 
+
+Run the appropriate converter script on your data file:
+readdta.pl, readpor.pl or and readsav.pl for the Stata,
+SPSS/por and SPSS/sav file formats respectively.
+
+This will produce an XML file in the DDI fromat with the
+UNFs for the individual variables and the combined UNF for
+the datafile.
+
+---
+
+A note on the UNF:3 implementation:
+
+
+It was discovered that the UNF:3 implementation was affected
+by certain behavior that was language-specific and/or
+operated on data object in non-canonical forms. There are at
+least 2 known examples: handling of Date and Time objects by
+R; and drop in precision and rounding of floating point
+values while the data values were extracted from the Stata
+files. (see the documentation file
+UNF3_Implementation_Details.txt for more information). All
+the UNF signatures generated in the DVN <2.0 relied on that
+implementation. For this reason we strongly recommend that
+when it is necessary to replicate UNF:3, the preserved DVN
+UNF:3 software (above) is used, to achieve the result that
+is guaranteed to be identical.
+

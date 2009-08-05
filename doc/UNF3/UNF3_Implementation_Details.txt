@@ -1,0 +1,103 @@
+It has been discovered that the implementation (in R) used
+by the DVN application depended on certain features and/or
+behavior specific to R, essentially making it very difficult
+to port (meaning, to implement on another platform exactly
+replicating the behavior of the old UNF:3 implementation).
+
+Known issues with the implementation: 
+
+
+1. Loss of precision/rounding in processing floating point
+   values exracted from Stata files during the ingest. 
+
+   For both "float" and "double" floating
+   point values, the resulting value in the tab-delimited
+   file was printed using perl 'sprintf "%g"' function, which
+   reduced precision to 6 decimal digits before and after
+   the decimal point (UNF uses 7 internally). 
+
+2. Date/Time values: 
+
+   It was discovered that the vector, on which the UNF
+   algorithm is executed is in fact the internal
+   data structure used by R to handle date objects, it is
+   completely proprietory and thus violates the stated goal
+   to use canonical forms of all data objects for signature
+   calculation. 
+   In the UNF:5+ care is taken to ensure that the date
+   values are processed in their canonical form (see
+   documentation for UNF:5 for more details).
+
+The 1. above appears to be particularly non-portable. The
+Perl manual page suggests that the default behavior of
+'sprintf "%g"' is not guaranteed to be the same even between
+perl implementations on different platforms.  In the light
+of this, it appears that in order to be able to replicate a
+UNF:3 signature in a way that's 100% identical to what was
+used in the DVN pre-2.0 citations, it is highly advisable to
+use the the DSB package (referenced above) on redhat
+linux/i386 hardware.
+
+
+
+Notes on the R package UNF. 
+
+
+Please see the documentation that comes with the R package
+for more information on how to use the software. As a
+reference, below is a brief explanation of how the package
+is used by the DSB implementation, with an example that
+mirrors the production use.
+
+
+
+Note that it is the responsibility of the user to supply
+both the data values AND the information about the variable
+types. In the DSB/DVN <2.0 implementation the data values
+are passed as a tab-delimited file, and the types are
+specified in the R code passed to the R environment to be
+executed:
+
+
+library("UNF")
+vartyp <-c(
+1,
+0,
+0,
+0,
+0,
+1)
+varFmt<-list(
+'DATERUN'='D',
+'TIME0'='T');
+x<-read.table141vdc(file="/tmp/filename.tab", sep="\t", col.names=c(
+"REC0",
+"SID",
+"DATERUN",
+"TIME0",
+"SEX",
+"RACE"),colClassesx=vartyp,varFormat=varFmt,nrows=92)
+sumStatTabAll.DDI(dtfrm=x,file="/tmp/filename.out.tab", flid=1, jobNo=0, novars=45)
+
+rm(x) 
+
+Using the DSB scripts to convert SPSS and Stata files to
+tab-delimited format: 
+
+The following perl scripts distributed as part of the DSB
+rpm can be used to produce tab-delimited files from Stata,
+SPSS/por and SPSS/sav respectively: readdta.pl, readpor.pl
+and readsav.pl. 
+
+These scripts in turn rely on the following packages
+(all in lib/VDC/DSB/Ingest/):
+
+StatData.pm
+StatDataFileReaderFactory.pm
+DTA.pm
+POR.pm
+SAV.pm
+
+The code comes with builtin documentation in standard
+perldoc format. 
+

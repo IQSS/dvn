@@ -167,15 +167,22 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         chkbxAdvStatOutputOptMap.put("Include Plot", "Plots");
         chkbxAdvStatOutputOptMap.put("Include Replication Data", "BinOutput");
         
-        chkbxAdvStatOutputOpt.setValue(new String[]{"Summary", "Plots", "BinOutput"});
+        chkbxAdvStatOutputOpt.setValue(new String[]{
+	    "Summary", 
+	    "Plots", 
+	    "BinOutput"});
 
+	// Cross-tabs have their own checkbox menu:
+	
         chkbxAdvStatOutputXtbOptMap.put("Include Totals","xtb_Totals");
         chkbxAdvStatOutputXtbOptMap.put("Include Statistics","xtb_Statistics");
         chkbxAdvStatOutputXtbOptMap.put("Include Percentages","xtb_Percentages");
         chkbxAdvStatOutputXtbOptMap.put("Include Extra Tables","xtb_ExtraTables");
         
-        chkbxAdvStatOutputXtbOpt.setValue(new String[]{"xtb_Totals", "xtb_Statistics", 
-                "xtb_Percentages",});
+        chkbxAdvStatOutputXtbOpt.setValue(new String[]{
+	    "xtb_Totals", 
+	    "xtb_Statistics", 
+	    "xtb_Percentages",});
 
 	
         
@@ -3959,7 +3966,18 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             chkbxAdvStatOutputOpt.setRendered(false);
 
             chkbxAdvStatOutputXtbOpt.setRendered(true);
-	    chkbxAdvStatOutputXtbOpt.setValue(new String[]{"xtb_Totals", "xtb_Statistics", 
+	    
+	    // Important!
+	    // the "setValue" call on a "selectMany" checkbox,
+	    // to specify the boxes checked by default, needs
+	    // to be made *after* setRendered(true) call has 
+	    // been made. 
+	    // This is the reason the default settings were lost 
+	    // when this page was rewritten in icefaces. 
+
+	    chkbxAdvStatOutputXtbOpt.setValue(new String[]{
+		"xtb_Totals", 
+		"xtb_Statistics", 
                 "xtb_Percentages",});
 
             analysisOptionPanel.setRendered(false);
@@ -3972,12 +3990,19 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 analysisOptionPanel.setRendered(false);
             } else {
 
-            chkbxAdvStatOutputOpt.setRendered(true);
-            chkbxAdvStatOutputXtbOpt.setRendered(false);
+		chkbxAdvStatOutputOpt.setRendered(true);
+		chkbxAdvStatOutputOpt.setValue(new String[]{
+		    "Summary", 
+		    "Plots", 
+		    "BinOutput"});
 
-            analysisOptionPanel.setRendered(true);
-            // show/hide setx-option panel
+		chkbxAdvStatOutputXtbOpt.setRendered(false);
+
+		analysisOptionPanel.setRendered(true);
+		// show/hide setx-option panel
                 setxOptionPanel.setRendered(true);
+
+
             }
         }
         FacesContext.getCurrentInstance().getExternalContext()

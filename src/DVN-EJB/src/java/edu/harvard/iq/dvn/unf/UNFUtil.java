@@ -43,6 +43,7 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -295,11 +296,19 @@ public class UNFUtil {
         UnfDigest.setTrnps(false);
         int cnt = 0;
         for (String str : chr) {
-            SimpleDateFormat sdf  = new SimpleDateFormat(sdfFormat[cnt]);
-            try {
-                Date d = sdf.parse(str);
-            } catch (ParseException ex) {
-                Logger.getLogger(UNFUtil.class.getName()).log(Level.SEVERE, null, ex);
+            if (sdfFormat[cnt] != null) {
+                SimpleDateFormat sdf = new SimpleDateFormat(sdfFormat[cnt]);
+                try {
+                    Date d = sdf.parse(str);
+                    UnfDateFormatter udf = new UnfDateFormatter(sdfFormat[cnt]);
+                    SimpleDateFormat unfSdf = new SimpleDateFormat(udf.getUnfFormatString().toString());
+                    if (udf.isTimeZoneSpecified()){
+                        unfSdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+                    }
+                    str = unfSdf.format(d);
+                } catch (ParseException ex) {
+                    Logger.getLogger(UNFUtil.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
             chseq[0][cnt] = (CharSequence) str;
             cnt++;

@@ -1,0 +1,57 @@
+
+  ___  ____  ____  ____  ____ tm
+ /__    /   ____/   /   ____/
+___/   /   /___/   /   /___/   10.1   Copyright 1984-2009
+  Statistics/Data Analysis            StataCorp
+                                      4905 Lakeway Drive
+     Special Edition                  College Station, Texas 77845 USA
+                                      800-STATA-PC        http://www.stata.com
+                                      979-696-4600        stata@stata.com
+                                      979-696-4601 (fax)
+
+10-student Stata for Windows (network) perpetual license:
+       Serial number:  81910515916
+         Licensed to:  Odum Institute
+                       University of North Carolina at Chapel Hill
+
+Notes:
+      1.  (/m# option or -set memory-) 10.00 MB allocated to data
+      2.  (/v# option or -set maxvar-) 5000 maximum variables
+
+. use "C:\Documents and Settings\asone\Desktop\ingest_test_data\date_time_data_10_new.dta" 
+(test data set of various date and time formats)
+
+
+. desc
+
+Contains data from C:\Documents and Settings\asone\Desktop\ingest_test_data\date_time_data_10_new
+> .dta
+  obs:            11                          test data set of various date and time formats
+ vars:            18                          29 Jun 2009 10:37
+ size:           858 (99.9% of memory free)
+-------------------------------------------------------------------------------------------------
+              storage  display     value
+variable name   type   format      label      variable label
+-------------------------------------------------------------------------------------------------
+baseInt         int    %8.0g                  int for date/time variable
+baseLong        long   %8.0g                  long for date/time variable
+baseFloat       float  %8.0g                  float for date/time variables
+baseDouble      double %10.0g                 double for date/time variables
+year            long   %8.0g                  year integer
+eg_ty_from_year long   %ty                    copy of year with %ty
+eg_tg_from_i    int    %tg                    int with %tg format
+eg_tc_from_d    double %tc..                  double with %tc format
+eg_td_from_f    float  %td                    float with %td format
+eg_tw_from_i    int    %tw                    int with %tw format
+eg_tq_from_i    int    %tq                    int with %tq format
+eq_tm_from_i    int    %tm                    int with %tm format
+eg_tw_from_f    float  %tw                    float with %tw format
+eg_th_from_f    float  %th                    float with %th format
+eg_td_from_l    long   %td                    long with %td format
+eg_d_from_f     float  %d                     float with %d format
+eg_d_from_l     long   %d                     long with %d format
+eg2_tc_from_d   double %tc                    double with %tc format default
+-------------------------------------------------------------------------------------------------
+Sorted by:  
+
+. 

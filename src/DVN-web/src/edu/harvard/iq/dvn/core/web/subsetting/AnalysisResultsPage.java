@@ -466,6 +466,14 @@ public class AnalysisResultsPage extends VDCBaseBean implements java.io.Serializ
             }
 
                 // urls
+
+            FacesContext mycntxt = FacesContext.getCurrentInstance();
+            HttpServletRequest myreq = (HttpServletRequest) mycntxt.getExternalContext().getRequest();
+
+	    String serverPrefix = myreq.getScheme() + "://"
+                + myreq.getServerName() + ":" + myreq.getServerPort();
+
+	    
             if (resultInfo.get("option").equals("download")){
                 resultURLdwnld = dsbUrl+
                               resultInfo.get("dsbContextRootDir") +
@@ -473,15 +481,24 @@ public class AnalysisResultsPage extends VDCBaseBean implements java.io.Serializ
                 dbgLog.fine("subset url="+resultURLdwnld);         
             } else if (resultInfo.get("option").equals("eda") ||
                 resultInfo.get("option").equals("xtab")) {
-                resultURLhtml = dsbUrl+
-                              resultInfo.get("dsbContextRootDir") +
-                              resultInfo.get("html");
+                //resultURLhtml = dsbUrl+
+		//resultInfo.get("dsbContextRootDir") +
+		//resultInfo.get("html");
+
+		
+
+		resultURLhtml = serverPrefix+"/temp/" + 
+		    resultInfo.get("html"); 
                 
                 dbgLog.fine("hmtl url="+ resultURLhtml);
             } else if (resultInfo.get("option").equals("zelig")) {
-                resultURLhtml = dsbUrl+
-                              resultInfo.get("dsbContextRootDir") +
-                              resultInfo.get("html");
+                //resultURLhtml = dsbUrl+
+		//resultInfo.get("dsbContextRootDir") +
+		//resultInfo.get("html");
+
+		resultURLhtml = serverPrefix+"/temp/" + 
+		    resultInfo.get("html"); 
+
                 dbgLog.fine("html url="+ resultURLhtml);
             }
             

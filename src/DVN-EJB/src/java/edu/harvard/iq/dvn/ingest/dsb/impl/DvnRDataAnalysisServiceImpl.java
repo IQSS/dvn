@@ -767,11 +767,71 @@ if (tmpv.length > 0){
             
         
 // reflection block: end
+
+	    // create a zip file of the directory created: 
+
+	    String zipTmpDir = "system(\"(cd "+DSB_TMP_DIR+"; zip -r /tmp/"+requestdir+".zip "+requestdir+")\")";
+            c.voidEval(zipTmpDir);        
+
+	    // transfer the zip file to the application side: 
+	    
+	    RFileInputStream ris = null;
+	    OutputStream outbr   = null;
+
+	    try {
+		outbr = new BufferedOutputStream(new FileOutputStream(new File(TEMP_DIR+"/DVN", requestdir+".zip")));
+		ris = c.openFile("/tmp/"+requestdir+".zip");
+		
+		int bfsize = 8*1024;
+		byte[] obuf = new byte[bfsize];
+
+		int obufsize = 0; 
+
+		while ((obufsize = ris.read(obuf)) != -1) {
+		    outbr.write(obuf, 0, bfsize);
+		}
+		
+		ris.close();
+		outbr.close();
+
+		String unZipCmd = "/usr/bin/unzip "+TEMP_DIR+"/DVN/"+requestdir+".zip -d "+TEMP_DIR+"/DVN";
+		int exitValue = 1;
+		
+		dbgLog.info("attempting to execute "+unZipCmd);
+
+		try {
+		    Runtime runtime = Runtime.getRuntime();
+		    Process process = runtime.exec(unZipCmd);
+		    exitValue = process.waitFor();
+		} catch (Exception e) {
+		    e.printStackTrace();
+		    exitValue = 1;
+		}
+
+		if (exitValue == 0) {
+		    result.put("webFolderArchived",TEMP_DIR+"/DVN/"+requestdir+".zip");
+		}
+
+	    } catch (FileNotFoundException fe){
+		fe.printStackTrace();
+	    } catch (IOException ie){
+		ie.printStackTrace();
+	    } finally {
+		if (ris != null){
+                    ris.close();
+                }
+		if (outbr != null){
+		    outbr.close();
+		}
+            }
             
+	    
             // move the temp dir to the web-temp root dir
             String mvTmpDir = "file.rename('"+wrkdir+"','"+webwrkdir+"')";
             dbgLog.fine("web-temp_dir="+mvTmpDir);
             c.voidEval(mvTmpDir);        
+
+	    
             // close the Rserve connection
             c.close();
         

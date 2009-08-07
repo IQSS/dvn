@@ -493,3 +493,23 @@ REFERENCES
         spss_date_conversion_help.pdf   An Excerpt from the SPSS manual page
                                         concerning its date-type data
 
+    C. Sample data files
+        
+        (1) Stata data file that contains various date-time-format variables
+            its accompanying pdf and txt file contains format data, etc.
+            
+            date_time_data_10_new.dta
+            date_time_data_10_new_dataview.pdf
+            date_time_data_10_new_dta_contents.txt
+
+        (2) SPSS SAV/POR data file that contains various date-time-format variables
+            its accompanying pdf and txt file contains format data, etc.
+            The POR file was generated from the SAV file (same contents)
+            
+            various_dates_sav_v_17.sav
+            various_dates_dataview.pdf
+            various_dates_sav_v_17_contents.txt
+
+            various_dates_por.por
+            various_dates_por_contents.txt
+

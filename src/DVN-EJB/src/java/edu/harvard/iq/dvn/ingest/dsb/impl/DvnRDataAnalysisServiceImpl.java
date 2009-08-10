@@ -189,6 +189,43 @@ public class DvnRDataAnalysisServiceImpl{
             rse.printStackTrace();
         }
 
+	// Now test for the temporary directory on the application side:
+	
+	try {
+
+	    File tempDir = new File(TEMP_DIR, "DVN");
+	    if ( !tempDir.exists() ) {
+		tempDir.mkdir();
+	    }
+
+	} catch (Exception ex) {
+	    ex.printStackTrace();
+        }
+
+	// and the link to it from the docroot directory:
+
+	Properties p = System.getProperties();
+        String domainRoot = p.getProperty("com.sun.jbi.domain.root");
+	dbgLog.fine("PROPERTY: com.sun.jbi.domain.root="+domainRoot);
+
+	File tempLoc = new File (domainRoot+"/docroot/temp"); 
+	if ( !tempLoc.exists() ) {
+
+	    String createSymLink = "/bin/ln -s "+TEMP_DIR+"/DVN "+tempLoc;
+		
+	    dbgLog.fine("attempting to execute "+createSymLink);
+
+	    try {
+		Runtime runtime = Runtime.getRuntime();
+		Process process = runtime.exec(createSymLink);
+		int exitValue = process.waitFor();
+	    } catch (Exception e) {
+		e.printStackTrace();
+	    }
+	} else {
+	    dbgLog.fine("link "+tempLoc+" exists");
+	}
+
     }
     
     public void setupWorkingDirectory(RConnection c){
@@ -773,16 +810,21 @@ if (tmpv.length > 0){
 	    String zipTmpDir = "system(\"(cd "+DSB_TMP_DIR+"; zip -r /tmp/"+requestdir+".zip "+requestdir+")\")";
             c.voidEval(zipTmpDir);        
 
+
 	    // transfer the zip file to the application side: 
 	    
 	    RFileInputStream ris = null;
 	    OutputStream outbr   = null;
 
+            int zipSize = getFileSize(c,"/tmp/"+requestdir+".zip");
+
+
 	    try {
 		outbr = new BufferedOutputStream(new FileOutputStream(new File(TEMP_DIR+"/DVN", requestdir+".zip")));
 		ris = c.openFile("/tmp/"+requestdir+".zip");
 		
-		int bfsize = 8*1024;
+		//int bfsize = 8*1024;
+		int bfsize = zipSize; 
 		byte[] obuf = new byte[bfsize];
 
 		int obufsize = 0; 
@@ -797,7 +839,7 @@ if (tmpv.length > 0){
 		String unZipCmd = "/usr/bin/unzip "+TEMP_DIR+"/DVN/"+requestdir+".zip -d "+TEMP_DIR+"/DVN";
 		int exitValue = 1;
 		
-		dbgLog.info("attempting to execute "+unZipCmd);
+		dbgLog.fine("attempting to execute "+unZipCmd);
 
 		try {
 		    Runtime runtime = Runtime.getRuntime();
@@ -826,10 +868,10 @@ if (tmpv.length > 0){
             }
             
 	    
-            // move the temp dir to the web-temp root dir
-            String mvTmpDir = "file.rename('"+wrkdir+"','"+webwrkdir+"')";
-            dbgLog.fine("web-temp_dir="+mvTmpDir);
-            c.voidEval(mvTmpDir);        
+	    // // move the temp dir to the web-temp root dir
+            //String mvTmpDir = "file.rename('"+wrkdir+"','"+webwrkdir+"')";
+            //dbgLog.fine("web-temp_dir="+mvTmpDir);
+            //c.voidEval(mvTmpDir);        
 
 	    
             // close the Rserve connection
@@ -978,11 +1020,6 @@ if (tmpv.length > 0){
             c.voidEval(mvTmpTabFile);
             dbgLog.fine("move temp file="+mvTmpTabFile);
 
-            // move the temp dir to the web-temp root dir
-//            String mvTmpDir = "file.rename('"+wrkdir+"','"+webwrkdir+"')";
-//            dbgLog.fine("web-temp_dir="+mvTmpDir);
-//            c.voidEval(mvTmpDir);
-            
         } catch (RserveException rse) {
             rse.printStackTrace();
             sr.put("RexecError", "true");
@@ -1128,10 +1165,6 @@ if (tmpv.length > 0){
             c.voidEval(mvTmpTabFile);
             dbgLog.fine("move temp file="+mvTmpTabFile);
             
-            // move the temp dir to the web-temp root dir
-//            String mvTmpDir = "file.rename('"+wrkdir+"','"+webwrkdir+"')";
-//            dbgLog.fine("web-temp_dir="+mvTmpDir);
-//            c.voidEval(mvTmpDir);
 
         } catch (RserveException rse) {
             rse.printStackTrace();
@@ -1306,10 +1339,6 @@ if (tmpv.length > 0){
             c.voidEval(mvTmpTabFile);
             dbgLog.fine("move temp file="+mvTmpTabFile);
             
-            // move the temp dir to the web-temp root dir
-//            String mvTmpDir = "file.rename('"+wrkdir+"','"+webwrkdir+"')";
-//            dbgLog.fine("web-temp_dir="+mvTmpDir);
-//            c.voidEval(mvTmpDir);
 
         } catch (RserveException rse) {
             rse.printStackTrace();

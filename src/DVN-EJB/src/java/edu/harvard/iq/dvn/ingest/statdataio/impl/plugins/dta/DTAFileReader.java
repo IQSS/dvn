@@ -2062,7 +2062,7 @@ public class DTAFileReader extends StatDataFileReader{
                 unfValue = UNFUtil.calculateUNF(fdata, unfVersionNumber);
 
                 smd.getSummaryStatisticsTable().put(variablePosition,
-                    ArrayUtils.toObject(StatHelper.calculateSummaryStatistics(fdata)));
+                    ArrayUtils.toObject(StatHelper.calculateSummaryStatisticsContDistSample(fdata)));
 
                 if (valueLabelSchemeMappingTable.containsKey(variableNameList.get(variablePosition))){
                     catStat = StatHelper.calculateCategoryStatistics(fdata);
@@ -2081,7 +2081,7 @@ public class DTAFileReader extends StatDataFileReader{
                 unfValue = UNFUtil.calculateUNF(ddata, unfVersionNumber);
                 
                 smd.getSummaryStatisticsTable().put(variablePosition,
-                    ArrayUtils.toObject(StatHelper.calculateSummaryStatistics(ddata)));
+                    ArrayUtils.toObject(StatHelper.calculateSummaryStatisticsContDistSample(ddata)));
 
                 if (valueLabelSchemeMappingTable.containsKey(variableNameList.get(variablePosition))){
                     catStat = StatHelper.calculateCategoryStatistics(ddata);

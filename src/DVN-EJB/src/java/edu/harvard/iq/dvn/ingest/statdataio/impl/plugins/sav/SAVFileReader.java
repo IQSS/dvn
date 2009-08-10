@@ -3410,7 +3410,7 @@ while(true ){
                 unfValue = UNFUtil.calculateUNF(ddata, unfVersionNumber);
                 dbgLog.finer("double:unfValue="+unfValue);
                 smd.getSummaryStatisticsTable().put(variablePosition,
-                    ArrayUtils.toObject(StatHelper.calculateSummaryStatistics(ddata)));
+                    ArrayUtils.toObject(StatHelper.calculateSummaryStatisticsContDistSample(ddata)));
 
                 break;
             case  -1:

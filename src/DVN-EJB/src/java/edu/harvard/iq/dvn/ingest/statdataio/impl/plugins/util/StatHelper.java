@@ -434,6 +434,45 @@ public class StatHelper {
     }
 
     /**
+     * This is a special Summary Statistics calculator that we use for 
+     * the variables that are samples from continuos distributions, in other
+     * words, all continuous numeric variables. This method skips the "mode",
+     * as it is highly unlikely we can calculate the value that is 
+     * in any way meaningful or useful.
+     *
+     * @param x     a float array
+     * @return      a double array
+     */
+    public static double[] calculateSummaryStatisticsContDistSample(double[] x){
+        double[] newx = removeNaNs(x);
+        double[] nx = new double[8];
+        //("mean", "medn", "mode", "vald", "invd", "min", "max", "stdev");
+
+        nx[0] = StatUtils.mean(newx);
+        nx[1] = StatUtils.percentile(newx, 50);
+	nx[2] = Double.NaN;
+        nx[4] = countNaNs(x);//countNaNs(x);
+        nx[3] = x.length - nx[4];
+
+        nx[5] = StatUtils.min(newx);
+        nx[6] = StatUtils.max(newx);
+        nx[7] = Math.sqrt(StatUtils.variance(newx));
+        return nx;
+    }
+
+    /**
+     * Returns a double array of descriptive statistics from a float array
+     *
+     * @param x     a float array
+     * @return      a double array
+     */
+    public static double[] calculateSummaryStatisticsContDistSample(float[] x){
+        double[] z = floatToDouble(x);
+        return calculateSummaryStatisticsContDistSample(z);
+    }
+
+
+    /**
      * Returns a String array of descriptive statistics from a String array
      *
      * @param x     a String array

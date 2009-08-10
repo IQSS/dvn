@@ -2380,7 +2380,7 @@ public class PORFileReader extends StatDataFileReader{
                 unfValue = UNFUtil.calculateUNF(ddata, unfVersionNumber);
 
                 smd.getSummaryStatisticsTable().put(variablePosition,
-                    ArrayUtils.toObject(StatHelper.calculateSummaryStatistics(ddata)));
+                    ArrayUtils.toObject(StatHelper.calculateSummaryStatisticsContDistSample(ddata)));
 
                 break;
             case  -1:

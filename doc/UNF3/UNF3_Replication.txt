@@ -1,11 +1,21 @@
 If you need to replicate a UNF:3 for a Stata or SPSS data
 set, please follow these steps: 
 
-Download the DSB rpm version 1.5, archived <here>. [insert
-URL once we freeze and archive the rpm]
+Download the DSB rpm version 1.4-2, archived on SourceForge
+at 
 
-Install R package UNF version 3 available <here>. [insert
-URL] 
+https://sourceforge.net/projects/dvn/files/dvn-dsb/1.4/DVN-DSB-1.4-2.noarch.rpm/download
+
+Install the R package UNF:3 that comes with the DSB rpm
+above:
+
+R CMD INSTALL -l <R_ROOT_DIRECTORY>/library /usr/local/VDC/R/UNF_1.16.tar.gz
+
+<R_ROOT_DIRECTORY> above is the location of the R
+installation root on your system. For example, on a 64 bit
+RedHat Linux system this will be /usr/lib64/R. 
+/usr/local/VDC/R/UNF_1.16.tar.gz is the location of the
+source R package in the DVN DSB distribution.
 
 Run the appropriate converter script on your data file:
 readdta.pl, readpor.pl or and readsav.pl for the Stata,

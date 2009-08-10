@@ -59,7 +59,7 @@ specified in the R code passed to the R environment to be
 executed:
 
 
-library("UNF")
+source("/usr/local/VDC/R/library/vdc_startup.R")
 vartyp <-c(
 1,
 0,
@@ -80,6 +80,11 @@ x<-read.table141vdc(file="/tmp/filename.tab", sep="\t", col.names=c(
 sumStatTabAll.DDI(dtfrm=x,file="/tmp/filename.out.tab", flid=1, jobNo=0, novars=45)
 
 rm(x) 
+
+("/usr/local/VDC/R/library/vdc_startup.R" is the location of
+the extra startup R code in the DVN DSB rpm that loads the UNF and
+Summary Statistics code and runs it on the supplied
+tab-delimited file).
 
 Using the DSB scripts to convert SPSS and Stata files to
 tab-delimited format: 

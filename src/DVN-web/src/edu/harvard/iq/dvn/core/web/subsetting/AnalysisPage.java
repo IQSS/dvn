@@ -4501,6 +4501,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             }
         }
         dbgLog.fine("valid categories=" + catStatSize);
+
         return catStatSize;
     }
 
@@ -4611,9 +4612,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     sumStatSize = getSumStatSize(varId);
                     catStatSize = getCatStatSize(varId);
                 }
-                if ((varType == 2) || (sumStatSize > 2) || (catStatSize < 2)) {
-                    // continuous var or more-than-ten-categories (=> not
-                    // binary)
+                if (varType == 2) {
+                    // continuous var => not binary
                     result = false;
                 } else {
                     // net test

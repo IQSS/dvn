@@ -255,7 +255,7 @@ public class SubsettableFileChecker implements java.io.Serializable {
 
         // size test
 	int bufferCapacity = buff.capacity();
-	dbgLog.info("Subsettable Checker: buffer capacity: "+bufferCapacity);
+	dbgLog.fine("Subsettable Checker: buffer capacity: "+bufferCapacity);
 
         if (bufferCapacity < 491) {
             if (DEBUG) {
@@ -291,7 +291,7 @@ public class SubsettableFileChecker implements java.io.Serializable {
             pos1 = baseBias + i;
 
 	    if ( pos1 > bufferCapacity - 1 ) {
-		dbgLog.info("Subsettable Checker: request to go beyond buffer capacity ("+pos1+")");
+		dbgLog.fine("Subsettable Checker: request to go beyond buffer capacity ("+pos1+")");
 		return result; 
 	    }
 
@@ -312,7 +312,7 @@ public class SubsettableFileChecker implements java.io.Serializable {
             pos2 = baseBias + 2 * i;
 
 	    if ( pos2 > bufferCapacity - 2 ) {
-		dbgLog.info("Subsettable Checker: request to read 2 bytes beyond buffer capacity ("+pos2+")");
+		dbgLog.fine("Subsettable Checker: request to read 2 bytes beyond buffer capacity ("+pos2+")");
 		return result; 
 	    }
 
@@ -328,7 +328,7 @@ public class SubsettableFileChecker implements java.io.Serializable {
             pos3 = baseBias + 3 * i;
 
 	    if ( pos3 > bufferCapacity - 3 ) {
-		dbgLog.info("Subsettable Checker: request to read 3 bytes beyond buffer capacity ("+pos3+")");
+		dbgLog.fine("Subsettable Checker: request to read 3 bytes beyond buffer capacity ("+pos3+")");
 		return result; 
 	    }
 

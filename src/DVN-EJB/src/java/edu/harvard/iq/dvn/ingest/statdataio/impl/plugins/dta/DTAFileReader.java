@@ -254,7 +254,7 @@ public class DTAFileReader extends StatDataFileReader{
     private static List<Method> decodeMethods  = new ArrayList<Method>();
 
 
-    private static String unfVersionNumber = "3";
+    private static String unfVersionNumber = "5";
 
     private static int MISSING_VALUE_BIAS = 26;
 

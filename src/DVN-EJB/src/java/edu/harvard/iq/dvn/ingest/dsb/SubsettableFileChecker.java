@@ -254,10 +254,14 @@ public class SubsettableFileChecker implements java.io.Serializable {
         }
 
         // size test
-        if (buff.capacity() < 491) {
+	int bufferCapacity = buff.capacity();
+	dbgLog.info("Subsettable Checker: buffer capacity: "+bufferCapacity);
+
+        if (bufferCapacity < 491) {
             if (DEBUG) {
                 out.println("this file is NOT spss-por type\n");
             }
+
             return result;
         }
 
@@ -285,6 +289,12 @@ public class SubsettableFileChecker implements java.io.Serializable {
             int baseBias = nocols * (i + 1);
             // 1-char case
             pos1 = baseBias + i;
+
+	    if ( pos1 > bufferCapacity - 1 ) {
+		dbgLog.info("Subsettable Checker: request to go beyond buffer capacity ("+pos1+")");
+		return result; 
+	    }
+
             buff.position(pos1);
             if (DEBUG) {
                 out.println("\tposition(1)=" + buff.position());
@@ -300,6 +310,13 @@ public class SubsettableFileChecker implements java.io.Serializable {
 
             // 2-char case
             pos2 = baseBias + 2 * i;
+
+	    if ( pos2 > bufferCapacity - 2 ) {
+		dbgLog.info("Subsettable Checker: request to read 2 bytes beyond buffer capacity ("+pos2+")");
+		return result; 
+	    }
+
+
             buff.position(pos2);
             if (DEBUG) {
                 out.println("\tposition(2)=" + buff.position());
@@ -309,6 +326,13 @@ public class SubsettableFileChecker implements java.io.Serializable {
 
             // 3-char case
             pos3 = baseBias + 3 * i;
+
+	    if ( pos3 > bufferCapacity - 3 ) {
+		dbgLog.info("Subsettable Checker: request to read 3 bytes beyond buffer capacity ("+pos3+")");
+		return result; 
+	    }
+
+
             buff.position(pos3);
             if (DEBUG) {
                 out.println("\tposition(3)=" + buff.position());

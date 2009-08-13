@@ -289,7 +289,7 @@ public class DTAFileReader extends StatDataFileReader{
     Set<Double> DOUBLE_MISSING_VALUE_SET =
         new HashSet<Double>(DOUBLE_MISSING_VALUE_LIST);
 
-
+    private static SimpleDateFormat sdf_ymdhms = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); // sdf
     private static SimpleDateFormat sdf_ymdhmsS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS"); // sdf
 
 
@@ -2160,8 +2160,8 @@ public class DTAFileReader extends StatDataFileReader{
             // datum is millisecond-wise
 
             milliSeconds = Long.parseLong(rawDatum)+ STATA_BIAS_TO_EPOCH;
-            decodedDateTime = sdf_ymdhmsS.format(new Date(milliSeconds));
-            format = sdf_ymdhmsS.toPattern();
+            decodedDateTime = sdf_ymdhms.format(new Date(milliSeconds));
+            format = sdf_ymdhms.toPattern();
             dbgLog.finer("tc: result="+decodedDateTime+", format = "+format);
             
         } else if (FormatType.matches("^%t?d(\\w|[:\\.])*")){
@@ -2179,43 +2179,30 @@ public class DTAFileReader extends StatDataFileReader{
             long years;
             if (weekYears < 0L){
                 left = 52L - left;
+                if (left == 52L){
+                    left = 0L;
+                }
                 //out.println("left="+left);
                 years = (Math.abs(weekYears) -1)/52L +1L;
                 years *= -1L;
             } else {
                 years = weekYears/52L;
             }
-// alterantive decoding 1: ISO style YYYY-Www-D
-            String week = null;
 
-            if (left == 52L){
-                left = 0L;
+            String yearString  = Long.valueOf(1960L + years).toString();
+            String dayInYearString = new DecimalFormat("000").format((left*7) + 1).toString();
+            String yearDayInYearString = yearString + "-" + dayInYearString;
+
+            Date tempDate = null;
+            try {
+                tempDate = new SimpleDateFormat("yyyy-DDD").parse(yearDayInYearString);
+            } catch (ParseException ex) {
+                Logger.getLogger(DTAFileReader.class.getName()).log(Level.SEVERE, null, ex);
             }
             
-            Long weekdata = (left+1);
-            week = "-W"+twoDigitFormatter.format(weekdata).toString();
-            long year  = 1960L + years;
-            String weekYear = Long.valueOf(year).toString() + week;
-            dbgLog.finer("rawDatum="+rawDatum+": weekYear="+weekYear);
-
-            //decodedDateTime = weekYear;
-            
-// alterantive decoding 2: for R
-            Calendar wyr = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
-            wyr.set(1, (int)year);// year
-            wyr.set(3,weekdata.intValue());
-            wyr.set(9, 0);// AM(0) or PM(1)
-            wyr.set(10, 0);// hh
-            wyr.set(12, 0);// mm
-            wyr.set(13, 0);// ss
-            wyr.set(14, 0); // SS millisecond
-            dbgLog.finer("rawDatum="+rawDatum+" date="+
-            sdf_yw.format(new Date(wyr.getTimeInMillis()))+"\n");
-            
-            decodedDateTime = sdf_ymd.format(new Date(wyr.getTimeInMillis()));
+            decodedDateTime = sdf_ymd.format(tempDate.getTime());
             format = sdf_ymd.toPattern();
-            dbgLog.finer("tw:"+decodedDateTime+", format = "+format);
-          
+
         } else if (FormatType.matches("^%t?m(\\w|[:\\.])*")){
             // month 
             long monthYears = Long.parseLong(rawDatum);

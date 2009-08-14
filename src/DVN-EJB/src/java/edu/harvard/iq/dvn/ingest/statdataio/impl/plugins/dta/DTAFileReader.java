@@ -628,7 +628,7 @@ public class DTAFileReader extends StatDataFileReader{
         //                out.printf("%2d\t0x%02X\n", i, magic_number[i]);
         //            }
 
-       dbgLog.info("hex dump: 1st 4bytes =>" +
+       dbgLog.fine("hex dump: 1st 4bytes =>" +
                 new String(Hex.encodeHex(magic_number)) + "<-");
 
 
@@ -664,7 +664,7 @@ public class DTAFileReader extends StatDataFileReader{
 
             if ((int)magic_number[1] == 2 ){
                 isLittleEndian = true;
-                dbgLog.info("Reveral of the bytes is necessary to decode "+
+                dbgLog.fine("Reveral of the bytes is necessary to decode "+
                         "multi-byte fields");
             }
             dbgLog.fine("Endian of this platform:"+ByteOrder.nativeOrder().toString());
@@ -814,6 +814,8 @@ public class DTAFileReader extends StatDataFileReader{
 
                 } else {
                         // pre-111 string type
+		    dbgLog.info("DTA reader: release number: "+release_number);
+
                     if (release_number < 111){
                         int stringType = 256 + typeList[i];
                         if ( stringType >= type_offset_table.get("STRING")) {
@@ -833,11 +835,21 @@ public class DTAFileReader extends StatDataFileReader{
                         }
                     } else if (release_number >= 111){
                         // post-111 string type
-                        int stringType = typeList[i] > 127 ? 256 + typeList[i] :typeList[i] ;
+			dbgLog.fine("DTA reader: typeList["+i+"]="+typeList[i]);
+			
+			// if the size of strXXX type is less than 128, 
+			// the value of typeList[i] will be equal to that;
+			// if however it is >= 128, typeList[i] = (size - 256)
+			// i.e. it'll be a negative value:
+
+                        int stringType = ((typeList[i] > 0) &&
+					  (typeList[i] <= 127)) ? 
+			    typeList[i] :
+			    256 + typeList[i];
                         
                         if ( stringType >= type_offset_table.get("STRING")) {
                             int string_var_length = stringType - type_offset_table.get("STRING");
-                            dbgLog.fine("string_var_length="+string_var_length);
+                            dbgLog.fine("DTA reader: string_var_length="+string_var_length);
                             bytes_per_row += string_var_length;
 
                             variableTypelList[i] = "String";
@@ -1050,7 +1062,7 @@ public class DTAFileReader extends StatDataFileReader{
 
     void decodeVariableLabels(BufferedInputStream stream){
 
-        dbgLog.info("***** decodeVariableLabels(): start *****");
+        dbgLog.fine("***** decodeVariableLabels(): start *****");
         
         if (stream ==null){
             throw new IllegalArgumentException("stream == null!");
@@ -1060,7 +1072,7 @@ public class DTAFileReader extends StatDataFileReader{
         int nvar = (Integer)smd.getFileInformation().get("varQnty");
         int length_var_label = constant_table.get("LABEL");
         int length_var_label_list = length_var_label*nvar;
-        dbgLog.info("length_label_name="+length_var_label_list);
+        dbgLog.fine("length_label_name="+length_var_label_list);
 
         byte[] variableLabelBytes = new byte[length_var_label_list];
         String[] variableLabels = new String[nvar];
@@ -1078,18 +1090,18 @@ public class DTAFileReader extends StatDataFileReader{
                 String vari = new String(Arrays.copyOfRange(variableLabelBytes, offset_start,
                     offset_end),"ISO-8859-1");
                 variableLabelMap.put(variableNameList.get(i), getNullStrippedString(vari));
-                dbgLog.info(i+"-th label=["+variableLabels[i]+"]");
+                dbgLog.fine(i+"-th label=["+variableLabels[i]+"]");
                 offset_start = offset_end;
             }
-            dbgLog.info("variableLabelMap=\n"+variableLabelMap.toString() +"\n");
+            dbgLog.fine("variableLabelMap=\n"+variableLabelMap.toString() +"\n");
         } catch (IOException ex) {
             ex.printStackTrace();
         }
 
         smd.setVariableLabel(variableLabelMap);
         
-        dbgLog.info("smd dump (variable label):\n"+smd.toString());
-        dbgLog.info("***** decodeVariableLabels(): end *****");
+        dbgLog.fine("smd dump (variable label):\n"+smd.toString());
+        dbgLog.fine("***** decodeVariableLabels(): end *****");
 
     }
     

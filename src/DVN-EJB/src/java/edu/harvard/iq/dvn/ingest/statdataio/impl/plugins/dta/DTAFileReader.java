@@ -289,7 +289,6 @@ public class DTAFileReader extends StatDataFileReader{
     Set<Double> DOUBLE_MISSING_VALUE_SET =
         new HashSet<Double>(DOUBLE_MISSING_VALUE_LIST);
 
-    private static SimpleDateFormat sdf_ymdhms = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); // sdf
     private static SimpleDateFormat sdf_ymdhmsS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS"); // sdf
 
 
@@ -2167,16 +2166,16 @@ public class DTAFileReader extends StatDataFileReader{
         String decodedDateTime=null;
         String format = null;
 
-        if (FormatType.matches("^%tc(\\w|[:\\.])*")){
+        if (FormatType.matches("^%tc.*")){
             // tc is a relatively new format
             // datum is millisecond-wise
 
             milliSeconds = Long.parseLong(rawDatum)+ STATA_BIAS_TO_EPOCH;
-            decodedDateTime = sdf_ymdhms.format(new Date(milliSeconds));
-            format = sdf_ymdhms.toPattern();
+            decodedDateTime = sdf_ymdhmsS.format(new Date(milliSeconds));
+            format = sdf_ymdhmsS.toPattern();
             dbgLog.finer("tc: result="+decodedDateTime+", format = "+format);
             
-        } else if (FormatType.matches("^%t?d(\\w|[:\\.])*")){
+        } else if (FormatType.matches("^%t?d.*")){
             milliSeconds = Long.parseLong(rawDatum)*SECONDS_PER_YEAR + STATA_BIAS_TO_EPOCH;
             dbgLog.finer("milliSeconds="+milliSeconds);
             
@@ -2184,7 +2183,7 @@ public class DTAFileReader extends StatDataFileReader{
             format = sdf_ymd.toPattern();
             dbgLog.finer("td:"+decodedDateTime+", format = "+format);
 
-        } else if (FormatType.matches("^%t?w(\\w|[:\\.])*")){
+        } else if (FormatType.matches("^%t?w.*")){
 
             long weekYears = Long.parseLong(rawDatum);
             long left = Math.abs(weekYears)%52L;
@@ -2215,7 +2214,7 @@ public class DTAFileReader extends StatDataFileReader{
             decodedDateTime = sdf_ymd.format(tempDate.getTime());
             format = sdf_ymd.toPattern();
 
-        } else if (FormatType.matches("^%t?m(\\w|[:\\.])*")){
+        } else if (FormatType.matches("^%t?m.*")){
             // month 
             long monthYears = Long.parseLong(rawDatum);
             long left = Math.abs(monthYears)%12L;
@@ -2243,7 +2242,7 @@ public class DTAFileReader extends StatDataFileReader{
             format = "yyyy-MM-dd";
             dbgLog.finer("tm:"+decodedDateTime+", format:"+format);
 
-        } else if (FormatType.matches("^%t?q(\\w|[:\\.])*")){
+        } else if (FormatType.matches("^%t?q.*")){
             // quater
             long quaterYears = Long.parseLong(rawDatum);
             long left = Math.abs(quaterYears)%4L;
@@ -2281,7 +2280,7 @@ public class DTAFileReader extends StatDataFileReader{
             format = "yyyy-MM-dd";
             dbgLog.finer("tq:"+decodedDateTime+", format:"+format);
 
-        } else if (FormatType.matches("^%t?h(\\w|[:\\.])*")){
+        } else if (FormatType.matches("^%t?h.*")){
             // half year
             // odd number:2nd half
             // even number: 1st half
@@ -2314,7 +2313,7 @@ public class DTAFileReader extends StatDataFileReader{
             format = "yyyy-MM-dd";
             dbgLog.finer("th:"+decodedDateTime+", format:"+format);
             
-        } else if (FormatType.matches("^%t?y(\\w|[:\\.])*")){
+        } else if (FormatType.matches("^%t?y.*")){
             // year type's origin is 0 AD
             decodedDateTime = rawDatum;
             format = "yyyy";

@@ -258,12 +258,12 @@ public class DTAFileReader extends StatDataFileReader{
 
     private static int MISSING_VALUE_BIAS = 26;
 
-    private static byte BYTE_MISSING_VALUE = Byte.MAX_VALUE;
-    private static short INT_MISSIG_VALUE = Short.MAX_VALUE;
-    private static int LONG_MISSING_VALUE = Integer.MAX_VALUE;
+    private byte BYTE_MISSING_VALUE = Byte.MAX_VALUE;
+    private short INT_MISSIG_VALUE = Short.MAX_VALUE;
+    private int LONG_MISSING_VALUE = Integer.MAX_VALUE;
     
-    private static float FLOAT_MISSING_VALUE = Float.MAX_VALUE;
-    private static double DOUBLE_MISSING_VALUE = Double.MAX_VALUE;
+    private float FLOAT_MISSING_VALUE = Float.MAX_VALUE;
+    private double DOUBLE_MISSING_VALUE = Double.MAX_VALUE;
 
 
     private static final List<Float> FLOAT_MISSING_VALUES = Arrays.asList(
@@ -1316,6 +1316,8 @@ public class DTAFileReader extends StatDataFileReader{
                             // stata-Long (= java's int: 4 byte) case
                             //out.print("\tstata long case");
                             // note: 4-byte singed, not java's long
+			    dbgLog.fine("DATreader: stata long");
+
                             ByteBuffer long_buffer = 
                                 ByteBuffer.wrap(dataRowBytes, byte_offset, 4);
                             if (isLittleEndian){
@@ -1325,10 +1327,10 @@ public class DTAFileReader extends StatDataFileReader{
                             int int_datum = long_buffer.getInt();
                             //out.println(int_datum);
 
-                            dbgLog.finer(i+"-th row "+columnCounter+
+                            dbgLog.fine(i+"-th row "+columnCounter+
                                     "=th column stata long ="+int_datum);
                             if (int_datum >=LONG_MISSING_VALUE){
-                                dbgLog.finer(i+"-th row "+columnCounter+
+                                dbgLog.fine(i+"-th row "+columnCounter+
                                     "=th column stata long missing value="+int_datum);
                                 if (isDateTimeDatum){
                                     dataRow[columnCounter] =  MissingValueForTextDataFileString;

@@ -314,7 +314,7 @@ public class PORFileReader extends StatDataFileReader{
     
         //
         doubleNumberFormatter.setGroupingUsed(false);
-        doubleNumberFormatter.setMaximumFractionDigits(324);
+        doubleNumberFormatter.setMaximumFractionDigits(340);
     }
 
     // Methods ---------------------------------------------------------------//

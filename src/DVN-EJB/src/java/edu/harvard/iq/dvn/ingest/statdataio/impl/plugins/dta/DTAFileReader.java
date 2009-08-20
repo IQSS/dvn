@@ -547,7 +547,7 @@ public class DTAFileReader extends StatDataFileReader{
         //out.format("%e\n", missing_value_double);
 
         doubleNumberFormatter.setGroupingUsed(false);
-        doubleNumberFormatter.setMaximumFractionDigits(324);
+        doubleNumberFormatter.setMaximumFractionDigits(340);
 
     }
 

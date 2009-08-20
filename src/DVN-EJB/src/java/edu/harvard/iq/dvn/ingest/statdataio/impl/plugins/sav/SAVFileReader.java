@@ -154,7 +154,7 @@ public class SAVFileReader extends StatDataFileReader{
 
     private static List<Method> decodeMethods  = new ArrayList<Method>();
 
-    private static String unfVersionNumber = "3";
+    private static String unfVersionNumber = "5";
 
     private static double SYSMIS_LITTLE =0xFFFFFFFFFFFFEFFFL;
     private static double SYSMIS_BIG =0xFFEFFFFFFFFFFFFFL;
@@ -288,9 +288,10 @@ public class SAVFileReader extends StatDataFileReader{
     Double systemMissingValue =Double.NaN;
     
 //    String NA_String = "NA";
-    
-    String StringMissingValue =" ";
-    String NumericMissingValue=".";
+
+// Commented out these values because they're not used. - EK
+//  String StringMissingValue =" ";
+//    String NumericMissingValue=".";
 
 
     Map<String, String> OBStypeIfomation = new LinkedHashMap<String, String>();
@@ -309,6 +310,10 @@ public class SAVFileReader extends StatDataFileReader{
 
     
     Object[][] dataTable2 = null;
+
+    // Used to store the date format string for all date types
+    // the format string is passed to the UNF calculator
+    String[][] dateFormats = null;
 
 
     // RecordType 7 
@@ -1893,7 +1898,10 @@ while(true ){
             //int variableTypeNumer = variableTypelList.get(j) > 0 ? 1 : 0;
             int variableTypeNumer = variableTypeFinal[j];
             try {
-                unfValues[j] = getUNF(dataTable2[j], variableTypeNumer,
+                dbgLog.finer("j = "+j);
+                dbgLog.finer("dataTable2[j] = " + Arrays.deepToString(dataTable2[j]));
+                dbgLog.finer("dateFormats[j] = " + Arrays.deepToString(dateFormats[j]));
+                unfValues[j] = getUNF(dataTable2[j], dateFormats[j], variableTypeNumer,
                     unfVersionNumber, j);
                 dbgLog.fine(j+"th unf value"+unfValues[j]);
 
@@ -2007,6 +2015,7 @@ while(true ){
         int numberOfDecimalVariables = 0;
         
         List<String> dataLine = new ArrayList<String>();
+        String dateFormatLine[] =null;
         List<String> dataLine2 = new ArrayList<String>();
 
         // Sets for NA-string-to-NaN conversion
@@ -2023,6 +2032,8 @@ while(true ){
         
         // data-storage object for sumStat
         dataTable2 = new Object[varQnty][caseQnty];
+        // storage of date formats to pass to UNF
+        dateFormats = new String[varQnty][caseQnty];
         
         try {
             // this compression is applied only to non-float data, i.e. integer;
@@ -2240,7 +2251,7 @@ while(true ){
                     for (int el=0; el< dataLine.size(); el++){
                         dataLine2.add(new String(dataLine.get(el)));
                     }
-
+                    dateFormatLine = new String[dataLine.size()];
                     // caseIndex starts from 1 not 0
                     caseIndex = (ii*OBS + i + 1)/nOBS;
                     //dbgLog.finer("caseIndex="+caseIndex);
@@ -2327,7 +2338,9 @@ while(true ){
                                 
                                 String newDatum = sdf_ymd.format(new Date(dateDatum));
                                 dbgLog.finer("k="+k+":"+newDatum);
-                                
+                                dateFormatLine[k] = sdf_ymd.toPattern();
+                                /* saving date format */
+                                dbgLog.finer("setting dateFormatLine[k] = "+sdf_ymd.toPattern());
                                 dataLine.set(k, newDatum);
                                 //formatCategoryTable.put(variableNameList.get(k), "date");
                             } else if (variableFormatType.equals("time")) {
@@ -2364,6 +2377,7 @@ while(true ){
                                         long dateDatum  = Long.parseLong(dataLine.get(k).toString())*1000L - SPSS_DATE_OFFSET;
                                         String newDatum = sdf_ymdhms.format(new Date(dateDatum));
                                         dbgLog.finer("k="+k+":"+newDatum);
+                                        dateFormatLine[k] = sdf_ymdhms.toPattern();
                                         dataLine.set(k, newDatum);
                                     } else {
                                         // decimal point included
@@ -2378,7 +2392,7 @@ while(true ){
                                         if (formatDecimalPointPosition > 0){
                                             sb_time.append("."+timeData[1].substring(0,formatDecimalPointPosition));
                                         }
-                                        
+                                        dateFormatLine[k] = sdf_ymdhms.toPattern() + (formatDecimalPointPosition > 0 ? ".S" : "" );
                                         dbgLog.finer("k="+k+":"+sb_time.toString());
                                         dataLine.set(k, sb_time.toString());
                                     }
@@ -2386,6 +2400,7 @@ while(true ){
                                     if (dataLine.get(k).toString().indexOf(".") < 0){
                                         long dateDatum = Long.parseLong(dataLine.get(k).toString())*1000L;
                                         String newDatum = sdf_hms.format(new Date(dateDatum));
+                                        dateFormatLine[k] = sdf_hms.toPattern();
                                         dbgLog.finer("k="+k+":"+newDatum);
                                         dataLine.set(k, newDatum);
                                     } else {
@@ -2401,7 +2416,7 @@ while(true ){
                                         if (formatDecimalPointPosition > 0){
                                             sb_time.append("."+timeData[1].substring(0,formatDecimalPointPosition));
                                         }
-                                        
+                                        dateFormatLine[k] = this.sdf_hms.toPattern() + (formatDecimalPointPosition > 0 ? ".S" : "" );
                                         dbgLog.finer("k="+k+":"+sb_time.toString());
                                         dataLine.set(k, sb_time.toString());
                                     }
@@ -2485,6 +2500,7 @@ while(true ){
                     for (int ij=0; ij<varQnty;ij++ ){
                         if (variableFormatTypeList[ij].equals("date") ||
                             variableFormatTypeList[ij].equals("time")){
+                            this.dateFormats[ij][caseIndex-1] = dateFormatLine[ij];
                             dataTable2[ij][caseIndex-1] = dataLine.get(ij);
                         } else {
                             dataTable2[ij][caseIndex-1] = dataLine2.get(ij);
@@ -2645,6 +2661,7 @@ while(true ){
         int numberOfDecimalVariables = 0;
         
         List<String> dataLine = new ArrayList<String>();
+
         List<String>  dataLine2 = new ArrayList<String>();
         
         // Sets for NA-string-to-NaN conversion
@@ -2653,7 +2670,7 @@ while(true ){
         
         // data-storage object for sumStat
         dataTable2 = new Object[varQnty][caseQnty];
-
+        dateFormats = new String[varQnty][caseQnty];
 
         try {
             for (int i=0; ;i++){  // case-wise loop
@@ -2822,7 +2839,7 @@ while(true ){
                 
                 caseIndex++;
                 dbgLog.finer("caseIndex="+caseIndex);
-                
+                String[] dateFormatLine = new String[dataLine.size()];
                 for (int k=0; k<dataLine.size(); k++){
                     
                     //dbgLog.fine("k="+k+"-th variableTypelList="+variableTypelList.get(k));
@@ -2902,6 +2919,7 @@ while(true ){
                             long dateDatum = Long.parseLong(dataLine.get(k).toString())*1000L- SPSS_DATE_OFFSET;
 
                             String newDatum = sdf_ymd.format(new Date(dateDatum));
+                            dateFormatLine[k] = sdf_ymd.toPattern();
                             dbgLog.finer("k="+k+":"+newDatum);
 
                             dataLine.set(k, newDatum);
@@ -2915,6 +2933,7 @@ while(true ){
                                 if (dataLine.get(k).toString().indexOf(".") < 0){
                                     long dateDatum  = Long.parseLong(dataLine.get(k).toString())*1000L - SPSS_DATE_BIAS;
                                     String newDatum = sdf_dhms.format(new Date(dateDatum));
+                                    // Note: DTIME is not a complete date, so we don't save a date format with it
                                     dbgLog.finer("k="+k+":"+newDatum);
                                     dataLine.set(k, newDatum);
                                 } else {
@@ -2939,6 +2958,7 @@ while(true ){
                                 if (dataLine.get(k).toString().indexOf(".") < 0){
                                     long dateDatum  = Long.parseLong(dataLine.get(k).toString())*1000L - SPSS_DATE_OFFSET;
                                     String newDatum = sdf_ymdhms.format(new Date(dateDatum));
+                                    dateFormatLine[k] = sdf_ymdhms.toPattern();
                                     dbgLog.finer("k="+k+":"+newDatum);
                                     dataLine.set(k, newDatum);
                                 } else {
@@ -3336,7 +3356,7 @@ while(true ){
     }    
     
     
-    private String getUNF(Object[] varData, int variableType, 
+    private String getUNF(Object[] varData, String[] dateFormats, int variableType,
         String unfVersionNumber, int variablePosition)
         throws NumberFormatException, UnfException,
         IOException, NoSuchAlgorithmException{
@@ -3426,7 +3446,7 @@ while(true ){
                 String[] strdata = Arrays.asList(varData).toArray(
                     new String[varData.length]);
                 
-                unfValue = UNFUtil.calculateUNF(strdata, unfVersionNumber);
+                unfValue = UNFUtil.calculateUNF(strdata, dateFormats, unfVersionNumber);
                 dbgLog.finer("string:unfValue="+unfValue);
 
                 smd.getSummaryStatisticsTable().put(variablePosition,

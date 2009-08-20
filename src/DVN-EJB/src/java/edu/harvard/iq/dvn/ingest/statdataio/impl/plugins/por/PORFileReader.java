@@ -22,7 +22,6 @@ package edu.harvard.iq.dvn.ingest.statdataio.impl.plugins.por;
 
 import java.io.*;
 import java.nio.*;
-import java.nio.channels.*;
 import java.security.NoSuchAlgorithmException;
 import java.util.logging.*;
 
@@ -33,9 +32,6 @@ import java.util.regex.*;
 import java.text.*;
 
 import org.apache.commons.lang.*;
-import org.apache.commons.lang.builder.*;
-import org.apache.commons.io.*;
-import org.apache.commons.io.input.*;
 import org.apache.commons.codec.binary.Hex;
 
 import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.*;
@@ -47,6 +43,9 @@ import edu.harvard.iq.dvn.unf.*;
 
 
 import edu.harvard.iq.dvn.ingest.statdataio.impl.plugins.util.*;
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 
 
 /**
@@ -315,7 +314,7 @@ public class PORFileReader extends StatDataFileReader{
     
         //
         doubleNumberFormatter.setGroupingUsed(false);
-        doubleNumberFormatter.setMaximumFractionDigits(16);
+        doubleNumberFormatter.setMaximumFractionDigits(324);
     }
 
     // Methods ---------------------------------------------------------------//
@@ -2213,119 +2212,49 @@ public class PORFileReader extends StatDataFileReader{
 
         // check the scientific notation
         // if so, divide it into the significand and exponent
-
-        boolean hasExponent = false;
-        boolean hasPositiveExponent = false;
-        boolean hasNegativeExponent = false;
-
         String significand  = null;
-        String exponent = null;
+        long exponent = 0;
 
         int plusIndex = base30StringNoSign.indexOf("+");
         int minusIndex = base30StringNoSign.indexOf("-");
 
         if (plusIndex> 0){
-            // positive exponent
-            //dbgLog.fine("plusIndex="+plusIndex);
             significand = base30StringNoSign.substring(0, plusIndex);
-            //dbgLog.fine("significand="+ significand);
-            String exponentRaw = base30StringNoSign.substring(plusIndex+1);
-            exponent = exponentRaw.substring(exponentRaw.indexOf("0")+1);
-            hasPositiveExponent=true;
-            hasExponent = true;
-            //dbgLog.fine("exponent="+exponent);
+            exponent = Long.valueOf( base30StringNoSign.substring(plusIndex+1), oldBase );
+
         } else if (minusIndex > 0){
-            // negative exponent
-            //dbgLog.fine("minusIndex="+minusIndex);
             significand = base30StringNoSign.substring(0, minusIndex);
-            String exponentRaw    =  base30StringNoSign.substring(minusIndex+1);
-            exponent = exponentRaw.substring(exponentRaw.indexOf("0")+1);
-            //dbgLog.fine("exponent="+exponent);
-            hasNegativeExponent=true;
-            hasExponent = true;
+            exponent = -1 * Long.valueOf( base30StringNoSign.substring(minusIndex+1), oldBase );
+
         } else {
             significand = new String(base30StringNoSign);
         }
 
-        //dbgLog.fine("significand="+ significand);
 
-        // convert the exponent to a base-10 number if the exponent exits
-        int exponentValue = 0;
-        if (hasExponent){
-            exponentValue = Integer.valueOf(exponent, oldBase);
-            if (hasNegativeExponent){
-                exponentValue = ~exponentValue+1;
-            }
+        // "move" decimal point; for each shift right, subtract one from exponent; end result is a string with no decimal
+        int decimalIndex = significand.indexOf(".");
+        if (decimalIndex != -1) {
+            exponent -= (significand.length() - (decimalIndex + 1) );
+            significand = significand.substring(0, decimalIndex) + significand.substring( decimalIndex + 1 );
         }
 
-        //dbgLog.fine("exponentValue="+exponentValue);
-
-        // check the position of the decimal point
-        // index-no starts from 0
-        int index_dpn = significand.indexOf(".");
-
-        //dbgLog.fine("dpPosition="+index_dpn);
-
-        int length_Significand = significand.length();
-
-        // note: split("") method incorrectly divided a string into a String[]
-        // "" was inserted as the first element
-        // is there any left-over after StringUtils.remove()?
-        char[] base30Significand= null;
-        if (index_dpn >= 0){
-            base30Significand = StringUtils.remove(significand, ".").toCharArray();
-            if (base30Significand.length != (length_Significand-1)){
-               err.println("Tokeninzing the significand failed");
-            }
-        } else {
-            base30Significand = significand.toCharArray();
-            if (base30Significand.length != length_Significand){
-                err.println("Tokeninzing the significand failed");
-            }
-        }
-
-        //dbgLog.fine("base30Significand="+ArrayUtils.toString(base30Significand));
-
-        // create a power-value array
-        int[] powerNumbers = new int[base30Significand.length];
-        // if the decimal point does not exist, set the index to
-        // the length  of the significand
-        if (index_dpn < 0){
-            index_dpn = base30Significand.length;
-        }
         
-        for (int j=0;j<powerNumbers.length;j++){
-            if (j < index_dpn){
-                powerNumbers[j] = index_dpn-j -1;
-            } else {
-                powerNumbers[j] = -1*(j+1-index_dpn);
-            }
+        MathContext mc = new MathContext(15,RoundingMode.HALF_UP);
+        long base10Significand = Long.parseLong(significand, oldBase);
+        BigDecimal base10value = new BigDecimal( String.valueOf(base10Significand), mc );
+        BigDecimal exponentialComponent = new BigDecimal("1", mc);
+
+        for (int g=0; g < Math.abs(exponent); g++) {
+            exponentialComponent = exponentialComponent.multiply(new BigDecimal("30", mc));
         }
 
-        //dbgLog.fine(ArrayUtils.toString(powerNumbers));
-
-        // adjust the power value with the exponent
-        if (hasExponent){
-            for (int i=0; i< powerNumbers.length;i++){
-                powerNumbers[i] += exponentValue;
-            }
+        if (exponent >= 0) {
+            base10value = base10value.multiply(exponentialComponent, mc);
+        } else {
+            base10value = base10value.divide(exponentialComponent, mc);
         }
 
-        // calculate the base-10 value as a double
-        double base = 10;
-        double base10value = 0d;
-        for (int k=0;k<powerNumbers.length;k++){
-            base10value += Long.valueOf(
-                        String.valueOf(base30Significand[k]), oldBase)*
-                        Math.pow(oldBase, powerNumbers[k]);
-        }
-
-        // negative sign if applicable
-        if (isNegativeNumber){
-            base10value = -1d*base10value;
-        }
-
-        return base10value;
+        return base10value.doubleValue();
     }
     
     void print2Darray(Object[][] datatable, String title){

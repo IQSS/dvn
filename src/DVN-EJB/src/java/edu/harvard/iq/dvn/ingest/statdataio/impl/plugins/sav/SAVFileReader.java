@@ -419,7 +419,7 @@ public class SAVFileReader extends StatDataFileReader{
 
         
         doubleNumberFormatter.setGroupingUsed(false);
-        doubleNumberFormatter.setMaximumFractionDigits(324);
+        doubleNumberFormatter.setMaximumFractionDigits(340);
     }
     
     // Accessor Methods  ----------------------------------------------------//

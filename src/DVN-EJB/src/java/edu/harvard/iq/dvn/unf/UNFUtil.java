@@ -37,6 +37,7 @@
 package edu.harvard.iq.dvn.unf;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -64,7 +65,6 @@ public class UNFUtil {
     public static String calculateUNF(final double[] numb, String version)
             throws NumberFormatException, UnfException, IOException, NoSuchAlgorithmException {
 
-        float vers = (float) Double.parseDouble(version);
         Double mat[][] = new Double[1][numb.length];
         for (int n = 0; n < numb.length; ++n) {
             mat[0][n] = numb[n];
@@ -75,6 +75,7 @@ public class UNFUtil {
 
         return res[0];
     }
+
 
     /**
      * Overloaded method
@@ -378,5 +379,16 @@ public class UNFUtil {
         float v = (float) Double.parseDouble(version);
         String[] unfs = UnfDigest.unf(pass, version);
         return calculateUNF(unfs, version);
+    }
+
+    public static String calculateUNF(final Number[] numb, String vers) throws NoSuchAlgorithmException, IOException, UnfException {
+        Double mat[][] = new Double[1][numb.length];
+        for (int n = 0; n < numb.length; ++n) {
+            mat[0][n] = numb[n] != null ? Double.valueOf(numb[n].doubleValue()) : null;
+        }
+        UnfDigest.setTrnps(false);
+        String[] res = UnfDigest.unf(mat, vers);
+
+        return res[0];
     }
 }

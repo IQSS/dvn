@@ -225,11 +225,7 @@ public class UnfNumber<T extends Number> implements UnfCons {
         int k = 0;
 
         for (k = 0; k < nv; ++k) {
-            miss = false;
-            dub = v[k].doubleValue();
-            if (Double.isNaN(dub)) {
-                miss = true;
-            }
+            miss = (v[k] == null);
 
             //md5_append is called with UNF3
             md = UNF3(v[k], digits, md, miss);

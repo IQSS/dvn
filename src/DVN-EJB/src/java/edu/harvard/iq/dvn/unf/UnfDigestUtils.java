@@ -33,8 +33,6 @@ import java.util.logging.Logger;
 
 public class UnfDigestUtils implements UnfCons {
 
-    /** the following symbols represent missing values*/
-    private static final String nasymb[] = nastrings;
     private static Logger mLog = Logger.getLogger(UnfDigestUtils.class.getName());
 
     /**
@@ -143,15 +141,7 @@ public class UnfDigestUtils implements UnfCons {
         int ln = obj.length;
         boolean[] res = new boolean[ln];
         for (int k = 0; k < ln; ++k) {
-            res[k] = false;
-
-            String tmp = ((String) obj[k]).trim();
-            for (int n = 0; n < nasymb.length; ++n) {
-                if (tmp.equals(nasymb[n])) {
-                    res[k] = true;
-                    break;
-                }
-            }
+            res[k] = (obj[k] == null);
         }
         return res;
     }

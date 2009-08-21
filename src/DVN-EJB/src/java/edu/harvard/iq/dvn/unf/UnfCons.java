@@ -50,12 +50,6 @@ public interface UnfCons {
     /** the starting encoding */
     static String textencoding = "UTF-8";
 
-    /**representing missing values*/
-    static String miss = "" + Double.NaN;
-
-    /** array with na's values */
-    static String[] nastrings = {"NA", "N/A", miss, ""};
-
     /** constant used in the C code*/
     static int INACCURATE_SPRINTF_DIGITS = 14;
 

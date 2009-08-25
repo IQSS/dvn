@@ -779,7 +779,9 @@ public class SAVFileReader extends StatDataFileReader{
         // variable one (string <=256 + 3 missing-value units[optional])
         int variableCounter = 0;
 
-        for (int j= 0; j< OBSUnitsPerCase;j++){
+	int j = 0;
+
+        for (j= 0; j< OBSUnitsPerCase;j++){
             dbgLog.fine("\n\n+++++++++++ "+j+"-th RT2 unit is to be decoded +++++++++++");
             // 2.0: read the fixed[=non-optional] 32-byte segment
             byte[] recordType2Fixed = new byte[LENGTH_RECORDTYPE2_FIXED];
@@ -825,7 +827,7 @@ public class SAVFileReader extends StatDataFileReader{
                     break;
                     //throw new IOException("RT2 reading error: The current position is no longer Record Type 2");
                 }
-                dbgLog.fine("variable type[must be 2]="+recordType2FixedPart1[0]);
+                dbgLog.info("variable type[must be 2]="+recordType2FixedPart1[0]);
 
 
                 // 2nd ([1]) element: numeric variable = 0 :for string variable 
@@ -835,7 +837,7 @@ public class SAVFileReader extends StatDataFileReader{
 
                 boolean isNumericVariable = false;
 
-                dbgLog.fine("variable type(0: numeric; > 0: String;-1 continue )="+
+                dbgLog.info("variable type(0: numeric; > 0: String;-1 continue )="+
                     recordType2FixedPart1[1]);
 
                 OBSwiseTypelList.add(recordType2FixedPart1[1]);
@@ -1133,24 +1135,28 @@ public class SAVFileReader extends StatDataFileReader{
                 ex.printStackTrace();
             }
 
-            if (j == (OBSUnitsPerCase-1) ){
-                dbgLog.fine("RT2 metadata-related exit-chores");
-                smd.getFileInformation().put("varQnty", variableCounter);
-                varQnty = variableCounter;
-                smd.setVariableName(variableNameList.toArray(new String[variableNameList.size()]));
-                smd.setVariableLabel(variableLabelMap);
-                smd.setMissingValueTable(missingValueTable);
-                smd.getFileInformation().put("caseWeightVariableName", caseWeightVariableName);
-                smd.setVariableTypeMinimal(ArrayUtils.toPrimitive(
-                variableTypelList.toArray(new Integer[variableTypelList.size()])));
-
-                
-                dbgLog.fine("OBSwiseTypelList="+OBSwiseTypelList);
-                
-                // variableType is determined after the valueTable is finalized
-            }
-
         } // j-loop
+
+	//if (j == (OBSUnitsPerCase-1) ){
+	if (j == OBSUnitsPerCase ) {
+	    dbgLog.fine("RT2 metadata-related exit-chores");
+	    smd.getFileInformation().put("varQnty", variableCounter);
+	    varQnty = variableCounter;
+	    dbgLog.fine("varQnty="+varQnty);
+
+	    smd.setVariableName(variableNameList.toArray(new String[variableNameList.size()]));
+	    smd.setVariableLabel(variableLabelMap);
+	    smd.setMissingValueTable(missingValueTable);
+	    smd.getFileInformation().put("caseWeightVariableName", caseWeightVariableName);
+	    smd.setVariableTypeMinimal(ArrayUtils.toPrimitive(
+							      variableTypelList.toArray(new Integer[variableTypelList.size()])));
+	    
+                
+	    dbgLog.fine("OBSwiseTypelList="+OBSwiseTypelList);
+                
+	    // variableType is determined after the valueTable is finalized
+	}
+	
         dbgLog.fine("***** decodeRecordType2(): end *****");
     }
     
@@ -1999,6 +2005,9 @@ while(true ){
         dbgLog.fine("printFormatNameTable:\n"+printFormatNameTable);
         variableFormatTypeList = new String[varQnty];
 
+        dbgLog.fine("varQnty: "+varQnty);
+
+
         for (int i=0; i<varQnty;i++){
             variableFormatTypeList[i]=SPSSConstants.FORMAT_CATEGORY_TABLE.get(
                     printFormatTable.get(variableNameList.get(i)));
@@ -2180,7 +2189,7 @@ while(true ){
                         
                         Set<Integer> removeJset = new HashSet<Integer>();
                         for (int j=0; j< nOBS; j++){
-                            dbgLog.finer("j="+j+"-th type ="+OBSwiseTypelList.get(j));
+                            dbgLog.fine("j="+j+"-th type ="+OBSwiseTypelList.get(j));
                             if (OBSwiseTypelList.get(j) == -1){
                                 // String continued fount at j-th 
                                 // look back the j-1 
@@ -2192,8 +2201,9 @@ while(true ){
                                 sb.append(dataLine.get(j-1));
                                 sb.append(dataLine.get(j));
                                 for (int jc =1; ; jc++ ){
-                                    if (OBSwiseTypelList.get(j+jc) != -1){
-                                    // j is the end unit of this string variable
+                                    if ((j+jc == nOBS) || (OBSwiseTypelList.get(j+jc) != -1)){
+					
+					// j is the end unit of this string variable
                                         concatanated = sb.toString();
                                         sb.setLength(0);
                                        lastJ = j+jc;
@@ -3116,11 +3126,11 @@ while(true ){
 
                     } else if (caseQnty == caseIndex){
                         // header's case information was correct
-                        dbgLog.info("recorded number of cases is the same as the actual number");
+                        dbgLog.fine("recorded number of cases is the same as the actual number");
                     } else {
                         // header's case information disagree with the actual one
                         // take the actual one
-                        dbgLog.info("recorded number of cases in the header is not the same as the actual number:"+caseIndex);
+                        dbgLog.fine("recorded number of cases in the header is not the same as the actual number:"+caseIndex);
                         caseQnty = caseIndex;
                     }
 

@@ -79,7 +79,7 @@ public class UnfDateFormatter {
                 if (hasSecond(formatString)) {
                     unfFormatString.append(":ss");
                     if (hasMillisecond(formatString)) {
-                        unfFormatString.append(":SSS");
+                        unfFormatString.append(".SSS");
                     }
                 }
             }

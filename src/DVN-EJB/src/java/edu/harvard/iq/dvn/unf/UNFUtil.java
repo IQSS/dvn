@@ -284,7 +284,6 @@ public class UNFUtil {
 
      public static String calculateUNF(final String[] chr, final String[] sdfFormat, String version)
             throws UnfException, NoSuchAlgorithmException, IOException {
-        float vers = (float) Double.parseDouble(version);
         String tosplit = ":";
         String spres[] = chr[0].split(tosplit);
         if (spres.length >= 3 && chr[0].startsWith("UNF:")) {
@@ -307,6 +306,16 @@ public class UNFUtil {
                         unfSdf.setTimeZone(TimeZone.getTimeZone("UTC"));
                     }
                     str = unfSdf.format(d);
+                    // remove any trailing 0s from milliseconds
+                    if (sdfFormat[cnt].indexOf("S")> -1 && str.endsWith("0")){
+                        while (str.endsWith("0")){
+                            str = str.substring(0,str.length()-1);
+                        }
+                        // if all trailing milliseconds were 0s, there will now be a trailing . to remove
+                        if (str.endsWith(".")) {
+                            str = str.substring(0, str.length() - 1);
+                        }
+                    }
                 } catch (ParseException ex) {
                     Logger.getLogger(UNFUtil.class.getName()).log(Level.SEVERE, null, ex);
                 }

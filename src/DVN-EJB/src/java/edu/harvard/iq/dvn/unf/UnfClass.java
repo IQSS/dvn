@@ -64,6 +64,8 @@ public class UnfClass {
     /** the encoding to apply message digest*/
     private String encoding = null;
 
+    private String extensions = "";
+
     /**
      * Constructor
      */
@@ -80,6 +82,15 @@ public class UnfClass {
         cdigits = cd;
         ndigits = nd;
         version = vers;
+        if (vers.startsWith("5")) {
+            if (cd != 128) {
+                addExtension("X" + cd);
+            }
+            if (nd != 7) {
+                addExtension("N"+nd);
+            }
+            addExtension("H128"); // TODO this is used on dvn, but may not be the default- needs more attention
+        }
     }
 
     /**
@@ -227,4 +238,28 @@ public class UnfClass {
     public void setEncoding(String enc) {
         encoding = enc;
     }
+
+    /**
+     * @return the extensions
+     */
+    public String getExtensions() {
+        return extensions;
+    }
+
+    /**
+     * @param extensions the extensions to set
+     */
+
+    public void setExtensions(String extensions) {
+        this.extensions = extensions;
+    }
+
+    public void addExtension(String ext){
+        if (getExtensions().length()>0){
+            setExtensions(getExtensions() + getExtensions() + "," + ext);
+        } else{
+            setExtensions(getExtensions() + ext);
+        }
+    }
+
 }

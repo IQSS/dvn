@@ -258,6 +258,69 @@ public class UnfString<T extends CharSequence> implements UnfCons {
     }
 
     /**
+     * Feeds the elements of v to MessageDigest and updates it
+     *
+     * @param v vector of class CharSequence or its sub-classes:
+     *           CharBuffer, StringBuilder, StringBuffer, String, Segment
+     * @param digits int with the numbers of digits for precision
+     * @param result  of Class Number
+     * @param miss array of booleans for missing values
+     * @throws UnsupportedEncodingException
+     * @throws NoSuchAlgorithmException
+     */
+    public String RUNF5(final CharSequence[] v, boolean miss[], int digits, List<Integer> result,
+            Character[] base64, StringBuilder hex)
+            throws UnsupportedEncodingException, NoSuchAlgorithmException {
+
+        int nv = v.length;
+
+        int [] v5bitsize = {128, 192, 256}; // TODO: is it supposed to be 192 rather than 196?
+        int k = 0;
+        for (k = 0; k < nv; ++k) {
+            //md5_append is called with UNF3
+            mLog.finer("" + v[k] + ";");
+            mLog.finer(digits + ";" + md + ";");
+            boolean m;
+            if (miss == null) {
+                md = UNF3(v[k], digits, md, false);
+            } else {
+                md = UNF3(v[k], digits, md, (boolean) miss[k]);
+            }
+        }
+        /**SHA256 produces, by default, 32 byte digest**/
+        byte[] hash = md.digest();
+        md.reset();
+        if (hash.length > 32) {
+            mLog.finer("unfString: hash has more than 32 bytes.." + hash.length);
+        }
+
+        // most significant 128 bits are used by dvn in UNFv5
+        byte[] v5hash = truncateHash(hash,v5bitsize[0]);
+        for (k = 0; k < v5hash.length; ++k) {
+            result.add(v5hash[k] & 0xFF);
+        }
+        String rtobase64 = Base64Encoding.tobase64(v5hash, false);
+        String hexstr = UtilsConverter.getHexStrng(v5hash);
+        hex.append(hexstr);
+        for (int n = 0; n < rtobase64.length(); ++n) {
+            base64[n] = new Character(rtobase64.charAt(n));
+        }
+        mLog.finer(rtobase64);
+        return rtobase64;
+    }
+
+    byte[] truncateHash(byte[] hash,int n){
+        //TODO: are all the truncation values on byte boundaries
+        assert n%8 == 0;
+        int bits = n/8;
+        byte[] rhash = new byte[bits];
+        for (int x=0;x<bits;x++){
+            rhash[x] = hash[x];
+        }
+        return rhash;
+    }
+
+    /**
      * Updates the MessageDigest previous with the bytes in obj
      *
      * @param obj Class Number or sub-classes

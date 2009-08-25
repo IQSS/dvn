@@ -75,6 +75,17 @@ public class UnfDigest implements UnfCons {
     /** List elements are arrays of fingerprints
      * for every column of input data obj*/
     private static List<List<Integer>> fingerprint = new ArrayList<List<Integer>>();
+
+    private static String getExtensions(UnfClass signature) {
+        StringBuffer retValBuf = new StringBuffer();
+        if (signature != null){
+            String extensions = signature.getExtensions();
+            if (extensions.length() > 0){
+                retValBuf.append(":"+extensions);
+            }
+        }
+        return retValBuf.toString();
+    }
     /** for debugging */
     private boolean debug = false;
     /** unfClass type after calculating digest
@@ -459,12 +470,14 @@ public class UnfDigest implements UnfCons {
         assnMDEnc(vers, unfno);
         String b64 = vers.startsWith("5")? unfno.RUNF5((CharSequence[]) obj, b, cdg, fingerp, base64, hex) : unfno.RUNF3((CharSequence[]) obj, b, cdg, fingerp, base64, hex);
         fingerprint.add(fingerp);
-        b64 = "UNF:" + getVersion() + ":" + signature.getExtensions() + ":" + b64;
+        b64 = "UNF:" + getVersion() + getExtensions(signature) + ":" + b64;
         if (buildunfObj && signature != null) {
             buildUnfClass(fingerp, hex, b64, signature);
         }
         return b64;
     }
+
+
 
     /**
      * Utility helper method

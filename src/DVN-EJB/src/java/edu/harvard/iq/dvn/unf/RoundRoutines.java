@@ -188,7 +188,7 @@ public class RoundRoutines<T extends Number> implements UnfCons {
         boolean bigNumber = (obj instanceof BigDecimal) ? true : false;
         if (obj instanceof BigInteger) {
             bigNumber = true;
-            objbint = new BigDecimal((BigInteger) obj);
+            objbint = new BigDecimal((BigInteger) obj, MathContext.DECIMAL64);
         }
 
         StringBuilder build = new StringBuilder();

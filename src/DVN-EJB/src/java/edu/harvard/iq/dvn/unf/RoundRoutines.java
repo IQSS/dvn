@@ -61,6 +61,7 @@ package edu.harvard.iq.dvn.unf;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
+import java.math.RoundingMode;
 import java.nio.charset.Charset;
 import java.util.Locale;
 import java.util.logging.Level;
@@ -202,6 +203,7 @@ public class RoundRoutines<T extends Number> implements UnfCons {
 
         Double n = obj.doubleValue();
 
+        objbint = new BigDecimal(Double.toString(obj.doubleValue()) ,MathContext.DECIMAL64);
         if (sep != dot) {
             mLog.warning("RoundRoutines: Decimal separator is not " +
                     "'\u002E' or a dot:.");
@@ -233,7 +235,7 @@ public class RoundRoutines<T extends Number> implements UnfCons {
         if (obj instanceof BigDecimal) {
             tmp = String.format(loc, fmtu, obj);
         } else if (objbint != null) {
-            tmp = String.format(loc, fmtu, objbint);
+            tmp = String.format(loc, fmtu, objbint.setScale(dgt, RoundingMode.HALF_EVEN));
         } else {
             tmp = String.format(loc, fmtu, n);//double representation with full precision
         }

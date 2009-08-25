@@ -30,10 +30,7 @@ package edu.harvard.iq.dvn.core.web;
 
 import com.icesoft.faces.component.datapaginator.DataPaginator;
 import com.icesoft.faces.component.tree.IceUserObject;
-import edu.harvard.iq.dvn.core.admin.NetworkRoleServiceLocal;
-import edu.harvard.iq.dvn.core.admin.RoleServiceLocal;
 import edu.harvard.iq.dvn.core.admin.UserGroup;
-import edu.harvard.iq.dvn.core.admin.VDCRole;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.index.IndexServiceLocal;
 import edu.harvard.iq.dvn.core.index.SearchTerm;
@@ -41,6 +38,7 @@ import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyField;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.study.VariableServiceLocal;
+import edu.harvard.iq.dvn.core.util.StringUtil;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCCollection;
 import edu.harvard.iq.dvn.core.vdc.VDCCollectionServiceLocal;
@@ -106,9 +104,12 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
     private boolean renderScroller;
     private boolean renderDescription;
     private boolean renderContributorLink;
+    private boolean renderTruncatedDesc;
+    private boolean descriptionTruncated;
 
     String listHeader;
     String listMessage;
+    String truncatedDescription;
 
     public StudyListing getStudyListing() {
         return studyListing;
@@ -175,6 +176,14 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
         return listMessage;
     }
 
+    public String getTruncatedDescription() {
+        return truncatedDescription;
+    }
+
+    public boolean isDescriptionTruncated() {
+        return descriptionTruncated;
+    }
+
     public boolean isRenderTree() {
         return renderTree;
     }
@@ -199,6 +208,9 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
         return renderDescription;
     }
 
+    public boolean isRenderTruncatedDesc() {
+        return renderTruncatedDesc;
+    }
 
     public String search_action() {
         List searchTerms = new ArrayList();
@@ -287,6 +299,11 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
             studyListing.setStudyIds(sortedStudies);
             resetScroller();
         }
+    }
+
+    public String toggleDescription_action() {
+        renderTruncatedDesc = !renderTruncatedDesc;
+        return null;
     }
 
     private void resetScroller() {
@@ -419,7 +436,16 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
             }
 
             renderSearchCollectionFilter = renderTree;
+            
+            // check description rendering and size
             renderDescription = getVDCRequestBean().getCurrentVDC().isDisplayAnnouncements();
+            if (renderDescription) {
+                truncatedDescription = StringUtil.truncateString(getVDCRequestBean().getCurrentVDC().getAnnouncements(), 1000);
+                if ( truncatedDescription != null && !truncatedDescription.equals(getVDCRequestBean().getCurrentVDC().getAnnouncements()) ) {
+                    descriptionTruncated = true;
+                    renderTruncatedDesc = true;
+                }
+            }
 
             LoginBean loginBean = getVDCSessionBean().getLoginBean();
             renderContributorLink =

@@ -1,4 +1,4 @@
-/*
+ /*
  * Dataverse Network - A web application to distribute, share and analyze quantitative data.
  * Copyright (C) 2009
  * 
@@ -33,6 +33,8 @@ import java.util.*;
 import java.lang.reflect.*;
 import java.util.regex.*;
 import java.text.*;
+
+import java.math.RoundingMode;
 
 import org.apache.commons.lang.*;
 import org.apache.commons.lang.builder.*;
@@ -373,6 +375,13 @@ public class DTAFileReader extends StatDataFileReader{
     private static Logger dbgLog = Logger.getLogger(DTAFileReader.class.getPackage().getName());
 
     NumberFormat doubleNumberFormatter = new DecimalFormat();
+
+    // separate formatters for single-width floats:
+
+    NumberFormat floatNumberFormatter = new DecimalFormat();
+
+
+
 
     SDIOMetadata smd = new DTAMetadata();
     
@@ -1396,7 +1405,8 @@ public class DTAFileReader extends StatDataFileReader{
                                     dataTable2[columnCounter][i] = dataRow[columnCounter];
                                 } else {
                                     dataTable2[columnCounter][i] = float_datum;
-                                    dataRow[columnCounter] = doubleNumberFormatter.format(float_datum);
+                                    //dataRow[columnCounter] = doubleNumberFormatter.format(float_datum);
+				    dataRow[columnCounter] = float_datum;
                                 }
 
                             }

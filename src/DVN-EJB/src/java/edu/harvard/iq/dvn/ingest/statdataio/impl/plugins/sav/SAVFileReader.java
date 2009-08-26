@@ -2050,7 +2050,7 @@ while(true ){
             boolean hasReachedEOF = false;
             
         OBSERVATION: while(true){
-            dbgLog.finer("ii="+ii+"-th iteration");
+            dbgLog.fine("SAV Reader: compressed: ii="+ii+"-th iteration");
 
             byte[] octate = new byte[LENGTH_SAV_OBS_BLOCK];
 
@@ -2076,7 +2076,7 @@ while(true ){
                 switch (byteCode) {
                     case 252:
                         // end of the file
-                        dbgLog.finer("end of file mark [FC] was found");
+                        dbgLog.fine("SAV Reader: compressed: end of file mark [FC] was found");
                         hasReachedEOF = true;
                         break;
                     case 253:
@@ -2111,19 +2111,23 @@ while(true ){
                             // out.println("ddatum="+ddatum);
                             // add this non-missing-value numeric datum
                             dataLine.add(doubleNumberFormatter.format(ddatum)) ;
+			    dbgLog.fine("SAV Reader: compressed: added value to dataLine: "+ddatum);
 
                         } else {
+			    dbgLog.fine("SAV Reader: out-of-range exception");
                             throw new IOException("out-of-range value was found");
                         }
                         
+			/* 
                         // EOF-check after reading this octate
                         if (stream.available() == 0){
                             hasReachedEOF = true;
                             dbgLog.fine(
-                            "*** After reading an uncompressed octate," +
+                            "SAV Reader: *** After reading an uncompressed octate," +
                              " reached the end of the file at "+ii
                                 +"th iteration and i="+i+"th octate position [0-start] *****");
                         }
+			*/
 
 
                         break;
@@ -2143,11 +2147,14 @@ while(true ){
                         // cf: uncompressed case (sysmis)
                         // FF FF FF FF FF FF eF FF(little endian)
                         // add the numeric missing value
+			dbgLog.fine("SAV Reader: compressed: Missing Value, numeric");
                         dataLine.add(MissingValueForTextDataFileNumeric);
 
                         break;
                     case 0:
                         // 00: do nothing
+			dbgLog.fine("SAV Reader: compressed: doing nothing (zero); ");
+			
                         break;
                     default:
                         //out.println("byte code(default)="+ byteCode);
@@ -2156,6 +2163,8 @@ while(true ){
                             //Integer unCompressed = Integer.valueOf(byteCode -100);
                             // add this uncompressed numeric datum
                             Double unCompressed = Double.valueOf(byteCode -100);
+			    dbgLog.fine("SAV Reader: compressed: default case: "+unCompressed);
+
                             dataLine.add(doubleNumberFormatter.format(unCompressed));
                             // out.println("uncompressed="+unCompressed);
                             // out.println("dataline="+dataLine);
@@ -2167,7 +2176,7 @@ while(true ){
                 
                 // The-end-of-a-case(row)-processing
                 int varCounter = (ii*OBS + i +1)%nOBS;
-                dbgLog.finer("variable counter="+varCounter+"(ii="+ii+")");
+                dbgLog.fine("SAV Reader: compressed: variable counter="+varCounter+"(ii="+ii+")");
                 
                 if ((ii*OBS + i +1)%nOBS == 0){
                     //out.println("dataLine(before)="+dataLine);
@@ -2461,7 +2470,6 @@ while(true ){
                     // calculating UNF/summary statistic
                     // dbgLog.finer("tab-data: caseIndex="+caseIndex+"-th:"+StringUtils.join(dataLine, "\t"));
 
-                    
                     pwout.println(StringUtils.join(dataLine, "\t"));
                     
                     // replace NA-strings for a tab-limited file with
@@ -2554,8 +2562,10 @@ while(true ){
 
                 } else if (caseQnty == caseIndex){
                     // header's case information was correct
-                    dbgLog.fine("recorded number of cases is the same as the actual number");
+                    dbgLog.fine("SAV Reader: compressed: recorded number of cases is the same as the actual number");
                 } else {
+		    dbgLog.fine("SAV Reader: compressed: recorded number of cases is different from the actual number: stored: "+caseQnty+"; found: "+caseIndex);
+
                     // header's case information disagree with the actual one
                     // take the actual one
                     caseQnty = caseIndex;
@@ -2725,10 +2735,11 @@ while(true ){
                             (dphex.equals("ffefffffffffffff"))){
                             //dataLine.add(systemMissingValue);
                             // add the numeric missing value
+			    dbgLog.fine("SAV Reader: adding: Missing Value (numeric)");
                             dataLine.add(MissingValueForTextDataFileNumeric);
                         } else {
                             Double ddatum  = bb_double.getDouble();
-                            dbgLog.finer("ddatum="+ddatum);
+                            dbgLog.fine("SAV Reader: adding: ddatum="+ddatum);
 
                             // add this non-missing-value numeric datum
                             dataLine.add(doubleNumberFormatter.format(ddatum)) ;

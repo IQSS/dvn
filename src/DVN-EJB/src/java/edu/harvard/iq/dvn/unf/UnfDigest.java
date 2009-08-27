@@ -388,7 +388,7 @@ public class UnfDigest implements UnfCons {
         StringBuilder hex = new StringBuilder();
         /**Define encoding and mdalgor according to version(vers)*/
         assnMDEnc(vers, unfno);
-        String b64 = = vers.startsWith("5")? unfno.RUNF5(obj, ndg, fingerp, base64, hex) : unfno.RUNF3(obj, ndg, fingerp, base64, hex);
+        String b64 =  vers.startsWith("5")? unfno.RUNF5(obj, ndg, fingerp, base64, hex) : unfno.RUNF3(obj, ndg, fingerp, base64, hex);
 
         b64 = "UNF:" + getVersion() + ":" + b64;
         if (buildunfObj && signature != null) {

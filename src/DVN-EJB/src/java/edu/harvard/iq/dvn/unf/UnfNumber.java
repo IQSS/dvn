@@ -265,6 +265,7 @@ public class UnfNumber<T extends Number> implements UnfCons {
         double dub = 0;
         boolean miss = false;
         int k = 0;
+        int [] v5bitsize = {128, 192, 256}; // TODO: is it supposed to be 192 rather than 196?
 
         for (k = 0; k < nv; ++k) {
             miss = (v[k] == null);

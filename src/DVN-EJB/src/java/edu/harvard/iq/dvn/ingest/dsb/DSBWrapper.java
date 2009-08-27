@@ -458,7 +458,7 @@ public class DSBWrapper implements java.io.Serializable  {
         } else {
             String fileUNF=null;
             try {
-                fileUNF = UNFUtil.calculateUNF(unfs, "3");
+                fileUNF = UNFUtil.calculateUNF(unfs, "5");
             //return calculateUNF(unfs);
             } catch (UnfException e) {
                 e.printStackTrace();

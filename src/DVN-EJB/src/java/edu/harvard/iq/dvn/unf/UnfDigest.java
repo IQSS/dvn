@@ -389,9 +389,15 @@ public class UnfDigest implements UnfCons {
         /**Define encoding and mdalgor according to version(vers)*/
         assnMDEnc(vers, unfno);
         String b64 =  vers.startsWith("5")? unfno.RUNF5(obj, ndg, fingerp, base64, hex) : unfno.RUNF3(obj, ndg, fingerp, base64, hex);
+        boolean buildclass=false;
+        if (signature != null){
+            buildclass = true;
+        } else{
+            signature = new UnfClass(ndg,128,currentVersion);
+        }
 
-        b64 = "UNF:" + getVersion() + ":" + b64;
-        if (buildunfObj && signature != null) {
+        b64 = "UNF:" + getVersion() + getExtensions(signature) + ":" + b64;
+        if (buildunfObj && buildclass) {
             buildUnfClass(fingerp, hex, b64, signature);
         }
 
@@ -470,8 +476,14 @@ public class UnfDigest implements UnfCons {
         assnMDEnc(vers, unfno);
         String b64 = vers.startsWith("5")? unfno.RUNF5((CharSequence[]) obj, b, cdg, fingerp, base64, hex) : unfno.RUNF3((CharSequence[]) obj, b, cdg, fingerp, base64, hex);
         fingerprint.add(fingerp);
+        boolean buildclass=false;
+        if (signature != null){
+            buildclass = true;
+        } else{
+            signature = new UnfClass(7,cdg,currentVersion);
+        }
         b64 = "UNF:" + getVersion() + getExtensions(signature) + ":" + b64;
-        if (buildunfObj && signature != null) {
+        if (buildunfObj && buildclass) {
             buildUnfClass(fingerp, hex, b64, signature);
         }
         return b64;

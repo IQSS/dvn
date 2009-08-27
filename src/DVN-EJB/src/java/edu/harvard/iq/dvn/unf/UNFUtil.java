@@ -264,12 +264,14 @@ public class UNFUtil {
             throws UnfException, NoSuchAlgorithmException, IOException {
         float vers = (float) Double.parseDouble(version);
         String tosplit = ":";
-        String spres[] = chr[0].split(tosplit);
-        if (spres.length >= 3 && chr[0].startsWith("UNF:")) {
-            return UnfDigest.addUNFs(chr);
-        }
-        if (spres.length > 1) {
-            //throw new UnfException("UNFUtil: Malformed unf");
+        if (chr[0] != null) {
+            String spres[] = chr[0].split(tosplit);
+            if (spres.length >= 3 && chr[0].startsWith("UNF:")) {
+                return UnfDigest.addUNFs(chr);
+            }
+            if (spres.length > 1) {
+                //throw new UnfException("UNFUtil: Malformed unf");
+            }
         }
         CharSequence[][] chseq = new CharSequence[1][chr.length];
         UnfDigest.setTrnps(false);
@@ -285,13 +287,16 @@ public class UNFUtil {
      public static String calculateUNF(final String[] chr, final String[] sdfFormat, String version)
             throws UnfException, NoSuchAlgorithmException, IOException {
         String tosplit = ":";
-        String spres[] = chr[0].split(tosplit);
-        if (spres.length >= 3 && chr[0].startsWith("UNF:")) {
-            return UnfDigest.addUNFs(chr);
-        }
-        if (spres.length > 1) {
-            //throw new UnfException("UNFUtil: Malformed unf");
-        }
+         if (chr[0] != null) {
+             String spres[] = chr[0].split(tosplit);
+             if (spres.length >= 3 && chr[0].startsWith("UNF:")) {
+                 return UnfDigest.addUNFs(chr);
+             }
+
+             if (spres.length > 1) {
+                 //throw new UnfException("UNFUtil: Malformed unf");
+             }
+         }
         CharSequence[][] chseq = new CharSequence[1][chr.length];
         UnfDigest.setTrnps(false);
         int cnt = 0;

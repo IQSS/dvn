@@ -259,6 +259,61 @@ public class UnfNumber<T extends Number> implements UnfCons {
         return tobase64;
     }
 
+    public String RUNF5(final T[] v, int digits, List<Integer> result, Character[] base64, StringBuilder hex)//, String[] resultBase64)
+            throws UnsupportedEncodingException, NoSuchAlgorithmException, IOException {
+        int nv = v.length;
+        double dub = 0;
+        boolean miss = false;
+        int k = 0;
+
+        for (k = 0; k < nv; ++k) {
+            miss = (v[k] == null);
+
+            //md5_append is called with UNF3
+            md = UNF3(v[k], digits, md, miss);
+        }
+        /**produces, by default, 16 byte digest: equivalent to md5_finish**/
+        byte[] hash = md.digest();
+        md.reset();
+        byte[] inthash = new byte[hash.length];
+        byte[] v5hash = truncateHash(hash,v5bitsize[0]);
+        for (k = 0; k < v5hash.length; ++k) {
+            int h = (int) ((v5hash[k] & 0xFF));
+            inthash[k] = (byte) h;
+            result.add((Integer) (h + 0));
+        }
+        Integer[] res = result.toArray(new Integer[16]);
+
+        //make sure is in big-endian order
+        mLog.finer("Base64 encoding in BIG-ENDIAN");
+        String tobase64 = Base64Encoding.tobase64(inthash, false);
+        String hexstr = UtilsConverter.getHexStrng(v5hash);
+        hex.append(hexstr);
+        mLog.finer("hex " + hex);
+        if ((hash.length > 16) && mdalgor.equals("MD5")) {
+            mLog.finer("unfNumber: hash has more than 16 bytes.." + hash.length);
+        }
+
+
+        for (int n = 0; n < tobase64.length(); ++n) {
+            base64[n] = new Character(tobase64.charAt(n));
+        }
+
+        return tobase64;
+    }
+
+    //TODO: this was cut&pasted from UnfString refactoring need to be done
+    byte[] truncateHash(byte[] hash,int n){
+        //TODO: are all the truncation values on byte boundaries
+        assert n%8 == 0;
+        int bits = n/8;
+        byte[] rhash = new byte[bits];
+        for (int x=0;x<bits;x++){
+            rhash[x] = hash[x];
+        }
+        return rhash;
+    }
+
     /**
      *  Feeds the bytes of a String to MessageDigest algorithm
      *

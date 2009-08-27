@@ -590,7 +590,8 @@ public class DTAFileReader extends StatDataFileReader{
 
             } catch (InvocationTargetException e) {
                 Throwable cause = e.getCause();
-                err.format(cause.getMessage());
+
+           //     err.format(cause.getMessage());
                 e.printStackTrace();
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
@@ -1267,7 +1268,7 @@ public class DTAFileReader extends StatDataFileReader{
                                 dbgLog.finer(i+"-th row "+columnCounter+
                                     "=th column byte MV="+byte_datum);
                                 dataRow[columnCounter] = MissingValueForTextDataFileNumeric;
-                                dataTable2[columnCounter][i] = Byte.MAX_VALUE;
+                                dataTable2[columnCounter][i] = null;  //use null reference to indicate missing value in data that is passed to UNF
                             } else {
                                 dataRow[columnCounter] = byte_datum;
                                 dataTable2[columnCounter][i] = byte_datum;
@@ -1296,13 +1297,11 @@ public class DTAFileReader extends StatDataFileReader{
                             if (short_datum >= INT_MISSIG_VALUE){
                                 dbgLog.finer(i+"-th row "+columnCounter+
                                     "=th column stata long missing value="+short_datum);
-                                    
+                                dataTable2[columnCounter][i] = null;  //use null reference to indicate missing value in data that is passed to UNF
                                 if (isDateTimeDatum){
                                     dataRow[columnCounter] =  MissingValueForTextDataFileString;
-                                    dataTable2[columnCounter][i] = "";
                                 } else {
                                     dataRow[columnCounter] = MissingValueForTextDataFileNumeric;
-                                    dataTable2[columnCounter][i] = Short.MAX_VALUE;
                                 }
                             } else {
                             
@@ -1341,12 +1340,11 @@ public class DTAFileReader extends StatDataFileReader{
                             if (int_datum >=LONG_MISSING_VALUE){
                                 dbgLog.fine(i+"-th row "+columnCounter+
                                     "=th column stata long missing value="+int_datum);
+                                dataTable2[columnCounter][i] = null;  //use null reference to indicate missing value in data that is passed to UNF
                                 if (isDateTimeDatum){
-                                    dataRow[columnCounter] =  MissingValueForTextDataFileString;
-                                    dataTable2[columnCounter][i] = "";
+                                    dataRow[columnCounter] =  MissingValueForTextDataFileString;                                   
                                 } else {
-                                    dataRow[columnCounter] = MissingValueForTextDataFileNumeric;
-                                    dataTable2[columnCounter][i] = Integer.MAX_VALUE;
+                                    dataRow[columnCounter] = MissingValueForTextDataFileNumeric;                                   
                                 }
                             } else {
 
@@ -1385,13 +1383,11 @@ public class DTAFileReader extends StatDataFileReader{
                             if (FLOAT_MISSING_VALUE_SET.contains(float_datum)){
                                 dbgLog.finer(i+"-th row "+columnCounter+
                                     "=th column float missing value="+float_datum);
-                                    
+                                 dataTable2[columnCounter][i] = null;  //use null reference to indicate missing value in data that is passed to UNF
                                 if (isDateTimeDatum){
                                     dataRow[columnCounter] =  MissingValueForTextDataFileString;
-                                    dataTable2[columnCounter][i] = "";
                                 } else {
                                     dataRow[columnCounter] = MissingValueForTextDataFileNumeric;
-                                    dataTable2[columnCounter][i] = Float.NaN;
                                 }
                                 
                             } else {
@@ -1432,14 +1428,13 @@ public class DTAFileReader extends StatDataFileReader{
 //                            dbgLog.finer("double_datum="+double_datum_hex);
 
                             if (DOUBLE_MISSING_VALUE_SET.contains(double_datum)){
+                                dataTable2[columnCounter][i] = null;  //use null reference to indicate missing value in data that is passed to UNF
                                 dbgLog.finer(i+"-th row "+columnCounter+
                                     "=th column double missing value="+double_datum);
                                 if (isDateTimeDatum){
-                                    dataRow[columnCounter] =  MissingValueForTextDataFileString;
-                                    dataTable2[columnCounter][i] = "";
+                                    dataRow[columnCounter] =  MissingValueForTextDataFileString;                                
                                 } else {
-                                    dataRow[columnCounter] =  MissingValueForTextDataFileNumeric;
-                                    dataTable2[columnCounter][i] = Double.NaN;
+                                    dataRow[columnCounter] =  MissingValueForTextDataFileNumeric;                                   
                                 }
                             } else {
 
@@ -1486,7 +1481,7 @@ public class DTAFileReader extends StatDataFileReader{
                                 dbgLog.finer(i+"-th row "+columnCounter+
                                     "=th column string missing value="+string_datum);
                                 dataRow[columnCounter] =  MissingValueForTextDataFileString;
-                                dataTable2[columnCounter][i] = "";
+                                dataTable2[columnCounter][i] = null;  //use null reference to indicate missing value in data that is passed to UNF
                             } else {
                                 dataRow[columnCounter] = string_datum;
                                 dataTable2[columnCounter][i] = string_datum;
@@ -2032,15 +2027,18 @@ public class DTAFileReader extends StatDataFileReader{
                 // Byte case
                 dbgLog.fine("byte case");
 
-                byte[] bdata = ArrayUtils.toPrimitive(
-                        Arrays.asList(varData).toArray(new Byte[varData.length]));
+                Byte[] bdata = new Byte[varData.length];
+                for (int i = 0; i < varData.length; i++) {
+                    bdata[i] = (Byte)varData[i];
+                }
+        
 
-                unfValue = UNFUtil.calculateUNF(bdata, unfVersionNumber);
+                unfValue = UNFUtil.calculateUNF((Byte[] )bdata, unfVersionNumber);
 
                 smd.getSummaryStatisticsTable().put(variablePosition, 
-                    ArrayUtils.toObject(StatHelper.calculateSummaryStatistics(bdata)));
+                    ArrayUtils.toObject(StatHelper.calculateSummaryStatistics((Byte[] )bdata)));
 
-                catStat = StatHelper.calculateCategoryStatistics(bdata);
+                catStat = StatHelper.calculateCategoryStatistics((Byte[] )bdata);
                 smd.getCategoryStatisticsTable().put(variableNameList.get(variablePosition), catStat);
                 
                 break;
@@ -2049,11 +2047,13 @@ public class DTAFileReader extends StatDataFileReader{
                 dbgLog.fine("stata int case");
                 // note: 2-byte signed int, not java's int
 
-                short[] sdata = ArrayUtils.toPrimitive(
-                        Arrays.asList(varData).toArray(new Short[varData.length]));
-                unfValue = UNFUtil.calculateUNF(sdata, unfVersionNumber);
+               Short[] sdata = new Short[varData.length];
+                for (int i = 0; i < varData.length; i++) {
+                    sdata[i] = (Short)varData[i];
+                }
+               unfValue = UNFUtil.calculateUNF(sdata, unfVersionNumber);
 
-                smd.getSummaryStatisticsTable().put(variablePosition, 
+               smd.getSummaryStatisticsTable().put(variablePosition, 
                     ArrayUtils.toObject(StatHelper.calculateSummaryStatistics(sdata)));
 
                 catStat = StatHelper.calculateCategoryStatistics(sdata);
@@ -2063,10 +2063,12 @@ public class DTAFileReader extends StatDataFileReader{
             case -3:
                 // stata-Long (= java's int: 4 byte) case
                 dbgLog.fine("stata long case");
-                // note: 4-byte singed, not java's long
+                // note: 4-byte signed, not java's long
 
-                int[] idata = ArrayUtils.toPrimitive(
-                        Arrays.asList(varData).toArray(new Integer[varData.length]));
+                Integer[] idata = new Integer[varData.length];
+                for (int i=0; i< varData.length; i++) {
+                    idata[i]=(Integer)varData[i];
+                }
                 unfValue = UNFUtil.calculateUNF(idata, unfVersionNumber);
 
                 smd.getSummaryStatisticsTable().put(variablePosition, 
@@ -2079,8 +2081,10 @@ public class DTAFileReader extends StatDataFileReader{
                 // float case
                 dbgLog.fine("float case");
                 // note: 4-byte
-                float[] fdata = ArrayUtils.toPrimitive(
-                        Arrays.asList(varData).toArray(new Float[varData.length]));
+                Float[] fdata = new Float[varData.length];
+                for (int i =0; i<varData.length; i++) {
+                    fdata[i] = (Float)varData[i];
+                }
 
                 unfValue = UNFUtil.calculateUNF(fdata, unfVersionNumber);
 
@@ -2098,8 +2102,10 @@ public class DTAFileReader extends StatDataFileReader{
                 dbgLog.fine("double case");
                 // note: 8-byte
 
-                double[] ddata= ArrayUtils.toPrimitive(
-                        Arrays.asList(varData).toArray(new Double[varData.length]));
+                Double[] ddata= new Double[varData.length];
+                for (int i=0; i<varData.length; i++) {
+                    ddata[i] = (Double)varData[i];
+                }
                         
                 unfValue = UNFUtil.calculateUNF(ddata, unfVersionNumber);
                 
@@ -2115,8 +2121,10 @@ public class DTAFileReader extends StatDataFileReader{
             case  0:
                 // String case
                 dbgLog.fine("string case");
-                String[] strdata = Arrays.asList(varData).toArray(
-                        new String[varData.length]);
+                String[] strdata = new String[varData.length];
+                for(int i=0; i<varData.length; i++) {
+                    strdata[i] = (String)varData[i];
+                }
                     dbgLog.fine("strdata="+Arrays.deepToString(strdata));
                     unfValue = UNFUtil.calculateUNF(strdata, dateFormat, unfVersionNumber);
                 

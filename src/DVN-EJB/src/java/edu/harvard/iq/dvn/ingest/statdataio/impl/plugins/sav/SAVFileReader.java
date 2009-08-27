@@ -2486,7 +2486,8 @@ while(true ){
                                     variableFormatTypeList[el].equals("time")){
                                     dataLine.set(el, MissingValueForTextDataFileString);
                                 } else{
-                                    dataLine2.set(el, Double.toHexString(systemMissingValue));
+                                    // Set missing value to null for UNF calculation
+                                    dataLine2.set(el, null);
                                     //out.println("replaced="+el+"th element="+dataLine.get(el));
 
                                 }
@@ -2502,7 +2503,7 @@ while(true ){
                         for (int el : NaNlocationString){
 
                             if (dataLine.get(el).equals(MissingValueForTextDataFileString)){
-                               dataLine2.set(el, Double.toHexString(systemMissingValue));
+                               dataLine2.set(el, null);
                                 //out.println("replaced="+el+"th element="+dataLine.get(el));
                             }
                         }
@@ -3074,7 +3075,7 @@ while(true ){
                                 variableFormatTypeList[el].equals("time")){
                                 dataLine.set(el, MissingValueForTextDataFileString);
                             } else{
-                                dataLine2.set(el, Double.toHexString(systemMissingValue));
+                                dataLine2.set(el, null);
                                 //out.println("replaced="+el+"th element="+dataLine.get(el));
                             }
                         }
@@ -3089,7 +3090,7 @@ while(true ){
                     for (int el : NaNlocationString){
 
                         if (dataLine.get(el).equals(MissingValueForTextDataFileString)){
-                           dataLine2.set(el, Double.toHexString(systemMissingValue));
+                           dataLine2.set(el, null);
                             //out.println("replaced="+el+"th element="+dataLine.get(el));                            
 
                         }
@@ -3397,33 +3398,26 @@ while(true ){
                 // remove an unnecessary decimal point and 0-padding
                 // numeric (double) data are now String objects
 
-                dbgLog.fine("Integar case");
-                 long[] ldata = new long[varData.length];
-                    for (int i=0;i<varData.length;i++){
-                        //dbgLog.finer("double: i th case ="+i+" "+varData[i]);
-                        if ( (varData[i] == null) ||
-                             (varData[i].equals("NaN")) ||
-                             (varData[i].equals(""))  )
-                        {
-                            ldata[i] = Long.MAX_VALUE;
-                        } else {
-                            ldata[i] = Long.parseLong((String)varData[i]);
-                        }
+                dbgLog.fine("Integer case");
+
+                // Convert array of Strings to array of Longs
+                Long[] ldata = new Long[varData.length];
+                for (int i = 0; i < varData.length; i++) {
+                    if (varData[i] != null) {
+                        ldata[i] = new Long((String) varData[i]);
                     }
-
+                }
                 unfValue = UNFUtil.calculateUNF(ldata, unfVersionNumber);
-                dbgLog.finer("integer:unfValue="+unfValue);
+                dbgLog.finer("integer:unfValue=" + unfValue);
 
-                dbgLog.finer("sumstat:long case="+Arrays.deepToString(
+                dbgLog.finer("sumstat:long case=" + Arrays.deepToString(
                         ArrayUtils.toObject(StatHelper.calculateSummaryStatistics(ldata))));
 
                 smd.getSummaryStatisticsTable().put(variablePosition,
-                    ArrayUtils.toObject(StatHelper.calculateSummaryStatistics(ldata)));
+                        ArrayUtils.toObject(StatHelper.calculateSummaryStatistics(ldata)));
 
 
                 Map<String, Integer> catStat = StatHelper.calculateCategoryStatistics(ldata);
-                //out.println("catStat="+catStat);
-
                 smd.getCategoryStatisticsTable().put(variableNameList.get(variablePosition), catStat);
 
                 break;
@@ -3435,19 +3429,14 @@ while(true ){
                 // numeric (double) data are now String objects
 
                 dbgLog.finer("double case");
-                 double[] ddata = new double[varData.length];
-                    for (int i=0;i<varData.length;i++){
-                        //dbgLog.finer("double: i th case ="+i+" "+varData[i]);
-                        if ( (varData[i] == null) ||
-                             (varData[i].equals("NaN")) ||
-                             (varData[i].equals(""))  )
-                        {
-                            ddata[i] = Double.NaN;
-                        } else {
-                            ddata[i] =  Double.parseDouble((String)varData[i]);
-                        }
+             
+                 // Convert array of Strings to array of Doubles
+                Double[]  ddata = new Double[varData.length];
+                for (int i=0;i<varData.length;i++) {
+                    if (varData[i]!=null) {
+                        ddata[i] = new Double((String)varData[i]);
                     }
-
+                }
                 unfValue = UNFUtil.calculateUNF(ddata, unfVersionNumber);
                 dbgLog.finer("double:unfValue="+unfValue);
                 smd.getSummaryStatisticsTable().put(variablePosition,
@@ -3457,16 +3446,11 @@ while(true ){
             case  -1:
                 // String case
                 dbgLog.finer("string case");
-                //out.println("string data="+Arrays.deepToString(varData));
-                    for (int i=0;i<varData.length;i++){
-                        //dbgLog.fine("string: i ="+i+" "+varData[i]);
-                        if (varData[i] == null || ((String)varData[i]).equals("")){
-                            varData[i] = "";
-                        }
-                    }
+              
+           
                 String[] strdata = Arrays.asList(varData).toArray(
                     new String[varData.length]);
-                
+                dbgLog.finer("string array passed to calculateUNF: "+Arrays.deepToString(strdata));
                 unfValue = UNFUtil.calculateUNF(strdata, dateFormats, unfVersionNumber);
                 dbgLog.finer("string:unfValue="+unfValue);
 

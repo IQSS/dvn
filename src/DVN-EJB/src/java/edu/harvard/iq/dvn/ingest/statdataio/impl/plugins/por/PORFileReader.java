@@ -191,8 +191,6 @@ public class PORFileReader extends StatDataFileReader{
     
     boolean isCurrentVariableString = false;
     
-    Double systemMissingValue =Double.NaN;
-
 
     List<String> variableNameList = new ArrayList<String>();
     Map<String, String> variableLabelMap = new LinkedHashMap<String, String>();
@@ -1552,7 +1550,7 @@ public class PORFileReader extends StatDataFileReader{
                                 (datumString.equals(".")) ){
                                 
                                 datumString  = MissingValueForTextDataFileString;
-                                datumString2 = Double.toHexString(systemMissingValue);
+                                datumString2 = null;
                                 
 
                                 // add this index to NaN-to-NA-replacement sentinel
@@ -1610,7 +1608,7 @@ public class PORFileReader extends StatDataFileReader{
                                 //datumNumericBase10 = Double.toHexString(systemMissingValue);
                                 
                                 datumNumericBase10 = MissingValueForTextDataFileNumeric;
-                                datumNumeric2Base10 = Double.toHexString(systemMissingValue);
+                                datumNumeric2Base10 = null;
                                 
                                 
                                 isMissingValue = true;
@@ -1838,7 +1836,7 @@ public class PORFileReader extends StatDataFileReader{
                 // tab-delimited file
                 pwout.println(StringUtils.join(casewiseRecordForTabFile, "\t"));
 
-                
+                /*
                 if (NaNlocationNumeric.size() > 0){
                     // NA-String to NaN conversion
                     for (int el : NaNlocationNumeric){
@@ -1849,7 +1847,7 @@ public class PORFileReader extends StatDataFileReader{
                                 variableFormatTypeList[el].equals("time")){
                                 casewiseRecord[el]= MissingValueForTextDataFileString;
                             } else{ 
-                                casewiseRecord[el]= Double.toHexString(systemMissingValue);
+                                casewiseRecord[el]= null;
                             }
                             
                         }
@@ -1865,14 +1863,14 @@ public class PORFileReader extends StatDataFileReader{
                     for (int el : NaNlocationString){
                     
                         if (casewiseRecord[el].equals(MissingValueForTextDataFileString)){
-                           casewiseRecord[el]= Double.toHexString(systemMissingValue);
+                           casewiseRecord[el]= null;
                         }
                     }
                     dbgLog.finer(j+"-th:(after NA processing[S]):"+StringUtils.join(casewiseRecord, "\t"));
                     
                 }
                 dbgLog.finer(j+"-th:(after NA processing):"+StringUtils.join(casewiseRecord, "\t"));
-
+                */
 
                 // store the current case-holder object to the data object
                 // for later operations such as UNF/summary statistics
@@ -2282,13 +2280,9 @@ public class PORFileReader extends StatDataFileReader{
                 dbgLog.fine("integer case");
                 // data are stored as storing
 
-                long[] ldata = new long[varData.length];
+                Long[] ldata = new Long[varData.length];
                 for (int i=0;i<varData.length;i++){
-                    if (((String)varData[i]).equals("NaN")){
-                        ldata[i] = Long.MAX_VALUE;
-                    } else {
-                        ldata[i] = Long.parseLong((String)varData[i]);
-                    }
+                    ldata[i] = new Long((String)varData[i]);
                 }
 
                 unfValue = UNFUtil.calculateUNF(ldata, unfVersionNumber);
@@ -2312,12 +2306,12 @@ public class PORFileReader extends StatDataFileReader{
                 dbgLog.fine("double case");
                 // data are store as storing
 
-                double[] ddata = new double[varData.length];
+                Double[] ddata = new Double[varData.length];
                 for (int i=0;i<varData.length;i++){
                     if (((String)varData[i]).equals("NaN")){
                         ddata[i] = Double.NaN;
                     } else {
-                        ddata[i] =  Double.parseDouble((String)varData[i]);
+                        ddata[i] =  new Double((String)varData[i]);
                     }
                 }
 

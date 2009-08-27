@@ -276,8 +276,8 @@ public class UnfNumber<T extends Number> implements UnfCons {
         /**produces, by default, 16 byte digest: equivalent to md5_finish**/
         byte[] hash = md.digest();
         md.reset();
-        byte[] inthash = new byte[hash.length];
         byte[] v5hash = truncateHash(hash,v5bitsize[0]);
+        byte[] inthash = new byte[v5hash.length];
         for (k = 0; k < v5hash.length; ++k) {
             int h = (int) ((v5hash[k] & 0xFF));
             inthash[k] = (byte) h;

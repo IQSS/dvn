@@ -61,7 +61,7 @@ public class UnfDigest implements UnfCons {
     private static final double lastVersion = 4.1d;
     /** current version */
    //private static float currentVersion = 3f;
-    private static String currentVersion = "3";
+    private static String currentVersion = "5";
     /** the MessageDigest algor associated with current version*/
     private static final String algor3 = "MD5";
     /** the MessageDigest algor associated with lastVersion*/
@@ -559,7 +559,7 @@ public class UnfDigest implements UnfCons {
 
             if (res.length >= 3 && str.startsWith("UNF:")) {
                 mLog.finer("toadd..." + res[1]);
-                combo.add(res[2].trim());
+                combo.add(res[res.length - 1].trim());
             } else {
                 mLog.finer("toadd..." + res[0]);
                 combo.add(res[0].trim());

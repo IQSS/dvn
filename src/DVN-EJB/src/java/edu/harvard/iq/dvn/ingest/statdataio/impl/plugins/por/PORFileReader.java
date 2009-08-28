@@ -1459,9 +1459,7 @@ public class PORFileReader extends StatDataFileReader{
         List<String[]> dateFormatList = new ArrayList<String[]>();
 
         int StringLengthBase10=0;
-        // Sets for NA-string-to-NaN conversion
-        Set<Integer> NaNlocationNumeric = new LinkedHashSet<Integer>();
-        Set<Integer> NaNlocationString = new LinkedHashSet<Integer>();
+
         
         try{
             // use while instead for because the number of cases (observations) is usually unknown
@@ -1552,9 +1550,6 @@ public class PORFileReader extends StatDataFileReader{
                                 datumString  = MissingValueForTextDataFileString;
                                 datumString2 = null;
                                 
-
-                                // add this index to NaN-to-NA-replacement sentinel
-                                NaNlocationString.add(i);
                             }
                             
                             
@@ -1612,8 +1607,7 @@ public class PORFileReader extends StatDataFileReader{
                                 
                                 
                                 isMissingValue = true;
-                                // add this index to NaN-to-NA-replacement sentinel
-                                 NaNlocationNumeric.add(i);
+
 
                                 
                                 // read next char '.' as part of the missing value
@@ -1836,51 +1830,11 @@ public class PORFileReader extends StatDataFileReader{
                 // tab-delimited file
                 pwout.println(StringUtils.join(casewiseRecordForTabFile, "\t"));
 
-                /*
-                if (NaNlocationNumeric.size() > 0){
-                    // NA-String to NaN conversion
-                    for (int el : NaNlocationNumeric){
-                    
-                        if (casewiseRecord[el].equals(MissingValueForTextDataFileNumeric)){
-
-                            if (variableFormatTypeList[el].equals("date") ||
-                                variableFormatTypeList[el].equals("time")){
-                                casewiseRecord[el]= MissingValueForTextDataFileString;
-                            } else{ 
-                                casewiseRecord[el]= null;
-                            }
-                            
-                        }
-            
-                    }
-                    dbgLog.finer(j+"-th:(after NA processing[N]):"+StringUtils.join(casewiseRecord, "\t"));
-                    
-                }
-                
-                
-                if (NaNlocationString.size() > 0){
-                    // NaN-String to NaN conversion
-                    for (int el : NaNlocationString){
-                    
-                        if (casewiseRecord[el].equals(MissingValueForTextDataFileString)){
-                           casewiseRecord[el]= null;
-                        }
-                    }
-                    dbgLog.finer(j+"-th:(after NA processing[S]):"+StringUtils.join(casewiseRecord, "\t"));
-                    
-                }
-                dbgLog.finer(j+"-th:(after NA processing):"+StringUtils.join(casewiseRecord, "\t"));
-                */
-
                 // store the current case-holder object to the data object
                 // for later operations such as UNF/summary statistics
                 dataTableList.add(casewiseRecord);
                 dateFormatList.add(dateFormatTemp);
-
-                // reset the case-wise working objects
-                
-                NaNlocationNumeric.clear();
-                NaNlocationString.clear();
+;
 
             } // end: while-block
 
@@ -2308,7 +2262,7 @@ public class PORFileReader extends StatDataFileReader{
 
                 Double[] ddata = new Double[varData.length];
                 for (int i=0;i<varData.length;i++){
-                    if (((String)varData[i]).equals("NaN")){
+                    if (varData[i] != null && ((String)varData[i]).equals("NaN")){
                         ddata[i] = Double.NaN;
                     } else {
                         ddata[i] =  new Double((String)varData[i]);

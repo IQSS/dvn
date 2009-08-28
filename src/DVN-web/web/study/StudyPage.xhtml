@@ -153,7 +153,7 @@
           </div>
           <div jsfc="ice:panelGroup" styleClass="dvn_sectionTitleLinksR" rendered="#{studyPage.studyUI.userAuthorizedToEdit or studyPage.studyUI.study.inReview or studyPage.studyUI.study.new}">
             <ice:outputText styleClass="vdcStudyStatus" value="Currently unavailable for editing because file upload is in progress." rendered="#{studyPage.studyUI.userAuthorizedToEdit and !(studyPage.studyUI.study.studyLock==null)}"/>
-            <ice:outputLink styleClass="vdcStudyStatus" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=#{studyPage.tab}#{vdcRequest.studyListingIndexAsParameter}" rendered="#{studyPage.studyUI.userAuthorizedToEdit and !(studyPage.studyUI.study.studyLock==null)}">
+            <ice:outputLink styleClass="vdcStudyStatus" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=#{studyPage.tab}#{VDCRequest.studyListingIndexAsParameter}" rendered="#{studyPage.studyUI.userAuthorizedToEdit and !(studyPage.studyUI.study.studyLock==null)}">
                 <ice:outputText nospan="true" value="Refresh"/>
             </ice:outputLink>
             <div jsfc="ice:panelGroup" styleClass="dvn_tooltip" rendered="#{studyPage.studyUI.userAuthorizedToEdit and studyPage.studyUI.study.studyLock==null}">
@@ -668,7 +668,7 @@
                                               <ice:outputText value="View Data Citation [+]"/>
                                           </ice:outputLink>
                                           <div jsfc="ice:panelGroup" style="display: none;">
-                                              <ice:outputText escape="false" value="#{studyPage.studyUI.study.citation} #{studyFileUI.studyFile.fileName} [fileDscr/fileName (DDI)]"/>
+                                              <ice:outputText escape="false" value="#{studyPage.studyUI.study.citation} #{studyFileUI.studyFile.fileName} [fileDscr/fileName (DDI)] #{studyFileUI.studyFile.unf}"/>
                                           </div>
                                       </div>
                                     </ice:column>

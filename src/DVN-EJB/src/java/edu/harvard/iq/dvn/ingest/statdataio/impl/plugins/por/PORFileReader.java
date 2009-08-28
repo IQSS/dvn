@@ -2262,10 +2262,12 @@ public class PORFileReader extends StatDataFileReader{
 
                 Double[] ddata = new Double[varData.length];
                 for (int i=0;i<varData.length;i++){
-                    if (varData[i] != null && ((String)varData[i]).equals("NaN")){
-                        ddata[i] = Double.NaN;
-                    } else {
-                        ddata[i] =  new Double((String)varData[i]);
+                    if (varData[i] != null) {
+                        if (((String)varData[i]).equals("NaN")){
+                            ddata[i] = Double.NaN;
+                        } else {
+                            ddata[i] =  new Double((String)varData[i]);
+                        }
                     }
                 }
 

@@ -2236,7 +2236,9 @@ public class PORFileReader extends StatDataFileReader{
 
                 Long[] ldata = new Long[varData.length];
                 for (int i=0;i<varData.length;i++){
-                    ldata[i] = new Long((String)varData[i]);
+                    if (varData[i] != null) {
+                        ldata[i] = new Long((String)varData[i]);
+                    }
                 }
 
                 unfValue = UNFUtil.calculateUNF(ldata, unfVersionNumber);

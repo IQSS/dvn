@@ -393,7 +393,7 @@ public class UnfDigest implements UnfCons {
         if (signature != null){
             buildclass = true;
         } else{
-            signature = new UnfClass(ndg,128,currentVersion);
+            signature = new UnfClass(DEF_CDGTS, ndg,currentVersion);
         }
 
         b64 = "UNF:" + getVersion() + getExtensions(signature) + ":" + b64;
@@ -480,7 +480,7 @@ public class UnfDigest implements UnfCons {
         if (signature != null){
             buildclass = true;
         } else{
-            signature = new UnfClass(7,cdg,currentVersion);
+            signature = new UnfClass(cdg,DEF_NDGTS,currentVersion);
         }
         b64 = "UNF:" + getVersion() + getExtensions(signature) + ":" + b64;
         if (buildunfObj && buildclass) {
@@ -582,7 +582,7 @@ public class UnfDigest implements UnfCons {
         String[] sortedb64 = new String[ln];
         sortedb64 = combo.toArray(new String[ln]);
         //do not update the signature but just return the calculated unf
-        String fin = unfV(sortedb64, 256, currentVersion, null);
+        String fin = unfV(sortedb64, DEF_CDGTS, currentVersion, null);
         return fin;
     }
 }

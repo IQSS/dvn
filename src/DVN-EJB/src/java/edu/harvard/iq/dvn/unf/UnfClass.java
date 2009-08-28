@@ -38,9 +38,9 @@ import java.util.List;
 public class UnfClass {
 
     /** approximate with cdigits number of characters */
-    private int cdigits = 128;
+    private int cdigits = UnfCons.DEF_CDGTS;
     /** approximate with (ndigits-1) after decimal point*/
-    private int ndigits = 7;
+    private int ndigits = UnfCons.DEF_NDGTS;
     /**
      * contains the fingerprint (byte array) from MessageDigest
      * for every column of data matrix
@@ -83,10 +83,10 @@ public class UnfClass {
         ndigits = nd;
         version = vers;
         if (vers.startsWith("5")) {
-            if (cd != 128) {
+            if (cd != UnfCons.DEF_CDGTS) {
                 addExtension("X" + cd);
             }
-            if (nd != 7) {
+            if (nd != UnfCons.DEF_NDGTS) {
                 addExtension("N"+nd);
             }
             addExtension("H128"); // TODO this is used on dvn, but may not be the default- needs more attention

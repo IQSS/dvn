@@ -2515,14 +2515,15 @@ while(true ){
                     //out.println(caseIndex+"-th case:(after NA processing):"+StringUtils.join(dataLine, "\t")+"\n\n");
                     
                     
-                    
-                    for (int ij=0; ij<varQnty;ij++ ){
-                        if (variableFormatTypeList[ij].equals("date") ||
-                            variableFormatTypeList[ij].equals("time")){
-                            this.dateFormats[ij][caseIndex-1] = dateFormatLine[ij];
-                            dataTable2[ij][caseIndex-1] = dataLine.get(ij);
-                        } else {
-                            dataTable2[ij][caseIndex-1] = dataLine2.get(ij);
+                    if (dataLine.size()>0) {
+                        for (int ij=0; ij<varQnty;ij++ ){
+                            if (variableFormatTypeList[ij].equals("date") ||
+                                variableFormatTypeList[ij].equals("time")){
+                                this.dateFormats[ij][caseIndex-1] = dateFormatLine[ij];
+                                dataTable2[ij][caseIndex-1] = dataLine.get(ij);
+                            } else {
+                                dataTable2[ij][caseIndex-1] = dataLine2.get(ij);
+                            }
                         }
                     }
                     
@@ -3100,13 +3101,14 @@ while(true ){
                 
                 //out.println(caseIndex+"-th case:(after NA processing):"+StringUtils.join(dataLine, "\t")+"\n\n");
                 
-                
-                for (int ij=0; ij<varQnty;ij++ ){
-                    if (variableFormatTypeList[ij].equals("date") ||
-                        variableFormatTypeList[ij].equals("time")){
-                        dataTable2[ij][caseIndex-1] = dataLine.get(ij);
-                    } else {
-                        dataTable2[ij][caseIndex-1] = dataLine2.get(ij);
+                if (dataLine.size()>0) {
+                    for (int ij=0; ij<varQnty;ij++ ){
+                        if (variableFormatTypeList[ij].equals("date") ||
+                            variableFormatTypeList[ij].equals("time")){
+                            dataTable2[ij][caseIndex-1] = dataLine.get(ij);
+                        } else {
+                            dataTable2[ij][caseIndex-1] = dataLine2.get(ij);
+                        }
                     }
                 }
                 

@@ -41,6 +41,7 @@ public class UnfClass {
     private int cdigits = UnfCons.DEF_CDGTS;
     /** approximate with (ndigits-1) after decimal point*/
     private int ndigits = UnfCons.DEF_NDGTS;
+    private int hsize;
     /**
      * contains the fingerprint (byte array) from MessageDigest
      * for every column of data matrix
@@ -93,6 +94,24 @@ public class UnfClass {
         }
     }
 
+    public UnfClass(int cd, int nd, int hsz, String vers) {
+        cdigits = cd;
+        ndigits = nd;
+        hsize = hsz;
+        version = vers;
+        if (vers.startsWith("5")) {
+            if (cd != UnfCons.DEF_CDGTS) {
+                addExtension("X" + cd);
+            }
+            if (nd != UnfCons.DEF_NDGTS) {
+                addExtension("N"+nd);
+            }
+            if (hsz != UnfCons.DEF_HSZ){
+                addExtension("H"+hsz);
+            }
+        }
+    }
+
     /**
      * Constructor
      * @param cd integer with number of characters
@@ -103,6 +122,12 @@ public class UnfClass {
      */
     public UnfClass(int cd, int nd, String vers, String md, String enc) {
         this(cd, nd, vers);
+        mdalgor = md;
+        encoding = enc;
+    }
+
+    public UnfClass(int cd, int nd, int hsz, String vers, String md, String enc) {
+        this(cd, nd, hsz, vers);
         mdalgor = md;
         encoding = enc;
     }
@@ -260,6 +285,20 @@ public class UnfClass {
         } else{
             setExtensions(getExtensions() + ext);
         }
+    }
+
+    /**
+     * @return the hsize
+     */
+    public int getHsize() {
+        return hsize;
+    }
+
+    /**
+     * @param hsize the hsize to set
+     */
+    public void setHsize(int hsize) {
+        this.hsize = hsize;
     }
 
 }

@@ -263,8 +263,9 @@ public class UnfDigest implements UnfCons {
         }
         String algor = (Float.parseFloat(vers.substring(0, 1)) <= 3) ? algor3 : algor4;
         String enc = (Float.parseFloat(vers.substring(0, 1)) <= 4) ? encod3y4 : encod4p1;
+        int hsz = 128; // TODO default for dvn only
         if (buildunfObj) {
-            signature = new UnfClass(cdigits, ndigits, getVersion(), algor, enc);
+            signature = new UnfClass(cdigits, ndigits, hsz, getVersion(), algor, enc);
         }
 
         String[] res = new String[nrow];
@@ -336,8 +337,9 @@ public class UnfDigest implements UnfCons {
         }
         String algor = (Float.parseFloat(vers) <= 3) ? algor3 : algor4;
         String enc = (Float.parseFloat(vers) <= 4) ? encod3y4 : encod4p1;
+        int hsz = 128; // TODO default for dvn only
         if (buildunfObj) {
-            signature = new UnfClass(cdigits, ndigits, getVersion(), algor, enc);
+            signature = new UnfClass(cdigits, ndigits, hsz, getVersion(), algor, enc);
         }
         String[] res = new String[nrow];
         for (int r = 0; r < nrow; r++) {
@@ -360,7 +362,8 @@ public class UnfDigest implements UnfCons {
     public static <T extends Number> String unfV(final T[] obj, int ndg) throws
             NoSuchAlgorithmException, UnsupportedEncodingException,
             IOException, UnfException {
-        signature = new UnfClass(DEF_CDGTS, ndg, getVersion());
+        int hsz = 128;
+        signature = new UnfClass(DEF_CDGTS, ndg, hsz, getVersion());
         return unfV(obj, ndg, currentVersion, signature);
     }
 
@@ -393,7 +396,8 @@ public class UnfDigest implements UnfCons {
         if (signature != null){
             buildclass = true;
         } else{
-            signature = new UnfClass(DEF_CDGTS, ndg,currentVersion);
+            int hsz = 128;
+            signature = new UnfClass(DEF_CDGTS, ndg, hsz, currentVersion);
         }
 
         b64 = "UNF:" + getVersion() + getExtensions(signature) + ":" + b64;
@@ -443,7 +447,8 @@ public class UnfDigest implements UnfCons {
     public static <T extends CharSequence> String unfV(final T[] obj, int cdg) throws
             NoSuchAlgorithmException, UnsupportedEncodingException,
             IOException, UnfException {
-        signature = new UnfClass(cdg, DEF_NDGTS, getVersion());
+        int hsz = 128;
+        signature = new UnfClass(cdg, DEF_NDGTS, hsz, getVersion());
         return unfV(obj, cdg, currentVersion, signature);
     }
 
@@ -480,7 +485,8 @@ public class UnfDigest implements UnfCons {
         if (signature != null){
             buildclass = true;
         } else{
-            signature = new UnfClass(cdg,DEF_NDGTS,currentVersion);
+            int hsz = 128;
+            signature = new UnfClass(cdg,DEF_NDGTS,hsz,currentVersion);
         }
         b64 = "UNF:" + getVersion() + getExtensions(signature) + ":" + b64;
         if (buildunfObj && buildclass) {

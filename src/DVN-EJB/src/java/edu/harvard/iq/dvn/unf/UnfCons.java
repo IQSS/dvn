@@ -35,6 +35,8 @@ public interface UnfCons {
     /**number of characters approximation*/
     static int DEF_CDGTS = 128;
 
+    static int DEF_HSZ = 256;
+
     /**bounds for min and max decimal digits and decimal point */
     static int[] NDGTS_BNDS = {1, 15};
 

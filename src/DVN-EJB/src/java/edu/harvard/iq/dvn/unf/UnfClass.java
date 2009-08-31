@@ -256,7 +256,7 @@ public class UnfClass {
 
     public void addExtension(String ext){
         if (getExtensions().length()>0){
-            setExtensions(getExtensions() + getExtensions() + "," + ext);
+            setExtensions(getExtensions()  + "," + ext);
         } else{
             setExtensions(getExtensions() + ext);
         }

@@ -467,7 +467,7 @@ public class DTAFileReader extends StatDataFileReader{
      * The <code>String</code> that represents the string missing value 
      * for a tab-delimited data file, initially "".
      */
-    String MissingValueForTextDataFileString = "";
+    String MissingValueForTextDataFileString = ".";
 
     /**
      * Returns the value of the
@@ -1483,7 +1483,8 @@ public class DTAFileReader extends StatDataFileReader{
                                 dataRow[columnCounter] =  MissingValueForTextDataFileString;
                                 dataTable2[columnCounter][i] = null;  //use null reference to indicate missing value in data that is passed to UNF
                             } else {
-                                dataRow[columnCounter] = string_datum;
+                                String escapedString = string_datum.replaceAll("\"",Matcher.quoteReplacement("\\\"")) ;
+                                dataRow[columnCounter] = "\""+escapedString+"\"";
                                 dataTable2[columnCounter][i] = string_datum;
                             }
                             byte_offset +=strVarLength;

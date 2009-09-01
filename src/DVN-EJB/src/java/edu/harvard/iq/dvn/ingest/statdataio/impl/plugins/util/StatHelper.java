@@ -120,13 +120,11 @@ public class StatHelper {
     public static Map<String, Integer>getFrequencyTable(Number[] x){
         Map<String, Integer> tbl = new TreeMap<String, Integer>();
         for (Number entry : x) {
-            String sentry;
-            if (entry == null) {
-                sentry = ".";
-            } else {
-                sentry = String.valueOf(entry);
+            if (entry == null || entry.toString().equals("NaN")) {
+                continue;
             }
 
+            String sentry = String.valueOf(entry);
             Integer freq = tbl.get(sentry);
             tbl.put(sentry, (freq == null ? 1 : freq + 1));
         }
@@ -216,7 +214,7 @@ public class StatHelper {
 
         String[] nx = new String[3];
         //( "vald", "invd", "mode")
-        int validcases = (removeEmptyElements(x)).length;
+        int validcases = (removeNullElements(x)).length;
 
         nx[0] = Integer.toString(validcases);  // valid responses
         nx[1] = Integer.toString((x.length - validcases)); // invalid responses
@@ -266,10 +264,10 @@ public class StatHelper {
      * @param x     a String array
      * @return      a String array
      */
-    private static String[] removeEmptyElements(String[] x){
+    private static String[] removeNullElements(String[] x){
         List<String> sl = new ArrayList<String>();
         for (String s : x){
-            if (!StringUtils.isEmpty(s)){
+            if (s != null){
                 sl.add(s);
             }
         }
@@ -350,7 +348,7 @@ public class StatHelper {
      */
     public static String getMode(String[] x){
         String mode = null;
-        int nobs = removeEmptyElements(x).length;
+        int nobs = removeNullElements(x).length;
         if ((nobs == 0) || (nobs == x.length)) {
             mode ="";
         } else {

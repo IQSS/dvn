@@ -285,13 +285,8 @@ public class SAVFileReader extends StatDataFileReader{
     
     int varQnty=0;
 
-    Double systemMissingValue =Double.NaN;
-    
-//    String NA_String = "NA";
 
-// Commented out these values because they're not used. - EK
-//  String StringMissingValue =" ";
-//    String NumericMissingValue=".";
+
 
 
     Map<String, String> OBStypeIfomation = new LinkedHashMap<String, String>();
@@ -371,7 +366,7 @@ public class SAVFileReader extends StatDataFileReader{
      * The <code>String</code> that represents the string missing value 
      * for a tab-delimited data file, initially "".
      */
-    String MissingValueForTextDataFileString = "";
+    String MissingValueForTextDataFileString = ".";
 
     /**
      * Returns the value of the
@@ -454,7 +449,7 @@ public class SAVFileReader extends StatDataFileReader{
 
             } catch (InvocationTargetException e) {
                 Throwable cause = e.getCause();
-                err.format(cause.getMessage());
+            //    err.format(cause.getMessage());
                 e.printStackTrace();
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
@@ -2029,7 +2024,6 @@ while(true ){
 
         // Sets for NA-string-to-NaN conversion
         Set<Integer> NaNlocationNumeric = new LinkedHashSet<Integer>();
-        Set<Integer> NaNlocationString = new LinkedHashSet<Integer>();
         // missing values are written to the tab-delimited file by
         // using the default or user-specified missing-value  strings;
         // however, to calculate UNF/summary statistics,
@@ -2054,16 +2048,9 @@ while(true ){
 
             byte[] octate = new byte[LENGTH_SAV_OBS_BLOCK];
 
-            Object[] dataRow = new Object[varQnty];
-
-
             int nbytes = stream.read(octate);
 
-            String dphex = new String(Hex.encodeHex(octate));
-            //dbgLog.finer("dphex="+ dphex);
-
-            
-            for (int i = 0; i < LENGTH_SAV_OBS_BLOCK; i++) {
+             for (int i = 0; i < LENGTH_SAV_OBS_BLOCK; i++) {
 
                 dbgLog.finer("i="+i+"-th iteration");
                 int octate_i = octate[i];
@@ -2139,7 +2126,8 @@ while(true ){
                         // 20 20 20 20 20 20 20 20
                         // add the string missing value
                         // out.println("254: String missing data");
-                        dataLine.add(" ");
+                        dataLine.add(" ");  // add "." here?
+
  
                         break;
                     case 255:
@@ -2268,7 +2256,7 @@ while(true ){
                     } // end-if: stringContinuousVar-exist case
 
                     for (int el=0; el< dataLine.size(); el++){
-                        dataLine2.add(new String(dataLine.get(el)));
+                        dataLine2.add(dataLine.get(el));
                     }
                     dateFormatLine = new String[dataLine.size()];
                     // caseIndex starts from 1 not 0
@@ -2302,17 +2290,14 @@ while(true ){
                             if (trimmed.equals(".")){
                                 // missing value
                                 // old dataLine.set(k, StringMissingValue);
-                                dataLine.set(k, MissingValueForTextDataFileString);
+                                dataLine.set(k, null);
 
-                                // add this index to NaN-to-NA-replacement sentinel
-                                NaNlocationString.add(k);
                             } else if (dataLine.get(k).equals(" ") && trimmed.equals("")) {
                                 // space-missing value
                                 // old dataLine.set(k, StringMissingValue);
-                                dataLine.set(k, MissingValueForTextDataFileString);
+                                dataLine.set(k, null);
 
-                                // add this index to NaN-to-NA-replacement sentinel
-                                NaNlocationString.add(k);
+                               
                             } else {
                                 // padding removed
                                 String paddRemoved = StringUtils.stripEnd(dataLine.get(k).toString(), null);
@@ -2321,7 +2306,7 @@ while(true ){
                             } 
                             
                             // deep-copy the above change to dataLine2 for stats
-                            dataLine2.set(k,new String(dataLine.get(k)));
+                            dataLine2.set(k,dataLine.get(k));
                             
                             // end of String var case
                         
@@ -2335,15 +2320,11 @@ while(true ){
                             
                         } // end of variable-type check
                         
-                        
-                        //out.println("NaNlocationNumeric="+NaNlocationNumeric);
-                        //out.println("NaNlocationString="+NaNlocationString);
-
+                 
                         
                         // old if (!dataLine.get(k).equals("NaN")){
-                        if (!dataLine.get(k).equals(MissingValueForTextDataFileNumeric)){
+                        if (dataLine.get(k)!=null && !dataLine.get(k).equals(MissingValueForTextDataFileNumeric)){
                         
-// to do date conversion
                             String variableFormatType = variableFormatTypeList[k];
                             dbgLog.finer("k="+k+"th printFormatTable format="+printFormatTable.get(variableNameList.get(k)));
                             
@@ -2465,12 +2446,23 @@ while(true ){
                     
                     } // end: loop-k(2nd: variable-wise-check)
                     
-                    // dump the line to the tab-delimited file first
-                    // then replace the missing value token with those for
-                    // calculating UNF/summary statistic
-                    // dbgLog.finer("tab-data: caseIndex="+caseIndex+"-th:"+StringUtils.join(dataLine, "\t"));
 
-                    pwout.println(StringUtils.join(dataLine, "\t"));
+
+                    //
+                    //  For the Tab file, do special String processing -
+                    //  If the String is null, set it to missingValue,
+                    //  else escape quotes within the string and add quotes around the string
+                    //
+                    List<String> tabDataLine = new ArrayList<String>();
+                    for (int e=0;e<dataLine.size();e++) {
+                        if (variableTypeFinal[e] ==-1) {
+                            tabDataLine.add (dataLine.get(e)==null ? this.MissingValueForTextDataFileString : "\"" + dataLine.get(e).replaceAll("\"",Matcher.quoteReplacement("\\\""))) ;
+                        }
+                        else {
+                            tabDataLine.add(dataLine.get(e));
+                        }
+                    }
+                    pwout.println(StringUtils.join(tabDataLine, "\t"));
                     
                     // replace NA-strings for a tab-limited file with
                     // those for UNF/summaryStatistics 
@@ -2485,6 +2477,7 @@ while(true ){
                                 if (variableFormatTypeList[el].equals("date") ||
                                     variableFormatTypeList[el].equals("time")){
                                     dataLine.set(el, MissingValueForTextDataFileString);
+                                    dataLine2.set(el,null);
                                 } else{
                                     // Set missing value to null for UNF calculation
                                     dataLine2.set(el, null);
@@ -2497,24 +2490,7 @@ while(true ){
                         //out.println(caseIndex+"-th case:(after NA processing[N]):"+StringUtils.join(dataLine, "\t"));
 
                     }
-                    // string variable
-                    if (NaNlocationString.size() > 0){
-                        // NaN-String to NaN conversion
-                        for (int el : NaNlocationString){
-
-                            if (dataLine.get(el).equals(MissingValueForTextDataFileString)){
-                               dataLine2.set(el, null);
-                                //out.println("replaced="+el+"th element="+dataLine.get(el));
-                            }
-                        }
-                        //out.println(caseIndex+"-th case:(after NA processing[S]):"+StringUtils.join(dataLine, "\t"));
-
-                    }
-                    
-                    
-                    //out.println(caseIndex+"-th case:(after NA processing):"+StringUtils.join(dataLine, "\t")+"\n\n");
-                    
-                    
+                   
                     if (dataLine.size()>0) {
                         for (int ij=0; ij<varQnty;ij++ ){
                             if (variableFormatTypeList[ij].equals("date") ||
@@ -2531,6 +2507,7 @@ while(true ){
                     for (int l=0;l< dataLine.size();l++){
                         if (variableTypeFinal[l]==0){
                             if (dataLine.get(l).toString().indexOf(".") >=0){
+                                // TODO - check for large numbers
                                 // l-th variable is not integer
                                 variableTypeFinal[l]=1;
                                 numberOfDecimalVariables++;
@@ -2541,7 +2518,6 @@ while(true ){
                     // reset the case-wise working objects
 
                     NaNlocationNumeric.clear();
-                    NaNlocationString.clear();
                     dataLine.clear();
                     dataLine2.clear();
                     if (hasReachedEOF){
@@ -2688,7 +2664,6 @@ while(true ){
         
         // Sets for NA-string-to-NaN conversion
         Set<Integer> NaNlocationNumeric = new LinkedHashSet<Integer>();
-        Set<Integer> NaNlocationString = new LinkedHashSet<Integer>();
         
         // data-storage object for sumStat
         dataTable2 = new Object[varQnty][caseQnty];
@@ -2857,7 +2832,7 @@ while(true ){
                 } // end-if: stringContinuousVar-exist case
 
                 for (int el=0; el< dataLine.size(); el++){
-                    dataLine2.add(new String(dataLine.get(el)));
+                    dataLine2.add(dataLine.get(el));
                 }
                 
                 caseIndex++;
@@ -2887,19 +2862,12 @@ while(true ){
 
                         if (trimmed.equals(".")){
                             // missing value
-                            // old dataLine.set(k, StringMissingValue);
-                            dataLine.set(k, MissingValueForTextDataFileString);
-
-                            // add this index to NaN-to-NA-replacement sentinel
-                            NaNlocationString.add(k);
-
-                         } else if (dataLine.get(k).equals(" ") && trimmed.equals("")) {
+                          
+                            dataLine.set(k, null);
+                        } else if (dataLine.get(k).equals(" ") && trimmed.equals("")) {
                             // space-missing value
-                            // old dataLine.set(k, StringMissingValue);
-                            dataLine.set(k, MissingValueForTextDataFileString);
-
-                            // add this index to NaN-to-NA-replacement sentinel
-                            NaNlocationString.add(k);
+                      
+                            dataLine.set(k, null);
 
                         } else {
                             // padding removed
@@ -2909,7 +2877,7 @@ while(true ){
                         }
                         
                         // deep-copy the above change to dataLine2 for stats
-                        dataLine2.set(k,new String(dataLine.get(k)));
+                        dataLine2.set(k,dataLine.get(k));
                         
                         // end of String var case
 
@@ -2927,7 +2895,7 @@ while(true ){
                     //out.println("NaNlocationString="+NaNlocationString);
 
                     
-                    if (!dataLine.get(k).equals(MissingValueForTextDataFileNumeric)){
+                    if (dataLine.get(k)!=null && !dataLine.get(k).equals(MissingValueForTextDataFileNumeric)){
                         
 // to do date conversion
                         String variableFormatType =  variableFormatTypeList[k];
@@ -3054,14 +3022,22 @@ while(true ){
                 } // end: loop-k(2nd: variablte-wise-check)
 
 
+                //
+                    //  For the Tab file, do special String processing -
+                    //  If the String is null, set it to missingValue,
+                    //  else escape quotes within the string and add quotes around the string
+                    //
+                    List<String> tabDataLine = new ArrayList<String>();
+                    for (int e=0;e<dataLine.size();e++) {
+                        if (variableTypeFinal[e] ==-1) {
+                            tabDataLine.add (dataLine.get(e)==null ? this.MissingValueForTextDataFileString : "\"" + dataLine.get(e).replaceAll("\"",Matcher.quoteReplacement("\\\""))) ;
+                        }
+                        else {
+                            tabDataLine.add(dataLine.get(e));
+                        }
+                    }
+                    pwout.println(StringUtils.join(tabDataLine, "\t"));
 
-                // dump the line to the tab-delimited file first
-                // then replace the missing value token with those for
-                // calculating UNF/summary statistic
-                // dbgLog.finer("tab-data: caseIndex="+caseIndex+"-th:"+StringUtils.join(dataLine, "\t"));
-
-                pwout.println(StringUtils.join(dataLine, "\t"));
-                
                 // replace NA-strings for a tab-limited file with
                 // those for UNF/summaryStatistics 
                 // numeric variable
@@ -3074,7 +3050,7 @@ while(true ){
                         
                             if (variableFormatTypeList[el].equals("date") ||
                                 variableFormatTypeList[el].equals("time")){
-                                dataLine.set(el, MissingValueForTextDataFileString);
+                                dataLine.set(el, null);
                             } else{
                                 dataLine2.set(el, null);
                                 //out.println("replaced="+el+"th element="+dataLine.get(el));
@@ -3085,19 +3061,7 @@ while(true ){
                     //out.println(caseIndex+"-th case:(after NA processing[N]):"+StringUtils.join(dataLine, "\t"));
 
                 }
-                // string variable
-                if (NaNlocationString.size() > 0){
-                    // NaN-String to NaN conversion
-                    for (int el : NaNlocationString){
-
-                        if (dataLine.get(el).equals(MissingValueForTextDataFileString)){
-                           dataLine2.set(el, null);
-                            //out.println("replaced="+el+"th element="+dataLine.get(el));                            
-
-                        }
-                    }
-                    //out.println(caseIndex+"-th case:(after NA processing[S]):"+StringUtils.join(dataLine, "\t"));
-                }
+               
                 
                 //out.println(caseIndex+"-th case:(after NA processing):"+StringUtils.join(dataLine, "\t")+"\n\n");
                 
@@ -3125,7 +3089,7 @@ while(true ){
                 
                 // reset the case-wise working objects
                 NaNlocationNumeric.clear();
-                NaNlocationString.clear();
+            
                 dataLine.clear();
                 dataLine2.clear();
                 

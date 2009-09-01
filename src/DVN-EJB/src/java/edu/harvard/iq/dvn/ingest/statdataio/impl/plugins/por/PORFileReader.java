@@ -259,7 +259,7 @@ public class PORFileReader extends StatDataFileReader{
      * The <code>String</code> that represents the string missing value 
      * for a tab-delimited data file, initially "".
      */
-    String MissingValueForTextDataFileString = "";
+    String MissingValueForTextDataFileString = ".";
 
     /**
      * Returns the value of the
@@ -1547,7 +1547,7 @@ public class PORFileReader extends StatDataFileReader{
                             if ((datumString.equals(" ")) ||
                                 (datumString.equals(".")) ){
                                 
-                                datumString  = MissingValueForTextDataFileString;
+                                datumString  = null;
                                 datumString2 = null;
                                 
                             }
@@ -1559,7 +1559,7 @@ public class PORFileReader extends StatDataFileReader{
                         // string variable case
                         // store this datum in the case-wise-storage object
                         casewiseRecord[i]= datumString2;
-                        casewiseRecordForTabFile[i] = datumString;
+                        casewiseRecordForTabFile[i] = datumString == null ? MissingValueForTextDataFileString : "\"" + datumString.replaceAll("\"", "\\\"") + "\"";
 
 
                         // reset working objects

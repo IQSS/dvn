@@ -1559,7 +1559,7 @@ public class PORFileReader extends StatDataFileReader{
                         // string variable case
                         // store this datum in the case-wise-storage object
                         casewiseRecord[i]= datumString2;
-                        casewiseRecordForTabFile[i] = datumString == null ? MissingValueForTextDataFileString : "\"" + datumString.replaceAll("\"", "\\\"") + "\"";
+                        casewiseRecordForTabFile[i] = datumString == null ? MissingValueForTextDataFileString : "\"" + datumString.replaceAll("\"",Matcher.quoteReplacement("\\\"")) + "\"";
 
 
                         // reset working objects

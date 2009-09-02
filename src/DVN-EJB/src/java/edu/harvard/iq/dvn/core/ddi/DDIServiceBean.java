@@ -2292,7 +2292,7 @@ public class DDIServiceBean implements DDIServiceLocal {
                         cat.setLabel( _labl );
                     }
                 } else if (xmlr.getLocalName().equals("catValu")) {
-                    cat.setValue( parseText(xmlr) );
+                    cat.setValue( parseText(xmlr, false) );
                 }
                 else if (xmlr.getLocalName().equals("catStat")) {
                     String type = xmlr.getAttributeValue(null, "type");
@@ -2404,7 +2404,15 @@ public class DDIServiceBean implements DDIServiceLocal {
     }
 
      private String parseText(XMLStreamReader xmlr) throws XMLStreamException {
-        return getElementText(xmlr).trim().replace('\n',' ');
+        return parseText(xmlr,true);
+     }
+
+     private String parseText(XMLStreamReader xmlr, boolean scrubText) throws XMLStreamException {
+        String tempString = getElementText(xmlr);
+        if (scrubText) {
+            tempString = tempString.trim().replace('\n',' ');
+        }
+        return tempString;
      }
 
      private String parseText(XMLStreamReader xmlr, String endTag) throws XMLStreamException {

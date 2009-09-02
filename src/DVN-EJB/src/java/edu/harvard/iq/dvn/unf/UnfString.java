@@ -310,8 +310,6 @@ public class UnfString<T extends CharSequence> implements UnfCons {
     }
 
     byte[] truncateHash(byte[] hash,int n){
-        //TODO: are all the truncation values on byte boundaries
-        assert n%8 == 0;
         int bits = n/8;
         byte[] rhash = new byte[bits];
         for (int x=0;x<bits;x++){

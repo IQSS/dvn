@@ -2267,52 +2267,34 @@ while(true ){
                         
                         dbgLog.fine("k="+k+"-th variableTypelList="+variableTypelList.get(k));
 
-                        if (variableTypelList.get(k)>0){
+                        if (variableTypelList.get(k) > 0) {
                             // String variable case: set to  -1
                             variableTypeFinal[k] = -1;
-                            
+
                             // shorten the string up to its length (no padding)
-                            
-                            if ((dataLine.get(k)).toString().length() > variableTypelList.get(k)){
-                            
+
+                            if ((dataLine.get(k)).toString().length() > variableTypelList.get(k)) {
+
                                 dataLine.set(k,
-                                    (StringUtils.substring(dataLine.get(k).toString(), 0,
-                                    variableTypelList.get(k))));
-                                    
-                            } else if (variableTypelList.get(k) < dataLine.get(k).toString().length() ){
-                                throw new IOException("string-reading error: at "+k+"th variable");
+                                        (StringUtils.substring(dataLine.get(k).toString(), 0,
+                                        variableTypelList.get(k))));
+
+                            } else if (variableTypelList.get(k) < dataLine.get(k).toString().length()) {
+                                throw new IOException("string-reading error: at " + k + "th variable");
                             }
-                            
-                            // check '.' dot
-                            String trimmed = StringUtils.strip(dataLine.get(k).toString());
-                            //dbgLog.fine("trimed="+trimmed);
-                            
-                            if (trimmed.equals(".")){
-                                // missing value
-                                // old dataLine.set(k, StringMissingValue);
-                                dataLine.set(k, null);
 
-                            } else if (dataLine.get(k).equals(" ") && trimmed.equals("")) {
-                                // space-missing value
-                                // old dataLine.set(k, StringMissingValue);
-                                dataLine.set(k, null);
-
-                               
-                            } else {
-                                // padding removed
-                                String paddRemoved = StringUtils.stripEnd(dataLine.get(k).toString(), null);
-                                //dbgLog.fine("paddRemoved="+paddRemoved);
-                                dataLine.set(k,paddRemoved);
-                            } 
-                            
+                            // padding removed
+                            String paddRemoved = StringUtils.stripEnd(dataLine.get(k).toString(), null);
+                            //dbgLog.fine("paddRemoved="+paddRemoved);
+                            dataLine.set(k, paddRemoved);
                             // deep-copy the above change to dataLine2 for stats
-                            dataLine2.set(k,dataLine.get(k));
-                            
-                            // end of String var case
-                        
+                            dataLine2.set(k, dataLine.get(k));
+
+                        // end of String var case
+
                         } else {
                             // numeric var case
-                            if (dataLine.get(k).equals(MissingValueForTextDataFileNumeric)){
+                            if (dataLine.get(k).equals(MissingValueForTextDataFileNumeric)) {
                                 // out.println("NA-N k= "+k+"=["+dataLine.get(k)+"]");
                                 // add this index to NaN-to-NA-replacement sentinel
                                 NaNlocationNumeric.add(k);
@@ -2322,7 +2304,7 @@ while(true ){
                         
                  
                         
-                        // old if (!dataLine.get(k).equals("NaN")){
+                        
                         if (dataLine.get(k)!=null && !dataLine.get(k).equals(MissingValueForTextDataFileNumeric)){
                         
                             String variableFormatType = variableFormatTypeList[k];
@@ -2456,7 +2438,7 @@ while(true ){
                     List<String> tabDataLine = new ArrayList<String>();
                     for (int e=0;e<dataLine.size();e++) {
                         if (variableTypeFinal[e] ==-1) {
-                            tabDataLine.add (dataLine.get(e)==null ? this.MissingValueForTextDataFileString : "\"" + dataLine.get(e).replaceAll("\"",Matcher.quoteReplacement("\\\""))) ;
+                            tabDataLine.add (dataLine.get(e)==null ? this.MissingValueForTextDataFileString : "\"" + dataLine.get(e).replaceAll("\"",Matcher.quoteReplacement("\\\""))  +"\"");
                         }
                         else {
                             tabDataLine.add(dataLine.get(e));
@@ -2744,10 +2726,7 @@ while(true ){
                 
                 } // k-loop
                 
-                //dbgLog.fine("all variables in a case(row) are parsed == nOBS");
-                //dbgLog.fine("hasStringVarContinuousBlock="+hasStringVarContinuousBlock);
-
-                // out.println("i="+i+"th dataLine(before)="+dataLine);
+               
 
                 // String-variable's continuous block exits
                 if (hasStringVarContinuousBlock){
@@ -2842,48 +2821,30 @@ while(true ){
                     
                     //dbgLog.fine("k="+k+"-th variableTypelList="+variableTypelList.get(k));
 
-                    if (variableTypelList.get(k)>0){
+                    if (variableTypelList.get(k) > 0) {
                         // String variable case: set to  -1
                         variableTypeFinal[k] = -1;
 
                         // shorten the string up to its length (no padding)
-
-                        if ((dataLine.get(k)).toString().length() > variableTypelList.get(k)){
+                        if ((dataLine.get(k)).toString().length() > variableTypelList.get(k)) {
                             dataLine.set(k,
-                                (StringUtils.substring(dataLine.get(k).toString(), 0,
-                                variableTypelList.get(k))));
-                        } else if (variableTypelList.get(k) < dataLine.get(k).toString().length() ){
-                            throw new IOException("string-reading error: at "+k+"th variable");
+                                    (StringUtils.substring(dataLine.get(k).toString(), 0,
+                                    variableTypelList.get(k))));
+                        } else if (variableTypelList.get(k) < dataLine.get(k).toString().length()) {
+                            throw new IOException("string-reading error: at " + k + "th variable");
                         }
-
-                        // check '.' dot
-                        String trimmed = StringUtils.strip(dataLine.get(k).toString());
-                        //dbgLog.fine("trimed="+trimmed);
-
-                        if (trimmed.equals(".")){
-                            // missing value
-                          
-                            dataLine.set(k, null);
-                        } else if (dataLine.get(k).equals(" ") && trimmed.equals("")) {
-                            // space-missing value
-                      
-                            dataLine.set(k, null);
-
-                        } else {
-                            // padding removed
-                            String paddRemoved = StringUtils.stripEnd(dataLine.get(k).toString(), null);
-                            //dbgLog.fine("paddRemoved="+paddRemoved);
-                            dataLine.set(k,paddRemoved);
-                        }
-                        
+                        // padding removed
+                        String paddRemoved = StringUtils.stripEnd(dataLine.get(k).toString(), null);
+                        //dbgLog.fine("paddRemoved="+paddRemoved);
+                        dataLine.set(k, paddRemoved);
                         // deep-copy the above change to dataLine2 for stats
-                        dataLine2.set(k,dataLine.get(k));
-                        
-                        // end of String var case
+                        dataLine2.set(k, dataLine.get(k));
+
+                    // end of String var case
 
                     } else {
                         // numeric var case
-                        if (dataLine.get(k).equals(MissingValueForTextDataFileNumeric)){
+                        if (dataLine.get(k).equals(MissingValueForTextDataFileNumeric)) {
                             //out.println("NA-N k= "+k+"=["+dataLine.get(k)+"]");
                             // add this index to NaN-to-NA-replacement sentinel
                             NaNlocationNumeric.add(k);
@@ -2891,13 +2852,12 @@ while(true ){
                     
                     } // end of variable-type check
 
-                    //out.println("NaNlocationNumeric="+NaNlocationNumeric);
-                    //out.println("NaNlocationString="+NaNlocationString);
+                   
 
                     
                     if (dataLine.get(k)!=null && !dataLine.get(k).equals(MissingValueForTextDataFileNumeric)){
                         
-// to do date conversion
+                        // to do date conversion
                         String variableFormatType =  variableFormatTypeList[k];
                         dbgLog.finer("k="+k+"th variable format="+variableFormatType);
                         
@@ -3030,7 +2990,7 @@ while(true ){
                     List<String> tabDataLine = new ArrayList<String>();
                     for (int e=0;e<dataLine.size();e++) {
                         if (variableTypeFinal[e] ==-1) {
-                            tabDataLine.add (dataLine.get(e)==null ? this.MissingValueForTextDataFileString : "\"" + dataLine.get(e).replaceAll("\"",Matcher.quoteReplacement("\\\""))) ;
+                            tabDataLine.add (dataLine.get(e)==null ? this.MissingValueForTextDataFileString : "\"" + dataLine.get(e).replaceAll("\"",Matcher.quoteReplacement("\\\"")) +"\"")  ;
                         }
                         else {
                             tabDataLine.add(dataLine.get(e));

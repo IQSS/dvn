@@ -1542,20 +1542,7 @@ public class PORFileReader extends StatDataFileReader{
                         String datumString = new String(char_datumString);
                         dbgLog.finer("string data="+datumString);
                         String datumString2 = new String(char_datumString);
-                        // missing-value processing
-                        if (StringLengthBase10==1){
-                            if ((datumString.equals(" ")) ||
-                                (datumString.equals(".")) ){
-                                
-                                datumString  = null;
-                                datumString2 = null;
-                                
-                            }
-                            
-                            
-                            
-                        }
-                        
+                       
                         // string variable case
                         // store this datum in the case-wise-storage object
                         casewiseRecord[i]= datumString2;
@@ -2204,6 +2191,11 @@ public class PORFileReader extends StatDataFileReader{
             base10value = base10value.multiply(exponentialComponent, mc);
         } else {
             base10value = base10value.divide(exponentialComponent, mc);
+        }
+
+        // negative sign if applicable
+        if (isNegativeNumber){
+            base10value = base10value.multiply(new BigDecimal("-1", mc));
         }
 
         return base10value.doubleValue();

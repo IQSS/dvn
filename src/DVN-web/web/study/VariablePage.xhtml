@@ -61,9 +61,12 @@
               </div>
               <ice:dataTable value="#{VariablePage.variable.categories}" var="cs" width="500px;" columnClasses="vdcColPadded">
                 <ice:column>
-                  <ice:outputText value="#{cs.label} (#{cs.value})"/>
+                    <gui:repeat value="#{cs.valueCharacterList}" var="char" >
+                        <ice:outputText escape="#{char!='&amp;nbsp;'}" value="#{char}" nospan="true" />
+                    </gui:repeat>
+                  <ice:outputText rendered="#{!empty cs.label}" value=" (#{cs.label})" nospan="true"/>
                   <f:facet name="header">
-                    <ice:outputText value="Label (Value)"/>
+                    <ice:outputText value="Value (Label)"/>
                   </f:facet>
                 </ice:column>
                 <ice:column>

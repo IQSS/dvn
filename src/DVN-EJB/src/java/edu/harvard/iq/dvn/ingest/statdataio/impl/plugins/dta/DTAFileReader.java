@@ -438,7 +438,7 @@ public class DTAFileReader extends StatDataFileReader{
      * for a tab-delimited data file, initially "NA" 
      * after R's missing value.
      */
-    String MissingValueForTextDataFileNumeric = "NA";
+    String MissingValueForTextDataFileNumeric = "";
 
     /**
      * Returns the value of the
@@ -467,7 +467,7 @@ public class DTAFileReader extends StatDataFileReader{
      * The <code>String</code> that represents the string missing value 
      * for a tab-delimited data file, initially "".
      */
-    String MissingValueForTextDataFileString = ".";
+    String MissingValueForTextDataFileString = "";
 
     /**
      * Returns the value of the

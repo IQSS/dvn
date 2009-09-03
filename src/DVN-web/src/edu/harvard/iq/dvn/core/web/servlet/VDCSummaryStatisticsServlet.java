@@ -170,7 +170,7 @@ public class VDCSummaryStatisticsServlet extends HttpServlet {
     public String quickSummaryContentsCreator(String varId) {
         StringBuilder colQS = new StringBuilder();
 //    colQS.append("QS requested for variableId="+varId);
-        String columnHeaderCat = "Value(Label)";
+        String columnHeaderCat = "Value (Label)";
         Collection<SummaryStatistic> sumStat = null;
         // Collection<VariableCategory> catStat=  null;
         List<VariableCategory> catStat = null;
@@ -311,11 +311,11 @@ public class VDCSummaryStatisticsServlet extends HttpServlet {
                 }
                 // key:statistic-type, value: its freq
                 StringBuilder sb = new StringBuilder();
-                sb.append(dvcat.getValue());
+                sb.append( dvcat.getValue().replaceAll(" ", "&nbsp;") );
 
                 if ((dvcat.getLabel() == null) || (dvcat.getLabel().equals(""))) {
                 } else {
-                    sb.append("(");
+                    sb.append(" (");
                     sb.append(dvcat.getLabel());
                     sb.append(")");
                 }

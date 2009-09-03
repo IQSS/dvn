@@ -255,33 +255,6 @@ public class PORFileReader extends StatDataFileReader{
     }
 
 
-    /**
-     * The <code>String</code> that represents the string missing value 
-     * for a tab-delimited data file, initially "".
-     */
-    String MissingValueForTextDataFileString = ".";
-
-    /**
-     * Returns the value of the
-     * <code>MissingValueForTextDataFileString</code> field.
-     * 
-     * @return the value of the
-     * <code>MissingValueForTextDataFileString</code> field.
-     */
-    public String getMissingValueForTextDataFileString() {
-        return MissingValueForTextDataFileString;
-    }
-
-    /**
-     * Sets the new value of 
-     * the <code>MissingValueForTextDataFileString</code> field.
-     * 
-     * @param MissingValueToken the new value of the
-     * <code>MissingValueForTextDataFileString</code> field.
-     */
-    public void setMissingValueForTextDataFileString(String MissingValueToken) {
-        this.MissingValueForTextDataFileString = MissingValueToken;
-    }
 
     // date/time data format
     SimpleDateFormat sdf_ymd    = new SimpleDateFormat("yyyy-MM-dd");
@@ -1546,7 +1519,7 @@ public class PORFileReader extends StatDataFileReader{
                         // string variable case
                         // store this datum in the case-wise-storage object
                         casewiseRecord[i]= datumString2;
-                        casewiseRecordForTabFile[i] = datumString == null ? MissingValueForTextDataFileString : "\"" + datumString.replaceAll("\"",Matcher.quoteReplacement("\\\"")) + "\"";
+                        casewiseRecordForTabFile[i] =  "\"" + datumString.replaceAll("\"",Matcher.quoteReplacement("\\\"")) + "\"";
 
 
                         // reset working objects

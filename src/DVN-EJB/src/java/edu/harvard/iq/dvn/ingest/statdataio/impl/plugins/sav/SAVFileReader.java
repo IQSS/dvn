@@ -2285,6 +2285,10 @@ while(true ){
 
                             // padding removed
                             String paddRemoved = StringUtils.stripEnd(dataLine.get(k).toString(), null);
+                            // TODO: clean this up.  For now, just make sure that strings contain at least one blank space.
+                            if (paddRemoved.equals("")) {
+                                paddRemoved = " ";
+                            }
                             //dbgLog.fine("paddRemoved="+paddRemoved);
                             dataLine.set(k, paddRemoved);
                             // deep-copy the above change to dataLine2 for stats
@@ -2836,6 +2840,11 @@ while(true ){
                         // padding removed
                         String paddRemoved = StringUtils.stripEnd(dataLine.get(k).toString(), null);
                         //dbgLog.fine("paddRemoved="+paddRemoved);
+                        // TODO: clean this up.  For now, just make sure that empty strings are converted to single space.
+                        //
+                        if (paddRemoved.equals("")) {
+                                paddRemoved = " ";
+                        }
                         dataLine.set(k, paddRemoved);
                         // deep-copy the above change to dataLine2 for stats
                         dataLine2.set(k, dataLine.get(k));

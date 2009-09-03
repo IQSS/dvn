@@ -688,7 +688,7 @@ public class SAVFileReader extends StatDataFileReader{
             
             if ( numberOfCases < 0){
                 // -1 if numberOfCases is unknown
-                dbgLog.info("number of cases is not recoded in the header");
+                throw new RuntimeException("number of cases is not recorded in the header");
             } else {
                 dbgLog.info("number of cases is recorded= "+numberOfCases);
                 caseQnty = numberOfCases;
@@ -2439,17 +2439,18 @@ while(true ){
                     //  If the String is null, set it to missingValue,
                     //  else escape quotes within the string and add quotes around the string
                     //
-                    List<String> tabDataLine = new ArrayList<String>();
-                    for (int e=0;e<dataLine.size();e++) {
-                        if (variableTypeFinal[e] ==-1) {
-                            tabDataLine.add (dataLine.get(e)==null ? this.MissingValueForTextDataFileString : "\"" + dataLine.get(e).replaceAll("\"",Matcher.quoteReplacement("\\\""))  +"\"");
+                    if (dataLine.size()>0) {
+                        List<String> tabDataLine = new ArrayList<String>();
+                        for (int e=0;e<dataLine.size();e++) {
+                            if (variableTypeFinal[e] ==-1) {
+                                tabDataLine.add (dataLine.get(e)==null ? this.MissingValueForTextDataFileString : "\"" + dataLine.get(e).replaceAll("\"",Matcher.quoteReplacement("\\\""))  +"\"");
+                            }
+                            else {
+                                tabDataLine.add(dataLine.get(e));
+                            }
                         }
-                        else {
-                            tabDataLine.add(dataLine.get(e));
-                        }
+                        pwout.println(StringUtils.join(tabDataLine, "\t"));
                     }
-                    pwout.println(StringUtils.join(tabDataLine, "\t"));
-                    
                     // replace NA-strings for a tab-limited file with
                     // those for UNF/summaryStatistics 
                     // numeric variable
@@ -2519,21 +2520,7 @@ while(true ){
                 // reached the end of this file
                 // do exit-processing
 
-                // check the actual number of cases
-                if (caseQnty == -1){
-                    // caseQnty is unknown case
-                    caseQnty = caseIndex;
-
-                } else if (caseQnty == caseIndex){
-                    // header's case information was correct
-                    dbgLog.fine("SAV Reader: compressed: recorded number of cases is the same as the actual number");
-                } else {
-		    dbgLog.fine("SAV Reader: compressed: recorded number of cases is different from the actual number: stored: "+caseQnty+"; found: "+caseIndex);
-
-                    // header's case information disagree with the actual one
-                    // take the actual one
-                    caseQnty = caseIndex;
-                }
+              
 
 
                 dbgLog.fine("***** reached the end of the file at "+ii
@@ -2996,16 +2983,18 @@ while(true ){
                     //  If the String is null, set it to missingValue,
                     //  else escape quotes within the string and add quotes around the string
                     //
-                    List<String> tabDataLine = new ArrayList<String>();
-                    for (int e=0;e<dataLine.size();e++) {
-                        if (variableTypeFinal[e] ==-1) {
-                            tabDataLine.add (dataLine.get(e)==null ? this.MissingValueForTextDataFileString : "\"" + dataLine.get(e).replaceAll("\"",Matcher.quoteReplacement("\\\"")) +"\"")  ;
+                    if (dataLine.size()>0) {
+                        List<String> tabDataLine = new ArrayList<String>();
+                        for (int e=0;e<dataLine.size();e++) {
+                            if (variableTypeFinal[e] ==-1) {
+                                tabDataLine.add (dataLine.get(e)==null ? this.MissingValueForTextDataFileString : "\"" + dataLine.get(e).replaceAll("\"",Matcher.quoteReplacement("\\\"")) +"\"")  ;
+                            }
+                            else {
+                                tabDataLine.add(dataLine.get(e));
+                            }
                         }
-                        else {
-                            tabDataLine.add(dataLine.get(e));
-                        }
+                        pwout.println(StringUtils.join(tabDataLine, "\t"));
                     }
-                    pwout.println(StringUtils.join(tabDataLine, "\t"));
 
                 // replace NA-strings for a tab-limited file with
                 // those for UNF/summaryStatistics 
@@ -3066,20 +3055,7 @@ while(true ){
                     // reached the end of this file
                     // do exit-processing
 
-                    // check the actual number of cases
-                    if (caseQnty == -1){
-                        // caseQnty is unknown case
-                        caseQnty = caseIndex;
-
-                    } else if (caseQnty == caseIndex){
-                        // header's case information was correct
-                        dbgLog.fine("recorded number of cases is the same as the actual number");
-                    } else {
-                        // header's case information disagree with the actual one
-                        // take the actual one
-                        dbgLog.fine("recorded number of cases in the header is not the same as the actual number:"+caseIndex);
-                        caseQnty = caseIndex;
-                    }
+                 
 
 
                     dbgLog.fine("***** reached the end of the file at "+ii

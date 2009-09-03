@@ -30,6 +30,8 @@
 package edu.harvard.iq.dvn.core.study;
 
 import edu.harvard.iq.dvn.core.util.AlphaNumericComparator;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -71,12 +73,30 @@ public class VariableCategory implements Comparable, java.io.Serializable {
         return this.value;
     }
 
+    // helper for html display  
+    private transient List charList;
+
+    public List getValueCharacterList() {
+        if (charList == null) {
+            charList = new ArrayList();
+            for (int i=0; i < this.value.length(); i++) {
+                if (this.value.charAt(i) == ' ') {
+                    charList.add( "&nbsp;" );
+                } else {
+                    charList.add( this.value.charAt(i) );
+                }
+            }
+        }
+        return charList;
+    }
+
     /**
      * Setter for property beginValue.
      * @param beginValue New value of property beginValue.
      */
     public void setValue(String value) {
         this.value = value;
+        charList = null;
     }
 
     public Long getId() {

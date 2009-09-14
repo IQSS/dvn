@@ -90,7 +90,6 @@ public class UnfClass {
             if (nd != UnfCons.DEF_NDGTS) {
                 addExtension("N"+nd);
             }
-            addExtension("H128"); // TODO this is used on dvn, but may not be the default- needs more attention
         }
     }
 

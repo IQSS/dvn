@@ -30,7 +30,7 @@
 package edu.harvard.iq.dvn.ingest.dsb;
 
 import edu.harvard.iq.dvn.unf.UnfException;
-import edu.harvard.iq.dvn.unf.UNFUtil;
+import edu.harvard.iq.dvn.unf.UNF5Util;
 import edu.harvard.iq.dvn.core.study.DataVariable;
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyFile;
@@ -458,7 +458,7 @@ public class DSBWrapper implements java.io.Serializable  {
         } else {
             String fileUNF=null;
             try {
-                fileUNF = UNFUtil.calculateUNF(unfs, "5");
+                fileUNF = UNF5Util.calculateUNF(unfs);
             //return calculateUNF(unfs);
             } catch (UnfException e) {
                 e.printStackTrace();

@@ -1869,7 +1869,7 @@ public class PORFileReader extends StatDataFileReader{
         dbgLog.fine("unf set:\n"+Arrays.deepToString(unfValues));
         
         try {
-            fileUnfValue = UNFUtil.calculateUNF(unfValues,unfVersionNumber);
+            fileUnfValue = UNF5Util.calculateUNF(unfValues);
 
         } catch (NumberFormatException ex) {
             ex.printStackTrace();
@@ -2206,7 +2206,7 @@ public class PORFileReader extends StatDataFileReader{
                     }
                 }
 
-                unfValue = UNFUtil.calculateUNF(ldata, unfVersionNumber);
+                unfValue = UNF5Util.calculateUNF(ldata);
 
                 dbgLog.finer("sumstat:long case="+Arrays.deepToString(
                         ArrayUtils.toObject(StatHelper.calculateSummaryStatistics(ldata))));
@@ -2238,7 +2238,7 @@ public class PORFileReader extends StatDataFileReader{
                     }
                 }
 
-                unfValue = UNFUtil.calculateUNF(ddata, unfVersionNumber);
+                unfValue = UNF5Util.calculateUNF(ddata);
 
                 smd.getSummaryStatisticsTable().put(variablePosition,
                     ArrayUtils.toObject(StatHelper.calculateSummaryStatisticsContDistSample(ddata)));
@@ -2251,7 +2251,7 @@ public class PORFileReader extends StatDataFileReader{
                 String[] strdata = Arrays.asList(varData).toArray(
                     new String[varData.length]);
 
-                unfValue = UNFUtil.calculateUNF(strdata, dateFormat, unfVersionNumber);
+                unfValue = UNF5Util.calculateUNF(strdata, dateFormat);
                 dbgLog.fine("string:unfValue"+unfValue);
 
                 smd.getSummaryStatisticsTable().put(variablePosition,

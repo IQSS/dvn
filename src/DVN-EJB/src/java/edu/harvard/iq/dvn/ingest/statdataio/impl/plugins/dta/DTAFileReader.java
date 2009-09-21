@@ -1547,7 +1547,7 @@ public class DTAFileReader extends StatDataFileReader{
         dbgLog.fine("unf set:\n"+Arrays.deepToString(unfValues));
         
         try {
-            fileUnfValue = UNFUtil.calculateUNF(unfValues,unfVersionNumber);
+            fileUnfValue = UNF5Util.calculateUNF(unfValues);
 
         } catch (NumberFormatException ex) {
             ex.printStackTrace();
@@ -2034,7 +2034,7 @@ public class DTAFileReader extends StatDataFileReader{
                 }
         
 
-                unfValue = UNFUtil.calculateUNF((Byte[] )bdata, unfVersionNumber);
+                unfValue = UNF5Util.calculateUNF((Byte[] )bdata);
 
                 smd.getSummaryStatisticsTable().put(variablePosition, 
                     ArrayUtils.toObject(StatHelper.calculateSummaryStatistics((Byte[] )bdata)));
@@ -2052,7 +2052,7 @@ public class DTAFileReader extends StatDataFileReader{
                 for (int i = 0; i < varData.length; i++) {
                     sdata[i] = (Short)varData[i];
                 }
-               unfValue = UNFUtil.calculateUNF(sdata, unfVersionNumber);
+               unfValue = UNF5Util.calculateUNF(sdata);
 
                smd.getSummaryStatisticsTable().put(variablePosition, 
                     ArrayUtils.toObject(StatHelper.calculateSummaryStatistics(sdata)));
@@ -2070,7 +2070,7 @@ public class DTAFileReader extends StatDataFileReader{
                 for (int i=0; i< varData.length; i++) {
                     idata[i]=(Integer)varData[i];
                 }
-                unfValue = UNFUtil.calculateUNF(idata, unfVersionNumber);
+                unfValue = UNF5Util.calculateUNF(idata);
 
                 smd.getSummaryStatisticsTable().put(variablePosition, 
                     ArrayUtils.toObject(StatHelper.calculateSummaryStatistics(idata)));
@@ -2087,7 +2087,7 @@ public class DTAFileReader extends StatDataFileReader{
                     fdata[i] = (Float)varData[i];
                 }
 
-                unfValue = UNFUtil.calculateUNF(fdata, unfVersionNumber);
+                unfValue = UNF5Util.calculateUNF(fdata);
 
                 smd.getSummaryStatisticsTable().put(variablePosition,
                     ArrayUtils.toObject(StatHelper.calculateSummaryStatisticsContDistSample(fdata)));
@@ -2108,7 +2108,7 @@ public class DTAFileReader extends StatDataFileReader{
                     ddata[i] = (Double)varData[i];
                 }
                         
-                unfValue = UNFUtil.calculateUNF(ddata, unfVersionNumber);
+                unfValue = UNF5Util.calculateUNF(ddata);
                 
                 smd.getSummaryStatisticsTable().put(variablePosition,
                     ArrayUtils.toObject(StatHelper.calculateSummaryStatisticsContDistSample(ddata)));
@@ -2127,7 +2127,7 @@ public class DTAFileReader extends StatDataFileReader{
                     strdata[i] = (String)varData[i];
                 }
                     dbgLog.fine("strdata="+Arrays.deepToString(strdata));
-                    unfValue = UNFUtil.calculateUNF(strdata, dateFormat, unfVersionNumber);
+                    unfValue = UNF5Util.calculateUNF(strdata, dateFormat);
                 
                 dbgLog.fine("string:unfValue"+unfValue);
                 // Shoud summary statistics be calculated on dates?

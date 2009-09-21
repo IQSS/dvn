@@ -1921,7 +1921,7 @@ while(true ){
         dbgLog.fine("unf set:\n"+Arrays.deepToString(unfValues));
         
         try {
-            fileUnfValue = UNFUtil.calculateUNF(unfValues,unfVersionNumber);
+            fileUnfValue = UNF5Util.calculateUNF(unfValues);
 
         } catch (NumberFormatException ex) {
             ex.printStackTrace();
@@ -3318,7 +3318,7 @@ while(true ){
                         ldata[i] = new Long((String) varData[i]);
                     }
                 }
-                unfValue = UNFUtil.calculateUNF(ldata, unfVersionNumber);
+                unfValue = UNF5Util.calculateUNF(ldata);
                 dbgLog.finer("integer:unfValue=" + unfValue);
 
                 dbgLog.finer("sumstat:long case=" + Arrays.deepToString(
@@ -3348,7 +3348,7 @@ while(true ){
                         ddata[i] = new Double((String)varData[i]);
                     }
                 }
-                unfValue = UNFUtil.calculateUNF(ddata, unfVersionNumber);
+                unfValue = UNF5Util.calculateUNF(ddata);
                 dbgLog.finer("double:unfValue="+unfValue);
                 smd.getSummaryStatisticsTable().put(variablePosition,
                     ArrayUtils.toObject(StatHelper.calculateSummaryStatisticsContDistSample(ddata)));
@@ -3362,7 +3362,7 @@ while(true ){
                 String[] strdata = Arrays.asList(varData).toArray(
                     new String[varData.length]);
                 dbgLog.finer("string array passed to calculateUNF: "+Arrays.deepToString(strdata));
-                unfValue = UNFUtil.calculateUNF(strdata, dateFormats, unfVersionNumber);
+                unfValue = UNF5Util.calculateUNF(strdata, dateFormats);
                 dbgLog.finer("string:unfValue="+unfValue);
 
                 smd.getSummaryStatisticsTable().put(variablePosition,

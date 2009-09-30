@@ -203,17 +203,12 @@ public class UNF5Util {
     public static String calculateUNF(final boolean[] numb)
             throws NumberFormatException, UnfException, IOException, NoSuchAlgorithmException {
 
-        double[] toret = new double[numb.length];
+        Boolean[] toret = new Boolean[numb.length];
         for (int k = 0; k < numb.length; ++k) {
-
-           if (Boolean.valueOf(numb[k]) == null){
-                toret[k] = Double.NaN;
-            } else {
-                toret[k] = (numb[k] == true) ? 1d : 0d;
-           }
+            toret[k] = Boolean.valueOf(numb[k]);
         }
-        String res = calculateUNF(toret);
-        return res;
+        String[] res = Unf5Digest.unf(toret);
+        return res[0];
     }
 
     /**

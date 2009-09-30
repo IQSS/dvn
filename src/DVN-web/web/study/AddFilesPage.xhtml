@@ -121,8 +121,8 @@
                       </f:facet>
                       <ice:inputText id="input_filename" size="24" value="#{file.studyFile.fileName}" required="true"
                                      requiredMessage="This field is required."
-                                     validator="#{AddFilesPage.validateFileName}" partialSubmit="false"
-                                     onblur="iceSubmitPartial(form,this,event);"/>
+                                     validator="#{AddFilesPage.validateFileName}" partialSubmit="true"
+                                    />
                                      <!-- "this.form.submit();"/>
                       <f:param name="fileName" value="#{file.studyFile.fileName}"/> -->
                       <ice:message for="input_filename" styleClass="errorMessage"/>

@@ -33,6 +33,12 @@ public class BitString implements CharSequence{
         
     }
 
+    public BitString(String bitString){
+        if (validate(bitString)){
+            setBits(bitString);
+        }
+    }
+
     public BitString(Long l){
         setBits(Long.toBinaryString(l));
     }

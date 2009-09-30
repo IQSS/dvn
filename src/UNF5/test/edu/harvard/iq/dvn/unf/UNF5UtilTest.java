@@ -69,7 +69,7 @@ public class UNF5UtilTest {
     @Test
     public void testCalculateUNF_floatArr() throws Exception {
         System.out.println("calculateUNF");
-        List testData = readFileData("FloatTest");
+        List testData = readFileData("test/FloatTest");
         float[] numb = new float[testData.size() - 1];
         String expResult = (String) testData.get(0);
         for (int i = 1; i < testData.size(); i++) {
@@ -77,8 +77,6 @@ public class UNF5UtilTest {
         }
         String result = UNF5Util.calculateUNF(numb);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -87,7 +85,7 @@ public class UNF5UtilTest {
     @Test
     public void testCalculateUNF_shortArr() throws Exception {
         System.out.println("calculateUNF");
-        List testData = readFileData("ShortTest");
+        List testData = readFileData("test/ShortTest");
         short[] numb = new short[testData.size() - 1];
         String expResult = (String) testData.get(0);
         for (int i = 1; i < testData.size(); i++) {
@@ -95,8 +93,6 @@ public class UNF5UtilTest {
         }
         String result = UNF5Util.calculateUNF(numb);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -105,7 +101,7 @@ public class UNF5UtilTest {
     @Test
     public void testCalculateUNF_byteArr() throws Exception {
         System.out.println("calculateUNF");
-        List testData = readFileData("ByteTest");
+        List testData = readFileData("test/ByteTest");
         byte[] numb = new byte[testData.size() - 1];
         String expResult = (String) testData.get(0);
         for (int i = 1; i < testData.size(); i++) {
@@ -113,8 +109,6 @@ public class UNF5UtilTest {
         }
         String result = UNF5Util.calculateUNF(numb);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -139,7 +133,7 @@ public class UNF5UtilTest {
     @Test
     public void testCalculateUNF_intArr() throws Exception {
         System.out.println("calculateUNF");
-        List testData = readFileData("ShortTest");
+        List testData = readFileData("test/IntTest");
         int[] numb = new int[testData.size() - 1];
         String expResult = (String) testData.get(0);
         for (int i = 1; i < testData.size(); i++) {
@@ -147,8 +141,6 @@ public class UNF5UtilTest {
         }
         String result = UNF5Util.calculateUNF(numb);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -157,7 +149,7 @@ public class UNF5UtilTest {
     @Test
     public void testCalculateUNF_booleanArr() throws Exception {
         System.out.println("calculateUNF");
-        List testData = readFileData("BooleanTest");
+        List testData = readFileData("test/BooleanTest");
         boolean[] numb = new boolean[testData.size() - 1];
         String expResult = (String) testData.get(0);
         for (int i = 1; i < testData.size(); i++) {
@@ -165,8 +157,6 @@ public class UNF5UtilTest {
         }
         String result = UNF5Util.calculateUNF(numb);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -175,7 +165,7 @@ public class UNF5UtilTest {
     @Test
     public void testCalculateUNF_StringArr() throws Exception {
         System.out.println("calculateUNF");
-        List testData = readFileData("StringTest");
+        List testData = readFileData("test/StringTest");
         String[] chr = new String[testData.size() - 1];
         String expResult = (String) testData.get(0);
         for (int i = 1; i < testData.size(); i++) {
@@ -183,8 +173,6 @@ public class UNF5UtilTest {
         }
         String result = UNF5Util.calculateUNF(chr);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**

@@ -569,7 +569,7 @@ public class Unf5Digest implements UnfCons {
         b[0] = obj != null? false: true;
         StringBuilder hex = new StringBuilder();
         CharSequence[] cobj = new CharSequence[1];
-        cobj[0] = obj;
+        cobj[0] = obj.getBits();
         /**Define encoding and mdalgor according to version (vers)*/
         String b64 = unfno.RUNF5((CharSequence[]) cobj, b,  fingerp, base64, hex);
         fingerprint.add(fingerp);

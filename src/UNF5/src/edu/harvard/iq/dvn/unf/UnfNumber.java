@@ -79,7 +79,7 @@ public class UnfNumber<T extends Number> implements UnfCons {
             //md5_init in Micah code
             md = MessageDigest.getInstance(mdalgor);
         } catch (NoSuchAlgorithmException err) {
-            err.getMessage();
+            throw new RuntimeException(err.getMessage());
         }
     }
 
@@ -98,7 +98,7 @@ public class UnfNumber<T extends Number> implements UnfCons {
             //another algor different form md5
             md = MessageDigest.getInstance(algor);
         } catch (NoSuchAlgorithmException err) {
-            err.getMessage();
+            throw new RuntimeException(err.getMessage());
         }
     }
 
@@ -161,7 +161,7 @@ public class UnfNumber<T extends Number> implements UnfCons {
             mdm = MessageDigest.getInstance(aa);
             this.md = mdm;
         } catch (NoSuchAlgorithmException err) {
-            err.getMessage();
+            throw new RuntimeException(err.getMessage());
         }
 
     }
@@ -202,7 +202,7 @@ public class UnfNumber<T extends Number> implements UnfCons {
     }
 
     public String RUNF5(final T[] v, int digits, List<Integer> result, Character[] base64, StringBuilder hex)//, String[] resultBase64)
-            throws UnsupportedEncodingException, NoSuchAlgorithmException, IOException {
+            throws UnsupportedEncodingException,  IOException {
         int nv = v.length;
         double dub = 0;
         boolean miss = false;
@@ -211,7 +211,6 @@ public class UnfNumber<T extends Number> implements UnfCons {
 
         for (k = 0; k < nv; ++k) {
             miss = (v[k] == null);
-
             //md5_append is called with UNF5
             md = UNF5(v[k], digits, md, miss);
         }
@@ -264,10 +263,9 @@ public class UnfNumber<T extends Number> implements UnfCons {
      * @param miss boolean for missing values
      * @return MessageDigest after updating with data in obj
      * @throws UnsupportedEncodingException
-     * @throws NoSuchAlgorithmException
      */
     public MessageDigest UNF5(final T obj, int digits, MessageDigest previous, boolean miss)
-            throws UnsupportedEncodingException, NoSuchAlgorithmException, IOException {
+            throws UnsupportedEncodingException,  IOException {
         if (!miss) {
             RoundRoutines<T> rout = new RoundRoutines<T>(digits, false, currentlocale);
 

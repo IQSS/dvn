@@ -46,7 +46,6 @@ package edu.harvard.iq.dvn.unf;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -199,13 +198,11 @@ public class Unf5Digest implements UnfCons {
      * @param obj bi-dimensional array of generic class T that extends Number
      * @param digits varargs with array of Integer 
      * @return array of String with base64 encoding for each column of obj
-     * @throws NoSuchAlgorithmException
      * @throws UnsupportedEncodingException
      * @throws IOException
      */
      public static <T extends Number> String[] unf(final T[][] obj, Integer... digits) throws
-            NoSuchAlgorithmException, UnsupportedEncodingException,
-            IOException, UnfException {
+            UnsupportedEncodingException, IOException {
         if (obj == null) {
             return null;
         }
@@ -247,7 +244,7 @@ public class Unf5Digest implements UnfCons {
         return res;
     }
 
-    public static String [] unf(BitString[] b) throws NoSuchAlgorithmException, UnsupportedEncodingException, IOException, UnfException{
+    public static String [] unf(BitString[] b) throws UnsupportedEncodingException, IOException{
         int nrow = b.length;
         int hsz = 128; // TODO default for dvn only
         if (buildunfObj) {
@@ -261,7 +258,7 @@ public class Unf5Digest implements UnfCons {
         return res;
     }
 
-    public static String [] unf(Boolean[] b) throws NoSuchAlgorithmException, UnsupportedEncodingException, IOException, UnfException{
+    public static String [] unf(Boolean[] b) throws UnsupportedEncodingException, IOException{
         int nrow = b.length;
         int hsz = 128; // TODO default for dvn only
         if (buildunfObj) {
@@ -281,13 +278,12 @@ public class Unf5Digest implements UnfCons {
      * @param obj bi-dimensional array of generic class T that extends CharSequence
      * @param digits varargs with array of Integer 
      * @return array of String with base64 encoding for each column of obj
-     * @throws NoSuchAlgorithmException
      * @throws UnsupportedEncodingException
      * @throws IOException
      */
     public static <T extends CharSequence> String[] unf(final T[][] obj, Integer... digits) throws
-            NoSuchAlgorithmException, UnsupportedEncodingException,
-            IOException, UnfException {
+            UnsupportedEncodingException,
+            IOException {
         return unf(obj, currentVersion, digits);
 
     }
@@ -300,14 +296,13 @@ public class Unf5Digest implements UnfCons {
      * @param vers float unf version number
      * @param digits varargs with array of Integer 
      * @return array of String with base64 encoding for each column of obj
-     * @throws NoSuchAlgorithmException
      * @throws UnsupportedEncodingException
      * @throws IOException
      */
     public static <T extends CharSequence> String[] unf(final T[][] obj, String vers,
             Integer... digits) throws
-            NoSuchAlgorithmException, UnsupportedEncodingException,
-            IOException, UnfException {
+            UnsupportedEncodingException,
+            IOException {
         if (obj == null) {
             return null;
         }
@@ -353,13 +348,12 @@ public class Unf5Digest implements UnfCons {
      * @param obj one-dimensional array of generic class T that extends Number
      * @param ndg integer with significant digits that includes decimal point
      * @return String with base64 encoding
-     * @throws NoSuchAlgorithmException
      * @throws UnsupportedEncodingException
      * @throws IOException
      */
     public static <T extends Number> String unfV(final T[] obj, int ndg) throws
-            NoSuchAlgorithmException, UnsupportedEncodingException,
-            IOException, UnfException {
+            UnsupportedEncodingException,
+            IOException {
         int hsz = 128;
         signature = new Unf5Class(DEF_CDGTS, ndg, hsz);
         return unfV(obj, ndg, signature);
@@ -373,14 +367,13 @@ public class Unf5Digest implements UnfCons {
      * @param ndg integer significant digits that includes decimal point
      * @param vers float with unf version
      * @return String with base64 encoding
-     * @throws NoSuchAlgorithmException
      * @throws UnsupportedEncodingException
      * @throws IOException
      */
     public static <T extends Number> String unfV(final T[] obj,
             int ndg, Unf5Class signature) throws
-            NoSuchAlgorithmException, UnsupportedEncodingException,
-            IOException, UnfException {
+            UnsupportedEncodingException,
+            IOException {
         UnfNumber<T> unfno = new UnfNumber<T>();
         Character[] base64 = new Character[64];
         List<Integer> fingerp = new ArrayList<Integer>();
@@ -409,13 +402,12 @@ public class Unf5Digest implements UnfCons {
      * @param obj one-dimensional array of generic class T that extends CharSequence
      * @param cdg integer with number of chars to keep
      * @return String with base64 encoding
-     * @throws NoSuchAlgorithmException
      * @throws UnsupportedEncodingException
      * @throws IOException
      */
     public static <T extends CharSequence> String unfV(final T[] obj, int cdg) throws
-            NoSuchAlgorithmException, UnsupportedEncodingException,
-            IOException, UnfException {
+            UnsupportedEncodingException,
+            IOException {
         int hsz = 128;
         signature = new Unf5Class(cdg, DEF_NDGTS, hsz);
         return unfV(obj, cdg, signature);
@@ -429,14 +421,13 @@ public class Unf5Digest implements UnfCons {
      * @param cdg integer with number of chars to keep
      * @param vers String with unf version
      * @return String with base64 encoding
-     * @throws NoSuchAlgorithmException
      * @throws UnsupportedEncodingException
      * @throws IOException
      */
     public static <T extends CharSequence> String unfV(final T[] obj, int cdg,
             Unf5Class signature) throws
-            NoSuchAlgorithmException, UnsupportedEncodingException,
-            IOException, UnfException {
+            UnsupportedEncodingException,
+            IOException{
         UnfString<T> unfno = new UnfString<T>();
         String init = String.format("%064d", 0);
         Character[] base64 = new Character[64];
@@ -497,11 +488,10 @@ public class Unf5Digest implements UnfCons {
      * @return String with combine unf's
      * @throws UnsupportedEncodingException
      * @throws IOException
-     * @throws NoSuchAlgorithmException
      */
     public static String addUNFs(String[] b64) throws
-            UnsupportedEncodingException, IOException,
-            NoSuchAlgorithmException, UnfException {
+            UnsupportedEncodingException, IOException
+            {
         if (b64.length <= 0) {
             return null;
         } else if (b64.length <= 1) {
@@ -532,8 +522,8 @@ public class Unf5Digest implements UnfCons {
         return fin;
     }
     public static String unfV(final Boolean obj, Unf5Class signature) throws
-            NoSuchAlgorithmException, UnsupportedEncodingException,
-            IOException, UnfException {
+            UnsupportedEncodingException,
+            IOException {
         UnfBoolean unfno = new UnfBoolean();
         Character[] base64 = new Character[64];
         List<Integer> fingerp = new ArrayList<Integer>();
@@ -558,8 +548,7 @@ public class Unf5Digest implements UnfCons {
 
     public static String unfV(final BitString obj,
             Unf5Class signature) throws
-            NoSuchAlgorithmException, UnsupportedEncodingException,
-            IOException, UnfException {
+            UnsupportedEncodingException, IOException{
         UnfBitfield unfno = new UnfBitfield();
         String init = String.format("%064d", 0);
         Character[] base64 = new Character[64];

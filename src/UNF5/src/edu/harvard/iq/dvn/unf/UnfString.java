@@ -41,8 +41,6 @@
 package edu.harvard.iq.dvn.unf;
 
 import java.io.UnsupportedEncodingException;
-import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -77,7 +75,7 @@ public class UnfString<T extends CharSequence> implements UnfCons {
             //md5_init in Micah code
             md = MessageDigest.getInstance(mdalgor);
         } catch (NoSuchAlgorithmException err) {
-            err.getMessage();
+            throw new RuntimeException(err.getMessage());
         }
     }
 
@@ -96,7 +94,7 @@ public class UnfString<T extends CharSequence> implements UnfCons {
             //another algor different form md5
             md = MessageDigest.getInstance(algor);
         } catch (NoSuchAlgorithmException err) {
-            err.getMessage();
+            throw new RuntimeException(err.getMessage());
         }
     }
 
@@ -160,7 +158,7 @@ public class UnfString<T extends CharSequence> implements UnfCons {
             mdm = MessageDigest.getInstance(aa);
             this.md = mdm;
         } catch (NoSuchAlgorithmException err) {
-            err.getMessage();
+            throw new RuntimeException(err.getMessage());
         }
 
     }
@@ -182,11 +180,10 @@ public class UnfString<T extends CharSequence> implements UnfCons {
      * @param result  of Class Number
      * @param miss array of booleans for missing values
      * @throws UnsupportedEncodingException
-     * @throws NoSuchAlgorithmException
      */
     public String RUNF5(final CharSequence[] v, boolean miss[], int digits, List<Integer> result,
             Character[] base64, StringBuilder hex)
-            throws UnsupportedEncodingException, NoSuchAlgorithmException {
+            throws UnsupportedEncodingException {
 
         int nv = v.length;
 
@@ -245,11 +242,10 @@ public class UnfString<T extends CharSequence> implements UnfCons {
      * @param miss boolean for missing values
      * @return updated MessageDigest
      * @throws UnsupportedEncodingException
-     * @throws NoSuchAlgorithmException
      */
     public MessageDigest UNF3(CharSequence obj, int digits,
             MessageDigest previous, boolean miss)
-            throws UnsupportedEncodingException, NoSuchAlgorithmException {
+            throws UnsupportedEncodingException {
         if (!miss) {
             mLog.finer(obj.toString());
             String res = "";

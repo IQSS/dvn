@@ -39,7 +39,6 @@
 package edu.harvard.iq.dvn.unf;
 
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -58,12 +57,10 @@ public class UNF5Util {
      * @param numb one dimensional array of double
      * @return String with unf calculation
      * @throws NumberFormatException
-     * @throws UnfException
      * @throws IOException
-     * @throws NoSuchAlgorithmException
      */
     public static String calculateUNF(final double[] numb)
-            throws NumberFormatException, UnfException, IOException, NoSuchAlgorithmException {
+            throws NumberFormatException, IOException {
 
         Double mat[][] = new Double[1][numb.length];
         for (int n = 0; n < numb.length; ++n) {
@@ -81,12 +78,10 @@ public class UNF5Util {
      * @param numb one dimensional array of float
      * @return String with unf calculation
      * @throws NumberFormatException
-     * @throws UnfException
      * @throws IOException
-     * @throws NoSuchAlgorithmException
      */
     public static String calculateUNF(final float[] numb)
-            throws NumberFormatException, UnfException, IOException, NoSuchAlgorithmException {
+            throws NumberFormatException, IOException {
         double[] toret = new double[numb.length];
         for (int k = 0; k < numb.length; ++k) {
              toret[k] =  numb[k] == Float.NaN ? Double.NaN : (double) numb[k];
@@ -100,12 +95,10 @@ public class UNF5Util {
      * @param numb one dimensional array of short
      * @return String with unf calculation
      * @throws NumberFormatException
-     * @throws UnfException
      * @throws IOException
-     * @throws NoSuchAlgorithmException
      */
     public static String calculateUNF(final short[] numb)
-            throws NumberFormatException, UnfException, IOException, NoSuchAlgorithmException {
+            throws NumberFormatException, IOException {
         double[] toret = new double[numb.length];
         for (int k = 0; k < numb.length; ++k) {
            if (numb[k] == Short.MAX_VALUE){
@@ -124,12 +117,10 @@ public class UNF5Util {
      * @param numb one dimensional array of byte
      * @return String with unf calculation
      * @throws NumberFormatException
-     * @throws UnfException
      * @throws IOException
-     * @throws NoSuchAlgorithmException
      */
     public static String calculateUNF(final byte[] numb)
-            throws NumberFormatException, UnfException, IOException, NoSuchAlgorithmException {
+            throws NumberFormatException, IOException {
         double[] toret = new double[numb.length];
         for (int k = 0; k < numb.length; ++k) {
            if (numb[k] == Byte.MAX_VALUE){
@@ -148,12 +139,10 @@ public class UNF5Util {
      * @param numb one dimensional array of long
      * @return String with unf calculation
      * @throws NumberFormatException
-     * @throws UnfException
      * @throws IOException
-     * @throws NoSuchAlgorithmException
      */
     public static String calculateUNF(final long[] numb)
-            throws NumberFormatException, UnfException, IOException, NoSuchAlgorithmException {
+            throws NumberFormatException, IOException {
 
         double[] toret = new double[numb.length];
         for (int k = 0; k < numb.length; ++k) {
@@ -172,12 +161,10 @@ public class UNF5Util {
      * @param numb one dimensional array of integer
      * @return String with unf calculation
      * @throws NumberFormatException
-     * @throws UnfException
      * @throws IOException
-     * @throws NoSuchAlgorithmException
      */
     public static String calculateUNF(final int[] numb)
-            throws NumberFormatException, UnfException, IOException, NoSuchAlgorithmException {
+            throws NumberFormatException, IOException {
 
         double[] toret = new double[numb.length];
         for (int k = 0; k < numb.length; ++k) {
@@ -196,12 +183,10 @@ public class UNF5Util {
      * @param numb one dimensional array of boolean
      * @return String with unf calculation
      * @throws NumberFormatException
-     * @throws UnfException
      * @throws IOException
-     * @throws NoSuchAlgorithmException
      */
     public static String calculateUNF(final boolean[] numb)
-            throws NumberFormatException, UnfException, IOException, NoSuchAlgorithmException {
+            throws NumberFormatException, IOException {
 
         Boolean[] toret = new Boolean[numb.length];
         for (int k = 0; k < numb.length; ++k) {
@@ -216,12 +201,10 @@ public class UNF5Util {
      * @param numb List with generics types
      * @return String with unf calculation
      * @throws NumberFormatException
-     * @throws UnfException
      * @throws IOException
-     * @throws NoSuchAlgorithmException
      */
     public static <T> String calculateUNF(final List<T> numb)
-            throws NumberFormatException, UnfException, IOException, NoSuchAlgorithmException {
+            throws NumberFormatException, IOException {
         if (numb.get(0) instanceof Number) {
             double[] arr = new double[numb.size()];
             int cnt = 0;
@@ -242,12 +225,10 @@ public class UNF5Util {
      * @param chr one dimensional array of String
      * @return String with unf calculation
      * @throws NumberFormatException
-     * @throws UnfException
      * @throws IOException
-     * @throws NoSuchAlgorithmException
      */
     public static String calculateUNF(final String[] chr)
-            throws UnfException, NoSuchAlgorithmException, IOException {
+            throws IOException {
         String tosplit = ":";
         if (chr[0] != null) {
             String spres[] = chr[0].split(tosplit);
@@ -270,7 +251,7 @@ public class UNF5Util {
     }
 
      public static String calculateUNF(final String[] chr, final String[] sdfFormat)
-            throws UnfException, NoSuchAlgorithmException, IOException {
+            throws  IOException {
         String tosplit = ":";
          if (chr[0] != null) {
              String spres[] = chr[0].split(tosplit);
@@ -328,12 +309,10 @@ public class UNF5Util {
      * to obtain unf along columns second index
      * @return String unf for data set
      * @throws NumberFormatException
-     * @throws UnfException
      * @throws IOException
-     * @throws NoSuchAlgorithmException
      */
     public static String calculateUNF(final double[][] numb)
-            throws NumberFormatException, UnfException, IOException, NoSuchAlgorithmException {
+            throws NumberFormatException, IOException {
         int ncol = numb[0].length;
         List<double[]> lst = Arrays.asList(numb);
         int nrw = lst.size();
@@ -358,12 +337,10 @@ public class UNF5Util {
      * to obtain unf along columns second index
      * @return String unf for data set
      * @throws NumberFormatException
-     * @throws UnfException
      * @throws IOException
-     * @throws NoSuchAlgorithmException
      */
     public static String calculateUNF(final String[][] str)
-            throws NumberFormatException, UnfException, IOException, NoSuchAlgorithmException {
+            throws NumberFormatException, IOException {
         int ncol = str[0].length;
         List<String[]> lst = Arrays.asList(str);
         int nrw = lst.size();
@@ -377,7 +354,7 @@ public class UNF5Util {
         return calculateUNF(unfs);
     }
 
-    public static String calculateUNF(final Number[] numb) throws NoSuchAlgorithmException, IOException, UnfException {
+    public static String calculateUNF(final Number[] numb) throws IOException {
         Double mat[][] = new Double[1][numb.length];
         for (int n = 0; n < numb.length; ++n) {
             mat[0][n] = numb[n] != null ? Double.valueOf(numb[n].doubleValue()) : null;
@@ -388,7 +365,7 @@ public class UNF5Util {
         return res[0];
     }
 
-    public static String calculateUNF(final BitString[] numb) throws NoSuchAlgorithmException, IOException, UnfException {
+    public static String calculateUNF(final BitString[] numb) throws IOException {
         Unf5Digest.setTrnps(false);
         String[] res = Unf5Digest.unf(numb);
 

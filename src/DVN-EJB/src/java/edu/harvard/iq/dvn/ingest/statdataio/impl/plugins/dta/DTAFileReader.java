@@ -137,8 +137,6 @@ public class DTAFileReader extends StatDataFileReader{
         release111type.put("DOUBLE", -1);
 
         
-//        TYPE_OFFSET_TABLE.put("REL_105", release105);
-//        TYPE_OFFSET_TABLE.put("REL_111", release111);
         
         release104constant.put("HEADER",     LENGTH_HEADER[0]);
         release104constant.put("LABEL",     LENGTH_LABEL[0]);
@@ -232,8 +230,7 @@ public class DTAFileReader extends StatDataFileReader{
 
     }
 
-    private static String[] FORMAT_NAMES = {"dta", "DTA"};
-    private static String[] EXTENSIONS = {"dta"};
+   
     private static String[] MIME_TYPE = {"application/x-stata"};
 
 
@@ -248,14 +245,8 @@ public class DTAFileReader extends StatDataFileReader{
     private static final int VALUE_LABEL_HEADER_PADDING_LENGTH = 3;
 
 
-    /** List of decoding methods for reflection */
-    private static String[] decodeMethodNames = {
-        "decodeHeader","decodeDescriptors","decodeVariableLabels",
-        "decodeExpansionFields","decodeData","decodeValueLabels" };
-
-    private static List<Method> decodeMethods  = new ArrayList<Method>();
-
-
+ 
+   
     private static String unfVersionNumber = "5";
 
     private static int MISSING_VALUE_BIAS = 26;
@@ -264,9 +255,7 @@ public class DTAFileReader extends StatDataFileReader{
     private short INT_MISSIG_VALUE = Short.MAX_VALUE;
     private int LONG_MISSING_VALUE = Integer.MAX_VALUE;
     
-    private float FLOAT_MISSING_VALUE = Float.MAX_VALUE;
-    private double DOUBLE_MISSING_VALUE = Double.MAX_VALUE;
-
+  
 
     private static final List<Float> FLOAT_MISSING_VALUES = Arrays.asList(
         0x1.000p127f, 0x1.001p127f, 0x1.002p127f, 0x1.003p127f,
@@ -277,7 +266,7 @@ public class DTAFileReader extends StatDataFileReader{
         0x1.014p127f, 0x1.015p127f, 0x1.016p127f, 0x1.017p127f,
         0x1.018p127f, 0x1.019p127f, 0x1.01ap127f);
 
-    Set<Float> FLOAT_MISSING_VALUE_SET =
+    private Set<Float> FLOAT_MISSING_VALUE_SET =
         new HashSet<Float>(FLOAT_MISSING_VALUES);
 
     private static final List<Double> DOUBLE_MISSING_VALUE_LIST = Arrays.asList(
@@ -288,7 +277,7 @@ public class DTAFileReader extends StatDataFileReader{
         0x1.014p1023, 0x1.015p1023, 0x1.016p1023, 0x1.017p1023, 0x1.018p1023,
         0x1.019p1023, 0x1.01ap1023);
 
-    Set<Double> DOUBLE_MISSING_VALUE_SET =
+    private Set<Double> DOUBLE_MISSING_VALUE_SET =
         new HashSet<Double>(DOUBLE_MISSING_VALUE_LIST);
 
     private static SimpleDateFormat sdf_ymdhmsS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS"); // sdf
@@ -322,13 +311,7 @@ public class DTAFileReader extends StatDataFileReader{
 
     static {
 
-        for (String n: decodeMethodNames){
-            for (Method m: DTAFileReader.class.getDeclaredMethods()){
-                if (m.getName().equals(n)){
-                    decodeMethods.add(m);
-                }
-            }
-        }
+     
         sdf_ymdhmsS.setTimeZone(TimeZone.getTimeZone("GMT"));
         sdf_ymd.setTimeZone(TimeZone.getTimeZone("GMT"));
         sdf_hms.setTimeZone(TimeZone.getTimeZone("GMT"));
@@ -354,19 +337,7 @@ public class DTAFileReader extends StatDataFileReader{
 
 
     }
-    /*
-        // note: stata-missing value(old version)
-        // little endian Hex and decimals: missing values
-        string: ""
-        byte:   0x7f = 127
-        int :   0xff7f = 32,767
-        long:   0xffffff7f = 2,147, 483, 647
-        float:  0x0000007f = 2**127
-        double: 0x000000000000e07f = 2**1023
-
-    */
-   
-
+    
 
 
 
@@ -374,63 +345,67 @@ public class DTAFileReader extends StatDataFileReader{
 
     private static Logger dbgLog = Logger.getLogger(DTAFileReader.class.getPackage().getName());
 
-    NumberFormat doubleNumberFormatter = new DecimalFormat();
+  
 
-    // separate formatters for single-width floats:
+    private String[] variableFormats = null;
 
-    NumberFormat floatNumberFormatter = new DecimalFormat();
+    private Map<String, String> formatCategoryTable = new LinkedHashMap<String, String>();
 
+    private Map<String, String> formatNameTable = new LinkedHashMap<String, String>();
 
-
-
-    SDIOMetadata smd = new DTAMetadata();
+    private Map<String, String> valueLabelSchemeMappingTable = new LinkedHashMap<String, String>();
     
-
-    SDIOData sdiodata;
-
-    DataTable stataDataSection = new DataTable();
-
-    int release_number;
-    int header_length;
-    int data_label_length;
-
-
-
-    Map<String, Integer> type_offset_table ;
+    private Map<Integer, Integer> StringVariableTable = new LinkedHashMap<Integer, Integer>();
     
-    Map<String, Integer> constant_table ;
-    
-    Map<Byte, Integer> byteLengthTable;
-    
-    double missing_value_double;
-
-    boolean isLittleEndian = false;
-
-    int bytes_per_row;
-
-    Map<Byte, String> variableTypeTable;
-
-    String[] variableTypelList=null;
-    
-    String[] variableTypelListFinal= null;
-    boolean[] isDateTimeDatumList = null;
-
-    Map<Integer, Integer> StringVariableTable = new LinkedHashMap<Integer, Integer>();
-    
-    int value_label_table_length;
-    
-    Map<String, Map<String, String>> valueLabelTable =
+    private Map<String, Map<String, String>> valueLabelTable =
             new LinkedHashMap<String, Map<String, String>>();
 
-    //Map<Integer, List<?  extends Object>> columnwiseDataTable;
-    
-    String[] unfValues = null;
-    
-    String fileUnfValue = null;
+    private Map<String, Integer> typeOffsetTable ;
 
-    List<String> variableNameList = new ArrayList<String>();
+    private Map<String, Integer> constantTable ;
 
-    Map<String, String> variableLabelMap = new LinkedHashMap<String, String>();
+    private Map<Byte, Integer> byteLengthTable;
+
+    private Map<Byte, String> variableTypeTable;
+
+
+
+    private NumberFormat twoDigitFormatter = new DecimalFormat("00");
+
+    private NumberFormat doubleNumberFormatter = new DecimalFormat();
+
+    private SDIOMetadata smd = new DTAMetadata();
+    
+
+    private SDIOData sdiodata;
+
+    private DataTable stataDataSection = new DataTable();
+
+    private int releaseNumber;
+
+    private int headerLength;
+
+    private int dataLabelLength;
+
+    private boolean isLittleEndian = false;
+
+    private int bytes_per_row;
+
+    
+
+    private String[] variableTypelList=null;
+    
+    private String[] variableTypelListFinal= null;
+    
+    private boolean[] isDateTimeDatumList = null;
+
+    private int value_label_table_length;
+    
+    private String fileUnfValue = null;
+
+    private List<String> variableNameList = new ArrayList<String>();
+
+    private Map<String, String> variableLabelMap = new LinkedHashMap<String, String>();
 
 
     /**
@@ -438,69 +413,17 @@ public class DTAFileReader extends StatDataFileReader{
      * for a tab-delimited data file, initially "NA" 
      * after R's missing value.
      */
-    String MissingValueForTextDataFileNumeric = "";
+    private static final String MissingValueForTextDataFileNumeric = "";
 
-    /**
-     * Returns the value of the
-     * <code>MissingValueForTextDataFileNumeric</code> field.
-     * 
-     * @return the value of the
-     * <code>MissingValueForTextDataFileNumeric</code> field.
-     */
-    public String getMissingValueForTextDataFileNumeric() {
-        return MissingValueForTextDataFileNumeric;
-    }
-
-    /**
-     * Sets the new value of 
-     * the <code>setMissingValueForTextDataFileNumeric</code> field.
-     * 
-     * @param MissingValueToken the new value of the
-     * <code>setMissingValueForTextDataFileNumeric</code> field.
-     */
-    public void setMissingValueForTextDataFileNumeric(String MissingValueToken) {
-        this.MissingValueForTextDataFileNumeric = MissingValueToken;
-    }
-
-
+ 
     /**
      * The <code>String</code> that represents the string missing value 
      * for a tab-delimited data file, initially "".
      */
-    String MissingValueForTextDataFileString = "";
+    private static final String MissingValueForTextDataFileString = "";
 
-    /**
-     * Returns the value of the
-     * <code>MissingValueForTextDataFileString</code> field.
-     * 
-     * @return the value of the
-     * <code>MissingValueForTextDataFileString</code> field.
-     */
-    public String getMissingValueForTextDataFileString() {
-        return MissingValueForTextDataFileString;
-    }
-
-    /**
-     * Sets the new value of 
-     * the <code>MissingValueForTextDataFileString</code> field.
-     * 
-     * @param MissingValueToken the new value of the
-     * <code>MissingValueForTextDataFileString</code> field.
-     */
-    public void setMissingValueForTextDataFileString(String MissingValueToken) {
-        this.MissingValueForTextDataFileString = MissingValueToken;
-    }
-
-    String[] variableFormats = null;
-
-    Map<String, String> formatCategoryTable = new LinkedHashMap<String, String>();
-    
-    Map<String, String> formatNameTable = new LinkedHashMap<String, String>();
-
-    Map<String, String> valueLabelSchemeMappingTable = new LinkedHashMap<String, String>();
-
-    NumberFormat twoDigitFormatter = new DecimalFormat("00");
-
+ 
+  
     // Constructor -----------------------------------------------------------//
 
     /**
@@ -518,14 +441,14 @@ public class DTAFileReader extends StatDataFileReader{
 
     private void init(){
         //
-        dbgLog.fine("release number="+release_number);
+        dbgLog.fine("release number="+releaseNumber);
         
-        if (release_number < 111) {
-            type_offset_table = release105type;
+        if (releaseNumber < 111) {
+            typeOffsetTable = release105type;
             variableTypeTable = variableTypeTable105;
             byteLengthTable = byteLengthTable105;
         } else {
-            type_offset_table = release111type;
+            typeOffsetTable = release111type;
             variableTypeTable = variableTypeTable111;
             byteLengthTable = byteLengthTable111;
             BYTE_MISSING_VALUE   -= MISSING_VALUE_BIAS;
@@ -533,27 +456,24 @@ public class DTAFileReader extends StatDataFileReader{
             LONG_MISSING_VALUE   -= MISSING_VALUE_BIAS;
         }
         
-        if (release_number <= 105){
+        if (releaseNumber <= 105){
             value_label_table_length = 2;
         } else {
             value_label_table_length = 4;
         }
         
-        dbgLog.fine("type-offset table to be used:\n"+type_offset_table);
+        dbgLog.fine("type-offset table to be used:\n"+typeOffsetTable);
 
-        constant_table = CONSTATNT_TABLE.get(release_number);
+        constantTable = CONSTATNT_TABLE.get(releaseNumber);
 
-        header_length = constant_table.get("HEADER") - DTA_MAGIC_NUMBER_LENGTH;
+        headerLength = constantTable.get("HEADER") - DTA_MAGIC_NUMBER_LENGTH;
         
-        data_label_length = header_length - (NVAR_FIELD_LENGTH +
+        dataLabelLength = headerLength - (NVAR_FIELD_LENGTH +
             NOBS_FIELD_LENGTH + TIME_STAMP_LENGTH);
-        dbgLog.fine("data_label_length="+data_label_length);
+        dbgLog.fine("data_label_length="+dataLabelLength);
 
-        dbgLog.fine("constant table to be used:\n"+constant_table);
-
-        missing_value_double = Math.pow(2, constant_table.get("DBL_MV_PWR"));
-
-        //out.format("%e\n", missing_value_double);
+        dbgLog.fine("constant table to be used:\n"+constantTable);
+       
 
         doubleNumberFormatter.setGroupingUsed(false);
         doubleNumberFormatter.setMaximumFractionDigits(340);
@@ -572,33 +492,17 @@ public class DTAFileReader extends StatDataFileReader{
     @Override
     public SDIOData read(BufferedInputStream stream) throws IOException{
         dbgLog.info("***** DTAFileReader: read() start *****");
-
-        for (Method mthd : decodeMethods){
-
-            try {
-                // invoke this method
-                dbgLog.fine("method Name="+mthd.getName());
-
-                if (mthd.getName().equals("decodeExpansionFields")){
-                    if (release_number == 104){
-                        // release 104 does not have the expansion fields
-                        continue;
-                    }
-                }
-
-                mthd.invoke(this, stream);
-
-            } catch (InvocationTargetException e) {
-                Throwable cause = e.getCause();
-
-           //     err.format(cause.getMessage());
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-
-        }
         
+        decodeHeader(stream);
+        decodeDescriptors(stream);
+        decodeVariableLabels(stream);
+        if (releaseNumber!=104) {
+            decodeExpansionFields(stream);
+        }
+        decodeData(stream);
+        decodeValueLabels(stream);
+
+       
         smd.setVariableFormatName(formatNameTable);
         smd.setVariableFormatCategory(formatCategoryTable);
         smd.setValueLabelMappingTable(valueLabelSchemeMappingTable);
@@ -615,7 +519,7 @@ public class DTAFileReader extends StatDataFileReader{
 
 
 
-    void decodeHeader(BufferedInputStream stream){
+    private void decodeHeader(BufferedInputStream stream) throws IOException {
         dbgLog.fine("***** decodeHeader(): start *****");
 
         if (stream ==null){
@@ -625,25 +529,20 @@ public class DTAFileReader extends StatDataFileReader{
         dbgLog.fine("reading the header segument 1: 4 byte\n");
         byte[] magic_number = new byte[DTA_MAGIC_NUMBER_LENGTH];
 
-        try{
+   
 
-            int nbytes = stream.read(magic_number, 0, DTA_MAGIC_NUMBER_LENGTH);
+        int nbytes = stream.read(magic_number, 0, DTA_MAGIC_NUMBER_LENGTH);
 
-            if (nbytes == 0){
-                throw new IOException();
-            }
-        //            dbgLog.fine("header: hex dump");
-        //            for (int i = 0; i < magic_number.length; ++i) {
-        //                out.printf("%2d\t0x%02X\n", i, magic_number[i]);
-        //            }
+        if (nbytes == 0){
+            throw new IOException();
+        }
+   
 
        dbgLog.fine("hex dump: 1st 4bytes =>" +
                 new String(Hex.encodeHex(magic_number)) + "<-");
 
 
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
+     
 
         if (magic_number[2] != 1) {
             dbgLog.fine("3rd byte is not 1: given file is not stata-dta type");
@@ -657,8 +556,8 @@ public class DTAFileReader extends StatDataFileReader{
                     "this file is NOT stata-dta type");
             throw new IllegalArgumentException("given file is not stata-dta type");
         } else {
-            release_number = (int)magic_number[0];
-            smd.getFileInformation().put("releaseNumber", release_number);
+            releaseNumber = (int)magic_number[0];
+            smd.getFileInformation().put("releaseNumber", releaseNumber);
             smd.getFileInformation().put("byteOrder", (int)magic_number[1]);
             smd.getFileInformation().put("OSByteOrder", ByteOrder.nativeOrder().toString());
 
@@ -680,14 +579,11 @@ public class DTAFileReader extends StatDataFileReader{
         }
 
         dbgLog.fine("reading the remaining header segument 2: 60 or 109-byte");
-        //  60 - 4 = 56
-        // 109 - 4 = 105
-        try {
-
-            byte[] header = new byte[header_length];
-            int nbytes = stream.read(header, 0, header_length);
+     
+            byte[] header = new byte[headerLength];
+            nbytes = stream.read(header, 0, headerLength);
             //printHexDump(header, "header:\n");
-
+       
             // 1. number of variables: short (2 bytes)
             ByteBuffer bbnvar = ByteBuffer.wrap(header, 0, NVAR_FIELD_LENGTH);
             ByteBuffer dupnvar = bbnvar.duplicate();
@@ -698,9 +594,7 @@ public class DTAFileReader extends StatDataFileReader{
                 bbnvar.order(ByteOrder.LITTLE_ENDIAN);
 
             }
-            //ShortBuffer s_nvar = nvar.asShortBuffer();
-            //out.println("get short view(nvar)="+ nvar.getShort());
-            //out.println("as short view(nvar)="+ s_nvar.get());
+     
             short shrt_nvar = bbnvar.getShort();
             smd.getFileInformation().put("varQnty", new Integer(shrt_nvar));
 
@@ -727,10 +621,10 @@ public class DTAFileReader extends StatDataFileReader{
             // 3. data_label: 32 or 81 bytes
             int dl_offset = NVAR_FIELD_LENGTH + NOBS_FIELD_LENGTH ;
             dbgLog.fine("dl_offset="+dl_offset);
-            dbgLog.fine("data_label_length="+data_label_length);
+            dbgLog.fine("data_label_length="+dataLabelLength);
 
             String data_label = new String(Arrays.copyOfRange(header, dl_offset,
-                (dl_offset+data_label_length)), "ISO-8859-1");
+                (dl_offset+dataLabelLength)), "ISO-8859-1");
 
 
 
@@ -746,8 +640,8 @@ public class DTAFileReader extends StatDataFileReader{
 
             // 4. time_stamp: ASCII String (18 bytes)
             // added after release 4
-            if (release_number > 104){
-                int ts_offset = dl_offset + data_label_length;
+            if (releaseNumber > 104){
+                int ts_offset = dl_offset + dataLabelLength;
                 String time_stamp = new String(Arrays.copyOfRange(header, ts_offset,
                     ts_offset+TIME_STAMP_LENGTH),"ISO-8859-1");
                 dbgLog.fine("time_stamp_length="+time_stamp.length());
@@ -764,11 +658,7 @@ public class DTAFileReader extends StatDataFileReader{
                 smd.getFileInformation().put("varFormat_schema", "STATA");
 
             }
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        } catch (Exception e){
-            e.printStackTrace();
-        }
+       
 
         dbgLog.fine("smd dump:"+smd.toString());
         dbgLog.fine("***** decodeHeader(): end *****");
@@ -776,300 +666,286 @@ public class DTAFileReader extends StatDataFileReader{
 
 
 
-    void decodeDescriptors(BufferedInputStream stream){
+    private void decodeDescriptors(BufferedInputStream stream) throws IOException {
 
         dbgLog.fine("***** decodeDescriptors(): start *****");
         
         if (stream ==null){
             throw new IllegalArgumentException("stream == null!");
         }
-        
-        // part 1: variable type list
         int nvar = (Integer)smd.getFileInformation().get("varQnty");
-        byte[] typeList = new byte[nvar];
-        try {
-            // note: the offset param of read() is relative to
-            // the current position, not absolute position
-            int nbytes = stream.read(typeList, 0, nvar);
-            //printHexDump(typeList, "variable type list");
-            if (nbytes == 0){
-                throw new IOException("reading the descriptior: no byte was read");
-            }
-            /*
-              111 type
-              Type:   b   i   l   f   d (byte, int, long, float, double)
-              byte:  -5  -4  -3  -2  -1 (signed byte = java's byte type)
-              byte: 251 252 253 254 255 (unsigned byte)
-               HEX:  FB  FC  FD  FE  FF
-               
-              105 type(type chars correspond to their hex/decimal expressions
-              Type:   b   i   l   f   d (byte, int, long, float, double)
-              byte:  98 105 108 102 100 (signed byte = java's byte type)
-              byte:  98 105 108 102 100 (unsigned byte)
-               HEX:  62  69  6C  66  64  
-            */
-            dbgLog.fine("type_offset_table:\n"+type_offset_table);
-            dbgLog.fine("type code list:\n");
 
-            bytes_per_row = 0;
-            for (int i=0; i<typeList.length; i++){
-                dbgLog.fine(i+"-th value="+typeList[i]);
-                
-                if (byteLengthTable.containsKey(typeList[i])){
-                    bytes_per_row += byteLengthTable.get(typeList[i]);
-                    
-                    variableTypelList[i]= variableTypeTable.get(typeList[i]);
+        // part 1: variable type list
+        decodeDescriptorVarTypeList(stream,nvar);
 
-
-                } else {
-                        // pre-111 string type
-		    dbgLog.info("DTA reader: release number: "+release_number);
-
-                    if (release_number < 111){
-                        int stringType = 256 + typeList[i];
-                        if ( stringType >= type_offset_table.get("STRING")) {
-                            int string_var_length = stringType
-                                - type_offset_table.get("STRING");
-                            dbgLog.fine("string_var_length="+string_var_length);
-                            bytes_per_row += string_var_length;
-
-                            variableTypelList[i] = "String";
-                            StringVariableTable.put(i,string_var_length);
-
-
-                        } else if ((256+ typeList[i]) <
-                            type_offset_table.get("STRING")) {
-                            throw new IOException(
-                            "unknown variable type was detected: reading errors?");
-                        }
-                    } else if (release_number >= 111){
-                        // post-111 string type
-			dbgLog.fine("DTA reader: typeList["+i+"]="+typeList[i]);
-			
-			// if the size of strXXX type is less than 128, 
-			// the value of typeList[i] will be equal to that;
-			// if however it is >= 128, typeList[i] = (size - 256)
-			// i.e. it'll be a negative value:
-
-                        int stringType = ((typeList[i] > 0) &&
-					  (typeList[i] <= 127)) ? 
-			    typeList[i] :
-			    256 + typeList[i];
-                        
-                        if ( stringType >= type_offset_table.get("STRING")) {
-                            int string_var_length = stringType - type_offset_table.get("STRING");
-                            dbgLog.fine("DTA reader: string_var_length="+string_var_length);
-                            bytes_per_row += string_var_length;
-
-                            variableTypelList[i] = "String";
-                            StringVariableTable.put(i,string_var_length);
-
-
-                        } else if (stringType < type_offset_table.get("STRING")) {
-                            throw new IOException(
-                            "unknown variable type was detected: reading errors?");
-                        }
-                    } else {
-                        throw new IOException("uknown release number ");
-                    }
-
-                }
-                dbgLog.fine(i+"=th\t sum="+ bytes_per_row);
-            }
-            dbgLog.fine("bytes_per_row(final)="+bytes_per_row);
-            
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-        
-        dbgLog.fine("variableTypelList:\n"+Arrays.deepToString(variableTypelList));
-
-        dbgLog.fine("StringVariableTable="+StringVariableTable);
-        
-        variableTypelListFinal = new String[nvar];
-        for (int i=0; i< variableTypelList.length; i++){
-            variableTypelListFinal[i] = new String(variableTypelList[i]);
-        }
-        
-        
         
         // part 2: Variable_Name List
         // name length= 9(release 105) or 33 (release 111) each null terminated
-        int length_var_name = constant_table.get("NAME");
-        int length_var_name_list = length_var_name*nvar;
-        dbgLog.fine("length_var_name_list="+length_var_name_list);
-
-        byte[] variableNameBytes = new byte[length_var_name_list];
-        //String[] variableNames = new String[nvar];
-        try {
-            int nbytes = stream.read(variableNameBytes, 0, length_var_name_list);
-
-            //printHexDump(variableNameList, "variable name list");
-            if (nbytes == 0){
-                throw new IOException("reading the var name list: no var name was read");
-            }
-            int offset_start = 0;
-            int offset_end = 0;
-            for (int i= 0; i< nvar; i++){
-                offset_end += length_var_name;
-                String vari = new String(Arrays.copyOfRange(variableNameBytes, offset_start,
-                    offset_end),"ISO-8859-1");
-                variableNameList.add(getNullStrippedString(vari));
-                dbgLog.fine(i+"-th name=["+variableNameList.get(i)+"]");
-                offset_start = offset_end;
-            }
-            dbgLog.fine("variableNameList=\n"+StringUtils.join(variableNameList, ",\n")+"\n");
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-
-        smd.setVariableName(variableNameList.toArray(new String[variableNameList.size()]));
+        decodeDescriptorVarNameList(stream,nvar);
 
         // Part 3: variable sort list
         // length of this field = short(2bytes)*(nvar +1)
-        int length_var_sort_list = VAR_SORT_FIELD_LENGTH*(nvar+1);
-        dbgLog.fine("length_var_sort_list="+length_var_sort_list);
-
-        byte[] varSortList = new byte[length_var_sort_list];
-        short[] variableSortList = new short[nvar+1];
-
-        try {
-            int nbytes = stream.read(varSortList, 0, length_var_sort_list);
-
-            //printHexDump(varSortList, "varSortList");
-
-            if (nbytes == 0){
-                throw new IOException("reading error: the varSortList");
-            }
-            
-            int offset_start = 0;
-            for (int i= 0; i<= nvar; i++){
-                //dbgLog.fine(i+"-th iteration:(offset="+ offset_start+")");
-
-                ByteBuffer bb_varSortList = ByteBuffer.wrap(varSortList, 
-                    offset_start, VAR_SORT_FIELD_LENGTH);
-                if (isLittleEndian){
-                    bb_varSortList.order(ByteOrder.LITTLE_ENDIAN);
-                }
-                variableSortList[i] = bb_varSortList.getShort();
-                //dbgLog.fine(variableSortList[i]);
-                offset_start += VAR_SORT_FIELD_LENGTH;
-            }
-            dbgLog.fine("variableSortList="+ Arrays.toString(variableSortList));
-
-        } catch (IOException ex) {
-           ex.printStackTrace();
-        }
+        decodeDescriptorVarSortList(stream,nvar);
+       
 
         // Part 4: variable format list
         // VAR_FORMAT_FIELD_LENGTH (7,12, 49 bytes) * navar
         // null-terminated string
-        int length_var_format =  constant_table.get("FORMAT");
-        int length_var_format_list = length_var_format*nvar;
-        dbgLog.fine("length_var_format_list="+length_var_format_list);
-
-        byte[] variableFormatList = new byte[length_var_format_list];
-        variableFormats = new String[nvar];
-        isDateTimeDatumList = new boolean[nvar];
-        try {
-            int nbytes = stream.read(variableFormatList, 0, length_var_format_list);
-
-            //printHexDump(variableFormatList, "variableFormatList");
-            if (nbytes == 0){
-                throw new IOException("reading var formats: no format was read");
-            }
-            int offset_start = 0;
-            int offset_end = 0;
-            for (int i= 0; i< nvar; i++){
-                offset_end += length_var_format;
-                String vari = new String(Arrays.copyOfRange(variableFormatList, offset_start,
-                    offset_end),"ISO-8859-1");
-                variableFormats[i] = getNullStrippedString(vari);
-                dbgLog.fine(i+"-th format=["+variableFormats[i]+"]");
-                
-                
-                
-                String variableFormat = variableFormats[i];
-                String variableFormatKey= null;
-                if (variableFormat.startsWith("%t")){
-                    variableFormatKey = variableFormat.substring(0, 3);
-                } else {
-                    variableFormatKey = variableFormat.substring(0, 2);
-                }
-                dbgLog.fine(i+" th variableFormatKey="+variableFormatKey);
-
-                if (DATE_TIME_FORMAT_TABLE.containsKey(variableFormatKey)){
-                
-                    formatNameTable.put(variableNameList.get(i), variableFormat);
-                    
-                    formatCategoryTable.put(variableNameList.get(i) , DATE_TIME_FORMAT_TABLE.get(variableFormatKey));
-                    
-                    isDateTimeDatumList[i] = true;
-                    dbgLog.fine(i+"th var: category="+
-                        DATE_TIME_FORMAT_TABLE.get(variableFormatKey)
-                        );
-                        
-                    variableTypelListFinal[i]="String";
-                } else {
-                    isDateTimeDatumList[i] = false;
-                }
-
-
-                
-                offset_start = offset_end;
-            }
-            dbgLog.fine("variableFormats=\n"+StringUtils.join(variableFormats, ",\n")+"\n");
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-
-
-        //smd.setVariableFormat(variableFormats);
+        decodeDescriptorVariableFormat(stream, nvar);
 
         // Part 5: value-label list
         // variable_name * nvar null-terminated String
-        
-        int length_label_name = constant_table.get("NAME");
-        int length_label_name_list = length_label_name*nvar;
-        dbgLog.fine("length_label_name="+length_label_name_list);
-
-        byte[] labelNameList = new byte[length_label_name_list];
-        String[] labelNames = new String[nvar];
-        try {
-            int nbytes = stream.read(labelNameList, 0, length_label_name_list);
-
-            //printHexDump(labelNameList, "labelNameList");
-            if (nbytes == 0){
-                throw new IOException("reading value-label list:: no var name was read");
-            }
-            int offset_start = 0;
-            int offset_end = 0;
-            for (int i= 0; i< nvar; i++){
-                offset_end += length_label_name;
-                String vari = new String(Arrays.copyOfRange(labelNameList, offset_start,
-                    offset_end),"ISO-8859-1");
-                labelNames[i] = getNullStrippedString(vari);
-                dbgLog.fine(i+"-th label=["+labelNames[i]+"]");
-                offset_start = offset_end;
-            }
-            dbgLog.fine("labelNames=\n"+StringUtils.join(labelNames, ",\n")+"\n");
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-        for (int i=0; i <nvar; i++){
-            if ((labelNames[i] != null) && (!labelNames[i].equals(""))){
-                valueLabelSchemeMappingTable.put(variableNameList.get(i), labelNames[i]);
-            }
-        }
-        dbgLog.fine("valueLabelSchemeMappingTable:\n"+valueLabelSchemeMappingTable);
+        decodeDescriptorValueLabel(stream, nvar);
+      
         
         dbgLog.fine("smd dump (Descriptor):\n"+smd.toString());
         dbgLog.fine("***** decodeDescriptors(): end *****");
 
     }
-    
 
-    void decodeVariableLabels(BufferedInputStream stream){
+    private void decodeDescriptorVarTypeList(BufferedInputStream stream, int nvar) throws IOException {
+        byte[] typeList = new byte[nvar];
+
+        // note: the offset param of read() is relative to
+        // the current position, not absolute position
+        int nbytes = stream.read(typeList, 0, nvar);
+        //printHexDump(typeList, "variable type list");
+        if (nbytes == 0) {
+            throw new IOException("reading the descriptior: no byte was read");
+        }
+        /*
+        111 type
+        Type:   b   i   l   f   d (byte, int, long, float, double)
+        byte:  -5  -4  -3  -2  -1 (signed byte = java's byte type)
+        byte: 251 252 253 254 255 (unsigned byte)
+        HEX:  FB  FC  FD  FE  FF
+
+        105 type(type chars correspond to their hex/decimal expressions
+        Type:   b   i   l   f   d (byte, int, long, float, double)
+        byte:  98 105 108 102 100 (signed byte = java's byte type)
+        byte:  98 105 108 102 100 (unsigned byte)
+        HEX:  62  69  6C  66  64
+         */
+        dbgLog.fine("type_offset_table:\n" + typeOffsetTable);
+
+
+        bytes_per_row = 0;
+        for (int i = 0; i < typeList.length; i++) {
+            dbgLog.fine(i + "-th value=" + typeList[i]);
+
+            if (byteLengthTable.containsKey(typeList[i])) {
+                bytes_per_row += byteLengthTable.get(typeList[i]);
+                variableTypelList[i] = variableTypeTable.get(typeList[i]);
+            } else {
+                // pre-111 string type
+                if (releaseNumber < 111) {
+                    int stringType = 256 + typeList[i];
+                    if (stringType >= typeOffsetTable.get("STRING")) {
+                        int string_var_length = stringType - typeOffsetTable.get("STRING");
+                        dbgLog.fine("string_var_length=" + string_var_length);
+                        bytes_per_row += string_var_length;
+
+                        variableTypelList[i] = "String";
+                        StringVariableTable.put(i, string_var_length);
+
+
+                    } else if ((256 + typeList[i]) <
+                            typeOffsetTable.get("STRING")) {
+                        throw new IOException(
+                                "unknown variable type was detected: reading errors?");
+                    }
+                } else if (releaseNumber >= 111) {
+                    // post-111 string type
+                    dbgLog.fine("DTA reader: typeList[" + i + "]=" + typeList[i]);
+
+                    // if the size of strXXX type is less than 128,
+                    // the value of typeList[i] will be equal to that;
+                    // if however it is >= 128, typeList[i] = (size - 256)
+                    // i.e. it'll be a negative value:
+
+                    int stringType = ((typeList[i] > 0) &&
+                            (typeList[i] <= 127)) ? typeList[i] : 256 + typeList[i];
+
+                    if (stringType >= typeOffsetTable.get("STRING")) {
+                        int string_var_length = stringType - typeOffsetTable.get("STRING");
+                        dbgLog.fine("DTA reader: string_var_length=" + string_var_length);
+                        bytes_per_row += string_var_length;
+
+                        variableTypelList[i] = "String";
+                        StringVariableTable.put(i, string_var_length);
+
+
+                    } else if (stringType < typeOffsetTable.get("STRING")) {
+                        throw new IOException(
+                                "unknown variable type was detected: reading errors?");
+                    }
+                } else {
+                    throw new IOException("uknown release number ");
+                }
+
+            }
+            dbgLog.fine(i + "=th\t sum=" + bytes_per_row);
+        }
+        dbgLog.fine("bytes_per_row(final)=" + bytes_per_row);
+        dbgLog.fine("variableTypelList:\n" + Arrays.deepToString(variableTypelList));
+        dbgLog.fine("StringVariableTable=" + StringVariableTable);
+
+        variableTypelListFinal = new String[nvar];
+        for (int i = 0; i < variableTypelList.length; i++) {
+            variableTypelListFinal[i] = new String(variableTypelList[i]);
+        }
+
+    }
+
+
+
+    private void decodeDescriptorVarNameList(BufferedInputStream stream, int nvar) throws IOException {
+        int length_var_name = constantTable.get("NAME");
+        int length_var_name_list = length_var_name * nvar;
+        dbgLog.fine("length_var_name_list=" + length_var_name_list);
+
+        byte[] variableNameBytes = new byte[length_var_name_list];
+        //String[] variableNames = new String[nvar];
+
+        int nbytes = stream.read(variableNameBytes, 0, length_var_name_list);
+
+
+        if (nbytes == 0) {
+            throw new IOException("reading the var name list: no var name was read");
+        }
+        int offset_start = 0;
+        int offset_end = 0;
+        for (int i = 0; i < nvar; i++) {
+            offset_end += length_var_name;
+            String vari = new String(Arrays.copyOfRange(variableNameBytes, offset_start,
+                    offset_end), "ISO-8859-1");
+            variableNameList.add(getNullStrippedString(vari));
+            dbgLog.fine(i + "-th name=[" + variableNameList.get(i) + "]");
+            offset_start = offset_end;
+        }
+        dbgLog.fine("variableNameList=\n" + StringUtils.join(variableNameList, ",\n") + "\n");
+
+
+        smd.setVariableName(variableNameList.toArray(new String[variableNameList.size()]));
+    }
+
+    private void decodeDescriptorVarSortList(BufferedInputStream stream, int nvar) throws IOException {
+        int length_var_sort_list = VAR_SORT_FIELD_LENGTH * (nvar + 1);
+        dbgLog.fine("length_var_sort_list=" + length_var_sort_list);
+
+        byte[] varSortList = new byte[length_var_sort_list];
+        short[] variableSortList = new short[nvar + 1];
+
+
+        int nbytes = stream.read(varSortList, 0, length_var_sort_list);
+
+        if (nbytes == 0) {
+            throw new IOException("reading error: the varSortList");
+        }
+
+        int offset_start = 0;
+        for (int i = 0; i <= nvar; i++) {
+
+
+            ByteBuffer bb_varSortList = ByteBuffer.wrap(varSortList,
+                    offset_start, VAR_SORT_FIELD_LENGTH);
+            if (isLittleEndian) {
+                bb_varSortList.order(ByteOrder.LITTLE_ENDIAN);
+            }
+            variableSortList[i] = bb_varSortList.getShort();
+
+            offset_start += VAR_SORT_FIELD_LENGTH;
+        }
+        dbgLog.fine("variableSortList=" + Arrays.toString(variableSortList));
+
+    }
+
+
+    private void decodeDescriptorVariableFormat(BufferedInputStream stream, int nvar) throws IOException {
+        int length_var_format = constantTable.get("FORMAT");
+        int length_var_format_list = length_var_format * nvar;
+        dbgLog.fine("length_var_format_list=" + length_var_format_list);
+
+        byte[] variableFormatList = new byte[length_var_format_list];
+        variableFormats = new String[nvar];
+        isDateTimeDatumList = new boolean[nvar];
+
+        int nbytes = stream.read(variableFormatList, 0, length_var_format_list);
+
+        if (nbytes == 0) {
+            throw new IOException("reading var formats: no format was read");
+        }
+        int offset_start = 0;
+        int offset_end = 0;
+        for (int i = 0; i < nvar; i++) {
+            offset_end += length_var_format;
+            String vari = new String(Arrays.copyOfRange(variableFormatList, offset_start,
+                    offset_end), "ISO-8859-1");
+            variableFormats[i] = getNullStrippedString(vari);
+            dbgLog.fine(i + "-th format=[" + variableFormats[i] + "]");
+
+            String variableFormat = variableFormats[i];
+            String variableFormatKey = null;
+            if (variableFormat.startsWith("%t")) {
+                variableFormatKey = variableFormat.substring(0, 3);
+            } else {
+                variableFormatKey = variableFormat.substring(0, 2);
+            }
+            dbgLog.fine(i + " th variableFormatKey=" + variableFormatKey);
+
+            if (DATE_TIME_FORMAT_TABLE.containsKey(variableFormatKey)) {
+                formatNameTable.put(variableNameList.get(i), variableFormat);
+                formatCategoryTable.put(variableNameList.get(i), DATE_TIME_FORMAT_TABLE.get(variableFormatKey));
+                isDateTimeDatumList[i] = true;
+                dbgLog.fine(i + "th var: category=" +
+                        DATE_TIME_FORMAT_TABLE.get(variableFormatKey));
+                variableTypelListFinal[i] = "String";
+            } else {
+                isDateTimeDatumList[i] = false;
+            }
+
+            offset_start = offset_end;
+        }
+        dbgLog.fine("variableFormats=\n" + StringUtils.join(variableFormats, ",\n") + "\n");
+
+
+    }
+
+    private void decodeDescriptorValueLabel(BufferedInputStream stream, int nvar) throws IOException {
+        int length_label_name = constantTable.get("NAME");
+        int length_label_name_list = length_label_name * nvar;
+        dbgLog.fine("length_label_name=" + length_label_name_list);
+
+        byte[] labelNameList = new byte[length_label_name_list];
+        String[] labelNames = new String[nvar];
+
+        int nbytes = stream.read(labelNameList, 0, length_label_name_list);
+
+        if (nbytes == 0) {
+            throw new IOException("reading value-label list:: no var name was read");
+        }
+        int offset_start = 0;
+        int offset_end = 0;
+        for (int i = 0; i < nvar; i++) {
+            offset_end += length_label_name;
+            String vari = new String(Arrays.copyOfRange(labelNameList, offset_start,
+                    offset_end), "ISO-8859-1");
+            labelNames[i] = getNullStrippedString(vari);
+            dbgLog.fine(i + "-th label=[" + labelNames[i] + "]");
+            offset_start = offset_end;
+        }
+        dbgLog.fine("labelNames=\n" + StringUtils.join(labelNames, ",\n") + "\n");
+
+        for (int i = 0; i < nvar; i++) {
+            if ((labelNames[i] != null) && (!labelNames[i].equals(""))) {
+                valueLabelSchemeMappingTable.put(variableNameList.get(i), labelNames[i]);
+            }
+        }
+        dbgLog.fine("valueLabelSchemeMappingTable:\n" + valueLabelSchemeMappingTable);
+    }
+
+
+    private void decodeVariableLabels(BufferedInputStream stream){
 
         dbgLog.fine("***** decodeVariableLabels(): start *****");
         
@@ -1079,7 +955,7 @@ public class DTAFileReader extends StatDataFileReader{
         
         // variable label length (32 or 81 bytes)*nvar, each null-terminated
         int nvar = (Integer)smd.getFileInformation().get("varQnty");
-        int length_var_label = constant_table.get("LABEL");
+        int length_var_label = constantTable.get("LABEL");
         int length_var_label_list = length_var_label*nvar;
         dbgLog.fine("length_label_name="+length_var_label_list);
 
@@ -1115,7 +991,7 @@ public class DTAFileReader extends StatDataFileReader{
     }
     
 
-    void decodeExpansionFields(BufferedInputStream stream){
+    private void decodeExpansionFields(BufferedInputStream stream)throws IOException{
 
         dbgLog.fine("***** decodeExpansionFields(): start *****");
         
@@ -1127,20 +1003,16 @@ public class DTAFileReader extends StatDataFileReader{
         // [1-byte byte_field][short(2)/int(4)_field][variable_field whose
         // length is specified by the previous short/int field]
         
-        int int_type_expansion_field = constant_table.get("EXPANSION");
+        int int_type_expansion_field = constantTable.get("EXPANSION");
         dbgLog.fine("int_type_expansion_field="+int_type_expansion_field);
         while(true){
             byte[] firstByte = new byte[1];
             byte[] lengthBytes = new byte[int_type_expansion_field];
-
-            try {
-                int nbyte = stream.read(firstByte, 0, 1);
-                dbgLog.fine("read 1st byte");
-                int nbytes = stream.read(lengthBytes, 0, int_type_expansion_field);
-                dbgLog.fine("read next integer");
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
+          
+            int nbyte = stream.read(firstByte, 0, 1);
+            dbgLog.fine("read 1st byte");
+            int nbytes = stream.read(lengthBytes, 0, int_type_expansion_field);
+            dbgLog.fine("read next integer");
 
             ByteBuffer bb_field_length = ByteBuffer.wrap(lengthBytes);
 
@@ -1164,13 +1036,9 @@ public class DTAFileReader extends StatDataFileReader{
                 break;
             } else {
                 byte[] stringField = new byte[field_length];
-                try {
-                    
-                    int nbyte = stream.read(stringField, 0, field_length);
+                nbyte = stream.read(stringField, 0, field_length);
 
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
+              
             }
         }
 
@@ -1179,7 +1047,7 @@ public class DTAFileReader extends StatDataFileReader{
     }
     
 
-    void decodeData(BufferedInputStream stream){
+    private void decodeData(BufferedInputStream stream) throws IOException {
 
         dbgLog.fine("\n***** decodeData(): start *****");
         
@@ -1197,26 +1065,20 @@ public class DTAFileReader extends StatDataFileReader{
 
         FileOutputStream fileOutTab = null;
         PrintWriter pwout = null;
-        try {
-            // create a File object to save the tab-delimited data file
-            File tabDelimitedDataFile = File.createTempFile("tempTabfile.", ".tab");
+      
+        // create a File object to save the tab-delimited data file
+        File tabDelimitedDataFile = File.createTempFile("tempTabfile.", ".tab");
 
-            String tabDelimitedDataFileName   = tabDelimitedDataFile.getAbsolutePath();
+        String tabDelimitedDataFileName   = tabDelimitedDataFile.getAbsolutePath();
 
-            // save the temp file name in the metadata object
-            smd.getFileInformation().put("tabDelimitedDataFileLocation", tabDelimitedDataFileName);
+        // save the temp file name in the metadata object
+        smd.getFileInformation().put("tabDelimitedDataFileLocation", tabDelimitedDataFileName);
 
-            fileOutTab = new FileOutputStream(tabDelimitedDataFile);
-            
-            pwout = new PrintWriter(new OutputStreamWriter(fileOutTab, "utf8"), true);
+        fileOutTab = new FileOutputStream(tabDelimitedDataFile);
 
-        } catch (FileNotFoundException ex) {
-            ex.printStackTrace();
-        } catch (UnsupportedEncodingException ex) {
-            ex.printStackTrace();
-        } catch (IOException ex){
-            ex.printStackTrace();
-        }
+        pwout = new PrintWriter(new OutputStreamWriter(fileOutTab, "utf8"), true);
+
+        
 
 
         // data storage
@@ -1232,8 +1094,7 @@ public class DTAFileReader extends StatDataFileReader{
             
             try {
                 int nbytes = stream.read(dataRowBytes, 0, bytes_per_row);
-                String rowTitle = "dataRowBytes("+i + "-th)";
-                //printHexDump(dataRowBytes, rowTitle);
+             
 
                 if (nbytes == 0){
                     String errorMessage = "reading data: no data were read at("+
@@ -1244,12 +1105,10 @@ public class DTAFileReader extends StatDataFileReader{
                 int byte_offset = 0;
                 for (int columnCounter = 0;
                     columnCounter<variableTypelList.length; columnCounter++){
-                    //String variable_id = "v"+ Integer.toString(columnCounter);
+                  
                     Integer varType = 
                         variableTypeMap.get(variableTypelList[columnCounter]);
-                    //out.print(columnCounter+"th varType="+varType);
-                    //out.println(columnCounter+"th variableFormats="+variableFormats[columnCounter]);
-
+               
                     String variableFormat = variableFormats[columnCounter];
 
                     boolean isDateTimeDatum = isDateTimeDatumList[columnCounter];
@@ -1257,11 +1116,10 @@ public class DTAFileReader extends StatDataFileReader{
                     switch( varType != null ? varType: 256){
                         case -5:
                             // Byte case
-                            //out.print("\tbyte case:"+columnCounter+"th var");
                             // note: 1 byte signed
                             byte byte_datum = dataRowBytes[byte_offset];
                             
-                            //out.println(byte_datum);
+                         
                             dbgLog.finer(i+"-th row "+columnCounter+
                                     "=th column byte ="+byte_datum);
                             if (byte_datum >= BYTE_MISSING_VALUE){
@@ -1279,18 +1137,16 @@ public class DTAFileReader extends StatDataFileReader{
                             break;
                         case -4:
                             // Stata-int (=java's short: 2byte) case
-                            //out.print("\tstata int case");
-                            
                             // note: 2-byte signed int, not java's int
                             ByteBuffer int_buffer = 
                                 ByteBuffer.wrap(dataRowBytes, byte_offset, 2);
                             if (isLittleEndian){
                                 int_buffer.order(ByteOrder.LITTLE_ENDIAN);
-                                //dbgLog.fine("short: byte reversed");
+                              
                             }
                             short short_datum = int_buffer.getShort();
                             
-                            //out.println(short_datum);
+                         
 
                             dbgLog.finer(i+"-th row "+columnCounter+
                                     "=th column stata int ="+short_datum);
@@ -1306,7 +1162,7 @@ public class DTAFileReader extends StatDataFileReader{
                             } else {
                             
                                 if (isDateTimeDatum){
-                                    //dataTable2[columnCounter][i] = short_datum;
+                                   
                                     DecodedDateTime ddt = decodeDateTimeData("short",variableFormat, Short.toString(short_datum));
                                     dbgLog.finer(i+"-th row , decodedDateTime "+ddt.decodedDateTime+", format="+ddt.format);
                                     dataRow[columnCounter] = ddt.decodedDateTime;
@@ -1322,18 +1178,17 @@ public class DTAFileReader extends StatDataFileReader{
                             break;
                         case -3:
                             // stata-Long (= java's int: 4 byte) case
-                            //out.print("\tstata long case");
                             // note: 4-byte singed, not java's long
-			    dbgLog.fine("DATreader: stata long");
+                            dbgLog.fine("DATreader: stata long");
 
                             ByteBuffer long_buffer = 
                                 ByteBuffer.wrap(dataRowBytes, byte_offset, 4);
                             if (isLittleEndian){
                                 long_buffer.order(ByteOrder.LITTLE_ENDIAN);
-                                //dbgLog.fine("int: byte reversed");
+                                
                             }
                             int int_datum = long_buffer.getInt();
-                            //out.println(int_datum);
+                         
 
                             dbgLog.fine(i+"-th row "+columnCounter+
                                     "=th column stata long ="+int_datum);
@@ -1347,11 +1202,8 @@ public class DTAFileReader extends StatDataFileReader{
                                     dataRow[columnCounter] = MissingValueForTextDataFileNumeric;                                   
                                 }
                             } else {
-
-                                //out.println("columnCounter="+columnCounter+"\t"+int_datum);
                                 if (isDateTimeDatum){
-                                    //dataTable2[columnCounter][i] = int_datum;
-                                    DecodedDateTime ddt = decodeDateTimeData("int",variableFormat, Integer.toString(int_datum));
+                                     DecodedDateTime ddt = decodeDateTimeData("int",variableFormat, Integer.toString(int_datum));
                                     dbgLog.finer(i+"-th row , decodedDateTime "+ddt.decodedDateTime+", format="+ddt.format);
                                     dataRow[columnCounter] = ddt.decodedDateTime;
                                     dateFormat[columnCounter][i] = ddt.format;
@@ -1367,17 +1219,14 @@ public class DTAFileReader extends StatDataFileReader{
                             break;
                         case -2:
                             // float case
-                            //out.print("\tfloat case");
                             // note: 4-byte
                             ByteBuffer float_buffer =
                                 ByteBuffer.wrap(dataRowBytes, byte_offset, 4);
                             if (isLittleEndian){
                                 float_buffer.order(ByteOrder.LITTLE_ENDIAN);
-                                //dbgLog.fine("float: byte reversed");
                             }
                             float float_datum = float_buffer.getFloat();
                             
-                            //out.println(float_datum);
                             dbgLog.finer(i+"-th row "+columnCounter+
                                     "=th column float ="+float_datum);
                             if (FLOAT_MISSING_VALUE_SET.contains(float_datum)){
@@ -1393,7 +1242,6 @@ public class DTAFileReader extends StatDataFileReader{
                             } else {
 
                                 if (isDateTimeDatum){
-                                    //dataTable2[columnCounter][i] = float_datum;
                                    DecodedDateTime ddt = decodeDateTimeData("float",variableFormat, doubleNumberFormatter.format(float_datum));
                                     dbgLog.finer(i+"-th row , decodedDateTime "+ddt.decodedDateTime+", format="+ddt.format);
                                     dataRow[columnCounter] = ddt.decodedDateTime;
@@ -1401,8 +1249,7 @@ public class DTAFileReader extends StatDataFileReader{
                                     dataTable2[columnCounter][i] = dataRow[columnCounter];
                                 } else {
                                     dataTable2[columnCounter][i] = float_datum;
-                                    //dataRow[columnCounter] = doubleNumberFormatter.format(float_datum);
-				    dataRow[columnCounter] = float_datum;
+                    			    dataRow[columnCounter] = float_datum;
                                 }
 
                             }
@@ -1410,22 +1257,14 @@ public class DTAFileReader extends StatDataFileReader{
                             break;
                         case -1:
                             // double case
-                            //out.print("\tdouble case");
                             // note: 8-byte
                             ByteBuffer double_buffer =
                                 ByteBuffer.wrap(dataRowBytes, byte_offset, 8);
                             if (isLittleEndian){
                                 double_buffer.order(ByteOrder.LITTLE_ENDIAN);
-                                //dbgLog.fine("double: byte reversed");
                             }
                             double double_datum = double_buffer.getDouble();
 
-//                            dbgLog.finer(i+"-th row "+columnCounter+
-//                                    "=th column double ="+double_datum);
-//                            dbgLog.finer(i+"-th row "+columnCounter+
-//                                    "=th column double ="+Double.toHexString(double_datum));
-//                            String double_datum_hex = new String (Hex.encodeHex(StatHelper.toByteArrays(double_datum)));
-//                            dbgLog.finer("double_datum="+double_datum_hex);
 
                             if (DOUBLE_MISSING_VALUE_SET.contains(double_datum)){
                                 dataTable2[columnCounter][i] = null;  //use null reference to indicate missing value in data that is passed to UNF
@@ -1439,9 +1278,7 @@ public class DTAFileReader extends StatDataFileReader{
                             } else {
 
                                 if (isDateTimeDatum){
-                                    
-                                    //dataTable2[columnCounter][i] = double_datum;
-                                   DecodedDateTime ddt = decodeDateTimeData("double",variableFormat, doubleNumberFormatter.format(double_datum));
+                                    DecodedDateTime ddt = decodeDateTimeData("double",variableFormat, doubleNumberFormatter.format(double_datum));
                                     dbgLog.finer(i+"-th row , decodedDateTime "+ddt.decodedDateTime+", format="+ddt.format);
                                     dataRow[columnCounter] = ddt.decodedDateTime;
                                     dateFormat[columnCounter][i] = ddt.format;
@@ -1457,24 +1294,9 @@ public class DTAFileReader extends StatDataFileReader{
                         case  0:
                             // String case
                             int strVarLength = StringVariableTable.get(columnCounter);
-                            //out.print("\t"+columnCounter+"-th string var length="+strVarLength);
-                            //out.println("byte_offset="+byte_offset);
                             String raw_datum = new String(Arrays.copyOfRange(dataRowBytes, byte_offset,
                                 (byte_offset+strVarLength)), "ISO-8859-1");
-                            //out.println("raw_datum="+raw_datum);
-//                            int null_position = raw_datum.indexOf(0);
-//                            String string_datum=null;
-//                            if (null_position >= 0){
-//                                // string is terminated by the null
-//                                string_datum = raw_datum.substring(0, null_position);
-//                            } else {
-//                                // not null-termiated (sometimes space-paddded, instead)
-//                                // get up to the length and
-//                                // then trim spaces ("x20") form the end
-//                                string_datum = StringUtils.stripEnd(raw_datum.substring(0, strVarLength)," ");
-//                            }
                             String string_datum = StringUtils.stripEnd(getNullStrippedString(raw_datum), " ");
-                            //out.println(string_datum);
                             dbgLog.finer(i+"-th row "+columnCounter+
                                     "=th column string ="+string_datum);
                             if (string_datum.equals("")){
@@ -1508,9 +1330,6 @@ public class DTAFileReader extends StatDataFileReader{
             
             dbgLog.fine(i+"-th row's data={"+StringUtils.join(dataRow, ",")+"};");
 
-            
-            
-            //dataTable[i] = dataRow;
         }  // for- i (row)
 
         
@@ -1523,21 +1342,16 @@ public class DTAFileReader extends StatDataFileReader{
 
         dbgLog.fine("variableTypelList:\n"+Arrays.deepToString(variableTypelList));
         dbgLog.fine("variableTypelListFinal:\n"+Arrays.deepToString(variableTypelListFinal));
-        unfValues = new String[nvar];
+        String[] unfValues = new String[nvar];
 
         for (int j=0;j<nvar; j++){
-           //String variableType_j =  variableTypelList[j];
            String variableType_j =  variableTypelListFinal[j];
             try {
                 unfValues[j] = getUNF(dataTable2[j], dateFormat[j], variableType_j,
                     unfVersionNumber, j);
                 dbgLog.fine(j+"th unf value"+unfValues[j]);
 
-            } catch (NumberFormatException ex) {
-                ex.printStackTrace();
             } catch (UnfException ex) {
-                ex.printStackTrace();
-            } catch (IOException ex) {
                 ex.printStackTrace();
             } catch (NoSuchAlgorithmException ex) {
                 ex.printStackTrace();
@@ -1549,16 +1363,13 @@ public class DTAFileReader extends StatDataFileReader{
         try {
             fileUnfValue = UNF5Util.calculateUNF(unfValues);
 
-        } catch (NumberFormatException ex) {
-            ex.printStackTrace();
+        
         } catch (UnfException ex) {
-            ex.printStackTrace();
-        } catch (IOException ex) {
             ex.printStackTrace();
         } catch (NoSuchAlgorithmException ex) {
             ex.printStackTrace();
         }
-        
+
         dbgLog.fine("file-unf="+fileUnfValue);
         
         stataDataSection.setUnf(unfValues);
@@ -1584,7 +1395,7 @@ public class DTAFileReader extends StatDataFileReader{
      *
      * @param stream
      */
-    void decodeValueLabels(BufferedInputStream stream){
+    private void decodeValueLabels(BufferedInputStream stream){
 
         dbgLog.fine("***** decodeValueLabels(): start *****");
         
@@ -1611,7 +1422,7 @@ public class DTAFileReader extends StatDataFileReader{
     }
     
     
-    void parseValueLabelsRelease105(BufferedInputStream stream){
+    void parseValueLabelsRelease105(BufferedInputStream stream)throws IOException {
 
         dbgLog.fine("***** parseValueLabelsRelease105(): start *****");
         
@@ -1620,7 +1431,7 @@ public class DTAFileReader extends StatDataFileReader{
         }
         
         int nvar = (Integer)smd.getFileInformation().get("varQnty");
-        int length_label_name = constant_table.get("NAME") + 1;
+        int length_label_name = constantTable.get("NAME") + 1;
         // note: caution +1 as the null character, not 9 byte
 
         
@@ -1647,7 +1458,7 @@ public class DTAFileReader extends StatDataFileReader{
             
             byte[] valueLabelHeader = new byte[length_value_label_header];
 
-            try {
+         
                 // Part 1: reading the header of a value-label table if exists
                 int nbytes = stream.read(valueLabelHeader, 0, 
                     length_value_label_header);
@@ -1655,7 +1466,6 @@ public class DTAFileReader extends StatDataFileReader{
                 if (nbytes == 0){
                     throw new IOException("reading value label header: no datum");
                 }
-                //printHexDump(valueLabelHeader, "value-label header");
                 
                 // 1.1 number of value-label pairs in this table (= m)
                 ByteBuffer bb_value_label_pairs =
@@ -1696,12 +1506,10 @@ public class DTAFileReader extends StatDataFileReader{
                 if (noBytes == 0){
                     throw new IOException("reading value label table: no datum");
                 }
-                //printHexDump(valueLabelTable_i, "valueLabelTable_i");
                 
                 // 2-1. 2-byte-integer array (2*m): value array (sorted)
                 
-                dbgLog.fine("value array");
-                
+                 
                 short[] valueList = new short[no_value_label_pairs];
                 int offset_value = 0;
 
@@ -1712,11 +1520,8 @@ public class DTAFileReader extends StatDataFileReader{
                         value_label_table_length);
                     if (isLittleEndian){
                         bb_value_list.order(ByteOrder.LITTLE_ENDIAN);
-                        //dbgLog.fine("value list: byte reversed");
                     }
                     valueList[k] = bb_value_list.getShort();
-
-                    //dbgLog.fine(k+"-th value_list=["+valueList[k]+"]");
 
                     offset_value += value_label_table_length;
                 }
@@ -1745,15 +1550,12 @@ public class DTAFileReader extends StatDataFileReader{
                         labelList[l] = string_l;
                     }
                     
-                    //dbgLog.fine(l+"-th label=["+labelList[l]+"]");
                     
                     offset_start = offset_end;
                     offset_end += length_lable_name_field;
                 }
                 
 
-                //dbgLog.fine("label list: length="+labelList.length);
-                //dbgLog.fine("label list ="+StringUtils.join(labelList, ",")+"\n");
 
 
                 Map<String, String> tmpValueLabelTable = new LinkedHashMap<String, String>();
@@ -1773,9 +1575,7 @@ public class DTAFileReader extends StatDataFileReader{
                     break;
                 }
 
-            } catch (IOException ex){
-
-            }
+         
 
         
         } // for-loop
@@ -1791,7 +1591,7 @@ public class DTAFileReader extends StatDataFileReader{
     }
 
 
-    private void parseValueLabelsReleasel108(BufferedInputStream stream){
+    private void parseValueLabelsReleasel108(BufferedInputStream stream)throws IOException {
 
         dbgLog.fine("***** parseValueLabelsRelease108(): start *****");
         
@@ -1800,7 +1600,7 @@ public class DTAFileReader extends StatDataFileReader{
         }
         
         int nvar = (Integer)smd.getFileInformation().get("varQnty");
-        int length_label_name = constant_table.get("NAME");
+        int length_label_name = constantTable.get("NAME");
         int length_value_label_header = value_label_table_length
                                        + length_label_name
                                        + VALUE_LABEL_HEADER_PADDING_LENGTH;
@@ -1826,15 +1626,14 @@ public class DTAFileReader extends StatDataFileReader{
             
             byte[] valueLabelHeader = new byte[length_value_label_header];
 
-            try {
+        
                 // Part 1: reading the header of a value-label table if exists
-                int nbytes = stream.read(valueLabelHeader, 0, 
+                int nbytes = stream.read(valueLabelHeader, 0,
                     length_value_label_header);
 
                 if (nbytes == 0){
                     throw new IOException("reading value label header: no datum");
                 }
-                //printHexDump(valueLabelHeader, "value-label header");
                 
                 // 1.1 length_value_label_table
                 ByteBuffer bb_value_label_header =
@@ -1842,7 +1641,6 @@ public class DTAFileReader extends StatDataFileReader{
                                     value_label_table_length);
                 if (isLittleEndian){
                     bb_value_label_header.order(ByteOrder.LITTLE_ENDIAN);
-                    //dbgLog.fine("value lable table lenth: byte reversed");
                 }
                 int length_value_label_table = bb_value_label_header.getInt();
 
@@ -1868,7 +1666,6 @@ public class DTAFileReader extends StatDataFileReader{
                 if (noBytes == 0){
                     throw new IOException("reading value label table: no datum");
                 }
-                //printHexDump(valueLabelTable_i, "valueLabelTable_i");
 
                 // 2-1. 4-byte-integer: number of units in this table (n)
                 int valueLabelTable_offset = 0;
@@ -1877,7 +1674,6 @@ public class DTAFileReader extends StatDataFileReader{
                         value_label_table_length);
                 if (isLittleEndian){
                     bb_value_label_pairs.order(ByteOrder.LITTLE_ENDIAN);
-                    //dbgLog.fine("value_label pairs: byte reversed");
                 }
 
                 int no_value_label_pairs = bb_value_label_pairs.getInt();
@@ -1894,17 +1690,14 @@ public class DTAFileReader extends StatDataFileReader{
                         value_label_table_length);
                 if (isLittleEndian){
                     bb_length_label_segment.order(ByteOrder.LITTLE_ENDIAN);
-                    //dbgLog.fine("length label segment: byte reversed");
-                }
+                 }
 
                 int length_label_segment = bb_length_label_segment.getInt();
                 valueLabelTable_offset += value_label_table_length;
 
-                //dbgLog.fine("length_label_segment="+length_label_segment);
 
                 // 2-3. 4-byte-integer array (4xm): offset values for the label sec.
                 
-                //dbgLog.fine("label offset array");
                 
                 int[] label_offsets = new int[no_value_label_pairs];
                 int byte_offset = valueLabelTable_offset;
@@ -1923,10 +1716,8 @@ public class DTAFileReader extends StatDataFileReader{
 
                     byte_offset += value_label_table_length;
 
-                    //dbgLog.fine(j+"-th label_offset=["+label_offsets[j]+"]");
-                }
+                 }
 
-                //dbgLog.fine("label_offsets="+Arrays.toString(label_offsets)+"\n");
                 
 
                 // 2-4. 4-byte-integer array (4xm): value array (sorted)
@@ -1942,24 +1733,18 @@ public class DTAFileReader extends StatDataFileReader{
                                     ByteBuffer.wrap(valueLabelTable_i, offset_value, 
                                     value_label_table_length);
                     if (isLittleEndian){
-                        bb_value_list.order(ByteOrder.LITTLE_ENDIAN);
-                        //out.println("value list: byte reversed");
-                    }
+                        bb_value_list.order(ByteOrder.LITTLE_ENDIAN);                    }
                     valueList[k] = bb_value_list.getInt();
 
-                    //dbgLog.fine(k+"-th value_list=["+valueList[k]+"]");
 
                     offset_value += value_label_table_length;
 
                 }
 
-                //dbgLog.fine("value_list="+Arrays.toString(valueList)+"\n");
                 
 
                 // 2-5. m-byte chars that store label data (m units of labels)
 
-                //dbgLog.fine("current offset_value="+offset_value);
-                //dbgLog.fine("current length_label_segment="+length_label_segment);
                 String label_segment = new String(
                                 Arrays.copyOfRange(valueLabelTable_i,
                                 offset_value,
@@ -1967,8 +1752,6 @@ public class DTAFileReader extends StatDataFileReader{
 
                 String[] labelList = label_segment.split("\0");
 
-                //dbgLog.fine("label list: length="+labelList.length);
-                //dbgLog.fine("label list ="+StringUtils.join(labelList, ",")+"\n");
 
                 Map<String, String> tmpValueLabelTable = new LinkedHashMap<String, String>();
                 
@@ -1991,9 +1774,7 @@ public class DTAFileReader extends StatDataFileReader{
 
 
 
-            } catch (IOException ex){
-
-            }
+          
 
         }  // for loop
         dbgLog.fine("valueLabelTable:\n"+valueLabelTable);
@@ -2016,7 +1797,6 @@ public class DTAFileReader extends StatDataFileReader{
         throws NumberFormatException, UnfException,
         IOException, NoSuchAlgorithmException{
         String unfValue = null;
-//                for (int j=0; j<nvar;j++){
         dbgLog.fine(variablePosition+"-th varData:\n"+Arrays.deepToString(varData));
         dbgLog.fine("variableType="+variableType);
         dbgLog.fine("unfVersionNumber="+unfVersionNumber);
@@ -2135,7 +1915,6 @@ public class DTAFileReader extends StatDataFileReader{
                     StatHelper.calculateSummaryStatistics(strdata));
                     
                 Map<String, Integer> StrCatStat = StatHelper.calculateCategoryStatistics(strdata);
-                //out.println("catStat="+StrCatStat);
                 
                 smd.getCategoryStatisticsTable().put(variableNameList.get(variablePosition), StrCatStat);
                     
@@ -2152,19 +1931,7 @@ public class DTAFileReader extends StatDataFileReader{
         return unfValue;
     }
 
-//    private String getNullStrippedString(String rawString){
-//        String nullRemovedString = null;
-//        int null_position = rawString.indexOf(0);
-//        if (null_position >= 0){
-//            // string is terminated by the null
-//            nullRemovedString = rawString.substring(0, null_position);
-//        } else {
-//            // not null-termiated (sometimes space-paddded, instead)
-//            // get up to the length
-//            nullRemovedString = rawString.substring(0, rawString.length());
-//        }
-//        return nullRemovedString;
-//    }
+
 
     private class DecodedDateTime {
         String format;

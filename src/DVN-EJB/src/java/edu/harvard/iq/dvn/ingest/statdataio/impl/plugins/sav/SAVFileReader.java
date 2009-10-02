@@ -54,6 +54,7 @@ import org.apache.commons.codec.binary.Hex;
  * 
  * @author Akio Sone at UNC-Odum
  */
+
 public class SAVFileReader extends StatDataFileReader{
 
     // static fields ---------------------------------------------------------//
@@ -61,6 +62,8 @@ public class SAVFileReader extends StatDataFileReader{
     private static String[] EXTENSIONS = {"sav"};
     private static String[] MIME_TYPE = {"application/x-spss-sav"};
 
+
+    // constants (static final) variables ---------------------------------------------------------//
 
     // block length
     // RecordType 1
@@ -145,21 +148,22 @@ public class SAVFileReader extends StatDataFileReader{
     private static final Map<Integer, Integer> missingValueCodeUnits = new HashMap<Integer, Integer>();
 
     
-    /** List of decoding methods for reflection */
-    private static String[] decodeMethodNames = {
-        "decodeHeader","decodeRecordType1","decodeRecordType2",
-        "decodeRecordType3and4","decodeRecordType6","decodeRecordType7",
-        "decodeRecordType999", "decodeRecordTypeData" };
-
-
-    private static List<Method> decodeMethods  = new ArrayList<Method>();
-
     private static String unfVersionNumber = "5";
 
     private static double SYSMIS_LITTLE =0xFFFFFFFFFFFFEFFFL;
     private static double SYSMIS_BIG =0xFFEFFFFFFFFFFFFFL;
     
     private static Calendar GCO = new GregorianCalendar();
+
+    /** List of decoding methods for reflection */
+
+    private static String[] decodeMethodNames = {
+        "decodeHeader","decodeRecordType1","decodeRecordType2",
+        "decodeRecordType3and4","decodeRecordType6","decodeRecordType7",
+        "decodeRecordType999", "decodeRecordTypeData" };
+
+    private static List<Method> decodeMethods  = new ArrayList<Method>();
+
 
     static {
         // initialize method name list
@@ -203,141 +207,99 @@ public class SAVFileReader extends StatDataFileReader{
         GCO.set(14, 0); // SS millisecond
         GCO.set(15, 0);// z
     }
-    private static long SPSS_DATE_BIAS = 60*60*24*1000;
 
-    private static long SPSS_DATE_OFFSET = SPSS_DATE_BIAS + Math.abs(GCO.getTimeInMillis());
+    private static final long SPSS_DATE_BIAS = 60*60*24*1000;
+
+    private static final long SPSS_DATE_OFFSET = SPSS_DATE_BIAS + Math.abs(GCO.getTimeInMillis());
+
 
    // instance fields -------------------------------------------------------//
 
-   private static Logger dbgLog =
+    private static Logger dbgLog =
        Logger.getLogger(SAVFileReader.class.getPackage().getName());
 
     SDIOMetadata smd = new SAVMetadata();
     
-
     SDIOData sdiodata;
 
     DataTable savDataSection = new DataTable();
 
-//    int release_number;
-//    int header_length;
-//    int data_label_length;
 
-    
-    double missing_value_double;
 
-    boolean isLittleEndian = false;
-    
-    boolean isDataSectionCompressed = true;
+    // global variables -------------------------------------------------------//
 
-    boolean hasCaseWeightVariable = false;
-    
-    int caseWeightVariableOBSIndex = 0;
-    
-    String caseWeightVariableName = null;
-    
-    int caseWeightVariableIndex = 0;
-    
-    Map<Integer, String> OBSIndexToVariableName =
-        new LinkedHashMap<Integer, String>();
-    
-    int OBSUnitsPerCase;
-    
-//    int bytes_per_row;
-    //boolean[] variableLocation ;
+    int caseQnty=0; 
+    int varQnty=0;   
 
-    Map<String, Integer> variableTypeTable;
 
-    List<Integer> variableTypelList= new ArrayList<Integer>();
-    List<Integer> OBSwiseTypelList= new ArrayList<Integer>();
+    private boolean isLittleEndian = false;     
+    private boolean isDataSectionCompressed = true; 
 
-    List<Integer> printFormatList = new ArrayList<Integer>();
-    Map<String, String> printFormatTable = new LinkedHashMap<String, String>();
-    Map<String, String> printFormatNameTable = new LinkedHashMap<String, String>();
+    private Map<Integer, String> OBSIndexToVariableName =
+        new LinkedHashMap<Integer, String>(); 
     
-    Map<String, String> formatCategoryTable = new LinkedHashMap<String, String>();
+    private int OBSUnitsPerCase; 
     
+    private List<Integer> variableTypelList= new ArrayList<Integer>(); 
+    private List<Integer> OBSwiseTypelList= new ArrayList<Integer>(); 
 
-    //Map<String, Integer> StringVariableTable = new LinkedHashMap<String, Integer>();
-    Set<Integer> obsStringVariableSet = new LinkedHashSet<Integer>();
-    Set<Integer> obsNonVariableBlockSet = new LinkedHashSet<Integer>();
-    Set<Integer> obsVariableBlockSet = new LinkedHashSet<Integer>();
-//    int value_label_table_length;
+    List<Integer> printFormatList = new ArrayList<Integer>(); 
+
+    Map<String, String> printFormatTable = new LinkedHashMap<String, String>(); 
+    Map<String, String> printFormatNameTable = new LinkedHashMap<String, String>(); 
+    
+    Map<String, String> formatCategoryTable = new LinkedHashMap<String, String>(); 
+    
+    Set<Integer> obsNonVariableBlockSet = new LinkedHashSet<Integer>(); 
     
     Map<String, Map<String, String>> valueLabelTable =
-            new LinkedHashMap<String, Map<String, String>>();
-    Map<String, String> valueVariableMappingTable = new LinkedHashMap<String, String>();
+	new LinkedHashMap<String, Map<String, String>>(); 
 
-    String[] unfValues = null;
-    
-    String fileUnfValue = null;
+    Map<String, String> valueVariableMappingTable = new LinkedHashMap<String, String>(); 
+ 
 
-    List<String> variableNameList = new ArrayList<String>();
-    List<String> variableLabelList = new ArrayList<String>();
-
-    Map<String, String> variableLabelMap = new LinkedHashMap<String, String>();
-    
-    Map<String, List<String>> missingValueTable = new LinkedHashMap<String, List<String>>();
-
-    Map<String, InvalidData> invalidDataTable = new LinkedHashMap<String, InvalidData>();
-    
-    int caseQnty=0;
-    
-    int varQnty=0;
+    List<String> variableNameList = new ArrayList<String>(); 
 
 
+    Map<String, InvalidData> invalidDataTable = new LinkedHashMap<String, InvalidData>(); // this variable used in 2 methods; only one uses it to set the smd value -- ??
 
-
-
-    Map<String, String> OBStypeIfomation = new LinkedHashMap<String, String>();
-    //String[] OBStypes = { "SYSMIS", "HIGHEST", "LOWEST"};
-    
     NumberFormat doubleNumberFormatter = new DecimalFormat();
 
+    Set<Integer> decimalVariableSet = new HashSet<Integer>(); 
 
-    Set<Integer> decimalVariableSet = new HashSet<Integer>();
-
-    int[] variableTypeFinal= null;
+    int[] variableTypeFinal= null; 
     
-    String[] variableFormatTypeList= null;
+    String[] variableFormatTypeList= null; 
 
-    List<Integer> formatDecimalPointPositionList= new ArrayList<Integer>();
+    List<Integer> formatDecimalPointPositionList= new ArrayList<Integer>(); 
 
     
-    Object[][] dataTable2 = null;
+    Object[][] dataTable2 = null; 
 
     // Used to store the date format string for all date types
     // the format string is passed to the UNF calculator
-    String[][] dateFormats = null;
+    String[][] dateFormats = null; 
 
-
-    // RecordType 7 
-    // Subtype 3
-    List<Integer> releaseMachineSpecificInfo = new ArrayList<Integer>();
-    List<String> releaseMachineSpecificInfoHex = new ArrayList<String>();
+    int caseWeightVariableOBSIndex = 0; 
     
-    // Subytpe 4
-    Map<String, Double> OBSTypeValue = new LinkedHashMap<String, Double>();
+
+    // date/time data formats
+
+    private SimpleDateFormat sdf_ymd    = new SimpleDateFormat("yyyy-MM-dd");
+    private SimpleDateFormat sdf_ymdhms = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private SimpleDateFormat sdf_dhms   = new SimpleDateFormat("DDD HH:mm:ss");
+    private SimpleDateFormat sdf_hms    = new SimpleDateFormat("HH:mm:ss");
+
+
     Map<String, String> OBSTypeHexValue = new LinkedHashMap<String, String>();    
-    //Subtype 11
-    List<Integer> measurementLevel = new ArrayList<Integer>();
-    List<Integer> columnWidth = new ArrayList<Integer>();
-    List<Integer> alignment = new ArrayList<Integer>();
 
-    Map<String, String> shortToLongVarialbeNameTable = new LinkedHashMap<String, String>();
-
-    // date/time data format
-    SimpleDateFormat sdf_ymd    = new SimpleDateFormat("yyyy-MM-dd");
-    SimpleDateFormat sdf_ymdhms = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    SimpleDateFormat sdf_dhms   = new SimpleDateFormat("DDD HH:mm:ss");
-    SimpleDateFormat sdf_hms    = new SimpleDateFormat("HH:mm:ss");
 
     /**
      * The <code>String</code> that represents the numeric missing value 
      * for a tab-delimited data file, initially "NA" 
      * after R's missing value.
      */
-    String MissingValueForTextDataFileNumeric = "";
+    private String MissingValueForTextDataFileNumeric = "";
 
     /**
      * Returns the value of the
@@ -436,7 +398,7 @@ public class SAVFileReader extends StatDataFileReader{
     @Override
     public SDIOData read(BufferedInputStream stream) throws IOException{
 
-        dbgLog.info("***** SAVFileReader: read() start *****");
+        dbgLog.fine("***** SAVFileReader: read() start *****");
 
         for (Method mthd : decodeMethods){
 
@@ -463,7 +425,7 @@ public class SAVFileReader extends StatDataFileReader{
         if (sdiodata == null){
             sdiodata = new SDIOData(smd, savDataSection);
         }
-        dbgLog.info("***** SAVFileReader: read() end *****");
+        dbgLog.fine("***** SAVFileReader: read() end *****");
         return sdiodata;
 
     }
@@ -522,6 +484,7 @@ public class SAVFileReader extends StatDataFileReader{
 
     void decodeRecordType1(BufferedInputStream stream){
         dbgLog.fine("***** decodeRecordType1(): start *****");
+
         if (stream ==null){
             throw new IllegalArgumentException("stream == null!");
         }
@@ -533,6 +496,7 @@ public class SAVFileReader extends StatDataFileReader{
         // this field consists of 6 distinct blocks
         
         byte[] recordType1 = new byte[LENGTH_RECORDTYPE1];
+	// int caseWeightVariableOBSIndex = 0; 
         
         try {
             int nbytes = stream.read(recordType1, 0, LENGTH_RECORDTYPE1);
@@ -573,7 +537,7 @@ public class SAVFileReader extends StatDataFileReader{
             int int2test = byteOderTest.getInt();
             
             if (int2test == 2 ){
-                dbgLog.info("integer == 2: the byte-oder of the writer is the same "+
+                dbgLog.fine("integer == 2: the byte-oder of the writer is the same "+
                 "as the counterpart of Java: Big Endian");
             } else {
                 // Because Java's byte-order is always big endian, 
@@ -583,8 +547,8 @@ public class SAVFileReader extends StatDataFileReader{
                 bb_fileLayout_code.order(ByteOrder.LITTLE_ENDIAN);
 
                 if (bb_fileLayout_code.getInt()==2){
-                    dbgLog.info("The sav file was saved on a little endian machine");
-                    dbgLog.info("Reveral of the bytes is necessary to decode "+
+                    dbgLog.fine("The sav file was saved on a little endian machine");
+                    dbgLog.fine("Reveral of the bytes is necessary to decode "+
                             "multi-byte, non-string blocks");
                             
                     isLittleEndian = true;
@@ -638,9 +602,9 @@ public class SAVFileReader extends StatDataFileReader{
             if ( compression_switch == 0){
                 // data section is not compressed
                 isDataSectionCompressed = false;
-                dbgLog.info("data section is not compressed");
+                dbgLog.fine("data section is not compressed");
             } else {
-                dbgLog.info("data section is compressed:"+compression_switch);
+                dbgLog.fine("data section is compressed:"+compression_switch);
             }
             
             smd.getFileInformation().put("compressedData", compression_switch);
@@ -660,15 +624,6 @@ public class SAVFileReader extends StatDataFileReader{
             
             caseWeightVariableOBSIndex = bb_Case_Weight_Variable_Index.getInt();
             
-            
-            if ( caseWeightVariableOBSIndex == 0){
-                // no weight variable
-                hasCaseWeightVariable = false;
-                dbgLog.info("caseWeightVariableIndex is not specified [none-weighted data]");
-            } else {
-                dbgLog.info("caseWeightVariableIndex is specified="+caseWeightVariableOBSIndex);
-                hasCaseWeightVariable = true;
-            }
             
             smd.getFileInformation().put("caseWeightVariableOBSIndex", caseWeightVariableOBSIndex);
 
@@ -690,7 +645,7 @@ public class SAVFileReader extends StatDataFileReader{
                 // -1 if numberOfCases is unknown
                 throw new RuntimeException("number of cases is not recorded in the header");
             } else {
-                dbgLog.info("number of cases is recorded= "+numberOfCases);
+                dbgLog.fine("number of cases is recorded= "+numberOfCases);
                 caseQnty = numberOfCases;
                 smd.getFileInformation().put("caseQnty", numberOfCases);
             }
@@ -712,10 +667,10 @@ public class SAVFileReader extends StatDataFileReader{
             
             if ( compressionBias == 100d){
                 // 100 is expected
-                dbgLog.info("compressionBias is 100 as expected");
+                dbgLog.fine("compressionBias is 100 as expected");
                 smd.getFileInformation().put("compressionBias", 100);
             } else {
-                dbgLog.info("compression bias is not 100: "+ compressionBias);
+                dbgLog.fine("compression bias is not 100: "+ compressionBias);
                 smd.getFileInformation().put("compressionBias", compressionBias);
             }
             
@@ -768,15 +723,24 @@ public class SAVFileReader extends StatDataFileReader{
         if (stream ==null){
             throw new IllegalArgumentException("stream == null!");
         }
+
+	Map<String, String> variableLabelMap = new LinkedHashMap<String, String>();
+	Map<String, List<String>> missingValueTable = new LinkedHashMap<String, List<String>>();
+	String caseWeightVariableName = null;
+	int caseWeightVariableIndex = 0; 
+
+
         // this field repeats as many as the number of variables in 
         // this sav file
         // Each field constists of a fixed (36-byte) segment and
         // variable one (string <=256 + 3 missing-value units[optional])
+
         int variableCounter = 0;
 
 	int j = 0;
 
         for (j= 0; j< OBSUnitsPerCase;j++){
+
             dbgLog.fine("\n\n+++++++++++ "+j+"-th RT2 unit is to be decoded +++++++++++");
             // 2.0: read the fixed[=non-optional] 32-byte segment
             byte[] recordType2Fixed = new byte[LENGTH_RECORDTYPE2_FIXED];
@@ -822,7 +786,7 @@ public class SAVFileReader extends StatDataFileReader{
                     break;
                     //throw new IOException("RT2 reading error: The current position is no longer Record Type 2");
                 }
-                dbgLog.info("variable type[must be 2]="+recordType2FixedPart1[0]);
+                dbgLog.fine("variable type[must be 2]="+recordType2FixedPart1[0]);
 
 
                 // 2nd ([1]) element: numeric variable = 0 :for string variable 
@@ -832,7 +796,7 @@ public class SAVFileReader extends StatDataFileReader{
 
                 boolean isNumericVariable = false;
 
-                dbgLog.info("variable type(0: numeric; > 0: String;-1 continue )="+
+                dbgLog.fine("variable type(0: numeric; > 0: String;-1 continue )="+
                     recordType2FixedPart1[1]);
 
                 OBSwiseTypelList.add(recordType2FixedPart1[1]);
@@ -848,12 +812,9 @@ public class SAVFileReader extends StatDataFileReader{
                      variableCounter++;
                      isNumericVariable = true;
                      variableTypelList.add(recordType2FixedPart1[1]);
-                     obsVariableBlockSet.add(j);
                 } else if (recordType2FixedPart1[1] > 0){
                 
                     variableCounter++;
-                    obsVariableBlockSet.add(j);
-                    obsStringVariableSet.add(j);
                     if (recordType2FixedPart1[1] % LENGTH_SAV_OBS_BLOCK == 0){
                         HowManyRt2Units = recordType2FixedPart1[1] / LENGTH_SAV_OBS_BLOCK;
                     } else {
@@ -967,17 +928,13 @@ public class SAVFileReader extends StatDataFileReader{
                 }
                 printFormatTable.put(variableName, SPSSConstants.FORMAT_CODE_TABLE_SAV.get(formatCode));
                 
-                
-                
-                
-                
-                
-                
 
             // 2.4 [optional]The length of a variable label followed: 4-byte int
             // 3rd element of 2.1 indicates whether this field exists
             // *** warning: The label block is padded to a multiple of the 4-byte
             // NOT the raw integer value of this 4-byte block
+
+
             if (hasVariableLabel){
                 byte[] length_variable_label= new byte[4];
                 int nbytes_2_4 = stream.read(length_variable_label);
@@ -1012,9 +969,8 @@ public class SAVFileReader extends StatDataFileReader{
                 dbgLog.fine("variableLabel="+variableLabel+"<-");
 
                 variableLabelMap.put(variableName, variableLabel);
-                variableLabelList.add(variableLabel);
             } else {
-                variableLabelList.add("");
+		// 
             }
             // 2.6 [optional] missing values:4-byte each if exists
             //     4th element of 2.1 indicates the structure of this sub-field
@@ -1480,6 +1436,27 @@ while(true ){
         dbgLog.fine("***** decodeRecordType7(): start *****");
         int counter=0;
         int[] headerSection = new int[2];
+
+	// the variables below may no longer needed; 
+	// but they may be useful for debugging/logging purposes.
+
+	/// // RecordType 7 
+	/// // Subtype 3
+	/// List<Integer> releaseMachineSpecificInfo = new ArrayList<Integer>();
+	/// List<String> releaseMachineSpecificInfoHex = new ArrayList<String>();
+    
+	/// // Subytpe 4
+	/// Map<String, Double> OBSTypeValue = new LinkedHashMap<String, Double>();
+	/// Map<String, String> OBSTypeHexValue = new LinkedHashMap<String, String>();    
+	//Subtype 11
+	/// List<Integer> measurementLevel = new ArrayList<Integer>();
+	/// List<Integer> columnWidth = new ArrayList<Integer>();
+	/// List<Integer> alignment = new ArrayList<Integer>();
+
+
+	Map<String, String> shortToLongVarialbeNameTable = new LinkedHashMap<String, String>();
+
+
     while(true){
         try {
             if (stream ==null){
@@ -1560,20 +1537,20 @@ while(true ){
                                 bb_field.order(ByteOrder.LITTLE_ENDIAN);
                             }
                             String dataInHex = new String(Hex.encodeHex(bb_field.array()));
-                            releaseMachineSpecificInfoHex.add(dataInHex);
+                            /// releaseMachineSpecificInfoHex.add(dataInHex);
                             
                             dbgLog.finer("raw bytes in Hex:"+ dataInHex);
                             if (unitLength==4){
                                 int fieldData = bb_field.getInt();
                                 dbgLog.finer("fieldData(int)="+fieldData);
                                 dbgLog.finer("fieldData in Hex=0x"+Integer.toHexString(fieldData));
-                                releaseMachineSpecificInfo.add(fieldData);
+                                /// releaseMachineSpecificInfo.add(fieldData);
                             }
                             
                         }
                        
-                        dbgLog.fine("releaseMachineSpecificInfo="+releaseMachineSpecificInfo);
-                        dbgLog.fine("releaseMachineSpecificInfoHex="+releaseMachineSpecificInfoHex);
+                        /// dbgLog.fine("releaseMachineSpecificInfo="+releaseMachineSpecificInfo);
+                        /// dbgLog.fine("releaseMachineSpecificInfoHex="+releaseMachineSpecificInfoHex);
                        
                     } else {
                         // throw new IOException
@@ -1604,21 +1581,21 @@ while(true ){
                                 bb_field.order(ByteOrder.LITTLE_ENDIAN);
                             }
                             ByteBuffer bb_field_dup = bb_field.duplicate();
-//                            OBSTypeHexValue.put(RecordType7SubType4Fields.get(i),
-//                                new String(Hex.encodeHex(bb_field.array())) );
-                            dbgLog.finer("raw bytes in Hex:"+
-                                OBSTypeHexValue.get(RecordType7SubType4Fields.get(i)));
+                            OBSTypeHexValue.put(RecordType7SubType4Fields.get(i),
+                                new String(Hex.encodeHex(bb_field.array())) );
+//                            dbgLog.finer("raw bytes in Hex:"+
+//                                OBSTypeHexValue.get(RecordType7SubType4Fields.get(i)));
                             if (unitLength==8){
                                 double fieldData = bb_field.getDouble();
-                                OBSTypeValue.put(RecordType7SubType4Fields.get(i), fieldData);
+                                /// OBSTypeValue.put(RecordType7SubType4Fields.get(i), fieldData);
                                 dbgLog.finer("fieldData(double)="+fieldData);
                                 OBSTypeHexValue.put(RecordType7SubType4Fields.get(i),
-                                    Double.toHexString(fieldData));
+						    Double.toHexString(fieldData));
                                 dbgLog.fine("fieldData in Hex="+Double.toHexString(fieldData));
                             }
                         }
-                        dbgLog.fine("OBSTypeValue="+OBSTypeValue);
-                        dbgLog.fine("OBSTypeHexValue="+OBSTypeHexValue);
+                        /// dbgLog.fine("OBSTypeValue="+OBSTypeValue);
+                        /// dbgLog.fine("OBSTypeHexValue="+OBSTypeHexValue);
 
                     } else {
                         // throw new IOException
@@ -1680,11 +1657,11 @@ while(true ){
                                 int remainder = i%3;
                                 dbgLog.finer("remainder="+remainder);
                                 if (remainder == 0){
-                                    measurementLevel.add(fieldData);
+                                    /// measurementLevel.add(fieldData);
                                 } else if (remainder == 1){
-                                    columnWidth.add(fieldData);
+                                    /// columnWidth.add(fieldData);
                                 } else if (remainder == 2){
-                                    alignment.add(fieldData);
+                                    /// alignment.add(fieldData);
                                 }
                             }
 
@@ -1693,9 +1670,9 @@ while(true ){
                     } else {
                         // throw new IOException
                     }
-                    dbgLog.fine("measurementLevel="+measurementLevel);
-                    dbgLog.fine("columnWidth="+columnWidth);
-                    dbgLog.fine("alignment="+alignment);
+                    /// dbgLog.fine("measurementLevel="+measurementLevel);
+                    /// dbgLog.fine("columnWidth="+columnWidth);
+                    /// dbgLog.fine("alignment="+alignment);
                     dbgLog.fine("***** end of subType 11 ***** \n");
 
                     break;
@@ -1880,6 +1857,12 @@ while(true ){
 
     void decodeRecordTypeData(BufferedInputStream stream){
         dbgLog.fine("***** decodeRecordTypeData(): start *****");
+
+	String fileUnfValue = null;
+	String[] unfValues = null;
+
+
+
         if (stream ==null){
             throw new IllegalArgumentException("stream == null!");
         }
@@ -1951,17 +1934,12 @@ while(true ){
         dbgLog.fine("***** decodeRecordTypeData(): end *****");
     }
 
-
-    void decodeRecordTypeDataCompressed(BufferedInputStream stream){
-        dbgLog.fine("***** decodeRecordTypeDataCompressed(): start *****");
-        if (stream ==null){
-            throw new IllegalArgumentException("decodeRecordTypeDataCompressed: stream == null!");
-        }
-        
-        FileOutputStream fileOutTab = null;
+    PrintWriter createOutputWriter (BufferedInputStream stream){
         PrintWriter pwout = null;
-        
+	FileOutputStream fileOutTab = null;
+	        
         try {
+
             // create a File object to save the tab-delimited data file
             File tabDelimitedDataFile = File.createTempFile("tempTabfile.", ".tab");
 
@@ -1982,6 +1960,21 @@ while(true ){
             ex.printStackTrace();
         }
 
+	return pwout;
+
+    }
+
+    void decodeRecordTypeDataCompressed(BufferedInputStream stream){
+
+        dbgLog.fine("***** decodeRecordTypeDataCompressed(): start *****");
+
+        if (stream == null){
+            throw new IllegalArgumentException("decodeRecordTypeDataCompressed: stream == null!");
+        }
+        
+        PrintWriter pwout = createOutputWriter ( stream ); 
+
+        
         boolean hasStringVarContinuousBlock = 
             obsNonVariableBlockSet.size() > 0 ? true : false;
         dbgLog.fine("hasStringVarContinuousBlock="+hasStringVarContinuousBlock);
@@ -2023,7 +2016,9 @@ while(true ){
         List<String> dataLine2 = new ArrayList<String>();
 
         // Sets for NA-string-to-NaN conversion
+
         Set<Integer> NaNlocationNumeric = new LinkedHashSet<Integer>();
+
         // missing values are written to the tab-delimited file by
         // using the default or user-specified missing-value  strings;
         // however, to calculate UNF/summary statistics,
@@ -2570,32 +2565,11 @@ while(true ){
         if (stream ==null){
             throw new IllegalArgumentException("decodeRecordTypeDataUnCompressed: stream == null!");
         }
+
         // 
         // set-up tab file
         
-        FileOutputStream fileOutTab = null;
-        PrintWriter pwout = null;
-        
-        try {
-            // create a File object to save the tab-delimited data file
-            File tabDelimitedDataFile = File.createTempFile("tempTabfile.", ".tab");
-
-            String tabDelimitedDataFileName   = tabDelimitedDataFile.getAbsolutePath();
-
-            // save the temp file name in the metadata object
-            smd.getFileInformation().put("tabDelimitedDataFileLocation", tabDelimitedDataFileName);
-
-            fileOutTab = new FileOutputStream(tabDelimitedDataFile);
-            
-            pwout = new PrintWriter(new OutputStreamWriter(fileOutTab, "utf8"), true);
-
-        } catch (FileNotFoundException ex) {
-            ex.printStackTrace();
-        } catch (UnsupportedEncodingException ex) {
-            ex.printStackTrace();
-        } catch (IOException ex){
-            ex.printStackTrace();
-        }
+        PrintWriter pwout = createOutputWriter ( stream ); 
         
         boolean hasStringVarContinuousBlock = 
             obsNonVariableBlockSet.size() > 0 ? true : false;
@@ -2610,8 +2584,7 @@ while(true ){
         
         int caseIndex = 0;
         
-        
-        out.println("printFormatTable:\n"+printFormatTable);
+	out.println("printFormatTable:\n"+printFormatTable);
 
         out.println("printFormatNameTable:\n"+printFormatNameTable);
         variableFormatTypeList = new String[varQnty];
@@ -2680,7 +2653,6 @@ while(true ){
                                 offset, offset+LENGTH_SAV_OBS_BLOCK)));
                         dbgLog.finer("dphex="+ dphex);
                             
-                        //if (dphex.equals(OBStypeIfomation.get("SYSMIS"))){
                         if ((dphex.equals("ffffffffffffefff"))||
                             (dphex.equals("ffefffffffffffff"))){
                             //dataLine.add(systemMissingValue);
@@ -2772,26 +2744,8 @@ while(true ){
                         //out.println("jl="+jl+"-th datum =["+dataLine.get(jl)+"]");
                         
                         if (!removeJset.contains(jl) ){
-                        
-//                            if (dataLine.get(jl).equals(MissingValueForTextDataFileString)){
-//                                out.println("NA-S jl= "+jl+"=["+dataLine.get(jl)+"]");
-//                            } else if (dataLine.get(jl).equals(MissingValueForTextDataFileNumeric)){
-//                                out.println("NA-N jl= "+jl+"=["+dataLine.get(jl)+"]");
-//                            } else if (dataLine.get(jl)==null){
-//                                out.println("null case jl="+jl+"=["+dataLine.get(jl)+"]");
-//                            } else if (dataLine.get(jl).equals("NaN")){
-//                                out.println("NaN jl= "+jl+"=["+dataLine.get(jl)+"]");
-//                            } else if (dataLine.get(jl).equals("")){
-//                                out.println("blank jl= "+jl+"=["+dataLine.get(jl)+"]");
-//                            } else if (dataLine.get(jl).equals(" ")){
-//                                out.println("space jl= "+jl+"=["+dataLine.get(jl)+"]");
-//                            }
-                                
                             newDataLine.add(dataLine.get(jl));
-                        } else {
-//                            out.println("Excluded: jl="+jl+"-th datum=["+dataLine.get(jl)+"]");
-                        }
-
+                        } 
                     }
 
                     dbgLog.fine("new dataLine="+newDataLine);
@@ -3095,10 +3049,6 @@ while(true ){
 
         dbgLog.fine("***** decodeRecordTypeDataUnCompressed(): end *****");
     }
-
-
-
-
 
     // Utility Methods  -----------------------------------------------------//
 

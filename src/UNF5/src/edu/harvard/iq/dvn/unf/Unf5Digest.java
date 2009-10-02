@@ -245,30 +245,26 @@ public class Unf5Digest implements UnfCons {
     }
 
     public static String [] unf(BitString[] b) throws UnsupportedEncodingException, IOException{
-        int nrow = b.length;
+        int nrow = 1;
         int hsz = 128; // TODO default for dvn only
         if (buildunfObj) {
             signature = new Unf5Class(DEF_CDGTS, DEF_NDGTS, DEF_HSZ);
         }
         String[] res = new String[nrow];
-        for (int r = 0; r < nrow; r++) {
-
-            res[r] = unfV(b[r],  signature);
-        }
+ 
+        res[0] = unfV(b,  signature);
         return res;
     }
 
-    public static String [] unf(Boolean[] b) throws UnsupportedEncodingException, IOException{
+    public static String[] unf(Boolean[] b) throws UnsupportedEncodingException, IOException {
         int nrow = b.length;
         int hsz = 128; // TODO default for dvn only
         if (buildunfObj) {
             signature = new Unf5Class(DEF_CDGTS, DEF_NDGTS, hsz);
         }
         String[] res = new String[nrow];
-        for (int r = 0; r < nrow; r++) {
 
-            res[r] = unfV(b[r],  signature);
-        }
+        res[0] = unfV(b, signature);
         return res;
     }
 
@@ -521,7 +517,7 @@ public class Unf5Digest implements UnfCons {
         String fin = unfV(sortedb64, DEF_CDGTS, null);
         return fin;
     }
-    public static String unfV(final Boolean obj, Unf5Class signature) throws
+    public static String unfV(final Boolean[] obj, Unf5Class signature) throws
             UnsupportedEncodingException,
             IOException {
         UnfBoolean unfno = new UnfBoolean();
@@ -529,7 +525,7 @@ public class Unf5Digest implements UnfCons {
         List<Integer> fingerp = new ArrayList<Integer>();
         StringBuilder hex = new StringBuilder();
         Boolean[] cobj = new Boolean[1];
-        cobj[0] = obj;
+        cobj = obj;
         String b64 = unfno.RUNF5(cobj, fingerp, base64, hex);
         boolean buildclass=false;
         if (signature != null){
@@ -546,19 +542,23 @@ public class Unf5Digest implements UnfCons {
         return b64;
     }
 
-    public static String unfV(final BitString obj,
+    public static String unfV(final BitString[] obj,
             Unf5Class signature) throws
             UnsupportedEncodingException, IOException{
+        int nrows = obj.length;
         UnfBitfield unfno = new UnfBitfield();
         String init = String.format("%064d", 0);
         Character[] base64 = new Character[64];
 
         List<Integer> fingerp = new ArrayList<Integer>();
-        boolean[] b = new boolean[1];
-        b[0] = obj != null? false: true;
+        boolean[] b = new boolean[nrows];
         StringBuilder hex = new StringBuilder();
-        CharSequence[] cobj = new CharSequence[1];
-        cobj[0] = obj.getBits();
+        CharSequence[] cobj = new CharSequence[nrows];
+        for (int i = 0; i < nrows; i++) {
+            b[i] = obj[i] != null ? false : true;
+
+            cobj[i] = obj[i] != null ? obj[i].getBits() : null;
+        }
         /**Define encoding and mdalgor according to version (vers)*/
         String b64 = unfno.RUNF5((CharSequence[]) cobj, b,  fingerp, base64, hex);
         fingerprint.add(fingerp);

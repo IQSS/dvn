@@ -68,7 +68,7 @@ public class UNF5UtilTest {
      */
     @Test
     public void testCalculateUNF_floatArr() throws Exception {
-        System.out.println("calculateUNF");
+        System.out.println("calculateFloatUNF");
         List testData = readFileData("test/FloatTest");
         float[] numb = new float[testData.size() - 1];
         String expResult = (String) testData.get(0);
@@ -84,7 +84,7 @@ public class UNF5UtilTest {
      */
     @Test
     public void testCalculateUNF_shortArr() throws Exception {
-        System.out.println("calculateUNF");
+        System.out.println("calculateShortUNF");
         List testData = readFileData("test/ShortTest");
         short[] numb = new short[testData.size() - 1];
         String expResult = (String) testData.get(0);
@@ -100,7 +100,7 @@ public class UNF5UtilTest {
      */
     @Test
     public void testCalculateUNF_byteArr() throws Exception {
-        System.out.println("calculateUNF");
+        System.out.println("calculateByteUNF");
         List testData = readFileData("test/ByteTest");
         byte[] numb = new byte[testData.size() - 1];
         String expResult = (String) testData.get(0);
@@ -116,7 +116,7 @@ public class UNF5UtilTest {
      */
     @Test
     public void testCalculateUNF_longArr() throws Exception {
-        System.out.println("calculateUNF");
+        System.out.println("calculateLongUNF");
         List testData = readFileData("test/LongTest");
         long[] numb = new long[testData.size() - 1];
         String expResult = (String) testData.get(0);
@@ -132,7 +132,7 @@ public class UNF5UtilTest {
      */
     @Test
     public void testCalculateUNF_intArr() throws Exception {
-        System.out.println("calculateUNF");
+        System.out.println("calculateIntUNF");
         List testData = readFileData("test/IntTest");
         int[] numb = new int[testData.size() - 1];
         String expResult = (String) testData.get(0);
@@ -148,7 +148,7 @@ public class UNF5UtilTest {
      */
     @Test
     public void testCalculateUNF_booleanArr() throws Exception {
-        System.out.println("calculateUNF");
+        System.out.println("calculateBooleanUNF");
         List testData = readFileData("test/BooleanTest");
         boolean[] numb = new boolean[testData.size() - 1];
         String expResult = (String) testData.get(0);
@@ -164,7 +164,7 @@ public class UNF5UtilTest {
      */
     @Test
     public void testCalculateUNF_StringArr() throws Exception {
-        System.out.println("calculateUNF");
+        System.out.println("calculateStringUNF");
         List testData = readFileData("test/StringTest");
         String[] chr = new String[testData.size() - 1];
         String expResult = (String) testData.get(0);
@@ -175,6 +175,26 @@ public class UNF5UtilTest {
         assertEquals(expResult, result);
     }
 
+
+    /**
+     * Test of calculateUNF method, of class UNF5Util.
+     */
+    @Test
+    public void testCalculateUNF_StringArr_StringArr() throws Exception {
+        System.out.println("calculateDateTimeUNF");
+        List testData = readFileData("test/DateTimeTest");
+        String[] chr = new String[testData.size() - 1];
+        String[] sdfFormat = new String[testData.size() - 1];
+        String expResult = (String) testData.get(0);
+        for (int i = 1; i < testData.size(); i++) {
+            String dateAndFormat = (String) testData.get(i);
+            int separatorIndex = dateAndFormat.indexOf('~');
+            chr[i - 1] = dateAndFormat.substring(0, separatorIndex);
+            sdfFormat[i - 1] = dateAndFormat.substring(separatorIndex+2);
+        }
+        String result = UNF5Util.calculateUNF(chr, sdfFormat);
+        assertEquals(expResult, result);
+    }
     /**
      * Test of calculateUNF method, of class UNF5Util.
      */

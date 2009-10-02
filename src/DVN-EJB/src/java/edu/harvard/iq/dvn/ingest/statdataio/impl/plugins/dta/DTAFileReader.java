@@ -24,33 +24,26 @@ package edu.harvard.iq.dvn.ingest.statdataio.impl.plugins.dta;
 
 import java.io.*;
 import java.nio.*;
-import java.nio.channels.*;
-import java.security.NoSuchAlgorithmException;
 import java.util.logging.*;
 
-import static java.lang.System.*;
 import java.util.*;
-import java.lang.reflect.*;
 import java.util.regex.*;
 import java.text.*;
 
-import java.math.RoundingMode;
 
 import org.apache.commons.lang.*;
-import org.apache.commons.lang.builder.*;
-import org.apache.commons.io.*;
-import org.apache.commons.io.input.*;
 import org.apache.commons.codec.binary.Hex;
 
 import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.*;
 import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.spi.*;
 import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.metadata.*;
 import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.data.*;
-import edu.harvard.iq.dvn.unf.*;
+
 
 
 
 import edu.harvard.iq.dvn.ingest.statdataio.impl.plugins.util.*;
+import edu.harvard.iq.dvn.unf.UNF5Util;
 
 
 /**
@@ -945,7 +938,7 @@ public class DTAFileReader extends StatDataFileReader{
     }
 
 
-    private void decodeVariableLabels(BufferedInputStream stream){
+    private void decodeVariableLabels(BufferedInputStream stream)throws IOException{
 
         dbgLog.fine("***** decodeVariableLabels(): start *****");
         
@@ -961,7 +954,7 @@ public class DTAFileReader extends StatDataFileReader{
 
         byte[] variableLabelBytes = new byte[length_var_label_list];
         String[] variableLabels = new String[nvar];
-        try {
+        
             int nbytes = stream.read(variableLabelBytes, 0, length_var_label_list);
 
             //printHexDump(variableLabelList, "variableLabelList");
@@ -979,9 +972,7 @@ public class DTAFileReader extends StatDataFileReader{
                 offset_start = offset_end;
             }
             dbgLog.fine("variableLabelMap=\n"+variableLabelMap.toString() +"\n");
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+      
 
         smd.setVariableLabel(variableLabelMap);
         
@@ -1092,7 +1083,7 @@ public class DTAFileReader extends StatDataFileReader{
             byte[] dataRowBytes = new byte[bytes_per_row];
             Object[] dataRow = new Object[nvar];
             
-            try {
+           
                 int nbytes = stream.read(dataRowBytes, 0, bytes_per_row);
              
 
@@ -1324,9 +1315,7 @@ public class DTAFileReader extends StatDataFileReader{
             // dump the row of data to the external file
             pwout.println(StringUtils.join(dataRow, "\t"));
 
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
+         
             
             dbgLog.fine(i+"-th row's data={"+StringUtils.join(dataRow, ",")+"};");
 
@@ -1346,29 +1335,21 @@ public class DTAFileReader extends StatDataFileReader{
 
         for (int j=0;j<nvar; j++){
            String variableType_j =  variableTypelListFinal[j];
-            try {
+           
                 unfValues[j] = getUNF(dataTable2[j], dateFormat[j], variableType_j,
                     unfVersionNumber, j);
                 dbgLog.fine(j+"th unf value"+unfValues[j]);
 
-            } catch (UnfException ex) {
-                ex.printStackTrace();
-            } catch (NoSuchAlgorithmException ex) {
-                ex.printStackTrace();
-            }
+           
         }
         
         dbgLog.fine("unf set:\n"+Arrays.deepToString(unfValues));
         
-        try {
-            fileUnfValue = UNF5Util.calculateUNF(unfValues);
+        
+       fileUnfValue = UNF5Util.calculateUNF(unfValues);
 
         
-        } catch (UnfException ex) {
-            ex.printStackTrace();
-        } catch (NoSuchAlgorithmException ex) {
-            ex.printStackTrace();
-        }
+       
 
         dbgLog.fine("file-unf="+fileUnfValue);
         
@@ -1395,7 +1376,7 @@ public class DTAFileReader extends StatDataFileReader{
      *
      * @param stream
      */
-    private void decodeValueLabels(BufferedInputStream stream){
+    private void decodeValueLabels(BufferedInputStream stream)throws IOException{
 
         dbgLog.fine("***** decodeValueLabels(): start *****");
         
@@ -1404,7 +1385,7 @@ public class DTAFileReader extends StatDataFileReader{
         }
         
         
-        try {
+      
             if (stream.available() != 0) {
                 if ((Integer) smd.getFileInformation().get("releaseNumber") <= 105) {
                     parseValueLabelsRelease105(stream);
@@ -1413,11 +1394,8 @@ public class DTAFileReader extends StatDataFileReader{
                 }
             } else {
                 dbgLog.fine("no value-label table: end of file");
+       
             }
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-        
        dbgLog.fine("***** decodeValueLabels(): end *****");
     }
     
@@ -1794,8 +1772,8 @@ public class DTAFileReader extends StatDataFileReader{
 
     private String getUNF(Object[] varData, String[] dateFormat, String variableType,
         String unfVersionNumber, int variablePosition)
-        throws NumberFormatException, UnfException,
-        IOException, NoSuchAlgorithmException{
+        throws 
+        IOException {
         String unfValue = null;
         dbgLog.fine(variablePosition+"-th varData:\n"+Arrays.deepToString(varData));
         dbgLog.fine("variableType="+variableType);
@@ -1938,7 +1916,7 @@ public class DTAFileReader extends StatDataFileReader{
         String decodedDateTime;
     }
 
-    private DecodedDateTime decodeDateTimeData(String storageType, String FormatType, String rawDatum){
+    private DecodedDateTime decodeDateTimeData(String storageType, String FormatType, String rawDatum) throws IOException {
 
         dbgLog.finer("(storageType, FormatType, rawDatum)=("+
         storageType +", " +FormatType +", " +rawDatum+")");
@@ -1996,7 +1974,7 @@ public class DTAFileReader extends StatDataFileReader{
             try {
                 tempDate = new SimpleDateFormat("yyyy-DDD").parse(yearDayInYearString);
             } catch (ParseException ex) {
-                Logger.getLogger(DTAFileReader.class.getName()).log(Level.SEVERE, null, ex);
+                throw new IOException(ex);
             }
             
             decodedDateTime = sdf_ymd.format(tempDate.getTime());

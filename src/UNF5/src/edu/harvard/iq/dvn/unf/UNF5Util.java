@@ -222,7 +222,7 @@ public class UNF5Util {
 
     /**
      * Overloaded method
-     * @param chr one dimensional array of String
+     * @param beginDate one dimensional array of String
      * @return String with unf calculation
      * @throws NumberFormatException
      * @throws IOException
@@ -298,7 +298,70 @@ public class UNF5Util {
         return res[0];
     }
 
-   /**
+      public static String calculateUNF(final String[] beginDate, final String[] sdfFormat, final String[] endDate)
+            throws  IOException {
+        String tosplit = ":";
+         if (beginDate[0] != null) {
+             String spres[] = beginDate[0].split(tosplit);
+             if (spres.length >= 3 && beginDate[0].startsWith("UNF:")) {
+                 return Unf5Digest.addUNFs(beginDate);
+             }
+
+             if (spres.length > 1) {
+                 //throw new UnfException("UNFUtil: Malformed unf");
+             }
+         }
+        CharSequence[][] chseq = new CharSequence[1][beginDate.length];
+        Unf5Digest.setTrnps(false);
+        int cnt = 0;
+        for (String str : beginDate) {
+            if (sdfFormat[cnt] != null) {
+                SimpleDateFormat sdf = new SimpleDateFormat(sdfFormat[cnt]);
+                try {
+                    Date d = sdf.parse(str);
+                    UnfDateFormatter udf = new UnfDateFormatter(sdfFormat[cnt]);
+                    SimpleDateFormat unfSdf = new SimpleDateFormat(udf.getUnfFormatString().toString());
+                    if (udf.isTimeZoneSpecified()){
+                        unfSdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+                    }
+                    str = unfSdf.format(d);
+                    // remove any trailing 0s from milliseconds
+                    if (sdfFormat[cnt].indexOf("S")> -1 && str.endsWith("0")){
+                        while (str.endsWith("0")){
+                            str = str.substring(0,str.length()-1);
+                        }
+                        // if all trailing milliseconds were 0s, there will now be a trailing . to remove
+                        if (str.endsWith(".")) {
+                            str = str.substring(0, str.length() - 1);
+                        }
+                    }
+                    if (endDate[cnt] != null) {
+                        String str2 = endDate[cnt];
+                        Date endD = sdf.parse(str2);
+                        str2 = unfSdf.format(endD);
+                        if (sdfFormat[cnt].indexOf("S") > -1 && str2.endsWith("0")) {
+                            while (str2.endsWith("0")) {
+                                str2 = str2.substring(0, str.length() - 1);
+                            }
+                            // if all trailing milliseconds were 0s, there will now be a trailing . to remove
+                            if (str2.endsWith(".")) {
+                                str2 = str2.substring(0, str2.length() - 1);
+                            }
+                        }
+                        str += "/" + str2;
+                    }
+                } catch (ParseException ex) {
+                    Logger.getLogger(UNF5Util.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            chseq[0][cnt] = (CharSequence) str;
+            cnt++;
+        }
+        String[] res = Unf5Digest.unf(chseq);
+        return res[0];
+    }
+
+  /**
      * Calculates unf's of two-dimensional array of double
      * along second index (columns) and add them
      * Note that if data set contains number and String this method

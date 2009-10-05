@@ -401,35 +401,59 @@ public class SAVFileReader extends StatDataFileReader{
         dbgLog.fine("***** SAVFileReader: read() start *****");
 
         for (Method mthd : decodeMethods){
+	    
+	    // the following methods are now executed, in this order:
+	    
+	    // decodeHeader -- this method doesn't read any [meta]data and 
+	    //    doesn't initialize any values; its only purpose is to 
+	    //    make sure that the file is indeed an SPSS/SAV file. 
+	    // 
+	    // decodeRecordType1 -- there's always one RT1 record; it is 
+	    //    always 176 byte long. it contains the very basic metadata
+	    //    about the data file. most notably, the number of observations
+	    //    and the number of OBS (8 byte values) per observation.
+	    //
+	    // decodeRecordType2 -- there are multiple RT2 records. there's 
+	    //    one RT2 for every OBS (8 byte value); i.e. one per variable,
+	    //    or more per every String variable split into multiple OBS
+	    //    segments. this one is a 400 line method, that may benefit 
+	    //    from being split into smaller methods.
+	    //
+	    // decodeRecordType3and4,
+	    // decodeRecordType6,
+	    // decodeRecordType7,
+	    // decodeRecordType999, 
+	    // decodeRecordTypeData
 
-            try {
-                // invoke this method
 
-                dbgLog.fine("method Name="+mthd.getName());
+	    try {
+		// invoke this method
 
-                mthd.invoke(this, stream);
+		dbgLog.fine("method Name="+mthd.getName());
 
-            } catch (InvocationTargetException e) {
-                Throwable cause = e.getCause();
-            //    err.format(cause.getMessage());
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
+		mthd.invoke(this, stream);
+	    
+	    } catch (InvocationTargetException e) {
+		Throwable cause = e.getCause();
+		//    err.format(cause.getMessage());
+		e.printStackTrace();
+	    } catch (IllegalAccessException e) {
+		e.printStackTrace();
+	    }
+	    
+	    smd.setValueLabelTable(valueLabelTable);
+	    smd.setVariableFormat(printFormatList);
+	    smd.setVariableFormatName(printFormatNameTable);
+	    smd.setVariableFormatCategory(formatCategoryTable);
+	}
 
-            smd.setValueLabelTable(valueLabelTable);
-            smd.setVariableFormat(printFormatList);
-            smd.setVariableFormatName(printFormatNameTable);
-            smd.setVariableFormatCategory(formatCategoryTable);
-        }
-        if (sdiodata == null){
+	if (sdiodata == null){
             sdiodata = new SDIOData(smd, savDataSection);
         }
         dbgLog.fine("***** SAVFileReader: read() end *****");
         return sdiodata;
 
     }
-    
     
     void decodeHeader(BufferedInputStream stream){
         dbgLog.fine("***** decodeHeader(): start *****");
@@ -517,7 +541,7 @@ public class SAVFileReader extends StatDataFileReader{
             String productInfo = new String(Arrays.copyOfRange(recordType1, offset_start,
                 offset_end),"US-ASCII");
                 
-            dbgLog.fine("productInfo:\n"+productInfo+"\n");
+            dbgLog.info("productInfo:\n"+productInfo+"\n");
             
             // add the info to the fileInfo
             smd.getFileInformation().put("productInfo", productInfo);
@@ -537,7 +561,7 @@ public class SAVFileReader extends StatDataFileReader{
             int int2test = byteOderTest.getInt();
             
             if (int2test == 2 ){
-                dbgLog.fine("integer == 2: the byte-oder of the writer is the same "+
+                dbgLog.info("integer == 2: the byte-oder of the writer is the same "+
                 "as the counterpart of Java: Big Endian");
             } else {
                 // Because Java's byte-order is always big endian, 
@@ -547,8 +571,8 @@ public class SAVFileReader extends StatDataFileReader{
                 bb_fileLayout_code.order(ByteOrder.LITTLE_ENDIAN);
 
                 if (bb_fileLayout_code.getInt()==2){
-                    dbgLog.fine("The sav file was saved on a little endian machine");
-                    dbgLog.fine("Reveral of the bytes is necessary to decode "+
+                    dbgLog.info("The sav file was saved on a little endian machine");
+                    dbgLog.info("Reveral of the bytes is necessary to decode "+
                             "multi-byte, non-string blocks");
                             
                     isLittleEndian = true;
@@ -558,7 +582,7 @@ public class SAVFileReader extends StatDataFileReader{
                 }
             }
 
-            dbgLog.fine("Endian of this platform:"+ByteOrder.nativeOrder().toString());
+            dbgLog.info("Endian of this platform:"+ByteOrder.nativeOrder().toString());
             
             smd.getFileInformation().put("OSByteOrder", ByteOrder.nativeOrder().toString());
             smd.getFileInformation().put("byteOrder", int2test);
@@ -581,7 +605,7 @@ public class SAVFileReader extends StatDataFileReader{
             
             OBSUnitsPerCase = bb_OBS_units_per_case.getInt();
             
-            dbgLog.fine("OBSUnitsPerCase="+OBSUnitsPerCase);
+            dbgLog.info("OBSUnitsPerCase="+OBSUnitsPerCase);
             
             smd.getFileInformation().put("OBSUnitsPerCase", OBSUnitsPerCase);
 
@@ -602,9 +626,9 @@ public class SAVFileReader extends StatDataFileReader{
             if ( compression_switch == 0){
                 // data section is not compressed
                 isDataSectionCompressed = false;
-                dbgLog.fine("data section is not compressed");
+                dbgLog.info("data section is not compressed");
             } else {
-                dbgLog.fine("data section is compressed:"+compression_switch);
+                dbgLog.info("data section is compressed:"+compression_switch);
             }
             
             smd.getFileInformation().put("compressedData", compression_switch);
@@ -645,7 +669,7 @@ public class SAVFileReader extends StatDataFileReader{
                 // -1 if numberOfCases is unknown
                 throw new RuntimeException("number of cases is not recorded in the header");
             } else {
-                dbgLog.fine("number of cases is recorded= "+numberOfCases);
+                dbgLog.info("number of cases is recorded= "+numberOfCases);
                 caseQnty = numberOfCases;
                 smd.getFileInformation().put("caseQnty", numberOfCases);
             }
@@ -667,10 +691,10 @@ public class SAVFileReader extends StatDataFileReader{
             
             if ( compressionBias == 100d){
                 // 100 is expected
-                dbgLog.fine("compressionBias is 100 as expected");
+                dbgLog.info("compressionBias is 100 as expected");
                 smd.getFileInformation().put("compressionBias", 100);
             } else {
-                dbgLog.fine("compression bias is not 100: "+ compressionBias);
+                dbgLog.info("compression bias is not 100: "+ compressionBias);
                 smd.getFileInformation().put("compressionBias", compressionBias);
             }
             
@@ -732,16 +756,22 @@ public class SAVFileReader extends StatDataFileReader{
 
         // this field repeats as many as the number of variables in 
         // this sav file
+
+	// (note that the above statement is not technically correct, this 
+	//  record repeats not just for every variable in the file, but for 
+	//  every OBS (8 byte unit); i.e., if a string is split into multiple
+	//  OBS units, each one will have its own RT2 record -- L.A.). 
+
         // Each field constists of a fixed (36-byte) segment and
         // variable one (string <=256 + 3 missing-value units[optional])
 
         int variableCounter = 0;
 
-	int j = 0;
+	int j; 
 
-        for (j= 0; j< OBSUnitsPerCase;j++){
+        for (j=0; j<OBSUnitsPerCase; j++){
 
-            dbgLog.fine("\n\n+++++++++++ "+j+"-th RT2 unit is to be decoded +++++++++++");
+            dbgLog.info("RT2: \n\n+++++++++++ "+j+"-th RT2 unit is to be decoded +++++++++++");
             // 2.0: read the fixed[=non-optional] 32-byte segment
             byte[] recordType2Fixed = new byte[LENGTH_RECORDTYPE2_FIXED];
 
@@ -822,7 +852,7 @@ public class SAVFileReader extends StatDataFileReader{
                     }
                     variableTypelList.add(recordType2FixedPart1[1]);
                 }
-                dbgLog.fine("HowManyRt2Units for this variable="+HowManyRt2Units);
+                dbgLog.info("RT2: HowManyRt2Units for this variable="+HowManyRt2Units);
 
 
                 // 3rd ([2]) element: = 1 variable-label block follows; 0 = no label
@@ -907,9 +937,11 @@ public class SAVFileReader extends StatDataFileReader{
                     smd.setCaseWeightVariableName(caseWeightVariableName);
                     smd.getFileInformation().put("caseWeightVariableIndex", caseWeightVariableIndex);
                 }
+
                 OBSIndexToVariableName.put(j, variableName);
-                dbgLog.fine("\nvariable name="+variableName+"<-");
-                dbgLog.fine(j+"-th variable name="+variableName+"<-");
+                //dbgLog.fine("\nvariable name="+variableName+"<-");
+                dbgLog.info("RT2: "+j+"-th variable name="+variableName+"<-");
+		dbgLog.info("RT2: raw variable: "+RawVariableName);
                 variableNameList.add(variableName);
 
 
@@ -952,7 +984,7 @@ public class SAVFileReader extends StatDataFileReader{
 
                 dbgLog.fine("rawVariableLabelLength="+rawVariableLabelLength);
                 int variableLabelLength = getSAVintAdjustedBlockLength(rawVariableLabelLength);
-                dbgLog.fine("variableLabelLength="+variableLabelLength);
+                dbgLog.info("RT2: variableLabelLength="+variableLabelLength);
 
 
             // 2.5 [optional]variable label whose length is found at 2.4
@@ -966,118 +998,119 @@ public class SAVFileReader extends StatDataFileReader{
                 }
                 String variableLabel = new String(Arrays.copyOfRange(variable_label,
                     0, rawVariableLabelLength),"US-ASCII");
-                dbgLog.fine("variableLabel="+variableLabel+"<-");
+                dbgLog.info("RT2: variableLabel="+variableLabel+"<-");
 
                 variableLabelMap.put(variableName, variableLabel);
-            } else {
-		// 
             }
+
             // 2.6 [optional] missing values:4-byte each if exists
             //     4th element of 2.1 indicates the structure of this sub-field
-                if (hasMissingValues){
-                    dbgLog.fine("decoding missing value: type="+recordType2FixedPart1[3]);
-                    int howManyMissingValueUnits = missingValueCodeUnits.get(recordType2FixedPart1[3]);
-                    //int howManyMissingValueUnits = recordType2FixedPart1[3] > 0 ? recordType2FixedPart1[3] :  0;
 
-                    dbgLog.fine("howManyMissingValueUnits="+howManyMissingValueUnits);
+	    if (hasMissingValues){
+		dbgLog.info("RT2: decoding missing value: type="+recordType2FixedPart1[3]);
+		int howManyMissingValueUnits = missingValueCodeUnits.get(recordType2FixedPart1[3]);
+		//int howManyMissingValueUnits = recordType2FixedPart1[3] > 0 ? recordType2FixedPart1[3] :  0;
 
-                    byte[] missing_value_code_units = new byte[LENGTH_SAV_OBS_BLOCK*howManyMissingValueUnits];
-                    int nbytes_2_6 = stream.read(missing_value_code_units);
-                    if (nbytes_2_6 == 0){
-                        throw new IOException("RT 2: reading recordType2.6: no byte was read");
-                    } else {
-                        dbgLog.fine("nbytes_2_6="+nbytes_2_6);
-                    }
+		dbgLog.info("RT2: howManyMissingValueUnits="+howManyMissingValueUnits);
 
-                    //printHexDump(missing_value_code_units, "missing value");
+		byte[] missing_value_code_units = new byte[LENGTH_SAV_OBS_BLOCK*howManyMissingValueUnits];
+		int nbytes_2_6 = stream.read(missing_value_code_units);
 
-                    if (isNumericVariable){
+		if (nbytes_2_6 == 0){
+		    throw new IOException("RT 2: reading recordType2.6: no byte was read");
+		} else {
+		    dbgLog.fine("nbytes_2_6="+nbytes_2_6);
+		}
 
-                        double[] missingValues = new double[howManyMissingValueUnits];
-                        //List<String> mvp = new ArrayList<String>();
-                        List<String> mv = new ArrayList<String>();
+		//printHexDump(missing_value_code_units, "missing value");
 
-                        ByteBuffer[] bb_missig_value_code = 
-                            new ByteBuffer[howManyMissingValueUnits];
+		if (isNumericVariable){
 
-                        int offset_start = 0;
+		    double[] missingValues = new double[howManyMissingValueUnits];
+		    //List<String> mvp = new ArrayList<String>();
+		    List<String> mv = new ArrayList<String>();
+
+		    ByteBuffer[] bb_missig_value_code = 
+			new ByteBuffer[howManyMissingValueUnits];
+
+		    int offset_start = 0;
                         
-                        for (int i= 0; i < howManyMissingValueUnits;i++ ){
+		    for (int i= 0; i < howManyMissingValueUnits;i++ ){
 
-                            bb_missig_value_code[i]  =
-                                    ByteBuffer.wrap(missing_value_code_units, offset_start,
-                                    LENGTH_SAV_OBS_BLOCK);
+			bb_missig_value_code[i]  =
+			    ByteBuffer.wrap(missing_value_code_units, offset_start,
+					    LENGTH_SAV_OBS_BLOCK);
+			
+			offset_start +=LENGTH_SAV_OBS_BLOCK;
+			if (isLittleEndian){
+			    bb_missig_value_code[i].order(ByteOrder.LITTLE_ENDIAN);
+			}
+			ByteBuffer temp = bb_missig_value_code[i].duplicate();
 
-                            offset_start +=LENGTH_SAV_OBS_BLOCK;
-                            if (isLittleEndian){
-                               bb_missig_value_code[i].order(ByteOrder.LITTLE_ENDIAN);
-                            }
-                            ByteBuffer temp = bb_missig_value_code[i].duplicate();
 
+			missingValues[i] = bb_missig_value_code[i].getDouble();
+			if (Double.toHexString(missingValues[i]).equals("-0x1.ffffffffffffep1023")){
+			    dbgLog.fine("1st value is LOWEST");
+			    mv.add(Double.toHexString(missingValues[i]));
+			} else if (Double.valueOf(missingValues[i]).equals(Double.MAX_VALUE)){
+			    dbgLog.fine("2nd value is HIGHEST");
+			    mv.add(Double.toHexString(missingValues[i]));
+			} else {
+			    mv .add(doubleNumberFormatter.format(missingValues[i]));
+			}
+			dbgLog.fine(i+"-th missing value="+Double.toHexString(missingValues[i]));
+		    }
 
-                            missingValues[i] = bb_missig_value_code[i].getDouble();
-                            if (Double.toHexString(missingValues[i]).equals("-0x1.ffffffffffffep1023")){
-                                dbgLog.fine("1st value is LOWEST");
-                                mv.add(Double.toHexString(missingValues[i]));
-                            } else if (Double.valueOf(missingValues[i]).equals(Double.MAX_VALUE)){
-                                dbgLog.fine("2nd value is HIGHEST");
-                                mv.add(Double.toHexString(missingValues[i]));
-                            } else {
-                                mv .add(doubleNumberFormatter.format(missingValues[i]));
-                            }
-                            dbgLog.fine(i+"-th missing value="+Double.toHexString(missingValues[i]));
-                        }
-                        dbgLog.fine("variableName="+variableName);
-                        if (recordType2FixedPart1[3] > 0) {
-                            // point cases only
-                            dbgLog.fine("mv(>0)="+mv);
-                            missingValueTable.put(variableName, mv);
-                            invalidDataInfo.setInvalidValues(mv);
-                        } else if (recordType2FixedPart1[3]== -2) {
-                            dbgLog.fine("mv(-2)="+mv);
-                            // range
-                            invalidDataInfo.setInvalidRange(mv);
-                        } else if (recordType2FixedPart1[3]== -3){
-                            // mixed case
-                            dbgLog.fine("mv(-3)="+mv);
-                            invalidDataInfo.setInvalidRange(mv.subList(0, 2));
-                            invalidDataInfo.setInvalidValues(mv.subList(2, 3));
-                            missingValueTable.put(variableName, mv.subList(2, 3));
-                        }
+		    dbgLog.fine("variableName="+variableName);
+		    if (recordType2FixedPart1[3] > 0) {
+			// point cases only
+			dbgLog.fine("mv(>0)="+mv);
+			missingValueTable.put(variableName, mv);
+			invalidDataInfo.setInvalidValues(mv);
+		    } else if (recordType2FixedPart1[3]== -2) {
+			dbgLog.fine("mv(-2)="+mv);
+			// range
+			invalidDataInfo.setInvalidRange(mv);
+		    } else if (recordType2FixedPart1[3]== -3){
+			// mixed case
+			dbgLog.fine("mv(-3)="+mv);
+			invalidDataInfo.setInvalidRange(mv.subList(0, 2));
+			invalidDataInfo.setInvalidValues(mv.subList(2, 3));
+			missingValueTable.put(variableName, mv.subList(2, 3));
+		    }
                         
-                        dbgLog.fine("missing value="+
-                            StringUtils.join(missingValueTable.get(variableName),"|"));
-                        dbgLog.fine("invalidDataInfo(Numeric):\n"+invalidDataInfo);
-                        invalidDataTable.put(variableName, invalidDataInfo);
-                    } else {
-                        // string variable case
-                        String[] missingValues = new String[howManyMissingValueUnits];
-                        List<String> mv = new ArrayList<String>();
-                        int offset_start = 0;
-                        int offset_end   = LENGTH_SAV_OBS_BLOCK;
-                        for (int i= 0; i < howManyMissingValueUnits;i++ ){
+		    dbgLog.fine("missing value="+
+				StringUtils.join(missingValueTable.get(variableName),"|"));
+		    dbgLog.fine("invalidDataInfo(Numeric):\n"+invalidDataInfo);
+		    invalidDataTable.put(variableName, invalidDataInfo);
+		} else {
+		    // string variable case
+		    String[] missingValues = new String[howManyMissingValueUnits];
+		    List<String> mv = new ArrayList<String>();
+		    int offset_start = 0;
+		    int offset_end   = LENGTH_SAV_OBS_BLOCK;
+		    for (int i= 0; i < howManyMissingValueUnits;i++ ){
 
-                            missingValues[i] = StringUtils.stripEnd(new
-                                String(Arrays.copyOfRange(missing_value_code_units,
-                                offset_start, offset_end),"US-ASCII"), " ");
-                            dbgLog.fine("missing value="+missingValues[i]+"<-");
+			missingValues[i] = StringUtils.stripEnd(new
+								String(Arrays.copyOfRange(missing_value_code_units,
+											  offset_start, offset_end),"US-ASCII"), " ");
+			dbgLog.fine("missing value="+missingValues[i]+"<-");
+			
+			offset_start = offset_end;
+			offset_end +=LENGTH_SAV_OBS_BLOCK;
 
-                            offset_start = offset_end;
-                            offset_end +=LENGTH_SAV_OBS_BLOCK;
-
-
-                            mv.add(missingValues[i]);
-                        }
-                        invalidDataInfo.setInvalidValues(mv);
-                        missingValueTable.put(variableName, mv);
-                        invalidDataTable.put(variableName, invalidDataInfo);
-                        dbgLog.fine("missing value(str)="+
-                            StringUtils.join(missingValueTable.get(variableName),"|"));
-                        dbgLog.fine("invalidDataInfo(String):\n"+invalidDataInfo);
-
-                    } // string case
-                    dbgLog.fine("invalidDataTable:\n"+invalidDataTable);
-                } // if msv
+			mv.add(missingValues[i]);
+		    }
+		    invalidDataInfo.setInvalidValues(mv);
+		    missingValueTable.put(variableName, mv);
+		    invalidDataTable.put(variableName, invalidDataInfo);
+		    dbgLog.fine("missing value(str)="+
+				StringUtils.join(missingValueTable.get(variableName),"|"));
+		    dbgLog.fine("invalidDataInfo(String):\n"+invalidDataInfo);
+		    
+		} // string case
+		dbgLog.fine("invalidDataTable:\n"+invalidDataTable);
+	    } // if msv
 
 
             } catch (IOException ex){
@@ -1093,7 +1126,7 @@ public class SAVFileReader extends StatDataFileReader{
 	    dbgLog.fine("RT2 metadata-related exit-chores");
 	    smd.getFileInformation().put("varQnty", variableCounter);
 	    varQnty = variableCounter;
-	    dbgLog.fine("varQnty="+varQnty);
+	    dbgLog.info("RT2: varQnty="+varQnty);
 
 	    smd.setVariableName(variableNameList.toArray(new String[variableNameList.size()]));
 	    smd.setVariableLabel(variableLabelMap);
@@ -1103,12 +1136,14 @@ public class SAVFileReader extends StatDataFileReader{
 							      variableTypelList.toArray(new Integer[variableTypelList.size()])));
 	    
                 
-	    dbgLog.fine("OBSwiseTypelList="+OBSwiseTypelList);
+	    dbgLog.info("RT2: OBSwiseTypelList="+OBSwiseTypelList);
                 
 	    // variableType is determined after the valueTable is finalized
-	}
+	} else {
+	    dbgLog.info("RT2: attention! didn't reach the end of the OBS list!");
+	}	    
 	
-        dbgLog.fine("***** decodeRecordType2(): end *****");
+        dbgLog.info("***** decodeRecordType2(): end *****");
     }
     
     
@@ -1908,11 +1943,7 @@ while(true ){
 
         } catch (NumberFormatException ex) {
             ex.printStackTrace();
-        } catch (UnfException ex) {
-            ex.printStackTrace();
         } catch (IOException ex) {
-            ex.printStackTrace();
-        } catch (NoSuchAlgorithmException ex) {
             ex.printStackTrace();
         }
         
@@ -2516,7 +2547,6 @@ while(true ){
                 // do exit-processing
 
               
-
 
                 dbgLog.fine("***** reached the end of the file at "+ii
                     +"th iteration *****");

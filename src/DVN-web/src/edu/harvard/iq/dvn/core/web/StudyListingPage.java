@@ -93,7 +93,6 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
     private DataPaginator paginator2;
     private String searchField;
     private String searchValue;
-    private Integer searchFilter;
     private Map studyFields;
     private String studyListingIndex;
 
@@ -222,15 +221,12 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
         List studyIDList = new ArrayList();
         Map variableMap = new HashMap();
 
-        if (searchFilter == null) {
-            searchFilter = 0;
-        }
-
         // currently search filter is determined from a set of boolean checkboxes
-        if (searchResultsFilter) {
+        int searchFilter = 0;
+        if (renderSearchResultsFilter && searchResultsFilter) {
             searchFilter = 2;
         }
-        if (searchCollectionFilter) {
+        if (renderSearchCollectionFilter && searchCollectionFilter) {
             searchFilter = 1;
         }
 
@@ -659,14 +655,6 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
 
     public void setSearchValue(String searchValue) {
         this.searchValue = searchValue;
-    }
-
-    public Integer getSearchFilter() {
-        return searchFilter;
-    }
-
-    public void setSearchFilter(Integer searchFilter) {
-        this.searchFilter = searchFilter;
     }
 
     public DataPaginator getPaginator() {

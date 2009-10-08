@@ -155,25 +155,7 @@ public class SAVFileReader extends StatDataFileReader{
     
     private static Calendar GCO = new GregorianCalendar();
 
-    /** List of decoding methods for reflection */
-
-    private static String[] decodeMethodNames = {
-        "decodeHeader","decodeRecordType1","decodeRecordType2",
-        "decodeRecordType3and4","decodeRecordType6","decodeRecordType7",
-        "decodeRecordType999", "decodeRecordTypeData" };
-
-    private static List<Method> decodeMethods  = new ArrayList<Method>();
-
-
     static {
-        // initialize method name list
-        for (String n: decodeMethodNames){
-            for (Method m: SAVFileReader.class.getDeclaredMethods()){
-                if (m.getName().equals(n)){
-                    decodeMethods.add(m);
-                }
-            }
-        }
         
         // initialize validMissingValueCodeSet
         validMissingValueCodeSet.add(3);
@@ -243,17 +225,12 @@ public class SAVFileReader extends StatDataFileReader{
     private List<Integer> variableTypelList= new ArrayList<Integer>(); 
     private List<Integer> OBSwiseTypelList= new ArrayList<Integer>(); 
 
-    List<Integer> printFormatList = new ArrayList<Integer>(); 
-
     Map<String, String> printFormatTable = new LinkedHashMap<String, String>(); 
     Map<String, String> printFormatNameTable = new LinkedHashMap<String, String>(); 
     
-    Map<String, String> formatCategoryTable = new LinkedHashMap<String, String>(); 
-    
+
     Set<Integer> obsNonVariableBlockSet = new LinkedHashSet<Integer>(); 
     
-    Map<String, Map<String, String>> valueLabelTable =
-	new LinkedHashMap<String, Map<String, String>>(); 
 
     Map<String, String> valueVariableMappingTable = new LinkedHashMap<String, String>(); 
  
@@ -402,75 +379,99 @@ public class SAVFileReader extends StatDataFileReader{
 
         dbgLog.fine("***** SAVFileReader: read() start *****");
 
-        for (Method mthd : decodeMethods){
+	// the following methods are now executed, in this order:
 	    
-	    // the following methods are now executed, in this order:
-	    
-	    // decodeHeader -- this method doesn't read any [meta]data and 
-	    //    doesn't initialize any values; its only purpose is to 
-	    //    make sure that the file is indeed an SPSS/SAV file. 
-	    // 
-	    // decodeRecordType1 -- there's always one RT1 record; it is 
-	    //    always 176 byte long. it contains the very basic metadata
-	    //    about the data file. most notably, the number of observations
-	    //    and the number of OBS (8 byte values) per observation.
-	    //
-	    // decodeRecordType2 -- there are multiple RT2 records. there's 
-	    //    one RT2 for every OBS (8 byte value); i.e. one per variable,
-	    //    or more per every String variable split into multiple OBS
-	    //    segments. this one is a 400 line method, that may benefit 
-	    //    from being split into smaller methods.
-	    //
-	    // decodeRecordType3and4 -- these sections come in pairs, each
-	    //    pair dedicated to one set of variable labels. 
-	    // decodeRecordType6,
-	    //
-	    // decodeRecordType7 -- this RT contains some extended 
-	    //    metadata for the data file. (including the information 
-	    //    about the extended variables, i.e. variables longer than
-	    //    255 bytes split into 255 byte fragments that are stored 
-	    //    in the data file as independent variables). 
-	    //
-	    // decodeRecordType999 -- this RT does not contain any data; 
-	    //    its sole function is to indicate that the metadata portion 
-	    //    of the data file is over and the data section follows. 
-	    // 
-	    // decodeRecordTypeData -- this method decodes the data section 
-	    //    of the file. Inside this method, 2 distinct methods are 
-	    //    called to process compressed or uncompressed data, depending
-	    //    on which method is used in this data file. 
+	// decodeHeader -- this method doesn't read any [meta]data and 
+	//    doesn't initialize any values; its only purpose is to 
+	//    make sure that the file is indeed an SPSS/SAV file. 
+	// 
+	// decodeRecordType1 -- there's always one RT1 record; it is 
+	//    always 176 byte long. it contains the very basic metadata
+	//    about the data file. most notably, the number of observations
+	//    and the number of OBS (8 byte values) per observation.
+	//
+	// decodeRecordType2 -- there are multiple RT2 records. there's 
+	//    one RT2 for every OBS (8 byte value); i.e. one per variable,
+	//    or more per every String variable split into multiple OBS
+	//    segments. this one is a 400 line method, that may benefit 
+	//    from being split into smaller methods.
+	//
+	// decodeRecordType3and4 -- these sections come in pairs, each
+	//    pair dedicated to one set of variable labels. 
+	// decodeRecordType6,
+	//
+	// decodeRecordType7 -- this RT contains some extended 
+	//    metadata for the data file. (including the information 
+	//    about the extended variables, i.e. variables longer than
+	//    255 bytes split into 255 byte fragments that are stored 
+	//    in the data file as independent variables). 
+	//
+	// decodeRecordType999 -- this RT does not contain any data; 
+	//    its sole function is to indicate that the metadata portion 
+	//    of the data file is over and the data section follows. 
+	// 
+	// decodeRecordTypeData -- this method decodes the data section 
+	//    of the file. Inside this method, 2 distinct methods are 
+	//    called to process compressed or uncompressed data, depending
+	//    on which method is used in this data file. 
 
 
-	    try {
-		// invoke this method
+	String methodCurrentlyExecuted = null; 
 
-		dbgLog.fine("method Name="+mthd.getName());
+	try {
+	    methodCurrentlyExecuted = "decodeHeader";
+	    dbgLog.fine("***** SAVFileReader: executing method decodeHeader");
+	    decodeHeader(stream); 
 
-		mthd.invoke(this, stream);
-	    
-	    } catch (InvocationTargetException e) {
-		Throwable cause = e.getCause();
-		//    err.format(cause.getMessage());
-		e.printStackTrace();
-	    } catch (IllegalAccessException e) {
-		e.printStackTrace();
-	    }
-	    
-	    smd.setValueLabelTable(valueLabelTable);
-	    smd.setVariableFormat(printFormatList);
-	    smd.setVariableFormatName(printFormatNameTable);
-	    smd.setVariableFormatCategory(formatCategoryTable);
+	    methodCurrentlyExecuted = "decodeRecordType1";
+	    dbgLog.fine("***** SAVFileReader: executing method decodeRecordType1");
+	    decodeRecordType1(stream); 
+
+	    methodCurrentlyExecuted = "decodeRecordType2";
+	    dbgLog.fine("***** SAVFileReader: executing method decodeRecordType1");
+	    decodeRecordType2(stream); 
+
+	    methodCurrentlyExecuted = "decodeRecordType3and4"; 
+	    dbgLog.fine("***** SAVFileReader: executing method decodeRecordType3and4");
+	    decodeRecordType3and4(stream); 
+
+	    methodCurrentlyExecuted = "decodeRecordType6";
+	    dbgLog.fine("***** SAVFileReader: executing method decodeRecordType6");
+	    decodeRecordType6(stream); 
+
+	    methodCurrentlyExecuted = "decodeRecordType7";
+	    dbgLog.fine("***** SAVFileReader: executing method decodeRecordType7");
+	    decodeRecordType7(stream);
+
+	    methodCurrentlyExecuted = "decodeRecordType999"; 
+	    dbgLog.fine("***** SAVFileReader: executing method decodeRecordType999");
+	    decodeRecordType999(stream);
+
+	    methodCurrentlyExecuted = "decodeRecordTypeData";
+	    dbgLog.fine("***** SAVFileReader: executing method decodeRecordTypeData");
+	    decodeRecordTypeData(stream); 
+
+		
+	} catch (IllegalArgumentException e) {
+	    //Throwable cause = e.getCause();
+	    dbgLog.info("***** SAVFileReader: ATTENTION: IllegalArgumentException thrown while executing "+methodCurrentlyExecuted);  
+	    e.printStackTrace();
+	    throw new IllegalArgumentException ( "in method "+methodCurrentlyExecuted+": "+e.getMessage() ); 
+	} catch (IOException e) {
+	    dbgLog.info("***** SAVFileReader: ATTENTION: IOException thrown while executing "+methodCurrentlyExecuted);  
+	    e.printStackTrace();
+	    throw new IOException ( "in method "+methodCurrentlyExecuted+": "+e.getMessage() ); 
 	}
-
+	    
 	if (sdiodata == null){
-            sdiodata = new SDIOData(smd, savDataSection);
-        }
-        dbgLog.fine("***** SAVFileReader: read() end *****");
-        return sdiodata;
-
+	    sdiodata = new SDIOData(smd, savDataSection);
+	}
+	dbgLog.fine("***** SAVFileReader: read() end *****");
+	return sdiodata;
+    
     }
     
-    void decodeHeader(BufferedInputStream stream){
+    void decodeHeader(BufferedInputStream stream) throws IOException {
         dbgLog.fine("***** decodeHeader(): start *****");
         
         if (stream ==null){
@@ -492,7 +493,8 @@ public class SAVFileReader extends StatDataFileReader{
             }
 
         } catch (IOException ex){
-            ex.printStackTrace();
+            //ex.printStackTrace();
+	    throw ex; 
         }
 
         //printHexDump(b, "hex dump of the byte-array");
@@ -520,8 +522,7 @@ public class SAVFileReader extends StatDataFileReader{
     }
 
 
-
-    void decodeRecordType1(BufferedInputStream stream){
+    void decodeRecordType1(BufferedInputStream stream) throws IOException {
         dbgLog.fine("***** decodeRecordType1(): start *****");
 
         if (stream ==null){
@@ -750,14 +751,15 @@ public class SAVFileReader extends StatDataFileReader{
             
             
         } catch (IOException ex) {
-            ex.printStackTrace();
+            //ex.printStackTrace();
+	    throw ex; 
         }
         
         dbgLog.fine("***** decodeRecordType1(): end *****");
     }
     
     
-    void decodeRecordType2(BufferedInputStream stream){
+    void decodeRecordType2(BufferedInputStream stream) throws IOException {
         dbgLog.fine("***** decodeRecordType2(): start *****");
         if (stream ==null){
             throw new IllegalArgumentException("stream == null!");
@@ -765,6 +767,8 @@ public class SAVFileReader extends StatDataFileReader{
 
 	Map<String, String> variableLabelMap = new LinkedHashMap<String, String>();
 	Map<String, List<String>> missingValueTable = new LinkedHashMap<String, List<String>>();
+	List<Integer> printFormatList = new ArrayList<Integer>(); 
+
 	String caseWeightVariableName = null;
 	int caseWeightVariableIndex = 0; 
 
@@ -1188,14 +1192,14 @@ public class SAVFileReader extends StatDataFileReader{
 
 
             } catch (IOException ex){
-                ex.printStackTrace();
+                //ex.printStackTrace();
+		throw ex; 
             } catch (Exception ex){
                 ex.printStackTrace();
             }
 
         } // j-loop
 
-	//if (j == (OBSUnitsPerCase-1) ){
 	if (j == OBSUnitsPerCase ) {
 	    dbgLog.fine("RT2 metadata-related exit-chores");
 	    smd.getFileInformation().put("varQnty", variableCounter);
@@ -1208,7 +1212,10 @@ public class SAVFileReader extends StatDataFileReader{
 	    smd.getFileInformation().put("caseWeightVariableName", caseWeightVariableName);
 	    smd.setVariableTypeMinimal(ArrayUtils.toPrimitive(
 							      variableTypelList.toArray(new Integer[variableTypelList.size()])));
-	    
+
+	    smd.setVariableFormat(printFormatList);
+	    smd.setVariableFormatName(printFormatNameTable);
+
                 
 	    dbgLog.fine("RT2: OBSwiseTypelList="+OBSwiseTypelList);
                 
@@ -1220,241 +1227,224 @@ public class SAVFileReader extends StatDataFileReader{
         dbgLog.fine("***** decodeRecordType2(): end *****");
     }
     
-    void decodeRecordType3and4(BufferedInputStream stream){
+    void decodeRecordType3and4(BufferedInputStream stream) throws IOException {
         dbgLog.fine("***** decodeRecordType3and4(): start *****");
+	Map<String, Map<String, String>> valueLabelTable =
+	    new LinkedHashMap<String, Map<String, String>>(); 
+
         int safteyCounter = 0;
-while(true ){
-        try {
-            if (stream ==null){
-                throw new IllegalArgumentException("stream == null!");
-            }
-            // this secton may not exit so first check the 4-byte header value
-            //if (stream.markSupported()){
-            stream.mark(1000);
-            //}
-            // 3.0 check the first 4 bytes
-            byte[] headerCode = new byte[LENGTH_RECORD_TYPE3_CODE];
+	while(true ){
+	    try {
+		if (stream ==null){
+		    throw new IllegalArgumentException("stream == null!");
+		}
+		// this secton may not exit so first check the 4-byte header value
+		//if (stream.markSupported()){
+		stream.mark(1000);
+		//}
+		// 3.0 check the first 4 bytes
+		byte[] headerCode = new byte[LENGTH_RECORD_TYPE3_CODE];
 
-            int nbytes_rt3 = stream.read(headerCode, 0, LENGTH_RECORD_TYPE3_CODE);
-            // to-do check against nbytes
-            //printHexDump(headerCode, "RT3 header test");
-            ByteBuffer bb_header_code  = ByteBuffer.wrap(headerCode,
-                       0, LENGTH_RECORD_TYPE3_CODE);
-            if (isLittleEndian){
-                bb_header_code.order(ByteOrder.LITTLE_ENDIAN);
-            }
+		int nbytes_rt3 = stream.read(headerCode, 0, LENGTH_RECORD_TYPE3_CODE);
+		// to-do check against nbytes
+		//printHexDump(headerCode, "RT3 header test");
+		ByteBuffer bb_header_code  = ByteBuffer.wrap(headerCode,
+							     0, LENGTH_RECORD_TYPE3_CODE);
+		if (isLittleEndian){
+		    bb_header_code.order(ByteOrder.LITTLE_ENDIAN);
+		}
 
-            int intRT3test = bb_header_code.getInt();
-            dbgLog.fine("header test value: RT3="+intRT3test);
-            if (intRT3test != 3){
-            //if (stream.markSupported()){
-                dbgLog.fine("iteration="+safteyCounter);
+		int intRT3test = bb_header_code.getInt();
+		dbgLog.fine("header test value: RT3="+intRT3test);
+		if (intRT3test != 3){
+		    //if (stream.markSupported()){
+		    dbgLog.fine("iteration="+safteyCounter);
+		    
+		    stream.reset();
+		    return;
+		    //}
+		}
+		// 3.1 how many value-label pairs follow
+		byte[] number_of_labels = new byte[LENGTH_RT3_HOW_MANY_LABELS];
+		
+		int nbytes_3_1 = stream.read(number_of_labels);
+		if (nbytes_3_1 == 0){
+		    throw new IOException("RT 3: reading recordType3.1: no byte was read");
+		}
+		ByteBuffer bb_number_of_labels  = ByteBuffer.wrap(number_of_labels,
+								  0, LENGTH_RT3_HOW_MANY_LABELS);
+		if (isLittleEndian){
+		    bb_number_of_labels.order(ByteOrder.LITTLE_ENDIAN);
+		}
 
-                stream.reset();
-                return;
-            //}
-            }
-            // 3.1 how many value-label pairs follow
-            byte[] number_of_labels = new byte[LENGTH_RT3_HOW_MANY_LABELS];
+		int numberOfValueLabels = bb_number_of_labels.getInt();
+		dbgLog.fine("number of value-label pairs="+numberOfValueLabels);
+            
+		ByteBuffer[] tempBB = new ByteBuffer[numberOfValueLabels];
 
-            int nbytes_3_1 = stream.read(number_of_labels);
-            if (nbytes_3_1 == 0){
-                throw new IOException("RT 3: reading recordType3.1: no byte was read");
-            }
-             ByteBuffer bb_number_of_labels  = ByteBuffer.wrap(number_of_labels,
-                   0, LENGTH_RT3_HOW_MANY_LABELS);
-            if (isLittleEndian){
-                bb_number_of_labels.order(ByteOrder.LITTLE_ENDIAN);
-            }
+		String valueLabel[] = new String[numberOfValueLabels];
 
-            int numberOfValueLabels = bb_number_of_labels.getInt();
-            dbgLog.fine("number of value-label pairs="+numberOfValueLabels);
-            
-            
-            ByteBuffer[] tempBB = new ByteBuffer[numberOfValueLabels];
-            
-            String valueLabel[] = new String[numberOfValueLabels];
-            
-            
-            for (int i=0; i<numberOfValueLabels;i++){
-            
-                // read 8-byte as value
-            
-            
+		for (int i=0; i<numberOfValueLabels;i++){
+		    
+		    // read 8-byte as value		    
+		    byte[] value = new byte[LENGTH_RT3_VALUE];
+		    int nbytes_3_value = stream.read(value);
                 
-                byte[] value = new byte[LENGTH_RT3_VALUE];
-                int nbytes_3_value = stream.read(value);
-                
-                if (nbytes_3_value == 0){
-                    throw new IOException("RT 3: reading recordType3 value: no byte was read");
-                }
-                // note these 8 bytes are interpreted later
-                // currently no information about which variable's (=> type unknown)
-                ByteBuffer bb_value  = ByteBuffer.wrap(value,
-                           0, LENGTH_RT3_VALUE);
-                if (isLittleEndian){
-                    bb_value.order(ByteOrder.LITTLE_ENDIAN);
-                }
-                tempBB[i] = bb_value;
-                dbgLog.fine("bb_value="+Hex.encodeHex(bb_value.array()));
-                
-            /*
-                double valueD = bb_value.getDouble();
-                
-                dbgLog.fine("value="+valueD);
-            */
-                // read 1st byte as unsigned integer = label_length
-                
-                // read label_length byte as label
-                byte[] labelLengthByte = new byte[LENGTH_RT3_LABEL_LENGTH];
-                
-                int nbytes_3_label_length = stream.read(labelLengthByte);
+		    if (nbytes_3_value == 0){
+			throw new IOException("RT 3: reading recordType3 value: no byte was read");
+		    }
+		    // note these 8 bytes are interpreted later
+		    // currently no information about which variable's (=> type unknown)
+		    ByteBuffer bb_value  = ByteBuffer.wrap(value,
+							   0, LENGTH_RT3_VALUE);
+		    if (isLittleEndian){
+			bb_value.order(ByteOrder.LITTLE_ENDIAN);
+		    }
+		    tempBB[i] = bb_value;
+		    dbgLog.fine("bb_value="+Hex.encodeHex(bb_value.array()));
+		    /*
+		      double valueD = bb_value.getDouble();                
+		      dbgLog.fine("value="+valueD);
+		    */
+		    // read 1st byte as unsigned integer = label_length
 
-                // add check-routine here
-                
-                dbgLog.fine("labelLengthByte"+Hex.encodeHex(labelLengthByte));
-                
-                dbgLog.fine("label length = "+labelLengthByte[0]);
-                // the net-length of a value label is saved as
-                // unsigned byte; however, the length is less than 127
-                // byte should be ok
-                int rawLabelLength = labelLengthByte[0] & 0xFF;
-                dbgLog.fine("rawLabelLength="+rawLabelLength);
-                // -1 =>1-byte already read
-                int labelLength = getSAVobsAdjustedBlockLength(rawLabelLength+1)-1;
-                
-                byte[] valueLabelBytes = new byte[labelLength];
-                int nbytes_3_value_label = stream.read(valueLabelBytes);
-                
-                
-               // ByteBuffer bb_label = ByteBuffer.wrap(valueLabel,0,labelLength);
-               
-                valueLabel[i] = StringUtils.stripEnd(new
-                    String(Arrays.copyOfRange(valueLabelBytes,
-                    0, rawLabelLength),"US-ASCII"), " ");
-                    
-                dbgLog.fine(i+"-th valueLabel="+valueLabel[i]+"<-");
+		    // read label_length byte as label
+		    byte[] labelLengthByte = new byte[LENGTH_RT3_LABEL_LENGTH];
 
+		    int nbytes_3_label_length = stream.read(labelLengthByte);
 
-            } // iter rt3
+		    // add check-routine here
 
-            dbgLog.fine("end of RT3 block");
-            dbgLog.fine("start of RT4 block");
+		    dbgLog.fine("labelLengthByte"+Hex.encodeHex(labelLengthByte));
+		    dbgLog.fine("label length = "+labelLengthByte[0]);
+		    // the net-length of a value label is saved as
+		    // unsigned byte; however, the length is less than 127
+		    // byte should be ok
+		    int rawLabelLength = labelLengthByte[0] & 0xFF;
+		    dbgLog.fine("rawLabelLength="+rawLabelLength);
+		    // -1 =>1-byte already read
+		    int labelLength = getSAVobsAdjustedBlockLength(rawLabelLength+1)-1;
+		    byte[] valueLabelBytes = new byte[labelLength];
+		    int nbytes_3_value_label = stream.read(valueLabelBytes);
 
-            // 4.0 check the first 4 bytes
-            byte[] headerCode4 = new byte[LENGTH_RECORD_TYPE4_CODE];
+		    // ByteBuffer bb_label = ByteBuffer.wrap(valueLabel,0,labelLength);
 
-            int nbytes_rt4 = stream.read(headerCode4, 0, LENGTH_RECORD_TYPE4_CODE);
+		    valueLabel[i] = StringUtils.stripEnd(new
+							 String(Arrays.copyOfRange(valueLabelBytes, 0, rawLabelLength),"US-ASCII"), " ");
+		    dbgLog.fine(i+"-th valueLabel="+valueLabel[i]+"<-");
+
+		} // iter rt3
+
+		dbgLog.fine("end of RT3 block");
+		dbgLog.fine("start of RT4 block");
+
+		// 4.0 check the first 4 bytes
+		byte[] headerCode4 = new byte[LENGTH_RECORD_TYPE4_CODE];
+
+		int nbytes_rt4 = stream.read(headerCode4, 0, LENGTH_RECORD_TYPE4_CODE);
+
+		if (nbytes_rt4 == 0){
+		    throw new IOException("RT4: reading recordType4 value: no byte was read");
+		}
+
+		//printHexDump(headerCode4, "RT4 header test");
+
+		ByteBuffer bb_header_code_4  = ByteBuffer.wrap(headerCode4,
+							       0, LENGTH_RECORD_TYPE4_CODE);
+		if (isLittleEndian){
+		    bb_header_code_4.order(ByteOrder.LITTLE_ENDIAN);
+		}
+
+		int intRT4test = bb_header_code_4.getInt();
+		dbgLog.fine("header test value: RT4="+intRT4test);
             
-            if (nbytes_rt4 == 0){
-                throw new IOException("RT4: reading recordType4 value: no byte was read");
-            }
+		if (intRT4test != 4){
+		    throw new IOException("RT 4: reading recordType4 header: no byte was read");
+		}
+            
+		// 4.1 read the how-many-variables bytes
+		byte[] howManyVariablesfollow = new byte[LENGTH_RT4_HOW_MANY_VARIABLES];
+            
+		int nbytes_rt4_1 = stream.read(howManyVariablesfollow, 0, LENGTH_RT4_HOW_MANY_VARIABLES);
+		
+		ByteBuffer bb_howManyVariablesfollow = ByteBuffer.wrap(howManyVariablesfollow,
+								       0, LENGTH_RT4_HOW_MANY_VARIABLES);
+		if (isLittleEndian){
+		    bb_howManyVariablesfollow.order(ByteOrder.LITTLE_ENDIAN);
+		}
 
-            //printHexDump(headerCode4, "RT4 header test");
-            
-            ByteBuffer bb_header_code_4  = ByteBuffer.wrap(headerCode4,
-                       0, LENGTH_RECORD_TYPE4_CODE);
-            if (isLittleEndian){
-                bb_header_code_4.order(ByteOrder.LITTLE_ENDIAN);
-            }
+		int howManyVariablesRT4 = bb_howManyVariablesfollow.getInt();
+		dbgLog.fine("how many variables follow: RT4="+howManyVariablesRT4);
 
-            int intRT4test = bb_header_code_4.getInt();
-            dbgLog.fine("header test value: RT4="+intRT4test);
-            
-            if (intRT4test != 4){
-                throw new IOException("RT 4: reading recordType4 header: no byte was read");
-            }
-            
-            // 4.1 read the how-many-variables bytes
-            byte[] howManyVariablesfollow = new byte[LENGTH_RT4_HOW_MANY_VARIABLES];
-            
-            int nbytes_rt4_1 = stream.read(howManyVariablesfollow, 0, LENGTH_RT4_HOW_MANY_VARIABLES);
-            
-            ByteBuffer bb_howManyVariablesfollow = ByteBuffer.wrap(howManyVariablesfollow,
-                       0, LENGTH_RT4_HOW_MANY_VARIABLES);
-            if (isLittleEndian){
-                bb_howManyVariablesfollow.order(ByteOrder.LITTLE_ENDIAN);
-            }
+		int length_indicies = LENGTH_RT4_VARIABLE_INDEX*howManyVariablesRT4;
+		byte[] variableIdicesBytes = new byte[length_indicies];
 
-            int howManyVariablesRT4 = bb_howManyVariablesfollow.getInt();
-            dbgLog.fine("how many variables follow: RT4="+howManyVariablesRT4);
-            
-            int length_indicies = LENGTH_RT4_VARIABLE_INDEX*howManyVariablesRT4;
-            byte[] variableIdicesBytes = new byte[length_indicies];
+		int nbytes_rt4_2 = stream.read(variableIdicesBytes, 0, length_indicies);
 
-            int nbytes_rt4_2 = stream.read(variableIdicesBytes, 0, length_indicies);
-            
-            // !!!!! Caution: variableIndex in RT4 starts from 1 NOT ** 0 **
-            
-            
-            int[] variableIndex = new int[howManyVariablesRT4];
-            int offset = 0;
-            for (int i=0; i< howManyVariablesRT4; i++){
-                
-                ByteBuffer bb_variable_index = ByteBuffer.wrap(variableIdicesBytes,
-                       offset, LENGTH_RT4_VARIABLE_INDEX);            
-                offset +=LENGTH_RT4_VARIABLE_INDEX;
+		// !!!!! Caution: variableIndex in RT4 starts from 1 NOT ** 0 **
+		int[] variableIndex = new int[howManyVariablesRT4];
+		int offset = 0;
+		for (int i=0; i< howManyVariablesRT4; i++){
 
+		    ByteBuffer bb_variable_index = ByteBuffer.wrap(variableIdicesBytes,
+								   offset, LENGTH_RT4_VARIABLE_INDEX);            
+		    offset +=LENGTH_RT4_VARIABLE_INDEX;
 
-                if (isLittleEndian){
-                    bb_variable_index.order(ByteOrder.LITTLE_ENDIAN);
-                }
+		    if (isLittleEndian){
+			bb_variable_index.order(ByteOrder.LITTLE_ENDIAN);
+		    }
 
-                variableIndex[i] = bb_variable_index.getInt();
-                dbgLog.fine(i+"-th variable index number="+variableIndex[i]);
-                
-            }
-            
-            dbgLog.fine("variable index set="+ArrayUtils.toString(variableIndex));
-            dbgLog.fine("subtract 1 from variableIndex for getting a variable info");
-            
-            boolean isNumeric = OBSwiseTypelList.get(variableIndex[0]-1)==0 ? true : false;
-            
-            Map<String, String> valueLabelPair = new LinkedHashMap<String, String>();
-            if (isNumeric){
-                // numeric variable
-                dbgLog.fine("processing of a numeric value-label table");
-                for (int j=0;j<numberOfValueLabels;j++){
-                    valueLabelPair.put(doubleNumberFormatter.format(tempBB[j].getDouble()), 
-                    valueLabel[j] );
-                }
-            } else {
-                // String variable
-                dbgLog.fine("processing of a string value-label table");
-                for (int j=0;j<numberOfValueLabels;j++){
-                    valueLabelPair.put(
-                    StringUtils.stripEnd(new String((tempBB[j].array()),"US-ASCII"), " "),
-                    valueLabel[j] );
-                }
-            }
+		    variableIndex[i] = bb_variable_index.getInt();
+		    dbgLog.fine(i+"-th variable index number="+variableIndex[i]);
+		}
 
-            dbgLog.fine("valueLabePair="+valueLabelPair);
-            dbgLog.fine("key variable's (raw) index ="+variableIndex[0]);
-            
-            valueLabelTable.put(OBSIndexToVariableName.get(variableIndex[0]-1),valueLabelPair);
-            
-            dbgLog.fine("valueLabelTable="+valueLabelTable);
-            
-            // create a mapping table that finds the key variable for this mapping table
-            String keyVariableName = OBSIndexToVariableName.get(variableIndex[0]-1);
-            for (int vn : variableIndex){
-                valueVariableMappingTable.put(OBSIndexToVariableName.get(vn - 1), keyVariableName);
-            }
-            
-            dbgLog.fine("valueVariableMappingTable:\n"+valueVariableMappingTable);            
-        } catch (IOException ex){
-            ex.printStackTrace();
-        }
+		dbgLog.fine("variable index set="+ArrayUtils.toString(variableIndex));
+		dbgLog.fine("subtract 1 from variableIndex for getting a variable info");
 
-        safteyCounter++;
-        if (safteyCounter >= 1000000){
-            break;
-        }
-} //while
+		boolean isNumeric = OBSwiseTypelList.get(variableIndex[0]-1)==0 ? true : false;
 
+		Map<String, String> valueLabelPair = new LinkedHashMap<String, String>();
+		if (isNumeric){
+		    // numeric variable
+		    dbgLog.fine("processing of a numeric value-label table");
+		    for (int j=0;j<numberOfValueLabels;j++){
+			valueLabelPair.put(doubleNumberFormatter.format(tempBB[j].getDouble()), valueLabel[j] );
+		    }
+		} else {
+		    // String variable
+		    dbgLog.fine("processing of a string value-label table");
+		    for (int j=0;j<numberOfValueLabels;j++){
+			valueLabelPair.put(
+					   StringUtils.stripEnd(new String((tempBB[j].array()),"US-ASCII"), " "),valueLabel[j] );
+		    }
+		}
 
+		dbgLog.fine("valueLabePair="+valueLabelPair);
+		dbgLog.fine("key variable's (raw) index ="+variableIndex[0]);
 
+		valueLabelTable.put(OBSIndexToVariableName.get(variableIndex[0]-1),valueLabelPair);
 
+		dbgLog.fine("valueLabelTable="+valueLabelTable);
+
+		// create a mapping table that finds the key variable for this mapping table
+		String keyVariableName = OBSIndexToVariableName.get(variableIndex[0]-1);
+		for (int vn : variableIndex){
+		    valueVariableMappingTable.put(OBSIndexToVariableName.get(vn - 1), keyVariableName);
+		}
+
+		dbgLog.fine("valueVariableMappingTable:\n"+valueVariableMappingTable);            
+	    } catch (IOException ex){
+		//ex.printStackTrace();
+		throw ex; 
+	    }
+
+	    safteyCounter++;
+	    if (safteyCounter >= 1000000){
+		break;
+	    }
+	} //while
+
+	smd.setValueLabelTable(valueLabelTable);
 
         dbgLog.fine("***** decodeRecordType3and4(): end *****");
     }
@@ -1462,7 +1452,7 @@ while(true ){
     
     
 
-    void decodeRecordType6(BufferedInputStream stream){
+    void decodeRecordType6(BufferedInputStream stream) throws IOException {
         dbgLog.fine("***** decodeRecordType6(): start *****");
         try {
             if (stream ==null){
@@ -1532,7 +1522,8 @@ while(true ){
 
 
         } catch (IOException ex){
-            ex.printStackTrace();
+            //ex.printStackTrace();
+	    throw ex; 
         }
         
         dbgLog.fine("***** decodeRecordType6(): end *****");
@@ -1540,7 +1531,7 @@ while(true ){
     
     
 
-    void decodeRecordType7(BufferedInputStream stream){
+    void decodeRecordType7(BufferedInputStream stream) throws IOException {
         dbgLog.fine("***** decodeRecordType7(): start *****");
         int counter=0;
         int[] headerSection = new int[2];
@@ -1882,7 +1873,8 @@ while(true ){
             }
 
         } catch (IOException ex){
-            ex.printStackTrace();
+            //ex.printStackTrace();
+	    throw ex; 
         }
 
         counter++;
@@ -1896,7 +1888,7 @@ while(true ){
     }
     
     
-    void decodeRecordType999(BufferedInputStream stream){
+    void decodeRecordType999(BufferedInputStream stream) throws IOException {
         dbgLog.fine("***** decodeRecordType999(): start *****");
         try {
             if (stream ==null){
@@ -1978,8 +1970,9 @@ while(true ){
             dbgLog.fine("invalidDataTable:\n"+invalidDataTable);
             smd.setInvalidDataTable(invalidDataTable);
         } catch (IOException ex){
-            ex.printStackTrace();
-            exit(1);
+            //ex.printStackTrace();
+            //exit(1);
+	    throw ex; 
         }
         
         dbgLog.fine("***** decodeRecordType999(): end *****");
@@ -1987,7 +1980,7 @@ while(true ){
     
     
 
-    void decodeRecordTypeData(BufferedInputStream stream){
+    void decodeRecordTypeData(BufferedInputStream stream) throws IOException {
         dbgLog.fine("***** decodeRecordTypeData(): start *****");
 
 	String fileUnfValue = null;
@@ -2026,7 +2019,8 @@ while(true ){
             } catch (UnfException ex) {
                 ex.printStackTrace();
             } catch (IOException ex) {
-                ex.printStackTrace();
+                //ex.printStackTrace();
+		throw ex; 
             } catch (NoSuchAlgorithmException ex) {
                 ex.printStackTrace();
             }
@@ -2041,7 +2035,8 @@ while(true ){
         } catch (NumberFormatException ex) {
             ex.printStackTrace();
         } catch (IOException ex) {
-            ex.printStackTrace();
+            //ex.printStackTrace();
+	    throw ex; 
         }
         
         dbgLog.fine("file-unf="+fileUnfValue);
@@ -2062,7 +2057,7 @@ while(true ){
         dbgLog.fine("***** decodeRecordTypeData(): end *****");
     }
 
-    PrintWriter createOutputWriter (BufferedInputStream stream){
+    PrintWriter createOutputWriter (BufferedInputStream stream) throws IOException {
         PrintWriter pwout = null;
 	FileOutputStream fileOutTab = null;
 	        
@@ -2085,20 +2080,22 @@ while(true ){
         } catch (UnsupportedEncodingException ex) {
             ex.printStackTrace();
         } catch (IOException ex){
-            ex.printStackTrace();
+            //ex.printStackTrace();
+	    throw ex; 
         }
 
 	return pwout;
 
     }
 
-    void decodeRecordTypeDataCompressed(BufferedInputStream stream){
+    void decodeRecordTypeDataCompressed(BufferedInputStream stream) throws IOException {
 
         dbgLog.fine("***** decodeRecordTypeDataCompressed(): start *****");
 
         if (stream == null){
             throw new IllegalArgumentException("decodeRecordTypeDataCompressed: stream == null!");
         }
+	Map<String, String> formatCategoryTable = new LinkedHashMap<String, String>(); 
         
         PrintWriter pwout = createOutputWriter ( stream ); 
 
@@ -2706,7 +2703,7 @@ while(true ){
 
             pwout.close();
         } catch (IOException ex) {
-           
+	    throw ex; 
         }
         
         // save a decimal-type variable's number
@@ -2722,6 +2719,8 @@ while(true ){
         }
         smd.setDecimalVariables(decimalVariableSet);
         smd.getFileInformation().put("caseQnty", caseQnty);
+	smd.setVariableFormatCategory(formatCategoryTable);
+
 
         // contents check
         //out.println("variableType="+ArrayUtils.toString(variableTypeFinal));
@@ -2734,12 +2733,15 @@ while(true ){
     }
 
 
-    void decodeRecordTypeDataUnCompressed(BufferedInputStream stream){
+    void decodeRecordTypeDataUnCompressed(BufferedInputStream stream) throws IOException {
         dbgLog.fine("***** decodeRecordTypeDataUnCompressed(): start *****");
 
         if (stream ==null){
             throw new IllegalArgumentException("decodeRecordTypeDataUnCompressed: stream == null!");
         }
+
+	Map<String, String> formatCategoryTable = new LinkedHashMap<String, String>(); 
+
 
         // 
         // set-up tab file
@@ -3200,7 +3202,7 @@ while(true ){
             
 
         } catch (IOException ex) {
-           ex.printStackTrace();
+	    throw ex; 
         }
 
 
@@ -3216,6 +3218,7 @@ while(true ){
         }
         smd.getFileInformation().put("caseQnty", caseQnty);
         smd.setDecimalVariables(decimalVariableSet);
+	smd.setVariableFormatCategory(formatCategoryTable);
         
         // contents check
         dbgLog.fine("variableType="+ArrayUtils.toString(variableTypeFinal));
@@ -3335,7 +3338,7 @@ while(true ){
     }
     
     
-    private int[] parseRT7SubTypefieldHeader(BufferedInputStream stream){
+    private int[] parseRT7SubTypefieldHeader(BufferedInputStream stream) throws IOException {
         int length_unit_length = 4;
         int length_number_of_units = 4;
         int storage_size = length_unit_length + length_number_of_units;
@@ -3344,40 +3347,39 @@ while(true ){
         
         byte[] byteStorage = new byte[storage_size];
 
-        try{
-            int nbytes = stream.read(byteStorage);
-            // to-do check against nbytes
+	try {
+	    int nbytes = stream.read(byteStorage);
+	    // to-do check against nbytes
 
-            //printHexDump(byteStorage, "RT7:storage");
+	    //printHexDump(byteStorage, "RT7:storage");
+	    
+	    ByteBuffer bb_data_type = ByteBuffer.wrap(byteStorage,
+						      0, length_unit_length);
+	    if (isLittleEndian){
+		bb_data_type.order(ByteOrder.LITTLE_ENDIAN);
+	    }
 
-            ByteBuffer bb_data_type = ByteBuffer.wrap(byteStorage,
-                       0, length_unit_length);
-            if (isLittleEndian){
-                bb_data_type.order(ByteOrder.LITTLE_ENDIAN);
-            }
+	    int unitLength = bb_data_type.getInt();
+	    dbgLog.fine("parseRT7 SubTypefield: unitLength="+unitLength);
+	    
+	    ByteBuffer bb_number_of_units = ByteBuffer.wrap(byteStorage,
+							    length_unit_length, length_number_of_units);
+	    if (isLittleEndian){
+		bb_number_of_units.order(ByteOrder.LITTLE_ENDIAN);
+	    }
 
-            int unitLength = bb_data_type.getInt();
-            dbgLog.fine("parseRT7 SubTypefield: unitLength="+unitLength);
-
-            ByteBuffer bb_number_of_units = ByteBuffer.wrap(byteStorage,
-                       length_unit_length, length_number_of_units);
-            if (isLittleEndian){
-                bb_number_of_units.order(ByteOrder.LITTLE_ENDIAN);
-            }
-
-            int numberOfUnits = bb_number_of_units.getInt();
-            dbgLog.fine("parseRT7 SubTypefield: numberOfUnits="+numberOfUnits);
-
-            headerSection[0] = unitLength;
-            headerSection[1] = numberOfUnits;
-            return headerSection;
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-        return null;
+	    int numberOfUnits = bb_number_of_units.getInt();
+	    dbgLog.fine("parseRT7 SubTypefield: numberOfUnits="+numberOfUnits);
+	
+	    headerSection[0] = unitLength;
+	    headerSection[1] = numberOfUnits;
+	    return headerSection;
+	} catch (IOException ex) {
+	    throw ex;
+	}
     }
     
-    private void parseRT7SubTypefield(BufferedInputStream stream){
+    private void parseRT7SubTypefield(BufferedInputStream stream) throws IOException {
         int length_unit_length = 4;
         int length_number_of_units = 4;
         int storage_size = length_unit_length + length_number_of_units;
@@ -3437,12 +3439,13 @@ while(true ){
             }
            
         } catch (IOException ex) {
-            ex.printStackTrace();
+            //ex.printStackTrace();
+	    throw ex; 
         }
         
     }
     
-    private List<byte[]> getRT7SubTypefieldData(BufferedInputStream stream){
+    private List<byte[]> getRT7SubTypefieldData(BufferedInputStream stream) throws IOException {
         int length_unit_length = 4;
         int length_number_of_units = 4;
         int storage_size = length_unit_length + length_number_of_units;
@@ -3488,7 +3491,8 @@ while(true ){
 
 
         } catch (IOException ex) {
-            ex.printStackTrace();
+            //ex.printStackTrace();
+	    throw ex; 
         }
         return dataList;
     }    

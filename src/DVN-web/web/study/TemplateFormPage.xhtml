@@ -1606,7 +1606,7 @@
                              styleClass="vdcEditStudyTable #{TemplateFormPage.studyMap[sfc.originalArchive].templateField.fieldInputLevel.name}"
                              columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
                 <div class="vdcEditStudyField">
-                  <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.placeOfAccess].recommended}"/>
+                  <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.originalArchive].recommended}"/>
                   <dvn:inlinehelp helpMessage="#{editstudybundle.originalArchiveHelp}" linkText="#{editstudybundle.originalArchiveLabel}" heading="#{editstudybundle.originalArchiveHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                   <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.originalArchive].required}"/>
                   <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.originalArchive].recommended}"/>

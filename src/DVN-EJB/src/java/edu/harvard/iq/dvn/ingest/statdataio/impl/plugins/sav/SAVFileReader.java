@@ -1204,7 +1204,7 @@ public class SAVFileReader extends StatDataFileReader{
 	    dbgLog.fine("RT2 metadata-related exit-chores");
 	    smd.getFileInformation().put("varQnty", variableCounter);
 	    varQnty = variableCounter;
-	    dbgLog.fine("RT2: varQnty="+varQnty);
+	    dbgLog.info("RT2: varQnty="+varQnty);
 
 	    smd.setVariableName(variableNameList.toArray(new String[variableNameList.size()]));
 	    smd.setVariableLabel(variableLabelMap);
@@ -1217,7 +1217,7 @@ public class SAVFileReader extends StatDataFileReader{
 	    smd.setVariableFormatName(printFormatNameTable);
 
                 
-	    dbgLog.fine("RT2: OBSwiseTypelList="+OBSwiseTypelList);
+	    dbgLog.info("RT2: OBSwiseTypelList="+OBSwiseTypelList);
                 
 	    // variableType is determined after the valueTable is finalized
 	} else {
@@ -3285,7 +3285,7 @@ public class SAVFileReader extends StatDataFileReader{
 	int lastSuffixValue = intBase36 ( lastSuffix ); 
 	int currentSuffixValue = intBase36 ( currentSuffix ); 
 
-	if ( currentSuffixValue - lastSuffixValue == 1 ) {
+	if ( currentSuffixValue - lastSuffixValue > 0 ) {
 	    return true; 
 	}
 

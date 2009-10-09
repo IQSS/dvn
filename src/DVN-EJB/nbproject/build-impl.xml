@@ -133,9 +133,9 @@ is divided into following sections:
             </and>
         </condition>
     </target>
-    <target depends="init" name="-init-cos">
-        <condition property="ensure.built.source.roots" value="${src.dir}">
-            <isfalse value="${disable.deploy.on.save}"/>
+    <target depends="init" name="-init-cos" unless="deploy.on.save">
+        <condition property="deploy.on.save" value="true">
+            <istrue value="${j2ee.deploy.on.save}"/>
         </condition>
     </target>
     <target name="-post-init">
@@ -323,8 +323,14 @@ exists or setup the property manually. For example like this:
     <!--
                 COMPILATION SECTION
             -->
-    <target depends="init" if="no.dist.ear.dir" name="-deps-module-jar" unless="no.deps"/>
-    <target depends="init" if="dist.ear.dir" name="-deps-ear-jar" unless="no.deps"/>
+    <target depends="init" if="no.dist.ear.dir" name="-deps-module-jar" unless="no.deps">
+        <ant antfile="${project.DVN-ingest}/build.xml" inheritall="false" target="jar"/>
+        <ant antfile="${project.unf5}/nbbuild.xml" inheritall="false" target="jar"/>
+    </target>
+    <target depends="init" if="dist.ear.dir" name="-deps-ear-jar" unless="no.deps">
+        <ant antfile="${project.DVN-ingest}/build.xml" inheritall="false" target="jar"/>
+        <ant antfile="${project.unf5}/nbbuild.xml" inheritall="false" target="jar"/>
+    </target>
     <target depends="init, -deps-module-jar, -deps-ear-jar" name="deps-jar"/>
     <target depends="init,deps-jar" name="-pre-pre-compile">
         <mkdir dir="${build.classes.dir}"/>
@@ -336,11 +342,15 @@ exists or setup the property manually. For example like this:
     </target>
     <target depends="compile" name="library-inclusion-in-archive">
         <copyfiles files="${libs.dvn-EJB.classpath}" todir="${build.classes.dir}"/>
+        <copyfiles files="${reference.DVN-ingest.jar}" todir="${build.classes.dir}"/>
+        <copyfiles files="${reference.unf5.jar}" todir="${build.classes.dir}"/>
     </target>
     <target depends="compile" name="library-inclusion-in-manifest">
         <copyfiles files="${libs.dvn-EJB.classpath}" manifestproperty="manifest.libs.dvn-EJB.classpath" todir="${dist.ear.dir}"/>
+        <copyfiles files="${reference.DVN-ingest.jar}" manifestproperty="manifest.reference.DVN-ingest.jar" todir="${dist.ear.dir}"/>
+        <copyfiles files="${reference.unf5.jar}" manifestproperty="manifest.reference.unf5.jar" todir="${dist.ear.dir}"/>
         <manifest file="${build.ear.classes.dir}/META-INF/MANIFEST.MF" mode="update">
-            <attribute name="Class-Path" value="${manifest.libs.dvn-EJB.classpath} "/>
+            <attribute name="Class-Path" value="${manifest.libs.dvn-EJB.classpath} ${manifest.reference.DVN-ingest.jar} ${manifest.reference.unf5.jar} "/>
         </manifest>
     </target>
     <target name="-copy-meta-inf">
@@ -598,7 +608,10 @@ exists or setup the property manually. For example like this:
     <!--
                 CLEANUP SECTION
             -->
-    <target depends="init" if="no.dist.ear.dir" name="deps-clean" unless="no.deps"/>
+    <target depends="init" if="no.dist.ear.dir" name="deps-clean" unless="no.deps">
+        <ant antfile="${project.DVN-ingest}/build.xml" inheritall="false" target="clean"/>
+        <ant antfile="${project.unf5}/nbbuild.xml" inheritall="false" target="clean"/>
+    </target>
     <target depends="init" name="-do-clean">
         <delete dir="${build.dir}"/>
         <delete dir="${dist.dir}"/>
@@ -607,6 +620,9 @@ exists or setup the property manually. For example like this:
         <!-- Empty placeholder for easier customization. -->
         <!-- You can override this target in the ../build.xml file. -->
     </target>
-    <target depends="init,deps-clean,-do-clean,-post-clean" description="Clean build products." name="clean"/>
+    <target depends="init" if="netbeans.home" name="undeploy-clean">
+        <nbundeploy failOnError="false" startServer="false"/>
+    </target>
+    <target depends="init,undeploy-clean,deps-clean,-do-clean,-post-clean" description="Clean build products." name="clean"/>
     <target depends="clean" name="clean-ear"/>
 </project>

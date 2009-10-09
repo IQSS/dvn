@@ -65,12 +65,8 @@ import edu.harvard.iq.dvn.core.study.TemplateFileCategory;
 import edu.harvard.iq.dvn.core.study.FileCategory;
 import edu.harvard.iq.dvn.core.study.StudyLock;
 import edu.harvard.iq.dvn.core.util.FileUtil;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.faces.event.ValueChangeEvent;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 public class AddFilesPage extends VDCBaseBean implements java.io.Serializable,
         Renderable, DisposableBean {
@@ -173,9 +169,6 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable,
         sessionId = FacesContext.getCurrentInstance().getExternalContext().getSession(false).toString();
         String studyEV = ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("studyId");
         studyId = Long.parseLong(studyEV);
-        if (fileCategories == null) {
-            fileCategories = Collections.synchronizedList(new ArrayList<SelectItem>());
-        }
 
     }
 
@@ -478,9 +471,6 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable,
         }
         //Added by EV: Files already existent in the Study 
         existentFiles("From init");
-        //existent categories
-
-        fileCategories = this.buildCategories();
     }
 
     private boolean isStudyLocked() {
@@ -529,66 +519,6 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable,
 
     }
 
-    /**
-     * Find the names of the categories that exists in the Study
-     * @return String array with the names of categories in the study
-     */
-    private String[] studyCategories() {
-        List<FileCategory> tfc = study.getFileCategories();
-        mLog.debug("Files categories are " + tfc.size());
-        Collection<FileCategory> tfcuniq = new HashSet<FileCategory>(tfc);
-        int ln = tfcuniq.size();
-        if (ln <= 0) {
-            return null;
-        }
-        Iterator<FileCategory> iter = tfcuniq.iterator();
-        int cnt = 0;
-        //category names that are stored in the study
-        String[] catstudy = new String[ln];
-        while (iter.hasNext()) {
-            FileCategory tmp = iter.next();
-            catstudy[cnt] = tmp.getName().trim();
-            mLog.debug(catstudy[cnt]);
-            cnt++;
-        }
-        Arrays.sort(catstudy);
-        return catstudy;
-    }
-
-    /**
-     * Find the categories in the study for displaying in a dropdown menu
-     * @return Collection<SelectItem>
-     */
-    public Collection<SelectItem> buildCategories() {
-        if (study == null || study.getFileCategories() == null) {
-            return fileCategories;
-        }
-        String[] catstudy = studyCategories();
-        if (catstudy == null) {
-            return fileCategories;
-        }
-        //category names that are stored in drop down list of SelectItem
-        String catfiles[] = new String[fileCategories.size()];
-        int cnt = 0;
-        for (SelectItem sel : fileCategories) {
-            String key = ((String) sel.getValue()).trim();
-            catfiles[cnt] = key;
-            cnt++;
-        }
-        Arrays.sort(catfiles);
-        //add the study categories to the drop down list of SelectItem
-        for (String str : catstudy) {
-            String key = str.trim();
-            int found = Arrays.binarySearch(catfiles, key);
-            if (found < 0) {
-                fileCategories.add(new SelectItem(key));
-            }
-        }
-
-
-        return fileCategories;
-
-    }
     private Study study;
 
     public Study getStudy() {
@@ -937,70 +867,21 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable,
      * @return list of SelectItem to display in the AddFilesPage.xhtml 
      */
     public Collection<SelectItem> getFileCategories() {
-        mLog.debug("In getFileCategories");
-        Collection<SelectItem> uniq = new HashSet<SelectItem>(fileCategories);
-        Collection<String> noDups = new HashSet<String>();
-        for (SelectItem select : uniq) {
-            noDups.add(((String) select.getValue()).trim());
-        }
-        int sz = noDups.size();
-        String[] cats = noDups.toArray(new String[sz]);
-        if (cats.length > 1) {
-            Arrays.sort(cats);
-        }
-        if (currentFile != null) {
-            String str = currentFile.getFileCategoryName().trim();
-            int found = 0;
-            if (str != null && !str.equals("")) {
-                found = Arrays.binarySearch(cats, str.trim());
+        if (fileCategories == null) {
+            List<FileCategory> fileCats = new ArrayList();
+            fileCats.addAll( study.getFileCategories() );
+            Collections.sort(fileCats);
+
+            fileCategories = new ArrayList();
+            for (FileCategory fc : fileCats) {
+                fileCategories.add( new SelectItem( (fc.getName()) ) );
             }
-            FileCategory c = null;
-            if (found < 0) {
-                mLog.debug("Added category " + str);
-                c = new FileCategory();
-                c.setName(str);
-                Collection<StudyFile> studf = c.getStudyFiles();
-                if (studf == null) {
-                    studf = new ArrayList<StudyFile>();
-                }
-                studf.add(currentFile.getStudyFile());
-                c.setStudyFiles(studf);
-
-            }
-
-            if (c != null) {
-                if (study.getFileCategories() == null) {
-                    study.setFileCategories(new ArrayList<FileCategory>());
-                }
-                study.getFileCategories().add(c);
-                fileCategories.add(new SelectItem(str));
-            }
-
         }
-
-
 
         return fileCategories;
     }
 
-    public void setFileCategories(Collection<SelectItem> tfc) {
-        mLog.debug("In setFileCategories");
-        Iterator<SelectItem> iter = tfc.iterator();
-        fileCategories.addAll(tfc);
 
-        while (iter.hasNext()) {
-            String val = ((String) iter.next().getValue()).trim();
-            FileCategory cat = new FileCategory();
-            cat.setName(val);
-            if (study.getFileCategories() == null) {
-                study.setFileCategories(new ArrayList<FileCategory>());
-            }
-            study.getFileCategories().add(cat);
-
-        // currentFile.getStudyFile().setFileCategory(cat);
-        }
-
-    }
     private String fileCategoryName = null;
 
     public String getFileCategoryName() {
@@ -1016,9 +897,6 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable,
 
     public void addCategory(ValueChangeEvent e) {
         currentFile.setFileCategoryName(((String) e.getNewValue()).trim());
-        if (!currentFile.getStudyFile().isSubsettable()) {
-            currentFile.addFileToCategory(study);
-        }
-
     }
+
 }

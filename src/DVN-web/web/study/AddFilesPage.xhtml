@@ -101,10 +101,9 @@
                         <!-- note that the Javascript functions currently depends on the placement and ids of these fields (and the dropdown box;
                                           changing them may require corresponding changes in the Javascript  -->
                         <ice:selectBooleanCheckbox id="catCheckbox" onclick="updateCategory(this);"/>
-                        <ice:inputText id="catTextField" size="28" value="#{file.fileCategoryName}" partialSubmit="false"
+                        <ice:inputText id="catTextField" size="28" value="#{file.fileCategoryName}" partialSubmit="true"
                                        valueChangeListener="#{AddFilesPage.addCategory}"
-                                       onfocus="deselectCategory(this);"
-                                       onblur="iceSubmitPartial(form,this,event);"/>
+                                       onfocus="deselectCategory(this);"/>
                       </ice:panelGroup>
                       <f:facet name="header" id="f1">
                         <ice:panelGroup id="catColPanelGroup" styleClass="dvnAddFilesTableCategory">

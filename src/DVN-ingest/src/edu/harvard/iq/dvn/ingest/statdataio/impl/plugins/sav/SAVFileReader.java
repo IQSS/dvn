@@ -775,6 +775,7 @@ public class SAVFileReader extends StatDataFileReader{
 
 	boolean lastVariableIsExtendable = false; 
 	boolean extendedVariableMode = false;
+	boolean obs255 = false; 
 
 	String lastVariableName = null; 
 	String lastExtendedVariable = null; 
@@ -792,6 +793,7 @@ public class SAVFileReader extends StatDataFileReader{
         // variable one (string <=256 + 3 missing-value units[optional])
 
         int variableCounter = 0;
+	int obsSeqNumber = 0; 
 
 	int j; 
 
@@ -879,7 +881,18 @@ public class SAVFileReader extends StatDataFileReader{
 
                 if (recordType2FixedPart1[1] == -1) {
                     dbgLog.fine("this RT2 is contiguous one of a previous string variable");
-		    OBSwiseTypelList.add(recordType2FixedPart1[1]);
+		    if ( obs255 ) {			
+			if ( obsSeqNumber < 30 ) {
+			    OBSwiseTypelList.add(recordType2FixedPart1[1]);
+			    obsSeqNumber++; 
+			} else {
+			    OBSwiseTypelList.add(-2);
+			    obs255 = false; 
+			    obsSeqNumber = 0; 
+			}
+		    } else {
+			OBSwiseTypelList.add(recordType2FixedPart1[1]);
+		    }
 
                     obsNonVariableBlockSet.add(j);
                     continue;
@@ -894,6 +907,10 @@ public class SAVFileReader extends StatDataFileReader{
 		    // it may still be a part of a compound variable 
 		    // (a String > 255 bytes that was split into 255 byte
 		    // chunks, stored as individual String variables).
+
+		    if (recordType2FixedPart1[1] == 255){
+			obs255 = true; 
+		    } 
 
 		    if ( lastVariableIsExtendable ) {
 			String varNameBase = null; 
@@ -926,12 +943,6 @@ public class SAVFileReader extends StatDataFileReader{
 		
 		    OBSwiseTypelList.add(recordType2FixedPart1[1]);
                     variableCounter++;
-                    if (recordType2FixedPart1[1] % LENGTH_SAV_OBS_BLOCK == 0){
-                        HowManyRt2Units = recordType2FixedPart1[1] / LENGTH_SAV_OBS_BLOCK;
-                    } else {
-			HowManyRt2Units = recordType2FixedPart1[1] / LENGTH_SAV_OBS_BLOCK +1;
-                    }
-                    variableTypelList.add(recordType2FixedPart1[1]);
 
 		    if (recordType2FixedPart1[1] == 255){
 			// This variable is 255 bytes long, i.e. this is
@@ -945,6 +956,13 @@ public class SAVFileReader extends StatDataFileReader{
 		    } else {
 			lastVariableIsExtendable = false; 
 		    }
+
+                    if (recordType2FixedPart1[1] % LENGTH_SAV_OBS_BLOCK == 0){
+                        HowManyRt2Units = recordType2FixedPart1[1] / LENGTH_SAV_OBS_BLOCK;
+                    } else {
+			HowManyRt2Units = recordType2FixedPart1[1] / LENGTH_SAV_OBS_BLOCK +1;
+                    }
+                    variableTypelList.add(recordType2FixedPart1[1]);
 
                 }
 
@@ -1204,7 +1222,7 @@ public class SAVFileReader extends StatDataFileReader{
 	    dbgLog.fine("RT2 metadata-related exit-chores");
 	    smd.getFileInformation().put("varQnty", variableCounter);
 	    varQnty = variableCounter;
-	    dbgLog.fine("RT2: varQnty="+varQnty);
+	    dbgLog.info("RT2: varQnty="+varQnty);
 
 	    smd.setVariableName(variableNameList.toArray(new String[variableNameList.size()]));
 	    smd.setVariableLabel(variableLabelMap);
@@ -1217,7 +1235,7 @@ public class SAVFileReader extends StatDataFileReader{
 	    smd.setVariableFormatName(printFormatNameTable);
 
                 
-	    dbgLog.fine("RT2: OBSwiseTypelList="+OBSwiseTypelList);
+	    dbgLog.info("RT2: OBSwiseTypelList="+OBSwiseTypelList);
                 
 	    // variableType is determined after the valueTable is finalized
 	} else {
@@ -2213,6 +2231,12 @@ public class SAVFileReader extends StatDataFileReader{
                             // add this non-missing-value string datum 
                             dataLine.add(strdatum);
                             //out.println("dataLine(String)="+dataLine);
+			} else if (OBSwiseTypelList.get(typeIndex)== -2){
+                            String strdatum = new String(
+                                Arrays.copyOfRange(uncompressedByte,
+                                0, LENGTH_SAV_OBS_BLOCK-1),"US-ASCII");
+                            dataLine.add(strdatum);
+                            //out.println("dataLine(String)="+dataLine);
                         } else if (OBSwiseTypelList.get(typeIndex)==0){
                             // code= 0: numeric 
                             
@@ -2355,7 +2379,9 @@ public class SAVFileReader extends StatDataFileReader{
                         Set<Integer> removeJset = new HashSet<Integer>();
                         for (int j=0; j< nOBS; j++){
                             dbgLog.fine("j="+j+"-th type ="+OBSwiseTypelList.get(j));
-                            if (OBSwiseTypelList.get(j) == -1){
+                            if ((OBSwiseTypelList.get(j) == -1)||
+				(OBSwiseTypelList.get(j) == -2))
+			    {
                                 // Continued String variable found at j-th 
 				// position. look back the j-1 
                                 firstPosition = j-1;
@@ -2366,7 +2392,7 @@ public class SAVFileReader extends StatDataFileReader{
                                 sb.append(dataLine.get(j-1));
                                 sb.append(dataLine.get(j));
                                 for (int jc =1; ; jc++ ){
-                                    if ((j+jc == nOBS) || (OBSwiseTypelList.get(j+jc) != -1)){
+                                    if ((j+jc == nOBS) || ((OBSwiseTypelList.get(j+jc) != -1)&&(OBSwiseTypelList.get(j+jc) != -2))){
 					
 					// j is the end unit of this string variable
                                         concatanated = sb.toString();
@@ -3285,7 +3311,7 @@ public class SAVFileReader extends StatDataFileReader{
 	int lastSuffixValue = intBase36 ( lastSuffix ); 
 	int currentSuffixValue = intBase36 ( currentSuffix ); 
 
-	if ( currentSuffixValue - lastSuffixValue == 1 ) {
+	if ( currentSuffixValue - lastSuffixValue > 0 ) {
 	    return true; 
 	}
 

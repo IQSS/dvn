@@ -22,30 +22,12 @@ import javax.ejb.EJB;
  * @author roberttreacy
  */
 public class VersionPage extends VDCBaseBean  implements java.io.Serializable {
-    @EJB DVNVersionServiceLocal dvnVersionService;
+   
     
-    public void init() {
-        super.init();
-        DVNVersion version = getLatestVersion();
-        this.versionNumber = version.getVersionNumber();
-        this.buildNumber = version.getBuildNumber();
-    }
-    
-    public Long versionNumber;
+    public String getVersionNumber() {
 
-    public Long getVersionNumber() {
-        DVNVersion version = getLatestVersion();
-        return version.getVersionNumber();
-    }
-    
-    public Long buildNumber;
-    public Long getBuildNumber(){
-        DVNVersion version = getLatestVersion();
-        return version.getBuildNumber();
-    }
-    
-    public DVNVersion getLatestVersion(){
-        return dvnVersionService.getLatestVersion();
+        return ResourceBundle.getBundle("VersionNumber").getString("version.number");
+
     }
     
     public String getBambooBuild() {

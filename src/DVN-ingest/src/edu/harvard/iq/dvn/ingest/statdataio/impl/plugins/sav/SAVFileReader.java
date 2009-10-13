@@ -278,7 +278,7 @@ public class SAVFileReader extends StatDataFileReader{
      * for a tab-delimited data file, initially "NA" 
      * after R's missing value.
      */
-    private String MissingValueForTextDataFileNumeric = "";
+    private String MissingValueForTextDataFileNumeric = "NA";
 
     /**
      * Returns the value of the
@@ -2663,13 +2663,8 @@ public class SAVFileReader extends StatDataFileReader{
                                 if (variableFormatTypeList[el].equals("date") ||
                                     variableFormatTypeList[el].equals("time")){
                                     dataLine.set(el, MissingValueForTextDataFileString);
-                                    dataLine2.set(el,null);
-                                } else{
-                                    // Set missing value to null for UNF calculation
-                                    dataLine2.set(el, null);
-                                    //out.println("replaced="+el+"th element="+dataLine.get(el));
-
-                                }
+				}
+				dataLine2.set(el,null);
                             }
 
                         }
@@ -3165,11 +3160,9 @@ public class SAVFileReader extends StatDataFileReader{
                         
                             if (variableFormatTypeList[el].equals("date") ||
                                 variableFormatTypeList[el].equals("time")){
-                                dataLine.set(el, null);
-                            } else{
-                                dataLine2.set(el, null);
-                                //out.println("replaced="+el+"th element="+dataLine.get(el));
-                            }
+				dataLine.set(el, MissingValueForTextDataFileString);
+                            } 
+			    dataLine2.set(el, null);
                         }
 
                     }

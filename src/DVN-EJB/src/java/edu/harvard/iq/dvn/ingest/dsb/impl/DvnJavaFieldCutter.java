@@ -43,10 +43,7 @@ public class DvnJavaFieldCutter implements FieldCutter{
           scanner.useDelimiter("\\n");
 
           while (scanner.hasNext()) {
-              String[] line = (scanner.next()).split(delimiter);
-              if ((line.length <= 1) && (line[0].equals(""))) {
-                  break;
-              }
+              String[] line = (scanner.next()).split(delimiter,-1);
               List<String> ln = new ArrayList<String>();
               for (Integer i : columns) {
                   ln.add(line[i]);

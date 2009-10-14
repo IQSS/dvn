@@ -278,7 +278,7 @@ public class SAVFileReader extends StatDataFileReader{
      * for a tab-delimited data file, initially "NA" 
      * after R's missing value.
      */
-    private String MissingValueForTextDataFileNumeric = "NA";
+    private String MissingValueForTextDataFileNumeric = "";
 
     /**
      * Returns the value of the

@@ -57,7 +57,7 @@ public class PORFileReader extends StatDataFileReader{
      * for a tab-delimited data file, initially "NA"
      * after R's missing value.
      */
-    private static final String MissingValueForTextDataFileNumeric = "NA";
+    private static final String MissingValueForTextDataFile = "";
 
 
     private static final int POR_HEADER_SIZE = 500;   
@@ -1080,7 +1080,7 @@ public class PORFileReader extends StatDataFileReader{
                                 }
                             } else if (buffer.equals("*")) {
                                 // '*' is the first character of the system missing value
-                                datumForTabFile = MissingValueForTextDataFileNumeric;
+                                datumForTabFile = MissingValueForTextDataFile;
                                 datum = null;
                                 isMissingValue = true;
 

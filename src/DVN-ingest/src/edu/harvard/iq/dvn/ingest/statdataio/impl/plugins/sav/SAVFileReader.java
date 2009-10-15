@@ -2674,13 +2674,15 @@ public class SAVFileReader extends StatDataFileReader{
                    
                     if (dataLine.size()>0) {
                         for (int ij=0; ij<varQnty;ij++ ){
-                            if (variableFormatTypeList[ij].equals("date") ||
-                                variableFormatTypeList[ij].equals("time")){
-                                this.dateFormats[ij][caseIndex-1] = dateFormatLine[ij];
-                                dataTable2[ij][caseIndex-1] = dataLine.get(ij);
-                            } else {
                                 dataTable2[ij][caseIndex-1] = dataLine2.get(ij);
-                            }
+
+				//                            if (variableFormatTypeList[ij].equals("date") ||
+				//                                variableFormatTypeList[ij].equals("time")){
+				//                                this.dateFormats[ij][caseIndex-1] = dateFormatLine[ij];
+				//                                dataTable2[ij][caseIndex-1] = dataLine.get(ij);
+				//                            } else {
+				//                                dataTable2[ij][caseIndex-1] = dataLine2.get(ij);
+				//                            }
                         }
                     }
                     
@@ -3175,12 +3177,14 @@ public class SAVFileReader extends StatDataFileReader{
                 
                 if (dataLine.size()>0) {
                     for (int ij=0; ij<varQnty;ij++ ){
-                        if (variableFormatTypeList[ij].equals("date") ||
-                            variableFormatTypeList[ij].equals("time")){
-                            dataTable2[ij][caseIndex-1] = dataLine.get(ij);
-                        } else {
                             dataTable2[ij][caseIndex-1] = dataLine2.get(ij);
-                        }
+
+			    //                        if (variableFormatTypeList[ij].equals("date") ||
+			    //                            variableFormatTypeList[ij].equals("time")){
+			    //                            dataTable2[ij][caseIndex-1] = dataLine.get(ij);
+			    //                        } else {
+			    //                            dataTable2[ij][caseIndex-1] = dataLine2.get(ij);
+			    //                        }
                     }
                 }
                 

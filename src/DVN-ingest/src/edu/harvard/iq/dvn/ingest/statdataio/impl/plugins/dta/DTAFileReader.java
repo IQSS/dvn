@@ -1287,7 +1287,7 @@ public class DTAFileReader extends StatDataFileReader{
                             int strVarLength = StringVariableTable.get(columnCounter);
                             String raw_datum = new String(Arrays.copyOfRange(dataRowBytes, byte_offset,
                                 (byte_offset+strVarLength)), "ISO-8859-1");
-                            String string_datum = StringUtils.stripEnd(getNullStrippedString(raw_datum), " ");
+                            String string_datum = getNullStrippedString(raw_datum);
                             dbgLog.finer(i+"-th row "+columnCounter+
                                     "=th column string ="+string_datum);
                             if (string_datum.equals("")){

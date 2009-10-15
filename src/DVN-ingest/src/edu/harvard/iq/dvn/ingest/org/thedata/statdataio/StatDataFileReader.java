@@ -139,8 +139,7 @@ public abstract class StatDataFileReader {
             nullRemovedString = rawString.substring(0, null_position);
         } else {
             // not null-termiated (sometimes space-paddded, instead)
-            // get up to the length
-            nullRemovedString = rawString.substring(0, rawString.length());
+            nullRemovedString = rawString;
         }
         return nullRemovedString;
     }

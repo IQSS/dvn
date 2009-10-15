@@ -256,10 +256,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         
         R_COMMAND_FILE_PREFIX = "RcommandFile_";
         
-        DVNversionNo =
-                dvnVersionService.getLatestVersion().getVersionNumber() +
-                "." + dvnVersionService.getLatestVersion().getBuildNumber();
-
+     
 
     } // end of _init()
 
@@ -313,6 +310,18 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     // Non-JSF-component Instance variables
     // -----------------------------------------------------------------------
     // <editor-fold desc="Instance Variables">
+
+    private String versionNumber;
+
+    public String getVersionNumber() {
+        return versionNumber;
+    }
+
+    public void setVersionNumber(String versionNumber) {
+        this.versionNumber = versionNumber;
+    }
+
+
     private List<File> deleteTempFileList = new ArrayList<File>();
 
     /**
@@ -1381,12 +1390,11 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             resultInfo.put("dtId", dtId.toString());
             resultInfo.put("studyURL", studyURL);
             resultInfo.put("R_min_verion_no",resultInfo.get("Rversion").substring(2));
-//            DVNversionNo = dvnVersionService.getLatestVersion().getVersionNumber() +
-//                "." + dvnVersionService.getLatestVersion().getBuildNumber();
+
             
-            resultInfo.put("dataverse_version_no",DVNversionNo);
+            resultInfo.put("dataverse_version_no",versionNumber);
             // resultInfo.put("dataverse_version_no","1.3");
-             dbgLog.fine("DVNversionNo="+DVNversionNo);
+             dbgLog.fine("DVNversionNo="+versionNumber);
              dbgLog.fine("dataverse_version_no="+resultInfo.get("dataverse_version_no"));
            
             dbgLog.fine("wbDataFileName="+resultInfo.get("wbDataFileName"));
@@ -3512,7 +3520,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
                 return "failure";
 
-            } // end:subsetNotOKcase
+            } // end:subsetNotOKcaseF
 
             // final processing steps for all successful cases
 
@@ -3522,7 +3530,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             resultInfo.put("dtId", dtId.toString());
             resultInfo.put("studyURL", studyURL);
             resultInfo.put("R_min_verion_no",resultInfo.get("Rversion").substring(2));
-            resultInfo.put("dataverse_version_no",DVNversionNo);
+            resultInfo.put("dataverse_version_no",versionNumber);
             
             dbgLog.fine("RwrkspFileName="+resultInfo.get("wrkspFileName"));
 
@@ -6251,7 +6259,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             resultInfo.put("dtId", dtId.toString());
             resultInfo.put("studyURL", studyURL);
             resultInfo.put("R_min_verion_no",resultInfo.get("Rversion").substring(2));
-            resultInfo.put("dataverse_version_no",DVNversionNo);
+            resultInfo.put("dataverse_version_no",versionNumber);
             
             dbgLog.fine("RwrkspFileName="+resultInfo.get("wrkspFileName"));
 

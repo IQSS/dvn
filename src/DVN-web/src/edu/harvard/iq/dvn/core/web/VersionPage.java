@@ -23,13 +23,17 @@ import javax.ejb.EJB;
  */
 public class VersionPage extends VDCBaseBean  implements java.io.Serializable {
    
-    
+    private String versionNumber;
     public String getVersionNumber() {
-
-        return ResourceBundle.getBundle("VersionNumber").getString("version.number");
+        if (versionNumber == null) {
+            versionNumber = ResourceBundle.getBundle("VersionNumber").getString("version.number");
+        }
+        return versionNumber;
 
     }
-    
+    public void setVersionNumber(String versionNumber) {
+        this.versionNumber = versionNumber;
+    }
     public String getBambooBuild() {
         String buildString = null;
         String buildStr = ResourceBundle.getBundle("BuildNumber").getString("build.number");

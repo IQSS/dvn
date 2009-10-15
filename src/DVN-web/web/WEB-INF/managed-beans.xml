@@ -56,6 +56,11 @@
         <managed-bean-class>edu.harvard.iq.dvn.core.web.AboutPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
+      <managed-bean>
+        <managed-bean-name>VersionPage</managed-bean-name>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.VersionPage</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
     <!-- **************** Analysis and Subsetting ***************** -->
     <managed-bean>
         <managed-bean-name>AnalysisPage</managed-bean-name>
@@ -65,6 +70,11 @@
             <property-name>dtId</property-name>
             <property-class>java.lang.Long</property-class>
             <value>#{param.dtId}</value>
+        </managed-property>
+        <managed-property>
+            <property-name>versionNumber</property-name>
+            <property-class>java.lang.String</property-class>
+            <value>#{VersionPage.versionNumber}</value>
         </managed-property>
     </managed-bean>
     <managed-bean>
@@ -744,11 +754,7 @@
         <managed-bean-class>edu.harvard.iq.dvn.core.web.MainLayoutBean</managed-bean-class>
         <managed-bean-scope>application</managed-bean-scope>
     </managed-bean>
-    <managed-bean>
-        <managed-bean-name>VersionPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.iq.dvn.core.web.VersionPage</managed-bean-class>
-        <managed-bean-scope>request</managed-bean-scope>
-    </managed-bean>
+  
     <!-- rem'd the tiles classes -->
     <managed-bean>
         <managed-bean-name>LoginWorkflowBean</managed-bean-name>

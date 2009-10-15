@@ -2621,13 +2621,17 @@ public class SAVFileReader extends StatDataFileReader{
                                     // day of week
                                     dbgLog.finer("data k="+k+":"+dataLine.get(k));
                                     dbgLog.finer("data k="+k+":"+SPSSConstants.WEEKDAY_LIST.get(Integer.valueOf(dataLine.get(k).toString())-1));
-                                    dataLine.set(k, SPSSConstants.WEEKDAY_LIST.get(Integer.valueOf(dataLine.get(k).toString())-1));
+                                    String newDatum = SPSSConstants.WEEKDAY_LIST.get(Integer.valueOf(dataLine.get(k).toString())-1);
+                                    dataLine.set(k, newDatum);
+                                    dataLine2.set(k, newDatum);
                                     dbgLog.finer("wkday:k="+k+":"+dataLine.get(k));
                                 } else if (printFormatTable.get(variableNameList.get(k)).equals("MONTH")){
                                     // month
                                     dbgLog.finer("data k="+k+":"+dataLine.get(k));
                                     dbgLog.finer("data k="+k+":"+SPSSConstants.MONTH_LIST.get(Integer.valueOf(dataLine.get(k).toString())-1));
-                                    dataLine.set(k, SPSSConstants.MONTH_LIST.get(Integer.valueOf(dataLine.get(k).toString())-1));
+                                    String newDatum = SPSSConstants.MONTH_LIST.get(Integer.valueOf(dataLine.get(k).toString())-1);
+                                    dataLine.set(k, newDatum);
+                                    dataLine2.set(k, newDatum);
                                     dbgLog.finer("month:k="+k+":"+dataLine.get(k));
                                 }
                             } 
@@ -3127,13 +3131,17 @@ public class SAVFileReader extends StatDataFileReader{
                                 // day of week
                                 dbgLog.finer("data k="+k+":"+dataLine.get(k));
                                 dbgLog.finer("data k="+k+":"+SPSSConstants.WEEKDAY_LIST.get(Integer.valueOf(dataLine.get(k).toString())-1));
-                                dataLine.set(k, SPSSConstants.WEEKDAY_LIST.get(Integer.valueOf(dataLine.get(k).toString())-1));
+                                String newDatum = SPSSConstants.WEEKDAY_LIST.get(Integer.valueOf(dataLine.get(k).toString())-1);
+                                dataLine.set(k, newDatum);
+                                dataLine2.set(k, newDatum);
                                 dbgLog.finer("wkday:k="+k+":"+dataLine.get(k));
                             } else if (printFormatTable.get(variableNameList.get(k)).equals("MONTH")){
                                 // month
                                 dbgLog.finer("data k="+k+":"+dataLine.get(k));
                                 dbgLog.finer("data k="+k+":"+SPSSConstants.MONTH_LIST.get(Integer.valueOf(dataLine.get(k).toString())-1));
-                                dataLine.set(k, SPSSConstants.MONTH_LIST.get(Integer.valueOf(dataLine.get(k).toString())-1));
+                                String newDatum = SPSSConstants.MONTH_LIST.get(Integer.valueOf(dataLine.get(k).toString())-1);
+                                dataLine.set(k, newDatum);
+                                dataLine2.set(k, newDatum);
                                 dbgLog.finer("month:k="+k+":"+dataLine.get(k));
                                 
                                 

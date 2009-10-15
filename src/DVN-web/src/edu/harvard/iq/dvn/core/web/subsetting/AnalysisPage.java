@@ -1132,7 +1132,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
 		    // temp subset file that stores requested variables 
 		    tmpsbfl = File.createTempFile("tempsubsetfile.", ".tab");
-		    ///deleteTempFileList.add(tmpsbfl);
+		    deleteTempFileList.add(tmpsbfl);
 
                     String cutOp1 = null;
 		    // result(subset) data file: full-path name
@@ -1400,31 +1400,6 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             // others    citation, data,   R history,            wrksp
             
             try{
-
-                // rename the subsetting file
-                File tmpsbflnew = null; 
-
-		if (formatType.equals("D01")) {
-		    tmpsbflnew = File.createTempFile(SUBSET_DATAFILE, ".tab");
-		} else {
-		    tmpsbflnew = File.createTempFile(SUBSET_FILENAME_PREFIX + resultInfo.get("PID") +".", ".tab");
-		    ///deleteTempFileList.add(tmpsbflnew);
-
-		} 
-		InputStream inb = new BufferedInputStream(new FileInputStream(tmpsbfl));
-		OutputStream outb = new BufferedOutputStream(new FileOutputStream(tmpsbflnew));
-
-		int bufsize;
-		byte [] bffr = new byte[8192];
-                while ((bufsize = inb.read(bffr))!=-1) {
-                    outb.write(bffr, 0, bufsize);
-                }
-                inb.close();
-                outb.close();
-                
-                
-                String rhistNew = StringUtils.replace(resultInfo.get("RCommandHistory"), tmpsbfl.getName(),tmpsbflnew.getName());
-                
                 
                 //zipFileList.add(tmpsbflnew);
 
@@ -1481,6 +1456,28 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     scfw.write(tmpCCsasfl, tmpCCspsfl, tmpCCdofl);
 
 		    // add the subset file: 
+
+		    File tmpsbflnew = new File (resultInfo.get("wbDataFileName"));
+		    deleteTempFileList.add(tmpsbflnew);
+
+		    InputStream inb = new BufferedInputStream(new FileInputStream(tmpsbfl));
+		    OutputStream outb = new BufferedOutputStream(new FileOutputStream(tmpsbflnew));
+
+		    String varHeaderLine = getVariableHeaderForSubset(); 
+		    // Add the variable header to the subset file:
+		    byte[] varHeaderBuffer = null;
+		    varHeaderBuffer = varHeaderLine.getBytes();
+		    outb.write(varHeaderBuffer);
+		    outb.flush();
+
+		    int bufsize;
+		    byte [] bffr = new byte[8192];
+		    while ((bufsize = inb.read(bffr))!=-1) {
+			outb.write(bffr, 0, bufsize);
+		    }
+		    inb.close();
+		    outb.close();
+
 		    dbgLog.fine("adding tab file: "+tmpsbflnew.getName());
 		    zipFileList.add(tmpsbflnew); 
 

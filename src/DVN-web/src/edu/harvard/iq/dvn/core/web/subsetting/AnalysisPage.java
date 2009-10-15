@@ -294,6 +294,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     private static Logger dbgLog = Logger.getLogger(AnalysisPage.class.getPackage().getName());
     
     private static String SUBSET_FILENAME_PREFIX="dvnSubsetFile.";
+    private static String SUBSET_DATAFILE="dvnDataFile.";
     
     private static File REP_README_FILE;
     private static String REP_README_FILE_PREFIX;
@@ -1115,7 +1116,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
              
             List<File> zipFileList = new ArrayList();
             
-           // the data file for downloading/statistical analyses must be subset-ready
+	    // the data file for downloading/statistical analyses must be subset-ready
             // local (relative to the application) file case 
             // note: a typical remote case is: US Census Bureau
             
@@ -1131,7 +1132,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
 		    // temp subset file that stores requested variables 
 		    tmpsbfl = File.createTempFile("tempsubsetfile.", ".tab");
-		    deleteTempFileList.add(tmpsbfl);
+		    ///deleteTempFileList.add(tmpsbfl);
 
                     String cutOp1 = null;
 		    // result(subset) data file: full-path name
@@ -1401,13 +1402,20 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             try{
 
                 // rename the subsetting file
-                File tmpsbflnew = File.createTempFile(SUBSET_FILENAME_PREFIX + resultInfo.get("PID") +".", ".tab");
-                deleteTempFileList.add(tmpsbflnew);
-                InputStream inb = new BufferedInputStream(new FileInputStream(tmpsbfl));
-                OutputStream outb = new BufferedOutputStream(new FileOutputStream(tmpsbflnew));
+                File tmpsbflnew = null; 
 
-                int bufsize;
-                byte [] bffr = new byte[8192];
+		if (formatType.equals("D01")) {
+		    tmpsbflnew = File.createTempFile(SUBSET_DATAFILE, ".tab");
+		} else {
+		    tmpsbflnew = File.createTempFile(SUBSET_FILENAME_PREFIX + resultInfo.get("PID") +".", ".tab");
+		    ///deleteTempFileList.add(tmpsbflnew);
+
+		} 
+		InputStream inb = new BufferedInputStream(new FileInputStream(tmpsbfl));
+		OutputStream outb = new BufferedOutputStream(new FileOutputStream(tmpsbflnew));
+
+		int bufsize;
+		byte [] bffr = new byte[8192];
                 while ((bufsize = inb.read(bffr))!=-1) {
                     outb.write(bffr, 0, bufsize);
                 }
@@ -1442,9 +1450,15 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 
                 //writeRhistory(tmpRhfl, rhistNew);
                 
-                // (2) tab-delimitd-format-only step
+
                 if (formatType.equals("D01")){
-                    // write code files
+		    // (2) tab-delimited-format-only step:
+		    //
+		    // In the final zip file we package the subset file 
+		    // created by JCut, plus the SAS, SPSS and R control 
+		    // files created by R, above.
+		    
+                    // write code files:
                     String codeFileSas = "codeFile_sas_" + resultInfo.get("PID") + ".sas";
                     File tmpCCsasfl = new File(TEMP_DIR, codeFileSas);
                     
@@ -1466,31 +1480,34 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     StatisticalCodeFileWriter scfw = new StatisticalCodeFileWriter(sro);
                     scfw.write(tmpCCsasfl, tmpCCspsfl, tmpCCdofl);
 
-                }
-                
-                // (2)The format-converted subset data file
-                // get the path-name of the data-file to be delivered 
-                String wbDataFileName = resultInfo.get("wbDataFileName");
-                dbgLog.fine("wbDataFileName="+wbDataFileName);
-                
-                File wbSubsetDataFile = new File(wbDataFileName);
-                if (wbSubsetDataFile.exists()){
-                    dbgLog.fine("wbSubsetDataFile:length="+wbSubsetDataFile.length());
-                    deleteTempFileList.add(wbSubsetDataFile);
-                    zipFileList.add(wbSubsetDataFile);
+		    // add the subset file: 
+		    dbgLog.fine("adding tab file: "+tmpsbflnew.getName());
+		    zipFileList.add(tmpsbflnew); 
 
                 } else {
-                    // the data file was not created
-                    dbgLog.fine("wbSubsetDataFile does not exist");
-
-                    msgDwnldButton.setValue("* The requested data file is not available");
-                    msgDwnldButton.setVisible(true);
-                    dbgLog.warning("exiting dwnldAction(): data file was not transferred");
-                    getVDCRequestBean().setSelectedTab("tabDwnld");
-                    dvnDSBTimerService.createTimer(deleteTempFileList, TEMP_FILE_LIFETIME);
-                    return "failure";
-                }
                 
+		    // (2)The format-converted subset data file
+		    // get the path-name of the data-file to be delivered 
+		    String wbDataFileName = resultInfo.get("wbDataFileName");
+		    dbgLog.fine("wbDataFileName="+wbDataFileName);
+                
+		    File wbSubsetDataFile = new File(wbDataFileName);
+		    if (wbSubsetDataFile.exists()){
+			dbgLog.fine("wbSubsetDataFile:length="+wbSubsetDataFile.length());
+			deleteTempFileList.add(wbSubsetDataFile);
+			zipFileList.add(wbSubsetDataFile);
+		    } else {
+			// the data file was not created
+			dbgLog.fine("wbSubsetDataFile does not exist");
+
+			msgDwnldButton.setValue("* The requested data file is not available");
+			msgDwnldButton.setVisible(true);
+			dbgLog.warning("exiting dwnldAction(): data file was not transferred");
+			getVDCRequestBean().setSelectedTab("tabDwnld");
+			dvnDSBTimerService.createTimer(deleteTempFileList, TEMP_FILE_LIFETIME);
+			return "failure";
+		    }
+                }
                 // R-work space file
 //                String wrkspFileName = resultInfo.get("wrkspFileName");
 //                dbgLog.fine("wrkspFileName="+wrkspFileName);

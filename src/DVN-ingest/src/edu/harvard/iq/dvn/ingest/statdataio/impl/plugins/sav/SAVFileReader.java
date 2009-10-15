@@ -2527,6 +2527,7 @@ public class SAVFileReader extends StatDataFileReader{
                                 /* saving date format */
                                 dbgLog.finer("setting dateFormatLine[k] = "+sdf_ymd.toPattern());
                                 dataLine.set(k, newDatum);
+                                dataLine2.set(k, newDatum);
                                 //formatCategoryTable.put(variableNameList.get(k), "date");
                             } else if (variableFormatType.equals("time")) {
                                 dbgLog.finer("time case:DTIME or DATETIME or TIME");
@@ -2539,6 +2540,7 @@ public class SAVFileReader extends StatDataFileReader{
                                         String newDatum = sdf_dhms.format(new Date(dateDatum));
                                         dbgLog.finer("k="+k+":"+newDatum);
                                         dataLine.set(k, newDatum);
+                                        dataLine2.set(k, newDatum);
                                     } else {
                                         // decimal point included
                                         String[] timeData = dataLine.get(k).toString().split("\\.");
@@ -2555,6 +2557,7 @@ public class SAVFileReader extends StatDataFileReader{
                                         
                                         dbgLog.finer("k="+k+":"+sb_time.toString());
                                         dataLine.set(k, sb_time.toString());
+                                        dataLine2.set(k, sb_time.toString());
                                     }
                                 } else if (printFormatTable.get(variableNameList.get(k)).equals("DATETIME")){
 
@@ -2564,6 +2567,7 @@ public class SAVFileReader extends StatDataFileReader{
                                         dbgLog.finer("k="+k+":"+newDatum);
                                         dateFormatLine[k] = sdf_ymdhms.toPattern();
                                         dataLine.set(k, newDatum);
+                                        dataLine2.set(k, newDatum);
                                     } else {
                                         // decimal point included
                                         String[] timeData = dataLine.get(k).toString().split("\\.");
@@ -2580,6 +2584,7 @@ public class SAVFileReader extends StatDataFileReader{
                                         dateFormatLine[k] = sdf_ymdhms.toPattern() + (formatDecimalPointPosition > 0 ? ".S" : "" );
                                         dbgLog.finer("k="+k+":"+sb_time.toString());
                                         dataLine.set(k, sb_time.toString());
+                                        dataLine2.set(k, sb_time.toString());
                                     }
                                 } else if (printFormatTable.get(variableNameList.get(k)).equals("TIME")){
                                     if (dataLine.get(k).toString().indexOf(".") < 0){
@@ -2588,6 +2593,7 @@ public class SAVFileReader extends StatDataFileReader{
                                         dateFormatLine[k] = sdf_hms.toPattern();
                                         dbgLog.finer("k="+k+":"+newDatum);
                                         dataLine.set(k, newDatum);
+                                        dataLine2.set(k, newDatum);
                                     } else {
                                         // decimal point included
                                         String[] timeData = dataLine.get(k).toString().split("\\.");
@@ -2604,6 +2610,7 @@ public class SAVFileReader extends StatDataFileReader{
                                         dateFormatLine[k] = this.sdf_hms.toPattern() + (formatDecimalPointPosition > 0 ? ".S" : "" );
                                         dbgLog.finer("k="+k+":"+sb_time.toString());
                                         dataLine.set(k, sb_time.toString());
+                                        dataLine2.set(k, sb_time.toString());
                                     }
                                 }
                             
@@ -2674,15 +2681,15 @@ public class SAVFileReader extends StatDataFileReader{
                    
                     if (dataLine.size()>0) {
                         for (int ij=0; ij<varQnty;ij++ ){
-                                dataTable2[ij][caseIndex-1] = dataLine2.get(ij);
+			    dataTable2[ij][caseIndex-1] = dataLine2.get(ij);
 
-				//                            if (variableFormatTypeList[ij].equals("date") ||
-				//                                variableFormatTypeList[ij].equals("time")){
-				//                                this.dateFormats[ij][caseIndex-1] = dateFormatLine[ij];
-				//                                dataTable2[ij][caseIndex-1] = dataLine.get(ij);
-				//                            } else {
-				//                                dataTable2[ij][caseIndex-1] = dataLine2.get(ij);
-				//                            }
+			    //			    if (variableFormatTypeList[ij].equals("date") ||
+			    //			    variableFormatTypeList[ij].equals("time")){
+			    //			    this.dateFormats[ij][caseIndex-1] = dateFormatLine[ij];
+			    //			    dataTable2[ij][caseIndex-1] = dataLine.get(ij);
+			    //			    } else {
+			    //				dataTable2[ij][caseIndex-1] = dataLine2.get(ij);
+			    //			    }
                         }
                     }
                     
@@ -3024,6 +3031,7 @@ public class SAVFileReader extends StatDataFileReader{
                             dbgLog.finer("k="+k+":"+newDatum);
 
                             dataLine.set(k, newDatum);
+                            dataLine2.set(k, newDatum);
                             //formatCategoryTable.put(variableNameList.get(k), "date");
                         } else if (variableFormatType.equals("time")) {
                             dbgLog.finer("time case:DTIME or DATETIME or TIME");
@@ -3037,6 +3045,7 @@ public class SAVFileReader extends StatDataFileReader{
                                     // Note: DTIME is not a complete date, so we don't save a date format with it
                                     dbgLog.finer("k="+k+":"+newDatum);
                                     dataLine.set(k, newDatum);
+                                    dataLine2.set(k, newDatum);
                                 } else {
                                     // decimal point included
                                     String[] timeData = dataLine.get(k).toString().split("\\.");
@@ -3053,6 +3062,7 @@ public class SAVFileReader extends StatDataFileReader{
                                     
                                     dbgLog.finer("k="+k+":"+sb_time.toString());
                                     dataLine.set(k, sb_time.toString());
+                                    dataLine2.set(k, sb_time.toString());
                                 }
                             } else if (printFormatTable.get(variableNameList.get(k)).equals("DATETIME")){
 
@@ -3062,6 +3072,7 @@ public class SAVFileReader extends StatDataFileReader{
                                     dateFormatLine[k] = sdf_ymdhms.toPattern();
                                     dbgLog.finer("k="+k+":"+newDatum);
                                     dataLine.set(k, newDatum);
+                                    dataLine2.set(k, newDatum);
                                 } else {
                                     // decimal point included
                                     String[] timeData = dataLine.get(k).toString().split("\\.");
@@ -3078,6 +3089,7 @@ public class SAVFileReader extends StatDataFileReader{
                                     
                                     dbgLog.finer("k="+k+":"+sb_time.toString());
                                     dataLine.set(k, sb_time.toString());
+                                    dataLine2.set(k, sb_time.toString());
                                 }
                             } else if (printFormatTable.get(variableNameList.get(k)).equals("TIME")){
                                 if (dataLine.get(k).toString().indexOf(".") < 0){
@@ -3085,6 +3097,7 @@ public class SAVFileReader extends StatDataFileReader{
                                     String newDatum = sdf_hms.format(new Date(dateDatum));
                                     dbgLog.finer("k="+k+":"+newDatum);
                                     dataLine.set(k, newDatum);
+                                    dataLine2.set(k, newDatum);
                                 } else {
                                     // decimal point included
                                     String[] timeData = dataLine.get(k).toString().split("\\.");
@@ -3101,6 +3114,7 @@ public class SAVFileReader extends StatDataFileReader{
                                     
                                     dbgLog.finer("k="+k+":"+sb_time.toString());
                                     dataLine.set(k, sb_time.toString());
+                                    dataLine2.set(k, sb_time.toString());
                                 }
                             }
                             

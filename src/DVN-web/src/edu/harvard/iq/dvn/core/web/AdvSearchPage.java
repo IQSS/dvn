@@ -543,30 +543,6 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
         }
     }    
 
-    public List getCollections() {
-        ArrayList collections = new ArrayList();
-        VDC vdc = getVDCRequestBean().getCurrentVDC();
-        int treeLevel = 1;
-        VDCCollection vdcRootCollection = vdc.getRootCollection();
-        Collection<VDCCollection> subcollections = vdcRootCollection.getSubCollections();
-        treeLevel = buildList(collections, subcollections, treeLevel);
-        return collections;
-    }
-
-    private int buildList(ArrayList collections, Collection<VDCCollection> vdcCollections, int level) {
-        level++;
-        for (Iterator it = vdcCollections.iterator(); it.hasNext();) {
-            VDCCollection elem = (VDCCollection) it.next();
-            elem.setLevel(level);
-            collections.add(elem);
-            Collection<VDCCollection> subcollections = elem.getSubCollections();
-            if (!subcollections.isEmpty()) {
-                buildList(collections, subcollections, level);
-            }
-        }
-        level--;
-        return level;
-    }
 
     public List getCollectionsDisplay() {
         ArrayList collections = new ArrayList();
@@ -574,13 +550,6 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
         if (vdc != null) {
             getVDCCollections(vdc, collections);
         } else {
-            List<VDC> allVdc = vdcService.findAll();
-            for (Iterator it = allVdc.iterator(); it.hasNext();) {
-                VDC elem = (VDC) it.next();
-                if (!elem.isRestricted()) {
-                    getVDCCollections(elem, collections);
-                }
-            }
             collectionsIncluded = false;
         }
         return collections;
@@ -588,21 +557,30 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
 
     private void getVDCCollections(final VDC vdc, final ArrayList collections) {
         int treeLevel = 1;
-        VDCCollection vdcRootCollection = vdc.getRootCollection();
-        CollectionModel row = getRow(vdcRootCollection, treeLevel);
-        collections.add(row);
-        List<VDCCollection> subcollections = vdcCollectionService.findSubCollections(vdcRootCollection.getId(), false);
-//        Collection <VDCCollection> subcollections = vdcRootCollection.getSubCollections();
-        if (!subcollections.isEmpty()) {
-            collectionsIncluded = true;
+        
+        if (  !new VDCUI(vdc).containsOnlyLinkedCollections() ) {
+            VDCCollection vdcRootCollection = vdc.getRootCollection();
+            CollectionModel row = getRow(vdcRootCollection, treeLevel);
+            collections.add(row);
+            List<VDCCollection> subcollections = vdcCollectionService.findSubCollections(vdcRootCollection.getId(), false);
+            if (!subcollections.isEmpty()) {
+                collectionsIncluded = true;
+            }
+            buildDisplayModel(collections, subcollections, treeLevel);
         }
-        treeLevel = buildDisplayModel(collections, subcollections, treeLevel);
-        VDCUI vdcUI = new VDCUI(vdc);
-        List<VDCCollection> linkedCollections = vdcUI.getLinkedCollections(false);
+        
+        // linked collections
+        List<VDCCollection> linkedCollections = new VDCUI(vdc).getLinkedCollections(false);
         for (Iterator it = linkedCollections.iterator(); it.hasNext();) {
             VDCCollection link = (VDCCollection) it.next();
             CollectionModel linkedRow = getRow(link, treeLevel);
             collections.add(linkedRow);
+            // linked collection subcollections
+            buildDisplayModel(collections, vdcCollectionService.findSubCollections(link.getId(), false), treeLevel);
+
+        }
+        if (!linkedCollections.isEmpty()) {
+            collectionsIncluded = true;
         }
     }
 

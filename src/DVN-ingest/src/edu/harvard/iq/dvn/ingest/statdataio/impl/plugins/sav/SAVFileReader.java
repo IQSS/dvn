@@ -2670,12 +2670,7 @@ public class SAVFileReader extends StatDataFileReader{
                         for (int el : NaNlocationNumeric){
                             //out.println("replaced="+el+"th element="+dataLine.get(el));
                             if (dataLine.get(el).equals(MissingValueForTextDataFileNumeric)){
-                            
-                                if (variableFormatTypeList[el].equals("date") ||
-                                    variableFormatTypeList[el].equals("time")){
-                                    dataLine.set(el, MissingValueForTextDataFileString);
-				}
-				dataLine2.set(el,null);
+                                dataLine2.set(el,null);
                             }
 
                         }
@@ -2699,6 +2694,14 @@ public class SAVFileReader extends StatDataFileReader{
                     
                     // numeric contents-check
                     for (int l=0;l< dataLine.size();l++){
+
+                    if ( variableFormatTypeList[l].equals("date") ||
+                         variableFormatTypeList[l].equals("time") ||
+                         printFormatTable.get(variableNameList.get(l)).equals("WKDAY") ||
+                         printFormatTable.get(variableNameList.get(l)).equals("MONTH") ) {
+                        variableTypeFinal[l] = -1;
+                    }
+                    
                         if (variableTypeFinal[l]==0){
                             if (dataLine.get(l).toString().indexOf(".") >=0){
                                 // TODO - check for large numbers
@@ -2746,10 +2749,6 @@ public class SAVFileReader extends StatDataFileReader{
                 decimalVariableSet.add(l);
             }
             
-            if (variableFormatTypeList[l].equals("date") || 
-                variableFormatTypeList[l].equals("time")){
-                variableTypeFinal[l]=-1;
-            }
         }
         smd.setDecimalVariables(decimalVariableSet);
         smd.getFileInformation().put("caseQnty", caseQnty);
@@ -3181,12 +3180,7 @@ public class SAVFileReader extends StatDataFileReader{
                     for (int el : NaNlocationNumeric){
                         //out.println("replaced="+el+"th element="+dataLine.get(el));
                         if (dataLine.get(el).equals(MissingValueForTextDataFileNumeric)){
-                        
-                            if (variableFormatTypeList[el].equals("date") ||
-                                variableFormatTypeList[el].equals("time")){
-				dataLine.set(el, MissingValueForTextDataFileString);
-                            } 
-			    dataLine2.set(el, null);
+                            dataLine2.set(el, null);
                         }
 
                     }
@@ -3212,6 +3206,14 @@ public class SAVFileReader extends StatDataFileReader{
                 
                 // numeric contents-check
                 for (int l=0;l< dataLine.size();l++){
+                    if ( variableFormatTypeList[l].equals("date") ||
+                         variableFormatTypeList[l].equals("time") ||
+                         printFormatTable.get(variableNameList.get(l)).equals("WKDAY") ||
+                         printFormatTable.get(variableNameList.get(l)).equals("MONTH") ) {
+                        variableTypeFinal[l] = -1;
+                    }
+
+
                     if (variableTypeFinal[l]==0){
                         if (dataLine.get(l).toString().indexOf(".") >=0){
                             // l-th variable is not integer
@@ -3255,10 +3257,6 @@ public class SAVFileReader extends StatDataFileReader{
         for (int l=0; l< variableTypeFinal.length;l++){
             if (variableTypeFinal[l]>0){
                 decimalVariableSet.add(l);
-            }
-            if (variableFormatTypeList[l].equals("date") || 
-                variableFormatTypeList[l].equals("time")){
-                variableTypeFinal[l]=-1;
             }
         }
         smd.getFileInformation().put("caseQnty", caseQnty);

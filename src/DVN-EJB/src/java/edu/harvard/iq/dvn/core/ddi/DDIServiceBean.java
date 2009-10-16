@@ -2542,7 +2542,7 @@ public class DDIServiceBean implements DDIServiceLocal {
                 text += xmlr.getText().trim().replace('\n',' ');
             } else if (event == XMLStreamConstants.START_ELEMENT) {
                 if (xmlr.getLocalName().equals("ExtLink")) {
-                    String mapKey  = "image".equals( xmlr.getAttributeValue(null, "role") ) ? "logo" : "url";
+                    String mapKey  = ("image".equalsIgnoreCase( xmlr.getAttributeValue(null, "role") ) || "logo".equalsIgnoreCase(xmlr.getAttributeValue(null, "title")))? "logo" : "url";
                     returnMap.put( mapKey, xmlr.getAttributeValue(null, "URI") );
                     parseText(xmlr, "ExtLink"); // this line effectively just skips though until the end of the tag
                 }

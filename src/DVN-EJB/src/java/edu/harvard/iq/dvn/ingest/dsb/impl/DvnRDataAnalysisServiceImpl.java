@@ -127,9 +127,10 @@ public class DvnRDataAnalysisServiceImpl{
         }
 
     }
+    // This is how to initialize the source library, without hardcoding 
+    // the path:    
     static String VDC_R_STARTUP_FILE="vdc_startup.R";
-    static String VDC_R_STARTUP = "/usr/local/VDC/R/library/vdc_startup.R";
-    static String librarySetup= "source('"+ VDC_R_STARTUP + "');";
+    static String librarySetup = "source(paste(.libPaths(), '/../share/dvn/" + VDC_R_STARTUP_FILE + "', sep = ''));";
     boolean DEBUG = true;
     
     // ----------------------------------------------------- instance filelds
@@ -293,7 +294,8 @@ public class DvnRDataAnalysisServiceImpl{
             inb.close();
             
             // Rserve code starts here
-            dbgLog.fine("wrkdir="+wrkdir);
+            dbgLog.info("DvnRserveComm: "+"wrkdir="+wrkdir);
+            dbgLog.info("DvnRserveComm: "+librarySetup);
             historyEntry.add(librarySetup);
             c.voidEval(librarySetup);
             
@@ -321,11 +323,12 @@ public class DvnRDataAnalysisServiceImpl{
             historyEntry.add("vartyp<-c(" + sb.toString()+")");
 */
             historyEntry.add("vartyp<-c(" + StringUtils.join(sro.getVariableTypesAsString(),",") + ")");
+            dbgLog.info("DvnRserveComm: "+"vartyp<-c(" + StringUtils.join(sro.getVariableTypesAsString(),",") + ")");
             //c.assign("vartyp", new REXPInteger(jvartyp));
             dbgLog.fine("raw variable type="+sro.getVariableTypes());
             c.assign("vartyp", new REXPInteger(sro.getVariableTypes()));
             String [] tmpt = c.eval("vartyp").asStrings();
-            dbgLog.fine("vartyp length="+ tmpt.length + "\t " +
+            dbgLog.info("DvnRserveComm: "+"vartyp length="+ tmpt.length + "\t " +
                 StringUtils.join(tmpt,","));
         
             // variable format (date/time)
@@ -335,25 +338,35 @@ public class DvnRDataAnalysisServiceImpl{
             */
             
             Map<String, String> tmpFmt = sro.getVariableFormats();
-            dbgLog.fine("tmpFmt="+tmpFmt);
+            dbgLog.info("DvnRserveComm: "+"tmpFmt="+tmpFmt);
             if (tmpFmt != null){
                 Set<String> vfkeys = tmpFmt.keySet();
                 String[] tmpfk = (String[]) vfkeys.toArray(new String[vfkeys.size()]);
                 String[] tmpfv = getValueSet(tmpFmt, tmpfk);
                 historyEntry.add("tmpfk<-c(" + StringUtils.join(tmpfk,", ")+")");
+                dbgLog.info("DvnRserveComm: "+"tmpfk<-c(" + StringUtils.join(tmpfk,", ")+")");
+
                 c.assign("tmpfk", new REXPString(tmpfk));
                 historyEntry.add("tmpfv<-c(" + StringUtils.join(tmpfv,", ")+")");
+                dbgLog.info("DvnRserveComm: "+"tmpfv<-c(" + StringUtils.join(tmpfv,", ")+")");
                 c.assign("tmpfv", new REXPString(tmpfv));
                 String fmtNamesLine = "names(tmpfv)<- tmpfk";
                 historyEntry.add(fmtNamesLine);
+
+		dbgLog.info("DvnRserveComm: "+fmtNamesLine); 
                 c.voidEval(fmtNamesLine);
+
                 String fmtValuesLine ="varFmt<- as.list(tmpfv)";
                 historyEntry.add(fmtValuesLine);
+		
+		dbgLog.info("DvnRserveComm: "+fmtValuesLine); 
                 c.voidEval(fmtValuesLine);
             } else {
                 String [] varFmtN ={};
                 List<String> varFmtV = new ArrayList<String>();
                 historyEntry.add("varFmt <- list()");
+
+		dbgLog.info("DvnRserveComm: "+"varFmt <- list()");
                 c.assign("varFmt", new REXPList(new RList(varFmtV, varFmtN)));
             }
             /*
@@ -384,7 +397,7 @@ public class DvnRDataAnalysisServiceImpl{
             
             // confirmation
             String [] tmpjvnames = c.eval("vnames").asStrings();
-            dbgLog.fine("vnames:"+ StringUtils.join(tmpjvnames, ","));
+            dbgLog.info("DvnRserveComm: "+"vnames:"+ StringUtils.join(tmpjvnames, ","));
             
         
             /*
@@ -398,7 +411,7 @@ public class DvnRDataAnalysisServiceImpl{
             String readtableline = "x<-read.table141vdc(file='"+tempFileName+
                 "', col.names=vnames, colClassesx=vartyp, varFormat=varFmt )";
             historyEntry.add(readtableline);
-            dbgLog.fine("readtable="+readtableline);
+            dbgLog.info("DvnRserveComm: "+"readtable="+readtableline);
 
             c.voidEval(readtableline);
         
@@ -488,10 +501,14 @@ if (sro.hasRecodedVariables()){
             
             String reattachVarTypeLine = "attr(x, 'var.type') <- vartyp";
             historyEntry.add(reattachVarTypeLine);
-            c.voidEval(reattachVarTypeLine);
+ 
+	    dbgLog.info("DvnRserveComm: "+reattachVarTypeLine);
+	    c.voidEval(reattachVarTypeLine);
             
             // replication: variable type
             String repDVN_vt = "attr(dvnData, 'var.type') <- vartyp";
+
+            dbgLog.info("DvnRserveComm: "+repDVN_vt);
             c.voidEval(repDVN_vt);
             
             // variable Id
@@ -510,6 +527,8 @@ if (sro.hasRecodedVariables()){
             
             String attrVarNmbrLine = "attr(x, 'var.nmbr')<-varnmbr";
             historyEntry.add(attrVarNmbrLine);
+
+            dbgLog.info("DvnRserveComm: "+attrVarNmbrLine);
             c.voidEval(attrVarNmbrLine);
             
             // confirmation
@@ -518,6 +537,8 @@ if (sro.hasRecodedVariables()){
 
             // replication: variable number
             String repDVN_vn = "attr(dvnData, 'var.nmbr') <- varnmbr";
+
+	    dbgLog.info("DvnRserveComm: "+repDVN_vn); 
             c.voidEval(repDVN_vn);
             
             // variable labels
@@ -533,10 +554,14 @@ if (sro.hasRecodedVariables()){
             String vlQList = DvnDSButil.joinNelementsPerLine(jvarlabels,true);
 
             historyEntry.add("varlabels <-c("+ vlQList +")");
+
+	    dbgLog.info("DvnRserveComm: "+"varlabels <-c("+ vlQList +")");
             c.assign("varlabels", new REXPString(jvarlabels));
             
             String attrVarLabelsLine = "attr(x, 'var.labels')<-varlabels";
             historyEntry.add(attrVarLabelsLine);
+
+            dbgLog.info("DvnRserveComm: "+attrVarLabelsLine);
             c.voidEval(attrVarLabelsLine);
             
             // confirmation
@@ -545,6 +570,8 @@ if (sro.hasRecodedVariables()){
         
             // replication: 
             String repDVN_vl = "attr(dvnData, 'var.labels') <- varlabels";
+
+	    dbgLog.info("DvnRserveComm: "+repDVN_vl);
             c.voidEval(repDVN_vl);
         
 // --------- start: block to be used for the production code
@@ -560,6 +587,8 @@ if (sro.hasRecodedVariables()){
             // create the VALTABLE
             String vtFirstLine = "VALTABLE<-list()";
             historyEntry.add(vtFirstLine);
+
+            dbgLog.info("DvnRserveComm: "+vtFirstLine);
             c.voidEval(vtFirstLine);
             
             // vltbl includes both base and recoded cases when it was generated
@@ -973,7 +1002,7 @@ if (tmpv.length > 0){
         try {
             // create a temp dir
             String createTmpDir = "dir.create('"+wrkdir +"')";
-            dbgLog.fine("createTmpDir="+createTmpDir);
+            dbgLog.info("DvnRserveComm: "+"createTmpDir="+createTmpDir);
             
             historyEntry.add(createTmpDir);
 
@@ -998,6 +1027,8 @@ if (tmpv.length > 0){
             dbgLog.fine("univarDataDwnld="+univarDataDwnld);
             
             historyEntry.add(univarDataDwnld);
+
+            dbgLog.info("DvnRserveComm: "+univarDataDwnld);
             c.voidEval(univarDataDwnld);
             
             int wbFileSize = getFileSize(c,dsnprfx);
@@ -1018,7 +1049,7 @@ if (tmpv.length > 0){
             // tab data file
             String mvTmpTabFile = "file.rename('"+ tempFileName +"','"+ tempFileNameNew +"')";
             c.voidEval(mvTmpTabFile);
-            dbgLog.fine("move temp file="+mvTmpTabFile);
+            dbgLog.info("DvnRserveComm: "+"move temp file="+mvTmpTabFile);
 
         } catch (RserveException rse) {
             rse.printStackTrace();

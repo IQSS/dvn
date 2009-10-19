@@ -26,7 +26,6 @@ import java.nio.channels.*;
 import java.security.NoSuchAlgorithmException;
 import java.util.logging.*;
 
-import static java.lang.System.*;
 import java.util.*;
 import java.lang.reflect.*;
 import java.util.regex.*;
@@ -2110,57 +2109,52 @@ public class SAVFileReader extends StatDataFileReader{
 
         dbgLog.fine("***** decodeRecordTypeDataCompressed(): start *****");
 
-        if (stream == null){
+        if (stream == null) {
             throw new IllegalArgumentException("decodeRecordTypeDataCompressed: stream == null!");
         }
-	Map<String, String> formatCategoryTable = new LinkedHashMap<String, String>(); 
-        
-        PrintWriter pwout = createOutputWriter ( stream ); 
+        Map<String, String> formatCategoryTable = new LinkedHashMap<String, String>();
 
-        
-        boolean hasStringVarContinuousBlock = 
-            obsNonVariableBlockSet.size() > 0 ? true : false;
-        dbgLog.fine("hasStringVarContinuousBlock="+hasStringVarContinuousBlock);
-        
+        PrintWriter pwout = createOutputWriter(stream);
+
+
+        boolean hasStringVarContinuousBlock =
+                obsNonVariableBlockSet.size() > 0 ? true : false;
+        dbgLog.fine("hasStringVarContinuousBlock=" + hasStringVarContinuousBlock);
+
         int ii = 0;
-        
+
         int OBS = LENGTH_SAV_OBS_BLOCK;
         int nOBS = OBSUnitsPerCase;
-        
-        dbgLog.fine("OBSUnitsPerCase="+OBSUnitsPerCase);
-        
+
+        dbgLog.fine("OBSUnitsPerCase=" + OBSUnitsPerCase);
+
         int caseIndex = 0;
 
-        dbgLog.fine("printFormatTable:\n"+printFormatTable);
+        dbgLog.fine("printFormatTable:\n" + printFormatTable);
 
-        dbgLog.fine("printFormatNameTable:\n"+printFormatNameTable);
+        dbgLog.fine("printFormatNameTable:\n" + printFormatNameTable);
         variableFormatTypeList = new String[varQnty];
 
-        dbgLog.fine("varQnty: "+varQnty);
+        dbgLog.fine("varQnty: " + varQnty);
 
 
-        for (int i=0; i<varQnty;i++){
-            variableFormatTypeList[i]=SPSSConstants.FORMAT_CATEGORY_TABLE.get(
+        for (int i = 0; i < varQnty; i++) {
+            variableFormatTypeList[i] = SPSSConstants.FORMAT_CATEGORY_TABLE.get(
                     printFormatTable.get(variableNameList.get(i)));
-            dbgLog.fine("i="+i+"th variableFormatTypeList="+variableFormatTypeList[i]);
+            dbgLog.fine("i=" + i + "th variableFormatTypeList=" + variableFormatTypeList[i]);
             formatCategoryTable.put(variableNameList.get(i), variableFormatTypeList[i]);
         }
-        dbgLog.fine("variableFormatType:\n"+Arrays.deepToString(variableFormatTypeList));
-        dbgLog.fine("formatCategoryTable:\n"+formatCategoryTable);
+        dbgLog.fine("variableFormatType:\n" + Arrays.deepToString(variableFormatTypeList));
+        dbgLog.fine("formatCategoryTable:\n" + formatCategoryTable);
 
         // contents (variable) checker concering decimals
         variableTypeFinal = new int[varQnty];
         Arrays.fill(variableTypeFinal, 0);
 
-        int numberOfDecimalVariables = 0;
-        
-        List<String> dataLine = new ArrayList<String>();
-        String dateFormatLine[] =null;
-        List<String> dataLine2 = new ArrayList<String>();
+        List<String> casewiseRecordForUNF = new ArrayList<String>();
+        String[] caseWiseDateFormatForUNF = null;
+        List<String> casewiseRecordForTabFile = new ArrayList<String>();
 
-        // Sets for NA-string-to-NaN conversion
-
-        Set<Integer> NaNlocationNumeric = new LinkedHashSet<Integer>();
 
         // missing values are written to the tab-delimited file by
         // using the default or user-specified missing-value  strings;
@@ -2170,595 +2164,553 @@ public class SAVFileReader extends StatDataFileReader{
         // strings; therefore, after row data for the tab-delimited 
         // file are written, missing values in a row are changed to
         // UNF/summary-statistics-OK ones.
-        
+
         // data-storage object for sumStat
         dataTable2 = new Object[varQnty][caseQnty];
         // storage of date formats to pass to UNF
         dateFormats = new String[varQnty][caseQnty];
-        
+
         try {
             // this compression is applied only to non-float data, i.e. integer;
             // 8-byte float datum is kept in tact
             boolean hasReachedEOF = false;
-            
-        OBSERVATION: while(true){
-            dbgLog.fine("SAV Reader: compressed: ii="+ii+"-th iteration");
 
-            byte[] octate = new byte[LENGTH_SAV_OBS_BLOCK];
+            OBSERVATION:
+            while (true) {
 
-            int nbytes = stream.read(octate);
+                dbgLog.fine("SAV Reader: compressed: ii=" + ii + "-th iteration");
 
-	    // processCompressedOBSblock () 
+                byte[] octate = new byte[LENGTH_SAV_OBS_BLOCK];
 
-	    // (this means process a block of 8 compressed OBS 
-	    // values -- should result in 64 bytes of data total)
+                int nbytes = stream.read(octate);
 
-             for (int i = 0; i < LENGTH_SAV_OBS_BLOCK; i++) {
+                // processCompressedOBSblock ()
 
-                dbgLog.finer("i="+i+"-th iteration");
-                int octate_i = octate[i];
-                //dbgLog.fine("octate="+octate_i);
-                if (octate_i < 0){
-                    octate_i += 256;
-                }
-                int byteCode = octate_i;//octate_i & 0xF;
-                //out.println("byeCode="+byteCode);
+                // (this means process a block of 8 compressed OBS
+                // values -- should result in 64 bytes of data total)
 
-		// processCompressedOBS()
+                for (int i = 0; i < LENGTH_SAV_OBS_BLOCK; i++) {
 
-                switch (byteCode) {
-                    case 252:
-                        // end of the file
-                        dbgLog.fine("SAV Reader: compressed: end of file mark [FC] was found");
-                        hasReachedEOF = true;
-                        break;
-                    case 253:
-                        // FD: uncompressed data follows after this octate
-                        // long string datum or float datum
-                        // read the following octate
-                        byte[] uncompressedByte = new byte[LENGTH_SAV_OBS_BLOCK];
-                        int ucbytes = stream.read(uncompressedByte);
-                        int typeIndex = (ii*OBS + i)%nOBS;
-                        
-                        if ((OBSwiseTypelList.get(typeIndex) > 0)||
-                            (OBSwiseTypelList.get(typeIndex)== -1)){
-                            // code= >0 |-1: string or its conitiguous block
-                            // decode as a string object
-                            String strdatum = new String(
-                                Arrays.copyOfRange(uncompressedByte,
-                                0, LENGTH_SAV_OBS_BLOCK),"US-ASCII");
-                            //out.println("str_datum="+strdatum+"<-");
-                            // add this non-missing-value string datum 
-                            dataLine.add(strdatum);
-                            //out.println("dataLine(String)="+dataLine);
-			} else if (OBSwiseTypelList.get(typeIndex)== -2){
-                            String strdatum = new String(
-                                Arrays.copyOfRange(uncompressedByte,
-                                0, LENGTH_SAV_OBS_BLOCK-1),"US-ASCII");
-                            dataLine.add(strdatum);
-                            //out.println("dataLine(String)="+dataLine);
-                        } else if (OBSwiseTypelList.get(typeIndex)==0){
-                            // code= 0: numeric 
-                            
-                            ByteBuffer bb_double = ByteBuffer.wrap(
-                                uncompressedByte, 0, LENGTH_SAV_OBS_BLOCK);
-                            if (isLittleEndian){
-                                bb_double.order(ByteOrder.LITTLE_ENDIAN);
+
+                    dbgLog.finer("i=" + i + "-th iteration");
+                    int octate_i = octate[i];
+                    //dbgLog.fine("octate="+octate_i);
+                    if (octate_i < 0) {
+                        octate_i += 256;
+                    }
+                    int byteCode = octate_i;//octate_i & 0xF;
+                    //out.println("byeCode="+byteCode);
+
+                    // processCompressedOBS()
+
+                    switch (byteCode) {
+                        case 252:
+                            // end of the file
+                            dbgLog.fine("SAV Reader: compressed: end of file mark [FC] was found");
+                            hasReachedEOF = true;
+                            break;
+                        case 253:
+                            // FD: uncompressed data follows after this octate
+                            // long string datum or float datum
+                            // read the following octate
+                            byte[] uncompressedByte = new byte[LENGTH_SAV_OBS_BLOCK];
+                            int ucbytes = stream.read(uncompressedByte);
+                            int typeIndex = (ii * OBS + i) % nOBS;
+
+                            if ((OBSwiseTypelList.get(typeIndex) > 0) ||
+                                    (OBSwiseTypelList.get(typeIndex) == -1)) {
+                                // code= >0 |-1: string or its conitiguous block
+                                // decode as a string object
+                                String strdatum = new String(
+                                        Arrays.copyOfRange(uncompressedByte,
+                                        0, LENGTH_SAV_OBS_BLOCK), "US-ASCII");
+                                //out.println("str_datum="+strdatum+"<-");
+                                // add this non-missing-value string datum
+                                casewiseRecordForTabFile.add(strdatum);
+                            //out.println("casewiseRecordForTabFile(String)="+casewiseRecordForTabFile);
+                            } else if (OBSwiseTypelList.get(typeIndex) == -2) {
+                                String strdatum = new String(
+                                        Arrays.copyOfRange(uncompressedByte,
+                                        0, LENGTH_SAV_OBS_BLOCK - 1), "US-ASCII");
+                                casewiseRecordForTabFile.add(strdatum);
+                            //out.println("casewiseRecordForTabFile(String)="+casewiseRecordForTabFile);
+                            } else if (OBSwiseTypelList.get(typeIndex) == 0) {
+                                // code= 0: numeric
+
+                                ByteBuffer bb_double = ByteBuffer.wrap(
+                                        uncompressedByte, 0, LENGTH_SAV_OBS_BLOCK);
+                                if (isLittleEndian) {
+                                    bb_double.order(ByteOrder.LITTLE_ENDIAN);
+                                }
+
+                                Double ddatum = bb_double.getDouble();
+                                // out.println("ddatum="+ddatum);
+                                // add this non-missing-value numeric datum
+                                casewiseRecordForTabFile.add(doubleNumberFormatter.format(ddatum));
+                                dbgLog.fine("SAV Reader: compressed: added value to dataLine: " + ddatum);
+
+                            } else {
+                                dbgLog.fine("SAV Reader: out-of-range exception");
+                                throw new IOException("out-of-range value was found");
                             }
 
-                            Double ddatum  = bb_double.getDouble();
-                            // out.println("ddatum="+ddatum);
-                            // add this non-missing-value numeric datum
-                            dataLine.add(doubleNumberFormatter.format(ddatum)) ;
-			    dbgLog.fine("SAV Reader: compressed: added value to dataLine: "+ddatum);
-
-                        } else {
-			    dbgLog.fine("SAV Reader: out-of-range exception");
-                            throw new IOException("out-of-range value was found");
-                        }
-                        
-			/* 
-                        // EOF-check after reading this octate
-                        if (stream.available() == 0){
+                            /*
+                            // EOF-check after reading this octate
+                            if (stream.available() == 0){
                             hasReachedEOF = true;
                             dbgLog.fine(
                             "SAV Reader: *** After reading an uncompressed octate," +
-                             " reached the end of the file at "+ii
-                                +"th iteration and i="+i+"th octate position [0-start] *****");
-                        }
-			*/
+                            " reached the end of the file at "+ii
+                            +"th iteration and i="+i+"th octate position [0-start] *****");
+                            }
+                             */
 
 
-                        break;
-                    case 254:
-                        // FE: used as the missing value for string variables
-                        // an empty case in a string variable also takes this value
-                        // string variable does not accept space-only data
-                        // cf: uncompressed case
-                        // 20 20 20 20 20 20 20 20
-                        // add the string missing value
-                        // out.println("254: String missing data");
+                            break;
+                        case 254:
+                            // FE: used as the missing value for string variables
+                            // an empty case in a string variable also takes this value
+                            // string variable does not accept space-only data
+                            // cf: uncompressed case
+                            // 20 20 20 20 20 20 20 20
+                            // add the string missing value
+                            // out.println("254: String missing data");
 
-                        dataLine.add(" ");  // add "." here?
+                            casewiseRecordForTabFile.add(" ");  // add "." here?
 
 
-			// Note that technically this byte flag (254/xFE) means
-			// that *eight* white space characters should be 
-			// written to the output stream. This caused me 
-			// a great amount of confusion, because it appeared 
-			// to me that there was a mismatch between the number
-			// of bytes advertised in the variable metadata and 
-			// the number of bytes actually found in the data
-			// section of a compressed SAV file; this is because
-			// these 8 bytes "come out of nowhere"; they are not
-			// written in the data section, but this flag specifies
-			// that they should be added to the output. 
-			// Also, as I pointed out above, we are only writing
-			// out one whitespace character, not 8 as instructed.
-			// This appears to be legit; these blocks of 8 spaces
-			// seem to be only used for padding, and all such
-			// multiple padding spaces are stripped anyway during 
-			// the post-processing.
+                            // Note that technically this byte flag (254/xFE) means
+                            // that *eight* white space characters should be
+                            // written to the output stream. This caused me
+                            // a great amount of confusion, because it appeared
+                            // to me that there was a mismatch between the number
+                            // of bytes advertised in the variable metadata and
+                            // the number of bytes actually found in the data
+                            // section of a compressed SAV file; this is because
+                            // these 8 bytes "come out of nowhere"; they are not
+                            // written in the data section, but this flag specifies
+                            // that they should be added to the output.
+                            // Also, as I pointed out above, we are only writing
+                            // out one whitespace character, not 8 as instructed.
+                            // This appears to be legit; these blocks of 8 spaces
+                            // seem to be only used for padding, and all such
+                            // multiple padding spaces are stripped anyway during
+                            // the post-processing.
 
- 
-                        break;
-                    case 255:
-                        // FF: system missing value for numeric variables
-                        // cf: uncompressed case (sysmis)
-                        // FF FF FF FF FF FF eF FF(little endian)
-                        // add the numeric missing value
-			dbgLog.fine("SAV Reader: compressed: Missing Value, numeric");
-                        dataLine.add(MissingValueForTextDataFileNumeric);
 
-                        break;
-                    case 0:
-                        // 00: do nothing
-			dbgLog.fine("SAV Reader: compressed: doing nothing (zero); ");
-			
-                        break;
-                    default:
-                        //out.println("byte code(default)="+ byteCode);
-                        if ((byteCode > 0) && (byteCode < 252)) {
-                            // datum is compressed
-                            //Integer unCompressed = Integer.valueOf(byteCode -100);
-                            // add this uncompressed numeric datum
-                            Double unCompressed = Double.valueOf(byteCode -100);
-			    dbgLog.fine("SAV Reader: compressed: default case: "+unCompressed);
+                            break;
+                        case 255:
+                            // FF: system missing value for numeric variables
+                            // cf: uncompressed case (sysmis)
+                            // FF FF FF FF FF FF eF FF(little endian)
+                            // add the numeric missing value
+                            dbgLog.fine("SAV Reader: compressed: Missing Value, numeric");
+                            casewiseRecordForTabFile.add(MissingValueForTextDataFileNumeric);
 
-                            dataLine.add(doubleNumberFormatter.format(unCompressed));
+                            break;
+                        case 0:
+                            // 00: do nothing
+                            dbgLog.fine("SAV Reader: compressed: doing nothing (zero); ");
+
+                            break;
+                        default:
+                            //out.println("byte code(default)="+ byteCode);
+                            if ((byteCode > 0) && (byteCode < 252)) {
+                                // datum is compressed
+                                //Integer unCompressed = Integer.valueOf(byteCode -100);
+                                // add this uncompressed numeric datum
+                                Double unCompressed = Double.valueOf(byteCode - 100);
+                                dbgLog.fine("SAV Reader: compressed: default case: " + unCompressed);
+
+                                casewiseRecordForTabFile.add(doubleNumberFormatter.format(unCompressed));
                             // out.println("uncompressed="+unCompressed);
-                            // out.println("dataline="+dataLine);
-                        }
-                }// end of switch
-                
-                // out.println("end of switch");
-                
-                
-                // The-end-of-a-case(row)-processing
+                            // out.println("dataline="+casewiseRecordForTabFile);
+                            }
+                    }// end of switch
 
-		// this line that follows, and the code around it
-		// is really confusing:
-                int varCounter = (ii*OBS + i + 1)%nOBS;
-		// while both OBS and LENGTH_SAV_OBS_BLOCK = 8
-		// (OBS was initialized as OBS=LENGTH_SAV_OBS_BLOCK),
-		// the 2 values mean different things:
-		// LENGTH_SAV_OBS_BLOCK is the number of bytes in one OBS;
-		// and OBS is the number of OBS blocks that we process 
-		// at a time. I.e., we process 8 chunks of 8 bytes at a time. 
-		// This is how data is organized inside an SAV file: 
-		// 8 bytes of compression flags, followd by 8x8 or fewer
-		// (depending on the flags) bytes of compressed data.
-		// I should rename this OBS variable something more 
-		// meaningful. 
-		//
-		// Also, the "varCounter" variable name is entirely 
-		// misleading -- it counts not variables, but OBS blocks.
-		
-                dbgLog.fine("SAV Reader: compressed: OBS counter="+varCounter+"(ii="+ii+")");
-                
-                if ((ii*OBS + i + 1)%nOBS == 0){
-                    //out.println("dataLine(before)="+dataLine);
+                    // out.println("end of switch");
 
-                    // out.println("all variables in a case are parsed == nOBS");
-                    // out.println("hasStringVarContinuousBlock="+hasStringVarContinuousBlock);
-                    
-                    // check whether a string-variable's continuous block exits
-                    // if so, they must be joined
 
-                    if (hasStringVarContinuousBlock){
+                    // The-end-of-a-case(row)-processing
 
-                    // string-variable's continuous-block-concatenating-processing
-                    
-                        //out.println("concatenating process starts");
-                        //out.println("dataLine(before)="+dataLine);
-                        //out.println("dataLine(before:size)="+dataLine.size());
+                    // this line that follows, and the code around it
+                    // is really confusing:
+                    int varCounter = (ii * OBS + i + 1) % nOBS;
+                    // while both OBS and LENGTH_SAV_OBS_BLOCK = 8
+                    // (OBS was initialized as OBS=LENGTH_SAV_OBS_BLOCK),
+                    // the 2 values mean different things:
+                    // LENGTH_SAV_OBS_BLOCK is the number of bytes in one OBS;
+                    // and OBS is the number of OBS blocks that we process
+                    // at a time. I.e., we process 8 chunks of 8 bytes at a time.
+                    // This is how data is organized inside an SAV file:
+                    // 8 bytes of compression flags, followd by 8x8 or fewer
+                    // (depending on the flags) bytes of compressed data.
+                    // I should rename this OBS variable something more
+                    // meaningful.
+                    //
+                    // Also, the "varCounter" variable name is entirely
+                    // misleading -- it counts not variables, but OBS blocks.
 
-                        StringBuilder sb = new StringBuilder("");
-                        int firstPosition = 0;
-                        
-                        Set<Integer> removeJset = new HashSet<Integer>();
-                        for (int j=0; j< nOBS; j++){
-                            dbgLog.fine("j="+j+"-th type ="+OBSwiseTypelList.get(j));
-                            if ((OBSwiseTypelList.get(j) == -1)||
-				(OBSwiseTypelList.get(j) == -2))
-			    {
-                                // Continued String variable found at j-th 
-				// position. look back the j-1 
-                                firstPosition = j-1;
-                                int lastJ = j;
-                                String concatanated = null;
-                               
-                                removeJset.add(j);
-                                sb.append(dataLine.get(j-1));
-                                sb.append(dataLine.get(j));
-                                for (int jc =1; ; jc++ ){
-                                    if ((j+jc == nOBS) || ((OBSwiseTypelList.get(j+jc) != -1)&&(OBSwiseTypelList.get(j+jc) != -2))){
-					
-					// j is the end unit of this string variable
-                                        concatanated = sb.toString();
-                                        sb.setLength(0);
-                                       lastJ = j+jc;
-                                       break;
-                                    } else {
-                                        sb.append(dataLine.get(j+jc));
-                                        removeJset.add(j+jc);
+                    dbgLog.fine("SAV Reader: compressed: OBS counter=" + varCounter + "(ii=" + ii + ")");
+
+                    if ((ii * OBS + i + 1) % nOBS == 0) {
+                        //out.println("casewiseRecordForTabFile(before)="+casewiseRecordForTabFile);
+
+                        // out.println("all variables in a case are parsed == nOBS");
+                        // out.println("hasStringVarContinuousBlock="+hasStringVarContinuousBlock);
+
+                        // check whether a string-variable's continuous block exits
+                        // if so, they must be joined
+
+                        if (hasStringVarContinuousBlock) {
+
+                            // string-variable's continuous-block-concatenating-processing
+
+                            //out.println("concatenating process starts");
+                            //out.println("casewiseRecordForTabFile(before)="+casewiseRecordForTabFile);
+                            //out.println("casewiseRecordForTabFile(before:size)="+casewiseRecordForTabFile.size());
+
+                            StringBuilder sb = new StringBuilder("");
+                            int firstPosition = 0;
+
+                            Set<Integer> removeJset = new HashSet<Integer>();
+                            for (int j = 0; j < nOBS; j++) {
+                                dbgLog.fine("j=" + j + "-th type =" + OBSwiseTypelList.get(j));
+                                if ((OBSwiseTypelList.get(j) == -1) ||
+                                        (OBSwiseTypelList.get(j) == -2)) {
+                                    // Continued String variable found at j-th
+                                    // position. look back the j-1
+                                    firstPosition = j - 1;
+                                    int lastJ = j;
+                                    String concatanated = null;
+
+                                    removeJset.add(j);
+                                    sb.append(casewiseRecordForTabFile.get(j - 1));
+                                    sb.append(casewiseRecordForTabFile.get(j));
+                                    for (int jc = 1;; jc++) {
+                                        if ((j + jc == nOBS) || ((OBSwiseTypelList.get(j + jc) != -1) && (OBSwiseTypelList.get(j + jc) != -2))) {
+
+                                            // j is the end unit of this string variable
+                                            concatanated = sb.toString();
+                                            sb.setLength(0);
+                                            lastJ = j + jc;
+                                            break;
+                                        } else {
+                                            sb.append(casewiseRecordForTabFile.get(j + jc));
+                                            removeJset.add(j + jc);
+                                        }
                                     }
-                                }
-                                dataLine.set(j-1, concatanated); 
-                                
-                                //out.println(j-1+"th concatanated="+concatanated);
-                                j = lastJ -1; 
-                           
-                            } // end-of-if: continuous-OBS only
-                        } // end of loop-j
-                        
-                        //out.println("removeJset="+removeJset);
-                        
-                        // a new list that stores a new case with concatanated string data
-                        List<String> newDataLine = new ArrayList<String>();
-                        
-                        for (int jl=0; jl<dataLine.size();jl++){
-                            //out.println("jl="+jl+"-th datum =["+dataLine.get(jl)+"]");
-                            
-                            if (!removeJset.contains(jl) ){
-                            
-//                                if (dataLine.get(jl).equals(MissingValueForTextDataFileString)){
-//                                    out.println("NA-S jl= "+jl+"=["+dataLine.get(jl)+"]");
-//                                } else if (dataLine.get(jl).equals(MissingValueForTextDataFileNumeric)){
-//                                    out.println("NA-N jl= "+jl+"=["+dataLine.get(jl)+"]");
-//                                } else if (dataLine.get(jl)==null){
-//                                    out.println("null case jl="+jl+"=["+dataLine.get(jl)+"]");
-//                                } else if (dataLine.get(jl).equals("NaN")){
-//                                    out.println("NaN jl= "+jl+"=["+dataLine.get(jl)+"]");
-//                                } else if (dataLine.get(jl).equals("")){
-//                                    out.println("blank jl= "+jl+"=["+dataLine.get(jl)+"]");
-//                                } else if (dataLine.get(jl).equals(" ")){
-//                                    out.println("space jl= "+jl+"=["+dataLine.get(jl)+"]");
+                                    casewiseRecordForTabFile.set(j - 1, concatanated);
+
+                                    //out.println(j-1+"th concatanated="+concatanated);
+                                    j = lastJ - 1;
+
+                                } // end-of-if: continuous-OBS only
+                            } // end of loop-j
+
+                            //out.println("removeJset="+removeJset);
+
+                            // a new list that stores a new case with concatanated string data
+                            List<String> newDataLine = new ArrayList<String>();
+
+                            for (int jl = 0; jl < casewiseRecordForTabFile.size(); jl++) {
+                                //out.println("jl="+jl+"-th datum =["+casewiseRecordForTabFile.get(jl)+"]");
+
+                                if (!removeJset.contains(jl)) {
+
+//                                if (casewiseRecordForTabFile.get(jl).equals(MissingValueForTextDataFileString)){
+//                                    out.println("NA-S jl= "+jl+"=["+casewiseRecordForTabFile.get(jl)+"]");
+//                                } else if (casewiseRecordForTabFile.get(jl).equals(MissingValueForTextDataFileNumeric)){
+//                                    out.println("NA-N jl= "+jl+"=["+casewiseRecordForTabFile.get(jl)+"]");
+//                                } else if (casewiseRecordForTabFile.get(jl)==null){
+//                                    out.println("null case jl="+jl+"=["+casewiseRecordForTabFile.get(jl)+"]");
+//                                } else if (casewiseRecordForTabFile.get(jl).equals("NaN")){
+//                                    out.println("NaN jl= "+jl+"=["+casewiseRecordForTabFile.get(jl)+"]");
+//                                } else if (casewiseRecordForTabFile.get(jl).equals("")){
+//                                    out.println("blank jl= "+jl+"=["+casewiseRecordForTabFile.get(jl)+"]");
+//                                } else if (casewiseRecordForTabFile.get(jl).equals(" ")){
+//                                    out.println("space jl= "+jl+"=["+casewiseRecordForTabFile.get(jl)+"]");
 //                                }
-                                
-                                newDataLine.add(dataLine.get(jl));
+
+                                    newDataLine.add(casewiseRecordForTabFile.get(jl));
+                                } else {
+//                                out.println("Excluded: jl="+jl+"-th datum=["+casewiseRecordForTabFile.get(jl)+"]");
+                                }
+                            }  // end of loop-jl
+
+                            //out.println("new casewiseRecordForTabFile="+newDataLine);
+                            //out.println("new casewiseRecordForTabFile(size)="+newDataLine.size());
+
+                            casewiseRecordForTabFile = newDataLine;
+
+                        } // end-if: stringContinuousVar-exist case
+
+                        for (int el = 0; el < casewiseRecordForTabFile.size(); el++) {
+                            casewiseRecordForUNF.add(casewiseRecordForTabFile.get(el));
+                        }
+
+                        caseWiseDateFormatForUNF = new String[casewiseRecordForTabFile.size()];
+
+                        // caseIndex starts from 1 not 0
+                        caseIndex = (ii * OBS + i + 1) / nOBS;
+                        //dbgLog.finer("caseIndex="+caseIndex);
+
+                        for (int k = 0; k < casewiseRecordForTabFile.size(); k++) {
+
+                            dbgLog.fine("k=" + k + "-th variableTypelList=" + variableTypelList.get(k));
+
+                            if (variableTypelList.get(k) > 0) {
+                                // String variable case: set to  -1
+                                variableTypeFinal[k] = -1;
+
+                                // Strip the String variables off the
+                                // whitespace padding:
+
+                                // [ snipped ]
+
+                                // I've removed the block of code above where
+                                // String values were substring()-ed to the
+                                // length specified in the variable metadata;
+                                // Doing that was not enough, since a string
+                                // can still be space-padded inside its
+                                // advertised capacity. (note that extended
+                                // variables can have many kylobytes of such
+                                // padding in them!) Plus it was completely
+                                // redundant, since we are stripping all the
+                                // trailing white spaces with
+                                // StringUtils.stripEnd() below:
+
+
+                                String paddRemoved = StringUtils.stripEnd(casewiseRecordForTabFile.get(k).toString(), null);
+                                // TODO: clean this up.  For now, just make sure that strings contain at least one blank space.
+                                if (paddRemoved.equals("")) {
+                                    paddRemoved = " ";
+                                }
+
+                                casewiseRecordForUNF.set(k, paddRemoved);
+                                casewiseRecordForTabFile.set(k, "\"" + paddRemoved.replaceAll("\"", Matcher.quoteReplacement("\\\"")) + "\"");
+
+                            // end of String var case
+
                             } else {
-//                                out.println("Excluded: jl="+jl+"-th datum=["+dataLine.get(jl)+"]");
-                            }
-                        }  // end of loop-jl
+                                // numeric var case
+                                if (casewiseRecordForTabFile.get(k).equals(MissingValueForTextDataFileNumeric)) {
+                                    casewiseRecordForUNF.set(k, null);
 
-                        //out.println("new dataLine="+newDataLine);
-                        //out.println("new dataLine(size)="+newDataLine.size());
+                                }
 
-                        dataLine = newDataLine;
+                            } // end of variable-type check
 
-                    } // end-if: stringContinuousVar-exist case
+                            if (casewiseRecordForTabFile.get(k) != null && !casewiseRecordForTabFile.get(k).equals(MissingValueForTextDataFileNumeric)) {
 
-                    for (int el=0; el< dataLine.size(); el++){
-                        dataLine2.add(dataLine.get(el));
-                    }
+                                String variableFormatType = variableFormatTypeList[k];
+                                dbgLog.finer("k=" + k + "th printFormatTable format=" + printFormatTable.get(variableNameList.get(k)));
 
-                    dateFormatLine = new String[dataLine.size()];
-
-                    // caseIndex starts from 1 not 0
-                    caseIndex = (ii*OBS + i + 1)/nOBS;
-                    //dbgLog.finer("caseIndex="+caseIndex);
-                    
-                    for (int k=0; k<dataLine.size(); k++){
-                        
-                        dbgLog.fine("k="+k+"-th variableTypelList="+variableTypelList.get(k));
-
-                        if (variableTypelList.get(k) > 0) {
-                            // String variable case: set to  -1
-                            variableTypeFinal[k] = -1;
-
-			    // Strip the String variables off the
-			    // whitespace padding:
-
-			    // [ snipped ]
-
-			    // I've removed the block of code above where
-			    // String values were substring()-ed to the 
-			    // length specified in the variable metadata;
-			    // Doing that was not enough, since a string
-			    // can still be space-padded inside its 
-			    // advertised capacity. (note that extended 
-			    // variables can have many kylobytes of such 
-			    // padding in them!) Plus it was completely
-			    // redundant, since we are stripping all the
-			    // trailing white spaces with 
-			    // StringUtils.stripEnd() below:
+                                int formatDecimalPointPosition = formatDecimalPointPositionList.get(k);
 
 
-                            String paddRemoved = StringUtils.stripEnd(dataLine.get(k).toString(), null);
-                            // TODO: clean this up.  For now, just make sure that strings contain at least one blank space.
-                            if (paddRemoved.equals("")) {
-                                paddRemoved = " ";
-                            }
+                                if (variableFormatType.equals("date")) {
+                                    dbgLog.finer("date case");
 
-                            //dbgLog.fine("paddRemoved="+paddRemoved);
-                            dataLine.set(k, paddRemoved);
-                            // deep-copy the above change to dataLine2 for stats
-                            dataLine2.set(k, dataLine.get(k));
+                                    long dateDatum = Long.parseLong(casewiseRecordForTabFile.get(k).toString()) * 1000L - SPSS_DATE_OFFSET;
 
-                        // end of String var case
-
-                        } else {
-                            // numeric var case
-                            if (dataLine.get(k).equals(MissingValueForTextDataFileNumeric)) {
-                                // out.println("NA-N k= "+k+"=["+dataLine.get(k)+"]");
-                                // add this index to NaN-to-NA-replacement sentinel
-                                NaNlocationNumeric.add(k);
-                            }
-                            
-                        } // end of variable-type check
-                        
-			if (dataLine.get(k)!=null && !dataLine.get(k).equals(MissingValueForTextDataFileNumeric)){
-                        
-                            String variableFormatType = variableFormatTypeList[k];
-                            dbgLog.finer("k="+k+"th printFormatTable format="+printFormatTable.get(variableNameList.get(k)));
-                            
-                            int formatDecimalPointPosition = formatDecimalPointPositionList.get(k);
-
-                            
-                            if (variableFormatType.equals("date")){
-                                dbgLog.finer("date case");
-                                
-                                long dateDatum = Long.parseLong(dataLine.get(k).toString())*1000L- SPSS_DATE_OFFSET;
-                                
-                                String newDatum = sdf_ymd.format(new Date(dateDatum));
-                                dbgLog.finer("k="+k+":"+newDatum);
-                                dateFormatLine[k] = sdf_ymd.toPattern();
-                                /* saving date format */
-                                dbgLog.finer("setting dateFormatLine[k] = "+sdf_ymd.toPattern());
-                                dataLine.set(k, newDatum);
-                                dataLine2.set(k, newDatum);
+                                    String newDatum = sdf_ymd.format(new Date(dateDatum));
+                                    dbgLog.finer("k=" + k + ":" + newDatum);
+                                    caseWiseDateFormatForUNF[k] = sdf_ymd.toPattern();
+                                    /* saving date format */
+                                    dbgLog.finer("setting dateFormatLine[k] = " + sdf_ymd.toPattern());
+                                    casewiseRecordForTabFile.set(k, newDatum);
+                                    casewiseRecordForUNF.set(k, newDatum);
                                 //formatCategoryTable.put(variableNameList.get(k), "date");
-                            } else if (variableFormatType.equals("time")) {
-                                dbgLog.finer("time case:DTIME or DATETIME or TIME");
-                                //formatCategoryTable.put(variableNameList.get(k), "time");
-                            
-                                if (printFormatTable.get(variableNameList.get(k)).equals("DTIME")){
+                                } else if (variableFormatType.equals("time")) {
+                                    dbgLog.finer("time case:DTIME or DATETIME or TIME");
+                                    //formatCategoryTable.put(variableNameList.get(k), "time");
 
-                                    if (dataLine.get(k).toString().indexOf(".") < 0){
-                                        long dateDatum  = Long.parseLong(dataLine.get(k).toString())*1000L - SPSS_DATE_BIAS;
-                                        String newDatum = sdf_dhms.format(new Date(dateDatum));
-                                        dbgLog.finer("k="+k+":"+newDatum);
-                                        dataLine.set(k, newDatum);
-                                        dataLine2.set(k, newDatum);
-                                    } else {
-                                        // decimal point included
-                                        String[] timeData = dataLine.get(k).toString().split("\\.");
+                                    if (printFormatTable.get(variableNameList.get(k)).equals("DTIME")) {
 
-                                        dbgLog.finer(StringUtils.join(timeData, "|"));
-                                        long dateDatum = Long.parseLong(timeData[0])*1000L - SPSS_DATE_BIAS;
-                                        StringBuilder sb_time = new StringBuilder(
-                                            sdf_dhms.format(new Date(dateDatum)));
-                                        dbgLog.finer(sb_time.toString());
-                                        
-                                        if (formatDecimalPointPosition > 0){
-                                            sb_time.append("."+timeData[1].substring(0,formatDecimalPointPosition));
+                                        if (casewiseRecordForTabFile.get(k).toString().indexOf(".") < 0) {
+                                            long dateDatum = Long.parseLong(casewiseRecordForTabFile.get(k).toString()) * 1000L - SPSS_DATE_BIAS;
+                                            String newDatum = sdf_dhms.format(new Date(dateDatum));
+                                            dbgLog.finer("k=" + k + ":" + newDatum);
+                                            casewiseRecordForTabFile.set(k, newDatum);
+                                            casewiseRecordForUNF.set(k, newDatum);
+                                        } else {
+                                            // decimal point included
+                                            String[] timeData = casewiseRecordForTabFile.get(k).toString().split("\\.");
+
+                                            dbgLog.finer(StringUtils.join(timeData, "|"));
+                                            long dateDatum = Long.parseLong(timeData[0]) * 1000L - SPSS_DATE_BIAS;
+                                            StringBuilder sb_time = new StringBuilder(
+                                                    sdf_dhms.format(new Date(dateDatum)));
+                                            dbgLog.finer(sb_time.toString());
+
+                                            if (formatDecimalPointPosition > 0) {
+                                                sb_time.append("." + timeData[1].substring(0, formatDecimalPointPosition));
+                                            }
+
+                                            dbgLog.finer("k=" + k + ":" + sb_time.toString());
+                                            casewiseRecordForTabFile.set(k, sb_time.toString());
+                                            casewiseRecordForUNF.set(k, sb_time.toString());
                                         }
-                                        
-                                        dbgLog.finer("k="+k+":"+sb_time.toString());
-                                        dataLine.set(k, sb_time.toString());
-                                        dataLine2.set(k, sb_time.toString());
+                                    } else if (printFormatTable.get(variableNameList.get(k)).equals("DATETIME")) {
+
+                                        if (casewiseRecordForTabFile.get(k).toString().indexOf(".") < 0) {
+                                            long dateDatum = Long.parseLong(casewiseRecordForTabFile.get(k).toString()) * 1000L - SPSS_DATE_OFFSET;
+                                            String newDatum = sdf_ymdhms.format(new Date(dateDatum));
+                                            dbgLog.finer("k=" + k + ":" + newDatum);
+                                            caseWiseDateFormatForUNF[k] = sdf_ymdhms.toPattern();
+                                            casewiseRecordForTabFile.set(k, newDatum);
+                                            casewiseRecordForUNF.set(k, newDatum);
+                                        } else {
+                                            // decimal point included
+                                            String[] timeData = casewiseRecordForTabFile.get(k).toString().split("\\.");
+
+                                            //dbgLog.finer(StringUtils.join(timeData, "|"));
+                                            long dateDatum = Long.parseLong(timeData[0]) * 1000L - SPSS_DATE_OFFSET;
+                                            StringBuilder sb_time = new StringBuilder(
+                                                    sdf_ymdhms.format(new Date(dateDatum)));
+                                            //dbgLog.finer(sb_time.toString());
+
+                                            if (formatDecimalPointPosition > 0) {
+                                                sb_time.append("." + timeData[1].substring(0, formatDecimalPointPosition));
+                                            }
+                                            caseWiseDateFormatForUNF[k] = sdf_ymdhms.toPattern() + (formatDecimalPointPosition > 0 ? ".S" : "");
+                                            dbgLog.finer("k=" + k + ":" + sb_time.toString());
+                                            casewiseRecordForTabFile.set(k, sb_time.toString());
+                                            casewiseRecordForUNF.set(k, sb_time.toString());
+                                        }
+                                    } else if (printFormatTable.get(variableNameList.get(k)).equals("TIME")) {
+                                        if (casewiseRecordForTabFile.get(k).toString().indexOf(".") < 0) {
+                                            long dateDatum = Long.parseLong(casewiseRecordForTabFile.get(k).toString()) * 1000L;
+                                            String newDatum = sdf_hms.format(new Date(dateDatum));
+                                            caseWiseDateFormatForUNF[k] = sdf_hms.toPattern();
+                                            dbgLog.finer("k=" + k + ":" + newDatum);
+                                            casewiseRecordForTabFile.set(k, newDatum);
+                                            casewiseRecordForUNF.set(k, newDatum);
+                                        } else {
+                                            // decimal point included
+                                            String[] timeData = casewiseRecordForTabFile.get(k).toString().split("\\.");
+
+                                            //dbgLog.finer(StringUtils.join(timeData, "|"));
+                                            long dateDatum = Long.parseLong(timeData[0]) * 1000L;
+                                            StringBuilder sb_time = new StringBuilder(
+                                                    sdf_hms.format(new Date(dateDatum)));
+                                            //dbgLog.finer(sb_time.toString());
+
+                                            if (formatDecimalPointPosition > 0) {
+                                                sb_time.append("." + timeData[1].substring(0, formatDecimalPointPosition));
+                                            }
+                                            caseWiseDateFormatForUNF[k] = this.sdf_hms.toPattern() + (formatDecimalPointPosition > 0 ? ".S" : "");
+                                            dbgLog.finer("k=" + k + ":" + sb_time.toString());
+                                            casewiseRecordForTabFile.set(k, sb_time.toString());
+                                            casewiseRecordForUNF.set(k, sb_time.toString());
+                                        }
                                     }
-                                } else if (printFormatTable.get(variableNameList.get(k)).equals("DATETIME")){
 
-                                    if (dataLine.get(k).toString().indexOf(".") < 0){
-                                        long dateDatum  = Long.parseLong(dataLine.get(k).toString())*1000L - SPSS_DATE_OFFSET;
-                                        String newDatum = sdf_ymdhms.format(new Date(dateDatum));
-                                        dbgLog.finer("k="+k+":"+newDatum);
-                                        dateFormatLine[k] = sdf_ymdhms.toPattern();
-                                        dataLine.set(k, newDatum);
-                                        dataLine2.set(k, newDatum);
-                                    } else {
-                                        // decimal point included
-                                        String[] timeData = dataLine.get(k).toString().split("\\.");
+                                } else if (variableFormatType.equals("other")) {
+                                    dbgLog.finer("other non-date/time case:=" + i);
 
-                                        //dbgLog.finer(StringUtils.join(timeData, "|"));
-                                        long dateDatum = Long.parseLong(timeData[0])*1000L- SPSS_DATE_OFFSET;
-                                        StringBuilder sb_time = new StringBuilder(
-                                            sdf_ymdhms.format(new Date(dateDatum)));
-                                        //dbgLog.finer(sb_time.toString());
-                                        
-                                        if (formatDecimalPointPosition > 0){
-                                            sb_time.append("."+timeData[1].substring(0,formatDecimalPointPosition));
-                                        }
-                                        dateFormatLine[k] = sdf_ymdhms.toPattern() + (formatDecimalPointPosition > 0 ? ".S" : "" );
-                                        dbgLog.finer("k="+k+":"+sb_time.toString());
-                                        dataLine.set(k, sb_time.toString());
-                                        dataLine2.set(k, sb_time.toString());
-                                    }
-                                } else if (printFormatTable.get(variableNameList.get(k)).equals("TIME")){
-                                    if (dataLine.get(k).toString().indexOf(".") < 0){
-                                        long dateDatum = Long.parseLong(dataLine.get(k).toString())*1000L;
-                                        String newDatum = sdf_hms.format(new Date(dateDatum));
-                                        dateFormatLine[k] = sdf_hms.toPattern();
-                                        dbgLog.finer("k="+k+":"+newDatum);
-                                        dataLine.set(k, newDatum);
-                                        dataLine2.set(k, newDatum);
-                                    } else {
-                                        // decimal point included
-                                        String[] timeData = dataLine.get(k).toString().split("\\.");
-
-                                        //dbgLog.finer(StringUtils.join(timeData, "|"));
-                                        long dateDatum = Long.parseLong(timeData[0])*1000L;
-                                        StringBuilder sb_time = new StringBuilder(
-                                            sdf_hms.format(new Date(dateDatum)));
-                                        //dbgLog.finer(sb_time.toString());
-                                        
-                                        if (formatDecimalPointPosition > 0){
-                                            sb_time.append("."+timeData[1].substring(0,formatDecimalPointPosition));
-                                        }
-                                        dateFormatLine[k] = this.sdf_hms.toPattern() + (formatDecimalPointPosition > 0 ? ".S" : "" );
-                                        dbgLog.finer("k="+k+":"+sb_time.toString());
-                                        dataLine.set(k, sb_time.toString());
-                                        dataLine2.set(k, sb_time.toString());
+                                    if (printFormatTable.get(variableNameList.get(k)).equals("WKDAY")) {
+                                        // day of week
+                                        dbgLog.finer("data k=" + k + ":" + casewiseRecordForTabFile.get(k));
+                                        dbgLog.finer("data k=" + k + ":" + SPSSConstants.WEEKDAY_LIST.get(Integer.valueOf(casewiseRecordForTabFile.get(k).toString()) - 1));
+                                        String newDatum = SPSSConstants.WEEKDAY_LIST.get(Integer.valueOf(casewiseRecordForTabFile.get(k).toString()) - 1);
+                                        casewiseRecordForTabFile.set(k, newDatum);
+                                        casewiseRecordForUNF.set(k, newDatum);
+                                        dbgLog.finer("wkday:k=" + k + ":" + casewiseRecordForTabFile.get(k));
+                                    } else if (printFormatTable.get(variableNameList.get(k)).equals("MONTH")) {
+                                        // month
+                                        dbgLog.finer("data k=" + k + ":" + casewiseRecordForTabFile.get(k));
+                                        dbgLog.finer("data k=" + k + ":" + SPSSConstants.MONTH_LIST.get(Integer.valueOf(casewiseRecordForTabFile.get(k).toString()) - 1));
+                                        String newDatum = SPSSConstants.MONTH_LIST.get(Integer.valueOf(casewiseRecordForTabFile.get(k).toString()) - 1);
+                                        casewiseRecordForTabFile.set(k, newDatum);
+                                        casewiseRecordForUNF.set(k, newDatum);
+                                        dbgLog.finer("month:k=" + k + ":" + casewiseRecordForTabFile.get(k));
                                     }
                                 }
-                            
-                            } else if (variableFormatType.equals("other")){
-                                dbgLog.finer("other non-date/time case:="+i);
-                            
-                                if (printFormatTable.get(variableNameList.get(k)).equals("WKDAY")){
-                                    // day of week
-                                    dbgLog.finer("data k="+k+":"+dataLine.get(k));
-                                    dbgLog.finer("data k="+k+":"+SPSSConstants.WEEKDAY_LIST.get(Integer.valueOf(dataLine.get(k).toString())-1));
-                                    String newDatum = SPSSConstants.WEEKDAY_LIST.get(Integer.valueOf(dataLine.get(k).toString())-1);
-                                    dataLine.set(k, newDatum);
-                                    dataLine2.set(k, newDatum);
-                                    dbgLog.finer("wkday:k="+k+":"+dataLine.get(k));
-                                } else if (printFormatTable.get(variableNameList.get(k)).equals("MONTH")){
-                                    // month
-                                    dbgLog.finer("data k="+k+":"+dataLine.get(k));
-                                    dbgLog.finer("data k="+k+":"+SPSSConstants.MONTH_LIST.get(Integer.valueOf(dataLine.get(k).toString())-1));
-                                    String newDatum = SPSSConstants.MONTH_LIST.get(Integer.valueOf(dataLine.get(k).toString())-1);
-                                    dataLine.set(k, newDatum);
-                                    dataLine2.set(k, newDatum);
-                                    dbgLog.finer("month:k="+k+":"+dataLine.get(k));
+
+
+                            } // end: date-time-datum check
+
+
+                        } // end: loop-k(2nd: variable-wise-check)
+
+
+                        // write to tab file
+                        if (casewiseRecordForTabFile.size() > 0) {
+                            pwout.println(StringUtils.join(casewiseRecordForTabFile, "\t"));
+                        }
+
+
+
+                        if (casewiseRecordForTabFile.size() > 0) {
+                            for (int ij = 0; ij < varQnty; ij++) {
+                                dataTable2[ij][caseIndex - 1] = casewiseRecordForUNF.get(ij);
+
+                                if (variableFormatTypeList[ij].equals("date") || variableFormatTypeList[ij].equals("time")) {
+                                    this.dateFormats[ij][caseIndex - 1] = caseWiseDateFormatForUNF[ij];
                                 }
-                            } 
-
-                        
-                        } // end: date-time-datum check
-                    
-                    
-                    } // end: loop-k(2nd: variable-wise-check)
-                    
-
-
-                    //
-                    //  For the Tab file, do special String processing -
-                    //  If the String is null, set it to missingValue,
-                    //  else escape quotes within the string and add quotes around the string
-                    //
-                    if (dataLine.size()>0) {
-                        List<String> tabDataLine = new ArrayList<String>();
-                        for (int e=0;e<dataLine.size();e++) {
-                            if (variableTypeFinal[e] ==-1) {
-                                tabDataLine.add (dataLine.get(e)==null ? this.MissingValueForTextDataFileString : "\"" + dataLine.get(e).replaceAll("\"",Matcher.quoteReplacement("\\\""))  +"\"");
-                            }
-                            else {
-                                tabDataLine.add(dataLine.get(e));
                             }
                         }
-                        pwout.println(StringUtils.join(tabDataLine, "\t"));
-                    }
-                    // replace NA-strings for a tab-limited file with
-                    // those for UNF/summaryStatistics 
-                    // numeric variable
-                    
-                    if (NaNlocationNumeric.size() > 0){
-                        // NA-String to NaN conversion
-                        for (int el : NaNlocationNumeric){
-                            //out.println("replaced="+el+"th element="+dataLine.get(el));
-                            if (dataLine.get(el).equals(MissingValueForTextDataFileNumeric)){
-                                dataLine2.set(el,null);
+
+                        // numeric contents-check
+                        for (int l = 0; l < casewiseRecordForTabFile.size(); l++) {
+
+                            if (variableFormatTypeList[l].equals("date") ||
+                                    variableFormatTypeList[l].equals("time") ||
+                                    printFormatTable.get(variableNameList.get(l)).equals("WKDAY") ||
+                                    printFormatTable.get(variableNameList.get(l)).equals("MONTH")) {
+                                variableTypeFinal[l] = -1;
                             }
 
-                        }
-                        //out.println(caseIndex+"-th case:(after NA processing[N]):"+StringUtils.join(dataLine, "\t"));
+                            if (variableTypeFinal[l] == 0) {
+                                if (casewiseRecordForTabFile.get(l).toString().indexOf(".") >= 0) {
+                                    // TODO - check for large numbers
+                                    // l-th variable is not integer
+                                    variableTypeFinal[l] = 1;
+                                    decimalVariableSet.add(l);
 
-                    }
-                   
-                    if (dataLine.size()>0) {
-                        for (int ij=0; ij<varQnty;ij++ ){
-			    dataTable2[ij][caseIndex-1] = dataLine2.get(ij);
-
-			    //			    if (variableFormatTypeList[ij].equals("date") ||
-			    //			    variableFormatTypeList[ij].equals("time")){
-			    //			    this.dateFormats[ij][caseIndex-1] = dateFormatLine[ij];
-			    //			    dataTable2[ij][caseIndex-1] = dataLine.get(ij);
-			    //			    } else {
-			    //				dataTable2[ij][caseIndex-1] = dataLine2.get(ij);
-			    //			    }
-                        }
-                    }
-                    
-                    // numeric contents-check
-                    for (int l=0;l< dataLine.size();l++){
-
-                    if ( variableFormatTypeList[l].equals("date") ||
-                         variableFormatTypeList[l].equals("time") ||
-                         printFormatTable.get(variableNameList.get(l)).equals("WKDAY") ||
-                         printFormatTable.get(variableNameList.get(l)).equals("MONTH") ) {
-                        variableTypeFinal[l] = -1;
-                    }
-                    
-                        if (variableTypeFinal[l]==0){
-                            if (dataLine.get(l).toString().indexOf(".") >=0){
-                                // TODO - check for large numbers
-                                // l-th variable is not integer
-                                variableTypeFinal[l]=1;
-                                numberOfDecimalVariables++;
+                                }
                             }
                         }
-                    }
-                    
+
                     // reset the case-wise working objects
-
-                    NaNlocationNumeric.clear();
-                    dataLine.clear();
-                    dataLine2.clear();
+                    casewiseRecordForUNF.clear();
+                    casewiseRecordForTabFile.clear();
                     if (hasReachedEOF){
-                        break;
-                    }
-                } // if(The-end-of-a-case(row)-processing)
+                            break;
+                        }
+                    } // if(The-end-of-a-case(row)-processing)
 
-            } // loop-i (OBS unit)
-            
-	     if ( (hasReachedEOF) ||(stream.available() == 0)){
-		 // reached the end of this file
-		 // do exit-processing
+                } // loop-i (OBS unit)
 
-		 dbgLog.fine("***** reached the end of the file at "+ii
-			     +"th iteration *****");
-		 
-		 break OBSERVATION;
-	     }
+                if ((hasReachedEOF) || (stream.available() == 0)) {
+                    // reached the end of this file
+                    // do exit-processing
 
-	     ii++;
-	     
-        } // while loop
+                    dbgLog.fine("***** reached the end of the file at " + ii + "th iteration *****");
+
+                    break OBSERVATION;
+                }
+
+                ii++;
+
+            } // while loop
 
             pwout.close();
         } catch (IOException ex) {
-	    throw ex; 
+            throw ex;
         }
-        
-        // save a decimal-type variable's number
-        for (int l=0; l< variableTypeFinal.length;l++){
-            if (variableTypeFinal[l]>0){
-                decimalVariableSet.add(l);
-            }
-            
-        }
+
+
         smd.setDecimalVariables(decimalVariableSet);
         smd.getFileInformation().put("caseQnty", caseQnty);
-	smd.setVariableFormatCategory(formatCategoryTable);
+        smd.setVariableFormatCategory(formatCategoryTable);
 
 
         // contents check
         //out.println("variableType="+ArrayUtils.toString(variableTypeFinal));
-        dbgLog.fine("numberOfDecimalVariables="+numberOfDecimalVariables);
-        dbgLog.fine("decimalVariableSet="+decimalVariableSet);
+        dbgLog.fine("decimalVariableSet=" + decimalVariableSet);
         //out.println("variableTypelList=\n"+ variableTypelList.toString());
 
         // out.println("dataTable2:\n"+Arrays.deepToString(dataTable2));
@@ -2794,19 +2746,19 @@ public class SAVFileReader extends StatDataFileReader{
         
         int caseIndex = 0;
         
-	out.println("printFormatTable:\n"+printFormatTable);
+        dbgLog.fine("printFormatTable:\n"+printFormatTable);
 
-        out.println("printFormatNameTable:\n"+printFormatNameTable);
+        dbgLog.fine("printFormatNameTable:\n"+printFormatNameTable);
         variableFormatTypeList = new String[varQnty];
 
         for (int i=0; i<varQnty;i++){
             variableFormatTypeList[i]=SPSSConstants.FORMAT_CATEGORY_TABLE.get(
                     printFormatTable.get(variableNameList.get(i)));
-            out.println("i="+i+"th variableFormatTypeList="+variableFormatTypeList[i]);
+            dbgLog.fine("i="+i+"th variableFormatTypeList="+variableFormatTypeList[i]);
             formatCategoryTable.put(variableNameList.get(i), variableFormatTypeList[i]);
         }
-        out.println("variableFormatType:\n"+Arrays.deepToString(variableFormatTypeList));
-        out.println("formatCategoryTable:\n"+formatCategoryTable);
+        dbgLog.fine("variableFormatType:\n"+Arrays.deepToString(variableFormatTypeList));
+        dbgLog.fine("formatCategoryTable:\n"+formatCategoryTable);
 
         // contents (variable) checker concering decimals
         variableTypeFinal = new int[varQnty];
@@ -2865,7 +2817,7 @@ public class SAVFileReader extends StatDataFileReader{
                             
                         if ((dphex.equals("ffffffffffffefff"))||
                             (dphex.equals("ffefffffffffffff"))){
-                            //dataLine.add(systemMissingValue);
+                            //casewiseRecordForTabFile.add(systemMissingValue);
                             // add the numeric missing value
 			    dbgLog.fine("SAV Reader: adding: Missing Value (numeric)");
                             dataLine.add(MissingValueForTextDataFileNumeric);
@@ -2907,8 +2859,8 @@ public class SAVFileReader extends StatDataFileReader{
                 // concatenating process
                     //dbgLog.fine("concatenating process starts");
 
-                    //dbgLog.fine("dataLine(before)="+dataLine);
-                    //dbgLog.fine("dataLine(before:size)="+dataLine.size());
+                    //dbgLog.fine("casewiseRecordForTabFile(before)="+casewiseRecordForTabFile);
+                    //dbgLog.fine("casewiseRecordForTabFile(before:size)="+casewiseRecordForTabFile.size());
 
                     StringBuilder sb = new StringBuilder("");
                     int firstPosition = 0;
@@ -2951,7 +2903,7 @@ public class SAVFileReader extends StatDataFileReader{
                     List<String> newDataLine = new ArrayList<String>();
                     
                     for (int jl=0; jl<dataLine.size();jl++){
-                        //out.println("jl="+jl+"-th datum =["+dataLine.get(jl)+"]");
+                        //out.println("jl="+jl+"-th datum =["+casewiseRecordForTabFile.get(jl)+"]");
                         
                         if (!removeJset.contains(jl) ){
                             newDataLine.add(dataLine.get(jl));
@@ -2997,7 +2949,7 @@ public class SAVFileReader extends StatDataFileReader{
                                 paddRemoved = " ";
                         }
                         dataLine.set(k, paddRemoved);
-                        // deep-copy the above change to dataLine2 for stats
+                        // deep-copy the above change to casewiseRecordForUNF for stats
                         dataLine2.set(k, dataLine.get(k));
 
                     // end of String var case
@@ -3005,7 +2957,7 @@ public class SAVFileReader extends StatDataFileReader{
                     } else {
                         // numeric var case
                         if (dataLine.get(k).equals(MissingValueForTextDataFileNumeric)) {
-                            //out.println("NA-N k= "+k+"=["+dataLine.get(k)+"]");
+                            //out.println("NA-N k= "+k+"=["+casewiseRecordForTabFile.get(k)+"]");
                             // add this index to NaN-to-NA-replacement sentinel
                             NaNlocationNumeric.add(k);
                         }
@@ -3178,18 +3130,18 @@ public class SAVFileReader extends StatDataFileReader{
                 if (NaNlocationNumeric.size() > 0){
                     // NA-String to NaN conversion
                     for (int el : NaNlocationNumeric){
-                        //out.println("replaced="+el+"th element="+dataLine.get(el));
+                        //out.println("replaced="+el+"th element="+casewiseRecordForTabFile.get(el));
                         if (dataLine.get(el).equals(MissingValueForTextDataFileNumeric)){
                             dataLine2.set(el, null);
                         }
 
                     }
-                    //out.println(caseIndex+"-th case:(after NA processing[N]):"+StringUtils.join(dataLine, "\t"));
+                    //out.println(caseIndex+"-th case:(after NA processing[N]):"+StringUtils.join(casewiseRecordForTabFile, "\t"));
 
                 }
                
                 
-                //out.println(caseIndex+"-th case:(after NA processing):"+StringUtils.join(dataLine, "\t")+"\n\n");
+                //out.println(caseIndex+"-th case:(after NA processing):"+StringUtils.join(casewiseRecordForTabFile, "\t")+"\n\n");
                 
                 if (dataLine.size()>0) {
                     for (int ij=0; ij<varQnty;ij++ ){
@@ -3197,9 +3149,9 @@ public class SAVFileReader extends StatDataFileReader{
 
 			    //                        if (variableFormatTypeList[ij].equals("date") ||
 			    //                            variableFormatTypeList[ij].equals("time")){
-			    //                            dataTable2[ij][caseIndex-1] = dataLine.get(ij);
+			    //                            dataTable2[ij][caseIndex-1] = casewiseRecordForTabFile.get(ij);
 			    //                        } else {
-			    //                            dataTable2[ij][caseIndex-1] = dataLine2.get(ij);
+			    //                            dataTable2[ij][caseIndex-1] = casewiseRecordForUNF.get(ij);
 			    //                        }
                     }
                 }

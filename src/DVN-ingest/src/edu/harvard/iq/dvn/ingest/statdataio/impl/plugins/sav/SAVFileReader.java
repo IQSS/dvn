@@ -620,7 +620,7 @@ public class SAVFileReader extends StatDataFileReader{
             
             OBSUnitsPerCase = bb_OBS_units_per_case.getInt();
             
-            dbgLog.fine("OBSUnitsPerCase="+OBSUnitsPerCase);
+            dbgLog.fine("RT1: OBSUnitsPerCase="+OBSUnitsPerCase);
             
             smd.getFileInformation().put("OBSUnitsPerCase", OBSUnitsPerCase);
 
@@ -684,7 +684,7 @@ public class SAVFileReader extends StatDataFileReader{
                 // -1 if numberOfCases is unknown
                 throw new RuntimeException("number of cases is not recorded in the header");
             } else {
-                dbgLog.fine("number of cases is recorded= "+numberOfCases);
+                dbgLog.fine("RT1: number of cases is recorded= "+numberOfCases);
                 caseQnty = numberOfCases;
                 smd.getFileInformation().put("caseQnty", numberOfCases);
             }
@@ -2354,6 +2354,7 @@ public class SAVFileReader extends StatDataFileReader{
                     dbgLog.fine("SAV Reader: compressed: OBS counter=" + varCounter + "(ii=" + ii + ")");
 
                     if ((ii * OBS + i + 1) % nOBS == 0) {
+
                         //out.println("casewiseRecordForTabFile(before)="+casewiseRecordForTabFile);
 
                         // out.println("all variables in a case are parsed == nOBS");
@@ -2375,23 +2376,26 @@ public class SAVFileReader extends StatDataFileReader{
 
                             Set<Integer> removeJset = new HashSet<Integer>();
                             for (int j = 0; j < nOBS; j++) {
-                                dbgLog.fine("j=" + j + "-th type =" + OBSwiseTypelList.get(j));
+                                dbgLog.fine("RTD: j=" + j + "-th type =" + OBSwiseTypelList.get(j));
                                 if ((OBSwiseTypelList.get(j) == -1) ||
                                         (OBSwiseTypelList.get(j) == -2)) {
                                     // Continued String variable found at j-th
                                     // position. look back the j-1
                                     firstPosition = j - 1;
                                     int lastJ = j;
-                                    String concatanated = null;
+                                    String concatenated = null;
 
                                     removeJset.add(j);
                                     sb.append(casewiseRecordForTabFile.get(j - 1));
                                     sb.append(casewiseRecordForTabFile.get(j));
-                                    for (int jc = 1;; jc++) {
-                                        if ((j + jc == nOBS) || ((OBSwiseTypelList.get(j + jc) != -1) && (OBSwiseTypelList.get(j + jc) != -2))) {
+                                    
+				    for (int jc = 1; ; jc++) {
+                                        if ((j + jc == nOBS) 
+					    || ((OBSwiseTypelList.get(j + jc) != -1) 
+						&& (OBSwiseTypelList.get(j + jc) != -2))) {
 
                                             // j is the end unit of this string variable
-                                            concatanated = sb.toString();
+                                            concatenated = sb.toString();
                                             sb.setLength(0);
                                             lastJ = j + jc;
                                             break;
@@ -2400,12 +2404,13 @@ public class SAVFileReader extends StatDataFileReader{
                                             removeJset.add(j + jc);
                                         }
                                     }
-                                    casewiseRecordForTabFile.set(j - 1, concatanated);
+                                    casewiseRecordForTabFile.set(j - 1, concatenated);
 
-                                    //out.println(j-1+"th concatanated="+concatanated);
+                                    //out.println(j-1+"th concatenated="+concatenated);
                                     j = lastJ - 1;
 
                                 } // end-of-if: continuous-OBS only
+
                             } // end of loop-j
 
                             //out.println("removeJset="+removeJset);
@@ -2453,7 +2458,6 @@ public class SAVFileReader extends StatDataFileReader{
 
                         // caseIndex starts from 1 not 0
                         caseIndex = (ii * OBS + i + 1) / nOBS;
-                        //dbgLog.finer("caseIndex="+caseIndex);
 
                         for (int k = 0; k < casewiseRecordForTabFile.size(); k++) {
 
@@ -2676,9 +2680,17 @@ public class SAVFileReader extends StatDataFileReader{
 			// reset the case-wise working objects
 			casewiseRecordForUNF.clear();
 			casewiseRecordForTabFile.clear();
-			if (hasReachedEOF){
+
+			if ( caseQnty > 0 ) {
+			    if ( caseIndex == caseQnty ) {
+				hasReachedEOF = true; 
+			    }
+			}
+
+ 			if (hasReachedEOF){
                             break;
                         }
+
                     } // if(The-end-of-a-case(row)-processing)
 
                 } // loop-i (OBS unit)

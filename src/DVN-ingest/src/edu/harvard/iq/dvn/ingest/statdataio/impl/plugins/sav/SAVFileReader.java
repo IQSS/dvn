@@ -2968,8 +2968,8 @@ public class SAVFileReader extends StatDataFileReader{
                             long dateDatum = Long.parseLong(casewiseRecordForTabFile.get(k).toString())*1000L- SPSS_DATE_OFFSET;
 
                             String newDatum = sdf_ymd.format(new Date(dateDatum));
-                            caseWiseDateFormatForUNF[k] = sdf_ymd.toPattern();
                             dbgLog.finer("k="+k+":"+newDatum);
+                            caseWiseDateFormatForUNF[k] = sdf_ymd.toPattern();
 
                             casewiseRecordForTabFile.set(k, newDatum);
                             casewiseRecordForUNF.set(k, newDatum);
@@ -3027,7 +3027,7 @@ public class SAVFileReader extends StatDataFileReader{
                                     if (formatDecimalPointPosition > 0){
                                         sb_time.append("."+timeData[1].substring(0,formatDecimalPointPosition));
                                     }
-                                    
+				    caseWiseDateFormatForUNF[k] = sdf_ymdhms.toPattern() + (formatDecimalPointPosition > 0 ? ".S" : "");                                    
                                     dbgLog.finer("k="+k+":"+sb_time.toString());
                                     casewiseRecordForTabFile.set(k, sb_time.toString());
                                     casewiseRecordForUNF.set(k, sb_time.toString());
@@ -3036,6 +3036,7 @@ public class SAVFileReader extends StatDataFileReader{
                                 if (casewiseRecordForTabFile.get(k).toString().indexOf(".") < 0){
                                     long dateDatum = Long.parseLong(casewiseRecordForTabFile.get(k).toString())*1000L;
                                     String newDatum = sdf_hms.format(new Date(dateDatum));
+				    caseWiseDateFormatForUNF[k] = sdf_hms.toPattern();
                                     dbgLog.finer("k="+k+":"+newDatum);
                                     casewiseRecordForTabFile.set(k, newDatum);
                                     casewiseRecordForUNF.set(k, newDatum);
@@ -3052,7 +3053,7 @@ public class SAVFileReader extends StatDataFileReader{
                                     if (formatDecimalPointPosition > 0){
                                         sb_time.append("."+timeData[1].substring(0,formatDecimalPointPosition));
                                     }
-                                    
+				    caseWiseDateFormatForUNF[k] = this.sdf_hms.toPattern() + (formatDecimalPointPosition > 0 ? ".S" : "");                                    
                                     dbgLog.finer("k="+k+":"+sb_time.toString());
                                     casewiseRecordForTabFile.set(k, sb_time.toString());
                                     casewiseRecordForUNF.set(k, sb_time.toString());

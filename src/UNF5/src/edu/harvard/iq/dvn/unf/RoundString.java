@@ -105,7 +105,7 @@ public class RoundString implements UnfCons {
         if (!fmtu.equalsIgnoreCase(fmt) && loc == new Locale("en", "US")) {
             mLog.severe("RoundString: Unicode & format strings do not agree");
         }
-        String tmp = String.format(loc, fmtu, str).trim();
+        String tmp = String.format(loc, fmtu, str);
         tmp += creturn;
         if (nullbyte) {
             tmp += zeroscape;

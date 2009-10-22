@@ -123,9 +123,9 @@ public class DvnRforeignFileConversionServiceImpl{
         }
 
     }
+
     static String VDC_R_STARTUP_FILE="vdc_startup.R";
-    static String VDC_R_STARTUP = "/usr/local/VDC/R/library/vdc_startup.R";
-    static String librarySetup= "source('"+ VDC_R_STARTUP + "');";
+    static String librarySetup = "source(paste(.libPaths(), '/../share/dvn/" + VDC_R_STARTUP_FILE + "', sep = ''));";
     boolean DEBUG = true;
     
     // ----------------------------------------------------- instance filelds

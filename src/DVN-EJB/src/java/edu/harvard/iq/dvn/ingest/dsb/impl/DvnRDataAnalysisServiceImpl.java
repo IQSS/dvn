@@ -1361,8 +1361,9 @@ if (tmpv.length > 0){
             
             // copy the dvn-patch css file to the wkdir
             // file.copy(from, to, overwrite = FALSE)
-            String cssFile =R2HTML_CSS_DIR + "/" +"R2HTML.css";
-            String cpCssFile = "file.copy('"+cssFile+"','"+wrkdir+"')";
+            String cssFile ="paste(.libPaths(), '/../share/dvn/R2HTML.css', sep='')";
+            String cpCssFile = "file.copy("+cssFile+",'"+wrkdir+"')";
+
             c.voidEval(cpCssFile);
 
             // tab data file

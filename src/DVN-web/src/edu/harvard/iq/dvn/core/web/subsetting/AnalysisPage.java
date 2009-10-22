@@ -1234,7 +1234,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         FieldCutter fc = new DvnJavaFieldCutter();
 
                         // Executes the subsetting request
-                        fc.subsetFile(cutOp1, cutOp2, fields);
+                        fc.subsetFile(cutOp1, cutOp2, fields, dataTable.getCaseQuantity() );
 
 
                     } else {
@@ -3383,7 +3383,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         FieldCutter fc = new DvnJavaFieldCutter();
 
                         // Executes the subsetting request
-                        fc.subsetFile(cutOp1, cutOp2, fields);
+                        fc.subsetFile(cutOp1, cutOp2, fields,  dataTable.getCaseQuantity());
 
                     } else {
                 // Step 2.b. Set-up parameters for subsetting: cutting requested columns of data
@@ -6105,7 +6105,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         FieldCutter fc = new DvnJavaFieldCutter();
 
                         // Executes the subsetting request
-                        fc.subsetFile(cutOp1, cutOp2, fields);
+                        fc.subsetFile(cutOp1, cutOp2, fields,  dataTable.getCaseQuantity());
 
                     } else {
                 // Step 2.b. Set-up parameters for subsetting: cutting requested columns of data

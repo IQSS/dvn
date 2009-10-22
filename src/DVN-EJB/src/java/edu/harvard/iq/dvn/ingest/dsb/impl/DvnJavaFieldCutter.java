@@ -28,11 +28,11 @@ public class DvnJavaFieldCutter implements FieldCutter{
     
     public boolean debug=false;
     
-    public  void subsetFile(String infile, String outfile, Set<Integer> columns) {
-        subsetFile(infile, outfile, columns, "\t");
+    public  void subsetFile(String infile, String outfile, Set<Integer> columns, Long numCases) {
+        subsetFile(infile, outfile, columns, numCases, "\t");
     }
 
-    public void subsetFile(String infile, String outfile, Set<Integer> columns,
+    public void subsetFile(String infile, String outfile, Set<Integer> columns, Long numCases,
         String delimiter) {
         try {
           Scanner scanner =  new Scanner(new File(infile));
@@ -42,17 +42,24 @@ public class DvnJavaFieldCutter implements FieldCutter{
           BufferedWriter out = new BufferedWriter(new FileWriter(outfile));
           scanner.useDelimiter("\\n");
 
+            for (long caseIndex = 0; caseIndex < numCases; caseIndex++) {
+                if (scanner.hasNext()) {
+                    String[] line = (scanner.next()).split(delimiter,-1);
+                    List<String> ln = new ArrayList<String>();
+                    for (Integer i : columns) {
+                        ln.add(line[i]);
+                    }
+                    out.write(StringUtils.join(ln,"\t")+"\n");
+                } else {
+                    throw new RuntimeException("Tab file has fewer rows than the determined number of cases.");
+                }
+            }
+
           while (scanner.hasNext()) {
-              String[] line = (scanner.next()).split(delimiter,-1);
-              List<String> ln = new ArrayList<String>();
-              for (Integer i : columns) {
-                  ln.add(line[i]);
+              if (!"".equals(scanner.next()) ) {
+                  throw new RuntimeException("Tab file has extra nonempty rows than the determined number of cases.");
+
               }
-              
-              dbgLog.fine(StringUtils.join(ln,"\t"));
-              
-              out.write(StringUtils.join(ln,"\t")+"\n");
-              ln=null;
           }
           
           scanner.close();

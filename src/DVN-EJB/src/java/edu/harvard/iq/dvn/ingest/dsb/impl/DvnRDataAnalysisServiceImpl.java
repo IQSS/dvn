@@ -294,8 +294,8 @@ public class DvnRDataAnalysisServiceImpl{
             inb.close();
             
             // Rserve code starts here
-            dbgLog.info("DvnRserveComm: "+"wrkdir="+wrkdir);
-            dbgLog.info("DvnRserveComm: "+librarySetup);
+            dbgLog.fine("DvnRserveComm: "+"wrkdir="+wrkdir);
+            dbgLog.fine("DvnRserveComm: "+librarySetup);
             historyEntry.add(librarySetup);
             c.voidEval(librarySetup);
             
@@ -323,12 +323,12 @@ public class DvnRDataAnalysisServiceImpl{
             historyEntry.add("vartyp<-c(" + sb.toString()+")");
 */
             historyEntry.add("vartyp<-c(" + StringUtils.join(sro.getVariableTypesAsString(),",") + ")");
-            dbgLog.info("DvnRserveComm: "+"vartyp<-c(" + StringUtils.join(sro.getVariableTypesAsString(),",") + ")");
+            dbgLog.fine("DvnRserveComm: "+"vartyp<-c(" + StringUtils.join(sro.getVariableTypesAsString(),",") + ")");
             //c.assign("vartyp", new REXPInteger(jvartyp));
             dbgLog.fine("raw variable type="+sro.getVariableTypes());
             c.assign("vartyp", new REXPInteger(sro.getVariableTypes()));
             String [] tmpt = c.eval("vartyp").asStrings();
-            dbgLog.info("DvnRserveComm: "+"vartyp length="+ tmpt.length + "\t " +
+            dbgLog.fine("DvnRserveComm: "+"vartyp length="+ tmpt.length + "\t " +
                 StringUtils.join(tmpt,","));
         
             // variable format (date/time)
@@ -338,35 +338,35 @@ public class DvnRDataAnalysisServiceImpl{
             */
             
             Map<String, String> tmpFmt = sro.getVariableFormats();
-            dbgLog.info("DvnRserveComm: "+"tmpFmt="+tmpFmt);
+            dbgLog.fine("DvnRserveComm: "+"tmpFmt="+tmpFmt);
             if (tmpFmt != null){
                 Set<String> vfkeys = tmpFmt.keySet();
                 String[] tmpfk = (String[]) vfkeys.toArray(new String[vfkeys.size()]);
                 String[] tmpfv = getValueSet(tmpFmt, tmpfk);
                 historyEntry.add("tmpfk<-c(" + StringUtils.join(tmpfk,", ")+")");
-                dbgLog.info("DvnRserveComm: "+"tmpfk<-c(" + StringUtils.join(tmpfk,", ")+")");
+                dbgLog.fine("DvnRserveComm: "+"tmpfk<-c(" + StringUtils.join(tmpfk,", ")+")");
 
                 c.assign("tmpfk", new REXPString(tmpfk));
                 historyEntry.add("tmpfv<-c(" + StringUtils.join(tmpfv,", ")+")");
-                dbgLog.info("DvnRserveComm: "+"tmpfv<-c(" + StringUtils.join(tmpfv,", ")+")");
+                dbgLog.fine("DvnRserveComm: "+"tmpfv<-c(" + StringUtils.join(tmpfv,", ")+")");
                 c.assign("tmpfv", new REXPString(tmpfv));
                 String fmtNamesLine = "names(tmpfv)<- tmpfk";
                 historyEntry.add(fmtNamesLine);
 
-		dbgLog.info("DvnRserveComm: "+fmtNamesLine); 
+		dbgLog.fine("DvnRserveComm: "+fmtNamesLine); 
                 c.voidEval(fmtNamesLine);
 
                 String fmtValuesLine ="varFmt<- as.list(tmpfv)";
                 historyEntry.add(fmtValuesLine);
 		
-		dbgLog.info("DvnRserveComm: "+fmtValuesLine); 
+		dbgLog.fine("DvnRserveComm: "+fmtValuesLine); 
                 c.voidEval(fmtValuesLine);
             } else {
                 String [] varFmtN ={};
                 List<String> varFmtV = new ArrayList<String>();
                 historyEntry.add("varFmt <- list()");
 
-		dbgLog.info("DvnRserveComm: "+"varFmt <- list()");
+		dbgLog.fine("DvnRserveComm: "+"varFmt <- list()");
                 c.assign("varFmt", new REXPList(new RList(varFmtV, varFmtN)));
             }
             /*
@@ -397,7 +397,7 @@ public class DvnRDataAnalysisServiceImpl{
             
             // confirmation
             String [] tmpjvnames = c.eval("vnames").asStrings();
-            dbgLog.info("DvnRserveComm: "+"vnames:"+ StringUtils.join(tmpjvnames, ","));
+            dbgLog.fine("DvnRserveComm: "+"vnames:"+ StringUtils.join(tmpjvnames, ","));
             
         
             /*
@@ -411,7 +411,7 @@ public class DvnRDataAnalysisServiceImpl{
             String readtableline = "x<-read.table141vdc(file='"+tempFileName+
                 "', col.names=vnames, colClassesx=vartyp, varFormat=varFmt )";
             historyEntry.add(readtableline);
-            dbgLog.info("DvnRserveComm: "+"readtable="+readtableline);
+            dbgLog.fine("DvnRserveComm: "+"readtable="+readtableline);
 
             c.voidEval(readtableline);
         
@@ -502,13 +502,13 @@ if (sro.hasRecodedVariables()){
             String reattachVarTypeLine = "attr(x, 'var.type') <- vartyp";
             historyEntry.add(reattachVarTypeLine);
  
-	    dbgLog.info("DvnRserveComm: "+reattachVarTypeLine);
+	    dbgLog.fine("DvnRserveComm: "+reattachVarTypeLine);
 	    c.voidEval(reattachVarTypeLine);
             
             // replication: variable type
             String repDVN_vt = "attr(dvnData, 'var.type') <- vartyp";
 
-            dbgLog.info("DvnRserveComm: "+repDVN_vt);
+            dbgLog.fine("DvnRserveComm: "+repDVN_vt);
             c.voidEval(repDVN_vt);
             
             // variable Id
@@ -528,7 +528,7 @@ if (sro.hasRecodedVariables()){
             String attrVarNmbrLine = "attr(x, 'var.nmbr')<-varnmbr";
             historyEntry.add(attrVarNmbrLine);
 
-            dbgLog.info("DvnRserveComm: "+attrVarNmbrLine);
+            dbgLog.fine("DvnRserveComm: "+attrVarNmbrLine);
             c.voidEval(attrVarNmbrLine);
             
             // confirmation
@@ -538,7 +538,7 @@ if (sro.hasRecodedVariables()){
             // replication: variable number
             String repDVN_vn = "attr(dvnData, 'var.nmbr') <- varnmbr";
 
-	    dbgLog.info("DvnRserveComm: "+repDVN_vn); 
+	    dbgLog.fine("DvnRserveComm: "+repDVN_vn); 
             c.voidEval(repDVN_vn);
             
             // variable labels
@@ -555,13 +555,13 @@ if (sro.hasRecodedVariables()){
 
             historyEntry.add("varlabels <-c("+ vlQList +")");
 
-	    dbgLog.info("DvnRserveComm: "+"varlabels <-c("+ vlQList +")");
+	    dbgLog.fine("DvnRserveComm: "+"varlabels <-c("+ vlQList +")");
             c.assign("varlabels", new REXPString(jvarlabels));
             
             String attrVarLabelsLine = "attr(x, 'var.labels')<-varlabels";
             historyEntry.add(attrVarLabelsLine);
 
-            dbgLog.info("DvnRserveComm: "+attrVarLabelsLine);
+            dbgLog.fine("DvnRserveComm: "+attrVarLabelsLine);
             c.voidEval(attrVarLabelsLine);
             
             // confirmation
@@ -571,7 +571,7 @@ if (sro.hasRecodedVariables()){
             // replication: 
             String repDVN_vl = "attr(dvnData, 'var.labels') <- varlabels";
 
-	    dbgLog.info("DvnRserveComm: "+repDVN_vl);
+	    dbgLog.fine("DvnRserveComm: "+repDVN_vl);
             c.voidEval(repDVN_vl);
         
 // --------- start: block to be used for the production code
@@ -588,7 +588,7 @@ if (sro.hasRecodedVariables()){
             String vtFirstLine = "VALTABLE<-list()";
             historyEntry.add(vtFirstLine);
 
-            dbgLog.info("DvnRserveComm: "+vtFirstLine);
+            dbgLog.fine("DvnRserveComm: "+vtFirstLine);
             c.voidEval(vtFirstLine);
             
             // vltbl includes both base and recoded cases when it was generated
@@ -835,53 +835,74 @@ if (tmpv.length > 0){
 // reflection block: end
 
 	    // create a zip file of the directory created: 
-
-	    String zipTmpDir = "system(\"(cd "+DSB_TMP_DIR+"; zip -r /tmp/"+requestdir+".zip "+requestdir+")\")";
-            c.voidEval(zipTmpDir);        
+	    
+	    //String zipTmpDir = "system(\"(cd "+DSB_TMP_DIR+"; zip -r /tmp/"+requestdir+".zip "+requestdir+")\")";
+            //c.voidEval(zipTmpDir);        
 
 
 	    // transfer the zip file to the application side: 
 	    
+	    //RFileInputStream ris = null;
+	    //OutputStream outbr   = null;
+
+            //int zipSize = getFileSize(c,"/tmp/"+requestdir+".zip");
+
+	    String listAnalysisFiles = "list.files('"+DSB_TMP_DIR+"/"+requestdir+"', recursive=TRUE)"; 
+	    String[] analysisReportFiles = c.eval(listAnalysisFiles).asStrings(); 
 	    RFileInputStream ris = null;
 	    OutputStream outbr   = null;
 
-            int zipSize = getFileSize(c,"/tmp/"+requestdir+".zip");
-
-
 	    try {
-		outbr = new BufferedOutputStream(new FileOutputStream(new File(TEMP_DIR+"/DVN", requestdir+".zip")));
-		ris = c.openFile("/tmp/"+requestdir+".zip");
-		
-		//int bfsize = 8*1024;
-		int bfsize = zipSize; 
-		byte[] obuf = new byte[bfsize];
-
-		int obufsize = 0; 
-
-		while ((obufsize = ris.read(obuf)) != -1) {
-		    outbr.write(obuf, 0, bfsize);
-		}
-		
-		ris.close();
-		outbr.close();
-
-		String unZipCmd = "/usr/bin/unzip "+TEMP_DIR+"/DVN/"+requestdir+".zip -d "+TEMP_DIR+"/DVN";
-		int exitValue = 1;
-		
-		dbgLog.fine("attempting to execute "+unZipCmd);
-
-		try {
-		    Runtime runtime = Runtime.getRuntime();
-		    Process process = runtime.exec(unZipCmd);
-		    exitValue = process.waitFor();
-		} catch (Exception e) {
-		    e.printStackTrace();
-		    exitValue = 1;
+		File localReportDir = new File(TEMP_DIR+"/DVN", requestdir);
+		if ( !localReportDir.exists() ) {
+		    localReportDir.mkdir();
 		}
 
-		if (exitValue == 0) {
-		    result.put("webFolderArchived",TEMP_DIR+"/DVN/"+requestdir+".zip");
+		for (int i = 0; i < analysisReportFiles.length; i++) {
+		    String reportFile = analysisReportFiles[i]; 
+		    int reportFileSize = getFileSize(c, DSB_TMP_DIR+"/"+requestdir+"/"+reportFile);
+		    dbgLog.fine("DvnRData: transferring file "+reportFile);
+		    dbgLog.fine("DvnRData: file size: "+reportFileSize); 
+
+
+		    if ( reportFile.lastIndexOf("/") > 0 ) {
+			File localReportSubDir = new File (TEMP_DIR+"/DVN/"+requestdir, reportFile.substring(0,reportFile.lastIndexOf("/")));
+			if ( !localReportSubDir.exists() ) {
+			    localReportSubDir.mkdirs(); 
+			}
+		    }
+
+		    ris = c.openFile(DSB_TMP_DIR+"/"+requestdir+"/"+reportFile);		    
+		    outbr = new BufferedOutputStream(new FileOutputStream(new File(TEMP_DIR+"/DVN/"+requestdir, reportFile)));
+		
+		    byte[] obuf = new byte[reportFileSize];
+		    int obufsize = 0; 
+
+		    while ((obufsize = ris.read(obuf)) != -1) {
+			outbr.write(obuf, 0, reportFileSize);
+		    }
+		
+		    ris.close();
+		    outbr.close();
 		}
+
+		//String unZipCmd = "/usr/bin/unzip "+TEMP_DIR+"/DVN/"+requestdir+".zip -d "+TEMP_DIR+"/DVN";
+		//int exitValue = 1;
+		
+		//dbgLog.fine("attempting to execute "+unZipCmd);
+		
+		//try {
+		//Runtime runtime = Runtime.getRuntime();
+		//Process process = runtime.exec(unZipCmd);
+		//exitValue = process.waitFor();
+		//} catch (Exception e) {
+		//e.printStackTrace();
+		//exitValue = 1;
+		//}
+		    
+		//if (exitValue == 0) {
+		//result.put("webFolderArchived",TEMP_DIR+"/DVN/"+requestdir+".zip");
+		//}
 
 	    } catch (FileNotFoundException fe){
 		fe.printStackTrace();
@@ -889,13 +910,12 @@ if (tmpv.length > 0){
 		ie.printStackTrace();
 	    } finally {
 		if (ris != null){
-                    ris.close();
-                }
+		    ris.close();
+		}
 		if (outbr != null){
 		    outbr.close();
 		}
-            }
-            
+	    }
 	    
 	    // // move the temp dir to the web-temp root dir
             //String mvTmpDir = "file.rename('"+wrkdir+"','"+webwrkdir+"')";
@@ -1002,7 +1022,7 @@ if (tmpv.length > 0){
         try {
             // create a temp dir
             String createTmpDir = "dir.create('"+wrkdir +"')";
-            dbgLog.info("DvnRserveComm: "+"createTmpDir="+createTmpDir);
+            dbgLog.fine("DvnRserveComm: "+"createTmpDir="+createTmpDir);
             
             historyEntry.add(createTmpDir);
 
@@ -1028,7 +1048,7 @@ if (tmpv.length > 0){
             
             historyEntry.add(univarDataDwnld);
 
-            dbgLog.info("DvnRserveComm: "+univarDataDwnld);
+            dbgLog.fine("DvnRserveComm: "+univarDataDwnld);
             c.voidEval(univarDataDwnld);
             
             int wbFileSize = getFileSize(c,dsnprfx);
@@ -1049,7 +1069,7 @@ if (tmpv.length > 0){
             // tab data file
             String mvTmpTabFile = "file.rename('"+ tempFileName +"','"+ tempFileNameNew +"')";
             c.voidEval(mvTmpTabFile);
-            dbgLog.info("DvnRserveComm: "+"move temp file="+mvTmpTabFile);
+            dbgLog.fine("DvnRserveComm: "+"move temp file="+mvTmpTabFile);
 
         } catch (RserveException rse) {
             rse.printStackTrace();
@@ -1906,7 +1926,7 @@ if (tmpv.length > 0){
         dbgLog.fine("targetFilename="+targetFilename);
         int fileSize = 0;
         try {
-            String fileSizeLine = "round(file.info('"+targetFilename+"')$size)";
+            String fileSizeLine = "round(file.fine('"+targetFilename+"')$size)";
             fileSize = c.eval(fileSizeLine).asInteger();
         } catch (RserveException rse) {
             rse.printStackTrace();

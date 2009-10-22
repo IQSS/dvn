@@ -1926,7 +1926,7 @@ if (tmpv.length > 0){
         dbgLog.fine("targetFilename="+targetFilename);
         int fileSize = 0;
         try {
-            String fileSizeLine = "round(file.fine('"+targetFilename+"')$size)";
+            String fileSizeLine = "round(file.info('"+targetFilename+"')$size)";
             fileSize = c.eval(fileSizeLine).asInteger();
         } catch (RserveException rse) {
             rse.printStackTrace();

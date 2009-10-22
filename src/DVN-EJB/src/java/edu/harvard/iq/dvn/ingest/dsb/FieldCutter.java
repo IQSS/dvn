@@ -12,9 +12,9 @@ import java.util.*;
  * @author asone
  */
 public interface FieldCutter {
-    public  void subsetFile(String infile, String outfile, Set<Integer> columns);
+    public  void subsetFile(String infile, String outfile, Set<Integer> columns, Long numCases);
 
-    public void subsetFile(String infile, String outfile, Set<Integer> columns,
+    public void subsetFile(String infile, String outfile, Set<Integer> columns, Long numCases,
         String delimiter);
 
 }

@@ -575,8 +575,8 @@ public class SAVFileReader extends StatDataFileReader{
 
             int int2test = byteOderTest.getInt();
             
-            if (int2test == 2 ){
-                dbgLog.fine("integer == 2: the byte-oder of the writer is the same "+
+            if (int2test == 2 || int2test == 3){
+                dbgLog.fine("integer == "+int2test+": the byte-oder of the writer is the same "+
                 "as the counterpart of Java: Big Endian");
             } else {
                 // Because Java's byte-order is always big endian, 
@@ -585,7 +585,7 @@ public class SAVFileReader extends StatDataFileReader{
 
                 bb_fileLayout_code.order(ByteOrder.LITTLE_ENDIAN);
 
-                if (bb_fileLayout_code.getInt()==2){
+                if (bb_fileLayout_code.getInt() == 2 || bb_fileLayout_code.getInt() == 3){
                     dbgLog.fine("The sav file was saved on a little endian machine");
                     dbgLog.fine("Reveral of the bytes is necessary to decode "+
                             "multi-byte, non-string blocks");

@@ -585,7 +585,9 @@ public class SAVFileReader extends StatDataFileReader{
 
                 bb_fileLayout_code.order(ByteOrder.LITTLE_ENDIAN);
 
-                if (bb_fileLayout_code.getInt() == 2 || bb_fileLayout_code.getInt() == 3){
+		int2test = bb_fileLayout_code.getInt();
+
+                if (int2test == 2 || int2test == 3){
                     dbgLog.fine("The sav file was saved on a little endian machine");
                     dbgLog.fine("Reveral of the bytes is necessary to decode "+
                             "multi-byte, non-string blocks");

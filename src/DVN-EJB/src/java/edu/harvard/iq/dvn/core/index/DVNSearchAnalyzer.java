@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.Reader;
 import org.apache.lucene.analysis.standard.StandardFilter;
 import org.apache.lucene.analysis.standard.StandardTokenizer;
+import org.apache.lucene.util.Version;
 
 public class DVNSearchAnalyzer extends Analyzer {
 
@@ -14,7 +15,10 @@ public class DVNSearchAnalyzer extends Analyzer {
 
 
   public TokenStream tokenStream(String fieldName, Reader reader) {
-    StandardTokenizer tokenStream = new StandardTokenizer(reader, replaceInvalidAcronym);
+/* It seems that LUCENE_CURRENT is ultimately what we should use, but there is
+ an ominous warning in the source code about using it -- using LUCENE_29 for now, will look into this further */
+//    StandardTokenizer tokenStream = new StandardTokenizer(Version.LUCENE_CURRENT,reader);
+    StandardTokenizer tokenStream = new StandardTokenizer(Version.LUCENE_29,reader);
     tokenStream.setMaxTokenLength(maxTokenLength);
     TokenStream result = new StandardFilter(tokenStream);
     result = new LowerCaseFilter(result);
@@ -45,7 +49,8 @@ public class DVNSearchAnalyzer extends Analyzer {
     if (streams == null) {
       streams = new SavedStreams();
       setPreviousTokenStream(streams);
-      streams.tokenStream = new StandardTokenizer(reader);
+//      streams.tokenStream = new StandardTokenizer(Version.LUCENE_CURRENT, reader);
+      streams.tokenStream = new StandardTokenizer(Version.LUCENE_29, reader);
       streams.filteredTokenStream = new StandardFilter(streams.tokenStream);
       streams.filteredTokenStream = new LowerCaseFilter(streams.filteredTokenStream);
       streams.filteredTokenStream = new PorterStemFilter(streams.filteredTokenStream);
@@ -54,8 +59,6 @@ public class DVNSearchAnalyzer extends Analyzer {
     }
     streams.tokenStream.setMaxTokenLength(maxTokenLength);
     
-    streams.tokenStream.setReplaceInvalidAcronym(replaceInvalidAcronym);
-
     return streams.filteredTokenStream;
   }
 

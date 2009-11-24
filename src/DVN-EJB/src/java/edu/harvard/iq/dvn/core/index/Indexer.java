@@ -28,7 +28,6 @@
  */
 
 package edu.harvard.iq.dvn.core.index;
-import org.apache.lucene.index.*;
 import edu.harvard.iq.dvn.core.study.DataTable;
 import edu.harvard.iq.dvn.core.study.DataVariable;
 import edu.harvard.iq.dvn.core.study.FileCategory;
@@ -75,7 +74,6 @@ import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.PhraseQuery;
 import org.apache.lucene.search.Query;
@@ -83,9 +81,8 @@ import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.document.Field;
-import org.apache.lucene.index.IndexDeletionPolicy;
-import org.apache.lucene.search.Collector;
 import org.apache.lucene.search.TermRangeQuery;
+import org.apache.lucene.util.Version;
 
 /**
  *
@@ -140,7 +137,8 @@ public class Indexer implements java.io.Serializable  {
 
     protected void setup() throws IOException {
         assureIndexDirExists();
-        dir = FSDirectory.getDirectory(indexDir, isIndexEmpty());
+//        dir = FSDirectory.getDirectory(indexDir, isIndexEmpty());
+        dir = FSDirectory.open(new File(indexDir));
     }
 
     public static Indexer getInstance(){
@@ -564,7 +562,7 @@ public class Indexer implements java.io.Serializable  {
 
     public List query(String adhocQuery) throws IOException {
 //        QueryParser parser = new QueryParser("abstract",new DVNAnalyzer());
-        QueryParser parser = new QueryParser("abstract",new DVNSearchAnalyzer());
+        QueryParser parser = new QueryParser(Version.LUCENE_29,"abstract",new DVNSearchAnalyzer());
 //        QueryParser parser = new QueryParser("abstract",new StandardAnalyzer());
         parser.setDefaultOperator(QueryParser.AND_OPERATOR);
         Query query=null;
@@ -651,16 +649,15 @@ public class Indexer implements java.io.Serializable  {
     }
 
     private List<Document> getHits( Query query ) throws IOException {
-        Hits hits = null;
         List <Document> documents = new ArrayList();
         if (query != null){
             initIndexSearcher();
             logger.info("Start searcher: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
-            hits = searcher.search(query);
-            logger.info("done searcher: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND) + "hits: "+hits.length());
-            logger.info("Start iterate: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
-            for (int i = 0; i < hits.length(); i++) {
-                documents.add(hits.doc(i));
+            DocumentCollector s = new DocumentCollector(searcher);
+            searcher.search(query, s);
+            List <Document> hits = s.getStudies();
+            for (int i = 0; i < hits.size(); i++) {
+                documents.add(hits.get(i));
             }
             logger.info("done iterate: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             searcher.close();
@@ -752,9 +749,9 @@ public class Indexer implements java.io.Serializable  {
     private void initIndexSearcher() throws IOException {
         if (r != null) {
             if (!r.isCurrent()) {
-                while (r.isLocked(dir));
+                while (IndexWriter.isLocked(dir));
 
-                r = IndexReader.open(dir);
+                r = IndexReader.open(dir, true);
                 searcher = new IndexSearcher(r);
             }
         } else {

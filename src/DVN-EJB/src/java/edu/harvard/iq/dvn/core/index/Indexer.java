@@ -485,19 +485,14 @@ public class Indexer implements java.io.Serializable  {
         TermAttribute ta = p.addAttribute(TermAttribute.class);
         StringBuffer dvnValueSb = new StringBuffer();
         try {
-            boolean t = p.incrementToken();
-//            Token n = p.incrementToken();
-            while (t) {
+            while (p.incrementToken()) {
                 dvnValueSb.append(new String(ta.termBuffer()).substring(0, ta.termLength()) + " ");
-//                dvnValueSb.append(new String(p.).substring(0, n.termLength()) + " ");
-                t = p.incrementToken();
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
         String dvnValue = dvnValueSb.toString();
         return dvnValue;
-//        return p.toString();
     }
 
     private List <Long> intersectionDocResults(final List<Document> results1, final List<Long> results2) throws IOException {

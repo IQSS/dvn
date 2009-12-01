@@ -1815,10 +1815,18 @@ public class FileDownloadServlet extends HttpServlet {
         try {
             BufferedImage fullSizeImage = ImageIO.read(new File(fileLocation));
 
+	    if ( fullSizeImage == null ) {
+		return false; 
+	    }
+
             double scaleFactor = ((double) 64) / (double) fullSizeImage.getWidth(null);
             int thumbHeight = (int) (fullSizeImage.getHeight(null) * scaleFactor);
 
-            java.awt.Image thumbImage = fullSizeImage.getScaledInstance(64, thumbHeight, java.awt.Image.SCALE_FAST);
+	    // We are willing to spend a few extra CPU cycles to generate
+	    // better-looking thumbnails, hence the SCALE_SMOOTH flag. 
+	    // SCALE_FAST would trade quality for speed. 
+
+	    java.awt.Image thumbImage = fullSizeImage.getScaledInstance(64, thumbHeight, java.awt.Image.SCALE_SMOOTH);
 
             ImageWriter writer = null;
             Iterator iter = ImageIO.getImageWritersByFormatName("png");
@@ -1845,6 +1853,8 @@ public class FileDownloadServlet extends HttpServlet {
             return true;
         } catch (Exception e) {
             // something went wrong, returning "false":
+	    dbgLog.info("ImageIO: caught an exception while trying to generate a thumbnail for "+fileLocation);
+
             return false;
         }
     }

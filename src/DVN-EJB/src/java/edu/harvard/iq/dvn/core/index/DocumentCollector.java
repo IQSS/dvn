@@ -32,26 +32,31 @@ package edu.harvard.iq.dvn.core.index;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.search.HitCollector;
+import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.search.Collector;
 import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.Scorer;
 
 /**
  *
  * @author roberttreacy
  */
-public class DocumentCollector extends HitCollector implements java.io.Serializable {
+//public class DocumentCollector extends HitCollector implements java.io.Serializable {
+public class DocumentCollector extends Collector {
 
     private IndexSearcher searcher;
-    private ArrayList  documents = new ArrayList();
+    private List  documents = new ArrayList<ScoreDoc>();
+    private Scorer scorer;
+    private int docBase;
 
     public DocumentCollector(IndexSearcher searcher) {
         this.searcher = searcher;
     }
 
+    /*
     public void collect(int id, float score) {
         try {
             Document doc = searcher.doc(id);
@@ -61,9 +66,29 @@ public class DocumentCollector extends HitCollector implements java.io.Serializa
             e.printStackTrace();
         }
     }
+     */
 
     public List getStudies() {
-        Collections.sort(documents);
         return documents;
+    }
+
+    @Override
+    public void setScorer(Scorer scorer) throws IOException {
+        this.scorer = scorer;
+    }
+
+    @Override
+    public void collect(int doc) throws IOException {
+        documents.add(new ScoreDoc(doc+docBase,scorer.score()));
+    }
+
+    @Override
+    public void setNextReader(IndexReader reader, int docBase) throws IOException {
+        this.docBase = docBase;
+    }
+
+    @Override
+    public boolean acceptsDocsOutOfOrder() {
+        return false;
     }
 }

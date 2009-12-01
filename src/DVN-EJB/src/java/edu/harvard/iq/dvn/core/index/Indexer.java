@@ -64,6 +64,7 @@ import java.util.logging.Logger;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.PorterStemFilter;
 import org.apache.lucene.analysis.Token;
+import org.apache.lucene.analysis.tokenattributes.TermAttribute;
 import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.DateTools.Resolution;
 import org.apache.lucene.document.Document;
@@ -81,7 +82,9 @@ import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermRangeQuery;
+import org.apache.lucene.util.AttributeSource;
 import org.apache.lucene.util.Version;
 
 /**
@@ -479,18 +482,22 @@ public class Indexer implements java.io.Serializable  {
 
     private String getDVNTokenString(final String value) {
         PorterStemFilter p = new PorterStemFilter(new DVNTokenizer(new StringReader(value)));
+        TermAttribute ta = p.addAttribute(TermAttribute.class);
         StringBuffer dvnValueSb = new StringBuffer();
         try {
-            Token n = p.next();
-            while (n != null) {
-                dvnValueSb.append(new String(n.termBuffer()).substring(0, n.termLength()) + " ");
-                n = p.next(n);
+            boolean t = p.incrementToken();
+//            Token n = p.incrementToken();
+            while (t) {
+                dvnValueSb.append(new String(ta.termBuffer()).substring(0, ta.termLength()) + " ");
+//                dvnValueSb.append(new String(p.).substring(0, n.termLength()) + " ");
+                t = p.incrementToken();
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
         String dvnValue = dvnValueSb.toString();
         return dvnValue;
+//        return p.toString();
     }
 
     private List <Long> intersectionDocResults(final List<Document> results1, final List<Long> results2) throws IOException {
@@ -679,7 +686,8 @@ public class Indexer implements java.io.Serializable  {
             logger.info("Start iterate: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             List hits = s.getStudies();
             for (int i = 0; i < hits.size(); i++) {
-                Document d = ((ScoredDocument) hits.get(i)).getScoredDocument();
+                ScoreDoc sd = (ScoreDoc) hits.get(i);
+                Document d = searcher.doc(sd.doc);
                 Field studyId = d.getField("id");
                 String studyIdStr = studyId.stringValue();
                 Long studyIdLong = Long.valueOf(studyIdStr);

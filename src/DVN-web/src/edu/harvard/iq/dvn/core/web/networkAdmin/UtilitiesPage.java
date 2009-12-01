@@ -69,14 +69,11 @@ import com.icesoft.faces.webapp.xmlhttp.FatalRenderingException;
 import com.icesoft.faces.webapp.xmlhttp.PersistentFacesState;
 import com.icesoft.faces.webapp.xmlhttp.RenderingException;
 import com.icesoft.faces.webapp.xmlhttp.TransientRenderingException;
-import java.util.Collection;
+import edu.harvard.iq.dvn.core.util.StringUtil;
 import java.util.EventObject;
-import javax.faces.component.UIComponent;
 import javax.faces.context.ExternalContext;
-import javax.swing.JFileChooser;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import javax.faces.event.ActionEvent;
 /**
  *
  * @author gdurand
@@ -662,18 +659,14 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable, 
                         importLogger.info("Found study directory: " + studyDir.getName());
                         
                         File xmlFile = null;
-                        List<File> filesToUpload = new ArrayList();
+                        Map<File,String> filesToUpload = new HashMap();
                         
                         for (int j=0; j < studyDir.listFiles().length; j++ ) {
                             File file = studyDir.listFiles()[j];
                             if ( "study.xml".equals(file.getName()) ) {
                                 xmlFile = file;
-                            } else if ( file.getName()!= null && file.getName().startsWith(".")) {
-                                // ignore hidden files (ie files that start with "."
                             } else {
-                                File tempFile = FileUtil.createTempFile( sessionId, file.getName() );                               
-                                FileUtil.copyFile(file, tempFile);
-                                filesToUpload.add(tempFile);
+                                addFile(file, "", filesToUpload);
                             }
                         }
                         
@@ -689,8 +682,9 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable, 
                                 if ( !filesToUpload.isEmpty() ) {
 
                                     List<StudyFileEditBean> fileBeans = new ArrayList();
-                                    for (File file : filesToUpload) {
+                                    for (File file : filesToUpload.keySet()) {
                                         StudyFileEditBean fileBean = new StudyFileEditBean( file, studyService.generateFileSystemNameSequence(), study );
+                                        fileBean.setFileCategoryName( filesToUpload.get(file));
                                         fileBeans.add(fileBean);
                                     }
 
@@ -753,7 +747,23 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable, 
         }
 
         return null;       
-    }  
+    }
+
+    private void addFile(File file, String catName, Map<File,String> filesToUpload) throws Exception{
+        if ( file.getName()!= null && file.getName().startsWith(".")) {
+             // ignore hidden files (ie files that start with "."
+        } else if (file.isDirectory()) {
+            String tempCatName = StringUtil.isEmpty(catName) ?  file.getName() : catName + " - " + file.getName();
+            for (int j=0; j < file.listFiles().length; j++ ) {
+                addFile( file.listFiles()[j], tempCatName, filesToUpload );
+            }
+        } else {
+            File tempFile = FileUtil.createTempFile( sessionId, file.getName() );
+            FileUtil.copyFile(file, tempFile);
+            filesToUpload.put(tempFile, catName);
+        }
+    }
+
    /**
      * Return the reference to the
      * {@link com.icesoft.faces.webapp.xmlhttp.PersistentFacesState

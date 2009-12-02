@@ -14,16 +14,18 @@ public class PositionalPorterStopAnalyzer extends Analyzer {
   private Set stopWords;
 
   public PositionalPorterStopAnalyzer() {
-    this(StopAnalyzer.ENGLISH_STOP_WORDS);
+    this(StopAnalyzer.ENGLISH_STOP_WORDS_SET);
   }
 
-  public PositionalPorterStopAnalyzer(String[] stopList) {
-    stopWords = StopFilter.makeStopSet(stopList);
+  public PositionalPorterStopAnalyzer(Set stopWords) {
+    this.stopWords = stopWords;
   }
 
   public TokenStream tokenStream(String fieldName, Reader reader) {
-    return new PorterStemFilter(
-        new PositionalStopFilter(
-          new LowerCaseTokenizer(reader), stopWords));
+    StopFilter stopFilter = new StopFilter(true,
+                                           new LowerCaseTokenizer(reader),
+                                           stopWords);
+    stopFilter.setEnablePositionIncrements(true);
+    return new PorterStemFilter(stopFilter);
   }
 }

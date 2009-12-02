@@ -1,33 +1,36 @@
 package lia.analysis.positional;
 
+import org.apache.lucene.util.AttributeSource;
 import org.apache.lucene.analysis.TokenStream;
-import org.apache.lucene.analysis.Token;
+import org.apache.lucene.analysis.tokenattributes.PositionIncrementAttribute;
+import org.apache.lucene.analysis.tokenattributes.TermAttribute;
 import org.apache.lucene.analysis.TokenFilter;
-import java.util.Set;
+import org.apache.lucene.analysis.CharArraySet;
 import java.io.IOException;
 
 public class PositionalStopFilter extends TokenFilter {
-  private Set stopWords;
+  private CharArraySet stopWords;
+  private PositionIncrementAttribute posIncrAttr;
+  private TermAttribute termAttr;
 
-  public PositionalStopFilter(TokenStream in, Set stopWords) {
+  public PositionalStopFilter(TokenStream in, CharArraySet stopWords) {
     super(in);
     this.stopWords = stopWords;
+    posIncrAttr = (PositionIncrementAttribute) addAttribute(PositionIncrementAttribute.class);
+    termAttr = (TermAttribute) addAttribute(TermAttribute.class);
   }
 
-  public final Token next() throws IOException {
+  public final boolean incrementToken() throws IOException {
     int increment = 0;
-    for (Token token = input.next();
-         token != null; token = input.next()) {
-
-      if (!stopWords.contains(token.termText())) {
-        token.setPositionIncrement(
-            token.getPositionIncrement() + increment);
-        return token;
+    while(input.incrementToken()) {
+      if (!stopWords.contains(termAttr.termBuffer(), 0, termAttr.termLength())) {
+        posIncrAttr.setPositionIncrement(posIncrAttr.getPositionIncrement() + increment);
+        return true;
       }
 
-      increment++;
+      increment += posIncrAttr.getPositionIncrement();
     }
 
-    return null;
+    return false;
   }
 }

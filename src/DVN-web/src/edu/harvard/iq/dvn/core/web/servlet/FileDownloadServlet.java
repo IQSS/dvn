@@ -46,6 +46,7 @@ import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import edu.harvard.iq.dvn.core.web.study.StudyUI;
 import edu.harvard.iq.dvn.core.web.study.FileCategoryUI;
 import edu.harvard.iq.dvn.core.web.dvnremote.DvnTermsOfUseAccess;
+import edu.harvard.iq.dvn.core.web.dvnremote.ICPSRauth;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -243,7 +244,6 @@ public class FileDownloadServlet extends HttpServlet {
 // v1.4 chagnes: end
 
 
-
         if (fileId != null && (!fileId.contains(","))) {
 
             StudyFile file = null;
@@ -391,6 +391,8 @@ public class FileDownloadServlet extends HttpServlet {
             remoteHost = hostMatcher.group(1);
             }
 
+            method = new GetMethod(remoteFileUrl);
+            
             String jsessionid = null;
             String remoteAuthHeader = null;
 
@@ -402,21 +404,25 @@ public class FileDownloadServlet extends HttpServlet {
 		    // (password and username) from the database:
 		    
 		    remoteAuthHeader = getRemoteAuthCredentials(remoteHost);
+
+		    if (remoteAuthHeader != null) {
+			method.addRequestHeader("Authorization", remoteAuthHeader);
+		    }
 		} else if (remoteAuthType.equals("dvn")) {
 		    // Authenticate with the remote DVN:
 		    
 		    jsessionid = dvnRemoteAuth(remoteHost);
+		} else if (remoteAuthType.equals("icpsr")) {
+		    String icpsrCookie = getICPSRcookie(remoteHost, remoteFileUrl);
+
+		    if (icpsrCookie != null) {
+			method.addRequestHeader("Cookie", icpsrCookie);
+		    }			
 		}
             }
 
-            method = new GetMethod(remoteFileUrl);
-            
             if (jsessionid != null) {
 		method.addRequestHeader("Cookie", "JSESSIONID=" + jsessionid);
-            }
-
-            if (remoteAuthHeader != null) {
-		method.addRequestHeader("Authorization", remoteAuthHeader);
             }
 
             // normally, the HTTP client follows redirects
@@ -2072,6 +2078,28 @@ public class FileDownloadServlet extends HttpServlet {
         }
 
         return remoteJsessionid;
+    }
+
+    private String getICPSRcookie (String remoteHost, String fileDownloadUrl) {
+        String icpsrSubscribtionUser = null;
+        String icpsrSubscribtionPassword = null;
+
+        RemoteAccessAuth remoteAuth = studyService.lookupRemoteAuthByHost(remoteHost);
+
+        if (remoteAuth == null) {
+            return null;
+        }
+
+        icpsrSubscribtionUser = remoteAuth.getAuthCred1();
+        icpsrSubscribtionPassword = remoteAuth.getAuthCred2();
+
+        if ( icpsrSubscribtionUser == null || icpsrSubscribtionPassword == null) {
+            return null;
+        }
+
+	ICPSRauth icpsrAuth = new ICPSRauth();
+
+        return icpsrAuth.obtainAuthCookie (icpsrSubscribtionUser, icpsrSubscribtionPassword, fileDownloadUrl);
     }
 
     private GetMethod remoteAccessTOU(String TOUurl, String jsessionid, String downloadURL, String extraCookies) {

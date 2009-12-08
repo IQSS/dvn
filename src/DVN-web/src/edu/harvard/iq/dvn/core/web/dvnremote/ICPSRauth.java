@@ -41,6 +41,8 @@ import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
 import org.apache.commons.httpclient.methods.multipart.StringPart;
 
+import  org.apache.commons.httpclient.protocol.Protocol;
+
 /**
  *
  * @author landreev
@@ -49,10 +51,19 @@ public class ICPSRauth {
 
     private static Logger dbgLog = Logger.getLogger(ICPSRauth.class.getPackage().getName());
 
+    private String icpsrLoginUrl = "https://www.icpsr.umich.edu/ticketlogin";
+
     private HttpClient client = null;
     
-    /* Simple constructor:  */
+    /* constructor:  */
     public ICPSRauth() {
+	String icpsrLoginUrlJVMoption = System.getProperty("icpsr.login.url");
+
+	// the JVM option overrides the default:
+
+	if ( icpsrLoginUrlJVMoption != null ) {
+	    icpsrLoginUrl = icpsrLoginUrlJVMoption; 
+	}
     }
 
     private HttpClient getClient() {
@@ -65,7 +76,7 @@ public class ICPSRauth {
        cookie that can later be used to authorize a download request. 
     */ 
 
-    public String obtainAuthCookie ( String username, String password ) {
+    public String obtainAuthCookie ( String username, String password, String fileDownloadUrl ) {
 
         PostMethod loginPostMethod = null;
 
@@ -78,31 +89,27 @@ public class ICPSRauth {
 
 
         try {
-	    dbgLog.fine ("entering ICPSR auth;"); 
+	    dbgLog.fine ("entering ICPSR auth;"); 	    
 
-            String icpsrLoginUrl = "https://www.icpsr.umich.edu:443/ticketlogin";
-	    String sampleRequest = "http://www.icpsr.umich.edu/cgi-bin/bob/newark?study=6635"; 
-	    
+	    HttpClient httpclient = getClient();
+
 	    loginPostMethod = new PostMethod(icpsrLoginUrl);
-
-	    loginPostMethod.setFollowRedirects(false);
-
 	    
 	    Part[] parts = {
 		new StringPart("email", username),
 		new StringPart("password", password),
 		new StringPart("path", "ICPSR"),
-		new StringPart("request_uri", sampleRequest)
+		new StringPart("request_uri", fileDownloadUrl)
 	    };
 
 	    loginPostMethod.setRequestEntity(new MultipartRequestEntity(parts, loginPostMethod.getParams()));
 
-	    status = getClient().executeMethod(loginPostMethod);
+	    status = httpclient.executeMethod(loginPostMethod);
 
 	    dbgLog.fine ("executed POST method; status="+status); 
 
 	    
-	    if (status != 302 && status != 200) {
+	    if (status != 200) {
 		loginPostMethod.releaseConnection();
 		return null; 
 	    }
@@ -126,7 +133,7 @@ public class ICPSRauth {
 	    return icpsrAuthCookie; 
 
         } catch (IOException ex) {
-	    dbgLog.fine ("ICPSR auth: caught exception."); 
+	    dbgLog.info ("ICPSR auth: caught IO exception."); 
 	    ex.printStackTrace();
 
             if (loginPostMethod != null) {

@@ -40,92 +40,159 @@ public interface StudyServiceLocal extends java.io.Serializable {
     /**
      * Add given Study to persistent storage.
      */
-    
+
+    //   Comments for breaking this into multiple classes
+    //
+    // 1= Retrieval
+    // 2= Update
+    // 3= Import/Export
+    // 4= File related
+    // ?= not sure if this is needed
+    // x= no longer needed
+
+    //?
     public void exportStudyFilesToLegacySystem(String lastUpdateTime, String authority) throws IOException, JAXBException;
 // comment out - not used    public void addStudy(Study study); 
         
+    // 1
     public Study getStudy(Long studyId);
-    
+
+    // 1
     public Study getStudyByGlobalId(String globalId);
    
-
+    //1
     public Study getStudyByHarvestInfo(VDC vdc, String harvestIdentifier);
-     
+
+    //1
     public Study getStudyDetail(Long studyId);
-    
+
+    //1
     public Study getStudyForSearch(Long studyId, Map studyFields);
-    
+
+    //2
     public void updateStudy(Study study);
-    
+
+    //2
     public void deleteStudy(Long studyId) ;
     
+    //2
     public void deleteStudyInNewTransaction(Long studyId, boolean deleteFromIndex) ;
      
+    //2
     public void deleteStudyList(List<Long> studyIds);
    
+    //?
     public List getStudies();
-    
+
+    //1
     public List<Long> getAllNonHarvestedStudyIds();
-        
+
+    //1
     java.util.List getOrderedStudies(List studyIdList, String orderBy);
 
+    //4
     edu.harvard.iq.dvn.core.study.StudyFile getStudyFile(Long fileId);
 
+    //4
     edu.harvard.iq.dvn.core.study.FileCategory getFileCategory(Long fileCategoryId);
 
+    //?
     java.util.List getRecentStudies(Long vdcId, int numResults);
 
+    //1
     java.util.List <Study> getContributorStudies(VDCUser contributor, VDC vdc);
 
+    //1
     java.util.List<edu.harvard.iq.dvn.core.study.Study> getReviewerStudies(Long vdcId);
+
+    //1
     java.util.List<edu.harvard.iq.dvn.core.study.Study> getNewStudies(Long vdcId);
+
+    //?1
     public List getDvOrderedStudyIds(Long vdcId, String orderBy, boolean ascending );
+
+    //?1
     public List getDvOrderedStudyIdsByCreator(Long vdcId, Long creatorId, String orderBy, boolean ascending );
 
+    //4
     public void incrementNumberOfDownloads(Long studyFileId, Long currentVDCId);
+
+    //4
     public void incrementNumberOfDownloads(Long studyFileId, Long currentVDCId, Date lastDownloadTime);
 
-    RemoteAccessAuth lookupRemoteAuthByHost(String remoteHost);
+    //4
+    public RemoteAccessAuth lookupRemoteAuthByHost(String remoteHost);
 
-    List<DataFileFormatType> getDataFileFormatTypes();
+    //4
+    public List<DataFileFormatType> getDataFileFormatTypes();
 
+    //4
     void addIngestedFiles(Long studyId, List fileBeans, Long userId);
     
+    //4
     java.util.List<FileCategory> getOrderedFileCategories(Long studyId);
     
+    //4
     java.util.List<StudyFile> getOrderedFilesByCategory(Long fileCategoryId);
 
+    //4
     java.util.List<StudyFile> getOrderedFilesByStudy(Long studyId);
 
+    //2
     String generateStudyIdSequence(String protocol, String authority);
     
+    //2
     boolean isUniqueStudyId(String  userStudyId,String protocol,String authority);
 
+    //4
     java.lang.String generateFileSystemNameSequence();
 
+    //4
     boolean isUniqueFileSystemName(String fileSystemName);
 
+    //2
     List<StudyLock> getStudyLocks();
     
+    //2
     void removeStudyLock(Long studyId);
 
+    //2
     void addStudyLock(Long studyId, Long userId, String detail);
 
+    //2
     void deleteDataVariables(Long dataTableId);
 
+    //2
     edu.harvard.iq.dvn.core.study.Study saveStudy(Study study, Long userId);
 
+    //3
     edu.harvard.iq.dvn.core.study.Study importHarvestStudy(File xmlFile, Long vdcId, Long userId, String harvestIdentifier);
+    
+    //3
     edu.harvard.iq.dvn.core.study.Study importStudy(File xmlFile,  Long harvestFormatTypeId, Long vdcId, Long userId);
+    
+    //3
     edu.harvard.iq.dvn.core.study.Study importStudy(File xmlFile,  Long harvestFormatTypeId, Long vdcId, Long userId, List<StudyFileEditBean> filesToUpload);
+    
+    //3
     edu.harvard.iq.dvn.core.study.Study importStudy(File xmlFile,  Long harvestFormatTypeId, Long vdcId, Long userId, String harvestIdentifier, List<StudyFileEditBean> filesToUpload);
 
+    //1
     List getVisibleStudies(List studyIds, Long vdcId);
+
+    //1
     List getViewableStudies(List<Long> studyIds);
+    
+    //1
     List getViewableStudies(List<Long> studyIds, Long userId, Long ipUserGroupId, Long vdcId);
 
+    //3
     List getStudyIdsForExport();
-    public List<Long> getAllStudyIds(); 
+
+    //?
+    public List<Long> getAllStudyIds();
+
+    //3
     public void exportStudy(Long studyId);
     public void exportStudy(Study study);
     public void exportStudyToFormat(Long studyId, String exportFormat);
@@ -133,27 +200,28 @@ public interface StudyServiceLocal extends java.io.Serializable {
     public void exportUpdatedStudies();
     public void exportStudies(List<Long> studyIds);
     public void exportStudies(List<Long> studyIds, String exportFormat);
-    
+
+    //4
     public void addFiles(Study study, List<StudyFileEditBean> newFiles, VDCUser user);
     public void addFiles(Study study, List<StudyFileEditBean> newFiles, VDCUser user, String ingestEmail);
-    
     public List<StudyFile> getStudyFilesByExtension(String extension);
-
     public void updateStudyFile(StudyFile detachedStudyFile);
-    public boolean isValidStudyIdString(String studyId);
 
+    //2
+    public boolean isValidStudyIdString(String studyId);
     public void setIndexTime(Long studyId, Date indexTime);
- 
     public Timestamp getLastUpdatedTime(Long vdcId);
-    
     public void updateReviewState(Long studyId, String reviewStateName);
 
+    //1
     public long getStudyDownloadCount(Long studyId);
     public Long getActivityCount(Long vdcId);
     public Long getTotalActivityCount();
 
+    //4
     public Boolean doesStudyHaveSubsettableFiles(Long studyId);
-    
+
+    //2
     public void setReadyForReview(Long studyId);
     public void setReleased(Long studyId);
 

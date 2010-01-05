@@ -47,6 +47,7 @@ import edu.harvard.iq.dvn.core.vdc.HarvestingDataverseServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
+import edu.harvard.iq.dvn.core.gnrs.GNRSServiceLocal;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -88,6 +89,7 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable, 
     @EJB HarvestingDataverseServiceLocal harvestingDataverseService;    
     @EJB HarvesterServiceLocal harvesterService;
     @EJB VDCServiceLocal vdcService;
+    @EJB GNRSServiceLocal gnrsService;
     
     private String selectedPanel;
     private Long vdcId;
@@ -933,8 +935,43 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable, 
     
 
     // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="handle utilities">
+     public boolean isHandlePanelRendered() {
+        return "handle".equals(selectedPanel);
+    }
+
+       public String handleRegisterAll_action() {
+        try {
+            gnrsService.registerAll();
+
+            addMessage( "handleMessage", "Handle registration request completed." );
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            addMessage( "handleMessage", "Handle registration failed: An unknown error occurred trying to index the following: \"" + indexStudyIds + "\"" );
+        }
+
+        return null;
+    }
+
+
     
-    
+        public String handleFixAll_action() {
+        try {
+            gnrsService.fixAll();
+
+            addMessage( "handleMessage", "Handle re-registration request completed." );
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            addMessage( "handleMessage", "Handle registration failed: An unknown error occurred trying to index the following: \"" + indexStudyIds + "\"" );
+        }
+
+        return null;
+    }
+
+    // </editor-fold>
     // ****************************
     // Common methods
     // ****************************

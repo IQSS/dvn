@@ -254,6 +254,27 @@
                                      onclick="if(!confirm('Please confirm this DELETE request. This change CANNOT be undone.')){ return false; };"/>
               </div>
           </ice:panelGrid>
+              <!-- HANDLE PANEL -->
+              <div class="vdcStudyInfoHeader dvnFormPadding">
+                <ice:outputText value="Handle Utilities"/>
+                <ice:outputLink title="Display this panel" rendered="#{!UtilitiesPage.handlePanelRendered}" value="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/UtilitiesPage.xhtml?selectedPanel=handle">
+                  <ice:graphicImage styleClass="vdcNoBorders" value="/resources/images/icon_contract.gif"/>
+                </ice:outputLink>
+                <ice:graphicImage styleClass="vdcNoBorders" value="/resources/images/icon_expand.gif" rendered="#{UtilitiesPage.handlePanelRendered}"/>
+              </div>
+              <ice:panelGrid style="margin-left: auto; margin-right: auto;" rendered="#{UtilitiesPage.handlePanelRendered}">
+                <ice:messages id="handleMessage" styleClass="errorMessage"/>
+                <ice:outputText value="To register all handles, click on the button below:"/>
+                <div>
+                  <ice:commandButton value="Register All" action="#{UtilitiesPage.handleRegisterAll_action}"/>
+                </div>
+                <hr/>
+                <ice:outputText value="To re-register all registered handles, click on the button below:"/>
+                <div>
+                  <ice:commandButton value="Fix Handles" action="#{UtilitiesPage.handleFixAll_action}"/>
+                </div>
+              </ice:panelGrid>
+
             </div>
           </div>
         </div>

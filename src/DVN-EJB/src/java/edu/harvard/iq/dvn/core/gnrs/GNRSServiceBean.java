@@ -463,6 +463,19 @@ public class GNRSServiceBean implements edu.harvard.iq.dvn.core.gnrs.GNRSService
         }
         
     }
+
+    public void fixAll() {
+        List<Study> studies = studyService.getStudies();
+        for (Iterator it = studies.iterator(); it.hasNext();) {
+            Study elem = (Study) it.next();
+            String handle = elem.getAuthority() + "/" + elem.getStudyId();
+            if (isHandleRegistered(handle)) {
+                fixHandle(handle);
+            }
+        }
+
+    }
+
     private String getAuthHandle(){
         return "0.NA/" + System.getProperty("dvn.handle.auth");
     }

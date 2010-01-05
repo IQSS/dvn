@@ -1619,15 +1619,22 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
 
     }
 
+    /**
+     * The generated String will contain a maximum of 30,000 ids.
+     * (This is necessary because the String will be used to create a SQL select statement,
+     * and the SQL statement must not contain more than 32,767 items. We rounded down to 30,000.)
+    */
     private String generateIdString(List idList) {
         StringBuffer sb = new StringBuffer();
         Iterator iter = idList.iterator();
-        while (iter.hasNext()) {
+        int counter = 0;
+        while (iter.hasNext() && counter <30000) {
             Long id = (Long) iter.next();
             sb.append(id);
             if (iter.hasNext()) {
                 sb.append(",");
             }
+            counter++;
         }
 
         return sb.toString();

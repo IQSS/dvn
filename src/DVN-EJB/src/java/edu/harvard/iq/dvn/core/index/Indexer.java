@@ -547,10 +547,10 @@ public class Indexer implements java.io.Serializable  {
         initIndexSearcher();
 //        Hits hits = exactMatchQuery(searcher, field, value);
         DocumentCollector c = exactMatchQuery(searcher, field, value);
-        List <Document> s = c.getStudies();
+        List <ScoreDoc> s = c.getStudies();
         for (int i=0; i < s.size(); i++){
 //        for (int i = 0; i < hits.length(); i++) {
-            Document d = s.get(i);
+            Document d = searcher.doc(s.get(i).doc);
             Field studyId = d.getField("id");
             String studyIdStr = studyId.stringValue();
             Long studyIdLong = Long.getLong(studyIdStr);
@@ -564,7 +564,7 @@ public class Indexer implements java.io.Serializable  {
 
     public List query(String adhocQuery) throws IOException {
 //        QueryParser parser = new QueryParser("abstract",new DVNAnalyzer());
-        QueryParser parser = new QueryParser(Version.LUCENE_29,"abstract",new DVNSearchAnalyzer());
+        QueryParser parser = new QueryParser(Version.LUCENE_30,"abstract",new DVNSearchAnalyzer());
 //        QueryParser parser = new QueryParser("abstract",new StandardAnalyzer());
         parser.setDefaultOperator(QueryParser.AND_OPERATOR);
         Query query=null;
@@ -657,9 +657,9 @@ public class Indexer implements java.io.Serializable  {
             logger.info("Start searcher: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             DocumentCollector s = new DocumentCollector(searcher);
             searcher.search(query, s);
-            List <Document> hits = s.getStudies();
+            List <ScoreDoc> hits = s.getStudies();
             for (int i = 0; i < hits.size(); i++) {
-                documents.add(hits.get(i));
+                documents.add(searcher.doc(((ScoreDoc)hits.get(i)).doc));
             }
             logger.info("done iterate: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             searcher.close();

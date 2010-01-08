@@ -68,7 +68,7 @@ public class DocumentCollector extends Collector {
     }
      */
 
-    public List getStudies() {
+    public List <ScoreDoc> getStudies() {
         return documents;
     }
 

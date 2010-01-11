@@ -1628,10 +1628,10 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         StringBuffer sb = new StringBuffer();
         Iterator iter = idList.iterator();
         int counter = 0;
-        while (iter.hasNext() && counter <30000) {
+        while (iter.hasNext() && counter < 30000) {
             Long id = (Long) iter.next();
             sb.append(id);
-            if (iter.hasNext()) {
+            if (iter.hasNext()&& counter < 30000) {
                 sb.append(",");
             }
             counter++;

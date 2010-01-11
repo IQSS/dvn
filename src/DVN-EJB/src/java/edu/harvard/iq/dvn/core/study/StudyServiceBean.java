@@ -1631,7 +1631,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         while (iter.hasNext() && counter < 30000) {
             Long id = (Long) iter.next();
             sb.append(id);
-            if (iter.hasNext()&& counter < 30000) {
+            if (iter.hasNext()&& counter < 29999) {
                 sb.append(",");
             }
             counter++;

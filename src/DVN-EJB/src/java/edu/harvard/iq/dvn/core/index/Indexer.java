@@ -158,7 +158,7 @@ public class Indexer implements java.io.Serializable  {
 
     public void deleteDocument(long studyId) {
         try {
-            IndexReader reader = IndexReader.open(dir, true);
+            IndexReader reader = IndexReader.open(dir, false);
             reader.deleteDocuments(new Term("id", Long.toString(studyId)));
             reader.deleteDocuments(new Term("varStudyId",Long.toString(studyId)));
             reader.close();

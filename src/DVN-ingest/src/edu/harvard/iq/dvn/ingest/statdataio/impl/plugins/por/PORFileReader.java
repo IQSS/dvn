@@ -916,10 +916,14 @@ public class PORFileReader extends StatDataFileReader{
                 // values may not be always integers
                 String base30value = getNumericFieldAsRawString(reader);
 
-                if (base30value.indexOf(".")>=0){
-                    tempValueLabel[0] = doubleNumberFormatter.format(base30Tobase10Conversion(base30value));
+                Matcher matcher = pattern4Integer.matcher(base30value);
+
+                if (matcher.matches()) {
+                    // integer case
+                    tempValueLabel[0] = Long.valueOf(base30value, 30).toString();
                 } else {
-                    tempValueLabel[0]= Integer.valueOf(base30value, 30).toString();
+                    // double case
+                    tempValueLabel[0] = doubleNumberFormatter.format(base30Tobase10Conversion(base30value));
                 }
             }
 

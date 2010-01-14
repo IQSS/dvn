@@ -51,7 +51,7 @@ public class StatHelper {
     /**
      * The maximum number of categories in a frequency table to be returned
      */
-    public static final int MAX_CATEGORIES = 50;
+    public static final int MAX_CATEGORIES = 200;
 
    private static Logger dbgLog =
        Logger.getLogger(StatHelper.class.getPackage().getName());

@@ -337,7 +337,7 @@ public class FileDownloadServlet extends HttpServlet {
             dataVariables = ((TabularDataFile) file).getDataTable().getDataVariables();
             vls = getValueTablesForAllRequestedVariables();
             dbgLog.fine("remote: variables(getDataVariableForRequest())="+getDataVariableForRequest()+"\n");
-            dbgLog.warning("remote: value table(vls)="+vls+"\n");
+            dbgLog.fine("remote: value table(vls)="+vls+"\n");
 
         }
                 
@@ -388,8 +388,11 @@ public class FileDownloadServlet extends HttpServlet {
             Matcher hostMatcher = patternRemoteHost.matcher(remoteFileUrl);
 
             if (hostMatcher.find()) {
-            remoteHost = hostMatcher.group(1);
+		remoteHost = hostMatcher.group(1);
+		dbgLog.info("remote host: "+remoteHost);
             }
+
+
 
             method = new GetMethod(remoteFileUrl);
             
@@ -397,6 +400,9 @@ public class FileDownloadServlet extends HttpServlet {
             String remoteAuthHeader = null;
 
             String remoteAuthType = remoteAuthRequired(remoteHost);
+
+	    dbgLog.info("remote auth type: "+remoteAuthType);
+
             
             if (remoteAuthType != null) {
 		if (remoteAuthType.equals("httpbasic")) {
@@ -414,6 +420,7 @@ public class FileDownloadServlet extends HttpServlet {
 		    jsessionid = dvnRemoteAuth(remoteHost);
 		} else if (remoteAuthType.equals("icpsr")) {
 		    String icpsrCookie = getICPSRcookie(remoteHost, remoteFileUrl);
+		    dbgLog.info("icpsr cookie acquired: "+icpsrCookie);
 
 		    if (icpsrCookie != null) {
 			method.addRequestHeader("Cookie", icpsrCookie);

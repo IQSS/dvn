@@ -389,7 +389,6 @@ public class FileDownloadServlet extends HttpServlet {
 
             if (hostMatcher.find()) {
 		remoteHost = hostMatcher.group(1);
-		dbgLog.info("remote host: "+remoteHost);
             }
 
 
@@ -400,8 +399,6 @@ public class FileDownloadServlet extends HttpServlet {
             String remoteAuthHeader = null;
 
             String remoteAuthType = remoteAuthRequired(remoteHost);
-
-	    dbgLog.info("remote auth type: "+remoteAuthType);
 
             
             if (remoteAuthType != null) {
@@ -420,7 +417,6 @@ public class FileDownloadServlet extends HttpServlet {
 		    jsessionid = dvnRemoteAuth(remoteHost);
 		} else if (remoteAuthType.equals("icpsr")) {
 		    String icpsrCookie = getICPSRcookie(remoteHost, remoteFileUrl);
-		    dbgLog.info("icpsr cookie acquired: "+icpsrCookie);
 
 		    if (icpsrCookie != null) {
 			method.addRequestHeader("Cookie", icpsrCookie);

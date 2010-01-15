@@ -1344,11 +1344,9 @@ public class FileDownloadServlet extends HttpServlet {
                     }
                 }
             }
-        } else {
-            // a request for a zip-packaged multiple
-            // file archive.
+        } else { // a request for a zip-packaged multiple file archive.
 
-            // first determine which files to archive.
+            // first determine which files to archive:
 
             Study study = null;
             Collection files = new ArrayList();
@@ -1455,7 +1453,7 @@ public class FileDownloadServlet extends HttpServlet {
 
                 List nameList = new ArrayList(); // used to check for duplicates
 		List successList = new ArrayList(); 
-
+		
                 iter = files.iterator();
 
                 while (iter.hasNext()) {
@@ -1475,50 +1473,139 @@ public class FileDownloadServlet extends HttpServlet {
 			    varHeaderLine = generateVariableHeader(datavariables);
 			}
 			
+			if (dbContentType == null) {
+			    dbContentType = "unknown filetype;";
+			}
+
 			Boolean Success = true;
 
 			try {
 			    if (file.isRemote()) {
 
-				// do the http magic
+				// do the http magic;
+				// remote files may be subject to complex authentication and 
+				// authorization.
 
+				String remoteFileUrl = file.getFileSystemLocation();                    
+                    
+				method = null;
 				int status = 200;
 
-				method = new GetMethod(file.getFileSystemLocation());
-				status = getClient().executeMethod(method);
-
-				if (status != 200) {
-
-				    if (method != null) {
-					method.releaseConnection();
-				    }
-
-				} else {
-
-				    // the incoming HTTP stream is the source of
-				    // the current chunk of the zip stream we are
-				    // creating.
+				if (remoteFileUrl != null) {
+				    remoteFileUrl = remoteFileUrl.replaceAll(" ", "+");
+				}
 				    
-				    in = method.getResponseBodyAsStream();
+				// If it's another DVN from which we are getting
+				// the file, we need to pass the "noVarHeader"
+				// argument along:
+				
+				if (remoteFileUrl.matches(".*FileDownload.*")) {
+				    remoteFileUrl = remoteFileUrl + "&noVarHeader=1";
+				}
+				    
+				// See if remote authentication is required;
+
+				String remoteHost = null;
+				String regexRemoteHost = "https*://([^/]*)/";
+				Pattern patternRemoteHost = Pattern.compile(regexRemoteHost);
+				Matcher hostMatcher = patternRemoteHost.matcher(remoteFileUrl);
+				
+				if (hostMatcher.find()) {
+				    remoteHost = hostMatcher.group(1);
 				}
 
-				// well, yes, the logic above will result in
-				// adding an empty file to the zip archive in
-				// case the remote object is not accessible.
-
-				// I can't think of a better solution right now,
-				// but it should work for now.
+				method = new GetMethod(remoteFileUrl);
 				
+				String jsessionid = null;
+				String remoteAuthHeader = null;
+				
+				String remoteAuthType = remoteAuthRequired(remoteHost);
+				    
+				if (remoteAuthType != null) {
+				    if (remoteAuthType.equals("httpbasic")) {
+					// get the basic HTTP auth credentials
+					// (password and username) from the database:
+					
+					remoteAuthHeader = getRemoteAuthCredentials(remoteHost);
+					
+					if (remoteAuthHeader != null) {
+					    method.addRequestHeader("Authorization", remoteAuthHeader);
+					}
+				    } else if (remoteAuthType.equals("dvn")) {
+					// Authenticate with the remote DVN:
+					
+					jsessionid = dvnRemoteAuth(remoteHost);
+				    } else if (remoteAuthType.equals("icpsr")) {
+					String icpsrCookie = getICPSRcookie(remoteHost, remoteFileUrl);
+					
+					if (icpsrCookie != null) {
+					    method.addRequestHeader("Cookie", icpsrCookie);
+					}			
+				    }
+				}
+
+				if (jsessionid != null) {
+				    method.addRequestHeader("Cookie", "JSESSIONID=" + jsessionid);
+				}
+
+				method.setFollowRedirects(false);
+				status = getClient().executeMethod(method);
+				    
+				if (status == 302 || status == 301) {
+				    // this is a redirect.
+				    
+				    String redirectLocation = null;
+				    String extraCookies = null; 
+				    
+				    for (int i = 0; i < method.getResponseHeaders().length; i++) {
+					String headerName = method.getResponseHeaders()[i].getName();
+					if (headerName.equals("Location")) {
+					    redirectLocation = method.getResponseHeaders()[i].getValue();
+					}
+					
+					String regexCookie = "^([^;]*;)"; 
+					Pattern patternCookie = Pattern.compile (regexCookie); 
+		    
+					if (headerName.equals("Set-Cookie") || 
+					    headerName.equals("Set-cookie")) {
+					    String cookieHeader = method.getResponseHeaders()[i].getValue();
+					    Matcher cookieMatcher = patternCookie.matcher(cookieHeader);
+					    if ( cookieMatcher.find() ) {
+						extraCookies = cookieMatcher.group(1); 
+					    }
+					}
+				    }
+
+				    if (redirectLocation.matches(".*TermsOfUsePage.*")) {
+					
+					// Accept the TOU agreement:
+					
+					method = remoteAccessTOU(redirectLocation, jsessionid, remoteFileUrl, extraCookies);
+					
+					if (method != null) {
+					    status = method.getStatusCode();
+					} else {
+					    status = 404;
+					}
+					
+				    } else {
+					method = new GetMethod(redirectLocation);
+					status = getClient().executeMethod(method);
+				    }
+				}
+
+				if ( status == 200 ) {				    
+				    in = method.getResponseBodyAsStream();
+				} else {
+				    Success = false; 
+				    fileManifest = fileManifest + "remote file " + file.getFileName() + " (" + dbContentType + ") COULD NOT be downloaded; HTTP code " + status + ". \r\n";
+				}
 			    } else {
 				// local file.
 				in = new FileInputStream(new File(file.getFileSystemLocation()));
 			    }
 			} catch (IOException ex) {
 			    Success = false;
-
-			    if (dbContentType == null) {
-				dbContentType = "unknown filetype;";
-			    }
 
 			    fileManifest = fileManifest + file.getFileName() + " (" + dbContentType + ") COULD NOT be downloaded because an I/O error has occured. \r\n";
 

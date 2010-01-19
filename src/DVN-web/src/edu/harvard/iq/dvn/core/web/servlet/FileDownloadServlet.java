@@ -71,6 +71,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+import java.util.zip.ZipInputStream;
 import java.util.*;
 
 import java.net.InetAddress;
@@ -345,6 +346,7 @@ public class FileDownloadServlet extends HttpServlet {
         // common(file-access) block for both cases
                 
         String remoteFileUrl = file.getFileSystemLocation();
+	Boolean zippedStream = false; 
                     
                     
         GetMethod method = null;
@@ -420,7 +422,11 @@ public class FileDownloadServlet extends HttpServlet {
 
 		    if (icpsrCookie != null) {
 			method.addRequestHeader("Cookie", icpsrCookie);
-		    }			
+		    }
+
+		    if ( remoteFileUrl.matches(".*gzip.*") ) {
+			zippedStream = true; 
+		    }
 		}
             }
 
@@ -563,6 +569,28 @@ public class FileDownloadServlet extends HttpServlet {
         Boolean ExternalHTMLpage = false;
 
 
+	InputStream in = null;
+	
+	try {
+	    if ( zippedStream ) {
+		InputStream zipInputStream = method.getResponseBodyAsStream();
+		ZipInputStream zin = new ZipInputStream(zipInputStream);
+		zin.getNextEntry(); 
+		in = zin; 
+		
+	    } else {
+		in = method.getResponseBodyAsStream();
+	    }	    
+	} catch (IOException ex) {
+	    // catches exceptions that may have occured while trying
+	    // to download and stream a remote data file.
+
+	    String errorMessage = "An unknown I/O error has occured while attempting to retreive a remote data file (i.e., a file that belongs to a harvested study). It is possible that it is temporarily unavailable from that location or perhaps a temporary network error has occured. Please try again later and if the problem persists, report it to your DVN technical support contact.";
+	    createErrorResponseGeneric(res, 0, errorMessage);
+	    return; 
+	}
+
+
 	// Now we need to see if this file was requested in an alternative
 	// format; if so, we'll need to run an R job to convert the data. 
 	// Otherwise we can simply stream the incoming file to the browser.
@@ -598,14 +626,17 @@ public class FileDownloadServlet extends HttpServlet {
 			    method.releaseConnection();
 			    return;
 			}
-			res.setHeader(method.getResponseHeaders()[i].getName(), method.getResponseHeaders()[i].getValue());
+			String headerValue = method.getResponseHeaders()[i].getValue();
+			if ( zippedStream ) {
+			    headerValue = headerValue.replace (".zip", ""); 
+			} 			
+			res.setHeader(headerName, headerValue);
 		    }
 		}
 		    
 		    
 		// send the incoming HTTP stream as the response body
 
-		InputStream in = method.getResponseBodyAsStream();
 		OutputStream out = res.getOutputStream();
 		//WritableByteChannel out = Channels.newChannel (res.getOutputStream());
                 
@@ -648,7 +679,7 @@ public class FileDownloadServlet extends HttpServlet {
 
 	    try /* catching general IO exceptions */ {
 	    // save the incoming stream as a temp file
-	    InputStream in = method.getResponseBodyAsStream();
+
 	    // temp data file that stores incoming data
 	    // (meaning, the entire file, containing all variables; 
 	    // tab-delimited or fixed-field.)
@@ -1520,7 +1551,8 @@ public class FileDownloadServlet extends HttpServlet {
 				String remoteAuthHeader = null;
 				
 				String remoteAuthType = remoteAuthRequired(remoteHost);
-				    
+				Boolean zippedStream = false; 
+
 				if (remoteAuthType != null) {
 				    if (remoteAuthType.equals("httpbasic")) {
 					// get the basic HTTP auth credentials
@@ -1540,7 +1572,11 @@ public class FileDownloadServlet extends HttpServlet {
 					
 					if (icpsrCookie != null) {
 					    method.addRequestHeader("Cookie", icpsrCookie);
-					}			
+					}
+
+					if ( remoteFileUrl.matches(".*gzip.*") ) {
+					    zippedStream = true; 
+					}
 				    }
 				}
 
@@ -1595,7 +1631,15 @@ public class FileDownloadServlet extends HttpServlet {
 				}
 
 				if ( status == 200 ) {				    
-				    in = method.getResponseBodyAsStream();
+				    if (zippedStream) {
+					InputStream zipInputStream = method.getResponseBodyAsStream();
+					ZipInputStream zin = new ZipInputStream(zipInputStream);
+					zin.getNextEntry(); 
+					in = zin; 
+		
+				    } else {
+					in = method.getResponseBodyAsStream();
+				    }	    
 				} else {
 				    Success = false; 
 				    fileManifest = fileManifest + "remote file " + file.getFileName() + " (" + dbContentType + ") COULD NOT be downloaded; HTTP code " + status + ". \r\n";

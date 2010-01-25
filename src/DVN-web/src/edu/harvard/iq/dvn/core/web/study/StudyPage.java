@@ -129,8 +129,8 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
 
     public String getCitationDate() {
         String str = "";
-        if (getStudyUI().getStudy().getProductionDate() != null) {
-            str = getStudyUI().getStudy().getProductionDate();
+        if (getStudyUI().getMetadata().getProductionDate() != null) {
+            str = getStudyUI().getMetadata().getProductionDate();
         }
         return str;
     }
@@ -349,7 +349,7 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
     }
 
     public boolean getAbstractAndScopePanelIsEmpty() {
-        if (isEmpty(studyUI.getKeywords()) && isEmpty(studyUI.getTopicClasses()) && isEmpty(studyUI.getAbstracts()) && isEmpty(studyUI.getAbstractDates()) && isEmpty(studyUI.getRelPublications()) && isEmpty(studyUI.getRelMaterials()) && isEmpty(studyUI.getRelStudies()) && isEmpty(studyUI.getOtherRefs()) && (studyUI.getStudy().getTimePeriodCoveredStart() == null || isEmpty(studyUI.getStudy().getTimePeriodCoveredStart())) && (studyUI.getStudy().getTimePeriodCoveredEnd() == null || isEmpty(studyUI.getStudy().getTimePeriodCoveredEnd())) && (studyUI.getStudy().getDateOfCollectionStart() == null || isEmpty(studyUI.getStudy().getDateOfCollectionStart())) && (studyUI.getStudy().getDateOfCollectionEnd() == null || isEmpty(studyUI.getStudy().getDateOfCollectionEnd())) && isEmpty(studyUI.getStudy().getCountry()) && isEmpty(studyUI.getStudy().getGeographicCoverage()) && isEmpty(studyUI.getStudy().getGeographicUnit()) && isEmpty(studyUI.getGeographicBoundings()) && isEmpty(studyUI.getStudy().getUnitOfAnalysis()) && isEmpty(studyUI.getStudy().getUniverse()) && isEmpty(studyUI.getStudy().getKindOfData())) {
+        if (isEmpty(studyUI.getKeywords()) && isEmpty(studyUI.getTopicClasses()) && isEmpty(studyUI.getAbstracts()) && isEmpty(studyUI.getAbstractDates()) && isEmpty(studyUI.getRelPublications()) && isEmpty(studyUI.getRelMaterials()) && isEmpty(studyUI.getRelStudies()) && isEmpty(studyUI.getOtherRefs()) && (studyUI.getMetadata().getTimePeriodCoveredStart() == null || isEmpty(studyUI.getMetadata().getTimePeriodCoveredStart())) && (studyUI.getMetadata().getTimePeriodCoveredEnd() == null || isEmpty(studyUI.getMetadata().getTimePeriodCoveredEnd())) && (studyUI.getMetadata().getDateOfCollectionStart() == null || isEmpty(studyUI.getMetadata().getDateOfCollectionStart())) && (studyUI.getMetadata().getDateOfCollectionEnd() == null || isEmpty(studyUI.getMetadata().getDateOfCollectionEnd())) && isEmpty(studyUI.getMetadata().getCountry()) && isEmpty(studyUI.getMetadata().getGeographicCoverage()) && isEmpty(studyUI.getMetadata().getGeographicUnit()) && isEmpty(studyUI.getGeographicBoundings()) && isEmpty(studyUI.getMetadata().getUnitOfAnalysis()) && isEmpty(studyUI.getMetadata().getUniverse()) && isEmpty(studyUI.getMetadata().getKindOfData())) {
             return true;
         } else {
             return false;
@@ -357,7 +357,7 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
     }
 
     public boolean getDataCollectionIsEmpty() {
-        if (isEmpty(studyUI.getStudy().getTimeMethod()) && isEmpty(studyUI.getStudy().getDataCollector()) && isEmpty(studyUI.getStudy().getFrequencyOfDataCollection()) && isEmpty(studyUI.getStudy().getSamplingProcedure()) && isEmpty(studyUI.getStudy().getDeviationsFromSampleDesign()) && isEmpty(studyUI.getStudy().getCollectionMode()) && isEmpty(studyUI.getStudy().getResearchInstrument()) && isEmpty(studyUI.getStudy().getDataSources()) && isEmpty(studyUI.getStudy().getOriginOfSources()) && isEmpty(studyUI.getStudy().getCharacteristicOfSources()) && isEmpty(studyUI.getStudy().getAccessToSources()) && isEmpty(studyUI.getStudy().getDataCollectionSituation()) && isEmpty(studyUI.getStudy().getActionsToMinimizeLoss()) && isEmpty(studyUI.getStudy().getControlOperations()) && isEmpty(studyUI.getStudy().getWeighting()) && isEmpty(studyUI.getStudy().getCleaningOperations()) && isEmpty(studyUI.getStudy().getStudyLevelErrorNotes()) && isEmpty(studyUI.getStudy().getResponseRate()) && isEmpty(studyUI.getStudy().getSamplingErrorEstimate()) && isEmpty(studyUI.getStudy().getOtherDataAppraisal())) {
+        if (isEmpty(studyUI.getMetadata().getTimeMethod()) && isEmpty(studyUI.getMetadata().getDataCollector()) && isEmpty(studyUI.getMetadata().getFrequencyOfDataCollection()) && isEmpty(studyUI.getMetadata().getSamplingProcedure()) && isEmpty(studyUI.getMetadata().getDeviationsFromSampleDesign()) && isEmpty(studyUI.getMetadata().getCollectionMode()) && isEmpty(studyUI.getMetadata().getResearchInstrument()) && isEmpty(studyUI.getMetadata().getDataSources()) && isEmpty(studyUI.getMetadata().getOriginOfSources()) && isEmpty(studyUI.getMetadata().getCharacteristicOfSources()) && isEmpty(studyUI.getMetadata().getAccessToSources()) && isEmpty(studyUI.getMetadata().getDataCollectionSituation()) && isEmpty(studyUI.getMetadata().getActionsToMinimizeLoss()) && isEmpty(studyUI.getMetadata().getControlOperations()) && isEmpty(studyUI.getMetadata().getWeighting()) && isEmpty(studyUI.getMetadata().getCleaningOperations()) && isEmpty(studyUI.getMetadata().getStudyLevelErrorNotes()) && isEmpty(studyUI.getMetadata().getResponseRate()) && isEmpty(studyUI.getMetadata().getSamplingErrorEstimate()) && isEmpty(studyUI.getMetadata().getOtherDataAppraisal())) {
             return true;
         } else {
             return false;
@@ -365,7 +365,7 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
     }
 
     public boolean getDataAvailIsEmpty() {
-        if (isEmpty(studyUI.getStudy().getPlaceOfAccess()) && isEmpty(studyUI.getStudy().getOriginalArchive()) && isEmpty(studyUI.getStudy().getAvailabilityStatus()) && isEmpty(studyUI.getStudy().getCollectionSize()) && isEmpty(studyUI.getStudy().getStudyCompletion())) {
+        if (isEmpty(studyUI.getMetadata().getPlaceOfAccess()) && isEmpty(studyUI.getMetadata().getOriginalArchive()) && isEmpty(studyUI.getMetadata().getAvailabilityStatus()) && isEmpty(studyUI.getMetadata().getCollectionSize()) && isEmpty(studyUI.getMetadata().getStudyCompletion())) {
             return true;
         } else {
             return false;
@@ -373,11 +373,11 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
     }
 
     public boolean getTermsOfUseIsEmpty() {
-        if (isEmpty(studyUI.getStudy().getHarvestDVNTermsOfUse()) 
-            && isEmpty(studyUI.getStudy().getHarvestDVTermsOfUse())
+        if (isEmpty(studyUI.getMetadata().getHarvestDVNTermsOfUse())
+            && isEmpty(studyUI.getMetadata().getHarvestDVTermsOfUse())
             && !getVDCRequestBean().getVdcNetwork().isDownloadTermsOfUseEnabled() 
-            && !studyUI.getStudy().getOwner().isDownloadTermsOfUseEnabled()  
-            && isEmpty(studyUI.getStudy().getConfidentialityDeclaration()) && isEmpty(studyUI.getStudy().getSpecialPermissions()) && isEmpty(studyUI.getStudy().getRestrictions()) && isEmpty(studyUI.getStudy().getContact()) && isEmpty(studyUI.getStudy().getCitationRequirements()) && isEmpty(studyUI.getStudy().getDepositorRequirements()) && isEmpty(studyUI.getStudy().getConditions()) && isEmpty(studyUI.getStudy().getDisclaimer())) {
+            && !studyUI.getStudy().getOwner().isDownloadTermsOfUseEnabled()
+            && isEmpty(studyUI.getMetadata().getConfidentialityDeclaration()) && isEmpty(studyUI.getMetadata().getSpecialPermissions()) && isEmpty(studyUI.getMetadata().getRestrictions()) && isEmpty(studyUI.getMetadata().getContact()) && isEmpty(studyUI.getMetadata().getCitationRequirements()) && isEmpty(studyUI.getMetadata().getDepositorRequirements()) && isEmpty(studyUI.getMetadata().getConditions()) && isEmpty(studyUI.getMetadata().getDisclaimer())) {
             return true;
         } else {
             return false;

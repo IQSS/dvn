@@ -29,6 +29,7 @@
 
 package edu.harvard.iq.dvn.core.util;
 
+import edu.harvard.iq.dvn.core.study.FileMetadata;
 import edu.harvard.iq.dvn.ingest.dsb.JhoveWrapper;
 import edu.harvard.iq.dvn.ingest.dsb.SubsettableFileChecker;
 import edu.harvard.iq.dvn.core.study.Study;
@@ -101,15 +102,17 @@ public class FileUtil implements java.io.Serializable  {
         return determineFileType( f, f.getName()) ;    
     }      
     
-    public static String determineFileType(StudyFile sf) throws IOException{
+    public static String determineFileType(FileMetadata fm) throws IOException{
+        // TODO: VERSION:
         //TODO: networkDataFile
+        StudyFile sf = fm.getStudyFile();
       if (sf instanceof TabularDataFile) {
             return determineTabularDataFileType((TabularDataFile) sf);
         } else {            
             if ( sf.isRemote() ) {
-                return FileUtil.determineFileType( sf.getFileName() );  
+                return FileUtil.determineFileType( fm.getLabel() );
             } else {
-                return FileUtil.determineFileType( new File( sf.getFileSystemLocation() ), sf.getFileName() );
+                return FileUtil.determineFileType( new File( sf.getFileSystemLocation() ), fm.getLabel() );
             }              
         }
     }

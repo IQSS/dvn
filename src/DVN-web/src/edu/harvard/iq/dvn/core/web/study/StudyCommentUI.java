@@ -59,7 +59,7 @@ public class StudyCommentUI {
                 flaggedByAccountLinks += ", ";
             flaggedByAccountLinks += "<a href=\"" + baseUrl + "/faces/login/AccountPage.xhtml?userId=" +
                                         vdcuser.getId() + "&vdcId=" + 
-                                        studyComment.getStudy().getOwner().getId() + "\">" +
+                                        studyComment.getStudyVersion().getStudy().getOwner().getId() + "\">" +
                                         vdcuser.getUserName() +
                                         "</a>";
         }
@@ -84,9 +84,9 @@ public class StudyCommentUI {
     public String getStudyPageLink() {
         String studyPageLink = new String("");
         studyPageLink = getBaseUrl() + "/dv/" +
-                            studyComment.getStudy().getOwner().getAlias() +
+                            studyComment.getStudyVersion().getStudy().getOwner().getAlias() +
                             "/faces/study/StudyPage.xhtml?studyId=" +
-                            studyComment.getStudy().getId();
+                            studyComment.getStudyVersion().getStudy().getId();
         return studyPageLink;
     }
     
@@ -95,7 +95,7 @@ public class StudyCommentUI {
     public String getUserAccountPageLink() {
         userAccountPageLink = getBaseUrl() + "/faces/login/AccountPage.xhtml?userId=" +
                                 studyComment.getCommentCreator().getId() +
-                                "&vdcId=" + studyComment.getStudy().getOwner().getId();
+                                "&vdcId=" + studyComment.getStudyVersion().getStudy().getOwner().getId();
         return userAccountPageLink;
     }
 

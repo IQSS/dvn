@@ -90,12 +90,6 @@ public interface StudyServiceLocal extends java.io.Serializable {
     //1
     java.util.List getOrderedStudies(List studyIdList, String orderBy);
 
-    //4
-    edu.harvard.iq.dvn.core.study.StudyFile getStudyFile(Long fileId);
-
-    //4
-    edu.harvard.iq.dvn.core.study.FileCategory getFileCategory(Long fileCategoryId);
-
     //?
     java.util.List getRecentStudies(Long vdcId, int numResults);
 
@@ -129,14 +123,6 @@ public interface StudyServiceLocal extends java.io.Serializable {
     //4
     void addIngestedFiles(Long studyId, List fileBeans, Long userId);
     
-    //4
-    java.util.List<FileCategory> getOrderedFileCategories(Long studyId);
-    
-    //4
-    java.util.List<StudyFile> getOrderedFilesByCategory(Long fileCategoryId);
-
-    //4
-    java.util.List<StudyFile> getOrderedFilesByStudy(Long studyId);
 
     //2
     String generateStudyIdSequence(String protocol, String authority);
@@ -204,8 +190,6 @@ public interface StudyServiceLocal extends java.io.Serializable {
     //4
     public void addFiles(Study study, List<StudyFileEditBean> newFiles, VDCUser user);
     public void addFiles(Study study, List<StudyFileEditBean> newFiles, VDCUser user, String ingestEmail);
-    public List<StudyFile> getStudyFilesByExtension(String extension);
-    public void updateStudyFile(StudyFile detachedStudyFile);
 
     //2
     public boolean isValidStudyIdString(String studyId);
@@ -218,8 +202,6 @@ public interface StudyServiceLocal extends java.io.Serializable {
     public Long getActivityCount(Long vdcId);
     public Long getTotalActivityCount();
 
-    //4
-    public Boolean doesStudyHaveSubsettableFiles(Long studyId);
 
     //2
     public void setReadyForReview(Long studyId);

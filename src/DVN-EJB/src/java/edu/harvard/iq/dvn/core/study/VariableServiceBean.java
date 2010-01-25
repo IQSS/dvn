@@ -263,7 +263,7 @@ public class VariableServiceBean implements edu.harvard.iq.dvn.core.study.Variab
             }
             
             if (dv != null) {
-                Long studyId = dv.getDataTable().getStudyFile().getFileCategory().getStudy().getId();
+                Long studyId = dv.getDataTable().getStudyFile().getStudy().getId();
                 if ( studies.contains(studyId) ) {
                     List dvList = (List) variableMap.get(studyId);
                     dvList.add(dv);
@@ -284,7 +284,7 @@ public class VariableServiceBean implements edu.harvard.iq.dvn.core.study.Variab
             em.merge(dt);
 
             // mark study as updated
-            Study study = dt.getStudyFile().getFileCategory().getStudy();
+            Study study = dt.getStudyFile().getStudy();
             studyService.saveStudy( study, userId ); 
             em.merge(study);
             

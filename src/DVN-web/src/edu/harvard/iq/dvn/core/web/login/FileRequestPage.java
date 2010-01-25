@@ -143,14 +143,13 @@ public class FileRequestPage extends VDCBaseBean implements java.io.Serializable
         Study study = studyService.getStudy(getRequestStudyId());
        
         studyRequestService.create(user.getId(), study.getId());
-        // Notify Admin of request       
-        mailService.sendFileAccessRequestNotification(study.getOwner().getContactEmail(),
-                user.getUserName(),
-                study.getTitle(), study.getGlobalId());
+        // Notify Admin of request
+        // TODO: VERSION:
+        //mailService.sendFileAccessRequestNotification(study.getOwner().getContactEmail(), user.getUserName(), study.getTitle(), study.getGlobalId());
 
         // Send confirmation to user
-        mailService.sendFileAccessRequestConfirmation(user.getEmail(),
-                study.getTitle(), study.getGlobalId());
+        // TODO: VERSION:
+        //mailService.sendFileAccessRequestConfirmation(user.getEmail(), study.getTitle(), study.getGlobalId());
      
         return "success";
 

@@ -14,7 +14,7 @@
 
 <body>
   <gui:composition template="/template_study.xhtml">
-    <gui:param name="pageTitle" value="#{studyPage.studyUI.study.title} - #{VDCRequest.dataversePageTitle}"/>
+    <gui:param name="pageTitle" value="#{studyPage.studyUI.metadata.title} - #{VDCRequest.dataversePageTitle}"/>
     <gui:param name="uniquifier" value="#{studyPage.selectedIndex}"/> 
     <gui:define name="body">
         <script type="text/javascript">
@@ -142,7 +142,7 @@
         <ice:inputHidden id="slIndex" value="#{VDCRequest.studyListingIndex}"/>
         <div class="dvn_section">
           <div class="dvn_sectionTitle">
-            <ice:outputText value="#{studyPage.studyUI.study.title}"/>
+            <ice:outputText value="#{studyPage.studyUI.metadata.title}"/>
             <ice:outputText styleClass="vdcStudyStatus" value=" (In Review)" rendered="#{studyPage.studyUI.study.inReview}"/>
             <ice:outputText styleClass="vdcStudyStatus" value=" (New)" rendered="#{studyPage.studyUI.study.new}"/>
           </div>
@@ -197,10 +197,10 @@
                                  columnClasses="vdcStudyInfoCol1, vdcStudyInfoCol2" columns="2" width="100%" rendered="#{studyPage.studyUI.citationInformationPanelIsRendered}" >
                     <dvn:inlinehelp helpMessage="#{studybundle.howCiteHelp}" linkText="#{studybundle.howCiteLabel}" heading="#{studybundle.howCiteHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink"/>
                     <div jsfc="ice:panelGroup" styleClass="vdcCitationText">
-                      <ice:outputText value="#{studyPage.studyUI.study.citation}" escape="false"/>
+                      <ice:outputText value="#{studyPage.studyUI.metadata.citation}" escape="false"/>
                     </div>
-                    <dvn:inlinehelp helpMessage="#{studybundle.subtitleHelp}"  linkText="#{studybundle.subtitleLabel}" heading="#{studybundle.subtitleHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.subTitle!='' and studyPage.studyUI.study.subTitle!=null}"/>
-                    <ice:outputText id="text1" value="#{studyPage.studyUI.study.subTitle}" rendered="#{!empty studyPage.studyUI.study.subTitle}"/>
+                    <dvn:inlinehelp helpMessage="#{studybundle.subtitleHelp}"  linkText="#{studybundle.subtitleLabel}" heading="#{studybundle.subtitleHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.metadata.subTitle!='' and studyPage.studyUI.metadata.subTitle!=null}"/>
+                    <ice:outputText id="text1" value="#{studyPage.studyUI.metadata.subTitle}" rendered="#{!empty studyPage.studyUI.metadata.subTitle}"/>
 
                     <dvn:inlinehelp helpMessage="#{studybundle.studyGlobalIdHelp}"  linkText="#{studybundle.studyGlobalIdLabel}" heading="#{studybundle.studyGlobalIdHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink"/>
                     <ice:outputText id="text2" value="#{studyPage.studyUI.study.globalId}" />
@@ -214,17 +214,17 @@
                     <dvn:inlinehelp helpMessage="#{studybundle.producerHelp}"  linkText="#{studybundle.producerLabel}" heading="#{studybundle.producerHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.producers != ''}" />
                     <ice:outputText id="text5"  value="#{studyPage.studyUI.producers}" rendered="#{!empty studyPage.studyUI.producers}" escape="false" />
 
-                    <dvn:inlinehelp helpMessage="#{studybundle.productionDateHelp}"  linkText="#{studybundle.productionDateLabel}" heading="#{studybundle.productionDateHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.productionDate != '' and studyPage.studyUI.study.productionDate != null}" />
-                    <ice:outputText id="text6"  value="#{studyPage.studyUI.productionDate}" rendered="#{!empty studyPage.studyUI.study.productionDate}" />
+                    <dvn:inlinehelp helpMessage="#{studybundle.productionDateHelp}"  linkText="#{studybundle.productionDateLabel}" heading="#{studybundle.productionDateHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.metadata.productionDate != '' and studyPage.studyUI.metadata.productionDate != null}" />
+                    <ice:outputText id="text6"  value="#{studyPage.studyUI.productionDate}" rendered="#{!empty studyPage.studyUI.metadata.productionDate}" />
 
-                    <dvn:inlinehelp helpMessage="#{studybundle.productionPlaceHelp}"  linkText="#{studybundle.productionPlaceLabel}" heading="#{studybundle.productionPlaceHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.productionPlace != '' and studyPage.studyUI.study.productionPlace != null }" />
-                    <ice:outputText id="text7"  value="#{studyPage.studyUI.study.productionPlace}" rendered="#{!empty studyPage.studyUI.study.productionPlace}" escape="false"/>
+                    <dvn:inlinehelp helpMessage="#{studybundle.productionPlaceHelp}"  linkText="#{studybundle.productionPlaceLabel}" heading="#{studybundle.productionPlaceHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.metadata.productionPlace != '' and studyPage.studyUI.metadata.productionPlace != null }" />
+                    <ice:outputText id="text7"  value="#{studyPage.studyUI.metadata.productionPlace}" rendered="#{!empty studyPage.studyUI.metadata.productionPlace}" escape="false"/>
 
                     <dvn:inlinehelp helpMessage="#{studybundle.softwareHelp}"  linkText="#{studybundle.softwareLabel}" heading="#{studybundle.softwareHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.software != '' and studyPage.studyUI.software != null}"/>
                     <ice:outputText id="text8"  value="#{studyPage.studyUI.software}" rendered="#{!empty studyPage.studyUI.software}" escape="false"/>
 
-                    <dvn:inlinehelp helpMessage="#{studybundle.fundingAgencyHelp}"  linkText="#{studybundle.fundingAgencyLabel}" heading="#{studybundle.fundingAgencyHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.fundingAgency != '' and studyPage.studyUI.study.fundingAgency != null }" />
-                    <ice:outputText id="text9"  value="#{studyPage.studyUI.study.fundingAgency}" rendered="#{!empty studyPage.studyUI.study.fundingAgency}" escape="false"/>
+                    <dvn:inlinehelp helpMessage="#{studybundle.fundingAgencyHelp}"  linkText="#{studybundle.fundingAgencyLabel}" heading="#{studybundle.fundingAgencyHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.metadata.fundingAgency != '' and studyPage.studyUI.metadata.fundingAgency != null }" />
+                    <ice:outputText id="text9"  value="#{studyPage.studyUI.metadata.fundingAgency}" rendered="#{!empty studyPage.studyUI.metadata.fundingAgency}" escape="false"/>
 
                     <dvn:inlinehelp helpMessage="#{studybundle.grantNumberHelp}"  linkText="#{studybundle.grantNumberLabel}" heading="#{studybundle.grantNumberHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.grants != ''}" />
                     <ice:outputText id="text10"  value="#{studyPage.studyUI.grants}" rendered="#{!empty studyPage.studyUI.grants}" />
@@ -235,13 +235,13 @@
                     <dvn:inlinehelp helpMessage="#{studybundle.distributorContactHelp}"  linkText="#{studybundle.distributorContactLabel}" heading="#{studybundle.distributorContactHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.distributorContact != ''  }"/>
                     <ice:outputText id="text12" value="#{studyPage.studyUI.distributorContact}" rendered="#{!empty studyPage.studyUI.distributorContact}"  escape="false"/>
 
-                    <dvn:inlinehelp helpMessage="#{studybundle.distributionDateHelp}"  linkText="#{studybundle.distributionDateLabel}" heading="#{studybundle.distributionDateHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.distributionDate != '' and studyPage.studyUI.study.distributionDate != null }"/>
-                    <ice:outputText id="text13" value="#{studyPage.studyUI.distributionDate}" rendered="#{!empty studyPage.studyUI.study.distributionDate}"/>
+                    <dvn:inlinehelp helpMessage="#{studybundle.distributionDateHelp}"  linkText="#{studybundle.distributionDateLabel}" heading="#{studybundle.distributionDateHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.metadata.distributionDate != '' and studyPage.studyUI.metadata.distributionDate != null }"/>
+                    <ice:outputText id="text13" value="#{studyPage.studyUI.distributionDate}" rendered="#{!empty studyPage.studyUI.metadata.distributionDate}"/>
 
-                    <dvn:inlinehelp helpMessage="#{studybundle.depositorHelp}"  linkText="#{studybundle.depositorLabel}" heading="#{studybundle.depositorHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.depositor != '' and studyPage.studyUI.study.depositor != null }"/>
-                    <ice:outputText  id="text14" value="#{studyPage.studyUI.study.depositor}" rendered="#{!empty studyPage.studyUI.study.depositor}" />
-                    <dvn:inlinehelp helpMessage="#{studybundle.depositDateHelp}"  linkText="#{studybundle.depositDateLabel}" heading="#{studybundle.depositDateHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.dateOfDeposit != '' and studyPage.studyUI.study.dateOfDeposit != null }"/>
-                    <ice:outputText id="text15"  value="#{studyPage.studyUI.dateOfDeposit}" rendered="#{!empty studyPage.studyUI.study.dateOfDeposit}"/>
+                    <dvn:inlinehelp helpMessage="#{studybundle.depositorHelp}"  linkText="#{studybundle.depositorLabel}" heading="#{studybundle.depositorHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.metadata.depositor != '' and studyPage.studyUI.metadata.depositor != null }"/>
+                    <ice:outputText  id="text14" value="#{studyPage.studyUI.metadata.depositor}" rendered="#{!empty studyPage.studyUI.metadata.depositor}" />
+                    <dvn:inlinehelp helpMessage="#{studybundle.depositDateHelp}"  linkText="#{studybundle.depositDateLabel}" heading="#{studybundle.depositDateHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.metadata.dateOfDeposit != '' and studyPage.studyUI.metadata.dateOfDeposit != null }"/>
+                    <ice:outputText id="text15"  value="#{studyPage.studyUI.dateOfDeposit}" rendered="#{!empty studyPage.studyUI.metadata.dateOfDeposit}"/>
 
                     <dvn:inlinehelp helpMessage="#{studybundle.seriesHelp}"  linkText="#{studybundle.seriesLabel}" heading="#{studybundle.seriesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.series != '' }"/>
                     <ice:outputText  id="text16" value="#{studyPage.studyUI.series}" rendered="#{!empty studyPage.studyUI.series}" escape="false"/>
@@ -249,8 +249,8 @@
                     <dvn:inlinehelp helpMessage="#{studybundle.seriesVersionHelp}"  linkText="#{studybundle.seriesVersionLabel}" heading="#{studybundle.seriesVersionHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.studyVersion != '' }"/>
                     <ice:outputText id="text17"  value="#{studyPage.studyUI.studyVersion}" rendered="#{!empty studyPage.studyUI.studyVersion}"/>
 
-                    <dvn:inlinehelp helpMessage="#{studybundle.replicationForHelp}"  linkText="#{studybundle.replicationForLabel}" heading="#{studybundle.replicationForHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.replicationFor != '' and studyPage.studyUI.study.replicationFor != null }"/>
-                    <ice:outputText id="text18"  value="#{studyPage.studyUI.study.replicationFor}" rendered="#{!empty studyPage.studyUI.study.replicationFor}" escape="false" />
+                    <dvn:inlinehelp helpMessage="#{studybundle.replicationForHelp}"  linkText="#{studybundle.replicationForLabel}" heading="#{studybundle.replicationForHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.metadata.replicationFor != '' and studyPage.studyUI.metadata.replicationFor != null }"/>
+                    <ice:outputText id="text18"  value="#{studyPage.studyUI.metadata.replicationFor}" rendered="#{!empty studyPage.studyUI.metadata.replicationFor}" escape="false" />
 
                     <!--
                   <dvn:inlinehelp helpMessage="#{studybundle.dataverseOwnerHelp}"  linkText="#{studybundle.dataverseOwnerLabel}" heading="#{studybundle.dataverseOwnerHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.owner.Id != VDCRequest.currentVDCId}" />
@@ -258,15 +258,15 @@
                       <ice:outputText value="#{studyPage.studyUI.study.owner.name} Dataverse" />
                   </ice:outputLink>
 
-                  <dvn:inlinehelp helpMessage="#{studybundle.harvestHoldingsHelp}"  linkText="#{studybundle.harvestHoldingsLabel}" heading="#{studybundle.harvestHoldingsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{ !empty studyPage.studyUI.study.harvestHoldings and studyPage.studyUI.study.isHarvested}"/>
-                  <ice:outputLink value="#{studyPage.studyUI.study.harvestHoldings}" rendered="#{!empty studyPage.studyUI.study.harvestHoldings and studyPage.studyUI.study.isHarvested}">
-                      <ice:outputText value="#{studyPage.studyUI.study.harvestHoldings}" />
+                  <dvn:inlinehelp helpMessage="#{studybundle.harvestHoldingsHelp}"  linkText="#{studybundle.harvestHoldingsLabel}" heading="#{studybundle.harvestHoldingsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{ !empty studyPage.studyUI.metadata.harvestHoldings and studyPage.studyUI.study.isHarvested}"/>
+                  <ice:outputLink value="#{studyPage.studyUI.metadata.harvestHoldings}" rendered="#{!empty studyPage.studyUI.metadata.harvestHoldings and studyPage.studyUI.study.isHarvested}">
+                      <ice:outputText value="#{studyPage.studyUI.metadata.harvestHoldings}" />
                   </ice:outputLink>
                   -->
 
                     <dvn:inlinehelp helpMessage="#{studybundle.provenanceHelp}"  linkText="#{studybundle.provenanceLabel}" heading="#{studybundle.provenanceHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink"  />
                     <div jsfc="ice:panelGroup" >
-                      <ice:outputLink value="#{studyPage.studyUI.study.harvestHoldings}" rendered="#{!empty studyPage.studyUI.study.harvestHoldings and studyPage.studyUI.study.isHarvested}">
+                      <ice:outputLink value="#{studyPage.studyUI.metadata.harvestHoldings}" rendered="#{!empty studyPage.studyUI.metadata.harvestHoldings and studyPage.studyUI.study.isHarvested}">
                         <ice:outputText value="Original Source > " />
                       </ice:outputLink>
                       <ice:outputLink value="/dvn/dv/#{studyPage.studyUI.study.owner.alias}/faces/study/StudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=catalog" >
@@ -314,25 +314,25 @@
                     <ice:outputText id="text25"  value="#{studyPage.studyUI.dateOfCollection} " rendered="#{!empty studyPage.studyUI.dateOfCollection }"/>
 
                     <dvn:inlinehelp helpMessage="#{studybundle.countryHelp}"  linkText="#{studybundle.countryLabel}" heading="#{studybundle.countryHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.country != '' and studyPage.studyUI.study.country != null }"/>
-                    <ice:outputText  id="text26" value="#{studyPage.studyUI.study.country}" rendered="#{!empty studyPage.studyUI.study.country }"/>
+                    <ice:outputText  id="text26" value="#{studyPage.studyUI.metadata.country}" rendered="#{!empty studyPage.studyUI.metadata.country }"/>
 
                     <dvn:inlinehelp helpMessage="#{studybundle.geographicCoverageHelp}"  linkText="#{studybundle.geographicCoverageLabel}" heading="#{studybundle.geographicCoverageHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.geographicCoverage != '' and studyPage.studyUI.study.geographicCoverage!= null }"/>
-                    <ice:outputText id="text27"  value="#{studyPage.studyUI.study.geographicCoverage}" rendered="#{!empty studyPage.studyUI.study.geographicCoverage}"/>
+                    <ice:outputText id="text27"  value="#{studyPage.studyUI.metadata.geographicCoverage}" rendered="#{!empty studyPage.studyUI.metadata.geographicCoverage}"/>
 
                     <dvn:inlinehelp helpMessage="#{studybundle.geographicUnitHelp}"  linkText="#{studybundle.geographicUnitLabel}" heading="#{studybundle.geographicUnitHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.geographicUnit != '' and studyPage.studyUI.study.geographicUnit != null }"/>
-                    <ice:outputText id="text28"  value="#{studyPage.studyUI.study.geographicUnit}" rendered="#{!empty studyPage.studyUI.study.geographicUnit}"/>
+                    <ice:outputText id="text28"  value="#{studyPage.studyUI.metadata.geographicUnit}" rendered="#{!empty studyPage.studyUI.metadata.geographicUnit}"/>
 
                     <dvn:inlinehelp helpMessage="#{studybundle.geographicBoundingHelp}"  linkText="#{studybundle.geographicBoundingLabel}" heading="#{studybundle.geographicBoundingHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.geographicBoundings != '' and studyPage.studyUI.geographicBoundings != null }"/>
                     <ice:outputText id="text29"  value="#{studyPage.studyUI.geographicBoundings}" rendered="#{!empty studyPage.studyUI.geographicBoundings}"/>
 
                     <dvn:inlinehelp helpMessage="#{studybundle.unitOfAnalysisHelp}"  linkText="#{studybundle.unitOfAnalysisLabel}" heading="#{studybundle.unitOfAnalysisHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.unitOfAnalysis != '' and studyPage.studyUI.study.unitOfAnalysis != null }" />
-                    <ice:outputText id="text30"  value="#{studyPage.studyUI.study.unitOfAnalysis}" rendered="#{!empty studyPage.studyUI.study.unitOfAnalysis }" escape="false"/>
+                    <ice:outputText id="text30"  value="#{studyPage.studyUI.metadata.unitOfAnalysis}" rendered="#{!empty studyPage.studyUI.metadata.unitOfAnalysis }" escape="false"/>
 
                     <dvn:inlinehelp helpMessage="#{studybundle.universeHelp}"  linkText="#{studybundle.universeLabel}" heading="#{studybundle.universeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.universe != '' and studyPage.studyUI.study.universe != null }"/>
-                    <ice:outputText id="text31"  value="#{studyPage.studyUI.study.universe}" rendered="#{!empty studyPage.studyUI.study.universe}" escape="false"/>
+                    <ice:outputText id="text31"  value="#{studyPage.studyUI.metadata.universe}" rendered="#{!empty studyPage.studyUI.metadata.universe}" escape="false"/>
 
                     <dvn:inlinehelp helpMessage="#{studybundle.kindOfDataHelp}"  linkText="#{studybundle.kindOfDataLabel}" heading="#{studybundle.kindOfDataHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.kindOfData != '' and studyPage.studyUI.study.kindOfData != null }"/>
-                    <ice:outputText id="text32"  value="#{studyPage.studyUI.study.kindOfData}" rendered="#{!empty studyPage.studyUI.study.kindOfData}"/>
+                    <ice:outputText id="text32"  value="#{studyPage.studyUI.metadata.kindOfData}" rendered="#{!empty studyPage.studyUI.metadata.kindOfData}"/>
                   </ice:panelGrid>
                   <div jsfc="ice:panelGroup"   id="groupPanel13" styleClass="vdcStudyInfoHeader" rendered="#{!studyPage.dataCollectionIsEmpty}">
                     <ice:outputText  id="outputText78" value="Data Collection / Methodology"/>
@@ -342,65 +342,65 @@
                   <ice:panelGrid   binding="#{studyPage.dataCollectionPanel}" cellpadding="0" cellspacing="0"
                                    columnClasses="vdcStudyInfoCol1, vdcStudyInfoCol2" columns="2" id="gridPanelDataCollection"
                                    width="100%"  rendered="#{studyPage.studyUI.dataCollectionPanelIsRendered}" >
-                    <dvn:inlinehelp helpMessage="#{studybundle.timeMethodHelp}"  linkText="#{studybundle.timeMethodLabel}" heading="#{studybundle.timeMethodHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink"  rendered="#{studyPage.studyUI.study.timeMethod != '' and studyPage.studyUI.study.timeMethod != null }"/>
-                    <ice:outputText  id="text33" value="#{studyPage.studyUI.study.timeMethod}"  rendered="#{!empty studyPage.studyUI.study.timeMethod}" escape="false"/>
+                    <dvn:inlinehelp helpMessage="#{studybundle.timeMethodHelp}"  linkText="#{studybundle.timeMethodLabel}" heading="#{studybundle.timeMethodHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink"  rendered="#{studyPage.studyUI.metadata.timeMethod != '' and studyPage.studyUI.metadata.timeMethod != null }"/>
+                    <ice:outputText  id="text33" value="#{studyPage.studyUI.metadata.timeMethod}"  rendered="#{!empty studyPage.studyUI.metadata.timeMethod}" escape="false"/>
 
-                    <dvn:inlinehelp helpMessage="#{studybundle.dataCollectorHelp}"  linkText="#{studybundle.dataCollectorLabel}" heading="#{studybundle.dataCollectorHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink"  rendered="#{studyPage.studyUI.study.dataCollector != '' and studyPage.studyUI.study.dataCollector != null }"/>
-                    <ice:outputText  id="outputText77" value="#{studyPage.studyUI.study.dataCollector}"  rendered="#{!empty studyPage.studyUI.study.dataCollector }" escape="false"/>
+                    <dvn:inlinehelp helpMessage="#{studybundle.dataCollectorHelp}"  linkText="#{studybundle.dataCollectorLabel}" heading="#{studybundle.dataCollectorHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink"  rendered="#{studyPage.studyUI.metadata.dataCollector != '' and studyPage.studyUI.metadata.dataCollector != null }"/>
+                    <ice:outputText  id="outputText77" value="#{studyPage.studyUI.metadata.dataCollector}"  rendered="#{!empty studyPage.studyUI.metadata.dataCollector }" escape="false"/>
 
-                    <dvn:inlinehelp helpMessage="#{studybundle.frequencyHelp}"  linkText="#{studybundle.frequencyLabel}" heading="#{studybundle.frequencyHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink"  rendered="#{studyPage.studyUI.study.frequencyOfDataCollection != '' and studyPage.studyUI.study.frequencyOfDataCollection != null }"/>
-                    <ice:outputText  id="outputText80" value="#{studyPage.studyUI.study.frequencyOfDataCollection}" rendered="#{!empty studyPage.studyUI.study.frequencyOfDataCollection}" escape="false"/>
+                    <dvn:inlinehelp helpMessage="#{studybundle.frequencyHelp}"  linkText="#{studybundle.frequencyLabel}" heading="#{studybundle.frequencyHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink"  rendered="#{studyPage.studyUI.metadata.frequencyOfDataCollection != '' and studyPage.studyUI.metadata.frequencyOfDataCollection != null }"/>
+                    <ice:outputText  id="outputText80" value="#{studyPage.studyUI.metadata.frequencyOfDataCollection}" rendered="#{!empty studyPage.studyUI.metadata.frequencyOfDataCollection}" escape="false"/>
 
-                    <dvn:inlinehelp helpMessage="#{studybundle.samplingProcedureHelp}"  linkText="#{studybundle.samplingProcedureLabel}" heading="#{studybundle.samplingProcedureHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink"  rendered="#{studyPage.studyUI.study.samplingProcedure != '' and studyPage.studyUI.study.samplingProcedure != null }"/>
-                    <ice:outputText  id="outputText82" value="#{studyPage.studyUI.study.samplingProcedure}"  rendered="#{!empty studyPage.studyUI.study.samplingProcedure}" escape="false"/>
+                    <dvn:inlinehelp helpMessage="#{studybundle.samplingProcedureHelp}"  linkText="#{studybundle.samplingProcedureLabel}" heading="#{studybundle.samplingProcedureHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink"  rendered="#{studyPage.studyUI.metadata.samplingProcedure != '' and studyPage.studyUI.metadata.samplingProcedure != null }"/>
+                    <ice:outputText  id="outputText82" value="#{studyPage.studyUI.metadata.samplingProcedure}"  rendered="#{!empty studyPage.studyUI.metadata.samplingProcedure}" escape="false"/>
 
-                    <dvn:inlinehelp helpMessage="#{studybundle.majorDeviationsHelp}"  linkText="#{studybundle.majorDeviationsLabel}" heading="#{studybundle.majorDeviationsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.deviationsFromSampleDesign != '' and studyPage.studyUI.study.deviationsFromSampleDesign != null }"/>
-                    <ice:outputText  id="outputText84" value="#{studyPage.studyUI.study.deviationsFromSampleDesign}"  rendered="#{!empty studyPage.studyUI.study.deviationsFromSampleDesign }" escape="false"/>
+                    <dvn:inlinehelp helpMessage="#{studybundle.majorDeviationsHelp}"  linkText="#{studybundle.majorDeviationsLabel}" heading="#{studybundle.majorDeviationsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.metadata.deviationsFromSampleDesign != '' and studyPage.studyUI.metadata.deviationsFromSampleDesign != null }"/>
+                    <ice:outputText  id="outputText84" value="#{studyPage.studyUI.metadata.deviationsFromSampleDesign}"  rendered="#{!empty studyPage.studyUI.metadata.deviationsFromSampleDesign }" escape="false"/>
 
-                    <dvn:inlinehelp helpMessage="#{studybundle.collectionModeHelp}"  linkText="#{studybundle.collectionModeLabel}" heading="#{studybundle.collectionModeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.collectionMode != '' and studyPage.studyUI.study.collectionMode != null }"/>
-                    <ice:outputText  id="outputText86" value="#{studyPage.studyUI.study.collectionMode}"  rendered="#{!empty studyPage.studyUI.study.collectionMode}" escape="false"/>
+                    <dvn:inlinehelp helpMessage="#{studybundle.collectionModeHelp}"  linkText="#{studybundle.collectionModeLabel}" heading="#{studybundle.collectionModeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.metadata.collectionMode != '' and studyPage.studyUI.metadata.collectionMode != null }"/>
+                    <ice:outputText  id="outputText86" value="#{studyPage.studyUI.metadata.collectionMode}"  rendered="#{!empty studyPage.studyUI.metadata.collectionMode}" escape="false"/>
 
-                    <dvn:inlinehelp helpMessage="#{studybundle.researchInstrumentHelp}"  linkText="#{studybundle.researchInstrumentLabel}" heading="#{studybundle.researchInstrumentHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.researchInstrument != '' and studyPage.studyUI.study.researchInstrument != null }"/>
-                    <ice:outputText  id="outputText88" value="#{studyPage.studyUI.study.researchInstrument}"  rendered="#{!empty studyPage.studyUI.study.researchInstrument}" escape="false"/>
+                    <dvn:inlinehelp helpMessage="#{studybundle.researchInstrumentHelp}"  linkText="#{studybundle.researchInstrumentLabel}" heading="#{studybundle.researchInstrumentHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.metadata.researchInstrument != '' and studyPage.studyUI.metadata.researchInstrument != null }"/>
+                    <ice:outputText  id="outputText88" value="#{studyPage.studyUI.metadata.researchInstrument}"  rendered="#{!empty studyPage.studyUI.metadata.researchInstrument}" escape="false"/>
 
-                    <dvn:inlinehelp helpMessage="#{studybundle.dataSourcesHelp}"  linkText="#{studybundle.dataSourcesLabel}" heading="#{studybundle.dataSourcesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.dataSources != '' and studyPage.studyUI.study.dataSources != null }"/>
-                    <ice:outputText  id="outputText90" value="#{studyPage.studyUI.study.dataSources}"  rendered="#{!empty studyPage.studyUI.study.dataSources}" escape="false"/>
+                    <dvn:inlinehelp helpMessage="#{studybundle.dataSourcesHelp}"  linkText="#{studybundle.dataSourcesLabel}" heading="#{studybundle.dataSourcesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.metadata.dataSources != '' and studyPage.studyUI.metadata.dataSources != null }"/>
+                    <ice:outputText  id="outputText90" value="#{studyPage.studyUI.metadata.dataSources}"  rendered="#{!empty studyPage.studyUI.metadata.dataSources}" escape="false"/>
 
-                    <dvn:inlinehelp helpMessage="#{studybundle.originOfSourcesHelp}"  linkText="#{studybundle.originOfSourcesLabel}" heading="#{studybundle.originOfSourcesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.originOfSources != '' and studyPage.studyUI.study.originOfSources != null }"/>
-                    <ice:outputText  id="outputText92" value="#{studyPage.studyUI.study.originOfSources}"  rendered="#{!empty studyPage.studyUI.study.originOfSources }" escape="false"/>
+                    <dvn:inlinehelp helpMessage="#{studybundle.originOfSourcesHelp}"  linkText="#{studybundle.originOfSourcesLabel}" heading="#{studybundle.originOfSourcesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.metadata.originOfSources != '' and studyPage.studyUI.metadata.originOfSources != null }"/>
+                    <ice:outputText  id="outputText92" value="#{studyPage.studyUI.metadata.originOfSources}"  rendered="#{!empty studyPage.studyUI.metadata.originOfSources }" escape="false"/>
 
-                    <dvn:inlinehelp helpMessage="#{studybundle.sourceCharacteristicsHelp}"  linkText="#{studybundle.sourceCharacteristicsLabel}" heading="#{studybundle.sourceCharacteristicsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.characteristicOfSources != '' and studyPage.studyUI.study.characteristicOfSources != null }"/>
-                    <ice:outputText  id="outputText94" value="#{studyPage.studyUI.study.characteristicOfSources}" rendered="#{!empty studyPage.studyUI.study.characteristicOfSources}" escape="false"/>
+                    <dvn:inlinehelp helpMessage="#{studybundle.sourceCharacteristicsHelp}"  linkText="#{studybundle.sourceCharacteristicsLabel}" heading="#{studybundle.sourceCharacteristicsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.metadata.characteristicOfSources != '' and studyPage.studyUI.metadata.characteristicOfSources != null }"/>
+                    <ice:outputText  id="outputText94" value="#{studyPage.studyUI.metadata.characteristicOfSources}" rendered="#{!empty studyPage.studyUI.metadata.characteristicOfSources}" escape="false"/>
 
-                    <dvn:inlinehelp helpMessage="#{studybundle.sourceDocumentationHelp}"  linkText="#{studybundle.sourceDocumentationLabel}" heading="#{studybundle.sourceDocumentationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.accessToSources != '' and studyPage.studyUI.study.accessToSources != null }"/>
-                    <ice:outputText id="outputText96" value="#{studyPage.studyUI.study.accessToSources}"  rendered="#{!empty studyPage.studyUI.study.accessToSources}" escape="false"/>
+                    <dvn:inlinehelp helpMessage="#{studybundle.sourceDocumentationHelp}"  linkText="#{studybundle.sourceDocumentationLabel}" heading="#{studybundle.sourceDocumentationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.metadata.accessToSources != '' and studyPage.studyUI.metadata.accessToSources != null }"/>
+                    <ice:outputText id="outputText96" value="#{studyPage.studyUI.metadata.accessToSources}"  rendered="#{!empty studyPage.studyUI.metadata.accessToSources}" escape="false"/>
 
-                    <dvn:inlinehelp helpMessage="#{studybundle.dataCollectionCharacteristicsHelp}" linkText="#{studybundle.dataCollectionCharacteristicsLabel}" heading="#{studybundle.dataCollectionCharacteristicsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.dataCollectionSituation != '' and studyPage.studyUI.study.dataCollectionSituation != null }"/>
-                    <ice:outputText id="outputText98" value="#{studyPage.studyUI.study.dataCollectionSituation}" rendered="#{!empty studyPage.studyUI.study.dataCollectionSituation}" escape="false"/>
+                    <dvn:inlinehelp helpMessage="#{studybundle.dataCollectionCharacteristicsHelp}" linkText="#{studybundle.dataCollectionCharacteristicsLabel}" heading="#{studybundle.dataCollectionCharacteristicsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.metadata.dataCollectionSituation != '' and studyPage.studyUI.metadata.dataCollectionSituation != null }"/>
+                    <ice:outputText id="outputText98" value="#{studyPage.studyUI.metadata.dataCollectionSituation}" rendered="#{!empty studyPage.studyUI.metadata.dataCollectionSituation}" escape="false"/>
 
-                    <dvn:inlinehelp helpMessage="#{studybundle.minimizeActionsHelp}" linkText="#{studybundle.minimizeActionsLabel}" heading="#{studybundle.minimizeActionsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.actionsToMinimizeLoss != '' and studyPage.studyUI.study.actionsToMinimizeLoss != null }"/>
-                    <ice:outputText id="outputText100" value="#{studyPage.studyUI.study.actionsToMinimizeLoss}" rendered="#{!empty studyPage.studyUI.study.actionsToMinimizeLoss}" escape="false"/>
+                    <dvn:inlinehelp helpMessage="#{studybundle.minimizeActionsHelp}" linkText="#{studybundle.minimizeActionsLabel}" heading="#{studybundle.minimizeActionsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.metadata.actionsToMinimizeLoss != '' and studyPage.studyUI.metadata.actionsToMinimizeLoss != null }"/>
+                    <ice:outputText id="outputText100" value="#{studyPage.studyUI.metadata.actionsToMinimizeLoss}" rendered="#{!empty studyPage.studyUI.metadata.actionsToMinimizeLoss}" escape="false"/>
 
-                    <dvn:inlinehelp helpMessage="#{studybundle.controlOperationsHelp}" linkText="#{studybundle.controlOperationsLabel}" heading="#{studybundle.controlOperationsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.controlOperations != '' and studyPage.studyUI.study.controlOperations != null }"/>
-                    <ice:outputText id="outputText102" value="#{studyPage.studyUI.study.controlOperations}"  rendered="#{!empty studyPage.studyUI.study.controlOperations}" escape="false"/>
+                    <dvn:inlinehelp helpMessage="#{studybundle.controlOperationsHelp}" linkText="#{studybundle.controlOperationsLabel}" heading="#{studybundle.controlOperationsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.metadata.controlOperations != '' and studyPage.studyUI.metadata.controlOperations != null }"/>
+                    <ice:outputText id="outputText102" value="#{studyPage.studyUI.metadata.controlOperations}"  rendered="#{!empty studyPage.studyUI.metadata.controlOperations}" escape="false"/>
 
-                    <dvn:inlinehelp helpMessage="#{studybundle.weightingHelp}" linkText="#{studybundle.weightingLabel}" heading="#{studybundle.weightingHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.weighting != '' and studyPage.studyUI.study.weighting != null }"/>
-                    <ice:outputText id="outputText104" value="#{studyPage.studyUI.study.weighting}" rendered="#{!empty studyPage.studyUI.study.weighting}" escape="false"/>
+                    <dvn:inlinehelp helpMessage="#{studybundle.weightingHelp}" linkText="#{studybundle.weightingLabel}" heading="#{studybundle.weightingHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.metadata.weighting != '' and studyPage.studyUI.metadata.weighting != null }"/>
+                    <ice:outputText id="outputText104" value="#{studyPage.studyUI.metadata.weighting}" rendered="#{!empty studyPage.studyUI.metadata.weighting}" escape="false"/>
 
-                    <dvn:inlinehelp helpMessage="#{studybundle.cleaningOperationsHelp}" linkText="#{studybundle.cleaningOperationsLabel}" heading="#{studybundle.cleaningOperationsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.cleaningOperations != '' and studyPage.studyUI.study.cleaningOperations != null }"/>
-                    <ice:outputText id="outputText106" value="#{studyPage.studyUI.study.cleaningOperations}" rendered="#{!empty studyPage.studyUI.study.cleaningOperations}" escape="false"/>
+                    <dvn:inlinehelp helpMessage="#{studybundle.cleaningOperationsHelp}" linkText="#{studybundle.cleaningOperationsLabel}" heading="#{studybundle.cleaningOperationsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.metadata.cleaningOperations != '' and studyPage.studyUI.metadata.cleaningOperations != null }"/>
+                    <ice:outputText id="outputText106" value="#{studyPage.studyUI.metadata.cleaningOperations}" rendered="#{!empty studyPage.studyUI.metadata.cleaningOperations}" escape="false"/>
 
-                    <dvn:inlinehelp helpMessage="#{studybundle.studyLevelErrorNotesHelp}" linkText="#{studybundle.studyLevelErrorNotesLabel}" heading="#{studybundle.studyLevelErrorNotesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.studyLevelErrorNotes != '' and studyPage.studyUI.study.studyLevelErrorNotes != null }"/>
-                    <ice:outputText id="outputText108" value="#{studyPage.studyUI.study.studyLevelErrorNotes}" rendered="#{!empty studyPage.studyUI.study.studyLevelErrorNotes}" escape="false"/>
+                    <dvn:inlinehelp helpMessage="#{studybundle.studyLevelErrorNotesHelp}" linkText="#{studybundle.studyLevelErrorNotesLabel}" heading="#{studybundle.studyLevelErrorNotesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.metadata.studyLevelErrorNotes != '' and studyPage.studyUI.metadata.studyLevelErrorNotes != null }"/>
+                    <ice:outputText id="outputText108" value="#{studyPage.studyUI.metadata.studyLevelErrorNotes}" rendered="#{!empty studyPage.studyUI.metadata.studyLevelErrorNotes}" escape="false"/>
 
-                    <dvn:inlinehelp helpMessage="#{studybundle.responseRateHelp}" linkText="#{studybundle.responseRateLabel}" heading="#{studybundle.responseRateHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.responseRate != '' and studyPage.studyUI.study.responseRate != null }"/>
-                    <ice:outputText id="outputText110" value="#{studyPage.studyUI.study.responseRate}" rendered="#{!empty studyPage.studyUI.study.responseRate}" escape="false"/>
+                    <dvn:inlinehelp helpMessage="#{studybundle.responseRateHelp}" linkText="#{studybundle.responseRateLabel}" heading="#{studybundle.responseRateHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.metadata.responseRate != '' and studyPage.studyUI.metadata.responseRate != null }"/>
+                    <ice:outputText id="outputText110" value="#{studyPage.studyUI.metadata.responseRate}" rendered="#{!empty studyPage.studyUI.metadata.responseRate}" escape="false"/>
 
-                    <dvn:inlinehelp helpMessage="#{studybundle.samplingErrorHelp}" linkText="#{studybundle.samplingErrorLabel}" heading="#{studybundle.samplingErrorHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.samplingErrorEstimate != '' and studyPage.studyUI.study.samplingErrorEstimate != null }"/>
-                    <ice:outputText id="outputText112" value="#{studyPage.studyUI.study.samplingErrorEstimate}" rendered="#{!empty studyPage.studyUI.study.samplingErrorEstimate}" escape="false"/>
+                    <dvn:inlinehelp helpMessage="#{studybundle.samplingErrorHelp}" linkText="#{studybundle.samplingErrorLabel}" heading="#{studybundle.samplingErrorHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.metadata.samplingErrorEstimate != '' and studyPage.studyUI.metadata.samplingErrorEstimate != null }"/>
+                    <ice:outputText id="outputText112" value="#{studyPage.studyUI.metadata.samplingErrorEstimate}" rendered="#{!empty studyPage.studyUI.metadata.samplingErrorEstimate}" escape="false"/>
 
-                    <dvn:inlinehelp helpMessage="#{studybundle.otherDataAppraisalHelp}" linkText="#{studybundle.otherDataAppraisalLabel}" heading="#{studybundle.otherDataAppraisalHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.otherDataAppraisal != '' and studyPage.studyUI.study.otherDataAppraisal != null }"/>
-                    <ice:outputText id="outputText114" value="#{studyPage.studyUI.study.otherDataAppraisal}" rendered="#{!empty studyPage.studyUI.study.otherDataAppraisal}" escape="false" />
+                    <dvn:inlinehelp helpMessage="#{studybundle.otherDataAppraisalHelp}" linkText="#{studybundle.otherDataAppraisalLabel}" heading="#{studybundle.otherDataAppraisalHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.metadata.otherDataAppraisal != '' and studyPage.studyUI.metadata.otherDataAppraisal != null }"/>
+                    <ice:outputText id="outputText114" value="#{studyPage.studyUI.metadata.otherDataAppraisal}" rendered="#{!empty studyPage.studyUI.metadata.otherDataAppraisal}" escape="false" />
                   </ice:panelGrid>
                   <div jsfc="ice:panelGroup" id="groupPanel14a" styleClass="vdcStudyInfoHeader" rendered="#{!studyPage.dataAvailIsEmpty}">
                     <ice:outputText id="outputText115a" value="Data Set Availability"/>
@@ -410,23 +410,23 @@
                   <ice:panelGrid binding="#{studyPage.dataAvailPanel}" cellpadding="0" cellspacing="0"
                                  columnClasses="vdcStudyInfoCol1, vdcStudyInfoCol2" columns="2" id="gridPanelDataAvail" rendered="#{studyPage.studyUI.dataAvailPanelIsRendered}"
                                  width="100%">
-                    <dvn:inlinehelp helpMessage="#{studybundle.dataAccessPlaceHelp}" linkText="#{studybundle.dataAccessPlaceLabel}" heading="#{studybundle.dataAccessPlaceHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.placeOfAccess != '' and studyPage.studyUI.study.placeOfAccess != null }"/>
-                    <ice:outputText id="outputText117" value="#{studyPage.studyUI.study.placeOfAccess}" rendered="#{!empty studyPage.studyUI.study.placeOfAccess}" escape="false"/>
+                    <dvn:inlinehelp helpMessage="#{studybundle.dataAccessPlaceHelp}" linkText="#{studybundle.dataAccessPlaceLabel}" heading="#{studybundle.dataAccessPlaceHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.metadata.placeOfAccess != '' and studyPage.studyUI.metadata.placeOfAccess != null }"/>
+                    <ice:outputText id="outputText117" value="#{studyPage.studyUI.metadata.placeOfAccess}" rendered="#{!empty studyPage.studyUI.metadata.placeOfAccess}" escape="false"/>
 
-                    <dvn:inlinehelp helpMessage="#{studybundle.originalArchiveHelp}" linkText="#{studybundle.originalArchiveLabel}" heading="#{studybundle.originalArchiveHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.originalArchive != '' and studyPage.studyUI.study.originalArchive != null }"/>
-                    <ice:outputText id="outputText119" value="#{studyPage.studyUI.study.originalArchive}" rendered="#{!empty studyPage.studyUI.study.originalArchive}" escape="false"/>
+                    <dvn:inlinehelp helpMessage="#{studybundle.originalArchiveHelp}" linkText="#{studybundle.originalArchiveLabel}" heading="#{studybundle.originalArchiveHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.metadata.originalArchive != '' and studyPage.studyUI.metadata.originalArchive != null }"/>
+                    <ice:outputText id="outputText119" value="#{studyPage.studyUI.metadata.originalArchive}" rendered="#{!empty studyPage.studyUI.metadata.originalArchive}" escape="false"/>
 
-                    <dvn:inlinehelp helpMessage="#{studybundle.availabilityHelp}" linkText="#{studybundle.availabilityLabel}" heading="#{studybundle.availabilityHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.availabilityStatus != '' and studyPage.studyUI.study.availabilityStatus != null }"/>
-                    <ice:outputText id="outputText121" value="#{studyPage.studyUI.study.availabilityStatus}" rendered="#{!empty studyPage.studyUI.study.availabilityStatus}" escape="false" />
+                    <dvn:inlinehelp helpMessage="#{studybundle.availabilityHelp}" linkText="#{studybundle.availabilityLabel}" heading="#{studybundle.availabilityHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.metadata.availabilityStatus != '' and studyPage.studyUI.metadata.availabilityStatus != null }"/>
+                    <ice:outputText id="outputText121" value="#{studyPage.studyUI.metadata.availabilityStatus}" rendered="#{!empty studyPage.studyUI.metadata.availabilityStatus}" escape="false" />
 
-                    <dvn:inlinehelp helpMessage="#{studybundle.collectionSizeHelp}" linkText="#{studybundle.collectionSizeLabel}" heading="#{studybundle.collectionSizeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.collectionSize != '' and studyPage.studyUI.study.collectionSize != null }" />
-                    <ice:outputText id="outputText123" value="#{studyPage.studyUI.study.collectionSize}" rendered="#{!empty studyPage.studyUI.study.collectionSize}" escape="false"/>
+                    <dvn:inlinehelp helpMessage="#{studybundle.collectionSizeHelp}" linkText="#{studybundle.collectionSizeLabel}" heading="#{studybundle.collectionSizeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.metadata.collectionSize != '' and studyPage.studyUI.metadata.collectionSize != null }" />
+                    <ice:outputText id="outputText123" value="#{studyPage.studyUI.metadata.collectionSize}" rendered="#{!empty studyPage.studyUI.metadata.collectionSize}" escape="false"/>
 
-                    <dvn:inlinehelp helpMessage="#{studybundle.studyCompletionHelp}" linkText="#{studybundle.studyCompletionLabel}" heading="#{studybundle.studyCompletionHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.studyCompletion != '' and studyPage.studyUI.study.studyCompletion != null }"/>
-                    <ice:outputText id="outputText125" value="#{studyPage.studyUI.study.studyCompletion}"  rendered="#{!empty studyPage.studyUI.study.studyCompletion != '' and studyPage.studyUI.study.studyCompletion != null }" escape="false"/>
+                    <dvn:inlinehelp helpMessage="#{studybundle.studyCompletionHelp}" linkText="#{studybundle.studyCompletionLabel}" heading="#{studybundle.studyCompletionHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.metadata.studyCompletion != '' and studyPage.studyUI.metadata.studyCompletion != null }"/>
+                    <ice:outputText id="outputText125" value="#{studyPage.studyUI.metadata.studyCompletion}"  rendered="#{!empty studyPage.studyUI.metadata.studyCompletion != '' and studyPage.studyUI.metadata.studyCompletion != null }" escape="false"/>
 
-                    <dvn:inlinehelp helpMessage="#{studybundle.numberOfFilesHelp}" linkText="#{studybundle.numberOfFilesLabel}" heading="#{studybundle.numberOfFilesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.numberOfFiles != '' and studyPage.studyUI.study.numberOfFiles != null }"/>
-                    <ice:outputText id="outputText127" value="#{studyPage.studyUI.study.numberOfFiles}" rendered="#{!empty studyPage.studyUI.study.numberOfFiles}" escape="false"/>
+                    <dvn:inlinehelp helpMessage="#{studybundle.numberOfFilesHelp}" linkText="#{studybundle.numberOfFilesLabel}" heading="#{studybundle.numberOfFilesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.metadata.numberOfFiles != '' and studyPage.studyUI.metadata.numberOfFiles != null }"/>
+                    <ice:outputText id="outputText127" value="#{studyPage.studyUI.metadata.numberOfFiles}" rendered="#{!empty studyPage.studyUI.metadata.numberOfFiles}" escape="false"/>
                   </ice:panelGrid>
                   <div jsfc="ice:panelGroup" id="groupPanel14b" styleClass="vdcStudyInfoHeader" rendered="#{!studyPage.termsOfUseIsEmpty}">
                     <a name="termsofuse"><!--TERMS OF USE--></a>
@@ -438,29 +438,29 @@
                                  columnClasses="vdcStudyInfoCol1, vdcStudyInfoCol2" columns="2" id="gridPanelTermsOfUse"  rendered="#{studyPage.studyUI.termsOfUsePanelIsRendered}"
                                  width="100%">
                     <!-- Study Terms of Use -->
-                    <dvn:inlinehelp helpMessage="#{studybundle.confidentialityHelp}"  linkText="#{studybundle.confidentialityLabel}" heading="#{studybundle.confidentialityHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.confidentialityDeclaration != '' and studyPage.studyUI.study.confidentialityDeclaration != null }"/>
-                    <ice:outputText  id="outputText129" value="#{studyPage.studyUI.study.confidentialityDeclaration}" rendered="#{!empty studyPage.studyUI.study.confidentialityDeclaration}" escape="false"/>
+                    <dvn:inlinehelp helpMessage="#{studybundle.confidentialityHelp}"  linkText="#{studybundle.confidentialityLabel}" heading="#{studybundle.confidentialityHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.metadata.confidentialityDeclaration != '' and studyPage.studyUI.metadata.confidentialityDeclaration != null }"/>
+                    <ice:outputText  id="outputText129" value="#{studyPage.studyUI.metadata.confidentialityDeclaration}" rendered="#{!empty studyPage.studyUI.metadata.confidentialityDeclaration}" escape="false"/>
 
-                    <dvn:inlinehelp helpMessage="#{studybundle.specialPermissionsHelp}"  linkText="#{studybundle.specialPermissionsLabel}" heading="#{studybundle.specialPermissionsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.specialPermissions != '' and studyPage.studyUI.study.specialPermissions != null }"/>
-                    <ice:outputText  id="outputText131" value="#{studyPage.studyUI.study.specialPermissions}" rendered="#{!empty studyPage.studyUI.study.specialPermissions}" escape="false"/>
+                    <dvn:inlinehelp helpMessage="#{studybundle.specialPermissionsHelp}"  linkText="#{studybundle.specialPermissionsLabel}" heading="#{studybundle.specialPermissionsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.metadata.specialPermissions != '' and studyPage.studyUI.metadata.specialPermissions != null }"/>
+                    <ice:outputText  id="outputText131" value="#{studyPage.studyUI.metadata.specialPermissions}" rendered="#{!empty studyPage.studyUI.metadata.specialPermissions}" escape="false"/>
 
-                    <dvn:inlinehelp helpMessage="#{studybundle.restrictionsHelp}"  linkText="#{studybundle.restrictionsLabel}" heading="#{studybundle.restrictionsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.restrictions != '' and studyPage.studyUI.study.restrictions != null }" />
-                    <ice:outputText  id="outputText133" value="#{studyPage.studyUI.study.restrictions}" rendered="#{!empty studyPage.studyUI.study.restrictions}" escape="false"/>
+                    <dvn:inlinehelp helpMessage="#{studybundle.restrictionsHelp}"  linkText="#{studybundle.restrictionsLabel}" heading="#{studybundle.restrictionsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.metadata.restrictions != '' and studyPage.studyUI.metadata.restrictions != null }" />
+                    <ice:outputText  id="outputText133" value="#{studyPage.studyUI.metadata.restrictions}" rendered="#{!empty studyPage.studyUI.metadata.restrictions}" escape="false"/>
 
-                    <dvn:inlinehelp helpMessage="#{studybundle.contactHelp}"  linkText="#{studybundle.contactLabel}" heading="#{studybundle.contactHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.contact != '' and studyPage.studyUI.study.contact != null }" />
-                    <ice:outputText  id="outputText135" value="#{studyPage.studyUI.study.contact}" rendered="#{!empty studyPage.studyUI.study.contact}" escape="false"/>
+                    <dvn:inlinehelp helpMessage="#{studybundle.contactHelp}"  linkText="#{studybundle.contactLabel}" heading="#{studybundle.contactHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.metadata.contact != '' and studyPage.studyUI.metadata.contact != null }" />
+                    <ice:outputText  id="outputText135" value="#{studyPage.studyUI.metadata.contact}" rendered="#{!empty studyPage.studyUI.metadata.contact}" escape="false"/>
 
-                    <dvn:inlinehelp helpMessage="#{studybundle.citationRequirementsHelp}"  linkText="#{studybundle.citationRequirementsLabel}" heading="#{studybundle.citationRequirementsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.citationRequirements != '' and studyPage.studyUI.study.citationRequirements != null }"/>
-                    <ice:outputText  id="outputText137" value="#{studyPage.studyUI.study.citationRequirements}" rendered="#{!empty studyPage.studyUI.study.citationRequirements}" escape="false"/>
+                    <dvn:inlinehelp helpMessage="#{studybundle.citationRequirementsHelp}"  linkText="#{studybundle.citationRequirementsLabel}" heading="#{studybundle.citationRequirementsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.metadata.citationRequirements != '' and studyPage.studyUI.metadata.citationRequirements != null }"/>
+                    <ice:outputText  id="outputText137" value="#{studyPage.studyUI.metadata.citationRequirements}" rendered="#{!empty studyPage.studyUI.metadata.citationRequirements}" escape="false"/>
 
-                    <dvn:inlinehelp helpMessage="#{studybundle.depositorRequirementsHelp}"  linkText="#{studybundle.depositorRequirementsLabel}" heading="#{studybundle.depositorRequirementsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.depositorRequirements != '' and studyPage.studyUI.study.depositorRequirements != null }"/>
-                    <ice:outputText  id="outputText139" value="#{studyPage.studyUI.study.depositorRequirements}" rendered="#{!empty studyPage.studyUI.study.depositorRequirements}" escape="false"/>
+                    <dvn:inlinehelp helpMessage="#{studybundle.depositorRequirementsHelp}"  linkText="#{studybundle.depositorRequirementsLabel}" heading="#{studybundle.depositorRequirementsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.metadata.depositorRequirements != '' and studyPage.studyUI.metadata.depositorRequirements != null }"/>
+                    <ice:outputText  id="outputText139" value="#{studyPage.studyUI.metadata.depositorRequirements}" rendered="#{!empty studyPage.studyUI.metadata.depositorRequirements}" escape="false"/>
 
-                    <dvn:inlinehelp helpMessage="#{studybundle.conditionsHelp}"  linkText="#{studybundle.conditionsLabel}" heading="#{studybundle.conditionsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.conditions != '' and studyPage.studyUI.study.conditions != null }"/>
-                    <ice:outputText  id="outputText141" value="#{studyPage.studyUI.study.conditions}" rendered="#{!empty studyPage.studyUI.study.conditions}" escape="false"/>
+                    <dvn:inlinehelp helpMessage="#{studybundle.conditionsHelp}"  linkText="#{studybundle.conditionsLabel}" heading="#{studybundle.conditionsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.metadata.conditions != '' and studyPage.studyUI.metadata.conditions != null }"/>
+                    <ice:outputText  id="outputText141" value="#{studyPage.studyUI.metadata.conditions}" rendered="#{!empty studyPage.studyUI.metadata.conditions}" escape="false"/>
 
-                    <dvn:inlinehelp helpMessage="#{studybundle.disclaimerHelp}" linkText="#{studybundle.disclaimerLabel}" heading="#{studybundle.disclaimerHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.disclaimer != '' and studyPage.studyUI.study.disclaimer != null }"/>
-                    <ice:outputText id="outputText143" value="#{studyPage.studyUI.study.disclaimer}" rendered="#{!empty studyPage.studyUI.study.disclaimer}" escape="false"/>
+                    <dvn:inlinehelp helpMessage="#{studybundle.disclaimerHelp}" linkText="#{studybundle.disclaimerLabel}" heading="#{studybundle.disclaimerHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.metadata.disclaimer != '' and studyPage.studyUI.metadata.disclaimer != null }"/>
+                    <ice:outputText id="outputText143" value="#{studyPage.studyUI.metadata.disclaimer}" rendered="#{!empty studyPage.studyUI.metadata.disclaimer}" escape="false"/>
 
                     <!-- Dataverse, Dataverse Network and Harvest Terms of Use -->
                     <dvn:inlinehelp helpMessage="#{studybundle.dataverseTermsofUseHelp}" linkText="#{studybundle.dataverseTermsofUseLabel}" heading="#{studybundle.dataverseTermsofUseHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{!empty studyPage.studyUI.dataverseTermsOfUse}"/>
@@ -469,11 +469,11 @@
                     <dvn:inlinehelp helpMessage="#{studybundle.networkTermsofUseHelp}"  linkText="#{studybundle.networkTermsofUseLabel}" heading="#{studybundle.networkTermsofUseHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{VDCRequest.vdcNetwork.downloadTermsOfUseEnabled}"/>
                     <ice:outputText value="#{VDCRequest.vdcNetwork.downloadTermsOfUse}" rendered="#{VDCRequest.vdcNetwork.downloadTermsOfUseEnabled}" escape="false"/>
 
-                    <dvn:inlinehelp helpMessage="#{studybundle.dataverseHarvestedTermsofUseHelp}" linkText="#{studybundle.dataverseHarvestedTermsofUseLabel}" heading="#{studybundle.dataverseHarvestedTermsofUseHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{!empty studyPage.studyUI.study.harvestDVTermsOfUse}"/>
-                    <ice:outputText value="#{studyPage.studyUI.study.harvestDVTermsOfUse}" rendered="#{!empty studyPage.studyUI.study.harvestDVTermsOfUse}" escape="false"/>
+                    <dvn:inlinehelp helpMessage="#{studybundle.dataverseHarvestedTermsofUseHelp}" linkText="#{studybundle.dataverseHarvestedTermsofUseLabel}" heading="#{studybundle.dataverseHarvestedTermsofUseHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{!empty studyPage.studyUI.metadata.harvestDVTermsOfUse}"/>
+                    <ice:outputText value="#{studyPage.studyUI.metadata.harvestDVTermsOfUse}" rendered="#{!empty studyPage.studyUI.metadata.harvestDVTermsOfUse}" escape="false"/>
 
-                    <dvn:inlinehelp helpMessage="#{studybundle.networkHarvestedTermsofUseHelp}" linkText="#{studybundle.networkHarvestedTermsofUseLabel}" heading="#{studybundle.networkHarvestedTermsofUseHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{!empty studyPage.studyUI.study.harvestDVNTermsOfUse}"/>
-                    <ice:outputText value="#{studyPage.studyUI.study.harvestDVNTermsOfUse}" rendered="#{!empty studyPage.studyUI.study.harvestDVNTermsOfUse}" escape="false"/>
+                    <dvn:inlinehelp helpMessage="#{studybundle.networkHarvestedTermsofUseHelp}" linkText="#{studybundle.networkHarvestedTermsofUseLabel}" heading="#{studybundle.networkHarvestedTermsofUseHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{!empty studyPage.studyUI.metadata.harvestDVNTermsOfUse}"/>
+                    <ice:outputText value="#{studyPage.studyUI.metadata.harvestDVNTermsOfUse}" rendered="#{!empty studyPage.studyUI.metadata.harvestDVNTermsOfUse}" escape="false"/>
 
                   </ice:panelGrid>
                   <div jsfc="ice:panelGroup" id="groupPanel15" styleClass="vdcStudyInfoHeader" rendered="#{!studyPage.notesIsEmpty}">
@@ -524,7 +524,7 @@
                         <ice:graphicImage value="/resources/images/icon_info.gif" styleClass="dvn_icon"/>
                         <ice:outputText value=" Use the check boxes next to the file name to download multiple files. Data files will be downloaded in their default format. You can also download all the files in a category by checking the box next to the category name. You will be prompted to save a single archive file. Study files that have restricted access will not be downloaded."/>
                     </div>
-                    <div jsfc="ice:panelGroup" rendered="#{!empty studyPage.studyUI.study.harvestHoldings and studyPage.studyUI.study.isHarvested}">
+                    <div jsfc="ice:panelGroup" rendered="#{!empty studyPage.studyUI.metadata.harvestHoldings and studyPage.studyUI.study.isHarvested}">
                         <p>
                             <ice:graphicImage value="/resources/images/icon_warning.18.png" styleClass="dvn_icon"/>
                             <ice:outputText value=" Files for this study may also be accessed from their "/>
@@ -590,7 +590,7 @@
                                           <ice:graphicImage styleClass="vdcNoBorders" value="/FileDownload/?fileId=#{studyFileUI.studyFile.id}&amp;imageThumb" alt="Thumbnail"/>
                                         </div>
                                         <div jsfc="ice:panelGroup" styleClass="vdcStudyFileRowFileName">
-                                          <ice:outputText id="outputText15" value="#{studyFileUI.studyFile.fileName}"/>
+                                          <ice:outputText id="outputText15" value="#{studyFileUI.fileMetadata.label}"/>
                                           <ice:inputHidden id="vdcIdforFile" value="#{studyFileUI.vdcId}"/>
                                           <br/>
                                           <ice:outputText styleClass="vdcStudyFileRowFileDetails" value="#{studyFileUI.userFriendlyFileType}"/>
@@ -621,7 +621,7 @@
                                     </ice:column>
                                     <ice:column id="column13">
                                       <div jsfc="ice:panelGroup">
-                                        <ice:outputText styleClass="vdcStudyDesc" id="outputText17" value="#{studyFileUI.studyFile.description}"/>
+                                        <ice:outputText styleClass="vdcStudyDesc" id="outputText17" value="#{studyFileUI.fileMetadata.description}"/>
                                       </div>
                                     </ice:column>
                                     <!-- SUBSET/ANALYZE TABLE COLUMNS -->
@@ -668,7 +668,7 @@
                                               <ice:outputText value="View Data Citation [+]"/>
                                           </ice:outputLink>
                                           <div jsfc="ice:panelGroup" style="display: none;">
-                                              <ice:outputText escape="false" value="#{studyPage.studyUI.study.citation} #{studyFileUI.studyFile.fileName} [fileDscr/fileName (DDI)] #{studyFileUI.studyFile.unf}"/>
+                                              <ice:outputText escape="false" value="#{studyPage.studyUI.metadata.citation} #{studyFileUI.studyFile.fileName} [fileDscr/fileName (DDI)] #{studyFileUI.studyFile.unf}"/>
                                           </div>
                                       </div>
                                     </ice:column>

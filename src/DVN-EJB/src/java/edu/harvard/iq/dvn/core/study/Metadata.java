@@ -63,16 +63,16 @@ public class Metadata implements java.io.Serializable {
         this.id = id;
     }
     @OneToOne(mappedBy="metadata")
-    private Study study;
+    private StudyVersion studyVersion;
 
- /*   public Study getStudy() {
-        return study;
+    public StudyVersion getStudyVersion() {
+        return studyVersion;
     }
 
-    public void setStudy(Study study) {
-        this.study = study;
+    public void setStudyVersion(StudyVersion studyVersion) {
+        this.studyVersion = studyVersion;
     }
-*/
+
     
     @OneToOne(mappedBy="metadata")
     private Template template;
@@ -136,7 +136,7 @@ public class Metadata implements java.io.Serializable {
         copyTarget.setSeriesInformation(seriesInformation);
         copyTarget.setSeriesName(seriesName);
         copyTarget.setSpecialPermissions(specialPermissions);
-        copyTarget.setStudyVersion(studyVersion);
+        copyTarget.setStudyVersionText(studyVersionText);
         copyTarget.setSubTitle(subTitle);
         copyTarget.setTimeMethod(timeMethod);
         copyTarget.setTimePeriodCoveredEnd(timePeriodCoveredEnd);
@@ -621,23 +621,23 @@ public class Metadata implements java.io.Serializable {
     /**
      * Holds value of property studyVersion.
      */
-    @Column(columnDefinition="TEXT")
-    private String studyVersion;
+    @Column(name="studyVersion",columnDefinition="TEXT")
+    private String studyVersionText;
     
     /**
      * Getter for property studyVersion.
      * @return Value of property studyVersion.
      */
-    public String getStudyVersion() {
-        return this.studyVersion;
+    public String getStudyVersionText() {
+        return this.studyVersionText;
     }
     
     /**
      * Setter for property studyVersion.
      * @param studyVersion New value of property studyVersion.
      */
-    public void setStudyVersion(String studyVersion) {
-        this.studyVersion = studyVersion;
+    public void setStudyVersionText(String studyVersionText) {
+        this.studyVersionText = studyVersionText;
     }
     
     /**
@@ -2043,6 +2043,92 @@ public class Metadata implements java.io.Serializable {
 
     public void setHarvestDVNTermsOfUse(String harvestDVNTermsOfUse) {
         this.harvestDVNTermsOfUse = harvestDVNTermsOfUse;
+    }
+
+    public String getCitation() {
+        return getCitation(true);
+    }
+
+
+    public String getCitation(boolean isOnlineVersion) {
+
+        Study study = getStudy();
+
+        String str = "";
+        boolean includeAffiliation = false;
+        String authors = getAuthorsStr(includeAffiliation);
+        if (!StringUtil.isEmpty(authors)) {
+            str += authors;
+        }
+
+        if (!StringUtil.isEmpty(getDistributionDate())) {
+            if (!StringUtil.isEmpty(str)) {
+                str += ", ";
+            }
+            str += getDistributionDate();
+        } else {
+            if (!StringUtil.isEmpty(getProductionDate())) {
+                if (!StringUtil.isEmpty(str)) {
+                    str += ", ";
+                }
+                str += getProductionDate();
+            }
+        }
+        if (!StringUtil.isEmpty(getTitle())) {
+            if (!StringUtil.isEmpty(str)) {
+                str += ", ";
+            }
+            str += "\"" + getTitle() + "\"";
+        }
+        if (!StringUtil.isEmpty(study.getStudyId())) {
+            if (!StringUtil.isEmpty(str)) {
+                str += ", ";
+            }
+            if (isOnlineVersion) {
+                str += "<a href='" + study.getHandleURL() + "'>" + study.getGlobalId() + "</a>";
+            } else {
+                str += study.getHandleURL();
+            }
+
+
+        }
+
+        if (!StringUtil.isEmpty(getUNF())) {
+            if (!StringUtil.isEmpty(str)) {
+                str += " ";
+            }
+            str += getUNF();
+        }
+        String distributorNames = getDistributorNames();
+        if (distributorNames.length() > 0) {
+            str += " " + distributorNames;
+            str += " [Distributor]";
+        }
+
+        return str;
+    }
+
+    public boolean isTermsOfUseEnabled() {
+        // we might make this a true boolean stored in the db at some point;
+        // for now, just check if any of the "terms of use" fields are not empty
+
+        // terms of use fields are those from the "use statement" part of the ddi
+        if ( !StringUtil.isEmpty(getConfidentialityDeclaration()) ) { return true; }
+        if ( !StringUtil.isEmpty(getSpecialPermissions()) ) { return true; }
+        if ( !StringUtil.isEmpty(getRestrictions()) ) { return true; }
+        if ( !StringUtil.isEmpty(getContact()) ) { return true; }
+        if ( !StringUtil.isEmpty(getCitationRequirements()) ) { return true; }
+        if ( !StringUtil.isEmpty(getDepositorRequirements()) ) { return true; }
+        if ( !StringUtil.isEmpty(getConditions()) ) { return true; }
+        if ( !StringUtil.isEmpty(getDisclaimer()) ) { return true; }
+        if ( !StringUtil.isEmpty(getHarvestDVNTermsOfUse()) ) { return true; }
+        if ( !StringUtil.isEmpty(getHarvestDVTermsOfUse()) ) { return true; }
+
+        return false;
+    }
+
+    public Study getStudy() {
+        return getStudyVersion().getStudy();
     }
 
 

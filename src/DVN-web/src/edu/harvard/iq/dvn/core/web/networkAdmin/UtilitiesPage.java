@@ -70,6 +70,8 @@ import com.icesoft.faces.webapp.xmlhttp.FatalRenderingException;
 import com.icesoft.faces.webapp.xmlhttp.PersistentFacesState;
 import com.icesoft.faces.webapp.xmlhttp.RenderingException;
 import com.icesoft.faces.webapp.xmlhttp.TransientRenderingException;
+import edu.harvard.iq.dvn.core.study.FileMetadata;
+import edu.harvard.iq.dvn.core.study.StudyFileServiceLocal;
 import edu.harvard.iq.dvn.core.util.StringUtil;
 import java.util.EventObject;
 import javax.faces.context.ExternalContext;
@@ -84,6 +86,7 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable, 
     private static final Logger logger = Logger.getLogger("edu.harvard.iq.dvn.core.web.networkAdmin.UtilitiesPage");
             
     @EJB StudyServiceLocal studyService;
+    @EJB StudyFileServiceLocal studyFileService;
     @EJB IndexServiceLocal indexService;
     @EJB HarvestStudyServiceLocal harvestStudyService;
     @EJB HarvestingDataverseServiceLocal harvestingDataverseService;    
@@ -497,13 +500,15 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable, 
   
     public String determineFileTypeForExtension_action() {
         try {
-            List<StudyFile> studyFiles = studyService.getStudyFilesByExtension(fileExtension);
+            // TODO: VERSION:
+            List<FileMetadata> studyFiles = studyFileService.getStudyFilesByExtension(fileExtension);
             Map<String,Integer> fileTypeCounts = new HashMap<String,Integer>();
             
-            for ( StudyFile sf : studyFiles ) {
-                String newFileType = FileUtil.determineFileType( sf );     
+            for ( FileMetadata fmd : studyFiles ) {
+                StudyFile sf = fmd.getStudyFile();
+                String newFileType = FileUtil.determineFileType( fmd );
                 sf.setFileType( newFileType );
-                studyService.updateStudyFile(sf);
+                studyFileService.updateStudyFile(sf);
                 
                 Integer count = fileTypeCounts.get(newFileType);
                 if ( fileTypeCounts.containsKey(newFileType)) {
@@ -534,9 +539,9 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable, 
             for (Iterator<Long>  iter = ((List<Long>) tokenizedLists.get("idList")).iterator(); iter.hasNext();) {
                 Long studyId = iter.next();
                 Study study = studyService.getStudy(studyId);
-                    
-                for ( StudyFile sf : study.getStudyFiles() ) {
-                    sf.setFileType( FileUtil.determineFileType( sf ) );
+// TODO: VERSION:
+            for ( FileMetadata fmd : study.getReleasedVersion().getFileMetadatas() ) {
+                    fmd.getStudyFile().setFileType( FileUtil.determineFileType( fmd ) );
                 } 
                 
                 studyService.updateStudy(study);

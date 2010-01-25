@@ -37,6 +37,7 @@ import edu.harvard.iq.dvn.core.study.StudyFile;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.study.RemoteAccessAuth;
 import edu.harvard.iq.dvn.core.study.DataVariable;
+import edu.harvard.iq.dvn.core.study.StudyFileServiceLocal;
 import edu.harvard.iq.dvn.core.study.TabularDataFile;
 import edu.harvard.iq.dvn.core.study.VariableCategory;
 
@@ -61,12 +62,6 @@ import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.WritableByteChannel;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
@@ -76,15 +71,12 @@ import java.util.*;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.net.URLEncoder;
 import javax.ejb.EJB;
-import javax.ejb.EJBException;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
@@ -97,12 +89,9 @@ import java.util.LinkedHashMap;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
-import org.apache.commons.lang.StringUtils;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.builder.*;
 
-import edu.harvard.iq.dvn.ingest.dsb.*;
 import edu.harvard.iq.dvn.ingest.dsb.impl.*;
 import java.io.BufferedOutputStream;
 import java.util.logging.Logger;
@@ -187,6 +176,8 @@ public class FileDownloadServlet extends HttpServlet {
     StudyServiceLocal studyService;
     @EJB
     VDCServiceLocal vdcService;
+    @EJB
+    StudyFileServiceLocal studyFileService;
 
 
 
@@ -227,12 +218,14 @@ public class FileDownloadServlet extends HttpServlet {
         // Stores the title, ID, and citation data of the requested study
         if (sessionMap.containsKey(studyUIclassName)) {
 
+            // TODO: VERSION: check how study ui is generated
             StudyUI sui = (StudyUI) sessionMap.get(studyUIclassName);
 
+            // TODO: VERSION:
             // Stores the title, Id, and Citation of the requested study
-            studyTitle = sui.getStudy().getTitle();
+            studyTitle = sui.getMetadata().getTitle();
             studyId = sui.getStudy().getId();
-            citation = sui.getStudy().getCitation(false);
+            citation = sui.getMetadata().getCitation(false);
             
             dbgLog.fine("StudyUIclassName was found in the session Map");
             dbgLog.fine("Study Title="+studyTitle);
@@ -250,7 +243,7 @@ public class FileDownloadServlet extends HttpServlet {
             StudyFile file = null;
 
             try {
-                file = studyService.getStudyFile(new Long(fileId));
+                file = studyFileService.getStudyFile(new Long(fileId));
 
             } catch (Exception ex) {
                 if (ex.getCause() instanceof IllegalArgumentException) {
@@ -1382,7 +1375,6 @@ public class FileDownloadServlet extends HttpServlet {
             Study study = null;
             Collection files = new ArrayList();
             boolean createDirectoriesForCategories = false;
-            String catId = req.getParameter("catId");
             String studyId = req.getParameter("studyId");
 
             String fileManifest = "";
@@ -1394,21 +1386,10 @@ public class FileDownloadServlet extends HttpServlet {
                 for (String tok : idTokens) {
                     StudyFile sf;
                     try {
-                        sf = studyService.getStudyFile(new Long(tok));
+                        sf = studyFileService.getStudyFile(new Long(tok));
                         files.add(sf);
                     } catch (Exception ex) {
                         fileManifest = fileManifest + tok + " DOES NOT APPEAR TO BE A VALID FILE ID;\r\n";
-                    }
-                }
-            } else if (catId != null) {
-                try {
-                    FileCategory cat = studyService.getFileCategory(new Long(catId));
-                    study = cat.getStudy();
-                    files = cat.getStudyFiles();
-                } catch (Exception ex) {
-                    if (ex.getCause() instanceof IllegalArgumentException) {
-                        createErrorResponse404(res);
-                        return;
                     }
                 }
             } else if (studyId != null) {
@@ -1670,7 +1651,8 @@ public class FileDownloadServlet extends HttpServlet {
 			if (Success) {
 			    String zipEntryName = file.getFileName();
 			    if (createDirectoriesForCategories) {
-				String catName = new FileCategoryUI(file.getFileCategory()).getDownloadName();
+                // TODO: VERSION: change this to use a study version object
+				String catName = "";//new FileCategoryUI(file.getFileCategory()).getDownloadName();
 				zipEntryName = catName + "/" + zipEntryName;
 			    }
 			    zipEntryName = checkZipEntryName(zipEntryName, nameList);

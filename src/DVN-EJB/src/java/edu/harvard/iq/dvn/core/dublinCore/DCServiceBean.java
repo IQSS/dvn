@@ -28,10 +28,10 @@
  */
 package edu.harvard.iq.dvn.core.dublinCore;
 
+import edu.harvard.iq.dvn.core.study.Metadata;
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyAbstract;
 import edu.harvard.iq.dvn.core.study.StudyAuthor;
-import edu.harvard.iq.dvn.core.study.StudyDistributor;
 import edu.harvard.iq.dvn.core.study.StudyGeoBounding;
 import edu.harvard.iq.dvn.core.study.StudyKeyword;
 import edu.harvard.iq.dvn.core.study.StudyProducer;
@@ -40,7 +40,6 @@ import edu.harvard.iq.dvn.core.study.StudyTopicClass;
 import edu.harvard.iq.dvn.core.util.StringUtil;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -92,6 +91,8 @@ public class DCServiceBean implements DCServiceLocal {
 
       
     public void createDC(XMLStreamWriter xmlw, Study study) throws XMLStreamException {
+        // TODO: VERSION: should only be with released versions
+        Metadata metadata = study.getReleasedVersion().getMetadata();
 
         xmlw.writeStartElement("oai_dc:dc");
         xmlw.writeAttribute("xmlns:oai_dc", "http://www.openarchives.org/OAI/2.0/oai_dc/");
@@ -101,7 +102,7 @@ public class DCServiceBean implements DCServiceLocal {
 
         // Title
         xmlw.writeStartElement("dc:title");
-        xmlw.writeCharacters(study.getTitle());
+        xmlw.writeCharacters(metadata.getTitle());
         xmlw.writeEndElement();
 
         // Identifier
@@ -110,34 +111,34 @@ public class DCServiceBean implements DCServiceLocal {
         xmlw.writeEndElement();
 
         //Creator
-        for (StudyAuthor author : study.getStudyAuthors()) {
+        for (StudyAuthor author : metadata.getStudyAuthors()) {
             xmlw.writeStartElement("dc:creator");
             xmlw.writeCharacters(author.getName());
             xmlw.writeEndElement();
         }
 
         //Publisher
-        for (StudyProducer producer : study.getStudyProducers()) {
+        for (StudyProducer producer : metadata.getStudyProducers()) {
             xmlw.writeStartElement("dc:publisher");
             xmlw.writeCharacters(producer.getName());
             xmlw.writeEndElement();
         }
 
         // Date
-        if (!StringUtil.isEmpty(study.getProductionDate())) {
+        if (!StringUtil.isEmpty(metadata.getProductionDate())) {
             xmlw.writeStartElement("dc:date");
-            xmlw.writeCharacters(study.getProductionDate());
+            xmlw.writeCharacters(metadata.getProductionDate());
             xmlw.writeEndElement();
 
         }
 
         //Relation              
-        if (!StringUtil.isEmpty(study.getReplicationFor())) {
+        if (!StringUtil.isEmpty(metadata.getReplicationFor())) {
             xmlw.writeStartElement("dc:relation");
-            xmlw.writeCharacters(study.getReplicationFor());
+            xmlw.writeCharacters(metadata.getReplicationFor());
             xmlw.writeEndElement();
         } else {
-            for (StudyRelMaterial relMaterial : study.getStudyRelMaterials()) {
+            for (StudyRelMaterial relMaterial : metadata.getStudyRelMaterials()) {
                 xmlw.writeStartElement("dc:relation");
                 xmlw.writeCharacters(relMaterial.getText());
                 xmlw.writeEndElement();
@@ -145,46 +146,46 @@ public class DCServiceBean implements DCServiceLocal {
         }
 
         //Subject
-        for (StudyKeyword keyword : study.getStudyKeywords()) {
+        for (StudyKeyword keyword : metadata.getStudyKeywords()) {
             xmlw.writeStartElement("dc:subject");
             xmlw.writeCharacters(keyword.getValue());
             xmlw.writeEndElement();
         }
-        for (StudyTopicClass topicClass : study.getStudyTopicClasses()) {
+        for (StudyTopicClass topicClass : metadata.getStudyTopicClasses()) {
             xmlw.writeStartElement("dc:subject");
             xmlw.writeCharacters(topicClass.getValue());
             xmlw.writeEndElement();
         }
 
         // Description
-        for (StudyAbstract studyAbstract : study.getStudyAbstracts()) {
+        for (StudyAbstract studyAbstract : metadata.getStudyAbstracts()) {
             xmlw.writeStartElement("dc:description");
             xmlw.writeCharacters(studyAbstract.getText());
             xmlw.writeEndElement();
         }
         xmlw.writeStartElement("dc:description");
-        xmlw.writeCharacters("Citation: " + study.getCitation());
+        xmlw.writeCharacters("Citation: " + metadata.getCitation());
         xmlw.writeEndElement();
 
         // Coverage
-        writeCoverage(xmlw, study);
+        writeCoverage(xmlw, metadata);
 
         // Type
-        if (!StringUtil.isEmpty(study.getKindOfData())) {
+        if (!StringUtil.isEmpty(metadata.getKindOfData())) {
             xmlw.writeStartElement("dc:type");
-            xmlw.writeCharacters(study.getKindOfData());
+            xmlw.writeCharacters(metadata.getKindOfData());
             xmlw.writeEndElement();
         }
 
         // Source
-        if (!StringUtil.isEmpty(study.getDataSources())) {
+        if (!StringUtil.isEmpty(metadata.getDataSources())) {
             xmlw.writeStartElement("dc:source");
-            xmlw.writeCharacters(study.getDataSources());
+            xmlw.writeCharacters(metadata.getDataSources());
             xmlw.writeEndElement();
         }
 
         // Rights
-        writeRights(xmlw, study);
+        writeRights(xmlw, metadata);
 
         //End root element
         xmlw.writeEndElement();
@@ -192,7 +193,8 @@ public class DCServiceBean implements DCServiceLocal {
 
     }
 
-    private void writeRights(XMLStreamWriter xmlw, Study study) throws XMLStreamException {
+    private void writeRights(XMLStreamWriter xmlw, Metadata metadata) throws XMLStreamException {
+        Study study = metadata.getStudyVersion().getStudy();
         // Rights
         if (study.getOwner().isDownloadTermsOfUseEnabled() && !StringUtil.isEmpty(study.getOwner().getDownloadTermsOfUse())) {
             xmlw.writeStartElement("dc:rights");
@@ -200,107 +202,107 @@ public class DCServiceBean implements DCServiceLocal {
             xmlw.writeEndElement();
 
         }
-        if (!StringUtil.isEmpty(study.getConfidentialityDeclaration())) {
+        if (!StringUtil.isEmpty(metadata.getConfidentialityDeclaration())) {
             xmlw.writeStartElement("dc:rights");
-            xmlw.writeCharacters(study.getConfidentialityDeclaration());
+            xmlw.writeCharacters(metadata.getConfidentialityDeclaration());
             xmlw.writeEndElement();
 
 
         }
-        if (!StringUtil.isEmpty(study.getSpecialPermissions())) {
+        if (!StringUtil.isEmpty(metadata.getSpecialPermissions())) {
             xmlw.writeStartElement("dc:rights");
-            xmlw.writeCharacters(study.getSpecialPermissions());
+            xmlw.writeCharacters(metadata.getSpecialPermissions());
             xmlw.writeEndElement();
 
         }
-        if (!StringUtil.isEmpty(study.getRestrictions())) {
+        if (!StringUtil.isEmpty(metadata.getRestrictions())) {
             xmlw.writeStartElement("dc:rights");
-            xmlw.writeCharacters(study.getRestrictions());
+            xmlw.writeCharacters(metadata.getRestrictions());
             xmlw.writeEndElement();
         }
-        if (!StringUtil.isEmpty(study.getContact())) {
+        if (!StringUtil.isEmpty(metadata.getContact())) {
             xmlw.writeStartElement("dc:rights");
-            xmlw.writeCharacters(study.getContact());
+            xmlw.writeCharacters(metadata.getContact());
             xmlw.writeEndElement();
         }
-        if (!StringUtil.isEmpty(study.getCitationRequirements())) {
+        if (!StringUtil.isEmpty(metadata.getCitationRequirements())) {
             xmlw.writeStartElement("dc:rights");
-            xmlw.writeCharacters(study.getCitationRequirements());
+            xmlw.writeCharacters(metadata.getCitationRequirements());
             xmlw.writeEndElement();
         }
-        if (!StringUtil.isEmpty(study.getDepositorRequirements())) {
+        if (!StringUtil.isEmpty(metadata.getDepositorRequirements())) {
             xmlw.writeStartElement("dc:rights");
-            xmlw.writeCharacters(study.getDepositorRequirements());
+            xmlw.writeCharacters(metadata.getDepositorRequirements());
             xmlw.writeEndElement();
         }
-        if (!StringUtil.isEmpty(study.getConditions())) {
+        if (!StringUtil.isEmpty(metadata.getConditions())) {
             xmlw.writeStartElement("dc:rights");
-            xmlw.writeCharacters(study.getConditions());
+            xmlw.writeCharacters(metadata.getConditions());
             xmlw.writeEndElement();
         }
-        if (!StringUtil.isEmpty(study.getDisclaimer())) {
+        if (!StringUtil.isEmpty(metadata.getDisclaimer())) {
             xmlw.writeStartElement("dc:rights");
-            xmlw.writeCharacters(study.getDisclaimer());
+            xmlw.writeCharacters(metadata.getDisclaimer());
             xmlw.writeEndElement();
         }
     }
     
-    private void writeCoverage(XMLStreamWriter xmlw, Study study) throws XMLStreamException {
+    private void writeCoverage(XMLStreamWriter xmlw, Metadata metadata) throws XMLStreamException {
         // Time Period Covered
         String elementText=null;
-        if (!StringUtil.isEmpty(study.getTimePeriodCoveredStart()) ||!StringUtil.isEmpty(study.getTimePeriodCoveredEnd()) ) {      
+        if (!StringUtil.isEmpty(metadata.getTimePeriodCoveredStart()) ||!StringUtil.isEmpty(metadata.getTimePeriodCoveredEnd()) ) {
             xmlw.writeStartElement("dc:coverage");
             elementText ="Time Period Covered: ";
-             if (!StringUtil.isEmpty(study.getTimePeriodCoveredStart())) {
-                  elementText+=study.getTimePeriodCoveredStart();
+             if (!StringUtil.isEmpty(metadata.getTimePeriodCoveredStart())) {
+                  elementText+=metadata.getTimePeriodCoveredStart();
              }
-             if (!StringUtil.isEmpty(study.getTimePeriodCoveredEnd())) {
-                  if (!StringUtil.isEmpty(study.getTimePeriodCoveredStart())) {
+             if (!StringUtil.isEmpty(metadata.getTimePeriodCoveredEnd())) {
+                  if (!StringUtil.isEmpty(metadata.getTimePeriodCoveredStart())) {
                       elementText+=" - ";
                   }
-                  elementText+=study.getTimePeriodCoveredEnd();                
+                  elementText+=metadata.getTimePeriodCoveredEnd();
              }
              xmlw.writeCharacters(elementText);
              xmlw.writeEndElement();
         }
  
         // Date Of Collection
-        if (!StringUtil.isEmpty(study.getDateOfCollectionStart()) ||!StringUtil.isEmpty(study.getDateOfCollectionEnd()) ) {      
+        if (!StringUtil.isEmpty(metadata.getDateOfCollectionStart()) ||!StringUtil.isEmpty(metadata.getDateOfCollectionEnd()) ) {
             xmlw.writeStartElement("dc:coverage");
             elementText ="Date of Collection: ";
-             if (!StringUtil.isEmpty(study.getDateOfCollectionStart())) {
-                  elementText+=study.getDateOfCollectionStart();
+             if (!StringUtil.isEmpty(metadata.getDateOfCollectionStart())) {
+                  elementText+=metadata.getDateOfCollectionStart();
              }
-             if (!StringUtil.isEmpty(study.getDateOfCollectionEnd())) {
-                  if (!StringUtil.isEmpty(study.getDateOfCollectionStart())) {
+             if (!StringUtil.isEmpty(metadata.getDateOfCollectionEnd())) {
+                  if (!StringUtil.isEmpty(metadata.getDateOfCollectionStart())) {
                       elementText+=" - ";
                   }
-                  elementText+=study.getDateOfCollectionEnd();                
+                  elementText+=metadata.getDateOfCollectionEnd();
              }
              xmlw.writeCharacters(elementText);
              xmlw.writeEndElement();
         }
         
         //Country/Nation
-        if (!StringUtil.isEmpty(study.getCountry())) {
+        if (!StringUtil.isEmpty(metadata.getCountry())) {
             xmlw.writeStartElement("dc:coverage");
-            xmlw.writeCharacters("Country/Nation: "+study.getCountry());
+            xmlw.writeCharacters("Country/Nation: "+metadata.getCountry());
             xmlw.writeEndElement();
         }
        
        // Geographic Data 
-       if (!StringUtil.isEmpty(study.getGeographicCoverage())) {
+       if (!StringUtil.isEmpty(metadata.getGeographicCoverage())) {
             xmlw.writeStartElement("dc:coverage");
-            xmlw.writeCharacters("Geographic Coverage: "+study.getGeographicCoverage());
+            xmlw.writeCharacters("Geographic Coverage: "+metadata.getGeographicCoverage());
             xmlw.writeEndElement();
        }
-        if (!StringUtil.isEmpty(study.getGeographicUnit())) {
+        if (!StringUtil.isEmpty(metadata.getGeographicUnit())) {
             xmlw.writeStartElement("dc:coverage");
-            xmlw.writeCharacters("Geographic Unit: "+study.getGeographicUnit());
+            xmlw.writeCharacters("Geographic Unit: "+metadata.getGeographicUnit());
             xmlw.writeEndElement();
        }
        
-       for (StudyGeoBounding geoBounding : study.getStudyGeoBoundings()) {
+       for (StudyGeoBounding geoBounding : metadata.getStudyGeoBoundings()) {
              xmlw.writeStartElement("dc:coverage");
              xmlw.writeCharacters("Geographic Bounding: " + geoBounding );
              xmlw.writeEndElement();

@@ -28,6 +28,7 @@
  */
 package edu.harvard.iq.dvn.core.marc;
 
+import edu.harvard.iq.dvn.core.study.Metadata;
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyAbstract;
 import edu.harvard.iq.dvn.core.study.StudyOtherId;
@@ -43,7 +44,6 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
-import javax.xml.bind.JAXBException;
 import org.marc4j.MarcStreamWriter;
 import org.marc4j.marc.DataField;
 import org.marc4j.marc.MarcFactory;
@@ -68,18 +68,20 @@ public class MarcServiceBean implements MarcServiceLocal {
 
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     public void exportStudy(Study study, OutputStream out) throws IOException {
+        // TODO: VERSION: should only be with released versions
+        Metadata metadata = study.getReleasedVersion().getMetadata();
 
         MarcFactory factory = MarcFactory.newInstance();
         Record record = factory.newRecord();
 
 
         DataField title = factory.newDataField("245", '0', ' ');
-        title.addSubfield(factory.newSubfield('a', study.getTitle()));
-        if (!StringUtil.isEmpty(study.getAuthorsStr())) {
-            title.addSubfield(factory.newSubfield('c', study.getAuthorsStr()));
+        title.addSubfield(factory.newSubfield('a', metadata.getTitle()));
+        if (!StringUtil.isEmpty(metadata.getAuthorsStr())) {
+            title.addSubfield(factory.newSubfield('c', metadata.getAuthorsStr()));
         }
-        if (!StringUtil.isEmpty(study.getDistributionDate())) {
-            title.addSubfield(factory.newSubfield('s', study.getDistributionDate()));
+        if (!StringUtil.isEmpty(metadata.getDistributionDate())) {
+            title.addSubfield(factory.newSubfield('s', metadata.getDistributionDate()));
         }
         record.addVariableField(title);
 
@@ -88,12 +90,12 @@ public class MarcServiceBean implements MarcServiceLocal {
         record.addVariableField(globalId);
 
 
-        for (StudyOtherId studyOtherId : study.getStudyOtherIds()) {
+        for (StudyOtherId studyOtherId : metadata.getStudyOtherIds()) {
             DataField otherId = factory.newDataField("440", ' ', ' ');
             otherId.addSubfield(factory.newSubfield('v', studyOtherId.getOtherId()));
             record.addVariableField(otherId);
         }
-        for (StudyAbstract studyAbstract : study.getStudyAbstracts()) {
+        for (StudyAbstract studyAbstract : metadata.getStudyAbstracts()) {
             DataField abstractField = factory.newDataField("520", ' ', ' ');
             abstractField.addSubfield(factory.newSubfield('a', studyAbstract.getText()));
             record.addVariableField(abstractField);
@@ -107,7 +109,7 @@ public class MarcServiceBean implements MarcServiceLocal {
         dataverseUrl.addSubfield(factory.newSubfield('d', "http://" + PropertyUtil.getHostUrl() + "/dvn/study?globalId=" + study.getGlobalId()));
         record.addVariableField(dataverseUrl);
         
-        for (StudyTopicClass studyTopicClass : study.getStudyTopicClasses()) {
+        for (StudyTopicClass studyTopicClass : metadata.getStudyTopicClasses()) {
             DataField topicClass = factory.newDataField("650", ' ', ' ');
             topicClass.addSubfield(factory.newSubfield('a', studyTopicClass.getValue()));
             record.addVariableField(topicClass);

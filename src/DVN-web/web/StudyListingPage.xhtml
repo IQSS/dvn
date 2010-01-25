@@ -148,7 +148,7 @@
                     <div class="dvnStudyListStudyInfo">
                       <div jsfc="ice:panelGroup" styleClass="#{!studyUI.study.restricted ? 'dvn_nostyle' : (studyUI.studyRestricted ? 'dvnStudyRestricted' : 'dvnStudyPublic')}" id="groupPanel1">
                         <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyUI.study.id}&amp;studyListingIndex=#{StudyListingPage.studyListingIndex}" id="hyperlink3">
-                          <ice:outputText id="hyperlink3Text" value="#{studyUI.study.title}"/>
+                          <ice:outputText id="hyperlink3Text" value="#{studyUI.metadata.title}"/>
                         </ice:outputLink>
                         <ice:outputText id="outputText13" styleClass="dvnStudyListStudyAuthor" value="by #{studyUI.authors}" rendered="#{studyUI.authors != null and studyUI.authors != ''}"/>
                       </div>
@@ -169,7 +169,7 @@
                         <ice:outputText id="outputText14" styleClass="dvnStudyListTableAbstract" escape="false" value="Abstract: #{studyUI.truncatedAbstracts}"/>
                       </div>
                       <!-- Optional search fields -->
-                      <div jsfc="ice:panelGroup" styleClass="dvnStudyListTableOptionalField" rendered="#{!empty StudyListingPage.studyFields[sfc.productionDate] and !empty studyUI.study.productionDate}">
+                      <div jsfc="ice:panelGroup" styleClass="dvnStudyListTableOptionalField" rendered="#{!empty StudyListingPage.studyFields[sfc.productionDate] and !empty studyUI.metadata.productionDate}">
                           <ice:outputText value="Production Date:" styleClass="dvnStudyListTableOptionalFieldLabel"/>
                           <ice:outputText value="#{studyUI.productionDate}"/>
                       </div>
@@ -177,7 +177,7 @@
                           <ice:outputText value="Producer:" styleClass="dvnStudyListTableOptionalFieldLabel"/>
                           <ice:outputText value="#{studyUI.producers}" escape="false"/>
                       </div>
-                      <div jsfc="ice:panelGroup" styleClass="dvnStudyListTableOptionalField" rendered="#{!empty StudyListingPage.studyFields[sfc.distributionDate] and !empty studyUI.study.distributionDate}">
+                      <div jsfc="ice:panelGroup" styleClass="dvnStudyListTableOptionalField" rendered="#{!empty StudyListingPage.studyFields[sfc.distributionDate] and !empty studyUI.metadata.distributionDate}">
                           <ice:outputText value="Distribution Date:" styleClass="dvnStudyListTableOptionalFieldLabel"/>
                           <ice:outputText value="#{studyUI.distributionDate}" escape="false"/>
                       </div>
@@ -185,9 +185,9 @@
                           <ice:outputText value="Distributor:" styleClass="dvnStudyListTableOptionalFieldLabel"/>
                           <ice:outputText value="#{studyUI.distributors}" escape="false"/>
                       </div>
-                      <div jsfc="ice:panelGroup" styleClass="dvnStudyListTableOptionalField" rendered="#{!empty StudyListingPage.studyFields[sfc.replicationFor] and !empty studyUI.study.replicationFor}">
+                      <div jsfc="ice:panelGroup" styleClass="dvnStudyListTableOptionalField" rendered="#{!empty StudyListingPage.studyFields[sfc.replicationFor] and !empty studyUI.metadata.replicationFor}">
                           <ice:outputText value="Replication For:" styleClass="dvnStudyListTableOptionalFieldLabel"/>
-                          <ice:outputText value="#{studyUI.study.replicationFor}" escape="false"/>
+                          <ice:outputText value="#{studyUI.metadata.replicationFor}" escape="false"/>
                       </div>
                       <div jsfc="ice:panelGroup" styleClass="dvnStudyListTableOptionalField" rendered="#{!empty StudyListingPage.studyFields[sfc.relatedPublications] and !empty studyUI.relPublications}">
                           <ice:outputText value="Related Publications:" styleClass="dvnStudyListTableOptionalFieldLabel"/>

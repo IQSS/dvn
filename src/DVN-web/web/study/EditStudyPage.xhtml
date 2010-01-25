@@ -91,7 +91,7 @@
             </div>
           </div>
           <div class="dvn_sectionTitle dvn_sectionTitleLinksL">
-            <ice:outputText value="#{EditStudyPage.study.title}"/>
+            <ice:outputText value="#{EditStudyPage.metadata.title}"/>
           </div>
           <div class="dvn_sectionTitleLinksR">
             <div jsfc="ice:panelGroup" id="groupPanel10" styleClass="vdcTextRight dvnFormMargin">
@@ -138,7 +138,7 @@
                       <ice:graphicImage id="image40" value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.title].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup" id="groupPanel16">
-                      <ice:inputText binding="#{EditStudyPage.inputTitle}" id="input_title" size="90" value="#{EditStudyPage.study.title}" />
+                      <ice:inputText binding="#{EditStudyPage.inputTitle}" id="input_title" size="90" value="#{EditStudyPage.metadata.title}" />
                       <ice:message styleClass="errorMessage" for="input_title"/>
                     </div>
                   </ice:panelGrid>
@@ -152,7 +152,7 @@
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.subTitle].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
-                      <ice:inputText id="input_subtitle" size="90" value="#{EditStudyPage.study.subTitle}" required="#{EditStudyPage.studyMap[sfc.subTitle].required}"/>
+                      <ice:inputText id="input_subtitle" size="90" value="#{EditStudyPage.metadata.subTitle}" required="#{EditStudyPage.studyMap[sfc.subTitle].required}"/>
                       <ice:message styleClass="errorMessage" for="input_subtitle"/>
                     </div>
                   </ice:panelGrid>
@@ -183,7 +183,7 @@
                                      styleClass="vdcEditStudyInnerTable"
                                      columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
                                      binding="#{EditStudyPage.dataTableOtherIds}"
-                                     value="#{EditStudyPage.study.studyOtherIds}" var="currentRow" width="100%">
+                                     value="#{EditStudyPage.metadata.studyOtherIds}" var="currentRow" width="100%">
                         <ice:column>
                           <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                             <dvn:inlinehelp helpMessage="#{editstudybundle.otheridHelp}" linkText="#{editstudybundle.otheridLabel}" heading="#{editstudybundle.otheridHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
@@ -224,7 +224,7 @@
                         <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                                        styleClass="vdcEditStudyInnerTable" columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
                                        binding="#{EditStudyPage.dataTableAuthors}"
-                                       value="#{EditStudyPage.study.studyAuthors}" var="currentAuthor">
+                                       value="#{EditStudyPage.metadata.studyAuthors}" var="currentAuthor">
                           <ice:column>
                             <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                               <dvn:inlinehelp helpMessage="#{editstudybundle.authorHelp}" linkText="#{editstudybundle.authorLabel}" heading="#{editstudybundle.authorHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
@@ -278,7 +278,7 @@
                                      styleClass="vdcEditStudyInnerTable"
                                      columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
                                      binding="#{EditStudyPage.dataTableProducers}"
-                                     value="#{EditStudyPage.study.studyProducers}" var="currentRow" width="100%">
+                                     value="#{EditStudyPage.metadata.studyProducers}" var="currentRow" width="100%">
                         <ice:column>
                           <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                             <dvn:inlinehelp helpMessage="#{editstudybundle.producerHelp}" linkText="#{editstudybundle.producerLabel}" heading="#{editstudybundle.producerHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
@@ -358,7 +358,7 @@
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.productionDate].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup" id="groupPanel19">
-                      <ice:inputText id="input_productionDate" styleClass="formDateFormat" value="#{EditStudyPage.study.productionDate}"  required="#{EditStudyPage.studyMap[sfc.productionDate].required}">
+                      <ice:inputText id="input_productionDate" styleClass="formDateFormat" value="#{EditStudyPage.metadata.productionDate}"  required="#{EditStudyPage.studyMap[sfc.productionDate].required}">
                         <f:validator validatorId="DateValidator"/>
                       </ice:inputText>
                       <ice:outputText value="#{editstudybundle.dateFormatDescription}"/>
@@ -376,7 +376,7 @@
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.productionPlace].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup" id="groupPanel20">
-                      <ice:inputText id="input_productionPlace" size="45" value="#{EditStudyPage.study.productionPlace}" required="#{EditStudyPage.studyMap[sfc.productionPlace].required}"/>
+                      <ice:inputText id="input_productionPlace" size="45" value="#{EditStudyPage.metadata.productionPlace}" required="#{EditStudyPage.studyMap[sfc.productionPlace].required}"/>
                       <ice:message styleClass="errorMessage" for="input_productionPlace"/>
                     </div>
                   </ice:panelGrid>
@@ -390,7 +390,7 @@
                                      styleClass="vdcEditStudyInnerTable"
                                      columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
                                      binding="#{EditStudyPage.dataTableSoftware}"
-                                     value="#{EditStudyPage.study.studySoftware}" var="currentRow">
+                                     value="#{EditStudyPage.metadata.studySoftware}" var="currentRow">
                         <ice:column>
                           <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                             <dvn:inlinehelp helpMessage="#{editstudybundle.softwareNameHelp}" linkText="#{editstudybundle.softwareNameLabel}" heading="#{editstudybundle.softwareNameHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
@@ -432,7 +432,7 @@
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.fundingAgency].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
-                      <ice:inputText id="input_fundingAgency" size="45" value="#{EditStudyPage.study.fundingAgency}" required="#{EditStudyPage.studyMap[sfc.fundingAgency].required}"/>
+                      <ice:inputText id="input_fundingAgency" size="45" value="#{EditStudyPage.metadata.fundingAgency}" required="#{EditStudyPage.studyMap[sfc.fundingAgency].required}"/>
                       <ice:message styleClass="errorMessage" for="input_fundingAgency"/>
                     </div>
                   </ice:panelGrid>
@@ -445,7 +445,7 @@
                                      styleClass="vdcEditStudyInnerTable"
                                      columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
                                      binding="#{EditStudyPage.dataTableGrants}"
-                                     value="#{EditStudyPage.study.studyGrants}" var="currentRow" width="100%">
+                                     value="#{EditStudyPage.metadata.studyGrants}" var="currentRow" width="100%">
                         <ice:column>
                           <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                             <dvn:inlinehelp helpMessage="#{editstudybundle.grantNumberHelp}" linkText="#{editstudybundle.grantNumberLabel}" heading="#{editstudybundle.grantNumberHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
@@ -485,7 +485,7 @@
                                      styleClass="vdcEditStudyInnerTable"
                                      columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
                                      binding="#{EditStudyPage.dataTableDistributors}"
-                                     value="#{EditStudyPage.study.studyDistributors}" var="currentRow" width="100%">
+                                     value="#{EditStudyPage.metadata.studyDistributors}" var="currentRow" width="100%">
                         <ice:column>
                           <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                             <dvn:inlinehelp helpMessage="#{editstudybundle.distributorHelp}" linkText="#{editstudybundle.distributorLabel}" heading="#{editstudybundle.distributorHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
@@ -570,7 +570,7 @@
                       <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1">
                         <dvn:inlinehelp helpMessage="#{editstudybundle.distributorContactHelp}" linkText="#{editstudybundle.distributorContactLabel}" heading="#{editstudybundle.distributorContactHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                         <br/>
-                        <ice:inputText binding ="#{EditStudyPage.inputDistributorContact}" id="input_distributorContact" size="45"  value="#{EditStudyPage.study.distributorContact}"  required="#{EditStudyPage.studyMap[sfc.distributorContact].required}"/>
+                        <ice:inputText binding ="#{EditStudyPage.inputDistributorContact}" id="input_distributorContact" size="45"  value="#{EditStudyPage.metadata.distributorContact}"  required="#{EditStudyPage.studyMap[sfc.distributorContact].required}"/>
                         <ice:message styleClass="errorMessage" for="input_distributorContact"/>
                       </div>
                       <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField">
@@ -578,7 +578,7 @@
                         <br/>
                         <ice:inputText id="distributorContactAffiliation" size="45" maxlength="255"
                                        binding ="#{EditStudyPage.inputDistributorContactAffiliation}"
-                                       value="#{EditStudyPage.study.distributorContactAffiliation}"
+                                       value="#{EditStudyPage.metadata.distributorContactAffiliation}"
                                        validator="#{EditStudyPage.validateDistributorContact}"
                                        required="#{EditStudyPage.studyMap[sfc.distributorContactAffiliation].required}"
                                        styleClass="formHtmlEnabled">
@@ -589,7 +589,7 @@
                       <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3 vdcEditStudyGroupField " >
                         <dvn:inlinehelp helpMessage="#{editstudybundle.distributorContactEmailHelp}" linkText="#{editstudybundle.distributorContactEmailLabel}" heading="#{editstudybundle.distributorContactEmailHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                         <br/>
-                        <ice:inputText binding ="#{EditStudyPage.inputDistributorContactEmail}" id="input_distributorContactEmail" size="45" value="#{EditStudyPage.study.distributorContactEmail}" required="#{EditStudyPage.studyMap[sfc.distributorContactEmail].required}"/>
+                        <ice:inputText binding ="#{EditStudyPage.inputDistributorContactEmail}" id="input_distributorContactEmail" size="45" value="#{EditStudyPage.metadata.distributorContactEmail}" required="#{EditStudyPage.studyMap[sfc.distributorContactEmail].required}"/>
                         <ice:message styleClass="errorMessage" for="input_distributorContactEmail"/>
                       </div>
                     </div>
@@ -605,7 +605,7 @@
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.distributionDate].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup" id="groupPanel26" >
-                      <ice:inputText id="input_distributionDate" styleClass="formDateFormat" value="#{EditStudyPage.study.distributionDate}" required="#{EditStudyPage.studyMap[sfc.distributionDate].required}">
+                      <ice:inputText id="input_distributionDate" styleClass="formDateFormat" value="#{EditStudyPage.metadata.distributionDate}" required="#{EditStudyPage.studyMap[sfc.distributionDate].required}">
                         <f:validator validatorId="DateValidator"/>
                       </ice:inputText>
                       <ice:outputText value="#{editstudybundle.dateFormatDescription}"/>
@@ -623,7 +623,7 @@
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.depositor].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup" id="groupPanel27" >
-                      <ice:inputText id="input_depositor" size="45"  value="#{EditStudyPage.study.depositor}" required="#{EditStudyPage.studyMap[sfc.depositor].required}"/>
+                      <ice:inputText id="input_depositor" size="45"  value="#{EditStudyPage.metadata.depositor}" required="#{EditStudyPage.studyMap[sfc.depositor].required}"/>
                       <ice:message styleClass="errorMessage" for="input_depositor"/>
                     </div>
                   </ice:panelGrid>
@@ -638,7 +638,7 @@
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.dateOfDeposit].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup" id="groupPanel28" styleClass="vdcEditStudyField">
-                      <ice:inputText id="input_dateOfDeposit" styleClass="formDateFormat" value="#{EditStudyPage.study.dateOfDeposit}" required="#{EditStudyPage.studyMap[sfc.dateOfDeposit].required}">
+                      <ice:inputText id="input_dateOfDeposit" styleClass="formDateFormat" value="#{EditStudyPage.metadata.dateOfDeposit}" required="#{EditStudyPage.studyMap[sfc.dateOfDeposit].required}">
                         <f:validator validatorId="DateValidator"/>
                       </ice:inputText>
                       <ice:outputText value="#{editstudybundle.dateFormatDescription}"/>
@@ -660,7 +660,7 @@
                         <dvn:inlinehelp helpMessage="#{editstudybundle.seriesHelp}" linkText="#{editstudybundle.seriesLabel}" heading="#{editstudybundle.seriesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                         <br/>
                         <ice:inputText binding="#{EditStudyPage.inputSeries}" id="input_seriesName"
-                                       value="#{EditStudyPage.study.seriesName}"
+                                       value="#{EditStudyPage.metadata.seriesName}"
                                        required="#{EditStudyPage.studyMap[sfc.seriesName].required}"
                                        styleClass="formHtmlEnabled">
                           <f:validator validatorId="XhtmlValidator"/>
@@ -672,7 +672,7 @@
                         <br/>
                         <ice:inputText binding ="#{EditStudyPage.inputSeriesInformation}" id="input_seriesInformation"
                                        size="45"
-                                       value="#{EditStudyPage.study.seriesInformation}"
+                                       value="#{EditStudyPage.metadata.seriesInformation}"
                                        required="#{EditStudyPage.studyMap[sfc.seriesInformation].required}"
                                        validator="#{EditStudyPage.validateSeries}"
                                        styleClass="formHtmlEnabled">
@@ -696,13 +696,13 @@
                       <div jsfc="ice:panelGroup" >
                         <dvn:inlinehelp helpMessage="#{editstudybundle.seriesVersionHelp}" linkText="#{editstudybundle.seriesVersionLabel}" heading="#{editstudybundle.seriesVersionHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                         <br/>
-                        <ice:inputText binding="#{EditStudyPage.inputVersion}" id="input_studyVersion" value="#{EditStudyPage.study.studyVersion}"  required="#{EditStudyPage.studyMap[sfc.studyVersion].required}"/>
+                        <ice:inputText binding="#{EditStudyPage.inputVersion}" id="input_studyVersion" value="#{EditStudyPage.metadata.studyVersionText}"  required="#{EditStudyPage.studyMap[sfc.studyVersion].required}"/>
                         <ice:message styleClass="errorMessage" for="input_studyVersion"/>
                       </div>
                       <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField">
                         <dvn:inlinehelp helpMessage="#{editstudybundle.seriesVersionDateHelp}" linkText="#{editstudybundle.seriesVersionDateLabel}" heading="#{editstudybundle.seriesVersionDateHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                         <br/>
-                        <ice:inputText binding="#{EditStudyPage.inputVersionDate}" validator="#{EditStudyPage.validateVersion}" id="input_versionDate" styleClass="formDateFormat" value="#{EditStudyPage.study.versionDate}" required="#{EditStudyPage.studyMap[sfc.versionDate].required}" >
+                        <ice:inputText binding="#{EditStudyPage.inputVersionDate}" validator="#{EditStudyPage.validateVersion}" id="input_versionDate" styleClass="formDateFormat" value="#{EditStudyPage.metadata.versionDate}" required="#{EditStudyPage.studyMap[sfc.versionDate].required}" >
                           <f:validator validatorId="DateValidator"/>
                         </ice:inputText>
                         <ice:outputText value="#{editstudybundle.dateFormatDescription}"/>
@@ -723,7 +723,7 @@
                     <div jsfc="ice:panelGroup" >
                       <ice:inputTextarea cols="90" rows="4"
                                          id="input_replicationFor"
-                                         value="#{EditStudyPage.study.replicationFor}"
+                                         value="#{EditStudyPage.metadata.replicationFor}"
                                          required="#{EditStudyPage.studyMap[sfc.replicationFor].required}"
                                          styleClass="formHtmlEnabled">
                         <f:validator validatorId="XhtmlValidator"/>
@@ -744,7 +744,7 @@
                                      styleClass="vdcEditStudyInnerTable"
                                      columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
                                      binding="#{EditStudyPage.dataTableAbstracts}"
-                                     value="#{EditStudyPage.study.studyAbstracts}" var="currentRow" width="100%">
+                                     value="#{EditStudyPage.metadata.studyAbstracts}" var="currentRow" width="100%">
                         <ice:column>
                           <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                             <dvn:inlinehelp helpMessage="#{editstudybundle.abstractHelp}" linkText="#{editstudybundle.abstractLabel}" heading="#{editstudybundle.abstractHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
@@ -796,7 +796,7 @@
                                      styleClass="vdcEditStudyInnerTable"
                                      columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
                                      binding="#{EditStudyPage.dataTableKeywords}"
-                                     value="#{EditStudyPage.study.studyKeywords}" var="currentRow" width="100%">
+                                     value="#{EditStudyPage.metadata.studyKeywords}" var="currentRow" width="100%">
                         <ice:column>
                           <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                             <dvn:inlinehelp helpMessage="#{editstudybundle.keywordHelp}" linkText="#{editstudybundle.keywordLabel}" heading="#{editstudybundle.keywordHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
@@ -852,7 +852,7 @@
                                      columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
                                      id="dataTableTopicClass"
                                      binding="#{EditStudyPage.dataTableTopicClass}"
-                                     value="#{EditStudyPage.study.studyTopicClasses}" var="currentRow">
+                                     value="#{EditStudyPage.metadata.studyTopicClasses}" var="currentRow">
                         <ice:column>
                           <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                             <dvn:inlinehelp helpMessage="#{editstudybundle.topicClassificationHelp}" linkText="#{editstudybundle.topicClassificationLabel}" heading="#{editstudybundle.topicClassificationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
@@ -907,7 +907,7 @@
                                      styleClass="vdcEditStudyInnerTable"
                                      columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
                                      binding="#{EditStudyPage.dataTableRelPublications}"
-                                     value="#{EditStudyPage.study.studyRelPublications}" var="currentRow" width="100%">
+                                     value="#{EditStudyPage.metadata.studyRelPublications}" var="currentRow" width="100%">
                         <ice:column>
                           <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                             <dvn:inlinehelp helpMessage="#{editstudybundle.relatedPublicationsHelp}" linkText="#{editstudybundle.relatedPublicationsLabel}" heading="#{editstudybundle.relatedPublicationsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
@@ -944,7 +944,7 @@
                                      styleClass="vdcEditStudyInnerTable"
                                      columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
                                      binding="#{EditStudyPage.dataTableRelMaterials}"
-                                     value="#{EditStudyPage.study.studyRelMaterials}" var="currentRow" width="100%">
+                                     value="#{EditStudyPage.metadata.studyRelMaterials}" var="currentRow" width="100%">
                         <ice:column>
                           <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                             <dvn:inlinehelp helpMessage="#{editstudybundle.relatedMaterialHelp}" linkText="#{editstudybundle.relatedMaterialLabel}" heading="#{editstudybundle.relatedMaterialHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
@@ -981,7 +981,7 @@
                                      styleClass="vdcEditStudyInnerTable"
                                      columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
                                      binding="#{EditStudyPage.dataTableRelStudies}"
-                                     value="#{EditStudyPage.study.studyRelStudies}" var="currentRow" width="100%">
+                                     value="#{EditStudyPage.metadata.studyRelStudies}" var="currentRow" width="100%">
                         <ice:column>
                           <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                             <dvn:inlinehelp helpMessage="#{editstudybundle.relatedStudiesHelp}" linkText="#{editstudybundle.relatedStudiesLabel}" heading="#{editstudybundle.relatedStudiesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
@@ -1019,7 +1019,7 @@
                                      styleClass="vdcEditStudyInnerTable"
                                      columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
                                      binding="#{EditStudyPage.dataTableOtherReferences}"
-                                     value="#{EditStudyPage.study.studyOtherRefs}" var="currentRow" width="100%">
+                                     value="#{EditStudyPage.metadata.studyOtherRefs}" var="currentRow" width="100%">
                         <ice:column>
                           <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                             <dvn:inlinehelp helpMessage="#{editstudybundle.otherReferencesHelp}" linkText="#{editstudybundle.otherReferencesLabel}" heading="#{editstudybundle.otherReferencesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
@@ -1058,7 +1058,7 @@
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.timePeriodCoveredStart].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
-                      <ice:inputText id="input_timePeriodCoveredStart" styleClass="formDateFormat" value="#{EditStudyPage.study.timePeriodCoveredStart}" required="#{EditStudyPage.studyMap[sfc.timePeriodCoveredStart].required}">
+                      <ice:inputText id="input_timePeriodCoveredStart" styleClass="formDateFormat" value="#{EditStudyPage.metadata.timePeriodCoveredStart}" required="#{EditStudyPage.studyMap[sfc.timePeriodCoveredStart].required}">
                         <f:validator validatorId="DateValidator"/>
                       </ice:inputText>
                       <ice:outputText value="#{editstudybundle.dateFormatDescription}"/>
@@ -1076,7 +1076,7 @@
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.timePeriodCoveredEnd].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
-                      <ice:inputText id="input_timePeriodCoveredEnd" styleClass="formDateFormat" value="#{EditStudyPage.study.timePeriodCoveredEnd}" required="#{EditStudyPage.studyMap[sfc.timePeriodCoveredEnd].required}">
+                      <ice:inputText id="input_timePeriodCoveredEnd" styleClass="formDateFormat" value="#{EditStudyPage.metadata.timePeriodCoveredEnd}" required="#{EditStudyPage.studyMap[sfc.timePeriodCoveredEnd].required}">
                         <f:validator validatorId="DateValidator"/>
                       </ice:inputText>
                       <ice:outputText value="#{editstudybundle.dateFormatDescription}"/>
@@ -1094,7 +1094,7 @@
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.dateOfCollectionStart].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
-                      <ice:inputText id="input_dateOfCollectionStart" styleClass="formDateFormat" value="#{EditStudyPage.study.dateOfCollectionStart}"  required="#{EditStudyPage.studyMap[sfc.dateOfCollectionStart].required}">
+                      <ice:inputText id="input_dateOfCollectionStart" styleClass="formDateFormat" value="#{EditStudyPage.metadata.dateOfCollectionStart}"  required="#{EditStudyPage.studyMap[sfc.dateOfCollectionStart].required}">
                         <f:validator validatorId="DateValidator"/>
                       </ice:inputText>
                       <ice:outputText value="#{editstudybundle.dateFormatDescription}"/>
@@ -1112,7 +1112,7 @@
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.dateOfCollectionEnd].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
-                      <ice:inputText id="input_dateOfCollectionEnd" styleClass="formDateFormat" value="#{EditStudyPage.study.dateOfCollectionEnd}"  required="#{EditStudyPage.studyMap[sfc.dateOfCollectionEnd].required}">
+                      <ice:inputText id="input_dateOfCollectionEnd" styleClass="formDateFormat" value="#{EditStudyPage.metadata.dateOfCollectionEnd}"  required="#{EditStudyPage.studyMap[sfc.dateOfCollectionEnd].required}">
                         <f:validator validatorId="DateValidator"/>
                       </ice:inputText>
                       <ice:outputText value="#{editstudybundle.dateFormatDescription}"/>
@@ -1130,7 +1130,7 @@
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.country].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup" >
-                      <ice:inputText id="input_country" size="45" value="#{EditStudyPage.study.country}" required="#{EditStudyPage.studyMap[sfc.country].required}"/>
+                      <ice:inputText id="input_country" size="45" value="#{EditStudyPage.metadata.country}" required="#{EditStudyPage.studyMap[sfc.country].required}"/>
                       <ice:message styleClass="errorMessage" for="input_country"/>
                     </div>
                   </ice:panelGrid>
@@ -1145,7 +1145,7 @@
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.geographicCoverage].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
-                      <ice:inputText id="input_geographicCoverage" size="45"  value="#{EditStudyPage.study.geographicCoverage}" required="#{EditStudyPage.studyMap[sfc.geographicCoverage].required}"/>
+                      <ice:inputText id="input_geographicCoverage" size="45"  value="#{EditStudyPage.metadata.geographicCoverage}" required="#{EditStudyPage.studyMap[sfc.geographicCoverage].required}"/>
                       <ice:message styleClass="errorMessage" for="input_geographicCoverage"/>
                     </div>
                   </ice:panelGrid>
@@ -1160,7 +1160,7 @@
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.geographicUnit].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
-                      <ice:inputText id="input_geographicUnit" size="45"  value="#{EditStudyPage.study.geographicUnit}" required="#{EditStudyPage.studyMap[sfc.geographicUnit].required}"/>
+                      <ice:inputText id="input_geographicUnit" size="45"  value="#{EditStudyPage.metadata.geographicUnit}" required="#{EditStudyPage.studyMap[sfc.geographicUnit].required}"/>
                       <ice:message styleClass="errorMessage" for="input_geographicUnit"/>
                     </div>
                   </ice:panelGrid>
@@ -1178,28 +1178,28 @@
                       <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 vdcEditStudyGroupField">
                         <dvn:inlinehelp helpMessage="#{editstudybundle.westLongitudeHelp}" linkText="#{editstudybundle.westLongitudeLabel}" heading="#{editstudybundle.westLongitudeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                         <br/>
-                        <ice:inputText id="input_westLongitude" binding="#{EditStudyPage.inputWestLongitude}" value="#{EditStudyPage.study.studyGeoBoundings[0].westLongitude}"   required="#{EditStudyPage.studyMap[sfc.westLongitude].required}"/>
+                        <ice:inputText id="input_westLongitude" binding="#{EditStudyPage.inputWestLongitude}" value="#{EditStudyPage.metadata.studyGeoBoundings[0].westLongitude}"   required="#{EditStudyPage.studyMap[sfc.westLongitude].required}"/>
                       </div>
                       <ice:message styleClass="errorMessage" for="input_westLongitude"/>
 
                       <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField">
                         <dvn:inlinehelp helpMessage="#{editstudybundle.eastLongitudeHelp}" linkText="#{editstudybundle.eastLongitudeLabel}" heading="#{editstudybundle.eastLongitudeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                         <br/>
-                        <ice:inputText binding="#{EditStudyPage.inputEastLongitude}" id="input_eastLongitude" value="#{EditStudyPage.study.studyGeoBoundings[0].eastLongitude}"  required="#{EditStudyPage.studyMap[sfc.eastLongitude].required}"/>
+                        <ice:inputText binding="#{EditStudyPage.inputEastLongitude}" id="input_eastLongitude" value="#{EditStudyPage.metadata.studyGeoBoundings[0].eastLongitude}"  required="#{EditStudyPage.studyMap[sfc.eastLongitude].required}"/>
                       </div>
                       <ice:message styleClass="errorMessage" for="input_eastLongitude"/>
 
                       <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 vdcEditStudyFieldFloat3 vdcEditStudyGroupField">
                         <dvn:inlinehelp helpMessage="#{editstudybundle.northLatitudeHelp}" linkText="#{editstudybundle.northLatitudeLabel}" heading="#{editstudybundle.northLatitudeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                         <br/>
-                        <ice:inputText binding="#{EditStudyPage.inputNorthLatitude}" id="input_northLatitude" value="#{EditStudyPage.study.studyGeoBoundings[0].northLatitude}"  required="#{EditStudyPage.studyMap[sfc.northLatitude].required}"/>
+                        <ice:inputText binding="#{EditStudyPage.inputNorthLatitude}" id="input_northLatitude" value="#{EditStudyPage.metadata.studyGeoBoundings[0].northLatitude}"  required="#{EditStudyPage.studyMap[sfc.northLatitude].required}"/>
                       </div>
                       <ice:message styleClass="errorMessage" for="input_northLatitude"/>
 
                       <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField">
                         <dvn:inlinehelp helpMessage="#{editstudybundle.southLatitudeHelp}" linkText="#{editstudybundle.southLatitudeLabel}" heading="#{editstudybundle.southLatitudeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                         <br/>
-                        <ice:inputText binding="#{EditStudyPage.inputSouthLatitude}" id="input_southLatitude" value="#{EditStudyPage.study.studyGeoBoundings[0].southLatitude}"  required="#{EditStudyPage.studyMap[sfc.southLatitude].required}"/>
+                        <ice:inputText binding="#{EditStudyPage.inputSouthLatitude}" id="input_southLatitude" value="#{EditStudyPage.metadata.studyGeoBoundings[0].southLatitude}"  required="#{EditStudyPage.studyMap[sfc.southLatitude].required}"/>
                       </div>
                       <ice:message styleClass="errorMessage" for="input_southLatitude"/>
                       <ice:inputHidden validator="#{EditStudyPage.validateGeographicBounding}" value="test" required="true"/>
@@ -1216,7 +1216,7 @@
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.unitOfAnalysis].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
-                      <ice:inputTextarea id="input_unitOfAnalysis" cols="90" rows="2" value="#{EditStudyPage.study.unitOfAnalysis}" required="#{EditStudyPage.studyMap[sfc.unitOfAnalysis].required}" styleClass="formHtmlEnabled">
+                      <ice:inputTextarea id="input_unitOfAnalysis" cols="90" rows="2" value="#{EditStudyPage.metadata.unitOfAnalysis}" required="#{EditStudyPage.studyMap[sfc.unitOfAnalysis].required}" styleClass="formHtmlEnabled">
                         <f:validator validatorId="XhtmlValidator"/>
                       </ice:inputTextarea>
                       <ice:message styleClass="errorMessage" for="input_unitOfAnalysis"/>
@@ -1233,7 +1233,7 @@
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.universe].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
-                      <ice:inputTextarea id="input_universe" cols="90" rows="2"  value="#{EditStudyPage.study.universe}" required="#{EditStudyPage.studyMap[sfc.universe].required}" styleClass="formHtmlEnabled">
+                      <ice:inputTextarea id="input_universe" cols="90" rows="2"  value="#{EditStudyPage.metadata.universe}" required="#{EditStudyPage.studyMap[sfc.universe].required}" styleClass="formHtmlEnabled">
                         <f:validator validatorId="XhtmlValidator"/>
                       </ice:inputTextarea>
                       <ice:message styleClass="errorMessage" for="input_universe"/>
@@ -1250,7 +1250,7 @@
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.kindOfData].recommended}"/>
                     </div>
                     <div jsfc="ice:panelGroup">
-                      <ice:inputText id="input_kindOfData" size="45" value="#{EditStudyPage.study.kindOfData}" required="#{EditStudyPage.studyMap[sfc.kindOfData].required}"/>
+                      <ice:inputText id="input_kindOfData" size="45" value="#{EditStudyPage.metadata.kindOfData}" required="#{EditStudyPage.studyMap[sfc.kindOfData].required}"/>
                       <ice:message styleClass="errorMessage" for="input_kindOfData"/>
                     </div>
                   </ice:panelGrid>
@@ -1273,7 +1273,7 @@
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputText id="input_timeMethod" size="90"
-                                     value="#{EditStudyPage.study.timeMethod}"
+                                     value="#{EditStudyPage.metadata.timeMethod}"
                                      required="#{EditStudyPage.studyMap[sfc.timeMethod].required}"
                                      styleClass="formHtmlEnabled">
                         <f:validator validatorId="XhtmlValidator"/>
@@ -1292,7 +1292,7 @@
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputText id="input_dataCollector" size="90"
-                                     value="#{EditStudyPage.study.dataCollector}"
+                                     value="#{EditStudyPage.metadata.dataCollector}"
                                      required="#{EditStudyPage.studyMap[sfc.dataCollector].required}"
                                      styleClass="formHtmlEnabled">
                         <f:validator validatorId="XhtmlValidator"/>
@@ -1312,7 +1312,7 @@
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputText id="input_frequencyOfDataCollection" size="90"
-                                     value="#{EditStudyPage.study.frequencyOfDataCollection}"
+                                     value="#{EditStudyPage.metadata.frequencyOfDataCollection}"
                                      required="#{EditStudyPage.studyMap[sfc.frequencyOfDataCollection].required}"
                                      styleClass="formHtmlEnabled">
                         <f:validator validatorId="XhtmlValidator"/>
@@ -1333,7 +1333,7 @@
                     <div jsfc="ice:panelGroup">
                       <ice:inputTextarea id="input_samplingProcedure"
                                          cols="90" rows="4"
-                                         value="#{EditStudyPage.study.samplingProcedure}"
+                                         value="#{EditStudyPage.metadata.samplingProcedure}"
                                          required="#{EditStudyPage.studyMap[sfc.samplingProcedure].required}"
                                          styleClass="formHtmlEnabled">
                         <f:validator validatorId="XhtmlValidator"/>
@@ -1354,7 +1354,7 @@
                     <div jsfc="ice:panelGroup">
                       <ice:inputTextarea cols="90" rows="4"
                                          id="input_deviationsFromSampleDesign"
-                                         value="#{EditStudyPage.study.deviationsFromSampleDesign}"
+                                         value="#{EditStudyPage.metadata.deviationsFromSampleDesign}"
                                          required="#{EditStudyPage.studyMap[sfc.deviationsFromSampleDesign].required}"
                                          styleClass="formHtmlEnabled">
                         <f:validator validatorId="XhtmlValidator"/>
@@ -1374,7 +1374,7 @@
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputText id="input_collectionMode" size="90"
-                                     value="#{EditStudyPage.study.collectionMode}"
+                                     value="#{EditStudyPage.metadata.collectionMode}"
                                      required="#{EditStudyPage.studyMap[sfc.collectionMode].required}"
                                      styleClass="formHtmlEnabled">
                         <f:validator validatorId="XhtmlValidator"/>
@@ -1394,7 +1394,7 @@
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputText id="input_researchInstrument" size="90"
-                                     value="#{EditStudyPage.study.researchInstrument}"
+                                     value="#{EditStudyPage.metadata.researchInstrument}"
                                      required="#{EditStudyPage.studyMap[sfc.researchInstrument].required}"
                                      styleClass="formHtmlEnabled">
                         <f:validator validatorId="XhtmlValidator"/>
@@ -1414,7 +1414,7 @@
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputText id="input_dataSources" size="90"
-                                     value="#{EditStudyPage.study.dataSources}"
+                                     value="#{EditStudyPage.metadata.dataSources}"
                                      required="#{EditStudyPage.studyMap[sfc.dataSources].required}"
                                      styleClass="formHtmlEnabled">
                         <f:validator validatorId="XhtmlValidator"/>
@@ -1434,7 +1434,7 @@
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputText id="input_originOfSources" size="90"
-                                     value="#{EditStudyPage.study.originOfSources}"
+                                     value="#{EditStudyPage.metadata.originOfSources}"
                                      required="#{EditStudyPage.studyMap[sfc.originOfSources].required}"
                                      styleClass="formHtmlEnabled">
                         <f:validator validatorId="XhtmlValidator"/>
@@ -1454,7 +1454,7 @@
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputText id="input_characteristicOfSources" size="90"
-                                     value="#{EditStudyPage.study.characteristicOfSources}"
+                                     value="#{EditStudyPage.metadata.characteristicOfSources}"
                                      required="#{EditStudyPage.studyMap[sfc.characteristicOfSources].required}"
                                      styleClass="formHtmlEnabled">
                         <f:validator validatorId="XhtmlValidator"/>
@@ -1475,7 +1475,7 @@
                     <div jsfc="ice:panelGroup">
                       <ice:inputTextarea cols="90" rows="4"
                                          id="input_accessToSources"
-                                         value="#{EditStudyPage.study.accessToSources}"
+                                         value="#{EditStudyPage.metadata.accessToSources}"
                                          required="#{EditStudyPage.studyMap[sfc.accessToSources].required}"
                                          styleClass="formHtmlEnabled">
                         <f:validator validatorId="XhtmlValidator"/>
@@ -1495,7 +1495,7 @@
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputText id="input_dataCollectionSituation" size="90"
-                                     value="#{EditStudyPage.study.dataCollectionSituation}"
+                                     value="#{EditStudyPage.metadata.dataCollectionSituation}"
                                      required="#{EditStudyPage.studyMap[sfc.dataCollectionSituation].required}"
                                      styleClass="formHtmlEnabled">
                         <f:validator validatorId="XhtmlValidator"/>
@@ -1515,7 +1515,7 @@
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputText id="input_actionsToMinimizeLoss" size="90"
-                                     value="#{EditStudyPage.study.actionsToMinimizeLoss}"
+                                     value="#{EditStudyPage.metadata.actionsToMinimizeLoss}"
                                      required="#{EditStudyPage.studyMap[sfc.actionsToMinimizeLoss].required}"
                                      styleClass="formHtmlEnabled">
                         <f:validator validatorId="XhtmlValidator"/>
@@ -1535,7 +1535,7 @@
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputText id="input_controlOperations" size="90"
-                                     value="#{EditStudyPage.study.controlOperations}"
+                                     value="#{EditStudyPage.metadata.controlOperations}"
                                      required="#{EditStudyPage.studyMap[sfc.controlOperations].required}"
                                      styleClass="formHtmlEnabled">
                         <f:validator validatorId="XhtmlValidator"/>
@@ -1555,7 +1555,7 @@
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputText id="input_weighting" size="90"
-                                     value="#{EditStudyPage.study.weighting}"
+                                     value="#{EditStudyPage.metadata.weighting}"
                                      required="#{EditStudyPage.studyMap[sfc.weighting].required}"
                                      styleClass="formHtmlEnabled">
                         <f:validator validatorId="XhtmlValidator"/>
@@ -1575,7 +1575,7 @@
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputText id="input_cleaningOperations" size="90"
-                                     value="#{EditStudyPage.study.cleaningOperations}"
+                                     value="#{EditStudyPage.metadata.cleaningOperations}"
                                      required="#{EditStudyPage.studyMap[sfc.cleaningOperations].required}"
                                      styleClass="formHtmlEnabled">
                         <f:validator validatorId="XhtmlValidator"/>
@@ -1595,7 +1595,7 @@
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputText id="input_studyLevelErrorNotes" size="90"
-                                     value="#{EditStudyPage.study.studyLevelErrorNotes}"
+                                     value="#{EditStudyPage.metadata.studyLevelErrorNotes}"
                                      required="#{EditStudyPage.studyMap[sfc.studyLevelErrorNotes].required}"
                                      styleClass="formHtmlEnabled">
                         <f:validator validatorId="XhtmlValidator"/>
@@ -1615,7 +1615,7 @@
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputText id="input_responseRate" size="90"
-                                     value="#{EditStudyPage.study.responseRate}"
+                                     value="#{EditStudyPage.metadata.responseRate}"
                                      required="#{EditStudyPage.studyMap[sfc.responseRate].required}"
                                      styleClass="formHtmlEnabled">
                         <f:validator validatorId="XhtmlValidator"/>
@@ -1635,7 +1635,7 @@
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputText id="input_samplingErrorEstimates" size="90"
-                                     value="#{EditStudyPage.study.samplingErrorEstimate}"
+                                     value="#{EditStudyPage.metadata.samplingErrorEstimate}"
                                      required="#{EditStudyPage.studyMap[sfc.samplingErrorEstimates].required}"
                                      styleClass="formHtmlEnabled">
                         <f:validator validatorId="XhtmlValidator"/>
@@ -1655,7 +1655,7 @@
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputText id="input_otherDataAppraisal" size="90"
-                                     value="#{EditStudyPage.study.otherDataAppraisal}"
+                                     value="#{EditStudyPage.metadata.otherDataAppraisal}"
                                      required="#{EditStudyPage.studyMap[sfc.otherDataAppraisal].required}"
                                      styleClass="formHtmlEnabled">
                         <f:validator validatorId="XhtmlValidator"/>
@@ -1682,7 +1682,7 @@
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputText id="input_placeOfAccess" size="90"
-                                     value="#{EditStudyPage.study.placeOfAccess}"
+                                     value="#{EditStudyPage.metadata.placeOfAccess}"
                                      required="#{EditStudyPage.studyMap[sfc.placeOfAccess].required}"
                                      styleClass="formHtmlEnabled">
                         <f:validator validatorId="XhtmlValidator"/>
@@ -1702,7 +1702,7 @@
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputText id="input_originalArchive" size="90"
-                                     value="#{EditStudyPage.study.originalArchive}"
+                                     value="#{EditStudyPage.metadata.originalArchive}"
                                      required="#{EditStudyPage.studyMap[sfc.originalArchive].required}"
                                      styleClass="formHtmlEnabled">
                         <f:validator validatorId="XhtmlValidator"/>
@@ -1722,7 +1722,7 @@
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputText id="input_availabilityStatus" size="90"
-                                     value="#{EditStudyPage.study.availabilityStatus}"
+                                     value="#{EditStudyPage.metadata.availabilityStatus}"
                                      required="#{EditStudyPage.studyMap[sfc.availabilityStatus].required}"
                                      styleClass="formHtmlEnabled">
                         <f:validator validatorId="XhtmlValidator"/>
@@ -1742,7 +1742,7 @@
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputText id="input_collectionSize" size="90"
-                                     value="#{EditStudyPage.study.collectionSize}"
+                                     value="#{EditStudyPage.metadata.collectionSize}"
                                      required="#{EditStudyPage.studyMap[sfc.collectionSize].required}"
                                      styleClass="formHtmlEnabled">
                         <f:validator validatorId="XhtmlValidator"/>
@@ -1762,7 +1762,7 @@
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputText size="90" id="input_studyCompletion"
-                                     value="#{EditStudyPage.study.studyCompletion}"
+                                     value="#{EditStudyPage.metadata.studyCompletion}"
                                      required="#{EditStudyPage.studyMap[sfc.studyCompletion].required}"
                                      styleClass="formHtmlEnabled">
                         <f:validator validatorId="XhtmlValidator"/>
@@ -1789,7 +1789,7 @@
                     <div jsfc="ice:panelGroup">
                       <ice:inputTextarea cols="90" rows="4"
                                          id="input_confidentialityDeclaration"
-                                         value="#{EditStudyPage.study.confidentialityDeclaration}"
+                                         value="#{EditStudyPage.metadata.confidentialityDeclaration}"
                                          required="#{EditStudyPage.studyMap[sfc.confidentialityDeclaration].required}"
                                          styleClass="formHtmlEnabled">
                         <f:validator validatorId="XhtmlValidator"/>
@@ -1809,7 +1809,7 @@
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputTextarea cols="90" rows="4" id="input_specialPermissions"
-                                         value="#{EditStudyPage.study.specialPermissions}"
+                                         value="#{EditStudyPage.metadata.specialPermissions}"
                                          required="#{EditStudyPage.studyMap[sfc.specialPermissions].required}"
                                          styleClass="formHtmlEnabled">
                         <f:validator validatorId="XhtmlValidator"/>
@@ -1830,7 +1830,7 @@
                     <div jsfc="ice:panelGroup">
                       <ice:inputTextarea cols="90" rows="4"
                                          id="input_restrictions"
-                                         value="#{EditStudyPage.study.restrictions}"
+                                         value="#{EditStudyPage.metadata.restrictions}"
                                          required="#{EditStudyPage.studyMap[sfc.restrictions].required}"
                                          styleClass="formHtmlEnabled">
                         <f:validator validatorId="XhtmlValidator"/>
@@ -1850,7 +1850,7 @@
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputText id="input_contact" size="90"
-                                     value="#{EditStudyPage.study.contact}"
+                                     value="#{EditStudyPage.metadata.contact}"
                                      required="#{EditStudyPage.studyMap[sfc.contact].required}"
                                      styleClass="formHtmlEnabled">
                         <f:validator validatorId="XhtmlValidator"/>
@@ -1870,7 +1870,7 @@
                     </div>
                     <div jsfc="ice:panelGroup">
                       <ice:inputTextarea cols="90" rows="4" id="input_citationRequirements"
-                                         value="#{EditStudyPage.study.citationRequirements}"
+                                         value="#{EditStudyPage.metadata.citationRequirements}"
                                          required="#{EditStudyPage.studyMap[sfc.citationRequirements].required}"
                                          styleClass="formHtmlEnabled">
                         <f:validator validatorId="XhtmlValidator"/>
@@ -1891,7 +1891,7 @@
                     <div jsfc="ice:panelGroup">
                       <ice:inputTextarea cols="90" rows="4"
                                          id="input_depositorRequirements"
-                                         value="#{EditStudyPage.study.depositorRequirements}"
+                                         value="#{EditStudyPage.metadata.depositorRequirements}"
                                          required="#{EditStudyPage.studyMap[sfc.depositorRequirements].required}"
                                          styleClass="formHtmlEnabled">
                         <f:validator validatorId="XhtmlValidator"/>
@@ -1912,7 +1912,7 @@
                     <div jsfc="ice:panelGroup">
                       <ice:inputTextarea cols="90" rows="4"
                                          id="input_conditions"
-                                         value="#{EditStudyPage.study.conditions}"
+                                         value="#{EditStudyPage.metadata.conditions}"
                                          required="#{EditStudyPage.studyMap[sfc.conditions].required}"
                                          styleClass="formHtmlEnabled">
                         <f:validator validatorId="XhtmlValidator"/>
@@ -1933,7 +1933,7 @@
                     <div jsfc="ice:panelGroup">
                       <ice:inputTextarea cols="90" rows="4"
                                          id="input_disclaimer"
-                                         value="#{EditStudyPage.study.disclaimer}"
+                                         value="#{EditStudyPage.metadata.disclaimer}"
                                          required="#{EditStudyPage.studyMap[sfc.disclaimer].required}"
                                          styleClass="formHtmlEnabled">
                         <f:validator validatorId="XhtmlValidator"/>
@@ -1955,7 +1955,7 @@
                                      styleClass="vdcEditStudyInnerTable"
                                      columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
                                      binding="#{EditStudyPage.dataTableNotes}"
-                                     value="#{EditStudyPage.study.studyNotes}" var="currentRow" width="100%">
+                                     value="#{EditStudyPage.metadata.studyNotes}" var="currentRow" width="100%">
                         <ice:column>
                           <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
                             <dvn:inlinehelp helpMessage="#{editstudybundle.notesTypeHelp}" linkText="#{editstudybundle.notesTypeLabel}" heading="#{editstudybundle.notesTypeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>

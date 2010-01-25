@@ -74,6 +74,7 @@ import javax.servlet.http.HttpSession;
 @EJBs({
 @EJB(name = "collectionService", beanInterface = edu.harvard.iq.dvn.core.vdc.VDCCollectionServiceLocal.class),
 @EJB(name = "studyService", beanInterface = edu.harvard.iq.dvn.core.study.StudyServiceLocal.class),
+@EJB(name = "studyFileService", beanInterface = edu.harvard.iq.dvn.core.study.StudyFileServiceLocal.class),
 @EJB(name = "templateService", beanInterface = edu.harvard.iq.dvn.core.study.TemplateServiceLocal.class),
 @EJB(name = "indexService", beanInterface = edu.harvard.iq.dvn.core.index.IndexServiceLocal.class),
 @EJB(name = "catalogService", beanInterface = edu.harvard.iq.dvn.core.catalog.CatalogServiceLocal.class),
@@ -326,7 +327,7 @@ public class LoginFilter implements Filter {
         } else if (isSubsettingPage(pageDef)) {
             String dtId = VDCBaseBean.getParamFromRequestOrComponent("dtId", request);
             DataTable dataTable = variableService.getDataTable(Long.parseLong(dtId));
-            Study study = dataTable.getStudyFile().getFileCategory().getStudy();
+            Study study = dataTable.getStudyFile().getStudy();
             if (study.isStudyRestrictedForUser(user, ipUserGroup)) {
                 return false;
             }        
@@ -710,7 +711,7 @@ public class LoginFilter implements Filter {
     private Long determineStudyId(PageDef pageDef, HttpServletRequest request) {
         if (pageDef.getName().equals(PageDefServiceLocal.EDIT_VARIABLE_PAGE)) {
             String dtIdParam = getIdFromRequest("dtId", request);
-            return varService.getDataTable(new Long(dtIdParam)).getStudyFile().getFileCategory().getStudy().getId();
+            return varService.getDataTable(new Long(dtIdParam)).getStudyFile().getStudy().getId();
         }
 
         String studyIdParam = getStudyIdFromRequest(request);

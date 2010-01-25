@@ -97,10 +97,11 @@ public class StudyCommentsFragment extends VDCBaseBean implements Serializable {
      public String reportAbuse(ActionEvent event) {
          studyCommentService.flagStudyCommentAbuse(flaggedCommentId, getVDCSessionBean().getUser().getId());
          study = studyService.getStudy(studyId);
+         // TODO: VERSION: which title to send???
          mailService.sendMail(getVDCSessionBean().getUser().getEmail(), getVDCRequestBean().getVdcNetwork().getContactEmail(), "Study Comment Abuse Reported", "A study comment " +
                                 "has been reported for abuse.  Please review the details below. " +
                                 "\n\r" + "\n\r" +
-                                "Study Name: " + study.getTitle() +
+                                "Study Name: " + study.getReleasedVersion().getMetadata().getTitle() +
                                 "\n" +
                                 "Study Id: " + studyId +
                                 "\n" +
@@ -232,7 +233,7 @@ public class StudyCommentsFragment extends VDCBaseBean implements Serializable {
          while (iterator.hasNext()) {
              StudyCommentUI studycommentui = (StudyCommentUI)iterator.next();
              if (studycommentui.getStudyComment().getId().equals(flaggedCommentId)) {
-                 title = studycommentui.getStudyComment().getStudy().getTitle();
+                 title = studycommentui.getStudyComment().getStudyVersion().getMetadata().getTitle();
                  break;
              }
          }

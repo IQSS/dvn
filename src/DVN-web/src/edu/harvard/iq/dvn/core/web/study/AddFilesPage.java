@@ -549,7 +549,7 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable,
                 String nm = sf.getFileName();
                 int found = Arrays.binarySearch(studyFileNames, nm);
 
-                mLog.debug(tmp.getStudyFile().getDescription() + "; File Description");
+                //mLog.debug(tmp.getStudyFile().getDescription() + "; File Description");
                 //if the file name exist remove it from temp directory and do not store
                 if (found >= 0) {
                     edbean.remove();
@@ -828,7 +828,7 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable,
             }
         }
         // now add this name to the validation list
-        fileList.get(inx).getStudyFile().setFileName(fileName);
+        //fileList.get(inx).getStudyFile().setFileName(fileName);
         getValidationFileNames().add(fileName.trim());
         //remove the old name from validation names
         hasFileName(fname, true);

@@ -56,6 +56,7 @@ public class EditStudyPermissionsServiceBean implements EditStudyPermissionsServ
     @PersistenceContext(type = PersistenceContextType.EXTENDED,unitName="VDCNet-ejbPU")
     EntityManager em;
     @EJB StudyServiceLocal studyService;
+    @EJB StudyFileServiceLocal studyFileService;
     @EJB MailServiceLocal mailService;
 
     Study study;
@@ -96,27 +97,25 @@ public class EditStudyPermissionsServiceBean implements EditStudyPermissionsServ
             studyPermissions.add(new PermissionBean(group));
         }
         
-        
-        for (Iterator<FileCategory> catIter = studyService.getOrderedFileCategories(study.getId()).iterator(); catIter.hasNext();) {
-            FileCategory fileCategory = (FileCategory) catIter.next();
-            for (Iterator<StudyFile>fileIter = studyService.getOrderedFilesByCategory(fileCategory.getId()).iterator(); fileIter.hasNext();) {
-                StudyFile elem = (StudyFile)fileIter.next();
-                FileDetailBean fd = new FileDetailBean();
-                fd.setStudyFile(em.find(StudyFile.class,elem.getId()));
-                fd.setFilePermissions(new ArrayList<PermissionBean>());
-                for (Iterator it4 = elem.getAllowedUsers().iterator(); it4.hasNext();) {
-                    VDCUser elem2 = (VDCUser) it4.next();
-                    fd.getFilePermissions().add(new PermissionBean(elem2));
-                }
-                for (Iterator it5 = elem.getAllowedGroups().iterator(); it5.hasNext();) {
-                    UserGroup elem2 = (UserGroup) it5.next();
-                    fd.getFilePermissions().add(new PermissionBean(elem2));
-                }
-                
-                fileDetails.add(fd);
-                
+        // TODO: VERSION
+        for (Iterator<FileMetadata>fileIter = studyFileService.getOrderedFilesByStudy(study.getId()).iterator(); fileIter.hasNext();) {
+            FileMetadata elem = (FileMetadata)fileIter.next();
+            FileDetailBean fd = new FileDetailBean();
+            fd.setStudyFile(em.find(StudyFile.class,elem.getStudyFile().getId()));
+            fd.setFilePermissions(new ArrayList<PermissionBean>());
+            for (Iterator it4 = elem.getStudyFile().getAllowedUsers().iterator(); it4.hasNext();) {
+                VDCUser elem2 = (VDCUser) it4.next();
+                fd.getFilePermissions().add(new PermissionBean(elem2));
             }
+            for (Iterator it5 = elem.getStudyFile().getAllowedGroups().iterator(); it5.hasNext();) {
+                UserGroup elem2 = (UserGroup) it5.next();
+                fd.getFilePermissions().add(new PermissionBean(elem2));
+            }
+
+            fileDetails.add(fd);
+
         }
+
         for (Iterator detailIter = fileDetails.iterator(); detailIter.hasNext();) {
             FileDetailBean elem = (FileDetailBean) detailIter.next();
             if (elem.getStudyFile().isRestricted()) {
@@ -168,12 +167,14 @@ public class EditStudyPermissionsServiceBean implements EditStudyPermissionsServ
                 em.remove(elem.getStudyRequest());
                 study.getStudyRequests().remove(elem.getStudyRequest());
                 removeBeans.add(elem);
-                mailService.sendFileAccessApprovalNotification(elem.getStudyRequest().getVdcUser().getEmail(),study.getTitle(),study.getGlobalId(),studyUrl);
+                // TODO: VERSION: change this to use a study version object
+                //mailService.sendFileAccessApprovalNotification(elem.getStudyRequest().getVdcUser().getEmail(),study.getTitle(),study.getGlobalId(),studyUrl);
  
             } else if (Boolean.FALSE.equals(elem.getAccept()) ){
                 em.remove(elem.getStudyRequest());
                 study.getStudyRequests().remove(elem.getStudyRequest());
-                 mailService.sendFileAccessRejectNotification(elem.getStudyRequest().getVdcUser().getEmail(),study.getTitle(),study.getGlobalId(),study.getOwner().getContactEmail());
+                // TODO: VERSION: change this to use a study version object
+                //mailService.sendFileAccessRejectNotification(elem.getStudyRequest().getVdcUser().getEmail(),study.getTitle(),study.getGlobalId(),study.getOwner().getContactEmail());
                 removeBeans.add(elem);
             }
             

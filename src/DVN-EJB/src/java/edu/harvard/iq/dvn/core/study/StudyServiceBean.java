@@ -129,6 +129,9 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
     HarvestStudyServiceLocal harvestStudyService;
     @EJB
     VDCServiceLocal vdcService;
+    @EJB
+    StudyFileServiceLocal studyFileService;
+
     /**
      * Creates a new instance of StudyServiceBean
      */
@@ -148,6 +151,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
     }
     
     public void setReadyForReview(Long studyId) {
+        // TODO: VERSION: change this to use a study version object
         Study study = em.find(Study.class, studyId);
         ReviewState inReview = this.reviewStateService.findByName(ReviewStateServiceLocal.REVIEW_STATE_IN_REVIEW);
         study.setReviewState(inReview);
@@ -157,13 +161,13 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         // and send an email to the Contributor about the status of the study
 
         if (user.getVDCRole(study.getOwner()) != null && user.getVDCRole(study.getOwner()).getRole().getName().equals(RoleServiceLocal.CONTRIBUTOR)) {
-            mailService.sendStudyInReviewNotification(user.getEmail(), study.getTitle());
+           // mailService.sendStudyInReviewNotification(user.getEmail(), study.getTitle());
 
             // Notify all curators and admins that study is in review
             for (Iterator it = study.getOwner().getVdcRoles().iterator(); it.hasNext();) {
                 VDCRole elem = (VDCRole) it.next();
                 if (elem.getRole().getName().equals(RoleServiceLocal.CURATOR) || elem.getRole().getName().equals(RoleServiceLocal.ADMIN)) {
-                    mailService.sendStudyAddedCuratorNotification(elem.getVdcUser().getEmail(), user.getUserName(), study.getTitle(), study.getOwner().getName());
+                   // mailService.sendStudyAddedCuratorNotification(elem.getVdcUser().getEmail(), user.getUserName(), study.getTitle(), study.getOwner().getName());
                 }
             }
 
@@ -171,7 +175,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
     }
          
      public void setReleased(Long studyId) {
-      
+      // TODO: VERSION: change this to use a study version object
         Study study = em.find(Study.class, studyId);
         ReviewState released = this.reviewStateService.findByName(ReviewStateServiceLocal.REVIEW_STATE_RELEASED);
         study.setReviewState(released);
@@ -179,7 +183,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         VDCRole studyCreatorRole = study.getCreator().getVDCRole(study.getOwner());
 
         if (studyCreatorRole != null && studyCreatorRole.getRole().getName().equals(RoleServiceLocal.CONTRIBUTOR)) {
-            mailService.sendStudyReleasedNotification(study.getCreator().getEmail(), study.getTitle(), study.getOwner().getName());
+            //mailService.sendStudyReleasedNotification(study.getCreator().getEmail(), study.getTitle(), study.getOwner().getName());
         }
     }
 
@@ -387,12 +391,13 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
      *
      */
     public Study getStudyDetail(Long studyId) {
+        // TODO: VERSION: change this to use a study version object
         Study study = em.find(Study.class, studyId);
 
         if (study == null) {
             throw new IllegalArgumentException("Unknown studyId: " + studyId);
         }
-
+        /*
         for (Iterator<StudyAbstract> it = study.getStudyAbstracts().iterator(); it.hasNext();) {
             StudyAbstract elem = it.next();
             elem.getId();
@@ -457,7 +462,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
             StudyOtherRef elem = it.next();
             elem.getId();
         }
-
+        */
         return study;
     }
 
@@ -493,39 +498,46 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
 
         if (studyFields != null) {
             for (Object studyField : studyFields.keySet()) {
+                // TODO: VERSION: until we have the versioning working!!
+                Metadata metadata = null;
+                if (study.getReleasedVersion() != null) {
+                    metadata = study.getReleasedVersion().getMetadata();
+                } else {
+                    metadata = study.getStudyVersions().get(0).getMetadata();
+                }
                 String fieldName = (String) studyField;
                 if ("authorName".equals(fieldName)) {
-                    for (Iterator<StudyAuthor> it = study.getStudyAuthors().iterator(); it.hasNext();) {
+                    for (Iterator<StudyAuthor> it = metadata.getStudyAuthors().iterator(); it.hasNext();) {
                         StudyAuthor elem = it.next();
                         elem.getId();
                     }
                 } else if ("abstractText".equals(fieldName)) {
-                    for (Iterator<StudyAbstract> it = study.getStudyAbstracts().iterator(); it.hasNext();) {
+                    for (Iterator<StudyAbstract> it = metadata.getStudyAbstracts().iterator(); it.hasNext();) {
                         StudyAbstract elem = it.next();
                         elem.getId();
                     }
                 } else if ("producerName".equals(fieldName)) {
-                    for (Iterator<StudyProducer> it = study.getStudyProducers().iterator(); it.hasNext();) {
+                    for (Iterator<StudyProducer> it = metadata.getStudyProducers().iterator(); it.hasNext();) {
                         StudyProducer elem = it.next();
                         elem.getId();
                     }
                 } else if ("distributorName".equals(fieldName)) {
-                    for (Iterator<StudyDistributor> it = study.getStudyDistributors().iterator(); it.hasNext();) {
+                    for (Iterator<StudyDistributor> it = metadata.getStudyDistributors().iterator(); it.hasNext();) {
                         StudyDistributor elem = it.next();
                         elem.getId();
                     }
                 } else if ("relatedStudies".equals(fieldName)) {
-                    for (Iterator<StudyRelStudy> it = study.getStudyRelStudies().iterator(); it.hasNext();) {
+                    for (Iterator<StudyRelStudy> it = metadata.getStudyRelStudies().iterator(); it.hasNext();) {
                         StudyRelStudy elem = it.next();
                         elem.getId();
                     }
                 } else if ("relatedMaterial".equals(fieldName)) {
-                    for (Iterator<StudyRelMaterial> it = study.getStudyRelMaterials().iterator(); it.hasNext();) {
+                    for (Iterator<StudyRelMaterial> it = metadata.getStudyRelMaterials().iterator(); it.hasNext();) {
                         StudyRelMaterial elem = it.next();
                         elem.getId();
                     }
                 } else if ("relatedPublications".equals(fieldName)) {
-                    for (Iterator<StudyRelPublication> it = study.getStudyRelPublications().iterator(); it.hasNext();) {
+                    for (Iterator<StudyRelPublication> it = metadata.getStudyRelPublications().iterator(); it.hasNext();) {
                         StudyRelPublication elem = it.next();
                         elem.getId();
                     }
@@ -685,25 +697,6 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         return studies;
     }
 
-    public StudyFile getStudyFile(Long fileId) {
-        StudyFile file = em.find(StudyFile.class, fileId);
-        if (file == null) {
-            throw new IllegalArgumentException("Unknown studyFileId: " + fileId);
-        }
-
-
-        return file;
-    }
-
-    public FileCategory getFileCategory(Long fileCategoryId) {
-        FileCategory fileCategory = em.find(FileCategory.class, fileCategoryId);
-        if (fileCategory == null) {
-            throw new IllegalArgumentException("Unknown fileCategoryId: " + fileCategoryId);
-        }
-
-
-        return fileCategory;
-    }
 
     public List<DataFileFormatType> getDataFileFormatTypes() {
         return em.createQuery("select object(t) from DataFileFormatType as t").getResultList();
@@ -729,8 +722,10 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
                 subsettableFiles.add(fileBean);
             } else {
                 otherFiles.add(fileBean);
-                // also add to category, so that it will be flushed for the ids
-                addFileToCategory(fileBean.getStudyFile(), fileBean.getFileCategoryName(), study);
+                // also add to study, so that it will be flushed for the ids
+                fileBean.getStudyFile().setStudy(study);
+                study.getStudyFiles().add(fileBean.getStudyFile());
+
             }
         }
 
@@ -804,32 +799,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         }
     }
 
-    private void addFileToCategory(StudyFile file, String catName, Study s) {
-        if (catName == null) {
-            catName = "";
-        }
 
-        Iterator iter = s.getFileCategories().iterator();
-        while (iter.hasNext()) {
-            FileCategory cat = (FileCategory) iter.next();
-            if (cat.getName().equals(catName)) {
-                file.setFileCategory(cat);
-                cat.getStudyFiles().add(file);
-                return;
-            }
-        }
-
-        // category was not found, so we create a new file category
-        FileCategory cat = new FileCategory();
-        cat.setStudy(s);
-        s.getFileCategories().add(cat);
-        cat.setName(catName);
-        cat.setStudyFiles(new ArrayList());
-
-        // link cat to file
-        file.setFileCategory(cat);
-        cat.getStudyFiles().add(file);
-    }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void addIngestedFiles(Long studyId, List fileBeans, Long userId) {
@@ -902,55 +872,19 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
                 em.merge(fileBean.getStudyFile());
             }
         }
-
-        // calcualte study UNF
+        // TODO: VERSION
+        /* calcualte study UNF
         try {
             study.setUNF(new DSBWrapper().calculateUNF(study));
         } catch (IOException e) {
             throw new EJBException("Could not calculate new study UNF");
-        }
+        }*/
 
         study.setLastUpdateTime(new Date());
         study.setLastUpdater(user);
 
     }
 
-    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-    public java.util.List<FileCategory> getOrderedFileCategories(Long studyId) {
-        // Note: This ordering is case-sensitive, so names beginning with upperclass chars will appear first.
-        // (I tried using UPPER(f.name) to make the sorting case-insensitive, but the EJB query language doesn't seem
-        // to like this.)
-        String query = "SELECT f FROM FileCategory f WHERE f.study.id = " + studyId + " ORDER BY f.name";
-        List<FileCategory> categories = em.createQuery(query).getResultList();
-
-        return categories;
-    }
-
-    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-    public java.util.List<StudyFile> getOrderedFilesByCategory(Long fileCategoryId) {
-        // Note: This ordering is case-sensitive, so names beginning with upperclass chars will appear first.
-        // (I tried using UPPER(f.name) to make the sorting case-insensitive, but the EJB query language doesn't seem
-        // to like this.)
-        String queryStr = "SELECT f FROM StudyFile f WHERE f.fileCategory.id = " + fileCategoryId + " ORDER BY f.fileName";
-        Query query = em.createQuery(queryStr);
-        List<StudyFile> studyFiles = query.getResultList();
-
-        return studyFiles;
-    }
-
-    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-    public java.util.List<StudyFile> getOrderedFilesByStudy(Long studyId) {
-        // Note: This ordering is case-sensitive, so names beginning with upperclass chars will appear first.
-        // (I tried using UPPER(f.name) to make the sorting case-insensitive, but the EJB query language doesn't seem
-        // to like this.)
-        String queryStr = "SELECT f FROM StudyFile f JOIN FETCH f.fileCategory WHERE f.fileCategory.study.id = " + studyId + " ORDER BY f.fileCategory.name, f.fileName";
-        Query query = em.createQuery(queryStr);
-        List<StudyFile> studyFiles = query.getResultList();
-   //     for (StudyFile sf: studyFiles) {
-   //         sf.getDataTables().size();
-   //     }
-        return studyFiles;
-    }
 
     public String generateStudyIdSequence(String protocol, String authority) {
         //   Date now = new Date();
@@ -1211,8 +1145,8 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
     }
 
     public void incrementNumberOfDownloads(Long studyFileId, Long currentVDCId, Date lastDownloadTime) {
-        StudyFile sf = getStudyFile(studyFileId);
-        Study study = sf.getFileCategory().getStudy();
+        StudyFile sf = studyFileService.getStudyFile(studyFileId);
+        Study study = sf.getStudy();
         StudyFileActivity sfActivity = sf.getStudyFileActivity();
 
         if (sfActivity == null) {
@@ -1416,6 +1350,9 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
             elem.clearData();
         }
 
+
+        // TODO: VERSION
+        /*
         // then delete files
         clearCollection(study.getFileCategories());
 
@@ -1424,7 +1361,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         em.persist(m); // persist because otherwise update study can fail with non null metadata id exception
         em.remove(study.getMetadata());
         study.setMetadata(m);
-
+        */
         // clear global id componenents
         study.setProtocol(null);
         study.setAuthority(null);
@@ -1436,6 +1373,8 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
 
 
     private void setDisplayOrders(Study study) {
+        // TODO: VERSION: change this to use a study version object
+        /*
         int i = 0;
         for (Iterator it = study.getStudyAuthors().iterator(); it.hasNext();) {
             StudyAuthor elem = (StudyAuthor) it.next();
@@ -1509,7 +1448,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
             elem.setDisplayOrder(i);
             i++;
         }
-
+        */
     }
 
     public Study saveStudy(Study study, Long userId) {
@@ -1757,6 +1696,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
     }
 
     private Study doImportStudy(File xmlFile, Long harvestFormatTypeId, Long vdcId, Long userId, String harvestIdentifier, List<StudyFileEditBean> filesToUpload) {
+        // TODO: VERSION
         logger.info("Begin doImportStudy");
 
         Study study = null;
@@ -1812,7 +1752,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
 
             // if not a harvest, set initial date of deposit (this may get overridden during map ddi step
             if (!isHarvest) {
-                study.setDateOfDeposit(  new SimpleDateFormat("yyyy-MM-dd").format(study.getCreateTime()) );
+                //study.setDateOfDeposit(  new SimpleDateFormat("yyyy-MM-dd").format(study.getCreateTime()) );
             }
 
         }
@@ -1828,9 +1768,9 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
             study.setHarvestIdentifier(harvestIdentifier);
         } else {
             // clear fields related to harvesting
-            study.setHarvestHoldings(null);
-            study.setHarvestDVTermsOfUse(null);
-            study.setHarvestDVNTermsOfUse(null);
+            //study.setHarvestHoldings(null);
+            //study.setHarvestDVTermsOfUse(null);
+            //study.setHarvestDVNTermsOfUse(null);
         }
         setDisplayOrders(study);
         boolean registerHandle = determineId(study, vdc, globalIdComponents);
@@ -1910,6 +1850,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
     }
 
     private void generateHandle(Study study, String protocol, String authority, boolean generateRandom) {
+        // TODO: VERSION: change this to use a study version object
         String studyId = null;
 
         if (generateRandom) {
@@ -1918,7 +1859,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
             } while (!isUniqueStudyId(studyId, protocol, authority));
 
 
-        } else {
+        } else {/*
             if (study.getStudyOtherIds().size() > 0) {
                 studyId = study.getStudyOtherIds().get(0).getOtherId();
                 if (!isValidStudyIdString(studyId)) {
@@ -1926,7 +1867,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
                 }
             } else {
                 throw new EJBException("No Other ID (from DDI) was available for generating a handle.");
-            }
+            }*/
         }
 
         study.setProtocol(protocol);
@@ -1947,20 +1888,6 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         return true;
     }
 
-    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-    public List<StudyFile> getStudyFilesByExtension(String extension) {
-
-        String queryStr = "SELECT sf from StudyFile sf where lower(sf.fileName) LIKE :extension";
-
-        Query query = em.createQuery(queryStr);
-        query.setParameter("extension", "%." + extension.toLowerCase());
-        return query.getResultList();
-
-    }
-
-    public void updateStudyFile(StudyFile detachedStudyFile) {
-        em.merge(detachedStudyFile);
-    }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void setIndexTime(Long studyId, Date indexTime) {
@@ -2016,36 +1943,6 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         Object object       = ((List)query.getSingleResult()).get(0);
         Long longValue      = (Long)object;
         return longValue;
-    }
-
-    public Boolean doesStudyHaveSubsettableFiles(Long studyId) {
-        // step 1: get categories
-        List fcList = new ArrayList();
-        Query query = em.createNativeQuery("select id from filecategory where study_id = ?").setParameter(1, studyId);
-        for (Object currentResult : query.getResultList()) {
-            // since query is native, must parse through Vector results and convert to Long
-            fcList.add(new Long(((Integer) ((Vector) currentResult).get(0))).longValue());
-        }
-
-        if ( !fcList.isEmpty() ) {
-            // step 2: get files (only subsettable flag)
-            List<String> subsettableList = new ArrayList();
-            query = em.createNativeQuery("select fileclass from studyfile where filecategory_id in (" + generateIdString(fcList) + ")");
-            for (Object currentResult : query.getResultList()) {
-                subsettableList.add( ((String) ((Vector) currentResult).get(0)) );
-            }
-
-            if ( !subsettableList.isEmpty() ) {
-                for (String fclass : subsettableList) {
-                    if ("TabularDataFile".equals(fclass) || "NetworkDataFile".equals(fclass))
-                        return Boolean.TRUE;
-                }
-
-                return Boolean.FALSE;
-            }
-        }
-
-        return null;
     }
     
 

@@ -423,7 +423,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
      * @return    the citation information of the requested data file
      */
     public String getCitation() {
-        return thisStudy.getCitation(false);
+        // TODO: VERSION: change this to use a study version object
+        return thisStudy.getReleasedVersion().getMetadata().getCitation(false);
     }
     /**
      * Setter for property citation
@@ -443,7 +444,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
      * @return    the title of the requested study
      */
     public String getStudyTitle() {
-        return thisStudy.getTitle();
+        // TODO: VERSION:
+        return thisStudy.getReleasedVersion().getMetadata().getTitle();
     }
     
     /**
@@ -8129,12 +8131,14 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 dbgLog.severe("ERROR: AanalysisPage.java: "+
                     "without a serviceBean or a dtId");
             }
-
+// TODO: VERSION:
             // Stores the title, ID, and citation data of the requested study
-                thisStudy = dataTable.getStudyFile().getFileCategory().getStudy();
-                setStudyTitle(thisStudy.getTitle());
+                thisStudy = dataTable.getStudyFile().getStudy();
+                // TODO: VERSION: change this to use a study version object
+                setStudyTitle(thisStudy.getReleasedVersion().getMetadata().getTitle());
                 setStudyId(thisStudy.getId());
-                setCitation(thisStudy.getCitation(false));
+                // TODO: VERSION: change this to use a study version object
+                setCitation(thisStudy.getReleasedVersion().getMetadata().getCitation(false));
                     dbgLog.fine("Study Title="+studyTitle);
                     dbgLog.fine("Study Id="+studyId);
                     dbgLog.fine("Ciation="+citation);
@@ -8191,7 +8195,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         boolean render = false;
 
         if (getVDCSessionBean().getLoginBean() != null) {
-            Study study = dataTable.getStudyFile().getFileCategory().getStudy();
+            Study study = dataTable.getStudyFile().getStudy();
             boolean authorized = study
                 .isUserAuthorizedToEdit(getVDCSessionBean().getLoginBean()
                     .getUser());

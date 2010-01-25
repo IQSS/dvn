@@ -51,17 +51,28 @@ public class FileCategoryUI implements Comparable, java.io.Serializable   {
     private FileCategory fileCategory;
     
     /** Creates a new instance of FileCategoryUI */
+
+    /* no longer used
     public FileCategoryUI(FileCategory fileCategory, VDC vdc, VDCUser user, UserGroup ipUserGroup) {
         this.fileCategory = fileCategory;
         initStudyFiles(vdc,user, ipUserGroup);
 
-    }  
+    }
+    */
     
       /** Creates a new instance of FileCategoryUI */
     public FileCategoryUI(FileCategory fileCategory) {
         this.fileCategory = fileCategory;
 
-    }  
+    }
+
+    /** Creates a new instance of FileCategoryUI */
+    public FileCategoryUI(String category) {
+        this.fileCategory = new FileCategory();
+        this.fileCategory.setName(category);
+
+    }
+    /* no longer used!!!!!
     private void initStudyFiles(VDC vdc, VDCUser user, UserGroup ipUserGroup) {
         StudyServiceLocal studyService = null;
         try {
@@ -77,6 +88,7 @@ public class FileCategoryUI implements Comparable, java.io.Serializable   {
             studyFileUIs.add(studyFileUI);
         }
     }
+    */
     
     private List<StudyFileUI> studyFileUIs = new ArrayList();
     

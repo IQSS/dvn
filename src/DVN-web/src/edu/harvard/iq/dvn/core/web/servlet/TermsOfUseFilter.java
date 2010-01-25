@@ -30,6 +30,7 @@ import edu.harvard.iq.dvn.core.study.DataTable;
 import edu.harvard.iq.dvn.core.study.FileCategory;
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyFile;
+import edu.harvard.iq.dvn.core.study.StudyFileServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.study.VariableServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDC;
@@ -83,6 +84,8 @@ public class TermsOfUseFilter implements Filter {
     VariableServiceLocal variableService;
     @EJB
     VDCNetworkServiceLocal vdcNetworkService;
+    @EJB
+    StudyFileServiceLocal studyFileService;
 
     public static boolean isDownloadDataverseTermsRequired(Study study, Map termsOfUseMap) {
         boolean vdcTermsRequired = study.getOwner().isDownloadTermsOfUseEnabled();
@@ -104,7 +107,7 @@ public class TermsOfUseFilter implements Filter {
     }
 
     public static boolean isDownloadStudyTermsRequired(Study study, Map termsOfUseMap) {
-        boolean studyTermsRequired = study.isTermsOfUseEnabled();
+        boolean studyTermsRequired = study.getReleasedVersion().getMetadata().isTermsOfUseEnabled();
         if (studyTermsRequired) {
             return termsOfUseMap.get("study_download_" + study.getId()) == null;
         }
@@ -295,11 +298,11 @@ public class TermsOfUseFilter implements Filter {
                     StringTokenizer st = new StringTokenizer(fileId,",");
 
                     while (st.hasMoreTokens()) {
-                        StudyFile file = studyService.getStudyFile(new Long(st.nextToken()));
+                        StudyFile file = studyFileService.getStudyFile(new Long(st.nextToken()));
                         if (study == null) {
-                            study = file.getFileCategory().getStudy();
+                            study = file.getStudy();
 
-                        } else if ( !study.equals(file.getFileCategory().getStudy()) ) {
+                        } else if ( !study.equals(file.getStudy()) ) {
                             res.sendRedirect(req.getContextPath() + "/ExceptionHandler?You may not download multiple files from different studies.");
                             //res.sendRedirect(req.getContextPath() + "/faces/ErrorPage.xhtml");
                             return true; // don't continue with chain since we are redirecting'
@@ -316,9 +319,10 @@ public class TermsOfUseFilter implements Filter {
                         return false;
                     }
                 }
+                // TODO: VERSION:
             } else if (catId != null) {
                 try {
-                    FileCategory cat = studyService.getFileCategory(new Long(catId));
+                    FileCategory cat = studyFileService.getFileCategory(new Long(catId));
                     study = cat.getStudy();
                 } catch (Exception ex) {
                     if (ex.getCause() instanceof IllegalArgumentException) {
@@ -349,7 +353,7 @@ public class TermsOfUseFilter implements Filter {
                 String dtId = req.getParameter("dtId");
                 if (dtId != null) {
                     DataTable dt = variableService.getDataTable(new Long(dtId));
-                    study = dt.getStudyFile().getFileCategory().getStudy();
+                    study = dt.getStudyFile().getStudy();
                 }
 
             }

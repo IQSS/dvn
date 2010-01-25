@@ -211,7 +211,8 @@ public class ReviewStudiesPage extends VDCBaseBean implements java.io.Serializab
             Study elem = (Study) it.next();
             row[0] = elem.getId().toString();
             row[1] = elem.getGlobalId();
-            row[2] = elem.getTitle();
+            // TODO: VERSION:
+            row[2] = "DUMMY TITLE"; //elem.getTitle();
             row[3] = elem.getReviewState().getName();
             row[4] = elem.getCreator().getFirstName()+ " "+elem.getCreator().getLastName();
             row[5] = elem.getReviewer() != null ? elem.getReviewer().getFirstName()+ " "+ elem.getReviewer().getLastName():"";
@@ -270,14 +271,14 @@ public class ReviewStudiesPage extends VDCBaseBean implements java.io.Serializab
                     if (!study.getReviewState().getId().equals(inReview.getId())){
                         study.setReviewState(inReview);
                         study.setReviewer(getVDCSessionBean().getLoginBean().getUser());
-                        mailService.sendStudyInReviewNotification(study.getCreator().getEmail(),study.getTitle());
+                        //mailService.sendStudyInReviewNotification(study.getCreator().getEmail(),study.getTitle());
                     }
                 }
                 if (elem[3].equalsIgnoreCase("Released")){  // Bundle this
                     if (!study.getReviewState().getId().equals(released.getId())){
                         ReviewState accepted = reviewStateService.findByName(ReviewStateServiceLocal.REVIEW_STATE_RELEASED);
                         study.setReviewState(accepted);
-                        mailService.sendStudyReleasedNotification(study.getCreator().getEmail(),study.getTitle(),getVDCRequestBean().getCurrentVDC().getName());
+                        //mailService.sendStudyReleasedNotification(study.getCreator().getEmail(),study.getTitle(),getVDCRequestBean().getCurrentVDC().getName());
                     }
                 }
                 studyService.updateStudy(study);

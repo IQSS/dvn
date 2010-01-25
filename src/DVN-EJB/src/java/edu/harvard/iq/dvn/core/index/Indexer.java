@@ -30,7 +30,8 @@
 package edu.harvard.iq.dvn.core.index;
 import edu.harvard.iq.dvn.core.study.DataTable;
 import edu.harvard.iq.dvn.core.study.DataVariable;
-import edu.harvard.iq.dvn.core.study.FileCategory;
+import edu.harvard.iq.dvn.core.study.FileMetadata;
+import edu.harvard.iq.dvn.core.study.Metadata;
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyAbstract;
 import edu.harvard.iq.dvn.core.study.StudyAuthor;
@@ -48,6 +49,7 @@ import edu.harvard.iq.dvn.core.study.StudyRelPublication;
 import edu.harvard.iq.dvn.core.study.StudyRelStudy;
 import edu.harvard.iq.dvn.core.study.StudySoftware;
 import edu.harvard.iq.dvn.core.study.StudyTopicClass;
+import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.study.TabularDataFile;
 import java.io.File;
 import java.io.IOException;
@@ -63,7 +65,6 @@ import java.util.StringTokenizer;
 import java.util.logging.Logger;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.PorterStemFilter;
-import org.apache.lucene.analysis.Token;
 import org.apache.lucene.analysis.tokenattributes.TermAttribute;
 import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.DateTools.Resolution;
@@ -84,7 +85,6 @@ import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermRangeQuery;
-import org.apache.lucene.util.AttributeSource;
 import org.apache.lucene.util.Version;
 
 /**
@@ -168,41 +168,52 @@ public class Indexer implements java.io.Serializable  {
     }
 
     protected void addDocument(Study study) throws IOException{
+
+        // TODO: VERSION: we should only indexed RELEASED
+        StudyVersion sv = null;
+        if (study.getReleasedVersion() != null) {
+            sv = study.getReleasedVersion();
+        } else {
+            sv = study.getStudyVersions().get(0);
+        }
+        Metadata metadata = sv.getMetadata();
+
+        
         Document doc = new Document();
         logger.info("Start indexing study "+study.getStudyId());
-        addText(4.0f,  doc,"title",study.getTitle());
+        addText(4.0f,  doc,"title",metadata.getTitle());
         addKeyword(doc,"id",study.getId().toString());
         addText(1.0f,  doc,"studyId", study.getStudyId());
 //        addText(1.0f,  doc,"owner",study.getOwner().getName());
         addText(1.0f, doc, "dvOwnerId", Long.toString(study.getOwner().getId()));
-        addDate(1.0f, doc,"productionDate", study.getProductionDate());
-        addDate(1.0f, doc,"distributionDate", study.getDistributionDate());
-        Collection <StudyKeyword> keywords = study.getStudyKeywords();
+        addDate(1.0f, doc,"productionDate", metadata.getProductionDate());
+        addDate(1.0f, doc,"distributionDate", metadata.getDistributionDate());
+        Collection <StudyKeyword> keywords = metadata.getStudyKeywords();
         for (Iterator it = keywords.iterator(); it.hasNext();) {
             StudyKeyword elem = (StudyKeyword) it.next();
             addText(1.0f,  doc,"keywordValue", elem.getValue());
         }
-        Collection <StudyTopicClass> topicClassifications = study.getStudyTopicClasses();
+        Collection <StudyTopicClass> topicClassifications = metadata.getStudyTopicClasses();
         for (Iterator it = topicClassifications.iterator(); it.hasNext();) {
             StudyTopicClass elem = (StudyTopicClass) it.next();
             addText(1.0f,  doc,"topicClassValue", elem.getValue());
             addText(1.0f,  doc,"topicVocabClassURI", elem.getVocabURI());
             addText(1.0f,  doc,"topicClassVocabulary", elem.getVocab());        }
-        Collection <StudyAbstract> abstracts = study.getStudyAbstracts();
+        Collection <StudyAbstract> abstracts = metadata.getStudyAbstracts();
         for (Iterator it = abstracts.iterator(); it.hasNext();) {
             StudyAbstract elem = (StudyAbstract) it.next();
             addText(2.0f,  doc,"abstractText",elem.getText());
             addDate(1.0f, doc,"abstractDate",elem.getDate());
 
         }
-        Collection <StudyAuthor> studyAuthors = study.getStudyAuthors();
+        Collection <StudyAuthor> studyAuthors = metadata.getStudyAuthors();
         for (Iterator it = studyAuthors.iterator(); it.hasNext();) {
             StudyAuthor elem = (StudyAuthor) it.next();
             addText(3.0f,  doc,"authorName",elem.getName());
             addText(1.0f, doc,"authorName",elem.getName());
             addText(1.0f,  doc,"authorAffiliation", elem.getAffiliation());
         }
-        Collection <StudyProducer> studyProducers = study.getStudyProducers();
+        Collection <StudyProducer> studyProducers = metadata.getStudyProducers();
         for (Iterator itProducers = studyProducers.iterator(); itProducers.hasNext();) {
             StudyProducer studyProducer = (StudyProducer) itProducers.next();
             addText(1.0f,  doc,"producerName", studyProducer.getName());
@@ -212,7 +223,7 @@ public class Indexer implements java.io.Serializable  {
             addText(1.0f,  doc,"producerName", studyProducer.getAffiliation());
             addText(1.0f,  doc,"producerName", studyProducer.getMetadata().getProductionPlace());
         }
-        Collection <StudyDistributor> studyDistributors = study.getStudyDistributors();
+        Collection <StudyDistributor> studyDistributors = metadata.getStudyDistributors();
         for (Iterator it = studyDistributors.iterator(); it.hasNext();) {
             StudyDistributor studyDistributor = (StudyDistributor) it.next();
             addText(1.0f,  doc,"distributorName", studyDistributor.getName());
@@ -221,99 +232,99 @@ public class Indexer implements java.io.Serializable  {
             addText(1.0f,  doc,"distributorName", studyDistributor.getUrl());
             addText(1.0f,  doc,"distributorName", studyDistributor.getAffiliation());
         }
-        Collection <StudyOtherId> otherIds = study.getStudyOtherIds();
+        Collection <StudyOtherId> otherIds = metadata.getStudyOtherIds();
         for (Iterator it = otherIds.iterator(); it.hasNext();) {
             StudyOtherId elem = (StudyOtherId) it.next();
             addText(1.0f,  doc,"otherId", elem.getOtherId());
             addText(1.0f,  doc,"otherIdAgency", elem.getAgency());
         }
-        addText(1.0f,  doc,"fundingAgency",study.getFundingAgency());
-        addText(1.0f,  doc,"distributorContact",study.getDistributorContact());
-        addText(1.0f,  doc,"distributorContactAffiliation",study.getDistributorContactAffiliation());
-        addText(1.0f,  doc,"distributorContactEmail",study.getDistributorContactEmail());
-        addDate(1.0f, doc,"dateOfDeposit",study.getDateOfDeposit());
-        addText(1.0f,  doc,"depositor",study.getDepositor());
-        addText(1.0f,  doc,"seriesName",study.getSeriesName());
-        addText(1.0f,  doc,"seriesInformation",study.getSeriesInformation());
-        addText(1.0f, doc,"studyVersion",study.getStudyVersion());
-        addText(1.0f, doc,"versionDate",study.getVersionDate());
-        addText(1.0f,  doc,"originOfSources",study.getOriginOfSources());
-        addText(1.0f,  doc,"dataSources",study.getDataSources());
-        addText(1.0f, doc,"frequencyOfDataCollection",study.getFrequencyOfDataCollection());
-        addText(1.0f,  doc,"universe",study.getUniverse());
-        addText(1.0f, doc,"unitOfAnalysis",study.getUnitOfAnalysis());
-        addText(1.0f,  doc,"dataCollector",study.getDataCollector());
-        addText(1.0f,  doc,"kindOfData", study.getKindOfData());
-        addText(1.0f,  doc,"geographicCoverage",study.getGeographicCoverage());
-        addText(1.0f,  doc,"geographicUnit",study.getGeographicUnit());
-        addDate(1.0f, doc,"timePeriodCoveredEnd",study.getTimePeriodCoveredEnd());
-        addDate(1.0f, doc,"timePeriodCoveredStart",study.getTimePeriodCoveredStart());
-        addDate(1.0f, doc,"dateOfCollection",study.getDateOfCollectionStart());
-        addDate(1.0f, doc,"dateOfCollectionEnd",study.getDateOfCollectionEnd());
-        addText(1.0f, doc,"country",study.getCountry());
-        addText(1.0f, doc,"timeMethod",study.getTimeMethod());
-        addText(1.0f, doc,"samplingProcedure",study.getSamplingProcedure());
-        addText(1.0f, doc,"deviationsFromSampleDesign",study.getDeviationsFromSampleDesign());
-        addText(1.0f, doc,"collectionMode",study.getCollectionMode());
-        addText(1.0f, doc,"researchInstrument",study.getResearchInstrument());
-        addText(1.0f,  doc,"characteristicOfSources",study.getCharacteristicOfSources());
-        addText(1.0f,  doc,"accessToSources",study.getAccessToSources());
-        addText(1.0f,  doc,"dataCollectionSituation",study.getDataCollectionSituation());
-        addText(1.0f,  doc,"actionsToMinimizeLoss",study.getActionsToMinimizeLoss());
-        addText(1.0f,  doc,"controlOperations",study.getControlOperations());
-        addText(1.0f,  doc,"weighting",study.getWeighting());
-        addText(1.0f,  doc,"cleaningOperations",study.getCleaningOperations());
-        addText(1.0f,  doc,"studyLevelErrorNotes",study.getStudyLevelErrorNotes());
-        List <StudyNote> studyNotes = study.getStudyNotes();
+        addText(1.0f,  doc,"fundingAgency",metadata.getFundingAgency());
+        addText(1.0f,  doc,"distributorContact",metadata.getDistributorContact());
+        addText(1.0f,  doc,"distributorContactAffiliation",metadata.getDistributorContactAffiliation());
+        addText(1.0f,  doc,"distributorContactEmail",metadata.getDistributorContactEmail());
+        addDate(1.0f, doc,"dateOfDeposit",metadata.getDateOfDeposit());
+        addText(1.0f,  doc,"depositor",metadata.getDepositor());
+        addText(1.0f,  doc,"seriesName",metadata.getSeriesName());
+        addText(1.0f,  doc,"seriesInformation",metadata.getSeriesInformation());
+        addText(1.0f, doc,"studyVersion",metadata.getStudyVersionText());
+        addText(1.0f, doc,"versionDate",metadata.getVersionDate());
+        addText(1.0f,  doc,"originOfSources",metadata.getOriginOfSources());
+        addText(1.0f,  doc,"dataSources",metadata.getDataSources());
+        addText(1.0f, doc,"frequencyOfDataCollection",metadata.getFrequencyOfDataCollection());
+        addText(1.0f,  doc,"universe",metadata.getUniverse());
+        addText(1.0f, doc,"unitOfAnalysis",metadata.getUnitOfAnalysis());
+        addText(1.0f,  doc,"dataCollector",metadata.getDataCollector());
+        addText(1.0f,  doc,"kindOfData", metadata.getKindOfData());
+        addText(1.0f,  doc,"geographicCoverage",metadata.getGeographicCoverage());
+        addText(1.0f,  doc,"geographicUnit",metadata.getGeographicUnit());
+        addDate(1.0f, doc,"timePeriodCoveredEnd",metadata.getTimePeriodCoveredEnd());
+        addDate(1.0f, doc,"timePeriodCoveredStart",metadata.getTimePeriodCoveredStart());
+        addDate(1.0f, doc,"dateOfCollection",metadata.getDateOfCollectionStart());
+        addDate(1.0f, doc,"dateOfCollectionEnd",metadata.getDateOfCollectionEnd());
+        addText(1.0f, doc,"country",metadata.getCountry());
+        addText(1.0f, doc,"timeMethod",metadata.getTimeMethod());
+        addText(1.0f, doc,"samplingProcedure",metadata.getSamplingProcedure());
+        addText(1.0f, doc,"deviationsFromSampleDesign",metadata.getDeviationsFromSampleDesign());
+        addText(1.0f, doc,"collectionMode",metadata.getCollectionMode());
+        addText(1.0f, doc,"researchInstrument",metadata.getResearchInstrument());
+        addText(1.0f,  doc,"characteristicOfSources",metadata.getCharacteristicOfSources());
+        addText(1.0f,  doc,"accessToSources",metadata.getAccessToSources());
+        addText(1.0f,  doc,"dataCollectionSituation",metadata.getDataCollectionSituation());
+        addText(1.0f,  doc,"actionsToMinimizeLoss",metadata.getActionsToMinimizeLoss());
+        addText(1.0f,  doc,"controlOperations",metadata.getControlOperations());
+        addText(1.0f,  doc,"weighting",metadata.getWeighting());
+        addText(1.0f,  doc,"cleaningOperations",metadata.getCleaningOperations());
+        addText(1.0f,  doc,"studyLevelErrorNotes",metadata.getStudyLevelErrorNotes());
+        List <StudyNote> studyNotes = metadata.getStudyNotes();
         for (Iterator it = studyNotes.iterator(); it.hasNext();){
             StudyNote elem = (StudyNote) it.next();
             addText(1.0f,  doc, "studyNoteType", elem.getType());
             addText(1.0f,  doc, "studyNoteSubject", elem.getSubject());
             addText(1.0f,  doc, "studyNoteText", elem.getText());
         }
-        addText(1.0f, doc,"responseRate",study.getResponseRate());
-        addText(1.0f, doc,"samplingErrorEstimate",study.getSamplingErrorEstimate());
-        addText(1.0f,  doc,"otherDataAppraisal",study.getOtherDataAppraisal());
-        addText(1.0f,  doc,"placeOfAccess",study.getPlaceOfAccess());
-        addText(1.0f,  doc,"originalArchive",study.getOriginalArchive());
-        addText(1.0f, doc,"availabilityStatus",study.getAvailabilityStatus());
-        addText(1.0f, doc,"collectionSize",study.getCollectionSize());
-        addText(1.0f, doc,"studyCompletion",study.getStudyCompletion());
-        addText(1.0f,  doc,"confidentialityDeclaration",study.getConfidentialityDeclaration());
-        addText(1.0f,  doc,"specialPermissions",study.getSpecialPermissions());
-        addText(1.0f,  doc,"restrictions",study.getRestrictions());
-        addText(1.0f,  doc,"contact",study.getContact());
-        addText(1.0f,  doc,"citationRequirements",study.getCitationRequirements());
-        addText(1.0f,  doc,"depositorRequirements",study.getDepositorRequirements());
-        addText(1.0f,  doc,"conditions",study.getConditions());
-        addText(1.0f,  doc,"disclaimer",study.getDisclaimer());
-        List <StudyRelMaterial> relMaterials = study.getStudyRelMaterials();
+        addText(1.0f, doc,"responseRate",metadata.getResponseRate());
+        addText(1.0f, doc,"samplingErrorEstimate",metadata.getSamplingErrorEstimate());
+        addText(1.0f,  doc,"otherDataAppraisal",metadata.getOtherDataAppraisal());
+        addText(1.0f,  doc,"placeOfAccess",metadata.getPlaceOfAccess());
+        addText(1.0f,  doc,"originalArchive",metadata.getOriginalArchive());
+        addText(1.0f, doc,"availabilityStatus",metadata.getAvailabilityStatus());
+        addText(1.0f, doc,"collectionSize",metadata.getCollectionSize());
+        addText(1.0f, doc,"studyCompletion",metadata.getStudyCompletion());
+        addText(1.0f,  doc,"confidentialityDeclaration",metadata.getConfidentialityDeclaration());
+        addText(1.0f,  doc,"specialPermissions",metadata.getSpecialPermissions());
+        addText(1.0f,  doc,"restrictions",metadata.getRestrictions());
+        addText(1.0f,  doc,"contact",metadata.getContact());
+        addText(1.0f,  doc,"citationRequirements",metadata.getCitationRequirements());
+        addText(1.0f,  doc,"depositorRequirements",metadata.getDepositorRequirements());
+        addText(1.0f,  doc,"conditions",metadata.getConditions());
+        addText(1.0f,  doc,"disclaimer",metadata.getDisclaimer());
+        List <StudyRelMaterial> relMaterials = metadata.getStudyRelMaterials();
         for (Iterator it = relMaterials.iterator(); it.hasNext();) {
             StudyRelMaterial elem = (StudyRelMaterial) it.next();
             addText(1.0f,  doc,"relatedMaterial",elem.getText());
         }
-        List <StudyRelPublication> relPublications = study.getStudyRelPublications();
+        List <StudyRelPublication> relPublications = metadata.getStudyRelPublications();
         for (Iterator it = relPublications.iterator(); it.hasNext();) {
             StudyRelPublication elem = (StudyRelPublication) it.next();
             addText(1.0f,  doc,"relatedPublications",elem.getText());
         }
-        List <StudyRelStudy> relStudies = study.getStudyRelStudies();
+        List <StudyRelStudy> relStudies = metadata.getStudyRelStudies();
         for (Iterator it = relStudies.iterator(); it.hasNext();) {
             StudyRelStudy elem = (StudyRelStudy) it.next();
             addText(1.0f,  doc,"relatedStudy",elem.getText());
         }
-        List <StudyOtherRef> otherRefs = study.getStudyOtherRefs();
+        List <StudyOtherRef> otherRefs = metadata.getStudyOtherRefs();
         for (Iterator it = otherRefs.iterator(); it.hasNext();) {
             StudyOtherRef elem = (StudyOtherRef) it.next();
             addText(1.0f,  doc,"otherReferences",elem.getText());
         }
 
-   /*     addText(1.0f,  doc,"relatedMaterial",study.getRelatedMaterial());
-        addText(1.0f,  doc,"relatedPublications",study.getRelatedPublications());
-        addText(1.0f,  doc,"otherReferences",study.getOtherReferences());
+   /*     addText(1.0f,  doc,"relatedMaterial",metadata.getRelatedMaterial());
+        addText(1.0f,  doc,"relatedPublications",metadata.getRelatedPublications());
+        addText(1.0f,  doc,"otherReferences",metadata.getOtherReferences());
     */
-        addText(1.0f,  doc,"subtitle",study.getSubTitle());
-        List <StudyKeyword> studyKeywords = study.getStudyKeywords();
+        addText(1.0f,  doc,"subtitle",metadata.getSubTitle());
+        List <StudyKeyword> studyKeywords = metadata.getStudyKeywords();
         for (Iterator it = studyKeywords.iterator(); it.hasNext();) {
             StudyKeyword elem = (StudyKeyword) it.next();
             addText(1.0f,  doc,"keywordVocabulary",elem.getVocab());
@@ -322,20 +333,20 @@ public class Indexer implements java.io.Serializable  {
         addText(1.0f,  doc,"protocol",study.getProtocol());
         addText(1.0f,  doc,"authority",study.getAuthority());
         addText(1.0f,  doc,"globalId",study.getGlobalId());
-        List <StudySoftware> studySoftware = study.getMetadata().getStudySoftware();
+        List <StudySoftware> studySoftware = metadata.getStudySoftware();
         for (Iterator it = studySoftware.iterator(); it.hasNext();) {
             StudySoftware elem = (StudySoftware) it.next();
             addText(1.0f,  doc,"studySoftware", elem.getName());
             addText(1.0f,  doc,"studySoftwareVersion", elem.getSoftwareVersion());
         }
-        List <StudyGrant> studyGrants = study.getMetadata().getStudyGrants();
+        List <StudyGrant> studyGrants = metadata.getStudyGrants();
         for (Iterator it = studyGrants.iterator(); it.hasNext();) {
             StudyGrant elem = (StudyGrant) it.next();
             addText(1.0f,  doc,"studyGrantNumber", elem.getNumber());
             addText(1.0f,  doc,"studyGrantNumberAgency", elem.getAgency());
         }
-        addText(1.0f,  doc, "replicationFor", study.getReplicationFor());
-        List <StudyGeoBounding> studyGeoBounding = study.getMetadata().getStudyGeoBoundings();
+        addText(1.0f,  doc, "replicationFor", metadata.getReplicationFor());
+        List <StudyGeoBounding> studyGeoBounding = metadata.getStudyGeoBoundings();
         for (Iterator it = studyGeoBounding.iterator(); it.hasNext();) {
             StudyGeoBounding elem = (StudyGeoBounding) it.next();
             addText(1.0f,  doc,"studyEastLongitude", elem.getEastLongitude());
@@ -343,48 +354,42 @@ public class Indexer implements java.io.Serializable  {
             addText(1.0f,  doc,"studyNorthLatitude", elem.getNorthLatitude());
             addText(1.0f,  doc,"studySouthLatitude", elem.getSouthLatitude());
         }
-        List <FileCategory> fileCategories = study.getFileCategories();
-        for (int i = 0; i < fileCategories.size(); i++) {
-            FileCategory fileCategory = fileCategories.get(i);
-            Collection<StudyFile> studyFiles = fileCategory.getStudyFiles();
-            for (Iterator it = studyFiles.iterator(); it.hasNext();) {
-                StudyFile elem = (StudyFile) it.next();
-                addText(1.0f, doc, "fileDescription",elem.getDescription());
-            }
+
+
+        for (FileMetadata fileMetadata : sv.getFileMetadatas()) {
+            addText(1.0f, doc, "fileDescription",fileMetadata.getDescription());
         }
-        addText(1.0f,  doc,"unf", study.getUNF());
+
+        addText(1.0f,  doc,"unf", metadata.getUNF());
 //        writer = new IndexWriter(dir, true, getAnalyzer(), isIndexEmpty());
         writer = new IndexWriter(dir, getAnalyzer(),isIndexEmpty(), IndexWriter.MaxFieldLength.UNLIMITED);
         writer.setUseCompoundFile(true);
         writer.addDocument(doc);
         writer.close();
         writerVar = new IndexWriter(dir, getAnalyzer(), isIndexEmpty(), IndexWriter.MaxFieldLength.UNLIMITED);
-        for (int i = 0; i < fileCategories.size(); i++) {
-            FileCategory fileCategory = fileCategories.get(i);
-            Collection<StudyFile> studyFiles = fileCategory.getStudyFiles();
-            for (Iterator it = studyFiles.iterator(); it.hasNext();) {
-                StudyFile elem = (StudyFile) it.next();
 
-                //TODO: networkDataFile
-                if (elem instanceof TabularDataFile) {
-                    DataTable dataTable = ((TabularDataFile) elem).getDataTable();
-                    if (dataTable != null) {
-                        List<DataVariable> dataVariables = dataTable.getDataVariables();
-                        for (int j = 0; j < dataVariables.size(); j++) {
-                            Document docVariables = new Document();
-                            addText(1.0f, docVariables, "varStudyId", study.getId().toString());
-                            addText(1.0f, docVariables, "varStudyFileId", elem.getId().toString());
-                            DataVariable dataVariable = dataVariables.get(j);
-                            addText(1.0f, docVariables, "varId", dataVariable.getId().toString());
-                            addText(1.0f, docVariables, "varName", dataVariable.getName());
-                            addText(1.0f, docVariables, "varLabel", dataVariable.getLabel());
-                            addText(1.0f, docVariables, "varId", dataVariable.getId().toString());
-                            writerVar.addDocument(docVariables);
-                        }
+        for (FileMetadata fileMetadata : sv.getFileMetadatas()) {
+            //TODO: networkDataFile
+            StudyFile elem = fileMetadata.getStudyFile();
+            if (elem instanceof TabularDataFile) {
+                DataTable dataTable = ((TabularDataFile) elem).getDataTable();
+                if (dataTable != null) {
+                    List<DataVariable> dataVariables = dataTable.getDataVariables();
+                    for (int j = 0; j < dataVariables.size(); j++) {
+                        Document docVariables = new Document();
+                        addText(1.0f, docVariables, "varStudyId", study.getId().toString());
+                        addText(1.0f, docVariables, "varStudyFileId", elem.getId().toString());
+                        DataVariable dataVariable = dataVariables.get(j);
+                        addText(1.0f, docVariables, "varId", dataVariable.getId().toString());
+                        addText(1.0f, docVariables, "varName", dataVariable.getName());
+                        addText(1.0f, docVariables, "varLabel", dataVariable.getLabel());
+                        addText(1.0f, docVariables, "varId", dataVariable.getId().toString());
+                        writerVar.addDocument(docVariables);
                     }
                 }
             }
-        }
+
+        }        
         writerVar.close();
         logger.info("End indexing study " + study.getStudyId());
     }

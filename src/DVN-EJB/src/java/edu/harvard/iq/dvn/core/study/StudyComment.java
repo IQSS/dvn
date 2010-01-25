@@ -57,7 +57,7 @@ public class StudyComment implements Serializable {
     private Date createTime;
 
     @ManyToOne
-    private Study study;
+    private StudyVersion studyVersion;
     @ManyToMany
     @JoinTable(name = "FLAGGED_STUDY_COMMENTS",
     joinColumns = @JoinColumn(name = "study_comment_id"),
@@ -68,10 +68,10 @@ public class StudyComment implements Serializable {
         this.createTime = new Date();
     }
 
-    public StudyComment(String comment, VDCUser commenter, Study study){
+    public StudyComment(String comment, VDCUser commenter, StudyVersion studyVersion){
         this.commentCreator = commenter;
         this.comment = comment;
-        this.study = study;
+        this.studyVersion = studyVersion;
         this.createTime = new Date();
     }
 
@@ -95,17 +95,17 @@ public class StudyComment implements Serializable {
     }
 
     /**
-     * @return the study
+     * @return the studyVersion
      */
-    public Study getStudy() {
-        return study;
+    public StudyVersion getStudyVersion() {
+        return studyVersion;
     }
 
     /**
-     * @param study the study to set
+     * @param studyVersion the studyVersion to set
      */
-    public void setStudy(Study study) {
-        this.study = study;
+    public void setStudyVersion(StudyVersion studyVersion) {
+        this.studyVersion = studyVersion;
     }
     
     public Long getId() {

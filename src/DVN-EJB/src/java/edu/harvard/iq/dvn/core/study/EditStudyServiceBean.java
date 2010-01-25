@@ -75,6 +75,7 @@ public class EditStudyServiceBean implements edu.harvard.iq.dvn.core.study.EditS
     @EJB MailServiceLocal mailService;
     @EJB VDCNetworkServiceLocal vdcNetworkService;
     @EJB StudyServiceLocal studyService;
+    @EJB StudyFileServiceLocal studyFileService;
     @EJB GNRSServiceLocal gnrsService;
     
     @PersistenceContext(type = PersistenceContextType.EXTENDED,unitName="VDCNet-ejbPU")
@@ -82,6 +83,7 @@ public class EditStudyServiceBean implements edu.harvard.iq.dvn.core.study.EditS
     @Resource(mappedName="jms/DSBIngest") Queue queue;
     @Resource(mappedName="jms/DSBQueueConnectionFactory") QueueConnectionFactory factory;
     Study study;
+    Metadata metadata;
     private boolean newStudy=false;
     private List currentFiles = new ArrayList();
     private List newFiles = new ArrayList();
@@ -97,13 +99,15 @@ public class EditStudyServiceBean implements edu.harvard.iq.dvn.core.study.EditS
         }
         
         // now set the files
-        for (Iterator fileIt = studyService.getOrderedFilesByStudy(study.getId()).iterator(); fileIt.hasNext();) {
+        /* TODO: VERSION:
+        for (Iterator fileIt = studyFileService.getOrderedFilesByStudy(study.getId()).iterator(); fileIt.hasNext();) {
             StudyFile sf = (StudyFile) fileIt.next();
             StudyFileEditBean fileBean = new StudyFileEditBean(em.find(StudyFile.class,sf.getId()));
             fileBean.setFileCategoryName(sf.getFileCategory().getName());
             getCurrentFiles().add(fileBean);
 
         }
+        */
    
     }
     
@@ -326,17 +330,17 @@ public class EditStudyServiceBean implements edu.harvard.iq.dvn.core.study.EditS
             if (file.isDeleteFlag()) {
                 f.getAllowedGroups().clear();
                 f.getAllowedUsers().clear();
-                removeCollectionElement(f.getFileCategory().getStudyFiles(),f);
+                //removeCollectionElement(f.getFileCategory().getStudyFiles(),f);
                 recalculateStudyUNF = f.isUNFable() ? true : recalculateStudyUNF;
                 filesToBeDeleted.add(f);
-                
-            } else {
+                // TODO: VERSION
+            } /*else {
                 if (!f.getFileCategory().getName().equals(file.getFileCategoryName()) ) {
                     // move to new cat
                     f.getFileCategory().getStudyFiles().remove(f);
                     addFileToCategory(file.getStudyFile(), file.getFileCategoryName(), study);
                 }
-            }
+            }*/
         }
 
         // persist new categories and flush
@@ -350,19 +354,11 @@ public class EditStudyServiceBean implements edu.harvard.iq.dvn.core.study.EditS
         }
         em.flush();
         
-        // now delete categories that no longer have files
-        Iterator catIter = study.getFileCategories().iterator();
-        while (catIter.hasNext()) {
-            FileCategory cat = (FileCategory) catIter.next();
-            if (cat.getStudyFiles().size() == 0) {
-                removeCollectionElement(catIter,cat);
-            }
-        }
         
         // and recalculate study UNF, if needed
         if (recalculateStudyUNF) {
             try {
-                study.setUNF( new DSBWrapper().calculateUNF(study) );
+                metadata.setUNF( new DSBWrapper().calculateUNF(study) );
             } catch (IOException e) {
                 throw new EJBException("Could not calculate new study UNF");
             }
@@ -426,30 +422,7 @@ public class EditStudyServiceBean implements edu.harvard.iq.dvn.core.study.EditS
     }
     
     
-    private void addFileToCategory(StudyFile file, String catName, Study s) {
-        
-        Iterator iter = s.getFileCategories().iterator();
-        while (iter.hasNext()) {
-            FileCategory cat = (FileCategory) iter.next();
-            if ( cat.getName().equals( catName ) ) {
-                file.setFileCategory(cat);
-                cat.getStudyFiles().add(file);
-                return;
-            }
-        }
-        
-        // category was not found, so we create a new file category
-        FileCategory cat = new FileCategory();
-        cat.setStudy(s);
-        s.getFileCategories().add(cat);
-        cat.setName( catName );
-        cat.setStudyFiles(new ArrayList());
-        
-        // link cat to file
-        file.setFileCategory(cat);
-        cat.getStudyFiles().add(file);
-    }
-    
+   
     
     
     public String getIngestEmail() {
@@ -467,28 +440,29 @@ public class EditStudyServiceBean implements edu.harvard.iq.dvn.core.study.EditS
     public void changeTemplate(Long templateId) {
         Template newTemplate = em.find(Template.class, templateId);
         // Clear existing metadata from study
-        clearCollection(study.getStudyAbstracts());
-        clearCollection(study.getStudyAuthors());
-        clearCollection(study.getStudyDistributors());
-        clearCollection(study.getStudyGeoBoundings());
-        clearCollection(study.getStudyGrants());
-        clearCollection(study.getStudyKeywords());
-        clearCollection(study.getStudyNotes());
-        clearCollection(study.getStudyOtherIds());
-        clearCollection(study.getStudyOtherRefs());
-        clearCollection(study.getStudyProducers());
-        clearCollection(study.getStudyRelMaterials());
-        clearCollection(study.getStudyRelPublications());
-        clearCollection(study.getStudyRelStudies());
-        clearCollection(study.getStudySoftware());
-        clearCollection(study.getStudyTopicClasses());
+        // TODO: VERSION
+        clearCollection(metadata.getStudyAbstracts());
+        clearCollection(metadata.getStudyAuthors());
+        clearCollection(metadata.getStudyDistributors());
+        clearCollection(metadata.getStudyGeoBoundings());
+        clearCollection(metadata.getStudyGrants());
+        clearCollection(metadata.getStudyKeywords());
+        clearCollection(metadata.getStudyNotes());
+        clearCollection(metadata.getStudyOtherIds());
+        clearCollection(metadata.getStudyOtherRefs());
+        clearCollection(metadata.getStudyProducers());
+        clearCollection(metadata.getStudyRelMaterials());
+        clearCollection(metadata.getStudyRelPublications());
+        clearCollection(metadata.getStudyRelStudies());
+        clearCollection(metadata.getStudySoftware());
+        clearCollection(metadata.getStudyTopicClasses());
         
         // Copy Template Metadata into Study Metadata
-        newTemplate.getMetadata().copyMetadata(study.getMetadata());
+        newTemplate.getMetadata().copyMetadata(metadata);
         study.setTemplate(newTemplate);
 
         // prefill date of deposit
-        study.setDateOfDeposit(  new SimpleDateFormat("yyyy-MM-dd").format(study.getCreateTime()) );
+        metadata.setDateOfDeposit(  new SimpleDateFormat("yyyy-MM-dd").format(study.getCreateTime()) );
     }
     
     private void clearCollection(Collection collection) {

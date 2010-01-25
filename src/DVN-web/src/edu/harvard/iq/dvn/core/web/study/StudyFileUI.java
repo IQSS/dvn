@@ -31,6 +31,7 @@ package edu.harvard.iq.dvn.core.web.study;
 import edu.harvard.iq.dvn.core.admin.UserGroup;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.study.DataFileFormatType;
+import edu.harvard.iq.dvn.core.study.FileMetadata;
 import edu.harvard.iq.dvn.core.study.NetworkDataFile;
 import edu.harvard.iq.dvn.core.study.StudyFile;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
@@ -70,22 +71,26 @@ public class StudyFileUI implements java.io.Serializable {
      * Holds value of property studyFile.
      */
     private StudyFile studyFile;
+    private FileMetadata fileMetadata;
 
-    /**
-     * Getter for property studyFile.
-     * @return Value of property studyFile.
-     */
     public StudyFile getStudyFile() {
         return this.studyFile;
     }
 
-    /**
-     * Setter for property studyFile.
-     * @param studyFile New value of property studyFile.
-     */
     public void setStudyFile(StudyFile studyFile) {
         this.studyFile = studyFile;
     }
+// TODO: VERSION: change this to use a file matadata object (in constrcutor? no studyfile object passed?)
+    public FileMetadata getFileMetadata() {
+        return fileMetadata;
+    }
+
+    public void setFileMetadata(FileMetadata fileMetadata) {
+        this.fileMetadata = fileMetadata;
+    }
+
+
+
     /**
      * Holds value of property restrictedForUser.
      */

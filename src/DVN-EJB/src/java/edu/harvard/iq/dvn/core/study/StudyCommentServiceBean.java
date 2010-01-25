@@ -63,7 +63,7 @@ public class StudyCommentServiceBean implements StudyCommentService {
 
     @Override
     public List <StudyComment> getStudyComments(Long studyId){
-        String studyCommentsByStudyIdQuery = "Select c from StudyComment c where c.study.id = :commentStudyId and c.status <> :deleted order by c.createTime";
+        String studyCommentsByStudyIdQuery = "Select c from StudyComment c where c.studyVersion.study.id = :commentStudyId and c.status <> :deleted order by c.createTime";
         Query query = em.createQuery(studyCommentsByStudyIdQuery);
         query.setParameter("commentStudyId", studyId);
         query.setParameter("deleted",StudyComment.Status.DELETED);
@@ -130,9 +130,16 @@ public class StudyCommentServiceBean implements StudyCommentService {
         if (study != null){
             VDCUser commenter = em.find(VDCUser.class, commenterId);
             if (commenter != null){
-                StudyComment studyComment = new StudyComment(comment, commenter, study);
+                //TODO: VERSION : should deal with version
+                StudyVersion sv = null;
+                if (study.getReleasedVersion() != null) {
+                    sv = study.getReleasedVersion();
+                } else {
+                    sv = study.getStudyVersions().get(0);
+                }
+                StudyComment studyComment = new StudyComment(comment, commenter, sv);
                 studyComment.setStatus(StudyComment.Status.OK);
-                study.getStudyComments().add(studyComment);
+                sv.getStudyComments().add(studyComment);
                 em.persist(study);
             }
         }

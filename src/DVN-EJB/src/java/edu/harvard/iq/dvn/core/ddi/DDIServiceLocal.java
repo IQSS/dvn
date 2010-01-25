@@ -9,9 +9,9 @@
 
 package edu.harvard.iq.dvn.core.ddi;
 
+import edu.harvard.iq.dvn.core.study.FileMetadata;
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyExporter;
-import edu.harvard.iq.dvn.core.study.TabularDataFile;
 import java.io.File;
 import java.io.OutputStream;
 import javax.ejb.Local;
@@ -26,6 +26,6 @@ public interface DDIServiceLocal extends StudyExporter, java.io.Serializable {
     void mapDDI(String xmlToParse, Study study);
     void mapDDI(File ddiFile, Study study);
 
-    void exportDataFile(TabularDataFile sf, OutputStream out);
+    void exportDataFile(FileMetadata fmd, OutputStream out);
 
 }

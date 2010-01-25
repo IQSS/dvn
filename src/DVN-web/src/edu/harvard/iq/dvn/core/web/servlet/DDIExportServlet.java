@@ -32,6 +32,7 @@ import edu.harvard.iq.dvn.core.ddi.DDIServiceLocal;
 import edu.harvard.iq.dvn.ingest.dsb.DSBWrapper;
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyFile;
+import edu.harvard.iq.dvn.core.study.StudyFileServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.study.TabularDataFile;
 import edu.harvard.iq.dvn.core.util.FileUtil;
@@ -50,6 +51,7 @@ public class DDIExportServlet extends HttpServlet {
     
     @EJB DDIServiceLocal ddiService;
     @EJB StudyServiceLocal studyService;
+    @EJB StudyFileServiceLocal studyFileService;
  
     private boolean isNetworkAdmin(HttpServletRequest req) {
         VDCUser user = null;
@@ -83,13 +85,14 @@ public class DDIExportServlet extends HttpServlet {
             try {
                 if (fileId != null) {
                     try {
-                        StudyFile sf = studyService.getStudyFile( new Long( fileId ) );
+                        StudyFile sf = studyFileService.getStudyFile( new Long( fileId ) );
 
                         if (!(sf instanceof TabularDataFile)) {
                             createErrorResponse(res, "The file you requested is NOT a tabular data file.");
                         } else {
                             res.setContentType("text/xml");
-                            ddiService.exportDataFile( (TabularDataFile) sf, out );
+                            // TODO: VERSION
+                            //ddiService.exportDataFile( (TabularDataFile) sf, out );
                         }
                     } catch (Exception ex) {
                         if (ex.getCause() instanceof IllegalArgumentException) {

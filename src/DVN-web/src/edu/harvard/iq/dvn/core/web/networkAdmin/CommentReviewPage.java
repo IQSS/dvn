@@ -207,7 +207,8 @@ public class CommentReviewPage extends VDCBaseBean implements java.io.Serializab
          while (iterator.hasNext()) {
              StudyCommentUI studycommentui = (StudyCommentUI)iterator.next();
              if (studycommentui.getStudyComment().getId().equals(flaggedCommentId)) {
-                 title = studycommentui.getStudyComment().getStudy().getTitle();
+                 // TODO: VERSION: should we show tilte from version or current???
+                 title = studycommentui.getStudyComment().getStudyVersion().getMetadata().getTitle();
                  break;
              }
          }

@@ -108,27 +108,7 @@ public class FileCategory implements Comparable, java.io.Serializable {
         this.id = id;
     }
     
-    /**
-     * Holds value of property studyFiles.
-     */
-    @OneToMany(mappedBy="fileCategory", cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
-    private Collection<StudyFile> studyFiles;
-    
-    /**
-     * Getter for property studyFiles.
-     * @return Value of property studyFiles.
-     */
-    public Collection<StudyFile> getStudyFiles() {
-        return this.studyFiles;
-    }
-    
-    /**
-     * Setter for property studyFiles.
-     * @param studyFiles New value of property studyFiles.
-     */
-    public void setStudyFiles(Collection<StudyFile> studyFiles) {
-        this.studyFiles = studyFiles;
-    }
+
     
     @ManyToOne
     private Study study;

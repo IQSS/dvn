@@ -75,6 +75,10 @@ public class StudyFileEditBean implements Serializable {
             this.studyFile = new OtherFile(study);
         }
 
+        fileMetadata = new FileMetadata();
+        fileMetadata.setStudyFile(studyFile);
+
+
 
         this.getStudyFile().setFileType( fileType );
 
@@ -89,7 +93,7 @@ public class StudyFileEditBean implements Serializable {
         //this.getStudyFile().getFileType().equals("application/x-rlang-transport") );
         dbgLog.fine("before setFileName");
         // replace extension with ".tab" if this we are going to convert this to a tabular data file
-        this.getStudyFile().setFileName(this.getStudyFile() instanceof TabularDataFile ? FileUtil.replaceExtension(this.getOriginalFileName()) : this.getOriginalFileName());
+        fileMetadata.setLabel(this.getStudyFile() instanceof TabularDataFile ? FileUtil.replaceExtension(this.getOriginalFileName()) : this.getOriginalFileName());
         dbgLog.fine("before tempsystemfilelocation");
         this.setTempSystemFileLocation(file.getAbsolutePath());
         this.getStudyFile().setFileSystemName(fileSystemName);
@@ -98,6 +102,7 @@ public class StudyFileEditBean implements Serializable {
         dbgLog.fine("***** within StudyFileEditBean: constructor: end *****");
 
     }
+    private FileMetadata fileMetadata;
     private StudyFile studyFile;
     private String fileCategoryName;
     private String originalFileName;
@@ -169,7 +174,7 @@ public class StudyFileEditBean implements Serializable {
         file.setStudy(s);
         s.getStudyFiles().add(file);
         
-        addFileToCategory(s);
+        //addFileToCategory(s);
 
         // also create study file activity object
         StudyFileActivity sfActivity = new StudyFileActivity();
@@ -178,31 +183,6 @@ public class StudyFileEditBean implements Serializable {
         sfActivity.setStudy(s);
     }
 
-    public void addFileToCategory(Study s) {
-        StudyFile file = this.getStudyFile();
-        String catName = this.getFileCategoryName() != null ? this.getFileCategoryName() : "";
-
-        Iterator iter = s.getFileCategories().iterator();
-        while (iter.hasNext()) {
-            FileCategory cat = (FileCategory) iter.next();
-            if (cat.getName().equals(catName)) {
-                file.setFileCategory(cat);
-                cat.getStudyFiles().add(file);
-                return;
-            }
-        }
-
-        // category was not found, so we create a new file category
-        FileCategory cat = new FileCategory();
-        cat.setStudy(s);
-        s.getFileCategories().add(cat);
-        cat.setName(catName);
-        cat.setStudyFiles(new ArrayList());
-
-        // link cat to file
-        file.setFileCategory(cat);
-        cat.getStudyFiles().add(file);
-    }
 
     public String getUserFriendlyFileType() {
         return FileUtil.getUserFriendlyFileType(studyFile);

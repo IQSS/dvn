@@ -32,11 +32,14 @@ import edu.harvard.iq.dvn.core.admin.UserGroup;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.ddi.DDIServiceBean;
 import edu.harvard.iq.dvn.core.study.FileCategory;
+import edu.harvard.iq.dvn.core.study.FileMetadata;
+import edu.harvard.iq.dvn.core.study.Metadata;
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyAbstract;
 import edu.harvard.iq.dvn.core.study.StudyAuthor;
 import edu.harvard.iq.dvn.core.study.StudyDistributor;
 import edu.harvard.iq.dvn.core.study.StudyFile;
+import edu.harvard.iq.dvn.core.study.StudyFileServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyGeoBounding;
 import edu.harvard.iq.dvn.core.study.StudyGrant;
 import edu.harvard.iq.dvn.core.study.StudyKeyword;
@@ -70,12 +73,14 @@ import javax.naming.InitialContext;
 public class StudyUI  implements java.io.Serializable {
     
     private Study study;
+    private Metadata metadata;
     private Long studyId;
     private Map studyFields;
     private VDCUser user;
     private UserGroup ipUserGroup;
 
     private StudyServiceLocal studyService = null;
+    private StudyFileServiceLocal studyFileService = null;
 
     private static DateFormat dateFormatter = DateFormat.getDateInstance(DateFormat.MEDIUM);
     
@@ -162,6 +167,16 @@ public class StudyUI  implements java.io.Serializable {
         }
     }
 
+    private void initStudyFileService() {
+        if (studyFileService == null) {
+            try {
+                studyFileService = (StudyFileServiceLocal) new InitialContext().lookup("java:comp/env/studyFileService");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public Long getStudyId() {
         return studyId;
     }
@@ -179,6 +194,21 @@ public class StudyUI  implements java.io.Serializable {
         
         return study;
     }
+
+    public Metadata getMetadata() {
+        // TODO: VERSION: change this to use a study version object
+        if (metadata == null) {
+            initStudyService();
+            study = studyService.getStudyForSearch(studyId, studyFields);
+            if (study.getReleasedVersion() != null) {
+                metadata = study.getReleasedVersion().getMetadata();
+            } else {
+                metadata = study.getStudyVersions().get(0).getMetadata();
+            }
+        }
+
+        return metadata;
+    }
     
     public void setStudy(Study study) {
         this.study = study;
@@ -189,7 +219,7 @@ public class StudyUI  implements java.io.Serializable {
      */
     public String getAuthors() {
         String str = "";
-        for (Iterator<StudyAuthor> it = getStudy().getStudyAuthors().iterator(); it.hasNext();) {
+        for (Iterator<StudyAuthor> it = getMetadata().getStudyAuthors().iterator(); it.hasNext();) {
             StudyAuthor sa = it.next();
             if (!StringUtil.isEmpty(sa.getName())) {
                 if (str != "") {
@@ -207,7 +237,7 @@ public class StudyUI  implements java.io.Serializable {
         String str = "";
         boolean hasAffiliation = false;
         
-        for (Iterator<StudyAuthor> it = getStudy().getStudyAuthors().iterator(); it.hasNext();) {
+        for (Iterator<StudyAuthor> it = getMetadata().getStudyAuthors().iterator(); it.hasNext();) {
             StudyAuthor sa = it.next();
             if (!StringUtil.isEmpty(sa.getName())) {
                 if (str != "") {
@@ -232,7 +262,7 @@ public class StudyUI  implements java.io.Serializable {
     
     public String getAbstracts() {
         String str = "";
-        for (Iterator<StudyAbstract> it = getStudy().getStudyAbstracts().iterator(); it.hasNext();) {
+        for (Iterator<StudyAbstract> it = getMetadata().getStudyAbstracts().iterator(); it.hasNext();) {
             StudyAbstract elem = it.next();
             if (!StringUtil.isEmpty(elem.getText())) {
                 str += "<p>" + elem.getText() + "</p>";
@@ -244,17 +274,17 @@ public class StudyUI  implements java.io.Serializable {
     
     public String getDistributorContact() {
         String str = "";
-        if (!StringUtil.isEmpty(getStudy().getDistributorContact())) {
-            str += getStudy().getDistributorContact();
+        if (!StringUtil.isEmpty(getMetadata().getDistributorContact())) {
+            str += getMetadata().getDistributorContact();
         }
-        if (!StringUtil.isEmpty(getStudy().getDistributorContactAffiliation())) {
-            str += " (" + getStudy().getDistributorContactAffiliation() + ")";
+        if (!StringUtil.isEmpty(getMetadata().getDistributorContactAffiliation())) {
+            str += " (" + getMetadata().getDistributorContactAffiliation() + ")";
         }
-        if (!StringUtil.isEmpty(getStudy().getDistributorContactEmail())) {
+        if (!StringUtil.isEmpty(getMetadata().getDistributorContactEmail())) {
             if (str != "") {
                 str += ", ";
             }
-            str += getStudy().getDistributorContactEmail();
+            str += getMetadata().getDistributorContactEmail();
         }
         /*"Distributor Contact (affiliation), e-mail"*/
         return str;
@@ -262,57 +292,57 @@ public class StudyUI  implements java.io.Serializable {
     
     public String getSeries() {
         String str = "";
-        if (!StringUtil.isEmpty(getStudy().getSeriesName())) {
-            str += getStudy().getSeriesName();
+        if (!StringUtil.isEmpty(getMetadata().getSeriesName())) {
+            str += getMetadata().getSeriesName();
         }
-        if (!StringUtil.isEmpty(getStudy().getSeriesInformation())) {
+        if (!StringUtil.isEmpty(getMetadata().getSeriesInformation())) {
             if (str != "") {
                 str += ", ";
             }
-            str += getStudy().getSeriesInformation();
+            str += getMetadata().getSeriesInformation();
         }
         return str;
     }
     
     public String getStudyVersion() {
         String str = "";
-        if (!StringUtil.isEmpty(getStudy().getStudyVersion())) {
-            str += getStudy().getStudyVersion();
+        if (!StringUtil.isEmpty(getMetadata().getStudyVersionText())) {
+            str += getMetadata().getStudyVersion();
         }
-        if (!StringUtil.isEmpty(getStudy().getVersionDate())) {
+        if (!StringUtil.isEmpty(getMetadata().getVersionDate())) {
             if (str != "") {
                 str += ", ";
             }
-            str += reformatDate(getStudy().getVersionDate());
+            str += reformatDate(getMetadata().getVersionDate());
         }
         return str;
     }
     
     public String getTimePeriodCovered() {
         String str = "";
-        if (!StringUtil.isEmpty(getStudy().getTimePeriodCoveredStart())) {
-            str += reformatDate(getStudy().getTimePeriodCoveredStart());
+        if (!StringUtil.isEmpty(getMetadata().getTimePeriodCoveredStart())) {
+            str += reformatDate(getMetadata().getTimePeriodCoveredStart());
         }
-        if (!StringUtil.isEmpty(getStudy().getTimePeriodCoveredEnd())) {
+        if (!StringUtil.isEmpty(getMetadata().getTimePeriodCoveredEnd())) {
             if (str != "") {
                 str += " - ";
             }
-            str += reformatDate(getStudy().getTimePeriodCoveredEnd());
+            str += reformatDate(getMetadata().getTimePeriodCoveredEnd());
         }
         return str;
         
     }
     
     public String getProductionDate() {
-        return reformatDate(getStudy().getProductionDate());
+        return reformatDate(getMetadata().getProductionDate());
     }
     
     public String getDistributionDate() {
-        return reformatDate(getStudy().getDistributionDate());
+        return reformatDate(getMetadata().getDistributionDate());
     }
     
     public String getDateOfDeposit() {
-        return reformatDate(getStudy().getDateOfDeposit());
+        return reformatDate(getMetadata().getDateOfDeposit());
     }
     
     private String reformatDate(String dateString) {
@@ -349,14 +379,14 @@ public class StudyUI  implements java.io.Serializable {
     
     public String getDateOfCollection() {
         String str = "";
-        if (!StringUtil.isEmpty(getStudy().getDateOfCollectionStart())) {
-            str += reformatDate(getStudy().getDateOfCollectionStart());
+        if (!StringUtil.isEmpty(getMetadata().getDateOfCollectionStart())) {
+            str += reformatDate(getMetadata().getDateOfCollectionStart());
         }
-        if (!StringUtil.isEmpty(getStudy().getDateOfCollectionEnd())) {
+        if (!StringUtil.isEmpty(getMetadata().getDateOfCollectionEnd())) {
             if (str != "") {
                 str += " - ";
             }
-            str += reformatDate(getStudy().getDateOfCollectionEnd());
+            str += reformatDate(getMetadata().getDateOfCollectionEnd());
         }
         return str;
     }
@@ -395,20 +425,18 @@ public class StudyUI  implements java.io.Serializable {
     }
 
     private void initFileFlags() {
-        initStudyService();
+        initStudyFileService();
 
-        Boolean doesStudyHaveSubsettableFiles = studyService.doesStudyHaveSubsettableFiles(studyId);
+        Boolean doesStudyHaveSubsettableFiles = studyFileService.doesStudyHaveSubsettableFiles(studyId);
         isFiles = (doesStudyHaveSubsettableFiles != null);
         isSubsettable = (doesStudyHaveSubsettableFiles != null && doesStudyHaveSubsettableFiles);
     }
 
     // TODO: is the methos still being used; if not, we should remove
     public boolean isNonSubsettable() {
-        for (Iterator<FileCategory> it = getStudy().getFileCategories().iterator(); it.hasNext();) {
-            for (Iterator<StudyFile> fit = it.next().getStudyFiles().iterator(); fit.hasNext();) {
-                if (!fit.next().isSubsettable()) {
-                    return true;
-                }
+        for (Iterator<StudyFile> it = getStudy().getStudyFiles().iterator(); it.hasNext();) {
+            if (!it.next().isSubsettable()) {
+                return true;
             }
         }
         
@@ -417,7 +445,7 @@ public class StudyUI  implements java.io.Serializable {
     
     public String getProducers() {
         String str = "";
-        for (Iterator<StudyProducer> it = getStudy().getStudyProducers().iterator(); it.hasNext();) {
+        for (Iterator<StudyProducer> it = getMetadata().getStudyProducers().iterator(); it.hasNext();) {
             StudyProducer elem = it.next();
             if (!StringUtil.isEmpty(elem.getName())) {
                 if (str != "") {
@@ -449,7 +477,7 @@ public class StudyUI  implements java.io.Serializable {
     
     public String getAbstractDates() {
         String str = "";
-        for (Iterator<StudyAbstract> it = getStudy().getStudyAbstracts().iterator(); it.hasNext();) {
+        for (Iterator<StudyAbstract> it = getMetadata().getStudyAbstracts().iterator(); it.hasNext();) {
             StudyAbstract elem = it.next();
             if (!StringUtil.isEmpty(elem.getDate())) {
                 if (str != "") {
@@ -465,7 +493,7 @@ public class StudyUI  implements java.io.Serializable {
     
     public String getNotes() {
         String str = "";
-        for (Iterator<StudyNote> it = getStudy().getStudyNotes().iterator(); it.hasNext();) {
+        for (Iterator<StudyNote> it = getMetadata().getStudyNotes().iterator(); it.hasNext();) {
             StudyNote elem = it.next();
             if (elem.getType()==null || !elem.getType().equals(DDIServiceBean.NOTE_TYPE_TERMS_OF_USE)) {
                 if (!StringUtil.isEmpty(elem.getType())) {
@@ -488,7 +516,7 @@ public class StudyUI  implements java.io.Serializable {
     
     public String getRelPublications() {
         String str = "";
-        for (Iterator<StudyRelPublication> it = getStudy().getStudyRelPublications().iterator(); it.hasNext();) {
+        for (Iterator<StudyRelPublication> it = getMetadata().getStudyRelPublications().iterator(); it.hasNext();) {
             StudyRelPublication elem = it.next();
             if (!StringUtil.isEmpty(elem.getText())) {
                 if (str != "") {
@@ -503,7 +531,7 @@ public class StudyUI  implements java.io.Serializable {
     
     public String getRelMaterials() {
         String str = "";
-        for (Iterator<StudyRelMaterial> it = getStudy().getStudyRelMaterials().iterator(); it.hasNext();) {
+        for (Iterator<StudyRelMaterial> it = getMetadata().getStudyRelMaterials().iterator(); it.hasNext();) {
             StudyRelMaterial elem = it.next();
             if (!StringUtil.isEmpty(elem.getText())) {
                 if (str != "") {
@@ -518,7 +546,7 @@ public class StudyUI  implements java.io.Serializable {
     
     public String getRelStudies() {
         String str = "";
-        for (Iterator<StudyRelStudy> it = getStudy().getStudyRelStudies().iterator(); it.hasNext();) {
+        for (Iterator<StudyRelStudy> it = getMetadata().getStudyRelStudies().iterator(); it.hasNext();) {
             StudyRelStudy elem = it.next();
             if (!StringUtil.isEmpty(elem.getText())) {
                 if (str != "") {
@@ -533,7 +561,7 @@ public class StudyUI  implements java.io.Serializable {
     
     public String getOtherRefs() {
         String str = "";
-        for (Iterator<StudyOtherRef> it = getStudy().getStudyOtherRefs().iterator(); it.hasNext();) {
+        for (Iterator<StudyOtherRef> it = getMetadata().getStudyOtherRefs().iterator(); it.hasNext();) {
             StudyOtherRef elem = it.next();
             if (!StringUtil.isEmpty(elem.getText())) {
                 if (str != "") {
@@ -548,7 +576,7 @@ public class StudyUI  implements java.io.Serializable {
     
     public String getSoftware() {
         String str = "";
-        for (Iterator<StudySoftware> it = getStudy().getStudySoftware().iterator(); it.hasNext();) {
+        for (Iterator<StudySoftware> it = getMetadata().getStudySoftware().iterator(); it.hasNext();) {
             StudySoftware ss = it.next();
             if (!StringUtil.isEmpty(ss.getName())) {
                 if (str != "") {
@@ -565,7 +593,7 @@ public class StudyUI  implements java.io.Serializable {
     
     public String getGrants() {
         String str = "";
-        for (Iterator<StudyGrant> it = getStudy().getStudyGrants().iterator(); it.hasNext();) {
+        for (Iterator<StudyGrant> it = getMetadata().getStudyGrants().iterator(); it.hasNext();) {
             StudyGrant elem = it.next();
             if (!StringUtil.isEmpty(elem.getNumber())) {
                 if (str != "") {
@@ -586,7 +614,7 @@ public class StudyUI  implements java.io.Serializable {
     
     public String getOtherIds() {
         String str = "";
-        for (Iterator<StudyOtherId> it = getStudy().getStudyOtherIds().iterator(); it.hasNext();) {
+        for (Iterator<StudyOtherId> it = getMetadata().getStudyOtherIds().iterator(); it.hasNext();) {
             StudyOtherId elem = it.next();
             if (!StringUtil.isEmpty(elem.getAgency()) || !StringUtil.isEmpty(elem.getOtherId())) {
                 if (str != "") {
@@ -609,7 +637,7 @@ public class StudyUI  implements java.io.Serializable {
     
     public String getGeographicBoundings() {
         String str = "";
-        for (Iterator it = getStudy().getStudyGeoBoundings().iterator(); it.hasNext();) {
+        for (Iterator it = getMetadata().getStudyGeoBoundings().iterator(); it.hasNext();) {
             StudyGeoBounding elem = (StudyGeoBounding) it.next();
             String boundingStr = "";
             if (!StringUtil.isEmpty(elem.getWestLongitude())) {
@@ -638,7 +666,7 @@ public class StudyUI  implements java.io.Serializable {
     
     public String getKeywords() {
         String str = "";
-        for (Iterator<StudyKeyword> it = getStudy().getStudyKeywords().iterator(); it.hasNext();) {
+        for (Iterator<StudyKeyword> it = getMetadata().getStudyKeywords().iterator(); it.hasNext();) {
             StudyKeyword elem = it.next();
             if (!StringUtil.isEmpty(elem.getValue())) {
                 if (str != "") {
@@ -660,7 +688,7 @@ public class StudyUI  implements java.io.Serializable {
     
     public String getTopicClasses() {
         String str = "";
-        for (Iterator<StudyTopicClass> it = getStudy().getStudyTopicClasses().iterator(); it.hasNext();) {
+        for (Iterator<StudyTopicClass> it = getMetadata().getStudyTopicClasses().iterator(); it.hasNext();) {
             StudyTopicClass elem = it.next();
             if (!StringUtil.isEmpty(elem.getValue())) {
                 if (str != "") {
@@ -693,7 +721,7 @@ public class StudyUI  implements java.io.Serializable {
     
     public String getDistributors() {
         String str = "";
-        for (Iterator<StudyDistributor> it = getStudy().getStudyDistributors().iterator(); it.hasNext();) {
+        for (Iterator<StudyDistributor> it = getMetadata().getStudyDistributors().iterator(); it.hasNext();) {
             StudyDistributor elem = it.next();
             if (!StringUtil.isEmpty(elem.getName())) {
                 if (str != "") {
@@ -782,23 +810,23 @@ public class StudyUI  implements java.io.Serializable {
         categoryUIList = new ArrayList<FileCategoryUI>();
         StudyServiceLocal studyService = null;
         try {
-            studyService = (StudyServiceLocal) new InitialContext().lookup("java:comp/env/studyService");
+            studyFileService = (StudyFileServiceLocal) new InitialContext().lookup("java:comp/env/studyFileService");
         } catch (Exception e) {
             e.printStackTrace();
         }
         
-        List files = studyService.getOrderedFilesByStudy(getStudy().getId());
-        Iterator iter = files.iterator();
+
         FileCategoryUI catUI = null;
-        while (iter.hasNext()) {
-            StudyFile sf = (StudyFile) iter.next();
-            if (catUI == null || !sf.getFileCategory().equals(catUI.getFileCategory())) {
-                catUI = new FileCategoryUI(sf.getFileCategory());
+        for (FileMetadata fmd : studyFileService.getOrderedFilesByStudy(getStudy().getId())) {
+            if (catUI == null || !fmd.getCategory().equals(catUI.getFileCategory().getName())) {
+                catUI = new FileCategoryUI(fmd.getCategory());
                 categoryUIList.add(catUI);
             }
-            
-            catUI.getStudyFileUIs().add(new StudyFileUI(sf, vdc, user, ipUserGroup));
+            StudyFileUI sfui = new StudyFileUI(fmd.getStudyFile(), vdc, user, ipUserGroup);
+            sfui.setFileMetadata(fmd);
+            catUI.getStudyFileUIs().add(sfui);
         }
+
         
         Collections.sort(categoryUIList);
         

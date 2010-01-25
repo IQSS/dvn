@@ -51,19 +51,18 @@ import javax.persistence.*;
 @DiscriminatorColumn(name="fileClass")
 public abstract class StudyFile implements Serializable {
 
-    private String globalId;
-    private String fileName;
     private String fileType;
     private String fileSystemLocation;
-    private String label;
     private String originalFileType;
-    @Column(columnDefinition = "TEXT")
-    private String description;
     private String unf;
 
 
     public StudyFile() {
     }
+
+
+    @OneToMany(mappedBy="studyFile", cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
+    private List<FileMetadata> fileMetadatas;
 
     /**
      * Creates a new instance of StudyFile
@@ -80,20 +79,17 @@ public abstract class StudyFile implements Serializable {
         //this.getStudy().getStudyFileActivity().add(sfActivity);
     }
 
-    public String getGlobalId() {
-        return globalId;
+
+
+
+
+
+    public List<FileMetadata> getFileMetadatas() {
+        return fileMetadatas;
     }
 
-    public void setGlobalId(String globalId) {
-        this.globalId = globalId;
-    }
-
-    public String getFileName() {
-        return fileName;
-    }
-
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
+    public void setFileMetadatas(List<FileMetadata> fileMetadatas) {
+        this.fileMetadatas = fileMetadatas;
     }
 
     public String getFileType() {
@@ -112,13 +108,7 @@ public abstract class StudyFile implements Serializable {
         this.fileSystemLocation = fileSystemLocation;
     }
 
-    public String getLabel() {
-        return label;
-    }
 
-    public void setLabel(String label) {
-        this.label = label;
-    }
 
     public String getOriginalFileType() {
         return originalFileType;
@@ -128,15 +118,10 @@ public abstract class StudyFile implements Serializable {
         this.originalFileType = originalFileType;
     }
 
-    public String getDescription() {
-        return description;
-    }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @JoinColumn(nullable=false)
     private Study study;
 
     public Study getStudy() {
@@ -148,16 +133,6 @@ public abstract class StudyFile implements Serializable {
     }
 
 
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    private FileCategory fileCategory;
-
-    public FileCategory getFileCategory() {
-        return fileCategory;
-    }
-
-    public void setFileCategory(FileCategory fileCategory) {
-        this.fileCategory = fileCategory;
-    }
     /**
      * Holds value of property displayOrder.
      */
@@ -341,7 +316,7 @@ public abstract class StudyFile implements Serializable {
 
     public boolean isSubsetRestrictedForUser(VDCUser user, VDC vdc, UserGroup ipUserGroup) {
         // the restrictions should be checked on the owner of the study, not the currentVDC (needs cleanup)
-        VDC owner = this.getFileCategory().getStudy().getOwner();
+        VDC owner = this.getStudy().getOwner();
         if (owner.isHarvestingDv()) {
             HarvestingDataverse hd = owner.getHarvestingDataverse();
             return hd.isSubsetRestrictedForUser(user, ipUserGroup);
@@ -353,11 +328,11 @@ public abstract class StudyFile implements Serializable {
     public boolean isFileRestrictedForUser(VDCUser user, VDC vdc, UserGroup ipUserGroup) {
 
         // the restrictions should be checked on the owner of the study, not the currentVDC (needs cleanup)
-        vdc = this.getFileCategory().getStudy().getOwner();
+        vdc = this.getStudy().getOwner();
 
 
         // first check if study is restricted, regardless of file permissions
-        Study study = getFileCategory().getStudy();
+        Study study = getStudy();
         if (study.isStudyRestrictedForUser(vdc, user)) {
             return true;
         }
@@ -401,7 +376,7 @@ public abstract class StudyFile implements Serializable {
             }
 
             //4. check if creator
-            if (user.getId().equals(this.getFileCategory().getStudy().getCreator().getId())) {
+            if (user.getId().equals(this.getStudy().getCreator().getId())) {
                 return false;
             }
 
@@ -524,7 +499,24 @@ public abstract class StudyFile implements Serializable {
             }
         }
     }
-    
+
+
+    // TODO: VERSION: review if this is needed
+    public String getFileName() {
+        return getLatestFileMetadata().getLabel();
+    }
+
+    private FileMetadata getLatestFileMetadata() {
+        FileMetadata fmd = null;
+        for (FileMetadata fileMetadata : fileMetadatas) {
+            if (fmd == null || fileMetadata.getStudyVersion().getVersionNumber().compareTo( fmd.getStudyVersion().getVersionNumber() ) == 1 ) {
+                fmd = fileMetadata;
+            }           
+            
+        }
+        return fmd;
+    }
+
 //    @Override
 //    public String toString() {
 //            return ToStringBuilder.reflectionToString(this,

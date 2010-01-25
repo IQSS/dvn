@@ -482,7 +482,8 @@ public class VDCServiceBean implements VDCServiceLocal {
     }
 
     public java.util.List<Long> getOwnedStudyIds(Long vdcId) {
-        String queryStr = "SELECT s.id FROM VDC v JOIN v.ownedStudies s where v.id = " + vdcId + " ORDER BY s.metadata.title";
+        // TODO: VERSION: hwo to order, based on versioning
+        String queryStr = "SELECT s.id FROM VDC v JOIN v.ownedStudies s where v.id = " + vdcId;// + " ORDER BY s.metadata.title";
         return em.createQuery(queryStr).getResultList();
     }
 

@@ -12,6 +12,8 @@ package edu.harvard.iq.dvn.core.ddi;
 import edu.harvard.iq.dvn.core.study.DataTable;
 import edu.harvard.iq.dvn.core.study.DataVariable;
 import edu.harvard.iq.dvn.core.study.FileCategory;
+import edu.harvard.iq.dvn.core.study.FileMetadata;
+import edu.harvard.iq.dvn.core.study.Metadata;
 import edu.harvard.iq.dvn.core.study.OtherFile;
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyAbstract;
@@ -32,6 +34,7 @@ import edu.harvard.iq.dvn.core.study.StudyRelPublication;
 import edu.harvard.iq.dvn.core.study.StudyRelStudy;
 import edu.harvard.iq.dvn.core.study.StudySoftware;
 import edu.harvard.iq.dvn.core.study.StudyTopicClass;
+import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.study.SummaryStatistic;
 import edu.harvard.iq.dvn.core.study.SummaryStatisticType;
 import edu.harvard.iq.dvn.core.study.TabularDataFile;
@@ -178,7 +181,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         }
     }
 
-    public void exportDataFile(TabularDataFile sf, OutputStream os)  {
+    public void exportDataFile(FileMetadata fmd, OutputStream os)  {
         XMLStreamWriter xmlw = null;
         try {
             xmlw = xmlOutputFactory.createXMLStreamWriter(os);
@@ -189,8 +192,8 @@ public class DDIServiceBean implements DDIServiceLocal {
             xmlw.writeDefaultNamespace("http://www.icpsr.umich.edu/DDI");
             writeAttribute( xmlw, "version", "2.0" );
 
-            createFileDscr(xmlw,sf);
-            createDataDscr(xmlw,sf);
+            createFileDscr(xmlw,fmd);
+            createDataDscr(xmlw,(TabularDataFile)fmd.getStudyFile());
 
             xmlw.writeEndElement(); // codeBook
 
@@ -234,7 +237,8 @@ public class DDIServiceBean implements DDIServiceLocal {
                         
                         // now create DocDscr element (using StAX)
                         xmlw = xmlOutputFactory.createXMLStreamWriter(os);
-                        createDocDscr(xmlw, s);
+                        // TODO: VERSION:
+                        createDocDscr(xmlw, s.getReleasedVersion().getMetadata());
                         xmlw.close();
 
                         out.write(System.getProperty("line.separator"));
@@ -274,36 +278,47 @@ public class DDIServiceBean implements DDIServiceLocal {
 
     // <editor-fold defaultstate="collapsed" desc="export methods">
     private void createCodeBook(XMLStreamWriter xmlw, Study study) throws XMLStreamException {
-        xmlw.writeStartElement("codeBook");
-        xmlw.writeDefaultNamespace("http://www.icpsr.umich.edu/DDI");
-        writeAttribute( xmlw, "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance" );
-        writeAttribute( xmlw, "xsi:schemaLocation", "http://www.icpsr.umich.edu/DDI http://www.icpsr.umich.edu/DDI/Version2-0.xsd" );
-        writeAttribute( xmlw, "version", "2.0" );
+        // TODO: VERSION:
+        StudyVersion sv = study.getReleasedVersion();
+        Metadata md = sv.getMetadata();
 
-        createDocDscr(xmlw, study);
-        createStdyDscr(xmlw, study);
+        if (sv!= null) {
+            xmlw.writeStartElement("codeBook");
+            xmlw.writeDefaultNamespace("http://www.icpsr.umich.edu/DDI");
+            writeAttribute( xmlw, "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance" );
+            writeAttribute( xmlw, "xsi:schemaLocation", "http://www.icpsr.umich.edu/DDI http://www.icpsr.umich.edu/DDI/Version2-0.xsd" );
+            writeAttribute( xmlw, "version", "2.0" );
 
-        // iterate through files, saving other material files for the end
-        List<StudyFile> otherMatFiles = new ArrayList();
-        for (StudyFile sf : study.getStudyFiles()) {
-            if ( sf instanceof TabularDataFile ) {
-                createFileDscr(xmlw, (TabularDataFile) sf);
-            } else {
-                otherMatFiles.add(sf);
+            createDocDscr(xmlw, md);
+            createStdyDscr(xmlw, md);
+
+            // iterate through files, saving other material files for the end
+            List<FileMetadata> otherMatFiles = new ArrayList();
+            for (FileMetadata fmd : sv.getFileMetadatas()) {
+                StudyFile sf = fmd.getStudyFile();
+                if ( sf instanceof TabularDataFile ) {
+                    createFileDscr(xmlw, fmd);
+                } else {
+                    otherMatFiles.add(fmd);
+                }
             }
+
+            createDataDscr(xmlw, sv);
+
+            // now go through otherMat files
+            for (FileMetadata fmd : otherMatFiles) {
+                createOtherMat(xmlw, fmd);
+            }
+
+            xmlw.writeEndElement(); // codeBook
+        } else {
+            // TODO: throw Exception; no released version fo metadata
         }
-
-        createDataDscr(xmlw, study);
-
-        // now go through otherMat files
-        for (StudyFile sf : otherMatFiles) {
-            createOtherMat(xmlw, sf);
-        }
-
-        xmlw.writeEndElement(); // codeBook
     }
 
-    private void createDocDscr(XMLStreamWriter xmlw, Study study) throws XMLStreamException {
+    private void createDocDscr(XMLStreamWriter xmlw, Metadata metadata) throws XMLStreamException {
+        Study study = metadata.getStudy();
+
         xmlw.writeStartElement("docDscr");
         xmlw.writeStartElement("citation");
 
@@ -311,7 +326,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         xmlw.writeStartElement("titlStmt");
 
         xmlw.writeStartElement("titl");
-        xmlw.writeCharacters( study.getTitle() );
+        xmlw.writeCharacters( metadata.getTitle() );
         xmlw.writeEndElement(); // titl
 
         xmlw.writeStartElement("IDNo");
@@ -336,7 +351,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         // biblCit
         xmlw.writeStartElement("biblCit");
         writeAttribute( xmlw, "format", "DVN" );
-        xmlw.writeCharacters( study.getCitation() );
+        xmlw.writeCharacters( metadata.getCitation() );
         xmlw.writeEndElement(); // biblCit
 
         // holdings
@@ -348,39 +363,39 @@ public class DDIServiceBean implements DDIServiceLocal {
         xmlw.writeEndElement(); // docDscr
     }
 
-    private void createStdyDscr(XMLStreamWriter xmlw, Study study) throws XMLStreamException {
+    private void createStdyDscr(XMLStreamWriter xmlw, Metadata metadata) throws XMLStreamException {
         xmlw.writeStartElement("stdyDscr");
-        createCitation(xmlw, study);
-        createStdyInfo(xmlw, study);
-        createMethod(xmlw, study);
-        createDataAccs(xmlw, study);
-        createOthrStdyMat(xmlw,study);
-        createNotes(xmlw,study);
+        createCitation(xmlw, metadata);
+        createStdyInfo(xmlw, metadata);
+        createMethod(xmlw, metadata);
+        createDataAccs(xmlw, metadata);
+        createOthrStdyMat(xmlw,metadata);
+        createNotes(xmlw,metadata);
         xmlw.writeEndElement(); // stdyDscr
     }
 
-    private void createCitation(XMLStreamWriter xmlw, Study study) throws XMLStreamException {
+    private void createCitation(XMLStreamWriter xmlw, Metadata metadata) throws XMLStreamException {
         xmlw.writeStartElement("citation");
 
         // titlStmt
         xmlw.writeStartElement("titlStmt");
 
         xmlw.writeStartElement("titl");
-        xmlw.writeCharacters( study.getTitle() );
+        xmlw.writeCharacters( metadata.getTitle() );
         xmlw.writeEndElement(); // titl
 
-        if ( !StringUtil.isEmpty( study.getSubTitle() ) ) {
+        if ( !StringUtil.isEmpty( metadata.getSubTitle() ) ) {
             xmlw.writeStartElement("subTitl");
-            xmlw.writeCharacters( study.getSubTitle() );
+            xmlw.writeCharacters( metadata.getSubTitle() );
             xmlw.writeEndElement(); // subTitl
         }
 
         xmlw.writeStartElement("IDNo");
         writeAttribute( xmlw, "agency", "handle" );
-        xmlw.writeCharacters( study.getGlobalId() );
+        xmlw.writeCharacters( metadata.getStudy().getGlobalId() );
         xmlw.writeEndElement(); // IDNo
 
-        for (StudyOtherId otherId : study.getStudyOtherIds()) {
+        for (StudyOtherId otherId : metadata.getStudyOtherIds()) {
             xmlw.writeStartElement("IDNo");
             writeAttribute( xmlw, "agency", otherId.getAgency() );
             xmlw.writeCharacters( otherId.getOtherId() );
@@ -390,9 +405,9 @@ public class DDIServiceBean implements DDIServiceLocal {
         xmlw.writeEndElement(); // titlStmt
 
         // rspStmt
-        if (study.getStudyAuthors() != null && study.getStudyAuthors().size() > 0) {
+        if (metadata.getStudyAuthors() != null && metadata.getStudyAuthors().size() > 0) {
             xmlw.writeStartElement("rspStmt");
-            for (StudyAuthor author : study.getStudyAuthors()) {
+            for (StudyAuthor author : metadata.getStudyAuthors()) {
                 xmlw.writeStartElement("AuthEnty");
                 if ( !StringUtil.isEmpty(author.getAffiliation()) ) {
                     writeAttribute( xmlw, "affiliation", author.getAffiliation() );
@@ -406,7 +421,7 @@ public class DDIServiceBean implements DDIServiceLocal {
 
         // prodStmt
         boolean prodStmtAdded = false;
-        for (StudyProducer prod : study.getStudyProducers()) {
+        for (StudyProducer prod : metadata.getStudyProducers()) {
             prodStmtAdded = checkParentElement(xmlw, "prodStmt", prodStmtAdded);
             xmlw.writeStartElement("producer");
             writeAttribute( xmlw, "abbr", prod.getAbbreviation() );
@@ -416,30 +431,30 @@ public class DDIServiceBean implements DDIServiceLocal {
             createExtLink(xmlw, prod.getLogo(), "image");
             xmlw.writeEndElement(); // producer
         }
-        if (!StringUtil.isEmpty( study.getProductionDate() )) {
+        if (!StringUtil.isEmpty( metadata.getProductionDate() )) {
             prodStmtAdded = checkParentElement(xmlw, "prodStmt", prodStmtAdded);
-            createDateElement( xmlw, "prodDate", study.getProductionDate() );
+            createDateElement( xmlw, "prodDate", metadata.getProductionDate() );
         }
-        if (!StringUtil.isEmpty( study.getProductionPlace() )) {
+        if (!StringUtil.isEmpty( metadata.getProductionPlace() )) {
             prodStmtAdded = checkParentElement(xmlw, "prodStmt", prodStmtAdded);
             xmlw.writeStartElement("prodPlac");
-            xmlw.writeCharacters( study.getProductionPlace() );
+            xmlw.writeCharacters( metadata.getProductionPlace() );
             xmlw.writeEndElement(); // prodPlac
         }
-        for (StudySoftware soft : study.getStudySoftware()) {
+        for (StudySoftware soft : metadata.getStudySoftware()) {
             prodStmtAdded = checkParentElement(xmlw, "prodStmt", prodStmtAdded);
             xmlw.writeStartElement("software");
             writeAttribute( xmlw, "version", soft.getSoftwareVersion() );
             xmlw.writeCharacters( soft.getName() );
             xmlw.writeEndElement(); // software
         }
-        if (!StringUtil.isEmpty( study.getFundingAgency() )) {
+        if (!StringUtil.isEmpty( metadata.getFundingAgency() )) {
             prodStmtAdded = checkParentElement(xmlw, "prodStmt", prodStmtAdded);
             xmlw.writeStartElement("fundAg");
-            xmlw.writeCharacters( study.getFundingAgency() );
+            xmlw.writeCharacters( metadata.getFundingAgency() );
             xmlw.writeEndElement(); // fundAg
         }
-        for (StudyGrant grant : study.getStudyGrants()) {
+        for (StudyGrant grant : metadata.getStudyGrants()) {
             prodStmtAdded = checkParentElement(xmlw, "prodStmt", prodStmtAdded);
             xmlw.writeStartElement("grantNo");
             writeAttribute( xmlw, "agency", grant.getAgency() );
@@ -451,7 +466,7 @@ public class DDIServiceBean implements DDIServiceLocal {
 
         // distStmt
         boolean distStmtAdded = false;
-        for (StudyDistributor dist : study.getStudyDistributors()) {
+        for (StudyDistributor dist : metadata.getStudyDistributors()) {
             distStmtAdded = checkParentElement(xmlw, "distStmt", distStmtAdded);
             xmlw.writeStartElement("distrbtr");
             writeAttribute( xmlw, "abbr", dist.getAbbreviation() );
@@ -461,47 +476,47 @@ public class DDIServiceBean implements DDIServiceLocal {
             createExtLink(xmlw, dist.getLogo(), "image");
             xmlw.writeEndElement(); // distrbtr
         }
-        if (!StringUtil.isEmpty( study.getDistributorContact()) ||
-                !StringUtil.isEmpty( study.getDistributorContactEmail()) ||
-                !StringUtil.isEmpty( study.getDistributorContactAffiliation()) ) {
+        if (!StringUtil.isEmpty( metadata.getDistributorContact()) ||
+                !StringUtil.isEmpty( metadata.getDistributorContactEmail()) ||
+                !StringUtil.isEmpty( metadata.getDistributorContactAffiliation()) ) {
 
             distStmtAdded = checkParentElement(xmlw, "distStmt", distStmtAdded);
             xmlw.writeStartElement("contact");
-            writeAttribute( xmlw, "email", study.getDistributorContactEmail() );
-            writeAttribute( xmlw, "affiliation", study.getDistributorContactAffiliation() );
-            xmlw.writeCharacters( study.getDistributorContact() );
+            writeAttribute( xmlw, "email", metadata.getDistributorContactEmail() );
+            writeAttribute( xmlw, "affiliation", metadata.getDistributorContactAffiliation() );
+            xmlw.writeCharacters( metadata.getDistributorContact() );
             xmlw.writeEndElement(); // contact
         }
-        if (!StringUtil.isEmpty( study.getDepositor() )) {
+        if (!StringUtil.isEmpty( metadata.getDepositor() )) {
             distStmtAdded = checkParentElement(xmlw, "distStmt", distStmtAdded);
             xmlw.writeStartElement("depositr");
-            xmlw.writeCharacters( study.getDepositor() );
+            xmlw.writeCharacters( metadata.getDepositor() );
             xmlw.writeEndElement(); // depositr
         }
-        if (!StringUtil.isEmpty( study.getDateOfDeposit() )) {
+        if (!StringUtil.isEmpty( metadata.getDateOfDeposit() )) {
             distStmtAdded = checkParentElement(xmlw, "distStmt", distStmtAdded);
-            createDateElement( xmlw, "depDate", study.getDateOfDeposit() );
+            createDateElement( xmlw, "depDate", metadata.getDateOfDeposit() );
         }
-        if (!StringUtil.isEmpty( study.getDistributionDate() )) {
+        if (!StringUtil.isEmpty( metadata.getDistributionDate() )) {
             distStmtAdded = checkParentElement(xmlw, "distStmt", distStmtAdded);
-            createDateElement( xmlw, "distDate", study.getDistributionDate() );
+            createDateElement( xmlw, "distDate", metadata.getDistributionDate() );
         }
         if (distStmtAdded) xmlw.writeEndElement(); // distStmt
 
 
         // serStmt
         boolean serStmtAdded = false;
-        if (!StringUtil.isEmpty( study.getSeriesName() )) {
+        if (!StringUtil.isEmpty( metadata.getSeriesName() )) {
             serStmtAdded = checkParentElement(xmlw, "serStmt", serStmtAdded);
             xmlw.writeStartElement("serName");
-            xmlw.writeCharacters( study.getSeriesName() );
+            xmlw.writeCharacters( metadata.getSeriesName() );
             xmlw.writeEndElement(); // serName
         }
 
-        if (!StringUtil.isEmpty( study.getSeriesInformation() )) {
+        if (!StringUtil.isEmpty( metadata.getSeriesInformation() )) {
             serStmtAdded = checkParentElement(xmlw, "serStmt", serStmtAdded);
             xmlw.writeStartElement("serInfo");
-            xmlw.writeCharacters( study.getSeriesInformation() );
+            xmlw.writeCharacters( metadata.getSeriesInformation() );
             xmlw.writeEndElement(); // serInfo
         }
         if (serStmtAdded) xmlw.writeEndElement(); // serStmt
@@ -509,34 +524,34 @@ public class DDIServiceBean implements DDIServiceLocal {
 
         // verStmt
         boolean verStmtAdded = false;
-        if (!StringUtil.isEmpty( study.getStudyVersion()) || !StringUtil.isEmpty( study.getVersionDate()) ) {
+        if (!StringUtil.isEmpty( metadata.getStudyVersionText()) || !StringUtil.isEmpty( metadata.getVersionDate()) ) {
             verStmtAdded = checkParentElement(xmlw, "verStmt", verStmtAdded);
             xmlw.writeStartElement("version");
-            writeAttribute( xmlw, "date", study.getVersionDate() );
-            xmlw.writeCharacters( study.getStudyVersion() );
+            writeAttribute( xmlw, "date", metadata.getVersionDate() );
+            xmlw.writeCharacters( metadata.getStudyVersionText() );
             xmlw.writeEndElement(); // version
         }
        if (verStmtAdded) xmlw.writeEndElement(); // verStmt
 
         // UNF note
-        if (! StringUtil.isEmpty( study.getUNF()) ) {
+        if (! StringUtil.isEmpty( metadata.getUNF()) ) {
             xmlw.writeStartElement("notes");
             writeAttribute( xmlw, "level", LEVEL_STUDY );
             writeAttribute( xmlw, "type", NOTE_TYPE_UNF );
             writeAttribute( xmlw, "subject", NOTE_SUBJECT_UNF );
-            xmlw.writeCharacters( study.getUNF() );
+            xmlw.writeCharacters( metadata.getUNF() );
             xmlw.writeEndElement(); // notes
         }
 
         xmlw.writeEndElement(); // citation
     }
 
-    private void createStdyInfo(XMLStreamWriter xmlw, Study study) throws XMLStreamException {
+    private void createStdyInfo(XMLStreamWriter xmlw, Metadata metadata) throws XMLStreamException {
         boolean stdyInfoAdded = false;
 
         // subject
         boolean subjectAdded = false;
-        for (StudyKeyword kw : study.getStudyKeywords()) {
+        for (StudyKeyword kw : metadata.getStudyKeywords()) {
             stdyInfoAdded = checkParentElement(xmlw, "stdyInfo", stdyInfoAdded);
             subjectAdded = checkParentElement(xmlw, "subject", subjectAdded);
             xmlw.writeStartElement("keyword");
@@ -545,7 +560,7 @@ public class DDIServiceBean implements DDIServiceLocal {
             xmlw.writeCharacters( kw.getValue() );
             xmlw.writeEndElement(); // keyword
         }
-        for (StudyTopicClass tc : study.getStudyTopicClasses()) {
+        for (StudyTopicClass tc : metadata.getStudyTopicClasses()) {
             stdyInfoAdded = checkParentElement(xmlw, "stdyInfo", stdyInfoAdded);
             subjectAdded = checkParentElement(xmlw, "subject", subjectAdded);
             xmlw.writeStartElement("topcClas");
@@ -558,7 +573,7 @@ public class DDIServiceBean implements DDIServiceLocal {
 
 
         // abstract
-        for (StudyAbstract abst : study.getStudyAbstracts()) {
+        for (StudyAbstract abst : metadata.getStudyAbstracts()) {
             stdyInfoAdded = checkParentElement(xmlw, "stdyInfo", stdyInfoAdded);
             xmlw.writeStartElement("abstract");
             writeAttribute( xmlw, "date", abst.getDate() );
@@ -569,68 +584,68 @@ public class DDIServiceBean implements DDIServiceLocal {
 
         // sumDscr
         boolean sumDscrAdded = false;
-        if (!StringUtil.isEmpty( study.getTimePeriodCoveredStart() )) {
+        if (!StringUtil.isEmpty( metadata.getTimePeriodCoveredStart() )) {
             stdyInfoAdded = checkParentElement(xmlw, "stdyInfo", stdyInfoAdded);
             sumDscrAdded = checkParentElement(xmlw, "sumDscr", sumDscrAdded);
             xmlw.writeStartElement("timePrd");
             writeAttribute( xmlw, "event", EVENT_START );
-            writeDateAttribute( xmlw, study.getTimePeriodCoveredStart() );
-            xmlw.writeCharacters( study.getTimePeriodCoveredStart() );
+            writeDateAttribute( xmlw, metadata.getTimePeriodCoveredStart() );
+            xmlw.writeCharacters( metadata.getTimePeriodCoveredStart() );
             xmlw.writeEndElement(); // timePrd
         }
-        if (!StringUtil.isEmpty( study.getTimePeriodCoveredEnd() )) {
+        if (!StringUtil.isEmpty( metadata.getTimePeriodCoveredEnd() )) {
             stdyInfoAdded = checkParentElement(xmlw, "stdyInfo", stdyInfoAdded);
             sumDscrAdded = checkParentElement(xmlw, "sumDscr", sumDscrAdded);
             xmlw.writeStartElement("timePrd");
             writeAttribute( xmlw, "event", EVENT_END );
-            writeDateAttribute( xmlw, study.getTimePeriodCoveredEnd() );
-            xmlw.writeCharacters( study.getTimePeriodCoveredEnd() );
+            writeDateAttribute( xmlw, metadata.getTimePeriodCoveredEnd() );
+            xmlw.writeCharacters( metadata.getTimePeriodCoveredEnd() );
             xmlw.writeEndElement(); // timePrd
         }
-        if (!StringUtil.isEmpty( study.getDateOfCollectionStart() )) {
+        if (!StringUtil.isEmpty( metadata.getDateOfCollectionStart() )) {
             stdyInfoAdded = checkParentElement(xmlw, "stdyInfo", stdyInfoAdded);
             sumDscrAdded = checkParentElement(xmlw, "sumDscr", sumDscrAdded);
             xmlw.writeStartElement("collDate");
             writeAttribute( xmlw, "event", EVENT_START );
-            writeDateAttribute( xmlw, study.getDateOfCollectionStart() );
-            xmlw.writeCharacters( study.getDateOfCollectionStart() );
+            writeDateAttribute( xmlw, metadata.getDateOfCollectionStart() );
+            xmlw.writeCharacters( metadata.getDateOfCollectionStart() );
             xmlw.writeEndElement(); // collDate
         }
-        if (!StringUtil.isEmpty( study.getDateOfCollectionEnd() )) {
+        if (!StringUtil.isEmpty( metadata.getDateOfCollectionEnd() )) {
             stdyInfoAdded = checkParentElement(xmlw, "stdyInfo", stdyInfoAdded);
             sumDscrAdded = checkParentElement(xmlw, "sumDscr", sumDscrAdded);
             xmlw.writeStartElement("collDate");
             writeAttribute( xmlw, "event", EVENT_END );
-            writeDateAttribute( xmlw, study.getDateOfCollectionEnd() );
-            xmlw.writeCharacters( study.getDateOfCollectionEnd() );
+            writeDateAttribute( xmlw, metadata.getDateOfCollectionEnd() );
+            xmlw.writeCharacters( metadata.getDateOfCollectionEnd() );
             xmlw.writeEndElement(); // collDate
         }
-        if (!StringUtil.isEmpty( study.getCountry() )) {
+        if (!StringUtil.isEmpty( metadata.getCountry() )) {
             stdyInfoAdded = checkParentElement(xmlw, "stdyInfo", stdyInfoAdded);
             sumDscrAdded = checkParentElement(xmlw, "sumDscr", sumDscrAdded);
             xmlw.writeStartElement("nation");
-            xmlw.writeCharacters( study.getCountry() );
+            xmlw.writeCharacters( metadata.getCountry() );
             xmlw.writeEndElement(); // nation
         }
-        if (!StringUtil.isEmpty( study.getGeographicCoverage() )) {
+        if (!StringUtil.isEmpty( metadata.getGeographicCoverage() )) {
             stdyInfoAdded = checkParentElement(xmlw, "stdyInfo", stdyInfoAdded);
             sumDscrAdded = checkParentElement(xmlw, "sumDscr", sumDscrAdded);
             xmlw.writeStartElement("geogCover");
-            xmlw.writeCharacters( study.getGeographicCoverage() );
+            xmlw.writeCharacters( metadata.getGeographicCoverage() );
             xmlw.writeEndElement(); // geogCover
         }
-        if (!StringUtil.isEmpty( study.getGeographicUnit() )) {
+        if (!StringUtil.isEmpty( metadata.getGeographicUnit() )) {
             stdyInfoAdded = checkParentElement(xmlw, "stdyInfo", stdyInfoAdded);
             sumDscrAdded = checkParentElement(xmlw, "sumDscr", sumDscrAdded);
             xmlw.writeStartElement("geogUnit");
-            xmlw.writeCharacters( study.getGeographicUnit() );
+            xmlw.writeCharacters( metadata.getGeographicUnit() );
             xmlw.writeEndElement(); // geogUnit
         }
         // we store geoboundings as list but there is only one
-        if (study.getStudyGeoBoundings() != null && study.getStudyGeoBoundings().size() != 0) {
+        if (metadata.getStudyGeoBoundings() != null && metadata.getStudyGeoBoundings().size() != 0) {
             stdyInfoAdded = checkParentElement(xmlw, "stdyInfo", stdyInfoAdded);
             sumDscrAdded = checkParentElement(xmlw, "sumDscr", sumDscrAdded);
-            StudyGeoBounding gbb = study.getStudyGeoBoundings().get(0);
+            StudyGeoBounding gbb = metadata.getStudyGeoBoundings().get(0);
             xmlw.writeStartElement("geoBndBox");
             xmlw.writeStartElement("westBL");
             xmlw.writeCharacters( gbb.getWestLongitude() );
@@ -647,27 +662,27 @@ public class DDIServiceBean implements DDIServiceLocal {
             xmlw.writeEndElement(); // geoBndBox
         }
 
-        if (!StringUtil.isEmpty( study.getUnitOfAnalysis() )) {
+        if (!StringUtil.isEmpty( metadata.getUnitOfAnalysis() )) {
             stdyInfoAdded = checkParentElement(xmlw, "stdyInfo", stdyInfoAdded);
             sumDscrAdded = checkParentElement(xmlw, "sumDscr", sumDscrAdded);
             xmlw.writeStartElement("anlyUnit");
-            xmlw.writeCharacters( study.getUnitOfAnalysis() );
+            xmlw.writeCharacters( metadata.getUnitOfAnalysis() );
             xmlw.writeEndElement(); // anlyUnit
         }
 
-        if (!StringUtil.isEmpty( study.getUniverse() )) {
+        if (!StringUtil.isEmpty( metadata.getUniverse() )) {
             stdyInfoAdded = checkParentElement(xmlw, "stdyInfo", stdyInfoAdded);
             sumDscrAdded = checkParentElement(xmlw, "sumDscr", sumDscrAdded);
             xmlw.writeStartElement("universe");
-            xmlw.writeCharacters( study.getUniverse() );
+            xmlw.writeCharacters( metadata.getUniverse() );
             xmlw.writeEndElement(); // universe
         }
 
-        if (!StringUtil.isEmpty( study.getKindOfData() )) {
+        if (!StringUtil.isEmpty( metadata.getKindOfData() )) {
             stdyInfoAdded = checkParentElement(xmlw, "stdyInfo", stdyInfoAdded);
             sumDscrAdded = checkParentElement(xmlw, "sumDscr", sumDscrAdded);
             xmlw.writeStartElement("dataKind");
-            xmlw.writeCharacters( study.getKindOfData() );
+            xmlw.writeCharacters( metadata.getKindOfData() );
             xmlw.writeEndElement(); // dataKind
         }
         if (sumDscrAdded) xmlw.writeEndElement(); // sumDscr
@@ -676,174 +691,174 @@ public class DDIServiceBean implements DDIServiceLocal {
         if (stdyInfoAdded) xmlw.writeEndElement(); // stdyInfo
     }
 
-    private void createMethod(XMLStreamWriter xmlw, Study study) throws XMLStreamException {
+    private void createMethod(XMLStreamWriter xmlw, Metadata metadata) throws XMLStreamException {
         boolean methodAdded = false;
 
         // dataColl
         boolean dataCollAdded = false;
-        if (!StringUtil.isEmpty( study.getTimeMethod() )) {
+        if (!StringUtil.isEmpty( metadata.getTimeMethod() )) {
             methodAdded = checkParentElement(xmlw, "method", methodAdded);
             dataCollAdded = checkParentElement(xmlw, "dataColl", dataCollAdded);
             xmlw.writeStartElement("timeMeth");
-            xmlw.writeCharacters( study.getTimeMethod() );
+            xmlw.writeCharacters( metadata.getTimeMethod() );
             xmlw.writeEndElement(); // timeMeth
         }
-        if (!StringUtil.isEmpty( study.getDataCollector() )) {
+        if (!StringUtil.isEmpty( metadata.getDataCollector() )) {
             methodAdded = checkParentElement(xmlw, "method", methodAdded);
             dataCollAdded = checkParentElement(xmlw, "dataColl", dataCollAdded);
             xmlw.writeStartElement("dataCollector");
-            xmlw.writeCharacters( study.getDataCollector() );
+            xmlw.writeCharacters( metadata.getDataCollector() );
             xmlw.writeEndElement(); // dataCollector
         }
-        if (!StringUtil.isEmpty( study.getFrequencyOfDataCollection() )) {
+        if (!StringUtil.isEmpty( metadata.getFrequencyOfDataCollection() )) {
             methodAdded = checkParentElement(xmlw, "method", methodAdded);
             dataCollAdded = checkParentElement(xmlw, "dataColl", dataCollAdded);
             xmlw.writeStartElement("frequenc");
-            xmlw.writeCharacters( study.getFrequencyOfDataCollection() );
+            xmlw.writeCharacters( metadata.getFrequencyOfDataCollection() );
             xmlw.writeEndElement(); // frequenc
         }
-        if (!StringUtil.isEmpty( study.getSamplingProcedure() )) {
+        if (!StringUtil.isEmpty( metadata.getSamplingProcedure() )) {
             methodAdded = checkParentElement(xmlw, "method", methodAdded);
             dataCollAdded = checkParentElement(xmlw, "dataColl", dataCollAdded);
             xmlw.writeStartElement("sampProc");
-            xmlw.writeCharacters( study.getSamplingProcedure() );
+            xmlw.writeCharacters( metadata.getSamplingProcedure() );
             xmlw.writeEndElement(); // sampProc
         }
-        if (!StringUtil.isEmpty( study.getDeviationsFromSampleDesign() )) {
+        if (!StringUtil.isEmpty( metadata.getDeviationsFromSampleDesign() )) {
             methodAdded = checkParentElement(xmlw, "method", methodAdded);
             dataCollAdded = checkParentElement(xmlw, "dataColl", dataCollAdded);
             xmlw.writeStartElement("deviat");
-            xmlw.writeCharacters( study.getDeviationsFromSampleDesign() );
+            xmlw.writeCharacters( metadata.getDeviationsFromSampleDesign() );
             xmlw.writeEndElement(); // deviat
         }
-        if (!StringUtil.isEmpty( study.getCollectionMode() )) {
+        if (!StringUtil.isEmpty( metadata.getCollectionMode() )) {
             methodAdded = checkParentElement(xmlw, "method", methodAdded);
             dataCollAdded = checkParentElement(xmlw, "dataColl", dataCollAdded);
             xmlw.writeStartElement("collMode");
-            xmlw.writeCharacters( study.getCollectionMode() );
+            xmlw.writeCharacters( metadata.getCollectionMode() );
             xmlw.writeEndElement(); // collMode
         }
 
-        if (!StringUtil.isEmpty( study.getResearchInstrument() )) {
+        if (!StringUtil.isEmpty( metadata.getResearchInstrument() )) {
             methodAdded = checkParentElement(xmlw, "method", methodAdded);
             dataCollAdded = checkParentElement(xmlw, "dataColl", dataCollAdded);
             xmlw.writeStartElement("resInstru");
-            xmlw.writeCharacters( study.getResearchInstrument() );
+            xmlw.writeCharacters( metadata.getResearchInstrument() );
             xmlw.writeEndElement(); // resInstru
         }
         //source
         boolean sourcesAdded = false;
-        if (!StringUtil.isEmpty( study.getDataSources() )) {
+        if (!StringUtil.isEmpty( metadata.getDataSources() )) {
             methodAdded = checkParentElement(xmlw, "method", methodAdded);
             dataCollAdded = checkParentElement(xmlw, "dataColl", dataCollAdded);
             sourcesAdded = checkParentElement(xmlw, "sources", sourcesAdded);
             xmlw.writeStartElement("dataSrc");
-            xmlw.writeCharacters( study.getDataSources() );
+            xmlw.writeCharacters( metadata.getDataSources() );
             xmlw.writeEndElement(); // dataSrc
         }
 
-        if (!StringUtil.isEmpty( study.getOriginOfSources() )) {
+        if (!StringUtil.isEmpty( metadata.getOriginOfSources() )) {
             methodAdded = checkParentElement(xmlw, "method", methodAdded);
             dataCollAdded = checkParentElement(xmlw, "dataColl", dataCollAdded);
             sourcesAdded = checkParentElement(xmlw, "sources", sourcesAdded);
             xmlw.writeStartElement("srcOrig");
-            xmlw.writeCharacters( study.getOriginOfSources() );
+            xmlw.writeCharacters( metadata.getOriginOfSources() );
             xmlw.writeEndElement(); // srcOrig
         }
 
-        if (!StringUtil.isEmpty( study.getCharacteristicOfSources() )) {
+        if (!StringUtil.isEmpty( metadata.getCharacteristicOfSources() )) {
             methodAdded = checkParentElement(xmlw, "method", methodAdded);
             dataCollAdded = checkParentElement(xmlw, "dataColl", dataCollAdded);
             sourcesAdded = checkParentElement(xmlw, "sources", sourcesAdded);
             xmlw.writeStartElement("srcChar");
-            xmlw.writeCharacters( study.getCharacteristicOfSources() );
+            xmlw.writeCharacters( metadata.getCharacteristicOfSources() );
             xmlw.writeEndElement(); // srcChar
         }
 
-        if (!StringUtil.isEmpty( study.getAccessToSources() )) {
+        if (!StringUtil.isEmpty( metadata.getAccessToSources() )) {
             methodAdded = checkParentElement(xmlw, "method", methodAdded);
             dataCollAdded = checkParentElement(xmlw, "dataColl", dataCollAdded);
             sourcesAdded = checkParentElement(xmlw, "sources", sourcesAdded);
             xmlw.writeStartElement("srcDocu");
-            xmlw.writeCharacters( study.getAccessToSources() );
+            xmlw.writeCharacters( metadata.getAccessToSources() );
             xmlw.writeEndElement(); // srcDocu
         }
         if (sourcesAdded) xmlw.writeEndElement(); // sources
 
-        if (!StringUtil.isEmpty( study.getDataCollectionSituation() )) {
+        if (!StringUtil.isEmpty( metadata.getDataCollectionSituation() )) {
             methodAdded = checkParentElement(xmlw, "method", methodAdded);
             dataCollAdded = checkParentElement(xmlw, "dataColl", dataCollAdded);
             xmlw.writeStartElement("collSitu");
-            xmlw.writeCharacters( study.getDataCollectionSituation() );
+            xmlw.writeCharacters( metadata.getDataCollectionSituation() );
             xmlw.writeEndElement(); // collSitu
         }
 
-        if (!StringUtil.isEmpty( study.getActionsToMinimizeLoss() )) {
+        if (!StringUtil.isEmpty( metadata.getActionsToMinimizeLoss() )) {
             methodAdded = checkParentElement(xmlw, "method", methodAdded);
             dataCollAdded = checkParentElement(xmlw, "dataColl", dataCollAdded);
             xmlw.writeStartElement("actMin");
-            xmlw.writeCharacters( study.getActionsToMinimizeLoss() );
+            xmlw.writeCharacters( metadata.getActionsToMinimizeLoss() );
             xmlw.writeEndElement(); // actMin
         }
 
-        if (!StringUtil.isEmpty( study.getControlOperations() )) {
+        if (!StringUtil.isEmpty( metadata.getControlOperations() )) {
             methodAdded = checkParentElement(xmlw, "method", methodAdded);
             dataCollAdded = checkParentElement(xmlw, "dataColl", dataCollAdded);
             xmlw.writeStartElement("ConOps");
-            xmlw.writeCharacters( study.getControlOperations() );
+            xmlw.writeCharacters( metadata.getControlOperations() );
             xmlw.writeEndElement(); // ConOps
         }
 
-        if (!StringUtil.isEmpty( study.getWeighting() )) {
+        if (!StringUtil.isEmpty( metadata.getWeighting() )) {
             methodAdded = checkParentElement(xmlw, "method", methodAdded);
             dataCollAdded = checkParentElement(xmlw, "dataColl", dataCollAdded);
             xmlw.writeStartElement("weight");
-            xmlw.writeCharacters( study.getWeighting() );
+            xmlw.writeCharacters( metadata.getWeighting() );
             xmlw.writeEndElement(); // weight
         }
 
-        if (!StringUtil.isEmpty( study.getCleaningOperations() )) {
+        if (!StringUtil.isEmpty( metadata.getCleaningOperations() )) {
             methodAdded = checkParentElement(xmlw, "method", methodAdded);
             dataCollAdded = checkParentElement(xmlw, "dataColl", dataCollAdded);
             xmlw.writeStartElement("cleanOps");
-            xmlw.writeCharacters( study.getCleaningOperations() );
+            xmlw.writeCharacters( metadata.getCleaningOperations() );
             xmlw.writeEndElement(); // cleanOps
         }
         if (dataCollAdded) xmlw.writeEndElement(); // dataColl
 
 
         // notes
-        if (!StringUtil.isEmpty( study.getStudyLevelErrorNotes() )) {
+        if (!StringUtil.isEmpty( metadata.getStudyLevelErrorNotes() )) {
             methodAdded = checkParentElement(xmlw, "method", methodAdded);
             xmlw.writeStartElement("notes");
-            xmlw.writeCharacters( study.getStudyLevelErrorNotes() );
+            xmlw.writeCharacters( metadata.getStudyLevelErrorNotes() );
             xmlw.writeEndElement(); // notes
         }
 
 
         // anlyInfo
         boolean anlyInfoAdded = false;
-        if (!StringUtil.isEmpty( study.getResponseRate() )) {
+        if (!StringUtil.isEmpty( metadata.getResponseRate() )) {
             methodAdded = checkParentElement(xmlw, "method", methodAdded);
             anlyInfoAdded = checkParentElement(xmlw, "anlyInfo", anlyInfoAdded);
             xmlw.writeStartElement("respRate");
-            xmlw.writeCharacters( study.getResponseRate() );
+            xmlw.writeCharacters( metadata.getResponseRate() );
             xmlw.writeEndElement(); // getResponseRate
         }
 
-        if (!StringUtil.isEmpty( study.getSamplingErrorEstimate() )) {
+        if (!StringUtil.isEmpty( metadata.getSamplingErrorEstimate() )) {
             methodAdded = checkParentElement(xmlw, "method", methodAdded);
             anlyInfoAdded = checkParentElement(xmlw, "anlyInfo", anlyInfoAdded);
             xmlw.writeStartElement("EstSmpErr");
-            xmlw.writeCharacters( study.getSamplingErrorEstimate() );
+            xmlw.writeCharacters( metadata.getSamplingErrorEstimate() );
             xmlw.writeEndElement(); // EstSmpErr
         }
 
-        if (!StringUtil.isEmpty( study.getOtherDataAppraisal() )) {
+        if (!StringUtil.isEmpty( metadata.getOtherDataAppraisal() )) {
             methodAdded = checkParentElement(xmlw, "method", methodAdded);
             anlyInfoAdded = checkParentElement(xmlw, "anlyInfo", anlyInfoAdded);
             xmlw.writeStartElement("dataAppr");
-            xmlw.writeCharacters( study.getOtherDataAppraisal() );
+            xmlw.writeCharacters( metadata.getOtherDataAppraisal() );
             xmlw.writeEndElement(); // dataAppr
         }
         if (anlyInfoAdded) xmlw.writeEndElement(); // anlyInfo
@@ -852,124 +867,125 @@ public class DDIServiceBean implements DDIServiceLocal {
         if (methodAdded) xmlw.writeEndElement(); // method
     }
 
-    private void createDataAccs(XMLStreamWriter xmlw, Study study) throws XMLStreamException {
+    private void createDataAccs(XMLStreamWriter xmlw, Metadata metadata) throws XMLStreamException {
         boolean dataAccsAdded = false;
 
         // setAvail
         boolean setAvailAdded = false;
-        if (!StringUtil.isEmpty( study.getPlaceOfAccess() )) {
+        if (!StringUtil.isEmpty( metadata.getPlaceOfAccess() )) {
             dataAccsAdded = checkParentElement(xmlw, "dataAccs", dataAccsAdded);
             setAvailAdded = checkParentElement(xmlw, "setAvail", setAvailAdded);
             xmlw.writeStartElement("accsPlac");
-            xmlw.writeCharacters( study.getPlaceOfAccess() );
+            xmlw.writeCharacters( metadata.getPlaceOfAccess() );
             xmlw.writeEndElement(); // getStudyCompletion
         }
-        if (!StringUtil.isEmpty( study.getOriginalArchive() )) {
+        if (!StringUtil.isEmpty( metadata.getOriginalArchive() )) {
             dataAccsAdded = checkParentElement(xmlw, "dataAccs", dataAccsAdded);
             setAvailAdded = checkParentElement(xmlw, "setAvail", setAvailAdded);
             xmlw.writeStartElement("origArch");
-            xmlw.writeCharacters( study.getOriginalArchive() );
+            xmlw.writeCharacters( metadata.getOriginalArchive() );
             xmlw.writeEndElement(); // origArch
         }
-        if (!StringUtil.isEmpty( study.getAvailabilityStatus() )) {
+        if (!StringUtil.isEmpty( metadata.getAvailabilityStatus() )) {
             dataAccsAdded = checkParentElement(xmlw, "dataAccs", dataAccsAdded);
             setAvailAdded = checkParentElement(xmlw, "setAvail", setAvailAdded);
             xmlw.writeStartElement("avlStatus");
-            xmlw.writeCharacters( study.getAvailabilityStatus() );
+            xmlw.writeCharacters( metadata.getAvailabilityStatus() );
             xmlw.writeEndElement(); // avlStatus
         }
-        if (!StringUtil.isEmpty( study.getCollectionSize() )) {
+        if (!StringUtil.isEmpty( metadata.getCollectionSize() )) {
             dataAccsAdded = checkParentElement(xmlw, "dataAccs", dataAccsAdded);
             setAvailAdded = checkParentElement(xmlw, "setAvail", setAvailAdded);
             xmlw.writeStartElement("collSize");
-            xmlw.writeCharacters( study.getCollectionSize() );
+            xmlw.writeCharacters( metadata.getCollectionSize() );
             xmlw.writeEndElement(); // collSize
         }
-        if (!StringUtil.isEmpty( study.getStudyCompletion() )) {
+        if (!StringUtil.isEmpty( metadata.getStudyCompletion() )) {
             dataAccsAdded = checkParentElement(xmlw, "dataAccs", dataAccsAdded);
             setAvailAdded = checkParentElement(xmlw, "setAvail", setAvailAdded);
             xmlw.writeStartElement("complete");
-            xmlw.writeCharacters( study.getStudyCompletion() );
+            xmlw.writeCharacters( metadata.getStudyCompletion() );
             xmlw.writeEndElement(); // complete
         }
         if (setAvailAdded) xmlw.writeEndElement(); // setAvail
 
         // useStmt
         boolean useStmtAdded = false;
-        if (!StringUtil.isEmpty( study.getConfidentialityDeclaration() )) {
+        if (!StringUtil.isEmpty( metadata.getConfidentialityDeclaration() )) {
             dataAccsAdded = checkParentElement(xmlw, "dataAccs", dataAccsAdded);
             useStmtAdded = checkParentElement(xmlw, "useStmt", useStmtAdded);
             xmlw.writeStartElement("confDec");
-            xmlw.writeCharacters( study.getConfidentialityDeclaration() );
+            xmlw.writeCharacters( metadata.getConfidentialityDeclaration() );
             xmlw.writeEndElement(); // confDec
         }
 
-        if (!StringUtil.isEmpty( study.getSpecialPermissions() )) {
+        if (!StringUtil.isEmpty( metadata.getSpecialPermissions() )) {
             dataAccsAdded = checkParentElement(xmlw, "dataAccs", dataAccsAdded);
             useStmtAdded = checkParentElement(xmlw, "useStmt", useStmtAdded);
             xmlw.writeStartElement("specPerm");
-            xmlw.writeCharacters( study.getSpecialPermissions() );
+            xmlw.writeCharacters( metadata.getSpecialPermissions() );
             xmlw.writeEndElement(); // specPerm
         }
 
-        if (!StringUtil.isEmpty( study.getRestrictions() )) {
+        if (!StringUtil.isEmpty( metadata.getRestrictions() )) {
             dataAccsAdded = checkParentElement(xmlw, "dataAccs", dataAccsAdded);
             useStmtAdded = checkParentElement(xmlw, "useStmt", useStmtAdded);
             xmlw.writeStartElement("restrctn");
-            xmlw.writeCharacters( study.getRestrictions() );
+            xmlw.writeCharacters( metadata.getRestrictions() );
             xmlw.writeEndElement(); // restrctn
         }
 
 
-        if (!StringUtil.isEmpty( study.getContact() )) {
+        if (!StringUtil.isEmpty( metadata.getContact() )) {
             dataAccsAdded = checkParentElement(xmlw, "dataAccs", dataAccsAdded);
             useStmtAdded = checkParentElement(xmlw, "useStmt", useStmtAdded);
             xmlw.writeStartElement("contact");
-            xmlw.writeCharacters( study.getContact() );
+            xmlw.writeCharacters( metadata.getContact() );
             xmlw.writeEndElement(); // contact
         }
 
-        if (!StringUtil.isEmpty( study.getCitationRequirements() )) {
+        if (!StringUtil.isEmpty( metadata.getCitationRequirements() )) {
             dataAccsAdded = checkParentElement(xmlw, "dataAccs", dataAccsAdded);
             useStmtAdded = checkParentElement(xmlw, "useStmt", useStmtAdded);
             xmlw.writeStartElement("citReq");
-            xmlw.writeCharacters( study.getCitationRequirements() );
+            xmlw.writeCharacters( metadata.getCitationRequirements() );
             xmlw.writeEndElement(); // citReq
         }
 
-        if (!StringUtil.isEmpty( study.getDepositorRequirements() )) {
+        if (!StringUtil.isEmpty( metadata.getDepositorRequirements() )) {
             dataAccsAdded = checkParentElement(xmlw, "dataAccs", dataAccsAdded);
             useStmtAdded = checkParentElement(xmlw, "useStmt", useStmtAdded);
             xmlw.writeStartElement("deposReq");
-            xmlw.writeCharacters( study.getDepositorRequirements() );
+            xmlw.writeCharacters( metadata.getDepositorRequirements() );
             xmlw.writeEndElement(); // deposReq
         }
 
-        if (!StringUtil.isEmpty( study.getConditions() )) {
+        if (!StringUtil.isEmpty( metadata.getConditions() )) {
             dataAccsAdded = checkParentElement(xmlw, "dataAccs", dataAccsAdded);
             useStmtAdded = checkParentElement(xmlw, "useStmt", useStmtAdded);
             xmlw.writeStartElement("conditions");
-            xmlw.writeCharacters( study.getConditions() );
+            xmlw.writeCharacters( metadata.getConditions() );
             xmlw.writeEndElement(); // conditions
         }
 
-        if (!StringUtil.isEmpty( study.getDisclaimer() )) {
+        if (!StringUtil.isEmpty( metadata.getDisclaimer() )) {
             dataAccsAdded = checkParentElement(xmlw, "dataAccs", dataAccsAdded);
             useStmtAdded = checkParentElement(xmlw, "useStmt", useStmtAdded);
             xmlw.writeStartElement("disclaimer");
-            xmlw.writeCharacters( study.getDisclaimer() );
+            xmlw.writeCharacters( metadata.getDisclaimer() );
             xmlw.writeEndElement(); // disclaimer
         }
         if (useStmtAdded) xmlw.writeEndElement(); // useStmt
 
 
         // terms of use notes
+        Study study = metadata.getStudy();
         String dvTermsOfUse = null;
         String dvnTermsOfUse = null;
 
         if (study.isIsHarvested() ) {
-            dvTermsOfUse = study.getHarvestDVTermsOfUse();
-            dvnTermsOfUse = study.getHarvestDVNTermsOfUse();
+            dvTermsOfUse = metadata.getHarvestDVTermsOfUse();
+            dvnTermsOfUse = metadata.getHarvestDVNTermsOfUse();
         } else {
             dvTermsOfUse = study.getOwner().isDownloadTermsOfUseEnabled() ? study.getOwner().getDownloadTermsOfUse() : null;
             dvnTermsOfUse = vdcNetworkService.find().isDownloadTermsOfUseEnabled() ? vdcNetworkService.find().getDownloadTermsOfUse() : null;
@@ -998,36 +1014,36 @@ public class DDIServiceBean implements DDIServiceLocal {
         if (dataAccsAdded) xmlw.writeEndElement(); // dataAccs
     }
 
-    private void createOthrStdyMat(XMLStreamWriter xmlw, Study study) throws XMLStreamException {
+    private void createOthrStdyMat(XMLStreamWriter xmlw, Metadata metadata) throws XMLStreamException {
         boolean othrStdyMatAdded = false;
 
         // add replication for as a related material
-        if (!StringUtil.isEmpty( study.getReplicationFor() )) {
+        if (!StringUtil.isEmpty( metadata.getReplicationFor() )) {
             othrStdyMatAdded = checkParentElement(xmlw, "othrStdyMat", othrStdyMatAdded);
             xmlw.writeStartElement("relMat");
             writeAttribute( xmlw, "type", "replicationFor" );
-            xmlw.writeCharacters( study.getReplicationFor() );
+            xmlw.writeCharacters( metadata.getReplicationFor() );
             xmlw.writeEndElement(); // relMat
         }
-        for (StudyRelMaterial rm : study.getStudyRelMaterials()) {
+        for (StudyRelMaterial rm : metadata.getStudyRelMaterials()) {
             othrStdyMatAdded = checkParentElement(xmlw, "othrStdyMat", othrStdyMatAdded);
             xmlw.writeStartElement("relMat");
             xmlw.writeCharacters( rm.getText() );
             xmlw.writeEndElement(); // relMat
         }
-        for (StudyRelStudy rs : study.getStudyRelStudies()) {
+        for (StudyRelStudy rs : metadata.getStudyRelStudies()) {
             othrStdyMatAdded = checkParentElement(xmlw, "othrStdyMat", othrStdyMatAdded);
             xmlw.writeStartElement("relStdy");
             xmlw.writeCharacters( rs.getText() );
             xmlw.writeEndElement(); // relStdy
         }
-        for (StudyRelPublication rp : study.getStudyRelPublications()) {
+        for (StudyRelPublication rp : metadata.getStudyRelPublications()) {
             othrStdyMatAdded = checkParentElement(xmlw, "othrStdyMat", othrStdyMatAdded);
             xmlw.writeStartElement("relPubl");
             xmlw.writeCharacters( rp.getText() );
             xmlw.writeEndElement(); // relPubl
         }
-        for (StudyOtherRef or : study.getStudyOtherRefs()) {
+        for (StudyOtherRef or : metadata.getStudyOtherRefs()) {
             othrStdyMatAdded = checkParentElement(xmlw, "othrStdyMat", othrStdyMatAdded);
             xmlw.writeStartElement("otherRefs");
             xmlw.writeCharacters( or.getText() );
@@ -1038,8 +1054,8 @@ public class DDIServiceBean implements DDIServiceLocal {
         if (othrStdyMatAdded) xmlw.writeEndElement(); // othrStdyMat
     }
 
-    private void createNotes(XMLStreamWriter xmlw, Study study) throws XMLStreamException {
-        for (StudyNote note : study.getStudyNotes()) {
+    private void createNotes(XMLStreamWriter xmlw, Metadata metadata) throws XMLStreamException {
+        for (StudyNote note : metadata.getStudyNotes()) {
             xmlw.writeStartElement("notes");
             writeAttribute( xmlw, "type", note.getType() );
             writeAttribute( xmlw, "subject", note.getSubject() );
@@ -1048,22 +1064,23 @@ public class DDIServiceBean implements DDIServiceLocal {
         }
     }
 
-    private void createFileDscr(XMLStreamWriter xmlw, TabularDataFile tdf) throws XMLStreamException {
+    private void createFileDscr(XMLStreamWriter xmlw, FileMetadata fm) throws XMLStreamException {
+        TabularDataFile tdf = (TabularDataFile) fm.getStudyFile();
         DataTable dt = tdf.getDataTable();
 
         xmlw.writeStartElement("fileDscr");
         writeAttribute( xmlw, "ID", "f" + tdf.getId().toString() );
-        writeAttribute( xmlw, "URI", determineFileURI(tdf) );
+        writeAttribute( xmlw, "URI", determineFileURI(fm) );
 
         // fileTxt
         xmlw.writeStartElement("fileTxt");
 
         xmlw.writeStartElement("fileName");
-        xmlw.writeCharacters( tdf.getFileName() );
+        xmlw.writeCharacters( fm.getLabel() );
         xmlw.writeEndElement(); // fileName
 
         xmlw.writeStartElement("fileCont");
-        xmlw.writeCharacters( tdf.getDescription() );
+        xmlw.writeCharacters( fm.getDescription() );
         xmlw.writeEndElement(); // fileCont
 
         // dimensions
@@ -1105,7 +1122,7 @@ public class DDIServiceBean implements DDIServiceLocal {
 
         xmlw.writeStartElement("notes");
         writeAttribute( xmlw, "type", "vdc:category" );
-        xmlw.writeCharacters( tdf.getFileCategory().getName() );
+        xmlw.writeCharacters( fm.getCategory() );
         xmlw.writeEndElement(); // notes
 
         // THIS IS OLD CODE FROM JAXB, but a reminder that we may want to add original fileType
@@ -1120,10 +1137,10 @@ public class DDIServiceBean implements DDIServiceLocal {
         xmlw.writeEndElement(); // fileDscr
     }
 
-    private String determineFileURI(StudyFile sf) {
+    private String determineFileURI(FileMetadata fm) {
         String fileURI = "";
-        Study s = sf.getFileCategory().getStudy();
-
+        StudyFile sf = fm.getStudyFile();
+        Study s = sf.getStudy();
 
         // determine whether file is local or harvested
         if (sf.isRemote()) {
@@ -1131,7 +1148,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         } else {
             fileURI = "http://" + PropertyUtil.getHostUrl() + "/dvn/dv/" + s.getOwner().getAlias() + "/FileDownload/";
             try {
-                fileURI += URLEncoder.encode(sf.getFileName(), "UTF-8") + "?fileId=" + sf.getId();
+                fileURI += URLEncoder.encode(fm.getLabel(), "UTF-8") + "?fileId=" + sf.getId();
             } catch (IOException e) {
                 throw new EJBException(e);
             }
@@ -1140,31 +1157,34 @@ public class DDIServiceBean implements DDIServiceLocal {
         return fileURI;
     }
 
-    private void createOtherMat(XMLStreamWriter xmlw, StudyFile sf) throws XMLStreamException {
+    private void createOtherMat(XMLStreamWriter xmlw, FileMetadata fm) throws XMLStreamException {
+        StudyFile sf = fm.getStudyFile();
+
         xmlw.writeStartElement("otherMat");
         writeAttribute( xmlw, "level", LEVEL_STUDY );
-        writeAttribute( xmlw, "URI", determineFileURI(sf) );
+        writeAttribute( xmlw, "URI", determineFileURI(fm) );
 
         xmlw.writeStartElement("labl");
-        xmlw.writeCharacters( sf.getFileName() );
+        xmlw.writeCharacters( fm.getLabel() );
         xmlw.writeEndElement(); // labl
 
         xmlw.writeStartElement("txt");
-        xmlw.writeCharacters( sf.getDescription() );
+        xmlw.writeCharacters( fm.getDescription() );
         xmlw.writeEndElement(); // txt
 
         xmlw.writeStartElement("notes");
         writeAttribute( xmlw, "type", "vdc:category" );
-        xmlw.writeCharacters( sf.getFileCategory().getName() );
+        xmlw.writeCharacters( fm.getCategory() );
         xmlw.writeEndElement(); // notes
 
         xmlw.writeEndElement(); // otherMat
     }
 
-    private void createDataDscr(XMLStreamWriter xmlw, Study study) throws XMLStreamException {
+    private void createDataDscr(XMLStreamWriter xmlw, StudyVersion studyVersion) throws XMLStreamException {
         boolean dataDscrAdded = false;
 
-        for (StudyFile sf : study.getStudyFiles()) {
+        for (FileMetadata fmd : studyVersion.getFileMetadatas()) {
+            StudyFile sf = fmd.getStudyFile();
             if ( sf instanceof TabularDataFile ) {
                 TabularDataFile tdf = (TabularDataFile) sf;
                 if ( tdf.getDataTable().getDataVariables().size() > 0 ) {
@@ -1418,43 +1438,47 @@ public class DDIServiceBean implements DDIServiceLocal {
 
     // <editor-fold defaultstate="collapsed" desc="import methods">
     private void processDDI( XMLStreamReader xmlr, Study study) throws XMLStreamException {
-        initializeCollections(study); // not sure we need this call; to be investigated
+        // TODO: VERSION: change this to use a study version object
+        Metadata metadata = study.getReleasedVersion().getMetadata(); // am wondering about this line here; this WILL HAVE TO CHANGE
+        initializeCollections(metadata); // not sure we need this call; to be investigated
         
         // make sure we have a codeBook
         //while ( xmlr.next() == XMLStreamConstants.COMMENT ); // skip pre root comments
         xmlr.nextTag();
         xmlr.require(XMLStreamConstants.START_ELEMENT, null, "codeBook");
-        processCodeBook(xmlr, study);      
+        processCodeBook(xmlr, metadata);
     }
 
-    private void initializeCollections(Study study) {
+    private void initializeCollections(Metadata metadata) {
         // initialize the collections
-        study.setFileCategories( new ArrayList() );
-        study.setStudyFiles( new ArrayList() );
-        study.setStudyAbstracts( new ArrayList() );
-        study.setStudyAuthors( new ArrayList() );
-        study.setStudyDistributors( new ArrayList() );
-        study.setStudyGeoBoundings(new ArrayList());
-        study.setStudyGrants(new ArrayList());
-        study.setStudyKeywords(new ArrayList());
-        study.setStudyNotes(new ArrayList());
-        study.setStudyOtherIds(new ArrayList());
-        study.setStudyOtherRefs(new ArrayList());
-        study.setStudyProducers(new ArrayList());
-        study.setStudyRelMaterials(new ArrayList());
-        study.setStudyRelPublications(new ArrayList());
-        study.setStudyRelStudies(new ArrayList());
-        study.setStudySoftware(new ArrayList());
-        study.setStudyTopicClasses(new ArrayList());
+        // TODO: VERSION:
+        //metadata.setFileCategories( new ArrayList() );
+        //metadata.setStudyFiles( new ArrayList() ); WHAT DO WE INITIALIZE HERE????
+        metadata.setStudyAbstracts( new ArrayList() );
+        metadata.setStudyAuthors( new ArrayList() );
+        metadata.setStudyDistributors( new ArrayList() );
+        metadata.setStudyGeoBoundings(new ArrayList());
+        metadata.setStudyGrants(new ArrayList());
+        metadata.setStudyKeywords(new ArrayList());
+        metadata.setStudyNotes(new ArrayList());
+        metadata.setStudyOtherIds(new ArrayList());
+        metadata.setStudyOtherRefs(new ArrayList());
+        metadata.setStudyProducers(new ArrayList());
+        metadata.setStudyRelMaterials(new ArrayList());
+        metadata.setStudyRelPublications(new ArrayList());
+        metadata.setStudyRelStudies(new ArrayList());
+        metadata.setStudySoftware(new ArrayList());
+        metadata.setStudyTopicClasses(new ArrayList());
 }
 
-     private void processCodeBook( XMLStreamReader xmlr, Study study) throws XMLStreamException {
+     private void processCodeBook( XMLStreamReader xmlr, Metadata metadata) throws XMLStreamException {
         Map filesMap = new HashMap();
+        Study study = metadata.getStudyVersion().getStudy();
 
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
-                if (xmlr.getLocalName().equals("docDscr")) processDocDscr(xmlr, study);
-                else if (xmlr.getLocalName().equals("stdyDscr")) processStdyDscr(xmlr, study);
+                if (xmlr.getLocalName().equals("docDscr")) processDocDscr(xmlr, metadata);
+                else if (xmlr.getLocalName().equals("stdyDscr")) processStdyDscr(xmlr, metadata);
                 else if (xmlr.getLocalName().equals("fileDscr")) processFileDscr(xmlr, study, filesMap);
                 else if (xmlr.getLocalName().equals("dataDscr")) processDataDscr(xmlr, study, filesMap);
                 else if (xmlr.getLocalName().equals("otherMat")) processOtherMat(xmlr, study);
@@ -1464,17 +1488,17 @@ public class DDIServiceBean implements DDIServiceLocal {
         }
     }
 
-    private void processDocDscr(XMLStreamReader xmlr, Study study) throws XMLStreamException {
+    private void processDocDscr(XMLStreamReader xmlr, Metadata metadata) throws XMLStreamException {
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
-                if (xmlr.getLocalName().equals("IDNo") && StringUtil.isEmpty(study.getStudyId()) ) {
-                    // this will set a StudyId if it has not yet been set; it will get overridden by a study
+                if (xmlr.getLocalName().equals("IDNo") && StringUtil.isEmpty(metadata.getStudy().getStudyId()) ) {
+                    // this will set a StudyId if it has not yet been set; it will get overridden by a metadata
                     // id in the StudyDscr section, if one exists
                     if ( AGENCY_HANDLE.equals( xmlr.getAttributeValue(null, "agency") ) ) {
-                        parseStudyId( parseText(xmlr), study );
+                        parseStudyId( parseText(xmlr), metadata.getStudy() );
                     }
-                } else if ( xmlr.getLocalName().equals("holdings") && StringUtil.isEmpty(study.getHarvestHoldings()) ) {
-                    study.setHarvestHoldings( xmlr.getAttributeValue(null, "URI") );
+                } else if ( xmlr.getLocalName().equals("holdings") && StringUtil.isEmpty(metadata.getHarvestHoldings()) ) {
+                    metadata.setHarvestHoldings( xmlr.getAttributeValue(null, "URI") );
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
                 if (xmlr.getLocalName().equals("docDscr")) return;
@@ -1482,36 +1506,36 @@ public class DDIServiceBean implements DDIServiceLocal {
         }
     }
 
-    private void processStdyDscr(XMLStreamReader xmlr, Study study) throws XMLStreamException {
+    private void processStdyDscr(XMLStreamReader xmlr, Metadata metadata) throws XMLStreamException {
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
-                if (xmlr.getLocalName().equals("citation")) processCitation(xmlr, study);
-                else if (xmlr.getLocalName().equals("stdyInfo")) processStdyInfo(xmlr, study);
-                else if (xmlr.getLocalName().equals("method")) processMethod(xmlr, study);
-                else if (xmlr.getLocalName().equals("dataAccs")) processDataAccs(xmlr, study);
-                else if (xmlr.getLocalName().equals("othrStdyMat")) processOthrStdyMat(xmlr, study);
-                else if (xmlr.getLocalName().equals("notes")) processNotes(xmlr, study);
+                if (xmlr.getLocalName().equals("citation")) processCitation(xmlr, metadata);
+                else if (xmlr.getLocalName().equals("stdyInfo")) processStdyInfo(xmlr, metadata);
+                else if (xmlr.getLocalName().equals("method")) processMethod(xmlr, metadata);
+                else if (xmlr.getLocalName().equals("dataAccs")) processDataAccs(xmlr, metadata);
+                else if (xmlr.getLocalName().equals("othrStdyMat")) processOthrStdyMat(xmlr, metadata);
+                else if (xmlr.getLocalName().equals("notes")) processNotes(xmlr, metadata);
             } else if (event == XMLStreamConstants.END_ELEMENT) {
                 if (xmlr.getLocalName().equals("stdyDscr")) return;
             }
         }
     }
 
-     private void processCitation(XMLStreamReader xmlr, Study study) throws XMLStreamException {
+     private void processCitation(XMLStreamReader xmlr, Metadata metadata) throws XMLStreamException {
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
-                if (xmlr.getLocalName().equals("titlStmt")) processTitlStmt(xmlr, study);
-                else if (xmlr.getLocalName().equals("rspStmt")) processRspStmt(xmlr,study);
-                else if (xmlr.getLocalName().equals("prodStmt")) processProdStmt(xmlr,study);
-                else if (xmlr.getLocalName().equals("distStmt")) processDistStmt(xmlr,study);
-                else if (xmlr.getLocalName().equals("serStmt")) processSerStmt(xmlr,study);
-                else if (xmlr.getLocalName().equals("verStmt")) processVerStmt(xmlr,study);
+                if (xmlr.getLocalName().equals("titlStmt")) processTitlStmt(xmlr, metadata);
+                else if (xmlr.getLocalName().equals("rspStmt")) processRspStmt(xmlr,metadata);
+                else if (xmlr.getLocalName().equals("prodStmt")) processProdStmt(xmlr,metadata);
+                else if (xmlr.getLocalName().equals("distStmt")) processDistStmt(xmlr,metadata);
+                else if (xmlr.getLocalName().equals("serStmt")) processSerStmt(xmlr,metadata);
+                else if (xmlr.getLocalName().equals("verStmt")) processVerStmt(xmlr,metadata);
                 else if (xmlr.getLocalName().equals("notes")) {
                     String _note = parseNoteByType( xmlr, NOTE_TYPE_UNF );
                     if (_note != null) {
-                        study.setUNF( parseUNF( _note ) );
+                        metadata.setUNF( parseUNF( _note ) );
                     } else {
-                        processNotes(xmlr, study);
+                        processNotes(xmlr, metadata);
                     }
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
@@ -1520,22 +1544,22 @@ public class DDIServiceBean implements DDIServiceLocal {
         }
     }
 
-    private void processTitlStmt(XMLStreamReader xmlr, Study study) throws XMLStreamException {
+    private void processTitlStmt(XMLStreamReader xmlr, Metadata metadata) throws XMLStreamException {
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
                 if (xmlr.getLocalName().equals("titl")) {
-                    study.setTitle( parseText(xmlr) );
+                    metadata.setTitle( parseText(xmlr) );
                 } else if (xmlr.getLocalName().equals("subTitl")) {
-                    study.setSubTitle( parseText(xmlr) );
+                    metadata.setSubTitle( parseText(xmlr) );
                 } else if (xmlr.getLocalName().equals("IDNo")) {
                     if ( AGENCY_HANDLE.equals( xmlr.getAttributeValue(null, "agency") ) ) {
-                        parseStudyId( parseText(xmlr), study );
+                        parseStudyId( parseText(xmlr), metadata.getStudyVersion().getStudy() );
                     } else {
                         StudyOtherId sid = new StudyOtherId();
                         sid.setAgency( xmlr.getAttributeValue(null, "agency")) ;
                         sid.setOtherId( parseText(xmlr) );
-                        sid.setMetadata(study.getMetadata());
-                        study.getStudyOtherIds().add(sid);
+                        sid.setMetadata(metadata);
+                        metadata.getStudyOtherIds().add(sid);
                     }
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
@@ -1544,15 +1568,15 @@ public class DDIServiceBean implements DDIServiceLocal {
         }
     }
 
-    private void processRspStmt(XMLStreamReader xmlr, Study study) throws XMLStreamException {
+    private void processRspStmt(XMLStreamReader xmlr, Metadata metadata) throws XMLStreamException {
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
                 if (xmlr.getLocalName().equals("AuthEnty")) {
                     StudyAuthor author = new StudyAuthor();
                     author.setAffiliation( xmlr.getAttributeValue(null, "affiliation") );
                     author.setName( parseText(xmlr) );
-                    author.setMetadata(study.getMetadata());
-                    study.getStudyAuthors().add(author);
+                    author.setMetadata(metadata);
+                    metadata.getStudyAuthors().add(author);
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
                 if (xmlr.getLocalName().equals("rspStmt")) return;
@@ -1560,13 +1584,13 @@ public class DDIServiceBean implements DDIServiceLocal {
         }
     }
 
-    private void processProdStmt(XMLStreamReader xmlr, Study study) throws XMLStreamException {
+    private void processProdStmt(XMLStreamReader xmlr, Metadata metadata) throws XMLStreamException {
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
                 if (xmlr.getLocalName().equals("producer")) {
                     StudyProducer prod = new StudyProducer();
-                    study.getStudyProducers().add(prod);
-                    prod.setMetadata(study.getMetadata());
+                    metadata.getStudyProducers().add(prod);
+                    prod.setMetadata(metadata);
                     prod.setAbbreviation(xmlr.getAttributeValue(null, "abbr") );
                     prod.setAffiliation( xmlr.getAttributeValue(null, "affiliation") );
                     Map<String,String> prodDetails = parseCompoundText(xmlr, "producer");
@@ -1574,21 +1598,21 @@ public class DDIServiceBean implements DDIServiceLocal {
                     prod.setUrl(  prodDetails.get("url") );
                     prod.setLogo(  prodDetails.get("logo") );
                 } else if (xmlr.getLocalName().equals("prodDate")) {
-                    study.setProductionDate(parseDate(xmlr,"prodDate"));
+                    metadata.setProductionDate(parseDate(xmlr,"prodDate"));
                 } else if (xmlr.getLocalName().equals("prodPlac")) {
-                    study.setProductionPlace( parseText(xmlr) );
+                    metadata.setProductionPlace( parseText(xmlr) );
                 } else if (xmlr.getLocalName().equals("software")) {
                     StudySoftware ss = new StudySoftware();
-                    study.getStudySoftware().add(ss);
-                    ss.setMetadata(study.getMetadata());
+                    metadata.getStudySoftware().add(ss);
+                    ss.setMetadata(metadata);
                     ss.setSoftwareVersion( xmlr.getAttributeValue(null, "version") );
                     ss.setName( parseText(xmlr) );
                 } else if (xmlr.getLocalName().equals("fundAg")) {
-                    study.setFundingAgency( parseText(xmlr) );
+                    metadata.setFundingAgency( parseText(xmlr) );
                 } else if (xmlr.getLocalName().equals("grantNo")) {
                     StudyGrant sg = new StudyGrant();
-                    study.getStudyGrants().add(sg);
-                    sg.setMetadata(study.getMetadata());
+                    metadata.getStudyGrants().add(sg);
+                    sg.setMetadata(metadata);
                     sg.setAgency( xmlr.getAttributeValue(null, "agency") );
                     sg.setNumber( parseText(xmlr) );
                 }
@@ -1598,13 +1622,13 @@ public class DDIServiceBean implements DDIServiceLocal {
         }
     }
 
-    private void processDistStmt(XMLStreamReader xmlr, Study study) throws XMLStreamException {
+    private void processDistStmt(XMLStreamReader xmlr, Metadata metadata) throws XMLStreamException {
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
                 if (xmlr.getLocalName().equals("distrbtr")) {
                     StudyDistributor dist = new StudyDistributor();
-                    study.getStudyDistributors().add(dist);
-                    dist.setMetadata(study.getMetadata());
+                    metadata.getStudyDistributors().add(dist);
+                    dist.setMetadata(metadata);
                     dist.setAbbreviation(xmlr.getAttributeValue(null, "abbr") );
                     dist.setAffiliation( xmlr.getAttributeValue(null, "affiliation") );
                     Map<String,String> distDetails = parseCompoundText(xmlr, "distrbtr");
@@ -1612,16 +1636,16 @@ public class DDIServiceBean implements DDIServiceLocal {
                     dist.setUrl(  distDetails.get("url") );
                     dist.setLogo(  distDetails.get("logo") );
                 } else if (xmlr.getLocalName().equals("contact")) {
-                    study.setDistributorContactEmail( xmlr.getAttributeValue(null, "email") );
-                    study.setDistributorContactAffiliation( xmlr.getAttributeValue(null, "affiliation") );
-                    study.setDistributorContact( parseText(xmlr) );
+                    metadata.setDistributorContactEmail( xmlr.getAttributeValue(null, "email") );
+                    metadata.setDistributorContactAffiliation( xmlr.getAttributeValue(null, "affiliation") );
+                    metadata.setDistributorContact( parseText(xmlr) );
                 } else if (xmlr.getLocalName().equals("depositr")) {
                     Map<String,String> depDetails = parseCompoundText(xmlr, "depositr");
-                    study.setDepositor( depDetails.get("name") );
+                    metadata.setDepositor( depDetails.get("name") );
                 } else if (xmlr.getLocalName().equals("depDate")) {
-                    study.setDateOfDeposit( parseDate(xmlr,"depDate") );
+                    metadata.setDateOfDeposit( parseDate(xmlr,"depDate") );
                 } else if (xmlr.getLocalName().equals("distDate")) {
-                    study.setDistributionDate( parseDate(xmlr,"distDate") );
+                    metadata.setDistributionDate( parseDate(xmlr,"distDate") );
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
                 if (xmlr.getLocalName().equals("distStmt")) return;
@@ -1630,13 +1654,13 @@ public class DDIServiceBean implements DDIServiceLocal {
     }
 
 
-    private void processSerStmt(XMLStreamReader xmlr, Study study) throws XMLStreamException {
+    private void processSerStmt(XMLStreamReader xmlr, Metadata metadata) throws XMLStreamException {
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
                 if (xmlr.getLocalName().equals("serName")) {
-                    study.setSeriesName( parseText(xmlr) );
+                    metadata.setSeriesName( parseText(xmlr) );
                 } else if (xmlr.getLocalName().equals("serInfo")) {
-                    study.setSeriesInformation( parseText(xmlr) );
+                    metadata.setSeriesInformation( parseText(xmlr) );
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
                 if (xmlr.getLocalName().equals("serStmt")) return;
@@ -1644,51 +1668,51 @@ public class DDIServiceBean implements DDIServiceLocal {
         }
     }
 
-    private void processVerStmt(XMLStreamReader xmlr, Study study) throws XMLStreamException {
+    private void processVerStmt(XMLStreamReader xmlr, Metadata metadata) throws XMLStreamException {
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
                 if (xmlr.getLocalName().equals("version")) {
-                    study.setVersionDate( xmlr.getAttributeValue(null, "date") );
-                    study.setStudyVersion( parseText(xmlr) );
-                } else if (xmlr.getLocalName().equals("notes")) { processNotes(xmlr, study); }
+                    metadata.setVersionDate( xmlr.getAttributeValue(null, "date") );
+                    metadata.setStudyVersionText( parseText(xmlr) );
+                } else if (xmlr.getLocalName().equals("notes")) { processNotes(xmlr, metadata); }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
                 if (xmlr.getLocalName().equals("verStmt")) return;
             }
         }
     }
 
-     private void processStdyInfo(XMLStreamReader xmlr, Study study) throws XMLStreamException {
+     private void processStdyInfo(XMLStreamReader xmlr, Metadata metadata) throws XMLStreamException {
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
-                if (xmlr.getLocalName().equals("subject")) processSubject(xmlr, study);
+                if (xmlr.getLocalName().equals("subject")) processSubject(xmlr, metadata);
                 else if (xmlr.getLocalName().equals("abstract")) {
                     StudyAbstract abs = new StudyAbstract();
-                    study.getStudyAbstracts().add(abs);
-                    abs.setMetadata(study.getMetadata());
+                    metadata.getStudyAbstracts().add(abs);
+                    abs.setMetadata(metadata);
                     abs.setDate( xmlr.getAttributeValue(null, "date") );
                     abs.setText( parseText(xmlr, "abstract") );
-                } else if (xmlr.getLocalName().equals("sumDscr")) processSumDscr(xmlr, study);
-                else if (xmlr.getLocalName().equals("notes")) processNotes(xmlr, study);
+                } else if (xmlr.getLocalName().equals("sumDscr")) processSumDscr(xmlr, metadata);
+                else if (xmlr.getLocalName().equals("notes")) processNotes(xmlr, metadata);
             } else if (event == XMLStreamConstants.END_ELEMENT) {
                 if (xmlr.getLocalName().equals("stdyInfo")) return;
             }
         }
     }
 
-     private void processSubject(XMLStreamReader xmlr, Study study) throws XMLStreamException {
+     private void processSubject(XMLStreamReader xmlr, Metadata metadata) throws XMLStreamException {
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
                 if (xmlr.getLocalName().equals("keyword")) {
                     StudyKeyword kw = new StudyKeyword();
-                    study.getStudyKeywords().add(kw);
-                    kw.setMetadata(study.getMetadata());
+                    metadata.getStudyKeywords().add(kw);
+                    kw.setMetadata(metadata);
                     kw.setVocab( xmlr.getAttributeValue(null, "vocab") );
                     kw.setVocabURI( xmlr.getAttributeValue(null, "vocabURI") );
                     kw.setValue( parseText(xmlr));
                 } else if (xmlr.getLocalName().equals("topcClas")) {
                     StudyTopicClass tc = new StudyTopicClass();
-                    study.getStudyTopicClasses().add(tc);
-                    tc.setMetadata(study.getMetadata());
+                    metadata.getStudyTopicClasses().add(tc);
+                    tc.setMetadata(metadata);
                     tc.setVocab( xmlr.getAttributeValue(null, "vocab") );
                     tc.setVocabURI( xmlr.getAttributeValue(null, "vocabURI") );
                     tc.setValue( parseText(xmlr));
@@ -1699,60 +1723,60 @@ public class DDIServiceBean implements DDIServiceLocal {
         }
     }
 
-     private void processSumDscr(XMLStreamReader xmlr, Study study) throws XMLStreamException {
+     private void processSumDscr(XMLStreamReader xmlr, Metadata metadata) throws XMLStreamException {
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
                 if (xmlr.getLocalName().equals("timePrd")) {
                     String eventAttr = xmlr.getAttributeValue(null, "event");
                     if ( eventAttr == null || EVENT_SINGLE.equalsIgnoreCase(eventAttr) || EVENT_START.equalsIgnoreCase(eventAttr) ) {
-                        study.setTimePeriodCoveredStart( parseDate(xmlr, "timePrd") );
+                        metadata.setTimePeriodCoveredStart( parseDate(xmlr, "timePrd") );
                     } else if ( EVENT_END.equals(eventAttr) ) {
-                        study.setTimePeriodCoveredEnd( parseDate(xmlr, "timePrd") );
+                        metadata.setTimePeriodCoveredEnd( parseDate(xmlr, "timePrd") );
                     }
                 } else if (xmlr.getLocalName().equals("collDate")) {
                     String eventAttr = xmlr.getAttributeValue(null, "event");
                     if ( eventAttr == null || EVENT_SINGLE.equalsIgnoreCase(eventAttr) || EVENT_START.equalsIgnoreCase(eventAttr) ) {
-                        study.setDateOfCollectionStart( parseDate(xmlr, "collDate") );
+                        metadata.setDateOfCollectionStart( parseDate(xmlr, "collDate") );
                     } else if ( EVENT_END.equals(eventAttr) ) {
-                        study.setDateOfCollectionEnd( parseDate(xmlr, "collDate") );
+                        metadata.setDateOfCollectionEnd( parseDate(xmlr, "collDate") );
                     }
                 } else if (xmlr.getLocalName().equals("nation")) {
-                    if (StringUtil.isEmpty( study.getCountry() ) ) {
-                        study.setCountry( parseText(xmlr) );
+                    if (StringUtil.isEmpty( metadata.getCountry() ) ) {
+                        metadata.setCountry( parseText(xmlr) );
                     } else {
-                        study.setCountry( study.getCountry() + "; " + parseText(xmlr) );
+                        metadata.setCountry( metadata.getCountry() + "; " + parseText(xmlr) );
                     }
                 } else if (xmlr.getLocalName().equals("geogCover")) {
-                    if (StringUtil.isEmpty( study.getGeographicCoverage() ) ) {
-                        study.setGeographicCoverage( parseText(xmlr) );
+                    if (StringUtil.isEmpty( metadata.getGeographicCoverage() ) ) {
+                        metadata.setGeographicCoverage( parseText(xmlr) );
                     } else {
-                        study.setGeographicCoverage( study.getGeographicCoverage() + "; " + parseText(xmlr) );
+                        metadata.setGeographicCoverage( metadata.getGeographicCoverage() + "; " + parseText(xmlr) );
                     }
                 } else if (xmlr.getLocalName().equals("geogUnit")) {
-                    if (StringUtil.isEmpty( study.getGeographicUnit() ) ) {
-                        study.setGeographicUnit( parseText(xmlr) );
+                    if (StringUtil.isEmpty( metadata.getGeographicUnit() ) ) {
+                        metadata.setGeographicUnit( parseText(xmlr) );
                     } else {
-                        study.setGeographicUnit( study.getGeographicUnit() + "; " + parseText(xmlr) );
+                        metadata.setGeographicUnit( metadata.getGeographicUnit() + "; " + parseText(xmlr) );
                     }
                 } else if (xmlr.getLocalName().equals("geoBndBox")) {
-                    processGeoBndBox(xmlr,study);
+                    processGeoBndBox(xmlr,metadata);
                 } else if (xmlr.getLocalName().equals("anlyUnit")) {
-                    if (StringUtil.isEmpty( study.getUnitOfAnalysis() ) ) {
-                        study.setUnitOfAnalysis( parseText(xmlr,"anlyUnit") );
+                    if (StringUtil.isEmpty( metadata.getUnitOfAnalysis() ) ) {
+                        metadata.setUnitOfAnalysis( parseText(xmlr,"anlyUnit") );
                     } else {
-                        study.setUnitOfAnalysis( study.getUnitOfAnalysis() + "; " + parseText(xmlr,"anlyUnit") );
+                        metadata.setUnitOfAnalysis( metadata.getUnitOfAnalysis() + "; " + parseText(xmlr,"anlyUnit") );
                     }
                 } else if (xmlr.getLocalName().equals("universe")) {
-                    if (StringUtil.isEmpty( study.getUniverse() ) ) {
-                        study.setUniverse( parseText(xmlr,"universe") );
+                    if (StringUtil.isEmpty( metadata.getUniverse() ) ) {
+                        metadata.setUniverse( parseText(xmlr,"universe") );
                     } else {
-                        study.setUniverse( study.getUniverse() + "; " + parseText(xmlr,"universe") );
+                        metadata.setUniverse( metadata.getUniverse() + "; " + parseText(xmlr,"universe") );
                     }
                 } else if (xmlr.getLocalName().equals("dataKind")) {
-                    if (StringUtil.isEmpty( study.getKindOfData() ) ) {
-                        study.setKindOfData( parseText(xmlr) );
+                    if (StringUtil.isEmpty( metadata.getKindOfData() ) ) {
+                        metadata.setKindOfData( parseText(xmlr) );
                     } else {
-                        study.setKindOfData( study.getKindOfData() + "; " + parseText(xmlr) );
+                        metadata.setKindOfData( metadata.getKindOfData() + "; " + parseText(xmlr) );
                     }
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
@@ -1761,10 +1785,10 @@ public class DDIServiceBean implements DDIServiceLocal {
         }
     }
 
-    private void processGeoBndBox(XMLStreamReader xmlr, Study study) throws XMLStreamException {
+    private void processGeoBndBox(XMLStreamReader xmlr, Metadata metadata) throws XMLStreamException {
         StudyGeoBounding geoBound = new StudyGeoBounding();
-        study.getStudyGeoBoundings().add(geoBound);
-        geoBound.setMetadata(study.getMetadata());
+        metadata.getStudyGeoBoundings().add(geoBound);
+        geoBound.setMetadata(metadata);
 
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -1783,52 +1807,52 @@ public class DDIServiceBean implements DDIServiceLocal {
         }
     }
 
-    private void processMethod(XMLStreamReader xmlr, Study study) throws XMLStreamException {
+    private void processMethod(XMLStreamReader xmlr, Metadata metadata) throws XMLStreamException {
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
-                if (xmlr.getLocalName().equals("dataColl")) processDataColl(xmlr, study);
+                if (xmlr.getLocalName().equals("dataColl")) processDataColl(xmlr, metadata);
                 else if (xmlr.getLocalName().equals("notes")) {
-                    if (StringUtil.isEmpty( study.getStudyLevelErrorNotes() ) ) {
-                        study.setStudyLevelErrorNotes( parseText( xmlr,"notes" ) );
+                    if (StringUtil.isEmpty( metadata.getStudyLevelErrorNotes() ) ) {
+                        metadata.setStudyLevelErrorNotes( parseText( xmlr,"notes" ) );
                     } else {
-                        study.setStudyLevelErrorNotes( study.getStudyLevelErrorNotes() + "; " + parseText( xmlr, "notes" ) );
+                        metadata.setStudyLevelErrorNotes( metadata.getStudyLevelErrorNotes() + "; " + parseText( xmlr, "notes" ) );
                     }
-                } else if (xmlr.getLocalName().equals("anlyInfo")) processAnlyInfo(xmlr, study);
+                } else if (xmlr.getLocalName().equals("anlyInfo")) processAnlyInfo(xmlr, metadata);
             } else if (event == XMLStreamConstants.END_ELEMENT) {
                 if (xmlr.getLocalName().equals("method")) return;
             }
         }
     }
 
-    private void processDataColl(XMLStreamReader xmlr, Study study) throws XMLStreamException {
+    private void processDataColl(XMLStreamReader xmlr, Metadata metadata) throws XMLStreamException {
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
                 if (xmlr.getLocalName().equals("timeMeth")) {
-                    study.setTimeMethod( parseText( xmlr, "timeMeth" ) );
+                    metadata.setTimeMethod( parseText( xmlr, "timeMeth" ) );
                 } else if (xmlr.getLocalName().equals("dataCollector")) {
-                    study.setDataCollector( parseText( xmlr, "dataCollector" ) );
+                    metadata.setDataCollector( parseText( xmlr, "dataCollector" ) );
                 } else if (xmlr.getLocalName().equals("frequenc")) {
-                    study.setFrequencyOfDataCollection( parseText( xmlr, "frequenc" ) );
+                    metadata.setFrequencyOfDataCollection( parseText( xmlr, "frequenc" ) );
                 } else if (xmlr.getLocalName().equals("sampProc")) {
-                    study.setSamplingProcedure( parseText( xmlr, "sampProc" ) );
+                    metadata.setSamplingProcedure( parseText( xmlr, "sampProc" ) );
                 } else if (xmlr.getLocalName().equals("deviat")) {
-                    study.setDeviationsFromSampleDesign( parseText( xmlr, "deviat" ) );;
+                    metadata.setDeviationsFromSampleDesign( parseText( xmlr, "deviat" ) );
                 } else if (xmlr.getLocalName().equals("collMode")) {
-                    study.setCollectionMode( parseText( xmlr, "collMode" ) );
+                    metadata.setCollectionMode( parseText( xmlr, "collMode" ) );
                 } else if (xmlr.getLocalName().equals("resInstru")) {
-                    study.setResearchInstrument( parseText( xmlr, "resInstru" ) );
+                    metadata.setResearchInstrument( parseText( xmlr, "resInstru" ) );
                 } else if (xmlr.getLocalName().equals("sources")) {
-                    processSources(xmlr,study);
+                    processSources(xmlr,metadata);
                 } else if (xmlr.getLocalName().equals("collSitu")) {
-                    study.setDataCollectionSituation( parseText( xmlr, "collSitu" ) );;
+                    metadata.setDataCollectionSituation( parseText( xmlr, "collSitu" ) );
                 } else if (xmlr.getLocalName().equals("actMin")) {
-                    study.setActionsToMinimizeLoss( parseText( xmlr, "actMin" ) );
+                    metadata.setActionsToMinimizeLoss( parseText( xmlr, "actMin" ) );
                 } else if (xmlr.getLocalName().equals("ConOps")) {
-                    study.setControlOperations( parseText( xmlr, "ConOps" ) );
+                    metadata.setControlOperations( parseText( xmlr, "ConOps" ) );
                 } else if (xmlr.getLocalName().equals("weight")) {
-                    study.setWeighting( parseText( xmlr, "weight" ) );
+                    metadata.setWeighting( parseText( xmlr, "weight" ) );
                 } else if (xmlr.getLocalName().equals("cleanOps")) {
-                    study.setCleaningOperations( parseText( xmlr, "cleanOps" ) );
+                    metadata.setCleaningOperations( parseText( xmlr, "cleanOps" ) );
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
                 if (xmlr.getLocalName().equals("dataColl")) return;
@@ -1836,17 +1860,17 @@ public class DDIServiceBean implements DDIServiceLocal {
         }
     }
 
-    private void processSources(XMLStreamReader xmlr, Study study) throws XMLStreamException {
+    private void processSources(XMLStreamReader xmlr, Metadata metadata) throws XMLStreamException {
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
                 if (xmlr.getLocalName().equals("dataSrc")) {
-                    study.setDataSources( parseText( xmlr, "dataSrc" ) );;
+                    metadata.setDataSources( parseText( xmlr, "dataSrc" ) );;
                 } else if (xmlr.getLocalName().equals("srcOrig")) {
-                    study.setOriginOfSources( parseText( xmlr, "srcOrig" ) );
+                    metadata.setOriginOfSources( parseText( xmlr, "srcOrig" ) );
                 } else if (xmlr.getLocalName().equals("srcChar")) {
-                    study.setCharacteristicOfSources( parseText( xmlr, "srcChar" ) );
+                    metadata.setCharacteristicOfSources( parseText( xmlr, "srcChar" ) );
                 } else if (xmlr.getLocalName().equals("srcDocu")) {
-                    study.setAccessToSources( parseText( xmlr, "srcDocu" ) );
+                    metadata.setAccessToSources( parseText( xmlr, "srcDocu" ) );
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
                 if (xmlr.getLocalName().equals("sources")) return;
@@ -1854,15 +1878,15 @@ public class DDIServiceBean implements DDIServiceLocal {
         }
     }
 
-    private void processAnlyInfo(XMLStreamReader xmlr, Study study) throws XMLStreamException {
+    private void processAnlyInfo(XMLStreamReader xmlr, Metadata metadata) throws XMLStreamException {
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
                 if (xmlr.getLocalName().equals("respRate")) {
-                    study.setResponseRate( parseText( xmlr, "respRate" ) );
+                    metadata.setResponseRate( parseText( xmlr, "respRate" ) );
                 } else if (xmlr.getLocalName().equals("EstSmpErr")) {
-                    study.setSamplingErrorEstimate( parseText( xmlr, "EstSmpErr" ) );
+                    metadata.setSamplingErrorEstimate( parseText( xmlr, "EstSmpErr" ) );
                 } else if (xmlr.getLocalName().equals("dataAppr")) {
-                    study.setOtherDataAppraisal( parseText( xmlr, "dataAppr" ) );
+                    metadata.setOtherDataAppraisal( parseText( xmlr, "dataAppr" ) );
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
                 if (xmlr.getLocalName().equals("anlyInfo")) return;
@@ -1870,22 +1894,22 @@ public class DDIServiceBean implements DDIServiceLocal {
         }
     }
 
-    private void processDataAccs(XMLStreamReader xmlr, Study study) throws XMLStreamException {
+    private void processDataAccs(XMLStreamReader xmlr, Metadata metadata) throws XMLStreamException {
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
-                if (xmlr.getLocalName().equals("setAvail")) processSetAvail(xmlr,study);
-                else if (xmlr.getLocalName().equals("useStmt")) processUseStmt(xmlr,study);
+                if (xmlr.getLocalName().equals("setAvail")) processSetAvail(xmlr,metadata);
+                else if (xmlr.getLocalName().equals("useStmt")) processUseStmt(xmlr,metadata);
                 else if (xmlr.getLocalName().equals("notes")) {
                     String noteType = xmlr.getAttributeValue(null, "type");
                     if (NOTE_TYPE_TERMS_OF_USE.equalsIgnoreCase(noteType) ) {
                         String noteLevel = xmlr.getAttributeValue(null, "level");
                         if (LEVEL_DV.equalsIgnoreCase(noteLevel) ) {
-                            study.setHarvestDVTermsOfUse( parseText(xmlr) );
+                            metadata.setHarvestDVTermsOfUse( parseText(xmlr) );
                         } else if (LEVEL_DVN.equalsIgnoreCase(noteLevel) )  {
-                            study.setHarvestDVNTermsOfUse( parseText(xmlr) );
+                            metadata.setHarvestDVNTermsOfUse( parseText(xmlr) );
                         }
                     } else {
-                        processNotes( xmlr, study );
+                        processNotes( xmlr, metadata );
                     }
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
@@ -1894,21 +1918,21 @@ public class DDIServiceBean implements DDIServiceLocal {
         }
     }
 
-    private void processSetAvail(XMLStreamReader xmlr, Study study) throws XMLStreamException {
+    private void processSetAvail(XMLStreamReader xmlr, Metadata metadata) throws XMLStreamException {
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
                 if (xmlr.getLocalName().equals("accsPlac")) {
-                    study.setPlaceOfAccess( parseText( xmlr, "accsPlac" ) );
+                    metadata.setPlaceOfAccess( parseText( xmlr, "accsPlac" ) );
                 } else if (xmlr.getLocalName().equals("origArch")) {
-                    study.setOriginalArchive( parseText( xmlr, "origArch" ) );
+                    metadata.setOriginalArchive( parseText( xmlr, "origArch" ) );
                 } else if (xmlr.getLocalName().equals("avlStatus")) {
-                    study.setAvailabilityStatus( parseText( xmlr, "avlStatus" ) );
+                    metadata.setAvailabilityStatus( parseText( xmlr, "avlStatus" ) );
                 } else if (xmlr.getLocalName().equals("collSize")) {
-                    study.setCollectionSize( parseText( xmlr, "collSize" ) );
+                    metadata.setCollectionSize( parseText( xmlr, "collSize" ) );
                 } else if (xmlr.getLocalName().equals("complete")) {
-                    study.setStudyCompletion( parseText( xmlr, "complete" ) );
+                    metadata.setStudyCompletion( parseText( xmlr, "complete" ) );
                 } else if (xmlr.getLocalName().equals("notes")) {
-                    processNotes( xmlr, study );
+                    processNotes( xmlr, metadata );
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
                 if (xmlr.getLocalName().equals("setAvail")) return;
@@ -1916,25 +1940,25 @@ public class DDIServiceBean implements DDIServiceLocal {
         }
     }
 
-    private void processUseStmt(XMLStreamReader xmlr, Study study) throws XMLStreamException {
+    private void processUseStmt(XMLStreamReader xmlr, Metadata metadata) throws XMLStreamException {
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
                 if (xmlr.getLocalName().equals("confDec")) {
-                    study.setConfidentialityDeclaration( parseText( xmlr, "confDec" ) );
+                    metadata.setConfidentialityDeclaration( parseText( xmlr, "confDec" ) );
                 } else if (xmlr.getLocalName().equals("specPerm")) {
-                    study.setSpecialPermissions( parseText( xmlr, "specPerm" ) );
+                    metadata.setSpecialPermissions( parseText( xmlr, "specPerm" ) );
                 } else if (xmlr.getLocalName().equals("restrctn")) {
-                    study.setRestrictions( parseText( xmlr, "restrctn" ) );
+                    metadata.setRestrictions( parseText( xmlr, "restrctn" ) );
                 } else if (xmlr.getLocalName().equals("contact")) {
-                    study.setContact( parseText( xmlr, "contact" ) );
+                    metadata.setContact( parseText( xmlr, "contact" ) );
                 } else if (xmlr.getLocalName().equals("citReq")) {
-                    study.setCitationRequirements( parseText( xmlr, "citReq" ) );
+                    metadata.setCitationRequirements( parseText( xmlr, "citReq" ) );
                 } else if (xmlr.getLocalName().equals("deposReq")) {
-                    study.setDepositorRequirements( parseText( xmlr, "deposReq" ) );
+                    metadata.setDepositorRequirements( parseText( xmlr, "deposReq" ) );
                 } else if (xmlr.getLocalName().equals("conditions")) {
-                    study.setConditions( parseText( xmlr, "conditions" ) );
+                    metadata.setConditions( parseText( xmlr, "conditions" ) );
                 } else if (xmlr.getLocalName().equals("disclaimer")) {
-                    study.setDisclaimer( parseText( xmlr, "disclaimer" ) );
+                    metadata.setDisclaimer( parseText( xmlr, "disclaimer" ) );
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
                 if (xmlr.getLocalName().equals("useStmt")) return;
@@ -1942,34 +1966,34 @@ public class DDIServiceBean implements DDIServiceLocal {
         }
     }
 
-    private void processOthrStdyMat(XMLStreamReader xmlr, Study study) throws XMLStreamException {
+    private void processOthrStdyMat(XMLStreamReader xmlr, Metadata metadata) throws XMLStreamException {
         boolean replicationForFound = false;
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
                 if (xmlr.getLocalName().equals("relMat")) {
                     if (!replicationForFound && REPLICATION_FOR_TYPE.equals( xmlr.getAttributeValue(null, "type") ) ) {
-                        study.setReplicationFor( parseText( xmlr, "relMat" ) );
+                        metadata.setReplicationFor( parseText( xmlr, "relMat" ) );
                         replicationForFound = true;
                     } else {
                         StudyRelMaterial rm = new StudyRelMaterial();
-                        study.getStudyRelMaterials().add(rm);
-                        rm.setMetadata(study.getMetadata());
+                        metadata.getStudyRelMaterials().add(rm);
+                        rm.setMetadata(metadata);
                         rm.setText( parseText( xmlr, "relMat" ) );
                     }
                 } else if (xmlr.getLocalName().equals("relStdy")) {
                     StudyRelStudy rs = new StudyRelStudy();
-                    study.getStudyRelStudies().add(rs);
-                    rs.setMetadata(study.getMetadata());
+                    metadata.getStudyRelStudies().add(rs);
+                    rs.setMetadata(metadata);
                     rs.setText( parseText( xmlr, "relStdy" ) );
                 } else if (xmlr.getLocalName().equals("relPubl")) {
                     StudyRelPublication rp = new StudyRelPublication();
-                    study.getStudyRelPublications().add(rp);
-                    rp.setMetadata(study.getMetadata());
+                    metadata.getStudyRelPublications().add(rp);
+                    rp.setMetadata(metadata);
                     rp.setText( parseText( xmlr, "relPubl" ) );
                 } else if (xmlr.getLocalName().equals("otherRefs")) {
                     StudyOtherRef or = new StudyOtherRef();
-                    study.getStudyOtherRefs().add(or);
-                    or.setMetadata(study.getMetadata());
+                    metadata.getStudyOtherRefs().add(or);
+                    or.setMetadata(metadata);
                     or.setText( parseText( xmlr, "otherRefs" ) );
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
@@ -1979,9 +2003,12 @@ public class DDIServiceBean implements DDIServiceLocal {
     }
 
     private void processFileDscr(XMLStreamReader xmlr, Study study, Map filesMap) throws XMLStreamException {
+        // TODO: VERSION:
+        FileMetadata fmd = new FileMetadata();
         StudyFile sf = new OtherFile(study); // until we connect the sf and dt, we have to assume it's an other file
         DataTable dt = new DataTable();
         dt.setDataVariables( new ArrayList() );
+        fmd.setStudyFile(sf);
 
         sf.setFileSystemLocation( xmlr.getAttributeValue(null, "URI"));
         String ddiFileId = xmlr.getAttributeValue(null, "ID");
@@ -1994,7 +2021,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
                 if (xmlr.getLocalName().equals("fileTxt")) {
-                    String tempDDIFileId = processFileTxt(xmlr, sf, dt);
+                    String tempDDIFileId = processFileTxt(xmlr, fmd, dt);
                     ddiFileId = ddiFileId != null ? ddiFileId : tempDDIFileId;
                 }
                 else if (xmlr.getLocalName().equals("notes")) {
@@ -2017,8 +2044,8 @@ public class DDIServiceBean implements DDIServiceLocal {
             } else if (event == XMLStreamConstants.END_ELEMENT) {// </codeBook>
                 if (xmlr.getLocalName().equals("fileDscr")) {
                     // post process
-                    if (sf.getFileName() == null || sf.getFileName().trim().equals("") ) {
-                        sf.setFileName("file");
+                    if (fmd.getLabel() == null || fmd.getLabel().trim().equals("") ) {
+                        fmd.setLabel("file");
                     }
                     addFileToCategory(sf, determineFileCategory(catName, icpsrDesc, icpsrId), study);
 
@@ -2035,17 +2062,18 @@ public class DDIServiceBean implements DDIServiceLocal {
         }
     }
 
-    private String processFileTxt(XMLStreamReader xmlr, StudyFile sf, DataTable dt) throws XMLStreamException {
+    private String processFileTxt(XMLStreamReader xmlr, FileMetadata fmd, DataTable dt) throws XMLStreamException {
         String ddiFileId = null;
+        StudyFile sf = fmd.getStudyFile();
 
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
                 if (xmlr.getLocalName().equals("fileName")) {
                     ddiFileId = xmlr.getAttributeValue(null, "ID");
-                    sf.setFileName( parseText(xmlr) );
-                    sf.setFileType( FileUtil.determineFileType( sf.getFileName() ) );
+                    fmd.setLabel( parseText(xmlr) );
+                    sf.setFileType( FileUtil.determineFileType( fmd.getLabel() ) );
                 } else if (xmlr.getLocalName().equals("fileCont")) {
-                    sf.setDescription( parseText(xmlr) );
+                    fmd.setDescription( parseText(xmlr) );
                 }  else if (xmlr.getLocalName().equals("dimensns")) processDimensns(xmlr, dt);
             } else if (event == XMLStreamConstants.END_ELEMENT) {
                 if (xmlr.getLocalName().equals("fileTxt")) return ddiFileId;
@@ -2191,15 +2219,15 @@ public class DDIServiceBean implements DDIServiceLocal {
 
     private TabularDataFile converOtherFileToTabularDataFile(OtherFile of) {
         TabularDataFile tdf = new TabularDataFile();
-
-        tdf.setFileName( of.getFileName() );
+// TODO: VERSION:
+        //tdf.setFileName( of.getFileName() );
         tdf.setFileType( of.getFileType() );
         tdf.setFileSystemLocation( of.getFileSystemLocation() );
         tdf.setUnf( of.getUnf() );
-        tdf.setDescription( of.getDescription() );
+        //tdf.setDescription( of.getDescription() );
         // not sure if these fields are set in the mapping, but just in case!
-        tdf.setGlobalId( of.getGlobalId() );
-        tdf.setLabel( of.getLabel() );
+        //tdf.setGlobalId( of.getGlobalId() );
+        //tdf.setLabel( of.getLabel() );
         tdf.setOriginalFileType( of.getOriginalFileType() );
         tdf.setDisplayOrder( of.getDisplayOrder() );
 
@@ -2207,11 +2235,6 @@ public class DDIServiceBean implements DDIServiceLocal {
         tdf.setStudy( study );
         study.getStudyFiles().remove(of);
         study.getStudyFiles().add(tdf);
-
-        FileCategory fc = of.getFileCategory();
-        tdf.setFileCategory( fc );
-        fc.getStudyFiles().remove(of);
-        fc.getStudyFiles().add(tdf);
 
         StudyFileActivity sfa = of.getStudyFileActivity();
         tdf.setStudyFileActivity(sfa);
@@ -2324,6 +2347,8 @@ public class DDIServiceBean implements DDIServiceLocal {
     }
 
     private void processOtherMat(XMLStreamReader xmlr, Study study) throws XMLStreamException {
+        FileMetadata fmd = new FileMetadata();
+
         StudyFile sf = new OtherFile(study);
         sf.setFileSystemLocation( xmlr.getAttributeValue(null, "URI"));
 
@@ -2336,10 +2361,10 @@ public class DDIServiceBean implements DDIServiceLocal {
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
                 if (xmlr.getLocalName().equals("labl")) {
-                    sf.setFileName( parseText(xmlr) );
-                    sf.setFileType( FileUtil.determineFileType( sf.getFileName() ) );
+                    fmd.setLabel( parseText(xmlr) );
+                    sf.setFileType( FileUtil.determineFileType( fmd.getLabel() ) );
                 } else if (xmlr.getLocalName().equals("txt")) {
-                    sf.setDescription( parseText(xmlr) );
+                    fmd.setDescription( parseText(xmlr) );
                 } else if (xmlr.getLocalName().equals("notes")) {
                     String noteType = xmlr.getAttributeValue(null, "type");
                     if ("vdc:category".equalsIgnoreCase(noteType) ) {
@@ -2356,8 +2381,8 @@ public class DDIServiceBean implements DDIServiceLocal {
             } else if (event == XMLStreamConstants.END_ELEMENT) {// </codeBook>
                 if (xmlr.getLocalName().equals("otherMat")) {
                     // post process
-                    if (sf.getFileName() == null || sf.getFileName().trim().equals("") ) {
-                        sf.setFileName("file");
+                    if (fmd.getLabel() == null || fmd.getLabel().trim().equals("") ) {
+                        fmd.setLabel("file");
                     }
                     addFileToCategory(sf, determineFileCategory(catName, icpsrDesc, icpsrId), study);
                     return;
@@ -2366,10 +2391,10 @@ public class DDIServiceBean implements DDIServiceLocal {
         }
     }
 
-    private void processNotes (XMLStreamReader xmlr, Study study) throws XMLStreamException {
+    private void processNotes (XMLStreamReader xmlr, Metadata metadata) throws XMLStreamException {
         StudyNote note = new StudyNote();
-        study.getStudyNotes().add(note);
-        note.setMetadata(study.getMetadata());
+        metadata.getStudyNotes().add(note);
+        note.setMetadata(metadata);
         note.setSubject( xmlr.getAttributeValue(null, "subject") );
         note.setType( xmlr.getAttributeValue(null, "type") );
         note.setText( parseText(xmlr, "notes") );
@@ -2570,9 +2595,11 @@ public class DDIServiceBean implements DDIServiceLocal {
     }
 
     private void addFileToCategory(StudyFile sf, String catName, Study study) {
+        // TODO: VERSION:
         StudyFileEditBean fileBean = new StudyFileEditBean(sf);
         fileBean.setFileCategoryName(catName);
-        fileBean.addFileToCategory(study);
+        fileBean.getStudyFile().setStudy(study);
+        study.getStudyFiles().add(fileBean.getStudyFile());
     }
 
     private String determineFileCategory(String catName, String icpsrDesc, String icpsrId) {

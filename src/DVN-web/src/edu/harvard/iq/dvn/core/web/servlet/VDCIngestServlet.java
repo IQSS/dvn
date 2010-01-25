@@ -13,6 +13,7 @@ import edu.harvard.iq.dvn.core.study.FileCategory;
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyFile;
 import edu.harvard.iq.dvn.core.study.StudyFileEditBean;
+import edu.harvard.iq.dvn.core.study.StudyFileServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.study.TabularDataFile;
 import java.io.*;
@@ -39,6 +40,7 @@ import javax.servlet.http.*;
 public class VDCIngestServlet extends HttpServlet {
     
     @EJB StudyServiceLocal studyService;
+    @EJB StudyFileServiceLocal studyFileService;
     @Resource(mappedName="jms/DSBIngest") Queue queue;
     @Resource(mappedName="jms/DSBQueueConnectionFactory") QueueConnectionFactory factory;
     
@@ -73,10 +75,8 @@ public class VDCIngestServlet extends HttpServlet {
                 Study study = studyService.getStudy(studyId);
                 
                 String selectString = "";
-                for (FileCategory cat : study.getFileCategories()) {
-                    for (StudyFile file : cat.getStudyFiles()) {
-                        selectString += "<option value=" + file.getId()+ ">" + file.getFileName();
-                    }
+                for (StudyFile file : study.getStudyFiles()) {
+                    selectString += "<option value=" + file.getId()+ ">" + file.getFileName();
                 }
                 
                 beginPage(out);
@@ -137,12 +137,12 @@ public class VDCIngestServlet extends HttpServlet {
             Long dataFileId = new Long( req.getParameter("dataFileId") );
             Long controlCardFileId = new Long( req.getParameter("controlCardFileId") );
             
-            StudyFileEditBean fileBean = new StudyFileEditBean( studyService.getStudyFile(dataFileId) );
+            StudyFileEditBean fileBean = new StudyFileEditBean( studyFileService.getStudyFile(dataFileId) );
             if (fileBean.getStudyFile() instanceof TabularDataFile) {
                 ((TabularDataFile) fileBean.getStudyFile()).getDataTable(); // this is to instantiate lazy relationship, before serializing
             }
             fileBean.setTempSystemFileLocation( fileBean.getStudyFile().getFileSystemLocation() );
-            fileBean.setControlCardSystemFileLocation( studyService.getStudyFile(controlCardFileId).getFileSystemLocation() );
+            fileBean.setControlCardSystemFileLocation( studyFileService.getStudyFile(controlCardFileId).getFileSystemLocation() );
             
             List tempList = new ArrayList();
             tempList.add(fileBean);

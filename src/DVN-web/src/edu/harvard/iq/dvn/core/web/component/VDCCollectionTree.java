@@ -330,7 +330,8 @@ public class VDCCollectionTree implements java.io.Serializable  {
         }
                 
         StudyUI studyUI = new StudyUI(study);
-        String studyText = study.getTitle();
+        // TODO: VERSION: 
+        String studyText = study.getReleasedVersion().getMetadata().getTitle();
         if ( !StringUtil.isEmpty(studyUI.getAuthors()) ) {
             studyText += " by " + studyUI.getAuthors();
         }

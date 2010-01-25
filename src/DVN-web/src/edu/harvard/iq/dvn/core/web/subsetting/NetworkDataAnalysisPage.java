@@ -13,6 +13,7 @@ import edu.harvard.iq.dvn.core.analysis.NetworkMeasureParameter;
 import edu.harvard.iq.dvn.core.study.DataTable;
 import edu.harvard.iq.dvn.core.study.DataVariable;
 import edu.harvard.iq.dvn.core.study.NetworkDataFile;
+import edu.harvard.iq.dvn.core.study.StudyFileServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.util.FileUtil;
 import edu.harvard.iq.dvn.core.util.StringUtil;
@@ -37,7 +38,6 @@ import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 import javax.naming.Context;
 import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
 /**
  *
@@ -58,6 +58,8 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
 
     @EJB
     StudyServiceLocal studyService;
+    @EJB
+    StudyFileServiceLocal studyFileService;
 
     NetworkDataServiceLocal networkDataService;
 
@@ -97,7 +99,7 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
 
         try {
             fileId = Long.parseLong( getRequestParam("fileId") );
-            file = (NetworkDataFile) studyService.getStudyFile(fileId);
+            file = (NetworkDataFile) studyFileService.getStudyFile(fileId);
         } catch (Exception e) { // id not a long, or file is not a NetworkDataFile (TODO: redirect to a different page if not network data file)
             redirect("/faces/IdDoesNotExistPage.xhtml?type=File");
             return;

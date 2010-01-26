@@ -26,10 +26,10 @@ select filename, sf.description, fc.name, sf.id,  sv.id, 1
 from studyfile sf, filecategory fc, study s, studyversion sv
 where sf.filecategory_id = fc.id
 and sf.study_id = s.id
-and s.id = sv.study_id
+and s.id = sv.study_id;
 
 update studycomment set studyversion_id = sv.id
-from studyversion sv where studycomment.study_id = sv.study_id
+from studyversion sv where studycomment.study_id = sv.study_id;
 
 commit;
 

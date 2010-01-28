@@ -2047,7 +2047,12 @@ public class DDIServiceBean implements DDIServiceLocal {
                     if (fmd.getLabel() == null || fmd.getLabel().trim().equals("") ) {
                         fmd.setLabel("file");
                     }
-                    addFileToCategory(sf, determineFileCategory(catName, icpsrDesc, icpsrId), study);
+                    
+                    fmd.setCategory(determineFileCategory(catName, icpsrDesc, icpsrId));
+
+                    // TODO: VERSION:
+                    sf.setStudy(study);
+                    study.getStudyFiles().add(sf);
 
                     if (ddiFileId != null) {
                         List filesMapEntry = new ArrayList();
@@ -2384,7 +2389,13 @@ public class DDIServiceBean implements DDIServiceLocal {
                     if (fmd.getLabel() == null || fmd.getLabel().trim().equals("") ) {
                         fmd.setLabel("file");
                     }
-                    addFileToCategory(sf, determineFileCategory(catName, icpsrDesc, icpsrId), study);
+
+                    fmd.setCategory(determineFileCategory(catName, icpsrDesc, icpsrId));
+
+                    // TODO: VERSION:
+                    sf.setStudy(study);
+                    study.getStudyFiles().add(sf);
+
                     return;
                 }
             }
@@ -2594,13 +2605,6 @@ public class DDIServiceBean implements DDIServiceLocal {
         return date;
     }
 
-    private void addFileToCategory(StudyFile sf, String catName, Study study) {
-        // TODO: VERSION:
-        StudyFileEditBean fileBean = new StudyFileEditBean(sf);
-        fileBean.setFileCategoryName(catName);
-        fileBean.getStudyFile().setStudy(study);
-        study.getStudyFiles().add(fileBean.getStudyFile());
-    }
 
     private String determineFileCategory(String catName, String icpsrDesc, String icpsrId) {
         if (catName == null) {

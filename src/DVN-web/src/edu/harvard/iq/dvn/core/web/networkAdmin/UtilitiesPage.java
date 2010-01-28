@@ -691,7 +691,9 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable, 
                                     List<StudyFileEditBean> fileBeans = new ArrayList();
                                     for (File file : filesToUpload.keySet()) {
                                         StudyFileEditBean fileBean = new StudyFileEditBean( file, studyService.generateFileSystemNameSequence(), study );
-                                        fileBean.setFileCategoryName( filesToUpload.get(file));
+                                        
+                                        //TODO: VERSION:
+                                        //fileBean.setFileCategoryName( filesToUpload.get(file));
                                         fileBeans.add(fileBean);
                                     }
 

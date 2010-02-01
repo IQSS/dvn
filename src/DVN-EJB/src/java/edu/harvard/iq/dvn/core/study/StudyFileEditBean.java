@@ -102,15 +102,26 @@ public class StudyFileEditBean implements Serializable {
         dbgLog.fine("***** within StudyFileEditBean: constructor: end *****");
 
     }
+
     private FileMetadata fileMetadata;
     private StudyFile studyFile;
-    private String fileCategoryName;
     private String originalFileName;
     private String tempSystemFileLocation;
     private String controlCardSystemFileLocation;
     private String ingestedSystemFileLocation;
     private boolean deleteFlag;
     private Long sizeFormatted = null;
+
+    public FileMetadata getFileMetadata() {
+        return fileMetadata;
+    }
+
+    public void setFileMetadata(FileMetadata fileMetadata) {
+        this.fileMetadata = fileMetadata;
+    }
+
+
+
 
     //end of EV additions
     public StudyFile getStudyFile() {
@@ -121,13 +132,7 @@ public class StudyFileEditBean implements Serializable {
         this.studyFile = studyFile;
     }
 
-    public String getFileCategoryName() {
-        return fileCategoryName;
-    }
 
-    public void setFileCategoryName(String fileCategoryName) {
-        this.fileCategoryName = fileCategoryName.trim();
-    }
 
     public String getOriginalFileName() {
         return originalFileName;

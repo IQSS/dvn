@@ -20,6 +20,7 @@ public class StudyVersion implements Serializable {
 
     public StudyVersion () {
         metadata = new Metadata();
+        metadata.setStudyVersion(this);
     }
 
     private Long versionNumber;

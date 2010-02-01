@@ -34,9 +34,11 @@ import edu.harvard.iq.dvn.core.ddi.DDIServiceLocal;
 import edu.harvard.iq.dvn.core.index.IndexServiceLocal;
 import edu.harvard.iq.dvn.core.mail.MailServiceLocal;
 import edu.harvard.iq.dvn.core.study.DataTable;
+import edu.harvard.iq.dvn.core.study.FileMetadata;
 import edu.harvard.iq.dvn.core.study.NetworkDataFile;
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyFileEditBean;
+import edu.harvard.iq.dvn.core.study.StudyFileServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.study.TabularDataFile;
 import java.util.ArrayList;
@@ -60,6 +62,7 @@ import javax.jms.ObjectMessage;
 public class DSBIngestMessageBean implements MessageListener {
     @EJB DDIServiceLocal ddiService;
     @EJB StudyServiceLocal studyService;
+    @EJB StudyFileServiceLocal studyFileService;
     @EJB MailServiceLocal mailService;
     @EJB IndexServiceLocal indexService;
     @EJB NetworkDataServiceLocal networkDataService;
@@ -93,7 +96,7 @@ public class DSBIngestMessageBean implements MessageListener {
                         networkDataService.ingest(fileBean);
                         successfuleFiles.add(fileBean);
                     } else {
-                        parseXML( new DSBWrapper().ingest(fileBean) , (TabularDataFile) fileBean.getStudyFile() );
+                        parseXML( new DSBWrapper().ingest(fileBean) , fileBean.getFileMetadata() );
                         successfuleFiles.add(fileBean);
                     }
                 } catch (Exception ex) {
@@ -103,7 +106,7 @@ public class DSBIngestMessageBean implements MessageListener {
                 
             }
             
-            studyService.addIngestedFiles( ingestMessage.getStudyId(),
+            studyFileService.addIngestedFiles( ingestMessage.getStudyId(),
                     successfuleFiles,
                     ingestMessage.getIngestUserId());
             
@@ -112,7 +115,8 @@ public class DSBIngestMessageBean implements MessageListener {
             indexService.updateStudy(ingestMessage.getStudyId());
             
             if ( ingestMessage.sendInfoMessage() || ( problemFiles.size() >= 0 && ingestMessage.sendErrorMessage() ) ) {
-                mailService.sendIngestCompletedNotification(ingestMessage.getIngestEmail(), successfuleFiles, problemFiles);
+                //TODO: VERSION:
+                //mailService.sendIngestCompletedNotification(ingestMessage.getIngestEmail(), successfuleFiles, problemFiles);
             }
             
         } catch (JMSException ex) {
@@ -121,8 +125,9 @@ public class DSBIngestMessageBean implements MessageListener {
         } catch (Exception ex) { 
             ex.printStackTrace();
             // if a general exception is caught that means the entire upload failed
-            if (ingestMessage.sendErrorMessage()) { 
-                mailService.sendIngestCompletedNotification(ingestMessage.getIngestEmail(), null, ingestMessage.getFileBeans());
+            if (ingestMessage.sendErrorMessage()) {
+                //TODO: VERSION:
+                //mailService.sendIngestCompletedNotification(ingestMessage.getIngestEmail(), null, ingestMessage.getFileBeans());
             }
             
         } finally {
@@ -135,13 +140,16 @@ public class DSBIngestMessageBean implements MessageListener {
         }
     }
     
-    private void parseXML(String xmlToParse, TabularDataFile file) {
+    private void parseXML(String xmlToParse, FileMetadata fileMetadata) {
         // now map and get dummy dataTable
         Study dummyStudy = new Study();
         ddiService.mapDDI(xmlToParse, dummyStudy);
         TabularDataFile tdf = (TabularDataFile) dummyStudy.getStudyFiles().iterator().next();
         DataTable dt = tdf.getDataTable();
 
+        //TODO: VERSION:
+        TabularDataFile file = (TabularDataFile) fileMetadata.getStudyFile();
+      
         // set to actual file (and copy over the UNF)
         file.setDataTable( dt );
         dt.setStudyFile(file);

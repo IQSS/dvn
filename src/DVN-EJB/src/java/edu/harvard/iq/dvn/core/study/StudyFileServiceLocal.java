@@ -5,6 +5,7 @@
 
 package edu.harvard.iq.dvn.core.study;
 
+import edu.harvard.iq.dvn.core.admin.VDCUser;
 import java.util.List;
 import javax.ejb.Local;
 
@@ -25,5 +26,10 @@ public interface StudyFileServiceLocal {
     java.util.List<FileMetadata> getOrderedFilesByStudy(Long studyId);
 
     public Boolean doesStudyHaveSubsettableFiles(Long studyId);
+
+
+    public void addFiles(StudyVersion studyVersion, List<StudyFileEditBean> newFiles, VDCUser user);
+    public void addFiles(StudyVersion studyVersion, List<StudyFileEditBean> newFiles, VDCUser user, String ingestEmail);
+    public void addIngestedFiles(Long studyId, List fileBeans, Long userId);
     
 }

@@ -6,6 +6,7 @@
 package edu.harvard.iq.dvn.core.study;
 
 import java.io.Serializable;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -30,7 +31,7 @@ public class FileMetadata implements Serializable {
 
     @ManyToOne
     private StudyVersion studyVersion;
-    @ManyToOne
+    @ManyToOne (cascade={ CascadeType.PERSIST })
     private StudyFile studyFile;
 
     public String getLabel() {

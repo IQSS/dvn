@@ -96,8 +96,8 @@ public class Indexer implements java.io.Serializable  {
     private static final Logger logger = Logger.getLogger("edu.harvard.iq.dvn.core.index.Indexer");
     private static IndexWriter writer;
     private static IndexWriter writer2;
-    private static IndexWriter writerStem;
     private static IndexWriter writerVar;
+    private static IndexWriter writerVersions;
     private static IndexReader reader;
     private static IndexReader r;
     private static IndexSearcher searcher;
@@ -173,7 +173,7 @@ public class Indexer implements java.io.Serializable  {
         StudyVersion sv = null;
         if (study.getReleasedVersion() != null) {
             sv = study.getReleasedVersion();
-        } else {
+        } else { // take this out before we "release" dvn 2.1
             sv = study.getStudyVersions().get(0);
         }
         Metadata metadata = sv.getMetadata();
@@ -188,6 +188,7 @@ public class Indexer implements java.io.Serializable  {
         addText(1.0f, doc, "dvOwnerId", Long.toString(study.getOwner().getId()));
         addDate(1.0f, doc,"productionDate", metadata.getProductionDate());
         addDate(1.0f, doc,"distributionDate", metadata.getDistributionDate());
+        Collection <
         Collection <StudyKeyword> keywords = metadata.getStudyKeywords();
         for (Iterator it = keywords.iterator(); it.hasNext();) {
             StudyKeyword elem = (StudyKeyword) it.next();
@@ -391,6 +392,15 @@ public class Indexer implements java.io.Serializable  {
 
         }        
         writerVar.close();
+        writerVersions = new IndexWriter(dir, getAnalyzer(), isIndexEmpty(), IndexWriter.MaxFieldLength.UNLIMITED);
+        for (StudyVersion version: study.getStudyVersions()){
+            Document docVersions = new Document();
+            addText(1.0f,docVersions, "versionStudyId",study.getId().toString());
+            addText(1.0f, docVersions, "versionId", version.getId().toString());
+            addText(1.0f, docVersions, "versionNumber", version.getVersion().toString());
+            addText(1.0f, docVersions, "versionUnf", version.getMetadata().getUNF());
+        }
+        writerVersions.close();
         logger.info("End indexing study " + study.getStudyId());
     }
 
@@ -615,6 +625,7 @@ public class Indexer implements java.io.Serializable  {
     public List searchVariables(List <Long> studyIds,SearchTerm searchTerm) throws IOException {
         BooleanQuery indexQuery = null;
         BooleanQuery searchQuery = new BooleanQuery();
+        searchQuery.add(orIdSearchTermClause(studyIds), BooleanClause.Occur.MUST);
         if (searchTerm.getFieldName().equalsIgnoreCase("variable")){
             indexQuery = buildVariableQuery(searchTerm);
             if (searchTerm.getOperator().equals("=")) {
@@ -631,6 +642,7 @@ public class Indexer implements java.io.Serializable  {
 
     public List searchVariables(List<Long> studyIds, List<SearchTerm> searchTerms, boolean varIdReturnValues) throws IOException {
         BooleanQuery searchQuery = new BooleanQuery();
+        searchQuery.add(orIdSearchTermClause(studyIds), BooleanClause.Occur.MUST);
         for (Iterator it = searchTerms.iterator(); it.hasNext();) {
             SearchTerm elem = (SearchTerm) it.next();
             BooleanQuery indexQuery = null;
@@ -820,6 +832,17 @@ public class Indexer implements java.io.Serializable  {
             }
         }
         return orTerms;
+    }
+
+    BooleanQuery orIdSearchTermClause(List <Long> id){
+        BooleanQuery idTerms = new BooleanQuery();
+        for (Iterator it = id.iterator(); it.hasNext();){
+            Long lId= (Long) it.next();
+            Term varStudyId = new Term ("varStudyId",lId.toString());
+            TermQuery varStudyIdQuery = new TermQuery(varStudyId);
+            idTerms.add(varStudyIdQuery, BooleanClause.Occur.SHOULD);
+        }
+        return idTerms;
     }
 
     BooleanQuery andSearchTermClause(List <SearchTerm> andSearchTerms){

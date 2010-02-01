@@ -120,7 +120,7 @@ public abstract class StudyFile implements Serializable {
 
 
 
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToOne(cascade = {CascadeType.MERGE})
     @JoinColumn(nullable=false)
     private Study study;
 

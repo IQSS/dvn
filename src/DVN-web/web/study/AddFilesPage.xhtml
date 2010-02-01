@@ -66,6 +66,7 @@
               <input type="hidden" name="pageName" value="AddFilesPage"/>
               <ice:panelGroup id ="inputFile" style="dvnAddFilesInputBlock">
                 <ice:inputFile id="inputFileComponent"
+                               autoUpload="true"
                                submitOnUpload="postUpload"
                                actionListener="#{AddFilesPage.uploadFile}"
                                binding="#{AddFilesPage.inputFile}"
@@ -95,13 +96,13 @@
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%" rendered="true"
                                  id="fileDataTable" styleClass="dvnAddFilesTable"
                                  columnWidths="20%,20%,40%,10%,10%"
-                                 value="#{AddFilesPage.fileList}" binding="#{AddFilesPage.filesDataTable}" var="file">
+                                 value="#{AddFilesPage.fileList}" binding="#{AddFilesPage.filesDataTable}" var="fileBean">
                     <ice:column id="catCol">
                       <ice:panelGroup block="true" id="panel1" style="white-space: nowrap;">
                         <!-- note that the Javascript functions currently depends on the placement and ids of these fields (and the dropdown box;
                                           changing them may require corresponding changes in the Javascript  -->
                         <ice:selectBooleanCheckbox id="catCheckbox" onclick="updateCategory(this);"/>
-                        <ice:inputText id="catTextField" size="28" value="#{file.fileCategoryName}" partialSubmit="true"
+                        <ice:inputText id="catTextField" size="28" value="#{fileBean.fileMetadata.category}" partialSubmit="true"
                                        valueChangeListener="#{AddFilesPage.addCategory}"
                                        onfocus="deselectCategory(this);"/>
                       </ice:panelGroup>
@@ -118,12 +119,12 @@
                       <f:facet name="header">
                         <ice:outputLabel value="File Name"/>
                       </f:facet>
-                      <ice:inputText id="input_filename" size="24" value="#{file.studyFile.fileName}" required="true"
+                      <ice:inputText id="input_filename" size="24" value="#{fileBean.fileMetadata.label}" required="true"
                                      requiredMessage="This field is required."
                                      validator="#{AddFilesPage.validateFileName}" partialSubmit="true"
                                     />
                                      <!-- "this.form.submit();"/>
-                      <f:param name="fileName" value="#{file.studyFile.fileName}"/> -->
+                      <f:param name="fileName" value="#{fileBean.fileMetadata.label}"/> -->
                       <ice:message for="input_filename" styleClass="errorMessage"/>
                     </ice:column>
                     <ice:column>
@@ -131,14 +132,14 @@
                         <ice:outputLabel value="Description"/>
                       </f:facet>
                       <ice:inputTextarea id="description_filename" styleClass="dvnTextareaAuto" cols="38" rows="2"
-                                         value="#{file.studyFile.description}" partialSubmit="false"
+                                         value="#{fileBean.fileMetadata.description}" partialSubmit="false"
                                          onchange="iceSubmitPartial(form,this,event);"/>
                     </ice:column>
                     <ice:column>
                       <f:facet name="header">
                         <ice:outputLabel value="Size (bytes)"/>
                       </f:facet>
-                      <ice:outputText size="25" value="#{file.sizeFormatted}"/>
+                      <ice:outputText size="25" value="#{fileBean.sizeFormatted}"/>
                     </ice:column>
                     <ice:column>
                       <f:facet name="header">
@@ -147,7 +148,7 @@
                       <ice:commandLink
                         value="Remove" id="removeFile"
                         actionListener="#{AddFilesPage.removeUploadedFile}">
-                        <f:param name="fileName" value="#{file.studyFile.fileName}"/>
+                        <f:param name="fileName" value="#{fileBean.fileMetadata.label}"/>
                       </ice:commandLink>
                     </ice:column>
                   </ice:dataTable>

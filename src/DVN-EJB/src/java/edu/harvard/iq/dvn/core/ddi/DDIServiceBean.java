@@ -1439,7 +1439,7 @@ public class DDIServiceBean implements DDIServiceLocal {
     // <editor-fold defaultstate="collapsed" desc="import methods">
     private void processDDI( XMLStreamReader xmlr, Study study) throws XMLStreamException {
         // TODO: VERSION: change this to use a study version object
-        Metadata metadata = study.getReleasedVersion().getMetadata(); // am wondering about this line here; this WILL HAVE TO CHANGE
+        Metadata metadata = study.getStudyVersions().get(0).getMetadata(); // am wondering about this line here; this WILL HAVE TO CHANGE
         initializeCollections(metadata); // not sure we need this call; to be investigated
         
         // make sure we have a codeBook
@@ -1454,6 +1454,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         // TODO: VERSION:
         //metadata.setFileCategories( new ArrayList() );
         //metadata.setStudyFiles( new ArrayList() ); WHAT DO WE INITIALIZE HERE????
+        metadata.getStudyVersion().getStudy().setStudyFiles( new ArrayList() );
         metadata.setStudyAbstracts( new ArrayList() );
         metadata.setStudyAuthors( new ArrayList() );
         metadata.setStudyDistributors( new ArrayList() );
@@ -2051,8 +2052,6 @@ public class DDIServiceBean implements DDIServiceLocal {
                     fmd.setCategory(determineFileCategory(catName, icpsrDesc, icpsrId));
 
                     // TODO: VERSION:
-                    sf.setStudy(study);
-                    study.getStudyFiles().add(sf);
 
                     if (ddiFileId != null) {
                         List filesMapEntry = new ArrayList();
@@ -2393,8 +2392,6 @@ public class DDIServiceBean implements DDIServiceLocal {
                     fmd.setCategory(determineFileCategory(catName, icpsrDesc, icpsrId));
 
                     // TODO: VERSION:
-                    sf.setStudy(study);
-                    study.getStudyFiles().add(sf);
 
                     return;
                 }

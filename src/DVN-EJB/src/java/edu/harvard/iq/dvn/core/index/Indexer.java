@@ -188,7 +188,7 @@ public class Indexer implements java.io.Serializable  {
         addText(1.0f, doc, "dvOwnerId", Long.toString(study.getOwner().getId()));
         addDate(1.0f, doc,"productionDate", metadata.getProductionDate());
         addDate(1.0f, doc,"distributionDate", metadata.getDistributionDate());
-        Collection <
+
         Collection <StudyKeyword> keywords = metadata.getStudyKeywords();
         for (Iterator it = keywords.iterator(); it.hasNext();) {
             StudyKeyword elem = (StudyKeyword) it.next();

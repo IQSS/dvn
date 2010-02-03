@@ -1,0 +1,67 @@
+                <div xmlns:gui="http://java.sun.com/jsf/facelets"
+                      xmlns:h="http://java.sun.com/jsf/html"
+                      xmlns:f="http://java.sun.com/jsf/core"
+                      xmlns:jsp="http://java.sun.com/JSP/Page"
+                      xmlns:ice="http://www.icesoft.com/icefaces/component"
+                      xmlns:dvn="/WEB-INF/tlds/dvn-components"
+                      xmlns:ui="http://www.sun.com/web/ui"
+                      jsfc="ice:panelGroup"
+                      id="layoutPanelVersions"
+                      panelLayout="flow"
+                      styleClass="vdcStudyCommentsBlock">
+                  <div jsfc="ice:panelGroup"
+                       id="versionsContentPanel"
+                       panelLayout="flow">
+                       <div jsfc="ice:panelGroup" id="groupPanel11" styleClass="vdcStudyInfoHeader">
+                            <ice:outputText id="outputText11" value="Version History"/>
+                       </div>
+                       
+                       <style type="text/css">
+                            .dvnversionstable th {padding: 8px; text-align: center; background:#FFF; border: 0; font-weight: bold; font-size: 1em;}
+                            .dvnversionstable td {padding: 8px; border: 0;}
+                            .dvnversionstable {border: 0;}
+                            .dvnversionstable .oddRow {background:#E6EBED;}
+                            .dvnversionstable .evenRow {background:#FFF;}
+                            .dvnversionsreleasedate {white-space:nowrap}
+                       </style>
+
+                       <table class="iceDatTbl dvnversionstable" cellpadding="0" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th class="iceDatTblColHdr1"><input type="button" value="Difference" /></th>
+                                    <th class="iceDatTblColHdr2">Version</th>
+                                    <th class="iceDatTblColHdr1">Status</th>
+                                    <th class="iceDatTblColHdr2">Comments</th>
+                                    <th class="iceDatTblColHdr1">Released</th>
+                                    <th class="iceDatTblColHdr2">Contributors</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="iceDatTblRow oddRow">
+                                    <td class="iceDatTblCol1"><input type="checkbox"/></td>
+                                    <td class="iceDatTblCol2"><span class="iceOutTxt">3</span></td>
+                                    <td class="iceDatTblCol1"><a class="iceOutLnk" href=""><span class="iceOutTxt">Draft</span></a></td>
+                                    <td class="iceDatTblCol2">&nbsp;</td>
+                                    <td class="iceDatTblCol1"><span class="iceOutTxt dvnversionsreleasedate">Tue Nov 03 10:53:11 EDT 2009</span></td>
+                                    <td class="iceDatTblCol2"><span class="iceOutTxt">gary_king</span></td>
+                                </tr>
+                                <tr class="iceDatTblRow evenRow">
+                                    <td class="iceDatTblCol1"><input type="checkbox"/></td>
+                                    <td class="iceDatTblCol2"><span class="iceOutTxt">2</span></td>
+                                    <td class="iceDatTblCol1"><a class="iceOutLnk" href=""><span class="iceOutTxt">Released</span></a></td>
+                                    <td class="iceDatTblCol2"><span class="iceOutTxt">New meta data has been added to the study, including Abstract, Abstract Date and Keywords.</span></td>
+                                    <td class="iceDatTblCol1"><span class="iceOutTxt dvnversionsreleasedate">Thu Oct 08 18:27:35 EDT 2009</span></td>
+                                    <td class="iceDatTblCol2"><span class="iceOutTxt">gary_king, kosuke_imai, clayton_nall</span></td>
+                                </tr>
+                                <tr class="iceDatTblRow oddRow">
+                                    <td class="iceDatTblCol1"><input type="checkbox"/></td>
+                                    <td class="iceDatTblCol2"><span class="iceOutTxt">1</span></td>
+                                    <td class="iceDatTblCol1"><a class="iceOutLnk" href=""><span class="iceOutTxt">Archived</span></a></td>
+                                    <td class="iceDatTblCol2"><span class="iceOutTxt">New study about Mexican health insurance.</span></td>
+                                    <td class="iceDatTblCol1"><span class="iceOutTxt dvnversionsreleasedate">Mon Jan 26 13:17:43 EDT 2009</span></td>
+                                    <td class="iceDatTblCol2"><span class="iceOutTxt">gary_king</span></td>
+                                </tr>
+                            </tbody>
+                       </table>
+                    </div>
+                </div>

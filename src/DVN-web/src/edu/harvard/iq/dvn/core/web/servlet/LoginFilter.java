@@ -318,8 +318,13 @@ public class LoginFilter implements Filter {
                 return false;
             }
         } else if (isViewStudyPage(pageDef)) {
+            Study study = null;
             String studyId = VDCBaseBean.getParamFromRequestOrComponent("studyId", request);
-            Study study = studyService.getStudy(Long.parseLong(studyId));
+            if (studyId != null) {
+                study = studyService.getStudy(Long.parseLong(studyId));
+            } else {
+                study = studyService.getStudyByGlobalId( VDCBaseBean.getParamFromRequestOrComponent("globalId", request) );
+            }
             if (study.isStudyRestrictedForUser(user, ipUserGroup)) {
                 return false;
             }

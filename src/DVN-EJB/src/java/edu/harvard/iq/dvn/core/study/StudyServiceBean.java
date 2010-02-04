@@ -548,7 +548,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
 
         return study;
     }
-
+   
     public List getStudies() {
         String query = "SELECT s FROM Study s ORDER BY s.id";
         return (List) em.createQuery(query).getResultList();
@@ -1232,6 +1232,38 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         }
         return study;
     }
+
+    public StudyVersion getStudyVersion(String globalId, Long versionNumber) {
+        Study study = getStudyByGlobalId(globalId);
+        if (study != null) {
+            return getStudyVersion( study.getId(), versionNumber );
+        } else {
+            return null;
+        }
+    }
+
+
+    public StudyVersion getStudyVersion(Long studyId, Long versionNumber) {
+        String queryStr = "SELECT sv FROM StudyVersion sv WHERE sv.study.id = '" + studyId;
+        if (versionNumber != null) {
+            queryStr += "' and sv.versionNumber = '" + versionNumber + "'";
+        } else {
+            // get reelased version
+            queryStr += "' and sv.versionState = 'Released'";
+        }
+        
+        Query query = em.createQuery(queryStr);
+        List resultList = query.getResultList();
+        StudyVersion studyVersion = null;
+        if (resultList.size() > 1) {
+            throw new EJBException("More than one study version found with studyId = " + studyId + " and versionNumber = " + versionNumber);
+        }
+        if (resultList.size() == 1) {
+            studyVersion = (StudyVersion) resultList.get(0);
+        }
+        return studyVersion;
+    }
+
 
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)

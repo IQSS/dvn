@@ -35,6 +35,7 @@ import edu.harvard.iq.dvn.core.mail.MailServiceLocal;
 import edu.harvard.iq.dvn.core.study.DataFileFormatType;
 import edu.harvard.iq.dvn.core.study.ReviewStateServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
+import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.util.WebStatisticsSupport;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import edu.harvard.iq.dvn.core.web.login.LoginWorkflowBean;
@@ -54,14 +55,46 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
 
-    @EJB
-    private StudyServiceLocal studyService;
-    @EJB
-    private ReviewStateServiceLocal reviewStateService;
-    @EJB
-    private MailServiceLocal mailService;
+    @EJB private StudyServiceLocal studyService;
+    @EJB private ReviewStateServiceLocal reviewStateService;
+    @EJB private MailServiceLocal mailService;
 
+
+    public StudyPage() {
+    }
+
+    // params
+    private String globalId;
+    private Long studyId;
+    private Long versionNumber;
+
+    private boolean studyUIContainsFileDetails=false; // TODO: needed??
     private int selectedIndex;
+
+
+    public String getGlobalId() {
+        return globalId;
+    }
+
+    public void setGlobalId(String globalId) {
+        this.globalId = globalId;
+    }
+
+    public Long getStudyId() {
+        return studyId;
+    }
+
+    public void setStudyId(Long studyId) {
+        this.studyId = studyId;
+    }
+
+    public Long getVersionNumber() {
+        return versionNumber;
+    }
+
+    public void setVersionNumber(Long versionNumber) {
+        this.versionNumber = versionNumber;
+    }
 
     public int getSelectedIndex() {
         return selectedIndex;
@@ -69,63 +102,125 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
 
     public void setSelectedIndex(int selectedIndex) {
         this.selectedIndex = selectedIndex;
-      
+
     }
+    
+    public void init() {
+        super.init();
+        //TODO: see if this can be removed and handled through regular tab handling
+        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        if (request.getHeader("referer") != null && ((String) request.getHeader("referer")).indexOf("CommentReview") != -1) {
+            setTab("comments");
+        }
+        // set tab if it was it was sent as pamameter or part of request bean
+        initSelectedTabIndex();
+
+
+        // If we're coming from EditStudyPage
+        if (studyId == null) {
+            studyId = getVDCRequestBean().getStudyId();
+        }
+
+        // first determine study, via gloablId or studyId param
+        if (globalId != null || studyId != null) {
+            StudyVersion sv = null;
+
+            if (globalId != null) {
+                sv = studyService.getStudyVersion(globalId, versionNumber);
+                studyId = sv.getStudy().getId();
+                getVDCRequestBean().setStudyId(studyId);
+            } else {
+                sv = studyService.getStudyVersion(studyId, versionNumber);
+            }
+
+            if (sv == null) {
+                redirect("/faces/IdDoesNotExistPage.xhtml?type=Study%20Version");
+                return;
+            }
+
+            
+            if ("files".equals(tab)) {
+                initStudyUIWithFiles(sv);
+            } else {
+                studyUI = new StudyUI(sv, getVDCSessionBean().getUser());
+                initPanelDisplay();
+            }
+
+            allowStudyComments = studyUI.getStudy().getOwner().isAllowStudyComments();
+
+            /* TODO: do we need this code still for closing all file categories?
+            // flag added to start with all file categories closed
+            if (getRequestParam("renderFiles") != null && getRequestParam("renderFiles").equals("false")) {
+                for (FileCategoryUI catUI : studyUI.getCategoryUIList()) {
+                    catUI.setRendered(false);
+                }
+            }
+            */
+
+        } else {
+            // WE SHOULD HAVE A STUDY ID, throw an error
+            System.out.println("ERROR: in StudyPage, without a globalId or a studyId");
+        }
+    }
+
+    /**
+     *  Get the tab name from the request parameter or
+     *  the VDCRequestBean, and set the selected index based on the
+     *  tab name.
+     */
+    private void initSelectedTabIndex() {
+        if (tab == null && getVDCRequestBean().getSelectedTab() != null) {
+            tab = getVDCRequestBean().getSelectedTab();
+        }
+        if (tab != null) {
+            if (tab.equals("catalog")) {
+                selectedIndex=0;
+            } else if (tab.equals("files")) {
+                selectedIndex=1;
+            } else if (tab.equals("comments")) {
+                selectedIndex=2;
+            }
+
+            tabSet1.setSelectedIndex(selectedIndex);
+        }
+    }
+
+    private void initStudyUIWithFiles(StudyVersion studyVersion) {
+          if (!studyUIContainsFileDetails) {
+             studyUI = new StudyUI(
+                            studyVersion,
+                            getVDCRequestBean().getCurrentVDC(),
+                            getVDCSessionBean().getLoginBean() != null ? this.getVDCSessionBean().getLoginBean().getUser() : null,
+                            getVDCSessionBean().getIpUserGroup());
+             studyUIContainsFileDetails=true;
+          }
+    }
+
+    public void processTabChange(TabChangeEvent tabChangeEvent) throws AbortProcessingException {
+
+
+        // If user clicks on the catalog tab, reset the open/closed settings for each section
+        if (tabChangeEvent.getNewTabIndex()==0) {
+            initPanelDisplay();
+        }
+        // If the user clicks on the files tab,
+        // make sure the StudyUI object contains file details.
+        if ( tabChangeEvent.getNewTabIndex()==1) {
+            initStudyUIWithFiles(studyUI.getStudyVersion());
+        }
+    }
+
 
     private PanelTabSet tabSet1 = new PanelTabSet();
 
-    /**
-     * Getter for component tabSet1
-     *
-     * @return    the main tab-set component
-     */
     public PanelTabSet getTabSet1() {
         return tabSet1;
     }
 
-    /**
-     * Setter for component tabSet1
-     *
-     * @param ts    the main tab-set component
-     */
     public void setTabSet1(PanelTabSet tabSet1) {
         this.tabSet1 = tabSet1;
     }
 
-
-    public StudyPage() {
-    }
-
- 
-    private DefaultTableDataModel dataTable5Model = new DefaultTableDataModel();
-
-    public DefaultTableDataModel getDataTable5Model() {
-        return dataTable5Model;
-    }
-
-    public void setDataTable5Model(DefaultTableDataModel dtdm) {
-        this.dataTable5Model = dtdm;
-    }
-    /**
-     * Holds value of property studyId.
-     */
-    private Long studyId;
-
-    /**
-     * Getter for property studyId.
-     * @return Value of property studyId.
-     */
-    public Long getStudyId() {
-        return this.studyId;
-    }
-
-    /**
-     * Setter for property studyId.
-     * @param studyId New value of property studyId.
-     */
-    public void setStudyId(Long studyId) {
-        this.studyId = studyId;
-    }
 
     public String getCitationDate() {
         String str = "";
@@ -291,53 +386,6 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
      */
     public void setNotesPanel(HtmlPanelGrid notesPanel) {
         this.notesPanel = notesPanel;
-    }
-
-    public void init() {
-        super.init();
-        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-        if (request.getHeader("referer") != null && ((String)request.getHeader("referer")).indexOf("CommentReview") != -1) {
-            setTab("comments");
-        }
-        // set tab if it was it was sent as pamameter or part of request bean
-        initSelectedTabIndex();
-        if (isFromPage("StudyPage")) {
-            setStudyUI((StudyUI) sessionGet(StudyUI.class.getName()));
-            setStudyId(studyUI.getStudy().getId());
-            studyUI.setStudy(studyService.getStudyDetail(studyId));
-
-        } else {
-            // if studyId was passes as a URL parameter it will
-            // alread be set (and not null); otherwise:
-
-            // If we're coming from EditStudyPage
-            if (studyId == null) {
-                studyId = getVDCRequestBean().getStudyId();
-            }
-            // we need to create the studyServiceBean
-            //request = (HttpServletRequest) this.getExternalContext().getRequest();
-            if (studyId != null) {
-                if ("files".equals(tab)) {
-                    initStudyUIWithFiles();
-                } else {                
-                        studyUI = new StudyUI(studyService.getStudyDetail(studyId),getVDCSessionBean().getUser());
-                }
-                // flag added to start with all file categories closed
-                if (getRequestParam("renderFiles") != null && getRequestParam("renderFiles").equals("false")) {
-                    for (FileCategoryUI catUI : studyUI.getCategoryUIList()) {
-                        catUI.setRendered(false);
-                    }
-                }
-                sessionPut(studyUI.getClass().getName(), studyUI);
-                initPanelDisplay();
-
-            } else {
-                // WE SHOULD HAVE A STUDY ID, throw an error
-                System.out.println("ERROR: in StudyPage, without a serviceBean or a studyId");
-            }
-        }
-        allowStudyComments = studyUI.getStudy().getOwner().isAllowStudyComments();
-
     }
 
     private boolean isEmpty(String s) {
@@ -583,51 +631,4 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
             return lwf.beginFileAccessWorkflow(studyId);
     }
     
-    private boolean studyUIContainsFileDetails=false;
-    /**
-     *  Get the tab name from the request parameter or
-     *  the VDCRequestBean, and set the selected index based on the 
-     *  tab name.
-     */
-    private void initSelectedTabIndex() {
-        if (tab == null && getVDCRequestBean().getSelectedTab() != null) {
-            tab = getVDCRequestBean().getSelectedTab();
-        }
-        if (tab != null) {
-            if (tab.equals("catalog")) {
-                selectedIndex=0;
-            } else if (tab.equals("files")) {
-                selectedIndex=1;
-            } else if (tab.equals("comments")) {
-                selectedIndex=2;
-            }
-            
-            tabSet1.setSelectedIndex(selectedIndex);
-        } 
-    }
-    
-    private void initStudyUIWithFiles() {
-          if (!studyUIContainsFileDetails) {
-             studyUI = new StudyUI(
-                            studyService.getStudyDetail(studyId),
-                            getVDCRequestBean().getCurrentVDC(),
-                            getVDCSessionBean().getLoginBean() != null ? this.getVDCSessionBean().getLoginBean().getUser() : null,
-                            getVDCSessionBean().getIpUserGroup());
-             studyUIContainsFileDetails=true;
-          }
-    }
-
-    public void processTabChange(TabChangeEvent tabChangeEvent) throws AbortProcessingException {
-
-        // If the user clicks on the files tab,
-        // make sure the StudyUI object contains file details.
-        if ( tabChangeEvent.getNewTabIndex()==1) {
-            initStudyUIWithFiles();
-        }
-        // If user clicks on the catalog tab, reset the open/closed settings for each section
-        if (tabChangeEvent.getNewTabIndex()==0) {
-            initPanelDisplay();
-        }
-
-    }
 }

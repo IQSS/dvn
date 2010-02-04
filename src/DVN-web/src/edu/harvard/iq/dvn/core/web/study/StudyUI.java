@@ -31,7 +31,6 @@ package edu.harvard.iq.dvn.core.web.study;
 import edu.harvard.iq.dvn.core.admin.UserGroup;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.ddi.DDIServiceBean;
-import edu.harvard.iq.dvn.core.study.FileCategory;
 import edu.harvard.iq.dvn.core.study.FileMetadata;
 import edu.harvard.iq.dvn.core.study.Metadata;
 import edu.harvard.iq.dvn.core.study.Study;
@@ -53,6 +52,7 @@ import edu.harvard.iq.dvn.core.study.StudyRelStudy;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudySoftware;
 import edu.harvard.iq.dvn.core.study.StudyTopicClass;
+import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.web.util.DvnDate;
 import edu.harvard.iq.dvn.core.util.StringUtil;
 import edu.harvard.iq.dvn.core.vdc.VDC;
@@ -73,6 +73,7 @@ import javax.naming.InitialContext;
 public class StudyUI  implements java.io.Serializable {
     
     private Study study;
+    private StudyVersion studyVersion;
     private Metadata metadata;
     private Long studyId;
     private Map studyFields;
@@ -143,7 +144,7 @@ public class StudyUI  implements java.io.Serializable {
         this.studyId = sid;
         this.user = user;
     }
-    
+
     /**
      * Creates a new instance of StudyUI
      * this constructor initializes the file category ui list
@@ -152,6 +153,48 @@ public class StudyUI  implements java.io.Serializable {
     public StudyUI(Study s, VDC vdc, VDCUser user, UserGroup ipUserGroup) {
         this.study = s;
         this.studyId = s.getId();
+        this.user = user;
+        this.ipUserGroup = ipUserGroup;
+        initFileCategoryUIList(vdc, user, ipUserGroup);
+    }
+
+    public StudyUI(StudyVersion sv) {
+        this.studyVersion = sv;
+        this.study = sv.getStudy();
+        this.studyId = this.study.getId();
+    }
+    /**
+     *  Used in View Study Page - user is required to determine permissions
+     */
+    public StudyUI(StudyVersion sv, VDCUser u) {
+        this.studyVersion = sv;
+        this.study = sv.getStudy();
+        this.studyId = this.study.getId();
+        this.user = u;
+    }
+
+
+
+    public StudyUI(StudyVersion sv, VDCUser user, UserGroup ipUserGroup, boolean selected) {
+        this.studyVersion = sv;
+        this.study = sv.getStudy();
+        this.studyId = this.study.getId();
+        this.user = user;
+        this.ipUserGroup = ipUserGroup;
+        this.selected = selected;
+    }
+
+
+   
+    /**
+     * Creates a new instance of StudyUI
+     * this constructor initializes the file category ui list
+     * Use this constructor if you want to set the StudyFileUI.fileRestrictedFor user value
+     */
+    public StudyUI(StudyVersion sv, VDC vdc, VDCUser user, UserGroup ipUserGroup) {
+        this.studyVersion = sv;
+        this.study = sv.getStudy();
+        this.studyId = this.study.getId();
         this.user = user;
         this.ipUserGroup = ipUserGroup;
         initFileCategoryUIList(vdc, user, ipUserGroup);
@@ -212,6 +255,10 @@ public class StudyUI  implements java.io.Serializable {
     
     public void setStudy(Study study) {
         this.study = study;
+    }
+
+    public StudyVersion getStudyVersion() {
+        return studyVersion;
     }
     
     /**
@@ -304,7 +351,7 @@ public class StudyUI  implements java.io.Serializable {
         return str;
     }
     
-    public String getStudyVersion() {
+    public String getStudyVersionText() {
         String str = "";
         if (!StringUtil.isEmpty(getMetadata().getStudyVersionText())) {
             str += getMetadata().getStudyVersion();

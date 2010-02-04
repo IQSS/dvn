@@ -184,9 +184,19 @@
         <managed-bean-class>edu.harvard.iq.dvn.core.web.study.StudyPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
         <managed-property>
+            <property-name>globalId</property-name>
+            <property-class>java.lang.String</property-class>
+            <value>#{param.globalId}</value>
+        </managed-property>
+        <managed-property>
             <property-name>studyId</property-name>
             <property-class>java.lang.Long</property-class>
             <value>#{param.studyId}</value>
+        </managed-property>
+        <managed-property>
+            <property-name>versionNumber</property-name>
+            <property-class>java.lang.Long</property-class>
+            <value>#{param.versionNumber}</value>
         </managed-property>
         <managed-property>
             <property-name>tab</property-name>

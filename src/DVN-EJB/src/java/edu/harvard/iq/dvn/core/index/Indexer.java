@@ -395,7 +395,6 @@ public class Indexer implements java.io.Serializable  {
         writerVersions = new IndexWriter(dir, getAnalyzer(), isIndexEmpty(), IndexWriter.MaxFieldLength.UNLIMITED);
         for (StudyVersion version: study.getStudyVersions()){
             Document docVersions = new Document();
-            addText(1.0f,docVersions, "versionStudyId",study.getId().toString());
             addText(1.0f, docVersions, "versionId", version.getId().toString());
             addText(1.0f, docVersions, "versionNumber", version.getVersion().toString());
             addText(1.0f, docVersions, "versionUnf", version.getMetadata().getUNF());
@@ -493,6 +492,17 @@ public class Indexer implements java.io.Serializable  {
 
         return results;
 
+    }
+
+    // returns a list of study version ids for a given unf
+    public List<Long> searchVersionUnf(String unf) throws IOException {
+        Query unfQuery = null;
+        SearchTerm st = new SearchTerm();
+        st.setFieldName("versionUnf");
+        st.setValue(unf);
+        Term t = new Term(st.getFieldName(), st.getValue().toLowerCase().trim());
+        unfQuery = new TermQuery(t);
+        return getVersionHitIds(getHits(unfQuery));
     }
 
     private String getDVNTokenString(final String value) {
@@ -733,6 +743,20 @@ public class Indexer implements java.io.Serializable  {
         for (Iterator it = hits.iterator(); it.hasNext();){
             Document d = (Document) it.next();
             Field studyId = d.getField("varId");
+            String studyIdStr = studyId.stringValue();
+            Long studyIdLong = Long.valueOf(studyIdStr);
+            matchIdsSet.add(studyIdLong);
+        }
+        matchIds.addAll(matchIdsSet);
+        return matchIds;
+    }
+
+    private List getVersionHitIds(List <Document> hits) throws IOException {
+        ArrayList matchIds = new ArrayList();
+        LinkedHashSet matchIdsSet = new LinkedHashSet();
+        for (Iterator it = hits.iterator(); it.hasNext();){
+            Document d = (Document) it.next();
+            Field studyId = d.getField("versionId");
             String studyIdStr = studyId.stringValue();
             Long studyIdLong = Long.valueOf(studyIdStr);
             matchIdsSet.add(studyIdLong);

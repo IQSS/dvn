@@ -179,6 +179,8 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
                 selectedIndex=1;
             } else if (tab.equals("comments")) {
                 selectedIndex=2;
+            } else if (tab.equals("versions")) {
+                selectedIndex=3;
             }
 
             tabSet1.setSelectedIndex(selectedIndex);
@@ -468,7 +470,7 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
     }
 
     public void setTab(String tab) {
-        if (tab == null || tab.equals("files") || tab.equals("catalog") || tab.equals("comments")) {
+        if ( tab == null || tab.equals("files") || tab.equals("catalog") || tab.equals("comments") || tab.equals("versions") ) {
             this.tab = tab;
         }
     }

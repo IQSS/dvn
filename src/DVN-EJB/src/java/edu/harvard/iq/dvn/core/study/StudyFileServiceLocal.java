@@ -24,6 +24,7 @@ public interface StudyFileServiceLocal {
     public void updateStudyFile(StudyFile detachedStudyFile);
 
     java.util.List<FileMetadata> getOrderedFilesByStudy(Long studyId);
+    java.util.List<FileMetadata> getOrderedFilesByStudyVersion(Long svId);
 
     public Boolean doesStudyHaveSubsettableFiles(Long studyId);
 

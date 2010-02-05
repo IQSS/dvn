@@ -160,6 +160,7 @@ public class StudyUI  implements java.io.Serializable {
 
     public StudyUI(StudyVersion sv) {
         this.studyVersion = sv;
+        this.metadata = sv.getMetadata();
         this.study = sv.getStudy();
         this.studyId = this.study.getId();
     }
@@ -168,6 +169,7 @@ public class StudyUI  implements java.io.Serializable {
      */
     public StudyUI(StudyVersion sv, VDCUser u) {
         this.studyVersion = sv;
+        this.metadata = sv.getMetadata();
         this.study = sv.getStudy();
         this.studyId = this.study.getId();
         this.user = u;
@@ -177,6 +179,7 @@ public class StudyUI  implements java.io.Serializable {
 
     public StudyUI(StudyVersion sv, VDCUser user, UserGroup ipUserGroup, boolean selected) {
         this.studyVersion = sv;
+        this.metadata = sv.getMetadata();
         this.study = sv.getStudy();
         this.studyId = this.study.getId();
         this.user = user;
@@ -193,6 +196,7 @@ public class StudyUI  implements java.io.Serializable {
      */
     public StudyUI(StudyVersion sv, VDC vdc, VDCUser user, UserGroup ipUserGroup) {
         this.studyVersion = sv;
+        this.metadata = sv.getMetadata();
         this.study = sv.getStudy();
         this.studyId = this.study.getId();
         this.user = user;

@@ -868,7 +868,7 @@ public class StudyUI  implements java.io.Serializable {
         
 
         FileCategoryUI catUI = null;
-        for (FileMetadata fmd : studyFileService.getOrderedFilesByStudy(getStudy().getId())) {
+        for (FileMetadata fmd : studyFileService.getOrderedFilesByStudyVersion(getStudyVersion().getId())) {
             if (catUI == null || !fmd.getCategory().equals(catUI.getFileCategory().getName())) {
                 catUI = new FileCategoryUI(fmd.getCategory());
                 categoryUIList.add(catUI);

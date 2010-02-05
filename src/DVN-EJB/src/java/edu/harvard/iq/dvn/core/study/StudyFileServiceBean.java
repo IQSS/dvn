@@ -109,6 +109,20 @@ public class StudyFileServiceBean implements StudyFileServiceLocal {
         return studyFiles;
     }
 
+    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+    public java.util.List<FileMetadata> getOrderedFilesByStudyVersion (Long svId) {
+        // Note: This ordering is case-sensitive, so names beginning with upperclass chars will appear first.
+        // (I tried using UPPER(f.name) to make the sorting case-insensitive, but the EJB query language doesn't seem
+        // to like this.)
+        String queryStr = "SELECT f FROM FileMetadata f  WHERE f.studyVersion.id = " + svId + " ORDER BY f.category, f.label";
+        Query query = em.createQuery(queryStr);
+        List<FileMetadata> studyFiles = query.getResultList();
+   //     for (StudyFile sf: studyFiles) {
+   //         sf.getDataTables().size();
+   //     }
+        return studyFiles;
+    }
+
     public Boolean doesStudyHaveSubsettableFiles(Long studyId) {
         // TODO: VERSION: change this to use a study version object
         List<String> subsettableList = new ArrayList();

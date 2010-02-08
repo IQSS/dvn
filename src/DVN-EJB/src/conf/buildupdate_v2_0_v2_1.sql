@@ -31,7 +31,9 @@ and s.id = sv.study_id;
 update studycomment set studyversion_id = sv.id
 from studyversion sv where studycomment.study_id = sv.study_id;
 
-update studyversion set versionstate="DRAFT" where versionstate="New";
+update studyversion set versionstate='DRAFT' where versionstate='New';
+update studyversion set versionstate='IN_REVIEW' where versionstate='In Review';
+update studyversion set versionstate='RELEASED' where versionstate='Released';
 
 commit;
 

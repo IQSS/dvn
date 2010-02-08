@@ -1244,7 +1244,11 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         }
         
         Query query = em.createQuery(queryStr);
-        query.setParameter("releasedState", VersionState.RELEASED);
+
+        if (versionNumber == null) {
+            query.setParameter("releasedState", VersionState.RELEASED);
+        }
+        
         List resultList = query.getResultList();
         StudyVersion studyVersion = null;
         if (resultList.size() > 1) {

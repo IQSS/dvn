@@ -104,70 +104,53 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     public void init() {
         super.init();
         // set tab if it was it was sent as pamameter
-        if (tab==null) {
-            tab="catalog";
+        if (tab == null) {
+            tab = "catalog";
         }
-        token = this.getRequestParam("studyForm:token" );
-        if ( token!=null) {
-            if ( sessionGet(token)!=null) {
-                editStudyService = (EditStudyService) sessionGet(token);
-                study = editStudyService.getStudy();
-             
-                setFiles(editStudyService.getCurrentFiles());
-            } else {
-                FacesContext context = FacesContext.getCurrentInstance();
-                FacesMessage errMessage = new FacesMessage(FacesMessage.SEVERITY_ERROR, "The Study form you are trying to save contains stale data. Please re-load the study and try again.","");
-                context.addMessage(null,errMessage);
-           }
+
+
+        try {
+            Context ctx = new InitialContext();
+            editStudyService = (EditStudyService) ctx.lookup("java:comp/env/editStudy");
+
+        } catch (NamingException e) {
+            e.printStackTrace();
+            FacesContext context = FacesContext.getCurrentInstance();
+            FacesMessage errMessage = new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), null);
+            context.addMessage(null, errMessage);
+
+        }
+        if (getStudyId() != null) {
+            editStudyService.setStudyVersion(studyId);
+            study = editStudyService.getStudy();
+          
+            metadata = study.getLatestVersion().getMetadata();
+        
+
+            setFiles(editStudyService.getCurrentFiles());
         } else {
-            
-            // we need to create the token and the editStudyService bean
-            token=java.util.UUID.randomUUID().toString();
-            try {
-                Context ctx = new InitialContext();
-                editStudyService = (EditStudyService) ctx.lookup("java:comp/env/editStudy");
-                sessionPut( token, editStudyService);
-            } catch(NamingException e) {
-                e.printStackTrace();
-                FacesContext context = FacesContext.getCurrentInstance();
-                FacesMessage errMessage = new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(),null);
-                context.addMessage(null,errMessage);
-                
-            }
-            if (getStudyId() != null) {
-                editStudyService.setStudy(studyId);            
-                study = editStudyService.getStudy();
-                 // WE NEED TO GET THE RIGHT METADATA, CREATE NEW VERSION< ETC>
-                if (study.getReleasedVersion() != null) {
-                    metadata = study.getReleasedVersion().getMetadata();
-                } else {
-                    metadata = study.getStudyVersions().get(0).getMetadata();
-                }
-
-                setFiles(editStudyService.getCurrentFiles());
-            } else {
-                Long vdcId = getVDCRequestBean().getCurrentVDC().getId();
-                selectTemplateId = getVDCRequestBean().getCurrentVDC().getDefaultTemplate().getId();
-                editStudyService.newStudy(vdcId, getVDCSessionBean().getLoginBean().getUser().getId(), selectTemplateId);
-                study = editStudyService.getStudy();
-                metadata = study.getStudyVersions().get(0).getMetadata(); // WE NEED TO GET THE RIGHT METADATA, CREATE NEW VERSION< ETC>
-                studyId = SessionCounter.getNext();
+            Long vdcId = getVDCRequestBean().getCurrentVDC().getId();
+            selectTemplateId = getVDCRequestBean().getCurrentVDC().getDefaultTemplate().getId();
+            editStudyService.newStudy(vdcId, getVDCSessionBean().getLoginBean().getUser().getId(), selectTemplateId);
+            study = editStudyService.getStudy();
+            metadata = study.getStudyVersions().get(0).getMetadata(); // WE NEED TO GET THE RIGHT METADATA, CREATE NEW VERSION< ETC>
+            studyId = SessionCounter.getNext();
 
 
-                study.setStudyId(studyService.generateStudyIdSequence(study.getProtocol(),study.getAuthority()));
-                // prefill date of deposit
-                metadata.setDateOfDeposit(  new SimpleDateFormat("yyyy-MM-dd").format(study.getCreateTime()) );
-                setFiles(editStudyService.getCurrentFiles());
-            }
-            // Initialize map containing required/recommended settings for all fields
-             initStudyMap();
-             // Add empty first element to subcollections, so the input text fields will be visible
-            initCollections();
-          //  initDvnDates();
-            
+            study.setStudyId(studyService.generateStudyIdSequence(study.getProtocol(), study.getAuthority()));
+            // prefill date of deposit
+            metadata.setDateOfDeposit(new SimpleDateFormat("yyyy-MM-dd").format(study.getCreateTime()));
+            setFiles(editStudyService.getCurrentFiles());
         }
-        
-        
+        // Initialize map containing required/recommended settings for all fields
+        initStudyMap();
+        // Add empty first element to subcollections, so the input text fields will be visible
+        initCollections();
+        //  initDvnDates();
+
+
+
+
         
         
     }
@@ -673,7 +656,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             forwardPage="myOptions";
         }
         editStudyService.cancel();
-        this.sessionRemove(token);
+       
         getVDCRequestBean().setStudyId(study.getId());
         getVDCRequestBean().setSelectedTab(tab);
         
@@ -1105,15 +1088,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         this.studyId = studyId;
     }
 
-    private String token;
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
+   
         
     private List files;
     
@@ -1127,7 +1102,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     
     
     public String save() {
-        this.getVDCRequestBean().setSelectedTab(tab);
+        EditStudyPage.getVDCRequestBean().setSelectedTab(tab);
         if (this.getStudy()==null) {
             return "home";
         }
@@ -1149,7 +1124,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
        
         getVDCRequestBean().setStudyId(study.getId());
         getVDCRequestBean().setSelectedTab(tab);
-        this.sessionRemove(token);
+      
         return "viewStudy";
     }
     

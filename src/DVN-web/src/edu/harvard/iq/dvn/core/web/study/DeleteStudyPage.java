@@ -87,10 +87,10 @@ public class DeleteStudyPage extends VDCBaseBean implements java.io.Serializable
                 
             }
             if (studyId != null) {
-                //TODO: we need to store editStudyService by studyId, not just class name
-               editStudyService.setStudy(getStudyId());
-               sessionPut( EditStudyService.class.getName(), editStudyService);
-               study = editStudyService.getStudy();
+                //TODO: VERSION: update this for versions (Do we still need to use a stateful sessionbean?
+         ////      editStudyService.setStudy(getStudyId());
+          //     sessionPut( EditStudyService.class.getName(), editStudyService);
+          //     study = editStudyService.getStudy();
             } else {
                 // TODO: replace this with real current VDC
                 throw new IllegalArgumentException("Missing studyId in request parameters.");

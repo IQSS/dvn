@@ -175,11 +175,11 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
                       <div jsfc="ice:panelGroup" styleClass="dvnstudyversioninfo">
                           <ice:outputText value="#{studyPage.studyUI.study.globalId}"/>
                       </div>
-                      <div jsfc="ice:panelGroup" styleClass="dvnstudyversioninfo" rendered="#{!(studyPage.studyUI.study.inReview)}">
+                      <div jsfc="ice:panelGroup" styleClass="dvnstudyversioninfo" rendered="#{(studyPage.studyUI.studyVersion.released)}">
                           <ice:outputText value="Version: #{studyPage.studyUI.studyVersion.versionNumber}"/> &mdash; <ice:outputText value="Released: #{studyPage.studyUI.dateOfDeposit}"/>
                       </div>
-                      <div jsfc="ice:panelGroup" styleClass="dvnstudystatusbox #{studyPage.studyUI.study.inReview ? 'dvnstudystatusarchived' : ''}" rendered="#{studyPage.studyUI.study.inReview}">
-                          <ice:outputText styleClass="dvnstudystatuslabel" value="In Review" rendered="#{studyPage.studyUI.study.inReview}"/> Study Version: 1<br/>
+                      <div jsfc="ice:panelGroup" styleClass="dvnstudystatusbox #{studyPage.studyUI.studyVersion.archived ? 'dvnstudystatusarchived' : ''}" rendered="#{!studyPage.studyUI.studyVersion.released}">
+                          <ice:outputText styleClass="dvnstudystatuslabel" value="In Review" rendered="#{!studyPage.studyUI.studyVersion.released}"/> Study Version: 1<br/>
                           <ice:outputText value="Created: #{studyPage.studyUI.dateOfDeposit}"/>
                       </div>
                   </div>

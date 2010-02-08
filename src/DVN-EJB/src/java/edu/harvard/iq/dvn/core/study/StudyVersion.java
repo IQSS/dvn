@@ -6,6 +6,7 @@
 package edu.harvard.iq.dvn.core.study;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.*;
 
@@ -18,6 +19,13 @@ import javax.persistence.*;
 public class StudyVersion implements Serializable {
     private static final long serialVersionUID = 1L;
 
+  public enum VersionState { DRAFT, IN_REVIEW, RELEASED, ARCHIVED};
+
+
+   // public static final String VERSION_STATE_DRAFT = "Draft";
+   // public static final String VERSION_STATE_IN_REVIEW = "In Review";
+   // public static final String VERSION_STATE_RELEASED = "Released";
+
     public StudyVersion () {
         metadata = new Metadata();
         metadata.setStudyVersion(this);
@@ -25,7 +33,9 @@ public class StudyVersion implements Serializable {
 
     private Long versionNumber;
     private String versionNote;
-    private String versionState;
+    
+    @Enumerated(EnumType.STRING)
+    private VersionState versionState;
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(nullable=false)
@@ -37,6 +47,36 @@ public class StudyVersion implements Serializable {
     private List<FileMetadata> fileMetadatas;
     @OneToMany(mappedBy="studyVersion", cascade={CascadeType.REMOVE, CascadeType.PERSIST})
     private List<StudyComment> studyComments;
+    @Temporal(value = TemporalType.TIMESTAMP)
+    private Date createTime;
+    @Temporal(value = TemporalType.TIMESTAMP)
+    private Date lastUpdateTime;
+    @Temporal(value = TemporalType.TIMESTAMP)
+    private Date releaseTime;
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public Date getLastUpdateTime() {
+        return lastUpdateTime;
+    }
+
+    public void setLastUpdateTime(Date lastUpdateTime) {
+        this.lastUpdateTime = lastUpdateTime;
+    }
+
+    public Date getReleaseTime() {
+        return releaseTime;
+    }
+
+    public void setReleaseTime(Date releaseTime) {
+        this.releaseTime = releaseTime;
+    }
 
     public String getVersionNote() {
         return versionNote;
@@ -54,14 +94,35 @@ public class StudyVersion implements Serializable {
         this.versionNumber = versionNumber;
     }
 
-    public String getVersionState() {
+   
+    public VersionState getVersionState() {
         return versionState;
     }
 
-    public void setVersionState(String versionState) {
+    public void setVersionState(VersionState versionState) {
+        
         this.versionState = versionState;
     }
-    
+
+    public boolean isReleased() {
+        return versionState.equals(VersionState.RELEASED);
+    }
+
+    public boolean isInReview() {
+        return versionState.equals(VersionState.IN_REVIEW);
+    }
+
+    public boolean isDraft() {
+         return versionState.equals(VersionState.DRAFT);
+    }
+
+    public boolean isWorkingCopy() {
+        return (versionState.equals(VersionState.DRAFT) ||  versionState.equals(VersionState.IN_REVIEW)) ;
+    }
+
+    public boolean isArchived() {
+         return versionState.equals(VersionState.ARCHIVED);
+    }
 
     public Study getStudy() {
         return study;

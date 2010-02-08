@@ -29,18 +29,15 @@
 
 package edu.harvard.iq.dvn.core.study;
 
-import edu.harvard.iq.dvn.core.admin.NetworkRoleServiceLocal;
-import edu.harvard.iq.dvn.core.admin.RoleServiceLocal;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.ingest.dsb.DSBWrapper;
 import edu.harvard.iq.dvn.core.gnrs.GNRSServiceLocal;
 import edu.harvard.iq.dvn.core.index.IndexServiceLocal;
 import edu.harvard.iq.dvn.core.mail.MailServiceLocal;
-import edu.harvard.iq.dvn.core.vdc.ReviewState;
+import edu.harvard.iq.dvn.core.study.StudyVersion.VersionState;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCNetwork;
 import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
-import edu.harvard.iq.dvn.core.study.DataFileFormatType;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -71,7 +68,6 @@ import javax.persistence.PersistenceContextType;
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class EditStudyServiceBean implements edu.harvard.iq.dvn.core.study.EditStudyService, java.io.Serializable {
     @EJB IndexServiceLocal indexService;
-    @EJB ReviewStateServiceLocal reviewStateService;
     @EJB MailServiceLocal mailService;
     @EJB VDCNetworkServiceLocal vdcNetworkService;
     @EJB StudyServiceLocal studyService;
@@ -82,22 +78,32 @@ public class EditStudyServiceBean implements edu.harvard.iq.dvn.core.study.EditS
     EntityManager em;
     @Resource(mappedName="jms/DSBIngest") Queue queue;
     @Resource(mappedName="jms/DSBQueueConnectionFactory") QueueConnectionFactory factory;
-    Study study;
-    Metadata metadata;
+    StudyVersion studyVersion;
     private boolean newStudy=false;
     private List currentFiles = new ArrayList();
     private List newFiles = new ArrayList();
     private String ingestEmail;
     
     /**
-     *  Initialize the bean with a Study for editing
+     *  Initialize the bean with a studyVersion for editing
      */
-    public void setStudy(Long id ) {
-        study = em.find(Study.class,id);
+    public void setStudyVersion(Long studyId ) {
+        Study study = em.find(Study.class,studyId);
         if (study==null) {
-            throw new IllegalArgumentException("Unknown study id: "+id);
+            throw new IllegalArgumentException("Unknown study id: "+studyId);
         }
-        
+        StudyVersion latestVersion = study.getLatestVersion();
+         if (latestVersion.isReleased())
+            // if the latest version is released, create a new version for editing
+            studyVersion = createNewStudyVersion(study,latestVersion);
+        else if (latestVersion.isWorkingCopy()){
+            // else, edit existing working copy
+            studyVersion = latestVersion;
+        } else {
+            // if latest version is archived, we can't edit
+            throw new IllegalArgumentException("Cannot edit deaccessioned study: "+studyId);
+        }
+
         // now set the files
         /* TODO: VERSION:
         for (Iterator fileIt = studyFileService.getOrderedFilesByStudy(study.getId()).iterator(); fileIt.hasNext();) {
@@ -111,27 +117,34 @@ public class EditStudyServiceBean implements edu.harvard.iq.dvn.core.study.EditS
    
     }
     
+    private StudyVersion createNewStudyVersion(Study study, StudyVersion latestVersion) {
+        StudyVersion sv = new StudyVersion();
+        sv.setVersionState(VersionState.DRAFT);
+        latestVersion.getMetadata().copyMetadata(sv.getMetadata());
+        sv.setVersionNumber(latestVersion.getVersionNumber()+1);
+        study.getStudyVersions().add(sv);
+        sv.setStudy(study);
+        return sv;
+    }
+
+
     public void newStudy(Long vdcId, Long userId, Long templateId) {
         newStudy=true;
         
         VDC vdc = em.find(VDC.class, vdcId);
         VDCUser creator = em.find(VDCUser.class,userId);
-        ReviewState reviewState = reviewStateService.findByName(ReviewStateServiceLocal.REVIEW_STATE_NEW);
+       
+      
         
-        // If user is network admin, or has a vdc role > contributor, set the study to IN REVIEW
-        // else (user is a contributor), set the study to NEW
-        if ((creator.getNetworkRole()!=null && creator.getNetworkRole().getName().equals(NetworkRoleServiceLocal.ADMIN))
-        || (creator.getVDCRole(vdc)!=null && !creator.getVDCRole(vdc).getRole().getName().equals(RoleServiceLocal.CONTRIBUTOR))) {
-            reviewState = reviewStateService.findByName(ReviewStateServiceLocal.REVIEW_STATE_IN_REVIEW);
-        }
-        
-        study = new Study(vdc, creator, em.find(ReviewState.class, reviewState.getId()),  em.find(Template.class,templateId));
+        Study study = new Study(vdc, creator, StudyVersion.VersionState.DRAFT,  em.find(Template.class,templateId));
         em.persist(study);
         
         // set default protocol and authority
         VDCNetwork vdcNetwork = vdcNetworkService.find();
         study.setProtocol(vdcNetwork.getProtocol());
         study.setAuthority(vdcNetwork.getAuthority());
+
+        studyVersion = study.getLatestVersion();
         
     }
     
@@ -150,14 +163,15 @@ public class EditStudyServiceBean implements edu.harvard.iq.dvn.core.study.EditS
     }
     
     public  Study getStudy() {
-        return study;
+        return studyVersion.getStudy();
     }
     
     
     @Remove
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void deleteStudy() {
-        studyService.deleteStudy(study.getId());
+        // TODO: VERSION:  check if this method is used anywhere
+        studyService.deleteStudy(studyVersion.getStudy().getId());
         
     }
     
@@ -177,42 +191,40 @@ public class EditStudyServiceBean implements edu.harvard.iq.dvn.core.study.EditS
         try {
             // If user is a Contributor and is editing a study with review state "Released", then
             // revert the review state back to In Review.
-            if (!isNewStudy()
-            && user.getVDCRole(study.getOwner())!=null
-                    && user.getVDCRole(study.getOwner()).getRole().getName().equals(RoleServiceLocal.CONTRIBUTOR)
-                    && study.getReviewState().getName().equals(ReviewStateServiceLocal.REVIEW_STATE_RELEASED)) {
-                study.setReviewState(reviewStateService.findByName(ReviewStateServiceLocal.REVIEW_STATE_IN_REVIEW));
-            }
+
+         // TODO: VERSION: review this commented logic
+        //    if (!isNewStudy()
+        //    && user.getVDCRole(study.getOwner())!=null
+        //            && user.getVDCRole(study.getOwner()).getRole().getName().equals(RoleServiceLocal.CONTRIBUTOR)
+        //            && study.getReviewState().getName().equals(ReviewStateServiceLocal.REVIEW_STATE_RELEASED)) {
+        //        study.setReviewState(reviewStateService.findByName(ReviewStateServiceLocal.REVIEW_STATE_IN_REVIEW));
+        //    }
             
-            // check newFiles list; if > 0, we are coming from addPage
-            if (newFiles.size() > 0) {
-                studyService.addFiles(study, newFiles, user, ingestEmail);
-                
-            } else {
+            
                 // otherwise we are coming from edit; check current files for changes
                 
-                editFiles();
-            }
+            editFiles();
+            
        
-            studyService.saveStudy(study, userId);
+            studyService.saveStudy(studyVersion.getStudy(), userId);
             
             // if new, register the handle
             if ( isNewStudy() && vdcNetworkService.find().isHandleRegistration() ) {
               
-                String handle = study.getAuthority() + "/" + study.getStudyId();
+                String handle = studyVersion.getStudy().getAuthority() + "/" + studyVersion.getStudy().getStudyId();
                 gnrsService.createHandle(handle);
                
             }
             
-            if (study.getId() == null) {
+            if (studyVersion.getId() == null) {
                 // we need to flush to get the id for the indexer
                 em.flush();
             }
             em.flush(); // Always call flush(), so that we can detect an OptimisticLockException
-            indexService.updateStudy(study.getId());
+            indexService.updateStudy(studyVersion.getStudy().getId());
            
         } catch(EJBException e) {
-            System.out.println("EJBException "+e.getMessage()+" saving study "+study.getId()+" edited by " + user.getUserName() + " at "+ new Date().toString());
+            System.out.println("EJBException "+e.getMessage()+" saving studyVersion "+studyVersion.getId()+" edited by " + user.getUserName() + " at "+ new Date().toString());
             e.printStackTrace();
             throw e;
         
@@ -347,7 +359,7 @@ public class EditStudyServiceBean implements edu.harvard.iq.dvn.core.study.EditS
         // this is done here, because, since a study file could change categories, we need the new category to get persisted
         // before the old categoy gets deleted (otherwise the persistence layer will attempt to set the category_id on the study file
         // to null when the delete happens throwing a SQL not null exception)
-        for (FileCategory cat : study.getFileCategories()) {
+        for (FileCategory cat : studyVersion.getStudy().getFileCategories()) {
             if (cat.getId() == null) {
                 em.persist(cat);
             }
@@ -358,7 +370,7 @@ public class EditStudyServiceBean implements edu.harvard.iq.dvn.core.study.EditS
         // and recalculate study UNF, if needed
         if (recalculateStudyUNF) {
             try {
-                metadata.setUNF( new DSBWrapper().calculateUNF(study) );
+                studyVersion.getMetadata().setUNF( new DSBWrapper().calculateUNF(studyVersion.getStudy()) );
             } catch (IOException e) {
                 throw new EJBException("Could not calculate new study UNF");
             }
@@ -439,30 +451,30 @@ public class EditStudyServiceBean implements edu.harvard.iq.dvn.core.study.EditS
     
     public void changeTemplate(Long templateId) {
         Template newTemplate = em.find(Template.class, templateId);
-        // Clear existing metadata from study
-        // TODO: VERSION
-        clearCollection(metadata.getStudyAbstracts());
-        clearCollection(metadata.getStudyAuthors());
-        clearCollection(metadata.getStudyDistributors());
-        clearCollection(metadata.getStudyGeoBoundings());
-        clearCollection(metadata.getStudyGrants());
-        clearCollection(metadata.getStudyKeywords());
-        clearCollection(metadata.getStudyNotes());
-        clearCollection(metadata.getStudyOtherIds());
-        clearCollection(metadata.getStudyOtherRefs());
-        clearCollection(metadata.getStudyProducers());
-        clearCollection(metadata.getStudyRelMaterials());
-        clearCollection(metadata.getStudyRelPublications());
-        clearCollection(metadata.getStudyRelStudies());
-        clearCollection(metadata.getStudySoftware());
-        clearCollection(metadata.getStudyTopicClasses());
+        // Clear existing metadata from study version
+     
+        clearCollection(studyVersion.getMetadata().getStudyAbstracts());
+        clearCollection(studyVersion.getMetadata().getStudyAuthors());
+        clearCollection(studyVersion.getMetadata().getStudyDistributors());
+        clearCollection(studyVersion.getMetadata().getStudyGeoBoundings());
+        clearCollection(studyVersion.getMetadata().getStudyGrants());
+        clearCollection(studyVersion.getMetadata().getStudyKeywords());
+        clearCollection(studyVersion.getMetadata().getStudyNotes());
+        clearCollection(studyVersion.getMetadata().getStudyOtherIds());
+        clearCollection(studyVersion.getMetadata().getStudyOtherRefs());
+        clearCollection(studyVersion.getMetadata().getStudyProducers());
+        clearCollection(studyVersion.getMetadata().getStudyRelMaterials());
+        clearCollection(studyVersion.getMetadata().getStudyRelPublications());
+        clearCollection(studyVersion.getMetadata().getStudyRelStudies());
+        clearCollection(studyVersion.getMetadata().getStudySoftware());
+        clearCollection(studyVersion.getMetadata().getStudyTopicClasses());
         
         // Copy Template Metadata into Study Metadata
-        newTemplate.getMetadata().copyMetadata(metadata);
-        study.setTemplate(newTemplate);
+        newTemplate.getMetadata().copyMetadata(studyVersion.getMetadata());
+        studyVersion.getStudy().setTemplate(newTemplate);
 
         // prefill date of deposit
-        metadata.setDateOfDeposit(  new SimpleDateFormat("yyyy-MM-dd").format(study.getCreateTime()) );
+        studyVersion.getMetadata().setDateOfDeposit(  new SimpleDateFormat("yyyy-MM-dd").format(studyVersion.getStudy().getCreateTime()) );
     }
     
     private void clearCollection(Collection collection) {

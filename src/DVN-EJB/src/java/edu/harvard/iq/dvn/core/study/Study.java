@@ -80,6 +80,7 @@ public class Study implements java.io.Serializable {
     @Temporal(value = TemporalType.TIMESTAMP)
     private Date lastIndexTime;
     @OneToMany(mappedBy="study", cascade={CascadeType.REMOVE, CascadeType.PERSIST})
+    @OrderBy("versionNumber")
     private List<StudyVersion> studyVersions;
 
     
@@ -90,11 +91,11 @@ public class Study implements java.io.Serializable {
         sv.setStudy(this);
         
     }    
-     public Study(VDC vdc, VDCUser creator, ReviewState reviewState) {
-         this(vdc,creator,reviewState,null);
+     public Study(VDC vdc, VDCUser creator, StudyVersion.VersionState versionState) {
+         this(vdc,creator,versionState,null);
      }
         
-    public Study(VDC vdc, VDCUser creator, ReviewState reviewState, Template initTemplate) {
+    public Study(VDC vdc, VDCUser creator, StudyVersion.VersionState versionState, Template initTemplate) {
         if (vdc==null) {
             throw new EJBException("Cannot create study with null VDC");
         }
@@ -106,6 +107,7 @@ public class Study implements java.io.Serializable {
           
         }
         StudyVersion sv = new StudyVersion();
+        sv.setVersionState(versionState);
         studyVersions = new ArrayList<StudyVersion>();
         studyVersions.add( sv );
         sv.setStudy(this);
@@ -123,7 +125,7 @@ public class Study implements java.io.Serializable {
         this.setLastUpdater(creator);
         this.setLastUpdateTime(createDate);
 
-        this.setReviewState( reviewState );
+      
     }
        
     
@@ -163,20 +165,29 @@ public class Study implements java.io.Serializable {
         this.lastUpdateTime = lastUpdateTime;
     }
     
-    
-    
-    public boolean isInReview() {
-        return reviewState.getName().equals(ReviewStateServiceLocal.REVIEW_STATE_IN_REVIEW);
+    public StudyVersion getLatestVersion() {
+        int size = studyVersions.size();
+        if (size==0){
+            return null;
+        } else {
+            return studyVersions.get(size-1);
+        }
     }
     
+    public boolean isInReview() {
+        return this.getLatestVersion().getVersionState().equals(StudyVersion.VersionState.IN_REVIEW);
+    }
+
+    // TODO: VERSION:  Replace isNew() with isDraft()
     public boolean isNew() {
-        return reviewState.getName().equals(ReviewStateServiceLocal.REVIEW_STATE_NEW);
+        return this.getLatestVersion().getVersionState().equals(StudyVersion.VersionState.DRAFT);
     }
     
     public boolean isReleased() {
-        return reviewState.getName().equals(ReviewStateServiceLocal.REVIEW_STATE_RELEASED);
+        return this.getLatestVersion().getVersionState().equals(StudyVersion.VersionState.RELEASED);
     }
-    
+
+    // TODO: VERSION:  get rid of ReviewState
     public ReviewState getReviewState() {
         return reviewState;
     }
@@ -822,7 +833,7 @@ End of deprecated methods section
     
     public StudyVersion getReleasedVersion() {
         for (StudyVersion studyVersion : getStudyVersions()) {
-            if ("Released".equals(studyVersion.getVersionState()) ) {
+            if (studyVersion.getVersionState().equals(StudyVersion.VersionState.RELEASED) ) {
                 return studyVersion;
             }
         }

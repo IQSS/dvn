@@ -34,15 +34,14 @@ import edu.harvard.iq.dvn.core.admin.VDCRole;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.ddi.DDIServiceLocal;
 import edu.harvard.iq.dvn.ingest.dsb.DSBIngestMessage;
-import edu.harvard.iq.dvn.ingest.dsb.DSBWrapper;
 import edu.harvard.iq.dvn.core.gnrs.GNRSServiceLocal;
 import edu.harvard.iq.dvn.core.harvest.HarvestFormatType;
 import edu.harvard.iq.dvn.core.harvest.HarvestStudyServiceLocal;
 import edu.harvard.iq.dvn.core.index.IndexServiceLocal;
 import edu.harvard.iq.dvn.core.mail.MailServiceLocal;
+import edu.harvard.iq.dvn.core.study.StudyVersion.VersionState;
 import edu.harvard.iq.dvn.core.util.FileUtil;
 import edu.harvard.iq.dvn.core.util.StringUtil;
-import edu.harvard.iq.dvn.core.vdc.ReviewState;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCActivity;
 import edu.harvard.iq.dvn.core.vdc.VDCCollection;
@@ -115,8 +114,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
     UserServiceLocal userService;
     @EJB
     IndexServiceLocal indexService;
-    @EJB
-    ReviewStateServiceLocal reviewStateService;
+
     @EJB
     StudyExporterFactoryLocal studyExporterFactory;
     @EJB
@@ -143,18 +141,12 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         em.merge(detachedStudy);
     }
 
-    public void updateReviewState(Long studyId, String reviewStateName) {
-        Study study = em.find(Study.class, studyId);
-        ReviewState state = this.reviewStateService.findByName(reviewStateName);
-        study.setReviewState(state);
-
-    }
+   
     
     public void setReadyForReview(Long studyId) {
-        // TODO: VERSION: change this to use a study version object
+      
         Study study = em.find(Study.class, studyId);
-        ReviewState inReview = this.reviewStateService.findByName(ReviewStateServiceLocal.REVIEW_STATE_IN_REVIEW);
-        study.setReviewState(inReview);
+        study.getLatestVersion().setVersionState(StudyVersion.VersionState.IN_REVIEW);
             
         VDCUser user = study.getCreator();
         // If the user adding the study is a Contributor, send notification to all Curators in this VDC
@@ -175,11 +167,10 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
     }
          
      public void setReleased(Long studyId) {
-      // TODO: VERSION: change this to use a study version object
+      
         Study study = em.find(Study.class, studyId);
-        ReviewState released = this.reviewStateService.findByName(ReviewStateServiceLocal.REVIEW_STATE_RELEASED);
-        study.setReviewState(released);
-     
+        study.getLatestVersion().setVersionState(StudyVersion.VersionState.RELEASED);
+
         VDCRole studyCreatorRole = study.getCreator().getVDCRole(study.getOwner());
 
         if (studyCreatorRole != null && studyCreatorRole.getRole().getName().equals(RoleServiceLocal.CONTRIBUTOR)) {
@@ -1249,10 +1240,11 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
             queryStr += "' and sv.versionNumber = '" + versionNumber + "'";
         } else {
             // get reelased version
-            queryStr += "' and sv.versionState = 'Released'";
+            queryStr += "' and  sv.versionState = :releasedState ";
         }
         
         Query query = em.createQuery(queryStr);
+        query.setParameter("releasedState", VersionState.RELEASED);
         List resultList = query.getResultList();
         StudyVersion studyVersion = null;
         if (resultList.size() > 1) {
@@ -1486,7 +1478,8 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
     public Study saveStudy(Study study, Long userId) {
         VDCUser user = em.find(VDCUser.class, userId);
 
-        study.setLastUpdateTime(new Date());
+        study.getLatestVersion().setLastUpdateTime(new Date());
+        // TODO: VERSION:  create entity for storing study contributors
         study.setLastUpdater(user);
 
         setDisplayOrders(study);
@@ -1497,12 +1490,16 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
     // (unless you are in vdc)
     public List getVisibleStudies(List studyIds, Long vdcId) {
         if (studyIds != null && studyIds.size() > 0) {
-            String query = "SELECT s.id FROM Study s WHERE s.reviewState.name = 'Released' " +
+           
+
+
+            String queryString = "SELECT s.id FROM Study s, IN(s.studyVersions) AS sv  WHERE sv.versionState = :releasedState " +
                     "AND (s.owner.restricted = false " +
                     (vdcId != null ? "OR s.owner.id = " + vdcId : "") +
                     ") AND s.id in (" + generateIdString(studyIds) + ")";
-
-            return (List) em.createQuery(query).getResultList();
+            Query query = em.createQuery(queryString);
+            query.setParameter("releasedState", StudyVersion.VersionState.RELEASED);
+            return (List) query.getResultList();
         } else {
             return new ArrayList();
         }
@@ -1778,8 +1775,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
 
         // Step 2b: initialize new Study
         if (study == null) {
-            ReviewState reviewState = reviewStateService.findByName(ReviewStateServiceLocal.REVIEW_STATE_RELEASED);
-            study = new Study(vdc, creator, reviewState);
+            study = new Study(vdc, creator, StudyVersion.VersionState.RELEASED);
             em.persist(study);
 
             // if not a harvest, set initial date of deposit (this may get overridden during map ddi step

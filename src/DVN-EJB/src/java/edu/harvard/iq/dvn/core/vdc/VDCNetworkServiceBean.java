@@ -233,8 +233,9 @@ public class VDCNetworkServiceBean implements VDCNetworkServiceLocal {
     public Long getTotalFiles(boolean released) {
         Long total = new Long("0");
         boolean bool = !released;
-        Object object = ((List)em.createNativeQuery("select COUNT(studyfile.id) from studyfile, vdc, reviewstate, filecategory, study where study.owner_id = vdc.id AND study.reviewstate_id = reviewstate.id AND reviewstate.name = '" + ReviewStateServiceBean.REVIEW_STATE_RELEASED + "' AND filecategory.study_id = study.id AND studyfile.filecategory_id = filecategory.id AND vdc.restricted = " + bool).getSingleResult()).get(0);
-        total = (Long)object;
+        // TODO: VERSION:  fix query
+      //  Object object = ((List)em.createNativeQuery("select COUNT(studyfile.id) from studyfile, vdc, filemetadata, studyversion, study where study.owner_id = vdc.id AND study.reviewstate_id = reviewstate.id AND reviewstate.name = '" + ReviewStateServiceBean.REVIEW_STATE_RELEASED + "' AND filecategory.study_id = study.id AND studyfile.filecategory_id = filecategory.id AND vdc.restricted = " + bool).getSingleResult()).get(0);
+       // total = (Long)object;
         return total;
     }
     

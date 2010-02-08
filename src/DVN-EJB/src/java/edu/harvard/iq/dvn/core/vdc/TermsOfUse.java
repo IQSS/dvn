@@ -19,7 +19,7 @@
  */
 
 /*
- * ReviewState.java
+ * TermsOfUse.java
  *
  * Created on July 28, 2006, 2:46 PM
  *

@@ -35,7 +35,6 @@ import edu.harvard.iq.dvn.core.admin.UserServiceLocal;
 import edu.harvard.iq.dvn.core.admin.VDCRole;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.harvest.HarvesterServiceLocal;
-import edu.harvard.iq.dvn.core.study.ReviewStateServiceLocal;
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyField;
 import edu.harvard.iq.dvn.core.study.StudyFieldServiceLocal;
@@ -78,8 +77,6 @@ public class VDCServiceBean implements VDCServiceLocal {
     RoleServiceLocal roleService;
     @EJB
     UserServiceLocal userService;
-    @EJB
-    ReviewStateServiceLocal reviewStateService;
     @EJB
     StudyServiceLocal studyService;
     @EJB

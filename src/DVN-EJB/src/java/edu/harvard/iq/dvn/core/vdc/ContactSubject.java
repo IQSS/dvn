@@ -19,7 +19,7 @@
  */
 
 /*
- * ReviewState.java
+ * ContactSubject.java
  *
  * Created on July 28, 2006, 2:46 PM
  *
@@ -42,7 +42,7 @@ import javax.persistence.*;
 public class ContactSubject implements java.io.Serializable  {
     private String subjectText;
     
-    /** Creates a new instance of ReviewState */
+    /** Creates a new instance of ContactSubject */
     public ContactSubject() {
     }
 

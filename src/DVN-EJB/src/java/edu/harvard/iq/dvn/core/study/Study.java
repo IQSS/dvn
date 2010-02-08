@@ -80,7 +80,7 @@ public class Study implements java.io.Serializable {
     @Temporal(value = TemporalType.TIMESTAMP)
     private Date lastIndexTime;
     @OneToMany(mappedBy="study", cascade={CascadeType.REMOVE, CascadeType.PERSIST})
-    @OrderBy("versionNumber")
+    @OrderBy("versionNumber DESC")
     private List<StudyVersion> studyVersions;
 
     

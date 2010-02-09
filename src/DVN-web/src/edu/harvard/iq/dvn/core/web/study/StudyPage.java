@@ -121,7 +121,9 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
         if (studyId == null) {
             studyId = getVDCRequestBean().getStudyId();
         }
-
+        if (versionNumber == null) {
+            versionNumber = getVDCRequestBean().getStudyVersionNumber();
+        }
         // first determine study, via gloablId or studyId param
         if (globalId != null || studyId != null) {
             StudyVersion sv = null;

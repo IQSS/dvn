@@ -1123,6 +1123,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         editStudyService.save(getVDCRequestBean().getCurrentVDCId(),getVDCSessionBean().getLoginBean().getUser().getId());
        
         getVDCRequestBean().setStudyId(study.getId());
+        getVDCRequestBean().setStudyVersionNumber(metadata.getStudyVersion().getVersionNumber());
         getVDCRequestBean().setSelectedTab(tab);
       
         return "viewStudy";

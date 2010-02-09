@@ -90,7 +90,17 @@ public class VDCRequestBean extends VDCBaseBean implements java.io.Serializable 
     public void setStudyId(Long studyId) {
         this.studyId = studyId;
     }
-    
+
+    private Long studyVersionNumber;
+
+    public Long getStudyVersionNumber() {
+        return studyVersionNumber;
+    }
+
+    public void setStudyVersionNumber(Long studyVersionNumber) {
+        this.studyVersionNumber = studyVersionNumber;
+    }
+
     private String selectedTab;
 
     public String getSelectedTab() {

@@ -211,9 +211,14 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
                                     <dvn:tooltip tooltipMessage="#{studybundle.editFilesTip}" linkText="#{studybundle.editFilesText}" eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=files#{VDCRequest.studyListingIndexAsParameter}"/>
                                 </li>
                             </span>
-                            <span jsfc="ice:panelGroup">
+                            <span jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.userAuthorizedToRelease and studyPage.studyUI.study.studyLock==null and studyPage.studyUI.studyVersion.inReview or studyPage.studyUI.studyVersion.draft}">
+                                <!--<li>
+                                    <dvn:tooltip tooltipMessage="#{studybundle.editVersionNotesTip}" linkText="#{studybundle.editVersionNotesText}" eventType="mouseover" binding="#{studyPage.editStudyVersionNotesLink}" actionListener="#{studyPage.toggleVersionNotesPopup}"/>
+                                </li>-->
                                 <li>
-                                    <dvn:tooltip tooltipMessage="#{studybundle.editVersionNotesTip}" linkText="#{studybundle.editVersionNotesText}" eventType="mouseover" linkUrl="#"/>
+                                    <ice:commandLink binding="#{studyPage.editStudyVersionNotesLink}" actionListener="#{studyPage.toggleVersionNotesPopup}">
+                                        <ice:outputText value="Edit Study Version Notes" nospan="true"/>
+                                    </ice:commandLink>
                                 </li>
                             </span>
                             <span jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.userAuthorizedToRelease and studyPage.studyUI.study.studyLock==null and studyPage.studyUI.studyVersion.inReview}">

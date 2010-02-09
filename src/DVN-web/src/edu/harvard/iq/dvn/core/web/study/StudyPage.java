@@ -28,6 +28,7 @@
  */
 package edu.harvard.iq.dvn.core.web.study;
 
+import com.icesoft.faces.component.ext.HtmlCommandLink;
 import com.icesoft.faces.component.paneltabset.PanelTabSet;
 import com.icesoft.faces.component.paneltabset.TabChangeEvent;
 import com.sun.jsfcl.data.DefaultTableDataModel;
@@ -631,6 +632,48 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
     public String beginRequestWorkflow() {
             LoginWorkflowBean lwf = (LoginWorkflowBean) getBean("LoginWorkflowBean");       
             return lwf.beginFileAccessWorkflow(studyId);
+    }
+
+    /** toggleVersionNotesPopup
+     * actionListener method for hiding
+     * and showing the popup
+     *
+     * @param ActionEvent
+     *
+     * @author mheppler
+    */
+    public void toggleVersionNotesPopup(javax.faces.event.ActionEvent event) {
+        showVersionNotesPopup = !showVersionNotesPopup;
+        actionComplete = false;
+    }
+
+    protected boolean showVersionNotesPopup = false;
+    protected boolean actionComplete = false;
+
+    public boolean isActionComplete() {
+        return actionComplete;
+    }
+
+    public void setActionComplete(boolean actionComplete) {
+        this.actionComplete = actionComplete;
+    }
+
+    public boolean isShowVersionNotesPopup() {
+        return showVersionNotesPopup;
+    }
+
+    public void setShowVersionNotesPopup(boolean showVersionNotesPopup) {
+        this.showVersionNotesPopup = showVersionNotesPopup;
+    }
+
+    protected HtmlCommandLink editStudyVersionNotesLink = new HtmlCommandLink();
+
+    public HtmlCommandLink getEditStudyVersionNotesLink() {
+        return editStudyVersionNotesLink;
+    }
+
+    public void setEditStudyVersionNotesLink(HtmlCommandLink editStudyVersionNotesLink) {
+        this.editStudyVersionNotesLink = editStudyVersionNotesLink;
     }
     
 }

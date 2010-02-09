@@ -143,7 +143,7 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
 .dvnstudyversioninfo {}
 .dvnstudyversioninfo span.iceOutTxt {color:#A9A9A9; line-height: 1.48; font-size:.95em !important;}
 
-.dvnstudystatusbox{margin: 1em 0; padding: 0 8px; font-weight: bold; line-height:24px !important;}
+.dvnstudystatusbox{margin: 0; padding: 0 8px; font-weight: bold; line-height:24px !important;}
 .dvnstudystatusbox div{margin-top:4px; line-height:18px !important;}
 .dvnstudystatusarchived{background: gold; color: #526F76;}
 .dvnstudystatusreview{background: #ececec; color: #526F76;}
@@ -178,8 +178,14 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
                       <div jsfc="ice:panelGroup" styleClass="dvnstudyversioninfo" rendered="#{(studyPage.studyUI.studyVersion.released)}">
                           <ice:outputText value="Version: #{studyPage.studyUI.studyVersion.versionNumber}"/> &mdash; <ice:outputText value="Released: #{studyPage.studyUI.dateOfDeposit}"/>
                       </div>
-                      <div jsfc="ice:panelGroup" styleClass="dvnstudystatusbox #{studyPage.studyUI.studyVersion.archived ? 'dvnstudystatusarchived' : ''}" rendered="#{!studyPage.studyUI.studyVersion.released}">
-                          <ice:outputText styleClass="dvnstudystatuslabel" value="In Review" rendered="#{studyPage.studyUI.studyVersion.inReview}"/><ice:outputText value="Study Version: #{studyPage.studyUI.studyVersion.versionNumber}"/> <br/>
+                      <div jsfc="ice:panelGroup" styleClass="dvnstudystatusbox #{studyPage.studyUI.studyVersion.archived ? 'dvnstudystatusarchived' : '' or studyPage.studyUI.studyVersion.inReview ? 'dvnstudystatusreview' : '' or studyPage.studyUI.studyVersion.draft ? 'dvnstudystatusdraft' : ''}" rendered="#{!studyPage.studyUI.studyVersion.released}">
+                          <ice:outputText styleClass="dvnstudystatuslabel" value="In Review" rendered="#{studyPage.studyUI.studyVersion.inReview}"/>
+                          <ice:outputText styleClass="dvnstudystatuslabel" value="Draft" rendered="#{studyPage.studyUI.studyVersion.draft}"/>
+                          <ice:outputText value="Study Version: #{studyPage.studyUI.studyVersion.versionNumber}"/>
+                          <ice:outputText value="--" rendered="#{!(studyPage.studyUI.studyVersion.released)}"/>
+                          <ice:outputLink value="#" rendered="#{!(studyPage.studyUI.studyVersion.released)}">
+                            <ice:outputText value="View Released Version"/>
+                          </ice:outputLink> <br/>
                           <ice:outputText value="Created: #{studyPage.studyUI.dateOfDeposit}"/>
                       </div>
                   </div>
@@ -193,7 +199,7 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
                     </ice:outputLink>
                 </div>
                 <div class="dvnstudyadminbox">
-                    <div jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.userAuthorizedToEdit or studyPage.studyUI.study.inReview or studyPage.studyUI.study.new and studyPage.studyUI.study.studyLock==null}">
+                    <div jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.userAuthorizedToEdit or studyPage.studyUI.studyVersion.inReview or studyPage.studyUI.study.new and studyPage.studyUI.study.studyLock==null}">
                         <ul class="dvnstudyadminlinksL">
                             <span jsfc="ice:panelGroup">
                                 <li>
@@ -210,12 +216,12 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
                                     <dvn:tooltip tooltipMessage="#{studybundle.editVersionNotesTip}" linkText="#{studybundle.editVersionNotesText}" eventType="mouseover" linkUrl="#"/>
                                 </li>
                             </span>
-                            <span jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.userAuthorizedToRelease and studyPage.studyUI.study.studyLock==null and studyPage.studyUI.study.inReview}">
+                            <span jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.userAuthorizedToRelease and studyPage.studyUI.study.studyLock==null and studyPage.studyUI.studyVersion.inReview}">
                                 <li>
                                     <dvn:tooltip tooltipMessage="#{studybundle.releaseTip}" linkText="Release" eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/ReleaseStudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}"/>
                                 </li>
                             </span>
-                            <span jsfc="ice:panelGroup">
+                            <span jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.userAuthorizedToEdit and studyPage.studyUI.study.studyLock==null and studyPage.studyUI.studyVersion.draft}">
                                 <li>
                                     <dvn:tooltip tooltipMessage="#{studybundle.reviewTip}" linkText="#{studybundle.reviewText}" eventType="mouseover" linkUrl="#"/>
                                 </li>
@@ -225,17 +231,17 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
                                     <dvn:tooltip tooltipMessage="#{studybundle.removeTip}" linkText="#{studybundle.removeText}" eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/DeleteStudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}#{VDCRequest.studyListingIndexAsParameter}"/>
                                 </li>
                             </span>
-                            <span jsfc="ice:panelGroup">
+                            <span jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.userAuthorizedToEdit and studyPage.studyUI.study.studyLock==null and studyPage.studyUI.studyVersion.draft}">
                                 <li>
                                     <dvn:tooltip tooltipMessage="#{studybundle.deleteDraftTip}" linkText="#{studybundle.deleteDraftText}" eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/DeleteStudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}#{VDCRequest.studyListingIndexAsParameter}"/>
                                 </li>
                             </span>
-                            <span jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.userAuthorizedToEdit and studyPage.studyUI.study.studyLock==null and studyPage.studyUI.study.inReview}">
+                            <span jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.userAuthorizedToEdit and studyPage.studyUI.study.studyLock==null and studyPage.studyUI.studyVersion.inReview}">
                                 <li>
                                     <dvn:tooltip tooltipMessage="#{studybundle.deleteReviewTip}" linkText="#{studybundle.deleteReviewText}" eventType="mouseover" linkUrl="#"/>
                                 </li>
                             </span>
-                            <span jsfc="ice:panelGroup">
+                            <span jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.userAuthorizedToEdit and studyPage.studyUI.study.studyLock==null and studyPage.studyUI.studyVersion.archived}">
                                 <li>
                                     <dvn:tooltip tooltipMessage="#{studybundle.restoreTip}" linkText="#{studybundle.restoreText}" eventType="mouseover" linkUrl="#"/>
                                 </li>

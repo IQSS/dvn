@@ -17,36 +17,35 @@
         </div>
 
         <style type="text/css">
-            .dvnversionstable th {padding: 8px; text-align: center; background:#FFF; border: 0; font-weight: bold; font-size: 1em;}
-            .dvnversionstable td {padding: 8px; border: 0;}
             .dvnversionstable {border: 0;}
             .dvnversionstable .oddRow {background:#E6EBED;}
             .dvnversionstable .evenRow {background:#FFF;}
+            .dvnversionstable th {padding: 8px; text-align: center; background:#FFF; border: 0; font-weight: bold; font-size: 1em;}
+            .dvnversionstable td {padding: 8px; border: 0;}
+            .dvnversionstable td.dvnversionstableCol1 {width:80px;}
+            .dvnversionstable td.dvnversionstableCol1, .dvnversionstable td.dvnversionstableCol2 {text-align:center;}
+            .dvnversionstable td.dvnversionstableCol2, .dvnversionstable td.dvnversionstableCol3 {width:50px;}
+            .dvnversionstable td.dvnversionstableCol5, .dvnversionstable td.dvnversionstableCol6 {width:180px;}
             .dvnversionsreleasedate {white-space:nowrap}
         </style>
 
-
-        <ice:dataTable cellpadding="0"
-                       cellspacing="0"
-                       id="versionsDataTable"
-                       rowClasses="oddRow evenRow"
-                       styleClass="dvnversionstable"
-                       value="#{studyPage.studyUI.study.studyVersions}"
-                       var="sv"
-                       width="100%">
-           <ice:column styleClass="iceDatTblColHdr1">
+        <ice:dataTable id="versionsDataTable" cellpadding="0" cellspacing="0" width="100%"
+                       styleClass="dvnversionstable" rowClasses="oddRow evenRow"
+                       columnClasses="dvnversionstableCol1, dvnversionstableCol2, dvnversionstableCol3, dvnversionstableCol4, dvnversionstableCol5, dvnversionstableCol6"
+                       value="#{studyPage.studyUI.study.studyVersions}" var="sv">
+           <ice:column>
                   <f:facet name="header">
                       <input type="button" value="Difference" />
                   </f:facet>
                 <input type="checkbox"/>
             </ice:column>
-            <ice:column styleClass="iceDatTblColHdr2">
+            <ice:column>
                   <f:facet name="header">
                       <ice:outputText value="Version"/>
                   </f:facet>
                 <ice:outputText value="#{sv.versionNumber}"/>
             </ice:column>
-            <ice:column styleClass="iceDatTblColHdr1">
+            <ice:column>
                   <f:facet name="header">
                       <ice:outputText value="Status"/>
                   </f:facet>
@@ -54,23 +53,23 @@
                       <ice:outputText value="#{sv.versionState}"/>
                   </ice:outputLink>
             </ice:column>
-            <ice:column styleClass="iceDatTblColHdr2">
+            <ice:column>
                   <f:facet name="header">
                       <ice:outputText value="Comments"/>
                   </f:facet>
                 <ice:outputText value="#{sv.versionNote}"/>
             </ice:column>
-            <ice:column styleClass="iceDatTblColHdr1">
+            <ice:column>
                   <f:facet name="header">
                       <ice:outputText value="Released"/>
                   </f:facet>
                 <ice:outputText value="#{sv.releaseTime}"/>
             </ice:column>
-            <ice:column styleClass="iceDatTblColHdr2">
+            <ice:column>
                   <f:facet name="header">
                       <ice:outputText value="Contributors"/>
                   </f:facet>
-                <ice:outputText value="Contributor 1; Contributor 2"/>
+                <ice:outputText value="Contributor 1, Contributor 2"/>
             </ice:column>
         </ice:dataTable>
     </div>

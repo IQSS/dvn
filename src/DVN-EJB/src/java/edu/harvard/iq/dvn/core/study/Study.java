@@ -165,13 +165,16 @@ public class Study implements java.io.Serializable {
     public void setLastUpdateTime(Date lastUpdateTime) {
         this.lastUpdateTime = lastUpdateTime;
     }
-    
+
     public StudyVersion getLatestVersion() {
         int size = studyVersions.size();
         if (size==0){
             return null;
         } else {
-            return studyVersions.get(size-1);
+            // The versions are retrieved from the database
+            // in descending versionNumber order, so the first element in the list
+            // is the latest version
+            return studyVersions.get(0);
         }
     }
     

@@ -201,7 +201,7 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
                     </ice:outputLink>
                 </div>
                 <div class="dvnstudyadminbox">
-                    <div jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.userAuthorizedToEdit or studyPage.studyUI.studyVersion.inReview or studyPage.studyUI.study.new and studyPage.studyUI.study.studyLock==null}">
+                    <div jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.study.studyLock==null and studyPage.studyUI.userAuthorizedToEdit or studyPage.studyUI.studyVersion.inReview or studyPage.studyUI.study.new}">
                         <ul class="dvnstudyadminlinksL">
                             <span jsfc="ice:panelGroup">
                                 <li>

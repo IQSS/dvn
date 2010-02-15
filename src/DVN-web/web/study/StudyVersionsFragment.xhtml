@@ -69,7 +69,11 @@
                   <f:facet name="header">
                       <ice:outputText value="Contributors"/>
                   </f:facet>
-                <ice:outputText value="Contributor 1, Contributor 2"/>
+                <gui:repeat value="#{sv.versionContributors}" var="elem" >
+                        <ice:outputText value="#{elem.contributor.firstName} #{elem.contributor.lastName}"  />
+                      
+                    </gui:repeat>
+               
             </ice:column>
         </ice:dataTable>
     </div>

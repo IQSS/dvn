@@ -201,11 +201,11 @@ public class EditStudyServiceBean implements edu.harvard.iq.dvn.core.study.EditS
         //    }
             
             
-                // otherwise we are coming from edit; check current files for changes
-                
+            // otherwise we are coming from edit; check current files for changes    
             editFiles();
-            
-       
+            studyVersion.updateVersionContributors(user);
+
+
             studyService.saveStudy(studyVersion.getStudy(), userId);
             
             // if new, register the handle

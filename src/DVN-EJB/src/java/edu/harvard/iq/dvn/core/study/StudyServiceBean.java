@@ -1483,7 +1483,9 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         VDCUser user = em.find(VDCUser.class, userId);
 
         study.getLatestVersion().setLastUpdateTime(new Date());
-        // TODO: VERSION:  create entity for storing study contributors
+        // TODO: VERSION:  do we still want to store the last
+        // updater here, now that we have a contributor list
+        // and update time for each version?
         study.setLastUpdater(user);
 
         setDisplayOrders(study);

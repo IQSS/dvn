@@ -5,11 +5,11 @@
 
 package edu.harvard.iq.dvn.core.study;
 
+import edu.harvard.iq.dvn.core.admin.VDCUser;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.*;
-
 
 /**
  *
@@ -47,12 +47,22 @@ public class StudyVersion implements Serializable {
     private List<FileMetadata> fileMetadatas;
     @OneToMany(mappedBy="studyVersion", cascade={CascadeType.REMOVE, CascadeType.PERSIST})
     private List<StudyComment> studyComments;
+    @OneToMany(mappedBy="studyVersion", cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
+    private List<VersionContributor> versionContributors;
     @Temporal(value = TemporalType.TIMESTAMP)
     private Date createTime;
     @Temporal(value = TemporalType.TIMESTAMP)
     private Date lastUpdateTime;
     @Temporal(value = TemporalType.TIMESTAMP)
     private Date releaseTime;
+
+    public List<VersionContributor> getVersionContributors() {
+        return versionContributors;
+    }
+
+    public void setVersionContributors(List<VersionContributor> versionContributors) {
+        this.versionContributors = versionContributors;
+    }
 
     public Date getCreateTime() {
         return createTime;
@@ -156,7 +166,28 @@ public class StudyVersion implements Serializable {
         this.studyComments = studyComments;
     }
 
+    /**
+     * Update versionContributors List:
+     * If the user who made the edit has already contributed to this version,
+     * update his lastUpdated time.  Else, add him as a new contributor
+     */
+    public void updateVersionContributors(VDCUser user) {
+            boolean foundUser = false;
+            for (VersionContributor vc : versionContributors) {
+                if (vc.getContributor().equals(user)) {
+                  vc.setLastUpdateTime(new Date());
+                  foundUser=true;
+                }
+            }
+            if (!foundUser) {
+                VersionContributor newContrib = new VersionContributor();
+                newContrib.setContributor(user);
+                newContrib.setLastUpdateTime(new Date());
+                newContrib.setStudyVersion(this);
+                versionContributors.add(newContrib);
 
+            }
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

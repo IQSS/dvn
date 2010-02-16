@@ -370,7 +370,7 @@ public class EditStudyServiceBean implements edu.harvard.iq.dvn.core.study.EditS
         // and recalculate study UNF, if needed
         if (recalculateStudyUNF) {
             try {
-                studyVersion.getMetadata().setUNF( new DSBWrapper().calculateUNF(studyVersion.getStudy()) );
+                studyVersion.getMetadata().setUNF( new DSBWrapper().calculateUNF(studyVersion) );
             } catch (IOException e) {
                 throw new EJBException("Could not calculate new study UNF");
             }

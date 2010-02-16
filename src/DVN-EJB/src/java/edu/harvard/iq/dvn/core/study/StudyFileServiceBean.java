@@ -10,6 +10,7 @@ import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.mail.MailServiceLocal;
 import edu.harvard.iq.dvn.core.util.FileUtil;
 import edu.harvard.iq.dvn.ingest.dsb.DSBIngestMessage;
+import edu.harvard.iq.dvn.ingest.dsb.DSBWrapper;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -331,12 +332,12 @@ public class StudyFileServiceBean implements StudyFileServiceLocal {
             }
         }
         // TODO: VERSION
-        /* calcualte study UNF
+        // calcualte study UNF
         try {
-            study.setUNF(new DSBWrapper().calculateUNF(study));
+            studyVersion.getMetadata().setUNF(new DSBWrapper().calculateUNF(studyVersion));
         } catch (IOException e) {
             throw new EJBException("Could not calculate new study UNF");
-        }*/
+        }
 
         study.setLastUpdateTime(new Date());
         study.setLastUpdater(user);

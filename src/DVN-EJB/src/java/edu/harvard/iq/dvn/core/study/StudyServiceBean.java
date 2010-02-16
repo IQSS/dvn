@@ -1260,6 +1260,13 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         return studyVersion;
     }
 
+    public StudyVersion getStudyVersionById(Long versionId){
+        StudyVersion sv = em.find(StudyVersion.class, versionId);
+        if (sv==null){
+            throw new IllegalArgumentException("Unknown version id " + versionId);
+        }
+        return sv;
+    }
 
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)

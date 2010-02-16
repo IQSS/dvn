@@ -63,6 +63,7 @@ public interface StudyServiceLocal extends java.io.Serializable {
     // 1 (new to this version)
     public StudyVersion getStudyVersion(String globalId, Long versionNumber);
     public StudyVersion getStudyVersion(Long studyId, Long versionNumber);
+    public StudyVersion getStudyVersionById(Long versionId);
 
     //1
     public Study getStudyByHarvestInfo(VDC vdc, String harvestIdentifier);

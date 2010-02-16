@@ -65,6 +65,7 @@ import java.util.StringTokenizer;
 import java.util.logging.Logger;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.PorterStemFilter;
+import org.apache.lucene.analysis.WhitespaceAnalyzer;
 import org.apache.lucene.analysis.tokenattributes.TermAttribute;
 import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.DateTools.Resolution;
@@ -180,7 +181,7 @@ public class Indexer implements java.io.Serializable  {
 
         
         Document doc = new Document();
-        logger.info("Start indexing study "+study.getStudyId());
+        logger.fine("Start indexing study "+study.getStudyId());
         addText(4.0f,  doc,"title",metadata.getTitle());
         addKeyword(doc,"id",study.getId().toString());
         addText(1.0f,  doc,"studyId", study.getStudyId());
@@ -392,15 +393,16 @@ public class Indexer implements java.io.Serializable  {
 
         }        
         writerVar.close();
-        writerVersions = new IndexWriter(dir, getAnalyzer(), isIndexEmpty(), IndexWriter.MaxFieldLength.UNLIMITED);
+        writerVersions = new IndexWriter(dir, new WhitespaceAnalyzer(), isIndexEmpty(), IndexWriter.MaxFieldLength.UNLIMITED);
         for (StudyVersion version: study.getStudyVersions()){
             Document docVersions = new Document();
             addText(1.0f, docVersions, "versionId", version.getId().toString());
             addText(1.0f, docVersions, "versionNumber", version.getVersion().toString());
-            addText(1.0f, docVersions, "versionUnf", version.getMetadata().getUNF());
+            addKeyword(docVersions, "versionUnf", version.getMetadata().getUNF());
+            writerVersions.addDocument(docVersions);
         }
         writerVersions.close();
-        logger.info("End indexing study " + study.getStudyId());
+        logger.fine("End indexing study " + study.getStudyId());
     }
 
 
@@ -436,7 +438,7 @@ public class Indexer implements java.io.Serializable  {
 
 
     public List search(List <Long> studyIds, List <SearchTerm> searchTerms) throws IOException{
-        logger.info("Start search: "+DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+        logger.fine("Start search: "+DateTools.dateToString(new Date(), Resolution.MILLISECOND));
         Long[] studyIdsArray = null;
         if (studyIds != null) {
             studyIdsArray = studyIds.toArray(new Long[studyIds.size()]);
@@ -468,27 +470,27 @@ public class Indexer implements java.io.Serializable  {
             BooleanQuery searchTermsQuery = andSearchTermClause(nonVariableSearchTerms);
             searchParts.add(searchTermsQuery);
             BooleanQuery searchQuery = andQueryClause(searchParts);
-            logger.info("Start hits: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+            logger.fine("Start hits: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             nvResults = getHitIds(searchQuery);
-            logger.info("Done hits: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
-            logger.info("Start filter: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+            logger.fine("Done hits: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+            logger.fine("Start filter: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             filteredResults = studyIds != null ? intersectionResults(nvResults, studyIdsArray) : nvResults;
-            logger.info("Done filter: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+            logger.fine("Done filter: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
         }
         if (variableSearch){
             if (nonVariableSearch) {
-                logger.info("Start nonvar search variables: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+                logger.fine("Start nonvar search variables: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
                 results = searchVariables(filteredResults, variableSearchTerms, true); // get var ids
-                logger.info("Done nonvar search variables: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+                logger.fine("Done nonvar search variables: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             } else {
-                logger.info("Start search variables: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+                logger.fine("Start search variables: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
                 results = searchVariables(studyIds, variableSearchTerms, true); // get var ids
-                logger.info("Done search variables: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+                logger.fine("Done search variables: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             }
         } else {
             results = filteredResults;
         }
-        logger.info("Done search: "+DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+        logger.fine("Done search: "+DateTools.dateToString(new Date(), Resolution.MILLISECOND));
 
         return results;
 
@@ -502,7 +504,8 @@ public class Indexer implements java.io.Serializable  {
         st.setValue(unf);
         Term t = new Term(st.getFieldName(), st.getValue().toLowerCase().trim());
         unfQuery = new TermQuery(t);
-        return getVersionHitIds(getHits(unfQuery));
+        List<Document> documents = getVersionUnfHits(unfQuery);
+        return getVersionHitIds(documents);
     }
 
     private String getDVNTokenString(final String value) {
@@ -681,14 +684,34 @@ public class Indexer implements java.io.Serializable  {
         List <Document> documents = new ArrayList();
         if (query != null){
             initIndexSearcher();
-            logger.info("Start searcher: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+            logger.fine("Start searcher: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             DocumentCollector s = new DocumentCollector(searcher);
             searcher.search(query, s);
             List <ScoreDoc> hits = s.getStudies();
             for (int i = 0; i < hits.size(); i++) {
                 documents.add(searcher.doc(((ScoreDoc)hits.get(i)).doc));
             }
-            logger.info("done iterate: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+            logger.fine("done iterate: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+            searcher.close();
+        }
+        return documents;
+    }
+
+    private List<Document> getVersionUnfHits( Query query ) throws IOException {
+         List <Document> documents = new ArrayList();
+        if (query != null){
+            initIndexSearcher();
+            logger.fine("Start searcher: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+            DocumentCollector s = new DocumentCollector(searcher);
+            searcher.search(query, s);
+            List hits = s.getStudies();
+            for (int i = 0; i < hits.size(); i++) {
+                ScoreDoc sd = (ScoreDoc) hits.get(i);
+                Document d = searcher.doc(sd.doc);
+                documents.add(d);
+//                documents.add(searcher.doc(((ScoreDoc)hits.get(i)).doc));
+            }
+            logger.fine("done iterate: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             searcher.close();
         }
         return documents;
@@ -700,12 +723,12 @@ public class Indexer implements java.io.Serializable  {
         LinkedHashSet matchIdsSet = new LinkedHashSet();
         if (query != null){
             initIndexSearcher();
-            logger.info("Start searcher: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+            logger.fine("Start searcher: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             DocumentCollector s = new DocumentCollector(searcher);
             searcher.search(query, s);
 //            searcher.close();
-            logger.info("done searcher: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
-            logger.info("Start iterate: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+            logger.fine("done searcher: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+            logger.fine("Start iterate: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             List hits = s.getStudies();
             for (int i = 0; i < hits.size(); i++) {
                 ScoreDoc sd = (ScoreDoc) hits.get(i);
@@ -715,7 +738,7 @@ public class Indexer implements java.io.Serializable  {
                 Long studyIdLong = Long.valueOf(studyIdStr);
                 matchIdsSet.add(studyIdLong);
             }
-            logger.info("done iterate: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
+            logger.fine("done iterate: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             searcher.close();
         }
         matchIds.addAll(matchIdsSet);
@@ -756,10 +779,10 @@ public class Indexer implements java.io.Serializable  {
         LinkedHashSet matchIdsSet = new LinkedHashSet();
         for (Iterator it = hits.iterator(); it.hasNext();){
             Document d = (Document) it.next();
-            Field studyId = d.getField("versionId");
-            String studyIdStr = studyId.stringValue();
-            Long studyIdLong = Long.valueOf(studyIdStr);
-            matchIdsSet.add(studyIdLong);
+            Field versionId = d.getField("versionId");
+            String versionIdStr = versionId.stringValue();
+            Long versionIdLong = Long.valueOf(versionIdStr);
+            matchIdsSet.add(versionIdLong);
         }
         matchIds.addAll(matchIdsSet);
         return matchIds;
@@ -1058,9 +1081,9 @@ public class Indexer implements java.io.Serializable  {
     private void assureIndexDirExists() {
         File indexDirFile = new File(indexDir);
         if (!indexDirFile.exists()) {
-            logger.info("Index directory does not exist - creating "+indexDir);
+            logger.fine("Index directory does not exist - creating "+indexDir);
             indexDirFile.mkdir();
-            logger.info(indexDir + " created");
+            logger.fine(indexDir + " created");
         }
     }
 }

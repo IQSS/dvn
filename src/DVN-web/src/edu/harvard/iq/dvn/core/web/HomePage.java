@@ -41,6 +41,7 @@ import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.index.IndexServiceLocal;
 import edu.harvard.iq.dvn.core.index.SearchTerm;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
+import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.study.VariableServiceLocal;
 import edu.harvard.iq.dvn.core.web.util.PagedDataModel;
 import edu.harvard.iq.dvn.core.util.StringUtil;
@@ -484,6 +485,8 @@ public class HomePage extends VDCBaseBean implements Serializable {
         searchTerms.add(st);
         List studies        = new ArrayList();
         Map variableMap     = new HashMap();
+        Map versionMap = new HashMap();
+        List versions   = new ArrayList();
 
         if ( searchField.equals("variable") ) {
             List variables  = indexService.searchVariables(getVDCRequestBean().getCurrentVDC(), st);
@@ -492,12 +495,36 @@ public class HomePage extends VDCBaseBean implements Serializable {
         } else {
             studies         = indexService.search(getVDCRequestBean().getCurrentVDC(), searchTerms);
         }
+        if (searchField.equals("any")) {
+//            studies.add(st);
+            List<Long> versionIds = indexService.searchVersionUnf(searchValue);
+            Iterator iter = versionIds.iterator();
+            Long studyId = null;
+            while (iter.hasNext()) {
+                List<StudyVersion> svList = new ArrayList<StudyVersion>();
+                Long vId = (Long) iter.next();
+                StudyVersion sv = null;
+                try {
+                    sv = studyService.getStudyVersionById(vId);
+                    studyId = sv.getStudy().getId();
+                    svList.add(sv);
+                    if (!studies.contains(studyId)) {
+                        studies.add(studyId);
+                    }
+                } catch (IllegalArgumentException e) {
+                    System.out.println("StudyVersion (ID=" + vId + ") was found in index, but is not in DB.");
+                }
+                versionMap.put(studyId, svList);
+            }
+
+        }
 
 
         StudyListing sl = new StudyListing(StudyListing.SEARCH);
         sl.setStudyIds(studies);
         sl.setSearchTerms(searchTerms);
         sl.setVariableMap(variableMap);
+        sl.setVersionMap(versionMap);
         getVDCRequestBean().setStudyListing(sl);
 
         return "search";

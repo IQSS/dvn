@@ -69,6 +69,7 @@ public class StudyListing  implements java.io.Serializable {
     private Long vdcId;
     private List searchTerms;
     private Map variableMap;
+    private Map versionMap;
 
     public int getMode() {
         return mode;
@@ -124,6 +125,20 @@ public class StudyListing  implements java.io.Serializable {
 
     public void setVariableMap(Map variableMap) {
         this.variableMap = variableMap;
+    }
+
+    /**
+     * @return the versionMap
+     */
+    public Map getVersionMap() {
+        return versionMap;
+    }
+
+    /**
+     * @param versionMap the versionMap to set
+     */
+    public void setVersionMap(Map versionMap) {
+        this.versionMap = versionMap;
     }
 
     public static String addToStudyListingMap(StudyListing sl, Map sessionMap) {

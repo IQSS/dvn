@@ -37,6 +37,7 @@ import edu.harvard.iq.dvn.core.index.SearchTerm;
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyField;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
+import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.study.VariableServiceLocal;
 import edu.harvard.iq.dvn.core.util.StringUtil;
 import edu.harvard.iq.dvn.core.vdc.VDC;
@@ -132,6 +133,10 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
                     List dvList = (List) studyListing.getVariableMap().get(sid);
                     sui.setFoundInVariables(dvList);
                 }
+                if (studyListing.getVersionMap() != null){
+                    List versionList = (List) studyListing.getVersionMap().get(sid);
+                    sui.setFoundInVersions(versionList);
+                }
                 studyUIList.add(sui);
             }
         }
@@ -220,6 +225,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
 
         List studyIDList = new ArrayList();
         Map variableMap = new HashMap();
+        Map versionMap = new HashMap();
 
         // currently search filter is determined from a set of boolean checkboxes
         int searchFilter = 0;
@@ -257,6 +263,28 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
             } else {
                 studyIDList = indexService.search(getVDCRequestBean().getCurrentVDC(), searchTerms);
             }
+            if (searchField.equals("any")) {
+                List<Long> versionIds = indexService.searchVersionUnf(searchValue);
+                Iterator iter = versionIds.iterator();
+                Long studyId = null;
+                List<StudyVersion> svList = new ArrayList<StudyVersion>();
+                while (iter.hasNext()) {
+                    Long vId = (Long) iter.next();
+                    StudyVersion sv = null;
+                    try {
+                        sv = studyService.getStudyVersionById(vId);
+                        studyId = sv.getStudy().getId();
+                        svList.add(sv); 
+                        if (!studyIDList.contains(studyId)) {
+                            studyIDList.add(studyId);
+                        }
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("StudyVersion (ID=" + vId + ") was found in index, but is not in DB.");
+                    }
+                }
+                versionMap.put(studyId, svList);
+
+            }
         }
 
 
@@ -270,6 +298,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
         studyListing.setStudyIds(studyIDList);
         studyListing.setSearchTerms(searchTerms);
         studyListing.setVariableMap(variableMap);
+        studyListing.setVersionMap(versionMap);
         studyListing.setCollectionTree(collectionTree);
         setStudyListingIndex(addToStudyListingMap(studyListing));
 

@@ -67,6 +67,8 @@ public interface IndexServiceLocal extends java.io.Serializable {
 
     public List searchVariables(VDC vdc, List<VDCCollection> searchCollections, SearchTerm searchTerm);
 
+    public List <Long> searchVersionUnf(String unf);
+    
     public void createIndexTimer();
     
     public void createIndexNotificationTimer();

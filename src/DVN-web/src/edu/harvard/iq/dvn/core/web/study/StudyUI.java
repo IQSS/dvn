@@ -1016,7 +1016,24 @@ public class StudyUI  implements java.io.Serializable {
     public void setFoundInVariables(List foundInVariables) {
         this.foundInVariables = foundInVariables;
     }
-    
+
+    private List foundInVersions;
+
+    /**
+     * @return the foundInVersions
+     */
+    public List getFoundInVersions() {
+        return foundInVersions;
+    }
+
+    /**
+     * @param foundInVersions the foundInVersions to set
+     */
+    public void setFoundInVersions(List foundInVersions) {
+        this.foundInVersions = foundInVersions;
+    }
+
+
     public static boolean isStudyInList(Study study, List list) {
         Iterator iter = list.iterator();
         while (iter.hasNext()) {
@@ -1093,6 +1110,6 @@ public class StudyUI  implements java.io.Serializable {
             authorized = getStudy().isUserAuthorizedToRelease(user);
         }
         return authorized;
-    }    
-    
+    }
+
 }

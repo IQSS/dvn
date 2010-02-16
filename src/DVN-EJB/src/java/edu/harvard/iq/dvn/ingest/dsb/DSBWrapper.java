@@ -29,19 +29,17 @@
 
 package edu.harvard.iq.dvn.ingest.dsb;
 
-import edu.harvard.iq.dvn.unf.UnfException;
 import edu.harvard.iq.dvn.unf.UNF5Util;
 import edu.harvard.iq.dvn.core.study.DataVariable;
-import edu.harvard.iq.dvn.core.study.Study;
+import edu.harvard.iq.dvn.core.study.FileMetadata;
 import edu.harvard.iq.dvn.core.study.StudyFile;
 import edu.harvard.iq.dvn.core.study.StudyFileEditBean;
+import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.study.TabularDataFile;
 import edu.harvard.iq.dvn.core.util.WebStatisticsSupport;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -61,21 +59,15 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.methods.multipart.FilePart;
-import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
-import org.apache.commons.httpclient.methods.multipart.Part;
-import org.apache.commons.httpclient.methods.multipart.StringPart;
 
 
 import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.*;
 import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.metadata.*;
-import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.data.*;
 
 
 import java.io.BufferedInputStream;
 import java.io.FileOutputStream;
 import java.nio.channels.FileChannel;
-import java.security.NoSuchAlgorithmException;
 
 import java.util.logging.Logger;
 
@@ -325,11 +317,11 @@ public class DSBWrapper implements java.io.Serializable  {
 
     }
     
-    public String calculateUNF(Study s) throws IOException {
+    public String calculateUNF(StudyVersion sv) throws IOException {
+        //TODO: VERSION: (check this)
         List unfs = new ArrayList();
-        Iterator iter = s.getStudyFiles().iterator();
-        while (iter.hasNext()) {
-            StudyFile temp = (StudyFile) iter.next();
+        for (FileMetadata fmd : sv.getFileMetadatas()) {
+            StudyFile temp = fmd.getStudyFile();
             if (temp.isUNFable()) {
                 unfs.add(temp.getUnf());
             }

@@ -106,7 +106,7 @@ public class DSBIngestMessageBean implements MessageListener {
                 
             }
             
-            studyFileService.addIngestedFiles( ingestMessage.getStudyId(),
+            studyFileService.addIngestedFiles( ingestMessage.getStudyVersionId(),
                     successfuleFiles,
                     ingestMessage.getIngestUserId());
             

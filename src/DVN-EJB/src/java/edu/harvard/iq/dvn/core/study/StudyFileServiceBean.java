@@ -213,6 +213,7 @@ public class StudyFileServiceBean implements StudyFileServiceLocal {
                 ingestMessage.setIngestEmail(ingestEmail);
                 ingestMessage.setIngestUserId(user.getId());
                 ingestMessage.setStudyId(study.getId());
+                ingestMessage.setStudyVersionId(studyVersion.getId());
                 Message message = session.createObjectMessage(ingestMessage);
 
                 String detail = "Ingest processing for " + subsettableFiles.size() + " file(s).";
@@ -254,11 +255,11 @@ public class StudyFileServiceBean implements StudyFileServiceLocal {
 
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void addIngestedFiles(Long studyId, List fileBeans, Long userId) {
+    public void addIngestedFiles(Long studyVersionId, List fileBeans, Long userId) {
         // first some initialization
         // TODO: VERSION:
-        Study study = studyService.getStudy(studyId);
-        StudyVersion studyVersion = study.getStudyVersions().get(0);
+        StudyVersion studyVersion =  em.find(StudyVersion.class, studyVersionId);
+        Study study = studyVersion.getStudy();
         em.refresh(study);
         VDCUser user = userService.find(userId);
 

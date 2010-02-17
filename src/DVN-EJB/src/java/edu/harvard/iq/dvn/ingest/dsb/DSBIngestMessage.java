@@ -55,6 +55,7 @@ public class DSBIngestMessage implements Serializable{
     private int messageLevel = INGEST_MESAGE_LEVEL_INFO;
     
     private Long studyId;
+    private Long studyVersionId;
     private List fileBeans;
 
     public String getIngestEmail() {
@@ -87,6 +88,14 @@ public class DSBIngestMessage implements Serializable{
 
     public void setStudyId(Long studyId) {
         this.studyId = studyId;
+    }
+
+    public Long getStudyVersionId() {
+        return studyVersionId;
+    }
+
+    public void setStudyVersionId(Long studyVersionId) {
+        this.studyVersionId = studyVersionId;
     }
 
     public List getFileBeans() {

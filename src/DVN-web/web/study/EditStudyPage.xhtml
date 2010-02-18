@@ -2034,7 +2034,7 @@
                             <!-- note that the Javascript functions currently depends on the placement and ids of these fields (and the dropdown box;
                                                   changing them may require corresponding changes in the Javascript  -->
                             <ice:selectBooleanCheckbox id="catCheckbox" onclick="updateCategory(this);"/>
-                            <ice:inputText id="catTextField" size="26" value="#{file.fileCategoryName}" onfocus="deselectCategory(this)"/>
+                            <ice:inputText id="catTextField" size="26" value="#{file.fileMetadata.category}" onfocus="deselectCategory(this)"/>
                           </div>
                           <f:facet name="header">
                             <div jsfc="ice:panelGroup" id="catColPanelGroup">
@@ -2046,7 +2046,7 @@
                           </f:facet>
                         </ice:column>
                         <ice:column id="column10">
-                          <ice:inputText id="input_fileName" size="30" value="#{file.studyFile.fileName}" required="true" requiredMessage="This field is required."  validator="#{EditStudyPage.validateFileName}" />
+                          <ice:inputText id="input_fileName" size="30" value="#{file.fileMetadata.label}" required="true" requiredMessage="This field is required."  validator="#{EditStudyPage.validateFileName}" />
                           <ice:message styleClass="errorMessage" for="input_fileName"/><br/>
                           <ice:graphicImage rendered="#{file.studyFile.subsettable}" id="imagefs" styleClass="vdcNoBorders" value="/resources/images/icon_subsettable.gif"/>
                           <ice:outputText id="outputText17" value="#{file.userFriendlyFileType}"/>
@@ -2055,7 +2055,7 @@
                           </f:facet>
                         </ice:column>
                         <ice:column id="column11">
-                          <ice:inputTextarea cols="48" rows="2" value="#{file.studyFile.description}"/>
+                          <ice:inputTextarea cols="48" rows="2" value="#{file.fileMetadata.description}"/>
                           <f:facet name="header">
                             <ice:outputText id="outputText16" value="Description"/>
                           </f:facet>

@@ -93,9 +93,11 @@ public class EditStudyServiceBean implements edu.harvard.iq.dvn.core.study.EditS
             throw new IllegalArgumentException("Unknown study id: "+studyId);
         }
         StudyVersion latestVersion = study.getLatestVersion();
-         if (latestVersion.isReleased())
+         if (latestVersion.isReleased()) {
             // if the latest version is released, create a new version for editing
-            studyVersion = createNewStudyVersion(study,latestVersion);
+            study.createNewStudyVersion();
+            studyVersion = study.getLatestVersion();
+        }
         else if (latestVersion.isWorkingCopy()){
             // else, edit existing working copy
             studyVersion = latestVersion;
@@ -104,28 +106,17 @@ public class EditStudyServiceBean implements edu.harvard.iq.dvn.core.study.EditS
             throw new IllegalArgumentException("Cannot edit deaccessioned study: "+studyId);
         }
 
-        // now set the files
-        /* TODO: VERSION:
-        for (Iterator fileIt = studyFileService.getOrderedFilesByStudy(study.getId()).iterator(); fileIt.hasNext();) {
-            StudyFile sf = (StudyFile) fileIt.next();
-            StudyFileEditBean fileBean = new StudyFileEditBean(em.find(StudyFile.class,sf.getId()));
-            fileBean.setFileCategoryName(sf.getFileCategory().getName());
+       
+        for (FileMetadata fm: studyVersion.getFileMetadatas()) {
+            StudyFileEditBean fileBean = new StudyFileEditBean(fm);
             getCurrentFiles().add(fileBean);
 
         }
-        */
+        
    
     }
     
-    private StudyVersion createNewStudyVersion(Study study, StudyVersion latestVersion) {
-        StudyVersion sv = new StudyVersion();
-        sv.setVersionState(VersionState.DRAFT);
-        latestVersion.getMetadata().copyMetadata(sv.getMetadata());
-        sv.setVersionNumber(latestVersion.getVersionNumber()+1);
-        study.getStudyVersions().add(sv);
-        sv.setStudy(study);
-        return sv;
-    }
+ 
 
 
     public void newStudy(Long vdcId, Long userId, Long templateId) {
@@ -337,33 +328,24 @@ public class EditStudyServiceBean implements edu.harvard.iq.dvn.core.study.EditS
         
         Iterator iter = currentFiles.iterator();
         while (iter.hasNext()) {
-            StudyFileEditBean file = (StudyFileEditBean) iter.next();
-            StudyFile f = em.find(StudyFile.class,file.getStudyFile().getId());
-            if (file.isDeleteFlag()) {
-                f.getAllowedGroups().clear();
-                f.getAllowedUsers().clear();
-                //removeCollectionElement(f.getFileCategory().getStudyFiles(),f);
-                recalculateStudyUNF = f.isUNFable() ? true : recalculateStudyUNF;
-                filesToBeDeleted.add(f);
-                // TODO: VERSION
-            } /*else {
-                if (!f.getFileCategory().getName().equals(file.getFileCategoryName()) ) {
-                    // move to new cat
-                    f.getFileCategory().getStudyFiles().remove(f);
-                    addFileToCategory(file.getStudyFile(), file.getFileCategoryName(), study);
-                }
-            }*/
-        }
+            StudyFileEditBean fileBean = (StudyFileEditBean) iter.next();
+            StudyFile f = em.find(StudyFile.class,fileBean.getStudyFile().getId());
+            if (fileBean.isDeleteFlag()) {
 
-        // persist new categories and flush
-        // this is done here, because, since a study file could change categories, we need the new category to get persisted
-        // before the old categoy gets deleted (otherwise the persistence layer will attempt to set the category_id on the study file
-        // to null when the delete happens throwing a SQL not null exception)
-        for (FileCategory cat : studyVersion.getStudy().getFileCategories()) {
-            if (cat.getId() == null) {
-                em.persist(cat);
+                recalculateStudyUNF = f.isUNFable() ? true : recalculateStudyUNF;
+                // If there is only one study version that points to the file,
+                // delete the file metadata and the file.  
+                // Else, just delete the file metadata.
+                if (f.getFileMetadatas().size()==1) {
+                    f.getAllowedGroups().clear();
+                    f.getAllowedUsers().clear();
+                    filesToBeDeleted.add(f);
+                }
+                em.remove(fileBean.getFileMetadata());
             }
         }
+
+       
         em.flush();
         
         
@@ -470,7 +452,7 @@ public class EditStudyServiceBean implements edu.harvard.iq.dvn.core.study.EditS
         clearCollection(studyVersion.getMetadata().getStudyTopicClasses());
         
         // Copy Template Metadata into Study Metadata
-        newTemplate.getMetadata().copyMetadata(studyVersion.getMetadata());
+        studyVersion.setMetadata(new Metadata(newTemplate.getMetadata()));
         studyVersion.getStudy().setTemplate(newTemplate);
 
         // prefill date of deposit

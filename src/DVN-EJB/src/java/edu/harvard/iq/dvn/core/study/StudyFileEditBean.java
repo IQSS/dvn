@@ -53,8 +53,15 @@ public class StudyFileEditBean implements Serializable {
     /** Creates a new instance of StudyFileEditBean */
     public StudyFileEditBean(StudyFile sf) {
         this.studyFile = sf;
+
     }
 
+    /** Creates a new instance of StudyFileEditBean */
+    public StudyFileEditBean(FileMetadata fileMetadata) {
+        this.fileMetadata = fileMetadata;
+        this.studyFile = fileMetadata.getStudyFile();
+
+    }
 
     public StudyFileEditBean(File file, String fileSystemName, Study study) throws IOException {
         dbgLog.fine("***** within StudyFileEditBean: constructor: start *****");

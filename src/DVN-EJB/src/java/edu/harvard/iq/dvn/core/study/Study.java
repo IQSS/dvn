@@ -109,12 +109,12 @@ public class Study implements java.io.Serializable {
         StudyVersion sv = new StudyVersion();
         sv.setVersionNumber(new Long(1));
         sv.setVersionState(versionState);
+        sv.setStudy(this);
+        sv.setMetadata(new Metadata(template.getMetadata()));
+        sv.getMetadata().setStudyVersion(sv);
         studyVersions = new ArrayList<StudyVersion>();
         studyVersions.add( sv );
-        sv.setStudy(this);
-
-        template.getMetadata().copyMetadata(sv.getMetadata());
-        if (vdc != null) {
+         if (vdc != null) {
             vdc.getOwnedStudies().add(this);
         }
         
@@ -844,6 +844,37 @@ End of deprecated methods section
 
         return null;
     }
+    /**
+     *  Create a new Study version based on the metadata of the latest version
+     */
+     public void createNewStudyVersion() {
+        StudyVersion sv = new StudyVersion();
+        sv.setVersionState(StudyVersion.VersionState.DRAFT);
+
+        StudyVersion latestVersion = getLatestVersion();
+        sv.setMetadata(new Metadata(latestVersion.getMetadata()));
+        sv.getMetadata().setStudyVersion(sv);
+
+       sv.setFileMetadatas(new ArrayList<FileMetadata>());
+       for(FileMetadata fm : latestVersion.getFileMetadatas()) {
+           FileMetadata newFm = new FileMetadata();
+           newFm.setCategory(fm.getCategory());
+           newFm.setDescription(fm.getDescription());
+           newFm.setLabel(fm.getLabel());
+           newFm.setStudyFile(fm.getStudyFile());
+           newFm.setStudyVersion(sv);
+           sv.getFileMetadatas().add(newFm);
+       }
+
+        sv.setVersionNumber(latestVersion.getVersionNumber()+1);
+        // TODO: VERSION:  will this cause too many db calls?
+        // I'm adding the version to the list so it will be persisted when
+        // the study object is persisted.
+        getStudyVersions().add(0, sv);
+        sv.setStudy(this);
+        return;
+    }
+
 
 //    @Override
 //    public String toString() {

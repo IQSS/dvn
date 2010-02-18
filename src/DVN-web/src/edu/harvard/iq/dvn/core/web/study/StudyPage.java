@@ -72,7 +72,6 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
     private boolean studyUIContainsFileDetails=false; // TODO: needed??
     private int selectedIndex;
 
-
     public String getGlobalId() {
         return globalId;
     }
@@ -105,7 +104,7 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
         this.selectedIndex = selectedIndex;
 
     }
-    
+
     public void init() {
         super.init();
         //TODO: see if this can be removed and handled through regular tab handling
@@ -124,6 +123,7 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
         if (versionNumber == null) {
             versionNumber = getVDCRequestBean().getStudyVersionNumber();
         }
+
         // first determine study, via gloablId or studyId param
         if (globalId != null || studyId != null) {
             StudyVersion sv = null;
@@ -140,7 +140,6 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
                 redirect("/faces/IdDoesNotExistPage.xhtml?type=Study%20Version");
                 return;
             }
-
             
             if ("files".equals(tab)) {
                 initStudyUIWithFiles(sv);
@@ -184,7 +183,7 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
                 selectedIndex=2;
             } else if (tab.equals("versions")) {
                 selectedIndex=3;
-            }
+            } 
 
             tabSet1.setSelectedIndex(selectedIndex);
         }
@@ -529,8 +528,14 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
    
 
     public void setReadyForReview(ActionEvent ae) {
-        studyService.setReadyForReview(studyUI.getStudy().getId());
-        studyUI.setStudy(studyService.getStudy(studyId));
+        //studyService.setReadyForReview(studyUI.getStudy().getId());
+        //studyUI.setStudy(studyService.getStudy(studyId));
+
+        studyUI.getStudyVersion().setVersionState(StudyVersion.VersionState.IN_REVIEW);
+        //studyUI = new StudyUI(sv, getVDCSessionBean().getUser());
+
+
+        //initPanelDisplay();
     }
 
     public void setReleased(ActionEvent ae) {

@@ -91,10 +91,10 @@ public class EditTemplateServiceBean implements edu.harvard.iq.dvn.core.study.Ed
     public void  newTemplate(Long vdcId, Long metadataId) {
         newTemplate=true;
         template = new Template();
-
-        initTemplate( vdcId);
         Metadata metadata = em.find(Metadata.class, metadataId);
-        metadata.copyMetadata(template.getMetadata());
+        template.setMetadata(new Metadata(metadata));
+        initTemplate( vdcId);
+        
         template.getMetadata().setDateOfDeposit("");
 
         em.persist(template);

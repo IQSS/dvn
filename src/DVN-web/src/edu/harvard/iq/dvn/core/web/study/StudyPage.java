@@ -528,14 +528,13 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
    
 
     public void setReadyForReview(ActionEvent ae) {
-        //studyService.setReadyForReview(studyUI.getStudy().getId());
-        //studyUI.setStudy(studyService.getStudy(studyId));
-
+        studyService.setReadyForReview(studyUI.getStudy().getId());
         studyUI.getStudyVersion().setVersionState(StudyVersion.VersionState.IN_REVIEW);
-        //studyUI = new StudyUI(sv, getVDCSessionBean().getUser());
-
-
-        //initPanelDisplay();
+        // (The above is to make sure the new Version State ends up in *both* the
+        // database and the StudyVersion object attached here, so that
+        // the new state shows up in the UI;
+        // Eventually we'll create a better scheme of mapping between
+        // db objects and methods, so that this could be done in one step/place).
     }
 
     public void setReleased(ActionEvent ae) {

@@ -146,7 +146,7 @@
         </managed-property>
         <managed-property>
             <property-name>clearWorkflow</property-name>
-            <property-class>boolean</property-class>
+            <property-class>java.lang.Boolean</property-class>
             <value>#{param.clearWorkflow}</value>
         </managed-property>
         <managed-property>

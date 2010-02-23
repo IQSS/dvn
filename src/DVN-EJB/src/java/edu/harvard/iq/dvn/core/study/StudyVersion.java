@@ -37,7 +37,7 @@ public class StudyVersion implements Serializable {
     @Enumerated(EnumType.STRING)
     private VersionState versionState;
 
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToOne(cascade = {CascadeType.MERGE})
     @JoinColumn(nullable=false)
     private Study study;
     @OneToOne(cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})

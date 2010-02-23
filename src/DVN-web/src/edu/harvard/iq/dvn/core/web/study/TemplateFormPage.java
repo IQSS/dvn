@@ -97,76 +97,40 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     
     
    public void init() {
-        super.init();
-        // set tab if it was it was sent as pamameter
-       
-        token = this.getRequestParam("templateForm:token" );
-        if ( token!=null) {
-            if ( sessionGet(token)!=null) {
-                editTemplateService = (EditTemplateService) sessionGet(token);
-                template = editTemplateService.getTemplate();
-             
-              
-            } else {
-                FacesContext context = FacesContext.getCurrentInstance();
-                FacesMessage errMessage = new FacesMessage(FacesMessage.SEVERITY_ERROR, "The Template form you are trying to save contains stale data. Please re-load the template and try again.","");
-                context.addMessage(null,errMessage);
+       super.init();
+ 
+       try {
+           Context ctx = new InitialContext();
+           editTemplateService = (EditTemplateService) ctx.lookup("java:comp/env/editTemplate");
+       } catch (NamingException e) {
+           e.printStackTrace();
+           FacesContext context = FacesContext.getCurrentInstance();
+           FacesMessage errMessage = new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), null);
+           context.addMessage(null, errMessage);
+
+       }
+       if (getTemplateId() != null) {
+           editTemplateService.setTemplate(templateId);
+           template = editTemplateService.getTemplate();
+
+       } else {
+           Long vdcId = getVDCRequestBean().getCurrentVDC().getId();
+           if (studyVersionId != null) {
+               editTemplateService.newTemplate(vdcId, studyVersionId);
+           } else {
+               editTemplateService.newTemplate(vdcId);
            }
-        } else {
-            
-            // we need to create the token and the editTemplateService bean
-            token=java.util.UUID.randomUUID().toString();
-            try {
-                Context ctx = new InitialContext();
-                editTemplateService = (EditTemplateService) ctx.lookup("java:comp/env/editTemplate");
-                sessionPut( token, editTemplateService);
-            } catch(NamingException e) {
-                e.printStackTrace();
-                FacesContext context = FacesContext.getCurrentInstance();
-                FacesMessage errMessage = new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(),null);
-                context.addMessage(null,errMessage);
-                
-            }
-            if (getTemplateId() != null) {
-                editTemplateService.setTemplate(templateId);            
-                template = editTemplateService.getTemplate();
-              
-            } else {
-                Long vdcId = getVDCRequestBean().getCurrentVDC().getId();
-                if (studyId!=null) {
-                    editTemplateService.newTemplate(vdcId, studyId);
-                } else {
-                    editTemplateService.newTemplate(vdcId);
-                }
-              //  editTemplateService.addFields(vdcId);
-                template = editTemplateService.getTemplate();
-            //     studyId = SessionCounter.getNext();
-            }
-            // Add empty first element to subcollections, so the input text fields will be visible
-           
-        }
-        initStudyMap();
-        initCollections();
+        
+           template = editTemplateService.getTemplate();
+         
+       }
+       initStudyMap();
+       initCollections();
 
         
     }
     
-    private String getStudyIdFromRequest() {
-        HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
-        String studyIdParam=request.getParameter("studyId");
-        if (studyIdParam==null) {
-            Iterator iter = request.getParameterMap().keySet().iterator();
-            while (iter.hasNext()) {
-                Object key = (Object) iter.next();
-                if ( key instanceof String && ((String) key).indexOf("studyId") != -1 ) {
-                    studyIdParam = request.getParameter((String)key);
-                    break;
-                }
-            }
-        }
-        return studyIdParam;
-        
-    }    
+   
     private void initCollections() {
         
         if ( template.getMetadata().getStudyOtherIds()==null || template.getMetadata().getStudyOtherIds().size()==0) {
@@ -594,13 +558,11 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
     
     public String cancel() {
         String forwardPage="manageTemplates";
-        if (editTemplateService.getCreatedFromStudyId()!=null) {
-            forwardPage="viewStudy";
-            getVDCRequestBean().setStudyId(editTemplateService.getCreatedFromStudyId());
-        }
+    //    if (editTemplateService.getCreatedFromStudyId()!=null) {
+     //       forwardPage="viewStudy";
+     //       getVDCRequestBean().setStudyId(editTemplateService.getCreatedFromStudyId());
+      //  }
         editTemplateService.cancel();
-        this.sessionRemove(token);
-       
         
         return  forwardPage;
     }
@@ -1016,14 +978,14 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
   
    
    
-    private Long studyId;
+    private Long studyVersionId;
 
-    public Long getStudyId() {
-        return studyId;
+    public Long getStudyVersionId() {
+        return studyVersionId;
     }
 
-    public void setStudyId(Long studyId) {
-        this.studyId = studyId;
+    public void setStudyVersionId(Long studyVersionId) {
+        this.studyVersionId = studyVersionId;
     }
     
     
@@ -1049,17 +1011,6 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         this.templateId = templateId;
     }
     
- 
-
-    private String token;
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
         
     private List files;
     
@@ -1081,8 +1032,6 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
         removeEmptyRows();
         editTemplateService.save();
        
-       
-        this.sessionRemove(token);
         return "manageTemplates";
     }
     

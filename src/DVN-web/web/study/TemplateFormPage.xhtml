@@ -19,16 +19,14 @@
       <ice:form id="templateForm">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <input type="hidden" name="pageName" value="TemplateFormPage"/>
-        <ice:inputHidden id="token" value="#{TemplateFormPage.token}"/>
-        <ice:inputHidden immediate="true" binding="#{TemplateFormPage.hiddenStudyId}" id="studyId" value="#{TemplateFormPage.studyId}"/>
-        <div class="dvn_section">
+         <div class="dvn_section">
           <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
             <div class="dvnMsgBlockContainer">
               <ice:outputText value="#{bundlePageInfo.editTemplateHelp}" escape="false"/>
             </div>
           </div>
           <div class="dvn_sectionTitle">
-            <ice:outputText value="#{EditStudyPage.study.title}"/>
+            <ice:outputText value="#{TemplateFormPage.template.metadata.title}"/>
           </div>
           <div class="dvn_sectionBoxNoBorders">
             <!-- validation errors occurred? -->

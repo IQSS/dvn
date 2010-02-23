@@ -311,9 +311,9 @@
             <value>#{param.templateId}</value>
         </managed-property>
         <managed-property>
-            <property-name>studyId</property-name>
+            <property-name>studyVersionId</property-name>
             <property-class>java.lang.Long</property-class>
-            <value>#{param.studyId}</value>
+            <value>#{param.studyVersionId}</value>
         </managed-property>
     </managed-bean>
         <managed-bean>

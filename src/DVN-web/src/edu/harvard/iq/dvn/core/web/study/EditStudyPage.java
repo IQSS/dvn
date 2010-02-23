@@ -122,9 +122,9 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         }
         if (getStudyId() != null) {
             editStudyService.setStudyVersion(studyId);
-            study = editStudyService.getStudy();
+            study = editStudyService.getStudyVersion().getStudy();
           
-            metadata = study.getLatestVersion().getMetadata();
+            metadata = editStudyService.getStudyVersion().getMetadata();
         
 
             setFiles(editStudyService.getCurrentFiles());
@@ -132,8 +132,8 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             Long vdcId = getVDCRequestBean().getCurrentVDC().getId();
             selectTemplateId = getVDCRequestBean().getCurrentVDC().getDefaultTemplate().getId();
             editStudyService.newStudy(vdcId, getVDCSessionBean().getLoginBean().getUser().getId(), selectTemplateId);
-            study = editStudyService.getStudy();
-            metadata = study.getStudyVersions().get(0).getMetadata(); // WE NEED TO GET THE RIGHT METADATA, CREATE NEW VERSION< ETC>
+            study = editStudyService.getStudyVersion().getStudy();
+            metadata = study.getLatestVersion().getMetadata();
             studyId = SessionCounter.getNext();
 
 
@@ -339,7 +339,8 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         Object value= this.selectTemplate.getValue();
         if (value!=null ) {           
             editStudyService.changeTemplate((Long)value);
-            study = editStudyService.getStudy();
+            metadata = editStudyService.getStudyVersion().getMetadata();
+         
         }
         initCollections();  // Add empty row for entering data in currently empty collections
         initStudyMap();  // Reset Recommended flag for all fields

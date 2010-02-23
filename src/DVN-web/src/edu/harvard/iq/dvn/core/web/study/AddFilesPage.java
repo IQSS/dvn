@@ -128,6 +128,7 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
         if (studyId != null) {
             sessionId = FacesContext.getCurrentInstance().getExternalContext().getSession(false).toString();
             study = studyService.getStudy(studyId);
+            studyVersion = study.getEditVersion();
         } else {
             // WE SHOULD HAVE A STUDY ID, throw an error
             System.out.println("ERROR: in addStudyPage, without a serviceBean or a studyId");
@@ -407,6 +408,7 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
     }
 
     private Study study;
+    private StudyVersion studyVersion;
 
     public Study getStudy() {
 
@@ -416,6 +418,16 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
     public void setStudy(Study study) {
         this.study = study;
     }
+
+    public StudyVersion getStudyVersion() {
+        return studyVersion;
+    }
+
+    public void setStudyVersion(StudyVersion studyVersion) {
+        this.studyVersion = studyVersion;
+    }
+
+
 
     /**
      * Action method that saves the files in the data table
@@ -458,13 +470,13 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
          */
         // now call save
         if (fileList.size() > 0) {
-            StudyVersion studyVersion = study.getStudyVersions().get(0);
             studyFileService.addFiles(studyVersion, fileList, getVDCSessionBean().getLoginBean().getUser(), ingestEmail);
             //editStudyService.setIngestEmail(ingestEmail);
             //editStudyService.save(getVDCRequestBean().getCurrentVDCId(), getVDCSessionBean().getLoginBean().getUser().getId());
         }
         
         getVDCRequestBean().setStudyId(study.getId());
+        getVDCRequestBean().setStudyVersionNumber(studyVersion.getVersionNumber());
         getVDCRequestBean().setSelectedTab("files");
 
         return "viewStudy";
@@ -518,8 +530,9 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
     public String cancel_action() {
         //first clean up the temp files  
         //removeUploadFiles();
-        editStudyService.cancel();
+        //editStudyService.cancel();
         getVDCRequestBean().setStudyId(study.getId());
+        getVDCRequestBean().setStudyVersionNumber(study.getLatestVersion().getVersionNumber());
         getVDCRequestBean().setSelectedTab("files");
         return "viewStudy";
     }

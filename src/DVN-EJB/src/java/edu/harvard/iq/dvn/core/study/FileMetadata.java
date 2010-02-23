@@ -23,15 +23,15 @@ import javax.persistence.Version;
 public class FileMetadata implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private String label;
+    private String label = "";
     @Column(columnDefinition = "TEXT")
-    private String description;
+    private String description = "";
     @Column(columnDefinition="TEXT")
-    private String category;
+    private String category = "";
 
     @ManyToOne
     private StudyVersion studyVersion;
-    @ManyToOne (cascade={ CascadeType.PERSIST })
+    @ManyToOne
     private StudyFile studyFile;
 
     public String getLabel() {

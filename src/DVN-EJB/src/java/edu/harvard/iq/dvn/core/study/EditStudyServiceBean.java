@@ -157,6 +157,9 @@ public class EditStudyServiceBean implements edu.harvard.iq.dvn.core.study.EditS
         return studyVersion.getStudy();
     }
     
+    public  StudyVersion getStudyVersion() {
+        return studyVersion;
+    }
     
     @Remove
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)

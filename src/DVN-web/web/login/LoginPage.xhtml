@@ -36,8 +36,9 @@
                 <p>
                   <ice:commandButton tabindex="3" id="button1" value="Log in" action="#{LoginPage.login}"/>
                 </p>
-                <div>
-                  <ice:outputLink tabindex="4" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/ForgotPasswordPage.xhtml" title="Link to Reset Password">Forgot your password?</ice:outputLink>
+                <div class="dvnLoginLinkBlock">
+                  <p><ice:outputLink tabindex="4" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/ForgotPasswordPage.xhtml" title="Link to Reset Password">Forgot your password?</ice:outputLink></p>
+                  <p><ice:outputText value="You do not have a Dataverse Network account?"></ice:outputText> <ice:outputLink tabindex="5" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/AddAccountPage.xhtml" title="Create an Account">Create an Account.</ice:outputLink></p>
                 </div>
               </fieldset>
               <!-- ************* end username login section *************** -->

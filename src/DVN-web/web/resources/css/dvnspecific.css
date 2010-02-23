@@ -15,8 +15,10 @@
 .dvnLoginInputArea legend{padding:0 8px;border:1px solid #7f9db9;background:#e6ebed;text-transform:uppercase}
 .dvnLoginInputArea label{margin-top:1em;padding-right:.5em}
 .dvnLoginInputArea input{margin-top:1em}
+.dvnLoginInputArea .iceCmdBtn{margin:0}
 .dvnLoginInputArea fieldset div{margin-top:1em;text-align:left}
 .dvnLoginInputArea span fieldset{margin-top:1em}
+.dvnLoginLinkBlock p{text-align:left}
 .dvnLoginContentAreaFooter{margin-top:1em;text-align:center}
 fieldset.dvnLoginPageAffiliate input.iceCmdBtn{display:block;float:right}
 /* MY OPTIONS */

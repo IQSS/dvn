@@ -73,7 +73,8 @@ public class DeleteStudyPage extends VDCBaseBean implements java.io.Serializable
         super.init();
          if ( isFromPage("DeleteStudyPage") ) {
             editStudyService = (EditStudyService) sessionGet(EditStudyService.class.getName());
-            study = editStudyService.getStudy();
+            //TODO: VERSION: update this for versions (Do we still need to use a stateful sessionbean?
+            //study = editStudyService.getStudy();
         }else {
                 // we need to create the editStudyService bean
             try {
@@ -174,7 +175,8 @@ public class DeleteStudyPage extends VDCBaseBean implements java.io.Serializable
     }
     
     public String cancel() {
-        this.getVDCRequestBean().setStudyId(editStudyService.getStudy().getId());
+        //TODO: VERSION: update this for versions (Do we still need to use a stateful sessionbean?
+        //this.getVDCRequestBean().setStudyId(editStudyService.getStudy().getId());
          editStudyService.cancel();
         return "viewStudy";
     }

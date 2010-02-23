@@ -92,20 +92,8 @@ public class EditStudyServiceBean implements edu.harvard.iq.dvn.core.study.EditS
         if (study==null) {
             throw new IllegalArgumentException("Unknown study id: "+studyId);
         }
-        StudyVersion latestVersion = study.getLatestVersion();
-         if (latestVersion.isReleased()) {
-            // if the latest version is released, create a new version for editing
-            study.createNewStudyVersion();
-            studyVersion = study.getLatestVersion();
-        }
-        else if (latestVersion.isWorkingCopy()){
-            // else, edit existing working copy
-            studyVersion = latestVersion;
-        } else {
-            // if latest version is archived, we can't edit
-            throw new IllegalArgumentException("Cannot edit deaccessioned study: "+studyId);
-        }
 
+        studyVersion = study.getEditVersion();
        
         for (FileMetadata fm: studyVersion.getFileMetadatas()) {
             StudyFileEditBean fileBean = new StudyFileEditBean(fm);

@@ -148,6 +148,7 @@ public class StudyVersion implements Serializable {
 
     public void setMetadata(Metadata metadata) {
         this.metadata = metadata;
+        metadata.setStudyVersion(this);
     }
 
     public List<FileMetadata> getFileMetadatas() {

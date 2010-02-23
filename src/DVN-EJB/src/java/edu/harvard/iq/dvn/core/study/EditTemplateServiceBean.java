@@ -59,7 +59,7 @@ public class EditTemplateServiceBean implements edu.harvard.iq.dvn.core.study.Ed
     EntityManager em;
     Template template;
     private boolean newTemplate=false;
-    private Long createdFromStudyId;
+  
   
     
     /**
@@ -88,20 +88,21 @@ public class EditTemplateServiceBean implements edu.harvard.iq.dvn.core.study.Ed
       
      
     }
-    public void  newTemplate(Long vdcId, Long metadataId) {
+    public void  newTemplate(Long vdcId, Long studyVersionId) {
         newTemplate=true;
         template = new Template();
-        Metadata metadata = em.find(Metadata.class, metadataId);
+        Metadata metadata = em.find(StudyVersion.class, studyVersionId).getMetadata();
         template.setMetadata(new Metadata(metadata));
         initTemplate( vdcId);
         
         template.getMetadata().setDateOfDeposit("");
 
         em.persist(template);
-        // TODO: VERSION
-        createdFromStudyId=metadata.getStudyVersion().getStudy().getId();
       
     }
+
+
+
     
     public void removeCollectionElement(Collection coll, Object elem) {
         coll.remove(elem);
@@ -173,13 +174,7 @@ public class EditTemplateServiceBean implements edu.harvard.iq.dvn.core.study.Ed
         return newTemplate;
     }
     
-    public void setCreatedFromStudy(Long createdFromStudyId) {
-        this.createdFromStudyId=createdFromStudyId;
-    }
-    
-    public Long getCreatedFromStudyId() {
-        return createdFromStudyId;
-    }
+ 
    
     /**
      * Get the default template for the given dataverse, and add fields to the 

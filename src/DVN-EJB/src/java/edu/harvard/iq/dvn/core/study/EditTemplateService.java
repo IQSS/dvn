@@ -35,12 +35,11 @@ import javax.ejb.Local;
 public interface EditTemplateService extends java.io.Serializable { 
     public void setTemplate( Long templateId);
     public void newTemplate(Long vdcId);
-    public void newTemplate(Long vdcId,Long studyId);
+    public void newTemplate(Long vdcId,Long studyVersionId);
     public void cancel();
     public void save();
     public Template getTemplate();
     public void removeCollectionElement(Collection coll, Object elem);
-    public Long getCreatedFromStudyId();
     void removeCollectionElement(Iterator iter, Object elem);
     public void changeRecommend(TemplateField tf, boolean isRecommended);
   

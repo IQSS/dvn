@@ -159,6 +159,11 @@ public class StudyFileServiceBean implements StudyFileServiceLocal {
 
         Study study = studyVersion.getStudy();
 
+        if (studyVersion.getId() == null) {
+            em.persist(studyVersion);
+            em.flush(); // populates study_id
+        }
+
         // step 1: divide the files, based on subsettable or not
         List subsettableFiles = new ArrayList();
         List otherFiles = new ArrayList();
@@ -191,6 +196,8 @@ public class StudyFileServiceBean implements StudyFileServiceLocal {
                 f.setFileSystemLocation(newLocationFile.getAbsolutePath());
 
                 fileBean.getFileMetadata().setStudyVersion( studyVersion );
+
+                em.persist(fileBean.getStudyFile());
                 em.persist(fileBean.getFileMetadata());
 
             } catch (IOException ex) {
@@ -286,6 +293,8 @@ public class StudyFileServiceBean implements StudyFileServiceLocal {
                 fileBean.getFileMetadata().setStudyVersion( studyVersion );
                 fileBean.getStudyFile().setStudy(study );
                 study.getStudyFiles().add(fileBean.getStudyFile());
+
+                em.persist(fileBean.getStudyFile());
                 em.persist(fileBean.getFileMetadata());
                 
                 //fileBean.addFiletoStudy(study);

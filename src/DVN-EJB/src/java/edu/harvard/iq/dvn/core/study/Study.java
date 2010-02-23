@@ -847,7 +847,7 @@ End of deprecated methods section
     /**
      *  Create a new Study version based on the metadata of the latest version
      */
-     public void createNewStudyVersion() {
+     private StudyVersion createNewStudyVersion() {
         StudyVersion sv = new StudyVersion();
         sv.setVersionState(StudyVersion.VersionState.DRAFT);
 
@@ -872,7 +872,21 @@ End of deprecated methods section
         // the study object is persisted.
         getStudyVersions().add(0, sv);
         sv.setStudy(this);
-        return;
+        return sv;
+    }
+
+    public StudyVersion getEditVersion() {
+        StudyVersion latestVersion = this.getLatestVersion();
+        if (latestVersion.isReleased()) {
+            // if the latest version is released, create a new version for editing
+            return createNewStudyVersion();
+        } else if (latestVersion.isWorkingCopy()) {
+            // else, edit existing working copy
+            return latestVersion;
+        } else {
+            // if latest version is archived, we can't edit
+            throw new IllegalArgumentException("Cannot edit deaccessioned study: " + studyId);
+        }
     }
 
 

@@ -332,6 +332,7 @@ public class EditStudyServiceBean implements edu.harvard.iq.dvn.core.study.EditS
                     f.getAllowedUsers().clear();
                     filesToBeDeleted.add(f);
                 }
+                studyVersion.getFileMetadatas().remove(fileBean.getFileMetadata());
                 em.remove(fileBean.getFileMetadata());
             }
         }

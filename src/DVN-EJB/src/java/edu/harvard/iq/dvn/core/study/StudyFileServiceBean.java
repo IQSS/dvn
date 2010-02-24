@@ -289,10 +289,12 @@ public class StudyFileServiceBean implements StudyFileServiceLocal {
 
                 StudyFile f = fileBean.getStudyFile();
                 String originalFileType = f.getFileType();
-                // attach file to study
+                // attach file to study version and study
                 fileBean.getFileMetadata().setStudyVersion( studyVersion );
+                studyVersion.getFileMetadatas().add(fileBean.getFileMetadata());
                 fileBean.getStudyFile().setStudy(study );
-                study.getStudyFiles().add(fileBean.getStudyFile());
+                // don't need to set study side, since we're no longer using persistence cache
+                //study.getStudyFiles().add(fileBean.getStudyFile());
 
                 em.persist(fileBean.getStudyFile());
                 em.persist(fileBean.getFileMetadata());

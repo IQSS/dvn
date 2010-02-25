@@ -451,14 +451,22 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
         if (!getAbstractAndScopePanelIsEmpty()) {
             studyUI.setAbstractAndScopePanelIsRendered(true);
         }
-        // When you first go to the page, these panels will be closed regardless of 
-        // whether they contain data
-        studyUI.setDataCollectionPanelIsRendered(false);
-        studyUI.setDataAvailPanelIsRendered(false);
+        
+        // When you first go to the page, if these sections contain data, these panels will ALSO be open 
+        // they were previously set to be closed
+
+        if (!getDataCollectionIsEmpty()) {
+            studyUI.setDataCollectionPanelIsRendered(true);
+        }
+        if (!getDataAvailIsEmpty()) {
+            studyUI.setDataAvailPanelIsRendered(true);
+        }
         if (!getTermsOfUseIsEmpty()) {
             studyUI.setTermsOfUsePanelIsRendered(true);
         }
-        studyUI.setNotesPanelIsRendered(false);
+        if (!getNotesIsEmpty()) {
+            studyUI.setNotesPanelIsRendered(true);
+        }
     }
 
     public String confirmDelete() {

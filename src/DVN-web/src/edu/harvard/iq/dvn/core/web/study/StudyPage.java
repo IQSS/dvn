@@ -542,6 +542,11 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
         studyUI.setStudy(studyService.getStudy(studyId));
     }
 
+    public void saveVersionNote(ActionEvent ae) {
+
+        this.toggleVersionNotesPopup(ae);
+    }
+
     public String requestFileAccess() {
         LoginWorkflowBean loginWorkflowBean = (LoginWorkflowBean) this.getBean("LoginWorkflowBean");
         return loginWorkflowBean.beginFileAccessWorkflow(studyUI.getStudy().getId());

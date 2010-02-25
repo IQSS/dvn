@@ -2704,6 +2704,41 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
        return show;
        
     }
+
+    private boolean showVersionNotesPopup = false;
+
+    /**
+     * Get the value of showPopup
+     *
+     * @return the value of showPopup
+     */
+    public boolean isShowVersionNotesPopup() {
+        return   showVersionNotesPopup;
+
+    }
+
+    /**
+     * Set the value of showPopup
+     *
+     * @param showPopup new value of showPopup
+     */
+    public void setShowVersionNotesPopup(boolean showVersionNotesPopup) {
+        this.showVersionNotesPopup = showVersionNotesPopup;
+    }
+
+ /** togglePopup
+      * actionListener method for hiding
+      * and showing the popup
+      *
+      * @param ActionEvent
+      *
+      */
+     public void toggleVersionNotesPopup(javax.faces.event.ActionEvent event) {
+
+         showVersionNotesPopup = !showVersionNotesPopup;
+
+     }
+ 
   
 }
 

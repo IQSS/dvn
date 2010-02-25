@@ -210,5 +210,6 @@ public interface StudyServiceLocal extends java.io.Serializable {
     //2
     public void setReadyForReview(Long studyId);
     public void setReleased(Long studyId);
+    public void saveVersionNote(Long studyVersionId, String versionNote);
 
 }

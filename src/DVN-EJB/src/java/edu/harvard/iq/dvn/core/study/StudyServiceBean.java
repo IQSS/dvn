@@ -1985,7 +1985,12 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         Long longValue      = (Long)object;
         return longValue;
     }
-    
+
+    public void saveVersionNote(Long studyVersionId, String versionNote) {
+        StudyVersion studyVersion = em.find(StudyVersion.class, studyVersionId);
+        studyVersion.setVersionNote(versionNote);
+    }
+   
 
 
 }

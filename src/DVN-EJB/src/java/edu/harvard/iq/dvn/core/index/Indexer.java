@@ -185,6 +185,7 @@ public class Indexer implements java.io.Serializable  {
         addText(4.0f,  doc,"title",metadata.getTitle());
         addKeyword(doc,"id",study.getId().toString());
         addText(1.0f,  doc,"studyId", study.getStudyId());
+        addKeyword(doc,"studyId", study.getStudyId());
 //        addText(1.0f,  doc,"owner",study.getOwner().getName());
         addText(1.0f, doc, "dvOwnerId", Long.toString(study.getOwner().getId()));
         addDate(1.0f, doc,"productionDate", metadata.getProductionDate());
@@ -592,7 +593,8 @@ public class Indexer implements java.io.Serializable  {
 
     public List query(String adhocQuery) throws IOException {
 //        QueryParser parser = new QueryParser("abstract",new DVNAnalyzer());
-        QueryParser parser = new QueryParser(Version.LUCENE_30,"abstract",new DVNSearchAnalyzer());
+//        QueryParser parser = new QueryParser(Version.LUCENE_30,"abstract",new DVNSearchAnalyzer());
+        QueryParser parser = new QueryParser(Version.LUCENE_30,"abstract",new DVNAnalyzer());
 //        QueryParser parser = new QueryParser("abstract",new StandardAnalyzer());
         parser.setDefaultOperator(QueryParser.AND_OPERATOR);
         Query query=null;
@@ -638,7 +640,9 @@ public class Indexer implements java.io.Serializable  {
     public List searchVariables(List <Long> studyIds,SearchTerm searchTerm) throws IOException {
         BooleanQuery indexQuery = null;
         BooleanQuery searchQuery = new BooleanQuery();
-        searchQuery.add(orIdSearchTermClause(studyIds), BooleanClause.Occur.MUST);
+        if (studyIds != null) {
+            searchQuery.add(orIdSearchTermClause(studyIds), BooleanClause.Occur.MUST);
+        }
         if (searchTerm.getFieldName().equalsIgnoreCase("variable")){
             indexQuery = buildVariableQuery(searchTerm);
             if (searchTerm.getOperator().equals("=")) {

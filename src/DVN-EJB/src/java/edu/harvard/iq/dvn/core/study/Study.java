@@ -86,9 +86,10 @@ public class Study implements java.io.Serializable {
     
     public Study () {
         StudyVersion sv = new StudyVersion();
+        sv.setStudy(this);
         studyVersions = new ArrayList<StudyVersion>();
         studyVersions.add( sv );
-        sv.setStudy(this);
+
         
     }    
      public Study(VDC vdc, VDCUser creator, StudyVersion.VersionState versionState) {
@@ -178,6 +179,19 @@ public class Study implements java.io.Serializable {
         }
     }
     
+    public StudyVersion getStudyVersionByNumber (Long versionNumber) {
+        int size = studyVersions.size();
+        //for (int i = 0; i < size; i++) {
+        for (StudyVersion studyVersion : getStudyVersions()) {
+            if (studyVersion.getVersionNumber().equals(versionNumber)) {
+                return studyVersion;
+            }
+        }
+
+        return null;
+
+    }
+
     public boolean isInReview() {
         return this.getLatestVersion().getVersionState().equals(StudyVersion.VersionState.IN_REVIEW);
     }

@@ -124,6 +124,11 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
             versionNumber = getVDCRequestBean().getStudyVersionNumber();
         }
 
+        // No versionNumber?
+        // What do we do, default to the latest?
+        // Yes, to the latest released, if available.
+        // (that happens inside getStudyVersion)
+
         // first determine study, via gloablId or studyId param
         if (globalId != null || studyId != null) {
             StudyVersion sv = null;
@@ -536,23 +541,13 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
    
 
     public void setReadyForReview(ActionEvent ae) {
-        studyService.setReadyForReview(studyUI.getStudy().getId());
         studyUI.getStudyVersion().setVersionState(StudyVersion.VersionState.IN_REVIEW);
-        // (The above is to make sure the new Version State ends up in *both* the
-        // database and the StudyVersion object attached here, so that
-        // the new state shows up in the UI;
-        // Eventually we'll create a better scheme of mapping between
-        // db objects and methods, so that this could be done in one step/place).
+        studyService.setReadyForReview(studyUI.getStudy().getId());
     }
 
     public void setReleased(ActionEvent ae) {
         studyService.setReleased(studyUI.getStudy().getId());
         studyUI.setStudy(studyService.getStudy(studyId));
-    }
-
-    public void saveVersionNote(ActionEvent ae) {
-
-        this.toggleVersionNotesPopup(ae);
     }
 
     public String requestFileAccess() {
@@ -658,16 +653,78 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
      * and showing the popup
      *
      * @param ActionEvent
-     *
+     *studyPage.studyUI.studyVersion.versionNote
      * @author mheppler
     */
+    
+    private enum StudyActionRequestType {REVIEW, RELEASE};
+    private StudyActionRequestType actionRequested = null;
+
     public void toggleVersionNotesPopup(javax.faces.event.ActionEvent event) {
+        if (showVersionNotesPopup && (actionRequested != null)) {
+            actionRequested = null;
+        }
         showVersionNotesPopup = !showVersionNotesPopup;
         actionComplete = false;
     }
 
     protected boolean showVersionNotesPopup = false;
     protected boolean actionComplete = false;
+
+    public void confirmReleased(ActionEvent ae) {
+        actionRequested = StudyActionRequestType.RELEASE;
+        showVersionNotesPopup = true;
+        actionComplete = false;
+    }
+
+    public void confirmSubmitForReview(ActionEvent ae) {
+        actionRequested = StudyActionRequestType.REVIEW;
+        showVersionNotesPopup = true;
+        actionComplete = false;
+    }
+
+
+    //public String saveVersionNote(javax.faces.event.ActionEvent event) {
+    public String saveVersionNote() {
+
+        studyService.saveVersionNote (studyUI.getStudyVersion().getId(), studyUI.getStudyVersion().getVersionNote());
+        showVersionNotesPopup = false;
+        actionComplete = true;
+
+
+        if (actionRequested != null) {
+
+            if (actionRequested.equals(StudyActionRequestType.RELEASE)) {
+                actionRequested = null;
+
+                // See if the study already has released versions;
+                // If so, redirect to the Diff page.
+                // Otherwise, simply switch the version state to "released".
+
+                StudyVersion releasedVersion = studyService.getStudyVersion(getStudyId(), null);
+
+                if ( releasedVersion == null ) {
+                    // This is the first release of the study.
+                    studyUI.getStudyVersion().setVersionState(StudyVersion.VersionState.RELEASED);
+                    studyService.setReleased(studyUI.getStudy().getId());
+                } else {
+                    // We are redirecting to the Differences page; 
+                    // Need to set the HTTP parameters:
+                    getVDCRequestBean().setStudyId(getStudyId());
+                    getVDCRequestBean().setStudyVersionNumber(getVersionNumber());
+
+                    return "diffStudy";
+                }
+            } else if (actionRequested.equals(StudyActionRequestType.REVIEW)) {
+                studyUI.getStudyVersion().setVersionState(StudyVersion.VersionState.IN_REVIEW);
+                studyService.setReadyForReview(studyUI.getStudy().getId());
+
+                actionRequested = null;
+            }
+        }
+
+        return "";
+    }
 
     public boolean isActionComplete() {
         return actionComplete;

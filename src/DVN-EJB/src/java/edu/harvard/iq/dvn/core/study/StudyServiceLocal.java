@@ -76,12 +76,13 @@ public interface StudyServiceLocal extends java.io.Serializable {
 
     //2
     public void updateStudy(Study study);
+    public void updateStudyVersion(StudyVersion studyVersion);
 
     //2
-    public void deleteStudy(Long studyId) ;
+    public void deleteStudy(Long studyId);
     
     //2
-    public void deleteStudyInNewTransaction(Long studyId, boolean deleteFromIndex) ;
+    public void deleteStudyInNewTransaction(Long studyId, boolean deleteFromIndex);
      
     //2
     public void deleteStudyList(List<Long> studyIds);
@@ -209,7 +210,9 @@ public interface StudyServiceLocal extends java.io.Serializable {
 
     //2
     public void setReadyForReview(Long studyId);
+    public void setReadyForReview(StudyVersion sv);
+    public void saveVersionNote(Long studyId, Long versionNumber, String newVersionNote);
+    public void saveVersionNote(Long studyVersionId, String newVersionNote);
     public void setReleased(Long studyId);
-    public void saveVersionNote(Long studyVersionId, String versionNote);
 
 }

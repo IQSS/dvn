@@ -45,7 +45,7 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
 .dvnstudystatuslabel{text-transform:uppercase;}
 .dvnstudystatusreleasedver{font-weight: normal;color:#C55B28;}
 .dvnstudystatusnoreleasedver{color:#820024;}
-.dvnstudystatuaversionnote{font-weight:normal;}
+.dvnstudystatusversionnote{font-weight:normal;}
 
 .dvnstudyadminboxfloat{float: right; width: 310px; margin-bottom: 1em; text-align:left;}
 .dvnstudypreviouslisting{text-align:right;}
@@ -72,7 +72,8 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
                           <ice:outputText value="#{studyPage.studyUI.study.globalId}"/>
                       </div>
                       <div jsfc="ice:panelGroup" styleClass="dvnstudyversioninfo" rendered="#{(studyPage.studyUI.studyVersion.released)}">
-                          <ice:outputText value="Version: #{studyPage.studyUI.studyVersion.versionNumber}"/> &mdash; <ice:outputText value="Released: #{studyPage.studyUI.dateOfDeposit}"/>
+                          <ice:outputText value="Version: #{studyPage.studyUI.studyVersion.versionNumber}"/> &mdash; <ice:outputText value="Released: #{studyPage.studyUI.dateOfDeposit}"/> <br/>
+                          <ice:outputText styleClass="dvnstudyversionnote" value="Study Version Notes: #{studyPage.studyUI.studyVersion.versionNote}" rendered="#{!empty studyPage.studyUI.studyVersion.versionNote}"/>
                       </div>
                       <div jsfc="ice:panelGroup" styleClass="dvnstudystatusbox #{studyPage.studyUI.studyVersion.archived ? 'dvnstudystatusarchived' : '' or studyPage.studyUI.studyVersion.inReview ? 'dvnstudystatusreview' : '' or studyPage.studyUI.studyVersion.draft ? 'dvnstudystatusdraft' : ''}" rendered="#{!studyPage.studyUI.studyVersion.released}">
                           <ice:outputText styleClass="dvnstudystatuslabel" value="In Review " rendered="#{studyPage.studyUI.studyVersion.inReview}"/>
@@ -83,8 +84,8 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
                             <ice:outputText value="View Released Version"/>
                           </ice:outputLink> <br/>
                           <ice:outputText value="Created: #{studyPage.studyUI.dateOfDeposit}"/> <br/>
-                          <ice:outputText value="Study Version Notes: #{studyPage.studyUI.studyVersion.versionNote}"/>
-                  </div>
+                          <ice:outputText styleClass="dvnstudyversionnote" value="Study Version Notes: #{studyPage.studyUI.studyVersion.versionNote}" rendered="#{!empty studyPage.studyUI.studyVersion.versionNote}"/>
+                      </div>
                   </div>
 
         <!-- REMOVED CODE 2 -->
@@ -113,14 +114,20 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
                                     <dvn:tooltip tooltipMessage="#{studybundle.editVersionNotesTip}" linkText="#{studybundle.editVersionNotesText}" eventType="mouseover" binding="#{studyPage.editStudyVersionNotesLink}" actionListener="#{studyPage.toggleVersionNotesPopup}"/>
                                 </li>-->
                                 <li>
-                                    <ice:commandLink binding="#{studyPage.editStudyVersionNotesLink}" actionListener="#{studyPage.toggleVersionNotesPopup}">
+                                    <ice:commandLink styleClass="dvn_tooltip" binding="#{studyPage.editStudyVersionNotesLink}" actionListener="#{studyPage.toggleVersionNotesPopup}" title="#{studybundle.editVersionNotesTip}">
                                         <ice:outputText value="Edit Study Version Notes" nospan="true"/>
                                     </ice:commandLink>
                                 </li>
                             </span>
                             <span jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.userAuthorizedToRelease and studyPage.studyUI.studyVersion.inReview}">
+                                <!--<li>
+                                    <dvn:tooltip tooltipMessage="#{studybundle.releaseTip}" linkText="Release" eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}"/>
+                                </li>-->
                                 <li>
-                                    <dvn:tooltip tooltipMessage="#{studybundle.releaseTip}" linkText="Release" eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/ReleaseStudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}"/>
+                                    <ice:commandLink actionListener="#{studyPage.confirmReleased}" title="#{studybundle.releaseTip}">
+                                        <ice:outputText value="Release" nospan="true"/>
+                                    </ice:commandLink>
+
                                 </li>
                             </span>
                             <span jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.userAuthorizedToEdit and studyPage.studyUI.studyVersion.draft}">
@@ -128,7 +135,7 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
                                     <dvn:tooltip tooltipMessage="#{studybundle.reviewTip}" linkText="#{studybundle.reviewText}" eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;versionNumber=#{studyPage.studyUI.studyVersion.versionNumber}"/>
                                 </li>-->
                                 <li>
-                                    <ice:commandLink actionListener="#{studyPage.setReadyForReview}">
+                                    <ice:commandLink actionListener="#{studyPage.confirmSubmitForReview}" title="#{studybundle.reviewTip}">
                                         <ice:outputText value="Submit For Review" nospan="true"/>
                                     </ice:commandLink>
                                 </li>

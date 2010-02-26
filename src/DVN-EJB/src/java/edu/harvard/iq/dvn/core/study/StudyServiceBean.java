@@ -141,13 +141,24 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         em.merge(detachedStudy);
     }
 
-   
-    
+    public void updateStudyVersion(StudyVersion studyVersion) {
+        em.merge(studyVersion);
+    }
+       
     public void setReadyForReview(Long studyId) {
       
         Study study = em.find(Study.class, studyId);
-        study.getLatestVersion().setVersionState(StudyVersion.VersionState.IN_REVIEW);
+        StudyVersion sv = study.getLatestVersion();
             
+        setReadyForReview(sv);
+    }
+
+    public void setReadyForReview(StudyVersion sv) {
+
+        sv.setVersionState(StudyVersion.VersionState.IN_REVIEW);
+
+        Study study = sv.getStudy();
+
         VDCUser user = study.getCreator();
         // If the user adding the study is a Contributor, send notification to all Curators in this VDC
         // and send an email to the Contributor about the status of the study
@@ -165,8 +176,33 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
 
         }
     }
-         
-     public void setReleased(Long studyId) {
+
+    public void saveVersionNote(Long studyId, Long versionNumber, String newVersionNote) {
+        Study study = em.find(Study.class, studyId);
+        StudyVersion sv = null;
+
+        if ( study != null ) {
+            if (versionNumber != null) {
+                sv = study.getStudyVersionByNumber(versionNumber);
+            } else {
+                sv = study.getLatestVersion();
+            }
+
+            if ( sv != null ) {
+                sv.setVersionNote(newVersionNote);
+            }
+        }
+    }
+
+    public void saveVersionNote(Long studyVersionId, String newVersionNote) {
+        StudyVersion sv = em.find(StudyVersion.class, studyVersionId);
+
+        if ( sv != null ) {
+            sv.setVersionNote(newVersionNote);
+        }
+    }
+
+    public void setReleased(Long studyId) {
       
         Study study = em.find(Study.class, studyId);
         study.getLatestVersion().setVersionState(StudyVersion.VersionState.RELEASED);
@@ -1235,28 +1271,38 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
 
 
     public StudyVersion getStudyVersion(Long studyId, Long versionNumber) {
-        String queryStr = "SELECT sv FROM StudyVersion sv WHERE sv.study.id = '" + studyId;
-        if (versionNumber != null) {
-            queryStr += "' and sv.versionNumber = '" + versionNumber + "'";
-        } else {
-            // get reelased version
-            queryStr += "' and  sv.versionState = :releasedState ";
-        }
-        
-        Query query = em.createQuery(queryStr);
-
-        if (versionNumber == null) {
-            query.setParameter("releasedState", VersionState.RELEASED);
-        }
-        
-        List resultList = query.getResultList();
+        Study study = em.find(Study.class, studyId);
         StudyVersion studyVersion = null;
-        if (resultList.size() > 1) {
-            throw new EJBException("More than one study version found with studyId = " + studyId + " and versionNumber = " + versionNumber);
+
+        if (versionNumber != null) {
+            studyVersion = study.getStudyVersionByNumber(versionNumber);
+        } else {
+            //studyVersion = study.getLatestVersion();
+            studyVersion = study.getReleasedVersion();
         }
-        if (resultList.size() == 1) {
-            studyVersion = (StudyVersion) resultList.get(0);
-        }
+
+        //String queryStr = "SELECT sv FROM StudyVersion sv WHERE sv.study.id = '" + studyId;
+        //if (versionNumber != null) {
+        //    queryStr += "' and sv.versionNumber = '" + versionNumber + "'";
+        //} else {
+            // get reelased version
+        //    queryStr += "' and  sv.versionState = :releasedState ";
+        //}
+        
+        //Query query = em.createQuery(queryStr);
+
+        //if (versionNumber == null) {
+        //    query.setParameter("releasedState", VersionState.RELEASED);
+        //}
+        
+        //List resultList = query.getResultList();
+        //StudyVersion studyVersion = null;
+        //if (resultList.size() > 1) {
+        //    throw new EJBException("More than one study version found with studyId = " + studyId + " and versionNumber = " + versionNumber);
+        //}
+        //if (resultList.size() == 1) {
+        //    studyVersion = (StudyVersion) resultList.get(0);
+        //}
         return studyVersion;
     }
 
@@ -1984,13 +2030,6 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         Object object       = ((List)query.getSingleResult()).get(0);
         Long longValue      = (Long)object;
         return longValue;
-    }
-
-    public void saveVersionNote(Long studyVersionId, String versionNote) {
-        StudyVersion studyVersion = em.find(StudyVersion.class, studyVersionId);
-        studyVersion.setVersionNote(versionNote);
-    }
-   
-
+    }   
 
 }

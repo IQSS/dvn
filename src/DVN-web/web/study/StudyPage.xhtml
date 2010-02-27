@@ -110,32 +110,23 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
                                 </li>
                             </span>
                             <span jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.userAuthorizedToRelease and studyPage.studyUI.studyVersion.inReview or studyPage.studyUI.studyVersion.draft}">
-                                <!--<li>
-                                    <dvn:tooltip tooltipMessage="#{studybundle.editVersionNotesTip}" linkText="#{studybundle.editVersionNotesText}" eventType="mouseover" binding="#{studyPage.editStudyVersionNotesLink}" actionListener="#{studyPage.toggleVersionNotesPopup}"/>
-                                </li>-->
                                 <li>
-                                    <ice:commandLink styleClass="dvn_tooltip" binding="#{studyPage.editStudyVersionNotesLink}" actionListener="#{studyPage.toggleVersionNotesPopup}" title="#{studybundle.editVersionNotesTip}">
+                                    <ice:commandLink onmouseover="javascript:popupTooltip(this, &#39;#{studybundle.editVersionNotesTip}&#39;, &#39;&#39;, event);" onmouseout="javascript:hideTooltip();" binding="#{studyPage.editStudyVersionNotesLink}" actionListener="#{studyPage.toggleVersionNotesPopup}">
                                         <ice:outputText value="Edit Study Version Notes" nospan="true"/>
                                     </ice:commandLink>
                                 </li>
                             </span>
                             <span jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.userAuthorizedToRelease and studyPage.studyUI.studyVersion.inReview}">
-                                <!--<li>
-                                    <dvn:tooltip tooltipMessage="#{studybundle.releaseTip}" linkText="Release" eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}"/>
-                                </li>-->
                                 <li>
-                                    <ice:commandLink actionListener="#{studyPage.confirmReleased}" title="#{studybundle.releaseTip}">
+                                    <ice:commandLink actionListener="#{studyPage.confirmReleased}" onmouseover="javascript:popupTooltip(this, &#39;#{studybundle.releaseTip}&#39;, &#39;&#39;, event);" onmouseout="javascript:hideTooltip();">
                                         <ice:outputText value="Release" nospan="true"/>
                                     </ice:commandLink>
 
                                 </li>
                             </span>
                             <span jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.userAuthorizedToEdit and studyPage.studyUI.studyVersion.draft}">
-                                <!--<li>
-                                    <dvn:tooltip tooltipMessage="#{studybundle.reviewTip}" linkText="#{studybundle.reviewText}" eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;versionNumber=#{studyPage.studyUI.studyVersion.versionNumber}"/>
-                                </li>-->
                                 <li>
-                                    <ice:commandLink actionListener="#{studyPage.confirmSubmitForReview}" title="#{studybundle.reviewTip}">
+                                    <ice:commandLink actionListener="#{studyPage.confirmSubmitForReview}" onmouseover="javascript:popupTooltip(this, &#39;#{studybundle.reviewTip}&#39;, &#39;&#39;, event);" onmouseout="javascript:hideTooltip();">
                                         <ice:outputText value="Submit For Review" nospan="true"/>
                                     </ice:commandLink>
                                 </li>

@@ -96,10 +96,8 @@ public class Indexer implements java.io.Serializable  {
 
     private static final Logger logger = Logger.getLogger("edu.harvard.iq.dvn.core.index.Indexer");
     private static IndexWriter writer;
-    private static IndexWriter writer2;
     private static IndexWriter writerVar;
     private static IndexWriter writerVersions;
-    private static IndexReader reader;
     private static IndexReader r;
     private static IndexSearcher searcher;
     private static Indexer indexer;
@@ -168,242 +166,251 @@ public class Indexer implements java.io.Serializable  {
         }
     }
 
+    public void deleteVersionDocuments(long studyId){
+        try{
+            IndexReader reader = IndexReader.open(dir, false);
+            reader.deleteDocuments(new Term("versionStudyId",Long.toString(studyId)));
+            reader.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
     protected void addDocument(Study study) throws IOException{
 
-        // TODO: VERSION: we should only indexed RELEASED
         StudyVersion sv = null;
         if (study.getReleasedVersion() != null) {
             sv = study.getReleasedVersion();
-        } else { // take this out before we "release" dvn 2.1
-            sv = study.getStudyVersions().get(0);
-        }
-        Metadata metadata = sv.getMetadata();
+            Metadata metadata = sv.getMetadata();
 
-        
-        Document doc = new Document();
-        logger.fine("Start indexing study "+study.getStudyId());
-        addText(4.0f,  doc,"title",metadata.getTitle());
-        addKeyword(doc,"id",study.getId().toString());
-        addText(1.0f,  doc,"studyId", study.getStudyId());
-        addKeyword(doc,"studyId", study.getStudyId());
+
+            Document doc = new Document();
+            logger.fine("Start indexing study " + study.getStudyId());
+            addText(4.0f, doc, "title", metadata.getTitle());
+            addKeyword(doc, "id", study.getId().toString());
+            addText(1.0f, doc, "studyId", study.getStudyId());
+            addKeyword(doc, "studyId", study.getStudyId());
 //        addText(1.0f,  doc,"owner",study.getOwner().getName());
-        addText(1.0f, doc, "dvOwnerId", Long.toString(study.getOwner().getId()));
-        addDate(1.0f, doc,"productionDate", metadata.getProductionDate());
-        addDate(1.0f, doc,"distributionDate", metadata.getDistributionDate());
+            addText(1.0f, doc, "dvOwnerId", Long.toString(study.getOwner().getId()));
+            addDate(1.0f, doc, "productionDate", metadata.getProductionDate());
+            addDate(1.0f, doc, "distributionDate", metadata.getDistributionDate());
 
-        Collection <StudyKeyword> keywords = metadata.getStudyKeywords();
-        for (Iterator it = keywords.iterator(); it.hasNext();) {
-            StudyKeyword elem = (StudyKeyword) it.next();
-            addText(1.0f,  doc,"keywordValue", elem.getValue());
-        }
-        Collection <StudyTopicClass> topicClassifications = metadata.getStudyTopicClasses();
-        for (Iterator it = topicClassifications.iterator(); it.hasNext();) {
-            StudyTopicClass elem = (StudyTopicClass) it.next();
-            addText(1.0f,  doc,"topicClassValue", elem.getValue());
-            addText(1.0f,  doc,"topicVocabClassURI", elem.getVocabURI());
-            addText(1.0f,  doc,"topicClassVocabulary", elem.getVocab());        }
-        Collection <StudyAbstract> abstracts = metadata.getStudyAbstracts();
-        for (Iterator it = abstracts.iterator(); it.hasNext();) {
-            StudyAbstract elem = (StudyAbstract) it.next();
-            addText(2.0f,  doc,"abstractText",elem.getText());
-            addDate(1.0f, doc,"abstractDate",elem.getDate());
+            Collection<StudyKeyword> keywords = metadata.getStudyKeywords();
+            for (Iterator it = keywords.iterator(); it.hasNext();) {
+                StudyKeyword elem = (StudyKeyword) it.next();
+                addText(1.0f, doc, "keywordValue", elem.getValue());
+            }
+            Collection<StudyTopicClass> topicClassifications = metadata.getStudyTopicClasses();
+            for (Iterator it = topicClassifications.iterator(); it.hasNext();) {
+                StudyTopicClass elem = (StudyTopicClass) it.next();
+                addText(1.0f, doc, "topicClassValue", elem.getValue());
+                addText(1.0f, doc, "topicVocabClassURI", elem.getVocabURI());
+                addText(1.0f, doc, "topicClassVocabulary", elem.getVocab());
+            }
+            Collection<StudyAbstract> abstracts = metadata.getStudyAbstracts();
+            for (Iterator it = abstracts.iterator(); it.hasNext();) {
+                StudyAbstract elem = (StudyAbstract) it.next();
+                addText(2.0f, doc, "abstractText", elem.getText());
+                addDate(1.0f, doc, "abstractDate", elem.getDate());
 
-        }
-        Collection <StudyAuthor> studyAuthors = metadata.getStudyAuthors();
-        for (Iterator it = studyAuthors.iterator(); it.hasNext();) {
-            StudyAuthor elem = (StudyAuthor) it.next();
-            addText(3.0f,  doc,"authorName",elem.getName());
-            addText(1.0f, doc,"authorName",elem.getName());
-            addText(1.0f,  doc,"authorAffiliation", elem.getAffiliation());
-        }
-        Collection <StudyProducer> studyProducers = metadata.getStudyProducers();
-        for (Iterator itProducers = studyProducers.iterator(); itProducers.hasNext();) {
-            StudyProducer studyProducer = (StudyProducer) itProducers.next();
-            addText(1.0f,  doc,"producerName", studyProducer.getName());
-            addText(1.0f,  doc,"producerName", studyProducer.getAbbreviation());
-            addText(1.0f,  doc,"producerName", studyProducer.getLogo());
-            addText(1.0f,  doc,"producerName", studyProducer.getUrl());
-            addText(1.0f,  doc,"producerName", studyProducer.getAffiliation());
-            addText(1.0f,  doc,"producerName", studyProducer.getMetadata().getProductionPlace());
-        }
-        Collection <StudyDistributor> studyDistributors = metadata.getStudyDistributors();
-        for (Iterator it = studyDistributors.iterator(); it.hasNext();) {
-            StudyDistributor studyDistributor = (StudyDistributor) it.next();
-            addText(1.0f,  doc,"distributorName", studyDistributor.getName());
-            addText(1.0f,  doc,"distributorName", studyDistributor.getAbbreviation());
-            addText(1.0f,  doc,"distributorName", studyDistributor.getLogo());
-            addText(1.0f,  doc,"distributorName", studyDistributor.getUrl());
-            addText(1.0f,  doc,"distributorName", studyDistributor.getAffiliation());
-        }
-        Collection <StudyOtherId> otherIds = metadata.getStudyOtherIds();
-        for (Iterator it = otherIds.iterator(); it.hasNext();) {
-            StudyOtherId elem = (StudyOtherId) it.next();
-            addText(1.0f,  doc,"otherId", elem.getOtherId());
-            addText(1.0f,  doc,"otherIdAgency", elem.getAgency());
-        }
-        addText(1.0f,  doc,"fundingAgency",metadata.getFundingAgency());
-        addText(1.0f,  doc,"distributorContact",metadata.getDistributorContact());
-        addText(1.0f,  doc,"distributorContactAffiliation",metadata.getDistributorContactAffiliation());
-        addText(1.0f,  doc,"distributorContactEmail",metadata.getDistributorContactEmail());
-        addDate(1.0f, doc,"dateOfDeposit",metadata.getDateOfDeposit());
-        addText(1.0f,  doc,"depositor",metadata.getDepositor());
-        addText(1.0f,  doc,"seriesName",metadata.getSeriesName());
-        addText(1.0f,  doc,"seriesInformation",metadata.getSeriesInformation());
-        addText(1.0f, doc,"studyVersion",metadata.getStudyVersionText());
-        addText(1.0f, doc,"versionDate",metadata.getVersionDate());
-        addText(1.0f,  doc,"originOfSources",metadata.getOriginOfSources());
-        addText(1.0f,  doc,"dataSources",metadata.getDataSources());
-        addText(1.0f, doc,"frequencyOfDataCollection",metadata.getFrequencyOfDataCollection());
-        addText(1.0f,  doc,"universe",metadata.getUniverse());
-        addText(1.0f, doc,"unitOfAnalysis",metadata.getUnitOfAnalysis());
-        addText(1.0f,  doc,"dataCollector",metadata.getDataCollector());
-        addText(1.0f,  doc,"kindOfData", metadata.getKindOfData());
-        addText(1.0f,  doc,"geographicCoverage",metadata.getGeographicCoverage());
-        addText(1.0f,  doc,"geographicUnit",metadata.getGeographicUnit());
-        addDate(1.0f, doc,"timePeriodCoveredEnd",metadata.getTimePeriodCoveredEnd());
-        addDate(1.0f, doc,"timePeriodCoveredStart",metadata.getTimePeriodCoveredStart());
-        addDate(1.0f, doc,"dateOfCollection",metadata.getDateOfCollectionStart());
-        addDate(1.0f, doc,"dateOfCollectionEnd",metadata.getDateOfCollectionEnd());
-        addText(1.0f, doc,"country",metadata.getCountry());
-        addText(1.0f, doc,"timeMethod",metadata.getTimeMethod());
-        addText(1.0f, doc,"samplingProcedure",metadata.getSamplingProcedure());
-        addText(1.0f, doc,"deviationsFromSampleDesign",metadata.getDeviationsFromSampleDesign());
-        addText(1.0f, doc,"collectionMode",metadata.getCollectionMode());
-        addText(1.0f, doc,"researchInstrument",metadata.getResearchInstrument());
-        addText(1.0f,  doc,"characteristicOfSources",metadata.getCharacteristicOfSources());
-        addText(1.0f,  doc,"accessToSources",metadata.getAccessToSources());
-        addText(1.0f,  doc,"dataCollectionSituation",metadata.getDataCollectionSituation());
-        addText(1.0f,  doc,"actionsToMinimizeLoss",metadata.getActionsToMinimizeLoss());
-        addText(1.0f,  doc,"controlOperations",metadata.getControlOperations());
-        addText(1.0f,  doc,"weighting",metadata.getWeighting());
-        addText(1.0f,  doc,"cleaningOperations",metadata.getCleaningOperations());
-        addText(1.0f,  doc,"studyLevelErrorNotes",metadata.getStudyLevelErrorNotes());
-        List <StudyNote> studyNotes = metadata.getStudyNotes();
-        for (Iterator it = studyNotes.iterator(); it.hasNext();){
-            StudyNote elem = (StudyNote) it.next();
-            addText(1.0f,  doc, "studyNoteType", elem.getType());
-            addText(1.0f,  doc, "studyNoteSubject", elem.getSubject());
-            addText(1.0f,  doc, "studyNoteText", elem.getText());
-        }
-        addText(1.0f, doc,"responseRate",metadata.getResponseRate());
-        addText(1.0f, doc,"samplingErrorEstimate",metadata.getSamplingErrorEstimate());
-        addText(1.0f,  doc,"otherDataAppraisal",metadata.getOtherDataAppraisal());
-        addText(1.0f,  doc,"placeOfAccess",metadata.getPlaceOfAccess());
-        addText(1.0f,  doc,"originalArchive",metadata.getOriginalArchive());
-        addText(1.0f, doc,"availabilityStatus",metadata.getAvailabilityStatus());
-        addText(1.0f, doc,"collectionSize",metadata.getCollectionSize());
-        addText(1.0f, doc,"studyCompletion",metadata.getStudyCompletion());
-        addText(1.0f,  doc,"confidentialityDeclaration",metadata.getConfidentialityDeclaration());
-        addText(1.0f,  doc,"specialPermissions",metadata.getSpecialPermissions());
-        addText(1.0f,  doc,"restrictions",metadata.getRestrictions());
-        addText(1.0f,  doc,"contact",metadata.getContact());
-        addText(1.0f,  doc,"citationRequirements",metadata.getCitationRequirements());
-        addText(1.0f,  doc,"depositorRequirements",metadata.getDepositorRequirements());
-        addText(1.0f,  doc,"conditions",metadata.getConditions());
-        addText(1.0f,  doc,"disclaimer",metadata.getDisclaimer());
-        List <StudyRelMaterial> relMaterials = metadata.getStudyRelMaterials();
-        for (Iterator it = relMaterials.iterator(); it.hasNext();) {
-            StudyRelMaterial elem = (StudyRelMaterial) it.next();
-            addText(1.0f,  doc,"relatedMaterial",elem.getText());
-        }
-        List <StudyRelPublication> relPublications = metadata.getStudyRelPublications();
-        for (Iterator it = relPublications.iterator(); it.hasNext();) {
-            StudyRelPublication elem = (StudyRelPublication) it.next();
-            addText(1.0f,  doc,"relatedPublications",elem.getText());
-        }
-        List <StudyRelStudy> relStudies = metadata.getStudyRelStudies();
-        for (Iterator it = relStudies.iterator(); it.hasNext();) {
-            StudyRelStudy elem = (StudyRelStudy) it.next();
-            addText(1.0f,  doc,"relatedStudy",elem.getText());
-        }
-        List <StudyOtherRef> otherRefs = metadata.getStudyOtherRefs();
-        for (Iterator it = otherRefs.iterator(); it.hasNext();) {
-            StudyOtherRef elem = (StudyOtherRef) it.next();
-            addText(1.0f,  doc,"otherReferences",elem.getText());
-        }
-
-   /*     addText(1.0f,  doc,"relatedMaterial",metadata.getRelatedMaterial());
-        addText(1.0f,  doc,"relatedPublications",metadata.getRelatedPublications());
-        addText(1.0f,  doc,"otherReferences",metadata.getOtherReferences());
-    */
-        addText(1.0f,  doc,"subtitle",metadata.getSubTitle());
-        List <StudyKeyword> studyKeywords = metadata.getStudyKeywords();
-        for (Iterator it = studyKeywords.iterator(); it.hasNext();) {
-            StudyKeyword elem = (StudyKeyword) it.next();
-            addText(1.0f,  doc,"keywordVocabulary",elem.getVocab());
-            addText(1.0f,  doc,"keywordVocabulary",elem.getVocabURI());
-        }
-        addText(1.0f,  doc,"protocol",study.getProtocol());
-        addText(1.0f,  doc,"authority",study.getAuthority());
-        addText(1.0f,  doc,"globalId",study.getGlobalId());
-        List <StudySoftware> studySoftware = metadata.getStudySoftware();
-        for (Iterator it = studySoftware.iterator(); it.hasNext();) {
-            StudySoftware elem = (StudySoftware) it.next();
-            addText(1.0f,  doc,"studySoftware", elem.getName());
-            addText(1.0f,  doc,"studySoftwareVersion", elem.getSoftwareVersion());
-        }
-        List <StudyGrant> studyGrants = metadata.getStudyGrants();
-        for (Iterator it = studyGrants.iterator(); it.hasNext();) {
-            StudyGrant elem = (StudyGrant) it.next();
-            addText(1.0f,  doc,"studyGrantNumber", elem.getNumber());
-            addText(1.0f,  doc,"studyGrantNumberAgency", elem.getAgency());
-        }
-        addText(1.0f,  doc, "replicationFor", metadata.getReplicationFor());
-        List <StudyGeoBounding> studyGeoBounding = metadata.getStudyGeoBoundings();
-        for (Iterator it = studyGeoBounding.iterator(); it.hasNext();) {
-            StudyGeoBounding elem = (StudyGeoBounding) it.next();
-            addText(1.0f,  doc,"studyEastLongitude", elem.getEastLongitude());
-            addText(1.0f,  doc,"studyWestLongitude", elem.getWestLongitude());
-            addText(1.0f,  doc,"studyNorthLatitude", elem.getNorthLatitude());
-            addText(1.0f,  doc,"studySouthLatitude", elem.getSouthLatitude());
-        }
-
-
-        for (FileMetadata fileMetadata : sv.getFileMetadatas()) {
-            addText(1.0f, doc, "fileDescription",fileMetadata.getDescription());
-        }
-
-        addText(1.0f,  doc,"unf", metadata.getUNF());
-//        writer = new IndexWriter(dir, true, getAnalyzer(), isIndexEmpty());
-        writer = new IndexWriter(dir, getAnalyzer(),isIndexEmpty(), IndexWriter.MaxFieldLength.UNLIMITED);
-        writer.setUseCompoundFile(true);
-        writer.addDocument(doc);
-        writer.close();
-        writerVar = new IndexWriter(dir, getAnalyzer(), isIndexEmpty(), IndexWriter.MaxFieldLength.UNLIMITED);
-
-        for (FileMetadata fileMetadata : sv.getFileMetadatas()) {
-            //TODO: networkDataFile
-            StudyFile elem = fileMetadata.getStudyFile();
-            if (elem instanceof TabularDataFile) {
-                DataTable dataTable = ((TabularDataFile) elem).getDataTable();
-                if (dataTable != null) {
-                    List<DataVariable> dataVariables = dataTable.getDataVariables();
-                    for (int j = 0; j < dataVariables.size(); j++) {
-                        Document docVariables = new Document();
-                        addText(1.0f, docVariables, "varStudyId", study.getId().toString());
-                        addText(1.0f, docVariables, "varStudyFileId", elem.getId().toString());
-                        DataVariable dataVariable = dataVariables.get(j);
-                        addText(1.0f, docVariables, "varId", dataVariable.getId().toString());
-                        addText(1.0f, docVariables, "varName", dataVariable.getName());
-                        addText(1.0f, docVariables, "varLabel", dataVariable.getLabel());
-                        addText(1.0f, docVariables, "varId", dataVariable.getId().toString());
-                        writerVar.addDocument(docVariables);
-                    }
-                }
+            }
+            Collection<StudyAuthor> studyAuthors = metadata.getStudyAuthors();
+            for (Iterator it = studyAuthors.iterator(); it.hasNext();) {
+                StudyAuthor elem = (StudyAuthor) it.next();
+                addText(3.0f, doc, "authorName", elem.getName());
+                addText(1.0f, doc, "authorName", elem.getName());
+                addText(1.0f, doc, "authorAffiliation", elem.getAffiliation());
+            }
+            Collection<StudyProducer> studyProducers = metadata.getStudyProducers();
+            for (Iterator itProducers = studyProducers.iterator(); itProducers.hasNext();) {
+                StudyProducer studyProducer = (StudyProducer) itProducers.next();
+                addText(1.0f, doc, "producerName", studyProducer.getName());
+                addText(1.0f, doc, "producerName", studyProducer.getAbbreviation());
+                addText(1.0f, doc, "producerName", studyProducer.getLogo());
+                addText(1.0f, doc, "producerName", studyProducer.getUrl());
+                addText(1.0f, doc, "producerName", studyProducer.getAffiliation());
+                addText(1.0f, doc, "producerName", studyProducer.getMetadata().getProductionPlace());
+            }
+            Collection<StudyDistributor> studyDistributors = metadata.getStudyDistributors();
+            for (Iterator it = studyDistributors.iterator(); it.hasNext();) {
+                StudyDistributor studyDistributor = (StudyDistributor) it.next();
+                addText(1.0f, doc, "distributorName", studyDistributor.getName());
+                addText(1.0f, doc, "distributorName", studyDistributor.getAbbreviation());
+                addText(1.0f, doc, "distributorName", studyDistributor.getLogo());
+                addText(1.0f, doc, "distributorName", studyDistributor.getUrl());
+                addText(1.0f, doc, "distributorName", studyDistributor.getAffiliation());
+            }
+            Collection<StudyOtherId> otherIds = metadata.getStudyOtherIds();
+            for (Iterator it = otherIds.iterator(); it.hasNext();) {
+                StudyOtherId elem = (StudyOtherId) it.next();
+                addText(1.0f, doc, "otherId", elem.getOtherId());
+                addText(1.0f, doc, "otherIdAgency", elem.getAgency());
+            }
+            addText(1.0f, doc, "fundingAgency", metadata.getFundingAgency());
+            addText(1.0f, doc, "distributorContact", metadata.getDistributorContact());
+            addText(1.0f, doc, "distributorContactAffiliation", metadata.getDistributorContactAffiliation());
+            addText(1.0f, doc, "distributorContactEmail", metadata.getDistributorContactEmail());
+            addDate(1.0f, doc, "dateOfDeposit", metadata.getDateOfDeposit());
+            addText(1.0f, doc, "depositor", metadata.getDepositor());
+            addText(1.0f, doc, "seriesName", metadata.getSeriesName());
+            addText(1.0f, doc, "seriesInformation", metadata.getSeriesInformation());
+            addText(1.0f, doc, "studyVersion", metadata.getStudyVersionText());
+            addText(1.0f, doc, "versionDate", metadata.getVersionDate());
+            addText(1.0f, doc, "originOfSources", metadata.getOriginOfSources());
+            addText(1.0f, doc, "dataSources", metadata.getDataSources());
+            addText(1.0f, doc, "frequencyOfDataCollection", metadata.getFrequencyOfDataCollection());
+            addText(1.0f, doc, "universe", metadata.getUniverse());
+            addText(1.0f, doc, "unitOfAnalysis", metadata.getUnitOfAnalysis());
+            addText(1.0f, doc, "dataCollector", metadata.getDataCollector());
+            addText(1.0f, doc, "kindOfData", metadata.getKindOfData());
+            addText(1.0f, doc, "geographicCoverage", metadata.getGeographicCoverage());
+            addText(1.0f, doc, "geographicUnit", metadata.getGeographicUnit());
+            addDate(1.0f, doc, "timePeriodCoveredEnd", metadata.getTimePeriodCoveredEnd());
+            addDate(1.0f, doc, "timePeriodCoveredStart", metadata.getTimePeriodCoveredStart());
+            addDate(1.0f, doc, "dateOfCollection", metadata.getDateOfCollectionStart());
+            addDate(1.0f, doc, "dateOfCollectionEnd", metadata.getDateOfCollectionEnd());
+            addText(1.0f, doc, "country", metadata.getCountry());
+            addText(1.0f, doc, "timeMethod", metadata.getTimeMethod());
+            addText(1.0f, doc, "samplingProcedure", metadata.getSamplingProcedure());
+            addText(1.0f, doc, "deviationsFromSampleDesign", metadata.getDeviationsFromSampleDesign());
+            addText(1.0f, doc, "collectionMode", metadata.getCollectionMode());
+            addText(1.0f, doc, "researchInstrument", metadata.getResearchInstrument());
+            addText(1.0f, doc, "characteristicOfSources", metadata.getCharacteristicOfSources());
+            addText(1.0f, doc, "accessToSources", metadata.getAccessToSources());
+            addText(1.0f, doc, "dataCollectionSituation", metadata.getDataCollectionSituation());
+            addText(1.0f, doc, "actionsToMinimizeLoss", metadata.getActionsToMinimizeLoss());
+            addText(1.0f, doc, "controlOperations", metadata.getControlOperations());
+            addText(1.0f, doc, "weighting", metadata.getWeighting());
+            addText(1.0f, doc, "cleaningOperations", metadata.getCleaningOperations());
+            addText(1.0f, doc, "studyLevelErrorNotes", metadata.getStudyLevelErrorNotes());
+            List<StudyNote> studyNotes = metadata.getStudyNotes();
+            for (Iterator it = studyNotes.iterator(); it.hasNext();) {
+                StudyNote elem = (StudyNote) it.next();
+                addText(1.0f, doc, "studyNoteType", elem.getType());
+                addText(1.0f, doc, "studyNoteSubject", elem.getSubject());
+                addText(1.0f, doc, "studyNoteText", elem.getText());
+            }
+            addText(1.0f, doc, "responseRate", metadata.getResponseRate());
+            addText(1.0f, doc, "samplingErrorEstimate", metadata.getSamplingErrorEstimate());
+            addText(1.0f, doc, "otherDataAppraisal", metadata.getOtherDataAppraisal());
+            addText(1.0f, doc, "placeOfAccess", metadata.getPlaceOfAccess());
+            addText(1.0f, doc, "originalArchive", metadata.getOriginalArchive());
+            addText(1.0f, doc, "availabilityStatus", metadata.getAvailabilityStatus());
+            addText(1.0f, doc, "collectionSize", metadata.getCollectionSize());
+            addText(1.0f, doc, "studyCompletion", metadata.getStudyCompletion());
+            addText(1.0f, doc, "confidentialityDeclaration", metadata.getConfidentialityDeclaration());
+            addText(1.0f, doc, "specialPermissions", metadata.getSpecialPermissions());
+            addText(1.0f, doc, "restrictions", metadata.getRestrictions());
+            addText(1.0f, doc, "contact", metadata.getContact());
+            addText(1.0f, doc, "citationRequirements", metadata.getCitationRequirements());
+            addText(1.0f, doc, "depositorRequirements", metadata.getDepositorRequirements());
+            addText(1.0f, doc, "conditions", metadata.getConditions());
+            addText(1.0f, doc, "disclaimer", metadata.getDisclaimer());
+            List<StudyRelMaterial> relMaterials = metadata.getStudyRelMaterials();
+            for (Iterator it = relMaterials.iterator(); it.hasNext();) {
+                StudyRelMaterial elem = (StudyRelMaterial) it.next();
+                addText(1.0f, doc, "relatedMaterial", elem.getText());
+            }
+            List<StudyRelPublication> relPublications = metadata.getStudyRelPublications();
+            for (Iterator it = relPublications.iterator(); it.hasNext();) {
+                StudyRelPublication elem = (StudyRelPublication) it.next();
+                addText(1.0f, doc, "relatedPublications", elem.getText());
+            }
+            List<StudyRelStudy> relStudies = metadata.getStudyRelStudies();
+            for (Iterator it = relStudies.iterator(); it.hasNext();) {
+                StudyRelStudy elem = (StudyRelStudy) it.next();
+                addText(1.0f, doc, "relatedStudy", elem.getText());
+            }
+            List<StudyOtherRef> otherRefs = metadata.getStudyOtherRefs();
+            for (Iterator it = otherRefs.iterator(); it.hasNext();) {
+                StudyOtherRef elem = (StudyOtherRef) it.next();
+                addText(1.0f, doc, "otherReferences", elem.getText());
             }
 
-        }        
-        writerVar.close();
-        writerVersions = new IndexWriter(dir, new WhitespaceAnalyzer(), isIndexEmpty(), IndexWriter.MaxFieldLength.UNLIMITED);
-        for (StudyVersion version: study.getStudyVersions()){
-            Document docVersions = new Document();
-            addText(1.0f, docVersions, "versionId", version.getId().toString());
-            addText(1.0f, docVersions, "versionNumber", version.getVersion().toString());
-            addKeyword(docVersions, "versionUnf", version.getMetadata().getUNF());
-            writerVersions.addDocument(docVersions);
+            /*     addText(1.0f,  doc,"relatedMaterial",metadata.getRelatedMaterial());
+            addText(1.0f,  doc,"relatedPublications",metadata.getRelatedPublications());
+            addText(1.0f,  doc,"otherReferences",metadata.getOtherReferences());
+             */
+            addText(1.0f, doc, "subtitle", metadata.getSubTitle());
+            List<StudyKeyword> studyKeywords = metadata.getStudyKeywords();
+            for (Iterator it = studyKeywords.iterator(); it.hasNext();) {
+                StudyKeyword elem = (StudyKeyword) it.next();
+                addText(1.0f, doc, "keywordVocabulary", elem.getVocab());
+                addText(1.0f, doc, "keywordVocabulary", elem.getVocabURI());
+            }
+            addText(1.0f, doc, "protocol", study.getProtocol());
+            addText(1.0f, doc, "authority", study.getAuthority());
+            addText(1.0f, doc, "globalId", study.getGlobalId());
+            List<StudySoftware> studySoftware = metadata.getStudySoftware();
+            for (Iterator it = studySoftware.iterator(); it.hasNext();) {
+                StudySoftware elem = (StudySoftware) it.next();
+                addText(1.0f, doc, "studySoftware", elem.getName());
+                addText(1.0f, doc, "studySoftwareVersion", elem.getSoftwareVersion());
+            }
+            List<StudyGrant> studyGrants = metadata.getStudyGrants();
+            for (Iterator it = studyGrants.iterator(); it.hasNext();) {
+                StudyGrant elem = (StudyGrant) it.next();
+                addText(1.0f, doc, "studyGrantNumber", elem.getNumber());
+                addText(1.0f, doc, "studyGrantNumberAgency", elem.getAgency());
+            }
+            addText(1.0f, doc, "replicationFor", metadata.getReplicationFor());
+            List<StudyGeoBounding> studyGeoBounding = metadata.getStudyGeoBoundings();
+            for (Iterator it = studyGeoBounding.iterator(); it.hasNext();) {
+                StudyGeoBounding elem = (StudyGeoBounding) it.next();
+                addText(1.0f, doc, "studyEastLongitude", elem.getEastLongitude());
+                addText(1.0f, doc, "studyWestLongitude", elem.getWestLongitude());
+                addText(1.0f, doc, "studyNorthLatitude", elem.getNorthLatitude());
+                addText(1.0f, doc, "studySouthLatitude", elem.getSouthLatitude());
+            }
+
+
+            for (FileMetadata fileMetadata : sv.getFileMetadatas()) {
+                addText(1.0f, doc, "fileDescription", fileMetadata.getDescription());
+            }
+
+            addText(1.0f, doc, "unf", metadata.getUNF());
+//        writer = new IndexWriter(dir, true, getAnalyzer(), isIndexEmpty());
+            writer = new IndexWriter(dir, getAnalyzer(), isIndexEmpty(), IndexWriter.MaxFieldLength.UNLIMITED);
+            writer.setUseCompoundFile(true);
+            writer.addDocument(doc);
+            writer.close();
+            writerVar = new IndexWriter(dir, getAnalyzer(), isIndexEmpty(), IndexWriter.MaxFieldLength.UNLIMITED);
+
+            for (FileMetadata fileMetadata : sv.getFileMetadatas()) {
+                //TODO: networkDataFile
+                StudyFile elem = fileMetadata.getStudyFile();
+                if (elem instanceof TabularDataFile) {
+                    DataTable dataTable = ((TabularDataFile) elem).getDataTable();
+                    if (dataTable != null) {
+                        List<DataVariable> dataVariables = dataTable.getDataVariables();
+                        for (int j = 0; j < dataVariables.size(); j++) {
+                            Document docVariables = new Document();
+                            addText(1.0f, docVariables, "varStudyId", study.getId().toString());
+                            addText(1.0f, docVariables, "varStudyFileId", elem.getId().toString());
+                            DataVariable dataVariable = dataVariables.get(j);
+                            addText(1.0f, docVariables, "varId", dataVariable.getId().toString());
+                            addText(1.0f, docVariables, "varName", dataVariable.getName());
+                            addText(1.0f, docVariables, "varLabel", dataVariable.getLabel());
+                            addText(1.0f, docVariables, "varId", dataVariable.getId().toString());
+                            writerVar.addDocument(docVariables);
+                        }
+                    }
+                }
+
+            }
+            writerVar.close();
+            writerVersions = new IndexWriter(dir, new WhitespaceAnalyzer(), isIndexEmpty(), IndexWriter.MaxFieldLength.UNLIMITED);
+            for (StudyVersion version : study.getStudyVersions()) {
+                Document docVersions = new Document();
+                addKeyword(docVersions, "versionStudyId",study.getId().toString());
+                addText(1.0f, docVersions, "versionId", version.getId().toString());
+                addText(1.0f, docVersions, "versionNumber", version.getVersion().toString());
+                addKeyword(docVersions, "versionUnf", version.getMetadata().getUNF());
+                writerVersions.addDocument(docVersions);
+            }
+            writerVersions.close();
+            logger.fine("End indexing study " + study.getStudyId());
         }
-        writerVersions.close();
-        logger.fine("End indexing study " + study.getStudyId());
     }
 
 

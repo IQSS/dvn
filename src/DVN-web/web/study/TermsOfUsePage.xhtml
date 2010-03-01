@@ -25,7 +25,7 @@
               <p>
                 <ice:outputText rendered="#{TermsOfUsePage.touTypeDownload}" value="Please agree to the terms of use below before accessing the files for study: "/>
                 <ice:outputText rendered="#{TermsOfUsePage.touTypeDeposit and TermsOfUsePage.studyId!=null}" value="Please agree to the terms of use below before editing study: "/>
-                <ice:outputText styleClass="warnMessage" value="#{TermsOfUsePage.study.title}"/>
+                <ice:outputText styleClass="warnMessage" value="#{TermsOfUsePage.study.releasedVersion.metadata.title}"/>
                 <ice:outputText rendered="#{TermsOfUsePage.studyId==null}" value="Please agree to the terms of use below before creating a new study."/>
               </p>
               <div jsfc="ice:panelGroup" rendered="#{TermsOfUsePage.studyId!=null and TermsOfUsePage.touTypeDownload}">

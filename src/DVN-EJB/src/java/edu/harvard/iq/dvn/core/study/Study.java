@@ -180,8 +180,6 @@ public class Study implements java.io.Serializable {
     }
     
     public StudyVersion getStudyVersionByNumber (Long versionNumber) {
-        int size = studyVersions.size();
-        //for (int i = 0; i < size; i++) {
         for (StudyVersion studyVersion : getStudyVersions()) {
             if (studyVersion.getVersionNumber().equals(versionNumber)) {
                 return studyVersion;

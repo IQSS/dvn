@@ -711,7 +711,8 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
                     // We are redirecting to the Differences page; 
                     // Need to set the HTTP parameters:
                     getVDCRequestBean().setStudyId(getStudyId());
-                    getVDCRequestBean().setStudyVersionNumber(getVersionNumber());
+                    getVDCRequestBean().setStudyVersionNumberList(releasedVersion.getVersionNumber()+","+getVersionNumber());
+                    getVDCRequestBean().setActionMode("confirmRelease");
 
                     return "diffStudy";
                 }

@@ -205,6 +205,26 @@
         </managed-property>
     </managed-bean>
     <managed-bean>
+        <managed-bean-name>studyVersionDifferencesPage</managed-bean-name>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.study.StudyVersionDifferencesPage</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+        <managed-property>
+            <property-name>studyId</property-name>
+            <property-class>java.lang.Long</property-class>
+            <value>#{param.studyId}</value>
+        </managed-property>
+        <managed-property>
+            <property-name>versionNumberList</property-name>
+            <property-class>java.lang.String</property-class>
+            <value>#{param.versionNumberList}</value>
+        </managed-property>
+        <managed-property>
+            <property-name>actionMode</property-name>
+            <property-class>java.lang.String</property-class>
+            <value>#{param.actionMode}</value>
+        </managed-property>
+    </managed-bean>
+    <managed-bean>
         <managed-bean-name>StudyCommentsFragment</managed-bean-name>
         <managed-bean-class>edu.harvard.iq.dvn.core.web.study.StudyCommentsFragment</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>

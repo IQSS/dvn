@@ -101,6 +101,16 @@ public class VDCRequestBean extends VDCBaseBean implements java.io.Serializable 
         this.studyVersionNumber = studyVersionNumber;
     }
 
+    private String studyVersionNumberList;
+
+    public String getStudyVersionNumberList() {
+        return studyVersionNumberList;
+    }
+
+    public void setStudyVersionNumberList(String studyVersionNumberList) {
+        this.studyVersionNumberList = studyVersionNumberList;
+    }
+
     private String selectedTab;
 
     public String getSelectedTab() {
@@ -110,6 +120,16 @@ public class VDCRequestBean extends VDCBaseBean implements java.io.Serializable 
     public void setSelectedTab(String selectedTab) {
         this.selectedTab = selectedTab;
     }    
+
+    private String actionMode;
+
+    public String getActionMode() {
+        return actionMode;
+    }
+
+    public void setActionMode(String am) {
+        this.actionMode = am;
+    }
 
     private boolean currentVDCinitialized;
     private VDC currentVDC;

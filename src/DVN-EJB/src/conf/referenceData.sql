@@ -293,6 +293,7 @@ INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'CreatorReq
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'CreatorRequestInfoPage','/login/CreatorRequestInfoPage.xhtml', null,null );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'TermsOfUsePage','/login/TermsOfUsePage.xhtml', null,null );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'AccountTermsOfUsePage','/login/AccountTermsOfUsePage.xhtml', null,null );
+INSERT INTO pagedef (name, path, role_id, networkrole_id ) VALUES  ( 'StudyVersionDifferencesPage', '/study/StudyVersionDifferencesPage.xhtml', null,null );
 
 -- Pages that require VDC Role authorization:
 -- Contributor Role 

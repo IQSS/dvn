@@ -198,12 +198,9 @@ public class EditStudyServiceBean implements edu.harvard.iq.dvn.core.study.EditS
                
             }
             
-            if (studyVersion.getId() == null) {
-                // we need to flush to get the id for the indexer
-                em.flush();
-            }
+            
             em.flush(); // Always call flush(), so that we can detect an OptimisticLockException
-            indexService.updateStudy(studyVersion.getStudy().getId());
+           
            
         } catch(EJBException e) {
             System.out.println("EJBException "+e.getMessage()+" saving studyVersion "+studyVersion.getId()+" edited by " + user.getUserName() + " at "+ new Date().toString());

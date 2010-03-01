@@ -111,8 +111,6 @@ public class DSBIngestMessageBean implements MessageListener {
                     ingestMessage.getIngestUserId());
             
             
-            // adding files succeeded; call indexer
-            indexService.updateStudy(ingestMessage.getStudyId());
             
             if ( ingestMessage.sendInfoMessage() || ( problemFiles.size() >= 0 && ingestMessage.sendErrorMessage() ) ) {
                 //TODO: VERSION:

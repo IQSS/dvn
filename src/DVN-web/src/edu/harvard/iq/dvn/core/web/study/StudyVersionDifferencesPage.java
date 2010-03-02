@@ -339,7 +339,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("subtitle");
+				idi.setFieldName("Subtitle");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -362,7 +362,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("globalid");
+				idi.setFieldName("Global ID");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -385,7 +385,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("otherids");
+				idi.setFieldName("Other ID");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -408,7 +408,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("authors");
+				idi.setFieldName("Author");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -431,7 +431,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("producers");
+				idi.setFieldName("Producer");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -454,7 +454,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("production date");
+				idi.setFieldName("Production Date");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -477,7 +477,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("production place");
+				idi.setFieldName("Production Place");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -500,7 +500,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("software");
+				idi.setFieldName("Software");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -523,7 +523,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("funding agency");
+				idi.setFieldName("Funding Agency");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -546,7 +546,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("grants");
+				idi.setFieldName("Grant Number");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -569,7 +569,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("distributors");
+				idi.setFieldName("Distributor");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -592,7 +592,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("distributor contact");
+				idi.setFieldName("Distributor Contact");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -615,7 +615,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("distribution date");
+				idi.setFieldName("Distribution Date");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -638,7 +638,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("depositor");
+				idi.setFieldName("Depositor");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -661,7 +661,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("date of deposit");
+				idi.setFieldName("Deposit Date");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -684,7 +684,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("series");
+				idi.setFieldName("Series");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -707,7 +707,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("study version text");
+				idi.setFieldName("Version");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -730,7 +730,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("replication for");
+				idi.setFieldName("Replication For");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -765,7 +765,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("abstracts");
+				idi.setFieldName("Abstract");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -788,7 +788,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("abstractdates");
+				idi.setFieldName("Abstract Date");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -811,7 +811,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("keywords");
+				idi.setFieldName("Keyword");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -834,7 +834,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("topicclasses");
+				idi.setFieldName("Topic Classification");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -857,7 +857,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("relpublications");
+				idi.setFieldName("Related Publications");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -880,7 +880,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("timeperiodcovered");
+				idi.setFieldName("Time Period Covered");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -903,7 +903,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("dateofcollection");
+				idi.setFieldName("Date of Collection");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -926,7 +926,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("country");
+				idi.setFieldName("Country/Nation");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -949,7 +949,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("geographiccoverage");
+				idi.setFieldName("Geographic Coverage");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -972,7 +972,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("geographicunit");
+				idi.setFieldName("Geographic Unit");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -995,7 +995,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("geographicboundings");
+				idi.setFieldName("Geographic Bounding Box");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -1018,7 +1018,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("unitofanalysis");
+				idi.setFieldName("Unit of Analysis");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -1041,7 +1041,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("universe");
+				idi.setFieldName("Universe");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -1064,7 +1064,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("kindofdata");
+				idi.setFieldName("Kind of Data");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -1099,7 +1099,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("timemethod");
+				idi.setFieldName("Time Method");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -1122,7 +1122,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("datacollector");
+				idi.setFieldName("Data Collector");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -1145,7 +1145,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("frequencyofdatacollection");
+				idi.setFieldName("Frequency");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -1168,7 +1168,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("samplingprocedure");
+				idi.setFieldName("Sampling Procedure");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -1191,7 +1191,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("deviationsfromsampledesign");
+				idi.setFieldName("Major Deviations for Sample Design");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -1214,7 +1214,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("collectionmode");
+				idi.setFieldName("Collection Mode");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -1237,7 +1237,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("researchinstrument");
+				idi.setFieldName("Type of Research Instrument");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -1260,7 +1260,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("datasources");
+				idi.setFieldName("Data Sources");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -1283,7 +1283,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("originofsources");
+				idi.setFieldName("Origin of Sources");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -1306,7 +1306,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("characteristicofsources");
+				idi.setFieldName("Characteristic of Sources Noted");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -1329,7 +1329,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("accesstosources");
+				idi.setFieldName("Documentation and Access to Sources");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -1352,7 +1352,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("datacollectionsituation");
+				idi.setFieldName("Characteristics of Data Collection Situation");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -1375,7 +1375,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("actionstominimizeloss");
+				idi.setFieldName("Actions to Minimize Losses");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -1398,7 +1398,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("controloperations");
+				idi.setFieldName("Control Operations");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -1421,7 +1421,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("weighting");
+				idi.setFieldName("Weighting");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -1444,7 +1444,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("cleaningoperations");
+				idi.setFieldName("Cleaning Operations");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -1467,7 +1467,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("studylevelerrornotes");
+				idi.setFieldName("Study Level Error Notes");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -1490,7 +1490,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("responserate");
+				idi.setFieldName("Response Rate");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -1513,7 +1513,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("samplingerrorestimate");
+				idi.setFieldName("Estimates of Sampling Error ");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -1536,7 +1536,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("otherdataappraisal");
+				idi.setFieldName("Other Forms of Data Appraisal");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -1570,7 +1570,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("placeofaccess");
+				idi.setFieldName("Data Access Place");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -1593,7 +1593,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("originalarchive");
+				idi.setFieldName("Original Archive");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -1616,7 +1616,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("availabilitystatus");
+				idi.setFieldName("Availability Status");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -1639,7 +1639,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("collectionsize");
+				idi.setFieldName("Size of Collection");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -1662,7 +1662,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("studycompletion");
+				idi.setFieldName("Study Completion");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -1696,7 +1696,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("confidentialitydeclaration");
+				idi.setFieldName("Confidentiality Declaration");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -1719,7 +1719,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("specialpermissions");
+				idi.setFieldName("Special Permissions");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -1742,7 +1742,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("restrictions");
+				idi.setFieldName("Restrictions");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -1765,7 +1765,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("contact");
+				idi.setFieldName("Contact");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -1788,7 +1788,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("citationrequirements");
+				idi.setFieldName("Citation Requirements");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -1811,7 +1811,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("depositorrequirements");
+				idi.setFieldName("Depositor Requirements");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -1834,7 +1834,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("conditions");
+				idi.setFieldName("Conditions");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -1857,7 +1857,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("disclaimer");
+				idi.setFieldName("Disclaimer");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -1891,7 +1891,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("timemethod");
+				idi.setFieldName("Time Method");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 

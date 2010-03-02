@@ -26,7 +26,7 @@
             </div>
             <div class="dvn_sectionTitleLinksR">
                 <div jsfc="ice:panelGroup" id="groupPanel10" styleClass="vdcTextRight dvnFormMargin">
-                    <ice:commandButton id="button1" value="Release" action="#{studyVersionDifferencesPage.release}" rendered="#{studyVersionDifferencesPage.releaseConfrimInProgress}"/>
+                    <ice:commandButton id="button1" value="Release" actionListener="#{studyVersionDifferencesPage.release}" rendered="#{studyVersionDifferencesPage.releaseConfrimInProgress}"/>
                     <ice:commandButton id="button2" value="Cancel" immediate="true" action="#{studyVersionDifferencesPage.cancel}" rendered="#{studyVersionDifferencesPage.releaseConfrimInProgress}"/>
                 </div>
             </div>

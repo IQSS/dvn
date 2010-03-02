@@ -207,14 +207,32 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         Study study = em.find(Study.class, studyId);
         study.getLatestVersion().setVersionState(StudyVersion.VersionState.RELEASED);
 
+        em.flush(); // Not sure it is necessary... but can't hurt. :)
+
         VDCRole studyCreatorRole = study.getCreator().getVDCRole(study.getOwner());
 
         if (studyCreatorRole != null && studyCreatorRole.getRole().getName().equals(RoleServiceLocal.CONTRIBUTOR)) {
             //mailService.sendStudyReleasedNotification(study.getCreator().getEmail(), study.getTitle(), study.getOwner().getName());
         }
+
+        // finally, re-index the study metadata:
+        indexService.updateStudy(studyId);
     }
 
-     
+    public void setArchived(Long studyVersionId) {
+        // Not sure we need a separate method for this; 
+        // We could instead modify the setReleased method above to 
+        // always archive the previously released copy, if exists...
+        // Do we ever want to archive study versios without releasing
+        // a later version?
+
+        StudyVersion sv = em.find(StudyVersion.class, studyVersionId);
+        
+        if ( sv != null ) {
+            sv.setVersionState(StudyVersion.VersionState.ARCHIVED);
+        }
+    }
+    
     public Study getStudyByHarvestInfo(VDC dataverse, String harvestIdentifier) {
         String queryStr = "SELECT s FROM Study s WHERE s.owner.id = '" + dataverse.getId() + "' and s.harvestIdentifier = '" + harvestIdentifier + "'";
         Query query = em.createQuery(queryStr);

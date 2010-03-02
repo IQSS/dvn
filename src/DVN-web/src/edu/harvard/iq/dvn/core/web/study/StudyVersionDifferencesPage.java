@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -267,19 +268,21 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
         return ("confirmRelease".equals(actionMode));
     }
 
-    public String release() {
+    public void release (ActionEvent ae) {
+        // First we archive the previously released version:
+        studyService.setArchived(getStudyVersion1().getId());
 
-        studyUI2.getStudyVersion().setVersionState(StudyVersion.VersionState.RELEASED);
+        // Then we release this latest version:
+        //studyUI2.getStudyVersion().setVersionState(StudyVersion.VersionState.RELEASED);
         studyService.setReleased(studyUI2.getStudy().getId());
 
-        // We are redirecting back to the StudyPage;
-        // Need to set the HTTP parameters:
+        // the setReleased method in the StudyServiceBean, above,
+        // also updates the study with the Indexer service.
+        // every time a study is released.
 
-        getVDCRequestBean().setStudyId(getStudyId());
+        // And now we are redirecting back to the StudyPage;
         // no need to specify the version really, since the latest version is now released.
-        //getVDCRequestBean().setStudyVersionNumber(releasedVersion.getVersionNote()+","+getVersionNumber());
-
-        return "viewStudy";
+        redirect("/faces/study/StudyPage.xhtml?studyId="+studyId);
     }
 
     public String cancel() {

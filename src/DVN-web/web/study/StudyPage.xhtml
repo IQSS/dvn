@@ -25,6 +25,120 @@
                 jQuery(moreInfo).children('span.iceOutTxt').text(toggleLabelText);
                 return false;
           };
+
+        function getElementsByClassName( strClassName, obj ) {
+              var ar = arguments[2] || new Array();
+              var re = new RegExp("\\b" + strClassName + "\\b", "g");
+              if ( re.test(obj.className) ) {
+                  ar.push( obj );
+              }
+              for ( var i = 0; i < obj.childNodes.length; i++ )
+                  getElementsByClassName( strClassName, obj.childNodes[i], ar );
+              return ar;
+          }
+
+          function toggleCheckBoxes( elem ) {
+              if (elem.id.indexOf('fileCheckBox') > -1) {
+                  if (!elem.checked) {
+                      fileCatIndex = findCatIndex(elem.id);
+                      // deselect corresponding catCheckBox and studyCheckBox
+                      var catCBs = getElementsByClassName("catCheckBox", document.body);
+                      for (var i = 0; i < catCBs.length; i++) {
+                          if ( fileCatIndex == findCatIndex(catCBs[i].id) )  {
+                              catCBs[i].checked = elem.checked;
+                          }
+                      }
+                      var studyCBs = getElementsByClassName("studyCheckBox", document.body);
+                      for (var i = 0; i < studyCBs.length; i++) {
+                          studyCBs[i].checked = elem.checked;
+                      }
+                  }
+              } else if (elem.id.indexOf('catCheckBox') > -1) {
+                  catIndex = findCatIndex(elem.id);
+                  var fileCBs = getElementsByClassName("fileCheckBox", document.body);
+                  for (var i = 0; i < fileCBs.length; i++) {
+                      if ( !fileCBs[i].disabled && catIndex == findCatIndex(fileCBs[i].id)  )  {
+                          fileCBs[i].checked = elem.checked;
+                      }
+                  }
+                  if (!elem.checked) {
+                      // deselect studyCheckBox
+                      var studyCBs = getElementsByClassName("studyCheckBox", document.body);
+                      for (var i = 0; i < studyCBs.length; i++) {
+                          studyCBs[i].checked = elem.checked;
+                      }
+                  }
+
+              } else if (elem.id.indexOf('studyCheckBox') > -1) {
+                  var catCBs = getElementsByClassName("catCheckBox", document.body);
+                  for (var i = 0; i < catCBs.length; i++) {
+                      if ( !catCBs[i].disabled ) {
+                          catCBs[i].checked = elem.checked;
+                      }
+                  }
+                  var fileCBs = getElementsByClassName("fileCheckBox", document.body);
+                  for (var i = 0; i < fileCBs.length; i++) {
+                      if ( !fileCBs[i].disabled ) {
+                          fileCBs[i].checked = elem.checked;
+                      }
+                  }
+              }
+          }
+
+          function findCatIndex(id) {
+              startIndex = id.indexOf("catDataTable:") + 13;
+              endIndex = id.indexOf(":", startIndex);
+              return id.substring(startIndex, endIndex);
+          }
+
+          function downloadSingleFile(fileDropdown) {
+              downloadUrl = fileDropdown.options[ fileDropdown.selectedIndex ].value;
+              fileDropdown.selectedIndex = 0;
+              if (downloadUrl != "") {
+                window.location.href = downloadUrl;
+              }
+          }
+
+          function downloadSelectedFiles() {
+              fileIdStr = "";
+              var fileCBs = getElementsByClassName("fileCheckBox", document.body);
+              for (var i = 0; i < fileCBs.length; i++) {
+                  if ( fileCBs[i].checked ) {
+                      if (fileIdStr != "") {
+                          fileIdStr = fileIdStr + ",";
+                      }
+                      fileIdStr = fileIdStr + fileCBs[i].previousSibling.value;
+                  }
+              }
+              if (fileIdStr == "") {
+                  alert ("No files selected");
+                  return false;
+              }
+              window.location.href = "/dvn#{VDCRequest.currentVDCURL}/FileDownload/study_#{studyPage.studyUI.study.studyId}.zip?fileId=" + fileIdStr +  "#{studyPage.xff}";
+              return false;
+          }     
+
+          function viewStudyVersionDifferences() {
+              var versionNumberStr = "";
+              var checkedCount = 0;
+              var versionCBs = getElementsByClassName("versionCheckBox", document.body);
+              for (var i = 0; i < versionCBs.length; i++) {
+                  if ( versionCBs[i].checked ) {
+                      if (versionNumberStr != "") {
+                          versionNumberStr = versionNumberStr + ",";
+                      }
+                      versionNumberStr = versionNumberStr + versionCBs[i].previousSibling.value;
+                      checkedCount++;
+                  }
+              }
+              if (checkedCount != 2) {
+                  alert ("You must select exactly two versions to see the differences.");
+                  return false;
+              }
+              window.location.href = "/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyVersionDifferencesPage.xhtml?studyId=#{studyPage.studyUI.study.id}&versionNumberList=" + versionNumberStr;
+              return false;
+          }
+
           // ]]>
         </script>
       <f:loadBundle basename="StudyBundle" var="studybundle"/>
@@ -178,7 +292,7 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
                     </div>
                     <div jsfc="ice:panelGroup" rendered="#{!(studyPage.studyUI.study.studyLock==null)}">
                         <ice:outputText styleClass="vdcStudyStatus" value="Currently unavailable for editing because file upload is in progress." rendered="#{studyPage.studyUI.userAuthorizedToEdit and !(studyPage.studyUI.study.studyLock==null)}"/>
-                        <ice:outputLink styleClass="vdcStudyStatus" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=#{studyPage.tab}#{VDCRequest.studyListingIndexAsParameter}" rendered="#{studyPage.studyUI.userAuthorizedToEdit and !(studyPage.studyUI.study.studyLock==null)}">
+                        <ice:outputLink styleClass="vdcStudyStatus" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;versionNumber=#{studyPage.studyUI.studyVersion.versionNumber}&amp;tab=#{studyPage.tab}#{VDCRequest.studyListingIndexAsParameter}" rendered="#{studyPage.studyUI.userAuthorizedToEdit and !(studyPage.studyUI.study.studyLock==null)}">
                             <ice:outputText nospan="true" value="Refresh"/>
                         </ice:outputLink>
                     </div>
@@ -613,98 +727,6 @@ textarea.dvnstudycitation {width:auto;}
               jQuery(".vdcStudyDesc").truncate({max_length: 198});
               jQuery(".TogglePaneFancy").initTogglePane({headerClassClosed:"TogglePaneFancyHeaderClosed"});
           });
-
-          function getElementsByClassName( strClassName, obj ) {
-              var ar = arguments[2] || new Array();
-              var re = new RegExp("\\b" + strClassName + "\\b", "g");
-              if ( re.test(obj.className) ) {
-                  ar.push( obj );
-              }
-              for ( var i = 0; i < obj.childNodes.length; i++ )
-                  getElementsByClassName( strClassName, obj.childNodes[i], ar );
-              return ar;
-          }
-
-          function toggleCheckBoxes( elem ) {
-              if (elem.id.indexOf('fileCheckBox') > -1) {
-                  if (!elem.checked) {
-                      fileCatIndex = findCatIndex(elem.id);
-                      // deselect corresponding catCheckBox and studyCheckBox
-                      var catCBs = getElementsByClassName("catCheckBox", document.body);
-                      for (var i = 0; i < catCBs.length; i++) {
-                          if ( fileCatIndex == findCatIndex(catCBs[i].id) )  {
-                              catCBs[i].checked = elem.checked;
-                          }
-                      }
-                      var studyCBs = getElementsByClassName("studyCheckBox", document.body);
-                      for (var i = 0; i < studyCBs.length; i++) {
-                          studyCBs[i].checked = elem.checked;
-                      }
-                  }
-              } else if (elem.id.indexOf('catCheckBox') > -1) {
-                  catIndex = findCatIndex(elem.id);
-                  var fileCBs = getElementsByClassName("fileCheckBox", document.body);
-                  for (var i = 0; i < fileCBs.length; i++) {
-                      if ( !fileCBs[i].disabled && catIndex == findCatIndex(fileCBs[i].id)  )  {
-                          fileCBs[i].checked = elem.checked;
-                      }
-                  }
-                  if (!elem.checked) {
-                      // deselect studyCheckBox
-                      var studyCBs = getElementsByClassName("studyCheckBox", document.body);
-                      for (var i = 0; i < studyCBs.length; i++) {
-                          studyCBs[i].checked = elem.checked;
-                      }
-                  }
-
-              } else if (elem.id.indexOf('studyCheckBox') > -1) {
-                  var catCBs = getElementsByClassName("catCheckBox", document.body);
-                  for (var i = 0; i < catCBs.length; i++) {
-                      if ( !catCBs[i].disabled ) {
-                          catCBs[i].checked = elem.checked;
-                      }
-                  }
-                  var fileCBs = getElementsByClassName("fileCheckBox", document.body);
-                  for (var i = 0; i < fileCBs.length; i++) {
-                      if ( !fileCBs[i].disabled ) {
-                          fileCBs[i].checked = elem.checked;
-                      }
-                  }
-              }
-          }
-
-          function findCatIndex(id) {
-              startIndex = id.indexOf("catDataTable:") + 13;
-              endIndex = id.indexOf(":", startIndex);
-              return id.substring(startIndex, endIndex);
-          }
-
-          function downloadSingleFile(fileDropdown) {
-              downloadUrl = fileDropdown.options[ fileDropdown.selectedIndex ].value;
-              fileDropdown.selectedIndex = 0;
-              if (downloadUrl != "") {
-                window.location.href = downloadUrl;
-              }
-          }
-
-          function downloadSelectedFiles() {
-              fileIdStr = "";
-              var fileCBs = getElementsByClassName("fileCheckBox", document.body);
-              for (var i = 0; i < fileCBs.length; i++) {
-                  if ( fileCBs[i].checked ) {
-                      if (fileIdStr != "") {
-                          fileIdStr = fileIdStr + ",";
-                      }
-                      fileIdStr = fileIdStr + fileCBs[i].previousSibling.value;
-                  }
-              }
-              if (fileIdStr == "") {
-                  alert ("No files selected");
-                  return false;
-              }
-              window.location.href = "/dvn#{VDCRequest.currentVDCURL}/FileDownload/study_#{studyPage.studyUI.study.studyId}.zip?fileId=" + fileIdStr +  "#{studyPage.xff}";
-              return false;
-          }
           // ]]>
         </script>
                 <f:param name="tab" value="files"/>

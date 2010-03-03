@@ -33,11 +33,12 @@
                        styleClass="dvnversionstable" rowClasses="oddRow evenRow"
                        columnClasses="dvnversionstableCol1, dvnversionstableCol2, dvnversionstableCol3, dvnversionstableCol4, dvnversionstableCol5, dvnversionstableCol6"
                        value="#{studyPage.studyUI.study.studyVersions}" var="sv">
-           <ice:column>
-                  <f:facet name="header">
-                      <input type="button" value="Difference" />
-                  </f:facet>
-                <input type="checkbox"/>
+            <ice:column>
+                <f:facet name="header">
+                    <input type="button" value="Difference" onclick="viewStudyVersionDifferences();"/>
+                </f:facet>
+                <ice:inputHidden id="versionNumber" value="#{sv.versionNumber}"/>
+                <ice:selectBooleanCheckbox id="versionCheckBox" styleClass="versionCheckBox"/>
             </ice:column>
             <ice:column>
                   <f:facet name="header">

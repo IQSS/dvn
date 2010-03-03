@@ -1292,11 +1292,13 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         Study study = em.find(Study.class, studyId);
         StudyVersion studyVersion = null;
 
-        if (versionNumber != null) {
-            studyVersion = study.getStudyVersionByNumber(versionNumber);
-        } else {
-            //studyVersion = study.getLatestVersion();
-            studyVersion = study.getReleasedVersion();
+        if (study != null) {
+            if (versionNumber != null) {
+                studyVersion = study.getStudyVersionByNumber(versionNumber);
+            } else {
+                //studyVersion = study.getLatestVersion();
+                studyVersion = study.getReleasedVersion();
+            }
         }
 
         //String queryStr = "SELECT sv FROM StudyVersion sv WHERE sv.study.id = '" + studyId;

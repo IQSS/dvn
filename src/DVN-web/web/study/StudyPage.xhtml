@@ -252,9 +252,15 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
                                 </li>
                             </span>
                             <span jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.userAuthorizedToEdit and studyPage.studyUI.studyVersion.draft}">
-                                <li>
+                                <!--<li>
                                     <dvn:tooltip tooltipMessage="#{studybundle.deleteDraftTip}" linkText="#{studybundle.deleteDraftText}" eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/DeleteStudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}#{VDCRequest.studyListingIndexAsParameter}"/>
+                                </li>-->
+                                <li>
+                                    <ice:commandLink actionListener="#{studyPage.confirmDraftDeleteAction}" onmouseover="javascript:popupTooltip(this, &#39;#{studybundle.deleteDraftTip}&#39;, &#39;&#39;, event);" onmouseout="javascript:hideTooltip();">
+                                        <ice:outputText value="#{studybundle.deleteDraftText}" nospan="true"/>
+                                    </ice:commandLink>
                                 </li>
+
                             </span>
                             <span jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.userAuthorizedToEdit and studyPage.studyUI.studyVersion.inReview}">
                                 <li>

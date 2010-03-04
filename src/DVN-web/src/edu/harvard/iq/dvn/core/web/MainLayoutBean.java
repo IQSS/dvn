@@ -180,4 +180,16 @@ public class MainLayoutBean implements java.io.Serializable  {
         this.writeStudyVersionNotesPopups = writeStudyVersionNotesPopups;
     }
 
+    protected boolean writeStudyDeletePopups = false;
+
+    public boolean isWriteStudyDeletePopups() {
+        HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        writeStudyDeletePopups = request.getRequestURI().indexOf("StudyPage.xhtml") != -1;
+        return writeStudyDeletePopups;
+    }
+
+    public void setWriteStudyDeletePopups(boolean writeStudyDeletePopups) {
+        this.writeStudyDeletePopups = writeStudyDeletePopups;
+    }
+
 }

@@ -642,11 +642,65 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
         this.allowStudyComments = allowStudyComments;
     }
 
-   
     public String beginRequestWorkflow() {
             LoginWorkflowBean lwf = (LoginWorkflowBean) getBean("LoginWorkflowBean");       
             return lwf.beginFileAccessWorkflow(studyId);
     }
+
+   /** confirmation popup for deleting study versions in various states
+    *
+    * 
+    */
+    private enum StudyDeleteRequestType {DRAFT, REVIEW};
+    private StudyDeleteRequestType deleteRequested = null;
+
+
+    private boolean showStudyDeletePopup = false;
+    
+    public void toggleStudyDeletePopup(javax.faces.event.ActionEvent event) {
+        //if (showVersionNotesPopup && (actionRequested != null)) {
+        //    actionRequested = null;
+        //}
+        showStudyDeletePopup = !showStudyDeletePopup;
+        actionComplete = false;
+    }
+
+    public boolean isShowStudyDeletePopup() {
+        return showStudyDeletePopup;
+    }
+
+    public void setShowStudyDeletePopup(boolean showPopup) {
+        this.showStudyDeletePopup = showPopup;
+    }
+
+    private String deleteActionLabel;
+
+    public String getDeleteActionLabel() {
+        return deleteActionLabel;
+    }
+
+    public void setDeleteActionLabel(String actionLabel) {
+        this.deleteActionLabel = actionLabel;
+    }
+
+    public String confirmStudyDelete () {
+        //if (StudyDeleteRequestType.DRAFT.equals(deleteRequested)) {
+        //    DELETE_THIS_DRAFT();
+        //    deleteRequested = null;
+        //} etc.
+        showStudyDeletePopup = false;
+        //return "manageStudies";
+        return "";
+
+    }
+
+    public void confirmDraftDeleteAction (ActionEvent event) {
+        showStudyDeletePopup = true;
+        deleteRequested = StudyDeleteRequestType.DRAFT;
+        deleteActionLabel = "DRAFT study version";       
+    }
+
+
 
     /** toggleVersionNotesPopup
      * actionListener method for hiding

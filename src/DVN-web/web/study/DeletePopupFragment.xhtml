@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:gui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:ice="http://www.icesoft.com/icefaces/component"
+      xmlns:dvn="/WEB-INF/tlds/dvn-components">
+<head></head>
+<body>
+    <ice:form id="StudyConfirmDeletePopup" rendered="#{MainLayoutBean.writeStudyDeletePopups}">
+        <!-- (universal) delete study version popup -->
+        <ice:panelPopup id="studyDeletePopup"
+                        draggable="false"
+                        visible="#{studyPage.showStudyDeletePopup}"
+                        autoCentre="true"
+                        modal="true">
+            <f:facet name="header">
+                <ice:panelGrid id="autoCentPanelGrid"
+                               width="100%" cellpadding="0"
+                               cellspacing="0" columns="2"
+                               columnClasses="none,popupButton">
+                    <ice:outputText value="Delete #{studyPage.deleteActionLabel}"/>
+                    <ice:commandLink id="autoCentPopupClose"
+                                     actionListener="#{studyPage.toggleStudyDeletePopup}"
+                                     styleClass="popupModalClose">
+                        <ice:graphicImage value="/resources/images/icon_close.gif"/>
+                    </ice:commandLink>
+                </ice:panelGrid>
+            </f:facet>
+            <f:facet name="body">
+                <ice:panelGrid id="autoCentContent"
+                               width="100%" cellpadding="0"
+                               cellspacing="0" columns="1"
+                               styleClass="popupModalBody">
+                    <div jsfc="ice:panelGroup">
+                        <ice:graphicImage value="/resources/images/icon_warning.png"/>
+                        <ice:outputText value="Are you sure that you want to delete this #{studyPage.deleteActionLabel}?" nospan="true"/>
+                    </div>
+                    <ice:outputText value="#{studyPage.studyUI.metadata.title}"/>
+                    <ice:outputText value="#{studyPage.studyUI.study.globalId}"/>
+                    <div jsfc="ice:panelGroup" styleClass="dvnFormPadding dvnFormMargin">
+                        <ice:commandButton id="autoCentPopupOk"
+                                           action="#{studyPage.confirmStudyDelete}"
+                                           value="Confirm"/>
+                        <ice:commandButton id="autoCentPopupCancel"
+                                           actionListener="#{studyPage.toggleStudyDeletePopup}"
+                                           value="Cancel"/>
+                    </div>
+                </ice:panelGrid>
+            </f:facet>
+        </ice:panelPopup>
+        <!-- end delete popup -->
+    </ice:form>
+</body>
+</html>

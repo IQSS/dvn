@@ -453,11 +453,11 @@ public class SAVFileReader extends StatDataFileReader{
 		
 	} catch (IllegalArgumentException e) {
 	    //Throwable cause = e.getCause();
-	    dbgLog.info("***** SAVFileReader: ATTENTION: IllegalArgumentException thrown while executing "+methodCurrentlyExecuted);  
+	    dbgLog.fine("***** SAVFileReader: ATTENTION: IllegalArgumentException thrown while executing "+methodCurrentlyExecuted);
 	    e.printStackTrace();
 	    throw new IllegalArgumentException ( "in method "+methodCurrentlyExecuted+": "+e.getMessage() ); 
 	} catch (IOException e) {
-	    dbgLog.info("***** SAVFileReader: ATTENTION: IOException thrown while executing "+methodCurrentlyExecuted);  
+	    dbgLog.fine("***** SAVFileReader: ATTENTION: IOException thrown while executing "+methodCurrentlyExecuted);
 	    e.printStackTrace();
 	    throw new IOException ( "in method "+methodCurrentlyExecuted+": "+e.getMessage() ); 
 	}
@@ -766,37 +766,44 @@ public class SAVFileReader extends StatDataFileReader{
             throw new IllegalArgumentException("stream == null!");
         }
 
-	Map<String, String> variableLabelMap = new LinkedHashMap<String, String>();
-	Map<String, List<String>> missingValueTable = new LinkedHashMap<String, List<String>>();
-	List<Integer> printFormatList = new ArrayList<Integer>(); 
+        Map<String, String> variableLabelMap = new LinkedHashMap<String, String>();
+        Map<String, List<String>> missingValueTable = new LinkedHashMap<String, List<String>>();
+        List<Integer> printFormatList = new ArrayList<Integer>();
 
-	String caseWeightVariableName = null;
-	int caseWeightVariableIndex = 0; 
-
-
-	boolean lastVariableIsExtendable = false; 
-	boolean extendedVariableMode = false;
-	boolean obs255 = false; 
-
-	String lastVariableName = null; 
-	String lastExtendedVariable = null; 
+        String caseWeightVariableName = null;
+        int caseWeightVariableIndex = 0;
 
 
-        // this field repeats as many as the number of variables in 
+        boolean lastVariableIsExtendable = false;
+        boolean extendedVariableMode = false;
+        boolean obs255 = false;
+
+        String lastVariableName = null;
+        String lastExtendedVariable = null;
+
+
+        // this field repeats as many as the number of variables in
         // this sav file
 
-	// (note that the above statement is not technically correct, this 
-	//  record repeats not just for every variable in the file, but for 
-	//  every OBS (8 byte unit); i.e., if a string is split into multiple
-	//  OBS units, each one will have its own RT2 record -- L.A.). 
+        // (note that the above statement is not technically correct, this
+        //  record repeats not just for every variable in the file, but for
+        //  every OBS (8 byte unit); i.e., if a string is split into multiple
+        //  OBS units, each one will have its own RT2 record -- L.A.).
 
-        // Each field constists of a fixed (36-byte) segment and
-        // variable one (string <=256 + 3 missing-value units[optional])
+        // Each field constists of a fixed (32-byte) segment and
+        // then a few variable segments:
+        // if the variable has a label (3rd INT4 set to 1), then there's 4 more
+        // bytes specifying the length of the label, and then that many bytes
+        // holding the label itself (no more than 256).
+        // Then if there are optional missing value units (4th INT4 set to 1)
+        // there will be 3 more OBS units attached = 24 extra bytes.
 
         int variableCounter = 0;
-	int obsSeqNumber = 0; 
+        int obsSeqNumber = 0;
 
-	int j; 
+        int j;
+
+        dbgLog.fine("RT2: Reading "+OBSUnitsPerCase+" OBS units.");
 
         for (j=0; j<OBSUnitsPerCase; j++){
 
@@ -811,49 +818,47 @@ public class SAVFileReader extends StatDataFileReader{
                 //printHexDump(recordType2Fixed, "recordType2 part 1");
 
                 if (nbytes == 0){
-                    throw new IOException("reading recordType2: no byte was read");
+                    throw new IOException("reading recordType2: no bytes read!");
                 }
 
                 int offset = 0;
 
-            // 2.1: create int-view of the bytebuffer for the first 16-byte segment
+                // 2.1: create int-view of the bytebuffer for the first 16-byte segment
                 int rt2_1st_4_units = 4;
                 ByteBuffer[] bb_record_type2_fixed_part1 = new ByteBuffer[rt2_1st_4_units];
                 int[] recordType2FixedPart1 = new int[rt2_1st_4_units];
                 for (int i= 0; i < rt2_1st_4_units;i++ ){
 
-                    bb_record_type2_fixed_part1[i]  =
-                            ByteBuffer.wrap(recordType2Fixed, offset,
-                            LENGTH_SAV_INT_BLOCK);
+                    bb_record_type2_fixed_part1[i] =
+                    ByteBuffer.wrap(recordType2Fixed, offset, LENGTH_SAV_INT_BLOCK);
 
                     offset +=LENGTH_SAV_INT_BLOCK;
                     if (isLittleEndian){
-                       bb_record_type2_fixed_part1[i].order(ByteOrder.LITTLE_ENDIAN);
+                        bb_record_type2_fixed_part1[i].order(ByteOrder.LITTLE_ENDIAN);
                     }
                     recordType2FixedPart1[i] = bb_record_type2_fixed_part1[i].getInt();
                 }
 
 
                 dbgLog.fine("recordType2FixedPart="+
-                    ReflectionToStringBuilder.toString(recordType2FixedPart1,
-                    ToStringStyle.MULTI_LINE_STYLE));
+                        ReflectionToStringBuilder.toString(recordType2FixedPart1, ToStringStyle.MULTI_LINE_STYLE));
 
 
                 // 1st ([0]) element must be 2 otherwise no longer Record Type 2
                 if (recordType2FixedPart1[0] != 2){
-                    dbgLog.fine(j+"-th RT header value="+recordType2FixedPart1[0]);
+                    dbgLog.info(j+"-th RT header value is no longet RT2! "+recordType2FixedPart1[0]);
                     break;
                     //throw new IOException("RT2 reading error: The current position is no longer Record Type 2");
                 }
                 dbgLog.fine("variable type[must be 2]="+recordType2FixedPart1[0]);
 
 
-		// 2.3 variable name: 8 byte(space[x20]-padded)
-		// This field is located at the very end of the 32 byte
-		// fixed-size RT2 header (bytes 24-31).
-		// We are processing it now, so that
-		// we can make the decision on whether this variable is part
-		// of a compound variable:
+                // 2.3 variable name: 8 byte(space[x20]-padded)
+                // This field is located at the very end of the 32 byte
+                // fixed-size RT2 header (bytes 24-31).
+                // We are processing it now, so that
+                // we can make the decision on whether this variable is part
+                // of a compound variable:
 
                 String RawVariableName = new String(Arrays.copyOfRange(recordType2Fixed, 24, (24+LENGTH_VARIABLE_NAME)),"US-ASCII");
                 //offset +=LENGTH_VARIABLE_NAME;
@@ -865,15 +870,14 @@ public class SAVFileReader extends StatDataFileReader{
                 }
 
 
-                // 2nd ([1]) element: numeric variable = 0 :for string variable 
+                // 2nd ([1]) element: numeric variable = 0 :for string variable
                 // this block indicates its datum-length, i.e, >0 ;
                 // if -1, this RT2 unit is a non-1st RT2 unit for a string variable
                 // whose value is longer than 8 character.
 
                 boolean isNumericVariable = false;
 
-                dbgLog.fine("variable type(0: numeric; > 0: String;-1 continue )="+
-                    recordType2FixedPart1[1]);
+                dbgLog.fine("variable type(0: numeric; > 0: String;-1 continue )="+recordType2FixedPart1[1]);
 
                 //OBSwiseTypelList.add(recordType2FixedPart1[1]);
 
@@ -881,113 +885,136 @@ public class SAVFileReader extends StatDataFileReader{
 
 
                 if (recordType2FixedPart1[1] == -1) {
-                    dbgLog.fine("this RT2 is contiguous one of a previous string variable");
-		    if ( obs255 ) {			
-			if ( obsSeqNumber < 30 ) {
-			    OBSwiseTypelList.add(recordType2FixedPart1[1]);
-			    obsSeqNumber++; 
-			} else {
-			    OBSwiseTypelList.add(-2);
-			    obs255 = false; 
-			    obsSeqNumber = 0; 
-			}
-		    } else {
-			OBSwiseTypelList.add(recordType2FixedPart1[1]);
-		    }
+                    dbgLog.fine("this RT2 is an 8 bit continuation chunk of an earlier string variable");
+                    if ( obs255 ) {
+                        if ( obsSeqNumber < 30 ) {
+                            OBSwiseTypelList.add(recordType2FixedPart1[1]);
+                            obsSeqNumber++;
+                        } else {
+                            OBSwiseTypelList.add(-2);
+                            obs255 = false;
+                            obsSeqNumber = 0;
+                        }
+                    } else {
+                        OBSwiseTypelList.add(recordType2FixedPart1[1]);
+                    }
 
                     obsNonVariableBlockSet.add(j);
                     continue;
                 } else if (recordType2FixedPart1[1] == 0){
-		    OBSwiseTypelList.add(recordType2FixedPart1[1]);
-		    variableCounter++;
-		    isNumericVariable = true;
-		    variableTypelList.add(recordType2FixedPart1[1]);
-		} else if (recordType2FixedPart1[1] > 0){                
-		    
-		    // This looks like a regular string variable. However, 
-		    // it may still be a part of a compound variable 
-		    // (a String > 255 bytes that was split into 255 byte
-		    // chunks, stored as individual String variables).
-
-		    if (recordType2FixedPart1[1] == 255){
-			obs255 = true; 
-		    } 
-
-		    if ( lastVariableIsExtendable ) {
-			String varNameBase = null; 
-			if ( lastVariableName.length() > 5 ) {
-			    varNameBase = lastVariableName.substring (0, 5); 
-			} else {
-			    varNameBase = lastVariableName; 
-			}
-
-			if ( extendedVariableMode ) {
-			    if ( variableNameIsAnIncrement ( varNameBase, lastExtendedVariable, variableName ) ) {
-				OBSwiseTypelList.add(-1);
-				lastExtendedVariable = variableName; 
-				continue; 
-			    } else {
-				extendedVariableMode = false; 
-			    }
-			} else {
-			    if ( variableNameIsAnIncrement ( varNameBase, variableName ) ) {
-				OBSwiseTypelList.add(-1);
-				extendedVariableMode = true; 
-				lastExtendedVariable = variableName; 
-				continue; 
-			    } 
-			}
-		    }
-		    // OK, we've determined that this is indeed a "real"
-		    // variable, and not a continuation chunk of a compound
-		    // string.
-		
-		    OBSwiseTypelList.add(recordType2FixedPart1[1]);
+                    // This is a numeric variable
+                    extendedVariableMode = false;
+                    // And as such, it cannot be an extension of a
+                    // previous, long string variable.
+                    OBSwiseTypelList.add(recordType2FixedPart1[1]);
                     variableCounter++;
-
-		    if (recordType2FixedPart1[1] == 255){
-			// This variable is 255 bytes long, i.e. this is
-			// either the single "atomic" variable of the
-			// max allowed size, or it's a 255 byte segment 
-			// of a compound variable. So we will check 
-			// the next variable and see if it is the continuation
-			// of this one. 
-
-			lastVariableIsExtendable = true; 
-		    } else {
-			lastVariableIsExtendable = false; 
-		    }
-
-                    if (recordType2FixedPart1[1] % LENGTH_SAV_OBS_BLOCK == 0){
-                        HowManyRt2Units = recordType2FixedPart1[1] / LENGTH_SAV_OBS_BLOCK;
-                    } else {
-			HowManyRt2Units = recordType2FixedPart1[1] / LENGTH_SAV_OBS_BLOCK +1;
-                    }
+                    isNumericVariable = true;
                     variableTypelList.add(recordType2FixedPart1[1]);
+                } else if (recordType2FixedPart1[1] > 0){
 
+                    // This looks like a regular string variable. However,
+                    // it may still be a part of a compound variable
+                    // (a String > 255 bytes that was split into 255 byte
+                    // chunks, stored as individual String variables).
+
+                    if (recordType2FixedPart1[1] == 255){
+                        obs255 = true;
+                    }
+
+                    if ( lastVariableIsExtendable ) {
+                        String varNameBase = null;
+                        if ( lastVariableName.length() > 5 ) {
+                            varNameBase = lastVariableName.substring (0, 5);
+                        } else {
+                            varNameBase = lastVariableName;
+                        }
+
+                        if ( extendedVariableMode ) {
+                            if ( variableNameIsAnIncrement ( varNameBase, lastExtendedVariable, variableName ) ) {
+                                OBSwiseTypelList.add(-1);
+                                lastExtendedVariable = variableName;
+                                // OK, we stay in the "extended variable" mode;
+                                // but we can't move on to the next OBS (hence the commented out
+                                // "continue" below:
+                                //continue;
+                                // see the next comment below for the explanation.
+                                //
+                                // Should we also set "extendable" flag to false at this point
+                                // if it's shorter than 255 bytes, i.e. the last extended chunk?
+                            } else {
+                                extendedVariableMode = false;
+                            }
+                        } else {
+                            if ( variableNameIsAnIncrement ( varNameBase, variableName ) ) {
+                                OBSwiseTypelList.add(-1);
+                                extendedVariableMode = true;
+                                dbgLog.fine("RT2: in extended variable mode; variable "+variableName);
+                                lastExtendedVariable = variableName;
+                                // Before we move on to the next OBS unit, we need to check
+                                // if this current extended variable has its own label specified;
+                                // If so, we need to determine its length, then read and skip
+                                // that many bytes.
+                                // Hence the commented out "continue" below:
+                                //continue;
+                            }
+                        }
+                    }
+
+                    if ( !extendedVariableMode) {
+                        // OK, this is a "real"
+                        // string variable, and not a continuation chunk of a compound
+                        // string.
+
+                        OBSwiseTypelList.add(recordType2FixedPart1[1]);
+                        variableCounter++;
+
+                        if (recordType2FixedPart1[1] == 255){
+                            // This variable is 255 bytes long, i.e. this is
+                            // either the single "atomic" variable of the
+                            // max allowed size, or it's a 255 byte segment
+                            // of a compound variable. So we will check
+                            // the next variable and see if it is the continuation
+                            // of this one.
+
+                            lastVariableIsExtendable = true;
+                        } else {
+                            lastVariableIsExtendable = false;
+                        }
+
+                        if (recordType2FixedPart1[1] % LENGTH_SAV_OBS_BLOCK == 0){
+                            HowManyRt2Units = recordType2FixedPart1[1] / LENGTH_SAV_OBS_BLOCK;
+                        } else {
+                            HowManyRt2Units = recordType2FixedPart1[1] / LENGTH_SAV_OBS_BLOCK +1;
+                        }
+                        variableTypelList.add(recordType2FixedPart1[1]);
+                    }
                 }
 
-                dbgLog.fine("RT2: HowManyRt2Units for this variable="+HowManyRt2Units);
+                if ( !extendedVariableMode ) {
+                    // Again, we only want to do the following steps for the "real"
+                    // variables, not the chunks of split mega-variables:
 
-		lastVariableName = variableName; 
+                    dbgLog.fine("RT2: HowManyRt2Units for this variable="+HowManyRt2Units);
 
-                // caseWeightVariableOBSIndex starts from 1: 0 is used for does-not-exist cases
-                if (j == (caseWeightVariableOBSIndex -1)){
-                    caseWeightVariableName = variableName;
-                    caseWeightVariableIndex = variableCounter;
+                    lastVariableName = variableName;
 
-                    smd.setCaseWeightVariableName(caseWeightVariableName);
-                    smd.getFileInformation().put("caseWeightVariableIndex", caseWeightVariableIndex);
+                    // caseWeightVariableOBSIndex starts from 1: 0 is used for does-not-exist cases
+                    if (j == (caseWeightVariableOBSIndex -1)){
+                        caseWeightVariableName = variableName;
+                        caseWeightVariableIndex = variableCounter;
+
+                        smd.setCaseWeightVariableName(caseWeightVariableName);
+                        smd.getFileInformation().put("caseWeightVariableIndex", caseWeightVariableIndex);
+                    }
+
+                    OBSIndexToVariableName.put(j, variableName);
+
+                    //dbgLog.fine("\nvariable name="+variableName+"<-");
+                    dbgLog.fine("RT2: "+j+"-th variable name="+variableName+"<-");
+                    dbgLog.fine("RT2: raw variable: "+RawVariableName);
+
+                    variableNameList.add(variableName);
                 }
-
-		OBSIndexToVariableName.put(j, variableName);
-
-                //dbgLog.fine("\nvariable name="+variableName+"<-");
-                dbgLog.fine("RT2: "+j+"-th variable name="+variableName+"<-");
-		dbgLog.fine("RT2: raw variable: "+RawVariableName);
-				
-		variableNameList.add(variableName);
-
 
 
 
@@ -997,26 +1024,88 @@ public class SAVFileReader extends StatDataFileReader{
                 boolean hasVariableLabel = recordType2FixedPart1[2] == 1 ? true : false;
                 if ((recordType2FixedPart1[2] != 0) && (recordType2FixedPart1[2] != 1)) {
                     throw new IOException("RT2: reading error: value is neither 0 or 1"+
-                        recordType2FixedPart1[2]);
+                            recordType2FixedPart1[2]);
+                }
+
+                // 2.4 [optional]The length of a variable label followed: 4-byte int
+                // 3rd element of 2.1 indicates whether this field exists
+                // *** warning: The label block is padded to a multiple of the 4-byte
+                // NOT the raw integer value of this 4-byte block
+
+
+                if (hasVariableLabel){
+                    byte[] length_variable_label= new byte[4];
+                    int nbytes_2_4 = stream.read(length_variable_label);
+                    if (nbytes_2_4 == 0){
+                        throw new IOException("RT 2: error reading recordType2.4: no bytes read!");
+                    } else {
+                        dbgLog.fine("nbytes_2_4="+nbytes_2_4);
+                    }
+                    ByteBuffer bb_length_variable_label = ByteBuffer.wrap(
+                            length_variable_label, 0, LENGTH_VARIABLE_LABEL);
+                    if (isLittleEndian){
+                        bb_length_variable_label.order(ByteOrder.LITTLE_ENDIAN);
+                    }
+                    int rawVariableLabelLength = bb_length_variable_label.getInt();
+
+                    dbgLog.fine("rawVariableLabelLength="+rawVariableLabelLength);
+                    int variableLabelLength = getSAVintAdjustedBlockLength(rawVariableLabelLength);
+                    dbgLog.fine("RT2: variableLabelLength="+variableLabelLength);
+
+
+                    // 2.5 [optional]variable label whose length is found at 2.4
+
+                    byte[] variable_label = new byte[variableLabelLength];
+                    int nbytes_2_5 = stream.read(variable_label);
+                    if (nbytes_2_5 == 0){
+                        throw new IOException("RT 2: error reading recordType2.5: no bytes read!");
+                    } else {
+                        dbgLog.fine("nbytes_2_5="+nbytes_2_5);
+                    }
+                    if (!extendedVariableMode) {
+                    // We only have any use for this label if it's a "real" variable.
+                    // Thinking about it, it doesn't make much sense for the "fake"
+                    // variables that are actually chunks of large strings to store
+                    // their own labels. But in some files they do. Then failing to read
+                    // the bytes would result in getting out of sync with the RT record
+                    // borders. So we always read the bytes, but only use them for
+                    // the real variable entries.
+                        String variableLabel = new String(Arrays.copyOfRange(variable_label,
+                                0, rawVariableLabelLength),"US-ASCII");
+                        dbgLog.fine("RT2: variableLabel="+variableLabel+"<-");
+
+                        variableLabelMap.put(variableName, variableLabel);
+                    }
+                }
+
+                if (extendedVariableMode) {
+                // there's nothing else left for us to do in this iteration of the loop.
+                // Once again, this was not a real variable, but a dummy variable entry
+                // created for a chunk of a string variable longer than 255 bytes --
+                // that's how SPSS stores them.
+                    continue;
                 }
 
                 // 4th ([3]) element: Missing value type code
                 // 0[none], 1, 2, 3 [point-type],-2[range], -3 [range type+ point]
 
                 dbgLog.fine("RT: missing value unit follows?(if 0, none)="+recordType2FixedPart1[3]);
-                boolean hasMissingValues = (validMissingValueCodeSet.contains(
-                    recordType2FixedPart1[3]) && (recordType2FixedPart1[3] !=0)) ?
+                boolean hasMissingValues =
+                        (validMissingValueCodeSet.contains(
+                                recordType2FixedPart1[3]) && (recordType2FixedPart1[3] !=0)) ?
                         true : false;
+
                 InvalidData invalidDataInfo = null;
+
                 if (recordType2FixedPart1[3] !=0){
-                   invalidDataInfo = new InvalidData(recordType2FixedPart1[3]);
-                   dbgLog.fine("RT: missing value type="+invalidDataInfo.getType());
+                    invalidDataInfo = new InvalidData(recordType2FixedPart1[3]);
+                    dbgLog.fine("RT: missing value type="+invalidDataInfo.getType());
                 }
-                
-            // 2.2: print/write formats: 4-byte each = 8 bytes
+
+                // 2.2: print/write formats: 4-byte each = 8 bytes
 
                 byte[] printFormt = Arrays.copyOfRange(recordType2Fixed, offset, offset+
-                    LENGTH_PRINT_FORMAT_CODE);
+                        LENGTH_PRINT_FORMAT_CODE);
                 dbgLog.fine("printFrmt="+new String (Hex.encodeHex(printFormt)));
 
 
@@ -1025,19 +1114,19 @@ public class SAVFileReader extends StatDataFileReader{
                 int formatWidth = isLittleEndian ? printFormt[1] : printFormt[2];
                 int formatDecimalPointPosition = isLittleEndian ? printFormt[0] : printFormt[3];
                 dbgLog.fine("RT2: format code{5=F, 1=A[String]}="+formatCode);
-                
-		formatDecimalPointPositionList.add(formatDecimalPointPosition);
+
+                formatDecimalPointPositionList.add(formatDecimalPointPosition);
 
 
                 if (!SPSSConstants.FORMAT_CODE_TABLE_SAV.containsKey(formatCode)){
                     throw new IOException("Unknown format code was found = "
-                        + formatCode);
+                            + formatCode);
                 } else{
-		    printFormatList.add(formatCode);
+                    printFormatList.add(formatCode);
                 }
 
                 byte[] writeFormt = Arrays.copyOfRange(recordType2Fixed, offset, offset+
-                    LENGTH_WRITE_FORMAT_CODE);
+                        LENGTH_WRITE_FORMAT_CODE);
 
                 dbgLog.fine("RT2: writeFrmt="+new String (Hex.encodeHex(writeFormt)));
                 if (writeFormt[3] != 0x00){
@@ -1046,203 +1135,167 @@ public class SAVFileReader extends StatDataFileReader{
 
                 offset +=LENGTH_WRITE_FORMAT_CODE;
 
-                if (!SPSSConstants.ORDINARY_FORMAT_CODE_SET.contains(formatCode)){
+                if (!SPSSConstants.ORDINARY_FORMAT_CODE_SET.contains(formatCode)) {
                     StringBuilder sb = new StringBuilder(
-                        SPSSConstants.FORMAT_CODE_TABLE_SAV.get(formatCode)+
-                        formatWidth);
+                    SPSSConstants.FORMAT_CODE_TABLE_SAV.get(formatCode)+
+                            formatWidth);
                     if (formatDecimalPointPosition > 0){
                         sb.append("."+ formatDecimalPointPosition);
                     }
                     printFormatNameTable.put(variableName, sb.toString());
-                    
+
                 }
+
                 printFormatTable.put(variableName, SPSSConstants.FORMAT_CODE_TABLE_SAV.get(formatCode));
 
-            // 2.4 [optional]The length of a variable label followed: 4-byte int
-            // 3rd element of 2.1 indicates whether this field exists
-            // *** warning: The label block is padded to a multiple of the 4-byte
-            // NOT the raw integer value of this 4-byte block
+
+                // 2.6 [optional] missing values:4-byte each if exists
+                // 4th element of 2.1 indicates the structure of this sub-field
+
+                // Should we perhaps check for this for the "fake" variables too?
+                //
+
+                if (hasMissingValues) {
+                    dbgLog.fine("RT2: decoding missing value: type="+recordType2FixedPart1[3]);
+                    int howManyMissingValueUnits = missingValueCodeUnits.get(recordType2FixedPart1[3]);
+                    //int howManyMissingValueUnits = recordType2FixedPart1[3] > 0 ? recordType2FixedPart1[3] :  0;
+
+                    dbgLog.fine("RT2: howManyMissingValueUnits="+howManyMissingValueUnits);
+
+                    byte[] missing_value_code_units = new byte[LENGTH_SAV_OBS_BLOCK*howManyMissingValueUnits];
+                    int nbytes_2_6 = stream.read(missing_value_code_units);
+
+                    if (nbytes_2_6 == 0){
+                        throw new IOException("RT 2: reading recordType2.6: no byte was read");
+                    } else {
+                        dbgLog.fine("nbytes_2_6="+nbytes_2_6);
+                    }
+
+                    //printHexDump(missing_value_code_units, "missing value");
+
+                    if (isNumericVariable){
+
+                        double[] missingValues = new double[howManyMissingValueUnits];
+                        //List<String> mvp = new ArrayList<String>();
+                        List<String> mv = new ArrayList<String>();
+
+                        ByteBuffer[] bb_missig_value_code =
+                            new ByteBuffer[howManyMissingValueUnits];
+
+                        int offset_start = 0;
+
+                        for (int i= 0; i < howManyMissingValueUnits;i++ ){
+
+                            bb_missig_value_code[i]  =
+                                    ByteBuffer.wrap(missing_value_code_units, offset_start,
+                                    LENGTH_SAV_OBS_BLOCK);
+
+                            offset_start +=LENGTH_SAV_OBS_BLOCK;
+                            if (isLittleEndian){
+                                bb_missig_value_code[i].order(ByteOrder.LITTLE_ENDIAN);
+                            }
+
+                            ByteBuffer temp = bb_missig_value_code[i].duplicate();
 
 
-            if (hasVariableLabel){
-                byte[] length_variable_label= new byte[4];
-                int nbytes_2_4 = stream.read(length_variable_label);
-                if (nbytes_2_4 == 0){
-                    throw new IOException("RT 2: reading recordType2.4: no byte was read");
-                } else {
-                    dbgLog.fine("nbytes_2_4="+nbytes_2_4);
-                }
-                ByteBuffer bb_length_variable_label = ByteBuffer.wrap(
-                    length_variable_label, 0, LENGTH_VARIABLE_LABEL);
-                if (isLittleEndian){
-                    bb_length_variable_label.order(ByteOrder.LITTLE_ENDIAN);
-                }
-                int rawVariableLabelLength = bb_length_variable_label.getInt();
+                            missingValues[i] = bb_missig_value_code[i].getDouble();
+                            if (Double.toHexString(missingValues[i]).equals("-0x1.ffffffffffffep1023")){
+                                dbgLog.fine("1st value is LOWEST");
+                                mv.add(Double.toHexString(missingValues[i]));
+                            } else if (Double.valueOf(missingValues[i]).equals(Double.MAX_VALUE)){
+                                dbgLog.fine("2nd value is HIGHEST");
+                                mv.add(Double.toHexString(missingValues[i]));
+                            } else {
+                                mv.add(doubleNumberFormatter.format(missingValues[i]));
+                            }
+                            dbgLog.fine(i+"-th missing value="+Double.toHexString(missingValues[i]));
+                        }
 
-                dbgLog.fine("rawVariableLabelLength="+rawVariableLabelLength);
-                int variableLabelLength = getSAVintAdjustedBlockLength(rawVariableLabelLength);
-                dbgLog.fine("RT2: variableLabelLength="+variableLabelLength);
+                        dbgLog.fine("variableName="+variableName);
+                        if (recordType2FixedPart1[3] > 0) {
+                            // point cases only
+                            dbgLog.fine("mv(>0)="+mv);
+                            missingValueTable.put(variableName, mv);
+                            invalidDataInfo.setInvalidValues(mv);
+                        } else if (recordType2FixedPart1[3]== -2) {
+                            dbgLog.fine("mv(-2)="+mv);
+                            // range
+                            invalidDataInfo.setInvalidRange(mv);
+                        } else if (recordType2FixedPart1[3]== -3){
+                            // mixed case
+                            dbgLog.fine("mv(-3)="+mv);
+                            invalidDataInfo.setInvalidRange(mv.subList(0, 2));
+                            invalidDataInfo.setInvalidValues(mv.subList(2, 3));
+                            missingValueTable.put(variableName, mv.subList(2, 3));
+                        }
 
+                        dbgLog.fine("missing value="+
+                                StringUtils.join(missingValueTable.get(variableName),"|"));
+                        dbgLog.fine("invalidDataInfo(Numeric):\n"+invalidDataInfo);
+                        invalidDataTable.put(variableName, invalidDataInfo);
+                    } else {
+                        // string variable case
+                        String[] missingValues = new String[howManyMissingValueUnits];
+                        List<String> mv = new ArrayList<String>();
+                        int offset_start = 0;
+                        int offset_end   = LENGTH_SAV_OBS_BLOCK;
+                        for (int i= 0; i < howManyMissingValueUnits;i++ ){
 
-            // 2.5 [optional]variable label whose length is found at 2.4
+                            missingValues[i] =
+                                    StringUtils.stripEnd(new
+                            String(Arrays.copyOfRange(missing_value_code_units, offset_start, offset_end),"US-ASCII"), " ");
+                            dbgLog.fine("missing value="+missingValues[i]+"<-");
 
-                byte[] variable_label = new byte[variableLabelLength];
-                int nbytes_2_5 = stream.read(variable_label);
-                if (nbytes_2_5 == 0){
-                    throw new IOException("RT 2: reading recordType2.5: no byte was read");
-                } else {
-                    dbgLog.fine("nbytes_2_5="+nbytes_2_5);
-                }
-                String variableLabel = new String(Arrays.copyOfRange(variable_label,
-                    0, rawVariableLabelLength),"US-ASCII");
-                dbgLog.fine("RT2: variableLabel="+variableLabel+"<-");
+                            offset_start = offset_end;
+                            offset_end +=LENGTH_SAV_OBS_BLOCK;
 
-                variableLabelMap.put(variableName, variableLabel);
-            }
+                            mv.add(missingValues[i]);
+                        }
+                        invalidDataInfo.setInvalidValues(mv);
+                        missingValueTable.put(variableName, mv);
+                        invalidDataTable.put(variableName, invalidDataInfo);
+                        dbgLog.fine("missing value(str)="+
+                                StringUtils.join(missingValueTable.get(variableName),"|"));
+                        dbgLog.fine("invalidDataInfo(String):\n"+invalidDataInfo);
 
-            // 2.6 [optional] missing values:4-byte each if exists
-            //     4th element of 2.1 indicates the structure of this sub-field
-
-	    if (hasMissingValues){
-		dbgLog.fine("RT2: decoding missing value: type="+recordType2FixedPart1[3]);
-		int howManyMissingValueUnits = missingValueCodeUnits.get(recordType2FixedPart1[3]);
-		//int howManyMissingValueUnits = recordType2FixedPart1[3] > 0 ? recordType2FixedPart1[3] :  0;
-
-		dbgLog.fine("RT2: howManyMissingValueUnits="+howManyMissingValueUnits);
-
-		byte[] missing_value_code_units = new byte[LENGTH_SAV_OBS_BLOCK*howManyMissingValueUnits];
-		int nbytes_2_6 = stream.read(missing_value_code_units);
-
-		if (nbytes_2_6 == 0){
-		    throw new IOException("RT 2: reading recordType2.6: no byte was read");
-		} else {
-		    dbgLog.fine("nbytes_2_6="+nbytes_2_6);
-		}
-
-		//printHexDump(missing_value_code_units, "missing value");
-
-		if (isNumericVariable){
-
-		    double[] missingValues = new double[howManyMissingValueUnits];
-		    //List<String> mvp = new ArrayList<String>();
-		    List<String> mv = new ArrayList<String>();
-
-		    ByteBuffer[] bb_missig_value_code = 
-			new ByteBuffer[howManyMissingValueUnits];
-
-		    int offset_start = 0;
-                        
-		    for (int i= 0; i < howManyMissingValueUnits;i++ ){
-
-			bb_missig_value_code[i]  =
-			    ByteBuffer.wrap(missing_value_code_units, offset_start,
-					    LENGTH_SAV_OBS_BLOCK);
-			
-			offset_start +=LENGTH_SAV_OBS_BLOCK;
-			if (isLittleEndian){
-			    bb_missig_value_code[i].order(ByteOrder.LITTLE_ENDIAN);
-			}
-			ByteBuffer temp = bb_missig_value_code[i].duplicate();
-
-
-			missingValues[i] = bb_missig_value_code[i].getDouble();
-			if (Double.toHexString(missingValues[i]).equals("-0x1.ffffffffffffep1023")){
-			    dbgLog.fine("1st value is LOWEST");
-			    mv.add(Double.toHexString(missingValues[i]));
-			} else if (Double.valueOf(missingValues[i]).equals(Double.MAX_VALUE)){
-			    dbgLog.fine("2nd value is HIGHEST");
-			    mv.add(Double.toHexString(missingValues[i]));
-			} else {
-			    mv .add(doubleNumberFormatter.format(missingValues[i]));
-			}
-			dbgLog.fine(i+"-th missing value="+Double.toHexString(missingValues[i]));
-		    }
-
-		    dbgLog.fine("variableName="+variableName);
-		    if (recordType2FixedPart1[3] > 0) {
-			// point cases only
-			dbgLog.fine("mv(>0)="+mv);
-			missingValueTable.put(variableName, mv);
-			invalidDataInfo.setInvalidValues(mv);
-		    } else if (recordType2FixedPart1[3]== -2) {
-			dbgLog.fine("mv(-2)="+mv);
-			// range
-			invalidDataInfo.setInvalidRange(mv);
-		    } else if (recordType2FixedPart1[3]== -3){
-			// mixed case
-			dbgLog.fine("mv(-3)="+mv);
-			invalidDataInfo.setInvalidRange(mv.subList(0, 2));
-			invalidDataInfo.setInvalidValues(mv.subList(2, 3));
-			missingValueTable.put(variableName, mv.subList(2, 3));
-		    }
-                        
-		    dbgLog.fine("missing value="+
-				StringUtils.join(missingValueTable.get(variableName),"|"));
-		    dbgLog.fine("invalidDataInfo(Numeric):\n"+invalidDataInfo);
-		    invalidDataTable.put(variableName, invalidDataInfo);
-		} else {
-		    // string variable case
-		    String[] missingValues = new String[howManyMissingValueUnits];
-		    List<String> mv = new ArrayList<String>();
-		    int offset_start = 0;
-		    int offset_end   = LENGTH_SAV_OBS_BLOCK;
-		    for (int i= 0; i < howManyMissingValueUnits;i++ ){
-
-			missingValues[i] = StringUtils.stripEnd(new
-								String(Arrays.copyOfRange(missing_value_code_units,
-											  offset_start, offset_end),"US-ASCII"), " ");
-			dbgLog.fine("missing value="+missingValues[i]+"<-");
-			
-			offset_start = offset_end;
-			offset_end +=LENGTH_SAV_OBS_BLOCK;
-
-			mv.add(missingValues[i]);
-		    }
-		    invalidDataInfo.setInvalidValues(mv);
-		    missingValueTable.put(variableName, mv);
-		    invalidDataTable.put(variableName, invalidDataInfo);
-		    dbgLog.fine("missing value(str)="+
-				StringUtils.join(missingValueTable.get(variableName),"|"));
-		    dbgLog.fine("invalidDataInfo(String):\n"+invalidDataInfo);
-		    
-		} // string case
-		dbgLog.fine("invalidDataTable:\n"+invalidDataTable);
-	    } // if msv
-
+                    } // string case
+                    dbgLog.fine("invalidDataTable:\n"+invalidDataTable);
+                } // if msv
 
             } catch (IOException ex){
                 //ex.printStackTrace();
-		throw ex; 
+                throw ex;
             } catch (Exception ex){
                 ex.printStackTrace();
+                // should we be throwing some exception here?
             }
-
         } // j-loop
 
-	if (j == OBSUnitsPerCase ) {
-	    dbgLog.fine("RT2 metadata-related exit-chores");
-	    smd.getFileInformation().put("varQnty", variableCounter);
-	    varQnty = variableCounter;
-	    dbgLog.fine("RT2: varQnty="+varQnty);
+        if (j == OBSUnitsPerCase ) {
+            dbgLog.fine("RT2 metadata-related exit-chores");
+            smd.getFileInformation().put("varQnty", variableCounter);
+            varQnty = variableCounter;
+            dbgLog.fine("RT2: varQnty="+varQnty);
 
-	    smd.setVariableName(variableNameList.toArray(new String[variableNameList.size()]));
-	    smd.setVariableLabel(variableLabelMap);
-	    smd.setMissingValueTable(missingValueTable);
-	    smd.getFileInformation().put("caseWeightVariableName", caseWeightVariableName);
-	    smd.setVariableTypeMinimal(ArrayUtils.toPrimitive(
-							      variableTypelList.toArray(new Integer[variableTypelList.size()])));
+            smd.setVariableName(variableNameList.toArray(new String[variableNameList.size()]));
+            smd.setVariableLabel(variableLabelMap);
+            smd.setMissingValueTable(missingValueTable);
+            smd.getFileInformation().put("caseWeightVariableName", caseWeightVariableName);
+            smd.setVariableTypeMinimal(ArrayUtils.toPrimitive(
+            variableTypelList.toArray(new Integer[variableTypelList.size()])));
 
-	    smd.setVariableFormat(printFormatList);
-	    smd.setVariableFormatName(printFormatNameTable);
+            smd.setVariableFormat(printFormatList);
+            smd.setVariableFormatName(printFormatNameTable);
 
-                
-	    dbgLog.fine("RT2: OBSwiseTypelList="+OBSwiseTypelList);
-                
-	    // variableType is determined after the valueTable is finalized
-	} else {
-	    dbgLog.fine("RT2: attention! didn't reach the end of the OBS list!");
-	}	    
-	
+
+            dbgLog.fine("RT2: OBSwiseTypelList="+OBSwiseTypelList);
+
+        // variableType is determined after the valueTable is finalized
+        } else {
+            dbgLog.info("RT2: attention! didn't reach the end of the OBS list!");
+            throw new IOException("RT2: didn't reach the end of the OBS list!");
+        }
+
         dbgLog.fine("***** decodeRecordType2(): end *****");
     }
     
@@ -1494,7 +1547,7 @@ public class SAVFileReader extends StatDataFileReader{
             }
 
             int intRT6test = bb_header_code_rt6.getInt();
-            dbgLog.fine("header test value: RT6="+intRT6test);
+            dbgLog.fine("RT6: header test value="+intRT6test);
             if (intRT6test != 6){
             //if (stream.markSupported()){
                 //out.print("iteration="+safteyCounter);
@@ -1598,7 +1651,7 @@ public class SAVFileReader extends StatDataFileReader{
 		}
 
 		int intRT7test = bb_header_code_rt7.getInt();
-		dbgLog.fine("header test value: RT7="+intRT7test);
+		dbgLog.fine("RT7: header test value="+intRT7test);
 		if (intRT7test != 7){
 		    //if (stream.markSupported()){
 		    //out.print("iteration="+safteyCounter);
@@ -1902,7 +1955,8 @@ public class SAVFileReader extends StatDataFileReader{
             break;
         }
     }
-        
+
+    dbgLog.fine("RT7: counter="+counter);
         dbgLog.fine("RT7: ***** decodeRecordType7(): end *****");
     }
     
@@ -1919,6 +1973,8 @@ public class SAVFileReader extends StatDataFileReader{
             //}
             // 999.0 check the first 4 bytes
             byte[] headerCodeRt999 = new byte[LENGTH_RECORD_TYPE999_CODE];
+
+            //dbgLog.fine("RT999: stream position="+stream.pos);
 
             int nbytes_rt999 = stream.read(headerCodeRt999, 0, 
                 LENGTH_RECORD_TYPE999_CODE);

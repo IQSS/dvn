@@ -49,6 +49,13 @@
     <navigation-rule>
         <from-view-id>/*</from-view-id>
         <navigation-case>
+            <from-outcome>manageStudies</from-outcome>
+            <to-view-id>/study/ManageStudiesPage.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>   
+    <navigation-rule>
+        <from-view-id>/*</from-view-id>
+        <navigation-case>
             <from-outcome>templateForm</from-outcome>
             <to-view-id>/study/TemplateFormPage.xhtml</to-view-id>
         </navigation-case>

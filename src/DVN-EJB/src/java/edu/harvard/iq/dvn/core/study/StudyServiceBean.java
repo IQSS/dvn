@@ -331,6 +331,23 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
 
     }
 
+    public void destroyWorkingCopyVersion(Long studyVersionId) {
+        long start = new Date().getTime();
+
+        StudyVersion studyVersion = em.find(StudyVersion.class, studyVersionId);
+        if (studyVersion == null) {
+            return;
+        }
+
+        // Not touching the files, datatables and variables, for now.
+
+        em.remove(studyVersion);
+        em.flush();  // Force study deletion to the database, for cases when we are calling this before deleting the owning Dataverse
+
+        logger.log(Level.INFO, "Successfully deleted StudyVersion " + studyVersionId + "!");
+
+    }
+
     /* these delete queires seem to take too long, so we are currently trying testing something different for deleting variables
     private static final String DELETE_VARIABLE_CATEGORIES = " delete from variablecategory where datavariable_id in ( " +
             "select dv.id from study s, filecategory fc, studyfile sf, datatable dt, datavariable dv" +

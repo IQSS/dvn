@@ -37,6 +37,7 @@ import edu.harvard.iq.dvn.core.study.DataFileFormatType;
 import edu.harvard.iq.dvn.core.study.ReviewStateServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyVersion;
+import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.util.WebStatisticsSupport;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import edu.harvard.iq.dvn.core.web.login.LoginWorkflowBean;
@@ -658,11 +659,10 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
     private boolean showStudyDeletePopup = false;
     
     public void toggleStudyDeletePopup(javax.faces.event.ActionEvent event) {
-        //if (showVersionNotesPopup && (actionRequested != null)) {
-        //    actionRequested = null;
-        //}
+        if (showStudyDeletePopup && (deleteRequested != null)) {
+            deleteRequested = null;
+        }
         showStudyDeletePopup = !showStudyDeletePopup;
-        actionComplete = false;
     }
 
     public boolean isShowStudyDeletePopup() {
@@ -684,16 +684,31 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
     }
 
     public String confirmStudyDelete () {
-        //if (StudyDeleteRequestType.DRAFT.equals(deleteRequested)) {
-        //    DELETE_THIS_DRAFT();
-        //    deleteRequested = null;
-        //} etc.
+        VDC dataverse = null;
+
+        if (studyUI != null && studyUI.getStudy() != null) {
+            dataverse = studyUI.getStudy().getOwner();
+        }
+        if (StudyDeleteRequestType.DRAFT_VERSION.equals(deleteRequested)) {
+            if (studyUI != null && studyUI.getStudyVersion() != null ) {
+                studyService.destroyWorkingCopyVersion(studyUI.getStudyVersion().getId());
+            }
+        } else if (StudyDeleteRequestType.REVIEW_VERSION.equals(deleteRequested)) {
+            if (studyUI != null && studyUI.getStudyVersion() != null ) {
+                studyService.destroyWorkingCopyVersion(studyUI.getStudyVersion().getId());
+            }
+        }
         showStudyDeletePopup = false;
         deleteRequested = null;
-        deleteActionLabel = null; 
-        //return "manageStudies";
-        return "";
-
+        deleteActionLabel = null;
+        // redirecting to the Manage Studies page;
+        // Figure it's not necessary to send the vdcId as a parameter -- ?
+        // actually, it looks like it is necessary, in some cases:
+        if (getVDCRequestBean().getCurrentVDC() == null) {
+            getVDCRequestBean().setCurrentVDC(dataverse);
+        }
+        return "manageStudies";
+        //return "";
     }
 
     public void confirmDraftDeleteAction (ActionEvent event) {

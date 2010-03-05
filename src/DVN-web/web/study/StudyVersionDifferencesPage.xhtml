@@ -209,6 +209,12 @@ td.dvnDifferanceTableHeaderCol1 {border-top: 0 !important;}
                               </ice:column>
                           </ice:dataTable>
 
+              <!-- If there are no differences in the metadata, we want to say so explicitely, rather than showing a blank page: -->
+              <div jsfc="ice:panelGroup" id="diffPanel7" styleClass="vdcStudyInfoHeader" rendered="#{!studyVersionDifferencesPage.catalogingInformationDifferent}">
+                    <ice:outputText id="outputText7" value="#{studyVersionDifferencesPage.noCatalogDifferencesFoundLabel}"/>
+              </div>
+
+
               <ice:dataTable id="diffFilesDataTableWrap" cellpadding="0" cellspacing="0" width="100%" var="diffFilesCat">
                   <ice:column id="sectionColumn">
                       <div jsfc="ice:panelGroup" styleClass="vdcStudyInfoHeader">

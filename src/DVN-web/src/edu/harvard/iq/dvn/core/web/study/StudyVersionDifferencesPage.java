@@ -99,6 +99,8 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
     private List<catalogInfoDifferenceItem> termsofuseDiffList;
     private List<catalogInfoDifferenceItem> notesDiffList;
 
+    private String noCatalogDifferencesFoundLabel = "";
+    private String noFileDifferencesFoundLabel = "";
 
     public List<catalogInfoDifferenceItem> getCitationDiffList () {
         return citationDiffList;
@@ -197,7 +199,22 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
         this.studyUI2 = studyUI;
     }
 
+    public String getNoCatalogDifferencesFoundLabel () {
+        return noCatalogDifferencesFoundLabel;
+    }
 
+    public void setNoCatalogDifferencesFoundLabel (String label) {
+        noCatalogDifferencesFoundLabel = label;
+    }
+
+    public String getNoFileDifferencesFoundLabel () {
+        return noFileDifferencesFoundLabel;
+    }
+
+    public void setNoFileDifferencesFoundLabel (String label) {
+        noFileDifferencesFoundLabel = label;
+    }
+    
     public void init() {
         super.init();
    
@@ -258,6 +275,8 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
             initCatalogInfoDifferencesList();
 
+            //initStudyFilesDifferencesList();
+
         } else {
             // We must have a StudyId and the Version numbers; throw an error
             System.out.println("ERROR: in StudyVersionDifferencePage, without a studyId and/or version Ids");
@@ -266,6 +285,15 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
     public boolean isReleaseConfrimInProgress () {
         return ("confirmRelease".equals(actionMode));
+    }
+
+    public boolean isCatalogingInformationDifferent () {
+        return citationDiffList.size() > 0 ||
+               abstractandscopeDiffList.size() > 0 || 
+               datacollectionDiffList.size() > 0 ||
+               dataavailDiffList.size() > 0 ||
+               termsofuseDiffList.size() > 0 ||
+               notesDiffList.size() > 0;
     }
 
     public void release (ActionEvent ae) {
@@ -304,6 +332,10 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
         initDataavailDifferencesList();
         initTermsofuseDifferencesList();
         initNotesDifferencesList();
+        
+        if ( !isCatalogingInformationDifferent() ) {
+            noCatalogDifferencesFoundLabel = "There are no differences in the Cataloging Information between the 2 versions";
+        }
     }
     
     private void initCitationDifferencesList () {
@@ -324,7 +356,30 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
         catalogInfoDifferenceItem idi; 
         
         // insert auto-generated code here:
-		value1 = getStudyUI1().getMetadata().getSubTitle();
+		value1 = getStudyUI1().getMetadata().getTitle();
+		value2 = getStudyUI2().getMetadata().getTitle();
+
+		if (value1 != null || value2 != null) {
+			if ((value1 != null && !value1.equals(value2)) ||
+			    (value2 != null && !value2.equals(value1))) {
+
+				if (value1 == null || value1.equals("")) {
+					value1 = "[Empty]";
+				} else if (value2 == null || value2.equals("")) {
+					value2 = "[Empty]";
+				}
+
+				idi = new catalogInfoDifferenceItem();
+
+				idi.setFieldName("Title");
+				idi.setFieldValue1(value1);
+				idi.setFieldValue2(value2);
+
+				citationDiffList.add(idi);
+
+			}
+		}
+        value1 = getStudyUI1().getMetadata().getSubTitle();
 		value2 = getStudyUI2().getMetadata().getSubTitle();
 
 		if (value1 != null || value2 != null) {

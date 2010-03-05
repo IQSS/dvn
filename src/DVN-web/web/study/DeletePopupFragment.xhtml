@@ -22,7 +22,7 @@
                                width="100%" cellpadding="0"
                                cellspacing="0" columns="2"
                                columnClasses="none,popupButton">
-                    <ice:outputText value="Delete #{studyPage.deleteActionLabel}"/>
+                    <ice:outputText value="#{studyPage.deleteActionLabel}"/>
                     <ice:commandLink id="autoCentPopupClose"
                                      actionListener="#{studyPage.toggleStudyDeletePopup}"
                                      styleClass="popupModalClose">
@@ -37,7 +37,7 @@
                                styleClass="popupModalBody">
                     <div jsfc="ice:panelGroup">
                         <ice:graphicImage value="/resources/images/icon_warning.png"/>
-                        <ice:outputText value="Are you sure that you want to delete this #{studyPage.deleteActionLabel}?" nospan="true"/>
+                        <ice:outputText value="Are you sure that you want to #{studyPage.deleteActionLabel}?" nospan="true"/>
                     </div>
                     <ice:outputText value="#{studyPage.studyUI.metadata.title}"/>
                     <ice:outputText value="#{studyPage.studyUI.study.globalId}"/>

@@ -263,9 +263,14 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
 
                             </span>
                             <span jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.userAuthorizedToEdit and studyPage.studyUI.studyVersion.inReview}">
-                                <li>
+                                <!--<li>
                                     <dvn:tooltip tooltipMessage="#{studybundle.deleteReviewTip}" linkText="#{studybundle.deleteReviewText}" eventType="mouseover" linkUrl="#"/>
-                                </li>
+                                </li>-->
+                                 <li>
+                                    <ice:commandLink actionListener="#{studyPage.confirmInreviewDeleteAction}" onmouseover="javascript:popupTooltip(this, &#39;#{studybundle.deleteReviewTip}&#39;, &#39;&#39;, event);" onmouseout="javascript:hideTooltip();">
+                                        <ice:outputText value="#{studybundle.deleteReviewText}" nospan="true"/>
+                                    </ice:commandLink>
+                                 </li>
                             </span>
                             <span jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.userAuthorizedToEdit and studyPage.studyUI.studyVersion.archived}">
                                 <li>
@@ -290,8 +295,13 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
                                 </li>
                             </span>
                             <span jsfc="ice:panelGroup">
-                                <li>
+                                <!--<li>
                                     <dvn:tooltip tooltipMessage="#{studybundle.destroyTip}" linkText="#{studybundle.destroyText}" eventType="mouseover" linkUrl="#"/>
+                                </li>-->
+                                <li>
+                                    <ice:commandLink actionListener="#{studyPage.confirmStudyDestroyAction}" onmouseover="javascript:popupTooltip(this, &#39;#{studybundle.destroyTip}&#39;, &#39;&#39;, event);" onmouseout="javascript:hideTooltip();">
+                                        <ice:outputText value="#{studybundle.destroyText}" nospan="true"/>
+                                    </ice:commandLink>
                                 </li>
                             </span>
                         </ul>

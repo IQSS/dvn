@@ -651,7 +651,7 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
     *
     * 
     */
-    private enum StudyDeleteRequestType {DRAFT, REVIEW};
+    private enum StudyDeleteRequestType {DRAFT_VERSION, REVIEW_VERSION, DESTROY_STUDY};
     private StudyDeleteRequestType deleteRequested = null;
 
 
@@ -689,6 +689,8 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
         //    deleteRequested = null;
         //} etc.
         showStudyDeletePopup = false;
+        deleteRequested = null;
+        deleteActionLabel = null; 
         //return "manageStudies";
         return "";
 
@@ -696,11 +698,21 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
 
     public void confirmDraftDeleteAction (ActionEvent event) {
         showStudyDeletePopup = true;
-        deleteRequested = StudyDeleteRequestType.DRAFT;
-        deleteActionLabel = "DRAFT study version";       
+        deleteRequested = StudyDeleteRequestType.DRAFT_VERSION;
+        deleteActionLabel = "delete this draft version of the study";
     }
 
+    public void confirmInreviewDeleteAction (ActionEvent event) {
+        showStudyDeletePopup = true;
+        deleteRequested = StudyDeleteRequestType.REVIEW_VERSION;
+        deleteActionLabel = "delete this review version of the study";
+    }
 
+    public void confirmStudyDestroyAction (ActionEvent event) {
+        showStudyDeletePopup = true;
+        deleteRequested = StudyDeleteRequestType.DESTROY_STUDY;
+        deleteActionLabel = "permanently destroy this study";
+    }
 
     /** toggleVersionNotesPopup
      * actionListener method for hiding

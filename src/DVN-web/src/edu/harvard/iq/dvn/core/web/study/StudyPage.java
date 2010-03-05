@@ -689,6 +689,7 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
         if (studyUI != null && studyUI.getStudy() != null) {
             dataverse = studyUI.getStudy().getOwner();
         }
+
         if (StudyDeleteRequestType.DRAFT_VERSION.equals(deleteRequested)) {
             if (studyUI != null && studyUI.getStudyVersion() != null ) {
                 studyService.destroyWorkingCopyVersion(studyUI.getStudyVersion().getId());
@@ -697,13 +698,15 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
             if (studyUI != null && studyUI.getStudyVersion() != null ) {
                 studyService.destroyWorkingCopyVersion(studyUI.getStudyVersion().getId());
             }
+        } else if (StudyDeleteRequestType.DESTROY_STUDY.equals(deleteRequested)) {
+            studyService.deleteStudy(studyId);
         }
+
         showStudyDeletePopup = false;
         deleteRequested = null;
         deleteActionLabel = null;
+        
         // redirecting to the Manage Studies page;
-        // Figure it's not necessary to send the vdcId as a parameter -- ?
-        // actually, it looks like it is necessary, in some cases:
         if (getVDCRequestBean().getCurrentVDC() == null) {
             getVDCRequestBean().setCurrentVDC(dataverse);
         }

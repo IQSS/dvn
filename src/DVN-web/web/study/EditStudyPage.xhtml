@@ -82,22 +82,109 @@
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <input type="hidden" name="pageName" value="EditStudyPage"/>
         <ice:inputHidden id="studyId" value="#{EditStudyPage.studyId}"/>
+
+        <style type="text/css">
+            .dvnEditStudyHelpBlock {position: relative;}
+            .dvnEditStudyHelpBlock .dvnCloseHelpBlock {display: block; position: absolute; top: 0; right: 12px;}
+			.dvnEditStudyHelpBlock .dvnEditStudyHelp {display: block; padding-top: .5em;}
+        </style>
+
+        <script type="text/javascript">
+          // <![CDATA[
+
+          jQuery(document).ready(function(){
+
+              function toggleHelpBlock(helpBlock) {
+                    jQuery(helpBlock).next().slideToggle(500);
+                    var toggleHelpBlock = (jQuery(helpBlock).children('span.iceOutTxt').text() == 'Close Help [-]') ? 'Open Help [+]' : 'Close Help [-]';
+                    jQuery(helpBlock).children('span.iceOutTxt').text(toggleHelpBlock);
+                    var toggleState = jQuery(helpBlock).children('span.iceOutTxt').text();
+                    if (toggleState == 'Open Help [+]') {
+                        jQuery('.dvnEditStudyHelpBlock').animate({height:'26px'},400,function() {jQuery('.dvnInformationMessage').css('background-image','url(/dvn/resources/images/icon_information.18.png)')});
+                        jQuery.cookie('helpBlockState', 'closed');
+                    }
+                    else {
+                        jQuery('.dvnEditStudyHelpBlock').animate({height:'auto'},400,function() {jQuery('.dvnInformationMessage').css('background-image','url(/dvn/resources/images/icon_information.png)')});
+                        jQuery.cookie('helpBlockState', 'opened');
+                    }
+                    return false;
+              };
+              
+              var helpBlockStateVar = jQuery.cookie('helpBlockState');
+                    if (helpBlockStateVar == 'closed') {
+                        jQuery('.dvnCloseHelpBlock').next().slideToggle(500);
+                        jQuery('.dvnEditStudyHelpBlock').animate({height:'26px'},400,function() {jQuery('.dvnInformationMessage').css('background-image','url(/dvn/resources/images/icon_information.18.png)')});
+                        jQuery('.dvnCloseHelpBlock').children('span.iceOutTxt').text('Open Help [+]');
+              };
+
+          });
+          // ]]>
+        </script>
+
         <div class="dvn_section">
           <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
-            <div class="dvnMsgBlockContainer">
-              <ice:outputText value="#{bundlePageInfo.editStudyCatalogingHelp}" rendered="#{EditStudyPage.showCatalog}" escape="false"/>
-              <ice:outputText value="#{bundlePageInfo.editStudyFilesHelp}" rendered="#{EditStudyPage.showFiles}" escape="false"/>
+            <div class="dvnMsgBlockContainer dvnEditStudyHelpBlock">
+              <ice:outputLink styleClass="dvnCloseHelpBlock" value="#" onclick="return toggleHelpBlock(this)">
+                  <ice:outputText value="Close Help [-]"/>
+              </ice:outputLink>
+              <ice:outputText styleClass="dvnEditStudyHelp" value="#{bundlePageInfo.editStudyCatalogingHelp}" rendered="#{EditStudyPage.showCatalog}" escape="false"/>
+              <ice:outputText styleClass="dvnEditStudyHelp" value="#{bundlePageInfo.editStudyFilesHelp}" rendered="#{EditStudyPage.showFiles}" escape="false"/>
             </div>
           </div>
-          <div class="dvn_sectionTitle dvn_sectionTitleLinksL">
-            <ice:outputText value="#{EditStudyPage.metadata.title}"/>
-          </div>
-          <div class="dvn_sectionTitleLinksR">
-            <div jsfc="ice:panelGroup" id="groupPanel10" styleClass="vdcTextRight dvnFormMargin">
-              <ice:commandButton id="button1" value="Save" actionListener="#{EditStudyPage.toggleVersionNotesPopup}"/>
-              <ice:commandButton id="button2" value="Cancel" immediate="true" action="#{EditStudyPage.cancel}"/>
+<style type="text/css">
+.dvnstudytitleblock {overflow: hidden;}
+.dvnstudytitlefloat {float: left; padding-right: 30px; text-align: left;}
+span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; font-size:1.35em !important;}
+.dvnstudyversioninfo {}
+.dvnstudyversioninfo span.iceOutTxt {color:#A9A9A9; line-height: 1.48; font-size:.95em !important;}
+
+.dvnstudystatusbox{margin: 0; padding: 2px 8px; font-weight: bold; line-height:24px !important;}
+.dvnstudystatusbox div{margin-top:4px; line-height:18px !important;}
+.dvnstudystatusarchived{background: gold; color: #526F76;}
+.dvnstudystatusreview{background: #ececec; color: #526F76;}
+.dvnstudystatusdraft{background: #CFDDEA; color: #526F76;}
+.dvnstudystatuslabel{text-transform:uppercase;}
+.dvnstudystatusreleasedver{font-weight: normal;color:#C55B28;}
+.dvnstudystatusnoreleasedver{color:#820024;}
+.dvnstudystatusversionnote{font-weight:normal;}
+
+.dvnstudyadminboxfloat{float: right; width: 310px; margin-bottom: 1em; text-align:left;}
+.dvnstudypreviouslisting{text-align:right;}
+.dvnstudyadminbox{width: 300px; overflow:hidden; border:1px solid #d0d0d0; margin-bottom: 1em; padding:4px; color:#526F76;}
+.dvnstudyadminlinksL {float: left; width: 150px; list-style-type: square; margin: 0 0 0 1.25em; padding: 0;}
+.dvnstudyadminlinksR {float: right; width: 120px; list-style-type: square; margin: 0; padding: 0;}
+.dvnstudyadminbox ul {padding: 0px; margin: 0px; list-style-type: none;}
+.dvnstudyadminbox li {background: url(/dvn/resources/images/icon_bullet.gif) no-repeat 0px 8px; padding-left: 10px;}
+.dvnstudyadminbox a:link,.dvnstudyadminbox a:visited,.dvnstudyadminbox a:hover,.dvnstudyadminbox a:active{color:#C55B28;}
+.dvnstudyadminbox li a:link,.dvnstudyadminbox li a:visited,.dvnstudyadminbox li a:hover,.dvnstudyadminbox li a:active{font-size:.9em !important;}
+</style>
+          
+        <div class="dvnstudytitleblock">
+            <div class="dvnstudytitlefloat">
+                <ice:outputText styleClass="dvnstudytitle" value="#{EditStudyPage.metadata.title}" rendered="#{EditStudyPage.study.id != null}"/>
+                <div jsfc="ice:panelGroup" styleClass="dvnstudyversioninfo" rendered="#{EditStudyPage.metadata.id != null}">
+                    <ice:outputText value="#{EditStudyPage.study.globalId}"/>
+                </div>
+                <div jsfc="ice:panelGroup" styleClass="dvnstudystatusbox #{EditStudyPage.metadata.studyVersion.inReview ? 'dvnstudystatusreview' : '' or EditStudyPage.metadata.studyVersion.draft ? 'dvnstudystatusdraft' : ''}" rendered="#{EditStudyPage.study.id != null}">
+                  <ice:outputText styleClass="dvnstudystatuslabel" value="In Review " rendered="#{EditStudyPage.metadata.studyVersion.inReview}"/>
+                  <ice:outputText styleClass="dvnstudystatuslabel" value="Draft " rendered="#{EditStudyPage.metadata.studyVersion.draft}"/>
+                  <ice:outputText value="Study Version: #{EditStudyPage.metadata.studyVersion.versionNumber}"/>
+                  <ice:outputText nospan="true" rendered="#{!empty EditStudyPage.metadata.studyVersion.lastUpdateTime}"><br/></ice:outputText>
+                  <ice:outputText value="Last Updated: #{EditStudyPage.metadata.studyVersion.lastUpdateTime}" rendered="#{!empty EditStudyPage.metadata.studyVersion.lastUpdateTime}"/>
+                  <ice:outputText nospan="true" rendered="#{!empty EditStudyPage.metadata.studyVersion.versionNote}"><br/></ice:outputText>
+                  <ice:outputText value="Study Version Notes: " rendered="#{!empty EditStudyPage.metadata.studyVersion.versionNote}"/>
+                  <ice:outputText styleClass="dvnstudystatusversionnote" value="#{EditStudyPage.metadata.studyVersion.versionNote}" rendered="#{!empty EditStudyPage.metadata.studyVersion.versionNote}"/>
+                </div>
             </div>
-          </div>
+
+            <div class="dvnstudyadminboxfloat">
+                    <div jsfc="ice:panelGroup" id="groupPanel10" styleClass="vdcTextRight dvnFormMargin">
+                        <ice:commandButton id="button1" value="Save" actionListener="#{EditStudyPage.toggleVersionNotesPopup}"/>
+                        <ice:commandButton id="button2" value="Cancel" immediate="true" action="#{EditStudyPage.cancel}"/>
+                    </div>
+            </div>
+        </div>
+
           <div class="dvn_sectionBoxNoBorders">
               <!-- validation errors occurred? -->
               <div jsfc="ice:panelGroup" id="messagePanel" styleClass="errorMessage" rendered="#{!empty facesContext.maximumSeverity}">

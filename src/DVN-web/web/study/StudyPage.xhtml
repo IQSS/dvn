@@ -192,11 +192,13 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
                           <ice:outputText styleClass="dvnstudystatuslabel" value="In Review " rendered="#{studyPage.studyUI.studyVersion.inReview}"/>
                           <ice:outputText styleClass="dvnstudystatuslabel" value="Draft " rendered="#{studyPage.studyUI.studyVersion.draft}"/>
                           <ice:outputText value="Study Version: #{studyPage.studyUI.studyVersion.versionNumber}"/>
-                          <ice:outputText value="--" rendered="#{!(studyPage.studyUI.studyVersion.released)}"/>
+                          <ice:outputText value="&#8211;" rendered="#{!(studyPage.studyUI.studyVersion.released)}"/>
                           <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;versionNumber=#{studyPage.studyUI.study.releasedVersion.versionNumber}#{VDCRequest.studyListingIndexAsParameter}" rendered="#{!(studyPage.studyUI.studyVersion.released) and (studyPage.studyUI.study.releasedVersion != null)}">
                             <ice:outputText value="View Released Version" />
-                          </ice:outputLink> <br/>
-                          <ice:outputText value="Created: #{studyPage.studyUI.dateOfDeposit}"/> <br/>
+                          </ice:outputLink>
+                          <ice:outputText nospan="true" rendered="#{!empty studyPage.studyUI.dateOfDeposit}"><br/></ice:outputText>
+                          <ice:outputText value="Created: #{studyPage.studyUI.dateOfDeposit}"/>
+                          <ice:outputText nospan="true" rendered="#{!empty studyPage.studyUI.studyVersion.versionNote}"><br/></ice:outputText>
                           <ice:outputText value="Study Version Notes: " rendered="#{!empty studyPage.studyUI.studyVersion.versionNote}"/>
                           <ice:outputText styleClass="dvnstudystatusversionnote" value="#{studyPage.studyUI.studyVersion.versionNote}" rendered="#{!empty studyPage.studyUI.studyVersion.versionNote}"/>
                       </div>

@@ -320,6 +320,31 @@
             <div jsfc="ice:panelGroup" styleClass="dvn_theMenuContainer">
                 <div class="theMenuContainer">
                     <!-- START ACCORDION -->
+                    <script type="text/javascript">
+                      // <![CDATA[
+                      function highlight_active_sidebar_links(obj) {
+                          jQuery("a.lastNodeActive").each(function(){
+                            jQuery(this).removeClass("lastNodeActive");
+                          });
+                          obj.className = "lastNodeActive";
+                       }
+                       function deselect_active_children(obj) {
+                           if (arguments.length > 1) {
+                               var parentNode = obj.parentNode.parentNode.parentNode;
+                               var nodes = parentNode.getElementsByTagName("H4");
+                               for (var i = 0; i < nodes.length; i++) {
+                                   var nodeObj = nodes.item(i);
+                                   if (nodeObj.className.indexOf('selected') != -1) {
+                                       jQuery(nodeObj).removeClass("selected");
+                                   }
+                               }
+                           }
+                           jQuery("a.lastNodeActive").each(function(){
+                               jQuery(this).removeClass("lastNodeActive");
+                           });
+                       }
+                      // ]]>
+                    </script>
 
                     <ul id="navigation" class="basic">
                         <!-- All Dataverses -->

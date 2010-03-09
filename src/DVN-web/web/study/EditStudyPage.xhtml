@@ -92,8 +92,6 @@
         <script type="text/javascript">
           // <![CDATA[
 
-          jQuery(document).ready(function(){
-
               function toggleHelpBlock(helpBlock) {
                     jQuery(helpBlock).next().slideToggle(500);
                     var toggleHelpBlock = (jQuery(helpBlock).children('span.iceOutTxt').text() == 'Close Help [-]') ? 'Open Help [+]' : 'Close Help [-]';
@@ -109,6 +107,8 @@
                     }
                     return false;
               };
+
+          jQuery(document).ready(function(){
               
               var helpBlockStateVar = jQuery.cookie('helpBlockState');
                     if (helpBlockStateVar == 'closed') {

@@ -349,7 +349,7 @@ textarea.dvnstudycitation {width:auto;}
                     </div>
                     <div jsfc="ice:panelGroup" styleClass="dvnhowtocitecitationfloat">
                         <label for="citationformat">Citation Format</label> <select id="citationformat"><option>Web</option><option>Print</option></select> <input type="button" value="Select Citation &amp; Copy" class="dvnhowtocitecitationcopy"/><br/>
-                        <textarea cols="46" rows="6" class="dvnstudycitation" id="dvnstudycitation"><ice:outputText value="#{studyPage.studyUI.metadata.citation}" nospan="true"/></textarea>
+                        <textarea cols="46" rows="6" class="dvnstudycitation" id="dvnstudycitation"><ice:outputText value="#{studyPage.studyUI.metadata.textCitation}" nospan="true"/></textarea>
                     </div>
                   </ice:panelGrid>
                   <div jsfc="ice:panelGroup" id="groupPanel11" styleClass="vdcStudyInfoHeader">
@@ -912,7 +912,7 @@ textarea.dvnstudycitation {width:auto;}
                                               <ice:outputText value="View Data Citation [+]"/>
                                           </ice:outputLink>
                                           <div jsfc="ice:panelGroup" style="display: none;">
-                                              <ice:outputText escape="false" value="#{studyPage.studyUI.metadata.citation} #{studyFileUI.studyFile.fileName} [fileDscr/fileName (DDI)] #{studyFileUI.studyFile.unf}"/>
+                                              <ice:outputText escape="false" value="#{studyPage.studyUI.metadata.textCitation} #{studyFileUI.studyFile.fileName} [fileDscr/fileName (DDI)] #{studyFileUI.studyFile.unf}"/>
                                           </div>
                                       </div>
                                     </ice:column>

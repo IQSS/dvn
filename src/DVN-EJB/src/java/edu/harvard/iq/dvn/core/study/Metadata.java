@@ -2045,11 +2045,18 @@ public class Metadata implements java.io.Serializable {
         this.harvestDVNTermsOfUse = harvestDVNTermsOfUse;
     }
 
-    public String getCitation() {
+    private String getCitation() {
         return getCitation(true);
     }
 
+    public String getTextCitation() {
+        return getCitation(false);
+    }
 
+    public String getWebCitation() {
+        return getCitation(true);
+    }
+    
     public String getCitation(boolean isOnlineVersion) {
 
         Study study = getStudy();

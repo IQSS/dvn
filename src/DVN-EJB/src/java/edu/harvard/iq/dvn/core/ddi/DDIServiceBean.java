@@ -351,7 +351,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         // biblCit
         xmlw.writeStartElement("biblCit");
         writeAttribute( xmlw, "format", "DVN" );
-        xmlw.writeCharacters( metadata.getCitation() );
+        xmlw.writeCharacters( metadata.getTextCitation() );
         xmlw.writeEndElement(); // biblCit
 
         // holdings

@@ -164,7 +164,7 @@ public class DCServiceBean implements DCServiceLocal {
             xmlw.writeEndElement();
         }
         xmlw.writeStartElement("dc:description");
-        xmlw.writeCharacters("Citation: " + metadata.getCitation());
+        xmlw.writeCharacters("Citation: " + metadata.getTextCitation());
         xmlw.writeEndElement();
 
         // Coverage

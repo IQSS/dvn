@@ -242,6 +242,11 @@ td.dvnDifferanceTableHeaderCol1 {border-top: 0 !important;}
                       </div>
                   </ice:column>
               </ice:dataTable>
+
+              <div jsfc="ice:panelGroup" id="diffPanel8" styleClass="vdcStudyInfoHeader" rendered="#{!studyVersionDifferencesPage.studyFilesDifferent}">
+                    <ice:outputText id="outputText8" value="#{studyVersionDifferencesPage.noFileDifferencesFoundLabel}"/>
+              </div>
+
               
             </div>
           </div>

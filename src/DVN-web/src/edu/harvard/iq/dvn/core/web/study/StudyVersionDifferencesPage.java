@@ -275,7 +275,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
             initCatalogInfoDifferencesList();
 
-            //initStudyFilesDifferencesList();
+            initStudyFilesDifferencesList();
 
         } else {
             // We must have a StudyId and the Version numbers; throw an error
@@ -294,6 +294,10 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
                dataavailDiffList.size() > 0 ||
                termsofuseDiffList.size() > 0 ||
                notesDiffList.size() > 0;
+    }
+
+    public boolean isStudyFilesDifferent () {
+        return false; 
     }
 
     public void release (ActionEvent ae) {
@@ -338,6 +342,14 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
         }
     }
     
+    private void initStudyFilesDifferencesList () {
+        if (studyUI2.getCategoryUIList().size() == 0) {
+            noFileDifferencesFoundLabel = "No data files in either version of the study";
+        } else {
+            noFileDifferencesFoundLabel = "These study versions have identical sets of data files";
+        }
+    }
+
     private void initCitationDifferencesList () {
         // Can't think of a better way of doing this than just going
         // through and comparing all the cataloging information entries.

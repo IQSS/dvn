@@ -279,7 +279,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
         } else {
             // We must have a StudyId and the Version numbers; throw an error
-            System.out.println("ERROR: in StudyVersionDifferencePage, without a studyId and/or version Ids");
+            //System.out.println("ERROR: in StudyVersionDifferencePage, without a studyId and/or version Ids");
         }
     }
 
@@ -300,8 +300,11 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
         return false; 
     }
 
-    public void release (ActionEvent ae) {
-        // First we archive the previously released version:
+    public void saveVersionNoteAndRelease (ActionEvent ae) {
+        // First we save the Version Note:
+        studyService.saveVersionNote (studyUI2.getStudyVersion().getId(), studyUI2.getStudyVersion().getVersionNote());
+
+        // Then we archive the previously released version:
         studyService.setArchived(getStudyVersion1().getId());
 
         // Then we release this latest version:
@@ -311,6 +314,9 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
         // the setReleased method in the StudyServiceBean, above,
         // also updates the study with the Indexer service.
         // every time a study is released.
+
+        // Make sure the popup is turned off:
+        showVersionNotesPopup = false;
 
         // And now we are redirecting back to the StudyPage;
         // no need to specify the version really, since the latest version is now released.
@@ -326,6 +332,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
         getVDCRequestBean().setStudyVersionNumber(getVersionNumber2());
 
         return "viewStudy";
+
     }
 
 
@@ -1943,8 +1950,8 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
         catalogInfoDifferenceItem idi;
 
         // insert auto-generated code here:
-		value1 = getStudyUI1().getMetadata().getTimeMethod();
-		value2 = getStudyUI2().getMetadata().getTimeMethod();
+		value1 = getStudyUI1().getNotes();
+		value2 = getStudyUI2().getNotes();
 
 		if (value1 != null || value2 != null) {
 			if ((value1 != null && !value1.equals(value2)) ||
@@ -1958,7 +1965,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 				idi = new catalogInfoDifferenceItem();
 
-				idi.setFieldName("Time Method");
+				idi.setFieldName("Notes");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 
@@ -1976,8 +1983,21 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
             return false;
         }
     }
+    
+    public void toggleVersionNotesPopup(javax.faces.event.ActionEvent event) {
+        showVersionNotesPopup = !showVersionNotesPopup;
+    }
 
-   
+    protected boolean showVersionNotesPopup = false;
+
+    public boolean isShowVersionNotesPopup() {
+        return showVersionNotesPopup;
+    }
+
+    public void setShowVersionNotesPopup(boolean showVersionNotesPopup) {
+        this.showVersionNotesPopup = showVersionNotesPopup;
+    }
+
     public class catalogInfoDifferenceItem {
 
         public catalogInfoDifferenceItem () {

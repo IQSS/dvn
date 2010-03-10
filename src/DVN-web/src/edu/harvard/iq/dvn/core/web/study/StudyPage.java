@@ -756,9 +756,35 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
     protected boolean actionComplete = false;
 
     public void confirmReleased(ActionEvent ae) {
-        actionRequested = StudyActionRequestType.RELEASE;
-        showVersionNotesPopup = true;
-        actionComplete = false;
+    //public String confirmReleased() {
+        // See if the study already has released versions;
+        // If not (i.e., this is the first release), we want to
+        // simply switch the version state to "released"
+        // -- but not before we present the Version Notes popup
+        // to them.
+        // If it is not the first release, we don't need the popup, but
+        // we redirect them to the Diff page, so that they can review
+        // the changes before they proceed with releasing the version.
+        // The Version Notes popup will be presented when they hit
+        // "release" there.
+
+        StudyVersion releasedVersion = studyService.getStudyVersion(getStudyId(), null);
+
+        if ( releasedVersion == null ) {
+            // This is the first release of the study.
+            actionRequested = StudyActionRequestType.RELEASE;
+            showVersionNotesPopup = true;
+            actionComplete = false;
+        } else {
+            // Redirecting to the Differences page;
+            // Need to set the correct HTTP parameters:
+            redirect("/faces/study/StudyVersionDifferencesPage.xhtml?studyId="
+                    +studyId+"&versionNumberList="
+                    +releasedVersion.getVersionNumber()+","
+                    +getVersionNumber()
+                    +"&actionMode=confirmRelease");
+        }
+
     }
 
     public void confirmSubmitForReview(ActionEvent ae) {
@@ -780,6 +806,9 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
 
             if (actionRequested.equals(StudyActionRequestType.RELEASE)) {
                 actionRequested = null;
+                // Well, at this point, if we are here and the desired action is
+                // release, this must be the first release of the study; but 
+                // I'm going to keep the code below to be safe, at least for now. 
 
                 // See if the study already has released versions;
                 // If so, redirect to the Diff page.

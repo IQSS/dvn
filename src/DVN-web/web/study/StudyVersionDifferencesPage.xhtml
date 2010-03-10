@@ -11,6 +11,7 @@
 </head>
 <body>
   <gui:composition template="/template.xhtml">
+    <!--<gui:include src="VersionNotesPopupFragment.xhtml"/>-->
     <gui:param name="pageTitle" value="#{bundlePageInfo.versionDifferencesTitle} - #{VDCRequest.dataversePageTitle}"/>
     <gui:define name="body">
       <ice:form>
@@ -71,7 +72,9 @@ td.dvnDifferanceTableHeaderCol1 {border-top: 0 !important;}
 
                 <div class="dvnstudyadminboxfloat">
                         <div jsfc="ice:panelGroup" styleClass="vdcTextRight dvnFormMargin">
-                            <ice:commandButton id="button1" value="Release" actionListener="#{studyVersionDifferencesPage.release}"/>
+                            <!--<ice:commandButton id="button1" value="Release" actionListener="#{studyVersionDifferencesPage.release}"/>-->
+                            <!--<ice:commandButton id="button1" value="Release" actionListener="#{studyPage.confirmReleased}"/>-->
+                            <ice:commandButton id="button1" value="ReleaseX" actionListener="#{studyVersionDifferencesPage.toggleVersionNotesPopup}"/>-
                             <ice:commandButton id="button2" value="Cancel" immediate="true" action="#{studyVersionDifferencesPage.cancel}"/>
                         </div>
                 </div>

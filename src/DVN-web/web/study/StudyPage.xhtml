@@ -212,7 +212,7 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
                                         </ice:commandLink>
                                     </li>
                                 </span>
-                                <span jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.userAuthorizedToEdit and studyPage.studyUI.studyVersion.draft}">
+                                <span jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.userAuthorizedToEdit and ! studyPage.studyUI.userAuthorizedToRelease and studyPage.studyUI.studyVersion.draft}">
                                     <li>
                                         <ice:commandLink actionListener="#{studyPage.confirmSubmitForReview}" onmouseover="javascript:popupTooltip(this, &#39;#{studybundle.reviewTip}&#39;, &#39;&#39;, event);" onmouseout="javascript:hideTooltip();">
                                             <ice:outputText value="Submit For Review" nospan="true"/>

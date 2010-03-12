@@ -1039,6 +1039,7 @@ public class Indexer implements java.io.Serializable  {
         anyTerms.add(buildAnyTerm("authority",string));
         anyTerms.add(buildAnyTerm("globalId",string));
         anyTerms.add(buildAnyTerm("otherId",string));
+        anyTerms.add(buildAnyTerm("otherIdAgency",string));
         anyTerms.add(buildAnyTerm("versionDate",string));
         anyTerms.add(buildAnyTerm("studySoftware",string));
         anyTerms.add(buildAnyTerm("studySoftwareVersion",string));

@@ -916,7 +916,8 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 			}
 		}
-		value1 = getStudyUI1().getRelPublications();
+
+        value1 = getStudyUI1().getRelPublications();
 		value2 = getStudyUI2().getRelPublications();
 
 		if (value1 != null || value2 != null) {
@@ -939,6 +940,80 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
 			}
 		}
+
+		value1 = getStudyUI1().getRelMaterials();
+		value2 = getStudyUI2().getRelMaterials();
+
+		if (value1 != null || value2 != null) {
+			if ((value1 != null && !value1.equals(value2)) ||
+			    (value2 != null && !value2.equals(value1))) {
+
+				if (value1 == null || value1.equals("")) {
+					value1 = "[Empty]";
+				} else if (value2 == null || value2.equals("")) {
+					value2 = "[Empty]";
+				}
+
+				idi = new catalogInfoDifferenceItem();
+
+				idi.setFieldName("Related Materials");
+				idi.setFieldValue1(value1);
+				idi.setFieldValue2(value2);
+
+				abstractandscopeDiffList.add(idi);
+
+			}
+		}
+
+ 		value1 = getStudyUI1().getRelStudies();
+		value2 = getStudyUI2().getRelStudies();
+
+		if (value1 != null || value2 != null) {
+			if ((value1 != null && !value1.equals(value2)) ||
+			    (value2 != null && !value2.equals(value1))) {
+
+				if (value1 == null || value1.equals("")) {
+					value1 = "[Empty]";
+				} else if (value2 == null || value2.equals("")) {
+					value2 = "[Empty]";
+				}
+
+				idi = new catalogInfoDifferenceItem();
+
+				idi.setFieldName("Related Studies");
+				idi.setFieldValue1(value1);
+				idi.setFieldValue2(value2);
+
+				abstractandscopeDiffList.add(idi);
+
+			}
+		}
+
+ 		value1 = getStudyUI1().getOtherRefs();
+		value2 = getStudyUI2().getOtherRefs();
+
+		if (value1 != null || value2 != null) {
+			if ((value1 != null && !value1.equals(value2)) ||
+			    (value2 != null && !value2.equals(value1))) {
+
+				if (value1 == null || value1.equals("")) {
+					value1 = "[Empty]";
+				} else if (value2 == null || value2.equals("")) {
+					value2 = "[Empty]";
+				}
+
+				idi = new catalogInfoDifferenceItem();
+
+				idi.setFieldName("Other References");
+				idi.setFieldValue1(value1);
+				idi.setFieldValue2(value2);
+
+				abstractandscopeDiffList.add(idi);
+
+			}
+		}
+
+
 		value1 = getStudyUI1().getTimePeriodCovered();
 		value2 = getStudyUI2().getTimePeriodCovered();
 

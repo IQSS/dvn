@@ -455,6 +455,8 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
             studyFilesDiffList.add(fdi);
 
+            i++;
+
         }
 
         // and whatever's left on either list:
@@ -474,6 +476,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
             studyFilesDiffList.add(fdi);
 
+            i++;
         }
 
         while ( i < diffFileMetadataList2.size() ) {
@@ -491,6 +494,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
             studyFilesDiffList.add(fdi);
 
+            i++;
         }
 
         if (studyFilesDiffList.size() == 0) {

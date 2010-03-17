@@ -225,27 +225,33 @@ td.dvnDifferanceTableHeaderCol1 {border-top: 0 !important;}
               </div>
 
 
-                            <ice:dataTable id="diffFilesDataTable" styleClass="dvnDifferanceTable" var="diffFile"
+                            <ice:dataTable id="diffFilesDataTable" styleClass="dvnDifferanceTable" value="#{studyVersionDifferencesPage.studyFilesDiffList}" var="diffFile"
                                           columns="3" cellpadding="0" cellspacing="0" width="100%" 
                                           columnWidths="20%,40%,40%" columnClasses="vdcStudyInfoCol1, vdcStudyInfoCol2, vdcStudyInfoCol2"
                                           bgcolor="" rendered="#{studyVersionDifferencesPage.studyFilesDifferent}">
                                 <ice:column id="column1">
                                     <ice:outputText value="&nbsp;" escape="false"/>
                                 </ice:column>
-                                <ice:column id="column2">
+                                <ice:column id="column2" rendered="#{! fileDiff.file1Empty}">
                                     <ice:outputText value="File Name: #{fileDiff.fileName1}"/><br/>
                                     <ice:outputText value="File Type: #{fileDiff.fileType1}"/><br/>
                                     <ice:outputText value="File Size: #{fileDiff.fileSize1}"/><br/>
                                     <ice:outputText value="Category: #{fileDiff.fileCat1}"/><br/>
                                     <ice:outputText value="Description: #{fileDiff.fileDesc1}"/>
                                 </ice:column>
-                              <ice:column id="column3">
+                                <ice:column id="column2" rendered="#{fileDiff.file1Empty}">
+                                    <ice:outputText value="[Empty]"/><br/>
+                                </ice:column>
+                                <ice:column id="column3" rendered="#{! fileDiff.file2Empty}">
                                     <ice:outputText value="File Name: #{fileDiff.fileName2}"/><br/>
                                     <ice:outputText value="File Type: #{fileDiff.fileType2}"/><br/>
                                     <ice:outputText value="File Size: #{fileDiff.fileSize2}"/><br/>
                                     <ice:outputText value="Category: #{fileDiff.fileCat2}"/><br/>
                                     <ice:outputText value="Description: #{fileDiff.fileDesc2}"/>
-                              </ice:column>
+                                </ice:column>
+                                <ice:column id="column3" rendered="#{fileDiff.file2Empty}">
+                                    <ice:outputText value="[Empty]"/><br/>
+                                </ice:column>
                           </ice:dataTable>
 
               <div jsfc="ice:panelGroup" id="diffPanel9" styleClass="vdcStudyInfoHeader" rendered="#{!studyVersionDifferencesPage.studyFilesDifferent}">

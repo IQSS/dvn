@@ -31,6 +31,10 @@ package edu.harvard.iq.dvn.core.web.study;
 import edu.harvard.iq.dvn.core.study.ReviewStateServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyVersion;
+import edu.harvard.iq.dvn.core.study.FileMetadata;
+import java.io.File;
+import org.apache.commons.io.FileUtils;
+
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import java.util.ArrayList;
 import java.util.List;
@@ -99,6 +103,8 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
     private List<catalogInfoDifferenceItem> termsofuseDiffList;
     private List<catalogInfoDifferenceItem> notesDiffList;
 
+    private List<studyFileDifferenceItem> studyFilesDiffList;
+
     private String noCatalogDifferencesFoundLabel = "";
     private String noFileDifferencesFoundLabel = "";
 
@@ -149,6 +155,14 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
     public void setNotesDiffList (List<catalogInfoDifferenceItem> cidl) {
         this.notesDiffList = cidl;
+    }
+
+    public List<studyFileDifferenceItem> getStudyFilesDiffList () {
+            return studyFilesDiffList;
+    }
+
+    public void setStudyFilesDiffList(List<studyFileDifferenceItem> sfdl) {
+        this.studyFilesDiffList = sfdl;
     }
 
     public Long getVersionNumber1() {
@@ -268,8 +282,8 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
                 return;
             }
 
-            studyUI1 = new StudyUI(studyVersion1, getVDCSessionBean().getUser());
-            studyUI2 = new StudyUI(studyVersion2, getVDCSessionBean().getUser());
+            studyUI1 = new StudyUI(studyVersion1, getVDCSessionBean().getUser(), true);
+            studyUI2 = new StudyUI(studyVersion2, getVDCSessionBean().getUser(), true);
 
             //initPanelDisplay();
 
@@ -297,7 +311,8 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
     }
 
     public boolean isStudyFilesDifferent () {
-        return false; 
+        //return false;
+        return studyFilesDiffList.size() > 0;
     }
 
     public void saveVersionNoteAndRelease (ActionEvent ae) {
@@ -350,9 +365,135 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
     }
     
     private void initStudyFilesDifferencesList () {
-        if (studyUI2.getCategoryUIList().size() == 0) {
+        studyFilesDiffList = new ArrayList<studyFileDifferenceItem>();
+
+        // Study Files themselves are version-less;
+        // In other words, 2 different versions can have different sets of
+        // study files, but if the files themselves don't have versions.
+        // So in order to find the differences between the 2 sets of study
+        // files in 2 versions we can just go through the lists of the
+        // files and compare the ids. If both versions have the file with
+        // the same file id, it is the same file.
+
+
+        if (studyUI1.getFileMetadataList().size() == 0 && studyUI2.getFileMetadataList().size() == 0) {
             noFileDifferencesFoundLabel = "No data files in either version of the study";
-        } else {
+            return;
+        }
+
+        List<FileMetadata> diffFileMetadataList1 = new ArrayList<FileMetadata>();
+        List<FileMetadata> diffFileMetadataList2 = new ArrayList<FileMetadata>();
+
+
+        int i = 0;
+        int j = 0;
+
+        FileMetadata fm1;
+        FileMetadata fm2;
+
+        while ( i < studyUI1.getFileMetadataList().size() &&
+                j < studyUI2.getFileMetadataList().size() ) {
+            fm1 = studyUI1.getFileMetadataList().get(i);
+            fm2 = studyUI2.getFileMetadataList().get(j);
+
+            if (fm1.getStudyFile().getId().compareTo(fm2.getStudyFile().getId()) == 0) {
+                // The 2 versions share the same study file; skipping.
+                i++;
+                j++;
+            } else if (fm1.getStudyFile().getId().compareTo(fm2.getStudyFile().getId()) > 0) {
+                diffFileMetadataList2.add(fm2);
+                j++;
+            } else if (fm1.getStudyFile().getId().compareTo(fm2.getStudyFile().getId()) < 0) {
+                diffFileMetadataList1.add(fm1);
+                i++;
+            }
+        }
+
+        // We've reached the end of at least one file list.
+        // Whatever files are left on either of the 2 lists are automatically "different"
+        // between the 2 versions.
+
+        while ( i < studyUI1.getFileMetadataList().size() ) {
+            fm1 = studyUI1.getFileMetadataList().get(i);
+            diffFileMetadataList1.add(fm1);
+            i++;
+        }
+
+         while ( j < studyUI2.getFileMetadataList().size() ) {
+            fm2 = studyUI2.getFileMetadataList().get(j);
+            diffFileMetadataList2.add(fm2);
+            j++;
+        }
+
+        // So now we have 2 lists of study file metadatas that ONLY
+        // CONTAIN the entries that are DIFFERENT between the 2 versions.
+        //
+        // Let's go through the entries one more time, this time creating
+        // the list of different entries.
+
+        i = 0;
+        studyFileDifferenceItem fdi;
+
+        while ( i < diffFileMetadataList1.size() &&
+                i < diffFileMetadataList2.size() ) {
+            fm1 = diffFileMetadataList1.get(i);
+            fm2 = diffFileMetadataList2.get(i);
+
+            fdi = new studyFileDifferenceItem();
+
+            fdi.setFileName1(fm1.getStudyFile().getFileName());
+		    fdi.setFileType1(fm1.getStudyFile().getFileType());
+            fdi.setFileSize1(FileUtils.byteCountToDisplaySize(new File(fm1.getStudyFile().getFileSystemLocation()).length()));
+            fdi.setFileCat1(fm1.getCategory());
+            fdi.setFileDesc1(fm1.getDescription());
+
+            fdi.setFileName2(fm2.getStudyFile().getFileName());
+		    fdi.setFileType2(fm2.getStudyFile().getFileType());
+            fdi.setFileSize2(FileUtils.byteCountToDisplaySize(new File(fm2.getStudyFile().getFileSystemLocation()).length()));
+            fdi.setFileCat2(fm2.getCategory());
+            fdi.setFileDesc2(fm2.getDescription());
+
+            studyFilesDiffList.add(fdi);
+
+        }
+
+        // and whatever's left on either list:
+
+         while ( i < diffFileMetadataList1.size() ) {
+            fm1 = diffFileMetadataList1.get(i);
+
+            fdi = new studyFileDifferenceItem();
+
+            fdi.setFileName1(fm1.getStudyFile().getFileName());
+		    fdi.setFileType1(fm1.getStudyFile().getFileType());
+            fdi.setFileSize1(FileUtils.byteCountToDisplaySize(new File(fm1.getStudyFile().getFileSystemLocation()).length()));
+            fdi.setFileCat1(fm1.getCategory());
+            fdi.setFileDesc1(fm1.getDescription());
+
+            fdi.setFile2Empty(true);
+
+            studyFilesDiffList.add(fdi);
+
+        }
+
+        while ( i < diffFileMetadataList2.size() ) {
+            fm2 = diffFileMetadataList2.get(i);
+
+            fdi = new studyFileDifferenceItem();
+
+            fdi.setFile1Empty(true);
+
+            fdi.setFileName2(fm2.getStudyFile().getFileName());
+		    fdi.setFileType2(fm2.getStudyFile().getFileType());
+            fdi.setFileSize2(FileUtils.byteCountToDisplaySize(new File(fm2.getStudyFile().getFileSystemLocation()).length()));
+            fdi.setFileCat2(fm2.getCategory());
+            fdi.setFileDesc2(fm2.getDescription());
+
+            studyFilesDiffList.add(fdi);
+
+        }
+
+        if (studyFilesDiffList.size() == 0) {
             noFileDifferencesFoundLabel = "These study versions have identical sets of data files";
         }
     }
@@ -2105,6 +2246,125 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
         public void setFieldValue2(String fv) {
             this.fieldValue2 = fv;
         }
+
+    }
+
+    public class studyFileDifferenceItem {
+
+        public studyFileDifferenceItem () {
+        }
+
+        private String fileName1;
+        private String fileType1;
+        private String fileSize1;
+        private String fileCat1;
+        private String fileDesc1;
+
+        private String fileName2;
+        private String fileType2;
+        private String fileSize2;
+        private String fileCat2;
+        private String fileDesc2;
+
+        private boolean file1Empty = false;
+        private boolean file2Empty = false;
+
+        public String getFileName1() {
+            return fileName1;
+        }
+
+        public void setFileName1(String fn) {
+            this.fileName1 = fn;
+        }
+
+        public String getFileType1() {
+            return fileType1;
+        }
+
+        public void setFileType1(String ft) {
+            this.fileType1 = ft;
+        }
+
+        public String getFileSize1() {
+            return fileSize1;
+        }
+
+        public void setFileSize1(String fs) {
+            this.fileSize1 = fs;
+        }
+
+        public String getFileCat1() {
+            return fileCat1;
+        }
+
+        public void setFileCat1(String fc) {
+            this.fileCat1 = fc;
+        }
+
+        public String getFileDesc1() {
+            return fileDesc1;
+        }
+
+        public void setFileDesc1(String fd) {
+            this.fileDesc1 = fd;
+        }
+
+         public String getFileName2() {
+            return fileName2;
+        }
+
+        public void setFileName2(String fn) {
+            this.fileName2 = fn;
+        }
+
+        public String getFileType2() {
+            return fileType2;
+        }
+
+        public void setFileType2(String ft) {
+            this.fileType2 = ft;
+        }
+
+        public String getFileSize2() {
+            return fileSize2;
+        }
+
+        public void setFileSize2(String fs) {
+            this.fileSize2 = fs;
+        }
+
+        public String getFileCat2() {
+            return fileCat2;
+        }
+
+        public void setFileCat2(String fc) {
+            this.fileCat2 = fc;
+        }
+
+        public String getFileDesc2() {
+            return fileDesc2;
+        }
+
+        public void setFileDesc2(String fd) {
+            this.fileDesc2 = fd;
+        }
+
+        public boolean isFile1Empty() {
+            return file1Empty;
+        }
+
+        public boolean isFile2Empty() {
+            return file2Empty;
+        }
+
+        public void setFile1Empty(boolean state) {
+            file1Empty = state;
+        }
+
+        public void setFile2Empty(boolean state) {
+            file2Empty = state;
+        }
+
 
     }
     

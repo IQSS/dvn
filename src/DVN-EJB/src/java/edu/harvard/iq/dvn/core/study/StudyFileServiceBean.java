@@ -124,6 +124,15 @@ public class StudyFileServiceBean implements StudyFileServiceLocal {
         return studyFiles;
     }
 
+    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+    public java.util.List<FileMetadata> getFilesByStudyVersionOrderedById (Long svId) {
+        String queryStr = "SELECT f FROM FileMetadata f  WHERE f.studyVersion.id = " + svId + " ORDER BY f.studyFile.id";
+        Query query = em.createQuery(queryStr);
+        List<FileMetadata> studyFiles = query.getResultList();
+
+        return studyFiles;
+    }
+
     public Boolean doesStudyHaveSubsettableFiles(Long studyId) {
         // TODO: VERSION: change this to use a study version object
         List<String> subsettableList = new ArrayList();

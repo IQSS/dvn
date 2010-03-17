@@ -204,6 +204,24 @@ public class StudyUI  implements java.io.Serializable {
         initFileCategoryUIList(vdc, user, ipUserGroup);
     }
 
+
+    /**
+     * Creates a new instance of StudyUI used for detecting differences
+     * between study versions.
+     */
+
+    public StudyUI(StudyVersion sv, VDCUser user, boolean withFiles) {
+        this.studyVersion = sv;
+        this.metadata = sv.getMetadata();
+        this.study = sv.getStudy();
+        this.studyId = this.study.getId();
+        this.user = user;
+        if (withFiles) {
+            initFileMetadataList(sv);
+        }
+    }
+
+
     private void initStudyService() {
         if (studyService == null) {
             try {
@@ -857,6 +875,7 @@ public class StudyUI  implements java.io.Serializable {
         this.termsOfUsePanelIsRendered = termsOfUsePanelIsRendered;
     }
     
+
     public void initFileCategoryUIList(VDC vdc, VDCUser user, UserGroup ipUserGroup) {
         categoryUIList = new ArrayList<FileCategoryUI>();
         StudyServiceLocal studyService = null;
@@ -865,7 +884,7 @@ public class StudyUI  implements java.io.Serializable {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
+
 
         FileCategoryUI catUI = null;
         for (FileMetadata fmd : studyFileService.getOrderedFilesByStudyVersion(getStudyVersion().getId())) {
@@ -878,9 +897,9 @@ public class StudyUI  implements java.io.Serializable {
             catUI.getStudyFileUIs().add(sfui);
         }
 
-        
+
         Collections.sort(categoryUIList);
-        
+
     /*
     List categories = studyService.getOrderedFileCategories(getStudy().getId());
     Iterator iter = categories.iterator();
@@ -890,9 +909,21 @@ public class StudyUI  implements java.io.Serializable {
     categoryUIList.add(catUI);
     }
      */
-        
+
     }
-    
+
+    public void initFileMetadataList(StudyVersion sv) {
+        fileMetadataList = new ArrayList<FileMetadata>();
+        StudyServiceLocal studyService = null;
+        try {
+            studyFileService = (StudyFileServiceLocal) new InitialContext().lookup("java:comp/env/studyFileService");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        fileMetadataList = studyFileService.getFilesByStudyVersionOrderedById(sv.getId());
+    }
+
     public boolean isAnyFileUnrestricted() {
         
         for (Iterator it = categoryUIList.iterator(); it.hasNext();) {
@@ -1005,7 +1036,26 @@ public class StudyUI  implements java.io.Serializable {
     public void setCategoryUIList(List<FileCategoryUI> categoryUIList) {
         this.categoryUIList = categoryUIList;
     }
-    
+
+
+    /**
+     * fileMetadataList is a single list of FileMetadata objects
+     * (i.e., not split by file categories). This is created when
+     * the StudyUI is going to be used for comparing one study version
+     * to another on the Study Differences page.
+     */
+
+    private List<FileMetadata> fileMetadataList;
+
+
+    public List<FileMetadata> getFileMetadataList() {
+        return this.fileMetadataList;
+    }
+
+     public void setFileMetadataList(List<FileMetadata> fml) {
+        this.fileMetadataList = fml;
+    }
+
     
     private List foundInVariables;
     

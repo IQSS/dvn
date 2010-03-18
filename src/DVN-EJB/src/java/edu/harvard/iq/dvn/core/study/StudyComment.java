@@ -52,11 +52,13 @@ public class StudyComment implements Serializable {
     @Column(columnDefinition = "TEXT")
     private String comment;
     @ManyToOne
+    @JoinColumn(nullable=false)
     private VDCUser commentCreator;
     @Temporal(value = TemporalType.TIMESTAMP)
     private Date createTime;
 
     @ManyToOne
+    @JoinColumn(nullable=false)
     private StudyVersion studyVersion;
     @ManyToMany
     @JoinTable(name = "FLAGGED_STUDY_COMMENTS",

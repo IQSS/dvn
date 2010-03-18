@@ -151,6 +151,7 @@ public class DataTable implements java.io.Serializable {
      * Holds value of property study.
      */
     @ManyToOne
+    @JoinColumn(nullable=false)
     private StudyFile studyFile;
 
     /**

@@ -33,15 +33,14 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.GenerationType;
 import java.util.Collection;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Version;
 
-import org.apache.commons.lang.builder.*;
 
 /**
  *
@@ -57,7 +56,8 @@ public class DataVariable implements java.io.Serializable{
     /**
      * Holds value of property studyFile.
      */
-    @ManyToOne    
+    @ManyToOne
+    @JoinColumn(nullable=false)
     private DataTable dataTable;
 
     /**
@@ -273,6 +273,7 @@ public class DataVariable implements java.io.Serializable{
      * Holds value of property variableFormatType.
      */
     @ManyToOne
+    @JoinColumn(nullable=false)
     private VariableFormatType variableFormatType;
 
     /**

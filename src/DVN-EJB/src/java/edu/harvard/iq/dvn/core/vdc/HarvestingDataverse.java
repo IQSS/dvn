@@ -349,6 +349,7 @@ public class HarvestingDataverse implements Serializable {
     private Integer scheduleDayOfWeek;
     
     @ManyToOne
+    @JoinColumn(nullable=false)
     private HarvestFormatType harvestFormatType;
 
     public HarvestFormatType getHarvestFormatType() {

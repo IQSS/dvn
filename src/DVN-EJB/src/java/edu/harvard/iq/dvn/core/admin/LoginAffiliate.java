@@ -116,6 +116,7 @@ public class LoginAffiliate  implements java.io.Serializable  {
      * Holds value of property userGroup.
      */
     @ManyToOne
+    @JoinColumn(nullable=false)
     private UserGroup userGroup;
 
     /**

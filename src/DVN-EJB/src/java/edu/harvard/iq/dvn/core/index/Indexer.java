@@ -666,7 +666,9 @@ public class Indexer implements java.io.Serializable  {
 
     public List searchVariables(List<Long> studyIds, List<SearchTerm> searchTerms, boolean varIdReturnValues) throws IOException {
         BooleanQuery searchQuery = new BooleanQuery();
-        searchQuery.add(orIdSearchTermClause(studyIds), BooleanClause.Occur.MUST);
+        if (studyIds != null) {
+            searchQuery.add(orIdSearchTermClause(studyIds), BooleanClause.Occur.MUST);
+        }
         for (Iterator it = searchTerms.iterator(); it.hasNext();) {
             SearchTerm elem = (SearchTerm) it.next();
             BooleanQuery indexQuery = null;
@@ -874,7 +876,6 @@ public class Indexer implements java.io.Serializable  {
             SearchTerm elem = (SearchTerm) it.next();
             String[] phrase = getPhrase(elem.getValue().toLowerCase().trim());
             if (phrase.length > 1) {
-                BooleanClause partialMatchClause = null;
                 PhraseQuery phraseQuery = new PhraseQuery();
                 phraseQuery.setSlop(10);
 

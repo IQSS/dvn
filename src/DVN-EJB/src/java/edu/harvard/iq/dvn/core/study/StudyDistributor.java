@@ -113,6 +113,7 @@ public class StudyDistributor implements java.io.Serializable {
     }
     
     @ManyToOne
+    @JoinColumn(nullable=false)
     private Metadata metadata;
 
     public Metadata getMetadata() {

@@ -35,8 +35,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
 
 /**
  *
@@ -73,6 +73,7 @@ public class StudyAccessRequest implements Serializable {
      * Holds value of property study.
      */
     @ManyToOne
+    @JoinColumn(nullable=false)
     private Study study;
 
     /**
@@ -96,6 +97,7 @@ public class StudyAccessRequest implements Serializable {
      * Holds value of property vdcUser.
      */
     @ManyToOne
+    @JoinColumn(nullable=false)
     private VDCUser vdcUser;
 
     /**

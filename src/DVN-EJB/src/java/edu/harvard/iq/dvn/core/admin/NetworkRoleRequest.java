@@ -34,8 +34,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
 
 /**
  *
@@ -72,6 +72,7 @@ public class NetworkRoleRequest implements Serializable {
      * Holds value of property networkRole.
      */
     @ManyToOne
+    @JoinColumn(nullable=false)
     private edu.harvard.iq.dvn.core.admin.NetworkRole networkRole;
 
     /**
@@ -95,6 +96,7 @@ public class NetworkRoleRequest implements Serializable {
      * Holds value of property vdcUser.
      */
     @ManyToOne
+    @JoinColumn(nullable=false)
     private VDCUser vdcUser;
 
     /**

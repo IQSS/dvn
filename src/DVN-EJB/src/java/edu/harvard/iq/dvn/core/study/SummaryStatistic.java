@@ -29,14 +29,12 @@
 
 package edu.harvard.iq.dvn.core.study;
 
-import java.math.BigDecimal;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
-import org.apache.commons.lang.builder.*;
 
 /**
  *
@@ -89,6 +87,7 @@ public class SummaryStatistic implements java.io.Serializable {
      * Holds value of property type.
      */
     @ManyToOne
+    @JoinColumn(nullable=false)
     private SummaryStatisticType type;
 
     /**
@@ -112,6 +111,7 @@ public class SummaryStatistic implements java.io.Serializable {
      * Holds value of property dataVariable.
      */
     @ManyToOne
+    @JoinColumn(nullable=false)
     private DataVariable dataVariable;
 
     /**

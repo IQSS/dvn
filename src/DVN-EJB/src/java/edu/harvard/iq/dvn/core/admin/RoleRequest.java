@@ -35,8 +35,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
 
 /**
  *
@@ -85,6 +85,7 @@ public class RoleRequest implements Serializable {
      * Holds value of property role.
      */
     @ManyToOne
+    @JoinColumn(nullable=false)
     private Role role;
 
     /**
@@ -107,6 +108,7 @@ public class RoleRequest implements Serializable {
      * Holds value of property vdc.
      */
     @ManyToOne
+    @JoinColumn(nullable=false)
     private VDC vdc;
 
     /**
@@ -129,6 +131,7 @@ public class RoleRequest implements Serializable {
      * Holds value of property vdcUser.
      */
     @ManyToOne
+    @JoinColumn(nullable=false)
     private VDCUser vdcUser;
 
     /**

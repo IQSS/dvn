@@ -36,9 +36,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -100,6 +100,7 @@ public class StudyLock implements Serializable {
     
     
     @OneToOne
+    @JoinColumn(nullable=false)
     private Study study;
 
     public Study getStudy() {
@@ -111,6 +112,7 @@ public class StudyLock implements Serializable {
     }
  
     @ManyToOne
+    @JoinColumn(nullable=false)
     private VDCUser user;    
 
     public VDCUser getUser() {

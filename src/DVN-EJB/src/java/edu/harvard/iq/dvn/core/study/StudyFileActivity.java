@@ -11,9 +11,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -62,8 +62,12 @@ public class StudyFileActivity implements Serializable {
         return "edu.harvard.iq.dvn.core.study.StudyFileActivity[id=" + id + "]";
     }
     
-    @OneToOne StudyFile studyFile;
-    @ManyToOne Study study;
+    @OneToOne
+    @JoinColumn(nullable=false)
+    StudyFile studyFile;
+    @ManyToOne 
+    @JoinColumn(nullable=false)
+    Study study;
     private int downloadCount;
     @Temporal(value = TemporalType.TIMESTAMP)
     private Date lastDownloadTime;

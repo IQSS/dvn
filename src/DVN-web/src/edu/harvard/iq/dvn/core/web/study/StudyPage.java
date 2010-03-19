@@ -423,7 +423,7 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
     }
 
     public boolean getDataAvailIsEmpty() {
-        if (isEmpty(studyUI.getMetadata().getPlaceOfAccess()) && isEmpty(studyUI.getMetadata().getOriginalArchive()) && isEmpty(studyUI.getMetadata().getAvailabilityStatus()) && isEmpty(studyUI.getMetadata().getCollectionSize()) && isEmpty(studyUI.getMetadata().getStudyCompletion())) {
+        if (isEmpty(studyUI.getStudyVersion().getNumberOfFiles()) && isEmpty(studyUI.getMetadata().getPlaceOfAccess()) && isEmpty(studyUI.getMetadata().getOriginalArchive()) && isEmpty(studyUI.getMetadata().getAvailabilityStatus()) && isEmpty(studyUI.getMetadata().getCollectionSize()) && isEmpty(studyUI.getMetadata().getStudyCompletion())) {
             return true;
         } else {
             return false;

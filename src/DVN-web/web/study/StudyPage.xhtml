@@ -591,8 +591,8 @@ jQuery(document).ready(function(){
                     <dvn:inlinehelp helpMessage="#{studybundle.studyCompletionHelp}" linkText="#{studybundle.studyCompletionLabel}" heading="#{studybundle.studyCompletionHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.metadata.studyCompletion != '' and studyPage.studyUI.metadata.studyCompletion != null }"/>
                     <ice:outputText id="outputText125" value="#{studyPage.studyUI.metadata.studyCompletion}" rendered="#{!empty studyPage.studyUI.metadata.studyCompletion != '' and studyPage.studyUI.metadata.studyCompletion != null }" escape="false"/>
 
-                    <dvn:inlinehelp helpMessage="#{studybundle.numberOfFilesHelp}" linkText="#{studybundle.numberOfFilesLabel}" heading="#{studybundle.numberOfFilesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.metadata.numberOfFiles != '' and studyPage.studyUI.metadata.numberOfFiles != null }"/>
-                    <ice:outputText id="outputText127" value="#{studyPage.studyUI.metadata.numberOfFiles}" rendered="#{!empty studyPage.studyUI.metadata.numberOfFiles}" escape="false"/>
+                    <dvn:inlinehelp helpMessage="#{studybundle.numberOfFilesHelp}" linkText="#{studybundle.numberOfFilesLabel}" heading="#{studybundle.numberOfFilesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.studyVersion.numberOfFiles != '' and studyPage.studyUI.studyVersion.numberOfFiles != null }"/>
+                    <ice:outputText id="outputText127" value="#{studyPage.studyUI.studyVersion.numberOfFiles}" rendered="#{!empty studyPage.studyUI.studyVersion.numberOfFiles}" escape="false"/>
                   </ice:panelGrid>
                   <div jsfc="ice:panelGroup" id="groupPanel14b" styleClass="vdcStudyInfoHeader" rendered="#{!studyPage.termsOfUseIsEmpty}">
                     <a name="termsofuse"><!--TERMS OF USE--></a>

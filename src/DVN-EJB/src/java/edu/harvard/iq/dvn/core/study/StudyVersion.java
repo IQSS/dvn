@@ -159,6 +159,14 @@ public class StudyVersion implements Serializable {
         this.fileMetadatas = fileMetadatas;
     }
 
+    public String getNumberOfFiles() {
+        if (this.fileMetadatas != null && this.fileMetadatas.size() != 0) {
+            return "" + this.fileMetadatas.size();
+        } else {
+            return null;
+        }
+    }
+
     public List<StudyComment> getStudyComments() {
         return studyComments;
     }

@@ -152,6 +152,10 @@ public class VDC implements java.io.Serializable  {
     private VDCUser reviewer;
 
     private boolean allowStudyComments = true;
+
+    private boolean allowRegisteredUsersToContribute=false;
+
+    private boolean allowContributorsEditAll=false;
     
    
     /** Creates a new instance of VDC */
@@ -160,6 +164,24 @@ public class VDC implements java.io.Serializable  {
         this.setVDCActivity(vdcActivity);
         vdcActivity.setVDC(this);
     }
+
+    public boolean isAllowContributorsEditAll() {
+        return allowContributorsEditAll;
+    }
+
+    public void setAllowContributorsEditAll(boolean allowContributorsEditAll) {
+        this.allowContributorsEditAll = allowContributorsEditAll;
+    }
+
+    public boolean isAllowRegisteredUsersToContribute() {
+        return allowRegisteredUsersToContribute;
+    }
+
+    public void setAllowRegisteredUsersToContribute(boolean allowRegisteredUsersToContribute) {
+        this.allowRegisteredUsersToContribute = allowRegisteredUsersToContribute;
+    }
+
+    
 
     public boolean isTermsOfUseEnabled() {
         return termsOfUseEnabled;

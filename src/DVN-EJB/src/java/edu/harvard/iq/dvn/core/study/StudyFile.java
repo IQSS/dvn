@@ -333,7 +333,7 @@ public abstract class StudyFile implements Serializable {
 
         // first check if study is restricted, regardless of file permissions
         Study study = getStudy();
-        if (study.isStudyRestrictedForUser(vdc, user)) {
+        if (study.isStudyRestrictedForUser( user)) {
             return true;
         }
 

@@ -156,6 +156,45 @@ public class VDCUser implements java.io.Serializable  {
     }
 
     /**
+     *
+     * @param vdc - the dataverse where we are checking the role
+     * @return true  if this user has been assigned the contributor role in the VDC.
+     *
+     */
+    public boolean isContributor(VDC vdc) {
+        VDCRole vdcRole = getVDCRole(vdc);
+        return  vdcRole!=null && vdcRole.getRole().getName().equals(RoleServiceLocal.CONTRIBUTOR);
+    }
+
+
+    /**
+     *
+     * @param vdc - the dataverse where we are checking the role
+     * @return true if this user has been assigned the curator role in the VDC.
+     *
+     *  Simply a helper method - easier than calling getVDCRole() and checking the result.
+     */
+    public boolean isCurator(VDC vdc) {
+        VDCRole vdcRole = getVDCRole(vdc);
+        return  vdcRole!=null && vdcRole.getRole().getName().equals(RoleServiceLocal.CURATOR);
+    }
+
+
+
+    /**
+     *
+     * @param vdc - the dataverse where we are checking the role
+     * @return true if this user has been assigned the curator role in the VDC.
+     *
+     *  Simply a helper method - easier than calling getVDCRole() and checking the result.
+     */
+    public boolean isAdmin(VDC vdc) {
+        VDCRole vdcRole = getVDCRole(vdc);
+        return  vdcRole!=null && vdcRole.getRole().getName().equals(RoleServiceLocal.ADMIN);
+    }
+
+
+    /**
      * Setter for property vdcRoles.
      * @param vdcRoles New value of property vdcRoles.
      */

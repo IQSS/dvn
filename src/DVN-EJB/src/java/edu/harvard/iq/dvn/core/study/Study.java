@@ -69,6 +69,7 @@ public class Study implements java.io.Serializable {
     @ManyToMany(cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST })
     private Collection<UserGroup> allowedGroups;
     @ManyToOne
+    @JoinColumn(nullable=false)
     private VDCUser creator;
     @ManyToOne
     private VDCUser lastUpdater;
@@ -393,6 +394,7 @@ public class Study implements java.io.Serializable {
      * Holds value of property template.
      */
     @ManyToOne
+    @JoinColumn(nullable=false)
     private Template template;
     
     /**
@@ -482,6 +484,7 @@ public class Study implements java.io.Serializable {
      * Holds value of property owner.
      */
     @ManyToOne
+    @JoinColumn(nullable=false)
     private VDC owner;
     
     /**
@@ -532,9 +535,8 @@ public class Study implements java.io.Serializable {
     
 
     
-    // these are wrapper methods to support old code; once old calls are
-    // cleaned up and use the method directly, these should be removed
-    public boolean isStudyRestrictedForUser(VDC vdc, VDCUser user) {
+    
+    public boolean isStudyRestrictedForUser( VDCUser user) {
         return isStudyRestrictedForUser(user, null);
     }
     
@@ -614,69 +616,6 @@ public class Study implements java.io.Serializable {
      }
 
 
-/*********************************************************************
-The methods in this section are the old way and need to be removed, once they are no longer called;
-I left in for now because I want to make sure that using new code doesn't break anything
-*********************************************************************/
-    public  boolean isUserRestricted( VDC vdc, VDCUser user) {
-
-        // the restrictions should be checked on the owner of the study, not the currentVDC (needs cleanup)
-        vdc = this.getOwner();
-        
-        if (user == null) {
-            return true;
-        }
-        if (user.getNetworkRole()!=null && user.getNetworkRole().getName().equals(NetworkRoleServiceLocal.ADMIN)) {
-            return false;
-        }
-        VDCRole userRole = user.getVDCRole(vdc);
-        String userRoleName=null;
-        if (userRole!=null) {
-            userRoleName = userRole.getRole().getName();
-        }
-        
-        if (RoleServiceLocal.ADMIN.equals(userRoleName)
-        || RoleServiceLocal.CURATOR.equals(userRoleName)
-        || userInAllowedGroups(user)
-        || userInAllowedUsers(user)
-        || getCreator().getId().equals(user.getId())) {
-            return false;
-        } else {
-            return true;
-        }
-        
-    }
-    
-    private boolean userInAllowedUsers(VDCUser user) {
-        for (Iterator it = allowedUsers.iterator(); it.hasNext();) {
-            VDCUser allowedUser = (VDCUser) it.next();
-            if (allowedUser.getId().equals(user.getId())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean userInAllowedGroups(VDCUser user) {
-        boolean foundUser=false;
-        for (Iterator it = allowedGroups.iterator(); it.hasNext();) {
-            UserGroup userGroup = (UserGroup) it.next();
-            for (Iterator it2 = userGroup.getUsers().iterator(); it2.hasNext();) {
-                VDCUser allowedUser = (VDCUser) it2.next();
-                if (allowedUser.getId().equals(user.getId())) {
-                    foundUser=true;
-                    break;
-                }
-                
-            }
-            
-            
-        }
-        return foundUser;
-    }
-/*********************************************************************
-End of deprecated methods section
-*********************************************************************/
 
     
     /**
@@ -736,7 +675,7 @@ End of deprecated methods section
 
     
     public boolean isUserAuthorizedToEdit(VDCUser user) {   
-        String  studyVDCRoleName =null;
+        
         // No users are allowed to edit a Harvested Study
         if (owner.isHarvestingDv()) {
             return false;
@@ -745,19 +684,30 @@ End of deprecated methods section
             return true;
         }
 
-        if (user.getVDCRole(owner)!=null) {
-            studyVDCRoleName= user.getVDCRole(owner).getRole().getName();
-        }
-        if ((creator.getId().equals(user.getId()) && reviewState.getName().equals(ReviewStateServiceLocal.REVIEW_STATE_NEW))
-        || RoleServiceLocal.ADMIN.equals(studyVDCRoleName)
-        || RoleServiceLocal.CURATOR.equals(studyVDCRoleName)) {
+        if (user.isCurator(owner) || user.isAdmin(owner)) {
             return true;
         }
+
+        if (isUserStudyContributor(user)) {
+            return true;
+        }
+       
         return false;
     }
 
+    public boolean isUserStudyContributor(VDCUser user) {
+
+     if ((owner.isAllowRegisteredUsersToContribute() || user.isContributor(owner))
+                &&(creator.getId().equals(user.getId()) || owner.isAllowContributorsEditAll()) ) {
+            return true;
+        }
+
+        return false;
+
+    }
+
     public boolean isUserAuthorizedToRelease(VDCUser user) {   
-        String  studyVDCRoleName =null;
+       
         // No users are allowed to edit a Harvested Study
         if (owner.isHarvestingDv()) {
             return false;
@@ -765,11 +715,7 @@ End of deprecated methods section
         if (user.getNetworkRole()!=null && user.getNetworkRole().getName().equals(NetworkRoleServiceLocal.ADMIN)) {
             return true;
         }
-        if (user.getVDCRole(owner)!=null) {
-            studyVDCRoleName= user.getVDCRole(owner).getRole().getName();
-        }
-        if (RoleServiceLocal.ADMIN.equals(studyVDCRoleName)
-        || RoleServiceLocal.CURATOR.equals(studyVDCRoleName)) {
+         if (user.isCurator(owner) || user.isAdmin(owner)) {
             return true;
         }
         return false;

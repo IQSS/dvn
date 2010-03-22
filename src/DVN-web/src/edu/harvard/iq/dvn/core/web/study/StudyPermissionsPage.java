@@ -324,7 +324,7 @@ public class StudyPermissionsPage extends VDCBaseBean  implements java.io.Serial
         }
         
         if (valid) {
-            if ( !editStudyPermissions.getStudy().isUserRestricted(getVDCRequestBean().getCurrentVDC(),user)) {
+            if ( !editStudyPermissions.getStudy().isStudyRestrictedForUser(user,null)) {
                 valid=false;
                 msg= "This user already has a Network or Dataverse Role that allows access to the study.";
             }

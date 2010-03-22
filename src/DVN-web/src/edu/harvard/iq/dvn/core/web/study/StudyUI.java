@@ -988,7 +988,7 @@ public class StudyUI  implements java.io.Serializable {
         }
         
         // lastly check restrictions
-        return !study.isStudyRestrictedForUser(vdc, user);
+        return !study.isStudyRestrictedForUser(user);
         
         
     }

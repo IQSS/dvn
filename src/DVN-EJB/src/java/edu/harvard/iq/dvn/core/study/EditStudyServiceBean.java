@@ -171,19 +171,7 @@ public class EditStudyServiceBean implements edu.harvard.iq.dvn.core.study.EditS
     public void save(Long vdcId, Long userId) {
         VDCUser user = em.find(VDCUser.class,userId);
         try {
-            // If user is a Contributor and is editing a study with review state "Released", then
-            // revert the review state back to In Review.
-
-         // TODO: VERSION: review this commented logic
-        //    if (!isNewStudy()
-        //    && user.getVDCRole(study.getOwner())!=null
-        //            && user.getVDCRole(study.getOwner()).getRole().getName().equals(RoleServiceLocal.CONTRIBUTOR)
-        //            && study.getReviewState().getName().equals(ReviewStateServiceLocal.REVIEW_STATE_RELEASED)) {
-        //        study.setReviewState(reviewStateService.findByName(ReviewStateServiceLocal.REVIEW_STATE_IN_REVIEW));
-        //    }
-            
-            
-            // otherwise we are coming from edit; check current files for changes    
+           
             editFiles();
             studyVersion.updateVersionContributors(user);
 

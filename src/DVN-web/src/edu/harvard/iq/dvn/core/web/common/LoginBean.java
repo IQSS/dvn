@@ -103,26 +103,17 @@ public class LoginBean  implements java.io.Serializable {
     public VDCRole getVDCRole() {
         VDCRole role= null;
         if (getCurrentVDC()!=null) {
-            role = getVDCRole(getCurrentVDC());
+            role = user.getVDCRole(getCurrentVDC());
           
         }
         return role;
     }
     
     
-      public VDCRole getVDCRole(VDC vdc) {
-        VDCRole role= null;
-        if (vdc!=null) {
-            for (Iterator it = user.getVdcRoles().iterator(); it.hasNext();) {
-                VDCRole elem = (VDCRole) it.next();
-                if (elem.getVdc().getId().equals(vdc.getId())) {
-                    role = elem;
-                    break;
-                }              
-            }           
-        }
-        return role;
+    public VDCRole getVDCRole(VDC vdc) {
+        return user.getVDCRole(vdc);
     }
+
     public boolean isContributor() {
         return getRoleName().equals(RoleServiceLocal.CONTRIBUTOR);
     }

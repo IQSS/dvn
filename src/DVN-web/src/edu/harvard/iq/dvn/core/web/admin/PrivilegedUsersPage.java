@@ -72,7 +72,25 @@ public class PrivilegedUsersPage extends VDCBaseBean implements java.io.Serializ
    
     private javax.faces.component.UIData userTable;
     private ListDataModel userList;
-    
+
+
+     public enum ContributorSetting {
+        CONTRIB_CREATE,
+        CONTRIB_EDIT,
+        USER_CREATE,
+        USER_EDIT
+    };
+
+    private ContributorSetting selectedSetting;
+
+    public ContributorSetting getSelectedSetting() {
+        return selectedSetting;
+    }
+
+    public void setSelectedSetting(ContributorSetting selectedSetting) {
+        this.selectedSetting = selectedSetting;
+    }
+
     /** 
      * <p>Construct a new Page bean instance.</p>
      */
@@ -115,7 +133,7 @@ public class PrivilegedUsersPage extends VDCBaseBean implements java.io.Serializ
         } else {
             siteRestriction="Public";
         }
-        
+        initContributorSetting();
         setFilesRestricted(vdc.isFilesRestricted());       
     }
     
@@ -245,6 +263,8 @@ public class PrivilegedUsersPage extends VDCBaseBean implements java.io.Serializ
                 vdc.getHarvestingDataverse().setSubsetRestricted(filesRestricted);
             }
         }
+
+        saveContributorSetting();
         
         // If the user has added a vdcUser to the privileged list, but hasn't assigned
         // a role for the vdcUser, delete the vdcUser from the list before saving changes.
@@ -292,7 +312,44 @@ public class PrivilegedUsersPage extends VDCBaseBean implements java.io.Serializ
         getVDCRequestBean().setSuccessMessage("Successfully updated dataverse permissions.");
         return "myOptions";  
     } 
-    
+
+    private void initContributorSetting() {
+        if (!vdc.isAllowRegisteredUsersToContribute() && !vdc.isAllowContributorsEditAll()) {
+            selectedSetting = ContributorSetting.CONTRIB_CREATE;
+        }
+        else if (!vdc.isAllowRegisteredUsersToContribute() && vdc.isAllowContributorsEditAll()) {
+            selectedSetting = ContributorSetting.CONTRIB_EDIT;
+        }
+        else if (vdc.isAllowRegisteredUsersToContribute() && !vdc.isAllowContributorsEditAll()) {
+            selectedSetting = ContributorSetting.USER_CREATE;
+        }
+        else if (vdc.isAllowRegisteredUsersToContribute() && vdc.isAllowContributorsEditAll()) {
+            selectedSetting = ContributorSetting.USER_EDIT;
+        }
+
+    }
+
+
+    private void saveContributorSetting() {
+        switch (selectedSetting) {
+            case CONTRIB_CREATE:
+                vdc.setAllowRegisteredUsersToContribute(false);
+                vdc.setAllowContributorsEditAll(false);
+                break;
+            case CONTRIB_EDIT:
+                vdc.setAllowRegisteredUsersToContribute(false);
+                vdc.setAllowContributorsEditAll(true);
+                break;
+            case USER_CREATE:
+                vdc.setAllowRegisteredUsersToContribute(true);
+                vdc.setAllowContributorsEditAll(false);
+                break;
+            case USER_EDIT:
+                vdc.setAllowRegisteredUsersToContribute(true);
+                vdc.setAllowContributorsEditAll(true);
+       }
+    }
+
     public void addUser(ActionEvent ae) {
         
         if (validateUserName(FacesContext.getCurrentInstance(),userInputText, userName)) {

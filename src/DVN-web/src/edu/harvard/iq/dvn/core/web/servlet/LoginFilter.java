@@ -675,16 +675,18 @@ public class LoginFilter implements Filter {
         // in currentVDC
         if (pageDef.getName().equals(PageDefServiceLocal.EDIT_STUDY_PAGE) && (getStudyIdFromRequest(request) == null || Integer.parseInt(getStudyIdFromRequest(request)) < 0)) {
             String currentVDCRoleName = null;
-            if (currentVDC != null && user.getVDCRole(currentVDC) != null) {
-                currentVDCRoleName = user.getVDCRole(currentVDC).getRole().getName();
-            }
-            if (currentVDC != null && (currentVDCRoleName.equals(RoleServiceLocal.ADMIN) || currentVDCRoleName.equals(RoleServiceLocal.CURATOR) || currentVDCRoleName.equals(RoleServiceLocal.CONTRIBUTOR))) {
+            if (currentVDC != null && currentVDC.isAllowRegisteredUsersToContribute()) {
                 authorized = true;
+            } else {
+                if (currentVDC != null && user.getVDCRole(currentVDC) != null) {
+                    currentVDCRoleName = user.getVDCRole(currentVDC).getRole().getName();
+                }
+                if (currentVDCRoleName != null && (currentVDCRoleName.equals(RoleServiceLocal.ADMIN) || currentVDCRoleName.equals(RoleServiceLocal.CURATOR) || currentVDCRoleName.equals(RoleServiceLocal.CONTRIBUTOR))) {
+                    authorized = true;
+                }
             }
         } else {
-            // If we are editing an existing study, then the user
-            // must be admin or curator in the owning VDC, or user must be
-            // study creator.
+            // If we are editing an existing study, then the authorization depends on the study
             Long studyId = Long.parseLong(getStudyIdFromRequest(request));
             Study study = studyService.getStudy(studyId);
             authorized = study.isUserAuthorizedToEdit(user);

@@ -301,6 +301,7 @@ public class Study implements java.io.Serializable {
      */
     @OneToOne(cascade={CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name="defaultFileCategory_id")
+    // VERSION: TODO: remove this
     private FileCategory defaultFileCategory;
     
     /**

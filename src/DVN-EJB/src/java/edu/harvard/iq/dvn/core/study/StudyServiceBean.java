@@ -232,6 +232,15 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
             sv.setVersionState(StudyVersion.VersionState.ARCHIVED);
         }
     }
+
+    public void deaccessionStudy(Long studyId) {
+        Study study = em.find(Study.class, studyId);
+        StudyVersion sv = study.getReleasedVersion();
+        sv.setVersionState(StudyVersion.VersionState.ARCHIVED);
+        // save note
+        // save date
+        indexService.deleteStudy(study.getId());
+    }
     
     public Study getStudyByHarvestInfo(VDC dataverse, String harvestIdentifier) {
         String queryStr = "SELECT s FROM Study s WHERE s.owner.id = '" + dataverse.getId() + "' and s.harvestIdentifier = '" + harvestIdentifier + "'";

@@ -57,7 +57,7 @@ public class VDCGroupRelationship implements java.io.Serializable  {
      * Holds value of property group.
      */
     @ManyToOne
-    @JoinColumn (name="group_id")
+    @JoinColumn (name="group_id", nullable=false)
     private VDCGroup group;
 
     /**
@@ -80,7 +80,7 @@ public class VDCGroupRelationship implements java.io.Serializable  {
      * Holds value of property subGroup.
      */
     @ManyToOne
-    @JoinColumn(name="subgroup_id")
+    @JoinColumn(name="subgroup_id", nullable=false)
     private VDCGroup subGroup;
 
     /**

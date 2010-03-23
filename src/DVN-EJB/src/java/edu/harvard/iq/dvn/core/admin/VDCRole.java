@@ -32,8 +32,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
 
 /**
  *
@@ -66,13 +66,16 @@ public class VDCRole implements java.io.Serializable  {
  
    
     @ManyToOne
-    private VDC vdc;
+     @JoinColumn(nullable=false)
+   private VDC vdc;
     
     
     @ManyToOne
+    @JoinColumn(nullable=false)
     private Role role;
     
     @ManyToOne
+    @JoinColumn(nullable=false)
     private VDCUser vdcUser;
 
     /** Creates a new instance of VDCRole */

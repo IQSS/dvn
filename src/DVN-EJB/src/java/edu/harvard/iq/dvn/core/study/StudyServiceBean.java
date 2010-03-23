@@ -407,10 +407,9 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
     private static final String DELETE_VARIABLE_RANGES_PREFIX = "delete from variablerange where datavariable_id in ";
     private static final String DELETE_DATA_VARIABLES_PREFIX = "delete from datavariable where id in ";
 
-    private static final String SELECT_DATATABLE_IDS = "select dt.id from study s, filecategory fc, studyfile sf, datatable dt " +
+    private static final String SELECT_DATATABLE_IDS = "select dt.id from study s, studyfile sf, datatable dt " +
             "where s.id= ? " +
-            "and s.id = fc.study_id " +
-            "and fc.id= sf.filecategory_id " +
+            "and s.id = sf.study_id " +
             "and sf.id=dt.studyfile_id ";
 
     private static final String SELECT_DATAVARIABLE_IDS_PREFIX = "select dv.id from datavariable dv where dv.datatable_id in ";

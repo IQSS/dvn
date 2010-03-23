@@ -273,7 +273,17 @@
             <property-class>java.lang.Long</property-class>
             <value>#{param.studyId}</value>
         </managed-property>
-    </managed-bean>    
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>DeaccessionStudyPage</managed-bean-name>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.study.DeaccessionStudyPage</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+        <managed-property>
+            <property-name>studyId</property-name>
+            <property-class>java.lang.Long</property-class>
+            <value>#{param.studyId}</value>
+        </managed-property>
+    </managed-bean>
     <managed-bean>
         <managed-bean-name>DeleteStudyPage</managed-bean-name>
         <managed-bean-class>edu.harvard.iq.dvn.core.web.study.DeleteStudyPage</managed-bean-class>

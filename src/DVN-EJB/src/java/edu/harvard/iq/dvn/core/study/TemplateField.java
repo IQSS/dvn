@@ -92,6 +92,7 @@ public class TemplateField implements java.io.Serializable {
      * Holds value of property fieldInputLevel.
      */
     @ManyToOne
+    @JoinColumn(nullable=false)
     private FieldInputLevel fieldInputLevel;
 
     /**
@@ -113,6 +114,8 @@ public class TemplateField implements java.io.Serializable {
     /**
      * Holds value of property template.
      */
+    @ManyToOne
+    @JoinColumn(nullable=false)
     private Template template;
 
     /**
@@ -158,6 +161,7 @@ public class TemplateField implements java.io.Serializable {
      * Holds value of property studyField.
      */
     @ManyToOne
+    @JoinColumn(nullable=false)
     private StudyField studyField;
 
     /**

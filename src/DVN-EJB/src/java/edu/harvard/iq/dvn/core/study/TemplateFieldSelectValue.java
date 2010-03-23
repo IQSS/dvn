@@ -116,6 +116,7 @@ public class TemplateFieldSelectValue implements java.io.Serializable {
      * Holds value of property templateField.
      */
     @ManyToOne
+    @JoinColumn(nullable=false)
     private TemplateField templateField;
 
     /**

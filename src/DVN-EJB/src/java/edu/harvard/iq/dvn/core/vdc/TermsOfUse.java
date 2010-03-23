@@ -82,6 +82,7 @@ public class TermsOfUse implements java.io.Serializable  {
     }
         
     @ManyToOne
+    @JoinColumn(nullable=false)
     VDC vdc;
 
     public Date getCreateTime() {

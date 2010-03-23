@@ -37,6 +37,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 
@@ -153,6 +154,7 @@ public class VariableCategory implements Comparable, java.io.Serializable {
      * Holds value of property dataVariable.
      */
     @ManyToOne
+    @JoinColumn(nullable=false)
     private DataVariable dataVariable;
 
     /**

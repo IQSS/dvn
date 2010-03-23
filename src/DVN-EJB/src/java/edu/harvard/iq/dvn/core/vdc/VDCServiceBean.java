@@ -96,10 +96,16 @@ public class VDCServiceBean implements VDCServiceLocal {
         em.persist(vDC);
     }
 
-    /** scholar dataverse */
     public void createScholarDataverse(Long userId, String firstName, String lastName, String name, String affiliation, String alias, String dataverseType) {
+        List studyFields = studyFieldService.findAll();
+        createScholarDataverse(userId,firstName, lastName, name, affiliation, alias, dataverseType, studyFields);
+    }
+
+    /** scholar dataverse */
+    private void createScholarDataverse(Long userId, String firstName, String lastName, String name, String affiliation, String alias, String dataverseType, List studyFields) {
         VDC sDV = new VDC();
         em.persist(sDV);
+        sDV.setCreator(em.find(VDCUser.class, userId));
         sDV.setName(name);
         sDV.setFirstName(firstName);
         sDV.setLastName(lastName);
@@ -121,8 +127,8 @@ public class VDCServiceBean implements VDCServiceLocal {
         sDV.setDisplayAnnouncements(false);
         ArrayList advancedSearchFields = new ArrayList();
         ArrayList searchResultsFields = new ArrayList();
-        List postgresStudyFields = studyFieldService.findAll();
-        for (Iterator it = postgresStudyFields.iterator(); it.hasNext();) {
+       
+        for (Iterator it = studyFields.iterator(); it.hasNext();) {
             StudyField elem = (StudyField) it.next();
             if (elem.isAdvancedSearchField()) {
                 advancedSearchFields.add(elem);
@@ -133,7 +139,7 @@ public class VDCServiceBean implements VDCServiceLocal {
         }
         sDV.setAdvSearchFields(advancedSearchFields);
         sDV.setSearchResultFields(searchResultsFields);
-        sDV.setCreator(em.find(VDCUser.class, userId));
+      
 
         addedRootCollection.setOwner(sDV);
         vdcCollectionService.edit(addedRootCollection);
@@ -260,19 +266,22 @@ public class VDCServiceBean implements VDCServiceLocal {
         return em.createQuery("select object(o) from VDC as o where o.dtype = 'Basic' order by o.name").getResultList();
     }
 
-    public void create(Long userId, String name, String alias, String dtype) {
+    private void create(VDCUser user, String name, String alias, String dtype, List studyFields) {
         VDC addedSite = new VDC();
+        addedSite.setCreator(user);
+
+        VDCNetwork vdcNetwork = vdcNetworkService.find(new Long(1));
+        addedSite.setDefaultTemplate(vdcNetwork.getDefaultTemplate());
+
         em.persist(addedSite);
+        
         addedSite.setName(name);
         addedSite.setAlias(alias);
         addedSite.setDtype(dtype);
         addedSite.setCreatedDate(DateUtil.getTimestamp());
-        VDCCollection addedRootCollection = new VDCCollection();
-        addedRootCollection.setName(name);
-        vdcCollectionService.create(addedRootCollection);
-        addedSite.setRootCollection(addedRootCollection);
-        addedSite.getOwnedCollections().add(addedRootCollection);
-        VDCNetwork vdcNetwork = vdcNetworkService.find(new Long(1));
+        addedSite.getRootCollection().setName(name);
+
+       
         addedSite.setDefaultTemplate(vdcNetwork.getDefaultTemplate());
         addedSite.setHeader(vdcNetwork.getDefaultVDCHeader());
         addedSite.setFooter(vdcNetwork.getDefaultVDCFooter());
@@ -280,8 +289,9 @@ public class VDCServiceBean implements VDCServiceLocal {
         addedSite.setDisplayAnnouncements(false);
         ArrayList advancedSearchFields = new ArrayList();
         ArrayList searchResultsFields = new ArrayList();
-        List postgresStudyFields = studyFieldService.findAll();
-        for (Iterator it = postgresStudyFields.iterator(); it.hasNext();) {
+   
+        
+        for (Iterator it = studyFields.iterator(); it.hasNext();) {
             StudyField elem = (StudyField) it.next();
             if (elem.isAdvancedSearchField()) {
                 advancedSearchFields.add(elem);
@@ -292,11 +302,11 @@ public class VDCServiceBean implements VDCServiceLocal {
         }
         addedSite.setAdvSearchFields(advancedSearchFields);
         addedSite.setSearchResultFields(searchResultsFields);
-        addedSite.setCreator(em.find(VDCUser.class, userId));
+        
+   
+       userService.addVdcRole(user.getId(), findByAlias(addedSite.getAlias()).getId(), roleService.ADMIN);
 
-        addedRootCollection.setOwner(addedSite);
-        vdcCollectionService.edit(addedRootCollection);
-        userService.addVdcRole(userId, findByAlias(addedSite.getAlias()).getId(), roleService.ADMIN);
+   
 
     }
 
@@ -320,6 +330,12 @@ public class VDCServiceBean implements VDCServiceLocal {
             }
         }
         return vdc;
+    }
+
+    public void create(Long userId, String name, String alias, String dtype) {
+        List studyFields = studyFieldService.findAll();
+        VDCUser user = em.find(VDCUser.class, userId);
+        create(user, name, alias, dtype, studyFields);
     }
 
     public void addContributorRequest(Long vdcId, Long userId) {

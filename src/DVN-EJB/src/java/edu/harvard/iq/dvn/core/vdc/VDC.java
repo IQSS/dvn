@@ -37,15 +37,10 @@ import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyField;
 import edu.harvard.iq.dvn.core.study.Template;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.*;
 
 /**
@@ -121,7 +116,7 @@ public class VDC implements java.io.Serializable  {
      
      
     private String copyright;
-    @OneToOne (cascade={CascadeType.REMOVE, CascadeType.PERSIST})
+    @OneToOne (cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
     private VDCCollection rootCollection;
     @ManyToMany
     //(cascade={CascadeType.REMOVE })
@@ -163,6 +158,12 @@ public class VDC implements java.io.Serializable  {
         VDCActivity vdcActivity = new VDCActivity();
         this.setVDCActivity(vdcActivity);
         vdcActivity.setVDC(this);
+
+        rootCollection = new VDCCollection();
+        rootCollection.setOwner(this);
+
+        ownedCollections = new ArrayList<VDCCollection>();
+        ownedCollections.add(rootCollection);
     }
 
     public boolean isAllowContributorsEditAll() {
@@ -410,6 +411,7 @@ public class VDC implements java.io.Serializable  {
      * Holds value of property reviewState.
      */
     @ManyToOne
+    // TODO: VERSION: remove this
     private ReviewState reviewState;
     
     /**

@@ -486,7 +486,7 @@ public class Indexer implements java.io.Serializable  {
             logger.fine("Done filter: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
         }
         if (variableSearch){
-            if (nonVariableSearch && (filteredResults != null)) {
+            if (nonVariableSearch && (filteredResults.size() > 0 )) {
                 logger.fine("Start nonvar search variables: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
                 results = searchVariables(filteredResults, variableSearchTerms, true); // get var ids
                 logger.fine("Done nonvar search variables: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));

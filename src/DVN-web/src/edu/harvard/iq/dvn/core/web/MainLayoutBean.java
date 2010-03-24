@@ -31,6 +31,7 @@ package edu.harvard.iq.dvn.core.web;
 
 import java.util.Map;
 import javax.faces.context.FacesContext;
+import javax.faces.component.UIViewRoot;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -193,4 +194,40 @@ public class MainLayoutBean implements java.io.Serializable  {
         this.writeStudyDeletePopups = writeStudyDeletePopups;
     }
 
+
+    // These methods below are for the xhtml fragments that can be loaded from
+    // different pages to determine what page they are in.
+
+    public boolean isInStudyPage() {
+        String viewId = getCurrentViewId();
+        if (viewId != null) {
+            return viewId.indexOf("/StudyPage.xhtml") != -1;
+        }
+        return false;
+    }
+
+    public boolean isInEditStudyPage() {
+        String viewId = getCurrentViewId();
+        if (viewId != null) {
+            return viewId.indexOf("/EditStudyPage.xhtml") != -1;
+        }
+        return false;
+    }
+
+    public boolean isInVersionDiffPage() {
+        String viewId = getCurrentViewId();
+        if (viewId != null) {
+            return viewId.indexOf("/StudyVersionDifferencesPage.xhtml") != -1;
+        }
+        return false;
+    }
+
+
+    private String getCurrentViewId() {
+        UIViewRoot uiViewRoot = FacesContext.getCurrentInstance().getViewRoot();
+        if (uiViewRoot != null) {
+            return uiViewRoot.getViewId();
+        }
+        return null;
+    }
 }

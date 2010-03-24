@@ -293,7 +293,7 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
                         <ice:outputText value="#{studyPage.studyUI.study.globalId}"/> <ice:outputText value="#{studyPage.studyUI.metadata.UNF}" rendered="#{!empty studyPage.studyUI.metadata.UNF}"/>
                     </div>
                     <div jsfc="ice:panelGroup" styleClass="dvnstudyversioninfo" rendered="#{(studyPage.studyUI.studyVersion.released)}">
-                        <ice:outputText value="Version: #{studyPage.studyUI.studyVersion.versionNumber}"/> <ice:outputText value="&#8211; Released: #{studyPage.studyUI.dateOfDeposit}"/>
+                        <ice:outputText value="Version: #{studyPage.studyUI.studyVersion.versionNumber}"/> <ice:outputText value="&#8211; Released: #{studyPage.studyUI.studyVersion.releaseTime}"/>
                     </div>
                     <div jsfc="ice:panelGroup" styleClass="dvnstudystatusbox #{studyPage.studyUI.studyVersion.archived ? 'dvnstudystatusarchived' : '' or studyPage.studyUI.studyVersion.inReview ? 'dvnstudystatusreview' : '' or studyPage.studyUI.studyVersion.draft ? 'dvnstudystatusdraft' : ''}" rendered="#{!studyPage.studyUI.studyVersion.released}">
                         <ice:outputText styleClass="dvnstudystatuslabel" value="In Review " rendered="#{studyPage.studyUI.studyVersion.inReview}"/>
@@ -303,8 +303,8 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
                         <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;versionNumber=#{studyPage.studyUI.study.releasedVersion.versionNumber}#{VDCRequest.studyListingIndexAsParameter}" rendered="#{!(studyPage.studyUI.studyVersion.released) and (studyPage.studyUI.study.releasedVersion != null)}">
                             <ice:outputText value="View Released Version" />
                         </ice:outputLink>
-                        <ice:outputText nospan="true" rendered="#{!empty studyPage.studyUI.dateOfDeposit}"><br/></ice:outputText>
-                        <ice:outputText value="Created: #{studyPage.studyUI.dateOfDeposit}"/>
+                        <ice:outputText nospan="true" rendered="#{!empty studyPage.studyUI.studyVersion.createTime}"><br/></ice:outputText>
+                        <ice:outputText value="Created: #{studyPage.studyUI.studyVersion.createTime}"/>
                         <ice:outputText nospan="true" rendered="#{!empty studyPage.studyUI.studyVersion.versionNote}"><br/></ice:outputText>
                         <ice:outputText value="Study Version Notes: " rendered="#{!empty studyPage.studyUI.studyVersion.versionNote}"/>
                         <ice:outputText styleClass="dvnstudystatusversionnote" value="#{studyPage.studyUI.studyVersion.versionNote}" rendered="#{!empty studyPage.studyUI.studyVersion.versionNote}"/>

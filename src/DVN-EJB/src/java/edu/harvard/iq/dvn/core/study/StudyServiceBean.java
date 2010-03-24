@@ -1884,6 +1884,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
 
             // if not a harvest, set initial date of deposit (this may get overridden during map ddi step
             if (!isHarvest) {
+                // TODO: VERSION:
                 //study.setDateOfDeposit(  new SimpleDateFormat("yyyy-MM-dd").format(study.getCreateTime()) );
             }
 

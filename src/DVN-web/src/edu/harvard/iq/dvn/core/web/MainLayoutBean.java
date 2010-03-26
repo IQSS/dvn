@@ -169,7 +169,8 @@ public class MainLayoutBean implements java.io.Serializable  {
     public boolean isWriteStudyVersionNotesPopups() {
         HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
         writeStudyVersionNotesPopups = request.getRequestURI().indexOf("/StudyPage.xhtml") != -1
-                || request.getRequestURI().indexOf("/StudyVersionDifferencesPage.xhtml") != -1;
+                || request.getRequestURI().indexOf("/StudyVersionDifferencesPage.xhtml") != -1
+                || request.getRequestURI().indexOf("/EditStudyPage.xhtml") != -1;
         return writeStudyVersionNotesPopups;
     }
 

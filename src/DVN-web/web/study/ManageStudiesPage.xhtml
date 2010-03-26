@@ -26,8 +26,8 @@
           </div>
           <div jsfc="ice:panelGroup">
             <script type="text/javascript">
-                // <![CDATA[
-                jQuery.noConflict();
+                //<![CDATA[
+                //jQuery.noConflict();
                 jQuery(function(jQuery) {
                   jQuery.fn.fixOverflow = function () {
                     if (jQuery.browser.msie) {
@@ -47,8 +47,9 @@
                      y = $div.outerHeight() + 17;
                      jQuery(".dvnManageStudiesTableBlock").css("height", y);
                 });
-                // ]]>
+               //]]>
             </script>
+
             <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="2"
                            styleClass="dvnManageStudiesTableTop" columnClasses="dvn_StudyListTotals, dvnPaginatorWrap"
                            rendered="#{not empty(ManageStudiesList.studyUIList)}">
@@ -158,9 +159,10 @@
                     </ice:commandSortHeader>
                   </f:facet>
                   <ice:outputText value="#{studyUI.study.reviewState.name}" styleClass="dvnManageStudiesTableStatusLabel"/>
-                  <ice:commandButton value="&#187; Release" rendered="#{studyUI.userAuthorizedToRelease and studyUI.study.studyLock==null and studyUI.study.inReview}" actionListener="#{ManageStudiesList.doSetReleased}"/>
-                  <ice:commandButton value="&#187; Review" rendered="#{studyUI.study.new}" actionListener="#{ManageStudiesList.doSetInReview}"/>
-                  <ice:commandButton value="&#187; Unrelease" rendered="#{studyUI.userAuthorizedToRelease and studyUI.study.studyLock==null and studyUI.study.released}" actionListener="#{ManageStudiesList.doSetInReview}"/>
+                  <ice:commandButton id="button1" value="&#187; Release" rendered="#{studyUI.userAuthorizedToRelease and studyUI.study.studyLock==null and studyUI.study.inReview}" actionListener="#{ManageStudiesList.doSetReleased}"/>
+                  <ice:commandButton id="button2" value="&#187; Review" rendered="#{studyUI.study.new}" actionListener="#{ManageStudiesList.doSetInReview}"/>
+                  <ice:commandButton id="button3" value="&#187; Unrelease" rendered="#{studyUI.userAuthorizedToRelease and studyUI.study.studyLock==null and studyUI.study.released}" actionListener="#{ManageStudiesList.doSetInReview}"/>
+                  <ice:commandButton id="button4" value="&#187; Delete" immediate="true" rendered="#{studyUI.userAuthorizedToEdit and studyUI.study.studyLock==null and (studyUI.study.new or studyUI.study.inReview)}" actionListener="#{ManageStudiesList.confirmDeleteAction}"/>
                 </ice:column>
                 <ice:column>
                   <f:facet name="header">

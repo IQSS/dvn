@@ -348,13 +348,36 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
             return;
         }
 
-        // Not touching the files, datatables and variables, for now.
+        // We need to determine if there are already released versions of this
+        // study. If so, we can destroy this version and leave the older versions
+        // and the study intact. However, if this working version is the first
+        // version of the study, we have to destroy the study as well -- otherwise
+        // we'll have that version-less study shell left behind, which can mess up
+        // ManageStudies page and possibly other partds of the system.
 
-        em.remove(studyVersion);
-        em.flush();  // Force study deletion to the database, for cases when we are calling this before deleting the owning Dataverse
+        Long studyId = null;
+        boolean destroyStudy = false;
 
-        logger.log(Level.INFO, "Successfully deleted StudyVersion " + studyVersionId + "!");
+        if (studyVersion.getStudy() != null) {
+            studyId = studyVersion.getStudy().getId();
+        }
 
+        if (studyId != null) {
+            if (getStudyVersion(studyId, null) == null) {
+                destroyStudy = true;
+            }
+
+            // Not touching the files, datatables and variables, for now.
+
+            em.remove(studyVersion);
+
+            if (destroyStudy) {
+                deleteStudy(studyId, true);
+            }
+            em.flush();  // Force deletion to the database, for cases when we are calling this before deleting the owning Dataverse
+
+            logger.log(Level.INFO, "Successfully deleted StudyVersion " + studyVersionId + "!");
+        }
     }
 
     /* these delete queires seem to take too long, so we are currently trying testing something different for deleting variables

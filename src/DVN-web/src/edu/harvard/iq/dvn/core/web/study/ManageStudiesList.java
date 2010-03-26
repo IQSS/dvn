@@ -9,14 +9,15 @@ import com.icesoft.faces.component.datapaginator.DataPaginator;
 import com.icesoft.faces.component.ext.HtmlDataTable;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
+import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.web.SortableList;
 import edu.harvard.iq.dvn.core.web.common.LoginBean;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
-
-
+import javax.servlet.http.HttpServletResponse;
 
 
 
@@ -24,7 +25,7 @@ import javax.faces.event.ActionEvent;
  *
  * @author Ellen Kraffmiller
  */
-public class ManageStudiesList extends SortableList { 
+public class ManageStudiesList extends SortableList {
     private @EJB StudyServiceLocal studyService;
     private List<StudyUI> studyUIList;
     
@@ -40,8 +41,13 @@ public class ManageStudiesList extends SortableList {
    
     private Long vdcId;
     private LoginBean loginBean;
-    
-       public DataPaginator getPaginator() {
+
+    // the StudyUI object for the currently selected study:
+    // (for example, selected for deletion)
+
+    private StudyUI currentStudyUI = null;
+
+    public DataPaginator getPaginator() {
         return paginator;
     }
 
@@ -105,7 +111,8 @@ public class ManageStudiesList extends SortableList {
             for (Object studyId: studyIds) {
                 studyUIList.add(new StudyUI((Long)studyId,user));
             }
-}
+
+    }
 
     public LoginBean getLoginBean() {
         return loginBean;
@@ -148,7 +155,16 @@ public class ManageStudiesList extends SortableList {
     public void setVdcId(Long vdcId) {
         this.vdcId = vdcId;
     }
-    
+
+    public StudyUI getCurrentStudyUI () {
+        return this.currentStudyUI;
+    }
+
+    public void setCurrentStudyUI (StudyUI csui) {
+        this.currentStudyUI = csui;
+    }
+
+
      public void doSetReleased(ActionEvent ae) {
         StudyUI studyUI = (StudyUI) this.studyDataTable.getRowData();
         studyService.setReleased(studyUI.getStudyId());
@@ -162,6 +178,98 @@ public class ManageStudiesList extends SortableList {
         // set list to null, to force a fresh retrieval of data
         studyUIList=null;
     }
- 
+
+   /** Confirmation popup for deleting (working) study versions.
+    *
+    *  -- you can only delete working versions from the ManageStudies
+    *  page. To destroy an archived copy you have to go to to the
+    *  StudyPage for that study, we're not supplying buttons for that
+    *  in the ManageStudies view.
+    */
+
+    private boolean showStudyDeletePopup = false;
+
+    public void toggleStudyDeletePopup(ActionEvent event) {
+        if (showStudyDeletePopup) {
+            deleteActionLabel = null;
+            currentStudyUI = null;
+        }
+        showStudyDeletePopup = !showStudyDeletePopup;
+    }
+
+    public boolean isShowStudyDeletePopup() {
+        return showStudyDeletePopup;
+    }
+
+    public void setShowStudyDeletePopup(boolean showPopup) {
+        this.showStudyDeletePopup = showPopup;
+    }
+
+    private String deleteActionLabel;
+
+    public String getDeleteActionLabel() {
+        return deleteActionLabel;
+    }
+
+    public void setDeleteActionLabel(String actionLabel) {
+        this.deleteActionLabel = actionLabel;
+    }
+
+    public void confirmStudyDelete (ActionEvent event) {
+
+        if (currentStudyUI != null) {
+            StudyVersion latestVersion = currentStudyUI.getStudy().getLatestVersion();
+            if (latestVersion != null) {
+                studyService.destroyWorkingCopyVersion(latestVersion.getId());
+            }
+        }
+
+        showStudyDeletePopup = false;
+        deleteActionLabel = null;
+        currentStudyUI = null;
+
+        FacesContext fc = javax.faces.context.FacesContext.getCurrentInstance();
+        HttpServletResponse response = (javax.servlet.http.HttpServletResponse) fc.getExternalContext().getResponse();
+        try {
+            response.sendRedirect("/dvn/faces/study/ManageStudiesPage.xhtml?vdcId="+vdcId);
+            fc.responseComplete();
+        } catch (Exception ex) {
+            // bummer.
+            // for some reason, the redirect didn't work. we are already in the ManageStudies page,
+            // so this redirect is not strictly necessary.
+            // but there's a chance that the page didn't get refreshed properly;
+            // UPDATE:
+            // It looks like the redirect is not necessary really. To ensure that the list
+            // of studies is refreshed, all you need to do is set the list of study UIs to null.
+            // I'll try that instead. -- L.A.
+        }
+
+    }
+
+    public void confirmDeleteAction (ActionEvent event) {
+        showStudyDeletePopup = true;
+
+        StudyUI studyUI = null; 
+        
+        if (currentStudyUI == null) {
+            studyUI = (StudyUI) this.studyDataTable.getRowData();
+        } else {
+            studyUI = currentStudyUI;
+        }
+
+        if ( studyUI != null ) {
+            currentStudyUI = studyUI;
+            showStudyDeletePopup = true;
+
+            if (studyUI.getStudy() != null) {
+                if (studyUI.getStudy().isNew() ) {
+                    deleteActionLabel = "delete this draft version of the study";
+                }
+                else if (studyUI.getStudy().isInReview() ) {
+                    deleteActionLabel = "delete this review version of the study";
+                }
+            }
+        }
+    }
 
 }

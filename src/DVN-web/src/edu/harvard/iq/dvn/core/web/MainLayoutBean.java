@@ -214,10 +214,19 @@ public class MainLayoutBean implements java.io.Serializable  {
         return false;
     }
 
+
     public boolean isInVersionDiffPage() {
         String viewId = getCurrentViewId();
         if (viewId != null) {
             return viewId.indexOf("/StudyVersionDifferencesPage.xhtml") != -1;
+        }
+        return false;
+    }
+
+    public boolean isInManageStudiesPage() {
+        String viewId = getCurrentViewId();
+        if (viewId != null) {
+            return viewId.indexOf("/ManageStudiesPage.xhtml") != -1;
         }
         return false;
     }

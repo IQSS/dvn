@@ -82,6 +82,7 @@
         <gui:include src="views/CustomFooter.xhtml"/>
     </gui:insert>
     <gui:include src="study/VersionNotesPopupFragment.xhtml"/>
+    <gui:include src="study/DeletePopupFragment.xhtml"/>
     <ice:outputText escape="false" nospan="true"
                     rendered="#{applicationScope.googleAnalyticsKey != null || MainLayoutBean.googleAnalyticsKey != null}"
                     value="#{(applicationScope.googleAnalyticsCode != null) ? applicationScope.googleAnalyticsCode : MainLayoutBean.googleAnalyticsCode}"/>

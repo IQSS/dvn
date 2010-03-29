@@ -652,17 +652,21 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     
     
     public String cancel() {
-        String forwardPage="viewStudy";
-        if (study.getId()==null) {
-            forwardPage="myOptions";
-        }
         editStudyService.cancel();
-       
+
+        if (study.getId()==null) {
+            return "myOptions";
+        }
+
         getVDCRequestBean().setStudyId(study.getId());
-        getVDCRequestBean().setStudyVersionNumber(metadata.getStudyVersion().getVersionNumber());
+        if ( metadata.getStudyVersion().getId() == null ) {
+            getVDCRequestBean().setStudyVersionNumber(study.getReleasedVersion().getVersionNumber());
+        } else {
+            getVDCRequestBean().setStudyVersionNumber(metadata.getStudyVersion().getVersionNumber());
+        }
         getVDCRequestBean().setSelectedTab(tab);
         
-        return  forwardPage;
+        return "viewStudy";
     }
     
     

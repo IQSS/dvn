@@ -356,7 +356,6 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         // ManageStudies page and possibly other partds of the system.
 
         Long studyId = null;
-        boolean destroyStudy = false;
 
         if (studyVersion.getStudy() != null) {
             studyId = studyVersion.getStudy().getId();
@@ -364,19 +363,15 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
 
         if (studyId != null) {
             if (getStudyVersion(studyId, null) == null) {
-                destroyStudy = true;
-            }
-
-            // Not touching the files, datatables and variables, for now.
-
-            em.remove(studyVersion);
-
-            if (destroyStudy) {
                 deleteStudy(studyId, true);
-            }
-            em.flush();  // Force deletion to the database, for cases when we are calling this before deleting the owning Dataverse
+            } else {
+                // Not touching the files, datatables and variables, for now.
 
-            logger.log(Level.INFO, "Successfully deleted StudyVersion " + studyVersionId + "!");
+                em.remove(studyVersion);
+                em.flush();  // Force deletion to the database, for cases when we are calling this before deleting the owning Dataverse
+
+                logger.log(Level.INFO, "Successfully deleted StudyVersion " + studyVersionId + "!");
+            }
         }
     }
 

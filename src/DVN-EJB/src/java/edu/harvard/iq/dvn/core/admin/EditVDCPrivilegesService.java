@@ -30,7 +30,6 @@
 package edu.harvard.iq.dvn.core.admin;
 
 import edu.harvard.iq.dvn.core.vdc.VDC;
-import java.util.List;
 import javax.ejb.Remove;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -58,35 +57,24 @@ public interface EditVDCPrivilegesService extends java.io.Serializable  {
 
     @Remove
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void save(String contributorUrl);
+    public void save();
 
-    /**
-     * Setter for property contributorRequests.
-     * 
-     * @param contributorRequests New value of property contributorRequests.
-     */
- //   public void setContributorRequests(List<ContributorRequestBean> contributorRequests);
-    
     public void removeAllowedGroup(Long groupId);
 
     public void addAllowedGroup(Long groupId);
     
-    public void removeRole(Long userId);
+    public void removeRole(int listIndex);
     /**
      *  Initialize the bean with a Study for editing
      */
-    void setVdc(Long id);
+    void setVdc(Long id);    
     
-    
-    public void addUserRole(String userName);
-    
-    public List getPrivilegedUsers();
-    
+
     public void removeAllowedFileGroup(Long groupId);
     
     public void  addAllowedFileGroup(Long groupId);
     
-     public void removeAllowedFileUser(Long userId);
+    public void removeAllowedFileUser(Long userId);
     
     public void  addAllowedFileUser(Long userId);
     

@@ -532,8 +532,12 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
         //removeUploadFiles();
         //editStudyService.cancel();
         getVDCRequestBean().setStudyId(study.getId());
-        getVDCRequestBean().setStudyVersionNumber(study.getLatestVersion().getVersionNumber());
-        getVDCRequestBean().setSelectedTab("files");
+        if ( studyVersion.getId() == null ) {
+            getVDCRequestBean().setStudyVersionNumber(study.getReleasedVersion().getVersionNumber());
+        } else {
+            getVDCRequestBean().setStudyVersionNumber(studyVersion.getVersionNumber());
+        }
+        getVDCRequestBean().setSelectedTab("files");       
         return "viewStudy";
     }
 

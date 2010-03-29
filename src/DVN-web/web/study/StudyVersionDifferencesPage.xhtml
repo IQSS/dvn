@@ -107,12 +107,12 @@ td.dvnDifferanceTableHeaderCol1 {border-top: 0 !important;}
                   </ice:column>
                   <ice:column id="column2">
                       <ice:outputText value="Version: #{studyVersionDifferencesPage.studyUI1.studyVersion.versionNumber}"/>
-                      <ice:outputText value="last updated: #{studyVersionDifferencesPage.studyUI1.studyVersion.lastUpdateTime}"/>
+                      <ice:outputText value="Last Updated: #{studyVersionDifferencesPage.studyUI1.studyVersion.lastUpdateTime}"/>
                       <ice:outputText value="#{studyVersionDifferencesPage.studyUI1.metadata.UNF}" escape="false" rendered="#{!empty studyVersionDifferencesPage.studyUI1.metadata.UNF}"/><br/>
                   </ice:column>
                   <ice:column id="column3">
                       <ice:outputText value="Version: #{studyVersionDifferencesPage.studyUI2.studyVersion.versionNumber}"/>
-                      <ice:outputText value="last updated: #{studyVersionDifferencesPage.studyUI2.studyVersion.lastUpdateTime}"/>
+                      <ice:outputText value="Last Updated: #{studyVersionDifferencesPage.studyUI2.studyVersion.lastUpdateTime}"/>
                       <ice:outputText value="#{studyVersionDifferencesPage.studyUI2.metadata.UNF}" escape="false" rendered="#{!empty studyVersionDifferencesPage.studyUI2.metadata.UNF}"/><br/>
                   </ice:column>
               </ice:dataTable>

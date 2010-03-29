@@ -64,6 +64,14 @@ ALTER TABLE vdc ALTER COLUMN allowregistereduserstocontribute SET STORAGE PLAIN;
 update vdc set allowcontributorseditall = false;
 update vdc set allowregistereduserstocontribute = false;
 
+-- change data type for filesystemlocation
+alter table studyfile alter column filesystemlocation type text;
+
+--
+-- Page authorization change for contributor settings
+--
+update pagedef set role_id = null where path = '/admin/OptionsPage.xhtml';
+update pagedef set role_id = null where path = '/study/ManageStudiesPage.xhtml';
 --
 -- Add null constraints to existing columns
 --

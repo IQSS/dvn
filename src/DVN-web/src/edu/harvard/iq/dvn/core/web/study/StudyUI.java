@@ -376,7 +376,7 @@ public class StudyUI  implements java.io.Serializable {
     public String getStudyVersionText() {
         String str = "";
         if (!StringUtil.isEmpty(getMetadata().getStudyVersionText())) {
-            str += getMetadata().getStudyVersion();
+            str += getMetadata().getStudyVersionText();
         }
         if (!StringUtil.isEmpty(getMetadata().getVersionDate())) {
             if (str != "") {
@@ -495,22 +495,12 @@ public class StudyUI  implements java.io.Serializable {
 
     private void initFileFlags() {
         initStudyFileService();
-
-        Boolean doesStudyHaveSubsettableFiles = studyFileService.doesStudyHaveSubsettableFiles(studyId);
+        // TODO: VERSION: always for released study?
+        Boolean doesStudyHaveSubsettableFiles = studyFileService.doesStudyHaveSubsettableFiles(getStudy().getReleasedVersion().getId());
         isFiles = (doesStudyHaveSubsettableFiles != null);
         isSubsettable = (doesStudyHaveSubsettableFiles != null && doesStudyHaveSubsettableFiles);
     }
 
-    // TODO: is the methos still being used; if not, we should remove
-    public boolean isNonSubsettable() {
-        for (Iterator<StudyFile> it = getStudy().getStudyFiles().iterator(); it.hasNext();) {
-            if (!it.next().isSubsettable()) {
-                return true;
-            }
-        }
-        
-        return false;
-    }
     
     public String getProducers() {
         String str = "";

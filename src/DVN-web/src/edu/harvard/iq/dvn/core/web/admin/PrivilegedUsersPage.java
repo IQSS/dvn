@@ -32,13 +32,11 @@ import edu.harvard.iq.dvn.core.admin.Role;
 import edu.harvard.iq.dvn.core.admin.RoleServiceLocal;
 import edu.harvard.iq.dvn.core.admin.UserGroup;
 import edu.harvard.iq.dvn.core.admin.UserServiceLocal;
-import edu.harvard.iq.dvn.core.admin.VDCRole;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.util.DateUtil;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import javax.ejb.EJB;
@@ -48,13 +46,12 @@ import javax.faces.component.UIData;
 import javax.faces.component.UIInput;
 import com.icesoft.faces.component.ext.HtmlDataTable;
 import com.icesoft.faces.component.ext.HtmlInputText;
+import edu.harvard.iq.dvn.core.admin.VDCRole;
 import edu.harvard.iq.dvn.core.vdc.VDCGroup;
 import edu.harvard.iq.dvn.core.web.push.beans.NetworkStatsBean;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
-import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * <p>Page bean that corresponds to a similarly named JSP page.  This
@@ -69,10 +66,44 @@ public class PrivilegedUsersPage extends VDCBaseBean implements java.io.Serializ
     @EJB RoleServiceLocal roleService;
     @EJB UserServiceLocal userService;
     @EJB GroupServiceLocal groupService;
+
+    public class RoleListItem {
+        private VDCRole vdcRole;
+        private Long selectedRoleId;
+
+        public RoleListItem(VDCRole vdcRole, Long selectedRoleId) {
+            this.vdcRole = vdcRole;
+            this.selectedRoleId = selectedRoleId;
+        }
+
+        public Long getSelectedRoleId() {
+            return selectedRoleId;
+        }
+
+        public void setSelectedRoleId(Long selectedRoleId) {
+            this.selectedRoleId = selectedRoleId;
+        }
+
+        public VDCRole getVdcRole() {
+            return vdcRole;
+        }
+
+        public void setVdcRole(VDCRole vdcRole) {
+            this.vdcRole = vdcRole;
+        }
+    }
    
     private javax.faces.component.UIData userTable;
-    private ListDataModel userList;
+    private List<RoleListItem> vdcRoleList;
 
+    public List<RoleListItem> getVdcRoleList() {
+        return vdcRoleList;
+    }
+
+    public void setVdcRoleList(List<RoleListItem> vdcRoleList) {
+        this.vdcRoleList = vdcRoleList;
+    }
+   
 
      public enum ContributorSetting {
         CONTRIB_CREATE,
@@ -82,6 +113,8 @@ public class PrivilegedUsersPage extends VDCBaseBean implements java.io.Serializ
     };
 
     private ContributorSetting selectedSetting;
+
+    
 
     public ContributorSetting getSelectedSetting() {
         return selectedSetting;
@@ -114,27 +147,32 @@ public class PrivilegedUsersPage extends VDCBaseBean implements java.io.Serializ
     public void init() {
         super.init();
 
-        if ( isFromPage("PrivilegedUsersPage")  && sessionGet(editVDCPrivileges.getClass().getName())!=null) {
-            editVDCPrivileges= (EditVDCPrivilegesService) sessionGet(editVDCPrivileges.getClass().getName());
-            System.out.println("Getting stateful session bean editVDCPrivileges ="+editVDCPrivileges);
-            
-        } else {
-            Long vdcId = getVDCRequestBean().getCurrentVDC().getId();
-            editVDCPrivileges.setVdc(vdcId);
-            System.out.println("Putting stateful session bean in request, editVDCPrivileges ="+editVDCPrivileges);
-           
-            sessionPut( editVDCPrivileges.getClass().getName(), editVDCPrivileges);
-            //sessionPut( (studyService.getClass().getName() + "."  + studyId.toString()), studyService);
-        }
-        
-        vdc=editVDCPrivileges.getVdc();
+        Long vdcId = getVDCRequestBean().getCurrentVDC().getId();
+        editVDCPrivileges.setVdc(vdcId);
+
+
+
+        vdc = editVDCPrivileges.getVdc();
         if (vdc.isRestricted()) {
-            siteRestriction= "Restricted";
+            siteRestriction = "Restricted";
         } else {
-            siteRestriction="Public";
+            siteRestriction = "Public";
         }
         initContributorSetting();
-        setFilesRestricted(vdc.isFilesRestricted());       
+        initUserName();
+
+        vdcRoleList = new ArrayList<RoleListItem>();
+
+        // Add empty VDCRole to list, to allow user input of a new VDCRole
+        vdcRoleList.add(new RoleListItem(null,null));
+
+        // Add rest of items to the list from vdc object
+        for (VDCRole vdcRole : vdc.getVdcRoles()) {
+            vdcRoleList.add(new RoleListItem(vdcRole, vdcRole.getRoleId()));
+        }
+       
+
+        setFilesRestricted(vdc.isFilesRestricted());
     }
     
    
@@ -183,9 +221,8 @@ public class PrivilegedUsersPage extends VDCBaseBean implements java.io.Serializ
         return this.vdc;
     }
 
-    public List getPrivilegedUsers() {
-        return this.editVDCPrivileges.getPrivilegedUsers();
-    }
+   
+
     /**
      * Setter for property vdc.
      * @param vdc New value of property vdc.
@@ -235,7 +272,40 @@ public class PrivilegedUsersPage extends VDCBaseBean implements java.io.Serializ
     public void setSiteRestriction(String siteRestriction) {
         this.siteRestriction = siteRestriction;
     }
-    
+
+
+    /**
+     * Holds value of property newUserName.
+     */
+    private String newUserName;
+
+    /**
+     * Getter for property addUserName.
+     * @return Value of property addUserName.
+     */
+    public String getNewUserName() {
+        return this.newUserName;
+    }
+
+    /**
+     * Setter for property addUserName.
+     * @param addUserName New value of property addUserName.
+     */
+    public void setNewUserName(String userName) {
+        this.newUserName = userName;
+    }
+
+
+    public Long newRoleId;
+
+    public Long getNewRoleId() {
+        return newRoleId;
+    }
+
+    public void setNewRoleId(Long newRoleId) {
+        this.newRoleId = newRoleId;
+    }
+
     public String saveChanges() {
         NetworkStatsBean statsBean = (NetworkStatsBean) FacesContext.getCurrentInstance().getExternalContext().getRequestMap().get("NetworkStatsBean");
         if (siteRestriction.equals("Public")) {
@@ -265,46 +335,16 @@ public class PrivilegedUsersPage extends VDCBaseBean implements java.io.Serializ
         }
 
         saveContributorSetting();
-        
-        // If the user has added a vdcUser to the privileged list, but hasn't assigned
-        // a role for the vdcUser, delete the vdcUser from the list before saving changes.
-        Collection removeRoles = new ArrayList();
-        for (Iterator<List> it = getPrivilegedUsers().iterator(); it.hasNext();) {
-            List privilegedUsersRow =  it.next();
-            String roleId=null;
-            if (privilegedUsersRow.get(1) instanceof Long) {
-                roleId = privilegedUsersRow.get(1).toString();
-            } else {
-                 roleId = (String)privilegedUsersRow.get(1);
-            }
-            if (roleId==null) {
-                removeRoles.add(privilegedUsersRow.get(0));
+
+        // For each item in display role list, update the vdc with the selected role
+        for (int i=1; i< vdcRoleList.size(); i++) {
+            if (vdcRoleList.get(i).selectedRoleId!=null) {
+                Role role = roleService.findById(vdcRoleList.get(i).selectedRoleId);
+                vdcRoleList.get(i).getVdcRole().setRole(role);
             }
         }
-        for (Iterator<VDCRole> it = removeRoles.iterator(); it.hasNext();) {
-            VDCRole elem =  it.next();
-             editVDCPrivileges.removeRole(elem.getVdcUser().getId());            
-        }
-        
-        // Repopulate the list with Role objects.  This is necessary because the role objects
-        // aren't resubmitted from the form.
-       for (Iterator<List> it = getPrivilegedUsers().iterator(); it.hasNext();) {
-            List privilegedUsersRow =  it.next();
-             VDCRole elem =  (VDCRole)privilegedUsersRow.get(0);
-            if (elem.getRoleId()!=null && elem.getRole()==null) {
-                elem.setRole(roleService.findById(elem.getRoleId()));
-            }
-        }
-            
-        HttpServletRequest request = (HttpServletRequest)this.getExternalContext().getRequest();
-        String hostName=request.getLocalName();
-        int port = request.getLocalPort();
-        String portStr="";
-        if (port!=80) {
-            portStr=":"+port;
-        }
-        String contributorUrl = "http://"+hostName+portStr+request.getContextPath()+"/dv/"+getVDCRequestBean().getCurrentVDC().getAlias()+"/faces/admin/OptionsPage.xhtml";
-       this.editVDCPrivileges.save(contributorUrl);
+
+        this.editVDCPrivileges.save();
         
        
         editVDCPrivileges.setVdc(vdc.getId());
@@ -330,6 +370,10 @@ public class PrivilegedUsersPage extends VDCBaseBean implements java.io.Serializ
     }
 
 
+    private void initUserName() {
+        newUserName = "Enter Username";
+    }
+
     private void saveContributorSetting() {
         switch (selectedSetting) {
             case CONTRIB_CREATE:
@@ -350,13 +394,34 @@ public class PrivilegedUsersPage extends VDCBaseBean implements java.io.Serializ
        }
     }
 
-    public void addUser(ActionEvent ae) {
-        
-        if (validateUserName(FacesContext.getCurrentInstance(),userInputText, userName)) {
-            this.editVDCPrivileges.addUserRole(userName);
 
-            this.userName="";
+
+
+    public void addUser(ActionEvent ae) {
+     
+        if (validateUserName(FacesContext.getCurrentInstance(),userInputText, newUserName)) {
+            VDCUser user = userService.findByUserName(newUserName);
+
+            VDCRole vdcRole = new VDCRole();
+            vdcRole.setVdcUser(user);
+            vdcRole.setRole(roleService.findById(newRoleId));
+            vdcRole.setVdc(vdc);
+            // Add the new vdcRole object to the second position in the display list -
+            // the first position stays null to allow for more inserts.
+            vdcRoleList.add(1, new RoleListItem(vdcRole, vdcRole.getRoleId()));
+
+            // Add new vdcRole to the actual list in the vdc object
+            vdc.getVdcRoles().add(0,vdcRole);
+
+            // Reset newUserName, to be ready for new input from user
+            initUserName();
+
+            // Reset newRoleId, to be ready for new input from user
+            newRoleId=null;
+           
+     
         }
+     
          
     }
     
@@ -376,48 +441,24 @@ public class PrivilegedUsersPage extends VDCBaseBean implements java.io.Serializ
     }
     
     
-    public void removeRole(ActionEvent ea) {
-          List privilegedUsersRow = (List)userTable.getRowData();
-          VDCRole vdcRole = (VDCRole)privilegedUsersRow.get(0);
-          this.editVDCPrivileges.removeRole(vdcRole.getVdcUser().getId());
-          this.getPrivilegedUsers().remove(userTable.getRowIndex());
-        
+    public void removeRole(ActionEvent ea) {      
+        vdcRoleList.remove(userTable.getRowIndex());
+        editVDCPrivileges.removeRole(userTable.getRowIndex()-1);
       
     }
     
     
     public List getRoleSelectItems() {
-        List selectItems = new ArrayList();
-        Role role = roleService.findByName(RoleServiceLocal.PRIVILEGED_VIEWER);
-        selectItems.add(new SelectItem(role.getId(), "Access To Site"));
+        List selectItems = new ArrayList();     
         selectItems.add(new SelectItem(roleService.findByName(RoleServiceLocal.CONTRIBUTOR).getId(), "Contributor"));
         selectItems.add(new SelectItem(roleService.findByName(RoleServiceLocal.CURATOR).getId(), "Curator"));
         selectItems.add(new SelectItem(roleService.findByName(RoleServiceLocal.ADMIN).getId(), "Admin"));
+        Role role = roleService.findByName(RoleServiceLocal.PRIVILEGED_VIEWER);
+        selectItems.add(new SelectItem(role.getId(), "Access Restricted Site"));
         return selectItems;
     }
 
-   
-    /**
-     * Holds value of property userName.
-     */
-    private String userName;
-
-    /**
-     * Getter for property addUserName.
-     * @return Value of property addUserName.
-     */
-    public String getUserName() {
-        return this.userName;
-    }
-
-    /**
-     * Setter for property addUserName.
-     * @param addUserName New value of property addUserName.
-     */
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
+  
     public javax.faces.component.UIData getUserTable() {
         return userTable;
     }
@@ -468,13 +509,6 @@ public class PrivilegedUsersPage extends VDCBaseBean implements java.io.Serializ
         this.groupTable = groupTable;
     }
 
-    public ListDataModel getUserList() {
-        return userList;
-    }
-
-    public void setUserList(ListDataModel userList) {
-        this.userList = userList;
-    }
 
     /**
      * Holds value of property success.
@@ -512,9 +546,8 @@ public class PrivilegedUsersPage extends VDCBaseBean implements java.io.Serializ
                 msg = "User not found.";
             }
         if (valid) {
-            for (Iterator it = vdc.getVdcRoles().iterator(); it.hasNext();) {
-                VDCRole elem = (VDCRole) it.next();
-                if (elem.getVdcUser().equals(user)) {
+            for ( VDCRole vdcRole : vdc.getVdcRoles()) {
+                if (vdcRole!=null && vdcRole.getVdcUser().getId().equals(user.getId())) {
                     valid=false;
                     msg = "User already in privileged users list.";
                     break;

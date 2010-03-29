@@ -72,47 +72,44 @@
           <div jsfc="ice:panelGroup">
             <table class="dvnPermissionsTable" cellspacing="0" cellpadding="0" border="0">
               <tr><td colspan="2" class="dvnPermissionsTableHeader"><ice:outputText value="User Permission Settings"/></td></tr>
-              <tr>
-                <td class="dvnPermissionsTableOption dvnPermissionsStackedCells">
-                  <ice:outputText value="Privileged Users"/>
-                </td>
-                <td class="dvnPermissionsStackedCells">
-                  <ice:outputText id="outputText2" value="Username: "/>
-                  <ice:inputText binding="#{PrivilegedUsersPage.userInputText}" id="userName" value="#{PrivilegedUsersPage.userName}" onkeypress="if (window.event) return processEvent('', 'privilegedUsersForm:addUserButton'); else return processEvent(event, 'privilegedUsersForm:addUserButton');"/>
-                  <ice:commandButton id="addUserButton" value="Add" actionListener="#{PrivilegedUsersPage.addUser}"/>
-                  <ice:message styleClass="errorMessage" for="userName"/>
-                  <br/>
-                  <ice:outputText styleClass="vdcHelpText" value="Enter username to allow a user access to the dataverse. 'Access To Site' is only applicable if dataverse is not released."/>
-                </td>
-              </tr>
+            
               <tr>
                 <td colspan="2">
                   <ice:dataTable binding="#{PrivilegedUsersPage.userTable}" cellpadding="0" cellspacing="0" width="100%"
                                  columnClasses="vdcColPadded, vdcColPadded, vdcColPadded" headerClass="list-header-left" id="dataTable1"
                                  columnWidths="20%,60%,20%"
-                                 rowClasses="list-row-even,list-row-odd" value="#{PrivilegedUsersPage.privilegedUsers}" var="currentRow">
+                                 rowClasses="list-row-even,list-row-odd" value="#{PrivilegedUsersPage.vdcRoleList}" var="currentRow">
                     <ice:column id="column1">
                       <f:facet name="header">
                         <ice:outputText id="outputText3" value="Username"/>
                       </f:facet>
-                      <ice:outputLink id="hyperlink2" value="/dvn/faces/login/AccountPage.xhtml?userId=#{currentRow[0].vdcUser.id}">
-                        <ice:outputText id="hyperlink2Text" value="#{currentRow[0].vdcUser.userName}"/>
+                      
+                        <ice:outputLink id="hyperlink2"  rendered="#{currentRow.vdcRole!=null}" value="/dvn/faces/login/AccountPage.xhtml?userId=#{currentRow.vdcRole.vdcUser.id}">
+                        <ice:outputText id="hyperlink2Text" value="#{currentRow.vdcRole.vdcUser.userName}"/>
                       </ice:outputLink>
+                      <ice:inputText rendered="#{currentRow.vdcRole==null}" binding="#{PrivilegedUsersPage.userInputText}" id="userName" value="#{PrivilegedUsersPage.newUserName}" />
                     </ice:column>
                     <ice:column id="column9">
                       <f:facet name="header">
                         <div>
-                          <ice:outputText id="outputText16" value="Privileged Role"/>
+                          <ice:outputText id="outputText16" value="Permission Setting"/>
                         </div>
                       </f:facet>
-                      <ice:selectOneRadio disabled="#{currentRow[0].vdcUser.id==PrivilegedUsersPage.vdc.creator.id}" id="roleSelectMenu" value="#{currentRow[1]}">
+                      <ice:selectOneMenu rendered="#{currentRow.vdcRole==null}"  id="newRoleSelectMenu" value="#{PrivilegedUsersPage.newRoleId}">
                         <ice:message for="roleSelectMenu" styleClass="errorMessage"/>
                         <f:selectItems id="roleSelectItems" value="#{PrivilegedUsersPage.roleSelectItems}"/>
-                      </ice:selectOneRadio>
+                      </ice:selectOneMenu>
+                       <ice:selectOneMenu rendered="#{currentRow.vdcRole!=null and currentRow.vdcRole.vdcUser.id!=PrivilegedUsersPage.vdc.creator.id}"  id="roleSelectMenu" value="#{currentRow.selectedRoleId}">
+                        <ice:message for="roleSelectMenu" styleClass="errorMessage"/>
+                        <f:selectItems id="roleSelectItems" value="#{PrivilegedUsersPage.roleSelectItems}"/>
+                      </ice:selectOneMenu>
+                     <ice:outputText rendered="#{currentRow.vdcRole!=null and currentRow.vdcRole.vdcUser.id==PrivilegedUsersPage.vdc.creator.id}"  id="disabledRole" value="Admin"/>
+                     <ice:commandButton rendered="#{currentRow.vdcRole==null}"  id="addUserButton" value="Add" actionListener="#{PrivilegedUsersPage.addUser}"/>
+                      <ice:message styleClass="errorMessage" for="userName"/>
                     </ice:column>
                     <ice:column>
-                      <ice:commandButton id="removeRoleButton" value="Remove Role" rendered="#{currentRow[0].vdcUser.id!=PrivilegedUsersPage.vdc.creator.id}" actionListener="#{PrivilegedUsersPage.removeRole}"/>
-                      <ice:outputText value="Dataverse Creator&lt;br&#47;&gt;(Cannot modify Role)" escape="false" rendered="#{currentRow[0].vdcUser.id==PrivilegedUsersPage.vdc.creator.id}"/>
+                      <ice:commandButton id="removeRoleButton" value="Remove" rendered="#{currentRow.vdcRole!=null and currentRow.vdcRole.vdcUser.id!=PrivilegedUsersPage.vdc.creator.id}" actionListener="#{PrivilegedUsersPage.removeRole}"/>
+                      <ice:outputText value="Dataverse Creator&lt;br&#47;&gt;(Cannot modify Role)" escape="false" rendered="#{currentRow.vdcRole.vdcUser.id==PrivilegedUsersPage.vdc.creator.id}"/>
                     </ice:column>
                   </ice:dataTable>
                 </td>

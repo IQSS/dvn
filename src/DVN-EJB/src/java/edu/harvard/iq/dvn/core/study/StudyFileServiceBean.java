@@ -133,10 +133,9 @@ public class StudyFileServiceBean implements StudyFileServiceLocal {
         return studyFiles;
     }
 
-    public Boolean doesStudyHaveSubsettableFiles(Long studyId) {
-        // TODO: VERSION: change this to use a study version object
+    public Boolean doesStudyHaveSubsettableFiles(Long studyVersionId) {
         List<String> subsettableList = new ArrayList();
-        Query query = em.createNativeQuery("select fileclass from studyfile where study_id = " + studyId);
+        Query query = em.createNativeQuery("select fileclass from studyfile sf, filemetadata fmd where fmd.studyfile_id = sf.id and studyversion_id = " + studyVersionId);
         for (Object currentResult : query.getResultList()) {
             subsettableList.add( ((String) ((Vector) currentResult).get(0)) );
         }

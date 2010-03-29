@@ -52,6 +52,7 @@ import javax.persistence.*;
 public abstract class StudyFile implements Serializable {
 
     private String fileType;
+    @Column(columnDefinition="TEXT")
     private String fileSystemLocation;
     private String originalFileType;
     private String unf;

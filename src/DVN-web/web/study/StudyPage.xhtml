@@ -186,7 +186,7 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
                         </ice:outputLink>
                     </div>
                     <div jsfc="ice:panelGroup" styleClass="dvnstudyadminbox" rendered="#{VDCSession.loginBean.user!=null and studyPage.studyUI.userAuthorizedToEdit}">
-                        <div jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.userAuthorizedToEdit and studyPage.studyUI.study.studyLock==null}">
+                        <div jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.study.studyLock==null}">
                             <ul class="dvnstudyadminlinksL">
                                 <span jsfc="ice:panelGroup" rendered="#{! studyPage.studyUI.studyVersion.archived}">
                                     <li>
@@ -280,10 +280,17 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
                             </ice:outputLink>
                         </div>
                     </div>
-                    <div jsfc="ice:panelGroup" styleClass="dvnstudyadminbox" rendered="#{VDCSession.loginBean.user==null}">
-                        <div jsfc="ice:panelGroup" rendered="#{!studyPage.studyUI.userAuthorizedToEdit and studypage.studyUI.study.owner.allowRegisteredUsersToContribute and studypage.studyUI.study.owner.allowContributorsEditAll}">
-                            <div><a href="">Register to Edit</a></div>
-                            Create an account to gain access to edit this study and others in this dataverse and across our network.
+                    <div jsfc="ice:panelGroup" styleClass="dvnstudyadminbox" rendered="#{VDCSession.loginBean.user==null and studyPage.studyUI.study.owner.allowRegisteredUsersToContribute and studyPage.studyUI.study.owner.allowContributorsEditAll}">
+                       <div jsfc="ice:panelGroup">
+                            <div>
+                                <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/login/AddAccountPage.xhtml">
+                                    <ice:outputText value="Register to Edit"/>
+                                </ice:outputLink>
+                            </div>
+                            Create an account to gain access to edit this study and others in this dataverse and across our network. Already have an account? &#160;
+                            <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/login/LoginPage.xhtml?clearWorkflow=true" title="Log In">
+                                <ice:outputText value="Log In"/>
+                            </ice:outputLink>
                         </div>
                     </div>
                 </div>
@@ -304,7 +311,7 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
                             <ice:outputText value="View Released Version" />
                         </ice:outputLink>
                         <ice:outputText nospan="true" rendered="#{!empty studyPage.studyUI.studyVersion.createTime}"><br/></ice:outputText>
-                        <ice:outputText value="Created: #{studyPage.studyUI.studyVersion.createTime}"/>
+                        <ice:outputText value="Created: #{studyPage.studyUI.studyVersion.createTime}" rendered="#{!empty studyPage.studyUI.studyVersion.createTime}"/>
                         <ice:outputText nospan="true" rendered="#{!empty studyPage.studyUI.studyVersion.versionNote}"><br/></ice:outputText>
                         <ice:outputText value="Study Version Notes: " rendered="#{!empty studyPage.studyUI.studyVersion.versionNote}"/>
                         <ice:outputText styleClass="dvnstudystatusversionnote" value="#{studyPage.studyUI.studyVersion.versionNote}" rendered="#{!empty studyPage.studyUI.studyVersion.versionNote}"/>
@@ -595,6 +602,29 @@ jQuery(document).ready(function(){
                     <ice:commandButton id="commandButtonTermsOfUseContract" image="/resources/images/icon_expand.gif" title="Hide fields in this section" rendered="#{studyPage.studyUI.termsOfUsePanelIsRendered}" actionListener="#{studyPage.updateTermsOfUseDisplay}"/>
                     <ice:commandButton id="commandButtonTermsOfUseExpand" image="/resources/images/icon_contract.gif" title="Show fields in this section" rendered="#{!studyPage.studyUI.termsOfUsePanelIsRendered}" actionListener="#{studyPage.updateTermsOfUseDisplay}"/>
                   </div>
+                  
+                        <style type="text/css">
+                            .dvnStudyAdditionalTermsofUse div.icePnlGrp {margin-bottom:.5em;}
+                            .dvnStudyAdditionalTermsofUse a:after {content: " [+]";}
+                            .dvnStudyAdditionalTermsofUse a.vdcInlineHelpLinkClose:after {content: " [-]";}
+                        </style>
+
+                        <script type="text/javascript">
+                          // <![CDATA[
+                          jQuery(document).ready(function(){
+                              jQuery('.vdcInlineHelpLink').next().hide();
+                                jQuery('.vdcInlineHelpLink').toggle(function(){
+                                    jQuery(this).addClass('vdcInlineHelpLinkClose');
+                                    }, function () {
+                                    jQuery(this).removeClass('vdcInlineHelpLinkClose');
+                                });
+                                jQuery('.vdcInlineHelpLink').click(function(){
+                                    jQuery(this).next().slideToggle(500);
+                              });
+                          });
+                          // ]]>
+                        </script>
+
                   <ice:panelGrid binding="#{studyPage.termsOfUsePanel}" cellpadding="0" cellspacing="0"
                                  columnClasses="vdcStudyInfoCol1, vdcStudyInfoCol2" columns="2" id="gridPanelTermsOfUse" rendered="#{studyPage.studyUI.termsOfUsePanelIsRendered}"
                                  width="100%">
@@ -626,28 +656,6 @@ jQuery(document).ready(function(){
                     <!-- Dataverse, Dataverse Network and Harvest Terms of Use -->
                     <dvn:inlinehelp helpMessage="#{studybundle.additionalTermsofUseHelp}" linkText="#{studybundle.additionalTermsofUseLabel}" heading="#{studybundle.additionalTermsofUseHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{!empty studyPage.studyUI.dataverseTermsOfUse or VDCRequest.vdcNetwork.downloadTermsOfUseEnabled}"/>
                     <div jsfc="ice:panelGroup" styleClass="dvnStudyAdditionalTermsofUse" rendered="#{!empty studyPage.studyUI.dataverseTermsOfUse or VDCRequest.vdcNetwork.downloadTermsOfUseEnabled}">
-
-                        <style type="text/css">
-                            .dvnStudyAdditionalTermsofUse div.icePnlGrp {margin-bottom:.5em;}
-                            .dvnStudyAdditionalTermsofUse a:after {content: " [+]";}
-                            .dvnStudyAdditionalTermsofUse a.vdcInlineHelpLinkClose:after {content: " [-]";}
-                        </style>
-
-                        <script type="text/javascript">
-                          // <![CDATA[
-                          jQuery(document).ready(function(){
-                              jQuery('.vdcInlineHelpLink').next().hide();
-                                jQuery('.vdcInlineHelpLink').toggle(function(){
-                                    jQuery(this).addClass('vdcInlineHelpLinkClose');
-                                    }, function () {
-                                    jQuery(this).removeClass('vdcInlineHelpLinkClose');
-                                });
-                                jQuery('.vdcInlineHelpLink').click(function(){
-                                    jQuery(this).next().slideToggle(500);
-                              });
-                          });
-                          // ]]>
-                        </script>
         
                         <div jsfc="ice:panelGroup" styleClass="toggleTermsofUse" rendered="#{!empty studyPage.studyUI.dataverseTermsOfUse}">
                             <ice:outputLink value="#" styleClass="vdcInlineHelpLink">
@@ -669,28 +677,6 @@ jQuery(document).ready(function(){
 
                     <dvn:inlinehelp helpMessage="#{studybundle.harvestedTermsofUseHelp}" linkText="#{studybundle.harvestedTermsofUseLabel}" heading="#{studybundle.harvestedTermsofUseHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{!empty studyPage.studyUI.metadata.harvestDVTermsOfUse or !empty studyPage.studyUI.metadata.harvestDVNTermsOfUse}"/>
                     <div jsfc="ice:panelGroup" styleClass="dvnStudyAdditionalTermsofUse" rendered="#{!empty studyPage.studyUI.metadata.harvestDVTermsOfUse or !empty studyPage.studyUI.metadata.harvestDVNTermsOfUse}">
-
-                        <style type="text/css">
-                            .dvnStudyAdditionalTermsofUse div.icePnlGrp {margin-bottom:.5em;}
-                            .dvnStudyAdditionalTermsofUse a:after {content: " [+]";}
-                            .dvnStudyAdditionalTermsofUse a.vdcInlineHelpLinkClose:after {content: " [-]";}
-                        </style>
-
-                        <script type="text/javascript">
-                          // <![CDATA[
-                          jQuery(document).ready(function(){
-                              jQuery('.vdcInlineHelpLink').next().hide();
-                                jQuery('.vdcInlineHelpLink').toggle(function(){
-                                    jQuery(this).addClass('vdcInlineHelpLinkClose');
-                                    }, function () {
-                                    jQuery(this).removeClass('vdcInlineHelpLinkClose');
-                                });
-                                jQuery('.vdcInlineHelpLink').click(function(){
-                                    jQuery(this).next().slideToggle(500);
-                              });
-                          });
-                          // ]]>
-                        </script>
 
                         <div jsfc="ice:panelGroup" styleClass="toggleTermsofUse" rendered="#{!empty studyPage.studyUI.metadata.harvestDVTermsOfUse}">
                             <ice:outputLink value="#" styleClass="vdcInlineHelpLink">

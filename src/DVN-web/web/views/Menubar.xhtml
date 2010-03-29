@@ -49,10 +49,10 @@
           </ice:outputLink>
         </li>
         <li>
-          <ice:outputLink rendered="#{VDCRequest.logoutPage or VDCSession.loginBean.user==null}" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/LoginPage.xhtml?clearWorkflow=true" title="Login">
+          <ice:outputLink rendered="#{VDCRequest.logoutPage or VDCSession.loginBean.user==null}" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/LoginPage.xhtml?clearWorkflow=true" title="Log In">
             <ice:outputText value="#{bundle.loginLabel}"/>
           </ice:outputLink>
-          <ice:outputLink rendered="#{VDCSession.loginBean.user!=null and !VDCRequest.logoutPage }" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/LogoutPage.xhtml" title="Logout">
+          <ice:outputLink rendered="#{VDCSession.loginBean.user!=null and !VDCRequest.logoutPage }" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/LogoutPage.xhtml" title="Log Out">
             <ice:outputText value="#{bundle.logoutLabel}"/>
           </ice:outputLink>
         </li>

@@ -27,7 +27,7 @@ public interface StudyFileServiceLocal {
     java.util.List<FileMetadata> getOrderedFilesByStudyVersion(Long svId);
         java.util.List<FileMetadata> getFilesByStudyVersionOrderedById(Long svId);
 
-    public Boolean doesStudyHaveSubsettableFiles(Long studyId);
+    public Boolean doesStudyHaveSubsettableFiles(Long studyVersionId);
 
 
     public void addFiles(StudyVersion studyVersion, List<StudyFileEditBean> newFiles, VDCUser user);

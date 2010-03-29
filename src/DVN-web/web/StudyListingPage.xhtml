@@ -220,7 +220,7 @@
                       <div jsfc="ice:panelGroup" styleClass="dvnStudyListTableOptionalField" rendered="#{ !empty studyUI.foundInVersions}">
                           <ice:dataTable cellspacing="0" cellpadding="0" width="100%" id="versionDataTable" value="#{studyUI.foundInVersions}" var="version">
                               <ice:column>
-                                  <ice:outputText value="Found in version #{version.version}"/>
+                                  <ice:outputText value="Found in version #{version.versionNumber}"/>
                               </ice:column>
                           </ice:dataTable>
                       </div>

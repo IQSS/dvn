@@ -683,8 +683,9 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
         this.deleteActionLabel = actionLabel;
     }
 
-    public String confirmStudyDelete () {
+    public void confirmStudyDelete (ActionEvent ae) {
         VDC dataverse = null;
+        Long dvId;
 
         if (studyUI != null && studyUI.getStudy() != null) {
             dataverse = studyUI.getStudy().getOwner();
@@ -707,11 +708,12 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
         deleteActionLabel = null;
         
         // redirecting to the Manage Studies page;
-        if (getVDCRequestBean().getCurrentVDC() == null) {
-            getVDCRequestBean().setCurrentVDC(dataverse);
+        if (getVDCRequestBean().getCurrentVDC() != null) {
+            dvId = getVDCRequestBean().getCurrentVDC().getId();
+        } else {
+            dvId = dataverse.getId();
         }
-        return "manageStudies";
-        //return "";
+        redirect("/faces/study/ManageStudiesPage.xhtml?vdcId="+dvId);
     }
 
     public void confirmDraftDeleteAction (ActionEvent event) {

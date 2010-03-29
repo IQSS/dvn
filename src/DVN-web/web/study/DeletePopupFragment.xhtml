@@ -44,7 +44,7 @@
                         <ice:outputText value="#{ManageStudiesList.currentStudyUI.study.globalId}" rendered="#{MainLayoutBean.inManageStudiesPage}"/>
                         <div jsfc="ice:panelGroup" styleClass="dvnFormPadding dvnFormMargin">
                             <ice:commandButton id="autoCentPopupOk"
-                                               action="#{studyPage.confirmStudyDelete}"
+                                               actionListener="#{studyPage.confirmStudyDelete}"
                                                value="Confirm"
                                                rendered="#{MainLayoutBean.inStudyPage}"/>
                             <ice:commandButton id="autoCentPopupCancel"

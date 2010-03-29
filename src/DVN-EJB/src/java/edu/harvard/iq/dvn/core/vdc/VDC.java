@@ -592,13 +592,14 @@ public class VDC implements java.io.Serializable  {
         this.allowContributorRequests = allowContributorRequests;
     }
     @OneToMany(mappedBy="vdc", cascade={CascadeType.PERSIST, CascadeType.REMOVE})
-    private Collection<VDCRole> vdcRoles;
+  //  @OrderBy("vdcUser.userName")
+    private List<VDCRole> vdcRoles;
 
     /**
      * Getter for property vdcRoles.
      * @return Value of property vdcRoles.
      */
-    public Collection<VDCRole> getVdcRoles() {
+    public List<VDCRole> getVdcRoles() {
         return this.vdcRoles;
     }
 
@@ -606,7 +607,7 @@ public class VDC implements java.io.Serializable  {
      * Setter for property vdcRoles.
      * @param vdcRoles New value of property vdcRoles.
      */
-    public void setVdcRoles(Collection<VDCRole> vdcRoles) {
+    public void setVdcRoles(List<VDCRole> vdcRoles) {
         this.vdcRoles = vdcRoles;
     }
 

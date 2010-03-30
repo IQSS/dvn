@@ -220,18 +220,19 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         indexService.updateStudy(studyId);
     }
 
+
     public void setArchived(Long studyVersionId) {
         // Not sure we need a separate method for this; 
         // We could instead modify the setReleased method above to 
         // always archive the previously released copy, if exists...
-        // Do we ever want to archive study versios without releasing
+        // Do we ever want to archive study versions without releasing
         // a later version?
 
         StudyVersion sv = em.find(StudyVersion.class, studyVersionId);
         
         if ( sv != null ) {
             sv.setVersionState(StudyVersion.VersionState.ARCHIVED);
-            sv.setReleaseTime(new Date());
+            //sv.setReleaseTime(new Date());
         }
     }
 

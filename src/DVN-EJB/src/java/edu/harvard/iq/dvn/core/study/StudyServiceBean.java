@@ -206,6 +206,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
       
         Study study = em.find(Study.class, studyId);
         study.getLatestVersion().setVersionState(StudyVersion.VersionState.RELEASED);
+        study.getLatestVersion().setReleaseTime(new Date());
 
         em.flush(); // Not sure it is necessary... but can't hurt. :)
 
@@ -230,6 +231,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         
         if ( sv != null ) {
             sv.setVersionState(StudyVersion.VersionState.ARCHIVED);
+            sv.setReleaseTime(new Date());
         }
     }
 

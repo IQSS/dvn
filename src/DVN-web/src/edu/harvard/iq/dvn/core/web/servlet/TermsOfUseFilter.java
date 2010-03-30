@@ -360,7 +360,8 @@ public class TermsOfUseFilter implements Filter {
         }
 
         // if we've populate the study, then check the TermsOfUse'
-        if (study != null) {
+        // We only need to display the terms if the study is Released.
+        if (study.getReleasedVersion() != null) {
 
             // the code below is for determining if the request is from 
             // our registered DSB host; (then no agreement form should be 

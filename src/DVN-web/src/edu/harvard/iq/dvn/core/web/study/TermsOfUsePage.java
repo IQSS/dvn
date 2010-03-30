@@ -30,6 +30,7 @@
 package edu.harvard.iq.dvn.core.web.study;
 
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
+import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCNetwork;
 import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
@@ -64,6 +65,15 @@ public class TermsOfUsePage extends VDCBaseBean {
     private boolean downloadStudyTermsRequired;
     private boolean depositDataverseTermsRequired;
     private boolean depositDvnTermsRequired;
+    private StudyVersion releasedVersion;
+
+    public StudyVersion getReleasedVersion() {
+        return releasedVersion;
+    }
+
+    public void setReleasedVersion(StudyVersion releasedVersion) {
+        this.releasedVersion = releasedVersion;
+    }
 
     public HtmlInputHidden getHiddenTou() {
         return hiddenTou;
@@ -148,8 +158,10 @@ public class TermsOfUsePage extends VDCBaseBean {
             } catch (NumberFormatException ex) {}
         }
         if (studyId != null) {
-            setStudy(studyService.getStudyDetail(studyId));
-        }  
+            study = studyService.getStudyDetail(studyId);
+           
+        }
+        releasedVersion = study.getReleasedVersion();
         setRequiredFlags();
       
     }       

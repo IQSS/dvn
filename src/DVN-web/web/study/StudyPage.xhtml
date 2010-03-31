@@ -188,12 +188,12 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
                     <div jsfc="ice:panelGroup" styleClass="dvnstudyadminbox" rendered="#{VDCSession.loginBean.user!=null and studyPage.studyUI.userAuthorizedToEdit}">
                         <div jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.study.studyLock==null}">
                             <ul class="dvnstudyadminlinksL">
-                                <span jsfc="ice:panelGroup" rendered="#{! studyPage.studyUI.studyVersion.archived}">
+                                <span jsfc="ice:panelGroup" rendered="#{ studyPage.studyUI.studyVersion == studyPage.studyUI.study.latestVersion}">
                                     <li>
                                         <dvn:tooltip tooltipMessage="#{studybundle.editStudyTip}" linkText="#{studybundle.editStudyText}" eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=catalog#{VDCRequest.studyListingIndexAsParameter}"/>
                                     </li>
                                 </span>
-                                <span jsfc="ice:panelGroup" rendered="#{! studyPage.studyUI.studyVersion.archived}">
+                                <span jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.studyVersion == studyPage.studyUI.study.latestVersion}">
                                     <li>
                                         <dvn:tooltip tooltipMessage="#{studybundle.editFilesTip}" linkText="#{studybundle.editFilesText}" eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=files#{VDCRequest.studyListingIndexAsParameter}"/>
                                     </li>
@@ -246,7 +246,7 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
                                 </span-->
                             </ul>
                             <ul class="dvnstudyadminlinksR">
-                                <span jsfc="ice:panelGroup" rendered="#{! studyPage.studyUI.studyVersion.archived}">
+                                <span jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.studyVersion == studyPage.studyUI.study.latestVersion}">
                                     <li>
                                         <dvn:tooltip tooltipMessage="#{studybundle.addTip}" linkText="#{studybundle.addText}" eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/AddFilesPage.xhtml?studyId=#{studyPage.studyUI.study.id}#{VDCRequest.studyListingIndexAsParameter}"/>
                                     </li>

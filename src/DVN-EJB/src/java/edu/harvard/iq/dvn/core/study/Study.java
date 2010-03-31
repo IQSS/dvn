@@ -116,9 +116,16 @@ public class Study implements java.io.Serializable {
         sv.getMetadata().setStudyVersion(sv);
         studyVersions = new ArrayList<StudyVersion>();
         studyVersions.add( sv );
-         if (vdc != null) {
-            vdc.getOwnedStudies().add(this);
-        }
+
+        //if (vdc != null) {
+        //    vdc.getOwnedStudies().add(this);
+        //}
+        // commented the lines above: with the EJB caching off,
+        // getOwnedStudies results in actually looking up the studies
+        // in the database, then looking up the metadata, the studylock, and
+        // a couple of other things *for every study in the DV*; resulting
+        // in 5*N SQL queries where N = number of studies already in the DV!
+        // -L.A.
         
         Date createDate = new Date();
 

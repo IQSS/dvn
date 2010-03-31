@@ -126,6 +126,10 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
     private JAXBContext jaxbContext;
     private Unmarshaller unmarshaller;
 
+    private long processedSizeThisBatch; 
+    private List<Long> harvestedStudyIdsThisBatch;
+
+
     public void ejbCreate() {
         try {
 
@@ -276,6 +280,9 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
         FileHandler fileHandler = new FileHandler(logFileName);
         hdLogger.addHandler(fileHandler);
         List<Long> harvestedStudyIds = null;
+	processedSizeThisBatch = 0; 
+	harvestedStudyIdsThisBatch = new ArrayList<Long>();
+
         List<String> failedIdentifiers = new ArrayList<String>();
         try {
             boolean harvestingNow = dataverse.isHarvestingNow();
@@ -309,8 +316,8 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
                     hdLogger.log(Level.INFO, "COMPLETED HARVEST, server=" + dataverse.getServerUrl() + ", metadataPrefix=" + dataverse.getHarvestFormatType().getMetadataPrefix());
               
                     // now index all studies (need to modify for update)
-                    hdLogger.log(Level.INFO, "POST HARVEST, start calls to index.");
-                    indexService.updateIndexList(harvestedStudyIds);
+                    hdLogger.log(Level.INFO, "POST HARVEST, reindexing the remaining studies.");
+                    indexService.updateIndexList(harvestedStudyIdsThisBatch);
                     hdLogger.log(Level.INFO, "POST HARVEST, calls to index finished.");                   
                 }else {
                     harvestErrorOccurred.setValue(true);
@@ -471,6 +478,24 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
                 VDCUser networkAdmin = vdcNetworkService.find().getDefaultNetworkAdmin();
                 harvestedStudy = studyService.importHarvestStudy(record.getMetadataFile(), dataverse.getVdc().getId(), networkAdmin.getId(), identifier);
                 hdLogger.log(Level.INFO, "Harvest Successful for identifier " + identifier);
+
+		processedSizeThisBatch += record.getMetadataFile().length(); 
+		if ( harvestedStudyIdsThisBatch == null ) {
+		    harvestedStudyIdsThisBatch = new ArrayList<Long>();
+		}
+		harvestedStudyIdsThisBatch.add(harvestedStudy.getId()); 
+
+		if ( processedSizeThisBatch > 10000000 ) {
+		    // 
+		    hdLogger.log(Level.INFO, "REACHED CONTENT BATCH SIZE LIMIT; calling index ("+harvestedStudyIdsThisBatch.size()+" studies in the batch).");
+                    indexService.updateIndexList(harvestedStudyIdsThisBatch);
+                    hdLogger.log(Level.INFO, "REINDEX DONE.");                   
+
+
+		    processedSizeThisBatch = 0; 
+		    harvestedStudyIdsThisBatch = null; 
+		}
+			
             }
 
         } catch (Throwable e) {

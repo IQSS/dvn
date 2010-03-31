@@ -369,7 +369,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
         // Study Files themselves are version-less;
         // In other words, 2 different versions can have different sets of
-        // study files, but if the files themselves don't have versions.
+        // study files, but the files themselves don't have versions.
         // So in order to find the differences between the 2 sets of study
         // files in 2 versions we can just go through the lists of the
         // files and compare the ids. If both versions have the file with
@@ -457,6 +457,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
             i++;
 
+
         }
 
         // and whatever's left on either list:
@@ -506,11 +507,11 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
         // Can't think of a better way of doing this than just going
         // through and comparing all the cataloging information entries.
         //
-        // I also decided to the same exact items for these comparison
+        // I also decided to use the same exact items for these comparisons
         // that we generate for the study view page, in the same order.
         //
-        // The code below is largely automatically-generated using
-        // the citation items as they are listed in the study view page.
+        // The code below is largely automatically generated from the
+        // cataloging information items on the study view page.
 
         String value1;
         String value2;
@@ -582,6 +583,29 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 				idi = new catalogInfoDifferenceItem();
 
 				idi.setFieldName("Global ID");
+				idi.setFieldValue1(value1);
+				idi.setFieldValue2(value2);
+
+				citationDiffList.add(idi);
+
+			}
+		}
+		value1 = getStudyUI1().getMetadata().getUNF();
+		value2 = getStudyUI2().getMetadata().getUNF();
+
+		if (value1 != null || value2 != null) {
+			if ((value1 != null && !value1.equals(value2)) ||
+			    (value2 != null && !value2.equals(value1))) {
+
+				if (value1 == null || value1.equals("")) {
+					value1 = "[N/A]";
+				} else if (value2 == null || value2.equals("")) {
+					value2 = "[N/A]";
+				}
+
+				idi = new catalogInfoDifferenceItem();
+
+				idi.setFieldName("UNF");
 				idi.setFieldValue1(value1);
 				idi.setFieldValue2(value2);
 

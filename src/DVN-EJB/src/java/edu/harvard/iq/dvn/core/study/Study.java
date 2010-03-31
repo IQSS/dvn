@@ -843,16 +843,13 @@ public class Study implements java.io.Serializable {
 
     public StudyVersion getEditVersion() {
         StudyVersion latestVersion = this.getLatestVersion();
-        if (latestVersion.isReleased()) {
-            // if the latest version is released, create a new version for editing
+        if (!latestVersion.isWorkingCopy()) {
+            // if the latest version is released or archived, create a new version for editing
             return createNewStudyVersion();
-        } else if (latestVersion.isWorkingCopy()) {
+        } else {
             // else, edit existing working copy
             return latestVersion;
-        } else {
-            // if latest version is archived, we can't edit
-            throw new IllegalArgumentException("Cannot edit deaccessioned study: " + studyId);
-        }
+        } 
     }
 
 

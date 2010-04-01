@@ -318,8 +318,15 @@ public class VDCCollectionTree implements java.io.Serializable  {
         if (collectionUrl != null) {
             url = appendParameterToUrl("/dvn/dv/" + vdc.getAlias() + collectionUrl, "collectionId=" + coll.getId());
         }
-               
-        return newTreeNode(coll.getName(), url, true);
+             
+        String collectionLabel = coll.getName();
+        String collectionDescription = coll.getDescription();
+
+        if (collectionDescription != null) {
+             collectionLabel += " - " + collectionDescription;
+        }
+
+        return newTreeNode(collectionLabel, url, true);
     }
 
     private DefaultMutableTreeNode newTreeNode(Study study, VDC vdc) {

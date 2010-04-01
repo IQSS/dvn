@@ -1519,96 +1519,95 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
     }
 
 
-    private void setDisplayOrders(Study study) {
-        // TODO: VERSION: change this to use a study version object
-        /*
+    private void setDisplayOrders(Metadata metadata) {
+        
         int i = 0;
-        for (Iterator it = study.getStudyAuthors().iterator(); it.hasNext();) {
+        for (Iterator it = metadata.getStudyAuthors().iterator(); it.hasNext();) {
             StudyAuthor elem = (StudyAuthor) it.next();
             elem.setDisplayOrder(i);
             i++;
 
         }
         i = 0;
-        for (Iterator it = study.getStudyAbstracts().iterator(); it.hasNext();) {
+        for (Iterator it = metadata.getStudyAbstracts().iterator(); it.hasNext();) {
             StudyAbstract elem = (StudyAbstract) it.next();
             elem.setDisplayOrder(i);
             i++;
 
         }
         i = 0;
-        for (Iterator it = study.getStudyDistributors().iterator(); it.hasNext();) {
+        for (Iterator it = metadata.getStudyDistributors().iterator(); it.hasNext();) {
             StudyDistributor elem = (StudyDistributor) it.next();
             elem.setDisplayOrder(i);
             i++;
 
         }
         i = 0;
-        for (Iterator it = study.getStudyGeoBoundings().iterator(); it.hasNext();) {
+        for (Iterator it = metadata.getStudyGeoBoundings().iterator(); it.hasNext();) {
             StudyGeoBounding elem = (StudyGeoBounding) it.next();
             elem.setDisplayOrder(i);
             i++;
 
         }
         i = 0;
-        for (Iterator it = study.getStudyGrants().iterator(); it.hasNext();) {
+        for (Iterator it = metadata.getStudyGrants().iterator(); it.hasNext();) {
             StudyGrant elem = (StudyGrant) it.next();
             elem.setDisplayOrder(i);
             i++;
         }
 
         i = 0;
-        for (Iterator it = study.getStudyKeywords().iterator(); it.hasNext();) {
+        for (Iterator it = metadata.getStudyKeywords().iterator(); it.hasNext();) {
             StudyKeyword elem = (StudyKeyword) it.next();
             elem.setDisplayOrder(i);
             i++;
         }
 
         i = 0;
-        for (Iterator it = study.getStudyNotes().iterator(); it.hasNext();) {
+        for (Iterator it = metadata.getStudyNotes().iterator(); it.hasNext();) {
             StudyNote elem = (StudyNote) it.next();
             elem.setDisplayOrder(i);
             i++;
         }
         i = 0;
-        for (Iterator it = study.getStudyOtherIds().iterator(); it.hasNext();) {
+        for (Iterator it = metadata.getStudyOtherIds().iterator(); it.hasNext();) {
             StudyOtherId elem = (StudyOtherId) it.next();
             elem.setDisplayOrder(i);
             i++;
         }
         i = 0;
-        for (Iterator it = study.getStudyProducers().iterator(); it.hasNext();) {
+        for (Iterator it = metadata.getStudyProducers().iterator(); it.hasNext();) {
             StudyProducer elem = (StudyProducer) it.next();
             elem.setDisplayOrder(i);
             i++;
         }
         i = 0;
-        for (Iterator it = study.getStudySoftware().iterator(); it.hasNext();) {
+        for (Iterator it = metadata.getStudySoftware().iterator(); it.hasNext();) {
             StudySoftware elem = (StudySoftware) it.next();
             elem.setDisplayOrder(i);
             i++;
         }
 
         i = 0;
-        for (Iterator it = study.getStudyTopicClasses().iterator(); it.hasNext();) {
+        for (Iterator it = metadata.getStudyTopicClasses().iterator(); it.hasNext();) {
             StudyTopicClass elem = (StudyTopicClass) it.next();
             elem.setDisplayOrder(i);
             i++;
         }
-        */
+       
     }
 
-    public Study saveStudy(Study study, Long userId) {
+    public Study saveStudyVersion(StudyVersion studyVersion, Long userId) {
         VDCUser user = em.find(VDCUser.class, userId);
 
-        study.getLatestVersion().setLastUpdateTime(new Date());
+        studyVersion.setLastUpdateTime(new Date());
         // TODO: VERSION:  do we still want to store the last
         // updater here, now that we have a contributor list
         // and update time for each version?
-        study.setLastUpdater(user);
-
-        setDisplayOrders(study);
-        return study;
+        studyVersion.getStudy().setLastUpdater(user);
+        studyVersion.updateVersionContributors(user);
+        setDisplayOrders(studyVersion.getMetadata());
+        return studyVersion.getStudy();
     }
 
     // visible studies are defined as those that are released and not in a restricted vdc
@@ -1926,7 +1925,8 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
             //study.setHarvestDVTermsOfUse(null);
             //study.setHarvestDVNTermsOfUse(null);
         }
-        setDisplayOrders(study);
+        // TODO: VERSION:
+   //     setDisplayOrders(study);
         boolean registerHandle = determineId(study, vdc, globalIdComponents);
         if (newStudy && !studyService.isUniqueStudyId( study.getStudyId(), study.getProtocol(), study.getAuthority() ) ) {
             throw new EJBException("A study with this globalId already exists (likely cause: the study was previously harvested into a different dataverse).");

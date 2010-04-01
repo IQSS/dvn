@@ -155,7 +155,7 @@ public interface StudyServiceLocal extends java.io.Serializable {
     void deleteDataVariables(Long dataTableId);
 
     //2
-    edu.harvard.iq.dvn.core.study.Study saveStudy(Study study, Long userId);
+    edu.harvard.iq.dvn.core.study.Study saveStudyVersion(StudyVersion studyVersion, Long userId);
 
     //3
     edu.harvard.iq.dvn.core.study.Study importHarvestStudy(File xmlFile, Long vdcId, Long userId, String harvestIdentifier);

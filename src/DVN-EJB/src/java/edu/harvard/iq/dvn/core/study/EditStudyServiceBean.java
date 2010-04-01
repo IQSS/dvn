@@ -176,7 +176,7 @@ public class EditStudyServiceBean implements edu.harvard.iq.dvn.core.study.EditS
             studyVersion.updateVersionContributors(user);
 
 
-            studyService.saveStudy(studyVersion.getStudy(), userId);
+            studyService.saveStudyVersion(studyVersion, userId);
             
             // if new, register the handle
             if ( isNewStudy() && vdcNetworkService.find().isHandleRegistration() ) {

@@ -818,10 +818,12 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
 
                 StudyVersion releasedVersion = studyService.getStudyVersion(getStudyId(), null);
 
-                if ( releasedVersion == null ) {
-                    // This is the first release of the study.
-                    studyUI.getStudyVersion().setVersionState(StudyVersion.VersionState.RELEASED);
+                if (releasedVersion == null) {
                     studyService.setReleased(studyUI.getStudy().getId());
+                    // Get updated studyVersion to display on the page (we need this to get the releaseTime & state)
+                    StudyVersion updatedVersion = studyService.getStudyVersion(studyUI.getStudyVersion().getStudy().getId(), studyUI.getStudyVersion().getVersionNumber());
+                    studyUI = new StudyUI(updatedVersion, getVDCSessionBean().getUser());
+                    initPanelDisplay();
                 } else {
                     // We are redirecting to the Differences page; 
                     // Need to set the HTTP parameters:
@@ -837,6 +839,8 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
 
                 actionRequested = null;
             }
+        
+
         }
 
         return "";

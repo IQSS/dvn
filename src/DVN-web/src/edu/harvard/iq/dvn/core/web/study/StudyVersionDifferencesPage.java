@@ -319,11 +319,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
         // First we save the Version Note:
         studyService.saveVersionNote (studyUI2.getStudyVersion().getId(), studyUI2.getStudyVersion().getVersionNote());
 
-        // Then we archive the previously released version:
-        studyService.setArchived(getStudyVersion1().getId());
-
-        // Then we release this latest version:
-        //studyUI2.getStudyVersion().setVersionState(StudyVersion.VersionState.RELEASED);
+        // Release the latest version, and archive the previously released version
         studyService.setReleased(studyUI2.getStudy().getId());
 
         // the setReleased method in the StudyServiceBean, above,

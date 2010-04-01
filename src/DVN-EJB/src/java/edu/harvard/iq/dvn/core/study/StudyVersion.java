@@ -22,13 +22,14 @@ public class StudyVersion implements Serializable {
   public enum VersionState { DRAFT, IN_REVIEW, RELEASED, ARCHIVED};
 
 
-   // public static final String VERSION_STATE_DRAFT = "Draft";
-   // public static final String VERSION_STATE_IN_REVIEW = "In Review";
-   // public static final String VERSION_STATE_RELEASED = "Released";
 
     public StudyVersion () {
         metadata = new Metadata();
         metadata.setStudyVersion(this);
+        
+        Date createDate = new Date();
+        setCreateTime(createDate);
+        setLastUpdateTime(createDate);
     }
 
     private Long versionNumber;
@@ -55,6 +56,17 @@ public class StudyVersion implements Serializable {
     private Date lastUpdateTime;
     @Temporal(value = TemporalType.TIMESTAMP)
     private Date releaseTime;
+    @Temporal(value = TemporalType.TIMESTAMP)
+    private Date archiveTime;
+
+    public Date getArchiveTime() {
+        return archiveTime;
+    }
+
+    public void setArchiveTime(Date archiveTime) {
+        this.archiveTime = archiveTime;
+    }
+
 
     public List<VersionContributor> getVersionContributors() {
         return versionContributors;

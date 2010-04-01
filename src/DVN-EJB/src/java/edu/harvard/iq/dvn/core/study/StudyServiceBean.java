@@ -164,13 +164,13 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         // and send an email to the Contributor about the status of the study
 
         if (user.getVDCRole(study.getOwner()) != null && user.getVDCRole(study.getOwner()).getRole().getName().equals(RoleServiceLocal.CONTRIBUTOR)) {
-           // mailService.sendStudyInReviewNotification(user.getEmail(), study.getTitle());
+            mailService.sendStudyInReviewNotification(user.getEmail(), sv.getMetadata().getTitle());
 
             // Notify all curators and admins that study is in review
             for (Iterator it = study.getOwner().getVdcRoles().iterator(); it.hasNext();) {
                 VDCRole elem = (VDCRole) it.next();
                 if (elem.getRole().getName().equals(RoleServiceLocal.CURATOR) || elem.getRole().getName().equals(RoleServiceLocal.ADMIN)) {
-                   // mailService.sendStudyAddedCuratorNotification(elem.getVdcUser().getEmail(), user.getUserName(), study.getTitle(), study.getOwner().getName());
+                    mailService.sendStudyAddedCuratorNotification(elem.getVdcUser().getEmail(), user.getUserName(), sv.getMetadata().getTitle(), study.getOwner().getName());
                 }
             }
 
@@ -205,15 +205,26 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
     public void setReleased(Long studyId) {
       
         Study study = em.find(Study.class, studyId);
-        study.getLatestVersion().setVersionState(StudyVersion.VersionState.RELEASED);
-        study.getLatestVersion().setReleaseTime(new Date());
+        StudyVersion latestVersion = study.getLatestVersion();
+        StudyVersion releasedVersion = study.getReleasedVersion();
+        if (!latestVersion.isWorkingCopy()) {
+            throw new EJBException("Cannot release latestVersion, incorrect state: "+latestVersion.getVersionState());
+        }
 
-        em.flush(); // Not sure it is necessary... but can't hurt. :)
+        // Archive the previously released version
+        if (releasedVersion!=null) {
+            setArchived(releasedVersion);
+
+        }
+        latestVersion.setVersionState(StudyVersion.VersionState.RELEASED);
+        latestVersion.setReleaseTime(new Date());
+
+        
 
         VDCRole studyCreatorRole = study.getCreator().getVDCRole(study.getOwner());
 
         if (studyCreatorRole != null && studyCreatorRole.getRole().getName().equals(RoleServiceLocal.CONTRIBUTOR)) {
-            //mailService.sendStudyReleasedNotification(study.getCreator().getEmail(), study.getTitle(), study.getOwner().getName());
+            mailService.sendStudyReleasedNotification(study.getCreator().getEmail(), latestVersion.getMetadata().getTitle(), study.getOwner().getName());
         }
 
         // finally, re-index the study metadata:
@@ -221,27 +232,18 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
     }
 
 
-    public void setArchived(Long studyVersionId) {
-        // Not sure we need a separate method for this; 
-        // We could instead modify the setReleased method above to 
-        // always archive the previously released copy, if exists...
-        // Do we ever want to archive study versions without releasing
-        // a later version?
-
-        StudyVersion sv = em.find(StudyVersion.class, studyVersionId);
-        
+    private void setArchived(StudyVersion sv) {
         if ( sv != null ) {
             sv.setVersionState(StudyVersion.VersionState.ARCHIVED);
-            //sv.setReleaseTime(new Date());
+            sv.setArchiveTime(new Date());
         }
     }
 
     public void deaccessionStudy(Long studyId) {
         Study study = em.find(Study.class, studyId);
         StudyVersion sv = study.getReleasedVersion();
-        sv.setVersionState(StudyVersion.VersionState.ARCHIVED);
+        setArchived(sv);
         // save note
-        // save date
         indexService.deleteStudy(study.getId());
     }
     

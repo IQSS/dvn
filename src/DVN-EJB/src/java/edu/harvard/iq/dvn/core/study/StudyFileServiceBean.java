@@ -265,8 +265,13 @@ public class StudyFileServiceBean implements StudyFileServiceLocal {
                 }
             }
         }
-    }
 
+        if (!otherFiles.isEmpty()) {
+            studyService.saveStudyVersion(studyVersion, user.getId());
+        }
+
+        em.merge(studyVersion); // this will save the version notes (and the update info, if set)
+    }
 
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -359,9 +364,7 @@ public class StudyFileServiceBean implements StudyFileServiceLocal {
             throw new EJBException("Could not calculate new study UNF");
         }
 
-        study.setLastUpdateTime(new Date());
-        study.setLastUpdater(user);
-
+        studyService.saveStudyVersion(studyVersion, user.getId());
     }
 
 

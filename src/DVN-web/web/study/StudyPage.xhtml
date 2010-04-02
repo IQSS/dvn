@@ -198,6 +198,11 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
                                         <dvn:tooltip tooltipMessage="#{studybundle.editFilesTip}" linkText="#{studybundle.editFilesText}" eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=files#{VDCRequest.studyListingIndexAsParameter}"/>
                                     </li>
                                 </span>
+                                <span jsfc="ice:panelGroup" rendered="#{! studyPage.studyUI.studyVersion.archived}">
+                                    <li>
+                                        <dvn:tooltip tooltipMessage="#{studybundle.addTip}" linkText="#{studybundle.addText}" eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/AddFilesPage.xhtml?studyId=#{studyPage.studyUI.study.id}#{VDCRequest.studyListingIndexAsParameter}"/>
+                                    </li>
+                                </span>
                                 <span jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.studyVersion.inReview or studyPage.studyUI.studyVersion.draft}">
                                     <li>
                                         <ice:commandLink onmouseover="javascript:popupTooltip(this, &#39;#{studybundle.editVersionNotesTip}&#39;, &#39;&#39;, event);" onmouseout="javascript:hideTooltip();" binding="#{studyPage.editStudyVersionNotesLink}" actionListener="#{studyPage.toggleVersionNotesPopup}">
@@ -219,13 +224,24 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
                                         </ice:commandLink>
                                     </li>
                                 </span>
+                            </ul>
+                            <ul class="dvnstudyadminlinksR">
+                                <span jsfc="ice:panelGroup" rendered="#{(VDCSession.loginBean.curator or VDCSession.loginBean.admin or  VDCSession.loginBean.networkAdmin)}">
+                                    <li>
+                                        <dvn:tooltip tooltipMessage="#{studybundle.permissionsTip}" linkText="#{studybundle.permissionsText}" eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPermissionsPage.xhtml?studyId=#{studyPage.studyUI.study.id}#{VDCRequest.studyListingIndexAsParameter}"/>
+                                    </li>
+                                </span>
+                                <span jsfc="ice:panelGroup" rendered="#{(VDCSession.loginBean.curator or VDCSession.loginBean.admin or  VDCSession.loginBean.networkAdmin)}">
+                                    <li>
+                                        <dvn:tooltip tooltipMessage="#{studybundle.templateTip}" linkText="#{studybundle.templateText}" eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/TemplateFormPage.xhtml?studyVersionId=#{studyPage.studyUI.studyVersion.id}#{VDCRequest.studyListingIndexAsParameter}"/>
+                                    </li>
+                                </span>
                                 <span jsfc="ice:panelGroup" rendered="#{(VDCSession.loginBean.curator or VDCSession.loginBean.admin or  VDCSession.loginBean.networkAdmin) and studyPage.studyUI.studyVersion.released}">
                                     <li>
                                         <dvn:tooltip tooltipMessage="#{studybundle.removeTip}" linkText="#{studybundle.removeText}" eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/DeaccessionStudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}#{VDCRequest.studyListingIndexAsParameter}"/>
                                     </li>
                                 </span>
-                                <span jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.studyVersion.draft }">
-                                  
+                                <span jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.studyVersion.draft}">
                                     <li>
                                         <ice:commandLink actionListener="#{studyPage.confirmDraftDeleteAction}" onmouseover="javascript:popupTooltip(this, &#39;#{studybundle.deleteDraftTip}&#39;, &#39;&#39;, event);" onmouseout="javascript:hideTooltip();">
                                             <ice:outputText value="#{studybundle.deleteDraftText}" nospan="true"/>
@@ -244,27 +260,7 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
                                         <dvn:tooltip tooltipMessage="#{studybundle.restoreTip}" linkText="#{studybundle.restoreText}" eventType="mouseover" linkUrl="#"/>
                                     </li>
                                 </span-->
-                            </ul>
-                            <ul class="dvnstudyadminlinksR">
-                                <span jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.studyVersion == studyPage.studyUI.study.latestVersion}">
-                                    <li>
-                                        <dvn:tooltip tooltipMessage="#{studybundle.addTip}" linkText="#{studybundle.addText}" eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/AddFilesPage.xhtml?studyId=#{studyPage.studyUI.study.id}#{VDCRequest.studyListingIndexAsParameter}"/>
-                                    </li>
-                                </span>
-                                <span jsfc="ice:panelGroup" rendered="#{(VDCSession.loginBean.curator or VDCSession.loginBean.admin or  VDCSession.loginBean.networkAdmin) }">
-                                    <li>
-                                        <dvn:tooltip tooltipMessage="#{studybundle.permissionsTip}" linkText="#{studybundle.permissionsText}" eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPermissionsPage.xhtml?studyId=#{studyPage.studyUI.study.id}#{VDCRequest.studyListingIndexAsParameter}"/>
-                                    </li>
-                                </span>
-                                <span jsfc="ice:panelGroup" rendered="#{(VDCSession.loginBean.curator or VDCSession.loginBean.admin or  VDCSession.loginBean.networkAdmin)}">
-                                    <li>
-                                        <dvn:tooltip tooltipMessage="#{studybundle.templateTip}" linkText="#{studybundle.templateText}" eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/TemplateFormPage.xhtml?studyVersionId=#{studyPage.studyUI.studyVersion.id}#{VDCRequest.studyListingIndexAsParameter}"/>
-                                    </li>
-                                </span>
                                 <span jsfc="ice:panelGroup" rendered="#{VDCSession.loginBean.networkAdmin}">
-                                    <!--<li>
-                                        <dvn:tooltip tooltipMessage="#{studybundle.destroyTip}" linkText="#{studybundle.destroyText}" eventType="mouseover" linkUrl="#"/>
-                                    </li>-->
                                     <li>
                                         <ice:commandLink actionListener="#{studyPage.confirmStudyDestroyAction}" onmouseover="javascript:popupTooltip(this, &#39;#{studybundle.destroyTip}&#39;, &#39;&#39;, event);" onmouseout="javascript:hideTooltip();">
                                             <ice:outputText value="#{studybundle.destroyText}" nospan="true"/>

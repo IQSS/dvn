@@ -2332,7 +2332,7 @@ public class DDIServiceBean implements DDIServiceLocal {
                     if (type == null || CAT_STAT_TYPE_FREQUENCY.equalsIgnoreCase( type ) ) {
                         String _freq = parseText(xmlr);
                         if (_freq != null && !_freq.equals("") ) {
-                            cat.setFrequency( new Long( _freq ) );
+                            cat.setFrequency( new Double( _freq ) );
                         }
                     }
                 }

@@ -116,3 +116,11 @@ ALTER TABLE vdcgrouprelationship ALTER COLUMN group_id SET NOT NULL;
 ALTER TABLE vdcrole ALTER COLUMN vdcuser_id SET NOT NULL;
 ALTER TABLE vdcrole ALTER COLUMN vdc_id SET NOT NULL;
 ALTER TABLE vdcrole ALTER COLUMN role_id SET NOT NULL;
+
+--
+-- Modify variablecategory to use a double precision float for frequency:
+--
+ALTER TABLE variablecategory RENAME COLUMN frequency TO temp;
+ALTER TABLE variablecategory ADD COLUMN frequency float;
+UPDATE variablecategory SET frequency=temp;
+ALTER TABLE variablecategory DROP COLUMN temp;

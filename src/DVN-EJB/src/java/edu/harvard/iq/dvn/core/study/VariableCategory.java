@@ -176,13 +176,14 @@ public class VariableCategory implements Comparable, java.io.Serializable {
     /**
      * Holds value of property frequency.
      */
-    private java.lang.Long frequency;
+    private Double frequency;
+
 
     /**
      * Getter for property frequency.
      * @return Value of property frequency.
      */
-    public java.lang.Long getFrequency() {
+    public Double getFrequency() {
         return this.frequency;
     }
 
@@ -190,7 +191,7 @@ public class VariableCategory implements Comparable, java.io.Serializable {
      * Setter for property frequency.
      * @param frequency New value of property frequency.
      */
-    public void setFrequency(java.lang.Long frequency) {
+    public void setFrequency(Double frequency) {
         this.frequency = frequency;
     }
 

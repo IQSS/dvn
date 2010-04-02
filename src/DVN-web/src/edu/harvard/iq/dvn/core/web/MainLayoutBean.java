@@ -170,7 +170,8 @@ public class MainLayoutBean implements java.io.Serializable  {
         HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
         writeStudyVersionNotesPopups = request.getRequestURI().indexOf("/StudyPage.xhtml") != -1
                 || request.getRequestURI().indexOf("/StudyVersionDifferencesPage.xhtml") != -1
-                || request.getRequestURI().indexOf("/EditStudyPage.xhtml") != -1;
+                || request.getRequestURI().indexOf("/EditStudyPage.xhtml") != -1
+                || request.getRequestURI().indexOf("/AddFilesPage.xhtml") != -1;
         return writeStudyVersionNotesPopups;
     }
 
@@ -215,6 +216,13 @@ public class MainLayoutBean implements java.io.Serializable  {
         return false;
     }
 
+    public boolean isInAddFilesPage() {
+        String viewId = getCurrentViewId();
+        if (viewId != null) {
+            return viewId.indexOf("/AddFilesPage.xhtml") != -1;
+        }
+        return false;
+    }
 
     public boolean isInVersionDiffPage() {
         String viewId = getCurrentViewId();

@@ -12,11 +12,13 @@ import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.web.SortableList;
 import edu.harvard.iq.dvn.core.web.common.LoginBean;
+import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpServletResponse;
 
 
@@ -35,8 +37,11 @@ public class ManageStudiesList extends SortableList {
     private static final String CREATOR_COLUMN = "creator";
     private static final String DATE_CREATED_COLUMN = "dateCreated";
     private static final String STATUS_COLUMN = "status";
-    private static final String TEMPLATE_COLUMN = "template";
+//    private static final String TEMPLATE_COLUMN = "template";
+    private static final String DATE_RELEASED_COLUMN = "dateReleased";
+    private static final String VERSION_COLUMN = "version";
     private static final String DATE_UPDATED_COLUMN = "lastUpdated";    
+    private static final String ACTION_COLUMN = "actionReleased";
     private DataPaginator paginator;
    
     private Long vdcId;
@@ -93,8 +98,8 @@ public class ManageStudiesList extends SortableList {
                 orderBy="createTime";
             } else if (sortColumnName.equals(STATUS_COLUMN)) {
                 orderBy="reviewState.name";
-            } else if (sortColumnName.equals(TEMPLATE_COLUMN)) {
-                orderBy="template.name";
+//            } else if (sortColumnName.equals(TEMPLATE_COLUMN)) {
+//                orderBy="template.name";
             } else if (sortColumnName.equals(DATE_UPDATED_COLUMN)) {
                 orderBy="lastUpdateTime";
             } else {
@@ -131,8 +136,11 @@ public class ManageStudiesList extends SortableList {
     public String getCreatorColumn() {return CREATOR_COLUMN; }
     public String getCreatedColumn() {return DATE_CREATED_COLUMN; }
     public String getStatusColumn() { return STATUS_COLUMN; }
-    public String getTemplateColumn() {return TEMPLATE_COLUMN; }
+//    public String getTemplateColumn() {return TEMPLATE_COLUMN; }
+    public String getReleasedColumn() {return DATE_RELEASED_COLUMN; }
+    public String getVersionColumn() { return VERSION_COLUMN; }
     public String getUpdatedColumn() { return DATE_UPDATED_COLUMN; }
+    public String getActionColumn() {return ACTION_COLUMN; }
 
     public List<StudyUI> getStudyUIList() {     
         if (studyUIList==null) {
@@ -174,9 +182,45 @@ public class ManageStudiesList extends SortableList {
 
     public void doSetInReview(ActionEvent ae) {
         StudyUI studyUI = (StudyUI) this.studyDataTable.getRowData();
-        studyService.setReadyForReview(studyUI.getStudyId());                 
+        studyService.setReadyForReview(studyUI.getStudyVersion());
         // set list to null, to force a fresh retrieval of data
         studyUIList=null;
+    }
+
+    public String release_action() {
+        StudyUI studyUI = (StudyUI) this.studyDataTable.getRowData();
+        StudyVersion releasedVersion = studyService.getStudyVersion(studyUI.getStudyId(), null);
+        String action = null;
+        if (releasedVersion != null) {
+            VDCBaseBean.getVDCRequestBean().setStudyId(studyUI.getStudyId());
+            VDCBaseBean.getVDCRequestBean().setStudyVersionNumberList(releasedVersion.getVersionNumber() + "," + studyUI.getStudyVersion().getNumberOfFiles());
+            VDCBaseBean.getVDCRequestBean().setActionMode("confirmRelease");
+            action = "diffStudy";
+        } else {
+            studyService.setReleased(studyUI.getStudyId());
+            studyUIList=null;
+            action = "";
+        }
+
+        return action;
+    }
+
+    public void review_action(){
+        StudyUI studyUI = (StudyUI) this.studyDataTable.getRowData();
+        studyService.setReadyForReview(studyUI.getStudyId());
+        studyUIList=null;
+    }
+
+    public void delete_action(){
+
+    }
+
+    public String editStudy_action(){
+        return "editStudy";
+    }
+
+    public void restore_action(){
+        
     }
 
    /** Confirmation popup for deleting (working) study versions.
@@ -271,5 +315,35 @@ public class ManageStudiesList extends SortableList {
             }
         }
     }
+
+    public void filter(ActionEvent event){
+
+    }
+    
+    private boolean showArchivedStudies;
+
+    /**
+     * @return the showArchivedStudies
+     */
+    public boolean isShowArchivedStudies() {
+        return showArchivedStudies;
+    }
+
+    /**
+     * @param showArchivedStudies the showArchivedStudies to set
+     */
+    public void setShowArchivedStudies(boolean showArchivedStudies) {
+        this.showArchivedStudies = showArchivedStudies;
+    }
+
+    public List getStudyScopeSelectItems() {
+        List selectItems = new ArrayList();
+        selectItems.add(new SelectItem(1, "All studies belonging to the dataverse"));
+        selectItems.add(new SelectItem(2, "Only studies I have contributed to"));
+        return selectItems;
+    }
+
+
+
 
 }

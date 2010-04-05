@@ -33,7 +33,6 @@ import edu.harvard.iq.dvn.core.admin.UserGroup;
 import edu.harvard.iq.dvn.core.admin.VDCRole;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.util.StringUtil;
-import edu.harvard.iq.dvn.core.vdc.ReviewState;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCCollection;
 import java.util.ArrayList;
@@ -62,8 +61,6 @@ public class Study implements java.io.Serializable {
     private Date createTime;
     @Temporal(value = TemporalType.TIMESTAMP)
     private Date lastUpdateTime;
-    @ManyToOne
-    private ReviewState reviewState;
     @Temporal(value = TemporalType.TIMESTAMP)
     private Date lastExportTime;
     @ManyToMany(cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST })
@@ -211,15 +208,7 @@ public class Study implements java.io.Serializable {
         return this.getLatestVersion().getVersionState().equals(StudyVersion.VersionState.RELEASED);
     }
 
-    // TODO: VERSION:  get rid of ReviewState
-    public ReviewState getReviewState() {
-        return reviewState;
-    }
     
-    public void setReviewState(ReviewState reviewState) {
-        this.reviewState = reviewState;
-    }
-
     
     public Collection<UserGroup> getAllowedGroups() {
         return allowedGroups;

@@ -852,6 +852,25 @@ public class Study implements java.io.Serializable {
         } 
     }
 
+    public StudyVersion getDeaccessionedVersion() {
+        // The versions are retrieved from the database
+        // in descending versionNumber order, so the first element in the list
+        // is the latest version
+        if ( !getStudyVersions().isEmpty() ) {
+            StudyVersion sv = getStudyVersions().get(0);
+
+            if (sv.isWorkingCopy() && getStudyVersions().size() > 1) {
+                sv = getStudyVersions().get(1);
+            }
+
+            if (sv.isArchived()) {
+                return sv;
+            }
+        }
+
+        return null;
+    }
+
 
 //    @Override
 //    public String toString() {

@@ -145,10 +145,14 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
             if (sv == null) {
                 redirect("/faces/IdDoesNotExistPage.xhtml?type=Study%20Version");
                 return;
-            }
             
-            if ("files".equals(tab)) {
+            } else if ( versionNumber == null && sv.isArchived() ) { // deaccessioned
+                deaccessionedView = true;
+                studyUI = new StudyUI(sv, getVDCSessionBean().getUser()); // TODO: could this be simpler
+            
+            } else if ("files".equals(tab)) { // files tab
                 initStudyUIWithFiles(sv);
+
             } else {
                 studyUI = new StudyUI(sv, getVDCSessionBean().getUser());
                 initPanelDisplay();
@@ -871,5 +875,16 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
     public void setEditStudyVersionNotesLink(HtmlCommandLink editStudyVersionNotesLink) {
         this.editStudyVersionNotesLink = editStudyVersionNotesLink;
     }
+
+    private boolean deaccessionedView = false;
+
+    public boolean isDeaccessionedView() {
+        return deaccessionedView;
+    }
+
+    public void setDeaccessionedView(boolean deaccessionedView) {
+        this.deaccessionedView = deaccessionedView;
+    }
+
     
 }

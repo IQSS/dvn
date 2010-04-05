@@ -202,8 +202,8 @@ public class Study implements java.io.Serializable {
         return this.getLatestVersion().getVersionState().equals(StudyVersion.VersionState.IN_REVIEW);
     }
 
-    // TODO: VERSION:  Replace isNew() with isDraft()
-    public boolean isNew() {
+  
+    public boolean isDraft() {
         return this.getLatestVersion().getVersionState().equals(StudyVersion.VersionState.DRAFT);
     }
     

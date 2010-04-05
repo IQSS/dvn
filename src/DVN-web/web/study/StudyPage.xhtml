@@ -172,7 +172,7 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
 .dvnstudyadminbox li a:link,.dvnstudyadminbox li a:visited,.dvnstudyadminbox li a:hover,.dvnstudyadminbox li a:active{font-size:.9em !important;}
 </style>
 
-      <ice:form id="form1">
+      <ice:form id="form1" rendered="#{!studyPage.deaccessionedView}">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <input type="hidden" value="StudyPage" name="pageName"/>
         <ice:inputHidden id="studyId" value="#{studyPage.studyId}"/>
@@ -929,6 +929,10 @@ jQuery(document).ready(function(){
           </div>
         </div>
       </ice:form>
+
+    <!-- Deacessioned study! -->
+    <gui:include src="StudyDeaccessionedFragment.xhtml"/>
+ 
     </gui:define>
   </gui:composition>
 </body>

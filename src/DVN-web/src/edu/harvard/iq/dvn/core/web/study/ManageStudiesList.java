@@ -307,7 +307,7 @@ public class ManageStudiesList extends SortableList {
             showStudyDeletePopup = true;
 
             if (studyUI.getStudy() != null) {
-                if (studyUI.getStudy().isNew() ) {
+                if (studyUI.getStudy().isDraft() ) {
                     deleteActionLabel = "delete this draft version of the study";
                 }
                 else if (studyUI.getStudy().isInReview() ) {

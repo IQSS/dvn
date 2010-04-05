@@ -51,7 +51,7 @@
                       <ice:outputText value="Status"/>
                   </f:facet>
                   <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{sv.study.id}&amp;versionNumber=#{sv.versionNumber}#{VDCRequest.studyListingIndexAsParameter}">
-                      <ice:outputText value="#{sv.versionState}"/>
+                      <ice:outputText value="#{sv.userFriendlyVersionState}"/>
                   </ice:outputLink>
             </ice:column>
             <ice:column>

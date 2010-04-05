@@ -98,16 +98,7 @@ public interface StudyServiceLocal extends java.io.Serializable {
 
     //?
     java.util.List getRecentStudies(Long vdcId, int numResults);
-
-    //1
-    java.util.List <Study> getContributorStudies(VDCUser contributor, VDC vdc);
-
-    //1
-    java.util.List<edu.harvard.iq.dvn.core.study.Study> getReviewerStudies(Long vdcId);
-
-    //1
-    java.util.List<edu.harvard.iq.dvn.core.study.Study> getNewStudies(Long vdcId);
-
+    
     //?1
     public List getDvOrderedStudyIds(Long vdcId, String orderBy, boolean ascending );
 

@@ -63,13 +63,6 @@ SELECT pg_catalog.setval(pg_catalog.pg_get_serial_sequence('filecategory', 'id')
 SELECT pg_catalog.setval(pg_catalog.pg_get_serial_sequence('logindomain', 'id'), 1, false);
 
 
---
--- TOC entry 1845 (class 0 OID 0)
--- Dependencies: 1257
--- Name: reviewstate_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dvnApp
---
-
-SELECT pg_catalog.setval(pg_catalog.pg_get_serial_sequence('reviewstate', 'id'), 3, true);
 
 
 --
@@ -239,20 +232,7 @@ ALTER TABLE logindomain DISABLE TRIGGER ALL;
 
 ALTER TABLE logindomain ENABLE TRIGGER ALL;
 
---
--- TOC entry 1803 (class 0 OID 113766)
--- Dependencies: 1258
--- Data for Name: reviewstate; Type: TABLE DATA; Schema: public; Owner: dvnApp
---
 
-ALTER TABLE reviewstate DISABLE TRIGGER ALL;
-
-INSERT INTO reviewstate (id, description, name) VALUES (1, 'Newly created by an untrusted user', 'New');
-INSERT INTO reviewstate (id, description, name) VALUES (2, 'Currently under review by a curator', 'In Review');
-INSERT INTO reviewstate (id, description, name) VALUES (3, 'Approved by a curator, visible in browse/search', 'Released');
-
-
-ALTER TABLE reviewstate ENABLE TRIGGER ALL;
 
 --
 -- TOC entry 1838 (class 0 OID 113987)

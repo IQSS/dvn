@@ -407,28 +407,7 @@ public class VDC implements java.io.Serializable  {
         this.defaultTemplate = defaultTemplate;
     }
     
-    /**
-     * Holds value of property reviewState.
-     */
-    @ManyToOne
-    // TODO: VERSION: remove this
-    private ReviewState reviewState;
-    
-    /**
-     * Getter for property reviewState.
-     * @return Value of property reviewState.
-     */
-    public ReviewState getReviewState() {
-        return this.reviewState;
-    }
-    
-    /**
-     * Setter for property reviewState.
-     * @param reviewState New value of property reviewState.
-     */
-    public void setReviewState(ReviewState reviewState) {
-        this.reviewState = reviewState;
-    }
+   
     
     /**
      * Holds value of property id.

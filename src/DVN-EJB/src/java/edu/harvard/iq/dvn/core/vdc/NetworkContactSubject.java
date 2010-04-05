@@ -41,7 +41,7 @@ import javax.persistence.*;
 public class NetworkContactSubject implements java.io.Serializable  {
     private String subjectText;
     
-    /** Creates a new instance of ReviewState */
+
     public NetworkContactSubject() {
     }
 

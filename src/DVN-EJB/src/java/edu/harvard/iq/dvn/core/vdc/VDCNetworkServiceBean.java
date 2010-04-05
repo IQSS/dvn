@@ -30,8 +30,8 @@
 package edu.harvard.iq.dvn.core.vdc;
 
 import edu.harvard.iq.dvn.core.mail.MailServiceLocal;
-import edu.harvard.iq.dvn.core.study.ReviewStateServiceBean;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
+import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.util.StringUtil;
 import java.util.Calendar;
 import java.util.Date;
@@ -225,17 +225,16 @@ public class VDCNetworkServiceBean implements VDCNetworkServiceLocal {
     public Long getTotalStudies(boolean released) {
         Long total = new Long("0");
         boolean bool = !released;
-        Object object = ((List)em.createNativeQuery("select COUNT(study.id) from study, vdc, reviewstate where study.owner_id = vdc.id AND study.reviewstate_id = reviewstate.id AND reviewstate.name = '" + ReviewStateServiceBean.REVIEW_STATE_RELEASED + "' AND vdc.restricted = " + bool).getSingleResult()).get(0);
+        Object object = ((List)em.createNativeQuery("select COUNT(study.id) from study, vdc, studyVersion where study.owner_id = vdc.id AND studyVersion.study_id = study.id AND studyVersion.versionState = '" + StudyVersion.VersionState.RELEASED + "' AND vdc.restricted = " + bool).getSingleResult()).get(0);
         total = (Long)object;
         return total;
     }
     
     public Long getTotalFiles(boolean released) {
         Long total = new Long("0");
-        boolean bool = !released;
-        // TODO: VERSION:  fix query
-      //  Object object = ((List)em.createNativeQuery("select COUNT(studyfile.id) from studyfile, vdc, filemetadata, studyversion, study where study.owner_id = vdc.id AND study.reviewstate_id = reviewstate.id AND reviewstate.name = '" + ReviewStateServiceBean.REVIEW_STATE_RELEASED + "' AND filecategory.study_id = study.id AND studyfile.filecategory_id = filecategory.id AND vdc.restricted = " + bool).getSingleResult()).get(0);
-       // total = (Long)object;
+        boolean bool = !released; 
+        Object object = ((List)em.createNativeQuery("select COUNT(studyfile.id) from studyfile, vdc, filemetadata, studyversion, study where study.owner_id = vdc.id AND study.id = studyversion.study_id AND studyversion.versionstate= '" + StudyVersion.VersionState.RELEASED + "' AND filemetadata.studyversion_id = studyversion.id AND studyfile.id = filemetadata.studyfile_id  AND vdc.restricted = " + bool).getSingleResult()).get(0);
+        total = (Long)object;
         return total;
     }
     

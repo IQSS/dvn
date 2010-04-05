@@ -755,37 +755,10 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
             return (List) em.createQuery(query).getResultList();
         }
 
-    public List<Study> getReviewerStudies(Long vdcId) {
-        String query = "SELECT s FROM Study s WHERE s.reviewState.name = 'In Review' AND s.owner.id = " + vdcId;
-        List<Study> studies = em.createQuery(query).getResultList();
-        for (Iterator it = studies.iterator(); it.hasNext();) {
-            Study elem = (Study) it.next();
-            elem.getReviewState();
-        }
+   
 
-        return studies;
-    }
 
-    public List<Study> getNewStudies(Long vdcId) {
-        String query = "SELECT s FROM Study s WHERE s.reviewState.name = 'New' AND s.owner.id = " + vdcId;
-        List<Study> studies = em.createQuery(query).getResultList();
-        for (Iterator it = studies.iterator(); it.hasNext();) {
-            Study elem = (Study) it.next();
-            elem.getReviewState();
-        }
-
-        return studies;
-    }
-
-    public List<Study> getContributorStudies(VDCUser contributor, VDC vdc) {
-        String query = "SELECT s FROM Study s WHERE s.creator.id = " + contributor.getId().toString() + " and s.owner.id =" + vdc.getId();
-        List<Study> studies = em.createQuery(query).getResultList();
-        for (Iterator it = studies.iterator(); it.hasNext();) {
-            Study elem = (Study) it.next();
-            elem.getReviewState();
-        }
-        return studies;
-    }
+   
 
 
     public List<DataFileFormatType> getDataFileFormatTypes() {

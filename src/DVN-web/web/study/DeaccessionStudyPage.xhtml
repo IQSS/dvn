@@ -45,12 +45,12 @@
                   <ice:outputText value="Leave a comment to explain why the study was deaccessioned."/>
                 </p>
                 <label for="dvnDeaccessionComments">Comments</label><br/>
-                <ice:inputTextarea id="dvnDeaccessionComments"></ice:inputTextarea>
+                <ice:inputTextarea id="dvnDeaccessionComments" value="#{DeaccessionStudyPage.studyVersion.archiveNote}"></ice:inputTextarea>
                 <p>
                   <ice:outputText value="Add a link to another version of the deaccssioned study by including the Global ID of the new study."/>
                 </p>
                 <label for="dvnDeaccessionForwardLink">Global ID</label>
-                <ice:inputText id="dvnDeaccessionForwardLink"></ice:inputText>
+                <ice:inputText id="dvnDeaccessionForwardLink" value="#{DeaccessionStudyPage.studyVersion.deaccessionLink}"></ice:inputText>
               </div>
               <div class="dvnFormPadding dvnFormMargin">
                 <ice:commandButton id="button1" value="Deaccession" action="#{DeaccessionStudyPage.deaccession_action}"/>

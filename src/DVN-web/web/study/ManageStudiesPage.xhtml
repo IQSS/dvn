@@ -55,13 +55,13 @@
                            rendered="#{not empty(ManageStudiesList.studyUIList)}">
                 <div jsfc="ice:panelGroup" id="groupPanel3" styleClass="dvn_StudyListTotals">
                     <div>
-                        <ice:selectOneMenu rendered="true"  id="studyScopeSelectMenu" value="">
+                        <ice:selectOneMenu rendered="#{ManageStudiesList.contributorFilterRendered}"  id="studyScopeSelectMenu" value="">
                             <ice:message for="studyScopeSelectMenu" styleClass="errorMessage"/>
                             <f:selectItems id="studyScopeSelectItems" value="#{ManageStudiesList.studyScopeSelectItems}"/>
                         </ice:selectOneMenu>
                     </div>
                     <div>
-                        <ice:commandButton rendered="true"  id="filterButton" value="Filter" actionListener="#{ManageStudiesList.filter}"/>
+                        <ice:commandButton rendered="#{ManageStudiesList.contributorFilterRendered}"  id="filterButton" value="Filter" actionListener="#{ManageStudiesList.filter}"/>
                         <ice:message styleClass="errorMessage" for="userName"/>
                     </div>
                     <div >

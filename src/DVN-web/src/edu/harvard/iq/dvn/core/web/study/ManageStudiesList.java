@@ -10,6 +10,7 @@ import com.icesoft.faces.component.ext.HtmlDataTable;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyVersion;
+import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.web.SortableList;
 import edu.harvard.iq.dvn.core.web.common.LoginBean;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
@@ -344,6 +345,25 @@ public class ManageStudiesList extends SortableList {
     }
 
 
+    public boolean isContributorFilterRendered(){
+        boolean rendered = VDCBaseBean.getVDCRequestBean().getCurrentVDC() != null && (isUserCuratorOrAdmin() || isRegAndEdit() || isUserContributorAndAllowedToEdit());
+        return rendered;
+    }
 
+    private boolean isUserCuratorOrAdmin(){
+        VDCUser user = loginBean == null ? null : loginBean.getUser();
+        VDC vdc = VDCBaseBean.getVDCRequestBean().getCurrentVDC();
+        return user.isCurator(vdc)|| user.isAdmin(vdc);
+    }
 
+    private boolean isRegAndEdit(){
+        VDC vdc = VDCBaseBean.getVDCRequestBean().getCurrentVDC();
+        return vdc.isAllowRegisteredUsersToContribute() && vdc.isAllowContributorsEditAll();
+    }
+
+    private boolean isUserContributorAndAllowedToEdit(){
+        VDCUser user = loginBean == null ? null : loginBean.getUser();
+        VDC vdc = VDCBaseBean.getVDCRequestBean().getCurrentVDC();
+        return user.isContributor(vdc) && vdc.isAllowContributorsEditAll();
+    }
 }

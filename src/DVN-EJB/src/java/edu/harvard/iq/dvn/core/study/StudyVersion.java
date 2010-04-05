@@ -9,6 +9,8 @@ import edu.harvard.iq.dvn.core.admin.VDCUser;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 import javax.persistence.*;
 
 /**
@@ -58,6 +60,8 @@ public class StudyVersion implements Serializable {
     private Date releaseTime;
     @Temporal(value = TemporalType.TIMESTAMP)
     private Date archiveTime;
+    private String archiveNote;
+    private String deaccessionLink;
 
     public Date getArchiveTime() {
         return archiveTime;
@@ -66,6 +70,24 @@ public class StudyVersion implements Serializable {
     public void setArchiveTime(Date archiveTime) {
         this.archiveTime = archiveTime;
     }
+
+    public String getArchiveNote() {
+        return archiveNote;
+    }
+
+    public void setArchiveNote(String archiveNote) {
+        this.archiveNote = archiveNote;
+    }
+
+    public String getDeaccessionLink() {
+        return deaccessionLink;
+    }
+
+    public void setDeaccessionLink(String deaccessionLink) {
+        this.deaccessionLink = deaccessionLink;
+    }
+
+
 
 
     public List<VersionContributor> getVersionContributors() {
@@ -274,4 +296,12 @@ public class StudyVersion implements Serializable {
         return "edu.harvard.iq.dvn.core.study.StudyVersion[id=" + id + "]";
     }
 
+    public String getUserFriendlyVersionState() {
+        //TODO: move this logic to web tier
+        try {
+            return ResourceBundle.getBundle("studybundle").getString( versionState.toString() );
+        } catch (MissingResourceException e) {
+            return versionState.toString();
+        }
+    }
 }

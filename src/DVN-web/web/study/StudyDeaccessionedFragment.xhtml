@@ -1,0 +1,36 @@
+<div xmlns:gui="http://java.sun.com/jsf/facelets"
+     xmlns:h="http://java.sun.com/jsf/html"
+     xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:jsp="http://java.sun.com/JSP/Page"
+     xmlns:ice="http://www.icesoft.com/icefaces/component"
+     xmlns:dvn="/WEB-INF/tlds/dvn-components"
+     xmlns:ui="http://www.sun.com/web/ui"
+     jsfc="ice:panelGroup"
+     rendered="#{studyPage.deaccessionedView}">
+    <div class="dvn_sectionBox">
+        <div class="dvn_margin12">
+            <div>
+                <ice:outputText id="outputText2" styleClass="warnMessage" value=" STUDY DEACCESSIONED"/>
+
+                <p>
+                    <ice:outputText id="dvnDeaccessionForwardLink" value="#{studyPage.studyUI.studyVersion.metadata.textCitation}"/>
+                </p>
+
+                <p>
+                    <ice:outputText value="The study you have requested has been deaccessioned."/>
+                    <ice:outputText rendered="#{empty studyPage.studyUI.studyVersion.deaccessionLink}" value="No further information has been provided."/>
+                    <ice:outputText rendered="#{!empty studyPage.studyUI.studyVersion.deaccessionLink}" value="An updated version has been created with Global ID,"/>
+                    <ice:outputLink rendered="#{!empty studyPage.studyUI.studyVersion.deaccessionLink}" value="http://hdl.handle.net/#{studyPage.studyUI.studyVersion.archiveLink}">
+                        <ice:outputText value="#{studyPage.studyUI.studyVersion.deaccessionLink}"/>
+                    </ice:outputLink>
+                </p>
+
+                <label for="dvnDeaccessionComments">Comments</label><br/>
+                <p>
+                    <ice:outputText id="dvnDeaccessionComments" value="#{studyPage.studyUI.studyVersion.archiveNote}"/>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</div>

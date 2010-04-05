@@ -318,7 +318,8 @@ public class DSBWrapper implements java.io.Serializable  {
     }
     
     public String calculateUNF(StudyVersion sv) throws IOException {
-        //TODO: VERSION: (check this)
+        // TODO: VERSION: (check this)
+        // Looks OK -- L.A.
         List unfs = new ArrayList();
         for (FileMetadata fmd : sv.getFileMetadatas()) {
             StudyFile temp = fmd.getStudyFile();

@@ -211,13 +211,17 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
             throw new EJBException("Cannot release latestVersion, incorrect state: "+latestVersion.getVersionState());
         }
 
+        Date releaseDate = new Date();
+
         // Archive the previously released version
         if (releasedVersion!=null) {
-            setArchived(releasedVersion);
-
+            releasedVersion.setVersionState(StudyVersion.VersionState.ARCHIVED);
+            releasedVersion.setArchiveTime(releaseDate);
+            releasedVersion.setArchiveNote("Replaced by version " + latestVersion.getVersionNumber());
         }
+
         latestVersion.setVersionState(StudyVersion.VersionState.RELEASED);
-        latestVersion.setReleaseTime(new Date());
+        latestVersion.setReleaseTime(releaseDate);
 
         
 
@@ -232,19 +236,12 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
     }
 
 
-    private void setArchived(StudyVersion sv) {
-        if ( sv != null ) {
-            sv.setVersionState(StudyVersion.VersionState.ARCHIVED);
-            sv.setArchiveTime(new Date());
-        }
-    }
-
-    public void deaccessionStudy(Long studyId) {
-        Study study = em.find(Study.class, studyId);
-        StudyVersion sv = study.getReleasedVersion();
-        setArchived(sv);
-        // save note
-        indexService.deleteStudy(study.getId());
+    public void deaccessionStudy(StudyVersion sv) {
+        sv.setVersionState(StudyVersion.VersionState.ARCHIVED);
+        sv.setArchiveTime(new Date());
+        em.merge(sv);
+        
+        indexService.deleteStudy(sv.getStudy().getId());
     }
     
     public Study getStudyByHarvestInfo(VDC dataverse, String harvestIdentifier) {
@@ -1346,6 +1343,10 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
             } else {
                 //studyVersion = study.getLatestVersion();
                 studyVersion = study.getReleasedVersion();
+
+                if (studyVersion == null) { // check if deaaccessioned
+                    studyVersion = study.getDeaccessionedVersion();
+                }
             }
         }
 

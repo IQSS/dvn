@@ -216,6 +216,6 @@ public interface StudyServiceLocal extends java.io.Serializable {
     public void setReleased(Long studyId);
     public void destroyWorkingCopyVersion(Long studyVersionId);
 
-    public void deaccessionStudy(Long studyId);
+    public void deaccessionStudy(StudyVersion studyVersion);
 
 }

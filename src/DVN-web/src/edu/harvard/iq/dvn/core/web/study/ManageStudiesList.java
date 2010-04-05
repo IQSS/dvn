@@ -97,8 +97,9 @@ public class ManageStudiesList extends SortableList {
                 orderBy="creator.userName";
             } else if (sortColumnName.equals(DATE_CREATED_COLUMN)) {
                 orderBy="createTime";
-            } else if (sortColumnName.equals(STATUS_COLUMN)) {
-                orderBy="reviewState.name";
+                // TODO: VERSION:  update query so we can sort by studyVersion.versionState
+//            } else if (sortColumnName.equals(STATUS_COLUMN)) {
+//                orderBy="reviewState.name";
 //            } else if (sortColumnName.equals(TEMPLATE_COLUMN)) {
 //                orderBy="template.name";
             } else if (sortColumnName.equals(DATE_UPDATED_COLUMN)) {

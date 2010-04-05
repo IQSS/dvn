@@ -25,11 +25,8 @@
  */
 package edu.harvard.iq.dvn.core.web;
 
-import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.index.IndexServiceLocal;
 import edu.harvard.iq.dvn.core.index.SearchTerm;
-import edu.harvard.iq.dvn.core.study.ReviewStateServiceLocal;
-import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyField;
 import edu.harvard.iq.dvn.core.study.StudyFieldServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
@@ -40,7 +37,6 @@ import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import edu.harvard.iq.dvn.core.web.collection.CollectionModel;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import edu.harvard.iq.dvn.core.web.site.VDCUI;
-import edu.harvard.iq.dvn.core.web.study.StudyUI;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -86,8 +82,6 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
     IndexServiceLocal indexServiceBean;
     @EJB
     StudyFieldServiceLocal studyFieldService;
-    @EJB
-    ReviewStateServiceLocal reviewStateService;
     @EJB
     StudyServiceLocal studyService;
     @EJB
@@ -612,26 +606,9 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
     }
 
 
-    private boolean isViewable(Study s) {
-        boolean viewable = false;
-        if (s != null) {
-            viewable = ((!s.getOwner().isRestricted() || s.getOwner().getId().equals(getVDCSessionBean().getLoginBean().getCurrentVDC().getId())) && !s.getReviewState().getId().equals(reviewStateService.findByName(ReviewStateServiceLocal.REVIEW_STATE_IN_REVIEW).getId()) && !s.getReviewState().getId().equals(reviewStateService.findByName(ReviewStateServiceLocal.REVIEW_STATE_NEW).getId()) && (!s.isRestricted() || isUserAllowed(s.getAllowedUsers(), getVDCSessionBean().getLoginBean().getUser().getId())));
-        }
-        return viewable;
+  
 
-    }
-
-    private boolean isUserAllowed(Collection allowedList, Long userId) {
-        boolean userAllowed = false;
-        for (Iterator it = allowedList.iterator(); it.hasNext();) {
-            VDCUser elem = (VDCUser) it.next();
-            if (elem.getId().equals(userId)) {
-                userAllowed = true;
-                break;
-            }
-        }
-        return userAllowed;
-    }
+    
 
     public String search() {
 //        String query = buildQuery();

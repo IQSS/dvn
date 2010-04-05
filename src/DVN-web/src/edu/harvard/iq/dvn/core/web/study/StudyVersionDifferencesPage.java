@@ -28,7 +28,7 @@
  */
 package edu.harvard.iq.dvn.core.web.study;
 
-import edu.harvard.iq.dvn.core.study.ReviewStateServiceLocal;
+
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.study.FileMetadata;
@@ -50,7 +50,6 @@ import javax.servlet.http.HttpServletRequest;
 public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.Serializable  {
 
     @EJB private StudyServiceLocal studyService;
-    @EJB private ReviewStateServiceLocal reviewStateService;
 
 
     public StudyVersionDifferencesPage() {

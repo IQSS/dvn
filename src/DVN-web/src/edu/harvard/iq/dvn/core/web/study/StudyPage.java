@@ -34,7 +34,6 @@ import com.icesoft.faces.component.paneltabset.TabChangeEvent;
 import com.sun.jsfcl.data.DefaultTableDataModel;
 import edu.harvard.iq.dvn.core.mail.MailServiceLocal;
 import edu.harvard.iq.dvn.core.study.DataFileFormatType;
-import edu.harvard.iq.dvn.core.study.ReviewStateServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.vdc.VDC;
@@ -58,8 +57,6 @@ import javax.servlet.http.HttpServletRequest;
 public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
 
     @EJB private StudyServiceLocal studyService;
-    @EJB private ReviewStateServiceLocal reviewStateService;
-    @EJB private MailServiceLocal mailService;
 
 
     public StudyPage() {

@@ -175,7 +175,7 @@
                       <ice:outputText value="#{bundle.MSStatusColumn}"/>
                     </ice:commandSortHeader>
                   </f:facet>
-                  <ice:outputText value="#{studyUI.study.reviewState.name}" styleClass="dvnManageStudiesTableStatusLabel"/>
+                  <ice:outputText value="#{studyUI.study.latestVersion.versionState}" styleClass="dvnManageStudiesTableStatusLabel"/>
                   <ice:outputText value="#{(studyUI.study.latestVersion.draft) ? bundle.MSDraftStatus : ((studyUI.study.latestVersion.inReview) ? bundle.MSReviewStatus :(studyUI.study.latestVersion.released) ? bundle.MSReleasedStatus : bundle.MSArchivedStatus)}"/>
                   <!--
                   <ice:commandButton value="&#187; Release" rendered="#{studyUI.userAuthorizedToRelease and studyUI.study.studyLock==null and studyUI.study.inReview}" actionListener="#{ManageStudiesList.doSetReleased}"/>

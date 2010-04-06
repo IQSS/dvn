@@ -17,7 +17,7 @@
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <input type="hidden" name="pageName" value="DeaccessionStudyPage"/>
         <ice:inputHidden id="studyId" value="#{DeaccessionStudyPage.studyId}"/>
-        <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnWarningMessage">
+        <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnWarningMessage" rendered="#{!DeaccessionStudyPage.updateDeaccessionDetails}">
             <div class="dvnMsgBlockContainer">
               <p><ice:outputText value="By deaccessioning a study, it will be removed, but not permanently deleted. If a user tries to view the study use the persistent global identifier, a page will be displayed with your comments about why the study was deaccessioned, and a link to another study, if desired. You can restore this study by using the Manage Studies page of My Options." escape="false"/></p>
             </div>
@@ -34,13 +34,15 @@
           <div class="dvn_sectionBox">
             <div class="dvn_margin12">
               <div>
-                <ice:graphicImage value="/resources/images/icon_warning.18.png" styleClass="dvn_icon"/>
-                <ice:outputText id="outputText2" styleClass="warnMessage" value=" Are you sure you want to deaccession the study "/>
-                <ice:outputFormat id="outputText3" styleClass="vdcTextStandOut" value="{0} - {1}">
-                  <f:param value="#{DeaccessionStudyPage.studyVersion.study.globalId}"/>
-                  <f:param value="#{DeaccessionStudyPage.studyVersion.metadata.title}"/>
-                </ice:outputFormat>
-                <ice:outputText id="outputText4" styleClass="warnMessage" value="?"/>
+                  <span jsfc="ice:panelGroup"  rendered="#{!DeaccessionStudyPage.updateDeaccessionDetails}">
+                    <ice:graphicImage value="/resources/images/icon_warning.18.png" styleClass="dvn_icon"/>
+                    <ice:outputText id="outputText2" styleClass="warnMessage" value=" Are you sure you want to deaccession the study "/>
+                    <ice:outputFormat id="outputText3" styleClass="vdcTextStandOut" value="{0} - {1}">
+                      <f:param value="#{DeaccessionStudyPage.studyVersion.study.globalId}"/>
+                      <f:param value="#{DeaccessionStudyPage.studyVersion.metadata.title}"/>
+                    </ice:outputFormat>
+                    <ice:outputText id="outputText4" styleClass="warnMessage" value="?"/>
+                    </span>
                 <p>
                   <ice:outputText value="Leave a comment to explain why the study was deaccessioned."/>
                 </p>
@@ -53,7 +55,7 @@
                 <ice:inputText id="dvnDeaccessionForwardLink" value="#{DeaccessionStudyPage.studyVersion.deaccessionLink}"></ice:inputText>
               </div>
               <div class="dvnFormPadding dvnFormMargin">
-                <ice:commandButton id="button1" value="Deaccession" action="#{DeaccessionStudyPage.deaccession_action}"/>
+                <ice:commandButton id="button1" value='#{DeaccessionStudyPage.updateDeaccessionDetails?"Update":"Deaccession"}' action="#{DeaccessionStudyPage.deaccession_action}"/>
                 <ice:commandButton immediate="true" id="button2" value="Cancel" action="#{DeaccessionStudyPage.cancel_action}"/>
               </div>
             </div>

@@ -48,6 +48,7 @@ public class DeaccessionStudyPage extends VDCBaseBean implements java.io.Seriali
 
     private Long studyId;
     private StudyVersion studyVersion;
+    private boolean updateDeAccessionDetails = false;
 
     public void init() {
         super.init();
@@ -56,6 +57,10 @@ public class DeaccessionStudyPage extends VDCBaseBean implements java.io.Seriali
         if (studyId != null) {
             Study study = studyService.getStudy(studyId);
             studyVersion = study.getReleasedVersion();
+            if (studyVersion == null) {
+                studyVersion = study.getDeaccessionedVersion();
+                updateDeAccessionDetails = true;
+            }
         } else {
             // WE SHOULD HAVE A STUDY ID, throw an error
             System.out.println("ERROR: in DeaccessionStudyPage, without a studyId");
@@ -79,12 +84,24 @@ public class DeaccessionStudyPage extends VDCBaseBean implements java.io.Seriali
         this.studyVersion = studyVersion;
     }
 
+    public boolean isUpdateDeAccessionDetails() {
+        return updateDeAccessionDetails;
+    }
+
+    public void setUpdateDeAccessionDetails(boolean updateDeAccessionDetails) {
+        this.updateDeAccessionDetails = updateDeAccessionDetails;
+    }
+
 
     public String deaccession_action() {
+        if (updateDeAccessionDetails) {
+            studyService.deaccessionStudy(studyVersion);
+        } else {
+            studyService.updateStudyVersion(studyVersion);
+        }
 
-        studyService.deaccessionStudy(studyVersion);
         getVDCRequestBean().setStudyId(studyVersion.getStudy().getId());
-        getVDCRequestBean().setStudyVersionNumber(studyVersion.getVersionNumber());
+        // we don't provide a version number, so the user goes to the deaccessioned page
         return "viewStudy";
     }
 

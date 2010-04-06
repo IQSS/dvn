@@ -48,7 +48,7 @@ public class DeaccessionStudyPage extends VDCBaseBean implements java.io.Seriali
 
     private Long studyId;
     private StudyVersion studyVersion;
-    private boolean updateDeAccessionDetails = false;
+    private boolean updateDeaccessionDetails = false;
 
     public void init() {
         super.init();
@@ -59,7 +59,7 @@ public class DeaccessionStudyPage extends VDCBaseBean implements java.io.Seriali
             studyVersion = study.getReleasedVersion();
             if (studyVersion == null) {
                 studyVersion = study.getDeaccessionedVersion();
-                updateDeAccessionDetails = true;
+                updateDeaccessionDetails = true;
             }
         } else {
             // WE SHOULD HAVE A STUDY ID, throw an error
@@ -84,17 +84,17 @@ public class DeaccessionStudyPage extends VDCBaseBean implements java.io.Seriali
         this.studyVersion = studyVersion;
     }
 
-    public boolean isUpdateDeAccessionDetails() {
-        return updateDeAccessionDetails;
+    public boolean isUpdateDeaccessionDetails() {
+        return updateDeaccessionDetails;
     }
 
-    public void setUpdateDeAccessionDetails(boolean updateDeAccessionDetails) {
-        this.updateDeAccessionDetails = updateDeAccessionDetails;
+    public void setUpdateDeaccessionDetails(boolean updateDeaccessionDetails) {
+        this.updateDeaccessionDetails = updateDeaccessionDetails;
     }
 
 
     public String deaccession_action() {
-        if (updateDeAccessionDetails) {
+        if (updateDeaccessionDetails) {
             studyService.deaccessionStudy(studyVersion);
         } else {
             studyService.updateStudyVersion(studyVersion);

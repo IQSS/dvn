@@ -195,7 +195,8 @@ public class ManageStudiesList extends SortableList {
         String action = null;
         if (releasedVersion != null) {
             VDCBaseBean.getVDCRequestBean().setStudyId(studyUI.getStudyId());
-            VDCBaseBean.getVDCRequestBean().setStudyVersionNumberList(releasedVersion.getVersionNumber() + "," + studyUI.getStudyVersion().getNumberOfFiles());
+//            VDCBaseBean.getVDCRequestBean().setStudyVersionNumberList(releasedVersion.getVersionNumber() + "," + studyUI.getStudyVersion().getNumberOfFiles());
+            VDCBaseBean.getVDCRequestBean().setStudyVersionNumberList(releasedVersion.getVersionNumber() + "," + releasedVersion.getNumberOfFiles());
             VDCBaseBean.getVDCRequestBean().setActionMode("confirmRelease");
             action = "diffStudy";
         } else {
@@ -215,10 +216,6 @@ public class ManageStudiesList extends SortableList {
 
     public void delete_action(){
 
-    }
-
-    public String editStudy_action(){
-        return "editStudy";
     }
 
     public void restore_action(){

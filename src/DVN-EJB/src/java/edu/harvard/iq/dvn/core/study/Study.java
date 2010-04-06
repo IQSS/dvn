@@ -822,7 +822,6 @@ public class Study implements java.io.Serializable {
        }
 
         sv.setVersionNumber(latestVersion.getVersionNumber()+1);
-        // TODO: VERSION:  will this cause too many db calls?
         // I'm adding the version to the list so it will be persisted when
         // the study object is persisted.
         getStudyVersions().add(0, sv);

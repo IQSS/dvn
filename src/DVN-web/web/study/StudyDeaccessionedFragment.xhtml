@@ -7,26 +7,32 @@
      xmlns:ui="http://www.sun.com/web/ui"
      jsfc="ice:panelGroup"
      rendered="#{studyPage.deaccessionedView}">
-    <div class="dvn_sectionBox">
+    <div class="dvn_sectionBoxNoBorders">
         <div class="dvn_margin12">
             <div>
-                <span jsfc="ice:panelGroup" rendered="#{(VDCSession.loginBean.curator or VDCSession.loginBean.admin or  VDCSession.loginBean.networkAdmin)}">
-                    <ice:outputText value="This study has been deacessioned as is not accesable to the general viewing public." />
+                <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnWarningMessage" rendered="#{(VDCSession.loginBean.curator or VDCSession.loginBean.admin or  VDCSession.loginBean.networkAdmin)}">
+                  <div class="dvnMsgBlockContainer">
+                    <p><ice:outputText value="This study has been deacessioned and is not accesable to the general viewing public."/>
                     <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;versionNumber=#{studyPage.studyUI.studyVersion.versionNumber}">
-                        <ice:outputText value="View"/>
+                        <ice:outputText value="View" nospan="true"/>
                     </ice:outputLink>
                     <ice:outputText value="the study version details or" />
                     <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/DeaccessionStudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}">
-                        <ice:outputText value="Edit"/>
+                        <ice:outputText value="Edit" nospan="true"/>
                     </ice:outputLink>
-                    <ice:outputText value="what an end user sees when attempting to access this study." />
-                </span>
+                    <ice:outputText value="what an end user sees when attempting to access this study."/></p>
+                  </div>
+                </div>
 
-                <ice:outputText id="outputText2" styleClass="warnMessage" value=" STUDY DEACCESSIONED"/>
+                <style type="text/css">
+                    .dvnWarningMessage a {font-weight: bold;}
+                    span.warnMessage {text-transform: uppercase;}
+                    label.dvnDeaccessionCommentsLabel {display: block; font-weight: bold;}
+                </style>
 
-                <p>
-                    <ice:outputText id="dvnDeaccessionForwardLink" value="#{studyPage.studyUI.studyVersion.metadata.textCitation}"/>
-                </p>
+                <h1><ice:outputText styleClass="warnMessage" value="Study Deaccesioned"/></h1>
+
+                <ice:outputText id="dvnDeaccessionForwardLink" value="#{studyPage.studyUI.studyVersion.metadata.textCitation}"/>
 
                 <p>
                     <ice:outputText value="The study you have requested has been deaccessioned."/>
@@ -37,10 +43,8 @@
                     </ice:outputLink>
                 </p>
 
-                <label for="dvnDeaccessionComments">Comments</label><br/>
-                <p>
-                    <ice:outputText id="dvnDeaccessionComments" value="#{studyPage.studyUI.studyVersion.archiveNote}"/>
-                </p>
+                <label for="dvnDeaccessionComments" class="dvnDeaccessionCommentsLabel">Comments</label>
+                <ice:outputText id="dvnDeaccessionComments" value="#{studyPage.studyUI.studyVersion.archiveNote}"/>
 
             </div>
         </div>

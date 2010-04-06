@@ -10,6 +10,18 @@
     <div class="dvn_sectionBox">
         <div class="dvn_margin12">
             <div>
+                <span jsfc="ice:panelGroup" rendered="#{(VDCSession.loginBean.curator or VDCSession.loginBean.admin or  VDCSession.loginBean.networkAdmin)}">
+                    <ice:outputText value="This study has been deacessioned as is not accesable to the general viewing public." />
+                    <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;versionNumber=#{studyPage.studyUI.studyVersion.versionNumber}">
+                        <ice:outputText value="View"/>
+                    </ice:outputLink>
+                    <ice:outputText value="the study version details or" />
+                    <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/DeaccessionStudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}">
+                        <ice:outputText value="Edit"/>
+                    </ice:outputLink>
+                    <ice:outputText value="what an end user sees when attempting to access this study." />
+                </span>
+
                 <ice:outputText id="outputText2" styleClass="warnMessage" value=" STUDY DEACCESSIONED"/>
 
                 <p>
@@ -20,7 +32,7 @@
                     <ice:outputText value="The study you have requested has been deaccessioned."/>
                     <ice:outputText rendered="#{empty studyPage.studyUI.studyVersion.deaccessionLink}" value="No further information has been provided."/>
                     <ice:outputText rendered="#{!empty studyPage.studyUI.studyVersion.deaccessionLink}" value="An updated version has been created with Global ID,"/>
-                    <ice:outputLink rendered="#{!empty studyPage.studyUI.studyVersion.deaccessionLink}" value="http://hdl.handle.net/#{studyPage.studyUI.studyVersion.archiveLink}">
+                    <ice:outputLink rendered="#{!empty studyPage.studyUI.studyVersion.deaccessionLink}" value="http://hdl.handle.net/#{studyPage.studyUI.studyVersion.deaccessionLink}">
                         <ice:outputText value="#{studyPage.studyUI.studyVersion.deaccessionLink}"/>
                     </ice:outputLink>
                 </p>

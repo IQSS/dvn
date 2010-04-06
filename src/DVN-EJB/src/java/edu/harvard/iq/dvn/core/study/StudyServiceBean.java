@@ -740,6 +740,22 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
 
     }
 
+    public List getDvOrderedStudyVersionIds(Long vdcId, String orderBy, boolean ascending) {
+        String query = "SELECT s.latestVersion.id FROM Study s WHERE s.owner.id = " + vdcId + " ORDER BY s." + orderBy;
+        if (!ascending) {
+            query += " desc";
+        }
+        return (List) em.createQuery(query).getResultList();
+    }
+
+    public List getDvOrderedStudyIdsByContributor(Long vdcId, Long contributorId, String orderBy, boolean ascending) {
+        String query = "SELECT max(v.id) from studyversion v, study s, versioncontributor c WHERE s.owner.id = " + vdcId + " and c.contributor_id = " + contributorId + " and c.studyversion_id=v.id and v.study_id=s.id group by s.id ORDER BY s." + orderBy;
+        if (!ascending) {
+            query += " desc";
+        }
+        return (List) em.createNativeQuery(query).getResultList();
+    }
+
        public List getDvOrderedStudyIds(Long vdcId, String orderBy, boolean ascending ) {
           String query = "SELECT s.id FROM Study s WHERE s.owner.id = " + vdcId + " ORDER BY s."+orderBy;
           if (!ascending) {

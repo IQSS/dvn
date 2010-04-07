@@ -10,17 +10,13 @@
     <div class="dvn_sectionBoxNoBorders">
         <div class="dvn_margin12">
             <div>
-                <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnWarningMessage" rendered="#{(VDCSession.loginBean.curator or VDCSession.loginBean.admin or  VDCSession.loginBean.networkAdmin)}">
+                <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnWarningMessage" rendered="#{(VDCSession.loginBean.curator or VDCSession.loginBean.admin or VDCSession.loginBean.networkAdmin)}">
                   <div class="dvnMsgBlockContainer">
-                    <p><ice:outputText value="This study has been deacessioned and is not accesable to the general viewing public."/>
-                    <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;versionNumber=#{studyPage.studyUI.studyVersion.versionNumber}">
-                        <ice:outputText value="View" nospan="true"/>
-                    </ice:outputLink>
-                    <ice:outputText value="the study version details or" />
-                    <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/DeaccessionStudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}">
-                        <ice:outputText value="Edit" nospan="true"/>
-                    </ice:outputLink>
-                    <ice:outputText value="what an end user sees when attempting to access this study."/></p>
+                    <ice:outputFormat value="#{bundlePageInfo.deaccessionedStudyPublicHelp}" escape="false">
+                      <f:param value="#{VDCRequest.currentVDCURL}"/>
+                      <f:param value="#{studyPage.studyUI.study.id}"/>
+                      <f:param value="#{studyPage.studyUI.studyVersion.versionNumber}"/>
+                    </ice:outputFormat>
                   </div>
                 </div>
 

@@ -178,6 +178,18 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
         <ice:inputHidden id="studyId" value="#{studyPage.studyId}"/>
         <ice:inputHidden id="slIndex" value="#{VDCRequest.studyListingIndex}"/>
         <div class="dvn_section">
+
+                <style type="text/css">
+                    .dvnWarningMessage a {font-weight: bold;}
+                </style>
+                <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnWarningMessage" rendered="#{studyPage.studyUI.study.deaccessionedVersion != null and (VDCSession.loginBean.curator or VDCSession.loginBean.admin or VDCSession.loginBean.networkAdmin)}">
+                  <div class="dvnMsgBlockContainer">
+                    <ice:outputFormat value="#{bundlePageInfo.deaccessionedStudyDetailHelp}" escape="false">
+                      <f:param value="#{VDCRequest.currentVDCURL}" />
+                      <f:param value="#{studyPage.studyUI.study.id}"/>
+                    </ice:outputFormat>
+                  </div>
+                </div>
             <div class="dvnstudytitleblock">
                 <div class="dvnstudyadminboxfloat">
                     <div jsfc="ice:panelGroup" styleClass="dvnstudypreviouslisting" rendered="#{!empty VDCRequest.studyListingIndex}">
@@ -188,7 +200,7 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
                     <div jsfc="ice:panelGroup" styleClass="dvnstudyadminbox" rendered="#{VDCSession.loginBean.user!=null and studyPage.studyUI.userAuthorizedToEdit}">
                         <div jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.study.studyLock==null}">
                             <ul class="dvnstudyadminlinksL">
-                                <span jsfc="ice:panelGroup" rendered="#{ studyPage.studyUI.studyVersion == studyPage.studyUI.study.latestVersion}">
+                                <span jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.studyVersion == studyPage.studyUI.study.latestVersion}">
                                     <li>
                                         <dvn:tooltip tooltipMessage="#{studybundle.editStudyTip}" linkText="#{studybundle.editStudyText}" eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=catalog#{VDCRequest.studyListingIndexAsParameter}"/>
                                     </li>

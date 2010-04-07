@@ -17,10 +17,18 @@
                 <div jsfc="ice:panelGroup" styleClass="dvn_section">
                     <span class="dvn_sectionTitleR">
                         <ice:outputLink
-                            value="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/SubsettingPage.xhtml?dtId=#{AnalysisResultsPage.dtId}">
+                            value="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/SubsettingPage.xhtml?dtId=#{AnalysisResultsPage.dtId}"
+                            rendered="#{! AnalysisResultsPage.versionNumberSupplied}">
                             <ice:outputText
                                 value="Back to Analysis and Subsetting"/>
                         </ice:outputLink>
+                        <ice:outputLink
+                            value="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/SubsettingPage.xhtml?dtId=#{AnalysisResultsPage.dtId}&amp;versionNumber=#{AnalysisResultsPage.versionNumber}"
+                            rendered="#{AnalysisResultsPage.versionNumberSupplied}">
+                            <ice:outputText
+                                value="Back to Analysis and Subsetting"/>
+                        </ice:outputLink>
+
                     </span>
                     <div class="dvn_sectionTitle">
                         <h:outputText value="#{AnalysisResultsPage.studyTitle}"/>

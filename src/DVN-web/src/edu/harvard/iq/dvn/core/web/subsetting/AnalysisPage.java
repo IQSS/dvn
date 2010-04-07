@@ -1405,6 +1405,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             resultInfo.put("studyTitle", studyTitle);
             resultInfo.put("studyNo", getStudyId().toString());
             resultInfo.put("dtId", dtId.toString());
+            if (versionNumber != null) {
+                resultInfo.put("versionNumber", versionNumber.toString());
+            }
             resultInfo.put("studyURL", studyURL);
             resultInfo.put("R_min_verion_no",resultInfo.get("Rversion").substring(2));
            
@@ -3539,6 +3542,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             resultInfo.put("studyTitle", studyTitle);
             resultInfo.put("studyNo", getStudyId().toString());
             resultInfo.put("dtId", dtId.toString());
+            if (versionNumber != null) {
+                resultInfo.put("versionNumber", versionNumber.toString());
+            }
             resultInfo.put("studyURL", studyURL);
             resultInfo.put("R_min_verion_no",resultInfo.get("Rversion").substring(2));
             
@@ -6267,6 +6273,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             resultInfo.put("studyTitle", studyTitle);
             resultInfo.put("studyNo", getStudyId().toString());
             resultInfo.put("dtId", dtId.toString());
+            if (versionNumber != null) {
+                resultInfo.put("versionNumber", versionNumber.toString());
+            }
             resultInfo.put("studyURL", studyURL);
             resultInfo.put("R_min_verion_no",resultInfo.get("Rversion").substring(2));
             

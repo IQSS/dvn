@@ -76,7 +76,16 @@ public class AnalysisResultsPage extends VDCBaseBean implements java.io.Serializ
     public void setDtId(String dtId) {
         this.dtId = dtId;
     }
-    
+
+    private String versionNumber;
+
+    public String getVersionNumber() {
+        return this.versionNumber;
+    }
+
+    public void setVersionNumber(String vn) {
+        this.versionNumber = vn;
+    }
     public String zipFile;
 
     public String getZipFile() {
@@ -219,6 +228,10 @@ public class AnalysisResultsPage extends VDCBaseBean implements java.io.Serializ
 
     public void setResultURLhtml(String resultURLhtml) {
         this.resultURLhtml = resultURLhtml;
+    }
+
+    public boolean isVersionNumberSupplied() {
+        return (versionNumber == null || versionNumber.equals(""));
     }
 /*
     public String resultURLRworkspace;
@@ -429,6 +442,7 @@ public class AnalysisResultsPage extends VDCBaseBean implements java.io.Serializ
             offlineCitation = resultInfo.get("offlineCitation");
             studyTitle      = resultInfo.get("studyTitle");
             dtId            = resultInfo.get("dtId");
+            versionNumber   = resultInfo.get("versionNumber");
             fileUNF         = resultInfo.get("fileUNF");
             variableList    = resultInfo.get("variableList");
             zeligVersion    = resultInfo.get("zeligVersion");

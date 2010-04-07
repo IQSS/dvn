@@ -516,28 +516,36 @@ public abstract class StudyFile implements Serializable {
         return getLatestFileMetadata().getLabel();
     }
 
+    public String getFileName(Long versionNumber) {
+        if (getFileMetadata(versionNumber) == null) {
+            return null;
+        }
+        return getFileMetadata(versionNumber).getLabel();
+    }
+
     private FileMetadata getLatestFileMetadata() {
-        Long studyVersionNumber = null;
-
-        if (study == null || study.getLatestVersion() == null) {
-            return null;
-        }
-
-        studyVersionNumber = study.getLatestVersion().getVersionNumber();
-
-        if (studyVersionNumber == null) {
-            return null;
-        }
-
-        //FileMetadata fmd = null;
+        FileMetadata fmd = null;
 
         for (FileMetadata fileMetadata : fileMetadatas) {
-            //if (fmd == null || fileMetadata.getStudyVersion().getVersionNumber().compareTo( fmd.getStudyVersion().getVersionNumber() ) == 1 ) {
-            if (fileMetadata != null && fileMetadata.getStudyVersion() != null &&
-                studyVersionNumber.equals( fileMetadata.getStudyVersion().getVersionNumber() ) ) {
-                return fileMetadata;
+            if (fmd == null || fileMetadata.getStudyVersion().getVersionNumber().compareTo( fmd.getStudyVersion().getVersionNumber() ) > 0 ) {
+                fmd = fileMetadata;
             }                       
         }
+        return fmd;
+    }
+
+    private FileMetadata getFileMetadata (Long versionNumber) {
+        if (versionNumber == null) {
+                return getLatestFileMetadata();
+        }
+
+        for (FileMetadata fileMetadata : fileMetadatas) {
+            if (fileMetadata != null && fileMetadata.getStudyVersion() != null &&
+                versionNumber.equals( fileMetadata.getStudyVersion().getVersionNumber() ) ) {
+                return fileMetadata;
+            }
+        }
+
         return null;
     }
 

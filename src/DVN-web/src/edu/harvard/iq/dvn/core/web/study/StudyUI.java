@@ -74,8 +74,8 @@ public class StudyUI  implements java.io.Serializable {
     
     private Study study;
     private StudyVersion studyVersion;
-    private Metadata metadata;
     private Long studyId;
+    private Long studyVersionId;
     private Map studyFields;
     private VDCUser user;
     private UserGroup ipUserGroup;
@@ -86,6 +86,8 @@ public class StudyUI  implements java.io.Serializable {
     private static DateFormat dateFormatter = DateFormat.getDateInstance(DateFormat.MEDIUM);
     
     /** Creates a new instance of StudyUI
+     *
+     *  Used in VDCCollectionTree
      *  this constructor does not initialize the file category ui list
      *  and is meant to be used in places where you do not need them
      *  e.g. the StudyListingPage or the CollectionTree
@@ -93,112 +95,93 @@ public class StudyUI  implements java.io.Serializable {
     public StudyUI(Study s) {
         this.study = s;
         this.studyId = s.getId();
+        this.studyVersion = study.getReleasedVersion();
+
     }
+   
+
+
     /**
-     *  Used in View Study Page - user is required to determine permissions
+     *  Used in StudyListingPage
+     * @param sid
+     * @param studyFields
+     * @param user
+     * @param ipUserGroup
      */
-    public StudyUI(Study s, VDCUser u) {
-        this.study = s;
-        this.user = u;
-        this.studyId = s.getId();
-    }
-
-    public StudyUI(Long sid) {
-        this.studyId = sid;
-    }
-    
-    public StudyUI(Long sid, Map studyFields) {
-        this.studyId = sid;
-        this.studyFields = studyFields;
-    }
-
     public StudyUI(Long sid, Map studyFields, VDCUser user, UserGroup ipUserGroup) {
         this.studyId = sid;
         this.studyFields = studyFields;
         this.user = user;
         this.ipUserGroup = ipUserGroup;
     }
-        
+
+    /**
+     * Used in EditCollectionPage
+     * @param sid
+     * @param user
+     * @param ipUserGroup
+     * @param selected
+     */
     public StudyUI(Long sid, VDCUser user, UserGroup ipUserGroup, boolean selected) {
         this.studyId = sid;
         this.user = user;
         this.ipUserGroup = ipUserGroup;        
         this.selected = selected;
     }
-
+    /**
+     * Used in EditCollectionPage
+     * @param s
+     * @param user
+     * @param ipUserGroup
+     * @param selected
+     */
     public StudyUI(Study s, VDCUser user, UserGroup ipUserGroup, boolean selected) {
         this.study = s;
         this.studyId = s.getId();
+        this.studyVersion = study.getReleasedVersion();
         this.user = user;
         this.ipUserGroup = ipUserGroup;        
         this.selected = selected;
     }
 
     /**
-     * Used for  Manage Studies page - to determine
+     * Used for  ManageStudiesList page - to determine
      * if user is authorized to Edit or change the state
-     * @param sid
+     * @param studyVersionId
      * @param user
      */
-    public StudyUI(Long sid, VDCUser user) {
-        this.studyId = sid;
+    public StudyUI(Long studyVersionId, VDCUser user) {
+        this.studyVersionId = studyVersionId;
         this.user = user;
     }
 
-    /**
-     * Creates a new instance of StudyUI
-     * this constructor initializes the file category ui list
-     * Use this constructor if you want to set the StudyFileUI.fileRestrictedFor user value
-     */
-    public StudyUI(Study s, VDC vdc, VDCUser user, UserGroup ipUserGroup) {
-        this.study = s;
-        this.studyId = s.getId();
-        this.user = user;
-        this.ipUserGroup = ipUserGroup;
-        initFileCategoryUIList(vdc, user, ipUserGroup);
-    }
-
-    public StudyUI(StudyVersion sv) {
-        this.studyVersion = sv;
-        this.metadata = sv.getMetadata();
-        this.study = sv.getStudy();
-        this.studyId = this.study.getId();
-    }
+ 
     /**
      *  Used in View Study Page - user is required to determine permissions
      */
     public StudyUI(StudyVersion sv, VDCUser u) {
         this.studyVersion = sv;
-        this.metadata = sv.getMetadata();
         this.study = sv.getStudy();
         this.studyId = this.study.getId();
         this.user = u;
     }
 
 
-
-    public StudyUI(StudyVersion sv, VDCUser user, UserGroup ipUserGroup, boolean selected) {
-        this.studyVersion = sv;
-        this.metadata = sv.getMetadata();
-        this.study = sv.getStudy();
-        this.studyId = this.study.getId();
-        this.user = user;
-        this.ipUserGroup = ipUserGroup;
-        this.selected = selected;
-    }
+   
 
 
    
     /**
+     * Used In StudyPage
      * Creates a new instance of StudyUI
      * this constructor initializes the file category ui list
      * Use this constructor if you want to set the StudyFileUI.fileRestrictedFor user value
      */
     public StudyUI(StudyVersion sv, VDC vdc, VDCUser user, UserGroup ipUserGroup) {
         this.studyVersion = sv;
-        this.metadata = sv.getMetadata();
         this.study = sv.getStudy();
         this.studyId = this.study.getId();
+
         this.user = user;
         this.ipUserGroup = ipUserGroup;
         initFileCategoryUIList(vdc, user, ipUserGroup);
@@ -206,13 +189,13 @@ public class StudyUI  implements java.io.Serializable {
 
 
     /**
+     * Used In StudyVersionDifferencesPage
      * Creates a new instance of StudyUI used for detecting differences
      * between study versions.
      */
 
     public StudyUI(StudyVersion sv, VDCUser user, boolean withFiles) {
         this.studyVersion = sv;
-        this.metadata = sv.getMetadata();
         this.study = sv.getStudy();
         this.studyId = this.study.getId();
         this.user = user;
@@ -253,26 +236,27 @@ public class StudyUI  implements java.io.Serializable {
     public Study getStudy() {
         // check to see if study is loaded or if we only have the studyId
         if (study == null) {
-            initStudyService();
-            study = studyService.getStudyForSearch(studyId, studyFields);
-        }
-        
+            initStudyAndVersion();
+        }        
         return study;
     }
 
-    public Metadata getMetadata() {
-        // TODO: VERSION: change this to use a study version object
-        if (metadata == null) {
-            initStudyService();
-            study = studyService.getStudyForSearch(studyId, studyFields);
-            if (study.getReleasedVersion() != null) {
-                metadata = study.getReleasedVersion().getMetadata();
-            } else {
-                metadata = study.getStudyVersions().get(0).getMetadata();
-            }
-        }
 
-        return metadata;
+    private void initStudyAndVersion() {
+        initStudyService();
+        if (studyId!=null) {
+                study = studyService.getStudyForSearch(studyId, studyFields);
+                studyVersion = study.getReleasedVersion();
+
+
+        } else if (studyVersionId!=null) {
+                studyVersion = studyService.getStudyVersionById(studyVersionId);
+                study = studyVersion.getStudy();
+        }
+    }
+
+    public Metadata getMetadata() {
+        return getStudyVersion().getMetadata();
     }
     
     public void setStudy(Study study) {
@@ -280,6 +264,9 @@ public class StudyUI  implements java.io.Serializable {
     }
 
     public StudyVersion getStudyVersion() {
+        if (studyVersion==null) {
+                initStudyAndVersion();
+        }
         return studyVersion;
     }
     
@@ -772,8 +759,8 @@ public class StudyUI  implements java.io.Serializable {
      * @return
      */
     public String getDataverseTermsOfUse() {
-        if (study.getOwner().isDownloadTermsOfUseEnabled()) {
-            return study.getOwner().getDownloadTermsOfUse();
+        if (getStudy().getOwner().isDownloadTermsOfUseEnabled()) {
+            return getStudy().getOwner().getDownloadTermsOfUse();
         }
         return "";
     }

@@ -114,7 +114,7 @@ public class DSBIngestMessageBean implements MessageListener {
             
             if ( ingestMessage.sendInfoMessage() || ( problemFiles.size() >= 0 && ingestMessage.sendErrorMessage() ) ) {
                 //TODO: VERSION:
-                //mailService.sendIngestCompletedNotification(ingestMessage.getIngestEmail(), successfuleFiles, problemFiles);
+                mailService.sendIngestCompletedNotification(ingestMessage.getIngestEmail(), successfuleFiles, problemFiles);
             }
             
         } catch (JMSException ex) {
@@ -125,7 +125,7 @@ public class DSBIngestMessageBean implements MessageListener {
             // if a general exception is caught that means the entire upload failed
             if (ingestMessage.sendErrorMessage()) {
                 //TODO: VERSION:
-                //mailService.sendIngestCompletedNotification(ingestMessage.getIngestEmail(), null, ingestMessage.getFileBeans());
+                mailService.sendIngestCompletedNotification(ingestMessage.getIngestEmail(), null, ingestMessage.getFileBeans());
             }
             
         } finally {
@@ -146,12 +146,14 @@ public class DSBIngestMessageBean implements MessageListener {
         DataTable dt = tdf.getDataTable();
 
         //TODO: VERSION:
+        //  looks OK. -- L.A.
         TabularDataFile file = (TabularDataFile) fileMetadata.getStudyFile();
       
         // set to actual file (and copy over the UNF)
         file.setDataTable( dt );
         dt.setStudyFile(file);
         file.setUnf(dt.getUnf());
+        file.getFileMetadatas().add(fileMetadata);
 
     }
  

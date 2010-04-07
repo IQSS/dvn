@@ -58,16 +58,17 @@ public abstract class StudyFile implements Serializable {
     private String unf;
 
 
-    public StudyFile() {
-    }
-
-
     @OneToMany(mappedBy="studyFile", cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
     private List<FileMetadata> fileMetadatas;
+
 
     /**
      * Creates a new instance of StudyFile
      */
+    public StudyFile() {
+        fileMetadatas = new ArrayList<FileMetadata>();
+    }
+
     public StudyFile(Study study) {
         this.setStudy( study );
         study.getStudyFiles().add(this);
@@ -78,6 +79,7 @@ public abstract class StudyFile implements Serializable {
         sfActivity.setStudy(this.getStudy());
         //TODO: add both sides of relationship here
         //this.getStudy().getStudyFileActivity().add(sfActivity);
+        fileMetadatas = new ArrayList<FileMetadata>();
     }
 
 
@@ -503,19 +505,40 @@ public abstract class StudyFile implements Serializable {
 
 
     // TODO: VERSION: review if this is needed
+    // I believe it is still needed. At least the DSB ingest framework still
+    // uses this method. (And I'm assuming we'll always want to be able to
+    // get the filename of a given studyFile -- unless I'm missing something).
+    //  -- L.A.
     public String getFileName() {
+        if (getLatestFileMetadata() == null) {
+            return null;
+        }
         return getLatestFileMetadata().getLabel();
     }
 
     private FileMetadata getLatestFileMetadata() {
-        FileMetadata fmd = null;
-        for (FileMetadata fileMetadata : fileMetadatas) {
-            if (fmd == null || fileMetadata.getStudyVersion().getVersionNumber().compareTo( fmd.getStudyVersion().getVersionNumber() ) == 1 ) {
-                fmd = fileMetadata;
-            }           
-            
+        Long studyVersionNumber = null;
+
+        if (study == null || study.getLatestVersion() == null) {
+            return null;
         }
-        return fmd;
+
+        studyVersionNumber = study.getLatestVersion().getVersionNumber();
+
+        if (studyVersionNumber == null) {
+            return null;
+        }
+
+        //FileMetadata fmd = null;
+
+        for (FileMetadata fileMetadata : fileMetadatas) {
+            //if (fmd == null || fileMetadata.getStudyVersion().getVersionNumber().compareTo( fmd.getStudyVersion().getVersionNumber() ) == 1 ) {
+            if (fileMetadata != null && fileMetadata.getStudyVersion() != null &&
+                studyVersionNumber.equals( fileMetadata.getStudyVersion().getVersionNumber() ) ) {
+                return fileMetadata;
+            }                       
+        }
+        return null;
     }
 
 //    @Override

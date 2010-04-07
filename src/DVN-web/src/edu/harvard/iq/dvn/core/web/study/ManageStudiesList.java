@@ -7,6 +7,7 @@ package edu.harvard.iq.dvn.core.web.study;
 
 import com.icesoft.faces.component.datapaginator.DataPaginator;
 import com.icesoft.faces.component.ext.HtmlDataTable;
+import com.icesoft.faces.component.ext.HtmlSelectOneMenu;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyVersion;
@@ -107,16 +108,16 @@ public class ManageStudiesList extends SortableList {
             } else {
                 throw new RuntimeException("Unknown sortColumnName: "+sortColumnName);
             }
-            List studyIds =null;
-            if (loginBean!=null && loginBean.isContributor()) {
-                studyIds = studyService.getDvOrderedStudyIdsByCreator(vdcId, loginBean.getUser().getId(), orderBy, ascending);
+            List studyVersionIds =null;
+            if (loginBean!=null && loginBean.isContributor() && contributorFilter) {
+                studyVersionIds = studyService.getDvOrderedStudyVersionIdsByContributor(vdcId, loginBean.getUser().getId(), orderBy, ascending);
             } else {
-                studyIds = studyService.getDvOrderedStudyIds(vdcId, orderBy, ascending);
+                studyVersionIds = studyService.getDvOrderedStudyVersionIds(vdcId, orderBy, ascending);
             }
             studyUIList = new ArrayList<StudyUI>();
             VDCUser user = loginBean == null ? null : loginBean.getUser();
-            for (Object studyId: studyIds) {
-                studyUIList.add(new StudyUI((Long)studyId,user));
+            for (Object studyVersionId: studyVersionIds) {
+                studyUIList.add(new StudyUI((Long)studyVersionId,user));
             }
 
     }
@@ -315,8 +316,12 @@ public class ManageStudiesList extends SortableList {
         }
     }
 
-    public void filter(ActionEvent event){
+    private boolean contributorFilter;
 
+    public void filter(ActionEvent event){
+        System.out.println("Filter is "+ filterDropdown.getValue());
+        contributorFilter = Boolean.valueOf((String)filterDropdown.getValue());
+        studyUIList = null;
     }
     
     private boolean showArchivedStudies;
@@ -337,8 +342,8 @@ public class ManageStudiesList extends SortableList {
 
     public List getStudyScopeSelectItems() {
         List selectItems = new ArrayList();
-        selectItems.add(new SelectItem(1, "All studies belonging to the dataverse"));
-        selectItems.add(new SelectItem(2, "Only studies I have contributed to"));
+        selectItems.add(new SelectItem(false, "All studies belonging to the dataverse"));
+        selectItems.add(new SelectItem(true, "Only studies I have contributed to"));
         return selectItems;
     }
 
@@ -363,5 +368,35 @@ public class ManageStudiesList extends SortableList {
         VDCUser user = loginBean == null ? null : loginBean.getUser();
         VDC vdc = VDCBaseBean.getVDCRequestBean().getCurrentVDC();
         return user.isContributor(vdc) && vdc.isAllowContributorsEditAll();
+    }
+
+    /**
+     * @return the contributorFilter
+     */
+    public boolean isContributorFilter() {
+        return contributorFilter;
+    }
+
+    /**
+     * @param contributorFilter the contributorFilter to set
+     */
+    public void setContributorFilter(boolean contributorFilter) {
+        this.contributorFilter = contributorFilter;
+    }
+
+    private HtmlSelectOneMenu filterDropdown = new HtmlSelectOneMenu();
+
+    /**
+     * @return the filterDropdown
+     */
+    public HtmlSelectOneMenu getFilterDropdown() {
+        return filterDropdown;
+    }
+
+    /**
+     * @param filterDropdown the filterDropdown to set
+     */
+    public void setFilterDropdown(HtmlSelectOneMenu filterDropdown) {
+        this.filterDropdown = filterDropdown;
     }
 }

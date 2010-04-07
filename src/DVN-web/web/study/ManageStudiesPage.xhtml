@@ -55,9 +55,9 @@
                            rendered="#{not empty(ManageStudiesList.studyUIList)}">
                 <div jsfc="ice:panelGroup" id="groupPanel3" styleClass="dvn_StudyListTotals">
                     <div>
-                        <ice:selectOneMenu rendered="#{ManageStudiesList.contributorFilterRendered}"  id="studyScopeSelectMenu" value="">
+                        <ice:selectOneMenu rendered="#{ManageStudiesList.contributorFilterRendered}"  id="studyScopeSelectMenu" binding="#{ManageStudiesList.filterDropdown}">
                             <ice:message for="studyScopeSelectMenu" styleClass="errorMessage"/>
-                            <f:selectItems id="studyScopeSelectItems" value="#{ManageStudiesList.studyScopeSelectItems}"/>
+                            <f:selectItems id="studyScopeSelectItems" value="#{ManageStudiesList.studyScopeSelectItems}" />
                         </ice:selectOneMenu>
                     </div>
                     <div>
@@ -257,9 +257,11 @@
                                      onclick="if(!confirm('Please confirm this DELETE request. This will delete this collection and any subcollections it contains.')){ return false; };">
                         <ice:outputText value="#{bundle.MSDeleteAction}"/>
                     </ice:commandLink>
-                    <ice:commandLink id="inReviewEditColLink" action="#{ManageStudiesList.editStudy_action}" rendered="#{studyUI.study.latestVersion.inReview}">
+                    <ice:outputLink value="/dvn/dv/#{VDCRequest.currentVDC.alias}/faces/study/EditStudyPage.xhtml" rendered="#{studyUI.study.latestVersion.inReview}" >
+                        <f:param name="studyId" value="#{studyUI.study.id}"/>
+                        <f:param name="versionNumber" value="#{studyUI.study.latestVersion.versionNumber}"/>
                         <ice:outputText value="#{bundle.MSEditAction}"/>
-                    </ice:commandLink>
+                    </ice:outputLink>
                     <ice:commandLink id="inReviewReleaseColLink" action="#{  ManageStudiesList.release_action  }" rendered="#{studyUI.study.latestVersion.inReview}">
                         <ice:outputText value="#{bundle.MSReleaseAction}"/>
                     </ice:commandLink>

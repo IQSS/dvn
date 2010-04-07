@@ -741,19 +741,28 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
     }
 
     public List getDvOrderedStudyVersionIds(Long vdcId, String orderBy, boolean ascending) {
-        String query = "SELECT s.latestVersion.id FROM Study s WHERE s.owner.id = " + vdcId + " ORDER BY s." + orderBy;
+        String query = "SELECT max(v.id) FROM StudyVersion v, Study s WHERE s.owner.id = " + vdcId + " and v.study=s group by s ORDER BY s." + orderBy;
         if (!ascending) {
             query += " desc";
         }
         return (List) em.createQuery(query).getResultList();
     }
 
-    public List getDvOrderedStudyIdsByContributor(Long vdcId, Long contributorId, String orderBy, boolean ascending) {
-        String query = "SELECT max(v.id) from studyversion v, study s, versioncontributor c WHERE s.owner.id = " + vdcId + " and c.contributor_id = " + contributorId + " and c.studyversion_id=v.id and v.study_id=s.id group by s.id ORDER BY s." + orderBy;
+    public List getDvOrderedStudyVersionIdsByContributor(Long vdcId, Long contributorId, String orderBy, boolean ascending) {
+        String queryStr = "SELECT max(v.id) from studyversion v, study s, versioncontributor c WHERE s.owner_id = " + vdcId + " and c.contributor_id = " + contributorId + " and c.studyversion_id=v.id and v.study_id=s.id group by s.id, s." + orderBy + " ORDER BY s." + orderBy;
+//        String query = "SELECT max(v.id) from StudyVersion v, Study s, VersionContributor c WHERE s.owner.id = " + vdcId + " and c.contributor.id = " + contributorId + " and c.studyVersion.id=v.id and v.study_id=s.id group by s.id, s."+orderBy+" ORDER BY s." + orderBy;
         if (!ascending) {
-            query += " desc";
+            queryStr += " desc";
         }
-        return (List) em.createNativeQuery(query).getResultList();
+        Query query = em.createNativeQuery(queryStr);
+        List<Long> returnList = new ArrayList<Long>();
+        // since query is native, must parse through Vector results
+        for (Object currentResult : query.getResultList()) {
+            // convert results into Longs
+            returnList.add(new Long(((Integer) ((Vector) currentResult).get(0))).longValue());
+        }
+
+        return returnList;
     }
 
        public List getDvOrderedStudyIds(Long vdcId, String orderBy, boolean ascending ) {

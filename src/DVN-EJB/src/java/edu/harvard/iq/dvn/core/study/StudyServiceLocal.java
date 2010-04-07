@@ -209,4 +209,7 @@ public interface StudyServiceLocal extends java.io.Serializable {
 
     public void deaccessionStudy(StudyVersion studyVersion);
 
+    public List getDvOrderedStudyVersionIds(Long vdcId, String orderBy, boolean ascending);
+    public List getDvOrderedStudyVersionIdsByContributor(Long vdcId, Long contributorId, String orderBy, boolean ascending);
+
 }

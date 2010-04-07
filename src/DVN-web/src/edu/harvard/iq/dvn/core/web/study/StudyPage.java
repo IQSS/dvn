@@ -476,10 +476,13 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
         }
     }
 
-    public String confirmDelete() {
-        getVDCRequestBean().setStudyId(studyUI.getStudy().getId());
-        return "deleteStudy";
-    }
+    // this method is no longer needed;
+    // the deleteStudyPage is no longer used either. -- L.A.
+    //public String confirmDelete() {
+    //    getVDCRequestBean().setStudyId(studyUI.getStudy().getId());
+    //    return "deleteStudy";
+    //}
+    
     private String tab;
 
     public String getTab() {

@@ -114,6 +114,7 @@ public class DSBIngestMessageBean implements MessageListener {
             
             if ( ingestMessage.sendInfoMessage() || ( problemFiles.size() >= 0 && ingestMessage.sendErrorMessage() ) ) {
                 //TODO: VERSION:
+                // done -- L.A.
                 mailService.sendIngestCompletedNotification(ingestMessage.getIngestEmail(), successfuleFiles, problemFiles);
             }
             
@@ -125,6 +126,7 @@ public class DSBIngestMessageBean implements MessageListener {
             // if a general exception is caught that means the entire upload failed
             if (ingestMessage.sendErrorMessage()) {
                 //TODO: VERSION:
+                // done -- L.A. 
                 mailService.sendIngestCompletedNotification(ingestMessage.getIngestEmail(), null, ingestMessage.getFileBeans());
             }
             

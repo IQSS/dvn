@@ -63,6 +63,7 @@ import javax.ejb.EJB;
 import edu.harvard.iq.dvn.core.study.VariableServiceLocal;
 import edu.harvard.iq.dvn.core.study.DataVariable;
 import edu.harvard.iq.dvn.core.study.Study;
+import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.study.SummaryStatistic;
 import edu.harvard.iq.dvn.core.study.VariableCategory;
 import edu.harvard.iq.dvn.core.study.StudyFile;
@@ -311,13 +312,13 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     // -----------------------------------------------------------------------
     // <editor-fold desc="Instance Variables">
 
-    private String versionNumber;
+    private Long versionNumber;
 
-    public String getVersionNumber() {
+    public Long getVersionNumber() {
         return versionNumber;
     }
 
-    public void setVersionNumber(String versionNumber) {
+    public void setVersionNumber(Long versionNumber) {
         this.versionNumber = versionNumber;
     }
 
@@ -414,8 +415,14 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
      */
     private Study thisStudy;
 
+    /*
+     * current version of the study
+     */
+    private StudyVersion thisStudyVersion;
+
     /** The citation information as a String */
     private String citation;
+
 
     /**
      * getter for property citation
@@ -424,7 +431,11 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
      */
     public String getCitation() {
         // TODO: VERSION: change this to use a study version object
-        return thisStudy.getReleasedVersion().getMetadata().getCitation(false);
+        //return thisStudy.getReleasedVersion().getMetadata().getCitation(false);
+        if (thisStudyVersion == null || thisStudyVersion.getMetadata() == null) {
+            return null;
+        }
+        return thisStudyVersion.getMetadata().getCitation(false);
     }
     /**
      * Setter for property citation
@@ -445,7 +456,11 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
      */
     public String getStudyTitle() {
         // TODO: VERSION:
-        return thisStudy.getReleasedVersion().getMetadata().getTitle();
+        //return thisStudy.getReleasedVersion().getMetadata().getTitle();
+        if (thisStudyVersion == null || thisStudyVersion.getMetadata() == null) {
+            return null;
+        }
+        return thisStudyVersion.getMetadata().getTitle();
     }
     
     /**
@@ -1392,12 +1407,6 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             resultInfo.put("dtId", dtId.toString());
             resultInfo.put("studyURL", studyURL);
             resultInfo.put("R_min_verion_no",resultInfo.get("Rversion").substring(2));
-
-            
-            resultInfo.put("dataverse_version_no",versionNumber);
-            // resultInfo.put("dataverse_version_no","1.3");
-             dbgLog.fine("DVNversionNo="+versionNumber);
-             dbgLog.fine("dataverse_version_no="+resultInfo.get("dataverse_version_no"));
            
             dbgLog.fine("wbDataFileName="+resultInfo.get("wbDataFileName"));
             dbgLog.fine("RwrkspFileName="+resultInfo.get("wrkspFileName"));
@@ -3532,7 +3541,6 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             resultInfo.put("dtId", dtId.toString());
             resultInfo.put("studyURL", studyURL);
             resultInfo.put("R_min_verion_no",resultInfo.get("Rversion").substring(2));
-            resultInfo.put("dataverse_version_no",versionNumber);
             
             dbgLog.fine("RwrkspFileName="+resultInfo.get("wrkspFileName"));
 
@@ -6261,7 +6269,6 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             resultInfo.put("dtId", dtId.toString());
             resultInfo.put("studyURL", studyURL);
             resultInfo.put("R_min_verion_no",resultInfo.get("Rversion").substring(2));
-            resultInfo.put("dataverse_version_no",versionNumber);
             
             dbgLog.fine("RwrkspFileName="+resultInfo.get("wrkspFileName"));
 
@@ -7581,36 +7588,35 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
      * 
      */
     public void init() {
-            dbgLog.fine("\n***** init():start "+
-                "(edu.harvard.iq.dvn.core.web.subsetting.AnalysisPage) *****");
+        dbgLog.fine("\n***** init():start "+
+            "(edu.harvard.iq.dvn.core.web.subsetting.AnalysisPage) *****");
         super.init();
         try {
             // sets default values to html components
             _init();
             
-                dbgLog.fine("pass _init() in init()");
+            dbgLog.fine("pass _init() in init()");
             // gets the FacesContext instance
             FacesContext cntxt = FacesContext.getCurrentInstance();
             
             // gets the ExternalContext
-            ExternalContext exCntxt = FacesContext.getCurrentInstance()
-                .getExternalContext();
+            ExternalContext exCntxt = FacesContext.getCurrentInstance().getExternalContext();
             
             // gets session data from the ExternalContext
             Map<String, Object> sessionMap = exCntxt.getSessionMap();
             
 
-                dbgLog.finer("\ncontents of RequestParameterMap:\n"
-                    + exCntxt.getRequestParameterMap());
-                dbgLog.finer("\ncontents of SessionMap:\n"+sessionMap);
+            dbgLog.finer("\ncontents of RequestParameterMap:\n"
+                + exCntxt.getRequestParameterMap());
+            dbgLog.finer("\ncontents of SessionMap:\n"+sessionMap);
 
             
             // gets the request header data
             Map<String, String> rqustHdrMp = exCntxt.getRequestHeaderMap();
             
-                dbgLog.fine("\nRequest Header Values Map:\n" + rqustHdrMp);
-                dbgLog.fine("\nRequest Header Values Map(user-agent):"
-                    + rqustHdrMp.get("user-agent"));
+            dbgLog.fine("\nRequest Header Values Map:\n" + rqustHdrMp);
+            dbgLog.fine("\nRequest Header Values Map(user-agent):"
+                + rqustHdrMp.get("user-agent"));
             
             // gets an end-user's browser type
             if (isBrowserFirefox(rqustHdrMp.get("user-agent"))) {
@@ -7624,16 +7630,16 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             String currentViewStateValue = exCntxt.getRequestParameterMap()
                 .get(ResponseStateManager.VIEW_STATE_PARAM);
             
-                dbgLog.fine("ViewState value=" + currentViewStateValue);
-                dbgLog.fine("VDCRequestBean: current VDC URL ="
+            dbgLog.fine("ViewState value=" + currentViewStateValue);
+            dbgLog.fine("VDCRequestBean: current VDC URL ="
                 + getVDCRequestBean().getCurrentVDCURL());
             
             // Stores the URL of the requested study 
             setStudyURL(getVDCRequestBean().getCurrentVDCURL());
             
-                dbgLog.fine("VDCRequestBean: studyId ="
-                    + getVDCRequestBean().getStudyId());
-                dbgLog.fine("VDCRequestBean =" + getVDCRequestBean());
+            dbgLog.fine("VDCRequestBean: studyId ="
+                + getVDCRequestBean().getStudyId());
+            dbgLog.fine("VDCRequestBean =" + getVDCRequestBean());
 
 //             dbgLog.fine("selected tab(init())="+getTabSet1().getSelected());
 
@@ -7681,38 +7687,49 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     }
                 }
                 
-                    dbgLog.fine("left-over objects of the previous session"
-                        +" have been removed");
+                dbgLog.fine("left-over objects of the previous session"
+                    +" have been removed");
             }
 
             // Gets the datatable Id if we're coming from editVariabePage
             if (dtId == null) {
                 dtId = getVDCRequestBean().getDtId();
-                    dbgLog.fine("dtId(null case: came from editVariablePage)="
-                        +dtId);
+                dbgLog.fine("dtId(null case: came from editVariablePage)="
+                    +dtId);
             }
 
             // we need to create the VariableServiceBean
-            if (dtId != null) {
-                    dbgLog.fine("Init() enters non-null-dtId case: dtId="
-                    + dtId);
-                // Gets the requested data table by its Id
-                dataTable = variableService.getDataTable(dtId);
-                
-                // Exposes the data file name to SubsettingPage.xhtml
-                setFileName(dataTable.getStudyFile().getFileName());
-                
-                    dbgLog.fine("file Name=" + fileName);
-                
+            if (dtId == null) {
+                // dtId is not available case
+                dbgLog.severe("ERROR: AnalysisPage.java: without dtId supplied");
+                throw new FacesException("AnalysisPage called without DataTable id");
+            }
 
-                // Retrieves each var's data from the data table
-                // and saves them in Collection<DataVariable> dataVariables
-                dataVariables.addAll(dataTable.getDataVariables());
+            dbgLog.fine("Init() enters non-null-dtId case: dtId="
+                + dtId);
+            // Gets the requested data table by its Id
+            dataTable = variableService.getDataTable(dtId);
+                                
+            if (versionNumber == null) {
+                versionNumber = getVDCRequestBean().getStudyVersionNumber();
+            }
+
+            // Exposes the data file name to SubsettingPage.xhtml
+            setFileName(dataTable.getStudyFile().getFileName(versionNumber));
+            // (if versionNumber is still null at this point, getFileName()
+            // will default to the latest version of the file metadata -- L.A.
+
+            dbgLog.fine("file Name=" + fileName);
+
+
+            // Retrieves each var's data from the data table
+            // and saves them in Collection<DataVariable> dataVariables
+            dataVariables.addAll(dataTable.getDataVariables());
                 
-                    dbgLog.fine("pass the addAll line");
+            dbgLog.fine("pass the addAll line");
                 
-                // Gets VDCUser-related data
-                VDCUser user = null;
+            // Gets VDCUser-related data
+            VDCUser user = null;
                 if (getVDCSessionBean().getLoginBean() != null) {
                     user = getVDCSessionBean().getLoginBean().getUser();
                 }
@@ -8126,22 +8143,32 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     // end of post-back cases
                 }
 
-            } else {
-                // dtId is not available case
-                dbgLog.severe("ERROR: AanalysisPage.java: "+
-                    "without a serviceBean or a dtId");
-            }
+            //}
 // TODO: VERSION:
+//  done. -- L.A.
             // Stores the title, ID, and citation data of the requested study
                 thisStudy = dataTable.getStudyFile().getStudy();
+                
+                if (versionNumber == null) {
+                    thisStudyVersion = thisStudy.getReleasedVersion();
+                } else {
+                    thisStudyVersion = thisStudy.getStudyVersionByNumber(versionNumber);
+                }
+
+                if (thisStudyVersion == null) {
+                    dbgLog.severe("ERROR: Could not find a valid Version of this study");
+                    throw new FacesException("Could not find a valid Version of this study");
+                }
+
                 // TODO: VERSION: change this to use a study version object
-                setStudyTitle(thisStudy.getReleasedVersion().getMetadata().getTitle());
+                //  done. -- L.A.
+                setStudyTitle(thisStudyVersion.getMetadata().getTitle());
+                setCitation(thisStudyVersion.getMetadata().getCitation(false));
                 setStudyId(thisStudy.getId());
-                // TODO: VERSION: change this to use a study version object
-                setCitation(thisStudy.getReleasedVersion().getMetadata().getCitation(false));
-                    dbgLog.fine("Study Title="+studyTitle);
-                    dbgLog.fine("Study Id="+studyId);
-                    dbgLog.fine("Ciation="+citation);
+
+                dbgLog.fine("Study Title="+studyTitle);
+                dbgLog.fine("Study Id="+studyId);
+                dbgLog.fine("Ciation="+citation);
 
             
                 dbgLog.finer("\nSpec Map:\n"+

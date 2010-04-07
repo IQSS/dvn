@@ -102,20 +102,6 @@
             <to-view-id>/site/HarvestSitesPage.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
-  <navigation-rule>
-     <from-view-id>/*</from-view-id>
-        <navigation-case>
-            <from-outcome>deleteStudy</from-outcome>
-            <to-view-id>/study/DeleteStudyPage.xhtml</to-view-id>
-        </navigation-case>
-    </navigation-rule> 
-   <navigation-rule>
-        <from-view-id>/study/DeleteStudyPage.xhtml</from-view-id>
-        <navigation-case>
-            <from-outcome>success</from-outcome>
-            <to-view-id>/study/DeleteSuccessPage.xhtml</to-view-id>
-        </navigation-case>
-    </navigation-rule>    
    <navigation-rule>
         <from-view-id>/study/EditTemplatePage.xhtml</from-view-id>
         <navigation-case>

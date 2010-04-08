@@ -160,6 +160,7 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
 .dvnstudystatusreleasedver{font-weight: normal;color:#C55B28;}
 .dvnstudystatusnoreleasedver{color:#820024;}
 .dvnstudystatusversionnote{font-weight:normal;}
+.dvnstudystatusversionnote .vdcTruncatorLinkLess{margin-left: 8px;}
 
 .dvnstudyadminboxfloat{float: right; width: 310px; text-align:left;}
 .dvnstudypreviouslisting{text-align:right;}
@@ -172,6 +173,13 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
 .dvnstudyadminbox li a:link,.dvnstudyadminbox li a:visited,.dvnstudyadminbox li a:hover,.dvnstudyadminbox li a:active{font-size:.9em !important;}
 </style>
 
+<script type="text/javascript">
+  // <![CDATA[
+  jQuery(document).ready(function(){
+      jQuery(".dvnstudystatusversionnote").truncate({max_length: 250});
+  });
+  // ]]>
+</script>
       <ice:form id="form1" rendered="#{!studyPage.deaccessionedView}">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <input type="hidden" value="StudyPage" name="pageName"/>

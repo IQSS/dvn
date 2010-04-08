@@ -15,7 +15,13 @@
         <div jsfc="ice:panelGroup" id="groupPanel11" styleClass="vdcStudyInfoHeader">
             <ice:outputText id="outputText11" value="Version History"/>
         </div>
-
+<script type="text/javascript">
+  // <![CDATA[
+  jQuery(document).ready(function(){
+      jQuery(".dvnStudyVersionNote").truncate({max_length: 250});
+  });
+  // ]]>
+</script>
         <style type="text/css">
             .dvnversionstable {border: 0;}
             .dvnversionstable .oddRow {background:#E6EBED;}
@@ -27,6 +33,7 @@
             .dvnversionstable td.dvnversionstableCol2, .dvnversionstable td.dvnversionstableCol3 {width:50px;}
             .dvnversionstable td.dvnversionstableCol5, .dvnversionstable td.dvnversionstableCol6 {width:180px;}
             .dvnversionsreleasedate {white-space:nowrap}
+            .dvnStudyVersionNote .vdcTruncatorLinkLess{margin-left: 8px;}
         </style>
 
         <ice:dataTable id="versionsDataTable" cellpadding="0" cellspacing="0" width="100%"
@@ -58,7 +65,7 @@
                   <f:facet name="header">
                       <ice:outputText value="Comments"/>
                   </f:facet>
-                <ice:outputText value="#{sv.versionNote}"/>
+                <ice:outputText styleClass="dvnStudyVersionNote" value="#{sv.versionNote}"/>
             </ice:column>
             <ice:column>
                   <f:facet name="header">

@@ -178,7 +178,7 @@
                     <!--
                   <ice:outputText value="#{studyUI.study.latestVersion.versionState}" styleClass="dvnManageStudiesTableStatusLabel"/>
                     -->
-                  <ice:outputText value="#{(studyUI.study.latestVersion.draft) ? bundle.MSDraftStatus : ((studyUI.study.latestVersion.inReview) ? bundle.MSReviewStatus :(studyUI.study.latestVersion.released) ? bundle.MSReleasedStatus : bundle.MSArchivedStatus)}"/>
+                  <ice:outputText value="#{(studyUI.study.latestVersion.draft) ? bundle.MSDraftStatus : ((studyUI.study.latestVersion.inReview) ? bundle.MSReviewStatus :(studyUI.study.latestVersion.released) ? bundle.MSReleasedStatus : bundle.MSDeaccessionedStatus)}"/>
                   <!--
                   <ice:commandButton value="&#187; Release" rendered="#{studyUI.userAuthorizedToRelease and studyUI.study.studyLock==null and studyUI.study.inReview}" actionListener="#{ManageStudiesList.doSetReleased}"/>
                   <ice:commandButton value="&#187; Review" rendered="#{studyUI.study.new}" actionListener="#{ManageStudiesList.doSetInReview}"/>
@@ -279,9 +279,9 @@
                         <ice:outputText value="#{bundle.MSEditAction}"/>
                     </ice:commandLink>
 -->
-                    <ice:commandLink id="releasedColLink" action="#{ManageStudiesList.release_action}" rendered="#{studyUI.study.latestVersion.released}"
+                    <ice:commandLink id="releasedColLink" action="#{ManageStudiesList.remove_action}" rendered="#{studyUI.study.latestVersion.released}"
                                      onclick="if(!confirm('Please confirm this DELETE request. This will delete this collection and any subcollections it contains.')){ return false; };">
-                        <ice:outputText value="#{bundle.MSRemoveAction}"/>
+                        <ice:outputText value="#{bundle.MSDeaccessionAction}"/>
                     </ice:commandLink>
                     <ice:commandLink id="archivedColLink" action="#{ManageStudiesList.restore_action}" rendered="#{studyUI.study.latestVersion.archived}"
                                      onclick="if(!confirm('Please confirm this RESTORE request. This will delete this collection and any subcollections it contains.')){ return false; };">

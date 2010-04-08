@@ -20,6 +20,7 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpServletResponse;
 
@@ -117,7 +118,10 @@ public class ManageStudiesList extends SortableList {
             studyUIList = new ArrayList<StudyUI>();
             VDCUser user = loginBean == null ? null : loginBean.getUser();
             for (Object studyVersionId: studyVersionIds) {
-                studyUIList.add(new StudyUI((Long)studyVersionId,user));
+                StudyUI studyUI = new StudyUI((Long)studyVersionId,user);
+                if (showArchivedStudies || !studyUI.getStudyVersion().isArchived()) {
+                    studyUIList.add(studyUI);
+                }
             }
 
     }
@@ -197,8 +201,9 @@ public class ManageStudiesList extends SortableList {
         if (releasedVersion != null) {
             VDCBaseBean.getVDCRequestBean().setStudyId(studyUI.getStudyId());
 //            VDCBaseBean.getVDCRequestBean().setStudyVersionNumberList(releasedVersion.getVersionNumber() + "," + studyUI.getStudyVersion().getNumberOfFiles());
-            VDCBaseBean.getVDCRequestBean().setStudyVersionNumberList(releasedVersion.getVersionNumber() + "," + releasedVersion.getNumberOfFiles());
+            VDCBaseBean.getVDCRequestBean().setStudyVersionNumberList(releasedVersion.getVersionNumber() + "," + studyUI.getStudyVersion().getVersionNumber());
             VDCBaseBean.getVDCRequestBean().setActionMode("confirmRelease");
+            System.out.println(VDCBaseBean.getVDCRequestBean().getStudyVersionNumberList());
             action = "diffStudy";
         } else {
             studyService.setReleased(studyUI.getStudyId());
@@ -209,6 +214,15 @@ public class ManageStudiesList extends SortableList {
         return action;
     }
 
+    public String remove_action(){
+        String action=null;
+        StudyUI studyUI = (StudyUI) this.studyDataTable.getRowData();
+        studyService.deaccessionStudy(studyUI.getStudyVersion());
+        studyUIList=null;
+        action = "";
+        return action;
+    }
+    
     public void review_action(){
         StudyUI studyUI = (StudyUI) this.studyDataTable.getRowData();
         studyService.setReadyForReview(studyUI.getStudyId());
@@ -399,4 +413,5 @@ public class ManageStudiesList extends SortableList {
     public void setFilterDropdown(HtmlSelectOneMenu filterDropdown) {
         this.filterDropdown = filterDropdown;
     }
+
 }

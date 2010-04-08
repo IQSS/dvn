@@ -231,7 +231,7 @@ public class AnalysisResultsPage extends VDCBaseBean implements java.io.Serializ
     }
 
     public boolean isVersionNumberSupplied() {
-        return (versionNumber == null || versionNumber.equals(""));
+        return !(versionNumber == null || versionNumber.equals(""));
     }
 /*
     public String resultURLRworkspace;

@@ -34,8 +34,6 @@
             }
           }
 
-         jQuery.noConflict();
-
          function toggleMoreInfo(moreInfo) {
             jQuery(moreInfo).next().slideToggle(500);
             var toggleLabelText = (jQuery(moreInfo).children('span.iceOutTxt').text() == 'View Info [+]') ? 'Collapse Info [-]' : 'View Info [+]';
@@ -239,6 +237,11 @@
                   <p><ice:outputText value="There are no dataverses to display for the selected filter. Please select again."/></p>
              </div>
              <div jsfc="ice:panelGroup" rendered="#{!empty(HomePage.vdcUIList.vdcUIList)}">
+
+               <style type="text/css">
+                   .iceDatTblActvSrtHdr {background: #DADEE0;}
+                   .iceDatTblActvSrtHdr span td {font-weight: bold;}
+               </style>
 
                <ice:dataTable headerClass="groupRow" id="dataverseList"
                                rendered="#{!empty(HomePage.vdcUIList.vdcUIList)}"

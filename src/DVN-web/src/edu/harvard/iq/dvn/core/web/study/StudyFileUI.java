@@ -62,25 +62,22 @@ public class StudyFileUI implements java.io.Serializable {
     public StudyFileUI() {
     }
 
-    public StudyFileUI(StudyFile studyFile, VDC vdc, VDCUser user, UserGroup ipUserGroup) {
-        this.studyFile = studyFile;
-        this.restrictedForUser = studyFile.isFileRestrictedForUser(user, vdc, ipUserGroup);
+    public StudyFileUI(FileMetadata fmd, VDC vdc, VDCUser user, UserGroup ipUserGroup) {
+        this.fileMetadata = fmd;
+        this.restrictedForUser = fileMetadata.getStudyFile().isFileRestrictedForUser(user, vdc, ipUserGroup);
         this.vdcId = vdc != null ? vdc.getId() : null;
     }
     /**
      * Holds value of property studyFile.
      */
-    private StudyFile studyFile;
+  
     private FileMetadata fileMetadata;
 
     public StudyFile getStudyFile() {
-        return this.studyFile;
+        return this.fileMetadata.getStudyFile();
     }
 
-    public void setStudyFile(StudyFile studyFile) {
-        this.studyFile = studyFile;
-    }
-// TODO: VERSION: change this to use a file matadata object (in constrcutor? no studyfile object passed?)
+    
     public FileMetadata getFileMetadata() {
         return fileMetadata;
     }
@@ -134,8 +131,8 @@ public class StudyFileUI implements java.io.Serializable {
 
     public boolean isImage() {
 
-        if (studyFile.getFileType() != null && studyFile.getFileType().length() >= 6 &&
-                studyFile.getFileType().substring(0, 6).equalsIgnoreCase("image/")) {
+        if (getStudyFile().getFileType() != null && getStudyFile().getFileType().length() >= 6 &&
+                getStudyFile().getFileType().substring(0, 6).equalsIgnoreCase("image/")) {
             return true;
         } else {
             return false;
@@ -143,7 +140,7 @@ public class StudyFileUI implements java.io.Serializable {
     }
 
     public String getUserFriendlyFileType() {
-        return FileUtil.getUserFriendlyFileType(studyFile);
+        return FileUtil.getUserFriendlyFileType(getStudyFile());
     }
 
     public String fileDownload_action() {
@@ -171,7 +168,7 @@ public class StudyFileUI implements java.io.Serializable {
     
     public String getFileDownloadURL() {
         
-        String fileDownloadURL = "/dvn/FileDownload/" + "?fileId=" + this.studyFile.getId();
+        String fileDownloadURL = "/dvn/FileDownload/" + "?fileId=" + this.getStudyFile().getId();
         if (vdcId != null) {
             fileDownloadURL += "&vdcId=" + this.vdcId;
         }
@@ -194,7 +191,7 @@ public class StudyFileUI implements java.io.Serializable {
             String tabDelimitedValue = "";
 
             // first check for fixed field
-            if ("text/x-fixed-field".equals(studyFile.getFileType())) {
+            if ("text/x-fixed-field".equals(getStudyFile().getFileType())) {
                 DataFileFormatType fixedFileType = new DataFileFormatType();
                 fixedFileType.setName("Fixed-Field");
                 fixedFileType.setValue("");
@@ -210,7 +207,7 @@ public class StudyFileUI implements java.io.Serializable {
             dataFileFormatTypes.add(tabDelimitedType);
 
             // and original file
-            if ( !StringUtil.isEmpty( studyFile.getOriginalFileType() ) ) {
+            if ( !StringUtil.isEmpty( getStudyFile().getOriginalFileType() ) ) {
                 DataFileFormatType originalFileType = new DataFileFormatType();
                 originalFileType.setName("Original File");
                 originalFileType.setValue(DataFileFormatType.ORIGINAL_FILE_DATA_FILE_FORMAT);
@@ -235,7 +232,7 @@ public class StudyFileUI implements java.io.Serializable {
             dataFileFormatTypes.add(tabDelimitedType);
 
             // and original file
-            if ( !StringUtil.isEmpty( studyFile.getOriginalFileType() ) ) {
+            if ( !StringUtil.isEmpty( getStudyFile().getOriginalFileType() ) ) {
                 DataFileFormatType originalFileType = new DataFileFormatType();
                 originalFileType.setName("Original File");
                 originalFileType.setValue(DataFileFormatType.ORIGINAL_FILE_DATA_FILE_FORMAT);
@@ -265,20 +262,20 @@ public class StudyFileUI implements java.io.Serializable {
     }
 
     public String getFileSize() {
-        File pFile = new File (studyFile.getFileSystemLocation()); 
+        File pFile = new File (getStudyFile().getFileSystemLocation());
         return FileUtils.byteCountToDisplaySize( pFile.length() );
         //return String.valueOf( pFile.length() );
     }
     
     public int getDownloadCount() {
-        return studyFile.getStudyFileActivity() != null ? studyFile.getStudyFileActivity().getDownloadCount() : 0;
+        return getStudyFile().getStudyFileActivity() != null ? getStudyFile().getStudyFileActivity().getDownloadCount() : 0;
     }
 
     public boolean isTabularDataFile() {
-        return studyFile instanceof TabularDataFile;
+        return getStudyFile() instanceof TabularDataFile;
     }
 
     public boolean isNetworkDataFile() {
-        return studyFile instanceof NetworkDataFile;
+        return getStudyFile() instanceof NetworkDataFile;
     }
 }

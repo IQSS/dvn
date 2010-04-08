@@ -226,7 +226,13 @@ public class StudyUI  implements java.io.Serializable {
     }
 
     public Long getStudyId() {
-        return studyId;
+        if (studyId!=null) {
+            return studyId;
+        } else if (studyVersionId !=null) {
+            initStudyAndVersion();
+            return studyVersion.getStudy().getId();
+        }
+        return null;
     }
 
     public void setStudyId(Long studyId) {
@@ -463,15 +469,15 @@ public class StudyUI  implements java.io.Serializable {
 
     private Boolean isFiles;
     private Boolean isSubsettable;
-
+  
     public boolean isFiles() {
         if (isFiles == null) {
             initFileFlags();
         }
-
+    
         return isFiles.booleanValue();
     }
-    
+   
     public boolean isSubsettable() {
         if (isSubsettable == null) {
             initFileFlags();
@@ -479,11 +485,10 @@ public class StudyUI  implements java.io.Serializable {
 
         return isSubsettable.booleanValue();
     }
-
+   
     private void initFileFlags() {
         initStudyFileService();
-        // TODO: VERSION: always for released study?
-        Boolean doesStudyHaveSubsettableFiles = studyFileService.doesStudyHaveSubsettableFiles(getStudy().getReleasedVersion().getId());
+        Boolean doesStudyHaveSubsettableFiles = studyFileService.doesStudyHaveSubsettableFiles(getStudyVersion().getId());
         isFiles = (doesStudyHaveSubsettableFiles != null);
         isSubsettable = (doesStudyHaveSubsettableFiles != null && doesStudyHaveSubsettableFiles);
     }
@@ -869,8 +874,7 @@ public class StudyUI  implements java.io.Serializable {
                 catUI = new FileCategoryUI(fmd.getCategory());
                 categoryUIList.add(catUI);
             }
-            StudyFileUI sfui = new StudyFileUI(fmd.getStudyFile(), vdc, user, ipUserGroup);
-            sfui.setFileMetadata(fmd);
+            StudyFileUI sfui = new StudyFileUI(fmd, vdc, user, ipUserGroup);
             catUI.getStudyFileUIs().add(sfui);
         }
 

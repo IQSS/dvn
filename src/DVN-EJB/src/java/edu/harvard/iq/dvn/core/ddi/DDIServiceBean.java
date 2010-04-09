@@ -161,22 +161,24 @@ public class DDIServiceBean implements DDIServiceLocal {
 
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     public void exportStudy(Study s, OutputStream os) {
-        if (s.isIsHarvested() ) {
-            exportOriginalDDIPlus( s, os );
-        } else {
-            XMLStreamWriter xmlw = null;
-            try {
-                xmlw = xmlOutputFactory.createXMLStreamWriter(os);
-                xmlw.writeStartDocument();
-                createCodeBook(xmlw,s);
-                xmlw.writeEndDocument();
-            } catch (XMLStreamException ex) {
-                Logger.getLogger("global").log(Level.SEVERE, null, ex);
-                throw new EJBException("ERROR occurred in exportStudy.", ex);
-            } finally {
+        if (s.getReleasedVersion() != null) {
+            if (s.isIsHarvested() ) {
+                exportOriginalDDIPlus( s.getReleasedVersion(), os );
+            } else {
+                XMLStreamWriter xmlw = null;
                 try {
-                    if (xmlw != null) { xmlw.close(); }
-                } catch (XMLStreamException ex) {}
+                    xmlw = xmlOutputFactory.createXMLStreamWriter(os);
+                    xmlw.writeStartDocument();
+                    createCodeBook( xmlw, s.getReleasedVersion() );
+                    xmlw.writeEndDocument();
+                } catch (XMLStreamException ex) {
+                    Logger.getLogger("global").log(Level.SEVERE, null, ex);
+                    throw new EJBException("ERROR occurred in exportStudy.", ex);
+                } finally {
+                    try {
+                        if (xmlw != null) { xmlw.close(); }
+                    } catch (XMLStreamException ex) {}
+                }
             }
         }
     }
@@ -209,12 +211,12 @@ public class DDIServiceBean implements DDIServiceLocal {
         }
     }
 
-    private void exportOriginalDDIPlus (Study s, OutputStream os) {
+    private void exportOriginalDDIPlus (StudyVersion sv, OutputStream os) {
         BufferedReader in = null;
         OutputStreamWriter out = null;
         XMLStreamWriter xmlw = null;
 
-        File studyDir = new File(FileUtil.getStudyFileDir(), s.getAuthority() + File.separator + s.getStudyId());
+        File studyDir = new File(FileUtil.getStudyFileDir(), sv.getStudy().getAuthority() + File.separator + sv.getStudy().getStudyId());
         File originalImport = new File(studyDir, "original_imported_study.xml");
 
         if (originalImport.exists()) {
@@ -237,8 +239,7 @@ public class DDIServiceBean implements DDIServiceLocal {
                         
                         // now create DocDscr element (using StAX)
                         xmlw = xmlOutputFactory.createXMLStreamWriter(os);
-                        // TODO: VERSION:
-                        createDocDscr(xmlw, s.getReleasedVersion().getMetadata());
+                        createDocDscr(xmlw, sv.getMetadata());
                         xmlw.close();
 
                         out.write(System.getProperty("line.separator"));
@@ -277,43 +278,37 @@ public class DDIServiceBean implements DDIServiceLocal {
 
 
     // <editor-fold defaultstate="collapsed" desc="export methods">
-    private void createCodeBook(XMLStreamWriter xmlw, Study study) throws XMLStreamException {
-        // TODO: VERSION:
-        StudyVersion sv = study.getReleasedVersion();
+    private void createCodeBook(XMLStreamWriter xmlw, StudyVersion sv) throws XMLStreamException {
         Metadata md = sv.getMetadata();
 
-        if (sv!= null) {
-            xmlw.writeStartElement("codeBook");
-            xmlw.writeDefaultNamespace("http://www.icpsr.umich.edu/DDI");
-            writeAttribute( xmlw, "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance" );
-            writeAttribute( xmlw, "xsi:schemaLocation", "http://www.icpsr.umich.edu/DDI http://www.icpsr.umich.edu/DDI/Version2-0.xsd" );
-            writeAttribute( xmlw, "version", "2.0" );
+        xmlw.writeStartElement("codeBook");
+        xmlw.writeDefaultNamespace("http://www.icpsr.umich.edu/DDI");
+        writeAttribute( xmlw, "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance" );
+        writeAttribute( xmlw, "xsi:schemaLocation", "http://www.icpsr.umich.edu/DDI http://www.icpsr.umich.edu/DDI/Version2-0.xsd" );
+        writeAttribute( xmlw, "version", "2.0" );
 
-            createDocDscr(xmlw, md);
-            createStdyDscr(xmlw, md);
+        createDocDscr(xmlw, md);
+        createStdyDscr(xmlw, md);
 
-            // iterate through files, saving other material files for the end
-            List<FileMetadata> otherMatFiles = new ArrayList();
-            for (FileMetadata fmd : sv.getFileMetadatas()) {
-                StudyFile sf = fmd.getStudyFile();
-                if ( sf instanceof TabularDataFile ) {
-                    createFileDscr(xmlw, fmd);
-                } else {
-                    otherMatFiles.add(fmd);
-                }
+        // iterate through files, saving other material files for the end
+        List<FileMetadata> otherMatFiles = new ArrayList();
+        for (FileMetadata fmd : sv.getFileMetadatas()) {
+            StudyFile sf = fmd.getStudyFile();
+            if ( sf instanceof TabularDataFile ) {
+                createFileDscr(xmlw, fmd);
+            } else {
+                otherMatFiles.add(fmd);
             }
-
-            createDataDscr(xmlw, sv);
-
-            // now go through otherMat files
-            for (FileMetadata fmd : otherMatFiles) {
-                createOtherMat(xmlw, fmd);
-            }
-
-            xmlw.writeEndElement(); // codeBook
-        } else {
-            // TODO: throw Exception; no released version fo metadata
         }
+
+        createDataDscr(xmlw, sv);
+
+        // now go through otherMat files
+        for (FileMetadata fmd : otherMatFiles) {
+            createOtherMat(xmlw, fmd);
+        }
+
+        xmlw.writeEndElement(); // codeBook
     }
 
     private void createDocDscr(XMLStreamWriter xmlw, Metadata metadata) throws XMLStreamException {
@@ -1393,13 +1388,13 @@ public class DDIServiceBean implements DDIServiceLocal {
     // IMPORT METHODS
     //**********************
 
-    public void mapDDI(String xmlToParse, Study study) {
+    public void mapDDI(String xmlToParse, StudyVersion studyVersion) {
         StringReader reader = null;
         XMLStreamReader xmlr = null;
         try {
             reader = new StringReader(xmlToParse);
             xmlr =  xmlInputFactory.createXMLStreamReader(reader);
-            processDDI( xmlr, study );
+            processDDI( xmlr, studyVersion );
         } catch (XMLStreamException ex) {
             Logger.getLogger("global").log(Level.SEVERE, null, ex);
             throw new EJBException("ERROR occurred in mapDDI.", ex);
@@ -1412,13 +1407,13 @@ public class DDIServiceBean implements DDIServiceLocal {
         }
     }
 
-    public void mapDDI(File ddiFile, Study study) {
+    public void mapDDI(File ddiFile, StudyVersion studyVersion) {
         FileInputStream in = null;
         XMLStreamReader xmlr = null;
         try {
             in = new FileInputStream(ddiFile);
             xmlr =  xmlInputFactory.createXMLStreamReader(in);
-            processDDI( xmlr, study );
+            processDDI( xmlr, studyVersion );
         } catch (FileNotFoundException ex) {
             Logger.getLogger("global").log(Level.SEVERE, null, ex);
             throw new EJBException("ERROR occurred in mapDDI: File Not Found!");
@@ -1437,23 +1432,19 @@ public class DDIServiceBean implements DDIServiceLocal {
     }
 
     // <editor-fold defaultstate="collapsed" desc="import methods">
-    private void processDDI( XMLStreamReader xmlr, Study study) throws XMLStreamException {
-        // TODO: VERSION: change this to use a study version object
-        Metadata metadata = study.getStudyVersions().get(0).getMetadata(); // am wondering about this line here; this WILL HAVE TO CHANGE
-        initializeCollections(metadata); // not sure we need this call; to be investigated
+    private void processDDI( XMLStreamReader xmlr, StudyVersion studyVersion) throws XMLStreamException {
+        initializeCollections(studyVersion); // not sure we need this call; to be investigated
         
         // make sure we have a codeBook
         //while ( xmlr.next() == XMLStreamConstants.COMMENT ); // skip pre root comments
         xmlr.nextTag();
         xmlr.require(XMLStreamConstants.START_ELEMENT, null, "codeBook");
-        processCodeBook(xmlr, metadata);
+        processCodeBook(xmlr, studyVersion);
     }
 
-    private void initializeCollections(Metadata metadata) {
+    private void initializeCollections(StudyVersion studyVersion) {
         // initialize the collections
-        // TODO: VERSION:
-        //metadata.setFileCategories( new ArrayList() );
-        //metadata.setStudyFiles( new ArrayList() ); WHAT DO WE INITIALIZE HERE????
+        Metadata metadata = studyVersion.getMetadata();
         metadata.getStudyVersion().getStudy().setStudyFiles( new ArrayList() );
         metadata.setStudyAbstracts( new ArrayList() );
         metadata.setStudyAuthors( new ArrayList() );
@@ -1470,19 +1461,21 @@ public class DDIServiceBean implements DDIServiceLocal {
         metadata.setStudyRelStudies(new ArrayList());
         metadata.setStudySoftware(new ArrayList());
         metadata.setStudyTopicClasses(new ArrayList());
+
+        studyVersion.setFileMetadatas( new ArrayList() );
 }
 
-     private void processCodeBook( XMLStreamReader xmlr, Metadata metadata) throws XMLStreamException {
+     private void processCodeBook( XMLStreamReader xmlr, StudyVersion studyVersion) throws XMLStreamException {
         Map filesMap = new HashMap();
-        Study study = metadata.getStudyVersion().getStudy();
+        Metadata metadata = studyVersion.getMetadata();
 
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
                 if (xmlr.getLocalName().equals("docDscr")) processDocDscr(xmlr, metadata);
                 else if (xmlr.getLocalName().equals("stdyDscr")) processStdyDscr(xmlr, metadata);
-                else if (xmlr.getLocalName().equals("fileDscr")) processFileDscr(xmlr, study, filesMap);
-                else if (xmlr.getLocalName().equals("dataDscr")) processDataDscr(xmlr, study, filesMap);
-                else if (xmlr.getLocalName().equals("otherMat")) processOtherMat(xmlr, study);
+                else if (xmlr.getLocalName().equals("fileDscr")) processFileDscr(xmlr, studyVersion, filesMap);
+                else if (xmlr.getLocalName().equals("dataDscr")) processDataDscr(xmlr, filesMap);
+                else if (xmlr.getLocalName().equals("otherMat")) processOtherMat(xmlr, studyVersion);
             } else if (event == XMLStreamConstants.END_ELEMENT) {
                 if (xmlr.getLocalName().equals("codeBook")) return;
             }
@@ -2003,10 +1996,11 @@ public class DDIServiceBean implements DDIServiceLocal {
         }
     }
 
-    private void processFileDscr(XMLStreamReader xmlr, Study study, Map filesMap) throws XMLStreamException {
-        // TODO: VERSION:
+    private void processFileDscr(XMLStreamReader xmlr, StudyVersion studyVersion, Map filesMap) throws XMLStreamException {
         FileMetadata fmd = new FileMetadata();
-        StudyFile sf = new OtherFile(study); // until we connect the sf and dt, we have to assume it's an other file
+        studyVersion.getFileMetadatas().add(fmd);
+
+        StudyFile sf = new OtherFile(studyVersion.getStudy()); // until we connect the sf and dt, we have to assume it's an other file
         DataTable dt = new DataTable();
         dt.setDataVariables( new ArrayList() );
         fmd.setStudyFile(sf);
@@ -2051,11 +2045,10 @@ public class DDIServiceBean implements DDIServiceLocal {
                     
                     fmd.setCategory(determineFileCategory(catName, icpsrDesc, icpsrId));
 
-                    // TODO: VERSION:
 
                     if (ddiFileId != null) {
                         List filesMapEntry = new ArrayList();
-                        filesMapEntry.add(sf);
+                        filesMapEntry.add(fmd);
                         filesMapEntry.add(dt);
                         filesMap.put( ddiFileId, filesMapEntry);
                     }
@@ -2108,7 +2101,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         }
     }
 
-    private void processDataDscr(XMLStreamReader xmlr, Study study, Map filesMap) throws XMLStreamException {
+    private void processDataDscr(XMLStreamReader xmlr, Map filesMap) throws XMLStreamException {
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
                 if (xmlr.getLocalName().equals("var")) processVar(xmlr, filesMap);
@@ -2201,16 +2194,16 @@ public class DDIServiceBean implements DDIServiceLocal {
     private void linkDataVariableToDatable(Map filesMap, String fileId, DataVariable dv) {
         List filesMapEntry = (List) filesMap.get( fileId );
         if (filesMapEntry != null) {
-            StudyFile sf = (StudyFile) filesMapEntry.get(0);
+            FileMetadata fmd = (FileMetadata) filesMapEntry.get(0);
             DataTable dt = (DataTable) filesMapEntry.get(1);
-            if (sf instanceof OtherFile) {
+            if ( fmd.getStudyFile() instanceof OtherFile) {
                 // first time with this file, so attach the dt to the file and set as subsettable)
-                TabularDataFile tdf = converOtherFileToTabularDataFile( (OtherFile) sf);
-                filesMapEntry.set(0, tdf);
+                TabularDataFile tdf = converOtherFileToTabularDataFile( fmd);
 
+                // now add link to datatable
                 dt.setStudyFile(tdf);
                 tdf.setDataTable(dt);
-                tdf.setFileType( FileUtil.determineTabularDataFileType( tdf ) ); // redetermine file type, now that we know it's subsettable
+                tdf.setFileType( FileUtil.determineTabularDataFileType( tdf ) ); // redetermine file type (suing dt), now that we know it's subsettable
             }
 
             // set fileOrder to size of list (pre add, since indexes start at 0)
@@ -2221,19 +2214,18 @@ public class DDIServiceBean implements DDIServiceLocal {
         }
     }
 
-    private TabularDataFile converOtherFileToTabularDataFile(OtherFile of) {
+    private TabularDataFile converOtherFileToTabularDataFile(FileMetadata fmd) {
+        OtherFile of = (OtherFile) fmd.getStudyFile();
         TabularDataFile tdf = new TabularDataFile();
-// TODO: VERSION:
-        //tdf.setFileName( of.getFileName() );
+
         tdf.setFileType( of.getFileType() );
         tdf.setFileSystemLocation( of.getFileSystemLocation() );
         tdf.setUnf( of.getUnf() );
-        //tdf.setDescription( of.getDescription() );
-        // not sure if these fields are set in the mapping, but just in case!
-        //tdf.setGlobalId( of.getGlobalId() );
-        //tdf.setLabel( of.getLabel() );
         tdf.setOriginalFileType( of.getOriginalFileType() );
         tdf.setDisplayOrder( of.getDisplayOrder() );
+
+        // reset links
+        fmd.setStudyFile(tdf);
 
         Study study = of.getStudy();
         tdf.setStudy( study );
@@ -2350,10 +2342,11 @@ public class DDIServiceBean implements DDIServiceLocal {
         }
     }
 
-    private void processOtherMat(XMLStreamReader xmlr, Study study) throws XMLStreamException {
+    private void processOtherMat(XMLStreamReader xmlr, StudyVersion studyVersion) throws XMLStreamException {
         FileMetadata fmd = new FileMetadata();
+        studyVersion.getFileMetadatas().add(fmd);
 
-        StudyFile sf = new OtherFile(study);
+        StudyFile sf = new OtherFile(studyVersion.getStudy());
         sf.setFileSystemLocation( xmlr.getAttributeValue(null, "URI"));
 
 
@@ -2390,9 +2383,6 @@ public class DDIServiceBean implements DDIServiceLocal {
                     }
 
                     fmd.setCategory(determineFileCategory(catName, icpsrDesc, icpsrId));
-
-                    // TODO: VERSION:
-
                     return;
                 }
             }

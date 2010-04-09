@@ -790,190 +790,6 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         return em.createQuery("select object(t) from DataFileFormatType as t").getResultList();
     }
 
-    public void addFiles(Study study, List<StudyFileEditBean> newFiles, VDCUser user) {
-        addFiles(study, newFiles, user, user.getEmail(), DSBIngestMessage.INGEST_MESAGE_LEVEL_ERROR);
-    }
-
-    public void addFiles(Study study, List<StudyFileEditBean> newFiles, VDCUser user, String ingestEmail) {
-        addFiles(study, newFiles, user, ingestEmail, DSBIngestMessage.INGEST_MESAGE_LEVEL_INFO);
-    }
-
-    private void addFiles(Study study, List<StudyFileEditBean> newFiles, VDCUser user, String ingestEmail, int messageLevel) {
-        // step 1: divide the files, based on subsettable or not
-        List subsettableFiles = new ArrayList();
-        List otherFiles = new ArrayList();
-
-        Iterator iter = newFiles.iterator();
-        while (iter.hasNext()) {
-            StudyFileEditBean fileBean = (StudyFileEditBean) iter.next();
-            if (fileBean.getStudyFile().isSubsettable()) {
-                subsettableFiles.add(fileBean);
-            } else {
-                otherFiles.add(fileBean);
-                // also add to study, so that it will be flushed for the ids
-                fileBean.getStudyFile().setStudy(study);
-                study.getStudyFiles().add(fileBean.getStudyFile());
-
-            }
-        }
-
-        // step 2: iterate through nonsubsettable files, moving from temp to new location
-        File newDir = FileUtil.getStudyFileDir(study);
-        iter = otherFiles.iterator();
-        while (iter.hasNext()) {
-            StudyFileEditBean fileBean = (StudyFileEditBean) iter.next();
-            StudyFile f = fileBean.getStudyFile();
-            File tempFile = new File(fileBean.getTempSystemFileLocation());
-            File newLocationFile = new File(newDir, f.getFileSystemName());
-            try {
-                FileUtil.copyFile(tempFile, newLocationFile);
-                tempFile.delete();
-                f.setFileSystemLocation(newLocationFile.getAbsolutePath());
-            } catch (IOException ex) {
-                throw new EJBException(ex);
-            }
-        }
-
-        // step 3: iterate through subsettable files, sending a message via JMS
-        if (subsettableFiles.size() > 0) {
-            QueueConnection conn = null;
-            QueueSession session = null;
-            QueueSender sender = null;
-            try {
-                conn = factory.createQueueConnection();
-                session = conn.createQueueSession(false, 0);
-                sender = session.createSender(queue);
-
-                DSBIngestMessage ingestMessage = new DSBIngestMessage(messageLevel);
-                ingestMessage.setFileBeans(subsettableFiles);
-                ingestMessage.setIngestEmail(ingestEmail);
-                ingestMessage.setIngestUserId(user.getId());
-                ingestMessage.setStudyId(study.getId());
-                Message message = session.createObjectMessage(ingestMessage);
-
-                String detail = "Ingest processing for " + subsettableFiles.size() + " file(s).";
-                studyService.addStudyLock(study.getId(), user.getId(), detail);
-                try {
-                    sender.send(message);
-                } catch (Exception ex) {
-                    // If anything goes wrong, remove the study lock.
-                    studyService.removeStudyLock(study.getId());
-                    ex.printStackTrace();
-                }
-
-                // send an e-mail
-                if (ingestMessage.sendInfoMessage()) {
-                    mailService.sendIngestRequestedNotification(ingestEmail, subsettableFiles);
-                }
-
-            } catch (JMSException ex) {
-                ex.printStackTrace();
-            } finally {
-                try {
-
-                    if (sender != null) {
-                        sender.close();
-                    }
-                    if (session != null) {
-                        session.close();
-                    }
-                    if (conn != null) {
-                        conn.close();
-                    }
-                } catch (JMSException ex) {
-                    ex.printStackTrace();
-                }
-            }
-        }
-    }
-
-
-
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void addIngestedFiles(Long studyId, List fileBeans, Long userId) {
-        // first some initialization
-        Study study = getStudy(studyId);
-        em.refresh(study);
-        VDCUser user = userService.find(userId);
-
-        File newDir = new File(FileUtil.getStudyFileDir(), study.getAuthority() + File.separator + study.getStudyId());
-        if (!newDir.exists()) {
-            newDir.mkdirs();
-        }
-
-        // now iterate through fileBeans
-        Iterator iter = fileBeans.iterator();
-        while (iter.hasNext()) {
-            StudyFileEditBean fileBean = (StudyFileEditBean) iter.next();
-
-            // for now the logic is if the DSB does not return a file, don't copy
-            // over anything; this is to cover the situation with the Ingest servlet
-            // that uses takes a control card file to add a dataTable to a prexisting
-            // file; this will have to change if we do this two files method at the
-            // time of the original upload
-            if (fileBean.getIngestedSystemFileLocation() != null) {
-
-                StudyFile f = fileBean.getStudyFile();
-                String originalFileType = f.getFileType();
-                // attach file to study
-                fileBean.addFiletoStudy(study);
-
-                // move ingest-created file
-                File tempIngestedFile = new File(fileBean.getIngestedSystemFileLocation());
-                File newIngestedLocationFile = new File(newDir, f.getFileSystemName());
-                try {
-                    FileUtil.copyFile(tempIngestedFile, newIngestedLocationFile);
-                    tempIngestedFile.delete();
-                    if (f instanceof TabularDataFile ){
-                        f.setFileType("text/tab-separated-values");
-                    }
-                    f.setFileSystemLocation(newIngestedLocationFile.getAbsolutePath());
-
-                } catch (IOException ex) {
-                    throw new EJBException(ex);
-                }
-                // If this is a NetworkDataFile,  move the RData file from the temp Ingested location to the system location
-                if (f instanceof NetworkDataFile) {
-                    File tempRDataFile = new File(FileUtil.replaceExtension(fileBean.getIngestedSystemFileLocation(), "RData"));
-                    File newRDataFile = new File(newDir, f.getFileSystemName()+".RData");
-                    try {
-                        FileUtil.copyFile(tempRDataFile, newRDataFile);
-                        tempRDataFile.delete();
-                        f.setOriginalFileType(originalFileType);
-                    } catch (IOException ex) {
-                        throw new EJBException(ex);
-                    }
-                }
-
-                // also move original file for archiving
-                File tempOriginalFile = new File(fileBean.getTempSystemFileLocation());
-                File newOriginalLocationFile = new File(newDir, "_" + f.getFileSystemName());
-                try {
-                    FileUtil.copyFile(tempOriginalFile, newOriginalLocationFile);
-                    tempOriginalFile.delete();
-                    f.setOriginalFileType(originalFileType);
-                } catch (IOException ex) {
-                    throw new EJBException(ex);
-                }
-            } else {
-                //fileBean.getStudyFile().setSubsettable(true);
-                em.merge(fileBean.getStudyFile());
-            }
-        }
-        // TODO: VERSION
-        /* calcualte study UNF
-        try {
-            study.setUNF(new DSBWrapper().calculateUNF(study));
-        } catch (IOException e) {
-            throw new EJBException("Could not calculate new study UNF");
-        }*/
-
-        study.setLastUpdateTime(new Date());
-        study.setLastUpdater(user);
-
-    }
-
-
     public String generateStudyIdSequence(String protocol, String authority) {
         //   Date now = new Date();
         //   return ""+now.getTime();
@@ -1490,26 +1306,26 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         }
     }
 
-    private void clearStudy(Study study) {
+
+    private void clearStudyVersion(StudyVersion studyVersion) {
+        // TODO: VERSION: test this to make sure it works properly
         // first delete variables via query (for performance)
+        Study study = studyVersion.getStudy();
         deleteDataVariables(study.getId());
 
         for (StudyFile elem : study.getStudyFiles()) {
             elem.clearData();
         }
 
-
-        // TODO: VERSION
-        /*
         // then delete files
-        clearCollection(study.getFileCategories());
+        clearCollection(studyVersion.getFileMetadatas());
 
         // now create new, empty metadata object and delete old one
         Metadata m = new Metadata();
         em.persist(m); // persist because otherwise update study can fail with non null metadata id exception
-        em.remove(study.getMetadata());
-        study.setMetadata(m);
-        */
+        em.remove(studyVersion.getMetadata());
+        studyVersion.setMetadata(m);
+
         // clear global id componenents
         study.setProtocol(null);
         study.setAuthority(null);
@@ -1869,10 +1685,11 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
     }
 
     private Study doImportStudy(File xmlFile, Long harvestFormatTypeId, Long vdcId, Long userId, String harvestIdentifier, List<StudyFileEditBean> filesToUpload) {
-        // TODO: VERSION
         logger.info("Begin doImportStudy");
 
         Study study = null;
+        StudyVersion studyVersion = null;
+
         boolean newStudy = true;
         boolean isHarvest = (harvestIdentifier != null);
         Map<String, String> globalIdComponents = null; // used if this is an update of a harvested study
@@ -1910,7 +1727,8 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
                 globalIdComponents.put("authority", study.getAuthority());
                 globalIdComponents.put("studyId", study.getStudyId());
 
-                clearStudy(study);
+                studyVersion = study.getLatestVersion();
+                clearStudyVersion(studyVersion);
 
                 study.setLastUpdateTime(new Date());
                 study.setLastUpdater(creator);
@@ -1920,19 +1738,19 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         // Step 2b: initialize new Study
         if (study == null) {
             study = new Study(vdc, creator, StudyVersion.VersionState.RELEASED);
+            studyVersion = study.getLatestVersion(); 
             em.persist(study);
 
             // if not a harvest, set initial date of deposit (this may get overridden during map ddi step
             if (!isHarvest) {
-                // TODO: VERSION:
-                //study.setDateOfDeposit(  new SimpleDateFormat("yyyy-MM-dd").format(study.getCreateTime()) );
+                studyVersion.getMetadata().setDateOfDeposit(  new SimpleDateFormat("yyyy-MM-dd").format(study.getCreateTime()) );
             }
 
         }
 
 
         // Step 3: map the ddi
-        ddiService.mapDDI(ddiFile, study);
+        ddiService.mapDDI(ddiFile, studyVersion);
 
 
         //Step 4: post mapping processing
@@ -1941,13 +1759,13 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
             study.setHarvestIdentifier(harvestIdentifier);
         } else {
             // clear fields related to harvesting
-            //study.setHarvestHoldings(null);
-            //study.setHarvestDVTermsOfUse(null);
-            //study.setHarvestDVNTermsOfUse(null);
+            studyVersion.getMetadata().setHarvestHoldings(null);
+            studyVersion.getMetadata().setHarvestDVTermsOfUse(null);
+            studyVersion.getMetadata().setHarvestDVNTermsOfUse(null);
         }
-        // TODO: VERSION:
-   //     setDisplayOrders(study);
-        boolean registerHandle = determineId(study, vdc, globalIdComponents);
+
+        setDisplayOrders(studyVersion.getMetadata());
+        boolean registerHandle = determineId(studyVersion, vdc, globalIdComponents);
         if (newStudy && !studyService.isUniqueStudyId( study.getStudyId(), study.getProtocol(), study.getAuthority() ) ) {
             throw new EJBException("A study with this globalId already exists (likely cause: the study was previously harvested into a different dataverse).");
         }
@@ -1955,7 +1773,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
 
         // step 5: upload files
         if (filesToUpload != null) {
-            addFiles(study, filesToUpload, creator);
+            studyFileService.addFiles(studyVersion, filesToUpload, creator);
         }
 
 
@@ -1977,7 +1795,9 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         return study;
     }
 
-    private boolean determineId(Study study, VDC vdc, Map<String, String> globalIdComponents) {
+    private boolean determineId(StudyVersion sv, VDC vdc, Map<String, String> globalIdComponents) {
+        Study study = sv.getStudy();
+
         VDCNetwork vdcNetwork = vdcNetworkService.find();
         String protocol = vdcNetwork.getProtocol();
         String authority = vdcNetwork.getAuthority();
@@ -2001,7 +1821,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
                 } else {
                     boolean generateRandom = vdc.getHarvestingDataverse().isGenerateRandomIds();
                     authority = vdc.getHarvestingDataverse().getHandlePrefix().getPrefix();
-                    generateHandle(study, protocol, authority, generateRandom);
+                    generateHandle(sv.getMetadata(), protocol, authority, generateRandom);
                     return true;
                 }
 
@@ -2015,7 +1835,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
 
         } else { // imported study
             if (globalId == null) {
-                generateHandle(study, protocol, authority, true);
+                generateHandle(sv.getMetadata(), protocol, authority, true);
                 return true;
             }
         }
@@ -2023,8 +1843,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         return false;
     }
 
-    private void generateHandle(Study study, String protocol, String authority, boolean generateRandom) {
-        // TODO: VERSION: change this to use a study version object
+    private void generateHandle(Metadata metadata, String protocol, String authority, boolean generateRandom) {
         String studyId = null;
 
         if (generateRandom) {
@@ -2033,17 +1852,18 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
             } while (!isUniqueStudyId(studyId, protocol, authority));
 
 
-        } else {/*
-            if (study.getStudyOtherIds().size() > 0) {
-                studyId = study.getStudyOtherIds().get(0).getOtherId();
+        } else {
+            if (metadata.getStudyOtherIds().size() > 0) {
+                studyId = metadata.getStudyOtherIds().get(0).getOtherId();
                 if (!isValidStudyIdString(studyId)) {
                     throw new EJBException("The Other ID (from DDI) was invalid.");
                 }
             } else {
                 throw new EJBException("No Other ID (from DDI) was available for generating a handle.");
-            }*/
+            }
         }
 
+        Study study = metadata.getStudyVersion().getStudy();
         study.setProtocol(protocol);
         study.setAuthority(authority);
         study.setStudyId(studyId);

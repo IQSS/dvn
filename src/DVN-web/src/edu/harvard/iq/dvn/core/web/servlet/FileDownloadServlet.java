@@ -227,12 +227,12 @@ public class FileDownloadServlet extends HttpServlet {
             studyId = sui.getStudy().getId();
             citation = sui.getMetadata().getCitation(false);
             
-            dbgLog.fine("StudyUIclassName was found in the session Map");
-            dbgLog.fine("Study Title="+studyTitle);
-            dbgLog.fine("Study Id="+studyId);
-            dbgLog.fine("Citation="+citation);
+            dbgLog.info("StudyUIclassName was found in the session Map");
+            dbgLog.info("Study Title="+studyTitle);
+            dbgLog.info("Study Id="+studyId);
+            dbgLog.info("Citation="+citation);
         } else {
-            dbgLog.fine("StudyUIclassName was not in the session Map");
+            dbgLog.info("StudyUIclassName was not in the session Map");
         }
 
 // v1.4 chagnes: end

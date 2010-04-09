@@ -117,9 +117,6 @@ public interface StudyServiceLocal extends java.io.Serializable {
     //4
     public List<DataFileFormatType> getDataFileFormatTypes();
 
-    //4
-    void addIngestedFiles(Long studyId, List fileBeans, Long userId);
-    
 
     //2
     String generateStudyIdSequence(String protocol, String authority);
@@ -183,10 +180,6 @@ public interface StudyServiceLocal extends java.io.Serializable {
     public void exportUpdatedStudies();
     public void exportStudies(List<Long> studyIds);
     public void exportStudies(List<Long> studyIds, String exportFormat);
-
-    //4
-    public void addFiles(Study study, List<StudyFileEditBean> newFiles, VDCUser user);
-    public void addFiles(Study study, List<StudyFileEditBean> newFiles, VDCUser user, String ingestEmail);
 
     //2
     public boolean isValidStudyIdString(String studyId);

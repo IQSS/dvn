@@ -52,7 +52,7 @@
 
             <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="2"
                            styleClass="dvnManageStudiesTableTop" columnClasses="dvn_StudyListTotals, dvnPaginatorWrap"
-                           rendered="#{not empty(ManageStudiesList.studyUIList)}">
+                           rendered="#{(not empty(ManageStudiesList.studyUIList)) || ManageStudiesList.deaccessionedStudiesExist}">
                 <div jsfc="ice:panelGroup" id="groupPanel3" styleClass="dvn_StudyListTotals">
                     <div>
                         <ice:selectOneMenu rendered="#{ManageStudiesList.contributorFilterRendered}"  id="studyScopeSelectMenu" binding="#{ManageStudiesList.filterDropdown}">
@@ -65,7 +65,7 @@
                         <ice:message styleClass="errorMessage" for="userName"/>
                     </div>
                     <div >
-                        <ice:selectBooleanCheckbox id="showArchivedStudies" value="#{ManageStudiesList.showArchivedStudies}"/>
+                        <ice:selectBooleanCheckbox id="showArchivedStudies" binding="#{ManageStudiesList.archiveCheckBox}" value="#{ManageStudiesList.showArchivedStudies}" valueChangeListener="#{ManageStudiesList.changeArchive}" onchange="submit()" />
                         <ice:outputText id="outputText3" value="#{bundle.showArchivedStudiesLabel}"/>
                     </div>
                     <ice:dataPaginator id="scroll_2"

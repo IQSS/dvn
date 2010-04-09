@@ -7,6 +7,7 @@ package edu.harvard.iq.dvn.core.web.study;
 
 import com.icesoft.faces.component.datapaginator.DataPaginator;
 import com.icesoft.faces.component.ext.HtmlDataTable;
+import com.icesoft.faces.component.ext.HtmlSelectBooleanCheckbox;
 import com.icesoft.faces.component.ext.HtmlSelectOneMenu;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
@@ -117,10 +118,14 @@ public class ManageStudiesList extends SortableList {
             }
             studyUIList = new ArrayList<StudyUI>();
             VDCUser user = loginBean == null ? null : loginBean.getUser();
+            deaccessionedStudiesExist=false;
             for (Object studyVersionId: studyVersionIds) {
                 StudyUI studyUI = new StudyUI((Long)studyVersionId,user);
                 if (showArchivedStudies || !studyUI.getStudyVersion().isArchived()) {
                     studyUIList.add(studyUI);
+                }
+                if (studyUI.getStudyVersion().isArchived()){
+                    deaccessionedStudiesExist=true;
                 }
             }
 
@@ -414,4 +419,41 @@ public class ManageStudiesList extends SortableList {
         this.filterDropdown = filterDropdown;
     }
 
+    public void changeArchive(ValueChangeEvent vce){
+        showArchivedStudies = (Boolean)archiveCheckBox.getValue();
+        studyUIList=null;
+//        sort();
+    }
+
+    private HtmlSelectBooleanCheckbox archiveCheckBox;
+
+    /**
+     * @return the archiveCheckBox
+     */
+    public HtmlSelectBooleanCheckbox getArchiveCheckBox() {
+        return archiveCheckBox;
+    }
+
+    /**
+     * @param archiveCheckBox the archiveCheckBox to set
+     */
+    public void setArchiveCheckBox(HtmlSelectBooleanCheckbox archiveCheckBox) {
+        this.archiveCheckBox = archiveCheckBox;
+    }
+
+    private boolean deaccessionedStudiesExist;
+
+    /**
+     * @return the deaccessionedStudiesExist
+     */
+    public boolean isDeaccessionedStudiesExist() {
+        return deaccessionedStudiesExist;
+    }
+
+    /**
+     * @param deaccessionedStudiesExist the deaccessionedStudiesExist to set
+     */
+    public void setDeaccessionedStudiesExist(boolean deaccessionedStudiesExist) {
+        this.deaccessionedStudiesExist = deaccessionedStudiesExist;
+    }
 }

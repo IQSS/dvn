@@ -32,6 +32,7 @@ package edu.harvard.iq.dvn.core.web.study;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.study.FileMetadata;
+import edu.harvard.iq.dvn.core.web.MainLayoutBean;
 import java.io.File;
 import org.apache.commons.io.FileUtils;
 
@@ -325,6 +326,8 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
         // also updates the study with the Indexer service.
         // every time a study is released.
 
+        ((MainLayoutBean) getBean("MainLayoutBean")).setShowVersionNotesPopup(false);
+        ((MainLayoutBean) getBean("MainLayoutBean")).setShowVersionNotesReleaseButton(false);
         // Make sure the popup is turned off:
         showVersionNotesPopup = false;
 
@@ -2224,7 +2227,9 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
     }
     
     public void toggleVersionNotesPopup(javax.faces.event.ActionEvent event) {
-        showVersionNotesPopup = !showVersionNotesPopup;
+        MainLayoutBean mlb = (MainLayoutBean) getBean("MainLayoutBean");
+        mlb.setShowVersionNotesPopup(! mlb.isShowVersionNotesPopup());
+        mlb.setShowVersionNotesReleaseButton(! mlb.isShowVersionNotesReleaseButton());
     }
 
     protected boolean showVersionNotesPopup = false;

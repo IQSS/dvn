@@ -171,7 +171,8 @@ public class MainLayoutBean implements java.io.Serializable  {
         writeStudyVersionNotesPopups = request.getRequestURI().indexOf("/StudyPage.xhtml") != -1
                 || request.getRequestURI().indexOf("/StudyVersionDifferencesPage.xhtml") != -1
                 || request.getRequestURI().indexOf("/EditStudyPage.xhtml") != -1
-                || request.getRequestURI().indexOf("/AddFilesPage.xhtml") != -1;
+                || request.getRequestURI().indexOf("/AddFilesPage.xhtml") != -1
+                || request.getRequestURI().indexOf("/ManageStudiesPage.xhtml") != -1;
         return writeStudyVersionNotesPopups;
     }
 
@@ -233,11 +234,14 @@ public class MainLayoutBean implements java.io.Serializable  {
     }
 
     public boolean isInManageStudiesPage() {
+        HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        return request.getRequestURI().indexOf("/ManageStudiesPage.xhtml") != -1;
+        /*
         String viewId = getCurrentViewId();
         if (viewId != null) {
             return viewId.indexOf("/ManageStudiesPage.xhtml") != -1;
         }
-        return false;
+        return false;*/
     }
 
 
@@ -247,5 +251,32 @@ public class MainLayoutBean implements java.io.Serializable  {
             return uiViewRoot.getViewId();
         }
         return null;
+    }
+    private boolean showVersionNotesPopup;
+    public boolean isShowVersionNotesPopup(){
+        return this.showVersionNotesPopup;
+    }
+
+    /**
+     * @param showVersionNotesPopup the showVersionNotesPopup to set
+     */
+    public void setShowVersionNotesPopup(boolean showVersionNotesPopup) {
+        this.showVersionNotesPopup = showVersionNotesPopup;
+    }
+
+    private boolean showVersionNotesReleaseButton;
+
+    /**
+     * @return the showVersionNotesReleaseButton
+     */
+    public boolean isShowVersionNotesReleaseButton() {
+        return showVersionNotesReleaseButton;
+    }
+
+    /**
+     * @param showVersionNotesReleaseButton the showVersionNotesReleaseButton to set
+     */
+    public void setShowVersionNotesReleaseButton(boolean showVersionNotesReleaseButton) {
+        this.showVersionNotesReleaseButton = showVersionNotesReleaseButton;
     }
 }

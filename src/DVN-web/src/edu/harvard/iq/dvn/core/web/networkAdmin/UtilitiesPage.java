@@ -500,11 +500,11 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable, 
   
     public String determineFileTypeForExtension_action() {
         try {
-            // TODO: VERSION:
-            List<FileMetadata> studyFiles = studyFileService.getStudyFilesByExtension(fileExtension);
+             // TODO: VERSION:
+            List<FileMetadata> fileMetadatas = studyFileService.getStudyFilesByExtension(fileExtension);
             Map<String,Integer> fileTypeCounts = new HashMap<String,Integer>();
             
-            for ( FileMetadata fmd : studyFiles ) {
+            for ( FileMetadata fmd : fileMetadatas ) {
                 StudyFile sf = fmd.getStudyFile();
                 String newFileType = FileUtil.determineFileType( fmd );
                 sf.setFileType( newFileType );
@@ -680,7 +680,7 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable, 
                         if (xmlFile != null) {                                
                             try {
                                 importLogger.info("Found study.xml and " + filesToUpload.size() + " other " + (filesToUpload.size() == 1 ? "file." : "files."));
-                                
+                                // TODO: we need to incorporate the add files step into the same transaction of the import!!!
                                 Study study = studyService.importStudy( 
                                         xmlFile, importFileFormat, importDVId, getVDCSessionBean().getLoginBean().getUser().getId());
                                 importLogger.info("Import of study.xml succeeded: study id = " + study.getId());
@@ -691,14 +691,12 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable, 
                                     List<StudyFileEditBean> fileBeans = new ArrayList();
                                     for (File file : filesToUpload.keySet()) {
                                         StudyFileEditBean fileBean = new StudyFileEditBean( file, studyService.generateFileSystemNameSequence(), study );
-                                        
-                                        //TODO: VERSION:
-                                        //fileBean.setFileCategoryName( filesToUpload.get(file));
+                                        fileBean.getFileMetadata().setCategory (filesToUpload.get(file));
                                         fileBeans.add(fileBean);
                                     }
 
                                     try {
-                                        studyService.addFiles( study, fileBeans, getVDCSessionBean().getLoginBean().getUser() );
+                                        studyFileService.addFiles( study.getReleasedVersion(), fileBeans, getVDCSessionBean().getLoginBean().getUser() );
                                         studyService.updateStudy(study); // for now, must call this to persist the new files
                                         importLogger.info("File upload succeeded.");
                                     } catch (Exception e) {

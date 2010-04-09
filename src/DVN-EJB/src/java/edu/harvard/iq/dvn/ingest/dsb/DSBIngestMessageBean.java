@@ -143,7 +143,7 @@ public class DSBIngestMessageBean implements MessageListener {
     private void parseXML(String xmlToParse, FileMetadata fileMetadata) {
         // now map and get dummy dataTable
         Study dummyStudy = new Study();
-        ddiService.mapDDI(xmlToParse, dummyStudy);
+        ddiService.mapDDI(xmlToParse, dummyStudy.getLatestVersion());
         TabularDataFile tdf = (TabularDataFile) dummyStudy.getStudyFiles().iterator().next();
         DataTable dt = tdf.getDataTable();
 
@@ -155,7 +155,7 @@ public class DSBIngestMessageBean implements MessageListener {
         file.setDataTable( dt );
         dt.setStudyFile(file);
         file.setUnf(dt.getUnf());
-        file.getFileMetadatas().add(fileMetadata);
+        file.getFileMetadatas().add(fileMetadata); //TODO: VERSION: to be removed, once the getFileName method is removed
 
     }
  

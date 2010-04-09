@@ -147,12 +147,8 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
                 deaccessionedView = true;
                 studyUI = new StudyUI(sv, getVDCSessionBean().getUser()); // TODO: could this be simpler
             
-            } else if ("files".equals(tab)) { // files tab
-                initStudyUIWithFiles(sv);
-
             } else {
-                studyUI = new StudyUI(sv, getVDCSessionBean().getUser());
-                initPanelDisplay();
+                initPage(sv);
             }
 
             allowStudyComments = studyUI.getStudy().getOwner().isAllowStudyComments();
@@ -196,19 +192,16 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
         }
     }
 
-    private void initStudyUIWithFiles(StudyVersion studyVersion) {
-          if (!studyUIContainsFileDetails) {
-             studyUI = new StudyUI(
-                            studyVersion,
-                            getVDCRequestBean().getCurrentVDC(),
-                            getVDCSessionBean().getLoginBean() != null ? this.getVDCSessionBean().getLoginBean().getUser() : null,
-                            getVDCSessionBean().getIpUserGroup());
-             studyUIContainsFileDetails=true;
-          }
+    private void initPage(StudyVersion sv) {
+        if (tabSet1.getSelectedIndex()==1) {
+            initStudyUIWithFiles(sv);
+        } else {
+            studyUI = new StudyUI(sv, getVDCSessionBean().getUser());
+            initPanelDisplay();
+        }
     }
-
+    // TODO: consolidate logic into previous method
     public void processTabChange(TabChangeEvent tabChangeEvent) throws AbortProcessingException {
-
 
         // If user clicks on the catalog tab, reset the open/closed settings for each section
         if (tabChangeEvent.getNewTabIndex()==0) {
@@ -221,6 +214,16 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
         }
     }
 
+    private void initStudyUIWithFiles(StudyVersion studyVersion) {
+          if (!studyUIContainsFileDetails) {
+             studyUI = new StudyUI(
+                            studyVersion,
+                            getVDCRequestBean().getCurrentVDC(),
+                            getVDCSessionBean().getLoginBean() != null ? this.getVDCSessionBean().getLoginBean().getUser() : null,
+                            getVDCSessionBean().getIpUserGroup());
+             studyUIContainsFileDetails=true;
+          }
+    }
 
     private PanelTabSet tabSet1 = new PanelTabSet();
 
@@ -826,8 +829,11 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
                     studyService.setReleased(studyUI.getStudy().getId());
                     // Get updated studyVersion to display on the page (we need this to get the releaseTime & state)
                     StudyVersion updatedVersion = studyService.getStudyVersion(studyUI.getStudyVersion().getStudy().getId(), studyUI.getStudyVersion().getVersionNumber());
-                    studyUI = new StudyUI(updatedVersion, getVDCSessionBean().getUser());
-                    initPanelDisplay();
+
+                    // and reset page components
+                    studyUIContainsFileDetails=false; // TODO: could we move this to be a member variable of StudyUI?
+                    initPage(updatedVersion);
+
                 } else {
                     // We are redirecting to the Differences page; 
                     // Need to set the HTTP parameters:

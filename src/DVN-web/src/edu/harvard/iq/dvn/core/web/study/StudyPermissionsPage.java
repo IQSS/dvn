@@ -47,6 +47,9 @@ import javax.faces.component.UIInput;
 import com.icesoft.faces.component.ext.HtmlInputText;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -56,8 +59,9 @@ import javax.servlet.http.HttpServletRequest;
  * lifecycle methods and event handlers where you may add behavior
  * to respond to incoming events.</p>
  */
+@EJB(name="editStudyPermissions", beanInterface=edu.harvard.iq.dvn.core.study.EditStudyPermissionsService.class)
 public class StudyPermissionsPage extends VDCBaseBean  implements java.io.Serializable {
-    @EJB
+   
     private EditStudyPermissionsService editStudyPermissions;
     @EJB
     private UserServiceLocal userService;
@@ -70,19 +74,20 @@ public class StudyPermissionsPage extends VDCBaseBean  implements java.io.Serial
     
     
     public void init() {
-        super.init();
-        if ( isFromPage("StudyPermissionsPage") ) {
-            setEditStudyPermissions((EditStudyPermissionsService) sessionGet(getEditStudyPermissions().getClass().getName()));
-            System.out.println("Getting stateful session bean editStudyPermissions ="+getEditStudyPermissions());
-            
-            
-        } else {
-            editStudyPermissions.setStudy(getStudyId());
-            System.out.println("Putting stateful session bean in request, editUserGroupService ="+getEditStudyPermissions());
-            sessionPut(getEditStudyPermissions().getClass().getName(), getEditStudyPermissions());
-            
-            
+    try {
+            Context ctx = new InitialContext();
+            editStudyPermissions = (EditStudyPermissionsService) ctx.lookup("java:comp/env/editStudyPermissions");
+
+        } catch (NamingException e) {
+            e.printStackTrace();
+            FacesContext context = FacesContext.getCurrentInstance();
+            FacesMessage errMessage = new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), null);
+            context.addMessage(null, errMessage);
+
         }
+            editStudyPermissions.setStudy(getStudyId());
+                     
+            
     }
     
     /**

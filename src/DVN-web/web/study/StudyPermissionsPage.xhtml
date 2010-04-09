@@ -193,7 +193,7 @@
                       <ice:selectBooleanCheckbox id="filePermissionCheckbox" value="#{currentRow.checked}"/>
                     </ice:column>
                     <ice:column>
-                      <ice:outputText value="#{currentRow.studyFile.fileCategory.name}"/>
+                      <ice:outputText value="#{currentRow.studyFile.latestCategory}"/>
                       <f:facet name="header">
                         <ice:outputText id="fileuser_tcol1" value="Category Name"/>
                       </f:facet>
@@ -204,7 +204,13 @@
                         <ice:outputText id="fileuser_tcol2" value="File Name"/>
                       </f:facet>
                     </ice:column>
-                    <ice:column id="fileuser_col3">
+                    <ice:column id="fileuser_col5">
+                      <ice:outputText value="#{currentRow.fileVersions}"/>
+                      <f:facet name="header">
+                        <ice:outputText id="fileuser_tcol5" value="Found in Version(s)"/>
+                      </f:facet>
+                    </ice:column>
+                      <ice:column id="fileuser_col3">
                       <ice:outputText value="#{currentRow.fileRestriction}"/>
                       <f:facet name="header">
                         <ice:outputText id="fileuser_tcol3" value="Permission"/>

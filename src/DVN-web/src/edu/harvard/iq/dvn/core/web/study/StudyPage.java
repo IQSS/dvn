@@ -197,6 +197,7 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
             initStudyUIWithFiles(sv);
         } else {
             studyUI = new StudyUI(sv, getVDCSessionBean().getUser());
+            sessionPut(studyUI.getClass().getName(), studyUI);
             initPanelDisplay();
         }
     }

@@ -49,11 +49,7 @@ public interface EditStudyPermissionsService extends java.io.Serializable {
      */
     @Remove
     void cancel();
-    
-    @Remove
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    void deleteStudy();
-    
+   
     /**
      * Getter for property filePermissions.
      *

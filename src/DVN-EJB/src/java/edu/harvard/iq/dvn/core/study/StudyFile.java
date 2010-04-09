@@ -504,7 +504,7 @@ public abstract class StudyFile implements Serializable {
     }
 
 
-    // TODO: VERSION: review if this is needed
+   
     // I believe it is still needed. At least the DSB ingest framework still
     // uses this method. (And I'm assuming we'll always want to be able to
     // get the filename of a given studyFile -- unless I'm missing something).
@@ -515,6 +515,12 @@ public abstract class StudyFile implements Serializable {
         }
         return getLatestFileMetadata().getLabel();
     }
+
+
+    public String getLatestCategory() {
+        return getLatestFileMetadata().getCategory();
+    }
+
 
     public String getFileName(Long versionNumber) {
         if (getFileMetadata(versionNumber) == null) {

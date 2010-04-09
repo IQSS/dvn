@@ -97,17 +97,35 @@ public class StudyFileServiceBean implements StudyFileServiceLocal {
 
 
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-    public java.util.List<FileMetadata> getOrderedFilesByStudy(Long studyId) {
-        // Note: This ordering is case-sensitive, so names beginning with upperclass chars will appear first.
-        // (I tried using UPPER(f.name) to make the sorting case-insensitive, but the EJB query language doesn't seem
-        // to like this.)
-        String queryStr = "SELECT f FROM FileMetadata f  WHERE f.studyVersion.study.id = " + studyId + " ORDER BY f.category, f.label";
-        Query query = em.createQuery(queryStr);
-        List<FileMetadata> studyFiles = query.getResultList();
-   //     for (StudyFile sf: studyFiles) {
-   //         sf.getDataTables().size();
-   //     }
-        return studyFiles;
+    public java.util.List<Long> getOrderedFilesByStudy(Long studyId) {
+  
+        /*
+         * This query returns all the ids of all the studyfiles belonging to
+         * this study, ordered by the category in the latest filemetadata object associated with the studyfile.
+         */
+       
+        List<Long> studyFileIds = new ArrayList();
+      
+        String nativeQuery = "select sf1.id from filemetadata fm1, studyfile sf1 " +
+            " where fm1.studyfile_id = sf1.id "+
+            " and  fm1.id in "+
+            " (select max(fm.id) "+
+            " from studyfile sf, study s, filemetadata fm, studyversion sv "+
+            " where sf.study_id = s.id "+
+            " and fm.studyfile_id = sf.id "+
+            " and sv.study_id = s.id "+
+            " and s.id = "+ studyId +
+            " group by sf.id) "+
+            " order by  UPPER(fm1.category)";
+     
+        Query query = em.createNativeQuery(nativeQuery);
+        
+        for (Object currentResult : query.getResultList()) {
+            studyFileIds.add(new Long(((Integer) ((Vector) currentResult).get(0)).longValue()));
+        }
+       
+
+        return studyFileIds;
     }
 
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)

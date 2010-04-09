@@ -23,7 +23,7 @@ public interface StudyFileServiceLocal {
     public List<FileMetadata> getStudyFilesByExtension(String extension);
     public void updateStudyFile(StudyFile detachedStudyFile);
 
-    java.util.List<FileMetadata> getOrderedFilesByStudy(Long studyId);
+    java.util.List<Long> getOrderedFilesByStudy(Long studyId);
     java.util.List<FileMetadata> getOrderedFilesByStudyVersion(Long svId);
         java.util.List<FileMetadata> getFilesByStudyVersionOrderedById(Long svId);
 

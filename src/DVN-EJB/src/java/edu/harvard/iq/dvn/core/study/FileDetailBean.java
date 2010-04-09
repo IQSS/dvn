@@ -126,5 +126,23 @@ public class FileDetailBean implements java.io.Serializable {
     public void setFileRestriction(String fileRestriction) {
         this.fileRestriction = fileRestriction;
     }
+
+    /**
+     *
+     * @return a String listing all the study versionNumbers that this file
+     *  is associated with.
+     */
+    public String getFileVersions() {
+        String versions = "";
+
+        for ( int i = 0; i < studyFile.getFileMetadatas().size(); i++) {
+            versions += studyFile.getFileMetadatas().get(i).getStudyVersion().getVersionNumber();
+            if (i+1< studyFile.getFileMetadatas().size()) {
+                versions +=", ";
+            }
+        }
+        return versions;
+
+    }
     
 }

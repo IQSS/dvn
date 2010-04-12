@@ -45,8 +45,8 @@ public class StudyCommentsFragment extends VDCBaseBean implements Serializable {
 
     protected List<StudyCommentUI> studyComments;
     protected Long studyId = null;  // corresponds to the primary key in the table, id
-    protected Long studyIdForComments = null;  // corresponds to the foreign key int he table, studyId ex. 10001
-    
+    protected Long studyIdForComments = null;  // corresponds to the foreign key int he table, studyId ex. 10001 // TODO: is this needed??
+
 
      public void init() {
         super.init();        
@@ -599,6 +599,17 @@ public class StudyCommentsFragment extends VDCBaseBean implements Serializable {
         HttpServletRequest request      = (HttpServletRequest) externalContext.getRequest();
         cancelLink = request.getProtocol().substring(0, request.getProtocol().indexOf("/")).toLowerCase() + "://" + getHostUrl() + request.getContextPath() + "/faces/networkAdmin/CommentReviewPage.xhtml";
         return cancelLink;
+    }
+
+    private Boolean renderStudyVersionReference = null;
+
+    public Boolean getRenderStudyVersionReference() {
+        if (renderStudyVersionReference == null) {
+            study = studyService.getStudy(studyId);
+            renderStudyVersionReference = study.getLatestVersion().getVersionNumber() > 1;
+        }
+
+        return renderStudyVersionReference;
     }
 
 }

@@ -30,9 +30,7 @@ public class StudyVersion implements Serializable {
         metadata = new Metadata();
         metadata.setStudyVersion(this);
         
-        Date createDate = new Date();
-        setCreateTime(createDate);
-        setLastUpdateTime(createDate);
+       
     }
 
     private Long versionNumber;
@@ -113,6 +111,9 @@ public class StudyVersion implements Serializable {
     }
 
     public void setLastUpdateTime(Date lastUpdateTime) {
+        if (createTime==null) {
+            createTime = lastUpdateTime;
+        }
         this.lastUpdateTime = lastUpdateTime;
     }
 

@@ -218,11 +218,14 @@ public class FileDownloadServlet extends HttpServlet {
         // Stores the title, ID, and citation data of the requested study
         if (sessionMap.containsKey(studyUIclassName)) {
 
-            // TODO: VERSION: check how study ui is generated
+            // version review: check how study ui is generated
             StudyUI sui = (StudyUI) sessionMap.get(studyUIclassName);
+            // -- This is the study UI that gets created in StudyPage.java;
+            //    So this guarantees the title and citations are from the
+            //    correct version of the metadata.
+            //    Still, this is not a very good method of passing information
+            //    between the componenets. Will rewrite this for 2.1.1 -- L.A.
 
-            // TODO: VERSION:
-            // Stores the title, Id, and Citation of the requested study
             studyTitle = sui.getMetadata().getTitle();
             studyId = sui.getStudy().getId();
             citation = sui.getMetadata().getCitation(false);
@@ -1650,11 +1653,6 @@ public class FileDownloadServlet extends HttpServlet {
 			
 			if (Success) {
 			    String zipEntryName = file.getFileName();
-			    if (createDirectoriesForCategories) {
-                // TODO: VERSION: change this to use a study version object
-				String catName = "";//new FileCategoryUI(file.getFileCategory()).getDownloadName();
-				zipEntryName = catName + "/" + zipEntryName;
-			    }
 			    zipEntryName = checkZipEntryName(zipEntryName, nameList);
 			    ZipEntry e = new ZipEntry(zipEntryName);
 			    

@@ -430,8 +430,6 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
      * @return    the citation information of the requested data file
      */
     public String getCitation() {
-        // TODO: VERSION: change this to use a study version object
-        //return thisStudy.getReleasedVersion().getMetadata().getCitation(false);
         if (thisStudyVersion == null || thisStudyVersion.getMetadata() == null) {
             return null;
         }
@@ -455,8 +453,6 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
      * @return    the title of the requested study
      */
     public String getStudyTitle() {
-        // TODO: VERSION:
-        //return thisStudy.getReleasedVersion().getMetadata().getTitle();
         if (thisStudyVersion == null || thisStudyVersion.getMetadata() == null) {
             return null;
         }
@@ -8153,9 +8149,6 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 }
 
             //}
-// TODO: VERSION:
-//  done. -- L.A.
-            // Stores the title, ID, and citation data of the requested study
                 thisStudy = dataTable.getStudyFile().getStudy();
                 
                 if (versionNumber == null) {
@@ -8169,8 +8162,6 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     throw new FacesException("Could not find a valid Version of this study");
                 }
 
-                // TODO: VERSION: change this to use a study version object
-                //  done. -- L.A.
                 setStudyTitle(thisStudyVersion.getMetadata().getTitle());
                 setCitation(thisStudyVersion.getMetadata().getCitation(false));
                 setStudyId(thisStudy.getId());

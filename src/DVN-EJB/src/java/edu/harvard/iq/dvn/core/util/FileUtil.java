@@ -103,7 +103,6 @@ public class FileUtil implements java.io.Serializable  {
     }      
     
     public static String determineFileType(FileMetadata fm) throws IOException{
-        // TODO: VERSION:
         //TODO: networkDataFile
         StudyFile sf = fm.getStudyFile();
       if (sf instanceof TabularDataFile) {

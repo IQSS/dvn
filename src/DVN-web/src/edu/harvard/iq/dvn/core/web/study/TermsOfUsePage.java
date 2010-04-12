@@ -158,10 +158,11 @@ public class TermsOfUsePage extends VDCBaseBean {
             } catch (NumberFormatException ex) {}
         }
         if (studyId != null) {
-            study = studyService.getStudyDetail(studyId);
+            releasedVersion = studyService.getStudyVersion(studyId, null); // gets released or deaccessioned version
+            study = releasedVersion.getStudy();
            
         }
-        releasedVersion = study.getReleasedVersion();
+
         setRequiredFlags();
       
     }       

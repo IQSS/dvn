@@ -425,37 +425,28 @@ public class HomePage extends VDCBaseBean implements Serializable {
          }
       }
       
-      private void writeJavascript() {
+            private void writeJavascript() {
           accordionJavascript +=  "<script type=\"text/javascript\">"  + "\n\r" +
                 "// <![CDATA[ " +  "\n\r" +
                 "jQuery(document).ready(function(){" + "\n\r" +
-                      "jQuery('#theMenu').Accordion({ " +
+                      "jQuery('#navigation').accordion({ " +
                         "active: 'h3.selected', " +
                         "header: 'h3.head', " +
-                        "alwaysOpen: false, " +
-                        "animated: true, " +
-                        "showSpeed: 400, " +
-                        "hideSpeed: 800 " +
+                        "autoheight: false, " +
                 "});" + "\n\r" +
-                "jQuery('.xtraMenu').Accordion({" +
+                "jQuery('.xtraMenu').accordion({" +
                 "active: 'h4.selected'," +
                 "header: 'h4.head', " +
-                "alwaysOpen: false, " +
-                "animated: true, " +
-                "showSpeed: 400, " +
-                "hideSpeed: 800 " +
+                "autoheight: false, " +
                 "});" + "\n\r";
         Iterator iterator = childItemBeans.iterator();
         while (iterator.hasNext()) {
             String grouping = (String)iterator.next();
             String divId = "xtraMenu" + grouping;
-                accordionJavascript += "jQuery('#" + divId + "').Accordion({" + 
+                accordionJavascript += "jQuery('#" + divId + "').accordion({" +
                 "active: 'h4.selected'," +
                 "header: 'h4.head', " +
-                "alwaysOpen: false, " +
-                "animated: true, " +
-                "showSpeed: 400, " +
-                "hideSpeed: 800 " +
+                "autoheight: false, " +
                 "});" + "\n\r";
         }
         accordionJavascript += "  });"  + "\n\r" +

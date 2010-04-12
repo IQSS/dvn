@@ -93,11 +93,11 @@ public class DeaccessionStudyPage extends VDCBaseBean implements java.io.Seriali
     }
 
 
-    public String deaccession_action() {
-        if (!updateDeaccessionDetails) {
-            studyService.deaccessionStudy(studyVersion);
-        } else {
+    public String save_action() {
+        if (updateDeaccessionDetails) {
             studyService.updateStudyVersion(studyVersion);
+        } else {
+            studyService.deaccessionStudy(studyVersion);
         }
 
         getVDCRequestBean().setStudyId(studyVersion.getStudy().getId());

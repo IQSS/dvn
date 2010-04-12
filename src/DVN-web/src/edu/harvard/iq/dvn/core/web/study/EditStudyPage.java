@@ -67,9 +67,9 @@ import com.icesoft.faces.component.ext.HtmlDataTable;
 import com.icesoft.faces.component.ext.HtmlInputText;
 import com.icesoft.faces.component.ext.HtmlInputTextarea;
 import com.icesoft.faces.component.ext.HtmlSelectOneMenu;
-import edu.harvard.iq.dvn.core.study.FileCategory;
+import edu.harvard.iq.dvn.core.study.FileMetadata;
 import edu.harvard.iq.dvn.core.study.Metadata;
-import java.util.Collections;
+import edu.harvard.iq.dvn.core.study.StudyFileServiceLocal;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.model.SelectItem;
@@ -90,6 +90,7 @@ import javax.servlet.http.HttpServletRequest;
 public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  {
     EditStudyService editStudyService;
     @EJB StudyServiceLocal studyService;
+    @EJB StudyFileServiceLocal studyFileService;
     @EJB VDCNetworkServiceLocal vdcNetworkService;
     @EJB VDCServiceLocal vdcService;
     
@@ -1150,18 +1151,19 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             this.tab = tab;
         }
     }
+
+    private List<SelectItem> fileCategoriesItems = null;
     
     
     public List getFileCategoryItems() {
-        List<FileCategory> fileCats = new ArrayList();
-        fileCats.addAll( study.getFileCategories() );
-        Collections.sort(fileCats);
-        
-        List fcItems = new ArrayList();
-        for (FileCategory fc : fileCats) {
-            fcItems.add( new SelectItem( (fc.getName()) ) );
+        if (fileCategoriesItems == null) {
+            fileCategoriesItems = new ArrayList();
+            for (String catName : editStudyService.getStudyVersion().getFileCategories()) {
+                fileCategoriesItems.add( new SelectItem(catName));
+            }
         }
-        return fcItems;
+
+        return fileCategoriesItems;
     }
     
     

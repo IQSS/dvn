@@ -295,7 +295,6 @@ public class StudyFileServiceBean implements StudyFileServiceLocal {
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void addIngestedFiles(Long studyVersionId, List fileBeans, Long userId) {
         // first some initialization
-        // TODO: VERSION:
         StudyVersion studyVersion =  em.find(StudyVersion.class, studyVersionId);
         Study study = studyVersion.getStudy();
         em.refresh(study);
@@ -374,8 +373,7 @@ public class StudyFileServiceBean implements StudyFileServiceLocal {
                 em.merge(fileBean.getStudyFile());
             }
         }
-        // TODO: VERSION
-        // calcualte study UNF
+        // calcualte UNF for study version
         try {
             studyVersion.getMetadata().setUNF(new DSBWrapper().calculateUNF(studyVersion));
         } catch (IOException e) {

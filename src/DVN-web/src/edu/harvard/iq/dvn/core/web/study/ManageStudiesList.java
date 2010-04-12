@@ -235,10 +235,15 @@ public class ManageStudiesList extends SortableList {
     }
 
     public void delete_action(){
-
+        StudyUI studyUI = (StudyUI) this.studyDataTable.getRowData();
+        studyService.deleteStudy(studyUI.getStudyId());
+        studyUIList=null;
     }
 
     public void restore_action(){
+        StudyUI studyUI = (StudyUI) this.studyDataTable.getRowData();
+        studyService.setReleased(studyUI.getStudyId());
+        studyUIList=null;
         
     }
 

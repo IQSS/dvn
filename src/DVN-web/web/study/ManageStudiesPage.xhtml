@@ -126,7 +126,9 @@
                       <ice:outputText value="#{bundle.MSIdColumn}"/>
                     </ice:commandSortHeader>
                   </f:facet>
-                  <ice:outputLink value="/dvn/dv/#{VDCRequest.currentVDC.alias}/faces/study/StudyPage.xhtml?studyId=#{studyUI.study.id}">
+                  <ice:outputLink value="/dvn/dv/#{VDCRequest.currentVDC.alias}/faces/study/StudyPage.xhtml">
+                        <f:param name="studyId" value="#{studyUI.study.id}"/>
+                        <f:param name="versionNumber" value="#{studyUI.study.latestVersion.versionNumber}"/>
                     <ice:outputText value="#{studyUI.study.globalId}"/>
                   </ice:outputLink>
                 </ice:column>
@@ -138,10 +140,12 @@
                       <ice:outputText value="#{bundle.MSTitleColumn}"/>
                     </ice:commandSortHeader>
                   </f:facet>
-                  <ice:outputLink value="/dvn/dv/#{VDCRequest.currentVDC.alias}/faces/study/StudyPage.xhtml?studyId=#{studyUI.study.id}">
+                  <ice:outputLink value="/dvn/dv/#{VDCRequest.currentVDC.alias}/faces/study/StudyPage.xhtml">
 <!--
                     <ice:outputText value="#{studyUI.study.latestVersion.metadata.title}"/>
 -->
+                        <f:param name="studyId" value="#{studyUI.study.id}"/>
+                        <f:param name="versionNumber" value="#{studyUI.study.latestVersion.versionNumber}"/>
                     <ice:outputText value="#{studyUI.metadata.title}"/>
                   </ice:outputLink>
                 </ice:column>

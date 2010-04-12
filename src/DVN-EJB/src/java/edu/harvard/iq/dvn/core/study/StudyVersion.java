@@ -7,6 +7,7 @@ package edu.harvard.iq.dvn.core.study;
 
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.MissingResourceException;
@@ -47,6 +48,7 @@ public class StudyVersion implements Serializable {
     @JoinColumn(nullable=false)
     private Metadata metadata;
     @OneToMany(mappedBy="studyVersion", cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
+    @OrderBy("category") // this is not our preferred ordering, which is with the AlphaNumericComparator, but does allow the files to be grouped by category
     private List<FileMetadata> fileMetadatas;
     @OneToMany(mappedBy="studyVersion", cascade={CascadeType.REMOVE, CascadeType.PERSIST})
     private List<StudyComment> studyComments;
@@ -303,5 +305,18 @@ public class StudyVersion implements Serializable {
         } catch (MissingResourceException e) {
             return versionState.toString();
         }
+    }
+
+    public List<String> getFileCategories() {
+        List<String> fileCategories = new ArrayList();
+
+        String currentCategory = null;
+        for (FileMetadata fmd : this.getFileMetadatas()) { //fileMetadatas are grouped together based on @OrderBy annotation
+            if (currentCategory == null || !currentCategory.equals(fmd.getCategory())) {
+                currentCategory = fmd.getCategory();
+                fileCategories.add(currentCategory);
+            }
+        }
+        return fileCategories;
     }
 }

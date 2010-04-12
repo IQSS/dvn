@@ -572,7 +572,8 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
     }
 
     public List<Long> getStudyIdsForExport() {
-        String queryStr = "select id from study where isharvested='false' and (lastupdatetime > lastexporttime or lastexporttime is null)";
+        String queryStr = "select s.id from study s, studyversion sv where s.id = sv.study_id and sv.versionstate = '"+ StudyVersion.VersionState.RELEASED +
+                "' and s.isharvested='false' and (s.lastupdatetime > s.lastexporttime or s.lastexporttime is null)";
         Query query = em.createNativeQuery(queryStr);
         List<Long> returnList = new ArrayList<Long>();
         // since query is native, must parse through Vector results
@@ -1353,8 +1354,9 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
 
     public Study saveStudyVersion(StudyVersion studyVersion, Long userId) {
         VDCUser user = em.find(VDCUser.class, userId);
-
-        studyVersion.setLastUpdateTime(new Date());
+        Date lastUpdateTime = new Date();
+        studyVersion.setLastUpdateTime(lastUpdateTime);
+        studyVersion.getStudy().setLastUpdateTime(lastUpdateTime);
         studyVersion.updateVersionContributors(user);
         setDisplayOrders(studyVersion.getMetadata());
         return studyVersion.getStudy();

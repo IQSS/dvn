@@ -33,9 +33,9 @@ div.dvn_searchblock{margin-bottom:12px;padding:4px 12px;background:#e6ebed;borde
 .theMenuContainer{text-align:left}
 .theMenuContainer ul,.theMenuContainer li{margin:0;padding:0;list-style-type:none;list-style-image:none}
 .theMenuContainer h3,.theMenuContainer h4{margin:0;padding:0}
-#theMenu{margin:0;padding:0;text-indent:0;background-color:silver;width:100%}
-#theMenu ul,#theMenu li{margin:0;padding:0;border-top:1px solid white}
-#theMenu li ul li ul li ul li{margin:0;padding:0;border-bottom:1px solid white}
+#navigation{margin:0;padding:0;text-indent:0;background-color:silver;width:100%}
+#navigation ul,#navigation li{margin:0;padding:0;border-top:1px solid white}
+#navigation li ul li ul li ul li{margin:0;padding:0;border-bottom:1px solid white}
 .theMenuContainer a{outline:0}
 .xtraMenu{background-color:white}
 h3.head a{display:block;background:#dadee0 url(/dvn/resources/images/menudown.gif) no-repeat;background-position:98% 50%;padding:.5em 26px .5em .5em}

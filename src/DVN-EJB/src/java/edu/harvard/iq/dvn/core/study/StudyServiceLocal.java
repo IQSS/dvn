@@ -69,9 +69,6 @@ public interface StudyServiceLocal extends java.io.Serializable {
     public Study getStudyByHarvestInfo(VDC vdc, String harvestIdentifier);
 
     //1
-    public Study getStudyDetail(Long studyId);
-
-    //1
     public Study getStudyForSearch(Long studyId, Map studyFields);
 
     //2

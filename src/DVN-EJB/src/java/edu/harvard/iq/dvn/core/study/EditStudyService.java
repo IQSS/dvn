@@ -38,7 +38,6 @@ public interface EditStudyService extends java.io.Serializable {
     public void cancel();
     public void save(Long vdcId, Long userId);
     public StudyVersion getStudyVersion();
-    public void deleteStudy();
     public void removeCollectionElement(Collection coll, Object elem);
     public void removeCollectionElement(List list,int index);
     public void removeCollectionElement(Iterator iter, Object elem);

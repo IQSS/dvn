@@ -149,13 +149,6 @@ public class EditStudyServiceBean implements edu.harvard.iq.dvn.core.study.EditS
         return studyVersion;
     }
     
-    @Remove
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void deleteStudy() {
-        // TODO: VERSION:  check if this method is used anywhere
-        studyService.deleteStudy(studyVersion.getStudy().getId());
-        
-    }
     
     private HashMap studyMap;
     public HashMap getStudyMap() {
@@ -173,20 +166,17 @@ public class EditStudyServiceBean implements edu.harvard.iq.dvn.core.study.EditS
         try {
            
             editFiles();
-            studyVersion.updateVersionContributors(user);
-
-
+   
             studyService.saveStudyVersion(studyVersion, userId);
-            
+          
             // if new, register the handle
             if ( isNewStudy() && vdcNetworkService.find().isHandleRegistration() ) {
-              
                 String handle = studyVersion.getStudy().getAuthority() + "/" + studyVersion.getStudy().getStudyId();
                 gnrsService.createHandle(handle);
                
             }
-            
-            
+
+             
             em.flush(); // Always call flush(), so that we can detect an OptimisticLockException
            
            

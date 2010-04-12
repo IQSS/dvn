@@ -43,7 +43,7 @@
                                   <ice:outputText value="#{item.studyComment.commentCreator.userName}" />
                                   <ice:outputText styleClass="vdcStudyCommentDetails"
                                                   value="posted on #{item.studyComment.createTime}" />
-                                  <ice:outputText rendered="#{item.studyComment.studyVersion.study.latestVersion.versionNumber > 1}"
+                                  <ice:outputText rendered="#{StudyCommentsFragment.renderStudyVersionReference}"
                                                   styleClass="vdcStudyCommentDetails"
                                                   value="referencing Study Version: #{item.studyComment.studyVersion.versionNumber}" />
                                   <div jsfc="ice:panelGroup" styleClass="dvnReportCommentsLinks" rendered="#{VDCSession.user != null}">

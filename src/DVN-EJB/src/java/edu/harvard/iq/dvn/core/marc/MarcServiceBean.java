@@ -65,10 +65,17 @@ public class MarcServiceBean implements MarcServiceLocal {
     public boolean isXmlFormat() {
         return false;
     }
-
+    /**
+     *
+     * @param study - study that we are exporting
+     * @param out
+     * @throws IOException
+     */
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     public void exportStudy(Study study, OutputStream out) throws IOException {
-        // TODO: VERSION: should only be with released versions
+         if (study.getReleasedVersion() == null) {
+            throw new IllegalArgumentException("Study does not have released version, study.id = " + study.getId());
+        }
         Metadata metadata = study.getReleasedVersion().getMetadata();
 
         MarcFactory factory = MarcFactory.newInstance();

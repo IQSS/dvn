@@ -475,88 +475,6 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
     }
 
     /**
-     *  Get the Study and all it's dependent objects.
-     *  Used to view/update all the Study details
-     *  Access each dependent object to trigger it's retreival from the database.
-     *
-     */
-    public Study getStudyDetail(Long studyId) {
-        // TODO: VERSION: change this to use a study version object
-        Study study = em.find(Study.class, studyId);
-
-        if (study == null) {
-            throw new IllegalArgumentException("Unknown studyId: " + studyId);
-        }
-        /*
-        for (Iterator<StudyAbstract> it = study.getStudyAbstracts().iterator(); it.hasNext();) {
-            StudyAbstract elem = it.next();
-            elem.getId();
-        }
-        for (Iterator<StudyAuthor> it = study.getStudyAuthors().iterator(); it.hasNext();) {
-            StudyAuthor elem = it.next();
-            elem.getId();
-        }
-        for (Iterator<StudyDistributor> it = study.getStudyDistributors().iterator(); it.hasNext();) {
-            StudyDistributor elem = it.next();
-            elem.getId();
-        }
-
-        for (Iterator<StudyKeyword> it = study.getStudyKeywords().iterator(); it.hasNext();) {
-            StudyKeyword elem = it.next();
-            elem.getId();
-        }
-
-        for (Iterator<StudyNote> it = study.getStudyNotes().iterator(); it.hasNext();) {
-            StudyNote elem = it.next();
-            elem.getId();
-        }
-
-        for (Iterator<StudyProducer> it = study.getStudyProducers().iterator(); it.hasNext();) {
-            StudyProducer elem = it.next();
-            elem.getId();
-        }
-        for (Iterator<StudySoftware> it = study.getStudySoftware().iterator(); it.hasNext();) {
-            StudySoftware elem = it.next();
-            elem.getId();
-        }
-        for (Iterator<StudyTopicClass> it = study.getStudyTopicClasses().iterator(); it.hasNext();) {
-            StudyTopicClass elem = it.next();
-            elem.getId();
-        }
-
-        for (Iterator<StudyOtherId> it = study.getStudyOtherIds().iterator(); it.hasNext();) {
-            StudyOtherId elem = it.next();
-            elem.getId();
-        }
-
-        for (Iterator<TemplateField> it = study.getTemplate().getTemplateFields().iterator(); it.hasNext();) {
-            TemplateField elem = it.next();
-            elem.getId();
-        }
-
-        for (Iterator<StudyRelStudy> it = study.getStudyRelStudies().iterator(); it.hasNext();) {
-            StudyRelStudy elem = it.next();
-            elem.getId();
-        }
-
-        for (Iterator<StudyRelMaterial> it = study.getStudyRelMaterials().iterator(); it.hasNext();) {
-            StudyRelMaterial elem = it.next();
-            elem.getId();
-        }
-
-        for (Iterator<StudyRelPublication> it = study.getStudyRelPublications().iterator(); it.hasNext();) {
-            StudyRelPublication elem = it.next();
-            elem.getId();
-        }
-        for (Iterator<StudyOtherRef> it = study.getStudyOtherRefs().iterator(); it.hasNext();) {
-            StudyOtherRef elem = it.next();
-            elem.getId();
-        }
-        */
-        return study;
-    }
-
-    /**
      *   Gets Study without any of its dependent objects
      *
      */
@@ -573,6 +491,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
 
     /**
      *   Gets Study and dependent objects based on Map parameter;
+     *   Should only be sued for studies with Released versions
      *   used by studyListingPage
      *
      */
@@ -584,17 +503,16 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
             throw new IllegalArgumentException("Unknown studyId: " + studyId);
         }
 
-
-
+        Metadata metadata = null;
+        if (study.getReleasedVersion() != null) {
+            metadata = study.getReleasedVersion().getMetadata();
+        } else {
+            throw new IllegalArgumentException("No released version available for this study: " + studyId);
+        }
+        
         if (studyFields != null) {
             for (Object studyField : studyFields.keySet()) {
-                // TODO: VERSION: until we have the versioning working!!
-                Metadata metadata = null;
-                if (study.getReleasedVersion() != null) {
-                    metadata = study.getReleasedVersion().getMetadata();
-                } else {
-                    metadata = study.getStudyVersions().get(0).getMetadata();
-                }
+
                 String fieldName = (String) studyField;
                 if ("authorName".equals(fieldName)) {
                     for (Iterator<StudyAuthor> it = metadata.getStudyAuthors().iterator(); it.hasNext();) {
@@ -1437,10 +1355,6 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         VDCUser user = em.find(VDCUser.class, userId);
 
         studyVersion.setLastUpdateTime(new Date());
-        // TODO: VERSION:  do we still want to store the last
-        // updater here, now that we have a contributor list
-        // and update time for each version?
-        studyVersion.getStudy().setLastUpdater(user);
         studyVersion.updateVersionContributors(user);
         setDisplayOrders(studyVersion.getMetadata());
         return studyVersion.getStudy();

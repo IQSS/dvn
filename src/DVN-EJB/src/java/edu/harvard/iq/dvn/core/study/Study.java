@@ -124,13 +124,12 @@ public class Study implements java.io.Serializable {
         // in 5*N SQL queries where N = number of studies already in the DV!
         // -L.A.
         
-        Date createDate = new Date();
+       
 
         this.setCreator(creator);
-        this.setCreateTime(createDate);
 
         this.setLastUpdater(creator);
-        this.setLastUpdateTime(createDate);
+      
 
       
     }
@@ -170,6 +169,10 @@ public class Study implements java.io.Serializable {
     
     public void setLastUpdateTime(Date lastUpdateTime) {
         this.lastUpdateTime = lastUpdateTime;
+        if (createTime==null) {
+            setCreateTime(lastUpdateTime);
+        }
+        
     }
 
     public StudyVersion getLatestVersion() {

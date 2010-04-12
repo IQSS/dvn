@@ -55,7 +55,7 @@
                 <ice:inputText id="dvnDeaccessionForwardLink" value="#{DeaccessionStudyPage.studyVersion.deaccessionLink}"></ice:inputText>
               </div>
               <div class="dvnFormPadding dvnFormMargin">
-                <ice:commandButton id="button1" value='#{DeaccessionStudyPage.updateDeaccessionDetails?"Update":"Deaccession"}' action="#{DeaccessionStudyPage.deaccession_action}"/>
+                <ice:commandButton id="button1" value='#{DeaccessionStudyPage.updateDeaccessionDetails?"Update":"Deaccession"}' action="#{DeaccessionStudyPage.save_action}"/>
                 <ice:commandButton immediate="true" id="button2" value="Cancel" action="#{DeaccessionStudyPage.cancel_action}"/>
               </div>
             </div>

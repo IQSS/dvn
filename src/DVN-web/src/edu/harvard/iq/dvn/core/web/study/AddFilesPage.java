@@ -395,14 +395,9 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
      */
     public Collection<SelectItem> getFileCategories() {
         if (fileCategories == null) {
-            fileCategories = new ArrayList();
-            if (study != null) {
-                StudyVersion sv = study.getStudyVersions().get(0);
-
-                for (FileMetadata fmd : sv.getFileMetadatas()) {
-                fileCategories.add( new SelectItem( (fmd.getCategory()) ) );
-                }
-                 //Collections.sort(fileCats);
+            fileCategories = new ArrayList(); 
+            for (String catName : studyVersion.getFileCategories()) {
+                fileCategories.add( new SelectItem(catName));
             }
         }
 

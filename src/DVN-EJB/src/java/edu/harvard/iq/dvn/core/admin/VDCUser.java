@@ -30,14 +30,12 @@ import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyComment;
 import edu.harvard.iq.dvn.core.study.StudyFile;
 import edu.harvard.iq.dvn.core.study.StudyLock;
+import edu.harvard.iq.dvn.core.study.VersionContributor;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCNetwork;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.*;
 
 /**
@@ -89,7 +87,18 @@ public class VDCUser implements java.io.Serializable  {
 
     @OneToMany(mappedBy="commentCreator", cascade={CascadeType.PERSIST, CascadeType.REMOVE})
     private List<StudyComment> studyComments;
-    /**
+
+    @OneToMany(mappedBy="contributor", cascade={CascadeType.PERSIST, CascadeType.REMOVE})
+    private List<VersionContributor> versionContributors;
+
+    public List<VersionContributor> getVersionContributors() {
+        return versionContributors;
+    }
+
+    public void setVersionContributors(List<VersionContributor> versionContributors) {
+        this.versionContributors = versionContributors;
+    }
+   /**
      * Creates a new instance of VDCUser
      */
     public VDCUser() {

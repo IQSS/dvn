@@ -19,17 +19,17 @@
         <ice:inputHidden id="studyId" value="#{DeaccessionStudyPage.studyId}"/>
         <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnWarningMessage" rendered="#{!DeaccessionStudyPage.updateDeaccessionDetails}">
             <div class="dvnMsgBlockContainer">
-              <p><ice:outputText value="By deaccessioning a study, it will be removed, but not permanently deleted. If a user tries to view the study use the persistent global identifier, a page will be displayed with your comments about why the study was deaccessioned, and a link to another study, if desired. You can restore this study by using the Manage Studies page of My Options." escape="false"/></p>
+              <ice:outputText value="#{bundlePageInfo.deaccessionStudyHelp}" escape="false"/>
             </div>
         </div>
         <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage" rendered="#{DeaccessionStudyPage.updateDeaccessionDetails}">
             <div class="dvnMsgBlockContainer">
-              <p><ice:outputText value="Edit the comment and forwarding URL that an end-user sees when accessing this deaccessioned study." escape="false"/></p>
+              <ice:outputText value="#{bundlePageInfo.deaccessionStudyEditHelp}" escape="false"/>
             </div>
         </div>
         <div class="dvn_section">
           <div class="dvn_sectionTitle">
-            <ice:outputText value="Deaccession Study"/>
+            <ice:outputText value="#{bundlePageInfo.deaccessionStudyTitle}" escape="false"/>
           </div>
           <div class="dvn_sectionBox">
             <div class="dvn_margin12">

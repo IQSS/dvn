@@ -494,9 +494,8 @@ public class VDCServiceBean implements VDCServiceLocal {
         vdc.setDefaultTemplate(template);
     }
 
-    public java.util.List<Long> getOwnedStudyIds(Long vdcId) {
-        // TODO: VERSION: hwo to order, based on versioning
-        String queryStr = "SELECT s.id FROM VDC v JOIN v.ownedStudies s where v.id = " + vdcId;// + " ORDER BY s.metadata.title";
+    public java.util.List<Long> getOwnedStudyIds(Long vdcId) {      
+        String queryStr = "SELECT s.id FROM VDC v JOIN v.ownedStudies s where v.id = " + vdcId;
         return em.createQuery(queryStr).getResultList();
     }
 

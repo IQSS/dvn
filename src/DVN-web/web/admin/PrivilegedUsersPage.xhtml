@@ -87,7 +87,7 @@
                         <ice:outputLink id="hyperlink2"  rendered="#{currentRow.vdcRole!=null}" value="/dvn/faces/login/AccountPage.xhtml?userId=#{currentRow.vdcRole.vdcUser.id}">
                         <ice:outputText id="hyperlink2Text" value="#{currentRow.vdcRole.vdcUser.userName}"/>
                       </ice:outputLink>
-                      <ice:inputText rendered="#{currentRow.vdcRole==null}" binding="#{PrivilegedUsersPage.userInputText}" id="userName" value="#{PrivilegedUsersPage.newUserName}" />
+                      <ice:inputText rendered="#{currentRow.vdcRole==null}" binding="#{PrivilegedUsersPage.userInputText}" id="userName" value="#{PrivilegedUsersPage.newUserName}" onclick="this.value='';" />
                     </ice:column>
                     <ice:column id="column9">
                       <f:facet name="header">

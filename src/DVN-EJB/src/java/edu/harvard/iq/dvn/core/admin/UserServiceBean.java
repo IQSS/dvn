@@ -267,4 +267,17 @@ public class UserServiceBean implements UserServiceLocal {
             return false;
         }
     }
+     public boolean hasUserContributed(Long userId) {
+       String queryStr = "select count(*) from versioncontributor where contributor_id = " + userId;
+        Query query = em.createNativeQuery(queryStr);
+
+        Long count = (Long) ((Vector) query.getSingleResult()).get(0);
+        System.out.println("count is "+count+", type "+count.getClass().getName());
+        if (count.compareTo(new Long(0))>0) {
+            return true;
+        } else {
+            return false;
+        }
+     }
+
 }

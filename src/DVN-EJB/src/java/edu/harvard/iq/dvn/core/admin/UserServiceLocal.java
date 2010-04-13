@@ -75,5 +75,7 @@ public interface UserServiceLocal extends java.io.Serializable  {
     public void makeContributor(Long userId, Long vdcId);
     
     public boolean hasUserCreatedDataverse(Long userId);
+
+    public boolean hasUserContributed(Long userId);
     
 }

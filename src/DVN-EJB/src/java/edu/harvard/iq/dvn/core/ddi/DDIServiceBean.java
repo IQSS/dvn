@@ -161,29 +161,38 @@ public class DDIServiceBean implements DDIServiceLocal {
 
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     public void exportStudy(Study s, OutputStream os) {
-        if (s.getReleasedVersion() != null) {
-            if (s.isIsHarvested() ) {
-                exportOriginalDDIPlus( s.getReleasedVersion(), os );
-            } else {
-                XMLStreamWriter xmlw = null;
+        if (s.getReleasedVersion() == null) {
+            throw new IllegalArgumentException("Study does not have released version, study.id = " + s.getId());
+        }
+
+        if (s.isIsHarvested()) {
+            exportOriginalDDIPlus(s.getReleasedVersion(), os);
+        } else {
+            XMLStreamWriter xmlw = null;
+            try {
+                xmlw = xmlOutputFactory.createXMLStreamWriter(os);
+                xmlw.writeStartDocument();
+                createCodeBook(xmlw, s.getReleasedVersion());
+                xmlw.writeEndDocument();
+            } catch (XMLStreamException ex) {
+                Logger.getLogger("global").log(Level.SEVERE, null, ex);
+                throw new EJBException("ERROR occurred in exportStudy.", ex);
+            } finally {
                 try {
-                    xmlw = xmlOutputFactory.createXMLStreamWriter(os);
-                    xmlw.writeStartDocument();
-                    createCodeBook( xmlw, s.getReleasedVersion() );
-                    xmlw.writeEndDocument();
+                    if (xmlw != null) {
+                        xmlw.close();
+                    }
                 } catch (XMLStreamException ex) {
-                    Logger.getLogger("global").log(Level.SEVERE, null, ex);
-                    throw new EJBException("ERROR occurred in exportStudy.", ex);
-                } finally {
-                    try {
-                        if (xmlw != null) { xmlw.close(); }
-                    } catch (XMLStreamException ex) {}
                 }
             }
         }
     }
 
     public void exportDataFile(FileMetadata fmd, OutputStream os)  {
+        if (!(fmd.getStudyFile() instanceof TabularDataFile)) {
+            throw new IllegalArgumentException("StudyFile is not a tabular data file, study file id = " + fmd.getStudyFile() );
+        }
+
         XMLStreamWriter xmlw = null;
         try {
             xmlw = xmlOutputFactory.createXMLStreamWriter(os);

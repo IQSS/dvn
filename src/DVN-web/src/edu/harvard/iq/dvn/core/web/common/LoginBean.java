@@ -167,6 +167,10 @@ public class LoginBean  implements java.io.Serializable {
                hasDataverses=true;
            }
         return hasDataverses;
-    }   
+    }
+
+   public boolean hasContributed() {
+       return user.getVersionContributors().size() > 0;
+   }
     
 }

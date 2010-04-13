@@ -86,7 +86,16 @@ public class StudyFileServiceBean implements StudyFileServiceLocal {
 
         Query query = em.createQuery(queryStr);
         query.setParameter("extension", "%." + extension.toLowerCase());
-        return query.getResultList();
+
+        List<FileMetadata> fmdList = query.getResultList();
+        Iterator it = fmdList.iterator();
+        while (it.hasNext()) {
+            FileMetadata fmd = (FileMetadata) it.next();
+            if (!fmd.getStudyVersion().isLatestVersion()) {
+                it.remove();
+            }
+        }
+        return fmdList;
 
     }
 

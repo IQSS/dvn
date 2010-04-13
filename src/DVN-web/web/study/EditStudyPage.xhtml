@@ -133,7 +133,7 @@
           </div>
 <style type="text/css">
 .dvnstudytitleblock {overflow: hidden;}
-.dvnstudytitlefloat {float: left; padding-right: 30px; text-align: left;}
+.dvnstudytitlefloat {padding-right: 340px; text-align: left;}
 span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; font-size:1.35em !important;}
 .dvnstudyversioninfo {}
 .dvnstudyversioninfo span.iceOutTxt {color:#A9A9A9; line-height: 1.48; font-size:.95em !important;}
@@ -148,7 +148,7 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
 .dvnstudystatusnoreleasedver{color:#820024;}
 .dvnstudystatusversionnote{font-weight:normal;}
 
-.dvnstudyadminboxfloat{float: right; width: 310px; margin-bottom: 1em; text-align:left;}
+.dvnstudyadminboxfloat{float: right; width: 310px; text-align:left;}
 .dvnstudypreviouslisting{text-align:right;}
 .dvnstudyadminbox{width: 300px; overflow:hidden; border:1px solid #d0d0d0; margin-bottom: 1em; padding:4px; color:#526F76;}
 .dvnstudyadminlinksL {float: left; width: 150px; list-style-type: square; margin: 0 0 0 1.25em; padding: 0;}
@@ -160,6 +160,12 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
 </style>
           
         <div class="dvnstudytitleblock">
+            <div class="dvnstudyadminboxfloat">
+                    <div jsfc="ice:panelGroup" id="groupPanel10" styleClass="vdcTextRight dvnFormMargin">
+                        <ice:commandButton id="button1" value="Save" actionListener="#{EditStudyPage.toggleVersionNotesPopup}"/>
+                        <ice:commandButton id="button2" value="Cancel" immediate="true" action="#{EditStudyPage.cancel}"/>
+                    </div>
+            </div>
             <div class="dvnstudytitlefloat">
                 <ice:outputText styleClass="dvnstudytitle" value="#{EditStudyPage.metadata.title}" rendered="#{EditStudyPage.study.id != null}"/>
                 <div jsfc="ice:panelGroup" styleClass="dvnstudyversioninfo" rendered="#{EditStudyPage.metadata.id != null}">
@@ -169,19 +175,12 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
                   <ice:outputText styleClass="dvnstudystatuslabel" value="In Review " rendered="#{EditStudyPage.metadata.studyVersion.inReview}"/>
                   <ice:outputText styleClass="dvnstudystatuslabel" value="Draft " rendered="#{EditStudyPage.metadata.studyVersion.draft}"/>
                   <ice:outputText value="Study Version: #{EditStudyPage.metadata.studyVersion.versionNumber}"/>
-                  <ice:outputText nospan="true" rendered="#{!empty EditStudyPage.metadata.studyVersion.lastUpdateTime}"><br/></ice:outputText>
-                  <ice:outputText value="Last Updated: #{EditStudyPage.metadata.studyVersion.lastUpdateTime}" rendered="#{!empty EditStudyPage.metadata.studyVersion.lastUpdateTime}"/>
+                  <ice:outputText nospan="true"><br/></ice:outputText>
+                  <ice:outputText value="Created: #{EditStudyPage.metadata.studyVersion.createTime} - Last Updated: #{EditStudyPage.metadata.studyVersion.lastUpdateTime}" rendered="#{!empty EditStudyPage.metadata.studyVersion.lastUpdateTime}"/>
                   <ice:outputText nospan="true" rendered="#{!empty EditStudyPage.metadata.studyVersion.versionNote}"><br/></ice:outputText>
                   <ice:outputText value="Study Version Notes: " rendered="#{!empty EditStudyPage.metadata.studyVersion.versionNote}"/>
                   <ice:outputText styleClass="dvnstudystatusversionnote" value="#{EditStudyPage.metadata.studyVersion.versionNote}" rendered="#{!empty EditStudyPage.metadata.studyVersion.versionNote}"/>
                 </div>
-            </div>
-
-            <div class="dvnstudyadminboxfloat">
-                    <div jsfc="ice:panelGroup" id="groupPanel10" styleClass="vdcTextRight dvnFormMargin">
-                        <ice:commandButton id="button1" value="Save" actionListener="#{EditStudyPage.toggleVersionNotesPopup}"/>
-                        <ice:commandButton id="button2" value="Cancel" immediate="true" action="#{EditStudyPage.cancel}"/>
-                    </div>
             </div>
         </div>
 

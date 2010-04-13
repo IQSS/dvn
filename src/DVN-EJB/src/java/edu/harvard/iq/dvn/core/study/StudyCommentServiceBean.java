@@ -130,12 +130,11 @@ public class StudyCommentServiceBean implements StudyCommentService {
         if (study != null){
             VDCUser commenter = em.find(VDCUser.class, commenterId);
             if (commenter != null){
-                //TODO: VERSION : should deal with version
                 StudyVersion sv = null;
                 if (study.getReleasedVersion() != null) {
                     sv = study.getReleasedVersion();
                 } else {
-                    sv = study.getStudyVersions().get(0);
+                    throw new IllegalArgumentException("Study does not have released version, study.id = " + study.getId());
                 }
                 StudyComment studyComment = new StudyComment(comment, commenter, sv);
                 studyComment.setStatus(StudyComment.Status.OK);

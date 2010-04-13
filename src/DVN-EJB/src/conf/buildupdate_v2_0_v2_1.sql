@@ -77,6 +77,8 @@ alter table studyfile alter column filesystemlocation type text;
 --
 update pagedef set role_id = null where path = '/admin/OptionsPage.xhtml';
 update pagedef set role_id = null where path = '/study/ManageStudiesPage.xhtml';
+update pagedef set networkrole_id = null where path = '/networkAdmin/NetworkOptionsPage.xhtml';
+
 --
 -- Add null constraints to existing columns
 --

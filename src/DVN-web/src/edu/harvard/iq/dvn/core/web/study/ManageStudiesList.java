@@ -111,10 +111,14 @@ public class ManageStudiesList extends SortableList {
                 throw new RuntimeException("Unknown sortColumnName: "+sortColumnName);
             }
             List studyVersionIds =null;
-            if (loginBean!=null && loginBean.isContributor() && contributorFilter) {
-                studyVersionIds = studyService.getDvOrderedStudyVersionIdsByContributor(vdcId, loginBean.getUser().getId(), orderBy, ascending);
-            } else {
-                studyVersionIds = studyService.getDvOrderedStudyVersionIds(vdcId, orderBy, ascending);
+            if (vdcId != null){
+                if (loginBean != null && loginBean.isContributor() && contributorFilter) {
+                    studyVersionIds = studyService.getDvOrderedStudyVersionIdsByContributor(vdcId, loginBean.getUser().getId(), orderBy, ascending);
+                } else {
+                    studyVersionIds = studyService.getDvOrderedStudyVersionIds(vdcId, orderBy, ascending);
+                }
+            } else{
+                studyVersionIds = studyService.getAllStudyVersionIdsByContributor(loginBean.getUser().getId(), orderBy, ascending);
             }
             studyUIList = new ArrayList<StudyUI>();
             VDCUser user = loginBean == null ? null : loginBean.getUser();

@@ -219,15 +219,6 @@ public class ManageStudiesList extends SortableList {
         return action;
     }
 
-    public String remove_action(){
-        String action=null;
-        StudyUI studyUI = (StudyUI) this.studyDataTable.getRowData();
-        studyService.deaccessionStudy(studyUI.getStudyVersion());
-        studyUIList=null;
-        action = "";
-        return action;
-    }
-    
     public void review_action(){
         StudyUI studyUI = (StudyUI) this.studyDataTable.getRowData();
         studyService.setReadyForReview(studyUI.getStudyId());

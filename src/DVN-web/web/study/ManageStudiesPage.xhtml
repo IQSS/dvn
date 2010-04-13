@@ -278,15 +278,17 @@
                         <f:param name="versionNumber" value="#{studyUI.study.latestVersion.versionNumber}"/>
                         <ice:outputText value="#{bundle.MSEditAction}"/>
                     </ice:outputLink>
-<!--
-                    <ice:commandLink id="releasedEditColLink" action="#{ManageStudiesList.editStudy_action}" rendered="#{studyUI.study.latestVersion.released}">
-                        <ice:outputText value="#{bundle.MSEditAction}"/>
-                    </ice:commandLink>
--->
+                    <ice:outputLink value="/dvn/dv/#{VDCRequest.currentVDC.alias}/faces/study/DeaccessionStudyPage.xhtml" rendered="#{studyUI.study.latestVersion.released}" >
+                        <f:param name="studyId" value="#{studyUI.study.id}"/>
+                        <f:param name="versionNumber" value="#{studyUI.study.latestVersion.versionNumber}"/>
+                        <ice:outputText value="#{bundle.MSDeaccessionAction}"/>
+                    </ice:outputLink>
+                    <!--
                     <ice:commandLink id="releasedColLink" action="#{ManageStudiesList.remove_action}" rendered="#{studyUI.study.latestVersion.released}"
                                      onclick="if(!confirm('Please confirm this DELETE request. This will delete this study.')){ return false; };">
                         <ice:outputText value="#{bundle.MSDeaccessionAction}"/>
                     </ice:commandLink>
+                    -->
                     <ice:outputLink value="/dvn/dv/#{VDCRequest.currentVDC.alias}/faces/study/EditStudyPage.xhtml" rendered="#{studyUI.study.latestVersion.archived}" >
                         <f:param name="studyId" value="#{studyUI.study.id}"/>
                         <f:param name="versionNumber" value="#{studyUI.study.latestVersion.versionNumber}"/>

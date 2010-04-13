@@ -68,6 +68,7 @@ import com.icesoft.faces.component.ext.HtmlInputText;
 import com.icesoft.faces.component.ext.HtmlInputTextarea;
 import com.icesoft.faces.component.ext.HtmlSelectOneMenu;
 import edu.harvard.iq.dvn.core.study.Metadata;
+import java.util.Date;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.model.SelectItem;
@@ -137,7 +138,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
 
             study.setStudyId(studyService.generateStudyIdSequence(study.getProtocol(), study.getAuthority()));
             // prefill date of deposit
-            metadata.setDateOfDeposit(new SimpleDateFormat("yyyy-MM-dd").format(study.getCreateTime()));
+            metadata.setDateOfDeposit(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
             setFiles(editStudyService.getCurrentFiles());
         }
         // Initialize map containing required/recommended settings for all fields

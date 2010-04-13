@@ -500,7 +500,6 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable, 
   
     public String determineFileTypeForExtension_action() {
         try {
-             // TODO: VERSION:
             List<FileMetadata> fileMetadatas = studyFileService.getStudyFilesByExtension(fileExtension);
             Map<String,Integer> fileTypeCounts = new HashMap<String,Integer>();
             
@@ -539,8 +538,8 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable, 
             for (Iterator<Long>  iter = ((List<Long>) tokenizedLists.get("idList")).iterator(); iter.hasNext();) {
                 Long studyId = iter.next();
                 Study study = studyService.getStudy(studyId);
-// TODO: VERSION:
-            for ( FileMetadata fmd : study.getReleasedVersion().getFileMetadatas() ) {
+                // determine the file type for the latest version of the study
+                for ( FileMetadata fmd : study.getLatestVersion().getFileMetadatas() ) {
                     fmd.getStudyFile().setFileType( FileUtil.determineFileType( fmd ) );
                 } 
                 

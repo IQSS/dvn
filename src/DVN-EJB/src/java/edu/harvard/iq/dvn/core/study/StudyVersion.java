@@ -320,4 +320,8 @@ public class StudyVersion implements Serializable {
         }
         return fileCategories;
     }
+
+    public boolean isLatestVersion() {
+        return this.equals( this.getStudy().getLatestVersion() );
+    }
 }

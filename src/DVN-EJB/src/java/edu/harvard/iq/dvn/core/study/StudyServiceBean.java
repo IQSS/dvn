@@ -667,6 +667,25 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         return (List) em.createQuery(query).getResultList();
     }
 
+
+
+    public List getAllStudyVersionIdsByContributor(Long contributorId, String orderBy, boolean ascending) {
+        List<Long> returnList = new ArrayList<Long>();
+        String queryStr = "SELECT max(v.id) from studyversion v, study s, "+
+                " versioncontributor c WHERE " +
+                "  c.contributor_id = " + contributorId + " and c.studyversion_id=v.id and v.study_id=s.id group by s.id, s." + orderBy + " ORDER BY s." + orderBy;
+        if (!ascending) {
+            queryStr += " desc";
+        }
+        Query query = em.createNativeQuery(queryStr);
+        // since query is native, must parse through Vector results
+        for (Object currentResult : query.getResultList()) {
+            // convert results into Longs
+            returnList.add(new Long(((Integer) ((Vector) currentResult).get(0))).longValue());
+        }
+        return returnList;
+    }
+
     public List getDvOrderedStudyVersionIdsByContributor(Long vdcId, Long contributorId, String orderBy, boolean ascending) {
         String queryStr = "SELECT max(v.id) from studyversion v, study s, versioncontributor c WHERE s.owner_id = " + vdcId + " and c.contributor_id = " + contributorId + " and c.studyversion_id=v.id and v.study_id=s.id group by s.id, s." + orderBy + " ORDER BY s." + orderBy;
 //        String query = "SELECT max(v.id) from StudyVersion v, Study s, VersionContributor c WHERE s.owner.id = " + vdcId + " and c.contributor.id = " + contributorId + " and c.studyVersion.id=v.id and v.study_id=s.id group by s.id, s."+orderBy+" ORDER BY s." + orderBy;

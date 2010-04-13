@@ -208,6 +208,11 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
                     <div jsfc="ice:panelGroup" styleClass="dvnstudyadminbox" rendered="#{VDCSession.loginBean.user!=null and studyPage.studyUI.userAuthorizedToEdit}">
                         <div jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.study.studyLock==null}">
                             <ul class="dvnstudyadminlinksL">
+                                <span jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.studyVersion != studyPage.studyUI.study.latestVersion}">
+                                    <li>
+                                        <dvn:tooltip tooltipMessage="#{studybundle.editStudyTip}" linkText="Edit Draft/Review Version" eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;versionNumber=#{studyPage.studyUI.study.latestVersion.versionNumber}"/>
+                                    </li>
+                                </span>
                                 <span jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.studyVersion == studyPage.studyUI.study.latestVersion}">
                                     <li>
                                         <dvn:tooltip tooltipMessage="#{studybundle.editStudyTip}" linkText="#{studybundle.editStudyText}" eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;tab=catalog#{VDCRequest.studyListingIndexAsParameter}"/>

@@ -104,7 +104,7 @@
                       </div>
                     </div>
                     <div jsfc="ice:panelGroup"
-                           rendered="#{VDCSession.user != null}"><!-- the dataTable needs StudyCommentsFragment.user to refresh the table? but session bean alone okay here? -->
+                           rendered="#{VDCSession.user != null and StudyCommentsFragment.study.releasedVersion != null}"><!-- the dataTable needs StudyCommentsFragment.user to refresh the table? but session bean alone okay here? -->
                           <ice:outputLabel styleClass="vdcStudyCommentsSubheading" for="studyComments" id="studyCommentsLabel">
                             <ice:outputText value="Add a Comment"/>
                           </ice:outputLabel>
@@ -118,7 +118,7 @@
                           </ice:inputTextarea>
                       </div>
                       <div jsfc="ice:panelGroup"
-                           rendered="#{VDCSession.user != null}"
+                           rendered="#{VDCSession.user != null and StudyCommentsFragment.study.releasedVersion != null}"
                            styleClass="dvnFormPadding dvnFormMargin">
                             <ice:commandButton id="button1"
                                                value="Save"
@@ -126,5 +126,8 @@
                             <ice:commandButton id="button2"
                                                value="Cancel"
                                                action="#{StudyCommentsFragment.cancel}"/>
+                      </div>
+                      <div jsfc="ice:panelGroup" styleClass="vdcStudyCommentLoginRegister" rendered="#{VDCSession.user != null and StudyCommentsFragment.study.releasedVersion == null}">
+                          <ice:outputText value="The study must be released in order to add comments. "/>
                       </div>
                 </div>

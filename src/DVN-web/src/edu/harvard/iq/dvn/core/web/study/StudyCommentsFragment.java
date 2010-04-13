@@ -46,6 +46,7 @@ public class StudyCommentsFragment extends VDCBaseBean implements Serializable {
     protected List<StudyCommentUI> studyComments;
     protected Long studyId = null;  // corresponds to the primary key in the table, id
     protected Long studyIdForComments = null;  // corresponds to the foreign key int he table, studyId ex. 10001 // TODO: is this needed??
+    private boolean renderStudyVersionReference;
 
 
      public void init() {
@@ -53,6 +54,10 @@ public class StudyCommentsFragment extends VDCBaseBean implements Serializable {
         if (studyId == null && getVDCRequestBean().getStudyId() != null) {
             studyId = getVDCRequestBean().getStudyId();
         }
+
+        study = studyService.getStudy(studyId);
+        renderStudyVersionReference = study.getLatestVersion().getVersionNumber() > 1;
+
      }
 
      /** togglePopup
@@ -280,6 +285,9 @@ public class StudyCommentsFragment extends VDCBaseBean implements Serializable {
         this.study = study;
     }
 
+    public boolean getRenderStudyVersionReference() {
+        return renderStudyVersionReference;
+    }
 
      /**
      * Get the studyComments wrapper
@@ -600,16 +608,4 @@ public class StudyCommentsFragment extends VDCBaseBean implements Serializable {
         cancelLink = request.getProtocol().substring(0, request.getProtocol().indexOf("/")).toLowerCase() + "://" + getHostUrl() + request.getContextPath() + "/faces/networkAdmin/CommentReviewPage.xhtml";
         return cancelLink;
     }
-
-    private Boolean renderStudyVersionReference = null;
-
-    public Boolean getRenderStudyVersionReference() {
-        if (renderStudyVersionReference == null) {
-            study = studyService.getStudy(studyId);
-            renderStudyVersionReference = study.getLatestVersion().getVersionNumber() > 1;
-        }
-
-        return renderStudyVersionReference;
-    }
-
 }

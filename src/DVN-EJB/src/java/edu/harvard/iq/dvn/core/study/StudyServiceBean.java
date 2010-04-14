@@ -1245,8 +1245,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
     }
 
 
-    private void clearStudyVersion(StudyVersion studyVersion) {
-        // TODO: VERSION: test this to make sure it works properly
+    private void resetStudyForHarvesting(StudyVersion studyVersion) {
         // first delete variables via query (for performance)
         Study study = studyVersion.getStudy();
         deleteDataVariables(study.getId());
@@ -1256,7 +1255,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         }
 
         // then delete files
-        clearCollection(studyVersion.getFileMetadatas());
+        clearCollection(study.getStudyFiles());
 
         // now create new, empty metadata object and delete old one
         Metadata m = new Metadata();
@@ -1663,10 +1662,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
                 globalIdComponents.put("studyId", study.getStudyId());
 
                 studyVersion = study.getLatestVersion();
-                clearStudyVersion(studyVersion);
-
-                study.setLastUpdateTime(new Date());
-                study.setLastUpdater(creator);
+                resetStudyForHarvesting(studyVersion);
             }
         }
 
@@ -1699,7 +1695,9 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
             studyVersion.getMetadata().setHarvestDVNTermsOfUse(null);
         }
 
-        setDisplayOrders(studyVersion.getMetadata());
+        saveStudyVersion(studyVersion, userId);
+        studyVersion.setReleaseTime( new Date() );
+
         boolean registerHandle = determineId(studyVersion, vdc, globalIdComponents);
         if (newStudy && !studyService.isUniqueStudyId( study.getStudyId(), study.getProtocol(), study.getAuthority() ) ) {
             throw new EJBException("A study with this globalId already exists (likely cause: the study was previously harvested into a different dataverse).");

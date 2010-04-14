@@ -42,7 +42,6 @@ public class ManageStudiesList extends SortableList {
     private static final String CREATOR_COLUMN = "creator";
     private static final String DATE_CREATED_COLUMN = "dateCreated";
     private static final String STATUS_COLUMN = "status";
-//    private static final String TEMPLATE_COLUMN = "template";
     private static final String DATE_RELEASED_COLUMN = "dateReleased";
     private static final String VERSION_COLUMN = "version";
     private static final String DATE_UPDATED_COLUMN = "lastUpdated";    
@@ -94,20 +93,21 @@ public class ManageStudiesList extends SortableList {
             }
             paginator.gotoFirstPage();
             if (sortColumnName.equals(TITLE_COLUMN)) {
-                orderBy = "metadata.title";
+                orderBy = "m.title";
             } else if (sortColumnName.equals(ID_COLUMN)) {
-                orderBy="studyId";
+                orderBy="s.studyId";
             } else if (sortColumnName.equals(CREATOR_COLUMN)){
-                orderBy="creator.userName";
+                orderBy="cr.userName";
             } else if (sortColumnName.equals(DATE_CREATED_COLUMN)) {
-                orderBy="createTime";
-                // TODO: VERSION:  update query so we can sort by studyVersion.versionState
-//            } else if (sortColumnName.equals(STATUS_COLUMN)) {
-//                orderBy="reviewState.name";
-//            } else if (sortColumnName.equals(TEMPLATE_COLUMN)) {
-//                orderBy="template.name";
+                orderBy="s.createTime";
+            } else if (sortColumnName.equals(DATE_RELEASED_COLUMN)) {
+                orderBy="v.releaseTime";
+            } else if (sortColumnName.equals(STATUS_COLUMN)) {
+                orderBy="v.versionState";
+             } else if (sortColumnName.equals(VERSION_COLUMN)) {
+                orderBy="v.versionNumber";
             } else if (sortColumnName.equals(DATE_UPDATED_COLUMN)) {
-                orderBy="lastUpdateTime";
+                orderBy="s.lastUpdateTime";
             } else {
                 throw new RuntimeException("Unknown sortColumnName: "+sortColumnName);
             }

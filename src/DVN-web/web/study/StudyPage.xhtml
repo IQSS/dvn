@@ -336,9 +336,9 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
                         <ice:outputText value="&#8211;" rendered="#{studyPage.studyUI.study.deaccessionedVersion != null}"/>
                         <ice:outputText value="No Released Version" styleClass="warnMessage" rendered="#{studyPage.studyUI.study.deaccessionedVersion != null}"/>
                         <ice:outputText nospan="true" rendered="#{studyPage.studyUI.studyVersion.archived}"><br/></ice:outputText>
-                        <ice:outputText value="Archived: #{studyPage.studyUI.studyVersion.archiveTime }" rendered="#{studyPage.studyUI.studyVersion.archived}"/>
+                        <ice:outputText value="Released: #{studyPage.studyUI.studyVersion.releaseTime} &#8211; Archived: #{studyPage.studyUI.studyVersion.archiveTime}" rendered="#{studyPage.studyUI.studyVersion.archived}"/>
                         <ice:outputText nospan="true" rendered="#{studyPage.studyUI.studyVersion.workingCopy}"><br/></ice:outputText>
-                        <ice:outputText value="Created: #{studyPage.studyUI.studyVersion.createTime} - Last Updated: #{studyPage.studyUI.studyVersion.lastUpdateTime}" rendered="#{studyPage.studyUI.studyVersion.workingCopy}"/>
+                        <ice:outputText value="Created: #{studyPage.studyUI.studyVersion.createTime} &#8211; Last Updated: #{studyPage.studyUI.studyVersion.lastUpdateTime}" rendered="#{studyPage.studyUI.studyVersion.workingCopy}"/>
                         <ice:outputText nospan="true" rendered="#{!empty studyPage.studyUI.studyVersion.versionNote}"><br/></ice:outputText>
                         <ice:outputText value="Study Version Notes: " rendered="#{!empty studyPage.studyUI.studyVersion.versionNote}"/>
                         <ice:outputText styleClass="dvnstudystatusversionnote" value="#{studyPage.studyUI.studyVersion.versionNote}" rendered="#{!empty studyPage.studyUI.studyVersion.versionNote}"/>

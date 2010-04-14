@@ -2086,6 +2086,7 @@ public class DDIServiceBean implements DDIServiceLocal {
 
     private void processFileDscr(XMLStreamReader xmlr, StudyVersion studyVersion, Map filesMap) throws XMLStreamException {
         FileMetadata fmd = new FileMetadata();
+        fmd.setStudyVersion(studyVersion);
         studyVersion.getFileMetadatas().add(fmd);
 
         StudyFile sf = new OtherFile(studyVersion.getStudy()); // until we connect the sf and dt, we have to assume it's an other file
@@ -2432,12 +2433,13 @@ public class DDIServiceBean implements DDIServiceLocal {
 
     private void processOtherMat(XMLStreamReader xmlr, StudyVersion studyVersion) throws XMLStreamException {
         FileMetadata fmd = new FileMetadata();
+        fmd.setStudyVersion(studyVersion);
         studyVersion.getFileMetadatas().add(fmd);
 
         StudyFile sf = new OtherFile(studyVersion.getStudy());
+        fmd.setStudyFile(sf);
         sf.setFileSystemLocation( xmlr.getAttributeValue(null, "URI"));
-
-
+        
         /// the following Strings are used to determine the category
         String catName = null;
         String icpsrDesc = null;

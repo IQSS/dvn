@@ -1386,6 +1386,13 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         }
         
         i = 0;
+           for (Iterator it = metadata.getStudyRelMaterials().iterator(); it.hasNext();) {
+            StudyRelMaterial elem = (StudyRelMaterial) it.next();
+            elem.setDisplayOrder(i);
+            i++;
+        }
+
+        i = 0;
         for (Iterator it = metadata.getStudySoftware().iterator(); it.hasNext();) {
             StudySoftware elem = (StudySoftware) it.next();
             elem.setDisplayOrder(i);

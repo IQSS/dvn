@@ -11,7 +11,6 @@ package edu.harvard.iq.dvn.core.ddi;
 
 import edu.harvard.iq.dvn.core.study.DataTable;
 import edu.harvard.iq.dvn.core.study.DataVariable;
-import edu.harvard.iq.dvn.core.study.FileCategory;
 import edu.harvard.iq.dvn.core.study.FileMetadata;
 import edu.harvard.iq.dvn.core.study.Metadata;
 import edu.harvard.iq.dvn.core.study.OtherFile;
@@ -21,7 +20,6 @@ import edu.harvard.iq.dvn.core.study.StudyAuthor;
 import edu.harvard.iq.dvn.core.study.StudyDistributor;
 import edu.harvard.iq.dvn.core.study.StudyFile;
 import edu.harvard.iq.dvn.core.study.StudyFileActivity;
-import edu.harvard.iq.dvn.core.study.StudyFileEditBean;
 import edu.harvard.iq.dvn.core.study.StudyGeoBounding;
 import edu.harvard.iq.dvn.core.study.StudyGrant;
 import edu.harvard.iq.dvn.core.study.StudyKeyword;
@@ -44,6 +42,7 @@ import edu.harvard.iq.dvn.core.study.VariableIntervalType;
 import edu.harvard.iq.dvn.core.study.VariableRange;
 import edu.harvard.iq.dvn.core.study.VariableRangeType;
 import edu.harvard.iq.dvn.core.study.VariableServiceLocal;
+import edu.harvard.iq.dvn.core.study.VersionContributor;
 import edu.harvard.iq.dvn.core.util.DateUtil;
 import edu.harvard.iq.dvn.core.util.FileUtil;
 import edu.harvard.iq.dvn.core.util.PropertyUtil;
@@ -120,6 +119,15 @@ public class DDIServiceBean implements DDIServiceLocal {
     public static final String NOTE_TYPE_CITATION = "DVN:CITATION";
     public static final String NOTE_SUBJECT_CITATION = "Citation";
 
+    public static final String NOTE_TYPE_VERSION_NOTE = "DVN:VERSION_NOTE";
+    public static final String NOTE_SUBJECT_VERSION_NOTE= "Version Note";
+
+    public static final String NOTE_TYPE_ARCHIVE_NOTE = "DVN:ARCHIVE_NOTE";
+    public static final String NOTE_SUBJECT_ARCHIVE_NOTE= "Archive Note";
+
+    public static final String NOTE_TYPE_ARCHIVE_DATE = "DVN:ARCHIVE_DATE";
+    public static final String NOTE_SUBJECT_ARCHIVE_DATE= "Archive Date";
+
     // db constants
     public static final String DB_VAR_INTERVAL_TYPE_CONTINUOUS = "continuous";
     public static final String DB_VAR_RANGE_TYPE_POINT = "point";
@@ -188,10 +196,11 @@ public class DDIServiceBean implements DDIServiceLocal {
         }
     }
 
-    public void exportDataFile(FileMetadata fmd, OutputStream os)  {
-        if (!(fmd.getStudyFile() instanceof TabularDataFile)) {
-            throw new IllegalArgumentException("StudyFile is not a tabular data file, study file id = " + fmd.getStudyFile() );
+    public void exportDataFile(TabularDataFile tdf, OutputStream os)  {
+        if (tdf.getReleasedFileMetadata() == null) {
+            throw new IllegalArgumentException("StudyFile does not have a released version, study file id = " + tdf.getId() );
         }
+
 
         XMLStreamWriter xmlw = null;
         try {
@@ -203,8 +212,8 @@ public class DDIServiceBean implements DDIServiceLocal {
             xmlw.writeDefaultNamespace("http://www.icpsr.umich.edu/DDI");
             writeAttribute( xmlw, "version", "2.0" );
 
-            createFileDscr(xmlw,fmd);
-            createDataDscr(xmlw,(TabularDataFile)fmd.getStudyFile());
+            createFileDscr(xmlw, tdf.getReleasedFileMetadata());
+            createDataDscr(xmlw, tdf);
 
             xmlw.writeEndElement(); // codeBook
 
@@ -351,6 +360,59 @@ public class DDIServiceBean implements DDIServiceLocal {
         createDateElement( xmlw, "distDate", lastUpdateString );
 
         xmlw.writeEndElement(); // distStmt
+
+        // verStmt (DVN versions)
+        for (StudyVersion sv : study.getStudyVersions()) {
+            if (sv.isWorkingCopy()) {
+                continue; // we do not want to incude any info about a working copy
+            }
+
+            xmlw.writeStartElement("verStmt");
+            writeAttribute( xmlw, "source", "DVN" );
+
+            xmlw.writeStartElement("version");
+            writeAttribute( xmlw, "date", new SimpleDateFormat("yyyy-MM-dd").format(sv.getReleaseTime()) );
+            writeAttribute( xmlw, "type", sv.getVersionState().toString() );
+            xmlw.writeCharacters( sv.getVersionNumber().toString() );
+            xmlw.writeEndElement(); // version
+
+            String versionContributors = "";
+            for (VersionContributor vc : sv.getVersionContributors()) {
+                if (!"".equals(versionContributors)) {
+                    versionContributors += ", ";
+                }
+                versionContributors += vc.getContributor().getUserName();
+            }
+            xmlw.writeStartElement("verResp");
+            xmlw.writeCharacters( versionContributors );
+            xmlw.writeEndElement(); // verResp
+
+            if (!StringUtil.isEmpty( sv.getVersionNote() )) {
+                xmlw.writeStartElement("notes");
+                writeAttribute( xmlw, "type", NOTE_TYPE_VERSION_NOTE );
+                writeAttribute( xmlw, "subject", NOTE_SUBJECT_VERSION_NOTE );
+                xmlw.writeCharacters( sv.getVersionNote());
+                xmlw.writeEndElement(); // notes
+            }
+
+            if (!StringUtil.isEmpty( sv.getArchiveNote() )) {
+                xmlw.writeStartElement("notes");
+                writeAttribute( xmlw, "type", NOTE_TYPE_ARCHIVE_NOTE );
+                writeAttribute( xmlw, "subject", NOTE_SUBJECT_ARCHIVE_NOTE );
+                xmlw.writeCharacters( sv.getArchiveNote());
+                xmlw.writeEndElement(); // notes
+            }
+
+            if (sv.getArchiveTime() != null) {
+                xmlw.writeStartElement("notes");
+                writeAttribute( xmlw, "type", NOTE_TYPE_ARCHIVE_DATE );
+                writeAttribute( xmlw, "subject", NOTE_SUBJECT_ARCHIVE_DATE );
+                xmlw.writeCharacters( new SimpleDateFormat("yyyy-MM-dd").format(sv.getArchiveTime()) );
+                xmlw.writeEndElement(); // notes
+            }
+
+            xmlw.writeEndElement(); // verStmt
+        }
 
         // biblCit
         xmlw.writeStartElement("biblCit");
@@ -535,7 +597,18 @@ public class DDIServiceBean implements DDIServiceLocal {
             xmlw.writeCharacters( metadata.getStudyVersionText() );
             xmlw.writeEndElement(); // version
         }
-       if (verStmtAdded) xmlw.writeEndElement(); // verStmt
+        if (verStmtAdded) xmlw.writeEndElement(); // verStmt
+        
+        // DVN Version info
+        StudyVersion sv = metadata.getStudyVersion();
+        xmlw.writeStartElement("verStmt");
+        writeAttribute( xmlw, "source", "DVN" );
+        xmlw.writeStartElement("version");
+        writeAttribute( xmlw, "date", new SimpleDateFormat("yyyy-MM-dd").format(sv.getReleaseTime()) );
+        writeAttribute( xmlw, "type", sv.getVersionState().toString() );
+        xmlw.writeCharacters( sv.getVersionNumber().toString() );
+        xmlw.writeEndElement(); // version
+        xmlw.writeEndElement(); // verStmt
 
         // UNF note
         if (! StringUtil.isEmpty( metadata.getUNF()) ) {
@@ -1206,19 +1279,16 @@ public class DDIServiceBean implements DDIServiceLocal {
     }
 
 
-    private void createDataDscr(XMLStreamWriter xmlw, StudyFile sf) throws XMLStreamException {
+    private void createDataDscr(XMLStreamWriter xmlw, TabularDataFile tdf) throws XMLStreamException {
         // this version is to produce the dataDscr for just one file
-        if ( sf instanceof TabularDataFile ) {
-            TabularDataFile tdf = (TabularDataFile) sf;
-            if (tdf.getDataTable().getDataVariables().size() > 0 ) {
-                xmlw.writeStartElement("dataDscr");
-                Iterator varIter = varService.getDataVariablesByFileOrder( tdf.getDataTable().getId() ).iterator();
-                while (varIter.hasNext()) {
-                    DataVariable dv = (DataVariable) varIter.next();
-                    createVar(xmlw, dv);
-                }
-                xmlw.writeEndElement(); // dataDscr
+        if (tdf.getDataTable().getDataVariables().size() > 0 ) {
+            xmlw.writeStartElement("dataDscr");
+            Iterator varIter = varService.getDataVariablesByFileOrder( tdf.getDataTable().getId() ).iterator();
+            while (varIter.hasNext()) {
+                DataVariable dv = (DataVariable) varIter.next();
+                createVar(xmlw, dv);
             }
+            xmlw.writeEndElement(); // dataDscr
         }
     }
 
@@ -1672,14 +1742,23 @@ public class DDIServiceBean implements DDIServiceLocal {
     }
 
     private void processVerStmt(XMLStreamReader xmlr, Metadata metadata) throws XMLStreamException {
-        for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
-            if (event == XMLStreamConstants.START_ELEMENT) {
-                if (xmlr.getLocalName().equals("version")) {
-                    metadata.setVersionDate( xmlr.getAttributeValue(null, "date") );
-                    metadata.setStudyVersionText( parseText(xmlr) );
-                } else if (xmlr.getLocalName().equals("notes")) { processNotes(xmlr, metadata); }
-            } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (xmlr.getLocalName().equals("verStmt")) return;
+        if (!"DVN".equals(xmlr.getAttributeValue(null, "source"))) {
+            for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
+                if (event == XMLStreamConstants.START_ELEMENT) {
+                    if (xmlr.getLocalName().equals("version")) {
+                        metadata.setVersionDate( xmlr.getAttributeValue(null, "date") );
+                        metadata.setStudyVersionText( parseText(xmlr) );
+                    } else if (xmlr.getLocalName().equals("notes")) { processNotes(xmlr, metadata); }
+                } else if (event == XMLStreamConstants.END_ELEMENT) {
+                    if (xmlr.getLocalName().equals("verStmt")) return;
+                }
+            }
+        } else {
+            // this is the DVN version info and should just be skipped
+            for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
+                if (event == XMLStreamConstants.END_ELEMENT) {
+                    if (xmlr.getLocalName().equals("verStmt")) return;
+                }
             }
         }
     }

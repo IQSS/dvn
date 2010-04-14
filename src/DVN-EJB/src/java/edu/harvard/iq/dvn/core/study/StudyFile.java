@@ -504,7 +504,7 @@ public abstract class StudyFile implements Serializable {
     }
 
 
-   
+    // TODO: review how these methods are used
     // I believe it is still needed. At least the DSB ingest framework still
     // uses this method. (And I'm assuming we'll always want to be able to
     // get the filename of a given studyFile -- unless I'm missing something).
@@ -552,6 +552,15 @@ public abstract class StudyFile implements Serializable {
             }
         }
 
+        return null;
+    }
+
+    public FileMetadata getReleasedFileMetadata() {
+        for (FileMetadata fileMetadata : fileMetadatas) {
+            if (fileMetadata.getStudyVersion().isReleased() ) {
+                return fileMetadata;
+            }
+        }
         return null;
     }
 

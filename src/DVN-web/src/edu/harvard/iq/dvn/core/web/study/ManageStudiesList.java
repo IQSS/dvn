@@ -18,6 +18,7 @@ import edu.harvard.iq.dvn.core.web.common.LoginBean;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
@@ -47,7 +48,7 @@ public class ManageStudiesList extends SortableList {
     private static final String DATE_UPDATED_COLUMN = "lastUpdated";    
     private static final String ACTION_COLUMN = "actionReleased";
     private DataPaginator paginator;
-   
+    private static Logger dbgLog = Logger.getLogger(ManageStudiesList.class.getCanonicalName());
     private Long vdcId;
     private LoginBean loginBean;
 
@@ -152,7 +153,6 @@ public class ManageStudiesList extends SortableList {
     public String getCreatorColumn() {return CREATOR_COLUMN; }
     public String getCreatedColumn() {return DATE_CREATED_COLUMN; }
     public String getStatusColumn() { return STATUS_COLUMN; }
-//    public String getTemplateColumn() {return TEMPLATE_COLUMN; }
     public String getReleasedColumn() {return DATE_RELEASED_COLUMN; }
     public String getVersionColumn() { return VERSION_COLUMN; }
     public String getUpdatedColumn() { return DATE_UPDATED_COLUMN; }
@@ -231,7 +231,7 @@ public class ManageStudiesList extends SortableList {
 
     public void delete_action(){
         StudyUI studyUI = (StudyUI) this.studyDataTable.getRowData();
-        studyService.deleteStudy(studyUI.getStudyId());
+        studyService.destroyWorkingCopyVersion(studyUI.getStudyVersion().getId());
         studyUIList=null;
     }
 

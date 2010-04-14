@@ -91,8 +91,7 @@ public class DDIExportServlet extends HttpServlet {
                             createErrorResponse(res, "The file you requested is NOT a tabular data file.");
                         } else {
                             res.setContentType("text/xml");
-                            // TODO: VERSION
-                            //ddiService.exportDataFile( (TabularDataFile) sf, out );
+                            ddiService.exportDataFile( (TabularDataFile) sf, out );
                         }
                     } catch (Exception ex) {
                         if (ex.getCause() instanceof IllegalArgumentException) {

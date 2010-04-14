@@ -130,6 +130,23 @@ public class EditHarvestSiteServiceBean implements EditHarvestSiteService  {
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void save(Long userId, String name, String alias, boolean filesRestricted, String dtype, String affiliation) {
+
+        // set these values first, so that reqired columns are not null!
+        if (selectedHandlePrefixId==null) {
+            harvestingDataverse.setHandlePrefix(null);
+        } else {
+            HandlePrefix handlePrefix = em.find(HandlePrefix.class, selectedHandlePrefixId);
+            harvestingDataverse.setHandlePrefix(handlePrefix);
+        }
+        
+        if (selectedMetadataPrefixId==null) {
+            harvestingDataverse.setHarvestFormatType(null);
+        } else {
+            HarvestFormatType hft = em.find(HarvestFormatType.class, selectedMetadataPrefixId);
+            harvestingDataverse.setHarvestFormatType(hft);
+        }
+   
+
         VDC vdc = null;
         if (harvestingDataverse.getVdc()==null) {
             vdcService.create(userId, name, alias, dtype);
@@ -149,22 +166,7 @@ public class EditHarvestSiteServiceBean implements EditHarvestSiteService  {
         vdc.setFilesRestricted(filesRestricted);
         vdc.setAllowedFileGroups(allowedFileGroups);
         vdc.setAllowedFileUsers(allowedFileUsers);
-
-        
-        if (selectedHandlePrefixId==null) {
-            harvestingDataverse.setHandlePrefix(null);
-        } else {
-            HandlePrefix handlePrefix = em.find(HandlePrefix.class, selectedHandlePrefixId);
-            harvestingDataverse.setHandlePrefix(handlePrefix);
-        }
-        
-        if (selectedMetadataPrefixId==null) {
-            harvestingDataverse.setHarvestFormatType(null);
-        } else {
-            HarvestFormatType hft = em.find(HarvestFormatType.class, selectedMetadataPrefixId);
-            harvestingDataverse.setHarvestFormatType(hft);
-        }
-        
+             
         harvesterService.updateHarvestTimer(harvestingDataverse);
         em.flush();        
     }

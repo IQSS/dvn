@@ -68,17 +68,6 @@ public class StudyFileServiceBean implements StudyFileServiceLocal {
         return file;
     }
 
-    //TODO: VERSION: this method should be removed
-    public FileCategory getFileCategory(Long fileCategoryId) {
-        FileCategory fileCategory = em.find(FileCategory.class, fileCategoryId);
-        if (fileCategory == null) {
-            throw new IllegalArgumentException("Unknown fileCategoryId: " + fileCategoryId);
-        }
-
-
-        return fileCategory;
-    }
-
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     public List<FileMetadata> getStudyFilesByExtension(String extension) {
 

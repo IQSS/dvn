@@ -59,6 +59,4 @@ public interface VariableServiceLocal extends java.io.Serializable {
     List<VariableRangeType> findAllVariableRangeType();
     VariableRangeType findVariableRangeTypeByName(List<VariableRangeType> typeList, String name);
     
-    public void updateDataTable(DataTable dt, Long userId);
-     
 }

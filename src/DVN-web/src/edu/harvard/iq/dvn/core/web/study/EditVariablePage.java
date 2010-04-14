@@ -156,9 +156,7 @@ public class EditVariablePage extends VDCBaseBean implements java.io.Serializabl
     
     
     public String save_action() {
-        
-        varService.updateDataTable( dt, getVDCSessionBean().getLoginBean().getUser().getId() );
-        
+                
         // this lets the Analysis page know which dt, and also to reset the session
         getVDCRequestBean().setDtId(dtId);
         

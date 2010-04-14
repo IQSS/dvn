@@ -280,19 +280,4 @@ public class VariableServiceBean implements edu.harvard.iq.dvn.core.study.Variab
         }
     }
 
-        // This method is no longer needed as of DVN version 2.1 -
-        // we will not be allowing variable edits.
-        // TODO: VERSION:  finish removing all code related to this.
-        public void updateDataTable(DataTable dt, Long userId) {
-          //   em.merge(dt);
-           
-          // mark study as updated
-          //  Study study = dt.getStudyFile().getStudy();
-          //  studyService.saveStudy( study, userId );
-          //  em.merge(study);
-            
-          // lastly, reindex
-          //  indexService.updateStudy(study.getId());
-
-        }
 }

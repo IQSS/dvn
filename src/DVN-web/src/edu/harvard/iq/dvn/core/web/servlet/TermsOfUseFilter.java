@@ -319,21 +319,6 @@ public class TermsOfUseFilter implements Filter {
                         return false;
                     }
                 }
-                // TODO: VERSION:
-            } else if (catId != null) {
-                try {
-                    FileCategory cat = studyFileService.getFileCategory(new Long(catId));
-                    study = cat.getStudy();
-                } catch (Exception ex) {
-                    if (ex.getCause() instanceof IllegalArgumentException) {
-                    // do nothing.
-                    // if the category does not exist, there sure 
-                    // isn't a license/terms of use for it!
-                    } else {
-                        ex.printStackTrace();
-                        return false;
-                    }
-                }
             } else if (studyId != null) {
                 try {
                     study = studyService.getStudy(new Long(studyId));

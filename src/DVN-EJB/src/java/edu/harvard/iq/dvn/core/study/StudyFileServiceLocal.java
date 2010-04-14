@@ -18,7 +18,6 @@ public interface StudyFileServiceLocal {
 
 
     public StudyFile getStudyFile(Long fileId);
-    public FileCategory getFileCategory(Long fileCategoryId);
 
     public List<FileMetadata> getStudyFilesByExtension(String extension);
     public void updateStudyFile(StudyFile detachedStudyFile);

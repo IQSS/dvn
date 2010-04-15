@@ -742,6 +742,18 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
         deleteActionLabel = "permanently destroy this study";
     }
 
+    public boolean isDraftDeleteRequested () {
+        return StudyDeleteRequestType.DRAFT_VERSION.equals(deleteRequested);
+    }
+
+    public boolean isReviewDeleteRequested () {
+        return StudyDeleteRequestType.REVIEW_VERSION.equals(deleteRequested);
+    }
+
+    public boolean isStudyDestroyRequested () {
+        return StudyDeleteRequestType.DESTROY_STUDY.equals(deleteRequested);
+    }
+
     /** toggleVersionNotesPopup
      * actionListener method for hiding
      * and showing the popup

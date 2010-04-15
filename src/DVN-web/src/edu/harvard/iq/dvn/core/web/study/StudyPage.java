@@ -70,6 +70,18 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
     private boolean studyUIContainsFileDetails=false; // TODO: needed??
     private int selectedIndex;
 
+    private VersionNotesPopupBean versionNotesPopup;
+
+    public VersionNotesPopupBean getVersionNotesPopup() {
+        return versionNotesPopup;
+    }
+
+    public void setVersionNotesPopup(VersionNotesPopupBean versionNotesPopup) {
+        this.versionNotesPopup = versionNotesPopup;
+    }
+
+    
+
     public String getGlobalId() {
         return globalId;
     }
@@ -112,7 +124,8 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
         }
         // set tab if it was it was sent as pamameter or part of request bean
         initSelectedTabIndex();
-
+        
+        versionNotesPopup.setActionType(VersionNotesPopupBean.ActionType.EDIT_NOTE);
 
         // If we're coming from EditStudyPage
         if (studyId == null) {
@@ -766,15 +779,7 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
     private enum StudyActionRequestType {REVIEW, RELEASE};
     private StudyActionRequestType actionRequested = null;
 
-    public void toggleVersionNotesPopup(javax.faces.event.ActionEvent event) {
-        if (showVersionNotesPopup && (actionRequested != null)) {
-            actionRequested = null;
-        }
-        showVersionNotesPopup = !showVersionNotesPopup;
-        actionComplete = false;
-    }
-
-    protected boolean showVersionNotesPopup = false;
+   
     protected boolean actionComplete = false;
 
     public void confirmReleased(ActionEvent ae) {
@@ -795,7 +800,7 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
         if ( releasedVersion == null ) {
             // This is the first release of the study.
             actionRequested = StudyActionRequestType.RELEASE;
-            showVersionNotesPopup = true;
+            versionNotesPopup.setShowPopup(true);
             actionComplete = false;
         } else {
             // Redirecting to the Differences page;
@@ -811,7 +816,7 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
 
     public void confirmSubmitForReview(ActionEvent ae) {
         actionRequested = StudyActionRequestType.REVIEW;
-        showVersionNotesPopup = true;
+        versionNotesPopup.setShowPopup(true);
         actionComplete = false;
     }
 
@@ -820,7 +825,7 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
     public String saveVersionNote() {
 
         studyService.saveVersionNote (studyUI.getStudyVersion().getId(), studyUI.getStudyVersion().getVersionNote());
-        showVersionNotesPopup = false;
+        versionNotesPopup.setShowPopup(false);
         actionComplete = true;
 
 
@@ -877,13 +882,7 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
         this.actionComplete = actionComplete;
     }
 
-    public boolean isShowVersionNotesPopup() {
-        return showVersionNotesPopup;
-    }
-
-    public void setShowVersionNotesPopup(boolean showVersionNotesPopup) {
-        this.showVersionNotesPopup = showVersionNotesPopup;
-    }
+    
 
     protected HtmlCommandLink editStudyVersionNotesLink = new HtmlCommandLink();
 

@@ -163,7 +163,7 @@
                 <ice:message for="textField3" id="validatorMessage" styleClass="errorMessage"/>
               </ice:panelGroup>
               <div class="dvnFormPadding dvnFormMargin">
-                  <ice:commandButton id="saveButton" value="Save" actionListener="#{AddFilesPage.toggleVersionNotesPopup}" disabled ="#{empty AddFilesPage.fileList}"/>
+                  <ice:commandButton id="saveButton" value="Save" actionListener="#{VersionNotesPopupBean.openPopup}" disabled ="#{empty AddFilesPage.fileList}"/>
                 <ice:commandButton id="cancelButton" value="Cancel" immediate="true" action="#{AddFilesPage.cancel_action}"/>
               </div>
             </ice:form>

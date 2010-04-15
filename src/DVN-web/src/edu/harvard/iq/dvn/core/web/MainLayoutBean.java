@@ -264,19 +264,19 @@ public class MainLayoutBean implements java.io.Serializable  {
         this.showVersionNotesPopup = showVersionNotesPopup;
     }
 
-    private boolean showVersionNotesReleaseButton;
+    private boolean showVersionNotesRelease;
 
     /**
-     * @return the showVersionNotesReleaseButton
+     * @return the showVersionNotesRelease
      */
-    public boolean isShowVersionNotesReleaseButton() {
-        return showVersionNotesReleaseButton;
+    public boolean isShowVersionNotesRelease() {
+        return showVersionNotesRelease;
     }
 
     /**
-     * @param showVersionNotesReleaseButton the showVersionNotesReleaseButton to set
+     * @param showVersionNotesReleaseButton the showVersionNotesRelease to set
      */
-    public void setShowVersionNotesReleaseButton(boolean showVersionNotesReleaseButton) {
-        this.showVersionNotesReleaseButton = showVersionNotesReleaseButton;
+    public void setShowVersionNotesRelease(boolean showVersionNotesRelease) {
+        this.showVersionNotesRelease = showVersionNotesRelease;
     }
 }

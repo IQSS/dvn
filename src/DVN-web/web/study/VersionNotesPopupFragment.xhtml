@@ -16,7 +16,7 @@
         <!--visible="#{studyVersionDifferencesPage.showVersionNotesPopup}"-->
         <ice:panelPopup id="versionNotesPopup"
                         draggable="false"
-                        visible="#{(MainLayoutBean.inStudyPage and studyPage.showVersionNotesPopup) or (MainLayoutBean.showVersionNotesPopup) or (MainLayoutBean.inAddFilesPage and AddFilesPage.showVersionNotesPopup)}"
+                        visible="#{VersionNotesPopupBean.showPopup }"
                         autoCentre="true"
                         modal="true">
             <f:facet name="header">
@@ -39,35 +39,29 @@
                                styleClass="popupModalBody">
                     <ice:outputText value="Add your comments to the Study Version Notes field below, in order to give a brief description of the changes associated with this version."/>
                     <ice:outputText value="Study Version Notes"/>
-                    <ice:inputTextarea id="studyVersionNotes" value="#{studyPage.studyUI.studyVersion.versionNote}" rendered="#{MainLayoutBean.inStudyPage}"></ice:inputTextarea>
-                    <ice:inputTextarea id="studyVersionNotes" value="#{studyVersionDifferencesPage.studyUI2.studyVersion.versionNote}" rendered="#{MainLayoutBean.inVersionDiffPage} || #{MainLayoutBean.inManageStudiesPage}"></ice:inputTextarea>
-                    <ice:inputTextarea id="studyVersionNotes" value="#{AddFilesPage.studyVersion.versionNote}" rendered="#{MainLayoutBean.inAddFilesPage}"></ice:inputTextarea>
+                    <ice:inputTextarea id="studyVersionNotes" value="#{studyPage.studyUI.studyVersion.versionNote}" rendered="#{VersionNotesPopupBean.editNoteAction}"></ice:inputTextarea>
+                    <ice:inputTextarea id="studyVersionNotes" value="#{studyVersionDifferencesPage.studyUI2.studyVersion.versionNote}" rendered="#{VersionNotesPopupBean.versionReleaseAction || MainLayoutBean.inManageStudiesPage}"></ice:inputTextarea>
+                    <ice:inputTextarea id="studyVersionNotes" value="#{AddFilesPage.studyVersion.versionNote}" rendered="#{VersionNotesPopupBean.addFilesAction}"></ice:inputTextarea>
 
                     <div jsfc="ice:panelGroup" styleClass="dvnFormPadding dvnFormMargin">
                         <ice:commandButton id="autoCentPopupOk"
                                            action="#{studyPage.saveVersionNote}"
                                            value="Confirm"
-                                           rendered="#{MainLayoutBean.inStudyPage}"/>
-                        <ice:commandButton id="autoCentPopupCancel"
-                                           actionListener="#{studyPage.toggleVersionNotesPopup}"
-                                           value="Cancel"
-                                           rendered="#{MainLayoutBean.inStudyPage}"/>
-                        <ice:commandButton id="autoCentPopupOk"
+                                           rendered="#{VersionNotesPopupBean.editNoteAction}"/>
+                       <ice:commandButton id="autoCentPopupOk"
                                            actionListener="#{studyVersionDifferencesPage.saveVersionNoteAndRelease}"
                                            value="Confirm"
-                                           rendered="#{MainLayoutBean.showVersionNotesReleaseButton}"/>
-                        <ice:commandButton id="autoCentPopupCancel"
-                                           actionListener="#{studyVersionDifferencesPage.toggleVersionNotesPopup}"
-                                           value="Cancel"
-                                           rendered="#{MainLayoutBean.showVersionNotesReleaseButton}"/>
-                        <ice:commandButton id="autoCentPopupOk"
+                                           rendered="#{VersionNotesPopupBean.versionReleaseAction}"/>
+                       <ice:commandButton id="autoCentPopupOk"
                                            action="#{AddFilesPage.save_action}"
                                            value="Confirm"
-                                           rendered="#{MainLayoutBean.inAddFilesPage}"/>
+                                           rendered="#{VersionNotesPopupBean.addFilesAction}"/>
+                       
+                      
                         <ice:commandButton id="autoCentPopupCancel"
-                                           actionListener="#{AddFilesPage.toggleVersionNotesPopup}"
-                                           value="Cancel"
-                                           rendered="#{MainLayoutBean.inAddFilesPage}"/>
+                                           actionListener="#{VersionNotesPopupBean.closePopup}"
+                                           value="Cancel"/>
+                     
 
                     </div>
                 </ice:panelGrid>

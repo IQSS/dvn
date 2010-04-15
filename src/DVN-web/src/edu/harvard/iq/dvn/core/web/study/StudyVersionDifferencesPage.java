@@ -60,6 +60,15 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
     private String actionMode;
     private Long studyId;
     private String versionNumberList;
+    VersionNotesPopupBean versionNotesPopup;
+
+    public VersionNotesPopupBean getVersionNotesPopup() {
+        return versionNotesPopup;
+    }
+
+    public void setVersionNotesPopup(VersionNotesPopupBean versionNotesPopup) {
+        this.versionNotesPopup = versionNotesPopup;
+    }
 
     public String getActionMode() {
         return actionMode;
@@ -291,6 +300,8 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
             initStudyFilesDifferencesList();
 
+            versionNotesPopup.setActionType(VersionNotesPopupBean.ActionType.VERSION_RELEASE);
+
         } else {
             // We must have a StudyId and the Version numbers; throw an error
             //System.out.println("ERROR: in StudyVersionDifferencePage, without a studyId and/or version Ids");
@@ -326,11 +337,8 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
         // also updates the study with the Indexer service.
         // every time a study is released.
 
-        ((MainLayoutBean) getBean("MainLayoutBean")).setShowVersionNotesPopup(false);
-        ((MainLayoutBean) getBean("MainLayoutBean")).setShowVersionNotesReleaseButton(false);
-        // Make sure the popup is turned off:
-        showVersionNotesPopup = false;
-
+        versionNotesPopup.setShowPopup(false);
+       
         // And now we are redirecting back to the StudyPage;
         // no need to specify the version really, since the latest version is now released.
         redirect("/faces/study/StudyPage.xhtml?studyId="+studyId);
@@ -2226,21 +2234,9 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
         }
     }
     
-    public void toggleVersionNotesPopup(javax.faces.event.ActionEvent event) {
-        MainLayoutBean mlb = (MainLayoutBean) getBean("MainLayoutBean");
-        mlb.setShowVersionNotesPopup(! mlb.isShowVersionNotesPopup());
-        mlb.setShowVersionNotesReleaseButton(! mlb.isShowVersionNotesReleaseButton());
-    }
+   
 
-    protected boolean showVersionNotesPopup = false;
-
-    public boolean isShowVersionNotesPopup() {
-        return showVersionNotesPopup;
-    }
-
-    public void setShowVersionNotesPopup(boolean showVersionNotesPopup) {
-        this.showVersionNotesPopup = showVersionNotesPopup;
-    }
+   
 
     public class catalogInfoDifferenceItem {
 

@@ -78,6 +78,8 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
     private List<String> currentLabels = new ArrayList<String>();// used for validation
     private int fileProgress; // TODO: file upload completed percent (Progress), currently not used!!!
     private HtmlDataTable filesDataTable = new HtmlDataTable();
+    private VersionNotesPopupBean versionNotesPopup;
+
 
 
     public Long getStudyId() {
@@ -130,6 +132,14 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
         this.filesDataTable = hdt;
     }
 
+    public VersionNotesPopupBean getVersionNotesPopup() {
+        return versionNotesPopup;
+    }
+
+    public void setVersionNotesPopup(VersionNotesPopupBean versionNotesPopup) {
+        this.versionNotesPopup = versionNotesPopup;
+    }
+
 
     public void init() {
         super.init();
@@ -151,6 +161,7 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
             // WE SHOULD HAVE A STUDY ID, throw an error
             System.out.println("ERROR: in addStudyPage, without a serviceBean or a studyId");
         }
+        versionNotesPopup.setActionType(VersionNotesPopupBean.ActionType.ADD_FILES);
     }
 
     public void uploadFile(ActionEvent event) {
@@ -261,7 +272,7 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
 
     public String save_action() {
 
-        showVersionNotesPopup = false;
+        versionNotesPopup.setShowPopup(false);
 
         if (fileList.size() > 0) {
             studyFileService.addFiles(studyVersion, fileList, getVDCSessionBean().getLoginBean().getUser(), ingestEmail);
@@ -404,38 +415,6 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
         return fileCategories;
     }
 
-    private boolean showVersionNotesPopup = false;
-
-    /**
-     * Get the value of showPopup
-     *
-     * @return the value of showPopup
-     */
-    public boolean isShowVersionNotesPopup() {
-        return   showVersionNotesPopup;
-
-    }
-
-    /**
-     * Set the value of showPopup
-     *
-     * @param showPopup new value of showPopup
-     */
-    public void setShowVersionNotesPopup(boolean showVersionNotesPopup) {
-        this.showVersionNotesPopup = showVersionNotesPopup;
-    }
-
- /** togglePopup
-      * actionListener method for hiding
-      * and showing the popup
-      *
-      * @param ActionEvent
-      *
-      */
-     public void toggleVersionNotesPopup(javax.faces.event.ActionEvent event) {
-
-         showVersionNotesPopup = !showVersionNotesPopup;
-
-     }
+   
 
 }

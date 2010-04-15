@@ -203,6 +203,11 @@
             <property-class>java.lang.String</property-class>
             <value>#{param.tab}</value>
         </managed-property>
+        <managed-property>
+            <property-name>versionNotesPopup</property-name>
+            <property-class>edu.harvard.iq.dvn.core.web.study.VersionNotesPopupBean</property-class>
+            <value>#{VersionNotesPopupBean}</value>
+        </managed-property>
     </managed-bean>
     <managed-bean>
         <managed-bean-name>studyVersionDifferencesPage</managed-bean-name>
@@ -222,6 +227,11 @@
             <property-name>actionMode</property-name>
             <property-class>java.lang.String</property-class>
             <value>#{param.actionMode}</value>
+        </managed-property>
+        <managed-property>
+            <property-name>versionNotesPopup</property-name>
+            <property-class>edu.harvard.iq.dvn.core.web.study.VersionNotesPopupBean</property-class>
+            <value>#{VersionNotesPopupBean}</value>
         </managed-property>
     </managed-bean>
     <managed-bean>
@@ -297,6 +307,11 @@
             <property-name>ingestEmail</property-name>
             <property-class>java.lang.String</property-class>
             <value>#{VDCSession.loginBean.user.email}</value>
+        </managed-property>
+        <managed-property>
+            <property-name>versionNotesPopup</property-name>
+            <property-class>edu.harvard.iq.dvn.core.web.study.VersionNotesPopupBean</property-class>
+            <value>#{VersionNotesPopupBean}</value>
         </managed-property>
  <!-- ****** EV : Managed beans for AddFilesPage with IceFaces ****** -->
     </managed-bean>
@@ -785,7 +800,12 @@
         <managed-bean-class>edu.harvard.iq.dvn.core.web.MainLayoutBean</managed-bean-class>
         <managed-bean-scope>application</managed-bean-scope>
     </managed-bean>
-  
+      <managed-bean>
+        <managed-bean-name>VersionNotesPopupBean</managed-bean-name>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.study.VersionNotesPopupBean</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+
+        </managed-bean>
     <!-- rem'd the tiles classes -->
     <managed-bean>
         <managed-bean-name>LoginWorkflowBean</managed-bean-name>

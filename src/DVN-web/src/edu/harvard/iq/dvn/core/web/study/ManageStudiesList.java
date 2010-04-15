@@ -326,10 +326,10 @@ public class ManageStudiesList extends SortableList {
 
             if (studyUI.getStudy() != null) {
                 if (studyUI.getStudy().isDraft() ) {
-                    deleteActionLabel = "delete this draft version of the study";
+                    deleteActionLabel = "delete this draft study version";
                 }
                 else if (studyUI.getStudy().isInReview() ) {
-                    deleteActionLabel = "delete this review version of the study";
+                    deleteActionLabel = "delete this review study version";
                 }
             }
         }

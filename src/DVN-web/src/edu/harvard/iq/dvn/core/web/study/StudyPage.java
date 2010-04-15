@@ -727,13 +727,13 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
     public void confirmDraftDeleteAction (ActionEvent event) {
         showStudyDeletePopup = true;
         deleteRequested = StudyDeleteRequestType.DRAFT_VERSION;
-        deleteActionLabel = "delete this draft version of the study";
+        deleteActionLabel = "delete this draft study version";
     }
 
     public void confirmInreviewDeleteAction (ActionEvent event) {
         showStudyDeletePopup = true;
         deleteRequested = StudyDeleteRequestType.REVIEW_VERSION;
-        deleteActionLabel = "delete this review version of the study";
+        deleteActionLabel = "delete this review study version";
     }
 
     public void confirmStudyDestroyAction (ActionEvent event) {

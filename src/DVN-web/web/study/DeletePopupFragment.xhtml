@@ -14,17 +14,17 @@
             <!-- (universal) delete study version popup -->
         <ice:panelPopup id="studyDeletePopup"
                         draggable="false"
-                        visible="#{(MainLayoutBean.inStudyPage and studyPage.showStudyDeletePopup)
-                                or (MainLayoutBean.inManageStudiesPage and ManageStudiesList.showStudyDeletePopup)}"
+                        visible="#{(MainLayoutBean.inStudyPage and studyPage.showStudyDeletePopup) or (MainLayoutBean.inManageStudiesPage and ManageStudiesList.showStudyDeletePopup)}"
                         autoCentre="true"
-                            modal="true">
+                        modal="true">
                 <f:facet name="header">
                     <ice:panelGrid id="autoCentPanelGrid"
                                    width="100%" cellpadding="0"
                                    cellspacing="0" columns="2"
                                    columnClasses="none,popupButton">
-                        <ice:outputText value="#{studyPage.deleteActionLabel}" rendered="#{MainLayoutBean.inStudyPage}"/>
-                        <ice:outputText value="#{ManageStudiesList.deleteActionLabel}" rendered="#{MainLayoutBean.inManageStudiesPage}"/>
+                        <ice:outputText value="Delete Draft Study Version" rendered="#{MainLayoutBean.inStudyPage}"/>
+                        <ice:outputText value="Delete Review Study Version" rendered="#{MainLayoutBean.inStudyPage}"/>
+                        <ice:outputText value="Permanently Destroy Study" rendered="#{MainLayoutBean.inStudyPage}"/>
                     </ice:panelGrid>
                 </f:facet>
                 <f:facet name="body">
@@ -32,20 +32,26 @@
                                    width="100%" cellpadding="0"
                                    cellspacing="0" columns="1"
                                    styleClass="popupModalBody">
-                        <div jsfc="ice:panelGroup">
-                            <ice:graphicImage value="/resources/images/icon_warning.png"/>
-                            <ice:outputText value="Are you sure that you want to "/>
-                            <ice:outputText value="#{studyPage.deleteActionLabel}?" nospan="true" rendered="#{MainLayoutBean.inStudyPage}"/>
-                            <ice:outputText value="#{ManageStudiesList.deleteActionLabel}?" rendered="#{MainLayoutBean.inManageStudiesPage}"/>
+                        <style type="text/css">
+                            .dvnPopupWarningMessage {background: url(/dvn/resources/images/icon_warning.png) no-repeat scroll 4px 0;}
+                            .dvnPopupMessageContainer {display:table-cell;vertical-align:middle;}
+                            .dvnPopupWarningMessage p {margin:.25em 0 1.5em 58px;}
+                        </style>
+                            
+                        <div jsfc="ice:panelGroup" styleClass="dvnPopupWarningMessage">
+                            <div class="dvnPopupMessageContainer">
+                                <p>
+                                    <ice:outputText value="Are you sure that you want to #{studyPage.deleteActionLabel}?" rendered="#{MainLayoutBean.inStudyPage}"/>
+                                    <ice:outputText value="Are you sure that you want to #{ManageStudiesList.deleteActionLabel}?" rendered="#{MainLayoutBean.inManageStudiesPage}"/>
+                                </p>
+                            </div>
                         </div>
-                        <ice:outputText value="#{studyPage.studyUI.metadata.title}" rendered="#{MainLayoutBean.inStudyPage}"/>
-                        <ice:outputText value="#{studyPage.studyUI.study.globalId}" rendered="#{MainLayoutBean.inStudyPage}"/>
-                        <ice:outputText value="#{ManageStudiesList.currentStudyUI.metadata.title}" rendered="#{MainLayoutBean.inManageStudiesPage}"/>
-                        <ice:outputText value="#{ManageStudiesList.currentStudyUI.study.globalId}" rendered="#{MainLayoutBean.inManageStudiesPage}"/>
+                        <ice:outputText value="&#34;#{studyPage.studyUI.metadata.title}&#34;, #{studyPage.studyUI.study.globalId}" rendered="#{MainLayoutBean.inStudyPage}" escape="false"/>
+                        <ice:outputText value="&#34;#{ManageStudiesList.currentStudyUI.metadata.title}&#34;, #{ManageStudiesList.currentStudyUI.study.globalId}" rendered="#{MainLayoutBean.inManageStudiesPage}" escape="false"/>
                         <div jsfc="ice:panelGroup" styleClass="dvnFormPadding dvnFormMargin">
                             <ice:commandButton id="autoCentPopupOk"
                                                actionListener="#{studyPage.confirmStudyDelete}"
-                                               value="Confirm"
+                                               value="Delete"
                                                rendered="#{MainLayoutBean.inStudyPage}"/>
                             <ice:commandButton id="autoCentPopupCancel"
                                                actionListener="#{studyPage.toggleStudyDeletePopup}"
@@ -53,13 +59,12 @@
                                                rendered="#{MainLayoutBean.inStudyPage}"/>
                             <ice:commandButton id="autoCentPopupOk"
                                                actionListener="#{ManageStudiesList.confirmStudyDelete}"
-                                               value="Confirm"
+                                               value="Delete"
                                                rendered="#{MainLayoutBean.inManageStudiesPage}"/>
                             <ice:commandButton id="autoCentPopupCancel"
                                                actionListener="#{ManageStudiesList.toggleStudyDeletePopup}"
                                                value="Cancel"
                                                rendered="#{MainLayoutBean.inManageStudiesPage}"/>
-
                         </div>
                     </ice:panelGrid>
                 </f:facet>

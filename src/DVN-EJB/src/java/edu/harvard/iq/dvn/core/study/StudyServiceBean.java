@@ -687,13 +687,13 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
     public List getAllStudyVersionIdsByContributor(Long contributorId, String orderBy, boolean ascending) {
         List<Long> returnList = new ArrayList<Long>();
         String queryStr = "SELECT v.id" + 
-                " from studyversion v, study s, versioncontributor c, metadata m, vdcuser cr " +
+                " from studyversion v, study s, metadata m, vdcuser cr " +
                 " WHERE v.study_id = s.id" +              
-                " and c.studyversion_id = v.id " +
                 " and v.metadata_id = m.id" +
                 " and s.creator_id = cr.id" +
-                " and c.contributor_id = " + contributorId + 
-                " and v.id in (SELECT max(v.id) from studyversion v group by v.study_id)" +
+                " and v.id in (SELECT max(v.id) from studyversion v, versioncontributor c " +
+                " where c.studyversion_id = v.id and c.contributor_id = " + contributorId +
+                " group by v.study_id)" +
                 " ORDER BY " + orderBy;
 
         if (!ascending) {
@@ -713,12 +713,12 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         String queryStr = "SELECT v.id" + 
                 " from studyversion v, study s, versioncontributor c, metadata m, vdcuser cr " +
                 " WHERE v.study_id=s.id" +
-                " and c.studyversion_id=v.id " +
                 " and v.metadata_id = m.id" +
                 " and s.creator_id = cr.id" +
-                " and c.contributor_id = " + contributorId + 
                 " and s.owner_id = " + vdcId + 
-                " and v.id in (SELECT max(v.id) from studyversion v group by v.study_id)" +
+                " and v.id in (SELECT max(v.id) from studyversion v, versioncontributor c " +
+                " where c.studyversion_id = v.id and c.contributor_id = " + contributorId +
+                " group by v.study_id)" +
                 " ORDER BY " + orderBy;
 
         if (!ascending) {

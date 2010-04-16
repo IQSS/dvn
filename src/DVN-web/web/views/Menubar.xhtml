@@ -75,7 +75,7 @@
         <div jsfc="ice:panelGroup" styleClass="textUserName" rendered="#{!VDCRequest.logoutPage and VDCSession.ipUserGroup.friendlyName != null}">
           <ice:outputText value="#{VDCSession.ipUserGroup.friendlyName}"/>
         </div>
-        <div jsfc="ice:panelGroup" rendered="#{VDCRequest.currentVDC == null and !VDCRequest.logoutPage and (VDCSession.loginBean.networkAdmin or (VDCSession.loginBean.hasDataverses and VDCSession.loginBean.hasContributed))}">
+        <div jsfc="ice:panelGroup" rendered="#{VDCRequest.currentVDC == null and !VDCRequest.logoutPage and (VDCSession.loginBean.networkAdmin or VDCSession.loginBean.hasDataverses or VDCSession.loginBean.hasContributed)}">
           <ice:outputLink styleClass="dvn_navUserOptions" value="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/NetworkOptionsPage.xhtml" title="#{VDCRequest.vdcNetwork.name} Dataverse Network Admin Options">
             <ice:outputText value="Options"/>
           </ice:outputLink>

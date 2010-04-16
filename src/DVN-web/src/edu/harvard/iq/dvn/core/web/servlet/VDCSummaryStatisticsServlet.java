@@ -115,7 +115,7 @@ public class VDCSummaryStatisticsServlet extends HttpServlet {
 
         Set ent = mp.entrySet();
         long maxBarLen = 200L;
-        long maxFreq = 0L;
+        double maxFreq = 0L;
         out.println("header value"+hdrValue);
         if (hdrValue.equals("Frequency")) {
             // get max freq
@@ -123,7 +123,7 @@ public class VDCSummaryStatisticsServlet extends HttpServlet {
                 Map.Entry en = (Map.Entry) itr.next();
                 if (en.getKey().equals("UNF")) {
                 } else {
-                    long tmpMax = Long.parseLong((String) en.getValue());
+                    double tmpMax = Double.parseDouble((String) en.getValue());
                     out.println("tmpMax=" + tmpMax);
                     if (tmpMax > maxFreq) {
                         maxFreq = tmpMax;
@@ -147,7 +147,7 @@ public class VDCSummaryStatisticsServlet extends HttpServlet {
                     // calculate width
                     long w = 0L;
                     if (maxFreq != 0) {
-                        w = maxBarLen * Long.parseLong(((String) en.getValue())) / maxFreq;
+                        w =  Math.round( maxBarLen * Double.parseDouble(((String) en.getValue())) / maxFreq );
                         out.println("bar chart width=" + w);
                     }
                     img.append(imgPrefix + w + "'/>");

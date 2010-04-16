@@ -153,7 +153,7 @@ public class LoginBean  implements java.io.Serializable {
         this.termsfUseMap = termsfUseMap;
     }
     
-  public boolean gethasDataverses() {
+  public boolean isHasDataverses() {
         boolean hasDataverses=false;
         List vdcs;
             VDCServiceLocal vdcService = null;
@@ -169,7 +169,7 @@ public class LoginBean  implements java.io.Serializable {
         return hasDataverses;
     }
 
-   public boolean hasContributed() {
+   public boolean isHasContributed() {
        return user.getVersionContributors().size() > 0;
    }
     

@@ -367,7 +367,52 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
             if (getStudyVersion(studyId, null) == null) {
                 deleteStudy(studyId, true);
             } else {
-                // Not touching the files, datatables and variables, for now.
+                // We need to make sure to delete all the Study Files that would
+                // otherwise become "orphans" -- meaning, the files that were
+                // only added in this working version, that are not part of
+                // the released version of the study.
+                //
+                // I'm going to simply retrieve the lists of file metadata
+                // for both versions, ordered by file Id, and delete the "tail"
+                // of the working version list.
+                
+                StudyVersion releasedVersion = getStudyVersion(studyId, null);
+
+                List<FileMetadata> fileMetadataList = new ArrayList<FileMetadata>();
+                List<FileMetadata> fileMetadataListReleased = new ArrayList<FileMetadata>();
+
+                fileMetadataList = studyFileService.getFilesByStudyVersionOrderedById(studyVersion.getId());
+                fileMetadataListReleased = studyFileService.getFilesByStudyVersionOrderedById(releasedVersion.getId());
+
+                int i = fileMetadataList.size();
+
+                if ( i > 0 ) {
+                    FileMetadata fm1 = fileMetadataList.get(i-1);
+
+                    Long lastReleasedStudyFileId = new Long (0);
+
+                    if (fileMetadataListReleased.size() > 0) {
+                        lastReleasedStudyFileId = fileMetadataListReleased.get(fileMetadataListReleased.size()-1).getStudyFile().getId();
+                    }
+
+                    while ( i > 0 &&
+                            fm1 != null &&
+                            fm1.getStudyFile().getId().compareTo(lastReleasedStudyFileId) > 0 ) {
+
+                        String fileSystemLocation = fm1.getStudyFile().getFileSystemLocation();
+                        if ( fileSystemLocation != null ) {
+                            File fileToDelete = new File (fileSystemLocation);
+                            if (fileToDelete != null) {
+                                fileToDelete.delete();
+                            }
+                        }
+
+                        i--;
+                        if (i > 0) {
+                            fm1 = fileMetadataList.get(i-1);
+                        }
+                    }
+                }
 
                 em.remove(studyVersion);
                 em.flush();  // Force deletion to the database, for cases when we are calling this before deleting the owning Dataverse

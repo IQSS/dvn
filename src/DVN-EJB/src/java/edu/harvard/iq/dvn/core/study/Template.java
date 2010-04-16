@@ -48,7 +48,7 @@ public class Template implements java.io.Serializable {
      * Creates a new instance of Template
      */
     public Template() {
-        
+        metadata = new Metadata();
     }
 
      public Template(ArrayList templateFields ) {

@@ -386,6 +386,11 @@
             <property-class>edu.harvard.iq.dvn.core.web.common.LoginBean</property-class>
             <value>#{VDCSession.loginBean}</value>
         </managed-property>       
+        <managed-property>
+            <property-name>versionNotesPopupBean</property-name>
+            <property-class>edu.harvard.iq.dvn.core.web.study.VersionNotesPopupBean</property-class>
+            <value>#{ManageStudiesVersionNotesPopupBean}</value>
+        </managed-property>
 
     </managed-bean>
     <managed-bean>
@@ -806,6 +811,18 @@
         <managed-bean-scope>request</managed-bean-scope>
 
         </managed-bean>
+      <managed-bean>
+        <managed-bean-name>ManageStudiesVersionNotesPopupBean</managed-bean-name>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.study.VersionNotesPopupBean</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+        <managed-property>
+            <property-name>actionTypeStr</property-name>
+            <property-class>java.lang.String</property-class>
+            <value>MANAGE_STUDIES_RELEASE</value>
+        </managed-property>
+
+      </managed-bean>
+
     <!-- rem'd the tiles classes -->
     <managed-bean>
         <managed-bean-name>LoginWorkflowBean</managed-bean-name>

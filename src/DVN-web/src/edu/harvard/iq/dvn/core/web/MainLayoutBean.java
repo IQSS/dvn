@@ -172,6 +172,7 @@ public class MainLayoutBean implements java.io.Serializable  {
                 || request.getRequestURI().indexOf("/StudyVersionDifferencesPage.xhtml") != -1
                 || request.getRequestURI().indexOf("/EditStudyPage.xhtml") != -1
                 || request.getRequestURI().indexOf("/AddFilesPage.xhtml") != -1
+                || request.getRequestURI().indexOf("/NetworkOptionsPage.xhtml") != -1
                 || request.getRequestURI().indexOf("/ManageStudiesPage.xhtml") != -1;
         return writeStudyVersionNotesPopups;
     }

@@ -11,10 +11,26 @@ import javax.faces.event.ActionEvent;
  * @author ekraffmiller
  */
 public class VersionNotesPopupBean {
+
+    /**
+     * @return the notes
+     */
+    public String getVersionNote() {
+        return versionNote;
+    }
+
+    /**
+     * @param notes the notes to set
+     */
+    public void setVersionNote(String versionNote) {
+        this.versionNote = versionNote;
+    }
     
-    enum ActionType {VERSION_RELEASE, EDIT_STUDY, EDIT_NOTE, ADD_FILES };
+    public enum ActionType {VERSION_RELEASE, EDIT_STUDY, EDIT_NOTE, ADD_FILES, MANAGE_STUDIES_RELEASE };
 
     private ActionType actionType;
+
+    private String versionNote;
 
 
     boolean showPopup;
@@ -43,6 +59,10 @@ public class VersionNotesPopupBean {
         this.actionType = actionType;
     }
 
+    public void setActionTypeStr(String actionTypeStr){
+        this.actionType = ActionType.valueOf(actionTypeStr);
+    }
+
     public boolean isVersionReleaseAction() {
         return actionType == ActionType.VERSION_RELEASE;
     }
@@ -53,6 +73,10 @@ public class VersionNotesPopupBean {
 
     public boolean isEditNoteAction() {
         return actionType == ActionType.EDIT_NOTE;
+    }
+
+    public boolean isManageStudiesReleaseAction(){
+        return actionType == ActionType.MANAGE_STUDIES_RELEASE;
     }
 
 }

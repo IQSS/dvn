@@ -50,6 +50,7 @@ public class ManageStudiesList extends SortableList {
     private static Logger dbgLog = Logger.getLogger(ManageStudiesList.class.getCanonicalName());
     private Long vdcId;
     private LoginBean loginBean;
+    private VersionNotesPopupBean versionNotesPopupBean;
 
     // the StudyUI object for the currently selected study:
     // (for example, selected for deletion)
@@ -190,7 +191,9 @@ public class ManageStudiesList extends SortableList {
 
 
      public void doSetReleased(ActionEvent ae) {
-        StudyUI studyUI = (StudyUI) this.studyDataTable.getRowData();
+        StudyUI studyUI = studyUIList.get(selectedIndex);
+        versionNotesPopupBean.setShowPopup(false);
+        studyService.saveVersionNote(studyUI.getStudyId(), versionNotesPopupBean.getVersionNote());
         studyService.setReleased(studyUI.getStudyId());
         // set list to null, to force a fresh retrieval of data
         studyUIList=null;
@@ -203,25 +206,13 @@ public class ManageStudiesList extends SortableList {
         studyUIList=null;
     }
 
-    public String release_action() {
-        StudyUI studyUI = (StudyUI) this.studyDataTable.getRowData();
-        StudyVersion releasedVersion = studyService.getStudyVersion(studyUI.getStudyId(), null);
-        String action = null;
-        if (releasedVersion != null) {
-            VDCBaseBean.getVDCRequestBean().setStudyId(studyUI.getStudyId());
-//            VDCBaseBean.getVDCRequestBean().setStudyVersionNumberList(releasedVersion.getVersionNumber() + "," + studyUI.getStudyVersion().getNumberOfFiles());
-            VDCBaseBean.getVDCRequestBean().setStudyVersionNumberList(releasedVersion.getVersionNumber() + "," + studyUI.getStudyVersion().getVersionNumber());
-            VDCBaseBean.getVDCRequestBean().setActionMode("confirmRelease");
-            System.out.println(VDCBaseBean.getVDCRequestBean().getStudyVersionNumberList());
-            action = "diffStudy";
-        } else {
-            studyService.setReleased(studyUI.getStudyId());
-            studyUIList=null;
-            action = "";
-        }
-
-        return action;
+    public void doSaveAndVersionNotesPopup(ActionEvent ae) {
+        selectedIndex=studyDataTable.getRowIndex();
+        versionNotesPopupBean.setShowPopup(true);
     }
+
+
+    int selectedIndex;
 
     public void review_action(){
         StudyUI studyUI = (StudyUI) this.studyDataTable.getRowData();
@@ -455,5 +446,19 @@ public class ManageStudiesList extends SortableList {
      */
     public void setDeaccessionedStudiesExist(boolean deaccessionedStudiesExist) {
         this.deaccessionedStudiesExist = deaccessionedStudiesExist;
+    }
+
+    /**
+     * @return the versionNotesPopupBean
+     */
+    public VersionNotesPopupBean getVersionNotesPopupBean() {
+        return versionNotesPopupBean;
+    }
+
+    /**
+     * @param versionNotesPopupBean the versionNotesPopupBean to set
+     */
+    public void setVersionNotesPopupBean(VersionNotesPopupBean versionNotesPopupBean) {
+        this.versionNotesPopupBean = versionNotesPopupBean;
     }
 }

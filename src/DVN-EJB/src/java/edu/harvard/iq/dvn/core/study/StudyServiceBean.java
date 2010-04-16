@@ -1563,6 +1563,11 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void exportStudyToFormat(Study study, String exportFormat) {
+        // only export released studies
+        // TODO: we should clean up the export logic to handle export of versions
+        if (study.getReleasedVersion() == null) {
+            return;
+        }
 
         File studyDir = FileUtil.getStudyFileDir(study);
 

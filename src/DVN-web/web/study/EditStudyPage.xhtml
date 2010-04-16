@@ -168,10 +168,10 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
             </div>
             <div class="dvnstudytitlefloat">
                 <ice:outputText styleClass="dvnstudytitle" value="#{EditStudyPage.metadata.title}" rendered="#{EditStudyPage.study.id != null}"/>
-                <div jsfc="ice:panelGroup" styleClass="dvnstudyversioninfo" rendered="#{EditStudyPage.metadata.id != null}">
-                    <ice:outputText value="#{EditStudyPage.study.globalId}"/>
+                <div jsfc="ice:panelGroup" styleClass="dvnstudyversioninfo" rendered="#{EditStudyPage.study.id != null}">
+                    <ice:outputText value="#{EditStudyPage.study.globalId}"/> <ice:outputText value="#{EditStudyPage.metadata.UNF}" rendered="#{!empty EditStudyPage.metadata.UNF}"/>
                 </div>
-                <div jsfc="ice:panelGroup" styleClass="dvnstudystatusbox #{EditStudyPage.metadata.studyVersion.inReview ? 'dvnstudystatusreview' : '' or EditStudyPage.metadata.studyVersion.draft ? 'dvnstudystatusdraft' : ''}" rendered="#{EditStudyPage.study.id != null}">
+                <div jsfc="ice:panelGroup" styleClass="dvnstudystatusbox #{EditStudyPage.metadata.studyVersion.inReview ? 'dvnstudystatusreview' : '' or EditStudyPage.metadata.studyVersion.draft ? 'dvnstudystatusdraft' : ''}">
                   <ice:outputText styleClass="dvnstudystatuslabel" value="In Review " rendered="#{EditStudyPage.metadata.studyVersion.inReview}"/>
                   <ice:outputText styleClass="dvnstudystatuslabel" value="Draft " rendered="#{EditStudyPage.metadata.studyVersion.draft}"/>
                   <ice:outputText value="Study Version: #{EditStudyPage.metadata.studyVersion.versionNumber}"/>

@@ -125,129 +125,13 @@ public class TemplateFormPage extends VDCBaseBean implements java.io.Serializabl
          
        }
        initStudyMap();
-       initCollections();
+       template.getMetadata().initCollections();
 
         
     }
     
    
-    private void initCollections() {
-        
-        if ( template.getMetadata().getStudyOtherIds()==null || template.getMetadata().getStudyOtherIds().size()==0) {
-            StudyOtherId elem = new StudyOtherId();
-            elem.setMetadata(template.getMetadata());
-            List otherIds = new ArrayList();
-            otherIds.add(elem);
-            template.getMetadata().setStudyOtherIds(otherIds);
-        }
-        if ( template.getMetadata().getStudyAuthors()==null || template.getMetadata().getStudyAuthors().size()==0) {
-            List authors = new ArrayList();
-            StudyAuthor anAuthor = new StudyAuthor();
-            anAuthor.setMetadata(template.getMetadata());
-            authors.add(anAuthor);
-            template.getMetadata().setStudyAuthors(authors);
-        }
-        
-        if ( template.getMetadata().getStudyAbstracts()==null || template.getMetadata().getStudyAbstracts().size()==0) {
-            List abstracts = new ArrayList();
-            StudyAbstract elem = new StudyAbstract();
-            elem.setMetadata(template.getMetadata());
-            abstracts.add(elem);
-            template.getMetadata().setStudyAbstracts(abstracts);
-        }
-        
-        if (template.getMetadata().getStudyDistributors()==null || template.getMetadata().getStudyDistributors().size()==0) {
-            List distributors = new ArrayList();
-            StudyDistributor elem = new StudyDistributor();
-            elem.setMetadata(template.getMetadata());
-            distributors.add(elem);
-            template.getMetadata().setStudyDistributors(distributors);
-        }
-        if (template.getMetadata().getStudyGrants()==null || template.getMetadata().getStudyGrants().size()==0) {
-            List grants = new ArrayList();
-            StudyGrant elem = new StudyGrant();
-            elem.setMetadata(template.getMetadata());
-            grants.add(elem);
-            template.getMetadata().setStudyGrants(grants);
-        }
-        
-        if (template.getMetadata().getStudyKeywords()==null || template.getMetadata().getStudyKeywords().size()==0 ) {
-            List keywords = new ArrayList();
-            StudyKeyword elem = new StudyKeyword();
-            elem.setMetadata(template.getMetadata());
-            keywords.add(elem);
-            template.getMetadata().setStudyKeywords(keywords);
-        }
-        
-        if (template.getMetadata().getStudyTopicClasses()==null || template.getMetadata().getStudyTopicClasses().size()==0 ) {
-            List topicClasses = new ArrayList();
-            StudyTopicClass elem = new StudyTopicClass();
-            elem.setMetadata(template.getMetadata());
-            topicClasses.add(elem);
-            template.getMetadata().setStudyTopicClasses(topicClasses);
-        }
-        
-        if (template.getMetadata().getStudyNotes()==null || template.getMetadata().getStudyNotes().size()==0) {
-            List notes = new ArrayList();
-            StudyNote elem = new StudyNote();
-            elem.setMetadata(template.getMetadata());
-            notes.add(elem);
-            template.getMetadata().setStudyNotes(notes);
-        }
-        
-        if (template.getMetadata().getStudyProducers()==null || template.getMetadata().getStudyProducers().size()==0) {
-            List producers = new ArrayList();
-            StudyProducer elem = new StudyProducer();
-            elem.setMetadata(template.getMetadata());
-            producers.add(elem);
-            template.getMetadata().setStudyProducers(producers);
-        }
-        
-        if (template.getMetadata().getStudySoftware()==null || template.getMetadata().getStudySoftware().size()==0) {
-            List software = new ArrayList();
-            StudySoftware elem = new StudySoftware();
-            elem.setMetadata(template.getMetadata());
-            software.add(elem);
-            template.getMetadata().setStudySoftware(software);
-        }
-        if (template.getMetadata().getStudyGeoBoundings()==null || template.getMetadata().getStudyGeoBoundings().size()==0) {
-            List boundings = new ArrayList();
-            StudyGeoBounding elem = new StudyGeoBounding();
-            elem.setMetadata(template.getMetadata());
-            boundings.add(elem);
-            template.getMetadata().setStudyGeoBoundings(boundings);
-        }
-        if (template.getMetadata().getStudyRelMaterials()==null || template.getMetadata().getStudyRelMaterials().size()==0) {
-            List mats = new ArrayList();
-            StudyRelMaterial elem = new StudyRelMaterial();
-            elem.setMetadata(template.getMetadata());
-            mats.add(elem);
-            template.getMetadata().setStudyRelMaterials(mats);
-        }
-        if (template.getMetadata().getStudyRelPublications()==null || template.getMetadata().getStudyRelPublications().size()==0) {
-            List list = new ArrayList();
-            StudyRelPublication elem = new StudyRelPublication();
-            elem.setMetadata(template.getMetadata());
-            list.add(elem);
-            template.getMetadata().setStudyRelPublications(list);
-        }
-        if (template.getMetadata().getStudyRelStudies()==null || template.getMetadata().getStudyRelStudies().size()==0) {
-            List list = new ArrayList();
-            StudyRelStudy elem = new StudyRelStudy();
-            elem.setMetadata(template.getMetadata());
-            list.add(elem);
-            template.getMetadata().setStudyRelStudies(list);
-        }
-        if (template.getMetadata().getStudyOtherRefs()==null || template.getMetadata().getStudyOtherRefs().size()==0) {
-            List list = new ArrayList();
-            StudyOtherRef elem = new StudyOtherRef();
-            elem.setMetadata(template.getMetadata());
-            list.add(elem);
-            template.getMetadata().setStudyOtherRefs(list);
-        }
-        
-        
-    }
+   
     
     /**
      * <p>Callback method that is called after the component tree has been

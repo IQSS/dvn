@@ -144,7 +144,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         // Initialize map containing required/recommended settings for all fields
         initStudyMap();
         // Add empty first element to subcollections, so the input text fields will be visible
-        initCollections();
+        metadata.initCollections();
         //  initDvnDates();
 
 
@@ -170,122 +170,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         return studyIdParam;
         
     }    
-    private void initCollections() {
-        if ( metadata.getStudyOtherIds()==null || metadata.getStudyOtherIds().size()==0) {
-            StudyOtherId elem = new StudyOtherId();
-            elem.setMetadata(metadata);
-            List otherIds = new ArrayList();
-            otherIds.add(elem);
-            metadata.setStudyOtherIds(otherIds);
-        }
-        if ( metadata.getStudyAuthors()==null || metadata.getStudyAuthors().size()==0) {
-            List authors = new ArrayList();
-            StudyAuthor anAuthor = new StudyAuthor();
-            anAuthor.setMetadata(metadata);
-            authors.add(anAuthor);
-            metadata.setStudyAuthors(authors);
-        }
-        
-        if ( metadata.getStudyAbstracts()==null || metadata.getStudyAbstracts().size()==0) {
-            List abstracts = new ArrayList();
-            StudyAbstract elem = new StudyAbstract();
-            elem.setMetadata(metadata);
-            abstracts.add(elem);
-            metadata.setStudyAbstracts(abstracts);
-        }
-        
-        if (metadata.getStudyDistributors()==null || metadata.getStudyDistributors().size()==0) {
-            List distributors = new ArrayList();
-            StudyDistributor elem = new StudyDistributor();
-            elem.setMetadata(metadata);
-            distributors.add(elem);
-            metadata.setStudyDistributors(distributors);
-        }
-        if (metadata.getStudyGrants()==null || metadata.getStudyGrants().size()==0) {
-            List grants = new ArrayList();
-            StudyGrant elem = new StudyGrant();
-            elem.setMetadata(metadata);
-            grants.add(elem);
-            metadata.setStudyGrants(grants);
-        }
-        
-        if (metadata.getStudyKeywords()==null || metadata.getStudyKeywords().size()==0 ) {
-            List keywords = new ArrayList();
-            StudyKeyword elem = new StudyKeyword();
-            elem.setMetadata(metadata);
-            keywords.add(elem);
-            metadata.setStudyKeywords(keywords);
-        }
-        
-        if (metadata.getStudyTopicClasses()==null || metadata.getStudyTopicClasses().size()==0 ) {
-            List topicClasses = new ArrayList();
-            StudyTopicClass elem = new StudyTopicClass();
-            elem.setMetadata(metadata);
-            topicClasses.add(elem);
-            metadata.setStudyTopicClasses(topicClasses);
-        }
-        
-        if (metadata.getStudyNotes()==null || metadata.getStudyNotes().size()==0) {
-            List notes = new ArrayList();
-            StudyNote elem = new StudyNote();
-            elem.setMetadata(metadata);
-            notes.add(elem);
-            metadata.setStudyNotes(notes);
-        }
-        
-        if (metadata.getStudyProducers()==null || metadata.getStudyProducers().size()==0) {
-            List producers = new ArrayList();
-            StudyProducer elem = new StudyProducer();
-            elem.setMetadata(metadata);
-            producers.add(elem);
-            metadata.setStudyProducers(producers);
-        }
-        
-        if (metadata.getStudySoftware()==null || metadata.getStudySoftware().size()==0) {
-            List software = new ArrayList();
-            StudySoftware elem = new StudySoftware();
-            elem.setMetadata(metadata);
-            software.add(elem);
-            metadata.setStudySoftware(software);
-        }
-        if (metadata.getStudyGeoBoundings()==null || metadata.getStudyGeoBoundings().size()==0) {
-            List boundings = new ArrayList();
-            StudyGeoBounding elem = new StudyGeoBounding();
-            elem.setMetadata(metadata);
-            boundings.add(elem);
-            metadata.setStudyGeoBoundings(boundings);
-        }
-        if (metadata.getStudyRelMaterials()==null || metadata.getStudyRelMaterials().size()==0) {
-            List mats = new ArrayList();
-            StudyRelMaterial elem = new StudyRelMaterial();
-            elem.setMetadata(metadata);
-            mats.add(elem);
-            metadata.setStudyRelMaterials(mats);
-        }
-        if (metadata.getStudyRelPublications()==null || metadata.getStudyRelPublications().size()==0) {
-            List list = new ArrayList();
-            StudyRelPublication elem = new StudyRelPublication();
-            elem.setMetadata(metadata);
-            list.add(elem);
-            metadata.setStudyRelPublications(list);
-        }
-        if (metadata.getStudyRelStudies()==null || metadata.getStudyRelStudies().size()==0) {
-            List list = new ArrayList();
-            StudyRelStudy elem = new StudyRelStudy();
-            elem.setMetadata(metadata);
-            list.add(elem);
-            metadata.setStudyRelStudies(list);
-        }
-        if (metadata.getStudyOtherRefs()==null || metadata.getStudyOtherRefs().size()==0) {
-            List list = new ArrayList();
-            StudyOtherRef elem = new StudyOtherRef();
-            elem.setMetadata(metadata);
-            list.add(elem);
-            metadata.setStudyOtherRefs(list);
-        }
-        
-        
-    }
+    
     
     /**
      * <p>Callback method that is called after the component tree has been
@@ -341,7 +226,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             metadata = editStudyService.getStudyVersion().getMetadata();
          
         }
-        initCollections();  // Add empty row for entering data in currently empty collections
+       
         initStudyMap();  // Reset Recommended flag for all fields
         return "";
      }

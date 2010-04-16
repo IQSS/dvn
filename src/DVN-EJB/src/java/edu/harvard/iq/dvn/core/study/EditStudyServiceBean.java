@@ -424,6 +424,8 @@ public class EditStudyServiceBean implements edu.harvard.iq.dvn.core.study.EditS
 
         // prefill date of deposit
         studyVersion.getMetadata().setDateOfDeposit( new SimpleDateFormat("yyyy-MM-dd").format( new Date() ) );
+        // Add empty row for entering data in currently empty collections
+        studyVersion.getMetadata().initCollections();
     }
     
     private void clearCollection(Collection collection) {

@@ -2138,5 +2138,125 @@ public class Metadata implements java.io.Serializable {
         return getStudyVersion().getStudy();
     }
 
+    /**
+     *  This method populates the dependent collections with at least one element.
+     *  It's necessary to do this before displaying the metadata in a form, because
+     *  we need empty elements for the users to enter data into.
+     */
+    public void initCollections() {
+        if ( this.getStudyOtherIds()==null || this.getStudyOtherIds().size()==0) {
+            StudyOtherId elem = new StudyOtherId();
+            elem.setMetadata(this);
+            List otherIds = new ArrayList();
+            otherIds.add(elem);
+            this.setStudyOtherIds(otherIds);
+        }
+        if ( this.getStudyAuthors()==null || this.getStudyAuthors().size()==0) {
+            List authors = new ArrayList();
+            StudyAuthor anAuthor = new StudyAuthor();
+            anAuthor.setMetadata(this);
+            authors.add(anAuthor);
+            this.setStudyAuthors(authors);
+        }
 
+        if ( this.getStudyAbstracts()==null || this.getStudyAbstracts().size()==0) {
+            List abstracts = new ArrayList();
+            StudyAbstract elem = new StudyAbstract();
+            elem.setMetadata(this);
+            abstracts.add(elem);
+            this.setStudyAbstracts(abstracts);
+        }
+
+        if (this.getStudyDistributors()==null || this.getStudyDistributors().size()==0) {
+            List distributors = new ArrayList();
+            StudyDistributor elem = new StudyDistributor();
+            elem.setMetadata(this);
+            distributors.add(elem);
+            this.setStudyDistributors(distributors);
+        }
+        if (this.getStudyGrants()==null || this.getStudyGrants().size()==0) {
+            List grants = new ArrayList();
+            StudyGrant elem = new StudyGrant();
+            elem.setMetadata(this);
+            grants.add(elem);
+            this.setStudyGrants(grants);
+        }
+
+        if (this.getStudyKeywords()==null || this.getStudyKeywords().size()==0 ) {
+            List keywords = new ArrayList();
+            StudyKeyword elem = new StudyKeyword();
+            elem.setMetadata(this);
+            keywords.add(elem);
+            this.setStudyKeywords(keywords);
+        }
+
+        if (this.getStudyTopicClasses()==null || this.getStudyTopicClasses().size()==0 ) {
+            List topicClasses = new ArrayList();
+            StudyTopicClass elem = new StudyTopicClass();
+            elem.setMetadata(this);
+            topicClasses.add(elem);
+            this.setStudyTopicClasses(topicClasses);
+        }
+
+        if (this.getStudyNotes()==null || this.getStudyNotes().size()==0) {
+            List notes = new ArrayList();
+            StudyNote elem = new StudyNote();
+            elem.setMetadata(this);
+            notes.add(elem);
+            this.setStudyNotes(notes);
+        }
+
+        if (this.getStudyProducers()==null || this.getStudyProducers().size()==0) {
+            List producers = new ArrayList();
+            StudyProducer elem = new StudyProducer();
+            elem.setMetadata(this);
+            producers.add(elem);
+            this.setStudyProducers(producers);
+        }
+
+        if (this.getStudySoftware()==null || this.getStudySoftware().size()==0) {
+            List software = new ArrayList();
+            StudySoftware elem = new StudySoftware();
+            elem.setMetadata(this);
+            software.add(elem);
+            this.setStudySoftware(software);
+        }
+        if (this.getStudyGeoBoundings()==null || this.getStudyGeoBoundings().size()==0) {
+            List boundings = new ArrayList();
+            StudyGeoBounding elem = new StudyGeoBounding();
+            elem.setMetadata(this);
+            boundings.add(elem);
+            this.setStudyGeoBoundings(boundings);
+        }
+        if (this.getStudyRelMaterials()==null || this.getStudyRelMaterials().size()==0) {
+            List mats = new ArrayList();
+            StudyRelMaterial elem = new StudyRelMaterial();
+            elem.setMetadata(this);
+            mats.add(elem);
+            this.setStudyRelMaterials(mats);
+        }
+        if (this.getStudyRelPublications()==null || this.getStudyRelPublications().size()==0) {
+            List list = new ArrayList();
+            StudyRelPublication elem = new StudyRelPublication();
+            elem.setMetadata(this);
+            list.add(elem);
+            this.setStudyRelPublications(list);
+        }
+        if (this.getStudyRelStudies()==null || this.getStudyRelStudies().size()==0) {
+            List list = new ArrayList();
+            StudyRelStudy elem = new StudyRelStudy();
+            elem.setMetadata(this);
+            list.add(elem);
+            this.setStudyRelStudies(list);
+        }
+        if (this.getStudyOtherRefs()==null || this.getStudyOtherRefs().size()==0) {
+            List list = new ArrayList();
+            StudyOtherRef elem = new StudyOtherRef();
+            elem.setMetadata(this);
+            list.add(elem);
+            this.setStudyOtherRefs(list);
+        }
+
+
+    }
 }

@@ -1662,18 +1662,24 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
             return;
         }
         try {
-            exportLogger.info("Begin exporting studies, number of studies to export: " + studyIds.size());
+            int exportCount = 0;
+            exportLogger.info("Begin exporting studies, number of possible studies to export: " + studyIds.size());
             for (Long studyId : studyIds) {
                 Study study = em.find(Study.class, studyId);
-                exportLogger.info("Begin export for study " + study.getGlobalId());
-                if (exportFormat == null) {
-                    studyService.exportStudy(studyId);
+                if (study.getReleasedVersion() != null){
+                    exportLogger.info("Begin export for study " + study.getGlobalId());
+                    if (exportFormat == null) {
+                    studyService.exportStudy(studyId); //TODO check why do we pass the id and not the study
+                    } else {
+                    studyService.exportStudyToFormat(studyId, exportFormat); //TODO check why do we pass the id and not the study
+                    }
+                    exportLogger.info("Complete export for study " + study.getGlobalId());
+                    exportCount++;
                 } else {
-                    studyService.exportStudyToFormat(studyId, exportFormat);
+                    exportLogger.info("No released version for study " + study.getGlobalId() + "; skipping export.");
                 }
-                exportLogger.info("Complete export for study " + study.getGlobalId());
             }
-            exportLogger.info("Completed exporting studies.");
+            exportLogger.info("Completed exporting studies. Actual number of studies exported: " + exportCount);
         } catch (EJBException e) {
             logException(e, exportLogger);
             throw e;

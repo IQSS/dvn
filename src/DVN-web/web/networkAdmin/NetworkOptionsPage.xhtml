@@ -14,10 +14,10 @@
     <gui:composition template="/template.xhtml">
         <gui:param name="pageTitle" value="Dataverse Network Admin Options - #{VDCRequest.dataversePageTitle}"/>
         <gui:define name="body">
-            <ice:form id="form1">
+            <ice:form id="form1" rendered="#{VDCRequest.currentVDC == null}">
                     <ice:panelTabSet id="tabSet1">
                         <!-- DATAVERSE OPTIONS -->
-                        <ice:panelTab id="networkOptions" label="Network Options" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml&amp;tab=dataverseOptions">
+                        <ice:panelTab id="networkOptions" label="Network Options" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml&amp;tab=dataverseOptions" rendered="#{VDCSession.loginBean.networkAdmin}">
                 <div class="dvn_section">
                   <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnSuccessMessage" rendered="#{!empty VDCRequest.successMessage}">
                     <div class="dvnMsgBlockContainer">
@@ -242,14 +242,14 @@
                     </table>
                 </div>
                         </ice:panelTab>
-                        <ice:panelTab id="studyOptions" label="Study Options" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml&amp;tab=studyOptions">
+                        <ice:panelTab id="myStudies" label="My Studies" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml&amp;tab=studyOptions" rendered="#{!VDCSession.loginBean.networkAdmin and VDCSession.loginBean.hasContributed}">
         
                             <gui:include src="/study/ManageStudiesFragment.xhtml">
                             </gui:include>
                         </ice:panelTab>
 
                         <!-- MY DATAVERSES -->
-                        <ice:panelTab id="comments" label="My Dataverses" rendered="#{ VDCRequest.currentVDC == null and !VDCRequest.logoutPage and !VDCSession.loginBean.networkAdmin and VDCSession.loginBean.hasDataverses}">
+                        <ice:panelTab id="myDataverses" label="My Dataverses" rendered="#{!VDCSession.loginBean.networkAdmin and VDCSession.loginBean.hasDataverses}">
                             <gui:include src="/networkAdmin/MyDataversesFragment.xhtml">
                             </gui:include>
                         </ice:panelTab>

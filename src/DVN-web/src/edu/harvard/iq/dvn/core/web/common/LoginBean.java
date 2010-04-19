@@ -117,15 +117,23 @@ public class LoginBean  implements java.io.Serializable {
     public boolean isContributor() {
         return getRoleName().equals(RoleServiceLocal.CONTRIBUTOR);
     }
-    
+
     public boolean isCurator() {
         return getRoleName().equals(RoleServiceLocal.CURATOR);
     }
     
     public boolean isAdmin() {
-        return getRoleName().equals(RoleServiceLocal.ADMIN);
-        
+        return getRoleName().equals(RoleServiceLocal.ADMIN);        
     }
+
+    public boolean isContributorOrAbove() {
+        return getRoleName().equals(RoleServiceLocal.CONTRIBUTOR) || getRoleName().equals(RoleServiceLocal.CURATOR) || getRoleName().equals(RoleServiceLocal.ADMIN);
+    }
+
+    public boolean isCuratorOrAbove() {
+        return getRoleName().equals(RoleServiceLocal.CURATOR) || getRoleName().equals(RoleServiceLocal.ADMIN);
+    }
+
     public boolean isPrivilegedViewer() {
         return getRoleName().equals(RoleServiceLocal.PRIVILEGED_VIEWER);
     }
@@ -172,5 +180,5 @@ public class LoginBean  implements java.io.Serializable {
    public boolean isHasContributed() {
        return user.getVersionContributors().size() > 0;
    }
-    
+
 }

@@ -404,7 +404,7 @@ public class Indexer implements java.io.Serializable  {
                 Document docVersions = new Document();
                 addKeyword(docVersions, "versionStudyId",study.getId().toString());
                 addText(1.0f, docVersions, "versionId", version.getId().toString());
-                addText(1.0f, docVersions, "versionNumber", version.getVersion().toString());
+                addText(1.0f, docVersions, "versionNumber", version.getVersionNumber().toString());
                 addKeyword(docVersions, "versionUnf", version.getMetadata().getUNF());
                 writerVersions.addDocument(docVersions);
             }
@@ -412,7 +412,6 @@ public class Indexer implements java.io.Serializable  {
             logger.fine("End indexing study " + study.getStudyId());
         }
     }
-
 
     protected Analyzer getAnalyzer(){
 //        return new StandardAnalyzer();

@@ -37,7 +37,7 @@
 .icePnlTbSetSpcr {border-bottom: 0;}
 .icePnlTbSetCnt {border-top: 1px solid #D9D9D9;}
 </style>
-                <ice:panelTabSet id="tabSet1">
+                <ice:panelTabSet id="tabSet1" selectedIndex="#{VDCSession.loginBean.networkAdmin ? 0 : VDCSession.loginBean.hasContributed ? 1 : 2}">
                         <!-- DATAVERSE OPTIONS -->
                         <ice:panelTab id="networkOptions" label="Network Options" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml&amp;tab=dataverseOptions" rendered="#{VDCSession.loginBean.networkAdmin}">
                 <div class="dvn_section">

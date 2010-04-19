@@ -33,38 +33,38 @@
                           <!-- STUDY OPTIONS -->
               <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="2"
                              styleClass="dvnManageStudiesTableTop" columnClasses="dvn_StudyListTotals, dvnPaginatorWrap"
-                             rendered="#{(not empty(ManageStudiesList.studyUIList)) || ManageStudiesList.deaccessionedStudiesExist}" >
-                <div jsfc="ice:panelGroup" id="groupPanel3" styleClass="dvn_StudyListTotals">
-                    <div>
-                        <ice:selectOneMenu rendered="#{ManageStudiesList.contributorFilterRendered}"  id="studyScopeSelectMenu" binding="#{ManageStudiesList.filterDropdown}">
+                             rendered="#{(not empty(ManageStudiesList.studyUIList)) || ManageStudiesList.deaccessionedStudiesExist}">
+                <div jsfc="ice:panelGroup" id="groupPanel3" styleClass="dvn_StudyListTotals" style="width: 100%; overflow: hidden;">
+                    <div jsfc="ice:panelGroup" rendered="#{ManageStudiesList.contributorFilterRendered}" style="float: left;">
+                        <ice:selectOneMenu id="studyScopeSelectMenu" binding="#{ManageStudiesList.filterDropdown}">
                             <ice:message for="studyScopeSelectMenu" styleClass="errorMessage"/>
-                            <f:selectItems id="studyScopeSelectItems" value="#{ManageStudiesList.studyScopeSelectItems}" />
+                            <f:selectItems id="studyScopeSelectItems" value="#{ManageStudiesList.studyScopeSelectItems}"/>
                         </ice:selectOneMenu>
-                    </div>
-                    <div>
-                        <ice:commandButton rendered="#{ManageStudiesList.contributorFilterRendered}"  id="filterButton" value="Filter" actionListener="#{ManageStudiesList.filter}"/>
+                        <ice:commandButton id="filterButton" value="Filter" actionListener="#{ManageStudiesList.filter}"/>
                         <ice:message styleClass="errorMessage" for="userName"/>
                     </div>
-                    <div >
+                    <div style="float: left; padding-left: 1em;">
                         <ice:selectBooleanCheckbox id="showArchivedStudies" binding="#{ManageStudiesList.archiveCheckBox}" value="#{ManageStudiesList.showArchivedStudies}" valueChangeListener="#{ManageStudiesList.changeArchive}" onchange="submit()" />
                         <ice:outputText id="outputText3" value="#{bundle.showArchivedStudiesLabel}"/>
                     </div>
-                    <ice:dataPaginator id="scroll_2"
-                                       binding="#{ManageStudiesList.paginator}"
-                                       for="studyData"
-                                       rowsCountVar="rowsCount"
-                                       displayedRowsCountVar="displayedRowsCountVar"
-                                       firstRowIndexVar="firstRowIndex"
-                                       lastRowIndexVar="lastRowIndex"
-                                       pageCountVar="pageCount"
-                                       pageIndexVar="pageIndex">
-                        <ice:outputText value="1 Study" rendered="#{rowsCount == 1}" styleClass="dvn_totalsValue" />
-                        <ice:outputText value="#{rowsCount} Studies" rendered="#{rowsCount > 1}" styleClass="dvn_totalsValue" />
-                        <ice:outputFormat rendered="#{rowsCount > displayedRowsCountVar}" value=", displaying {0} to {1}" styleClass="dvn_totalsValue">
-                            <f:param value="#{firstRowIndex}"/>
-                            <f:param value="#{lastRowIndex}"/>
-                        </ice:outputFormat>
-                    </ice:dataPaginator>
+                    <div style="float: right; text-align: right;">
+                        <ice:dataPaginator id="scroll_2"
+                                           binding="#{ManageStudiesList.paginator}"
+                                           for="studyData"
+                                           rowsCountVar="rowsCount"
+                                           displayedRowsCountVar="displayedRowsCountVar"
+                                           firstRowIndexVar="firstRowIndex"
+                                           lastRowIndexVar="lastRowIndex"
+                                           pageCountVar="pageCount"
+                                           pageIndexVar="pageIndex">
+                            <ice:outputText value="1 Study" rendered="#{rowsCount == 1}" styleClass="dvn_totalsValue"/>
+                            <ice:outputText value="#{rowsCount} Studies" rendered="#{rowsCount > 1}" styleClass="dvn_totalsValue" />
+                            <ice:outputFormat rendered="#{rowsCount > displayedRowsCountVar}" value=", displaying {0} to {1}" styleClass="dvn_totalsValue">
+                                <f:param value="#{firstRowIndex}"/>
+                                <f:param value="#{lastRowIndex}"/>
+                            </ice:outputFormat>
+                        </ice:dataPaginator>
+                    </div>
                 </div>
                 <div jsfc="ice:panelGroup" id="groupPanel4" styleClass="dvnPaginatorWrap">
                 <ice:dataPaginator id="scroll_1" styleClass="dvnPaginatorRight"

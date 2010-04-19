@@ -199,8 +199,8 @@
                         <f:param name="versionNumber" value="#{studyUI.study.latestVersion.versionNumber}"/>
                         <ice:outputText value="#{bundle.MSEditAction}"/>
                     </ice:outputLink>
-                    <ice:commandLink id="draftReviewColLink" action="#{ManageStudiesList.review_action}" rendered="#{studyUI.study.latestVersion.draft}"
-                                     onclick="if(!confirm('Are you sure you want to review this DRAFT study version?   #{studyUI.metadata.title} #{studyUI.study.globalId}')){ return false; };">
+                    <ice:commandLink id="draftReviewColLink" actionListener="#{  ManageStudiesList.doShowReviewPopup  }"  rendered="#{studyUI.study.latestVersion.draft}"
+                                     >
                         <ice:outputText value="#{bundle.MSReviewAction}"/>
                     </ice:commandLink>
                     <ice:commandLink id="draftDeleteColLink" action="#{ManageStudiesList.delete_action}" rendered="#{studyUI.study.latestVersion.draft}"
@@ -212,7 +212,7 @@
                         <f:param name="versionNumber" value="#{studyUI.study.latestVersion.versionNumber}"/>
                         <ice:outputText value="#{bundle.MSEditAction}"/>
                     </ice:outputLink>
-                    <ice:commandLink id="inReviewReleaseColLink" actionListener="#{  ManageStudiesList.doSaveAndVersionNotesPopup  }" rendered="#{studyUI.study.latestVersion.inReview and studyUI.study.releasedVersion == null}">
+                    <ice:commandLink id="inReviewReleaseColLink" actionListener="#{  ManageStudiesList.doShowReleasePopup  }" rendered="#{studyUI.study.latestVersion.inReview and studyUI.study.releasedVersion == null}">
                         <ice:outputText value="#{bundle.MSReleaseAction}"/>
                     </ice:commandLink>
                     <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyVersionDifferencesPage.xhtml" rendered="#{studyUI.study.latestVersion.inReview and studyUI.study.releasedVersion != null}" >

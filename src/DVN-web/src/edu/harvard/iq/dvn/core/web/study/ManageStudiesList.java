@@ -186,37 +186,39 @@ public class ManageStudiesList extends VDCBaseBean {
     }
 
 
-     public void doSetReleased(ActionEvent ae) {
-        StudyUI studyUI = studyUIList.get(selectedIndex);
+  
+    public void doConfirmVersionNotesPopup(ActionEvent ae) {
+      StudyUI studyUI = studyUIList.get(selectedIndex);
         versionNotesPopupBean.setShowPopup(false);
-        studyService.saveVersionNote(studyUI.getStudyId(), versionNotesPopupBean.getVersionNote());
-        studyService.setReleased(studyUI.getStudyId());
+        studyService.saveVersionNote(studyUI.getStudyVersion().getId(), versionNotesPopupBean.getVersionNote());
+        if (versionPopupMode.equals(VersionPopupMode.REVIEW)) {
+            studyService.setReadyForReview(studyUI.getStudyId());
+        } else
+              studyService.setReleased(studyUI.getStudyId());
         // set list to null, to force a fresh retrieval of data
         studyUIList=null;
     }
 
-    public void doSetInReview(ActionEvent ae) {
-        StudyUI studyUI = (StudyUI) this.studyDataTable.getRowData();
-        studyService.setReadyForReview(studyUI.getStudyVersion());
-        // set list to null, to force a fresh retrieval of data
-        studyUIList=null;
-    }
-
-    public void doSaveAndVersionNotesPopup(ActionEvent ae) {
+    public void doShowReviewPopup(ActionEvent ae) {
         selectedIndex=studyDataTable.getRowIndex();
+        versionPopupMode = VersionPopupMode.REVIEW;
         versionNotesPopupBean.setVersionNote(studyUIList.get(selectedIndex).getStudyVersion().getVersionNote());
         versionNotesPopupBean.setShowPopup(true);
     }
 
+    public void doShowReleasePopup(ActionEvent ae) {
+        selectedIndex=studyDataTable.getRowIndex();
+        versionPopupMode = VersionPopupMode.RELEASE;
+        versionNotesPopupBean.setVersionNote(studyUIList.get(selectedIndex).getStudyVersion().getVersionNote());
+        versionNotesPopupBean.setShowPopup(true);
+    }
+
+    private enum VersionPopupMode { REVIEW, RELEASE};
+    private VersionPopupMode versionPopupMode;
 
     int selectedIndex;
 
-    public void review_action(){
-        StudyUI studyUI = (StudyUI) this.studyDataTable.getRowData();
-        studyService.setReadyForReview(studyUI.getStudyId());
-        studyUIList=null;
-    }
-
+  
     public void delete_action(){
         StudyUI studyUI = (StudyUI) this.studyDataTable.getRowData();
         studyService.destroyWorkingCopyVersion(studyUI.getStudyVersion().getId());
@@ -491,7 +493,7 @@ public class ManageStudiesList extends VDCBaseBean {
     
 
     public void init() {
-        this.versionNotesPopupBean.setActionType(VersionNotesPopupBean.ActionType.MANAGE_STUDIES_RELEASE);
+        this.versionNotesPopupBean.setActionType(VersionNotesPopupBean.ActionType.MANAGE_STUDIES);
     }
 
     public ManageStudiesList() {

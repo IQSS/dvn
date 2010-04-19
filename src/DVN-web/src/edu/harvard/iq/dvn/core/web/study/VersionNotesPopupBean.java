@@ -26,7 +26,7 @@ public class VersionNotesPopupBean {
         this.versionNote = versionNote;
     }
     
-    public enum ActionType {VERSION_RELEASE, EDIT_STUDY, EDIT_NOTE, ADD_FILES, MANAGE_STUDIES_RELEASE };
+    public enum ActionType {VERSION_RELEASE, EDIT_STUDY, EDIT_NOTE, ADD_FILES, MANAGE_STUDIES };
 
     private ActionType actionType;
 
@@ -75,8 +75,8 @@ public class VersionNotesPopupBean {
         return actionType == ActionType.EDIT_NOTE;
     }
 
-    public boolean isManageStudiesReleaseAction(){
-        return actionType == ActionType.MANAGE_STUDIES_RELEASE;
+    public boolean isManageStudiesAction(){
+        return actionType == ActionType.MANAGE_STUDIES;
     }
-
+  
 }

@@ -42,7 +42,7 @@
                     <ice:inputTextarea id="studyVersionNotes" value="#{studyPage.studyUI.studyVersion.versionNote}" rendered="#{VersionNotesPopupBean.editNoteAction}"></ice:inputTextarea>
                     <ice:inputTextarea id="studyVersionNotes" value="#{studyVersionDifferencesPage.studyUI2.studyVersion.versionNote}" rendered="#{VersionNotesPopupBean.versionReleaseAction }"></ice:inputTextarea>
                     <ice:inputTextarea id="studyVersionNotes" value="#{AddFilesPage.studyVersion.versionNote}" rendered="#{VersionNotesPopupBean.addFilesAction}"></ice:inputTextarea>
-                    <ice:inputTextarea id="studyVersionNotes" value="#{VersionNotesPopupBean.versionNote}" rendered="#{VersionNotesPopupBean.manageStudiesReleaseAction}"></ice:inputTextarea>
+                    <ice:inputTextarea id="studyVersionNotes" value="#{VersionNotesPopupBean.versionNote}" rendered="#{VersionNotesPopupBean.manageStudiesAction }"></ice:inputTextarea>
 
                     <div jsfc="ice:panelGroup" styleClass="dvnFormPadding dvnFormMargin">
                         <ice:commandButton id="autoCentPopupOk"
@@ -59,10 +59,10 @@
                                            rendered="#{VersionNotesPopupBean.addFilesAction}"/>
                        
                        <ice:commandButton id="autoCentPopupOk"
-                                           actionListener="#{ManageStudiesList.doSetReleased}"
+                                           actionListener="#{ManageStudiesList.doConfirmVersionNotesPopup}"
                                            value="Confirm"
-                                           rendered="#{VersionNotesPopupBean.manageStudiesReleaseAction}"/>
-
+                                           rendered="#{VersionNotesPopupBean.manageStudiesAction}"/>
+                    
                       
                         <ice:commandButton id="autoCentPopupCancel"
                                            actionListener="#{VersionNotesPopupBean.closePopup}"

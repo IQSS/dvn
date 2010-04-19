@@ -16,7 +16,7 @@
         <!--visible="#{studyVersionDifferencesPage.showVersionNotesPopup}"-->
         <ice:panelPopup id="versionNotesPopup"
                         draggable="false"
-                        visible="#{VersionNotesPopupBean.showPopup or ManageStudiesVersionNotesPopupBean.showPopup}"
+                        visible="#{VersionNotesPopupBean.showPopup }"
                         autoCentre="true"
                         modal="true">
             <f:facet name="header">
@@ -42,7 +42,7 @@
                     <ice:inputTextarea id="studyVersionNotes" value="#{studyPage.studyUI.studyVersion.versionNote}" rendered="#{VersionNotesPopupBean.editNoteAction}"></ice:inputTextarea>
                     <ice:inputTextarea id="studyVersionNotes" value="#{studyVersionDifferencesPage.studyUI2.studyVersion.versionNote}" rendered="#{VersionNotesPopupBean.versionReleaseAction }"></ice:inputTextarea>
                     <ice:inputTextarea id="studyVersionNotes" value="#{AddFilesPage.studyVersion.versionNote}" rendered="#{VersionNotesPopupBean.addFilesAction}"></ice:inputTextarea>
-                    <ice:inputTextarea id="studyVersionNotes" value="#{ManageStudiesVersionNotesPopupBean.versionNote}" rendered="#{ManageStudiesVersionNotesPopupBean.manageStudiesReleaseAction}"></ice:inputTextarea>
+                    <ice:inputTextarea id="studyVersionNotes" value="#{VersionNotesPopupBean.versionNote}" rendered="#{VersionNotesPopupBean.manageStudiesReleaseAction}"></ice:inputTextarea>
 
                     <div jsfc="ice:panelGroup" styleClass="dvnFormPadding dvnFormMargin">
                         <ice:commandButton id="autoCentPopupOk"
@@ -61,7 +61,7 @@
                        <ice:commandButton id="autoCentPopupOk"
                                            actionListener="#{ManageStudiesList.doSetReleased}"
                                            value="Confirm"
-                                           rendered="#{ManageStudiesVersionNotesPopupBean.manageStudiesReleaseAction}"/>
+                                           rendered="#{VersionNotesPopupBean.manageStudiesReleaseAction}"/>
 
                       
                         <ice:commandButton id="autoCentPopupCancel"

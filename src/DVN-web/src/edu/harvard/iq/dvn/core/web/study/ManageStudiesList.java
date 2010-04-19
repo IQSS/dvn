@@ -13,7 +13,6 @@ import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.vdc.VDC;
-import edu.harvard.iq.dvn.core.web.SortableList;
 import edu.harvard.iq.dvn.core.web.common.LoginBean;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import java.util.ArrayList;
@@ -32,7 +31,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Ellen Kraffmiller
  */
-public class ManageStudiesList extends SortableList {
+public class ManageStudiesList extends VDCBaseBean {
     private @EJB StudyServiceLocal studyService;
     private List<StudyUI> studyUIList;
     
@@ -82,10 +81,7 @@ public class ManageStudiesList extends SortableList {
         this.studyDataTable = studyDataTable;
     }  
    
-    public ManageStudiesList() {
-        super(DATE_CREATED_COLUMN);
-   
-    }
+  
     
     protected void sort() {
             String orderBy=null;
@@ -208,6 +204,7 @@ public class ManageStudiesList extends SortableList {
 
     public void doSaveAndVersionNotesPopup(ActionEvent ae) {
         selectedIndex=studyDataTable.getRowIndex();
+        versionNotesPopupBean.setVersionNote(studyUIList.get(selectedIndex).getStudyVersion().getVersionNote());
         versionNotesPopupBean.setShowPopup(true);
     }
 
@@ -366,7 +363,10 @@ public class ManageStudiesList extends SortableList {
     private boolean isUserCuratorOrAdmin(){
         VDCUser user = loginBean == null ? null : loginBean.getUser();
         VDC vdc = VDCBaseBean.getVDCRequestBean().getCurrentVDC();
-        return user.isCurator(vdc)|| user.isAdmin(vdc);
+        if (user!=null) {
+            return user.isCurator(vdc)|| user.isAdmin(vdc);
+        }
+        return false;
     }
 
     private boolean isRegAndEdit(){
@@ -377,7 +377,10 @@ public class ManageStudiesList extends SortableList {
     private boolean isUserContributorAndAllowedToEdit(){
         VDCUser user = loginBean == null ? null : loginBean.getUser();
         VDC vdc = VDCBaseBean.getVDCRequestBean().getCurrentVDC();
-        return user.isContributor(vdc) && vdc.isAllowContributorsEditAll();
+        if (user!=null) {
+            return user.isContributor(vdc) && vdc.isAllowContributorsEditAll();
+        }
+        return false;
     }
 
     /**
@@ -461,4 +464,59 @@ public class ManageStudiesList extends SortableList {
     public void setVersionNotesPopupBean(VersionNotesPopupBean versionNotesPopupBean) {
         this.versionNotesPopupBean = versionNotesPopupBean;
     }
+
+    private boolean ascending;
+
+    // we only want to resort if the order or column has changed.
+    private String oldSort;
+    private boolean oldAscending;
+    private String sortColumnName;
+
+    public boolean isAscending() {
+        return ascending;
+    }
+
+    public void setAscending(boolean ascending) {
+        this.ascending = ascending;
+    }
+
+    public String getSortColumnName() {
+        return sortColumnName;
+    }
+
+    public void setSortColumnName(String sortColumnName) {
+        this.sortColumnName = sortColumnName;
+    }
+
+    
+
+    public void init() {
+        this.versionNotesPopupBean.setActionType(VersionNotesPopupBean.ActionType.MANAGE_STUDIES_RELEASE);
+    }
+
+    public ManageStudiesList() {
+        this(DATE_CREATED_COLUMN);
+
+    }
+
+    public ManageStudiesList(String defaultSortColumn) {
+        sortColumnName = defaultSortColumn;
+        ascending = isDefaultAscending(defaultSortColumn);
+        oldSort = sortColumnName;
+        // make sure sortColumnName on first render
+        oldAscending = !ascending;
+
+    }
+
+    private void checkSort() {
+        // we only want to sortColumnName if the column or ordering has changed.
+            if (!oldSort.equals(sortColumnName) ||
+                oldAscending != ascending){
+                sort();
+                oldSort = sortColumnName;
+                oldAscending = ascending;
+            }
+
+        }
+
 }

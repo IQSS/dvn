@@ -389,7 +389,7 @@
         <managed-property>
             <property-name>versionNotesPopupBean</property-name>
             <property-class>edu.harvard.iq.dvn.core.web.study.VersionNotesPopupBean</property-class>
-            <value>#{ManageStudiesVersionNotesPopupBean}</value>
+            <value>#{VersionNotesPopupBean}</value>
         </managed-property>
 
     </managed-bean>

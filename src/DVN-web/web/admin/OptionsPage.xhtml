@@ -45,7 +45,7 @@
 .icePnlTbSetSpcr {border-bottom: 0;}
 .icePnlTbSetCnt {border-top: 1px solid #D9D9D9;}
 </style>
-                    <ice:panelTabSet id="tabSet1">
+                    <ice:panelTabSet id="tabSet1" selectedIndex="#{(VDCSession.loginBean.networkAdmin or VDCSession.loginBean.admin) ? 0 : 1}">
                         <!-- DATAVERSE OPTIONS -->
                         <ice:panelTab id="dataverseOptions" label="Dataverse Options" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml&amp;tab=dataverseOptions" rendered="#{VDCSession.loginBean.networkAdmin or VDCSession.loginBean.admin}">
                             <div jsfc="ice:panelGroup" id="layoutPanel1" panelLayout="flow">

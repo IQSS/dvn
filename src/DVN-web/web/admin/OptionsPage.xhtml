@@ -47,10 +47,10 @@
 </style>
                     <ice:panelTabSet id="tabSet1">
                         <!-- DATAVERSE OPTIONS -->
-                        <ice:panelTab id="dataverseOptions" label="Dataverse Options" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml&amp;tab=dataverseOptions">
+                        <ice:panelTab id="dataverseOptions" label="Dataverse Options" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml&amp;tab=dataverseOptions" rendered="#{VDCSession.loginBean.networkAdmin or VDCSession.loginBean.admin}">
                             <div jsfc="ice:panelGroup" id="layoutPanel1" panelLayout="flow">
                                 <!-- REMOVED CODE -->
-                                <div jsfc="ice:panelGroup" rendered="#{VDCSession.loginBean.admin == true or VDCSession.loginBean.networkAdmin == true}">
+                                <div jsfc="ice:panelGroup">
                                     <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
                                         <tr><td colspan="2" class="dvnOptionsTableHeader"><ice:outputText value="#{bundlePageInfo.dvSettingsSectionTitle}"/></td></tr>
                                         <gui:fragment rendered="#{not VDCRequest.currentVDC.harvestingDv or (VDCSession.loginBean.networkAdmin == false and VDCRequest.currentVDC.harvestingDv)}">
@@ -172,11 +172,11 @@
                             </div>
                         </ice:panelTab>
                         <!-- STUDY OPTIONS -->
-                        <ice:panelTab id="studyOptions" label="Study Options" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml&amp;tab=studyOptions">
+                        <ice:panelTab id="studyOptions" label="Study Options" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml&amp;tab=studyOptions" rendered="#{VDCSession.loginBean.networkAdmin or VDCSession.loginBean.curatorOrAbove or (not VDCRequest.currentVDC.harvestingDv and (VDCSession.loginBean.contributor or VDCRequest.currentVDC.allowRegisteredUsersToContribute))}">
                             <div jsfc="ice:panelGroup" id="layoutPanel2" panelLayout="flow">
                                 <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
-                                    <tr><td colspan="2" class="dvnOptionsTableHeader"><ice:outputText value="#{bundlePageInfo.contributorSectionTitle}"/></td></tr>
                                     <gui:fragment rendered="#{not VDCRequest.currentVDC.harvestingDv}">
+                                        <tr><td colspan="2" class="dvnOptionsTableHeader"><ice:outputText value="#{bundlePageInfo.contributorSectionTitle}"/></td></tr>
                                         <tr>
                                             <td class="dvnOptionsTableOption">
                                                 <ice:outputLink id="hyperlink5" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml">
@@ -193,17 +193,21 @@
                                             </td>
                                             <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.manageStudiesText}"/></td>
                                         </tr>
-                                        <tr>
-                                            <td class="dvnOptionsTableOption">
-                                                <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/ManageTemplatesPage.xhtml?mode=4" >
-                                                    <ice:outputText value="#{bundlePageInfo.manageTemplatesTitle}" escape="false"/>
-                                                </ice:outputLink>
-                                            </td>
-                                            <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.manageTemplatesText}"/></td>
-                                        </tr>
                                     </gui:fragment>
-                                    <gui:fragment rendered="#{VDCSession.loginBean.contributor or VDCSession.loginBean.curator or VDCSession.loginBean.admin or VDCSession.loginBean.networkAdmin}">
-                                       <tr>
+
+                                    <gui:fragment rendered="#{VDCSession.loginBean.networkAdmin or VDCSession.loginBean.curatorOrAbove}">
+                                        <tr><td colspan="2" class="dvnOptionsTableHeader"><ice:outputText value="#{bundlePageInfo.curatorSectionTitle}"/></td></tr>
+                                        <gui:fragment rendered="#{not VDCRequest.currentVDC.harvestingDv}">
+                                            <tr>
+                                                <td class="dvnOptionsTableOption">
+                                                    <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/ManageTemplatesPage.xhtml?mode=4" >
+                                                        <ice:outputText value="#{bundlePageInfo.manageTemplatesTitle}" escape="false"/>
+                                                    </ice:outputLink>
+                                                </td>
+                                                <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.manageTemplatesText}"/></td>
+                                            </tr>
+                                        </gui:fragment>
+                                        <tr>
                                             <td class="dvnOptionsTableOption">
                                                 <ice:outputLink id="hyperlink8" value="/dvn#{VDCRequest.currentVDCURL}/faces/collection/ManageCollectionsPage.xhtml">
                                                     <ice:outputText id="hyperlink4Text1" value="#{bundlePageInfo.manageCollectionsTitle}"/>
@@ -212,18 +216,11 @@
                                             <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.manageCollectionsText}"/></td>
                                         </tr>
                                     </gui:fragment>
-                                    <gui:fragment rendered="#{! VDCSession.loginBean.contributor and ! VDCSession.loginBean.curator and ! VDCSession.loginBean.admin and ! VDCSession.loginBean.networkAdmin}">
-                                       <tr>
-                                            <td class="dvnOptionsTableOption">
-                                                <ice:outputText value="You have no privileges."/>
-                                            </td>
-                                        </tr>
-                                    </gui:fragment>
                                 </table>
                             </div>
                         </ice:panelTab>
                         <!-- MY DATAVERSES -->
-                        <ice:panelTab id="comments" label="My Dataverses" rendered="#{VDCSession.loginBean.contributor or VDCSession.loginBean.curator or VDCSession.loginBean.admin}">
+                        <ice:panelTab id="comments" label="My Dataverses" rendered="#{!VDCSession.loginBean.networkAdmin and VDCSession.loginBean.hasDataverses}">
                             <gui:include src="/networkAdmin/MyDataversesFragment.xhtml">
                             </gui:include>
                         </ice:panelTab>

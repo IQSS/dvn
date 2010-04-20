@@ -264,7 +264,7 @@
                     </table>
                 </div>
                         </ice:panelTab>
-                        <ice:panelTab id="myStudies" label="My Studies" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml&amp;tab=studyOptions" rendered="#{!VDCSession.loginBean.networkAdmin and VDCSession.loginBean.hasContributed}">
+                        <ice:panelTab id="myStudies" label="My Studies" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml&amp;tab=studyOptions" rendered="#{VDCSession.loginBean.hasContributed}">
         
                             <gui:include src="/study/ManageStudiesFragment.xhtml">
                             </gui:include>

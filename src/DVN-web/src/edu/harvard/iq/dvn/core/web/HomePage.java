@@ -469,6 +469,8 @@ public class HomePage extends VDCBaseBean implements Serializable {
       //actions and actionListeners
 
     public String search_action() {
+        searchField = (searchField == null) ? "any" : searchField; // default searchField, in case no dropdown
+
         List searchTerms    = new ArrayList();
         SearchTerm st       = new SearchTerm();
         st.setFieldName( searchField );

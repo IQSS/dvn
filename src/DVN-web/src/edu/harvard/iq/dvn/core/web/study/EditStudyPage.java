@@ -26,6 +26,7 @@
 package edu.harvard.iq.dvn.core.web.study;
 
 
+import com.icesoft.faces.component.ext.HtmlCommandButton;
 import com.sun.jsfcl.data.DefaultTableDataModel;
 import edu.harvard.iq.dvn.core.study.EditStudyService;
 import edu.harvard.iq.dvn.core.study.Study;
@@ -67,6 +68,7 @@ import com.icesoft.faces.component.ext.HtmlDataTable;
 import com.icesoft.faces.component.ext.HtmlInputText;
 import com.icesoft.faces.component.ext.HtmlInputTextarea;
 import com.icesoft.faces.component.ext.HtmlSelectOneMenu;
+import com.icesoft.faces.component.ext.HtmlSelectOneRadio;
 import edu.harvard.iq.dvn.core.study.Metadata;
 import java.util.Date;
 import javax.faces.context.FacesContext;
@@ -996,13 +998,6 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         if (this.getStudy()==null) {
             return "home";
         }
-        if (StringUtil.isEmpty(metadata.getTitle())) {
-            FacesMessage message = new FacesMessage("This field is required.");
-            FacesContext context= FacesContext.getCurrentInstance();
-            context.addMessage(inputTitle.getClientId(context), message);
-            return "";
-
-        }
         removeEmptyRows();
         if (!StringUtil.isEmpty(metadata.getReplicationFor())  ) {
             if (!metadata.getTitle().startsWith("Replication data for:")) {
@@ -1055,25 +1050,26 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             UIComponent toValidate,
             Object value) {
         boolean valid=true;
-        
-        Double longitude = new Double(value.toString().trim());
-        BigDecimal decimalLongitude = new BigDecimal(value.toString().trim());
-        BigDecimal maxLongitude = new BigDecimal("180");
-        BigDecimal minLongitude = new BigDecimal("-180");
-        
-        // To be valid longitude must be between 180 and -180
-        if (decimalLongitude.compareTo(maxLongitude)==1 || decimalLongitude.compareTo(minLongitude)==-1) {
-            valid=false;
-        }
-        
-     
-        
-        if (!valid) {
-            ((UIInput)toValidate).setValid(false);
-            
-            FacesMessage message = new FacesMessage("Invalid Longitude.  Value must be between -180 and 180. (Unit is decimal degrees.)");
-            context.addMessage(toValidate.getClientId(context), message);
-           
+        if (isSaving()) {
+            Double longitude = new Double(value.toString().trim());
+            BigDecimal decimalLongitude = new BigDecimal(value.toString().trim());
+            BigDecimal maxLongitude = new BigDecimal("180");
+            BigDecimal minLongitude = new BigDecimal("-180");
+
+            // To be valid longitude must be between 180 and -180
+            if (decimalLongitude.compareTo(maxLongitude)==1 || decimalLongitude.compareTo(minLongitude)==-1) {
+                valid=false;
+            }
+
+
+
+            if (!valid) {
+                ((UIInput)toValidate).setValid(false);
+
+                FacesMessage message = new FacesMessage("Invalid Longitude.  Value must be between -180 and 180. (Unit is decimal degrees.)");
+                context.addMessage(toValidate.getClientId(context), message);
+
+            }
         }
         
     }
@@ -1083,41 +1079,43 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             Object value) {
         boolean valid=true;
         
-        Double latitude = new Double(value.toString().trim());
-        BigDecimal decimalLatitude = new BigDecimal(value.toString().trim());
-        BigDecimal maxLatitude = new BigDecimal("90");
-        BigDecimal minLatitude = new BigDecimal("-90");
-        
-        // To be valid latitude must be between 90 and -90
-        if (decimalLatitude.compareTo(maxLatitude)==1 || decimalLatitude.compareTo(minLatitude)==-1) {
-            valid=false;
-        }
-        
-    
-        if (!valid) {
-            ((UIInput)toValidate).setValid(false);
-            FacesMessage message = new FacesMessage("Invalid Latitude.  Value must be between -90 and 90. (Unit is decimal degrees.)");
-            context.addMessage(toValidate.getClientId(context), message);
+        if (isSaving()) {
+            BigDecimal decimalLatitude = new BigDecimal(value.toString().trim());
+            BigDecimal maxLatitude = new BigDecimal("90");
+            BigDecimal minLatitude = new BigDecimal("-90");
+
+            // To be valid latitude must be between 90 and -90
+            if (decimalLatitude.compareTo(maxLatitude)==1 || decimalLatitude.compareTo(minLatitude)==-1) {
+                valid=false;
+            }
+
+
+            if (!valid) {
+                ((UIInput)toValidate).setValid(false);
+                FacesMessage message = new FacesMessage("Invalid Latitude.  Value must be between -90 and 90. (Unit is decimal degrees.)");
+                context.addMessage(toValidate.getClientId(context), message);
+            }
         }
     }
     
     public void validateStudyAuthor(FacesContext context,
             UIComponent toValidate,
             Object value) {
-        
-        boolean valid=true;
-        // StudyAuthor
-        String name = (String)inputAuthorName.getLocalValue();
-        String affiliation = value.toString();
-        
-        if (StringUtil.isEmpty(name) && !StringUtil.isEmpty(affiliation)) {
-            valid=false;
-        }
-        if (!valid) {
-            ((UIInput)toValidate).setValid(false);
-            FacesMessage message = new FacesMessage("Author name is required if Affiliation is entered.");
-            context.addMessage(toValidate.getClientId(context), message);
-        }
+        if (isSaving()) {
+            boolean valid=true;
+            // StudyAuthor
+            String name = (String)inputAuthorName.getLocalValue();
+            String affiliation = value.toString();
+
+            if (StringUtil.isEmpty(name) && !StringUtil.isEmpty(affiliation)) {
+                valid=false;
+            }
+            if (!valid) {
+                ((UIInput)toValidate).setValid(false);
+                FacesMessage message = new FacesMessage("Author name is required if Affiliation is entered.");
+                context.addMessage(toValidate.getClientId(context), message);
+            }
+       }
         
     }
     
@@ -1125,53 +1123,51 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             UIComponent toValidate,
             Object value) {
         
-        boolean valid=true;
-       
-         
-        if (StringUtil.isEmpty((String)inputOtherId.getLocalValue())
-        && !StringUtil.isEmpty((String)value)  ) {
-            valid=false;
+        if (isSaving()) {
+            boolean valid=true;
+            if (StringUtil.isEmpty((String)inputOtherId.getLocalValue())
+            && !StringUtil.isEmpty((String)value)  ) {
+                valid=false;
+            }
+            if (!valid) {
+                ((UIInput)toValidate).setValid(false);
+                FacesMessage message = new FacesMessage("Other ID  is required if Agency is entered.");
+                context.addMessage(toValidate.getClientId(context), message);
+            }
         }
-        if (!valid) {
-            ((UIInput)toValidate).setValid(false);
-            FacesMessage message = new FacesMessage("Other ID  is required if Agency is entered.");
-            context.addMessage(toValidate.getClientId(context), message);
-        }
-        
     }
      
       public void validateSeries(FacesContext context,
             UIComponent toValidate, Object value) {
         
-        boolean valid=true;
-       
-         
-        if (StringUtil.isEmpty((String)inputSeries.getLocalValue())
-        && !StringUtil.isEmpty((String)value))   {
-            valid=false;
+        if (isSaving()) {
+                boolean valid=true;
+            if (StringUtil.isEmpty((String)inputSeries.getLocalValue())
+            && !StringUtil.isEmpty((String)value))   {
+                valid=false;
+            }
+            if (!valid) {
+                ((UIInput)toValidate).setValid(false);
+                FacesMessage message = new FacesMessage("Series is required if Series Information is entered.");
+                context.addMessage(toValidate.getClientId(context), message);
+            }
         }
-        if (!valid) {
-            ((UIInput)toValidate).setValid(false);
-            FacesMessage message = new FacesMessage("Series is required if Series Information is entered.");
-            context.addMessage(toValidate.getClientId(context), message);
-        }
-        
     }
      
  public void validateVersion(FacesContext context,
             UIComponent toValidate, Object value) {
         
-        boolean valid=true;
-       
-         
-        if (StringUtil.isEmpty((String)inputVersion.getLocalValue())
-        && !StringUtil.isEmpty((String)value)) {
-            valid=false;
-        }
-        if (!valid) {
-            ((UIInput)toValidate).setValid(false);
-            FacesMessage message = new FacesMessage("Version is required if Version Date is entered.");
-            context.addMessage(toValidate.getClientId(context), message);
+        if (isSaving()){
+            boolean valid=true;
+            if (StringUtil.isEmpty((String)inputVersion.getLocalValue())
+            && !StringUtil.isEmpty((String)value)) {
+                valid=false;
+            }
+            if (!valid) {
+                ((UIInput)toValidate).setValid(false);
+                FacesMessage message = new FacesMessage("Version is required if Version Date is entered.");
+                context.addMessage(toValidate.getClientId(context), message);
+            }
         }
         
     }     
@@ -1179,17 +1175,17 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             UIComponent toValidate,
             Object value) {
         
-        boolean valid=true;
-       
-         
-        if (StringUtil.isEmpty((String)inputAbstractText.getLocalValue())
-        && !StringUtil.isEmpty((String)value)  ) {
-            valid=false;
-        }
-        if (!valid) {
-            ((UIInput)toValidate).setValid(false);
-            FacesMessage message = new FacesMessage("Abstract text  is required if Date is entered.");
-            context.addMessage(toValidate.getClientId(context), message);
+        if (isSaving()) {
+            boolean valid=true;
+            if (StringUtil.isEmpty((String)inputAbstractText.getLocalValue())
+            && !StringUtil.isEmpty((String)value)  ) {
+                valid=false;
+            }
+            if (!valid) {
+                ((UIInput)toValidate).setValid(false);
+                FacesMessage message = new FacesMessage("Abstract text  is required if Date is entered.");
+                context.addMessage(toValidate.getClientId(context), message);
+            }
         }
         
     }   
@@ -1197,19 +1193,19 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             UIComponent toValidate,
             Object value) {
         
-        boolean valid=true;
-       
-         
-        if (StringUtil.isEmpty((String)this.inputNoteType.getLocalValue())
-        && (!StringUtil.isEmpty((String)this.inputNoteText.getLocalValue())
-            || !StringUtil.isEmpty((String)this.inputNoteSubject.getLocalValue())
-            || !StringUtil.isEmpty((String)value))  ) {
-            valid=false;
-        }
-        if (!valid) {
-            ((UIInput)toValidate).setValid(false);
-            FacesMessage message = new FacesMessage("Note type is required if other note data is entered.");
-            context.addMessage(toValidate.getClientId(context), message);
+        if (isSaving()) {
+            boolean valid=true;
+            if (StringUtil.isEmpty((String)this.inputNoteType.getLocalValue())
+            && (!StringUtil.isEmpty((String)this.inputNoteText.getLocalValue())
+                || !StringUtil.isEmpty((String)this.inputNoteSubject.getLocalValue())
+                || !StringUtil.isEmpty((String)value))  ) {
+                valid=false;
+            }
+            if (!valid) {
+                ((UIInput)toValidate).setValid(false);
+                FacesMessage message = new FacesMessage("Note type is required if other note data is entered.");
+                context.addMessage(toValidate.getClientId(context), message);
+            }
         }
         
     }   
@@ -1218,36 +1214,36 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             UIComponent toValidate,
             Object value) {
         
-        boolean valid=true;
-       
-         
-        if (StringUtil.isEmpty((String)this.inputSoftwareName.getLocalValue())
-        && !StringUtil.isEmpty((String)value)  ) {
-            valid=false;
+        if (isSaving()) {
+            boolean valid=true;
+            if (StringUtil.isEmpty((String)this.inputSoftwareName.getLocalValue())
+            && !StringUtil.isEmpty((String)value)  ) {
+                valid=false;
+            }
+            if (!valid) {
+                ((UIInput)toValidate).setValid(false);
+                FacesMessage message = new FacesMessage("Software Name is required if Version is entered.");
+                context.addMessage(toValidate.getClientId(context), message);
+            }
         }
-        if (!valid) {
-            ((UIInput)toValidate).setValid(false);
-            FacesMessage message = new FacesMessage("Software Name is required if Version is entered.");
-            context.addMessage(toValidate.getClientId(context), message);
-        }  
     }     
     
         public void validateStudyGrant(FacesContext context,
             UIComponent toValidate,
             Object value) {
         
-        boolean valid=true;
-       
-         
-        if (StringUtil.isEmpty((String)inputGrantNumber.getLocalValue())
-        && !StringUtil.isEmpty((String)value)  ) {
-            valid=false;
+        if (isSaving()){
+            boolean valid=true;
+            if (StringUtil.isEmpty((String)inputGrantNumber.getLocalValue())
+            && !StringUtil.isEmpty((String)value)  ) {
+                valid=false;
+            }
+            if (!valid) {
+                ((UIInput)toValidate).setValid(false);
+                FacesMessage message = new FacesMessage("Grant Number is required if Grant Number Agency is entered.");
+                context.addMessage(toValidate.getClientId(context), message);
+            }
         }
-        if (!valid) {
-            ((UIInput)toValidate).setValid(false);
-            FacesMessage message = new FacesMessage("Grant Number is required if Grant Number Agency is entered.");
-            context.addMessage(toValidate.getClientId(context), message);
-        }  
     }       
      
      
@@ -1255,20 +1251,20 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             UIComponent toValidate,
             Object value) {
         
-        boolean valid=true;
-       
-         
-        if (StringUtil.isEmpty((String)inputDistributorName.getLocalValue())
-        && (!StringUtil.isEmpty((String)inputDistributorAbbreviation.getLocalValue()) 
-             || !StringUtil.isEmpty((String)inputDistributorAffiliation.getLocalValue())
-             || !StringUtil.isEmpty((String)inputDistributorLogo.getLocalValue())
-             || !StringUtil.isEmpty((String)value) )) {
-            valid=false;
-        }
-        if (!valid) {
-            ((UIInput)toValidate).setValid(false);
-            FacesMessage message = new FacesMessage("Distributor name is required if other distributor data is entered.");
-            context.addMessage(toValidate.getClientId(context), message);
+        if (isSaving()) {
+            boolean valid=true;
+            if (StringUtil.isEmpty((String)inputDistributorName.getLocalValue())
+            && (!StringUtil.isEmpty((String)inputDistributorAbbreviation.getLocalValue())
+                 || !StringUtil.isEmpty((String)inputDistributorAffiliation.getLocalValue())
+                 || !StringUtil.isEmpty((String)inputDistributorLogo.getLocalValue())
+                 || !StringUtil.isEmpty((String)value) )) {
+                valid=false;
+            }
+            if (!valid) {
+                ((UIInput)toValidate).setValid(false);
+                FacesMessage message = new FacesMessage("Distributor name is required if other distributor data is entered.");
+                context.addMessage(toValidate.getClientId(context), message);
+            }
         }
         
     }
@@ -1277,19 +1273,19 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             UIComponent toValidate,
             Object value) {
         
-        boolean valid=true;
-       
-         
-        if (StringUtil.isEmpty((String)inputDistributorContact.getLocalValue())
-        && (!StringUtil.isEmpty((String)inputDistributorContactAffiliation.getLocalValue()) 
-             || !StringUtil.isEmpty((String)inputDistributorContactEmail.getLocalValue())
-             || !StringUtil.isEmpty((String)value) )) {
-            valid=false;
-        }
-        if (!valid) {
-            ((UIInput)toValidate).setValid(false);
-            FacesMessage message = new FacesMessage("Distributor contact name is required if distributor contact affiliation is entered.");
-            context.addMessage(toValidate.getClientId(context), message);
+        if (isSaving()) {
+            boolean valid=true;
+            if (StringUtil.isEmpty((String)inputDistributorContact.getLocalValue())
+            && (!StringUtil.isEmpty((String)inputDistributorContactAffiliation.getLocalValue())
+                 || !StringUtil.isEmpty((String)inputDistributorContactEmail.getLocalValue())
+                 || !StringUtil.isEmpty((String)value) )) {
+                valid=false;
+            }
+            if (!valid) {
+                ((UIInput)toValidate).setValid(false);
+                FacesMessage message = new FacesMessage("Distributor contact name is required if distributor contact affiliation is entered.");
+                context.addMessage(toValidate.getClientId(context), message);
+            }
         }
         
     }
@@ -1298,18 +1294,18 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             UIComponent toValidate,
             Object value) {
         
-        boolean valid=true;
-       
-         
-        if (StringUtil.isEmpty((String)inputKeywordValue.getLocalValue())
-        && (!StringUtil.isEmpty((String)inputKeywordVocab.getLocalValue()) 
-             || !StringUtil.isEmpty((String)value) )) {
-            valid=false;
-        }
-        if (!valid) {
-            ((UIInput)toValidate).setValid(false);
-            FacesMessage message = new FacesMessage("Keyword value is required if other keyword data is entered.");
-            context.addMessage(toValidate.getClientId(context), message);
+        if (isSaving()) {
+            boolean valid=true;
+            if (StringUtil.isEmpty((String)inputKeywordValue.getLocalValue())
+            && (!StringUtil.isEmpty((String)inputKeywordVocab.getLocalValue())
+                 || !StringUtil.isEmpty((String)value) )) {
+                valid=false;
+            }
+            if (!valid) {
+                ((UIInput)toValidate).setValid(false);
+                FacesMessage message = new FacesMessage("Keyword value is required if other keyword data is entered.");
+                context.addMessage(toValidate.getClientId(context), message);
+            }
         }
         
     }
@@ -1318,18 +1314,18 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             UIComponent toValidate,
             Object value) {
         
-        boolean valid=true;
-       
-         
-        if (StringUtil.isEmpty((String)inputTopicClassValue.getLocalValue())
-        && (!StringUtil.isEmpty((String)inputTopicClassVocab.getLocalValue()) 
-             || !StringUtil.isEmpty((String)value) )) {
-            valid=false;
-        }
-        if (!valid) {
-            ((UIInput)toValidate).setValid(false);
-            FacesMessage message = new FacesMessage("Topic Classification value is required if other topic classification data is entered.");
-            context.addMessage(toValidate.getClientId(context), message);
+        if( isSaving()) {
+            boolean valid=true;
+            if (StringUtil.isEmpty((String)inputTopicClassValue.getLocalValue())
+            && (!StringUtil.isEmpty((String)inputTopicClassVocab.getLocalValue())
+                 || !StringUtil.isEmpty((String)value) )) {
+                valid=false;
+            }
+            if (!valid) {
+                ((UIInput)toValidate).setValid(false);
+                FacesMessage message = new FacesMessage("Topic Classification value is required if other topic classification data is entered.");
+                context.addMessage(toValidate.getClientId(context), message);
+            }
         }
         
     }
@@ -1337,51 +1333,53 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
    public void validateGeographicBounding(FacesContext context,
             UIComponent toValidate,
             Object value) {
-     boolean valid=true;
-     // if any geographic values are filled, then they all must be filled
-     if (!StringUtil.isEmpty((String)inputWestLongitude.getLocalValue())
-        ||  !StringUtil.isEmpty((String)inputEastLongitude.getLocalValue())
-        ||  !StringUtil.isEmpty((String)inputNorthLatitude.getLocalValue())
-        || !StringUtil.isEmpty((String)inputSouthLatitude.getLocalValue())) {
-         if ( StringUtil.isEmpty((String)inputWestLongitude.getLocalValue())
-            ||  StringUtil.isEmpty((String)inputEastLongitude.getLocalValue())
-            ||  StringUtil.isEmpty((String)inputNorthLatitude.getLocalValue())
-            || StringUtil.isEmpty((String)inputSouthLatitude.getLocalValue())) {
+        if (isSaving()) {
+             boolean valid=true;
+            // if any geographic values are filled, then they all must be filled
+            if (!StringUtil.isEmpty((String)inputWestLongitude.getLocalValue())
+                ||  !StringUtil.isEmpty((String)inputEastLongitude.getLocalValue())
+                ||  !StringUtil.isEmpty((String)inputNorthLatitude.getLocalValue())
+                || !StringUtil.isEmpty((String)inputSouthLatitude.getLocalValue())) {
+                if ( StringUtil.isEmpty((String)inputWestLongitude.getLocalValue())
+                  ||  StringUtil.isEmpty((String)inputEastLongitude.getLocalValue())
+                  ||  StringUtil.isEmpty((String)inputNorthLatitude.getLocalValue())
+                  || StringUtil.isEmpty((String)inputSouthLatitude.getLocalValue())) {
              
-             valid=false;
-         }
-         
-    }
-     
-     
+                    valid=false;
+                }
+            }
+          
         
-        if (!valid) {
-            inputSouthLatitude.setValid(false);
-            FacesMessage message = new FacesMessage("If any geographic field is filled, then all geographic fields must be filled.");
-            context.addMessage(inputSouthLatitude.getClientId(context), message);
+            if (!valid) {
+               inputSouthLatitude.setValid(false);
+               FacesMessage message = new FacesMessage("If any geographic field is filled, then all geographic fields must be filled.");
+               context.addMessage(inputSouthLatitude.getClientId(context), message);
+           }
         }
    }
    
     public void validateStudyProducer(FacesContext context,
             UIComponent toValidate,
             Object value) {
-        
-        boolean valid=true;
-       
-         
+        if (isSaving()) {
+            boolean valid = true;
+
+
+
         if (StringUtil.isEmpty((String)inputProducerName.getLocalValue())
-        && (!StringUtil.isEmpty((String)inputProducerAbbreviation.getLocalValue()) 
+        && (!StringUtil.isEmpty((String)inputProducerAbbreviation.getLocalValue())
              || !StringUtil.isEmpty((String)inputProducerAffiliation.getLocalValue())
              || !StringUtil.isEmpty((String)inputProducerLogo.getLocalValue())
              || !StringUtil.isEmpty((String)value) )) {
             valid=false;
+            }
+            if (!valid) {
+                ((UIInput) toValidate).setValid(false);
+                FacesMessage message = new FacesMessage("Producer name is required if other producer data is entered.");
+                context.addMessage(toValidate.getClientId(context), message);
+            }
         }
-        if (!valid) {
-            ((UIInput)toValidate).setValid(false);
-            FacesMessage message = new FacesMessage("Producer name is required if other producer data is entered.");
-            context.addMessage(toValidate.getClientId(context), message);
-        }
-        
+
     }
       
   
@@ -1389,25 +1387,25 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             UIComponent toValidate,
             Object value) {
         boolean valid=true;
-        
-        
-        
-        String studyId = (String)value;
-        FacesMessage message=null;
-        if (!studyService.isUniqueStudyId(studyId, study.getProtocol(),study.getAuthority())) {
-            valid=false;
-            message = new FacesMessage("Study ID is already used in this dataverse.");
-        }
-        if (valid) {
-            if (!studyService.isValidStudyIdString(studyId)) {
-                valid = false;
-                message = new FacesMessage("Study ID can only contain characters a-z, A-Z, 0-9, dash or underscore (no spaces allowed)");
+                
+        if (isSaving()) {
+            String studyId = (String)value;
+            FacesMessage message=null;
+            if (!studyService.isUniqueStudyId(studyId, study.getProtocol(),study.getAuthority())) {
+                valid=false;
+                message = new FacesMessage("Study ID is already used in this dataverse.");
             }
-        }
-        
-        if (!valid) {
-            ((UIInput)toValidate).setValid(false);           
-            context.addMessage(toValidate.getClientId(context), message);
+            if (valid) {
+                if (!studyService.isValidStudyIdString(studyId)) {
+                    valid = false;
+                    message = new FacesMessage("Study ID can only contain characters a-z, A-Z, 0-9, dash or underscore (no spaces allowed)");
+                }
+            }
+
+            if (!valid) {
+                ((UIInput)toValidate).setValid(false);
+                context.addMessage(toValidate.getClientId(context), message);
+            }
         }
     }
     
@@ -1416,7 +1414,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             Object value) {
         String fileName = (String) value;
         String errorMessage = null;
-        
+
         // check invalid characters
         if (    fileName.contains("\\") ||
                 fileName.contains("/") ||
@@ -2628,7 +2626,43 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
          showVersionNotesPopup = !showVersionNotesPopup;
 
      }
- 
+
+     HtmlCommandButton saveCommand1;
+     HtmlCommandButton saveCommand2;
+     HtmlSelectOneRadio showFields;
+
+    public HtmlSelectOneRadio getShowFields() {
+        return showFields;
+    }
+
+    public void setShowFields(HtmlSelectOneRadio showFields) {
+        this.showFields = showFields;
+    }
+
+    public HtmlCommandButton getSaveCommand1() {
+        return saveCommand1;
+    }
+
+    public void setSaveCommand1(HtmlCommandButton saveCommand1) {
+        this.saveCommand1 = saveCommand1;
+    }
+
+    public HtmlCommandButton getSaveCommand2() {
+        return saveCommand2;
+    }
+
+    public void setSaveCommand2(HtmlCommandButton saveCommand2) {
+        this.saveCommand2 = saveCommand2;
+    }
+     
+
+
+    public boolean isSaving() {
+        // check to see if the current request is from the user clicking one of the save buttons 
+        FacesContext fc = FacesContext.getCurrentInstance();
+        Map reqParams = fc.getExternalContext().getRequestParameterMap();
+        return reqParams.containsKey(saveCommand1.getClientId(fc)) || reqParams.containsKey(saveCommand2.getClientId(fc));
+    }
   
 }
 

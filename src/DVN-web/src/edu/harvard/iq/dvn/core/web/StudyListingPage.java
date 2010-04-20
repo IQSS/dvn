@@ -217,6 +217,8 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
     }
 
     public String search_action() {
+        searchField = (searchField == null) ? "any" : searchField; // default searchField, in case no dropdown
+
         List searchTerms = new ArrayList();
         SearchTerm st = new SearchTerm();
         st.setFieldName(searchField);

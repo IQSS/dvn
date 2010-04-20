@@ -176,14 +176,13 @@
                             <div jsfc="ice:panelGroup" id="layoutPanel2" panelLayout="flow">
                                 <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
                                     <gui:fragment rendered="#{not VDCRequest.currentVDC.harvestingDv}">
-                                        <tr><td colspan="2" class="dvnOptionsTableHeader"><ice:outputText value="#{bundlePageInfo.contributorSectionTitle}"/></td></tr>
                                         <tr>
-                                            <td class="dvnOptionsTableOption">
+                                            <td class="dvnOptionsTableOption" style="border-top:1px solid lightgray;">
                                                 <ice:outputLink id="hyperlink5" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml">
                                                     <ice:outputText id="hyperlink1Text1" value="#{bundlePageInfo.createStudyTitle}"/>
                                                 </ice:outputLink>
                                             </td>
-                                            <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.createStudyText}"/></td>
+                                            <td style="border-top:1px solid lightgray;"><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.createStudyText}"/></td>
                                         </tr>
                                         <tr>
                                             <td class="dvnOptionsTableOption">
@@ -196,7 +195,6 @@
                                     </gui:fragment>
 
                                     <gui:fragment rendered="#{VDCSession.loginBean.networkAdmin or VDCSession.loginBean.curatorOrAbove}">
-                                        <tr><td colspan="2" class="dvnOptionsTableHeader"><ice:outputText value="#{bundlePageInfo.curatorSectionTitle}"/></td></tr>
                                         <gui:fragment rendered="#{not VDCRequest.currentVDC.harvestingDv}">
                                             <tr>
                                                 <td class="dvnOptionsTableOption">

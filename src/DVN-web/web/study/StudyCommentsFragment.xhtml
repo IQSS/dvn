@@ -103,31 +103,37 @@
                           <ice:outputText value=" to add your comments." nospan="true"/>
                       </div>
                     </div>
-                    <div jsfc="ice:panelGroup"
-                           rendered="#{VDCSession.user != null and StudyCommentsFragment.study.releasedVersion != null}"><!-- the dataTable needs StudyCommentsFragment.user to refresh the table? but session bean alone okay here? -->
-                          <ice:outputLabel styleClass="vdcStudyCommentsSubheading" for="studyComments" id="studyCommentsLabel">
-                            <ice:outputText value="Add a Comment"/>
-                          </ice:outputLabel>
-                          <ice:message for="studyComments" styleClass="errorMessage"/>
-                          <ice:inputTextarea id="studyComments"
-                                             binding="#{StudyCommentsFragment.commentsTextarea}"
-                                             cols="100"
-                                             rows="15"
-                                             styleClass="formHtmlEnabled"
-                                             value="#{StudyCommentsFragment.studyCommentsText}">
-                          </ice:inputTextarea>
+                    <div jsfc="ice:panelGroup" rendered="#{VDCSession.user != null and StudyCommentsFragment.studyVersion.released}">
+                        <div jsfc="ice:panelGroup"><!-- the dataTable needs StudyCommentsFragment.user to refresh the table? but session bean alone okay here? -->
+                              <ice:outputLabel styleClass="vdcStudyCommentsSubheading" for="studyComments" id="studyCommentsLabel">
+                                <ice:outputText value="Add a Comment"/>
+                              </ice:outputLabel>
+                              <ice:message for="studyComments" styleClass="errorMessage"/>
+                              <ice:inputTextarea id="studyComments"
+                                                 binding="#{StudyCommentsFragment.commentsTextarea}"
+                                                 cols="100"
+                                                 rows="15"
+                                                 styleClass="formHtmlEnabled"
+                                                 value="#{StudyCommentsFragment.studyCommentsText}">
+                              </ice:inputTextarea>
+                          </div>
+                          <div jsfc="ice:panelGroup" styleClass="dvnFormPadding dvnFormMargin">
+                                <ice:commandButton id="button1"
+                                                   value="Save"
+                                                   actionListener="#{StudyCommentsFragment.save}"/>
+                                <ice:commandButton id="button2"
+                                                   value="Cancel"
+                                                   action="#{StudyCommentsFragment.cancel}"/>
+                          </div>
                       </div>
-                      <div jsfc="ice:panelGroup"
-                           rendered="#{VDCSession.user != null and StudyCommentsFragment.study.releasedVersion != null}"
-                           styleClass="dvnFormPadding dvnFormMargin">
-                            <ice:commandButton id="button1"
-                                               value="Save"
-                                               actionListener="#{StudyCommentsFragment.save}"/>
-                            <ice:commandButton id="button2"
-                                               value="Cancel"
-                                               action="#{StudyCommentsFragment.cancel}"/>
+                      <div jsfc="ice:panelGroup" styleClass="vdcStudyCommentLoginRegister" rendered="#{VDCSession.user != null and !StudyCommentsFragment.studyVersion.released and StudyCommentsFragment.studyVersion.study.releasedVersion != null}">
+                          <ice:outputText value="To add comments, please vew the"/>
+                          <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{StudyCommentsFragment.studyVersion.study.id}&amp;versionNumber=#{StudyCommentsFragment.studyVersion.study.releasedVersion.versionNumber}&amp;tab=comments#{VDCRequest.studyListingIndexAsParameter}">
+                            <ice:outputText value="released version"/>
+                          </ice:outputLink>
+                          <ice:outputText value="of the study."/>
                       </div>
-                      <div jsfc="ice:panelGroup" styleClass="vdcStudyCommentLoginRegister" rendered="#{VDCSession.user != null and StudyCommentsFragment.study.releasedVersion == null}">
+                      <div jsfc="ice:panelGroup" styleClass="vdcStudyCommentLoginRegister" rendered="#{VDCSession.user != null and StudyCommentsFragment.studyVersion.released and StudyCommentsFragment.studyVersion.study.releasedVersion == null}">
                           <ice:outputText value="The study must be released in order to add comments. "/>
                       </div>
                 </div>

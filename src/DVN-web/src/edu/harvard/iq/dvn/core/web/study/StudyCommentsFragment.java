@@ -9,10 +9,10 @@ import com.icesoft.faces.component.ext.HtmlCommandLink;
 import com.icesoft.faces.component.ext.HtmlInputTextarea;
 import com.icesoft.faces.component.panelpopup.PanelPopup;
 import edu.harvard.iq.dvn.core.mail.MailServiceLocal;
-import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyComment;
 import edu.harvard.iq.dvn.core.study.StudyCommentService;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
+import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.util.PropertyUtil;
 import edu.harvard.iq.dvn.core.web.common.LoginBean;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
@@ -43,20 +43,24 @@ public class StudyCommentsFragment extends VDCBaseBean implements Serializable {
     @EJB
     private MailServiceLocal mailService;
 
-    protected List<StudyCommentUI> studyComments;
-    protected Long studyId = null;  // corresponds to the primary key in the table, id
-    protected Long studyIdForComments = null;  // corresponds to the foreign key int he table, studyId ex. 10001 // TODO: is this needed??
+    private List<StudyCommentUI> studyComments;
+    private Long studyId;
+    private Long versionNumber;
+    private StudyVersion studyVersion;
     private boolean renderStudyVersionReference;
-
 
      public void init() {
         super.init();        
-        if (studyId == null && getVDCRequestBean().getStudyId() != null) {
+        if (studyId == null) {
             studyId = getVDCRequestBean().getStudyId();
         }
 
-        study = studyService.getStudy(studyId);
-        renderStudyVersionReference = study.getLatestVersion().getVersionNumber() > 1;
+        if (versionNumber == null) {
+            versionNumber = getVDCRequestBean().getStudyVersionNumber();
+        }
+
+        studyVersion = studyService.getStudyVersion(studyId, versionNumber);
+        renderStudyVersionReference = studyVersion.getStudy().getLatestVersion().getVersionNumber() > 1;
 
      }
 
@@ -101,11 +105,10 @@ public class StudyCommentsFragment extends VDCBaseBean implements Serializable {
       */
      public String reportAbuse(ActionEvent event) {
          studyCommentService.flagStudyCommentAbuse(flaggedCommentId, getVDCSessionBean().getUser().getId());
-         study = studyService.getStudy(studyId);
          mailService.sendMail(getVDCSessionBean().getUser().getEmail(), getVDCRequestBean().getVdcNetwork().getContactEmail(), "Study Comment Abuse Reported", "A study comment " +
                                 "has been reported for abuse.  Please review the details below. " +
                                 "\n\r" + "\n\r" +
-                                "Study Name: " + study.getReleasedVersion().getMetadata().getTitle() +
+                                "Study Name: " + studyVersion.getStudy().getReleasedVersion().getMetadata().getTitle() +
                                 "\n" +
                                 "Study Id: " + studyId +
                                 "\n" +
@@ -265,25 +268,6 @@ public class StudyCommentsFragment extends VDCBaseBean implements Serializable {
     }
 
 
-    protected Study study;
-
-    /**
-     * Get the value of study
-     *
-     * @return the value of study
-     */
-    public Study getStudy() {
-        return study;
-    }
-
-    /**
-     * Set the value of study
-     *
-     * @param study new value of study
-     */
-    public void setStudy(Study study) {
-        this.study = study;
-    }
 
     public boolean getRenderStudyVersionReference() {
         return renderStudyVersionReference;
@@ -336,6 +320,24 @@ public class StudyCommentsFragment extends VDCBaseBean implements Serializable {
     public void setStudyId(Long studyId) {
         this.studyId = studyId;
     }
+
+    public Long getVersionNumber() {
+        return versionNumber;
+    }
+
+    public void setVersionNumber(Long versionNumber) {
+        this.versionNumber = versionNumber;
+    }
+
+    public StudyVersion getStudyVersion() {
+        return studyVersion;
+    }
+
+    public void setStudyVersion(StudyVersion studyVersion) {
+        this.studyVersion = studyVersion;
+    }
+
+
 
     protected PanelPopup reportPopup;
 

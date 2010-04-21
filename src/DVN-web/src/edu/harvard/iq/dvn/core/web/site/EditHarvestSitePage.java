@@ -30,6 +30,7 @@
 package edu.harvard.iq.dvn.core.web.site;
 
 
+import com.icesoft.faces.component.ext.HtmlCommandButton;
 import edu.harvard.iq.dvn.core.admin.EditHarvestSiteService;
 import edu.harvard.iq.dvn.core.admin.GroupServiceLocal;
 import edu.harvard.iq.dvn.core.admin.UserGroup;
@@ -59,9 +60,11 @@ import com.icesoft.faces.component.ext.HtmlInputText;
 import com.icesoft.faces.component.ext.HtmlSelectBooleanCheckbox;
 import com.icesoft.faces.component.ext.HtmlSelectOneMenu;
 import com.icesoft.faces.component.ext.HtmlSelectOneRadio;
+import java.util.Map;
 import java.util.ResourceBundle;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -166,31 +169,34 @@ public class EditHarvestSitePage extends VDCBaseBean implements java.io.Serializ
     public EditHarvestSitePage() {
     }
     
+    private String validatedServerUrl = null;
     
-    
-    public void validateAction(ActionEvent ae) {
-        // do nothing, everthing should be done in validateOAIServer
-        System.out.println("in validateAction");
-    }
-    
-    public boolean validateOAIServer(FacesContext context,
-            UIComponent toValidate,Object value) {
-     
-        boolean valid=true;            
+    public void validateOAIServer(FacesContext context, UIComponent toValidate, Object value) {
+        String validationMessage = null;
+        String currentServerUrl = ((String) value).trim();
 
-       valid= assignHarvestingSets(((String)value).trim(), (String) inputHarvestType.getLocalValue());
-       if (valid) {
-            assignMetadataFormats(((String)value).trim(), (String) inputHarvestType.getLocalValue());
-       }
-        if (!valid) {
-            ((UIInput)toValidate).setValid(false);
-            FacesMessage message = new FacesMessage( "Invalid OAI Server Url");
-            context.addMessage(toValidate.getClientId(context),message);
+        if (isSaving()) {
+            if (validatedServerUrl == null || !validatedServerUrl.equals( currentServerUrl )) {
+                validationMessage = "You must first validate the server.";
+            }
+        } else {
+            boolean valid = assignHarvestingSets(currentServerUrl, (String) inputHarvestType.getLocalValue());
+            if (valid) {
+                assignMetadataFormats(currentServerUrl, (String) inputHarvestType.getLocalValue());
+                validatedServerUrl = currentServerUrl;
+
+            } else {
+                validationMessage = "Invalid OAI Server Url";
+            }
         }
-        return valid;
-        
+
+        if (validationMessage != null) {
+             ((UIInput) toValidate).setValid(false);
+            FacesMessage message = new FacesMessage(validationMessage);
+            context.addMessage(toValidate.getClientId(context), message);
+        }
     }
-    
+
     public void getOAISets(ActionEvent ea) {
         
     }
@@ -894,6 +900,24 @@ public void validateDayOfWeek(FacesContext context,
         }
             
         
+    }
+
+     HtmlCommandButton saveCommand;
+
+
+    public HtmlCommandButton getSaveCommand() {
+        return saveCommand;
+    }
+
+    public void setSaveCommand(HtmlCommandButton saveCommand) {
+        this.saveCommand = saveCommand;
+    }
+
+    public boolean isSaving() {
+        // check to see if the current request is from the user clicking one of the save buttons
+        FacesContext fc = FacesContext.getCurrentInstance();
+        Map reqParams = fc.getExternalContext().getRequestParameterMap();
+        return reqParams.containsKey(saveCommand.getClientId(fc));
     }
 
 }

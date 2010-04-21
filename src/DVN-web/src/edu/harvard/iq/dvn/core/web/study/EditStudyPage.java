@@ -126,7 +126,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             study = editStudyService.getStudyVersion().getStudy();
           
             metadata = editStudyService.getStudyVersion().getMetadata();
-        
+            currentTitle = metadata.getTitle();
 
             setFiles(editStudyService.getCurrentFiles());
         } else {
@@ -238,6 +238,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
      */
     private Study study;
     private Metadata metadata;
+    private String currentTitle;
     
     /**
      * Getter for property study.
@@ -265,8 +266,14 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         this.metadata = metadata;
     }
 
+    public String getCurrentTitle() {
+        return currentTitle;
+    }
 
-    
+    public void setCurrentTitle(String currentTitle) {
+        this.currentTitle = currentTitle;
+    }
+   
     private DefaultTableDataModel dataTable5Model = new DefaultTableDataModel();
     
     public DefaultTableDataModel getDataTable5Model() {

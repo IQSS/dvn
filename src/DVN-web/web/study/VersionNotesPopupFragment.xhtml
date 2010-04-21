@@ -52,28 +52,24 @@
                     <div jsfc="ice:panelGroup" styleClass="dvnFormPadding dvnFormMargin">
                         <ice:commandButton id="autoCentPopupOk"
                                            action="#{studyPage.saveVersionNote}"
-                                           value="Confirm"
+                                           value="Save"
                                            rendered="#{VersionNotesPopupBean.editNoteAction}"/>
                        <ice:commandButton id="autoCentPopupOk"
                                            actionListener="#{studyVersionDifferencesPage.saveVersionNoteAndRelease}"
-                                           value="Confirm"
+                                           value="Continue"
                                            rendered="#{VersionNotesPopupBean.versionReleaseAction}"/>
                        <ice:commandButton id="autoCentPopupOk"
                                            action="#{AddFilesPage.save_action}"
-                                           value="Confirm"
+                                           value="Continue"
                                            rendered="#{VersionNotesPopupBean.addFilesAction}"/>
-                       
                        <ice:commandButton id="autoCentPopupOk"
                                            actionListener="#{ManageStudiesList.doConfirmVersionNotesPopup}"
-                                           value="Confirm"
+                                           value="Continue"
                                            rendered="#{VersionNotesPopupBean.manageStudiesAction}"/>
-                    
-                      
+
                         <ice:commandButton id="autoCentPopupCancel"
                                            actionListener="#{VersionNotesPopupBean.closePopup}"
                                            value="Cancel"/>
-                     
-
                     </div>
                 </ice:panelGrid>
             </f:facet>

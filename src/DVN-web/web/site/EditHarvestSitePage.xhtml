@@ -393,7 +393,7 @@
               </table>
           </div>
           <div class="dvnFormPadding dvnFormMargin">
-            <ice:commandButton id="button1" value="Save" action="#{EditHarvestSitePage.save}"/>
+              <ice:commandButton id="button1" binding ="#{EditHarvestSitePage.saveCommand}" value="Save" action="#{EditHarvestSitePage.save}"/>
             <ice:commandButton id="button2" immediate="true" value="Cancel" action="#{EditHarvestSitePage.cancel}"/>
           </div>
         </div>

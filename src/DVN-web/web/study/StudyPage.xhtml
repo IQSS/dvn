@@ -166,7 +166,7 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
 .dvnstudypreviouslisting{text-align:right;}
 .dvnstudyadminbox{width: 300px; overflow:hidden; border:1px solid #d0d0d0; padding:4px; color:#526F76;}
 .dvnstudyadminlinksL {float: left; width: 150px; list-style-type: square; margin: 0 0 0 1.25em; padding: 0;}
-.dvnstudyadminlinksR {float: right; width: 120px; list-style-type: square; margin: 0; padding: 0;}
+.dvnstudyadminlinksR {float: right; width: 130px; list-style-type: square; margin: 0; padding: 0;}
 .dvnstudyadminbox ul {padding: 0px; margin: 0px; list-style-type: none;}
 .dvnstudyadminbox li {background: url(/dvn/resources/images/icon_bullet.gif) no-repeat 0px 8px; padding-left: 10px;}
 .dvnstudyadminbox a:link,.dvnstudyadminbox a:visited,.dvnstudyadminbox a:hover,.dvnstudyadminbox a:active{color:#C55B28;}
@@ -209,8 +209,14 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
                         <div jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.study.studyLock==null}">
                             <ul class="dvnstudyadminlinksL">
                                 <span jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.studyVersion != studyPage.studyUI.study.latestVersion}">
-                                    <li>
+                                    <!--<li>
                                         <dvn:tooltip tooltipMessage="#{studybundle.editStudyTip}" linkText="Edit Draft/Review Version" eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;versionNumber=#{studyPage.studyUI.study.latestVersion.versionNumber}"/>
+                                    </li>-->
+                                    <li style="background: none; padding: 0; font-size:0.9em !important;">
+                                        Editing has been disable on this study version because a draft study version has been created. Go to the
+                                        <ice:outputLink style="font-size:1em !important;" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;versionNumber=#{studyPage.studyUI.study.latestVersion.versionNumber}">
+                                            draft study version
+                                        </ice:outputLink> to edit this study.
                                     </li>
                                 </span>
                                 <span jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.studyVersion == studyPage.studyUI.study.latestVersion}">
@@ -359,7 +365,7 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
 .dvnhowtocitecitationfloat{}
 .dvnhowtocitecitationfloat label{font-weight:bold;}
 .dvnhowtocitecitation{padding: 2px;}
-textarea.dvnstudycitation {width: 380px; padding: 4px; margin: 8px 0; font-family: monospace !important;}
+textarea.dvnstudycitation {width: 90%; padding: 4px; margin: 8px 0; font-family: monospace !important;}
 </style>
                   <ice:panelGrid id="panelGridHowToCite" styleClass="dvnhowtocitetable" cellpadding="0" cellspacing="0"
                                  columnClasses="col1, col2" columns="2" width="100%" rendered="#{studyPage.studyUI.citationInformationPanelIsRendered}">
@@ -382,8 +388,8 @@ jQuery(document).ready(function(){
 });
 </script>
                         <label for="citationformat">Citation Format</label> <select id="dvnCitationSelector"><option value="Web" selected="selected">Web</option><option value="Print">Print</option></select><br/>
-                        <textarea readonly="readonly" rows="3" id="dvnStudyCitationWeb" class="dvnstudycitation dvnstudycitationDefault"><ice:outputText value="#{studyPage.studyUI.metadata.webCitation}" nospan="true"></ice:outputText></textarea>
-                        <textarea readonly="readonly" rows="3" id="dvnStudyCitationPrint" class="dvnstudycitation"><ice:outputText value="#{studyPage.studyUI.metadata.textCitation}" nospan="true"></ice:outputText></textarea>
+                        <textarea readonly="readonly" rows="5" id="dvnStudyCitationWeb" class="dvnstudycitation dvnstudycitationDefault"><ice:outputText value="#{studyPage.studyUI.metadata.webCitation}" nospan="true"></ice:outputText></textarea>
+                        <textarea readonly="readonly" rows="5" id="dvnStudyCitationPrint" class="dvnstudycitation"><ice:outputText value="#{studyPage.studyUI.metadata.textCitation}" nospan="true"></ice:outputText></textarea>
                     </div>
                   </ice:panelGrid>
                   <div jsfc="ice:panelGroup" id="groupPanel11" styleClass="vdcStudyInfoHeader">

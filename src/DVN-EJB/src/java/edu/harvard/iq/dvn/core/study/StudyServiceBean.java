@@ -756,7 +756,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
     public List getDvOrderedStudyVersionIdsByContributor(Long vdcId, Long contributorId, String orderBy, boolean ascending) {
         List<Long> returnList = new ArrayList<Long>();
         String queryStr = "SELECT v.id" + 
-                " from studyversion v, study s, versioncontributor c, metadata m, vdcuser cr " +
+                " from studyversion v, study s, metadata m, vdcuser cr " +
                 " WHERE v.study_id=s.id" +
                 " and v.metadata_id = m.id" +
                 " and s.creator_id = cr.id" +

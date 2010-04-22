@@ -177,6 +177,7 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
                   <ice:outputText value="Study Version: #{EditStudyPage.metadata.studyVersion.versionNumber}"/>
                   <ice:outputText nospan="true"><br/></ice:outputText>
                   <ice:outputText value="Created: #{EditStudyPage.metadata.studyVersion.createTime} - Last Updated: #{EditStudyPage.metadata.studyVersion.lastUpdateTime}" rendered="#{!empty EditStudyPage.metadata.studyVersion.lastUpdateTime}"/>
+                  <ice:outputText value="Created: &lt;i&gt;Draft study version is not created until the form is saved&lt;/i&gt;" rendered="#{null == EditStudyPage.metadata.studyVersion.lastUpdateTime}" escape="false"/>
                   <ice:outputText nospan="true" rendered="#{!empty EditStudyPage.metadata.studyVersion.versionNote}"><br/></ice:outputText>
                   <ice:outputText value="Study Version Notes: " rendered="#{!empty EditStudyPage.metadata.studyVersion.versionNote}"/>
                   <ice:outputText styleClass="dvnstudystatusversionnote" value="#{EditStudyPage.metadata.studyVersion.versionNote}" rendered="#{!empty EditStudyPage.metadata.studyVersion.versionNote}"/>

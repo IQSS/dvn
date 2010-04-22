@@ -54,44 +54,55 @@
           <div jsfc="ice:panelGroup" styleClass="#{ (StudyListingPage.renderTree) ? 'dvn_section dvn_overflow' : 'dvn_section'}">
             <div jsfc="ice:panelGroup" styleClass="#{ (StudyListingPage.renderTree) ? 'dvn_sectionContent' : 'dvn_sectionContentNoPanels'}">
               <div jsfc="ice:panelGroup" styleClass="dvnStudyListCollectionNameBlock">
-                  
-                  <table cellpadding="0" cellspacing="0" border="0" width="100%"><tr><td valign="bottom">
 
-                <div jsfc="ice:panelGroup" styleClass="dvnStudyListCollectionName">
-                  <ice:outputText value="#{StudyListingPage.listHeader}"/>
-                  <ice:outputText styleClass="dvnStudyListSearchResultsMessage" value="#{StudyListingPage.listMessage}" rendered="#{StudyListingPage.studyCount != 0}"/>
-                </div>
+             <style type="text/css">
+                 .dvn_searchboxblock {overflow: hidden;}
+                 .dvn_searchboxblock fieldset {margin:0; padding:0; float: left; line-height: 36px !important;}
+                 .dvn_searchboxblock fieldset .iceCmdBtn {vertical-align: middle;}
+                 .dvnSearchBoxCheckbox {display:block; text-align:left;}
+                 .dvn_searchboxblock .dvn_searchlinks {float: left; margin-left: 1em; text-align: left;}
+                 .dvn_searchboxblock .dvn_searchlinks a.iceOutLnk {display: block;}
+                 .dvn_searchboxblock .dvn_searchlinks span.iceOutTxt {font-size:90% !important;}
+             </style>
 
-                  </td><td width="280" align="right" valign="bottom">
-
-                <div style="overflow: hidden;">
-                  <fieldset style="margin:0;padding:0; float: left; line-height: 36px !important;">
-                    <label for="search">
-                      <ice:inputText onkeypress="if (window.event) return processEvent('', 'form1:search'); else return processEvent(event, 'form1:search');" id="textField2" value="#{StudyListingPage.searchValue}"/>
-                    </label>
-                    <ice:outputLabel for="filter" styleClass="dvnSearchBoxCheckbox" rendered="#{StudyListingPage.renderSearchResultsFilter}">
-                      <ice:selectBooleanCheckbox value="#{StudyListingPage.searchResultsFilter}"/>
-                      <ice:outputText value="within these results"/>
-                    </ice:outputLabel>
-                    <ice:outputLabel for="filter" styleClass="dvnSearchBoxCheckbox" rendered="#{StudyListingPage.renderSearchCollectionFilter}">
-                      <ice:selectBooleanCheckbox value="#{StudyListingPage.searchCollectionFilter}"/>
-                      <ice:outputText value="within this collection"/>
-                    </ice:outputLabel>
-                    <label for="button">
-                      <ice:commandButton id="search" value="Go" action="#{StudyListingPage.search_action}"/>
-                    </label>
-                  </fieldset>
-                  <div style="float: left; margin-left: 1em; text-align: left;">
-                    <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/AdvSearchPage.xhtml" style="display: block;">
-                      <ice:outputText value="Advanced Search" style="font-size:90% !important;"/>
-                    </ice:outputLink>
-                    <ice:outputLink value="http://thedata.org/guides/users/search/tips" target="_blank" style="display: block;">
-                      <ice:outputText value="Tips" style="font-size:90% !important;"/>
-                    </ice:outputLink>
-                  </div>
-                </div>
-
-                  </td></tr></table>
+                  <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                      <tr>
+                          <td valign="bottom">
+                            <div jsfc="ice:panelGroup" styleClass="dvnStudyListCollectionName">
+                              <ice:outputText value="#{StudyListingPage.listHeader}"/>
+                              <ice:outputText styleClass="dvnStudyListSearchResultsMessage" value="#{StudyListingPage.listMessage}" rendered="#{StudyListingPage.studyCount != 0}"/>
+                            </div>
+                          </td>
+                          <td width="280" align="right" valign="bottom">
+                            <div class="dvn_searchboxblock">
+                              <fieldset>
+                                <label for="search">
+                                  <ice:inputText onkeypress="if (window.event) return processEvent('', 'form1:search'); else return processEvent(event, 'form1:search');" id="textField2" value="#{StudyListingPage.searchValue}" onclick="this.value='';"/>
+                                </label>
+                                <label for="button">
+                                  <ice:commandButton id="search" value="Go" action="#{StudyListingPage.search_action}"/>
+                                </label>
+                                <ice:outputLabel for="filter" styleClass="dvnSearchBoxCheckbox" rendered="#{StudyListingPage.renderSearchResultsFilter}">
+                                  <ice:selectBooleanCheckbox value="#{StudyListingPage.searchResultsFilter}"/>
+                                  <ice:outputText value="within these results"/>
+                                </ice:outputLabel>
+                                <ice:outputLabel for="filter" styleClass="dvnSearchBoxCheckbox" rendered="#{StudyListingPage.renderSearchCollectionFilter}">
+                                  <ice:selectBooleanCheckbox value="#{StudyListingPage.searchCollectionFilter}"/>
+                                  <ice:outputText value="within this collection"/>
+                                </ice:outputLabel>
+                              </fieldset>
+                              <div class="dvn_searchlinks">
+                                <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/AdvSearchPage.xhtml">
+                                  <ice:outputText value="Advanced Search"/>
+                                </ice:outputLink>
+                                <ice:outputLink value="http://thedata.org/guides/users/search/tips" target="_blank">
+                                  <ice:outputText value="Tips"/>
+                                </ice:outputLink>
+                              </div>
+                            </div>
+                          </td>
+                      </tr>
+                  </table>
 
                 
               </div>

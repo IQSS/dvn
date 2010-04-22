@@ -93,25 +93,36 @@
 
           <!-- MAIN CONTENT AREA -->
           <div jsfc="ice:panelGroup" styleClass="#{!empty(HomePage.accordionItemBeans) ? 'dvn_sectionContent' : 'dvn_sectionContentNoPanels'}">
+
+             <style type="text/css">
+                 .dvn_searchboxblock {overflow: hidden;}
+                 .dvn_searchboxblock fieldset {margin:0; padding:0; float: left; line-height: 36px !important;}
+                 .dvn_searchboxblock fieldset .iceCmdBtn {vertical-align: middle;}
+                 .dvnSearchBoxCheckbox {display:block; text-align:left;}
+                 .dvn_searchboxblock .dvn_searchlinks {float: left; margin-left: 1em; text-align: left;}
+                 .dvn_searchboxblock .dvn_searchlinks a.iceOutLnk {display: block;}
+                 .dvn_searchboxblock .dvn_searchlinks span.iceOutTxt {font-size:90% !important;}
+             </style>
+
              <table cellpadding="0" cellspacing="0" border="0" width="100%" class="dvnHmpgGroupHeaderBlock">
                  <tr>
                      <td valign="bottom"><ice:outputText styleClass="dvnHmpgGroupHeader" value="#{HomePage.groupName}"/></td>
                      <td width="280" align="right" valign="bottom">
-                         <div style="overflow: hidden;">
-                         <fieldset style="margin:0;padding:0; float: left; line-height: 36px !important;">
+                         <div class="dvn_searchboxblock">
+                         <fieldset>
                             <label for="search">
                               <ice:inputText onkeypress="if (window.event) return processEvent('', 'form1:searchButton'); else return processEvent(event, 'form1:searchButton');" id="textField2" value="#{HomePage.searchValue}" onclick="this.value='';"/>
                             </label>
-                            <label for="button" style="">
-                                <ice:commandButton id="searchButton" value="Go" style=" vertical-align: middle;" type="submit" action="#{HomePage.search_action}"/>
+                            <label for="button">
+                                <ice:commandButton id="searchButton" value="Go" type="submit" action="#{HomePage.search_action}"/>
                             </label>
                           </fieldset>
-                          <div style="float: left; margin-left: 1em; text-align: left;">
-                            <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/AdvSearchPage.xhtml" style="display: block;">
-                                <ice:outputText value="Advanced Search" style="font-size:90% !important;"/>
+                          <div class="dvn_searchlinks">
+                            <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/AdvSearchPage.xhtml">
+                                <ice:outputText value="Advanced Search"/>
                             </ice:outputLink>
-                            <ice:outputLink value="http://thedata.org/guides/users/search/tips" target="_blank" style="display: block;">
-                                <ice:outputText value="Tips" style="font-size:90% !important;"/>
+                            <ice:outputLink value="http://thedata.org/guides/users/search/tips" target="_blank">
+                                <ice:outputText value="Tips"/>
                             </ice:outputLink>
                           </div>
                           </div>

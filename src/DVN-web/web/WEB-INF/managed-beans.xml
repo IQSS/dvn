@@ -243,6 +243,11 @@
             <property-class>java.lang.Long</property-class>
             <value>#{param.studyId}</value>
         </managed-property>
+        <managed-property>
+            <property-name>versionNumber</property-name>
+            <property-class>java.lang.Long</property-class>
+            <value>#{param.versionNumber}</value>
+        </managed-property>
     </managed-bean>
     <managed-bean>
         <managed-bean-name>TermsOfUsePage</managed-bean-name>

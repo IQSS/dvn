@@ -105,7 +105,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
     private String parsedLocalAnnouncements     = parseAnnouncements((getVDCRequestBean().getCurrentVDC()!= null) ? getVDCRequestBean().getCurrentVDC().getAnnouncements(): "", true);
     private String parsedNetworkAnnouncements   = parseAnnouncements((getVDCRequestBean().getVdcNetwork() != null) ? getVDCRequestBean().getVdcNetwork().getAnnouncements(): "", false);
     private String searchField;
-    private String searchValue;
+    private String searchValue = "Search Studies";
     private boolean showRequestContributor;
     StatusMessage msg;
     private boolean isAlphaSort;

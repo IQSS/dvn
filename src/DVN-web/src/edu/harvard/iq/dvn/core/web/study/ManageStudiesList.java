@@ -110,7 +110,7 @@ public class ManageStudiesList extends VDCBaseBean {
             }
             List studyVersionIds =null;
             if (vdcId != null){
-                if (loginBean != null && loginBean.isContributorOrAbove() && contributorFilter) {
+                if (contributorFilter) {
                     studyVersionIds = studyService.getDvOrderedStudyVersionIdsByContributor(vdcId, loginBean.getUser().getId(), orderBy, ascending);
                 } else {
                     studyVersionIds = studyService.getDvOrderedStudyVersionIds(vdcId, orderBy, ascending);

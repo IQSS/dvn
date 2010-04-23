@@ -161,7 +161,6 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
             // WE SHOULD HAVE A STUDY ID, throw an error
             System.out.println("ERROR: in addStudyPage, without a serviceBean or a studyId");
         }
-        versionNotesPopup.setActionType(VersionNotesPopupBean.ActionType.ADD_FILES);
     }
 
     public void uploadFile(ActionEvent event) {
@@ -269,9 +268,14 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
     }
 
 
+    public void openPopup(ActionEvent ae) {
+        versionNotesPopup.setActionType(VersionNotesPopupBean.ActionType.ADD_FILES);
+        versionNotesPopup.setVersionNote(studyVersion.getVersionNote());
+        versionNotesPopup.openPopup(ae);
+    }
 
     public String save_action() {
-
+        studyVersion.setVersionNote(versionNotesPopup.getVersionNote());
         versionNotesPopup.setShowPopup(false);
 
         if (fileList.size() > 0) {

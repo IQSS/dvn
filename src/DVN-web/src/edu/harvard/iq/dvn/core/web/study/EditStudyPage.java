@@ -1000,18 +1000,31 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     }
     
     
+    private VersionNotesPopupBean versionNotesPopup;
+
+    public VersionNotesPopupBean getVersionNotesPopup() {
+        return versionNotesPopup;
+    }
+
+    public void setVersionNotesPopup(VersionNotesPopupBean versionNotesPopup) {
+        this.versionNotesPopup = versionNotesPopup;
+    }
+    
     public String save() {
-        EditStudyPage.getVDCRequestBean().setSelectedTab(tab);
         if (this.getStudy()==null) {
             return "home";
         }
+
+        metadata.getStudyVersion().setVersionNote(versionNotesPopup.getVersionNote());
+        versionNotesPopup.setShowPopup(false);
+
         removeEmptyRows();
         if (!StringUtil.isEmpty(metadata.getReplicationFor())  ) {
             if (!metadata.getTitle().startsWith("Replication data for:")) {
                 metadata.setTitle("Replication data for: "+metadata.getTitle());
             }
         }
-        
+
         editStudyService.save(getVDCRequestBean().getCurrentVDCId(),getVDCSessionBean().getLoginBean().getUser().getId());
        
         getVDCRequestBean().setStudyId(study.getId());
@@ -2600,39 +2613,6 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
        
     }
 
-    private boolean showVersionNotesPopup = false;
-
-    /**
-     * Get the value of showPopup
-     *
-     * @return the value of showPopup
-     */
-    public boolean isShowVersionNotesPopup() {
-        return   showVersionNotesPopup;
-
-    }
-
-    /**
-     * Set the value of showPopup
-     *
-     * @param showPopup new value of showPopup
-     */
-    public void setShowVersionNotesPopup(boolean showVersionNotesPopup) {
-        this.showVersionNotesPopup = showVersionNotesPopup;
-    }
-
- /** togglePopup
-      * actionListener method for hiding
-      * and showing the popup
-      *
-      * @param ActionEvent
-      *
-      */
-     public void toggleVersionNotesPopup(javax.faces.event.ActionEvent event) {
-
-         showVersionNotesPopup = !showVersionNotesPopup;
-
-     }
 
      HtmlCommandButton saveCommand1;
      HtmlCommandButton saveCommand2;

@@ -109,11 +109,11 @@ public class ManageTemplatesPage extends VDCBaseBean implements java.io.Serializ
     private String getRemoveText(Template template) {
         String removeText=null;
         if (template.getId().equals(networkTemplateId)) {
-            removeText = "Cannot remove - Network Default Template";
+            removeText = "Cannot remove - DVN default template";
         } else if (template.getId().equals(this.defaultTemplateId)) {
-            removeText = "Cannot remove - Dataverse Default Template";
+            removeText = "Cannot remove - dataverse default template";
         } else if (templateService.isTemplateUsed(template.getId())){
-            removeText="Cannot remove - template associated with created studies";     
+            removeText="Cannot remove - template associated with created studies";
         }
         return removeText;
     }

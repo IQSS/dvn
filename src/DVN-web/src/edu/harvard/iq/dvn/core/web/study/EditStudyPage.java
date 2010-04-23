@@ -1009,6 +1009,12 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     public void setVersionNotesPopup(VersionNotesPopupBean versionNotesPopup) {
         this.versionNotesPopup = versionNotesPopup;
     }
+
+    public void openPopup(ActionEvent ae) {
+        versionNotesPopup.setActionType(VersionNotesPopupBean.ActionType.EDIT_STUDY);
+        versionNotesPopup.setVersionNote(metadata.getStudyVersion().getVersionNote());
+        versionNotesPopup.openPopup(ae);
+    }
     
     public String save() {
         if (this.getStudy()==null) {

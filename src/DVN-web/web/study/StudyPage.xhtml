@@ -236,7 +236,7 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
                                 </span>
                                 <span jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.studyVersion.inReview or studyPage.studyUI.studyVersion.draft}">
                                     <li>
-                                        <ice:commandLink onmouseover="javascript:popupTooltip(this, &#39;#{studybundle.editVersionNotesTip}&#39;, &#39;&#39;, event);" onmouseout="javascript:hideTooltip();" binding="#{studyPage.editStudyVersionNotesLink}" actionListener="#{VersionNotesPopupBean.openPopup}">
+                                        <ice:commandLink onmouseover="javascript:popupTooltip(this, &#39;#{studybundle.editVersionNotesTip}&#39;, &#39;&#39;, event);" onmouseout="javascript:hideTooltip();" binding="#{studyPage.editStudyVersionNotesLink}" actionListener="#{studyPage.editStudyVersionNotes}">
                                             <ice:outputText value="Edit Study Version Notes" nospan="true"/>
                                         </ice:commandLink>
                                     </li>
@@ -372,7 +372,7 @@ textarea.dvnstudycitation {width: 90%; padding: 4px; margin: 8px 0; font-family:
                     <div jsfc="ice:panelGroup" styleClass="dvnhowtociteinfofloat">
                         <div>
                             <h4><ice:outputText value="#{studybundle.howCiteLabel}"/></h4>
-                            <ice:outputText value="#{studybundle.howCiteHelp}"/>
+                            <ice:outputText value="#{studybundle.howCiteHelp}" escape="false"/>
                         </div>
                     </div>
                     <div jsfc="ice:panelGroup" styleClass="dvnhowtocitecitationfloat">

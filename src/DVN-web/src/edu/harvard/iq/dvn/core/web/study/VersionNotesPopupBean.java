@@ -67,6 +67,10 @@ public class VersionNotesPopupBean {
         return actionType == ActionType.VERSION_RELEASE;
     }
 
+    public boolean isEditStudyAction(){
+        return actionType == ActionType.EDIT_STUDY;
+    }  
+
     public boolean isAddFilesAction() {
         return actionType == ActionType.ADD_FILES;
     }
@@ -78,5 +82,5 @@ public class VersionNotesPopupBean {
     public boolean isManageStudiesAction(){
         return actionType == ActionType.MANAGE_STUDIES;
     }
-  
+
 }

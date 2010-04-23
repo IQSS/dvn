@@ -704,9 +704,10 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
         this.deleteActionLabel = actionLabel;
     }
 
-    public void confirmStudyDelete (ActionEvent ae) {
+    //public void confirmStudyDelete (ActionEvent ae) {
+    public String confirmStudyDelete () {
         VDC dataverse = null;
-        Long dvId;
+        String successMessage = "";
 
         if (studyUI != null && studyUI.getStudy() != null) {
             dataverse = studyUI.getStudy().getOwner();
@@ -715,26 +716,44 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
         if (StudyDeleteRequestType.DRAFT_VERSION.equals(deleteRequested)) {
             if (studyUI != null && studyUI.getStudyVersion() != null ) {
                 studyService.destroyWorkingCopyVersion(studyUI.getStudyVersion().getId());
+                successMessage = "Successfully deleted draft version of the study \"" +
+                        studyUI.getMetadata().getTitle() + "\", " +
+                        studyUI.getStudy().getGlobalId();
             }
         } else if (StudyDeleteRequestType.REVIEW_VERSION.equals(deleteRequested)) {
             if (studyUI != null && studyUI.getStudyVersion() != null ) {
                 studyService.destroyWorkingCopyVersion(studyUI.getStudyVersion().getId());
+                successMessage = "Successfully deleted review version of the study \"" +
+                        studyUI.getMetadata().getTitle() + "\", " +
+                        studyUI.getStudy().getGlobalId();
+
             }
         } else if (StudyDeleteRequestType.DESTROY_STUDY.equals(deleteRequested)) {
             studyService.deleteStudy(studyId);
+            successMessage = "Permanently destroyed study \"" +
+                studyUI.getMetadata().getTitle() + "\", " +
+                studyUI.getStudy().getGlobalId();
+
+        } else {
+            successMessage = "Warning: attempted to execute unknown delete action!";
         }
 
         showStudyDeletePopup = false;
         deleteRequested = null;
         deleteActionLabel = null;
-        
-        // redirecting to the Manage Studies page;
-        if (getVDCRequestBean().getCurrentVDC() != null) {
-            dvId = getVDCRequestBean().getCurrentVDC().getId();
-        } else {
-            dvId = dataverse.getId();
+
+        // Once we have successfully deleted whatever it was that we
+        // wanted to delete/destroy, we are sending the user to the
+        // ManageStudies Page:
+
+        if (getVDCRequestBean().getCurrentVDC() == null) {
+            getVDCRequestBean().setCurrentVDC(dataverse);
         }
-        redirect("/faces/study/ManageStudiesPage.xhtml?vdcId="+dvId);
+
+        // Set the action status message for the ManageStudies page:
+        getVDCRequestBean().setSuccessMessage(successMessage);
+
+        return "manageStudies";
     }
 
     public void confirmDraftDeleteAction (ActionEvent event) {

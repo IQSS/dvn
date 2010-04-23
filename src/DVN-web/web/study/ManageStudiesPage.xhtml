@@ -16,7 +16,13 @@
       <ice:form>
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <div class="dvn_section">
-          <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
+          <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnSuccessMessage" rendered="#{!empty VDCRequest.successMessage }">
+            <div class="dvnMsgBlockContainer">
+                <p><ice:outputText id="statusMessage" value="#{VDCRequest.successMessage}"/></p>
+            </div>
+          </div>
+
+          <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage" rendered="#{empty VDCRequest.successMessage }">
             <div class="dvnMsgBlockContainer">
               <ice:outputText value="#{bundlePageInfo.manageStudiesHelp}" escape="false"/>
             </div>

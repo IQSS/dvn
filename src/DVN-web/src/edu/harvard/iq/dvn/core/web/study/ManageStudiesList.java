@@ -269,10 +269,14 @@ public class ManageStudiesList extends VDCBaseBean {
     }
 
     public void confirmStudyDelete (ActionEvent event) {
+        String successMessage = "";
 
         if (currentStudyUI != null) {
             StudyVersion latestVersion = currentStudyUI.getStudy().getLatestVersion();
             if (latestVersion != null) {
+                successMessage = "Successfully deleted working version of the study \""+
+                    currentStudyUI.getMetadata().getTitle() + "\", " +
+                    currentStudyUI.getStudy().getGlobalId();
                 studyService.destroyWorkingCopyVersion(latestVersion.getId());
             }
         }
@@ -281,21 +285,12 @@ public class ManageStudiesList extends VDCBaseBean {
         deleteActionLabel = null;
         currentStudyUI = null;
 
-        FacesContext fc = javax.faces.context.FacesContext.getCurrentInstance();
-        HttpServletResponse response = (javax.servlet.http.HttpServletResponse) fc.getExternalContext().getResponse();
-        try {
-            response.sendRedirect("/dvn/faces/study/ManageStudiesPage.xhtml?vdcId="+vdcId);
-            fc.responseComplete();
-        } catch (Exception ex) {
-            // bummer.
-            // for some reason, the redirect didn't work. we are already in the ManageStudies page,
-            // so this redirect is not strictly necessary.
-            // but there's a chance that the page didn't get refreshed properly;
-            // UPDATE:
-            // It looks like the redirect is not necessary really. To ensure that the list
-            // of studies is refreshed, all you need to do is set the list of study UIs to null.
-            // I'll try that instead. -- L.A.
-        }
+
+        // to make the page refresh, simply reset the studyUI list:
+        studyUIList = null;
+
+        // and finally, set the status message:
+        VDCBaseBean.getVDCRequestBean().setSuccessMessage(successMessage);
 
     }
 

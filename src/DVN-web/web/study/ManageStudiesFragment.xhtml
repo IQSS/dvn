@@ -203,8 +203,7 @@
                                      >
                         <ice:outputText value="#{bundle.MSReviewAction}"/>
                     </ice:commandLink>
-                    <ice:commandLink id="draftDeleteColLink" action="#{ManageStudiesList.delete_action}" rendered="#{studyUI.study.latestVersion.draft}"
-                                     onclick="if(!confirm('Are you sure you want to delete this DRAFT study version?   #{studyUI.metadata.title} #{studyUI.study.globalId}')){ return false; };">
+                    <ice:commandLink id="draftDeleteColLink" immediate="true" rendered="#{studyUI.userAuthorizedToEdit and studyUI.study.studyLock==null and (studyUI.study.latestVersion.draft or studyUI.study.latestVersion.inReview)}" actionListener="#{ManageStudiesList.confirmDeleteAction}">
                         <ice:outputText value="#{bundle.MSDeleteAction}"/>
                     </ice:commandLink>
                     <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml" rendered="#{studyUI.study.latestVersion.inReview}" >
@@ -221,10 +220,6 @@
                         <f:param name="actionMode" value="confirmRelease"/>
                         <ice:outputText value="#{bundle.MSReleaseAction}"/>
                     </ice:outputLink>
-                    <ice:commandLink id="inReviewDeleteColLink" action="#{ManageStudiesList.delete_action}" rendered="#{studyUI.study.latestVersion.inReview}"
-                                     onclick="if(!confirm('Are you sure you want to delete this IN REVIEW study version?   #{studyUI.metadata.title} #{studyUI.study.globalId}')){ return false; };">
-                        <ice:outputText value="#{bundle.MSDeleteAction}"/>
-                    </ice:commandLink>
                     <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml" rendered="#{studyUI.study.latestVersion.released}" >
                         <f:param name="studyId" value="#{studyUI.study.id}"/>
                         <f:param name="versionNumber" value="#{studyUI.study.latestVersion.versionNumber}"/>

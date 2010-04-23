@@ -22,6 +22,8 @@ import javax.persistence.*;
 public class StudyVersion implements Serializable {
     private static final long serialVersionUID = 1L;
 
+  // IMPORTANT: If you add a new value to this enum, you will also have to modify the
+  // StudyVersionsFragment.xhtml in order to display the correct value from a Resource Bundle
   public enum VersionState { DRAFT, IN_REVIEW, RELEASED, ARCHIVED};
 
 
@@ -297,15 +299,6 @@ public class StudyVersion implements Serializable {
     @Override
     public String toString() {
         return "edu.harvard.iq.dvn.core.study.StudyVersion[id=" + id + "]";
-    }
-
-    public String getUserFriendlyVersionState() {
-        //TODO: move this logic to web tier
-        try {
-            return ResourceBundle.getBundle("studybundle").getString( versionState.toString() );
-        } catch (MissingResourceException e) {
-            return versionState.toString();
-        }
     }
 
     public List<String> getFileCategories() {

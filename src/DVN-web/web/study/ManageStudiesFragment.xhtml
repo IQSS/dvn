@@ -194,46 +194,30 @@
                   <f:facet name="header">
                       <ice:outputText value="#{bundle.MSActionColumn}"/>
                   </f:facet>
-                    <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml" rendered="#{studyUI.study.latestVersion.draft}" >
+                    <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml" rendered="#{studyUI.userAuthorizedToEdit}" >
                         <f:param name="studyId" value="#{studyUI.study.id}"/>
                         <f:param name="versionNumber" value="#{studyUI.study.latestVersion.versionNumber}"/>
                         <ice:outputText value="#{bundle.MSEditAction}"/>
                     </ice:outputLink>
-                    <ice:commandLink id="draftReviewColLink" actionListener="#{  ManageStudiesList.doShowReviewPopup  }"  rendered="#{studyUI.study.latestVersion.draft}"
-                                     >
+                    <ice:commandLink id="draftReviewColLink" actionListener="#{  ManageStudiesList.doShowReviewPopup  }"  rendered="#{not studyUI.userAuthorizedToRelease and studyUI.study.latestVersion.draft}">
                         <ice:outputText value="#{bundle.MSReviewAction}"/>
                     </ice:commandLink>
                     <ice:commandLink id="draftDeleteColLink" immediate="true" rendered="#{studyUI.userAuthorizedToEdit and studyUI.study.studyLock==null and (studyUI.study.latestVersion.draft or studyUI.study.latestVersion.inReview)}" actionListener="#{ManageStudiesList.confirmDeleteAction}">
                         <ice:outputText value="#{bundle.MSDeleteAction}"/>
                     </ice:commandLink>
-                    <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml" rendered="#{studyUI.study.latestVersion.inReview}" >
-                        <f:param name="studyId" value="#{studyUI.study.id}"/>
-                        <f:param name="versionNumber" value="#{studyUI.study.latestVersion.versionNumber}"/>
-                        <ice:outputText value="#{bundle.MSEditAction}"/>
-                    </ice:outputLink>
-                    <ice:commandLink id="inReviewReleaseColLink" actionListener="#{  ManageStudiesList.doShowReleasePopup  }" rendered="#{studyUI.study.latestVersion.inReview and studyUI.study.releasedVersion == null}">
+                    <ice:commandLink id="inReviewOrDraftReleaseColLink" actionListener="#{  ManageStudiesList.doShowReleasePopup  }" rendered="#{studyUI.userAuthorizedToRelease and (studyUI.study.latestVersion.inReview or studyUI.study.latestVersion.draft)  and studyUI.study.releasedVersion == null}">
                         <ice:outputText value="#{bundle.MSReleaseAction}"/>
                     </ice:commandLink>
-                    <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyVersionDifferencesPage.xhtml" rendered="#{studyUI.study.latestVersion.inReview and studyUI.study.releasedVersion != null}" >
+                    <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyVersionDifferencesPage.xhtml" rendered="#{studyUI.userAuthorizedToRelease and (studyUI.study.latestVersion.inReview or studyUI.study.latestVersion.draft) and studyUI.study.releasedVersion != null}" >
                         <f:param name="studyId" value="#{studyUI.study.id}"/>
                         <f:param name="versionNumberList" value="#{studyUI.study.releasedVersion.versionNumber},#{studyUI.study.latestVersion.versionNumber}"/>
                         <f:param name="actionMode" value="confirmRelease"/>
                         <ice:outputText value="#{bundle.MSReleaseAction}"/>
                     </ice:outputLink>
-                    <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml" rendered="#{studyUI.study.latestVersion.released}" >
-                        <f:param name="studyId" value="#{studyUI.study.id}"/>
-                        <f:param name="versionNumber" value="#{studyUI.study.latestVersion.versionNumber}"/>
-                        <ice:outputText value="#{bundle.MSEditAction}"/>
-                    </ice:outputLink>
-                    <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/DeaccessionStudyPage.xhtml" rendered="#{studyUI.study.latestVersion.released}" >
+                    <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/DeaccessionStudyPage.xhtml" rendered="#{studyUI.userAuthorizedToRelease and studyUI.study.latestVersion.released}" >
                         <f:param name="studyId" value="#{studyUI.study.id}"/>
                         <f:param name="versionNumber" value="#{studyUI.study.latestVersion.versionNumber}"/>
                         <ice:outputText value="#{bundle.MSDeaccessionAction}"/>
-                    </ice:outputLink>
-                    <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml" rendered="#{studyUI.study.latestVersion.archived}" >
-                        <f:param name="studyId" value="#{studyUI.study.id}"/>
-                        <f:param name="versionNumber" value="#{studyUI.study.latestVersion.versionNumber}"/>
-                        <ice:outputText value="#{bundle.MSEditAction}"/>
                     </ice:outputLink>
                 </ice:column>
               </ice:dataTable>

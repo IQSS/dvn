@@ -278,6 +278,11 @@
             <property-class>java.lang.String</property-class>
             <value>#{param.tab}</value>
         </managed-property>
+         <managed-property>
+            <property-name>versionNotesPopup</property-name>
+            <property-class>edu.harvard.iq.dvn.core.web.study.VersionNotesPopupBean</property-class>
+            <value>#{VersionNotesPopupBean}</value>
+        </managed-property>
     </managed-bean>
   <managed-bean>
         <managed-bean-name>EditTemplatePage</managed-bean-name>

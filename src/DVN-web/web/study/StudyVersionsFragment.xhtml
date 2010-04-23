@@ -39,7 +39,7 @@
         <ice:dataTable id="versionsDataTable" cellpadding="0" cellspacing="0" width="100%"
                        styleClass="dvnversionstable" rowClasses="oddRow evenRow"
                        columnClasses="dvnversionstableCol1, dvnversionstableCol2, dvnversionstableCol3, dvnversionstableCol4, dvnversionstableCol5, dvnversionstableCol6"
-                       value="#{studyPage.studyUI.study.studyVersions}" var="sv">
+                       value="#{studyPage.studyUI.viewableStudyVersions}" var="sv">
             <ice:column>
                 <f:facet name="header">
                     <input type="button" value="Difference" onclick="viewStudyVersionDifferences();"/>
@@ -58,7 +58,10 @@
                       <ice:outputText value="Status"/>
                   </f:facet>
                   <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{sv.study.id}&amp;versionNumber=#{sv.versionNumber}#{VDCRequest.studyListingIndexAsParameter}">
-                      <ice:outputText value="#{sv.userFriendlyVersionState}"/>
+                      <ice:outputText value="#{studybundle.DRAFT}" rendered="#{sv.draft}"/>
+                      <ice:outputText value="#{studybundle.IN_REVIEW}" rendered="#{sv.inReview}"/>
+                      <ice:outputText value="#{studybundle.RELEASED}" rendered="#{sv.released}"/>
+                      <ice:outputText value="#{studybundle.ARCHIVED}" rendered="#{sv.archived}"/>
                   </ice:outputLink>
             </ice:column>
             <ice:column>

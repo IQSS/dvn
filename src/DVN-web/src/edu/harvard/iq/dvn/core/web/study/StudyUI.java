@@ -1143,4 +1143,12 @@ public class StudyUI  implements java.io.Serializable {
         return authorized;
     }
 
+    public List<StudyVersion> getViewableStudyVersions() {
+        if (study.getLatestVersion().isWorkingCopy() && !isUserAuthorizedToEdit()) {
+            return study.getStudyVersions().subList(1, study.getStudyVersions().size());
+        } else {
+            return study.getStudyVersions();
+        }
+    }
+
 }

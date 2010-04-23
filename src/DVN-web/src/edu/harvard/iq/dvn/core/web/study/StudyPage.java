@@ -819,6 +819,7 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
         if ( releasedVersion == null ) {
             // This is the first release of the study.
             actionRequested = StudyActionRequestType.RELEASE;
+            versionNotesPopup.setVersionNote(studyUI.getStudyVersion().getVersionNote());
             versionNotesPopup.setShowPopup(true);
             actionComplete = false;
         } else {
@@ -835,14 +836,24 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
 
     public void confirmSubmitForReview(ActionEvent ae) {
         actionRequested = StudyActionRequestType.REVIEW;
+        versionNotesPopup.setVersionNote(studyUI.getStudyVersion().getVersionNote());
+        versionNotesPopup.setShowPopup(true);
+        actionComplete = false;
+    }
+
+    public void editStudyVersionNotes(ActionEvent ae) {
+        actionRequested = null;
+        versionNotesPopup.setVersionNote(studyUI.getStudyVersion().getVersionNote());
         versionNotesPopup.setShowPopup(true);
         actionComplete = false;
     }
 
 
+
     //public String saveVersionNote(javax.faces.event.ActionEvent event) {
     public String saveVersionNote() {
 
+        studyUI.getStudyVersion().setVersionNote( versionNotesPopup.getVersionNote() );
         studyService.saveVersionNote (studyUI.getStudyVersion().getId(), studyUI.getStudyVersion().getVersionNote());
         versionNotesPopup.setShowPopup(false);
         actionComplete = true;

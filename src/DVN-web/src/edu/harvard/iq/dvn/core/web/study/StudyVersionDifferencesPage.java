@@ -300,8 +300,6 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
             initStudyFilesDifferencesList();
 
-            versionNotesPopup.setActionType(VersionNotesPopupBean.ActionType.VERSION_RELEASE);
-
         } else {
             // We must have a StudyId and the Version numbers; throw an error
             //System.out.println("ERROR: in StudyVersionDifferencePage, without a studyId and/or version Ids");
@@ -326,8 +324,15 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
         return studyFilesDiffList.size() > 0;
     }
 
+    public void openPopup(ActionEvent ae) {
+        versionNotesPopup.setActionType(VersionNotesPopupBean.ActionType.VERSION_RELEASE);
+        versionNotesPopup.setVersionNote(studyUI2.getStudyVersion().getVersionNote());
+        versionNotesPopup.openPopup(ae);
+    }
+
     public void saveVersionNoteAndRelease (ActionEvent ae) {
         // First we save the Version Note:
+        studyUI2.getStudyVersion().setVersionNote(versionNotesPopup.getVersionNote());
         studyService.saveVersionNote (studyUI2.getStudyVersion().getId(), studyUI2.getStudyVersion().getVersionNote());
 
         // Release the latest version, and archive the previously released version

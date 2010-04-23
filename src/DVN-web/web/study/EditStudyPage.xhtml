@@ -12,7 +12,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
 <body>
-  <gui:composition template="/template_edit_study.xhtml">
+  <gui:composition template="/template.xhtml">
     <gui:param name="pageTitle" value="#{bundlePageInfo.editStudyTitle} - #{VDCRequest.dataversePageTitle}"/>
     <gui:define name="body">
       <f:loadBundle basename="EditStudyBundle" var="editstudybundle"/>
@@ -162,7 +162,7 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
         <div class="dvnstudytitleblock">
             <div class="dvnstudyadminboxfloat">
                     <div jsfc="ice:panelGroup" id="groupPanel10" styleClass="vdcTextRight dvnFormMargin">
-                        <ice:commandButton binding ="#{EditStudyPage.saveCommand1}" id="saveCommand1" value="Save" actionListener="#{EditStudyPage.toggleVersionNotesPopup}"/>
+                        <ice:commandButton binding ="#{EditStudyPage.saveCommand1}" id="saveCommand1" value="Save" actionListener="#{EditStudyPage.openPopup}"/>
                         <ice:commandButton id="button2" value="Cancel" immediate="true" action="#{EditStudyPage.cancel}"/>
                     </div>
             </div>
@@ -2164,7 +2164,7 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
                </ice:panelGroup>
       
             <div jsfc="ice:panelGroup" styleClass="vdcTextRight dvnFormPadding dvnFormMargin">
-              <ice:commandButton binding ="#{EditStudyPage.saveCommand2}" id="saveCommand2" value="Save" actionListener="#{EditStudyPage.toggleVersionNotesPopup}"/>
+              <ice:commandButton binding ="#{EditStudyPage.saveCommand2}" id="saveCommand2" value="Save" actionListener="#{EditStudyPage.openPopup}"/>
               <ice:commandButton id="cancelCommand" value="Cancel" immediate="true" action="#{EditStudyPage.cancel}"/>
             </div>
           </div>

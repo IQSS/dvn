@@ -50,7 +50,9 @@
                   <ice:outputText value="Leave a comment to explain why the study was deaccessioned."/>
                 </p>
                 <label class="dvnDeaccessionFormLabel" for="dvnDeaccessionComments">Comments</label><br/>
-                <ice:inputTextarea id="dvnDeaccessionComments" value="#{DeaccessionStudyPage.studyVersion.archiveNote}"></ice:inputTextarea>
+                <ice:inputTextarea validator="#{DeaccessionStudyPage.validateArchiveNote}" id="dvnDeaccessionComments" value="#{DeaccessionStudyPage.studyVersion.archiveNote}"/>
+                <ice:message styleClass="errorMessage" for="dvnDeaccessionComments"/>
+                
                 <p>
                   <ice:outputText value="Add a link to another version of the deaccssioned study by including the Global ID of the new study."/>
                 </p>

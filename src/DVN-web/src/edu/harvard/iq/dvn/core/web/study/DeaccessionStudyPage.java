@@ -31,8 +31,13 @@ package edu.harvard.iq.dvn.core.web.study;
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyVersion;
+import edu.harvard.iq.dvn.core.util.StringUtil;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
+import javax.faces.component.UIInput;
+import javax.faces.context.FacesContext;
 
 /**
  *
@@ -92,6 +97,21 @@ public class DeaccessionStudyPage extends VDCBaseBean implements java.io.Seriali
         this.updateDeaccessionDetails = updateDeaccessionDetails;
     }
 
+    public int getArchiveNoteMaxLength() {
+        return StudyVersion.ARCHIVE_NOTE_MAX_LENGTH;
+    }
+
+    public void validateArchiveNote(FacesContext context,
+            UIComponent toValidate,
+            Object value) {
+
+        String strValue = (String) value;
+        if (strValue.length() > StudyVersion.ARCHIVE_NOTE_MAX_LENGTH) {
+            ((UIInput) toValidate).setValid(false);
+            FacesMessage message = new FacesMessage("Deaccession comment cannot exceed "+StudyVersion.ARCHIVE_NOTE_MAX_LENGTH+" characters.");
+            context.addMessage(toValidate.getClientId(context), message);
+        }
+    }
 
     public String save_action() {
         if (updateDeaccessionDetails) {

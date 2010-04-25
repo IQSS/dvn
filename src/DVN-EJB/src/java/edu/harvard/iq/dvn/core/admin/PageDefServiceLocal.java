@@ -65,6 +65,8 @@ public interface PageDefServiceLocal extends java.io.Serializable  {
     public static final String FORGOT_PASSWORD_PAGE = "ForgotPasswordPage";
     public static final String TERMS_OF_USE_PAGE = "TermsOfUsePage";
     public static final String ACCOUNT_TERMS_OF_USE_PAGE = "AccountTermsOfUsePage";
+    public static final String DV_OPTIONS_PAGE = "OptionsPage";
+    public static final String NETWORK_OPTIONS_PAGE = "NetworkOptionsPage";
           
     Role findById(Long id);
 

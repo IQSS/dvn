@@ -199,19 +199,22 @@ public class Study implements java.io.Serializable {
     }
 
     public boolean isInReview() {
-        return this.getLatestVersion().getVersionState().equals(StudyVersion.VersionState.IN_REVIEW);
+        return this.getLatestVersion().isInReview();
     }
-
   
     public boolean isDraft() {
-        return this.getLatestVersion().getVersionState().equals(StudyVersion.VersionState.DRAFT);
-    }
-    
-    public boolean isReleased() {
-        return this.getLatestVersion().getVersionState().equals(StudyVersion.VersionState.RELEASED);
+        return this.getLatestVersion().isDraft();
     }
 
-    
+    public boolean isDeaccessioned() {
+        return this.getLatestVersion().isArchived();
+    }
+
+
+     public boolean isReleased() {
+        return this.getLatestVersion().isReleased();
+    }
+
     
     public Collection<UserGroup> getAllowedGroups() {
         return allowedGroups;

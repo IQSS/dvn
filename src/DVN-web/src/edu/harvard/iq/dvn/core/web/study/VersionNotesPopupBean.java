@@ -4,6 +4,11 @@
  */
 package edu.harvard.iq.dvn.core.web.study;
 
+import edu.harvard.iq.dvn.core.study.StudyVersion;
+import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
+import javax.faces.component.UIInput;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 
 /**
@@ -82,5 +87,23 @@ public class VersionNotesPopupBean {
     public boolean isManageStudiesAction(){
         return actionType == ActionType.MANAGE_STUDIES;
     }
+
+
+    public int getVersionNoteMaxLength() {
+        return StudyVersion.VERSION_NOTE_MAX_LENGTH;
+    }
+
+     public void validateVersionNote(FacesContext context,
+            UIComponent toValidate,
+            Object value) {
+
+        String strValue = (String) value;
+        if (strValue.length() > StudyVersion.VERSION_NOTE_MAX_LENGTH) {
+            ((UIInput) toValidate).setValid(false);
+            FacesMessage message = new FacesMessage("Study Version Notes cannot exceed "+StudyVersion.VERSION_NOTE_MAX_LENGTH+" characters.");
+            context.addMessage(toValidate.getClientId(context), message);
+        }
+    }
+  
 
 }

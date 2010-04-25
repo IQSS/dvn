@@ -36,6 +36,8 @@ public class StudyVersion implements Serializable {
     }
 
     private Long versionNumber;
+    public static final int VERSION_NOTE_MAX_LENGTH = 1000;
+    @Column(length=VERSION_NOTE_MAX_LENGTH)
     private String versionNote;
     
     @Enumerated(EnumType.STRING)
@@ -62,6 +64,8 @@ public class StudyVersion implements Serializable {
     private Date releaseTime;
     @Temporal(value = TemporalType.TIMESTAMP)
     private Date archiveTime;
+    public static final int ARCHIVE_NOTE_MAX_LENGTH = 1000;
+    @Column(length=ARCHIVE_NOTE_MAX_LENGTH)
     private String archiveNote;
     private String deaccessionLink;
 
@@ -77,8 +81,12 @@ public class StudyVersion implements Serializable {
         return archiveNote;
     }
 
-    public void setArchiveNote(String archiveNote) {
-        this.archiveNote = archiveNote;
+    public void setArchiveNote(String note) {
+        if (note.length()>ARCHIVE_NOTE_MAX_LENGTH ) {
+            throw new IllegalArgumentException("Error setting archiveNote: String length is greater than maximum ("+ ARCHIVE_NOTE_MAX_LENGTH + ")."
+                   +"  StudyVersion id="+id+", archiveNote="+note);
+        }
+        this.archiveNote = note;
     }
 
     public String getDeaccessionLink() {
@@ -131,9 +139,12 @@ public class StudyVersion implements Serializable {
         return versionNote;
     }
 
-    public void setVersionNote(String versionNote) {
-        this.versionNote = versionNote;
-    }
+    public void setVersionNote(String note) {
+  if (note.length()>VERSION_NOTE_MAX_LENGTH ) {
+            throw new IllegalArgumentException("Error setting versionNote: String length is greater than maximum ("+ VERSION_NOTE_MAX_LENGTH + ")."
+                   +"  StudyVersion id="+id+", versionNote="+note);
+        }
+        this.versionNote = note;    }
 
     public Long getVersionNumber() {
         return versionNumber;

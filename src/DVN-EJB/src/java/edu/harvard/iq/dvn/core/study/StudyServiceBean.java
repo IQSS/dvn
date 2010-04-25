@@ -1168,6 +1168,9 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         if (study != null) {
             if (versionNumber != null) {
                 studyVersion = study.getStudyVersionByNumber(versionNumber);
+                if (studyVersion==null) {
+                    throw new IllegalArgumentException("No studyVersion found for study id "+studyId+"versionNumber "+versionNumber);
+                }
             } else {
                 //studyVersion = study.getLatestVersion();
                 studyVersion = study.getReleasedVersion();
@@ -1176,6 +1179,8 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
                     studyVersion = study.getDeaccessionedVersion();
                 }
             }
+        }else {
+            throw new IllegalArgumentException("No studyVersion found for study id "+studyId);
         }
 
         //String queryStr = "SELECT sv FROM StudyVersion sv WHERE sv.study.id = '" + studyId;

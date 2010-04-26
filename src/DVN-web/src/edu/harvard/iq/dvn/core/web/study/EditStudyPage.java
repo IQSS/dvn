@@ -1017,10 +1017,6 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     }
     
     public String save() {
-        if (this.getStudy()==null) {
-            return "home";
-        }
-
         metadata.getStudyVersion().setVersionNote(versionNotesPopup.getVersionNote());
         versionNotesPopup.setShowPopup(false);
 

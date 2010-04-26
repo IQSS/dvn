@@ -35,6 +35,9 @@ update studyversion set versionstate='DRAFT' where versionstate='New';
 update studyversion set versionstate='IN_REVIEW' where versionstate='In Review';
 update studyversion set versionstate='RELEASED' where versionstate='Released';
 
+ALTER TABLE study DROP COLUMN reviewstate_id;
+ALTER TABLE vdc DROP COLUMN reviewstate_id;
+
 drop table reviewstate;
 
 commit;
@@ -49,7 +52,7 @@ ALTER TABLE studycomment ALTER COLUMN studyversion_id SET NOT NULL;
 
 ALTER TABLE studyfile DROP COLUMN filecategory_id;
 alter table study drop column metadata_id;
-alter table study drop column reviewstate_id;
+
 
 
 

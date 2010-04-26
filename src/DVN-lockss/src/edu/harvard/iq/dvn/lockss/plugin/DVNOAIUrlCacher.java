@@ -561,7 +561,7 @@ public class DVNOAIUrlCacher implements UrlCacher {
       if ( conn.getResponseCode() == 403 ) {
 	  throw new CacheException.ExpectedNoRetryException();
       }
-      CacheException c_ex = resultMap.checkResult(conn);
+      CacheException c_ex = resultMap.checkResult(au, conn);
       if(c_ex != null) {
 	// The stack below here is misleading.  Makes more sense for it
 	// to reflect the point at which it's thrown
@@ -655,8 +655,8 @@ public class DVNOAIUrlCacher implements UrlCacher {
       logger.debug2("openConnection", ex);
       throw resultMap.getMalformedURLException(ex);
     } catch (IOException ex) {
-      logger.debug2("openConnection", ex);
-      throw resultMap.getHostException(ex);
+      logger.warning("openConnection: IO Exception", ex);
+      throw ex;
     } catch (RuntimeException e) {
       logger.warning("openConnection: unexpected exception", e);
       throw e;
@@ -811,8 +811,8 @@ public class DVNOAIUrlCacher implements UrlCacher {
 	    logger.debug2("openConnection", ex);
 	    throw resultMap.getMalformedURLException(ex);
 	} catch (IOException ex) {
-	    logger.debug2("openConnection", ex);
-	    throw resultMap.getHostException(ex);
+	    logger.warning("openConnection: IO Exception", ex);
+	    throw ex;
 	} catch (RuntimeException e) {
 	    logger.warning("openConnection: unexpected exception", e);
 	    throw e;

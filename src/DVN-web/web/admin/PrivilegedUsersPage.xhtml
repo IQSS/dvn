@@ -42,31 +42,33 @@
                   </ice:selectOneMenu>
                 </td>
               </tr>
-              <tr>
-                <td class="dvnPermissionsTableOption">
-                  <ice:outputText value="Contributor Accounts"/>
-                </td>
-                <td>
+              <div jsfc="ice:panelGroup" rendered="#{!PrivilegedUsersPage.vdc.harvestingDv}">
+                  <tr>
+                      <td class="dvnPermissionsTableOption">
+                          <ice:outputText value="Contributor Accounts"/>
+                      </td>
+                      <td>
                   <ice:selectBooleanCheckbox id="checkbox5" value="#{PrivilegedUsersPage.vdc.allowContributorRequests}"/>
-                  <ice:outputText id="outputText15" value=" Allow users to be contributors when they create an account."/>
-                </td>
-              </tr>
-              <tr>
-                  <td>Contribution Settings</td>
-                  <td>
-                    <ice:selectOneRadio
-                             layout="pageDirection"
-                             value="#{PrivilegedUsersPage.selectedSetting}"
-                             required="true"
-                             requiredMessage="This field is required.">
-                            <f:selectItem itemLabel = "Contributors can create and edit their own studies. " itemValue="CONTRIB_CREATE"/>
-                            <f:selectItem itemLabel = "Contributors can create and edit all studies in the dataverse. " itemValue="CONTRIB_EDIT"/>
-                            <f:selectItem itemLabel = "All registered users can create and edit their own studies. " itemValue="USER_CREATE"/>
-                            <f:selectItem itemLabel = "All registered users can create and edit all studies in the dataverse. " itemValue="USER_EDIT"/>
+                          <ice:outputText id="outputText15" value=" Allow users to be contributors when they create an account."/>
+                      </td>
+                  </tr>
+                  <tr>
+                      <td>Contribution Settings</td>
+                      <td>
+                          <ice:selectOneRadio
+                              layout="pageDirection"
+                              value="#{PrivilegedUsersPage.selectedSetting}"
+                              required="true"
+                              requiredMessage="This field is required.">
+                              <f:selectItem itemLabel = "Contributors can create and edit their own studies. " itemValue="CONTRIB_CREATE"/>
+                              <f:selectItem itemLabel = "Contributors can create and edit all studies in the dataverse. " itemValue="CONTRIB_EDIT"/>
+                              <f:selectItem itemLabel = "All registered users can create and edit their own studies. " itemValue="USER_CREATE"/>
+                              <f:selectItem itemLabel = "All registered users can create and edit all studies in the dataverse. " itemValue="USER_EDIT"/>
 
-                    </ice:selectOneRadio>
-                  </td>
-            </tr>
+                          </ice:selectOneRadio>
+                      </td>
+                  </tr>
+              </div>
             </table>
           </div>
           <div jsfc="ice:panelGroup">

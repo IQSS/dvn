@@ -449,8 +449,10 @@ public class PrivilegedUsersPage extends VDCBaseBean implements java.io.Serializ
     
     
     public List getRoleSelectItems() {
-        List selectItems = new ArrayList();     
-        selectItems.add(new SelectItem(roleService.findByName(RoleServiceLocal.CONTRIBUTOR).getId(), "Contributor"));
+        List selectItems = new ArrayList();
+        if (!vdc.isHarvestingDv()) {
+            selectItems.add(new SelectItem(roleService.findByName(RoleServiceLocal.CONTRIBUTOR).getId(), "Contributor"));
+        }
         selectItems.add(new SelectItem(roleService.findByName(RoleServiceLocal.CURATOR).getId(), "Curator"));
         selectItems.add(new SelectItem(roleService.findByName(RoleServiceLocal.ADMIN).getId(), "Admin"));
         Role role = roleService.findByName(RoleServiceLocal.PRIVILEGED_VIEWER);

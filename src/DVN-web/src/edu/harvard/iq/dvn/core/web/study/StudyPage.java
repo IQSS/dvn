@@ -799,7 +799,6 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
     private StudyActionRequestType actionRequested = null;
 
    
-    protected boolean actionComplete = false;
 
     public void confirmReleased(ActionEvent ae) {
     //public String confirmReleased() {
@@ -821,7 +820,6 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
             actionRequested = StudyActionRequestType.RELEASE;
             versionNotesPopup.setVersionNote(studyUI.getStudyVersion().getVersionNote());
             versionNotesPopup.setShowPopup(true);
-            actionComplete = false;
         } else {
             // Redirecting to the Differences page;
             // Need to set the correct HTTP parameters:
@@ -838,14 +836,12 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
         actionRequested = StudyActionRequestType.REVIEW;
         versionNotesPopup.setVersionNote(studyUI.getStudyVersion().getVersionNote());
         versionNotesPopup.setShowPopup(true);
-        actionComplete = false;
     }
 
     public void editStudyVersionNotes(ActionEvent ae) {
         actionRequested = null;
         versionNotesPopup.setVersionNote(studyUI.getStudyVersion().getVersionNote());
         versionNotesPopup.setShowPopup(true);
-        actionComplete = false;
     }
 
 
@@ -856,8 +852,6 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
         studyUI.getStudyVersion().setVersionNote( versionNotesPopup.getVersionNote() );
         studyService.saveVersionNote (studyUI.getStudyVersion().getId(), studyUI.getStudyVersion().getVersionNote());
         versionNotesPopup.setShowPopup(false);
-        actionComplete = true;
-
 
         if (actionRequested != null) {
 
@@ -903,16 +897,7 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
 
         return "";
     }
-
-    public boolean isActionComplete() {
-        return actionComplete;
-    }
-
-    public void setActionComplete(boolean actionComplete) {
-        this.actionComplete = actionComplete;
-    }
-
-    
+   
 
     protected HtmlCommandLink editStudyVersionNotesLink = new HtmlCommandLink();
 

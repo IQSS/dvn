@@ -21,8 +21,15 @@
           // <![CDATA[
           function toggleMoreInfo(moreInfo) {
                 jQuery(moreInfo).next().slideToggle(500);
-                var toggleLabelText = (jQuery(moreInfo).children('span.iceOutTxt').text() == 'View Data Citation [+]') ? 'Collapse Data Citation [+]' : 'View Data Citation [+]';
+                var toggleLabelText = (jQuery(moreInfo).children('span.iceOutTxt').text() == 'View Data Citation [+]') ? 'Collapse Data Citation [-]' : 'View Data Citation [+]';
                 jQuery(moreInfo).children('span.iceOutTxt').text(toggleLabelText);
+                return false;
+          };
+
+          function toggleTermsofUse(termsofUse) {
+                jQuery(termsofUse).next().slideToggle(500);
+                var toggleLabelText = (jQuery(termsofUse).children('span.iceOutTxt').text() == 'View Terms of Use [+]') ? 'Collapse Terms of Use [-]' : 'View Terms of Use [+]';
+                jQuery(termsofUse).children('span.iceOutTxt').text(toggleLabelText);
                 return false;
           };
 
@@ -635,28 +642,6 @@ jQuery(document).ready(function(){
                     <ice:commandButton id="commandButtonTermsOfUseContract" image="/resources/images/icon_expand.gif" title="Hide fields in this section" rendered="#{studyPage.studyUI.termsOfUsePanelIsRendered}" actionListener="#{studyPage.updateTermsOfUseDisplay}"/>
                     <ice:commandButton id="commandButtonTermsOfUseExpand" image="/resources/images/icon_contract.gif" title="Show fields in this section" rendered="#{!studyPage.studyUI.termsOfUsePanelIsRendered}" actionListener="#{studyPage.updateTermsOfUseDisplay}"/>
                   </div>
-                  
-                        <style type="text/css">
-                            .dvnStudyAdditionalTermsofUse div.icePnlGrp {margin-bottom:.5em;}
-                            .dvnStudyAdditionalTermsofUse a:after {content: " [+]";}
-                            .dvnStudyAdditionalTermsofUse a.vdcInlineHelpLinkClose:after {content: " [-]";}
-                        </style>
-
-                        <script type="text/javascript">
-                          // <![CDATA[
-                          jQuery(document).ready(function(){
-                              jQuery('.vdcInlineHelpLink').next().hide();
-                                jQuery('.vdcInlineHelpLink').toggle(function(){
-                                    jQuery(this).addClass('vdcInlineHelpLinkClose');
-                                    }, function () {
-                                    jQuery(this).removeClass('vdcInlineHelpLinkClose');
-                                });
-                                jQuery('.vdcInlineHelpLink').click(function(){
-                                    jQuery(this).next().slideToggle(500);
-                              });
-                          });
-                          // ]]>
-                        </script>
 
                   <ice:panelGrid binding="#{studyPage.termsOfUsePanel}" cellpadding="0" cellspacing="0"
                                  columnClasses="vdcStudyInfoCol1, vdcStudyInfoCol2" columns="2" id="gridPanelTermsOfUse" rendered="#{studyPage.studyUI.termsOfUsePanelIsRendered}"
@@ -687,44 +672,49 @@ jQuery(document).ready(function(){
                     <ice:outputText id="outputText143" value="#{studyPage.studyUI.metadata.disclaimer}" rendered="#{!empty studyPage.studyUI.metadata.disclaimer}" escape="false"/>
 
                     <!-- Dataverse, Dataverse Network and Harvest Terms of Use -->
-                    <dvn:inlinehelp helpMessage="#{studybundle.additionalTermsofUseHelp}" linkText="#{studybundle.additionalTermsofUseLabel}" heading="#{studybundle.additionalTermsofUseHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{!empty studyPage.studyUI.dataverseTermsOfUse or VDCRequest.vdcNetwork.downloadTermsOfUseEnabled}"/>
-                    <div jsfc="ice:panelGroup" styleClass="dvnStudyAdditionalTermsofUse" rendered="#{!empty studyPage.studyUI.dataverseTermsOfUse or VDCRequest.vdcNetwork.downloadTermsOfUseEnabled}">
-        
-                        <div jsfc="ice:panelGroup" styleClass="toggleTermsofUse" rendered="#{!empty studyPage.studyUI.dataverseTermsOfUse}">
-                            <ice:outputLink value="#" styleClass="vdcInlineHelpLink">
-                                <ice:outputText value="#{studybundle.dataverseTermsofUseLabel}" styleClass="vdcInlineHelpLinkText"/>
+                    <dvn:inlinehelp helpMessage="#{studybundle.networkTermsofUseHelp}" linkText="#{studybundle.networkTermsofUseLabel}" heading="#{studybundle.networkTermsofUseHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{!empty VDCRequest.vdcNetwork.downloadTermsOfUseEnabled}"/>
+                    <div jsfc="ice:panelGroup" rendered="#{!empty VDCRequest.vdcNetwork.downloadTermsOfUseEnabled}">
+                        <div jsfc="ice:panelGroup">
+                            <ice:outputLink value="#" onclick="return toggleTermsofUse(this)" styleClass="vdcInlineHelpLink">
+                                <ice:outputText value="View Terms of Use [+]" styleClass="vdcInlineHelpLinkText"/>
                             </ice:outputLink>
-                            <div>
-                                <ice:outputText value="#{studyPage.studyUI.dataverseTermsOfUse}" escape="false" style="display:block"/>
-                            </div>
-                        </div>
-                        <div jsfc="ice:panelGroup" styleClass="toggleTermsofUse" rendered="#{VDCRequest.vdcNetwork.downloadTermsOfUseEnabled}">
-                            <ice:outputLink value="#" styleClass="vdcInlineHelpLink">
-                                <ice:outputText value="#{studybundle.networkTermsofUseLabel}" styleClass="vdcInlineHelpLinkText"/>
-                            </ice:outputLink>
-                            <div>
+                            <div style="display:none;">
                                 <ice:outputText value="#{VDCRequest.vdcNetwork.downloadTermsOfUse}" escape="false" style="display:block"/>
                             </div>
                         </div>
                     </div>
 
-                    <dvn:inlinehelp helpMessage="#{studybundle.harvestedTermsofUseHelp}" linkText="#{studybundle.harvestedTermsofUseLabel}" heading="#{studybundle.harvestedTermsofUseHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{!empty studyPage.studyUI.metadata.harvestDVTermsOfUse or !empty studyPage.studyUI.metadata.harvestDVNTermsOfUse}"/>
-                    <div jsfc="ice:panelGroup" styleClass="dvnStudyAdditionalTermsofUse" rendered="#{!empty studyPage.studyUI.metadata.harvestDVTermsOfUse or !empty studyPage.studyUI.metadata.harvestDVNTermsOfUse}">
-
-                        <div jsfc="ice:panelGroup" styleClass="toggleTermsofUse" rendered="#{!empty studyPage.studyUI.metadata.harvestDVTermsOfUse}">
-                            <ice:outputLink value="#" styleClass="vdcInlineHelpLink">
-                                <ice:outputText value="#{studybundle.dataverseHarvestedTermsofUseLabel}" styleClass="vdcInlineHelpLinkText"/>
+                    <dvn:inlinehelp helpMessage="#{studybundle.dataverseTermsofUseHelp}" linkText="#{studybundle.dataverseTermsofUseLabel}" heading="#{studybundle.dataverseTermsofUseHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{!empty studyPage.studyUI.dataverseTermsOfUse}"/>
+                    <div jsfc="ice:panelGroup" rendered="#{!empty studyPage.studyUI.dataverseTermsOfUse}">
+                        <div jsfc="ice:panelGroup">
+                            <ice:outputLink value="#" onclick="return toggleTermsofUse(this)" styleClass="vdcInlineHelpLink">
+                                <ice:outputText value="View Terms of Use [+]" styleClass="vdcInlineHelpLinkText"/>
                             </ice:outputLink>
-                            <div>
-                                <ice:outputText value="#{studyPage.studyUI.metadata.harvestDVTermsOfUse}" escape="false" style="display:block"/>
+                            <div style="display:none;">
+                                <ice:outputText value="#{studyPage.studyUI.dataverseTermsOfUse}" escape="false" style="display:block"/>
                             </div>
                         </div>
-                        <div jsfc="ice:panelGroup" styleClass="toggleTermsofUse" rendered="#{!empty studyPage.studyUI.metadata.harvestDVNTermsOfUse}">
+                    </div>
+
+                    <dvn:inlinehelp helpMessage="#{studybundle.harvestedTermsofUseHelp}" linkText="#{studybundle.networkHarvestedTermsofUseLabel}" heading="#{studybundle.networkHarvestedTermsofUseHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{!empty studyPage.studyUI.metadata.harvestDVNTermsOfUse}"/>
+                    <div jsfc="ice:panelGroup">
+                        <div jsfc="ice:panelGroup">
                             <ice:outputLink value="#" styleClass="vdcInlineHelpLink">
-                                <ice:outputText value="#{studybundle.networkHarvestedTermsofUseLabel}" styleClass="vdcInlineHelpLinkText"/>
+                                <ice:outputText value="View Terms of Use [+]" styleClass="vdcInlineHelpLinkText"/>
                             </ice:outputLink>
-                            <div>
+                            <div style="display:none;">
                                 <ice:outputText value="#{studyPage.studyUI.metadata.harvestDVNTermsOfUse}" escape="false" style="display:block"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <dvn:inlinehelp helpMessage="#{studybundle.harvestedTermsofUseHelp}" linkText="#{studybundle.harvestedTermsofUseLabel}" heading="#{studybundle.harvestedTermsofUseHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{!empty studyPage.studyUI.metadata.harvestDVTermsOfUse}"/>
+                        <div jsfc="ice:panelGroup">
+                            <ice:outputLink value="#" styleClass="vdcInlineHelpLink">
+                                <ice:outputText value="View Terms of Use [+]" styleClass="vdcInlineHelpLinkText"/>
+                            </ice:outputLink>
+                            <div style="display:none;">
+                                <ice:outputText value="#{studyPage.studyUI.metadata.harvestDVTermsOfUse}" escape="false" style="display:block"/>
                             </div>
                         </div>
                     </div>

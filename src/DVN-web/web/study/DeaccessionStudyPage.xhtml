@@ -57,7 +57,14 @@
                   <ice:outputText value="Add a link to another version of the deaccssioned study by including the Global ID of the new study."/>
                 </p>
                 <label class="dvnDeaccessionFormLabel" for="dvnDeaccessionForwardLink">Global ID</label>
-                <ice:inputText id="dvnDeaccessionForwardLink" value="#{DeaccessionStudyPage.studyVersion.deaccessionLink}"></ice:inputText>
+                <ice:outputText value="hdl:"/>
+                <ice:inputText id="dvnDeaccessionLinkAuthority" value="#{DeaccessionStudyPage.deaccessionLinkAuthority}" binding="#{DeaccessionStudyPage.inputDeaccessionLinkAuthority}"/>
+                <ice:outputText value=":"/>
+                <ice:inputText id="dvnDeaccessionLinkStudyId" value="#{DeaccessionStudyPage.deaccessionLinkStudyId}" 
+                    required="#{!empty DeaccessionStudyPage.inputDeaccessionLinkAuthority.localValue}" requiredMessage="Deaccession link must contain both an authority and a study Id."
+                    validator = "#{DeaccessionStudyPage.validateDeaccessionLink}"/>
+                <ice:message styleClass="errorMessage" for="dvnDeaccessionLinkAuthority"/>
+                <ice:message styleClass="errorMessage" for="dvnDeaccessionLinkStudyId"/>
               </div>
               <div class="dvnFormPadding dvnFormMargin">
                 <ice:commandButton id="button1" value='#{DeaccessionStudyPage.updateDeaccessionDetails?"Update":"Deaccession"}' action="#{DeaccessionStudyPage.save_action}"/>

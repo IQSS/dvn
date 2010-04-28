@@ -28,6 +28,7 @@
  */
 package edu.harvard.iq.dvn.core.web.study;
 
+import edu.harvard.iq.dvn.core.study.GlobalId;
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyVersion;
@@ -37,6 +38,8 @@ import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
+import javax.faces.component.html.HtmlInputText;
+import javax.faces.component.html.HtmlInputTextarea;
 import javax.faces.context.FacesContext;
 
 /**
@@ -55,6 +58,9 @@ public class DeaccessionStudyPage extends VDCBaseBean implements java.io.Seriali
     private StudyVersion studyVersion;
     private boolean updateDeaccessionDetails = false;
 
+    private String deaccessionLinkAuthority;
+    private String deaccessionLinkStudyId;
+
     public void init() {
         super.init();
 
@@ -66,6 +72,13 @@ public class DeaccessionStudyPage extends VDCBaseBean implements java.io.Seriali
                 studyVersion = study.getDeaccessionedVersion();
                 updateDeaccessionDetails = true;
             }
+
+            // populate the deaccessionLink fields
+            if (studyVersion.getDeaccessionLink() != null) {
+                deaccessionLinkAuthority = studyVersion.getDeaccessionLinkAsGlobalId().getAuthority();
+                deaccessionLinkStudyId = studyVersion.getDeaccessionLinkAsGlobalId().getStudyId();
+            }
+
         } else {
             // WE SHOULD HAVE A STUDY ID, throw an error
             System.out.println("ERROR: in DeaccessionStudyPage, without a studyId");
@@ -97,6 +110,24 @@ public class DeaccessionStudyPage extends VDCBaseBean implements java.io.Seriali
         this.updateDeaccessionDetails = updateDeaccessionDetails;
     }
 
+    public String getDeaccessionLinkAuthority() {
+        return deaccessionLinkAuthority;
+    }
+
+    public void setDeaccessionLinkAuthority(String deaccessionLinkAuthority) {
+        this.deaccessionLinkAuthority = deaccessionLinkAuthority;
+    }
+
+    public String getDeaccessionLinkStudyId() {
+        return deaccessionLinkStudyId;
+    }
+
+    public void setDeaccessionLinkStudyId(String deaccessionLinkStudyId) {
+        this.deaccessionLinkStudyId = deaccessionLinkStudyId;
+    }
+
+  
+
     public int getArchiveNoteMaxLength() {
         return StudyVersion.ARCHIVE_NOTE_MAX_LENGTH;
     }
@@ -113,7 +144,38 @@ public class DeaccessionStudyPage extends VDCBaseBean implements java.io.Seriali
         }
     }
 
+    // needed for validation
+    private javax.faces.component.html.HtmlInputText inputDeaccessionLinkAuthority;
+
+    public HtmlInputText getInputDeaccessionLinkAuthority() {
+        return inputDeaccessionLinkAuthority;
+    }
+
+    public void setInputDeaccessionLinkAuthority(HtmlInputText inputDeaccessionLinkAuthority) {
+        this.inputDeaccessionLinkAuthority = inputDeaccessionLinkAuthority;
+    }
+
+
+    public void validateDeaccessionLink(FacesContext context, UIComponent toValidate, Object value) {
+        // we want to validate that the user has either filled in both fields or neither field
+        String linkStudyId = (String) value;
+        String linkAuthority = (String) inputDeaccessionLinkAuthority.getLocalValue();
+
+        if ( (StringUtil.isEmpty(linkStudyId) && !StringUtil.isEmpty(linkAuthority)) ||
+             (!StringUtil.isEmpty(linkStudyId) && StringUtil.isEmpty(linkAuthority)) ) {
+            ((UIInput) toValidate).setValid(false);
+            FacesMessage message = new FacesMessage("Deaccession link must contain both an authority and a study Id.");
+            context.addMessage(toValidate.getClientId(context), message);
+        }
+    }
+        
     public String save_action() {
+        if ( !StringUtil.isEmpty(deaccessionLinkAuthority) && !StringUtil.isEmpty(deaccessionLinkStudyId) ) {
+            studyVersion.setDeaccessionLink( new GlobalId("hdl", deaccessionLinkAuthority, deaccessionLinkStudyId).toString());
+        } else {
+            studyVersion.setDeaccessionLink(null);
+        }
+
         if (updateDeaccessionDetails) {
             studyService.updateStudyVersion(studyVersion);
         } else {

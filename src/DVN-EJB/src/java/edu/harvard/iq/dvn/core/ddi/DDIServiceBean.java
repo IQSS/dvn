@@ -1389,7 +1389,12 @@ public class DDIServiceBean implements DDIServiceLocal {
             if (cat.getFrequency() != null) {
                 xmlw.writeStartElement("catStat");
                 writeAttribute( xmlw, "type", "freq" );
-                xmlw.writeCharacters( cat.getFrequency().toString() );
+                // if frequency is actually a long value, we want to write "100" instead of "100.0"
+                if ( Math.floor(cat.getFrequency()) == cat.getFrequency() ) {
+                    xmlw.writeCharacters( new Long(cat.getFrequency().longValue()).toString() );
+                } else {
+                    xmlw.writeCharacters( cat.getFrequency().toString() );
+                }
                 xmlw.writeEndElement(); //catStat
         }
 

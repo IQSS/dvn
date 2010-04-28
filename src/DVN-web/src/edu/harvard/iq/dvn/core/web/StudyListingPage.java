@@ -577,6 +577,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
 
                 sl = search(searchField, searchValue);
                 setStudyListingIndex(addToStudyListingMap(sl));
+                prefillSearchValue(sl);
             }
 
         } else if (mode == StudyListing.COLLECTION_FILTER) {
@@ -637,6 +638,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
             sl = getVDCRequestBean().getStudyListing();
             if (sl != null) {
                 setStudyListingIndex(addToStudyListingMap(sl));
+                prefillSearchValue(sl);
             }
         }
 
@@ -662,6 +664,17 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
         studyListing = sl;
         studyListing.setVdcId(getVDCRequestBean().getCurrentVDCId());
 
+    }
+
+    private void prefillSearchValue(StudyListing sl) {
+        // this method will prefill the search value if the search done was "any" = xxxxx
+        // this covers search from the home page and search from a promo link
+         if (sl.getSearchTerms() != null && sl.getSearchTerms().size() == 1) {
+            SearchTerm st = (SearchTerm) sl.getSearchTerms().get(0);
+            if (st.getFieldName().equals("any") && st.getOperator().equals("=")) {
+                searchValue = st.getValue();
+            }
+        }
     }
 
     private String addToStudyListingMap(StudyListing sl) {

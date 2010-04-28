@@ -1806,13 +1806,19 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         }
 
 
-        // step 5: upload files
+        // step 5: persist files from ddi (since studyFile is not persisted when the new FileMetadata objects are created - since
+        // the studyFile often already exists - we need to manually persist the study files here)
+        for (FileMetadata fmd : studyVersion.getFileMetadatas()) {
+           em.persist( fmd.getStudyFile() );            
+        }
+
+        // step 6: upload files
         if (filesToUpload != null) {
             studyFileService.addFiles(studyVersion, filesToUpload, creator);
         }
 
 
-        // step 6: store the original study files
+        // step 7: store the original study files
         copyXMLFile(study, ddiFile, "original_imported_study.xml");
 
         if (fileTransformed) {
@@ -1820,7 +1826,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         }
 
 
-        // step 7: register if necessary
+        // step 8: register if necessary
         if (registerHandle && vdcNetworkService.find().isHandleRegistration()) {
             String handle = study.getAuthority() + "/" + study.getStudyId();
             gnrsService.createHandle(handle);

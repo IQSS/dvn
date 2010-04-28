@@ -14,6 +14,11 @@
             <property-class>java.lang.String</property-class>
             <value>#{param.studyListingIndex}</value>
         </managed-property>
+        <managed-property>
+            <property-name>studyVersionNumber</property-name>
+            <property-class>java.lang.Long</property-class>
+            <value>#{param.versionNumber}</value>
+        </managed-property>
     </managed-bean>
     <managed-bean>
         <managed-bean-name>VDCSession</managed-bean-name>
@@ -242,11 +247,6 @@
             <property-name>studyId</property-name>
             <property-class>java.lang.Long</property-class>
             <value>#{param.studyId}</value>
-        </managed-property>
-        <managed-property>
-            <property-name>versionNumber</property-name>
-            <property-class>java.lang.Long</property-class>
-            <value>#{param.versionNumber}</value>
         </managed-property>
     </managed-bean>
     <managed-bean>

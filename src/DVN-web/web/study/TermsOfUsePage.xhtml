@@ -31,9 +31,17 @@
               <div jsfc="ice:panelGroup" rendered="#{TermsOfUsePage.studyId!=null and TermsOfUsePage.touTypeDownload}">
                 <p>
                   <ice:outputText value="You may return "/>
-                  <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{TermsOfUsePage.study.id}&amp;tab=files">
+                  <ice:outputLink 
+                    value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{TermsOfUsePage.study.id}&amp;tab=files"
+                    rendered="#{VDCRequest.studyVersionNumber == null}">
                     <ice:outputText value="back to the Study"/>
                   </ice:outputLink>
+                  <ice:outputLink
+                    value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{TermsOfUsePage.study.id}&amp;versionNumber=#{VDCRequest.studyVersionNumber}&amp;tab=files"
+                    rendered="#{VDCRequest.studyVersionNumber != null}">
+                    <ice:outputText value="back to the Study"/>
+                  </ice:outputLink>
+
                   <ice:outputText value=" once you have been prompted to download the file."/>
                 </p>
               </div>

@@ -286,6 +286,7 @@ public class TermsOfUseFilter implements Filter {
         String fileId = req.getParameter("fileId");
         String catId = req.getParameter("catId");
         String studyId = req.getParameter("studyId");
+        String versionNumber = req.getParameter("versionNumber");
         String requestPath = req.getPathInfo();
         String imageThumb = req.getParameter("imageThumb");
 
@@ -391,6 +392,9 @@ public class TermsOfUseFilter implements Filter {
                 if (isDownloadDvnTermsRequired(vdcNetworkService.find(), termsOfUseMap) || isDownloadDataverseTermsRequired(study, termsOfUseMap) || isDownloadStudyTermsRequired(study, termsOfUseMap)) {
                  VDC currentVDC = vdcService.getVDCFromRequest(req);
                     String params = "?studyId=" + study.getId();
+                    if ( versionNumber != null ) {
+                        params += "&versionNumber=" + versionNumber;
+                    }
                     params += "&redirectPage=" + URLEncoder.encode(req.getServletPath() + req.getPathInfo() + "?" + req.getQueryString(), "UTF-8");
                     params += "&tou="+TOU_DOWNLOAD;
                     if (currentVDC != null) {

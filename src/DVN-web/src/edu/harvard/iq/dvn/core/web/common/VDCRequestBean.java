@@ -163,7 +163,20 @@ public class VDCRequestBean extends VDCBaseBean implements java.io.Serializable 
         return logoutPage.booleanValue();
 
     }    
-   
+
+    public String getPageDefName() {
+
+        HttpServletRequest httpRequest = (HttpServletRequest)this.getExternalContext().getRequest();
+        PageDef pageDef = pageDefService.findByPath(httpRequest.getPathInfo());
+        if (pageDef!=null) {
+                return pageDef.getName();
+        }
+
+        return "";
+
+    }
+
+
     public void setCurrentVDC(VDC currentVDC) {
         this.currentVDC = currentVDC;
         currentVDCinitialized = true;

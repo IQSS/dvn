@@ -37,13 +37,16 @@
                             .dvnPopupWarningMessage {background: url(/dvn/resources/images/icon_warning.png) no-repeat scroll 4px 0;}
                             .dvnPopupMessageContainer {display:table-cell;vertical-align:middle;}
                             .dvnPopupWarningMessage p {margin:.25em 0 1.5em 58px;}
+                            .dvnPopupWarningMessage strong {color:#820024; text-transform:uppercase;}
                         </style>
                             
                         <div jsfc="ice:panelGroup" styleClass="dvnPopupWarningMessage">
                             <div class="dvnPopupMessageContainer">
                                 <p>
-                                    <ice:outputText value="Are you sure that you want to #{studyPage.deleteActionLabel}? This action is irreversible." rendered="#{MainLayoutBean.inStudyPage}"/>
-                                    <ice:outputText value="Are you sure that you want to #{ManageStudiesList.deleteActionLabel}? This action is irreversible." rendered="#{MainLayoutBean.inManageStudiesPage}"/>
+                                    <ice:outputText value="Are you sure that you want to #{studyPage.deleteActionLabel}? This action is irreversible." rendered="#{MainLayoutBean.inStudyPage and !studyPage.studyDestroyRequested}"/>
+                                    <ice:outputText value="Are you sure that you want to #{ManageStudiesList.deleteActionLabel}? This action is irreversible." rendered="#{MainLayoutBean.inManageStudiesPage and !studyPage.studyDestroyRequested}"/>
+                                    <ice:outputText value="Are you sure that you want to &lt;strong&gt;#{studyPage.deleteActionLabel}?&lt;/strong&gt; This action is irreversible." rendered="#{MainLayoutBean.inStudyPage and studyPage.studyDestroyRequested}" escape="false"/>
+                                    <ice:outputText value="Are you sure that you want to &lt;strong&gt;#{ManageStudiesList.deleteActionLabel}?&lt;/strong&gt; This action is irreversible." rendered="#{MainLayoutBean.inManageStudiesPage and studyPage.studyDestroyRequested}" escape="false"/>
                                 </p>
                             </div>
                         </div>

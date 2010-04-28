@@ -357,7 +357,9 @@ public class LoginFilter implements Filter {
               if( studyVersion.isWorkingCopy() && (user==null || !study.isUserAuthorizedToEdit(user))) {
                   return false;
               }
-              else if (study.isDeaccessioned() && (user==null || !loginBean.isCuratorOrAbove())) {
+              // If this version is the deaccessioned version,
+              // only show the version if the user is authorized to edit
+              else if ( study.isDeaccessioned() && studyVersion.equals(study.getDeaccessionedVersion()) && (user==null || !study.isUserAuthorizedToEdit(user))) {
                   return false;
               }
 

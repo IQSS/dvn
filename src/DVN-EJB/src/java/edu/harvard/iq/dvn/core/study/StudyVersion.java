@@ -97,7 +97,9 @@ public class StudyVersion implements Serializable {
         this.deaccessionLink = deaccessionLink;
     }
 
-
+    public GlobalId getDeaccessionLinkAsGlobalId() {
+        return new GlobalId(deaccessionLink);
+    }
 
 
     public List<VersionContributor> getVersionContributors() {

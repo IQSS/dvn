@@ -10,16 +10,24 @@
     <div class="dvn_sectionBoxNoBorders">
         <div class="dvn_margin12">
             <div>
-                <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnWarningMessage" rendered="#{(VDCSession.loginBean.curator or VDCSession.loginBean.admin or VDCSession.loginBean.networkAdmin)}">
-                  <div class="dvnMsgBlockContainer">
-                    <ice:outputFormat value="#{bundlePageInfo.deaccessionedStudyPublicHelp}" escape="false">
-                      <f:param value="#{VDCRequest.currentVDCURL}"/>
-                      <f:param value="#{studyPage.studyUI.study.id}"/>
-                      <f:param value="#{studyPage.studyUI.studyVersion.versionNumber}"/>
-                    </ice:outputFormat>
-                  </div>
+                <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnWarningMessage" rendered="#{studyPage.studyUI.userAuthorizedToEdit  and !VDCSession.loginBean.curatorOrAbove and !VDCSession.loginBean.networkAdmin}">
+                    <div class="dvnMsgBlockContainer">
+                        <ice:outputFormat value="#{bundlePageInfo.deaccessionedStudyPublicContributorHelp}" escape="false">
+                            <f:param value="#{VDCRequest.currentVDCURL}"/>
+                            <f:param value="#{studyPage.studyUI.study.id}"/>
+                            <f:param value="#{studyPage.studyUI.studyVersion.versionNumber}"/>
+                        </ice:outputFormat>
+                    </div>
                 </div>
-
+                <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnWarningMessage" rendered="#{VDCSession.loginBean.curatorOrAbove or VDCSession.loginBean.networkAdmin}">
+                    <div class="dvnMsgBlockContainer">
+                        <ice:outputFormat value="#{bundlePageInfo.deaccessionedStudyPublicCuratorHelp}" escape="false">
+                            <f:param value="#{VDCRequest.currentVDCURL}"/>
+                            <f:param value="#{studyPage.studyUI.study.id}"/>
+                            <f:param value="#{studyPage.studyUI.studyVersion.versionNumber}"/>
+                        </ice:outputFormat>
+                    </div>
+                </div>
                 <style type="text/css">
                     .dvnWarningMessage a {font-weight: bold;}
                     span.warnMessage {text-transform: uppercase;}

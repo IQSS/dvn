@@ -197,15 +197,22 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
                 <style type="text/css">
                     .dvnWarningMessage a {font-weight: bold;}
                 </style>
-                <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnWarningMessage" rendered="#{studyPage.studyUI.study.deaccessionedVersion != null and (VDCSession.loginBean.curator or VDCSession.loginBean.admin or VDCSession.loginBean.networkAdmin)}">
+                <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnWarningMessage" rendered="#{studyPage.studyUI.study.deaccessionedVersion != null and studyPage.studyUI.userAuthorizedToEdit and !VDCSession.loginBean.curatorOrAbove and !VDCSession.loginBean.networkAdmin}">
                   <div class="dvnMsgBlockContainer">
-                    <ice:outputFormat value="#{bundlePageInfo.deaccessionedStudyDetailHelp}" escape="false">
+                    <ice:outputFormat value="#{bundlePageInfo.deaccessionedStudyDetailContributorHelp}" escape="false">
                       <f:param value="#{VDCRequest.currentVDCURL}" />
                       <f:param value="#{studyPage.studyUI.study.id}"/>
                     </ice:outputFormat>
                   </div>
                 </div>
-            <div class="dvnstudytitleblock">
+                <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnWarningMessage" rendered="#{studyPage.studyUI.study.deaccessionedVersion != null and (VDCSession.loginBean.curatorOrAbove or VDCSession.loginBean.networkAdmin)}">
+                  <div class="dvnMsgBlockContainer">
+                    <ice:outputFormat value="#{bundlePageInfo.deaccessionedStudyDetailCuratorHelp}" escape="false">
+                      <f:param value="#{VDCRequest.currentVDCURL}" />
+                      <f:param value="#{studyPage.studyUI.study.id}"/>
+                    </ice:outputFormat>
+                  </div>
+                </div>    <div class="dvnstudytitleblock">
                 <div class="dvnstudyadminboxfloat">
                     <div jsfc="ice:panelGroup" styleClass="dvnstudypreviouslisting" rendered="#{!empty VDCRequest.studyListingIndex}">
                         <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/StudyListingPage.xhtml?studyListingIndex=#{VDCRequest.studyListingIndex}">

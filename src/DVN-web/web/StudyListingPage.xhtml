@@ -75,9 +75,16 @@
                           </td>
                           <td width="280" align="right" valign="bottom">
                             <div class="dvn_searchboxblock">
+                              <script type="text/javascript">
+                                    function clickclear(thisfield, defaulttext) {
+                                        if (thisfield.value == defaulttext) {
+                                            thisfield.value = "";
+                                        }
+                                    }
+                             </script>
                               <fieldset>
                                 <label for="search">
-                                  <ice:inputText onkeypress="if (window.event) return processEvent('', 'form1:search'); else return processEvent(event, 'form1:search');" id="textField2" value="#{StudyListingPage.searchValue}" onclick="this.value='';"/>
+                                  <ice:inputText onkeypress="if (window.event) return processEvent('', 'form1:search'); else return processEvent(event, 'form1:search');" id="textField2" value="#{StudyListingPage.searchValue}" onclick="clickclear(this, 'Search Studies')"/>
                                 </label>
                                 <label for="button">
                                   <ice:commandButton id="search" value="Go" action="#{StudyListingPage.search_action}"/>

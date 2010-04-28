@@ -109,9 +109,16 @@
                      <td valign="bottom"><ice:outputText styleClass="dvnHmpgGroupHeader" value="#{HomePage.groupName}"/></td>
                      <td width="280" align="right" valign="bottom">
                          <div class="dvn_searchboxblock">
+                         <script type="text/javascript">
+                                function clickclear(thisfield, defaulttext) {
+                                    if (thisfield.value == defaulttext) {
+                                        thisfield.value = "";
+                                    }
+                                }
+                         </script>
                          <fieldset>
                             <label for="search">
-                              <ice:inputText onkeypress="if (window.event) return processEvent('', 'form1:searchButton'); else return processEvent(event, 'form1:searchButton');" id="textField2" value="#{HomePage.searchValue}" onclick="this.value='';"/>
+                              <ice:inputText onkeypress="if (window.event) return processEvent('', 'form1:searchButton'); else return processEvent(event, 'form1:searchButton');" id="textField2" value="#{HomePage.searchValue}" onclick="clickclear(this, 'Search Studies')"/>
                             </label>
                             <label for="button">
                                 <ice:commandButton id="searchButton" value="Go" type="submit" action="#{HomePage.search_action}"/>

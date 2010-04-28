@@ -34,7 +34,7 @@
                     <ice:outputText value="The study you have requested has been deaccessioned."/>
                     <ice:outputText rendered="#{empty studyPage.studyUI.studyVersion.deaccessionLink}" value="No further information has been provided."/>
                     <ice:outputText rendered="#{!empty studyPage.studyUI.studyVersion.deaccessionLink}" value="An updated version has been created with Global ID,"/>
-                    <ice:outputLink rendered="#{!empty studyPage.studyUI.studyVersion.deaccessionLink}" value="http://hdl.handle.net/#{studyPage.studyUI.studyVersion.deaccessionLink}">
+                    <ice:outputLink rendered="#{!empty studyPage.studyUI.studyVersion.deaccessionLink}" value="http://hdl.handle.net/#{studyPage.studyUI.studyVersion.deaccessionLinkAsGlobalId.authority}/#{studyPage.studyUI.studyVersion.deaccessionLinkAsGlobalId.studyId}">
                         <ice:outputText value="#{studyPage.studyUI.studyVersion.deaccessionLink}"/>
                     </ice:outputLink>
                 </p>

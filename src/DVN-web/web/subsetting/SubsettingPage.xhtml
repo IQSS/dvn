@@ -168,7 +168,14 @@
     <div class="dvn_section">
         <span class="dvn_sectionTitleR">
             <ice:outputLink 
-                value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{AnalysisPage.studyId}&amp;tab=files">
+                value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{AnalysisPage.studyId}&amp;tab=files"
+                rendered="#{empty AnalysisPage.versionNumber == null}">
+                <ice:outputText 
+                    value="Back to Study"/>                       
+            </ice:outputLink>
+            <ice:outputLink 
+                value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{AnalysisPage.studyId}&amp;versioNumber=#{AnalysisPage.versionNumber}&amp;tab=files"
+                rendered="#{AnalysisPage.versionNumber != null}">
                 <ice:outputText 
                     value="Back to Study"/>                       
             </ice:outputLink>

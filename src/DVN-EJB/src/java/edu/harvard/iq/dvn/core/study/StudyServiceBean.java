@@ -1463,6 +1463,9 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         Date lastUpdateTime = new Date();
         studyVersion.setLastUpdateTime(lastUpdateTime);
         studyVersion.getStudy().setLastUpdateTime(lastUpdateTime);
+        if (user.isContributor(studyVersion.getStudy().getOwner()) || user.getVDCRole(studyVersion.getStudy().getOwner())==null ) {
+            studyVersion.setVersionState(VersionState.DRAFT);
+        }
         studyVersion.updateVersionContributors(user);
         setDisplayOrders(studyVersion.getMetadata());
         return studyVersion.getStudy();

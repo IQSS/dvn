@@ -361,6 +361,19 @@
                       // ]]>
                     </script>
 
+                    <style type="text/css">
+                        h3.head span {
+                            background:#DADEE0;
+                            display:block;
+                            padding:0.5em 26px 0.5em 0.5em;
+                            font-weight: normal;
+                        }
+                        h3.head a span {
+                            background:none;
+                            padding:0;
+                        }
+                    </style>
+
                     <ul id="navigation" class="basic">
                         <!-- All Dataverses -->
                         <li>
@@ -379,9 +392,7 @@
                             <gui:fragment rendered="#{!empty(menuItems.childItems)}">
                                 <li>
                                     <h3 class="head">
-                                        <ice:outputLink styleClass="head">
                                             <ice:outputText value="#{menuItems.name}"/>
-                                        </ice:outputLink>
                                     </h3>
                                     <ul>
                                         <li>

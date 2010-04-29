@@ -429,11 +429,11 @@ public class HomePage extends VDCBaseBean implements Serializable {
           accordionJavascript +=  "<script type=\"text/javascript\">"  + "\n\r" +
                 "// <![CDATA[ " +  "\n\r" +
                 "jQuery(document).ready(function(){" + "\n\r" +
-                      "jQuery('#navigation').accordion({ " +
-                        "active: 'h3.selected', " +
-                        "header: 'h3.head', " +
-                        "autoheight: false, " +
-                "});" + "\n\r" +
+ //                     "jQuery('#navigation').accordion({ " +
+ //                       "active: 'h3.selected', " +
+ //                       "header: 'h3.head', " +
+  //                      "autoheight: false, " +
+  //              "});" + "\n\r" +
                 "jQuery('.xtraMenu').accordion({" +
                 "active: 'h4.selected'," +
                 "header: 'h4.head', " +

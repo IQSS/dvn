@@ -174,7 +174,7 @@
                     value="Back to Study"/>                       
             </ice:outputLink>
             <ice:outputLink 
-                value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{AnalysisPage.studyId}&amp;versioNumber=#{AnalysisPage.versionNumber}&amp;tab=files"
+                value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{AnalysisPage.studyId}&amp;versionNumber=#{AnalysisPage.versionNumber}&amp;tab=files"
                 rendered="#{AnalysisPage.versionNumber != null}">
                 <ice:outputText 
                     value="Back to Study"/>                       
@@ -187,7 +187,7 @@
                 <span class="dvn_preFileTitle">Data File: </span>
                 <ice:outputText 
                     styleClass="dvn_fileTitle" 
-                    value="#{AnalysisPage.fileName}"/>     
+                    value="#{AnalysisPage.fileName}"/>
         </div>            
         <div class="dvn_sectionBoxNoBorders">  
 

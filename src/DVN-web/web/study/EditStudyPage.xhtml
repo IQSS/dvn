@@ -2119,7 +2119,7 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
                       <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
                                      styleClass="vdcEditStudyInnerTable" headerClasses="vdcEditFilesHeader"
                                      columnClasses="vdcEditFilesColA, vdcEditFilesColA, vdcEditFilesColB, vdcEditFilesColC" rowClasses="list-row-even,list-row-odd"
-                                     id="fileDataTable" value="#{EditStudyPage.files}" var="file">
+                                     id="fileDataTable" binding="#{EditStudyPage.filesDataTable}" value="#{EditStudyPage.files}" var="file">
                         <ice:column id="column9">
                           <div jsfc="ice:panelGroup">
                             <!-- note that the Javascript functions currently depends on the placement and ids of these fields (and the dropdown box;

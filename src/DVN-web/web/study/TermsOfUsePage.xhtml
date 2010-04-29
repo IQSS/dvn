@@ -107,7 +107,8 @@
               </div>
               <div class="dvnFormPadding dvnFormMargin">
                 <ice:commandButton id="termsButton" value="Continue" action="#{TermsOfUsePage.acceptTerms_action}"/>
-                <ice:commandButton id="cancelButton" value="Cancel" onclick="window.location='/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{TermsOfUsePage.study.id}&amp;tab=files';return false;" rendered="#{TermsOfUsePage.studyId!=null}"/>
+                <ice:commandButton id="cancelButton" value="Cancel" onclick="window.location='/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{TermsOfUsePage.study.id}&amp;tab=files';return false;" rendered="#{TermsOfUsePage.studyId!=null and VDCRequest.studyVersionNumber == null}"/>
+                <ice:commandButton id="cancelButton" value="Cancel" onclick="window.location='/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{TermsOfUsePage.study.id}&amp;versionNumber=#{VDCRequest.studyVersionNumber}&amp;tab=files';return false;" rendered="#{TermsOfUsePage.studyId!=null and VDCRequest.studyVersionNumber != null}"/>
               </div>
             </div>
           </div>

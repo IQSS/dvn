@@ -142,7 +142,7 @@
                   alert ("You must select exactly two versions to see the differences.");
                   return false;
               }
-              window.location.href = "/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyVersionDifferencesPage.xhtml?studyId=#{studyPage.studyUI.study.id}&versionNumberList=" + versionNumberStr;
+              window.location.href = "/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyVersionDifferencesPage.xhtml?studyId=#{studyPage.studyUI.study.id}&versionNumberList=" + versionNumberStr + "&versionNumber=#{studyPage.studyUI.studyVersion.versionNumber}";
               return false;
           }
 

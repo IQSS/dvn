@@ -827,7 +827,9 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
                     +studyId+"&versionNumberList="
                     +releasedVersion.getVersionNumber()+","
                     +getVersionNumber()
-                    +"&actionMode=confirmRelease");
+                    +"&actionMode=confirmRelease"
+                    +"&versionNumber="
+                    +getVersionNumber());
         }
 
     }
@@ -857,13 +859,10 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
 
             if (actionRequested.equals(StudyActionRequestType.RELEASE)) {
                 actionRequested = null;
-                // Well, at this point, if we are here and the desired action is
-                // release, this must be the first release of the study; but 
-                // I'm going to keep the code below to be safe, at least for now. 
-
-                // See if the study already has released versions;
-                // If so, redirect to the Diff page.
-                // Otherwise, simply switch the version state to "released".
+                // If we made it this far and the desired action is
+                // release, this must be the first release of the study;
+                // otherwise the user would already have been redirected to the
+                // Differences page.
 
                 StudyVersion releasedVersion = studyService.getStudyVersion(getStudyId(), null);
 
@@ -876,14 +875,6 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
                     studyUIContainsFileDetails=false; // TODO: could we move this to be a member variable of StudyUI?
                     initPage(updatedVersion);
 
-                } else {
-                    // We are redirecting to the Differences page; 
-                    // Need to set the HTTP parameters:
-                    getVDCRequestBean().setStudyId(getStudyId());
-                    getVDCRequestBean().setStudyVersionNumberList(releasedVersion.getVersionNumber()+","+getVersionNumber());
-                    getVDCRequestBean().setActionMode("confirmRelease");
-
-                    return "diffStudy";
                 }
             } else if (actionRequested.equals(StudyActionRequestType.REVIEW)) {
                 studyUI.getStudyVersion().setVersionState(StudyVersion.VersionState.IN_REVIEW);

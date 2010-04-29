@@ -355,7 +355,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
         // Need to set the HTTP parameters:
 
         getVDCRequestBean().setStudyId(getStudyId());
-        getVDCRequestBean().setStudyVersionNumber(getVersionNumber2());
+        //getVDCRequestBean().setStudyVersionNumber(getVersionNumber2());
 
         return "viewStudy";
 

@@ -391,7 +391,6 @@ public class Indexer implements java.io.Serializable  {
                             addText(1.0f, docVariables, "varId", dataVariable.getId().toString());
                             addText(1.0f, docVariables, "varName", dataVariable.getName());
                             addText(1.0f, docVariables, "varLabel", dataVariable.getLabel());
-                            addText(1.0f, docVariables, "varId", dataVariable.getId().toString());
                             writerVar.addDocument(docVariables);
                         }
                     }
@@ -454,7 +453,9 @@ public class Indexer implements java.io.Serializable  {
         List <Long> results = null;
         List <BooleanQuery> searchParts = new ArrayList();
         boolean variableSearch = false;
+        boolean variableSearchContains = false;
         boolean nonVariableSearch = false;
+        boolean nonVariableSearchContains = false;
         List <SearchTerm> variableSearchTerms = new ArrayList();
         List <SearchTerm> nonVariableSearchTerms = new ArrayList();
         for (Iterator it = searchTerms.iterator(); it.hasNext();){
@@ -462,18 +463,24 @@ public class Indexer implements java.io.Serializable  {
             if (elem.getFieldName().equals("variable")){
 //                SearchTerm st = dvnTokenizeSearchTerm(elem);
 //                variableSearchTerms.add(st);
+                if (elem.getOperator().equals("=")){
+                    variableSearchContains = true;
+                }
                 variableSearchTerms.add(elem);
                 variableSearch = true;
             } else {
 //                SearchTerm nvst = dvnTokenizeSearchTerm(elem);
 //                nonVariableSearchTerms.add(nvst);
+                if (elem.getOperator().equals("=")){
+                    nonVariableSearchContains = true;
+                }
                 nonVariableSearchTerms.add(elem);
                 nonVariableSearch = true;
             }
         }
         List <Long> nvResults = null;
         List<Long> filteredResults = null;
-        if (nonVariableSearch) {
+        if ( nonVariableSearchContains) {
             BooleanQuery searchTermsQuery = andSearchTermClause(nonVariableSearchTerms);
             searchParts.add(searchTermsQuery);
             BooleanQuery searchQuery = andQueryClause(searchParts);
@@ -485,13 +492,37 @@ public class Indexer implements java.io.Serializable  {
             logger.fine("Done filter: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
         }
         if (variableSearch){
-            if (nonVariableSearch && (filteredResults.size() > 0 )) {
+            if (nonVariableSearchContains && (filteredResults.size() > 0 )) {
                 logger.fine("Start nonvar search variables: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
                 results = searchVariables(filteredResults, variableSearchTerms, true); // get var ids
                 logger.fine("Done nonvar search variables: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             } else {
                 logger.fine("Start search variables: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
-                results = searchVariables(studyIds, variableSearchTerms, true); // get var ids
+                if (nonVariableSearch && !nonVariableSearchContains) {
+                    results = searchVariables(studyIds, variableSearchTerms, false);
+                    if (results != null) {
+                        studyIdsArray = results.toArray(new Long[results.size()]);
+                        Arrays.sort(studyIdsArray);
+                    }
+                    BooleanQuery searchQuery = new BooleanQuery();
+                    searchQuery.add(orLongEqSearchTermClause(results, "id"), BooleanClause.Occur.MUST);
+                    for (Iterator it = searchTerms.iterator(); it.hasNext();) {
+                        SearchTerm elem = (SearchTerm) it.next();
+                        if (!elem.getFieldName().equalsIgnoreCase("variable")) {
+                            Term term = new Term(elem.getFieldName(), elem.getValue());
+                            TermQuery termQuery = new TermQuery(term);
+                            if (elem.getOperator().equals("=")) {
+                                searchQuery.add(termQuery, BooleanClause.Occur.MUST);
+                            } else {
+                                searchQuery.add(termQuery, BooleanClause.Occur.MUST_NOT);
+                            }
+
+                        }
+                    }
+                    results = getHitIds(searchQuery);
+                } else {
+                    results = searchVariables(studyIds, variableSearchTerms, true); // get var ids
+                }
                 logger.fine("Done search variables: " + DateTools.dateToString(new Date(), Resolution.MILLISECOND));
             }
         } else {
@@ -813,7 +844,7 @@ public class Indexer implements java.io.Serializable  {
             List hits = s.getStudies();
 //            Hits hits = searcher.search(query);
             for (int i = 0; i < hits.size(); i++) {
-                Document d = (Document) hits.get(i);
+                Document d = searcher.doc(((ScoreDoc) hits.get(i)).doc);
                 Field studyId = d.getField("varStudyId");
                 String studyIdStr = studyId.stringValue();
                 Long studyIdLong = Long.valueOf(studyIdStr);
@@ -899,6 +930,17 @@ public class Indexer implements java.io.Serializable  {
             Term varStudyId = new Term ("varStudyId",lId.toString());
             TermQuery varStudyIdQuery = new TermQuery(varStudyId);
             idTerms.add(varStudyIdQuery, BooleanClause.Occur.SHOULD);
+        }
+        return idTerms;
+    }
+
+    BooleanQuery orLongEqSearchTermClause(List <Long> id, String var){
+        BooleanQuery idTerms = new BooleanQuery();
+        for (Iterator it = id.iterator(); it.hasNext();){
+            Long lId= (Long) it.next();
+            Term longEq = new Term (var,lId.toString());
+            TermQuery longEqQuery = new TermQuery(longEq);
+            idTerms.add(longEqQuery, BooleanClause.Occur.SHOULD);
         }
         return idTerms;
     }

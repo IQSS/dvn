@@ -1431,11 +1431,17 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         }
     }
     
-    public void validateFileName(FacesContext context,
-            UIComponent toValidate,
-            Object value) {
+    public void validateFileName(FacesContext context, UIComponent toValidate, Object value) {
         String fileName = (String) value;
+        int rowIndex = getFilesDataTable().getRowIndex();
         String errorMessage = null;
+        
+        // add (or replace) name to list for validation of uniqueness
+        if (validationFileNames.size() < rowIndex + 1) {
+            validationFileNames.add(rowIndex, fileName);
+        } else {
+            validationFileNames.set(rowIndex, fileName);
+        }
 
         // check invalid characters
         if (    fileName.contains("\\") ||
@@ -1450,23 +1456,12 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
                 fileName.contains(";") ||
                 fileName.contains("#")) {
             errorMessage = "cannot contain any of the following characters: \\ / : * ? \" < > | ; #";
+
+        } else if (validationFileNames.subList(0, rowIndex).contains(fileName)) { // check versus current list
+            errorMessage = errorMessage = "must be unique.";
         }
         
         
-        // now check unique filename against other file names
-        Iterator iter = getValidationFileNames().iterator();
-        while (iter.hasNext()) {
-            
-            if ( fileName.equals( (String) iter.next() ) ) {
-                errorMessage = "must be unique.";
-                break;
-            }
-            
-        }
-        
-        
-        // now add this name to the validation list
-        getValidationFileNames().add(fileName);
         
         if (errorMessage != null) {
             ((UIInput)toValidate).setValid(false);
@@ -2652,6 +2647,19 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         Map reqParams = fc.getExternalContext().getRequestParameterMap();
         return reqParams.containsKey(saveCommand1.getClientId(fc)) || reqParams.containsKey(saveCommand2.getClientId(fc));
     }
+
+
+    private HtmlDataTable filesDataTable = new HtmlDataTable();
+
+    public HtmlDataTable getFilesDataTable() {
+        return filesDataTable;
+    }
+
+    public void setFilesDataTable(HtmlDataTable filesDataTable) {
+        this.filesDataTable = filesDataTable;
+    }
+
+
   
 }
 

@@ -122,6 +122,11 @@ update pagedef set role_id = null where path = '/admin/OptionsPage.xhtml';
 update pagedef set role_id = null where path = '/study/ManageStudiesPage.xhtml';
 update pagedef set networkrole_id = null where path = '/networkAdmin/NetworkOptionsPage.xhtml';
 
+---
+--- Other page def changes
+---
+INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'DeaccessionStudyPage', '/study/DeaccessionStudyPage.xhtml', 2, null );
+
 commit;
 
 

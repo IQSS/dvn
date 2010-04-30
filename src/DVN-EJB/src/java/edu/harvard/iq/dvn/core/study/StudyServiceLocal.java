@@ -191,10 +191,12 @@ public interface StudyServiceLocal extends java.io.Serializable {
 
     //2
     public void setReadyForReview(Long studyId);
+    public void setReadyForReview(Long studyId, String versionNote);
     public void setReadyForReview(StudyVersion sv);
     public void saveVersionNote(Long studyId, Long versionNumber, String newVersionNote);
     public void saveVersionNote(Long studyVersionId, String newVersionNote);
     public void setReleased(Long studyId);
+    public void setReleased(Long studyId, String versionNote);
     public void destroyWorkingCopyVersion(Long studyVersionId);
 
     public void deaccessionStudy(StudyVersion studyVersion);

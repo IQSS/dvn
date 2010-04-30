@@ -567,10 +567,10 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
         studyService.setReadyForReview(studyUI.getStudy().getId());
     }
 
-    public void setReleased(ActionEvent ae) {
-        studyService.setReleased(studyUI.getStudy().getId());
-        studyUI.setStudy(studyService.getStudy(studyId));
-    }
+ //   public void setReleased(ActionEvent ae) {
+ //       studyService.setReleased(studyUI.getStudy().getId());
+ //       studyUI.setStudy(studyService.getStudy(studyId));
+ //   }
 
     public String requestFileAccess() {
         LoginWorkflowBean loginWorkflowBean = (LoginWorkflowBean) this.getBean("LoginWorkflowBean");
@@ -852,8 +852,8 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
     public String saveVersionNote() {
 
         studyUI.getStudyVersion().setVersionNote( versionNotesPopup.getVersionNote() );
-        studyService.saveVersionNote (studyUI.getStudyVersion().getId(), studyUI.getStudyVersion().getVersionNote());
         versionNotesPopup.setShowPopup(false);
+
 
         if (actionRequested != null) {
 
@@ -863,11 +863,13 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
                 // release, this must be the first release of the study;
                 // otherwise the user would already have been redirected to the
                 // Differences page.
+                // But I'm still going to check that assumption before modifying
+                // the state of the version:
 
                 StudyVersion releasedVersion = studyService.getStudyVersion(getStudyId(), null);
 
                 if (releasedVersion == null) {
-                    studyService.setReleased(studyUI.getStudy().getId());
+                    studyService.setReleased(studyUI.getStudy().getId(), studyUI.getStudyVersion().getVersionNote());
                     // Get updated studyVersion to display on the page (we need this to get the releaseTime & state)
                     StudyVersion updatedVersion = studyService.getStudyVersion(studyUI.getStudyVersion().getStudy().getId(), studyUI.getStudyVersion().getVersionNumber());
 
@@ -878,11 +880,16 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
                 }
             } else if (actionRequested.equals(StudyActionRequestType.REVIEW)) {
                 studyUI.getStudyVersion().setVersionState(StudyVersion.VersionState.IN_REVIEW);
-                studyService.setReadyForReview(studyUI.getStudy().getId());
+                studyService.setReadyForReview(studyUI.getStudy().getId(), studyUI.getStudyVersion().getVersionNote());
 
                 actionRequested = null;
             }
         
+
+        } else {
+            // The user is editing the version note without modifying the state
+            // of the version.
+            studyService.saveVersionNote (studyUI.getStudyVersion().getId(), studyUI.getStudyVersion().getVersionNote());
 
         }
 

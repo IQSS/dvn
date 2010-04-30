@@ -190,11 +190,11 @@ public class ManageStudiesList extends VDCBaseBean {
     public void doConfirmVersionNotesPopup(ActionEvent ae) {
       StudyUI studyUI = studyUIList.get(selectedIndex);
         versionNotesPopupBean.setShowPopup(false);
-        studyService.saveVersionNote(studyUI.getStudyVersion().getId(), versionNotesPopupBean.getVersionNote());
+
         if (versionPopupMode.equals(VersionPopupMode.REVIEW)) {
-            studyService.setReadyForReview(studyUI.getStudyId());
+            studyService.setReadyForReview(studyUI.getStudyId(), versionNotesPopupBean.getVersionNote());
         } else
-              studyService.setReleased(studyUI.getStudyId());
+              studyService.setReleased(studyUI.getStudyId(), versionNotesPopupBean.getVersionNote());
         // set list to null, to force a fresh retrieval of data
         studyUIList=null;
     }

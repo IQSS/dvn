@@ -146,16 +146,27 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
     }
        
     public void setReadyForReview(Long studyId) {
+        setReadyForReview(studyId, null);
+    }
+
+    public void setReadyForReview(Long studyId, String versionNote) {
       
         Study study = em.find(Study.class, studyId);
         StudyVersion sv = study.getLatestVersion();
             
-        setReadyForReview(sv);
+        setReadyForReview(sv, versionNote);
     }
 
     public void setReadyForReview(StudyVersion sv) {
+        setReadyForReview(sv, null);
+    }
+
+    public void setReadyForReview(StudyVersion sv, String versionNote) {
 
         sv.setVersionState(StudyVersion.VersionState.IN_REVIEW);
+        if (versionNote != null) {
+            sv.setVersionNote(versionNote);
+        }
 
         Study study = sv.getStudy();
 
@@ -203,6 +214,10 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
     }
 
     public void setReleased(Long studyId) {
+        setReleased(studyId, null);
+    }
+
+    public void setReleased(Long studyId, String versionNote) {
       
         Study study = em.find(Study.class, studyId);
         StudyVersion latestVersion = study.getLatestVersion();
@@ -223,7 +238,9 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         latestVersion.setVersionState(StudyVersion.VersionState.RELEASED);
         latestVersion.setReleaseTime(releaseDate);
 
-        
+        if (versionNote != null) {
+            latestVersion.setVersionNote(versionNote);
+        }
 
         VDCRole studyCreatorRole = study.getCreator().getVDCRole(study.getOwner());
 

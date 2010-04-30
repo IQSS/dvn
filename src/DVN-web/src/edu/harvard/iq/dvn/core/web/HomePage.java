@@ -505,7 +505,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
                         studies.add(studyId);
                     }
                 } catch (IllegalArgumentException e) {
-                    System.out.println("StudyVersion (ID=" + vId + ") was found in index, but is not in DB.");
+                    e.printStackTrace();
                 }
                 versionMap.put(studyId, svList);
             }

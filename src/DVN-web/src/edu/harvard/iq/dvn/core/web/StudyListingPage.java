@@ -269,22 +269,22 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
                 List<Long> versionIds = indexService.searchVersionUnf(searchValue);
                 Iterator iter = versionIds.iterator();
                 Long studyId = null;
-                List<StudyVersion> svList = new ArrayList<StudyVersion>();
                 while (iter.hasNext()) {
+                    List<StudyVersion> svList = new ArrayList<StudyVersion>();
                     Long vId = (Long) iter.next();
                     StudyVersion sv = null;
                     try {
                         sv = studyService.getStudyVersionById(vId);
                         studyId = sv.getStudy().getId();
-                        svList.add(sv); 
+                        svList.add(sv);
                         if (!studyIDList.contains(studyId)) {
                             studyIDList.add(studyId);
                         }
                     } catch (IllegalArgumentException e) {
-                        System.out.println("StudyVersion (ID=" + vId + ") was found in index, but is not in DB.");
+                        e.printStackTrace();
                     }
+                    versionMap.put(studyId, svList);
                 }
-                versionMap.put(studyId, svList);
 
             }
         }

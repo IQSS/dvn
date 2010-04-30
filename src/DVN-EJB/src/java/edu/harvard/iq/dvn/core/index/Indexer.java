@@ -505,7 +505,12 @@ public class Indexer implements java.io.Serializable  {
                         Arrays.sort(studyIdsArray);
                     }
                     BooleanQuery searchQuery = new BooleanQuery();
-                    searchQuery.add(orLongEqSearchTermClause(results, "id"), BooleanClause.Occur.MUST);
+                    List <TermQuery> termQueries = orLongEqSearchTermQueries(results, "id");
+                    for (Iterator clausesIter = termQueries.iterator(); clausesIter.hasNext();){
+                        TermQuery termQuery = (TermQuery) clausesIter.next();
+                        searchQuery.add(termQuery, BooleanClause.Occur.SHOULD);
+                    }
+                    
                     for (Iterator it = searchTerms.iterator(); it.hasNext();) {
                         SearchTerm elem = (SearchTerm) it.next();
                         if (!elem.getFieldName().equalsIgnoreCase("variable")) {
@@ -516,10 +521,10 @@ public class Indexer implements java.io.Serializable  {
                             } else {
                                 searchQuery.add(termQuery, BooleanClause.Occur.MUST_NOT);
                             }
-
                         }
                     }
-                    results = getHitIds(searchQuery);
+                    List <Long> studyIdResults = getHitIds(searchQuery);
+                    results = searchVariables(studyIdResults, variableSearchTerms, true); // get var ids
                 } else {
                     results = searchVariables(studyIds, variableSearchTerms, true); // get var ids
                 }
@@ -934,15 +939,15 @@ public class Indexer implements java.io.Serializable  {
         return idTerms;
     }
 
-    BooleanQuery orLongEqSearchTermClause(List <Long> id, String var){
-        BooleanQuery idTerms = new BooleanQuery();
+    List <TermQuery> orLongEqSearchTermQueries(List <Long> id, String var){
+        List <TermQuery> termQuery = new ArrayList<TermQuery>();
         for (Iterator it = id.iterator(); it.hasNext();){
             Long lId= (Long) it.next();
             Term longEq = new Term (var,lId.toString());
             TermQuery longEqQuery = new TermQuery(longEq);
-            idTerms.add(longEqQuery, BooleanClause.Occur.SHOULD);
+            termQuery.add(longEqQuery);
         }
-        return idTerms;
+        return termQuery;
     }
 
     BooleanQuery andSearchTermClause(List <SearchTerm> andSearchTerms){

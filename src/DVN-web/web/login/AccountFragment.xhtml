@@ -1,0 +1,82 @@
+<div xmlns:gui="http://java.sun.com/jsf/facelets"
+     xmlns:h="http://java.sun.com/jsf/html"
+     xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:jsp="http://java.sun.com/JSP/Page"
+     xmlns:ice="http://www.icesoft.com/icefaces/component"
+     xmlns:dvn="/WEB-INF/tlds/dvn-components"
+     xmlns:ui="http://www.sun.com/web/ui"
+     jsfc="ice:panelGroup">
+    <!-- Begin code from account page -->
+
+
+
+    <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+    <div class="dvn_section">
+        <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnSuccessMessage" rendered="#{!empty AccountPage.statusMessage.messageText}">
+            <div class="dvnMsgBlockContainer">
+                <p><ice:outputText id="statusMessage" value="#{AccountPage.statusMessage.messageText}"/></p>
+            </div>
+        </div>
+        <div class="dvn_sectionTitle">
+            <ice:outputText value="Account for "/>
+            <ice:outputText value="#{AccountPage.user.userName}"/>
+        </div>
+        <div class="dvn_sectionBox">
+            <div class="dvn_margin12">
+                <div class="vdcTextRight">
+                    <ice:outputLink id="linkAction1" rendered="#{VDCSession.loginBean.networkAdmin or VDCSession.loginBean.user.id == AccountPage.user.id}"  value="/dvn/faces/login/EditAccountPage.xhtml?userId=#{AccountPage.user.id}&amp;returnPage=#{returnPage}&amp;vdcId=#{VDCRequest.currentVDCId}">
+                        <ice:outputText id="linkAction1Text" value="Update Account"/>
+                    </ice:outputLink>
+                    <ice:outputText rendered="#{VDCSession.loginBean.networkAdmin or VDCSession.loginBean.user.id == AccountPage.user.id}" value=" | " />
+                    <ice:outputLink rendered="#{VDCSession.loginBean.networkAdmin or VDCSession.loginBean.user.id == AccountPage.user.id}"  value="/dvn/faces/login/EditPasswordPage.xhtml?userId=#{AccountPage.user.id}&amp;returnPage=#{returnPage}&amp;vdcId=#{VDCRequest.currentVDCId}">
+                        <ice:outputText id="linkAction2Text" value="Change Password"/>
+                    </ice:outputLink>
+                    <ice:outputText value=" | " rendered="#{VDCSession.loginBean.networkAdmin and VDCRequest.currentVDC == null}"/>
+                    <ice:outputLink rendered="#{VDCSession.loginBean.networkAdmin and VDCRequest.currentVDC == null}" value="/dvn/faces/networkAdmin/AllUsersPage.xhtml?vdcId=#{VDCRequest.currentVDCId}">
+                        <ice:outputText value="Go To All Users List"/>
+                    </ice:outputLink>
+                </div>
+                <ice:panelGrid cellpadding="0" cellspacing="0" columns="2"
+                               columnClasses="vdcColPadded, vdcColPadded" id="gridPanel2">
+                    <div jsfc="ice:panelGroup" id="groupPanel1">
+                        <ice:outputText id="outputText2" styleClass="vdcFieldTitle" value="Username"/>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                        <ice:outputText id="outputText3" value="#{AccountPage.user.userName}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                        <ice:outputText id="outputText4" styleClass="vdcFieldTitle" value="Full Name"/>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                        <ice:outputText value="#{AccountPage.user.firstName} #{AccountPage.user.lastName}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                        <ice:outputText id="outputText5" styleClass="vdcFieldTitle" value="E-Mail"/>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                        <ice:outputText id="outputText11" value="#{AccountPage.user.email}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                        <ice:outputText id="outputText6" styleClass="vdcFieldTitle" value="Institution"/>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                        <ice:outputText id="outputText12" value="#{AccountPage.user.institution}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                        <ice:outputText id="outputText7" styleClass="vdcFieldTitle" value="Position"/>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                        <ice:outputText id="outputText15" value="#{AccountPage.user.position}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                        <ice:outputText id="outputText8" styleClass="vdcFieldTitle" value="Phone Number"/>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                        <ice:outputText id="outputText13" value="#{AccountPage.user.phoneNumber}"/>
+                    </div>
+                </ice:panelGrid>
+            </div>
+        </div>
+    </div>
+
+</div>

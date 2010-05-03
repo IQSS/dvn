@@ -124,6 +124,11 @@
             <property-class>java.lang.Long</property-class>
             <value>#{param.userId}</value>
         </managed-property>
+        <managed-property>
+            <property-name>returnPage</property-name>
+            <property-class>java.lang.String</property-class>
+            <value>#{param.returnPage}</value>
+        </managed-property>
     </managed-bean>
     <managed-bean>
         <managed-bean-name>EditPasswordPage</managed-bean-name>
@@ -133,6 +138,11 @@
             <property-name>userId</property-name>
             <property-class>java.lang.Long</property-class>
             <value>#{param.userId}</value>
+        </managed-property>
+        <managed-property>
+            <property-name>returnPage</property-name>
+            <property-class>java.lang.String</property-class>
+            <value>#{param.returnPage}</value>
         </managed-property>
     </managed-bean>    
     <managed-bean>

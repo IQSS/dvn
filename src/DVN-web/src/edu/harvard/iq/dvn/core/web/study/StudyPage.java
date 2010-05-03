@@ -687,10 +687,11 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
         this.showStudyDeletePopup = showPopup;
     }
 
-    //public void confirmStudyDelete (ActionEvent ae) {
-    public String confirmStudyDelete () {
+    public void confirmStudyDelete (ActionEvent ae) {
+    //public String confirmStudyDelete () {
         VDC dataverse = null;
         String successMessage = "";
+        Long dvId = null;
 
         if (studyUI != null && studyUI.getStudy() != null) {
             dataverse = studyUI.getStudy().getOwner();
@@ -698,24 +699,23 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
 
         if (StudyDeleteRequestType.DRAFT_VERSION.equals(deleteRequested)) {
             if (studyUI != null && studyUI.getStudyVersion() != null ) {
-                studyService.destroyWorkingCopyVersion(studyUI.getStudyVersion().getId());
                 successMessage = "Successfully deleted draft version of the study \"" +
                         studyUI.getMetadata().getTitle() + "\", " +
                         studyUI.getStudy().getGlobalId();
+                studyService.destroyWorkingCopyVersion(studyUI.getStudyVersion().getId());
             }
         } else if (StudyDeleteRequestType.REVIEW_VERSION.equals(deleteRequested)) {
             if (studyUI != null && studyUI.getStudyVersion() != null ) {
-                studyService.destroyWorkingCopyVersion(studyUI.getStudyVersion().getId());
                 successMessage = "Successfully deleted review version of the study \"" +
                         studyUI.getMetadata().getTitle() + "\", " +
                         studyUI.getStudy().getGlobalId();
-
+                studyService.destroyWorkingCopyVersion(studyUI.getStudyVersion().getId());
             }
         } else if (StudyDeleteRequestType.DESTROY_STUDY.equals(deleteRequested)) {
-            studyService.deleteStudy(studyId);
             successMessage = "Permanently destroyed study \"" +
                 studyUI.getMetadata().getTitle() + "\", " +
                 studyUI.getStudy().getGlobalId();
+            studyService.deleteStudy(studyId);
 
         } else {
             successMessage = "Warning: attempted to execute unknown delete action!";
@@ -728,14 +728,16 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
         // wanted to delete/destroy, we are sending the user to the
         // ManageStudies Page:
 
-        if (getVDCRequestBean().getCurrentVDC() == null) {
-            getVDCRequestBean().setCurrentVDC(dataverse);
+        if (getVDCRequestBean().getCurrentVDC() != null) {
+            dvId = getVDCRequestBean().getCurrentVDC().getId();
+        } else {
+            dvId = dataverse.getId();
         }
 
-        // Set the action status message for the ManageStudies page:
-        getVDCRequestBean().setSuccessMessage(successMessage);
+        redirect("/faces/study/ManageStudiesPage.xhtml?vdcId="+dvId
+                +"&successMessage="
+                +successMessage);
 
-        return "manageStudies";
     }
 
     public void confirmDraftDeleteAction (ActionEvent event) {

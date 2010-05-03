@@ -50,6 +50,7 @@ public class ManageStudiesList extends VDCBaseBean {
     private Long vdcId;
     private LoginBean loginBean;
     private VersionNotesPopupBean versionNotesPopupBean;
+    private String successMessage;
 
     // the StudyUI object for the currently selected study:
     // (for example, selected for deletion)
@@ -81,7 +82,16 @@ public class ManageStudiesList extends VDCBaseBean {
         this.studyDataTable = studyDataTable;
     }  
    
-  
+    public String getSuccessMessage() {
+        if (VDCBaseBean.getVDCRequestBean().getSuccessMessage() != null) {
+            return VDCBaseBean.getVDCRequestBean().getSuccessMessage();
+        }
+        return this.successMessage;
+    }
+
+    public void setSuccessMessage(String successMessage) {
+        this.successMessage = successMessage;
+    }
     
     protected void sort() {
             String orderBy=null;

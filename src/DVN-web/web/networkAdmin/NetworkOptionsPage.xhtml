@@ -37,7 +37,7 @@
 .icePnlTbSetSpcr {border-bottom: 0;}
 .icePnlTbSetCnt {border-top: 1px solid #D9D9D9;}
 </style>
-                <ice:panelTabSet id="tabSet1" selectedIndex="#{VDCSession.loginBean.networkAdmin ? 0 : VDCSession.loginBean.hasContributed ? 1 : 2}">
+                <ice:panelTabSet id="tabSet1" >
                         <!-- DATAVERSE OPTIONS -->
                         <ice:panelTab id="networkOptions" label="Network Options" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml&amp;tab=dataverseOptions" rendered="#{VDCSession.loginBean.networkAdmin}">
                 <div class="dvn_section">
@@ -46,9 +46,7 @@
                       <p><ice:outputText id="statusMessage" value="#{VDCRequest.successMessage}"/></p>
                     </div>
                   </div>
-                  <div class="dvn_sectionTitle">
-                    <ice:outputText value="#{bundlePageInfo.dvnOptionsTitle}"/>
-                  </div>
+                  
                     <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
                         <tr><td colspan="2" class="dvnOptionsTableHeader"><ice:outputText value="#{bundlePageInfo.dvsSectionTitle}"/></td></tr>
                         <tr>
@@ -263,19 +261,8 @@
                         </tr>
                     </table>
                 </div>
-                        </ice:panelTab>
-                        <ice:panelTab id="myStudies" label="My Studies" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml&amp;tab=studyOptions" rendered="#{VDCSession.loginBean.hasContributed}">
-        
-                            <gui:include src="/study/ManageStudiesFragment.xhtml">
-                            </gui:include>
-                        </ice:panelTab>
-
-                        <!-- MY DATAVERSES -->
-                        <ice:panelTab id="myDataverses" label="My Dataverses" rendered="#{!VDCSession.loginBean.networkAdmin and VDCSession.loginBean.hasDataverses}">
-                            <gui:include src="/networkAdmin/MyDataversesFragment.xhtml">
-                            </gui:include>
-                        </ice:panelTab>
-                    </ice:panelTabSet>
+                </ice:panelTab>
+                </ice:panelTabSet>
             </ice:form>
         </gui:define>
     </gui:composition>

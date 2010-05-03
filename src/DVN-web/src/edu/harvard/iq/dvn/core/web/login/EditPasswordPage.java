@@ -110,12 +110,7 @@ public class EditPasswordPage extends VDCBaseBean implements java.io.Serializabl
      */
     public void init() {
         super.init();
-        String userIdParam = getUserIdFromRequest();
-        if ( isFromPage("EditPasswordPage")&& sessionGet(EditUserService.class.getName()+userIdParam)!=null ) {
-            editUserService = (EditUserService) sessionGet(EditUserService.class.getName()+userIdParam);
-            user = editUserService.getUser();
-             
-        } else {
+       
                   // we need to create the editStudyService bean
             try {
                 Context ctx = new InitialContext();
@@ -126,12 +121,11 @@ public class EditPasswordPage extends VDCBaseBean implements java.io.Serializabl
                 FacesMessage errMessage = new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(),null);
                 context.addMessage(null,errMessage);
                 
-            }
-            sessionPut( EditUserService.class.getName()+userId, editUserService);
+            }        
             editUserService.setUser(userId); 
             user = editUserService.getUser();
          
-        }
+      
         
     }
     
@@ -216,9 +210,22 @@ public class EditPasswordPage extends VDCBaseBean implements java.io.Serializabl
     }
     
     public String cancel() {
-        editUserService.cancel();
-        return "myNetworkOptions";
+        // Save userId as requestAttribute so it can be used by AccountPage
+        this.getRequestMap().put("userId",user.getId());
+             editUserService.cancel();
+        return returnPage;
     }
+
+    String returnPage;
+
+    public String getReturnPage() {
+        return returnPage;
+    }
+
+    public void setReturnPage(String returnPage) {
+        this.returnPage = returnPage;
+    }
+
 
     /**
      * Holds value of property userId.

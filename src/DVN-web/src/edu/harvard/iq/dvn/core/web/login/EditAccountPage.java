@@ -61,11 +61,10 @@ public class EditAccountPage extends VDCBaseBean implements java.io.Serializable
     // </editor-fold>
     @EJB EditUserService editUserService;
     @EJB UserServiceLocal userService;
-    private HtmlSelectOneRadio resetPasswordRadio;
     private Long userId;
     private VDCUser user;
-    private String resetPassword;
-   
+    private String returnPage;
+
     /**
      * <p>Construct a new Page bean instance.</p>
      */
@@ -87,17 +86,11 @@ public class EditAccountPage extends VDCBaseBean implements java.io.Serializable
      * property values that were saved for this view when it was rendered.</p>
      */
     public void init() {
-        super.init();
-        if ( isFromPage("EditAccountPage")&& sessionGet(editUserService.getClass().getName())!=null ) {
-            editUserService = (EditUserService) sessionGet(editUserService.getClass().getName());
+
+            editUserService.setUser(userId);
             user = editUserService.getUser();
-             
-        } else {
-            sessionPut( editUserService.getClass().getName(), editUserService);
-            editUserService.setUser(userId); 
-            user = editUserService.getUser();
-         
-        }
+       
+        
         
     }
     
@@ -170,15 +163,15 @@ public class EditAccountPage extends VDCBaseBean implements java.io.Serializable
         StatusMessage msg = new StatusMessage();
         msg.setMessageText("User account updated successfully.");
         msg.setStyleClass("successMessage");
-        getRequestMap().put("statusMessage",msg);
-       
-        
-        return "result";
+        getRequestMap().put("statusMessage",msg);       
+        return returnPage;
     }
     
     public String cancelAction() {
+        // Save userId as requestAttribute so it can be used by AccountPage
+        this.getRequestMap().put("userId",user.getId());
         editUserService.cancel();
-        return "myNetworkOptions";
+        return returnPage;
     }
     
     public EditUserService getEditUserService() {
@@ -217,30 +210,15 @@ public class EditAccountPage extends VDCBaseBean implements java.io.Serializable
         this.userId = userId;
     }
 
-    public HtmlSelectOneRadio getResetPasswordRadio() {
-        return resetPasswordRadio;
+    public String getReturnPage() {
+        return returnPage;
     }
 
-    public void setResetPasswordRadio(HtmlSelectOneRadio resetPasswordRadio) {
-        this.resetPasswordRadio = resetPasswordRadio;
+    public void setReturnPage(String returnPage) {
+        this.returnPage = returnPage;
     }
 
-
-    /**
-     * Getter for property resetPassword.
-     * @return Value of property resetPassword.
-     */
-    public String getResetPassword() {
-        return this.resetPassword;
-    }
-
-    /**
-     * Setter for property resetPassword.
-     * @param resetPassword New value of property resetPassword.
-     */
-    public void setResetPassword(String resetPassword) {
-        this.resetPassword = resetPassword;
-    }
+ 
 
 
 

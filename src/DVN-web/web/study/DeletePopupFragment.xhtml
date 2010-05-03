@@ -25,7 +25,8 @@
                         <ice:outputText value="Delete Draft Study Version" rendered="#{MainLayoutBean.inStudyPage and studyPage.draftDeleteRequested}"/>
                         <ice:outputText value="Delete Review Study Version" rendered="#{MainLayoutBean.inStudyPage and studyPage.reviewDeleteRequested}"/>
                         <ice:outputText value="Permanently Destroy Study" rendered="#{MainLayoutBean.inStudyPage and studyPage.studyDestroyRequested}"/>
-                        <ice:outputText value="Delete Working Study Version" rendered="#{MainLayoutBean.inManageStudiesPageByViewID}"/>
+                        <ice:outputText value="Delete Draft Study Version" rendered="#{MainLayoutBean.inManageStudiesPageByViewID and ManageStudiesList.draftDeleteRequested}"/>
+                        <ice:outputText value="Delete Review Study Version" rendered="#{MainLayoutBean.inManageStudiesPageByViewID and ManageStudiesList.reviewDeleteRequested}"/>
                     </ice:panelGrid>
                 </f:facet>
                 <f:facet name="body">
@@ -43,9 +44,11 @@
                         <div jsfc="ice:panelGroup" styleClass="dvnPopupWarningMessage">
                             <div class="dvnPopupMessageContainer">
                                 <p>
-                                    <ice:outputText value="Are you sure that you want to delete this working copy? This action is irreversible." rendered="#{MainLayoutBean.inStudyPage and !studyPage.studyDestroyRequested}"/>
+                                    <ice:outputText value="Are you sure that you want to delete this draft study version? This action is irreversible." rendered="#{MainLayoutBean.inStudyPage and studyPage.draftDeleteRequested}"/>
+                                    <ice:outputText value="Are you sure that you want to delete this review study version? This action is irreversible." rendered="#{MainLayoutBean.inStudyPage and studyPage.reviewDeleteRequested}"/>
                                     <ice:outputText value="Are you sure that you want to &lt;strong&gt;destroy this study?&lt;/strong&gt; This action is irreversible." rendered="#{MainLayoutBean.inStudyPage and studyPage.studyDestroyRequested}" escape="false"/>
-                                    <ice:outputText value="Are you sure that you want to delete this working copy? This action is irreversible." rendered="#{MainLayoutBean.inManageStudiesPageByViewID}" escape="false"/>
+                                    <ice:outputText value="Are you sure that you want to delete this draft study version? This action is irreversible." rendered="#{MainLayoutBean.inManageStudiesPageByViewID and ManageStudiesList.draftDeleteRequested}"/>
+                                    <ice:outputText value="Are you sure that you want to delete this review study version? This action is irreversible." rendered="#{MainLayoutBean.inManageStudiesPageByViewID and ManageStudiesList.reviewDeleteRequested}"/>
                                 </p>
                             </div>
                         </div>
@@ -55,7 +58,11 @@
                             <ice:commandButton id="autoCentPopupOk"
                                                action="#{studyPage.confirmStudyDelete}"
                                                value="Delete"
-                                               rendered="#{MainLayoutBean.inStudyPage}"/>
+                                               rendered="#{MainLayoutBean.inStudyPage and !studyPage.studyDestroyRequested}"/>
+                            <ice:commandButton id="autoCentPopupOk"
+                                               action="#{studyPage.confirmStudyDelete}"
+                                               value="Destroy"
+                                               rendered="#{MainLayoutBean.inStudyPage and studyPage.studyDestroyRequested}"/>
                             <ice:commandButton id="autoCentPopupCancel"
                                                actionListener="#{studyPage.toggleStudyDeletePopup}"
                                                value="Cancel"

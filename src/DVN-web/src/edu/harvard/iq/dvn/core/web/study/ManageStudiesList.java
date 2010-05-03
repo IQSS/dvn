@@ -299,6 +299,31 @@ public class ManageStudiesList extends VDCBaseBean {
         }
     }
 
+
+
+    public boolean isDraftDeleteRequested () {
+        if (currentStudyUI != null) {
+            StudyVersion latestVersion = currentStudyUI.getStudy().getLatestVersion();
+            if (latestVersion != null) {
+               return latestVersion.isDraft();
+            }
+        }
+
+        return false;
+    }
+
+    public boolean isReviewDeleteRequested () {
+        if (currentStudyUI != null) {
+            StudyVersion latestVersion = currentStudyUI.getStudy().getLatestVersion();
+            if (latestVersion != null) {
+               return latestVersion.isInReview();
+            }
+        }
+
+        return false;
+    }
+
+
     private boolean contributorFilter;
 
     public void filter(ActionEvent event){

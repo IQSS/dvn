@@ -81,6 +81,13 @@
             <to-view-id>/networkAdmin/NetworkOptionsPage.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
+    <navigation-rule>
+        <from-view-id>/*</from-view-id>
+        <navigation-case>
+            <from-outcome>accountOptions</from-outcome>
+            <to-view-id>/login/AccountOptionsPage.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
       <navigation-rule>
         <from-view-id>/*</from-view-id>
         <navigation-case>
@@ -242,9 +249,15 @@
             <to-view-id>/login/FileRequestSuccessPage.xhtml</to-view-id>        
         </navigation-case>         
     </navigation-rule>
-       
     <navigation-rule>
-        <from-view-id>/login/AddAccountPage.xhtml</from-view-id>
+        <from-view-id>/*</from-view-id>
+         <navigation-case>
+            <from-outcome>viewAccount</from-outcome>
+            <to-view-id>/login/AccountPage.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+        <navigation-rule>
+            <from-view-id>/login/AddAccountPage.xhtml</from-view-id>
        
        
         <navigation-case>
@@ -433,13 +446,13 @@
             <to-view-id>/login/AccountPage.xhtml</to-view-id>       
         </navigation-case>
     </navigation-rule>   
-       <navigation-rule>
+     <navigation-rule>
         <from-view-id>/login/EditPasswordPage.xhtml</from-view-id>
         <navigation-case>
             <from-outcome>success</from-outcome>
-            <to-view-id>/login/PasswordSuccessPage.xhtml</to-view-id>       
+            <to-view-id>/login/PasswordSuccessPage.xhtml</to-view-id>
         </navigation-case>
-    </navigation-rule>     
+    </navigation-rule>
      <navigation-rule>
         <from-view-id>/networkAdmin/EditUserGroupPage.xhtml</from-view-id>
         <navigation-case>

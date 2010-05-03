@@ -50,7 +50,7 @@
                   <ice:outputText value="Leave a comment to explain why the study was deaccessioned."/>
                 </p>
                 <label class="dvnDeaccessionFormLabel" for="dvnDeaccessionComments">Comments</label><br/>
-                <ice:inputTextarea validator="#{DeaccessionStudyPage.validateArchiveNote}" id="dvnDeaccessionComments" value="#{DeaccessionStudyPage.studyVersion.archiveNote}"/>
+                <ice:inputTextarea  maxlength="#{DeaccessionStudyPage.archiveNoteMaxLength}" validator="#{DeaccessionStudyPage.validateArchiveNote}" id="dvnDeaccessionComments" value="#{DeaccessionStudyPage.studyVersion.archiveNote}"/>
                 <ice:message styleClass="errorMessage" for="dvnDeaccessionComments"/>
                 
                 <p>

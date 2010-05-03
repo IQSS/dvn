@@ -47,7 +47,7 @@
 </style>
                     <ice:panelTabSet id="tabSet1" selectedIndex="#{(VDCSession.loginBean.networkAdmin or VDCSession.loginBean.admin) ? 0 : 1}">
                         <!-- DATAVERSE OPTIONS -->
-                        <ice:panelTab id="dataverseOptions" label="Dataverse Options" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml&amp;tab=dataverseOptions" rendered="#{VDCSession.loginBean.networkAdmin or VDCSession.loginBean.admin}">
+                        <ice:panelTab id="dataverseOptions" label="Dataverse Settings" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml&amp;tab=dataverseOptions" rendered="#{VDCSession.loginBean.networkAdmin or VDCSession.loginBean.admin}">
                             <div jsfc="ice:panelGroup" id="layoutPanel1" panelLayout="flow">
                                 <!-- REMOVED CODE -->
                                 <div jsfc="ice:panelGroup">
@@ -217,11 +217,7 @@
                                 </table>
                             </div>
                         </ice:panelTab>
-                        <!-- MY DATAVERSES -->
-                        <ice:panelTab id="comments" label="My Dataverses" rendered="#{!VDCSession.loginBean.networkAdmin and VDCSession.loginBean.hasDataverses}">
-                            <gui:include src="/networkAdmin/MyDataversesFragment.xhtml">
-                            </gui:include>
-                        </ice:panelTab>
+                        
                     </ice:panelTabSet>
                     </div>
                 </div>

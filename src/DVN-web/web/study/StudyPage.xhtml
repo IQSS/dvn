@@ -305,7 +305,7 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
                                         <dvn:tooltip tooltipMessage="#{studybundle.restoreTip}" linkText="#{studybundle.restoreText}" eventType="mouseover" linkUrl="#"/>
                                     </li>
                                 </span-->
-                                <span jsfc="ice:panelGroup" rendered="#{VDCSession.loginBean.networkAdmin}">
+                                <span jsfc="ice:panelGroup" rendered="#{VDCSession.loginBean.networkAdmin and (!studyPage.studyUI.studyVersion.workingCopy or studyPage.studyUI.studyVersion.versionNumber != 1)}">
                                     <li>
                                         <ice:commandLink actionListener="#{studyPage.confirmStudyDestroyAction}" onmouseover="javascript:popupTooltip(this, &#39;#{studybundle.destroyTip}&#39;, &#39;&#39;, event);" onmouseout="javascript:hideTooltip();">
                                             <ice:outputText value="#{studybundle.destroyText}" nospan="true"/>

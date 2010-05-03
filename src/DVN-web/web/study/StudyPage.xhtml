@@ -704,9 +704,9 @@ jQuery(document).ready(function(){
                     </div>
 
                     <dvn:inlinehelp helpMessage="#{studybundle.harvestedTermsofUseHelp}" linkText="#{studybundle.networkHarvestedTermsofUseLabel}" heading="#{studybundle.networkHarvestedTermsofUseHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{!empty studyPage.studyUI.metadata.harvestDVNTermsOfUse}"/>
-                    <div jsfc="ice:panelGroup">
+                    <div jsfc="ice:panelGroup" rendered="#{!empty studyPage.studyUI.metadata.harvestDVNTermsOfUse}">
                         <div jsfc="ice:panelGroup">
-                            <ice:outputLink value="#" styleClass="vdcInlineHelpLink">
+                            <ice:outputLink value="#" onclick="return toggleTermsofUse(this)" styleClass="vdcInlineHelpLink">
                                 <ice:outputText value="View Terms of Use [+]" styleClass="vdcInlineHelpLinkText"/>
                             </ice:outputLink>
                             <div style="display:none;">
@@ -716,9 +716,9 @@ jQuery(document).ready(function(){
                     </div>
 
                     <dvn:inlinehelp helpMessage="#{studybundle.harvestedTermsofUseHelp}" linkText="#{studybundle.harvestedTermsofUseLabel}" heading="#{studybundle.harvestedTermsofUseHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{!empty studyPage.studyUI.metadata.harvestDVTermsOfUse}"/>
-                    <div jsfc="ice:panelGroup">
+                    <div jsfc="ice:panelGroup" rendered="#{!empty studyPage.studyUI.metadata.harvestDVTermsOfUse}">
                         <div jsfc="ice:panelGroup">
-                            <ice:outputLink value="#" styleClass="vdcInlineHelpLink">
+                            <ice:outputLink value="#" onclick="return toggleTermsofUse(this)" styleClass="vdcInlineHelpLink">
                                 <ice:outputText value="View Terms of Use [+]" styleClass="vdcInlineHelpLinkText"/>
                             </ice:outputLink>
                             <div style="display:none;">

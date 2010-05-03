@@ -492,13 +492,6 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
             studyUI.setNotesPanelIsRendered(true);
         }
     }
-
-    // this method is no longer needed;
-    // the deleteStudyPage is no longer used either. -- L.A.
-    //public String confirmDelete() {
-    //    getVDCRequestBean().setStudyId(studyUI.getStudy().getId());
-    //    return "deleteStudy";
-    //}
     
     private String tab;
 
@@ -694,16 +687,6 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
         this.showStudyDeletePopup = showPopup;
     }
 
-    private String deleteActionLabel;
-
-    public String getDeleteActionLabel() {
-        return deleteActionLabel;
-    }
-
-    public void setDeleteActionLabel(String actionLabel) {
-        this.deleteActionLabel = actionLabel;
-    }
-
     //public void confirmStudyDelete (ActionEvent ae) {
     public String confirmStudyDelete () {
         VDC dataverse = null;
@@ -740,7 +723,6 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
 
         showStudyDeletePopup = false;
         deleteRequested = null;
-        deleteActionLabel = null;
 
         // Once we have successfully deleted whatever it was that we
         // wanted to delete/destroy, we are sending the user to the
@@ -759,19 +741,16 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
     public void confirmDraftDeleteAction (ActionEvent event) {
         showStudyDeletePopup = true;
         deleteRequested = StudyDeleteRequestType.DRAFT_VERSION;
-        deleteActionLabel = "delete this draft study version";
     }
 
     public void confirmInreviewDeleteAction (ActionEvent event) {
         showStudyDeletePopup = true;
         deleteRequested = StudyDeleteRequestType.REVIEW_VERSION;
-        deleteActionLabel = "delete this review study version";
     }
 
     public void confirmStudyDestroyAction (ActionEvent event) {
         showStudyDeletePopup = true;
         deleteRequested = StudyDeleteRequestType.DESTROY_STUDY;
-        deleteActionLabel = "permanently destroy this study";
     }
 
     public boolean isDraftDeleteRequested () {
@@ -801,7 +780,6 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
    
 
     public void confirmReleased(ActionEvent ae) {
-    //public String confirmReleased() {
         // See if the study already has released versions;
         // If not (i.e., this is the first release), we want to
         // simply switch the version state to "released"

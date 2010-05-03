@@ -244,7 +244,6 @@ public class ManageStudiesList extends VDCBaseBean {
 
     public void toggleStudyDeletePopup(ActionEvent event) {
         if (showStudyDeletePopup) {
-            deleteActionLabel = null;
             currentStudyUI = null;
         }
         showStudyDeletePopup = !showStudyDeletePopup;
@@ -256,16 +255,6 @@ public class ManageStudiesList extends VDCBaseBean {
 
     public void setShowStudyDeletePopup(boolean showPopup) {
         this.showStudyDeletePopup = showPopup;
-    }
-
-    private String deleteActionLabel;
-
-    public String getDeleteActionLabel() {
-        return deleteActionLabel;
-    }
-
-    public void setDeleteActionLabel(String actionLabel) {
-        this.deleteActionLabel = actionLabel;
     }
 
     public void confirmStudyDelete (ActionEvent event) {
@@ -282,7 +271,6 @@ public class ManageStudiesList extends VDCBaseBean {
         }
 
         showStudyDeletePopup = false;
-        deleteActionLabel = null;
         currentStudyUI = null;
 
 
@@ -308,15 +296,6 @@ public class ManageStudiesList extends VDCBaseBean {
         if ( studyUI != null ) {
             currentStudyUI = studyUI;
             showStudyDeletePopup = true;
-
-            if (studyUI.getStudy() != null) {
-                if (studyUI.getStudy().isDraft() ) {
-                    deleteActionLabel = "delete this draft study version";
-                }
-                else if (studyUI.getStudy().isInReview() ) {
-                    deleteActionLabel = "delete this review study version";
-                }
-            }
         }
     }
 

@@ -237,12 +237,14 @@ public class MainLayoutBean implements java.io.Serializable  {
     public boolean isInManageStudiesPage() {
         HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
         return request.getRequestURI().indexOf("/ManageStudiesPage.xhtml") != -1;
-        /*
+    }
+
+    public boolean isInManageStudiesPageByViewID() {
         String viewId = getCurrentViewId();
         if (viewId != null) {
             return viewId.indexOf("/ManageStudiesPage.xhtml") != -1;
         }
-        return false;*/
+        return false;
     }
 
 

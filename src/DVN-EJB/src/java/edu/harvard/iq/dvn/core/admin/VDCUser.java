@@ -189,6 +189,9 @@ public class VDCUser implements java.io.Serializable  {
     }
 
 
+    public boolean isNetworkAdmin() {
+        return networkRole !=null && networkRole.getName().equals(NetworkRoleServiceLocal.ADMIN);
+    }
 
     /**
      *

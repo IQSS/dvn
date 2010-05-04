@@ -700,8 +700,8 @@
                       <div class="vdcEditStudyField">
                         <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.keywordValue].recommended}" rendered ="#{TemplateFormPage.dataTableKeywords.rowIndex==0}"  />
                         <dvn:inlinehelp helpMessage="#{editstudybundle.keywordHelp}" linkText="#{editstudybundle.keywordLabel}" heading="#{editstudybundle.keywordHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                        <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.keywordInputLevel=='required'}"/>
-                        <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.keywordInputLevel=='recommended'}"/>
+                        <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.keywordValue].required}"/>
+                        <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.keywordValue].recommended}"/>
                       </div>
                     </ice:column>
                     <ice:column>
@@ -756,8 +756,8 @@
                       <div class="vdcEditStudyField">
                         <ice:selectBooleanCheckbox partialSubmit="true"   value="#{TemplateFormPage.studyMap[sfc.topicClassValue].recommended}" rendered ="#{TemplateFormPage.dataTableTopicClass.rowIndex==0}"  />
                         <dvn:inlinehelp helpMessage="#{editstudybundle.topicClassificationHelp}" linkText="#{editstudybundle.topicClassificationLabel}" heading="#{editstudybundle.topicClassificationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                        <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.topicInputLevel=='required'}"/>
-                        <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.topicInputLevel=='recommended'}"/>
+                        <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{TemplateFormPage.studyMap[sfc.topicClassValue].required}"/>
+                        <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{TemplateFormPage.studyMap[sfc.topicClassValue].recommended}"/>
                       </div>
                     </ice:column>
                     <ice:column>

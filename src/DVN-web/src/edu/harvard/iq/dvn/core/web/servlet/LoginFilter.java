@@ -331,11 +331,14 @@ public class LoginFilter implements Filter {
             if (currentVDC.isVDCRestrictedForUser(user, ipUserGroup)) {
                 return false;
             }
-        } else if ( isOptionsPage(pageDef) ) {
-            // For the Options pages, the only requirement is
+        } else if (pageDef!=null &&( pageDef.getName().equals(PageDefServiceLocal.DV_OPTIONS_PAGE)
+                || pageDef.getName().equals(PageDefServiceLocal.ACCOUNT_OPTIONS_PAGE)
+                || pageDef.getName().equals(PageDefServiceLocal.MANAGE_STUDIES_PAGE)) ) {
+            // For these  pages, the only requirement is
             // to be logged in.
-            if (user==null)
+            if (user==null) {
                 return false;
+            }
         } else if (isViewStudyPage(pageDef)) {
             Study study = null;
             StudyVersion studyVersion = null;
@@ -414,14 +417,7 @@ public class LoginFilter implements Filter {
        
     }
 
-    private boolean isOptionsPage(PageDef pageDef) {
-        if (pageDef != null &&
-                (pageDef.getName().equals(PageDefServiceLocal.DV_OPTIONS_PAGE) || pageDef.getName().equals(PageDefServiceLocal.NETWORK_OPTIONS_PAGE)  )) {
-            return true;
-        }
-        return false;
-    }
-
+ 
     private boolean isUserStudyCreator(VDCUser user, HttpServletRequest request) {
         boolean ret = false;
         String studyIdParam = getStudyIdFromRequest(request);

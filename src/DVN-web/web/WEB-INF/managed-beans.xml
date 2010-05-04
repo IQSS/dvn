@@ -81,6 +81,11 @@
             <property-class>java.lang.Long</property-class>
             <value>#{param.versionNumber}</value>
         </managed-property>
+        <managed-property>
+            <property-name>dvnVersionNumber</property-name>
+            <property-class>java.lang.String</property-class>
+            <value>#{VersionPage.versionNumber}</value>
+        </managed-property>
     </managed-bean>
     <managed-bean>
         <managed-bean-name>AnalysisApplicationBean</managed-bean-name>
@@ -830,23 +835,11 @@
         <managed-bean-class>edu.harvard.iq.dvn.core.web.MainLayoutBean</managed-bean-class>
         <managed-bean-scope>application</managed-bean-scope>
     </managed-bean>
-      <managed-bean>
+    <managed-bean>
         <managed-bean-name>VersionNotesPopupBean</managed-bean-name>
         <managed-bean-class>edu.harvard.iq.dvn.core.web.study.VersionNotesPopupBean</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
-
-        </managed-bean>
-      <managed-bean>
-        <managed-bean-name>ManageStudiesVersionNotesPopupBean</managed-bean-name>
-        <managed-bean-class>edu.harvard.iq.dvn.core.web.study.VersionNotesPopupBean</managed-bean-class>
-        <managed-bean-scope>request</managed-bean-scope>
-        <managed-property>
-            <property-name>actionTypeStr</property-name>
-            <property-class>java.lang.String</property-class>
-            <value>MANAGE_STUDIES_RELEASE</value>
-        </managed-property>
-
-      </managed-bean>
+    </managed-bean>
 
     <!-- rem'd the tiles classes -->
     <managed-bean>

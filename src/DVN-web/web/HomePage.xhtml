@@ -372,6 +372,18 @@
                             background:none;
                             padding:0;
                         }
+                        h4.dvnHmpgAllDataverses a {
+                            background:silver;
+                            display:block;
+                            padding:0.5em 26px 0.5em 0.5em;
+                            font-weight:normal !important;
+                        }
+                        h4.dvnHmpgAllDataverses a:hover{
+                            background:#c55b28;
+                            display:block;
+                            padding:0.5em 26px 0.5em 0.5em;
+                            color:white;
+                        }
                     </style>
 
                     <ul id="navigation" class="basic">
@@ -380,7 +392,7 @@
                             <ul class="xtraMenu basic">
                                 <!-- All Dataverses -->
                                 <li>
-                                    <h4 class="head selected noSubNode">
+                                    <h4 class="head selected noSubNode dvnHmpgAllDataverses">
                                         <ice:commandLink onclick="deselect_active_children(this);setHiddenValues(-1);"
                                                          partialSubmit="true"
                                                          styleClass="head">

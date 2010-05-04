@@ -34,7 +34,7 @@ import javax.persistence.*;
  * @author Ellen Kraffmiller
  */
 @Entity
-public class StudyGeoBounding implements java.io.Serializable {
+public class StudyGeoBounding implements java.io.Serializable, MetadataFieldGroup {
     
     /** Creates a new instance of StudyAuthor */
     public StudyGeoBounding() {

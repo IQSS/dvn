@@ -42,7 +42,7 @@ import javax.persistence.*;
  * @author Ellen Kraffmiller
  */
 @Entity
-public class StudyRelMaterial implements java.io.Serializable {
+public class StudyRelMaterial implements java.io.Serializable, MetadataFieldGroup {
     
     /** Creates a new instance of StudyGrant */
     public StudyRelMaterial() {

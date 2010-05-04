@@ -42,7 +42,7 @@ import javax.persistence.*;
  * @author Ellen Kraffmiller
  */
 @Entity
-public class StudyAbstract implements java.io.Serializable {
+public class StudyAbstract implements java.io.Serializable, MetadataFieldGroup {
     
     /** Creates a new instance of StudyAbstract */
     public StudyAbstract() {

@@ -679,8 +679,8 @@ jQuery(document).ready(function(){
                     <ice:outputText id="outputText143" value="#{studyPage.studyUI.metadata.disclaimer}" rendered="#{!empty studyPage.studyUI.metadata.disclaimer}" escape="false"/>
 
                     <!-- Dataverse, Dataverse Network and Harvest Terms of Use -->
-                    <dvn:inlinehelp helpMessage="#{studybundle.networkTermsofUseHelp}" linkText="#{studybundle.networkTermsofUseLabel}" heading="#{studybundle.networkTermsofUseHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{!empty VDCRequest.vdcNetwork.downloadTermsOfUseEnabled}"/>
-                    <div jsfc="ice:panelGroup" rendered="#{!empty VDCRequest.vdcNetwork.downloadTermsOfUseEnabled}">
+                    <dvn:inlinehelp helpMessage="#{studybundle.networkTermsofUseHelp}" linkText="#{studybundle.networkTermsofUseLabel}" heading="#{studybundle.networkTermsofUseHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{VDCRequest.vdcNetwork.downloadTermsOfUseEnabled}"/>
+                    <div jsfc="ice:panelGroup" rendered="#{VDCRequest.vdcNetwork.downloadTermsOfUseEnabled}">
                         <div jsfc="ice:panelGroup">
                             <ice:outputLink value="#" onclick="return toggleTermsofUse(this)" styleClass="vdcInlineHelpLink">
                                 <ice:outputText value="View Terms of Use [+]" styleClass="vdcInlineHelpLinkText"/>

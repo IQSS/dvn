@@ -777,11 +777,11 @@ INSERT INTO templatefield(id, template_id, studyfield_id, fieldinputlevel_id) VA
 INSERT INTO templatefield(id, template_id, studyfield_id, fieldinputlevel_id) VALUES(25,1,25,3);
 INSERT INTO templatefield(id, template_id, studyfield_id, fieldinputlevel_id) VALUES(26,1,26,3);
 INSERT INTO templatefield(id, template_id, studyfield_id, fieldinputlevel_id) VALUES(27,1,27,2);
-INSERT INTO templatefield(id, template_id, studyfield_id, fieldinputlevel_id) VALUES(28,1,28,2);
+INSERT INTO templatefield(id, template_id, studyfield_id, fieldinputlevel_id) VALUES(28,1,28,3);
 INSERT INTO templatefield(id, template_id, studyfield_id, fieldinputlevel_id) VALUES(29,1,29,3);
 
 INSERT INTO templatefield(id, template_id, studyfield_id, fieldinputlevel_id) VALUES(30,1,30,2);
-INSERT INTO templatefield(id, template_id, studyfield_id, fieldinputlevel_id) VALUES(31,1,31,2);
+INSERT INTO templatefield(id, template_id, studyfield_id, fieldinputlevel_id) VALUES(31,1,31,3);
 INSERT INTO templatefield(id, template_id, studyfield_id, fieldinputlevel_id) VALUES(32,1,32,3);
 INSERT INTO templatefield(id, template_id, studyfield_id, fieldinputlevel_id) VALUES(33,1,33,2);
 INSERT INTO templatefield(id, template_id, studyfield_id, fieldinputlevel_id) VALUES(34,1,34,3);

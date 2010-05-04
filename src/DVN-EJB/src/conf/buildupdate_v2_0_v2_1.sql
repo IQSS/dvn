@@ -127,6 +127,10 @@ update pagedef set networkrole_id = null where path = '/networkAdmin/NetworkOpti
 ---
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'DeaccessionStudyPage', '/study/DeaccessionStudyPage.xhtml', 2, null );
 
+--
+-- Fix to template field recommendation levels
+--
+update templatefield set fieldinputlevel_id = 3 where studyfield_id in ( 28, 31);
 commit;
 
 

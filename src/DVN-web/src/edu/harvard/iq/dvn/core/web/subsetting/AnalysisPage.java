@@ -304,13 +304,25 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     private static Long TEMP_FILE_LIFETIME=10L;
     
     private static String TEMP_DIR = System.getProperty("java.io.tmpdir");
-    
+
     // </editor-fold>
     
     // -----------------------------------------------------------------------
     // Non-JSF-component Instance variables
     // -----------------------------------------------------------------------
     // <editor-fold desc="Instance Variables">
+
+    private String dvnVersionNumber;
+
+    public String getDvnVersionNumber() {
+        return dvnVersionNumber;
+    }
+
+    public void setDvnVersionNumber(String dvnVersionNumber) {
+        this.dvnVersionNumber = dvnVersionNumber;
+    }
+
+    
 
     private Long versionNumber;
 
@@ -1406,6 +1418,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             }
             resultInfo.put("studyURL", studyURL);
             resultInfo.put("R_min_verion_no",resultInfo.get("Rversion").substring(2));
+            resultInfo.put("dataverse_version_no",dvnVersionNumber);
            
             dbgLog.fine("wbDataFileName="+resultInfo.get("wbDataFileName"));
             dbgLog.fine("RwrkspFileName="+resultInfo.get("wrkspFileName"));
@@ -3543,6 +3556,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             }
             resultInfo.put("studyURL", studyURL);
             resultInfo.put("R_min_verion_no",resultInfo.get("Rversion").substring(2));
+            resultInfo.put("dataverse_version_no",dvnVersionNumber);
             
             dbgLog.fine("RwrkspFileName="+resultInfo.get("wrkspFileName"));
 
@@ -6274,7 +6288,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             }
             resultInfo.put("studyURL", studyURL);
             resultInfo.put("R_min_verion_no",resultInfo.get("Rversion").substring(2));
-            
+            resultInfo.put("dataverse_version_no",dvnVersionNumber);
+
             dbgLog.fine("RwrkspFileName="+resultInfo.get("wrkspFileName"));
 
             // writing necessary files

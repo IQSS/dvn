@@ -120,7 +120,7 @@ public class ManageStudiesList extends VDCBaseBean {
             }
             List studyVersionIds =null;
             if (vdcId != null){
-                if (contributorFilter) {
+                if (contributorFilter || (!isUserCuratorOrAdminOrNetworkAdmin() && !VDCBaseBean.getVDCRequestBean().getCurrentVDC().isAllowContributorsEditAll())) {
                     studyVersionIds = studyService.getDvOrderedStudyVersionIdsByContributor(vdcId, loginBean.getUser().getId(), orderBy, ascending);
                 } else {
                     studyVersionIds = studyService.getDvOrderedStudyVersionIds(vdcId, orderBy, ascending);
@@ -376,6 +376,15 @@ public class ManageStudiesList extends VDCBaseBean {
         VDC vdc = VDCBaseBean.getVDCRequestBean().getCurrentVDC();
         if (user!=null) {
             return user.isCurator(vdc)|| user.isAdmin(vdc);
+        }
+        return false;
+    }
+
+    private boolean isUserCuratorOrAdminOrNetworkAdmin(){
+        VDCUser user = loginBean == null ? null : loginBean.getUser();
+        VDC vdc = VDCBaseBean.getVDCRequestBean().getCurrentVDC();
+        if (user!=null) {
+            return user.isCurator(vdc)|| user.isAdmin(vdc) || user.isNetworkAdmin();
         }
         return false;
     }

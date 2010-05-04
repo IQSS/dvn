@@ -313,6 +313,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
             vdcUIList.setSortColumnName(vdcUIList.getNameColumnName());
         } 
         if (groupId == null || groupId.equals(new Long("-1")) ) {
+            group = null;
             setGroupName("All Dataverses");
         } else {
             group = vdcGroupService.findById(groupId);

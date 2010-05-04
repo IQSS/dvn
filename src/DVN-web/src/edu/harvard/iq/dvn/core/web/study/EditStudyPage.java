@@ -70,6 +70,7 @@ import com.icesoft.faces.component.ext.HtmlInputTextarea;
 import com.icesoft.faces.component.ext.HtmlSelectOneMenu;
 import com.icesoft.faces.component.ext.HtmlSelectOneRadio;
 import edu.harvard.iq.dvn.core.study.Metadata;
+import edu.harvard.iq.dvn.core.study.MetadataFieldGroup;
 import java.util.Date;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
@@ -423,7 +424,114 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     public void setDataTableOtherIds(HtmlDataTable dataTableOtherIds) {
         this.dataTableOtherIds = dataTableOtherIds;
     }
-    
+
+    private boolean isGroupEmpty(List mfgList) {
+        if (mfgList==null || mfgList.size()==0) {
+            return true;
+        }
+        for (Object obj : mfgList) {
+            if (!((MetadataFieldGroup)obj).isEmpty())
+                return false;
+        }
+        return true;
+    }
+
+    //
+    //  The following methods are used in the Edit Study form display logic for metadata dependent collections
+    //
+
+    // StudyAuthor
+
+    public boolean isStudyAuthorsEmpty() {
+        return isGroupEmpty(metadata.getStudyAuthors());
+    }
+
+    // StudyAbstract
+
+    public boolean isStudyAbstractsEmpty() {
+        return isGroupEmpty(metadata.getStudyAbstracts());
+    }
+
+    // StudyDistributor
+
+    public boolean isStudyDistributorsEmpty() {
+        return isGroupEmpty(metadata.getStudyDistributors());
+    }
+
+    // StudyGrant
+
+    public boolean isStudyGrantsEmpty() {
+        return isGroupEmpty(metadata.getStudyGrants());
+    }
+
+    // StudyGeobounding
+
+    public boolean isStudyGeoBoundingsEmpty() {
+        return isGroupEmpty(metadata.getStudyGeoBoundings());
+    }
+
+    // StudyKeyword
+
+    public boolean isStudyKeywordsEmpty() {
+        return isGroupEmpty(metadata.getStudyKeywords());
+    }
+
+    // StudyNote
+
+    public boolean isStudyNotesEmpty() {
+        return isGroupEmpty(metadata.getStudyNotes());
+    }
+
+    // StudyOtherId
+
+    public boolean isStudyOtherIdsEmpty() {
+        return isGroupEmpty(metadata.getStudyOtherIds());
+    }
+
+    // StudyProducer
+
+    public boolean isStudyProducersEmpty() {
+        return isGroupEmpty(metadata.getStudyProducers());
+    }
+
+    // StudySoftware
+
+    public boolean isStudySoftwareEmpty() {
+        return isGroupEmpty(metadata.getStudySoftware());
+    }
+
+    // StudyTopicClass
+
+    public boolean isStudyTopicClassesEmpty() {
+        return isGroupEmpty(metadata.getStudyTopicClasses());
+    }
+
+    // StudyRelMaterial
+
+    public boolean isStudyRelMaterialsEmpty() {
+        return isGroupEmpty(metadata.getStudyRelMaterials());
+    }
+
+    // StudyRelPublication
+
+    public boolean isStudyRelPublicationsEmpty() {
+        return isGroupEmpty(metadata.getStudyRelPublications());
+    }
+
+    // StudyRelStudy
+
+    public boolean isStudyRelStudiesEmpty() {
+        return isGroupEmpty(metadata.getStudyRelStudies());
+    }
+
+    // StudyOtherRef
+
+    public boolean isStudyOtherRefsEmpty() {
+        return isGroupEmpty(metadata.getStudyOtherRefs());
+    }
+
+
+
     private void removeEmptyRows() {
         // Remove empty collection rows
         
@@ -799,10 +907,10 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
      public String getAbstractAndScopeInputLevel() {
         return getInputLevel(StudyFieldConstant.abstractDate,
                StudyFieldConstant.abstractText,
-               StudyFieldConstant.keywordValue,
+               StudyFieldConstant.keywordValue,             
                StudyFieldConstant.keywordVocab,
                StudyFieldConstant.keywordVocabURI,
-               StudyFieldConstant.topicClassValue,
+               StudyFieldConstant.topicClassValue,              
                StudyFieldConstant.topicClassVocab,
                StudyFieldConstant.topicClassVocabURI,
                StudyFieldConstant.relatedPublications,
@@ -815,7 +923,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
                StudyFieldConstant.dateOfCollectionStart,
                StudyFieldConstant.country,
                StudyFieldConstant.geographicCoverage,
-               StudyFieldConstant.geographicUnit,
+               StudyFieldConstant.geographicUnit,            
                StudyFieldConstant.eastLongitude,
                StudyFieldConstant.westLongitude,
                StudyFieldConstant.northLatitude,
@@ -823,6 +931,26 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
                StudyFieldConstant.unitOfAnalysis,
                StudyFieldConstant.kindOfData,
                StudyFieldConstant.universe);
+     }
+
+     public boolean isAbstractAndScopeEmpty() {
+         return this.isStudyAbstractsEmpty() &&
+                 this.isStudyKeywordsEmpty() &&
+                 this.isStudyTopicClassesEmpty() &&
+                 this.isStudyRelPublicationsEmpty() &&
+                 this.isStudyRelMaterialsEmpty() &&
+                 this.isStudyOtherRefsEmpty() &&
+                 StringUtil.isEmpty(metadata.getTimePeriodCoveredStart()) &&
+                 StringUtil.isEmpty(metadata.getTimePeriodCoveredEnd()) &&
+                 StringUtil.isEmpty(metadata.getDateOfCollectionStart()) &&
+                 StringUtil.isEmpty(metadata.getDateOfCollectionEnd()) &&
+                 StringUtil.isEmpty(metadata.getCountry()) &&
+                 StringUtil.isEmpty(metadata.getGeographicCoverage()) &&
+                 StringUtil.isEmpty(metadata.getGeographicUnit()) &&
+                 this.isStudyGeoBoundingsEmpty() &&
+                 StringUtil.isEmpty(metadata.getUnitOfAnalysis()) &&
+                 StringUtil.isEmpty(metadata.getKindOfData()) &&
+                 StringUtil.isEmpty(metadata.getUniverse());
      }
 
     public String getDataCollectionMethodologyInputLevel() {
@@ -848,7 +976,29 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
 
 
     }
-
+    public boolean isDataCollectionMethodologyEmpty() {
+        return StringUtil.isEmpty(metadata.getTimeMethod()) &&
+                StringUtil.isEmpty(metadata.getDataCollector()) &&
+                StringUtil.isEmpty(metadata.getFrequencyOfDataCollection()) &&
+                StringUtil.isEmpty(metadata.getSamplingProcedure()) &&
+                StringUtil.isEmpty(metadata.getDeviationsFromSampleDesign()) &&
+                StringUtil.isEmpty(metadata.getCollectionMode()) &&
+                StringUtil.isEmpty(metadata.getResearchInstrument()) &&
+                StringUtil.isEmpty(metadata.getDataSources()) &&
+                StringUtil.isEmpty(metadata.getOriginOfSources()) &&
+                StringUtil.isEmpty(metadata.getCharacteristicOfSources()) &&
+                StringUtil.isEmpty(metadata.getAccessToSources()) &&
+                StringUtil.isEmpty(metadata.getDataCollectionSituation()) &&
+                StringUtil.isEmpty(metadata.getActionsToMinimizeLoss()) &&
+                StringUtil.isEmpty(metadata.getControlOperations()) &&
+                StringUtil.isEmpty(metadata.getWeighting()) &&
+                StringUtil.isEmpty(metadata.getCleaningOperations()) &&
+                StringUtil.isEmpty(metadata.getStudyLevelErrorNotes()) &&
+                StringUtil.isEmpty(metadata.getResponseRate()) &&
+                StringUtil.isEmpty(metadata.getSamplingErrorEstimate()) &&
+                StringUtil.isEmpty(metadata.getOtherDataAppraisal());
+    }
+ 
     public String getTermsOfUseInputLevel() {
         return getInputLevel(StudyFieldConstant.disclaimer,
                 StudyFieldConstant.conditions,
@@ -861,6 +1011,17 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
 
     }
 
+    public boolean isTermsOfUseEmpty() {
+        return StringUtil.isEmpty(metadata.getDisclaimer()) &&
+                StringUtil.isEmpty(metadata.getConditions()) &&
+                StringUtil.isEmpty(metadata.getDepositorRequirements()) &&
+                StringUtil.isEmpty(metadata.getCitationRequirements()) &&
+                StringUtil.isEmpty(metadata.getContact()) &&
+                StringUtil.isEmpty(metadata.getRestrictions()) &&
+                StringUtil.isEmpty(metadata.getSpecialPermissions()) &&
+                StringUtil.isEmpty(metadata.getConfidentialityDeclaration());
+    }
+
     public String getDataSetAvailabilityInputLevel() {
         return getInputLevel(StudyFieldConstant.placeOfAccess,
                 StudyFieldConstant.originalArchive,
@@ -869,11 +1030,13 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
                 StudyFieldConstant.studyCompletion);
 
     }
-   public String getGeoBoundingInputLevel() {
-        return getInputLevel(StudyFieldConstant.eastLongitude,
-                StudyFieldConstant.westLongitude,
-                StudyFieldConstant.northLatitude,
-                StudyFieldConstant.southLatitude);
+
+    public boolean isDataSetAvailabilityEmpty() {
+       return StringUtil.isEmpty(metadata.getPlaceOfAccess()) &&
+                StringUtil.isEmpty(metadata.getOriginalArchive()) &&
+                StringUtil.isEmpty(metadata.getAvailabilityStatus()) &&
+                StringUtil.isEmpty(metadata.getCollectionSize()) &&
+                StringUtil.isEmpty(metadata.getStudyCompletion());
 
     }
     public String getOtherInformationInputLevel() {
@@ -1072,7 +1235,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             UIComponent toValidate,
             Object value) {
         boolean valid=true;
-        if (isSaving()) {
+        if (isValidateRequired()) {
             Double longitude = new Double(value.toString().trim());
             BigDecimal decimalLongitude = new BigDecimal(value.toString().trim());
             BigDecimal maxLongitude = new BigDecimal("180");
@@ -1101,7 +1264,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             Object value) {
         boolean valid=true;
         
-        if (isSaving()) {
+        if (isValidateRequired()) {
             BigDecimal decimalLatitude = new BigDecimal(value.toString().trim());
             BigDecimal maxLatitude = new BigDecimal("90");
             BigDecimal minLatitude = new BigDecimal("-90");
@@ -1123,7 +1286,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     public void validateStudyAuthor(FacesContext context,
             UIComponent toValidate,
             Object value) {
-        if (isSaving()) {
+        if (isValidateRequired()) {
             boolean valid=true;
             // StudyAuthor
             String name = (String)inputAuthorName.getLocalValue();
@@ -1136,8 +1299,8 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
                 ((UIInput)toValidate).setValid(false);
                 FacesMessage message = new FacesMessage("Author name is required if Affiliation is entered.");
                 context.addMessage(toValidate.getClientId(context), message);
+                }
             }
-       }
         
     }
     
@@ -1145,7 +1308,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             UIComponent toValidate,
             Object value) {
         
-        if (isSaving()) {
+        if (isValidateRequired()) {
             boolean valid=true;
             if (StringUtil.isEmpty((String)inputOtherId.getLocalValue())
             && !StringUtil.isEmpty((String)value)  ) {
@@ -1162,7 +1325,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
       public void validateSeries(FacesContext context,
             UIComponent toValidate, Object value) {
         
-        if (isSaving()) {
+        if (isValidateRequired()) {
                 boolean valid=true;
             if (StringUtil.isEmpty((String)inputSeries.getLocalValue())
             && !StringUtil.isEmpty((String)value))   {
@@ -1179,7 +1342,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
  public void validateVersion(FacesContext context,
             UIComponent toValidate, Object value) {
         
-        if (isSaving()){
+        if (isValidateRequired()){
             boolean valid=true;
             if (StringUtil.isEmpty((String)inputVersion.getLocalValue())
             && !StringUtil.isEmpty((String)value)) {
@@ -1197,7 +1360,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             UIComponent toValidate,
             Object value) {
         
-        if (isSaving()) {
+        if (isValidateRequired()) {
             boolean valid=true;
             if (StringUtil.isEmpty((String)inputAbstractText.getLocalValue())
             && !StringUtil.isEmpty((String)value)  ) {
@@ -1215,7 +1378,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             UIComponent toValidate,
             Object value) {
         
-        if (isSaving()) {
+        if (isValidateRequired()) {
             boolean valid=true;
             if (StringUtil.isEmpty((String)this.inputNoteType.getLocalValue())
             && (!StringUtil.isEmpty((String)this.inputNoteText.getLocalValue())
@@ -1236,7 +1399,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             UIComponent toValidate,
             Object value) {
         
-        if (isSaving()) {
+        if (isValidateRequired()) {
             boolean valid=true;
             if (StringUtil.isEmpty((String)this.inputSoftwareName.getLocalValue())
             && !StringUtil.isEmpty((String)value)  ) {
@@ -1254,7 +1417,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             UIComponent toValidate,
             Object value) {
         
-        if (isSaving()){
+        if (isValidateRequired()){
             boolean valid=true;
             if (StringUtil.isEmpty((String)inputGrantNumber.getLocalValue())
             && !StringUtil.isEmpty((String)value)  ) {
@@ -1273,7 +1436,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             UIComponent toValidate,
             Object value) {
         
-        if (isSaving()) {
+        if (isValidateRequired()) {
             boolean valid=true;
             if (StringUtil.isEmpty((String)inputDistributorName.getLocalValue())
             && (!StringUtil.isEmpty((String)inputDistributorAbbreviation.getLocalValue())
@@ -1295,7 +1458,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             UIComponent toValidate,
             Object value) {
         
-        if (isSaving()) {
+        if (isValidateRequired()) {
             boolean valid=true;
             if (StringUtil.isEmpty((String)inputDistributorContact.getLocalValue())
             && (!StringUtil.isEmpty((String)inputDistributorContactAffiliation.getLocalValue())
@@ -1316,7 +1479,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             UIComponent toValidate,
             Object value) {
         
-        if (isSaving()) {
+        if (isValidateRequired()) {
             boolean valid=true;
             if (StringUtil.isEmpty((String)inputKeywordValue.getLocalValue())
             && (!StringUtil.isEmpty((String)inputKeywordVocab.getLocalValue())
@@ -1336,7 +1499,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             UIComponent toValidate,
             Object value) {
         
-        if( isSaving()) {
+        if( isValidateRequired()) {
             boolean valid=true;
             if (StringUtil.isEmpty((String)inputTopicClassValue.getLocalValue())
             && (!StringUtil.isEmpty((String)inputTopicClassVocab.getLocalValue())
@@ -1355,7 +1518,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
    public void validateGeographicBounding(FacesContext context,
             UIComponent toValidate,
             Object value) {
-        if (isSaving()) {
+        if (isValidateRequired()) {
              boolean valid=true;
             // if any geographic values are filled, then they all must be filled
             if (!StringUtil.isEmpty((String)inputWestLongitude.getLocalValue())
@@ -1383,7 +1546,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     public void validateStudyProducer(FacesContext context,
             UIComponent toValidate,
             Object value) {
-        if (isSaving()) {
+        if (isValidateRequired()) {
             boolean valid = true;
 
 
@@ -1410,7 +1573,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             Object value) {
         boolean valid=true;
                 
-        if (isSaving()) {
+        if (isValidateRequired()) {
             String studyId = (String)value;
             FacesMessage message=null;
             if (!studyService.isUniqueStudyId(studyId, study.getProtocol(),study.getAuthority())) {
@@ -1488,8 +1651,8 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     }
 
     public void setShowAll(boolean showAll) {
-        this.showAll = showAll;
-    }
+            this.showAll = showAll;
+         }
 
     
     private Long selectTemplateId;
@@ -2611,10 +2774,10 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     }
 
 
-     HtmlCommandButton saveCommand1;
-     HtmlCommandButton saveCommand2;
-     HtmlSelectOneRadio showFields;
-
+     private HtmlCommandButton saveCommand1;
+     private HtmlCommandButton saveCommand2;
+     private HtmlSelectOneRadio showFields;
+    
     public HtmlSelectOneRadio getShowFields() {
         return showFields;
     }
@@ -2641,11 +2804,20 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
      
 
 
-    public boolean isSaving() {
-        // check to see if the current request is from the user clicking one of the save buttons 
+    /**
+     * Check to see if this request requires validation.  Validation should occur
+     * when the user clicks either Save button.
+     *
+     * @return
+     */
+    public boolean isValidateRequired() {
+        // Check to see if the current request is from the user clicking one of the save buttons.
+
         FacesContext fc = FacesContext.getCurrentInstance();
         Map reqParams = fc.getExternalContext().getRequestParameterMap();
-        return reqParams.containsKey(saveCommand1.getClientId(fc)) || reqParams.containsKey(saveCommand2.getClientId(fc));
+        
+        boolean validateRequired=  reqParams.containsKey( saveCommand1.getClientId(fc)) || reqParams.containsKey(saveCommand2.getClientId(fc));
+        return validateRequired;
     }
 
 

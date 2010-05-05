@@ -13,6 +13,7 @@
   <gui:composition template="/template.xhtml">
     <gui:param name="pageTitle" value="Account Terms of Use - #{VDCRequest.dataversePageTitle}"/>
     <gui:define name="body">
+      <f:loadBundle basename="StudyBundle" var="studybundle"/>
       <ice:form  id="form1">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <input type="hidden" value="TermsOfUsePage" name="pageName"/>

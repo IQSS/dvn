@@ -1236,27 +1236,26 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             Object value) {
         boolean valid=true;
         if (isValidateRequired()) {
-            Double longitude = new Double(value.toString().trim());
-            BigDecimal decimalLongitude = new BigDecimal(value.toString().trim());
-            BigDecimal maxLongitude = new BigDecimal("180");
-            BigDecimal minLongitude = new BigDecimal("-180");
+            try {
+                Double longitude = new Double(value.toString().trim());
+                BigDecimal decimalLongitude = new BigDecimal(value.toString().trim());
+                BigDecimal maxLongitude = new BigDecimal("180");
+                BigDecimal minLongitude = new BigDecimal("-180");
 
-            // To be valid longitude must be between 180 and -180
-            if (decimalLongitude.compareTo(maxLongitude)==1 || decimalLongitude.compareTo(minLongitude)==-1) {
+                // To be valid longitude must be between 180 and -180
+                if (decimalLongitude.compareTo(maxLongitude)==1 || decimalLongitude.compareTo(minLongitude)==-1) {
+                    valid=false;
+                }
+            } catch (NumberFormatException e) {
                 valid=false;
             }
 
-
-
             if (!valid) {
                 ((UIInput)toValidate).setValid(false);
-
                 FacesMessage message = new FacesMessage("Invalid Longitude.  Value must be between -180 and 180. (Unit is decimal degrees.)");
                 context.addMessage(toValidate.getClientId(context), message);
-
             }
-        }
-        
+        }        
     }
     
     public void validateLatitude(FacesContext context,
@@ -1265,16 +1264,19 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         boolean valid=true;
         
         if (isValidateRequired()) {
-            BigDecimal decimalLatitude = new BigDecimal(value.toString().trim());
-            BigDecimal maxLatitude = new BigDecimal("90");
-            BigDecimal minLatitude = new BigDecimal("-90");
+            try {
+                 BigDecimal decimalLatitude = new BigDecimal(value.toString().trim());
+                 BigDecimal maxLatitude = new BigDecimal("90");
+                 BigDecimal minLatitude = new BigDecimal("-90");
 
-            // To be valid latitude must be between 90 and -90
-            if (decimalLatitude.compareTo(maxLatitude)==1 || decimalLatitude.compareTo(minLatitude)==-1) {
+                // To be valid latitude must be between 90 and -90
+                if (decimalLatitude.compareTo(maxLatitude)==1 || decimalLatitude.compareTo(minLatitude)==-1) {
+                    valid=false;
+                }
+            } catch (NumberFormatException e) {
                 valid=false;
             }
-
-
+          
             if (!valid) {
                 ((UIInput)toValidate).setValid(false);
                 FacesMessage message = new FacesMessage("Invalid Latitude.  Value must be between -90 and 90. (Unit is decimal degrees.)");

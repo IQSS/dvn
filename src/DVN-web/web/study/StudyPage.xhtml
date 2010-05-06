@@ -222,7 +222,7 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
                     <div jsfc="ice:panelGroup" styleClass="dvnstudyadminbox" rendered="#{VDCSession.loginBean.user!=null and studyPage.studyUI.userAuthorizedToEdit}">
                         <div jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.study.studyLock==null}">
                             <ul class="dvnstudyadminlinksL">
-                                <span jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.studyVersion != studyPage.studyUI.study.latestVersion}">
+                                <span jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.studyVersion != studyPage.studyUI.study.latestVersion and (studyPage.studyUI.studyVersion.released or studyPage.studyUI.studyVersion.deaccessioned)}">
                                     <!--<li>
                                         <dvn:tooltip tooltipMessage="#{studybundle.editStudyTip}" linkText="Edit Draft/Review Version" eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;versionNumber=#{studyPage.studyUI.study.latestVersion.versionNumber}"/>
                                     </li>-->
@@ -300,11 +300,6 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
                                         </ice:commandLink>
                                     </li>
                                 </span>
-                                <!--span jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.userAuthorizedToEdit and studyPage.studyUI.studyVersion.archived}">
-                                    <li>
-                                        <dvn:tooltip tooltipMessage="#{studybundle.restoreTip}" linkText="#{studybundle.restoreText}" eventType="mouseover" linkUrl="#"/>
-                                    </li>
-                                </span-->
                                 <span jsfc="ice:panelGroup" rendered="#{VDCSession.loginBean.networkAdmin and (!studyPage.studyUI.studyVersion.workingCopy or studyPage.studyUI.studyVersion.versionNumber != 1)}">
                                     <li>
                                         <ice:commandLink actionListener="#{studyPage.confirmStudyDestroyAction}" onmouseover="javascript:popupTooltip(this, &#39;#{studybundle.destroyTip}&#39;, &#39;&#39;, event);" onmouseout="javascript:hideTooltip();">
@@ -343,20 +338,20 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
                     <div jsfc="ice:panelGroup" styleClass="dvnstudyversioninfo" rendered="#{(studyPage.studyUI.studyVersion.released)}">
                         <ice:outputText value="Version: #{studyPage.studyUI.studyVersion.versionNumber}"/> <ice:outputText value="&#8211; Released: #{studyPage.studyUI.studyVersion.releaseTime}"/>
                     </div>
-                    <div jsfc="ice:panelGroup" styleClass="dvnstudystatusbox #{studyPage.studyUI.studyVersion.archived ? 'dvnstudystatusarchived' : '' or studyPage.studyUI.studyVersion.inReview ? 'dvnstudystatusreview' : '' or studyPage.studyUI.studyVersion.draft ? 'dvnstudystatusdraft' : ''}" rendered="#{!studyPage.studyUI.studyVersion.released}">
+                    <div jsfc="ice:panelGroup" styleClass="dvnstudystatusbox #{studyPage.studyUI.studyVersion.retiredCopy ? 'dvnstudystatusarchived' : '' or studyPage.studyUI.studyVersion.inReview ? 'dvnstudystatusreview' : '' or studyPage.studyUI.studyVersion.draft ? 'dvnstudystatusdraft' : ''}" rendered="#{!studyPage.studyUI.studyVersion.released}">
                         <ice:outputText styleClass="dvnstudystatuslabel" value="In Review " rendered="#{studyPage.studyUI.studyVersion.inReview}"/>
                         <ice:outputText styleClass="dvnstudystatuslabel" value="Draft " rendered="#{studyPage.studyUI.studyVersion.draft}"/>
-                        <ice:outputText styleClass="dvnstudystatuslabel" value="Archived " rendered="#{studyPage.studyUI.studyVersion.archived and studyPage.studyUI.study.deaccessionedVersion == null}"/>
-                        <ice:outputText styleClass="dvnstudystatuslabel" value="Deaccessioned " rendered="#{studyPage.studyUI.study.deaccessionedVersion != null}"/>
+                        <ice:outputText styleClass="dvnstudystatuslabel" value="Archived " rendered="#{studyPage.studyUI.studyVersion.archived}"/>
+                        <ice:outputText styleClass="dvnstudystatuslabel" value="Deaccessioned " rendered="#{studyPage.studyUI.studyVersion.deaccessioned}"/>
                         <ice:outputText value="Study Version: #{studyPage.studyUI.studyVersion.versionNumber}"/>
                         <ice:outputText value="&#8211;" rendered="#{!(studyPage.studyUI.studyVersion.released) and (studyPage.studyUI.study.releasedVersion != null)}"/>
                         <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;versionNumber=#{studyPage.studyUI.study.releasedVersion.versionNumber}#{VDCRequest.studyListingIndexAsParameter}" rendered="#{!(studyPage.studyUI.studyVersion.released) and (studyPage.studyUI.study.releasedVersion != null)}">
                             <ice:outputText value="View Released Version" />
                         </ice:outputLink>
-                        <ice:outputText value="&#8211;" rendered="#{studyPage.studyUI.study.deaccessionedVersion != null or (studyPage.studyUI.study.releasedVersion == null and studyPage.studyUI.studyVersion.inReview) or (studyPage.studyUI.study.releasedVersion == null and studyPage.studyUI.studyVersion.draft)}"/>
-                        <ice:outputText value="No Released Version" styleClass="warnMessage" rendered="#{studyPage.studyUI.study.deaccessionedVersion != null or (studyPage.studyUI.study.releasedVersion == null and studyPage.studyUI.studyVersion.inReview) or (studyPage.studyUI.study.releasedVersion == null and studyPage.studyUI.studyVersion.draft)}"/>
-                        <ice:outputText nospan="true" rendered="#{studyPage.studyUI.studyVersion.archived}"><br/></ice:outputText>
-                        <ice:outputText value="Released: #{studyPage.studyUI.studyVersion.releaseTime} &#8211; Archived: #{studyPage.studyUI.studyVersion.archiveTime}" rendered="#{studyPage.studyUI.studyVersion.archived}"/>
+                        <ice:outputText value="&#8211;" rendered="#{studyPage.studyUI.study.releasedVersion == null}"/>
+                        <ice:outputText value="No Released Version" styleClass="warnMessage" rendered="#{studyPage.studyUI.study.releasedVersion == null}"/>
+                        <ice:outputText nospan="true" rendered="#{studyPage.studyUI.studyVersion.retiredCopy}"><br/></ice:outputText>
+                        <ice:outputText value="Released: #{studyPage.studyUI.studyVersion.releaseTime} &#8211; Archived: #{studyPage.studyUI.studyVersion.archiveTime}" rendered="#{studyPage.studyUI.studyVersion.retiredCopy}"/>
                         <ice:outputText nospan="true" rendered="#{studyPage.studyUI.studyVersion.workingCopy}"><br/></ice:outputText>
                         <ice:outputText value="Created: #{studyPage.studyUI.studyVersion.createTime} &#8211; Last Updated: #{studyPage.studyUI.studyVersion.lastUpdateTime}" rendered="#{studyPage.studyUI.studyVersion.workingCopy}"/>
                         <ice:outputText nospan="true" rendered="#{!empty studyPage.studyUI.studyVersion.versionNote}"><br/></ice:outputText>

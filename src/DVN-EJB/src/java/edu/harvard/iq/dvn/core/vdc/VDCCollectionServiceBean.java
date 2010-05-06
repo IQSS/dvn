@@ -141,7 +141,7 @@ public class VDCCollectionServiceBean implements VDCCollectionServiceLocal {
     }
 
     public List<Long> getStudyIds(VDCCollection coll) {
-        return studyService.getOrderedStudies( getStudyIds(coll, true), "lastUpdateTime");
+        return studyService.getOrderedStudies( getStudyIds(coll, true), "releaseTime");
     }
 
     private List<Long> getStudyIds(VDCCollection coll, boolean includeSubCollections) {

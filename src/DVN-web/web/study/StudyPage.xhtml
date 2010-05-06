@@ -353,8 +353,8 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
                         <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;versionNumber=#{studyPage.studyUI.study.releasedVersion.versionNumber}#{VDCRequest.studyListingIndexAsParameter}" rendered="#{!(studyPage.studyUI.studyVersion.released) and (studyPage.studyUI.study.releasedVersion != null)}">
                             <ice:outputText value="View Released Version" />
                         </ice:outputLink>
-                        <ice:outputText value="&#8211;" rendered="#{studyPage.studyUI.study.deaccessionedVersion != null}"/>
-                        <ice:outputText value="No Released Version" styleClass="warnMessage" rendered="#{studyPage.studyUI.study.deaccessionedVersion != null}"/>
+                        <ice:outputText value="&#8211;" rendered="#{studyPage.studyUI.study.deaccessionedVersion != null or (studyPage.studyUI.study.releasedVersion == null and studyPage.studyUI.studyVersion.inReview) or (studyPage.studyUI.study.releasedVersion == null and studyPage.studyUI.studyVersion.draft)}"/>
+                        <ice:outputText value="No Released Version" styleClass="warnMessage" rendered="#{studyPage.studyUI.study.deaccessionedVersion != null or (studyPage.studyUI.study.releasedVersion == null and studyPage.studyUI.studyVersion.inReview) or (studyPage.studyUI.study.releasedVersion == null and studyPage.studyUI.studyVersion.draft)}"/>
                         <ice:outputText nospan="true" rendered="#{studyPage.studyUI.studyVersion.archived}"><br/></ice:outputText>
                         <ice:outputText value="Released: #{studyPage.studyUI.studyVersion.releaseTime} &#8211; Archived: #{studyPage.studyUI.studyVersion.archiveTime}" rendered="#{studyPage.studyUI.studyVersion.archived}"/>
                         <ice:outputText nospan="true" rendered="#{studyPage.studyUI.studyVersion.workingCopy}"><br/></ice:outputText>

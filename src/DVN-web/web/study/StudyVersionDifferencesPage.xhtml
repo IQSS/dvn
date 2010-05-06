@@ -84,8 +84,6 @@ td.dvnDifferanceTableHeaderCol1 {border-top: 0 !important;}
                     <div jsfc="ice:panelGroup" styleClass="dvnstudystatusbox dvnstudystatusreview">
                         <ice:outputText styleClass="dvnstudystatuslabel" value="In Review " rendered="#{studyVersionDifferencesPage.studyUI2.studyVersion.inReview}"/>
                         <ice:outputText styleClass="dvnstudystatuslabel" value="Draft " rendered="#{studyVersionDifferencesPage.studyUI2.studyVersion.draft}"/>
-                        <ice:outputText styleClass="dvnstudystatuslabel" value="Archived " rendered="#{studyVersionDifferencesPage.studyUI2.studyVersion.archived and studyPage.studyUI2.study.deaccessionedVersion == null}"/>
-                        <ice:outputText styleClass="dvnstudystatuslabel" value="Deaccessioned " rendered="#{studyVersionDifferencesPage.studyUI2.study.deaccessionedVersion != null}"/>
                         <ice:outputText value="Study Version: #{studyVersionDifferencesPage.studyUI2.studyVersion.versionNumber}"/> <br/>
                         <ice:outputText value="Created: #{studyVersionDifferencesPage.studyUI2.studyVersion.createTime} &#8211; Last Updated: #{studyVersionDifferencesPage.studyUI2.studyVersion.lastUpdateTime}" rendered="#{studyVersionDifferencesPage.studyUI2.studyVersion.workingCopy}"/> <br/>
                         <ice:outputText value="Study Version Notes: " rendered="#{!empty studyVersionDifferencesPage.studyUI2.studyVersion.versionNote}"/>

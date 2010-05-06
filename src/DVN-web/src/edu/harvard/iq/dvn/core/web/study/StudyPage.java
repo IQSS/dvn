@@ -156,7 +156,7 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
                 redirect("/faces/IdDoesNotExistPage.xhtml?type=Study%20Version");
                 return;
             
-            } else if ( versionNumber == null && sv.isArchived() ) { // deaccessioned
+            } else if ( sv.isDeaccessioned() && versionNumber == null ) {
                 deaccessionedView = true;
                 studyUI = new StudyUI(sv, getVDCSessionBean().getUser()); // TODO: could this be simpler
             

@@ -24,7 +24,7 @@ public class StudyVersion implements Serializable {
 
   // IMPORTANT: If you add a new value to this enum, you will also have to modify the
   // StudyVersionsFragment.xhtml in order to display the correct value from a Resource Bundle
-  public enum VersionState { DRAFT, IN_REVIEW, RELEASED, ARCHIVED};
+  public enum VersionState { DRAFT, IN_REVIEW, RELEASED, ARCHIVED, DEACCESSIONED};
 
 
 
@@ -184,6 +184,14 @@ public class StudyVersion implements Serializable {
 
     public boolean isArchived() {
          return versionState.equals(VersionState.ARCHIVED);
+    }
+
+    public boolean isDeaccessioned() {
+         return versionState.equals(VersionState.DEACCESSIONED);
+    }
+
+    public boolean isRetiredCopy() {
+        return (versionState.equals(VersionState.ARCHIVED) ||  versionState.equals(VersionState.DEACCESSIONED)) ;
     }
 
     public Study getStudy() {

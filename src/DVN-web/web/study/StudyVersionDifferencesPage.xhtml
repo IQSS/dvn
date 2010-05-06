@@ -67,8 +67,6 @@ td.dvnDifferanceTableHeaderCol1 {border-top: 0 !important;}
             <div class="dvnstudytitleblock">
                 <div class="dvnstudyadminboxfloat">
                         <div jsfc="ice:panelGroup" styleClass="vdcTextRight dvnFormMargin">
-                            <!--<ice:commandButton id="button1" value="Release" actionListener="#{studyVersionDifferencesPage.release}"/>-->
-                            <!--<ice:commandButton id="button1" value="Release" actionListener="#{studyPage.confirmReleased}"/>-->
                             <ice:commandButton id="button1" value="Release" actionListener="#{studyVersionDifferencesPage.openPopup}"/>
                             <ice:commandButton id="button2" value="Cancel" immediate="true" action="#{studyVersionDifferencesPage.cancel}"/>
                         </div>
@@ -78,14 +76,11 @@ td.dvnDifferanceTableHeaderCol1 {border-top: 0 !important;}
                     <div jsfc="ice:panelGroup" styleClass="dvnstudyversioninfo">
                         <ice:outputText value="#{studyVersionDifferencesPage.studyUI2.study.globalId}"/> <ice:outputText value="#{studyVersionDifferencesPage.studyUI2.metadata.UNF}" rendered="#{!empty studyVersionDifferencesPage.studyUI2.metadata.UNF}"/>
                     </div>
-                    <div jsfc="ice:panelGroup" styleClass="dvnstudyversioninfo" rendered="#{(studyVersionDifferencesPage.studyUI2.studyVersion.released)}">
-                        <ice:outputText value="Version: #{studyVersionDifferencesPage.studyUI2.studyVersion.versionNumber}"/> <ice:outputText value="&#8211; Released: #{studyVersionDifferencesPage.studyUI2.studyVersion.releaseTime}"/>
-                    </div>
-                    <div jsfc="ice:panelGroup" styleClass="dvnstudystatusbox dvnstudystatusreview">
+                    <div jsfc="ice:panelGroup" styleClass="dvnstudystatusbox #{studyVersionDifferencesPage.studyUI2.studyVersion.inReview ? 'dvnstudystatusreview' : '' or studyVersionDifferencesPage.studyUI2.studyVersion.draft ? 'dvnstudystatusdraft' : ''}">
                         <ice:outputText styleClass="dvnstudystatuslabel" value="In Review " rendered="#{studyVersionDifferencesPage.studyUI2.studyVersion.inReview}"/>
                         <ice:outputText styleClass="dvnstudystatuslabel" value="Draft " rendered="#{studyVersionDifferencesPage.studyUI2.studyVersion.draft}"/>
                         <ice:outputText value="Study Version: #{studyVersionDifferencesPage.studyUI2.studyVersion.versionNumber}"/> <br/>
-                        <ice:outputText value="Created: #{studyVersionDifferencesPage.studyUI2.studyVersion.createTime} &#8211; Last Updated: #{studyVersionDifferencesPage.studyUI2.studyVersion.lastUpdateTime}" rendered="#{studyVersionDifferencesPage.studyUI2.studyVersion.workingCopy}"/> <br/>
+                        <ice:outputText value="Created: #{studyVersionDifferencesPage.studyUI2.studyVersion.createTime} &#8211; Last Updated: #{studyVersionDifferencesPage.studyUI2.studyVersion.lastUpdateTime}"/> <br/>
                         <ice:outputText value="Study Version Notes: " rendered="#{!empty studyVersionDifferencesPage.studyUI2.studyVersion.versionNote}"/>
                         <ice:outputText styleClass="dvnstudystatusversionnote" value="#{studyVersionDifferencesPage.studyUI2.studyVersion.versionNote}" rendered="#{!empty studyVersionDifferencesPage.studyUI2.studyVersion.versionNote}"/>
                     </div>

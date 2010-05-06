@@ -125,7 +125,7 @@
                       <f:selectItem itemLabel="Sort By:" itemValue=""/>
                       <f:selectItem itemLabel="- Global ID" itemValue="globalId"/>
                       <f:selectItem itemLabel="- Title" itemValue="title"/>
-                      <f:selectItem itemLabel="- Last Update Time" itemValue="lastUpdateTime"/>
+                      <f:selectItem itemLabel="- Last Released" itemValue="releaseTime"/>
                       <f:selectItem itemLabel="- Download Count" itemValue="downloadCount"/>
                     </ice:selectOneMenu>
                   </div>
@@ -257,7 +257,7 @@
                       <ice:outputText styleClass="dvnStudyListIDDownloadsNonSubsettable" value="#{studyUI.downloadCount} downloads" rendered="#{studyUI.files and studyUI.downloadCount != 1 and !studyUI.subsettable}"/>
                       <ice:outputText styleClass="dvnStudyListIDDownloadsSubsettable" value="#{studyUI.downloadCount} downloads + analyses" rendered="#{studyUI.files and studyUI.downloadCount != 1 and studyUI.subsettable}"/>
                       </div>
-                      <ice:outputText value="Updated: #{studyUI.lastUpdateTime}"/>
+                      <ice:outputText value="Last Released: #{studyUI.releaseTime}"/>
                     </div>
                   </ice:column>
                 </ice:dataTable>

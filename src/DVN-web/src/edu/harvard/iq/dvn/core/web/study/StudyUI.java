@@ -1127,6 +1127,10 @@ public class StudyUI  implements java.io.Serializable {
         return dateFormatter.format( getStudy().getLastUpdateTime() );
     }
 
+    public String getReleaseTime() {
+        return dateFormatter.format( getStudyVersion().getReleaseTime() );
+    }
+
    public boolean isUserAuthorizedToEdit() {
         boolean authorized = false;
         if (user != null) {

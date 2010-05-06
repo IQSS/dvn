@@ -49,6 +49,7 @@ import edu.harvard.iq.dvn.core.vdc.VDCNetwork;
 import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -421,9 +422,45 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
                             fm1 != null &&
                             fm1.getStudyFile().getId().compareTo(lastReleasedStudyFileId) > 0 ) {
 
-                        String fileSystemLocation = fm1.getStudyFile().getFileSystemLocation();
+                        StudyFile studyFile = fm1.getStudyFile();
+
+                        String fileSystemLocation = studyFile.getFileSystemLocation();
                         if ( fileSystemLocation != null ) {
                             File fileToDelete = new File (fileSystemLocation);
+
+                            // For subsettable files, also remove the preserved
+                            // originals and cached format conversions:
+                            if (studyFile.isSubsettable()) {
+                                if (fileToDelete != null) {
+                                    // original:
+                                    File originalDataFile = new File(fileToDelete.getParent(), "_" + studyFile.getFileSystemName());
+                                    if (originalDataFile != null) {
+                                        originalDataFile.delete();
+                                    }
+                                    // cached alternative formats:
+                                    File fileDir = new File (fileToDelete.getParent());
+                                    File[] formatConvertedFiles =
+                                            fileDir.listFiles(
+                                                new ConvertedFilenamesFilter(
+                                                    studyFile.getFileSystemName()));
+                                    for (int j = 0; j < formatConvertedFiles.length; j++) {
+                                        formatConvertedFiles[j].delete();
+                                    }
+                                }
+                            }
+                            // End of subsettable file special case;
+
+                            // For image files, we may have thumbnail files
+                            // cached on disk as well:
+                            if (studyFile.getFileType().substring(0, 6).equalsIgnoreCase("image/")) {
+                                File imageThumbnailFile = new File(fileSystemLocation + ".thumb");
+                                if (imageThumbnailFile != null) {
+                                    imageThumbnailFile.delete();
+                                }
+                            }
+                            // End of image file special case.
+
+                            // And now delete the file itself:
                             if (fileToDelete != null) {
                                 fileToDelete.delete();
                             }
@@ -2023,5 +2060,21 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         Long longValue      = (Long)object;
         return longValue;
     }   
+
+    public class ConvertedFilenamesFilter implements FilenameFilter{
+
+        private String baseName;
+
+        public ConvertedFilenamesFilter (String baseName) {
+            super();
+            this.baseName = baseName;
+        }
+
+        public boolean accept(File dir, String name) {
+                return (name.matches(baseName + "\\.D[0-9]*"));
+        }
+    }
+
+
 
 }

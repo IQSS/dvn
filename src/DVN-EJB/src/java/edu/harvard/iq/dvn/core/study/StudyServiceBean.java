@@ -221,18 +221,23 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
       
         Study study = em.find(Study.class, studyId);
         StudyVersion latestVersion = study.getLatestVersion();
-        StudyVersion releasedVersion = study.getReleasedVersion();
         if (!latestVersion.isWorkingCopy()) {
             throw new EJBException("Cannot release latestVersion, incorrect state: "+latestVersion.getVersionState());
         }
 
         Date releaseDate = new Date();
 
-        // Archive the previously released version
+        // Archive the previously released or deaccessioned version
+        StudyVersion releasedVersion = study.getReleasedVersion();
         if (releasedVersion!=null) {
             releasedVersion.setVersionState(StudyVersion.VersionState.ARCHIVED);
             releasedVersion.setArchiveTime(releaseDate);
             releasedVersion.setArchiveNote("Replaced by version " + latestVersion.getVersionNumber());
+        } else {
+            StudyVersion deaccessionedVersion = study.getDeaccessionedVersion();
+            if (deaccessionedVersion!=null) {
+                deaccessionedVersion.setVersionState(StudyVersion.VersionState.ARCHIVED);
+            }
         }
 
         latestVersion.setVersionState(StudyVersion.VersionState.RELEASED);
@@ -254,7 +259,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
 
 
     public void deaccessionStudy(StudyVersion sv) {
-        sv.setVersionState(StudyVersion.VersionState.ARCHIVED);
+        sv.setVersionState(StudyVersion.VersionState.DEACCESSIONED);
         sv.setArchiveTime(new Date());
         em.merge(sv);
         
@@ -675,6 +680,12 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         return returnList;
     }
 
+    /**
+     *  this method only returns released studies
+     * @param studyIdList
+     * @param orderBy
+     * @return list of oredered ids
+     */
     public List getOrderedStudies(List studyIdList, String orderBy) {
         if (orderBy == null || studyIdList == null || studyIdList.size() == 0) {
             return studyIdList;
@@ -686,37 +697,53 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
             String query = "SELECT s.id FROM Study s WHERE s.id in (" + studyIds + ") ORDER BY s.protocol, s.authority, s.studyId";
             return (List) em.createQuery(query).getResultList();
 
-        } else if (orderBy.equals("title")) {
-            String query = "SELECT s.id FROM Study s WHERE s.id in (" + studyIds + ") ORDER BY s.metadata.title";
-            return (List) em.createQuery(query).getResultList();
+        } else {
+            String queryStr = null;
 
-        } else if (orderBy.equals("lastUpdateTime")) {
-            String query = "SELECT s.id FROM Study s WHERE s.id in (" + studyIds + ") ORDER BY s.lastUpdateTime desc";
-            return (List) em.createQuery(query).getResultList();
+            if (orderBy.equals("title")) {
+                queryStr = "SELECT s.id " +
+                        "from metadata m, studyversion sv, study s " +
+                        "where sv.metadata_id = m.id " +
+                        "and s.id = sv.study_id " +
+                        "and sv.versionstate = '" + StudyVersion.VersionState.RELEASED + "'" +
+                        "and s.id in (" + studyIds + ") " +
+                        "ORDER BY m.title";
 
-        } else if (orderBy.equals("downloadCount")) {
-            // this query runs fine in Postgres, but will need to be tested with other DBs if they are used
-            String queryStr = "select s.id " +
-                    "from metadata m, study s " +
-                    "LEFT OUTER JOIN studyfileactivity sfa on  s.id = sfa.study_id " +
-                    "where s.metadata_id = m.id " +
-                    "and s.id in (" + studyIds + ")" +
-                    "group by s.id, m.title " +
-                    "order by " +
-                    "(CASE WHEN sum(downloadcount) is null THEN -1 ELSE sum(downloadcount) END) desc, m.title" ;
-            Query query = em.createNativeQuery(queryStr);
-            List<Long> returnList = new ArrayList<Long>();
-            // since query is native, must parse through Vector results
-            for (Object currentResult : query.getResultList()) {
-                // convert results into Longs
-                returnList.add(new Long(((Integer) ((Vector) currentResult).get(0))).longValue());
+            } else if (orderBy.equals("releaseTime")) {
+                queryStr = "SELECT s.id " +
+                        "from studyversion sv, study s " +
+                        "where s.id = sv.study_id " +
+                        "and sv.versionstate = '" + StudyVersion.VersionState.RELEASED + "'" +
+                        "and s.id in (" + studyIds + ") " +
+                        "ORDER BY sv.releasetime desc";
+
+            } else if (orderBy.equals("downloadCount")) {
+                // this query runs fine in Postgres, but will need to be tested with other DBs if they are used
+                queryStr = "select s.id " +
+                        "from metadata m, studyversion sv, study s " +
+                        "LEFT OUTER JOIN studyfileactivity sfa on  s.id = sfa.study_id " +
+                        "where sv.metadata_id = m.id " +
+                        "and s.id = sv.study_id " +
+                        "and sv.versionstate = '" + StudyVersion.VersionState.RELEASED + "'" +
+                        "and s.id in (" + studyIds + ")" +
+                        "group by s.id, m.title " +
+                        "order by " +
+                        "(CASE WHEN sum(downloadcount) is null THEN -1 ELSE sum(downloadcount) END) desc, m.title" ;
             }
 
-            return returnList;
+            if (queryStr != null) {
+                Query query = em.createNativeQuery(queryStr);
+                List<Long> returnList = new ArrayList<Long>();
+                // since query is native, must parse through Vector results
+                for (Object currentResult : query.getResultList()) {
+                    // convert results into Longs
+                    returnList.add(new Long(((Integer) ((Vector) currentResult).get(0))).longValue());
+                }
+                return returnList;
 
-
-        } else {
-            return studyIdList;
+            } else {
+                return studyIdList; // invalid order by
+            }
         }
 
     }

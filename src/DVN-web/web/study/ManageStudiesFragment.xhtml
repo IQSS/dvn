@@ -5,17 +5,17 @@
                       xmlns:ice="http://www.icesoft.com/icefaces/component"
                       xmlns:dvn="/WEB-INF/tlds/dvn-components"
                       xmlns:ui="http://www.sun.com/web/ui"
-         jsfc="ice:panelGroup">
+                      jsfc="ice:panelGroup">
             <script type="text/javascript">
                 //<![CDATA[
-                jQuery(function(jQuery) {
-                  jQuery.fn.fixOverflow = function () {
+                jQuery(function(jQuery){
+                  jQuery.fn.fixOverflow = function(){
                     if (jQuery.browser.msie) {
-                      return this.each(function () {
-                        if (this.scrollWidth > this.offsetWidth) {
-                          jQuery(this).css({ 'padding-bottom' : '20px', 'overflow-y' : 'hidden' });
+                      return this.each(function(){
+                        if (this.scrollWidth > this.offsetWidth){
+                          jQuery(this).css({"padding-bottom" : "20px", "overflow-y" : "hidden"});
                         }
-                      });
+                      })
                     } else {
                       return this;
                     }
@@ -28,17 +28,17 @@
                     jQuery(".dvnManageStudiesTableBlock").css("height", y);                
                 });
 
-               Ice.onAsynchronousReceive('document:body', function() {
+               Ice.onAsynchronousReceive("document:body", function(){
                    jQuery("div.dvnMsgBlockRound").corner("10px");
 
-                   jQuery(function(jQuery) {
-                      jQuery.fn.fixOverflow = function () {
+                   jQuery(function(jQuery){
+                      jQuery.fn.fixOverflow = function(){
                         if (jQuery.browser.msie) {
-                          return this.each(function () {
-                            if (this.scrollWidth > this.offsetWidth) {
-                              jQuery(this).css({ 'padding-bottom' : '20px', 'overflow-y' : 'hidden' });
+                          return this.each(function(){
+                            if (this.scrollWidth > this.offsetWidth){
+                              jQuery(this).css({"padding-bottom" : "20px", "overflow-y" : "hidden"});
                             }
-                          });
+                          })
                         } else {
                           return this;
                         }
@@ -49,8 +49,6 @@
                     y = $div.outerHeight() + 17;
                     jQuery(".dvnManageStudiesTableBlock").css("height", y);
                });
-
-               
                //]]>
             </script>
             <style type="text/css">
@@ -76,7 +74,7 @@
                         <ice:message styleClass="errorMessage" for="userName"/>
                     </div>
                     <div class="dvnManageStudiesTableShowArchive">
-                        <ice:selectBooleanCheckbox id="showArchivedStudies" binding="#{ManageStudiesList.archiveCheckBox}" value="#{ManageStudiesList.showArchivedStudies}" valueChangeListener="#{ManageStudiesList.changeArchive}" onchange="submit()" />
+                        <ice:selectBooleanCheckbox id="showArchivedStudies" binding="#{ManageStudiesList.archiveCheckBox}" value="#{ManageStudiesList.showArchivedStudies}" valueChangeListener="#{ManageStudiesList.changeArchive}" onclick="submit()"/>
                         <ice:outputText id="outputText3" value="#{bundle.showArchivedStudiesLabel}"/>
                     </div>
                     <div class="dvnManageStudiesTablePaginator">
@@ -226,7 +224,7 @@
                   <f:facet name="header">
                       <ice:outputText value="#{bundle.MSActionColumn}"/>
                   </f:facet>
-                    <ice:outputLink styleClass="dvnManageStudiesTableEditLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml" rendered="#{studyUI.userAuthorizedToEdit}" >
+                    <ice:outputLink styleClass="dvnManageStudiesTableEditLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml" rendered="#{studyUI.userAuthorizedToEdit}">
                         <f:param name="studyId" value="#{studyUI.study.id}"/>
                         <f:param name="versionNumber" value="#{studyUI.study.latestVersion.versionNumber}"/>
                         <ice:outputText value="#{bundle.MSEditAction}"/>
@@ -240,13 +238,13 @@
                     <ice:commandLink id="inReviewOrDraftReleaseColLink" actionListener="#{ManageStudiesList.doShowReleasePopup}" rendered="#{studyUI.userAuthorizedToRelease and (studyUI.study.latestVersion.inReview or studyUI.study.latestVersion.draft)  and studyUI.study.releasedVersion == null}">
                         <ice:outputText value="#{bundle.MSReleaseAction}"/>
                     </ice:commandLink>
-                    <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyVersionDifferencesPage.xhtml" rendered="#{studyUI.userAuthorizedToRelease and (studyUI.study.latestVersion.inReview or studyUI.study.latestVersion.draft) and studyUI.study.releasedVersion != null}" >
+                    <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyVersionDifferencesPage.xhtml" rendered="#{studyUI.userAuthorizedToRelease and (studyUI.study.latestVersion.inReview or studyUI.study.latestVersion.draft) and studyUI.study.releasedVersion != null}">
                         <f:param name="studyId" value="#{studyUI.study.id}"/>
                         <f:param name="versionNumberList" value="#{studyUI.study.releasedVersion.versionNumber},#{studyUI.study.latestVersion.versionNumber}"/>
                         <f:param name="actionMode" value="confirmRelease"/>
                         <ice:outputText value="#{bundle.MSReleaseAction}"/>
                     </ice:outputLink>
-                    <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/DeaccessionStudyPage.xhtml" rendered="#{studyUI.userAuthorizedToRelease and studyUI.study.latestVersion.released}" >
+                    <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/DeaccessionStudyPage.xhtml" rendered="#{studyUI.userAuthorizedToRelease and studyUI.study.latestVersion.released}">
                         <f:param name="studyId" value="#{studyUI.study.id}"/>
                         <f:param name="versionNumber" value="#{studyUI.study.latestVersion.versionNumber}"/>
                         <ice:outputText value="#{bundle.MSDeaccessionAction}"/>

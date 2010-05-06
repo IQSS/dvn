@@ -133,10 +133,10 @@ public class ManageStudiesList extends VDCBaseBean {
             deaccessionedStudiesExist=false;
             for (Object studyVersionId: studyVersionIds) {
                 StudyUI studyUI = new StudyUI((Long)studyVersionId,user);
-                if (showArchivedStudies || !studyUI.getStudyVersion().isArchived()) {
+                if (showArchivedStudies || !studyUI.getStudyVersion().isDeaccessioned()) {
                     studyUIList.add(studyUI);
                 }
-                if (studyUI.getStudyVersion().isArchived()){
+                if (studyUI.getStudyVersion().isDeaccessioned()){
                     deaccessionedStudiesExist=true;
                 }
             }

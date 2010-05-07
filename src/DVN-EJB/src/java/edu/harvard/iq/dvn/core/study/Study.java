@@ -207,12 +207,12 @@ public class Study implements java.io.Serializable {
     }
 
     public boolean isDeaccessioned() {
-        return this.getDeaccessionedVersion()!=null;
+        return this.getDeaccessionedVersion() != null;
     }
 
 
      public boolean isReleased() {
-        return this.getLatestVersion().isReleased();
+        return this.getReleasedVersion() != null;
     }
 
     

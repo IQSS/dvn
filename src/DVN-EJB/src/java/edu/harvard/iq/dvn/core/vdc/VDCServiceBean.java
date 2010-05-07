@@ -114,11 +114,8 @@ public class VDCServiceBean implements VDCServiceLocal {
         sDV.setAlias(alias);
         sDV.setDtype(dataverseType);
         sDV.setCreatedDate(DateUtil.getTimestamp());
-        VDCCollection addedRootCollection = new VDCCollection();
-        addedRootCollection.setName(name);
-        vdcCollectionService.create(addedRootCollection);
-        sDV.setRootCollection(addedRootCollection);
-        sDV.getOwnedCollections().add(addedRootCollection);
+        sDV.getRootCollection().setName(name);
+
         VDCNetwork vdcNetwork = vdcNetworkService.find(new Long(1));
         sDV.setDefaultTemplate(vdcNetwork.getDefaultTemplate());
         sDV.setHeader(vdcNetwork.getDefaultVDCHeader());
@@ -141,8 +138,6 @@ public class VDCServiceBean implements VDCServiceLocal {
         sDV.setSearchResultFields(searchResultsFields);
       
 
-        addedRootCollection.setOwner(sDV);
-        vdcCollectionService.edit(addedRootCollection);
         userService.addVdcRole(userId, findByAlias(sDV.getAlias()).getId(), roleService.ADMIN);
 
     }

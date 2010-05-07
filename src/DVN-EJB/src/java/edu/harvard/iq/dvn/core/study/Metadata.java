@@ -2112,8 +2112,8 @@ public class Metadata implements java.io.Serializable {
             str += " [Distributor]";
         }
 
-        if (version != null) {
-            str += " V" + version;
+        if (getStudyVersion().getVersionNumber() != null) {
+            str += " V" + getStudyVersion().getVersionNumber();
             str += " [Version]";
         }
 

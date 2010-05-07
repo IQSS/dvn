@@ -60,7 +60,7 @@ div.dvn_navblockNetwork{background:#dadee0;border-top:2px solid #c55b28}
 .dvn_navblockLinks ul li:hover a:link,.dvn_navblockLinks ul li:hover a:visited,.dvn_navblockLinks ul li:hover a:hover,.dvn_navblockLinks ul li:hover a:active{background-color:#c55b28;text-decoration:underline}
 .dvn_navUserName{float:right}
 .dvn_navUserName div{float:left;z-index:1000}
-.dvn_navUserName div.textUserName{padding:0 .5em}
+.dvn_navUserName div.textUserName{padding:0.2em 0.5em;}
 .dvn_navUserName div a:link,.dvn_navUserName div a:visited,.dvn_navUserName div a:hover,.dvn_navUserName div a:active{float:left;display:block;padding:.2em .5em;color:#c55b28;text-decoration:none}
 .dvn_navUserName div:hover a:link,.dvn_navUserName div:hover a:visited,.dvn_navUserName div:hover a:hover,.dvn_navUserName div:hover a:active{background-color:#c55b28;text-decoration:underline}
 .dvn_navUserOptions{font-weight:bold;}

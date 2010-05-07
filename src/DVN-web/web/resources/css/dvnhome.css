@@ -33,7 +33,7 @@ div.dvn_searchblock{margin-bottom:12px;padding:4px 12px;background:#e6ebed;borde
 .theMenuContainer{text-align:left}
 .theMenuContainer ul,.theMenuContainer li{margin:0;padding:0;list-style-type:none;list-style-image:none}
 .theMenuContainer h3,.theMenuContainer h4{margin:0;padding:0}
-#navigation{margin:0;padding:0;text-indent:0;background-color:silver;width:100%}
+#navigation{margin:0;padding:0;text-indent:0;width:100%}
 #navigation ul,#navigation li{margin:0;padding:0;border-top:1px solid white}
 #navigation li ul li ul li ul li{margin:0;padding:0;border-bottom:1px solid white}
 .theMenuContainer a{outline:0}
@@ -47,7 +47,7 @@ h4.head a:hover{background:#c55b28 url(/dvn/resources/images/menudown.gif) no-re
 h4.selected a{background:transparent url(/dvn/resources/images/menuup.gif) no-repeat;background-position:98% 50%;padding:0 26px 0 .5em;font-weight:700}
 h4.selected a:hover{background:#c55b28 url(/dvn/resources/images/menuup.gif) no-repeat;background-position:98% 50%;padding:0 26px 0 .5em;color:white}
 h3.noSubNode,h3.noSubNode a,h3.noSubNode a:hover,h4.noSubNode,h4.noSubNode a,h4.noSubNode a:hover{background-image:none}
-.xtraMenu ul li a:link,.xtraMenu ul li a:active,.xtraMenu ul li a:hover,.xtraMenu ul li a:visited{padding-left:1.25em;display:block}
+.xtraMenu ul li a:link,.xtraMenu ul li a:visited,.xtraMenu ul li a:hover,.xtraMenu ul li a:active{padding-left:1.25em;display:block}
 .xtraMenu ul li a:hover{background:#c55b28;color:white}
 a.lastNodeActive:link{font-weight:700}
 /* DATAVERSE LIST TABLE + ALPHA SORT */
@@ -82,9 +82,9 @@ a.dvnHmpgGroupCreateLink:link,a.dvnHmpgGroupCreateLink:visited,a.dvnHmpgGroupCre
 .dvnNetworkHmpgDvListNav div{font-size:90% !important;text-align:left}
 .dvnNetworkHmpgDvListNav ul{margin-top:.5em;margin-left:0em;padding-left:0em;list-style:none}
 .dvnNetworkHmpgDvListNav ul li{margin-left:0em;padding-left:22px;background:url(/dvn/resources/icefaces/dvn_rime/css-images/tree_folder_closed.gif) 0 .25em no-repeat}
-.dvnNetworkHmpgDvListNav ul li a:link,.dvnNetworkHmpgDvListNav ul li a:visited,.dvnNetworkHmpgDvListNav ul li a:active,.dvnNetworkHmpgDvListNav ul li a:hover{font-size:90% !important}
+.dvnNetworkHmpgDvListNav ul li a:link,.dvnNetworkHmpgDvListNav ul li a:visited,.dvnNetworkHmpgDvListNav ul li a:hover,.dvnNetworkHmpgDvListNav ul li a:active{font-size:90% !important}
 .dvnNetworkHmpgDvListNav ul li.hmpgDvGroupSelected{background:url(/dvn/resources/icefaces/dvn_rime/css-images/tree_folder_close.gif) 0 0 no-repeat}
-li.hmpgDvGroupSelected a:link,li.hmpgDvGroupSelected a:visited,li.hmpgDvGroupSelected a:active,li.hmpgDvGroupSelected a:hover{font-weight:700}
+li.hmpgDvGroupSelected a:link,li.hmpgDvGroupSelected a:visited,li.hmpgDvGroupSelected a:hover,li.hmpgDvGroupSelected a:active{font-weight:700}
 /* STUDY LISTING */
 .dvnStudyListWrapper{border:1px solid #dcdddf}
 .dvnStudyListCollectionNameBlock{padding:.5em .25em;border:1px solid #dcdddf;border-width:1px 1px 0 1px;text-align:right}

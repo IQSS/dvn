@@ -433,21 +433,21 @@ public class HomePage extends VDCBaseBean implements Serializable {
  //                     "jQuery('#navigation').accordion({ " +
  //                       "active: 'h3.selected', " +
  //                       "header: 'h3.head', " +
-  //                      "autoheight: false, " +
-  //              "});" + "\n\r" +
+ //                       "autoheight: false" +
+ //               "});" + "\n\r" +
                 "jQuery('.xtraMenu').accordion({" +
-                "active: 'h4.selected'," +
+                "active: 'h4.selected', " +
                 "header: 'h4.head', " +
-                "autoheight: false, " +
+                "autoheight: false" +
                 "});" + "\n\r";
         Iterator iterator = childItemBeans.iterator();
         while (iterator.hasNext()) {
             String grouping = (String)iterator.next();
             String divId = "xtraMenu" + grouping;
                 accordionJavascript += "jQuery('#" + divId + "').accordion({" +
-                "active: 'h4.selected'," +
+                "active: 'h4.selected', " +
                 "header: 'h4.head', " +
-                "autoheight: false, " +
+                "autoheight: false" +
                 "});" + "\n\r";
         }
         accordionJavascript += "  });"  + "\n\r" +

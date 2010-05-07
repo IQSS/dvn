@@ -257,7 +257,13 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
                                 </span>
                                 <span jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.userAuthorizedToRelease and (studyPage.studyUI.studyVersion.inReview or studyPage.studyUI.studyVersion.draft)}">
                                     <li>
-                                        <ice:commandLink actionListener="#{studyPage.confirmReleased}" onmouseover="javascript:popupTooltip(this, &#39;#{studybundle.releaseTip}&#39;, &#39;&#39;, event);" onmouseout="javascript:hideTooltip();">
+                                        <ice:outputLink rendered="#{studyPage.studyUI.study.releasedVersion != null}" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyVersionDifferencesPage.xhtml" onmouseover="javascript:popupTooltip(this, &#39;#{studybundle.releaseTip}&#39;, &#39;&#39;, event);" onmouseout="javascript:hideTooltip();">
+                                            <f:param name="studyId" value="#{studyPage.studyUI.study.id}"/>
+                                            <f:param name="versionNumberList" value="#{studyPage.studyUI.study.releasedVersion.versionNumber},#{studyPage.studyUI.study.latestVersion.versionNumber}"/>
+                                            <f:param name="actionMode" value="confirmRelease"/>
+                                            <ice:outputText value="Release" nospan="true"/>
+                                        </ice:outputLink>
+                                        <ice:commandLink rendered="#{studyPage.studyUI.study.releasedVersion == null}" actionListener="#{studyPage.confirmReleased}" onmouseover="javascript:popupTooltip(this, &#39;#{studybundle.releaseTip}&#39;, &#39;&#39;, event);" onmouseout="javascript:hideTooltip();">
                                             <ice:outputText value="Release" nospan="true"/>
                                         </ice:commandLink>
                                     </li>

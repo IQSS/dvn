@@ -1261,7 +1261,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
                 }
             }
         }else {
-            throw new IllegalArgumentException("No studyVersion found for study id "+studyId);
+            throw new IllegalArgumentException("No study found for study id "+studyId);
         }
 
         //String queryStr = "SELECT sv FROM StudyVersion sv WHERE sv.study.id = '" + studyId;

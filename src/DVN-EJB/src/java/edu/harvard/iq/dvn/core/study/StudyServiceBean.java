@@ -437,7 +437,8 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
                                     if (originalDataFile != null) {
                                         originalDataFile.delete();
                                     }
-                                    // cached alternative formats:
+                                    // cached alternative formats (including .RData file
+                                    // that we create for Network Data files):
                                     File fileDir = new File (fileToDelete.getParent());
                                     File[] formatConvertedFiles =
                                             fileDir.listFiles(
@@ -2071,7 +2072,8 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         }
 
         public boolean accept(File dir, String name) {
-                return (name.matches(baseName + "\\.D[0-9]*"));
+                return (name.matches(baseName + "\\.D[0-9]*") ||
+                        name.equals(baseName + ".RData"));
         }
     }
 

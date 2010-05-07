@@ -102,7 +102,7 @@
               downloadUrl = fileDropdown.options[ fileDropdown.selectedIndex ].value;
               fileDropdown.selectedIndex = 0;
               if (downloadUrl != "") {
-                window.location.href = downloadUrl;
+                window.location.href = downloadUrl + "&versionNumber=#{studyPage.studyUI.studyVersion.versionNumber}";
               }
           }
 
@@ -121,7 +121,7 @@
                   alert ("No files selected");
                   return false;
               }
-              window.location.href = "/dvn#{VDCRequest.currentVDCURL}/FileDownload/study_#{studyPage.studyUI.study.studyId}.zip?fileId=" + fileIdStr +  "#{studyPage.xff}";
+              window.location.href = "/dvn#{VDCRequest.currentVDCURL}/FileDownload/study_#{studyPage.studyUI.study.studyId}.zip?fileId=" + fileIdStr + "&versionNumber=#{studyPage.studyUI.studyVersion.versionNumber}" + "#{studyPage.xff}";
               return false;
           }     
 
@@ -869,7 +869,7 @@ jQuery(document).ready(function(){
                                       <div jsfc="ice:panelGroup" styleClass="vdcStudyFileRowFileDownload">
                                         <ice:graphicImage styleClass="vdcNoBorders" value="/resources/images/icon_download_locked.gif" rendered="#{studyFileUI.restrictedForUser}" alt="You do not have permissions to access this file."/>
                                         <ice:outputText styleClass="vdcStudyFileRowFileDownloadRestricted" value=" Restricted Access" rendered="#{studyFileUI.restrictedForUser}"/>
-                                        <ice:outputLink styleClass="vdcStudyFileRowFileDownloadLink" value="#{studyFileUI.fileDownloadURL}" rendered="#{!studyFileUI.restrictedForUser and !studyFileUI.studyFile.subsettable}">
+                                        <ice:outputLink styleClass="vdcStudyFileRowFileDownloadLink" value="#{studyFileUI.fileDownloadURL}&amp;versionNumber=#{studyPage.studyUI.studyVersion.versionNumber}" rendered="#{!studyFileUI.restrictedForUser and !studyFileUI.studyFile.subsettable}">
                                           <ice:outputText value="Download" rendered="#{!studyFileUI.restrictedForUser and !studyFileUI.studyFile.subsettable}"/>
                                         </ice:outputLink>
                                       </div>

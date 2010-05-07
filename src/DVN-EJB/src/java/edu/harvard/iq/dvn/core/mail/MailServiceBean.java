@@ -211,7 +211,7 @@ public class MailServiceBean implements edu.harvard.iq.dvn.core.mail.MailService
                + "http://"+siteAddress+"\n"
                + "Your dataverse is set to Not Released by default. You can do the"
                +" following as a Dataverse Admin: \n"
-               +" -Click My Options to administer your dataverse.\n"
+               +" -Click Options to administer your dataverse.\n"
                + " -Begin creating your own studies and uploading files or adding collections of data from other dataverses\n"
                + " -Customize the layout, and then you are ready to release your dataverse to others.\n"
                + "For detailed information about how to use your dataverse options, click User Guides on the Dataverse Network menu bar, or go to http://thedata.org/guides.";
@@ -234,13 +234,13 @@ public class MailServiceBean implements edu.harvard.iq.dvn.core.mail.MailService
     public void sendStudyAddedNotification(String userEmail, String studyName, String dataverseName){
         String subject = "Dataverse Network: Your New Study has been set to ready for review";
         String messageText = "Your study '" + studyName + "' has been uploaded to '" + dataverseName + "' dataverse. and is ready for review."+
-                "Your study will go under review before it is released. You will be notified when the status of your study changes. You may also go to 'My Options > View My Studies' to check on the status of your study.";
+                "Your study will go under review before it is released. You will be notified when the status of your study changes. You may also go to 'Options > Study Options > Manage Studies' to check on the status of your study.";
         sendDoNotReplyMail(userEmail,subject,messageText);
     }
     public void sendStudyEditedNotification(String userEmail, String studyName, String dataverseName){
         String subject = "Dataverse Network: Your Study has been updated";
         String messageText = "Your study '" + studyName + "' has been updated in the '" + dataverseName + "' dataverse. "+
-                "Your study will go under review before it is released. You will be notified when the status of your study changes. You may also go to 'My Options > View My Studies' to check on the status or edit your study.";
+                "Your study will go under review before it is released. You will be notified when the status of your study changes. You may also go to 'Options > Study Options > Manage Studies' to check on the status or edit your study.";
         sendDoNotReplyMail(userEmail,subject,messageText);
     }
     public void sendStudyAddedCuratorNotification(String curatorEmail, String contributorName, String studyName, String dataverseName){

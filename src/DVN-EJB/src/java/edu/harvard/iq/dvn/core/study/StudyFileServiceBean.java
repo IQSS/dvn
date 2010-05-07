@@ -183,10 +183,7 @@ public class StudyFileServiceBean implements StudyFileServiceLocal {
 
         Study study = studyVersion.getStudy();
 
-        if (studyVersion.getId() == null) {
-            em.persist(studyVersion);
-            em.flush(); // populates study_id
-        }
+       
 
         // step 1: divide the files, based on subsettable or not
         List subsettableFiles = new ArrayList();
@@ -204,6 +201,15 @@ public class StudyFileServiceBean implements StudyFileServiceLocal {
                 study.getStudyFiles().add(fileBean.getStudyFile());
 
             }
+        }
+
+        if (otherFiles.size()>0) {
+             // Only persist the studyVersion we are adding a file that doesn't need to be ingested (non-subsettable)
+            if (studyVersion.getId() == null) {
+                em.persist(studyVersion);
+                em.flush(); // populates studyVersion_id
+            }
+
         }
 
         // step 2: iterate through nonsubsettable files, moving from temp to new location
@@ -245,6 +251,7 @@ public class StudyFileServiceBean implements StudyFileServiceLocal {
                 ingestMessage.setIngestUserId(user.getId());
                 ingestMessage.setStudyId(study.getId());
                 ingestMessage.setStudyVersionId(studyVersion.getId());
+                ingestMessage.setVersionNote(studyVersion.getVersionNote());
                 Message message = session.createObjectMessage(ingestMessage);
 
                 String detail = "Ingest processing for " + subsettableFiles.size() + " file(s).";
@@ -284,18 +291,29 @@ public class StudyFileServiceBean implements StudyFileServiceLocal {
 
         if (!otherFiles.isEmpty()) {
             studyService.saveStudyVersion(studyVersion, user.getId());
+            em.merge(studyVersion); // this will save the version notes (and the update info, if set)
         }
 
-        em.merge(studyVersion); // this will save the version notes (and the update info, if set)
+       
     }
 
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void addIngestedFiles(Long studyVersionId, List fileBeans, Long userId) {
+    public void addIngestedFiles( Long studyId, String versionNote, List fileBeans, Long userId) {
         // first some initialization
-        StudyVersion studyVersion =  em.find(StudyVersion.class, studyVersionId);
-        Study study = studyVersion.getStudy();
-        em.refresh(study);
+        StudyVersion studyVersion = null;
+        Study study = null;
+
+
+        study = em.find(Study.class, studyId);
+        studyVersion = study.getEditVersion();
+        if(studyVersion.getId()==null) {
+            em.persist(studyVersion);
+            em.flush();
+        }
+
+        studyVersion.setVersionNote(versionNote);
+        
         VDCUser user = userService.find(userId);
 
         File newDir = new File(FileUtil.getStudyFileDir(), study.getAuthority() + File.separator + study.getStudyId());

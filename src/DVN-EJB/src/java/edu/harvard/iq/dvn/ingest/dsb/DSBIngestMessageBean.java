@@ -78,7 +78,7 @@ public class DSBIngestMessageBean implements MessageListener {
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     public void onMessage(Message message) {
         DSBIngestMessage ingestMessage = null;
-        List successfuleFiles = new ArrayList();
+        List successfulFiles = new ArrayList();
         List problemFiles = new ArrayList();
         
         try {           
@@ -94,10 +94,10 @@ public class DSBIngestMessageBean implements MessageListener {
                     if (fileBean.getStudyFile() instanceof NetworkDataFile ) {
                         // ELLEN TODO:  move this logic into SDIOReader component
                         networkDataService.ingest(fileBean);
-                        successfuleFiles.add(fileBean);
+                        successfulFiles.add(fileBean);
                     } else {
                         parseXML( new DSBWrapper().ingest(fileBean) , fileBean.getFileMetadata() );
-                        successfuleFiles.add(fileBean);
+                        successfulFiles.add(fileBean);
                     }
                 } catch (Exception ex) {
                     ex.printStackTrace();
@@ -106,14 +106,14 @@ public class DSBIngestMessageBean implements MessageListener {
                 
             }
             
-            studyFileService.addIngestedFiles( ingestMessage.getStudyVersionId(),
-                    successfuleFiles,
+            studyFileService.addIngestedFiles( ingestMessage.getStudyId(), ingestMessage.getVersionNote(),
+                    successfulFiles,
                     ingestMessage.getIngestUserId());
             
             
             
             if ( ingestMessage.sendInfoMessage() || ( problemFiles.size() >= 0 && ingestMessage.sendErrorMessage() ) ) {
-                mailService.sendIngestCompletedNotification(ingestMessage.getIngestEmail(), successfuleFiles, problemFiles);
+                mailService.sendIngestCompletedNotification(ingestMessage.getIngestEmail(), successfulFiles, problemFiles);
             }
             
         } catch (JMSException ex) {

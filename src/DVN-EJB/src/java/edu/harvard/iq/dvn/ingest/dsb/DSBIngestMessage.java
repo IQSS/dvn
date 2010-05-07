@@ -57,7 +57,17 @@ public class DSBIngestMessage implements Serializable{
     private Long studyId;
     private Long studyVersionId;
     private List fileBeans;
+    private String versionNote;
 
+    public String getVersionNote() {
+        return versionNote;
+    }
+
+    public void setVersionNote(String versionNote) {
+        this.versionNote = versionNote;
+    }
+    
+    
     public String getIngestEmail() {
         return ingestEmail;
     }

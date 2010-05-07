@@ -31,6 +31,6 @@ public interface StudyFileServiceLocal {
 
     public void addFiles(StudyVersion studyVersion, List<StudyFileEditBean> newFiles, VDCUser user);
     public void addFiles(StudyVersion studyVersion, List<StudyFileEditBean> newFiles, VDCUser user, String ingestEmail);
-    public void addIngestedFiles(Long studyId, List fileBeans, Long userId);
+    public void addIngestedFiles(Long studyId, String versionNote, List fileBeans, Long userId);
     
 }

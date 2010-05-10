@@ -285,7 +285,8 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
         }
         
         getVDCRequestBean().setStudyId(study.getId());
-        getVDCRequestBean().setStudyVersionNumber(studyVersion.getVersionNumber());
+        Long versionNumber = studyService.getStudy( this.studyId).getLatestVersion().getVersionNumber();
+        getVDCRequestBean().setStudyVersionNumber(versionNumber);
         getVDCRequestBean().setSelectedTab("files");
 
         return "viewStudy";

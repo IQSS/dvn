@@ -126,6 +126,8 @@ update pagedef set role_id = null where path = '/study/ManageStudiesPage.xhtml';
 ---
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'DeaccessionStudyPage', '/study/DeaccessionStudyPage.xhtml', 2, null );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'AccountOptionsPage', '/login/AccountOptionsPage.xhtml', null,null );
+INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'AccountPage', '/login/AccountPage.xhtml', null,null );
+INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'StudyVersionDifferencesPage', '/study/StudyVersionDifferencesPage.xhtml', null,null );
 
 --
 -- Fix to template field recommendation levels

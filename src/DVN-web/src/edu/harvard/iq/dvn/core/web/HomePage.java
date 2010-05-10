@@ -472,7 +472,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
         }
         if (searchField.equals("any")) {
 //            studies.add(st);
-            List<Long> versionIds = indexService.searchVersionUnf(searchValue);
+            List<Long> versionIds = indexService.searchVersionUnf(getVDCRequestBean().getCurrentVDC(),searchValue);
             Iterator iter = versionIds.iterator();
             Long studyId = null;
             while (iter.hasNext()) {

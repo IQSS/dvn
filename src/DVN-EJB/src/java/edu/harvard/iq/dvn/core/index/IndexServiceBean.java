@@ -506,12 +506,13 @@ public class IndexServiceBean implements edu.harvard.iq.dvn.core.index.IndexServ
         return matchingStudyIds == null ? new ArrayList() : matchingStudyIds;
     }
 
-    public List <Long> searchVersionUnf(String unf){
+    public List <Long> searchVersionUnf(VDC vdc, String unf){
+        List studyIds = vdc != null ? listVdcStudyIds(vdc) : null;
 
         Indexer indexer = Indexer.getInstance();
         List matchingStudyIds = null;
         try {
-            matchingStudyIds = indexer.searchVersionUnf(unf);
+            matchingStudyIds = indexer.searchVersionUnf(studyIds, unf);
         } catch (IOException ex) {
             ex.printStackTrace();
         }

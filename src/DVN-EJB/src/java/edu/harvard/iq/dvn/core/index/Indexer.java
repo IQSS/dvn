@@ -540,7 +540,8 @@ public class Indexer implements java.io.Serializable  {
     }
 
     // returns a list of study version ids for a given unf
-    public List<Long> searchVersionUnf(String unf) throws IOException {
+    public List<Long> searchVersionUnf(List <Long> studyIds, String unf) throws IOException {
+        List <Long> results = null;
         Query unfQuery = null;
         SearchTerm st = new SearchTerm();
         st.setFieldName("versionUnf");
@@ -548,7 +549,8 @@ public class Indexer implements java.io.Serializable  {
         Term t = new Term(st.getFieldName(), st.getValue().toLowerCase().trim());
         unfQuery = new TermQuery(t);
         List<Document> documents = getVersionUnfHits(unfQuery);
-        return getVersionHitIds(documents);
+        results = studyIds != null ? getVersionHitIds(getFilteredByStudyIdVersionHitIds(documents, studyIds)) : getVersionHitIds(documents);
+        return results;
     }
 
     private String getDVNTokenString(final String value) {
@@ -834,6 +836,22 @@ public class Indexer implements java.io.Serializable  {
         }
         matchIds.addAll(matchIdsSet);
         return matchIds;
+    }
+
+    private List <Document> getFilteredByStudyIdVersionHitIds(List <Document> hits, List<Long> studyIds) throws IOException {
+        ArrayList matchDocuments = new ArrayList();
+        LinkedHashSet matchIdsSet = new LinkedHashSet();
+        for (Iterator it = hits.iterator(); it.hasNext();){
+            Document d = (Document) it.next();
+            Field studyId = d.getField("versionStudyId");
+            String studyIdStr = studyId.stringValue();
+            Long studyIdLong = Long.valueOf(studyIdStr);
+            if (studyIds.contains(studyIdLong)) {
+                matchIdsSet.add(d);
+            }
+        }
+        matchDocuments.addAll(matchIdsSet);
+        return matchDocuments;
     }
 
     /* returns studyIds for variable query

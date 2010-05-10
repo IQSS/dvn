@@ -266,7 +266,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
                 studyIDList = indexService.search(getVDCRequestBean().getCurrentVDC(), searchTerms);
             }
             if (searchField.equals("any")) {
-                List<Long> versionIds = indexService.searchVersionUnf(searchValue);
+                List<Long> versionIds = indexService.searchVersionUnf(getVDCRequestBean().getCurrentVDC(),searchValue);
                 Iterator iter = versionIds.iterator();
                 Long studyId = null;
                 while (iter.hasNext()) {

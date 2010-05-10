@@ -251,25 +251,11 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
             actionMode = getVDCRequestBean().getActionMode();
         }
 
-        if (versionNumberList == null || !versionNumberList.contains(",")) {
-            versionNumberList = getVDCRequestBean().getStudyVersionNumberList();
-        }
+       
+          Long[]  versionNumberValues =getVDCRequestBean().parseVersionNumberList(request);
+          if (studyId!=null && versionNumberValues!=null ) {
 
-        if (studyId != null && versionNumberList != null) {
-            String[] versionNumTokens = versionNumberList.split(",");
-
-            Long[] versionNumberValues = new Long[2];
-
-            for (int i=0; i<versionNumTokens.length && i<2; i++) {
-                if (versionNumTokens[i] != null) {
-                    try {
-                        versionNumberValues[i] = new Long(versionNumTokens[i]);
-                    } catch (Exception ex) {
-                        // Means this token was not a parseable decimal long number.
-                        versionNumberValues[i] = null;
-                    }
-                }
-            }
+        
 
             if ( versionNumberValues[0] != null && versionNumberValues[1] != null ) {
                 // we want to show first the older version,

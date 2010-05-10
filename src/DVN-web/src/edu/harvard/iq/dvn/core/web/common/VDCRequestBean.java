@@ -111,6 +111,35 @@ public class VDCRequestBean extends VDCBaseBean implements java.io.Serializable 
         this.studyVersionNumberList = studyVersionNumberList;
     }
 
+    
+/**
+     *  This parsing logic is separated out so it can be called
+     *
+     * @param HttpServletRequest - to get versionNumberList parameter, which
+     * should be a String of two integers, separatated by ","
+     * @return null if "versionNumberList" is not found in the list of request parameters
+     * @throws NumberFormatException if tokens in parameter aren't Longs
+     * @throws IllegalArgumentException if parameter value cannot be parsed into tokens separated by ","
+     */
+    public static Long[] parseVersionNumberList(HttpServletRequest request) {
+        String strList = VDCBaseBean.getParamFromRequestOrComponent("versionNumberList", request);
+        Long[] versionNumbers = null;
+        if (strList != null) {
+            String[] versionNumTokens = strList.split(",");
+            versionNumbers = new Long[2];
+           
+
+            for (int i = 0; i < versionNumTokens.length && i < 2; i++) {
+                if (versionNumTokens[i] != null) {
+                   
+                    versionNumbers[i] = new Long(versionNumTokens[i]);
+                    
+                }
+            }
+        }
+        return versionNumbers;
+    }
+
     private String selectedTab;
 
     public String getSelectedTab() {

@@ -102,6 +102,8 @@
                 </div>
               </div>
               <div>
+                <ice:outputText styleClass="vdcFieldTitle" value="BY CLICKING THE &quot;I AGREE&quot; CHECKBOX BELOW, I CONFIRM THAT I HAVE READ AND UNDERSTOOD EACH AND EVERY TERM SET FORTH IN THE TERMS AND CONDITIONS FOR THE USE OF DATA FOUND ABOVE, AND I AGREE TO BE BOUND BY ALL OF SUCH TERMS AND CONDITIONS."/><br/>
+                <ice:outputText styleClass="vdcFieldTitle" value="IF I DO NOT UNDERSTAND OR AGREE TO ALL OF THE TERMS AND CONDITIONS, I MUST NOT DOWNLOAD THE MATERIALS."/><br/>
                 <ice:selectBooleanCheckbox id="termsAccepted" required="true" validator="#{TermsOfUsePage.validateTermsAccepted}" value="#{TermsOfUsePage.termsAccepted}"/>
                 <ice:outputText styleClass="vdcFieldTitle" value="I agree and accept these terms of use."/>
                 <ice:message for="termsAccepted" styleClass="errorMessage"/>

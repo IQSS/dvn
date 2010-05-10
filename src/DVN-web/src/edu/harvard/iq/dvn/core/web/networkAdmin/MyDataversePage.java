@@ -5,6 +5,7 @@
 
 package edu.harvard.iq.dvn.core.web.networkAdmin;
 
+import edu.harvard.iq.dvn.core.admin.UserServiceLocal;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
@@ -19,6 +20,7 @@ import javax.ejb.EJB;
  */
 public class MyDataversePage  {
     @EJB VDCServiceLocal vdcService;
+    @EJB UserServiceLocal userService;
     
     private List dataverses;
     
@@ -33,6 +35,8 @@ public class MyDataversePage  {
         
         VDCUser user = VDCBaseBean.getVDCSessionBean().getUser();
         if (user!=null) {
+            // first refresh the user
+            user = userService.find(user.getId());
             List<VDC> vdcs= vdcService.getUserVDCs(user.getId());
             dataverses = new ArrayList();
             for (VDC vdc: vdcs) {
@@ -43,6 +47,12 @@ public class MyDataversePage  {
             }
         }
        
+    }
+
+    public String createDataverse() {
+        VDCUser user = VDCBaseBean.getVDCSessionBean().getUser();
+        userService.makeCreator(user.getId());
+        return "addSite";
     }
 
 }

@@ -225,7 +225,8 @@ public class LoginWorkflowBean extends VDCBaseBean implements java.io.Serializab
                   userService.makeCreator(user.getId());
             } 
             else if (workflowType.equals(WORKFLOW_TYPE_CONTRIBUTOR)) {
-                  userService.makeContributor(user.getId(),getVDCRequestBean().getCurrentVDCId());
+                // this workflow no longer makes the contributor immediately (it is used to create an account);
+                // instead the user will become a contributor when they make an actual contribution
                   
             } else if  (workflowType.equals(WORKFLOW_TYPE_FILE_ACCESS)) {
                 // give study file permission
@@ -240,7 +241,7 @@ public class LoginWorkflowBean extends VDCBaseBean implements java.io.Serializab
         String requestContextPath = this.getExternalContext().getRequestContextPath();
         VDC currentVDC = getVDCRequestBean().getCurrentVDC();
         if (WORKFLOW_TYPE_CONTRIBUTOR.equals(workflowType)) {
-            sessionMap.put("LOGIN_REDIRECT", requestContextPath + "/dv/" + currentVDC.getAlias() + "/faces/login/ContributorRequestSuccessPage.xhtml");
+            sessionMap.put("LOGIN_REDIRECT", requestContextPath + getVDCRequestBean().getCurrentVDCURL() + "/faces/login/ContributorRequestSuccessPage.xhtml");
         } else if (WORKFLOW_TYPE_CREATOR.equals(workflowType)) {
             sessionMap.put("LOGIN_REDIRECT", requestContextPath + "/faces/site/AddSitePage.xhtml");
         } else if (WORKFLOW_TYPE_FILE_ACCESS.equals(workflowType)) {

@@ -373,11 +373,14 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
 <style type="text/css">
 .dvnhowtocitetable td {padding: 5px 0; vertical-align:text-top;}
 .dvnhowtocitetable .col1{width:40%;}
-.dvnhowtocitetable .col2{padding-left: 9px}
+.dvnhowtocitetable .col2{}
 .dvnhowtociteinfofloat{}
 .dvnhowtociteinfofloat div{padding: 0; margin: 0 1em 0 0;}
-.dvnhowtociteinfofloat h4{margin:0;padding:0;}
-.dvnhowtocitecitationfloat{}
+.dvnhowtociteinfofloat h4 {margin:0; padding:0; display: inline;}
+.dvnhowtociteinfofloat .dvnhowtociteWhy {margin:0 0 0 1em; padding:0; font-weight: normal !important; display: inline;}
+.dvnhowtociteinfo {display: block;}
+.dvnhowtocitecitationfloat {padding: 0 0 1em 1em;}
+.dvnhowtocitecitationfloat textarea{display: block;}
 .dvnhowtocitecitationfloat label{font-weight:bold;}
 .dvnhowtocitecitation{padding: 2px;}
 textarea.dvnstudycitation {width: 90%; padding: 4px; margin: 8px 0; font-family: monospace !important;}
@@ -386,8 +389,8 @@ textarea.dvnstudycitation {width: 90%; padding: 4px; margin: 8px 0; font-family:
                                  columnClasses="col1, col2" columns="2" width="100%" rendered="#{studyPage.studyUI.citationInformationPanelIsRendered}">
                     <div jsfc="ice:panelGroup" styleClass="dvnhowtociteinfofloat">
                         <div>
-                            <h4><ice:outputText value="#{studybundle.howCiteLabel}"/></h4>
-                            <ice:outputText value="#{studybundle.howCiteHelp}" escape="false"/>
+                            <h4><ice:outputText value="#{studybundle.howCiteLabel}"/></h4> <div class="dvnhowtociteWhy"><a href="http://thedata.org/">Why to cite?</a></div>
+                            <ice:outputText value="#{studybundle.howCiteHelp}" styleClass="dvnhowtociteinfo" escape="false"/>
                         </div>
                     </div>
                     <div jsfc="ice:panelGroup" styleClass="dvnhowtocitecitationfloat">
@@ -402,9 +405,10 @@ jQuery(document).ready(function(){
 	});
 });
 </script>
-                        <label for="citationformat">Citation Format</label> <select id="dvnCitationSelector"><option value="Web" selected="selected">Web</option><option value="Print">Print</option></select><br/>
-                        <textarea readonly="readonly" rows="5" id="dvnStudyCitationWeb" class="dvnstudycitation dvnstudycitationDefault"><ice:outputText value="#{studyPage.studyUI.metadata.webCitation}" nospan="true"></ice:outputText></textarea>
-                        <textarea readonly="readonly" rows="5" id="dvnStudyCitationPrint" class="dvnstudycitation"><ice:outputText value="#{studyPage.studyUI.metadata.textCitation}" nospan="true"></ice:outputText></textarea>
+                        <strong>Please use this citation</strong>
+                        <textarea readonly="readonly" rows="5" id="dvnStudyCitationPrint" class="dvnstudycitation dvnstudycitationDefault"><ice:outputText value="#{studyPage.studyUI.metadata.textCitation}" nospan="true"></ice:outputText></textarea>
+                        <textarea readonly="readonly" rows="5" id="dvnStudyCitationWeb" class="dvnstudycitation"><ice:outputText value="#{studyPage.studyUI.metadata.webCitation}" nospan="true"></ice:outputText></textarea>
+                        <label for="citationformat">Citation Format</label> <select id="dvnCitationSelector"><option value="Print" selected="selected">Print</option><option value="Web">Web</option></select>
                     </div>
                   </ice:panelGrid>
                   <div jsfc="ice:panelGroup" id="groupPanel11" styleClass="vdcStudyInfoHeader">

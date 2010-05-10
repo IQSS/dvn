@@ -82,7 +82,6 @@ public class HomePage extends VDCBaseBean implements Serializable {
 
     //Primitives
     private boolean isInit;
-    private boolean showRequestCreator;
     private int classificationsSize  = 0;
     private int currentRow;
     
@@ -106,7 +105,6 @@ public class HomePage extends VDCBaseBean implements Serializable {
     private String parsedNetworkAnnouncements   = parseAnnouncements((getVDCRequestBean().getVdcNetwork() != null) ? getVDCRequestBean().getVdcNetwork().getAnnouncements(): "", false);
     private String searchField;
     private String searchValue = "Search Studies";
-    private boolean showRequestContributor;
     StatusMessage msg;
     private boolean isAlphaSort;
     private boolean hideRestricted = true; //show only restricted if set to false wjb
@@ -179,23 +177,6 @@ public class HomePage extends VDCBaseBean implements Serializable {
 
      private void initChrome() {
          msg =  (StatusMessage)getRequestMap().get("statusMessage");
-
-        LoginBean loginBean = getVDCSessionBean().getLoginBean();
-
-        if (getVDCRequestBean().getCurrentVDC() == null && getVDCRequestBean().getVdcNetwork().isAllowCreateRequest()) {
-            if (loginBean==null ||
-                    (loginBean!=null  &&
-                      !loginBean.isNetworkAdmin()    &&
-                      (!loginBean.isNetworkCreator() || (loginBean.isNetworkCreator() && !userService.hasUserCreatedDataverse(loginBean.getUser().getId()))))) {
-                showRequestCreator=true;
-            }
-        }
-        if ( getVDCRequestBean().getCurrentVDC() != null && getVDCRequestBean().getCurrentVDC().isAllowContributorRequests()) {
-            if (loginBean==null || (loginBean!=null && loginBean.isBasicUser() )) {
-                showRequestContributor=true;
-            }
-        }
-
      }
 
      //DEBUG -- new way to get at VDCS
@@ -579,14 +560,6 @@ public class HomePage extends VDCBaseBean implements Serializable {
         return searchValue;
     }
 
-    public boolean isShowRequestContributor() {
-        return this.showRequestContributor;
-    }
-
-    public boolean isShowRequestCreator() {
-        return this.showRequestCreator;
-    }
-
     public String getStudyCount() {
         Long count = vdcNetworkStatsService.getVDCNetworkStats().getStudyCount();
         return NumberFormat.getIntegerInstance().format(count);
@@ -624,13 +597,6 @@ public class HomePage extends VDCBaseBean implements Serializable {
         this.searchField = searchField;
     }
 
-   /**
-     * Setter for property showRequestCreator.
-     * @param showRequestCreator New value of property showRequestCreator.
-     */
-    public void setShowRequestCreator(boolean showRequestCreator) {
-        this.showRequestCreator = showRequestCreator;
-    }
 
     public void setSearchValue(String searchValue) {
         this.searchValue = searchValue;

@@ -53,7 +53,7 @@
                         </ice:panelTab>
 
                         <!-- MY DATAVERSES -->
-                        <ice:panelTab id="myDataverses" label="Dataverses" rendered="#{!VDCSession.loginBean.networkAdmin and VDCSession.loginBean.hasDataverses}">
+                        <ice:panelTab id="myDataverses" label="Dataverses" rendered="#{!VDCSession.loginBean.networkAdmin and (VDCRequest.vdcNetwork.allowCreateRequest or VDCSession.loginBean.hasDataverses)}">
                             <gui:include src="/networkAdmin/MyDataversesFragment.xhtml">
                             </gui:include>
                         </ice:panelTab>

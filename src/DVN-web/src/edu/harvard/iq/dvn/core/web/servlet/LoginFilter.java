@@ -44,6 +44,7 @@ import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import edu.harvard.iq.dvn.core.web.common.LoginBean;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
+import edu.harvard.iq.dvn.core.web.common.VDCRequestBean;
 import edu.harvard.iq.dvn.core.web.common.VDCSessionBean;
 import java.io.*;
 import java.util.Enumeration;
@@ -144,16 +145,31 @@ public class LoginFilter implements Filter {
         // check for invalid study Id or study versionNumber
         // for right now, do this with a sendRedirect, though we should try to figure out a solution
         // with a forward isntead; that way the user can fix the issue in the URL and easily try again
-        if ( isViewStudyPage(pageDef) || isEditStudyPage(pageDef) ) {
+        if ( isViewStudyPage(pageDef) || isEditStudyPage(pageDef) || isVersionDiffPage(pageDef) ) {
             Long studyId = determineStudyId(pageDef, httpRequest);
-            if (studyId != null && studyId > 0 ) {
+            Long[] versionDiffNumbers = VDCRequestBean.parseVersionNumberList(httpRequest);
+            if (studyId == null  || (isVersionDiffPage(pageDef) && versionDiffNumbers ==null)) {
+                 String redirectURL = httpRequest.getContextPath();
+                        if (currentVDC!=null) {
+                            redirectURL+="/dv/"+currentVDC.getAlias();
+                        }
+                    httpResponse.sendRedirect(redirectURL + "/faces/NotFoundPage.xhtml" );
+                    return;
+            } else {
                 try {
                     String versionNumberParam = httpRequest.getParameter("versionNumber");
-                    if (versionNumberParam==null) {
-                        Study study = studyService.getStudy(studyId);
-                    } else {
+                  
+                    if (versionNumberParam != null) {
                         Long versionNumber = new Long(versionNumberParam);
                         StudyVersion sv = studyService.getStudyVersion(studyId, versionNumber);
+
+                    } else if (versionDiffNumbers != null) {
+                        StudyVersion sv1 = studyService.getStudyVersion(studyId, versionDiffNumbers[0]);
+                        StudyVersion sv2 = studyService.getStudyVersion(studyId, versionDiffNumbers[1]);
+                    } else {
+
+                        Study study = studyService.getStudy(studyId);
+
                     }
                 } catch (EJBException e) {
                     if (e.getCause() instanceof IllegalArgumentException) {
@@ -174,7 +190,7 @@ public class LoginFilter implements Filter {
                     httpResponse.sendRedirect(redirectURL + "/faces/NotFoundPage.xhtml" );
                     return;
                 }
-            }
+            } 
         }
 
         setOriginalUrl(httpRequest, httpResponse, currentVDC);
@@ -333,10 +349,15 @@ public class LoginFilter implements Filter {
             }
         } else if (pageDef!=null &&( pageDef.getName().equals(PageDefServiceLocal.DV_OPTIONS_PAGE)
                 || pageDef.getName().equals(PageDefServiceLocal.ACCOUNT_OPTIONS_PAGE)
+                || pageDef.getName().equals(PageDefServiceLocal.ACCOUNT_PAGE)
                 || pageDef.getName().equals(PageDefServiceLocal.MANAGE_STUDIES_PAGE)) ) {
             // For these  pages, the only requirement is
             // to be logged in.
             if (user==null) {
+                return false;
+            }
+            String userParam = request.getParameter("userId");
+            if (userParam!=null && !userParam.equals(user.getId().toString()) && !user.isAdmin(currentVDC) ) {
                 return false;
             }
         } else if (isViewStudyPage(pageDef)) {
@@ -356,19 +377,58 @@ public class LoginFilter implements Filter {
                 return false;
           }
           if (studyVersion!=null ) {
-              // If this is a draft version, only show the version if the user is authorized to edit
-              if( studyVersion.isWorkingCopy() && (user==null || !study.isUserAuthorizedToEdit(user))) {
+              // If study has been deaccessioned,
+              // only show the page if the user is authorized to edit
+              if ( study.isDeaccessioned()  && (user==null || !study.isUserAuthorizedToEdit(user))) {
                   return false;
               }
-              // If this version is the deaccessioned version,
-              // only show the version if the user is authorized to edit
-              else if ( study.isDeaccessioned() && studyVersion.equals(study.getDeaccessionedVersion()) && (user==null || !study.isUserAuthorizedToEdit(user))) {
+              // If this is a draft version, only show the version if the user is authorized to edit
+              if( studyVersion.isWorkingCopy() && (user==null || !study.isUserAuthorizedToEdit(user))) {
                   return false;
               }
 
           }
 
-        } else if (isSubsettingPage(pageDef)) {
+        } else if ( isVersionDiffPage(pageDef)) {
+            Study study = null;
+            StudyVersion studyVersion1 = null;
+            StudyVersion studyVersion2 = null;
+            String studyId = VDCBaseBean.getParamFromRequestOrComponent("studyId", request);
+
+            Long[] versionList = VDCRequestBean.parseVersionNumberList(request);
+
+            studyVersion1 = studyService.getStudyVersion(Long.parseLong(studyId), versionList[0]);
+            studyVersion2 = studyService.getStudyVersion(Long.parseLong(studyId), versionList[1]);
+
+
+            if (studyId != null) {
+                study = studyService.getStudy(Long.parseLong(studyId));
+
+            } else {
+                study = studyService.getStudyByGlobalId(VDCBaseBean.getParamFromRequestOrComponent("globalId", request));
+            }
+            if (study.isStudyRestrictedForUser(user, ipUserGroup)) {
+                return false;
+            }
+
+            // If study has been deaccessioned,
+            // only show the page if the user is authorized to edit
+            if (study.isDeaccessioned() && (user == null || !study.isUserAuthorizedToEdit(user))) {
+                return false;
+            }
+            // If this is a draft version, only show the version if the user is authorized to edit
+            if ((studyVersion1.isWorkingCopy() || studyVersion2.isWorkingCopy()) && (user == null || !study.isUserAuthorizedToEdit(user))) {
+                return false;
+            }
+            if ("confirmRelease".equals(request.getParameter("actionMode")) &&! study.isUserAuthorizedToRelease(user)) {
+                return false;
+            }
+
+
+
+
+
+        }else if (isSubsettingPage(pageDef)) {
             String dtId = VDCBaseBean.getParamFromRequestOrComponent("dtId", request);
             DataTable dataTable = variableService.getDataTable(Long.parseLong(dtId));
             Study study = dataTable.getStudyFile().getStudy();
@@ -397,6 +457,14 @@ public class LoginFilter implements Filter {
             ipUserGroup = (UserGroup) session.getAttribute("ipUserGroup");
         }
         return ipUserGroup;
+    }
+
+    private boolean isVersionDiffPage(PageDef pageDef ) {
+        if (pageDef != null &&
+                pageDef.getName().equals(PageDefServiceLocal.STUDY_VERSION_DIFFERENCES_PAGE )) {
+            return true;
+        }
+        return false;
     }
 
     private boolean isEditStudyPage(PageDef pageDef) {

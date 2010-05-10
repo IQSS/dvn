@@ -59,9 +59,11 @@
           <ice:outputText value="#{VDCSession.ipUserGroup.friendlyName}"/>
         </div>
         <div jsfc="ice:panelGroup">
-          <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/login/AddAccountPage.xhtml" title="Create Account">
-            <ice:outputText value="#{bundle.createaccountLabel}"/>
-          </ice:outputLink>
+            <ice:form>
+                <ice:commandLink action="#{LoginWorkflowBean.beginContributorWorkflow}"  title="Create Account">
+                    <ice:outputText value="#{bundle.createaccountLabel}"/>
+                </ice:commandLink>
+            </ice:form>
         </div>
       </div>
       <div jsfc="ice:panelGroup" styleClass="dvn_navUserName" rendered="#{(!VDCRequest.logoutPage and VDCSession.loginBean.user != null)}">

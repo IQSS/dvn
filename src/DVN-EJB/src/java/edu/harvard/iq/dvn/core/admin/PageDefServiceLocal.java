@@ -69,7 +69,8 @@ public interface PageDefServiceLocal extends java.io.Serializable  {
     public static final String NETWORK_OPTIONS_PAGE = "NetworkOptionsPage";
     public static final String MANAGE_STUDIES_PAGE = "ManageStudiesPage";
     public static final String ACCOUNT_OPTIONS_PAGE = "AccountOptionsPage";
-          
+    public static final String ACCOUNT_PAGE = "AccountPage";
+    public static final String STUDY_VERSION_DIFFERENCES_PAGE = "StudyVersionDifferencesPage";
     Role findById(Long id);
 
     PageDef findByName(String name);

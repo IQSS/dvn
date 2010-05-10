@@ -31,12 +31,12 @@ package edu.harvard.iq.dvn.core.web.common;
 
 import edu.harvard.iq.dvn.core.admin.NetworkRoleServiceLocal;
 import edu.harvard.iq.dvn.core.admin.RoleServiceLocal;
+import edu.harvard.iq.dvn.core.admin.UserServiceLocal;
 import edu.harvard.iq.dvn.core.admin.VDCRole;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.naming.InitialContext;
@@ -160,25 +160,33 @@ public class LoginBean  implements java.io.Serializable {
     public void setTermsfUseMap(Map termsfUseMap) {
         this.termsfUseMap = termsfUseMap;
     }
-    
-  public boolean isHasDataverses() {
-        boolean hasDataverses=false;
-        List vdcs;
-            VDCServiceLocal vdcService = null;
-            try {
-                vdcService = (VDCServiceLocal) new InitialContext().lookup("java:comp/env/vdcService");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-           vdcs = vdcService.getUserVDCs(user.getId());
-           if (vdcs!=null && !vdcs.isEmpty()) {
-               hasDataverses=true;
-           }
+   
+    public boolean isHasDataverses() {
+        boolean hasDataverses = false;
+        VDCServiceLocal vdcService = null;
+        try {
+            vdcService = (VDCServiceLocal) new InitialContext().lookup("java:comp/env/vdcService");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        List vdcs = vdcService.getUserVDCs(user.getId());
+        if (vdcs != null && !vdcs.isEmpty()) {
+            hasDataverses = true;
+        }
         return hasDataverses;
     }
 
-   public boolean isHasContributed() {
-       return user.getVersionContributors().size() > 0;
-   }
+    public boolean isHasContributed() {
+        boolean hasContributed = false;
+        UserServiceLocal userService = null;
+        try {
+            userService = (UserServiceLocal) new InitialContext().lookup("java:comp/env/vdcUserService");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        // make sure we get current user from db
+        hasContributed = userService.find(user.getId()).getVersionContributors().size() > 0;
+        return hasContributed;
+    }
 
 }

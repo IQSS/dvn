@@ -61,9 +61,9 @@
             <div jsfc="ice:panelGroup"
                   styleClass="dvnHmpgGroupCreateBlock" style="width: 200px;"
                   id="createDataverse"
-                  rendered="#{HomePage.showRequestCreator}">
+                  rendered="#{VDCRequest.vdcNetwork.allowCreateRequest}">
                  <ice:outputLink styleClass="dvnHmpgGroupCreateLink" value="/dvn/faces/login/CreatorRequestInfoPage.xhtml">
-                     <ice:outputText value="Create your own Dataverse" escape="false"/>
+                     <ice:outputText value="Create a Dataverse" escape="false"/>
                  </ice:outputLink>
              </div>
 
@@ -71,12 +71,8 @@
                 .dvn_hmpgMainMessagePadding {padding-right:220px;}
             </style>
 
-            <div jsfc="ice:panelGroup" styleClass="#{HomePage.showRequestCreator == true ? 'dvn_hmpgMainMessage dvn_hmpgMainMessagePadding' : 'dvn_hmpgMainMessage'}" rendered="#{(VDCRequest.vdcNetwork.displayAnnouncements == true) and (VDCRequest.currentVDC == null) }" id="networkAnnouncementsHeaderPanel" >
+            <div jsfc="ice:panelGroup" styleClass="#{VDCRequest.vdcNetwork.allowCreateRequest ? 'dvn_hmpgMainMessage dvn_hmpgMainMessagePadding' : 'dvn_hmpgMainMessage'}" rendered="#{(VDCRequest.vdcNetwork.displayAnnouncements == true) and (VDCRequest.currentVDC == null) }" id="networkAnnouncementsHeaderPanel" >
               <ice:outputText id="networkAnnouncementsMessages" escape="false" value="#{HomePage.parsedNetworkAnnouncements}"/>
-            </div>
-
-            <div jsfc="ice:panelGroup" styleClass="#{!empty(HomePage.showRequestCreator) ? 'dvn_hmpgMainMessage dvn_hmpgMainMessagePadding' : 'dvn_hmpgMainMessage'}" rendered="#{VDCRequest.currentVDC.displayAnnouncements == true}" id="announcementsHeaderPanel" >
-              <ice:outputText rendered="#{VDCRequest.currentVDC.displayAnnouncements == true}" escape="false" value="#{HomePage.parsedLocalAnnouncements}"/>
             </div>
         </div>
         <!-- Main Section ends here -->

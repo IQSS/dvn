@@ -1295,7 +1295,6 @@ public class SAVFileReader extends StatDataFileReader{
             dbgLog.info("RT2: attention! didn't reach the end of the OBS list!");
             throw new IOException("RT2: didn't reach the end of the OBS list!");
         }
-
         dbgLog.fine("***** decodeRecordType2(): end *****");
     }
     
@@ -1331,7 +1330,16 @@ public class SAVFileReader extends StatDataFileReader{
 		if (intRT3test != 3){
 		    //if (stream.markSupported()){
 		    dbgLog.fine("iteration="+safteyCounter);
-		    
+
+            // We have encountered a record that's not type 3. This means we've
+            // processed all the type 3/4 record pairs. So we want to rewind
+            // the stream and return -- so that the appropriate record type
+            // reader can be called on it.
+            // But before we return, we need to save all the value labels
+            // we have found:
+
+            smd.setValueLabelTable(valueLabelTable);
+            
 		    stream.reset();
 		    return;
 		    //}
@@ -1504,7 +1512,7 @@ public class SAVFileReader extends StatDataFileReader{
 		    valueVariableMappingTable.put(OBSIndexToVariableName.get(vn - 1), keyVariableName);
 		}
 
-		dbgLog.fine("valueVariableMappingTable:\n"+valueVariableMappingTable);            
+		dbgLog.fine("valueVariableMappingTable:\n"+valueVariableMappingTable);
 	    } catch (IOException ex){
 		//ex.printStackTrace();
 		throw ex; 

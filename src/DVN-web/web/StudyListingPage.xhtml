@@ -29,10 +29,28 @@
             </div>
         </div>
 
-                <div jsfc="ice:panelGroup" id="beContributor" style="float: right; width: 200px;" styleClass="dvnStudyListContributorBlock" rendered="#{StudyListingPage.renderContributorLink}">
-                  <ice:outputLink styleClass="dvnStudyListContributorLink" value="/dvn/dv/#{VDCRequest.currentVDC.alias}/faces/login/ContributorRequestInfoPage.xhtml">
-                    <ice:outputText value="Become a Contributor" escape="false"/>
-                  </ice:outputLink>
+                <div jsfc="ice:panelGroup" id="beContributor" style="float: right; width: 200px;" styleClass="dvnStudyListContributorBlock" rendered="#{VDCSession.loginBean.user==null and VDCRequest.currentVDC.allowRegisteredUsersToContribute and !VDCRequest.currentVDC.allowContributorsEditAll}">
+                    <ice:outputText value="Open Dataverse:" escape="false"/>
+                    <ice:outputLink styleClass="dvnStudyListContributorLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/LoginPage.xhtml?clearWorkflow=true" >
+                        <ice:outputText value="Login" escape="false"/>
+                    </ice:outputLink>
+                    <ice:outputText value="or" />
+                    <ice:commandLink action="#{LoginWorkflowBean.beginContributorWorkflow}"  title="Create Account">
+                      <ice:outputText styleClass="dvnStudyListContributorLink" value="create an account" escape="false"/>
+                    </ice:commandLink>
+                  <ice:outputText value="to add your own study to this dataverse." />
+                </div>
+
+                 <div jsfc="ice:panelGroup" id="beContributor" style="float: right; width: 200px;" styleClass="dvnStudyListContributorBlock" rendered="#{VDCSession.loginBean.user==null and VDCRequest.currentVDC.allowRegisteredUsersToContribute and VDCRequest.currentVDC.allowContributorsEditAll}">
+                    <ice:outputText value="Wiki Dataverse:" escape="false"/>
+                    <ice:outputLink styleClass="dvnStudyListContributorLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/LoginPage.xhtml?clearWorkflow=true" >
+                        <ice:outputText value="Login" escape="false"/>
+                    </ice:outputLink>
+                    <ice:outputText value="or" />
+                    <ice:commandLink action="#{LoginWorkflowBean.beginContributorWorkflow}"  title="Create Account">
+                      <ice:outputText styleClass="dvnStudyListContributorLink" value="create an account" escape="false"/>
+                    </ice:commandLink>
+                  <ice:outputText value="to add your own study or contribute to existing studies in this dataverse." />
                 </div>
 
             <style type="text/css">

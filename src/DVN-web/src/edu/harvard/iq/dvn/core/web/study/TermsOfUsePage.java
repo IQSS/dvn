@@ -65,15 +65,6 @@ public class TermsOfUsePage extends VDCBaseBean {
     private boolean downloadStudyTermsRequired;
     private boolean depositDataverseTermsRequired;
     private boolean depositDvnTermsRequired;
-    private StudyVersion releasedVersion;
-
-    public StudyVersion getReleasedVersion() {
-        return releasedVersion;
-    }
-
-    public void setReleasedVersion(StudyVersion releasedVersion) {
-        this.releasedVersion = releasedVersion;
-    }
 
     public HtmlInputHidden getHiddenTou() {
         return hiddenTou;
@@ -158,9 +149,7 @@ public class TermsOfUsePage extends VDCBaseBean {
             } catch (NumberFormatException ex) {}
         }
         if (studyId != null) {
-            releasedVersion = studyService.getStudyVersion(studyId, null); // gets released or deaccessioned version
-            study = releasedVersion.getStudy();
-           
+            study = studyService.getStudy(studyId);
         }
 
         setRequiredFlags();
@@ -286,30 +275,27 @@ public class TermsOfUsePage extends VDCBaseBean {
     }
     
     private void setRequiredFlags() {
-        
-        if (study != null) {
-            downloadDataverseTermsRequired = TermsOfUseFilter.isDownloadDataverseTermsRequired(study, getTermsOfUseMap());
-            downloadStudyTermsRequired = TermsOfUseFilter.isDownloadStudyTermsRequired(study, getTermsOfUseMap());
-        }
-         if (getDepositVDC()!= null) {
+        if (isTouTypeDeposit()) {
             depositDataverseTermsRequired = TermsOfUseFilter.isDepositDataverseTermsRequired(getDepositVDC(), getTermsOfUseMap());
+            depositDvnTermsRequired = TermsOfUseFilter.isDepositDvnTermsRequired(vdcNetworkService.find(), getTermsOfUseMap());
         }
-        
-        // network level
-        downloadDvnTermsRequired = TermsOfUseFilter.isDownloadDvnTermsRequired(vdcNetworkService.find(), getTermsOfUseMap());
-        depositDvnTermsRequired = TermsOfUseFilter.isDepositDvnTermsRequired(vdcNetworkService.find(), getTermsOfUseMap());    
+
+        if (isTouTypeDownload()) {
+            if (study.getReleasedVersion() != null) {
+                downloadStudyTermsRequired = TermsOfUseFilter.isDownloadStudyTermsRequired(study, getTermsOfUseMap());
+                downloadDataverseTermsRequired = TermsOfUseFilter.isDownloadDataverseTermsRequired(study, getTermsOfUseMap());
+                downloadDvnTermsRequired = TermsOfUseFilter.isDownloadDvnTermsRequired(vdcNetworkService.find(), getTermsOfUseMap());
+            }
+        }
     }
     
     
-    private VDC getDepositVDC() {
-            
-        VDC depositVDC = null;
+    private VDC getDepositVDC() {          
         if (study!=null) {
-            depositVDC = study.getOwner();
+            return study.getOwner();
         } else {
-            depositVDC = getVDCRequestBean().getCurrentVDC();
+            return getVDCRequestBean().getCurrentVDC();
         }
-        return depositVDC;
     }
 
 }

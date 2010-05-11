@@ -193,8 +193,13 @@ public class UserServiceBean implements UserServiceLocal {
     public void makeContributor(Long userId, Long vdcId) {
         VDCUser user = em.find(VDCUser.class, userId);
         VDC vdc = em.find(VDC.class, vdcId);
-        // If the user already has a role for this VDC, then he is already at least a contributor,
-        // so don't need to change the role.
+        // if the current role is priveleged viewer, remove it so we can promote
+        // user to contributor.
+        if (user.isPrivilegedViewer(vdc)) {
+           VDCRole role = user.getVDCRole(vdc);
+            user.getVdcRoles().remove(role);
+            em.remove(role);
+        }
         if (user.getVDCRole(vdc)==null) {
             addVdcRole(userId, vdcId, RoleServiceLocal.CONTRIBUTOR);
             mailService.sendContributorAccountNotification(vdc.getContactEmail(), user.getUserName(), vdc.getName());

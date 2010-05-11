@@ -128,8 +128,6 @@ public class Indexer implements java.io.Serializable  {
         try {
             assureIndexDirExists();
             dir = FSDirectory.open(new File(indexDir));
- //           dir = FSDirectory.getDirectory(indexDir,isIndexEmpty());
-//            r = IndexReader.open(dir);
             r = IndexReader.open(dir, true);
             searcher = new IndexSearcher(r);
         } catch (IOException ex) {
@@ -139,7 +137,6 @@ public class Indexer implements java.io.Serializable  {
 
     protected void setup() throws IOException {
         assureIndexDirExists();
-//        dir = FSDirectory.getDirectory(indexDir, isIndexEmpty());
         dir = FSDirectory.open(new File(indexDir));
     }
 
@@ -160,6 +157,7 @@ public class Indexer implements java.io.Serializable  {
             IndexReader reader = IndexReader.open(dir, false);
             reader.deleteDocuments(new Term("id", Long.toString(studyId)));
             reader.deleteDocuments(new Term("varStudyId",Long.toString(studyId)));
+            reader.deleteDocuments(new Term("versionStudyId",Long.toString(studyId)));
             reader.close();
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -400,12 +398,16 @@ public class Indexer implements java.io.Serializable  {
             writerVar.close();
             writerVersions = new IndexWriter(dir, new WhitespaceAnalyzer(), isIndexEmpty(), IndexWriter.MaxFieldLength.UNLIMITED);
             for (StudyVersion version : study.getStudyVersions()) {
-                Document docVersions = new Document();
-                addKeyword(docVersions, "versionStudyId",study.getId().toString());
-                addText(1.0f, docVersions, "versionId", version.getId().toString());
-                addText(1.0f, docVersions, "versionNumber", version.getVersionNumber().toString());
-                addKeyword(docVersions, "versionUnf", version.getMetadata().getUNF());
-                writerVersions.addDocument(docVersions);
+                // The current(released) version UNF is indexed in the main document
+                // only index previous(archived) version UNFs here
+                if (version.isArchived()) {
+                    Document docVersions = new Document();
+                    addKeyword(docVersions, "versionStudyId", study.getId().toString());
+                    addText(1.0f, docVersions, "versionId", version.getId().toString());
+                    addText(1.0f, docVersions, "versionNumber", version.getVersionNumber().toString());
+                    addKeyword(docVersions, "versionUnf", version.getMetadata().getUNF());
+                    writerVersions.addDocument(docVersions);
+                }
             }
             writerVersions.close();
             logger.fine("End indexing study " + study.getStudyId());

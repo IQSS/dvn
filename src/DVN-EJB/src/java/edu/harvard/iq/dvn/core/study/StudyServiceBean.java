@@ -33,7 +33,6 @@ import edu.harvard.iq.dvn.core.admin.UserServiceLocal;
 import edu.harvard.iq.dvn.core.admin.VDCRole;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.ddi.DDIServiceLocal;
-import edu.harvard.iq.dvn.ingest.dsb.DSBIngestMessage;
 import edu.harvard.iq.dvn.core.gnrs.GNRSServiceLocal;
 import edu.harvard.iq.dvn.core.harvest.HarvestFormatType;
 import edu.harvard.iq.dvn.core.harvest.HarvestStudyServiceLocal;
@@ -75,13 +74,8 @@ import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.jms.JMSException;
-import javax.jms.Message;
 import javax.jms.Queue;
-import javax.jms.QueueConnection;
 import javax.jms.QueueConnectionFactory;
-import javax.jms.QueueSender;
-import javax.jms.QueueSession;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -1545,8 +1539,13 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         Date lastUpdateTime = new Date();
         studyVersion.setLastUpdateTime(lastUpdateTime);
         studyVersion.getStudy().setLastUpdateTime(lastUpdateTime);
-        if (user.isContributor(studyVersion.getStudy().getOwner()) || user.getVDCRole(studyVersion.getStudy().getOwner())==null ) {
+        VDC studyVDC  = studyVersion.getStudy().getOwner();
+
+        if (user.isContributor(studyVDC) || user.getVDCRole(studyVDC)==null ) {
             studyVersion.setVersionState(VersionState.DRAFT);
+        }
+        if ( !user.isNetworkAdmin()) {
+            userService.makeContributor(user.getId(), studyVDC.getId());
         }
         studyVersion.updateVersionContributors(user);
         setDisplayOrders(studyVersion.getMetadata());

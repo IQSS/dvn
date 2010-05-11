@@ -56,29 +56,29 @@
               <div class="termsAgreementBox">
                 <div jsfc="ice:panelGroup" rendered="#{TermsOfUsePage.touTypeDownload}">
                   <!-- Study Terms of Use -->
-                  <ice:outputText value="#{studybundle.confidentialityLabel}" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.releasedVersion.metadata.confidentialityDeclaration}"/>
-                  <ice:outputText value="#{TermsOfUsePage.releasedVersion.metadata.confidentialityDeclaration}" rendered="#{!empty TermsOfUsePage.releasedVersion.metadata.confidentialityDeclaration}" escape="false"/>
+                  <ice:outputText value="#{studybundle.confidentialityLabel}" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.confidentialityDeclaration}"/>
+                  <ice:outputText value="#{TermsOfUsePage.study.releasedVersion.metadata.confidentialityDeclaration}" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.confidentialityDeclaration}" escape="false"/>
 
-                  <ice:outputText value="#{studybundle.specialPermissionsLabel}" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.releasedVersion.metadata.specialPermissions}"/>
-                  <ice:outputText value="#{TermsOfUsePage.releasedVersion.metadata.specialPermissions}" rendered="#{!empty TermsOfUsePage.releasedVersion.metadata.specialPermissions}" escape="false"/>
+                  <ice:outputText value="#{studybundle.specialPermissionsLabel}" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.specialPermissions}"/>
+                  <ice:outputText value="#{TermsOfUsePage.study.releasedVersion.metadata.specialPermissions}" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.specialPermissions}" escape="false"/>
 
-                  <ice:outputText value="#{studybundle.restrictionsLabel}" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.releasedVersion.metadata.restrictions}"/>
-                  <ice:outputText value="#{TermsOfUsePage.releasedVersion.metadata.restrictions}" rendered="#{!empty TermsOfUsePage.releasedVersion.metadata.restrictions}" escape="false"/>
+                  <ice:outputText value="#{studybundle.restrictionsLabel}" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.restrictions}"/>
+                  <ice:outputText value="#{TermsOfUsePage.study.releasedVersion.metadata.restrictions}" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.restrictions}" escape="false"/>
 
-                  <ice:outputText value="#{studybundle.contactLabel}" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.releasedVersion.metadata.contact}"/>
-                  <ice:outputText value="#{TermsOfUsePage.releasedVersion.metadata.contact}" rendered="#{!empty TermsOfUsePage.releasedVersion.metadata.contact}" escape="false"/>
+                  <ice:outputText value="#{studybundle.contactLabel}" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.contact}"/>
+                  <ice:outputText value="#{TermsOfUsePage.study.releasedVersion.metadata.contact}" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.contact}" escape="false"/>
 
-                  <ice:outputText value="#{studybundle.citationRequirementsLabel}" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.releasedVersion.metadata.citationRequirements}"/>
-                  <ice:outputText value="#{TermsOfUsePage.releasedVersion.metadata.citationRequirements}" rendered="#{!empty TermsOfUsePage.releasedVersion.metadata.citationRequirements}" escape="false"/>
+                  <ice:outputText value="#{studybundle.citationRequirementsLabel}" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.citationRequirements}"/>
+                  <ice:outputText value="#{TermsOfUsePage.study.releasedVersion.metadata.citationRequirements}" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.citationRequirements}" escape="false"/>
 
-                  <ice:outputText value="#{studybundle.depositorRequirementsLabel}" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.releasedVersion.metadata.depositorRequirements}"/>
-                  <ice:outputText value="#{TermsOfUsePage.releasedVersion.metadata.depositorRequirements}" rendered="#{!empty TermsOfUsePage.releasedVersion.metadata.depositorRequirements}" escape="false"/>
+                  <ice:outputText value="#{studybundle.depositorRequirementsLabel}" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.depositorRequirements}"/>
+                  <ice:outputText value="#{TermsOfUsePage.study.releasedVersion.metadata.depositorRequirements}" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.depositorRequirements}" escape="false"/>
 
-                  <ice:outputText value="#{studybundle.conditionsLabel}" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.releasedVersion.metadata.conditions}"/>
-                  <ice:outputText value="#{TermsOfUsePage.releasedVersion.metadata.conditions}" rendered="#{!empty TermsOfUsePage.releasedVersion.metadata.conditions}" escape="false"/>
+                  <ice:outputText value="#{studybundle.conditionsLabel}" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.conditions}"/>
+                  <ice:outputText value="#{TermsOfUsePage.study.releasedVersion.metadata.conditions}" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.conditions}" escape="false"/>
 
-                  <ice:outputText value="#{studybundle.disclaimerLabel}" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.releasedVersion.metadata.disclaimer}"/>
-                  <ice:outputText value="#{TermsOfUsePage.releasedVersion.metadata.disclaimer}" rendered="#{!empty TermsOfUsePage.releasedVersion.metadata.disclaimer}" escape="false"/>
+                  <ice:outputText value="#{studybundle.disclaimerLabel}" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.disclaimer}"/>
+                  <ice:outputText value="#{TermsOfUsePage.study.releasedVersion.metadata.disclaimer}" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.disclaimer}" escape="false"/>
 
                   <!-- Dataverse, Dataverse Network and Harvest Terms of Use -->
                   <ice:outputText value="#{studybundle.dataverseTermsofUseLabel}" styleClass="termsAgreementMessageTitle" rendered="#{TermsOfUsePage.downloadDataverseTermsRequired}" />
@@ -87,11 +87,11 @@
                   <ice:outputText value="#{studybundle.networkTermsofUseLabel}" styleClass="termsAgreementMessageTitle" rendered="#{TermsOfUsePage.downloadDvnTermsRequired}"/>
                   <ice:outputText value="#{TermsOfUsePage.vdcNetwork.downloadTermsOfUse}" rendered="#{TermsOfUsePage.downloadDvnTermsRequired}" escape="false"/>
 
-                  <ice:outputText value="#{studybundle.harvestedTermsofUseLabel}" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.releasedVersion.metadata.harvestDVTermsOfUse}"/>
-                  <ice:outputText value="#{TermsOfUsePage.releasedVersion.metadata.harvestDVTermsOfUse}" rendered="#{!empty TermsOfUsePage.releasedVersion.metadata.harvestDVTermsOfUse}" escape="false"/>
+                  <ice:outputText value="#{studybundle.harvestedTermsofUseLabel}" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.harvestDVTermsOfUse}"/>
+                  <ice:outputText value="#{TermsOfUsePage.study.releasedVersion.metadata.harvestDVTermsOfUse}" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.harvestDVTermsOfUse}" escape="false"/>
 
-                  <ice:outputText value="#{studybundle.networkHarvestedTermsofUseLabel}" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.releasedVersion.metadata.harvestDVNTermsOfUse}"/>
-                  <ice:outputText value="#{TermsOfUsePage.releasedVersion.metadata.harvestDVNTermsOfUse}" rendered="#{!empty TermsOfUsePage.releasedVersion.metadata.harvestDVNTermsOfUse}" escape="false"/>
+                  <ice:outputText value="#{studybundle.networkHarvestedTermsofUseLabel}" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.harvestDVNTermsOfUse}"/>
+                  <ice:outputText value="#{TermsOfUsePage.study.releasedVersion.metadata.harvestDVNTermsOfUse}" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.harvestDVNTermsOfUse}" escape="false"/>
                 </div>
                 <div jsfc="ice:panelGroup" rendered="#{TermsOfUsePage.touTypeDeposit}">
                   <ice:outputText value="#{studybundle.networkStudyCreationTermsofUseLabel}" styleClass="termsAgreementMessageTitle" rendered="#{TermsOfUsePage.depositDvnTermsRequired}"/>
@@ -102,8 +102,8 @@
                 </div>
               </div>
               <div>
-                <ice:outputText styleClass="vdcFieldTitle" value="BY CLICKING THE &quot;I AGREE&quot; CHECKBOX BELOW, I CONFIRM THAT I HAVE READ AND UNDERSTOOD EACH AND EVERY TERM SET FORTH IN THE TERMS AND CONDITIONS FOR THE USE OF DATA FOUND ABOVE, AND I AGREE TO BE BOUND BY ALL OF SUCH TERMS AND CONDITIONS."/><br/>
-                <ice:outputText styleClass="vdcFieldTitle" value="IF I DO NOT UNDERSTAND OR AGREE TO ALL OF THE TERMS AND CONDITIONS, I MUST NOT DOWNLOAD THE MATERIALS."/><br/>
+                <ice:outputText rendered="#{TermsOfUsePage.touTypeDownload}" styleClass="vdcFieldTitle" value="BY CLICKING THE &quot;I AGREE&quot; CHECKBOX BELOW, I CONFIRM THAT I HAVE READ AND UNDERSTOOD EACH AND EVERY TERM SET FORTH IN THE TERMS AND CONDITIONS FOR THE USE OF DATA FOUND ABOVE, AND I AGREE TO BE BOUND BY ALL OF SUCH TERMS AND CONDITIONS."/><br/>
+                <ice:outputText rendered="#{TermsOfUsePage.touTypeDownload}" styleClass="vdcFieldTitle" value="IF I DO NOT UNDERSTAND OR AGREE TO ALL OF THE TERMS AND CONDITIONS, I MUST NOT DOWNLOAD THE MATERIALS."/><br/>
                 <ice:selectBooleanCheckbox id="termsAccepted" required="true" validator="#{TermsOfUsePage.validateTermsAccepted}" value="#{TermsOfUsePage.termsAccepted}"/>
                 <ice:outputText styleClass="vdcFieldTitle" value="I agree and accept these terms of use."/>
                 <ice:message for="termsAccepted" styleClass="errorMessage"/>

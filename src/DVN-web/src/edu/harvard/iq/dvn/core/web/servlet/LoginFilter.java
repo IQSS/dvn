@@ -148,14 +148,14 @@ public class LoginFilter implements Filter {
         if ( isViewStudyPage(pageDef) || isEditStudyPage(pageDef) || isVersionDiffPage(pageDef) ) {
             Long studyId = determineStudyId(pageDef, httpRequest);
             Long[] versionDiffNumbers = VDCRequestBean.parseVersionNumberList(httpRequest);
-            if (studyId == null  || (isVersionDiffPage(pageDef) && versionDiffNumbers ==null)) {
+            if ( (isVersionDiffPage(pageDef) && versionDiffNumbers ==null)) {
                  String redirectURL = httpRequest.getContextPath();
                         if (currentVDC!=null) {
                             redirectURL+="/dv/"+currentVDC.getAlias();
                         }
                     httpResponse.sendRedirect(redirectURL + "/faces/NotFoundPage.xhtml" );
                     return;
-            } else {
+            } else if (studyId!=null) {
                 try {
                     String versionNumberParam = httpRequest.getParameter("versionNumber");
                   

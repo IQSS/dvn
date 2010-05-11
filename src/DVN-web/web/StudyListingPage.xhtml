@@ -21,7 +21,7 @@
 
         <ice:inputHidden id="studyListingIndex" value="#{StudyListingPage.studyListingIndex}"/>
         <!-- Main Section starts here -->
-        <div id="dvn_mainSection" style="overflow:hidden;">
+        <div id="dvn_mainSection">
 
         <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnWarningMessage" rendered="#{VDCRequest.currentVDC.restricted==true}">
             <div class="dvnMsgBlockContainer">
@@ -29,47 +29,70 @@
             </div>
         </div>
 
-                <div jsfc="ice:panelGroup" id="beContributor" style="float: right; width: 200px;" styleClass="dvnStudyListContributorBlock" rendered="#{VDCSession.loginBean.user==null and VDCRequest.currentVDC.allowRegisteredUsersToContribute and !VDCRequest.currentVDC.allowContributorsEditAll}">
-                    <ice:outputText value="Open Dataverse:" escape="false"/>
-                    <ice:outputLink styleClass="dvnStudyListContributorLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/LoginPage.xhtml?clearWorkflow=true" >
-                        <ice:outputText value="Login" escape="false"/>
-                    </ice:outputLink>
-                    <ice:outputText value="or" />
-                    <ice:commandLink action="#{LoginWorkflowBean.beginContributorWorkflow}"  title="Create Account">
-                      <ice:outputText styleClass="dvnStudyListContributorLink" value="create an account" escape="false"/>
-                    </ice:commandLink>
-                  <ice:outputText value="to add your own study to this dataverse." />
+<style type="text/css">
+.dvhmpgdescopendvboxblock {overflow: hidden;}
+
+.dvhmpgopendvboxfloat{float: right; width: 310px; text-align:left;}
+.dvhmpgopendvbox{width: 300px; overflow:hidden; border:1px solid #d0d0d0; padding:4px; color:#526F76;}
+.dvhmpgopendvbox a:link,.dvhmpgopendvbox a:visited,.dvhmpgopendvbox a:hover,.dvhmpgopendvbox a:active{color:#C55B28;}
+.dvhmpgopendvbox div div span {font-weight: bold; text-transform: uppercase;}
+</style>
+
+        <div class="dvhmpgdescopendvboxblock">
+            <div class="dvhmpgopendvboxfloat">
+
+                <div jsfc="ice:panelGroup" id="beContributor" styleClass="dvhmpgopendvbox" rendered="#{VDCSession.loginBean.user==null and VDCRequest.currentVDC.allowRegisteredUsersToContribute and !VDCRequest.currentVDC.allowContributorsEditAll}">
+                    <div jsfc="ice:panelGroup">
+                        <div>
+                            <ice:outputText value="Open Dataverse"/>
+                        </div>
+                        <ice:commandLink action="#{LoginWorkflowBean.beginContributorWorkflow}" title="Create an account">
+                            <ice:outputText value="Create an account"/>
+                        </ice:commandLink>
+                        to add your own study to this dataverse. Already have an account? &#160;
+                        <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/login/LoginPage.xhtml?clearWorkflow=true" title="Log In">
+                            <ice:outputText value="Log In"/>
+                        </ice:outputLink>
+                    </div>
                 </div>
 
-                 <div jsfc="ice:panelGroup" id="beContributor" style="float: right; width: 200px;" styleClass="dvnStudyListContributorBlock" rendered="#{VDCSession.loginBean.user==null and VDCRequest.currentVDC.allowRegisteredUsersToContribute and VDCRequest.currentVDC.allowContributorsEditAll}">
-                    <ice:outputText value="Wiki Dataverse:" escape="false"/>
-                    <ice:outputLink styleClass="dvnStudyListContributorLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/LoginPage.xhtml?clearWorkflow=true" >
-                        <ice:outputText value="Login" escape="false"/>
-                    </ice:outputLink>
-                    <ice:outputText value="or" />
-                    <ice:commandLink action="#{LoginWorkflowBean.beginContributorWorkflow}"  title="Create Account">
-                      <ice:outputText styleClass="dvnStudyListContributorLink" value="create an account" escape="false"/>
-                    </ice:commandLink>
-                  <ice:outputText value="to add your own study or contribute to existing studies in this dataverse." />
+                <div jsfc="ice:panelGroup" id="beContributor" styleClass="dvhmpgopendvbox" rendered="#{VDCSession.loginBean.user==null and VDCRequest.currentVDC.allowRegisteredUsersToContribute and VDCRequest.currentVDC.allowContributorsEditAll}">
+                    <div jsfc="ice:panelGroup">
+                        <div>
+                            <ice:outputText value="Wiki Dataverse"/>
+                        </div>
+                        <ice:commandLink action="#{LoginWorkflowBean.beginContributorWorkflow}" title="Create an account">
+                            <ice:outputText value="Create an account"/>
+                        </ice:commandLink>
+                        to add your own study or contribute to existing studies in this dataverse. Already have an account? &#160;
+                        <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/login/LoginPage.xhtml?clearWorkflow=true" title="Log In">
+                            <ice:outputText value="Log In"/>
+                        </ice:outputLink>
+                    </div>
                 </div>
-
-            <style type="text/css">
-                .dvn_hmpgMainMessagePadding {padding-right:220px;}
-            </style>
-
-        <div jsfc="ice:panelGroup" styleClass="#{StudyListingPage.renderContributorLink == true ? 'dvn_hmpgMainMessage dvn_hmpgMainMessagePadding' : 'dvn_hmpgMainMessage'}" rendered="#{StudyListingPage.renderDescription}" block="true">
-            <div jsfc="ice:panelGroup" rendered="#{!StudyListingPage.descriptionTruncated or !StudyListingPage.renderTruncatedDesc}">
-                <h:outputText escape="false" value="#{VDCRequest.currentVDC.announcements}" rendered="#{!StudyListingPage.descriptionTruncated or !StudyListingPage.renderTruncatedDesc}" />
             </div>
-            <h:outputText escape="false" value="#{StudyListingPage.truncatedDescription}" rendered="#{StudyListingPage.descriptionTruncated and StudyListingPage.renderTruncatedDesc}" />
 
-            <ice:commandLink styleClass="dvn_more" action="#{StudyListingPage.toggleDescription_action}" rendered="#{StudyListingPage.descriptionTruncated}">
-                <h:outputText escape="false" value=" #{StudyListingPage.renderTruncatedDesc ? 'more >>' : '&lt;&lt; less'}"/>
-            </ice:commandLink>
+            <div class="dvhmpgdescfloat">
+
+                <style type="text/css">
+                    .dvn_hmpgMainMessagePadding {padding-right:340px;}
+                </style>
+
+                <div jsfc="ice:panelGroup" style="padding-right:340px;" styleClass="#{StudyListingPage.renderContributorLink == true ? 'dvn_hmpgMainMessage dvn_hmpgMainMessagePadding' : 'dvn_hmpgMainMessage'}" rendered="#{StudyListingPage.renderDescription}" block="true">
+                    <div jsfc="ice:panelGroup" rendered="#{!StudyListingPage.descriptionTruncated or !StudyListingPage.renderTruncatedDesc}">
+                        <h:outputText escape="false" value="#{VDCRequest.currentVDC.announcements}" rendered="#{!StudyListingPage.descriptionTruncated or !StudyListingPage.renderTruncatedDesc}" />
+                    </div>
+                    <h:outputText escape="false" value="#{StudyListingPage.truncatedDescription}" rendered="#{StudyListingPage.descriptionTruncated and StudyListingPage.renderTruncatedDesc}" />
+
+                    <ice:commandLink styleClass="dvn_more" action="#{StudyListingPage.toggleDescription_action}" rendered="#{StudyListingPage.descriptionTruncated}">
+                        <h:outputText escape="false" value=" #{StudyListingPage.renderTruncatedDesc ? 'more >>' : '&lt;&lt; less'}"/>
+                    </ice:commandLink>
+                </div>
+            </div>
         </div>
 
           <!-- Start Search Results (with side panel, if available) -->
-          <div jsfc="ice:panelGroup" styleClass="#{ (StudyListingPage.renderTree) ? 'dvn_section dvn_overflow' : 'dvn_section'}">
+          <div jsfc="ice:panelGroup" styleClass="#{ (StudyListingPage.renderTree) ? 'dvn_section dvn_overflow' : 'dvn_section'}" style="clear:both;">
             <div jsfc="ice:panelGroup" styleClass="#{ (StudyListingPage.renderTree) ? 'dvn_sectionContent' : 'dvn_sectionContentNoPanels'}">
               <div jsfc="ice:panelGroup" styleClass="dvnStudyListCollectionNameBlock">
 
@@ -83,7 +106,7 @@
                  .dvn_searchboxblock .dvn_searchlinks span.iceOutTxt {font-size:90% !important;}
              </style>
 
-                  <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                  <table cellpadding="0" cellspacing="0" border="0" width="98%">
                       <tr>
                           <td valign="bottom">
                             <div jsfc="ice:panelGroup" styleClass="dvnStudyListCollectionName">

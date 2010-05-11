@@ -163,6 +163,16 @@ public class VDCUser implements java.io.Serializable  {
         }
         return null;
     }
+    /**
+     *
+     * @param vdc - the dataverse where we are checking the role
+     * @return true  if this user has been assigned the contributor role in the VDC.
+     *
+     */
+    public boolean isPrivilegedViewer(VDC vdc) {
+        VDCRole vdcRole = getVDCRole(vdc);
+        return  vdcRole!=null && vdcRole.getRole().getName().equals(RoleServiceLocal.PRIVILEGED_VIEWER);
+    }
 
     /**
      *

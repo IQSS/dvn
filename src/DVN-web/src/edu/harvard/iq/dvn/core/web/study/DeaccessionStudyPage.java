@@ -183,7 +183,7 @@ public class DeaccessionStudyPage extends VDCBaseBean implements java.io.Seriali
         }
 
         getVDCRequestBean().setStudyId(studyVersion.getStudy().getId());
-        // we don't provide a version number, so the user goes to the deaccessioned page
+        getVDCRequestBean().setStudyVersionNumber(null); // we don't provide a version number, so the user goes to the study deaccessioned page
         return "viewStudy";
     }
 

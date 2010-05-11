@@ -1,253 +1,241 @@
-	// jquery-roundcorners-canvas
-	// www.meerbox.nl
-	
-(function($){
-	
-	var _corner = function(options) {
-		
-		// no native canvas support, or its msie and excanvas.js not loaded
-		var testcanvas = document.createElement("canvas");
-		if (typeof G_vmlCanvasManager == 'undefined' && $.browser.msie) {
-			return this.each(function() {});
+/*!
+ * jQuery corner plugin: simple corner rounding
+ * Examples and documentation at: http://jquery.malsup.com/corner/
+ * version 2.10 (05-MAY-2010)
+ * Requires jQuery v1.3.2 or later
+ * Dual licensed under the MIT and GPL licenses:
+ * http://www.opensource.org/licenses/mit-license.php
+ * http://www.gnu.org/licenses/gpl.html
+ * Authors: Dave Methvin and Mike Alsup
+ */
+
+/**
+ *  corner() takes a single string argument:  $('#myDiv').corner("effect corners width")
+ *
+ *  effect:  name of the effect to apply, such as round, bevel, notch, bite, etc (default is round). 
+ *  corners: one or more of: top, bottom, tr, tl, br, or bl.  (default is all corners)
+ *  width:   width of the effect; in the case of rounded corners this is the radius. 
+ *           specify this value using the px suffix such as 10px (yes, it must be pixels).
+ */
+;(function($) { 
+
+var style = document.createElement('div').style;
+var moz = style['MozBorderRadius'] !== undefined;
+var webkit = style['WebkitBorderRadius'] !== undefined;
+var radius = style['borderRadius'] !== undefined || style['BorderRadius'] !== undefined;
+var mode = document.documentMode || 0;
+var noBottomFold = $.browser.msie && (($.browser.version < 8 && !mode) || mode < 8);
+
+var expr = $.browser.msie && (function() {
+    var div = document.createElement('div');
+    try { div.style.setExpression('width','0+0'); div.style.removeExpression('width'); }
+    catch(e) { return false; }
+    return true;
+})();
+    
+function sz(el, p) { 
+    return parseInt($.css(el,p))||0; 
+};
+function hex2(s) {
+    var s = parseInt(s).toString(16);
+    return ( s.length < 2 ) ? '0'+s : s;
+};
+function gpc(node) {
+    while(node) {
+        var v = $.css(node,'backgroundColor');
+        if (v && v != 'transparent' && v != 'rgba(0, 0, 0, 0)') {
+	        if (v.indexOf('rgb') >= 0) { 
+	            var rgb = v.match(/\d+/g); 
+	            return '#'+ hex2(rgb[0]) + hex2(rgb[1]) + hex2(rgb[2]);
+	        }
+            return v;
 		}
-		
-		// get lowest number from array
-		var asNum = function(a, b) { return a-b; };
-		var getMin = function(a) {
-			var b = a.concat();
-			return b.sort(asNum)[0];
-		};
-		
-		// get CSS value as integer
-		var getCSSint = function(el, prop) {
-			return parseInt($.css(el.jquery?el[0]:el,prop))||0;
-		};
-			
-		// draw the round corner in Canvas object
-		var drawRoundCornerCanvasShape = function(canvas,radius,r_type,bg_color,border_width,border_color) {
-			
-			// change rgba(1,2,3,0.9) to rgb(1,2,3)
-			var reg = /^rgba\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3})\)$/;   
-			var bits = reg.exec(bg_color);
-			if (bits) {
-				channels = new Array(parseInt(bits[1]),parseInt(bits[2]),parseInt(bits[3]));
-				bg_color = 'rgb('+channels[0]+', '+channels[1]+', '+channels[2]+')';
-			} 
-		
-			var border_width = parseInt(border_width);
-			
-			var ctx = canvas.getContext('2d');
-			
-			if (radius == 1) {
-				ctx.fillStyle = bg_color;
-				ctx.fillRect(0,0,1,1);
-				return;
-			}
-	
-			if (r_type == 'tl') {
-				var steps = new Array(0,0,radius,0,radius,0,0,radius,0,0);
-			} else if (r_type == 'tr') {
-				var steps = new Array(radius,0,radius,radius,radius,0,0,0,0,0);
-			} else if (r_type == 'bl') {
-				var steps = new Array(0,radius,radius,radius,0,radius,0,0,0,radius);
-			} else if (r_type == 'br') {
-				var steps = new Array(radius,radius,radius,0,radius,0,0,radius,radius,radius);
-			}
-	          
-			ctx.fillStyle = bg_color;
-	    	ctx.beginPath();
-	     	ctx.moveTo(steps[0],steps[1]); 
-	     	ctx.lineTo(steps[2], steps[3]); 
-	    	if(r_type == 'br') ctx.bezierCurveTo(steps[4], steps[5], radius, radius, steps[6], steps[7]); 
-	    	else ctx.bezierCurveTo(steps[4], steps[5], 0, 0, steps[6], steps[7]);
-			ctx.lineTo(steps[8], steps[9]); 
-	        ctx.fill(); 
-	        
-	        // draw border
-	        if (border_width > 0 && border_width < radius) {
-		        
-		        // offset caused by border
-		        var offset = border_width/2; 
-		        
-		        if (r_type == 'tl') {
-					var steps = new Array(radius-offset,offset,radius-offset,offset,offset,radius-offset);
-					var curve_to = new Array(0,0);
-				} else if (r_type == 'tr') {
-					var steps = new Array(radius-offset,radius-offset,radius-offset,offset,offset,offset);
-					var curve_to = new Array(0,0);
-				} else if (r_type == 'bl') {
-					var steps = new Array(radius-offset,radius-offset,offset,radius-offset,offset,offset,offset,radius-offset);
-					var curve_to = new Array(0,0);
-				} else if (r_type == 'br') {
-					var steps = new Array(radius-offset,offset,radius-offset,offset,offset,radius-offset,radius-offset,radius-offset);
-					var curve_to = new Array(radius, radius);
-				}
-		        
-		        ctx.strokeStyle = border_color;
-		        ctx.lineWidth = border_width;
-	    		ctx.beginPath();
-	    		// go to corner to begin curve
-	     		ctx.moveTo(steps[0], steps[1]); 
-	     		// curve from righttop to leftbottom (for the tl canvas)
-	    		ctx.bezierCurveTo(steps[2], steps[3], curve_to[0], curve_to[1], steps[4], steps[5]); 
-				ctx.stroke();
-		        
-		    }
-		};
-		
-		var creatCanvas = function(p,radius) {
-			var elm = document.createElement('canvas');
-			elm.setAttribute("height", radius);
-    		elm.setAttribute("width", radius); 
-			elm.style.display = "block";
-			elm.style.position = "absolute";
-			elm.className = "cornercanvas";
-			elm = p.appendChild(elm); 
-			// if G_vmlCanvasManager in defined the browser (ie only) has loaded excanvas.js 
-			if (!elm.getContext && typeof G_vmlCanvasManager != 'undefined') {
-				var elm = G_vmlCanvasManager.initElement(elm);
-			}
-			return elm;
-		};
-		
-		// interpret the (string) argument
-   		var o = (options || "").toLowerCase();
-   		var radius = parseInt((o.match(/(\d+)px/)||[])[1]) || null; // corner width
-   		var bg_color = ((o.match(/(#[0-9a-f]+)/)||[])[1]);  // strip color
-   		if (radius == null) { radius = "auto"; }
-   		
-   		var edges = { T:0, B:1 };
-    	var opts = {
-        	tl:  /top|tl/.test(o),       
-        	tr:  /top|tr/.test(o),
-        	bl:  /bottom|bl/.test(o),    
-        	br:  /bottom|br/.test(o)
-    	};
-    	if ( !opts.tl && !opts.tr && !opts.bl && !opts.br) {
-        	opts = { tl:1, tr:1, bl:1, br:1 };
+		if (node.nodeName.toLowerCase() == 'html')
+		    break;
+		node = node.parentNode; // keep walking if transparent
+    }
+    return '#ffffff';
+};
+
+function getWidth(fx, i, width) {
+    switch(fx) {
+    case 'round':  return Math.round(width*(1-Math.cos(Math.asin(i/width))));
+    case 'cool':   return Math.round(width*(1+Math.cos(Math.asin(i/width))));
+    case 'sharp':  return Math.round(width*(1-Math.cos(Math.acos(i/width))));
+    case 'bite':   return Math.round(width*(Math.cos(Math.asin((width-i-1)/width))));
+    case 'slide':  return Math.round(width*(Math.atan2(i,width/i)));
+    case 'jut':    return Math.round(width*(Math.atan2(width,(width-i-1))));
+    case 'curl':   return Math.round(width*(Math.atan(i)));
+    case 'tear':   return Math.round(width*(Math.cos(i)));
+    case 'wicked': return Math.round(width*(Math.tan(i)));
+    case 'long':   return Math.round(width*(Math.sqrt(i)));
+    case 'sculpt': return Math.round(width*(Math.log((width-i-1),width)));
+	case 'dogfold':
+    case 'dog':    return (i&1) ? (i+1) : width;
+    case 'dog2':   return (i&2) ? (i+1) : width;
+    case 'dog3':   return (i&3) ? (i+1) : width;
+    case 'fray':   return (i%2)*width;
+    case 'notch':  return width; 
+	case 'bevelfold':
+    case 'bevel':  return i+1;
+    }
+};
+
+$.fn.corner = function(options) {
+    // in 1.3+ we can fix mistakes with the ready state
+	if (this.length == 0) {
+        if (!$.isReady && this.selector) {
+            var s = this.selector, c = this.context;
+            $(function() {
+                $(s,c).corner(options);
+            });
         }
-      
-		return this.each(function() {
-
-			var elm = $(this);
-			
-			// give the element 'haslayout'
-	   		if ($.browser.msie) { this.style.zoom = 1; }
-			
-			// the size of the corner is not defined...
-			var widthheight_smallest = getMin(new Array(getCSSint(this,'height'),getCSSint(this,'width')));
-			if (radius == "auto") {
-				radius = widthheight_smallest/4;
-				if (radius > 10) { radius = 10; }
-			}
-
-			// the size of the corner can't be to high
-			if (widthheight_smallest < radius) { 
-				radius = (widthheight_smallest/2); 
-			}
-			
-			// remove old canvas objects
-			elm.children("canvas.cornercanvas").remove();
-			
-			// some css thats required in order to position the canvas elements
-			if (elm.css('position') == 'static') { 
-				elm.css('position','relative'); 
-			// only needed for ie6 and (ie7 in Quirks mode) , CSS1Compat == Strict mode
-			} else if (elm.css('position') == 'fixed' && $.browser.msie && !(document.compatMode == 'CSS1Compat' && typeof document.body.style.maxHeight != "undefined")) { 
-				elm.css('position','absolute'); 
-			}
-			elm.css('overflow','visible'); 
-			
-			// get border width
-			var border_t = getCSSint(this, 'borderTopWidth');
-			var border_r = getCSSint(this, 'borderRightWidth');
-			var border_b = getCSSint(this, 'borderBottomWidth');
-			var border_l = getCSSint(this, 'borderLeftWidth');
-			
-			// get the lowest borderwidth of the corners in use
-			var bordersWidth = new Array();
-			if (opts.tl || opts.tr) { bordersWidth.push(border_t); }
-			if (opts.br || opts.tr) { bordersWidth.push(border_r); }
-			if (opts.br || opts.bl) { bordersWidth.push(border_b); }
-			if (opts.bl || opts.tl) { bordersWidth.push(border_l); }
-			
-			borderswidth_smallest = getMin(bordersWidth);
-			
-			// creat the canvas elements and position them
-			var p_top = 0-border_t;
-			var p_right = 0-border_r;
-			var p_bottom = 0-border_b;
-			var p_left = 0-border_l;	
-
-			if (opts.tl) { var tl = $(creatCanvas(this,radius)).css({left:p_left,top:p_top}).get(0); }
-			if (opts.tr) { var tr = $(creatCanvas(this,radius)).css({right:p_right,top:p_top}).get(0); }
-			if (opts.bl) { var bl = $(creatCanvas(this,radius)).css({left:p_left,bottom:p_bottom}).get(0); }
-			if (opts.br) { var br = $(creatCanvas(this,radius)).css({right:p_right,bottom:p_bottom}).get(0); }
-			
-			// get the background color of parent element
-			
-			if (bg_color == undefined) {
-				
-				var current_p = elm.parent();
-				var bg = current_p.css('background-color');
-				while((bg == "transparent" || bg == "rgba(0, 0, 0, 0)") && current_p.get(0).tagName.toLowerCase() != "html") {
-					bg = current_p.css('background-color');
-					current_p = current_p.parent();
-				}
-			} else {
-				bg = bg_color;
-			}
-
-			if (bg == "transparent" || bg == "rgba(0, 0, 0, 0)") { bg = "#ffffff"; }
-			
-			if (opts.tl) { drawRoundCornerCanvasShape(tl,radius,'tl',bg,borderswidth_smallest,elm.css('borderTopColor')); }
-			if (opts.tr) { drawRoundCornerCanvasShape(tr,radius,'tr',bg,borderswidth_smallest,elm.css('borderTopColor')); }
-			if (opts.bl) { drawRoundCornerCanvasShape(bl,radius,'bl',bg,borderswidth_smallest,elm.css('borderBottomColor')); }
-			if (opts.br) { drawRoundCornerCanvasShape(br,radius,'br',bg,borderswidth_smallest,elm.css('borderBottomColor')); }
-			
-			elm.addClass('roundCornersParent');
-				
-   		});  
-	};
-	
-	if ($.browser.msie && typeof G_vmlCanvasManager == 'undefined') {
-		
-		var corner_buffer = new Array();
-		var corner_buffer_args = new Array();
-		
-		$.fn.corner = function(options){
-			corner_buffer[corner_buffer.length] = this;
-    		corner_buffer_args[corner_buffer_args.length] = options;
-			return this.each(function(){});
-		};
-		
-		// load excanvas.pack.js
-		document.execCommand("BackgroundImageCache", false, true);
-		var elm = $("script[@src*=jquery.corner.]");
-		if (elm.length == 1) {
-			var jc_src = elm.attr('src');
-			var pathArray = jc_src.split('/');
-			pathArray.pop();
-			var base = pathArray.join('/') || '.';
-			var excanvasjs = base+'/excanvas.pack.js';
-			$.getScript(excanvasjs,function(){
-				 execbuffer();
-			});
-		}
-		
-		var execbuffer = function() {
-			// set back function
-			$.fn.corner = _corner;
-			// execute buffer and set back function
-			for(var i=0;i<corner_buffer.length;i++){
-				corner_buffer[i].corner(corner_buffer_args[i]);
-			}
-			corner_buffer = null;
-			corner_buffer_args = null;
-		}
-		
-	} else {
-		$.fn.corner = _corner;
+        return this;
 	}
+
+    return this.each(function(index){
+		var $this = $(this);
+		// meta values override options
+		var o = [$this.attr($.fn.corner.defaults.metaAttr) || '', options || ''].join(' ').toLowerCase();
+		var keep = /keep/.test(o);                       // keep borders?
+		var cc = ((o.match(/cc:(#[0-9a-f]+)/)||[])[1]);  // corner color
+		var sc = ((o.match(/sc:(#[0-9a-f]+)/)||[])[1]);  // strip color
+		var width = parseInt((o.match(/(\d+)px/)||[])[1]) || 10; // corner width
+		var re = /round|bevelfold|bevel|notch|bite|cool|sharp|slide|jut|curl|tear|fray|wicked|sculpt|long|dog3|dog2|dogfold|dog/;
+		var fx = ((o.match(re)||['round'])[0]);
+		var fold = /dogfold|bevelfold/.test(o);
+		var edges = { T:0, B:1 };
+		var opts = {
+			TL:  /top|tl|left/.test(o),       TR:  /top|tr|right/.test(o),
+			BL:  /bottom|bl|left/.test(o),    BR:  /bottom|br|right/.test(o)
+		};
+		if ( !opts.TL && !opts.TR && !opts.BL && !opts.BR )
+			opts = { TL:1, TR:1, BL:1, BR:1 };
+			
+		// support native rounding
+		if ($.fn.corner.defaults.useNative && fx == 'round' && (radius || moz || webkit) && !cc && !sc) {
+			if (opts.TL)
+				$this.css(radius ? 'border-top-left-radius' : moz ? '-moz-border-radius-topleft' : '-webkit-border-top-left-radius', width + 'px');
+			if (opts.TR)
+				$this.css(radius ? 'border-top-right-radius' : moz ? '-moz-border-radius-topright' : '-webkit-border-top-right-radius', width + 'px');
+			if (opts.BL)
+				$this.css(radius ? 'border-bottom-left-radius' : moz ? '-moz-border-radius-bottomleft' : '-webkit-border-bottom-left-radius', width + 'px');
+			if (opts.BR)
+				$this.css(radius ? 'border-bottom-right-radius' : moz ? '-moz-border-radius-bottomright' : '-webkit-border-bottom-right-radius', width + 'px');
+			return;
+		}
+			
+		var strip = document.createElement('div');
+		$(strip).css({
+			overflow: 'hidden',
+			height: '1px',
+			minHeight: '1px',
+			fontSize: '1px',
+			backgroundColor: sc || 'transparent',
+			borderStyle: 'solid'
+		});
 	
+        var pad = {
+            T: parseInt($.css(this,'paddingTop'))||0,     R: parseInt($.css(this,'paddingRight'))||0,
+            B: parseInt($.css(this,'paddingBottom'))||0,  L: parseInt($.css(this,'paddingLeft'))||0
+        };
+
+        if (typeof this.style.zoom != undefined) this.style.zoom = 1; // force 'hasLayout' in IE
+        if (!keep) this.style.border = 'none';
+        strip.style.borderColor = cc || gpc(this.parentNode);
+        var cssHeight = $(this).outerHeight();
+
+        for (var j in edges) {
+            var bot = edges[j];
+            // only add stips if needed
+            if ((bot && (opts.BL || opts.BR)) || (!bot && (opts.TL || opts.TR))) {
+                strip.style.borderStyle = 'none '+(opts[j+'R']?'solid':'none')+' none '+(opts[j+'L']?'solid':'none');
+                var d = document.createElement('div');
+                $(d).addClass('jquery-corner');
+                var ds = d.style;
+
+                bot ? this.appendChild(d) : this.insertBefore(d, this.firstChild);
+
+                if (bot && cssHeight != 'auto') {
+                    if ($.css(this,'position') == 'static')
+                        this.style.position = 'relative';
+                    ds.position = 'absolute';
+                    ds.bottom = ds.left = ds.padding = ds.margin = '0';
+                    if (expr)
+                        ds.setExpression('width', 'this.parentNode.offsetWidth');
+                    else
+                        ds.width = '100%';
+                }
+                else if (!bot && $.browser.msie) {
+                    if ($.css(this,'position') == 'static')
+                        this.style.position = 'relative';
+                    ds.position = 'absolute';
+                    ds.top = ds.left = ds.right = ds.padding = ds.margin = '0';
+                    
+                    // fix ie6 problem when blocked element has a border width
+                    if (expr) {
+                        var bw = sz(this,'borderLeftWidth') + sz(this,'borderRightWidth');
+                        ds.setExpression('width', 'this.parentNode.offsetWidth - '+bw+'+ "px"');
+                    }
+                    else
+                        ds.width = '100%';
+                }
+                else {
+                	ds.position = 'relative';
+                    ds.margin = !bot ? '-'+pad.T+'px -'+pad.R+'px '+(pad.T-width)+'px -'+pad.L+'px' : 
+                                        (pad.B-width)+'px -'+pad.R+'px -'+pad.B+'px -'+pad.L+'px';                
+                }
+
+                for (var i=0; i < width; i++) {
+                    var w = Math.max(0,getWidth(fx,i, width));
+                    var e = strip.cloneNode(false);
+                    e.style.borderWidth = '0 '+(opts[j+'R']?w:0)+'px 0 '+(opts[j+'L']?w:0)+'px';
+                    bot ? d.appendChild(e) : d.insertBefore(e, d.firstChild);
+                }
+				
+				if (fold && $.support.boxModel) {
+					if (bot && noBottomFold) continue;
+					for (var c in opts) {
+						if (!opts[c]) continue;
+						if (bot && (c == 'TL' || c == 'TR')) continue;
+						if (!bot && (c == 'BL' || c == 'BR')) continue;
+						
+						var common = { position: 'absolute', border: 'none', margin: 0, padding: 0, overflow: 'hidden', backgroundColor: strip.style.borderColor };
+						var $horz = $('<div/>').css(common).css({ width: width + 'px', height: '1px' });
+						switch(c) {
+						case 'TL': $horz.css({ bottom: 0, left: 0 }); break;
+						case 'TR': $horz.css({ bottom: 0, right: 0 }); break;
+						case 'BL': $horz.css({ top: 0, left: 0 }); break;
+						case 'BR': $horz.css({ top: 0, right: 0 }); break;
+						}
+						d.appendChild($horz[0]);
+						
+						var $vert = $('<div/>').css(common).css({ top: 0, bottom: 0, width: '1px', height: width + 'px' });
+						switch(c) {
+						case 'TL': $vert.css({ left: width }); break;
+						case 'TR': $vert.css({ right: width }); break;
+						case 'BL': $vert.css({ left: width }); break;
+						case 'BR': $vert.css({ right: width }); break;
+						}
+						d.appendChild($vert[0]);
+					}
+				}
+            }
+        }
+    });
+};
+
+$.fn.uncorner = function() { 
+	if (radius || moz || webkit)
+		this.css(radius ? 'border-radius' : moz ? '-moz-border-radius' : '-webkit-border-radius', 0);
+	$('div.jquery-corner', this).remove();
+	return this;
+};
+
+// expose options
+$.fn.corner.defaults = {
+	useNative: true, // true if plugin should attempt to use native browser support for border radius rounding
+	metaAttr:  'data-corner' // name of meta attribute to use for options
+};
+    
 })(jQuery);

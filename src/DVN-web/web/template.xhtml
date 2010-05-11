@@ -26,7 +26,7 @@
     &#60;![endif]--&#62;"/>
   <script type="text/javascript" src="/dvn/resources/javascript/EventCapture.js"/>
   <script type="text/javascript" src="/dvn/resources/javascript/jquery.js"/>
-  <script type="text/javascript" src="/dvn/resources/javascript/jquery.corner.pack.js"/>
+  <script type="text/javascript" src="/dvn/resources/javascript/jquery.corner.js"/>
   <script type="text/javascript" src="/dvn/resources/javascript/excanvas.pack.js"/>
   <script type="text/javascript" src="/dvn/resources/javascript/jquery.ifixpng.js"/>
   <script type="text/javascript" src="/dvn/resources/javascript/jquery.truncator.js"/>
@@ -45,11 +45,8 @@
       // <![CDATA[
       jQuery.noConflict();
       jQuery(document).ready(function(){
-          jQuery("div.dvn_navblock").corner("10px bottom");
-          jQuery("div.dvn_block, div.dvn_blockTitleBar, div.dvn_searchblock, div.dvnMsgBlockRound, div.vdcStudyFilesMessage"
-            ).corner("10px");
-          //jQuery.ifixpng("/dvn/resources/images/pixel.gif");
-          //jQuery("img[@src$=.png], a.requestHmpgSideLink:link, a.requestHmpgSideLink:visited, a.requestHmpgSideLink:hover, a.requestHmpgSideLink:active").ifixpng();
+          jQuery("div.dvn_navblock").corner("bottom keep 10px");
+          jQuery("div.dvn_block, div.dvn_blockTitleBar, div.dvn_searchblock, div.dvnMsgBlockRound, div.vdcStudyFilesMessage").corner("10px");
       });
       // ]]>
   </script>

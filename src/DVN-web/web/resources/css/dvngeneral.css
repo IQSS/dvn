@@ -67,11 +67,11 @@ div.dvn_navblockNetwork{background:#dadee0;border-top:2px solid #c55b28}
 .dvn_navUserName div a:hover,.dvn_navblockLinks ul li a:hover,.dvn_navUserName a:hover{position:relative;z-index:1000;background-color:#c55b28;color:#fff;text-decoration:underline}
 .dvn_navNetworkName a:link,.dvn_navNetworkName a:visited,.dvn_navNetworkName a:hover,.dvn_navNetworkName a:active{font-weight:400}
 /* HELP-INFO MSG BLOCK */
-div.dvnMsgBlockContainer{text-align:left;display:table-cell;vertical-align:middle;border:1px solid #bfdcf1}
+div.dvnMsgBlockContainer{text-align:left;display:table-cell;vertical-align:middle;}
 div.dvnMsgBlockContainer p{background:transparent;margin:1em 0 1em 58px}
 div.dvnInformationMessage{max-width:900px;width:80%;margin:0 auto 1em;background:url(/dvn/resources/images/icon_information.png) #bfdcf1 4px no-repeat}
 div.dvnSuccessMessage{max-width:900px;width:80%;margin:0 auto 1em;background:url(/dvn/resources/images/icon_success.png) #cee6bb 4px no-repeat}
-div.dvnSuccessMessage div.dvnMsgBlockContainer{border:1px solid #cee6bb}
+div.dvnSuccessMessage div.dvnMsgBlockContainer{}
 div.dvnSuccessMessage span{font-weight:bold;color:#299a0b;background:transparent}
 div.dvnSuccessMessage ul{padding-left:0;list-style:none;background:transparent}
 div.dvnSuccessMessage li{margin:0;padding:0}
@@ -81,7 +81,7 @@ div.dvnSuccessMessage .successMessage{background:transparent;color:#299a0b;font-
 ul.successMessage,.successMessage ul{list-style:none}
 ul.successMessage li,.successMessage ul li{margin:0;padding:0}
 div.dvnWarningMessage{max-width:900px;width:80%;margin:0 auto 1em;background:url(/dvn/resources/images/icon_warning.png) #e6e4d3 4px no-repeat}
-div.dvnWarningMessage div.dvnMsgBlockContainer{border:1px solid #e6e4d3}
+div.dvnWarningMessage div.dvnMsgBlockContainer{}
 div.dvnWarningMessage a:link,div.dvnWarningMessage a:visited,div.dvnWarningMessage a:hover,div.dvnWarningMessage a:active{color:#0c54b3}
 div.dvnWarningMessage span{font-weight:bold;color:#000;background:transparent}
 .warnMessage{color:#8B0404}

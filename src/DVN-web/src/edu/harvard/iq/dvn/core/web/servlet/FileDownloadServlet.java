@@ -28,11 +28,13 @@
  */
 package edu.harvard.iq.dvn.core.web.servlet;
 
+import com.sun.xml.internal.ws.api.addressing.WSEndpointReference.Metadata;
 import edu.harvard.iq.dvn.core.admin.UserGroup;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 
 import edu.harvard.iq.dvn.core.study.FileCategory;
 import edu.harvard.iq.dvn.core.study.Study;
+import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.study.StudyFile;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.study.RemoteAccessAuth;
@@ -228,7 +230,18 @@ public class FileDownloadServlet extends HttpServlet {
 
             studyTitle = sui.getMetadata().getTitle();
             studyId = sui.getStudy().getId();
-            citation = sui.getMetadata().getCitation(false);
+
+            // The studyUI in the session map contains a Metadata object; 
+            // However, for the purposes of retrieving the citation it may be
+            // "stale" -- for ex., it may still have the UNF generated before
+            // the last files were added. So we want to retrieve the Study 
+            // Version and Metadata from the database:
+
+            Long studyVersionId = sui.getStudyVersion().getId();
+            StudyVersion studyVersion = studyService.getStudyVersionById(studyVersionId);
+            citation = studyVersion.getMetadata().getCitation(false);
+
+            //citation = sui.getMetadata().getCitation(false);
             
             dbgLog.info("StudyUIclassName was found in the session Map");
             dbgLog.info("Study Title="+studyTitle);

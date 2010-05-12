@@ -5,7 +5,9 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:jsp="http://java.sun.com/JSP/Page"
-      xmlns:ice="http://www.icesoft.com/icefaces/component">
+      xmlns:dvn="/WEB-INF/tlds/dvn-components"
+      xmlns:ice="http://www.icesoft.com/icefaces/component"
+      xmlns:ui="http://www.sun.com/web/ui">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
@@ -30,18 +32,18 @@
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="3" width="100%"
                              columnClasses="vdcAdvSearchCol1, vdcAdvSearchCol2, vdcAdvSearchCol3" rowClasses="list-row-odd, list-row-even"
                              id="gridPanel1" styleClass="dvnAdvSearchScopeTable">
-                <ice:outputText id="outputText1" styleClass="vdcSubHeaderColor" value="Search Scope"/>
+                <ice:outputText id="outputText1" styleClass="vdcSubHeaderColor" value="Search Cataloging Information"/>
                 <ice:outputText id="outputText2" styleClass="vdcSubHeaderColor" value="Operator"/>
                 <ice:outputText id="outputText3" styleClass="vdcSubHeaderColor" value="Search Term"/>
                 <ice:selectOneMenu binding="#{AdvSearchPage.dropdown1}" id="dropdown1" value="Title" style="margin-left:24px" onchange="submit()" valueChangeListener="#{AdvSearchPage.searchFieldListener}" immediate="true">
                   <f:selectItems binding="#{AdvSearchPage.dropdown1SelectItems}" id="dropdown1SelectItems" value="#{AdvSearchPage.dropdown3DefaultItems}"/>
                 </ice:selectOneMenu>
                 <ice:selectOneMenu binding="#{AdvSearchPage.dropdown9}" id="dropdown9">
-                  <f:selectItems binding="#{AdvSearchPage.dropdown4SelectItems3}" id="dropdown4SelectItems3" value="#{AdvSearchPage.dateItem1 ? AdvSearchPage.dropdown4DateItems : AdvSearchPage.dropdown4FirstNonDateItems}"/>
+                  <f:selectItems binding="#{AdvSearchPage.dropdown4SelectItems3}" id="dropdown4SelectItems3" value="#{AdvSearchPage.dateItem1 ? AdvSearchPage.dropdown4DateItems : AdvSearchPage.dropdown4NotDateItems}"/>
                 </ice:selectOneMenu>
                 <div jsfc="ice:panelGroup">
-                  <ice:inputText binding="#{AdvSearchPage.textField1}" id="textField1" size="40" required="true" requiredMessage="This field is required."/>
-                  <ice:message for="textField1" errorClass="errorMessage" showDetail="false" showSummary="true"/>
+                  <ice:inputText binding="#{AdvSearchPage.textField1}" id="textField1" size="40"  />
+                  <ice:message for="textField1" styleClass="errorMessage" showDetail="false" showSummary="true" />
                 </div>
                 <div style="white-space: nowrap;">
                   <ice:outputText id="outputText7" value="and "/>
@@ -52,7 +54,7 @@
                 <ice:selectOneMenu binding="#{AdvSearchPage.dropdown4}" id="dropdown4">
                   <f:selectItems binding="#{AdvSearchPage.dropdown4SelectItems}" id="dropdown4SelectItems" value="#{AdvSearchPage.dateItem2 ? AdvSearchPage.dropdown4DateItems : AdvSearchPage.dropdown4NotDateItems}"/>
                 </ice:selectOneMenu>
-                <ice:inputText binding="#{AdvSearchPage.textField2}" id="textField2" size="40"/>
+                <ice:inputText binding="#{AdvSearchPage.textField2}" id="textField2" size="40" />
                 <div style="white-space: nowrap;">
                   <ice:outputText id="outputText6" value="and "/>
                   <ice:selectOneMenu binding="#{AdvSearchPage.dropdown5}" id="dropdown5" value="Production Date" onchange="submit()" valueChangeListener="#{AdvSearchPage.searchFieldListener}" immediate="true">
@@ -62,7 +64,7 @@
                 <ice:selectOneMenu binding="#{AdvSearchPage.dropdown6}" id="dropdown6">
                   <f:selectItems binding="#{AdvSearchPage.dropdown4SelectItems1}" id="dropdown4SelectItems1" value="#{AdvSearchPage.dateItem3 ? AdvSearchPage.dropdown4DateItems : AdvSearchPage.dropdown4NotDateItems}"/>
                 </ice:selectOneMenu>
-                <ice:inputText binding="#{AdvSearchPage.textField3}" id="textField3" size="40"/>
+                <ice:inputText binding="#{AdvSearchPage.textField3}" id="textField3" size="40"  />
                 <div style="white-space: nowrap;">
                   <ice:outputText id="outputText8" value="and "/>
                   <ice:selectOneMenu binding="#{AdvSearchPage.dropdown7}" id="dropdown7" value="Time Period Covered Start" onchange="submit()" valueChangeListener="#{AdvSearchPage.searchFieldListener}" immediate="true">
@@ -72,8 +74,31 @@
                 <ice:selectOneMenu binding="#{AdvSearchPage.dropdown8}" id="dropdown8">
                   <f:selectItems binding="#{AdvSearchPage.dropdown4SelectItems2}" id="dropdown4SelectItems2" value="#{AdvSearchPage.dateItem4 ? AdvSearchPage.dropdown4DateItems : AdvSearchPage.dropdown4NotDateItems}"/>
                 </ice:selectOneMenu>
-                <ice:inputText binding="#{AdvSearchPage.textField4}" id="textField4" size="40"/>
+                <ice:inputText binding="#{AdvSearchPage.textField4}" id="textField4" size="40"  />
               </ice:panelGrid>
+              <div style="white-space: nowrap;">
+
+              <ice:dataTable
+              cellpadding="0" cellspacing="0" columns="3" width="100%"
+                columnClasses="vdcAdvSearchCol1, vdcAdvSearchCol2, vdcAdvSearchCol3" rowClasses="list-row-odd, list-row-even"
+				binding="#{AdvSearchPage.dataTableVariableInfo}"
+				value="#{AdvSearchPage.variableInfoList}"
+                var="currentRow"
+                >
+                    <ice:column>
+                        <ice:outputText value="Variable Information"/>
+                    </ice:column>
+                    <ice:column>
+                        <ice:outputText value="Contains"/>
+                    </ice:column>
+                    <ice:column>
+				        <ice:inputText value="#{currentRow.value}" id="input_VariableInfo"
+				         binding="#{AdvSearchPage.inputVariableInfo}"
+				         size="40"/>
+				    </ice:column>
+              </ice:dataTable>
+
+              </div>
               <div jsfc="ice:panelGroup" styleClass="dvnFormPadding" rendered="#{AdvSearchPage.collectionsIncluded}">
                 <ice:outputText id="outputText5" styleClass="vdcSubHeaderColor" value="Collections"/>
                 <ice:selectOneRadio binding="#{AdvSearchPage.radioButtonList1}" id="radioButtonList1" layout="pageDirection" value="Search All Collections">

@@ -51,11 +51,14 @@ import com.sun.jsfcl.data.DefaultSelectItemsArray;
 import javax.faces.component.UISelectItems;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
+import javax.faces.event.ActionEvent;
 import com.icesoft.faces.component.ext.HtmlSelectOneMenu;
 import com.icesoft.faces.component.ext.HtmlInputText;
 import com.icesoft.faces.component.ext.HtmlSelectBooleanCheckbox;
 import com.icesoft.faces.component.ext.HtmlSelectOneRadio;
 import com.icesoft.faces.component.ext.HtmlDataTable;
+import com.icesoft.faces.component.ext.HtmlCommandButton;
+import com.icesoft.faces.component.ext.HtmlPanelGrid;
 import com.sun.jsfcl.data.DefaultTableDataModel;
 import edu.harvard.iq.dvn.core.study.VariableServiceLocal;
 import javax.faces.component.UIColumn;
@@ -90,10 +93,11 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
     private ResourceBundle messages = ResourceBundle.getBundle("Bundle");
     private HashMap advSearchFieldMap = new HashMap();
     private HashMap operatorMap = new HashMap();
-    private String[] advancedSearchFields = {"title", "authorName", "globalId", "otherId", "abstractText", "keywordValue", "keywordVocabulary", "topicClassValue", "topicClassVocabulary", "producerName", "distributorName", "fundingAgency", "productionDate", "distributionDate", "dateOfDeposit", "timePeriodCoveredStart", "timePeriodCoveredEnd", "country", "geographicCoverage", "geographicUnit", "universe", "kindOfData", "variable"};
+    private String[] advancedSearchFields = {"title", "authorName", "globalId", "otherId", "abstractText", "keywordValue", "keywordVocabulary", "topicClassValue", "topicClassVocabulary", "producerName", "distributorName", "fundingAgency", "productionDate", "distributionDate", "dateOfDeposit", "timePeriodCoveredStart", "timePeriodCoveredEnd", "country", "geographicCoverage", "geographicUnit", "universe", "kindOfData"};
     private boolean collectionsIncluded;
     private boolean variableSearch;
-
+    private List <SearchTerm>  variableInfoList = new ArrayList();
+  
     public boolean isVariableSearch() {
         return variableSearch;
     }
@@ -105,6 +109,15 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
     public boolean isCollectionsIncluded() {
         return collectionsIncluded;
     }
+
+    public List getVariableInfoList() {
+        return variableInfoList;
+    }
+
+    public void setVariableInfoList(List variableInfo) {
+        this.variableInfoList = variableInfo;
+    }
+
     // <editor-fold defaultstate="collapsed" desc="Creator-managed Component Definition">
     private int __placeholder;
 
@@ -117,11 +130,19 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
         super.init();
         radioButtonList1DefaultItems.setItems(new String[]{messages.getString("searchAllCollections"), messages.getString("searchOnlySelectedCollections")});
 //        dropdown4DefaultItems.setItems(new String[] {"contains", "does not contain", "is greater than", "is less than"});
+        dropdown3DefaultItems.setItems(getAdvSearchFieldDefaults());
         dropdown4DefaultItems.setItems(new String[]{messages.getString("contains"), messages.getString("doesNotContain"), messages.getString("isGreaterThan"), messages.getString("isLessThan")});
         dropdown4DateItems.setItems(new String[]{messages.getString("isGreaterThan"), messages.getString("isLessThan")});
         dropdown4NotDateItems.setItems(new String[]{messages.getString("contains"), messages.getString("doesNotContain")});
         dropdown4FirstNonDateItems.setItems(new String[]{messages.getString("contains")});
-
+        // Adding 4 rows here and removing user's ability to add/remove in interface.
+        /*  Add these back to xhtml when/if user is given control
+                    <ice:column>
+                        <ice:commandButton image="/resources/images/icon_add.gif" actionListener="#{AdvSearchPage.addRow}"/>
+                        <ice:commandButton rendered="#{AdvSearchPage.dataTableVariableInfo.rowCount gt 1}" image="/resources/images/icon_remove.gif" actionListener="#{AdvSearchPage.removeRow}" />
+                    </ice:column>
+         */
+        initVariableInfoList();
         operatorMap.put(messages.getString("contains"), "=");
         operatorMap.put(messages.getString("doesNotContain"), "-");
         operatorMap.put(messages.getString("isGreaterThan"), ">");
@@ -135,15 +156,51 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
         dropdown3DefaultItems.setItems(getAdvSearchFieldDefaults());
         }
          */
-        dropdown3DefaultItems.setItems(getAdvSearchFieldDefaults());
+
         dataTable1Model.setWrappedData(getCollectionsDisplay());
+    }
+
+    private void initVariableInfoList(){
+        variableInfoList.add(initVariableSearchTerm());
+        variableInfoList.add(initVariableSearchTerm());
+        variableInfoList.add(initVariableSearchTerm());
+        variableInfoList.add(initVariableSearchTerm());
+        //
+    }
+
+    private SearchTerm initVariableSearchTerm(){
+        SearchTerm addToList = new SearchTerm();
+        addToList.setFieldName("variable");
+        addToList.setOperator("=");
+        addToList.setValue("");
+        return addToList;
     }
     private HtmlSelectOneMenu dropdown1 = new HtmlSelectOneMenu();
 
     public HtmlSelectOneMenu getDropdown1() {
         return dropdown1;
     }
+ /**
+     * Holds value of property inputVariableInfo.
+     */
+    private HtmlInputText inputVariableInfo;
 
+    /**
+     * Getter for property variableInfo.
+     * @return Value of property inputVariableInfo.
+     */
+    public HtmlInputText getInputVariableInfo() {
+        return this.inputVariableInfo;
+    }
+
+    /**
+     * Setter for property variableInfo.
+     * @param variableInfo New value of property variableInfo.
+     */
+    public void setInputVariableInfo(HtmlInputText inputVariableInfo) {
+        this.inputVariableInfo = inputVariableInfo;
+    }
+    
     public void setDropdown1(HtmlSelectOneMenu hsom) {
         this.dropdown1 = hsom;
     }
@@ -165,6 +222,11 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
     public void setDropdown1SelectItems(UISelectItems uisi) {
         this.dropdown1SelectItems = uisi;
     }
+
+    private HtmlCommandButton searchCommand;
+
+    private HtmlPanelGrid gridPanel1;
+
     private HtmlInputText textField1 = new HtmlInputText();
 
     public HtmlInputText getTextField1() {
@@ -437,6 +499,24 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
     }
 
     // </editor-fold>
+        /**
+     * Holds value of property dataVariableInfo.
+     */
+    private HtmlDataTable dataTableVariableInfo;
+
+    /**
+     * Getter for property dataVariableInfo.
+     * @return Value of property dataVariableInfo.
+     */
+    public HtmlDataTable getDataTableVariableInfo() {
+        return this.dataTableVariableInfo;
+    }
+
+    public void setDataTableVariableInfo(HtmlDataTable hdt) {
+        this.dataTableVariableInfo = hdt;
+    }
+
+    private HtmlInputText input_VariableInfo;
     /** 
      * <p>Construct a new Page bean instance.</p>
      */
@@ -614,54 +694,58 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
 //        String query = buildQuery();
         List searchCollections = null;
         boolean searchOnlySelectedCollections = false;
-        if (radioButtonList1.getValue() != null) {
-            String radioButtonStr = (String) radioButtonList1.getValue();
-            if (radioButtonStr.indexOf("Only") > 1) {
-                searchOnlySelectedCollections = true;
+        
+        if (validateAllSearchCriteria()){
+            if (radioButtonList1.getValue() != null) {
+                String radioButtonStr = (String) radioButtonList1.getValue();
+                if (radioButtonStr.indexOf("Only") > 1) {
+                    searchOnlySelectedCollections = true;
 
-                searchCollections = new ArrayList();
-                List<CollectionModel> collectionModelList = (List<CollectionModel>) dataTable1Model.getWrappedData();
-                for (Iterator it = collectionModelList.iterator(); it.hasNext();) {
-                    CollectionModel elem = (CollectionModel) it.next();
-                    if (elem.isSelected()) {
-                        VDCCollection selectedCollection = vdcCollectionService.find(elem.getId());
-                        searchCollections.add(selectedCollection);
-                    }
-                }
-                if (searchCollections.isEmpty()) {
-                    searchOnlySelectedCollections = false;
+                 searchCollections = new ArrayList();
+                  List<CollectionModel> collectionModelList = (List<CollectionModel>) dataTable1Model.getWrappedData();
+                 for (Iterator it = collectionModelList.iterator(); it.hasNext();) {
+                      CollectionModel elem = (CollectionModel) it.next();
+                      if (elem.isSelected()) {
+                          VDCCollection selectedCollection = vdcCollectionService.find(elem.getId());
+                            searchCollections.add(selectedCollection);
+                        }
+                 }
+                 if (searchCollections.isEmpty()) {
+                      searchOnlySelectedCollections = false;
+                   }
                 }
             }
+
+            List<SearchTerm> searchTerms = buildSearchTermList();
+            VDC thisVDC = getVDCRequestBean().getCurrentVDC();
+            List<Long> viewableIds = null;
+            if (searchOnlySelectedCollections) {
+                viewableIds = indexServiceBean.search(thisVDC, searchCollections, searchTerms);
+            } else {
+                viewableIds = indexServiceBean.search(thisVDC, searchTerms);
+            }
+
+            StudyListing sl = new StudyListing(StudyListing.SEARCH);
+            sl.setSearchTerms(searchTerms);
+            if (isVariableSearch()) {
+                Map variableMap = new HashMap();
+                List studies = new ArrayList();
+                varService.determineStudiesFromVariables(viewableIds, studies, variableMap);
+                sl.setStudyIds(studies);
+                sl.setVariableMap(variableMap);
+
+            } else {
+                sl.setStudyIds(viewableIds);
+            }
+
+            getVDCRequestBean().setStudyListing(sl);
+            return "search";
         }
-
-        List<SearchTerm> searchTerms = buildSearchTermList();
-        VDC thisVDC = getVDCRequestBean().getCurrentVDC();
-        List<Long> viewableIds = null;
-        if (searchOnlySelectedCollections) {
-            viewableIds = indexServiceBean.search(thisVDC, searchCollections, searchTerms);
-        } else {
-            viewableIds = indexServiceBean.search(thisVDC, searchTerms);    
-        }
-
-        StudyListing sl = new StudyListing(StudyListing.SEARCH);
-        sl.setSearchTerms(searchTerms);
-        if (isVariableSearch()) {
-            Map variableMap = new HashMap();
-            List studies = new ArrayList();
-            varService.determineStudiesFromVariables(viewableIds, studies, variableMap);
-            sl.setStudyIds(studies);
-            sl.setVariableMap(variableMap);
-
-        } else {
-            sl.setStudyIds(viewableIds);
-        }
-
-        getVDCRequestBean().setStudyListing(sl);
-
-        return "search";
+        else{
+            return "";
+        }        
+        
     }
-
-
 
     public boolean isDateItem(String s) {
         // there is an issue with the date items, so for the time being, we are treating all fields as non date
@@ -721,10 +805,6 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
             searchTerm1.setOperator(operatorToken((String) dropdown9.getValue()));
             searchTerm1.setValue((String) textField1.getValue());
             searchTerms.add(searchTerm1);
-            if (searchTerm1.getFieldName().equals("variable")) {
-                setVariableSearch(true);
-            }
-
         }
         if (((String) textField2.getValue()).length() > 0) {
             SearchTerm searchTerm2 = new SearchTerm();
@@ -732,10 +812,6 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
             searchTerm2.setOperator(operatorToken((String) dropdown4.getValue()));
             searchTerm2.setValue((String) textField2.getValue());
             searchTerms.add(searchTerm2);
-            if (searchTerm2.getFieldName().equals("variable")) {
-                setVariableSearch(true);
-            }
-
         }
         if (((String) textField3.getValue()).length() > 0) {
             SearchTerm searchTerm3 = new SearchTerm();
@@ -743,9 +819,6 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
             searchTerm3.setOperator(operatorToken((String) dropdown6.getValue()));
             searchTerm3.setValue((String) textField3.getValue());
             searchTerms.add(searchTerm3);
-            if (searchTerm3.getFieldName().equals("variable")) {
-                setVariableSearch(true);
-            }
         }
         if (((String) textField4.getValue()).length() > 0) {
             SearchTerm searchTerm4 = new SearchTerm();
@@ -753,8 +826,13 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
             searchTerm4.setOperator(operatorToken((String) dropdown8.getValue()));
             searchTerm4.setValue((String) textField4.getValue());
             searchTerms.add(searchTerm4);
-            if (searchTerm4.getFieldName().equals("variable")) {
-                setVariableSearch(true);
+        }
+        if (variableInfoList.size() > 0){
+            
+            for (SearchTerm searchTerm : variableInfoList) {
+                if ( searchTerm.getValue().length() > 0 ){
+                    searchTerms.add(searchTerm);
+                }
             }
         }
         return searchTerms;
@@ -780,6 +858,85 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
         }
         return valid;
     }
+
+    public boolean validateAllSearchCriteria() {
+            
+            if (hasCatalogSearchCriteria() && !hasCatalogSearchCriteriaWithContains()) {
+                FacesMessage message = new FacesMessage("Must enter at least one 'Contains' for Cataloging Information Search.");
+                FacesContext fc = FacesContext.getCurrentInstance();
+                fc.addMessage(textField1.getClientId(fc), message);
+                return false;
+            }
+
+            if (!hasCatalogSearchCriteria()  && !hasVariableSearchCriteria()) {
+                //((UIInput)gridPanel1).setValid(false);
+                FacesMessage message = new FacesMessage("Must enter some Search Criteria.");
+                FacesContext fc = FacesContext.getCurrentInstance();
+                fc.addMessage(textField1.getClientId(fc), message);
+                return false;
+            }
+            return true;
+    }
+   
+    private boolean hasCatalogSearchCriteria(){
+
+        if (((String) textField1.getValue()).length() > 0) {
+            return true;
+        }
+        if (((String) textField2.getValue()).length() > 0  ) {
+            return true;
+        }
+        if (((String) textField3.getValue()).length() > 0) {
+            return true;
+        }
+        if (((String) textField4.getValue()).length() > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean hasCatalogSearchCriteriaWithContains(){
+
+        if (((String) textField1.getValue()).length() > 0) {
+            if (operatorToken((String) dropdown9.getValue()).equalsIgnoreCase("=")){
+                return true;
+            }
+        }
+        if (((String) textField2.getValue()).length() > 0 ) {
+            if (operatorToken((String) dropdown4.getValue()).equalsIgnoreCase("=")){
+                return true;
+            }
+        }
+        if (((String) textField3.getValue()).length() > 0) {
+            if (operatorToken((String) dropdown6.getValue()).equalsIgnoreCase("=")){
+                return true;
+            }
+        }
+        if (((String) textField4.getValue()).length() > 0) {
+            if (operatorToken((String) dropdown8.getValue()).equalsIgnoreCase("=")){
+                return true;
+            }
+        }
+        return false;
+    }
+
+   
+    protected boolean hasVariableSearchCriteria(){
+
+        if (variableInfoList.size() > 0){
+            for (SearchTerm searchTerm : variableInfoList) {
+                if ( searchTerm.getValue().length() > 0 ){
+                    setVariableSearch(true);
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+ 
+
 
     public void validateDate(FacesContext context,
             UIComponent toValidate,
@@ -807,7 +964,29 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
         }
 
     }
-    /**
+      public void addRow(ActionEvent ae) {
+
+        HtmlDataTable dataTable = (HtmlDataTable)ae.getComponent().getParent().getParent();
+
+        if (dataTable.equals(dataTableVariableInfo)) {
+            this.variableInfoList.add(dataTable.getRowIndex()+1, initVariableSearchTerm());
+        }
+    }
+
+        public void removeRow(ActionEvent ae) {
+
+            HtmlDataTable dataTable = (HtmlDataTable)ae.getComponent().getParent().getParent();
+            if (dataTable.getRowCount()>1) {
+                List data = (List)dataTable.getValue();
+                int i = dataTable.getRowIndex();
+                data.remove(i);
+            }
+    }
+
+
+
+
+        /**
      * <p>Callback method that is called whenever a page is navigated to,
      * either directly via a URL, or indirectly via page navigation.
      * Customize this method to acquire resources that will be needed

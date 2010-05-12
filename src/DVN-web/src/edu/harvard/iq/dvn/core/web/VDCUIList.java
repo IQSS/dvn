@@ -27,7 +27,6 @@ public class VDCUIList extends SortableList {
     private @EJB VDCGroupServiceLocal vdcGroupService;
 
     private boolean hideRestricted; //show unrestricted and restricted dataverses
-    private int    vdcGroupSize;
     private List<VDCUI> vdcUIList;
     private Long   vdcGroupId;
     private String alphaCharacter;
@@ -60,7 +59,6 @@ public class VDCUIList extends SortableList {
         oldAscending = ascending;
         initVdcService();
         initVdcGroupService();
-        vdcGroupSize = (vdcGroupId != null && !vdcGroupId.equals(new Long("-1"))) ? ((VDCGroup)vdcGroupService.findById(vdcGroupId)).getVdcs().size() : vdcService.findAll().size();
     }
 
     public VDCUIList() {
@@ -204,7 +202,7 @@ public class VDCUIList extends SortableList {
     }
 
     public int getVdcGroupSize() {
-        return vdcGroupSize;
+        return getVdcUIList().size();
     }
 
 
@@ -254,10 +252,6 @@ public class VDCUIList extends SortableList {
 
     public void setAlphaCharacter(String alphaCharacter) {
         this.alphaCharacter = alphaCharacter;
-    }
-
-    public void setVdcGroupSize(int vdcGroupSize) {
-        this.vdcGroupSize = vdcGroupSize;
     }
 
     //utils

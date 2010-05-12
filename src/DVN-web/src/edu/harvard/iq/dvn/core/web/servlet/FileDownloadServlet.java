@@ -28,11 +28,9 @@
  */
 package edu.harvard.iq.dvn.core.web.servlet;
 
-import com.sun.xml.internal.ws.api.addressing.WSEndpointReference.Metadata;
 import edu.harvard.iq.dvn.core.admin.UserGroup;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 
-import edu.harvard.iq.dvn.core.study.FileCategory;
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.study.StudyFile;
@@ -47,7 +45,6 @@ import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 
 import edu.harvard.iq.dvn.core.web.study.StudyUI;
-import edu.harvard.iq.dvn.core.web.study.FileCategoryUI;
 import edu.harvard.iq.dvn.core.web.dvnremote.DvnTermsOfUseAccess;
 import edu.harvard.iq.dvn.core.web.dvnremote.ICPSRauth;
 

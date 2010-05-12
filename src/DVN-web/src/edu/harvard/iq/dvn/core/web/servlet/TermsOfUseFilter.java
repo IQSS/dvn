@@ -168,7 +168,7 @@ public class TermsOfUseFilter implements Filter {
         
         if (req.getServletPath().equals("/FileDownload") || (req.getServletPath().equals("/faces") && req.getPathInfo().startsWith("/subsetting/SubsettingPage"))) {
             redirected = checkDownloadTermsOfUse(req, res);
-        } else if (req.getServletPath().equals("/faces") && req.getPathInfo().startsWith("/study/EditStudyPage")) {
+        } else if (req.getServletPath().equals("/faces") && (req.getPathInfo().startsWith("/study/EditStudyPage") || req.getPathInfo().startsWith("/study/AddFilesPage") ) ) {
             redirected = checkDepositTermsOfUse(req, res);
         }
         

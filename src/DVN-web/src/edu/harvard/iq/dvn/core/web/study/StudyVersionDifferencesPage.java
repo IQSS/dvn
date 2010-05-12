@@ -316,7 +316,8 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
         versionNotesPopup.openPopup(ae);
     }
 
-    public void saveVersionNoteAndRelease (ActionEvent ae) {
+    //public void saveVersionNoteAndRelease (ActionEvent ae) {
+    public String saveVersionNoteAndRelease () {
         // First we save the Version Note:
         studyUI2.getStudyVersion().setVersionNote(versionNotesPopup.getVersionNote());
 
@@ -332,7 +333,13 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
        
         // And now we are redirecting back to the StudyPage;
         // no need to specify the version really, since the latest version is now released.
-        redirect("/faces/study/StudyPage.xhtml?studyId="+studyId);
+        //redirect("/faces/study/StudyPage.xhtml?studyId="+studyId);
+
+        getVDCRequestBean().setStudyId(getStudyId());
+        //getVDCRequestBean().setStudyVersionNumber(getVersionNumber2());
+
+        return "viewStudy";
+
     }
 
     public String cancel() {

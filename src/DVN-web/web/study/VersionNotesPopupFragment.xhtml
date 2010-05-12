@@ -25,11 +25,6 @@
                                cellspacing="0" columns="2"
                                columnClasses="none,popupButton">
                     <ice:outputText value="Study Version Notes"/>
-                    <!--<ice:commandLink id="autoCentPopupClose"
-                                     actionListener="#{studyPage.toggleVersionNotesPopup}"
-                                     styleClass="popupModalClose">
-                        <ice:graphicImage value="/resources/images/icon_close.gif"/>
-                    </ice:commandLink>-->
                 </ice:panelGrid>
             </f:facet>
             <f:facet name="body">
@@ -48,7 +43,7 @@
                                            value="Save"
                                            rendered="#{VersionNotesPopupBean.editNoteAction}"/>
                        <ice:commandButton id="autoCentPopupOk"
-                                           actionListener="#{studyVersionDifferencesPage.saveVersionNoteAndRelease}"
+                                           action="#{studyVersionDifferencesPage.saveVersionNoteAndRelease}"
                                            value="Continue"
                                            rendered="#{VersionNotesPopupBean.versionReleaseAction}"/>
                        <ice:commandButton id="autoCentPopupOk"

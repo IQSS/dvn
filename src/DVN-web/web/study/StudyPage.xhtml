@@ -319,7 +319,7 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
                         </div>
                         <div jsfc="ice:panelGroup" rendered="#{!(studyPage.studyUI.study.studyLock==null)}">
                             <ice:outputText styleClass="vdcStudyStatus" value="Currently unavailable for editing because file upload is in progress." rendered="#{studyPage.studyUI.userAuthorizedToEdit and !(studyPage.studyUI.study.studyLock==null)}"/>
-                            <ice:outputLink styleClass="vdcStudyStatus" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;versionNumber=#{studyPage.studyUI.studyVersion.versionNumber}&amp;tab=#{studyPage.tab}#{VDCRequest.studyListingIndexAsParameter}" rendered="#{studyPage.studyUI.userAuthorizedToEdit and !(studyPage.studyUI.study.studyLock==null)}">
+                            <ice:outputLink styleClass="vdcStudyStatus" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;versionNumber=-1&amp;tab=#{studyPage.tab}#{VDCRequest.studyListingIndexAsParameter}" rendered="#{studyPage.studyUI.userAuthorizedToEdit and !(studyPage.studyUI.study.studyLock==null)}">
                                 <ice:outputText nospan="true" value="Refresh"/>
                             </ice:outputLink>
                         </div>

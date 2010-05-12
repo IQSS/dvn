@@ -137,6 +137,9 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
                     List versionList = (List) studyListing.getVersionMap().get(sid);
                     sui.setFoundInVersions(versionList);
                 }
+                if (studyListing.getDisplayStudyVersionsList() != null){
+                    sui.setDisplayVersions(studyListing.getDisplayStudyVersionsList().contains(sid));
+                }
                 studyUIList.add(sui);
             }
         }
@@ -228,6 +231,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
         List studyIDList = new ArrayList();
         Map variableMap = new HashMap();
         Map versionMap = new HashMap();
+        List displayVersionList = new ArrayList();
 
         // currently search filter is determined from a set of boolean checkboxes
         int searchFilter = 0;
@@ -270,20 +274,25 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
                 Iterator iter = versionIds.iterator();
                 Long studyId = null;
                 while (iter.hasNext()) {
-                    List<StudyVersion> svList = new ArrayList<StudyVersion>();
+//                    List<StudyVersion> svList = new ArrayList<StudyVersion>();
                     Long vId = (Long) iter.next();
                     StudyVersion sv = null;
                     try {
                         sv = studyService.getStudyVersionById(vId);
                         studyId = sv.getStudy().getId();
+                        List<StudyVersion> svList = (List<StudyVersion>) versionMap.get(studyId);
+                        if (svList == null) {
+                            svList = new ArrayList<StudyVersion>();
+                        }
                         svList.add(sv);
                         if (!studyIDList.contains(studyId)) {
+                            displayVersionList.add(studyId);
                             studyIDList.add(studyId);
                         }
+                        versionMap.put(studyId, svList);
                     } catch (IllegalArgumentException e) {
                         e.printStackTrace();
                     }
-                    versionMap.put(studyId, svList);
                 }
 
             }
@@ -302,6 +311,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
         studyListing.setVariableMap(variableMap);
         studyListing.setVersionMap(versionMap);
         studyListing.setCollectionTree(collectionTree);
+        studyListing.setDisplayStudyVersionsList(displayVersionList);
         setStudyListingIndex(addToStudyListingMap(studyListing));
 
         // finally reinit!

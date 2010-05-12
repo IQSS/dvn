@@ -461,7 +461,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
         List studies        = new ArrayList();
         Map variableMap     = new HashMap();
         Map versionMap = new HashMap();
-        List versions   = new ArrayList();
+        List displayVersionList = new ArrayList();
 
         if ( searchField.equals("variable") ) {
             List variables  = indexService.searchVariables(getVDCRequestBean().getCurrentVDC(), st);
@@ -472,24 +472,29 @@ public class HomePage extends VDCBaseBean implements Serializable {
         }
         if (searchField.equals("any")) {
 //            studies.add(st);
-            List<Long> versionIds = indexService.searchVersionUnf(getVDCRequestBean().getCurrentVDC(),searchValue);
+            List<Long> versionIds = indexService.searchVersionUnf(getVDCRequestBean().getCurrentVDC(), searchValue);
             Iterator iter = versionIds.iterator();
             Long studyId = null;
             while (iter.hasNext()) {
-                List<StudyVersion> svList = new ArrayList<StudyVersion>();
+//                List<StudyVersion> svList = new ArrayList<StudyVersion>();
                 Long vId = (Long) iter.next();
                 StudyVersion sv = null;
                 try {
                     sv = studyService.getStudyVersionById(vId);
                     studyId = sv.getStudy().getId();
+                    List<StudyVersion> svList = (List<StudyVersion>) versionMap.get(studyId);
+                    if (svList == null) {
+                        svList = new ArrayList<StudyVersion>();
+                    }
                     svList.add(sv);
                     if (!studies.contains(studyId)) {
+                        displayVersionList.add(studyId);
                         studies.add(studyId);
                     }
+                    versionMap.put(studyId, svList);
                 } catch (IllegalArgumentException e) {
                     e.printStackTrace();
                 }
-                versionMap.put(studyId, svList);
             }
 
         }
@@ -500,6 +505,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
         sl.setSearchTerms(searchTerms);
         sl.setVariableMap(variableMap);
         sl.setVersionMap(versionMap);
+        sl.setDisplayStudyVersionsList(displayVersionList);
         getVDCRequestBean().setStudyListing(sl);
 
         return "search";

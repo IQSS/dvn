@@ -1065,6 +1065,8 @@ public class StudyUI  implements java.io.Serializable {
     }
 
 
+    private boolean displayVersions;
+
     public static boolean isStudyInList(Study study, List list) {
         Iterator iter = list.iterator();
         while (iter.hasNext()) {
@@ -1153,6 +1155,20 @@ public class StudyUI  implements java.io.Serializable {
         } else {
             return study.getStudyVersions();
         }
+    }
+
+    /**
+     * @return the displayVersions
+     */
+    public boolean isDisplayVersions() {
+        return displayVersions;
+    }
+
+    /**
+     * @param displayVersions the displayVersions to set
+     */
+    public void setDisplayVersions(boolean displayVersions) {
+        this.displayVersions = displayVersions;
     }
 
 }

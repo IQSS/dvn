@@ -70,6 +70,7 @@ public class StudyListing  implements java.io.Serializable {
     private List searchTerms;
     private Map variableMap;
     private Map versionMap;
+    private List displayStudyVersionsList;
 
     public int getMode() {
         return mode;
@@ -199,6 +200,20 @@ public class StudyListing  implements java.io.Serializable {
 
     public static void clearStudyListingMap(Map sessionMap) {
         sessionMap.remove("studyListings");
+    }
+
+    /**
+     * @return the displayStudyVersionsList
+     */
+    public List getDisplayStudyVersionsList() {
+        return displayStudyVersionsList;
+    }
+
+    /**
+     * @param displayStudyVersionsList the displayStudyVersionsList to set
+     */
+    public void setDisplayStudyVersionsList(List displayStudyVersionsList) {
+        this.displayStudyVersionsList = displayStudyVersionsList;
     }
 
 }

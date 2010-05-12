@@ -125,11 +125,11 @@ span.dvnStudyListTableOptionalFieldLabel{color:gray}
 span.dvnStudyListSearchResultsMessage{font-size:100% !important;font-weight:400}
 .dvnStudyListNoStudies{padding:0 1em;text-align:center}
 /* ADVANCED SEARCH */
-.dvnAdvSearchScopeTable{max-width:900px;margin:auto}
+.dvnAdvSearchScopeTable{}
 .dvnAdvSearchScopeTable tr.list-row-even td{background-color:#fff}
 .vdcAdvSearchCol1{padding-bottom:2px;padding-left:10px;padding-top:2px;vertical-align:bottom}
 .vdcAdvSearchCol2{padding-bottom:2px;padding-left:10px;padding-top:2px;vertical-align:bottom}
 .vdcAdvSearchCol3{padding-bottom:2px;padding-left:10px;padding-top:2px;vertical-align:bottom}
-.dvnAdvSearchCollectionsTable{max-width:900px;margin:auto;border-top:1px solid #d9d9d9}
+.dvnAdvSearchCollectionsTable{border-top:1px solid #d9d9d9}
 .dvnAdvSearchCollectionsTableParent{display:inline}
 .dvnAdvSearchCollectionsTableChild{display:inline;padding-left:18px;background:url(/dvn/resources/icefaces/dvn_rime/css-images/tree_line_last_node.gif) 0 0 no-repeat}

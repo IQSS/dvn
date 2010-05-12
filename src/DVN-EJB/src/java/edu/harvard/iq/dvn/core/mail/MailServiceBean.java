@@ -146,7 +146,7 @@ public class MailServiceBean implements edu.harvard.iq.dvn.core.mail.MailService
         Iterator iter = subsettableFiles.iterator();
         while (iter.hasNext()) {
             StudyFileEditBean fileBean = (StudyFileEditBean) iter.next();
-            msgText += "  " + fileBean.getStudyFile().getFileName() + "\n";
+            msgText += "  " + fileBean.getFileMetadata().getLabel() + "\n";
         }
         msgText +="\nUpload in progress ...";
         sendDoNotReplyMail(userEmail, "Dataverse Network: The upload of your subsettable file(s) is in progress", msgText );

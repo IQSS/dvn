@@ -16,9 +16,6 @@
                                        styleClass="dvnMyDataverseTableTop" columnClasses="dvn1"
                                        rendered="#{VDCRequest.vdcNetwork.allowCreateRequest}">
                             <div jsfc="ice:panelGroup">
-                                <ice:outputLink value="/dvn/faces/site/AddSitePage.xhtml">
-                                    <ice:outputText value="#{bundlePageInfo.createDvTitle}"/>
-                                </ice:outputLink>
                                     <ice:commandLink action="#{MyDataversePage.createDataverse}"  title="Create a Dataverse">
                                         <ice:outputText value="#{bundlePageInfo.createDvTitle}"/>
                                     </ice:commandLink>

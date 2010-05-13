@@ -196,6 +196,8 @@ public class FileDownloadServlet extends HttpServlet {
         String imageThumb = req.getParameter("imageThumb");
         String noVarHeader = req.getParameter("noVarHeader");
 
+        StudyVersion studyVersion = null;
+
 // v1.4 changes: start
         dbgLog.fine("*****  FileDownLoadServlet : service() starts here *****");
         dbgLog.fine("*****  v1.4 lines start here *****");
@@ -235,7 +237,7 @@ public class FileDownloadServlet extends HttpServlet {
             // Version and Metadata from the database:
 
             Long studyVersionId = sui.getStudyVersion().getId();
-            StudyVersion studyVersion = studyService.getStudyVersionById(studyVersionId);
+            studyVersion = studyService.getStudyVersionById(studyVersionId);
             citation = studyVersion.getMetadata().getCitation(false);
 
             //citation = sui.getMetadata().getCitation(false);
@@ -976,9 +978,21 @@ public class FileDownloadServlet extends HttpServlet {
 
                     // First, let's check if we have this file cached.
 
-                    String cachedFileSystemLocation = file.getFileSystemLocation() + "." + formatRequested;
+                    String cachedFileSystemLocation = null;
 
-                    if (new File(cachedFileSystemLocation).exists()) {
+                    // Cached copies are now version-specific.
+
+                    if (studyVersion != null && studyVersion.getVersionNumber() != null) {
+                        String versionSuffix = "V" + studyVersion.getVersionNumber();
+                        cachedFileSystemLocation = file.getFileSystemLocation()
+                                + "."
+                                + formatRequested
+                                + "." 
+                                + versionSuffix;
+                    }
+
+                    if (cachedFileSystemLocation != null &&
+                        new File(cachedFileSystemLocation).exists()) {
                         try {
                             String cachedAltFormatType = generateAltFormat(formatRequested);
                             String cachedAltFormatFileName = generateAltFileName(formatRequested, "f" + file.getId().toString());
@@ -1188,20 +1202,30 @@ public class FileDownloadServlet extends HttpServlet {
 
                             // Also, we want to cache this file for future use:
 
-                            FileOutputStream fileCachingStream = new FileOutputStream(cachedFileSystemLocation);
+                            FileOutputStream fileCachingStream = null; 
+                            
+                            if (cachedFileSystemLocation != null &&
+                                    (!studyVersion.isDraft() && 
+                                     !studyVersion.isInReview())) {
+                                fileCachingStream = new FileOutputStream(cachedFileSystemLocation);
+                            }
 
                             byte[] dataBuffer = new byte[8192];
 
                             int i = 0;
                             while ((i = in.read(dataBuffer)) > 0) {
                                 out.write(dataBuffer, 0, i);
-                                fileCachingStream.write(dataBuffer, 0, i);
+                                if (fileCachingStream != null) {
+                                    fileCachingStream.write(dataBuffer, 0, i);
+                                }
                                 out.flush();
                             }
                             in.close();
                             out.close();
-                            fileCachingStream.flush();
-                            fileCachingStream.close();
+                            if (fileCachingStream != null) {
+                                fileCachingStream.flush();
+                                fileCachingStream.close();
+                            }
 
 			    if ( vdc != null ) {
 				studyService.incrementNumberOfDownloads(file.getId(), vdc.getId());

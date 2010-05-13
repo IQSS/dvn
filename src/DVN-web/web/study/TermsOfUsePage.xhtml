@@ -21,33 +21,25 @@
         <ice:inputHidden id="redirectPage" value="#{TermsOfUsePage.redirectPage}"/>
         <ice:inputHidden id="tou" value="#{TermsOfUsePage.touParam}"/>
         <div class="dvn_section">
-          <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
-            <div class="dvnMsgBlockContainer">
-              <p>
-                <ice:outputText rendered="#{TermsOfUsePage.touTypeDownload}" value="Please agree to the terms of use below before accessing the files for study: "/>
-                <ice:outputText rendered="#{TermsOfUsePage.touTypeDeposit and TermsOfUsePage.studyId!=null}" value="Please agree to the terms of use below before editing study: "/>
-                <ice:outputText styleClass="warnMessage" value="#{TermsOfUsePage.study.releasedVersion.metadata.title}"/>
-                <ice:outputText rendered="#{TermsOfUsePage.studyId==null}" value="Please agree to the terms of use below before creating a new study."/>
-              </p>
-              <div jsfc="ice:panelGroup" rendered="#{TermsOfUsePage.studyId!=null and TermsOfUsePage.touTypeDownload}">
-                <p>
-                  <ice:outputText value="You may return "/>
-                  <ice:outputLink 
-                    value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{TermsOfUsePage.study.id}&amp;tab=files"
-                    rendered="#{VDCRequest.studyVersionNumber == null}">
-                    <ice:outputText value="back to the Study"/>
-                  </ice:outputLink>
-                  <ice:outputLink
-                    value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{TermsOfUsePage.study.id}&amp;versionNumber=#{VDCRequest.studyVersionNumber}&amp;tab=files"
-                    rendered="#{VDCRequest.studyVersionNumber != null}">
-                    <ice:outputText value="back to the Study"/>
-                  </ice:outputLink>
+<style type="text/css">
+    .dvnstudypreviouslisting{text-align:right;}
+    .termsAgreeChkBxBlock{width:380px;}
+    .termsAgreeChkBxBlock p {font-size: .9em !important;}
+</style>
+          <div jsfc="ice:panelGroup" styleClass="dvnstudypreviouslisting" rendered="#{TermsOfUsePage.studyId!=null and TermsOfUsePage.touTypeDownload}">
+              <ice:outputLink
+                value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{TermsOfUsePage.study.id}&amp;tab=files"
+                rendered="#{VDCRequest.studyVersionNumber == null}">
+                <ice:outputText value="&lt; Back to the Study"/>
+              </ice:outputLink>
 
-                  <ice:outputText value=" once you have been prompted to download the file."/>
-                </p>
-              </div>
-            </div>
+              <ice:outputLink
+                value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{TermsOfUsePage.study.id}&amp;versionNumber=#{VDCRequest.studyVersionNumber}&amp;tab=files"
+                rendered="#{VDCRequest.studyVersionNumber != null}">
+                <ice:outputText value="&lt; Back to the Study"/>
+              </ice:outputLink>
           </div>
+
           <div class="dvn_sectionTitle">
             <ice:outputText value="Terms of Use"/>
           </div>
@@ -101,9 +93,8 @@
                   <ice:outputText value="#{TermsOfUsePage.depositDataverseTerms}" rendered="#{TermsOfUsePage.depositDataverseTermsRequired}" escape="false"/>
                 </div>
               </div>
-              <div>
-                <ice:outputText rendered="#{TermsOfUsePage.touTypeDownload}" styleClass="vdcFieldTitle" value="BY CLICKING THE &quot;I AGREE&quot; CHECKBOX BELOW, I CONFIRM THAT I HAVE READ AND UNDERSTOOD EACH AND EVERY TERM SET FORTH IN THE TERMS AND CONDITIONS FOR THE USE OF DATA FOUND ABOVE, AND I AGREE TO BE BOUND BY ALL OF SUCH TERMS AND CONDITIONS."/><br/>
-                <ice:outputText rendered="#{TermsOfUsePage.touTypeDownload}" styleClass="vdcFieldTitle" value="IF I DO NOT UNDERSTAND OR AGREE TO ALL OF THE TERMS AND CONDITIONS, I MUST NOT DOWNLOAD THE MATERIALS."/><br/>
+              <div class="termsAgreeChkBxBlock">
+                <ice:outputText rendered="#{TermsOfUsePage.touTypeDownload}" value="#{bundlePageInfo.termsofUseDownloadAgree}" escape="false"/>
                 <ice:selectBooleanCheckbox id="termsAccepted" required="true" validator="#{TermsOfUsePage.validateTermsAccepted}" value="#{TermsOfUsePage.termsAccepted}"/>
                 <ice:outputText styleClass="vdcFieldTitle" value="I agree and accept these terms of use."/>
                 <ice:message for="termsAccepted" styleClass="errorMessage"/>

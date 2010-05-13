@@ -832,6 +832,7 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
             for (SearchTerm searchTerm : variableInfoList) {
                 if ( searchTerm.getValue().length() > 0 ){
                     searchTerms.add(searchTerm);
+                    setVariableSearch(true);
                 }
             }
         }
@@ -868,7 +869,7 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
                 return false;
             }
 
-            if (!hasCatalogSearchCriteria()  && !hasVariableSearchCriteria()) {
+            if (!hasVariableSearchCriteria() &&  !hasCatalogSearchCriteria() ) {
                 //((UIInput)gridPanel1).setValid(false);
                 FacesMessage message = new FacesMessage("Must enter some Search Criteria.");
                 FacesContext fc = FacesContext.getCurrentInstance();

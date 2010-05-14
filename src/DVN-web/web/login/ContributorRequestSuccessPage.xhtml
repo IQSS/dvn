@@ -11,13 +11,13 @@
 </head>
 <body>
     <gui:composition template="/template.xhtml">
-        <gui:param name="pageTitle" value="Contributor Success - #{VDCRequest.dataversePageTitle}"/>
+        <gui:param name="pageTitle" value="Register Success - #{VDCRequest.dataversePageTitle}"/>
         <gui:define name="body">
             <ice:form id="contributorRequestForm">
                 <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
                 <div class="dvn_createDvRequest dvn_section dvn_overflow">
                     <div class="requestHeader dvn_overflow">
-                        <ice:outputText value="Success! &lt;span&gt;&gt; Become a Contributor&lt;/span&gt;" escape="false"/>
+                        <ice:outputText value="Success! &lt;span&gt;&gt; Register With Us&lt;/span&gt;" escape="false"/>
                     </div>
                     <div jsfc="ice:panelGroup" rendered="#{LoginWorkflowBean.contributorWorkflow}" styleClass="requestTimeline contributorTimelineStep3">
                         <div class="requestTimelinePoint contributorWorkflowStep1"><img src="/dvn/resources/images/lrg-blue-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong class="requestWorkflowCompleted">Create Account</strong></div>
@@ -28,30 +28,65 @@
                         <div class="requestContentDescLeft">
                             <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnSuccessMessage">
                                 <div class="dvnMsgBlockContainer">
-                                    <p><ice:outputText styleClass="successMessage" value="You are now a contributor to the #{VDCRequest.currentVDC.name} Dataverse!"/></p>
+                                    <p><ice:outputText styleClass="successMessage" value="You are now registered with us!"/></p>
                                 </div>
                             </div>
                         </div>
                         <div class="requestContentFormRight requestContentSucess">
                             <div class="dvn_margin12">
-                                <p><ice:outputText value="As a contributor, you can:"/> </p>
+                                <p><ice:outputText value="As a registered user, you can:"/></p>
                                 <ul>
-                                    <li>
-                                        <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml">
-                                            <ice:outputText value="Add new studies and upload files"/>
-                                        </ice:outputLink>
-                                    </li>
-                                    <li>
-                                        <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/ManageStudiesPage.xhtml">
-                                            <ice:outputText value="View studies you have uploaded"/>
-                                        </ice:outputLink>
-                                    </li>
+                                    
+                                    <span jsfc="ice:panelGroup" rendered="#{VDCRequest.currentVDC != null and VDCRequest.currentVDC.allowRegisteredUsersToContribute}">
+                                        <li>
+                                            <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml">
+                                                <ice:outputText value="Add studies to this dataverse"/>
+                                            </ice:outputLink>
+                                        </li>
+                                    </span>
+                                    <span jsfc="ice:panelGroup" rendered="#{VDCRequest.currentVDC == null}">
+                                        <li>
+                                            <ice:outputText value="Add studies to open and wiki dataverses, if available"/>
+                                        </li>
+                                    </span>
+
+                                    <span jsfc="ice:panelGroup" rendered="#{VDCRequest.currentVDC != null and VDCRequest.currentVDC.allowRegisteredUsersToContribute and VDCRequest.currentVDC.allowContributorsEditAll}">
+                                        <li>
+                                            <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/ManageStudiesPage.xhtml">
+                                                <ice:outputText value="Contribute to existing studies in this dataverse"/>
+                                            </ice:outputLink>
+                                        </li>
+                                    </span>
+                                    <span jsfc="ice:panelGroup" rendered="#{VDCRequest.currentVDC == null}">
+                                        <li>
+                                            <ice:outputText value="Contribute to existing studies in wiki dataverses, if available"/>
+                                        </li>
+                                    </span>
+
+                                    <span jsfc="ice:panelGroup">
+                                        <li>
+                                            <ice:outputText value="Add user comments to studies that have this option"/>
+                                        </li>
+                                    </span>
+
+                                    <span jsfc="ice:panelGroup" rendered="#{VDCRequest.vdcNetwork.allowCreateRequest}">
+                                        <li>
+                                            <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/login/CreatorRequestInfoPage.xhtml">
+                                                <ice:outputText value="Create your own dataverse"/>
+                                            </ice:outputLink>
+                                        </li>
+                                    </span>
+
                                 </ul>
-                                <p><ice:outputText value="You can get to these links from "/> <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml">
-                                        <ice:outputText value="Options"/>
-                                </ice:outputLink> <ice:outputText value=" (displayed in the menubar when you are logged in to this dataverse)."/></p>
-                                <p><ice:outputText escape="false" value="Click on &lt;em&gt;Ready for Review&lt;/em&gt; when your study is complete. This notifies your dataverse administrator to release your study.
-                                                                         Keep in mind that after you submit your study for review, you cannot edit or add files to it. Click &lt;em&gt;Report Issue&lt;/em&gt; to ask questions or report concerns to your dataverse administrator."/></p>
+                                <p>                                    
+                                    <ice:outputText value="Go to your "/> <ice:outputLink rendered="#{VDCRequest.currentVDC == null}" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/AccountOptionsPage.xhtml?userId=#{VDCSession.loginBean.user.id}">
+                                        <ice:outputText value="account page"/>
+                                    </ice:outputLink> <ice:outputLink rendered="#{VDCRequest.currentVDC != null}" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/AccountOptionsPage.xhtml?userId=#{VDCSession.loginBean.user.id}">
+                                        <ice:outputText value="options page"/>
+                                    </ice:outputLink> <ice:outputText rendered="#{VDCRequest.currentVDC != null}" value=" in this dataverse"/> <ice:outputText value=" to see your information."/>
+                                    
+                                    <ice:outputText value="If you are interested in accessing restricted studies in this Dataverse Network, please check the data availability and terms of use of the study, or contact the dataverse administrator for more information."/>
+                                </p>
                             </div>
                         </div>
                     </div>

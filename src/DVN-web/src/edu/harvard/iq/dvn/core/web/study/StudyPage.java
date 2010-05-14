@@ -40,8 +40,11 @@ import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.util.WebStatisticsSupport;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import edu.harvard.iq.dvn.core.web.login.LoginWorkflowBean;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.net.URLEncoder;
 import javax.ejb.EJB;
 import javax.faces.component.html.HtmlPanelGrid;
 import javax.faces.context.FacesContext;
@@ -699,22 +702,16 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
 
         if (StudyDeleteRequestType.DRAFT_VERSION.equals(deleteRequested)) {
             if (studyUI != null && studyUI.getStudyVersion() != null ) {
-                successMessage = "Successfully deleted draft version of the study \"" +
-                        studyUI.getMetadata().getTitle() + "\", " +
-                        studyUI.getStudy().getGlobalId();
+                successMessage = buildSuccessMessage( "Successfully deleted draft version of the study ");
                 studyService.destroyWorkingCopyVersion(studyUI.getStudyVersion().getId());
             }
         } else if (StudyDeleteRequestType.REVIEW_VERSION.equals(deleteRequested)) {
             if (studyUI != null && studyUI.getStudyVersion() != null ) {
-                successMessage = "Successfully deleted review version of the study \"" +
-                        studyUI.getMetadata().getTitle() + "\", " +
-                        studyUI.getStudy().getGlobalId();
+                successMessage = buildSuccessMessage("Successfully deleted review version of the study ");
                 studyService.destroyWorkingCopyVersion(studyUI.getStudyVersion().getId());
             }
         } else if (StudyDeleteRequestType.DESTROY_STUDY.equals(deleteRequested)) {
-            successMessage = "Permanently destroyed study \"" +
-                studyUI.getMetadata().getTitle() + "\", " +
-                studyUI.getStudy().getGlobalId();
+            successMessage = buildSuccessMessage("Permanently destroyed study ");
             studyService.deleteStudy(studyId);
 
         } else {
@@ -733,13 +730,36 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
         } else {
             dvId = dataverse.getId();
         }
-
+        
         redirect("/faces/study/ManageStudiesPage.xhtml?vdcId="+dvId
                 +"&successMessage="
                 +successMessage);
 
     }
 
+    private String buildSuccessMessage(String inString){
+        String successMessage = new String();
+
+        /*  -
+         * When we were trying to render out the study title we tried
+          to encode the illegal characters.
+        try {
+               successMessage = URLEncoder.encode( inString + "\"" +
+               studyUI.getMetadata().getTitle() + "\", " +
+               studyUI.getStudy().getGlobalId(), "UTF-8");
+        }
+        catch (UnsupportedEncodingException e) {
+               successMessage =  inString + "\"" +
+               studyUI.getMetadata().getTitle() + "\", " +
+               studyUI.getStudy().getGlobalId();
+        }
+         */
+              successMessage =  inString +
+               " " +
+               studyUI.getStudy().getGlobalId();
+        return successMessage;
+    }
+    
     public void confirmDraftDeleteAction (ActionEvent event) {
         showStudyDeletePopup = true;
         deleteRequested = StudyDeleteRequestType.DRAFT_VERSION;

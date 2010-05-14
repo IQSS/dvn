@@ -300,6 +300,11 @@ public class StudyFileServiceBean implements StudyFileServiceLocal {
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void addIngestedFiles( Long studyId, String versionNote, List fileBeans, Long userId) {
+        // if no files, then just return
+        if (fileBeans.isEmpty()) {
+            return;
+        }
+
         // first some initialization
         StudyVersion studyVersion = null;
         Study study = null;

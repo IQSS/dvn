@@ -82,7 +82,7 @@
                         <f:facet name="header">
                           <ice:outputText id="access_header" value="User/Group Access"/>
                         </f:facet>
-                        <ice:outputLink rendered="#{currentRow.user != null}" value="/dvn/faces/login/AccountPage.xhtml?userId=#{currentRow.user.id}&amp;vdcId=#{VDCRequest.currentVDCId}">
+                        <ice:outputLink rendered="#{currentRow.user != null}" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/AccountPage.xhtml?userId=#{currentRow.user.id}&amp;vdcId=#{VDCRequest.currentVDCId}">
                           <ice:outputText value="#{currentRow.user.userName}"/>
                         </ice:outputLink>
                         <ice:outputLink rendered="#{currentRow.group != null}" value="/dvn/faces/login/AccountPage.xhtml?userId=#{currentRow.group.id}&amp;vdcId=#{VDCRequest.currentVDCId}">
@@ -137,7 +137,7 @@
                       <f:facet name="header">
                         <ice:outputText id="accessRequest_header" value="Restricted File Access User Requests"/>
                       </f:facet>
-                      <ice:outputLink value="/dvn/faces/login/AccountPage.xhtml?userId=#{currentRow.studyRequest.vdcUser.id}&amp;vdcId=#{VDCRequest.currentVDCId}" >
+                      <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/login/AccountPage.xhtml?userId=#{currentRow.studyRequest.vdcUser.id}&amp;vdcId=#{VDCRequest.currentVDCId}" >
                         <ice:outputText value="#{currentRow.studyRequest.vdcUser.userName}"/>
                       </ice:outputLink>
                     </ice:column>

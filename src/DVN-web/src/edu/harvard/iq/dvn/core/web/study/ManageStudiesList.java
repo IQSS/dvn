@@ -367,7 +367,7 @@ public class ManageStudiesList extends VDCBaseBean {
 
 
     public boolean isContributorFilterRendered(){
-        boolean rendered = VDCBaseBean.getVDCRequestBean().getCurrentVDC() != null && (isUserCuratorOrAdmin() || isRegAndEdit() || isUserContributorAndAllowedToEdit());
+        boolean rendered = VDCBaseBean.getVDCRequestBean().getCurrentVDC() != null && (isUserCuratorOrAdminOrNetworkAdmin() || isRegAndEdit() || isUserContributorAndAllowedToEdit());
         return rendered;
     }
 

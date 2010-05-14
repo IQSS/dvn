@@ -357,8 +357,11 @@ public class LoginFilter implements Filter {
                 return false;
             }
             String userParam = request.getParameter("userId");
-            if (userParam!=null && !userParam.equals(user.getId().toString()) && !user.isAdmin(currentVDC) ) {
-                return false;
+            if (userParam!=null && !userParam.equals(user.getId().toString())) {
+                // To view other users, logged in user must be an admin or curator
+                if ( !(user.isAdmin(currentVDC) || user.isCurator(currentVDC) ) ) {
+                    return false;
+                }
             }
         } else if (isViewStudyPage(pageDef)) {
             Study study = null;

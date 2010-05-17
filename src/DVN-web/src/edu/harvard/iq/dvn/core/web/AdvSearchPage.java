@@ -162,10 +162,12 @@ public class AdvSearchPage extends VDCBaseBean implements java.io.Serializable {
 
     private void initVariableInfoList(){
         variableInfoList.add(initVariableSearchTerm());
-        variableInfoList.add(initVariableSearchTerm());
-        variableInfoList.add(initVariableSearchTerm());
-        variableInfoList.add(initVariableSearchTerm());
-        //
+        //We originally added 4 rows but the AND on the search would never return a result.
+        //left these here as a reminder just in case we re-visit.  SEK
+        //variableInfoList.add(initVariableSearchTerm());
+        //variableInfoList.add(initVariableSearchTerm());
+        //variableInfoList.add(initVariableSearchTerm());
+
     }
 
     private SearchTerm initVariableSearchTerm(){

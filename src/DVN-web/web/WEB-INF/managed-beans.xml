@@ -19,6 +19,11 @@
             <property-class>java.lang.Long</property-class>
             <value>#{param.versionNumber}</value>
         </managed-property>
+        <managed-property>
+            <property-name>selectedTab</property-name>
+            <property-class>java.lang.String</property-class>
+            <value>#{param.selectedTab}</value>
+        </managed-property>
     </managed-bean>
     <managed-bean>
         <managed-bean-name>VDCSession</managed-bean-name>

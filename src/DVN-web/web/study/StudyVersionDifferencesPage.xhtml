@@ -99,7 +99,10 @@ td.dvnDifferanceTableHeaderCol1 {border-top: 0 !important;}
             </div>
             <div class="dvn_sectionTitleLinksR">
                 <div class="vdcTextRight dvnFormMargin">
-                    <ice:commandButton id="button2" value="Back" immediate="true" action="#{studyVersionDifferencesPage.cancel}"/>
+                    <!--<ice:commandButton id="button2" value="Back" immediate="true" action="#{studyVersionDifferencesPage.cancel}"/>-->
+                    <ice:commandLink immediate="true" action="#{studyVersionDifferencesPage.cancel}">
+                        <ice:outputText value="Back to Study" nospan="true"/>
+                    </ice:commandLink>
                 </div>
             </div>
         </div>

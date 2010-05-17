@@ -802,6 +802,12 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
    
 
     public void confirmReleased(ActionEvent ae) {
+        // IMPORTANT:
+        // as of now (May 2010), this method is no longer being used;
+        // this decision, whether to release immediately or redirect
+        // to the Diff page is made in the .xhtml page, through
+        // rendering rules. 
+
         // See if the study already has released versions;
         // If not (i.e., this is the first release), we want to
         // simply switch the version state to "released"

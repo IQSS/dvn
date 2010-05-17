@@ -142,7 +142,8 @@
                   alert ("You must select exactly two versions to see the differences.");
                   return false;
               }
-              window.location.href = "/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyVersionDifferencesPage.xhtml?studyId=#{studyPage.studyUI.study.id}&versionNumberList=" + versionNumberStr + "&versionNumber=#{studyPage.studyUI.studyVersion.versionNumber}";
+              window.location.href = "/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyVersionDifferencesPage.xhtml?studyId=#{studyPage.studyUI.study.id}&versionNumberList=" + versionNumberStr + "&versionNumber=#{studyPage.studyUI.studyVersion.versionNumber}" + "&selectedTab=versions";
+
               return false;
           }
 
@@ -263,6 +264,7 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
                                             <f:param name="studyId" value="#{studyPage.studyUI.study.id}"/>
                                             <f:param name="versionNumberList" value="#{studyPage.studyUI.study.releasedVersion.versionNumber},#{studyPage.studyUI.study.latestVersion.versionNumber}"/>
                                             <f:param name="actionMode" value="confirmRelease"/>
+                                            <f:param name="versionNumber" value="#{studyPage.studyUI.study.latestVersion.versionNumber}"/>
                                             <ice:outputText value="Release" nospan="true"/>
                                         </ice:outputLink>
                                         <ice:commandLink rendered="#{studyPage.studyUI.study.releasedVersion == null}" actionListener="#{studyPage.confirmReleased}" onmouseover="javascript:popupTooltip(this, &#39;#{studybundle.releaseTip}&#39;, &#39;&#39;, event);" onmouseout="javascript:hideTooltip();">

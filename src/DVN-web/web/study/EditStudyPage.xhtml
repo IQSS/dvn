@@ -84,7 +84,7 @@
         <ice:inputHidden id="studyId" value="#{EditStudyPage.studyId}"/>
 
         <style type="text/css">
-            .dvnEditStudyHelpBlock {position: relative;}
+            .dvnMsgBlockRound {position: relative;}
             .dvnEditStudyHelpBlock .dvnCloseHelpBlock {display: block; position: absolute; top: 0; right: 12px;}
 			.dvnEditStudyHelpBlock .dvnEditStudyHelp {display: block; padding-top: .5em;}
         </style>
@@ -116,6 +116,9 @@
                         jQuery('.dvnEditStudyHelpBlock').animate({height:'26px'},400,function() {jQuery('.dvnInformationMessage').css('background-image','url(/dvn/resources/images/icon_information.18.png)')});
                         jQuery('.dvnCloseHelpBlock').children('span.iceOutTxt').text('Open Help [+]');
               };
+
+
+              jQuery(".dvnstudystatusversionnote").truncate({max_length: 250});
 
           });
           // ]]>

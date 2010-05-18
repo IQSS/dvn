@@ -69,6 +69,7 @@ div.dvn_navblockNetwork{background:#dadee0;border-top:2px solid #c55b28}
 /* HELP-INFO MSG BLOCK */
 div.dvnMsgBlockContainer{text-align:left;display:table-cell;vertical-align:middle;}
 div.dvnMsgBlockContainer p{background:transparent;margin:1em 0 1em 58px}
+div.dvnMsgBlockContainer ul{margin:1em 0 1em 58px}
 div.dvnInformationMessage{max-width:900px;width:80%;margin:0 auto 1em;background:url(/dvn/resources/images/icon_information.png) #bfdcf1 4px no-repeat}
 div.dvnSuccessMessage{max-width:900px;width:80%;margin:0 auto 1em;background:url(/dvn/resources/images/icon_success.png) #cee6bb 4px no-repeat}
 div.dvnSuccessMessage div.dvnMsgBlockContainer{}

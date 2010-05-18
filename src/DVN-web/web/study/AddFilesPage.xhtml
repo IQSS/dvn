@@ -5,6 +5,7 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:dvn="/WEB-INF/tlds/dvn-components"
       xmlns:ice="http://www.icesoft.com/icefaces/component">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -13,6 +14,7 @@
   <gui:composition template="/template.xhtml">
     <gui:param name="pageTitle" value="#{bundlePageInfo.addFilesTitle} - #{VDCRequest.dataversePageTitle}"/>
     <gui:define name="body">
+
       <script type="text/javascript">
           // <![CDATA[
           // functions to work with category selection note a few assumptions that these functions have:
@@ -57,13 +59,50 @@
         </div>
         <div class="dvn_sectionTitle">
           <ice:outputText value="#{bundlePageInfo.addFilesTitle}"/>
-        </div>
+        </div>                  
         <div class="dvn_sectionBox">
           <div class="dvn_margin12">
             <ice:form id="form1">
+                <style type="text/css">
+                    .dvnstudytitleblock {overflow: hidden;}
+                    .dvnstudytitlefloat {padding-right: 340px; text-align: left;}
+                    span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; font-size:1.35em !important;}
+                    .dvnstudyversioninfo {}
+                    .dvnstudyversioninfo span.iceOutTxt {color:#A9A9A9; line-height: 1.48; font-size:.95em !important;}
+                    .dvnstudystatusbox{margin: 0; padding: 2px 8px; font-weight: bold; line-height:24px !important;}
+                    .dvnstudystatusbox div{margin-top:4px; line-height:18px !important;}
+                    .dvnstudystatusreview{background: #ececec; color: #526F76;}
+                    .dvnstudystatusdraft{background: #CFDDEA; color: #526F76;}
+                    .dvnstudystatuslabel{text-transform:uppercase;}
+                    .dvnstudystatusreleasedver{font-weight: normal;color:#C55B28;}
+                    .dvnstudystatusnoreleasedver{color:#820024;}
+                    .dvnstudystatusversionnote{font-weight:normal;}
+                </style>
               <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
               <ice:inputHidden id="studyId" value="#{AddFilesPage.study.id}"/>
               <input type="hidden" name="pageName" value="AddFilesPage"/>
+ 
+             <div class="dvnstudytitlefloat">
+                    <ice:outputText styleClass="dvnstudytitle" value="#{AddFilesPage.studyUI.metadata.title}" rendered="#{AddFilesPage.study.id != null}"/>
+                    <div jsfc="ice:panelGroup" styleClass="dvnstudyversioninfo" rendered="#{(AddFilesPage.studyUI.studyVersion.released)}">
+                        <ice:outputText value="Version: #{AddFilesPage.studyUI.studyVersion.versionNumber}"/> <ice:outputText value="&#8211; Released: #{AddFilesPage.studyUI.studyVersion.releaseTime}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup" styleClass="dvnstudyversioninfo">
+                        <ice:outputText value="#{AddFilesPage.studyUI.study.globalId}"/> <ice:outputText value="#{AddFilesPage.studyUI.metadata.UNF}" rendered="#{!empty AddFilesPage.studyUI.metadata.UNF}"/>
+                    </div>
+
+                    <div jsfc="ice:panelGroup" styleClass="dvnstudystatusbox #{AddFilesPage.studyUI.studyVersion.inReview ? 'dvnstudystatusreview' : '' or AddFilesPage.studyUI.studyVersion.draft ? 'dvnstudystatusdraft' : ''}" rendered="#{!(AddFilesPage.studyUI.studyVersion.released)}">
+                        <ice:outputText styleClass="dvnstudystatuslabel" value="In Review " rendered="#{AddFilesPage.studyUI.studyVersion.inReview}"/>
+                        <ice:outputText styleClass="dvnstudystatuslabel" value="Draft " rendered="#{AddFilesPage.studyUI.studyVersion.draft}"/>
+                        <ice:outputText value="Study Version: #{AddFilesPage.studyUI.studyVersion.versionNumber}"/>
+                        <ice:outputText nospan="true" rendered="#{!empty AddFilesPage.studyUI.studyVersion.createTime}"><br/></ice:outputText>
+                        <ice:outputText value="Created: #{AddFilesPage.studyUI.studyVersion.createTime} &#8211; Last Updated: #{AddFilesPage.studyUI.studyVersion.lastUpdateTime}"/>
+                        <ice:outputText nospan="true" rendered="#{!empty AddFilesPage.studyUI.studyVersion.versionNote}"><br/></ice:outputText>
+                        <ice:outputText value="Study Version Notes: " rendered="#{!empty AddFilesPage.studyUI.studyVersion.versionNote}"/>
+                        <ice:outputText styleClass="dvnstudystatusversionnote" value="#{AddFilesPage.studyUI.studyVersion.versionNote}" rendered="#{!empty AddFilesPage.studyUI.studyVersion.versionNote}"/>
+                    </div>
+             </div>
+                <br/>
               <ice:panelGroup id ="inputFile" style="dvnAddFilesInputBlock">
                 <ice:inputFile id="inputFileComponent"
                                autoUpload="true"

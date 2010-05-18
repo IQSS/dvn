@@ -83,23 +83,20 @@
               <input type="hidden" name="pageName" value="AddFilesPage"/>
  
              <div class="dvnstudytitlefloat">
-                    <ice:outputText styleClass="dvnstudytitle" value="#{AddFilesPage.studyUI.metadata.title}" rendered="#{AddFilesPage.study.id != null}"/>
-                    <div jsfc="ice:panelGroup" styleClass="dvnstudyversioninfo" rendered="#{(AddFilesPage.studyUI.studyVersion.released)}">
-                        <ice:outputText value="Version: #{AddFilesPage.studyUI.studyVersion.versionNumber}"/> <ice:outputText value="&#8211; Released: #{AddFilesPage.studyUI.studyVersion.releaseTime}"/>
-                    </div>
+                    <ice:outputText styleClass="dvnstudytitle" value="#{AddFilesPage.studyVersion.metadata.title}"/>
                     <div jsfc="ice:panelGroup" styleClass="dvnstudyversioninfo">
-                        <ice:outputText value="#{AddFilesPage.studyUI.study.globalId}"/> <ice:outputText value="#{AddFilesPage.studyUI.metadata.UNF}" rendered="#{!empty AddFilesPage.studyUI.metadata.UNF}"/>
+                        <ice:outputText value="#{AddFilesPage.study.globalId}"/> <ice:outputText value="#{AddFilesPage.studyVersion.metadata.UNF}" rendered="#{!empty AddFilesPage.studyVersion.metadata.UNF}"/>
                     </div>
-
-                    <div jsfc="ice:panelGroup" styleClass="dvnstudystatusbox #{AddFilesPage.studyUI.studyVersion.inReview ? 'dvnstudystatusreview' : '' or AddFilesPage.studyUI.studyVersion.draft ? 'dvnstudystatusdraft' : ''}" rendered="#{!(AddFilesPage.studyUI.studyVersion.released)}">
-                        <ice:outputText styleClass="dvnstudystatuslabel" value="In Review " rendered="#{AddFilesPage.studyUI.studyVersion.inReview}"/>
-                        <ice:outputText styleClass="dvnstudystatuslabel" value="Draft " rendered="#{AddFilesPage.studyUI.studyVersion.draft}"/>
-                        <ice:outputText value="Study Version: #{AddFilesPage.studyUI.studyVersion.versionNumber}"/>
-                        <ice:outputText nospan="true" rendered="#{!empty AddFilesPage.studyUI.studyVersion.createTime}"><br/></ice:outputText>
-                        <ice:outputText value="Created: #{AddFilesPage.studyUI.studyVersion.createTime} &#8211; Last Updated: #{AddFilesPage.studyUI.studyVersion.lastUpdateTime}"/>
-                        <ice:outputText nospan="true" rendered="#{!empty AddFilesPage.studyUI.studyVersion.versionNote}"><br/></ice:outputText>
-                        <ice:outputText value="Study Version Notes: " rendered="#{!empty AddFilesPage.studyUI.studyVersion.versionNote}"/>
-                        <ice:outputText styleClass="dvnstudystatusversionnote" value="#{AddFilesPage.studyUI.studyVersion.versionNote}" rendered="#{!empty AddFilesPage.studyUI.studyVersion.versionNote}"/>
+                    <div jsfc="ice:panelGroup" styleClass="dvnstudystatusbox #{AddFilesPage.studyVersion.inReview ? 'dvnstudystatusreview' : '' or AddFilesPage.studyVersion.draft ? 'dvnstudystatusdraft' : ''}">
+                        <ice:outputText styleClass="dvnstudystatuslabel" value="In Review " rendered="#{AddFilesPage.studyVersion.inReview}"/>
+                        <ice:outputText styleClass="dvnstudystatuslabel" value="Draft " rendered="#{AddFilesPage.studyVersion.draft}"/>
+                        <ice:outputText value="Study Version: #{AddFilesPage.studyVersion.versionNumber}"/>
+                        <ice:outputText nospan="true"><br/></ice:outputText>
+                        <ice:outputText value="Created: #{AddFilesPage.studyVersion.createTime} - Last Updated: #{AddFilesPage.studyVersion.lastUpdateTime}" rendered="#{!empty AddFilesPage.studyVersion.lastUpdateTime}"/>
+                        <ice:outputText value="Created: &lt;i&gt;Draft study version is not created until the form is saved&lt;/i&gt;" rendered="#{null == AddFilesPage.studyVersion.lastUpdateTime}" escape="false"/>
+                        <ice:outputText nospan="true" rendered="#{!empty AddFilesPage.studyVersion.versionNote}"><br/></ice:outputText>
+                        <ice:outputText value="Study Version Notes: " rendered="#{!empty AddFilesPage.studyVersion.versionNote}"/>
+                        <ice:outputText styleClass="dvnstudystatusversionnote" value="#{AddFilesPage.studyVersion.versionNote}" rendered="#{!empty AddFilesPage.studyVersion.versionNote}"/>
                     </div>
              </div>
                 <br/>

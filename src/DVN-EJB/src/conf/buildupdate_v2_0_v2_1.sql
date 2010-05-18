@@ -114,6 +114,7 @@ update studyversion set releasetime = lastupdatetime where versionstate='RELEASE
 -- set contributor setting booleans
 update vdc set allowcontributorseditall = false;
 update vdc set allowregistereduserstocontribute = false;
+update vdc set allowregistereduserstocontribute = true where allowcontributorrequests = true;
 
 --
 -- Page authorization change for contributor settings

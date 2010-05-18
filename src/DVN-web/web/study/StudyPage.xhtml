@@ -907,7 +907,7 @@ jQuery(document).ready(function(){
                                                                                 <ice:outputLink rendered="#{studyFileUI.tabularDataFile}" value="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/SubsettingPage.xhtml?dtId=#{studyFileUI.studyFile.dataTable.id}&amp;versionNumber=#{studyPage.studyUI.studyVersion.versionNumber}">
                                                                                     <span>Tabular Data</span>
                                                                                 </ice:outputLink>
-                                                                                <ice:outputLink rendered="#{studyFileUI.networkDataFile}" value="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/NetworkDataAnalysisPage.xhtml?fileId=#{studyFileUI.studyFile.id}">
+                                                                                <ice:outputLink rendered="#{studyFileUI.networkDataFile}" value="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/NetworkDataAnalysisPage.xhtml?fileId=#{studyFileUI.studyFile.id}&amp;versionNumber=#{studyPage.studyUI.studyVersion.versionNumber}">
                                                                                     <span>Network Data</span>
                                                                                 </ice:outputLink>
                                                                             </ice:column>

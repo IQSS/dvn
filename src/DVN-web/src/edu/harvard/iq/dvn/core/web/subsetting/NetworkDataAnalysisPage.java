@@ -15,6 +15,7 @@ import edu.harvard.iq.dvn.core.study.DataVariable;
 import edu.harvard.iq.dvn.core.study.NetworkDataFile;
 import edu.harvard.iq.dvn.core.study.StudyFileServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
+import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.util.FileUtil;
 import edu.harvard.iq.dvn.core.util.StringUtil;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
@@ -64,6 +65,8 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
     NetworkDataServiceLocal networkDataService;
 
     private Long fileId;
+    private Long versionNumber;
+    private String studyTitle;
     private NetworkDataFile file;
     private String rWorkspace;
 
@@ -99,12 +102,25 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
 
         try {
             fileId = Long.parseLong( getRequestParam("fileId") );
-            file = (NetworkDataFile) studyFileService.getStudyFile(fileId);
+            file = (NetworkDataFile) studyFileService.getStudyFile(fileId);           
+            versionNumber = getVDCRequestBean().getStudyVersionNumber();
+            
+            if (versionNumber!=null) {
+                StudyVersion sv = file.getStudy().getStudyVersionByNumber(versionNumber);
+                if (sv == null) {
+                    redirect("/faces/IdDoesNotExistPage.xhtml?type=Study%20Version");
+                    return;
+                }
+                studyTitle = sv.getMetadata().getTitle();
+            } else {
+                studyTitle = file.getStudy().getReleasedVersion().getMetadata().getTitle();
+            }
+            
         } catch (Exception e) { // id not a long, or file is not a NetworkDataFile (TODO: redirect to a different page if not network data file)
             redirect("/faces/IdDoesNotExistPage.xhtml?type=File");
             return;
         }
-
+        
         //init workspace and page components
         try {
             Context ctx = new InitialContext();
@@ -209,10 +225,28 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
         this.fileId = fileId;
     }
 
+    public Long getVersionNumber() {
+        return versionNumber;
+    }
+
+    public void setVersionNumber(Long versionNumber) {
+        this.versionNumber = versionNumber;
+    }
+
+
     public String getActionType() {
         return actionType;
     }
 
+    public String getStudyTitle() {
+        return studyTitle;
+    }
+
+    public void setStudyTitle(String studyTitle) {
+        this.studyTitle = studyTitle;
+    }
+
+    
     public void setActionType(String actionType) {
         this.actionType = actionType;
     }

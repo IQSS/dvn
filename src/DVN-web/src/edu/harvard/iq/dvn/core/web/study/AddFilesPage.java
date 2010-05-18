@@ -68,6 +68,7 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
     private Long studyId = null;
     private Study study;
     private StudyVersion studyVersion;
+    private StudyUI studyUI;
 
     private List<StudyFileEditBean> fileList = new ArrayList();
 
@@ -139,7 +140,13 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
     public void setVersionNotesPopup(VersionNotesPopupBean versionNotesPopup) {
         this.versionNotesPopup = versionNotesPopup;
     }
+    public StudyUI getStudyUI() {
+        return studyUI;
+    }
 
+    public void setStudyUI(StudyUI studyUI) {
+        this.studyUI = studyUI;
+    }
 
     public void init() {
         super.init();
@@ -151,6 +158,8 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
             sessionId = FacesContext.getCurrentInstance().getExternalContext().getSession(false).toString();
             study = studyService.getStudy(studyId);
             studyVersion = study.getEditVersion();
+            Long versionNumber = studyService.getStudy(this.studyId).getLatestVersion().getVersionNumber();
+            studyUI = new StudyUI(studyService.getStudyVersion(studyId, versionNumber), getVDCSessionBean().getUser(), true);
 
             // determines labels already in use
             for (FileMetadata fmd : studyVersion.getFileMetadatas()) {

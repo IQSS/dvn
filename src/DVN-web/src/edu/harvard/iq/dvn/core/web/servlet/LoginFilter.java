@@ -147,14 +147,35 @@ public class LoginFilter implements Filter {
         // with a forward isntead; that way the user can fix the issue in the URL and easily try again
         if ( isViewStudyPage(pageDef) || isEditStudyPage(pageDef) || isVersionDiffPage(pageDef) ) {
             Long studyId = determineStudyId(pageDef, httpRequest);
-            Long[] versionDiffNumbers = VDCRequestBean.parseVersionNumberList(httpRequest);
-            if ( (isVersionDiffPage(pageDef) && versionDiffNumbers ==null)) {
-                 String redirectURL = httpRequest.getContextPath();
-                        if (currentVDC!=null) {
-                            redirectURL+="/dv/"+currentVDC.getAlias();
-                        }
-                    httpResponse.sendRedirect(redirectURL + "/faces/NotFoundPage.xhtml" );
+            
+            if (isVersionDiffPage(pageDef)) {
+                Long[] versionDiffNumbers = VDCRequestBean.parseVersionNumberList(httpRequest);
+                if (versionDiffNumbers == null || studyId==null) {
+                    String redirectURL = httpRequest.getContextPath();
+                    if (currentVDC != null) {
+                        redirectURL += "/dv/" + currentVDC.getAlias();
+                    }
+                    httpResponse.sendRedirect(redirectURL + "/faces/NotFoundPage.xhtml");
                     return;
+                } else {
+                    try {
+                        // Get the studyVersions to test that the versionNumbers exist for this study.
+                        // If they don't exist, an EJBException will be thrown.
+                        StudyVersion sv1 = studyService.getStudyVersion(studyId, versionDiffNumbers[0]);
+                        StudyVersion sv2 = studyService.getStudyVersion(studyId, versionDiffNumbers[1]);
+                    } catch (EJBException e) {
+                        if (e.getCause() instanceof IllegalArgumentException) {
+                            String redirectURL = httpRequest.getContextPath();
+                            if (currentVDC != null) {
+                                redirectURL += "/dv/" + currentVDC.getAlias();
+                            }
+                            httpResponse.sendRedirect(redirectURL + "/faces/IdDoesNotExistPage.xhtml");
+                            return;
+                        } else {
+                            throw e;
+                        }
+                    }
+                }
             } else if (studyId!=null) {
                 try {
                     String versionNumberParam = httpRequest.getParameter("versionNumber");
@@ -163,11 +184,9 @@ public class LoginFilter implements Filter {
                         Long versionNumber = new Long(versionNumberParam);
                         StudyVersion sv = studyService.getStudyVersion(studyId, versionNumber);
 
-                    } else if (versionDiffNumbers != null) {
-                        StudyVersion sv1 = studyService.getStudyVersion(studyId, versionDiffNumbers[0]);
-                        StudyVersion sv2 = studyService.getStudyVersion(studyId, versionDiffNumbers[1]);
                     } else {
-
+                        // Get the study to make sure that the studyId exists.
+                        // If it doesn't exist, and EJBException will be thrown.
                         Study study = studyService.getStudy(studyId);
 
                     }

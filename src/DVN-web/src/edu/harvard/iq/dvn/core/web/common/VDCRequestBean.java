@@ -28,6 +28,7 @@ package edu.harvard.iq.dvn.core.web.common;
 import edu.harvard.iq.dvn.core.admin.PageDef;
 import edu.harvard.iq.dvn.core.admin.PageDefServiceLocal;
 import edu.harvard.iq.dvn.core.util.PropertyUtil;
+import edu.harvard.iq.dvn.core.util.StringUtil;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCNetwork;
 import edu.harvard.iq.dvn.core.web.StudyListing;
@@ -124,17 +125,20 @@ public class VDCRequestBean extends VDCBaseBean implements java.io.Serializable 
     public static Long[] parseVersionNumberList(HttpServletRequest request) {
         String strList = VDCBaseBean.getParamFromRequestOrComponent("versionNumberList", request);
         Long[] versionNumbers = null;
-        if (strList != null) {
+        if (!StringUtil.isEmpty(strList)) {
             String[] versionNumTokens = strList.split(",");
             versionNumbers = new Long[2];
            
+            try {
+                for (int i = 0; i < versionNumTokens.length && i < 2; i++) {
+                    if (versionNumTokens[i] != null) {
 
-            for (int i = 0; i < versionNumTokens.length && i < 2; i++) {
-                if (versionNumTokens[i] != null) {
-                   
-                    versionNumbers[i] = new Long(versionNumTokens[i]);
-                    
+                        versionNumbers[i] = new Long(versionNumTokens[i]);
+
+                    }
                 }
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException("Cannot parse versionNumberList, string=" + strList + ", request = " + request);
             }
         }
         return versionNumbers;

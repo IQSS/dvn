@@ -2130,7 +2130,7 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
                             <!-- note that the Javascript functions currently depends on the placement and ids of these fields (and the dropdown box;
                                                   changing them may require corresponding changes in the Javascript  -->
                             <ice:selectBooleanCheckbox id="catCheckbox" onclick="updateCategory(this);"/>
-                            <ice:inputText id="catTextField" size="26" value="#{file.fileMetadata.category}" onfocus="deselectCategory(this)"/>
+                            <ice:inputText id="catTextField" size="26" value="#{file.fileMetadata.category}" onfocus="deselectCategory(this);"/>
                           </div>
                           <f:facet name="header">
                             <div jsfc="ice:panelGroup" id="catColPanelGroup">

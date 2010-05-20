@@ -10,13 +10,10 @@
       xmlns:dvn="/WEB-INF/tlds/dvn-components">
 <head></head>
 <body>
-    <ice:form id="StudyVersionNotesPopup" rendered="#{VersionNotesPopupBean.showPopup}">
-        <!--<ice:form id="StudyVersionNotesPopup" rendered="true">-->
-        <!-- version notes popup -->
-        <!--visible="#{studyVersionDifferencesPage.showVersionNotesPopup}"-->
+    <ice:form id="StudyVersionNotesPopup">
         <ice:panelPopup id="versionNotesPopup"
                         draggable="false"
-                        visible="#{VersionNotesPopupBean.showPopup }"
+                        rendered="#{VersionNotesPopupBean.showPopup }"
                         autoCentre="true"
                         modal="true">
             <f:facet name="header">

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:gui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:ice="http://www.icesoft.com/icefaces/component">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+  <gui:composition template="/template.xhtml">
+    <gui:param name="pageTitle" value="#{bundlePageInfo.oaiSetsTitle} - #{VDCRequest.dataversePageTitle}"/>
+    <gui:define name="body">
+      <ice:form id="form1">
+        <div class="dvn_section">
+          <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
+            <div class="dvnMsgBlockContainer">
+              <ice:outputText value="#{bundlePageInfo.oaiSetsHelp}" escape="false"/>
+            </div>
+          </div>
+          <div class="dvn_sectionTitle">
+            <ice:outputText value="#{bundlePageInfo.oaiSetsTitle}"/>
+          </div>
+          <div class="dvnManageTableTop">
+            <div class="dvnManageTableCreateLink">
+              <ice:outputLink value="/dvn/faces/networkAdmin/EditOAISetPage.xhtml">
+                <ice:outputText value="Create OAI Harvesting Set"/>
+              </ice:outputLink>
+            </div>
+          </div>
+          <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
+                         binding="#{OAISetsPage.dataTable}" id="dataTable1"
+                         styleClass="dvnManageTable" columnClasses="vdcColPadded, vdcColPadded" headerClass="list-header-left"
+                         rowClasses="list-row-even,list-row-odd" value="#{OAISetsPage.oaiSets}" var="currentRow">
+            <ice:column id="column1">
+              <f:facet name="header">
+                <ice:outputText id="column1Header" value="Set Name"/>
+              </f:facet>
+              <ice:outputLink value="/dvn/faces/networkAdmin/EditOAISetPage.xhtml?oaiSetId=#{currentRow.id}">
+                <ice:outputText value="#{currentRow.name}"/>
+              </ice:outputLink>
+            </ice:column>
+            <ice:column id="column2">
+              <f:facet name="header">
+                <ice:outputText id="column2Header" value="Spec"/>
+              </f:facet>
+              <ice:outputText value="#{currentRow.spec}"/>
+            </ice:column>
+            <ice:column id="column3">
+              <f:facet name="header">
+                <ice:outputText id="column3Header" value="Query Definition"/>
+              </f:facet>
+              <ice:outputText value="#{currentRow.definition}"/>
+            </ice:column>
+            <ice:column id="column4">
+              <f:facet name="header">
+                <ice:outputText id="column4Header" value="Description"/>
+              </f:facet>
+              <ice:outputText value="#{currentRow.description}"/>
+            </ice:column>
+            <ice:column id="column5">
+              <f:facet name="header">
+                <ice:outputText value="Delete"/>
+              </f:facet>
+              <ice:commandLink actionListener="#{OAISetsPage.deleteSet}">
+                <ice:outputText value="Delete Set"/>
+              </ice:commandLink>
+            </ice:column>
+          </ice:dataTable>
+        </div>
+      </ice:form>
+    </gui:define>
+  </gui:composition>
+</body>
+</html>

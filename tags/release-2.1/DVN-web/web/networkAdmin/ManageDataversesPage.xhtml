@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:gui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:ice="http://www.icesoft.com/icefaces/component"
+      xmlns:dvn="/WEB-INF/tlds/dvn-components">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    </head>
+    <body>
+        <gui:composition template="/template.xhtml">
+        <gui:param name="pageTitle" value="#{bundlePageInfo.manageDvsTitle} - #{VDCRequest.dataversePageTitle}"/>
+        <gui:define name="body">
+            <script type="text/javascript">
+          // <![CDATA[
+            function setHiddenValues(alphaKey) {
+                document.getElementById('manageDataversesForm:alphaCharacter').value = arguments[0];
+              }
+           // ]]>
+         </script>
+        <ice:form id="manageDataversesForm">
+             <ice:inputHidden  binding="#{manageDataversesPage.hiddenAlphaCharacter}"
+                                    id="alphaCharacter"
+                                    valueChangeListener="#{manageDataversesPage.changeAlphaCharacter}"
+                                    />
+        <div class="dvn_section">
+            <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
+                <div class="dvnMsgBlockContainer">
+                    <ice:outputText value="#{bundlePageInfo.manageDvsHelp}" escape="false"/>
+                </div>
+            </div>
+            <div class="dvn_sectionTitle">
+                <ice:outputText value="#{bundlePageInfo.manageDvsTitle}"/>
+            </div>
+          <div jsfc="ice:panelGroup" styleClass="dvnManageTableTop">
+                <div jsfc="ice:panelGroup" styleClass="dvnHmpgGroupAlphaSortBlock" rendered="#{VDCRequest.currentVDC == null}">
+                    <ul class="dvnAlphaBrowseBlock">
+                        <gui:fragment rendered="#{(manageDataversesPage.vdcUIList.alphaCharacter == '' or manageDataversesPage.vdcUIList.alphaCharacter == null)}">
+                            <li class="dvnAlphaBrowseSelected" onmouseover="this.className='dvnAlphaBrowseHover'" onmouseout="this.className='dvnAlphaBrowseSelected'">
+                                <ice:commandLink  onclick="setHiddenValues('All');">
+                                        <ice:outputText value="ALL"/>
+                                </ice:commandLink>
+                            </li>
+                        </gui:fragment>
+                        <gui:fragment rendered="#{(manageDataversesPage.vdcUIList.alphaCharacter != '' and manageDataversesPage.vdcUIList.alphaCharacter != null)}">
+                            <li class="dvnAlphaBrowse" onmouseover="this.className='dvnAlphaBrowseHover'" onmouseout="this.className='dvnAlphaBrowse'">
+                                <ice:commandLink  onclick="setHiddenValues('All');">
+                                        <ice:outputText value="ALL"/>
+                                </ice:commandLink>
+                            </li>
+                        </gui:fragment>
+                        <gui:repeat value="#{manageDataversesPage.alphaCharacterList}"
+                                    var="item">
+                            <gui:fragment rendered="#{(manageDataversesPage.vdcUIList.alphaCharacter == item)}">
+                                <li class="dvnAlphaBrowseSelected" onmouseover="this.className='dvnAlphaBrowseHover'" onmouseout="this.className='dvnAlphaBrowseSelected'">
+                                    <ice:commandLink onclick="setHiddenValues(document.getElementById('#{item}');">
+                                        <ice:outputText value="#{item}"/>
+                                        <f:attribute name="groupId" value="#{item.id}"/>
+                                        <f:attribute name="alphaCharacter" value="#{item}"/>
+                                    </ice:commandLink>
+                                </li>
+                            </gui:fragment>
+                            <gui:fragment rendered="#{(manageDataversesPage.vdcUIList.alphaCharacter != item)}">
+                                <li class="dvnAlphaBrowse" onmouseover="this.className='dvnAlphaBrowseHover'" onmouseout="this.className='dvnAlphaBrowse'">
+                                    <ice:commandLink onclick="setHiddenValues('#{item}');">
+                                        <ice:outputText value="#{item}"/>
+                                        <f:attribute name="groupId" value="#{item.id}"/>
+                                        <f:attribute name="alphaCharacter" value="#{item}"/>
+                                    </ice:commandLink>
+                                </li>
+                            </gui:fragment>
+                        </gui:repeat>
+                    </ul>
+                </div>
+                <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="2" id="gridPanel2"
+                               styleClass="dvnHmpgGroupTableTop"
+                               columnClasses="dvnHmpgGroupTotals, dvnPaginatorWrap">
+                    <div jsfc="ice:panelGroup">
+                        <img class="dvn_icon" src="/dvn/resources/images/icon_warning.18.png" alt=""/>
+                        <ice:outputText value=" Indicates a dataverse is not released."/>
+                    </div>
+                    <div jsfc="ice:panelGroup" styleClass="dvnPaginatorFloatRight">
+                        <ice:dataPaginator for="dataverseList"
+                                           binding="#{manageDataversesPage.vdcUIList.paginator}"
+                                           id="dataScroller"
+                                           paginator="true" fastStep="3"
+                                           paginatorMaxPages="4"
+                                           renderFacetsIfSinglePage="false"
+                                           styleClass="dvnPaginatorRight">
+                            <f:facet name="first">
+                                <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-first.gif" title="First Page"/>
+                            </f:facet>
+                            <f:facet name="fastrewind">
+                                <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-fr.gif" title="Fast Backward"/>
+                            </f:facet>
+                            <f:facet name="previous">
+                                <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-previous.gif" title="Previous"/>
+                            </f:facet>
+                            <f:facet name="next">
+                                <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-next.gif" title="Previous"/>
+                            </f:facet>
+                            <f:facet name="fastforward">
+                                <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-ff.gif" title="Fast Forward"/>
+                            </f:facet>
+                            <f:facet name="last">
+                                <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-last.gif" title="Previous"/>
+                            </f:facet>
+                        </ice:dataPaginator>
+                    </div>
+                </ice:panelGrid>
+            </div>
+            <div jsfc="ice:panelGroup">
+                <div jsfc="ice:panelGroup" styleClass="dvnManageTableEmpty" rendered="#{empty(manageDataversesPage.vdcUIList.vdcUIList)}">
+                    <ice:outputText styleClass="dvnManageTableEmptyMessage" value="There are no results to display. Select &#34;All&#34; or another letter to continue."/>
+                </div>
+                <ice:dataTable id="dataverseList" width="100%"
+                               columnWidths="20%,20%,10%,10%,10%,10%,10%,10%,10%"
+                               headerClass="groupRow"
+                               rendered="#{!empty(manageDataversesPage.vdcUIList.vdcUIList)}"
+                               rowClasses="evenRow oddRow" rows="10"
+                               styleClass="dvnManageTable"
+                               sortColumn="#{manageDataversesPage.vdcUIList.sortColumnName}"
+                               sortAscending="#{manageDataversesPage.vdcUIList.ascending}"
+                               value="#{manageDataversesPage.vdcUIList.vdcUIList}"
+                               var="item">
+                <!-- name number -->
+                <f:facet name="header">
+                </f:facet>
+                <ice:column>
+                <f:facet name="header">
+                    <ice:commandSortHeader
+                        columnName="#{manageDataversesPage.vdcUIList.nameColumnName}"
+                        arrow="true">
+                    <ice:outputText value="#{manageDataversesPage.vdcUIList.nameColumnName}"/>
+                    </ice:commandSortHeader>
+                </f:facet>
+                <ice:outputLink id="dataverse_link" value="/dvn/dv/#{item.vdc.alias}">
+                    <ice:outputText value="#{item.name}"
+                        styleClass="#{(item.vdc.restricted) ? 'dvnAddClassificationDvNotReleased' : 'dvnAddClassificationDvReleased'}" />
+                </ice:outputLink>
+                </ice:column>
+                <!-- Affiliation -->
+                <ice:column>
+                <f:facet name="header">
+                    <ice:commandSortHeader
+                        columnName="#{manageDataversesPage.vdcUIList.affiliationColumnName}"
+                        arrow="true">
+                    <ice:outputText value="#{manageDataversesPage.vdcUIList.affiliationColumnName}"/>
+                    </ice:commandSortHeader>
+                </f:facet>
+                <ice:outputText value="#{item.vdc.affiliation}"/>
+                </ice:column>
+                <!-- Type -->
+                <ice:column>
+                <f:facet name="header">
+                    <ice:commandSortHeader
+                        columnName="#{manageDataversesPage.vdcUIList.typeColumnName}"
+                        arrow="true">
+                    <ice:outputText value="#{manageDataversesPage.vdcUIList.typeColumnName}"/>
+                    </ice:commandSortHeader>
+                </f:facet>
+                <ice:outputText value="#{item.type}"/>
+                </ice:column>
+                <!-- Created -->
+                <ice:column>
+                <f:facet name="header">
+                    <ice:commandSortHeader
+                        columnName="#{manageDataversesPage.vdcUIList.dateCreatedColumnName}"
+                        arrow="true">
+                    <ice:outputText value="#{manageDataversesPage.vdcUIList.dateCreatedColumnName}"/>
+                    </ice:commandSortHeader>
+                </f:facet>
+                <ice:outputText value="#{item.createdDate}"/>
+                </ice:column>
+                <!-- Creator -->
+                <ice:column>
+                <f:facet name="header">
+                    <ice:commandSortHeader
+                        columnName="#{manageDataversesPage.vdcUIList.createdByColumnName}"
+                        arrow="true">
+                    <ice:outputText value="#{manageDataversesPage.vdcUIList.createdByColumnName}"/>
+                    </ice:commandSortHeader>
+                </f:facet>
+                <ice:outputText value="#{item.creator}"/>
+                </ice:column>
+                <!-- Released -->
+                <ice:column>
+                <f:facet name="header">
+                    <ice:commandSortHeader
+                        columnName="#{manageDataversesPage.vdcUIList.dateReleasedColumnName}"
+                        arrow="true">
+                    <ice:outputText value="#{manageDataversesPage.vdcUIList.dateReleasedColumnName}"/>
+                    </ice:commandSortHeader>
+                </f:facet>
+                <ice:outputText value="#{item.releaseDate}"/>
+                </ice:column>
+                <!-- Studies -->
+                <ice:column>
+                <f:facet name="header">
+                    <ice:commandSortHeader
+                        columnName="#{manageDataversesPage.vdcUIList.ownedStudiesColumnName}"
+                        arrow="true">
+                    <ice:outputText value="#{manageDataversesPage.vdcUIList.ownedStudiesColumnName}"/>
+                    </ice:commandSortHeader>
+                </f:facet>
+                <ice:outputText value="#{item.numberOwnedStudies}"/>
+                </ice:column>
+                <!-- Last Update -->
+                <ice:column>
+                <f:facet name="header">
+                    <ice:commandSortHeader
+                        columnName="#{manageDataversesPage.vdcUIList.lastUpdatedColumnName}"
+                        arrow="true">
+                    <ice:outputText value="#{manageDataversesPage.vdcUIList.lastUpdatedColumnName}"/>
+                    </ice:commandSortHeader>
+                </f:facet>
+                <ice:outputText value="#{item.lastUpdateTime}"/>
+                </ice:column>
+                <!-- Delete -->
+                <ice:column>
+                    <f:facet name="header">
+                        <ice:outputText value="Delete"/>
+                    </f:facet>
+                    <ice:outputLink value="/dvn/faces/site/DeleteDataversePage.xhtml">
+                        <f:param name="deleteId" value="#{item.vdc.id}" />
+                        <f:param name="from" value="manageDataverses"/>
+                        <ice:outputText value="Delete"/>
+                    </ice:outputLink>
+                </ice:column>
+                </ice:dataTable>
+            </div>
+            
+        </div>
+        </ice:form>
+        </gui:define>
+        </gui:composition>
+    </body>
+</html>

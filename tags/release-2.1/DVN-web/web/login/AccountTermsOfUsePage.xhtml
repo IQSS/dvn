@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:gui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core" 
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:ice="http://www.icesoft.com/icefaces/component">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+  <gui:composition template="/template.xhtml">
+    <gui:param name="pageTitle" value="Account Terms of Use - #{VDCRequest.dataversePageTitle}"/>
+    <gui:define name="body">
+      <ice:form id="form1">
+        <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+        <input type="hidden" value="TermsOfUsePage" name="pageName"/>
+        <div jsfc="ice:panelGroup" styleClass="#{(LoginWorkflowBean.creatorWorkflow or LoginWorkflowBean.contributorWorkflow) ? 'dvn_createDvRequest dvn_section dvn_overflow' : 'dvn_section'}">
+          <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage" rendered="#{LoginWorkflowBean.plainWorkflow or LoginWorkflowBean.fileAccessWorkflow}">
+            <div class="dvnMsgBlockContainer">
+              <p><ice:outputText value="Please read and agree to the terms of use for the #{VDCRequest.vdcNetwork.name} Dataverse Network. Check the &quot;I agree and accept&quot; box and click &lt;em&gt;Continue&lt;/em&gt;." escape="false"/></p>
+            </div>
+          </div>
+          <div jsfc="ice:panelGroup" styleClass="#{(LoginWorkflowBean.creatorWorkflow or LoginWorkflowBean.contributorWorkflow) ? 'requestHeader dvn_overflow' : 'dvn_sectionTitle'}">
+            <ice:outputText value="Terms of Use" rendered="#{LoginWorkflowBean.plainWorkflow}"/>
+            <ice:outputText value="Create a New Account" rendered="#{LoginWorkflowBean.fileAccessWorkflow}"/>
+            <ice:outputText value="Create Account &lt;span&gt;&gt; Create Your Own Dataverse&lt;/span&gt;" rendered="#{LoginWorkflowBean.creatorWorkflow}" escape="false"/>
+            <ice:outputText value="Create Account &lt;span&gt;&gt; Register With Us&lt;/span&gt;" rendered="#{LoginWorkflowBean.contributorWorkflow}" escape="false"/>
+          </div>
+          <div jsfc="ice:panelGroup" rendered="#{LoginWorkflowBean.creatorWorkflow}" styleClass="requestTimeline creatorTimelineStep2">
+            <div class="requestTimelinePoint creatorWorkflowStep1"><img src="/dvn/resources/images/lrg-blue-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong class="requestWorkflowCompleted">Create Account</strong></div>
+            <div class="requestTimelinePoint creatorWorkflowStep2"><img src="/dvn/resources/images/lrg-blue-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong class="requestWorkflowCurrent">Terms of Use</strong></div>
+            <div class="requestTimelinePoint creatorWorkflowStep3"><img src="/dvn/resources/images/lrg-grey-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong>Name Dataverse</strong></div>
+            <div class="requestTimelinePoint creatorWorkflowStep4"><img src="/dvn/resources/images/lrg-grey-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong>Success!</strong></div>
+          </div>
+          <div jsfc="ice:panelGroup" rendered="#{LoginWorkflowBean.contributorWorkflow}" styleClass="requestTimeline contributorTimelineStep2">
+            <div class="requestTimelinePoint contributorWorkflowStep1"><img src="/dvn/resources/images/lrg-blue-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong class="requestWorkflowCompleted">Create Account</strong></div>
+            <div class="requestTimelinePoint contributorWorkflowStep2"><img src="/dvn/resources/images/lrg-blue-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong class="requestWorkflowCurrent">Terms of Use</strong></div>
+            <div class="requestTimelinePoint contributorWorkflowStep3"><img src="/dvn/resources/images/lrg-grey-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong>Success!</strong></div>
+          </div>
+          <div jsfc="ice:panelGroup" styleClass="#{(LoginWorkflowBean.creatorWorkflow or LoginWorkflowBean.contributorWorkflow) ? 'requestContent' : 'dvn_sectionBox'}">
+            <div jsfc="ice:panelGroup" rendered="#{LoginWorkflowBean.creatorWorkflow or LoginWorkflowBean.contributorWorkflow}" styleClass="requestContentDescLeft">
+              <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
+                <div class="dvnMsgBlockContainer">
+                  <p>
+                    <ice:outputText value="Please read and agree to the terms of use for the "/>
+                    <ice:outputText value="#{VDCRequest.vdcNetwork.name}"/>
+                    <ice:outputText value=" Dataverse Network. Check the 'I agree and accept' box and continue."/>
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div jsfc="ice:panelGroup" styleClass="#{(LoginWorkflowBean.creatorWorkflow or LoginWorkflowBean.contributorWorkflow) ? 'requestContentFormRight' : 'empty'}">
+              <div class="dvn_margin12">
+                <div class="termsAgreementBox">
+                  <ice:outputText value="#{AccountTermsOfUsePage.termsOfUse}" escape="false"/>
+                </div>
+                <div>
+                  <ice:selectBooleanCheckbox id="termsAccepted" required="true" validator="#{AccountTermsOfUsePage.validateTermsAccepted}"  value="#{AccountTermsOfUsePage.termsAccepted}"/>
+                  <ice:outputText styleClass="agreeCheckbox" value="I agree and accept these terms of use."/>
+                  <ice:message for="termsAccepted" styleClass="errorMessage"/>
+                </div>
+                <div class="dvnFormPadding dvnFormMargin">
+                  <ice:commandButton id="termsButton" value="Continue" action="#{AccountTermsOfUsePage.acceptTerms_action}"/>
+                  <ice:commandButton id="termsCancelButton" value="Cancel" immediate="true" action="home"/>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ice:form>
+    </gui:define>
+  </gui:composition>
+</body>
+</html>

@@ -1,0 +1,271 @@
+/* LOGIN */
+#dvnLoginPageWrap{padding-top:10%;width:100%;text-align:center;background:#eee}
+#dvnLoginPageWrap form{width:700px;margin:0 auto}
+#dvnLoginPageWrap div.dvnRound{width:700px;margin:0 auto;padding:1em;background:#fff;border:1px solid #6E7F90}
+#dvnLoginPageHeader{width:100%;padding:.25em 0;margin-bottom:2em;background:#dadee0;text-align:center;vertical-align:middle}
+#dvnLoginPageHeader .dvnLoginHeadingText{font-size:160% !important;color:#c55b28;text-transform:uppercase}
+.dvnLoginPageSubHeader{color:#526f76;font-size:160% !important;text-transform:uppercase}
+.dvnLoginContent{width:698px;overflow:hidden;text-align:left}
+.dvnLoginContentText{float:left;width:380px;margin-right:10px;text-align:center}
+.dvnLoginInputArea{float:right;width:300px}
+.dvnLoginInputArea p{text-align:right}
+.dvnLoginInputArea .dvnLoginFailed{display:block}
+.dvnLoginInputArea .errorMessageError{display:block;text-align:right;color:red;font-weight:700}
+.dvnLoginInputArea fieldset{border:1px solid #7f9db9;background:#f4ebc7;text-align:center}
+.dvnLoginInputArea legend{padding:0 8px;border:1px solid #7f9db9;background:#e6ebed;text-transform:uppercase}
+.dvnLoginInputArea label{margin-top:1em;padding-right:.5em}
+.dvnLoginInputArea input{margin-top:1em}
+.dvnLoginInputArea .iceCmdBtn{margin:0}
+.dvnLoginInputArea fieldset div{margin-top:1em;text-align:left}
+.dvnLoginInputArea span fieldset{margin-top:1em}
+.dvnLoginLinkBlock p{text-align:left}
+.dvnLoginContentAreaFooter{margin-top:1em;text-align:center}
+fieldset.dvnLoginPageAffiliate input.iceCmdBtn{display:block;float:right}
+/* MY OPTIONS */
+.dvnOptionsTable{width:100%}
+.dvnOptionsTable td{padding:.5em 2em;border-bottom:1px solid lightgray}
+td.dvnOptionsTableHeader{padding:.5em 1em;background:gainsboro;color:gray;text-transform:uppercase}
+.dvnOptionsTableOption{width:240px}
+span.dvnOptionsTableNote{font-size:90% !important}
+div.dvnOptionsTableLicense{padding-top:.5em}
+/* MY DATAVERSE */
+.dvnMyDataverseTableTop{border:1px solid #d9d9d9;border-bottom:0;width:100%}
+.dvnMyDataverseTableTop td{text-align:right}
+.dvnMyDataverseTableTop td div{padding:.5em .25em}
+.dvnMyDataverseTableName{width:70%;padding-bottom:3px;padding-left:4px;padding-top:3px;text-align:left;vertical-align:top}
+.dvnMyDataverseTableRole{width:30%;padding-bottom:3px;padding-left:4px;padding-top:3px;text-align:center;vertical-align:top}
+/* MANAGE + EDIT STUDY */
+.vdcStudyTemplateFormTable{width:98%;border:1px solid #6E7F90;padding:10px;margin-top:1em}
+.vdcEditStudyTable{border:0;margin:0}
+.vdcEditStudyTable tr{border-width:0 0 1px 0;padding:0}
+.vdcEditStudyTable td{border-bottom:1px solid #dadee0;border-width:0 0 1px 0;padding:4px 0}
+.vdcEditStudyTable div{border-width:0 0 0 0;padding:0}
+.vdcEditStudyTableRow table{border-width:0 0 0 0;margin:0}
+.vdcEditStudyTableRow table td{border-width:0 0 0 0;padding:0}
+.vdcEditStudyInnerTable,.vdcEditStudyInnerTable tr,.vdcEditStudyInnerTable td{border-width:0 0 0 0;padding:0;margin:0}
+span.vdcEditStudyFormatExample{display:inline}
+.vdcEditStudyTableLegend div{margin-bottom:.25em}
+.vdcEditStudyTableLegend img{vertical-align:middle}
+.vdcEditStudyTableLegend span{margin-left:.25em}
+.vdcEditStudyTableLegend span.vdcEditStudyLegendMargin{margin-right:1em}
+.vdcEditStudyFieldFloatWrap{overflow:hidden}
+.vdcEditStudyFieldFloat1{float:left}
+.vdcEditStudyFieldFloat2{float:left;margin-left:1em}
+.vdcEditStudyFieldFloat3{clear:left}
+.vdcEditStudyOuterTable,.vdcEditStudyOuterTable td{padding:0;margin:0}
+.vdcEditStudyInnerTable{margin:0}
+.vdcEditStudyInnerTable div{white-space:nowrap}
+.vdcEditStudyInnerTable textarea{width:auto}
+.vdcEditStudyInnerTable td.vdcEditFilesColA img.iceGphImg{display:inline;vertical-align:middle}
+.vdcEditStudyInnerTable td.vdcEditFilesColA span.iceOutTxt{margin-left:.5em;display:inline}
+td.vdcEditFilesColA{width:26%;padding:1em .25em;vertical-align:top}
+td.vdcEditFilesColB{width:41%;padding:1em .25em;vertical-align:top}
+td.vdcEditFilesColC{width:7%;padding:1em .25em;text-align:center}
+.vdcEditFilesHeader{font-weight:bold;text-align:left;border-right:0}
+.vdcEditFilesHeader:first-child{border-left:0}
+.vdcEditFilesHeader div.icePnlGrp span.iceOutTxt,.vdcEditFilesHeader div.icePnlGrp select.iceSelOneMnu{display:inline}
+.vdcEditStudyCol1{font-weight:400;padding:4px 0;text-align:left;vertical-align:top;width:220px;border-bottom:1px solid #dadee0}
+.vdcEditStudyCol1b{font-weight:400;padding:4px 0;text-align:left;vertical-align:top;width:220px;border-bottom:1px solid #dadee0}
+.vdcEditStudyCol2{font-weight:400;padding:4px 0;text-align:left;vertical-align:middle;white-space:normal;border-bottom:1px solid #dadee0}
+.vdcEditStudyCol3{font-weight:400;padding:4px 0;text-align:right;width:50px;vertical-align:top;border-bottom:1px solid #dadee0}
+.vdcEditStudyField{padding-top:6px;padding-bottom:6px}
+.vdcEditStudyGroupField{white-space:nowrap}
+.vdcEditStudyIconLegend{float:left;margin-left:2em}
+.dvnManageStudiesTableTop{border:1px solid #d9d9d9;border-bottom:0;width:100%}
+.dvnManageStudiesTableTop .dvnPaginatorWrap{padding:.5em 0}
+.dvnManageStudiesTableBlock{position:relative;width:100%;overflow:auto}
+.dvnManageStudiesTable{position:absolute;top:0;left:0}
+.dvnManageStudiesTable{margin-top:0}
+.dvnManageStudiesTable span.iceOutTxt{font-size:90% !important}
+.dvnManageStudiesTable th span.iceOutTxt{font-size:100% !important}
+.dvnManageStudiesTable th table td{font-size:100% !important;font-weight:700}
+.dvnManageStudiesTable tbody td.iceDatTblCol1,.dvnManageStudiesTable tbody td.iceDatTblCol2{padding:.75em}
+.dvnManageStudiesTable tbody span.iceOutTxt{display:inline;white-space:nowrap}
+.dvnManageStudiesTableEmpty{border:1px solid #d9d9d9;padding:1em;text-align:center}
+.dvnManageStudiesTableStatus{white-space:nowrap}
+.dvnManageStudiesTableStatus span.dvnManageStudiesTableStatusLabel{width:5em;display:inline-block !important;vertical-align:middle}
+.dvnManageStudiesTableStatus input.iceCmdBtn{font-size:90% !important}
+.vdcReviewCol1{padding-left:2px;padding-right:2px}
+.vdcReviewCol2{padding-left:2px;padding-right:2px;width:70px}
+.vdcReviewCol3{padding-left:2px;padding-right:2px;width:100px}
+.vdcReviewCol4{padding-left:2px;padding-right:2px;width:100px}
+.vdcReviewCol5{padding-left:2px;padding-right:2px;width:70px}
+.vdcReviewCol6{padding-left:2px;padding-right:2px;width:70px}
+/* ADD FILE */
+.dvnAddFilesOuterTable{border-left:0;border-right:0;border-bottom:0}
+.dvnAddFilesOuterTable td{padding:0;border-left:0;border-right:0;border-bottom:0}
+.dvnAddFilesOuterTable tr:first-child{border-left:0}
+.dvnAddFilesTable{margin-top:0}
+.dvnAddFilesOuterTable table.iceDatTbl{margin:0;border-collapse:collapse}
+.dvnAddFilesOuterTable table.iceDatTbl td{text-align:center;border:1px solid #dadee0}
+.dvnAddFilesTableCategory label.iceOutLbl{display:inline}
+.dvnAddFilesTableCategory select.iceSelOneMnu{display:inline}
+/* MANAGE + EDIT COLLECTIONS */
+.dvnManageCollectionsTable{width:100%;margin-top:0}
+.dvnManageCollectionsTableChild{padding-left:18px;background:url(/dvn/resources/icefaces/dvn_rime/css-images/tree_line_last_node.gif) 0 0 no-repeat}
+.dvnEditCollectionStudySelectedList{border:1px solid #dcdddf;margin:0;padding:0}
+.dvnEditCollectionStudySelectedList .iceDatTbl{margin:0;padding:0;width:100%;border-left:0px}
+.dvnEditCollectionStudySelectedList .iceDatTbl table{margin:0;padding:0;width:100%;border:0}
+.dvnEditCollectionStudySelectedList .iceDatTbl td,.dvnEditCollectionStudySelectedList .iceDatTbl div{margin:0;border:0}
+.dvnEditCollectionStudySelectedList .iceDatTbl tr{border:1px solid #ccc;border-width:0 0 1px 0}
+.dvnEditCollectionStudySelectedList .iceDatTblScrlSpr{display:none}
+.dvnEditCollectionStudyList{border:1px solid #dcdddf;margin:0;padding:0}
+.dvnEditCollectionStudyList .dvnEditCollectionStudyListSelect{padding:.25em 1em}
+.dvnEditCollectionStudyListID{width:16%}
+.dvnEditCollectionStudyListTitle{width:56%}
+.dvnEditCollectionStudyListOwner{width:28%}
+.dvnEditCollectionStudySelectionList .iceDatTbl{margin:0;border:1px solid #ccc;border-width:1px 0 0 0}
+.dvnEditCollectionStudySelectionList .iceDatTbl td,.dvnEditCollectionStudySelectionList .iceDatTbl div{margin:0;border:0}
+.dvnEditCollectionStudySelectionList .iceDatTbl tr{border:1px solid #ccc;border-width:0 0 1px 0}
+.vdcAddCollectionCol1{padding-bottom:4px;padding-left:20px;padding-top:4px;width:250px}
+.vdcAddCollectionCol2{padding-bottom:4px;padding-left:20px;padding-top:4px}
+/* MANAGE + EDIT CLASSIFICATIONS */
+.dvnManageClassificationsTable{width:100%;margin:0}
+.dvnManageClassificationsTable img{border:0}
+.dvnManageClassificationsTableTop{border:1px solid #d9d9d9;border-bottom:0;overflow:hidden}
+.dvnManageClassificationsTableTotals{float:left;width:75%;padding:.5em .25em}
+.dvnManageClassificationsTableCreateLink{float:right;width:20%;padding:.5em .25em;text-align:right}
+.dvnMngClssTableSelect{width:1%}
+.dvnMngClssTableName{width:40%}
+.dvnMngClssTableDesc{width:35%}
+.dvnMngClssTableCount{width:10%}
+.dvnMngClssTableDelete{width:10%}
+.dvnAddClassificationBlock{overflow:hidden}
+.dvnAddClassificationMessage{margin-bottom:.5em}
+.dvnAddClassificationDataverses{float:left;width:48%}
+.dvnAddClassificationSelected{float:right;width:48%}
+table.dvnAddClassificationTable table{width:100%;margin:0}
+.dvnAddClassificationTableColHeader1{width:60%}
+.dvnAddClassificationTableColHeader2{width:40%}
+span.dvnAddClassificationDvNotReleased{background:url(/dvn/resources/images/icon_warning.18.png) center right no-repeat;padding-right:22px !important}
+.dvnAddClassificationDataverses table.iceDatTbl{border:1px solid #d9d9d9}
+.dvnAddClassificationDataverses div.iceDatTblScrlSpr table{border:1px}
+.dvnAddClassificationDataverses table.iceDatTbl div.iceDatTblScrlSpr{border:0}
+.dvnAddClassificationDataverses tr.iceDatTblRow1,.dvnAddClassificationDataverses tr.iceDatTblRow2{border:0}
+.dvnAddClassificationDataverses tr.iceDatTblRow1 td,.dvnAddClassificationDataverses tr.iceDatTblRow2 td{border-left:0;border-right:0}
+.dvnAddClassificationDataverses th.iceDatTblColHdr1{border-right:0}
+.dvnAddClassificationDataverses th.iceDatTblColHdr2{border-left:1px solid #d9d9d9}
+.dvnAddClassificationDataverses tr.iceDatTblRow1 td.dvnAddClassificationDvID,.dvnAddClassificationDataverses tr.iceDatTblRow2 td.dvnAddClassificationDvID,.dvnAddClassificationDataverses tr.iceDatTblRow1 td.dvnAddClassificationDvName,.dvnAddClassificationDataverses tr.iceDatTblRow2 td.dvnAddClassificationDvName{border-right:1px solid #d9d9d9}
+.dvnAddClassificationSelected table.iceDatTbl{border:1px solid #d9d9d9}
+.dvnAddClassificationSelected div.iceDatTblScrlSpr table{border:1px}
+.dvnAddClassificationSelected table.iceDatTbl div.iceDatTblScrlSpr{border:0}
+.dvnAddClassificationSelected tr.iceDatTblRow1,.dvnAddClassificationSelected tr.iceDatTblRow2{border:0}
+.dvnAddClassificationSelected tr.iceDatTblRow1 td,.dvnAddClassificationSelected tr.iceDatTblRow2 td{border-left:0;border-right:0}
+.dvnAddClassificationSelected th.iceDatTblColHdr1{border-right:0}
+.dvnAddClassificationSelected th.iceDatTblColHdr2{border-left:1px solid #d9d9d9}
+.dvnAddClassificationSelected tr.iceDatTblRow1 td.dvnAddClassificationDvID,.dvnAddClassificationSelected tr.iceDatTblRow2 td.dvnAddClassificationDvID,.dvnAddClassificationSelected tr.iceDatTblRow1 td.dvnAddClassificationDvName,.dvnAddClassificationSelected tr.iceDatTblRow2 td.dvnAddClassificationDvName{border-right:1px solid #d9d9d9}
+.dvnAddClassificationTableColHeader1,.dvnAddClassificationTableColHeader2{border-top:0}
+.dvnAddClassificationTableColHeader1{border-left:0}
+/* REVIEW STUDY COMMENTS */
+.dvnCommentReviewTable th {text-align: center;}
+.dvnCommentReviewTable th span {white-space: nowrap !important;}
+.dvnCommentReviewCol4 span {white-space: nowrap !important;}
+.dvnCommentReviewCol6 {width: 15%; text-align: center;}
+.dvnCommentReviewCol6 a.iceOutLnk {margin-right: .5em;}
+.dvnCommentReviewCol6 a, .dvnCommentReviewCol6 span {display: inline !important;}
+/* TERMS OF USE */
+.vdcTermsUseColumn{text-align:left}
+.vdcTermsUseField{text-align:left;color:#666;font-weight:700}
+/* PERMISSIONS */
+.dvnPermissionsTable{width:100%}
+.dvnPermissionsTable td{padding:.5em 2em;border-bottom:1px solid lightgray}
+.dvnPermissionsTable td.dvnPermissionsStackedCells{border-bottom:none}
+td.dvnPermissionsTableHeader{padding:.5em 1em;background:gainsboro;color:gray;text-transform:uppercase}
+td.dvnPermissionsTableOption{width:240px;padding-top:.75em;padding-bottom:.75em;display:table-cell;vertical-align:top}
+.dvnPermissionsTable .dvnPermissionsEmpty{text-align:center}
+.dvnPermissionsTable .dvnPermissionsEmpty span.iceOutTxt{color:gray}
+.dvnPermissionsTable fieldset.iceSelOneRb-dis{border:0;padding:0;background:none}
+.dvnPermissionsTable table.iceSelOneRb-dis td{padding:0 .25em;border:0}
+.dvnPermissionsTable label.iceSelOneRb-dis-dis{font-size:90% !important}
+.dvnPermissionsTable fieldset.iceSelOneRb{border:0;padding:0;background:none}
+.dvnPermissionsTable table.iceSelOneRb td{padding:0 .25em;border:0}
+.dvnPermissionsTable label.iceSelOneRb{font-size:90% !important}
+.dvnPermissionsTable .iceDatTbl span{font-size:90% !important}
+.dvnStudyPermissionsFileDetails th:first-child{width:10%;text-align:center}
+.dvnStudyPermissionsFileDetails table.iceDatTbl{margin-top:0;border-top:1px solid #d9d9d9}
+.dvnStudyPermissionsFileDetails table.iceDatTbl,.dvnStudyPermissionsFileDetails table.iceDatTbl td.iceDatTblCol1,.dvnStudyPermissionsFileDetails table.iceDatTbl td.iceDatTblCol2,.dvnStudyPermissionsFileDetails table.iceDatTbl tr.iceDatTblRow1,.dvnStudyPermissionsFileDetails table.iceDatTbl tr.iceDatTblRow2{border-left:0;border-right:0}
+/* ADD SITE */
+.vdcAddSiteCol1{padding-bottom:4px;padding-top:4px;vertical-align:top;white-space:nowrap}
+.vdcAddSiteCol2{padding-bottom:4px;padding-left:10px;padding-top:4px;vertical-align:top}
+.vdcScrollDivTermsUse{width:400px;height:250px;overflow:auto;background-color:#eee;border-color:#CCC #990000 #990000 #CCC;border-width:1px;border-style:solid;padding:10px}
+/* HARVEST SITES */
+.dvnHarvestSitesTable{margin-top:0}
+/* CREATE DATAVERSE + CONTRIBUTOR */
+.dvn_createDvRequest{text-align:center}
+.dvn_createDvRequest .requestHeader{margin-left:auto;margin-right:auto;width:676px;color:#c55b28;font-size:160% !important;text-transform:uppercase;text-align:left}
+.dvn_createDvRequest .requestHeader .requestContentTitle{float:left;width:330px;padding:0 0 6px;color:#c55b28;font-size:100% !important;font-weight:400;text-transform:uppercase}
+.dvn_createDvRequest .requestHeader span{color:#ccc;font-size:100% !important}
+.dvn_createDvRequest .requestContentDescRight{float:left;width:324px;padding:0 10px 6px;border-left:1px solid #ccc;color:#555;text-transform:none;text-align:left}
+.dvn_createDvRequest .requestIntroSteps{margin-top:30px;margin-left:auto;margin-right:auto;width:676px}
+.dvn_createDvRequest .requestIntroStepsContributor{margin-top:30px;margin-left:auto;margin-right:auto;width:521px}
+.dvn_createDvRequest .requestIntroStepCard{position:relative;width:161px;height:170px;float:left;text-align:left}
+.dvn_createDvRequest .requestIntroStepCard h3{margin:1.1em 0 1em 2.1em !important;font-size:150% !important;font-weight:normal !important;color:#c55b28 !important;text-transform:uppercase !important}
+.dvn_createDvRequest .requestIntroStepCard p{margin:1em;font-size:124% !important;font-weight:700}
+.dvn_createDvRequest .requestIntroStepCard div.stepCardBtm{position:absolute;top:162px;left:0;width:183px;height:8px;background:#fff url(/dvn/resources/images/request-intro-rndbtm.png) no-repeat}
+.dvn_createDvRequest .contributorSuccess{position:relative;width:402px;height:170px;float:left;text-align:left}
+#requestIntroCont{margin:0 auto;width:676px;text-align:right}
+#requestIntroCont .requestIntroContLink{padding-right:28px;background:url(/dvn/resources/images/start-arrows.gif) 100% 52% no-repeat;color:#c55b28;font-size:160% !important;text-transform:uppercase}
+#requestIntroCont .requestIntroContLinkNote{font-size:90% !important;line-height:224% !important}
+.dvn_createDvRequest .requestTimeline{position:relative;margin:20px auto 60px;width:676px;height:4px;background:#035899 url(/dvn/resources/images/fourpoint-timeline.gif) no-repeat}
+.dvn_createDvRequest .requestIntroTimeline{margin-bottom:12px;background-image:none;background-color:#ccc}
+.creatorTimelineStep1{background-position:-16px 0 !important}
+.creatorTimelineStep2{background-position:-24px -4px !important}
+.creatorTimelineStep3{background-position:-53px -8px !important}
+.creatorTimelineStep4{background-position:-78px -12px !important}
+.contributorTimelineStep1{background-position:61px 0 !important}
+.contributorTimelineStep2{background-position:49px -4px !important}
+.contributorTimelineStep3{background-position:-169px -12px !important}
+.dvn_createDvRequest .requestTimelinePoint{position:absolute;top:-6px;text-align:center}
+.creatorIntroStep1{left:72px}
+.creatorIntroStep2{left:243px}
+.creatorIntroStep3{left:414px}
+.creatorIntroStep4{left:585px}
+.contributorIntroStep1{left:149px}
+.contributorIntroStep2{left:320px}
+.contributorIntroStep3{left:491px}
+.requestIntroCard1{margin-right:10px;background:#f4ebc7 url(/dvn/resources/images/request-intro-rndtop1.png) no-repeat}
+.requestIntroCard2{margin-right:10px;background:#f4ebc7 url(/dvn/resources/images/request-intro-rndtop2.png) no-repeat}
+.requestIntroCard3{margin-right:10px;background:#f4ebc7 url(/dvn/resources/images/request-intro-rndtop3.png) no-repeat}
+.requestIntroCard4{background:#f4ebc7 url(/dvn/resources/images/request-intro-rndtop4.png) no-repeat}
+.requestIntroCard4 h3{line-height:1.85}
+.creatorWorkflowStep1{left:36px}
+.creatorWorkflowStep2{left:214px}
+.creatorWorkflowStep3{left:376px}
+.creatorWorkflowStep4{left:568px}
+.contributorWorkflowStep1{left:113px}
+.contributorWorkflowStep2{left:291px}
+.contributorWorkflowStep3{left:476px}
+strong.requestWorkflowCurrent{color:#035899 !important;font-weight:bold !important}
+strong.requestWorkflowCompleted{color:#035899 !important;font-weight:bold !important}
+.dvn_createDvRequest .requestTimelinePoint strong{color:#ccc;font-weight:400;line-height:3.5}
+.dvn_createDvRequest .requestContent{margin:30px auto;width:676px;border-top:1px solid #ccc}
+.dvn_createDvRequest .requestContentDescLeft{float:left;width:228px;padding:12px 12px 12px 0;text-align:left}
+.requestContentDescLeft .dvnInformationMessage,.requestContentDescLeft .dvnSuccessMessage{width:100%}
+.dvn_createDvRequest .requestContentFormRight{float:left;width:411px;padding:0 0 20px;border-left:1px solid #ccc;text-align:left}
+.dvn_createDvRequest .requestContentFormRight span.reqContentActionTitle{color:#555;font-weight:700}
+.dvn_createDvRequest .requestContentFormRight span.agreeCheckbox{padding:0}
+.dvn_createDvRequest .requestContentFormRight td.vdcAddSiteCol1{width:34%;white-space:normal}
+.dvn_createDvRequest .requestContentFormRight textarea{width:22.5em}
+.dvn_createDvRequest .requestContinueLink{padding:2em 0 0;text-align:center}
+span.termsAgreementMessageTitle{display:block;padding-top:1em;color:#526f76;font-size:120% !important;font-weight:bold;text-transform:uppercase}
+.termsAgreementBox{margin-bottom:20px;padding:4px;width:380px;height:300px;border:1px solid #035899;overflow:scroll;overflow-x:auto}
+.requestContentSucess a{font-weight:700}
+.requestContentSucess ul{margin-left:1.5em;list-style:disc}
+.dvnCreateDvClassificationTable td span.iceOutTxt{font-size:90% !important}
+.dvnCreateDvClassificationTable td.dvnCreateDvClassificationSelectColumn{border-right:0px}
+.dvnCreateDvClassificationTableChild2{margin-left:0;padding-left:0}
+.dvnCreateDvClassificationTableChild3{margin-left:.5em;padding-left:18px !important;background:url(/dvn/resources/icefaces/dvn_rime/css-images/tree_line_last_node.gif) 0 0 no-repeat}
+table.dvnCreateDvClassificationTable div{border-top:0px}
+table.dvnCreateDvClassificationTable table{width:100%;border-top:1px solid #dcdddf}
+/* PROMOTIONAL LINKS + SEARCH BOX */
+.dvnPromotionalLinks{text-align:left}
+.dvnPromotionalLinks .dvnPromotionalLinksInstructions{padding-bottom:1em}
+.dvnPromotionalLinks .dvnPromotionalLinksInstructions img{vertical-align:bottom}
+.dvnPromotionalLinks .dvnPromotionalLinksBlock{width:100%;overflow:hidden}
+.dvnPromotionalLinks .dvnPromotionalLinksHeader{width:100%;padding:.5em 1em;background:gainsboro;color:gray;text-transform:uppercase}
+.dvnPromotionalLinks .dvnPromotionalSampleBlock{padding:1em;overflow:hidden}
+.dvnPromotionalLinks .dvnPromotionalSample{float:left;width:25.333%}
+.dvnPromotionalLinks .dvnPromotionalCode{float:left;width:36.333%}
+.dvnPromotionalLinks .dvnPromotionalTip{float:left;width:36.333%}
+.dvnPromotionalSample span,.dvnPromotionalCode span,.dvnPromotionalTip span{color:gray}
+.dvnPromotionalSample textarea,.dvnPromotionalCode textarea,.dvnPromotionalTip textarea{width:90%;border:1px solid #6e7f90;overflow:scroll}

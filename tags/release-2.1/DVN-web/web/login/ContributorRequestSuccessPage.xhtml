@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:gui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:ice="http://www.icesoft.com/icefaces/component">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+    <gui:composition template="/template.xhtml">
+        <gui:param name="pageTitle" value="Register Success - #{VDCRequest.dataversePageTitle}"/>
+        <gui:define name="body">
+            <ice:form id="contributorRequestForm">
+                <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+                <div class="dvn_createDvRequest dvn_section dvn_overflow">
+                    <div class="requestHeader dvn_overflow">
+                        <ice:outputText value="Success! &lt;span&gt;&gt; Register With Us&lt;/span&gt;" escape="false"/>
+                    </div>
+                    <div jsfc="ice:panelGroup" rendered="#{LoginWorkflowBean.contributorWorkflow}" styleClass="requestTimeline contributorTimelineStep3">
+                        <div class="requestTimelinePoint contributorWorkflowStep1"><img src="/dvn/resources/images/lrg-blue-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong class="requestWorkflowCompleted">Create Account</strong></div>
+                        <div class="requestTimelinePoint contributorWorkflowStep2"><img src="/dvn/resources/images/lrg-blue-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong class="requestWorkflowCompleted">Terms of Use</strong></div>
+                        <div class="requestTimelinePoint contributorWorkflowStep3"><img src="/dvn/resources/images/lrg-blue-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong class="requestWorkflowCurrent">Success!</strong></div>
+                    </div>
+                    <div class="requestContent">
+                        <div class="requestContentDescLeft">
+                            <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnSuccessMessage">
+                                <div class="dvnMsgBlockContainer">
+                                    <p><ice:outputText styleClass="successMessage" value="You are now registered with us!"/></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="requestContentFormRight requestContentSucess">
+                            <div class="dvn_margin12">
+                                <p><ice:outputText value="As a registered user, you can:"/></p>
+                                <ul>
+                                    
+                                    <span jsfc="ice:panelGroup" rendered="#{VDCRequest.currentVDC != null and VDCRequest.currentVDC.allowRegisteredUsersToContribute}">
+                                        <li>
+                                            <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml">
+                                                <ice:outputText value="Add studies to this dataverse"/>
+                                            </ice:outputLink>
+                                        </li>
+                                    </span>
+                                    <span jsfc="ice:panelGroup" rendered="#{VDCRequest.currentVDC == null}">
+                                        <li>
+                                            <ice:outputText value="Add studies to open and wiki dataverses, if available"/>
+                                        </li>
+                                    </span>
+
+                                    <span jsfc="ice:panelGroup" rendered="#{VDCRequest.currentVDC != null and VDCRequest.currentVDC.allowRegisteredUsersToContribute and VDCRequest.currentVDC.allowContributorsEditAll}">
+                                        <li>
+                                            <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/ManageStudiesPage.xhtml">
+                                                <ice:outputText value="Contribute to existing studies in this dataverse"/>
+                                            </ice:outputLink>
+                                        </li>
+                                    </span>
+                                    <span jsfc="ice:panelGroup" rendered="#{VDCRequest.currentVDC == null}">
+                                        <li>
+                                            <ice:outputText value="Contribute to existing studies in wiki dataverses, if available"/>
+                                        </li>
+                                    </span>
+
+                                    <span jsfc="ice:panelGroup">
+                                        <li>
+                                            <ice:outputText value="Add user comments to studies that have this option"/>
+                                        </li>
+                                    </span>
+
+                                    <span jsfc="ice:panelGroup" rendered="#{VDCRequest.vdcNetwork.allowCreateRequest}">
+                                        <li>
+                                            <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/login/CreatorRequestInfoPage.xhtml">
+                                                <ice:outputText value="Create your own dataverse"/>
+                                            </ice:outputLink>
+                                        </li>
+                                    </span>
+
+                                </ul>
+                                <p>                                    
+                                    <ice:outputText value="Go to your "/> <ice:outputLink rendered="#{VDCRequest.currentVDC == null}" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/AccountOptionsPage.xhtml?userId=#{VDCSession.loginBean.user.id}">
+                                        <ice:outputText value="account page"/>
+                                    </ice:outputLink> <ice:outputLink rendered="#{VDCRequest.currentVDC != null}" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/AccountOptionsPage.xhtml?userId=#{VDCSession.loginBean.user.id}">
+                                        <ice:outputText value="options page"/>
+                                    </ice:outputLink> <ice:outputText rendered="#{VDCRequest.currentVDC != null}" value=" in this dataverse"/> <ice:outputText value=" to see your information."/>
+                                    
+                                    <ice:outputText value="If you are interested in accessing restricted studies in this Dataverse Network, please check the data availability and terms of use of the study, or contact the dataverse administrator for more information."/>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ice:form>
+        </gui:define>
+    </gui:composition>
+</body>
+</html>

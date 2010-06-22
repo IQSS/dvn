@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:gui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:ice="http://www.icesoft.com/icefaces/component"
+      xmlns:dvn="/WEB-INF/tlds/dvn-components">
+    <head></head>
+    <body>
+        <ice:form id="StudyConfirmDeletePopup" rendered="#{MainLayoutBean.inStudyPage or MainLayoutBean.inManageStudiesPageByViewID}">
+            <!-- (universal) delete study version popup -->
+        <ice:panelPopup id="studyDeletePopup"
+                        draggable="false"
+                        visible="#{(MainLayoutBean.inStudyPage and studyPage.showStudyDeletePopup) or (MainLayoutBean.inManageStudiesPageByViewID and ManageStudiesList.showStudyDeletePopup)}"
+                        autoCentre="true"
+                        modal="true">
+                <f:facet name="header">
+                    <ice:panelGrid id="autoCentPanelGrid"
+                                   width="100%" cellpadding="0"
+                                   cellspacing="0" columns="2"
+                                   columnClasses="none,popupButton">
+                        <ice:outputText value="Delete Draft Study Version" rendered="#{MainLayoutBean.inStudyPage and studyPage.draftDeleteRequested}"/>
+                        <ice:outputText value="Delete Review Study Version" rendered="#{MainLayoutBean.inStudyPage and studyPage.reviewDeleteRequested}"/>
+                        <ice:outputText value="Permanently Destroy Study" rendered="#{MainLayoutBean.inStudyPage and studyPage.studyDestroyRequested}"/>
+                        <ice:outputText value="Delete Draft Study Version" rendered="#{MainLayoutBean.inManageStudiesPageByViewID and ManageStudiesList.draftDeleteRequested}"/>
+                        <ice:outputText value="Delete Review Study Version" rendered="#{MainLayoutBean.inManageStudiesPageByViewID and ManageStudiesList.reviewDeleteRequested}"/>
+                    </ice:panelGrid>
+                </f:facet>
+                <f:facet name="body">
+                    <ice:panelGrid id="autoCentContent"
+                                   width="100%" cellpadding="0"
+                                   cellspacing="0" columns="1"
+                                   styleClass="popupModalBody">
+                        <style type="text/css">
+                            .dvnPopupWarningMessage {background: url(/dvn/resources/images/icon_warning.png) no-repeat scroll 4px 0;}
+                            .dvnPopupMessageContainer {display:table-cell;vertical-align:middle;}
+                            .dvnPopupWarningMessage p {margin:.25em 0 1.5em 58px;}
+                            .dvnPopupWarningMessage strong {color:#820024; text-transform:uppercase;}
+                        </style>
+                            
+                        <div jsfc="ice:panelGroup" styleClass="dvnPopupWarningMessage">
+                            <div class="dvnPopupMessageContainer">
+                                <p>
+                                    <ice:outputText value="Are you sure that you want to delete this draft study version? This action is irreversible." rendered="#{MainLayoutBean.inStudyPage and studyPage.draftDeleteRequested}"/>
+                                    <ice:outputText value="Are you sure that you want to delete this review study version? This action is irreversible." rendered="#{MainLayoutBean.inStudyPage and studyPage.reviewDeleteRequested}"/>
+                                    <ice:outputText value="Are you sure that you want to &lt;strong&gt;destroy this study?&lt;/strong&gt; This action is irreversible." rendered="#{MainLayoutBean.inStudyPage and studyPage.studyDestroyRequested}" escape="false"/>
+                                    <ice:outputText value="Are you sure that you want to delete this draft study version? This action is irreversible." rendered="#{MainLayoutBean.inManageStudiesPageByViewID and ManageStudiesList.draftDeleteRequested}"/>
+                                    <ice:outputText value="Are you sure that you want to delete this review study version? This action is irreversible." rendered="#{MainLayoutBean.inManageStudiesPageByViewID and ManageStudiesList.reviewDeleteRequested}"/>
+                                </p>
+                            </div>
+                        </div>
+                        <ice:outputText value="&#34;#{studyPage.studyUI.metadata.title}&#34;, #{studyPage.studyUI.study.globalId}" rendered="#{MainLayoutBean.inStudyPage}" escape="false"/>
+                        <ice:outputText value="&#34;#{ManageStudiesList.currentStudyUI.metadata.title}&#34;, #{ManageStudiesList.currentStudyUI.study.globalId}" rendered="#{MainLayoutBean.inManageStudiesPageByViewID}" escape="false"/>
+                        <div jsfc="ice:panelGroup" styleClass="dvnFormPadding dvnFormMargin">
+                            <ice:commandButton id="autoCentPopupOk"
+                                               actionListener="#{studyPage.confirmStudyDelete}"
+                                               value="Delete"
+                                               rendered="#{MainLayoutBean.inStudyPage and !studyPage.studyDestroyRequested}"/>
+                            <ice:commandButton id="autoCentPopupOk"
+                                               actionListener="#{studyPage.confirmStudyDelete}"
+                                               value="Destroy"
+                                               rendered="#{MainLayoutBean.inStudyPage and studyPage.studyDestroyRequested}"/>
+                            <ice:commandButton id="autoCentPopupCancel"
+                                               actionListener="#{studyPage.toggleStudyDeletePopup}"
+                                               value="Cancel"
+                                               rendered="#{MainLayoutBean.inStudyPage}"/>
+                            <ice:commandButton id="autoCentPopupOk"
+                                               actionListener="#{ManageStudiesList.confirmStudyDelete}"
+                                               value="Delete"
+                                               rendered="#{MainLayoutBean.inManageStudiesPageByViewID}"/>
+                            <ice:commandButton id="autoCentPopupCancel"
+                                               actionListener="#{ManageStudiesList.toggleStudyDeletePopup}"
+                                               value="Cancel"
+                                               rendered="#{MainLayoutBean.inManageStudiesPageByViewID}"/>
+                        </div>
+                    </ice:panelGrid>
+                </f:facet>
+            </ice:panelPopup>
+            <!-- end delete popup -->
+        </ice:form>
+    </body>
+</html>

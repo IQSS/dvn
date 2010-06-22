@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:gui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:ice="http://www.icesoft.com/icefaces/component">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+  <gui:composition template="/template.xhtml">
+    <gui:param name="pageTitle" value="#{bundlePageInfo.editAccountTitle} - #{VDCRequest.dataversePageTitle}"/>
+    <gui:define name="body">
+      <ice:form  id="form1">
+        <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+        <input type="hidden" name="pageName" value="EditAccountPage"/>
+        <div class="dvn_section">
+          <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
+            <div class="dvnMsgBlockContainer">
+              <ice:outputText value="#{bundlePageInfo.editAccountHelp}" escape="false"/>
+            </div>
+          </div>
+          <div class="dvn_sectionTitle">
+            <ice:outputText value="#{bundlePageInfo.editAccountTitle}"/>
+          </div>
+          <div class="dvn_sectionBox">
+            <div class="dvn_margin12">
+              <table cellpadding="0" cellspacing="0"
+                     columnClasses="vdcColPadded, vdcColPadded" columns="2" id="gridPanel2">
+                <div>
+                  <ice:outputText value="Username"/>
+                  <ice:graphicImage id="image1" value="/resources/images/icon_required.gif"/>
+                </div>
+                <div>
+                  <ice:inputText immediate="true" id="inputUserName" validator ="#{EditAccountPage.validateUserName}" value="#{EditAccountPage.user.userName}" required="true" requiredMessage="This field is required.">
+                  </ice:inputText>
+                  <ice:message styleClass="errorMessage" for="inputUserName"/>
+                </div>
+                <div>
+                  <ice:outputText value="First Name"/>
+                  <ice:graphicImage value="/resources/images/icon_required.gif"/>
+                </div>
+                <div>
+                  <ice:inputText id="inputFirstName" value="#{EditAccountPage.user.firstName}" required="true" requiredMessage="This field is required."/>
+                  <ice:message styleClass="errorMessage" for="inputFirstName"/>
+                </div>
+                <div>
+                  <ice:outputText value="Last Name"/>
+                  <ice:graphicImage value="/resources/images/icon_required.gif"/>
+                </div>
+                <div>
+                  <ice:inputText id="inputLastName" value="#{EditAccountPage.user.lastName}" required="true" requiredMessage="This field is required."/>
+                  <ice:message styleClass="errorMessage" for="inputLastName"/>
+                </div>
+                <div>
+                  <ice:outputText value="E-Mail"/>
+                  <ice:graphicImage value="/resources/images/icon_required.gif"/>
+                </div>
+                <div>
+                  <ice:inputText id="inputEmail" value="#{EditAccountPage.user.email}" size="40" required="true" requiredMessage="This field is required.">
+                    <f:validator validatorId="EmailValidator"/>
+                  </ice:inputText>
+                  <ice:message styleClass="errorMessage" for="inputEmail"/>
+                </div>
+                <div>
+                  <ice:outputText value="Institution"/>
+                </div>
+                <ice:inputText id="inputInstitution" value="#{EditAccountPage.user.institution}" size="40"/>
+                <div>
+                  <ice:outputText value="Position"/>
+                </div>
+                <ice:selectOneMenu value="#{EditAccountPage.user.position}">
+                  <f:selectItem itemLabel="Student" itemValue="Student"/>
+                  <f:selectItem itemLabel="Faculty" itemValue="Faculty"/>
+                  <f:selectItem itemLabel="Staff" itemValue="Staff"/>
+                  <f:selectItem itemLabel="Other" itemValue="Other"/>
+                </ice:selectOneMenu>
+                <div>
+                  <ice:outputText value="Phone Number"/>
+                </div>
+                <ice:inputText id="inputPhoneNumber" value="#{EditAccountPage.user.phoneNumber}"/>
+              </table>
+              <div class="dvnFormPadding dvnFormMargin">
+                <ice:commandButton  value="Save" action="#{EditAccountPage.saveAction}"/><ice:commandButton  value="Cancel" immediate ="true" action="#{EditAccountPage.cancelAction}"/>
+              </div>
+                
+              </div>
+            </div>
+          </div>
+       
+      </ice:form>
+    </gui:define>
+  </gui:composition>
+</body>
+</html>

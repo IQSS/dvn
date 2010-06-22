@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:gui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:ice="http://www.icesoft.com/icefaces/component">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+
+<body>
+  <gui:composition template="/template.xhtml">
+    <gui:param name="pageTitle" value="Report Issue Confirmation - #{VDCRequest.dataversePageTitle}"/>
+    <gui:define name="body">
+      <ice:form id="contactConfirmForm">
+        <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+        <div class="dvn_section">
+          <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnSuccessMessage" rendered="#{ContactUsPage.success}">
+            <div class="dvnMsgBlockContainer">
+              <p><ice:messages layout="list" globalOnly="true"/></p>
+            </div>
+          </div>
+          <div class="dvn_sectionTitle">
+            <ice:outputText value="#{bundle.contactUsHeading}"/>
+          </div>
+          <div class="dvn_sectionBox">
+            <div class="dvn_margin12">
+              <div jsfc="ice:panelGroup" id="groupPanel2" styleClass="dvnFormPadding">
+                <ice:outputText id="outputText2" value="#{bundle.contactUsMessageSummary}"/>
+              </div>
+              <ice:panelGrid cellpadding="0" cellspacing="0"
+                             columnClasses="vdcColPadded, vdcColPadded" columns="2" id="gridPanel2">
+                <ice:outputText id="outputText7" style="font-weight: bold" value="#{bundle.contactUsToLabel}"/>
+                <ice:outputFormat value="#{bundle.contactUsTo}">
+                  <f:param value="#{(VDCRequest.currentVDCId == null) ? VDCRequest.vdcNetwork.name : VDCRequest.currentVDC.name}"/>
+                  <f:param value="#{(VDCRequest.currentVDCId == null) ? ('Network') : ('')}"/>
+                  <f:param value="#{(VDCRequest.currentVDCId == null) ? VDCRequest.vdcNetwork.contactEmail : VDCRequest.currentVDC.contactEmail}"/>
+                </ice:outputFormat>
+                <div>
+                  <ice:outputText id="outputText4" style="font-weight: bold" value="#{bundle.contactUsEmailLabel}"/>
+                </div>
+                <div>
+                  <ice:outputText id="fullName" escape="true" value="#{ContactUsPage.fullName} (#{ContactUsPage.emailAddress})"/>
+                </div>
+                <div>
+                  <ice:outputText id="outputText5" style="font-weight: bold" value="#{bundle.contactUsSubjectLabel}"/>
+                </div>
+                <div>
+                  <ice:outputText id="listSubjects" value="#{ContactUsPage.selectedSubject}"/>
+                </div>
+                <div class="vdcTextNoWrap">
+                  <ice:outputText id="outputText6" style="font-weight: bold" value="#{bundle.contactUsBodyLabel}"/>
+                </div>
+                <div>
+                  <ice:outputText id="emailBody" value="#{ContactUsPage.emailBody}"/>
+                </div>
+              </ice:panelGrid>
+            </div>
+          </div>
+        </div>
+      </ice:form>
+    </gui:define>
+  </gui:composition>
+</body>
+</html>

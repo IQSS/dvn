@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:gui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:ice="http://www.icesoft.com/icefaces/component">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+  <gui:composition template="/template.xhtml">
+    <gui:param name="pageTitle" value="Account Terms of Use - #{VDCRequest.dataversePageTitle}"/>
+    <gui:define name="body">
+      <f:loadBundle basename="StudyBundle" var="studybundle"/>
+      <ice:form  id="form1">
+        <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+        <input type="hidden" value="TermsOfUsePage" name="pageName"/>
+        <ice:inputHidden id="studyId" value="#{TermsOfUsePage.studyId}"/>
+        <ice:inputHidden id="redirectPage" value="#{TermsOfUsePage.redirectPage}"/>
+        <ice:inputHidden id="tou" value="#{TermsOfUsePage.touParam}"/>
+        <div class="dvn_section">
+<style type="text/css">
+    .dvnstudypreviouslisting{text-align:right;}
+    .termsAgreeChkBxBlock{width:380px;}
+    .termsAgreeChkBxBlock p {font-size: .9em !important;}
+</style>
+          <div jsfc="ice:panelGroup" styleClass="dvnstudypreviouslisting" rendered="#{TermsOfUsePage.studyId!=null and TermsOfUsePage.touTypeDownload}">
+              <ice:outputLink
+                value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{TermsOfUsePage.study.id}&amp;tab=files"
+                rendered="#{VDCRequest.studyVersionNumber == null}">
+                <ice:outputText value="&lt; Back to the Study"/>
+              </ice:outputLink>
+
+              <ice:outputLink
+                value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{TermsOfUsePage.study.id}&amp;versionNumber=#{VDCRequest.studyVersionNumber}&amp;tab=files"
+                rendered="#{VDCRequest.studyVersionNumber != null}">
+                <ice:outputText value="&lt; Back to the Study"/>
+              </ice:outputLink>
+          </div>
+
+          <div class="dvn_sectionTitle">
+            <ice:outputText value="Terms of Use"/>
+          </div>
+          <div class="dvn_sectionBox">
+            <div class="dvn_margin12">
+              <div class="termsAgreementBox">
+                <div jsfc="ice:panelGroup" rendered="#{TermsOfUsePage.touTypeDownload}">
+                  <!-- Study Terms of Use -->
+                  <ice:outputText value="#{studybundle.confidentialityLabel}" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.confidentialityDeclaration}"/>
+                  <ice:outputText value="#{TermsOfUsePage.study.releasedVersion.metadata.confidentialityDeclaration}" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.confidentialityDeclaration}" escape="false"/>
+
+                  <ice:outputText value="#{studybundle.specialPermissionsLabel}" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.specialPermissions}"/>
+                  <ice:outputText value="#{TermsOfUsePage.study.releasedVersion.metadata.specialPermissions}" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.specialPermissions}" escape="false"/>
+
+                  <ice:outputText value="#{studybundle.restrictionsLabel}" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.restrictions}"/>
+                  <ice:outputText value="#{TermsOfUsePage.study.releasedVersion.metadata.restrictions}" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.restrictions}" escape="false"/>
+
+                  <ice:outputText value="#{studybundle.contactLabel}" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.contact}"/>
+                  <ice:outputText value="#{TermsOfUsePage.study.releasedVersion.metadata.contact}" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.contact}" escape="false"/>
+
+                  <ice:outputText value="#{studybundle.citationRequirementsLabel}" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.citationRequirements}"/>
+                  <ice:outputText value="#{TermsOfUsePage.study.releasedVersion.metadata.citationRequirements}" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.citationRequirements}" escape="false"/>
+
+                  <ice:outputText value="#{studybundle.depositorRequirementsLabel}" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.depositorRequirements}"/>
+                  <ice:outputText value="#{TermsOfUsePage.study.releasedVersion.metadata.depositorRequirements}" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.depositorRequirements}" escape="false"/>
+
+                  <ice:outputText value="#{studybundle.conditionsLabel}" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.conditions}"/>
+                  <ice:outputText value="#{TermsOfUsePage.study.releasedVersion.metadata.conditions}" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.conditions}" escape="false"/>
+
+                  <ice:outputText value="#{studybundle.disclaimerLabel}" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.disclaimer}"/>
+                  <ice:outputText value="#{TermsOfUsePage.study.releasedVersion.metadata.disclaimer}" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.disclaimer}" escape="false"/>
+
+                  <!-- Dataverse, Dataverse Network and Harvest Terms of Use -->
+                  <ice:outputText value="#{studybundle.dataverseTermsofUseLabel}" styleClass="termsAgreementMessageTitle" rendered="#{TermsOfUsePage.downloadDataverseTermsRequired}" />
+                  <ice:outputText value="#{TermsOfUsePage.study.owner.downloadTermsOfUse}" rendered="#{TermsOfUsePage.downloadDataverseTermsRequired}" escape="false"/>
+
+                  <ice:outputText value="#{studybundle.networkTermsofUseLabel}" styleClass="termsAgreementMessageTitle" rendered="#{TermsOfUsePage.downloadDvnTermsRequired}"/>
+                  <ice:outputText value="#{TermsOfUsePage.vdcNetwork.downloadTermsOfUse}" rendered="#{TermsOfUsePage.downloadDvnTermsRequired}" escape="false"/>
+
+                  <ice:outputText value="#{studybundle.harvestedTermsofUseLabel}" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.harvestDVTermsOfUse}"/>
+                  <ice:outputText value="#{TermsOfUsePage.study.releasedVersion.metadata.harvestDVTermsOfUse}" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.harvestDVTermsOfUse}" escape="false"/>
+
+                  <ice:outputText value="#{studybundle.networkHarvestedTermsofUseLabel}" styleClass="termsAgreementMessageTitle" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.harvestDVNTermsOfUse}"/>
+                  <ice:outputText value="#{TermsOfUsePage.study.releasedVersion.metadata.harvestDVNTermsOfUse}" rendered="#{!empty TermsOfUsePage.study.releasedVersion.metadata.harvestDVNTermsOfUse}" escape="false"/>
+                </div>
+                <div jsfc="ice:panelGroup" rendered="#{TermsOfUsePage.touTypeDeposit}">
+                  <ice:outputText value="#{studybundle.networkStudyCreationTermsofUseLabel}" styleClass="termsAgreementMessageTitle" rendered="#{TermsOfUsePage.depositDvnTermsRequired}"/>
+                  <ice:outputText value="#{TermsOfUsePage.vdcNetwork.depositTermsOfUse}" rendered="#{TermsOfUsePage.depositDvnTermsRequired}" escape="false"/>
+
+                  <ice:outputText value="#{studybundle.dataverseStudyCreationTermsofUseLabel}" styleClass="termsAgreementMessageTitle" rendered="#{TermsOfUsePage.depositDataverseTermsRequired}"/>
+                  <ice:outputText value="#{TermsOfUsePage.depositDataverseTerms}" rendered="#{TermsOfUsePage.depositDataverseTermsRequired}" escape="false"/>
+                </div>
+              </div>
+              <div class="termsAgreeChkBxBlock">
+                <ice:outputText rendered="#{TermsOfUsePage.touTypeDownload}" value="#{bundlePageInfo.termsofUseDownloadAgree}" escape="false"/>
+                <ice:selectBooleanCheckbox id="termsAccepted" required="true" validator="#{TermsOfUsePage.validateTermsAccepted}" value="#{TermsOfUsePage.termsAccepted}"/>
+                <ice:outputText styleClass="vdcFieldTitle" value="I agree and accept these terms of use."/>
+                <ice:message for="termsAccepted" styleClass="errorMessage"/>
+              </div>
+              <div class="dvnFormPadding dvnFormMargin">
+                <ice:commandButton id="termsButton" value="Continue" action="#{TermsOfUsePage.acceptTerms_action}"/>
+                <ice:commandButton id="cancelButton" value="Cancel" onclick="window.location='/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{TermsOfUsePage.study.id}&amp;versionNumber=-1';return false;" rendered="#{TermsOfUsePage.touTypeDeposit and TermsOfUsePage.studyId!=null}"/>
+                <ice:commandButton id="cancelButton" value="Cancel" onclick="window.location='/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{TermsOfUsePage.study.id}&amp;tab=files';return false;" rendered="#{TermsOfUsePage.touTypeDownload and VDCRequest.studyVersionNumber == null}"/>
+                <ice:commandButton id="cancelButton" value="Cancel" onclick="window.location='/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{TermsOfUsePage.study.id}&amp;versionNumber=#{VDCRequest.studyVersionNumber}&amp;tab=files';return false;" rendered="#{TermsOfUsePage.touTypeDownload and VDCRequest.studyVersionNumber != null}"/>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ice:form>
+    </gui:define>
+  </gui:composition>
+</body>
+</html>

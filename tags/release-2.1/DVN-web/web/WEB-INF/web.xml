@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+    <display-name>DVN webapp</display-name>
+    <session-config><session-timeout>480</session-timeout></session-config>
+    <!-- this error page mapping is not used yet, but kept here when we can catch exceptions from Icefaces ViewHandler -->
+    <!--error-page>
+        <exception-type>javax.faces.FacesException</exception-type>
+       <location>/faces/NotFoundPage.xhtml</location>
+    </error-page-->
+     
+    <!-- ICEFACES START -->
+    <!-- remove if this does not work delegateNonIface-->
+   <context-param>
+       <param-name>com.icesoft.faces.delegateNonIface</param-name> 
+       <param-value>true</param-value> 
+   </context-param>
+    <context-param>
+        <param-name>com.icesoft.faces.concurrentDOMViews</param-name>
+        <param-value>true</param-value>
+    </context-param>
+    <!-- optional for use with push -->
+    <context-param>
+        <param-name>com.icesoft.faces.synchronousUpdate</param-name>
+        <param-value>true</param-value>
+    </context-param>
+    <!-- removed asynch config so that default will be used -->
+    <!-- end optional for use with push -->
+    <context-param>
+        <param-name>com.icesoft.faces.debugDOMUpdate</param-name>
+        <param-value>false</param-value>
+    </context-param>
+    <context-param>
+        <param-name>com.icesoft.faces.standardRequestScope</param-name>
+        <param-value>false</param-value>
+    </context-param>
+    <context-param>
+       <param-name>com.icesoft.faces.uploadMaxFileSize</param-name>
+        <param-value>2147483648</param-value>
+   </context-param> 
+    <context-param>
+        <param-name>com.sun.faces.enableRestoreView11Compatibility</param-name>
+        <param-value>true</param-value>
+    </context-param>
+   <context-param>
+        <param-name>com.icesoft.faces.uploadDirectory</param-name>
+        <param-value>upload</param-value>
+    </context-param>
+ 
+    <context-param>
+        <param-name>com.icesoft.faces.connectionTimeout</param-name>
+	<param-value>1800000</param-value>
+    </context-param>
+  
+
+<!-- Facelets -->
+    <context-param>
+      <param-name>facelets.DEVELOPMENT</param-name>
+      <param-value>false</param-value>
+    </context-param>
+    <context-param>
+        <param-name>facelets.SKIP_COMMENTS</param-name>
+        <param-value>true</param-value>
+    </context-param>
+    <context-param>
+	<param-name>facelets.LIBRARIES</param-name>
+	<param-value>
+		/WEB-INF/dvn.taglib.xml;/WEB-INF/scroller.taglib.xml
+	</param-value>
+     </context-param>
+    <!-- JSF -->
+    <context-param>
+        <param-name>com.sun.faces.validateXml</param-name>
+        <param-value>true</param-value>
+    </context-param>
+    <!-- set verifyObjects to true for debugging if needed -->
+    <context-param>
+        <param-name>com.sun.faces.verifyObjects</param-name>
+        <param-value>false</param-value>
+    </context-param>
+   <!-- <context-param>
+        <param-name>javax.faces.DEFAULT_SUFFIX</param-name>
+        <param-value>.xhtml</param-value>
+    </context-param> -->
+    <context-param>
+    <param-name>javax.faces.DEFAULT_SUFFIX</param-name>
+    <param-value>.xhtml</param-value>
+  </context-param>
+    <context-param>
+        <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
+        <param-value>server</param-value>
+    </context-param>
+     <context-param>
+        <param-name>javax.faces.CONFIG_FILES</param-name>
+        <param-value>/WEB-INF/navigation.xml,/WEB-INF/managed-beans.xml</param-value>
+    </context-param>
+    <context-param>
+       <param-name>edu.harvard.hmdc.export</param-name>
+        <param-value>false</param-value>        
+    </context-param>
+    <context-param>
+       <param-name>properties</param-name>
+        <param-value>oaicat.properties</param-value>        
+    </context-param>
+    <listener>
+        <listener-class>com.icesoft.faces.util.event.servlet.ContextEventRepeater</listener-class>
+    </listener>
+    <listener>
+        <listener-class>edu.harvard.iq.dvn.core.web.util.VDCContextListener</listener-class>
+    </listener>
+   <!-- EV: to clean the temporary directory with the uploaded files -->
+    <listener>
+ <listener-class>edu.harvard.iq.dvn.core.web.util.InputFileSessionCleaner</listener-class>
+    </listener>
+    <!-- login filter -->
+    <filter>
+        <filter-name>LoginFilter</filter-name>
+        <filter-class>edu.harvard.iq.dvn.core.web.servlet.LoginFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>LoginFilter</filter-name>
+        <servlet-name>Persistent Faces Servlet</servlet-name>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+    </filter-mapping>
+    
+    <!-- terms of use filter -->
+   <filter>
+        <filter-name>TermsOfUseFilter</filter-name>
+        <filter-class>edu.harvard.iq.dvn.core.web.servlet.TermsOfUseFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>TermsOfUseFilter</filter-name>
+        <servlet-name>Persistent Faces Servlet</servlet-name>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>TermsOfUseFilter</filter-name>
+        <servlet-name>FileDownloadServlet</servlet-name>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+    </filter-mapping>
+    <!-- Icefaces Servlets -->
+   <servlet>
+        <servlet-name>Persistent Faces Servlet</servlet-name>
+            <servlet-class>com.icesoft.faces.webapp.xmlhttp.PersistentFacesServlet</servlet-class>
+           
+      </servlet>
+        <servlet>
+            <servlet-name>Blocking Servlet</servlet-name>
+            <servlet-class>com.icesoft.faces.webapp.xmlhttp.BlockingServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+        </servlet>
+      <servlet>
+            <servlet-name>uploadServlet</servlet-name>
+            <servlet-class>com.icesoft.faces.component.inputfile.FileUploadServlet</servlet-class>
+            <load-on-startup>1</load-on-startup>
+      </servlet>
+        <!-- DVN SPECIFIC SERVLETS -->
+    <servlet>
+        <servlet-name>Faces Servlet</servlet-name>
+        <servlet-class>edu.harvard.iq.dvn.core.web.servlet.VDCFacesServlet</servlet-class>
+        
+    </servlet>
+    <servlet>
+        <servlet-name>Default Faces Servlet</servlet-name>
+        <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ErrorPageServlet</servlet-name>
+        <servlet-class>edu.harvard.iq.dvn.core.web.servlet.ErrorPageServlet</servlet-class>
+        <load-on-startup>3</load-on-startup>
+    </servlet>
+    <servlet>
+        <servlet-name>FileDownloadServlet</servlet-name>
+        <servlet-class>edu.harvard.iq.dvn.core.web.servlet.FileDownloadServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>VDCServlet</servlet-name>
+        <servlet-class>edu.harvard.iq.dvn.core.web.servlet.VDCServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>DDIExportServlet</servlet-name>
+        <servlet-class>edu.harvard.iq.dvn.core.web.servlet.DDIExportServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>VDCHandleRegistrationServlet</servlet-name>
+        <servlet-class>edu.harvard.iq.dvn.core.web.servlet.VDCHandleRegistrationServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>OAIHandler</servlet-name>
+        <servlet-class>ORG.oclc.oai.server.OAIHandler</servlet-class>
+    </servlet>
+    <!-- END DVN SPECIFIC SERVLETS -->
+    <!-- ICEFACES MAPPINGS START -->
+    <!--
+   <servlet-mapping>
+        <servlet-name>Grizzly Push Servlet</servlet-name>
+        <url-pattern>/block/receive-updated-views/*</url-pattern>
+    </servlet-mapping>
+   <servlet>
+
+    <servlet-name>Grizzly Push Servlet</servlet-name>
+
+    <servlet-class>
+
+          com.icesoft.faces.webapp.http.servlet.GrizzlyPushServlet
+
+    </servlet-class>
+
+    <load-on-startup> 1 </load-on-startup>
+
+</servlet>
+ !-->
+   
+    <servlet-mapping>
+        <servlet-name>Blocking Servlet</servlet-name>
+        <url-pattern>/block/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>uploadServlet</servlet-name>
+        <url-pattern>/uploadHtml</url-pattern>
+    </servlet-mapping>
+       <servlet-mapping>
+        <servlet-name>Persistent Faces Servlet</servlet-name>
+        <url-pattern>/xmlhttp/*</url-pattern>
+    </servlet-mapping>
+      <servlet-mapping>
+        <servlet-name>Persistent Faces Servlet</servlet-name>
+        <url-pattern>*.iface</url-pattern>
+    </servlet-mapping>
+<!-- DVN SPECIFIC SERVLET MAPPINGS START -->
+     <servlet-mapping>
+        <servlet-name>Persistent Faces Servlet</servlet-name>
+        <url-pattern>/faces/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ErrorPageServlet</servlet-name>
+        <url-pattern>/ExceptionHandler</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>FileDownloadServlet</servlet-name>
+        <url-pattern>/FileDownload/*</url-pattern>
+    </servlet-mapping>  
+    <servlet-mapping>
+        <servlet-name>VDCServlet</servlet-name>
+        <url-pattern>/dv/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DDIExportServlet</servlet-name>
+        <url-pattern>/ddi/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>OAIHandler</servlet-name>
+        <url-pattern>/OAIHandler</url-pattern>
+    </servlet-mapping>
+    <welcome-file-list>
+        <welcome-file>HomePage.jsp</welcome-file>
+    </welcome-file-list>
+    <jsp-config>
+        <jsp-property-group>
+            <url-pattern>*.jspf</url-pattern>
+            <is-xml>true</is-xml>
+        </jsp-property-group>
+    </jsp-config>
+    <servlet-mapping>
+        <servlet-name>VDCHandleRegistrationServlet</servlet-name>
+        <url-pattern>/handleregistration/*</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>StudyGlobalIdServlet</servlet-name>
+        <servlet-class>edu.harvard.iq.dvn.core.web.servlet.StudyGlobalIdServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>StudyGlobalIdServlet</servlet-name>
+        <url-pattern>/study</url-pattern>
+    </servlet-mapping>
+
+
+    <servlet>
+        <servlet-name>CensusRepositoryServlet</servlet-name>
+        <servlet-class>edu.harvard.iq.dvn.core.web.servlet.CensusRepositoryServlet</servlet-class>
+    </servlet>     
+    <servlet-mapping>
+    <servlet-name>CensusRepositoryServlet</servlet-name>
+        <url-pattern>/CensusRepositoryServlet</url-pattern>
+    </servlet-mapping> 
+    <servlet>
+        <servlet-name>VDCIngestServlet</servlet-name>
+        <servlet-class>edu.harvard.iq.dvn.core.web.servlet.VDCIngestServlet</servlet-class>
+    </servlet>     
+    <servlet-mapping>
+    <servlet-name>VDCIngestServlet</servlet-name>
+        <url-pattern>/ingest</url-pattern>
+    </servlet-mapping>       
+    <servlet>
+        <servlet-name>VDCSummaryStatisticsServlet</servlet-name>
+        <servlet-class>edu.harvard.iq.dvn.core.web.servlet.VDCSummaryStatisticsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>VDCSummaryStatisticsServlet</servlet-name>
+        <url-pattern>/sumStat</url-pattern>
+    </servlet-mapping>
+    <!-- DVN SPECIFIC SERVLET MAPPINGS END -->
+    
+      <error-page>
+        <error-code>404</error-code>
+       <location>/faces/NotFoundPage.xhtml</location>
+    </error-page>
+    <!--
+    <error-page>
+        <error-code>500</error-code>
+       <location>/faces/ErrorPage.xhtml</location>
+    </error-page>
+    
+    <error-page>
+        <exception-type>Exception</exception-type>
+        <location>/faces/NotFoundPage.xhtml</location>
+    </error-page>
+    -->
+</web-app>

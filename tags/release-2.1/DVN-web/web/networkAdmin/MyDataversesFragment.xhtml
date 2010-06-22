@@ -1,0 +1,47 @@
+                <div xmlns:gui="http://java.sun.com/jsf/facelets"
+                     xmlns:h="http://java.sun.com/jsf/html"
+                     xmlns:f="http://java.sun.com/jsf/core"
+                     xmlns:jsp="http://java.sun.com/JSP/Page"
+                     xmlns:ice="http://www.icesoft.com/icefaces/component"
+                     xmlns:dvn="/WEB-INF/tlds/dvn-components"
+                     xmlns:ui="http://www.sun.com/web/ui"
+                     jsfc="ice:panelGroup"
+                     id="layoutPanelMyDataverses"
+                     panelLayout="flow"
+                     styleClass="dvnMyDataversesBlock">
+                    <div jsfc="ice:panelGroup"
+                         id="myDataversesPanel"
+                         panelLayout="flow">
+                        <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="1"
+                                       styleClass="dvnMyDataverseTableTop" columnClasses="dvn1"
+                                       rendered="#{VDCRequest.vdcNetwork.allowCreateRequest}">
+                            <div jsfc="ice:panelGroup">
+                                    <ice:commandLink action="#{MyDataversePage.createDataverse}"  title="Create a Dataverse">
+                                        <ice:outputText value="#{bundlePageInfo.createDvTitle}"/>
+                                    </ice:commandLink>
+                            </div>
+                        </ice:panelGrid>
+                        <ice:dataTable cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                       styleClass="dvnDataTable" id="gridPanel2"
+                                       columnClasses="dvnMyDataverseTableName, dvnMyDataverseTableRole"
+                                       rendered="#{not empty(MyDataversePage.dataverses)}"
+                                       rowClasses="evenRow oddRow"
+                                       value="#{MyDataversePage.dataverses}"
+                                       var="dataverseInfo">
+                            <ice:column>
+                                <f:facet name="header">
+                                    <ice:outputText value="Dataverse Name"/>
+                                </f:facet>
+                                <ice:outputLink value="/dvn/dv/#{dataverseInfo[0].alias}">
+                                    <ice:outputText value="#{dataverseInfo[0].name}"/>
+                                </ice:outputLink>
+                            </ice:column>
+                            <ice:column>
+                                <f:facet name="header">
+                                    <ice:outputText value="Role"/>
+                                </f:facet>
+                                <ice:outputText value="#{dataverseInfo[1]}"/>
+                            </ice:column>
+                        </ice:dataTable>
+                    </div>
+                </div>

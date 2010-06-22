@@ -1,0 +1,139 @@
+                <div xmlns:gui="http://java.sun.com/jsf/facelets"
+                      xmlns:h="http://java.sun.com/jsf/html"
+                      xmlns:f="http://java.sun.com/jsf/core"
+                      xmlns:jsp="http://java.sun.com/JSP/Page"
+                      xmlns:ice="http://www.icesoft.com/icefaces/component"
+                      xmlns:dvn="/WEB-INF/tlds/dvn-components"
+                      xmlns:ui="http://www.sun.com/web/ui"
+                      jsfc="ice:panelGroup"
+                      id="layoutPanelComments"
+                      panelLayout="flow"
+                      styleClass="vdcStudyCommentsBlock">
+                  <div jsfc="ice:panelGroup"
+                       id="commentContentPanel"
+                       panelLayout="flow">
+                       <!-- !empty StudyCommentsFragment.studyComments} -->
+                       <div jsfc="ice:panelGroup"  id="groupPanel11" styleClass="vdcStudyInfoHeader">
+                            <ice:outputText id="outputText11" value="Comments"/>
+                       </div>
+                      <div jsfc="ice:panelGroup"
+                       id="noCommentsPanel"
+                       panelLayout="flow"
+                       styleClass="vdcStudyFilesEmpty"
+                       rendered="#{empty StudyCommentsFragment.studyComments}">
+                    <div jsfc="ice:panelGroup"
+                         id="noCommentsUploadedPanel"
+                         styleClass="vdcStudyFilesEmptyMessage">
+                        <ice:outputText value="No comments have been added to this study."/>
+                    </div>
+                  </div>
+                      <ice:dataTable rendered="true"
+                                     cellpadding="0"
+                                     cellspacing="0"
+                                     id="commentsDataTable"
+                                     rowClasses="list-row-odd"
+                                     styleClass="vdcStudyCommentsDataTable"
+                                     value="#{StudyCommentsFragment.studyComments}"
+                                     var="item"
+                                     width="100%">
+                            <!-- inline border def'n because icefaces defaults the column borders otherwise -->
+                            <ice:column id="commentDetails"
+                                        styleClass="vdcStudyCommentDetailsColumn">
+                              <ice:panelGroup rendered="#{item.studyComment.status == 'OK' or item.studyComment.status == 'FLAGGED'}">
+                                  <ice:outputText value="#{item.studyComment.commentCreator.userName}" />
+                                  <ice:outputText styleClass="vdcStudyCommentDetails"
+                                                  value="posted on #{item.studyComment.createTime}" />
+                                  <ice:outputText rendered="#{StudyCommentsFragment.renderStudyVersionReference}"
+                                                  styleClass="vdcStudyCommentDetails"
+                                                  value="referencing Study Version: #{item.studyComment.studyVersion.versionNumber}" />
+                                  <div jsfc="ice:panelGroup" styleClass="dvnReportCommentsLinks" rendered="#{VDCSession.user != null}">
+                                      <ul>
+                                          <li>
+                                              <ice:outputText rendered="#{(item.studyComment.status == 'FLAGGED' and
+                                                              StudyCommentsFragment.authorizedToDeleteComment) or (!item.reportAbuseEnabled)}"
+                                                              styleClass="dvnReportCommentsFlag" value="Reported"/>
+                                              <ice:commandLink binding="#{StudyCommentsFragment.reportAbuseLink}"
+                                                               actionListener="#{StudyCommentsFragment.togglePopup}"
+                                                               rendered="#{(StudyCommentsFragment.authorizedToDeleteComment == false and item.reportAbuseEnabled)}">
+                                                               <!--  || !StudyCommentsFragment.authorizedToDeleteComment  -->
+                                                  <f:attribute name="commentId" value="#{item.studyComment.id}" />
+                                                  <ice:outputText value="Report Abuse" rendered="#{VDCSession.user != item.studyComment.commentCreator}"/>
+                                              </ice:commandLink>
+                                          </li>
+                                          <li>
+                                              <ice:commandLink binding="#{StudyCommentsFragment.deleteCommentLink}"
+                                                               actionListener="#{StudyCommentsFragment.toggleDeletePopup}"
+                                                               rendered="#{StudyCommentsFragment.authorizedToDeleteComment or item.studyComment.commentCreator == VDCSession.user}">
+                                                  <f:attribute name="commentId" value="#{item.studyComment.id}" />
+                                                  <ice:outputText value="Delete"/>
+                                              </ice:commandLink>
+                                          </li>
+                                          <li>
+                                              <ice:commandLink binding="#{StudyCommentsFragment.ignoreCommentFlagLink}"
+                                                               actionListener="#{StudyCommentsFragment.ignoreCommentFlag}"
+                                                               rendered="#{StudyCommentsFragment.authorizedToIgnoreFlag and item.studyComment.status == 'FLAGGED'}">
+                                                               <!-- and item.studyComment.status == 'FLAGGED' -->
+                                                  <f:attribute name="commentId" value="#{item.studyComment.id}" />
+                                                  <ice:outputText value="Ignore"/>
+                                              </ice:commandLink>
+                                          </li>
+                                      </ul>
+                                  </div>
+                              </ice:panelGroup>
+                            </ice:column>
+                            <ice:column id="commentContent"
+                                        rendered="#{item.studyComment.status == 'OK' or item.studyComment.status == 'FLAGGED'}"
+                                        styleClass="vdcStudyCommentContentColumn">
+                                <gui:fragment>
+                                    <a name="comment#{item.studyComment.id}"></a>
+                                </gui:fragment>
+                                  <ice:outputText value="#{item.studyComment.comment}"/>
+                            </ice:column>
+                      </ice:dataTable>
+                      <div jsfc="ice:panelGroup" styleClass="vdcStudyCommentLoginRegister" rendered="#{VDCSession.user == null}">
+                          <ice:outputText value="Please " nospan="true"/>
+                          <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/login/LoginPage.xhtml">
+                              <f:param name="vdcId" value="#{VDCRequest.currentVDCId}"/>
+                              <f:param name="studyId" value="#{StudyCommentsFragment.studyId}"/>
+                              <f:param name="tab" value="comments"/>
+                              <ice:outputText value="Log In" nospan="true"/>
+                          </ice:outputLink>
+                          <ice:outputText value=" or " nospan="true"/>
+                          <ice:commandLink value="Register" action="#{StudyCommentsFragment.addAccount}"></ice:commandLink>
+                          <ice:outputText value=" to add your comments." nospan="true"/>
+                      </div>
+                    </div>
+                    <div jsfc="ice:panelGroup" rendered="#{VDCSession.user != null and StudyCommentsFragment.studyVersion.released}">
+                        <div jsfc="ice:panelGroup"><!-- the dataTable needs StudyCommentsFragment.user to refresh the table? but session bean alone okay here? -->
+                              <ice:outputLabel styleClass="vdcStudyCommentsSubheading" for="studyComments" id="studyCommentsLabel">
+                                <ice:outputText value="Add a Comment"/>
+                              </ice:outputLabel>
+                              <ice:message for="studyComments" styleClass="errorMessage"/>
+                              <ice:inputTextarea id="studyComments"
+                                                 binding="#{StudyCommentsFragment.commentsTextarea}"
+                                                 cols="100"
+                                                 rows="15"
+                                                 styleClass="formHtmlEnabled"
+                                                 value="#{StudyCommentsFragment.studyCommentsText}">
+                              </ice:inputTextarea>
+                          </div>
+                          <div jsfc="ice:panelGroup" styleClass="dvnFormPadding dvnFormMargin">
+                                <ice:commandButton id="button1"
+                                                   value="Save"
+                                                   actionListener="#{StudyCommentsFragment.save}"/>
+                                <ice:commandButton id="button2"
+                                                   value="Cancel"
+                                                   action="#{StudyCommentsFragment.cancel}"/>
+                          </div>
+                      </div>
+                      <div jsfc="ice:panelGroup" styleClass="vdcStudyCommentLoginRegister" rendered="#{VDCSession.user != null and !StudyCommentsFragment.studyVersion.released and StudyCommentsFragment.studyVersion.study.releasedVersion != null}">
+                          <ice:outputText value="To add comments, please vew the"/>
+                          <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{StudyCommentsFragment.studyVersion.study.id}&amp;versionNumber=#{StudyCommentsFragment.studyVersion.study.releasedVersion.versionNumber}&amp;tab=comments#{VDCRequest.studyListingIndexAsParameter}">
+                            <ice:outputText value="released version"/>
+                          </ice:outputLink>
+                          <ice:outputText value="of the study."/>
+                      </div>
+                      <div jsfc="ice:panelGroup" styleClass="vdcStudyCommentLoginRegister" rendered="#{VDCSession.user != null and StudyCommentsFragment.studyVersion.released and StudyCommentsFragment.studyVersion.study.releasedVersion == null}">
+                          <ice:outputText value="The study must be released in order to add comments. "/>
+                      </div>
+                </div>

@@ -1,0 +1,433 @@
+<IfModule !mod_alias.c>
+  LoadModule alias_module   modules/mod_alias.so
+</IfModule>
+
+<IfModule !mod_jk.c>
+  LoadModule jk_module modules/mod_jk.so
+</IfModule>
+
+<IfModule !mod_deflate.c>
+  LoadModule deflate_module modules/mod_deflate.so
+</IfModule>
+
+<IfModule !mod_perl.c>
+  LoadModule perl_module modules/mod_perl.so
+</IfModule>
+
+<IfModule !mod_proxy.c>
+  LoadModule proxy_module modules/mod_proxy.so
+</IfModule>
+
+<IfModule !mod_proxy_httpd.c>
+  LoadModule proxy_http_module modules/mod_proxy_http.so
+</IfModule>
+
+<IfModule !mod_proxy_httpd.c>
+  LoadModule proxy_http_module modules/mod_proxy_http.so
+</IfModule>
+
+<IfModule !mod_ssl.c>
+  LoadModule ssl_module modules/mod_ssl.so
+</IfModule>
+
+#LoadModule proxy_ftp_module modules/mod_proxy_ftp.so
+#LoadModule proxy_connect_module modules/mod_proxy_connect.so
+
+JkWorkersFile /etc/httpd/conf/workers.properties
+
+Timeout 10980
+
+<VirtualHost *:80>
+  ServerName %UIS_SERVER%
+
+  CustomLog logs/VDC_access combined
+
+  CustomLog logs/VDC_detail '%v %h %l %u %t "%r" %>s %b "%{Referer}i" "%{User-agent}i" "%{SCRIPT_FILENAME}e" "%{cookie}i" %T ratio: "(%{ratio}n)"'
+                                                                                                                        
+   ScriptAlias /cgi-bin/ /usr/local/VDC/cgi-bin/
+                                                                                                                        
+  <IfModule mod_deflate.c>
+        SetOutputFilter DEFLATE
+
+        # If you change bind.cgi to USE_MOD_DEFLATE=0, uncomment the line below
+        # and the corresponding line in the :443 Vhost
+        # to avoid double encoding
+        SetEnvIfNoCase Request_URI \/Bind\/ no-gzip
+
+        DeflateFilterNote ratio
+
+
+        # standard, catch text, html, xml, etc.
+        AddOutputFilterByType DEFLATE text/*
+        # standard, but don't catch pdf, which breaks plugins, or images, which are already compressed
+        AddOutputFilterByType DEFLATE application/ms* application/vnd* application/postscript
+        # catch other VDC data types
+        AddOutputFilterByType DEFLATE application/octet-stream* octet/stream* application/x-* application/binary*
+                                                                                                                        
+        # tuning parameters, apache >= 2.0.45  only
+        DeflateBufferSize 64768
+  </IfModule>
+
+
+  <IfModule mod_perl.c>
+    <Location /perl>
+      SetHandler perl-script
+      <IfDefine !MODPERL2>
+	PerlHandler Apache::Registry
+      </IfDefine>
+      <IfDefine MODPERL2>
+	PerlHandler ModPerl::Registry
+      </IfDefine>
+
+      Options +ExecCGI
+
+    </Location>
+
+    Alias /perl/ /usr/local/VDC/perl/
+    PerlRequire /usr/local/VDC/perl/startup.pl
+
+  </IfModule>
+
+  <IfModule mod_jk.c>
+     Alias /VDC "/usr/local/VDC/UIS/VDC"
+
+     JKMount /VDC/* ajp13
+     # include the ferret JKMount config
+     Include /usr/local/VDC/etc/httpd
+
+    <Directory /usr/local/VDC/UIS/VDC>
+      Options Indexes FollowSymLinks
+
+    </Directory>
+
+    <Location WEB-INF>
+      AllowOverride None
+      deny from all
+
+    </Location>
+
+    RedirectMatch ^/+vdc /VDC
+    RedirectMatch ^/+$ /VDC/
+    RedirectMatch ^/+VDC//+ /VDC/
+    RedirectMatch ^/+VDC$ /VDC/
+      # UNCOMMENT THIS LINE TO FORCE ALL AUTHENTICATED ACCESS TO BE IN HTTPS MODE
+      #RedirectMatch ^/VDC/Authority/Login.jsp(.*) https://%VHOSTIPADDR%/VDC/Authority/Login.jsp$1
+
+  </IfModule>
+
+
+  <Location /VDC-DEBUG/>
+    Options Indexes FollowSymLinks
+
+  </Location>
+  <Location /temp/>
+    Options Indexes FollowSymLinks
+  </Location>
+
+  Alias /temp/ %VDCTMP%/webtemp/
+  
+  RewriteEngine on
+
+
+   
+  # index verbs, including those in IndexAdmin module
+  RewriteRule /VDC/Index/([0-9].[0-9])/AddObject        /cgi-bin/dispatch.pl    [PT,E=SERVICE:IndexAdmin,E=VERSION:$1,E=VERB:AddObject]
+  RewriteRule /VDC/Index/([0-9].[0-9])/DeleteObject     /cgi-bin/dispatch.pl    [PT,E=SERVICE:IndexAdmin,E=VERSION:$1,E=VERB:DeleteObject]
+  RewriteRule /VDC/Index/([0-9].[0-9])/ReIndex  /cgi-bin/dispatch.pl    [PT,E=SERVICE:IndexAdmin,E=VERSION:$1,E=VERB:ReIndex]
+  RewriteRule /VDC/Index/([0-9].[0-9])/Status   /cgi-bin/dispatch.pl    [PT,E=SERVICE:IndexAdmin,E=VERSION:$1,E=VERB:Status]
+  RewriteRule /VDC/Index/([0-9].[0-9])/([a-zA-Z0-9\-]+) /cgi-bin/dispatch.pl  [PT,E=SERVICE:Index,E=VERSION:$1,E=VERB:$2]
+  RewriteRule /VDC/IndexAdmin/([0-9].[0-9])/([a-zA-Z0-9\-]+)	/cgi-bin/dispatch.pl	[PT,E=SERVICE:IndexAdmin,E=VERSION:$1,E=VERB:$2]
+
+   #Harvester Admin:
+   RewriteRule /VDC/HarvesterAdmin/([0-9].[0-9])/([a-zA-Z0-9\-]+) /cgi-bin/dispatch.pl [PT,E=SERVICE:HarvesterAdmin,E=VERSION:$1,E=VERB:$2]
+
+    #Repository: 
+    RewriteRule /VDC/Repository/([0-9]\.[0-9])/AccessMeta/(.*)    /perl/dispatch.pl    [PT,E=SERVICE:Repository,E=VERSION:$1,E=VERB:AccessMeta,E=NAME:$2]
+    RewriteRule /VDC/Repository/([0-9]\.[0-9])/AccessMeta$    /perl/dispatch.pl        [PT,E=SERVICE:Repository,E=VERSION:$1,E=VERB:AccessMeta]
+    RewriteRule /VDC/Repository/([0-9].[0-9])/([a-zA-Z0-9\-]+)/(.*)	/cgi-bin/dispatch.pl	[PT,E=SERVICE:Repository,E=VERSION:$1,E=VERB:$2,E=NAME:$3]
+    RewriteRule /VDC/Repository/([0-9].[0-9])/([a-zA-Z0-9\-]+)	/cgi-bin/dispatch.pl	[PT,E=SERVICE:Repository,E=VERSION:$1,E=VERB:$2]
+    #Proxy:
+    RewriteRule /VDC/Proxy/([0-9]\.[0-9])/AccessMeta/(.*)	/perl/dispatch.pl    [PT,E=SERVICE:Proxy,E=VERSION:$1,E=VERB:AccessMeta,E=NAME:$2]
+    RewriteRule /VDC/Proxy/([0-9]\.[0-9])/AccessMeta$    /perl/dispatch.pl    [PT,E=SERVICE:Proxy,E=VERSION:$1,E=VERB:AccessMeta]
+    RewriteRule /VDC/Proxy/([0-9]\.[0-9])/([a-zA-Z0-9\-]+)/(.*)	/cgi-bin/dispatch.pl	[PT,E=SERVICE:Proxy,E=VERSION:$1,E=VERB:$2,E=NAME:$3]
+    RewriteRule /VDC/Proxy/([0-9].[0-9])/([a-zA-Z0-9\-]+) /cgi-bin/dispatch.pl      [PT,E=SERVICE:Proxy,E=VERSION:$1,E=VERB:$2]
+
+  RewriteRule /VDC/LNRS/([0-9].[0-9])/([a-zA-Z0-9\-]+)	/cgi-bin/dispatch.pl	[PT,E=SERVICE:LNRS,E=VERSION:$1,E=VERB:$2]
+  RewriteRule /VDC/DSB/([0-9].[0-9])/Disseminate        	 /cgi-bin/univar03.cgi  [PT]
+  RewriteRule /VDC/DSB/([0-9].[0-9])/Bind /cgi-bin/bind.cgi  [PT]
+  RewriteRule /VDC/DSB/([0-9].[0-9])/GetZeligConfig              /cgi-bin/dmpConfigZelig.pl  [PT]
+  RewriteRule /VDC/DSB/([0-9].[0-9])/([a-zA-Z0-9\-]+)         /cgi-bin/dispatch.pl    [PT,E=SERVICE:DSB,E=VERSION:$1,E=VERB:$2]
+  RewriteRule /VDC/Statistics/([0-9].[0-9])/Http             /cgi-bin/awstats/awstats.pl    [PT]
+  RewriteRule /VDC/OAI/([0-9].[0-9])/			/cgi-bin/oai.pl    [PT]
+  RewriteRule /VDC/temp/(.*)				/temp/$1    [PT]
+
+  Alias /VDC-DEBUG/ /var/www/html/vdc/
+
+  # For the manual
+  Alias /Manual /usr/local/VDC/htdocs/Manual
+
+# Rules for handling proxy requests.
+# This allows only local VDC components to use the proxying facilities of 
+# this server.
+# Rules for handling direct requests.
+
+  ProxyTimeout 36000
+
+<Location /cgi-bin/dispatch.pl>
+	Order allow,deny
+        Allow from all
+	Deny from none
+	AuthName Restricted
+	AuthType Basic
+        <IfDefine MODPERL2>
+                PerlOptions +GlobalRequest
+        </IfDefine>
+	PerlSetVar AuthServer http://%AUTH_SERVER%
+	PerlSetVar AuthServerPort %AUTH_SERVER_PORT%
+        PerlSetVar RepServer %PROXY_HOST%
+	PerlSetVar SquidURI %PROXY_CACHE_URI%
+	PerlAuthenHandler AuthRepMgr
+	PerlAuthzHandler  AuthzRepMgr
+	require valid-user
+</Location>
+
+<Location /cgi-bin/bind.cgi>
+	Order allow,deny
+        Allow from all
+	Deny from none
+	AuthName Restricted
+	AuthType Basic
+        <IfDefine MODPERL2>
+                PerlOptions +GlobalRequest
+        </IfDefine>
+	PerlSetVar AuthServer http://%AUTH_SERVER%
+        PerlSetVar AuthServerPort 80
+        PerlSetVar RepServer %REP_SERVER%
+	PerlSetVar SquidURI %PROXY_CACHE_URI%
+	PerlAuthenHandler AuthRepMgr
+	PerlAuthzHandler  AuthzRepMgr
+	require valid-user
+</Location>
+
+# Rules for handling direct modperl requests.
+<Location /perl/dispatch.pl>
+	Order allow,deny
+        Allow from all
+	Deny from none
+	AuthName Restricted
+	AuthType Basic
+        <IfDefine MODPERL2>
+                PerlOptions +GlobalRequest
+        </IfDefine>
+	PerlSetVar AuthServer http://%AUTH_SERVER%
+	PerlSetVar AuthServerPort %AUTH_SERVER_PORT%
+        PerlSetVar RepServer %PROXY_HOST%
+	PerlSetVar SquidURI %PROXY_CACHE_URI%
+	PerlAuthenHandler AuthRepMgr
+	PerlAuthzHandler  AuthzRepMgr
+	require valid-user
+</Location>
+
+
+</VirtualHost>
+
+<IfModule mod_ssl.c>
+NameVirtualHost *:443
+  <VirtualHost *:443>
+
+      ServerName %UIS_SERVER%
+
+     CustomLog logs/VDC_access combined
+
+  CustomLog logs/VDC_detail '%v %h %l %u %t "%r" %>s %b "%{Referer}i" "%{User-agent}i" "%{SCRIPT_FILENAME}e" "%{cookie}i" %T ratio: "(%{ratio}n)"'
+                                                                                                                        
+   ScriptAlias /cgi-bin/ /usr/local/VDC/cgi-bin/
+                                                                                                                        
+  <IfModule mod_deflate.c>
+        SetOutputFilter DEFLATE
+
+        # If you change bind.cgi to USE_MOD_DEFLATE=0, uncomment the line below
+        # and the corresponding line in the :443 Vhost
+        # to avoid double encoding
+        SetEnvIfNoCase Request_URI \/Bind\/ no-gzip
+
+        DeflateFilterNote ratio
+
+                                                                                                                        
+        # standard, catch text, html, xml, etc.
+        AddOutputFilterByType DEFLATE text/*
+        # standard, but don't catch pdf, which breaks plugins, or images, which are already compressed
+        AddOutputFilterByType DEFLATE application/ms* application/vnd* application/postscript
+        # catch other VDC data types
+        AddOutputFilterByType DEFLATE application/octet-stream* octet/stream* application/x-* application/binary*
+                                                                                                                        
+        # tuning parameters, apache >= 2.0.45  only
+        DeflateBufferSize 64768
+  </IfModule>
+
+    <IfModule mod_perl.c>
+      <Location /perl>
+        SetHandler perl-script
+        <IfDefine !MODPERL2>
+	  PerlHandler Apache::Registry
+        </IfDefine>
+        <IfDefine MODPERL2>
+  	  PerlHandler ModPerl::Registry
+        </IfDefine>
+        Options +ExecCGI
+
+      </Location>
+
+      Alias /perl/ /usr/local/VDC/perl/
+      PerlRequire /usr/local/VDC/perl/startup.pl
+
+    </IfModule>
+
+    <IfModule mod_jk.c>
+       Alias /VDC "/usr/local/VDC/UIS/VDC"
+
+       JKMount /VDC/* ajp13
+       # include the ferret JKMount config
+       Include /usr/local/VDC/etc/httpd
+
+      <Directory /usr/local/VDC/UIS/VDC>
+        Options Indexes FollowSymLinks
+
+      </Directory>
+
+      <Location WEB-INF>
+        AllowOverride None
+        deny from all
+
+      </Location>
+
+      RedirectMatch ^/+vdc /VDC
+      RedirectMatch ^/+$ /VDC/
+      RedirectMatch ^/+VDC//+ /VDC/
+      RedirectMatch ^/+VDC$ /VDC/
+
+
+
+    </IfModule>
+
+
+    <Location /VDC-DEBUG/>
+      Options Indexes FollowSymLinks
+
+    </Location>
+    <Location /temp/>
+      Options Indexes FollowSymLinks
+    </Location>
+
+    Alias /temp/ %VDCTMP%/webtemp/
+
+    RewriteEngine on
+  # index verbs, including those in IndexAdmin module
+  RewriteRule /VDC/Index/([0-9].[0-9])/AddObject        /cgi-bin/dispatch.pl    [PT,E=SERVICE:IndexAdmin,E=VERSION:$1,E=VERB:AddObject]
+  RewriteRule /VDC/Index/([0-9].[0-9])/DeleteObject     /cgi-bin/dispatch.pl    [PT,E=SERVICE:IndexAdmin,E=VERSION:$1,E=VERB:DeleteObject]
+  RewriteRule /VDC/Index/([0-9].[0-9])/ReIndex  /cgi-bin/dispatch.pl    [PT,E=SERVICE:IndexAdmin,E=VERSION:$1,E=VERB:ReIndex]
+  RewriteRule /VDC/Index/([0-9].[0-9])/Status   /cgi-bin/dispatch.pl    [PT,E=SERVICE:IndexAdmin,E=VERSION:$1,E=VERB:Status]
+  RewriteRule /VDC/Index/([0-9].[0-9])/([a-zA-Z0-9\-]+) /cgi-bin/dispatch.pl  [PT,E=SERVICE:Index,E=VERSION:$1,E=VERB:$2]
+  RewriteRule /VDC/IndexAdmin/([0-9].[0-9])/([a-zA-Z0-9\-]+)	/cgi-bin/dispatch.pl	[PT,E=SERVICE:IndexAdmin,E=VERSION:$1,E=VERB:$2]
+
+    #Repository: 
+    RewriteRule /VDC/Repository/([0-9]\.[0-9])/AccessMeta/(.*)    /perl/dispatch.pl    [PT,E=SERVICE:Repository,E=VERSION:$1,E=VERB:AccessMeta,E=NAME:$2]
+    RewriteRule /VDC/Repository/([0-9]\.[0-9])/AccessMeta$    /perl/dispatch.pl        [PT,E=SERVICE:Repository,E=VERSION:$1,E=VERB:AccessMeta]
+    RewriteRule /VDC/Repository/([0-9].[0-9])/([a-zA-Z0-9\-]+)/(.*)	/cgi-bin/dispatch.pl	[PT,E=SERVICE:Repository,E=VERSION:$1,E=VERB:$2,E=NAME:$3]
+    RewriteRule /VDC/Repository/([0-9].[0-9])/([a-zA-Z0-9\-]+)	/cgi-bin/dispatch.pl	[PT,E=SERVICE:Repository,E=VERSION:$1,E=VERB:$2]
+    #Proxy:
+    RewriteRule /VDC/Proxy/([0-9]\.[0-9])/AccessMeta/(.*)    /perl/dispatch.pl    [PT,E=SERVICE:Proxy,E=VERSION:$1,E=VERB:AccessMeta,E=NAME:$2]
+    RewriteRule /VDC/Proxy/([0-9]\.[0-9])/AccessMeta$    /perl/dispatch.pl        [PT,E=SERVICE:Proxy,E=VERSION:$1,E=VERB:AccessMeta]
+    RewriteRule /VDC/Proxy/([0-9]\.[0-9])/([a-zA-Z0-9\-]+)/(.*)	/cgi-bin/dispatch.pl	[PT,E=SERVICE:Proxy,E=VERSION:$1,E=VERB:$2,E=NAME:$3]
+    RewriteRule /VDC/Proxy/([0-9].[0-9])/([a-zA-Z0-9\-]+) /cgi-bin/dispatch.pl      [PT,E=SERVICE:Proxy,E=VERSION:$1,E=VERB:$2]
+
+    RewriteRule /VDC/LNRS/([0-9].[0-9])/([a-zA-Z0-9\-]+)	/cgi-bin/dispatch.pl	[PT,E=SERVICE:LNRS,E=VERSION:$1,E=VERB:$2]
+    RewriteRule /VDC/DSB/([0-9].[0-9])/Disseminate        	 /cgi-bin/univar03.cgi  [PT]
+    RewriteRule /VDC/DSB/([0-9].[0-9])/Bind 			 /cgi-bin/bind.cgi  [PT]
+    RewriteRule /VDC/DSB/([0-9].[0-9])/GetZeligConfig              /cgi-bin/dmpConfigZelig.pl  [PT]
+    RewriteRule /VDC/DSB/([0-9].[0-9])/([a-zA-Z0-9\-]+)         /cgi-bin/dispatch.pl    [PT,E=SERVICE:DSB,E=VERSION:$1,E=VERB:$2]
+    RewriteRule /VDC/Statistics/([0-9].[0-9])/Http             /cgi-bin/awstats/awstats.pl    [PT]
+    RewriteRule /VDC/OAI/([0-9].[0-9])/			/cgi-bin/oai.pl    [PT]
+    RewriteRule /VDC/temp/(.*)				/temp/$1    [PT]
+
+    SSLCertificateFile %VDC_SSL_CRT%
+
+    SSLCertificateKeyFile %VDC_SSL_KEY%
+
+    SSLCipherSuite HIGH:MEDIUM:
+
+    SSLEngine on
+
+    Alias /VDC-DEBUG/ /var/www/html/vdc/
+
+  # For the manual
+  Alias /Manual /usr/local/VDC/htdocs/Manual
+
+
+# Rules for handling proxy requests.
+# This allows only local VDC components to use the proxying facilities of 
+# this server.
+# Rules for handling direct requests.
+
+ProxyTimeout 36000
+
+<Location /cgi-bin/dispatch.pl>
+	Order allow,deny
+        Allow from all
+	Deny from none
+	AuthName Restricted
+	AuthType Basic
+        <IfDefine MODPERL2>
+                PerlOptions +GlobalRequest
+        </IfDefine>
+	PerlSetVar AuthServer http://%AUTH_SERVER%
+	PerlSetVar AuthServerPort %AUTH_SERVER_PORT%
+        PerlSetVar RepServer %PROXY_HOST%
+	PerlSetVar SquidURI %PROXY_CACHE_URI%
+	PerlAuthenHandler AuthRepMgr
+	PerlAuthzHandler  AuthzRepMgr
+	require valid-user
+</Location>
+
+<Location /cgi-bin/bind.cgi>
+	Order allow,deny
+        Allow from all
+	Deny from none
+	AuthName Restricted
+	AuthType Basic
+        <IfDefine MODPERL2>
+                PerlOptions +GlobalRequest
+        </IfDefine>
+	PerlSetVar AuthServer http://%AUTH_SERVER%
+        PerlSetVar AuthServerPort 80
+        PerlSetVar RepServer %REP_SERVER%
+	PerlSetVar SquidURI %PROXY_CACHE_URI%
+	PerlAuthenHandler AuthRepMgr
+	PerlAuthzHandler  AuthzRepMgr
+	require valid-user
+</Location>
+
+# Rules for handling direct modperl requests.
+<Location /perl/dispatch.pl>
+	Order allow,deny
+        Allow from all
+	Deny from none
+	AuthName Restricted
+	AuthType Basic
+        <IfDefine MODPERL2>
+                PerlOptions +GlobalRequest
+        </IfDefine>
+	PerlSetVar AuthServer http://%AUTH_SERVER%
+	PerlSetVar AuthServerPort %AUTH_SERVER_PORT%
+        PerlSetVar RepServer %PROXY_HOST%
+	PerlSetVar SquidURI %PROXY_CACHE_URI%
+	PerlAuthenHandler AuthRepMgr
+	PerlAuthzHandler  AuthzRepMgr
+	require valid-user
+</Location>
+
+
+  </VirtualHost>
+
+</IfModule>
+

@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:gui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:ice="http://www.icesoft.com/icefaces/component">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+    
+<body>
+    <gui:composition template="/template.xhtml">
+        <gui:param name="pageTitle" value="Dataverse Network Admin Options - #{VDCRequest.dataversePageTitle}"/>
+        <gui:define name="body">
+            <ice:form id="form1" rendered="#{VDCRequest.currentVDC == null}">
+<style type="text/css">
+.icePnlTb .LftTop, .icePnlTb .MidTop, .icePnlTb .RtTop {background: #D9D9D9; border: 0;}
+.icePnlTbOn, .icePnlTbOff, .icePnlTbOver {margin: 0 4px 2px 0;}
+.icePnlTbOn .LftTop, .icePnlTbOn .MidTop, .icePnlTbOn .RtTop, .icePnlTbOff .LftTop, .icePnlTbOff .MidTop, .icePnlTbOff .RtTop, .icePnlTbOver .LftTop, .icePnlTbOver .MidTop, .icePnlTbOver .RtTop {height: 1px;}
+.icePnlTbOn .LftBtm, .icePnlTbOn .MidBtm, .icePnlTbOn .RtBtm, .icePnlTbOff .LftBtm, .icePnlTbOff .MidBtm, .icePnlTbOff .RtBtm, .icePnlTbOver .LftBtm, .icePnlTbOver .MidBtm, .icePnlTbOver .RtBtm {background:none;}
+.icePnlTbOn .LftMid, .icePnlTbOff .LftMid, .icePnlTbOver .LftMid {background:none; border-left: 1px solid #D9D9D9;}
+.icePnlTbOn .RtMid, .icePnlTbOff .RtMid, .icePnlTbOver .RtMid {background:none; border-right: 1px solid #D9D9D9;}
+.icePnlTbOn .MidMid a {background:none; padding-left: 8px; text-transform: uppercase;}
+.icePnlTbOn .MidMid a td {color:#0C54B3;}
+.icePnlTbOn .MidMid a:hover td {color:#C55B28;}
+.icePnlTbOff .MidMid a {background:none; padding-left: 8px; margin: 0; color:#C55B28;}
+.icePnlTbOff .MidMid a td {color:#C55B28;}
+.icePnlTbOff .MidMid a:hover td {color:#0C54B3;}
+.icePnlTbOver .MidMid a {background:none; padding-left: 8px; margin: 0; color:#C55B28;}
+.icePnlTbOver .MidMid a td {color:#C55B28;}
+.icePnlTbOver .MidMid a:hover td {color:#0C54B3;}
+.icePnlTbOn .MidMid a td {font-size: 1.3em !important;}
+.icePnlTbOff .LftTop, .icePnlTbOff .MidTop, .icePnlTbOff .RtTop, .icePnlTbOff .LftMid, .icePnlTbOff .MidMid, .icePnlTbOff .RtMid, .icePnlTbOver .LftTop, .icePnlTbOver .MidTop, .icePnlTbOver .RtTop, .icePnlTbOver .LftMid, .icePnlTbOver .MidMid, .icePnlTbOver .RtMid {background: #D9D9D9;}
+.icePnlTbOff .MidMid td, .icePnlTbOver .MidMid td {font-weight: normal;}
+.icePnlTbSetSpcr {border-bottom: 0;}
+.icePnlTbSetCnt {border-top: 1px solid #D9D9D9;}
+</style>
+                <ice:panelTabSet id="tabSet1" >
+                        <!-- DATAVERSE OPTIONS -->
+                        <ice:panelTab id="networkOptions" label="Network Options" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml&amp;tab=dataverseOptions" rendered="#{VDCSession.loginBean.networkAdmin}">
+                <div class="dvn_section">
+                  <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnSuccessMessage" rendered="#{!empty VDCRequest.successMessage}">
+                    <div class="dvnMsgBlockContainer">
+                      <p><ice:outputText id="statusMessage" value="#{VDCRequest.successMessage}"/></p>
+                    </div>
+                  </div>
+                  
+                    <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
+                        <tr><td colspan="2" class="dvnOptionsTableHeader"><ice:outputText value="#{bundlePageInfo.dvsSectionTitle}"/></td></tr>
+                        <tr>
+                            <td class="dvnOptionsTableOption">
+                                <ice:outputLink id="hyperlink4" value="/dvn/faces/site/AddSitePage.xhtml">
+                                    <ice:outputText id="hyperlink4Text" value="#{bundlePageInfo.createDvTitle}"/>
+                                </ice:outputLink>
+                            </td>
+                            <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.createDvText}"/></td>
+                        </tr>
+                        <tr>
+                            <td class="dvnOptionsTableOption">
+                                <ice:outputLink value="/dvn/faces/networkAdmin/ManageDataversesPage.xhtml">
+                                    <ice:outputText value="#{bundlePageInfo.manageDvsTitle}"/>
+                                </ice:outputLink>
+                            </td>
+                            <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.manageDvsText}"/></td>
+                        </tr>
+                        <tr>
+                            <td class="dvnOptionsTableOption">
+                                <ice:outputLink value="/dvn/faces/networkAdmin/ManageClassificationsPage.xhtml">
+                                    <ice:outputText value="#{bundlePageInfo.manageClassificationsTitle}"/>
+                                </ice:outputLink>
+                            </td>
+                            <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.manageClassificationsText}"/></td>
+                        </tr>
+                        <tr>
+                            <td class="dvnOptionsTableOption">
+                                <ice:outputLink value="/dvn/faces/networkAdmin/CommentReviewPage.xhtml">
+                                    <ice:outputText value="#{bundlePageInfo.commentReviewTitle}"/>
+                                </ice:outputLink>
+                            </td>
+                            <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.commentReviewText}"/></td>
+                        </tr>
+                        <tr><td colspan="2" class="dvnOptionsTableHeader"><ice:outputText value="#{bundlePageInfo.harvestingSectionTitle}"/></td></tr>
+                        <tr>
+                            <td class="dvnOptionsTableOption">
+                                <ice:outputLink value="/dvn/faces/site/EditHarvestSitePage.xhtml">
+                                    <ice:outputText value="#{bundlePageInfo.createHarvestingDvTitle}"/>
+                                    <f:param name="from" value="myNetworkOptions"/>
+                                </ice:outputLink>
+                            </td>
+                            <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.createHarvestingDvText}"/></td>
+                        </tr>
+                        <tr>
+                            <td class="dvnOptionsTableOption">
+                                <ice:outputLink value="/dvn/faces/site/HarvestSitesPage.xhtml">
+                                    <ice:outputText value="#{bundlePageInfo.manageHarvestingTitle}"/>
+                                </ice:outputLink>
+                            </td>
+                            <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.manageHarvestingText}"/></td>
+                        </tr>
+                        <tr>
+                            <td class="dvnOptionsTableOption">
+                                <ice:outputLink value="/dvn/faces/networkAdmin/EditExportSchedulePage.xhtml">
+                                    <ice:outputText value="#{bundlePageInfo.exportsTitle}"/>
+                                </ice:outputLink>
+                            </td>
+                            <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.exportsText}"/></td>
+                        </tr>
+                        <tr>
+                            <td class="dvnOptionsTableOption">
+                                <ice:outputLink value="/dvn/faces/networkAdmin/OAISetsPage.xhtml">
+                                    <ice:outputText value="#{bundlePageInfo.oaiSetsTitle}"/>
+                                </ice:outputLink>
+                            </td>
+                            <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.oaiSetsText}"/></td>
+                        </tr>
+                    </table>
+                    <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
+                        <tr><td colspan="2" class="dvnOptionsTableHeader"><ice:outputText id="outputText3" value="#{bundlePageInfo.dvnSettingsSectionTitle}"/></td></tr>
+                        <tr>
+                            <td class="dvnOptionsTableOption">
+                                <ice:outputLink id="hyperlink12" value="/dvn/faces/networkAdmin/EditNetworkNamePage.xhtml">
+                                    <ice:outputText id="hyperlink12Text" value="#{bundlePageInfo.editDvnNameTitle}"/>
+                                </ice:outputLink>
+                            </td>
+                            <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.editDvnNameText}"/></td>
+                        </tr>
+                        <tr>
+                            <td styleClass="dvnOptionsTableOption">
+                                <ice:outputLink id="hyperlink3" value="/dvn/faces/admin/EditBannerFooterPage.xhtml">
+                                    <ice:outputText id="hyperlink1Text2" value="#{bundlePageInfo.editDvnBrandingTitle}"/>
+                                </ice:outputLink>
+                            </td>
+                            <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.editDvnBrandingText}"/></td>
+                        </tr>
+                        <tr>
+                            <td class="dvnOptionsTableOption">
+                                <ice:outputLink id="hyperlink5" value="/dvn/faces/networkAdmin/EditNetworkAnnouncementsPage.xhtml">
+                                    <ice:outputText id="hyperlink3Text1" value="#{bundlePageInfo.editDvnDescriptionTitle}"/>
+                                </ice:outputLink>
+                            </td>
+                            <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.editDvnDescriptionText}"/></td>
+                        </tr>
+                        <tr>
+                            <td class="dvnOptionsTableOption">
+                                <ice:outputLink id="hyperlink17" value="/dvn/faces/admin/EditContactUsPage.xhtml">
+                                    <ice:outputText id="hyperlink17Text" value="#{bundlePageInfo.editDvnNotificationsTitle}"/>
+                                </ice:outputLink>
+                            </td>
+                            <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.editDvnNotificationsText}"/></td>
+                        </tr>
+                    </table>
+                    <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
+                        <tr><td colspan="2" class="dvnOptionsTableHeader"><ice:outputText value="#{bundlePageInfo.dvnTermsSectionTitle}"/></td></tr>
+                        <tr>
+                            <td class="dvnOptionsTableOption">
+                                <ice:outputLink value="/dvn/faces/networkAdmin/EditAccountUseTermsPage.xhtml">
+                                    <ice:outputText value="#{bundlePageInfo.editDvnAccountTermsTitle}"/>
+                                </ice:outputLink>
+                            </td>
+                            <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.editDvnAccountTermsText}"/></td>
+                        </tr>
+                        <tr>
+                            <td class="dvnOptionsTableOption">
+                                <ice:outputLink value="/dvn/faces/networkAdmin/EditNetworkDepositUseTermsPage.xhtml">
+                                    <ice:outputText value="#{bundlePageInfo.editDvnDepositTermsTitle}"/>
+                                </ice:outputLink>
+                            </td>
+                            <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.editDvnDepositTermsText}"/></td>
+                        </tr>
+                        <tr>
+                            <td class="dvnOptionsTableOption">
+                                <ice:outputLink value="/dvn/faces/networkAdmin/EditNetworkDownloadUseTermsPage.xhtml">
+                                    <ice:outputText value="#{bundlePageInfo.editDvnDownloadTermsTitle}"/>
+                                </ice:outputLink>
+                            </td>
+                            <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.editDvnDownloadTermsText}"/></td>
+                        </tr>
+                    </table>
+                    <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
+                        <tr><td colspan="2" class="dvnOptionsTableHeader"><ice:outputText value="#{bundlePageInfo.dvnPermissionsSectionTitle}"/></td></tr>
+                        <tr>
+                            <td class="dvnOptionsTableOption">
+                                <ice:outputLink id="hyperlink1" value="/dvn/faces/networkAdmin/NetworkPrivilegedUsersPage.xhtml">
+                                    <ice:outputText id="hyperlink1Text1" value="#{bundlePageInfo.manageDvnPermissionsTitle}"/>
+                                </ice:outputLink>
+                            </td>
+                            <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.manageDvnPermissionsText}"/></td>
+                        </tr>
+                        <tr>
+                            <td class="dvnOptionsTableOption">
+                                <ice:outputLink value="/dvn/faces/login/AddAccountPage.xhtml">
+                                    <ice:outputText value="#{bundlePageInfo.createAccountTitle}"/>
+                                </ice:outputLink>
+                            </td>
+                            <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.createAccountText}"/></td>
+                        </tr>
+                        <tr>
+                            <td class="dvnOptionsTableOption">
+                                <ice:outputLink id="hyperlink6" value="/dvn/faces/networkAdmin/AllUsersPage.xhtml">
+                                    <ice:outputText id="hyperlink6Text" value="#{bundlePageInfo.manageUsersTitle}"/>
+                                </ice:outputLink>
+                            </td>
+                            <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.manageUsersText}"/></td>
+                        </tr>
+                        <tr>
+                            <td class="dvnOptionsTableOption">
+                                <ice:outputLink id="hyperlink7" value="/dvn/faces/networkAdmin/UserGroupsPage.xhtml">
+                                    <ice:outputText id="hyperlink7Text" value="#{bundlePageInfo.manageGroupsTitle}"/>
+                                </ice:outputLink>
+                            </td>
+                            <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.manageGroupsText}"/></td>
+                        </tr>
+                    </table>
+                    <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
+                        <tr><td colspan="2" class="dvnOptionsTableHeader"><ice:outputText value="#{bundlePageInfo.troubleshootSectionTitle}"/></td></tr>
+                        <tr>
+                            <td class="dvnOptionsTableOption">
+                                <ice:outputLink value="/dvn/faces/networkAdmin/UtilitiesPage.xhtml">
+                                    <ice:outputText value="#{bundlePageInfo.utilitiesTitle}"/>
+                                </ice:outputLink>
+                            </td>
+                            <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.utilitiesText}"/></td>
+                        </tr>
+                        <tr>
+                            <td class="dvnOptionsTableOption">
+                                <ice:outputText rendered="#{MainLayoutBean.googleAnalyticsKey == null }"
+                                              value="Google Analytics"/>
+                                <ice:outputLink rendered="#{MainLayoutBean.googleAnalyticsKey != null }"
+                                              id="siteStatslink"
+                                              value="http://www.google.com/analytics/"
+                                              target="_blank">
+                                    <ice:outputText value="#{bundlePageInfo.webStatsTitle}"/>
+                                </ice:outputLink>
+                            </td>
+                            <td>
+                                <ice:outputText styleClass="dvnOptionsTableNote" rendered="#{MainLayoutBean.googleAnalyticsKey != null }" value="#{bundlePageInfo.webStatsText}"/>
+                                <ice:outputText styleClass="dvnOptionsTableNote" rendered="#{MainLayoutBean.googleAnalyticsKey == null }"
+                                              id="siteStatsText"
+                                              value="NOTE: Google Analytics is not configured for this Dataverse Network"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="dvnOptionsTableOption">
+                                <ice:outputText value="Dataverse Network Version"/>
+                            </td>
+                            <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{VersionPage.versionNumber} build number #{VersionPage.bambooBuild}"/>
+                             <ice:outputText value=" - "/>
+                             <ice:outputLink value="http://thedata.org/software/license" target="_blank">
+                                <ice:outputText value="License Information"/>
+                            </ice:outputLink>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="dvnOptionsTableOption">
+                                <ice:outputText value="Served by"/>
+                            </td>
+                            <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{VersionPage.serverName}"/>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                </ice:panelTab>
+                </ice:panelTabSet>
+            </ice:form>
+        </gui:define>
+    </gui:composition>
+</body>
+</html>

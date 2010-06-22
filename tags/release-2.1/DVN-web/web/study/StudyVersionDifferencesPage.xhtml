@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:gui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:ice="http://www.icesoft.com/icefaces/component">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+  <gui:composition template="/template.xhtml">
+    <!--<gui:include src="VersionNotesPopupFragment.xhtml"/>-->
+    <gui:param name="pageTitle" value="#{bundlePageInfo.versionDifferencesTitle} - #{VDCRequest.dataversePageTitle}"/>
+    <gui:define name="body">
+      <ice:form>
+        <ice:inputHidden rendered="#{VDCRequest.currentVDCId != null}" id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+
+<style type="text/css">
+.dvnstudytitleblock {overflow: hidden;}
+.dvnstudytitlefloat {padding-right: 340px; text-align: left;}
+span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; font-size:1.35em !important;}
+.dvnstudyversioninfo {}
+.dvnstudyversioninfo span.iceOutTxt {color:#A9A9A9; line-height: 1.48; font-size:.95em !important;}
+
+.dvnstudystatusbox{display: table-cell; padding: 2px 8px; font-weight: bold; line-height:24px !important;}
+.dvnstudystatusbox div{margin-top:4px; line-height:18px !important;}
+.dvnstudystatusarchived{background: gold; color: #526F76;}
+.dvnstudystatusreview{background: #ececec; color: #526F76;}
+.dvnstudystatusdraft{background: #CFDDEA; color: #526F76;}
+.dvnstudystatuslabel{text-transform:uppercase;}
+.dvnstudystatusreleasedver{font-weight: normal;color:#C55B28;}
+.dvnstudystatusnoreleasedver{color:#820024;}
+.dvnstudystatusversionnote{font-weight:normal;}
+.dvnstudystatusversionnote .vdcTruncatorLinkLess{margin-left: 8px;}
+
+.dvnstudyadminboxfloat{float: right; width: 310px; text-align:left;}
+.dvnstudypreviouslisting{text-align:right;}
+.dvnstudyadminbox{width: 300px; overflow:hidden; border:1px solid #d0d0d0; padding:4px; color:#526F76;}
+.dvnstudyadminlinksL {float: left; width: 150px; list-style-type: square; margin: 0 0 0 1.25em; padding: 0;}
+.dvnstudyadminlinksR {float: right; width: 130px; list-style-type: square; margin: 0; padding: 0;}
+.dvnstudyadminbox ul {padding: 0px; margin: 0px; list-style-type: none;}
+.dvnstudyadminbox li {background: url(/dvn/resources/images/icon_bullet.gif) no-repeat 0px 8px; padding-left: 10px;}
+.dvnstudyadminbox a:link,.dvnstudyadminbox a:visited,.dvnstudyadminbox a:hover,.dvnstudyadminbox a:active{color:#C55B28;}
+.dvnstudyadminbox li a:link,.dvnstudyadminbox li a:visited,.dvnstudyadminbox li a:hover,.dvnstudyadminbox li a:active{font-size:.9em !important;}
+
+table.dvnDifferanceTableHeader, table.dvnDifferanceTableHeader tr {border-left: 0;}
+table.dvnDifferanceTableHeader td {border-bottom: 0;}
+table.dvnDifferanceTableHeader td {border-top: 1px solid #CCC;}
+td.dvnDifferanceTableHeaderCol1 {border-top: 0 !important;}
+.dvnDifferanceTableHeaderCol {vertical-align: top;}
+
+.dvnDifferanceTable {margin: 0}
+.dvnDifferanceTable td.vdcStudyInfoCol1 {padding: 5px;}
+</style>
+
+<script type="text/javascript">
+  // <![CDATA[
+  jQuery(document).ready(function(){
+      jQuery(".dvnstudystatusversionnote").truncate({max_length: 250});
+  });
+  // ]]>
+</script>
+
+        <div jsfc="ice:panelGroup" styleClass="dvn_section" rendered="#{studyVersionDifferencesPage.releaseConfrimInProgress}">
+            <div class="dvnstudytitleblock">
+                <div class="dvnstudyadminboxfloat">
+                        <div jsfc="ice:panelGroup" styleClass="vdcTextRight dvnFormMargin">
+                            <ice:commandButton id="button1" value="Release" actionListener="#{studyVersionDifferencesPage.openPopup}"/>
+                            <ice:commandButton id="button2" value="Cancel" immediate="true" action="#{studyVersionDifferencesPage.cancel}"/>
+                        </div>
+                </div>
+                <div class="dvnstudytitlefloat">
+                    <ice:outputText styleClass="dvnstudytitle" value="#{studyVersionDifferencesPage.studyUI2.metadata.title}"/>
+                    <div jsfc="ice:panelGroup" styleClass="dvnstudyversioninfo">
+                        <ice:outputText value="#{studyVersionDifferencesPage.studyUI2.study.globalId}"/> <ice:outputText value="#{studyVersionDifferencesPage.studyUI2.metadata.UNF}" rendered="#{!empty studyVersionDifferencesPage.studyUI2.metadata.UNF}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup" styleClass="dvnstudystatusbox #{studyVersionDifferencesPage.studyUI2.studyVersion.inReview ? 'dvnstudystatusreview' : '' or studyVersionDifferencesPage.studyUI2.studyVersion.draft ? 'dvnstudystatusdraft' : ''}">
+                        <ice:outputText styleClass="dvnstudystatuslabel" value="In Review " rendered="#{studyVersionDifferencesPage.studyUI2.studyVersion.inReview}"/>
+                        <ice:outputText styleClass="dvnstudystatuslabel" value="Draft " rendered="#{studyVersionDifferencesPage.studyUI2.studyVersion.draft}"/>
+                        <ice:outputText value="Study Version: #{studyVersionDifferencesPage.studyUI2.studyVersion.versionNumber}"/> <br/>
+                        <ice:outputText value="Created: #{studyVersionDifferencesPage.studyUI2.studyVersion.createTime} &#8211; Last Updated: #{studyVersionDifferencesPage.studyUI2.studyVersion.lastUpdateTime}"/> <br/>
+                        <ice:outputText value="Study Version Notes: " rendered="#{!empty studyVersionDifferencesPage.studyUI2.studyVersion.versionNote}"/>
+                        <ice:outputText styleClass="dvnstudystatusversionnote" value="#{studyVersionDifferencesPage.studyUI2.studyVersion.versionNote}" rendered="#{!empty studyVersionDifferencesPage.studyUI2.studyVersion.versionNote}"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div jsfc="ice:panelGroup" styleClass="dvn_section" rendered="#{! studyVersionDifferencesPage.releaseConfrimInProgress}">
+            <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
+                <div class="dvnMsgBlockContainer">
+                    <ice:outputText value="#{bundlePageInfo.versionDifferencesHelp}" escape="false"/>
+                </div>
+            </div>
+            <div class="dvn_sectionTitle dvn_sectionTitleLinksL">
+                <ice:outputText value="#{bundlePageInfo.versionDifferencesTitle}"/>
+            </div>
+            <div class="dvn_sectionTitleLinksR">
+                <div class="vdcTextRight dvnFormMargin">
+                    <!--<ice:commandButton id="button2" value="Back" immediate="true" action="#{studyVersionDifferencesPage.cancel}"/>-->
+                    <ice:commandLink immediate="true" action="#{studyVersionDifferencesPage.cancel}">
+                        <ice:outputText value="Back to Study" nospan="true"/>
+                    </ice:commandLink>
+                </div>
+            </div>
+        </div>
+
+          <div class="dvn_sectionBoxNoBorders">
+          <div class="dvn_sectionBox">
+            <div class="dvn_margin12">
+              
+              <ice:dataTable id="versionTable" styleClass="dvnDifferanceTableHeader" value="versionTable" rendered="true"
+                             columns="3" cellpadding="0" cellspacing="0" width="100%" columnWidths="20%,40%,40%" columnClasses="dvnDifferanceTableHeaderCol1,dvnDifferanceTableHeaderCol2,dvnDifferanceTableHeaderCol3">
+                  <ice:column id="column1">
+                  </ice:column>
+                  <ice:column id="column2">
+                      <ice:outputText value="Version: #{studyVersionDifferencesPage.studyUI1.studyVersion.versionNumber}"/>
+                      <ice:outputText value="Last Updated: #{studyVersionDifferencesPage.studyUI1.studyVersion.lastUpdateTime}"/>
+                  </ice:column>
+                  <ice:column id="column3">
+                      <ice:outputText value="Version: #{studyVersionDifferencesPage.studyUI2.studyVersion.versionNumber}"/>
+                      <ice:outputText value="Last Updated: #{studyVersionDifferencesPage.studyUI2.studyVersion.lastUpdateTime}"/>
+                  </ice:column>
+              </ice:dataTable>
+
+              <div jsfc="ice:panelGroup" id="diffPanel1" styleClass="vdcStudyInfoHeader" rendered="#{!empty studyVersionDifferencesPage.citationDiffList}">
+                    <ice:outputText id="outputText1" value="Citation Information"/>
+              </div>
+              <ice:dataTable id="diffCitationDataTable" styleClass="dvnDifferanceTable" rendered="#{!empty studyVersionDifferencesPage.citationDiffList}" value="#{studyVersionDifferencesPage.citationDiffList}" var="catDiff"
+                             columns="3" cellpadding="0" cellspacing="0" width="100%" columnWidths="20%,40%,40%" columnClasses="vdcStudyInfoCol1, vdcStudyInfoCol2, vdcStudyInfoCol2">
+                  <ice:column id="column1">
+                      <ice:outputText value="#{catDiff.fieldName}"/>
+                  </ice:column>
+                  <ice:column id="column2">
+                      <ice:outputText value="#{catDiff.fieldValue1}" escape="false"/>
+                  </ice:column>
+                  <ice:column id="column3">
+                      <ice:outputText value="#{catDiff.fieldValue2}" escape="false"/>
+                  </ice:column>
+              </ice:dataTable>
+
+              <div jsfc="ice:panelGroup" id="diffPanel2" styleClass="vdcStudyInfoHeader" rendered="#{!empty studyVersionDifferencesPage.abstractandscopeDiffList}">
+                    <ice:outputText id="outputText12" value="Abstract and Scope"/>
+              </div>
+              <ice:dataTable id="diffAbstractandscopeDataTable" styleClass="dvnDifferanceTable" rendered="#{!empty studyVersionDifferencesPage.abstractandscopeDiffList}" value="#{studyVersionDifferencesPage.abstractandscopeDiffList}" var="catDiff"
+                             columns="3" cellpadding="0" cellspacing="0" width="100%" columnWidths="20%,40%,40%" columnClasses="vdcStudyInfoCol1, vdcStudyInfoCol2, vdcStudyInfoCol2">
+                  <ice:column id="column1">
+                      <ice:outputText value="#{catDiff.fieldName}"/>
+                  </ice:column>
+                  <ice:column id="column2">
+                      <ice:outputText value="#{catDiff.fieldValue1}" escape="false"/>
+                  </ice:column>
+                  <ice:column id="column3">
+                      <ice:outputText value="#{catDiff.fieldValue2}" escape="false"/>
+                  </ice:column>
+              </ice:dataTable>
+
+              <div jsfc="ice:panelGroup" id="diffPanel3" styleClass="vdcStudyInfoHeader" rendered="#{!empty studyVersionDifferencesPage.datacollectionDiffList}">
+                    <ice:outputText id="outputText3" value="Data Collection / Methodology"/>
+              </div>
+              <ice:dataTable id="diffDatacollectionDataTable" styleClass="dvnDifferanceTable" rendered="#{!empty studyVersionDifferencesPage.datacollectionDiffList}" value="#{studyVersionDifferencesPage.datacollectionDiffList}" var="catDiff"
+                             columns="3" cellpadding="0" cellspacing="0" width="100%" columnWidths="20%,40%,40%" columnClasses="vdcStudyInfoCol1, vdcStudyInfoCol2, vdcStudyInfoCol2">
+                  <ice:column id="column1">
+                      <ice:outputText value="#{catDiff.fieldName}"/>
+                  </ice:column>
+                  <ice:column id="column2">
+                      <ice:outputText value="#{catDiff.fieldValue1}" escape="false"/>
+                  </ice:column>
+                  <ice:column id="column3">
+                      <ice:outputText value="#{catDiff.fieldValue2}" escape="false"/>
+                  </ice:column>
+              </ice:dataTable>
+
+              <div jsfc="ice:panelGroup" id="diffPanel4" styleClass="vdcStudyInfoHeader" rendered="#{!empty studyVersionDifferencesPage.dataavailDiffList}">
+                    <ice:outputText id="outputText4" value="Data Set Availability"/>
+              </div>
+              <ice:dataTable id="diffDataavailDataTable" styleClass="dvnDifferanceTable" rendered="#{!empty studyVersionDifferencesPage.dataavailDiffList}" value="#{studyVersionDifferencesPage.dataavailDiffList}" var="catDiff"
+                             columns="3" cellpadding="0" cellspacing="0" width="100%" columnWidths="20%,40%,40%" columnClasses="vdcStudyInfoCol1, vdcStudyInfoCol2, vdcStudyInfoCol2">
+                  <ice:column id="column1">
+                      <ice:outputText value="#{catDiff.fieldName}"/>
+                  </ice:column>
+                  <ice:column id="column2">
+                      <ice:outputText value="#{catDiff.fieldValue1}" escape="false"/>
+                  </ice:column>
+                  <ice:column id="column3">
+                      <ice:outputText value="#{catDiff.fieldValue2}" escape="false"/>
+                  </ice:column>
+              </ice:dataTable>
+
+              <div jsfc="ice:panelGroup" id="diffPanel5" styleClass="vdcStudyInfoHeader" rendered="#{!empty studyVersionDifferencesPage.termsofuseDiffList}">
+                    <ice:outputText id="outputText5" value="Terms of Use"/>
+              </div>
+              <ice:dataTable id="diffTermsofuseDataTable" styleClass="dvnDifferanceTable" rendered="#{!empty studyVersionDifferencesPage.termsofuseDiffList}" value="#{studyVersionDifferencesPage.termsofuseDiffList}" var="catDiff"
+                             columns="3" cellpadding="0" cellspacing="0" width="100%" columnWidths="20%,40%,40%" columnClasses="vdcStudyInfoCol1, vdcStudyInfoCol2, vdcStudyInfoCol2">
+                  <ice:column id="column1">
+                      <ice:outputText value="#{catDiff.fieldName}"/>
+                  </ice:column>
+                  <ice:column id="column2">
+                      <ice:outputText value="#{catDiff.fieldValue1}" escape="false"/>
+                  </ice:column>
+                  <ice:column id="column3">
+                      <ice:outputText value="#{catDiff.fieldValue2}" escape="false"/>
+                  </ice:column>
+              </ice:dataTable>
+
+              <div jsfc="ice:panelGroup" id="diffPanel6" styleClass="vdcStudyInfoHeader" rendered="#{!empty studyVersionDifferencesPage.notesDiffList}">
+                    <ice:outputText id="outputText6" value="Other Information"/>
+              </div>
+              <ice:dataTable id="diffNotesDataTable" styleClass="dvnDifferanceTable" rendered="#{!empty studyVersionDifferencesPage.notesDiffList}" value="#{studyVersionDifferencesPage.notesDiffList}" var="catDiff"
+                              columns="3" cellpadding="0" cellspacing="0" width="100%" columnWidths="20%,40%,40%" columnClasses="vdcStudyInfoCol1, vdcStudyInfoCol2, vdcStudyInfoCol2">
+                  <ice:column id="column1">
+                      <ice:outputText value="#{catDiff.fieldName}"/>
+                  </ice:column>
+                  <ice:column id="column2">
+                      <ice:outputText value="#{catDiff.fieldValue1}" escape="false"/>
+                  </ice:column>
+                  <ice:column id="column3">
+                      <ice:outputText value="#{catDiff.fieldValue2}" escape="false"/>
+                  </ice:column>
+              </ice:dataTable>
+
+              <!-- If there are no differences in the metadata, we want to say so explicitely, rather than showing a blank page: -->
+              <div jsfc="ice:panelGroup" id="diffPanel7" styleClass="vdcStudyInfoHeader" rendered="#{!studyVersionDifferencesPage.catalogingInformationDifferent}">
+                    <ice:outputText id="outputText7" value="#{studyVersionDifferencesPage.noCatalogDifferencesFoundLabel}"/>
+              </div>
+              <ice:dataTable id="IamAnEmptyTable" columns="1" cellpadding="0" cellspacing="0" width="100%" bgcolor=""/>
+
+              <div jsfc="ice:panelGroup" id="diffPanel8" styleClass="vdcStudyInfoHeader" rendered="#{studyVersionDifferencesPage.studyFilesDifferent}">
+                    <ice:outputText id="outputText" value="Differences in Study Files:"/>
+              </div>
+              <ice:dataTable id="diffFilesDataTable" styleClass="dvnDifferanceTable" value="#{studyVersionDifferencesPage.studyFilesDiffList}" var="fileDiff"
+                              columns="3" cellpadding="0" cellspacing="0" width="100%"
+                              columnWidths="20%,40%,40%" columnClasses="vdcStudyInfoCol1, vdcStudyInfoCol2, vdcStudyInfoCol2"
+                              rendered="#{studyVersionDifferencesPage.studyFilesDifferent}">
+                    <ice:column id="column1">
+                        <ice:outputText value="File ID: #{fileDiff.fileId}"/>
+                    </ice:column>
+                    <ice:column id="column2" rendered="#{! fileDiff.file1Empty}">
+                        <ice:outputText value="File Name: #{fileDiff.fileName1}" rendered="#{fileDiff.fileName1 != null}"/>
+                        <ice:outputText value="File Type: #{fileDiff.fileType1}" rendered="#{fileDiff.fileType1 != null}"/>
+                        <ice:outputText value="File Size: #{fileDiff.fileSize1}" rendered="#{fileDiff.fileSize1 != null}"/>
+                        <ice:outputText value="Category: #{fileDiff.fileCat1}" rendered="#{fileDiff.fileCat1 != null}"/>
+                        <ice:outputText value="Description: #{fileDiff.fileDesc1}" rendered="#{fileDiff.fileDesc1 != null}"/>
+                    </ice:column>
+                    <ice:column id="column2" rendered="#{fileDiff.file1Empty}">
+                        <ice:outputText value="[Empty]"/>
+                    </ice:column>
+                    <ice:column id="column3" rendered="#{! fileDiff.file2Empty}">
+                        <ice:outputText value="File Name: #{fileDiff.fileName2}" rendered="#{fileDiff.fileName2 != null}"/>
+                        <ice:outputText value="File Type: #{fileDiff.fileType2}" rendered="#{fileDiff.fileType2 != null}"/>
+                        <ice:outputText value="File Size: #{fileDiff.fileSize2}" rendered="#{fileDiff.fileSize2 != null}"/>
+                        <ice:outputText value="Category: #{fileDiff.fileCat2}" rendered="#{fileDiff.fileCat1 != null}"/>
+                        <ice:outputText value="Description: #{fileDiff.fileDesc2}" rendered="#{fileDiff.fileDesc1 != null}"/>
+                    </ice:column>
+                    <ice:column id="column3" rendered="#{fileDiff.file2Empty}">
+                        <ice:outputText value="[Empty]"/>
+                    </ice:column>
+              </ice:dataTable>
+
+              <div jsfc="ice:panelGroup" id="diffPanel9" styleClass="vdcStudyInfoHeader" rendered="#{!studyVersionDifferencesPage.studyFilesDifferent}">
+                    <ice:outputText id="outputText9" value="#{studyVersionDifferencesPage.noFileDifferencesFoundLabel}"/>
+              </div>
+              
+            </div>
+          </div>
+        </div>
+
+      </ice:form>
+    </gui:define>
+  </gui:composition>
+</body>
+</html>

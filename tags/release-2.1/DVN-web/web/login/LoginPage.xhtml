@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:gui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:ice="http://www.icesoft.com/icefaces/component">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+  <gui:composition template="/vanilla_template.xhtml">
+    <gui:param name="pageTitle" value="#{bundlePageInfo.loginTitle} - #{VDCRequest.dataversePageTitle}"/>
+    <gui:define name="body">
+      <div id="dvnLoginPageWrap">
+      <div class="dvnRound">
+        <ice:form id="vanillaLoginForm">
+          <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+          <ice:inputHidden binding="#{LoginPage.hiddenStudyId}" value="#{LoginPage.studyId}"/>
+          <div id="layoutPanel1" class="dvnLoginContent">
+            <div class="dvnLoginInputArea">
+              <!-- ************ Username login section ******************* -->
+              <fieldset>
+                <legend>Dataverse Account</legend>
+                <div jsfc="h:panelGroup" styleClass="dvnLoginFailed" rendered="#{LoginPage.loginFailed}">
+                  <ice:outputText styleClass="errorMessage" value="#{LoginPage.errMessage}"/>
+                </div>
+                <label for="username">Username</label>
+                <ice:inputText tabindex="1" id="username" name="username" value="#{LoginPage.userName}" required="true" requiredMessage="This field is required."/>
+                <ice:message for="username" styleClass="errorMessage"/>
+                <br/>
+                <label for="password">Password</label>
+                <ice:inputSecret tabindex="2" onkeypress="if (window.event) return processEvent('', 'loginForm:button1'); else return processEvent(event, 'loginForm:button1');" id="password" name="password" value="#{LoginPage.password}" required="true" requiredMessage="This field is required."/>
+                <ice:message for="password" styleClass="errorMessage"/>
+                <p>
+                  <ice:commandButton tabindex="3" id="button1" value="Log in" action="#{LoginPage.login}"/>
+                </p>
+                <div class="dvnLoginLinkBlock">
+                  <p><ice:outputLink tabindex="4" value="/dvn#{VDCRequest.currentVDCURL}/faces/login/ForgotPasswordPage.xhtml" title="Link to Reset Password">Forgot your password?</ice:outputLink></p>
+                  <p><ice:outputText value="Don't have a Dataverse Network account?"></ice:outputText><ice:commandLink tabindex="5" action="#{LoginWorkflowBean.beginContributorWorkflow}" title="Create an Account" immediate="true">Create an Account.</ice:commandLink></p>
+                </div>
+              </fieldset>
+              <!-- ************* end username login section *************** -->
+              <!-- ************ Affiliate login section ******************* -->
+              <div jsfc="h:panelGroup" rendered="#{LoginPage.isAffiliates != null}">
+                <script type="text/javascript">
+                    // <![CDATA[
+                          function loginAffiliate(objId) {
+                              var obj     = eval("document.getElementById('" + objId + "')");
+                              downloadUrl = obj.options[obj.selectedIndex].value;
+                              if (downloadUrl != "") {
+                                window.location.href = downloadUrl;
+                              }
+                          }
+                     // ]]>
+                 </script>
+                <fieldset class="dvnLoginPageAffiliate">
+                  <legend>Affiliate</legend>
+                  <label for="username">Affiliate Name</label>
+                  <ice:selectOneMenu id="affiliateName">
+                    <f:selectItems value="#{LoginPage.affiliateNames}"/>
+                  </ice:selectOneMenu>
+                  <ice:message for="affiliateName" styleClass="errorMessage"/>
+                  <input type="button" class="iceCmdBtn" onclick="loginAffiliate('vanillaLoginForm:affiliateName')" value="Log in"/>
+                </fieldset>
+              </div>
+              <!-- ************* end affiliate login section *************** -->
+            </div>
+            <div class="dvnLoginContentText">
+              <div id="dvnLoginPageHeader">
+                <a name="login" title="Dataverse Network Login"><ice:outputText value="#{VDCRequest.vdcNetwork.name} Dataverse Network" styleClass="dvnLoginHeadingText" escape="false"/></a>
+              </div>
+              <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
+                <div class="dvnMsgBlockContainer">
+                  <ice:outputText value="#{bundlePageInfo.loginHelp}" escape="false" rendered="#{LoginPage.redirect == null}"/>
+                  <ice:outputText value="#{bundlePageInfo.loginAffiliateHelp}" escape="false" rendered="#{LoginPage.isAffiliates != null}"/>
+                  <ice:outputText value="#{bundlePageInfo.loginRestrictedHelp}" escape="false" rendered="#{LoginPage.redirect != null}"/>
+                </div>
+              </div>
+              <div class="dvnLoginContentAreaFooter">
+                <a href="http://thedata.org" target="_blank" title="Link to the Dataverse Network Project"><img alt="Powered by the Dataverse Network Project" src="/dvn/resources/images/dvnPoweredByLogo.gif"/></a>
+              </div>
+            </div>
+          </div>
+        </ice:form>
+      </div>
+      </div>
+    </gui:define>
+  </gui:composition>
+</body>
+</html>

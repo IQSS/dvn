@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:gui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:ice="http://www.icesoft.com/icefaces/component"
+      xmlns:dvn="/WEB-INF/tlds/dvn-components">
+<head>
+  <!-- page title param passed in by param -->
+  <title><h:outputText value="#{pageTitle}"/></title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="Content-Language" content="en"/>
+  <meta http-equiv="imagetoolbar" content="no"/>
+  <link rel="stylesheet" type="text/css" href="/dvn/resources/icefaces/dvn_rime/dvn_rime.css"/>
+  <link rel="stylesheet" type="text/css" href="/dvn/resources/css/dvngeneral.css"/>
+  <link rel="stylesheet" type="text/css" href="/dvn/resources/css/dvnspecific.css"/>
+  <link rel="stylesheet" type="text/css" href="/dvn/resources/css/dvnhome.css"/>
+  <link rel="stylesheet" type="text/css" href="/dvn/resources/css/dvnstudy.css"/>
+  <!-- IE SPECIFIC STYLESHEET -->
+  <ice:outputText escape="false" nospan="true"
+    value="&#60;!--[if lte IE 8]&#62;
+	&#60;link rel=&#34;stylesheet&#34; type=&#34;text/css&#34; href=&#34;/dvn/resources/css/iefix.css&#34;/&#62;
+    &#60;![endif]--&#62;"/>
+  <script type="text/javascript" src="/dvn/resources/javascript/EventCapture.js"/>
+  <script type="text/javascript" src="/dvn/resources/javascript/jquery.js"/>
+  <script type="text/javascript" src="/dvn/resources/javascript/jquery.corner.js"/>
+  <script type="text/javascript" src="/dvn/resources/javascript/excanvas.pack.js"/>
+  <script type="text/javascript" src="/dvn/resources/javascript/jquery.ifixpng.js"/>
+  <script type="text/javascript" src="/dvn/resources/javascript/jquery.truncator.js"/>
+  <script type="text/javascript" src="/dvn/resources/javascript/sgbeal-togglepane.jquery.js"/>
+  <script type="text/javascript" src="/dvn/resources/javascript/jquery.accordion.js"/>
+  <script type="text/javascript" src="/dvn/resources/javascript/jquery.cookie.js"/>
+  <script type="text/javascript" src="/dvn/resources/javascript/jcap.js"/>
+  <script type="text/javascript" src="/dvn/resources/javascript/md5.js"/>
+  <!-- The following script is in place to make sure that the template code is reloaded when a forward happens
+    or when a page goes back to itself but with a different "view" (as with tabs); each page should, if need be,
+    define a uniquifier for each "view" (for example, a tabbed page would just use the selectedIndex of the tabSet) -->
+  <script type="text/javascript">
+      // #{pageTitle} - #{uniquifier}
+  </script>
+  <script type="text/javascript">
+      // <![CDATA[
+      jQuery.noConflict();
+      jQuery(document).ready(function(){
+          jQuery("div.dvn_navblock").corner("bottom keep 10px");
+          jQuery("div.dvn_block, div.dvn_blockTitleBar, div.dvn_searchblock, div.dvnMsgBlockRound, div.vdcStudyFilesMessage").corner("10px");
+      });
+      // ]]>
+  </script>
+  <script type="text/javascript">
+    if (self != top)
+    {
+      document.write ('<link rel="stylesheet" type="text/css" href="/dvn/resources/css/dvnframes.css"/>');
+    }
+  </script>
+  <ice:outputText escape="false" nospan="true"
+                  rendered="#{applicationScope.googleAnalyticsKey != null || MainLayoutBean.googleAnalyticsKey != null}"
+                  value="#{(applicationScope.googleAnalyticsSourceCode != null) ? applicationScope.googleAnalyticsSourceCode : MainLayoutBean.googleAnalyticsSourceCode}"/>
+</head>
+<!--  this template is example 4.3 in the Facelets Shortcut -->
+<body>
+    <f:loadBundle basename="Bundle" var="bundle"/>
+    <f:loadBundle basename="BundlePageInfo" var="bundlePageInfo"/>
+    <gui:insert name="title">
+        <!--  ****** THIS IS THE HEADER ******** -->
+        <gui:include src="views/CustomBanner.xhtml"/>
+        <!-- <gui:include src="views/ConnectedBanner.xhtml"/> -->
+    </gui:insert>
+    <div class="dvn_wrapper" id="dvn_wrapper">
+        <div class="dvn_content" id="content-frame">
+            <!-- required to fix a bug in firefox where the connection status box can be displayed erroneously -->
+            <ice:outputConnectionStatus showPopupOnDisconnect="false"/>
+            <gui:insert name="title">
+                <!-- *** MENUBAR (Included from template) *** -->
+                <gui:include src="views/Menubar.xhtml"/>
+            </gui:insert>
+            <gui:insert name="body">Default Body</gui:insert>
+            <div class="dvn_clear"></div>
+        </div>
+    </div>
+    <gui:insert name="footer">
+        <gui:include src="views/CustomFooter.xhtml"/>
+    </gui:insert>
+    <ice:outputText escape="false" nospan="true"
+                    rendered="#{applicationScope.googleAnalyticsKey != null || MainLayoutBean.googleAnalyticsKey != null}"
+                    value="#{(applicationScope.googleAnalyticsCode != null) ? applicationScope.googleAnalyticsCode : MainLayoutBean.googleAnalyticsCode}"/>
+    <!-- fix for the comments modal dialog being affected by customization -->
+    <ice:form id="StudyCommentsPopup" rendered="#{MainLayoutBean.writeStudyCommentsPopups}">
+        <!-- The popup panel code -->
+        <!-- report abuse popup -->
+        <ice:panelPopup id="reportPopup"
+                        draggable="false"
+                        visible="#{StudyCommentsFragment.showPopup}"
+                        autoCentre="true"
+                        modal="true">
+            <f:facet name="header">
+                <ice:panelGrid id="autoCentReportPanelGrid"
+                               width="100%"
+                               cellpadding="0"
+                               cellspacing="0"
+                               columns="2"
+                               columnClasses="none, popupButton">
+                    <ice:outputText value="Report Abuse"/>
+                    <ice:commandLink id="autoCentReportPopupClose"
+                                     actionListener="#{StudyCommentsFragment.togglePopup}"
+                                     styleClass="popupModalClose">
+                        <ice:graphicImage value="/resources/images/icon_close.gif"/>
+                    </ice:commandLink>
+                </ice:panelGrid>
+            </f:facet>
+            <f:facet name="body">
+                <ice:panelGrid id="autoCentReportContent"
+                               width="100%"
+                               cellpadding="0"
+                               cellspacing="0"
+                               columns="1"
+                               styleClass="popupModalBody">
+                    <ice:outputText value="You are about to report this comment as abusive because of inappropriate language, tone, or other violation of the study terms of use."/>
+                    <ice:outputText value="Do you want to continue?"/>
+                    <div jsfc="ice:panelGroup" styleClass="dvnFormPadding">
+                        <ice:commandButton id="autoCentReportPopupOk"
+                                           actionListener="#{StudyCommentsFragment.reportAbuse}"
+                                           value="OK"/>
+                        <ice:outputText nospan="true" escape="false" value="&#160;&#160;&#160;"/>
+                        <ice:commandButton id="autoCentReportPopupCancel"
+                                           actionListener="#{StudyCommentsFragment.togglePopup}"
+                                           value="Cancel"/>
+                    </div>
+                </ice:panelGrid>
+            </f:facet>
+        </ice:panelPopup>
+        <!-- delete popup -->
+        <ice:panelPopup id="deletePopup"
+                        draggable="false"
+                        visible="#{StudyCommentsFragment.showDeletePopup}"
+                        autoCentre="true"
+                        modal="true">
+            <f:facet name="header">
+                <ice:panelGrid id="autoCentPanelGrid"
+                               width="100%" cellpadding="0"
+                               cellspacing="0" columns="2"
+                               columnClasses="none,popupButton">
+                    <ice:outputText value="Delete Comment"/>
+                    <ice:commandLink id="autoCentPopupClose"
+                                     actionListener="#{StudyCommentsFragment.toggleDeletePopup}"
+                                     styleClass="popupModalClose">
+                        <ice:graphicImage value="/resources/images/icon_close.gif"/>
+                    </ice:commandLink>
+                </ice:panelGrid>
+            </f:facet>
+            <f:facet name="body">
+                <ice:panelGrid id="autoCentContent"
+                               width="100%" cellpadding="0"
+                               cellspacing="0" columns="1"
+                               styleClass="popupModalBody">
+                    <ice:outputText value="You are about to delete a comment. This comment will no longer be visible to any users."/>
+                    <ice:outputText value="Do you want to continue?"/>
+                    <div jsfc="ice:panelGroup" styleClass="dvnFormPadding dvnFormMargin">
+                        <ice:commandButton id="autoCentPopupOk"
+                                           actionListener="#{StudyCommentsFragment.deleteFlaggedComment}"
+                                           value="OK"/>
+                        <ice:commandButton id="autoCentPopupCancel"
+                                           actionListener="#{StudyCommentsFragment.toggleDeletePopup}"
+                                           value="Cancel"/>
+                    </div>
+                </ice:panelGrid>
+            </f:facet>
+        </ice:panelPopup>
+        <!-- end delete -->
+        <!-- end the popup panel code -->
+    </ice:form>
+    <!-- popups for Study Version Notes and Delete/Destroy confirmation: -->
+    <!-- they are needed by several different pages, so it made sense to -->
+    <!-- define them in these fragments that can be loaded where necessary. -->
+    <gui:include src="study/VersionNotesPopupFragment.xhtml"/>
+    <gui:include src="study/DeletePopupFragment.xhtml"/>
+</body>
+</html>

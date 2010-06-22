@@ -1,0 +1,191 @@
+/* CSS Document */
+/* STUDY ADMIN LINKS */
+.dvnStudyPageInlineReleaseButton{margin-right:2em;display:inline;vertical-align:middle}
+.editDropDown,.editDropDown li,.editDropDown ul{list-style:none;margin:0;padding:0}
+ul.editDropDown{display:inline}
+.editDropDown li{display:inline;position:relative;z-index:5;text-align:left}
+.editDropDown li a:hover{text-decoration:none}
+.editDropDown ul{width:20em;display:block;position:absolute;top:-999em;left:-1px;z-index:10;opacity:0.9999}
+.editDropDown li:hover ul,.editDropDown li.sfHover ul{top:1.5em;left:0}
+.editDropDown li:hover li,.editDropDown li.sfHover li{display:block;padding-bottom:.25em}
+.editDropDown ul li:hover{z-index:10000}
+.editDropDown ul li a,.editDropDown ul li a:link,.editDropDown ul li a:active,.editDropDown ul li a:visited{display:block;text-align:left;white-space:nowrap}
+.editDropDown li:hover ul a,.editDropDown li.sfHover ul a,.editDropDown li:hover ul a:link,.editDropDown li.sfHover ul a:link,.editDropDown li:hover ul a:visited,.editDropDown li.sfHover ul a:visited,.editDropDown li:hover ul a:active,.editDropDown li.sfHover ul a:active{padding:.5em 0 0;text-decoration:none !important;outline:none}
+.editDropDown a.editDropDownLink{margin:0;padding:0 .25em .5em;color:#0c54b3}
+.editDropDown a.editDropDownLink:hover{margin:0;text-decoration:none}
+.studyEditLinks li a{color:#0c54b3}
+.studyEditLinks li:hover a.editDropDownLink,.studyEditLinks li:hover li,.studyEditLinks li.sfHover li{background:khaki}
+.studyEditLinks li:hover ul a,.studyEditLinks li.sfHover ul a,.studyEditLinks li:hover ul a:link,.studyEditLinks li.sfHover ul a:link,.studyEditLinks li:hover ul a:visited,.studyEditLinks li.sfHover ul a:visited,.studyEditLinks li:hover ul a:active,.studyEditLinks li.sfHover ul a:active{text-decoration:none !important}
+.studyEditLinks li:hover ul a:hover,.studyEditLinks li.sfHover ul a:hover{color:#c55b28;text-decoration:underline !important}
+.vdcStudyStatus{font-weight:700;font-style:italic;color:#8B0404}
+a.vdcStudyStatus:link,a.vdcStudyStatus:visited,a.vdcStudyStatus:hover,a.vdcStudyStatus:active{margin:0;}
+.vdcStudyInfoHeader{background:#dadee0;font-weight:700;text-align:center;padding:3px 0;width:100%}
+.vdcStudyInfoCol1{border-bottom-color:#dadee0;border-bottom-style:solid;border-bottom-width:1px;padding-bottom:5px;padding-left:0px;padding-right:10px;padding-top:5px;text-align:left;width:200px}
+.vdcStudyInfoCol2{border-bottom-color:#dadee0;border-bottom-style:solid;border-bottom-width:1px;font-weight:400;padding-bottom:5px;padding-top:5px;text-align:left}
+.vdcStudyInfoDownload{font-weight:700;padding-top:10px;text-align:center}
+/* STUDY FILES */
+.vdcStudyFilesPage{width:100%;text-align:center}
+.vdcStudyFilesContent{text-align:left}
+.vdcStudyFilesEmpty{padding:20px 0}
+.vdcStudyFilesEmpty div.vdcStudyFilesEmptyMessage{text-align:center}
+div.vdcStudyFilesUploadingMsg{width:60%;padding:0.75em;margin:0 auto 12px;text-align:center;font-weight:400}
+div.vdcStudyFilesMessage{width:60%;padding:0.75em;margin:0 auto 12px;text-align:center;font-weight:400;background-color:#f4ebc7;color:#c55b28}
+div.vdcStudyFilesMessage span{display:block;padding:.5em 0}
+div.vdcStudyFilesMessage a:link,div.vdcStudyFilesMessage a:visited,div.vdcStudyFilesMessage a:hover,div.vdcStudyFilesMessage a:active{font-weight:700}
+.vdcStudyFilesDownloadAll{width:100%;margin-bottom:0.5em}
+td.vdcStudyFilesDownloadAllSelect{width:40%}
+td.vdcStudyFilesDownloadAllButton{width:60%}
+.vdcStudyFilesCat{background-color:#d2d2d2;border-bottom-color:#fff;border-bottom-style:solid;border-bottom-width:1px;padding:2px .25em;height:1.5em}
+.vdcStudyFilesCatLabel input.iceSelBoolChkbx,.vdcStudyFilesCatLabel input.iceSelBoolChkbx-dis{margin:0 .5em 0 0;padding:0;vertical-align:middle}
+.vdcStudyFilesCatLabel span.iceOutTxt{display:inline}
+.vdcStudyFilesCatLabel{font-weight:700;padding-left:1px;padding-right:1px}
+.TogglePaneFancyHeader{background-image:url(/dvn/resources/images/icon_expand.gif);background-repeat:no-repeat;background-position:right .25em}
+.TogglePaneFancyHeaderClosed{background-image:url(/dvn/resources/images/icon_contract.gif);background-repeat:no-repeat;background-position:right .25em}
+a.vdcTruncatorLinkMore:link,a.vdcTruncatorLinkMore:hover,a.vdcTruncatorLinkMore:active,a.vdcTruncatorLinkMore:visited,a.vdcTruncatorLinkLess:link,a.vdcTruncatorLinkLess:hover,a.vdcTruncatorLinkLess:active,a.vdcTruncatorLinkLess:visited{font-size:90% !important}
+.vdcStudyFileRowFileName span.iceOutTxt,.vdcStudyFileRowFileDownload span.iceOutTxt,.vdcStudyFilesCatLabel span.iceOutTxt,.vdcStudyFileSubsetAnalysisLink span.iceOutTxt{overflow:visible !important;display:inline !important;padding:0 !important}
+.vdcStudyFileRowFileDownloadLink span.iceOutTxt,.vdcStudyFileSubsetAnalysisLink span.iceOutTxt,.studyFileDownloadAs span.iceOutTxt,.vdcStudyFileSubsetTable span.iceOutTxt{font-size:100% !important}
+.vdcStudyFilesContent table.iceDatTbl,.vdcStudyFilesContent table.iceDatTbl tr,.vdcStudyFilesContent table.iceDatTbl td{border:0;margin:0;padding:0}
+.vdcStudyFileTableWrap table.iceDatTbl,.vdcStudyFileTableWrap table.icePnlGrd{margin:0;padding:0}
+.vdcStudyFileCheckBox,.vdcStudyFileSpacer{vertical-align:top;width:24px}
+.vdcStudyFileCheckBox input.iceSelBoolChkbx,.vdcStudyFileSpacer input.iceSelBoolChkbx{margin-top:4px;margin-left:4px}
+.vdcStudyFileInfo,.vdcStudyFileSubsetting{vertical-align:top;width:40%}
+.vdcStudyFileDownload,.vdcStudyFileAnalysis{vertical-align:top;width:158px}
+.vdcStudyFileDesc,.vdcStudyFileCitation{vertical-align:top;width:32%}
+.vdcStudyFileRowFileInfo{overflow:hidden;padding:0 .25em}
+.vdcStudyFileRowFileThumb{float:left;padding:.25em}
+span.vdcStudyFileRowFileDetails{font-size:90% !important;color:darkgray;white-space:nowrap}
+.vdcStudyFileRowFileDownload{padding:.25em 0}
+a.vdcStudyFileRowFileDownloadLink:link,a.vdcStudyFileRowFileDownloadLink:hover,a.vdcStudyFileRowFileDownloadLink:active,a.vdcStudyFileRowFileDownloadLink:visited{padding:2px 0px 2px 24px;background:url(/dvn/resources/images/icon_download.gif) no-repeat;font-size:90% !important;vertical-align:top}
+span.vdcStudyFileRowFileDownloadRestricted{margin-left:3px;font-size:90% !important;color:darkgray;vertical-align:top}
+img.vdcStudyFileRowFileDownloadAsIcon{border:0;vertical-align:middle}
+select.vdcStudyFileRowFileDownloadAsList{margin-left:.5em}
+.vdcStudyDesc a.vdcTruncatorLinkLess{display:block;text-align:right}
+.vdcStudyFileSubset{padding:0 .25em}
+.vdcStudyFileSubset table.vdcStudyFileSubsetTable{margin:.5em 0;border-collapse:collapse}
+.vdcStudyFileSubset table.vdcStudyFileSubsetTable td{border:1px solid #c55b28;padding:0 .5em}
+.vdcStudyFileSubset table.vdcStudyFileSubsetTable td span{font-size:90% !important}
+.vdcStudyFileSubset table.vdcStudyFileSubsetTable td a{text-transform:uppercase;font-size:100% !important}
+.vdcStudyFileSubsetAnalysis a:hover,.vdcStudyFileSubsetAnalysis a:active{color:#c55b28;text-decoration:underline}
+a.vdcStudyFileSubsetAnalysisLink:link,a.vdcStudyFileSubsetAnalysisLink:hover,a.vdcStudyFileSubsetAnalysisLink:active,a.vdcStudyFileSubsetAnalysisLink:visited{padding:2px 0px 2px 24px;background:url(/dvn/resources/images/icon_analyze.gif) no-repeat;font-size:90% !important;vertical-align:top}
+.vdcStudyDataCitationContainer{padding:0 .5em 0 .25em;}
+.vdcStudyDataCitation span{padding:0 0 2px 24px !important;display:inline !important;background:url(/dvn/resources/images/icon_citation.gif) no-repeat;font-size:90% !important}
+.downloadas,.downloadas ul{list-style:none;margin:0;padding:0}
+.downloadas li{margin:0;padding:0;display:block;position:relative;z-index:5}
+.downloadas li:hover{z-index:10000;white-space:normal}
+.downloadas li img{border:0}
+.downloadas li ul{opacity:0.9999;display:block}
+.downloadas li a,.downloadas li a:link,.downloadas li a:active,.downloadas li a:visited{background:inherit;color:#0c54b3;display:block;padding:0 3px;text-decoration:none;font-size:90% !important;vertical-align:top}
+.downloadas li a:hover{background:khaki;color:#0c54b3;text-decoration:none}
+.downloadas li a.downloadasLink{display:inline}
+.downloadas li a:hover.downloadasLink{color:#0c54b3;text-decoration:none !important}
+.studyFileDownloadAs li:hover a,.studyFileDownloadAs li.sfHover a{background:khaki;color:#0c54b3;font-size:90% !important}
+.studyFileDownloadAs li:hover ul a:link,.studyFileDownloadAs li.sfHover ul a:link,.studyFileDownloadAs li:hover ul a:visited,.studyFileDownloadAs li.sfHover ul a:visited,.studyFileDownloadAs li:hover ul a:active,.studyFileDownloadAs li.sfHover ul a:active{background:khaki;color:#0c54b3;font-size:90% !important;text-decoration:none !important;outline:none}
+.studyFileDownloadAs li:hover ul a:hover,.studyFileDownloadAs li.sfHover ul a:hover{background:khaki;color:#c55b28;font-size:90% !important;text-decoration:underline !important}
+.downloadas ul{list-style:none;margin:0;width:80px;position:absolute;top:-999em;left:-1px;z-index:10}
+.downloadas li:hover ul,.downloadas li.sfHover ul{top:16px;left:25px;border:0}
+.downloadas ul li{border:0;float:none}
+.downloadas ul a{width:80px;white-space:nowrap}
+.downloadas ul a:hover{background:khaki;color:#c55b28}
+/* STUDY COMMENTS */
+.vdcStudyCommentsBlock{width:100%;text-align:left}
+.vdcStudyCommentsDataTable{margin:0}
+.vdcStudyCommentDetailsColumn{width:25%;border-right:0;vertical-align:top;padding-right:2em}
+.vdcStudyCommentContentColumn{width:65%;border-left:0;vertical-align:top;overflow:hidden}
+span.vdcStudyCommentDetails{font-size:90% !important;color:#a9a9a9;white-space:nowrap}
+.vdcStudyCommentsSubheading{display:block;padding-top:1em;vertical-align:top}
+.dvnReportCommentsLinks{overflow:hidden;width:100%}
+.dvnReportCommentsLinks span{padding:0 !important}
+.dvnReportCommentsLinks ul{margin:0;padding:0;float:left;list-style-type:none !important}
+.dvnReportCommentsLinks ul li{float:left;z-index:1000;margin:0;padding:0}
+.dvnReportCommentsLinks ul li a:link,.dvnReportCommentsLinks ul li a:visited,.dvnReportCommentsLinks ul li a:hover,.dvnReportCommentsLinks ul li a:active{float:left;display:block;padding:.2em 1em .2em 0;text-decoration:none}
+.dvnReportCommentsLinks ul li:hover{position:relative}
+.dvnReportCommentsLinks ul li:hover a:link,.dvnReportCommentsLinks ul li:hover a:visited,.dvnReportCommentsLinks ul li:hover a:hover,.dvnReportCommentsLinks ul li:hover a:active{text-decoration:underline}
+.dvnReportCommentsLinks ul li a:hover{position:relative;z-index:1000;text-decoration:underline}
+.dvnReportCommentsLinks span.dvnReportCommentsFlag{padding:.2em 1em .2em 0 !important}
+.vdcStudyCommentLoginRegister{padding-top:.5em}
+.vdcStudyCommentsBlock .errorMessageFatal,.vdcStudyCommentsBlock .errorMessageError,.vdcStudyCommentsBlock .errorMessageWarn,.vdcStudyCommentsBlock .errorMessageInfo{padding-left:0 !important;display:block}
+.icePnlPop{z-index:1000;width:300px;}
+.icePnlPopHdr .iceOutTxt{font-family:"HelveticaNeue", Helvetica, Arial, sans-serif !important;font-size:12px !important;}
+.popupModalClose{float:right;cursor:pointer}
+.popupModalClose img{border:0}
+.popupModalBodyRow2 td{padding-top:.5em}
+.popupModalBody .iceOutTxt{font-family:"HelveticaNeue", Helvetica, Arial, sans-serif !important;font-size:12px !important;}
+.popupModalBody .dvnFormPadding input{display:inline;cursor:pointer}
+/* SUBSETTING + ANALYSIS RESULTS */
+.vdcAnalysisCol1{padding-left:4px;padding-right:4px;padding-top:4px;vertical-align:top;width:200px}
+.vdcAnalysisCol2{padding-left:4px;padding-right:4px;padding-top:20px;text-align:left;vertical-align:top}
+.pgDataTable{border-collapse:collapse;width:100%}
+.pgDataTable td.pgDataTableCol1{padding:0}
+.pgDataTable .dvnVariableInfoTableHdr{padding:.25em;font-weight:700}
+.pgDataTable .dvnPaginatorWrap{padding:.25em 0}
+.vdcVariablesCol1,.vdcVariablesCol6{vertical-align:top;text-align:center}
+.vdcVariablesCol2,.vdcVariablesCol4,.vdcVariablesCol5{vertical-align:top}
+.vdcVariablesCol3,.vdcVariablesColHdr3{display:none}
+div.statbox{background-color:#e6e6fa;padding:3px;margin:3px auto;border-width:1px;border-style:solid;border-top-color:silver;border-right-color:dimgray;border-bottom-color:dimgray;border-left-color:silver;display:table}
+table.viTblinx{border:2px #e6e6fa solid;background-color:#f5f5f5;color:#000080;text-align:left;margin:0px;padding:0px}
+table.viTblinx td{border:0;background-color:#f5f5f5;color:#000080;text-align:left;margin:0px;padding:2px}
+table.viTblinx th{background-color:#e6e6fa;font-weight:700;margin:0px;padding:2px;border:0}
+.vdcAdvAnalysisCol1{padding-top:10px;text-align:left;vertical-align:top}
+.vdcAdvAnalysisCol2{padding-left:20px;padding-top:10px;text-align:left;vertical-align:top}
+.vdcVarHeaderCol1{background-color:#dadee0;padding-bottom:5px;padding-left:20px;padding-top:10px}
+.vdcVarHeaderCol2{background-color:#dadee0;padding-bottom:5px;padding-top:10px;padding-right:4px;text-align:right}
+.vdcRecodesColA{padding-left:4px;padding-right:4px;width:20px}
+.vdcRecodesColB{padding-left:4px;padding-right:4px}
+.vdcRecodesHeader{font-weight:700;text-align:center}
+.vdcRecodeVariablesColHdr3,.vdcRecodeVariablesColHdr4,.vdcRecodeVariablesCol3,.vdcRecodeVariablesCol4{display:none}
+.MnuStdOptGrp{color:#000;background-color:#fff}
+.dvn_preFileTitle{font-weight:700;font-style:normal;color:#000}
+.dvn_fileTitle{font-weight:400;font-style:normal;color:#000}
+.dvn_analysisResultContainer{padding:10px;border:1px solid #6e7f90;text-align:left;float:left}
+.dvn_analysisResultContainer .dvAnalysisHeader{display:block;padding:3px 0;width:100%;background:#e6ebed;font-size:140% !important;font-weight:700;text-align:center}
+.dvn_analysisResultContainer .dvAnalysisResults{padding:10px;text-align:left}
+.dvn_analysisResultContainer .dvAnalysisInfoMessage{margin-bottom:1em}
+.dvAnalysisResults p.resultsNewWindowLink{margin-top:0;padding-top:0;text-align:right}
+.dvAnalysisResults iframe{width:100%;height:440px;border:1px solid #6e7f90}
+.dvAnalysisResults #dvAnalysisReplicationMsg{clear:left}
+.dvAnalysisResults #rWrkspButton{float:left;width:auto;padding-top:.5em}
+.dvAnalysisResults #rWrkspMessage{float:left;width:auto;padding-top:.5em;padding-left:1em}
+.dvAnalysisResults #rWrkspMessage #rZeligInfo{font-size:90% !important}
+.dvAnalysisResults #rWrkspMessage #rZeligInfo span{font-size:100% !important;color:silver}
+.dvAnalysisResults #rWrkspMessage #rZeligInfo a{font-size:100% !important}
+.dvAnalysisResults #citationInfo{width:98%;padding:4px;border:1px solid #6e7f90}
+.dvAnalysisResults #citationInfo blockquote{font-family:Courier !important;font-size:85% !important}
+.dvAnalysisResults #citationInfo blockquote a{font-family:Courier !important;font-size:85% !important}
+/* NETWORK DATA */
+.dvnNetworkDataBlock{width:700px;margin:0 auto;text-align:center}
+.dvnNetDataAnlsSubTblWrap{border:1px solid #D9D9D9}
+.dvnNetDataAnlsSubTblWrapCol1{text-align:center}
+.dvnNetDataAnlsSubTblWrapCol1 .vdcHelpText{text-align:left}
+.dvnNetDataAnlsSubTblWrapCol1 table.icePnlGrd td{vertical-align:top;text-align:left}
+.dvnNetDataAnlsSubTblWrap .errorMessageBlockFatal,.dvnNetDataAnlsSubTblWrap .errorMessageBlockError,.dvnNetDataAnlsSubTblWrap .errorMessageBlockWarn,.dvnNetDataAnlsSubTblWrap .errorMessageBlockInfo{padding-top:.5em}
+.dvnNetDataAnlsCol1{width:25%}
+.dvnNetDataAnlsQryBldrWrap{margin:0 .75em 1em .75em}
+.dvnNetDataAnlsAddQryInfoBlk{width:85%;margin-left:1em;padding:1em 0;background:#d2e3ff}
+.dvnNetDataAnlsAddQryInfoBlk div,.dvnNetDataAnlsAddQryInfoBlk p{padding:0 1em;}
+.dvnNetDataAnlsAddQryInfoTitle{text-align:left}
+.dvnNetDataAnlsQryBldrAddButton{text-align:right}
+.dvnLittleLetters{font-size:80% !important;vertical-align:top;line-height:2}
+.dvnNetDataAnlsSubTitle{font-weight:bold;margin-top:1em;text-align:left}
+.dvnNetDataAnlsSubTable{margin-top:0}
+.dvnNetDataAnlsSubTblBtmWrp{border:1px solid #D9D9D9;border-top:0}
+.dvnNetDataAnlsSubTblBtm{text-align:right;padding:.5em}
+.dvnNetDataAnlsHrzLn{text-align:center;width:98%;color:#D9D9D9}
+.dvnNetDataAnlsTbl{margin:0 0 1em 0}
+.dvnNetDataAnlsTbl td{vertical-align:top}
+.dvnNetDataAnlsTbl1{width:30%}
+.dvnNetDataAnlsTbl2{width:45%}
+.dvnNetDataAnlsTbl3{width:20%}
+.dvnNetDataAnlsTbl3 fieldset{text-align:right}
+.dvnNetDataAnlsTbl3 input{margin-right:2px}
+.dvnNetDataAnlsCol1 .iceSelOneRb,.dvnNetDataAnlsCol1 .iceSelOneRb-dis{font-weight:bold;vertical-align:top}
+.dvnNetDataAnlsQryBldrWrapCol1 .iceSelOneRb{font-weight:normal}
+.dvnNetDataAnlsPrmtrWrp{height:5.3em;overflow:auto;border:1px solid #D9D9D9}
+.dvnNetDataAnlsPrmtrTbl{margin-top:0;border:0}
+.dvnNetDataAnlsPrmtrTblCol1{width:35%;border-left:0}
+.dvnNetDataAnlsPrmtrTblCol2{width:65%;border-right:0}
+.dvnNetDataAnlsPrmtrTbl span.iceOutTxt{display:inline !important;vertical-align:middle}
+.dvnNtwkDataSubsetHistCol1{width:20%}
+.dvnNtwkDataSubsetHistCol2{width:14%}
+.dvnNtwkDataSubsetHistCol3{width:42%}
+.dvnNtwkDataSubsetHistCol4{width:12%}
+.dvnNtwkDataSubsetHistCol5{width:12%}

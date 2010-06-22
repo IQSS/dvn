@@ -1,0 +1,17 @@
+/* IE FIX STYLE CLASSES */
+.dvn_wrapper{border-right:724px solid #fff}
+.dvn_wrapperVanilla{border-right:724px solid #eee}
+.dvn_content{display:inline-block;position:relative;margin-right:-724px}
+.dvn_content form {margin:0;padding:0;}
+.dvn_content fieldset{padding:.75em}
+.iceOutConStat{position:absolute}
+.vdcTooltip{width:16em}
+.dvnHmpgGroupTableWrap{width:100%}
+.dvnHmpgGroupAlphaSortBlock{padding-bottom:1em;white-space:nowrap;overflow:hidden}
+.editDropDown li{position:static}
+.dvnAddFilesInputBtn{margin:2px;padding:2px;padding-top:4px;font-family:"HelveticaNeue", Helvetica, Arial, sans-serif;line-height:9px;height:22px}
+.iceInpFileTxt{margin:2px;padding:2px;font-family:"HelveticaNeue", Helvetica, Arial, sans-serif}
+.dvnLoginInputArea{padding-top:1em}
+.dvnLoginInputArea fieldset{position:relative;padding:1em .75em 1em 1em}
+.dvnLoginInputArea legend{position:absolute;top:-.75em;left:.5em}
+.dvAnalysisResults{width:100%}

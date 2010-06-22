@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:gui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:ice="http://www.icesoft.com/icefaces/component">
+<head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+    <gui:composition template="/template.xhtml">
+        <gui:param name="pageTitle" value="Analysis Results - #{VDCRequest.dataversePageTitle}"/>
+        <gui:define name="body">
+            <h:form id="form">
+                <div jsfc="ice:panelGroup" styleClass="dvn_section">
+                    <span class="dvn_sectionTitleR">
+                        <ice:outputLink
+                            value="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/SubsettingPage.xhtml?dtId=#{AnalysisResultsPage.dtId}"
+                            rendered="#{! AnalysisResultsPage.versionNumberSupplied}">
+                            <ice:outputText
+                                value="Back to Analysis and Subsetting"/>
+                        </ice:outputLink>
+                        <ice:outputLink
+                            value="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/SubsettingPage.xhtml?dtId=#{AnalysisResultsPage.dtId}&amp;versionNumber=#{AnalysisResultsPage.versionNumber}"
+                            rendered="#{AnalysisResultsPage.versionNumberSupplied}">
+                            <ice:outputText
+                                value="Back to Analysis and Subsetting"/>
+                        </ice:outputLink>
+
+                    </span>
+                    <div class="dvn_sectionTitle">
+                        <h:outputText value="#{AnalysisResultsPage.studyTitle}"/>
+                        <br/>
+                        <span class="dvn_preFileTitle">Data File: </span>
+                        <h:outputText styleClass="dvn_fileTitle" value="#{AnalysisPage.fileName}"/>
+                    </div>
+                    <div class="dvn_analysisResultContainer">
+                        <h:panelGroup id="pgHtml" binding="#{AnalysisResultsPage.pgHtml}">
+                            <span class="dvAnalysisHeader"><h:outputText value="#{AnalysisResultsPage.requestedOption}"/></span>
+                            <div class="dvAnalysisResults">
+                                Request ID: <h:outputText value="#{AnalysisResultsPage.requestResultPID}"/><br/>
+                                File Created: <h:outputText value="#{AnalysisResultsPage.rexecDate}"/> (US EST) - Note: will be erased one hour later.
+                                <p class="resultsNewWindowLink"><h:outputLink value="#{AnalysisResultsPage.resultURLhtml}" id="resultURLhtml" target="_blank">Open results in a new window</h:outputLink></p>
+                                <h:outputText escape="false" value="&lt;iframe src=&quot;#{AnalysisResultsPage.resultURLhtml}&quot;&gt;&lt;!-- results --&gt;&lt;/iframe&gt;"/>
+                            </div>
+                        </h:panelGroup>
+                        <h:panelGroup id="pgRwrksp" binding="#{AnalysisResultsPage.pgRwrksp}">
+                            <span class="dvAnalysisHeader">Replication</span>
+                            <div class="dvAnalysisResults dvn_overflow">
+                                <div id="dvAnalysisReplicationMsg">A copy of the data file used for this request with an R-command file are downloadable as a ZIP file by clicking the button below. To replicate the request on your local R installation for further analyses, please read the README file included in the ZIP file.</div>
+                                <div id="rWrkspButton">
+                                    <ice:outputText id="msgDwnldButton" binding="#{AnalysisResultsPage.msgDwnldButton}"
+                                            visible="false" escape="false" styleClass="errorMessage"
+                                            value="#{AnalysisResultsPage.msgDwnldButtonTxt}"/>
+                                    <!-- h:commandButton value="Download Replication-ZIP File" action="{AnalysisResultsPage.getReplicationPack}" id="resultURLRworkspace" / -->
+                                    <ice:outputResource id="replicationPack"
+                                            resource="#{AnalysisResultsPage.zipResourceDynFileName}"
+                                            mimeType="application/octet-stream"
+                                            value="Download Replication-ZIP File"
+                                            fileName="#{AnalysisResultsPage.zipFileName}"
+                                            type="button"
+                                            shared="false"/>
+                                </div>
+                                <div id="rWrkspMessage">
+                                    <div id="rZeligInfo">
+                                        <span>Statistical Software Info:</span><br/>
+                                        <h:outputText value="#{AnalysisResultsPage.rversion}"/>, R package Zelig&#160;<h:outputText value="#{AnalysisResultsPage.zeligVersion}"/> - more information: <a href="http://gking.harvard.edu/zelig/">http://gking.harvard.edu/zelig/</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </h:panelGroup>
+                        <h:panelGroup id="pgDwnld" binding="#{AnalysisResultsPage.pgDwnld}">
+                            <span class="dvAnalysisHeader">Download Subset</span>
+                            <div class="dvAnalysisResults">
+                                Download instructions: <h:outputLink value="#{AnalysisResultsPage.resultURLdwnld}" id="resultURLdwnld">Right-click this link and select, 'Save Link As...'</h:outputLink> to download the requested subset file.
+                            </div>
+                        </h:panelGroup>
+                        <h:panelGroup id="citnInfo">
+                            <span class="dvAnalysisHeader">Citation Information</span>
+                            <div class="dvAnalysisResults">
+                                <div id="citationInfo">
+                                    Citation for full data set:
+                                    <blockquote>
+                                        <h:outputText value="#{AnalysisResultsPage.offlineCitation}" escape="false"/>
+                                    </blockquote>
+                                    Citation for subset analysis:
+                                    <blockquote>
+                                        <h:outputText value="#{AnalysisResultsPage.offlineCitation}" escape="false"/>
+                                        <h:outputText value="#{AnalysisResultsPage.variableList}"/>
+                                        [VarGrp/@var(DDI)];
+                                        <h:outputText value="#{AnalysisResultsPage.fileUNF}"/>
+                                    </blockquote>
+                                </div>
+                            </div>
+                        </h:panelGroup>
+                    </div>
+                </div>
+            </h:form>
+        </gui:define>
+    </gui:composition>
+</body>
+</html>

@@ -1,0 +1,156 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+package edu.harvard.iq.dvn.ingest.dsb.impl;
+
+import java.util.*;
+import java.util.logging.*;
+import java.io.*;
+import org.apache.commons.lang.*;
+import static java.lang.System.*;
+
+/**
+ *
+ * @author asone
+ */
+
+public class DvnCitationFileWriter {
+    
+    private static Logger dbgLog = Logger.getLogger(DvnCitationFileWriter.class.getPackage().getName());
+    
+    String title = "_Citation for the full data set you chose_:\n";
+    String subsetTitle = "_Citation for this subset you chose_:\n";
+    String subsetingCriteriaLineD = "_Row selection Criteria for the subset you chose_:\n";
+    String subsetingCriteriaLineA = "_Row selection criteria for the subset used in your analysis_:\n";
+    
+    
+    String offlineCitation;
+    String subsetUNF;
+    String variableList;
+    String subsettingCriteria;
+    String requestType;
+    public DvnCitationFileWriter(String oc){
+        offlineCitation = oc;
+    }
+    
+    public DvnCitationFileWriter(Map<String, String> resultInfo){
+        this.offlineCitation    = resultInfo.get("offlineCitation");
+        this.subsetUNF          = resultInfo.get("fileUNF");
+        this.variableList       = resultInfo.get("variableList");
+        this.requestType        = resultInfo.get("option");
+        if (   (resultInfo.containsKey("subsettingCriteria")) 
+            && (resultInfo.get("subsettingCriteria") != null) 
+            ){
+                this.subsettingCriteria = resultInfo.get("subsettingCriteria");
+        } else {
+            this.subsettingCriteria = "";
+        }
+    }
+    
+    public String generateSubsetCriteriaLine(){
+        String subsetCriteriaLine =null;
+        String subsettingCriteriaHeader = null;
+        if (requestType.equals("download")){
+            subsettingCriteriaHeader = subsetingCriteriaLineD;
+        } else {
+            subsettingCriteriaHeader = subsetingCriteriaLineA;
+        }
+
+        if (subsettingCriteria.equals("")){
+            subsetCriteriaLine = "";
+        } else {
+            subsetCriteriaLine = subsettingCriteriaHeader + subsettingCriteria + "\n";
+        }
+        return subsetCriteriaLine;
+    }
+    
+    
+    public void write(String citationFilename, 
+        List<String> variableNameSet, String subsetUNF){
+        
+        this.write(citationFilename, variableNameSet, 
+            subsetUNF, null);
+    }
+
+    public void write(String citationFilename,
+        List<String> variableNameSet, String subsetUNF, 
+        String subsettingCriteria){
+        OutputStream outs = null;
+        if (subsetUNF == null){
+            subsetUNF="";
+        }
+        if (subsettingCriteria == null){
+            subsettingCriteria ="";
+        }
+        try {
+            File cf = new File(citationFilename);
+            outs = new BufferedOutputStream(new FileOutputStream(cf));
+            PrintWriter pw = new PrintWriter(new OutputStreamWriter(outs, "utf8"), true);
+            pw.println(title);
+            pw.println(offlineCitation);
+            
+            if (generateSubsetCriteriaLine().equals("")){
+                pw.println("\n\n");
+            } else {
+                pw.println("\n");
+                pw.println(generateSubsetCriteriaLine()+"\n");
+            }
+            pw.println(subsetTitle);
+            pw.print(offlineCitation + " ");
+            pw.print(DvnDSButil.joinNelementsPerLine(variableNameSet,5));
+            pw.println(" [VarGrp/@var(DDI)];");
+            pw.println(subsetUNF);
+           outs.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+    
+    
+    public void write(File cf){
+
+        OutputStream outs = null;
+        try {
+            outs = new BufferedOutputStream(new FileOutputStream(cf));
+            PrintWriter pw = new PrintWriter(new OutputStreamWriter(outs, "utf8"), true);
+            pw.println(title);
+            pw.println(offlineCitation);
+            
+            if (generateSubsetCriteriaLine().equals("")){
+                pw.println("\n\n");
+            } else {
+                pw.println("\n");
+                pw.println(generateSubsetCriteriaLine()+"\n");
+            }
+            pw.println(subsetTitle);
+            pw.print(offlineCitation + " ");
+            pw.print(variableList);
+            pw.println(" [VarGrp/@var(DDI)];");
+            pw.println(subsetUNF);
+           outs.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void writeWholeFileCase(File cf){
+        OutputStream outs = null;
+        try {
+            outs = new BufferedOutputStream(new FileOutputStream(cf));
+            PrintWriter pw = new PrintWriter(new OutputStreamWriter(outs, "utf8"), true);
+            pw.println(title);
+            pw.println(offlineCitation);
+
+           outs.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void write(String citationFilename){
+        File cf = new File(citationFilename);
+        write(cf);
+    }
+}

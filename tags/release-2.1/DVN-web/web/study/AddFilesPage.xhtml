@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:gui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:dvn="/WEB-INF/tlds/dvn-components"
+      xmlns:ice="http://www.icesoft.com/icefaces/component">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+  <gui:composition template="/template.xhtml">
+    <gui:param name="pageTitle" value="#{bundlePageInfo.addFilesTitle} - #{VDCRequest.dataversePageTitle}"/>
+    <gui:define name="body">
+
+      <script type="text/javascript">
+          // <![CDATA[
+          // functions to work with category selection note a few assumptions that these functions have:
+          // the id of the dropdown (including parent nodes); the partial id of the checkboxes;
+          // and that the checkbox is two elements before the text field (there is empty text
+          // in between, created by the div)
+          function updateCategory( checkbox ) {
+              if (checkbox.checked) {
+                  dropdown = document.getElementById("form1:dummy_datatable:0:fileDataTable:catDropdown");
+                  textField = (document.getElementById(checkbox.id)).nextSibling;
+                  textField.value= dropdown.value;
+                  textField.focus();
+                 // document.forms['form1'].elements[textFiled.id].select();
+                  //
+                  //alert("text value "+ textField.value);
+              }
+          }
+          function deselectCategory( textField ) {
+              checkbox = document.getElementById(textField.id).previousSibling;
+              checkbox.checked = false;
+          }
+          function updateAllCheckedCategories( dropdown ) {
+              checkboxes=document.getElementsByTagName("input");
+              for(i=0; i < checkboxes.length; i++) {
+                  if (checkboxes[i].id.indexOf("catCheckbox") != -1 && checkboxes[i].checked == true) {
+                      textField = checkboxes[i].nextSibling;
+                      textField.value = dropdown.value;
+                      textField.focus();
+                  }
+              }
+          }
+          function disableSave() {
+              document.getElementById("form1:saveButton").disabled = true;
+          }
+          // ]]>
+      </script>
+      <div class="dvn_section">
+        <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
+          <div class="dvnMsgBlockContainer">
+            <ice:outputText value="#{bundlePageInfo.addFilesHelp}" escape="false"/>
+          </div>
+        </div>
+        <div class="dvn_sectionTitle">
+          <ice:outputText value="#{bundlePageInfo.addFilesTitle}"/>
+        </div>                  
+        <div class="dvn_sectionBox">
+          <div class="dvn_margin12">
+            <ice:form id="form1">
+                <style type="text/css">
+                    .dvnstudytitleblock {overflow: hidden;}
+                    .dvnstudytitlefloat {padding-right: 340px; text-align: left;}
+                    span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; font-size:1.35em !important;}
+                    .dvnstudyversioninfo {}
+                    .dvnstudyversioninfo span.iceOutTxt {color:#A9A9A9; line-height: 1.48; font-size:.95em !important;}
+                    .dvnstudystatusbox{margin: 0; padding: 2px 8px; font-weight: bold; line-height:24px !important;}
+                    .dvnstudystatusbox div{margin-top:4px; line-height:18px !important;}
+                    .dvnstudystatusreview{background: #ececec; color: #526F76;}
+                    .dvnstudystatusdraft{background: #CFDDEA; color: #526F76;}
+                    .dvnstudystatuslabel{text-transform:uppercase;}
+                    .dvnstudystatusreleasedver{font-weight: normal;color:#C55B28;}
+                    .dvnstudystatusnoreleasedver{color:#820024;}
+                    .dvnstudystatusversionnote{font-weight:normal;}
+                </style>
+              <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+              <ice:inputHidden id="studyId" value="#{AddFilesPage.study.id}"/>
+              <input type="hidden" name="pageName" value="AddFilesPage"/>
+ 
+             <div class="dvnstudytitlefloat">
+                    <ice:outputText styleClass="dvnstudytitle" value="#{AddFilesPage.studyVersion.metadata.title}"/>
+                    <div jsfc="ice:panelGroup" styleClass="dvnstudyversioninfo">
+                        <ice:outputText value="#{AddFilesPage.study.globalId}"/> <ice:outputText value="#{AddFilesPage.studyVersion.metadata.UNF}" rendered="#{!empty AddFilesPage.studyVersion.metadata.UNF}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup" styleClass="dvnstudystatusbox #{AddFilesPage.studyVersion.inReview ? 'dvnstudystatusreview' : '' or AddFilesPage.studyVersion.draft ? 'dvnstudystatusdraft' : ''}">
+                        <ice:outputText styleClass="dvnstudystatuslabel" value="In Review " rendered="#{AddFilesPage.studyVersion.inReview}"/>
+                        <ice:outputText styleClass="dvnstudystatuslabel" value="Draft " rendered="#{AddFilesPage.studyVersion.draft}"/>
+                        <ice:outputText value="Study Version: #{AddFilesPage.studyVersion.versionNumber}"/>
+                        <ice:outputText nospan="true"><br/></ice:outputText>
+                        <ice:outputText value="Created: #{AddFilesPage.studyVersion.createTime} - Last Updated: #{AddFilesPage.studyVersion.lastUpdateTime}" rendered="#{!empty AddFilesPage.studyVersion.lastUpdateTime}"/>
+                        <ice:outputText value="Created: &lt;i&gt;Draft study version is not created until the form is saved&lt;/i&gt;" rendered="#{null == AddFilesPage.studyVersion.lastUpdateTime}" escape="false"/>
+                        <ice:outputText nospan="true" rendered="#{!empty AddFilesPage.studyVersion.versionNote}"><br/></ice:outputText>
+                        <ice:outputText value="Study Version Notes: " rendered="#{!empty AddFilesPage.studyVersion.versionNote}"/>
+                        <ice:outputText styleClass="dvnstudystatusversionnote" value="#{AddFilesPage.studyVersion.versionNote}" rendered="#{!empty AddFilesPage.studyVersion.versionNote}"/>
+                    </div>
+             </div>
+                <br/>
+              <ice:panelGroup id ="inputFile" style="dvnAddFilesInputBlock">
+                <ice:inputFile id="inputFileComponent"
+                               autoUpload="true"
+                               submitOnUpload="postUpload"
+                               actionListener="#{AddFilesPage.uploadFile}"
+                               binding="#{AddFilesPage.inputFile}"
+                               styleClass="dvnAddFilesInput">
+                  <!-- <ice:commandButton binding="#{AddFilesPage.inputFile}"/> -->
+                  <ice:outputStyle rel="stylesheet" type="text/css" href="/resources/css/stylesheet.css"/>
+                </ice:inputFile>
+                <br/>
+                <ice:message layout="table" globalOnly="false" for="inputFileComponent"
+                              showDetail="true" showSummary="false" styleClass="errorMessage"/>
+              </ice:panelGroup>
+              <!--
+              This is a very basic table comprising four columns. Each
+              row represents an inventory item. Each column represents a
+              inventory item property. commandSortHeader components have been
+              added ot the table headers.
+
+              The sortAscending and sortColumn attributes are set when a command
+              sortColumnName header is activated.  The sortColumn and sortAscending
+              data can then be sortColumnName by a sortColumnName algorithm if a
+              change is detected.
+              -->
+              <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
+   <ice:dataTable cellpadding="0" cellspacing="0" width="100%" id="dummy_datatable"
+                             value="dummy_datatable" styleClass="dvnAddFilesOuterTable">
+                <ice:column>
+                  <ice:dataTable cellpadding="0" cellspacing="0" width="100%" rendered="true"
+                                 id="fileDataTable" styleClass="dvnAddFilesTable"
+                                 columnWidths="20%,20%,40%,10%,10%"
+                                 value="#{AddFilesPage.fileList}" binding="#{AddFilesPage.filesDataTable}" var="fileBean">
+                    <ice:column id="catCol">
+                      <ice:panelGroup block="true" id="panel1" style="white-space: nowrap;">
+                        <!-- note that the Javascript functions currently depends on the placement and ids of these fields (and the dropdown box;
+                                          changing them may require corresponding changes in the Javascript  -->
+                        <ice:selectBooleanCheckbox id="catCheckbox" onclick="updateCategory(this);"/>
+                        <ice:inputText id="catTextField" size="28" value="#{fileBean.fileMetadata.category}" onfocus="deselectCategory(this);"/>
+                      </ice:panelGroup>
+                      <f:facet name="header" id="f1">
+                        <ice:panelGroup id="catColPanelGroup" styleClass="dvnAddFilesTableCategory">
+                          <ice:outputLabel id="catDesc" value="Category"/>
+                          <ice:selectOneMenu id="catDropdown" onchange="updateAllCheckedCategories(this);">
+                            <f:selectItems value="#{AddFilesPage.fileCategories}"/>
+                          </ice:selectOneMenu>
+                        </ice:panelGroup>
+                      </f:facet>
+                    </ice:column>
+                    <ice:column>
+                      <f:facet name="header">
+                        <ice:outputLabel value="File Name"/>
+                      </f:facet>
+                      <ice:inputText id="input_filename" size="24" value="#{fileBean.fileMetadata.label}" required="true"
+                                     requiredMessage="This field is required."
+                                     validator="#{AddFilesPage.validateFileName}" />
+                                     <!-- "this.form.submit();"/>
+                      <f:param name="fileName" value="#{fileBean.fileMetadata.label}"/> -->
+                      <ice:message for="input_filename" styleClass="errorMessage"/>
+                    </ice:column>
+                    <ice:column>
+                      <f:facet name="header">
+                        <ice:outputLabel value="Description"/>
+                      </f:facet>
+                      <ice:inputTextarea id="description_filename" styleClass="dvnTextareaAuto" cols="38" rows="2"
+                                         value="#{fileBean.fileMetadata.description}" />
+                    </ice:column>
+                    <ice:column>
+                      <f:facet name="header">
+                        <ice:outputLabel value="Size (bytes)"/>
+                      </f:facet>
+                      <ice:outputText size="25" value="#{fileBean.sizeFormatted}"/>
+                    </ice:column>
+                    <ice:column>
+                      <f:facet name="header">
+                        <ice:outputLabel value="Remove"/>
+                      </f:facet>
+                      <ice:commandLink value="Remove" id="removeFile" actionListener="#{AddFilesPage.removeFile_action}">
+                        <f:param name="removeAction" value="#{AddFilesPage.filesDataTable.rowIndex}"/>
+                      </ice:commandLink>
+                    </ice:column>
+                  </ice:dataTable>
+                </ice:column>
+              </ice:dataTable>
+              <ice:panelGroup block="true" styleClass="dvnFormPadding" rendered="#{AddFilesPage.emailRequested}">
+                <ice:outputText styleClass="vdcTextStandout" value="NOTE:"/>
+                <ice:outputText id="email" escape="false" styleClass="warnMessage"
+                                value="SPSS and STATA files will be converted to a  tab delimited  format and are subsettable. You will still be able to download the original file, as well as other formats. GraphML files will also be subsettable using network data analysis.  Subsettable files might take a long time to upload and be processed. We will send you an e-mail notification when the upload process starts and when it completes."/>
+                <br/>
+                <ice:outputText value="E-Mail Address:"/>
+                <ice:inputText id="textField3" size="50" value="#{AddFilesPage.ingestEmail}">
+                  <f:validator validatorId="EmailValidator"/>
+                </ice:inputText>
+                <br/>
+                <ice:outputText id="emailmany" escape="false" styleClass="warnMessage"
+                                value="Separate multiple e-mail addresses with a comma (and no spaces)."/>
+                <ice:message for="textField3" id="validatorMessage" styleClass="errorMessage"/>
+              </ice:panelGroup>
+              <div class="dvnFormPadding dvnFormMargin">
+                <ice:commandButton id="saveButton" value="Save" actionListener="#{AddFilesPage.openPopup}" disabled ="#{empty AddFilesPage.fileList}"/>
+                <ice:commandButton id="cancelButton" value="Cancel" immediate="true" action="#{AddFilesPage.cancel_action}"/>
+              </div>
+            </ice:form>
+          </div>
+        </div>
+      </div>
+    </gui:define>
+  </gui:composition>
+</body>
+</html>

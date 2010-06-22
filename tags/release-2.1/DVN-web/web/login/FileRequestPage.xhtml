@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:gui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:ice="http://www.icesoft.com/icefaces/component">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+  <gui:composition template="/template.xhtml">
+    <gui:param name="pageTitle" value="Request Access to File - #{VDCRequest.dataversePageTitle}"/>
+    <gui:define name="body">
+      <ice:form id="fileRequestForm">
+        <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+        <ice:inputHidden value="test"/>
+        <ice:inputHidden value="test"/>
+        <div class="dvn_section">
+          <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage" rendered="#{FileRequestPage.alreadyRequested}">
+            <div class="dvnMsgBlockContainer">
+              <p>
+                <ice:outputText value="You have already requested access to files in this study. Please wait for approval from the administrator. "/>
+                <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/HomePage.xhtml" title="Go to Dataverse Home Page"/>
+              </p>
+            </div>
+          </div>
+          <div class="dvn_sectionTitle">
+            <ice:outputText value="Request Access to Restricted File"/>
+          </div>
+          <div class="dvn_sectionBox">
+            <div class="dvn_margin12">
+              <div jsfc="ice:panelGroup" rendered="#{! FileRequestPage.alreadyRequested}">
+                <div jsfc="ice:panelGroup" styleClass="dvnFormPadding">
+                  <ice:outputText value="I would like to access restricted files in this study."/>
+                </div>
+                <div class="dvnFormPadding dvnFormMargin">
+                  <ice:commandButton value="Submit Request" action="#{FileRequestPage.generateRequest}"/>
+                  <ice:commandButton value="Cancel" action="home"/>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ice:form>
+    </gui:define>
+  </gui:composition>
+</body>
+</html>

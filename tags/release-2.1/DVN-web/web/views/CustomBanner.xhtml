@@ -1,0 +1,13 @@
+<div  xmlns:gui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core" 
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+       xmlns:ice="http://www.icesoft.com/icefaces/component"
+       >
+
+    <gui:composition>
+            <h:outputText escape="false" rendered="#{VDCRequest.currentVDCId != null}" value="#{VDCRequest.currentVDC.header}"/>
+            <h:outputText escape="false" rendered="#{VDCRequest.currentVDCId == null}" value="#{VDCRequest.vdcNetwork.networkPageHeader}"/>
+    </gui:composition>
+</div>
+

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:gui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:ice="http://www.icesoft.com/icefaces/component">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+  <gui:composition template="/template.xhtml">
+    <gui:param name="pageTitle" value="Deaccession Study - #{VDCRequest.dataversePageTitle}"/>
+    <gui:define name="body">
+      <ice:form id="form1">
+        <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+        <input type="hidden" name="pageName" value="DeaccessionStudyPage"/>
+        <ice:inputHidden id="studyId" value="#{DeaccessionStudyPage.studyId}"/>
+        <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnWarningMessage" rendered="#{!DeaccessionStudyPage.updateDeaccessionDetails}">
+            <div class="dvnMsgBlockContainer">
+              <ice:outputText value="#{bundlePageInfo.deaccessionStudyHelp}" escape="false"/>
+            </div>
+        </div>
+        <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage" rendered="#{DeaccessionStudyPage.updateDeaccessionDetails}">
+            <div class="dvnMsgBlockContainer">
+              <ice:outputText value="#{bundlePageInfo.deaccessionStudyEditHelp}" escape="false"/>
+            </div>
+        </div>
+        <div class="dvn_section">
+          <div class="dvn_sectionTitle">
+            <ice:outputText value="#{bundlePageInfo.deaccessionStudyTitle}" escape="false"/>
+          </div>
+          <div class="dvn_sectionBox">
+            <div class="dvn_margin12">
+              <style type="text/css">
+                  label.dvnDeaccessionFormLabel {font-weight: bold;}
+              </style>
+              <div>
+                <span jsfc="ice:panelGroup" rendered="#{!DeaccessionStudyPage.updateDeaccessionDetails}">
+                    <ice:graphicImage value="/resources/images/icon_warning.18.png" styleClass="dvn_icon"/>
+                    <ice:outputText id="outputText2" styleClass="warnMessage" value=" Are you sure you want to deaccession the study "/>
+                    <ice:outputFormat id="outputText3" styleClass="vdcTextStandOut" value="{0}, {1}">
+                      <f:param value="&#34;#{DeaccessionStudyPage.studyVersion.metadata.title}&#34;"/>
+                      <f:param value="#{DeaccessionStudyPage.studyVersion.study.globalId}"/>
+                    </ice:outputFormat>
+                    <ice:outputText id="outputText4" styleClass="warnMessage" value="?"/>
+                </span>
+                <p>
+                  <ice:outputText value="Leave a comment to explain why the study was deaccessioned."/>
+                </p>
+                <label class="dvnDeaccessionFormLabel" for="dvnDeaccessionComments">Comments</label><br/>
+                <ice:inputTextarea  maxlength="#{DeaccessionStudyPage.archiveNoteMaxLength}" validator="#{DeaccessionStudyPage.validateArchiveNote}" id="dvnDeaccessionComments" value="#{DeaccessionStudyPage.studyVersion.archiveNote}"/>
+                <ice:message styleClass="errorMessage" for="dvnDeaccessionComments"/>
+                
+                <p>
+                  <ice:outputText value="Add a link to another version of the deaccssioned study by including the Global ID of the new study."/>
+                </p>
+                <label class="dvnDeaccessionFormLabel" for="dvnDeaccessionForwardLink">Global ID</label>
+                <ice:outputText value="hdl:"/>
+                <ice:inputText id="dvnDeaccessionLinkAuthority" value="#{DeaccessionStudyPage.deaccessionLinkAuthority}" binding="#{DeaccessionStudyPage.inputDeaccessionLinkAuthority}"/>
+                <ice:outputText value=":"/>
+                <ice:inputText id="dvnDeaccessionLinkStudyId" value="#{DeaccessionStudyPage.deaccessionLinkStudyId}" 
+                    required="#{!empty DeaccessionStudyPage.inputDeaccessionLinkAuthority.localValue}" requiredMessage="Deaccession link must contain both an authority and a study Id."
+                    validator = "#{DeaccessionStudyPage.validateDeaccessionLink}"/>
+                <ice:message styleClass="errorMessage" for="dvnDeaccessionLinkAuthority"/>
+                <ice:message styleClass="errorMessage" for="dvnDeaccessionLinkStudyId"/>
+              </div>
+              <div class="dvnFormPadding dvnFormMargin">
+                <ice:commandButton id="button1" value='#{DeaccessionStudyPage.updateDeaccessionDetails?"Update":"Deaccession"}' action="#{DeaccessionStudyPage.save_action}"/>
+                <ice:commandButton immediate="true" id="button2" value="Cancel" action="#{DeaccessionStudyPage.cancel_action}"/>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ice:form>
+    </gui:define>
+  </gui:composition>
+</body>
+</html>

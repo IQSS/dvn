@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:gui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:ice="http://www.icesoft.com/icefaces/component">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+  <gui:composition template="/template.xhtml">
+    <gui:param name="pageTitle" value="#{bundlePageInfo.viewGroupTitle} - #{VDCRequest.dataversePageTitle}"/>
+    <gui:define name="body">
+      <ice:form id="form1">
+        <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+        <input type="hidden" name="pageName" value="EditUserGroupPage"/>
+        <div class="dvn_section">
+          <div class="dvn_sectionTitle">
+            <ice:outputText value="#{bundlePageInfo.viewGroupTitle}"/>
+          </div>
+          <div class="dvn_sectionBox">
+            <div class="dvn_margin12">
+              <table cellpadding="0" cellspacing="0" columns="2"
+                     columnClasses="vdcColPadded, vdcColPadded" id="gridPanel2">
+                <div>
+                  <ice:outputText id="outputText2" styleClass="vdcFieldTitle" value="Group Name: "/>
+                </div>
+                <div>
+                  <ice:outputText id="outputText3" value="#{ViewUserGroupPage.group.name}"/>
+                </div>
+                <div>
+                  <ice:outputText styleClass="vdcFieldTitle" value="Users: " rendered="#{!empty ViewUserGroupPage.group.users}"/>
+                </div>
+                <ice:outputText value="#{ViewUserGroupPage.userList}" rendered="#{!empty ViewUserGroupPage.group.users}"/>
+                <!-- Add later - PIN service -->
+              </table>
+            </div>
+          </div>
+        </div>
+      </ice:form>
+    </gui:define>
+  </gui:composition>
+</body>
+</html>

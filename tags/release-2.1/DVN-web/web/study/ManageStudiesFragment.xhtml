@@ -1,0 +1,262 @@
+     <div xmlns:gui="http://java.sun.com/jsf/facelets"
+                      xmlns:h="http://java.sun.com/jsf/html"
+                      xmlns:f="http://java.sun.com/jsf/core"
+                      xmlns:jsp="http://java.sun.com/JSP/Page"
+                      xmlns:ice="http://www.icesoft.com/icefaces/component"
+                      xmlns:dvn="/WEB-INF/tlds/dvn-components"
+                      xmlns:ui="http://www.sun.com/web/ui"
+                      jsfc="ice:panelGroup">
+            <script type="text/javascript">
+                //<![CDATA[
+                jQuery(function(jQuery){
+                  jQuery.fn.fixOverflow = function(){
+                    if (jQuery.browser.msie) {
+                      return this.each(function(){
+                        if (this.scrollWidth > this.offsetWidth){
+                          jQuery(this).css({"padding-bottom" : "20px", "overflow-y" : "hidden"});
+                        }
+                      })
+                    } else {
+                      return this;
+                    }
+                  };
+                });
+
+                jQuery(document).ready(function(){
+                    var $div = jQuery(".dvnManageStudiesTable");
+                    y = $div.outerHeight() + 17;
+                    jQuery(".dvnManageStudiesTableBlock").css("height", y);                
+                });
+
+               Ice.onAsynchronousReceive("document:body", function(){
+                   jQuery("div.dvnMsgBlockRound").corner("10px");
+
+                   jQuery(function(jQuery){
+                      jQuery.fn.fixOverflow = function(){
+                        if (jQuery.browser.msie) {
+                          return this.each(function(){
+                            if (this.scrollWidth > this.offsetWidth){
+                              jQuery(this).css({"padding-bottom" : "20px", "overflow-y" : "hidden"});
+                            }
+                          })
+                        } else {
+                          return this;
+                        }
+                      };
+                    });
+
+                    var $div = jQuery(".dvnManageStudiesTable");
+                    y = $div.outerHeight() + 17;
+                    jQuery(".dvnManageStudiesTableBlock").css("height", y);
+               });
+               //]]>
+            </script>
+            <style type="text/css">
+                .dvnManageStudiesTableTop .dvn_StudyListTotals {overflow: hidden;}
+                .dvnManageStudiesTableTop .dvnManageStudiesTableFilter {float: left;}
+                .dvnManageStudiesTableShowArchive {float: left; padding-left: 1em;}
+                .dvnManageStudiesTablePaginator {float: right; text-align: right;}
+                .dvnManageStudiesTableAction {white-space: nowrap;}
+                .dvnManageStudiesTableAction a.iceCmdLnk, .dvnManageStudiesTableAction a.iceOutLnk {margin-left: .75em;}
+                .dvnManageStudiesTableAction a.dvnManageStudiesTableEditLink {margin-left: 0;}
+            </style>
+            <!-- STUDY OPTIONS -->
+            <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="2"
+                             styleClass="dvnManageStudiesTableTop" columnClasses="dvn_StudyListTotals, dvnPaginatorWrap"
+                             >
+                <div jsfc="ice:panelGroup" id="groupPanel3" styleClass="dvn_StudyListTotals">
+                    <div jsfc="ice:panelGroup" styleClass="dvnManageStudiesTableFilter" rendered="#{ManageStudiesList.contributorFilterRendered}">
+                        <ice:selectOneMenu id="studyScopeSelectMenu" binding="#{ManageStudiesList.filterDropdown}">
+                            <ice:message for="studyScopeSelectMenu" styleClass="errorMessage"/>
+                            <f:selectItems id="studyScopeSelectItems" value="#{ManageStudiesList.studyScopeSelectItems}"/>
+                        </ice:selectOneMenu>
+                        <ice:commandButton id="filterButton" value="Filter" actionListener="#{ManageStudiesList.filter}"/>
+                        <ice:message styleClass="errorMessage" for="userName"/>
+                    </div>
+                    <div class="dvnManageStudiesTableShowArchive">
+                        <ice:selectBooleanCheckbox id="showArchivedStudies" binding="#{ManageStudiesList.archiveCheckBox}" value="#{ManageStudiesList.showArchivedStudies}" valueChangeListener="#{ManageStudiesList.changeArchive}" onclick="submit()"/>
+                        <ice:outputText id="outputText3" value="#{bundle.showArchivedStudiesLabel}"/>
+                    </div>
+                    <div class="dvnManageStudiesTablePaginator">
+                        <ice:dataPaginator id="scroll_2"
+                                           binding="#{ManageStudiesList.paginator}"
+                                           for="studyData"
+                                           rowsCountVar="rowsCount"
+                                           displayedRowsCountVar="displayedRowsCountVar"
+                                           firstRowIndexVar="firstRowIndex"
+                                           lastRowIndexVar="lastRowIndex"
+                                           pageCountVar="pageCount"
+                                           pageIndexVar="pageIndex">
+                            <ice:outputText value="1 Study" rendered="#{rowsCount == 1}" styleClass="dvn_totalsValue"/>
+                            <ice:outputText value="#{rowsCount} Studies" rendered="#{rowsCount > 1}" styleClass="dvn_totalsValue" />
+                            <ice:outputFormat rendered="#{rowsCount > displayedRowsCountVar}" value=", displaying {0} to {1}" styleClass="dvn_totalsValue">
+                                <f:param value="#{firstRowIndex}"/>
+                                <f:param value="#{lastRowIndex}"/>
+                            </ice:outputFormat>
+                        </ice:dataPaginator>
+                    </div>
+                </div>
+                <div jsfc="ice:panelGroup" id="groupPanel4" styleClass="dvnPaginatorWrap">
+                <ice:dataPaginator id="scroll_1" styleClass="dvnPaginatorRight"
+                                   for="studyData" fastStep="3"
+                                   pageCountVar="pageCount" pageIndexVar="pageIndex"
+                                   paginator="true" paginatorMaxPages="4" renderFacetsIfSinglePage="false">
+                  <f:facet name="first">
+                    <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-first.gif"/>
+                  </f:facet>
+                  <f:facet name="last">
+                    <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-last.gif"/>
+                  </f:facet>
+                  <f:facet name="previous">
+                    <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-previous.gif"/>
+                  </f:facet>
+                  <f:facet name="next">
+                    <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-next.gif"/>
+                  </f:facet>
+                  <f:facet name="fastforward">
+                    <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-ff.gif"/>
+                  </f:facet>
+                  <f:facet name="fastrewind">
+                    <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-fr.gif"/>
+                  </f:facet>
+                </ice:dataPaginator>
+              </div>
+            </ice:panelGrid>
+            <ice:panelGrid cellpadding="0" cellspacing="0" width="100%">
+                <div jsfc="ice:panelGroup" styleClass="dvnManageStudiesEmptyBlock" rendered="#{empty ManageStudiesList.studyUIList}">
+                    <style type="text/css">
+                        .dvnManageStudiesEmptyBlock {padding: 1em; text-align: center; border: 1px solid #D9D9D9; border-top: 0;}
+                    </style>
+                    <p><ice:outputText value="No studies found."/></p>
+                </div>
+                <div jsfc="ice:panelGroup" styleClass="dvnManageStudiesTableBlock" rendered="#{!empty (ManageStudiesList.studyUIList)}">
+                  <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
+                                 binding="#{ManageStudiesList.studyDataTable}"
+                                 rows="10" id="studyData" styleClass="dvnManageStudiesTable" headerClass="groupRow" rowClasses="evenRow oddRow"
+                                 rendered="#{not empty(ManageStudiesList.studyUIList)}"
+                                 sortColumn="#{ManageStudiesList.sortColumnName}" sortAscending="#{ManageStudiesList.ascending}"
+                                 value="#{ManageStudiesList.studyUIList}" var="studyUI">
+                    <ice:column>
+                      <f:facet name="header">
+                        <ice:commandSortHeader
+                          columnName="#{ManageStudiesList.idColumn}"
+                          arrow="true">
+                          <ice:outputText value="#{bundle.MSIdColumn}"/>
+                        </ice:commandSortHeader>
+                      </f:facet>
+                      <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml">
+                            <f:param name="studyId" value="#{studyUI.study.id}"/>
+                            <f:param name="versionNumber" value="#{studyUI.study.latestVersion.versionNumber}"/>
+                        <ice:outputText value="#{studyUI.study.globalId}"/>
+                      </ice:outputLink>
+                    </ice:column>
+                    <ice:column>
+                      <f:facet name="header">
+                        <ice:commandSortHeader
+                          columnName="#{ManageStudiesList.titleColumn}"
+                          arrow="true">
+                          <ice:outputText value="#{bundle.MSTitleColumn}"/>
+                        </ice:commandSortHeader>
+                      </f:facet>
+                      <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml">
+                            <f:param name="studyId" value="#{studyUI.study.id}"/>
+                            <f:param name="versionNumber" value="#{studyUI.study.latestVersion.versionNumber}"/>
+                        <ice:outputText value="#{studyUI.metadata.title}"/>
+                      </ice:outputLink>
+                    </ice:column>
+                    <ice:column>
+                      <f:facet name="header">
+                        <ice:commandSortHeader
+                          columnName="#{ManageStudiesList.creatorColumn}"
+                          arrow="true">
+                          <ice:outputText value="#{bundle.MSCreatorColumn}"/>
+                        </ice:commandSortHeader>
+                      </f:facet>
+                      <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/login/AccountPage.xhtml?userId=#{studyUI.study.creator.id}">
+                        <ice:outputText value="#{studyUI.study.creator.userName}"/>
+                      </ice:outputLink>
+                    </ice:column>
+                    <ice:column>
+                      <f:facet name="header">
+                        <ice:commandSortHeader
+                          columnName="#{ManageStudiesList.createdColumn}"
+                          arrow="true">
+                          <ice:outputText value="#{bundle.MSCreatedColumn}"/>
+                        </ice:commandSortHeader>
+                      </f:facet>
+                      <ice:outputText value="#{studyUI.study.createTime}"/>
+                    </ice:column>
+                    <ice:column styleClass="dvnManageStudiesTableStatus">
+                      <f:facet name="header">
+                        <ice:commandSortHeader
+                          columnName="#{ManageStudiesList.statusColumn}"
+                          arrow="true">
+                          <ice:outputText value="#{bundle.MSStatusColumn}"/>
+                        </ice:commandSortHeader>
+                      </f:facet>
+                      <ice:outputText value="#{(studyUI.study.latestVersion.draft) ? bundle.MSDraftStatus : ((studyUI.study.latestVersion.inReview) ? bundle.MSReviewStatus :(studyUI.study.latestVersion.released) ? bundle.MSReleasedStatus : bundle.MSDeaccessionedStatus)}"/>
+                    </ice:column>
+                    <ice:column>
+                      <f:facet name="header">
+                        <ice:commandSortHeader
+                          columnName="#{ManageStudiesList.releasedColumn}"
+                          arrow="true">
+                          <ice:outputText value="#{bundle.MSReleasedColumn}"/>
+                        </ice:commandSortHeader>
+                      </f:facet>
+                      <ice:outputText value="#{studyUI.study.latestVersion.releaseTime}"/>
+                    </ice:column>
+                    <ice:column>
+                      <f:facet name="header">
+                        <ice:commandSortHeader
+                          columnName="#{ManageStudiesList.versionColumn}"
+                          arrow="true">
+                          <ice:outputText value="#{bundle.MSVersionColumn}"/>
+                        </ice:commandSortHeader>
+                      </f:facet>
+                      <ice:outputText value="#{studyUI.study.latestVersion.versionNumber}"/>
+                    </ice:column>
+                    <ice:column>
+                      <f:facet name="header">
+                        <ice:commandSortHeader
+                          columnName="#{ManageStudiesList.updatedColumn}"
+                          arrow="true">
+                          <ice:outputText value="#{bundle.MSUpdatedColumn}"/>
+                        </ice:commandSortHeader>
+                      </f:facet>
+                      <ice:outputText value="#{studyUI.study.lastUpdateTime}"/>
+                    </ice:column>
+                    <ice:column styleClass="dvnManageStudiesTableAction">
+                      <f:facet name="header">
+                          <ice:outputText value="#{bundle.MSActionColumn}"/>
+                      </f:facet>
+                        <ice:outputLink styleClass="dvnManageStudiesTableEditLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml" rendered="#{studyUI.userAuthorizedToEdit}">
+                            <f:param name="studyId" value="#{studyUI.study.id}"/>
+                            <f:param name="versionNumber" value="#{studyUI.study.latestVersion.versionNumber}"/>
+                            <ice:outputText value="#{bundle.MSEditAction}"/>
+                        </ice:outputLink>
+                        <ice:commandLink id="draftReviewColLink" actionListener="#{ManageStudiesList.doShowReviewPopup}" rendered="#{not studyUI.userAuthorizedToRelease and studyUI.study.latestVersion.draft}">
+                            <ice:outputText value="#{bundle.MSReviewAction}"/>
+                        </ice:commandLink>
+                        <ice:commandLink id="draftDeleteColLink" immediate="true" rendered="#{studyUI.userAuthorizedToEdit and studyUI.study.studyLock==null and (studyUI.study.latestVersion.draft or studyUI.study.latestVersion.inReview)}" actionListener="#{ManageStudiesList.confirmDeleteAction}">
+                            <ice:outputText value="#{bundle.MSDeleteAction}"/>
+                        </ice:commandLink>
+                        <ice:commandLink id="inReviewOrDraftReleaseColLink" actionListener="#{ManageStudiesList.doShowReleasePopup}" rendered="#{studyUI.userAuthorizedToRelease and (studyUI.study.latestVersion.inReview or studyUI.study.latestVersion.draft)  and studyUI.study.releasedVersion == null}">
+                            <ice:outputText value="#{bundle.MSReleaseAction}"/>
+                        </ice:commandLink>
+                        <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyVersionDifferencesPage.xhtml" rendered="#{studyUI.userAuthorizedToRelease and (studyUI.study.latestVersion.inReview or studyUI.study.latestVersion.draft) and studyUI.study.releasedVersion != null}">
+                            <f:param name="studyId" value="#{studyUI.study.id}"/>
+                            <f:param name="versionNumberList" value="#{studyUI.study.releasedVersion.versionNumber},#{studyUI.study.latestVersion.versionNumber}"/>
+                            <f:param name="actionMode" value="confirmRelease"/>
+                            <ice:outputText value="#{bundle.MSReleaseAction}"/>
+                        </ice:outputLink>
+                        <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/DeaccessionStudyPage.xhtml" rendered="#{studyUI.userAuthorizedToRelease and studyUI.study.latestVersion.released}">
+                            <f:param name="studyId" value="#{studyUI.study.id}"/>
+                            <f:param name="versionNumber" value="#{studyUI.study.latestVersion.versionNumber}"/>
+                            <ice:outputText value="#{bundle.MSDeaccessionAction}"/>
+                        </ice:outputLink>
+                    </ice:column>
+                  </ice:dataTable>
+                </div>
+            </ice:panelGrid>
+     </div>

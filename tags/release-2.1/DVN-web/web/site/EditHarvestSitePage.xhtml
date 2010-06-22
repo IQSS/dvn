@@ -1,0 +1,410 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:gui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:ice="http://www.icesoft.com/icefaces/component">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+  <gui:composition template="/template.xhtml">
+    <gui:param name="pageTitle" value="#{EditHarvestSitePage.pageTitle} - #{VDCRequest.dataversePageTitle}"/>
+    <gui:define name="body">
+      <script type="text/javascript">
+          // <![CDATA[
+          function checkSubsetting( copyValue ) {
+              filesRestricted = getSelect("dropdown3");
+              subsetRestricted = getSelect("dropdown4");
+              subsetRestricted.disabled = !(filesRestricted.value == 'true');
+              if (copyValue) {
+                  subsetRestricted.value = filesRestricted.value;
+              }
+          }
+          function updateScheduleInput(  ) {
+              schedulePeriod = getSelect( "selectSchedulePeriod");
+              scheduleHourOfDay = getSelect("inputScheduleHourOfDay");
+              scheduleDayOfWeek = getSelect("inputScheduleDayOfWeek");
+              scheduleDayOfWeekMsg = getSpan("inputScheduleDayOfWeekMsg");
+              if (schedulePeriod.value=="daily") {
+                  scheduleHourOfDay.disabled = false;
+                  scheduleDayOfWeek.disabled = true;
+                  scheduleDayOfWeek.value='-1';
+              } else if (schedulePeriod.value=="weekly") {
+                  scheduleDayOfWeek.disabled = false;
+                  scheduleHourOfDay.disabled = false;
+              } else {
+                  scheduleDayOfWeek.disabled = true;
+                  scheduleHourOfDay.disabled = true;
+                  scheduleHourOfDay.value='-1';
+                  scheduleDayOfWeek.value='-1';
+              }
+          }
+          function getInput( id ) {
+              elements=document.getElementsByTagName("input");
+              for(i=0; i < elements.length; i++) {
+                  if (elements[i].id.indexOf(id) != -1 ) {
+                      return elements[i];
+                  }
+              }
+          }
+          function getSpan( id ) {
+              elements=document.getElementsByTagName("span");
+              for(i=0; i < elements.length; i++) {
+                  if (elements[i].id.indexOf(id) != -1 ) {
+                      return elements[i];
+                  }
+              }
+          }
+          function getSelect( id ) {
+              elements=document.getElementsByTagName("select");
+              for(i=0; i < elements.length; i++) {
+                  if (elements[i].id.indexOf(id) != -1) {
+                      return elements[i];
+                  }
+              }
+          }
+          function getRadioValue( id ) {
+              elements=document.getElementsByTagName("input");
+              for(i=0; i < elements.length; i++) {
+                  if (elements[i].id.indexOf(id) != -1 ) {
+                      if (elements[i].checked) {
+                          return elements[i].value;
+                      }
+                  }
+              }
+          }
+          function hideScheduling() {
+              harvestType = getRadioValue("harvestType");
+              if (harvestType  == 'oai') {
+                  document.getElementById("scheduleBlock").style.display='';
+              } else {
+                  document.getElementById("scheduleBlock").style.display='none';
+              }
+          }
+          //]]>
+      </script>
+      <ice:form id="form1">
+        <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+        <input type="hidden" name="pageName" value="EditHarvestSitePage"/>
+        <ice:inputHidden id="harvestId" value="#{EditHarvestSitePage.harvestId}"/>
+        <div class="dvn_section">
+          <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
+            <div class="dvnMsgBlockContainer">
+              <ice:outputText value="#{bundlePageInfo.createHarvestingDvHelp}" escape="false"/>
+              <div jsfc="ice:panelGroup" styleClass="successMessage" rendered="#{EditHarvestSitePage.success}">
+                <ice:outputText value="Update Successful!"/>
+              </div>
+            </div>
+          </div>
+          <div class="dvn_sectionTitle">
+            <ice:outputText value="#{EditHarvestSitePage.pageTitle}"/>
+          </div>
+          <div jsfc="ice:panelGroup">
+              <table class="dvnPermissionsTable" cellspacing="0" cellpadding="0" border="0">
+                  <tr><td colspan="2" class="dvnPermissionsTableHeader"><ice:outputText value="General Settings"/></td></tr>
+                  <tr>
+                    <td class="dvnPermissionsTableOption">
+                        <ice:outputText value="Harvesting Type"/>
+                    </td>
+                    <td>
+                        <ice:selectOneRadio id="harvestType"
+                                            layout="pageDirection"
+                                            binding="#{EditHarvestSitePage.inputHarvestType}"
+                                            onclick="hideScheduling()"
+                                            value="#{EditHarvestSitePage.harvestingDataverse.harvestType}"
+                                            required="true"
+                                            requiredMessage="This field is required.">
+                            <f:selectItem itemLabel="OAI Server" itemValue="oai"/>
+                            <f:selectItem itemLabel="Nesstar Server" itemValue="nesstar"/>
+                        </ice:selectOneRadio>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="dvnPermissionsTableOption">
+                        <ice:outputText value="Dataverse Name"/>
+                    </td>
+                    <td>
+                        <ice:inputText id="dataverseName" value="#{EditHarvestSitePage.dataverseName}" required="true" requiredMessage="This field is required." validator="#{EditHarvestSitePage.validateName}" size="60"/>
+                        <ice:message styleClass="errorMessage" for="dataverseName"/>
+                        <br/>
+                        <ice:outputText styleClass="vdcHelpText" value="Name used to refer to this dataverse in Dataverse Network Homepage and other pages."/>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="dvnPermissionsTableOption">
+                        <ice:outputText value="Dataverse Alias"/>
+                    </td>
+                    <td>
+                        <ice:inputText id="dataverseAlias" value="#{EditHarvestSitePage.dataverseAlias}" validator="#{EditHarvestSitePage.validateAlias}" required="true" requiredMessage="This field is required." />
+                        <ice:message styleClass="errorMessage" for="dataverseAlias"/>
+                        <br/>
+                        <ice:outputText styleClass="vdcHelpText" value="Short name used to build the URL for this dataverse, e.g., http://.../dv/'alias'. It is case sensitive."/>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="dvnPermissionsTableOption">
+                        <ice:outputText value="Dataverse Affiliation"/>
+                    </td>
+                    <td>
+                        <ice:inputText id="dataverseAffiliation" value="#{EditHarvestSitePage.dataverseAffiliation}"/>
+                        <ice:message styleClass="errorMessage" for="dataverseAffiliation"/>
+                        <br/>
+                        <ice:outputText styleClass="vdcHelpText" value="University, center, or research project."/>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="dvnPermissionsTableOption">
+                        <ice:outputText value="Server URL"/>
+                    </td>
+                    <td>
+                        <ice:inputText id="dataverseServer" validator="#{EditHarvestSitePage.validateOAIServer}" value="#{EditHarvestSitePage.harvestingDataverse.serverUrl}"  required="true" requiredMessage="This field is required." size="60">
+                            <f:validator validatorId="UrlValidator"/>
+                        </ice:inputText>
+                        <ice:commandButton value="Validate"/>
+                        <ice:message styleClass="errorMessage" for="dataverseServer"/>
+                        <br/>
+                        <ice:outputText styleClass="vdcHelpText" value="Enter server name, e.g., http://dvn.iq.harvard.edu/dvn/OAIHandler"/>
+                        <ice:outputText styleClass="errorMessageBlock" value="This Server does not support sets. If you are harvesting another DVN and a set is not specified, all studies owned by that DVN will be harvested (without including studies harvested by that DVN)."
+                                        rendered="#{EditHarvestSitePage.editHarvestSiteService.harvestingSets==null and EditHarvestSitePage.harvestingDataverse.serverUrl !=null}"/>
+                    </td>
+                  </tr>
+              </table>
+              <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                             id="gridPanel1" styleClass="dvnPermissionsTable"
+                             columnClasses="dvnPermissionsTableOption, dvnPermissionsTableOptionCol2"
+                             rendered="#{not empty EditHarvestSitePage.editHarvestSiteService.harvestingSets}">
+                <ice:column>
+                  <ice:outputText value="Harvesting Set"/>
+                </ice:column>
+                <ice:column>
+                  <ice:selectOneMenu id="radioButtonList1" value="#{EditHarvestSitePage.harvestingDataverse.harvestingSet}">
+                    <f:selectItem itemValue="" itemLabel="No Set (harvest all)"/>
+                    <f:selectItems id="radio1SelectItem" value="#{EditHarvestSitePage.harvestingSetsSelect}"/>
+                  </ice:selectOneMenu>
+                  <br/>
+                  <ice:outputText styleClass="vdcHelpText" value="Select the set you would like to harvest. If you are harvesting another DVN and a set is not specified, all studies owned by that DVN will be harvested (without including studies harvested by that DVN)."/>
+                </ice:column>
+              </ice:panelGrid>
+              <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                             id="gridPanel2" styleClass="dvnPermissionsTable"
+                             columnClasses="dvnPermissionsTableOption, dvnPermissionsTableOptionCol2"
+                             rendered="#{not empty EditHarvestSitePage.editHarvestSiteService.metadataFormats}">
+                <ice:column>
+                  <ice:outputText value="Harvesting Format"/>
+                </ice:column>
+                <ice:column>
+                  <ice:selectOneMenu value="#{EditHarvestSitePage.editHarvestSiteService.selectedMetadataPrefixId}">
+                    <f:selectItems value="#{EditHarvestSitePage.metadataFormatsSelect}"/>
+                  </ice:selectOneMenu>
+                  <br/>
+                  <ice:outputText styleClass="vdcHelpText" value="This is the XML format when used harvesting studies from this Server."/>
+                </ice:column>
+              </ice:panelGrid>
+              <table class="dvnPermissionsTable" cellspacing="0" cellpadding="0" border="0">
+                  <tr>
+                    <td class="dvnPermissionsTableOption">
+                        <ice:outputText value="Handle Registration"/>
+                    </td>
+                    <td>
+                        <ice:selectOneMenu binding="#{EditHarvestSitePage.handlePrefixSelectOneMenu}" value="#{EditHarvestSitePage.editHarvestSiteService.selectedHandlePrefixId}" >
+                            <f:selectItem itemValue="" itemLabel="Do not register harvested studies (studies must already have a handle)"/>
+                            <f:selectItems value="#{EditHarvestSitePage.handlePrefixSelect}"/>
+                        </ice:selectOneMenu>
+                    </td>
+                  </tr>
+              </table>
+          </div>
+          <div id="scheduleBlock" class="dvnFormPaddingTop">
+              <table class="dvnPermissionsTable" cellspacing="0" cellpadding="0" border="0">
+                  <tr><td colspan="2" class="dvnPermissionsTableHeader"><ice:outputText value="Schedule Settings"/></td></tr>
+                  <tr>
+                    <td class="dvnPermissionsTableOption">
+                        <ice:outputText value="Schedule Harvesting"/>
+                    </td>
+                    <td>
+                        <ice:selectBooleanCheckbox binding="#{EditHarvestSitePage.scheduledCheckbox}" id="scheduledCheckBox" value="#{EditHarvestSitePage.harvestingDataverse.scheduled}" onclick='updateScheduleInput();'/>
+                        <ice:outputText id="outputText15" value=" Enable scheduled harvest based on settings below."/>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="dvnPermissionsTableOption">
+                        <ice:outputText value="Scheduled Harvesting Period"/>
+                    </td>
+                    <td>
+                        <ice:selectOneMenu binding="#{EditHarvestSitePage.schedulePeriod}" validator="#{EditHarvestSitePage.validateSchedulePeriod}" id="selectSchedulePeriod" value="#{EditHarvestSitePage.harvestingDataverse.schedulePeriod}"  onchange='updateScheduleInput();' >
+                            <f:selectItem itemValue="notSelected" itemLabel="Not Selected"/>
+                            <f:selectItem itemValue="daily" itemLabel="Harvest daily"/>
+                            <f:selectItem itemValue="weekly" itemLabel="Harvest weekly"/>
+                        </ice:selectOneMenu>
+                        <ice:message id="selectSchedulePeriodMsg" styleClass="errorMessage" for="selectSchedulePeriod"/>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="dvnPermissionsTableOption">
+                        <ice:outputText value="Scheduled Harvesting Hour of Day"/>
+                    </td>
+                    <td>
+                        <!--
+                        <ice:inputText required="true" requiredMessage="This field is required." id="inputScheduleHourOfDay" value="#{EditHarvestSitePage.harvestingDataverse.scheduleHourOfDay}">
+                            <f:validateLongRange minimum="0" maximum="23" />
+                        </ice:inputText>
+                        -->
+                        <ice:selectOneMenu validator="#{EditHarvestSitePage.validateHourOfDay}" id="inputScheduleHourOfDay" value="#{EditHarvestSitePage.harvestingDataverse.scheduleHourOfDay}">
+                            <f:selectItem itemValue="-1" itemLabel="Not Selected"/>
+                            <f:selectItem itemValue="0" itemLabel="12:00 AM"/>
+                            <f:selectItem itemValue="1" itemLabel="1:00 AM"/>
+                            <f:selectItem itemValue="2" itemLabel="2:00 AM"/>
+                            <f:selectItem itemValue="3" itemLabel="3:00 AM"/>
+                            <f:selectItem itemValue="4" itemLabel="4:00 AM"/>
+                            <f:selectItem itemValue="5" itemLabel="5:00 AM"/>
+                            <f:selectItem itemValue="6" itemLabel="6:00 AM"/>
+                            <f:selectItem itemValue="7" itemLabel="7:00 AM"/>
+                            <f:selectItem itemValue="8" itemLabel="8:00 AM"/>
+                            <f:selectItem itemValue="9" itemLabel="9:00 AM"/>
+                            <f:selectItem itemValue="10" itemLabel="10:00 AM"/>
+                            <f:selectItem itemValue="11" itemLabel="11:00 AM"/>
+                            <f:selectItem itemValue="12" itemLabel="12:00 PM"/>
+                            <f:selectItem itemValue="13" itemLabel="1:00 PM"/>
+                            <f:selectItem itemValue="14" itemLabel="2:00 PM"/>
+                            <f:selectItem itemValue="15" itemLabel="3:00 PM"/>
+                            <f:selectItem itemValue="16" itemLabel="4:00 PM"/>
+                            <f:selectItem itemValue="17" itemLabel="5:00 PM"/>
+                            <f:selectItem itemValue="18" itemLabel="6:00 PM"/>
+                            <f:selectItem itemValue="19" itemLabel="7:00 PM"/>
+                            <f:selectItem itemValue="20" itemLabel="8:00 PM"/>
+                            <f:selectItem itemValue="21" itemLabel="9:00 PM"/>
+                            <f:selectItem itemValue="22" itemLabel="10:00 PM"/>
+                            <f:selectItem itemValue="23" itemLabel="11:00 PM"/>
+                        </ice:selectOneMenu>
+                        <ice:message id="inputScheduleHourOfDayMsg" styleClass="errorMessage" for="inputScheduleHourOfDay"/>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="dvnPermissionsTableOption">
+                        <ice:outputText value="Scheduled Harvesting Day Of Week"/>
+                    </td>
+                    <td>
+                        <!--
+                        <ice:inputText required="true" requiredMessage="This field is required." id="inputScheduleDayOfWeek" value="#{EditHarvestSitePage.harvestingDataverse.scheduleDayOfWeek}">
+                            <f:validateLongRange minimum="1" maximum="7"/>
+                        </ice:inputText>
+                        -->
+                        <ice:selectOneMenu validator="#{EditHarvestSitePage.validateDayOfWeek}" id="inputScheduleDayOfWeek" value="#{EditHarvestSitePage.harvestingDataverse.scheduleDayOfWeek}">
+                            <f:selectItem itemValue="-1" itemLabel="Not Selected"/>
+                            <f:selectItem itemValue="1" itemLabel="Sunday"/>
+                            <f:selectItem itemValue="2" itemLabel="Monday"/>
+                            <f:selectItem itemValue="3" itemLabel="Tuesday"/>
+                            <f:selectItem itemValue="4" itemLabel="Wednesday"/>
+                            <f:selectItem itemValue="5" itemLabel="Thursday"/>
+                            <f:selectItem itemValue="6" itemLabel="Friday"/>
+                            <f:selectItem itemValue="7" itemLabel="Saturday"/>
+                        </ice:selectOneMenu>
+                        <ice:message id="inputScheduleDayOfWeekMsg" styleClass="errorMessage" for="inputScheduleDayOfWeek"/>
+                    </td>
+                  </tr>
+              </table>
+          </div>
+          <div class="dvnFormPadding">
+              <table class="dvnPermissionsTable" cellspacing="0" cellpadding="0" border="0">
+                  <tr><td colspan="2" class="dvnPermissionsTableHeader"><ice:outputText value="Permissions Settings"/></td></tr>
+                  <tr>
+                    <td class="dvnPermissionsTableOption">
+                        <ice:outputText value="File Permissions"/>
+                    </td>
+                    <td>
+                        <ice:selectOneMenu id="dropdown3" value="#{EditHarvestSitePage.filesRestricted}" onchange="checkSubsetting(true)">
+                            <f:selectItem itemLabel="Public" itemValue="false"/>
+                            <f:selectItem itemLabel="Restricted" itemValue="true"/>
+                        </ice:selectOneMenu>
+                        <br/>
+                        <ice:outputText styleClass="vdcHelpText" value="Select to make all files for all studies in this dataverse public or restricted."/>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="dvnPermissionsTableOption">
+                        <ice:outputText value="Subset Permissions"/>
+                    </td>
+                    <td>
+                        <ice:selectOneMenu id="dropdown4" value="#{EditHarvestSitePage.subsetRestrictedWrapper}">
+                            <f:selectItem itemLabel="Public" itemValue="false"/>
+                            <f:selectItem itemLabel="Restricted" itemValue="true"/>
+                        </ice:selectOneMenu>
+                        <br/>
+                        <ice:outputText styleClass="vdcHelpText" value="Select to make subsetting for all studies in this dataverse public or restricted."/>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="dvnPermissionsTableOption">
+                        <ice:outputText value="Restricted File User Access"/>
+                    </td>
+                    <td>
+                        <ice:inputText binding="#{EditHarvestSitePage.userInputText}" value="#{EditHarvestSitePage.addUserName}"/>
+                        <ice:commandButton value="Add" actionListener="#{EditHarvestSitePage.addUser}"/>
+                        <br/>
+                        <ice:outputText styleClass="vdcHelpText" value="Enter username to allow them to access restricted studies."/>
+                        <ice:dataTable binding="#{EditHarvestSitePage.userTable}" cellpadding="0" cellspacing="0"
+                                       columnClasses="vdcColPadded, vdcColPadded, vdcColPadded, vdcColPadded" headerClass="list-header-left"
+                                       rowClasses="list-row-even,list-row-odd" value="#{EditHarvestSitePage.allowedFileUsers}" var="currentRow" width="100%"
+                                       rendered="#{not empty EditHarvestSitePage.allowedFileUsers}">
+                            <ice:column>
+                                <f:facet name="header">
+                                    <ice:outputText id="users_tcol1" value="User Name"/>
+                                </f:facet>
+                                <ice:outputLink value="/dvn/faces/login/AccountPage.xhtml?userId=#{currentRow.id}">
+                                    <ice:outputText value="#{currentRow.userName}"/>
+                                </ice:outputLink>
+                            </ice:column>
+                            <ice:column>
+                                <ice:commandButton id="removeUserButton" value="Remove User" actionListener="#{EditHarvestSitePage.removeUser}"/>
+                            </ice:column>
+                        </ice:dataTable>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="dvnPermissionsTableOption">
+                        <ice:outputText value="Restricted File Group Access"/>
+                    </td>
+                    <td>
+                        <ice:inputText value="#{EditHarvestSitePage.addGroupName}"/>
+                        <ice:commandButton value="Add" actionListener="#{EditHarvestSitePage.addGroup}"/>
+                        <br/>
+                        <ice:outputText styleClass="vdcHelpText" value="Enter group name to allow them to access restricted studies."/>
+                        <ice:dataTable binding="#{EditHarvestSitePage.groupTable}" cellpadding="0" cellspacing="0"
+                                       columnClasses="vdcColPadded, vdcColPadded, vdcColPadded, vdcColPadded" headerClass="list-header-left"
+                                       rowClasses="list-row-even,list-row-odd" value="#{EditHarvestSitePage.allowedFileGroups}" var="currentRow" width="100%"
+                                       rendered="#{not empty EditHarvestSitePage.allowedFileGroups}">
+                            <ice:column>
+                                <f:facet name="header">
+                                    <ice:outputText id="groups_tcol1" value="User Name"/>
+                                </f:facet>
+                                <ice:outputLink value="/dvn/faces/networkAdmin/ViewUserGroupPage.xhtml?userGroupId=#{currentRow.id}">
+                                    <ice:outputText value="#{currentRow.name}"/>
+                                </ice:outputLink>
+                            </ice:column>
+                            <ice:column>
+                                <ice:commandButton id="removeGroupButton" value="Remove Group" actionListener="#{EditHarvestSitePage.removeGroup}"/>
+                            </ice:column>
+                        </ice:dataTable>
+                    </td>
+                  </tr>
+              </table>
+          </div>
+          <div class="dvnFormPadding dvnFormMargin">
+              <ice:commandButton id="button1" binding ="#{EditHarvestSitePage.saveCommand}" value="Save" action="#{EditHarvestSitePage.save}"/>
+            <ice:commandButton id="button2" immediate="true" value="Cancel" action="#{EditHarvestSitePage.cancel}"/>
+          </div>
+        </div>
+      </ice:form>
+      <script type="text/javascript">
+          // initial call to disable subsetting Restricted (if needed)
+          checkSubsetting( false );
+          updateScheduleInput();
+          hideScheduling();
+      </script>
+    </gui:define>
+  </gui:composition>
+</body>
+</html>

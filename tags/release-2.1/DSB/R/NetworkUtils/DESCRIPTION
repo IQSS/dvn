@@ -1,0 +1,11 @@
+Package: NetworkUtils
+Type: Package
+Title: Provides network subsetting and measure-generating functionality for the DVN. 
+Version: 0.1
+Date: 2009-05-18
+Author: Alexander D'Amour 
+Maintainer: <adamour@iq.harvard.edu>
+Description: Uses igraph as a backend to support manual vertex and edge queries, component-based subsetting, and measure generation. 
+Depends: igraph (>= 0.5), Matrix (>= 0.999375-29), R (>= 2.9.0)
+License: GPL 
+LazyLoad: yes

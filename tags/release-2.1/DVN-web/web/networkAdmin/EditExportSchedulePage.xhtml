@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:gui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:ice="http://www.icesoft.com/icefaces/component">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+  <gui:composition template="/template.xhtml">
+    <gui:param name="pageTitle" value="#{bundlePageInfo.exportsTitle} - #{VDCRequest.dataversePageTitle}"/>
+    <gui:define name="body">
+      <script type="text/javascript">
+          //<![CDATA[
+          function updateExportInput(  ) {
+              exportPeriod = getSelect("exportPeriod");
+              exportHourOfDay = getSelect("exportHourOfDay");
+              exportDayOfWeek = getSelect("exportDayOfWeek");
+              if (exportPeriod.value=="daily") {
+                  exportHourOfDay.disabled = false;
+                  exportDayOfWeek.disabled = true;
+                  exportDayOfWeek.value='-1';
+              } else if (exportPeriod.value=="weekly") {
+                  exportDayOfWeek.disabled = false;
+                  exportHourOfDay.disabled = false;
+              } else {
+                  exportDayOfWeek.disabled = true;
+                  exportHourOfDay.disabled = true;
+                  exportHourOfDay.value='-1';
+                  exportDayOfWeek.value='-1';
+              }
+          }
+          function getInput( id ) {
+              elements=document.getElementsByTagName("input");
+              for(i=0; i < elements.length; i++) {
+                  if (elements[i].id.indexOf(id) != -1 ) {
+                      return elements[i];
+                  }
+              }
+          }
+          function getSelect( id ) {
+              elements=document.getElementsByTagName("select");
+              for(i=0; i < elements.length; i++) {
+                  if (elements[i].id.indexOf(id) != -1) {
+                      return elements[i];
+                  }
+              }
+          }
+          // ]]>
+      </script>
+      <ice:form id="form1">
+        <input type="hidden" name="pageName" value="EditExportSchedulePage"/>
+        <div class="dvn_section">
+          <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
+            <div class="dvnMsgBlockContainer">
+              <ice:outputText value="#{bundlePageInfo.exportsHelp}" escape="false"/>
+            </div>
+          </div>
+          <div class="dvn_sectionTitle">
+            <ice:outputText value="#{bundlePageInfo.exportsTitle}"/>
+          </div>
+          <div class="dvn_sectionBox">
+            <div class="dvn_margin12">
+              <ice:panelGrid cellpadding="0" cellspacing="0" columns="2"
+                             columnClasses="vdcColPadded, vdcColPadded" id="gridPanel2">
+                <div jsfc="ice:panelGroup">
+                  <ice:outputText value="Export Period"/>
+                </div>
+                <div jsfc="ice:panelGroup">
+                  <ice:selectOneMenu binding="#{EditExportSchedulePage.exportPeriod}" validator="#{EditExportSchedulePage.validateExportPeriod}" id="exportPeriod" value="#{EditExportSchedulePage.exportSchedulePeriod}"  onchange='updateExportInput();' >
+<!--                  <ice:selectOneMenu id="exportPeriod" value="#{EditExportSchedulePage.exportPeriod}" onchange='updateExportInput();'> -->
+                    <f:selectItem itemValue="notSelected" itemLabel="Not Selected"/>
+                    <f:selectItem itemValue="daily" itemLabel="Export daily"/>
+                    <f:selectItem itemValue="weekly" itemLabel="Export weekly"/>
+                  </ice:selectOneMenu>
+                  <ice:message styleClass="errorMessage" for="exportPeriod" />
+                </div>
+                <div jsfc="ice:panelGroup">
+                  <ice:outputText value="Export Hour of Day"/>
+                </div>
+                <div jsfc="ice:panelGroup">
+                        <ice:selectOneMenu validator="#{EditExportSchedulePage.validateHourOfDay}" id="exportHourOfDay" value="#{EditExportSchedulePage.exportHourOfDay}">
+<!--                        <ice:selectOneMenu id="selectScheduleHourOfDay" value="#{EditExportSchedulePage.exportHourOfDay}"> -->
+                            <f:selectItem itemValue="-1" itemLabel="Not Selected"/>
+                            <f:selectItem itemValue="0" itemLabel="12:00 AM"/>
+                            <f:selectItem itemValue="1" itemLabel="1:00 AM"/>
+                            <f:selectItem itemValue="2" itemLabel="2:00 AM"/>
+                            <f:selectItem itemValue="3" itemLabel="3:00 AM"/>
+                            <f:selectItem itemValue="4" itemLabel="4:00 AM"/>
+                            <f:selectItem itemValue="5" itemLabel="5:00 AM"/>
+                            <f:selectItem itemValue="6" itemLabel="6:00 AM"/>
+                            <f:selectItem itemValue="7" itemLabel="7:00 AM"/>
+                            <f:selectItem itemValue="8" itemLabel="8:00 AM"/>
+                            <f:selectItem itemValue="9" itemLabel="9:00 AM"/>
+                            <f:selectItem itemValue="10" itemLabel="10:00 AM"/>
+                            <f:selectItem itemValue="11" itemLabel="11:00 AM"/>
+                            <f:selectItem itemValue="12" itemLabel="12:00 PM"/>
+                            <f:selectItem itemValue="13" itemLabel="1:00 PM"/>
+                            <f:selectItem itemValue="14" itemLabel="2:00 PM"/>
+                            <f:selectItem itemValue="15" itemLabel="3:00 PM"/>
+                            <f:selectItem itemValue="16" itemLabel="4:00 PM"/>
+                            <f:selectItem itemValue="17" itemLabel="5:00 PM"/>
+                            <f:selectItem itemValue="18" itemLabel="6:00 PM"/>
+                            <f:selectItem itemValue="19" itemLabel="7:00 PM"/>
+                            <f:selectItem itemValue="20" itemLabel="8:00 PM"/>
+                            <f:selectItem itemValue="21" itemLabel="9:00 PM"/>
+                            <f:selectItem itemValue="22" itemLabel="10:00 PM"/>
+                            <f:selectItem itemValue="23" itemLabel="11:00 PM"/>
+                        </ice:selectOneMenu>
+                        <ice:message  styleClass="errorMessage" for="exportHourOfDay"/>
+                    <!--
+                  <ice:inputText id="exportHourOfDay" value="#{EditExportSchedulePage.exportHourOfDay}" required="true"  requiredMessage="This field is required.">
+                    <f:validateLongRange minimum="0" maximum="23" message="Please enter a value between 0 and 23"/>
+                  </ice:inputText>
+                  <ice:message for="exportHourOfDay" styleClass="errorMessage"/>
+                  -->
+                </div>
+                <div jsfc="ice:panelGroup">
+                  <div id="requiredDayOfWeek">
+                    <ice:outputText  value="Export Day of Week"/>
+                    <!--ice:graphicImage  value="/resources/images/icon_required.gif"/-->
+                  </div>
+                </div>
+                <div jsfc="ice:panelGroup">
+                  <div id="requiredDayOfWeekText">
+                         <ice:selectOneMenu validator="#{EditExportSchedulePage.validateDayOfWeek}" id="exportDayOfWeek" value="#{EditExportSchedulePage.exportDayOfWeek}">
+                            <f:selectItem itemValue="-1" itemLabel="Not Selected"/>
+                            <f:selectItem itemValue="1" itemLabel="Sunday"/>
+                            <f:selectItem itemValue="2" itemLabel="Monday"/>
+                            <f:selectItem itemValue="3" itemLabel="Tuesday"/>
+                            <f:selectItem itemValue="4" itemLabel="Wednesday"/>
+                            <f:selectItem itemValue="5" itemLabel="Thursday"/>
+                            <f:selectItem itemValue="6" itemLabel="Friday"/>
+                            <f:selectItem itemValue="7" itemLabel="Saturday"/>
+                        </ice:selectOneMenu>
+                        <ice:message  styleClass="errorMessage" for="exportDayOfWeek"/>
+                     <!--
+                    <ice:inputText id="exportDayOfWeek" value="#{EditExportSchedulePage.exportDayOfWeek}" required="true" requiredMessage="This field is required.">
+                      <f:validateLongRange minimum="1" maximum="7"  message="Please enter a value between 1 and 7"/>
+                    </ice:inputText>
+                    <ice:message for="exportDayOfWeek" styleClass="errorMessage"/>
+                    -->
+                  </div>
+                </div>
+              </ice:panelGrid>
+              <div jsfc="ice:panelGroup" styleClass="dvnFormPadding dvnFormMargin">
+                <ice:commandButton value="Save" action="#{EditExportSchedulePage.save}"/>
+                <ice:commandButton immediate="true" value="Cancel" action="myNetworkOptions"/>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ice:form>
+      <script type="text/javascript">
+          // initial call to disable subsetting Restricted (if needed)
+          updateExportInput();
+      </script>
+    </gui:define>
+  </gui:composition>
+</body>
+</html>

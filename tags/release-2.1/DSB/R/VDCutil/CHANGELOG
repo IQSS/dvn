@@ -1,0 +1,14 @@
+1.0 -- Initial Release
+1.04 -- Release with VDC RC 1.04
+1.06 -- Refactor to encapsulate Zelig description data structure, add VDCxtabs
+1.07 -- Fix windows issues, add VDCWebSearch
+1.08 -- Workarounds for Zelig 2.52,  remove zelig internal code (moved to zelig :-)
+1.09 -- Workarounds for bugs in Zelig 2.53
+1.10 -- typo-correction in printZeligSchemaInstance() in zlist.R
+1.11 -- be more paranoid about plot methods, recodeVDCdf to recode data frames with VDC metadata
+1.12 -- Rendering-related changes to VDCxtabs()
+1.13 -- R 2.4-RC changes
+1.14 -- code clean-up in compliance with R 2.6.0 
+1.15 -- bug-fix of VDCgenAnalysis()
+1.16 -- bug-fix: setx2Args and new Zelig GUI Schema location
+1.17 -- bug-fix: plot.grob, summary.vglm 

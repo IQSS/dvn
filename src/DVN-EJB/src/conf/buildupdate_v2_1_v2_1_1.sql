@@ -1,0 +1,1 @@
+ALTER TABLE vdc ALTER COLUMN defaulttemplate_id DROP NOT NULL;

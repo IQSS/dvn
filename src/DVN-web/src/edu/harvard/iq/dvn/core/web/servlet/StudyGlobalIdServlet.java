@@ -56,7 +56,7 @@ public class StudyGlobalIdServlet extends HttpServlet {
         if (globalId != null) {
             Study study = studyService.getStudyByGlobalId( globalId );
             if (study != null) {
-                res.sendRedirect("http://" + PropertyUtil.getHostUrl() + "/dvn/dv/" + study.getOwner().getAlias() + "/faces/study/StudyPage.xhtml?studyId=" + study.getId() );
+                res.sendRedirect("http://" + PropertyUtil.getHostUrl() + "/dvn/dv/" + study.getOwner().getAlias() + "/faces/study/StudyPage.xhtml?globalId=" + study.getGlobalId() );
             } else {
                 createErrorResponse(res, "No study exists for the specified Global Id.");
             }

@@ -58,7 +58,7 @@
                   <f:facet name="header">
                       <ice:outputText value="Status"/>
                   </f:facet>
-                  <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{sv.study.id}&amp;versionNumber=#{sv.versionNumber}#{VDCRequest.studyListingIndexAsParameter}">
+                  <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?globalId=#{sv.study.globalId}&amp;versionNumber=#{sv.versionNumber}#{VDCRequest.studyListingIndexAsParameter}">
                       <ice:outputText value="#{studybundle.DRAFT}" rendered="#{sv.draft}"/>
                       <ice:outputText value="#{studybundle.IN_REVIEW}" rendered="#{sv.inReview}"/>
                       <ice:outputText value="#{studybundle.RELEASED}" rendered="#{sv.released}"/>

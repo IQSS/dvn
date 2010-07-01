@@ -127,12 +127,21 @@ public class EditStudyFilesPage extends VDCBaseBean implements java.io.Serializa
         }
 
         getVDCRequestBean().setStudyId(study.getId());
-        if ( metadata.getStudyVersion().getId() == null ) {
-            getVDCRequestBean().setStudyVersionNumber(study.getReleasedVersion().getVersionNumber());
+
+        if ( metadata.getStudyVersion().getId() == null  && study.getReleasedVersion() != null ) {
+            // We are canceling the creation of a new version, so return
+            // to the previous version that the user was viewing.
+            if (study.isReleased()) {
+                getVDCRequestBean().setStudyVersionNumber(study.getReleasedVersion().getVersionNumber());
+            } else {
+                // The only other option is that the study is deaccessioned
+                getVDCRequestBean().setStudyVersionNumber(study.getDeaccessionedVersion().getVersionNumber());
+            }
         } else {
+            // We are cancelling the edit of an existing version, so just return to that version.
             getVDCRequestBean().setStudyVersionNumber(metadata.getStudyVersion().getVersionNumber());
         }
-        getVDCRequestBean().setSelectedTab("files");
+
 
         return "viewStudy";
     }

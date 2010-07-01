@@ -244,7 +244,7 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
                                 </span>
                                 <span jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.studyVersion.numberOfFiles!=null and studyPage.studyUI.studyVersion == studyPage.studyUI.study.latestVersion}">
                                     <li>
-                                        <dvn:tooltip tooltipMessage="#{studybundle.editFilesTip}" linkText="#{studybundle.editFilesText}" eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyFilesPage.xhtml?studyId=#{studyPage.study.id}&amp;#{VDCRequest.studyListingIndexAsParameter}"/>
+                                        <dvn:tooltip tooltipMessage="#{studybundle.editFilesTip}" linkText="#{studybundle.editFilesText}" eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyFilesPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;#{VDCRequest.studyListingIndexAsParameter}"/>
                                     </li>
                                 </span>
                                 <span jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.studyVersion == studyPage.studyUI.study.latestVersion}">

@@ -145,8 +145,9 @@
                         </ice:commandSortHeader>
                       </f:facet>
                       <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml">
-                            <f:param name="studyId" value="#{studyUI.study.id}"/>
-                            <f:param name="versionNumber" value="#{studyUI.study.latestVersion.versionNumber}"/>
+                          <f:param name="globalId" value="#{studyUI.study.globalId}"/>
+                          
+                          <f:param name="versionNumber" value="#{studyUI.study.latestVersion.versionNumber}"/>
                         <ice:outputText value="#{studyUI.study.globalId}"/>
                       </ice:outputLink>
                     </ice:column>
@@ -159,8 +160,9 @@
                         </ice:commandSortHeader>
                       </f:facet>
                       <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml">
-                            <f:param name="studyId" value="#{studyUI.study.id}"/>
-                            <f:param name="versionNumber" value="#{studyUI.study.latestVersion.versionNumber}"/>
+                          <f:param name="globalId" value="#{studyUI.study.globalId}"/>
+                          
+                          <f:param name="versionNumber" value="#{studyUI.study.latestVersion.versionNumber}"/>
                         <ice:outputText value="#{studyUI.metadata.title}"/>
                       </ice:outputLink>
                     </ice:column>
@@ -245,7 +247,7 @@
                             <ice:outputText value="#{bundle.MSReleaseAction}"/>
                         </ice:commandLink>
                         <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyVersionDifferencesPage.xhtml" rendered="#{studyUI.userAuthorizedToRelease and (studyUI.study.latestVersion.inReview or studyUI.study.latestVersion.draft) and studyUI.study.releasedVersion != null}">
-                            <f:param name="studyId" value="#{studyUI.study.id}"/>
+                            <f:param name="studyId" value="#{studyUI.study.id}"/>  
                             <f:param name="versionNumberList" value="#{studyUI.study.releasedVersion.versionNumber},#{studyUI.study.latestVersion.versionNumber}"/>
                             <f:param name="actionMode" value="confirmRelease"/>
                             <ice:outputText value="#{bundle.MSReleaseAction}"/>

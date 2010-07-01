@@ -104,7 +104,22 @@ public class EditStudyServiceBean implements edu.harvard.iq.dvn.core.study.EditS
    
     }
     
- 
+ public void setStudyVersionByGlobalId(String globalId ) {
+        Study study = getStudyByGlobalId(globalId);
+         if (study==null) {
+            throw new IllegalArgumentException("Unknown Global id: "+globalId);
+        }
+
+        studyVersion = study.getEditVersion();
+
+        for (FileMetadata fm: studyVersion.getFileMetadatas()) {
+            StudyFileEditBean fileBean = new StudyFileEditBean(fm);
+            getCurrentFiles().add(fileBean);
+
+        }
+
+
+    }
 
 
     public void newStudy(Long vdcId, Long userId, Long templateId) {
@@ -436,6 +451,10 @@ public class EditStudyServiceBean implements edu.harvard.iq.dvn.core.study.EditS
                 em.remove(elem);
             }
         }
+    }
+
+    public Study getStudyByGlobalId(String globalId) {
+        return studyService.getStudyByGlobalId(globalId);
     }
     
 }

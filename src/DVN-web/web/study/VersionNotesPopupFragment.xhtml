@@ -55,7 +55,10 @@
                                            action="#{EditStudyPage.save}"
                                            value="Continue"
                                            rendered="#{VersionNotesPopupBean.editStudyAction}"/>
-
+                       <ice:commandButton id="autoCentPopupOk"
+                                           action="#{EditStudyFilesPage.save}"
+                                           value="Continue"
+                                           rendered="#{VersionNotesPopupBean.editStudyFilesAction}"/>
                         <ice:commandButton id="autoCentPopupCancel"
                                            actionListener="#{VersionNotesPopupBean.closePopup}"
                                            value="Cancel"/>

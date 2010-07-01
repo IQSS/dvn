@@ -85,8 +85,8 @@ public class StudyCommentUI {
         String studyPageLink = new String("");
         studyPageLink = getBaseUrl() + "/dv/" +
                             studyComment.getStudyVersion().getStudy().getOwner().getAlias() +
-                            "/faces/study/StudyPage.xhtml?studyId=" +
-                            studyComment.getStudyVersion().getStudy().getId();
+                            "/faces/study/StudyPage.xhtml?globalId=" +
+                            studyComment.getStudyVersion().getStudy().getGlobalId();
         return studyPageLink;
     }
     

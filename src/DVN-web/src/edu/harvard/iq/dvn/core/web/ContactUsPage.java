@@ -30,9 +30,11 @@ import edu.harvard.iq.dvn.core.web.util.ExceptionMessageWriter;
 import edu.harvard.iq.dvn.core.vdc.Captcha;
 import edu.harvard.iq.dvn.core.vdc.CaptchaServiceLocal;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
+import javax.faces.event.ValueChangeEvent;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
@@ -258,8 +260,47 @@ public class ContactUsPage extends VDCBaseBean implements java.io.Serializable {
     public void setException(boolean exception) {
         this.exception = exception;
     }
+    private String emailRecipient;
     
+    public String getEmailRecipient(){
+        if (emailRecipient == null){
+            setEmailRecipient(getVDCRequestBean().getCurrentVDC().getContactEmail());
+        }
+        return emailRecipient;
+    }
+
+
+    public void setEmailRecipient(String inStr){
+        this.emailRecipient = inStr;
+    }
+
+    private List<SelectItem> emailRecipientOptions = null;
+
+    public List getEmailRecipientOptions() {
+        if (this.emailRecipientOptions == null) {
+            emailRecipientOptions = new ArrayList();
+                String networkOption       = getVDCRequestBean().getVdcNetwork().getContactEmail();
+                String dataverseOption     = getVDCRequestBean().getCurrentVDC().getContactEmail();
+                String networkDescription  =  getVDCRequestBean().getVdcNetwork().getName() + " Network Administrator";
+                String dataverseDescription = getVDCRequestBean().getCurrentVDC().getName() + " Dataverse Administrator";
+                emailRecipientOptions.add(new SelectItem(dataverseOption, dataverseDescription));
+                emailRecipientOptions.add(new SelectItem(networkOption, networkDescription));          
+        }
+        return emailRecipientOptions;
+    }
+
     //ACTION METHODS
+
+    private String getToEmailAddress(){
+        if(getVDCRequestBean().getCurrentVDCId() == null ){
+            return getVDCRequestBean().getVdcNetwork().getContactEmail();
+        }
+        else
+        {
+            return emailRecipient;
+        }
+    }
+
     public String send_action() {
         String msg  = SUCCESS_MESSAGE;
         Map map = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
@@ -267,7 +308,7 @@ public class ContactUsPage extends VDCBaseBean implements java.io.Serializable {
         success = true;
         try {
             String fromAddress = "\"" + fullName + "\"<" + emailAddress.trim() + ">";
-            mailService.sendMail(fromAddress, (getVDCRequestBean().getCurrentVDCId() == null) ? getVDCRequestBean().getVdcNetwork().getContactEmail() : getVDCRequestBean().getCurrentVDC().getContactEmail(), (getVDCRequestBean().getCurrentVDCId()==null) ? getVDCRequestBean().getVdcNetwork().getName()  + " Dataverse Network: " + selectedSubject.trim() : getVDCRequestBean().getCurrentVDC().getName() + " dataverse: " + selectedSubject.trim(), emailBody.trim());
+            mailService.sendMail(fromAddress, getToEmailAddress(), (getVDCRequestBean().getCurrentVDCId()==null) ? getVDCRequestBean().getVdcNetwork().getName()  + " Dataverse Network: " + selectedSubject.trim() : getVDCRequestBean().getCurrentVDC().getName() + " dataverse: " + selectedSubject.trim(), emailBody.trim());
         } catch (Exception e) {
             success     = false;
             exception   = true;

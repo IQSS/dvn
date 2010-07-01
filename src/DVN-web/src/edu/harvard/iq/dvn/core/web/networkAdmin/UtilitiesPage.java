@@ -869,7 +869,7 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable, 
              // create result message
             HttpServletRequest req = (HttpServletRequest) getExternalContext().getRequest();
             String studyURL = req.getScheme() +"://" + req.getServerName() + ":" + req.getServerPort() + req.getContextPath() 
-                    + "/dv/" + study.getOwner().getAlias() + "/faces/study/StudyPage.xhtml?studyId=" + study.getId();
+                    + "/dv/" + study.getOwner().getAlias() + "/faces/study/StudyPage.xhtml?globalId=" + study.getGlobalId();
 
             addMessage( "importMessage", "Import succeeded." );
             addMessage( "importMessage", "Study URL: " + studyURL );

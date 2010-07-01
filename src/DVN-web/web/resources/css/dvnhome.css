@@ -123,6 +123,7 @@ span.dvnStudyListTableOptionalFieldLabel{color:gray}
 .dvnStudyListTable td{border:0}
 .dvnStudyListTable div{border-width:0 0 0 0}
 span.dvnStudyListSearchResultsMessage{font-size:100% !important;font-weight:400}
+span.dvnCollectionDescription{font-size:100% !important;font-weight:normal;font-style: normal;}
 .dvnStudyListNoStudies{padding:0 1em;text-align:center}
 /* ADVANCED SEARCH */
 .dvnAdvSearchScopeTable{}

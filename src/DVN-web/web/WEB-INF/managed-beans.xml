@@ -294,9 +294,19 @@
             <value>#{param.studyId}</value>
         </managed-property>
         <managed-property>
-            <property-name>tab</property-name>
-            <property-class>java.lang.String</property-class>
-            <value>#{param.tab}</value>
+            <property-name>versionNotesPopup</property-name>
+            <property-class>edu.harvard.iq.dvn.core.web.study.VersionNotesPopupBean</property-class>
+            <value>#{VersionNotesPopupBean}</value>
+        </managed-property>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>EditStudyFilesPage</managed-bean-name>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.study.EditStudyFilesPage</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+        <managed-property>
+            <property-name>studyId</property-name>
+            <property-class>java.lang.Long</property-class>
+            <value>#{param.studyId}</value>
         </managed-property>
          <managed-property>
             <property-name>versionNotesPopup</property-name>

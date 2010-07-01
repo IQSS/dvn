@@ -105,11 +105,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
     
     public void init() {
         super.init();
-        // set tab if it was it was sent as pamameter
-        if (tab == null) {
-            tab = "catalog";
-        }
-
+        
 
         try {
             Context ctx = new InitialContext();
@@ -124,8 +120,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         }
         if (getStudyId() != null) {
             editStudyService.setStudyVersion(studyId);
-            study = editStudyService.getStudyVersion().getStudy();
-          
+            study = editStudyService.getStudyVersion().getStudy();          
             metadata = editStudyService.getStudyVersion().getMetadata();
             currentTitle = metadata.getTitle();
 
@@ -661,7 +656,8 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         }
 
         getVDCRequestBean().setStudyId(study.getId());
-        if ( metadata.getStudyVersion().getId() == null ) {
+
+        if ( metadata.getStudyVersion().getId() == null  && study.getReleasedVersion() != null ) {
             // We are canceling the creation of a new version, so return
             // to the previous version that the user was viewing.
             if (study.isReleased()) {
@@ -674,7 +670,7 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
             // We are cancelling the edit of an existing version, so just return to that version.
             getVDCRequestBean().setStudyVersionNumber(metadata.getStudyVersion().getVersionNumber());
         }
-        getVDCRequestBean().setSelectedTab(tab);
+
         
         return "viewStudy";
     }
@@ -1141,13 +1137,8 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
 
     }
 
- 
-  
+
    
-   
-  
-    
- 
     
     private Long studyId;
     
@@ -1203,26 +1194,12 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
        
         getVDCRequestBean().setStudyId(study.getId());
         getVDCRequestBean().setStudyVersionNumber(metadata.getStudyVersion().getVersionNumber());
-        getVDCRequestBean().setSelectedTab(tab);
-      
+       
         return "viewStudy";
     }
     
     
-    
-    
-    
-    private String tab;
-    
-    public String getTab() {
-        return tab;
-    }
-    
-    public void setTab(String tab) {
-        if ( tab == null || tab.equals("files") || tab.equals("catalog") ) {
-            this.tab = tab;
-        }
-    }
+
 
     private List<SelectItem> fileCategoriesItems = null;
     
@@ -1532,6 +1509,8 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         if (isValidateRequired()) {
              boolean valid=true;
             // if any geographic values are filled, then they all must be filled
+            /* - Validation for "all or nothing"
+             *
             if (!StringUtil.isEmpty((String)inputWestLongitude.getLocalValue())
                 ||  !StringUtil.isEmpty((String)inputEastLongitude.getLocalValue())
                 ||  !StringUtil.isEmpty((String)inputNorthLatitude.getLocalValue())
@@ -1544,11 +1523,23 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
                     valid=false;
                 }
             }
-          
-        
+          */
+            int numLatitude = 0;
+            int numLongitude = 0;
+
+            if (!StringUtil.isEmpty((String)inputWestLongitude.getLocalValue())){numLongitude++;}
+            if (!StringUtil.isEmpty((String)inputEastLongitude.getLocalValue())){numLongitude++;}
+            if (!StringUtil.isEmpty((String)inputNorthLatitude.getLocalValue())){numLatitude++;}
+            if (!StringUtil.isEmpty((String)inputSouthLatitude.getLocalValue())){numLatitude++;}
+
+            if (numLatitude != numLongitude) {
+                valid = false;
+            }
+
+
             if (!valid) {
                inputSouthLatitude.setValid(false);
-               FacesMessage message = new FacesMessage("If any geographic field is filled, then all geographic fields must be filled.");
+               FacesMessage message = new FacesMessage("Enter a single geographic point or a full bounding box.");
                context.addMessage(inputSouthLatitude.getClientId(context), message);
            }
         }
@@ -2770,20 +2761,8 @@ public class EditStudyPage extends VDCBaseBean implements java.io.Serializable  
         
     }
   */
-
-    public boolean getShowCatalog() {
-        boolean show= tab==null || tab.equals("catalog");
-        
-        return show;
-    }
     
-    public boolean getShowFiles() {
-        boolean show =  tab!=null && tab.equals("files");
-       
-       return show;
-       
-    }
-
+    
 
      private HtmlCommandButton saveCommand1;
      private HtmlCommandButton saveCommand2;

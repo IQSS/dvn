@@ -109,6 +109,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
 
     String listHeader;
     String listMessage;
+    String listDescription;
     String truncatedDescription;
 
     public StudyListing getStudyListing() {
@@ -179,6 +180,9 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
         return listHeader;
     }
 
+    public String getListDescription() {
+        return listDescription;
+    }
     public String getListMessage() {
         return listMessage;
     }
@@ -462,7 +466,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
 
         } else if (mode == StudyListing.COLLECTION_STUDIES) {
             listHeader = vdcCollectionService.find(studyListing.getCollectionId()).getName();
-
+            listDescription =  vdcCollectionService.find(studyListing.getCollectionId()).getDescription();
             VDC currentVDC = getVDCRequestBean().getCurrentVDC();
             if (currentVDC == null ||
                     (currentVDC.getRootCollection().getSubCollections().size() == 0 &&

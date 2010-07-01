@@ -177,6 +177,9 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
                 }
             }
             */
+            if ( globalId == null  ){
+                globalId = studyUI.getStudy().getGlobalId();
+            }
 
         } else {
             // WE SHOULD HAVE A STUDY ID, throw an error

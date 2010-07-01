@@ -41,6 +41,8 @@ public interface EditStudyService extends java.io.Serializable {
     public void removeCollectionElement(Collection coll, Object elem);
     public void removeCollectionElement(List list,int index);
     public void removeCollectionElement(Iterator iter, Object elem);
+    public Study getStudyByGlobalId(String globalId);
+    public void setStudyVersionByGlobalId(String globalId );
     
     java.util.List getCurrentFiles();
 

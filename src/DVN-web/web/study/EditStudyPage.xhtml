@@ -130,8 +130,7 @@
               <ice:outputLink styleClass="dvnCloseHelpBlock" value="#" onclick="return toggleHelpBlock(this)">
                   <ice:outputText value="Close Help [-]"/>
               </ice:outputLink>
-              <ice:outputText styleClass="dvnEditStudyHelp" value="#{bundlePageInfo.editStudyCatalogingHelp}" rendered="#{EditStudyPage.showCatalog}" escape="false"/>
-              <ice:outputText styleClass="dvnEditStudyHelp" value="#{bundlePageInfo.editStudyFilesHelp}" rendered="#{EditStudyPage.showFiles}" escape="false"/>
+              <ice:outputText styleClass="dvnEditStudyHelp" value="#{bundlePageInfo.editStudyCatalogingHelp}"  escape="false"/>
             </div>
           </div>
 <style type="text/css">
@@ -193,7 +192,7 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
               <div jsfc="ice:panelGroup" id="messagePanel" styleClass="errorMessage" rendered="#{!empty facesContext.maximumSeverity}">
                 <ice:outputText value='Please check messages below.'/>
               </div>
-                  <ice:panelGroup panelLayout="flow" rendered="#{EditStudyPage.showCatalog}">
+                  <ice:panelGroup panelLayout="flow" >
                     <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%" style="margin-bottom: 5px;">
                       <div jsfc="ice:panelGroup" id="groupPanel9b">
                         <ice:outputText value="Select Study Template: " rendered="#{EditStudyPage.showTemplateList}"/>
@@ -2109,65 +2108,7 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
                   </ice:dataTable>              
               </ice:panelGroup>
 
-              <!-- FILES TAB -->
-               <ice:panelGroup id="layoutPanel1" panelLayout="flow" rendered="#{EditStudyPage.showFiles}">
-                <div jsfc="ice:panelGroup" id="noFilesPanel" styleClass="dvnFormPadding" rendered="#{empty EditStudyPage.files}">
-                  <p>
-                    <ice:outputText value="No files have been provided for this study. To add files, return to the study view (by clicking Save or Cancel) and follow the Add File(s) link."/>
-                  </p>
-                </div>
-                <div jsfc="ice:panelGroup" id="layoutPanel2" panelLayout="flow" rendered="#{!empty EditStudyPage.files}">
-                  <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
-                  <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
-                                 id="fileDataTableWrapper" styleClass="vdcEditStudyOuterTable" value="dummy_datatable">
-                    <ice:column>
-                      <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
-                                     styleClass="vdcEditStudyInnerTable" headerClasses="vdcEditFilesHeader"
-                                     columnClasses="vdcEditFilesColA, vdcEditFilesColA, vdcEditFilesColB, vdcEditFilesColC" rowClasses="list-row-even,list-row-odd"
-                                     id="fileDataTable" binding="#{EditStudyPage.filesDataTable}" value="#{EditStudyPage.files}" var="file">
-                        <ice:column id="column9">
-                          <div jsfc="ice:panelGroup">
-                            <!-- note that the Javascript functions currently depends on the placement and ids of these fields (and the dropdown box;
-                                                  changing them may require corresponding changes in the Javascript  -->
-                            <ice:selectBooleanCheckbox id="catCheckbox" onclick="updateCategory(this);"/>
-                            <ice:inputText id="catTextField" size="26" value="#{file.fileMetadata.category}" onfocus="deselectCategory(this);"/>
-                          </div>
-                          <f:facet name="header">
-                            <div jsfc="ice:panelGroup" id="catColPanelGroup">
-                              <ice:outputText id="catLabel" value="Category"/>
-                              <ice:selectOneMenu id="catDropdown" onchange="updateAllCheckedCategories(this);">
-                                <f:selectItems value="#{EditStudyPage.fileCategoryItems}"/>
-                              </ice:selectOneMenu>
-                            </div>
-                          </f:facet>
-                        </ice:column>
-                        <ice:column id="column10">
-                          <ice:inputText id="input_fileName" size="30" value="#{file.fileMetadata.label}" required="true" requiredMessage="This field is required."  validator="#{EditStudyPage.validateFileName}" />
-                          <ice:message styleClass="errorMessage" for="input_fileName"/><br/>
-                          <ice:graphicImage rendered="#{file.studyFile.subsettable}" id="imagefs" styleClass="vdcNoBorders" value="/resources/images/icon_subsettable.gif"/>
-                          <ice:outputText id="outputText17" value="#{file.userFriendlyFileType}"/>
-                          <f:facet name="header">
-                            <ice:outputText id="outputText13" value="File Name"/>
-                          </f:facet>
-                        </ice:column>
-                        <ice:column id="column11">
-                          <ice:inputTextarea cols="48" rows="2" value="#{file.fileMetadata.description}"/>
-                          <f:facet name="header">
-                            <ice:outputText id="outputText16" value="Description"/>
-                          </f:facet>
-                        </ice:column>
-                        <ice:column id="deleteColumn">
-                          <ice:selectBooleanCheckbox id="deleteCheckBox" value="#{file.deleteFlag}"/>
-                          <f:facet name="header">
-                            <ice:outputText id="deleteText" value="Delete"/>
-                          </f:facet>
-                        </ice:column>
-                      </ice:dataTable>
-                    </ice:column>
-                  </ice:dataTable>
-                </div>
-               </ice:panelGroup>
-      
+
             <div jsfc="ice:panelGroup" styleClass="vdcTextRight dvnFormPadding dvnFormMargin">
               <ice:commandButton binding ="#{EditStudyPage.saveCommand2}" id="saveCommand2" value="Save" actionListener="#{EditStudyPage.openPopup}"/>
               <ice:commandButton id="cancelCommand" value="Cancel" immediate="true" action="#{EditStudyPage.cancel}"/>

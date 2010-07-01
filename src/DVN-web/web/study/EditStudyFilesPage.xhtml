@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:gui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:dvn="/WEB-INF/tlds/dvn-components"
+      xmlns:ice="http://www.icesoft.com/icefaces/component"
+      xmlns:ui="http://www.sun.com/web/ui">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    </head>
+    <body>
+        <gui:composition template="/template.xhtml">
+            <gui:param name="pageTitle" value="#{bundlePageInfo.editStudyTitle} - #{VDCRequest.dataversePageTitle}"/>
+            <gui:define name="body">
+                <f:loadBundle basename="EditStudyBundle" var="editstudybundle"/>
+                <script type="text/javascript">
+                    // <![CDATA[
+                    // Functions for hiding and showing study fields
+                    function addLoadEvent(func) {
+                        var oldonload = window.onload;
+                        if (typeof window.onload != 'function') {
+                            window.onload = func;
+                        } else {
+                            window.onload = function() {
+                                if (oldonload) {
+                                    oldonload();
+                                }
+                                func();
+                            }
+                        }
+                    }
+                    // functions to work with category selection
+                    // note a few assumptions that these functions have:
+                    // the id of the dropdown (including parent nodes); the partial id of the checkboxes;
+                    // and that the checkbox is two elements before the text field (there is empty text
+                    // in between, created by the div)
+                    function updateCategory( checkbox ) {
+                        if (checkbox.checked) {
+                            textField = document.getElementById(checkbox.id).nextSibling;
+                            dropdown = document.getElementById("studyForm:fileDataTableWrapper:0:fileDataTable:catDropdown");
+                            textField.value = dropdown.value;
+                        }
+                    }
+                    function deselectCategory( textField ) {
+                        checkbox = document.getElementById(textField.id).previousSibling;
+                        checkbox.checked = false;
+                    }
+                    function updateAllCheckedCategories( dropdown ) {
+                        checkboxes=document.getElementsByTagName("input");
+                        for(i=0; i < checkboxes.length; i++) {
+                            if (checkboxes[i].id.indexOf("catCheckbox") != -1 && checkboxes[i].checked == true) {
+                                textField = checkboxes[i].nextSibling;
+                                textField.value = dropdown.value;
+                            }
+                        }
+                    }
+                    /** commenting out this code pending
+                     * input from alpha testing re: validation
+                     * required or no
+                     * To activate uncomment the function
+                     * below and uncomment the related div
+                     * just below the author name. See below.
+                     * @author Wendy Bossons
+                     */
+                    function validateNameFormat(obj) {
+                        if (obj.value.length == 0) {
+                            return;
+                        } else {
+                            var regexp = /[^\s^]/i;
+                            var helpObj = eval("document.getElementById('input_authorNameHelp')");
+                            if (regexp.test(obj.value))
+                                helpObj.style.display = 'block';
+                        }
+                    }
+                    // ]]>
+                </script>
+                <dvn:inlinehelpsupport writeHelpDiv="true" writeTipDiv="true" rendered="true"/>
+                <ice:form id="studyForm">
+                    <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+                   
+                  
+
+                    <style type="text/css">
+                        .dvnMsgBlockRound {position: relative;}
+                        .dvnEditStudyHelpBlock .dvnCloseHelpBlock {display: block; position: absolute; top: 0; right: 12px;}
+                        .dvnEditStudyHelpBlock .dvnEditStudyHelp {display: block; padding-top: .5em;}
+                    </style>
+
+                    <script type="text/javascript">
+                      // <![CDATA[
+
+                          function toggleHelpBlock(helpBlock) {
+                                jQuery(helpBlock).next().slideToggle(500);
+                                var toggleHelpBlock = (jQuery(helpBlock).children('span.iceOutTxt').text() == 'Close Help [-]') ? 'Open Help [+]' : 'Close Help [-]';
+                                jQuery(helpBlock).children('span.iceOutTxt').text(toggleHelpBlock);
+                                var toggleState = jQuery(helpBlock).children('span.iceOutTxt').text();
+                                if (toggleState == 'Open Help [+]') {
+                                    jQuery('.dvnEditStudyHelpBlock').animate({height:'26px'},400,function() {jQuery('.dvnInformationMessage').css('background-image','url(/dvn/resources/images/icon_information.18.png)')});
+                                    jQuery.cookie('helpBlockState', 'closed');
+                                }
+                                else {
+                                    jQuery('.dvnEditStudyHelpBlock').animate({height:'auto'},400,function() {jQuery('.dvnInformationMessage').css('background-image','url(/dvn/resources/images/icon_information.png)')});
+                                    jQuery.cookie('helpBlockState', 'opened');
+                                }
+                                return false;
+                          };
+
+                          jQuery(document).ready(function(){
+
+                          var helpBlockStateVar = jQuery.cookie('helpBlockState');
+                                if (helpBlockStateVar == 'closed') {
+                                    jQuery('.dvnCloseHelpBlock').next().slideToggle(500);
+                                    jQuery('.dvnEditStudyHelpBlock').animate({height:'26px'},400,function() {jQuery('.dvnInformationMessage').css('background-image','url(/dvn/resources/images/icon_information.18.png)')});
+                                    jQuery('.dvnCloseHelpBlock').children('span.iceOutTxt').text('Open Help [+]');
+                          };
+
+
+                          jQuery(".dvnstudystatusversionnote").truncate({max_length: 250});
+
+                      });
+                      // ]]>
+                    </script>
+
+                    <div class="dvn_section">
+                        <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
+                            <div class="dvnMsgBlockContainer dvnEditStudyHelpBlock">
+                                <ice:outputLink styleClass="dvnCloseHelpBlock" value="#" onclick="return toggleHelpBlock(this)">
+                                    <ice:outputText value="Close Help [-]"/>
+                                </ice:outputLink>
+                                <ice:outputText styleClass="dvnEditStudyHelp" value="#{bundlePageInfo.editStudyFilesHelp}"  escape="false"/>
+                            </div>
+                        </div>
+                        <style type="text/css">
+                            .dvnstudytitleblock {overflow: hidden;}
+                            .dvnstudytitlefloat {padding-right: 340px; text-align: left;}
+                            span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; font-size:1.35em !important;}
+                            .dvnstudyversioninfo {}
+                            .dvnstudyversioninfo span.iceOutTxt {color:#A9A9A9; line-height: 1.48; font-size:.95em !important;}
+
+                            .dvnstudystatusbox{margin: 0; padding: 2px 8px; font-weight: bold; line-height:24px !important;}
+                            .dvnstudystatusbox div{margin-top:4px; line-height:18px !important;}
+                            .dvnstudystatusarchived{background: gold; color: #526F76;}
+                            .dvnstudystatusreview{background: #ececec; color: #526F76;}
+                            .dvnstudystatusdraft{background: #CFDDEA; color: #526F76;}
+                            .dvnstudystatuslabel{text-transform:uppercase;}
+                            .dvnstudystatusreleasedver{font-weight: normal;color:#C55B28;}
+                            .dvnstudystatusnoreleasedver{color:#820024;}
+                            .dvnstudystatusversionnote{font-weight:normal;}
+
+                            .dvnstudyadminboxfloat{float: right; width: 310px; text-align:left;}
+                            .dvnstudypreviouslisting{text-align:right;}
+                            .dvnstudyadminbox{width: 300px; overflow:hidden; border:1px solid #d0d0d0; margin-bottom: 1em; padding:4px; color:#526F76;}
+                            .dvnstudyadminlinksL {float: left; width: 150px; list-style-type: square; margin: 0 0 0 1.25em; padding: 0;}
+                            .dvnstudyadminlinksR {float: right; width: 120px; list-style-type: square; margin: 0; padding: 0;}
+                            .dvnstudyadminbox ul {padding: 0px; margin: 0px; list-style-type: none;}
+                            .dvnstudyadminbox li {background: url(/dvn/resources/images/icon_bullet.gif) no-repeat 0px 8px; padding-left: 10px;}
+                            .dvnstudyadminbox a:link,.dvnstudyadminbox a:visited,.dvnstudyadminbox a:hover,.dvnstudyadminbox a:active{color:#C55B28;}
+                            .dvnstudyadminbox li a:link,.dvnstudyadminbox li a:visited,.dvnstudyadminbox li a:hover,.dvnstudyadminbox li a:active{font-size:.9em !important;}
+                        </style>
+
+                        <div class="dvnstudytitleblock">
+                            <div class="dvnstudyadminboxfloat">
+                                <div jsfc="ice:panelGroup" id="groupPanel10" styleClass="vdcTextRight dvnFormMargin">
+                                    <ice:commandButton binding ="#{EditStudyFilesPage.saveCommand1}" id="saveCommand1" value="Save" actionListener="#{EditStudyFilesPage.openPopup}"/>
+                                    <ice:commandButton id="button2" value="Cancel" immediate="true" action="#{EditStudyFilesPage.cancel}"/>
+                                </div>
+                            </div>
+                            <div class="dvnstudytitlefloat">
+                                <ice:outputText styleClass="dvnstudytitle" value="#{EditStudyFilesPage.currentTitle}" rendered="#{EditStudyFilesPage.study.id != null}"/>
+                                <div jsfc="ice:panelGroup" styleClass="dvnstudyversioninfo" rendered="#{EditStudyFilesPage.study.id != null}">
+                                    <ice:outputText value="#{EditStudyFilesPage.metadata.study.studyId}"/> <ice:outputText value="#{EditStudyFilesPage.metadata.UNF}" rendered="#{!empty EditStudyFilesPage.metadata.UNF}"/>
+                                </div>
+                                <div jsfc="ice:panelGroup" styleClass="dvnstudystatusbox #{EditStudyFilesPage.metadata.studyVersion.inReview ? 'dvnstudystatusreview' : '' or EditStudyFilesPage.metadata.studyVersion.draft ? 'dvnstudystatusdraft' : ''}">
+                                    <ice:outputText styleClass="dvnstudystatuslabel" value="In Review " rendered="#{EditStudyFilesPage.metadata.studyVersion.inReview}"/>
+                                    <ice:outputText styleClass="dvnstudystatuslabel" value="Draft " rendered="#{EditStudyFilesPage.metadata.studyVersion.draft}"/>
+                                    <ice:outputText value="Study Version: #{EditStudyFilesPage.metadata.studyVersion.versionNumber}"/>
+                                    <ice:outputText nospan="true"><br/></ice:outputText>
+                                    <ice:outputText value="Created: #{EditStudyFilesPage.metadata.studyVersion.createTime} - Last Updated: #{EditStudyFilesPage.metadata.studyVersion.lastUpdateTime}" rendered="#{!empty EditStudyFilesPage.metadata.studyVersion.lastUpdateTime}"/>
+                                    <ice:outputText value="Created: &lt;i&gt;Draft study version is not created until the form is saved&lt;/i&gt;" rendered="#{null == EditStudyFilesPage.metadata.studyVersion.lastUpdateTime}" escape="false"/>
+                                    <ice:outputText nospan="true" rendered="#{!empty EditStudyFilesPage.metadata.studyVersion.versionNote}"><br/></ice:outputText>
+                                    <ice:outputText value="Study Version Notes: " rendered="#{!empty EditStudyFilesPage.metadata.studyVersion.versionNote}"/>
+                                    <ice:outputText styleClass="dvnstudystatusversionnote" value="#{EditStudyFilesPage.metadata.studyVersion.versionNote}" rendered="#{!empty EditStudyFilesPage.metadata.studyVersion.versionNote}"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="dvn_sectionBoxNoBorders">
+                            <!-- validation errors occurred? -->
+                            <div jsfc="ice:panelGroup" id="messagePanel" styleClass="errorMessage" rendered="#{!empty facesContext.maximumSeverity}">
+                                <ice:outputText value='Please check messages below.'/>
+                            </div>
+
+
+                            <!-- FILES TAB -->
+                            <ice:panelGroup id="layoutPanel1" panelLayout="flow" >
+                                <div jsfc="ice:panelGroup" id="noFilesPanel" styleClass="dvnFormPadding" rendered="#{empty EditStudyFilesPage.files}">
+                                    <p>
+                                        <ice:outputText value="No files have been provided for this study. To add files, return to the study view (by clicking Save or Cancel) and follow the Add File(s) link."/>
+                                    </p>
+                                </div>
+                                <div jsfc="ice:panelGroup" id="layoutPanel2" panelLayout="flow" rendered="#{!empty EditStudyFilesPage.files}">
+                                    <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
+                                    <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
+                                                   id="fileDataTableWrapper" styleClass="vdcEditStudyOuterTable" value="dummy_datatable">
+                                        <ice:column>
+                                            <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
+                                                           styleClass="vdcEditStudyInnerTable" headerClasses="vdcEditFilesHeader"
+                                                           columnClasses="vdcEditFilesColA, vdcEditFilesColA, vdcEditFilesColB, vdcEditFilesColC" rowClasses="list-row-even,list-row-odd"
+                                                           id="fileDataTable" binding="#{EditStudyFilesPage.filesDataTable}" value="#{EditStudyFilesPage.files}" var="file">
+                                                <ice:column id="column9">
+                                                    <div jsfc="ice:panelGroup">
+                                                        <!-- note that the Javascript functions currently depends on the placement and ids of these fields (and the dropdown box;
+                                                                              changing them may require corresponding changes in the Javascript  -->
+                                                        <ice:selectBooleanCheckbox id="catCheckbox" onclick="updateCategory(this);"/>
+                                                        <ice:inputText id="catTextField" size="26" value="#{file.fileMetadata.category}" onfocus="deselectCategory(this);"/>
+                                                    </div>
+                                                    <f:facet name="header">
+                                                        <div jsfc="ice:panelGroup" id="catColPanelGroup">
+                                                            <ice:outputText id="catLabel" value="Category"/>
+                                                            <ice:selectOneMenu id="catDropdown" onchange="updateAllCheckedCategories(this);">
+                                                                <f:selectItems value="#{EditStudyFilesPage.fileCategoryItems}"/>
+                                                            </ice:selectOneMenu>
+                                                        </div>
+                                                    </f:facet>
+                                                </ice:column>
+                                                <ice:column id="column10">
+                                                    <ice:inputText id="input_fileName" size="30" value="#{file.fileMetadata.label}" required="true" requiredMessage="This field is required."  validator="#{EditStudyFilesPage.validateFileName}" />
+                                                    <ice:message styleClass="errorMessage" for="input_fileName"/><br/>
+                                                    <ice:graphicImage rendered="#{file.studyFile.subsettable}" id="imagefs" styleClass="vdcNoBorders" value="/resources/images/icon_subsettable.gif"/>
+                                                    <ice:outputText id="outputText17" value="#{file.userFriendlyFileType}"/>
+                                                    <f:facet name="header">
+                                                        <ice:outputText id="outputText13" value="File Name"/>
+                                                    </f:facet>
+                                                </ice:column>
+                                                <ice:column id="column11">
+                                                    <ice:inputTextarea cols="48" rows="2" value="#{file.fileMetadata.description}"/>
+                                                    <f:facet name="header">
+                                                        <ice:outputText id="outputText16" value="Description"/>
+                                                    </f:facet>
+                                                </ice:column>
+                                                <ice:column id="deleteColumn">
+                                                    <ice:selectBooleanCheckbox id="deleteCheckBox" value="#{file.deleteFlag}"/>
+                                                    <f:facet name="header">
+                                                        <ice:outputText id="deleteText" value="Delete"/>
+                                                    </f:facet>
+                                                </ice:column>
+                                            </ice:dataTable>
+                                        </ice:column>
+                                    </ice:dataTable>
+                                </div>
+                            </ice:panelGroup>
+
+                            <div jsfc="ice:panelGroup" styleClass="vdcTextRight dvnFormPadding dvnFormMargin">
+                                <ice:commandButton binding ="#{EditStudyFilesPage.saveCommand2}" id="saveCommand2" value="Save" actionListener="#{EditStudyFilesPage.openPopup}"/>
+                                <ice:commandButton id="cancelCommand" value="Cancel" immediate="true" action="#{EditStudyFilesPage.cancel}"/>
+                            </div>
+                        </div>
+                    </div>
+                </ice:form>
+
+
+            </gui:define>
+        </gui:composition>
+    </body>
+</html>

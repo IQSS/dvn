@@ -425,7 +425,7 @@ exists or setup the property manually. For example like this:
         <copy todir="${build.classes.dir}">
             <fileset dir="${src.dir}" excludes="${build.classes.excludes},${excludes}" includes="${includes}"/>
         </copy>
-        <copyfile src="/var/lib/Bamboo/build-dir/DVN-V2DOT0DOT1/build-number.txt" dest="${build.classes.dir}/BuildNumber.properties" forceoverwrite="true" />
+        <!--copyfile src="/var/lib/Bamboo/build-dir/DVN-V2DOT0DOT1/build-number.txt" dest="${build.classes.dir}/BuildNumber.properties" forceoverwrite="true" /-->
     </target>
     <target if="has.custom.manifest" name="-copy-manifest">
         <mkdir dir="${build.meta.inf.dir}"/>

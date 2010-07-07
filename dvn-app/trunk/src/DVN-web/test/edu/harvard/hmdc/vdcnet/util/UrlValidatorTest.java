@@ -7,15 +7,10 @@
 
 package edu.harvard.hmdc.vdcnet.util;
 
+import edu.harvard.iq.dvn.core.web.util.UrlValidator;
 import junit.framework.*;
-import java.net.URL;
-import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
-import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
-import javax.faces.validator.Validator;
-import javax.faces.validator.ValidatorException;
-import javax.servlet.http.HttpServletRequest;
 
 /**
  *

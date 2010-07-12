@@ -496,7 +496,7 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
                                     <ice:outputLink value="#{studyPage.studyUI.metadata.harvestHoldings}" rendered="#{!empty studyPage.studyUI.metadata.harvestHoldings and studyPage.studyUI.study.isHarvested}">
                                         <ice:outputText value="Original Source > "/>
                                     </ice:outputLink>
-                                    <ice:outputLink value="/dvn/dv/#{studyPage.studyUI.study.owner.alias}/faces/study/StudyPage.xhtml?globalId=#{studyPage.studyUI.study.globalId}&amp;tab=catalog">
+                                    <ice:outputLink value="/dvn/dv/#{studyPage.studyUI.study.owner.alias}/faces/study/StudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;versionNumber=#{studyPage.studyUI.studyVersion.versionNumber}">
                                         <ice:outputText value="#{studyPage.studyUI.study.owner.name} Dataverse"/>
                                     </ice:outputLink>
                                 </div>

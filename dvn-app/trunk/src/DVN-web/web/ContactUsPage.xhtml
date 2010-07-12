@@ -76,12 +76,10 @@
                   <ice:inputText  id="emailAddress" size="30"
                                   value="#{ContactUsPage.emailAddress}"
                                   required="true"
-                                  requiredMessage="This field is required."/>
+                                  requiredMessage="This field is required.">
                     <f:validator validatorId="EmailValidator"/>
                   </ice:inputText>
-                  <ice:message id="emailAddressMsg"
-                               for="emailAddress"
-                               styleClass="errorMessage"/>
+                  <ice:message id="emailAddressMsg" for="emailAddress" styleClass="errorMessage"/>
                 </div>
 
                 <div>

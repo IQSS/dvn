@@ -22,7 +22,7 @@
 .dvnLoginContentAreaFooter{margin-top:1em;text-align:center}
 fieldset.dvnLoginPageAffiliate input.iceCmdBtn{display:block;float:right}
 /* MY OPTIONS */
-.dvnOptionsTable{width:100%}
+.dvnOptionsTable{width:100%;text-align:left}
 .dvnOptionsTable td{padding:.5em 2em;border-bottom:1px solid lightgray}
 td.dvnOptionsTableHeader{padding:.5em 1em;background:gainsboro;color:gray;text-transform:uppercase}
 .dvnOptionsTableOption{width:240px}
@@ -167,7 +167,7 @@ span.dvnAddClassificationDvNotReleased{background:url(/dvn/resources/images/icon
 .vdcTermsUseColumn{text-align:left}
 .vdcTermsUseField{text-align:left;color:#666;font-weight:700}
 /* PERMISSIONS */
-.dvnPermissionsTable{width:100%}
+.dvnPermissionsTable{width:100%;text-align:left}
 .dvnPermissionsTable td{padding:.5em 2em;border-bottom:1px solid lightgray}
 .dvnPermissionsTable td.dvnPermissionsStackedCells{border-bottom:none}
 td.dvnPermissionsTableHeader{padding:.5em 1em;background:gainsboro;color:gray;text-transform:uppercase}

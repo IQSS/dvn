@@ -29,24 +29,16 @@
             </div>
         </div>
 
-<style type="text/css">
-.dvhmpgdescopendvboxblock {overflow: hidden;}
-
-.dvhmpgopendvboxfloat{float: right; width: 310px; text-align:left;}
-.dvhmpgopendvbox{width: 300px; overflow:hidden; border:1px solid #d0d0d0; padding:4px; color:#526F76;}
-.dvhmpgopendvbox a:link,.dvhmpgopendvbox a:visited,.dvhmpgopendvbox a:hover,.dvhmpgopendvbox a:active{color:#C55B28;}
-.dvhmpgopendvbox div div span {font-weight: bold; text-transform: uppercase;}
-</style>
        <script type="text/javascript">
               jQuery(document).ready(function(){
               jQuery(".dvnCollectionDescription").truncate({max_length: 250});
           });
         </script>
 
-        <div class="dvhmpgdescopendvboxblock">
-            <div class="dvhmpgopendvboxfloat">
+        <div class="dvhmpgdescactionboxblock">
+            <div class="dvhmpgactionboxfloat">
 
-                <div jsfc="ice:panelGroup" id="beContributor" styleClass="dvhmpgopendvbox" rendered="#{VDCSession.loginBean.user==null and VDCRequest.currentVDC.allowRegisteredUsersToContribute and !VDCRequest.currentVDC.allowContributorsEditAll}">
+                <div jsfc="ice:panelGroup" id="beContributor" styleClass="dvhmpgactionbox" rendered="#{VDCSession.loginBean.user==null and VDCRequest.currentVDC.allowRegisteredUsersToContribute and !VDCRequest.currentVDC.allowContributorsEditAll}">
                     <div jsfc="ice:panelGroup">
                         <div>
                             <ice:outputText value="Open Dataverse"/>
@@ -60,7 +52,7 @@
                         </ice:outputLink>
                     </div>
                 </div>
-                <div jsfc="ice:panelGroup" id="beContributor" styleClass="dvhmpgopendvbox" rendered="#{VDCSession.loginBean.user!=null and VDCRequest.currentVDC.allowRegisteredUsersToContribute and !VDCRequest.currentVDC.allowContributorsEditAll}">
+                <div jsfc="ice:panelGroup" id="beContributor" styleClass="dvhmpgactionbox" rendered="#{VDCSession.loginBean.user!=null and VDCRequest.currentVDC.allowRegisteredUsersToContribute and !VDCRequest.currentVDC.allowContributorsEditAll}">
                     <div jsfc="ice:panelGroup">
                         <div>
                             <ice:outputText value="Open Dataverse"/>
@@ -71,7 +63,7 @@
                             </ice:outputLink>
                     </div>
                 </div>
-                <div jsfc="ice:panelGroup" id="beContributor" styleClass="dvhmpgopendvbox" rendered="#{VDCSession.loginBean.user==null and VDCRequest.currentVDC.allowRegisteredUsersToContribute and VDCRequest.currentVDC.allowContributorsEditAll}">
+                <div jsfc="ice:panelGroup" id="beContributor" styleClass="dvhmpgactionbox" rendered="#{VDCSession.loginBean.user==null and VDCRequest.currentVDC.allowRegisteredUsersToContribute and VDCRequest.currentVDC.allowContributorsEditAll}">
                     <div jsfc="ice:panelGroup">
                         <div>
                             <ice:outputText value="Wiki Dataverse"/>
@@ -85,7 +77,7 @@
                         </ice:outputLink>
                     </div>
                 </div>
-                <div jsfc="ice:panelGroup" id="beContributor" styleClass="dvhmpgopendvbox" rendered="#{VDCSession.loginBean.user!=null and VDCRequest.currentVDC.allowRegisteredUsersToContribute and VDCRequest.currentVDC.allowContributorsEditAll}">
+                <div jsfc="ice:panelGroup" id="beContributor" styleClass="dvhmpgactionbox" rendered="#{VDCSession.loginBean.user!=null and VDCRequest.currentVDC.allowRegisteredUsersToContribute and VDCRequest.currentVDC.allowContributorsEditAll}">
                     <div jsfc="ice:panelGroup">
                         <div>
                             <ice:outputText value="Wiki Dataverse"/>
@@ -99,12 +91,7 @@
             </div>
 
             <div class="dvhmpgdescfloat">
-
-                <style type="text/css">
-                    .dvn_hmpgMainMessagePadding {padding-right:340px;}
-                </style>
-
-                <div jsfc="ice:panelGroup" style="padding-right:340px;" styleClass="#{StudyListingPage.renderContributorLink == true ? 'dvn_hmpgMainMessage dvn_hmpgMainMessagePadding' : 'dvn_hmpgMainMessage'}" rendered="#{StudyListingPage.renderDescription}" block="true">
+                <div jsfc="ice:panelGroup" styleClass="#{VDCRequest.currentVDC.allowRegisteredUsersToContribute == true ? 'dvn_hmpgMainMessage dvn_hmpgMainMessagePadding' : 'dvn_hmpgMainMessage'}" rendered="#{StudyListingPage.renderDescription}" block="true">
                     <div jsfc="ice:panelGroup" rendered="#{!StudyListingPage.descriptionTruncated or !StudyListingPage.renderTruncatedDesc}">
                         <h:outputText escape="false" value="#{VDCRequest.currentVDC.announcements}" rendered="#{!StudyListingPage.descriptionTruncated or !StudyListingPage.renderTruncatedDesc}" />
                     </div>

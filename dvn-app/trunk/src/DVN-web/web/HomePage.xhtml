@@ -56,24 +56,33 @@
         </div>
 
         <!-- Main Section starts here -->
-        <div id="dvn_mainSection" style="overflow:hidden;">
+        <div id="dvn_mainSection">
 
-            <div jsfc="ice:panelGroup"
-                  styleClass="dvnHmpgGroupCreateBlock" style="width: 200px;"
-                  id="createDataverse"
-                  rendered="#{VDCRequest.vdcNetwork.allowCreateRequest}">
-                 <ice:outputLink styleClass="dvnHmpgGroupCreateLink" value="/dvn/faces/login/CreatorRequestInfoPage.xhtml">
-                     <ice:outputText value="Create a Dataverse" escape="false"/>
-                 </ice:outputLink>
-             </div>
+            <div class="dvhmpgdescactionboxblock">
+                <div class="dvhmpgactionboxfloat">
 
-            <style type="text/css">
-                .dvn_hmpgMainMessagePadding {padding-right:220px;}
-            </style>
+                    <div jsfc="ice:panelGroup" id="createDataverse" styleClass="dvhmpgactionbox" rendered="#{VDCRequest.vdcNetwork.allowCreateRequest}">
+                        <div jsfc="ice:panelGroup">
+                            <div>
+                                <ice:outputText value="Create a Dataverse"/>
+                            </div>
+                            <ice:outputLink value="/dvn/faces/login/CreatorRequestInfoPage.xhtml">
+                                <ice:outputText value="Create a Dataverse"/>
+                            </ice:outputLink>
+                            to upload your own data sets and create collections of data.
+                        </div>
+                    </div>
+                </div>
+                <div class="dvhmpgdescfloat">
 
-            <div jsfc="ice:panelGroup" styleClass="#{VDCRequest.vdcNetwork.allowCreateRequest ? 'dvn_hmpgMainMessage dvn_hmpgMainMessagePadding' : 'dvn_hmpgMainMessage'}" rendered="#{(VDCRequest.vdcNetwork.displayAnnouncements == true) and (VDCRequest.currentVDC == null) }" id="networkAnnouncementsHeaderPanel" >
-              <ice:outputText id="networkAnnouncementsMessages" escape="false" value="#{HomePage.parsedNetworkAnnouncements}"/>
+                    <div jsfc="ice:panelGroup" styleClass="#{VDCRequest.vdcNetwork.allowCreateRequest ? 'dvn_hmpgMainMessage dvn_hmpgMainMessagePadding' : 'dvn_hmpgMainMessage'}" rendered="#{(VDCRequest.vdcNetwork.displayAnnouncements == true) and (VDCRequest.currentVDC == null) }" id="networkAnnouncementsHeaderPanel" >
+                      <ice:outputText id="networkAnnouncementsMessages" escape="false" value="#{HomePage.parsedNetworkAnnouncements}"/>
+                    </div>
+
+                </div>
+
             </div>
+
         </div>
         <!-- Main Section ends here -->
 

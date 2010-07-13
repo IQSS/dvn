@@ -1,7 +1,14 @@
 /* DESCRIPTION */
 .dvn_hmpgMainMessage{margin-bottom:1em;text-align:left}
+.dvn_hmpgMainMessagePadding {padding-right:340px;}
 .dvn_more{font-style:italic;color:#6D0609}
 a.dvn_more:link,a.dvn_more:visited,a.dvn_more:hover,a.dvn_more:active{color:#6D0609}
+/* ACTION BOX */
+.dvhmpgdescactionboxblock{overflow:hidden}
+.dvhmpgactionboxfloat{float:right; width:310px; text-align:left}
+.dvhmpgactionbox{width:300px; overflow:hidden; border:1px solid #d0d0d0; padding:4px; color:#526F76}
+.dvhmpgactionbox a:link,.dvhmpgactionbox a:visited,.dvhmpgactionbox a:hover,.dvhmpgactionbox a:active{color:#C55B28}
+.dvhmpgactionbox div div span{font-weight:bold; text-transform:uppercase}
 /* SEARCH */
 div.dvn_searchblock{margin-bottom:12px;padding:4px 12px;background:#e6ebed;border:1px solid #ddd;text-align:left}
 .dvn_searchBoxContent{overflow:hidden}
@@ -18,7 +25,7 @@ div.dvn_searchblock{margin-bottom:12px;padding:4px 12px;background:#e6ebed;borde
 .dvnSearchBoxCheckbox,.dvnSearchBoxCheckbox select{margin-top:0;margin-bottom:0}
 .dvnSearchBoxCheckbox span.iceOutTxt{font-size:90% !important}
 /* SECTION PANELS + ACCORDION + TREE */
-#dvn_mainSection{position:relative;width:100%;text-align:center}
+#dvn_mainSection{position:relative;overflow:hidden;width:100%;text-align:center}
 .dvn_sectionContent{display:inline;width:75%;float:right;text-align:left}
 .dvn_sectionPanels{display:inline;position:relative;float:left;margin-right:2%;width:22%}
 .dvn_sectionPanelTitle{padding:.25em 0;border-bottom:2px solid #91a5a9;color:#555;font-weight:700}
@@ -53,7 +60,7 @@ a.lastNodeActive:link{font-weight:700}
 /* DATAVERSE LIST TABLE + ALPHA SORT */
 .dvnHmpgGroupHeaderBlock{width:100%;margin-bottom:.25em;overflow:hidden}
 span.dvnHmpgGroupHeader{float:left;font-size:150% !important;font-weight:700}
-.dvnHmpgGroupCreateBlock{float:right}
+.dvnHmpgGroupCreateBlock{float:right; width: 200px;}
 a.dvnHmpgGroupCreateLink:link,a.dvnHmpgGroupCreateLink:visited,a.dvnHmpgGroupCreateLink:hover,a.dvnHmpgGroupCreateLink:active{padding-right:28px;color:#c55b28;background:url(/dvn/resources/images/start-arrows.gif) 100% 52% no-repeat;font-size:95%;text-decoration:none}
 .dvnHmpgClassificationDesc{margin-bottom:.25em;width:100%}
 .dvnHmpgGroupNoDVs{padding:0 1em;border:1px solid #dcdddf;text-align:center}

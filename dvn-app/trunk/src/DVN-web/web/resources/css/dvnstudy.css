@@ -23,6 +23,9 @@ a.vdcStudyStatus:link,a.vdcStudyStatus:visited,a.vdcStudyStatus:hover,a.vdcStudy
 .vdcStudyInfoCol1{border-bottom-color:#dadee0;border-bottom-style:solid;border-bottom-width:1px;padding-bottom:5px;padding-left:0px;padding-right:10px;padding-top:5px;text-align:left;width:200px}
 .vdcStudyInfoCol2{border-bottom-color:#dadee0;border-bottom-style:solid;border-bottom-width:1px;font-weight:400;padding-bottom:5px;padding-top:5px;text-align:left}
 .vdcStudyInfoDownload{font-weight:700;padding-top:10px;text-align:center}
+/* STUDY TABS */
+.icePnlTbSet a:link td, .icePnlTbSet a:visited td {color:#464646}
+.icePnlTbSet a:hover td, .icePnlTbSet a:active td {color:#c55b28;text-decoration:underline}
 /* STUDY FILES */
 .vdcStudyFilesPage{width:100%;text-align:center}
 .vdcStudyFilesContent{text-align:left}

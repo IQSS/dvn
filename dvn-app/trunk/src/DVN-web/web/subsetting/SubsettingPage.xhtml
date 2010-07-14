@@ -746,11 +746,10 @@
                                 value="#{AnalysisApplicationBean.modelMenuOptions}"/>
                         </ice:selectOneMenu>
 
-                        <ice:panelGrid id="modelInfoBox" styleClass="vdcHelpText"
-                             columns="1"
+                        <div jsfc="ice:panelGroup" id="modelInfoBox" styleClass="vdcHelpText"
                              binding="#{AnalysisPage.gridPanelModelInfoBox}"
                              rendered="#{AnalysisPage.gridPanelModelInfoBoxRendered}">
-                            <ice:graphicImage 
+                            <ice:graphicImage styleClass="dvn_icon"
                                 alt="Information" 
                                 title="Information" 
                                 value="/resources/images/icon_info.gif"/>
@@ -761,7 +760,7 @@
                                 <ice:outputText 
                                     value="#{bundleAnalysis['advStat.model.helpInfo.header']}"/>                       
                             </ice:outputLink>
-                        </ice:panelGrid>
+                        </div>
                     </ice:panelGrid><!-- end: gridPanel8above -->
 
                     <ice:panelGroup id="groupPanel8below" 
@@ -1109,16 +1108,16 @@
                 cellpadding="0" cellspacing="0"
                 style="margin-left: 8px; margin-top: 10px" width="98%">
                 
-                <ice:panelGroup id="wrapSubsettingInstruction" styleClass="vdcHelpText"
+                <div jsfc="ice:panelGroup" id="wrapSubsettingInstruction" styleClass="vdcHelpText"
                     rendered="#{AnalysisPage.wrapSubsettingInstructionRendered}">
-                    <ice:graphicImage 
+                    <ice:graphicImage styleClass="dvn_icon"
                         alt="Information" 
                         title="Information"
                         value="/resources/images/icon_info.gif" />
                     <ice:outputText id="txtSubsettingInstruction"
                         binding="#{AnalysisPage.txtSubsettingInstruction}" 
                         value="#{bundleAnalysis['subsettingInstruction']}" />
-                </ice:panelGroup>
+                </div>
                <ice:panelGroup id="wrapNonSubsettingInstruction" 
                    block="true" 
                    styleClass="successMessage"

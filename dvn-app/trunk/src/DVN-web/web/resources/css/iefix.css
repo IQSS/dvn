@@ -1,7 +1,9 @@
 /* IE FIX STYLE CLASSES */
+/* Remove to resolve DOCTYPE margin/width issue
 .dvn_wrapper{border-right:724px solid #fff}
 .dvn_wrapperVanilla{border-right:724px solid #eee}
 .dvn_content{display:inline-block;position:relative;margin-right:-724px}
+*/
 .dvn_content form {margin:0;padding:0;}
 .dvn_content fieldset{padding:.75em}
 .iceOutConStat{position:absolute}

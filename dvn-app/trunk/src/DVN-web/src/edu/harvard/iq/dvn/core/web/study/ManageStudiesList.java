@@ -119,25 +119,25 @@ public class ManageStudiesList extends VDCBaseBean {
                 throw new RuntimeException("Unknown sortColumnName: "+sortColumnName);
             }
             List studyVersionIds =null;
+            List deaccessionedStudyVersionIds = null;
             if (vdcId != null){
                 if (contributorFilter || (!isUserCuratorOrAdminOrNetworkAdmin() && !VDCBaseBean.getVDCRequestBean().getCurrentVDC().isAllowContributorsEditAll())) {
                     studyVersionIds = studyService.getDvOrderedStudyVersionIdsByContributor(vdcId, loginBean.getUser().getId(), orderBy, ascending);
+                    deaccessionedStudyVersionIds = studyService.getDvOrderedDeaccessionedStudyVersionIdsByContributor(vdcId, vdcId, orderBy, ascending);
                 } else {
                     studyVersionIds = studyService.getDvOrderedStudyVersionIds(vdcId, orderBy, ascending);
+                    deaccessionedStudyVersionIds = studyService.getDvOrderedDeaccessionedStudyVersionIds(vdcId, orderBy, ascending);
                 }
             } else{
                 studyVersionIds = studyService.getAllStudyVersionIdsByContributor(loginBean.getUser().getId(), orderBy, ascending);
+                deaccessionedStudyVersionIds = studyService.getAllDeaccessionedStudyVersionIdsByContributor(vdcId, orderBy, ascending);
             }
             studyUIList = new ArrayList<StudyUI>();
             VDCUser user = loginBean == null ? null : loginBean.getUser();
-            deaccessionedStudiesExist=false;
             for (Object studyVersionId: studyVersionIds) {
                 StudyUI studyUI = new StudyUI((Long)studyVersionId,user);
-                if (showArchivedStudies || !studyUI.getStudyVersion().isDeaccessioned()) {
+                if (showArchivedStudies || !deaccessionedStudyVersionIds.contains(studyVersionId)) {
                     studyUIList.add(studyUI);
-                }
-                if (studyUI.getStudyVersion().isDeaccessioned()){
-                    deaccessionedStudiesExist=true;
                 }
             }
 
@@ -453,22 +453,6 @@ public class ManageStudiesList extends VDCBaseBean {
      */
     public void setArchiveCheckBox(HtmlSelectBooleanCheckbox archiveCheckBox) {
         this.archiveCheckBox = archiveCheckBox;
-    }
-
-    private boolean deaccessionedStudiesExist;
-
-    /**
-     * @return the deaccessionedStudiesExist
-     */
-    public boolean isDeaccessionedStudiesExist() {
-        return deaccessionedStudiesExist;
-    }
-
-    /**
-     * @param deaccessionedStudiesExist the deaccessionedStudiesExist to set
-     */
-    public void setDeaccessionedStudiesExist(boolean deaccessionedStudiesExist) {
-        this.deaccessionedStudiesExist = deaccessionedStudiesExist;
     }
 
     /**

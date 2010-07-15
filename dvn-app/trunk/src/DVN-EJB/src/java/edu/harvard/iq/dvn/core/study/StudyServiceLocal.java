@@ -206,4 +206,10 @@ public interface StudyServiceLocal extends java.io.Serializable {
 
     public List getAllStudyVersionIdsByContributor(Long contributorId, String orderBy, boolean ascending);
 
+    public List getDvOrderedDeaccessionedStudyVersionIdsByContributor(java.lang.Long vdcId, java.lang.Long contributorId, java.lang.String orderBy, boolean ascending);
+
+    public List getDvOrderedDeaccessionedStudyVersionIds(java.lang.Long vdcId, java.lang.String orderBy, boolean ascending);
+
+    public List getAllDeaccessionedStudyVersionIdsByContributor(java.lang.Long contributorId, java.lang.String orderBy, boolean ascending);
+
 }

@@ -803,13 +803,62 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         return returnList;
     }
 
+    public List getDvOrderedDeaccessionedStudyVersionIds(Long vdcId, String orderBy, boolean ascending) {
+        List<Long> returnList = new ArrayList<Long>();
+        String queryStr = "SELECT v.id" +
+                " from studyversion v, study s, metadata m, vdcuser cr" +
+                " WHERE v.study_id = s.id" +
+                " and v.metadata_id = m.id" +
+                " and s.creator_id = cr.id" +
+                " and s.owner_id = " + vdcId +
+                " and v.versionstate = '" + StudyVersion.VersionState.DEACCESSIONED + "'"  +
+                " and v.id in (SELECT max(v.id) from studyversion v group by v.study_id)" +
+                " ORDER BY " + orderBy;
+
+        if (!ascending) {
+            queryStr += " desc";
+        }
+        Query query = em.createNativeQuery(queryStr);
+        // since query is native, must parse through Vector results
+        for (Object currentResult : query.getResultList()) {
+            // convert results into Longs
+            returnList.add(new Long(((Integer) ((Vector) currentResult).get(0))).longValue());
+        }
+        return returnList;
+    }
 
 
-    public List getAllStudyVersionIdsByContributor(Long contributorId, String orderBy, boolean ascending) {
+
+    public List getAllDeaccessionedStudyVersionIdsByContributor(Long contributorId, String orderBy, boolean ascending) {
         List<Long> returnList = new ArrayList<Long>();
         String queryStr = "SELECT v.id" + 
                 " from studyversion v, study s, metadata m, vdcuser cr " +
                 " WHERE v.study_id = s.id" +              
+                " and v.metadata_id = m.id" +
+                " and s.creator_id = cr.id" +
+                " and v.versionstate = '" + StudyVersion.VersionState.DEACCESSIONED + "'"  +
+                " and v.id in (SELECT max(v.id) from studyversion v, versioncontributor c " +
+                " where c.studyversion_id = v.id and c.contributor_id = " + contributorId +
+                " group by v.study_id)" +
+                " ORDER BY " + orderBy;
+
+        if (!ascending) {
+            queryStr += " desc";
+        }
+        Query query = em.createNativeQuery(queryStr);
+        // since query is native, must parse through Vector results
+        for (Object currentResult : query.getResultList()) {
+            // convert results into Longs
+            returnList.add(new Long(((Integer) ((Vector) currentResult).get(0))).longValue());
+        }
+        return returnList;
+    }
+
+        public List getAllStudyVersionIdsByContributor(Long contributorId, String orderBy, boolean ascending) {
+        List<Long> returnList = new ArrayList<Long>();
+        String queryStr = "SELECT v.id" +
+                " from studyversion v, study s, metadata m, vdcuser cr " +
+                " WHERE v.study_id = s.id" +
                 " and v.metadata_id = m.id" +
                 " and s.creator_id = cr.id" +
                 " and v.id in (SELECT max(v.id) from studyversion v, versioncontributor c " +
@@ -837,6 +886,33 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
                 " and v.metadata_id = m.id" +
                 " and s.creator_id = cr.id" +
                 " and s.owner_id = " + vdcId + 
+                " and v.id in (SELECT max(v.id) from studyversion v, versioncontributor c " +
+                " where c.studyversion_id = v.id and c.contributor_id = " + contributorId +
+                " group by v.study_id)" +
+                " ORDER BY " + orderBy;
+
+        if (!ascending) {
+            queryStr += " desc";
+        }
+        Query query = em.createNativeQuery(queryStr);
+        // since query is native, must parse through Vector results
+        for (Object currentResult : query.getResultList()) {
+            // convert results into Longs
+            returnList.add(new Long(((Integer) ((Vector) currentResult).get(0))).longValue());
+        }
+
+        return returnList;
+    }
+
+    public List getDvOrderedDeaccessionedStudyVersionIdsByContributor(Long vdcId, Long contributorId, String orderBy, boolean ascending) {
+        List<Long> returnList = new ArrayList<Long>();
+        String queryStr = "SELECT v.id" +
+                " from studyversion v, study s, metadata m, vdcuser cr " +
+                " WHERE v.study_id=s.id" +
+                " and v.metadata_id = m.id" +
+                " and s.creator_id = cr.id" +
+                " and s.owner_id = " + vdcId +
+                " and v.versionstate = '" + StudyVersion.VersionState.DEACCESSIONED + "'"  +
                 " and v.id in (SELECT max(v.id) from studyversion v, versioncontributor c " +
                 " where c.studyversion_id = v.id and c.contributor_id = " + contributorId +
                 " group by v.study_id)" +

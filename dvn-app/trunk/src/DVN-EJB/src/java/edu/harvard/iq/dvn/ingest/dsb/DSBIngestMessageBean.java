@@ -53,19 +53,22 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.ObjectMessage;
+import javax.naming.Context;
+import javax.naming.InitialContext;
 
 /**
  *
  * @author gdurand
  */
 @MessageDriven(mappedName = "jms/DSBIngest", activationConfig =  {@ActivationConfigProperty(propertyName = "acknowledgeMode", propertyValue = "Auto-acknowledge"), @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue")})
+@EJB(name="networkData", beanInterface=edu.harvard.iq.dvn.core.analysis.NetworkDataServiceLocal.class)
 public class DSBIngestMessageBean implements MessageListener {
     @EJB DDIServiceLocal ddiService;
     @EJB StudyServiceLocal studyService;
     @EJB StudyFileServiceLocal studyFileService;
     @EJB MailServiceLocal mailService;
     @EJB IndexServiceLocal indexService;
-    @EJB NetworkDataServiceLocal networkDataService;
+    NetworkDataServiceLocal networkDataService;
 
     
     /**
@@ -93,6 +96,9 @@ public class DSBIngestMessageBean implements MessageListener {
                 try {
                     if (fileBean.getStudyFile() instanceof NetworkDataFile ) {
                         // ELLEN TODO:  move this logic into SDIOReader component
+
+                        Context ctx = new InitialContext();
+                        networkDataService = (NetworkDataServiceLocal) ctx.lookup("java:comp/env/networkData");
                         networkDataService.ingest(fileBean);
                         successfulFiles.add(fileBean);
                     } else {

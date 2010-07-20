@@ -31,20 +31,27 @@ package edu.harvard.iq.dvn.core.web.study;
 import com.icesoft.faces.component.ext.HtmlCommandLink;
 import com.icesoft.faces.component.paneltabset.PanelTabSet;
 import com.icesoft.faces.component.paneltabset.TabChangeEvent;
-import com.sun.jsfcl.data.DefaultTableDataModel;
-import edu.harvard.iq.dvn.core.mail.MailServiceLocal;
+import com.icesoft.faces.context.Resource;
+import com.icesoft.faces.context.Resource.Options;
+import com.icesoft.faces.context.effects.JavascriptContext;
 import edu.harvard.iq.dvn.core.study.DataFileFormatType;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyVersion;
+import edu.harvard.iq.dvn.core.util.PropertyUtil;
+import edu.harvard.iq.dvn.core.util.StringUtil;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.util.WebStatisticsSupport;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import edu.harvard.iq.dvn.core.web.login.LoginWorkflowBean;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.net.URLEncoder;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.faces.component.html.HtmlPanelGrid;
 import javax.faces.context.FacesContext;
@@ -58,7 +65,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Ellen Kraffmiller
  */
 public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
-
+    private static Logger dbgLog = Logger.getLogger(StudyPage.class.getCanonicalName());
     @EJB private StudyServiceLocal studyService;
 
 
@@ -635,7 +642,7 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
             WebStatisticsSupport webstatistics = new WebStatisticsSupport();
             int headerValue = webstatistics.getParameterFromHeader("X-Forwarded-For");
             setXFF(webstatistics.getQSArgument("xff", headerValue));
-        }
+    }
         return this.xff;
     }
 
@@ -926,5 +933,73 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
         this.deaccessionedView = deaccessionedView;
     }
 
+  
+    private String fileIdStr;
+
+
+     public String getFileIdStr() {
+        return fileIdStr;
+    }
+
+
+    public  synchronized void setFileIdStr(String fileIdStr) {
+        dbgLog.fine("SetFileIdStr - " +fileIdStr);
+        this.fileIdStr = fileIdStr;
+        if (!StringUtil.isEmpty(fileIdStr)) {       
+            notifyAll();
+            JavascriptContext.addJavascriptCall(FacesContext.getCurrentInstance(),"resetZipOutputResourceDisable();");
+        }
+    }
+
+   
+    public Resource getDownloadZipResource() {
+        return new RFileResource( getVDCRequestBean().getCurrentVDCId(),  this);
+    }
+
+   
+
+    static class RFileResource implements Resource, Serializable{
+        File file;
+        String currentVDCURL;
+        Long vdcId;
+        StudyPage studyPage;
+
+      
+       
+        public RFileResource(Long vdcId, StudyPage studyPage) {
+            currentVDCURL = getVDCRequestBean().getCurrentVDCURL();
+            this.vdcId = vdcId;
+            this.studyPage = studyPage;
+        }
+
+        public String calculateDigest() {
+            return file != null ? file.getPath() : null;
+        }
+
+        public Date lastModified() {
+            return file != null ? new Date(file.lastModified()) : null;
+        }
+
+        public InputStream open() throws IOException {
+            String fileDownloadURL = "http://" + PropertyUtil.getHostUrl() + "/dvn" + currentVDCURL + "/FileDownload/";
+            // If necessary, wait for these fields to be filled by the icefaces partial submit - called by Javascript in the StudyPage
+            while (StringUtil.isEmpty(studyPage.getFileIdStr())) {
+                try {
+                    wait();
+                } catch (Exception e) {
+                }
+            }
+
+            fileDownloadURL += studyPage.getStudyUI().getStudy().getId() + ".zip?fileId=" + studyPage.getFileIdStr() + "&versionNumber=" + this.studyPage.getStudyUI().getStudyVersion().getVersionNumber() + studyPage.getXff();
+
+            dbgLog.fine("..........OPENING STREAM: " + fileDownloadURL);
+            return new URL(fileDownloadURL).openStream();
+        }
+
+        public void withOptions(Options arg0) throws IOException {
+        }
+    }
+
+    
     
 }

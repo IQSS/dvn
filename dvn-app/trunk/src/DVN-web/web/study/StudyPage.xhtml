@@ -17,138 +17,203 @@
     <gui:param name="pageTitle" value="#{studyPage.studyUI.metadata.title} - #{VDCRequest.dataversePageTitle}"/>
     <gui:param name="uniquifier" value="#{studyPage.selectedIndex}"/>
     <gui:define name="body">
-        <script type="text/javascript">
-          // <![CDATA[
-          function toggleMoreInfo(moreInfo) {
-                jQuery(moreInfo).next().slideToggle(500);
-                var toggleLabelText = (jQuery(moreInfo).children('span.iceOutTxt').text() == 'View Data Citation [+]') ? 'Collapse Data Citation [-]' : 'View Data Citation [+]';
-                jQuery(moreInfo).children('span.iceOutTxt').text(toggleLabelText);
-                return false;
-          };
+       <script type="text/javascript">
+                    // <![CDATA[
+                    function toggleMoreInfo(moreInfo) {
+                        jQuery(moreInfo).next().slideToggle(500);
+                        var toggleLabelText = (jQuery(moreInfo).children('span.iceOutTxt').text() == 'View Data Citation [+]') ? 'Collapse Data Citation [-]' : 'View Data Citation [+]';
+                        jQuery(moreInfo).children('span.iceOutTxt').text(toggleLabelText);
+                        return false;
+                    };
 
-          function toggleTermsofUse(termsofUse) {
-                jQuery(termsofUse).next().slideToggle(500);
-                var toggleLabelText = (jQuery(termsofUse).children('span.iceOutTxt').text() == 'View Terms of Use [+]') ? 'Collapse Terms of Use [-]' : 'View Terms of Use [+]';
-                jQuery(termsofUse).children('span.iceOutTxt').text(toggleLabelText);
-                return false;
-          };
+                    function toggleTermsofUse(termsofUse) {
+                        jQuery(termsofUse).next().slideToggle(500);
+                        var toggleLabelText = (jQuery(termsofUse).children('span.iceOutTxt').text() == 'View Terms of Use [+]') ? 'Collapse Terms of Use [-]' : 'View Terms of Use [+]';
+                        jQuery(termsofUse).children('span.iceOutTxt').text(toggleLabelText);
+                        return false;
+                    };
 
-        function getElementsByClassName( strClassName, obj ) {
-              var ar = arguments[2] || new Array();
-              var re = new RegExp("\\b" + strClassName + "\\b", "g");
-              if ( re.test(obj.className) ) {
-                  ar.push( obj );
-              }
-              for ( var i = 0; i < obj.childNodes.length; i++ )
-                  getElementsByClassName( strClassName, obj.childNodes[i], ar );
-              return ar;
-          }
+                    function getElementsByClassName( strClassName, obj ) {
+                        var ar = arguments[2] || new Array();
+                        var re = new RegExp("\\b" + strClassName + "\\b", "g");
+                        if ( re.test(obj.className) ) {
+                            ar.push( obj );
+                        }
+                        for ( var i = 0; i < obj.childNodes.length; i++ )
+                            getElementsByClassName( strClassName, obj.childNodes[i], ar );
+                        return ar;
+                    }
 
-          function toggleCheckBoxes( elem ) {
-              if (elem.id.indexOf('fileCheckBox') > -1) {
-                  if (!elem.checked) {
-                      fileCatIndex = findCatIndex(elem.id);
-                      // deselect corresponding catCheckBox and studyCheckBox
-                      var catCBs = getElementsByClassName("catCheckBox", document.body);
-                      for (var i = 0; i < catCBs.length; i++) {
-                          if ( fileCatIndex == findCatIndex(catCBs[i].id) )  {
-                              catCBs[i].checked = elem.checked;
-                          }
-                      }
-                      var studyCBs = getElementsByClassName("studyCheckBox", document.body);
-                      for (var i = 0; i < studyCBs.length; i++) {
-                          studyCBs[i].checked = elem.checked;
-                      }
-                  }
-              } else if (elem.id.indexOf('catCheckBox') > -1) {
-                  catIndex = findCatIndex(elem.id);
-                  var fileCBs = getElementsByClassName("fileCheckBox", document.body);
-                  for (var i = 0; i < fileCBs.length; i++) {
-                      if ( !fileCBs[i].disabled && catIndex == findCatIndex(fileCBs[i].id)  )  {
-                          fileCBs[i].checked = elem.checked;
-                      }
-                  }
-                  if (!elem.checked) {
-                      // deselect studyCheckBox
-                      var studyCBs = getElementsByClassName("studyCheckBox", document.body);
-                      for (var i = 0; i < studyCBs.length; i++) {
-                          studyCBs[i].checked = elem.checked;
-                      }
-                  }
+                    function toggleCheckBoxes( elem ) {
+                        var catCBs = getElementsByClassName("catCheckBox", document.body);
+                        var studyCBs = getElementsByClassName("studyCheckBox", document.body);
+                        var fileCBs = getElementsByClassName("fileCheckBox", document.body);
 
-              } else if (elem.id.indexOf('studyCheckBox') > -1) {
-                  var catCBs = getElementsByClassName("catCheckBox", document.body);
-                  for (var i = 0; i < catCBs.length; i++) {
-                      if ( !catCBs[i].disabled ) {
-                          catCBs[i].checked = elem.checked;
-                      }
-                  }
-                  var fileCBs = getElementsByClassName("fileCheckBox", document.body);
-                  for (var i = 0; i < fileCBs.length; i++) {
-                      if ( !fileCBs[i].disabled ) {
-                          fileCBs[i].checked = elem.checked;
-                      }
-                  }
-              }
-          }
+                        if (elem.id.indexOf('fileCheckBox') > -1) {
+                            if (!elem.checked) {
+                                fileCatIndex = findCatIndex(elem.id);
+                                // deselect corresponding catCheckBox and studyCheckBox
+                                for (var i = 0; i < catCBs.length; i++) {
+                                    if ( fileCatIndex == findCatIndex(catCBs[i].id) )  {
+                                        catCBs[i].checked = elem.checked;
+                                    }
+                                }
+                                for (var i = 0; i < studyCBs.length; i++) {
+                                    studyCBs[i].checked = elem.checked;
+                                }
+                            }
+                        } else if (elem.id.indexOf('catCheckBox') > -1) {
+                            catIndex = findCatIndex(elem.id);
+                            for (var i = 0; i < fileCBs.length; i++) {
+                                if ( !fileCBs[i].disabled && catIndex == findCatIndex(fileCBs[i].id)  )  {
+                                    fileCBs[i].checked = elem.checked;
+                                }
+                            }
+                            if (!elem.checked) {
+                                // deselect studyCheckBox
+                                for (var i = 0; i < studyCBs.length; i++) {
+                                    studyCBs[i].checked = elem.checked;
+                                }
+                            }
 
-          function findCatIndex(id) {
-              startIndex = id.indexOf("catDataTable:") + 13;
-              endIndex = id.indexOf(":", startIndex);
-              return id.substring(startIndex, endIndex);
-          }
+                        } else if (elem.id.indexOf('studyCheckBox') > -1) {
+                            for (var i = 0; i < catCBs.length; i++) {
+                                if ( !catCBs[i].disabled ) {
+                                    catCBs[i].checked = elem.checked;
+                                }
+                            }
+                            for (var i = 0; i < fileCBs.length; i++) {
+                                if ( !fileCBs[i].disabled ) {
+                                    fileCBs[i].checked = elem.checked;
+                                }
+                            }
+                        }
+                        if (elem.checked) {
+                             document.getElementById('studyForm:tabSet1:0:downloadAll').disabled=false;
+                        } else {
+                            resetZipOutputResourceDisable();
+                        }
 
-          function downloadSingleFile(fileDropdown) {
-              downloadUrl = fileDropdown.options[ fileDropdown.selectedIndex ].value;
-              fileDropdown.selectedIndex = 0;
-              if (downloadUrl != "") {
-                window.location.href = downloadUrl + "&versionNumber=#{studyPage.studyUI.studyVersion.versionNumber}";
-              }
-          }
+                    }
 
-          function downloadSelectedFiles() {
-              fileIdStr = "";
-              var fileCBs = getElementsByClassName("fileCheckBox", document.body);
-              for (var i = 0; i < fileCBs.length; i++) {
-                  if ( fileCBs[i].checked ) {
-                      if (fileIdStr != "") {
-                          fileIdStr = fileIdStr + ",";
-                      }
-                      fileIdStr = fileIdStr + fileCBs[i].previousSibling.value;
-                  }
-              }
-              if (fileIdStr == "") {
-                  alert ("No files selected");
-                  return false;
-              }
-              window.location.href = "/dvn#{VDCRequest.currentVDCURL}/FileDownload/study_#{studyPage.studyUI.study.studyId}.zip?fileId=" + fileIdStr + "&versionNumber=#{studyPage.studyUI.studyVersion.versionNumber}" + "#{studyPage.xff}";
-              return false;
-          }     
+                    function resetZipOutputResourceDisable() {
+                        var catCBs = getElementsByClassName("catCheckBox", document.body);
+                        var studyCBs = getElementsByClassName("studyCheckBox", document.body);
+                        var fileCBs = getElementsByClassName("fileCheckBox", document.body);
 
-          function viewStudyVersionDifferences() {
-              var versionNumberStr = "";
-              var checkedCount = 0;
-              var versionCBs = getElementsByClassName("versionCheckBox", document.body);
-              for (var i = 0; i < versionCBs.length; i++) {
-                  if ( versionCBs[i].checked ) {
-                      if (versionNumberStr != "") {
-                          versionNumberStr = versionNumberStr + ",";
-                      }
-                      versionNumberStr = versionNumberStr + versionCBs[i].previousSibling.value;
-                      checkedCount++;
-                  }
-              }
-              if (checkedCount != 2) {
-                  alert ("You must select exactly two versions to see the differences.");
-                  return false;
-              }
-              window.location.href = "/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyVersionDifferencesPage.xhtml?studyId=#{studyPage.studyUI.study.id}&versionNumberList=" + versionNumberStr + "&versionNumber=#{studyPage.studyUI.studyVersion.versionNumber}" + "&selectedTab=versions";
+                        var anySelected = false;
 
-              return false;
-          }
+                        for (var i = 0; i < fileCBs.length; i++) {
+                            if ( fileCBs[i].checked )  {
+                                anySelected = true;
+                            }
+                        }
+                        for (var i = 0; i < catCBs.length; i++) {
+                            if ( catCBs[i].checked )  {
+                                anySelected = true;
+                            }
+                        }
+                        for (var i = 0; i < studyCBs.length; i++) {
+                            if ( studyCBs[i].checked )  {
+                                anySelected = true;
+                            }
+                        }
 
-          // ]]>
-        </script>
+                        if (anySelected) {
+                            document.getElementById('studyForm:tabSet1:0:downloadAll').disabled=false;
+                        } else {
+                            document.getElementById('studyForm:tabSet1:0:downloadAll').disabled=true;
+                        }
+                    }
+
+                    function findCatIndex(id) {
+                        startIndex = id.indexOf("catDataTable:") + 13;
+                        endIndex = id.indexOf(":", startIndex);
+                        return id.substring(startIndex, endIndex);
+                    }
+
+
+
+                
+                 
+                    function submitSelectedDownload(elem) {
+                          if (elem.value==null) {
+                            alert("Please select a format type before downloading.");
+                        } else {
+                            var selectedDownload = elem.previousSibling;
+                            selectedDownload.value = elem.value;
+                            iceSubmitPartial(document.getElementById('studyForm'), selectedDownload, null);
+                            
+                            var fileId = selectedDownload.previousSibling.value;
+                            if (elem.value=='FIXED_FIELD') {
+                                jQuery('.txt'+fileId).click();
+                            } else if (elem.value=='TAB_DELIMITED') {
+                                jQuery('.tab'+fileId).click();
+                            } else if (elem.value =='ORIGINAL_FILE') {
+                                jQuery('.orig'+fileId).click();
+                            } else if (elem.value=="GRAPHML") {
+                                jQuery('.label'+fileId).click();
+                            } else { // SPLUS, SPSS or R
+                                jQuery('.zip'+fileId).click();
+                            }
+                            // Reset selected value to "Download As..."
+                            elem.value="";
+
+                        }
+                    }
+
+                    function submitSelectedFileIds() {
+                        setSelectedFileIds();
+                        if (document.getElementById('studyForm:selectedFileIds').value=='') {
+                            alert("No files selected.");
+                        } else {
+                            iceSubmitPartial(document.getElementById('studyForm'), document.getElementById('studyForm:selectedFileIds'), null);
+                        }
+                    }
+
+                  
+
+                    function setSelectedFileIds() {
+                        fileIdStr = "";
+                        var fileCBs = getElementsByClassName("fileCheckBox", document.body);
+                        for (var i = 0; i < fileCBs.length; i++) {
+                            if ( fileCBs[i].checked ) {
+                                if (fileIdStr != "") {
+                                    fileIdStr = fileIdStr + ",";
+                                }
+                                fileIdStr = fileIdStr + fileCBs[i].previousSibling.value;
+                            }
+                        }
+                        var selectedFields = document.getElementById('studyForm:selectedFileIds');
+
+                        selectedFields.value = fileIdStr;
+
+                    }
+
+                    function viewStudyVersionDifferences() {
+                        var versionNumberStr = "";
+                        var checkedCount = 0;
+                        var versionCBs = getElementsByClassName("versionCheckBox", document.body);
+                        for (var i = 0; i < versionCBs.length; i++) {
+                            if ( versionCBs[i].checked ) {
+                                if (versionNumberStr != "") {
+                                    versionNumberStr = versionNumberStr + ",";
+                                }
+                                versionNumberStr = versionNumberStr + versionCBs[i].previousSibling.value;
+                                checkedCount++;
+                            }
+                        }
+                        if (checkedCount != 2) {
+                            alert ("You must select exactly two versions to see the differences.");
+                            return false;
+                        }
+                        window.location.href = "/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyVersionDifferencesPage.xhtml?studyId=#{studyPage.studyUI.study.id}&versionNumberList=" + versionNumberStr + "&versionNumber=#{studyPage.studyUI.studyVersion.versionNumber}" + "&selectedTab=versions";
+
+                        return false;
+                    }
+                  
+                    // ]]>
+                </script>
       <f:loadBundle basename="StudyBundle" var="studybundle"/>
       <dvn:inlinehelpsupport writeHelpDiv="true" writeTipDiv="true" writePopupDiv="true" rendered="true"/>
 
@@ -189,13 +254,14 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
   });
   // ]]>
 </script>
-      <ice:form id="form1" rendered="#{!studyPage.deaccessionedView}">
-        <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
-        <input type="hidden" value="StudyPage" name="pageName"/>
-        <ice:inputHidden id="studyId" value="#{studyPage.studyId}"/>
-        <ice:inputHidden id="globalId" value="#{studyPage.globalId}" />
-        <ice:inputHidden id="slIndex" value="#{VDCRequest.studyListingIndex}"/>
-        <div class="dvn_section">
+      <ice:form id="studyForm" rendered="#{!studyPage.deaccessionedView}">
+          <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+          <ice:inputHidden id="selectedFileIds" value="#{studyPage.fileIdStr}"/>
+          <input type="hidden" value="StudyPage" name="pageName"/>
+          <ice:inputHidden id="studyId" value="#{studyPage.studyId}"/>
+          <ice:inputHidden id="globalId" value="#{studyPage.globalId}" />
+          <ice:inputHidden id="slIndex" value="#{VDCRequest.studyListingIndex}"/>
+          <div class="dvn_section">
 
 <style type="text/css">
     .dvnWarningMessage a {font-weight: bold;}
@@ -767,14 +833,15 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
                     </ice:panelTab>
                     <!-- FILES -->
                     <ice:panelTab id="files" label="Documentation, Data and Analysis" >
-<script type="text/javascript">
-// <![CDATA[
-jQuery(document).ready(function(){
-  jQuery(".vdcStudyDesc").truncate({max_length: 198});
-  jQuery(".TogglePaneFancy").initTogglePane({headerClassClosed:"TogglePaneFancyHeaderClosed"});
-});
-// ]]>
-</script>
+                        <script type="text/javascript">
+                            // <![CDATA[
+                            jQuery(document).ready(function(){
+                                resetZipOutputResourceDisable();
+                                 jQuery(".vdcStudyDesc").truncate({max_length: 198});
+                                jQuery(".TogglePaneFancy").initTogglePane({headerClassClosed:"TogglePaneFancyHeaderClosed"});
+                            });
+                            // ]]>
+                        </script>
                         <f:param name="tab" value="files"/>
                         <gui:include src="StudyFilesFragment.xhtml">
                         </gui:include>

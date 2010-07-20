@@ -28,7 +28,9 @@
  */
 package edu.harvard.iq.dvn.core.web.study;
 
+import edu.harvard.iq.dvn.core.admin.RoleServiceLocal;
 import edu.harvard.iq.dvn.core.admin.UserGroup;
+import edu.harvard.iq.dvn.core.admin.VDCRole;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.ddi.DDIServiceBean;
 import edu.harvard.iq.dvn.core.study.FileMetadata;
@@ -37,7 +39,6 @@ import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyAbstract;
 import edu.harvard.iq.dvn.core.study.StudyAuthor;
 import edu.harvard.iq.dvn.core.study.StudyDistributor;
-import edu.harvard.iq.dvn.core.study.StudyFile;
 import edu.harvard.iq.dvn.core.study.StudyFileServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyGeoBounding;
 import edu.harvard.iq.dvn.core.study.StudyGrant;
@@ -1147,6 +1148,15 @@ public class StudyUI  implements java.io.Serializable {
             authorized = getStudy().isUserAuthorizedToRelease(user);
         }
         return authorized;
+    }
+
+    public boolean isUserCuratorOrAdmin() {
+        boolean ret = false;
+         VDCRole vdcRole = user.getVDCRole(study.getOwner());
+         if (vdcRole!=null && (vdcRole.getRole().getName().equals(RoleServiceLocal.ADMIN)||vdcRole.getRole().getName().equals(RoleServiceLocal.CURATOR ))) {
+             ret = true;
+         }
+         return ret;
     }
 
     public List<StudyVersion> getViewableStudyVersions() {

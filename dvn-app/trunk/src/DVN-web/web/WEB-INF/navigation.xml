@@ -369,14 +369,6 @@
             <to-view-id>/admin/SearchFieldsPage.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
-    <!-- EditAboutPage serves the network and the vdc views -->
-    <navigation-rule>
-        <from-view-id>/admin/EditAboutPage.xhtml</from-view-id>
-        <navigation-case>
-            <from-outcome>result</from-outcome>
-            <to-view-id>/admin/EditAboutPage.xhtml</to-view-id>
-        </navigation-case>
-    </navigation-rule>
     <navigation-rule>
         <from-view-id>/admin/EditBannerFooterPage.xhtml</from-view-id>
         <navigation-case>

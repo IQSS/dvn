@@ -185,7 +185,7 @@ public class LoginBean  implements java.io.Serializable {
             e.printStackTrace();
         }
         // make sure we get current user from db
-        hasContributed = userService.find(user.getId()).getVersionContributors().size() > 0;
+        hasContributed = userService.hasUserContributed(user.getId());
         return hasContributed;
     }
 

@@ -1,0 +1,41 @@
+
+<!--
+Common Header for Study Pages
+-->
+<div xmlns:gui="http://java.sun.com/jsf/facelets"
+     xmlns:h="http://java.sun.com/jsf/html"
+     xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:jsp="http://java.sun.com/JSP/Page"
+     xmlns:ice="http://www.icesoft.com/icefaces/component"
+     xmlns:dvn="/WEB-INF/tlds/dvn-components"
+     xmlns:ui="http://www.sun.com/web/ui"
+     class="dvnstudytitlefloat">
+    
+    <ice:outputText styleClass="dvnstudytitle" value="#{studyUI.metadata.title}"/>
+    <div jsfc="ice:panelGroup" styleClass="dvnstudyversioninfo">
+        <ice:outputText value="#{studyUI.study.globalId}"/> <ice:outputText value="#{studyUI.metadata.UNF}" rendered="#{!empty studyUI.metadata.UNF}"/>
+    </div>
+    <div jsfc="ice:panelGroup" styleClass="dvnstudyversioninfo" rendered="#{displayVersionInfo and studyUI.studyVersion.released}">
+        <ice:outputText value="Version: #{studyUI.studyVersion.versionNumber}"/> <ice:outputText value="&#8211; Released: #{studyUI.studyVersion.releaseTime}"/>
+    </div>
+    <div jsfc="ice:panelGroup" styleClass="dvnstudystatusbox #{studyUI.studyVersion.retiredCopy ? 'dvnstudystatusarchived' : '' or studyUI.studyVersion.inReview ? 'dvnstudystatusreview' : '' or studyUI.studyVersion.draft ? 'dvnstudystatusdraft' : ''}" rendered="#{displayVersionInfo and !studyUI.studyVersion.released}">
+        <ice:outputText styleClass="dvnstudystatuslabel" value="In Review " rendered="#{studyUI.studyVersion.inReview}"/>
+        <ice:outputText styleClass="dvnstudystatuslabel" value="Draft " rendered="#{studyUI.studyVersion.draft}"/>
+        <ice:outputText styleClass="dvnstudystatuslabel" value="Archived " rendered="#{studyUI.studyVersion.archived}"/>
+        <ice:outputText styleClass="dvnstudystatuslabel" value="Deaccessioned " rendered="#{studyUI.studyVersion.deaccessioned}"/>
+        <ice:outputText value="Study Version: #{studyUI.studyVersion.versionNumber}"/>
+        <ice:outputText value="&#8211;" rendered="#{!(studyUI.studyVersion.released) and (studyUI.study.releasedVersion != null)}"/>
+        <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?globalId=#{studyUI.study.globalId}&amp;versionNumber=#{studyUI.study.releasedVersion.versionNumber}#{VDCRequest.studyListingIndexAsParameter}" rendered="#{displayReleaseLink==true and !(studyUI.studyVersion.released) and (studyUI.study.releasedVersion != null)}">
+            <ice:outputText value="View Released Version" />
+        </ice:outputLink>
+        <ice:outputText value="&#8211;" rendered="#{studyUI.study.releasedVersion == null}"/>
+        <ice:outputText value="No Released Version" styleClass="warnMessage" rendered="#{studyUI.study.releasedVersion == null}"/>
+        <ice:outputText nospan="true" rendered="#{studyUI.studyVersion.retiredCopy}"><br/></ice:outputText>
+        <ice:outputText value="Released: #{studyUI.studyVersion.releaseTime} &#8211; Archived: #{studyUI.studyVersion.archiveTime}" rendered="#{studyUI.studyVersion.retiredCopy}"/>
+        <ice:outputText nospan="true" rendered="#{studyUI.studyVersion.workingCopy}"><br/></ice:outputText>
+        <ice:outputText value="Created: #{studyUI.studyVersion.createTime} &#8211; Last Updated: #{studyUI.studyVersion.lastUpdateTime}" rendered="#{studyUI.studyVersion.workingCopy}"/>
+        <ice:outputText nospan="true" rendered="#{!empty studyUI.studyVersion.versionNote}"><br/></ice:outputText>
+        <ice:outputText value="Study Version Notes: " rendered="#{!empty studyUI.studyVersion.versionNote}"/>
+        <ice:outputText styleClass="dvnstudystatusversionnote" value="#{studyUI.studyVersion.versionNote}" rendered="#{!empty studyUI.studyVersion.versionNote}"/>
+    </div>
+</div>

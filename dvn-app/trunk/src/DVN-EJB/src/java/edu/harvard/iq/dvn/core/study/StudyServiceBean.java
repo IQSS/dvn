@@ -124,6 +124,8 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
     VDCServiceLocal vdcService;
     @EJB
     StudyFileServiceLocal studyFileService;
+    @EJB
+    RoleServiceLocal roleService;
 
     /**
      * Creates a new instance of StudyServiceBean
@@ -1621,7 +1623,8 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         studyVersion.getStudy().setLastUpdateTime(lastUpdateTime);
         VDC studyVDC  = studyVersion.getStudy().getOwner();
 
-        if (user.isContributor(studyVDC) || user.getVDCRole(studyVDC)==null ) {
+        VDCRole vdcRole = roleService.findByUserVDC(userId, studyVDC.getId());
+        if ( vdcRole == null || (vdcRole.getRole().getName().equals(RoleServiceLocal.CONTRIBUTOR)) ) {
             studyVersion.setVersionState(VersionState.DRAFT);
         }
         if ( !user.isNetworkAdmin()) {

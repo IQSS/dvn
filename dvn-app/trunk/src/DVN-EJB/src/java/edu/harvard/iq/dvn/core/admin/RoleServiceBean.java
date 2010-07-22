@@ -51,7 +51,7 @@ public class RoleServiceBean implements RoleServiceLocal {
 
 
     public VDCRole findByUserVDC(Long userId, Long vdcId) {
-     String query="SELECT r from VDCRole r where r.vdcUserId = "+userId+" and r.vdcId = "+vdcId;
+     String query="SELECT r from VDCRole r where r.vdcUser.id = "+userId+" and r.vdc.id = "+vdcId;
        VDCRole role=null;
        try {
            role=(VDCRole)em.createQuery(query).getSingleResult();

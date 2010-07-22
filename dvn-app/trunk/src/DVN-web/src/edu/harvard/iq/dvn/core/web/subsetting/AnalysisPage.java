@@ -96,6 +96,7 @@ import com.icesoft.faces.context.ByteArrayResource;
 import com.icesoft.faces.context.Resource;
 import com.icesoft.faces.component.outputresource.*;
 import com.icesoft.faces.component.datapaginator.*;
+import edu.harvard.iq.dvn.core.web.study.StudyUI;
 
 public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     
@@ -422,18 +423,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     public String getStudyUIclassName() {
         return studyUIclassName;
     }
-    /**
-     * reference to the current study
-     */
-    private Study thisStudy;
-
-    /*
-     * current version of the study
-     */
-    private StudyVersion thisStudyVersion;
-
-    /** The citation information as a String */
-    private String citation;
+  
 
 
     /**
@@ -441,65 +431,35 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
      * 
      * @return    the citation information of the requested data file
      */
-    public String getCitation() {
-        if (thisStudyVersion == null || thisStudyVersion.getMetadata() == null) {
-            return null;
-        }
-        return thisStudyVersion.getMetadata().getCitation(false);
-    }
-    /**
-     * Setter for property citation
-     *
-     * @param c    citation information as a String
-     */
-    public void setCitation(String c) {
-        citation = c;
+    private String getCitation() {
+        
+        return studyUI.getMetadata().getCitation(false);
     }
     
-    /** The title of the requested study */
-    private String studyTitle;
+   
 
     /**
-     * getter for property studyTilte
+     * 
      *
      * @return    the title of the requested study
      */
-    public String getStudyTitle() {
-        if (thisStudyVersion == null || thisStudyVersion.getMetadata() == null) {
-            return null;
-        }
-        return thisStudyVersion.getMetadata().getTitle();
+    private String getStudyTitle() {
+        
+        return studyUI.getMetadata().getTitle();
     }
     
+   
+    
     /**
-     * setter for property studyTilte
      *
-     * @param sTl   the tilte of the requested study
-     */
-    public void setStudyTitle(String sTl) {
-        studyTitle = sTl;
-    }
-    
-    /** The ID of the requested study */
-    private Long studyId;
-
-    /**
-     * Getter for property studyId
      *
      * @return the ID of the requested study
      */
    public Long getStudyId() {
-        return thisStudy.getId();
+        return studyUI.getStudy().getId();
     }
     
-    /**
-     * Setter for property studyId
-     *
-     * @param sId    the ID of the requested study
-     */
-    public void setStudyId(Long sId) {
-        studyId = sId;
-    }
+    
     
     /** 
      * The name of the requested data file
@@ -545,6 +505,17 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     public void setStudyURL(String url) {
         studyURL = url;
     }
+
+    private StudyUI studyUI;
+
+    public StudyUI getStudyUI() {
+        return studyUI;
+    }
+
+    public void setStudyUI(StudyUI studyUI) {
+        this.studyUI = studyUI;
+    }
+
 
     /** The type of an end-user's browser */
     private String browserType;
@@ -1103,9 +1074,9 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             }
             */
             
-            dbgLog.fine("citation info to be sent:\n" + citation);
+            dbgLog.fine("citation info to be sent:\n" + getCitation());
 
-            mpl.put("studytitle", Arrays.asList(studyTitle));
+            mpl.put("studytitle", Arrays.asList(getStudyTitle()));
             dbgLog.fine("studyId="+getStudyId().toString());
             mpl.put("studyno", Arrays.asList(getStudyId().toString()));
             mpl.put("studyURL", Arrays.asList(studyURL));
@@ -1409,8 +1380,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             // final processing steps for all successful cases
             
             // add stuy-metadata to the resultInfo map
-            resultInfo.put("offlineCitation", citation);
-            resultInfo.put("studyTitle", studyTitle);
+            resultInfo.put("offlineCitation", getCitation());
+            resultInfo.put("studyTitle", getStudyTitle());
             resultInfo.put("studyNo", getStudyId().toString());
             resultInfo.put("dtId", dtId.toString());
             if (versionNumber != null) {
@@ -3269,7 +3240,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 //                mpl.put("appSERVER", Arrays.asList(req.getServerName() + ":"
 //                    + req.getServerPort() + req.getContextPath()));
                 
-                mpl.put("studytitle", Arrays.asList(studyTitle));
+                mpl.put("studytitle", Arrays.asList(getStudyTitle()));
                 dbgLog.fine("studyId from get method="+getStudyId().toString());
                 mpl.put("studyno", Arrays.asList(getStudyId().toString()));
                 mpl.put("studyURL", Arrays.asList(studyURL));
@@ -3547,8 +3518,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
             // final processing steps for all successful cases
 
-            resultInfo.put("offlineCitation", citation);
-            resultInfo.put("studyTitle", studyTitle);
+            resultInfo.put("offlineCitation", getCitation());
+            resultInfo.put("studyTitle", getStudyTitle());
             resultInfo.put("studyNo", getStudyId().toString());
             resultInfo.put("dtId", dtId.toString());
             if (versionNumber != null) {
@@ -5997,7 +5968,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 //                mpl.put("appSERVER", Arrays.asList(req.getServerName() +
 //                    ":"+ req.getServerPort() + req.getContextPath()));
 
-                mpl.put("studytitle", Arrays.asList(studyTitle));
+                mpl.put("studytitle", Arrays.asList(getStudyTitle()));
                 dbgLog.fine("alt studyId="+getStudyId().toString());
                 mpl.put("studyno", Arrays.asList(getStudyId().toString()));
                 mpl.put("studyURL", Arrays.asList(studyURL));
@@ -6279,8 +6250,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
             // final processing steps for all successful cases
 
-            resultInfo.put("offlineCitation", citation);
-            resultInfo.put("studyTitle", studyTitle);
+            resultInfo.put("offlineCitation", getCitation());
+            resultInfo.put("studyTitle", getStudyTitle());
             resultInfo.put("studyNo", getStudyId().toString());
             resultInfo.put("dtId", dtId.toString());
             if (versionNumber != null) {
@@ -8164,8 +8135,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 }
 
             //}
-                thisStudy = dataTable.getStudyFile().getStudy();
                 
+          /*
                 if (versionNumber == null) {
                     thisStudyVersion = thisStudy.getReleasedVersion();
                 } else {
@@ -8177,13 +8148,21 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     throw new FacesException("Could not find a valid Version of this study");
                 }
 
-                setStudyTitle(thisStudyVersion.getMetadata().getTitle());
-                setCitation(thisStudyVersion.getMetadata().getCitation(false));
-                setStudyId(thisStudy.getId());
+             */
+               Study thisStudy = dataTable.getStudyFile().getStudy();
+               if (versionNumber==null) {
+                   studyUI = new StudyUI(thisStudy);
+               } else {
+                    StudyVersion thisStudyVersion = thisStudy.getStudyVersionByNumber(versionNumber);
 
-                dbgLog.fine("Study Title="+studyTitle);
-                dbgLog.fine("Study Id="+studyId);
-                dbgLog.fine("Ciation="+citation);
+                    if (thisStudyVersion == null) {
+                        dbgLog.severe("ERROR: Could not find a valid Version of this study");
+                        throw new FacesException("Could not find a valid Version of this study, studyId = " +thisStudy.getId()+" versionNumber= "+versionNumber);
+                    }
+                    studyUI = new StudyUI(thisStudyVersion,user);
+               }
+
+                
 
             
                 dbgLog.finer("\nSpec Map:\n"+

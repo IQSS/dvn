@@ -70,6 +70,11 @@ import javax.naming.InitialContext;
 /**
  *
  * @author gdurand
+ *
+ * Convenience class for Study and StudyVersion information needed in multiple pages.
+ * The class does lazy loading of Study and StudyVersion objects.  It can be created either with a Study, studyId, StudyVersion or studyVersionId.
+ * If a Study or studyId is passed to the constructor, then the StudyVersion is initialized according to the logic in initVersionForStudy()
+ *
  */
 public class StudyUI  implements java.io.Serializable {
     
@@ -96,7 +101,7 @@ public class StudyUI  implements java.io.Serializable {
     public StudyUI(Study s) {
         this.study = s;
         this.studyId = s.getId();
-        this.studyVersion = study.getReleasedVersion();
+        initVersionForStudy(study);
 
     }
    
@@ -139,7 +144,7 @@ public class StudyUI  implements java.io.Serializable {
     public StudyUI(Study s, VDCUser user, UserGroup ipUserGroup, boolean selected) {
         this.study = s;
         this.studyId = s.getId();
-        this.studyVersion = study.getReleasedVersion();
+        initVersionForStudy(study);
         this.user = user;
         this.ipUserGroup = ipUserGroup;        
         this.selected = selected;
@@ -253,12 +258,30 @@ public class StudyUI  implements java.io.Serializable {
         initStudyService();
         if (studyId!=null) {
                 study = studyService.getStudyForSearch(studyId, studyFields);
-                studyVersion = study.getReleasedVersion();
+                initVersionForStudy(study);
 
 
         } else if (studyVersionId!=null) {
                 studyVersion = studyService.getStudyVersionById(studyVersionId);
                 study = studyVersion.getStudy();
+        }
+    }
+
+    /**
+     * Determine which StudyVersion to display if the StudyUI was initialized with a Study or studyId
+     * @param study
+     * @return
+     */
+    private void initVersionForStudy(Study study) {
+
+        if (study.isReleased()) {
+            studyVersion = study.getReleasedVersion();
+        }
+        else if (study.isDeaccessioned()) {
+            studyVersion =study.getDeaccessionedVersion();
+        }
+        else { 
+            studyVersion = study.getLatestVersion();
         }
     }
 

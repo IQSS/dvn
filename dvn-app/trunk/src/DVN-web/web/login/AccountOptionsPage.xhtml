@@ -15,43 +15,17 @@
             <gui:param name="pageTitle" value="Account Options"/>
             <gui:define name="body">
                 <ice:form id="form1" >
-                    <style type="text/css">
-                        .icePnlTb .LftTop, .icePnlTb .MidTop, .icePnlTb .RtTop {background: #D9D9D9; border: 0;}
-                        .icePnlTbOn, .icePnlTbOff, .icePnlTbOver {margin: 0 4px 2px 0;}
-                        .icePnlTbOn .LftTop, .icePnlTbOn .MidTop, .icePnlTbOn .RtTop, .icePnlTbOff .LftTop, .icePnlTbOff .MidTop, .icePnlTbOff .RtTop, .icePnlTbOver .LftTop, .icePnlTbOver .MidTop, .icePnlTbOver .RtTop {height: 1px;}
-                        .icePnlTbOn .LftBtm, .icePnlTbOn .MidBtm, .icePnlTbOn .RtBtm, .icePnlTbOff .LftBtm, .icePnlTbOff .MidBtm, .icePnlTbOff .RtBtm, .icePnlTbOver .LftBtm, .icePnlTbOver .MidBtm, .icePnlTbOver .RtBtm {background:none;}
-                        .icePnlTbOn .LftMid, .icePnlTbOff .LftMid, .icePnlTbOver .LftMid {background:none; border-left: 1px solid #D9D9D9;}
-                        .icePnlTbOn .RtMid, .icePnlTbOff .RtMid, .icePnlTbOver .RtMid {background:none; border-right: 1px solid #D9D9D9;}
-                        .icePnlTbOn .MidMid a {background:none; padding-left: 8px; text-transform: uppercase;}
-                        .icePnlTbOn .MidMid a td {color:#0C54B3;}
-                        .icePnlTbOn .MidMid a:hover td {color:#C55B28;}
-                        .icePnlTbOff .MidMid a {background:none; padding-left: 8px; margin: 0; color:#C55B28;}
-                        .icePnlTbOff .MidMid a td {color:#C55B28;}
-                        .icePnlTbOff .MidMid a:hover td {color:#0C54B3;}
-                        .icePnlTbOver .MidMid a {background:none; padding-left: 8px; margin: 0; color:#C55B28;}
-                        .icePnlTbOver .MidMid a td {color:#C55B28;}
-                        .icePnlTbOver .MidMid a:hover td {color:#0C54B3;}
-                        .icePnlTbOn .MidMid a td {font-size: 1.3em !important;}
-                        .icePnlTbOff .LftTop, .icePnlTbOff .MidTop, .icePnlTbOff .RtTop, .icePnlTbOff .LftMid, .icePnlTbOff .MidMid, .icePnlTbOff .RtMid, .icePnlTbOver .LftTop, .icePnlTbOver .MidTop, .icePnlTbOver .RtTop, .icePnlTbOver .LftMid, .icePnlTbOver .MidMid, .icePnlTbOver .RtMid {background: #D9D9D9;}
-                        .icePnlTbOff .MidMid td, .icePnlTbOver .MidMid td {font-weight: normal;}
-                        .icePnlTbSetSpcr {border-bottom: 0;}
-                        .icePnlTbSetCnt {border-top: 1px solid #D9D9D9;}
-                    </style>
-                    <ice:panelTabSet id="tabSet1" selectedIndex="0">
+                    <ice:panelTabSet id="tabSet1" styleClass="dvnTabs" selectedIndex="0">
                         <!-- Account Tab  -->
                         <ice:panelTab id="account" label="Account" url="/dvn#{VDCRequest.currentVDCURL}/faces/login/AccountPage.xhtml&amp;tab=account" >
-                           
-                            
                                 <gui:include src="/login/AccountFragment.xhtml">
                                     <gui:param name="returnPage" value="accountOptions"/>
                                 </gui:include>
                         </ice:panelTab>
                         <ice:panelTab id="studies" label="Studies" url="/dvn#{VDCRequest.currentVDCURL}/faces/login/AccountPage.xhtml&amp;tab=studies" rendered="#{VDCSession.loginBean.hasContributed}">
-
                             <gui:include src="/study/ManageStudiesFragment.xhtml">
                             </gui:include>
                         </ice:panelTab>
-
                         <!-- MY DATAVERSES -->
                         <ice:panelTab id="myDataverses" label="Dataverses" rendered="#{!VDCSession.loginBean.networkAdmin and (VDCRequest.vdcNetwork.allowCreateRequest or VDCSession.loginBean.hasDataverses)}">
                             <gui:include src="/networkAdmin/MyDataversesFragment.xhtml">

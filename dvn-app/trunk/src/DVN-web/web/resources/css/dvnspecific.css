@@ -12,7 +12,7 @@
 .dvnLoginInputArea .dvnLoginFailed{display:block}
 .dvnLoginInputArea .errorMessageError{display:block;text-align:right;color:red;font-weight:700}
 .dvnLoginInputArea fieldset{border:1px solid #7f9db9;background:#f4ebc7;text-align:center}
-.dvnLoginInputArea legend{padding:0 8px;border:1px solid #7f9db9;background:#e6ebed;text-transform:uppercase}
+.dvnLoginInputArea legend{padding:0 8px;border:1px solid #7f9db9;background:#F2F2F2;text-transform:uppercase}
 .dvnLoginInputArea label{margin-top:1em;padding-right:.5em}
 .dvnLoginInputArea input{margin-top:1em}
 .dvnLoginInputArea .iceCmdBtn{margin:0}
@@ -21,6 +21,19 @@
 .dvnLoginLinkBlock p{text-align:left}
 .dvnLoginContentAreaFooter{margin-top:1em;text-align:center}
 fieldset.dvnLoginPageAffiliate input.iceCmdBtn{display:block;float:right}
+/* CONTACT */
+.dvnContactLabel{font-weight:bold;}
+/* ADV SEARCH */
+.dvnAdvSearchScopeTable{border:0;margin:0;}
+.dvnAdvSearchScopeTable td{border-right:0;}
+.vdcAdvSearchCol1{white-space:nowrap;}
+.vdcAdvSearchCol2{width:18%;}
+.vdcAdvSearchCol3{width:50%;}
+.dvnAdvSearchScopeTable .errorMessageInfo{display:block;}
+.dvnAdvSearchCollectionsTable img{vertical-align:bottom;}
+.dvnAdvSearchCollectionsTable .iceOutTxt{display:inline;padding:0 .25em;}
+/* CONTRIBUTOR REQUEST */
+.dvnContributorRequestFormLinks{padding-top:10px;text-align:center;}
 /* MY OPTIONS */
 .dvnOptionsTable{width:100%;text-align:left}
 .dvnOptionsTable td{padding:.5em 2em;border-bottom:1px solid lightgray}
@@ -28,6 +41,7 @@ td.dvnOptionsTableHeader{padding:.5em 1em;background:gainsboro;color:gray;text-t
 .dvnOptionsTableOption{width:240px}
 span.dvnOptionsTableNote{font-size:90% !important}
 div.dvnOptionsTableLicense{padding-top:.5em}
+.dvnOptionsTableNoHeader{border-top:1px solid lightgray;}
 /* MY DATAVERSE */
 .dvnMyDataverseTableTop{border:1px solid #d9d9d9;border-bottom:0;width:100%}
 .dvnMyDataverseTableTop td{text-align:right}
@@ -81,10 +95,17 @@ td.vdcEditFilesColC{width:7%;padding:1em .25em;text-align:center}
 .dvnManageStudiesTable th table td{font-size:100% !important;font-weight:700}
 .dvnManageStudiesTable tbody td.iceDatTblCol1,.dvnManageStudiesTable tbody td.iceDatTblCol2{padding:.75em}
 .dvnManageStudiesTable tbody span.iceOutTxt{display:inline;white-space:nowrap}
-.dvnManageStudiesTableEmpty{border:1px solid #d9d9d9;padding:1em;text-align:center}
+.dvnManageStudiesEmptyBlock{padding:1em;text-align:center;border:1px solid #D9D9D9;border-top:0;}
 .dvnManageStudiesTableStatus{white-space:nowrap}
 .dvnManageStudiesTableStatus span.dvnManageStudiesTableStatusLabel{width:5em;display:inline-block !important;vertical-align:middle}
 .dvnManageStudiesTableStatus input.iceCmdBtn{font-size:90% !important}
+.dvnManageStudiesTableTop .dvn_StudyListTotals {overflow: hidden;}
+.dvnManageStudiesTableTop .dvnManageStudiesTableFilter {float: left;}
+.dvnManageStudiesTableShowArchive {float: left; padding-left: 1em;}
+.dvnManageStudiesTablePaginator {float: right; text-align: right;}
+.dvnManageStudiesTableAction {white-space: nowrap;}
+.dvnManageStudiesTableAction a.iceCmdLnk, .dvnManageStudiesTableAction a.iceOutLnk {margin-left: .75em;}
+.dvnManageStudiesTableAction a.dvnManageStudiesTableEditLink {margin-left: 0;}
 .vdcReviewCol1{padding-left:2px;padding-right:2px}
 .vdcReviewCol2{padding-left:2px;padding-right:2px;width:70px}
 .vdcReviewCol3{padding-left:2px;padding-right:2px;width:100px}
@@ -98,6 +119,7 @@ td.vdcEditFilesColC{width:7%;padding:1em .25em;text-align:center}
 .dvnAddFilesTable{margin-top:0}
 .dvnAddFilesOuterTable table.iceDatTbl{margin:0;border-collapse:collapse}
 .dvnAddFilesOuterTable table.iceDatTbl td{text-align:center;border:1px solid #dadee0}
+.dvnAddFilesTable .dvnAddFilesCatCol{white-space:nowrap;}
 .dvnAddFilesTableCategory label.iceOutLbl{display:inline}
 .dvnAddFilesTableCategory select.iceSelOneMnu{display:inline}
 /* MANAGE + EDIT COLLECTIONS */
@@ -119,6 +141,8 @@ td.vdcEditFilesColC{width:7%;padding:1em .25em;text-align:center}
 .dvnEditCollectionStudySelectionList .iceDatTbl tr{border:1px solid #ccc;border-width:0 0 1px 0}
 .vdcAddCollectionCol1{padding-bottom:4px;padding-left:20px;padding-top:4px;width:250px}
 .vdcAddCollectionCol2{padding-bottom:4px;padding-left:20px;padding-top:4px}
+.dvnEditCollection .dynamic td.cell1{width:45%;vertical-align:top;}
+.dvnEditCollection .dynamic td.cell2{width:55%;padding-left:1em;vertical-align:top;}
 /* MANAGE + EDIT CLASSIFICATIONS */
 .dvnManageClassificationsTable{width:100%;margin:0}
 .dvnManageClassificationsTable img{border:0}
@@ -164,8 +188,11 @@ span.dvnAddClassificationDvNotReleased{background:url(/dvn/resources/images/icon
 .dvnCommentReviewCol6 a.iceOutLnk {margin-right: .5em;}
 .dvnCommentReviewCol6 a, .dvnCommentReviewCol6 span {display: inline !important;}
 /* TERMS OF USE */
-.vdcTermsUseColumn{text-align:left}
-.vdcTermsUseField{text-align:left;color:#666;font-weight:700}
+.dvnstudypreviouslisting{text-align:right;}
+.termsAgreeChkBxBlock{width:380px;}
+.termsAgreeChkBxBlock p{font-size: .9em !important;}
+.dvnEditTermsForm .dvnEditTermsCheckbox{margin-bottom:1em;}
+.dvnEditTermsForm .errorMessage{margin-bottom:1em;}
 /* PERMISSIONS */
 .dvnPermissionsTable{width:100%;text-align:left}
 .dvnPermissionsTable td{padding:.5em 2em;border-bottom:1px solid lightgray}
@@ -184,6 +211,8 @@ td.dvnPermissionsTableOption{width:240px;padding-top:.75em;padding-bottom:.75em;
 .dvnStudyPermissionsFileDetails th:first-child{width:10%;text-align:center}
 .dvnStudyPermissionsFileDetails table.iceDatTbl{margin-top:0;border-top:1px solid #d9d9d9}
 .dvnStudyPermissionsFileDetails table.iceDatTbl,.dvnStudyPermissionsFileDetails table.iceDatTbl td.iceDatTblCol1,.dvnStudyPermissionsFileDetails table.iceDatTbl td.iceDatTblCol2,.dvnStudyPermissionsFileDetails table.iceDatTbl tr.iceDatTblRow1,.dvnStudyPermissionsFileDetails table.iceDatTbl tr.iceDatTblRow2{border-left:0;border-right:0}
+/* VARIABLE PAGE */
+.dvnVariableStatisticsBlock{margin-bottom:30px;padding:20px 10px;border:1px solid #cccccc;background:#F2F2F2;}
 /* ADD SITE */
 .vdcAddSiteCol1{padding-bottom:4px;padding-top:4px;vertical-align:top;white-space:nowrap}
 .vdcAddSiteCol2{padding-bottom:4px;padding-left:10px;padding-top:4px;vertical-align:top}
@@ -269,3 +298,5 @@ table.dvnCreateDvClassificationTable table{width:100%;border-top:1px solid #dcdd
 .dvnPromotionalLinks .dvnPromotionalTip{float:left;width:36.333%}
 .dvnPromotionalSample span,.dvnPromotionalCode span,.dvnPromotionalTip span{color:gray}
 .dvnPromotionalSample textarea,.dvnPromotionalCode textarea,.dvnPromotionalTip textarea{width:90%;border:1px solid #6e7f90;overflow:scroll}
+/* UTILITIES */
+.dvnUtilitiesTable{margin-left:auto;margin-right:auto;}

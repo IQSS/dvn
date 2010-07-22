@@ -87,7 +87,7 @@
         <!-- Main Section ends here -->
 
 
-        <div id="hiddenDiv" style="display:none;">
+        <div id="hiddenDiv">
           <ice:outputText value="#{NetworkStatsBean.autoLoad}"/>
         </div>
 
@@ -98,17 +98,6 @@
 
           <!-- MAIN CONTENT AREA -->
           <div jsfc="ice:panelGroup" styleClass="#{!empty(HomePage.accordionItemBeans) ? 'dvn_sectionContent' : 'dvn_sectionContentNoPanels'}">
-
-             <style type="text/css">
-                 .dvn_searchboxblock {overflow: hidden;}
-                 .dvn_searchboxblock fieldset {margin:0; padding:0; float: left; line-height: 36px !important;}
-                 .dvn_searchboxblock fieldset .iceCmdBtn {vertical-align: middle;}
-                 .dvnSearchBoxCheckbox {display:block; text-align:left;}
-                 .dvn_searchboxblock .dvn_searchlinks {float: left; margin-left: 1em; text-align: left;}
-                 .dvn_searchboxblock .dvn_searchlinks a.iceOutLnk {display: block;}
-                 .dvn_searchboxblock .dvn_searchlinks span.iceOutTxt {font-size:90% !important;}
-             </style>
-
              <table cellpadding="0" cellspacing="0" border="0" width="100%" class="dvnHmpgGroupHeaderBlock">
                  <tr>
                      <td valign="bottom"><ice:outputText styleClass="dvnHmpgGroupHeader" value="#{HomePage.groupName}"/></td>
@@ -254,12 +243,6 @@
                   <p><ice:outputText value="There are no dataverses to display for the selected filter. Please select again."/></p>
              </div>
              <div jsfc="ice:panelGroup" rendered="#{!empty(HomePage.vdcUIList.vdcUIList)}">
-
-               <style type="text/css">
-                   .iceDatTblActvSrtHdr {background: #DADEE0;}
-                   .iceDatTblActvSrtHdr span td {font-weight: bold;}
-               </style>
-
                <ice:dataTable headerClass="groupRow" id="dataverseList"
                                rendered="#{!empty(HomePage.vdcUIList.vdcUIList)}"
                                rowClasses="evenRow oddRow" rows="10" width="100%" columnWidths="35%,35%,10%,10%,10%"
@@ -365,34 +348,7 @@
                        }
                       // ]]>
                     </script>
-
-                    <style type="text/css">
-                        h3.head span {
-                            background:#DADEE0;
-                            display:block;
-                            padding:0.5em 26px 0.5em 0.5em;
-                            font-weight: normal;
-                        }
-                        h3.head a span {
-                            background:none;
-                            padding:0;
-                        }
-                        h4.dvnHmpgAllDataverses a {
-                            background:silver;
-                            display:block;
-                            padding:0.5em 26px 0.5em 0.5em;
-                            font-weight:normal !important;
-                        }
-                        h4.dvnHmpgAllDataverses a:hover{
-                            background:#c55b28;
-                            display:block;
-                            padding:0.5em 26px 0.5em 0.5em;
-                            color:white;
-                        }
-                    </style>
-
                     <ul id="navigation" class="basic">
-
                         <li>
                             <ul class="xtraMenu basic">
                                 <!-- All Dataverses -->

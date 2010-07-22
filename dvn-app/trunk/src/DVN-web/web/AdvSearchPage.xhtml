@@ -29,14 +29,6 @@
           </div>
           <div class="dvn_sectionBox">
             <div class="dvn_margin12">
-<style type="text/css">
-    .iceDatTbl {border: 0; margin: 0;}
-    .iceDatTbl td {border-right: 0;}
-    .vdcAdvSearchCol1{white-space: nowrap;}
-    .vdcAdvSearchCol2{width:18%;}
-    .vdcAdvSearchCol3{width:50%;}
-    .dvnAdvSearchScopeTable .errorMessageInfo {display: block;}
-</style>
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="3" width="90%"
                              id="gridPanel1" styleClass="dvnAdvSearchScopeTable" 
                              columnClasses="vdcAdvSearchCol1, vdcAdvSearchCol2, vdcAdvSearchCol3" rowClasses="list-row-odd, list-row-even">
@@ -117,8 +109,8 @@
                   <ice:column binding="#{AdvSearchPage.column1}" id="column1">
                     <ice:selectBooleanCheckbox id="checkbox1" style="margin-right: #{currentRow['level']}.5em;" binding="#{AdvSearchPage.checkbox1}" value="#{currentRow['selected']}"/>
                     <div jsfc="ice:panelGroup" styleClass="#{(currentRow['level'] >= 2) ? 'dvnAdvSearchCollectionsTableChild' : 'dvnAdvSearchCollectionsTableParent'}">
-                      <ice:graphicImage id="image1" style="vertical-align: bottom;" value="/resources/icefaces/dvn_rime/css-images/tree_folder_close.gif"/>
-                      <ice:outputText id="outputText11" style="display: inline; padding: 0 .25em;" value="#{currentRow['name']}"/>
+                      <ice:graphicImage id="image1" value="/resources/icefaces/dvn_rime/css-images/tree_folder_close.gif"/>
+                      <ice:outputText id="outputText11" value="#{currentRow['name']}"/>
                     </div>
                   </ice:column>
                 </ice:dataTable>

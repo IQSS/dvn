@@ -217,36 +217,6 @@
       <f:loadBundle basename="StudyBundle" var="studybundle"/>
       <dvn:inlinehelpsupport writeHelpDiv="true" writeTipDiv="true" writePopupDiv="true" rendered="true"/>
 
-<style type="text/css">
-.dvnstudytitleblock {overflow: hidden;}
-.dvnstudytitlefloat {padding-right: 340px; text-align: left;}
-span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; font-size:1.35em !important;}
-.dvnstudyversioninfo {}
-.dvnstudyversioninfo span.iceOutTxt {color:#A9A9A9; line-height: 1.48; font-size:.95em !important;}
-
-.dvnstudystatusbox{display: table-cell; padding: 2px 8px; font-weight: bold; line-height:24px !important;}
-.dvnstudystatusbox div{margin-top:4px; line-height:18px !important;}
-.dvnstudystatusarchived{background: gold; color: #526F76;}
-.dvnstudystatusreview{background: #ececec; color: #526F76;}
-.dvnstudystatusdraft{background: #CFDDEA; color: #526F76;}
-.dvnstudystatuslabel{text-transform:uppercase;}
-.dvnstudystatusreleasedver{font-weight: normal;color:#C55B28;}
-.dvnstudystatusnoreleasedver{color:#820024;}
-.dvnstudystatusversionnote{font-weight:normal;}
-.dvnstudystatusversionnote .vdcTruncatorLinkLess{margin-left: 8px;}
-
-.dvnstudyadminboxfloat{float: right; width: 310px; text-align:left;}
-.dvnstudypreviouslisting{text-align:right;}
-.dvnstudyadminbox{width: 300px; overflow:hidden; border:1px solid #d0d0d0; padding:4px; color:#526F76;}
-.dvnstudyadminlinksL {float: left; width: 150px; list-style-type: square; margin: 0 0 0 1.25em; padding: 0;}
-.dvnstudyadminlinksR {float: right; width: 130px; list-style-type: square; margin: 0; padding: 0;}
-.dvnstudyadminbox ul {padding: 0px; margin: 0px; list-style-type: none;}
-.dvnstudyadminbox li {background: url(/dvn/resources/images/icon_bullet.gif) no-repeat 0px 8px; padding-left: 10px;}
-.dvnstudyadminbox a:link,.dvnstudyadminbox a:visited,.dvnstudyadminbox a:hover,.dvnstudyadminbox a:active{color:#C55B28;}
-.dvnstudyadminbox li a:link,.dvnstudyadminbox li a:visited,.dvnstudyadminbox li a:hover,.dvnstudyadminbox li a:active{font-size:.9em !important;}
-.dvnstudyadminbox div div span {font-weight: bold; text-transform: uppercase;}
-</style>
-
 <script type="text/javascript">
   // <![CDATA[
   jQuery(document).ready(function(){
@@ -262,11 +232,7 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
           <ice:inputHidden id="globalId" value="#{studyPage.globalId}" />
           <ice:inputHidden id="slIndex" value="#{VDCRequest.studyListingIndex}"/>
           <div class="dvn_section">
-
-<style type="text/css">
-    .dvnWarningMessage a {font-weight: bold;}
-</style>
-            <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnWarningMessage" rendered="#{studyPage.studyUI.study.deaccessionedVersion != null and studyPage.studyUI.userAuthorizedToEdit and !VDCSession.loginBean.curatorOrAbove and !VDCSession.loginBean.networkAdmin}">
+            <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnWarningMessage dvnMessageLink" rendered="#{studyPage.studyUI.study.deaccessionedVersion != null and studyPage.studyUI.userAuthorizedToEdit and !VDCSession.loginBean.curatorOrAbove and !VDCSession.loginBean.networkAdmin}">
                 <div class="dvnMsgBlockContainer">
                     <ice:outputFormat value="#{bundlePageInfo.deaccessionedStudyDetailContributorHelp}" escape="false">
                         <f:param value="#{VDCRequest.currentVDCURL}" />
@@ -274,7 +240,7 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
                     </ice:outputFormat>
                 </div>
             </div>
-            <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnWarningMessage" rendered="#{studyPage.studyUI.study.deaccessionedVersion != null and (VDCSession.loginBean.curatorOrAbove or VDCSession.loginBean.networkAdmin)}">
+            <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnWarningMessage dvnMessageLink" rendered="#{studyPage.studyUI.study.deaccessionedVersion != null and (VDCSession.loginBean.curatorOrAbove or VDCSession.loginBean.networkAdmin)}">
                 <div class="dvnMsgBlockContainer">
                     <ice:outputFormat value="#{bundlePageInfo.deaccessionedStudyDetailCuratorHelp}" escape="false">
                         <f:param value="#{VDCRequest.currentVDCURL}" />
@@ -293,12 +259,9 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
                         <div jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.study.studyLock==null}">
                             <ul class="dvnstudyadminlinksL">
                                 <span jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.studyVersion != studyPage.studyUI.study.latestVersion and (studyPage.studyUI.studyVersion.released or studyPage.studyUI.studyVersion.deaccessioned)}">
-                                    <!--<li>
-                                        <dvn:tooltip tooltipMessage="#{studybundle.editStudyTip}" linkText="Edit Draft/Review Version" eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyPage.studyId}&amp;versionNumber=#{studyPage.studyUI.study.latestVersion.versionNumber}"/>
-                                    </li>-->
-                                    <li style="background: none; padding: 0; font-size:0.9em !important;">
+                                    <li class="dvnStudyEditDisableMsg">
                                         Editing is disabled because a draft study version was created. Go to the
-                                        <ice:outputLink style="font-size:1em !important;" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;versionNumber=#{studyPage.studyUI.study.latestVersion.versionNumber}">
+                                        <ice:outputLink styleClass="dvnStudyEditDisableLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;versionNumber=#{studyPage.studyUI.study.latestVersion.versionNumber}">
                                             draft study version
                                         </ice:outputLink> to edit this study.
                                     </li>
@@ -420,22 +383,6 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
                 <ice:panelTabSet id="tabSet1" binding="#{studyPage.tabSet1}" tabChangeListener="#{studyPage.processTabChange}">
                     <ice:panelTab id="catalog" label="Cataloging Information" url="#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?globalId=#{studyPage.studyUI.study.globalId}&amp;tab=catalog#{studyPage.studyListingIndexAsParameter}">
                         <div jsfc="ice:panelGroup" id="layoutPanel1" panelLayout="flow">
-<style type="text/css">
-    .dvnhowtocitetable td {padding: 5px 0; vertical-align:text-top;}
-    .dvnhowtocitetable .col1{width:40%;}
-    .dvnhowtocitetable .col2{}
-    .dvnhowtociteinfofloat{}
-    .dvnhowtociteinfofloat div{padding: 0; margin: 0 1em 0 0;}
-    .dvnhowtociteinfofloat h4 {margin:0; padding:0; display: inline;}
-    .dvnhowtociteinfofloat .dvnhowtociteWhy {margin:0 0 0 1em; padding:0; font-weight: normal !important; display: inline;}
-    .dvnhowtociteinfofloat .dvnhowtociteWhy a {font-size: .9em !important;}
-    .dvnhowtociteinfo {display: block;}
-    .dvnhowtocitecitationfloat {padding: 0 0 1em 1em;}
-    .dvnhowtocitecitationfloat textarea{display: block;}
-    .dvnhowtocitecitationfloat label{font-weight:bold;}
-    .dvnhowtocitecitation{padding: 2px;}
-    textarea.dvnstudycitation {width: 90%; padding: 4px; margin: 8px 0; font-family: monospace !important;}
-</style>
                             <ice:panelGrid id="panelGridHowToCite" styleClass="dvnhowtocitetable" cellpadding="0" cellspacing="0"
                                            columnClasses="col1, col2" columns="2" width="100%" rendered="#{studyPage.studyUI.citationInformationPanelIsRendered}">
                                 <div jsfc="ice:panelGroup" styleClass="dvnhowtociteinfofloat">

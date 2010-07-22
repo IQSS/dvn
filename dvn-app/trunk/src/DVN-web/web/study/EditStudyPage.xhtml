@@ -82,13 +82,6 @@
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <input type="hidden" name="pageName" value="EditStudyPage"/>
         <ice:inputHidden id="studyId" value="#{EditStudyPage.studyId}"/>
-
-        <style type="text/css">
-            .dvnMsgBlockRound {position: relative;}
-            .dvnEditStudyHelpBlock .dvnCloseHelpBlock {display: block; position: absolute; top: 0; right: 12px;}
-			.dvnEditStudyHelpBlock .dvnEditStudyHelp {display: block; padding-top: .5em;}
-        </style>
-
         <script type="text/javascript">
           // <![CDATA[
 
@@ -133,33 +126,6 @@
               <ice:outputText styleClass="dvnEditStudyHelp" value="#{bundlePageInfo.editStudyCatalogingHelp}"  escape="false"/>
             </div>
           </div>
-<style type="text/css">
-.dvnstudytitleblock {overflow: hidden;}
-.dvnstudytitlefloat {padding-right: 340px; text-align: left;}
-span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; font-size:1.35em !important;}
-.dvnstudyversioninfo {}
-.dvnstudyversioninfo span.iceOutTxt {color:#A9A9A9; line-height: 1.48; font-size:.95em !important;}
-
-.dvnstudystatusbox{margin: 0; padding: 2px 8px; font-weight: bold; line-height:24px !important;}
-.dvnstudystatusbox div{margin-top:4px; line-height:18px !important;}
-.dvnstudystatusarchived{background: gold; color: #526F76;}
-.dvnstudystatusreview{background: #ececec; color: #526F76;}
-.dvnstudystatusdraft{background: #CFDDEA; color: #526F76;}
-.dvnstudystatuslabel{text-transform:uppercase;}
-.dvnstudystatusreleasedver{font-weight: normal;color:#C55B28;}
-.dvnstudystatusnoreleasedver{color:#820024;}
-.dvnstudystatusversionnote{font-weight:normal;}
-
-.dvnstudyadminboxfloat{float: right; width: 310px; text-align:left;}
-.dvnstudypreviouslisting{text-align:right;}
-.dvnstudyadminbox{width: 300px; overflow:hidden; border:1px solid #d0d0d0; margin-bottom: 1em; padding:4px; color:#526F76;}
-.dvnstudyadminlinksL {float: left; width: 150px; list-style-type: square; margin: 0 0 0 1.25em; padding: 0;}
-.dvnstudyadminlinksR {float: right; width: 120px; list-style-type: square; margin: 0; padding: 0;}
-.dvnstudyadminbox ul {padding: 0px; margin: 0px; list-style-type: none;}
-.dvnstudyadminbox li {background: url(/dvn/resources/images/icon_bullet.gif) no-repeat 0px 8px; padding-left: 10px;}
-.dvnstudyadminbox a:link,.dvnstudyadminbox a:visited,.dvnstudyadminbox a:hover,.dvnstudyadminbox a:active{color:#C55B28;}
-.dvnstudyadminbox li a:link,.dvnstudyadminbox li a:visited,.dvnstudyadminbox li a:hover,.dvnstudyadminbox li a:active{font-size:.9em !important;}
-</style>
           
         <div class="dvnstudytitleblock">
             <div class="dvnstudyadminboxfloat">
@@ -192,8 +158,8 @@ span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; 
               <div jsfc="ice:panelGroup" id="messagePanel" styleClass="errorMessage" rendered="#{!empty facesContext.maximumSeverity}">
                 <ice:outputText value='Please check messages below.'/>
               </div>
-                  <ice:panelGroup panelLayout="flow" >
-                    <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%" style="margin-bottom: 5px;">
+                  <ice:panelGroup panelLayout="flow">
+                    <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%">
                       <div jsfc="ice:panelGroup" id="groupPanel9b">
                         <ice:outputText value="Select Study Template: " rendered="#{EditStudyPage.showTemplateList}"/>
                         <ice:selectOneMenu  value="#{EditStudyPage.selectTemplateId}" binding="#{EditStudyPage.selectTemplate}" rendered="#{EditStudyPage.showTemplateList}" onchange="getElementById('studyForm:templateButton').click();">

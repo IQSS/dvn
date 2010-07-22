@@ -105,20 +105,9 @@
         </div>
 
           <!-- Start Search Results (with side panel, if available) -->
-          <div jsfc="ice:panelGroup" styleClass="#{ (StudyListingPage.renderTree) ? 'dvn_section dvn_overflow' : 'dvn_section'}" style="clear:both;">
+          <div jsfc="ice:panelGroup" styleClass="#{ (StudyListingPage.renderTree) ? 'dvn_section dvn_overflow' : 'dvn_section'} dvn_clear">
             <div jsfc="ice:panelGroup" styleClass="#{ (StudyListingPage.renderTree) ? 'dvn_sectionContent' : 'dvn_sectionContentNoPanels'}">
               <div jsfc="ice:panelGroup" styleClass="dvnStudyListCollectionNameBlock">
-
-             <style type="text/css">
-                 .dvn_searchboxblock {overflow: hidden;}
-                 .dvn_searchboxblock fieldset {margin:0; padding:0; float: left; line-height: 36px !important;}
-                 .dvn_searchboxblock fieldset .iceCmdBtn {vertical-align: middle;}
-                 .dvnSearchBoxCheckbox {display:block; text-align:left;}
-                 .dvn_searchboxblock .dvn_searchlinks {float: left; margin-left: 1em; text-align: left;}
-                 .dvn_searchboxblock .dvn_searchlinks a.iceOutLnk {display: block;}
-                 .dvn_searchboxblock .dvn_searchlinks span.iceOutTxt {font-size:90% !important;}
-             </style>
-
                   <table cellpadding="0" cellspacing="0" border="0" width="98%">
                       <tr>
                           <td valign="bottom">

@@ -15,29 +15,7 @@
         <gui:param name="pageTitle" value="Dataverse Network Admin Options - #{VDCRequest.dataversePageTitle}"/>
         <gui:define name="body">
             <ice:form id="form1" rendered="#{VDCRequest.currentVDC == null}">
-<style type="text/css">
-.icePnlTb .LftTop, .icePnlTb .MidTop, .icePnlTb .RtTop {background: #D9D9D9; border: 0;}
-.icePnlTbOn, .icePnlTbOff, .icePnlTbOver {margin: 0 4px 2px 0;}
-.icePnlTbOn .LftTop, .icePnlTbOn .MidTop, .icePnlTbOn .RtTop, .icePnlTbOff .LftTop, .icePnlTbOff .MidTop, .icePnlTbOff .RtTop, .icePnlTbOver .LftTop, .icePnlTbOver .MidTop, .icePnlTbOver .RtTop {height: 1px;}
-.icePnlTbOn .LftBtm, .icePnlTbOn .MidBtm, .icePnlTbOn .RtBtm, .icePnlTbOff .LftBtm, .icePnlTbOff .MidBtm, .icePnlTbOff .RtBtm, .icePnlTbOver .LftBtm, .icePnlTbOver .MidBtm, .icePnlTbOver .RtBtm {background:none;}
-.icePnlTbOn .LftMid, .icePnlTbOff .LftMid, .icePnlTbOver .LftMid {background:none; border-left: 1px solid #D9D9D9;}
-.icePnlTbOn .RtMid, .icePnlTbOff .RtMid, .icePnlTbOver .RtMid {background:none; border-right: 1px solid #D9D9D9;}
-.icePnlTbOn .MidMid a {background:none; padding-left: 8px; text-transform: uppercase;}
-.icePnlTbOn .MidMid a td {color:#0C54B3;}
-.icePnlTbOn .MidMid a:hover td {color:#C55B28;}
-.icePnlTbOff .MidMid a {background:none; padding-left: 8px; margin: 0; color:#C55B28;}
-.icePnlTbOff .MidMid a td {color:#C55B28;}
-.icePnlTbOff .MidMid a:hover td {color:#0C54B3;}
-.icePnlTbOver .MidMid a {background:none; padding-left: 8px; margin: 0; color:#C55B28;}
-.icePnlTbOver .MidMid a td {color:#C55B28;}
-.icePnlTbOver .MidMid a:hover td {color:#0C54B3;}
-.icePnlTbOn .MidMid a td {font-size: 1.3em !important;}
-.icePnlTbOff .LftTop, .icePnlTbOff .MidTop, .icePnlTbOff .RtTop, .icePnlTbOff .LftMid, .icePnlTbOff .MidMid, .icePnlTbOff .RtMid, .icePnlTbOver .LftTop, .icePnlTbOver .MidTop, .icePnlTbOver .RtTop, .icePnlTbOver .LftMid, .icePnlTbOver .MidMid, .icePnlTbOver .RtMid {background: #D9D9D9;}
-.icePnlTbOff .MidMid td, .icePnlTbOver .MidMid td {font-weight: normal;}
-.icePnlTbSetSpcr {border-bottom: 0;}
-.icePnlTbSetCnt {border-top: 1px solid #D9D9D9;}
-</style>
-                <ice:panelTabSet id="tabSet1" >
+                <ice:panelTabSet id="tabSet1" styleClass="dvnTabs">
                         <!-- DATAVERSE OPTIONS -->
                         <ice:panelTab id="networkOptions" label="Network Options" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml&amp;tab=dataverseOptions" rendered="#{VDCSession.loginBean.networkAdmin}">
                 <div class="dvn_section">

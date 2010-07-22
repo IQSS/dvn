@@ -18,6 +18,9 @@ Common Header for Study Pages
     <div jsfc="ice:panelGroup" styleClass="dvnstudyversioninfo" rendered="#{displayVersionInfo and studyUI.studyVersion.released}">
         <ice:outputText value="Version: #{studyUI.studyVersion.versionNumber}"/> <ice:outputText value="&#8211; Released: #{studyUI.studyVersion.releaseTime}"/>
     </div>
+    <div jsfc="ice:panelGroup" styleClass="dvnstudyversioninfo" rendered="#{displayFileName != null}">
+        <span class="dvn_preFileTitle">Data File: </span><ice:outputText styleClass="dvn_fileTitle" value="#{displayFileName}"/>
+    </div>
     <div jsfc="ice:panelGroup" styleClass="dvnstudystatusbox #{studyUI.studyVersion.retiredCopy ? 'dvnstudystatusarchived' : '' or studyUI.studyVersion.inReview ? 'dvnstudystatusreview' : '' or studyUI.studyVersion.draft ? 'dvnstudystatusdraft' : ''}" rendered="#{displayVersionInfo and !studyUI.studyVersion.released}">
         <ice:outputText styleClass="dvnstudystatuslabel" value="In Review " rendered="#{studyUI.studyVersion.inReview}"/>
         <ice:outputText styleClass="dvnstudystatuslabel" value="Draft " rendered="#{studyUI.studyVersion.draft}"/>

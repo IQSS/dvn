@@ -30,28 +30,28 @@
               <div jsfc="ice:panelGroup" id="groupPanel2" styleClass="dvnFormPadding">
                 <ice:outputText id="outputText2" value="#{bundle.contactUsMessageSummary}"/>
               </div>
-              <ice:panelGrid cellpadding="0" cellspacing="0"
+              <ice:panelGrid cellpadding="0" cellspacing="0" styleClass="dvnContactConfirmTable"
                              columnClasses="vdcColPadded, vdcColPadded" columns="2" id="gridPanel2">
-                <ice:outputText id="outputText7" style="font-weight: bold" value="#{bundle.contactUsToLabel}"/>
+                <ice:outputText id="outputText7" styleClass="dvnContactLabel" value="#{bundle.contactUsToLabel}"/>
                 <ice:outputFormat value="#{bundle.contactUsTo}">
                   <f:param value="#{(VDCRequest.currentVDCId == null) ? VDCRequest.vdcNetwork.name : VDCRequest.currentVDC.name}"/>
                   <f:param value="#{(VDCRequest.currentVDCId == null) ? ('Network') : ('')}"/>
                   <f:param value="#{(VDCRequest.currentVDCId == null) ? VDCRequest.vdcNetwork.contactEmail : VDCRequest.currentVDC.contactEmail}"/>
                 </ice:outputFormat>
                 <div>
-                  <ice:outputText id="outputText4" style="font-weight: bold" value="#{bundle.contactUsEmailLabel}"/>
+                  <ice:outputText id="outputText4" styleClass="dvnContactLabel" value="#{bundle.contactUsEmailLabel}"/>
                 </div>
                 <div>
                   <ice:outputText id="fullName" escape="true" value="#{ContactUsPage.fullName} (#{ContactUsPage.emailAddress})"/>
                 </div>
                 <div>
-                  <ice:outputText id="outputText5" style="font-weight: bold" value="#{bundle.contactUsSubjectLabel}"/>
+                  <ice:outputText id="outputText5" styleClass="dvnContactLabel" value="#{bundle.contactUsSubjectLabel}"/>
                 </div>
                 <div>
                   <ice:outputText id="listSubjects" value="#{ContactUsPage.selectedSubject}"/>
                 </div>
                 <div class="vdcTextNoWrap">
-                  <ice:outputText id="outputText6" style="font-weight: bold" value="#{bundle.contactUsBodyLabel}"/>
+                  <ice:outputText id="outputText6" styleClass="dvnContactLabel" value="#{bundle.contactUsBodyLabel}"/>
                 </div>
                 <div>
                   <ice:outputText id="emailBody" value="#{ContactUsPage.emailBody}"/>

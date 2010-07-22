@@ -23,29 +23,7 @@
                       </div>
                     </div>
                     <div class="dvn_sectionBoxNoBorders">
-<style type="text/css">
-.icePnlTb .LftTop, .icePnlTb .MidTop, .icePnlTb .RtTop {background: #D9D9D9; border: 0;}
-.icePnlTbOn, .icePnlTbOff, .icePnlTbOver {margin: 0 4px 2px 0;}
-.icePnlTbOn .LftTop, .icePnlTbOn .MidTop, .icePnlTbOn .RtTop, .icePnlTbOff .LftTop, .icePnlTbOff .MidTop, .icePnlTbOff .RtTop, .icePnlTbOver .LftTop, .icePnlTbOver .MidTop, .icePnlTbOver .RtTop {height: 1px;}
-.icePnlTbOn .LftBtm, .icePnlTbOn .MidBtm, .icePnlTbOn .RtBtm, .icePnlTbOff .LftBtm, .icePnlTbOff .MidBtm, .icePnlTbOff .RtBtm, .icePnlTbOver .LftBtm, .icePnlTbOver .MidBtm, .icePnlTbOver .RtBtm {background:none;}
-.icePnlTbOn .LftMid, .icePnlTbOff .LftMid, .icePnlTbOver .LftMid {background:none; border-left: 1px solid #D9D9D9;}
-.icePnlTbOn .RtMid, .icePnlTbOff .RtMid, .icePnlTbOver .RtMid {background:none; border-right: 1px solid #D9D9D9;}
-.icePnlTbOn .MidMid a {background:none; padding-left: 8px; text-transform: uppercase;}
-.icePnlTbOn .MidMid a td {color:#0C54B3;}
-.icePnlTbOn .MidMid a:hover td {color:#C55B28;}
-.icePnlTbOff .MidMid a {background:none; padding-left: 8px; margin: 0; color:#C55B28;}
-.icePnlTbOff .MidMid a td {color:#C55B28;}
-.icePnlTbOff .MidMid a:hover td {color:#0C54B3;}
-.icePnlTbOver .MidMid a {background:none; padding-left: 8px; margin: 0; color:#C55B28;}
-.icePnlTbOver .MidMid a td {color:#C55B28;}
-.icePnlTbOver .MidMid a:hover td {color:#0C54B3;}
-.icePnlTbOn .MidMid a td {font-size: 1.3em !important;}
-.icePnlTbOff .LftTop, .icePnlTbOff .MidTop, .icePnlTbOff .RtTop, .icePnlTbOff .LftMid, .icePnlTbOff .MidMid, .icePnlTbOff .RtMid, .icePnlTbOver .LftTop, .icePnlTbOver .MidTop, .icePnlTbOver .RtTop, .icePnlTbOver .LftMid, .icePnlTbOver .MidMid, .icePnlTbOver .RtMid {background: #D9D9D9;}
-.icePnlTbOff .MidMid td, .icePnlTbOver .MidMid td {font-weight: normal;}
-.icePnlTbSetSpcr {border-bottom: 0;}
-.icePnlTbSetCnt {border-top: 1px solid #D9D9D9;}
-</style>
-                    <ice:panelTabSet id="tabSet1" selectedIndex="#{(VDCSession.loginBean.networkAdmin or VDCSession.loginBean.admin) ? 0 : 1}">
+                    <ice:panelTabSet id="tabSet1" styleClass="dvnTabs" selectedIndex="#{(VDCSession.loginBean.networkAdmin or VDCSession.loginBean.admin) ? 0 : 1}">
                         <!-- DATAVERSE OPTIONS -->
                         <ice:panelTab id="dataverseOptions" label="Dataverse Settings" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml&amp;tab=dataverseOptions" rendered="#{VDCSession.loginBean.networkAdmin or VDCSession.loginBean.admin}">
                             <div jsfc="ice:panelGroup" id="layoutPanel1" panelLayout="flow">
@@ -177,12 +155,12 @@
                                 <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
                                     <gui:fragment rendered="#{not VDCRequest.currentVDC.harvestingDv}">
                                         <tr>
-                                            <td class="dvnOptionsTableOption" style="border-top:1px solid lightgray;">
+                                            <td class="dvnOptionsTableOption dvnOptionsTableNoHeader">
                                                 <ice:outputLink id="hyperlink5" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml">
                                                     <ice:outputText id="hyperlink1Text1" value="#{bundlePageInfo.createStudyTitle}"/>
                                                 </ice:outputLink>
                                             </td>
-                                            <td style="border-top:1px solid lightgray;"><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.createStudyText}"/></td>
+                                            <td class="dvnOptionsTableNoHeader"><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.createStudyText}"/></td>
                                         </tr>
                                         <tr>
                                             <td class="dvnOptionsTableOption">

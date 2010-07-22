@@ -57,50 +57,33 @@
             <ice:outputText value="#{bundlePageInfo.addFilesHelp}" escape="false"/>
           </div>
         </div>
-        <div class="dvn_sectionTitle">
+        <div class="dvnstudytitlefloat">
+            <ice:outputText styleClass="dvnstudytitle" value="#{AddFilesPage.studyVersion.metadata.title}"/>
+            <div jsfc="ice:panelGroup" styleClass="dvnstudyversioninfo">
+                <ice:outputText value="#{AddFilesPage.study.globalId}"/> <ice:outputText value="#{AddFilesPage.studyVersion.metadata.UNF}" rendered="#{!empty AddFilesPage.studyVersion.metadata.UNF}"/>
+            </div>
+            <div jsfc="ice:panelGroup" styleClass="dvnstudystatusbox #{AddFilesPage.studyVersion.inReview ? 'dvnstudystatusreview' : '' or AddFilesPage.studyVersion.draft ? 'dvnstudystatusdraft' : ''}">
+                <ice:outputText styleClass="dvnstudystatuslabel" value="In Review " rendered="#{AddFilesPage.studyVersion.inReview}"/>
+                <ice:outputText styleClass="dvnstudystatuslabel" value="Draft " rendered="#{AddFilesPage.studyVersion.draft}"/>
+                <ice:outputText value="Study Version: #{AddFilesPage.studyVersion.versionNumber}"/>
+                <ice:outputText nospan="true"><br/></ice:outputText>
+                <ice:outputText value="Created: #{AddFilesPage.studyVersion.createTime} - Last Updated: #{AddFilesPage.studyVersion.lastUpdateTime}" rendered="#{!empty AddFilesPage.studyVersion.lastUpdateTime}"/>
+                <ice:outputText value="Created: &lt;i&gt;Draft study version is not created until the form is saved&lt;/i&gt;" rendered="#{null == AddFilesPage.studyVersion.lastUpdateTime}" escape="false"/>
+                <ice:outputText nospan="true" rendered="#{!empty AddFilesPage.studyVersion.versionNote}"><br/></ice:outputText>
+                <ice:outputText value="Study Version Notes: " rendered="#{!empty AddFilesPage.studyVersion.versionNote}"/>
+                <ice:outputText styleClass="dvnstudystatusversionnote" value="#{AddFilesPage.studyVersion.versionNote}" rendered="#{!empty AddFilesPage.studyVersion.versionNote}"/>
+            </div>
+        </div>
+        <div class="dvn_sectionTitle dvn_padTop">
           <ice:outputText value="#{bundlePageInfo.addFilesTitle}"/>
         </div>                  
         <div class="dvn_sectionBox">
           <div class="dvn_margin12">
             <ice:form id="form1">
-                <style type="text/css">
-                    .dvnstudytitleblock {overflow: hidden;}
-                    .dvnstudytitlefloat {padding-right: 340px; text-align: left;}
-                    span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; font-size:1.35em !important;}
-                    .dvnstudyversioninfo {}
-                    .dvnstudyversioninfo span.iceOutTxt {color:#A9A9A9; line-height: 1.48; font-size:.95em !important;}
-                    .dvnstudystatusbox{margin: 0; padding: 2px 8px; font-weight: bold; line-height:24px !important;}
-                    .dvnstudystatusbox div{margin-top:4px; line-height:18px !important;}
-                    .dvnstudystatusreview{background: #ececec; color: #526F76;}
-                    .dvnstudystatusdraft{background: #CFDDEA; color: #526F76;}
-                    .dvnstudystatuslabel{text-transform:uppercase;}
-                    .dvnstudystatusreleasedver{font-weight: normal;color:#C55B28;}
-                    .dvnstudystatusnoreleasedver{color:#820024;}
-                    .dvnstudystatusversionnote{font-weight:normal;}
-                </style>
               <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
               <ice:inputHidden id="studyId" value="#{AddFilesPage.study.id}"/>
               <input type="hidden" name="pageName" value="AddFilesPage"/>
- 
-             <div class="dvnstudytitlefloat">
-                    <ice:outputText styleClass="dvnstudytitle" value="#{AddFilesPage.studyVersion.metadata.title}"/>
-                    <div jsfc="ice:panelGroup" styleClass="dvnstudyversioninfo">
-                        <ice:outputText value="#{AddFilesPage.study.globalId}"/> <ice:outputText value="#{AddFilesPage.studyVersion.metadata.UNF}" rendered="#{!empty AddFilesPage.studyVersion.metadata.UNF}"/>
-                    </div>
-                    <div jsfc="ice:panelGroup" styleClass="dvnstudystatusbox #{AddFilesPage.studyVersion.inReview ? 'dvnstudystatusreview' : '' or AddFilesPage.studyVersion.draft ? 'dvnstudystatusdraft' : ''}">
-                        <ice:outputText styleClass="dvnstudystatuslabel" value="In Review " rendered="#{AddFilesPage.studyVersion.inReview}"/>
-                        <ice:outputText styleClass="dvnstudystatuslabel" value="Draft " rendered="#{AddFilesPage.studyVersion.draft}"/>
-                        <ice:outputText value="Study Version: #{AddFilesPage.studyVersion.versionNumber}"/>
-                        <ice:outputText nospan="true"><br/></ice:outputText>
-                        <ice:outputText value="Created: #{AddFilesPage.studyVersion.createTime} - Last Updated: #{AddFilesPage.studyVersion.lastUpdateTime}" rendered="#{!empty AddFilesPage.studyVersion.lastUpdateTime}"/>
-                        <ice:outputText value="Created: &lt;i&gt;Draft study version is not created until the form is saved&lt;/i&gt;" rendered="#{null == AddFilesPage.studyVersion.lastUpdateTime}" escape="false"/>
-                        <ice:outputText nospan="true" rendered="#{!empty AddFilesPage.studyVersion.versionNote}"><br/></ice:outputText>
-                        <ice:outputText value="Study Version Notes: " rendered="#{!empty AddFilesPage.studyVersion.versionNote}"/>
-                        <ice:outputText styleClass="dvnstudystatusversionnote" value="#{AddFilesPage.studyVersion.versionNote}" rendered="#{!empty AddFilesPage.studyVersion.versionNote}"/>
-                    </div>
-             </div>
-                <br/>
-              <ice:panelGroup id ="inputFile" style="dvnAddFilesInputBlock">
+              <ice:panelGroup id ="inputFile" styleClass="dvnAddFilesInputBlock">
                 <ice:inputFile id="inputFileComponent"
                                autoUpload="true"
                                submitOnUpload="postUpload"
@@ -134,7 +117,7 @@
                                  columnWidths="20%,20%,40%,10%,10%"
                                  value="#{AddFilesPage.fileList}" binding="#{AddFilesPage.filesDataTable}" var="fileBean">
                     <ice:column id="catCol">
-                      <ice:panelGroup block="true" id="panel1" style="white-space: nowrap;">
+                      <ice:panelGroup block="true" id="panel1" styleClass="dvnAddFilesCatCol">
                         <!-- note that the Javascript functions currently depends on the placement and ids of these fields (and the dropdown box;
                                           changing them may require corresponding changes in the Javascript  -->
                         <ice:selectBooleanCheckbox id="catCheckbox" onclick="updateCategory(this);"/>

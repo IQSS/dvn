@@ -1,4 +1,30 @@
 /* CSS Document */
+/* STUDY TITLE/ACTION BOX */
+.dvnstudytitleblock {overflow: hidden;}
+.dvnstudytitlefloat {padding-right: 340px; text-align: left;}
+span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; font-size:1.35em !important;}
+.dvnstudyversioninfo span.iceOutTxt {color:#A9A9A9; line-height: 1.48; font-size:.95em !important;}
+.dvnstudystatusbox{display: table-cell; padding: 2px 8px; font-weight: bold; line-height:24px !important;}
+.dvnstudystatusbox div{margin-top:4px; line-height:18px !important;}
+.dvnstudystatusarchived{background: gold; color: #526F76;}
+.dvnstudystatusreview{background: #ececec; color: #526F76;}
+.dvnstudystatusdraft{background: #CFDDEA; color: #526F76;}
+.dvnstudystatuslabel{text-transform:uppercase;}
+.dvnstudystatusreleasedver{font-weight: normal;color:#C55B28;}
+.dvnstudystatusnoreleasedver{color:#820024;}
+.dvnstudystatusversionnote{font-weight:normal;}
+.dvnstudystatusversionnote .vdcTruncatorLinkLess{margin-left: 8px;}
+.dvnstudyadminboxfloat{float: right; width: 310px; text-align:left;}
+.dvnstudyadminboxfloat.dvn_right{text-align:right;}
+.dvnstudypreviouslisting{text-align:right;}
+.dvnstudyadminbox{width: 300px; overflow:hidden; border:1px solid #d0d0d0; padding:4px; color:#526F76;}
+.dvnstudyadminlinksL {float: left; width: 150px; list-style-type: square; margin: 0 0 0 1.25em; padding: 0;}
+.dvnstudyadminlinksR {float: right; width: 130px; list-style-type: square; margin: 0; padding: 0;}
+.dvnstudyadminbox ul {padding: 0px; margin: 0px; list-style-type: none;}
+.dvnstudyadminbox li {background: url(/dvn/resources/images/icon_bullet.gif) no-repeat 0px 8px; padding-left: 10px;}
+.dvnstudyadminbox a:link,.dvnstudyadminbox a:visited,.dvnstudyadminbox a:hover,.dvnstudyadminbox a:active{color:#C55B28;}
+.dvnstudyadminbox li a:link,.dvnstudyadminbox li a:visited,.dvnstudyadminbox li a:hover,.dvnstudyadminbox li a:active{font-size:.9em !important;}
+.dvnstudyadminbox div div span {font-weight: bold; text-transform: uppercase;}
 /* STUDY ADMIN LINKS */
 .dvnStudyPageInlineReleaseButton{margin-right:2em;display:inline;vertical-align:middle}
 .editDropDown,.editDropDown li,.editDropDown ul{list-style:none;margin:0;padding:0}
@@ -23,9 +49,24 @@ a.vdcStudyStatus:link,a.vdcStudyStatus:visited,a.vdcStudyStatus:hover,a.vdcStudy
 .vdcStudyInfoCol1{border-bottom-color:#dadee0;border-bottom-style:solid;border-bottom-width:1px;padding-bottom:5px;padding-left:0px;padding-right:10px;padding-top:5px;text-align:left;width:200px}
 .vdcStudyInfoCol2{border-bottom-color:#dadee0;border-bottom-style:solid;border-bottom-width:1px;font-weight:400;padding-bottom:5px;padding-top:5px;text-align:left}
 .vdcStudyInfoDownload{font-weight:700;padding-top:10px;text-align:center}
+li.dvnStudyEditDisableMsg{background:none;padding:0;font-size:0.9em !important;}
+.dvnStudyEditDisableMsg a.dvnStudyEditDisableLink:link, .dvnStudyEditDisableMsg a.dvnStudyEditDisableLink:visited, .dvnStudyEditDisableMsg a.dvnStudyEditDisableLink:hover, .dvnStudyEditDisableMsg a.dvnStudyEditDisableLink:active{font-size:1em !important;}
 /* STUDY TABS */
 .icePnlTbSet a:link td, .icePnlTbSet a:visited td {color:#464646}
 .icePnlTbSet a:hover td, .icePnlTbSet a:active td {color:#c55b28;text-decoration:underline}
+/* HOW TO CITE */
+.dvnhowtocitetable td{padding:5px 0;vertical-align:text-top;}
+.dvnhowtocitetable .col1{width:40%;}
+.dvnhowtociteinfofloat div{padding: 0;margin:0 1em 0 0;}
+.dvnhowtociteinfofloat h4{margin:0;padding:0;display:inline;}
+.dvnhowtociteinfofloat .dvnhowtociteWhy{margin:0 0 0 1em;padding:0;font-weight:normal !important;display:inline;}
+.dvnhowtociteinfofloat .dvnhowtociteWhy a{font-size:.9em !important;}
+.dvnhowtociteinfo{display:block;}
+.dvnhowtocitecitationfloat{padding:0 0 1em 1em;}
+.dvnhowtocitecitationfloat textarea{display:block;}
+.dvnhowtocitecitationfloat label{font-weight:bold;}
+.dvnhowtocitecitation{padding:2px;}
+textarea.dvnstudycitation{width:90%;padding:4px;margin:8px 0;font-family:monospace !important;}
 /* STUDY FILES */
 .vdcStudyFilesPage{width:100%;text-align:center}
 .vdcStudyFilesContent{text-align:left}
@@ -112,8 +153,35 @@ span.vdcStudyCommentDetails{font-size:90% !important;color:#a9a9a9;white-space:n
 .popupModalClose{float:right;cursor:pointer}
 .popupModalClose img{border:0}
 .popupModalBodyRow2 td{padding-top:.5em}
+.popupModalBody .iceInpTxtArea{width:95%;}
 .popupModalBody .iceOutTxt{font-family:"HelveticaNeue", Helvetica, Arial, sans-serif !important;font-size:12px !important;}
 .popupModalBody .dvnFormPadding input{display:inline;cursor:pointer}
+tr.popupModVerNotLabel td{padding-top:1em;}
+tr.popupModVerNotLabel td span{font-weight:bold;}
+/* STUDY VERSIONS */
+.dvnversionstable{border:0;}
+.dvnversionstable span.iceOutTxt{overflow:visible !important;}
+.dvnversionstable .oddRow{background:#F2F2F2;}
+.dvnversionstable .evenRow{background:#FFF;}
+.dvnversionstable th{padding:8px;text-align:center;background:none;border:0;font-weight:bold;font-size:1em;}
+.dvnversionstable td{padding:8px;border:0;}
+.dvnversionstable td.dvnversionstableCol1{width:80px;}
+.dvnversionstable td.dvnversionstableCol1, .dvnversionstable td.dvnversionstableCol2{text-align:center;}
+.dvnversionstable td.dvnversionstableCol2, .dvnversionstable td.dvnversionstableCol3{width:50px;}
+.dvnversionstable td.dvnversionstableCol5, .dvnversionstable td.dvnversionstableCol6{width:180px;}
+.dvnversionsreleasedate{white-space:nowrap}
+.dvnStudyVersionNote .vdcTruncatorLinkLess{margin-left:8px;}
+/* STUDY VERSION DIFFERENCES */
+table.dvnDifferanceTableHeader, table.dvnDifferanceTableHeader tr{border-left:0;}
+table.dvnDifferanceTableHeader td{border-bottom:0;}
+table.dvnDifferanceTableHeader td{border-top:1px solid #CCC;}
+td.dvnDifferanceTableHeaderCol1{border-top:0 !important;}
+.dvnDifferanceTableHeaderCol{vertical-align:top;}
+.dvnDifferanceTable{margin:0}
+.dvnDifferanceTable td.vdcStudyInfoCol1{padding:5px;}
+/* STUDY DEACCESSION */
+label.dvnDeaccessionCommentsLabel{display:block;font-weight:bold;}
+label.dvnDeaccessionFormLabel {font-weight: bold;}
 /* SUBSETTING + ANALYSIS RESULTS */
 .vdcAnalysisCol1{padding-left:4px;padding-right:4px;padding-top:4px;vertical-align:top;width:200px}
 .vdcAnalysisCol2{padding-left:4px;padding-right:4px;padding-top:20px;text-align:left;vertical-align:top}
@@ -121,9 +189,11 @@ span.vdcStudyCommentDetails{font-size:90% !important;color:#a9a9a9;white-space:n
 .pgDataTable td.pgDataTableCol1{padding:0}
 .pgDataTable .dvnVariableInfoTableHdr{padding:.25em;font-weight:700}
 .pgDataTable .dvnPaginatorWrap{padding:.25em 0}
+.pgDataTable .iceDatTbl{margin:0;}
 .vdcVariablesCol1,.vdcVariablesCol6{vertical-align:top;text-align:center}
 .vdcVariablesCol2,.vdcVariablesCol4,.vdcVariablesCol5{vertical-align:top}
 .vdcVariablesCol3,.vdcVariablesColHdr3{display:none}
+.dvnSubsettingVarSearch .vdcVarHeaderCol2{text-align:right;}
 div.statbox{background-color:#e6e6fa;padding:3px;margin:3px auto;border-width:1px;border-style:solid;border-top-color:silver;border-right-color:dimgray;border-bottom-color:dimgray;border-left-color:silver;display:table}
 table.viTblinx{border:2px #e6e6fa solid;background-color:#f5f5f5;color:#000080;text-align:left;margin:0px;padding:0px}
 table.viTblinx td{border:0;background-color:#f5f5f5;color:#000080;text-align:left;margin:0px;padding:2px}
@@ -132,6 +202,8 @@ table.viTblinx th{background-color:#e6e6fa;font-weight:700;margin:0px;padding:2p
 .vdcAdvAnalysisCol2{padding-left:20px;padding-top:10px;text-align:left;vertical-align:top}
 .vdcVarHeaderCol1{background-color:#dadee0;padding-bottom:5px;padding-left:20px;padding-top:10px}
 .vdcVarHeaderCol2{background-color:#dadee0;padding-bottom:5px;padding-top:10px;padding-right:4px;text-align:right}
+.vdcAdvAnalysisCol1 .vdcHelpText a{padding-left:0.5em;}
+.dvnSubsettingAdvStatOutput{margin-bottom:.5em;border: 1px solid #999; border-collapse:collapse;}
 .vdcRecodesColA{padding-left:4px;padding-right:4px;width:20px}
 .vdcRecodesColB{padding-left:4px;padding-right:4px}
 .vdcRecodesHeader{font-weight:700;text-align:center}
@@ -140,7 +212,7 @@ table.viTblinx th{background-color:#e6e6fa;font-weight:700;margin:0px;padding:2p
 .dvn_preFileTitle{font-weight:700;font-style:normal;color:#000}
 .dvn_fileTitle{font-weight:400;font-style:normal;color:#000}
 .dvn_analysisResultContainer{padding:10px;border:1px solid #6e7f90;text-align:left;float:left}
-.dvn_analysisResultContainer .dvAnalysisHeader{display:block;padding:3px 0;width:100%;background:#e6ebed;font-size:140% !important;font-weight:700;text-align:center}
+.dvn_analysisResultContainer .dvAnalysisHeader{display:block;padding:3px 0;width:100%;background:#D2D2D2;font-size:140% !important;font-weight:700;text-align:center}
 .dvn_analysisResultContainer .dvAnalysisResults{padding:10px;text-align:left}
 .dvn_analysisResultContainer .dvAnalysisInfoMessage{margin-bottom:1em}
 .dvAnalysisResults p.resultsNewWindowLink{margin-top:0;padding-top:0;text-align:right}

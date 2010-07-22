@@ -10,7 +10,7 @@
     <div class="dvn_sectionBoxNoBorders">
         <div class="dvn_margin12">
             <div>
-                <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnWarningMessage" rendered="#{studyPage.studyUI.userAuthorizedToEdit  and !VDCSession.loginBean.curatorOrAbove and !VDCSession.loginBean.networkAdmin}">
+                <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnWarningMessage dvnMessageLink dvnMessageCapLock" rendered="#{studyPage.studyUI.userAuthorizedToEdit  and !VDCSession.loginBean.curatorOrAbove and !VDCSession.loginBean.networkAdmin}">
                     <div class="dvnMsgBlockContainer">
                         <ice:outputFormat value="#{bundlePageInfo.deaccessionedStudyPublicContributorHelp}" escape="false">
                             <f:param value="#{VDCRequest.currentVDCURL}"/>
@@ -19,7 +19,7 @@
                         </ice:outputFormat>
                     </div>
                 </div>
-                <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnWarningMessage" rendered="#{VDCSession.loginBean.curatorOrAbove or VDCSession.loginBean.networkAdmin}">
+                <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnWarningMessage dvnMessageLink dvnMessageCapLock" rendered="#{VDCSession.loginBean.curatorOrAbove or VDCSession.loginBean.networkAdmin}">
                     <div class="dvnMsgBlockContainer">
                         <ice:outputFormat value="#{bundlePageInfo.deaccessionedStudyPublicCuratorHelp}" escape="false">
                             <f:param value="#{VDCRequest.currentVDCURL}"/>
@@ -28,16 +28,8 @@
                         </ice:outputFormat>
                     </div>
                 </div>
-                <style type="text/css">
-                    .dvnWarningMessage a {font-weight: bold;}
-                    span.warnMessage {text-transform: uppercase;}
-                    label.dvnDeaccessionCommentsLabel {display: block; font-weight: bold;}
-                </style>
-
                 <h1><ice:outputText styleClass="warnMessage" value="Study Deaccessioned"/></h1>
-
                 <ice:outputText id="dvnDeaccessionForwardLink" value="#{studyPage.studyUI.studyVersion.metadata.textCitation}"/>
-
                 <p>
                     <ice:outputText value="The study you have requested has been deaccessioned."/>
                     <ice:outputText rendered="#{empty studyPage.studyUI.studyVersion.deaccessionLink}" value="No further information has been provided."/>
@@ -46,10 +38,8 @@
                         <ice:outputText value="#{studyPage.studyUI.studyVersion.deaccessionLink}"/>
                     </ice:outputLink>
                 </p>
-
                 <label for="dvnDeaccessionComments" class="dvnDeaccessionCommentsLabel">Comments</label>
                 <ice:outputText id="dvnDeaccessionComments" value="#{studyPage.studyUI.studyVersion.archiveNote}"/>
-
             </div>
         </div>
     </div>

@@ -51,15 +51,6 @@
                });
                //]]>
             </script>
-            <style type="text/css">
-                .dvnManageStudiesTableTop .dvn_StudyListTotals {overflow: hidden;}
-                .dvnManageStudiesTableTop .dvnManageStudiesTableFilter {float: left;}
-                .dvnManageStudiesTableShowArchive {float: left; padding-left: 1em;}
-                .dvnManageStudiesTablePaginator {float: right; text-align: right;}
-                .dvnManageStudiesTableAction {white-space: nowrap;}
-                .dvnManageStudiesTableAction a.iceCmdLnk, .dvnManageStudiesTableAction a.iceOutLnk {margin-left: .75em;}
-                .dvnManageStudiesTableAction a.dvnManageStudiesTableEditLink {margin-left: 0;}
-            </style>
             <!-- STUDY OPTIONS -->
             <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="2"
                              styleClass="dvnManageStudiesTableTop" columnClasses="dvn_StudyListTotals, dvnPaginatorWrap"
@@ -124,9 +115,6 @@
             </ice:panelGrid>
             <ice:panelGrid cellpadding="0" cellspacing="0" width="100%">
                 <div jsfc="ice:panelGroup" styleClass="dvnManageStudiesEmptyBlock" rendered="#{empty ManageStudiesList.studyUIList}">
-                    <style type="text/css">
-                        .dvnManageStudiesEmptyBlock {padding: 1em; text-align: center; border: 1px solid #D9D9D9; border-top: 0;}
-                    </style>
                     <p><ice:outputText value="No studies found."/></p>
                 </div>
                 <div jsfc="ice:panelGroup" styleClass="dvnManageStudiesTableBlock" rendered="#{!empty (ManageStudiesList.studyUIList)}">

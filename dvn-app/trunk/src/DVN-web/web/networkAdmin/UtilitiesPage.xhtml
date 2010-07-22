@@ -37,7 +37,7 @@
                 </ice:outputLink>
                 <ice:graphicImage styleClass="vdcNoBorders" value="/resources/images/icon_expand.gif" rendered="#{UtilitiesPage.studyLockPanelRendered}"/>
               </div>
-              <ice:panelGrid style="margin-left: auto; margin-right: auto;" rendered="#{UtilitiesPage.studyLockPanelRendered}">
+              <ice:panelGrid styleClass="dvnUtilitiesTable" rendered="#{UtilitiesPage.studyLockPanelRendered}">
                 <ice:messages id="studyLockMessage" styleClass="errorMessage"/>
                 <ice:outputText value="Current Locks:"/>
                 <ice:dataTable value="#{UtilitiesPage.studyLockList}" var="studyLock" width="100%">
@@ -81,7 +81,7 @@
                 </ice:outputLink>
                 <ice:graphicImage styleClass="vdcNoBorders" value="/resources/images/icon_expand.gif" rendered="#{UtilitiesPage.indexPanelRendered}"/>
               </div>
-              <ice:panelGrid style="margin-left: auto; margin-right: auto;" rendered="#{UtilitiesPage.indexPanelRendered}">
+              <ice:panelGrid styleClass="dvnUtilitiesTable" rendered="#{UtilitiesPage.indexPanelRendered}">
                 <ice:messages id="indexMessage" styleClass="errorMessage"/>
                 <ice:outputText value="To reindex all studies, click on the button below (please note: the index directory must be empty before 'index all' can be run):"/>
                 <div>
@@ -118,7 +118,7 @@
                 </ice:outputLink>
                 <ice:graphicImage styleClass="vdcNoBorders" value="/resources/images/icon_expand.gif" rendered="#{UtilitiesPage.exportPanelRendered}"/>
               </div>
-              <ice:panelGrid style="margin-left: auto; margin-right: auto;" rendered="#{UtilitiesPage.exportPanelRendered}">
+              <ice:panelGrid styleClass="dvnUtilitiesTable" rendered="#{UtilitiesPage.exportPanelRendered}">
                 <ice:messages id="exportMessage" styleClass="errorMessage"/>
                 <ice:outputText value="To run export now (all updated studies in all formats will be exported and update harvest studies will be run), click on the button below:"/>
                 <div>
@@ -164,7 +164,7 @@
                 </ice:outputLink>
                 <ice:graphicImage styleClass="vdcNoBorders" value="/resources/images/icon_expand.gif" rendered="#{UtilitiesPage.harvestPanelRendered}"/>
               </div>
-              <ice:panelGrid style="margin-left: auto; margin-right: auto;" rendered="#{UtilitiesPage.harvestPanelRendered}">
+              <ice:panelGrid styleClass="dvnUtilitiesTable" rendered="#{UtilitiesPage.harvestPanelRendered}">
                 <ice:messages id="harvestMessage"  styleClass="errorMessage"/>
                 <ice:outputText value="To harvest a specific study, input the DV and the harvest identifier, and click on the button below:"/>
                 <div jsfc="ice:panelGroup">
@@ -183,7 +183,7 @@
                 </ice:outputLink>
                 <ice:graphicImage styleClass="vdcNoBorders" value="/resources/images/icon_expand.gif" rendered="#{UtilitiesPage.filePanelRendered}"/>
               </div>
-              <ice:panelGrid style="margin-left: auto; margin-right: auto;" rendered="#{UtilitiesPage.filePanelRendered}">
+              <ice:panelGrid styleClass="dvnUtilitiesTable" rendered="#{UtilitiesPage.filePanelRendered}">
                 <ice:messages id="fileMessage" styleClass="errorMessage"/>
                 <ice:outputText value="To determine the file types for files with a particular extension:"/>
                 <div jsfc="ice:panelGroup">
@@ -203,7 +203,7 @@
                 </ice:outputLink>
                 <ice:graphicImage styleClass="vdcNoBorders" value="/resources/images/icon_expand.gif" rendered="#{UtilitiesPage.importPanelRendered}"/>
               </div>
-              <ice:panelGrid style="margin-left: auto; margin-right: auto;" rendered="#{UtilitiesPage.importPanelRendered}">
+              <ice:panelGrid styleClass="dvnUtilitiesTable" rendered="#{UtilitiesPage.importPanelRendered}">
                 <ice:messages id="importMessage" styleClass="errorMessage"/>
                 <ice:outputText value="Select the file format and the dataverse for the import, then either:"/>
                 <div>
@@ -245,7 +245,7 @@
                 </ice:outputLink>
                 <ice:graphicImage styleClass="vdcNoBorders" value="/resources/images/icon_expand.gif" rendered="#{UtilitiesPage.deletePanelRendered}"/>
               </div>
-              <ice:panelGrid style="margin-left: auto; margin-right: auto;" rendered="#{UtilitiesPage.deletePanelRendered}">
+              <ice:panelGrid styleClass="dvnUtilitiesTable" rendered="#{UtilitiesPage.deletePanelRendered}">
                 <ice:messages id="deleteMessage" styleClass="errorMessage"/>
                 <ice:outputText value="To delete arbitrary studies, input the study ids and click on the button below:"/>
                 <div>
@@ -262,7 +262,7 @@
                 </ice:outputLink>
                 <ice:graphicImage styleClass="vdcNoBorders" value="/resources/images/icon_expand.gif" rendered="#{UtilitiesPage.handlePanelRendered}"/>
               </div>
-              <ice:panelGrid style="margin-left: auto; margin-right: auto;" rendered="#{UtilitiesPage.handlePanelRendered}">
+              <ice:panelGrid styleClass="dvnUtilitiesTable" rendered="#{UtilitiesPage.handlePanelRendered}">
                 <ice:messages id="handleMessage" styleClass="errorMessage"/>
                 <ice:outputText value="To register all handles, click on the button below:"/>
                 <div>

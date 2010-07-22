@@ -166,31 +166,30 @@
     <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
 
     <div class="dvn_section">
-        <span class="dvn_sectionTitleR">
-            <ice:outputLink 
-                value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{AnalysisPage.studyId}&amp;tab=files"
-                rendered="#{empty AnalysisPage.versionNumber == null}">
-                <ice:outputText 
-                    value="Back to Study"/>                       
-            </ice:outputLink>
-            <ice:outputLink 
-                value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{AnalysisPage.studyId}&amp;versionNumber=#{AnalysisPage.versionNumber}&amp;tab=files"
-                rendered="#{AnalysisPage.versionNumber != null}">
-                <ice:outputText 
-                    value="Back to Study"/>                       
-            </ice:outputLink>
-         </span>
-        <div class="dvn_sectionTitle">                
-                    <gui:include src="/study/StudyTitleFragment.xhtml">
-                    <gui:param name="studyUI" value="#{AnalysisPage.studyUI}"/>
-                    <gui:param name="displayReleaseLink" value="false"/>
-                    <gui:param name="displayVersionInfo" value="true"/>
-                </gui:include>
-                <span class="dvn_preFileTitle">Data File: </span>
-                <ice:outputText 
-                    styleClass="dvn_fileTitle" 
-                    value="#{AnalysisPage.fileName}"/>
-        </div>            
+        
+        <div class="dvnstudytitleblock">
+            <div class="dvnstudyadminboxfloat dvn_right">
+                <ice:outputLink 
+                    value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{AnalysisPage.studyId}&amp;tab=files"
+                    rendered="#{empty AnalysisPage.versionNumber == null}">
+                    <ice:outputText 
+                        value="Back to Study"/>                       
+                </ice:outputLink>
+                <ice:outputLink 
+                    value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{AnalysisPage.studyId}&amp;versionNumber=#{AnalysisPage.versionNumber}&amp;tab=files"
+                    rendered="#{AnalysisPage.versionNumber != null}">
+                    <ice:outputText 
+                        value="Back to Study"/>                       
+                </ice:outputLink>
+            </div>
+            <gui:include src="/study/StudyTitleFragment.xhtml">
+                <gui:param name="studyUI" value="#{AnalysisPage.studyUI}"/>
+                <gui:param name="displayReleaseLink" value="false"/>
+                <gui:param name="displayVersionInfo" value="false"/>
+                <gui:param name="displayFileName" value="#{AnalysisPage.fileName}"/>
+            </gui:include>
+        </div>
+        
         <div class="dvn_sectionBoxNoBorders">  
 
             <!--tab block starts here -->
@@ -329,6 +328,8 @@
     title="Recoding and Case Selection">
     <ice:panelGrid id="layoutPanel2"
         columns="1"
+        cellpadding="0"
+        cellspacing="0"
         style="width: 100%;">
         <ice:panelGrid  id="gridPanel7"
               cellpadding="0" 

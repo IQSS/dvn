@@ -24,14 +24,14 @@
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.editDvDownloadTermsTitle}"/>
           </div>
-          <div class="dvn_sectionBox">
+          <div class="dvn_sectionBox dvnEditTermsForm">
             <div class="dvn_margin12">
-              <div>
+              <div class="dvnEditTermsCheckbox">
                 <ice:selectBooleanCheckbox value="#{EditUseTermsPage.termsOfUseEnabled}"/>
                 <ice:outputText value=" Enable Terms of Use"/>
               </div>
-              <div style="overflow: hidden;">
-                <div style="float: left;">
+              <ice:message for="textArea1" styleClass="errorMessage" id="outputText2Msg"/>
+              <div>
                 <ice:outputText id="outputText2" styleClass="vdcFieldTitle" value="Terms of Use"/>
                 <br/>
                 <ice:inputTextarea styleClass="formHtmlEnabled" cols="70" rows="8"
@@ -39,9 +39,6 @@
                                    value="#{EditUseTermsPage.termsOfUse}">
                   <f:validator validatorId="XhtmlValidator"/>
                 </ice:inputTextarea>
-                </div>
-                <div style="float: left; width: 30%; padding: 10px;">
-                  <ice:message for="textArea1" styleClass="errorMessage" id="outputText2Msg"/>
                 </div>
               </div>
               <div class="dvnFormPadding dvnFormMargin">

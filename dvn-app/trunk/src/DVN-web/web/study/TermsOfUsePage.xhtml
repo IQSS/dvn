@@ -21,11 +21,6 @@
         <ice:inputHidden id="redirectPage" value="#{TermsOfUsePage.redirectPage}"/>
         <ice:inputHidden id="tou" value="#{TermsOfUsePage.touParam}"/>
         <div class="dvn_section">
-<style type="text/css">
-    .dvnstudypreviouslisting{text-align:right;}
-    .termsAgreeChkBxBlock{width:380px;}
-    .termsAgreeChkBxBlock p {font-size: .9em !important;}
-</style>
           <div jsfc="ice:panelGroup" styleClass="dvnstudypreviouslisting" rendered="#{TermsOfUsePage.studyId!=null and TermsOfUsePage.touTypeDownload}">
               <ice:outputLink
                 value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{TermsOfUsePage.study.id}&amp;tab=files"

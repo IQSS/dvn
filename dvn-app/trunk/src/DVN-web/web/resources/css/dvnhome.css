@@ -10,20 +10,15 @@ a.dvn_more:link,a.dvn_more:visited,a.dvn_more:hover,a.dvn_more:active{color:#6D0
 .dvhmpgactionbox a:link,.dvhmpgactionbox a:visited,.dvhmpgactionbox a:hover,.dvhmpgactionbox a:active{color:#C55B28}
 .dvhmpgactionbox div div span{font-weight:bold; text-transform:uppercase}
 /* SEARCH */
-div.dvn_searchblock{margin-bottom:12px;padding:4px 12px;background:#e6ebed;border:1px solid #ddd;text-align:left}
-.dvn_searchBoxContent{overflow:hidden}
-.dvn_searchTitle a{color:#526f76;font-size:90% !important}
-.dvn_searchTitle a:hover,.dvn_searchTitle a:active{color:#526f76;font-size:90% !important;text-decoration:none !important;cursor:text}
-.dvn_searchBoxContent fieldset{float:left}
-.dvn_searchLinks{float:right}
-.dvn_searchLinks a span.iceOutTxt{margin:0;font-size:90% !important}
-.dvn_searchBoxContent{position:relative;width:100%}
-.dvn_searchBoxContent fieldset{margin:0;padding:0;border:0}
-.dvn_searchBoxContent label{float:left}
-.dvn_searchBoxContent span{margin-right:12px;line-height:224% !important}
-.dvn_searchBoxContent input,.dvn_searchBoxContent select{margin:2px 6px 2px 0}
+div.dvn_searchblock{margin-bottom:12px;padding:4px 12px;background:#F2F2F2;border:1px solid #ddd;text-align:left;overflow:hidden;}
+.dvnSearchBoxCheckbox{display:block;text-align:left;}
 .dvnSearchBoxCheckbox,.dvnSearchBoxCheckbox select{margin-top:0;margin-bottom:0}
 .dvnSearchBoxCheckbox span.iceOutTxt{font-size:90% !important}
+.dvn_searchboxblock fieldset {margin:0; padding:0; float: left; line-height: 36px !important;}
+.dvn_searchboxblock fieldset .iceCmdBtn {vertical-align: middle;}
+.dvn_searchboxblock .dvn_searchlinks {float: left; margin-left: 1em; text-align: left;}
+.dvn_searchboxblock .dvn_searchlinks a.iceOutLnk {display: block;}
+.dvn_searchboxblock .dvn_searchlinks span.iceOutTxt {font-size:90% !important;}
 /* SECTION PANELS + ACCORDION + TREE */
 #dvn_mainSection{position:relative;overflow:hidden;width:100%;text-align:center}
 .dvn_sectionContent{display:inline;width:75%;float:right;text-align:left}
@@ -49,10 +44,14 @@ h3.head a{display:block;background:#dadee0 url(/dvn/resources/images/menudown.gi
 h3.head a:hover{background:#c55b28 url(/dvn/resources/images/menudown.gif) no-repeat;background-position:98% 50%;padding:.5em 26px .5em .5em;color:white}
 h3.selected a{background:silver url(/dvn/resources/images/menuup.gif) no-repeat;background-position:98% 50%;padding:.5em 26px .5em .5em}
 h3.selected a:hover{background:#c55b28 url(/dvn/resources/images/menuup.gif) no-repeat;background-position:98% 50%;padding:.5em 26px .5em .5em;color:white}
+h3.head span{background:#DADEE0;display:block;padding:.5em 26px .5em .5em;font-weight:normal;}
+h3.head a span {background:none;padding:0;}
 h4.head a{display:block;background:transparent url(/dvn/resources/images/menudown.gif) no-repeat;padding:0 26px 0 .5em;background-position:98% 50%}
 h4.head a:hover{background:#c55b28 url(/dvn/resources/images/menudown.gif) no-repeat;background-position:98% 50%;padding:0 26px 0 .5em;color:white}
 h4.selected a{background:transparent url(/dvn/resources/images/menuup.gif) no-repeat;background-position:98% 50%;padding:0 26px 0 .5em;font-weight:700}
 h4.selected a:hover{background:#c55b28 url(/dvn/resources/images/menuup.gif) no-repeat;background-position:98% 50%;padding:0 26px 0 .5em;color:white}
+h4.dvnHmpgAllDataverses a{background:silver;display:block;padding:.5em 26px .5em .5em;font-weight:normal !important;}
+h4.dvnHmpgAllDataverses a:hover{background:#c55b28;display:block;padding:.5em 26px .5em .5em;color:white;}
 h3.noSubNode,h3.noSubNode a,h3.noSubNode a:hover,h4.noSubNode,h4.noSubNode a,h4.noSubNode a:hover{background-image:none}
 .xtraMenu ul li a:link,.xtraMenu ul li a:visited,.xtraMenu ul li a:hover,.xtraMenu ul li a:active{padding-left:1.25em;display:block}
 .xtraMenu ul li a:hover{background:#c55b28;color:white}
@@ -68,7 +67,7 @@ a.dvnHmpgGroupCreateLink:link,a.dvnHmpgGroupCreateLink:visited,a.dvnHmpgGroupCre
 .dvnHmpgGroupTableTop{width:100%}
 .dvnHmpgGroupTableTop td.dvnHmpgGroupTableTopCol{padding-bottom:.5em}
 .dvnHmpgGroupAlphaSortBlock{margin:.5em .5em 0;overflow:auto;width:100%}
-.dvnHmpgGroupTotals{padding:0 .5em}
+.dvnHmpgGroupTotals{padding:0 .5em;text-align:left}
 .dvnHmpgGroupDataTable{margin:0;width:100%}
 .dvnHmpgGroupDataTable span{font-size:90% !important}
 .dvnHmpgGroupDataTable th span.iceOutTxt td{font-size:90% !important}
@@ -92,6 +91,8 @@ a.dvnHmpgGroupCreateLink:link,a.dvnHmpgGroupCreateLink:visited,a.dvnHmpgGroupCre
 .dvnNetworkHmpgDvListNav ul li a:link,.dvnNetworkHmpgDvListNav ul li a:visited,.dvnNetworkHmpgDvListNav ul li a:hover,.dvnNetworkHmpgDvListNav ul li a:active{font-size:90% !important}
 .dvnNetworkHmpgDvListNav ul li.hmpgDvGroupSelected{background:url(/dvn/resources/icefaces/dvn_rime/css-images/tree_folder_close.gif) 0 0 no-repeat}
 li.hmpgDvGroupSelected a:link,li.hmpgDvGroupSelected a:visited,li.hmpgDvGroupSelected a:hover,li.hmpgDvGroupSelected a:active{font-weight:700}
+.iceDatTblActvSrtHdr{background:#DADEE0;}
+.iceDatTblActvSrtHdr span td{font-weight:bold;}
 /* STUDY LISTING */
 .dvnStudyListWrapper{border:1px solid #dcdddf}
 .dvnStudyListCollectionNameBlock{padding:.5em .25em;border:1px solid #dcdddf;border-width:1px 1px 0 1px;text-align:right}

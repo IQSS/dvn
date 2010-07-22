@@ -16,60 +16,20 @@
     <gui:define name="body">
       <ice:form>
         <ice:inputHidden rendered="#{VDCRequest.currentVDCId != null}" id="vdcId" value="#{VDCRequest.currentVDCId}"/>
-
-<style type="text/css">
-.dvnstudytitleblock {overflow: hidden;}
-.dvnstudytitlefloat {padding-right: 340px; text-align: left;}
-span.dvnstudytitle {line-height: 1.48; color:#526F76; text-transform:uppercase; font-size:1.35em !important;}
-.dvnstudyversioninfo {}
-.dvnstudyversioninfo span.iceOutTxt {color:#A9A9A9; line-height: 1.48; font-size:.95em !important;}
-
-.dvnstudystatusbox{display: table-cell; padding: 2px 8px; font-weight: bold; line-height:24px !important;}
-.dvnstudystatusbox div{margin-top:4px; line-height:18px !important;}
-.dvnstudystatusarchived{background: gold; color: #526F76;}
-.dvnstudystatusreview{background: #ececec; color: #526F76;}
-.dvnstudystatusdraft{background: #CFDDEA; color: #526F76;}
-.dvnstudystatuslabel{text-transform:uppercase;}
-.dvnstudystatusreleasedver{font-weight: normal;color:#C55B28;}
-.dvnstudystatusnoreleasedver{color:#820024;}
-.dvnstudystatusversionnote{font-weight:normal;}
-.dvnstudystatusversionnote .vdcTruncatorLinkLess{margin-left: 8px;}
-
-.dvnstudyadminboxfloat{float: right; width: 310px; text-align:left;}
-.dvnstudypreviouslisting{text-align:right;}
-.dvnstudyadminbox{width: 300px; overflow:hidden; border:1px solid #d0d0d0; padding:4px; color:#526F76;}
-.dvnstudyadminlinksL {float: left; width: 150px; list-style-type: square; margin: 0 0 0 1.25em; padding: 0;}
-.dvnstudyadminlinksR {float: right; width: 130px; list-style-type: square; margin: 0; padding: 0;}
-.dvnstudyadminbox ul {padding: 0px; margin: 0px; list-style-type: none;}
-.dvnstudyadminbox li {background: url(/dvn/resources/images/icon_bullet.gif) no-repeat 0px 8px; padding-left: 10px;}
-.dvnstudyadminbox a:link,.dvnstudyadminbox a:visited,.dvnstudyadminbox a:hover,.dvnstudyadminbox a:active{color:#C55B28;}
-.dvnstudyadminbox li a:link,.dvnstudyadminbox li a:visited,.dvnstudyadminbox li a:hover,.dvnstudyadminbox li a:active{font-size:.9em !important;}
-
-table.dvnDifferanceTableHeader, table.dvnDifferanceTableHeader tr {border-left: 0;}
-table.dvnDifferanceTableHeader td {border-bottom: 0;}
-table.dvnDifferanceTableHeader td {border-top: 1px solid #CCC;}
-td.dvnDifferanceTableHeaderCol1 {border-top: 0 !important;}
-.dvnDifferanceTableHeaderCol {vertical-align: top;}
-
-.dvnDifferanceTable {margin: 0}
-.dvnDifferanceTable td.vdcStudyInfoCol1 {padding: 5px;}
-</style>
-
-<script type="text/javascript">
-  // <![CDATA[
-  jQuery(document).ready(function(){
-      jQuery(".dvnstudystatusversionnote").truncate({max_length: 250});
-  });
-  // ]]>
-</script>
-
+        <script type="text/javascript">
+          // <![CDATA[
+          jQuery(document).ready(function(){
+              jQuery(".dvnstudystatusversionnote").truncate({max_length: 250});
+          });
+          // ]]>
+        </script>
         <div jsfc="ice:panelGroup" styleClass="dvn_section" rendered="#{studyVersionDifferencesPage.releaseConfrimInProgress}">
             <div class="dvnstudytitleblock">
                 <div class="dvnstudyadminboxfloat">
-                        <div jsfc="ice:panelGroup" styleClass="vdcTextRight dvnFormMargin">
-                            <ice:commandButton id="button1" value="Release" actionListener="#{studyVersionDifferencesPage.openPopup}"/>
-                            <ice:commandButton id="button2" value="Cancel" immediate="true" action="#{studyVersionDifferencesPage.cancel}"/>
-                        </div>
+                    <div jsfc="ice:panelGroup" styleClass="vdcTextRight dvnFormMargin">
+                        <ice:commandButton id="button1" value="Release" actionListener="#{studyVersionDifferencesPage.openPopup}"/>
+                        <ice:commandButton id="button2" value="Cancel" immediate="true" action="#{studyVersionDifferencesPage.cancel}"/>
+                    </div>
                 </div>
                 <div class="dvnstudytitlefloat">
                     <ice:outputText styleClass="dvnstudytitle" value="#{studyVersionDifferencesPage.studyUI2.metadata.title}"/>
@@ -87,7 +47,6 @@ td.dvnDifferanceTableHeaderCol1 {border-top: 0 !important;}
                 </div>
             </div>
         </div>
-        
         <div jsfc="ice:panelGroup" styleClass="dvn_section" rendered="#{! studyVersionDifferencesPage.releaseConfrimInProgress}">
             <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
                 <div class="dvnMsgBlockContainer">
@@ -106,8 +65,7 @@ td.dvnDifferanceTableHeaderCol1 {border-top: 0 !important;}
                 </div>
             </div>
         </div>
-
-          <div class="dvn_sectionBoxNoBorders">
+        <div class="dvn_sectionBoxNoBorders">
           <div class="dvn_sectionBox">
             <div class="dvn_margin12">
               

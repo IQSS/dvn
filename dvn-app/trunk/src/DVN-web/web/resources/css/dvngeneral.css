@@ -19,6 +19,7 @@
 .dvn_clear{clear:both}
 .dvn_indent{margin-left:2em}
 .dvn_icon{border:0;vertical-align:bottom}
+#hiddenDiv{display:none;}
 .vdcNoBorders{border-bottom-style:none;border-left-style:none;border-right-style:none;border-top-style:none}
 .iceOutConStat{position:fixed;left:50%;top:50%;margin-top:-12px;margin-left:-12px;z-index:1}
 .iceOutConStatActv,.iceOutConStatCaution,.iceOutConStatDisconnect{width:25px;height:25px}
@@ -37,9 +38,12 @@
 .dvn_sectionBoxNoBorders{width:100%;padding-top:.75em;text-align:left;float:left}
 .dvn_block{margin-bottom:12px;padding:6px;background:url(/dvn/resources/images/blocks_bg.png) no-repeat #f8f8f8;border:1px solid #e9e5e5}
 .dvn_block span{margin:0;padding:0;color:#526f76;font-weight:bold;text-transform:uppercase}
-.dvn_blockTitleBar{margin-bottom:12px;padding:6px;background:#e6ebed;border:1px solid #ddd;font-style:italic;text-align:center}
+.dvn_blockTitleBar{margin-bottom:12px;padding:6px;background:#F2F2F2;border:1px solid #ddd;font-style:italic;text-align:center}
 .dvn_margin12{margin:1em 0em 0em 1em;padding-bottom:2em;line-height:inherit}
+.dvn_padTop{padding-top:1em;}
+.dvn_padBot{padding-bottom:1em;}
 .dvn_spacing{margin:1em;}
+.dvn_right{text-align:right;}
 span.disabled{font-weight:700}
 /* HEADER */
 .dvn_headerTitle{position:relative;text-align:left}
@@ -67,6 +71,7 @@ div.dvn_navblockNetwork{background:#dadee0;border-top:2px solid #c55b28}
 .dvn_navUserName div a:hover,.dvn_navblockLinks ul li a:hover,.dvn_navUserName a:hover{position:relative;z-index:1000;background-color:#c55b28;color:#fff;text-decoration:underline}
 .dvn_navNetworkName a:link,.dvn_navNetworkName a:visited,.dvn_navNetworkName a:hover,.dvn_navNetworkName a:active{font-weight:400}
 /* HELP-INFO MSG BLOCK */
+div.dvnMsgBlockRound{position:relative;}
 div.dvnMsgBlockContainer{text-align:left;display:table-cell;vertical-align:middle;}
 div.dvnMsgBlockContainer p{background:transparent;margin:1em 0 1em 58px}
 div.dvnMsgBlockContainer ul{margin:1em 0 1em 58px}
@@ -85,6 +90,8 @@ div.dvnWarningMessage{max-width:900px;width:80%;margin:0 auto 1em;background:url
 div.dvnWarningMessage div.dvnMsgBlockContainer{}
 div.dvnWarningMessage a:link,div.dvnWarningMessage a:visited,div.dvnWarningMessage a:hover,div.dvnWarningMessage a:active{color:#0c54b3}
 div.dvnWarningMessage span{font-weight:bold;color:#000;background:transparent}
+.dvnWarningMessage.dvnMessageLink a{font-weight:bold;}
+.dvnWarningMessage.dvnMessageCapLock span.warnMessage {text-transform: uppercase;}
 .warnMessage{color:#8B0404}
 .errorMessage{color:red;font-weight:700}
 .errorMessageBlock{color:red;font-weight:bold;display:block}
@@ -92,6 +99,8 @@ div.dvnWarningMessage span{font-weight:bold;color:#000;background:transparent}
 .infoMessage{color:black}
 .errorMessageFatal,.errorMessageError,.errorMessageWarn,.errorMessageInfo{color:red;font-weight:bold;padding:0 .5em}
 .errorMessageBlockFatal,.errorMessageBlockError,.errorMessageBlockWarn,.errorMessageBlockInfo{color:red;font-weight:bold;padding:0 .5em;display:block}
+.dvnEditStudyHelpBlock .dvnCloseHelpBlock{display:block;position:absolute;top:0;right:12px;}
+.dvnEditStudyHelpBlock .dvnEditStudyHelp{display:block;padding-top:.5em;}
 /* HELP TEXT, TIPS, POP UPS */
 .vdcHelpText{color:#666;margin-bottom:1em}
 .vdcHelpText img{vertical-align:bottom;border:0}
@@ -110,6 +119,10 @@ p.vdcTooltipContents{display:block;height:100%;border:1px solid #ccc;background-
 .vdcPopupWrapper{font-weight:800}
 .vdcTextNoWrap{white-space:nowrap}
 .vdcTextStandOut{color:#820024;font-weight:700}
+.dvnPopupWarningMessage{background:url(/dvn/resources/images/icon_warning.png) no-repeat scroll 4px 0;}
+.dvnPopupMessageContainer{display:table-cell;vertical-align:middle;}
+.dvnPopupWarningMessage p{margin:.25em 0 1.5em 58px;}
+.dvnPopupWarningMessage strong{color:#820024;text-transform:uppercase;}
 /* PAGINATOR + ALPHA BROWSE */
 td.dvnPaginatorWrap,div.dvnPaginatorWrap{padding:0}
 .dvnPaginatorRight img{border:0}
@@ -122,8 +135,8 @@ td.dvnPaginatorWrap,div.dvnPaginatorWrap{padding:0}
 .list-header-left{background-color:#dadee0;font-weight:bold;text-align:left}
 .list-paging-header{background-color:white}
 .list-paging-footer{background-color:white}
-.list-row-even{background-color:#e6ebed}
-.list-row-even td{background-color:#e6ebed;border-bottom:1px solid #dddfde}
+.list-row-even{background-color:#F2F2F2}
+.list-row-even td{background-color:#F2F2F2;border-bottom:1px solid #dddfde}
 .list-row-odd{background-color:#fff}
 .list-row-odd td{background-color:#fff;border-bottom:1px solid #dddfde}
 ul.dvnAlphaBrowseBlock{float:left;margin:.5em 0 1em;padding:0;border:1px solid #0c54b3;background:#eee}
@@ -153,9 +166,32 @@ li.dvnAlphaBrowseSelected a{padding:2px 5px;font-weight:bold;color:white}
 .dvnManageSecondTable{margin-top:1.5em}
 .dvnManageTableTop{border:1px solid #d9d9d9;border-bottom:0;text-align:left;overflow:hidden}
 .dvnManageTableTotals{width:75%;padding:.5em .25em}
-.dvnManageTableCreateLink{width:20%;padding:.5em .25em;text-align:right}
+.dvnManageTableCreateLink{float:right;width:20%;padding:.5em .25em;text-align:right}
 .dvnManageTableEmpty{padding:20px 0}
 .dvnManageTableEmpty div.dvnManageTableEmptyMessage,.dvnManageTableEmpty span.dvnManageTableEmptyMessage{text-align:center}
+.dvnManageTable th span {white-space: nowrap;}
+.dvnManageTable .iceCmdLnk span {white-space: nowrap;}
+/* CUSTOM OPTION TABS */
+.dvnTabs .icePnlTb .LftTop, .dvnTabs .icePnlTb .MidTop, .dvnTabs .icePnlTb .RtTop {background: #D9D9D9; border: 0;}
+.dvnTabs .icePnlTbOn, .dvnTabs .icePnlTbOff, .dvnTabs .icePnlTbOver {margin: 0 4px 2px 0;}
+.dvnTabs .icePnlTbOn .LftTop, .dvnTabs .icePnlTbOn .MidTop, .dvnTabs .icePnlTbOn .RtTop, .dvnTabs .icePnlTbOff .LftTop, .dvnTabs .icePnlTbOff .MidTop, .dvnTabs .icePnlTbOff .RtTop, .dvnTabs .icePnlTbOver .LftTop, .dvnTabs .icePnlTbOver .MidTop, .dvnTabs .icePnlTbOver .RtTop {height: 1px;}
+.dvnTabs .icePnlTbOn .LftBtm, .dvnTabs .icePnlTbOn .MidBtm, .dvnTabs .icePnlTbOn .RtBtm, .dvnTabs .icePnlTbOff .LftBtm, .dvnTabs .icePnlTbOff .MidBtm, .dvnTabs .icePnlTbOff .RtBtm, .dvnTabs .icePnlTbOver .LftBtm, .dvnTabs .icePnlTbOver .MidBtm, .dvnTabs .icePnlTbOver .RtBtm {background:none;}
+.dvnTabs .icePnlTbOn .LftMid, .dvnTabs .icePnlTbOff .LftMid, .dvnTabs .icePnlTbOver .LftMid {background:none; border-left: 1px solid #D9D9D9;}
+.dvnTabs .icePnlTbOn .RtMid, .dvnTabs .icePnlTbOff .RtMid, .dvnTabs .icePnlTbOver .RtMid {background:none; border-right: 1px solid #D9D9D9;}
+.dvnTabs .icePnlTbOn .MidMid a {background:none; padding-left: 8px; text-transform: uppercase;}
+.dvnTabs .icePnlTbOn .MidMid a td {color:#0C54B3;}
+.dvnTabs .icePnlTbOn .MidMid a:hover td {color:#C55B28;}
+.dvnTabs .icePnlTbOff .MidMid a {background:none; padding-left: 8px; margin: 0; color:#C55B28;}
+.dvnTabs .icePnlTbOff .MidMid a td {color:#C55B28;}
+.dvnTabs .icePnlTbOff .MidMid a:hover td {color:#0C54B3;}
+.dvnTabs .icePnlTbOver .MidMid a {background:none; padding-left: 8px; margin: 0; color:#C55B28;}
+.dvnTabs .icePnlTbOver .MidMid a td {color:#C55B28;}
+.dvnTabs .icePnlTbOver .MidMid a:hover td {color:#0C54B3;}
+.dvnTabs .icePnlTbOn .MidMid a td {font-size: 1.3em !important;}
+.dvnTabs .icePnlTbOff .LftTop, .dvnTabs .icePnlTbOff .MidTop, .dvnTabs .icePnlTbOff .RtTop, .dvnTabs .icePnlTbOff .LftMid, .dvnTabs .icePnlTbOff .MidMid, .dvnTabs .icePnlTbOff .RtMid, .dvnTabs .icePnlTbOver .LftTop, .dvnTabs .icePnlTbOver .MidTop, .dvnTabs .icePnlTbOver .RtTop, .dvnTabs .icePnlTbOver .LftMid, .dvnTabs .icePnlTbOver .MidMid, .dvnTabs .icePnlTbOver .RtMid {background: #D9D9D9;}
+.dvnTabs .icePnlTbOff .MidMid td, .dvnTabs .icePnlTbOver .MidMid td {font-weight: normal;}
+.dvnTabs .icePnlTbSetSpcr {border-bottom: 0;}
+.dvnTabs .icePnlTbSetCnt {border-top: 1px solid #D9D9D9;}
 /* ICEFACES */
 .iceSelOneRb tr,.iceSelOneRb td{border:0}
 .MidMid a{padding-right:4px !important}

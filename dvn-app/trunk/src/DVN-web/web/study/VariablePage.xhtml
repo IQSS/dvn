@@ -16,31 +16,38 @@
       <ice:form id="form1">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <div class="dvn_section">
-          <span class="dvn_sectionTitleR">
-            <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{VariablePage.variable.dataTable.studyFile.study.id}">
-              <ice:outputText value="Go to Study"/>
-            </ice:outputLink>
-          </span>
-          <div class="dvn_sectionTitle">
-            <ice:outputText value="#{VariablePage.variable.dataTable.studyFile.study.releasedVersion.metadata.title}"/>
-            <br/>
-            <span class="dvn_preFileTitle">Variable: </span>
-            <ice:outputText styleClass="dvn_fileTitle" value="#{VariablePage.variable.name}"/><ice:outputText styleClass="dvn_fileTitle" value=" - #{VariablePage.variable.label}" rendered="#{!empty VariablePage.variable.label}"/>
-          </div>
+
+            <div class="dvnstudytitleblock">
+                <div class="dvnstudyadminboxfloat">
+                    <div class="dvnstudypreviouslisting">
+                        <div>
+                            <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{VariablePage.variable.dataTable.studyFile.study.id}">
+                              <ice:outputText value="Go to Study"/>
+                            </ice:outputLink>
+                        </div>
+                        <div>
+                            <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/SubsettingPage.xhtml?dtId=#{VariablePage.variable.dataTable.id}">
+                              <ice:outputText value="See all variables in data file: #{VariablePage.variable.dataTable.studyFile.fileName}"/>
+                            </ice:outputLink>
+                        </div>
+                    </div>
+                </div>
+                <div class="dvnstudytitlefloat">
+                    <ice:outputText value="#{VariablePage.variable.dataTable.studyFile.study.releasedVersion.metadata.title}"/>
+                    <div>
+                        <span class="dvn_preFileTitle">Variable: </span><ice:outputText value="#{VariablePage.variable.name}"/><ice:outputText value=" - #{VariablePage.variable.label}" rendered="#{!empty VariablePage.variable.label}"/>
+                    </div>
+                    <div>
+                      <ice:outputText value="#{VariablePage.variable.unf}"/>
+                    </div>
+                </div>
+            </div>
           <div class="dvn_sectionBoxNoBorders">
-            <div style="padding-left: 4px;">
-              <ice:outputText value="#{VariablePage.variable.unf}"/>
-            </div>
-            <div style="text-align: right; padding-bottom: 10px;">
-              <ice:outputLink  value="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/SubsettingPage.xhtml?dtId=#{VariablePage.variable.dataTable.id}">
-                <ice:outputText value="See all variables in data file: #{VariablePage.variable.dataTable.studyFile.fileName}"/>
-              </ice:outputLink>
-            </div>
-            <div style="margin-bottom: 30px; padding: 20px 10px 20px 10px; border: 1px solid #cccccc; background-color: #f5faff;" rendered="#{!empty VariablePage.variable.summaryStatistics}">
-              <div jsfc="ice:panelGroup" style="padding-bottom: 10px;" styleClass="vdcSubHeaderColor">
+            <div jsfc="ice:panelGroup" styleClass="dvnVariableStatisticsBlock" rendered="#{!empty VariablePage.variable.summaryStatistics}">
+              <div class="vdcSubHeaderColor">
                 <ice:outputText value="Summary Statistics"/>
               </div>
-              <ice:dataTable value="#{VariablePage.variable.summaryStatistics}" var="ss" width="500px;" columnClasses="vdcColPadded">
+              <ice:dataTable value="#{VariablePage.variable.summaryStatistics}" var="ss" width="500" columnClasses="vdcColPadded">
                 <ice:column>
                   <ice:outputText value="#{ss.type.name}"/>
                   <f:facet name="header">
@@ -55,11 +62,11 @@
                 </ice:column>
               </ice:dataTable>
             </div>
-            <div style="padding: 30px 10px 30px 10px; border: 1px solid #cccccc; background-color: #f5faff;" rendered="#{!empty VariablePage.variable.categories}">
-              <div jsfc="ice:panelGroup" style="padding-bottom: 10px;" styleClass="vdcSubHeaderColor">
+            <div jsfc="ice:panelGroup" styleClass="dvnVariableStatisticsBlock" rendered="#{!empty VariablePage.variable.categories}">
+              <div class="vdcSubHeaderColor">
                 <ice:outputText value="Category Statistics"/>
               </div>
-              <ice:dataTable value="#{VariablePage.variable.categories}" var="cs" width="500px;" columnClasses="vdcColPadded">
+              <ice:dataTable value="#{VariablePage.variable.categories}" var="cs" width="500" columnClasses="vdcColPadded">
                 <ice:column>
                     <gui:repeat value="#{cs.valueCharacterList}" var="char" >
                         <ice:outputText escape="#{char!='&amp;nbsp;'}" value="#{char}" nospan="true" />

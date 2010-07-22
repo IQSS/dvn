@@ -24,14 +24,13 @@
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.editDvDepositTermsTitle}"/>
           </div>
-          <div class="dvn_sectionBox">
+          <div class="dvn_sectionBox dvnEditTermsForm">
             <div class="dvn_margin12">
-              <div>
+              <div class="dvnEditTermsCheckbox">
                 <ice:selectBooleanCheckbox value="#{EditDepositUseTermsPage.termsOfUseEnabled}"/>
                 <ice:outputText value=" Enable Terms of Use"/>
               </div>
               <ice:message for="textArea1" styleClass="errorMessage" id="outputText2Msg"/>
-              <br/>
               <div>
                 <ice:outputText id="outputText2" styleClass="vdcFieldTitle" value="Terms of Use"/>
                 <br/>

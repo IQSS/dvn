@@ -86,66 +86,12 @@ public class StudyPermissionsPage extends VDCBaseBean  implements java.io.Serial
 
         }
             editStudyPermissions.setStudy(getStudyId());
-                     
+            studyUI = new StudyUI(editStudyPermissions.getStudy());
             
     }
     
-    /**
-     * <p>Callback method that is called after the component tree has been
-     * restored, but before any event processing takes place.  This method
-     * will <strong>only</strong> be called on a postback request that
-     * is processing a form submit.  Customize this method to allocate
-     * resources that will be required in your event handlers.</p>
-     */
-    public void preprocess() {
-    }
-    
-    /**
-     * <p>Callback method that is called just before rendering takes place.
-     * This method will <strong>only</strong> be called for the page that
-     * will actually be rendered (and not, for example, on a page that
-     * handled a postback and then navigated to a different page).  Customize
-     * this method to allocate resources that will be required for rendering
-     * this page.</p>
-     */
-    public void prerender() {
-    }
-    
-    /**
-     * <p>Callback method that is called after rendering is completed for
-     * this request, if <code>init()</code> was called (regardless of whether
-     * or not this was the page that was actually rendered).  Customize this
-     * method to release resources acquired in the <code>init()</code>,
-     * <code>preprocess()</code>, or <code>prerender()</code> methods (or
-     * acquired during execution of an event handler).</p>
-     */
-    public void destroy() {
-    }
-    
-    /**
-     * Holds value of property users.
-     */
-    private Collection<String> users = new ArrayList();
-    
-    /**
-     * Getter for property users.
-     * @return Value of property users.
-     */
-    public Collection<String> getUsers() {
-        users.clear();
-        users.add("User1");
-        users.add("User2");
-        users.add("User3");
-        return this.users;
-    }
-    
-    /**
-     * Setter for property users.
-     * @param users New value of property users.
-     */
-    public void setUsers(Collection<String> users) {
-        this.users = users;
-    }
+
+   
     
     public EditStudyPermissionsService getEditStudyPermissions() {
         return editStudyPermissions;
@@ -261,7 +207,7 @@ public class StudyPermissionsPage extends VDCBaseBean  implements java.io.Serial
     public void removeFilePermissions(ActionEvent ae) {
         editStudyPermissions.removeFilePermissions();
     }
-    
+ 
     public void  updateRequests(ActionEvent ae) {
         HttpServletRequest request = (HttpServletRequest)this.getExternalContext().getRequest();
         String hostName=request.getLocalName();
@@ -506,6 +452,21 @@ public class StudyPermissionsPage extends VDCBaseBean  implements java.io.Serial
     public void setSelectFilePermission(String selectFilePermission) {
         this.selectFilePermission = selectFilePermission;
     }
+
+    /**
+     *  Wrapper for Study object used to display Study Title information
+     */
+    private StudyUI studyUI;
+
+    public StudyUI getStudyUI() {
+        return studyUI;
+    }
+
+    public void setStudyUI(StudyUI studyUI) {
+        this.studyUI = studyUI;
+    }
+
+
     
     
       public String cancel() {

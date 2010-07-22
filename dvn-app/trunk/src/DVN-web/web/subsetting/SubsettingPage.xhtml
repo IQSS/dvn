@@ -181,9 +181,11 @@
             </ice:outputLink>
          </span>
         <div class="dvn_sectionTitle">                
-                <ice:outputText 
-                    value="#{AnalysisPage.studyTitle}"/>                       
-                <br />
+                    <gui:include src="/study/StudyTitleFragment.xhtml">
+                    <gui:param name="studyUI" value="#{AnalysisPage.studyUI}"/>
+                    <gui:param name="displayReleaseLink" value="false"/>
+                    <gui:param name="displayVersionInfo" value="true"/>
+                </gui:include>
                 <span class="dvn_preFileTitle">Data File: </span>
                 <ice:outputText 
                     styleClass="dvn_fileTitle" 

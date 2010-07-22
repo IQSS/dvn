@@ -48,6 +48,7 @@ public class VariablePage extends VDCBaseBean implements java.io.Serializable  {
 
     private Long dvId;
     private DataVariable variable;
+    private StudyUI studyUI;
     
     public void init() {
         super.init();
@@ -57,9 +58,10 @@ public class VariablePage extends VDCBaseBean implements java.io.Serializable  {
             setVariable(varService.getDataVariable(getDvId()));
             
         } else {
-            // WE SHOULD HAVE A STUDY ID, throw an error
+            // WE SHOULD HAVE A DataVariable ID, throw an error
             System.out.println("ERROR: in variablePage, without a dvId");
         }
+        studyUI = new StudyUI(variable.getDataTable().getStudyFile().getStudy());
         
     }
 
@@ -77,6 +79,14 @@ public class VariablePage extends VDCBaseBean implements java.io.Serializable  {
 
     public void setVariable(DataVariable variable) {
         this.variable = variable;
+    }
+
+    public StudyUI getStudyUI() {
+        return studyUI;
+    }
+
+    public void setStudyUI(StudyUI studyUI) {
+        this.studyUI = studyUI;
     }
     
 }

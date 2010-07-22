@@ -104,6 +104,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
     private StudyUI studyUI1;
     private StudyUI studyUI2;
+    private StudyUI studyUI;
 
     private List<catalogInfoDifferenceItem> citationDiffList;
     private List<catalogInfoDifferenceItem> abstractandscopeDiffList;
@@ -206,6 +207,15 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
         this.studyVersion2 = sv;
     }
 
+    public StudyUI getStudyUI() {
+        return studyUI;
+    }
+
+    public void setStudyUI(StudyUI studyUI) {
+        this.studyUI = studyUI;
+    }
+
+    
     public StudyUI getStudyUI1() {
         return studyUI1;
     }
@@ -280,8 +290,8 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
             studyUI1 = new StudyUI(studyVersion1, getVDCSessionBean().getUser(), true);
             studyUI2 = new StudyUI(studyVersion2, getVDCSessionBean().getUser(), true);
 
-            //initPanelDisplay();
-
+            studyUI = new StudyUI(studyUI1.getStudy());  // This studyUI is used in the Study Title section of the page
+           
             initCatalogInfoDifferencesList();
 
             initStudyFilesDifferencesList();

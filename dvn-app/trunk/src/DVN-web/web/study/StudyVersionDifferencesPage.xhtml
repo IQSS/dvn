@@ -23,49 +23,34 @@
           });
           // ]]>
         </script>
-        <div jsfc="ice:panelGroup" styleClass="dvn_section" rendered="#{studyVersionDifferencesPage.releaseConfrimInProgress}">
-            <div class="dvnstudytitleblock">
-                <div class="dvnstudyadminboxfloat">
-                    <div jsfc="ice:panelGroup" styleClass="vdcTextRight dvnFormMargin">
-                        <ice:commandButton id="button1" value="Release" actionListener="#{studyVersionDifferencesPage.openPopup}"/>
-                        <ice:commandButton id="button2" value="Cancel" immediate="true" action="#{studyVersionDifferencesPage.cancel}"/>
-                    </div>
-                </div>
-                <div class="dvnstudytitlefloat">
-                    <ice:outputText styleClass="dvnstudytitle" value="#{studyVersionDifferencesPage.studyUI2.metadata.title}"/>
-                    <div jsfc="ice:panelGroup" styleClass="dvnstudyversioninfo">
-                        <ice:outputText value="#{studyVersionDifferencesPage.studyUI2.study.globalId}"/> <ice:outputText value="#{studyVersionDifferencesPage.studyUI2.metadata.UNF}" rendered="#{!empty studyVersionDifferencesPage.studyUI2.metadata.UNF}"/>
-                    </div>
-                    <div jsfc="ice:panelGroup" styleClass="dvnstudystatusbox #{studyVersionDifferencesPage.studyUI2.studyVersion.inReview ? 'dvnstudystatusreview' : '' or studyVersionDifferencesPage.studyUI2.studyVersion.draft ? 'dvnstudystatusdraft' : ''}">
-                        <ice:outputText styleClass="dvnstudystatuslabel" value="In Review " rendered="#{studyVersionDifferencesPage.studyUI2.studyVersion.inReview}"/>
-                        <ice:outputText styleClass="dvnstudystatuslabel" value="Draft " rendered="#{studyVersionDifferencesPage.studyUI2.studyVersion.draft}"/>
-                        <ice:outputText value="Study Version: #{studyVersionDifferencesPage.studyUI2.studyVersion.versionNumber}"/> <br/>
-                        <ice:outputText value="Created: #{studyVersionDifferencesPage.studyUI2.studyVersion.createTime} &#8211; Last Updated: #{studyVersionDifferencesPage.studyUI2.studyVersion.lastUpdateTime}"/> <br/>
-                        <ice:outputText value="Study Version Notes: " rendered="#{!empty studyVersionDifferencesPage.studyUI2.studyVersion.versionNote}"/>
-                        <ice:outputText styleClass="dvnstudystatusversionnote" value="#{studyVersionDifferencesPage.studyUI2.studyVersion.versionNote}" rendered="#{!empty studyVersionDifferencesPage.studyUI2.studyVersion.versionNote}"/>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div jsfc="ice:panelGroup" styleClass="dvn_section" rendered="#{! studyVersionDifferencesPage.releaseConfrimInProgress}">
-            <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
+        <div jsfc="ice:panelGroup" styleClass="dvn_section">
+            <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage" rendered="#{! studyVersionDifferencesPage.releaseConfrimInProgress}">
                 <div class="dvnMsgBlockContainer">
                     <ice:outputText value="#{bundlePageInfo.versionDifferencesHelp}" escape="false"/>
                 </div>
             </div>
-            <div class="dvn_sectionTitle dvn_sectionTitleLinksL">
+            <div class="dvnstudytitleblock dvn_padBot">
+                <div class="dvnstudyadminboxfloat">
+                    <div jsfc="ice:panelGroup" styleClass="vdcTextRight dvnFormMargin" rendered="#{studyVersionDifferencesPage.releaseConfrimInProgress}">
+                        <ice:commandButton id="button1" value="Release" actionListener="#{studyVersionDifferencesPage.openPopup}"/>
+                        <ice:commandButton id="button2" value="Cancel" immediate="true" action="#{studyVersionDifferencesPage.cancel}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup" styleClass="vdcTextRight dvnFormMargin" rendered="#{! studyVersionDifferencesPage.releaseConfrimInProgress}">
+                        <ice:commandLink immediate="true" action="#{studyVersionDifferencesPage.cancel}">
+                            <ice:outputText value="Back to Study" nospan="true"/>
+                        </ice:commandLink>
+                    </div>
+                </div>
+                <gui:include src="/study/StudyTitleFragment.xhtml">
+                    <gui:param name="studyUI" value="#{studyVersionDifferencesPage.studyUI}"/>
+                    <gui:param name="displayVersionInfo" value="false"/>
+                    <gui:param name="displayStatusBox" value="true"/>
+                </gui:include>
+            </div>
+            <div jsfc="ice:panelGroup" styleClass="dvn_sectionTitle" rendered="#{! studyVersionDifferencesPage.releaseConfrimInProgress}">
                 <ice:outputText value="#{bundlePageInfo.versionDifferencesTitle}"/>
             </div>
-            <div class="dvn_sectionTitleLinksR">
-                <div class="vdcTextRight dvnFormMargin">
-                    <!--<ice:commandButton id="button2" value="Back" immediate="true" action="#{studyVersionDifferencesPage.cancel}"/>-->
-                    <ice:commandLink immediate="true" action="#{studyVersionDifferencesPage.cancel}">
-                        <ice:outputText value="Back to Study" nospan="true"/>
-                    </ice:commandLink>
-                </div>
-            </div>
-        </div>
-        <div class="dvn_sectionBoxNoBorders">
+            
           <div class="dvn_sectionBox">
             <div class="dvn_margin12">
               

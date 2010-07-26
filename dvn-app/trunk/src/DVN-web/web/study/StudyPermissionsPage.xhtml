@@ -35,6 +35,20 @@
               <ice:outputText value="#{bundlePageInfo.manageStudyPermissionsHelp}" escape="false"/>
             </div>
           </div>
+          <div class="dvnstudytitleblock dvn_padBot">
+            <div class="dvnstudyadminboxfloat dvn_right">
+                <div class="dvnFormMargin">
+                  <ice:commandButton value="Save" action="#{StudyPermissionsPage.save}"/>
+                  <ice:commandButton value="Cancel" action="#{StudyPermissionsPage.cancel}"/>
+                </div>
+            </div>
+            <gui:include src="/study/StudyTitleFragment.xhtml">
+                <gui:param name="studyUI" value="#{StudyPermissionsPage.studyUI}"/>
+                <gui:param name="displayReleaseLink" value="false"/>
+                <gui:param name="displayVersionInfo" value="false"/>
+                    <gui:param name="displayStatusBox" value="false"/>
+            </gui:include>
+          </div>
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.manageStudyPermissionsTitle}"/>
           </div>

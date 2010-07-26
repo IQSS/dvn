@@ -18,10 +18,7 @@ Common Header for Study Pages
     <div jsfc="ice:panelGroup" styleClass="dvnstudyversioninfo" rendered="#{displayVersionInfo and studyUI.studyVersion.released}">
         <ice:outputText value="Version: #{studyUI.studyVersion.versionNumber}"/> <ice:outputText value="&#8211; Released: #{studyUI.studyVersion.releaseTime}"/>
     </div>
-    <div jsfc="ice:panelGroup" styleClass="dvnstudyversioninfo" rendered="#{displayFileName != null}">
-        <span class="dvn_preFileTitle">Data File: </span><ice:outputText styleClass="dvn_fileTitle" value="#{displayFileName}"/>
-    </div>
-    <div jsfc="ice:panelGroup" styleClass="dvnstudystatusbox #{studyUI.studyVersion.retiredCopy ? 'dvnstudystatusarchived' : '' or studyUI.studyVersion.inReview ? 'dvnstudystatusreview' : '' or studyUI.studyVersion.draft ? 'dvnstudystatusdraft' : ''}" rendered="#{displayVersionInfo and !studyUI.studyVersion.released}">
+    <div jsfc="ice:panelGroup" styleClass="dvnstudystatusbox #{studyUI.studyVersion.retiredCopy ? 'dvnstudystatusarchived' : '' or studyUI.studyVersion.inReview ? 'dvnstudystatusreview' : '' or studyUI.studyVersion.draft ? 'dvnstudystatusdraft' : ''}" rendered="#{displayStatusBox and !studyUI.studyVersion.released}">
         <ice:outputText styleClass="dvnstudystatuslabel" value="In Review " rendered="#{studyUI.studyVersion.inReview}"/>
         <ice:outputText styleClass="dvnstudystatuslabel" value="Draft " rendered="#{studyUI.studyVersion.draft}"/>
         <ice:outputText styleClass="dvnstudystatuslabel" value="Archived " rendered="#{studyUI.studyVersion.archived}"/>
@@ -40,5 +37,11 @@ Common Header for Study Pages
         <ice:outputText nospan="true" rendered="#{!empty studyUI.studyVersion.versionNote}"><br/></ice:outputText>
         <ice:outputText value="Study Version Notes: " rendered="#{!empty studyUI.studyVersion.versionNote}"/>
         <ice:outputText styleClass="dvnstudystatusversionnote" value="#{studyUI.studyVersion.versionNote}" rendered="#{!empty studyUI.studyVersion.versionNote}"/>
+    </div>
+    <div jsfc="ice:panelGroup" styleClass="dvnstudyversioninfo" rendered="#{displayFileName != null}">
+        <ice:outputText styleClass="dvn_preFileTitle" value="Data File: "/><ice:outputText styleClass="dvn_fileTitle" value="#{displayFileName}"/>
+    </div>
+    <div jsfc="ice:panelGroup" styleClass="dvnstudyversioninfo" rendered="#{displayVariableName != null}">
+        <ice:outputText styleClass="dvn_preFileTitle" value="Variable: "/><ice:outputText styleClass="dvn_fileTitle" value="#{displayVariableName}"/><ice:outputText styleClass="dvn_fileTitle" value=" - #{displayVariableLabel}" rendered="#{displayVariableLabel != null}"/>
     </div>
 </div>

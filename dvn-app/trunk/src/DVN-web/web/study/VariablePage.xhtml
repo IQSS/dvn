@@ -32,15 +32,14 @@
                         </div>
                     </div>
                 </div>
-                <div class="dvnstudytitlefloat">
-                    <ice:outputText value="#{VariablePage.variable.dataTable.studyFile.study.releasedVersion.metadata.title}"/>
-                    <div>
-                        <span class="dvn_preFileTitle">Variable: </span><ice:outputText value="#{VariablePage.variable.name}"/><ice:outputText value=" - #{VariablePage.variable.label}" rendered="#{!empty VariablePage.variable.label}"/>
-                    </div>
-                    <div>
-                      <ice:outputText value="#{VariablePage.variable.unf}"/>
-                    </div>
-                </div>
+                <gui:include src="/study/StudyTitleFragment.xhtml">
+                    <gui:param name="studyUI" value="#{VariablePage.studyUI}"/>
+                    <gui:param name="displayReleaseLink" value="false"/>
+                    <gui:param name="displayVersionInfo" value="true"/>
+                    <gui:param name="displayStatusBox" value="false"/>
+                    <gui:param name="displayVariableName" value="#{VariablePage.variable.name}"/>
+                    <gui:param name="displayVariableLabel" value="#{VariablePage.variable.label}"/>
+                </gui:include>
             </div>
           <div class="dvn_sectionBoxNoBorders">
             <div jsfc="ice:panelGroup" styleClass="dvnVariableStatisticsBlock" rendered="#{!empty VariablePage.variable.summaryStatistics}">

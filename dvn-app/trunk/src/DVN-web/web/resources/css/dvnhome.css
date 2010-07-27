@@ -14,7 +14,8 @@ div.dvn_searchblock{margin-bottom:12px;padding:4px 12px;background:#F2F2F2;borde
 .dvnSearchBoxCheckbox{display:block;text-align:left;}
 .dvnSearchBoxCheckbox,.dvnSearchBoxCheckbox select{margin-top:0;margin-bottom:0}
 .dvnSearchBoxCheckbox span.iceOutTxt{font-size:90% !important}
-.dvn_searchboxblock fieldset {margin:0; padding:0; float: left; line-height: 36px !important;}
+.dvn_searchboxblock {overflow:hidden; width:308px;}
+.dvn_searchboxblock fieldset {float: left; padding:0; line-height: 36px !important;}
 .dvn_searchboxblock fieldset .iceCmdBtn {vertical-align: middle;}
 .dvn_searchboxblock .dvn_searchlinks {float: left; margin-left: 1em; text-align: left;}
 .dvn_searchboxblock .dvn_searchlinks a.iceOutLnk {display: block;}

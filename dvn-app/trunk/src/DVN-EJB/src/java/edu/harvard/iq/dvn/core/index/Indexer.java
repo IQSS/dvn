@@ -103,8 +103,8 @@ public class Indexer implements java.io.Serializable  {
     private static Indexer indexer;
     Directory dir;
     String indexDir = "index-dir";
-    int dvnMaxClauseCount = 8192;
-
+    int dvnMaxClauseCount = 16384;
+    
 
     /** Creates a new instance of Indexer */
     public Indexer() {
@@ -686,6 +686,7 @@ public class Indexer implements java.io.Serializable  {
     public List searchVariables(List <Long> studyIds,SearchTerm searchTerm) throws IOException {
         BooleanQuery indexQuery = null;
         BooleanQuery searchQuery = new BooleanQuery();
+        BooleanQuery.setMaxClauseCount(dvnMaxClauseCount);
         if (studyIds != null) {
             searchQuery.add(orIdSearchTermClause(studyIds), BooleanClause.Occur.MUST);
         }
@@ -705,6 +706,7 @@ public class Indexer implements java.io.Serializable  {
 
     public List searchVariables(List<Long> studyIds, List<SearchTerm> searchTerms, boolean varIdReturnValues) throws IOException {
         BooleanQuery searchQuery = new BooleanQuery();
+        BooleanQuery.setMaxClauseCount(dvnMaxClauseCount);
         if (studyIds != null) {
             searchQuery.add(orIdSearchTermClause(studyIds), BooleanClause.Occur.MUST);
         }

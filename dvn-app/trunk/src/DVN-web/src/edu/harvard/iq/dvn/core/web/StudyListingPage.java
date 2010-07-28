@@ -106,6 +106,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
     private boolean renderContributorLink;
     private boolean renderTruncatedDesc;
     private boolean descriptionTruncated;
+    private boolean renderDVPermissionsBox;
 
     String listHeader;
     String listMessage;
@@ -221,6 +222,10 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
 
     public boolean isRenderTruncatedDesc() {
         return renderTruncatedDesc;
+    }
+    
+    public boolean isRenderDVPermissionsBox() {
+        return renderDVPermissionsBox;
     }
 
     public String search_action() {
@@ -434,6 +439,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
 
         // default the following to false; will likely change after checking mode
         renderSearch = true;
+        renderDVPermissionsBox = true;
         renderSearchResultsFilter = false;
         renderSearchCollectionFilter = false;
         renderDescription = false;
@@ -463,6 +469,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
             }
 
             renderSearchResultsFilter = matches == 0 ? false : true;
+            renderDVPermissionsBox = false;
 
         } else if (mode == StudyListing.COLLECTION_STUDIES) {
             listHeader = vdcCollectionService.find(studyListing.getCollectionId()).getName();

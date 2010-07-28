@@ -265,6 +265,11 @@
         </managed-property>
     </managed-bean>
     <managed-bean>
+        <managed-bean-name>BasicSearchFragment</managed-bean-name>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.BasicSearchFragment</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
         <managed-bean-name>TermsOfUsePage</managed-bean-name>
         <managed-bean-class>edu.harvard.iq.dvn.core.web.study.TermsOfUsePage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>

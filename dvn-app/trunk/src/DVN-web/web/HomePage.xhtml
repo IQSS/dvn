@@ -111,12 +111,8 @@
                                 }
                          </script>
                          <fieldset>
-                            <label for="search">
-                              <ice:inputText onkeypress="if (window.event) return processEvent('', 'form1:searchButton'); else return processEvent(event, 'form1:searchButton');" id="textField2" value="#{HomePage.searchValue}" onclick="clickclear(this, 'Search Studies')"/>
-                            </label>
-                            <label for="button">
-                                <ice:commandButton id="searchButton" value="Go" type="submit" action="#{HomePage.search_action}"/>
-                            </label>
+                        <gui:include src="BasicSearchFragment.xhtml">
+                        </gui:include>
                           </fieldset>
                           <div class="dvn_searchlinks">
                             <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/AdvSearchPage.xhtml">

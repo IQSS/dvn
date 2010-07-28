@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:gui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:dvn="/WEB-INF/tlds/dvn-components"
+      xmlns:ice="http://www.icesoft.com/icefaces/component"
+      xmlns:ui="http://www.sun.com/web/ui">
+                         <script type="text/javascript">
+                                function clickclear(thisfield, defaulttext) {
+                                    if (thisfield.value == defaulttext) {
+                                        thisfield.value = "";
+                                    }
+                                }
+                         </script>
+
+        <fieldset>
+            <label for="search">
+                <ice:inputText value="#{BasicSearchFragment.searchValue}" id="simpleSearch" onclick="clickclear(this, 'Search Studies')"/>
+            </label>
+            <label for="button">
+                 <ice:commandButton id="searchButton" value="Go" type="submit" action="#{BasicSearchFragment.search_action}"/>
+            </label>
+        </fieldset>
+
+</html>

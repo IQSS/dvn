@@ -17,20 +17,28 @@
     <gui:define name="body">
       <ice:form id="advsearch">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
-        <div class="dvn_section">
-          <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
+
+ <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
             <div class="dvnMsgBlockContainer">
-              <ice:outputText value="#{bundlePageInfo.advancedSearchHelp}" escape="false"/>
-              <ice:outputText value="#{bundlePageInfo.advancedSearchDVCollectionsHelp}" rendered="#{AdvSearchPage.collectionsIncluded}" escape="false"/>
+              <ice:outputText value="#{bundlePageInfo.combinedSearchHelpWithLinks}" escape="false"/>
             </div>
+            </div>
+        <div class="dvn_section">
+          <div class="dvn_sectionTitle">
+            <ice:outputText value="#{bundlePageInfo.advancedSearchPageBasicTitle}"/>
+          </div>
+          <div class="dvnFormPadding dvnFormMargin">
+            <gui:include src="BasicSearchFragment.xhtml">
+            </gui:include>
           </div>
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.advancedSearchTitle}"/>
           </div>
+
           <div class="dvn_sectionBox">
             <div class="dvn_margin12">
               <ice:panelGrid cellpadding="0" cellspacing="0" columns="3" width="90%"
-                             id="gridPanel1" styleClass="dvnAdvSearchScopeTable" 
+                             id="gridPanel1" styleClass="dvnAdvSearchScopeTable"
                              columnClasses="vdcAdvSearchCol1, vdcAdvSearchCol2, vdcAdvSearchCol3" rowClasses="list-row-odd, list-row-even">
                 <ice:outputText id="outputText1" styleClass="vdcSubHeaderColor" value="Search Scope"/>
                 <ice:outputText id="outputText2" styleClass="vdcSubHeaderColor" value="Operator"/>
@@ -97,7 +105,7 @@
                         </ice:column>
                   </ice:dataTable>
               </div>
-              
+
               <div jsfc="ice:panelGroup" styleClass="dvnFormPadding" rendered="#{AdvSearchPage.collectionsIncluded}">
                 <ice:outputText id="outputText5" styleClass="vdcSubHeaderColor" value="Collections"/>
                 <ice:selectOneRadio binding="#{AdvSearchPage.radioButtonList1}" id="radioButtonList1" layout="pageDirection" value="Search All Collections">

@@ -27,12 +27,14 @@
   <div jsfc="ice:panelGroup" id="navblockDiv" styleClass="#{(VDCRequest.currentVDC == null) ? 'dvn_navblock dvn_navblockNetwork' : 'dvn_navblock'}">
     <div class="dvn_navblockLinks">
       <ul>
-        <li>
-          <ice:outputLink value="/dvn" title="Browse and Search #{VDCRequest.vdcNetwork.name} Dataverse Network" rendered="#{VDCRequest.currentVDC == null}">
-            <ice:outputText value="#{bundle.homeLabel}"/>
+      <li>
+          <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/AdvSearchPage.xhtml" title="Basic or Advanced Search of #{VDCRequest.currentVDC.name} dataverse" rendered="#{VDCRequest.currentVDC != null}">
+            <ice:outputText value="#{bundle.searchLabel}"/>
           </ice:outputLink>
-          <ice:outputLink value="/dvn/dv/#{VDCRequest.currentVDC.alias}" title="Browse and Search #{VDCRequest.currentVDC.name} dataverse" rendered="#{VDCRequest.currentVDC != null}">
-            <ice:outputText value="#{bundle.homeLabel}"/>
+        </li>
+        <li>
+          <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/AdvSearchPage.xhtml" title="Basic or Advanced Search of #{VDCRequest.vdcNetwork.name} Dataverse Network" rendered="#{VDCRequest.currentVDC == null}">
+            <ice:outputText value="#{bundle.searchLabel}"/>
           </ice:outputLink>
         </li>
         <li>

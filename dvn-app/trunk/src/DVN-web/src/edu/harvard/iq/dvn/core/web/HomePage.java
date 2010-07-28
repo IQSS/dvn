@@ -104,7 +104,6 @@ public class HomePage extends VDCBaseBean implements Serializable {
     private String parsedLocalAnnouncements     = parseAnnouncements((getVDCRequestBean().getCurrentVDC()!= null) ? getVDCRequestBean().getCurrentVDC().getAnnouncements(): "", true);
     private String parsedNetworkAnnouncements   = parseAnnouncements((getVDCRequestBean().getVdcNetwork() != null) ? getVDCRequestBean().getVdcNetwork().getAnnouncements(): "", false);
     private String searchField;
-    private String searchValue = "Search Studies";
     StatusMessage msg;
     private boolean isAlphaSort;
     private boolean hideRestricted = true; //show only restricted if set to false wjb
@@ -450,66 +449,6 @@ public class HomePage extends VDCBaseBean implements Serializable {
 
       //actions and actionListeners
 
-    public String search_action() {
-        searchField = (searchField == null) ? "any" : searchField; // default searchField, in case no dropdown
-
-        List searchTerms    = new ArrayList();
-        SearchTerm st       = new SearchTerm();
-        st.setFieldName( searchField );
-        st.setValue( searchValue );
-        searchTerms.add(st);
-        List studies        = new ArrayList();
-        Map variableMap     = new HashMap();
-        Map versionMap = new HashMap();
-        List displayVersionList = new ArrayList();
-
-        if ( searchField.equals("variable") ) {
-            List variables  = indexService.searchVariables(getVDCRequestBean().getCurrentVDC(), st);
-            varService.determineStudiesFromVariables(variables, studies, variableMap);
-
-        } else {
-            studies         = indexService.search(getVDCRequestBean().getCurrentVDC(), searchTerms);
-        }
-        if (searchField.equals("any")) {
-//            studies.add(st);
-            List<Long> versionIds = indexService.searchVersionUnf(getVDCRequestBean().getCurrentVDC(), searchValue);
-            Iterator iter = versionIds.iterator();
-            Long studyId = null;
-            while (iter.hasNext()) {
-//                List<StudyVersion> svList = new ArrayList<StudyVersion>();
-                Long vId = (Long) iter.next();
-                StudyVersion sv = null;
-                try {
-                    sv = studyService.getStudyVersionById(vId);
-                    studyId = sv.getStudy().getId();
-                    List<StudyVersion> svList = (List<StudyVersion>) versionMap.get(studyId);
-                    if (svList == null) {
-                        svList = new ArrayList<StudyVersion>();
-                    }
-                    svList.add(sv);
-                    if (!studies.contains(studyId)) {
-                        displayVersionList.add(studyId);
-                        studies.add(studyId);
-                    }
-                    versionMap.put(studyId, svList);
-                } catch (IllegalArgumentException e) {
-                    e.printStackTrace();
-                }
-            }
-
-        }
-
-
-        StudyListing sl = new StudyListing(StudyListing.SEARCH);
-        sl.setStudyIds(studies);
-        sl.setSearchTerms(searchTerms);
-        sl.setVariableMap(variableMap);
-        sl.setVersionMap(versionMap);
-        sl.setDisplayStudyVersionsList(displayVersionList);
-        getVDCRequestBean().setStudyListing(sl);
-
-        return "search";
-    }
 
      
   //getters
@@ -562,10 +501,6 @@ public class HomePage extends VDCBaseBean implements Serializable {
         return searchField;
     }
 
-     public String getSearchValue() {
-        return searchValue;
-    }
-
     public String getStudyCount() {
         Long count = vdcNetworkStatsService.getVDCNetworkStats().getStudyCount();
         return NumberFormat.getIntegerInstance().format(count);
@@ -604,9 +539,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
     }
 
 
-    public void setSearchValue(String searchValue) {
-        this.searchValue = searchValue;
-    }
+
 
     //utils
      /** public String parseLocalAnnouncements

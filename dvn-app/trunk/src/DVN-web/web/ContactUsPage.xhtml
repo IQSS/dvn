@@ -16,15 +16,15 @@
     <gui:define name="body">
       <ice:form id="contactUsForm">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
-        <script type="text/javascript">
-        //<![CDATA[
-        function changeValue(obj) {
-            if (window.event)
-                obj.value = window.event.srcElement.value;
-            document.getElementById('contactUsForm').submit();
-        }
-        // ]]>
-        </script>
+            <script type="text/javascript">
+            //<![CDATA[
+            function changeValue(obj) {
+                if (window.event)
+                    obj.value = window.event.srcElement.value;
+                document.getElementById('contactUsForm').submit();
+            }
+            // ]]>
+            </script>
         <div class="dvn_section">
           <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnSuccessMessage" rendered="#{ContactUsPage.success}">
             <div class="dvnMsgBlockContainer">
@@ -128,7 +128,7 @@
                 <ice:inputHidden id="recaptcha" validator="#{ContactUsPage.validateCaptcha}" value="captcha">
                   <ice:message styleClass="errorMessage" for="recaptcha"/>
                 </ice:inputHidden>
-                #{ContactUsPage.captcha}
+                  #{ContactUsPage.captcha}
               </ice:panelGrid>
               <div class="dvnFormPadding">
                 <ice:commandButton id="btnSend" value="Send E-mail" action="#{ContactUsPage.send_action}"/>

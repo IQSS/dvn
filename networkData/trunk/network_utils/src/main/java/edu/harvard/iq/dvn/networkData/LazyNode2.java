@@ -1,17 +1,18 @@
-package edu.harvard.iq.dvn.networkData;
+package patent_network.network_utils;
 
 import java.util.HashMap;
 
 import org.neo4j.graphdb.Node;
-
+/*
 import com.sleepycat.persist.model.Entity;
 import com.sleepycat.persist.model.PrimaryKey;
 import com.sleepycat.persist.model.SecondaryKey;
 import static com.sleepycat.persist.model.Relationship.*;
+*/
 
-@Entity
+//@Entity
 public class LazyNode2 {
-    @PrimaryKey
+//    @PrimaryKey
     private Long nodeId;
 
     private HashMap<String, Object> props;

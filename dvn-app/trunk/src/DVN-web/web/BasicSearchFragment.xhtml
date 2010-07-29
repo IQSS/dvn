@@ -18,10 +18,10 @@
 
         <fieldset>
             <label for="search">
-                <ice:inputText value="#{BasicSearchFragment.searchValue}" id="simpleSearch" onclick="clickclear(this, 'Search Studies')"/>
+                <ice:inputText onkeypress="if (window.event) return processEvent('', 'form1:search'); else return processEvent(event, 'form1:search');" value="#{BasicSearchFragment.searchValue}" id="simpleSearch" onclick="clickclear(this, 'Search Studies')"/>
             </label>
             <label for="button">
-                 <ice:commandButton id="searchButton" value="Go" type="submit" action="#{BasicSearchFragment.search_action}"/>
+                 <ice:commandButton id="search" value="Go"  action="#{BasicSearchFragment.search_action}"/>
             </label>
         </fieldset>
 

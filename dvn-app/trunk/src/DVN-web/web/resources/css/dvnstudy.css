@@ -55,7 +55,7 @@ li.dvnStudyEditDisableMsg{background:none;padding:0;font-size:0.9em !important;}
 .icePnlTbSet a:link td, .icePnlTbSet a:visited td {color:#464646}
 .icePnlTbSet a:hover td, .icePnlTbSet a:active td {color:#c55b28;text-decoration:underline}
 /* HOW TO CITE */
-.dvnhowtocitetable td{padding:5px 0;vertical-align:text-top;}
+.dvnhowtocitetable td{padding:5px 0;}
 .dvnhowtocitetable .col1{width:40%;}
 .dvnhowtociteinfofloat div{padding: 0;margin:0 1em 0 0;}
 .dvnhowtociteinfofloat h4{margin:0;padding:0;display:inline;}

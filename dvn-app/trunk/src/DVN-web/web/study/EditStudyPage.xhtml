@@ -178,9 +178,6 @@
                         </ice:selectOneRadio>
                       </div>
                     </ice:panelGrid>
-                  <div jsfc="ice:panelGroup" id="groupPanel9" styleClass="vdcStudyInfoHeader">
-                    <ice:outputText id="outputText26" value="Citation Information"/>
-                  </div>
 
                   <!-- TITLE -->
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
@@ -210,6 +207,69 @@
                       <ice:message styleClass="errorMessage" for="input_subtitle"/>
                     </div>
                   </ice:panelGrid>
+
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{!empty EditStudyPage.metadata.replicationFor or EditStudyPage.studyMap[sfc.replicationFor].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField">
+                      <dvn:inlinehelp helpMessage="#{editstudybundle.replicationForHelp}" linkText="#{editstudybundle.replicationForLabel}" heading="#{editstudybundle.replicationForHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.replicationFor].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.replicationFor].recommended}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup" >
+                        <div>Enter the full citation for the original publication whose results can be replicated using these data.</div>
+                        <ice:inputTextarea cols="90" rows="4"
+                                         id="input_replicationFor"
+                                         value="#{EditStudyPage.metadata.replicationFor}"
+                                         required="#{EditStudyPage.studyMap[sfc.replicationFor].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                         styleClass="formHtmlEnabled">
+                        <f:validator validatorId="XhtmlValidator"/>
+                      </ice:inputTextarea>
+                      <ice:message styleClass="errorMessage" for="input_replicationFor"/>
+                    </div>
+                  </ice:panelGrid>
+
+                  <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
+                  <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
+                                 styleClass="vdcEditStudyTable"  visible="#{!EditStudyPage.studyRelPublicationsEmpty or EditStudyPage.studyMap[sfc.relatedPublications].recommended or EditStudyPage.showAll}"  value="dummy_datatable">
+                    <ice:column>
+                      <ice:dataTable cellpadding="0" cellspacing="0"
+                                     styleClass="vdcEditStudyInnerTable"
+                                     columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
+                                     binding="#{EditStudyPage.dataTableRelPublications}"
+                                     value="#{EditStudyPage.metadata.studyRelPublications}" var="currentRow" width="100%">
+                        <ice:column>
+                          <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                            <dvn:inlinehelp helpMessage="#{editstudybundle.relatedPublicationsHelp}" linkText="#{editstudybundle.relatedPublicationsLabel}" heading="#{editstudybundle.relatedPublicationsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                            <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.relatedPublications].required}"/>
+                            <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.relatedPublications].recommended}"/>
+                          </div>
+                        </ice:column>
+                        <ice:column>
+                          <div jsfc="ice:panelGroup">
+                            <ice:inputTextarea cols="90" rows="4"
+                                               id="input_relatedPublications"
+                                               binding="#{EditStudyPage.inputRelPublicationName}"
+                                               value="#{currentRow.text}"
+                                               required="#{EditStudyPage.studyMap[sfc.relatedPublications].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                               styleClass="formHtmlEnabled">
+                              <f:validator validatorId="XhtmlValidator"/>
+                            </ice:inputTextarea>
+                            <ice:message styleClass="errorMessage" for="input_relatedPublications"/>
+                          </div>
+                        </ice:column>
+                        <ice:column>
+                          <ice:commandButton image="/resources/images/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/>
+                          <ice:commandButton rendered="#{EditStudyPage.dataTableRelPublications.rowCount gt 1}" image="/resources/images/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" />
+                        </ice:column>
+                      </ice:dataTable>
+                    </ice:column>
+                  </ice:dataTable>
+                  
+                  <div jsfc="ice:panelGroup" id="groupPanel9" styleClass="vdcStudyInfoHeader">
+                    <ice:outputText id="outputText26" value="Citation Information"/>
+                  </div>
 
                   <!-- STUDY ID-->
                   <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
@@ -765,26 +825,6 @@
                     </div>
                   </ice:panelGrid>
 
-                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
-                                 styleClass="vdcEditStudyTable"
-                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
-                                 visible="#{!empty EditStudyPage.metadata.replicationFor or EditStudyPage.studyMap[sfc.replicationFor].recommended or EditStudyPage.showAll}">
-                    <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField">
-                      <dvn:inlinehelp helpMessage="#{editstudybundle.replicationForHelp}" linkText="#{editstudybundle.replicationForLabel}" heading="#{editstudybundle.replicationForHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.replicationFor].required}"/>
-                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.replicationFor].recommended}"/>
-                    </div>
-                    <div jsfc="ice:panelGroup" >
-                      <ice:inputTextarea cols="90" rows="4"
-                                         id="input_replicationFor"
-                                         value="#{EditStudyPage.metadata.replicationFor}"
-                                         required="#{EditStudyPage.studyMap[sfc.replicationFor].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
-                                         styleClass="formHtmlEnabled">
-                        <f:validator validatorId="XhtmlValidator"/>
-                      </ice:inputTextarea>
-                      <ice:message styleClass="errorMessage" for="input_replicationFor"/>
-                    </div>
-                  </ice:panelGrid>
                 <ice:panelGrid cellpadding="0" cellspacing="0" columns="1" width="100%"
                                  visible="#{!EditStudyPage.abstractAndScopeEmpty or EditStudyPage.abstractAndScopeInputLevel=='recommended' or EditStudyPage.showAll }">
                   <div jsfc="ice:panelGroup" id="groupPanel12" styleClass="vdcStudyInfoHeader" >
@@ -949,43 +989,6 @@
                         <ice:column>
                           <ice:commandButton image="/resources/images/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/>
                           <ice:commandButton rendered="#{EditStudyPage.dataTableTopicClass.rowCount gt 1}" image="/resources/images/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" />
-                        </ice:column>
-                      </ice:dataTable>
-                    </ice:column>
-                  </ice:dataTable>
-
-                  <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
-                  <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
-                                 styleClass="vdcEditStudyTable"  visible="#{!EditStudyPage.studyRelPublicationsEmpty or EditStudyPage.studyMap[sfc.relatedPublications].recommended or EditStudyPage.showAll}"  value="dummy_datatable">
-                    <ice:column>
-                      <ice:dataTable cellpadding="0" cellspacing="0"
-                                     styleClass="vdcEditStudyInnerTable"
-                                     columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
-                                     binding="#{EditStudyPage.dataTableRelPublications}"
-                                     value="#{EditStudyPage.metadata.studyRelPublications}" var="currentRow" width="100%">
-                        <ice:column>
-                          <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
-                            <dvn:inlinehelp helpMessage="#{editstudybundle.relatedPublicationsHelp}" linkText="#{editstudybundle.relatedPublicationsLabel}" heading="#{editstudybundle.relatedPublicationsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                            <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.relatedPublications].required}"/>
-                            <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.relatedPublications].recommended}"/>
-                          </div>
-                        </ice:column>
-                        <ice:column>
-                          <div jsfc="ice:panelGroup">
-                            <ice:inputTextarea cols="90" rows="4"
-                                               id="input_relatedPublications"
-                                               binding="#{EditStudyPage.inputRelPublicationName}"
-                                               value="#{currentRow.text}"
-                                               required="#{EditStudyPage.studyMap[sfc.relatedPublications].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
-                                               styleClass="formHtmlEnabled">
-                              <f:validator validatorId="XhtmlValidator"/>
-                            </ice:inputTextarea>
-                            <ice:message styleClass="errorMessage" for="input_relatedPublications"/>
-                          </div>
-                        </ice:column>
-                        <ice:column>
-                          <ice:commandButton image="/resources/images/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/>
-                          <ice:commandButton rendered="#{EditStudyPage.dataTableRelPublications.rowCount gt 1}" image="/resources/images/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" />
                         </ice:column>
                       </ice:dataTable>
                     </ice:column>

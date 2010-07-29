@@ -9,10 +9,10 @@ public interface DVNGraph{
     public void markComponent(int nth);
     public void markNeighborhood(int nth);
 
-    public void calcDegree();
-    public void calcUniqueDegree();
-    public void calcPageRank(double d);
-    public void calcInLargestComponent();
+    public String calcDegree();
+    public String calcUniqueDegree();
+    public String calcPageRank(double d);
+    public String calcInLargestComponent();
 
     public void dumpGraphML(String xmlFilename);
     public void dumpTables(String vertexFilename, String edgeFilename, String delim);

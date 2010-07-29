@@ -1540,11 +1540,11 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
         return localName;
     }
 
-    public void calcPageRank(double d){
-        calcPageRank(d, 10);
+    public String calcPageRank(double d){
+        return calcPageRank(d, 10);
     }
    
-    public void calcPageRank(double d, int iters){
+    public String calcPageRank(double d, int iters){
         PageRank<LazyNode2, LazyRelationship2> pr = new PageRank(this, d);
         LazyNode2 v;
         int i=0;
@@ -1580,9 +1580,10 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
         finally{
             tx.finish();
         }
+        return name;
     }
 
-    public void calcDegree(){
+    public String calcDegree(){
         Transaction tx;
         Node n;
         long writeCount=0;
@@ -1604,9 +1605,10 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
         finally{
             tx.finish();
         }
+        return name;
     }
 
-    public void calcUniqueDegree(){
+    public String calcUniqueDegree(){
         Transaction tx;
         Node n;
         long writeCount=0;
@@ -1628,9 +1630,10 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
         finally{
             tx.finish();
         }
+        return name;
     }
 
-    public void calcInLargestComponent(){
+    public String calcInLargestComponent(){
         Transaction tx;
         Node n;
         Node compNode;
@@ -1656,6 +1659,7 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
         } finally{
             tx.finish();
         }
+        return name;
     }
 
     public void printUserProps(){

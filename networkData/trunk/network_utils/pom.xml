@@ -20,6 +20,7 @@
         <id>neo4j-public-repository</id>
         <url>http://m2.neo4j.org</url>
     </repository>
+    <!--
     <repository>
         <id>tinkerpop-repository</id>
         <name>>TinkerPop Maven2 Repository</name>
@@ -36,6 +37,7 @@
         <url>http://download.oracle.com/maven</url>
         <layout>default</layout>
     </repository>
+    -->
   </repositories>
   <dependencies>
     <dependency>
@@ -59,11 +61,13 @@
         <artifactId>neo4j-utils</artifactId>
         <version>1.1-SNAPSHOT</version>
     </dependency>
+    <!--
     <dependency>
         <groupId>com.tinkerpop</groupId>
         <artifactId>blueprints</artifactId>
         <version>0.1</version>
     </dependency>
+    -->
     <dependency>
         <groupId>net.sf.jung</groupId>
         <artifactId>jung-api</artifactId>
@@ -84,11 +88,13 @@
       <artifactId>sqlite-jdbc</artifactId>
       <version>3.6.16</version>
     </dependency>
+    <!--
     <dependency>
       <groupId>com.sleepycat</groupId>
       <artifactId>je</artifactId>
       <version>4.0.92</version>
     </dependency>
+    -->
   </dependencies>
   <build>
     <resources>

@@ -4,14 +4,14 @@ import java.sql.SQLException;
 
 public interface DVNGraph{
     public void markNodesByProperty(String query) throws SQLException;
-    public void markRelationshipsByProperty(String query) throws SQLException;
+    public void markRelationshipsByProperty(String query, boolean dropDisconnected) throws SQLException;
 
     public void markComponent(int nth);
     public void markNeighborhood(int nth);
 
     public void calcDegree();
     public void calcUniqueDegree();
-    public void calcPageRank(double d, int iters);
+    public void calcPageRank(double d);
     public void calcInLargestComponent();
 
     public void dumpGraphML(String xmlFilename);

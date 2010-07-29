@@ -1,6 +1,6 @@
-package edu.harvard.iq.dvn.networkData;
+package patent_network.network_utils;
 
-import com.tinkerpop.blueprints.pgm.impls.neo4j.Neo4jGraph;
+//import com.tinkerpop.blueprints.pgm.impls.neo4j.Neo4jGraph;
 
 import org.neo4j.graphdb.*;
 import org.neo4j.kernel.EmbeddedGraphDatabase;
@@ -68,7 +68,7 @@ public class GraphBatchInserter {
         conn.close();
 
         DVNGraph lg = new DVNGraphImpl(neoDbName, sqlDbName);
-        lg.initialize();
+        //lg.initialize();
         lg.finalize();
     }
 }

@@ -493,6 +493,7 @@ public class StudyUI  implements java.io.Serializable {
 
     private Boolean isFiles;
     private Boolean isSubsettable;
+
   
     public boolean isFiles() {
         if (isFiles == null) {
@@ -508,6 +509,10 @@ public class StudyUI  implements java.io.Serializable {
         }
 
         return isSubsettable.booleanValue();
+    }
+
+    public boolean getHasMultipleVersions() {
+        return getViewableStudyVersions().size() > 1;
     }
    
     private void initFileFlags() {
@@ -1187,7 +1192,7 @@ public class StudyUI  implements java.io.Serializable {
             return study.getStudyVersions().subList(1, study.getStudyVersions().size());
         } else {
             return study.getStudyVersions();
-        }
+            }
     }
 
     /**

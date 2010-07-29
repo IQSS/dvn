@@ -28,10 +28,10 @@
                        value="#{studyPage.studyUI.viewableStudyVersions}" var="sv">
             <ice:column>
                 <f:facet name="header">
-                    <input type="button" value="Difference" onclick="viewStudyVersionDifferences();"/>
+                    <input type="button" value="Difference"    onclick="viewStudyVersionDifferences();"/>
                 </f:facet>
                 <ice:inputHidden id="versionNumber" value="#{sv.versionNumber}"/>
-                <ice:selectBooleanCheckbox id="versionCheckBox" styleClass="versionCheckBox"/>
+                <ice:selectBooleanCheckbox id="versionCheckBox" styleClass="versionCheckBox"  disabled="#{!studyPage.studyUI.hasMultipleVersions}" />
             </ice:column>
             <ice:column>
                   <f:facet name="header">

@@ -44,6 +44,9 @@ import org.neo4j.graphdb.traversal.*;
 import org.neo4j.helpers.Predicate;
 import org.neo4j.kernel.Traversal;
 import org.neo4j.kernel.EmbeddedGraphDatabase;
+import org.neo4j.kernel.impl.transaction.TxModule;
+import org.neo4j.kernel.impl.transaction.XaDataSourceManager;
+import org.neo4j.kernel.impl.transaction.xaframework.XaDataSource;
 
 import java.util.HashMap;
 import java.util.SortedMap;
@@ -56,14 +59,17 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
     }
 
     public enum flushMode {
-        NODE_ONLY, FULL
+        NODE_ONLY, RELATIONSHIP_ONLY, FULL
     }
 
     public enum elementType {
         NODE, RELATIONSHIP 
     }
 
-    private final long TXN_LIMIT = 1000;
+    public long taggedNodes;
+    private long writeCount;
+
+    private final long TXN_LIMIT = 100000;
     private final long NEO_CACHE_LIMIT = 50000;
 
     //private final Graph graph;
@@ -94,7 +100,7 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
             ArrayList<Relationship> rels = new ArrayList();
             for(Relationship r : node.getRelationships(dir)){
                 if(r.getOtherNode(node).hasRelationship(relType.ACTIVE_SUB, Direction.INCOMING)){
-                    if(r.getType().equals(relType.DEFAULT) && r.hasProperty("active"))
+                    //if(r.getType().equals(relType.DEFAULT) && r.hasProperty("active"))
                         rels.add(r);
                 }
             }
@@ -148,6 +154,13 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
         catch(SQLException e){
             System.err.println(e.getMessage());
         }
+
+        TxModule txModule = ((EmbeddedGraphDatabase) neo).getConfig().getTxModule();
+        XaDataSourceManager xaDsMgr = txModule.getXaDataSourceManager();
+        XaDataSource xaDs = xaDsMgr.getXaDataSource( "nioneodb" );
+        xaDs.setAutoRotate( false );
+
+        writeCount = 0;
     }
 
     public DVNGraphImpl(String GraphDatabaseName, String propertyDb)
@@ -854,7 +867,7 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
     }
 
 
-    public void markRelationshipsByProperty(String query)throws SQLException{
+    public void markRelationshipsByProperty(String query, boolean dropDisconnected)throws SQLException{
         Transaction tx;
         String inStatement = "";
         String sql_format = "select uid from edge_props where uid in (%s) and (%s);";
@@ -907,7 +920,10 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
             tx.finish();
         }
         System.out.println("Edge selection task took " + (((double)(System.currentTimeMillis()-startTimeMs))/1000) + " seconds.");
-        flushMarks(flushMode.FULL);
+        if(dropDisconnected)
+            flushMarks(flushMode.FULL);
+        else
+            flushMarks(flushMode.RELATIONSHIP_ONLY);
     }
 
     public void markNodeNeighborhood(long n_num, final int nth){
@@ -1100,35 +1116,48 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
         return i;
     }
     */
+
+    private long compSize(Node n){
+        long size=0;
+        for(Relationship r : n.getRelationships(relType.OWNS, Direction.OUTGOING)) size++;
+        return size;
+    }
     
-    private boolean tagNodeComponent(Node node, Long tag){
-        Transaction tx;
+    private boolean tagNodeComponent(Node node, Long tag, Transaction tx){
+        //Transaction tx;
         Node compNode;
         Node otherComp;
+        Node tmpComp; // for swapping
         Node n;
+        //Relationship r;
         boolean newTag = true;
-        int writeCount = 0;
 
         TraversalDescription travDesc = defaultDesc;
         Traverser trav;
 
-        PruneEvaluator pruning = new DepthPruner(5);
+        //PruneEvaluator pruning = new DepthPruner(20);
+        PruneEvaluator pruning = new PruneEvaluator(){
+            public boolean pruneAfter(Path p){
+                return p.length() <= 20 || p.endNode().hasRelationship(relType.OWNS, Direction.INCOMING);
+            }
+        };
 
         long i;
+        long nodeCount = 0;
+        Long size1;
 
         //travDesc = travDesc.uniqueness(Uniqueness.NODE_GLOBAL).relationships(relType.DEFAULT, Direction.BOTH);
         travDesc = travDesc.uniqueness(Uniqueness.NODE_GLOBAL).
-                            expand(new ActiveExpander(Direction.BOTH)).
-                            prune(pruning);
-
-        
-
+                            //relationships(relType.DEFAULT, Direction.BOTH).
+                            expand(new ActiveExpander(Direction.OUTGOING));
+                            //prune(pruning);
 
         trav = travDesc.traverse(node);
 
-        tx = neo.beginTx();
+        //tx = neo.beginTx();
         i=0;
-        try{
+        //tx = neo.beginTx();
+        //try{
             compNode = neo.createNode();
             getComponentNode().createRelationshipTo(compNode, relType.COMPONENT_SUB);
 /*
@@ -1139,55 +1168,91 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
 
             */
             for(Path p : trav){
-              //  System.out.println("\tTrav." + p.endNode().getId());
+                //System.out.println("\tTrav." + p.endNode().getId());
                 if(p.endNode().hasRelationship(relType.OWNS, Direction.INCOMING)){
                     otherComp = p.endNode().getSingleRelationship(relType.OWNS, Direction.INCOMING).getStartNode();
                     if(otherComp.equals(compNode)) continue;
 
-             //       System.out.println(String.format("Found other component. Current component: %s. Other component: %s", compNode, otherComp));
-                    for(Relationship r : compNode.getRelationships(relType.OWNS, Direction.OUTGOING)){
+                    //Determine which has fewer relationships. A good proxy is which has a smaller id. This one will be deleted.
+        //            System.out.println(String.format("Found other component. Current component: %s. Other component: %s", compNode, otherComp));
+                    size1 = new Long(compSize(compNode));
+                    //System.out.println(String.format("Sizes. %s: %d, %s: %d.", compNode, size1, otherComp, (Long)otherComp.getProperty("nodeCount")));
+                    if(size1.longValue() > ((Long)otherComp.getProperty("nodeCount")).longValue()) {
+                        //swap
+                       tmpComp = compNode; compNode = otherComp; otherComp = tmpComp; tmpComp = null;
+                    }
+                    //System.out.println(String.format("Eliminating componeent " + compNode));
+
+                    for(Relationship r : compNode.getRelationships(relType.OWNS, Direction.OUTGOING)) {
                         n = r.getEndNode();
                         r.delete();
                         otherComp.createRelationshipTo(n, relType.OWNS);
+                        writeCount++;
+                        /*
                         if(writeCount++ > TXN_LIMIT/2){
                             writeCount %= TXN_LIMIT/2;
                             tx.success();
                             tx.finish();
                             tx = neo.beginTx();
                         }
+                       */
+                
                     }
+                    /*
                     tx.success();
                     tx.finish();
                     tx = neo.beginTx();
+                    */
 
                     compNode.getSingleRelationship(relType.COMPONENT_SUB, Direction.INCOMING).delete();
+                    for(Relationship rel : compNode.getRelationships())
+                        System.out.println(String.format("%s, %s, %s, %s", rel, rel.getOtherNode(compNode), rel.getType(), rel.getStartNode()));
                     compNode.delete();
                     compNode = otherComp;
-                }
+                    //System.out.println("Done");
 
-                if(!p.endNode().hasRelationship(relType.OWNS, Direction.INCOMING))
+                    
+
+                }
+                else//(!p.endNode().hasRelationship(relType.OWNS, Direction.INCOMING))
                     compNode.createRelationshipTo(p.endNode(), relType.OWNS);
-                if((i++%NEO_CACHE_LIMIT)==0){
+                
+                if((++nodeCount%(NEO_CACHE_LIMIT*5))==0){
+                    System.out.println(nodeCount);
+                    System.out.println("clearing...");
                     clearNeoCache();
+                    System.out.println("done.");
                 }
-            }
 
+                if(writeCount++ > TXN_LIMIT){
+                    writeCount %= TXN_LIMIT;
+                    System.out.println("Committing...");
+                    tx.success();
+                    tx.finish();
+                    tx = neo.beginTx();
+                    System.out.println("done.");
+                }
+                
+            }
+                  
             if(!compNode.hasProperty("tag"))
                 compNode.setProperty("tag", tag);
             else
                 newTag = false;
 
             if(!compNode.hasProperty("nodeCount"))
-                compNode.setProperty("nodeCount", new Long(i));
+                compNode.setProperty("nodeCount", new Long(nodeCount));
             else
                 compNode.setProperty("nodeCount",
-                        new Long(i) + (Long)compNode.getProperty("nodeCount"));
+                        new Long(nodeCount) + (Long)compNode.getProperty("nodeCount"));
 
-            tx.success();
-        }
-        finally{
-            tx.finish();
-        }
+            taggedNodes += nodeCount;
+
+        //    tx.success();
+        //}
+        //finally{
+        //    tx.finish();
+        //}
         return newTag;
     }
 
@@ -1198,17 +1263,31 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
 
         clearComponents();
 
+        tx = neo.beginTx();
+        try{
         //for(Path p : getActiveTraverser()){
         for(Relationship r : getActiveNode().getRelationships(relType.ACTIVE_SUB, Direction.OUTGOING)){
             cur = r.getEndNode();
-            if((i++%NEO_CACHE_LIMIT)==0)
-                clearNeoCache();
+            //if((i++%NEO_CACHE_LIMIT)==0)
+            //    clearNeoCache();
 
             if(!cur.hasRelationship(relType.OWNS, Direction.INCOMING)){
                 //System.out.println("Found one! " + cur.getId());
-                if(tagNodeComponent(cur, tag))
-                    tag++;
+                    if(tagNodeComponent(cur, tag, tx))
+                        tag++;
+                    if((tag > 10000)){
+                        tag %= 10000;
+                        tx.success();
+                        tx.finish();
+                        neo.beginTx();
+                        //clearNeoCache();
+                        System.out.println("Tagged nodes: " + taggedNodes);
+                    }
             }
+        }
+        tx.success();
+        } finally {
+            tx.finish();
         }
     }
 
@@ -1307,12 +1386,13 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
         long size=0, target_size, writeCount=0;
         Long key;
         long nodeCount=0;
+        Node anNode = getActiveNextNode();
         Transaction tx;
         
         tx = neo.beginTx();
         try{
             for(Relationship r : getNthComponentNode(nth).getRelationships(relType.OWNS, Direction.OUTGOING)){
-                getActiveNextNode().createRelationshipTo(r.getEndNode(), relType.ACTIVE_NEXT_SUB);
+                anNode.createRelationshipTo(r.getEndNode(), relType.ACTIVE_NEXT_SUB);
                 if((++writeCount%TXN_LIMIT)==0){
                     tx.success();
                     tx.finish();
@@ -1458,6 +1538,10 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
         neo.getReferenceNode().setProperty(globalName, type);
         userProperties.add(localName);
         return localName;
+    }
+
+    public void calcPageRank(double d){
+        calcPageRank(d, 10);
     }
    
     public void calcPageRank(double d, int iters){

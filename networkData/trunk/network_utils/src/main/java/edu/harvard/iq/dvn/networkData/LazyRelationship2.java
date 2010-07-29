@@ -1,20 +1,22 @@
-package edu.harvard.iq.dvn.networkData;
+package patent_network.network_utils;
 
 import java.util.HashMap;
 import java.util.Collection;
 
 import org.neo4j.graphdb.Relationship;
 
+/*
 import com.sleepycat.persist.model.Entity;
 import com.sleepycat.persist.model.PrimaryKey;
 import com.sleepycat.persist.model.SecondaryKey;
 import static com.sleepycat.persist.model.Relationship.*;
+*/
 
 import edu.uci.ics.jung.graph.util.EdgeType;
 
-@Entity
+//@Entity
 public class LazyRelationship2 {
-    @PrimaryKey
+//    @PrimaryKey
     private Long relId;
 
 //    private Relationship underlyingRelationship;

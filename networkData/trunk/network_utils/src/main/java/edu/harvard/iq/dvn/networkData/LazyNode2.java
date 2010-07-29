@@ -1,4 +1,4 @@
-package patent_network.network_utils;
+package edu.harvard.iq.dvn.networkData;
 
 import java.util.HashMap;
 

@@ -1,4 +1,4 @@
-package patent_network.network_utils;
+package edu.harvard.iq.dvn.networkData;
 
 //import com.tinkerpop.blueprints.pgm.impls.neo4j.Neo4jGraph;
 

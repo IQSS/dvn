@@ -103,7 +103,7 @@ public class Indexer implements java.io.Serializable  {
     private static Indexer indexer;
     Directory dir;
     String indexDir = "index-dir";
-    int dvnMaxClauseCount = 16384;
+    int dvnMaxClauseCount = Integer.MAX_VALUE;
     
 
     /** Creates a new instance of Indexer */

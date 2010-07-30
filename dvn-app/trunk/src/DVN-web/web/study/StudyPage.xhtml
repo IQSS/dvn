@@ -131,10 +131,6 @@
                         endIndex = id.indexOf(":", startIndex);
                         return id.substring(startIndex, endIndex);
                     }
-
-
-
-                
                  
                     function submitSelectedDownload(elem) {
                           if (elem.value==null) {
@@ -158,7 +154,6 @@
                             }
                             // Reset selected value to "Download As..."
                             elem.value="";
-
                         }
                     }
 
@@ -170,8 +165,6 @@
                             iceSubmitPartial(document.getElementById('studyForm'), document.getElementById('studyForm:selectedFileIds'), null);
                         }
                     }
-
-                  
 
                     function setSelectedFileIds() {
                         fileIdStr = "";
@@ -187,7 +180,6 @@
                         var selectedFields = document.getElementById('studyForm:selectedFileIds');
 
                         selectedFields.value = fileIdStr;
-
                     }
 
                     function viewStudyVersionDifferences() {
@@ -211,7 +203,6 @@
 
                         return false;
                     }
-                  
                     // ]]>
                 </script>
       <f:loadBundle basename="StudyBundle" var="studybundle"/>
@@ -387,11 +378,7 @@
                                            columnClasses="vdcStudyInfoCol1, vdcStudyInfoCol2" columns="2" width="100%" rendered="#{studyPage.studyUI.citationInformationPanelIsRendered}">
                                 <div jsfc="ice:panelGroup">
                                     <div>
-                                        <!-- <h4><ice:outputText value="#{studybundle.howCiteLabel}"/></h4> <div class="dvnhowtociteWhy"><a href="http://thedata.org/book/data-citation-standard-and-unf">Why cite?</a></div>
-                                        <ice:outputText value="#{studybundle.howCiteHelp}" styleClass="dvnhowtociteinfo" escape="false"/> -->
-
                                         <dvn:inlinehelp helpMessage="#{studybundle.dataCitationHelp}" linkText="#{studybundle.dataCitationLabel}" heading="#{studybundle.dataCitationHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink"/>
-
                                     </div>
                                 </div>
                                 <div jsfc="ice:panelGroup" styleClass="dvnhowtocitecitationfloat">
@@ -406,7 +393,10 @@
         });
     });
 </script>
-                                    <strong>If you use these data, please add the following citation to your scholarly references.</strong> <a href="http://thedata.org/book/data-citation-standard-and-unf">Why cite?</a>
+                                    <div>
+                                        <ice:graphicImage value="/resources/images/icon_info.gif" styleClass="dvn_icon"/>
+                                        <ice:outputText value=" &#60;strong&#62;If you use these data, please add the following citation to your scholarly references.&#60;/strong&#62; &#60;a href='http://thedata.org/book/data-citation-standard-and-unf'&#62;Why cite?&#60;/a&#62;" escape="false"/>
+                                    </div>
                                     <textarea readonly="readonly" rows="3" id="dvnStudyCitationPrint" class="dvnstudycitation dvnstudycitationDefault"><ice:outputText value="#{studyPage.studyUI.metadata.textCitation}" nospan="true"></ice:outputText></textarea>
                                     <textarea readonly="readonly" rows="3" id="dvnStudyCitationWeb" class="dvnstudycitation"><ice:outputText value="#{studyPage.studyUI.metadata.webCitation}" nospan="true"></ice:outputText></textarea>
                                     <label for="citationformat">Citation Format</label> <select id="dvnCitationSelector"><option value="Print" selected="selected">Print</option><option value="Web">Web</option></select>
@@ -414,20 +404,16 @@
 
                                 <dvn:inlinehelp helpMessage="#{studybundle.replicationForHelp}" linkText="#{studybundle.replicationForLabel}" heading="#{studybundle.replicationForHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.metadata.replicationFor != '' and studyPage.studyUI.metadata.replicationFor != null }"/>
                                 <div jsfc="ice:panelGroup" styleClass="dvnhowtocitecitationfloat" rendered="#{!empty studyPage.studyUI.metadata.replicationFor}">
-                                    <div>Results found in this publication can be replicated using these data.</div>
-                                    <textarea readonly="readonly" rows="3" class="dvnstudycitation dvnstudycitationDefault"><ice:outputText value="#{studyPage.studyUI.metadata.replicationFor}" nospan="true" escape="false"></ice:outputText></textarea>
+                                    <div class="dvn_padBot">
+                                        <ice:graphicImage value="/resources/images/icon_info.gif" styleClass="dvn_icon"/>
+                                        <ice:outputText value=" Results found in this publication can be replicated using these data."/>
+                                    </div>
+                                    <ice:outputText id="text18" value="#{studyPage.studyUI.metadata.replicationFor}" rendered="#{!empty studyPage.studyUI.metadata.replicationFor}" escape="false"/>
                                 </div>
-                                <!-- <ice:outputText id="text18" value="#{studyPage.studyUI.metadata.replicationFor}" rendered="#{!empty studyPage.studyUI.metadata.replicationFor}" escape="false"/> -->
-
-                                <dvn:inlinehelp helpMessage="#{studybundle.relatedPublicationsHelp}" linkText="#{studybundle.relatedPublicationsLabel}" heading="#{studybundle.relatedPublicationsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.relPublications != '' and studyPage.studyUI.relPublications != null }"/>
-                                <div jsfc="ice:panelGroup" styleClass="dvnhowtocitecitationfloat" rendered="#{!empty studyPage.studyUI.relPublications}">
-                                    <textarea readonly="readonly" rows="3" class="dvnstudycitation dvnstudycitationDefault"><ice:outputText value="#{studyPage.studyUI.relPublications}" nospan="true" escape="false"></ice:outputText></textarea>
-                                </div>
-                                <!-- <ice:outputText id="text23" value="#{studyPage.studyUI.relPublications}" rendered="#{!empty studyPage.studyUI.relPublications }" escape="false"/> -->
 
                             </ice:panelGrid>
                             <div jsfc="ice:panelGroup" id="groupPanel11" styleClass="vdcStudyInfoHeader">
-                                <ice:outputText id="outputText11" value="Citation Information"/>
+                                <ice:outputText id="outputText11" value="Data Citation Details"/>
                                 <ice:commandButton id="commandButtonCitationInfoContract" image="/resources/images/icon_expand.gif" title="Hide fields in this section" rendered="#{studyPage.studyUI.citationInformationPanelIsRendered}" actionListener="#{studyPage.updateCitationInfoDisplay}"/>
                                 <ice:commandButton id="commandButtonCitationInfoExpand" image="/resources/images/icon_contract.gif" title="Show fields in this section" rendered="#{!studyPage.studyUI.citationInformationPanelIsRendered}" actionListener="#{studyPage.updateCitationInfoDisplay}"/>
                             </div>
@@ -484,8 +470,6 @@
                                 <dvn:inlinehelp helpMessage="#{studybundle.seriesVersionHelp}" linkText="#{studybundle.seriesVersionLabel}" heading="#{studybundle.seriesVersionHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.studyVersionText != '' }"/>
                                 <ice:outputText id="text17" value="#{studyPage.studyUI.studyVersionText}" rendered="#{!empty studyPage.studyUI.studyVersionText}"/>
 
-                                
-
                                 <!--
                                   <dvn:inlinehelp helpMessage="#{studybundle.dataverseOwnerHelp}" linkText="#{studybundle.dataverseOwnerLabel}" heading="#{studybundle.dataverseOwnerHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.study.owner.Id != VDCRequest.currentVDCId}"/>
                                   <ice:outputLink value="/dvn/dv/#{studyPage.studyUI.study.owner.alias}" rendered="#{studyPage.studyUI.study.owner.Id != VDCRequest.currentVDCId}">
@@ -529,7 +513,8 @@
                                 <dvn:inlinehelp helpMessage="#{studybundle.topicClassificationHelp}" linkText="#{studybundle.topicClassificationLabel}" heading="#{studybundle.topicClassificationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.topicClasses != ''}"/>
                                 <ice:outputText id="text22" value="#{studyPage.studyUI.topicClasses}" rendered="#{!empty studyPage.studyUI.topicClasses }" escape="false"/>
 
-                                
+                                <dvn:inlinehelp helpMessage="#{studybundle.relatedPublicationsHelp}" linkText="#{studybundle.relatedPublicationsLabel}" heading="#{studybundle.relatedPublicationsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.relPublications != '' and studyPage.studyUI.relPublications != null }"/>
+                                <ice:outputText id="text23" value="#{studyPage.studyUI.relPublications}" rendered="#{!empty studyPage.studyUI.relPublications }" escape="false"/>
 
                                 <dvn:inlinehelp helpMessage="#{studybundle.relatedMaterialHelp}" linkText="#{studybundle.relatedMaterialLabel}" heading="#{studybundle.relatedMaterialHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="#{studyPage.studyUI.relMaterials != '' and studyPage.studyUI.relMaterials != null }"/>
                                 <ice:outputText id="outputText150" value="#{studyPage.studyUI.relMaterials}" rendered="#{!empty studyPage.studyUI.relMaterials}" escape="false"/>
@@ -636,7 +621,7 @@
                                 <ice:outputText id="outputText114" value="#{studyPage.studyUI.metadata.otherDataAppraisal}" rendered="#{!empty studyPage.studyUI.metadata.otherDataAppraisal}" escape="false"/>
                             </ice:panelGrid>
                             <div jsfc="ice:panelGroup" id="groupPanel14a" styleClass="vdcStudyInfoHeader" rendered="#{!studyPage.dataAvailIsEmpty}">
-                                <ice:outputText id="outputText115a" value="Data Set Availability"/>
+                                <ice:outputText id="outputText115a" value="Data Availability"/>
                                 <ice:commandButton id="commandButtonDataAvailContract" image="/resources/images/icon_expand.gif" title="Hide fields in this section" rendered="#{studyPage.studyUI.dataAvailPanelIsRendered}" actionListener="#{studyPage.updateDataAvailDisplay}"/>
                                 <ice:commandButton id="commandButtonDataAvailExpand" image="/resources/images/icon_contract.gif" title="Show fields in this section" rendered="#{!studyPage.studyUI.dataAvailPanelIsRendered}" actionListener="#{studyPage.updateDataAvailDisplay}"/>
                             </div>

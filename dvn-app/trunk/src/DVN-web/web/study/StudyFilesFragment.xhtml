@@ -142,6 +142,15 @@
                                                                             <ice:outputResource  id="subset_zip" styleClass="zip#{studyFileUI.studyFile.id}"   label="Download Subsettable Zip" type="button"
                                                                                                  fileName="#{studyFileUI.zipFileName}" mimeType="application/zip"
                                                                                                  resource="#{studyFileUI.resource}" shared="false"/>
+                                                                            <ice:outputResource  id="subset_splus" styleClass="splus#{studyFileUI.studyFile.id}"   label="Download Subsettable Splus" type="button"
+                                                                                                 fileName="#{studyFileUI.splusFileName}" mimeType="application/x-rlang-transport"
+                                                                                                 resource="#{studyFileUI.resource}" shared="false"/>
+                                                                            <ice:outputResource  id="subset_stata" styleClass="stata#{studyFileUI.studyFile.id}"   label="Download Subsettable Stata" type="button"
+                                                                                                 fileName="#{studyFileUI.stataFileName}" mimeType="application/x-stata-6"
+                                                                                                 resource="#{studyFileUI.resource}" shared="false"/>
+                                                                            <ice:outputResource  id="subset_rdata" styleClass="rdata#{studyFileUI.studyFile.id}"   label="Download Subsettable R" type="button"
+                                                                                                 fileName="#{studyFileUI.rdataFileName}" mimeType="application/x-R-2"
+                                                                                                 resource="#{studyFileUI.resource}" shared="false"/>
                                                                             <ice:outputResource  id="subset_tab" styleClass="tab#{studyFileUI.studyFile.id}"   label="Download Subsettable Tab" type="button"
                                                                                                  fileName="#{studyFileUI.tabFileName}" mimeType="text/plain"
                                                                                                  resource="#{studyFileUI.resource}" shared="false"/>

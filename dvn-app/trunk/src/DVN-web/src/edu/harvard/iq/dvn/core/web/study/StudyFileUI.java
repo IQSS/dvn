@@ -301,6 +301,19 @@ public class StudyFileUI implements java.io.Serializable {
         return FileUtil.replaceExtension(this.fileMetadata.getLabel(), "zip");
     }
 
+
+    public String getSplusFileName() {
+        return FileUtil.replaceExtension(this.fileMetadata.getLabel(), "ssc");
+    }
+
+    public String getStataFileName() {
+        return FileUtil.replaceExtension(this.fileMetadata.getLabel(), "dta");
+    }
+
+    public String getRdataFileName() {
+        return FileUtil.replaceExtension(this.fileMetadata.getLabel(), "RData");
+    }
+
     public String getOrigFileName() {
         String origFileType = fileMetadata.getStudyFile().getOriginalFileType();
         String origFileName = fileMetadata.getLabel();
@@ -417,7 +430,7 @@ public class StudyFileUI implements java.io.Serializable {
                     break;
                 // No formatParam needed for  GRAPHML or FIXED_FIELD, because no conversion is done.
             }
-            fileDownloadURL += "?fileId=" + studyFileUI.getStudyFile().getId() + formatParam + xff;
+            fileDownloadURL += "?fileId=" + studyFileUI.getStudyFile().getId() + formatParam + studyFileUI.getXff();
            
         }
          else {

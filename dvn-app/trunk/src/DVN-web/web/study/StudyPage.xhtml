@@ -149,6 +149,12 @@
                                 jQuery('.orig'+fileId).click();
                             } else if (elem.value=="GRAPHML") {
                                 jQuery('.label'+fileId).click();
+                            } else if (elem.value == 'SPLUS') {
+                                jQuery('.splus'+fileId).click();
+                            } else if (elem.value == 'STATA') {
+                                jQuery('.stata'+fileId).click();
+                            } else if (elem.value == 'R') {
+                                jQuery('.rdata'+fileId).click();
                             } else { // SPLUS, SPSS or R
                                 jQuery('.zip'+fileId).click();
                             }

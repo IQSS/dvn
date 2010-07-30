@@ -125,16 +125,16 @@ public class FileDownloadServlet extends HttpServlet {
     
     
     /** The citation information as a String */
-    private String citation;
+    //private String citation;
     
     /** The title of the requested study */
-    private String studyTitle;
+    //private String studyTitle;
     
     /** The ID of the requested study */
-    private Long studyId;
+    //private Long studyId;
     
     /** The URL of the requested study */
-    private String studyURL;
+    //private String studyURL;
     
     private static Map <String, String> formatRequestedMIMEtypeMap =
         new LinkedHashMap<String, String>();
@@ -196,61 +196,10 @@ public class FileDownloadServlet extends HttpServlet {
         String imageThumb = req.getParameter("imageThumb");
         String noVarHeader = req.getParameter("noVarHeader");
 
-        StudyVersion studyVersion = null;
+        //StudyVersion studyVersion = null;
 
-// v1.4 changes: start
         dbgLog.fine("*****  FileDownLoadServlet : service() starts here *****");
         dbgLog.fine("*****  v1.4 lines start here *****");
-
-        /**
-         * The name of StudyUI class that contains the citation-related 
-         * information about the requested Study
-         */
-        Enumeration emso =  req.getSession().getAttributeNames();
-        dbgLog.fine("session names="+emso);
-
-        Map<String, Object> sessionMap = new HashMap<String, Object>();
-        while(emso.hasMoreElements()){
-            String nm = (String) emso.nextElement();
-            sessionMap.put(nm, req.getSession().getAttribute(nm));
-        }
-        dbgLog.fine("sessionMap="+sessionMap);
-        
-        // Stores the title, ID, and citation data of the requested study
-        if (sessionMap.containsKey(studyUIclassName)) {
-
-            // version review: check how study ui is generated
-            StudyUI sui = (StudyUI) sessionMap.get(studyUIclassName);
-            // -- This is the study UI that gets created in StudyPage.java;
-            //    So this guarantees the title and citations are from the
-            //    correct version of the metadata.
-            //    Still, this is not a very good method of passing information
-            //    between the componenets. Will rewrite this for 2.1.1 -- L.A.
-
-            studyTitle = sui.getMetadata().getTitle();
-            studyId = sui.getStudy().getId();
-
-            // The studyUI in the session map contains a Metadata object; 
-            // However, for the purposes of retrieving the citation it may be
-            // "stale" -- for ex., it may still have the UNF generated before
-            // the last files were added. So we want to retrieve the Study 
-            // Version and Metadata from the database:
-
-            Long studyVersionId = sui.getStudyVersion().getId();
-            studyVersion = studyService.getStudyVersionById(studyVersionId);
-            citation = studyVersion.getMetadata().getCitation(false);
-
-            //citation = sui.getMetadata().getCitation(false);
-            
-            dbgLog.info("StudyUIclassName was found in the session Map");
-            dbgLog.info("Study Title="+studyTitle);
-            dbgLog.info("Study Id="+studyId);
-            dbgLog.info("Citation="+citation);
-        } else {
-            dbgLog.info("StudyUIclassName was not in the session Map");
-        }
-
-// v1.4 chagnes: end
 
 
         if (fileId != null && (!fileId.contains(","))) {
@@ -336,11 +285,6 @@ public class FileDownloadServlet extends HttpServlet {
             paramListToR = new HashMap<String, List<String>>();
 
             paramListToR.put("dtdwnld", Arrays.asList(formatRequested));            
-            dbgLog.fine("remote: citation info to be sent:\n" + citation);
-            
-            paramListToR.put("studytitle", Arrays.asList(studyTitle));
-            paramListToR.put("studyno", Arrays.asList(studyId.toString()));
-            paramListToR.put("studyURL", Arrays.asList(studyURL));
             paramListToR.put("requestType", Arrays.asList("Download"));
 
             dataVariables = ((TabularDataFile) file).getDataTable().getDataVariables();
@@ -354,7 +298,7 @@ public class FileDownloadServlet extends HttpServlet {
         // common(file-access) block for both cases
                 
         String remoteFileUrl = file.getFileSystemLocation();
-	Boolean zippedStream = false; 
+        Boolean zippedStream = false;
                     
                     
         GetMethod method = null;
@@ -363,29 +307,29 @@ public class FileDownloadServlet extends HttpServlet {
         try {
 
             if (remoteFileUrl != null) {
-		remoteFileUrl = remoteFileUrl.replaceAll(" ", "+");
+                remoteFileUrl = remoteFileUrl.replaceAll(" ", "+");
             }
 
             // If it's another DVN from which we are getting
             // the file, we need to pass the "noVarHeader"
             // argument along:
 
-	    if (remoteFileUrl.matches(".*FileDownload.*")) {
-		if (noVarHeader != null) {
-		    remoteFileUrl = remoteFileUrl + "&noVarHeader=1";
-		} else {
-		    // and if we are retreiving this tab file in order
-		    // to convert it to another format locally, we also 
-		    // have to add the noVarHeader flag, otherwise the
-		    // header will be treated as a line of data!
+            if (remoteFileUrl.matches(".*FileDownload.*")) {
+                if (noVarHeader != null) {
+                    remoteFileUrl = remoteFileUrl + "&noVarHeader=1";
+                } else {
+                    // and if we are retreiving this tab file in order
+                    // to convert it to another format locally, we also
+                    // have to add the noVarHeader flag, otherwise the
+                    // header will be treated as a line of data!
 		    
-		    if (formatRequested != null) {
-			remoteFileUrl = remoteFileUrl + "&noVarHeader=1";
-			// TODO -- ? -- do we need to check if this is 
-			// a tab-delimited file? in theory, this could 
-			// be a fixed field from another DVN... or could it?
-		    }
-		}
+                    if (formatRequested != null) {
+                        remoteFileUrl = remoteFileUrl + "&noVarHeader=1";
+                        // TODO -- ? -- do we need to check if this is
+                        // a tab-delimited file? in theory, this could
+                        // be a fixed field from another DVN... or could it?
+                    }
+                }
             }
 
 
@@ -398,7 +342,7 @@ public class FileDownloadServlet extends HttpServlet {
             Matcher hostMatcher = patternRemoteHost.matcher(remoteFileUrl);
 
             if (hostMatcher.find()) {
-		remoteHost = hostMatcher.group(1);
+                remoteHost = hostMatcher.group(1);
             }
 
 
@@ -412,34 +356,34 @@ public class FileDownloadServlet extends HttpServlet {
 
             
             if (remoteAuthType != null) {
-		if (remoteAuthType.equals("httpbasic")) {
-		    // get the basic HTTP auth credentials
-		    // (password and username) from the database:
+                if (remoteAuthType.equals("httpbasic")) {
+                    // get the basic HTTP auth credentials
+                    // (password and username) from the database:
 		    
-		    remoteAuthHeader = getRemoteAuthCredentials(remoteHost);
+                    remoteAuthHeader = getRemoteAuthCredentials(remoteHost);
 
-		    if (remoteAuthHeader != null) {
-			method.addRequestHeader("Authorization", remoteAuthHeader);
-		    }
-		} else if (remoteAuthType.equals("dvn")) {
-		    // Authenticate with the remote DVN:
+                    if (remoteAuthHeader != null) {
+                        method.addRequestHeader("Authorization", remoteAuthHeader);
+                    }
+                } else if (remoteAuthType.equals("dvn")) {
+                    // Authenticate with the remote DVN:
 		    
-		    jsessionid = dvnRemoteAuth(remoteHost);
-		} else if (remoteAuthType.equals("icpsr")) {
-		    String icpsrCookie = getICPSRcookie(remoteHost, remoteFileUrl);
+                    jsessionid = dvnRemoteAuth(remoteHost);
+                } else if (remoteAuthType.equals("icpsr")) {
+                    String icpsrCookie = getICPSRcookie(remoteHost, remoteFileUrl);
 
-		    if (icpsrCookie != null) {
-			method.addRequestHeader("Cookie", icpsrCookie);
-		    }
+                    if (icpsrCookie != null) {
+                        method.addRequestHeader("Cookie", icpsrCookie);
+                    }
 
-		    if ( remoteFileUrl.matches(".*gzip.*") ) {
-			zippedStream = true; 
-		    }
-		}
+                    if ( remoteFileUrl.matches(".*gzip.*") ) {
+                        zippedStream = true;
+                    }
+                }
             }
 
             if (jsessionid != null) {
-		method.addRequestHeader("Cookie", "JSESSIONID=" + jsessionid);
+                method.addRequestHeader("Cookie", "JSESSIONID=" + jsessionid);
             }
 
             // normally, the HTTP client follows redirects
@@ -468,73 +412,72 @@ public class FileDownloadServlet extends HttpServlet {
             // for it.
 
             if (status == 302 || status == 301) {
-		// this is a redirect.
+                // this is a redirect.
             
-		// let's see where it is redirecting us; if it looks like
-		// DVN TermsOfUse page, we'll "click" and submit the form,
-		// then we'll hopefully be able to download the file.
-		// If it's no the TOU page, we are just going to try to
-		// follow the redirect and hope for the best.
-		// (A good real life example is the Census archive: the
-		// URLs for their objects that they give us are actually
-		// aliases that are 302-redirected to the actual locations)
+                // let's see where it is redirecting us; if it looks like
+                // DVN TermsOfUse page, we'll "click" and submit the form,
+                // then we'll hopefully be able to download the file.
+                // If it's no the TOU page, we are just going to try to
+                // follow the redirect and hope for the best.
+                // (A good real life example is the Census archive: the
+                // URLs for their objects that they give us are actually
+                // aliases that are 302-redirected to the actual locations)
 
-		String redirectLocation = null;
-		String extraCookies = null; 
+                String redirectLocation = null;
+                String extraCookies = null;
                 
-		for (int i = 0; i < method.getResponseHeaders().length; i++) {
-		    String headerName = method.getResponseHeaders()[i].getName();
-		    if (headerName.equals("Location")) {
-			redirectLocation = method.getResponseHeaders()[i].getValue();
-		    }
+                for (int i = 0; i < method.getResponseHeaders().length; i++) {
+                    String headerName = method.getResponseHeaders()[i].getName();
+                    if (headerName.equals("Location")) {
+                        redirectLocation = method.getResponseHeaders()[i].getValue();
+                    }
 		    
-		    String regexCookie = "^([^;]*;)"; 
-		    Pattern patternCookie = Pattern.compile (regexCookie); 
+                    String regexCookie = "^([^;]*;)";
+                    Pattern patternCookie = Pattern.compile (regexCookie);
 		    
-		    if (headerName.equals("Set-Cookie") || 
-			headerName.equals("Set-cookie")) {
-			String cookieHeader = method.getResponseHeaders()[i].getValue();
-			Matcher cookieMatcher = patternCookie.matcher(cookieHeader);
-			if ( cookieMatcher.find() ) {
-			    extraCookies = cookieMatcher.group(1); 
-			}
-		    }
-		}
+                    if (headerName.equals("Set-Cookie") ||
+                        headerName.equals("Set-cookie")) {
+                        String cookieHeader = method.getResponseHeaders()[i].getValue();
+                        Matcher cookieMatcher = patternCookie.matcher(cookieHeader);
+                        if ( cookieMatcher.find() ) {
+                            extraCookies = cookieMatcher.group(1);
+                        }
+                    }
+                }
 
-		if (redirectLocation.matches(".*TermsOfUsePage.*")) {
+                if (redirectLocation.matches(".*TermsOfUsePage.*")) {
 		    
-		    // Accept the TOU agreement:
+                    // Accept the TOU agreement:
 		    
-		    method = remoteAccessTOU(redirectLocation, jsessionid, remoteFileUrl, extraCookies);
+                    method = remoteAccessTOU(redirectLocation, jsessionid, remoteFileUrl, extraCookies);
 
-		    // If everything has worked right
-		    // we should be redirected to the final
-		    // download URL, and the method returned is
-		    // an established download connection;
+                    // If everything has worked right
+                    // we should be redirected to the final
+                    // download URL, and the method returned is
+                    // an established download connection;
 
-		    if (method != null) {
-			status = method.getStatusCode();
-		    } else {
-			// but if something went wrong in the progress,
-			// we just report that we couldn't find
-			// the file:
-			status = 404;
-		    }
+                    if (method != null) {
+                        status = method.getStatusCode();
+                    } else {
+                        // but if something went wrong in the progress,
+                        // we just report that we couldn't find
+                        // the file:
+                        status = 404;
+                    }
                 
-		} else {
-		    // just try again (and hope for the best!)
-		    method = new GetMethod(redirectLocation);
-		    status = getClient().executeMethod(method);
-		}
+                } else {
+                    // just try again (and hope for the best!)
+                    method = new GetMethod(redirectLocation);
+                    status = getClient().executeMethod(method);
+                }
             }
-
         } catch (IOException ex) {
             // return 404
             // and generate a FILE NOT FOUND message
 
             createErrorResponse404(res);
             if (method != null) {
-            method.releaseConnection();
+                method.releaseConnection();
             }
             return;
         }
@@ -546,7 +489,7 @@ public class FileDownloadServlet extends HttpServlet {
             
             createErrorResponse403Remote(res);
             if (method != null) {
-            method.releaseConnection();
+                method.releaseConnection();
             }
             return;
         }
@@ -557,7 +500,7 @@ public class FileDownloadServlet extends HttpServlet {
 
             createErrorResponse404(res);
             if (method != null) {
-            method.releaseConnection();
+                method.releaseConnection();
             }
             return;
         }
@@ -569,7 +512,7 @@ public class FileDownloadServlet extends HttpServlet {
                            ? method.getStatusLine().toString()
                            : "Unknown HTTP Error has occured.");
             if (method != null) {
-            method.releaseConnection();
+                method.releaseConnection();
             }
             return;
         }
@@ -577,392 +520,330 @@ public class FileDownloadServlet extends HttpServlet {
         Boolean ExternalHTMLpage = false;
 
 
-	InputStream in = null;
+        InputStream in = null;
 	
-	try {
-	    if ( zippedStream ) {
-		InputStream zipInputStream = method.getResponseBodyAsStream();
-		ZipInputStream zin = new ZipInputStream(zipInputStream);
-		zin.getNextEntry(); 
-		in = zin; 
+        try {
+            if ( zippedStream ) {
+                InputStream zipInputStream = method.getResponseBodyAsStream();
+                ZipInputStream zin = new ZipInputStream(zipInputStream);
+                zin.getNextEntry();
+                in = zin;
 		
-	    } else {
-		in = method.getResponseBodyAsStream();
-	    }	    
-	} catch (IOException ex) {
-	    // catches exceptions that may have occured while trying
-	    // to download and stream a remote data file.
+            } else {
+                in = method.getResponseBodyAsStream();
+            }
+        } catch (IOException ex) {
+            // catches exceptions that may have occured while trying
+            // to download and stream a remote data file.
 
-	    String errorMessage = "An unknown I/O error has occured while attempting to retreive a remote data file (i.e., a file that belongs to a harvested study). It is possible that it is temporarily unavailable from that location or perhaps a temporary network error has occured. Please try again later and if the problem persists, report it to your DVN technical support contact.";
-	    createErrorResponseGeneric(res, 0, errorMessage);
-	    return; 
-	}
+            String errorMessage = "An unknown I/O error has occured while attempting to retreive a remote data file (i.e., a file that belongs to a harvested study). It is possible that it is temporarily unavailable from that location or perhaps a temporary network error has occured. Please try again later and if the problem persists, report it to your DVN technical support contact.";
+            createErrorResponseGeneric(res, 0, errorMessage);
+            return;
+        }
 
 
-	// Now we need to see if this file was requested in an alternative
-	// format; if so, we'll need to run an R job to convert the data. 
-	// Otherwise we can simply stream the incoming file to the browser.
+        // Now we need to see if this file was requested in an alternative
+        // format; if so, we'll need to run an R job to convert the data.
+        // Otherwise we can simply stream the incoming file to the browser.
 
-	if (formatRequested == null) {
-	    try /* streaming non-converted remote file */ {
-		// recycle the Content-* headers from the incoming HTTP stream:
+        if (formatRequested == null) {
+            try /* streaming non-converted remote file */ {
+                // recycle the Content-* headers from the incoming HTTP stream:
 
-		for (int i = 0; i < method.getResponseHeaders().length; i++) {
-		    String headerName = method.getResponseHeaders()[i].getName();
-		    if (headerName.startsWith("Content")) {
+                for (int i = 0; i < method.getResponseHeaders().length; i++) {
+                    String headerName = method.getResponseHeaders()[i].getName();
+                    if (headerName.startsWith("Content")) {
 			
-			// Special treatment case for remote
-			// HTML pages:
-			// if it looks like HTML, we redirect to
-			// that page, instead of trying to display it:
-			// (this is for cases like the harvested HGL
-			// documents which contain URLs pointing to
-			// dynamic content pages, not to static files.
+                        // Special treatment case for remote
+                        // HTML pages:
+                        // if it looks like HTML, we redirect to
+                        // that page, instead of trying to display it:
+                        // (this is for cases like the harvested HGL
+                        // documents which contain URLs pointing to
+                        // dynamic content pages, not to static files.
 
-			if (headerName.equals("Content-Type") &&
-			    method.getResponseHeaders()[i].getValue() != null &&
-			    method.getResponseHeaders()[i].getValue().startsWith("text/html")) {
-			    //String remoteFileUrl = file.getFileSystemLocation();
-			    createRedirectResponse(res, remoteFileUrl);
-			    //studyService.incrementNumberOfDownloads(file.getFileCategory().getStudy().getId());
-			    if ( vdc != null ) {
-				studyService.incrementNumberOfDownloads(file.getId(), vdc.getId());
-			    } else {
-				studyService.incrementNumberOfDownloads(file.getId(), (Long)null);
-			    }
+                        if (headerName.equals("Content-Type") &&
+                            method.getResponseHeaders()[i].getValue() != null &&
+                            method.getResponseHeaders()[i].getValue().startsWith("text/html")) {
+                            //String remoteFileUrl = file.getFileSystemLocation();
+                            createRedirectResponse(res, remoteFileUrl);
+                            //studyService.incrementNumberOfDownloads(file.getFileCategory().getStudy().getId());
+                            if ( vdc != null ) {
+                                studyService.incrementNumberOfDownloads(file.getId(), vdc.getId());
+                            } else {
+                                studyService.incrementNumberOfDownloads(file.getId(), (Long)null);
+                            }
 
-			    method.releaseConnection();
-			    return;
-			}
-			String headerValue = method.getResponseHeaders()[i].getValue();
-			if ( zippedStream ) {
-			    headerValue = headerValue.replace (".zip", ""); 
-			} 			
-			res.setHeader(headerName, headerValue);
-		    }
-		}
+                            method.releaseConnection();
+                            return;
+                        }
+                        String headerValue = method.getResponseHeaders()[i].getValue();
+                        if ( zippedStream ) {
+                            headerValue = headerValue.replace (".zip", "");
+                        }
+                        res.setHeader(headerName, headerValue);
+                    }
+                }
 		    
 		    
-		// send the incoming HTTP stream as the response body
+                // send the incoming HTTP stream as the response body
 
-		OutputStream out = res.getOutputStream();
-		//WritableByteChannel out = Channels.newChannel (res.getOutputStream());
+                OutputStream out = res.getOutputStream();
+                //WritableByteChannel out = Channels.newChannel (res.getOutputStream());
                 
-		byte[] dataReadBuffer = new byte[4 * 8192];
-		//ByteBuffer dataWriteBuffer = ByteBuffer.allocate ( 4 * 8192 );
+                byte[] dataReadBuffer = new byte[4 * 8192];
+                //ByteBuffer dataWriteBuffer = ByteBuffer.allocate ( 4 * 8192 );
 
-		int i = 0;
-		while ((i = in.read(dataReadBuffer)) > 0) {
-		    //dataWriteBuffer.put ( dataReadBuffer );
-		    //out.write(dataWriteBuffer);
-		    out.write(dataReadBuffer, 0, i);
-		    //dataWriteBuffer.rewind ();
-		    out.flush();
-		}
+                int i = 0;
+                while ((i = in.read(dataReadBuffer)) > 0) {
+                    //dataWriteBuffer.put ( dataReadBuffer );
+                    //out.write(dataWriteBuffer);
+                    out.write(dataReadBuffer, 0, i);
+                    //dataWriteBuffer.rewind ();
+                    out.flush();
+                }
 
-		in.close();
-		out.close();
+                in.close();
+                out.close();
 
-		if ( vdc != null ) {
-		    studyService.incrementNumberOfDownloads(file.getId(), vdc.getId());
-		} else {
-		    studyService.incrementNumberOfDownloads(file.getId(), (Long)null);
-		}
+                if ( vdc != null ) {
+                    studyService.incrementNumberOfDownloads(file.getId(), vdc.getId());
+                } else {
+                    studyService.incrementNumberOfDownloads(file.getId(), (Long)null);
+                }
 
+            } catch (IOException ex) {
+        		// catches exceptions that may have occured while trying
+                // to download and stream a remote data file.
+
+                //ex.printStackTrace();
+                String errorMessage = "An unknown I/O error has occured while attempting to retreive a remote data file (i.e., a file that belongs to a harvested study). It is possible that it is temporarily unavailable from that location or perhaps a temporary network error has occured. Please try again later and if the problem persists, report it to your DVN technical support contact.";
+                createErrorResponseGeneric(res, 0, errorMessage);
 		    
-	    } catch (IOException ex) {
-		// catches exceptions that may have occured while trying
-		// to download and stream a remote data file.
-
-		//ex.printStackTrace();
-		String errorMessage = "An unknown I/O error has occured while attempting to retreive a remote data file (i.e., a file that belongs to a harvested study). It is possible that it is temporarily unavailable from that location or perhaps a temporary network error has occured. Please try again later and if the problem persists, report it to your DVN technical support contact.";
-		createErrorResponseGeneric(res, 0, errorMessage);
-		    
-	    }
-                            
-	    // end: remote, non-conversion case
-	} else /* remote, conversion case */ {
-	    File zipFile  = null;
+            }
+            // end: remote, non-conversion case
+        } else /* remote, conversion case */ {
+            File zipFile  = null;
 	    
 
-	    try /* catching general IO exceptions */ {
-	    // save the incoming stream as a temp file
+            try /* catching general IO exceptions */ {
+                // save the incoming stream as a temp file
 
-	    // temp data file that stores incoming data
-	    // (meaning, the entire file, containing all variables; 
-	    // tab-delimited or fixed-field.)
+                // temp data file that stores incoming data
+                // (meaning, the entire file, containing all variables;
+                // tab-delimited or fixed-field.)
 
-	    File inFile = null; 
-	    File dtFile = File.createTempFile("tempDataFile.", ".dat");
+                File inFile = null;
+                File dtFile = File.createTempFile("tempDataFile.", ".dat");
 		
-	    OutputStream out = new BufferedOutputStream(new FileOutputStream(dtFile));
+                OutputStream out = new BufferedOutputStream(new FileOutputStream(dtFile));
                             
-	    int bufsize;
-	    byte [] bffr = new byte[4*8192];
+                int bufsize;
+                byte [] bffr = new byte[4*8192];
 
-	    while ((bufsize = in.read(bffr))!=-1) {
-		out.write(bffr, 0, bufsize);
-	    }
+                while ((bufsize = in.read(bffr))!=-1) {
+                    out.write(bffr, 0, bufsize);
+                }
 
                             
-	    in.close();
-	    out.close();
+                in.close();
+                out.close();
 
-	    // Check the resulting (whole!) data file
+                // Check the resulting (whole!) data file
 
-	    if (dtFile.exists()){
+                if (dtFile.exists()){
 
-		// if it exists, and the file is tab-delimited, we can
-		// proceed sending it to the R batch server for conversion; 
-		// if however, it is fixed-field, it has to be converted 
-		// to the tab-delimited format first. That we do by
-		// requesting a "subsetting" of the file for all of its
-		// variables: 
+                    // if it exists, and the file is tab-delimited, we can
+                    // proceed sending it to the R batch server for conversion;
+                    // if however, it is fixed-field, it has to be converted
+                    // to the tab-delimited format first. That we do by
+                    // requesting a "subsetting" of the file for all of its
+                    // variables:
 
-		if ( file.getFileType() != null && file.getFileType().equals("text/tab-separated-values") ) {
-		    inFile = dtFile; 
-		} else {
-		    // TODO: I'm assuming it's a fixed-field file, but
-		    // what if it's not? -- need to check!
+                    if ( file.getFileType() != null && file.getFileType().equals("text/tab-separated-values") ) {
+                        inFile = dtFile;
+                    } else {
+                        // TODO: I'm assuming it's a fixed-field file, but
+                        // what if it's not? -- need to check!
 			
-		    // create another temporary file to store the 
-		    // results of jcut subsetting: 
+                        // create another temporary file to store the
+                        // results of jcut subsetting:
 
-		    inFile = File.createTempFile("tempTabFile.", ".tab");
+                        inFile = File.createTempFile("tempTabFile.", ".tab");
 			
-		    // subsetting: 
+                        // subsetting:
 
-		    Long noRecords = ((TabularDataFile) file).getDataTable().getRecordsPerCase();
-		    Map<Long, List<List<Integer>>> varMetaSet = getSubsettingMetaData(noRecords); 
-		    DvnNewJavaFieldCutter fc = new DvnNewJavaFieldCutter(varMetaSet);
+                        Long noRecords = ((TabularDataFile) file).getDataTable().getRecordsPerCase();
+                        Map<Long, List<List<Integer>>> varMetaSet = getSubsettingMetaData(noRecords);
+                        DvnNewJavaFieldCutter fc = new DvnNewJavaFieldCutter(varMetaSet);
 		    
-		    try {
-			fc.cutColumns(dtFile, noRecords.intValue(), 0, "\t", inFile.getAbsolutePath());
-		    } catch (Exception e){
-			String errorMessage = "A run-time error occured while trying to convert a remote fixed-field data file into tab-delimited format. Please try again later and if the problem persists, report it to your DVN technical support contact.";
-			createErrorResponseGeneric(res, 0, errorMessage);
-			return; 
-		    }
-		}
+                        try {
+                            fc.cutColumns(dtFile, noRecords.intValue(), 0, "\t", inFile.getAbsolutePath());
+                        } catch (Exception e){
+                            String errorMessage = "A run-time error occured while trying to convert a remote fixed-field data file into tab-delimited format. Please try again later and if the problem persists, report it to your DVN technical support contact.";
+                            createErrorResponseGeneric(res, 0, errorMessage);
+                            return;
+                        }
+                    }
 
-		// Check the resulting file 
-		if (inFile.exists()){
-		    Long subsetFileSize = inFile.length();
-		    dbgLog.fine("data file:Length="+subsetFileSize);
-		    dbgLog.fine("data file:name="+inFile.getAbsolutePath());
+                    // Check the resulting file
+                    if (inFile.exists()){
+                        Long subsetFileSize = inFile.length();
+                        dbgLog.fine("data file:Length="+subsetFileSize);
+                        dbgLog.fine("data file:name="+inFile.getAbsolutePath());
                 
-		    if (subsetFileSize > 0){
-			paramListToR.put("subsetFileName", Arrays.asList(inFile.getAbsolutePath()));
-			paramListToR.put("subsetDataFileName",Arrays.asList(inFile.getName()));
-		    } else {
-			// subset file exists but it is empty
-			dbgLog.warning("exiting service() due to a file error:"+
-				       "a source file is empty");
-			return;
-		    }
-		} else {
-		    // subset file was not created
-		    dbgLog.warning("exiting service() due to a file error:"+
-				   "a source file was not created");
-		    return;
-		}
+                        if (subsetFileSize > 0){
+                            paramListToR.put("subsetFileName", Arrays.asList(inFile.getAbsolutePath()));
+                            paramListToR.put("subsetDataFileName",Arrays.asList(inFile.getName()));
+                        } else {
+                            // subset file exists but it is empty
+                            dbgLog.warning("exiting service() due to a file error:"+
+                                "a source file is empty");
+                            return;
+                        }
+                    } else {
+                        // subset file was not created
+                        dbgLog.warning("exiting service() due to a file error:"+
+                            "a source file was not created");
+                        return;
+                    }
 
-		File frmtCnvrtdFile = null;
-		Map<String, String> resultInfo = new HashMap<String, String>();
+                    File frmtCnvrtdFile = null;
+                    Map<String, String> resultInfo = new HashMap<String, String>();
 
-		if ( !(formatRequested.equals ("D00")) ) {
-		    // if the *requested* format is TAB-delimited, we don't
-		    // need to call R to do any conversions, we can just 
-		    // send back the TAB file we have just produced. 
+                    if ( !(formatRequested.equals ("D00")) ) {
+                        // if the *requested* format is TAB-delimited, we don't
+                        // need to call R to do any conversions, we can just
+                        // send back the TAB file we have just produced.
 
-		    dbgLog.fine("local: paramListToR="+paramListToR);
+                        dbgLog.fine("local: paramListToR="+paramListToR);
 		    
-		    sro = new DvnRJobRequest(getDataVariableForRequest(), paramListToR, vls);
-//		    dbgLog.fine("sro dump:\n"+ToStringBuilder.reflectionToString(sro, ToStringStyle.MULTI_LINE_STYLE));
+                        sro = new DvnRJobRequest(getDataVariableForRequest(), paramListToR, vls);
+                        //dbgLog.fine("sro dump:\n"+ToStringBuilder.reflectionToString(sro, ToStringStyle.MULTI_LINE_STYLE));
 		    
-		    // create the service instance
-		    DvnRforeignFileConversionServiceImpl dfcs = new DvnRforeignFileConversionServiceImpl();
+                        // create the service instance
+                        DvnRforeignFileConversionServiceImpl dfcs = new DvnRforeignFileConversionServiceImpl();
 		    
-		    // execute the service
-		    resultInfo = dfcs.execute(sro);
+                        // execute the service
+                        resultInfo = dfcs.execute(sro);
 
-		    resultInfo.put("offlineCitation", citation);
-		    dbgLog.fine("resultInfo="+resultInfo+"\n");
+                        //resultInfo.put("offlineCitation", citation);
+                        dbgLog.fine("resultInfo="+resultInfo+"\n");
 		
-		    // check whether a requested file is actually created
+                        // check whether a requested file is actually created
 
-		    if (resultInfo.get("RexecError").equals("true")){
-			dbgLog.fine("exiting dwnldAction() due to an R-runtime error");
-			// TODO: clean error response needed!
-			return; 
-		    } else {
-			// (2)The format-converted subset data file
-			// get the path-name of the data-file to be delivered 
-			String wbDataFileName = resultInfo.get("wbDataFileName");
-			dbgLog.fine("wbDataFileName="+wbDataFileName);
+                        if (resultInfo.get("RexecError").equals("true")){
+                            dbgLog.fine("exiting dwnldAction() due to an R-runtime error");
+                            // TODO: clean error response needed!
+                            return;
+                        } else {
+                            // (2)The format-converted subset data file
+                            // get the path-name of the data-file to be delivered
+                            String wbDataFileName = resultInfo.get("wbDataFileName");
+                            dbgLog.fine("wbDataFileName="+wbDataFileName);
 			
-			frmtCnvrtdFile = new File(wbDataFileName);
+                            frmtCnvrtdFile = new File(wbDataFileName);
 			
-			if (frmtCnvrtdFile.exists()){
-			    dbgLog.fine("frmtCnvrtdFile:length="+frmtCnvrtdFile.length());
-			} else {
-			    // the data file was not created
-			    dbgLog.fine("frmtCnvrtdFile does not exist");
-			    dbgLog.warning("exiting service: format-converted data file was not transferred");
-			    // TODO: clean error response needed!
-			    return;
-			}
-		    }
-
-		    // now we have to create a README file...
-
-		    String readMeFileName = "README_" + resultInfo.get("PID") +  ".txt";
-		    File readMeFile = new File(System.getProperty("java.io.tmpdir"), readMeFileName);
-                
-		    //DvnReplicationREADMEFileWriter rw = new DvnReplicationREADMEFileWriter(resultInfo);
-		    //rw.writeREADMEfile(readMeFile);
-		    DvnCitationFileWriter dcfw = new DvnCitationFileWriter(resultInfo);
-		    dcfw.writeWholeFileCase(readMeFile);
-
-		    // ... then package both files in a 
-		    // zip archive:
-                
-		    try /* zipping */ {
-			String zipFilePrefix = "zipFile_" + resultInfo.get("PID") + ".zip";
-			zipFile  = new File(System.getProperty("java.io.tmpdir"), zipFilePrefix);
-			// create zipped output stream:
+                            if (frmtCnvrtdFile.exists()){
+                                dbgLog.fine("frmtCnvrtdFile:length="+frmtCnvrtdFile.length());
+                            } else {
+                                // the data file was not created
+                                dbgLog.fine("frmtCnvrtdFile does not exist");
+                                dbgLog.warning("exiting service: format-converted data file was not transferred");
+                                // TODO: clean error response needed!
+                                return;
+                            }
+                        }
+                    }
 		    
-			FileOutputStream zipFileStream = new FileOutputStream(zipFile);
-			ZipOutputStream zout = new ZipOutputStream(zipFileStream);
-			
-			InputStream tmpin = null;
-			byte[] dataBuffer = new byte[8192];
-			int i = 0;
-			
-			tmpin = new FileInputStream(resultInfo.get("wbDataFileName"));
-			ZipEntry e = new ZipEntry(frmtCnvrtdFile.getName());
-			zout.putNextEntry(e);
-                
-			while ((i = tmpin.read(dataBuffer)) > 0) {
-			    zout.write(dataBuffer, 0, i);
-			    zout.flush();
-			}
-			tmpin.close();
-			zout.closeEntry();
+                    try /* streaming converted file */ {
+                        InputStream infc = null;
 
-			tmpin = new FileInputStream(readMeFile);
-			e = new ZipEntry(readMeFileName);
-			zout.putNextEntry(e);
-                
-			while ((i = tmpin.read(dataBuffer)) > 0) {
-			    zout.write(dataBuffer, 0, i);
-			    zout.flush();
-			}
-			tmpin.close();
-			zout.closeEntry();
-                
-			zout.close();
-			zipFileStream.close(); 
-			
-		    } catch (IOException e){
-			String errorMessage = "An unknown I/O error has occured while trying to create a ZIP archive for an otherwise successful format conversion on a remote data file. Please try again later and if the problem persists, report it to your DVN technical support contact.";
-			createErrorResponseGeneric(res, 0, errorMessage);
-			return; 
-		    }
-		}
-		    
-		// TODO: delete temporary files we created!
-		// end of zipping step
+                        String altFormatType = generateAltFormat(formatRequested);
+                        res.setContentType(altFormatType);
 
-		try /* streaming zipped package (or a TAB file) */ {
-		    //res.setContentType(formatRequestedMIMEtypeMap.get(formatRequested));
-		    //res.setHeader("content-disposition",
-		    // "attachment; filename=" +
-		    // frmtCnvrtdFile.getName());
-		    //InputStream infc = new FileInputStream(resultInfo.get("wbDataFileName"));
-		    InputStream infc = null; 
+                        String dbFileName = file.getFileName();
 
-		    if ( formatRequested.equals ("D00") ) {
-			res.setContentType("text/tab-separated-values");
-			if ( file.getFileName() != null ) {
-			    res.setHeader("content-disposition", "attachment; filename=" + file.getFileName() + ".tab");
-			} else {
-			    res.setHeader("content-disposition", "attachment; filename=" + inFile.getName());
-			}
-			infc = new FileInputStream(inFile);
-		    } else {
-			res.setContentType("application/zip");
-			res.setHeader("content-disposition", "attachment; filename=" + zipFile.getName());
-                
-			infc = new FileInputStream(zipFile);
-		    }
-		    OutputStream outfc = res.getOutputStream();
+                        if (dbFileName == null || dbFileName.equals("")) {
+                            dbFileName = "f" + file.getId().toString();
+                        }
+
+                        String altFormatFileName = generateAltFileName(formatRequested, dbFileName);
+
+                        res.setHeader("Content-disposition",
+                            "attachment; filename=\"" + altFormatFileName + "\"");
+                        res.setHeader("Content-Type",
+                            altFormatType + "; name=\"" + altFormatFileName + "\"; charset=ISO-8859-1");
+
+                        if ( formatRequested.equals ("D00") ) {
+                             infc = new FileInputStream(inFile);
+                        } else {
+                             infc = new FileInputStream(resultInfo.get("wbDataFileName"));
+                        }
+                        OutputStream outfc = res.getOutputStream();
                                 
-		    byte[] dataReadBuffer = new byte[8192 * 4];
+                        byte[] dataReadBuffer = new byte[8192 * 4];
                               
-		    // One more special case:
-		    // With fixed-field files we support requesting the
-		    // file in tab-delimited format. And for tab files
-		    // we always want to add the variable names header
-		    // line:
+                        // One more special case:
+                        // With fixed-field files we support requesting the
+                        // file in tab-delimited format. And for tab files
+                        // we always want to add the variable names header
+                        // line:
 
 
-		    if (formatRequested.equals("D00") && noVarHeader == null) {
+                        if (formatRequested.equals("D00") && noVarHeader == null) {
 
-			String varHeaderLine = null;
-			List dataVariables = ((TabularDataFile) file).getDataTable().getDataVariables();
-			varHeaderLine = generateVariableHeader(dataVariables);
-			if (varHeaderLine != null) {
-			    byte[] varHeaderBuffer = null;
-			    varHeaderBuffer = varHeaderLine.getBytes();
-			    outfc.write(varHeaderBuffer);
-			    outfc.flush();
-			}
-		    }
+                            String varHeaderLine = null;
+                            List dataVariablesList = ((TabularDataFile) file).getDataTable().getDataVariables();
+                            varHeaderLine = generateVariableHeader(dataVariablesList);
+                            if (varHeaderLine != null) {
+                                byte[] varHeaderBuffer = null;
+                                varHeaderBuffer = varHeaderLine.getBytes();
+                                outfc.write(varHeaderBuffer);
+                                outfc.flush();
+                            }
+                        }
 		    
-		    int i = 0;
-		    while ((i = infc.read(dataReadBuffer)) > 0) {
-			outfc.write(dataReadBuffer, 0, i);
-			outfc.flush();
-		    }
+                        int i = 0;
+                        while ((i = infc.read(dataReadBuffer)) > 0) {
+                            outfc.write(dataReadBuffer, 0, i);
+                            outfc.flush();
+                        }
 		    
-		    infc.close();
-		    outfc.close();
+                        infc.close();
+                        outfc.close();
 		
-		    if ( vdc != null ) {
-			studyService.incrementNumberOfDownloads(file.getId(), vdc.getId());
-		    } else {
-			studyService.incrementNumberOfDownloads(file.getId(), (Long)null);
-		    }
+                        if ( vdc != null ) {
+                            studyService.incrementNumberOfDownloads(file.getId(), vdc.getId());
+                        } else {
+                            studyService.incrementNumberOfDownloads(file.getId(), (Long)null);
+                        }
 
-		    
+                    } catch (IOException ex) {
+                        // this cathes exceptions that have happened
+                        // while attempting to stream the ZIP archive
+                        // containing the reformatted file:
 
-		} catch (IOException ex) {
-		    // this cathes exceptions that have happened 
-		    // while attempting to stream the ZIP archive 
-		    // containing the reformatted file: 
+                        //ex.printStackTrace();
 
-		    //ex.printStackTrace();
+                        String errorMessage = "An I/O error has occured while streaming an otherwise successfully reformatted remote data file. It is possible that this was caused by a temporary network problem. Please try again later and if the problem persists, report it to your DVN technical support contact.";
+                        createErrorResponseGeneric(res, 0, errorMessage);
+                    }
 
-			String errorMessage = "An I/O error has occured while streaming an otherwise successfully reformatted remote data file. It is possible that this was caused by a temporary network problem. Please try again later and if the problem persists, report it to your DVN technical support contact.";
-			createErrorResponseGeneric(res, 0, errorMessage);
-		}
+                    // end: conversion case:
+                } else {
+                    String errorMessage = "The application has failed to retreive the remote data file (i.e., a file that belongs to a harvested study). It is possible that it is temporarily unavailable from that location or perhaps a temporary network error has occured. Please try again later and if the problem persists, report it to your DVN technical support contact.";
+                    createErrorResponseGeneric(res, 0, errorMessage);
+                }
 
-		// TODO: delete temporary zip file.
-		// end: conversion case:
-	    } else {
-		String errorMessage = "The application has failed to retreive the remote data file (i.e., a file that belongs to a harvested study). It is possible that it is temporarily unavailable from that location or perhaps a temporary network error has occured. Please try again later and if the problem persists, report it to your DVN technical support contact.";
-		createErrorResponseGeneric(res, 0, errorMessage);
-	    }
+            } catch (IOException ex) {
+                String errorMessage = "An unknown I/O error has occured while performing a format conversion on a remote data file. It is possible that this was caused by a temporary network problem. Please try again later and if the problem persists, report it to your DVN technical support contact.";
+                createErrorResponseGeneric(res, 0, errorMessage);
+            }
 
-	    } catch (IOException ex) {
+        }
 
-		String errorMessage = "An unknown I/O error has occured while performing a format conversion on a remote data file. It is possible that this was caused by a temporary network problem. Please try again later and if the problem persists, report it to your DVN technical support contact.";
-		createErrorResponseGeneric(res, 0, errorMessage);
-	    }
-
-	}   
-	method.releaseConnection();
+        method.releaseConnection();
         
         // end of remote-file cases
 	
@@ -971,7 +852,7 @@ public class FileDownloadServlet extends HttpServlet {
 		
 		//studyService.incrementNumberOfDownloads(file.getFileCategory().getStudy().getId());
 	    
-		if (formatRequested != null) {
+		if (formatRequested != null && (!formatRequested.matches("D00.*"))) {
 
                     // user requested the file in a non-default (i.e.,
                     // not tab-delimited) format.
@@ -980,23 +861,24 @@ public class FileDownloadServlet extends HttpServlet {
 
                     String cachedFileSystemLocation = null;
 
-                    // Cached copies are now version-specific.
-
-                    if (studyVersion != null && studyVersion.getVersionNumber() != null) {
-                        String versionSuffix = "V" + studyVersion.getVersionNumber();
-                        cachedFileSystemLocation = file.getFileSystemLocation()
-                                + "."
-                                + formatRequested
-                                + "." 
-                                + versionSuffix;
-                    }
+                    cachedFileSystemLocation = file.getFileSystemLocation()
+                        + "."
+                        + formatRequested;
 
                     if (cachedFileSystemLocation != null &&
                         new File(cachedFileSystemLocation).exists()) {
                         try {
                             String cachedAltFormatType = generateAltFormat(formatRequested);
-                            String cachedAltFormatFileName = generateAltFileName(formatRequested, "f" + file.getId().toString());
+                            res.setContentType(cachedAltFormatType);
 
+                            String dbFileName = file.getFileName();
+
+                            if (dbFileName == null || dbFileName.equals("")) {
+                                dbFileName = "f" + file.getId().toString();
+                            }
+
+                            String cachedAltFormatFileName = generateAltFileName(formatRequested, dbFileName);
+                            
                             res.setHeader("Content-disposition",
                                 "attachment; filename=\"" + cachedAltFormatFileName + "\"");
                             res.setHeader("Content-Type",
@@ -1019,25 +901,18 @@ public class FileDownloadServlet extends HttpServlet {
                             in.close();
                             out.close();
 
-			    if ( vdc != null ) {
-				studyService.incrementNumberOfDownloads(file.getId(), vdc.getId());
-			    } else {
-				studyService.incrementNumberOfDownloads(file.getId(), (Long)null);
-			    }
-		    
-
+                            if ( vdc != null ) {
+                                studyService.incrementNumberOfDownloads(file.getId(), vdc.getId());
+                            } else {
+                                studyService.incrementNumberOfDownloads(file.getId(), (Long)null);
+                            }
 
                         } catch (IOException ex) {
-                            //ex.printStackTrace();
                             String errorMessage = "An unknown I/O error has occured while trying to serve a locally stored data file in an alternative format. It. It could also be a result of a temporary network error. Please try again later, and if the problem persists report it to your DVN technical support contact.";
                             createErrorResponseGeneric(res, 0, errorMessage);
 
                         }
-
                     } else {                        
-// local file: format conversion case: ver1.4-changes start here ##########
-            File zipFile  = null;
-
 
 
                         dbgLog.fine("***** v1.4 code-block : local file: format conversion case starts here *****");
@@ -1046,11 +921,6 @@ public class FileDownloadServlet extends HttpServlet {
                         Map<String, List<String>> paramListToR = new HashMap<String, List<String>>();
                         
                         paramListToR.put("dtdwnld", Arrays.asList(formatRequested));            
-                        dbgLog.fine("local: citation info to be sent:\n" + citation);
-
-                        paramListToR.put("studytitle", Arrays.asList(studyTitle));
-                        paramListToR.put("studyno", Arrays.asList(studyId.toString()));
-                        paramListToR.put("studyURL", Arrays.asList(studyURL));
                         paramListToR.put("requestType", Arrays.asList("Download"));
 
                         dbgLog.fine("remote: paramListToR="+paramListToR);
@@ -1058,7 +928,6 @@ public class FileDownloadServlet extends HttpServlet {
 
                         dataVariables = ((TabularDataFile) file).getDataTable().getDataVariables();
                         Map<String, Map<String, String>> vls = getValueTablesForAllRequestedVariables();
-                        /*dbgLog.fine("local: variables(getDataVariableForRequest())="+getDataVariableForRequest()+"\n");*/
                         dbgLog.fine("local: value table(vls)="+vls+"\n");
                         
                         File inFile = new File(file.getFileSystemLocation());
@@ -1089,7 +958,7 @@ public class FileDownloadServlet extends HttpServlet {
                         dbgLog.fine("local: paramListToR="+paramListToR);
                         
                         sro = new DvnRJobRequest(getDataVariableForRequest(), paramListToR, vls);
-//                        dbgLog.fine("sro dump:\n"+ToStringBuilder.reflectionToString(sro, ToStringStyle.MULTI_LINE_STYLE));
+                        //dbgLog.fine("sro dump:\n"+ToStringBuilder.reflectionToString(sro, ToStringStyle.MULTI_LINE_STYLE));
                         
                         // create the service instance
                         DvnRforeignFileConversionServiceImpl dfcs = new DvnRforeignFileConversionServiceImpl();
@@ -1098,15 +967,15 @@ public class FileDownloadServlet extends HttpServlet {
                         Map<String, String> resultInfo = new HashMap<String, String>();
                         resultInfo = dfcs.execute(sro);
                         
-                        resultInfo.put("offlineCitation", citation);
+                        //resultInfo.put("offlineCitation", citation);
                         dbgLog.fine("resultInfo="+resultInfo+"\n");
 
                         File frmtCnvrtdFile = null;
                         // check whether a requested file is actually created
                         if (resultInfo.get("RexecError").equals("true")){
                             dbgLog.fine("exiting dwnldAction() due to an R-runtime error");
-                // TODO: a cleaner exit message!
-                return; 
+                            // TODO: a cleaner exit message!
+                            return;
                         } else {
                             // (2)The format-converted subset data file
                             // get the path-name of the data-file to be delivered 
@@ -1116,97 +985,41 @@ public class FileDownloadServlet extends HttpServlet {
                             frmtCnvrtdFile = new File(wbDataFileName);
                             if (frmtCnvrtdFile.exists()){
                                 dbgLog.fine("frmtCnvrtdFile:length="+frmtCnvrtdFile.length());
-
                             } else {
                                 // the data file was not created
                                 dbgLog.fine("frmtCnvrtdFile does not exist");
                                 dbgLog.warning("exiting service: format-converted data file was not transferred");
                                 return;
                             }
-
-                // now we have to create a README file...
-
-                String readMeFileName = "README_" + resultInfo.get("PID") +  ".txt";
-                File readMeFile = new File(System.getProperty("java.io.tmpdir"), readMeFileName);
-                
-//                DvnReplicationREADMEFileWriter rw = new DvnReplicationREADMEFileWriter(resultInfo);
-//                rw.writeREADMEfile(readMeFile);
-                DvnCitationFileWriter dcfw = new DvnCitationFileWriter(resultInfo);
-                dcfw.writeWholeFileCase(readMeFile);
-                // ... then package both files in a 
-                // zip archive:
-                
-                try {
-                String zipFilePrefix = "zipFile_" + resultInfo.get("PID") + ".zip";
-                zipFile  = new File(System.getProperty("java.io.tmpdir"), zipFilePrefix);
-                // set content type:
-                res.setContentType("application/zip");
-
-                // create zipped output stream:
-
-                FileOutputStream zipFileStream = new FileOutputStream(zipFile);
-                ZipOutputStream zout = new ZipOutputStream(zipFileStream);
-
-                InputStream tmpin = null;
-                byte[] dataBuffer = new byte[8192];
-                int i = 0;
-
-                tmpin = new FileInputStream(resultInfo.get("wbDataFileName"));
-                ZipEntry e = new ZipEntry(frmtCnvrtdFile.getName());
-                zout.putNextEntry(e);
-
-                while ((i = tmpin.read(dataBuffer)) > 0) {
-                    zout.write(dataBuffer, 0, i);
-                    zout.flush();
-                }
-                tmpin.close();
-                zout.closeEntry();
-
-                tmpin = new FileInputStream(readMeFile);
-                e = new ZipEntry(readMeFileName);
-                zout.putNextEntry(e);
-
-                while ((i = tmpin.read(dataBuffer)) > 0) {
-                    zout.write(dataBuffer, 0, i);
-                    zout.flush();
-                }
-                tmpin.close();
-                zout.closeEntry();
-
-                zout.close();
-                zipFileStream.close(); 
-
-                } catch (IOException e){
-                String errorMessage = "An unknown I/O error has occured while trying to perform a format conversion on a locally-stored data file. Unfortunately, no extra diagnostic information on the nature of the problem is available to the application. It is possible that it was caused by a temporary network error as the Application was communicating to the Data Services Broker. Please try again later and if the problem persists, report it to your DVN technical support contact.";
-                createErrorResponseGeneric(res, 0, errorMessage);
-                return; 
-                }
-                // TODO: delete temporary files we created!
-                // end of zipping step
                         }
+
+                        /* We can now stream the file: */
                        
                         try {
+                            String altFormatType = generateAltFormat(formatRequested);
+                            res.setContentType(altFormatType);
 
-// v1.4 change: start
-//                            res.setContentType(formatRequestedMIMEtypeMap.get(formatRequested));
-//                            res.setHeader("content-disposition",
-//                                "attachment; filename=" +
-//                                frmtCnvrtdFile.getName());
+                            String dbFileName = file.getFileName();
 
-                res.setContentType("application/zip");
-                String zfname = zipFile.getName();
-                res.setHeader("content-disposition", "attachment; filename=" + zfname);
-                
-                            InputStream in = new FileInputStream(zipFile);
+                            if (dbFileName == null || dbFileName.equals("")) {
+                                dbFileName = "f" + file.getId().toString();
+                            }
+
+                            String altFormatFileName = generateAltFileName(formatRequested, dbFileName);
+
+                            res.setHeader("Content-disposition",
+                                "attachment; filename=\"" + altFormatFileName + "\"");
+                            res.setHeader("Content-Type",
+                                altFormatType + "; name=\"" + altFormatFileName + "\"; charset=ISO-8859-1");
+
+                            InputStream in = new FileInputStream(frmtCnvrtdFile);
                             OutputStream out = res.getOutputStream();
 
                             // Also, we want to cache this file for future use:
 
                             FileOutputStream fileCachingStream = null; 
                             
-                            if (cachedFileSystemLocation != null &&
-                                    (!studyVersion.isDraft() && 
-                                     !studyVersion.isInReview())) {
+                            if (cachedFileSystemLocation != null) {
                                 fileCachingStream = new FileOutputStream(cachedFileSystemLocation);
                             }
 
@@ -1227,17 +1040,11 @@ public class FileDownloadServlet extends HttpServlet {
                                 fileCachingStream.close();
                             }
 
-			    if ( vdc != null ) {
-				studyService.incrementNumberOfDownloads(file.getId(), vdc.getId());
-			    } else {
-				studyService.incrementNumberOfDownloads(file.getId(), (Long)null);
-			    }
-
-
-                // TODO: delete temporary zip file; 
-                // (or change the whole logic to skip creating
-                // temporary zip file and write it directly into 
-                // the cached location)
+                            if ( vdc != null ) {
+                                studyService.incrementNumberOfDownloads(file.getId(), vdc.getId());
+                            } else {
+                                studyService.incrementNumberOfDownloads(file.getId(), (Long)null);
+                            }
 
                         } catch (IOException ex) {
                             //ex.printStackTrace();
@@ -1246,13 +1053,13 @@ public class FileDownloadServlet extends HttpServlet {
 
                         }
 
-            // method.releaseConnection();
+                        // method.releaseConnection();
                     }
-// local file: format-conversion case: ver1.4-changes end here ###############
+                    // local format-conversion case ends here
 
                 } else {
 
-                    // finally, the *true* local case, where we just
+                    // finally, the simple local case, where we just
                     // read the file off disk and send the stream back.
 
                     try {
@@ -1895,20 +1702,17 @@ public class FileDownloadServlet extends HttpServlet {
     private String generateAltFormat(String formatRequested) {
         String altFormat;
 
-        //  if ( formatRequested.equals("D02") ) {
-        //    altFormat = "application/x-rlang-transport";
-        // } else if ( formatRequested.equals("DO3") ) {
-        //     altFormat = "application/x-stata-6";
-        // } else {
-        //     altFormat = "application/x-R-2";
-        // }
+        //  
 
         if (formatRequested.equals("D00")) {
             altFormat = "text/tab-separated-values";
+        } else if ( formatRequested.equals("D02") ) {
+            altFormat = "application/x-rlang-transport";
+        } else if ( formatRequested.equals("DO3") ) {
+            altFormat = "application/x-stata-6";
         } else {
-            altFormat = "application/zip";
+            altFormat = "application/x-R-2";
         }
-
         return altFormat;
     }
 
@@ -2016,18 +1820,26 @@ public class FileDownloadServlet extends HttpServlet {
     private String generateAltFileName(String formatRequested, String xfileId) {
         String altFileName;
 
-        //  if ( formatRequested.equals("D02") ) {
-        //    altFileName = "data_" + xfileId + ".ssc";
-        // } else if ( formatRequested.equals("DO3") ) {
-        //    altFileName = "data_" + xfileId + ".dta";
-        // } else {
-        //     altFileName = "data_" + xfileId + ".RData";
-        // }
-
-        if (formatRequested.equals("D00")) {
-            altFileName = "data_" + xfileId + ".tab";
+        if ( xfileId != null && xfileId.matches("\\.dat$") && formatRequested.equals("D00") ) {
+            altFileName = xfileId.replaceAll(".dat$", ".tab");
+        } else if ( xfileId != null && xfileId.matches("\\.tab$")) {
+            if ( formatRequested.equals("D02") ) {
+                altFileName = xfileId.replaceAll(".tab$", ".ssc");
+            } else if ( formatRequested.equals("DO3") ) {
+                altFileName = xfileId.replaceAll(".tab$", ".dta");
+            } else {
+                altFileName = xfileId.replaceAll(".tab$", ".RData");
+            }
         } else {
-            altFileName = "data_" + xfileId + ".zip";
+            if (formatRequested.equals("D00")) {
+                altFileName = xfileId + ".tab";
+            } else if ( formatRequested.equals("D02") ) {
+                altFileName = xfileId + ".ssc";
+            } else if ( formatRequested.equals("DO3") ) {
+                altFileName = xfileId + ".dta";
+            } else {
+                altFileName = xfileId + ".RData";
+            }
         }
 
         return altFileName;

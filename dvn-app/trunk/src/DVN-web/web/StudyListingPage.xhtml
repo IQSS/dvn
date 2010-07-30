@@ -229,7 +229,7 @@
                               </div>
                               -->
                       <div jsfc="ice:panelGroup" id="groupPanel2" rendered="#{studyUI.abstracts != null and studyUI.abstracts != ''}">
-                        <ice:outputText id="outputText14" styleClass="dvnStudyListTableAbstract" escape="false" value="Abstract: #{studyUI.truncatedAbstracts}"/>
+                          <ice:outputText id="outputText14" styleClass="dvnStudyListTableAbstract" escape="false" value="Abstract: &#60;div&#62;#{studyUI.truncatedAbstracts}&#60;/div&#62;"/>
                       </div>
                       <!-- Optional search fields -->
                       <div jsfc="ice:panelGroup" styleClass="dvnStudyListTableOptionalField" rendered="#{!empty StudyListingPage.studyFields[sfc.productionDate] and !empty studyUI.metadata.productionDate}">

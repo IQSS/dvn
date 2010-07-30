@@ -79,7 +79,7 @@ public final class StringUtil implements java.io.Serializable  {
                 Matcher matcher          = pattern.matcher(endParsedString);
                 boolean found            = matcher.find();
                 endParsedString          = endParsedString.substring(0, matcher.end());
-                finalString              = "<div>" + startParsedString + endParsedString + "<span class='dvn_threedots'>...</span></div>";
+                finalString              = startParsedString + endParsedString + "<span class='dvn_threedots'>...</span>";
 
              } catch (Exception e) {
                 e.printStackTrace();

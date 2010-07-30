@@ -135,11 +135,15 @@ span.dvnStudyListSearchResultsMessage{font-size:100% !important;font-weight:400}
 span.dvnCollectionDescription{font-size:100% !important;font-weight:normal;font-style: normal;}
 .dvnStudyListNoStudies{padding:0 1em;text-align:center}
 /* ADVANCED SEARCH */
-.dvnAdvSearchScopeTable{}
+.dvnAdvSearchScopeTable{border:0;margin:0;}
+.dvnAdvSearchScopeTable td{border-right:0;}
 .dvnAdvSearchScopeTable tr.list-row-even td{background-color:#fff}
-.vdcAdvSearchCol1{padding-bottom:2px;padding-left:10px;padding-top:2px;vertical-align:bottom}
-.vdcAdvSearchCol2{padding-bottom:2px;padding-left:10px;padding-top:2px;vertical-align:bottom}
-.vdcAdvSearchCol3{padding-bottom:2px;padding-left:10px;padding-top:2px;vertical-align:bottom}
+.vdcAdvSearchCol1{padding-bottom:2px;padding-left:10px;padding-top:2px;vertical-align:bottom;white-space:nowrap}
+.vdcAdvSearchCol2{width:18%;padding-bottom:2px;padding-left:10px;padding-top:2px;vertical-align:bottom}
+.vdcAdvSearchCol3{width:50%;padding-bottom:2px;padding-left:10px;padding-top:2px;vertical-align:bottom}
+.dvnAdvSearchScopeTable .errorMessageInfo{display:block;}
 .dvnAdvSearchCollectionsTable{border-top:1px solid #d9d9d9}
+.dvnAdvSearchCollectionsTable img{vertical-align:bottom;}
+.dvnAdvSearchCollectionsTable td span.iceOutTxt{display:inline;padding:0 .25em;}
 .dvnAdvSearchCollectionsTableParent{display:inline}
 .dvnAdvSearchCollectionsTableChild{display:inline;padding-left:18px;background:url(/dvn/resources/icefaces/dvn_rime/css-images/tree_line_last_node.gif) 0 0 no-repeat}

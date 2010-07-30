@@ -17,12 +17,11 @@
     <gui:define name="body">
       <ice:form id="advsearch">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
-
- <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
+        <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
             <div class="dvnMsgBlockContainer">
               <ice:outputText value="#{bundlePageInfo.combinedSearchHelpWithLinks}" escape="false"/>
             </div>
-            </div>
+        </div>
         <div class="dvn_section">
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.advancedSearchPageBasicTitle}"/>
@@ -95,7 +94,6 @@
                 </ice:selectOneMenu>
                 <ice:inputText onkeypress="if (window.event) return processEvent('', 'advsearch:button2'); else return processEvent(event, 'advsearch:button2');"
                                binding="#{AdvSearchPage.textField4}" id="textField4" size="40"/>
-
               </ice:panelGrid>
 
               <div>
@@ -126,7 +124,6 @@
                   <ice:column binding="#{AdvSearchPage.column1}" id="column1">
                     <ice:selectBooleanCheckbox id="checkbox1" style="margin-right: #{currentRow['level']}.5em;" binding="#{AdvSearchPage.checkbox1}" value="#{currentRow['selected']}"/>
                     <div jsfc="ice:panelGroup" styleClass="#{(currentRow['level'] >= 2) ? 'dvnAdvSearchCollectionsTableChild' : 'dvnAdvSearchCollectionsTableParent'}">
-                      <ice:graphicImage id="image1" value="/resources/icefaces/dvn_rime/css-images/tree_folder_close.gif"/>
                       <ice:outputText id="outputText11" value="#{currentRow['name']}"/>
                     </div>
                   </ice:column>

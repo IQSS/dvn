@@ -23,15 +23,6 @@
 fieldset.dvnLoginPageAffiliate input.iceCmdBtn{display:block;float:right}
 /* CONTACT */
 .dvnContactLabel{font-weight:bold;}
-/* ADV SEARCH */
-.dvnAdvSearchScopeTable{border:0;margin:0;}
-.dvnAdvSearchScopeTable td{border-right:0;}
-.vdcAdvSearchCol1{white-space:nowrap;}
-.vdcAdvSearchCol2{width:18%;}
-.vdcAdvSearchCol3{width:50%;}
-.dvnAdvSearchScopeTable .errorMessageInfo{display:block;}
-.dvnAdvSearchCollectionsTable img{vertical-align:bottom;}
-.dvnAdvSearchCollectionsTable .iceOutTxt{display:inline;padding:0 .25em;}
 /* CONTRIBUTOR REQUEST */
 .dvnContributorRequestFormLinks{padding-top:10px;text-align:center;}
 /* MY OPTIONS */

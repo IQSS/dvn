@@ -48,9 +48,9 @@ import edu.harvard.iq.dvn.core.vdc.VDCNetwork;
 import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -141,16 +141,16 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
     public void updateStudyVersion(StudyVersion studyVersion) {
         em.merge(studyVersion);
     }
-       
+
     public void setReadyForReview(Long studyId) {
         setReadyForReview(studyId, null);
     }
 
     public void setReadyForReview(Long studyId, String versionNote) {
-      
+
         Study study = em.find(Study.class, studyId);
         StudyVersion sv = study.getLatestVersion();
-            
+
         setReadyForReview(sv, versionNote);
     }
 
@@ -215,7 +215,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
     }
 
     public void setReleased(Long studyId, String versionNote) {
-      
+
         Study study = em.find(Study.class, studyId);
         StudyVersion latestVersion = study.getLatestVersion();
         if (!latestVersion.isWorkingCopy()) {
@@ -259,10 +259,10 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         sv.setVersionState(StudyVersion.VersionState.DEACCESSIONED);
         sv.setArchiveTime(new Date());
         em.merge(sv);
-        
+
         indexService.deleteStudy(sv.getStudy().getId());
     }
-    
+
     public Study getStudyByHarvestInfo(VDC dataverse, String harvestIdentifier) {
         String queryStr = "SELECT s FROM Study s WHERE s.owner.id = '" + dataverse.getId() + "' and s.harvestIdentifier = '" + harvestIdentifier + "'";
         Query query = em.createQuery(queryStr);
@@ -394,7 +394,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
                 // I'm going to simply retrieve the lists of file metadata
                 // for both versions, ordered by file Id, and delete the "tail"
                 // of the working version list.
-                
+
                 StudyVersion releasedVersion = getStudyVersion(studyId, null);
 
                 List<FileMetadata> fileMetadataList = new ArrayList<FileMetadata>();
@@ -550,14 +550,14 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         if ( !dtIdList.isEmpty() ) {
             // step 2: determine variables
             List varList = new ArrayList();
-            query = em.createNativeQuery(SELECT_DATAVARIABLE_IDS_PREFIX + "(" + generateIdString(dtIdList) + ")");
+            query = em.createNativeQuery(SELECT_DATAVARIABLE_IDS_PREFIX + "(" + generateTempTableString(dtIdList) + ")");
             for (Object currentResult : query.getResultList()) {
                 varList.add(new Long(((Integer) ((Vector) currentResult).get(0))).longValue());
             }
 
             if ( !varList.isEmpty() ) {
                 // step 3: delete!
-                String varString = "(" + generateIdString(varList) + ")";
+                String varString = "(" + generateTempTableString(varList) + ")";
 
                 em.createNativeQuery(DELETE_VARIABLE_CATEGORIES_PREFIX + varString).executeUpdate();
                 em.createNativeQuery(DELETE_SUMMARY_STATISTICS_PREFIX + varString).executeUpdate();
@@ -610,7 +610,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         } else {
             throw new IllegalArgumentException("No released version available for this study: " + studyId);
         }
-        
+
         if (studyFields != null) {
             for (Object studyField : studyFields.keySet()) {
 
@@ -657,7 +657,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
 
         return study;
     }
-   
+
     public List getStudies() {
         String query = "SELECT s FROM Study s ORDER BY s.id";
         return (List) em.createQuery(query).getResultList();
@@ -725,66 +725,64 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
             return studyIdList;
         }
 
-        String studyIds = generateIdString(studyIdList);
+        String studyIds = generateTempTableString(studyIdList);
+        String queryStr = null;
 
         if (orderBy.equals("globalId")) {
-            String query = "SELECT s.id FROM Study s WHERE s.id in (" + studyIds + ") ORDER BY s.protocol, s.authority, s.studyId";
-            return (List) em.createQuery(query).getResultList();
+            queryStr = "SELECT s.id " +
+                    "from study s " +
+                    "where s.id in (" + studyIds + ") " +
+                    "ORDER BY s.protocol, s.authority, s.studyId";
 
-        } else {
-            String queryStr = null;
+        } else if (orderBy.equals("title")) {
+            queryStr = "SELECT s.id " +
+                    "from metadata m, studyversion sv, study s " +
+                    "where sv.metadata_id = m.id " +
+                    "and s.id = sv.study_id " +
+                    "and sv.versionstate = '" + StudyVersion.VersionState.RELEASED + "'" +
+                    "and s.id in (" + studyIds + ") " +
+                    "ORDER BY m.title";
 
-            if (orderBy.equals("title")) {
-                queryStr = "SELECT s.id " +
-                        "from metadata m, studyversion sv, study s " +
-                        "where sv.metadata_id = m.id " +
-                        "and s.id = sv.study_id " +
-                        "and sv.versionstate = '" + StudyVersion.VersionState.RELEASED + "'" +
-                        "and s.id in (" + studyIds + ") " +
-                        "ORDER BY m.title";
+        } else if (orderBy.equals("releaseTime")) {
+            queryStr = "SELECT s.id " +
+                    "from studyversion sv, study s " +
+                    "where s.id = sv.study_id " +
+                    "and sv.versionstate = '" + StudyVersion.VersionState.RELEASED + "'" +
+                    "and s.id in (" + studyIds + ") " +
+                    "ORDER BY sv.releasetime desc";
 
-            } else if (orderBy.equals("releaseTime")) {
-                queryStr = "SELECT s.id " +
-                        "from studyversion sv, study s " +
-                        "where s.id = sv.study_id " +
-                        "and sv.versionstate = '" + StudyVersion.VersionState.RELEASED + "'" +
-                        "and s.id in (" + studyIds + ") " +
-                        "ORDER BY sv.releasetime desc";
-
-            } else if (orderBy.equals("downloadCount")) {
-                // this query runs fine in Postgres, but will need to be tested with other DBs if they are used
-                queryStr = "select s.id " +
-                        "from metadata m, studyversion sv, study s " +
-                        "LEFT OUTER JOIN studyfileactivity sfa on  s.id = sfa.study_id " +
-                        "where sv.metadata_id = m.id " +
-                        "and s.id = sv.study_id " +
-                        "and sv.versionstate = '" + StudyVersion.VersionState.RELEASED + "'" +
-                        "and s.id in (" + studyIds + ")" +
-                        "group by s.id, m.title " +
-                        "order by " +
-                        "(CASE WHEN sum(downloadcount) is null THEN -1 ELSE sum(downloadcount) END) desc, m.title" ;
-            }
-
-            if (queryStr != null) {
-                Query query = em.createNativeQuery(queryStr);
-                List<Long> returnList = new ArrayList<Long>();
-                // since query is native, must parse through Vector results
-                for (Object currentResult : query.getResultList()) {
-                    // convert results into Longs
-                    returnList.add(new Long(((Integer) ((Vector) currentResult).get(0))).longValue());
-                }
-                return returnList;
-
-            } else {
-                return studyIdList; // invalid order by
-            }
+        } else if (orderBy.equals("downloadCount")) {
+            // this query runs fine in Postgres, but will need to be tested with other DBs if they are used
+            queryStr = "select s.id " +
+                    "from metadata m, studyversion sv, study s " +
+                    "LEFT OUTER JOIN studyfileactivity sfa on  s.id = sfa.study_id " +
+                    "where sv.metadata_id = m.id " +
+                    "and s.id = sv.study_id " +
+                    "and sv.versionstate = '" + StudyVersion.VersionState.RELEASED + "'" +
+                    "and s.id in (" + studyIds + ")" +
+                    "group by s.id, m.title " +
+                    "order by " +
+                    "(CASE WHEN sum(downloadcount) is null THEN -1 ELSE sum(downloadcount) END) desc, m.title" ;
         }
 
+        if (queryStr != null) {
+            Query query = em.createNativeQuery(queryStr);
+            List<Long> returnList = new ArrayList<Long>();
+            // since query is native, must parse through Vector results
+            for (Object currentResult : query.getResultList()) {
+                // convert results into Longs
+                returnList.add(new Long(((Integer) ((Vector) currentResult).get(0))).longValue());
+            }
+            return returnList;
+
+        } else {
+            return studyIdList; // invalid order by
+        }
     }
 
     public List getDvOrderedStudyVersionIds(Long vdcId, String orderBy, boolean ascending) {
         List<Long> returnList = new ArrayList<Long>();
-        String queryStr = "SELECT v.id" + 
+        String queryStr = "SELECT v.id" +
                 " from studyversion v, study s, metadata m, vdcuser cr" +
                 " WHERE v.study_id = s.id" +
                 " and v.metadata_id = m.id" +
@@ -833,9 +831,9 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
 
     public List getAllDeaccessionedStudyVersionIdsByContributor(Long contributorId, String orderBy, boolean ascending) {
         List<Long> returnList = new ArrayList<Long>();
-        String queryStr = "SELECT v.id" + 
+        String queryStr = "SELECT v.id" +
                 " from studyversion v, study s, metadata m, vdcuser cr " +
-                " WHERE v.study_id = s.id" +              
+                " WHERE v.study_id = s.id" +
                 " and v.metadata_id = m.id" +
                 " and s.creator_id = cr.id" +
                 " and v.versionstate = '" + StudyVersion.VersionState.DEACCESSIONED + "'"  +
@@ -882,12 +880,12 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
 
     public List getDvOrderedStudyVersionIdsByContributor(Long vdcId, Long contributorId, String orderBy, boolean ascending) {
         List<Long> returnList = new ArrayList<Long>();
-        String queryStr = "SELECT v.id" + 
+        String queryStr = "SELECT v.id" +
                 " from studyversion v, study s, metadata m, vdcuser cr " +
                 " WHERE v.study_id=s.id" +
                 " and v.metadata_id = m.id" +
                 " and s.creator_id = cr.id" +
-                " and s.owner_id = " + vdcId + 
+                " and s.owner_id = " + vdcId +
                 " and v.id in (SELECT max(v.id) from studyversion v, versioncontributor c " +
                 " where c.studyversion_id = v.id and c.contributor_id = " + contributorId +
                 " group by v.study_id)" +
@@ -948,10 +946,10 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
             return (List) em.createQuery(query).getResultList();
         }
 
-   
 
 
-   
+
+
 
 
     public List<DataFileFormatType> getDataFileFormatTypes() {
@@ -1322,21 +1320,21 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         if (study != null) {
             if (versionNumber == null) { // return either the released or deaccessioned version
                  studyVersion = study.getReleasedVersion();
-                 
+
                 if (studyVersion == null) {
                     studyVersion = study.getDeaccessionedVersion();
-                }   
-                 
+                }
+
             } else if (versionNumber == -1) { // return the latest version
                 studyVersion = study.getLatestVersion();
             } else {
                 studyVersion = study.getStudyVersionByNumber(versionNumber);
-                
+
                 if (studyVersion==null) {
                     throw new IllegalArgumentException("No studyVersion found for study id "+studyId+"versionNumber "+versionNumber);
                 }
             }
-            
+
         } else {
             throw new IllegalArgumentException("No study found for study id "+studyId);
         }
@@ -1348,13 +1346,13 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
             // get reelased version
         //    queryStr += "' and  sv.versionState = :releasedState ";
         //}
-        
+
         //Query query = em.createQuery(queryStr);
 
         //if (versionNumber == null) {
         //    query.setParameter("releasedState", VersionState.RELEASED);
         //}
-        
+
         //List resultList = query.getResultList();
         //StudyVersion studyVersion = null;
         //if (resultList.size() > 1) {
@@ -1513,7 +1511,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
 
 
     private void setDisplayOrders(Metadata metadata) {
-        
+
         int i = 0;
         for (Iterator it = metadata.getStudyAuthors().iterator(); it.hasNext();) {
             StudyAuthor elem = (StudyAuthor) it.next();
@@ -1592,7 +1590,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
             elem.setDisplayOrder(i);
             i++;
         }
-        
+
         i = 0;
            for (Iterator it = metadata.getStudyRelMaterials().iterator(); it.hasNext();) {
             StudyRelMaterial elem = (StudyRelMaterial) it.next();
@@ -1613,7 +1611,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
             elem.setDisplayOrder(i);
             i++;
         }
-       
+
     }
 
     public Study saveStudyVersion(StudyVersion studyVersion, Long userId) {
@@ -1638,20 +1636,52 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
     // visible studies are defined as those that are released and not in a restricted vdc
     // (unless you are in vdc)
     public List getVisibleStudies(List studyIds, Long vdcId) {
+        List returnList = new ArrayList();
         if (studyIds != null && studyIds.size() > 0) {
-           
+            generateTempTableString(studyIds);
+            String queryString = "SELECT s.id " +
+                    "FROM study s, studyversion sv, vdc v, tempid ts " +
+                    "WHERE s.id = sv.study_id " +
+                    "AND s.owner_id = v.id " +
+                    "AND sv.versionState = '" + StudyVersion.VersionState.RELEASED + "' " +
+                    "AND s.id = ts.tempid " +
+                    "AND (v.restricted = false " +
+                    (vdcId != null ? "OR v.id = " + vdcId : "") +
+                    ") ORDER BY ts.orderby";
 
-
-            String queryString = "SELECT s.id FROM Study s, IN(s.studyVersions) AS sv  WHERE sv.versionState = :releasedState " +
-                    "AND (s.owner.restricted = false " +
-                    (vdcId != null ? "OR s.owner.id = " + vdcId : "") +
-                    ") AND s.id in (" + generateIdString(studyIds) + ")";
-            Query query = em.createQuery(queryString);
-            query.setParameter("releasedState", StudyVersion.VersionState.RELEASED);
-            return (List) query.getResultList();
-        } else {
-            return new ArrayList();
+            Query query = em.createNativeQuery(queryString);
+            // since query is native, must parse through Vector results
+            for (Object currentResult : query.getResultList()) {
+                // convert results into Longs
+                returnList.add(new Long(((Integer) ((Vector) currentResult).get(0))).longValue());
+            }
         }
+
+        return returnList;
+    }
+
+    private String generateTempTableString(List<Long> studyIds) {
+        // first step: create the temp table with the ids
+        em.createNativeQuery("DROP TABLE IF EXISTS tempid").executeUpdate();
+        em.createNativeQuery("CREATE TEMPORARY TABLE tempid (tempid integer primary key, orderby integer)").executeUpdate();
+        em.createNativeQuery("INSERT INTO tempid VALUES " + generateIDsforTempInsert(studyIds)).executeUpdate();
+
+        return "select tempid from tempid";
+    }
+
+    private String generateIDsforTempInsert(List idList) {
+        int count = 0;
+        StringBuffer sb = new StringBuffer();
+        Iterator iter = idList.iterator();
+        while (iter.hasNext()) {
+            Long id = (Long) iter.next();
+            sb.append("(").append(id).append(",").append(count++).append(")");
+            if (iter.hasNext()) {
+                sb.append(",");
+            }
+        }
+
+        return sb.toString();
     }
 
     // this method will return only the subset of studies that are public
@@ -1736,26 +1766,6 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
 
     }
 
-    /**
-     * The generated String will contain a maximum of 30,000 ids.
-     * (This is necessary because the String will be used to create a SQL select statement,
-     * and the SQL statement must not contain more than 32,767 items. We rounded down to 30,000.)
-    */
-    private String generateIdString(List idList) {
-        StringBuffer sb = new StringBuffer();
-        Iterator iter = idList.iterator();
-        int counter = 0;
-        while (iter.hasNext() && counter < 30000) {
-            Long id = (Long) iter.next();
-            sb.append(id);
-            if (iter.hasNext()&& counter < 29999) {
-                sb.append(",");
-            }
-            counter++;
-        }
-
-        return sb.toString();
-    }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void exportStudy(Study study) {
@@ -1935,7 +1945,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         // Step 2b: initialize new Study
         if (study == null) {
             study = new Study(vdc, creator, StudyVersion.VersionState.RELEASED);
-            studyVersion = study.getLatestVersion(); 
+            studyVersion = study.getLatestVersion();
             em.persist(study);
 
             // if not a harvest, set initial date of deposit (this may get overridden during map ddi step
@@ -1973,7 +1983,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         // step 5: persist files from ddi (since studyFile is not persisted when the new FileMetadata objects are created - since
         // the studyFile often already exists - we need to manually persist the study files here)
         for (FileMetadata fmd : studyVersion.getFileMetadatas()) {
-           em.persist( fmd.getStudyFile() );            
+           em.persist( fmd.getStudyFile() );
         }
 
         // step 6: upload files
@@ -2142,7 +2152,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         Object object       = ((List)query.getSingleResult()).get(0);
         Long longValue      = (Long)object;
         return longValue;
-    }   
+    }
 
     public class ConvertedFilenamesFilter implements FilenameFilter{
 

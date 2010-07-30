@@ -66,6 +66,7 @@ public class ContactUsPage extends VDCBaseBean implements java.io.Serializable {
     private Captcha c;
     private ReCaptchaImpl r;
     private SimpleHttpLoader l;
+    private boolean hasValidationErrors = false;
     
     // <editor-fold defaultstate="collapsed" desc="Creator-managed Component Definition">
     private int __placeholder;
@@ -343,23 +344,33 @@ public class ContactUsPage extends VDCBaseBean implements java.io.Serializable {
             ((UIInput)toValidate).setValid(false);
             FacesMessage message = new FacesMessage("Please select a subject.");
             context.addMessage(toValidate.getClientId(context), message);
+            hasValidationErrors = true;
         }
     }
     
+
     public void validateCaptcha(FacesContext context,
             UIComponent toValidate,
             Object value) {
+
         if (c != null) {
             Map map = context.getExternalContext().getRequestParameterMap();
             String challenge = map.get("recaptcha_challenge_field").toString();
             String response = map.get("recaptcha_response_field").toString();
             HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
             ReCaptchaResponse resp = r.checkAnswer(req.getRemoteAddr(), challenge, response); 
-            if (!resp.isValid()) {
+            if (!resp.isValid() || hasValidationErrors ) {
                 Logger.getLogger(ContactUsPage.class.getName()).info("INVALID RESPONSE: "+resp.getErrorMessage());
                 ((UIInput) toValidate).setValid(false);
-                FacesMessage message = new FacesMessage("Please fill in the reCAPTCHA form. Press Refresh to get a new challenge.");
-                context.addMessage(toValidate.getClientId(context), message);
+                if (hasValidationErrors){
+                    context.addMessage(toValidate.getClientId(context), new FacesMessage("Some required information was entered incorrectly. Please press refresh below to get a new challenge, then correct the issue."));
+                    hasValidationErrors = false;
+                }
+                else{
+                    context.addMessage(toValidate.getClientId(context), new FacesMessage("Press refresh below to get a new challenge."));
+                    hasValidationErrors = false;
+                }
+                
             }
         }
     }
@@ -378,6 +389,7 @@ public class ContactUsPage extends VDCBaseBean implements java.io.Serializable {
             r.setPublicKey(c.getPublicKey());
             Logger.getLogger(ContactUsPage.class.getName()).info("PUBLIC: "+c.getPublicKey()+" -- PRIVATE: "+c.getPrivateKey()+" -- HOST: "+c.getHost());
             retVal = r.createRecaptchaHtml(null, null);
+
         } else {
             retVal = "";
         }

@@ -70,9 +70,9 @@
                 </div>
                 <div>
                   <ice:inputText id="emailAddress" size="30"
-                                 value="#{ContactUsPage.emailAddress}"
+                                 value="#{ContactUsPage.emailAddress}"                                 
                                  required="true"
-                                 requiredMessage="This field is required.">
+                                 requiredMessage="This field is required.  Please press refresh below to get a new challenge, then correct the issue.">
                     <f:validator validatorId="EmailValidator"/>
                   </ice:inputText>
                   <ice:message id="emailAddressMsg" for="emailAddress" styleClass="errorMessage"/>
@@ -87,7 +87,7 @@
                                  size="30"
                                  value="#{ContactUsPage.fullName}"
                                  required="true"
-                                 requiredMessage="This field is required."/>
+                                 requiredMessage="This field is required.  Please press refresh below to get a new challenge, then correct the issue."/>
                   <ice:message id="fullNameMsg"
                                for="fullName"
                                styleClass="errorMessage"/>
@@ -115,7 +115,8 @@
                   <ice:inputTextarea cols="50" id="emailBody"
                                      value="#{ContactUsPage.emailBody}"
                                      required="true"
-                                     requiredMessage="This field is required."
+                                     
+                                     requiredMessage="This field is required.  Please press refresh below to get a new challenge, then correct the issue."
                                      rows="8"/>
                   <ice:message id="emailBodyMsg"
                                for="emailBody"

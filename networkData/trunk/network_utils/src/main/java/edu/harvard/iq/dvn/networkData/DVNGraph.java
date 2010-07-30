@@ -17,16 +17,22 @@ public interface DVNGraph{
     public void dumpGraphML(String xmlFilename);
     public void dumpTables(String vertexFilename, String edgeFilename, String delim);
 
+    public void commit();
+    public void rollback();
+
     public boolean initialize();
     public void finalize();
 
     public Iterable<String> listNodeProperties(); 
     public Iterable<String> listRelationshipProperties();
+    public int getUncommittedVertexCount();
     public int getVertexCount();
+    public int getUncommittedEdgeCount();
     public int getEdgeCount();
 
     //Below aren't part of the official API, but are useful for testing.
     //These will be removed soon, I think.
     public void printStatus();
+    public void printUncommittedStatus();
     public void printUserProps();
 }

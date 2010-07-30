@@ -68,6 +68,7 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
 
     public long taggedNodes;
     private long writeCount;
+    private flushMode currentFlushMode;
 
     private final long TXN_LIMIT = 100000;
     private final long NEO_CACHE_LIMIT = 50000;
@@ -158,9 +159,11 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
         TxModule txModule = ((EmbeddedGraphDatabase) neo).getConfig().getTxModule();
         XaDataSourceManager xaDsMgr = txModule.getXaDataSourceManager();
         XaDataSource xaDs = xaDsMgr.getXaDataSource( "nioneodb" );
-        xaDs.setAutoRotate( false );
+        //xaDs.setAutoRotate( false );
+        xaDs.setLogicalLogTargetSize(100 * 1024 * 1024L);
 
         writeCount = 0;
+        currentFlushMode = null;
     }
 
     public DVNGraphImpl(String GraphDatabaseName, String propertyDb)
@@ -224,6 +227,19 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
         for(i=0; actives.hasNext(); i++){ actives.next();}
         return i;
     }
+
+    public int getUncommittedVertexCount() {
+        int i = 0;
+        Iterator <Relationship> activeNexts = neo.getReferenceNode().
+            getSingleRelationship(relType.ACTIVE_NEXT, Direction.OUTGOING).
+            getEndNode().
+            getRelationships(relType.ACTIVE_NEXT_SUB, Direction.OUTGOING).iterator();
+
+        for(i=0; activeNexts.hasNext(); i++) { activeNexts.next(); }
+        return i;
+    }
+
+
 
     public boolean addEdge(final LazyRelationship2 edge){
         Relationship rel = neo.getRelationshipById(edge.getId());
@@ -330,6 +346,22 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
         for(Relationship act : getActiveNode().getRelationships(relType.ACTIVE_SUB, Direction.OUTGOING)){
             for(Relationship r : act.getEndNode().getRelationships(relType.DEFAULT, Direction.OUTGOING)){
                 if(r.hasProperty("active") && isActive(r.getEndNode())) relCount++;
+                if((travCount++%NEO_CACHE_LIMIT)==0){
+                    //System.out.println(relCount);
+                    clearNeoCache();
+                }
+            }
+        }
+
+        return (int)relCount;
+    }
+
+    public int getUncommittedEdgeCount(){
+        long travCount = 0, relCount = 0;
+       
+        for(Relationship act : getActiveNextNode().getRelationships(relType.ACTIVE_NEXT_SUB, Direction.OUTGOING)){
+            for(Relationship r : act.getEndNode().getRelationships(relType.DEFAULT, Direction.OUTGOING)){
+                if(r.hasProperty("activeNext") && isActiveNext(r.getEndNode())) relCount++;
                 if((travCount++%NEO_CACHE_LIMIT)==0){
                     //System.out.println(relCount);
                     clearNeoCache();
@@ -863,7 +895,7 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
         }
         System.out.println("New Nodes: " + newRelCount);
         System.out.println("Node selection task took " + (((double)(System.currentTimeMillis()-startTimeMs))/1000) + " seconds.");
-        flushMarks(flushMode.NODE_ONLY);
+        this.currentFlushMode = flushMode.NODE_ONLY;
     }
 
 
@@ -921,9 +953,9 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
         }
         System.out.println("Edge selection task took " + (((double)(System.currentTimeMillis()-startTimeMs))/1000) + " seconds.");
         if(dropDisconnected)
-            flushMarks(flushMode.FULL);
+            this.currentFlushMode = flushMode.FULL;
         else
-            flushMarks(flushMode.RELATIONSHIP_ONLY);
+            this.currentFlushMode = flushMode.RELATIONSHIP_ONLY;
     }
 
     public void markNodeNeighborhood(long n_num, final int nth){
@@ -991,7 +1023,7 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
         finally{
             tx.finish();
         }
-        this.flushMarks(flushMode.FULL);
+        this.currentFlushMode = flushMode.FULL;
     }
 
     private Traverser getActiveTraverser(){
@@ -1138,7 +1170,13 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
         //PruneEvaluator pruning = new DepthPruner(20);
         PruneEvaluator pruning = new PruneEvaluator(){
             public boolean pruneAfter(Path p){
-                return p.length() <= 20 || p.endNode().hasRelationship(relType.OWNS, Direction.INCOMING);
+                return !(isActive(p.endNode()) && (p.lastRelationship() == null || p.lastRelationship().hasProperty("active")));
+            }
+        };
+
+        Predicate activeFilter = new Predicate<Path>(){
+            public boolean accept(Path p){
+                return isActive(p.endNode()) && (p.lastRelationship() == null || p.lastRelationship().hasProperty("active")); 
             }
         };
 
@@ -1148,9 +1186,10 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
 
         //travDesc = travDesc.uniqueness(Uniqueness.NODE_GLOBAL).relationships(relType.DEFAULT, Direction.BOTH);
         travDesc = travDesc.uniqueness(Uniqueness.NODE_GLOBAL).
-                            //relationships(relType.DEFAULT, Direction.BOTH).
-                            expand(new ActiveExpander(Direction.OUTGOING));
-                            //prune(pruning);
+                            relationships(relType.DEFAULT, Direction.BOTH).
+                            //expand(new ActiveExpander(Direction.OUTGOING));
+                            filter(activeFilter).
+                            prune(pruning);
 
         trav = travDesc.traverse(node);
 
@@ -1318,6 +1357,7 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
         long numComp = 0;
         Node tmp;
         tx = neo.beginTx();
+        System.out.println("Clearing components...");
 
         try{
             for(Relationship r : getComponentNode().getRelationships(relType.COMPONENT_SUB, Direction.OUTGOING)){
@@ -1332,6 +1372,7 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
                 tmp.delete();
 
                 if(bigComp || (numComp++%1000)==0){
+                    System.out.println(numComp + " components removed.");
                     tx.success();
                     tx.finish();
                     tx = neo.beginTx();
@@ -1342,6 +1383,7 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
         finally{
             tx.finish();
         }
+        System.out.println("done.");
     }
 
 
@@ -1406,7 +1448,45 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
         finally{
             tx.finish();
         }
-        flushMarks(flushMode.NODE_ONLY);
+        this.currentFlushMode = flushMode.NODE_ONLY;
+    }
+
+    public void commit(){
+        flushMarks(this.currentFlushMode);
+        //this.currentFlushMode = null;
+    }
+
+    public void rollback(){
+        eraseMarks(this.currentFlushMode);
+        //this.currentFlushMode = null;
+    }
+    
+    public void eraseMarks(flushMode mode){
+        Node cur;
+        Relationship rel;
+
+        Transaction tx;
+        Traverser flushTrav;
+
+        tx = neo.beginTx();
+        try{
+            //Get rid of all of the activeNext relationships
+            for(Relationship r : getActiveNextNode().getRelationships(relType.ACTIVE_NEXT_SUB, Direction.OUTGOING)){
+                cur = r.getEndNode();
+                if(!mode.equals(flushMode.NODE_ONLY)){
+                    for(Relationship r1 : cur.getRelationships(relType.DEFAULT, Direction.OUTGOING)){ 
+                        if(r1.hasProperty("activeNext")) r1.removeProperty("activeNext");
+                    }
+                }
+                if(!mode.equals(flushMode.RELATIONSHIP_ONLY)){
+                    r.delete();
+                }
+            }
+            tx.success();
+        }
+        finally {
+            tx.finish();
+        }
     }
 
     public void flushMarks(flushMode mode){
@@ -1423,22 +1503,33 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
                 cur = r.getEndNode();
                 rel = cur.getSingleRelationship(relType.ACTIVE_NEXT_SUB, Direction.INCOMING);
                 if(rel==null){
-                    removeVertex(cur);
-                    writeCount++;
+                    if(!(mode.equals(flushMode.RELATIONSHIP_ONLY))){
+                        removeVertex(cur);
+                        writeCount++;
+                    }
                 }
                 else{
                     rel.delete();
                     nodeCount++;
                 }
+                
                 if(writeCount > TXN_LIMIT){
                     writeCount %= TXN_LIMIT;
+                    System.out.println(writeCount + " nodes deactivated.");
+                    clearNeoCache();
+                    /*
                     tx.success();
                     tx.finish();
                     tx = neo.beginTx();
+                    */
                 }
             }
+            tx.success();
+            tx.finish();
+            tx = neo.beginTx();
+            System.out.println(nodeCount + " nodes stay active.");
 
-            //System.out.println(nodeCount + " nodes stay active.");
+            if(!mode.equals(flushMode.RELATIONSHIP_ONLY)){
 
             /* Add nodes that get activated */
             for(Relationship r : getActiveNextNode().getRelationships(relType.ACTIVE_NEXT_SUB, Direction.OUTGOING)){
@@ -1448,15 +1539,24 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
                     writeCount++;
                     nodeCount++;
                 }
+                
                 if(writeCount > TXN_LIMIT){
                     writeCount %= TXN_LIMIT;
+                    System.out.println(writeCount + " nodes activated.");
+                    clearNeoCache();
+                    /*
                     tx.success();
                     tx.finish();
                     tx = neo.beginTx();
+                    */
                 }
             }
+            tx.success();
+            tx.finish();
+            tx = neo.beginTx();
 
-            //System.out.println(nodeCount + " nodes total activated.");
+            System.out.println(nodeCount + " nodes total activated.");
+            }
 
             if(!mode.equals(flushMode.NODE_ONLY)){
             for(Path e : getActiveTraverser()){
@@ -1492,6 +1592,7 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
         finally{
             tx.finish();
         }
+        clearNeoCache();
         tagComponents();
         //printComponents();
     }
@@ -1503,7 +1604,11 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
         getEdgeCount()); 
         //and " + getEdgeCount() + " edges active.");
     }
-    
+
+    public void printUncommittedStatus(){
+        System.out.println("Nodes: " + getUncommittedVertexCount() +
+                           " Edge: " + getUncommittedEdgeCount());
+    }
 
     public Iterable<String> listNodeProperties(){
         return getPropTypes(elementType.NODE).keySet();

@@ -371,8 +371,8 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
        
         for(Relationship act : getActiveNextNode().getRelationships(relType.ACTIVE_NEXT_SUB, Direction.OUTGOING)){
             for(Relationship r : act.getEndNode().getRelationships(relType.DEFAULT, Direction.OUTGOING)){
-                if(currentFlushMode.equals(flushMode.NODE_ONLY) ||
-                    (r.hasProperty("activeNext") && isActiveNext(r.getEndNode())))
+                if((currentFlushMode.equals(flushMode.NODE_ONLY) ||
+                    r.hasProperty("activeNext")) && isActiveNext(r.getEndNode()))
                     relCount++;
                 if((travCount++%NEO_CACHE_LIMIT)==0){
                     //System.out.println(relCount);
@@ -708,6 +708,9 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
     public boolean initialize(){
         long e=0, nm=0;
         Node refNode, activeNode, activeNextNode, componentNode;
+
+        if(dirty)
+            undo();
 
         Transaction tx = neo.beginTx();
 

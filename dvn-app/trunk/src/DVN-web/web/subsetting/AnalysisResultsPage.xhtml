@@ -15,26 +15,28 @@
         <gui:define name="body">
             <h:form id="form">
                 <div jsfc="ice:panelGroup" styleClass="dvn_section">
-                    <span class="dvn_sectionTitleR">
-                        <ice:outputLink
-                            value="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/SubsettingPage.xhtml?dtId=#{AnalysisResultsPage.dtId}"
-                            rendered="#{! AnalysisResultsPage.versionNumberSupplied}">
-                            <ice:outputText
-                                value="Back to Analysis and Subsetting"/>
-                        </ice:outputLink>
-                        <ice:outputLink
-                            value="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/SubsettingPage.xhtml?dtId=#{AnalysisResultsPage.dtId}&amp;versionNumber=#{AnalysisResultsPage.versionNumber}"
-                            rendered="#{AnalysisResultsPage.versionNumberSupplied}">
-                            <ice:outputText
-                                value="Back to Analysis and Subsetting"/>
-                        </ice:outputLink>
-
-                    </span>
-                    <div class="dvn_sectionTitle">
-                        <h:outputText value="#{AnalysisResultsPage.studyTitle}"/>
-                        <br/>
-                        <span class="dvn_preFileTitle">Data File: </span>
-                        <h:outputText styleClass="dvn_fileTitle" value="#{AnalysisPage.fileName}"/>
+                    <div class="dvnstudytitleblock dvn_padBot">
+                        <div class="dvnstudyadminboxfloat dvn_right">
+                            <ice:outputLink
+                                value="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/SubsettingPage.xhtml?dtId=#{AnalysisResultsPage.dtId}"
+                                rendered="#{! AnalysisResultsPage.versionNumberSupplied}">
+                                <ice:outputText
+                                    value="Back to Analysis and Subsetting"/>
+                            </ice:outputLink>
+                            <ice:outputLink
+                                value="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/SubsettingPage.xhtml?dtId=#{AnalysisResultsPage.dtId}&amp;versionNumber=#{AnalysisResultsPage.versionNumber}"
+                                rendered="#{AnalysisResultsPage.versionNumberSupplied}">
+                                <ice:outputText
+                                    value="Back to Analysis and Subsetting"/>
+                            </ice:outputLink>
+                        </div>
+                        <gui:include src="/study/StudyTitleFragment.xhtml">
+                            <gui:param name="studyUI" value="#{AnalysisPage.studyUI}"/>
+                            <gui:param name="displayReleaseLink" value="false"/>
+                            <gui:param name="displayVersionInfo" value="true"/>
+                            <gui:param name="displayStatusBox" value="true"/>
+                            <gui:param name="displayFileName" value="#{AnalysisPage.fileName}"/>
+                        </gui:include>
                     </div>
                     <div class="dvn_analysisResultContainer">
                         <h:panelGroup id="pgHtml" binding="#{AnalysisResultsPage.pgHtml}">

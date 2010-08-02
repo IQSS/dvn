@@ -68,7 +68,7 @@ public class GraphBatchInserter {
         conn.close();
 
         DVNGraph lg = new DVNGraphImpl(neoDbName, sqlDbName, neoConfigFileName);
-        //lg.initialize();
+        lg.initialize();
         lg.finalize();
     }
 }

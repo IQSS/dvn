@@ -1956,7 +1956,7 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
     }
     
     public void writeVertexTab(GraphWriter rsw){
-        long numCached = 0, batch_size = 500;
+        long numCached = 0, batch_size = 5000;
         String[] queryParts = userPropStrings(elementType.NODE);
         String insertCommand = String.format("INSERT INTO active_uid(%s) values (%s);",
                                         queryParts[0], queryParts[1]);
@@ -1967,12 +1967,13 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
         int i = 1;
         //Create in-memory sqlite table
         try{
-            memconn = DriverManager.getConnection("jdbc:sqlite::memory::");
+            memconn = DriverManager.getConnection("jdbc:sqlite:::memory::");
             
             Statement stat;
             stat = memconn.createStatement();
             stat.executeUpdate("DROP TABLE IF EXISTS active_uid;");
             stat.executeUpdate(String.format("CREATE TABLE active_uid (%s);", queryParts[2]));
+            stat.executeUpdate(String.format("CREATE UNIQUE INDEX active_uid_idx on active_uid(uid);"));
             stat.executeUpdate(String.format("ATTACH DATABASE \"%s\" as prop;", prop_db));
 
             memconn.setAutoCommit(false);
@@ -2007,6 +2008,7 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
 
                     stat.executeUpdate("delete from active_uid;");
 
+                    inserter.close();
                     inserter = memconn.prepareStatement(insertCommand);
                     System.out.println(nodesWritten + " nodes written so far...");
                 }
@@ -2023,6 +2025,7 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
             }
             rsw.flush();
             rs.close();
+            inserter.close();
 
             memconn.setAutoCommit(true);
             System.out.println(nodesWritten + " nodes written so far...");
@@ -2034,7 +2037,7 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
     }
 
     public void writeEdgeTab(GraphWriter rsw){
-        long numCached = 0, batch_size = 500;
+        long numCached = 0, batch_size = 5000;
         String[] queryParts = userPropStrings(elementType.RELATIONSHIP);
         String insertCommand = String.format("INSERT INTO active_rel_uid(source, target, %s) values (?, ?, %s);",
                                         queryParts[0], queryParts[1]);
@@ -2045,12 +2048,13 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
         long nodesWritten = 0;
         //Create in-memory sqlite table
         try{
-            memconn = DriverManager.getConnection("jdbc:sqlite::memory::");
+            memconn = DriverManager.getConnection("jdbc:sqlite:::memory::");
             
             Statement stat;
             stat = memconn.createStatement();
             stat.executeUpdate("DROP TABLE IF EXISTS active_rel_uid;");
             stat.executeUpdate(String.format("CREATE TABLE active_rel_uid (source INTEGER, target INTEGER, %s);", queryParts[2]));
+            stat.executeUpdate(String.format("CREATE UNIQUE INDEX active_rel_idx on active_rel_uid(uid);"));
             stat.executeUpdate(String.format("ATTACH DATABASE \"%s\" as prop;", prop_db));
 
             memconn.setAutoCommit(false);
@@ -2087,12 +2091,14 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
                     }
                     rsw.flush();
                     rs.close();
+                    inserter.close();
 
                     stat.executeUpdate("delete from active_rel_uid;");
 
                     inserter = memconn.prepareStatement(insertCommand);
                     System.out.println(nodesWritten + " rels written so far...");
                 }
+                clearNeoCache();
             }
             }
             inserter.executeBatch();
@@ -2107,6 +2113,7 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
             }
             rsw.flush();
             rs.close();
+            inserter.close();
 
             memconn.setAutoCommit(true);
             System.out.println(nodesWritten + " rels written so far...");

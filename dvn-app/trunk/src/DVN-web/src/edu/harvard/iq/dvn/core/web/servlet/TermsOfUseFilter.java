@@ -391,7 +391,7 @@ public class TermsOfUseFilter implements Filter {
                 Map termsOfUseMap = getTermsOfUseMap(req);
                 if (isDownloadDvnTermsRequired(vdcNetworkService.find(), termsOfUseMap) || isDownloadDataverseTermsRequired(study, termsOfUseMap) || isDownloadStudyTermsRequired(study, termsOfUseMap)) {
                  VDC currentVDC = vdcService.getVDCFromRequest(req);
-                    String params = "?globalId=" + study.getGlobalId();
+                    String params = "?studyId=" + study.getId();
                     if ( versionNumber != null ) {
                         params += "&versionNumber=" + versionNumber;
                     }

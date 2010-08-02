@@ -12,30 +12,33 @@ import edu.harvard.iq.dvn.core.study.NetworkDataFile;
 import edu.harvard.iq.dvn.core.study.StudyFileEditBean;
 import edu.harvard.iq.dvn.core.study.VariableServiceLocal;
 import edu.harvard.iq.dvn.core.util.FileUtil;
-import edu.harvard.iq.dvn.ingest.dsb.impl.DvnRGraphServiceImpl;
-import edu.harvard.iq.dvn.ingest.dsb.impl.DvnRGraphServiceImpl.DvnRGraphException;
-import edu.harvard.iq.dvn.ingest.dsb.impl.DvnRJobRequest;
+import edu.harvard.iq.dvn.networkData.DVNGraph;
+import edu.harvard.iq.dvn.core.util.StringUtil;
+import edu.harvard.iq.dvn.networkData.DVNGraphImpl;
+import edu.harvard.iq.dvn.networkData.GraphBatchInserter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.channels.FileChannel;
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 import javax.annotation.PreDestroy;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
-import javax.ejb.PostActivate;
-import javax.ejb.PrePassivate;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import org.apache.commons.io.FileUtils;
 
 /**
  *
@@ -45,100 +48,164 @@ import javax.xml.stream.XMLStreamReader;
 public class NetworkDataServiceBean implements NetworkDataServiceLocal, java.io.Serializable {
 
     private static Logger dbgLog = Logger.getLogger(NetworkDataServiceBean.class.getCanonicalName());
+    private static final String SQLITE_CONFIG_FILE ="graphml.props";
+    private static final String NEO4J_CONFIG_FILE = "neodb.props";
+    public static final String SQLITE_EXTENSION = "sqliteDB";
+    public static final String NEO4J_EXTENSION = "neo4jDB";
+    
     @EJB VariableServiceLocal varService;
 
-    String rWorkspace;
-    DvnRGraphServiceImpl dgs = new DvnRGraphServiceImpl();
+ 
+     
+     DVNGraph dvnGraph;
+     String fileSystemLocation;
+     private static final String baseTempPath = System.getProperty("java.io.tmpdir");
 
+        
+    public void initAnalysis(String fileSystemLocation, String sessionId) {
+       
+        try {
+            String neoDirPath = FileUtil.replaceExtension(fileSystemLocation, NEO4J_EXTENSION);
+            File neoDir = new File(neoDirPath);
+            // Coy neoDB directory to a temporary location, so this bean can have exclusive access to it.
+            File tempNeoDir = new File(baseTempPath, sessionId+new Long(new Date().getTime()).toString());
+            tempNeoDir.mkdir();
+            tempNeoDir.deleteOnExit();
+            FileUtils.copyDirectory(neoDir, tempNeoDir);
 
-    public String initAnalysis(String fileLocation) throws DvnRGraphException{
-        DvnRJobRequest rjr = new DvnRJobRequest(fileLocation, null);
-        Map<String, String> resultInfo = dgs.initializeConnection(rjr);
-
-        rWorkspace = resultInfo.get(DvnRGraphServiceImpl.SAVED_RWORK_SPACE);
-        return rWorkspace;
+            // File copyNeoDB = FileUtils.
+            String sqliteFilePath = FileUtil.replaceExtension(fileSystemLocation, SQLITE_EXTENSION);
+            try {
+                dvnGraph = new DVNGraphImpl(tempNeoDir.getAbsolutePath(), sqliteFilePath, NEO4J_CONFIG_FILE);
+            } catch (ClassNotFoundException e) {
+                throw new EJBException(e);
+            }
+            dvnGraph.initialize();
+            this.fileSystemLocation = fileSystemLocation;
+        } catch (IOException e) {
+            throw new EJBException(e);
+        }
     }
 
-    public NetworkDataSubsetResult runManualQuery(String rWorkspace, String attributeSet, String query, boolean eliminateDisconnectedVertices) throws DvnRGraphException{
+    @PreDestroy
+    public void finalizeGraph() {
+        if (dvnGraph!=null) {
+            dvnGraph.finalize();
+        }
+    }
 
-        Map<String, Object> subsetParameters = new HashMap<String, Object>();
-        subsetParameters.put( DvnRGraphServiceImpl.SAVED_RWORK_SPACE, rWorkspace);
-        subsetParameters.put( DvnRGraphServiceImpl.RSUBSETFUNCTION, DvnRGraphServiceImpl.MANUAL_QUERY_SUBSET );
+   
 
+    public NetworkDataSubsetResult runManualQuery( String attributeSet, String query, boolean eliminateDisconnectedVertices) throws SQLException {
+       
         if (DataTable.TYPE_VERTEX.equals(attributeSet)) {
-            subsetParameters.put( DvnRGraphServiceImpl.MANUAL_QUERY_TYPE, DvnRGraphServiceImpl.VERTEX_SUBSET );
+            dvnGraph.markNodesByProperty(query);
         } else if (DataTable.TYPE_EDGE.equals(attributeSet)) {
-             subsetParameters.put( DvnRGraphServiceImpl.MANUAL_QUERY_TYPE, DvnRGraphServiceImpl.EDGE_SUBSET );
+            dvnGraph.markRelationshipsByProperty(query, eliminateDisconnectedVertices);
         }
-
-        subsetParameters.put( DvnRGraphServiceImpl.MANUAL_QUERY, query );
-
-        if (eliminateDisconnectedVertices) {
-            subsetParameters.put( DvnRGraphServiceImpl.ELIMINATE_DISCONNECTED, "TRUE" ); // default is false
-        }
-
-        DvnRJobRequest rjr = new DvnRJobRequest(null, subsetParameters);
-        Map<String, String> resultInfo = dgs.liveConnectionExecute(rjr);
-
+       
         NetworkDataSubsetResult result = new NetworkDataSubsetResult();
-        result.setVertices( Long.parseLong( resultInfo.get(DvnRGraphServiceImpl.NUMBER_OF_VERTICES) ) );
-        result.setEdges( Long.parseLong( resultInfo.get(DvnRGraphServiceImpl.NUMBER_OF_EDGES) ) );
+        result.setVertices( dvnGraph.getVertexCount() );
+        result.setEdges(dvnGraph.getEdgeCount() );
         return result;
     }
 
-    public NetworkDataSubsetResult runAutomaticQuery(String rWorkspace, String automaticQuery, String nValue) throws DvnRGraphException{
-        Map<String, Object> subsetParameters = new HashMap<String, Object>();
-        subsetParameters.put(DvnRGraphServiceImpl.SAVED_RWORK_SPACE, rWorkspace);
-        subsetParameters.put(DvnRGraphServiceImpl.RSUBSETFUNCTION, DvnRGraphServiceImpl.AUTOMATIC_QUERY_SUBSET);
-        subsetParameters.put(DvnRGraphServiceImpl.AUTOMATIC_QUERY_TYPE, automaticQuery);
-        subsetParameters.put(DvnRGraphServiceImpl.AUTOMATIC_QUERY_N_VALUE, nValue);
-
-        DvnRJobRequest rjr = new DvnRJobRequest(rWorkspace, subsetParameters);
-        Map<String, String> resultInfo = dgs.liveConnectionExecute(rjr);
-
+    public NetworkDataSubsetResult runAutomaticQuery( String automaticQuery, int nValue) {
+        
+        if (automaticQuery.equals(AUTOMATIC_QUERY_NTHLARGEST)) {
+            dvnGraph.markComponent(nValue);
+        } else if (automaticQuery.equals(AUTOMATIC_QUERY_NEIGHBORHOOD)) {
+            dvnGraph.markNeighborhood(nValue);
+        }
+       
         NetworkDataSubsetResult result = new NetworkDataSubsetResult();
-        result.setVertices( Long.parseLong( resultInfo.get(DvnRGraphServiceImpl.NUMBER_OF_VERTICES) ) );
-        result.setEdges( Long.parseLong( resultInfo.get(DvnRGraphServiceImpl.NUMBER_OF_EDGES) ) );
+        result.setVertices(dvnGraph.getVertexCount());
+        result.setEdges( dvnGraph.getEdgeCount());
         
         return result;
     }
 
-    public String runNetworkMeasure(String rWorkspace, String networkMeasure, List<NetworkMeasureParameter> parameters) throws DvnRGraphException{
-        Map<String, Object> subsetParameters = new HashMap<String, Object>();
-        subsetParameters.put(DvnRGraphServiceImpl.SAVED_RWORK_SPACE, rWorkspace);
-        subsetParameters.put(DvnRGraphServiceImpl.RSUBSETFUNCTION, DvnRGraphServiceImpl.NETWORK_MEASURE);
-        subsetParameters.put(DvnRGraphServiceImpl.NETWORK_MEASURE_TYPE, networkMeasure);
-        subsetParameters.put(DvnRGraphServiceImpl.NETWORK_MEASURE_PARAMETER, parameters);
+    public String runNetworkMeasure( String networkMeasure, List<NetworkMeasureParameter> parameters){
+        
+        String newMeasure=null;
+        if (networkMeasure.equals(this.NETWORK_MEASURE_DEGREE)) {
+            newMeasure=dvnGraph.calcDegree();
+        } else if (networkMeasure.equals(this.NETWORK_MEASURE_UNIQUE_DEGREE)) {
+            newMeasure=dvnGraph.calcUniqueDegree();
+        } else if (networkMeasure.equals(this.NETWORK_MEASURE_RANK)) {
+            String strVal =parameters.get(0).getValue();
+            if (StringUtil.isEmpty(strVal)) {
+                strVal =parameters.get(0).getDefaultValue();
+            }
+            newMeasure=dvnGraph.calcPageRank(Double.parseDouble(strVal));
+        } else if (networkMeasure.equals(this.NETWORK_MEASURE_IN_LARGEST)) {
+            newMeasure=dvnGraph.calcInLargestComponent();
+        }
+        
 
-        DvnRJobRequest rjr = new DvnRJobRequest(rWorkspace, subsetParameters);
-        Map<String, String> resultInfo = dgs.liveConnectionExecute(rjr);
 
-        return resultInfo.get(DvnRGraphServiceImpl.NETWORK_MEASURE_NEW_COLUMN);
+        return newMeasure;
     }
 
-    public void undoLastEvent(String rWorkspace) throws DvnRGraphException {
-        Map<String, Object> subsetParameters = new HashMap<String, Object>();
-        subsetParameters.put(DvnRGraphServiceImpl.SAVED_RWORK_SPACE, rWorkspace);
-        subsetParameters.put(DvnRGraphServiceImpl.RSUBSETFUNCTION, DvnRGraphServiceImpl.UNDO);
-
-        DvnRJobRequest rjr = new DvnRJobRequest(rWorkspace, subsetParameters);
-        dgs.liveConnectionExecute(rjr);
+    public void undoLastEvent() {
+        dvnGraph.undo();
     }
 
-    public void resetAnalysis(String rWorkspace) throws DvnRGraphException {
-        Map<String, Object> subsetParameters = new HashMap<String, Object>();
-        subsetParameters.put(DvnRGraphServiceImpl.SAVED_RWORK_SPACE, rWorkspace);
-        subsetParameters.put(DvnRGraphServiceImpl.RSUBSETFUNCTION, DvnRGraphServiceImpl.RESET);
-
-        DvnRJobRequest rjr = new DvnRJobRequest(rWorkspace, subsetParameters);
-        dgs.liveConnectionExecute(rjr);
+    public void resetAnalysis()  {
+        dvnGraph.initialize();
+        
     }
 
-    public File getSubsetExport(String rWorkspace) throws DvnRGraphException {
-        Map<String, String> resultInfo = dgs.liveConnectionExport(rWorkspace);
-        return new File( resultInfo.get(DvnRGraphServiceImpl.GRAPHML_FILE_EXPORTED) );
+    public File getSubsetExport()  {
+      //  Map<String, String> resultInfo = dgs.liveConnectionExport(rWorkspace);
+      //return new File( resultInfo.get(DvnRGraphServiceImpl.GRAPHML_FILE_EXPORTED) );
+        File xmlFile;
+        File vertsFile;
+        File edgesFile;
+        File zipOutputFile;
+        ZipOutputStream zout;
+        try {
+            
+            xmlFile = File.createTempFile("graphml", "xml");
+            vertsFile = File.createTempFile("vertices", "tab");
+            edgesFile = File.createTempFile("edges", "tab");
+
+            
+            String delimiter = ",";
+            dvnGraph.dumpGraphML(xmlFile.getAbsolutePath());
+            dvnGraph.dumpTables(vertsFile.getAbsolutePath(), edgesFile.getAbsolutePath(), delimiter);
+
+            // Create zip file
+            zipOutputFile = File.createTempFile("subset", "zip");
+            zout = new ZipOutputStream((OutputStream)new FileOutputStream(zipOutputFile));
+            addZipEntry(zout,xmlFile.getAbsolutePath(),"graphml.xml");
+            addZipEntry(zout,vertsFile.getAbsolutePath(),"vertices.tab");
+            addZipEntry(zout,edgesFile.getAbsolutePath(),"edges.tab");
+            zout.close();
+
+
+        } catch(IOException e) {
+            throw new EJBException(e);
+        }
+
+        return zipOutputFile;
     }
 
+    private void addZipEntry(ZipOutputStream zout, String inputFileName, String outputFileName) throws IOException{
+        FileInputStream tmpin = new FileInputStream(inputFileName);
+        byte[] dataBuffer = new byte[8192];
+        int i = 0;
+
+        ZipEntry e = new ZipEntry(outputFileName);
+        zout.putNextEntry(e);
+
+        while ((i = tmpin.read(dataBuffer)) > 0) {
+            zout.write(dataBuffer, 0, i);
+            zout.flush();
+        }
+        tmpin.close();
+        zout.closeEntry();
+     }
 
     @Remove
     public void ingest(StudyFileEditBean editBean) {
@@ -166,9 +233,10 @@ public class NetworkDataServiceBean implements NetworkDataServiceLocal, java.io.
             throw new EJBException(e);
         }
 
-        // Convert the GraphML file to an RData File, and save it in "ingested" location so it can be loaded later for subsetting
-        saveRDataFile(editBean);
-
+        // Convert the GraphML file to a Neo4j DB File (for the qraph stucture, and a SQLite set of files (for the property values), and
+        // save it in "ingested" location so it can be loaded later for subsetting
+        saveNetworkDBFiles(editBean);
+        
     }
 
     private void processXML(String fileName, NetworkDataFile ndf) throws XMLStreamException, IOException{
@@ -284,6 +352,29 @@ public class NetworkDataServiceBean implements NetworkDataServiceLocal, java.io.
 
     }
 
+    private void saveNetworkDBFiles(StudyFileEditBean editBean) {
+        File temploc  = new File(editBean.getTempSystemFileLocation());
+        File tempDir = temploc.getParentFile();
+        File ingestedDir = new File(tempDir, "ingested");
+        if (!ingestedDir.exists()) {
+            ingestedDir.mkdirs();
+        }
+        String neo4jDirName = FileUtil.replaceExtension(temploc.getName(),this.NEO4J_EXTENSION);
+        File neo4jDir = new File(ingestedDir,neo4jDirName);
+        neo4jDir.mkdirs();
+        String sqliteFileName = FileUtil.replaceExtension(temploc.getName(),this.SQLITE_EXTENSION);
+        File sqliteFile = new File(ingestedDir, sqliteFileName);
+
+          try {
+            GraphBatchInserter gbi = new GraphBatchInserter(neo4jDir.getAbsolutePath(), sqliteFile.getAbsolutePath(),  SQLITE_CONFIG_FILE, NEO4J_CONFIG_FILE);
+            gbi.ingest(editBean.getTempSystemFileLocation());
+        } catch (Exception e) {
+            throw new EJBException(e);
+        }
+
+
+    }
+    /*
 
     private void saveRDataFile(StudyFileEditBean editBean){
         dbgLog.fine("begin saveRDataFile");
@@ -317,7 +408,7 @@ public class NetworkDataServiceBean implements NetworkDataServiceLocal, java.io.
         }
     }
 
-
+*/
    public static void main(String args[]) throws Exception{
 
 

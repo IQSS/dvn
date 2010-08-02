@@ -19,12 +19,12 @@ import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.util.FileUtil;
 import edu.harvard.iq.dvn.core.util.StringUtil;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
-import edu.harvard.iq.dvn.ingest.dsb.impl.DvnRGraphServiceImpl.DvnRGraphException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -35,6 +35,7 @@ import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 import javax.naming.Context;
@@ -47,15 +48,7 @@ import javax.naming.InitialContext;
 @EJB(name="networkData", beanInterface=edu.harvard.iq.dvn.core.analysis.NetworkDataServiceLocal.class)
 public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable {
 
-    public static String AUTOMATIC_QUERY_NTHLARGEST = "component";
-    public static String AUTOMATIC_QUERY_BICONNECTED = "biconnected_component";
-    public static String AUTOMATIC_QUERY_NEIGHBORHOOD = "add_neighborhood";
-
-    public static String NETWORK_MEASURE_DEGREE = "add_degree";
-    public static String NETWORK_MEASURE_UNIQUE_DEGREE = "add_unique_degree";
-    public static String NETWORK_MEASURE_RANK = "add_pagerank";
-    public static String NETWORK_MEASURE_IN_LARGEST = "add_in_largest_component";
-    public static String NETWORK_MEASURE_BONACICH_CENTRALITY = "add_bonacich_centrality";
+    
 
     @EJB
     StudyServiceLocal studyService;
@@ -68,15 +61,14 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
     private Long versionNumber;
     private String studyTitle;
     private NetworkDataFile file;
-    private String rWorkspace;
-
+   
     private String actionType = "manualQuery";
     private String manualQueryType = DataTable.TYPE_VERTEX;
     private String manualQuery;
     private boolean eliminateDisconnectedVertices = false;
-    private String automaticQueryType = AUTOMATIC_QUERY_NTHLARGEST;
+    private String automaticQueryType = NetworkDataServiceLocal.AUTOMATIC_QUERY_NTHLARGEST;
     private String automaticQueryNthValue;
-    private String networkMeasureType = NETWORK_MEASURE_RANK;
+    private String networkMeasureType = NetworkDataServiceLocal.NETWORK_MEASURE_RANK;
 
     private List<NetworkDataAnalysisEvent> events = new ArrayList();
     private List<NetworkMeasureParameter> networkMeasureParamterList = new ArrayList();
@@ -121,11 +113,12 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
             return;
         }
         
-        //init workspace and page components
+        //init workspace and page components 
         try {
             Context ctx = new InitialContext();
             networkDataService = (NetworkDataServiceLocal) ctx.lookup("java:comp/env/networkData");
-            rWorkspace = networkDataService.initAnalysis(file.getFileSystemLocation() + ".RData");
+            String sessionId = FacesContext.getCurrentInstance().getExternalContext().getSession(false).toString();
+            networkDataService.initAnalysis(file.getFileSystemLocation(), sessionId);
             initComponents();
         } catch (Exception ex) {
             Logger.getLogger(NetworkDataAnalysisPage.class.getName()).log(Level.SEVERE, null, ex);
@@ -153,36 +146,36 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
         
         // TODO: we will eventually have to read all the queries and network measures from xml
         // add automatic queries
-        friendlyNameMap.put(AUTOMATIC_QUERY_NTHLARGEST, "Largest Graph");
-        automaticQuerySelectItems.add(new SelectItem(AUTOMATIC_QUERY_NTHLARGEST, friendlyNameMap.get(AUTOMATIC_QUERY_NTHLARGEST)));
+        friendlyNameMap.put(NetworkDataServiceLocal.AUTOMATIC_QUERY_NTHLARGEST, "Largest Graph");
+        automaticQuerySelectItems.add(new SelectItem(NetworkDataServiceLocal.AUTOMATIC_QUERY_NTHLARGEST, friendlyNameMap.get(NetworkDataServiceLocal.AUTOMATIC_QUERY_NTHLARGEST)));
 
-        friendlyNameMap.put(AUTOMATIC_QUERY_BICONNECTED, "Biconnected Graph");
-        automaticQuerySelectItems.add(new SelectItem(AUTOMATIC_QUERY_BICONNECTED, friendlyNameMap.get(AUTOMATIC_QUERY_BICONNECTED)));
+        friendlyNameMap.put(NetworkDataServiceLocal.AUTOMATIC_QUERY_BICONNECTED, "Biconnected Graph");
+        automaticQuerySelectItems.add(new SelectItem(NetworkDataServiceLocal.AUTOMATIC_QUERY_BICONNECTED, friendlyNameMap.get(NetworkDataServiceLocal.AUTOMATIC_QUERY_BICONNECTED)));
 
-        friendlyNameMap.put(AUTOMATIC_QUERY_NEIGHBORHOOD, "Neighborhood");
-        automaticQuerySelectItems.add(new SelectItem(AUTOMATIC_QUERY_NEIGHBORHOOD, friendlyNameMap.get(AUTOMATIC_QUERY_NEIGHBORHOOD)));
+        friendlyNameMap.put(NetworkDataServiceLocal.AUTOMATIC_QUERY_NEIGHBORHOOD, "Neighborhood");
+        automaticQuerySelectItems.add(new SelectItem(NetworkDataServiceLocal.AUTOMATIC_QUERY_NEIGHBORHOOD, friendlyNameMap.get(NetworkDataServiceLocal.AUTOMATIC_QUERY_NEIGHBORHOOD)));
 
         // and network measures
-        friendlyNameMap.put(NETWORK_MEASURE_RANK, "Page Rank");
-        networkMeasureSelectItems.add(new SelectItem(NETWORK_MEASURE_RANK, friendlyNameMap.get(NETWORK_MEASURE_RANK)));
+        friendlyNameMap.put(NetworkDataServiceLocal.NETWORK_MEASURE_RANK, "Page Rank");
+        networkMeasureSelectItems.add(new SelectItem(NetworkDataServiceLocal.NETWORK_MEASURE_RANK, friendlyNameMap.get(NetworkDataServiceLocal.NETWORK_MEASURE_RANK)));
         List parameters = new ArrayList();
         NetworkMeasureParameter d = new NetworkMeasureParameter();
         d.setName("d");
         d.setDefaultValue(".85");
         parameters.add(d);
-        networkMeasureParameterMap.put(NETWORK_MEASURE_RANK, parameters);
+        networkMeasureParameterMap.put(NetworkDataServiceLocal.NETWORK_MEASURE_RANK, parameters);
                 
-        friendlyNameMap.put(NETWORK_MEASURE_DEGREE, "Degree");
-        networkMeasureSelectItems.add(new SelectItem(NETWORK_MEASURE_DEGREE, friendlyNameMap.get(NETWORK_MEASURE_DEGREE)));
+        friendlyNameMap.put(NetworkDataServiceLocal.NETWORK_MEASURE_DEGREE, "Degree");
+        networkMeasureSelectItems.add(new SelectItem(NetworkDataServiceLocal.NETWORK_MEASURE_DEGREE, friendlyNameMap.get(NetworkDataServiceLocal.NETWORK_MEASURE_DEGREE)));
 
-        friendlyNameMap.put(NETWORK_MEASURE_UNIQUE_DEGREE, "Unique Degree");
-        networkMeasureSelectItems.add(new SelectItem(NETWORK_MEASURE_UNIQUE_DEGREE, friendlyNameMap.get(NETWORK_MEASURE_UNIQUE_DEGREE)));
+        friendlyNameMap.put(NetworkDataServiceLocal.NETWORK_MEASURE_UNIQUE_DEGREE, "Unique Degree");
+        networkMeasureSelectItems.add(new SelectItem(NetworkDataServiceLocal.NETWORK_MEASURE_UNIQUE_DEGREE, friendlyNameMap.get(NetworkDataServiceLocal.NETWORK_MEASURE_UNIQUE_DEGREE)));
 
-        friendlyNameMap.put(NETWORK_MEASURE_IN_LARGEST, "In Largest Component");
-        networkMeasureSelectItems.add(new SelectItem(NETWORK_MEASURE_IN_LARGEST, friendlyNameMap.get(NETWORK_MEASURE_IN_LARGEST)));
+        friendlyNameMap.put(NetworkDataServiceLocal.NETWORK_MEASURE_IN_LARGEST, "In Largest Component");
+        networkMeasureSelectItems.add(new SelectItem(NetworkDataServiceLocal.NETWORK_MEASURE_IN_LARGEST, friendlyNameMap.get(NetworkDataServiceLocal.NETWORK_MEASURE_IN_LARGEST)));
 
-        friendlyNameMap.put(NETWORK_MEASURE_BONACICH_CENTRALITY, "Bonacich Centrality");
-        networkMeasureSelectItems.add(new SelectItem(NETWORK_MEASURE_BONACICH_CENTRALITY, friendlyNameMap.get(NETWORK_MEASURE_BONACICH_CENTRALITY)));
+        friendlyNameMap.put(NetworkDataServiceLocal.NETWORK_MEASURE_BONACICH_CENTRALITY, "Bonacich Centrality");
+        networkMeasureSelectItems.add(new SelectItem(NetworkDataServiceLocal.NETWORK_MEASURE_BONACICH_CENTRALITY, friendlyNameMap.get(NetworkDataServiceLocal.NETWORK_MEASURE_BONACICH_CENTRALITY)));
         parameters = new ArrayList();
         NetworkMeasureParameter p1 = new NetworkMeasureParameter();
         p1.setName("alpha");
@@ -193,7 +186,7 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
         p2.setName("exo");
         p2.setDefaultValue("1");
         parameters.add(p2);
-        networkMeasureParameterMap.put(NETWORK_MEASURE_BONACICH_CENTRALITY, parameters);
+        networkMeasureParameterMap.put(NetworkDataServiceLocal.NETWORK_MEASURE_BONACICH_CENTRALITY, parameters);
 
         networkMeasureParamterList = networkMeasureParameterMap.get(networkMeasureType);
 
@@ -399,7 +392,7 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
 
     public String manualQuery_action() {
         try {
-            NetworkDataSubsetResult result = networkDataService.runManualQuery(rWorkspace, manualQueryType, manualQuery, eliminateDisconnectedVertices );
+            NetworkDataSubsetResult result = networkDataService.runManualQuery( manualQueryType, manualQuery, eliminateDisconnectedVertices );
 
             NetworkDataAnalysisEvent event = new NetworkDataAnalysisEvent();
             event.setLabel("Manual Query");
@@ -410,8 +403,8 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
             events.add(event);
             canUndo=true;
 
-        } catch (DvnRGraphException e) {
-            FacesMessage message = new FacesMessage(e.getMessage());
+        } catch (SQLException e) {
+            FacesMessage message = new FacesMessage("Error executing query: "+e.getMessage());
             getFacesContext().addMessage(manualQueryError.getClientId(getFacesContext()), message);
         }
 
@@ -420,7 +413,11 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
 
     public String automaticQuery_action() {
         try {
-            NetworkDataSubsetResult result = networkDataService.runAutomaticQuery(rWorkspace, automaticQueryType, automaticQueryNthValue);
+            int queryValue = 1;
+            if (!StringUtil.isEmpty(automaticQueryNthValue)) {
+                queryValue = Integer.valueOf(automaticQueryNthValue).intValue();
+            }
+            NetworkDataSubsetResult result = networkDataService.runAutomaticQuery( automaticQueryType, queryValue);
 
             NetworkDataAnalysisEvent event = new NetworkDataAnalysisEvent();
             event.setLabel("Automatic Query");
@@ -431,10 +428,10 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
             events.add(event);
             canUndo = true;
             
-        } catch (DvnRGraphException e) {
+       } catch (Exception e) {
                 FacesMessage message = new FacesMessage(e.getMessage());
                 getFacesContext().addMessage(automaticQueryError.getClientId(getFacesContext()), message);
-        }
+       }
 
 
         return null;
@@ -442,7 +439,7 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
 
     public String networkMeasure_action() {
         try {
-            String result = networkDataService.runNetworkMeasure(rWorkspace, networkMeasureType, networkMeasureParamterList);
+            String result = networkDataService.runNetworkMeasure( networkMeasureType, networkMeasureParamterList);
 
             NetworkDataAnalysisEvent event = new NetworkDataAnalysisEvent();
             event.setLabel("Network Measure");
@@ -457,7 +454,7 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
             vertexAttributeSelectItems.add(new SelectItem(result));
             canUndo = true;
 
-        } catch (DvnRGraphException e) {
+        } catch (Exception e) {
                 FacesMessage message = new FacesMessage(e.getMessage());
                 getFacesContext().addMessage(networkMeasureError.getClientId(getFacesContext()), message);
         }
@@ -467,7 +464,7 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
 
     public String restart_action() throws Exception {
         //reinit workspace and clear events
-        networkDataService.resetAnalysis(rWorkspace);
+        networkDataService.resetAnalysis();
         events.clear();
         events.add(getInitialEvent());
         canUndo = false;
@@ -476,7 +473,7 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
     }
 
     public String undo_action() throws Exception {
-        networkDataService.undoLastEvent(rWorkspace);
+        networkDataService.undoLastEvent();
         NetworkDataAnalysisEvent lastEvent = getLastEvent();
         if (lastEvent.getAddedAttribute() != null) {
             for (SelectItem selectItem : vertexAttributeSelectItems) {
@@ -601,8 +598,8 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
 
         public InputStream open() throws IOException {
             try {
-                file = networkDataService.getSubsetExport(rWorkspace);
-            } catch (DvnRGraphException ex) {
+                file = networkDataService.getSubsetExport();
+            } catch (Exception ex) {
                 Logger.getLogger(NetworkDataAnalysisPage.class.getName()).log(Level.SEVERE, null, ex);
                 throw new IOException("There was a problem attempting to get the export file");
             }

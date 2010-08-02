@@ -11,6 +11,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class DelimitedWriter implements GraphWriter {
+    private static final String MISSING_VAL = "null";
+
     private OutputStreamWriter vertWriter;
     private OutputStreamWriter edgeWriter;
     private SortedMap<String, String> nodePropTypes;
@@ -56,11 +58,13 @@ public class DelimitedWriter implements GraphWriter {
     }
 
     public void writeNode(ResultSet rs){
+        String prop;
         try{
             vertWriter.write(rs.getString("uid"));
             for(String k : nodePropTypes.keySet()){
                 vertWriter.write(delim);
-                vertWriter.write(rs.getString(k));
+                prop = rs.getString(k);
+                vertWriter.write(prop==null ? MISSING_VAL : prop);
             }
             vertWriter.write(newline);
         } catch(SQLException e){
@@ -71,6 +75,7 @@ public class DelimitedWriter implements GraphWriter {
     }
 
     public void writeEdge(ResultSet rs){
+        String prop;
         try{
             edgeWriter.write(rs.getString("source"));
             edgeWriter.write(delim);
@@ -79,7 +84,8 @@ public class DelimitedWriter implements GraphWriter {
             edgeWriter.write(rs.getString("uid"));
             for(String k : edgePropTypes.keySet()){
                 edgeWriter.write(delim);
-                edgeWriter.write(rs.getString(k));
+                prop = rs.getString(k);
+                edgeWriter.write(prop==null ? MISSING_VAL : prop);
             }
             edgeWriter.write(newline);
         } catch(SQLException e){

@@ -1941,7 +1941,7 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
                     inserter.executeBatch();
                     memconn.commit();
                     stat = memconn.createStatement();
-                    rs = stat.executeQuery(String.format("select a.*,%s from prop.node_props as a "+ 
+                    rs = stat.executeQuery(String.format("select a.*%s from prop.node_props as a "+ 
                                                       "join active_uid as b on a.uid=b.uid;", queryParts[3]));
 
                     while(rs.next()){

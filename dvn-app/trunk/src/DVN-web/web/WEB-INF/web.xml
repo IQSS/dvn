@@ -48,7 +48,7 @@
  
     <context-param>
         <param-name>com.icesoft.faces.connectionTimeout</param-name>
-	<param-value>1800000</param-value>
+	<param-value>3600000</param-value>
     </context-param>
   
 

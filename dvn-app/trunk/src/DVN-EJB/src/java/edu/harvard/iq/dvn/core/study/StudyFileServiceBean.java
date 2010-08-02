@@ -7,6 +7,7 @@ package edu.harvard.iq.dvn.core.study;
 
 import edu.harvard.iq.dvn.core.admin.UserServiceLocal;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
+import edu.harvard.iq.dvn.core.analysis.NetworkDataServiceBean;
 import edu.harvard.iq.dvn.core.mail.MailServiceLocal;
 import edu.harvard.iq.dvn.core.util.FileUtil;
 import edu.harvard.iq.dvn.ingest.dsb.DSBIngestMessage;
@@ -14,7 +15,6 @@ import edu.harvard.iq.dvn.ingest.dsb.DSBWrapper;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
@@ -35,6 +35,7 @@ import javax.jms.QueueSession;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import org.apache.commons.io.FileUtils;
 
 /**
  *
@@ -366,13 +367,19 @@ public class StudyFileServiceBean implements StudyFileServiceLocal {
                 } catch (IOException ex) {
                     throw new EJBException(ex);
                 }
-                // If this is a NetworkDataFile,  move the RData file from the temp Ingested location to the system location
+                // If this is a NetworkDataFile,  move the SQLite file from the temp Ingested location to the system location
                 if (f instanceof NetworkDataFile) {
-                    File tempRDataFile = new File(FileUtil.replaceExtension(fileBean.getIngestedSystemFileLocation(), "RData"));
-                    File newRDataFile = new File(newDir, f.getFileSystemName()+".RData");
+                    File tempSQLDataFile = new File(FileUtil.replaceExtension(fileBean.getIngestedSystemFileLocation(), NetworkDataServiceBean.SQLITE_EXTENSION));
+                    File newSQLDataFile = new File(newDir, f.getFileSystemName()+"."+NetworkDataServiceBean.SQLITE_EXTENSION);
+
+                    File tempNeo4jDir =  new File(FileUtil.replaceExtension(fileBean.getIngestedSystemFileLocation(), NetworkDataServiceBean.NEO4J_EXTENSION));
+                    File newNeo4jDir = new File(newDir, f.getFileSystemName()+"."+NetworkDataServiceBean.NEO4J_EXTENSION);
+                    
                     try {
-                        FileUtil.copyFile(tempRDataFile, newRDataFile);
-                        tempRDataFile.delete();
+                        FileUtil.copyFile(tempSQLDataFile, newSQLDataFile);
+                        FileUtils.copyDirectory(tempNeo4jDir, newNeo4jDir);
+                        tempSQLDataFile.delete();
+                        FileUtils.deleteDirectory(tempNeo4jDir);
                         f.setOriginalFileType(originalFileType);
                     } catch (IOException ex) {
                         throw new EJBException(ex);

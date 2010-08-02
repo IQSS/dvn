@@ -29,36 +29,31 @@ public class TestDriver {
             
             System.out.println("\nComponent marking test.");
             lg.markComponent(1);
-            lg.printUncommittedStatus();
-            lg.commit();
+            lg.printStatus();
+            lg.undo();
             lg.printStatus();
             
             
             System.out.println("\nVertex subset test.");
             lg.markNodesByProperty("\"loc\"=\"MA\"");
-            lg.printUncommittedStatus();
-            lg.commit();
+            lg.printStatus();
+            lg.undo();
             lg.printStatus();
             lg.initialize();
             
 
             System.out.println("\nRelationship subset test with dropped nodes.");
             lg.markRelationshipsByProperty("h_city = \"CAMBRIDGE\" or t_city = \"CAMBRIDGE\"", true);
-            lg.printUncommittedStatus();
-            lg.commit();
             lg.printStatus();
 
             System.out.println("\nNeighborhood test.");
             lg.markNeighborhood(3);
-            lg.printUncommittedStatus();
-            lg.commit();
             lg.printStatus();
-
+            lg.initialize();
+            
             System.out.println("\nRelationship subset test without dropped nodes.");
             lg.initialize();
             lg.markRelationshipsByProperty("h_city = \"CAMBRIDGE\" or t_city = \"CAMBRIDGE\"", false);
-            lg.printUncommittedStatus();
-            lg.commit();
             lg.printStatus();
 
             System.out.println("\nNetwork measures test.");
@@ -69,12 +64,11 @@ public class TestDriver {
             lg.printUserProps();
 
             lg.markComponent(1);
-            lg.commit();
-            lg.printUserProps();
-
             lg.calcPageRank(0.85);
             lg.printUserProps();
-            
+
+            lg.markNeighborhood(1);
+            lg.printStatus();
 
             System.out.println("\nGraphML dump test.");
             lg.dumpGraphML("RNAi_subset.xml");

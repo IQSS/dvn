@@ -68,6 +68,8 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
 
     public long taggedNodes;
     private long writeCount;
+
+    private boolean dirty;
     private flushMode currentFlushMode;
 
     private final long TXN_LIMIT = 100000;
@@ -219,6 +221,10 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
 
     public int getVertexCount() {
         int i = 0;
+
+        if(dirty && !currentFlushMode.equals(flushMode.RELATIONSHIP_ONLY))
+            return getUncommittedVertexCount();
+
         Iterator<Relationship> actives = neo.getReferenceNode().
                 getSingleRelationship(relType.ACTIVE, Direction.OUTGOING).
                 getEndNode().
@@ -230,8 +236,6 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
 
     public int getUncommittedVertexCount() {
         int i = 0;
-        if(currentFlushMode.equals(flushMode.RELATIONSHIP_ONLY))
-            return getVertexCount();
 
         Iterator <Relationship> activeNexts = neo.getReferenceNode().
             getSingleRelationship(relType.ACTIVE_NEXT, Direction.OUTGOING).
@@ -345,6 +349,9 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
 
     public int getEdgeCount(){
         long travCount = 0, relCount = 0;
+
+        if(dirty)
+            return getUncommittedEdgeCount();
        
         for(Relationship act : getActiveNode().getRelationships(relType.ACTIVE_SUB, Direction.OUTGOING)){
             for(Relationship r : act.getEndNode().getRelationships(relType.DEFAULT, Direction.OUTGOING)){
@@ -856,6 +863,9 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
         long currentId = 0, travCount = 0, relCount = 0, newRelCount=0;
         ResultSet rs;
 
+        if(dirty)
+            this.commit();
+
         tx = neo.beginTx();
         try{
             for(Relationship act : getActiveNode().getRelationships(relType.ACTIVE_SUB, Direction.OUTGOING)){
@@ -901,6 +911,7 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
         System.out.println("New Nodes: " + newRelCount);
         System.out.println("Node selection task took " + (((double)(System.currentTimeMillis()-startTimeMs))/1000) + " seconds.");
         this.currentFlushMode = flushMode.NODE_ONLY;
+        this.dirty = true;
     }
 
 
@@ -914,6 +925,9 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
         long startTimeMs = System.currentTimeMillis();
         long currentId = 0, travCount = 0, relCount = 0, newRelCount=0;
         ResultSet rs;
+
+        if(dirty)
+            commit();
 
         tx = neo.beginTx();
         try{
@@ -961,6 +975,7 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
             this.currentFlushMode = flushMode.FULL;
         else
             this.currentFlushMode = flushMode.RELATIONSHIP_ONLY;
+        this.dirty=true;
     }
 
     public void markNodeNeighborhood(long n_num, final int nth){
@@ -1012,6 +1027,10 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
 
     public void markNeighborhood(int nth){
         long i=0;
+
+        if(dirty)
+            commit();
+
         Transaction tx = neo.beginTx();
         try{
             for(Path p : getActiveTraverser()){
@@ -1029,6 +1048,7 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
             tx.finish();
         }
         this.currentFlushMode = flushMode.FULL;
+        this.dirty = true;
     }
 
     private Traverser getActiveTraverser(){
@@ -1435,6 +1455,9 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
         long nodeCount=0;
         Node anNode = getActiveNextNode();
         Transaction tx;
+
+        if(dirty)
+            commit();
         
         tx = neo.beginTx();
         try{
@@ -1454,15 +1477,18 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
             tx.finish();
         }
         this.currentFlushMode = flushMode.NODE_ONLY;
+        this.dirty = true;
     }
 
-    public void commit(){
+    private void commit(){
         flushMarks(this.currentFlushMode);
+        this.dirty = false;
         //this.currentFlushMode = null;
     }
 
-    public void rollback(){
+    public void undo(){
         eraseMarks(this.currentFlushMode);
+        this.dirty = false;
         //this.currentFlushMode = null;
     }
     
@@ -1659,6 +1685,11 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
         LazyNode2 v;
         int i=0;
         long writeCount=0;
+
+        if(dirty)
+            commit();
+
+
         //System.out.println(pr.getTolerance());
         pr.initialize();
         while(i++ < iters){
@@ -1698,6 +1729,10 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
         Node n;
         long writeCount=0;
         String name;
+
+        if(dirty)
+            commit();
+
         tx = neo.beginTx();
         try{
             name = registerUserProperty("Degree", elementType.NODE, "integer");
@@ -1722,8 +1757,12 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
         Transaction tx;
         Node n;
         long writeCount=0;
-        tx = neo.beginTx();
         String name;
+
+        if(dirty)
+            commit();
+
+        tx = neo.beginTx();
         try{
             name = registerUserProperty("UDegree", elementType.NODE, "integer");
             for(Path p : getActiveTraverser()){
@@ -1749,7 +1788,12 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
         Node compNode;
         long writeCount=0;
         boolean yes;
+
+        if(dirty)
+            commit();
+
         compNode = getNthComponentNode(1);
+
         tx = neo.beginTx();
         String name;
         try{
@@ -1828,6 +1872,10 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
 
     public void dumpGraphML(String filename){
         OutputStream outfile;
+        
+        if(dirty)
+            commit();
+
         try{
             outfile = new FileOutputStream(filename);
         } catch(Exception e){
@@ -1862,6 +1910,9 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
     public void dumpTables(String vertFileName, String edgeFileName, String delim){
         OutputStream vertfile;
         OutputStream edgefile;
+
+        if(dirty)
+            commit();
         
         try{
             vertfile = new FileOutputStream(vertFileName);
@@ -2022,8 +2073,8 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
                     inserter.executeBatch();
                     memconn.commit();
                     stat = memconn.createStatement();
-                    System.out.println(String.format("select a.*%s,b.source,b.target from prop.edge_props as a "+ 
-                                                      "join active_rel_uid as b on a.uid=b.uid;", queryParts[3]));
+                    //System.out.println(String.format("select a.*%s,b.source,b.target from prop.edge_props as a "+ 
+                    //                                  "join active_rel_uid as b on a.uid=b.uid;", queryParts[3]));
                     rs = stat.executeQuery(String.format("select a.*%s,b.source,b.target from prop.edge_props as a "+ 
                                                       "join active_rel_uid as b on a.uid=b.uid;", queryParts[3]));
 

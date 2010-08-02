@@ -1956,7 +1956,7 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
     }
     
     public void writeVertexTab(GraphWriter rsw){
-        long numCached = 0, batch_size = 5000;
+        long numCached = 0, batch_size = 50000;
         String[] queryParts = userPropStrings(elementType.NODE);
         String insertCommand = String.format("INSERT INTO active_uid(%s) values (%s);",
                                         queryParts[0], queryParts[1]);
@@ -2037,7 +2037,7 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
     }
 
     public void writeEdgeTab(GraphWriter rsw){
-        long numCached = 0, batch_size = 5000;
+        long numCached = 0, batch_size = 50000;
         String[] queryParts = userPropStrings(elementType.RELATIONSHIP);
         String insertCommand = String.format("INSERT INTO active_rel_uid(source, target, %s) values (?, ?, %s);",
                                         queryParts[0], queryParts[1]);

@@ -21,21 +21,21 @@ import javax.xml.stream.XMLStreamException;
 //import java.util.Formatter;
 
 public class GraphBatchInserter {
-    private String neoDbName, sqlDbName, configFileName;
+    private String neoDbName, sqlDbName, sqlConfigFileName, neoConfigFileName;
 
-    public GraphBatchInserter(String neoDbName, String sqlDbName, String configFileName)
+    public GraphBatchInserter(String neoDbName, String sqlDbName, String sqlConfigFileName, String neoConfigFileName)
       throws ClassNotFoundException{
         this.neoDbName = neoDbName;
         this.sqlDbName = sqlDbName;
-        this.configFileName = configFileName;
-
+        this.sqlConfigFileName = sqlConfigFileName;
+        this.neoConfigFileName = neoConfigFileName;
         Class.forName("org.sqlite.JDBC");
     }
 
     public void ingest(String graphmlFilename) throws SQLException, ClassNotFoundException{
         FileInputStream infile = null;
         BatchInserter inserter =
-            new BatchInserterImpl(neoDbName, BatchInserterImpl.loadProperties(configFileName));
+            new BatchInserterImpl(neoDbName, BatchInserterImpl.loadProperties(sqlConfigFileName));
 
         Connection conn = null;
 
@@ -67,7 +67,7 @@ public class GraphBatchInserter {
         //conn.commit();
         conn.close();
 
-        DVNGraph lg = new DVNGraphImpl(neoDbName, sqlDbName);
+        DVNGraph lg = new DVNGraphImpl(neoDbName, sqlDbName, neoConfigFileName);
         //lg.initialize();
         lg.finalize();
     }

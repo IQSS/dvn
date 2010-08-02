@@ -125,11 +125,11 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
         }
     }
  
-    public DVNGraphImpl(EmbeddedGraphDatabase neo_arg, String propertyDb)
+    public DVNGraphImpl(EmbeddedGraphDatabase neo_arg, String propertyDb, String neoDBProperties)
         throws ClassNotFoundException{
         String driverName = "org.sqlite.JDBC";
         this.neo= neo_arg;
-        neo.loadConfigurations("neodb.props");
+        neo.loadConfigurations(neoDBProperties);
         this.GraphDatabaseName = neo.getStoreDir();
 
         this.myId = UUID.randomUUID();
@@ -166,9 +166,9 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
         currentFlushMode = null;
     }
 
-    public DVNGraphImpl(String GraphDatabaseName, String propertyDb)
+    public DVNGraphImpl(String GraphDatabaseName, String propertyDb, String neoDBProps)
         throws ClassNotFoundException{
-        this(new EmbeddedGraphDatabase(GraphDatabaseName), propertyDb);
+        this(new EmbeddedGraphDatabase(GraphDatabaseName), propertyDb, neoDBProps);
     }
 
     public boolean addVertex(final LazyNode2 vertex) {

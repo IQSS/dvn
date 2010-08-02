@@ -6,12 +6,12 @@ import java.sql.SQLException;
 public class TestDriver {
     public static void main(String[] args) throws ClassNotFoundException, SQLException{
         //GraphBatchInserter gbi = new GraphBatchInserter("full_db", "full_props.db", "graphml.props");
-        GraphBatchInserter gbi = new GraphBatchInserter("RNAi_db", "RNAi_props.db", "graphml.props");
+        GraphBatchInserter gbi = new GraphBatchInserter("RNAi_db1", "RNAi_props.db1", "graphml.props", "neodb.props");
         //gbi.ingest("big_one.xml");
         gbi.ingest("RNAi_sample.xml");
         
         //DVNGraph lg = new DVNGraphImpl("full_db", "full_props.db");
-        DVNGraph lg = new DVNGraphImpl("RNAi_db", "RNAi_props.db");
+        DVNGraph lg = new DVNGraphImpl("RNAi_db", "RNAi_props.db", "neoDB.props");
         try{
             lg.initialize();
             lg.printStatus();
@@ -20,9 +20,9 @@ public class TestDriver {
             lg.printStatus();
             lg.initialize();
 
-            lg.markRelationshipsByProperty("h_city = \"CAMBRIDGE\" or t_city = \"CAMBRIDGE\"");
+            lg.markRelationshipsByProperty("h_city = \"CAMBRIDGE\" or t_city = \"CAMBRIDGE\"",true);
 
-            lg.calcPageRank(0.85, 10);
+            lg.calcPageRank(0.85);
             lg.calcDegree();
             lg.calcUniqueDegree();
             lg.calcInLargestComponent();
@@ -31,7 +31,7 @@ public class TestDriver {
             
             lg.markComponent(1);
 
-            lg.calcPageRank(0.85, 10);
+            lg.calcPageRank(0.85);
 
             lg.printUserProps();
 

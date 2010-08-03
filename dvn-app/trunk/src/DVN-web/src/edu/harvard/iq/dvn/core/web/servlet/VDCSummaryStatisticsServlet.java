@@ -116,7 +116,7 @@ public class VDCSummaryStatisticsServlet extends HttpServlet {
         Set ent = mp.entrySet();
         long maxBarLen = 200L;
         double maxFreq = 0L;
-        out.println("header value"+hdrValue);
+        //out.println("header value"+hdrValue);
         if (hdrValue.equals("Frequency")) {
             // get max freq
             for (Iterator itr = ent.iterator(); itr.hasNext();) {
@@ -124,16 +124,16 @@ public class VDCSummaryStatisticsServlet extends HttpServlet {
                 if (en.getKey().equals("UNF")) {
                 } else {
                     double tmpMax = Double.parseDouble((String) en.getValue());
-                    out.println("tmpMax=" + tmpMax);
+                    //out.println("tmpMax=" + tmpMax);
                     if (tmpMax > maxFreq) {
                         maxFreq = tmpMax;
-                        out.println("tmp max=" + maxFreq);
+                        //out.println("tmp max=" + maxFreq);
                     }
                 }
             }
         // 
         }
-        out.println("maxFreq(final)=" + maxFreq);
+        //out.println("maxFreq(final)=" + maxFreq);
 
         for (Iterator itr = ent.iterator(); itr.hasNext();) {
             Map.Entry en = (Map.Entry) itr.next();
@@ -148,7 +148,7 @@ public class VDCSummaryStatisticsServlet extends HttpServlet {
                     long w = 0L;
                     if (maxFreq != 0) {
                         w =  Math.round( maxBarLen * Double.parseDouble(((String) en.getValue())) / maxFreq );
-                        out.println("bar chart width=" + w);
+                        //out.println("bar chart width=" + w);
                     }
                     img.append(imgPrefix + w + "'/>");
                     sb.append("<tr><th>" + en.getKey() + "</th><td>" 
@@ -184,31 +184,31 @@ public class VDCSummaryStatisticsServlet extends HttpServlet {
             // Id is Long
             // out.println("varName="+dv.getName());
             if (dv.getId().toString().equals(varId)) {
-                out.println("matched Id="+varId);
-                out.println("matched varName="+dv.getName());
+                //out.println("matched Id="+varId);
+                //out.println("matched varName="+dv.getName());
                 sumStat = dv.getSummaryStatistics();
-                out.println("sumStat:size="+sumStat.size());
+                //out.println("sumStat:size="+sumStat.size());
                 // catStat = dv.getCategories();
                 catStat = new ArrayList<VariableCategory>();
                 catStat.addAll(dv.getCategories());
-                out.println("catStat:size="+catStat.size());
+                //out.println("catStat:size="+catStat.size());
                 Collections.sort(catStat);
                 break;
             }
         }
-        out.println("how many items in this table=" + counter);
+        //out.println("how many items in this table=" + counter);
         if (sumStat == null) {
-            out.println("sumStat is still null");
+            //out.println("sumStat is still null");
         }
         if (catStat == null) {
-            out.println("catStat is still null");
+            //out.println("catStat is still null");
         }
         if (sumStat.isEmpty() && catStat.isEmpty()) {
             // no data case
             colQS.append("Summary Statistics not Recorded");
         } else if (!(sumStat.isEmpty()) && catStat.isEmpty()) {
             if (counter <= dbglns) {
-                out.println("sumStat-only case started: row no=" + counter);
+                //out.println("sumStat-only case started: row no=" + counter);
             }
             // sumstat only case
 
@@ -241,7 +241,7 @@ public class VDCSummaryStatisticsServlet extends HttpServlet {
             colQS.append(getHtmlTableFragment(sumStatSet, "Statistic", "Value", varId));
 
             if (counter <= dbglns) {
-                out.println("sumStat-only case ended: row no=" + counter);
+                //out.println("sumStat-only case ended: row no=" + counter);
             }
 
         } else if (sumStat.isEmpty() && !(catStat.isEmpty())) {
@@ -249,7 +249,7 @@ public class VDCSummaryStatisticsServlet extends HttpServlet {
             // discrete
 
             if (counter <= dbglns) {
-                out.println("catStat-only case started: row no=" + counter);
+                //out.println("catStat-only case started: row no=" + counter);
             }
 
             //dv.getCategories() returns the whole Collection of VariableCategory type.
@@ -288,7 +288,7 @@ public class VDCSummaryStatisticsServlet extends HttpServlet {
 
 
             if (counter <= dbglns) {
-                out.println("catStat-only case ended: row no=" + counter);
+                //out.println("catStat-only case ended: row no=" + counter);
             }
 
 
@@ -297,7 +297,7 @@ public class VDCSummaryStatisticsServlet extends HttpServlet {
 
             // discrete
             if (counter <= dbglns) {
-                out.println("sumStat/catStat case started: row no=" + counter);
+                //out.println("sumStat/catStat case started: row no=" + counter);
             }
 
             //dv.getCategories() returns the whole Collection of VariableCategory type.
@@ -333,7 +333,7 @@ public class VDCSummaryStatisticsServlet extends HttpServlet {
             colQS.append(getHtmlTableFragment(catStatSet, columnHeaderCat, "Frequency", varId));
 
             if (counter <= dbglns) {
-                out.println("sumStat/catStat case ended: row no=" + counter);
+                //out.println("sumStat/catStat case ended: row no=" + counter);
             }
 
         } else {
@@ -351,9 +351,9 @@ public class VDCSummaryStatisticsServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
         String dtId = request.getParameter("dtId");
-        out.println("sumStatServlet: dtId=" + dtId);
+        //out.println("sumStatServlet: dtId=" + dtId);
         String varId = request.getParameter("varId");
-        out.println("sumStatServlet: varId=" + varId);
+        //out.println("sumStatServlet: varId=" + varId);
 
         // retrieve the datatable by dtId and
         // set it into dataTable
@@ -362,8 +362,8 @@ public class VDCSummaryStatisticsServlet extends HttpServlet {
         // retrieve each var's data as DataVariable Class data 
         // and set them into Collection<DataVariable> dataVariables
         dataVariables.addAll(dataTable.getDataVariables());
-        out.println("pass the addAll line");
-        out.println("Number of vars in this data table(" + dtId + ")=" + dataTable.getVarQuantity());
+        //out.println("pass the addAll line");
+        //out.println("Number of vars in this data table(" + dtId + ")=" + dataTable.getVarQuantity());
 
         String qsblock = quickSummaryContentsCreator(varId);
         //out.println("quick summary-statistics table:" + qsblock);

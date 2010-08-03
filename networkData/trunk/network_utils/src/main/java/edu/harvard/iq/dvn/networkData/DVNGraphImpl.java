@@ -248,8 +248,6 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
         return i;
     }
 
-
-
     public boolean addEdge(final LazyRelationship2 edge){
         Relationship rel = neo.getRelationshipById(edge.getId());
         if(rel != null){
@@ -313,7 +311,6 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
             return true;
         return false;
     }
-
 
     public int getEdgeCount(final EdgeType edgeType) {
         return (int)this.getEdgeCount();
@@ -1583,7 +1580,7 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
 
         tx = neo.beginTx();
         try{
-            name = registerUserProperty("Degree", elementType.NODE, "integer");
+            name = registerUserProperty("Degree", elementType.NODE, "int");
             for(Path p : getActiveTraverser()){
                 n = p.endNode();
                 n.setProperty(name, degree(n));
@@ -1612,7 +1609,7 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
 
         tx = neo.beginTx();
         try{
-            name = registerUserProperty("UDegree", elementType.NODE, "integer");
+            name = registerUserProperty("UDegree", elementType.NODE, "int");
             for(Path p : getActiveTraverser()){
                 n = p.endNode();
                 n.setProperty(name, getNeighborCount(n));
@@ -1645,7 +1642,7 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
         tx = neo.beginTx();
         String name;
         try{
-            name = registerUserProperty("InLargestComponent", elementType.NODE, "integer");
+            name = registerUserProperty("InLargestComponent", elementType.NODE, "int");
             for(Path p : getActiveTraverser()){
                 n = p.endNode();
                 yes = n.getSingleRelationship(relType.OWNS, Direction.INCOMING).

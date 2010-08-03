@@ -19,6 +19,7 @@ import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.util.FileUtil;
 import edu.harvard.iq.dvn.core.util.StringUtil;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
+import edu.harvard.iq.dvn.core.web.study.StudyUI;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -59,7 +60,7 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
 
     private Long fileId;
     private Long versionNumber;
-    private String studyTitle;
+    private StudyUI studyUI;
     private NetworkDataFile file;
    
     private String actionType = "manualQuery";
@@ -99,13 +100,14 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
             
             if (versionNumber!=null) {
                 StudyVersion sv = file.getStudy().getStudyVersionByNumber(versionNumber);
+                studyUI = new StudyUI(sv, null);
                 if (sv == null) {
                     redirect("/faces/IdDoesNotExistPage.xhtml?type=Study%20Version");
                     return;
                 }
-                studyTitle = sv.getMetadata().getTitle();
+                
             } else {
-                studyTitle = file.getStudy().getReleasedVersion().getMetadata().getTitle();
+                studyUI = new StudyUI(file.getStudy().getReleasedVersion(), null);
             }
             
         } catch (Exception e) { // id not a long, or file is not a NetworkDataFile (TODO: redirect to a different page if not network data file)
@@ -202,6 +204,14 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
         return initialEvent;
     }
 
+    public StudyUI getStudyUI() {
+        return studyUI;
+    }
+
+    public void setStudyUI(StudyUI studyUI) {
+        this.studyUI = studyUI;
+    }
+
     public NetworkDataFile getFile() {
         return file;
     }
@@ -229,14 +239,6 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
 
     public String getActionType() {
         return actionType;
-    }
-
-    public String getStudyTitle() {
-        return studyTitle;
-    }
-
-    public void setStudyTitle(String studyTitle) {
-        this.studyTitle = studyTitle;
     }
 
     

@@ -65,8 +65,9 @@ public class NetworkDataServiceBean implements NetworkDataServiceLocal, java.io.
     public void initAnalysis(String fileSystemLocation, String sessionId) {
        
         try {
-            String neoDirPath = FileUtil.replaceExtension(fileSystemLocation, NEO4J_EXTENSION);
-            File neoDir = new File(neoDirPath);
+            File fileLocation = new File(fileSystemLocation);
+            String neoDirName = FileUtil.replaceExtension(fileLocation.getName(), NEO4J_EXTENSION);
+            File neoDir = new File(fileLocation.getParent(), neoDirName);
             // Coy neoDB directory to a temporary location, so this bean can have exclusive access to it.
             File tempNeoDir = new File(baseTempPath, sessionId+new Long(new Date().getTime()).toString());
             tempNeoDir.mkdir();
@@ -74,9 +75,9 @@ public class NetworkDataServiceBean implements NetworkDataServiceLocal, java.io.
             FileUtils.copyDirectory(neoDir, tempNeoDir);
 
             // File copyNeoDB = FileUtils.
-            String sqliteFilePath = FileUtil.replaceExtension(fileSystemLocation, SQLITE_EXTENSION);
+            File sqliteFile = new File(fileLocation.getParent(), FileUtil.replaceExtension(fileLocation.getName(), SQLITE_EXTENSION));
             try {
-                dvnGraph = new DVNGraphImpl(tempNeoDir.getAbsolutePath(), sqliteFilePath, NEO4J_CONFIG_FILE);
+                dvnGraph = new DVNGraphImpl(tempNeoDir.getAbsolutePath(), sqliteFile.getAbsolutePath(), NEO4J_CONFIG_FILE);
             } catch (ClassNotFoundException e) {
                 throw new EJBException(e);
             }

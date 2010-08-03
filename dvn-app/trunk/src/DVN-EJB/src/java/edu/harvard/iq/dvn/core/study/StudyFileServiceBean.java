@@ -369,10 +369,10 @@ public class StudyFileServiceBean implements StudyFileServiceLocal {
                 }
                 // If this is a NetworkDataFile,  move the SQLite file from the temp Ingested location to the system location
                 if (f instanceof NetworkDataFile) {
-                    File tempSQLDataFile = new File(FileUtil.replaceExtension(fileBean.getIngestedSystemFileLocation(), NetworkDataServiceBean.SQLITE_EXTENSION));
+                    File tempSQLDataFile = new File(tempIngestedFile.getParent(), FileUtil.replaceExtension(tempIngestedFile.getName(),NetworkDataServiceBean.SQLITE_EXTENSION));
                     File newSQLDataFile = new File(newDir, f.getFileSystemName()+"."+NetworkDataServiceBean.SQLITE_EXTENSION);
 
-                    File tempNeo4jDir =  new File(FileUtil.replaceExtension(fileBean.getIngestedSystemFileLocation(), NetworkDataServiceBean.NEO4J_EXTENSION));
+                    File tempNeo4jDir =  new File(tempIngestedFile.getParent(), FileUtil.replaceExtension(tempIngestedFile.getName(),NetworkDataServiceBean.NEO4J_EXTENSION));
                     File newNeo4jDir = new File(newDir, f.getFileSystemName()+"."+NetworkDataServiceBean.NEO4J_EXTENSION);
                     
                     try {

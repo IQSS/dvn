@@ -1011,15 +1011,15 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
         j=0;
         for(Path p : trav){
             tmp_n = p.endNode();
-            if(p.lastRelationship()==null) continue;
-            if(p.length() <= nth && !isActiveNext(tmp_n)){
+            //if(p.lastRelationship()==null) continue;
+            if((p.lastRelationship() == null || p.length() <= nth) && !isActiveNext(tmp_n)){
                 setActiveNext(tmp_n, true);
                 i++;
             }
 
             tmp_r = p.lastRelationship();
 
-            if(isActiveNext(tmp_n) && !tmp_r.hasProperty("activeNext")){
+            if(tmp_r != null && isActiveNext(tmp_n) && !tmp_r.hasProperty("activeNext")){
                 tmp_r.setProperty("activeNext", True);
                 j++;
             }
@@ -1132,8 +1132,8 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
         
         neighDesc = travFac.description().breadthFirst().
                           prune(pruning).
-                          relationships(relType.DEFAULT).
-                          filter(onlyDefaultEdges).
+                          relationships(relType.DEFAULT, Direction.BOTH).
+                          //filter(onlyDefaultEdges).
                           uniqueness(Uniqueness.RELATIONSHIP_GLOBAL);
 
         return neighDesc.traverse(n);

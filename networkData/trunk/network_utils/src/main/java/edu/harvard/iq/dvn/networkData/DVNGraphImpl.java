@@ -52,7 +52,7 @@ import java.util.HashMap;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<LazyNode2, LazyRelationship2> {
+public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<LazyNode2, LazyRelationship2>, GraphWriter {
     public enum relType implements RelationshipType {
         ACTIVE, ACTIVE_SUB, ACTIVE_NEXT, ACTIVE_NEXT_SUB,
             COMPONENT, COMPONENT_SUB, OWNS, DEFAULT
@@ -74,6 +74,8 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
 
     private final long TXN_LIMIT = 100000;
     private final long NEO_CACHE_LIMIT = 50000;
+    private Transaction writerTx;
+    private long writerWriteCount;
 
     //private final Graph graph;
     private final EmbeddedGraphDatabase neo;
@@ -287,36 +289,6 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
 
     public boolean addEdge(final LazyRelationship2 edge, final LazyNode2 outVertex, final LazyNode2 inVertex, final EdgeType edgeType) {
         return this.addEdge(edge);
-        /*
-        LazyRelationship2 l = relIdx.get(edge.getId());
-        LazyNode2 n1 = nodeIdx.get(outVertex.getId());
-        LazyNode2 n2 = nodeIdx.get(inVertex.getId());
-
-        //If nodes don't exist, dealbreaker
-        if (null == n1 || null == n2)
-            return false;
-
-        //If nodes exist but aren't active, silently activate
-        if (!n1.isActive()){
-            n1.setActive(True);
-            nodeIdx.put(n1);
-        }
-        if (!n2.isActive()){
-            n2.setActive(True);
-            nodeIdx.put(n2);
-        }
-        
-        //If edge exists activate
-        if (null != l){
-            l.setActive(True);
-            relIdx.put(l);
-        }
-
-        else
-            return false;
-
-        return true;
-        */
     }
 
     public boolean removeEdge(final LazyRelationship2 edge) {
@@ -853,134 +825,7 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
             System.err.println(e.getMessage());
         }
     }
-   
-    public void markNodesByProperty(String query) throws SQLException{
-        Transaction tx;
-        Node n;
-        String inStatement = "";
-        String sql_format = "select uid from node_props where uid in (%s) and (%s);";
-        Statement stat = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
-        int batch_size = 1000;
-        boolean firstInList = true;
-        long startTimeMs = System.currentTimeMillis();
-        long currentId = 0, travCount = 0, relCount = 0, newRelCount=0;
-        ResultSet rs;
-
-        if(dirty)
-            this.commit();
-
-        tx = neo.beginTx();
-        try{
-            for(Relationship act : getActiveNode().getRelationships(relType.ACTIVE_SUB, Direction.OUTGOING)){
-                n = act.getEndNode();
-                if(isActive(n)){
-                    if(firstInList)
-                        firstInList = false;
-                    else
-                        inStatement+=",";
-                    inStatement+= String.format("%d", n.getId());
-
-                    if((++relCount%batch_size)==0){
-                        rs = stat.executeQuery(String.format(sql_format, inStatement, query));
-                        while(rs.next()){
-                            travCount++;
-                            newRelCount++;
-                            setActiveNext(neo.getNodeById(rs.getLong(1)), true);
-                        }
-                        rs.close();
-                        tx.success();
-                        tx.finish();
-                        tx = neo.beginTx();
-                        firstInList = true;
-                        inStatement = "";
-                    }
-
-                    if(travCount++ > NEO_CACHE_LIMIT){
-                        travCount %= NEO_CACHE_LIMIT;
-                        clearNeoCache();
-                    }
-                }
-            }
-            rs = stat.executeQuery(String.format(sql_format, inStatement, query));
-            while(rs.next()) {
-                newRelCount++;
-                setActiveNext(neo.getNodeById(rs.getLong(1)), true);
-            }
-
-            tx.success();
-        } finally {
-            tx.finish();
-        }
-        System.out.println("New Nodes: " + newRelCount);
-        System.out.println("Node selection task took " + (((double)(System.currentTimeMillis()-startTimeMs))/1000) + " seconds.");
-        this.currentFlushMode = flushMode.NODE_ONLY;
-        this.dirty = true;
-    }
-
-
-    public void markRelationshipsByProperty(String query, boolean dropDisconnected)throws SQLException{
-        Transaction tx;
-        String inStatement = "";
-        String sql_format = "select uid from edge_props where uid in (%s) and (%s);";
-        Statement stat = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
-        int batch_size = 1000;
-        boolean firstInList = true;
-        long startTimeMs = System.currentTimeMillis();
-        long currentId = 0, travCount = 0, relCount = 0, newRelCount=0;
-        ResultSet rs;
-
-        if(dirty)
-            commit();
-
-        tx = neo.beginTx();
-        try{
-            for(Relationship act : getActiveNode().getRelationships(relType.ACTIVE_SUB, Direction.OUTGOING)){
-                for(Relationship r : act.getEndNode().getRelationships(relType.DEFAULT, Direction.OUTGOING)){
-                    if(r.hasProperty("active") && isActive(r.getEndNode())){
-                        if(firstInList)
-                            firstInList = false;
-                        else
-                            inStatement+=",";
-                        inStatement+= String.format("%d", r.getId());
-
-                        if((++relCount%batch_size)==0){
-                            rs = stat.executeQuery(String.format(sql_format, inStatement, query));
-                            while(rs.next()){
-                                travCount++;
-                                newRelCount++;
-                                setActiveNext(neo.getRelationshipById(rs.getLong(1)), true);
-                            }
-                            rs.close();
-                            tx.success();
-                            tx.finish();
-                            tx = neo.beginTx();
-                            firstInList = true;
-                            inStatement = "";
-                        }
-
-                        if(travCount++ > NEO_CACHE_LIMIT){
-                            travCount %= NEO_CACHE_LIMIT;
-                            clearNeoCache();
-                        }
-                    }
-                }
-            }
-            rs = stat.executeQuery(String.format(sql_format, inStatement, query));
-            while(rs.next()) 
-                setActiveNext(neo.getRelationshipById(rs.getLong(1)), true);
-
-            tx.success();
-        } finally {
-            tx.finish();
-        }
-        System.out.println("Edge selection task took " + (((double)(System.currentTimeMillis()-startTimeMs))/1000) + " seconds.");
-        if(dropDisconnected)
-            this.currentFlushMode = flushMode.FULL;
-        else
-            this.currentFlushMode = flushMode.RELATIONSHIP_ONLY;
-        this.dirty=true;
-    }
-
+    
     public void markNodeNeighborhood(long n_num, final int nth){
         Transaction tx = neo.beginTx();
         try{
@@ -1873,6 +1718,45 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
         return propStrings;
     }
 
+    public void markNodesByProperty(String query) throws SQLException{
+        if(dirty)
+            commit();
+
+        String sql_query = String.format("select a.uid from "+
+                                           "prop.node_props as a join active_uid as b " +
+                                           "on a.uid=b.uid where (%s);", query);
+
+        GraphWriter gwView = this;
+
+        gwView.writeHeader(); //hack for starting surrounding Tx. 
+        writeVertexTab(gwView, sql_query);
+        gwView.writeFooter(); //hack for finalizeing surrounding Tx.
+
+        this.currentFlushMode = flushMode.NODE_ONLY;
+        this.dirty = true;
+    }
+
+    public void markRelationshipsByProperty(String query, boolean dropIsolates) throws SQLException{
+        if(dirty)
+            commit();
+
+        String sql_query = String.format("select a.uid from "+
+                                           "prop.edge_props as a join active_rel_uid as b " +
+                                           "on a.uid=b.uid where (%s);", query);
+
+        GraphWriter gwView = this;
+
+        gwView.writeHeader();
+        writeEdgeTab(gwView, sql_query);
+        gwView.writeFooter();
+
+        if(dropIsolates)
+            this.currentFlushMode = flushMode.FULL;
+        else
+            this.currentFlushMode = flushMode.RELATIONSHIP_ONLY;
+        this.dirty = true;
+    }
+
     public void dumpGraphML(String filename){
         OutputStream outfile;
         
@@ -1954,12 +1838,19 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
 
         }
     }
-    
+
     public void writeVertexTab(GraphWriter rsw){
+        String[] queryParts = userPropStrings(elementType.NODE);
+        String queryCommand = String.format("select a.*%s from prop.node_props as a join active_uid as b on a.uid=b.uid;", queryParts[3]);
+        writeVertexTab(rsw, queryCommand);
+    }
+    
+    public void writeVertexTab(GraphWriter rsw, String query){
         long numCached = 0, batch_size = 50000;
         String[] queryParts = userPropStrings(elementType.NODE);
         String insertCommand = String.format("INSERT INTO active_uid(%s) values (%s);",
                                         queryParts[0], queryParts[1]);
+        String queryCommand = query;
         SortedMap<String, String> types = getPropTypes(elementType.NODE);
         ResultSet rs;
         Connection memconn;
@@ -1967,7 +1858,7 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
         int i = 1;
         //Create in-memory sqlite table
         try{
-            memconn = DriverManager.getConnection("jdbc:sqlite:::memory::");
+            memconn = DriverManager.getConnection("jdbc:sqlite::memory:");
             
             Statement stat;
             stat = memconn.createStatement();
@@ -1996,8 +1887,7 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
                     inserter.executeBatch();
                     memconn.commit();
                     stat = memconn.createStatement();
-                    rs = stat.executeQuery(String.format("select a.*%s from prop.node_props as a "+ 
-                                                      "join active_uid as b on a.uid=b.uid;", queryParts[3]));
+                    rs = stat.executeQuery(queryCommand);
 
                     while(rs.next()){
                         rsw.writeNode(rs);
@@ -2016,8 +1906,7 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
             inserter.executeBatch();
             memconn.commit();
             stat = memconn.createStatement();
-            rs = stat.executeQuery(String.format("select a.*%s from prop.node_props as a "+ 
-                                              "join active_uid as b on a.uid=b.uid;", queryParts[3]));
+            rs = stat.executeQuery(queryCommand);
 
             while(rs.next()){
                 rsw.writeNode(rs);
@@ -2037,10 +1926,18 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
     }
 
     public void writeEdgeTab(GraphWriter rsw){
+        String[] queryParts = userPropStrings(elementType.RELATIONSHIP);
+        String queryCommand = String.format("select a.*%s,b.source,b.target from prop.edge_props as a "+ 
+                                                      "join active_rel_uid as b on a.uid=b.uid;", queryParts[3]);
+        writeEdgeTab(rsw, queryCommand);
+    }
+
+    public void writeEdgeTab(GraphWriter rsw, String query){
         long numCached = 0, batch_size = 50000;
         String[] queryParts = userPropStrings(elementType.RELATIONSHIP);
         String insertCommand = String.format("INSERT INTO active_rel_uid(source, target, %s) values (?, ?, %s);",
                                         queryParts[0], queryParts[1]);
+        String queryCommand = query;
         SortedMap<String, String> types = getPropTypes(elementType.RELATIONSHIP);
         ResultSet rs;
         Connection memconn;
@@ -2048,7 +1945,7 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
         long nodesWritten = 0;
         //Create in-memory sqlite table
         try{
-            memconn = DriverManager.getConnection("jdbc:sqlite:::memory::");
+            memconn = DriverManager.getConnection("jdbc:sqlite::memory:");
             
             Statement stat;
             stat = memconn.createStatement();
@@ -2082,8 +1979,7 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
                     stat = memconn.createStatement();
                     //System.out.println(String.format("select a.*%s,b.source,b.target from prop.edge_props as a "+ 
                     //                                  "join active_rel_uid as b on a.uid=b.uid;", queryParts[3]));
-                    rs = stat.executeQuery(String.format("select a.*%s,b.source,b.target from prop.edge_props as a "+ 
-                                                      "join active_rel_uid as b on a.uid=b.uid;", queryParts[3]));
+                    rs = stat.executeQuery(queryCommand);
 
                     while(rs.next()){
                         rsw.writeEdge(rs);
@@ -2104,8 +2000,7 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
             inserter.executeBatch();
             memconn.commit();
             stat = memconn.createStatement();
-            rs = stat.executeQuery(String.format("select a.*%s,b.source,b.target from prop.edge_props as a "+ 
-                                              "join active_rel_uid as b on a.uid=b.uid;", queryParts[3]));
+            rs = stat.executeQuery(queryCommand);
 
             while(rs.next()){
                 rsw.writeEdge(rs);
@@ -2127,5 +2022,34 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
         } catch(SQLException e){
             System.err.println(e.getMessage());
         }
+    }
+
+    /*Graph Writer View*/
+    public void writeHeader(){
+        this.writerTx = neo.beginTx();
+        this.writerWriteCount = 0;
+    }
+    public void writeNode(ResultSet rs) {
+        try{
+            setActiveNext(neo.getNodeById(rs.getLong(1)), true);
+        } catch(SQLException e) {
+            System.err.println(e.getMessage());
+        }
+    }
+    public void writeEdge(ResultSet rs){
+        try{
+            setActiveNext(neo.getRelationshipById(rs.getLong(1)), true);
+        } catch(SQLException e) {
+            System.err.println(e.getMessage());
+        }
+    }
+    public void writeFooter(){
+        writerTx.success();
+        writerTx.finish();
+    }
+    public void flush(){
+        writerTx.success();
+        writerTx.finish();
+        writerTx = neo.beginTx();
     }
 }

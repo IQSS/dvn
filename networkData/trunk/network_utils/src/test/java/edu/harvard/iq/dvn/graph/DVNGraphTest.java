@@ -16,12 +16,12 @@ public class DVNGraphTest
     extends TestCase
 {
 
-    public static final String NEO_DB = "/home/alex/neo4j/dvn/network_utils/target/test-classes/RNAi_db1";
-    public static final String SQL_DB = "/home/alex/neo4j/dvn/network_utils/target/test-classes/RNAi_props.db1";
-    public static final String INSERT_PROPS = "/home/alex/neo4j/dvn/network_utils/target/test-classes/graphml.props";
-    public static final String NEO_PROPS = "/home/alex/neo4j/dvn/network_utils/target/test-classes/neoDB.props";
+    public static final String NEO_DB = "target/test-classes/RNAi_db1";
+    public static final String SQL_DB = "target/test-classes/RNAi_props.db1";
+    public static final String INSERT_PROPS = "target/test-classes/graphml.props";
+    public static final String NEO_PROPS = "target/test-classes/neoDB.props";
 
-    public static final String SOURCE_XML = "/home/alex/neo4j/dvn/network_utils/target/test-classes/RNAi_sample.xml";
+    public static final String SOURCE_XML = "target/test-classes/RNAi_sample.xml";
 
     private DVNGraph lg;
 

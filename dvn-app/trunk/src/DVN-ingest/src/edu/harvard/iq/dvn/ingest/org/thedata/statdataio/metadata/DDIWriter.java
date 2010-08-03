@@ -256,7 +256,7 @@ public class DDIWriter {
                 for (int j=0; j<sumStat.length;j++){
                     String statistic = (sumStat[j].toString()).equals("NaN")
                         || (sumStat[j].toString()).equals("")
-                        ? MISSING_VALUE_TOKEN : sumStat[j].toString();
+                        ? MISSING_VALUE_TOKEN : StringEscapeUtils.escapeXml(sumStat[j].toString());
 //                    sb.append("\t\t<sumStat type=\""+
 //                        sumStatLabels3[j]+"\">"+statistic+"</sumStat>\n");
 

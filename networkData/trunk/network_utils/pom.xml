@@ -49,12 +49,12 @@
     <dependency>
         <groupId>org.neo4j</groupId>
         <artifactId>neo4j-kernel</artifactId>
-        <version>1.1-SNAPSHOT</version>
+        <version>1.1</version>
     </dependency>
     <dependency>
         <groupId>org.neo4j</groupId>
         <artifactId>neo4j-index</artifactId>
-        <version>1.1-SNAPSHOT</version>
+        <version>1.1</version>
     </dependency>
     <dependency>
         <groupId>org.neo4j</groupId>
@@ -88,6 +88,11 @@
       <artifactId>sqlite-jdbc</artifactId>
       <version>3.6.16</version>
     </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>1.4</version>
+    </dependency>
     <!--
     <dependency>
       <groupId>com.sleepycat</groupId>
@@ -107,6 +112,11 @@
             -->
         </resource>
     </resources>
+    <testResources>
+        <testResource>
+            <directory>src/test/resources</directory>
+        </testResource>
+    </testResources>
     <plugins>
         <!--
         <plugin>

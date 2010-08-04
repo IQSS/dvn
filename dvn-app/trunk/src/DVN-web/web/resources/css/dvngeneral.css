@@ -1,6 +1,6 @@
 /* DVN STYLE CLASSES */
-.dvn_wrapper{width:100%;min-width:724px;position:relative;background-color:#fff}
-.dvn_wrapperVanilla{width:100%;min-width:724px;position:relative;background-color:#eee}
+.dvn_wrapper{width:100%;min-width:724px;background-color:#fff}
+.dvn_wrapperVanilla{width:100%;min-width:724px;background-color:#eee}
 .dvn_bodyVanilla{background-color:#eee}
 .dvn_content{padding:12px;color:#464646 !important;text-align:left;display:block}
 .dvn_content div,.dvn_content span,.dvn_content p,.dvn_content li,.dvn_content caption,.dvn_content table,.dvn_content tbody,.dvn_content tfoot,.dvn_content thead,.dvn_content tr,.dvn_content th,.dvn_content td{font-family:"HelveticaNeue", Helvetica, Arial, sans-serif !important;font-size:12px !important;line-height:18px !important}

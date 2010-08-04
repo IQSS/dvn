@@ -4,9 +4,16 @@
 .dvn_wrapperVanilla{border-right:724px solid #eee}
 .dvn_content{display:inline-block;position:relative;margin-right:-724px}
 */
+/* Hack to position ProgressIcon */
+@media screen {
+.iceOutConStat{position:fixed}
+* html{overflow-y:hidden}
+* html body{overflow-y:auto;height:100%;}
+* html .iceOutConStat{position:absolute}
+}
+/* End Hack */
 .dvn_content form {margin:0;padding:0;}
 .dvn_content fieldset{padding:0;}
-.iceOutConStat{position:absolute}
 .vdcTooltip{width:16em}
 .dvnHmpgGroupTableWrap{width:100%}
 .dvnHmpgGroupAlphaSortBlock{padding-bottom:1em;white-space:nowrap;overflow:hidden}

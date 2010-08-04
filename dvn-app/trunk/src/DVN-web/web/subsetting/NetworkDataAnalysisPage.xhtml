@@ -42,31 +42,31 @@
 <input type="hidden" name="fileId" value="${param.fileId}"/>
 <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
     <div class="dvn_section">
-        <div class="dvnNetworkDataBlock">
-            <div class="dvnstudytitleblock">
-                <div class="dvnstudyadminboxfloat dvn_right">
-                    <ice:outputLink
-                        rendered="#{NetworkDataAnalysisPage.versionNumber==null}"
-                        value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{NetworkDataAnalysisPage.file.study.id}&amp;tab=files">
-                    <ice:outputText
-                        value="Back to Study"/>
-                    </ice:outputLink>
-                    <ice:outputLink
-                        rendered="#{NetworkDataAnalysisPage.versionNumber!=null}"
-                        value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{NetworkDataAnalysisPage.file.study.id}&amp;tab=files&amp;versionNumber=#{NetworkDataAnalysisPage.versionNumber}">
-                    <ice:outputText
-                        value="Back to Study"/>
-                    </ice:outputLink>
-                </div>
-                <gui:include src="/study/StudyTitleFragment.xhtml">
-                    <gui:param name="studyUI" value="#{NetworkDataAnalysisPage.studyUI}"/>
-                    <gui:param name="displayReleaseLink" value="false"/>
-                    <gui:param name="displayVersionInfo" value="true"/>
-                    <gui:param name="displayStatusBox" value="true"/>
-                    <gui:param name="displayFileName" value="#{NetworkDataAnalysisPage.file.fileName}"/>
-                </gui:include>
+        <div class="dvnstudytitleblock">
+            <div class="dvnstudyadminboxfloat dvn_right">
+                <ice:outputLink
+                    rendered="#{NetworkDataAnalysisPage.versionNumber==null}"
+                    value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{NetworkDataAnalysisPage.file.study.id}&amp;tab=files">
+                <ice:outputText
+                    value="Back to Study"/>
+                </ice:outputLink>
+                <ice:outputLink
+                    rendered="#{NetworkDataAnalysisPage.versionNumber!=null}"
+                    value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{NetworkDataAnalysisPage.file.study.id}&amp;tab=files&amp;versionNumber=#{NetworkDataAnalysisPage.versionNumber}">
+                <ice:outputText
+                    value="Back to Study"/>
+                </ice:outputLink>
             </div>
-            <div class="dvn_sectionBoxNoBorders">
+            <gui:include src="/study/StudyTitleFragment.xhtml">
+                <gui:param name="studyUI" value="#{NetworkDataAnalysisPage.studyUI}"/>
+                <gui:param name="displayReleaseLink" value="false"/>
+                <gui:param name="displayVersionInfo" value="true"/>
+                <gui:param name="displayStatusBox" value="true"/>
+                <gui:param name="displayFileName" value="#{NetworkDataAnalysisPage.file.fileName}"/>
+            </gui:include>
+        </div>
+        <div class="dvn_sectionBoxNoBorders">
+            <div class="dvnNetworkDataBlock">
                 <ice:selectOneRadio id="analysisActions" layout="spread" value="#{NetworkDataAnalysisPage.actionType}" partialSubmit="true">
                     <f:selectItem itemValue="manualQuery" itemLabel="Manual Query"/>
                     <f:selectItem itemValue="automaticQuery" itemLabel="Automatic Query"/>

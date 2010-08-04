@@ -24,7 +24,7 @@ Common Header for Study Pages
         <ice:outputText styleClass="dvnstudystatuslabel" value="Archived " rendered="#{studyUI.studyVersion.archived}"/>
         <ice:outputText styleClass="dvnstudystatuslabel" value="Deaccessioned " rendered="#{studyUI.studyVersion.deaccessioned}"/>
         <ice:outputText value="Study Version: #{studyUI.studyVersion.versionNumber}"/>
-        <ice:outputText value="&#8211;" rendered="#{!(studyUI.studyVersion.released) and (studyUI.study.releasedVersion != null)}"/>
+        <ice:outputText value="&#8211;" rendered="#{displayReleaseLink==true and !(studyUI.studyVersion.released) and (studyUI.study.releasedVersion != null)}"/>
         <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?globalId=#{studyUI.study.globalId}&amp;versionNumber=#{studyUI.study.releasedVersion.versionNumber}#{VDCRequest.studyListingIndexAsParameter}" rendered="#{displayReleaseLink==true and !(studyUI.studyVersion.released) and (studyUI.study.releasedVersion != null)}">
             <ice:outputText value="View Released Version" />
         </ice:outputLink>

@@ -130,7 +130,7 @@ public class ManageStudiesList extends VDCBaseBean {
                 }
             } else{
                 studyVersionIds = studyService.getAllStudyVersionIdsByContributor(loginBean.getUser().getId(), orderBy, ascending);
-                deaccessionedStudyVersionIds = studyService.getAllDeaccessionedStudyVersionIdsByContributor(vdcId, orderBy, ascending);
+                deaccessionedStudyVersionIds = studyService.getAllDeaccessionedStudyVersionIdsByContributor(loginBean.getUser().getId(), orderBy, ascending);
             }
             studyUIList = new ArrayList<StudyUI>();
             VDCUser user = loginBean == null ? null : loginBean.getUser();

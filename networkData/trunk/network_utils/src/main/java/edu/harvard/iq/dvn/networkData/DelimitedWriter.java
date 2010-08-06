@@ -63,7 +63,14 @@ public class DelimitedWriter implements GraphWriter {
             vertWriter.write(rs.getString("uid"));
             for(String k : nodePropTypes.keySet()){
                 vertWriter.write(delim);
+                if(nodePropTypes.get(k).toUpperCase().equals("STRING"))
+                    vertWriter.write("\"");
+
                 prop = rs.getString(k);
+
+                if(nodePropTypes.get(k).toUpperCase().equals("STRING"))
+                    vertWriter.write("\"");
+
                 vertWriter.write(prop==null ? MISSING_VAL : prop);
             }
             vertWriter.write(newline);

@@ -147,6 +147,7 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
         relationshipUserProperties = new ArrayList<String>();
 
         index = new LuceneIndexService(neo);
+        //index.setLazySearchResultThreshold(100000);
 
         Traversal travFac = new Traversal();
         defaultDesc = travFac.description()
@@ -778,6 +779,7 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
         if(dirty)
             undo();
 
+        index.shutdown();
         this.neo.shutdown();
         try{
             this.conn.close();
@@ -953,8 +955,10 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
         Transaction tx;
         long tag = 0, compsize = 0, i=0;
 
-        if(neo.getReferenceNode().hasProperty("numComps"))
+        if(neo.getReferenceNode().hasProperty("numComps")){
+        //    System.out.println(neo.getReferenceNode().getProperty("numComps"));
             clearComponents();
+        }
 
         tx = neo.beginTx();
         try{
@@ -1043,14 +1047,6 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
         System.out.println("done.");
     }
 
-    private long degree(Node n){
-        long deg=0;
-        for(Relationship r : n.getRelationships(relType.DEFAULT, Direction.BOTH))
-            if(isActive(r)) deg++;
-        return deg;
-    }
-
-    
     private IndexHits<Node> getNthComponentIdx(int nth){
         ArrayList<IndexHits<Node>> componentList = new ArrayList();
         Node component;
@@ -1128,20 +1124,32 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
     public void eraseMarks(flushMode mode){
         Transaction tx;
         Traverser flushTrav;
+        IndexHits<Node> idx;
+        long numWrites = 0;
 
         tx = neo.beginTx();
         try{
             //Get rid of all of the activeNext relationships
-            for(Node cur : getActiveNextNodes()){
-                if(!mode.equals(flushMode.NODE_ONLY)){
-                    for(Relationship r1 : cur.getRelationships(relType.DEFAULT, Direction.OUTGOING)){ 
-                        if(r1.hasProperty("activeNext")) r1.removeProperty("activeNext");
+            idx = getActiveNextNodes();
+                for(Node cur : getActiveNextNodes()){
+                    if(!mode.equals(flushMode.NODE_ONLY)){
+                        for(Relationship r1 : cur.getRelationships(relType.DEFAULT, Direction.OUTGOING)){ 
+                            if(r1.hasProperty("activeNext")) r1.removeProperty("activeNext");
+                        }
+                    }
+                    if(!mode.equals(flushMode.RELATIONSHIP_ONLY)){
+                        setActiveNext(cur, false);
+                    }
+                    if(numWrites++ > TXN_LIMIT){
+                        numWrites %= TXN_LIMIT;
+                        //System.out.println("ping");
+                        //idx.close();
+                        tx.success();
+                        tx.finish();
+                        tx = neo.beginTx();
+                        //idx = getActiveNextNodes();
                     }
                 }
-                if(!mode.equals(flushMode.RELATIONSHIP_ONLY)){
-                    setActiveNext(cur, false);
-                }
-            }
             tx.success();
         }
         finally {
@@ -1363,7 +1371,7 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
         try{
             name = registerUserProperty("Degree", elementType.NODE, "int");
             for(Node n : getActiveNodes()){
-                n.setProperty(name, degree(n));
+                n.setProperty(name, degree(n, Direction.BOTH));
                 if((++writeCount%TXN_LIMIT)==0){
                     tx.success();
                     tx.finish();

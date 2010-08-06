@@ -322,7 +322,9 @@ public class StudyFileUI implements java.io.Serializable {
         // For the following file types, the label has an extension of "tab", so
         // we must replace the "tab" with the original extension.
         // For other types, just return the label.
-        if (origFileType.equalsIgnoreCase("application/x-spss-sav")) {
+        if (origFileType == null) {
+            return null;
+        } else if (origFileType.equalsIgnoreCase("application/x-spss-sav")) {
             origExtension= "sav";
         } else if (origFileType.equalsIgnoreCase("application/x-spss-por")) {
             origExtension= "por";

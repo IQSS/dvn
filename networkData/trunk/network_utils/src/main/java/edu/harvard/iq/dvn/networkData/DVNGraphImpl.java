@@ -24,6 +24,8 @@ import java.util.Map;
 import java.util.Iterator;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Arrays;
 import java.util.ArrayList;
@@ -53,9 +55,6 @@ import org.neo4j.kernel.impl.transaction.TxModule;
 import org.neo4j.kernel.impl.transaction.XaDataSourceManager;
 import org.neo4j.kernel.impl.transaction.xaframework.XaDataSource;
 
-import java.util.HashMap;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<LazyNode2, LazyRelationship2>, GraphWriter {
     public enum relType implements RelationshipType {
@@ -1466,12 +1465,12 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
         neo.getConfig().getGraphDbModule().getNodeManager().clearCache();
     }
 
-    private SortedMap<String, String> getPropTypes(elementType e){
+    private Map<String, String> getPropTypes(elementType e){
         Node n = neo.getReferenceNode();
         String elem = e.equals(elementType.NODE) ? "node" : "edge";
         Pattern elemMatches = Pattern.compile(String.format("%s_(.*)", elem));
         Matcher m;
-        SortedMap<String, String> propMap = new TreeMap<String, String>();
+        Map<String, String> propMap = new LinkedHashMap<String, String>();
         for(String p : n.getPropertyKeys()){
             m = elemMatches.matcher(p);
             if(m.matches()){
@@ -1490,7 +1489,7 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
         List<String> userProperties =
             e.equals(elementType.NODE) ? nodeUserProperties :
                                          relationshipUserProperties;
-        SortedMap<String, String> types = getPropTypes(e);
+        Map<String, String> types = getPropTypes(e);
         for(String s : userProperties){
             propString += String.format(", %s",s);
             paramString += ", ?";
@@ -1634,7 +1633,7 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
         String insertCommand = String.format("INSERT INTO active_uid(%s) values (%s);",
                                         queryParts[0], queryParts[1]);
         String queryCommand = query;
-        SortedMap<String, String> types = getPropTypes(elementType.NODE);
+        Map<String, String> types = getPropTypes(elementType.NODE);
         ResultSet rs;
         Connection memconn;
         long nodesWritten = 0;
@@ -1721,7 +1720,7 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
         String insertCommand = String.format("INSERT INTO active_rel_uid(source, target, %s) values (?, ?, %s);",
                                         queryParts[0], queryParts[1]);
         String queryCommand = query;
-        SortedMap<String, String> types = getPropTypes(elementType.RELATIONSHIP);
+        Map<String, String> types = getPropTypes(elementType.RELATIONSHIP);
         ResultSet rs;
         Connection memconn;
         int i=1;

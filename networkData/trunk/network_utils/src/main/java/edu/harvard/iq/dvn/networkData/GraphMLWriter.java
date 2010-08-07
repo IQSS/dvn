@@ -7,7 +7,6 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import java.io.OutputStream;
-import java.util.SortedMap;
 import java.util.Map;
 
 /**
@@ -16,11 +15,11 @@ import java.util.Map;
 public class GraphMLWriter implements GraphWriter {
     private XMLOutputFactory outputFactory;
     private XMLStreamWriter writer;
-    private SortedMap<String, String> nodePropTypes;
-    private SortedMap<String, String> edgePropTypes;
+    private Map<String, String> nodePropTypes;
+    private Map<String, String> edgePropTypes;
 
     public GraphMLWriter(OutputStream graphMLOutputStream,
-            SortedMap<String, String> nodePropTypes, SortedMap<String, String> edgePropTypes){
+            Map<String, String> nodePropTypes, Map<String, String> edgePropTypes){
         try{
             this.outputFactory = XMLOutputFactory.newInstance();
             this.writer = outputFactory.createXMLStreamWriter(graphMLOutputStream);

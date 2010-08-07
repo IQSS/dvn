@@ -197,17 +197,19 @@ public class GraphMLReader {
             columnString += ", ";
 
             colName = e.getKey();
-            type = e.getValue();
+            sqliteType = type = e.getValue();
+            System.out.println(type);
             if(type.equals(GraphMLTokens.STRING))
                 sqliteType = "TEXT";
             else if(type.equals(GraphMLTokens.DOUBLE) || type.equals(GraphMLTokens.FLOAT))
                 sqliteType = "REAL";
-            else if(type.equals(GraphMLTokens.INT) || type.equals(GraphMLTokens.BOOLEAN) || type.equals(GraphMLTokens.LONG))
+            else if(type.equals(GraphMLTokens.INT) || type.equals(GraphMLTokens.BOOLEAN) ||
+                    type.equals(GraphMLTokens.LONG))
                 sqliteType = "INTEGER";
             else
                 throw new XMLStreamException(String.format("Unsupported type %s in %s keys.", type, element));
 
-            columnString += String.format("%s %s", colName, type);
+            columnString += String.format("%s %s", colName, sqliteType);
         }
 
         sql = String.format("CREATE TABLE %s_props (%s);", element, columnString);
@@ -231,7 +233,7 @@ public class GraphMLReader {
             type = typeMap.get(colName);
 
             if(type==null || type.equals(GraphMLTokens.STRING))
-                value = String.format("\"%s\"", value);
+                value = String.format("\'%s\'", value);
             else if(type.equals(GraphMLTokens.BOOLEAN))
                 value = Boolean.valueOf(value) ? "1" : "0";
 
@@ -239,7 +241,7 @@ public class GraphMLReader {
             valString += value;
         }
         sql = String.format("INSERT INTO %s_props (%s) VALUES (%s);", elementType, colString, valString);
-        //System.out.println(sql);
+//        System.out.println(sql);
         Statement stat = conn.createStatement();
         ret = (stat.executeUpdate(sql)==0); 
         stat.close();

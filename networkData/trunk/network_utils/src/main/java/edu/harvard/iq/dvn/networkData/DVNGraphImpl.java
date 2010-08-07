@@ -948,7 +948,6 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
         }
         return newTag;
     }
-    
 
     public void tagComponents(){
         Transaction tx;
@@ -986,7 +985,6 @@ public class DVNGraphImpl implements DVNGraph, edu.uci.ics.jung.graph.Graph<Lazy
             tx.finish();
         }
     }
-    
 
     public void printComponents(){
         Transaction tx;

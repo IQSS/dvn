@@ -67,11 +67,11 @@ public class DelimitedWriter implements GraphWriter {
                     vertWriter.write("\"");
 
                 prop = rs.getString(k);
+                vertWriter.write(prop==null ? MISSING_VAL : prop);
 
                 if(nodePropTypes.get(k).toUpperCase().equals("STRING"))
                     vertWriter.write("\"");
 
-                vertWriter.write(prop==null ? MISSING_VAL : prop);
             }
             vertWriter.write(newline);
         } catch(SQLException e){
@@ -95,13 +95,10 @@ public class DelimitedWriter implements GraphWriter {
                     edgeWriter.write("\"");
 
                 prop = rs.getString(k);
+                edgeWriter.write(prop==null ? MISSING_VAL : prop);
 
                 if(edgePropTypes.get(k).toUpperCase().equals("STRING"))
                     edgeWriter.write("\"");
-
-                vertWriter.write(prop==null ? MISSING_VAL : prop);
-
-                edgeWriter.write(prop==null ? MISSING_VAL : prop);
             }
             edgeWriter.write(newline);
         } catch(SQLException e){

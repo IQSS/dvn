@@ -5,7 +5,7 @@ import java.io.OutputStreamWriter;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import java.util.SortedMap;
+import java.util.Map;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,8 +15,8 @@ public class DelimitedWriter implements GraphWriter {
 
     private OutputStreamWriter vertWriter;
     private OutputStreamWriter edgeWriter;
-    private SortedMap<String, String> nodePropTypes;
-    private SortedMap<String, String> edgePropTypes;
+    private Map<String, String> nodePropTypes;
+    private Map<String, String> edgePropTypes;
     private String delim;
     public static String newline = System.getProperty("line.separator");
 
@@ -25,8 +25,8 @@ public class DelimitedWriter implements GraphWriter {
     };
 
     public DelimitedWriter(OutputStream vertWriter, OutputStream edgeWriter,
-            SortedMap<String, String> nodePropTypes,
-            SortedMap<String, String> edgePropTypes, String delimiter){
+            Map<String, String> nodePropTypes,
+            Map<String, String> edgePropTypes, String delimiter){
 
         this.vertWriter = new OutputStreamWriter(vertWriter);
         this.edgeWriter = new OutputStreamWriter(edgeWriter);
@@ -91,7 +91,16 @@ public class DelimitedWriter implements GraphWriter {
             edgeWriter.write(rs.getString("uid"));
             for(String k : edgePropTypes.keySet()){
                 edgeWriter.write(delim);
+                if(edgePropTypes.get(k).toUpperCase().equals("STRING"))
+                    edgeWriter.write("\"");
+
                 prop = rs.getString(k);
+
+                if(edgePropTypes.get(k).toUpperCase().equals("STRING"))
+                    edgeWriter.write("\"");
+
+                vertWriter.write(prop==null ? MISSING_VAL : prop);
+
                 edgeWriter.write(prop==null ? MISSING_VAL : prop);
             }
             edgeWriter.write(newline);

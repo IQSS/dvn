@@ -198,7 +198,6 @@ public class GraphMLReader {
 
             colName = e.getKey();
             sqliteType = type = e.getValue();
-            System.out.println(type);
             if(type.equals(GraphMLTokens.STRING))
                 sqliteType = "TEXT";
             else if(type.equals(GraphMLTokens.DOUBLE) || type.equals(GraphMLTokens.FLOAT))

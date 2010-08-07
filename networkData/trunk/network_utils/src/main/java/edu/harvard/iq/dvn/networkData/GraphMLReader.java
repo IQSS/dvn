@@ -11,7 +11,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.events.XMLEvent;
 import java.io.InputStream;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 //import GraphMLTokens;
@@ -33,11 +33,11 @@ public class GraphMLReader {
         long nodeCount = 0, edgeCount = 0;
         boolean preNodeInit = true, preEdgeInit = true;
 
-        Map<String, String> NodeKeyTypesMaps = new HashMap<String, String>();
-        Map<String, String> EdgeKeyTypesMaps = new HashMap<String, String>();
-        Map<String, Long> vertexIdMap = new HashMap<String, Long>();
-        Map<String, Object> dummyMap = new HashMap<String, Object>();
-        Map<String, String> propertyMap = new HashMap<String, String>();
+        Map<String, String> NodeKeyTypesMaps = new LinkedHashMap<String, String>();
+        Map<String, String> EdgeKeyTypesMaps = new LinkedHashMap<String, String>();
+        Map<String, Long> vertexIdMap = new LinkedHashMap<String, Long>();
+        Map<String, Object> dummyMap = new LinkedHashMap<String, Object>();
+        Map<String, String> propertyMap = new LinkedHashMap<String, String>();
 
         Long vertexObj = null, edgeObj = null;
         Long inVertex = null, outVertex = null;
@@ -174,7 +174,7 @@ public class GraphMLReader {
 
     public static boolean cachePropertyTypes(BatchInserter inserter, Map<String, String> nodeTypeMap,
                                              Map<String, String> edgeTypeMap){
-        Map<String, Object> fullTypeMap = new HashMap<String, Object>();
+        Map<String, Object> fullTypeMap = new LinkedHashMap<String, Object>();
         for(Map.Entry<String, String> e : nodeTypeMap.entrySet())
             fullTypeMap.put(String.format("node_%s", e.getKey()), e.getValue());
         for(Map.Entry<String, String> e : edgeTypeMap.entrySet())

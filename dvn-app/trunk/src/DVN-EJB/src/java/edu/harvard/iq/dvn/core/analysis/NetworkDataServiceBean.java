@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.channels.FileChannel;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -172,16 +173,17 @@ public class NetworkDataServiceBean implements NetworkDataServiceLocal, java.io.
             edgesFile = File.createTempFile("edges", "tab");
 
             
-            String delimiter = ",";
+            String delimiter = "\t";
             dvnGraph.dumpGraphML(xmlFile.getAbsolutePath());
             dvnGraph.dumpTables(vertsFile.getAbsolutePath(), edgesFile.getAbsolutePath(), delimiter);
 
             // Create zip file
-            zipOutputFile = File.createTempFile("subset", "zip");
+            String exportTimestamp = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss").format(new Date());
+            zipOutputFile = File.createTempFile("subset_" + exportTimestamp, "zip");
             zout = new ZipOutputStream((OutputStream)new FileOutputStream(zipOutputFile));
-            addZipEntry(zout,xmlFile.getAbsolutePath(),"graphml.xml");
-            addZipEntry(zout,vertsFile.getAbsolutePath(),"vertices.tab");
-            addZipEntry(zout,edgesFile.getAbsolutePath(),"edges.tab");
+            addZipEntry(zout,xmlFile.getAbsolutePath(),"graphml_" + exportTimestamp + ".xml");
+            addZipEntry(zout,vertsFile.getAbsolutePath(),"vertices_" + exportTimestamp + ".tab");
+            addZipEntry(zout,edgesFile.getAbsolutePath(),"edges_" + exportTimestamp + ".tab");
             zout.close();
 
 

@@ -266,15 +266,10 @@ public class StudyFileUI implements java.io.Serializable {
     }
     */
    public List getDataFileFormatTypeSelectItems() {
-        String origFileType = fileMetadata.getStudyFile().getOriginalFileType();
         List selectItems = new ArrayList();
-        if ( !StringUtil.isEmpty( getStudyFile().getOriginalFileType())){
-            // If originalFileType is not empty, that means the original file
-            // is available for download 
-            selectItems.add(new SelectItem(DownloadFormat.ORIGINAL_FILE,"Original File"));
-        }
+
         if (fileMetadata.getStudyFile() instanceof TabularDataFile) {
-            if (origFileType.equals("text/x-fixed-field")) {
+            if ("text/x-fixed-field".equals(fileMetadata.getStudyFile().getFileType())) {
                 selectItems.add(new SelectItem(DownloadFormat.FIXED_FIELD,"Fixed Field"));
             }
             selectItems.add(new SelectItem(DownloadFormat.TAB_DELIMITED,"Tab Delimited"));
@@ -285,6 +280,13 @@ public class StudyFileUI implements java.io.Serializable {
         else if (fileMetadata.getStudyFile() instanceof NetworkDataFile ) {
             selectItems.add(new SelectItem(DownloadFormat.GRAPHML,"GraphML"));
         }
+
+        if ( !StringUtil.isEmpty( fileMetadata.getStudyFile().getOriginalFileType() ) ){
+            // If originalFileType is not empty, that means the original file
+            // is available for download 
+            selectItems.add(new SelectItem(DownloadFormat.ORIGINAL_FILE,"Original File"));
+        }
+
         return selectItems;
     }
 

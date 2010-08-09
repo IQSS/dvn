@@ -86,8 +86,8 @@ is divided into following sections:
         </condition>
     </target>
     <target depends="init" name="-init-cos">
-        <condition property="build.disable.deploy.on.save">
-            <istrue value="${disable.deploy.on.save}"/>
+        <condition else="false" property="build.deploy.on.save">
+            <istrue value="${j2ee.deploy.on.save}"/>
         </condition>
     </target>
     <target name="post-init">
@@ -120,17 +120,32 @@ exists or setup the property manually. For example like this:
     -->
     <target depends="init" name="deps-jar" unless="no.deps"/>
     <target depends="init" name="deps-j2ee-archive" unless="no.deps">
+        <condition property="build.deploy.on.save" value="false">
+            <not>
+                <isset property="build.deploy.on.save"/>
+            </not>
+        </condition>
         <ant antfile="${project.DVN-EJB}/build.xml" inheritall="false" target="dist-ear">
             <property location="${build.dir}" name="dist.ear.dir"/>
-            <property name="disable.deploy.on.save" value="${build.disable.deploy.on.save}"/>
+            <property name="deploy.on.save" value="${build.deploy.on.save}"/>
         </ant>
+        <condition property="build.deploy.on.save" value="false">
+            <not>
+                <isset property="build.deploy.on.save"/>
+            </not>
+        </condition>
         <ant antfile="${project.DVN-ejb}/build.xml" inheritall="false" target="dist-ear">
             <property location="${build.dir}" name="dist.ear.dir"/>
-            <property name="disable.deploy.on.save" value="${build.disable.deploy.on.save}"/>
+            <property name="deploy.on.save" value="${build.deploy.on.save}"/>
         </ant>
+        <condition property="build.deploy.on.save" value="false">
+            <not>
+                <isset property="build.deploy.on.save"/>
+            </not>
+        </condition>
         <ant antfile="${project.DVN-web}/build.xml" inheritall="false" target="dist-ear">
             <property location="${build.dir}" name="dist.ear.dir"/>
-            <property name="disable.deploy.on.save" value="${build.disable.deploy.on.save}"/>
+            <property name="deploy.on.save" value="${build.deploy.on.save}"/>
         </ant>
     </target>
     <target depends="init,deps-jar,deps-j2ee-archive" name="pre-pre-compile"/>
@@ -369,17 +384,32 @@ exists or setup the property manually. For example like this:
     CLEANUP SECTION
     -->
     <target depends="init" name="deps-clean" unless="no.deps">
+        <condition property="build.deploy.on.save" value="false">
+            <not>
+                <isset property="build.deploy.on.save"/>
+            </not>
+        </condition>
         <ant antfile="${project.DVN-EJB}/build.xml" inheritall="false" target="clean-ear">
             <property location="${build.dir}" name="dist.ear.dir"/>
-            <property name="disable.deploy.on.save" value="${build.disable.deploy.on.save}"/>
+            <property name="deploy.on.save" value="${build.deploy.on.save}"/>
         </ant>
+        <condition property="build.deploy.on.save" value="false">
+            <not>
+                <isset property="build.deploy.on.save"/>
+            </not>
+        </condition>
         <ant antfile="${project.DVN-ejb}/build.xml" inheritall="false" target="clean-ear">
             <property location="${build.dir}" name="dist.ear.dir"/>
-            <property name="disable.deploy.on.save" value="${build.disable.deploy.on.save}"/>
+            <property name="deploy.on.save" value="${build.deploy.on.save}"/>
         </ant>
+        <condition property="build.deploy.on.save" value="false">
+            <not>
+                <isset property="build.deploy.on.save"/>
+            </not>
+        </condition>
         <ant antfile="${project.DVN-web}/build.xml" inheritall="false" target="clean-ear">
             <property location="${build.dir}" name="dist.ear.dir"/>
-            <property name="disable.deploy.on.save" value="${build.disable.deploy.on.save}"/>
+            <property name="deploy.on.save" value="${build.deploy.on.save}"/>
         </ant>
     </target>
     <target depends="init" name="do-clean">
@@ -387,9 +417,12 @@ exists or setup the property manually. For example like this:
         <delete dir="${dist.dir}"/>
         <delete dir="${build.dir}"/>
     </target>
+    <target depends="init" if="netbeans.home" name="undeploy-clean">
+        <nbundeploy failOnError="false" startServer="false"/>
+    </target>
     <target name="post-clean">
         <!-- Empty placeholder for easier customization. -->
         <!-- You can override this target in the ../build.xml file. -->
     </target>
-    <target depends="init,deps-clean,do-clean,post-clean" description="Clean build products." name="clean"/>
+    <target depends="init,undeploy-clean,deps-clean,do-clean,post-clean" description="Clean build products." name="clean"/>
 </project>

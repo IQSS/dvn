@@ -151,9 +151,11 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
         friendlyNameMap.put(NetworkDataServiceLocal.AUTOMATIC_QUERY_NTHLARGEST, "Largest Graph");
         automaticQuerySelectItems.add(new SelectItem(NetworkDataServiceLocal.AUTOMATIC_QUERY_NTHLARGEST, friendlyNameMap.get(NetworkDataServiceLocal.AUTOMATIC_QUERY_NTHLARGEST)));
 
+        /*
         friendlyNameMap.put(NetworkDataServiceLocal.AUTOMATIC_QUERY_BICONNECTED, "Biconnected Graph");
         automaticQuerySelectItems.add(new SelectItem(NetworkDataServiceLocal.AUTOMATIC_QUERY_BICONNECTED, friendlyNameMap.get(NetworkDataServiceLocal.AUTOMATIC_QUERY_BICONNECTED)));
-
+        */
+        
         friendlyNameMap.put(NetworkDataServiceLocal.AUTOMATIC_QUERY_NEIGHBORHOOD, "Neighborhood");
         automaticQuerySelectItems.add(new SelectItem(NetworkDataServiceLocal.AUTOMATIC_QUERY_NEIGHBORHOOD, friendlyNameMap.get(NetworkDataServiceLocal.AUTOMATIC_QUERY_NEIGHBORHOOD)));
 
@@ -176,6 +178,7 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
         friendlyNameMap.put(NetworkDataServiceLocal.NETWORK_MEASURE_IN_LARGEST, "In Largest Component");
         networkMeasureSelectItems.add(new SelectItem(NetworkDataServiceLocal.NETWORK_MEASURE_IN_LARGEST, friendlyNameMap.get(NetworkDataServiceLocal.NETWORK_MEASURE_IN_LARGEST)));
 
+        /*
         friendlyNameMap.put(NetworkDataServiceLocal.NETWORK_MEASURE_BONACICH_CENTRALITY, "Bonacich Centrality");
         networkMeasureSelectItems.add(new SelectItem(NetworkDataServiceLocal.NETWORK_MEASURE_BONACICH_CENTRALITY, friendlyNameMap.get(NetworkDataServiceLocal.NETWORK_MEASURE_BONACICH_CENTRALITY)));
         parameters = new ArrayList();
@@ -189,7 +192,7 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
         p2.setDefaultValue("1");
         parameters.add(p2);
         networkMeasureParameterMap.put(NetworkDataServiceLocal.NETWORK_MEASURE_BONACICH_CENTRALITY, parameters);
-
+        */
         networkMeasureParamterList = networkMeasureParameterMap.get(networkMeasureType);
 
         // and finally, add the initial event

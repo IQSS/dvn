@@ -7,6 +7,10 @@ public class GraphMLTokens {
     protected static final String GRAPHML = "graphml";
     protected static final String XMLNS = "xmlns";
     protected static final String GRAPHML_XMLNS = "http://graphml.graphdrawing.org/xmlns";
+    protected static final String XMLNS_XSI = "xmlns:xsi";
+    protected static final String GRAPHML_XMLNS_XSI = "http://www.w3.org/2001/XMLSchema-instance";
+    protected static final String XMLNS_SCHEMA = "xsi:schemaLocation";
+    protected static final String GRAPHML_XMLNS_SCHEMA = "http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd";
     protected static final String G = "G";
     protected static final String EDGEDEFAULT = "edgedefault";
     protected static final String UNDIRECTED = "undirected";

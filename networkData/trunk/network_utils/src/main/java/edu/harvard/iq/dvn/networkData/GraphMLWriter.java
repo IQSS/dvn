@@ -35,6 +35,8 @@ public class GraphMLWriter implements GraphWriter {
             writer.writeStartDocument();
             writer.writeStartElement(GraphMLTokens.GRAPHML);
             writer.writeAttribute(GraphMLTokens.XMLNS, GraphMLTokens.GRAPHML_XMLNS);
+            writer.writeAttribute(GraphMLTokens.XMLNS_XSI, GraphMLTokens.GRAPHML_XMLNS_XSI);
+            writer.writeAttribute(GraphMLTokens.XMLNS_SCHEMA, GraphMLTokens.GRAPHML_XMLNS_SCHEMA);
             //<key id="weight" for="edge" attr.name="weight" attr.type="float"/>
             for (Map.Entry<String, String> entry : nodePropTypes.entrySet()) {
                 writer.writeStartElement(GraphMLTokens.KEY);

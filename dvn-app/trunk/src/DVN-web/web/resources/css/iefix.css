@@ -1,7 +1,7 @@
 /* IE FIX STYLE CLASSES */
 /* Remove to resolve DOCTYPE margin/width issue
 .dvn_wrapper{border-right:724px solid #fff}
-.dvn_wrapperVanilla{border-right:724px solid #eee}
+.dvn_wrapperVanilla{border-right:620px solid #eee}
 .dvn_content{display:inline-block;position:relative;margin-right:-724px}
 */
 /* Hack to position ProgressIcon */

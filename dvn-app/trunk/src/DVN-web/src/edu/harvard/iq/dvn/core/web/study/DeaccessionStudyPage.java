@@ -60,6 +60,7 @@ public class DeaccessionStudyPage extends VDCBaseBean implements java.io.Seriali
 
     private String deaccessionLinkAuthority;
     private String deaccessionLinkStudyId;
+    private StudyUI studyUI;
 
     public void init() {
         super.init();
@@ -67,9 +68,10 @@ public class DeaccessionStudyPage extends VDCBaseBean implements java.io.Seriali
         // we need to create the studyServiceBean
         if (studyId != null) {
             Study study = studyService.getStudy(studyId);
+            studyUI = new StudyUI(study);
             studyVersion = study.getReleasedVersion();
             if (studyVersion == null) {
-                studyVersion = study.getDeaccessionedVersion();
+                studyVersion = study.getDeaccessionedVersion();                
                 updateDeaccessionDetails = true;
             }
 
@@ -84,6 +86,10 @@ public class DeaccessionStudyPage extends VDCBaseBean implements java.io.Seriali
             System.out.println("ERROR: in DeaccessionStudyPage, without a studyId");
         }
 
+    }
+
+    public StudyUI getStudyUI(){
+        return studyUI;
     }
 
     public Long getStudyId() {

@@ -17,12 +17,7 @@
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <input type="hidden" name="pageName" value="DeaccessionStudyPage"/>
         <ice:inputHidden id="studyId" value="#{DeaccessionStudyPage.studyId}"/>
-        <gui:include src="StudyTitleFragment.xhtml">
-             <gui:param name="studyUI" value="#{DeaccessionStudyPage.studyUI}"/>
-             <gui:param name="displayReleaseLink" value="true"/>
-             <gui:param name="displayVersionInfo" value="false"/>
-             <gui:param name="displayStatusBox" value="false"/>
-        </gui:include>
+
         <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnWarningMessage" rendered="#{!DeaccessionStudyPage.updateDeaccessionDetails}">
             <div class="dvnMsgBlockContainer">
               <ice:outputText value="#{bundlePageInfo.deaccessionStudyHelp}" escape="false"/>
@@ -33,6 +28,12 @@
               <ice:outputText value="#{bundlePageInfo.deaccessionStudyEditHelp}" escape="false"/>
             </div>
         </div>
+        <gui:include src="StudyTitleFragment.xhtml">
+             <gui:param name="studyUI" value="#{DeaccessionStudyPage.studyUI}"/>
+             <gui:param name="displayReleaseLink" value="true"/>
+             <gui:param name="displayVersionInfo" value="false"/>
+             <gui:param name="displayStatusBox" value="false"/>
+        </gui:include>
         <div class="dvn_section">
           <gui:include src="StudyTitleFragment.xhtml">
              <gui:param name="studyUI" value="#{studyPage.studyUI}"/>

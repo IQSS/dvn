@@ -6,7 +6,11 @@ import junit.framework.TestSuite;
 
 import java.sql.SQLException;
 import java.io.File;
+import java.io.InputStreamReader;
+import java.io.FileInputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.FileNotFoundException;
 import org.apache.commons.io.FileUtils;
 
 /**
@@ -22,6 +26,11 @@ public class DVNGraphTest
     public static final String NEO_PROPS = "neoDB.props";
 
     public static final String SOURCE_XML = "RNAi_sample.xml";
+    public static final String LIB_CONF_FILE = "lib.conf";
+
+    private final String LIB_DIR;
+    private final DVNGraphFactory GraphFac;
+    private final GraphBatchInserterFactory GraphInserterFac;
 
     private DVNGraph lg;
 
@@ -31,9 +40,16 @@ public class DVNGraphTest
      *
      * @param testName name of the test case
      */
-    public DVNGraphTest( String testName )
+    public DVNGraphTest( String testName ) throws IOException, FileNotFoundException
     {
         super( testName );
+        File f = new File(LIB_CONF_FILE);
+        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
+        LIB_DIR = br.readLine();
+        br.close();
+
+        GraphFac = new DVNGraphFactory(LIB_DIR);
+        GraphInserterFac = new GraphBatchInserterFactory(LIB_DIR);
     }
 
     /**
@@ -45,9 +61,9 @@ public class DVNGraphTest
     }
 
     protected void setUp() throws ClassNotFoundException, SQLException {
-        GraphBatchInserter gbi = new GraphBatchInserter(NEO_DB, SQL_DB, INSERT_PROPS, NEO_PROPS);
+        GraphBatchInserter gbi = GraphInserterFac.newInstance(NEO_DB, SQL_DB, INSERT_PROPS, NEO_PROPS);
         gbi.ingest(SOURCE_XML);
-        lg = new DVNGraphImpl(NEO_DB, SQL_DB, NEO_PROPS);
+        lg = GraphFac.newInstance(NEO_DB, SQL_DB, NEO_PROPS);
     }
 
     protected void tearDown() throws IOException {

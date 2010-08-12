@@ -1,6 +1,7 @@
 package edu.harvard.iq.dvn.networkData;
 
 import java.sql.SQLException;
+import java.io.IOException;
 //import java.util.ArrayList;
 
 public class TestDriver {
@@ -11,14 +12,16 @@ public class TestDriver {
 
     public static final String SOURCE_XML = "RNAi_sample.xml";
 
-    public static void main(String[] args) throws ClassNotFoundException, SQLException{
+
+    public static void main(String[] args) throws ClassNotFoundException, SQLException, IOException{
+        String LIB_PATH = args[0];
         //GraphBatchInserter gbi = new GraphBatchInserter("full_db", "full_props.db", "graphml.props");
-        GraphBatchInserter gbi = new GraphBatchInserter(NEO_DB, SQL_DB, INSERT_PROPS, NEO_PROPS);
+        GraphBatchInserter gbi = new GraphBatchInserterFactory(LIB_PATH).newInstance(NEO_DB, SQL_DB, INSERT_PROPS, NEO_PROPS);
         //gbi.ingest("big_one.xml");
         gbi.ingest(SOURCE_XML);
         
         //DVNGraph lg = new DVNGraphImpl("full_db", "full_props.db");
-        DVNGraph lg = new DVNGraphImpl(NEO_DB, SQL_DB, NEO_PROPS);
+        DVNGraph lg = new DVNGraphFactory(LIB_PATH).newInstance(NEO_DB, SQL_DB, NEO_PROPS);
         
         
         try{

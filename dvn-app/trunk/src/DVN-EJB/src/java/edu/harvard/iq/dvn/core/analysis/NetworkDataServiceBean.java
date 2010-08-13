@@ -16,6 +16,7 @@ import edu.harvard.iq.dvn.networkData.DVNGraph;
 import edu.harvard.iq.dvn.core.util.StringUtil;
 import edu.harvard.iq.dvn.networkData.DVNGraphImpl;
 import edu.harvard.iq.dvn.networkData.GraphBatchInserter;
+import edu.harvard.iq.dvn.networkData.GraphBatchInserterImpl;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -369,7 +370,7 @@ public class NetworkDataServiceBean implements NetworkDataServiceLocal, java.io.
         File sqliteFile = new File(ingestedDir, sqliteFileName);
 
           try {
-            GraphBatchInserter gbi = new GraphBatchInserter(neo4jDir.getAbsolutePath(), sqliteFile.getAbsolutePath(),  SQLITE_CONFIG_FILE, NEO4J_CONFIG_FILE);
+            GraphBatchInserter gbi = new GraphBatchInserterImpl(neo4jDir.getAbsolutePath(), sqliteFile.getAbsolutePath(),  SQLITE_CONFIG_FILE, NEO4J_CONFIG_FILE);
             gbi.ingest(editBean.getTempSystemFileLocation());
         } catch (Exception e) {
             throw new EJBException(e);

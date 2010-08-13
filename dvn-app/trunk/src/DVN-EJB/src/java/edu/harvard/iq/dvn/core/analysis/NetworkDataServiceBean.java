@@ -64,7 +64,7 @@ public class NetworkDataServiceBean implements NetworkDataServiceLocal, java.io.
      DVNGraph dvnGraph;
      String fileSystemLocation;
      private static final String baseTempPath = System.getProperty("java.io.tmpdir");
-
+     private static final String LIB_PATH = System.getProperty("dvn.networkData.libPath");
         
     public void initAnalysis(String fileSystemLocation, String sessionId) {
        
@@ -78,7 +78,7 @@ public class NetworkDataServiceBean implements NetworkDataServiceLocal, java.io.
             tempNeoDir.deleteOnExit();
             FileUtils.copyDirectory(neoDir, tempNeoDir);
 
-            if(neoClassLoader = null)
+            if(neoClassLoader == null)
                 neoClassLoader = new RestrictedURLClassLoader(LIB_PATH, NetworkDataServiceBean.class.getClassLoader()); 
 
             // File copyNeoDB = FileUtils.

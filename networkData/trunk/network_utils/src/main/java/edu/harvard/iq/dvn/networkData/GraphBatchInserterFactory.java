@@ -23,6 +23,10 @@ public class GraphBatchInserterFactory{
                     GraphBatchInserterFactory.class.getClassLoader());
     }
 
+    public GraphBatchInserterFactory(RestrictedURLClassLoader cl){
+        rucl = cl;
+    }
+
     public GraphBatchInserter newInstance(String neoDb, String sqlDb, String insertProps, String neoProps) throws ClassNotFoundException{
         Class gbiimplclass = Class.forName("edu.harvard.iq.dvn.networkData.GraphBatchInserterImpl", true, rucl);
         try{

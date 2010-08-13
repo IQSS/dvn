@@ -2,6 +2,12 @@ package edu.harvard.iq.dvn.networkData;
 
 import java.sql.SQLException;
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.net.MalformedURLException;
+import java.io.File;
+import org.apache.commons.io.FileUtils;
+
 //import java.util.ArrayList;
 
 public class TestDriver {
@@ -14,14 +20,30 @@ public class TestDriver {
 
 
     public static void main(String[] args) throws ClassNotFoundException, SQLException, IOException{
+        long startTimeMs = System.currentTimeMillis();
         String LIB_PATH = args[0];
-        //GraphBatchInserter gbi = new GraphBatchInserter("full_db", "full_props.db", "graphml.props");
-        GraphBatchInserter gbi = new GraphBatchInserterFactory(LIB_PATH).newInstance(NEO_DB, SQL_DB, INSERT_PROPS, NEO_PROPS);
-        //gbi.ingest("big_one.xml");
-        gbi.ingest(SOURCE_XML);
+
+        /*
+        File libDir = new File(LIB_PATH);
+        URL[] urls = (URL[])FileUtils.toURLs(
+                        (File[])FileUtils.listFiles(
+                            libDir, new String[]{"jar"}, false).
+                            toArray(new File[0]));
+
+        RestrictedURLClassLoader rucl = new RestrictedURLClassLoader(urls,
+                                        TestDriver.class.getClassLoader());
+                            */
+        RestrictedURLClassLoader rucl = new RestrictedURLClassLoader(LIB_PATH,
+                                            TestDriver.class.getClassLoader());
         
-        //DVNGraph lg = new DVNGraphImpl("full_db", "full_props.db");
-        DVNGraph lg = new DVNGraphFactory(LIB_PATH).newInstance(NEO_DB, SQL_DB, NEO_PROPS);
+        //GraphBatchInserter gbi = new GraphBatchInserterImpl(NEO_DB, SQL_DB, INSERT_PROPS, NEO_PROPS);
+        GraphBatchInserter gbi = new GraphBatchInserterFactory(rucl).newInstance(NEO_DB, SQL_DB, INSERT_PROPS, NEO_PROPS);
+        gbi.ingest(SOURCE_XML);
+
+        //gbi.ingest("big_one.xml");
+        
+        //DVNGraph lg = new DVNGraphImpl(NEO_DB, SQL_DB, NEO_PROPS);
+        DVNGraph lg = new DVNGraphFactory(rucl).newInstance(NEO_DB, SQL_DB, NEO_PROPS);
         
         
         try{
@@ -91,7 +113,10 @@ public class TestDriver {
             
         }
         finally{
+             System.out.println("Entire test took " + (((double)(System.currentTimeMillis()-startTimeMs))/1000) + " seconds.");
+           //System.out.println("hello!");
             lg.finalize();
+
         }
     }
 }

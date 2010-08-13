@@ -23,6 +23,10 @@ public class DVNGraphFactory{
                     DVNGraphFactory.class.getClassLoader());
     }
 
+    public DVNGraphFactory(RestrictedURLClassLoader cl){
+        rucl = cl;
+    }
+
     public DVNGraph newInstance(String neoDb, String sqlDb, String neoProps) throws ClassNotFoundException{
         Class dvngraphimplclass = Class.forName("edu.harvard.iq.dvn.networkData.DVNGraphImpl", true, rucl);
         try{

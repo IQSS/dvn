@@ -14,9 +14,10 @@ import edu.harvard.iq.dvn.core.study.VariableServiceLocal;
 import edu.harvard.iq.dvn.core.util.FileUtil;
 import edu.harvard.iq.dvn.networkData.DVNGraph;
 import edu.harvard.iq.dvn.core.util.StringUtil;
-import edu.harvard.iq.dvn.networkData.DVNGraphImpl;
 import edu.harvard.iq.dvn.networkData.GraphBatchInserter;
-import edu.harvard.iq.dvn.networkData.GraphBatchInserterImpl;
+import edu.harvard.iq.dvn.networkData.DVNGraphFactory;
+import edu.harvard.iq.dvn.networkData.GraphBatchInserterFactory;
+import edu.harvard.iq.dvn.networkData.RestrictedURLClassLoader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -54,6 +55,7 @@ public class NetworkDataServiceBean implements NetworkDataServiceLocal, java.io.
     private static final String NEO4J_CONFIG_FILE = "neodb.props";
     public static final String SQLITE_EXTENSION = "sqliteDB";
     public static final String NEO4J_EXTENSION = "neo4jDB";
+    private RestrictedURLClassLoader neoClassLoader = null;
     
     @EJB VariableServiceLocal varService;
 
@@ -76,10 +78,15 @@ public class NetworkDataServiceBean implements NetworkDataServiceLocal, java.io.
             tempNeoDir.deleteOnExit();
             FileUtils.copyDirectory(neoDir, tempNeoDir);
 
+            if(neoClassLoader = null)
+                neoClassLoader = new RestrictedURLClassLoader(LIB_PATH, NetworkDataServiceBean.class.getClassLoader()); 
+
             // File copyNeoDB = FileUtils.
             File sqliteFile = new File(fileLocation.getParent(), FileUtil.replaceExtension(fileLocation.getName(), SQLITE_EXTENSION));
             try {
-                dvnGraph = new DVNGraphImpl(tempNeoDir.getAbsolutePath(), sqliteFile.getAbsolutePath(), NEO4J_CONFIG_FILE);
+                dvnGraph = new DVNGraphFactory(neoClassLoader).
+                        newInstance(tempNeoDir.getAbsolutePath(), sqliteFile.getAbsolutePath(), NEO4J_CONFIG_FILE);
+                //dvnGraph = new DVNGraphImpl(tempNeoDir.getAbsolutePath(), sqliteFile.getAbsolutePath(), NEO4J_CONFIG_FILE);
             } catch (ClassNotFoundException e) {
                 throw new EJBException(e);
             }
@@ -370,7 +377,10 @@ public class NetworkDataServiceBean implements NetworkDataServiceLocal, java.io.
         File sqliteFile = new File(ingestedDir, sqliteFileName);
 
           try {
-            GraphBatchInserter gbi = new GraphBatchInserterImpl(neo4jDir.getAbsolutePath(), sqliteFile.getAbsolutePath(),  SQLITE_CONFIG_FILE, NEO4J_CONFIG_FILE);
+            if(neoClassLoader == null)
+                neoClassLoader = new RestrictedURLClassLoader(LIB_PATH, NetworkDataServiceBean.class.getClassLoader());
+            GraphBatchInserter gbi = new GraphBatchInserterFactory(neoClassLoader).
+                newInstance(neo4jDir.getAbsolutePath(), sqliteFile.getAbsolutePath(),  SQLITE_CONFIG_FILE, NEO4J_CONFIG_FILE);
             gbi.ingest(editBean.getTempSystemFileLocation());
         } catch (Exception e) {
             throw new EJBException(e);

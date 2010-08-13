@@ -63,7 +63,8 @@ public class RestrictedURLClassLoader extends URLClassLoader{
         Class cls;
         if//(luceneFinder.matcher(name).matches())
           (!(name.equals("edu.harvard.iq.dvn.networkData.DVNGraph") ||
-           name.equals("edu.harvard.iq.dvn.networkData.GraphBatchInserter")))
+           name.equals("edu.harvard.iq.dvn.networkData.GraphBatchInserter") ||
+           name.equals("org.sqlite.JDBC")))
             cls = super.loadClass(name);
         else
             cls = parent.loadClass(name);

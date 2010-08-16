@@ -89,18 +89,15 @@
                             }
                         }
                         if (elem.checked) {
-                             document.getElementById('studyForm:tabSet1:0:downloadAll').disabled=false;
+                             document.getElementById('downloadAllButton').disabled=false;
                         } else {
-                            resetZipOutputResourceDisable();
+                            checkDownloadAllButton();
                         }
 
                     }
 
-                    function resetZipOutputResourceDisable() {
-                        var catCBs = getElementsByClassName("catCheckBox", document.body);
-                        var studyCBs = getElementsByClassName("studyCheckBox", document.body);
+                    function checkDownloadAllButton() {
                         var fileCBs = getElementsByClassName("fileCheckBox", document.body);
-
                         var anySelected = false;
 
                         for (var i = 0; i < fileCBs.length; i++) {
@@ -108,21 +105,11 @@
                                 anySelected = true;
                             }
                         }
-                        for (var i = 0; i < catCBs.length; i++) {
-                            if ( catCBs[i].checked )  {
-                                anySelected = true;
-                            }
-                        }
-                        for (var i = 0; i < studyCBs.length; i++) {
-                            if ( studyCBs[i].checked )  {
-                                anySelected = true;
-                            }
-                        }
 
                         if (anySelected) {
-                            document.getElementById('studyForm:tabSet1:0:downloadAll').disabled=false;
+                            document.getElementById('downloadAllButton').disabled=false;
                         } else {
-                            document.getElementById('studyForm:tabSet1:0:downloadAll').disabled=true;
+                            document.getElementById('downloadAllButton').disabled=true;
                         }
                     }
 
@@ -131,62 +118,8 @@
                         endIndex = id.indexOf(":", startIndex);
                         return id.substring(startIndex, endIndex);
                     }
-                 
-                    function submitSelectedDownload(elem) {
-                          if (elem.value==null) {
-                            alert("Please select a format type before downloading.");
-                        } else {
-                            var selectedDownload = elem.previousSibling;
-                            selectedDownload.value = elem.value;
-                            iceSubmitPartial(document.getElementById('studyForm'), selectedDownload, null);
-                            
-                            var fileId = selectedDownload.previousSibling.value;
-                            if (elem.value=='FIXED_FIELD') {
-                                jQuery('.txt'+fileId).click();
-                            } else if (elem.value=='TAB_DELIMITED') {
-                                jQuery('.tab'+fileId).click();
-                            } else if (elem.value =='ORIGINAL_FILE') {
-                                jQuery('.orig'+fileId).click();
-                            } else if (elem.value=="GRAPHML") {
-                                jQuery('.label'+fileId).click();
-                            } else if (elem.value == 'SPLUS') {
-                                jQuery('.splus'+fileId).click();
-                            } else if (elem.value == 'STATA') {
-                                jQuery('.stata'+fileId).click();
-                            } else if (elem.value == 'R') {
-                                jQuery('.rdata'+fileId).click();
-                            } else { // SPLUS, SPSS or R
-                                jQuery('.zip'+fileId).click();
-                            }
-                            // Reset selected value to "Download As..."
-                            elem.value="";
-                        }
-                    }
 
-                    function submitSelectedFileIds() {
-                        setSelectedFileIds();
-                        if (document.getElementById('studyForm:selectedFileIds').value=='') {
-                            alert("No files selected.");
-                        } else {
-                            iceSubmitPartial(document.getElementById('studyForm'), document.getElementById('studyForm:selectedFileIds'), null);
-                        }
-                    }
 
-                    function setSelectedFileIds() {
-                        fileIdStr = "";
-                        var fileCBs = getElementsByClassName("fileCheckBox", document.body);
-                        for (var i = 0; i < fileCBs.length; i++) {
-                            if ( fileCBs[i].checked ) {
-                                if (fileIdStr != "") {
-                                    fileIdStr = fileIdStr + ",";
-                                }
-                                fileIdStr = fileIdStr + fileCBs[i].previousSibling.value;
-                            }
-                        }
-                        var selectedFields = document.getElementById('studyForm:selectedFileIds');
-
-                        selectedFields.value = fileIdStr;
-                    }
 
                     function viewStudyVersionDifferences() {
                         var versionNumberStr = "";
@@ -209,6 +142,43 @@
 
                         return false;
                     }
+
+                    function downloadSingleFile(fileDropdown) {
+                        downloadUrl = fileDropdown.options[ fileDropdown.selectedIndex ].value;
+                        fileDropdown.selectedIndex = 0;
+                        if (downloadUrl != "") {
+                            downloadFile(downloadUrl + "&versionNumber=#{studyPage.studyUI.studyVersion.versionNumber}");
+                        }
+                    }
+
+                    function downloadSelectedFiles() {
+                        fileIdStr = "";
+                        var fileCBs = getElementsByClassName("fileCheckBox", document.body);
+                        for (var i = 0; i < fileCBs.length; i++) {
+                            if ( fileCBs[i].checked ) {
+                                if (fileIdStr != "") {
+                                    fileIdStr = fileIdStr + ",";
+                                }
+                                fileIdStr = fileIdStr + fileCBs[i].previousSibling.value;
+                            }
+                        }
+                        if (fileIdStr == "") {
+                            alert ("No files selected");
+                            return false;
+                        }
+                        downloadFile("/FileDownload/study_#{studyPage.studyUI.study.studyId}.zip?fileId=" + fileIdStr + "&versionNumber=#{studyPage.studyUI.studyVersion.versionNumber}" + "#{studyPage.xff}");
+                        return false;
+                    }
+
+
+                    function downloadFile(fileUrl) {
+                        if (#{studyPage.termsOfUseRequired}){
+                            window.location.href = "/dvn#{VDCRequest.currentVDCURL}/faces/study/TermsOfUsePage.xhtml?tou=download&studyId=#{studyPage.studyId}&versionNumber=#{studyPage.studyUI.studyVersion.versionNumber}&redirectPage=" + escape(fileUrl);
+                        } else {
+                            self.frames['hiddenDownloadFrame'].location.href = "/dvn" + fileUrl;
+                        }
+                    }
+
                     // ]]>
                 </script>
       <f:loadBundle basename="StudyBundle" var="studybundle"/>
@@ -223,7 +193,6 @@
 </script>
       <ice:form id="studyForm" rendered="#{!studyPage.deaccessionedView}">
           <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
-          <ice:inputHidden id="selectedFileIds" value="#{studyPage.fileIdStr}"/>
           <input type="hidden" value="StudyPage" name="pageName"/>
           <ice:inputHidden id="studyId" value="#{studyPage.studyId}"/>
           <ice:inputHidden id="globalId" value="#{studyPage.globalId}" />

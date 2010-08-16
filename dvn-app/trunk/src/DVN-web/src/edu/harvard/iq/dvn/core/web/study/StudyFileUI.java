@@ -33,9 +33,11 @@ import com.icesoft.faces.context.Resource.Options;
 import com.icesoft.faces.context.effects.JavascriptContext;
 import edu.harvard.iq.dvn.core.admin.UserGroup;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
+import edu.harvard.iq.dvn.core.study.DataFileFormatType;
 import edu.harvard.iq.dvn.core.study.FileMetadata;
 import edu.harvard.iq.dvn.core.study.NetworkDataFile;
 import edu.harvard.iq.dvn.core.study.StudyFile;
+import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.study.TabularDataFile;
 import edu.harvard.iq.dvn.core.util.FileUtil;
 import edu.harvard.iq.dvn.core.util.PropertyUtil;
@@ -52,6 +54,7 @@ import java.util.Date;
 import java.util.List;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
+import javax.naming.InitialContext;
 import org.apache.commons.io.FileUtils;
 
 /**
@@ -167,10 +170,10 @@ public class StudyFileUI implements java.io.Serializable {
         return "";
        
     }
- 
+ */
     public String getFileDownloadURL() {
         
-        String fileDownloadURL = "/dvn/FileDownload/" + "?fileId=" + this.getStudyFile().getId();
+        String fileDownloadURL = "/FileDownload/" + "?fileId=" + this.getStudyFile().getId();
         if (vdcId != null) {
             fileDownloadURL += "&vdcId=" + this.vdcId;
         }
@@ -180,18 +183,16 @@ public class StudyFileUI implements java.io.Serializable {
         int headerValue = webstatistics.getParameterFromHeader("X-Forwarded-For");
         String xff = webstatistics.getQSArgument("xff", headerValue);
         fileDownloadURL  += xff;
-         
+
          return fileDownloadURL;
     }
-     */
+     
     
-/*
+
     public List<DataFileFormatType> getDataFileFormatTypes() {
 
         List dataFileFormatTypes = new ArrayList();
         if (isTabularDataFile()) {
-
-            String tabDelimitedValue = "";
 
             // first check for fixed field
             if ("text/x-fixed-field".equals(getStudyFile().getFileType())) {
@@ -200,13 +201,12 @@ public class StudyFileUI implements java.io.Serializable {
                 fixedFileType.setValue("");
                 dataFileFormatTypes.add(fixedFileType);
 
-                tabDelimitedValue = "D00";
             }
 
             // now add tab delimited
             DataFileFormatType tabDelimitedType = new DataFileFormatType();
             tabDelimitedType.setName("Tab Delimited");
-            tabDelimitedType.setValue(tabDelimitedValue);
+            tabDelimitedType.setValue("D00");
             dataFileFormatTypes.add(tabDelimitedType);
 
             // and original file
@@ -246,8 +246,8 @@ public class StudyFileUI implements java.io.Serializable {
         }
         return dataFileFormatTypes;
     }
-    */
-/*
+    
+
     public List getDataFileFormatTypeSelectItems() {
         List selectItems = new ArrayList();
         for (DataFileFormatType formatType : getDataFileFormatTypes()) {
@@ -264,97 +264,7 @@ public class StudyFileUI implements java.io.Serializable {
 
         return selectItems;
     }
-    */
-   public List getDataFileFormatTypeSelectItems() {
-        List selectItems = new ArrayList();
 
-        if (fileMetadata.getStudyFile() instanceof TabularDataFile) {
-            if ("text/x-fixed-field".equals(fileMetadata.getStudyFile().getFileType())) {
-                selectItems.add(new SelectItem(DownloadFormat.FIXED_FIELD,"Fixed Field"));
-            }
-            selectItems.add(new SelectItem(DownloadFormat.TAB_DELIMITED,"Tab Delimited"));
-            selectItems.add(new SelectItem(DownloadFormat.SPLUS,"Splus"));
-            selectItems.add(new SelectItem(DownloadFormat.STATA,"Stata"));
-            selectItems.add(new SelectItem(DownloadFormat.R,"R"));
-        }
-        else if (fileMetadata.getStudyFile() instanceof NetworkDataFile ) {
-            selectItems.add(new SelectItem(DownloadFormat.GRAPHML,"GraphML"));
-        }
-
-        if ( !StringUtil.isEmpty( fileMetadata.getStudyFile().getOriginalFileType() ) ){
-            // If originalFileType is not empty, that means the original file
-            // is available for download 
-            selectItems.add(new SelectItem(DownloadFormat.ORIGINAL_FILE,"Original File"));
-        }
-
-        return selectItems;
-    }
-
-
-    public String getTxtFileName() {
-        return FileUtil.replaceExtension(this.fileMetadata.getLabel(), "txt");
-    }
-    
-    public String getTabFileName() {
-        return FileUtil.replaceExtension(this.fileMetadata.getLabel(), "tab");
-    }
-
-    public String getZipFileName() {
-        return FileUtil.replaceExtension(this.fileMetadata.getLabel(), "zip");
-    }
-
-
-    public String getSplusFileName() {
-        return FileUtil.replaceExtension(this.fileMetadata.getLabel(), "ssc");
-    }
-
-    public String getStataFileName() {
-        return FileUtil.replaceExtension(this.fileMetadata.getLabel(), "dta");
-    }
-
-    public String getRdataFileName() {
-        return FileUtil.replaceExtension(this.fileMetadata.getLabel(), "RData");
-    }
-
-    public String getOrigFileName() {
-        String origFileType = fileMetadata.getStudyFile().getOriginalFileType();
-        String origFileName = fileMetadata.getLabel();
-        String origExtension = "";
-
-        // For the following file types, the label has an extension of "tab", so
-        // we must replace the "tab" with the original extension.
-        // For other types, just return the label.
-        if (origFileType == null) {
-            return null;
-        } else if (origFileType.equalsIgnoreCase("application/x-spss-sav")) {
-            origExtension= "sav";
-        } else if (origFileType.equalsIgnoreCase("application/x-spss-por")) {
-            origExtension= "por";
-        } else if (origFileType.equalsIgnoreCase("application/x-stata")) {
-            origExtension= "dta";
-        }
-        if (!origExtension.equals("")) {
-            origFileName= FileUtil.replaceExtension(fileMetadata.getLabel(), origExtension);
-        }
-        return origFileName;
-    }
-
-    private String selectedDownload;
-
-    public String getSelectedDownload() {
-        return selectedDownload;
-    }
-
-    public void setSelectedDownload(String selectedDownload) {
-        
-        this.selectedDownload = selectedDownload;
-        if (!StringUtil.isEmpty(selectedDownload)) {
-            JavascriptContext.addJavascriptCall(FacesContext.getCurrentInstance(),"resetZipOutputResourceDisable();");
-            notifyAll();
-            
-        }
-           
-    }
 
  /**
      * web statistics related
@@ -376,7 +286,7 @@ public class StudyFileUI implements java.io.Serializable {
     public void setXFF(String xff) {
         this.xff = xff;
     }
-    
+    /*
     public RFileResource getResource() {
         return new RFileResource(this, getXff());
     }
@@ -404,7 +314,7 @@ public class StudyFileUI implements java.io.Serializable {
 
 
         public InputStream open() throws IOException {
-            String fileDownloadURL = "http://" + PropertyUtil.getHostUrl() + "/dvn" /*+ currentVDCURL */ + "/FileDownload/";
+            String fileDownloadURL = "http://" + PropertyUtil.getHostUrl() + "/dvn/FileDownload/";
             if (studyFileUI.getStudyFile().isSubsettable() ) {
             // If necessary, wait for these fields to be filled by the icefaces partial submit - called by Javascript in the StudyPage
             while (StringUtil.isEmpty(studyFileUI.getSelectedDownload())) {
@@ -447,7 +357,7 @@ public class StudyFileUI implements java.io.Serializable {
         }
         public void withOptions(Options arg0) throws IOException {
         }
-    }
+    }*/
 
     public String getFileSize() {
         File pFile = new File (getStudyFile().getFileSystemLocation());

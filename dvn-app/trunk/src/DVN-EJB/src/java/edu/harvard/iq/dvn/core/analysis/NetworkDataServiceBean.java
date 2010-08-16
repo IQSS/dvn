@@ -86,7 +86,7 @@ public class NetworkDataServiceBean implements NetworkDataServiceLocal, java.io.
             } catch (ClassNotFoundException e) {
                 throw new EJBException(e);
             }
-            dvnGraph.initialize();
+            //dvnGraph.initialize();
             this.fileSystemLocation = fileSystemLocation;
         } catch (IOException e) {
             throw new EJBException(e);

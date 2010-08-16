@@ -13,13 +13,7 @@ import org.apache.commons.io.FileUtils;
 public class GraphBatchInserterFactory{
     private RestrictedURLClassLoader rucl;
     public GraphBatchInserterFactory(String libPath) throws IOException{
-        File libDir = new File(libPath);
-        URL[] urls = (URL[])FileUtils.toURLs(
-                        (File[])FileUtils.listFiles(
-                            libDir, new String[]{"jar"}, false).
-                            toArray(new File[0]));
-
-        rucl = new RestrictedURLClassLoader(urls,
+        rucl = new RestrictedURLClassLoader(libPath,
                     GraphBatchInserterFactory.class.getClassLoader());
     }
 

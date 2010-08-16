@@ -47,7 +47,7 @@ public class RestrictedURLClassLoader extends URLClassLoader{
 
         try{
             for(int i = 0; i < jarNames.length; i++){
-                System.out.println("jar:file:"+libPath+jarNames[i]+"!/");
+                //System.out.println("jar:file:"+libPath+jarNames[i]+"!/");
                 this.addURL(new URL("jar:file:"+libPath+jarNames[i]+"!/"));
             }
         } catch (MalformedURLException e){

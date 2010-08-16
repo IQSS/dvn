@@ -13,14 +13,8 @@ import org.apache.commons.io.FileUtils;
 public class DVNGraphFactory{
     private RestrictedURLClassLoader rucl;
     public DVNGraphFactory(String libPath) throws IOException{
-        File libDir = new File(libPath);
-        URL[] urls = (URL[])FileUtils.toURLs(
-                        (File[])FileUtils.listFiles(
-                            libDir, new String[]{"jar"}, false).
-                            toArray(new File[0]));
-
-        rucl = new RestrictedURLClassLoader(urls,
-                    DVNGraphFactory.class.getClassLoader());
+        rucl = new RestrictedURLClassLoader(libPath,
+             DVNGraphFactory.class.getClassLoader());
     }
 
     public DVNGraphFactory(RestrictedURLClassLoader cl){

@@ -1708,7 +1708,7 @@ public class FileDownloadServlet extends HttpServlet {
             altFormat = "text/tab-separated-values";
         } else if ( formatRequested.equals("D02") ) {
             altFormat = "application/x-rlang-transport";
-        } else if ( formatRequested.equals("DO3") ) {
+        } else if ( formatRequested.equals("D03") ) {
             altFormat = "application/x-stata-6";
         } else {
             altFormat = "application/x-R-2";
@@ -1825,7 +1825,7 @@ public class FileDownloadServlet extends HttpServlet {
         } else if ( xfileId != null && xfileId.matches("\\.tab$")) {
             if ( formatRequested.equals("D02") ) {
                 altFileName = xfileId.replaceAll(".tab$", ".ssc");
-            } else if ( formatRequested.equals("DO3") ) {
+            } else if ( formatRequested.equals("D03") ) {
                 altFileName = xfileId.replaceAll(".tab$", ".dta");
             } else {
                 altFileName = xfileId.replaceAll(".tab$", ".RData");
@@ -1835,7 +1835,7 @@ public class FileDownloadServlet extends HttpServlet {
                 altFileName = xfileId + ".tab";
             } else if ( formatRequested.equals("D02") ) {
                 altFileName = xfileId + ".ssc";
-            } else if ( formatRequested.equals("DO3") ) {
+            } else if ( formatRequested.equals("D03") ) {
                 altFileName = xfileId + ".dta";
             } else {
                 altFileName = xfileId + ".RData";

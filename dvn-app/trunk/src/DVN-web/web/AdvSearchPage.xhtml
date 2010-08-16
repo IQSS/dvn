@@ -23,120 +23,130 @@
             </div>
         </div>
         <div class="dvn_section">
-          <div class="dvn_sectionTitle">
-            <ice:outputText value="#{bundlePageInfo.advancedSearchPageBasicTitle}"/>
+
+          <div jsfc="ice:panelGroup">
+            <table class="dvnAdvSearchTable dvnPermissionsTable" cellspacing="0" cellpadding="0" border="0">
+              <tr><td class="dvnPermissionsTableHeader"><ice:outputText value="#{bundlePageInfo.advancedSearchPageBasicTitle}"/></td></tr>
+              <tr>
+                <td class="dvnFormPadding">
+                    <gui:include src="BasicSearchFragment.xhtml"></gui:include>
+                </td>
+              </tr>
+            </table>
           </div>
-          <div class="dvnFormPadding dvnFormMargin">
-            <gui:include src="BasicSearchFragment.xhtml">
-            </gui:include>
-          </div>
-          <div class="dvn_sectionTitle">
-            <ice:outputText value="#{bundlePageInfo.advancedSearchTitle}"/>
-          </div>
-              
-          <div class="dvn_sectionBox">
-            <div class="dvn_margin12">
-                <div class="dvnFormPadding dvnFormMargin">
-                <ice:commandButton id="button4" value="Search"   action="#{AdvSearchPage.search}"/>
-                <ice:commandButton id="button5" value="Cancel" immediate="true" action="#{VDCRequest.home}"/>
-              </div>
-              <ice:panelGrid cellpadding="0" cellspacing="0" columns="3" width="90%"
-                             id="gridPanel1" styleClass="dvnAdvSearchScopeTable"
-                             columnClasses="vdcAdvSearchCol1, vdcAdvSearchCol2, vdcAdvSearchCol3" rowClasses="list-row-odd, list-row-even">
-                <ice:outputText id="outputText1" styleClass="vdcSubHeaderColor" value="Search Scope"/>
-                <ice:outputText id="outputText2" styleClass="vdcSubHeaderColor" value="Operator"/>
-                <ice:outputText id="outputText3" styleClass="vdcSubHeaderColor" value="Search Term"/>
 
-                <ice:selectOneMenu binding="#{AdvSearchPage.dropdown1}" id="dropdown1" value="Title" onchange="submit()" valueChangeListener="#{AdvSearchPage.searchFieldListener}" immediate="true">
-                  <f:selectItems binding="#{AdvSearchPage.dropdown1SelectItems}" id="dropdown1SelectItems" value="#{AdvSearchPage.dropdown3DefaultItems}"/>
-                </ice:selectOneMenu>
-                <ice:selectOneMenu binding="#{AdvSearchPage.dropdown9}" id="dropdown9">
-                  <f:selectItems binding="#{AdvSearchPage.dropdown4SelectItems3}" id="dropdown4SelectItems3" value="#{AdvSearchPage.dateItem1 ? AdvSearchPage.dropdown4DateItems : AdvSearchPage.dropdown4NotDateItems}"/>
-                </ice:selectOneMenu>
-                <div>
-                  <ice:inputText onkeypress="if (window.event) return processEvent('', 'advsearch:button2'); else return processEvent(event, 'advsearch:button2');"
-                                 binding="#{AdvSearchPage.textField1}" id="textField1" size="40"  />
-                  <ice:message for="textField1" styleClass="errorMessage" showDetail="false" showSummary="true" />
-                </div>
+          <div jsfc="ice:panelGroup">
+            <table class="dvnPermissionsTable" cellspacing="0" cellpadding="0" border="0">
+              <tr><td class="dvnPermissionsTableHeader"><ice:outputText value="#{bundlePageInfo.advancedSearchTitle}"/></td></tr>
+              <tr>
+                <td>
 
-                <div>
-                  <ice:outputText id="outputText7" value="and "/>
-                  <ice:selectOneMenu binding="#{AdvSearchPage.dropdown3}" id="dropdown3" value="Producer" onchange="submit()" valueChangeListener="#{AdvSearchPage.searchFieldListener}" immediate="true">
-                    <f:selectItems binding="#{AdvSearchPage.dropdown3SelectItems}" id="dropdown3SelectItems" value="#{AdvSearchPage.dropdown3DefaultItems}"/>
-                  </ice:selectOneMenu>
-                </div>
-                <ice:selectOneMenu binding="#{AdvSearchPage.dropdown4}" id="dropdown4">
-                  <f:selectItems binding="#{AdvSearchPage.dropdown4SelectItems}" id="dropdown4SelectItems" value="#{AdvSearchPage.dateItem2 ? AdvSearchPage.dropdown4DateItems : AdvSearchPage.dropdown4NotDateItems}"/>
-                </ice:selectOneMenu>
-                <ice:inputText onkeypress="if (window.event) return processEvent('', 'advsearch:button2'); else return processEvent(event, 'advsearch:button2');"
-                               binding="#{AdvSearchPage.textField2}" id="textField2" size="40" />
+                  <div class="dvnFormPadding dvnFormMargin">
+                    <ice:commandButton id="button4" value="Search"   action="#{AdvSearchPage.search}"/>
+                    <ice:commandButton id="button5" value="Cancel" immediate="true" action="#{VDCRequest.home}"/>
+                  </div>
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="3" width="90%"
+                                 id="gridPanel1" styleClass="dvnAdvSearchScopeTable"
+                                 columnClasses="vdcAdvSearchCol1, vdcAdvSearchCol2, vdcAdvSearchCol3" rowClasses="list-row-odd, list-row-even">
+                    <ice:outputText id="outputText1" styleClass="vdcSubHeaderColor" value="Search Scope"/>
+                    <ice:outputText id="outputText2" styleClass="vdcSubHeaderColor" value="Operator"/>
+                    <ice:outputText id="outputText3" styleClass="vdcSubHeaderColor" value="Search Term"/>
 
-                <div>
-                  <ice:outputText id="outputText6" value="and "/>
-                  <ice:selectOneMenu binding="#{AdvSearchPage.dropdown5}" id="dropdown5" value="Production Date" onchange="submit()" valueChangeListener="#{AdvSearchPage.searchFieldListener}" immediate="true">
-                    <f:selectItems binding="#{AdvSearchPage.dropdown3SelectItems1}" id="dropdown3SelectItems1" value="#{AdvSearchPage.dropdown3DefaultItems}"/>
-                  </ice:selectOneMenu>
-                </div>
-                <ice:selectOneMenu binding="#{AdvSearchPage.dropdown6}" id="dropdown6">
-                  <f:selectItems binding="#{AdvSearchPage.dropdown4SelectItems1}" id="dropdown4SelectItems1" value="#{AdvSearchPage.dateItem3 ? AdvSearchPage.dropdown4DateItems : AdvSearchPage.dropdown4NotDateItems}"/>
-                </ice:selectOneMenu>
-                <ice:inputText onkeypress="if (window.event) return processEvent('', 'advsearch:button2'); else return processEvent(event, 'advsearch:button2');"
-                               binding="#{AdvSearchPage.textField3}" id="textField3" size="40"/>
-
-                <div>
-                  <ice:outputText id="outputText8" value="and "/>
-                  <ice:selectOneMenu binding="#{AdvSearchPage.dropdown7}" id="dropdown7" value="Time Period Covered Start" onchange="submit()" valueChangeListener="#{AdvSearchPage.searchFieldListener}" immediate="true">
-                    <f:selectItems binding="#{AdvSearchPage.dropdown3SelectItems2}" id="dropdown3SelectItems2" value="#{AdvSearchPage.dropdown3DefaultItems}"/>
-                  </ice:selectOneMenu>
-                </div>
-                <ice:selectOneMenu binding="#{AdvSearchPage.dropdown8}" id="dropdown8">
-                  <f:selectItems binding="#{AdvSearchPage.dropdown4SelectItems2}" id="dropdown4SelectItems2" value="#{AdvSearchPage.dateItem4 ? AdvSearchPage.dropdown4DateItems : AdvSearchPage.dropdown4NotDateItems}"/>
-                </ice:selectOneMenu>
-                <ice:inputText onkeypress="if (window.event) return processEvent('', 'advsearch:button2'); else return processEvent(event, 'advsearch:button2');"
-                               binding="#{AdvSearchPage.textField4}" id="textField4" size="40"/>
-              </ice:panelGrid>
-
-              <div>
-                  <ice:dataTable cellpadding="0" cellspacing="0" columns="3" width="90%"
-                                 binding="#{AdvSearchPage.dataTableVariableInfo}" value="#{AdvSearchPage.variableInfoList}" var="currentRow"
-                                 styleClass="dvnAdvSearchScopeTable" columnClasses="vdcAdvSearchCol1, vdcAdvSearchCol2, vdcAdvSearchCol3" rowClasses="list-row-odd, list-row-even">
-                        <ice:column>
-                            <ice:outputText value="Variable Information"/>
-                        </ice:column>
-                        <ice:column>
-                            <ice:outputText value="Contains"/>
-                        </ice:column>
-                        <ice:column>
-                            <ice:inputText onkeypress="if (window.event) return processEvent('', 'advsearch:button2'); else return processEvent(event, 'advsearch:button2');"
-                                           id="input_VariableInfo" size="40" value="#{currentRow.value}" binding="#{AdvSearchPage.inputVariableInfo}"/>
-                        </ice:column>
-                  </ice:dataTable>
-              </div>
-
-              <div jsfc="ice:panelGroup" styleClass="dvnFormPadding" rendered="#{AdvSearchPage.collectionsIncluded}">
-                <ice:outputText id="outputText5" styleClass="vdcSubHeaderColor" value="Collections"/>
-                <ice:selectOneRadio binding="#{AdvSearchPage.radioButtonList1}" id="radioButtonList1" layout="pageDirection" value="Search All Collections">
-                  <f:selectItems binding="#{AdvSearchPage.radioButtonList1SelectItems}" id="radioButtonList1SelectItems" value="#{AdvSearchPage.radioButtonList1DefaultItems}"/>
-                </ice:selectOneRadio>
-                <ice:dataTable binding="#{AdvSearchPage.dataTable1}" cellpadding="0" cellspacing="0" width="90%"
-                               value="#{AdvSearchPage.dataTable1Model}" var="currentRow"
-                               styleClass="dvnAdvSearchCollectionsTable" columnClasses="vdcColPadded" id="dataTable1" >
-                  <ice:column binding="#{AdvSearchPage.column1}" id="column1">
-                    <ice:selectBooleanCheckbox id="checkbox1" style="margin-right: #{currentRow['level']}.5em;" binding="#{AdvSearchPage.checkbox1}" value="#{currentRow['selected']}"/>
-                    <div jsfc="ice:panelGroup" styleClass="#{(currentRow['level'] >= 2) ? 'dvnAdvSearchCollectionsTableChild' : 'dvnAdvSearchCollectionsTableParent'}">
-                      <ice:outputText id="outputText11" value="#{currentRow['name']}"/>
+                    <ice:selectOneMenu binding="#{AdvSearchPage.dropdown1}" id="dropdown1" value="Title" onchange="submit()" valueChangeListener="#{AdvSearchPage.searchFieldListener}" immediate="true">
+                      <f:selectItems binding="#{AdvSearchPage.dropdown1SelectItems}" id="dropdown1SelectItems" value="#{AdvSearchPage.dropdown3DefaultItems}"/>
+                    </ice:selectOneMenu>
+                    <ice:selectOneMenu binding="#{AdvSearchPage.dropdown9}" id="dropdown9">
+                      <f:selectItems binding="#{AdvSearchPage.dropdown4SelectItems3}" id="dropdown4SelectItems3" value="#{AdvSearchPage.dateItem1 ? AdvSearchPage.dropdown4DateItems : AdvSearchPage.dropdown4NotDateItems}"/>
+                    </ice:selectOneMenu>
+                    <div>
+                      <ice:inputText onkeypress="if (window.event) return processEvent('', 'advsearch:button2'); else return processEvent(event, 'advsearch:button2');"
+                                     binding="#{AdvSearchPage.textField1}" id="textField1" size="40"  />
+                      <ice:message for="textField1" styleClass="errorMessage" showDetail="false" showSummary="true" />
                     </div>
-                  </ice:column>
-                </ice:dataTable>
-              </div>
 
-              <div class="dvnFormPadding dvnFormMargin">
-                <ice:commandButton id="button2" value="Search"  type="submit" action="#{AdvSearchPage.search}" />
-                <ice:commandButton id="button3" value="Cancel" immediate="true" action="#{VDCRequest.home}"/>
-              </div>
-            </div>
+                    <div>
+                      <ice:outputText id="outputText7" value="and "/>
+                      <ice:selectOneMenu binding="#{AdvSearchPage.dropdown3}" id="dropdown3" value="Producer" onchange="submit()" valueChangeListener="#{AdvSearchPage.searchFieldListener}" immediate="true">
+                        <f:selectItems binding="#{AdvSearchPage.dropdown3SelectItems}" id="dropdown3SelectItems" value="#{AdvSearchPage.dropdown3DefaultItems}"/>
+                      </ice:selectOneMenu>
+                    </div>
+                    <ice:selectOneMenu binding="#{AdvSearchPage.dropdown4}" id="dropdown4">
+                      <f:selectItems binding="#{AdvSearchPage.dropdown4SelectItems}" id="dropdown4SelectItems" value="#{AdvSearchPage.dateItem2 ? AdvSearchPage.dropdown4DateItems : AdvSearchPage.dropdown4NotDateItems}"/>
+                    </ice:selectOneMenu>
+                    <ice:inputText onkeypress="if (window.event) return processEvent('', 'advsearch:button2'); else return processEvent(event, 'advsearch:button2');"
+                                   binding="#{AdvSearchPage.textField2}" id="textField2" size="40" />
+
+                    <div>
+                      <ice:outputText id="outputText6" value="and "/>
+                      <ice:selectOneMenu binding="#{AdvSearchPage.dropdown5}" id="dropdown5" value="Production Date" onchange="submit()" valueChangeListener="#{AdvSearchPage.searchFieldListener}" immediate="true">
+                        <f:selectItems binding="#{AdvSearchPage.dropdown3SelectItems1}" id="dropdown3SelectItems1" value="#{AdvSearchPage.dropdown3DefaultItems}"/>
+                      </ice:selectOneMenu>
+                    </div>
+                    <ice:selectOneMenu binding="#{AdvSearchPage.dropdown6}" id="dropdown6">
+                      <f:selectItems binding="#{AdvSearchPage.dropdown4SelectItems1}" id="dropdown4SelectItems1" value="#{AdvSearchPage.dateItem3 ? AdvSearchPage.dropdown4DateItems : AdvSearchPage.dropdown4NotDateItems}"/>
+                    </ice:selectOneMenu>
+                    <ice:inputText onkeypress="if (window.event) return processEvent('', 'advsearch:button2'); else return processEvent(event, 'advsearch:button2');"
+                                   binding="#{AdvSearchPage.textField3}" id="textField3" size="40"/>
+
+                    <div>
+                      <ice:outputText id="outputText8" value="and "/>
+                      <ice:selectOneMenu binding="#{AdvSearchPage.dropdown7}" id="dropdown7" value="Time Period Covered Start" onchange="submit()" valueChangeListener="#{AdvSearchPage.searchFieldListener}" immediate="true">
+                        <f:selectItems binding="#{AdvSearchPage.dropdown3SelectItems2}" id="dropdown3SelectItems2" value="#{AdvSearchPage.dropdown3DefaultItems}"/>
+                      </ice:selectOneMenu>
+                    </div>
+                    <ice:selectOneMenu binding="#{AdvSearchPage.dropdown8}" id="dropdown8">
+                      <f:selectItems binding="#{AdvSearchPage.dropdown4SelectItems2}" id="dropdown4SelectItems2" value="#{AdvSearchPage.dateItem4 ? AdvSearchPage.dropdown4DateItems : AdvSearchPage.dropdown4NotDateItems}"/>
+                    </ice:selectOneMenu>
+                    <ice:inputText onkeypress="if (window.event) return processEvent('', 'advsearch:button2'); else return processEvent(event, 'advsearch:button2');"
+                                   binding="#{AdvSearchPage.textField4}" id="textField4" size="40"/>
+                  </ice:panelGrid>
+
+                  <div>
+                      <ice:dataTable cellpadding="0" cellspacing="0" columns="3" width="90%"
+                                     binding="#{AdvSearchPage.dataTableVariableInfo}" value="#{AdvSearchPage.variableInfoList}" var="currentRow"
+                                     styleClass="dvnAdvSearchScopeTable" columnClasses="vdcAdvSearchCol1, vdcAdvSearchCol2, vdcAdvSearchCol3" rowClasses="list-row-odd, list-row-even">
+                            <ice:column>
+                                <ice:outputText value="Variable Information"/>
+                            </ice:column>
+                            <ice:column>
+                                <ice:outputText value="Contains"/>
+                            </ice:column>
+                            <ice:column>
+                                <ice:inputText onkeypress="if (window.event) return processEvent('', 'advsearch:button2'); else return processEvent(event, 'advsearch:button2');"
+                                               id="input_VariableInfo" size="40" value="#{currentRow.value}" binding="#{AdvSearchPage.inputVariableInfo}"/>
+                            </ice:column>
+                      </ice:dataTable>
+                  </div>
+
+                  <div jsfc="ice:panelGroup" styleClass="dvnFormPadding" rendered="#{AdvSearchPage.collectionsIncluded}">
+                    <ice:outputText id="outputText5" styleClass="vdcSubHeaderColor" value="Collections"/>
+                    <ice:selectOneRadio binding="#{AdvSearchPage.radioButtonList1}" id="radioButtonList1" layout="pageDirection" value="Search All Collections">
+                      <f:selectItems binding="#{AdvSearchPage.radioButtonList1SelectItems}" id="radioButtonList1SelectItems" value="#{AdvSearchPage.radioButtonList1DefaultItems}"/>
+                    </ice:selectOneRadio>
+                    <ice:dataTable binding="#{AdvSearchPage.dataTable1}" cellpadding="0" cellspacing="0" width="90%"
+                                   value="#{AdvSearchPage.dataTable1Model}" var="currentRow"
+                                   styleClass="dvnAdvSearchCollectionsTable" columnClasses="vdcColPadded" id="dataTable1" >
+                      <ice:column binding="#{AdvSearchPage.column1}" id="column1">
+                        <ice:selectBooleanCheckbox id="checkbox1" style="margin-right: #{currentRow['level']}.5em;" binding="#{AdvSearchPage.checkbox1}" value="#{currentRow['selected']}"/>
+                        <div jsfc="ice:panelGroup" styleClass="#{(currentRow['level'] >= 2) ? 'dvnAdvSearchCollectionsTableChild' : 'dvnAdvSearchCollectionsTableParent'}">
+                          <ice:outputText id="outputText11" value="#{currentRow['name']}"/>
+                        </div>
+                      </ice:column>
+                    </ice:dataTable>
+                  </div>
+
+                  <div class="dvnFormPadding dvnFormMargin">
+                    <ice:commandButton id="button2" value="Search"  type="submit" action="#{AdvSearchPage.search}" />
+                    <ice:commandButton id="button3" value="Cancel" immediate="true" action="#{VDCRequest.home}"/>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            
           </div>
+          
         </div>
+        
       </ice:form>
     </gui:define>
   </gui:composition>

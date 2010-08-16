@@ -1,13 +1,13 @@
 /* LOGIN */
 #dvnLoginPageWrap{padding-top:10%;width:100%;text-align:center;background:#eee}
-#dvnLoginPageWrap form{width:700px;margin:0 auto}
-#dvnLoginPageWrap div.dvnRound{width:700px;margin:0 auto;padding:1em;background:#fff;border:1px solid #6E7F90}
+#dvnLoginPageWrap form{width:620px;margin:0 auto}
+#dvnLoginPageWrap div.dvnRound{width:620px;margin:0 auto;padding:1em;background:#fff;border:1px solid #6E7F90}
 #dvnLoginPageHeader{width:100%;padding:.25em 0;margin-bottom:2em;background:#dadee0;text-align:center;vertical-align:middle}
 #dvnLoginPageHeader .dvnLoginHeadingText{font-size:160% !important;color:#c55b28;text-transform:uppercase}
 .dvnLoginPageSubHeader{color:#526f76;font-size:160% !important;text-transform:uppercase}
-.dvnLoginContent{width:698px;overflow:hidden;text-align:left}
-.dvnLoginContentText{float:left;width:380px;margin-right:10px;text-align:center}
-.dvnLoginInputArea{float:right;width:300px}
+.dvnLoginContent{width:618px;overflow:hidden;text-align:left}
+.dvnLoginContentText{float:left;width:340px;margin-right:10px;text-align:center}
+.dvnLoginInputArea{float:right;width:260px}
 .dvnLoginInputArea p{text-align:right}
 .dvnLoginInputArea .dvnLoginFailed{display:block}
 .dvnLoginInputArea .errorMessageError{display:block;text-align:right;color:red;font-weight:700}

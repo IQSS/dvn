@@ -42,7 +42,9 @@ import edu.harvard.iq.dvn.core.util.StringUtil;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.util.WebStatisticsSupport;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
+import edu.harvard.iq.dvn.core.web.common.VDCSessionBean;
 import edu.harvard.iq.dvn.core.web.login.LoginWorkflowBean;
+import edu.harvard.iq.dvn.core.web.servlet.TermsOfUseFilter;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -50,7 +52,9 @@ import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.faces.component.html.HtmlPanelGrid;
@@ -934,72 +938,33 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
     }
 
   
-    private String fileIdStr;
 
+    public boolean isTermsOfUseRequired() {
 
-     public String getFileIdStr() {
-        return fileIdStr;
+        // We only need to display the terms if the study is Released.
+        if (studyUI.getStudy().getReleasedVersion() != null) {
+            Map termsOfUseMap = getTermsOfUseMap();
+            if (TermsOfUseFilter.isDownloadDvnTermsRequired(getVDCRequestBean().getVdcNetwork(), termsOfUseMap) ||
+                TermsOfUseFilter.isDownloadDataverseTermsRequired(studyUI.getStudy(), termsOfUseMap) ||
+                TermsOfUseFilter.isDownloadStudyTermsRequired(studyUI.getStudy(), termsOfUseMap)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
-
-    public  synchronized void setFileIdStr(String fileIdStr) {
-        dbgLog.fine("SetFileIdStr - " +fileIdStr);
-        this.fileIdStr = fileIdStr;
-        if (!StringUtil.isEmpty(fileIdStr)) {       
-            notifyAll();
-            JavascriptContext.addJavascriptCall(FacesContext.getCurrentInstance(),"resetZipOutputResourceDisable();");
-        }
-    }
-
-   
-    public Resource getDownloadZipResource() {
-        return new RFileResource( getVDCRequestBean().getCurrentVDCId(),  this);
-    }
-
-   
-
-    static class RFileResource implements Resource, Serializable{
-        File file;
-        String currentVDCURL;
-        Long vdcId;
-        StudyPage studyPage;
-
-      
-       
-        public RFileResource(Long vdcId, StudyPage studyPage) {
-            currentVDCURL = getVDCRequestBean().getCurrentVDCURL();
-            this.vdcId = vdcId;
-            this.studyPage = studyPage;
-        }
-
-        public String calculateDigest() {
-            return file != null ? file.getPath() : null;
-        }
-
-        public Date lastModified() {
-            return file != null ? new Date(file.lastModified()) : null;
-        }
-
-        public InputStream open() throws IOException {
-            String fileDownloadURL = "http://" + PropertyUtil.getHostUrl() + "/dvn" + currentVDCURL + "/FileDownload/";
-            // If necessary, wait for these fields to be filled by the icefaces partial submit - called by Javascript in the StudyPage
-            while (StringUtil.isEmpty(studyPage.getFileIdStr())) {
-                try {
-                    wait();
-                } catch (Exception e) {
+    private Map getTermsOfUseMap() {
+            VDCSessionBean vdcSession = getVDCSessionBean();
+            if (vdcSession != null) {
+                if (vdcSession.getLoginBean() != null) {
+                    return vdcSession.getLoginBean().getTermsfUseMap();
+                } else {
+                    return vdcSession.getTermsfUseMap();
                 }
             }
 
-            fileDownloadURL += studyPage.getStudyUI().getStudy().getId() + ".zip?fileId=" + studyPage.getFileIdStr() + "&versionNumber=" + this.studyPage.getStudyUI().getStudyVersion().getVersionNumber() + studyPage.getXff();
-
-            dbgLog.fine("..........OPENING STREAM: " + fileDownloadURL);
-            return new URL(fileDownloadURL).openStream();
-        }
-
-        public void withOptions(Options arg0) throws IOException {
-        }
+        return new HashMap();
     }
 
-    
-    
 }

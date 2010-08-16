@@ -55,7 +55,6 @@ public class NetworkDataServiceBean implements NetworkDataServiceLocal, java.io.
     private static final String NEO4J_CONFIG_FILE = "neodb.props";
     public static final String SQLITE_EXTENSION = "sqliteDB";
     public static final String NEO4J_EXTENSION = "neo4jDB";
-    private RestrictedURLClassLoader neoClassLoader = null;
     
     @EJB VariableServiceLocal varService;
 
@@ -78,13 +77,10 @@ public class NetworkDataServiceBean implements NetworkDataServiceLocal, java.io.
             tempNeoDir.deleteOnExit();
             FileUtils.copyDirectory(neoDir, tempNeoDir);
 
-            if(neoClassLoader == null)
-                neoClassLoader = new RestrictedURLClassLoader(LIB_PATH, NetworkDataServiceBean.class.getClassLoader()); 
-
             // File copyNeoDB = FileUtils.
             File sqliteFile = new File(fileLocation.getParent(), FileUtil.replaceExtension(fileLocation.getName(), SQLITE_EXTENSION));
             try {
-                dvnGraph = new DVNGraphFactory(neoClassLoader).
+                dvnGraph = new DVNGraphFactory(LIB_PATH).
                         newInstance(tempNeoDir.getAbsolutePath(), sqliteFile.getAbsolutePath(), NEO4J_CONFIG_FILE);
                 //dvnGraph = new DVNGraphImpl(tempNeoDir.getAbsolutePath(), sqliteFile.getAbsolutePath(), NEO4J_CONFIG_FILE);
             } catch (ClassNotFoundException e) {
@@ -377,9 +373,7 @@ public class NetworkDataServiceBean implements NetworkDataServiceLocal, java.io.
         File sqliteFile = new File(ingestedDir, sqliteFileName);
 
           try {
-            if(neoClassLoader == null)
-                neoClassLoader = new RestrictedURLClassLoader(LIB_PATH, NetworkDataServiceBean.class.getClassLoader());
-            GraphBatchInserter gbi = new GraphBatchInserterFactory(neoClassLoader).
+            GraphBatchInserter gbi = new GraphBatchInserterFactory(LIB_PATH).
                 newInstance(neo4jDir.getAbsolutePath(), sqliteFile.getAbsolutePath(),  SQLITE_CONFIG_FILE, NEO4J_CONFIG_FILE);
             gbi.ingest(editBean.getTempSystemFileLocation());
         } catch (Exception e) {

@@ -68,12 +68,7 @@
                                         <ice:selectBooleanCheckbox id="studyCheckBox" styleClass="studyCheckBox" onclick="toggleCheckBoxes(this)" disabled="#{!studyPage.studyUI.anyFileUnrestricted}"/> <ice:outputText value=" Select all files"/>
                                     </ice:column>
                                     <ice:column>
-                                                    <ice:panelGroup id="panelGroup1" onclick="submitSelectedFileIds();">
-                                                        <ice:outputResource  id="downloadAll" styleClass="zipOutputResource"  label="Download All SelectedFiles" type="button"
-                                                                             mimeType="application/zip"
-                                                                            resource="#{studyPage.downloadZipResource}" shared="false" fileName="study_#{studyPage.studyUI.study.studyId}.zip" />
-                                                    </ice:panelGroup>
-                                                    
+                                        <input type="button" id="downloadAllButton" onclick="downloadSelectedFiles();" value="Download All Selected Files" disabled="disabled"/>
                                     </ice:column>
                                 </ice:panelGrid>
 
@@ -123,42 +118,13 @@
                                                                     <div jsfc="ice:panelGroup" styleClass="vdcStudyFileRowFileDownload">
                                                                         <ice:graphicImage styleClass="vdcNoBorders" value="/resources/images/icon_download_locked.gif" rendered="#{studyFileUI.restrictedForUser}" alt="You do not have permissions to access this file."/>
                                                                         <ice:outputText styleClass="vdcStudyFileRowFileDownloadRestricted" value=" Restricted Access" rendered="#{studyFileUI.restrictedForUser}"/>
-
-                                                                        <ice:outputResource styleClass="vdcStudyFileRowFileDownloadLink" id="singleDownloadResource" type="link" label="Download" rendered="#{!studyFileUI.restrictedForUser and !studyFileUI.studyFile.subsettable}"
-                                                                                            fileName="#{studyFileUI.fileMetadata.label}" mimeType="application/zip"
-                                                                                            resource="#{studyFileUI.resource}" shared="false"/>
+                                                                        <ice:outputLink styleClass="vdcStudyFileRowFileDownloadLink" value="javascript:downloadFile('#{studyFileUI.fileDownloadURL}&amp;versionNumber=#{studyPage.studyUI.studyVersion.versionNumber}')" rendered="#{!studyFileUI.restrictedForUser and !studyFileUI.studyFile.subsettable}">
+                                                                            <ice:outputText value="Download" rendered="#{!studyFileUI.restrictedForUser and !studyFileUI.studyFile.subsettable}"/>
+                                                                        </ice:outputLink>
                                                                     </div>
                                                                     <div jsfc="ice:panelGroup" rendered="#{!studyFileUI.restrictedForUser and studyFileUI.studyFile.subsettable}">
-                                                                        <ice:panelGroup visible="false">
-                                                                            <ice:outputResource  id="subset_label" styleClass="label#{studyFileUI.studyFile.id}"   label="Download Subsettable Label" type="button"
-                                                                                                 fileName="#{studyFileUI.fileMetadata.label}"
-                                                                                                 resource="#{studyFileUI.resource}" shared="false"/>
-                                                                            <ice:outputResource  id="subset_txt" styleClass="txt#{studyFileUI.studyFile.id}"   label="Download Subsettable Fixed Field" type="button"
-                                                                                                 fileName="#{studyFileUI.txtFileName}" mimeType="text/plain"
-                                                                                                 resource="#{studyFileUI.resource}" shared="false"/>
-                                                                            <ice:outputResource  id="subset_orig" styleClass="orig#{studyFileUI.studyFile.id}"   label="Download Subsettable Orig" type="button"
-                                                                                                 fileName="#{studyFileUI.origFileName}"
-                                                                                                 resource="#{studyFileUI.resource}" shared="false"/>
-                                                                            <ice:outputResource  id="subset_zip" styleClass="zip#{studyFileUI.studyFile.id}"   label="Download Subsettable Zip" type="button"
-                                                                                                 fileName="#{studyFileUI.zipFileName}" mimeType="application/zip"
-                                                                                                 resource="#{studyFileUI.resource}" shared="false"/>
-                                                                            <ice:outputResource  id="subset_splus" styleClass="splus#{studyFileUI.studyFile.id}"   label="Download Subsettable Splus" type="button"
-                                                                                                 fileName="#{studyFileUI.splusFileName}" mimeType="application/x-rlang-transport"
-                                                                                                 resource="#{studyFileUI.resource}" shared="false"/>
-                                                                            <ice:outputResource  id="subset_stata" styleClass="stata#{studyFileUI.studyFile.id}"   label="Download Subsettable Stata" type="button"
-                                                                                                 fileName="#{studyFileUI.stataFileName}" mimeType="application/x-stata-6"
-                                                                                                 resource="#{studyFileUI.resource}" shared="false"/>
-                                                                            <ice:outputResource  id="subset_rdata" styleClass="rdata#{studyFileUI.studyFile.id}"   label="Download Subsettable R" type="button"
-                                                                                                 fileName="#{studyFileUI.rdataFileName}" mimeType="application/x-R-2"
-                                                                                                 resource="#{studyFileUI.resource}" shared="false"/>
-                                                                            <ice:outputResource  id="subset_tab" styleClass="tab#{studyFileUI.studyFile.id}"   label="Download Subsettable Tab" type="button"
-                                                                                                 fileName="#{studyFileUI.tabFileName}" mimeType="text/plain"
-                                                                                                 resource="#{studyFileUI.resource}" shared="false"/>
-                                                                        </ice:panelGroup>
                                                                         <ice:graphicImage styleClass="vdcStudyFileRowFileDownloadAsIcon" value="/resources/images/icon_download.gif" alt="Download"/>
-                                                                        <ice:inputHidden id="fileId" value="#{studyFileUI.studyFile.id}" />
-                                                                        <ice:inputHidden id="selectedDownload" class="#{studyFileUI.studyFile.id}" value="#{studyFileUI.selectedDownload}"/>
-                                                                         <ice:selectOneMenu  styleClass="vdcStudyFileRowFileDownloadAsList" id="downloadList" onchange="submitSelectedDownload(this);">
+                                                                        <ice:selectOneMenu styleClass="vdcStudyFileRowFileDownloadAsList" id="downloadList" onchange="downloadSingleFile(this);">
                                                                             <f:selectItem itemLabel="Download as..." itemValue=""/>
                                                                             <f:selectItems value="#{studyFileUI.dataFileFormatTypeSelectItems}"/>
                                                                         </ice:selectOneMenu>

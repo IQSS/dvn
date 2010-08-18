@@ -130,7 +130,7 @@ public class DvnRDataAnalysisServiceImpl{
     // This is how to initialize the source library, without hardcoding 
     // the path:    
     static String VDC_R_STARTUP_FILE="vdc_startup.R";
-    static String librarySetup = "source(paste(.libPaths(), '/../share/dvn/" + VDC_R_STARTUP_FILE + "', sep = ''));";
+    static String librarySetup = "source(paste(.libPaths()[1], '/../share/dvn/" + VDC_R_STARTUP_FILE + "', sep = ''));";
     boolean DEBUG = true;
     
     // ----------------------------------------------------- instance filelds

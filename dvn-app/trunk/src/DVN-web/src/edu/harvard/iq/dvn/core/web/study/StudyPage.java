@@ -954,6 +954,11 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
         return false;
     }
 
+    public void setTermsOfUseRequired(boolean termsOfUseRequired) {
+        // nothing to set; empty method needed by Icefaces inputHidden
+    }
+    
+
     private Map getTermsOfUseMap() {
             VDCSessionBean vdcSession = getVDCSessionBean();
             if (vdcSession != null) {

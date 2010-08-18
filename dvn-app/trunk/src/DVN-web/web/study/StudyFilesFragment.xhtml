@@ -13,7 +13,7 @@
                        id="commentContentPanel"
                        panelLayout="flow">
 
-
+                    <ice:inputHidden id="touRequired"  value="#{studyPage.termsOfUseRequired}"/>
                     <div jsfc="ice:panelGroup" id="layoutPanel2" panelLayout="flow" styleClass="vdcStudyFilesPage">
                             <div jsfc="ice:panelGroup" id="noFilesPanel1" panelLayout="flow" styleClass="vdcStudyFilesEmpty" rendered="#{empty studyPage.studyUI.categoryUIList}">
                                 <div jsfc="ice:panelGroup" id="noFilesPanel2" styleClass="vdcStudyFilesEmptyMessage" rendered="#{!studyPage.studyUI.userAuthorizedToEdit}">

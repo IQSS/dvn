@@ -41,6 +41,8 @@ import edu.harvard.iq.dvn.core.study.StudyFileServiceLocal;
 import edu.harvard.iq.dvn.core.study.TabularDataFile;
 import edu.harvard.iq.dvn.core.study.VariableCategory;
 
+import edu.harvard.iq.dvn.core.util.FileUtil;
+
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 
@@ -1818,27 +1820,23 @@ public class FileDownloadServlet extends HttpServlet {
     }
 
     private String generateAltFileName(String formatRequested, String xfileId) {
-        String altFileName;
+        String altFileName = xfileId;
 
-        if ( xfileId != null && xfileId.matches("\\.dat$") && formatRequested.equals("D00") ) {
-            altFileName = xfileId.replaceAll(".dat$", ".tab");
-        } else if ( xfileId != null && xfileId.matches("\\.tab$")) {
-            if ( formatRequested.equals("D02") ) {
-                altFileName = xfileId.replaceAll(".tab$", ".ssc");
-            } else if ( formatRequested.equals("D03") ) {
-                altFileName = xfileId.replaceAll(".tab$", ".dta");
-            } else {
-                altFileName = xfileId.replaceAll(".tab$", ".RData");
-            }
-        } else {
+        if ( altFileName == null || altFileName.equals("")) {
+            altFileName = "Converted";
+        }
+
+        if ( formatRequested != null ) {
             if (formatRequested.equals("D00")) {
-                altFileName = xfileId + ".tab";
+                altFileName = FileUtil.replaceExtension(altFileName, ".tab");
             } else if ( formatRequested.equals("D02") ) {
-                altFileName = xfileId + ".ssc";
+                altFileName = FileUtil.replaceExtension(altFileName, ".ssc");
             } else if ( formatRequested.equals("D03") ) {
-                altFileName = xfileId + ".dta";
+                altFileName = FileUtil.replaceExtension(altFileName, ".dta");
+            } else if ( formatRequested.equals("D04") ) {
+                altFileName = FileUtil.replaceExtension(altFileName, ".RData");
             } else {
-                altFileName = xfileId + ".RData";
+                altFileName = FileUtil.replaceExtension(altFileName, formatRequested);
             }
         }
 

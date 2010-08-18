@@ -172,7 +172,8 @@
 
 
                     function downloadFile(fileUrl) {
-                        if (#{studyPage.termsOfUseRequired}){
+                        var touRequired = document.getElementById("studyForm:tabSet1:0:touRequired");
+                        if ( touRequired.value == 'true' ){
                             window.location.href = "/dvn#{VDCRequest.currentVDCURL}/faces/study/TermsOfUsePage.xhtml?tou=download&studyId=#{studyPage.studyId}&versionNumber=#{studyPage.studyUI.studyVersion.versionNumber}&redirectPage=" + escape(fileUrl);
                         } else {
                             self.frames['hiddenDownloadFrame'].location.href = "/dvn" + fileUrl;
@@ -737,7 +738,6 @@
                         <script type="text/javascript">
                             // <![CDATA[
                             jQuery(document).ready(function(){
-                                resetZipOutputResourceDisable();
                                  jQuery(".vdcStudyDesc").truncate({max_length: 198});
                                 jQuery(".TogglePaneFancy").initTogglePane({headerClassClosed:"TogglePaneFancyHeaderClosed"});
                             });

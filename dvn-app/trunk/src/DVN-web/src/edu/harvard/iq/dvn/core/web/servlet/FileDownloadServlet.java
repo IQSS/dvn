@@ -1828,13 +1828,13 @@ public class FileDownloadServlet extends HttpServlet {
 
         if ( formatRequested != null ) {
             if (formatRequested.equals("D00")) {
-                altFileName = FileUtil.replaceExtension(altFileName, ".tab");
+                altFileName = FileUtil.replaceExtension(altFileName, "tab");
             } else if ( formatRequested.equals("D02") ) {
-                altFileName = FileUtil.replaceExtension(altFileName, ".ssc");
+                altFileName = FileUtil.replaceExtension(altFileName, "ssc");
             } else if ( formatRequested.equals("D03") ) {
-                altFileName = FileUtil.replaceExtension(altFileName, ".dta");
+                altFileName = FileUtil.replaceExtension(altFileName, "dta");
             } else if ( formatRequested.equals("D04") ) {
-                altFileName = FileUtil.replaceExtension(altFileName, ".RData");
+                altFileName = FileUtil.replaceExtension(altFileName, "RData");
             } else {
                 altFileName = FileUtil.replaceExtension(altFileName, formatRequested);
             }

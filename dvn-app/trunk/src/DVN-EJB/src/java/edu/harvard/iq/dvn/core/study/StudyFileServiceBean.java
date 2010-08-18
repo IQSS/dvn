@@ -209,6 +209,13 @@ public class StudyFileServiceBean implements StudyFileServiceLocal {
             if (studyVersion.getId() == null) {
                 em.persist(studyVersion);
                 em.flush(); // populates studyVersion_id
+            } else {
+                // There is a problem merging the existing studyVersion,
+                // so since all we need from the exisiting version is the versionNote,
+                // we get a fresh copy of the object from the database, and update it with the versionNote.
+                String versionNote = studyVersion.getVersionNote();
+                studyVersion = em.find(StudyVersion.class, studyVersion.getId());
+                studyVersion.setVersionNote(versionNote);
             }
 
         }
@@ -292,7 +299,7 @@ public class StudyFileServiceBean implements StudyFileServiceLocal {
 
         if (!otherFiles.isEmpty()) {
             studyService.saveStudyVersion(studyVersion, user.getId());
-            em.merge(studyVersion); // this will save the version notes (and the update info, if set)
+           
         }
 
        

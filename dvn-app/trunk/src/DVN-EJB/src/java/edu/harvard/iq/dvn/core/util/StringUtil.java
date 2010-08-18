@@ -70,22 +70,18 @@ public final class StringUtil implements java.io.Serializable  {
     public static String truncateString(String originalString, int maxLength) {
         maxLength = Math.max( 0, maxLength);
         String finalString = originalString;
-        if (finalString != null && finalString.length() > maxLength ) {
-             try {
-                String regexp = "[A-Za-z0-9][\\p{Space}]";
-                Pattern pattern = Pattern.compile(regexp);
-                String startParsedString = finalString.substring(0, maxLength);
-                String endParsedString   = finalString.substring(maxLength, finalString.length());
-                Matcher matcher          = pattern.matcher(endParsedString);
-                boolean found            = matcher.find();
-                endParsedString          = endParsedString.substring(0, matcher.end());
-                finalString              = startParsedString + endParsedString + "<span class='dvn_threedots'>...</span>";
-
-             } catch (Exception e) {
-                e.printStackTrace();
-                System.out.println("An issue occurred truncating the following String: " + originalString);
+        if (finalString != null && finalString.length() > maxLength) {
+            String regexp = "[A-Za-z0-9][\\p{Space}]";
+            Pattern pattern = Pattern.compile(regexp);
+            String startParsedString = finalString.substring(0, maxLength);
+            String endParsedString = finalString.substring(maxLength, finalString.length());
+            Matcher matcher = pattern.matcher(endParsedString);
+            boolean found = matcher.find();
+            if (found) {
+                endParsedString = endParsedString.substring(0, matcher.end());
+                finalString = startParsedString + endParsedString + "<span class='dvn_threedots'>...</span>";
             }
-        } 
+        }
         
         return finalString;             
     }    

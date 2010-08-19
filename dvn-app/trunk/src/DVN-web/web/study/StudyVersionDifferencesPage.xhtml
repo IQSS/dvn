@@ -44,7 +44,7 @@
                 <gui:include src="/study/StudyTitleFragment.xhtml">
                     <gui:param name="studyUI" value="#{studyVersionDifferencesPage.studyUI}"/>
                     <gui:param name="displayVersionInfo" value="false"/>
-                    <gui:param name="displayStatusBox" value="true"/>
+                    <gui:param name="displayStatusBox" value="#{!studyVersionDifferencesPage.releaseConfrimInProgress}"/>
                 </gui:include>
             </div>
             <div jsfc="ice:panelGroup" styleClass="dvn_sectionTitle" rendered="#{! studyVersionDifferencesPage.releaseConfrimInProgress}">

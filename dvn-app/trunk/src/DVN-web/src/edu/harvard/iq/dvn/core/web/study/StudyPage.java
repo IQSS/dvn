@@ -816,41 +816,12 @@ public class StudyPage extends VDCBaseBean implements java.io.Serializable  {
    
 
     public void confirmReleased(ActionEvent ae) {
-        // IMPORTANT:
-        // as of now (May 2010), this method is no longer being used;
-        // this decision, whether to release immediately or redirect
-        // to the Diff page is made in the .xhtml page, through
-        // rendering rules. 
+        // This is the first release of the study.
+        // The logic for determining that this study hasn't been released or deaccesstioned is in the StudyPage.
+        actionRequested = StudyActionRequestType.RELEASE;
+        versionNotesPopup.setVersionNote(studyUI.getStudyVersion().getVersionNote());
+        versionNotesPopup.setShowPopup(true);
 
-        // See if the study already has released versions;
-        // If not (i.e., this is the first release), we want to
-        // simply switch the version state to "released"
-        // -- but not before we present the Version Notes popup
-        // to them.
-        // If it is not the first release, we don't need the popup, but
-        // we redirect them to the Diff page, so that they can review
-        // the changes before they proceed with releasing the version.
-        // The Version Notes popup will be presented when they hit
-        // "release" there.
-
-        StudyVersion releasedVersion = studyService.getStudyVersion(getStudyId(), null);
-
-        if ( releasedVersion == null ) {
-            // This is the first release of the study.
-            actionRequested = StudyActionRequestType.RELEASE;
-            versionNotesPopup.setVersionNote(studyUI.getStudyVersion().getVersionNote());
-            versionNotesPopup.setShowPopup(true);
-        } else {
-            // Redirecting to the Differences page;
-            // Need to set the correct HTTP parameters:
-            redirect("/faces/study/StudyVersionDifferencesPage.xhtml?studyId="
-                    +studyId+"&versionNumberList="
-                    +releasedVersion.getVersionNumber()+","
-                    +getVersionNumber()
-                    +"&actionMode=confirmRelease"
-                    +"&versionNumber="
-                    +getVersionNumber());
-        }
 
     }
 

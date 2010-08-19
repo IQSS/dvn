@@ -264,7 +264,14 @@
                                             <f:param name="versionNumber" value="#{studyPage.studyUI.study.latestVersion.versionNumber}"/>
                                             <ice:outputText value="Release" nospan="true"/>
                                         </ice:outputLink>
-                                        <ice:commandLink rendered="#{studyPage.studyUI.study.releasedVersion == null}" actionListener="#{studyPage.confirmReleased}" onmouseover="javascript:popupTooltip(this, &#39;#{studybundle.releaseTip}&#39;, &#39;&#39;, event);" onmouseout="javascript:hideTooltip();">
+                                        <ice:outputLink rendered="#{studyPage.studyUI.study.deaccessioned}" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyVersionDifferencesPage.xhtml" onmouseover="javascript:popupTooltip(this, &#39;#{studybundle.releaseTip}&#39;, &#39;&#39;, event);" onmouseout="javascript:hideTooltip();">
+                                            <f:param name="studyId" value="#{studyPage.studyUI.study.id}"/>
+                                            <f:param name="versionNumberList" value="#{studyPage.studyUI.study.deaccessionedVersion.versionNumber},#{studyPage.studyUI.study.latestVersion.versionNumber}"/>
+                                            <f:param name="actionMode" value="confirmRelease"/>
+                                            <f:param name="versionNumber" value="#{studyPage.studyUI.study.latestVersion.versionNumber}"/>
+                                            <ice:outputText value="Release" nospan="true"/>
+                                        </ice:outputLink>
+                                        <ice:commandLink rendered="#{studyPage.studyUI.study.releasedVersion == null and !studyPage.studyUI.study.deaccessioned }" actionListener="#{studyPage.confirmReleased}" onmouseover="javascript:popupTooltip(this, &#39;#{studybundle.releaseTip}&#39;, &#39;&#39;, event);" onmouseout="javascript:hideTooltip();">
                                             <ice:outputText value="Release" nospan="true"/>
                                         </ice:commandLink>
                                     </li>

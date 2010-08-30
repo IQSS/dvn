@@ -9,7 +9,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
-    
+
 <body>
     <gui:composition template="/template.xhtml">
         <gui:param name="pageTitle" value="Dataverse Network Admin Options - #{VDCRequest.dataversePageTitle}"/>
@@ -24,7 +24,7 @@
                       <p><ice:outputText id="statusMessage" value="#{VDCRequest.successMessage}"/></p>
                     </div>
                   </div>
-                  
+
                     <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
                         <tr><td colspan="2" class="dvnOptionsTableHeader"><ice:outputText value="#{bundlePageInfo.dvsSectionTitle}"/></td></tr>
                         <tr>
@@ -121,6 +121,13 @@
                             <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.editDvnDescriptionText}"/></td>
                         </tr>
                         <tr>
+                            <td class="dvnOptionsTableOption">
+                                <ice:outputLink id="hyperlink5" value="/dvn/faces/networkAdmin/EditNetworkDVRequirementsPage.xhtml">
+                                    <ice:outputText id="hyperlink3Text1" value="#{bundlePageInfo.editNetworkDvRequirementsTitle}"/>
+                                </ice:outputLink>
+                            </td>
+                            <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.editNetworkDvRequirementsText}"/></td>
+                        </tr>                        <tr>
                             <td class="dvnOptionsTableOption">
                                 <ice:outputLink id="hyperlink17" value="/dvn/faces/admin/EditContactUsPage.xhtml">
                                     <ice:outputText id="hyperlink17Text" value="#{bundlePageInfo.editDvnNotificationsTitle}"/>

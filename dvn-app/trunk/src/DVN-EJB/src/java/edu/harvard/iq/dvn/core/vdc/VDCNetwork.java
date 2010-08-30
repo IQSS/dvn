@@ -722,5 +722,44 @@ public class VDCNetwork implements java.io.Serializable  {
     public void setDefaultDisplayNumber(Long defaultDisplayNumber) {
         this.defaultDisplayNumber = defaultDisplayNumber;
     }
-    
+
+    private boolean requireDVaffiliation;
+
+    public boolean isRequireDVaffiliation() {
+        return requireDVaffiliation;
+    }
+
+    public void setRequireDVaffiliation(boolean requireDVaffiliation) {
+        this.requireDVaffiliation = requireDVaffiliation;
+    }
+
+    private boolean requireDVclassification;
+
+    public boolean isRequireDVclassification() {
+        return requireDVclassification;
+    }
+
+    public void setRequireDVclassification(boolean requireDVclassification) {
+        this.requireDVclassification = requireDVclassification;
+    }
+
+    private boolean requireDVdescription;
+
+    public boolean isRequireDVdescription() {
+        return requireDVdescription;
+    }
+
+    public void setRequireDVdescription(boolean requireDVdescription) {
+        this.requireDVdescription = requireDVdescription;
+    }
+
+    private boolean requireDVstudiesforrelease;
+
+    public boolean isRequireDVstudiesforrelease() {
+        return requireDVstudiesforrelease;
+    }
+
+    public void setRequireDVstudiesforrelease(boolean requireDVstudiesforrelease) {
+        this.requireDVstudiesforrelease = requireDVstudiesforrelease;
+    }
 }

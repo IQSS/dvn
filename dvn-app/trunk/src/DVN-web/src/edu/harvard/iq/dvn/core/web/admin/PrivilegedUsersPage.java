@@ -47,8 +47,11 @@ import javax.faces.component.UIInput;
 import com.icesoft.faces.component.ext.HtmlDataTable;
 import com.icesoft.faces.component.ext.HtmlInputText;
 import edu.harvard.iq.dvn.core.admin.VDCRole;
+import edu.harvard.iq.dvn.core.mail.MailServiceLocal;
+import edu.harvard.iq.dvn.core.util.PropertyUtil;
 import edu.harvard.iq.dvn.core.vdc.VDCGroup;
 import edu.harvard.iq.dvn.core.web.push.beans.NetworkStatsBean;
+import java.util.logging.Logger;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.model.SelectItem;
@@ -66,6 +69,7 @@ public class PrivilegedUsersPage extends VDCBaseBean implements java.io.Serializ
     @EJB RoleServiceLocal roleService;
     @EJB UserServiceLocal userService;
     @EJB GroupServiceLocal groupService;
+    @EJB MailServiceLocal mailService;
 
     public class RoleListItem {
         private VDCRole vdcRole;
@@ -314,6 +318,7 @@ public class PrivilegedUsersPage extends VDCBaseBean implements java.io.Serializ
                 if (statsBean != null)
                     statsBean.releaseAndUpdateInlineDataverseValue(vdc.getId(), (List<VDCGroup>)vdc.getVdcGroups());
                 vdc.setReleaseDate(DateUtil.getTimestamp());
+                sendReleaseEmails();
             }
             vdc.setRestricted(false);
             
@@ -349,6 +354,7 @@ public class PrivilegedUsersPage extends VDCBaseBean implements java.io.Serializ
        
         editVDCPrivileges.setVdc(vdc.getId());
         vdc = editVDCPrivileges.getVdc();
+
         getVDCRequestBean().setSuccessMessage("Successfully updated dataverse permissions.");
         return "myOptions";  
     } 
@@ -369,6 +375,29 @@ public class PrivilegedUsersPage extends VDCBaseBean implements java.io.Serializ
 
     }
 
+    private void sendReleaseEmails() {
+        String networkAdminEmailAddress = getVDCRequestBean().getVdcNetwork().getContactEmail();
+
+        String toMailAddress = vdc.getContactEmail();
+        String siteAddress = "unknown";
+        String hostUrl = PropertyUtil.getHostUrl();
+        siteAddress = hostUrl + "/dvn" + getVDCRequestBean().getCurrentVDCURL();
+        String name = vdc.getName();
+        if (toMailAddress != null){
+            mailService.sendReleaseSiteNotification(toMailAddress, name, siteAddress);
+        }
+        else {
+             Logger.getLogger("Release Emails vdc contact email is null");
+        }
+        if (networkAdminEmailAddress != null){
+            mailService.sendReleaseSiteNotificationNetwork(networkAdminEmailAddress, name, siteAddress);
+        }
+        else {
+             Logger.getLogger("Release Emails Network contact email is null");
+        }
+
+        
+    }
 
     private void initUserName() {
         newUserName = "Enter Username";
@@ -532,7 +561,16 @@ public class PrivilegedUsersPage extends VDCBaseBean implements java.io.Serializ
     public void setSuccess(boolean success) {
         this.success = success;
     }
-    
+
+    public boolean isReleasable(){
+        if (getVDCRequestBean().getVdcNetwork().isRequireDVstudiesforrelease() == false){
+           return true; 
+        }
+        else {      
+           return (vdc.getNumberReleasedStudies() > 0 || vdc.isHarvestingDv() ||  vdc.getOwnedCollections().size() > 1
+                   ||  vdc.getLinkedCollections().size() > 0 || vdc.getRootCollection().getStudies().size() > 0);
+        }
+    }
     
     public boolean validateUserName(FacesContext context,
             UIComponent toValidate,

@@ -508,6 +508,22 @@ public class VDCServiceBean implements VDCServiceLocal {
         }
     }
 
+        public Long getReleasedStudyCount(Long vdcId) {
+        String queryString = "select count(owner_id) from study  s, studyversion v "
+                + " where s.id = v.study_id and v.releasetime is not null and " +
+                "s.owner_id = " + vdcId;
+        Long longValue = null;
+        Query query = em.createNativeQuery(queryString);
+        try {
+            Object object = ((List) query.getSingleResult()).get(0);
+            longValue = (Long) object;
+        } catch (Exception nre) {
+            longValue = new Long("0");
+        } finally {
+            return longValue;
+        }
+    }
+
     public List getPagedData(Long vdcGroupId, int firstRow, int totalRows, String orderBy, String order) {
         List<VDC> list = new ArrayList();
         try {

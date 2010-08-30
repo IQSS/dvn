@@ -48,11 +48,13 @@ import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.web.util.CharacterValidator;
 import edu.harvard.iq.dvn.core.util.PropertyUtil;
 import edu.harvard.iq.dvn.core.vdc.VDCGroup;
+import edu.harvard.iq.dvn.core.vdc.VDCNetwork;
 import edu.harvard.iq.dvn.core.web.DataverseGrouping;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.DataModel;
@@ -124,8 +126,7 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
                 this.setDataverseType(request.getParameter((String) key));
             }
         }
-        
-        
+      
     }
 
     //copied from manageclassificationsPage.java
@@ -301,42 +302,52 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
         String name         = (String) dataverseName.getValue();
         String alias        = (String) dataverseAlias.getValue();
         Long userId = getVDCSessionBean().getLoginBean().getUser().getId();
-        vdcService.create(userId, name, alias, dtype);
-     
-        VDC createdVDC = vdcService.findByAlias(alias);
-        saveClassifications(createdVDC);
-        createdVDC.setDtype(dataverseType);
-        createdVDC.setDisplayNetworkAnnouncements(getVDCRequestBean().getVdcNetwork().isDisplayAnnouncements());
-        createdVDC.setDisplayAnnouncements(getVDCRequestBean().getVdcNetwork().isDisplayVDCAnnouncements());
-        createdVDC.setAnnouncements(getVDCRequestBean().getVdcNetwork().getDefaultVDCAnnouncements());
-        createdVDC.setDisplayNewStudies(getVDCRequestBean().getVdcNetwork().isDisplayVDCRecentStudies());
-        createdVDC.setAboutThisDataverse(getVDCRequestBean().getVdcNetwork().getDefaultVDCAboutText());
-        createdVDC.setContactEmail(getVDCSessionBean().getLoginBean().getUser().getEmail());      
-        createdVDC.setAffiliation(affiliation);
-        createdVDC.setDvnDescription(shortDescription);
-        vdcService.edit(createdVDC);
-        getVDCRequestBean().setCurrentVDC(createdVDC);
 
-        // Refresh User object in LoginBean so it contains the user's new role of VDC administrator.
-        getVDCRequestBean().getCurrentVDCURL();
-        StatusMessage msg = new StatusMessage();
 
-        String hostUrl = PropertyUtil.getHostUrl();
-        msg.setMessageText("Your new dataverse <a href='http://" + hostUrl + "/dvn" + getVDCRequestBean().getCurrentVDCURL()+ "'>http://" + hostUrl + "/dvn" + getVDCRequestBean().getCurrentVDCURL()+ "</a> has been successfully created!");
-        msg.setStyleClass("successMessage");
-        Map m = getRequestMap();
-        m.put("statusMessage", msg);
-        VDCUser creator = userService.findByUserName(getVDCSessionBean().getLoginBean().getUser().getUserName());
-        String toMailAddress = getVDCSessionBean().getLoginBean().getUser().getEmail();
-        String siteAddress = "unknown";
 
-        siteAddress = hostUrl + "/dvn" + getVDCRequestBean().getCurrentVDCURL();
+        boolean success = true;
+        if (validateClassificationCheckBoxes()) {
+            vdcService.create(userId, name, alias, dtype);
+            VDC createdVDC = vdcService.findByAlias(alias);
+            saveClassifications(createdVDC);
+            createdVDC.setDtype(dataverseType);
+            createdVDC.setDisplayNetworkAnnouncements(getVDCRequestBean().getVdcNetwork().isDisplayAnnouncements());
+            createdVDC.setDisplayAnnouncements(getVDCRequestBean().getVdcNetwork().isDisplayVDCAnnouncements());
+            createdVDC.setAnnouncements(getVDCRequestBean().getVdcNetwork().getDefaultVDCAnnouncements());
+            createdVDC.setDisplayNewStudies(getVDCRequestBean().getVdcNetwork().isDisplayVDCRecentStudies());
+            createdVDC.setAboutThisDataverse(getVDCRequestBean().getVdcNetwork().getDefaultVDCAboutText());
+            createdVDC.setContactEmail(getVDCSessionBean().getLoginBean().getUser().getEmail());
+            createdVDC.setAffiliation(affiliation);
+            createdVDC.setDvnDescription(shortDescription);
+            vdcService.edit(createdVDC);
+            getVDCRequestBean().setCurrentVDC(createdVDC);
 
-        mailService.sendAddSiteNotification(toMailAddress, name, siteAddress);
+            // Refresh User object in LoginBean so it contains the user's new role of VDC administrator.
+            getVDCRequestBean().getCurrentVDCURL();
+            StatusMessage msg = new StatusMessage();
 
-        getVDCSessionBean().getLoginBean().setUser(creator);
+            String hostUrl = PropertyUtil.getHostUrl();
+            msg.setMessageText("Your new dataverse <a href='http://" + hostUrl + "/dvn" + getVDCRequestBean().getCurrentVDCURL()+ "'>http://" + hostUrl + "/dvn" + getVDCRequestBean().getCurrentVDCURL()+ "</a> has been successfully created!");
+            msg.setStyleClass("successMessage");
+            Map m = getRequestMap();
+            m.put("statusMessage", msg);
+            VDCUser creator = userService.findByUserName(getVDCSessionBean().getLoginBean().getUser().getUserName());
+            String toMailAddress = getVDCSessionBean().getLoginBean().getUser().getEmail();
+            String siteAddress = "unknown";
 
-        return "addSiteSuccess";        
+            siteAddress = hostUrl + "/dvn" + getVDCRequestBean().getCurrentVDCURL();
+
+            mailService.sendAddSiteNotification(toMailAddress, name, siteAddress);
+
+            getVDCSessionBean().getLoginBean().setUser(creator);
+
+            return "addSiteSuccess";
+        }
+        else {
+            success = false;
+            return null;
+        }
+
     }
 
     private void saveClassifications(VDC createdVDC) {
@@ -353,48 +364,79 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
         String name = (String) dataverseName.getValue();
         String alias = (String) dataverseAlias.getValue();
         Long userId = getVDCSessionBean().getLoginBean().getUser().getId();
-        vdcService.createScholarDataverse(userId, firstName, lastName, name, affiliation, alias, dataversetype);
-        VDC createdScholarDataverse = vdcService.findScholarDataverseByAlias(alias);
-        saveClassifications(createdScholarDataverse);
+        boolean success = true;
+        if (validateClassificationCheckBoxes()) {
+            vdcService.createScholarDataverse(userId, firstName, lastName, name, affiliation, alias, dataversetype);
+            VDC createdScholarDataverse = vdcService.findScholarDataverseByAlias(alias);
+            saveClassifications(createdScholarDataverse);
   
-        //  add default values to the VDC table and commit/set the vdc bean props
-        createdScholarDataverse.setDisplayNetworkAnnouncements(getVDCRequestBean().getVdcNetwork().isDisplayAnnouncements());
-        createdScholarDataverse.setDisplayAnnouncements(getVDCRequestBean().getVdcNetwork().isDisplayVDCAnnouncements());
-        createdScholarDataverse.setAnnouncements(getVDCRequestBean().getVdcNetwork().getDefaultVDCAnnouncements());
-        createdScholarDataverse.setDisplayNewStudies(getVDCRequestBean().getVdcNetwork().isDisplayVDCRecentStudies());
-        createdScholarDataverse.setAboutThisDataverse(getVDCRequestBean().getVdcNetwork().getDefaultVDCAboutText());
-        createdScholarDataverse.setContactEmail(getVDCSessionBean().getLoginBean().getUser().getEmail());
-        createdScholarDataverse.setDvnDescription(shortDescription);
-        vdcService.edit(createdScholarDataverse);
-        getVDCRequestBean().setCurrentVDC(createdScholarDataverse);
-          // Refresh User object in LoginBean so it contains the user's new role of VDC administrator.
+            //  add default values to the VDC table and commit/set the vdc bean props
+            createdScholarDataverse.setDisplayNetworkAnnouncements(getVDCRequestBean().getVdcNetwork().isDisplayAnnouncements());
+            createdScholarDataverse.setDisplayAnnouncements(getVDCRequestBean().getVdcNetwork().isDisplayVDCAnnouncements());
+            createdScholarDataverse.setAnnouncements(getVDCRequestBean().getVdcNetwork().getDefaultVDCAnnouncements());
+            createdScholarDataverse.setDisplayNewStudies(getVDCRequestBean().getVdcNetwork().isDisplayVDCRecentStudies());
+            createdScholarDataverse.setAboutThisDataverse(getVDCRequestBean().getVdcNetwork().getDefaultVDCAboutText());
+            createdScholarDataverse.setContactEmail(getVDCSessionBean().getLoginBean().getUser().getEmail());
+            createdScholarDataverse.setDvnDescription(shortDescription);
+            vdcService.edit(createdScholarDataverse);
+            getVDCRequestBean().setCurrentVDC(createdScholarDataverse);
+            // Refresh User object in LoginBean so it contains the user's new role of VDC administrator.
     
-        StatusMessage msg = new StatusMessage();
+            StatusMessage msg = new StatusMessage();
 
-        String hostUrl = PropertyUtil.getHostUrl();
+            String hostUrl = PropertyUtil.getHostUrl();
 
-        msg.setMessageText("Your new scholar dataverse <a href='http://" + hostUrl + "/dvn" + getVDCRequestBean().getCurrentVDCURL()+ "'>http://" + hostUrl + "/dvn" + getVDCRequestBean().getCurrentVDCURL()+ "</a> has been successfully created!");
+            msg.setMessageText("Your new scholar dataverse <a href='http://" + hostUrl + "/dvn" + getVDCRequestBean().getCurrentVDCURL()+ "'>http://" + hostUrl + "/dvn" + getVDCRequestBean().getCurrentVDCURL()+ "</a> has been successfully created!");
 
-        msg.setStyleClass("successMessage");
-        Map m = getRequestMap();
-        m.put("statusMessage", msg);
-        VDCUser creator = userService.findByUserName(getVDCSessionBean().getLoginBean().getUser().getUserName());
-        String toMailAddress = getVDCSessionBean().getLoginBean().getUser().getEmail();
-        String siteAddress = "unknown";
+            msg.setStyleClass("successMessage");
+            Map m = getRequestMap();
+            m.put("statusMessage", msg);
+            VDCUser creator = userService.findByUserName(getVDCSessionBean().getLoginBean().getUser().getUserName());
+            String toMailAddress = getVDCSessionBean().getLoginBean().getUser().getEmail();
+            String siteAddress = "unknown";
 
-        siteAddress = hostUrl + "/dvn" + getVDCRequestBean().getCurrentVDCURL();
+            siteAddress = hostUrl + "/dvn" + getVDCRequestBean().getCurrentVDCURL();
 
-        mailService.sendAddSiteNotification(toMailAddress, name, siteAddress);
+            mailService.sendAddSiteNotification(toMailAddress, name, siteAddress);
 
-        getVDCSessionBean().getLoginBean().setUser(creator);
+            getVDCSessionBean().getLoginBean().setUser(creator);
 
-        return "addSiteSuccess";
+            return "addSiteSuccess";
+        }
+        else {
+            success = false;
+            return null;
+        }
+
     }
     
     public String cancel() {
         return "cancel";
     }
-    
+
+
+
+    public boolean validateClassificationCheckBoxes() {
+
+        if (!getVDCRequestBean().getVdcNetwork().isRequireDVclassification()){
+            return true;
+        }
+        else {
+            for (ClassificationUI classUI: classificationList.getClassificationUIs()) {
+                if (classUI.isSelected()) {
+                    return true;
+                }
+            }
+
+            FacesMessage message = new FacesMessage("You must select at least one classification for your dataverse.");
+            FacesContext.getCurrentInstance().addMessage("addsiteform", message);
+            return false;
+        }
+
+    }
+
+
+
     public void validateShortDescription(FacesContext context,
                 UIComponent toValidate,
                 Object value) {
@@ -647,5 +689,6 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
             context.renderResponse();
         }
     }
+
 }
 

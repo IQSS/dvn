@@ -58,6 +58,10 @@ public interface MailServiceLocal  extends java.io.Serializable  {
 
     public void sendAddSiteNotification(String dataverseCreatorEmail, String siteName, String siteAddress);
 
+    public void sendReleaseSiteNotification(String dataverseCreatorEmail, String siteName, String siteAddress);
+
+    public void sendReleaseSiteNotificationNetwork(String networkAdminEmail, String siteName, String siteAddress);
+
     public void sendStudyInReviewNotification(String userEmail, String studyName);
 
     public void sendStudyReleasedNotification(String userEmail, String studyName, String dataverseName);

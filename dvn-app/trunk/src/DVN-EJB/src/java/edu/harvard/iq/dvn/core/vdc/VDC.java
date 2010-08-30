@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import javax.naming.InitialContext;
 import javax.persistence.*;
 
 /**
@@ -49,6 +50,8 @@ import javax.persistence.*;
  */
 @Entity
 public class VDC implements java.io.Serializable  {
+
+    
 
     public static final String ORDER_BY_ACTIVITY = "activity";
     public static final String ORDER_BY_OWNED_STUDIES = "ownedStudies";
@@ -753,8 +756,8 @@ public class VDC implements java.io.Serializable  {
         this.ownedStudies = ownedStudies;
     }
 
-   
 
+   
     /**
      * Getter for property affiliation.
      * @return Value of property affiliation.
@@ -1128,5 +1131,21 @@ public class VDC implements java.io.Serializable  {
     public void setAllowStudyComments(boolean allowStudyComments) {
         this.allowStudyComments = allowStudyComments;
     }
+
+        
+
+    public Long getNumberReleasedStudies() {
+        VDCServiceLocal vdcService = null;
+        if (vdcService == null) {
+            try {
+                vdcService = (VDCServiceLocal) new InitialContext().lookup("java:comp/env/vdcService");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    
+        return vdcService.getReleasedStudyCount(id);
+    }
+
 
 }

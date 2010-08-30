@@ -47,6 +47,7 @@ import edu.harvard.iq.dvn.core.web.util.CharacterValidator;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCGroup;
 import edu.harvard.iq.dvn.core.vdc.VDCGroupServiceLocal;
+import edu.harvard.iq.dvn.core.vdc.VDCNetwork;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -285,25 +286,31 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
    
     public String edit(){
         VDC thisVDC = getVDCRequestBean().getCurrentVDC();
-        String dataversetype = dataverseType;
-        thisVDC.setDtype(dataversetype);
-        thisVDC.setName((String)dataverseName.getValue());
-        thisVDC.setAlias((String)dataverseAlias.getValue());
-        thisVDC.setAffiliation(this.getAffiliation());
-        thisVDC.setDvnDescription(shortDescription);
-        if (dataverseType.equals("Scholar")) {
-            thisVDC.setFirstName(this.firstName);
-            thisVDC.setLastName(this.lastName);
+        boolean success = true;
+        if (validateClassificationCheckBoxes()) {
+            String dataversetype = dataverseType;
+            thisVDC.setDtype(dataversetype);
+            thisVDC.setName((String)dataverseName.getValue());
+            thisVDC.setAlias((String)dataverseAlias.getValue());
+            thisVDC.setAffiliation(this.getAffiliation());
+            thisVDC.setDvnDescription(shortDescription);
+            if (dataverseType.equals("Scholar")) {
+                thisVDC.setFirstName(this.firstName);
+                thisVDC.setLastName(this.lastName);
            
+            } else {
+                thisVDC.setFirstName(null);
+                thisVDC.setLastName(null);
+            }
+            saveClassifications(thisVDC);
+            vdcService.edit(thisVDC);
+            getVDCRequestBean().setCurrentVDC(thisVDC);
+            getVDCRequestBean().setSuccessMessage("Successfully updated general settings.");
+            return "myOptions";
         } else {
-            thisVDC.setFirstName(null);
-            thisVDC.setLastName(null);
+            success = false;
+            return null;
         }
-        saveClassifications(thisVDC);
-        vdcService.edit(thisVDC);
-        getVDCRequestBean().setCurrentVDC(thisVDC);
-        getVDCRequestBean().setSuccessMessage("Successfully updated general settings.");
-         return "myOptions";
     }
     
    
@@ -535,10 +542,7 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
         this.shortDescriptionLabelText = shortDescriptionLabelText;
     }
 
-
-
-
-    
+   
     /**
      * Captures value change event for the dataverse affiliation.
      *
@@ -607,5 +611,23 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
                 context.addMessage(toValidate.getClientId(context), message);
             }
         }
+    }
+        public boolean validateClassificationCheckBoxes() {
+
+        if (!getVDCRequestBean().getVdcNetwork().isRequireDVclassification()){
+            return true;
+        }
+        else {
+            for (ClassificationUI classUI: classificationList.getClassificationUIs()) {
+                if (classUI.isSelected()) {
+                    return true;
+                }
+            }
+
+            FacesMessage message = new FacesMessage("You must select at least one classification for your dataverse.");
+            FacesContext.getCurrentInstance().addMessage("editsiteform", message);
+            return false;
+        }
+
     }
 }

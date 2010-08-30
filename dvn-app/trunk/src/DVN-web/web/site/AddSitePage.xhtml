@@ -14,6 +14,7 @@
     <gui:param name="pageTitle" value="#{bundlePageInfo.createDvTitle} - #{VDCRequest.dataversePageTitle}"/>
     <gui:define name="body">
       <ice:form id="addsiteform">
+          <ice:message for="addsiteform" id ="boxErrorMsg"  styleClass="errorMessage"   />
         <ice:outputText id="statusMessage" styleClass="#{AddSitePage.msg.styleClass}" value="#{AddSitePage.msg.messageText}"/>
         <div jsfc="ice:panelGroup" rendered="#{LoginWorkflowBean.plainWorkflow}" styleClass="#{(LoginWorkflowBean.plainWorkflow) ? 'dvn_section' : 'dvn_nostyle'}">
             <div class="dvnMsgBlockRound dvnInformationMessage">
@@ -24,7 +25,7 @@
         </div>
         <script type="text/javascript">
             //<![CDATA[
-            function changeValue(obj) {
+            function changeValue(obj) {                 
                 if (window.event)
                     obj.value = window.event.srcElement.value;
                 document.getElementById('addsiteform').submit();
@@ -131,10 +132,15 @@
                   <div>
                     <ice:outputLabel for="affiliation" id="affiliationLabel">
                       <ice:outputText value="Affiliation"/>
+                      <ice:graphicImage value="#{bundle.iconRequired}" rendered="#{VDCRequest.vdcNetwork.requireDVaffiliation}" />
                     </ice:outputLabel>
                   </div>
                   <div>
-                    <ice:inputText id="affiliation" immediate="true" value="#{AddSitePage.affiliation}" valueChangeListener="#{AddSitePage.changeAffiliation}"/>
+                    <ice:inputText id="affiliation" immediate="true" value="#{AddSitePage.affiliation}" 
+                                   required="#{VDCRequest.vdcNetwork.requireDVaffiliation}"
+                                   requiredMessage="This field is required." 
+                                   valueChangeListener="#{AddSitePage.changeAffiliation}"/>
+                            <ice:message for="affiliation" showSummary="true" showDetail="false" errorClass="errorMessage" styleClass="errorMessage"/>
                     <br/>
                     <ice:outputText styleClass="vdcHelpText" value="University, center, or research project."/>
                   </div>
@@ -176,37 +182,44 @@
                     <ice:outputText
                                     id="shortDescriptionLabelText"
                                     value="Network Home Page Description"/>
+                    <ice:graphicImage value="#{bundle.iconRequired}" rendered="#{VDCRequest.vdcNetwork.requireDVdescription}" />
                   </ice:outputLabel>
                 </div>
                 <div jsfc="ice:panelGroup">
                   <ice:inputTextarea id="dataverseShortDescription"
-                                     required="false"
+                                     required="#{VDCRequest.vdcNetwork.requireDVdescription}"
                                      validator="#{AddSitePage.validateShortDescription}"
+                                     requiredMessage="This field is required."
                                      value="#{AddSitePage.shortDescription}"/>
                   <br/>
                   <ice:outputText styleClass="vdcHelpText" value="Short description to appear on the network home page with your dataverse listing."/>
-                  <ice:message for="dataverseShortDescription" showSummary="true" showDetail="false" styleClass="errorMessage"/>
+                  <ice:message for="dataverseShortDescription" showSummary="true" showDetail="false" errorClass="errorMessage" styleClass="errorMessage"/>
                 </div>
 
                   <!-- Group Assignment -->
                   <div jsfc="ice:panelGroup">
                     <ice:outputLabel for="selectedGroup" id="selectedGroupLabel">
                       <ice:outputText id="selectedGroupText" value="Classification"/>
+
                     </ice:outputLabel>
+                       <ice:message for="classificationCheckBox" id ="boxErrorMsg"  styleClass="errorMessage"   />
                   </div>
                   <div jsfc="ice:panelGroup" rendered="#{empty AddSitePage.classificationList.classificationUIs}">
                       <ice:outputText styleClass="vdcHelpText" value="There are no classifications set up for this dataverse network."/>
                   </div>
                   <div jsfc="ice:panelGroup" rendered="#{!empty AddSitePage.classificationList.classificationUIs}">
                     <ice:outputText styleClass="vdcHelpText" for="selectedGroup" value="#{bundle.groupSelect}"/>
+                    <ice:message for="classificationCheckBox" id ="boxErrorMsg"  styleClass="errorMessage"   />
                     <ice:dataTable id="dataverseList" styleClass="dvnCreateDvClassificationTable" cellspacing="0" cellpadding="0" columns="2" width="100%"
                                    headerClass="groupRow" rowClasses="evenRow,oddRow" columnWidths="2%,98%"
                                    scrollable="true" 
                                    value="#{AddSitePage.classificationList.classificationUIs}" var="classUI">
                       <!-- controls -->
                       <ice:column styleClass="dvnCreateDvClassificationSelectColumn">
-                        <ice:selectBooleanCheckbox partialSubmit="true" value="#{classUI.selected}" rendered="#{classUI.level > 1}"/>
+                        <ice:selectBooleanCheckbox id="classificationCheckBox"  styleClass="classificationCheckBox" 
+                              value="#{classUI.selected}" rendered="#{classUI.level > 1}"/>
                       </ice:column>
+                                       
                       <!-- classification name -->
                       <ice:column styleClass="dvnCreateDvClassificationNameColumn" rendered="#{classUI.level == 1}">
                         <ice:outputText value="#{classUI.vdcGroup.name}"/>
@@ -215,6 +228,7 @@
                         <ice:outputText styleClass="dvnCreateDvClassificationTableChild#{classUI.level}" value="#{classUI.vdcGroup.name}"/>
                       </ice:column>
                     </ice:dataTable>
+                     <ice:message for="classificationCheckBox" id ="boxErrorMsg"  styleClass="errorMessage"   />
                   </div>
                 </ice:panelGrid>
                 <div class="dvnFormPadding dvnFormMargin">

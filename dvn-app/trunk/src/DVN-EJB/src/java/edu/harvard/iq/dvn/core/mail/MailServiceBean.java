@@ -218,7 +218,29 @@ public class MailServiceBean implements edu.harvard.iq.dvn.core.mail.MailService
 
         sendDoNotReplyMail(dataverseCreatorEmail,subject,messageText);
     }
-    
+
+    public void sendReleaseSiteNotification(String dataverseCreatorEmail, String siteName, String siteAddress){
+        String subject = "Dataverse Network: Your dataverse has been released";
+        String messageText = "Hello, \nYour new dataverse named '"+siteName+"' was"
+               + " released to the " + vdcNetworkService.find().getName() + " Dataverse Network. You can access your dataverse"
+               + " directly by entering this URL:\n" 
+               + "http://"+siteAddress+"\n"
+               + "For detailed information about how to use your dataverse options, click User Guides on the Dataverse Network menu bar, or go to http://thedata.org/guides.";
+               
+        sendDoNotReplyMail(dataverseCreatorEmail,subject,messageText);
+                       
+    }
+
+    public void sendReleaseSiteNotificationNetwork(String networkAdminEmail, String siteName, String siteAddress){
+        String subject = "Dataverse Network: Dataverse has been released";
+        String messageText = "Hello, \nThe dataverse named '"+siteName+"' was"
+               + " released to the " + vdcNetworkService.find().getName() + " Dataverse Network. You can access it"
+               + " directly by entering this URL:\n"
+               + "http://"+siteAddress+"\n";
+
+        sendDoNotReplyMail(networkAdminEmail,subject,messageText);
+
+    }
     public void sendStudyInReviewNotification(String userEmail, String studyName){
         String subject = "Dataverse Network: Your Study is in Review";
         String messageText = "Your study '"+ studyName + "' is now under review. You will be notified when the study is released.";

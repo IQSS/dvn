@@ -699,7 +699,11 @@
             <value>#{VDCRequest.vdcNetwork.depositTermsOfUseEnabled}</value>
         </managed-property>
     </managed-bean>
-
+    <managed-bean>
+        <managed-bean-name>EditNetworkDVRequirementsPage</managed-bean-name>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.networkAdmin.EditNetworkDVRequirementsPage</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
     <managed-bean>
         <managed-bean-name>AllUsersPage</managed-bean-name>
         <managed-bean-class>edu.harvard.iq.dvn.core.web.networkAdmin.AllUsersPage</managed-bean-class>

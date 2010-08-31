@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:gui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:ice="http://www.icesoft.com/icefaces/component">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+</head>
+<body>
+  <gui:composition template="/template.xhtml">
+    <gui:param name="pageTitle" value="#{bundlePageInfo.manageDvnPermissionsTitle} - #{VDCRequest.dataversePageTitle}"/>
+    <gui:define name="body">
+      <ice:form id="NetworkPrivilegedUsersPageView">
+        <input type="hidden" name="pageName" value="NetworkPrivilegedUsersPage"/>
+        <div class="dvn_section">
+          <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
+            <div class="dvnMsgBlockContainer">
+              <ice:outputText value="#{bundlePageInfo.manageDvnPermissionsHelp}" escape="false"/>
+            </div>
+          </div>
+          <div class="dvn_sectionTitle">
+            <ice:outputText value="#{bundlePageInfo.manageDvnPermissionsTitle}"/>
+          </div>
+          <div jsfc="ice:panelGroup">
+            <table class="dvnPermissionsTable" cellspacing="0" cellpadding="0" border="0">
+              <tr><td colspan="2" class="dvnPermissionsTableHeader"><ice:outputText value="Network Dataverse Permission Settings"/></td></tr>
+              <tr>
+                <td class="dvnPermissionsTableOption">
+                  <ice:outputText value="Creating a New Dataverse"/>
+                </td>
+                <td>
+                  <ice:selectBooleanCheckbox id="checkbox1" value="#{NetworkPrivilegedUsersPage.privileges.network.allowCreateRequest}"/>
+                  <ice:outputText id="outputText5" value=" Allow users to create a new Dataverse when they create an account."/>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div jsfc="ice:panelGroup">
+            <table class="dvnPermissionsTable" cellspacing="0" cellpadding="0" border="0">
+              <tr><td colspan="2" class="dvnPermissionsTableHeader"><ice:outputText value="Network User Permission Settings"/></td></tr>
+              <tr>
+                <td class="dvnPermissionsTableOption dvnPermissionsStackedCells">
+                  <ice:outputText value="Network Privileged Users"/>
+                </td>
+                <td class="dvnPermissionsStackedCells">
+                  <ice:outputText id="outputText7" value="Username: "/>
+                  <ice:inputText onkeypress="if (window.event) return processEvent('', 'addUserbutton'); else return processEvent(event, 'addUserbutton');" id="textField1" value="#{NetworkPrivilegedUsersPage.userName}"/>
+                  <ice:commandButton id="addUserButton" value="Add" actionListener="#{NetworkPrivilegedUsersPage.addUser}"/>
+                  <ice:outputText styleClass="errorMessage" value="User not found." rendered="#{NetworkPrivilegedUsersPage.userNotFound}"/>
+                  <br/>
+                  <ice:outputText styleClass="vdcHelpText" value="Enter username to assign Network Admin or Dataverse Creator privileges."/>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="2">
+                  <div jsfc="ice:panelGroup" rendered="#{!NetworkPrivilegedUsersPage.displayPrivilegedUsers}" styleClass="dvnPermissionsEmpty">
+                    <ice:outputText value="No users have been given privileged access this dataverse network."/>
+                  </div>
+                  <ice:dataTable binding="#{NetworkPrivilegedUsersPage.userTable}" cellpadding="0" cellspacing="0" width="98%"
+                                 columnClasses="vdcColPadded, vdcColPadded, vdcColPadded, vdcColPadded" headerClass="list-header-left"
+                                 rowClasses="list-row-even,list-row-odd" value="#{NetworkPrivilegedUsersPage.privileges.privilegedUsers}" var="currentRow"
+                                 rendered="#{NetworkPrivilegedUsersPage.displayPrivilegedUsers}">
+                    <ice:column id="column1" rendered="#{currentRow.user.id!=NetworkPrivilegedUsersPage.privileges.network.defaultNetworkAdmin.id}">
+                      <f:facet name="header">
+                        <ice:outputText id="outputText3" value="Username"/>
+                      </f:facet>
+                      <ice:outputLink id="hyperlink2" value="/dvn/faces/login/AccountPage.xhtml?userId=#{currentRow.user.id}">
+                        <ice:outputText id="hyperlink2Text" value="#{currentRow.user.userName}"/>
+                      </ice:outputLink>
+                    </ice:column>
+                    <ice:column id="column9" rendered="#{currentRow.user.id!=NetworkPrivilegedUsersPage.privileges.network.defaultNetworkAdmin.id}">
+                      <f:facet name="header">
+                        <ice:outputText id="outputText16" value="Privileged Role"/>
+                      </f:facet>
+                      <ice:selectOneRadio id="roleSelectMenu" value="#{currentRow.networkRoleId}">
+                        <f:selectItems id="roleSelectItems" value="#{NetworkPrivilegedUsersPage.roleSelectItems}"/>
+                        <ice:message for="roleSelectMenu" styleClass="errorMessage"/>
+                      </ice:selectOneRadio>
+                    </ice:column>
+                    <ice:column rendered="#{currentRow.user.id!=NetworkPrivilegedUsersPage.privileges.network.defaultNetworkAdmin.id}">
+                      <ice:commandButton value="Clear Role" actionListener="#{NetworkPrivilegedUsersPage.clearRole}"/>
+                    </ice:column>
+                  </ice:dataTable>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div id="groupPanel6" class="dvnFormPadding dvnFormMargin">
+            <ice:commandButton id="button5" value="Save Changes" action="#{NetworkPrivilegedUsersPage.save}"/>
+            <ice:commandButton immediate="true" id="cancelButton" value="Cancel" action="#{NetworkPrivilegedUsersPage.cancel}"/>
+          </div>
+        </div>
+      </ice:form>
+    </gui:define>
+  </gui:composition>
+</body>
+</html>

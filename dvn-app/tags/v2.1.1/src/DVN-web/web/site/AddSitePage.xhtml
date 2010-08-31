@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:gui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:ice="http://www.icesoft.com/icefaces/component">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+  <gui:composition template="/template.xhtml">
+    <gui:param name="pageTitle" value="#{bundlePageInfo.createDvTitle} - #{VDCRequest.dataversePageTitle}"/>
+    <gui:define name="body">
+      <ice:form id="addsiteform">
+        <ice:outputText id="statusMessage" styleClass="#{AddSitePage.msg.styleClass}" value="#{AddSitePage.msg.messageText}"/>
+        <div jsfc="ice:panelGroup" rendered="#{LoginWorkflowBean.plainWorkflow}" styleClass="#{(LoginWorkflowBean.plainWorkflow) ? 'dvn_section' : 'dvn_nostyle'}">
+            <div class="dvnMsgBlockRound dvnInformationMessage">
+              <div class="dvnMsgBlockContainer">
+                <ice:outputText value="#{bundlePageInfo.createDvHelp}" escape="false"/>
+              </div>
+            </div>
+        </div>
+        <script type="text/javascript">
+            //<![CDATA[
+            function changeValue(obj) {
+                if (window.event)
+                    obj.value = window.event.srcElement.value;
+                document.getElementById('addsiteform').submit();
+            }
+            //init the hidden fields
+            function showAll(){
+                var theForm = document.getElementById('addsiteform');
+                var showScholarFields = false;
+                for (var i = 0; i < theForm.elements.length; i++) {
+                    if ( (theForm.elements[i].checked) && (theForm.elements[i].value == "Scholar") ) {
+                        showScholarFields = true;
+                        break;
+                    }
+                }
+                if (!showScholarFields) {
+                    document.getElementById('addsiteform:firstName').style.display = 'none';
+                    document.getElementById('addsiteform:lastName').style.display = 'none';
+                }
+            }
+            function createDvName() {
+                if (document.getElementById('addsiteform:firstName').value != "" && document.getElementById('addsiteform:lastName').value != "") {
+                    document.getElementById('addsiteform:dataverseName').value = document.getElementById('addsiteform:firstName').value + " " + document.getElementById('addsiteform:lastName').value;
+                }
+            }
+            // ]]>
+        </script>
+        <div jsfc="ice:panelGroup" styleClass="#{(LoginWorkflowBean.creatorWorkflow) ? 'dvn_createDvRequest dvn_section dvn_overflow' : 'dvn_section'}">
+          <div jsfc="ice:panelGroup" styleClass="#{(LoginWorkflowBean.creatorWorkflow) ? 'requestHeader dvn_overflow' : 'dvn_sectionTitle'}">
+            <ice:outputText value="#{bundlePageInfo.createDvTitle}" rendered="#{LoginWorkflowBean.plainWorkflow}"/>
+            <ice:outputText value="#{bundlePageInfo.createDvTitle}" rendered="#{LoginWorkflowBean.fileAccessWorkflow}"/>
+            <ice:outputText value="Name Dataverse &lt;span&gt;&gt; Create Your Own Dataverse&lt;/span&gt;" rendered="#{LoginWorkflowBean.creatorWorkflow}" escape="false"/>
+          </div>
+          <div jsfc="ice:panelGroup" rendered="#{LoginWorkflowBean.creatorWorkflow}" styleClass="requestTimeline creatorTimelineStep3">
+            <div class="requestTimelinePoint creatorWorkflowStep1"><img src="/dvn/resources/images/lrg-blue-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong class="requestWorkflowCompleted">Create Account</strong></div>
+            <div class="requestTimelinePoint creatorWorkflowStep2"><img src="/dvn/resources/images/lrg-blue-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong class="requestWorkflowCompleted">Terms of Use</strong></div>
+            <div class="requestTimelinePoint creatorWorkflowStep3"><img src="/dvn/resources/images/lrg-blue-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong class="requestWorkflowCurrent">Name Dataverse</strong></div>
+            <div class="requestTimelinePoint creatorWorkflowStep4"><img src="/dvn/resources/images/lrg-grey-bullet.gif" class="vdcNoBorder" alt=""/><br/><strong>Success!</strong></div>
+          </div>
+          <div jsfc="ice:panelGroup" styleClass="#{(LoginWorkflowBean.creatorWorkflow) ? 'requestContent' : 'dvn_sectionBox'}">
+            <div jsfc="ice:panelGroup" rendered="#{LoginWorkflowBean.creatorWorkflow}" styleClass="requestContentDescLeft">
+              <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
+                <div class="dvnMsgBlockContainer">
+                  <ice:outputText value="#{bundlePageInfo.createDvHelp}" escape="false"/>
+                </div>
+              </div>
+            </div>
+            <div jsfc="ice:panelGroup" styleClass="#{(LoginWorkflowBean.creatorWorkflow) ? 'requestContentFormRight' : 'empty'}">
+              <div class="dvn_margin12">
+                <ice:panelGrid cellpadding="0" cellspacing="0"
+                               columnClasses="vdcAddSiteCol1, vdcAddSiteCol2" columns="2" id="gridPanel1">
+                  <!-- dataverse type -->
+                  <div jsfc="ice:panelGroup">
+                    <ice:outputLabel for="dataverseType" id="dataverseLabel">
+                      <ice:outputText value="Type of Dataverse"/>
+                    </ice:outputLabel>
+                  </div>
+                  <div>
+                    <ice:selectOneRadio id="dataverseType"
+                                        layout="pageDirection"
+                                        immediate="true"
+                                        onclick="changeValue(this);"
+                                        value="#{AddSitePage.dataverseType}"
+                                        valueChangeListener="#{AddSitePage.changeDataverseOption}"
+                                        required="true"
+                                        requiredMessage="This field is required.">
+                      <f:selectItems value="#{AddSitePage.dataverseOptions}"/>
+                    </ice:selectOneRadio>
+                  </div>
+                  <!-- first name -->
+                  <div jsfc="ice:panelGroup" rendered="#{AddSitePage.dataverseType == 'Scholar'}">
+                    <ice:outputLabel for="firstName" id="firstnameLabel">
+                      <ice:outputText value="First Name"/>
+                      <ice:graphicImage value="#{bundle.iconRequired}"/>
+                    </ice:outputLabel>
+                  </div>
+                  <div jsfc="ice:panelGroup" rendered="#{AddSitePage.dataverseType == 'Scholar'}">
+                    <ice:inputText id="firstName"
+                                   onblur="createDvName();"
+                                   required="#{(AddSitePage.dataverseType == 'Scholar') ? true : false}"
+                                   requiredMessage="This field is required."
+                                   validator="#{AddSitePage.validateIsEmpty}"
+                                   value="#{AddSitePage.firstName}"
+                                   valueChangeListener="#{AddSitePage.changeFirstName}"/>
+                    <ice:message for="firstName" showSummary="true" showDetail="false" errorClass="errorMessage" styleClass="errorMessage"/>
+                  </div>
+                  <!-- last name -->
+                  <div jsfc="ice:panelGroup" rendered="#{AddSitePage.dataverseType == 'Scholar'}">
+                    <ice:outputLabel for="lastName" id="lastnameLabel">
+                      <ice:outputText value="Last Name"/>
+                      <ice:graphicImage value="#{bundle.iconRequired}"/>
+                    </ice:outputLabel>
+                  </div>
+                  <div jsfc="ice:panelGroup" rendered="#{AddSitePage.dataverseType == 'Scholar'}">
+                    <ice:inputText id="lastName"
+                                   onblur="createDvName();"
+                                   required="#{(AddSitePage.dataverseType == 'Scholar') ? true : false}"
+                                   requiredMessage="This field is required."
+                                   validator="#{AddSitePage.validateIsEmpty}"
+                                   value="#{AddSitePage.lastName}"
+                                   valueChangeListener="#{AddSitePage.changeLastName}"/>
+                    <ice:message for="lastName" showSummary="true" showDetail="false" errorClass="errorMessage" styleClass="errorMessage"/>
+                  </div>
+                  <!-- affiliation -->
+                  <div>
+                    <ice:outputLabel for="affiliation" id="affiliationLabel">
+                      <ice:outputText value="Affiliation"/>
+                    </ice:outputLabel>
+                  </div>
+                  <div>
+                    <ice:inputText id="affiliation" immediate="true" value="#{AddSitePage.affiliation}" valueChangeListener="#{AddSitePage.changeAffiliation}"/>
+                    <br/>
+                    <ice:outputText styleClass="vdcHelpText" value="University, center, or research project."/>
+                  </div>
+                  <!-- Dataverse Name -->
+                  <div>
+                    <ice:outputLabel binding="#{AddSitePage.componentLabel1}" for="componentLabel1" id="componentLabel1">
+                      <ice:outputText binding="#{AddSitePage.componentLabel1Text}" id="componentLabel1Text" value="Dataverse Name"/>
+                      <ice:graphicImage value="#{bundle.iconRequired}"/>
+                    </ice:outputLabel>
+                  </div>
+                  <div>
+                    <ice:inputText binding="#{AddSitePage.dataverseName}" id="dataverseName"
+                                   required="#{(AddSitePage.dataverseType == 'Scholar') ? false : true}"
+                                   requiredMessage="This field is required."
+                                   validator="#{AddSitePage.validateName}" size="45"/>
+                    <ice:message for="dataverseName" showSummary="true" showDetail="false" errorClass="errorMessage" styleClass="errorMessage"/>
+                    <br/>
+                    <ice:outputText styleClass="vdcHelpText" value="Name used to refer to this dataverse in Dataverse Network Homepage and other pages."/>
+                  </div>
+                  <!-- Dataverse Alias -->
+                  <div>
+                    <ice:outputLabel binding="#{AddSitePage.componentLabel2}" for="componentLabel2" id="componentLabel2">
+                      <ice:outputText binding="#{AddSitePage.componentLabel2Text}" id="componentLabel2Text" value="Dataverse Alias"/>
+                      <ice:graphicImage value="#{bundle.iconRequired}"/>
+                    </ice:outputLabel>
+                  </div>
+                  <div jsfc="ice:panelGroup">
+                    <ice:inputText binding="#{AddSitePage.dataverseAlias}"
+                                   id="dataverseAlias"
+                                   required="true"
+                                   requiredMessage="This field is required."
+                                   validator="#{AddSitePage.validateAlias}"/>
+                    <ice:message for="dataverseAlias" showSummary="true" showDetail="false" errorClass="errorMessage" styleClass="errorMessage"/>
+                    <br/>
+                    <ice:outputText styleClass="vdcHelpText" value="Short name used to build the URL for this dataverse, e.g., http://.../dv/'alias'. It is case sensitive."/>
+                  </div>
+                      <div jsfc="ice:panelGroup">
+                  <ice:outputLabel  for="shortDescriptionInput" id="shortDescriptionLabel">
+                    <ice:outputText
+                                    id="shortDescriptionLabelText"
+                                    value="Network Home Page Description"/>
+                  </ice:outputLabel>
+                </div>
+                <div jsfc="ice:panelGroup">
+                  <ice:inputTextarea id="dataverseShortDescription"
+                                     required="false"
+                                     validator="#{AddSitePage.validateShortDescription}"
+                                     value="#{AddSitePage.shortDescription}"/>
+                  <br/>
+                  <ice:outputText styleClass="vdcHelpText" value="Short description to appear on the network home page with your dataverse listing."/>
+                  <ice:message for="dataverseShortDescription" showSummary="true" showDetail="false" styleClass="errorMessage"/>
+                </div>
+
+                  <!-- Group Assignment -->
+                  <div jsfc="ice:panelGroup">
+                    <ice:outputLabel for="selectedGroup" id="selectedGroupLabel">
+                      <ice:outputText id="selectedGroupText" value="Classification"/>
+                    </ice:outputLabel>
+                  </div>
+                  <div jsfc="ice:panelGroup" rendered="#{empty AddSitePage.classificationList.classificationUIs}">
+                      <ice:outputText styleClass="vdcHelpText" value="There are no classifications set up for this dataverse network."/>
+                  </div>
+                  <div jsfc="ice:panelGroup" rendered="#{!empty AddSitePage.classificationList.classificationUIs}">
+                    <ice:outputText styleClass="vdcHelpText" for="selectedGroup" value="#{bundle.groupSelect}"/>
+                    <ice:dataTable id="dataverseList" styleClass="dvnCreateDvClassificationTable" cellspacing="0" cellpadding="0" columns="2" width="100%"
+                                   headerClass="groupRow" rowClasses="evenRow,oddRow" columnWidths="2%,98%"
+                                   scrollable="true" 
+                                   value="#{AddSitePage.classificationList.classificationUIs}" var="classUI">
+                      <!-- controls -->
+                      <ice:column styleClass="dvnCreateDvClassificationSelectColumn">
+                        <ice:selectBooleanCheckbox partialSubmit="true" value="#{classUI.selected}" rendered="#{classUI.level > 1}"/>
+                      </ice:column>
+                      <!-- classification name -->
+                      <ice:column styleClass="dvnCreateDvClassificationNameColumn" rendered="#{classUI.level == 1}">
+                        <ice:outputText value="#{classUI.vdcGroup.name}"/>
+                      </ice:column>
+                      <ice:column styleClass="dvnCreateDvClassificationNameColumn" rendered="#{classUI.level > 1}">
+                        <ice:outputText styleClass="dvnCreateDvClassificationTableChild#{classUI.level}" value="#{classUI.vdcGroup.name}"/>
+                      </ice:column>
+                    </ice:dataTable>
+                  </div>
+                </ice:panelGrid>
+                <div class="dvnFormPadding dvnFormMargin">
+                  <ice:commandButton rendered="#{AddSitePage.dataverseType != 'Scholar'}" id="button1" value="Save" action="#{AddSitePage.create}"/>
+                  <ice:commandButton rendered="#{AddSitePage.dataverseType == 'Scholar'}" id="btnCreateSdv" value="Save" action="#{AddSitePage.createScholarDataverse}"/>
+                  <ice:commandButton binding="#{AddSitePage.button2}" id="button2" immediate="true" value="Cancel" action="#{AddSitePage.cancel}"/>
+                </div>
+                <script type="text/javascript">
+                    //<![CDATA[
+                    // this is done to ensure that the scholar fields are properly inited. wjb
+                    showAll();
+                    // ]]>
+                </script>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ice:form>
+    </gui:define>
+  </gui:composition>
+</body>
+</html>

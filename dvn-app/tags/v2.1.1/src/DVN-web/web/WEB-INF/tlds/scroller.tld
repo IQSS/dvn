@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taglib version="2.1" xmlns="http://java.sun.com/xml/ns/javaee" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://java.sun.com/xml/ns/javaee web-jsptaglibrary_2_1.xsd">
+
+  <jsp-version>2.1</jsp-version>
+  <tlib-version>1.1</tlib-version>
+  <short-name>t</short-name>
+  <uri>/WEB-INF/tlds/scroller</uri>
+  <description>
+    Taken from Java EE BluePrints JSF Components Tag Library, ui.tld.
+    This tag library contains tags for several useful JSF components.
+  </description>
+  
+<!-- original copyright notice -->
+<!--  Copyright 2005 Sun Microsystems, Inc.  All rights reserved.  You may not modify, use, reproduce, or distribute this software except in compliance with the terms of the License at: 
+ http://developer.sun.com/berkeley_license.html
+ $Id: scroller.tld,v 1.1 2006/11/15 06:55:32 asone Exp $ -->
+ 
+  <tag>
+    <name>scroller</name>
+    <!-- tag-class>com.sun.javaee.blueprints.components.ui.tag.ScrollerTag</tag-class -->
+    <tag-class>edu.harvard.iq.dvn.core.web.customComponent.scroller.ScrollerTag</tag-class>
+    <body-content>JSP</body-content>
+    <description>
+    Render a set of hyperlinks to enable navigation over results that span
+    across several pages.  Child tags nested inside this tag must be:
+    * facet tags that can optionally nest panel_group tag that provide widgets
+    * for easy navigation.
+    </description>
+    <attribute>
+      <description>
+        ValueExpression to bind this component to a backing bean.
+      </description>
+      <name>binding</name>
+      <required>false</required>
+      <deferred-value>
+        <!--type>com.sun.javaee.blueprints.components.ui.components.ScrollerComponent</type -->
+        <type>edu.harvard.iq.dvn.core.web.customComponent.scroller.ScrollerComponent</type>
+    </deferred-value>
+    </attribute>
+    <attribute>
+      <description>
+        Component id of this component.
+      </description>
+      <name>id</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <description>
+        The data grid component for which this acts as a scroller.
+      </description>
+      <name>for</name>
+      <required>true</required>
+      <deferred-value>
+        <type>java.lang.String</type>
+      </deferred-value>
+    </attribute>
+    <attribute>
+      <description>
+        When rendering a widget representing "page navigation" where
+        should the facet markup be rendered in relation to the page
+        navigation widget?  Values are "NORTH", "SOUTH", "EAST", "WEST".
+        Case insensitive.
+      </description>
+      <name>navFacetOrientation</name>
+      <required>false</required>
+      <deferred-value>
+        <type>java.lang.String</type>
+      </deferred-value>
+    </attribute>
+    <attribute>
+      <description>
+         Optional method binding reference to handle scroll event.
+      </description>
+      <name>actionListener</name>
+      <required>false</required>
+      <deferred-method>
+        <method-signature>void actionListener(javax.faces.event.ActionEvent)</method-signature>
+      </deferred-method>
+    </attribute>
+  </tag>
+
+</taglib>

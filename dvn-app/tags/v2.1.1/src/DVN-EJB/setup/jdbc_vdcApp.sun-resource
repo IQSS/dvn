@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+  <jdbc-resource enabled="true" jndi-name="jdbc/vdcApp" object-type="user" pool-name="post-gre-sqlPool"/>
+</resources>

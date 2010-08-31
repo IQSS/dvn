@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:gui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:ice="http://www.icesoft.com/icefaces/component">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+  <gui:composition template="/template.xhtml">
+    <gui:param name="pageTitle" value="#{bundlePageInfo.editVariableTitle} - #{VDCRequest.dataversePageTitle}"/>
+    <gui:define name="body">
+      <ice:form id="form1">
+        <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+        <input type="hidden" name="pageName" value="EditVariablePage"/>
+        <ice:inputHidden id="dtId" value="#{EditVariablePage.dtId}"/>
+        <ice:inputHidden id="dvFilter" value="#{EditVariablePage.dvFilter}"/>
+        <div class="dvn_section">
+          <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
+            <div class="dvnMsgBlockContainer">
+              <ice:outputText value="#{bundlePageInfo.editVariableHelp}" escape="false"/>
+            </div>
+          </div>
+          <div class="dvn_sectionTitle">
+            <ice:outputText value="#{bundlePageInfo.editVariableTitle}"/>
+          </div>
+          <ice:outputText value="#{EditVariablePage.dt.studyFile.fileName}"/>
+          <div class="dvn_sectionBoxNoBorders">
+            <span class="dvn_preFileTitle">Variables: </span>
+            <br/>
+            <div jsfc="ice:panelGroup" id="messagePanel" styleClass="errorMessage" rendered="#{! empty facesContext.maximumSeverity}">
+              <ice:outputText value="Some errors occurred, please check details below" rendered="#{! empty facesContext.maximumSeverity}" />
+            </div>
+            <br/>
+            <ice:dataTable value="#{EditVariablePage.dataVariables}" var="dv" columnClasses="vdcColPadded">
+              <ice:column>
+                <ice:inputHidden value="#{dv.id}"/>
+                <ice:inputText id="dv_name" value="#{dv.name}" required="true" requiredMessage="This field is required." validator ="#{EditVariablePage.validateDVName}"/>
+                <br/>
+                <ice:message styleClass="errorMessage" for="dv_name"/>
+                <f:facet name="header">
+                  <ice:outputText value="Name"/>
+                </f:facet>
+              </ice:column>
+              <ice:column>
+                <ice:inputText id="dv_label" value="#{dv.label}" size="80"/>
+                <br/>
+                <ice:message styleClass="errorMessage" for="dv_label"/>
+                <f:facet name="header">
+                  <ice:outputText value="Label"/>
+                </f:facet>
+              </ice:column>
+            </ice:dataTable>
+            <div class="dvnFormPadding dvnFormMargin">
+              <ice:commandButton id="saveButton" value="Save" action="#{EditVariablePage.save_action}"/>
+              <ice:commandButton id="cancelButton" value="Cancel" action="#{EditVariablePage.cancel_action}" immediate="true"/>
+            </div>
+          </div>
+        </div>
+      </ice:form>
+    </gui:define>
+  </gui:composition>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<f:view
+      xmlns:gui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:ice="http://www.icesoft.com/icefaces/component"
+      xmlns:dvn="/WEB-INF/tlds/dvn-components">
+<ice:outputDeclaration
+      doctypeRoot="HTML"
+      doctypePublic="-//W3C//DTD XHTML 1.0 Transitional//EN"
+      doctypeSystem="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"/>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+ <!-- page title param passed in by param -->
+ <title><h:outputText value="#{pageTitle}"/></title>
+ <link rel="stylesheet" type="text/css" href="/dvn/resources/icefaces/dvn_rime/dvn_rime.css"/>
+ <link rel="stylesheet" type="text/css" href="/dvn/resources/css/dvngeneral.css"/>
+ <link rel="stylesheet" type="text/css" href="/dvn/resources/css/dvnspecific.css"/>
+ <!-- IE SPECIFIC STYLESHEET -->
+ <ice:outputText escape="false" nospan="true"
+   value="&#60;!--[if lte IE 8]&#62;
+   &#60;link rel=&#34;stylesheet&#34; type=&#34;text/css&#34; href=&#34;/dvn/resources/css/iefix.css&#34;/&#62;
+   &#60;![endif]--&#62;"/>
+ <script type="text/javascript" src="/dvn/resources/javascript/EventCapture.js"/>
+ <script type="text/javascript" src="/dvn/resources/javascript/jquery.js"/>
+ <script type="text/javascript" src="/dvn/resources/javascript/jquery.corner.pack.js"/>
+ <script type="text/javascript">
+   // <![CDATA[
+   jQuery.noConflict();
+   jQuery(document).ready(function(){
+      jQuery("div.dvnRound, div.dvnMsgBlockRound").corner("10px");
+   });
+   // ]]>
+ </script>
+ <script type="text/javascript">
+     // <![CDATA[
+     var isChild = true;
+     function printMe() {
+         window.print();
+     }
+     //]]>
+ </script>
+</head>
+<!--  this template is example 4.3 in the Facelets Shortcut -->
+<body class="dvn_bodyVanilla">
+  <div class="dvn_wrapperVanilla">
+    <div class="dvn_content" id="content-frame">
+      <!-- required to fix a bug in firefox where the connection status box can be displayed erroneously -->
+      <ice:outputConnectionStatus/>
+      <f:loadBundle basename="Bundle" var="bundle"/>
+      <f:loadBundle basename="BundlePageInfo" var="bundlePageInfo"/>
+      <gui:insert name="body">Default Body</gui:insert>
+    </div>
+  </div>
+</body>
+</html>
+</f:view>

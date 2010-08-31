@@ -1,0 +1,219 @@
+/*
+ * Dataverse Network - A web application to distribute, share and analyze quantitative data.
+ * Copyright (C) 2007
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program; if not, see http://www.gnu.org/licenses
+ * or write to the Free Software Foundation,Inc., 51 Franklin Street,
+ * Fifth Floor, Boston, MA 02110-1301 USA
+ */
+
+/*
+ * StudyAuthor.java
+ *
+ * Created on August 7, 2006, 9:49 AM
+ *
+ * To change this template, choose Tools | Template Manager
+ * and open the template in the editor.
+ */
+
+package edu.harvard.iq.dvn.core.study;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Version;
+import javax.persistence.*;
+
+/**
+ *
+ * @author Ellen Kraffmiller
+ */
+@Entity
+public class StudyNote implements java.io.Serializable, MetadataFieldGroup {
+    
+    /** Creates a new instance of StudyNote */
+    public StudyNote() {
+    }
+
+    /**
+     * Holds value of property id.
+     */
+
+   
+    
+   @Id
+   @GeneratedValue(strategy = GenerationType.IDENTITY)
+   private Long id;
+
+    /**
+     * Getter for property id.
+     * @return Value of property id.
+     */
+    public Long getId() {
+        return this.id;
+    }
+
+    /**
+     * Setter for property id.
+     * @param id New value of property id.
+     */
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    /**
+     * Holds value of property displayOrder.
+     */
+    private int displayOrder;
+
+    /**
+     * Getter for property order.
+     * @return Value of property order.
+     */
+    public int getDisplayOrder() {
+        return this.displayOrder;
+    }
+
+    /**
+     * Setter for property order.
+     * @param order New value of property order.
+     */
+    public void setDisplayOrder(int displayOrder) {
+        this.displayOrder = displayOrder;
+    }
+
+    /**
+     * Holds value of property metadata.
+     */
+    @ManyToOne
+    @JoinColumn(nullable=false)
+    private Metadata metadata;
+
+    public Metadata getMetadata() {
+        return metadata;
+    }
+
+    public void setMetadata(Metadata metadata) {
+        this.metadata = metadata;
+    }
+    
+      /**
+     * Holds value of property version.
+     */
+    @Version
+    private Long version;
+
+    /**
+     * Getter for property version.
+     * @return Value of property version.
+     */
+    public Long getVersion() {
+        return this.version;
+    }
+
+    /**
+     * Setter for property version.
+     * @param version New value of property version.
+     */
+    public void setVersion(Long version) {
+        this.version = version;
+    }
+
+    /**
+     * Holds value of property type.
+     */
+    private String type;
+
+    /**
+     * Getter for property category.
+     * @return Value of property category.
+     */
+    public String getType() {
+        return this.type;
+    }
+
+    /**
+     * Setter for property category.
+     * @param category New value of property category.
+     */
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    /**
+     * Holds value of property text.
+     */
+    @Column(columnDefinition="TEXT")
+    private String text;
+
+    /**
+     * Getter for property text.
+     * @return Value of property text.
+     */
+    public String getText() {
+        return this.text;
+    }
+
+    /**
+     * Setter for property text.
+     * @param text New value of property text.
+     */
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    /**
+     * Holds value of property subject.
+     */
+    private String subject;
+
+    /**
+     * Getter for property subject.
+     * @return Value of property subject.
+     */
+    public String getSubject() {
+        return this.subject;
+    }
+
+    /**
+     * Setter for property subject.
+     * @param subject New value of property subject.
+     */
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+     public boolean isEmpty() {
+        return ((text==null || text.trim().equals(""))
+            && (type==null || type.trim().equals(""))
+            && (subject==null || subject.trim().equals("")));
+    }
+  public int hashCode() {
+        int hash = 0;
+        hash += (this.id != null ? this.id.hashCode() : 0);
+        return hash;
+    }
+
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof StudyNote)) {
+            return false;
+        }
+        StudyNote other = (StudyNote)object;
+        if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) return false;
+        return true;
+    }
+}

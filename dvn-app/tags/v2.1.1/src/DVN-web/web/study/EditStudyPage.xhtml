@@ -1,0 +1,2093 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:gui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:dvn="/WEB-INF/tlds/dvn-components"
+      xmlns:ice="http://www.icesoft.com/icefaces/component"
+      xmlns:ui="http://www.sun.com/web/ui">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+  <gui:composition template="/template.xhtml">
+    <gui:param name="pageTitle" value="#{bundlePageInfo.editStudyTitle} - #{VDCRequest.dataversePageTitle}"/>
+    <gui:define name="body">
+      <f:loadBundle basename="EditStudyBundle" var="editstudybundle"/>
+      <script type="text/javascript">
+          // <![CDATA[
+          // Functions for hiding and showing study fields
+          function addLoadEvent(func) {
+              var oldonload = window.onload;
+              if (typeof window.onload != 'function') {
+                  window.onload = func;
+              } else {
+                  window.onload = function() {
+                      if (oldonload) {
+                          oldonload();
+                      }
+                      func();
+                  }
+              }
+          }
+          // functions to work with category selection
+          // note a few assumptions that these functions have:
+          // the id of the dropdown (including parent nodes); the partial id of the checkboxes;
+          // and that the checkbox is two elements before the text field (there is empty text
+          // in between, created by the div)
+          function updateCategory( checkbox ) {
+              if (checkbox.checked) {
+                  textField = document.getElementById(checkbox.id).nextSibling;
+                  dropdown = document.getElementById("studyForm:fileDataTableWrapper:0:fileDataTable:catDropdown");
+                  textField.value = dropdown.value;
+              }
+          }
+          function deselectCategory( textField ) {
+              checkbox = document.getElementById(textField.id).previousSibling;
+              checkbox.checked = false;
+          }
+          function updateAllCheckedCategories( dropdown ) {
+              checkboxes=document.getElementsByTagName("input");
+              for(i=0; i < checkboxes.length; i++) {
+                  if (checkboxes[i].id.indexOf("catCheckbox") != -1 && checkboxes[i].checked == true) {
+                      textField = checkboxes[i].nextSibling;
+                      textField.value = dropdown.value;
+                  }
+              }
+          }
+          /** commenting out this code pending
+           * input from alpha testing re: validation
+           * required or no
+           * To activate uncomment the function
+           * below and uncomment the related div
+           * just below the author name. See below.
+           * @author Wendy Bossons
+           */
+          function validateNameFormat(obj) {
+              if (obj.value.length == 0) {
+                  return;
+              } else {
+                  var regexp = /[^\s^]/i;
+                  var helpObj = eval("document.getElementById('input_authorNameHelp')");
+                  if (regexp.test(obj.value))
+                      helpObj.style.display = 'block';
+              }
+          }
+          // ]]>
+      </script>
+      <dvn:inlinehelpsupport writeHelpDiv="true" writeTipDiv="true" rendered="true"/>
+      <ice:form id="studyForm">
+        <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+        <input type="hidden" name="pageName" value="EditStudyPage"/>
+        <ice:inputHidden id="studyId" value="#{EditStudyPage.studyId}"/>
+        <script type="text/javascript">
+          // <![CDATA[
+
+              function toggleHelpBlock(helpBlock) {
+                    jQuery(helpBlock).next().slideToggle(500);
+                    var toggleHelpBlock = (jQuery(helpBlock).children('span.iceOutTxt').text() == 'Close Help [-]') ? 'Open Help [+]' : 'Close Help [-]';
+                    jQuery(helpBlock).children('span.iceOutTxt').text(toggleHelpBlock);
+                    var toggleState = jQuery(helpBlock).children('span.iceOutTxt').text();
+                    if (toggleState == 'Open Help [+]') {
+                        jQuery('.dvnEditStudyHelpBlock').animate({height:'26px'},400,function() {jQuery('.dvnInformationMessage').css('background-image','url(/dvn/resources/images/icon_information.18.png)')});
+                        jQuery.cookie('helpBlockState', 'closed');
+                    }
+                    else {
+                        jQuery('.dvnEditStudyHelpBlock').animate({height:'auto'},400,function() {jQuery('.dvnInformationMessage').css('background-image','url(/dvn/resources/images/icon_information.png)')});
+                        jQuery.cookie('helpBlockState', 'opened');
+                    }
+                    return false;
+              };
+
+              jQuery(document).ready(function(){
+              
+              var helpBlockStateVar = jQuery.cookie('helpBlockState');
+                    if (helpBlockStateVar == 'closed') {
+                        jQuery('.dvnCloseHelpBlock').next().slideToggle(500);
+                        jQuery('.dvnEditStudyHelpBlock').animate({height:'26px'},400,function() {jQuery('.dvnInformationMessage').css('background-image','url(/dvn/resources/images/icon_information.18.png)')});
+                        jQuery('.dvnCloseHelpBlock').children('span.iceOutTxt').text('Open Help [+]');
+              };
+
+
+              jQuery(".dvnstudystatusversionnote").truncate({max_length: 250});
+
+          });
+          // ]]>
+        </script>
+
+        <div class="dvn_section">
+          <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
+            <div class="dvnMsgBlockContainer dvnEditStudyHelpBlock">
+              <ice:outputLink styleClass="dvnCloseHelpBlock" value="#" onclick="return toggleHelpBlock(this)">
+                  <ice:outputText value="Close Help [-]"/>
+              </ice:outputLink>
+              <ice:outputText styleClass="dvnEditStudyHelp" value="#{bundlePageInfo.editStudyCatalogingHelp}"  escape="false"/>
+            </div>
+          </div>
+          
+        <div class="dvnstudytitleblock">
+            <div class="dvnstudyadminboxfloat">
+                    <div jsfc="ice:panelGroup" id="groupPanel10" styleClass="vdcTextRight dvnFormMargin">
+                        <ice:commandButton binding ="#{EditStudyPage.saveCommand1}" id="saveCommand1" value="Save" actionListener="#{EditStudyPage.openPopup}"/>
+                        <ice:commandButton id="button2" value="Cancel" immediate="true" action="#{EditStudyPage.cancel}"/>
+                    </div>
+            </div>
+            <div class="dvnstudytitlefloat">
+                <ice:outputText styleClass="dvnstudytitle" value="#{EditStudyPage.currentTitle}" rendered="#{EditStudyPage.study.id != null}"/>
+                <div jsfc="ice:panelGroup" styleClass="dvnstudyversioninfo" rendered="#{EditStudyPage.study.id != null}">
+                    <ice:outputText value="#{EditStudyPage.study.globalId}"/> <ice:outputText value="#{EditStudyPage.metadata.UNF}" rendered="#{!empty EditStudyPage.metadata.UNF}"/>
+                </div>
+                <div jsfc="ice:panelGroup" styleClass="dvnstudystatusbox #{EditStudyPage.metadata.studyVersion.inReview ? 'dvnstudystatusreview' : '' or EditStudyPage.metadata.studyVersion.draft ? 'dvnstudystatusdraft' : ''}">
+                  <ice:outputText styleClass="dvnstudystatuslabel" value="In Review " rendered="#{EditStudyPage.metadata.studyVersion.inReview}"/>
+                  <ice:outputText styleClass="dvnstudystatuslabel" value="Draft " rendered="#{EditStudyPage.metadata.studyVersion.draft}"/>
+                  <ice:outputText value="Study Version: #{EditStudyPage.metadata.studyVersion.versionNumber}"/>
+                  <ice:outputText nospan="true"><br/></ice:outputText>
+                  <ice:outputText value="Created: #{EditStudyPage.metadata.studyVersion.createTime} - Last Updated: #{EditStudyPage.metadata.studyVersion.lastUpdateTime}" rendered="#{!empty EditStudyPage.metadata.studyVersion.lastUpdateTime}"/>
+                  <ice:outputText value="Created: &lt;i&gt;Draft study version is not created until the form is saved&lt;/i&gt;" rendered="#{null == EditStudyPage.metadata.studyVersion.lastUpdateTime}" escape="false"/>
+                  <ice:outputText nospan="true" rendered="#{!empty EditStudyPage.metadata.studyVersion.versionNote}"><br/></ice:outputText>
+                  <ice:outputText value="Study Version Notes: " rendered="#{!empty EditStudyPage.metadata.studyVersion.versionNote}"/>
+                  <ice:outputText styleClass="dvnstudystatusversionnote" value="#{EditStudyPage.metadata.studyVersion.versionNote}" rendered="#{!empty EditStudyPage.metadata.studyVersion.versionNote}"/>
+                </div>
+            </div>
+        </div>
+
+          <div class="dvn_sectionBoxNoBorders">
+              <!-- validation errors occurred? -->
+              <div jsfc="ice:panelGroup" id="messagePanel" styleClass="errorMessage" rendered="#{!empty facesContext.maximumSeverity}">
+                <ice:outputText value='Please check messages below.'/>
+              </div>
+                  <ice:panelGroup panelLayout="flow">
+                    <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%">
+                      <div jsfc="ice:panelGroup" id="groupPanel9b">
+                        <ice:outputText value="Select Study Template: " rendered="#{EditStudyPage.showTemplateList}"/>
+                        <ice:selectOneMenu  value="#{EditStudyPage.selectTemplateId}" binding="#{EditStudyPage.selectTemplate}" rendered="#{EditStudyPage.showTemplateList}" onchange="getElementById('studyForm:templateButton').click();">
+                          <f:selectItems value="#{EditStudyPage.templatesMap}"/>
+                        </ice:selectOneMenu>
+                        <!-- hidden button that is clicked by select menu's onchange action -->
+                        <ice:commandButton id="templateButton"  visible="false" value="Change" action="#{EditStudyPage.changeTemplateAction}"/>
+                        <br/>
+                        <!--
+                        <input checked="checked" type="radio" id="hideRadio" name="hideShowRadio" value="hide" onclick="updateHideShow(this);"/> Show Required and Recommended Fields
+                        <input type="radio" id="showRadio" name="hideShowRadio" value="show" onclick="updateHideShow(this);"/> Show All Fields
+                        -->
+                        <ice:selectOneRadio partialSubmit="true" value ="#{EditStudyPage.showAll}">
+                          <f:selectItem itemLabel="Show Required and Recommended Fields" itemValue="false"/>
+                          <f:selectItem itemLabel="Show All Fields" itemValue="true"/>
+                        </ice:selectOneRadio>
+                      </div>
+                    </ice:panelGrid>
+
+                  <!-- TITLE -->
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                    <div jsfc="ice:panelGroup" id="groupPanel37" styleClass="vdcEditStudyField">
+                      <dvn:inlinehelp helpMessage="#{editstudybundle.titleHelp}" linkText="#{editstudybundle.titleLabel}" heading="#{editstudybundle.titleHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                      <ice:graphicImage id="image39" value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.title].required}" />
+                      <ice:graphicImage id="image40" value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.title].recommended}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup" id="groupPanel16">
+                      <ice:inputText binding="#{EditStudyPage.inputTitle}" id="input_title" size="90" value="#{EditStudyPage.metadata.title}" required ="#{EditStudyPage.studyMap[sfc.title].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." />
+                      <ice:message styleClass="errorMessage" for="input_title"/>
+                    </div>
+                  </ice:panelGrid>
+                  <!-- SUBTITLE -->
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                 styleClass="vdcEditStudyTable" visible="#{!empty EditStudyPage.metadata.subTitle or EditStudyPage.studyMap[sfc.subTitle].recommended or EditStudyPage.showAll}"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                    <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                      <dvn:inlinehelp helpMessage="#{editstudybundle.subtitleHelp}" linkText="#{editstudybundle.subtitleLabel}" heading="#{editstudybundle.subtitleHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.subTitle].required}" />
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.subTitle].recommended}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                      <ice:inputText id="input_subtitle" size="90" value="#{EditStudyPage.metadata.subTitle}"  requiredMessage="This field is required." required="#{EditStudyPage.studyMap[sfc.subTitle].required and EditStudyPage.validateRequired}"/>
+                      <ice:message styleClass="errorMessage" for="input_subtitle"/>
+                    </div>
+                  </ice:panelGrid>
+
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{!empty EditStudyPage.metadata.replicationFor or EditStudyPage.studyMap[sfc.replicationFor].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField">
+                      <dvn:inlinehelp helpMessage="#{editstudybundle.replicationForHelp}" linkText="#{editstudybundle.replicationForLabel}" heading="#{editstudybundle.replicationForHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.replicationFor].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.replicationFor].recommended}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup" >
+                        <div>Enter the full citation for the original publication whose results can be replicated using these data.</div>
+                        <ice:inputTextarea cols="90" rows="4"
+                                         id="input_replicationFor"
+                                         value="#{EditStudyPage.metadata.replicationFor}"
+                                         required="#{EditStudyPage.studyMap[sfc.replicationFor].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                         styleClass="formHtmlEnabled">
+                        <f:validator validatorId="XhtmlValidator"/>
+                      </ice:inputTextarea>
+                      <ice:message styleClass="errorMessage" for="input_replicationFor"/>
+                    </div>
+                  </ice:panelGrid>
+                  
+                  <div jsfc="ice:panelGroup" id="groupPanel9" styleClass="vdcStudyInfoHeader">
+                    <ice:outputText id="outputText26" value="Citation Information"/>
+                  </div>
+
+                  <!-- STUDY ID-->
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2">
+                    <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                      <dvn:inlinehelp helpMessage="#{editstudybundle.studyidHelp}" linkText="#{editstudybundle.studyidLabel}" heading="#{editstudybundle.studyidHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.studyId].required and EditStudyPage.study.id==null}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.studyId].recommended and EditStudyPage.study.id==null}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                      <ice:outputText value="#{EditStudyPage.study.protocol}:#{EditStudyPage.study.authority}/" rendered="#{EditStudyPage.study.id==null}" />
+                      <ice:inputText maxlength="255" id="input_studyId" value="#{EditStudyPage.study.studyId}" validator="#{EditStudyPage.validateStudyId}"   required="#{EditStudyPage.studyMap[sfc.studyId].required  and EditStudyPage.validateRequired}" requiredMessage="This field is required." rendered="#{EditStudyPage.study.id==null}" />
+                      <ice:outputText value="#{EditStudyPage.study.globalId}" rendered="#{EditStudyPage.study.id!=null}"/>
+                      <ice:message styleClass="errorMessage" for="input_studyId"/>
+                    </div>
+                  </ice:panelGrid>
+
+                  <!-- OTHER IDS -->
+                  <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
+                                 styleClass="vdcEditStudyTable"
+                                 visible="#{!EditStudyPage.studyOtherIdsEmpty or EditStudyPage.studyMap[sfc.otherId].recommended or EditStudyPage.showAll}" value="dummy_datatable">
+                    <ice:column>
+                      <ice:dataTable cellpadding="0" cellspacing="0"
+                                     styleClass="vdcEditStudyInnerTable"
+                                     columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
+                                     binding="#{EditStudyPage.dataTableOtherIds}"
+                                     value="#{EditStudyPage.metadata.studyOtherIds}" var="currentRow" width="100%">
+                        <ice:column>
+                          <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                            <dvn:inlinehelp helpMessage="#{editstudybundle.otheridHelp}" linkText="#{editstudybundle.otheridLabel}" heading="#{editstudybundle.otheridHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                            <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.otherId].required}"/>
+                            <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.otherId].recommended}"/>
+                          </div>
+                        </ice:column>
+                        <ice:column>
+                          <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloatWrap">
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 ">
+                              <dvn:inlinehelp helpMessage="#{editstudybundle.otheridHelp}" linkText="#{editstudybundle.otheridLabel}" heading="#{editstudybundle.otheridHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                              <br/>
+                              <ice:inputText maxlength="255" binding="#{EditStudyPage.inputOtherId}" id="input_otherId" value="#{currentRow.otherId}" requiredMessage="This field is required."   required= "#{EditStudyPage.studyMap[sfc.otherId].required and EditStudyPage.validateRequired and EditStudyPage.validateRequired}"/>
+                              <ice:message styleClass="errorMessage" for="input_otherId"/>
+                            </div>
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField">
+                              <dvn:inlinehelp helpMessage="#{editstudybundle.otherAgencyHelp}" linkText="#{editstudybundle.otherAgencyLabel}" heading="#{editstudybundle.otherAgencyHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                              <br/>
+                              <ice:inputText maxlength="255" binding="#{EditStudyPage.inputOtherIdAgency}" validator="#{EditStudyPage.validateStudyOtherId}"
+                                             id="input_otherIdAgency" value="#{currentRow.agency}"  requiredMessage="This field is required." required="#{EditStudyPage.studyMap[sfc.otherIdAgency].required and EditStudyPage.validateRequired}"/>
+                              <ice:message styleClass="errorMessage" for="input_otherIdAgency"/>
+                            </div>
+                          </div>
+                        </ice:column>
+                        <ice:column id="groupPanel61">
+                          <ice:commandButton partialSubmit="true" image="/resources/images/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/>
+                          <ice:commandButton partialSubmit="true" rendered="#{EditStudyPage.dataTableOtherIds.rowCount gt 1}" image="/resources/images/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" />
+                        </ice:column>
+                      </ice:dataTable>
+                    </ice:column>
+                  </ice:dataTable>
+
+                  <!-- Authors -->
+                  <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
+                    <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
+                                   styleClass="vdcEditStudyTable" visible="#{!EditStudyPage.studyAuthorsEmpty or EditStudyPage.studyMap[sfc.authorName].recommended or EditStudyPage.showAll}" value="dummy_datatable">
+                      <ice:column>
+                        <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
+                                       styleClass="vdcEditStudyInnerTable" columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
+                                       binding="#{EditStudyPage.dataTableAuthors}"
+                                       value="#{EditStudyPage.metadata.studyAuthors}" var="currentAuthor">
+                          <ice:column>
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                              <dvn:inlinehelp helpMessage="#{editstudybundle.authorHelp}" linkText="#{editstudybundle.authorLabel}" heading="#{editstudybundle.authorHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                              <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.authorName].required}"/>
+                              <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.authorName].recommended}"/>
+                            </div>
+                          </ice:column>
+                          <ice:column>
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloatWrap">               
+                              <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1" >
+                                <dvn:inlinehelp helpMessage="#{editstudybundle.authorNameHelp}" linkText="#{editstudybundle.authorNameLabel}" heading="#{editstudybundle.authorNameHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                <br/>
+                                <ice:inputText id="input_authorName"
+                                               value="#{currentAuthor.name}"
+                                               size="45"
+                                               maxlength="255"
+                                               binding="#{EditStudyPage.inputAuthorName}"
+                                               required="#{EditStudyPage.studyMap[sfc.authorName].required  and EditStudyPage.validateRequired}" requiredMessage="This field is required." />
+                                <ice:outputText styleClass="vdcEditStudyFormatExample" value=" (FirstName LastName)"/>
+                                <ice:message styleClass="errorMessage" for="input_authorName"/>
+                              </div>
+                              <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2" >
+                                <dvn:inlinehelp helpMessage="#{editstudybundle.authorAffiliationHelp}" linkText="#{editstudybundle.authorAffiliationLabel}" heading="#{editstudybundle.authorAffiliationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                                <br/>
+                                <ice:inputText id="input_authorAffiliation" size="45" maxlength="255"
+                                               binding="#{EditStudyPage.inputAuthorAffiliation}"
+                                               value="#{currentAuthor.affiliation}"
+                                               validator="#{EditStudyPage.validateStudyAuthor}"
+                                               required="#{EditStudyPage.studyMap[sfc.authorAffiliation].required  and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                               styleClass="formHtmlEnabled">
+                                  <f:validator validatorId="XhtmlValidator"/>
+                                </ice:inputText>
+                                <ice:message styleClass="errorMessage" for="input_authorAffiliation"/>
+                              </div>
+                            </div>
+                          </ice:column>
+                          <ice:column>
+                            <ice:commandButton image="/resources/images/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/>
+                            <ice:commandButton rendered="#{EditStudyPage.dataTableAuthors.rowCount gt 1}" image="/resources/images/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" />
+                          </ice:column>
+                        </ice:dataTable>
+                      </ice:column>
+                    </ice:dataTable>
+
+                  <!--Producers-->
+                  <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
+                  <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
+                                 styleClass="vdcEditStudyTable"  visible="#{!EditStudyPage.studyProducersEmpty or EditStudyPage.studyMap[sfc.producerName].recommended or EditStudyPage.showAll}" value="dummy_datatable">
+                    <ice:column>
+                      <ice:dataTable cellpadding="0" cellspacing="0"
+                                     styleClass="vdcEditStudyInnerTable"
+                                     columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
+                                     binding="#{EditStudyPage.dataTableProducers}"
+                                     value="#{EditStudyPage.metadata.studyProducers}" var="currentRow" width="100%">
+                        <ice:column>
+                          <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                            <dvn:inlinehelp helpMessage="#{editstudybundle.producerHelp}" linkText="#{editstudybundle.producerLabel}" heading="#{editstudybundle.producerHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                            <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.producerName].required}"/>
+                            <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.producerName].recommended}"/>
+                          </div>
+                        </ice:column>
+                        <ice:column>
+                          <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloatWrap">
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 vdcEditStudyGroupField">
+                              <dvn:inlinehelp helpMessage="#{editstudybundle.producerHelp}" linkText="#{editstudybundle.producerLabel}" heading="#{editstudybundle.producerHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                              <br/>
+                              <ice:inputText maxlength="255" binding="#{EditStudyPage.inputProducerName}" id="input_producerName" value="#{currentRow.name}" size="45" required="#{EditStudyPage.studyMap[sfc.producerName].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." />
+                              <ice:message styleClass="errorMessage" for="input_producerName"/>
+                            </div>
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField">
+                              <dvn:inlinehelp helpMessage="#{editstudybundle.producerAbbreviationHelp}" linkText="#{editstudybundle.producerAbbreviationLabel}" heading="#{editstudybundle.producerAbbreviationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                              <br/>
+                              <ice:inputText maxlength="255" validator="#{EditStudyPage.validateStudyProducer}" binding="#{EditStudyPage.inputProducerAbbreviation}" id="input_producerAbbreviation" value="#{currentRow.abbreviation}" required="#{EditStudyPage.studyMap[sfc.producerAbbreviation].required  and EditStudyPage.validateRequired}" requiredMessage="This field is required." />
+                              <ice:message styleClass="errorMessage" for="input_producerAbbreviation"/>
+                            </div>
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3 vdcEditStudyGroupField">
+                              <dvn:inlinehelp helpMessage="#{editstudybundle.producerAffiliationHelp}" linkText="#{editstudybundle.producerAffiliationLabel}" heading="#{editstudybundle.producerAffiliationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                              <br/>
+                              <ice:inputText maxlength="255" validator="#{EditStudyPage.validateStudyProducer}" binding="#{EditStudyPage.inputProducerAffiliation}" id="input_producerAffiliation" size="45" value="#{currentRow.affiliation}" required="#{EditStudyPage.studyMap[sfc.producerAffiliation].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                             styleClass="formHtmlEnabled">
+                                <f:validator validatorId="XhtmlValidator"/>
+                              </ice:inputText>
+                              <ice:message styleClass="errorMessage" for="input_producerAffiliation"/>
+                            </div>
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField">
+                              <dvn:inlinehelp helpMessage="#{editstudybundle.producerURLHelp}" linkText="#{editstudybundle.producerURLLabel}" heading="#{editstudybundle.producerURLHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                              <br/>
+                              <ice:inputText id="input_producerURL"
+                                             validator="#{EditStudyPage.validateStudyProducer}"
+                                             binding="#{EditStudyPage.inputProducerUrl}"
+                                             value="#{currentRow.url}"
+                                             size="45"
+                                             maxlength="255"
+                                             required="#{EditStudyPage.studyMap[sfc.producerURL].required  and EditStudyPage.validateRequired}" requiredMessage="This field is required." >
+                                <f:validator validatorId="UrlValidator"/>
+                              </ice:inputText>
+                              <ice:outputText value="(http://example-domain.edu/)"/>
+                              <ice:message styleClass="errorMessage" for="input_producerURL"/>
+                            </div>
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField">
+                              <dvn:inlinehelp helpMessage="#{editstudybundle.producerLogoHelp}" linkText="#{editstudybundle.producerLogoLabel}" heading="#{editstudybundle.producerLogoHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                              <br/>
+                              <ice:inputText id="input_producerLogo"
+                                             binding="#{EditStudyPage.inputProducerLogo}"
+                                             validator="#{EditStudyPage.validateStudyProducer}"
+                                             value="#{currentRow.logo}"
+                                             size="45"
+                                             maxlength="255"
+                                             required="#{EditStudyPage.studyMap[sfc.producerLogo].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." >
+                                <f:validator validatorId="UrlValidator"/>
+                              </ice:inputText>
+                              <ice:outputText value="(http://example-domain.edu/images/)"/>
+                              <ice:message styleClass="errorMessage" for="input_producerLogo"/>
+                            </div>
+                          </div>
+                        </ice:column>
+                        <ice:column>
+                          <ice:commandButton image="/resources/images/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/>
+                          <ice:commandButton rendered="#{EditStudyPage.dataTableProducers.rowCount gt 1}" image="/resources/images/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" />
+                        </ice:column>
+                      </ice:dataTable>
+                    </ice:column>
+                  </ice:dataTable>
+
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                 styleClass="vdcEditStudyTable " columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{!empty EditStudyPage.metadata.productionDate or EditStudyPage.studyMap[sfc.productionDate].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" id="groupPanel42" styleClass="vdcEditStudyField">
+                      <dvn:inlinehelp helpMessage="#{editstudybundle.productionDateHelp}" linkText="#{editstudybundle.productionDateLabel}" heading="#{editstudybundle.productionDateHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.productionDate].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.productionDate].recommended}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup" id="groupPanel19">
+                      <ice:inputText id="input_productionDate" styleClass="formDateFormat" value="#{EditStudyPage.metadata.productionDate}"  required="#{EditStudyPage.studyMap[sfc.productionDate].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." >
+                        <f:validator validatorId="DateValidator"/>
+                      </ice:inputText>
+                      <ice:outputText value="#{editstudybundle.dateFormatDescription}"/>
+                      <ice:message styleClass="errorMessage" for="input_productionDate"><f:param name="x" value="Production Date:"/> </ice:message>
+                    </div>
+                  </ice:panelGrid>
+
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                 styleClass="vdcEditStudyTable" 
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{!empty EditStudyPage.metadata.productionPlace or EditStudyPage.studyMap[sfc.productionPlace].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" id="groupPanel43"   styleClass="vdcEditStudyField">
+                      <dvn:inlinehelp helpMessage="#{editstudybundle.productionPlaceHelp}" linkText="#{editstudybundle.productionPlaceLabel}" heading="#{editstudybundle.productionPlaceHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.productionPlace].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.productionPlace].recommended}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup" id="groupPanel20">
+                      <ice:inputText id="input_productionPlace" size="45" value="#{EditStudyPage.metadata.productionPlace}" required="#{EditStudyPage.studyMap[sfc.productionPlace].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." />
+                      <ice:message styleClass="errorMessage" for="input_productionPlace"/>
+                    </div>
+                  </ice:panelGrid>
+
+                  <!-- Software -->
+                  <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
+                  <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
+                                 styleClass="vdcEditStudyTable"  visible="#{!EditStudyPage.studySoftwareEmpty or EditStudyPage.studyMap[sfc.softwareName].recommended or EditStudyPage.showAll}" value="dummy_datatable">
+                    <ice:column>
+                      <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
+                                     styleClass="vdcEditStudyInnerTable"
+                                     columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
+                                     binding="#{EditStudyPage.dataTableSoftware}"
+                                     value="#{EditStudyPage.metadata.studySoftware}" var="currentRow">
+                        <ice:column>
+                          <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                            <dvn:inlinehelp helpMessage="#{editstudybundle.softwareNameHelp}" linkText="#{editstudybundle.softwareNameLabel}" heading="#{editstudybundle.softwareNameHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                            <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.softwareName].required}"/>
+                            <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.softwareName].recommended}"/>
+                          </div>
+                        </ice:column>
+                        <ice:column>
+                          <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloatWrap">
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1">
+                              <dvn:inlinehelp helpMessage="#{editstudybundle.softwareNameHelp}" linkText="#{editstudybundle.softwareNameLabel}" heading="#{editstudybundle.softwareNameHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                              <br/>
+                              <ice:inputText maxlength="255" binding="#{EditStudyPage.inputSoftwareName}" id="input_softwareName" size="45"  value="#{currentRow.name}" required="#{EditStudyPage.studyMap[sfc.softwareName].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." />
+                              <ice:message styleClass="errorMessage" for="input_softwareName"/>
+                            </div>
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField">
+                              <dvn:inlinehelp helpMessage="#{editstudybundle.softwareVersionHelp}" linkText="#{editstudybundle.softwareVersionLabel}" heading="#{editstudybundle.softwareVersionHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                              <br/>
+                              <ice:inputText maxlength="255" binding="#{EditStudyPage.inputSoftwareVersion}" validator="#{EditStudyPage.validateStudySoftware}" id="input_softwareVersion" value="#{currentRow.softwareVersion}" required="#{EditStudyPage.studyMap[sfc.softwareVersion].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." />
+                              <ice:message styleClass="errorMessage" for="input_softwareVersion"/>
+                            </div>
+                          </div>
+                        </ice:column>
+                        <ice:column>
+                          <ice:commandButton image="/resources/images/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/>
+                          <ice:commandButton rendered="#{EditStudyPage.dataTableSoftware.rowCount gt 1}" image="/resources/images/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" />
+                        </ice:column>
+                      </ice:dataTable>
+                    </ice:column>
+                  </ice:dataTable>
+
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                 styleClass="vdcEditStudyTable " 
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{!empty EditStudyPage.metadata.fundingAgency or EditStudyPage.studyMap[sfc.fundingAgency].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                      <dvn:inlinehelp helpMessage="#{editstudybundle.fundingAgencyHelp}" linkText="#{editstudybundle.fundingAgencyLabel}" heading="#{editstudybundle.fundingAgencyHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.fundingAgency].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.fundingAgency].recommended}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                      <ice:inputText id="input_fundingAgency" size="45" value="#{EditStudyPage.metadata.fundingAgency}" required="#{EditStudyPage.studyMap[sfc.fundingAgency].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." />
+                      <ice:message styleClass="errorMessage" for="input_fundingAgency"/>
+                    </div>
+                  </ice:panelGrid>
+
+                  <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
+                  <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
+                                 styleClass="vdcEditStudyTable" visible="#{!EditStudyPage.studyGrantsEmpty or EditStudyPage.studyMap[sfc.grantNumber].recommended or EditStudyPage.showAll}" value="dummy_datatable">
+                    <ice:column>
+                      <ice:dataTable cellpadding="0" cellspacing="0"
+                                     styleClass="vdcEditStudyInnerTable"
+                                     columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
+                                     binding="#{EditStudyPage.dataTableGrants}"
+                                     value="#{EditStudyPage.metadata.studyGrants}" var="currentRow" width="100%">
+                        <ice:column>
+                          <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                            <dvn:inlinehelp helpMessage="#{editstudybundle.grantNumberHelp}" linkText="#{editstudybundle.grantNumberLabel}" heading="#{editstudybundle.grantNumberHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                            <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.grantNumber].required}"/>
+                            <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.grantNumber].recommended}"/>
+                          </div>
+                        </ice:column>
+                        <ice:column>
+                          <div jsfc="ice:panelGroup">
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField">
+                              <dvn:inlinehelp helpMessage="#{editstudybundle.grantNumberHelp}" linkText="#{editstudybundle.grantNumberLabel}" heading="#{editstudybundle.grantNumberHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                              <br/>
+                              <ice:inputText maxlength="255"  binding="#{EditStudyPage.inputGrantNumber}" id="input_grantNumber" size="45"  value="#{currentRow.number}" required="#{EditStudyPage.studyMap[sfc.grantNumber].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." />
+                              <ice:message styleClass="errorMessage" for="input_grantNumber"/>
+                            </div>
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField">
+                              <dvn:inlinehelp helpMessage="#{editstudybundle.grantingAgencyHelp}" linkText="#{editstudybundle.grantingAgencyLabel}" heading="#{editstudybundle.grantingAgencyHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                              <br/>
+                              <ice:inputText maxlength="255"  binding="#{EditStudyPage.inputGrantAgency}" validator="#{EditStudyPage.validateStudyGrant}" id="input_grantNumberAgency" size="45" value="#{currentRow.agency}" required="#{EditStudyPage.studyMap[sfc.grantNumberAgency].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." />
+                              <ice:message styleClass="errorMessage" for="input_grantNumberAgency"/>
+                            </div>
+                          </div>
+                        </ice:column>
+                        <ice:column>
+                          <ice:commandButton image="/resources/images/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/>
+                          <ice:commandButton rendered="#{EditStudyPage.dataTableGrants.rowCount gt 1}" image="/resources/images/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" />
+                        </ice:column>
+                      </ice:dataTable>
+                    </ice:column>
+                  </ice:dataTable>
+
+                  <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
+                  <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
+                                 styleClass="vdcEditStudyTable" visible="#{!EditStudyPage.studyDistributorsEmpty or EditStudyPage.studyMap[sfc.distributorName].recommended or EditStudyPage.showAll}" value="dummy_datatable">
+                    <ice:column>
+                      <ice:dataTable cellpadding="0" cellspacing="0"
+                                     styleClass="vdcEditStudyInnerTable"
+                                     columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
+                                     binding="#{EditStudyPage.dataTableDistributors}"
+                                     value="#{EditStudyPage.metadata.studyDistributors}" var="currentRow" width="100%">
+                        <ice:column>
+                          <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                            <dvn:inlinehelp helpMessage="#{editstudybundle.distributorHelp}" linkText="#{editstudybundle.distributorLabel}" heading="#{editstudybundle.distributorHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                            <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.distributorName].required}"/>
+                            <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.distributorName].recommended}"/>
+                          </div>
+                        </ice:column>
+                        <ice:column>
+                          <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloatWrap">
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1">
+                              <dvn:inlinehelp helpMessage="#{editstudybundle.distributorHelp}" linkText="#{editstudybundle.distributorLabel}" heading="#{editstudybundle.distributorHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                              <br/>
+                              <ice:inputText maxlength="255" binding="#{EditStudyPage.inputDistributorName}" id="input_distributorName" value="#{currentRow.name}" size="45" required="#{EditStudyPage.studyMap[sfc.distributorName].required}" requiredMessage="This field is required." />
+                              <ice:message styleClass="errorMessage" for="input_distributorName"/>
+                            </div>
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField">
+                              <dvn:inlinehelp helpMessage="#{editstudybundle.distributorAbbreviationHelp}" linkText="#{editstudybundle.distributorAbbreviationLabel}" heading="#{editstudybundle.distributorAbbreviationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                              <br/>
+                              <ice:inputText maxlength="255" validator="#{EditStudyPage.validateStudyDistributor}" binding="#{EditStudyPage.inputDistributorAbbreviation}" id="input_distributorAbbreviation" value="#{currentRow.abbreviation}"  required="#{EditStudyPage.studyMap[sfc.distributorAbbreviation].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." />
+                              <ice:message styleClass="errorMessage" for="input_distributorAbbreviation"/>
+                            </div>
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3 vdcEditStudyGroupField">
+                              <dvn:inlinehelp helpMessage="#{editstudybundle.distributorAffiliationHelp}" linkText="#{editstudybundle.distributorAffiliationLabel}" heading="#{editstudybundle.distributorAffiliationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                              <br/>
+                              <ice:inputText maxlength="255" id="input_distributorAffiliation" validator="#{EditStudyPage.validateStudyDistributor}" binding="#{EditStudyPage.inputDistributorAffiliation}" size="45"
+                                             value="#{currentRow.affiliation}"
+                                             required="#{EditStudyPage.studyMap[sfc.distributorAffiliation].required  and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                             styleClass="formHtmlEnabled">
+                                <f:validator validatorId="XhtmlValidator"/>
+                              </ice:inputText>
+                              <ice:message styleClass="errorMessage" for="input_distributorAffiliation"/>
+                            </div>
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField ">
+                              <dvn:inlinehelp helpMessage="#{editstudybundle.distributorURLHelp}" linkText="#{editstudybundle.distributorURLLabel}" heading="#{editstudybundle.distributorURLHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                              <br/>
+                              <ice:inputText id="input_distributorURL"
+                                             validator="#{EditStudyPage.validateStudyDistributor}"
+                                             binding="#{EditStudyPage.inputDistributorUrl}"
+                                             value="#{currentRow.url}"
+                                             size="45"
+                                             maxlength="255"
+                                             required="#{EditStudyPage.studyMap[sfc.distributorURL].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." >
+                                <f:validator validatorId="UrlValidator"/>
+                              </ice:inputText>
+                              <ice:outputText value="(http://example-domain.edu/)"/>
+                              <ice:message styleClass="errorMessage" for="input_distributorURL"/>
+                            </div>
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField">
+                              <dvn:inlinehelp helpMessage="#{editstudybundle.distributorLogoHelp}" linkText="#{editstudybundle.distributorLogoLabel}" heading="#{editstudybundle.distributorLogoHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                              <br/>
+                              <ice:inputText binding="#{EditStudyPage.inputDistributorLogo}" id="input_distributorLogo"
+                                             validator="#{EditStudyPage.validateStudyDistributor}"
+                                             value="#{currentRow.logo}"
+                                             size="45"
+                                             maxlength="255"
+                                             required="#{EditStudyPage.studyMap[sfc.distributorLogo].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." >
+                                <f:validator validatorId="UrlValidator"/>
+                              </ice:inputText>
+                              <ice:outputText value="(http://example-domain.edu/images/)"/>
+                              <ice:message styleClass="errorMessage" for="input_distributorLogo"/>
+                            </div>
+                          </div>
+                        </ice:column>
+                        <ice:column>
+                          <ice:commandButton image="/resources/images/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/>
+                          <ice:commandButton rendered="#{EditStudyPage.dataTableDistributors.rowCount gt 1}" image="/resources/images/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" />
+                        </ice:column>
+                      </ice:dataTable>
+                    </ice:column>
+                  </ice:dataTable>
+
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                 styleClass="vdcEditStudyTable "
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{!empty EditStudyPage.metadata.distributorContact or EditStudyPage.studyMap[sfc.distributorContact].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                      <dvn:inlinehelp helpMessage="#{editstudybundle.distributorContactHelp}" linkText="#{editstudybundle.distributorContactLabel}" heading="#{editstudybundle.distributorContactHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.distributorContact].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.distributorContact].recommended}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloatWrap">
+                      <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1">
+                        <dvn:inlinehelp helpMessage="#{editstudybundle.distributorContactHelp}" linkText="#{editstudybundle.distributorContactLabel}" heading="#{editstudybundle.distributorContactHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true" requiredMessage="This field is required."/>
+                        <br/>
+                        <ice:inputText binding ="#{EditStudyPage.inputDistributorContact}" id="input_distributorContact" size="45"  value="#{EditStudyPage.metadata.distributorContact}"  required="#{EditStudyPage.studyMap[sfc.distributorContact].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." />
+                        <ice:message styleClass="errorMessage" for="input_distributorContact"/>
+                      </div>
+                      <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField">
+                        <dvn:inlinehelp helpMessage="#{editstudybundle.distributorContactAffiliationHelp}" linkText="#{editstudybundle.distributorContactAffiliationLabel}" heading="#{editstudybundle.distributorContactAffiliationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                        <br/>
+                        <ice:inputText id="distributorContactAffiliation" size="45" maxlength="255"
+                                       binding ="#{EditStudyPage.inputDistributorContactAffiliation}"
+                                       value="#{EditStudyPage.metadata.distributorContactAffiliation}"
+                                       validator="#{EditStudyPage.validateDistributorContact}"
+                                       required="#{EditStudyPage.studyMap[sfc.distributorContactAffiliation].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                       styleClass="formHtmlEnabled">
+                          <f:validator validatorId="XhtmlValidator"/>
+                        </ice:inputText>
+                        <ice:message styleClass="errorMessage" for="distributorContactAffiliation"/>
+                      </div>
+                      <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3 vdcEditStudyGroupField " >
+                        <dvn:inlinehelp helpMessage="#{editstudybundle.distributorContactEmailHelp}" linkText="#{editstudybundle.distributorContactEmailLabel}" heading="#{editstudybundle.distributorContactEmailHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                        <br/>
+                        <ice:inputText binding ="#{EditStudyPage.inputDistributorContactEmail}" id="input_distributorContactEmail" size="45" value="#{EditStudyPage.metadata.distributorContactEmail}" required="#{EditStudyPage.studyMap[sfc.distributorContactEmail].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."/>
+                        <ice:message styleClass="errorMessage" for="input_distributorContactEmail"/>
+                      </div>
+                    </div>
+                  </ice:panelGrid>
+
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{!empty EditStudyPage.metadata.distributionDate or EditStudyPage.studyMap[sfc.distributionDate].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" id="groupPanel49" styleClass="vdcEditStudyField" >
+                      <dvn:inlinehelp helpMessage="#{editstudybundle.distributionDateHelp}" linkText="#{editstudybundle.distributionDateLabel}" heading="#{editstudybundle.distributionDateHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.distributionDate].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.distributionDate].recommended}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup" id="groupPanel26" >
+                      <ice:inputText id="input_distributionDate" styleClass="formDateFormat" value="#{EditStudyPage.metadata.distributionDate}" required="#{EditStudyPage.studyMap[sfc.distributionDate].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." >
+                        <f:validator validatorId="DateValidator"/>
+                      </ice:inputText>
+                      <ice:outputText value="#{editstudybundle.dateFormatDescription}"/>
+                      <ice:message styleClass="errorMessage" for="input_distributionDate"/>
+                    </div>
+                  </ice:panelGrid>
+
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{!empty EditStudyPage.metadata.depositor or EditStudyPage.studyMap[sfc.depositor].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" id="groupPanel50"  styleClass="vdcEditStudyField">
+                      <dvn:inlinehelp helpMessage="#{editstudybundle.depositorHelp}" linkText="#{editstudybundle.depositorLabel}" heading="#{editstudybundle.depositorHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.depositor].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.depositor].recommended}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup" id="groupPanel27" >
+                      <ice:inputText id="input_depositor" size="45"  value="#{EditStudyPage.metadata.depositor}" required="#{EditStudyPage.studyMap[sfc.depositor].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." />
+                      <ice:message styleClass="errorMessage" for="input_depositor"/>
+                    </div>
+                  </ice:panelGrid>
+
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{!empty EditStudyPage.metadata.dateOfDeposit or EditStudyPage.studyMap[sfc.dateOfDeposit].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" id="groupPanel51"  styleClass="vdcEditStudyField">
+                      <dvn:inlinehelp helpMessage="#{editstudybundle.depositDateHelp}" linkText="#{editstudybundle.depositDateLabel}" heading="#{editstudybundle.depositDateHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.dateOfDeposit].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.dateOfDeposit].recommended}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup" id="groupPanel28" styleClass="vdcEditStudyField">
+                      <ice:inputText id="input_dateOfDeposit" styleClass="formDateFormat" value="#{EditStudyPage.metadata.dateOfDeposit}" required="#{EditStudyPage.studyMap[sfc.dateOfDeposit].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." >
+                        <f:validator validatorId="DateValidator"/>
+                      </ice:inputText>
+                      <ice:outputText value="#{editstudybundle.dateFormatDescription}"/>
+                      <ice:message styleClass="errorMessage" for="input_dateOfDeposit"/>
+                    </div>
+                  </ice:panelGrid>
+
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{!empty EditStudyPage.metadata.seriesName or EditStudyPage.studyMap[sfc.seriesName].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" id="groupPanel52"  styleClass="vdcEditStudyField">
+                      <dvn:inlinehelp helpMessage="#{editstudybundle.seriesHelp}" linkText="#{editstudybundle.seriesLabel}" heading="#{editstudybundle.seriesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.seriesName].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.seriesName].recommended}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                      <div jsfc="ice:panelGroup" id="groupPanel29" styleClass="vdcEditStudyField">
+                        <dvn:inlinehelp helpMessage="#{editstudybundle.seriesHelp}" linkText="#{editstudybundle.seriesLabel}" heading="#{editstudybundle.seriesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                        <br/>
+                        <ice:inputText binding="#{EditStudyPage.inputSeries}" id="input_seriesName"
+                                       value="#{EditStudyPage.metadata.seriesName}"
+                                       required="#{EditStudyPage.studyMap[sfc.seriesName].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                       styleClass="formHtmlEnabled">
+                          <f:validator validatorId="XhtmlValidator"/>
+                        </ice:inputText>
+                        <ice:message styleClass="errorMessage" for="input_seriesName"/>
+                      </div>
+                      <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField">
+                        <dvn:inlinehelp helpMessage="#{editstudybundle.seriesInformationHelp}" linkText="#{editstudybundle.seriesInformationLabel}" heading="#{editstudybundle.seriesInformationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                        <br/>
+                        <ice:inputText binding ="#{EditStudyPage.inputSeriesInformation}" id="input_seriesInformation"
+                                       size="45"
+                                       value="#{EditStudyPage.metadata.seriesInformation}"
+                                       required="#{EditStudyPage.studyMap[sfc.seriesInformation].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                       validator="#{EditStudyPage.validateSeries }"
+                                       styleClass="formHtmlEnabled">
+                          <f:validator validatorId="XhtmlValidator"/>
+                        </ice:inputText>
+                        <ice:message styleClass="errorMessage" for="input_seriesInformation"/>
+                      </div>
+                    </div>
+                  </ice:panelGrid>
+
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{!empty EditStudyPage.metadata.studyVersionText or EditStudyPage.studyMap[sfc.studyVersion].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" id="groupPanel53">
+                      <dvn:inlinehelp helpMessage="#{editstudybundle.seriesVersionHelp}" linkText="#{editstudybundle.seriesVersionLabel}" heading="#{editstudybundle.seriesVersionHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.studyVersion].required }"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.studyVersion].recommended }"/>
+                    </div>
+                    <div jsfc="ice:panelGroup" id="groupPanel30">
+                      <div jsfc="ice:panelGroup" >
+                        <dvn:inlinehelp helpMessage="#{editstudybundle.seriesVersionHelp}" linkText="#{editstudybundle.seriesVersionLabel}" heading="#{editstudybundle.seriesVersionHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                        <br/>
+                        <ice:inputText binding="#{EditStudyPage.inputVersion}" id="input_studyVersion" value="#{EditStudyPage.metadata.studyVersionText}"  required="#{EditStudyPage.studyMap[sfc.studyVersion].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." />
+                        <ice:message styleClass="errorMessage" for="input_studyVersion"/>
+                      </div>
+                      <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField">
+                        <dvn:inlinehelp helpMessage="#{editstudybundle.seriesVersionDateHelp}" linkText="#{editstudybundle.seriesVersionDateLabel}" heading="#{editstudybundle.seriesVersionDateHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                        <br/>
+                        <ice:inputText binding="#{EditStudyPage.inputVersionDate}" validator="#{EditStudyPage.validateVersion}" id="input_versionDate" styleClass="formDateFormat" value="#{EditStudyPage.metadata.versionDate}" required="#{EditStudyPage.studyMap[sfc.versionDate].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."  >
+                          <f:validator validatorId="DateValidator"/>
+                        </ice:inputText>
+                        <ice:outputText value="#{editstudybundle.dateFormatDescription}"/>
+                        <ice:message styleClass="errorMessage" for="input_versionDate"/>
+                      </div>
+                    </div>
+                  </ice:panelGrid>
+
+                <ice:panelGrid cellpadding="0" cellspacing="0" columns="1" width="100%"
+                                 visible="#{!EditStudyPage.abstractAndScopeEmpty or EditStudyPage.abstractAndScopeInputLevel=='recommended' or EditStudyPage.showAll }">
+                  <div jsfc="ice:panelGroup" id="groupPanel12" styleClass="vdcStudyInfoHeader" >
+                    <ice:outputText id="outputText65" value="Abstract and Scope"/>
+                  </div>
+                </ice:panelGrid>
+                  <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
+                  <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
+                                 styleClass="vdcEditStudyTable" visible="#{!EditStudyPage.studyAbstractsEmpty  or EditStudyPage.studyMap[sfc.abstractText].recommended or EditStudyPage.showAll}"  value="dummy_datatable">
+                    <ice:column>
+                      <ice:dataTable cellpadding="0" cellspacing="0"
+                                     styleClass="vdcEditStudyInnerTable"
+                                     columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
+                                     binding="#{EditStudyPage.dataTableAbstracts}"
+                                     value="#{EditStudyPage.metadata.studyAbstracts}" var="currentRow" width="100%">
+                        <ice:column>
+                          <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                            <dvn:inlinehelp helpMessage="#{editstudybundle.abstractHelp}" linkText="#{editstudybundle.abstractLabel}" heading="#{editstudybundle.abstractHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                            <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.abstractText].required}"/>
+                            <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.abstractText].recommended}"/>
+                          </div>
+                        </ice:column>
+                        <ice:column>
+                          <div jsfc="ice:panelGroup">
+                            <div jsfc="ice:panelGroup" >
+                              <ice:outputText value="Note: Copying and pasting from a Word document can create errors when you save this page."/>
+                              <br/>
+                              <dvn:inlinehelp helpMessage="#{editstudybundle.abstractHelp}" linkText="#{editstudybundle.abstractLabel}" heading="#{editstudybundle.abstractHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                              <br/>
+                              <ice:inputTextarea cols="90" rows="12"
+                                                 id="input_abstractText"
+                                                 binding="#{EditStudyPage.inputAbstractText}"
+                                                 value="#{currentRow.text}"
+                                                 required="#{EditStudyPage.studyMap[sfc.abstractText].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                                 styleClass="formHtmlEnabled">
+                                <f:validator validatorId="XhtmlValidator"/>
+                              </ice:inputTextarea>
+                              <ice:message styleClass="errorMessage" for="input_abstractText"/>
+                            </div>
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyGroupField">
+                              <dvn:inlinehelp helpMessage="#{editstudybundle.abstractDateHelp}" linkText="#{editstudybundle.abstractDateLabel}" heading="#{editstudybundle.abstractDateHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                              <br/>
+                              <ice:inputText binding="#{EditStudyPage.inputAbstractDate}" validator="#{EditStudyPage.validateStudyAbstract}" id="input_abstractDate" styleClass="formDateFormat" value="#{currentRow.date}" required="#{EditStudyPage.studyMap[sfc.abstractDate].required and EditStudyPage.validateRequired}" requiredMessage="This field is required.">
+                                <f:validator validatorId="DateValidator"/>
+                              </ice:inputText>
+                              <ice:outputText value="#{editstudybundle.dateFormatDescription}"/>
+                              <ice:message styleClass="errorMessage" for="input_abstractDate"/>
+                            </div>
+                          </div>
+                        </ice:column>
+                        <ice:column>
+                          <ice:commandButton image="/resources/images/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/>
+                          <ice:commandButton rendered="#{EditStudyPage.dataTableAbstracts.rowCount gt 1}" image="/resources/images/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" />
+                        </ice:column>
+                      </ice:dataTable>
+                    </ice:column>
+                  </ice:dataTable>
+
+                  <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
+                  <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
+                                 styleClass="vdcEditStudyTable" visible="#{!EditStudyPage.studyKeywordsEmpty or EditStudyPage.studyMap[sfc.keywordValue].recommended or EditStudyPage.showAll}" value="dummy_datatable">
+                    <ice:column>
+                      <ice:dataTable cellpadding="0" cellspacing="0"
+                                     styleClass="vdcEditStudyInnerTable"
+                                     columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
+                                     binding="#{EditStudyPage.dataTableKeywords}"
+                                     value="#{EditStudyPage.metadata.studyKeywords}" var="currentRow" width="100%">
+                        <ice:column>
+                          <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                            <dvn:inlinehelp helpMessage="#{editstudybundle.keywordHelp}" linkText="#{editstudybundle.keywordLabel}" heading="#{editstudybundle.keywordHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                            <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.keywordValue].required}"/>
+                            <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.keywordValue].recommended }"/>
+                          </div>
+                        </ice:column>
+                        <ice:column>
+                          <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloatWrap">
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1">
+                              <dvn:inlinehelp helpMessage="#{editstudybundle.keywordHelp}" linkText="#{editstudybundle.keywordLabel}" heading="#{editstudybundle.keywordHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                              <br/>
+                              <ice:inputText binding="#{EditStudyPage.inputKeywordValue}" id="input_keywordValue" value="#{currentRow.value}" required="#{EditStudyPage.studyMap[sfc.keywordValue].required}" requiredMessage="This field is required." />
+                              <ice:message styleClass="errorMessage" for="input_keywordValue"/>
+                            </div>
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField">
+                              <dvn:inlinehelp helpMessage="#{editstudybundle.keywordVocabularyHelp}" linkText="#{editstudybundle.keywordVocabularyLabel}" heading="#{editstudybundle.keywordVocabularyHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                              <br/>
+                              <ice:inputText validator="#{EditStudyPage.validateStudyKeyword}" binding="#{EditStudyPage.inputKeywordVocab}" id="input_keywordVocab" value="#{currentRow.vocab}" required="#{EditStudyPage.studyMap[sfc.keywordVocab].required and EditStudyPage.validateRequired}"  requiredMessage="This field is required." maxlength="255"/>
+                              <ice:message styleClass="errorMessage" for="input_keywordVocab"/>
+                            </div>
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3 vdcEditStudyGroupField ">
+                              <dvn:inlinehelp helpMessage="#{editstudybundle.keywordVocabularyURLHelp}" linkText="#{editstudybundle.keywordVocabularyURLLabel}" heading="#{editstudybundle.keywordVocabularyURLHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                              <br/>
+                              <ice:inputText id="input_keywordVocabURI"
+                                             validator="#{EditStudyPage.validateStudyKeyword}"
+                                             binding="#{EditStudyPage.inputKeywordVocabUri}"
+                                             size="45"
+                                             maxlength="255"
+                                             value="#{currentRow.vocabURI}"
+                                             required="#{EditStudyPage.studyMap[sfc.keywordVocabURI].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." >
+                                <f:validator validatorId="UrlValidator"/>
+                              </ice:inputText>
+                              <ice:outputText value="(http://example-domain.edu/images/)"/>
+                              <ice:message styleClass="errorMessage" for="input_keywordVocabURI"/>
+                            </div>
+                          </div>
+                        </ice:column>
+                        <ice:column>
+                          <ice:commandButton image="/resources/images/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/>
+                          <ice:commandButton rendered="#{EditStudyPage.dataTableKeywords.rowCount gt 1}" image="/resources/images/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" />
+                        </ice:column>
+                      </ice:dataTable>
+                    </ice:column>
+                  </ice:dataTable>
+
+                  <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
+                  <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
+                                 styleClass="vdcEditStudyTable" visible="#{!EditStudyPage.studyTopicClassesEmpty or EditStudyPage.studyMap[sfc.topicClassValue].recommended or EditStudyPage.showAll}" value="dummy_datatable">
+                    <ice:column>
+                      <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
+                                     styleClass="vdcEditStudyInnerTable"
+                                     columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
+                                     id="dataTableTopicClass"
+                                     binding="#{EditStudyPage.dataTableTopicClass}"
+                                     value="#{EditStudyPage.metadata.studyTopicClasses}" var="currentRow">
+                        <ice:column>
+                          <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                            <dvn:inlinehelp helpMessage="#{editstudybundle.topicClassificationHelp}" linkText="#{editstudybundle.topicClassificationLabel}" heading="#{editstudybundle.topicClassificationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                            <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.topicClassValue].required}"/>
+                            <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.topicClassValue].recommended}"/>
+                          </div>
+                        </ice:column>
+                        <ice:column>
+                          <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloatWrap">
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 vdcEditStudyGroupField ">
+                              <dvn:inlinehelp helpMessage="#{editstudybundle.topicClassificationHelp}" linkText="#{editstudybundle.topicClassificationLabel}" heading="#{editstudybundle.topicClassificationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                              <br/>
+                              <ice:inputText binding="#{EditStudyPage.inputTopicClassValue}" id="input_topicClassValue" value="#{currentRow.value}" required="#{EditStudyPage.studyMap[sfc.topicClassValue].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." />
+                              <ice:message styleClass="errorMessage" for="input_topicClassValue"/>
+                            </div>
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField ">
+                              <dvn:inlinehelp helpMessage="#{editstudybundle.topicClassVocabularyHelp}" linkText="#{editstudybundle.topicClassVocabularyLabel}" heading="#{editstudybundle.topicClassVocabularyHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                              <br/>
+                              <ice:inputText maxlength="255" validator="#{EditStudyPage.validateStudyTopicClass}" binding="#{EditStudyPage.inputTopicClassVocab}" id="input_topicClassVocab" value="#{currentRow.vocab}" required="#{EditStudyPage.studyMap[sfc.topicClassVocab].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." />
+                              <ice:message styleClass="errorMessage" for="input_topicClassVocab"/>
+                            </div>
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3 vdcEditStudyGroupField ">
+                              <dvn:inlinehelp helpMessage="#{editstudybundle.topicClassVocabularyURLHelp}" linkText="#{editstudybundle.topicClassVocabularyURLLabel}" heading="#{editstudybundle.topicClassVocabularyURLHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                              <br/>
+                              <ice:inputText id="input_topicClassVocabURI"
+                                             binding="#{EditStudyPage.inputTopicClassVocabUri}"
+                                             validator="#{EditStudyPage.validateStudyTopicClass}"
+                                             size="45"
+                                             maxlength="255"
+                                             value="#{currentRow.vocabURI}"
+                                             required="#{EditStudyPage.studyMap[sfc.topicClassVocabURI].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." >
+                                <f:validator validatorId="UrlValidator"/>
+                              </ice:inputText>
+                              <ice:outputText value="(http://example-domain.edu/)"/>
+                              <ice:message styleClass="errorMessage" for="input_topicClassVocabURI"/>
+                            </div>
+                          </div>
+                        </ice:column>
+                        <ice:column>
+                          <ice:commandButton image="/resources/images/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/>
+                          <ice:commandButton rendered="#{EditStudyPage.dataTableTopicClass.rowCount gt 1}" image="/resources/images/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" />
+                        </ice:column>
+                      </ice:dataTable>
+                    </ice:column>
+                  </ice:dataTable>
+
+                  <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
+                  <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
+                                 styleClass="vdcEditStudyTable" visible="#{!EditStudyPage.studyRelPublicationsEmpty or EditStudyPage.studyMap[sfc.relatedPublications].recommended or EditStudyPage.showAll}"  value="dummy_datatable">
+                    <ice:column>
+                      <ice:dataTable cellpadding="0" cellspacing="0"
+                                     styleClass="vdcEditStudyInnerTable"
+                                     columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
+                                     binding="#{EditStudyPage.dataTableRelPublications}"
+                                     value="#{EditStudyPage.metadata.studyRelPublications}" var="currentRow" width="100%">
+                        <ice:column>
+                          <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                            <dvn:inlinehelp helpMessage="#{editstudybundle.relatedPublicationsHelp}" linkText="#{editstudybundle.relatedPublicationsLabel}" heading="#{editstudybundle.relatedPublicationsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                            <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.relatedPublications].required}"/>
+                            <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.relatedPublications].recommended}"/>
+                          </div>
+                        </ice:column>
+                        <ice:column>
+                          <div jsfc="ice:panelGroup">
+                            <ice:inputTextarea cols="90" rows="4"
+                                               id="input_relatedPublications"
+                                               binding="#{EditStudyPage.inputRelPublicationName}"
+                                               value="#{currentRow.text}"
+                                               required="#{EditStudyPage.studyMap[sfc.relatedPublications].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                               styleClass="formHtmlEnabled">
+                              <f:validator validatorId="XhtmlValidator"/>
+                            </ice:inputTextarea>
+                            <ice:message styleClass="errorMessage" for="input_relatedPublications"/>
+                          </div>
+                        </ice:column>
+                        <ice:column>
+                          <ice:commandButton image="/resources/images/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/>
+                          <ice:commandButton rendered="#{EditStudyPage.dataTableRelPublications.rowCount gt 1}" image="/resources/images/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" />
+                        </ice:column>
+                      </ice:dataTable>
+                    </ice:column>
+                  </ice:dataTable>
+
+                  <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
+                  <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
+                                 styleClass="vdcEditStudyTable" visible="#{!EditStudyPage.studyRelMaterialsEmpty or EditStudyPage.studyMap[sfc.relatedMaterial].recommended or EditStudyPage.showAll}"  value="dummy_datatable">
+                    <ice:column>
+                      <ice:dataTable cellpadding="0" cellspacing="0"
+                                     styleClass="vdcEditStudyInnerTable"
+                                     columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
+                                     binding="#{EditStudyPage.dataTableRelMaterials}"
+                                     value="#{EditStudyPage.metadata.studyRelMaterials}" var="currentRow" width="100%">
+                        <ice:column>
+                          <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                            <dvn:inlinehelp helpMessage="#{editstudybundle.relatedMaterialHelp}" linkText="#{editstudybundle.relatedMaterialLabel}" heading="#{editstudybundle.relatedMaterialHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                            <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.relatedMaterial].required}"/>
+                            <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.relatedMaterial].recommended}"/>
+                          </div>
+                        </ice:column>
+                        <ice:column>
+                          <div jsfc="ice:panelGroup">
+                            <ice:inputTextarea cols="90" rows="4"
+                                               id="input_relatedMaterial"
+                                               binding="#{EditStudyPage.inputRelMaterial}"
+                                               value="#{currentRow.text}"
+                                               required="#{EditStudyPage.studyMap[sfc.relatedMaterial].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                               styleClass="formHtmlEnabled">
+                              <f:validator validatorId="XhtmlValidator"/>
+                            </ice:inputTextarea>
+                            <ice:message styleClass="errorMessage" for="input_relatedMaterial"/>
+                          </div>
+                        </ice:column>
+                        <ice:column>
+                          <ice:commandButton image="/resources/images/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/>
+                          <ice:commandButton rendered="#{EditStudyPage.dataTableRelMaterials.rowCount gt 1}" image="/resources/images/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" />
+                        </ice:column>
+                      </ice:dataTable>
+                    </ice:column>
+                  </ice:dataTable>
+
+                  <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
+                  <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
+                                 styleClass="vdcEditStudyTable" visible="#{!EditStudyPage.studyRelStudiesEmpty or EditStudyPage.studyMap[sfc.relatedStudies].recommended or EditStudyPage.showAll}" value="dummy_datatable">
+                    <ice:column>
+                      <ice:dataTable cellpadding="0" cellspacing="0"
+                                     styleClass="vdcEditStudyInnerTable"
+                                     columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
+                                     binding="#{EditStudyPage.dataTableRelStudies}"
+                                     value="#{EditStudyPage.metadata.studyRelStudies}" var="currentRow" width="100%">
+                        <ice:column>
+                          <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                            <dvn:inlinehelp helpMessage="#{editstudybundle.relatedStudiesHelp}" linkText="#{editstudybundle.relatedStudiesLabel}" heading="#{editstudybundle.relatedStudiesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                            <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.relatedStudies].required}"/>
+                            <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.relatedStudies].recommended}"/>
+                          </div>
+                        </ice:column>
+                        <ice:column>
+                          <div jsfc="ice:panelGroup">
+                            <ice:inputTextarea cols="90" rows="4"
+                                               id="input_relatedStudies"
+                                               binding="#{EditStudyPage.inputRelStudy}"
+                                               value="#{currentRow.text}"
+                                               required="#{EditStudyPage.studyMap[sfc.relatedStudies].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                               styleClass="formHtmlEnabled">
+                              <f:validator validatorId="XhtmlValidator"/>
+                            </ice:inputTextarea>
+                            <ice:message styleClass="errorMessage" for="input_relatedStudies"/>
+                          </div>
+                        </ice:column>
+                        <ice:column>
+                          <ice:commandButton image="/resources/images/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/>
+                          <ice:commandButton rendered="#{EditStudyPage.dataTableRelStudies.rowCount gt 1}" image="/resources/images/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" />
+                        </ice:column>
+                      </ice:dataTable>
+                    </ice:column>
+                  </ice:dataTable>
+
+                  <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
+                  <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
+                                 styleClass="vdcEditStudyTable"
+                                  visible="#{!EditStudyPage.studyOtherRefsEmpty or  EditStudyPage.studyMap[sfc.otherReferences].recommended or EditStudyPage.showAll}" value="dummy_datatable">
+                    <ice:column>
+                      <ice:dataTable cellpadding="0" cellspacing="0"
+                                     styleClass="vdcEditStudyInnerTable"
+                                     columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
+                                     binding="#{EditStudyPage.dataTableOtherReferences}"
+                                     value="#{EditStudyPage.metadata.studyOtherRefs}" var="currentRow" width="100%">
+                        <ice:column>
+                          <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                            <dvn:inlinehelp helpMessage="#{editstudybundle.otherReferencesHelp}" linkText="#{editstudybundle.otherReferencesLabel}" heading="#{editstudybundle.otherReferencesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                            <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.otherReferences].required}"/>
+                            <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.otherReferences].recommended}"/>
+                          </div>
+                        </ice:column>
+                        <ice:column>
+                          <div jsfc="ice:panelGroup">
+                            <ice:inputText id="input_otherReferences"
+                                           binding="#{EditStudyPage.inputOtherReference}"
+                                           value="#{currentRow.text}"
+                                           size="90"
+                                           required="#{EditStudyPage.studyMap[sfc.otherReferences].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                           styleClass="formHtmlEnabled">
+                              <f:validator validatorId="XhtmlValidator"/>
+                            </ice:inputText>
+                            <ice:message styleClass="errorMessage" for="input_otherReferences"/>
+                          </div>
+                        </ice:column>
+                        <ice:column>
+                          <ice:commandButton image="/resources/images/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/>
+                          <ice:commandButton rendered="#{EditStudyPage.dataTableOtherReferences.rowCount gt 1}" image="/resources/images/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" />
+                        </ice:column>
+                      </ice:dataTable>
+                    </ice:column>
+                  </ice:dataTable>
+
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{!empty EditStudyPage.metadata.timePeriodCoveredStart or EditStudyPage.studyMap[sfc.timePeriodCoveredStart].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField" >
+                      <dvn:inlinehelp helpMessage="#{editstudybundle.timePeriodStartHelp}" linkText="#{editstudybundle.timePeriodStartLabel}" heading="#{editstudybundle.timePeriodStartHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.timePeriodCoveredStart].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.timePeriodCoveredStart].recommended}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                      <ice:inputText id="input_timePeriodCoveredStart" styleClass="formDateFormat" value="#{EditStudyPage.metadata.timePeriodCoveredStart}" required="#{EditStudyPage.studyMap[sfc.timePeriodCoveredStart].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." >
+                        <f:validator validatorId="DateValidator"/>
+                      </ice:inputText>
+                      <ice:outputText value="#{editstudybundle.dateFormatDescription}"/>
+                      <ice:message styleClass="errorMessage" for="input_timePeriodCoveredStart"/>
+                    </div>
+                  </ice:panelGrid>
+
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{!empty EditStudyPage.metadata.timePeriodCoveredEnd or EditStudyPage.studyMap[sfc.timePeriodCoveredEnd].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                      <dvn:inlinehelp helpMessage="#{editstudybundle.timePeriodEndHelp}" linkText="#{editstudybundle.timePeriodEndLabel}" heading="#{editstudybundle.timePeriodEndHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.timePeriodCoveredEnd].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.timePeriodCoveredEnd].recommended}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                      <ice:inputText id="input_timePeriodCoveredEnd" styleClass="formDateFormat" value="#{EditStudyPage.metadata.timePeriodCoveredEnd}" required="#{EditStudyPage.studyMap[sfc.timePeriodCoveredEnd].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." >
+                        <f:validator validatorId="DateValidator"/>
+                      </ice:inputText>
+                      <ice:outputText value="#{editstudybundle.dateFormatDescription}"/>
+                      <ice:message styleClass="errorMessage" for="input_timePeriodCoveredEnd"/>
+                    </div>
+                  </ice:panelGrid>
+
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{!empty EditStudyPage.metadata.dateOfCollectionStart or EditStudyPage.studyMap[sfc.dateOfCollectionStart].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                      <dvn:inlinehelp helpMessage="#{editstudybundle.collectionDateStartHelp}" linkText="#{editstudybundle.collectionDateStartLabel}" heading="#{editstudybundle.collectionDateStartHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.dateOfCollectionStart].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.dateOfCollectionStart].recommended}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                      <ice:inputText id="input_dateOfCollectionStart" styleClass="formDateFormat" value="#{EditStudyPage.metadata.dateOfCollectionStart}"  required="#{EditStudyPage.studyMap[sfc.dateOfCollectionStart].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." >
+                        <f:validator validatorId="DateValidator"/>
+                      </ice:inputText>
+                      <ice:outputText value="#{editstudybundle.dateFormatDescription}"/>
+                      <ice:message styleClass="errorMessage" for="input_dateOfCollectionStart"/>
+                    </div>
+                  </ice:panelGrid>
+
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{!empty EditStudyPage.metadata.dateOfCollectionEnd or EditStudyPage.studyMap[sfc.dateOfCollectionEnd].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                      <dvn:inlinehelp helpMessage="#{editstudybundle.collectionDateEndHelp}" linkText="#{editstudybundle.collectionDateEndLabel}" heading="#{editstudybundle.collectionDateEndHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.dateOfCollectionEnd].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.dateOfCollectionEnd].recommended}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                      <ice:inputText id="input_dateOfCollectionEnd" styleClass="formDateFormat" value="#{EditStudyPage.metadata.dateOfCollectionEnd}"  required="#{EditStudyPage.studyMap[sfc.dateOfCollectionEnd].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." >
+                        <f:validator validatorId="DateValidator"/>
+                      </ice:inputText>
+                      <ice:outputText value="#{editstudybundle.dateFormatDescription}"/>
+                      <ice:message styleClass="errorMessage" for="input_dateOfCollectionEnd"/>
+                    </div>
+                  </ice:panelGrid>
+
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{!empty EditStudyPage.metadata.country or EditStudyPage.studyMap[sfc.country].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                      <dvn:inlinehelp helpMessage="#{editstudybundle.countryHelp}" linkText="#{editstudybundle.countryLabel}" heading="#{editstudybundle.countryHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.country].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.country].recommended}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup" >
+                      <ice:inputText id="input_country" size="45" value="#{EditStudyPage.metadata.country}" required="#{EditStudyPage.studyMap[sfc.country].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." />
+                      <ice:message styleClass="errorMessage" for="input_country"/>
+                    </div>
+                  </ice:panelGrid>
+
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{!empty EditStudyPage.metadata.geographicCoverage or EditStudyPage.studyMap[sfc.geographicCoverage].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                      <dvn:inlinehelp helpMessage="#{editstudybundle.geographicCoverageHelp}" linkText="#{editstudybundle.geographicCoverageLabel}" heading="#{editstudybundle.geographicCoverageHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.geographicCoverage].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.geographicCoverage].recommended}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                      <ice:inputText id="input_geographicCoverage" size="45"  value="#{EditStudyPage.metadata.geographicCoverage}" required="#{EditStudyPage.studyMap[sfc.geographicCoverage].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." />
+                      <ice:message styleClass="errorMessage" for="input_geographicCoverage"/>
+                    </div>
+                  </ice:panelGrid>
+
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{!empty EditStudyPage.metadata.geographicUnit or EditStudyPage.studyMap[sfc.geographicUnit].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                      <dvn:inlinehelp helpMessage="#{editstudybundle.geographicUnitHelp}" linkText="#{editstudybundle.geographicUnitLabel}" heading="#{editstudybundle.geographicUnitHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.geographicUnit].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.geographicUnit].recommended}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                      <ice:inputText id="input_geographicUnit" size="45"  value="#{EditStudyPage.metadata.geographicUnit}" required="#{EditStudyPage.studyMap[sfc.geographicUnit].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." />
+                      <ice:message styleClass="errorMessage" for="input_geographicUnit"/>
+                    </div>
+                  </ice:panelGrid>
+
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{!EditStudyPage.studyGeoBoundingsEmpty or EditStudyPage.studyMap[sfc.westLongitude].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                      <dvn:inlinehelp helpMessage="#{editstudybundle.geographicBoundingBoxHelp}" linkText="#{editstudybundle.geographicBoundingBoxLabel}" heading="#{editstudybundle.geographicBoundingBoxHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.westLongitude].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.westLongitude].recommended}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloatWrap">
+                      <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 vdcEditStudyGroupField">
+                        <dvn:inlinehelp helpMessage="#{editstudybundle.westLongitudeHelp}" linkText="#{editstudybundle.westLongitudeLabel}" heading="#{editstudybundle.westLongitudeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                        <br/>
+                        <ice:inputText id="input_westLongitude" binding="#{EditStudyPage.inputWestLongitude}" value="#{EditStudyPage.metadata.studyGeoBoundings[0].westLongitude}"  validator="#{EditStudyPage.validateLongitude}" required="#{EditStudyPage.studyMap[sfc.westLongitude].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." />
+                        <ice:message styleClass="errorMessage" for="input_westLongitude"/>
+                      </div>
+                      
+
+                      <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField">
+                        <dvn:inlinehelp helpMessage="#{editstudybundle.eastLongitudeHelp}" linkText="#{editstudybundle.eastLongitudeLabel}" heading="#{editstudybundle.eastLongitudeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                        <br/>
+                        <ice:inputText binding="#{EditStudyPage.inputEastLongitude}" id="input_eastLongitude" value="#{EditStudyPage.metadata.studyGeoBoundings[0].eastLongitude}" validator="#{EditStudyPage.validateLongitude}" required="#{EditStudyPage.studyMap[sfc.eastLongitude].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." />
+                        <ice:message styleClass="errorMessage" for="input_eastLongitude"/>
+                      </div>
+                      
+
+                      <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 vdcEditStudyFieldFloat3 vdcEditStudyGroupField">
+                        <dvn:inlinehelp helpMessage="#{editstudybundle.northLatitudeHelp}" linkText="#{editstudybundle.northLatitudeLabel}" heading="#{editstudybundle.northLatitudeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                        <br/>
+                        <ice:inputText binding="#{EditStudyPage.inputNorthLatitude}" id="input_northLatitude" value="#{EditStudyPage.metadata.studyGeoBoundings[0].northLatitude}" validator="#{EditStudyPage.validateLatitude}" required="#{EditStudyPage.studyMap[sfc.northLatitude].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." />
+                        <ice:message styleClass="errorMessage" for="input_northLatitude"/>
+                      </div>
+                      
+
+                      <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField">
+                        <dvn:inlinehelp helpMessage="#{editstudybundle.southLatitudeHelp}" linkText="#{editstudybundle.southLatitudeLabel}" heading="#{editstudybundle.southLatitudeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                        <br/>
+                        <ice:inputText binding="#{EditStudyPage.inputSouthLatitude}" id="input_southLatitude" value="#{EditStudyPage.metadata.studyGeoBoundings[0].southLatitude}" validator="#{EditStudyPage.validateLatitude}"  required="#{EditStudyPage.studyMap[sfc.southLatitude].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." />
+
+                        <ice:message styleClass="errorMessage" for="input_southLatitude"/>
+                      </div>
+                      
+                        <ice:inputHidden validator="#{EditStudyPage.validateGeographicBounding}" value="test" required="#{EditStudyPage.validateRequired}"/>
+                    </div>
+                  </ice:panelGrid>
+
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{!empty EditStudyPage.metadata.unitOfAnalysis or EditStudyPage.studyMap[sfc.unitOfAnalysis].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                      <dvn:inlinehelp helpMessage="#{editstudybundle.unitOfAnalysisHelp}" linkText="#{editstudybundle.unitOfAnalysisLabel}" heading="#{editstudybundle.unitOfAnalysisHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.unitOfAnalysis].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.unitOfAnalysis].recommended}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                      <ice:inputTextarea id="input_unitOfAnalysis" cols="90" rows="2" value="#{EditStudyPage.metadata.unitOfAnalysis}" required="#{EditStudyPage.studyMap[sfc.unitOfAnalysis].required and EditStudyPage.validateRequired}"  requiredMessage="This field is required." styleClass="formHtmlEnabled">
+                        <f:validator validatorId="XhtmlValidator"/>
+                      </ice:inputTextarea>
+                      <ice:message styleClass="errorMessage" for="input_unitOfAnalysis"/>
+                    </div>
+                  </ice:panelGrid>
+
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{!empty EditStudyPage.metadata.universe or EditStudyPage.studyMap[sfc.universe].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                      <dvn:inlinehelp helpMessage="#{editstudybundle.universeHelp}" linkText="#{editstudybundle.universeLabel}" heading="#{editstudybundle.universeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.universe].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.universe].recommended}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                      <ice:inputTextarea id="input_universe" cols="90" rows="2"  value="#{EditStudyPage.metadata.universe}" required="#{EditStudyPage.studyMap[sfc.universe].required and EditStudyPage.validateRequired}"  requiredMessage="This field is required." styleClass="formHtmlEnabled">
+                        <f:validator validatorId="XhtmlValidator"/>
+                      </ice:inputTextarea>
+                      <ice:message styleClass="errorMessage" for="input_universe"/>
+                    </div>
+                  </ice:panelGrid>
+
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{!empty EditStudyPage.metadata.kindOfData or EditStudyPage.studyMap[sfc.kindOfData].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                      <dvn:inlinehelp helpMessage="#{editstudybundle.kindOfDataHelp}" linkText="#{editstudybundle.kindOfDataLabel}" heading="#{editstudybundle.kindOfDataHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.kindOfData].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.kindOfData].recommended}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                      <ice:inputText id="input_kindOfData" size="45" value="#{EditStudyPage.metadata.kindOfData}" required="#{EditStudyPage.studyMap[sfc.kindOfData].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." />
+                      <ice:message styleClass="errorMessage" for="input_kindOfData"/>
+                    </div>
+                  </ice:panelGrid>
+
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="1" width="100%"
+                                 visible="#{!EditStudyPage.dataCollectionMethodologyEmpty or EditStudyPage.dataCollectionMethodologyInputLevel=='recommended' or EditStudyPage.showAll }">
+                    <div jsfc="ice:panelGroup" id="groupPanel13" styleClass="vdcStudyInfoHeader" >
+                      <ice:outputText id="outputText90" value="Data Collection / Methodology" />
+                    </div>
+                  </ice:panelGrid>
+
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{!empty EditStudyPage.metadata.timeMethod or EditStudyPage.studyMap[sfc.timeMethod].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                      <dvn:inlinehelp helpMessage="#{editstudybundle.timeMethodHelp}" linkText="#{editstudybundle.timeMethodLabel}" heading="#{editstudybundle.timeMethodHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.timeMethod].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.timeMethod].recommended}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                      <ice:inputText id="input_timeMethod" size="90"
+                                     value="#{EditStudyPage.metadata.timeMethod}"
+                                     required="#{EditStudyPage.studyMap[sfc.timeMethod].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                     styleClass="formHtmlEnabled">
+                        <f:validator validatorId="XhtmlValidator"/>
+                      </ice:inputText>
+                      <ice:message styleClass="errorMessage" for="input_timeMethod"/>
+                    </div>
+                  </ice:panelGrid>
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{!empty EditStudyPage.metadata.dataCollector or EditStudyPage.studyMap[sfc.dataCollector].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                      <dvn:inlinehelp helpMessage="#{editstudybundle.dataCollectorHelp}" linkText="#{editstudybundle.dataCollectorLabel}" heading="#{editstudybundle.dataCollectorHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.dataCollector].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.dataCollector].recommended}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                      <ice:inputText id="input_dataCollector" size="90"
+                                     value="#{EditStudyPage.metadata.dataCollector}"
+                                     required="#{EditStudyPage.studyMap[sfc.dataCollector].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                     styleClass="formHtmlEnabled">
+                        <f:validator validatorId="XhtmlValidator"/>
+                      </ice:inputText>
+                      <ice:message styleClass="errorMessage" for="input_dataCollector"/>
+                    </div>
+                  </ice:panelGrid>
+
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{!empty EditStudyPage.metadata.frequencyOfDataCollection or EditStudyPage.studyMap[sfc.frequencyOfDataCollection].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                      <dvn:inlinehelp helpMessage="#{editstudybundle.frequencyHelp}" linkText="#{editstudybundle.frequencyLabel}" heading="#{editstudybundle.frequencyHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.frequencyOfDataCollection].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.frequencyOfDataCollection].recommended}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                      <ice:inputText id="input_frequencyOfDataCollection" size="90"
+                                     value="#{EditStudyPage.metadata.frequencyOfDataCollection}"
+                                     required="#{EditStudyPage.studyMap[sfc.frequencyOfDataCollection].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                     styleClass="formHtmlEnabled">
+                        <f:validator validatorId="XhtmlValidator"/>
+                      </ice:inputText>
+                      <ice:message styleClass="errorMessage" for="input_frequencyOfDataCollection"/>
+                    </div>
+                  </ice:panelGrid>
+
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{!empty EditStudyPage.metadata.samplingProcedure or EditStudyPage.studyMap[sfc.samplingProcedure].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                      <dvn:inlinehelp helpMessage="#{editstudybundle.samplingProcedureHelp}" linkText="#{editstudybundle.samplingProcedureLabel}" heading="#{editstudybundle.samplingProcedureHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.samplingProcedure].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.samplingProcedure].recommended}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                      <ice:inputTextarea id="input_samplingProcedure"
+                                         cols="90" rows="4"
+                                         value="#{EditStudyPage.metadata.samplingProcedure}"
+                                         required="#{EditStudyPage.studyMap[sfc.samplingProcedure].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                         styleClass="formHtmlEnabled">
+                        <f:validator validatorId="XhtmlValidator"/>
+                      </ice:inputTextarea>
+                      <ice:message styleClass="errorMessage" for="input_samplingProcedure"/>
+                    </div>
+                  </ice:panelGrid>
+
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{!empty EditStudyPage.metadata.deviationsFromSampleDesign or EditStudyPage.studyMap[sfc.deviationsFromSampleDesign].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                      <dvn:inlinehelp helpMessage="#{editstudybundle.majorDeviationsHelp}" linkText="#{editstudybundle.majorDeviationsLabel}" heading="#{editstudybundle.majorDeviationsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.deviationsFromSampleDesign].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.deviationsFromSampleDesign].recommended}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                      <ice:inputTextarea cols="90" rows="4"
+                                         id="input_deviationsFromSampleDesign"
+                                         value="#{EditStudyPage.metadata.deviationsFromSampleDesign}"
+                                         required="#{EditStudyPage.studyMap[sfc.deviationsFromSampleDesign].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                         styleClass="formHtmlEnabled">
+                        <f:validator validatorId="XhtmlValidator"/>
+                      </ice:inputTextarea>
+                      <ice:message styleClass="errorMessage" for="input_deviationsFromSampleDesign"/>
+                    </div>
+                  </ice:panelGrid>
+
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                 styleClass="vdcEditStudyTable}"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{!empty EditStudyPage.metadata.collectionMode or EditStudyPage.studyMap[sfc.collectionMode].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                      <dvn:inlinehelp helpMessage="#{editstudybundle.collectionModeHelp}" linkText="#{editstudybundle.collectionModeLabel}" heading="#{editstudybundle.collectionModeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.collectionMode].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.collectionMode].recommended}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                      <ice:inputText id="input_collectionMode" size="90"
+                                     value="#{EditStudyPage.metadata.collectionMode}"
+                                     required="#{EditStudyPage.studyMap[sfc.collectionMode].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                     styleClass="formHtmlEnabled">
+                        <f:validator validatorId="XhtmlValidator"/>
+                      </ice:inputText>
+                      <ice:message styleClass="errorMessage" for="input_collectionMode"/>
+                    </div>
+                  </ice:panelGrid>
+
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{!empty EditStudyPage.metadata.researchInstrument or EditStudyPage.studyMap[sfc.researchInstrument].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                      <dvn:inlinehelp helpMessage="#{editstudybundle.researchInstrumentHelp}" linkText="#{editstudybundle.researchInstrumentLabel}" heading="#{editstudybundle.researchInstrumentHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.researchInstrument].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.researchInstrument].recommended}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                      <ice:inputText id="input_researchInstrument" size="90"
+                                     value="#{EditStudyPage.metadata.researchInstrument}"
+                                     required="#{EditStudyPage.studyMap[sfc.researchInstrument].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                     styleClass="formHtmlEnabled">
+                        <f:validator validatorId="XhtmlValidator"/>
+                      </ice:inputText>
+                      <ice:message styleClass="errorMessage" for="input_researchInstrument"/>
+                    </div>
+                  </ice:panelGrid>
+
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{!empty EditStudyPage.metadata.dataSources or EditStudyPage.studyMap[sfc.dataSources].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                      <dvn:inlinehelp helpMessage="#{editstudybundle.dataSourcesHelp}" linkText="#{editstudybundle.dataSourcesLabel}" heading="#{editstudybundle.dataSourcesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.dataSources].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.dataSources].recommended}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                      <ice:inputText id="input_dataSources" size="90"
+                                     value="#{EditStudyPage.metadata.dataSources}"
+                                     required="#{EditStudyPage.studyMap[sfc.dataSources].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                     styleClass="formHtmlEnabled">
+                        <f:validator validatorId="XhtmlValidator"/>
+                      </ice:inputText>
+                      <ice:message styleClass="errorMessage" for="input_dataSources"/>
+                    </div>
+                  </ice:panelGrid>
+
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{!empty EditStudyPage.metadata.originOfSources or EditStudyPage.studyMap[sfc.originOfSources].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                      <dvn:inlinehelp helpMessage="#{editstudybundle.originOfSourcesHelp}" linkText="#{editstudybundle.originOfSourcesLabel}" heading="#{editstudybundle.originOfSourcesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.originOfSources].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.originOfSources].recommended}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                      <ice:inputText id="input_originOfSources" size="90"
+                                     value="#{EditStudyPage.metadata.originOfSources}"
+                                     required="#{EditStudyPage.studyMap[sfc.originOfSources].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                     styleClass="formHtmlEnabled">
+                        <f:validator validatorId="XhtmlValidator"/>
+                      </ice:inputText>
+                      <ice:message styleClass="errorMessage" for="input_originOfSources"/>
+                    </div>
+                  </ice:panelGrid>
+
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{!empty EditStudyPage.metadata.characteristicOfSources or EditStudyPage.studyMap[sfc.characteristicOfSources].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                      <dvn:inlinehelp helpMessage="#{editstudybundle.sourceCharacteristicsHelp}" linkText="#{editstudybundle.sourceCharacteristicsLabel}" heading="#{editstudybundle.sourceCharacteristicsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.characteristicOfSources].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.characteristicOfSources].recommended}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                      <ice:inputText id="input_characteristicOfSources" size="90"
+                                     value="#{EditStudyPage.metadata.characteristicOfSources}"
+                                     required="#{EditStudyPage.studyMap[sfc.characteristicOfSources].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                     styleClass="formHtmlEnabled">
+                        <f:validator validatorId="XhtmlValidator"/>
+                      </ice:inputText>
+                      <ice:message styleClass="errorMessage" for="input_characteristicOfSources"/>
+                    </div>
+                  </ice:panelGrid>
+
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{!empty EditStudyPage.metadata.accessToSources or EditStudyPage.studyMap[sfc.accessToSources].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                      <dvn:inlinehelp helpMessage="#{editstudybundle.sourceDocumentationHelp}" linkText="#{editstudybundle.sourceDocumentationLabel}" heading="#{editstudybundle.sourceDocumentationHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.accessToSources].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.accessToSources].recommended}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                      <ice:inputTextarea cols="90" rows="4"
+                                         id="input_accessToSources"
+                                         value="#{EditStudyPage.metadata.accessToSources}"
+                                         required="#{EditStudyPage.studyMap[sfc.accessToSources].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                         styleClass="formHtmlEnabled">
+                        <f:validator validatorId="XhtmlValidator"/>
+                      </ice:inputTextarea>
+                      <ice:message styleClass="errorMessage" for="input_accessToSources"/>
+                    </div>
+                  </ice:panelGrid>
+
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{!empty EditStudyPage.metadata.dataCollectionSituation or EditStudyPage.studyMap[sfc.dataCollectionSituation].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                      <dvn:inlinehelp helpMessage="#{editstudybundle.dataCollectionCharacteristicsHelp}" linkText="#{editstudybundle.dataCollectionCharacteristicsLabel}" heading="#{editstudybundle.dataCollectionCharacteristicsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.dataCollectionSituation].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.dataCollectionSituation].recommended}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                      <ice:inputText id="input_dataCollectionSituation" size="90"
+                                     value="#{EditStudyPage.metadata.dataCollectionSituation}"
+                                     required="#{EditStudyPage.studyMap[sfc.dataCollectionSituation].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                     styleClass="formHtmlEnabled">
+                        <f:validator validatorId="XhtmlValidator"/>
+                      </ice:inputText>
+                      <ice:message styleClass="errorMessage" for="input_dataCollectionSituation"/>
+                    </div>
+                  </ice:panelGrid>
+
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{!empty EditStudyPage.metadata.actionsToMinimizeLoss or EditStudyPage.studyMap[sfc.actionsToMinimizeLoss].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                      <dvn:inlinehelp helpMessage="#{editstudybundle.minimizeActionsHelp}" linkText="#{editstudybundle.minimizeActionsLabel}" heading="#{editstudybundle.minimizeActionsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.actionsToMinimizeLoss].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.actionsToMinimizeLoss].recommended}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                      <ice:inputText id="input_actionsToMinimizeLoss" size="90"
+                                     value="#{EditStudyPage.metadata.actionsToMinimizeLoss}"
+                                     required="#{EditStudyPage.studyMap[sfc.actionsToMinimizeLoss].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                     styleClass="formHtmlEnabled">
+                        <f:validator validatorId="XhtmlValidator"/>
+                      </ice:inputText>
+                      <ice:message styleClass="errorMessage" for="input_actionsToMinimizeLoss"/>
+                    </div>
+                  </ice:panelGrid>
+
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{!empty EditStudyPage.metadata.controlOperations or EditStudyPage.studyMap[sfc.controlOperations].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                      <dvn:inlinehelp helpMessage="#{editstudybundle.controlOperationsHelp}" linkText="#{editstudybundle.controlOperationsLabel}" heading="#{editstudybundle.controlOperationsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.controlOperations].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.controlOperations].recommended}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                      <ice:inputText id="input_controlOperations" size="90"
+                                     value="#{EditStudyPage.metadata.controlOperations}"
+                                     required="#{EditStudyPage.studyMap[sfc.controlOperations].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                     styleClass="formHtmlEnabled">
+                        <f:validator validatorId="XhtmlValidator"/>
+                      </ice:inputText>
+                      <ice:message styleClass="errorMessage" for="input_controlOperations"/>
+                    </div>
+                  </ice:panelGrid>
+
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{!empty EditStudyPage.metadata.weighting or EditStudyPage.studyMap[sfc.weighting].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                      <dvn:inlinehelp helpMessage="#{editstudybundle.weightingHelp}" linkText="#{editstudybundle.weightingLabel}" heading="#{editstudybundle.weightingHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.weighting].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.weighting].recommended}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                      <ice:inputText id="input_weighting" size="90"
+                                     value="#{EditStudyPage.metadata.weighting}"
+                                     required="#{EditStudyPage.studyMap[sfc.weighting].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                     styleClass="formHtmlEnabled">
+                        <f:validator validatorId="XhtmlValidator"/>
+                      </ice:inputText>
+                      <ice:message styleClass="errorMessage" for="input_weighting"/>
+                    </div>
+                  </ice:panelGrid>
+
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                  visible="#{!empty EditStudyPage.metadata.cleaningOperations or EditStudyPage.studyMap[sfc.cleaningOperations].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                      <dvn:inlinehelp helpMessage="#{editstudybundle.cleaningOperationsHelp}" linkText="#{editstudybundle.cleaningOperationsLabel}" heading="#{editstudybundle.cleaningOperationsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.cleaningOperations].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.cleaningOperations].recommended}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                      <ice:inputText id="input_cleaningOperations" size="90"
+                                     value="#{EditStudyPage.metadata.cleaningOperations}"
+                                     required="#{EditStudyPage.studyMap[sfc.cleaningOperations].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                     styleClass="formHtmlEnabled">
+                        <f:validator validatorId="XhtmlValidator"/>
+                      </ice:inputText>
+                      <ice:message styleClass="errorMessage" for="input_cleaningOperations"/>
+                    </div>
+                  </ice:panelGrid>
+
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{!empty EditStudyPage.metadata.studyLevelErrorNotes or EditStudyPage.studyMap[sfc.studyLevelErrorNotes].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                      <dvn:inlinehelp helpMessage="#{editstudybundle.studyLevelErrorNotesHelp}" linkText="#{editstudybundle.studyLevelErrorNotesLabel}" heading="#{editstudybundle.studyLevelErrorNotesHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.studyLevelErrorNotes].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.studyLevelErrorNotes].recommended}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                      <ice:inputText id="input_studyLevelErrorNotes" size="90"
+                                     value="#{EditStudyPage.metadata.studyLevelErrorNotes}"
+                                     required="#{EditStudyPage.studyMap[sfc.studyLevelErrorNotes].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                     styleClass="formHtmlEnabled">
+                        <f:validator validatorId="XhtmlValidator"/>
+                      </ice:inputText>
+                      <ice:message styleClass="errorMessage" for="input_studyLevelErrorNotes"/>
+                    </div>
+                  </ice:panelGrid>
+
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{!empty EditStudyPage.metadata.responseRate or EditStudyPage.studyMap[sfc.responseRate].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                      <dvn:inlinehelp helpMessage="#{editstudybundle.responseRateHelp}" linkText="#{editstudybundle.responseRateLabel}" heading="#{editstudybundle.responseRateHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.responseRate].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.responseRate].recommended}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                      <ice:inputText id="input_responseRate" size="90"
+                                     value="#{EditStudyPage.metadata.responseRate}"
+                                     required="#{EditStudyPage.studyMap[sfc.responseRate].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                     styleClass="formHtmlEnabled">
+                        <f:validator validatorId="XhtmlValidator"/>
+                      </ice:inputText>
+                      <ice:message styleClass="errorMessage" for="input_responseRate"/>
+                    </div>
+                  </ice:panelGrid>
+
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{!empty EditStudyPage.metadata.samplingErrorEstimate or EditStudyPage.studyMap[sfc.samplingErrorEstimates].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                      <dvn:inlinehelp helpMessage="#{editstudybundle.samplingErrorHelp}" linkText="#{editstudybundle.samplingErrorLabel}" heading="#{editstudybundle.samplingErrorHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.samplingErrorEstimates].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.samplingErrorEstimates].recommended}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                      <ice:inputText id="input_samplingErrorEstimates" size="90"
+                                     value="#{EditStudyPage.metadata.samplingErrorEstimate}"
+                                     required="#{EditStudyPage.studyMap[sfc.samplingErrorEstimates].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                     styleClass="formHtmlEnabled">
+                        <f:validator validatorId="XhtmlValidator"/>
+                      </ice:inputText>
+                      <ice:message styleClass="errorMessage" for="input_samplingErrorEstimates"/>
+                    </div>
+                  </ice:panelGrid>
+
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{!empty EditStudyPage.metadata.otherDataAppraisal or EditStudyPage.studyMap[sfc.otherDataAppraisal].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                      <dvn:inlinehelp helpMessage="#{editstudybundle.otherDataAppraisalHelp}" linkText="#{editstudybundle.otherDataAppraisalLabel}" heading="#{editstudybundle.otherDataAppraisalHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.otherDataAppraisal].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.otherDataAppraisal].recommended}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                      <ice:inputText id="input_otherDataAppraisal" size="90"
+                                     value="#{EditStudyPage.metadata.otherDataAppraisal}"
+                                     required="#{EditStudyPage.studyMap[sfc.otherDataAppraisal].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                     styleClass="formHtmlEnabled">
+                        <f:validator validatorId="XhtmlValidator"/>
+                      </ice:inputText>
+                      <ice:message styleClass="errorMessage" for="input_otherDataAppraisal"/>
+                    </div>
+
+                  </ice:panelGrid>
+                  <ice:panelGrid cellpadding="0" cellspacing="0" visible="#{!EditStudyPage.dataSetAvailabilityEmpty or EditStudyPage.dataSetAvailabilityInputLevel=='recommended' or EditStudyPage.showAll}"
+                                 columns="1" width="100%">
+                    <div jsfc="ice:panelGroup" id="groupPanel14a" styleClass="vdcStudyInfoHeader">
+                      <ice:outputText id="outputText131a" value="Data Set Availability" />
+                    </div>
+                  </ice:panelGrid>
+
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2" id="gridPanel5a"
+                                 visible="#{!empty EditStudyPage.metadata.placeOfAccess or EditStudyPage.studyMap[sfc.placeOfAccess].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                      <dvn:inlinehelp helpMessage="#{editstudybundle.dataAccessPlaceHelp}" linkText="#{editstudybundle.dataAccessPlaceLabel}" heading="#{editstudybundle.dataAccessPlaceHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.placeOfAccess].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.placeOfAccess].recommended}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                      <ice:inputText id="input_placeOfAccess" size="90"
+                                     value="#{EditStudyPage.metadata.placeOfAccess}"
+                                     required="#{EditStudyPage.studyMap[sfc.placeOfAccess].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                     styleClass="formHtmlEnabled">
+                        <f:validator validatorId="XhtmlValidator"/>
+                      </ice:inputText>
+                      <ice:message styleClass="errorMessage" for="input_placeOfAccess"/>
+                    </div>
+                  </ice:panelGrid>
+
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                 styleClass="vdcEditStudyTable "
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{!empty EditStudyPage.metadata.originalArchive or EditStudyPage.studyMap[sfc.originalArchive].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                      <dvn:inlinehelp helpMessage="#{editstudybundle.originalArchiveHelp}" linkText="#{editstudybundle.originalArchiveLabel}" heading="#{editstudybundle.originalArchiveHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.originalArchive].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.originalArchive].recommended}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                      <ice:inputText id="input_originalArchive" size="90"
+                                     value="#{EditStudyPage.metadata.originalArchive}"
+                                     required="#{EditStudyPage.studyMap[sfc.originalArchive].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                     styleClass="formHtmlEnabled">
+                        <f:validator validatorId="XhtmlValidator"/>
+                      </ice:inputText>
+                      <ice:message styleClass="errorMessage" for="input_originalArchive"/>
+                    </div>
+                  </ice:panelGrid>
+
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{!empty EditStudyPage.metadata.availabilityStatus or EditStudyPage.studyMap[sfc.availabilityStatus].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                      <dvn:inlinehelp helpMessage="#{editstudybundle.availabilityHelp}" linkText="#{editstudybundle.availabilityLabel}" heading="#{editstudybundle.availabilityHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.availabilityStatus].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.availabilityStatus].recommended}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                      <ice:inputText id="input_availabilityStatus" size="90"
+                                     value="#{EditStudyPage.metadata.availabilityStatus}"
+                                     required="#{EditStudyPage.studyMap[sfc.availabilityStatus].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                     styleClass="formHtmlEnabled">
+                        <f:validator validatorId="XhtmlValidator"/>
+                      </ice:inputText>
+                      <ice:message styleClass="errorMessage" for="input_availabilityStatus"/>
+                    </div>
+                  </ice:panelGrid>
+
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{!empty EditStudyPage.metadata.collectionSize or EditStudyPage.studyMap[sfc.collectionSize].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                      <dvn:inlinehelp helpMessage="#{editstudybundle.collectionSizeHelp}" linkText="#{editstudybundle.collectionSizeLabel}" heading="#{editstudybundle.collectionSizeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.collectionSize].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.collectionSize].recommended}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                      <ice:inputText id="input_collectionSize" size="90"
+                                     value="#{EditStudyPage.metadata.collectionSize}"
+                                     required="#{EditStudyPage.studyMap[sfc.collectionSize].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                     styleClass="formHtmlEnabled">
+                        <f:validator validatorId="XhtmlValidator"/>
+                      </ice:inputText>
+                      <ice:message styleClass="errorMessage" for="input_collectionSize"/>
+                    </div>
+                  </ice:panelGrid>
+
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{!empty EditStudyPage.metadata.studyCompletion or EditStudyPage.studyMap[sfc.studyCompletion].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                      <dvn:inlinehelp helpMessage="#{editstudybundle.studyCompletionHelp}" linkText="#{editstudybundle.studyCompletionLabel}" heading="#{editstudybundle.studyCompletionHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.studyCompletion].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.studyCompletion].recommended}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                      <ice:inputText size="90" id="input_studyCompletion"
+                                     value="#{EditStudyPage.metadata.studyCompletion}"
+                                     required="#{EditStudyPage.studyMap[sfc.studyCompletion].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                     styleClass="formHtmlEnabled">
+                        <f:validator validatorId="XhtmlValidator"/>
+                      </ice:inputText>
+                      <ice:message styleClass="errorMessage" for="input_studyCompletion"/>
+                    </div>
+                  </ice:panelGrid>
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="1" width="100%"
+                                 visible="#{!EditStudyPage.termsOfUseEmpty or EditStudyPage.termsOfUseInputLevel=='recommended' or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" id="groupPanel14" styleClass="vdcStudyInfoHeader">
+                      <ice:outputText id="outputText131" value="Terms of Use" />
+                    </div>
+                  </ice:panelGrid>
+
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2" id="gridPanel5"
+                                 visible="#{!empty EditStudyPage.metadata.confidentialityDeclaration or EditStudyPage.studyMap[sfc.confidentialityDeclaration].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                      <dvn:inlinehelp helpMessage="#{editstudybundle.confidentialityHelp}" linkText="#{editstudybundle.confidentialityLabel}" heading="#{editstudybundle.confidentialityHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.confidentialityDeclaration].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.confidentialityDeclaration].recommended}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                      <ice:inputTextarea cols="90" rows="4"
+                                         id="input_confidentialityDeclaration"
+                                         value="#{EditStudyPage.metadata.confidentialityDeclaration}"
+                                         required="#{EditStudyPage.studyMap[sfc.confidentialityDeclaration].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                         styleClass="formHtmlEnabled">
+                        <f:validator validatorId="XhtmlValidator"/>
+                      </ice:inputTextarea>
+                      <ice:message styleClass="errorMessage" for="input_confidentialityDeclaration"/>
+                    </div>
+                  </ice:panelGrid>
+
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{!empty EditStudyPage.metadata.specialPermissions or EditStudyPage.studyMap[sfc.specialPermissions].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                      <dvn:inlinehelp helpMessage="#{editstudybundle.specialPermissionsHelp}" linkText="#{editstudybundle.specialPermissionsLabel}" heading="#{editstudybundle.specialPermissionsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.specialPermissions].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.specialPermissions].recommended}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                      <ice:inputTextarea cols="90" rows="4" id="input_specialPermissions"
+                                         value="#{EditStudyPage.metadata.specialPermissions}"
+                                         required="#{EditStudyPage.studyMap[sfc.specialPermissions].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                         styleClass="formHtmlEnabled">
+                        <f:validator validatorId="XhtmlValidator"/>
+                      </ice:inputTextarea>
+                      <ice:message styleClass="errorMessage" for="input_specialPermissions"/>
+                    </div>
+                  </ice:panelGrid>
+
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{!empty EditStudyPage.metadata.restrictions or EditStudyPage.studyMap[sfc.restrictions].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                      <dvn:inlinehelp helpMessage="#{editstudybundle.restrictionsHelp}" linkText="#{editstudybundle.restrictionsLabel}" heading="#{editstudybundle.restrictionsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.restrictions].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.restrictions].recommended}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                      <ice:inputTextarea cols="90" rows="4"
+                                         id="input_restrictions"
+                                         value="#{EditStudyPage.metadata.restrictions}"
+                                         required="#{EditStudyPage.studyMap[sfc.restrictions].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                         styleClass="formHtmlEnabled">
+                        <f:validator validatorId="XhtmlValidator"/>
+                      </ice:inputTextarea>
+                      <ice:message styleClass="errorMessage" for="input_restrictions"/>
+                    </div>
+                  </ice:panelGrid>
+
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{!empty EditStudyPage.metadata.contact or EditStudyPage.studyMap[sfc.contact].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                      <dvn:inlinehelp helpMessage="#{editstudybundle.contactHelp}" linkText="#{editstudybundle.contactLabel}" heading="#{editstudybundle.contactHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.contact].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.contact].recommended}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                      <ice:inputText id="input_contact" size="90"
+                                     value="#{EditStudyPage.metadata.contact}"
+                                     required="#{EditStudyPage.studyMap[sfc.contact].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                     styleClass="formHtmlEnabled">
+                        <f:validator validatorId="XhtmlValidator"/>
+                      </ice:inputText>
+                      <ice:message styleClass="errorMessage" for="input_contact"/>
+                    </div>
+                  </ice:panelGrid>
+
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{!empty EditStudyPage.metadata.citationRequirements or EditStudyPage.studyMap[sfc.citationRequirements].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                      <dvn:inlinehelp helpMessage="#{editstudybundle.citationRequirementsHelp}" linkText="#{editstudybundle.citationRequirementsLabel}" heading="#{editstudybundle.citationRequirementsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.citationRequirements].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.citationRequirements].recommended}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                      <ice:inputTextarea cols="90" rows="4" id="input_citationRequirements"
+                                         value="#{EditStudyPage.metadata.citationRequirements}"
+                                         required="#{EditStudyPage.studyMap[sfc.citationRequirements].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                         styleClass="formHtmlEnabled">
+                        <f:validator validatorId="XhtmlValidator"/>
+                      </ice:inputTextarea>
+                      <ice:message styleClass="errorMessage" for="input_citationRequirements"/>
+                    </div>
+                  </ice:panelGrid>
+
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{!empty EditStudyPage.metadata.depositorRequirements or EditStudyPage.studyMap[sfc.depositorRequirements].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                      <dvn:inlinehelp helpMessage="#{editstudybundle.depositorRequirementsHelp}" linkText="#{editstudybundle.depositorRequirementsLabel}" heading="#{editstudybundle.depositorRequirementsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.depositorRequirements].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.depositorRequirements].recommended}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                      <ice:inputTextarea cols="90" rows="4"
+                                         id="input_depositorRequirements"
+                                         value="#{EditStudyPage.metadata.depositorRequirements}"
+                                         required="#{EditStudyPage.studyMap[sfc.depositorRequirements].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                         styleClass="formHtmlEnabled">
+                        <f:validator validatorId="XhtmlValidator"/>
+                      </ice:inputTextarea>
+                      <ice:message styleClass="errorMessage" for="input_depositorRequirements"/>
+                    </div>
+                  </ice:panelGrid>
+
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{!empty EditStudyPage.metadata.conditions or EditStudyPage.studyMap[sfc.conditions].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                      <dvn:inlinehelp helpMessage="#{editstudybundle.conditionsHelp}" linkText="#{editstudybundle.conditionsLabel}" heading="#{editstudybundle.conditionsHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.conditions].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.conditions].recommended}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                      <ice:inputTextarea cols="90" rows="4"
+                                         id="input_conditions"
+                                         value="#{EditStudyPage.metadata.conditions}"
+                                         required="#{EditStudyPage.studyMap[sfc.conditions].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                         styleClass="formHtmlEnabled">
+                        <f:validator validatorId="XhtmlValidator"/>
+                      </ice:inputTextarea>
+                      <ice:message styleClass="errorMessage" for="input_conditions"/>
+                    </div>
+                  </ice:panelGrid>
+
+                  <ice:panelGrid cellpadding="0" cellspacing="0" columns="2" width="100%"
+                                 styleClass="vdcEditStudyTable"
+                                 columnClasses="vdcEditStudyCol1, vdcEditStudyCol2"
+                                 visible="#{!empty EditStudyPage.metadata.disclaimer or EditStudyPage.studyMap[sfc.disclaimer].recommended or EditStudyPage.showAll}">
+                    <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                      <dvn:inlinehelp helpMessage="#{editstudybundle.disclaimerHelp}" linkText="#{editstudybundle.disclaimerLabel}" heading="#{editstudybundle.disclaimerHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                      <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.disclaimer].required}"/>
+                      <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.disclaimer].recommended}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                      <ice:inputTextarea cols="90" rows="4"
+                                         id="input_disclaimer"
+                                         value="#{EditStudyPage.metadata.disclaimer}"
+                                         required="#{EditStudyPage.studyMap[sfc.disclaimer].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                         styleClass="formHtmlEnabled">
+                        <f:validator validatorId="XhtmlValidator"/>
+                      </ice:inputTextarea>
+                      <ice:message styleClass="errorMessage" for="input_disclaimer"/>
+                    </div>
+                  </ice:panelGrid>
+
+                  <div jsfc="ice:panelGroup" id="groupPanel15" styleClass="vdcStudyInfoHeader"
+                       visible="#{!EditStudyPage.studyNotesEmpty or EditStudyPage.studyMap[sfc.notesInformationType].recommended or EditStudyPage.showAll}">
+                    <ice:outputText id="outputText160" value="Other Information"/>
+                  </div>
+                  <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
+                  <ice:dataTable cellpadding="0" cellspacing="0" width="100%"
+                                 styleClass="vdcEditStudyTable"
+                                 visible="#{!EditStudyPage.studyNotesEmpty or EditStudyPage.studyMap[sfc.notesInformationType].recommended or EditStudyPage.showAll}" value="dummy_datatable">
+                    <ice:column>
+                      <ice:dataTable id="dataTableNotes" cellpadding="0" cellspacing="0"
+                                     styleClass="vdcEditStudyInnerTable"
+                                     columnClasses="vdcEditStudyCol1b, vdcEditStudyCol2, vdcEditStudyCol3"
+                                     binding="#{EditStudyPage.dataTableNotes}"
+                                     value="#{EditStudyPage.metadata.studyNotes}" var="currentRow" width="100%">
+                        <ice:column>
+                          <div jsfc="ice:panelGroup" styleClass="vdcEditStudyField">
+                            <dvn:inlinehelp helpMessage="#{editstudybundle.notesTypeHelp}" linkText="#{editstudybundle.notesTypeLabel}" heading="#{editstudybundle.notesTypeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                            <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.notesInformationType].required}"/>
+                            <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.notesInformationType].recommended}"/>
+                          </div>
+                        </ice:column>
+                        <ice:column>
+                          <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloatWrap">
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1">
+                              <dvn:inlinehelp helpMessage="#{editstudybundle.notesTypeHelp}" linkText="#{editstudybundle.notesTypeLabel}" heading="#{editstudybundle.notesTypeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                              <br/>
+                              <ice:inputText maxlength="255" binding="#{EditStudyPage.inputNoteType}" id="input_notesInformationType"
+                                             value="#{currentRow.type}"
+                                             required="#{EditStudyPage.studyMap[sfc.notesInformationType].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                             styleClass="formHtmlEnabled">
+                                <f:validator validatorId="XhtmlValidator"/>
+                              </ice:inputText>
+                              <ice:message styleClass="errorMessage" for="input_notesInformationType"/>
+                            </div>
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField"  >
+                              <dvn:inlinehelp helpMessage="#{editstudybundle.notesSubjectHelp}" linkText="#{editstudybundle.notesSubjectLabel}" heading="#{editstudybundle.notesSubjectHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                              <br/>
+                              <ice:inputText id="input_notesInformationSubject"
+                                             maxlength="255"
+                                             binding="#{EditStudyPage.inputNoteSubject}"
+                                             value="#{currentRow.subject}"
+                                             validator="#{EditStudyPage.validateStudyNote}"
+                                             required="#{EditStudyPage.studyMap[sfc.notesInformationSubject].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                             styleClass="formHtmlEnabled">
+                                <f:validator validatorId="XhtmlValidator"/>
+                              </ice:inputText>
+                              <ice:message styleClass="errorMessage" for="input_notesInformationSubject"/>
+                            </div>
+                            <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat3 vdcEditStudyGroupField" >
+                              <dvn:inlinehelp helpMessage="#{editstudybundle.notesTextHelp}" linkText="#{editstudybundle.notesTextLabel}" heading="#{editstudybundle.notesTextHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                              <br/>
+                              <ice:inputText id="input_notesText" size="90"
+                                             binding="#{EditStudyPage.inputNoteText}"
+                                             validator="#{EditStudyPage.validateStudyNote}"
+                                             value="#{currentRow.text}"
+                                             required="#{EditStudyPage.studyMap[sfc.notesText].required and EditStudyPage.validateRequired}" requiredMessage="This field is required."
+                                             styleClass="formHtmlEnabled">
+                                <f:validator validatorId="XhtmlValidator"/>
+                              </ice:inputText>
+                              <ice:message styleClass="errorMessage" for="input_notesText"/>
+                            </div>
+                          </div>
+                        </ice:column>
+                        <ice:column>
+                          <ice:commandButton image="/resources/images/icon_add.gif" actionListener="#{EditStudyPage.addRow}"/>
+                          <ice:commandButton rendered="#{EditStudyPage.dataTableNotes.rowCount gt 1}" image="/resources/images/icon_remove.gif" actionListener="#{EditStudyPage.removeRow}" />
+                        </ice:column>
+                      </ice:dataTable>
+                    </ice:column>
+                  </ice:dataTable>              
+              </ice:panelGroup>
+
+
+            <div jsfc="ice:panelGroup" styleClass="vdcTextRight dvnFormPadding dvnFormMargin">
+              <ice:commandButton binding ="#{EditStudyPage.saveCommand2}" id="saveCommand2" value="Save" actionListener="#{EditStudyPage.openPopup}"/>
+              <ice:commandButton id="cancelCommand" value="Cancel" immediate="true" action="#{EditStudyPage.cancel}"/>
+            </div>
+          </div>
+        </div>
+      </ice:form>
+  
+
+    </gui:define>
+  </gui:composition>
+</body>
+</html>

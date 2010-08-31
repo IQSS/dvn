@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:gui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:ice="http://www.icesoft.com/icefaces/component">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+  <gui:composition template="/template.xhtml">
+    <gui:param name="pageTitle" value="#{bundlePageInfo.editGroupTitle} - #{VDCRequest.dataversePageTitle}"/>
+    <gui:define name="body">
+      <ice:form id="form1">
+        <f:verbatim rendered="#{param.userGroupId == null}">
+          <script type="text/javascript">
+              //<![CDATA[
+              function showAll(){
+                  if (location.href.indexOf("userGroupType") != -1) {
+                      if (document.getElementById('form1:usergroups') != null)
+                          document.getElementById('form1:usergroups').style.display='none';
+                      if (document.getElementById('form1:ipgroups') != null)
+                          document.getElementById('form1:ipgroups').style.display='none';
+                  }
+              }
+              function setUserGroupType(obj) {
+                  if (obj.checked) {
+                      if (obj.value == "usergroup")
+                          document.getElementById('form1:userGroupType').value = "usergroup";
+                      else
+                          document.getElementById('form1:userGroupType').value = "ipgroup";
+                  }
+              }
+              //]]>
+          </script>
+        </f:verbatim>
+        <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+        <input type="hidden" name="pageName" value="EditUserGroupPage"/>
+        <div class="dvn_section">
+           <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
+             <div class="dvnMsgBlockContainer">
+               <ice:outputText value="#{bundlePageInfo.editGroupHelp}" escape="false"/>
+             </div>
+          </div>
+          <div class="dvn_sectionTitle">
+            <ice:outputText value="#{bundlePageInfo.editGroupTitle}"/>
+          </div>
+          <div class="dvn_sectionBox">
+            <div class="dvn_margin12">
+              <div jsfc="ice:panelGroup" styleClass="vdcHelpText">
+                <ice:graphicImage value="/resources/images/icon_required.gif"/> <ice:outputText value="Indicates a required field."/>
+              </div>
+              <!-- group name -->
+              <ice:panelGrid cellpadding="0" cellspacing="0" columns="2"
+                             columnClasses="vdcColPadded, vdcColPadded" id="gridPanel2">
+                <div jsfc="ice:panelGroup" id="groupPanel1">
+                  <ice:outputText value="Group Name"/>
+                  <ice:graphicImage id="image1" value="/resources/images/icon_required.gif"/>
+                </div>
+                <div jsfc="ice:panelGroup">
+                  <ice:inputText id="inputGroupName" size="40" value="#{EditUserGroupPage.group.name}" required="true" requiredMessage="This field is required." onkeypress="if (window.event) return processEvent('', 'form1:btnSave'); else return processEvent(event, 'form1:btnSave');">
+                    <f:validator validatorId="CharacterValidator"/>
+                  </ice:inputText>
+                  <ice:message styleClass="errorMessage" for="inputGroupName"/>
+                </div>
+                <div jsfc="ice:panelGroup" id="groupPanelFriendlyName">
+                  <ice:outputText value="Friendly Group Name"/>
+                  <ice:graphicImage value="/resources/images/icon_required.gif"/>
+                </div>
+                <div jsfc="ice:panelGroup">
+                  <ice:inputText id="inputFriendlyGroupName" 
+                                 size="40"
+                                 value="#{EditUserGroupPage.group.friendlyName}"
+                                 required="true" requiredMessage="This field is required."
+                                 onkeypress="if (window.event) return processEvent('', 'form1:btnSave'); else return processEvent(event, 'form1:btnSave');"/>
+                  <ice:message styleClass="errorMessage" for="inputFriendlyGroupName"/>
+                </div>
+              </ice:panelGrid>
+                  <div jsfc="ice:panelGroup" rendered="true">
+                <ice:selectOneRadio id="userGroupType"  
+                                    required="true"
+                                    requiredMessage="This field is required."
+                                    partialSubmit="true"
+                                    value="#{EditUserGroupPage.userGroupType}">
+                  <f:selectItems value="#{EditUserGroupPage.userGroupTypes}"/>
+                </ice:selectOneRadio>
+                <ice:message styleClass="errorMessage" for="userGroupType"/>               
+              </div>
+              <br/>
+              <!--TBD (wjb) What type of group is this -->
+             <!-- <ice:inputHidden valueChangeListener="#{EditUserGroupPage.changeUserGroupType}" value="#{EditUserGroupPage.userGroupType}" id="userGroupType"/>  -->
+              <!-- User Groups -->
+              <div jsfc="ice:panelGroup" styleClass="dvnFormPadding" rendered="#{ EditUserGroupPage.userGroupType == 'usergroup'}" id="usergroups">
+                <ice:outputText styleClass="vdcSubHeaderColor" value="Usernames"/>
+                <div jsfc="ice:panelGroup" styleClass="vdcHelpText">
+                  <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" value="/resources/images/icon_info.gif"/>
+                  <ice:outputText value="Enter usernames in the field below. Add/remove a user by clicking the icons next to the username field."/>
+                </div>
+                <ice:dataTable styleClass="dvnFormDataTable" cellpadding="0" cellspacing="0"
+                               binding="#{EditUserGroupPage.dataTableUserNames}" var="currentRow" value="#{EditUserGroupPage.userDetails}">
+                  <ice:column>
+                    <ice:inputText id="usertable" value="#{currentRow.userName}" validator="#{EditUserGroupPage.validateUserName}" immediate="true"/>
+                  </ice:column>
+                  <ice:column>
+                    <ice:commandButton image="/resources/images/icon_add.gif" actionListener="#{EditUserGroupPage.addRow}"/>
+                    <ice:commandButton image="/resources/images/icon_remove.gif" actionListener="#{EditUserGroupPage.removeRow}"/>
+                  </ice:column>
+                  <ice:column>
+                    <ice:message for="usertable" styleClass="errorMessage"/>
+                    <ice:outputText styleClass="errorMessage" value="Username is invalid." rendered = "#{!currentRow.valid}"/>
+                    <ice:outputText styleClass="errorMessage" value="Duplicate username." rendered = "#{currentRow.duplicate}"/>
+                  </ice:column>
+                </ice:dataTable>
+              </div>
+              <!-- IP Based Users Groups -->
+              <div jsfc="ice:panelGroup" styleClass="dvnFormPadding" rendered="#{EditUserGroupPage.userGroupType == 'ipgroup'}" id="ipgroups">
+                <ice:outputText styleClass="vdcSubHeaderColor" value="IP Addresses/Domains"/>
+                <div jsfc="ice:panelGroup" styleClass="vdcHelpText">
+                  <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" value="/resources/images/icon_info.gif"/>
+                  <ice:outputText value="Enter IP addresses (192.168.2.1) and/or domain names (www.host.edu) in the field below. Wildcards are acceptable. Add/remove an entry by clicking the icons next to the username field."/>
+                </div>
+                <ice:dataTable styleClass="dvnFormDataTable" 
+                               cellpadding="0"
+                               cellspacing="0"
+                               binding="#{EditUserGroupPage.dataTableIpAddresses}"
+                               var="currentIpRow"
+                               value="#{EditUserGroupPage.group.loginDomains}">
+                  <ice:column>
+                    <ice:inputText id="iptable"
+                                   binding="#{EditUserGroupPage.inputLoginDomains}"
+                                   validator="#{EditUserGroupPage.validateLoginDomain}"
+                                   value="#{currentIpRow.ipAddress}"
+                                   valueChangeListener="#{EditUserGroupPage.changeIpTable}"
+                                   />
+                  </ice:column>
+                  <ice:column>
+                    <ice:commandButton image="/resources/images/icon_add.gif" actionListener="#{EditUserGroupPage.addIpRow}"/>
+                    <ice:commandButton image="/resources/images/icon_remove.gif" actionListener="#{EditUserGroupPage.removeIpRow}"/>
+                  </ice:column>
+                  <ice:column>
+                    <ice:message for="iptable" styleClass="errorMessage"/>
+                  </ice:column>
+                </ice:dataTable>
+              </div>
+              <!-- ******************** Affiliate login services for IP Groups ****************** -->
+              <div jsfc="ice:panelGroup" styleClass="dvnFormPadding" rendered="#{EditUserGroupPage.userGroupType == 'ipgroup'}" id="affiliateLoginServices">
+                <ice:outputText styleClass="vdcSubHeaderColor" value="Affiliate Login Service"/>
+                <div jsfc="ice:panelGroup" styleClass="vdcHelpText" >
+                  <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" value="/resources/images/icon_info.gif"/>
+                  <ice:outputText value="Enter affiliate names (e.g. MySchool's Pin Service) and urls (http://ez.pinserver.edu) in the field below. Add/remove an entry by clicking the icons next to the input field."/>
+                </div>
+                <ice:selectBooleanCheckbox id="chkAffiliateLoginService"
+                                        valueChangeListener="#{EditUserGroupPage.changeChkAffiliateLoginService}"
+                                        partialSubmit="true"
+                                        value="#{EditUserGroupPage.chkAffiliateLoginService}">
+                  <ice:outputLabel for="chkAffiliateLoginService" value="This IP group has an affiliate login service"/>
+                </ice:selectBooleanCheckbox>
+                <br/>
+                <ice:dataTable styleClass="dvnFormDataTable dvnFormPadding" 
+                               binding="#{EditUserGroupPage.affiliatesTable}"
+                               immediate="true"
+                               partialSubmit="true"
+                               onblur="submit()"
+                               rendered="#{EditUserGroupPage.chkAffiliateLoginService}"
+                               value="#{EditUserGroupPage.group.loginAffiliates}"
+                               var="affiliate">
+                  <ice:column>
+                    <f:facet name="header">
+                      <ice:outputText value="Affiliate Name"/>
+                    </f:facet>
+                    <ice:inputText id="affiliateName"
+                                   value="#{affiliate.name}"
+                                   valueChangeListener="#{EditUserGroupPage.changeAffiliateTable}"/>
+                  </ice:column>
+                  <ice:column>
+                    <f:facet name="header">
+                      <ice:outputText value="Affiliate URL"/>
+                    </f:facet>
+                    <ice:inputText id="affiliateURL"
+                                   value="#{affiliate.url}"
+                                   valueChangeListener="#{EditUserGroupPage.changeAffiliateTable}"/>
+                  </ice:column>
+                  <ice:column>
+                    <ice:commandButton image="/resources/images/icon_add.gif" actionListener="#{EditUserGroupPage.addAffiliateRow}"/>
+                    <ice:commandButton image="/resources/images/icon_remove.gif" actionListener="#{EditUserGroupPage.removeAffiliateRow}"/>
+                  </ice:column>
+                  <ice:column>
+                    <ice:message for="affiliateName" styleClass="errorMessage"/>
+                  </ice:column>
+                </ice:dataTable>
+              </div>
+              <!-- end ip groups -->
+              <!-- Part of the code related to affiliates has been removed - can be recovered from earlier versions of this file (from revision 1672) - 1/29/08 by MC -->
+              <f:verbatim rendered="#{param.userGroupId == null}">
+                <script type="text/javascript">
+                    // this is done to ensure that the collections are properly inited. wjb
+                    showAll();
+                </script>
+              </f:verbatim>
+              <div jsfc="ice:panelGroup" styleClass="dvnFormPadding dvnFormMargin">
+                <ice:commandButton id="btnSave" value="Save" action="#{EditUserGroupPage.save}"/>
+                <ice:commandButton immediate="true" value="Cancel" action="#{EditUserGroupPage.cancel}"/>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ice:form>
+    </gui:define>
+  </gui:composition>
+</body>
+</html>

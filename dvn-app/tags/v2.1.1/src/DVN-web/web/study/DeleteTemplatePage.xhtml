@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:gui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:ice="http://www.icesoft.com/icefaces/component">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+  <gui:composition template="/template.xhtml">
+    <gui:param name="pageTitle" value="Delete Study Template - #{VDCRequest.dataversePageTitle}"/>
+    <gui:define name="body">
+      <ice:form id="form1">
+        <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+        <ice:inputHidden id="templateId" value="#{DeleteTemplatePage.templateId}"/>
+        <div class="dvn_section">
+          <div class="dvn_sectionTitle">
+            <ice:outputText value="Delete Study Template"/>
+          </div>
+          <div class="dvn_sectionBox">
+            <div class="dvn_margin12">
+              <div>
+                <ice:outputText styleClass="warnMessage" value="Are you sure you want to delete "/>
+                <ice:outputFormat id="outputText3" styleClass="vdcTextStandOut" value="{0}">
+                  <f:param value="#{DeleteTemplatePage.templateName}"/>
+                </ice:outputFormat>
+                <ice:outputText id="outputText4" value="?"/>
+              </div>
+              <div class="dvnFormPadding dvnFormMargin">
+                <ice:commandButton id="button1" value="Delete" action="#{DeleteTemplatePage.delete}"/>
+                <ice:commandButton immediate="true" id="button2" value="Cancel" action="#{DeleteTemplatePage.cancel}"/>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ice:form>
+    </gui:define>
+  </gui:composition>
+</body>
+</html>

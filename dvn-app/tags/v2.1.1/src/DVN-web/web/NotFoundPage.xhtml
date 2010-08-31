@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:gui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:ice="http://www.icesoft.com/icefaces/component">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+
+<body>
+    <gui:composition template="/template.xhtml">
+        <gui:param name="pageTitle" value="Page Not Found - #{VDCRequest.dataversePageTitle}"/>
+        <gui:define name="body">
+            <ice:form id="aboutUsForm">
+                <ice:inputHidden rendered="#{VDCRequest.currentVDCId != null}" id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+                <div class="dvn_section">
+                    <div class="dvn_sectionBoxNoBorders">
+                        <div class="dvn_margin12">
+                            <h1>File not found</h1>
+                            <ice:outputText escape="false" value="The page on &lt;a href='/dvn'&gt;#{VDCRequest.vdcNetwork.name} Dataverse Network&lt;/a&gt; that you requested cannot be found. If you reached this page by selecting a bookmark that worked previously, it is likely the file was renamed, moved or currently is unavailable. Please check the URL and update your bookmark."/>
+                        </div>
+                    </div>
+                </div>
+            </ice:form>
+        </gui:define>
+    </gui:composition>
+</body>
+</html>

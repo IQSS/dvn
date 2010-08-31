@@ -1,0 +1,5 @@
+# service providers by the dvn statdataio implementation
+edu.harvard.iq.dvn.ingest.statdataio.impl.plugins.dta.DTAFileReaderSpi
+edu.harvard.iq.dvn.ingest.statdataio.impl.plugins.por.PORFileReaderSpi
+edu.harvard.iq.dvn.ingest.statdataio.impl.plugins.sav.SAVFileReaderSpi
+

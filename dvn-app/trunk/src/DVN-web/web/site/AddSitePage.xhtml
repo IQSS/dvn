@@ -200,7 +200,7 @@
                   <div jsfc="ice:panelGroup">
                     <ice:outputLabel for="selectedGroup" id="selectedGroupLabel">
                       <ice:outputText id="selectedGroupText" value="Classification"/>
-
+                      <ice:graphicImage value="#{bundle.iconRequired}" rendered="#{VDCRequest.vdcNetwork.requireDVclassification}" />
                     </ice:outputLabel>
                        <ice:message for="classificationCheckBox" id ="boxErrorMsg"  styleClass="errorMessage"   />
                   </div>

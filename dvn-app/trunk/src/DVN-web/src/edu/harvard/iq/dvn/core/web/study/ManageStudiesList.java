@@ -42,6 +42,7 @@ public class ManageStudiesList extends VDCBaseBean {
     private static final String DATE_CREATED_COLUMN = "dateCreated";
     private static final String STATUS_COLUMN = "status";
     private static final String DATE_RELEASED_COLUMN = "dateReleased";
+    private static final String DATE_DEACCESSIONED_COLUMN = "dateDeaccessioned";
     private static final String VERSION_COLUMN = "version";
     private static final String DATE_UPDATED_COLUMN = "lastUpdated";    
     private static final String ACTION_COLUMN = "actionReleased";
@@ -109,6 +110,8 @@ public class ManageStudiesList extends VDCBaseBean {
                 orderBy="s.createTime";
             } else if (sortColumnName.equals(DATE_RELEASED_COLUMN)) {
                 orderBy="v.releaseTime";
+            } else if (sortColumnName.equals(DATE_DEACCESSIONED_COLUMN)) {
+                orderBy="v.archiveTime";
             } else if (sortColumnName.equals(STATUS_COLUMN)) {
                 orderBy="v.versionState";
              } else if (sortColumnName.equals(VERSION_COLUMN)) {
@@ -161,6 +164,7 @@ public class ManageStudiesList extends VDCBaseBean {
     public String getCreatedColumn() {return DATE_CREATED_COLUMN; }
     public String getStatusColumn() { return STATUS_COLUMN; }
     public String getReleasedColumn() {return DATE_RELEASED_COLUMN; }
+    public String getDeaccessionedColumn() {return DATE_DEACCESSIONED_COLUMN; }
     public String getVersionColumn() { return VERSION_COLUMN; }
     public String getUpdatedColumn() { return DATE_UPDATED_COLUMN; }
     public String getActionColumn() {return ACTION_COLUMN; }

@@ -196,6 +196,18 @@
                       </f:facet>
                       <ice:outputText value="#{studyUI.study.latestVersion.releaseTime}"/>
                     </ice:column>
+
+                    <ice:column>
+                      <f:facet name="header">
+                        <ice:commandSortHeader
+                          columnName="#{ManageStudiesList.deaccessionedColumn}"
+                          arrow="true">
+                          <ice:outputText value="#{bundle.MSDeaccessionedColumn}"/>
+                        </ice:commandSortHeader>
+                      </f:facet>
+                      <ice:outputText value="#{studyUI.study.latestVersion.archiveTime}"/>
+                    </ice:column>
+
                     <ice:column>
                       <f:facet name="header">
                         <ice:commandSortHeader

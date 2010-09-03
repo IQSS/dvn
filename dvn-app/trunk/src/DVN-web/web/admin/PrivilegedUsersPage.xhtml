@@ -37,12 +37,11 @@
                 </td>
                 <td>
                     <ice:selectOneMenu value="#{PrivilegedUsersPage.siteRestriction}"  disabled="#{!PrivilegedUsersPage.releasable}">
-                    <f:selectItem itemLabel="Not Released" itemValue="Restricted"/>
-                    <f:selectItem itemLabel="Released" itemValue="Public"/>
-                  </ice:selectOneMenu>
-                     <ice:outputText value="#{bundlePageInfo.releasableDVErrorMessage}" rendered="#{!PrivilegedUsersPage.releasable}"/>
+                        <f:selectItem itemLabel="Not Released" itemValue="Restricted"/>
+                        <f:selectItem itemLabel="Released" itemValue="Public"/>
+                    </ice:selectOneMenu>
+                    <ice:outputText styleClass="errorMessageBlock" value="#{bundlePageInfo.releasableDVErrorMessage}" rendered="#{!PrivilegedUsersPage.releasable}"/>
                 </td>
-                 
               </tr>
               <div jsfc="ice:panelGroup" rendered="#{!PrivilegedUsersPage.vdc.harvestingDv}">
                   <tr>

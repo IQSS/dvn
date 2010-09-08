@@ -1118,6 +1118,18 @@ public class VDC implements java.io.Serializable  {
         this.vdcActivity = vdcActivity;
     }
 
+    @OneToOne(mappedBy = "vdc", cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
+    private LockssConfig lockssConfig;
+
+    public LockssConfig getLockssConfig() {
+        return lockssConfig;
+    }
+
+    public void setLockssConfig(LockssConfig lockssConfig) {
+        this.lockssConfig = lockssConfig;
+    }
+    
+
     /**
      * @return the allowStudyComments
      */

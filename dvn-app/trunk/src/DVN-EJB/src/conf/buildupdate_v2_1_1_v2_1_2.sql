@@ -10,3 +10,5 @@ update vdcnetwork set  requireDVDescription = false,
  requireDVclassification = false,
  requireDVstudiesforrelease = false;
 
+ALTER TABLE oaiset ADD COLUMN lockssconfig_id bigint;
+ALTER TABLE oaiset ALTER COLUMN lockssconfig_id SET STORAGE PLAIN;

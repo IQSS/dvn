@@ -25,7 +25,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Version;
 
 /**
@@ -66,6 +67,15 @@ public class OAISet implements Serializable {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public LockssConfig getLockssConfig() {
+        return lockssConfig;
+    }
+
+    public void setLockssConfig(LockssConfig lockssConfig) {
+        this.lockssConfig = lockssConfig;
+    }
+
     
     @Column(columnDefinition="TEXT")
     private String name;
@@ -76,6 +86,10 @@ public class OAISet implements Serializable {
    
     @Column(columnDefinition="TEXT")
     private String description;
+
+    @OneToOne
+    @JoinColumn(unique=true)
+    LockssConfig lockssConfig;
 
    /**
      * Holds value of property version.

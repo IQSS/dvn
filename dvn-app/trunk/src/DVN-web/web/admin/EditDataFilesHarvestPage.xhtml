@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:gui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:ice="http://www.icesoft.com/icefaces/component">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+  <gui:composition template="/template.xhtml">
+    <gui:param name="pageTitle" value="Data Files Harvesting (LOCKSS Harversting) - #{VDCRequest.dataversePageTitle}"/>
+    <gui:define name="body">
+      <ice:form id="form1">
+        <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+        <input type="hidden" name="pageName" value="EditDataFilesHarverstPage"/>
+        <!--<ice:inputHidden id="harvestId" value="#{EditHarvestSitePage.harvestId}"/>-->
+        <div class="dvn_section">
+          <div class="dvn_sectionTitle">
+            <ice:outputText value="Data Files Harvesting (LOCKSS Harversting)"/>
+          </div>
+          <div jsfc="ice:panelGroup">
+              <table class="dvnPermissionsTable" cellspacing="0" cellpadding="0" border="0">
+                  <tr><td colspan="2" class="dvnPermissionsTableHeader"><ice:outputText value="Dataverse Settings"/></td></tr>
+                  <tr>
+                    <td class="dvnPermissionsTableOption">
+                        <ice:outputText value="OAI Set Model"/>
+                    </td>
+                    <td>
+                        <ice:selectOneMenu id="oaiSetModel">
+                            <f:selectItem itemValue="notSelected" itemLabel="Not Selected"/>
+                        </ice:selectOneMenu>
+                        <ice:message id="oaiSetModelMsg" styleClass="errorMessage" for="oaiSetModel"/>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="dvnPermissionsTableOption">
+                        <ice:outputText value="Harvesting Type"/>
+                    </td>
+                    <td>
+                        <ice:selectOneRadio id="harvestType"
+                                            layout="pageDirection"
+                                            required="true"
+                                            requiredMessage="This field is required.">
+                            <f:selectItem itemLabel="Disable harvesting of all data files" itemValue="disable"/>
+                            <f:selectItem itemLabel="Enable harvesting of public data files" itemValue="enablepublic"/>
+                            <f:selectItem itemLabel="Enable harvesting of public data files for specified servers only" itemValue="enablespecific"/>
+                        </ice:selectOneRadio>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="dvnPermissionsTableOption">
+                        <ice:outputText value="Restricted Data Files"/>
+                    </td>
+                    <td>
+                        <ice:selectBooleanCheckbox id="enableRestrictedCheckBox"/>
+                        <ice:outputText id="enableRestrictedLabel" value=" Enable LOCKSS harvesting of restricted data files from specified servers."/>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="dvnPermissionsTableOption">
+                        <ice:outputText value="IP Addresses"/>
+                    </td>
+                    <td>
+                        <div jsfc="ice:panelGroup" styleClass="vdcHelpText">
+                          <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" value="/resources/images/icon_info.gif"/>
+                          <ice:outputText value="Enter IP addresses (192.168.2.1) and/or domain names (www.host.edu) in the field below. Wildcards are acceptable. Add/remove an entry by clicking the icons next to the username field."/>
+                        </div>
+                        <ice:dataTable styleClass="dvnFormDataTable"
+                                       cellpadding="0"
+                                       cellspacing="0"
+                                       var="currentIpRow">
+                          <ice:column>
+                            <ice:inputText id="iptable"
+                                           value=""
+                                           />
+                          </ice:column>
+                          <ice:column>
+                            <ice:commandButton image="/resources/images/icon_add.gif"/>
+                            <ice:commandButton image="/resources/images/icon_remove.gif"/>
+                          </ice:column>
+                          <ice:column>
+                            <ice:message for="iptable" styleClass="errorMessage"/>
+                          </ice:column>
+                        </ice:dataTable>
+                    </td>
+                  </tr>
+                  <tr><td colspan="2" class="dvnPermissionsTableHeader"><ice:outputText value="Licensing Settings"/></td></tr>
+                  <tr>
+                    <td class="dvnPermissionsTableOption">
+                        <ice:outputText value="Licensing Options"/>
+                    </td>
+                    <td>
+                        <div jsfc="ice:panelGroup" styleClass="vdcHelpText">
+                          <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" value="/resources/images/icon_info.gif"/>
+                          <ice:outputText value="Designate the license terms to be associated with harvesting content."/>
+                        </div>
+                        <div jsfc="ice:panelGroup">
+                            <ice:selectOneMenu id="harvestingLicenseOptions">
+                                <f:selectItem itemValue="notSelected" itemLabel="Not Selected"/>
+                            </ice:selectOneMenu>
+                        </div>
+                        <ice:inputTextarea cols="100" rows="8" styleClass="formHtmlEnabled"
+                                           id="harvestingLicensingTerms" value="">
+                          <f:validator validatorId="XhtmlValidator"/>
+                        </ice:inputTextarea>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="dvnPermissionsTableOption">
+                        <ice:outputText value="Additional Terms"/>
+                    </td>
+                    <td>
+                        <ice:inputTextarea cols="100" rows="5" styleClass="formHtmlEnabled"
+                                           id="additionalLicensingTerms" value="">
+                          <f:validator validatorId="XhtmlValidator"/>
+                        </ice:inputTextarea>
+                    </td>
+                  </tr>
+              </table>
+          </div>
+          <div class="dvnFormPadding dvnFormMargin">
+            <!--<ice:commandButton id="button1" binding="#{EditHarvestSitePage.saveCommand}" value="Save" action="#{EditHarvestSitePage.save}"/>
+            <ice:commandButton id="button2" immediate="true" value="Cancel" action="#{EditHarvestSitePage.cancel}"/>-->
+          </div>
+        </div>
+      </ice:form>
+      <script type="text/javascript">
+          // initial call to disable subsetting Restricted (if needed)
+          checkSubsetting( false );
+          updateScheduleInput();
+          hideScheduling();
+      </script>
+    </gui:define>
+  </gui:composition>
+</body>
+</html>
+

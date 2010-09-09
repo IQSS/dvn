@@ -739,6 +739,11 @@ ALTER TABLE vdcnetwork DISABLE TRIGGER ALL;
 
 INSERT INTO vdcnetwork (id, version, name, networkpageheader, networkpagefooter, announcements, displayannouncements, aboutthisdataversenetwork, contactemail, defaultvdcheader, defaultvdcfooter, defaultvdcabouttext, defaultvdcannouncements, displayvdcannouncements, displayvdcrecentstudies, defaulttemplate_id, allowcreaterequest, defaultnetworkadmin_id,protocol,authority,handleregistration,termsofuseenabled, deposittermsofuseenabled, downloadtermsofuseenabled, defaultdisplaynumber) VALUES (1, 1, '[Your]', ' ', ' ', 'A description of your Dataverse Network or announcements may be added here. Use Network Options to edit or remove this text.', TRUE, 'This About page is not used anymore in the DVN application.', 'dataverse@lists.hmdc.harvard.edu', ' ', ' ', 'This About page is not used anymore in the DVN application.', 'A description of your Dataverse or announcements may be added here. Use Options to edit or remove this text.', TRUE, TRUE, 1, FALSE,1,'hdl','TEST',false,false,false,false,16);
 
+update vdcnetwork set  requireDVDescription = false,
+ requireDVaffiliation = false,
+ requireDVclassification = false,
+ requireDVstudiesforrelease = false;
+
 ALTER TABLE vdcnetwork ENABLE TRIGGER ALL;
 
 

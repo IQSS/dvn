@@ -44,6 +44,7 @@ import com.icesoft.faces.component.ext.HtmlOutputText;
 import com.icesoft.faces.component.ext.HtmlOutputLabel;
 import com.icesoft.faces.component.ext.HtmlInputText;
 import com.icesoft.faces.component.ext.HtmlCommandButton;
+import com.icesoft.faces.component.ext.HtmlInputTextarea;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.web.util.CharacterValidator;
 import edu.harvard.iq.dvn.core.util.PropertyUtil;
@@ -301,6 +302,8 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
         String dtype        = dataverseType;
         String name         = (String) dataverseName.getValue();
         String alias        = (String) dataverseAlias.getValue();
+        String strAffiliation = (String) affiliation.getValue();
+        String strShortDescription = (String) shortDescription.getValue();
         Long userId = getVDCSessionBean().getLoginBean().getUser().getId();
 
 
@@ -317,8 +320,8 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
             createdVDC.setDisplayNewStudies(getVDCRequestBean().getVdcNetwork().isDisplayVDCRecentStudies());
             createdVDC.setAboutThisDataverse(getVDCRequestBean().getVdcNetwork().getDefaultVDCAboutText());
             createdVDC.setContactEmail(getVDCSessionBean().getLoginBean().getUser().getEmail());
-            createdVDC.setAffiliation(affiliation);
-            createdVDC.setDvnDescription(shortDescription);
+            createdVDC.setAffiliation(strAffiliation);
+            createdVDC.setDvnDescription(strShortDescription);
             vdcService.edit(createdVDC);
             getVDCRequestBean().setCurrentVDC(createdVDC);
 
@@ -363,10 +366,12 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
      
         String name = (String) dataverseName.getValue();
         String alias = (String) dataverseAlias.getValue();
+        String strAffiliation = (String) affiliation.getValue();
+        String strShortDescription = (String) shortDescription.getValue();
         Long userId = getVDCSessionBean().getLoginBean().getUser().getId();
         boolean success = true;
         if (validateClassificationCheckBoxes()) {
-            vdcService.createScholarDataverse(userId, firstName, lastName, name, affiliation, alias, dataversetype);
+            vdcService.createScholarDataverse(userId, firstName, lastName, name, strAffiliation, alias, dataversetype);
             VDC createdScholarDataverse = vdcService.findScholarDataverseByAlias(alias);
             saveClassifications(createdScholarDataverse);
   
@@ -377,7 +382,7 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
             createdScholarDataverse.setDisplayNewStudies(getVDCRequestBean().getVdcNetwork().isDisplayVDCRecentStudies());
             createdScholarDataverse.setAboutThisDataverse(getVDCRequestBean().getVdcNetwork().getDefaultVDCAboutText());
             createdScholarDataverse.setContactEmail(getVDCSessionBean().getLoginBean().getUser().getEmail());
-            createdScholarDataverse.setDvnDescription(shortDescription);
+            createdScholarDataverse.setDvnDescription(strShortDescription);
             vdcService.edit(createdScholarDataverse);
             getVDCRequestBean().setCurrentVDC(createdScholarDataverse);
             // Refresh User object in LoginBean so it contains the user's new role of VDC administrator.
@@ -448,6 +453,13 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
                     context.addMessage(toValidate.getClientId(context), message);
                 }
             }
+            if ((newValue == null || newValue.trim().length() == 0) && getVDCRequestBean().getVdcNetwork().isRequireDVdescription()) {
+                FacesMessage message = new FacesMessage("The field must have a value.");
+                context.addMessage(toValidate.getClientId(context), message);
+                ((UIInput) toValidate).setValid(false);
+                context.renderResponse();
+            }
+
         }
 
     public void validateName(FacesContext context,
@@ -618,21 +630,21 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
     /**
      * Holds value of property affiliation.
      */
-    private String affiliation;
+    private HtmlInputText affiliation;
 
     /**
      * Getter for property affiliation.
      * @return Value of property affiliation.
      */
-    public String getAffiliation() {
+    public HtmlInputText getAffiliation() {
         return this.affiliation;
     }
 
-    public String getShortDescription() {
+    public HtmlInputTextarea getShortDescription() {
         return shortDescription;
     }
 
-    public void setShortDescription(String shortDescription) {
+    public void setShortDescription(HtmlInputTextarea shortDescription) {
         this.shortDescription = shortDescription;
     }
 
@@ -640,11 +652,11 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
      * Setter for property affiliation.
      * @param affiliation New value of property affiliation.
      */
-    public void setAffiliation(String affiliation) {
+    public void setAffiliation(HtmlInputText affiliation) {
         this.affiliation = affiliation;
     }
 
-    String shortDescription;
+    HtmlInputTextarea shortDescription;
 
     //END Group Select widgets
     /**
@@ -652,14 +664,7 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
      *
      *
      */
-    /**
-     * capture value change event
-     *
-     */
-    public void changeAffiliation(ValueChangeEvent event) {
-        String newValue = (String) event.getNewValue();
-        this.setAffiliation(newValue);
-    }
+
 
     public void changeDataverseOption(ValueChangeEvent event) {
         String newValue = (String) event.getNewValue();
@@ -684,10 +689,22 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
             Object value) {
         String newValue = (String) value;
         if (newValue == null || newValue.trim().length() == 0) {
+            ((UIInput) toValidate).setValid(false);
             FacesMessage message = new FacesMessage("The field must have a value.");
             context.addMessage(toValidate.getClientId(context), message);
             context.renderResponse();
         }
+    }
+    public void validateIsEmptyRequiredAffiliation(FacesContext context,
+            UIComponent toValidate,
+            Object value) {
+        String newValue = (String) value;
+        if ((newValue == null || newValue.trim().length() == 0) && getVDCRequestBean().getVdcNetwork().isRequireDVaffiliation()) {
+                FacesMessage message = new FacesMessage("The field must have a value.");
+                context.addMessage(toValidate.getClientId(context), message);
+                context.renderResponse();
+                ((UIInput) toValidate).setValid(false);
+            }
     }
 
 }

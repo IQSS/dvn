@@ -128,11 +128,10 @@
                 </div>
                 <div jsfc="ice:panelGroup">
                   <ice:inputText id="affiliation"
-                                 value="#{EditSitePage.affiliation}"
+                                 binding="#{EditSitePage.affiliation}"
                                  required="#{VDCRequest.vdcNetwork.requireDVaffiliation}"
-                                   requiredMessage="This field is required."
-
-                                 valueChangeListener="#{EditSitePage.changeAffiliation}"/>
+                                 validator="#{EditSitePage.validateIsEmptyRequiredAffiliation}"
+                                 requiredMessage="This field is required."/>
                    <ice:message for="affiliation" showSummary="true" showDetail="false" errorClass="errorMessage" styleClass="errorMessage"/>
                 </div>
                 <!-- dataverse name -->
@@ -182,12 +181,12 @@
                   </ice:outputLabel>
                 </div>
                 <div jsfc="ice:panelGroup">
-                  <ice:inputTextarea binding="#{EditSitePage.shortDescriptionInput}"
+                  <ice:inputTextarea binding="#{EditSitePage.shortDescription}"
                                      id="dataverseShortDescription"
                                      required="#{VDCRequest.vdcNetwork.requireDVdescription}"
                                      validator="#{EditSitePage.validateShortDescription}"
                                      requiredMessage="This field is required."
-                                     value="#{EditSitePage.shortDescription}"/>
+                                     />
                   <br/>
                   <ice:outputText styleClass="vdcHelpText" value="Short description to appear on the network home page with your dataverse listing."/>
                   <ice:message for="dataverseShortDescription" showSummary="true" showDetail="false" styleClass="errorMessage"/>
@@ -229,7 +228,7 @@
               </ice:panelGrid>
               <div class="dvnFormPadding dvnFormMargin">
                 <ice:commandButton binding="#{EditSitePage.button1}" id="button1" value="Save" action="#{EditSitePage.edit}"/>
-                <ice:commandButton binding="#{EditSitePage.button2}" id="button2" value="Cancel" action="#{EditSitePage.cancel}"/>
+                <ice:commandButton immediate="true" binding="#{EditSitePage.button2}" id="button2" value="Cancel" action="#{EditSitePage.cancel}"/>
               </div>
             </div>
           </div>

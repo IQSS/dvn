@@ -48,6 +48,7 @@ import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCGroup;
 import edu.harvard.iq.dvn.core.vdc.VDCGroupServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDCNetwork;
+import edu.harvard.iq.dvn.core.util.PropertyUtil;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -74,7 +75,7 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
 
     private StatusMessage   msg;
 
-    private String          affiliation;
+    private HtmlInputText          affiliation;
     private HtmlInputText   dataverseAlias;
     private HtmlInputText   dataverseName;
     private HtmlInputTextarea shortDescriptionInput = new HtmlInputTextarea();
@@ -83,7 +84,7 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
     private String          dataverseType = null;
     private String          firstName = new String("");
     private String          lastName;
-    private String          shortDescription;
+    private HtmlInputTextarea          shortDescription = new HtmlInputTextarea();
 
 
     private List<SelectItem> dataverseOptions = null;
@@ -120,25 +121,31 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
                 setDataverseType("Scholar");
                 setFirstName(scholardataverse.getFirstName());
                 setLastName(scholardataverse.getLastName());
-                setAffiliation(scholardataverse.getAffiliation());
+                HtmlInputText affiliationText = new HtmlInputText();
+                affiliationText.setValue(scholardataverse.getAffiliation());
+                setAffiliation(affiliationText);
                 HtmlInputText nameText = new HtmlInputText();
                 nameText.setValue(scholardataverse.getName());
                 setDataverseName(nameText);
                 HtmlInputText aliasText = new HtmlInputText();
                 aliasText.setValue(scholardataverse.getAlias());
-                setShortDescription(scholardataverse.getDvnDescription());
+                HtmlInputTextarea descriptionText = new HtmlInputTextarea();
+                descriptionText.setValue(scholardataverse.getDescription());
+                setShortDescription(descriptionText);
             } else if (!this.dataverseType.equals("Scholar")) {
                 setDataverseType("Basic");
                 HtmlInputText nameText = new HtmlInputText();
                 nameText.setValue(thisVDC.getName());
                 setDataverseName(nameText);
-                if (thisVDC.getAffiliation() != null)
-                    this.setAffiliation(thisVDC.getAffiliation());
-                else
-                    this.setAffiliation(new String(""));
+                HtmlInputText affiliationText = new HtmlInputText();
+                affiliationText.setValue(thisVDC.getAffiliation());
+                setAffiliation(affiliationText);
                 HtmlInputText aliasText = new HtmlInputText();
                 aliasText.setValue(thisVDC.getAlias());
-                setShortDescription(thisVDC.getDvnDescription());
+                HtmlInputTextarea descriptionText = new HtmlInputTextarea();
+                descriptionText.setValue(thisVDC.getDvnDescription());
+                setShortDescription(descriptionText);
+
             }
             // initialize the select
            for (ClassificationUI classUI: classificationList.getClassificationUIs()) {
@@ -292,8 +299,8 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
             thisVDC.setDtype(dataversetype);
             thisVDC.setName((String)dataverseName.getValue());
             thisVDC.setAlias((String)dataverseAlias.getValue());
-            thisVDC.setAffiliation(this.getAffiliation());
-            thisVDC.setDvnDescription(shortDescription);
+            thisVDC.setAffiliation((String)affiliation.getValue());
+            thisVDC.setDvnDescription((String)shortDescription.getValue());
             if (dataverseType.equals("Scholar")) {
                 thisVDC.setFirstName(this.firstName);
                 thisVDC.setLastName(this.lastName);
@@ -421,9 +428,13 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
      * Getter for property affiliation.
      * @return Value of property affiliation.
      */
-    public String getAffiliation() {
+    public HtmlInputText getAffiliation() {
         if (affiliation == null)
-            this.setAffiliation(getVDCRequestBean().getCurrentVDC().getAffiliation());
+        {
+            HtmlInputText affiliationText = new HtmlInputText();
+            affiliationText.setValue(getVDCRequestBean().getCurrentVDC().getAffiliation());
+            this.setAffiliation(affiliationText);
+        }
         return this.affiliation;
     }
 
@@ -435,7 +446,7 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
      * It is viewable on the network page.
      *
      */
-    public String getShortDescription() {
+    public HtmlInputTextarea getShortDescription() {
         return shortDescription;
     }
 
@@ -499,7 +510,7 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
      * Setter for property affiliation.
      * @param affiliation New value of property affiliation.
      */
-    public void setAffiliation(String affiliation) {
+    public void setAffiliation(HtmlInputText affiliation) {
         this.affiliation = affiliation;
     }
 
@@ -508,7 +519,7 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
      *
      * @param shortDescription
      */
-    public void setShortDescription(String shortDescription) {
+    public void setShortDescription(HtmlInputTextarea shortDescription) {
         this.shortDescription = shortDescription;
     }
 
@@ -542,15 +553,7 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
         this.shortDescriptionLabelText = shortDescriptionLabelText;
     }
 
-   
-    /**
-     * Captures value change event for the dataverse affiliation.
-     *
-     */
-    public void changeAffiliation(ValueChangeEvent event) {
-        String newValue = (String) event.getNewValue();
-        this.setAffiliation(newValue);        
-    }
+  
 
     /**
      * Captures the selected option.
@@ -611,8 +614,25 @@ public class EditSitePage extends VDCBaseBean implements java.io.Serializable  {
                 context.addMessage(toValidate.getClientId(context), message);
             }
         }
+        if ((newValue == null || newValue.trim().length() == 0) && getVDCRequestBean().getVdcNetwork().isRequireDVdescription()) {
+                ((UIInput)toValidate).setValid(false);
+                FacesMessage message = new FacesMessage("The field must have a value.");
+                context.addMessage(toValidate.getClientId(context), message);
+                context.renderResponse();
+        }
     }
-        public boolean validateClassificationCheckBoxes() {
+    public void validateIsEmptyRequiredAffiliation(FacesContext context,
+            UIComponent toValidate,
+            Object value) {
+        String newValue = (String) value;
+        if ((newValue == null || newValue.trim().length() == 0) && getVDCRequestBean().getVdcNetwork().isRequireDVaffiliation()) {
+                FacesMessage message = new FacesMessage("The field must have a value.");
+                context.addMessage(toValidate.getClientId(context), message);
+                ((UIInput)toValidate).setValid(false);
+                context.renderResponse();
+            }
+    }
+    public boolean validateClassificationCheckBoxes() {
 
         if (!getVDCRequestBean().getVdcNetwork().isRequireDVclassification()){
             return true;

@@ -136,10 +136,11 @@
                     </ice:outputLabel>
                   </div>
                   <div>
-                    <ice:inputText id="affiliation" immediate="true" value="#{AddSitePage.affiliation}" 
+                    <ice:inputText id="affiliation" binding="#{AddSitePage.affiliation}"
                                    required="#{VDCRequest.vdcNetwork.requireDVaffiliation}"
+                                   validator="#{AddSitePage.validateIsEmptyRequiredAffiliation}"
                                    requiredMessage="This field is required." 
-                                   valueChangeListener="#{AddSitePage.changeAffiliation}"/>
+                                   />
                             <ice:message for="affiliation" showSummary="true" showDetail="false" errorClass="errorMessage" styleClass="errorMessage"/>
                     <br/>
                     <ice:outputText styleClass="vdcHelpText" value="University, center, or research project."/>
@@ -190,7 +191,7 @@
                                      required="#{VDCRequest.vdcNetwork.requireDVdescription}"
                                      validator="#{AddSitePage.validateShortDescription}"
                                      requiredMessage="This field is required."
-                                     value="#{AddSitePage.shortDescription}"/>
+                                     binding="#{AddSitePage.shortDescription}"/>
                   <br/>
                   <ice:outputText styleClass="vdcHelpText" value="Short description to appear on the network home page with your dataverse listing."/>
                   <ice:message for="dataverseShortDescription" showSummary="true" showDetail="false" errorClass="errorMessage" styleClass="errorMessage"/>

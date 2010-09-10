@@ -26,7 +26,7 @@ public class LockssConfig implements Serializable {
 
     public enum ServerAccess { GROUP, ALL };
 
-    public enum LicenseType { CC_1, CC_2, CC_3 };
+    
 
     private boolean allowRestricted;
 
@@ -39,8 +39,6 @@ public class LockssConfig implements Serializable {
     @Enumerated(EnumType.STRING)
     private ServerAccess serverAccess;
 
-    @Enumerated(EnumType.STRING)
-    private LicenseType licenseType;
 
     @Column(columnDefinition="TEXT")
     private String licenseText;
@@ -52,6 +50,9 @@ public class LockssConfig implements Serializable {
 
     @OneToOne(mappedBy = "lockssConfig", cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
     private OAISet oaiSet;
+
+    @OneToOne
+    private LicenseType licenseType;
 
 
     public VDC getVdc() {

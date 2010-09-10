@@ -36,11 +36,12 @@
                   <ice:outputText value="Dataverse Release Settings"/>
                 </td>
                 <td>
-                    <ice:selectOneMenu value="#{PrivilegedUsersPage.siteRestriction}"  disabled="#{!PrivilegedUsersPage.releasable}">
+                    <ice:selectOneMenu value="#{PrivilegedUsersPage.siteRestriction}"  disabled="#{!(PrivilegedUsersPage.enableSelectRelease)}">
                         <f:selectItem itemLabel="Not Released" itemValue="Restricted"/>
                         <f:selectItem itemLabel="Released" itemValue="Public"/>
                     </ice:selectOneMenu>
-                    <ice:outputText styleClass="errorMessageBlock" value="#{bundlePageInfo.releasableDVErrorMessage}" rendered="#{!PrivilegedUsersPage.releasable}"/>
+                    <ice:outputText styleClass="errorMessageBlock" value="#{bundlePageInfo.releasableDVErrorMessage}" rendered="#{(PrivilegedUsersPage.notReleasableAndNotReleased)}"/>
+                    <ice:outputText styleClass="errorMessageBlock" value="#{bundlePageInfo.invalidReleasedDVErrorMessage}" rendered="#{(PrivilegedUsersPage.releasedWithoutRequiredStudies)}"/>
                 </td>
               </tr>
               <div jsfc="ice:panelGroup" rendered="#{!PrivilegedUsersPage.vdc.harvestingDv}">

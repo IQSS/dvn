@@ -562,6 +562,17 @@ public class PrivilegedUsersPage extends VDCBaseBean implements java.io.Serializ
         this.success = success;
     }
 
+    public boolean isEnableSelectRelease(){
+        if (getVDCRequestBean().getVdcNetwork().isRequireDVstudiesforrelease() == false || !vdc.isRestricted()){
+           return true;
+        }
+        else {
+           return (vdc.getNumberReleasedStudies() > 0 || vdc.isHarvestingDv() ||  vdc.getOwnedCollections().size() > 1
+                   ||  vdc.getLinkedCollections().size() > 0 || vdc.getRootCollection().getStudies().size() > 0);
+        }
+    }
+
+
     public boolean isReleasable(){
         if (getVDCRequestBean().getVdcNetwork().isRequireDVstudiesforrelease() == false){
            return true; 
@@ -569,6 +580,27 @@ public class PrivilegedUsersPage extends VDCBaseBean implements java.io.Serializ
         else {      
            return (vdc.getNumberReleasedStudies() > 0 || vdc.isHarvestingDv() ||  vdc.getOwnedCollections().size() > 1
                    ||  vdc.getLinkedCollections().size() > 0 || vdc.getRootCollection().getStudies().size() > 0);
+        }
+    }
+
+    public boolean isNotReleasableAndNotReleased(){
+        if (getVDCRequestBean().getVdcNetwork().isRequireDVstudiesforrelease() == false){
+           return false;
+        }
+        else {
+           return (!(vdc.getNumberReleasedStudies() > 0 || vdc.isHarvestingDv() ||  vdc.getOwnedCollections().size() > 1
+                   ||  vdc.getLinkedCollections().size() > 0 || vdc.getRootCollection().getStudies().size() > 0)  && vdc.isRestricted() );
+        }
+    }
+
+    public boolean isReleasedWithoutRequiredStudies(){
+        if (!vdc.isRestricted() && getVDCRequestBean().getVdcNetwork().isRequireDVstudiesforrelease() == true
+                && !(vdc.getNumberReleasedStudies() > 0 || vdc.isHarvestingDv() ||  vdc.getOwnedCollections().size() > 1
+                   ||  vdc.getLinkedCollections().size() > 0 || vdc.getRootCollection().getStudies().size() > 0) ){
+           return true;
+        }
+        else {
+           return false;
         }
     }
     

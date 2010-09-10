@@ -369,7 +369,7 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
         String strAffiliation = (String) affiliation.getValue();
         String strShortDescription = (String) shortDescription.getValue();
         Long userId = getVDCSessionBean().getLoginBean().getUser().getId();
-        boolean success = true;
+
         if (validateClassificationCheckBoxes()) {
             vdcService.createScholarDataverse(userId, firstName, lastName, name, strAffiliation, alias, dataversetype);
             VDC createdScholarDataverse = vdcService.findScholarDataverseByAlias(alias);
@@ -409,7 +409,6 @@ public class AddSitePage extends VDCBaseBean implements java.io.Serializable  {
             return "addSiteSuccess";
         }
         else {
-            success = false;
             return null;
         }
 

@@ -289,9 +289,7 @@ public class StudyUI  implements java.io.Serializable {
         return getStudyVersion().getMetadata();
     }
     
-    public void setStudy(Study study) {
-        this.study = study;
-    }
+
 
     public StudyVersion getStudyVersion() {
         if (studyVersion==null) {

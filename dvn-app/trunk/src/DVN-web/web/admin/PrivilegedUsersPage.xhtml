@@ -168,7 +168,7 @@
                     <f:selectItem itemLabel="Yes" itemValue="true"/>
                   </ice:selectOneMenu>
                    <br/>
-                  <ice:outputText styleClass="vdcHelpText" value="Choose 'Yes' to restrict ALL files in this dataverse.  To restrict files individually, go to the Study Permissions page of the study containing the file."/>
+                  <ice:outputText styleClass="vdcHelpText" value="Choose 'Yes' to restrict ALL files in this dataverse. To restrict files individually, go to the Study Permissions page of the study containing the file."/>
                 </td>
               </tr>
               <tr>
@@ -176,12 +176,16 @@
                   <ice:outputText value="Restricted File User Access"/>
                 </td>
                 <td class="dvnPermissionsStackedCells">
+                  <div class="dvn_padBot">
+                    <ice:graphicImage value="/resources/images/icon_info.gif" styleClass="dvn_icon"/>
+                    <ice:outputText value=" Please note that resulting file restrictions are a combination of dataverse and study level restrictions. A file can be restricted at either or both the dataverse and study level. Access to a restricted file requires permission at each level where a file is restricted." escape="false"/>
+                  </div>
                   <ice:outputText value="Username: "/>
                   <ice:inputText id="fileUserName" binding="#{PrivilegedUsersPage.fileUserInputText}" value="#{PrivilegedUsersPage.addFileUserName}"/>
                   <ice:commandButton value="Add" actionListener="#{PrivilegedUsersPage.addFileUser}"/>
                   <ice:message styleClass="errorMessage" for="fileUserName"/>
                   <br/>
-                  <ice:outputText styleClass="vdcHelpText" value="Enter username to allow an user access to restricted studies."/>
+                  <ice:outputText styleClass="vdcHelpText" value="Enter username to allow an user access to restricted files."/>
                 </td>
               </tr>
               <tr>
@@ -218,7 +222,7 @@
                   <ice:commandButton value="Add" actionListener="#{PrivilegedUsersPage.addFileGroup}"/>
                   <ice:message styleClass="errorMessage" for="fileGroupName"/>
                   <br/>
-                  <ice:outputText styleClass="vdcHelpText" value="Enter group name to allow a group access to restricted studies."/>
+                  <ice:outputText styleClass="vdcHelpText" value="Enter group name to allow a group access to restricted files."/>
                 </td>
               </tr>
               <tr>

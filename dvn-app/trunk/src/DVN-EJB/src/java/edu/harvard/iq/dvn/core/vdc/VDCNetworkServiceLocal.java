@@ -49,6 +49,8 @@ public interface VDCNetworkServiceLocal extends java.io.Serializable  {
     void createExportTimer();
     
     TermsOfUse getCurrentTermsOfUse();
+
+    public LockssConfig getLockssConfig();
     
     public void addTermsOfUse(TermsOfUse tou);  
 

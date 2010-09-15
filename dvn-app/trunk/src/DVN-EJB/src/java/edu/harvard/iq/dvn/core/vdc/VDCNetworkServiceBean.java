@@ -96,7 +96,12 @@ public class VDCNetworkServiceBean implements VDCNetworkServiceLocal {
         return vdcNetwork;
         
     }
-    
+
+    public LockssConfig getLockssConfig() {
+        LockssConfig lc = null;
+        return (LockssConfig) em.createQuery("select l from LockssConfig l where l.vdc_d is null").getSingleResult();
+        
+    }
       
    public TermsOfUse getCurrentTermsOfUse() {
         String queryStr = "SELECT t FROM TermsOfUse t WHERE t.vdc_id  is null order by createTime";

@@ -549,6 +549,12 @@
             <value>#{param.from}</value>
         </managed-property>
     </managed-bean>
+   <managed-bean>
+        <managed-bean-name>EditLockssConfigPage</managed-bean-name>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.admin.EditLockssConfigPage</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+        
+    </managed-bean>
     <managed-bean>
         <managed-bean-name>AddLinkPage</managed-bean-name>
         <managed-bean-class>edu.harvard.iq.dvn.core.web.collection.AddLinkPage</managed-bean-class>

@@ -55,6 +55,15 @@
                                         </gui:fragment>
                                         <tr>
                                             <td class="dvnOptionsTableOption">
+                                                <ice:outputLink  value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditLockssConfigPage.xhtml">
+                                                    <ice:outputText  value="#{bundlePageInfo.editLockssAUTitle}"/>
+                                                </ice:outputLink>
+                                            </td>
+                                            <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.editLockssAUText}"/></td>
+                                        </tr>
+
+                                        <tr>
+                                            <td class="dvnOptionsTableOption">
                                                 <ice:outputLink id="hyperlink3" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditBannerFooterPage.xhtml">
                                                     <ice:outputText id="hyperlink1Text2" value="#{bundlePageInfo.editDvBrandingTitle}"/>
                                                 </ice:outputLink>

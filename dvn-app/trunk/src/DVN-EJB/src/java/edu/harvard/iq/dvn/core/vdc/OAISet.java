@@ -152,5 +152,14 @@ public class OAISet implements Serializable {
         OAISet other = (OAISet)object;
         if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) return false;
         return true;
-    }    
+    }
+       @Override
+    public String toString() {
+        String s = "edu.harvard.iq.dvn.core.vdc.OAISet[id=" + id + "]";
+        if (lockssConfig!=null) {
+            s+= " lockssConfig = "+lockssConfig;
+        }
+        return s;
+    }
+
 }

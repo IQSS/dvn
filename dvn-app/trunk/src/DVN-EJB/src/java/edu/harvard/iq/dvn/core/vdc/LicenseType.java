@@ -30,6 +30,7 @@ public class LicenseType implements Serializable {
     private Long id;
 
     private String name;
+    private String shortName;
     private String licenseUrl;
     private String rdfUrl;
     private String imageUrl;
@@ -66,6 +67,14 @@ public class LicenseType implements Serializable {
         this.name = name;
     }
 
+    public String getShortName() {
+        return shortName;
+    }
+
+    public void setShortName(String shortName) {
+        this.shortName = shortName;
+    }
+
     public String getRdfUrl() {
         return rdfUrl;
     }
@@ -98,7 +107,7 @@ public class LicenseType implements Serializable {
 
     @Override
     public String toString() {
-        return "edu.harvard.iq.dvn.core.vdc.LockssLicenseType[id=" + id + "]";
+        return  name;
     }
 
 }

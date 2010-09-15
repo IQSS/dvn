@@ -90,17 +90,22 @@
                           <ice:outputText id="outputText16" value="Permission Setting"/>
                         </div>
                       </f:facet>
-                      <ice:selectOneMenu rendered="#{currentRow.vdcRole==null}"  id="newRoleSelectMenu" value="#{PrivilegedUsersPage.newRoleId}">
+                      <ice:selectOneMenu rendered="#{currentRow.vdcRole==null}" id="newRoleSelectMenu" value="#{PrivilegedUsersPage.newRoleId}">
                         <ice:message for="roleSelectMenu" styleClass="errorMessage"/>
                         <f:selectItems id="roleSelectItems" value="#{PrivilegedUsersPage.roleSelectItems}"/>
                       </ice:selectOneMenu>
-                       <ice:selectOneMenu rendered="#{currentRow.vdcRole!=null and currentRow.vdcRole.vdcUser.id!=PrivilegedUsersPage.vdc.creator.id}"  id="roleSelectMenu" value="#{currentRow.selectedRoleId}">
+                       <ice:selectOneMenu rendered="#{currentRow.vdcRole!=null and currentRow.vdcRole.vdcUser.id!=PrivilegedUsersPage.vdc.creator.id}" id="roleSelectMenu" value="#{currentRow.selectedRoleId}">
                         <ice:message for="roleSelectMenu" styleClass="errorMessage"/>
                         <f:selectItems id="roleSelectItems" value="#{PrivilegedUsersPage.roleSelectItems}"/>
                       </ice:selectOneMenu>
-                     <ice:outputText rendered="#{currentRow.vdcRole!=null and currentRow.vdcRole.vdcUser.id==PrivilegedUsersPage.vdc.creator.id}"  id="disabledRole" value="Admin"/>
-                     <ice:commandButton rendered="#{currentRow.vdcRole==null}"  id="addUserButton" value="Add" actionListener="#{PrivilegedUsersPage.addUser}"/>
-                      <ice:message styleClass="errorMessage" for="userName"/>
+                     <ice:outputText rendered="#{currentRow.vdcRole!=null and currentRow.vdcRole.vdcUser.id==PrivilegedUsersPage.vdc.creator.id}" id="disabledRole" value="Admin"/>
+                     <ice:commandButton rendered="#{currentRow.vdcRole==null}" id="addUserButton" value="Add" actionListener="#{PrivilegedUsersPage.addUser}"/>
+                     
+                     <ice:outputLink rendered="#{currentRow.vdcRole==null}" value="http://thedata.org/book/user-roles-0" styleClass="dvninlinelink" target="_blank" title="View Role Descriptions">
+                        <ice:outputText value="View Role Descriptions"/>
+                     </ice:outputLink>
+
+                     <ice:message styleClass="errorMessage" for="userName"/>
                     </ice:column>
                     <ice:column>
                       <ice:commandButton id="removeRoleButton" value="Remove" rendered="#{currentRow.vdcRole!=null and currentRow.vdcRole.vdcUser.id!=PrivilegedUsersPage.vdc.creator.id}" actionListener="#{PrivilegedUsersPage.removeRole}"/>

@@ -45,6 +45,8 @@
 .dvn_spacing{margin:1em;}
 .dvn_right{text-align:right;}
 span.disabled{font-weight:700}
+a.dvninlinelink, a.dvninlinelink span.iceOutTxt{display:inline;}
+a.dvninlinelink{margin-left:2em;}
 /* HEADER */
 .dvn_headerTitle{position:relative;text-align:left}
 .dvn_headerTitleLarge{margin:.25em 228px .25em 12px}

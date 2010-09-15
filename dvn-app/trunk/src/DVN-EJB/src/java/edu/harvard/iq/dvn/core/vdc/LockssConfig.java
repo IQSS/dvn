@@ -6,6 +6,7 @@
 package edu.harvard.iq.dvn.core.vdc;
 
 import java.io.Serializable;
+import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,6 +16,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 /**
@@ -48,12 +50,16 @@ public class LockssConfig implements Serializable {
     @JoinColumn(unique=true)
     private VDC vdc;
 
-    @OneToOne(mappedBy = "lockssConfig", cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
+    @OneToOne(mappedBy = "lockssConfig", cascade = { CascadeType.MERGE})
     private OAISet oaiSet;
 
     @OneToOne
     private LicenseType licenseType;
-
+ /**
+     * Holds value of property studyAbstracts.
+     */
+    @OneToMany(mappedBy="lockssConfig", cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
+    private List<LockssServer> lockssServers;
 
     public VDC getVdc() {
         return vdc;
@@ -114,9 +120,16 @@ public class LockssConfig implements Serializable {
         this.allowRestricted = allowRestricted;
     }
 
+    public List<LockssServer> getLockssServers() {
+        return lockssServers;
+    }
+
+    public void setLockssServers(List<LockssServer> lockssServers) {
+        this.lockssServers = lockssServers;
+    }
+
     
 
-   
     @Override
     public int hashCode() {
         int hash = 0;

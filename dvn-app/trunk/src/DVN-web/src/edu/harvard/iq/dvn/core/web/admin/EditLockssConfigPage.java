@@ -127,7 +127,7 @@ public class EditLockssConfigPage extends VDCBaseBean implements java.io.Seriali
     }
      
     public String save() {
-        removeEmptyRows();
+        //removeEmptyRows();
         if (selectHarvestType.equals(HarvestType.NONE)) {
             editLockssService.removeLockssConfig();
         } else {

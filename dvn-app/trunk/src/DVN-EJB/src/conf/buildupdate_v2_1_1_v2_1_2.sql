@@ -20,3 +20,12 @@ insert into licensetype (id, shortname, name, licenseurl, rdfurl, imageurl) valu
 insert into licensetype (id, shortname, name, licenseurl, rdfurl, imageurl) values ( 5, 'cc by-nc','CC Attribution Non-Commercial (cc by-nc)','http://creativecommons.org/licenses/by-nc/3.0/', 'http://creativecommons.org/licenses/by-nc/3.0/rdf', 'http://i.creativecommons.org/l/by-nc/3.0/88x31.png' );
 insert into licensetype (id, shortname, name, licenseurl, rdfurl, imageurl) values ( 6, 'cc by-nc-sa','CC Attribution Non-Commercial Share Alike (cc by-nc-sa)','http://creativecommons.org/licenses/by-nc-sa/3.0/', 'http://creativecommons.org/licenses/by-nc-sa/3.0/rdf', 'http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png' );
 insert into licensetype (id, shortname, name, licenseurl, rdfurl, imageurl) values ( 7, 'cc by-nc-nd','CC Attribution Non-Commercial No Derivatives (cc by-nc-nd)','http://creativecommons.org/licenses/by-nc-sa/3.0/', 'http://creativecommons.org/licenses/by-nc-sa/3.0/rdf', 'http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png' );
+
+
+ALTER TABLE vdc ADD COLUMN displayinframe boolean;
+ALTER TABLE vdc ALTER COLUMN displayinframe SET STORAGE PLAIN;
+
+ALTER TABLE vdc ADD COLUMN parentsite character varying(255);
+ALTER TABLE vdc ALTER COLUMN parentsite SET STORAGE EXTENDED;
+
+update vdc set displayinframe = false;

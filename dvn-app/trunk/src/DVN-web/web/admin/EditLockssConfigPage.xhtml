@@ -65,7 +65,7 @@
                   </tr>
                   <tr>
                     <td class="dvnPermissionsTableOption">
-                        <ice:outputText value="IP Addresses"/>
+                        <ice:outputText value="LOCKSS Server Addresses"/>
                     </td>
                     <td>
                         <div jsfc="ice:panelGroup" styleClass="vdcHelpText">
@@ -108,10 +108,11 @@
                             </ice:selectOneMenu>
                                <ice:message id="licenseErrorMsg" styleClass="errorMessage" for="licenseType"/>
                         </div>
-                        <ice:inputTextarea cols="100" rows="8" styleClass="formHtmlEnabled"
-                                           id="harvestingLicensingTerms" value="">
-                          <f:validator validatorId="XhtmlValidator"/>
-                        </ice:inputTextarea>
+                        <div styleClass="vdcHelpText">
+                            For more information about CC licenses, please refer to the <a href="http://creativecommons.org/about/licenses"> Creative Commons site</a>,
+                            or <a href="http://creativeCommons.org/about/cc0"> here</a> for information about CC Zero.
+                        </div>
+                        
                     </td>
                   </tr>
                   <tr>

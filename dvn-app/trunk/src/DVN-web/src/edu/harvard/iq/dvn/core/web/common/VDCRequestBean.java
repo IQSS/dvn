@@ -239,7 +239,11 @@ public class VDCRequestBean extends VDCBaseBean implements java.io.Serializable 
     }
     
     public void setCurrentVDCURL(String dataverseURL) {}  // dummy method since the get is just a wrapper 
-   
+
+    public String getRequestedPage() {
+        HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        return "/faces/" + request.getPathInfo();
+    }
     
     /**
      * Holds value of property vdcNetwork.

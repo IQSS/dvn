@@ -76,6 +76,8 @@ import ORG.oclc.oai.server.verb.NoSetHierarchyException;
 import edu.harvard.iq.dvn.core.catalog.CatalogServiceLocal;
 import edu.harvard.iq.dvn.core.harvest.HarvestStudy;
 import edu.harvard.iq.dvn.core.harvest.HarvestStudyServiceLocal;
+import edu.harvard.iq.dvn.core.vdc.LockssConfig;
+import edu.harvard.iq.dvn.core.vdc.VDC;
 import java.util.logging.Logger;
 import javax.naming.InitialContext;
 
@@ -96,6 +98,8 @@ public class DVNOAICatalog extends AbstractCatalog implements java.io.Serializab
      * maximum number of entries to return for ListRecords and ListIdentifiers
      */
     private static int maxListSize;
+
+    private static final String INET_ADDRESS = System.getProperty("dvn.inetAddress");
 
     /**
      * pending resumption tokens
@@ -781,7 +785,7 @@ public class DVNOAICatalog extends AbstractCatalog implements java.io.Serializab
         int i = 0;
         for (Iterator it = oaiSets.iterator(); it.hasNext();) {
             OAISet elem = (OAISet) it.next();
-            dbSets[i++] = "<set><setSpec>"+elem.getSpec()+"</setSpec><setName>"+elem.getName()+"</setName>"+(elem.getDescription()!= null?"<setDescription>"+elem.getDescription()+"</setDescription>":"")+"</set>";
+            dbSets[i++] = "<set><setSpec>"+elem.getSpec()+"</setSpec><setName>"+elem.getName()+"</setName>"+(hasSetDescription(elem)?"<setDescription>"+getDescription(elem.getDescription())+getLOCKSSLicense(elem.getLockssConfig())+"</setDescription>":"")+"</set>";
         }
         int count;
 
@@ -830,6 +834,62 @@ public class DVNOAICatalog extends AbstractCatalog implements java.io.Serializab
          ***********************************************************************/
         listSetsMap.put("sets", sets.iterator());
         return listSetsMap;
+    }
+
+    private boolean hasSetDescription(OAISet oaiSet){
+        return (oaiSet.getDescription() != null || oaiSet.getLockssConfig() != null);
+    }
+
+    private String getDescription(String description){
+        return description!= null?description:"";
+    }
+
+    private String getLOCKSSLicense(LockssConfig lockssConfig){
+        return lockssConfig != null? getLOCKSSLicenseXML(lockssConfig):"";
+    }
+
+    private String getLOCKSSLicenseXML(LockssConfig lockssConfig){        
+        String xml = "<rightsManifest xmlns=\"http://www.openarchives.org/OAI/2.0/rights\""
+                + " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+                + "      xsi:schemaLocation=\"http://www.openarchives.org/OAI/2.0/rights/"
+                + " http://www.openarchives.org/OAI/2.0/rightsManifest.xsd\""
+                + "       appliesTo=\"http://www.openarchives.org/OAI/2.0/entity#metadata\">"
+                + "       <rights>"
+                + "         <rightsReference ref=\""
+                + lockssConfig.getLicenseType().getRdfUrl()
+                + "\"/>"
+                + "       </rights>"
+                + "<rights xmlns=\"http://www.openarchives.org/OAI/2.0/rights/\""
+                + "   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+                + "   xsi:schemaLocation=\"http://www.openarchives.org/OAI/2.0/rights/"
+                + "                       http://www.openarchives.org/OAI/2.0/rights.xsd\">"
+                + "   <rightsDefinition>"
+                + "     <oai_dc:dc xmlns:oai_dc=\"http://www.openarchives.org/OAI/2.0/oai_dc/\""
+                + "       xmlns:dc=\"http://purl.org/dc/elements/1.1/\""
+                + "       xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+                + "       xsi:schemaLocation=\"http://www.openarchives.org/OAI/2.0/oai_dc/"
+                + "                           http://www.openarchives.org/OAI/2.0/oai_dc.xsd\">"
+                + "       <dc:title>LOCKSS Manifest</dc:title>"
+                + "       <dc:description>Full details are available on the LOCKSS manifest page.</dc:description>"
+                + "       <dc:identifier>"
+                + getPathToManifest(lockssConfig)
+                + "</dc:identifier>"
+                + "     </oai_dc:dc>"
+                + "   </rightsDefinition>"
+                + " </rights>"
+                + "     </rightsManifest>";
+        return xml;
+    }
+
+    private String getPathToManifest(LockssConfig lockssConfig){
+        String pathToManifest;
+        VDC vdc = lockssConfig.getVdc();
+        if (vdc != null){
+            pathToManifest = "http://" + INET_ADDRESS + "/dvn/dv/" + vdc.getAlias() + "/ManifestPage";
+        } else{
+            pathToManifest = "http://" + INET_ADDRESS + "/dvn/ManifestPage";
+        }
+        return pathToManifest;
     }
 
     /**

@@ -69,7 +69,10 @@ public class VDC implements java.io.Serializable  {
     private String affiliation;
     private String dtype;
     
-    
+
+    private boolean displayInFrame;
+    private String parentSite;
+
     /**
      * Make the text the default db type for header.
      */
@@ -218,6 +221,24 @@ public class VDC implements java.io.Serializable  {
     public void setVisibility(String visibility) {
         this.visibility = visibility;
     }
+
+    public boolean isDisplayInFrame() {
+        return displayInFrame;
+    }
+
+    public void setDisplayInFrame(boolean displayInFrame) {
+        this.displayInFrame = displayInFrame;
+    }
+
+    public String getParentSite() {
+        return parentSite;
+    }
+
+    public void setParentSite(String parentSite) {
+        this.parentSite = parentSite;
+    }
+
+    
     
     public String getHeader() {
         return header;

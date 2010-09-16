@@ -6,7 +6,7 @@
        >
 
     <gui:composition>
-            <h:outputText escape="false" rendered="#{VDCRequest.currentVDCId != null}" value="#{VDCRequest.currentVDC.header}"/>
+            <h:outputText escape="false" rendered="#{VDCRequest.currentVDCId != null and !VDCRequest.currentVDC.displayInFrame}" value="#{VDCRequest.currentVDC.header}"/>
             <h:outputText escape="false" rendered="#{VDCRequest.currentVDCId == null}" value="#{VDCRequest.vdcNetwork.networkPageHeader}"/>
     </gui:composition>
 </div>

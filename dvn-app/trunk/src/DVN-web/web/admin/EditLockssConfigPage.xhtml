@@ -75,15 +75,15 @@
                         <ice:dataTable styleClass="dvnFormDataTable"
                                        cellpadding="0"
                                        cellspacing="0"
-                                       var="currentIpRow">
+                                       var="currentRow" value="#{EditLockssConfigPage.lockssConfig.lockssServers}">
                           <ice:column>
                             <ice:inputText id="iptable"
-                                           value=""
+                                           value="#{currentRow.ipAddress}"
                                            />
                           </ice:column>
                           <ice:column>
-                            <ice:commandButton image="/resources/images/icon_add.gif"/>
-                            <ice:commandButton image="/resources/images/icon_remove.gif"/>
+                            <ice:commandButton image="/resources/images/icon_add.gif" actionListener="#{EditLockssConfigPage.addRow}" />
+                            <ice:commandButton image="/resources/images/icon_remove.gif" actionListener="#{EditLockssConfigPage.removeRow}"/>
                           </ice:column>
                           <ice:column>
                             <ice:message for="iptable" styleClass="errorMessage"/>

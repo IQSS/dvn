@@ -83,11 +83,13 @@ public class EditLockssConfigPage extends VDCBaseBean implements java.io.Seriali
             }
         }
 
-        // Based on lockssConfigId, set up stateful session bean for create/edit
+        // Based on lockssConfigId, set up stateful session bean for create/edit,
+        // and set default values for form controls
         if (lockssConfigId == null) {
             editLockssService.newLockssConfig(getVDCRequestBean().getCurrentVDCId());
             lockssConfig = editLockssService.getLockssConfig();
             selectHarvestType = HarvestType.NONE;
+            selectOAISetId = new Long(-1);
         } else {
             editLockssService.initLockssConfig(lockssConfigId);
             lockssConfig = editLockssService.getLockssConfig();
@@ -110,8 +112,10 @@ public class EditLockssConfigPage extends VDCBaseBean implements java.io.Seriali
         List selectItems = new ArrayList<SelectItem>();
         selectItems.add(new SelectItem(null, "No Set (All Owned Studies)"));
         for(OAISet oaiSet: oaiService.findAll()) {
-           
-            selectItems.add(new SelectItem(oaiSet.getId(), oaiSet.getName()));
+            // Don't show OAISets that have been created for dataverse-level Lockss Harvesting
+            if (oaiSet.getLockssConfig()==null || oaiSet.getLockssConfig().getVdc()==null) {
+                selectItems.add(new SelectItem(oaiSet.getId(), oaiSet.getName()));
+            }
         }
         return selectItems;
     }
@@ -127,7 +131,7 @@ public class EditLockssConfigPage extends VDCBaseBean implements java.io.Seriali
     }
      
     public String save() {
-        //removeEmptyRows();
+        removeEmptyRows();
         if (selectHarvestType.equals(HarvestType.NONE)) {
             editLockssService.removeLockssConfig();
         } else {
@@ -221,7 +225,7 @@ public class EditLockssConfigPage extends VDCBaseBean implements java.io.Seriali
         // StudyAuthor
         for (Iterator<LockssServer> it = lockssConfig.getLockssServers().iterator(); it.hasNext();) {
             LockssServer elem =  it.next();
-            if (elem.getIpAddress().trim().isEmpty()) {
+            if (elem.getIpAddress()!=null && elem.getIpAddress().trim().isEmpty()) {
                   editLockssService.removeCollectionElement(it,elem);
             }
         }

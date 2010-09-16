@@ -47,6 +47,7 @@ import javax.ejb.Timer;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
@@ -99,7 +100,13 @@ public class VDCNetworkServiceBean implements VDCNetworkServiceLocal {
 
     public LockssConfig getLockssConfig() {
         LockssConfig lc = null;
-        return (LockssConfig) em.createQuery("select l from LockssConfig l where l.vdc_d is null").getSingleResult();
+        try {
+            lc = (LockssConfig) em.createQuery("select l from LockssConfig l where l.vdc is null").getSingleResult();
+        } catch (NoResultException e) {
+            
+            // no result is ok - just return a null object
+        }
+        return lc;
         
     }
       

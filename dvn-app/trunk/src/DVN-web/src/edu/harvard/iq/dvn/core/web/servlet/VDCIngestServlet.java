@@ -9,7 +9,6 @@ package edu.harvard.iq.dvn.core.web.servlet;
 import edu.harvard.iq.dvn.core.admin.NetworkRoleServiceLocal;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.ingest.dsb.DSBIngestMessage;
-import edu.harvard.iq.dvn.core.study.FileCategory;
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyFile;
 import edu.harvard.iq.dvn.core.study.StudyFileEditBean;

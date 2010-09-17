@@ -60,6 +60,11 @@ public class EditBannerFooterPage extends VDCBaseBean  implements java.io.Serial
         if (this.getBanner() == null){
             setBanner( (getVDCRequestBean().getCurrentVDCId() == null) ? getVDCRequestBean().getVdcNetwork().getNetworkPageHeader(): getVDCRequestBean().getCurrentVDC().getHeader());
             setFooter( (getVDCRequestBean().getCurrentVDCId() == null) ? getVDCRequestBean().getVdcNetwork().getNetworkPageFooter(): getVDCRequestBean().getCurrentVDC().getFooter());
+            
+            if (getVDCRequestBean().getCurrentVDCId() != null) {
+                setDisplayInFrame(getVDCRequestBean().getCurrentVDC().isDisplayInFrame());
+                setParentSite(getVDCRequestBean().getCurrentVDC().getParentSite());
+            }
         }
         combinedTextField.setValue(banner + footer);
     }
@@ -166,6 +171,8 @@ public class EditBannerFooterPage extends VDCBaseBean  implements java.io.Serial
             VDC vdc = vdcService.find(new Long(getVDCRequestBean().getCurrentVDC().getId()));
             vdc.setHeader(banner);
             vdc.setFooter(footer);
+            vdc.setDisplayInFrame(displayInFrame);
+            vdc.setParentSite(parentSite);
             vdcService.edit(vdc);
             getVDCRequestBean().getCurrentVDC().setHeader(banner);
             getVDCRequestBean().getCurrentVDC().setFooter(footer);
@@ -184,6 +191,8 @@ public class EditBannerFooterPage extends VDCBaseBean  implements java.io.Serial
         } else {
                 setBanner(getVDCRequestBean().getCurrentVDC().getHeader());
                 setFooter(getVDCRequestBean().getCurrentVDC().getFooter());
+                setDisplayInFrame(getVDCRequestBean().getCurrentVDC().isDisplayInFrame());
+                setParentSite(getVDCRequestBean().getCurrentVDC().getParentSite());
             return "cancelVDC";
         }
     }
@@ -248,6 +257,27 @@ public class EditBannerFooterPage extends VDCBaseBean  implements java.io.Serial
     public void setCombinedTextField(HtmlInputHidden combinedTextField) {
         this.combinedTextField = combinedTextField;
     }
+
+    // these are only valid for a vdc
+    private boolean displayInFrame;
+    private String parentSite;
+
+    public boolean isDisplayInFrame() {
+        return displayInFrame;
+    }
+
+    public void setDisplayInFrame(boolean displayInFrame) {
+        this.displayInFrame = displayInFrame;
+    }
+
+    public String getParentSite() {
+        return parentSite;
+    }
+
+    public void setParentSite(String parentSite) {
+        this.parentSite = parentSite;
+    }
+    
 
 }
 

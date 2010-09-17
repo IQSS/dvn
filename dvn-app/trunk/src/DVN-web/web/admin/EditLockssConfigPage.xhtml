@@ -13,6 +13,48 @@
   <gui:composition template="/template.xhtml">
     <gui:param name="pageTitle" value="Data Files Harvesting (LOCKSS Harversting) - #{VDCRequest.dataversePageTitle}"/>
     <gui:define name="body">
+        <script type="text/javascript">
+          // <![CDATA[
+           function getRadioValue( id ) {
+              elements=document.getElementsByTagName("input");
+              for(i=0; i < elements.length; i++) {
+                  if (elements[i].id.indexOf(id) != -1 ) {
+                      if (elements[i].checked) {
+                          return elements[i].value;
+                      }
+                  }
+              }
+          }
+            function getElementsByClassName( strClassName, obj ) {
+              var ar = arguments[2] || new Array();
+              var re = new RegExp("\\b" + strClassName + "\\b", "g");
+              if ( re.test(obj.className) ) {
+                  ar.push( obj );
+              }
+              for ( var i = 0; i < obj.childNodes.length; i++ )
+                  getElementsByClassName( strClassName, obj.childNodes[i], ar );
+              return ar;
+          }
+          function hideOptions() {
+         //     alert("begin hideOptions");
+              harvestType = getRadioValue("harvestType");
+              var configElements = getElementsByClassName("lockssConfig", document.body);
+              if (harvestType  == 'NONE') {
+                for (var i = 0; i < configElements.length; i++)
+                {
+                    var el = configElements[i];
+                    el.style.display='none';
+                }
+              } else {
+                for (var i = 0; i < configElements.length; i++)
+                {
+                    var el = configElements[i];
+                    el.style.display='';
+                }
+              }
+          }
+           //]]>
+      </script>
       <ice:form id="form1">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <input type="hidden" name="pageName" value="EditDataFilesHarverstPage"/>
@@ -24,20 +66,7 @@
           <div jsfc="ice:panelGroup">
               <table class="dvnPermissionsTable" cellspacing="0" cellpadding="0" border="0">
                   <tr><td colspan="2" class="dvnPermissionsTableHeader"><ice:outputText value="Harvest Settings"/></td></tr>
-                  <gui:fragment rendered ="#{VDCRequest.currentVDC==null}" >
-                  <tr>
-                    <td class="dvnPermissionsTableOption">
-                        <ice:outputText value="OAI Set Model"/>
-                    </td>
-                    <td>
-                        <ice:selectOneMenu  id="oaiSetModel" value="#{EditLockssConfigPage.selectOAISetId}"  >
-                            <f:selectItem itemValue="-1" itemLabel="Not Selected"/>
-                            <f:selectItems value="#{EditLockssConfigPage.selectOAISets}"/>
-                        </ice:selectOneMenu>
-                        <ice:message id="oaiSetModelMsg" styleClass="errorMessage" for="oaiSetModel"/>
-                    </td>
-                  </tr>
-                  </gui:fragment>
+                 
                   <tr>
                     <td class="dvnPermissionsTableOption">
                         <ice:outputText value="Harvesting Type"/>
@@ -46,6 +75,7 @@
                         <ice:selectOneRadio id="harvestType"
                                             layout="pageDirection"
                                             required="true"
+                                            onclick="hideOptions()"
                                             value="#{EditLockssConfigPage.selectHarvestType}"
                                             requiredMessage="This field is required.">
                             <f:selectItem itemLabel="Disable harvesting of all data files" itemValue="NONE"/>
@@ -54,7 +84,21 @@
                         </ice:selectOneRadio>
                     </td>
                   </tr>
-                  <tr>
+                  <gui:fragment rendered ="#{VDCRequest.currentVDC==null}" >
+                  <tr class="lockssConfig">
+                    <td class="dvnPermissionsTableOption">
+                        <ice:outputText value="OAI Set Model"/>
+                    </td>
+                    <td>
+                        <ice:selectOneMenu binding="#{EditLockssConfigPage.oaiSetMenu}" id="oaiSetModel" value="#{EditLockssConfigPage.selectOAISetId}"  >
+                            <f:selectItem itemValue="-1" itemLabel="Not Selected"/>
+                            <f:selectItems value="#{EditLockssConfigPage.selectOAISets}"/>
+                        </ice:selectOneMenu>
+                        <ice:message id="oaiSetModelMsg" styleClass="errorMessage" for="oaiSetModel"/>
+                    </td>
+                  </tr>
+                  </gui:fragment>
+                  <tr class="lockssConfig">
                     <td class="dvnPermissionsTableOption">
                         <ice:outputText value="Restricted Data Files"/>
                     </td>
@@ -63,7 +107,7 @@
                         <ice:outputText id="enableRestrictedLabel" value=" Enable LOCKSS harvesting of restricted data files from specified servers."/>
                     </td>
                   </tr>
-                  <tr>
+                  <tr class="lockssConfig">
                     <td class="dvnPermissionsTableOption">
                         <ice:outputText value="LOCKSS Server Addresses"/>
                     </td>
@@ -79,6 +123,7 @@
                           <ice:column>
                             <ice:inputText id="iptable"
                                            value="#{currentRow.ipAddress}"
+                                           validator="#{EditLockssConfigPage.validateIpAddress}"
                                            />
                           </ice:column>
                           <ice:column>
@@ -91,8 +136,9 @@
                         </ice:dataTable>
                     </td>
                   </tr>
-                  <tr><td colspan="2" class="dvnPermissionsTableHeader"><ice:outputText value="Licensing Settings"/></td></tr>
-                  <tr>
+                   <tr class="lockssConfig" ><td colspan="2" class="dvnPermissionsTableHeader"><ice:outputText value="Licensing Settings"/></td></tr>
+                
+                  <tr class="lockssConfig">
                     <td class="dvnPermissionsTableOption">
                         <ice:outputText value="Licensing Options"/>
                     </td>
@@ -102,7 +148,7 @@
                           <ice:outputText value="Designate the license terms to be associated with harvesting content."/>
                         </div>
                         <div jsfc="ice:panelGroup">
-                            <ice:selectOneMenu id="licenseType" value="#{EditLockssConfigPage.selectLicenseId}" required="true">
+                            <ice:selectOneMenu binding="#{EditLockssConfigPage.licenseMenu}" id="licenseType" value="#{EditLockssConfigPage.selectLicenseId}" >
                                 <f:selectItem itemValue="" itemLabel="Not Selected"/>
                                 <f:selectItems value="#{EditLockssConfigPage.selectLicenseTypes}"/>
                             </ice:selectOneMenu>
@@ -115,7 +161,7 @@
                         
                     </td>
                   </tr>
-                  <tr>
+                  <tr class="lockssConfig">
                     <td class="dvnPermissionsTableOption">
                         <ice:outputText value="Additional Terms"/>
                     </td>
@@ -134,7 +180,10 @@
           </div>
         </div>
       </ice:form>
-      
+      <script type="text/javascript">
+          // initial call to hide LOCKSS config options, if LOCKSS is disabled
+          hideOptions();
+      </script>
     </gui:define>
   </gui:composition>
 </body>

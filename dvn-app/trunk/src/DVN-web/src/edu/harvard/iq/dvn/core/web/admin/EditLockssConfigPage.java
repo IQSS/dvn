@@ -31,6 +31,7 @@
 package edu.harvard.iq.dvn.core.web.admin;
 
 import com.icesoft.faces.component.ext.HtmlDataTable;
+import com.icesoft.faces.component.ext.HtmlSelectOneMenu;
 import edu.harvard.iq.dvn.core.admin.EditLockssService;
 import edu.harvard.iq.dvn.core.vdc.LicenseType;
 import edu.harvard.iq.dvn.core.vdc.LockssConfig;
@@ -47,8 +48,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
+import javax.faces.component.UIInput;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.model.SelectItem;
+import org.apache.commons.validator.routines.InetAddressValidator;
 
 /**
  *
@@ -65,6 +71,8 @@ public class EditLockssConfigPage extends VDCBaseBean implements java.io.Seriali
     private Long selectLicenseId;
     private Map<Long, LicenseType> licenseTypes = new HashMap();
     private HarvestType selectHarvestType;
+    private HtmlSelectOneMenu licenseMenu;
+    private HtmlSelectOneMenu oaiSetMenu;
 
     public enum HarvestType { NONE, ALL, GROUP};
 
@@ -120,6 +128,10 @@ public class EditLockssConfigPage extends VDCBaseBean implements java.io.Seriali
         return selectItems;
     }
 
+    public boolean isLicenseRequired() {
+        return !selectHarvestType.equals(HarvestType.NONE);
+    }
+
     public List<LicenseType> getSelectLicenseTypes() {
         List selectItems = new ArrayList<SelectItem>();
         for(LicenseType licenseType: licenseTypes.values()) {
@@ -129,22 +141,105 @@ public class EditLockssConfigPage extends VDCBaseBean implements java.io.Seriali
 
         return selectItems;
     }
-     
-    public String save() {
-        removeEmptyRows();
-        if (selectHarvestType.equals(HarvestType.NONE)) {
-            editLockssService.removeLockssConfig();
-        } else {
-            lockssConfig.setserverAccess(ServerAccess.valueOf(selectHarvestType.toString()));
-            lockssConfig.setLicenseType(licenseTypes.get(selectLicenseId));
-            editLockssService.saveChanges(selectOAISetId);
+
+    public boolean validateLicenseType() {
+
+        boolean valid = true;
+        if (!this.selectHarvestType.equals(HarvestType.NONE) && selectLicenseId==null) {
+            valid=false;
+        }
+       
+        if (!valid) {
+            ((UIInput) licenseMenu).setValid(false);
+            FacesMessage message = new FacesMessage("This field is required.");
+            FacesContext context = FacesContext.getCurrentInstance();
+            context.addMessage(licenseMenu.getClientId(context), message);
+        }
+        return valid;
+    }
+
+    public boolean validateOaiSet() {
+        boolean valid = true;
+        if (!this.selectHarvestType.equals(HarvestType.NONE) && getVDCRequestBean().getCurrentVDC()==null && new Long(-1).equals(this.selectOAISetId)) {
+            valid=false;
+        }
+        if (!valid) {
+            ((UIInput) oaiSetMenu).setValid(false);
+            FacesMessage message = new FacesMessage("This field is required.");
+            FacesContext context = FacesContext.getCurrentInstance();
+            context.addMessage(oaiSetMenu.getClientId(context), message);
+        }
+        return valid;
+    }
+
+    public void validateIpAddress(FacesContext context,
+            UIComponent toValidate,
+            Object value) {
+
+        boolean valid = false;
+
+
+        String ipAddress = value.toString();
+        // for the purposes of validation, replace * with 1
+        ipAddress.replace('*', '1');
+        InetAddressValidator val = InetAddressValidator.getInstance();
+
+        valid = val.isValid(ipAddress);
+
+        // If this isn't a valid ipAddress, check to see if its a valid hostname
+        if (!valid) {
+            String hostName = value.toString();
+            hostName.replace('*', 'a');
+            valid = validateDomainName(hostName);
         }
 
-        
+        if (!valid) {
+            ((UIInput) toValidate).setValid(false);
+            FacesMessage message = new FacesMessage("Invalid IP address or hostname.");
+            context.addMessage(toValidate.getClientId(context), message);
+        }
 
-        return getReturnPage();
+
     }
-    
+
+    /**
+     * Cribbed from: http://pappul.blogspot.com/2006/07/validation-of-host-name-in-java.html
+     * @param domainName
+     * @return
+     */
+    private  boolean validateDomainName(String domainName) {
+        if ((domainName == null) || (domainName.length() > 63)) {
+            return false;
+        }
+        String domainIdentifier = "((\\p{Alnum})([-]|(\\p{Alnum}))*(\\p{Alnum}))|(\\p{Alnum})";
+        String domainNameRule = "(" + domainIdentifier + ")((\\.)(" + domainIdentifier + "))*";
+        String oneAlpha = "(.)*((\\p{Alpha})|[-])(.)*";
+
+        return domainName.matches(domainNameRule) && domainName.matches(oneAlpha);
+    }
+
+
+
+
+    public String save() {
+        boolean validLicenseType = validateLicenseType();
+        boolean validOai = validateOaiSet();
+        if (validLicenseType && validOai) {
+            removeEmptyRows();
+            if (selectHarvestType.equals(HarvestType.NONE)) {
+                editLockssService.removeLockssConfig();
+            } else {
+                lockssConfig.setserverAccess(ServerAccess.valueOf(selectHarvestType.toString()));
+                lockssConfig.setLicenseType(licenseTypes.get(selectLicenseId));
+                editLockssService.saveChanges(selectOAISetId);
+            }
+            return getReturnPage();
+        } else {
+            return "";
+        }
+
+    }
+
     
     public String cancel() {
         editLockssService.cancel();
@@ -158,6 +253,24 @@ public class EditLockssConfigPage extends VDCBaseBean implements java.io.Seriali
             return "myOptions";
         }
     }
+
+    public HtmlSelectOneMenu getLicenseMenu() {
+        return licenseMenu;
+    }
+
+    public void setLicenseMenu(HtmlSelectOneMenu licenseMenu) {
+        this.licenseMenu = licenseMenu;
+    }
+
+    public HtmlSelectOneMenu getOaiSetMenu() {
+        return oaiSetMenu;
+    }
+
+    public void setOaiSetMenu(HtmlSelectOneMenu oaiSetMenu) {
+        this.oaiSetMenu = oaiSetMenu;
+    }
+
+ 
 
 
     public Long getSelectOAISetId() {

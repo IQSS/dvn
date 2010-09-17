@@ -101,7 +101,7 @@
                     rendered="#{applicationScope.googleAnalyticsKey != null || MainLayoutBean.googleAnalyticsKey != null}"
                     value="#{(applicationScope.googleAnalyticsCode != null) ? applicationScope.googleAnalyticsCode : MainLayoutBean.googleAnalyticsCode}"/>
     <!-- fix for the comments modal dialog being affected by customization -->
-    <ice:form id="StudyCommentsPopup" rendered="#{MainLayoutBean.writeStudyCommentsPopups}">
+    <ice:form id="StudyCommentsPopup" rendered="#{MainLayoutBean.inStudyPage}">
         <!-- The popup panel code -->
         <!-- report abuse popup -->
         <ice:panelPopup id="reportPopup"

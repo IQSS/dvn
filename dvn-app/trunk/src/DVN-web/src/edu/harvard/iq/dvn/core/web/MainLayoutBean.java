@@ -137,25 +137,6 @@ public class MainLayoutBean implements java.io.Serializable  {
         return System.getProperty(jvmoption);
     }
 
-    protected boolean writeStudyCommentsPopups = false;
-
-    /**
-     * Get the value of writeStudyCommentsPopups
-     *
-     * @return the value of writeStudyCommentsPopups
-     */
-    public boolean isWriteStudyCommentsPopups() {
-        return isInStudyPage();
-    }
-
-    /**
-     * Set the value of writeStudyCommentsPopups
-     *
-     * @param writeStudyCommentsPopups new value of writeStudyCommentsPopups
-     */
-    public void setWriteStudyCommentsPopups(boolean writeStudyCommentsPopups) {
-        this.writeStudyCommentsPopups = writeStudyCommentsPopups;
-    }
 
     protected boolean writeStudyVersionNotesPopups = false;
 

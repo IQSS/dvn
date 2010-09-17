@@ -42,6 +42,7 @@ public class OAISetServiceBean implements OAISetServiceLocal {
 
     public void remove(Long id) {
         OAISet oaiSet = em.find(OAISet.class, id);
+        em.createQuery("delete from HarvestStudy hs where hs.setName = " + oaiSet.getName()).executeUpdate();
         em.remove(oaiSet);
     }
     

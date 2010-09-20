@@ -145,6 +145,8 @@ public class EditHarvestSitePage extends VDCBaseBean implements java.io.Serializ
                 try {
                     assignHarvestingSets(editHarvestSiteService.getHarvestingDataverse().getServerUrl(), harvestingDataverse.getHarvestType());        
                     assignMetadataFormats(editHarvestSiteService.getHarvestingDataverse().getServerUrl(), harvestingDataverse.getHarvestType());       
+                    validatedServerUrl = harvestingDataverse.getServerUrl(); // default the validated server to what has validated in the past
+
                 } catch(Exception e) {
                     e.printStackTrace();
                     FacesContext context = FacesContext.getCurrentInstance();

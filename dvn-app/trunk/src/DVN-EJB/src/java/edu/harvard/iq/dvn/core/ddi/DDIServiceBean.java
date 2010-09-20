@@ -51,6 +51,8 @@ import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -127,6 +129,9 @@ public class DDIServiceBean implements DDIServiceLocal {
 
     public static final String NOTE_TYPE_ARCHIVE_DATE = "DVN:ARCHIVE_DATE";
     public static final String NOTE_SUBJECT_ARCHIVE_DATE= "Archive Date";
+
+    public static final String NOTE_TYPE_LOCKSS_CRAWL = "LOCKSS:CRAWLING";
+    public static final String NOTE_SUBJECT_LOCKSS_PERM = "LOCKSS Permission";
 
     // db constants
     public static final String DB_VAR_INTERVAL_TYPE_CONTINUOUS = "continuous";
@@ -1202,6 +1207,19 @@ public class DDIServiceBean implements DDIServiceLocal {
         xmlw.writeCharacters( fm.getCategory() );
         xmlw.writeEndElement(); // notes
 
+        // A special note for LOCKSS crawlers indicating the restricted
+        // status of the file:
+
+        if (tdf != null && tdf.isRestricted()) {
+            xmlw.writeStartElement("notes");
+            writeAttribute( xmlw, "type", NOTE_TYPE_LOCKSS_CRAWL );
+            writeAttribute( xmlw, "level", LEVEL_FILE );
+            writeAttribute( xmlw, "subject", NOTE_SUBJECT_LOCKSS_PERM );
+            xmlw.writeCharacters( "restricted" );
+            xmlw.writeEndElement(); // notes
+
+        }
+
         // THIS IS OLD CODE FROM JAXB, but a reminder that we may want to add original fileType
         // we don't yet store original file type!!!'
         // do we want this in the DDI export????
@@ -1253,6 +1271,19 @@ public class DDIServiceBean implements DDIServiceLocal {
         writeAttribute( xmlw, "type", "vdc:category" );
         xmlw.writeCharacters( fm.getCategory() );
         xmlw.writeEndElement(); // notes
+
+        // A special note for LOCKSS crawlers indicating the restricted
+        // status of the file:
+
+        if (sf != null && sf.isRestricted()) {
+            xmlw.writeStartElement("notes");
+            writeAttribute( xmlw, "type", NOTE_TYPE_LOCKSS_CRAWL );
+            writeAttribute( xmlw, "level", LEVEL_FILE );
+            writeAttribute( xmlw, "subject", NOTE_SUBJECT_LOCKSS_PERM );
+            xmlw.writeCharacters( "restricted" );
+            xmlw.writeEndElement(); // notes
+
+        }
 
         xmlw.writeEndElement(); // otherMat
     }
@@ -1475,6 +1506,8 @@ public class DDIServiceBean implements DDIServiceLocal {
     public void mapDDI(String xmlToParse, StudyVersion studyVersion) {
         StringReader reader = null;
         XMLStreamReader xmlr = null;
+        
+                
         try {
             reader = new StringReader(xmlToParse);
             xmlr =  xmlInputFactory.createXMLStreamReader(reader);

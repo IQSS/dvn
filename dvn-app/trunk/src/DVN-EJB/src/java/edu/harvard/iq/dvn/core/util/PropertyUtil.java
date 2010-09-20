@@ -58,7 +58,15 @@ public class PropertyUtil implements java.io.Serializable  {
       
     }
 
-    
+    /**
+     * This method returns the hostname of the timer server, which is needed for the LOCKSS manifest page,
+     * to display the OAI URL for lockss harvesting. (We may find other uses for this in the future.)
+     *
+     * If this instance is the timer server, returns the hostUrl.  Else, it will look for
+     * a JVM option 'dvn.timerServerHost'. If this is not the timer server, and the JVM option is not set,
+     * @return hostname of the timer server
+     * @throws RuntimeException - Exception is thrown if this is not the timer server, and the JVM option 'dvn.timerServer' is not set.
+     */
     public static String getTimerServerHost() {
         if (isTimerServer()) {
             return PropertyUtil.getHostUrl();

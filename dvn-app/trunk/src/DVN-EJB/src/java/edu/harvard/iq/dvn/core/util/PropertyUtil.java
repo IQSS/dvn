@@ -58,4 +58,17 @@ public class PropertyUtil implements java.io.Serializable  {
       
     }
 
+    
+    public static String getTimerServerHost() {
+        if (isTimerServer()) {
+            return PropertyUtil.getHostUrl();
+        } else {
+            String timerServerHost = System.getProperty("dvn.timerServerHost");
+            if (timerServerHost==null) {
+                throw new RuntimeException("Missing JVM option: dvn.timerServerHost.  If JVM option dvn.timerServer is set to 'false', then timerServerHost must be defined.");
+            }
+            return timerServerHost;
+        }
+    }
+
 }

@@ -1,4 +1,7 @@
 
+ALTER TABLE study DROP COLUMN defaultfilecategory_id;
+DROP TABLE filecategory;
+
 Alter Table vdcnetwork
 add requireDVDescription boolean,
 add requireDVaffiliation boolean,

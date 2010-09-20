@@ -1225,13 +1225,14 @@ public class FileDownloadServlet extends HttpServlet {
               
         if (formatConvertedFile != null && formatConvertedFile.exists()) {
 
+           fileDownload.closeInputStream();
+
             try {
                 fileDownload.setInputStream(new FileInputStream(formatConvertedFile));
             } catch (IOException ex) {
                 return null; 
             }
 
-            fileDownload.closeInputStream();
             fileDownload.releaseConnection();
             fileDownload.setHTTPMethod(null);
             fileDownload.setIsFile(true);

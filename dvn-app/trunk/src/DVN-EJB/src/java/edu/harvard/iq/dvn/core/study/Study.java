@@ -32,7 +32,6 @@ import edu.harvard.iq.dvn.core.admin.RoleServiceLocal;
 import edu.harvard.iq.dvn.core.admin.UserGroup;
 import edu.harvard.iq.dvn.core.admin.VDCRole;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
-import edu.harvard.iq.dvn.core.util.StringUtil;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCCollection;
 import java.util.ArrayList;
@@ -43,7 +42,6 @@ import java.util.List;
 import javax.ejb.EJBException;
 import javax.persistence.*;
 
-import org.apache.commons.lang.builder.*;
 
 /**
  *
@@ -298,52 +296,6 @@ public class Study implements java.io.Serializable {
     }
     
     
-    /**
-     * Holds value of property defaultFileCategory.
-     */
-    @OneToOne(cascade={CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinColumn(name="defaultFileCategory_id")
-    // VERSION: TODO: remove this
-    private FileCategory defaultFileCategory;
-    
-    /**
-     * Getter for property defaultFileCategory.
-     * @return Value of property defaultFileCategory.
-     */
-    public FileCategory getDefaultFileCategory() {
-        return this.defaultFileCategory;
-    }
-    
-    /**
-     * Setter for property defaultFileCategory.
-     * @param defaultFileCategory New value of property defaultFileCategory.
-     */
-    public void setDefaultFileCategory(FileCategory defaultFileCategory) {
-        this.defaultFileCategory = defaultFileCategory;
-    }
-    
-    /**
-     * Holds value of property fileCategories.
-     */
-    @OneToMany(mappedBy="study", cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
-    @OrderBy("name ASC")
-    private java.util.List<edu.harvard.iq.dvn.core.study.FileCategory> fileCategories;
-    
-    /**
-     * Getter for property fileCategories.
-     * @return Value of property fileCategories.
-     */
-    public java.util.List<edu.harvard.iq.dvn.core.study.FileCategory> getFileCategories() {
-        return this.fileCategories;
-    }
-    
-    /**
-     * Setter for property fileCategories.
-     * @param fileCategories New value of property fileCategories.
-     */
-    public void setFileCategories(java.util.List<edu.harvard.iq.dvn.core.study.FileCategory> fileCategories) {
-        this.fileCategories = fileCategories;
-    }
 
     @OneToMany(mappedBy="study", cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
     private java.util.List<edu.harvard.iq.dvn.core.study.StudyFile> studyFiles;

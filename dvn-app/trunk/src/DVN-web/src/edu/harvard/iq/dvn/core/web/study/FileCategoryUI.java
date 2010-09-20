@@ -29,78 +29,51 @@
 
 package edu.harvard.iq.dvn.core.web.study;
 
-import edu.harvard.iq.dvn.core.admin.UserGroup;
-import edu.harvard.iq.dvn.core.admin.VDCUser;
-import edu.harvard.iq.dvn.core.study.FileCategory;
-import edu.harvard.iq.dvn.core.study.StudyFile;
-import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
-import edu.harvard.iq.dvn.core.vdc.VDC;
+import edu.harvard.iq.dvn.core.util.AlphaNumericComparator;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import javax.faces.event.ActionEvent;
-import javax.naming.InitialContext;
 
 /**
  *
  * @author gdurand
  */
+
+/*
+ * This class was originally written to wrap around the FileCategory class. We have since removed that class, however
+ * we still display files in the StudyFilesFragment per Category, so this helper class is still useful to represent a
+ * category.
+ */
 public class FileCategoryUI implements Comparable, java.io.Serializable   {
     
-    private FileCategory fileCategory;
+    private String category;
+    private List<StudyFileUI> studyFileUIs = new ArrayList();
+    private boolean rendered=true;
+    private static AlphaNumericComparator alphaNumericComparator = new AlphaNumericComparator();
     
-    /** Creates a new instance of FileCategoryUI */
 
-    /* no longer used
-    public FileCategoryUI(FileCategory fileCategory, VDC vdc, VDCUser user, UserGroup ipUserGroup) {
-        this.fileCategory = fileCategory;
-        initStudyFiles(vdc,user, ipUserGroup);
-
-    }
-    */
-    
-      /** Creates a new instance of FileCategoryUI */
-    public FileCategoryUI(FileCategory fileCategory) {
-        this.fileCategory = fileCategory;
-
-    }
 
     /** Creates a new instance of FileCategoryUI */
     public FileCategoryUI(String category) {
-        this.fileCategory = new FileCategory();
-        this.fileCategory.setName(category);
+        this.category = category;
+    }
 
+    
+    public String getCategory() {
+        return category;
     }
-    /* no longer used!!!!!
-    private void initStudyFiles(VDC vdc, VDCUser user, UserGroup ipUserGroup) {
-        StudyServiceLocal studyService = null;
-        try {
-            studyService=(StudyServiceLocal)new InitialContext().lookup("java:comp/env/studyService");
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
-        studyFileUIs = new ArrayList<StudyFileUI>();
-        List<StudyFile> studyFiles = studyService.getOrderedFilesByCategory(fileCategory.getId());
-        for (Iterator it = studyFiles.iterator(); it.hasNext();) {
-            StudyFile studyFile = (StudyFile) it.next();
-            StudyFileUI studyFileUI = new StudyFileUI(studyFile, vdc, user, ipUserGroup);
-            studyFileUIs.add(studyFileUI);
-        }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
-    */
-    
-    private List<StudyFileUI> studyFileUIs = new ArrayList();
-    
-    public FileCategory getFileCategory() {
-        return fileCategory;
+
+    public List<StudyFileUI> getStudyFileUIs() {
+        return studyFileUIs;
     }
-    
-    
-    private boolean rendered=true;
-    
-    public void toggleRendered (ActionEvent ae) {
-        setRendered(!isRendered());
+
+    public void setStudyFileUIs(List<StudyFileUI> studyFileUIs) {
+        this.studyFileUIs = studyFileUIs;
     }
 
     public boolean isRendered() {
@@ -111,12 +84,19 @@ public class FileCategoryUI implements Comparable, java.io.Serializable   {
         this.rendered = rendered;
     }
     
+    public void toggleRendered (ActionEvent ae) {
+        setRendered(!isRendered());
+    }
+
+
+
+
     public String getDownloadName() {
-        if ( fileCategory.getName() == null || fileCategory.getName().trim().equals("") ) {
+        if ( category == null || category.trim().equals("") ) {
             return "defaultCategory";
         }
         
-        String downloadName = fileCategory.getName().trim();
+        String downloadName = category.trim();
         downloadName = downloadName.replace('\\','_');
         downloadName = downloadName.replace('/','_');
         downloadName = downloadName.replace(':','_');
@@ -142,18 +122,9 @@ public class FileCategoryUI implements Comparable, java.io.Serializable   {
         return false;   
     }
     
-  
-    public List<StudyFileUI> getStudyFileUIs() {
-        return studyFileUIs;
-    }
-
-    public void setStudyFileUIs(List<StudyFileUI> studyFileUIs) {
-        this.studyFileUIs = studyFileUIs;
-    }
  
     public int compareTo(Object obj) {
         FileCategoryUI catUI = (FileCategoryUI)obj;
-        return this.getFileCategory().compareTo( catUI.getFileCategory() );
-        
+        return alphaNumericComparator.compare(this.category, catUI.category);
     }    
 }

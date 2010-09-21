@@ -38,13 +38,37 @@
           </div>
           <div class="dvn_sectionBox">
             <div class="dvn_margin12">
+              <div jsfc="ice:panelGroup" rendered="#{VDCRequest.currentVDC != null}">
+<script type="text/javascript">
+    jQuery(document).ready(function(){
+        jQuery('.dvnUrlOpenScholar').hide();
+        jQuery('#editBannerFooterForm\\:chkOpenScholarDataverse[checked]').each(
+            function() {
+               jQuery('.dvnUrlOpenScholar').show();
+            }
+        );
+        jQuery('#editBannerFooterForm\\:chkOpenScholarDataverse').click(function(){
+            jQuery(".dvnUrlOpenScholar").toggle();
+        });
+    });
+</script>
+                <div class="dvn_padBot">
+                    <ice:selectBooleanCheckbox id="chkOpenScholarDataverse" value="#{EditBannerFooterPage.displayInFrame}"/>
+                    <ice:outputText id="outputText3" value="Disable customization for Dataverses linked to an Open Scholar site."/>
+                </div>
+                <div class="dvnUrlOpenScholar dvn_padBot">
+                    <ice:inputText id="urlOpenScholarDataverse" size="60" value="#{EditBannerFooterPage.parentSite}"/>
+                    <br/>
+                    <ice:outputText styleClass="vdcHelpText" value="Enter Open Scholar site URL, including the &#34;/data&#34; directory, e.g., http://openscholar.harvard.edu/youralias/data" escape="false"/>
+                </div>
+              </div>
               <div>
                 <ice:outputText id="outputText2" styleClass="vdcFieldTitle" value="#{bundle.editCustomBannerLabel}"/>
                 <ice:message for="combined" styleClass="errorMessage"/>
                 <ice:message id="bannerMsg"
                              for="banner"
                              styleClass="errorMessage"/>
-                <br />
+                <br/>
                 <ice:inputTextarea id="banner"
                                    binding="#{EditBannerFooterPage.bannerTextField}"
                                    rows="15"

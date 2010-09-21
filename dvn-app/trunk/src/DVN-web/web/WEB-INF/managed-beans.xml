@@ -52,6 +52,10 @@
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
     <managed-bean>
+        <managed-bean-name>ManifestPage</managed-bean-name>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.ManifestPage</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope></managed-bean>
+    <managed-bean>
         <managed-bean-name>ContactUsPage</managed-bean-name>
         <managed-bean-class>edu.harvard.iq.dvn.core.web.ContactUsPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
@@ -553,7 +557,7 @@
         <managed-bean-name>EditLockssConfigPage</managed-bean-name>
         <managed-bean-class>edu.harvard.iq.dvn.core.web.admin.EditLockssConfigPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
-        
+
     </managed-bean>
     <managed-bean>
         <managed-bean-name>AddLinkPage</managed-bean-name>
@@ -828,7 +832,6 @@
             <property-class>edu.harvard.iq.dvn.core.web.site.ClassificationList</property-class>
             <value>#{ClassificationList}</value>
         </managed-property>
-
     </managed-bean>
     <managed-bean>
         <managed-bean-name>manageClassificationsPage</managed-bean-name>
@@ -906,5 +909,6 @@
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
 </faces-config>
+
 
 

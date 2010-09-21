@@ -55,7 +55,7 @@ public class OAISetsPage extends VDCBaseBean implements java.io.Serializable  {
     
     private void initSetData() {
        
-        oaiSets = oaiSetService.findAll();
+        oaiSets = oaiSetService.findAllOrdered();
         System.out.println("oaiSets = "+oaiSets);
        
     }

@@ -15,7 +15,7 @@
   <gui:composition template="/template.xhtml">
     <gui:param name="pageTitle" value="#{bundlePageInfo.advancedSearchTitle} - #{VDCRequest.dataversePageTitle}"/>
     <gui:define name="body">
-      <ice:form id="advsearch">
+      <ice:form id="form1">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
             <div class="dvnMsgBlockContainer">
@@ -59,7 +59,7 @@
                       <f:selectItems binding="#{AdvSearchPage.dropdown4SelectItems3}" id="dropdown4SelectItems3" value="#{AdvSearchPage.dateItem1 ? AdvSearchPage.dropdown4DateItems : AdvSearchPage.dropdown4NotDateItems}"/>
                     </ice:selectOneMenu>
                     <div>
-                      <ice:inputText onkeypress="if (window.event) return processEvent('', 'advsearch:button2'); else return processEvent(event, 'advsearch:button2');"
+                      <ice:inputText onkeypress="if (window.event) return processEvent('', 'form1:button2'); else return processEvent(event, 'form1:button2');"
                                      binding="#{AdvSearchPage.textField1}" id="textField1" size="40"  />
                       <ice:message for="textField1" styleClass="errorMessage" showDetail="false" showSummary="true" />
                     </div>
@@ -73,7 +73,7 @@
                     <ice:selectOneMenu binding="#{AdvSearchPage.dropdown4}" id="dropdown4">
                       <f:selectItems binding="#{AdvSearchPage.dropdown4SelectItems}" id="dropdown4SelectItems" value="#{AdvSearchPage.dateItem2 ? AdvSearchPage.dropdown4DateItems : AdvSearchPage.dropdown4NotDateItems}"/>
                     </ice:selectOneMenu>
-                    <ice:inputText onkeypress="if (window.event) return processEvent('', 'advsearch:button2'); else return processEvent(event, 'advsearch:button2');"
+                    <ice:inputText onkeypress="if (window.event) return processEvent('', 'form1:button2'); else return processEvent(event, 'form1:button2');"
                                    binding="#{AdvSearchPage.textField2}" id="textField2" size="40" />
 
                     <div>
@@ -85,7 +85,7 @@
                     <ice:selectOneMenu binding="#{AdvSearchPage.dropdown6}" id="dropdown6">
                       <f:selectItems binding="#{AdvSearchPage.dropdown4SelectItems1}" id="dropdown4SelectItems1" value="#{AdvSearchPage.dateItem3 ? AdvSearchPage.dropdown4DateItems : AdvSearchPage.dropdown4NotDateItems}"/>
                     </ice:selectOneMenu>
-                    <ice:inputText onkeypress="if (window.event) return processEvent('', 'advsearch:button2'); else return processEvent(event, 'advsearch:button2');"
+                    <ice:inputText onkeypress="if (window.event) return processEvent('', 'form1:button2'); else return processEvent(event, 'form1:button2');"
                                    binding="#{AdvSearchPage.textField3}" id="textField3" size="40"/>
 
                     <div>
@@ -97,7 +97,7 @@
                     <ice:selectOneMenu binding="#{AdvSearchPage.dropdown8}" id="dropdown8">
                       <f:selectItems binding="#{AdvSearchPage.dropdown4SelectItems2}" id="dropdown4SelectItems2" value="#{AdvSearchPage.dateItem4 ? AdvSearchPage.dropdown4DateItems : AdvSearchPage.dropdown4NotDateItems}"/>
                     </ice:selectOneMenu>
-                    <ice:inputText onkeypress="if (window.event) return processEvent('', 'advsearch:button2'); else return processEvent(event, 'advsearch:button2');"
+                    <ice:inputText onkeypress="if (window.event) return processEvent('', 'form1:button2'); else return processEvent(event, 'form1:button2');"
                                    binding="#{AdvSearchPage.textField4}" id="textField4" size="40"/>
                   </ice:panelGrid>
 
@@ -112,7 +112,7 @@
                                 <ice:outputText value="Contains"/>
                             </ice:column>
                             <ice:column>
-                                <ice:inputText onkeypress="if (window.event) return processEvent('', 'advsearch:button2'); else return processEvent(event, 'advsearch:button2');"
+                                <ice:inputText onkeypress="if (window.event) return processEvent('', 'form1:button2'); else return processEvent(event, 'form1:button2');"
                                                id="input_VariableInfo" size="40" value="#{currentRow.value}" binding="#{AdvSearchPage.inputVariableInfo}"/>
                             </ice:column>
                       </ice:dataTable>

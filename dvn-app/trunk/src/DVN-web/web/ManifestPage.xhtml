@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:gui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:ice="http://www.icesoft.com/icefaces/component">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+
+<body>
+  <gui:composition template="/template.xhtml">
+    <gui:param name="pageTitle" value="Manifest - #{VDCRequest.dataversePageTitle}"/>
+    <gui:define name="body">
+      <ice:form id="manifestPage">
+        <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+        <div class="dvn_section">
+          <div class="dvn_sectionTitle">
+            <ice:outputText value="Manifest"/>
+          </div>
+          <div class="dvn_sectionBox">
+            <div class="dvn_margin12">
+                <div>
+                    <ice:outputText value="Dataverse Name:  "/>
+                    <ice:outputText value="#{ManifestPage.dvName}"/><br/>
+                </div>
+                <div>
+                    <ice:outputText value="Archival Unit:  "/>
+                    <ice:outputText value="#{ManifestPage.archivalUnit}"/><br/>
+                </div>
+                <div>
+                    <ice:outputText value="Dataverse URL:  "/>
+                    <ice:outputLink value="#{ManifestPage.oaiSetUrl}">
+                        <ice:outputText value="#{ManifestPage.oaiSetUrl}"/>
+                    </ice:outputLink><br/>
+                </div>
+                <div jsfc="ice:panelGroup" styleClass="dvn_padTop">
+                    <ice:outputText value="Licensing Terms:  "/>
+                    <ice:outputLink value="#{ManifestPage.lockssLicensingTerms}">
+                        <ice:outputText value="#{ManifestPage.lockssLicensingTerms}"/>
+                    </ice:outputLink><br/>
+                </div>
+                
+                <div>
+                      <a rel="license"
+                      href="#{ManifestPage.lockssLicensingTerms}"><img alt="Creative
+                      Commons License" style="border-width:0"
+                      src="#{ManifestPage.lockssImageUrl}" /></a><br
+                      /><span xmlns:dc="http://purl.org/dc/elements/1.1/"
+                      property="dc:title">This Data Collection </span> by
+                      <a
+                      xmlns:cc="http://creativecommons.org/ns#"
+                      href="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditContactUsPage.xhtml"
+                      property="cc:attributionName" rel="cc:attributionURL">Owner of
+                      </a> is licensed under a 
+                      <a rel="license"
+                      href="#{ManifestPage.lockssLicensingTerms}">
+                          <ice:outputText value="#{ManifestPage.lockssLicenseDescription}"/></a>.
+                      <br />Based on a work at <a
+                      xmlns:dc="http://purl.org/dc/elements/1.1/"
+                      href="/dvn#{VDCRequest.currentVDCURL}"
+                      rel="dc:source">dataverse</a>.<br />Permissions beyond the scope of
+                      this license may be available at <a
+                      xmlns:cc="http://creativecommons.org/ns#"
+                      href="/dvn#{VDCRequest.currentVDCURL}/faces/ManifestPage.xhtml"
+                      rel="cc:morePermissions">http://dataverse/path/to/manifest/page</a>
+                 </div>
+
+                <div jsfc="ice:panelGroup" styleClass="dvn_padTop">
+                    <ice:outputText value="Dataverse Network Terms:"/>
+                    <ice:outputText value="#{ManifestPage.dvNetworkTermsOfUse}"/><br/>
+                </div>
+                <div jsfc="ice:panelGroup" styleClass="dvn_padTop">
+                    <ice:outputText value="Dataverse Terms:"/>
+                    <ice:outputText value="#{ManifestPage.dvTermsOfUse}"/><br/>
+                </div>
+            </div>
+          </div>
+        </div>
+      </ice:form>
+    </gui:define>
+  </gui:composition>
+</body>
+</html>

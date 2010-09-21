@@ -38,7 +38,10 @@
               <f:facet name="header">
                 <ice:outputText id="column1Header" value="Set Name"/>
               </f:facet>
-              <ice:outputLink value="/dvn/faces/networkAdmin/EditOAISetPage.xhtml?oaiSetId=#{currentRow.id}">
+                <ice:outputLink value="/dvn/faces/networkAdmin/EditOAISetPage.xhtml?oaiSetId=#{currentRow.id}" rendered="#{currentRow.lockssConfig == null}">
+                <ice:outputText value="#{currentRow.name}"/>
+              </ice:outputLink>
+                <ice:outputLink value="/dvn/dv/#{currentRow.spec}/faces/admin/EditLockssConfigPage.xhtml" rendered="#{currentRow.lockssConfig != null}">
                 <ice:outputText value="#{currentRow.name}"/>
               </ice:outputLink>
             </ice:column>
@@ -65,7 +68,7 @@
                 <ice:outputText value="Delete"/>
               </f:facet>
               <ice:commandLink actionListener="#{OAISetsPage.deleteSet}">
-                <ice:outputText value="Delete Set"/>
+                  <ice:outputText value="Delete Set" rendered="#{currentRow.lockssConfig == null}"/>
               </ice:commandLink>
             </ice:column>
           </ice:dataTable>

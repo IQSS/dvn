@@ -22,6 +22,7 @@ public interface OAISetServiceLocal extends java.io.Serializable  {
    public OAISet findBySpec(String spec) throws NoItemsMatchException;   
    public void remove(Long id);
    public List<OAISet> findAll();
+   public List<OAISet> findAllOrdered();
    public OAISet findById(Long id);
    public void update(OAISet oaiSet);
 }

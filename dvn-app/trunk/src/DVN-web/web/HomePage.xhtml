@@ -6,7 +6,8 @@
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:dvn="/WEB-INF/tlds/dvn-components"
-      xmlns:ice="http://www.icesoft.com/icefaces/component">
+      xmlns:ice="http://www.icesoft.com/icefaces/component"
+      xmlns:ui="http://www.sun.com/web/ui">
 <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
@@ -23,13 +24,13 @@
 
           function setHiddenValues(groupid) {
             if (arguments[0] == "All") {
-                document.getElementById('HomePageForm:filterType').value = 'all';
+                document.getElementById('form1:filterType').value = 'all';
             } else if (arguments.length > 1) {
-                document.getElementById('HomePageForm:filterType').value = 'alphabetic';
-                document.getElementById('HomePageForm:alphaCharacter').value = arguments[1];
+                document.getElementById('form1:filterType').value = 'alphabetic';
+                document.getElementById('form1:alphaCharacter').value = arguments[1];
             } else {
-                document.getElementById('HomePageForm:filterType').value = 'numeric';
-                document.getElementById('HomePageForm:groupId').value = arguments[0];
+                document.getElementById('form1:filterType').value = 'numeric';
+                document.getElementById('form1:groupId').value = arguments[0];
                 oldGroupId = arguments[0];
             }
           }
@@ -48,7 +49,7 @@
                       value="#{HomePage.accordionJavascript}"
                     />
 
-      <ice:form id="HomePageForm">
+      <ice:form id="form1">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <!-- Success Message -->
         <div jsfc="ice:panelGroup" styleClass="#{HomePage.msg.styleClass}" rendered="#{!empty HomePage.msg.messageText}">
@@ -151,7 +152,7 @@
                                     var="item">
                             <gui:fragment rendered="#{(HomePage.vdcUIList.alphaCharacter == item)}">
                                 <li class="dvnAlphaBrowseSelected" onmouseover="this.className='dvnAlphaBrowseHover'" onmouseout="this.className='dvnAlphaBrowseSelected'">
-                                    <ice:commandLink onclick="setHiddenValues(document.getElementById('HomePageForm:groupId').value, '#{item}');">
+                                    <ice:commandLink onclick="setHiddenValues(document.getElementById('form1:groupId').value, '#{item}');">
                                         <ice:outputText value="#{item}"/>
                                         <f:attribute name="groupId" value="#{item.id}"/>
                                         <f:attribute name="alphaCharacter" value="#{item}"/>
@@ -160,7 +161,7 @@
                             </gui:fragment>
                             <gui:fragment rendered="#{(HomePage.vdcUIList.alphaCharacter != item)}">
                                 <li class="dvnAlphaBrowse" onmouseover="this.className='dvnAlphaBrowseHover'" onmouseout="this.className='dvnAlphaBrowse'">
-                                    <ice:commandLink onclick="setHiddenValues(document.getElementById('HomePageForm:groupId').value, '#{item}');">
+                                    <ice:commandLink onclick="setHiddenValues(document.getElementById('form1:groupId').value, '#{item}');">
                                         <ice:outputText value="#{item}"/>
                                         <f:attribute name="groupId" value="#{item.id}"/>
                                         <f:attribute name="alphaCharacter" value="#{item}"/>

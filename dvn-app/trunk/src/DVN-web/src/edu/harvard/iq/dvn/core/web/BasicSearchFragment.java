@@ -33,9 +33,6 @@ public class BasicSearchFragment extends VDCBaseBean implements java.io.Serializ
     VDCCollectionServiceLocal vdcCollectionService;
     private String searchValue = "Search Studies";
     private String searchField;
-    private StudyListing studyListing;
-
-
 
     public String search_action() {
         searchField = (searchField == null) ? "any" : searchField; // default searchField, in case no dropdown

@@ -59,6 +59,7 @@
 
         <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage" rendered="#{VDCRequest.vdcNetwork.exportPeriod ==null }">
             <div class="dvnMsgBlockContainer">
+                <p>
               <ice:outputText value="Note: In order for LOCKSS to harvest studies, study exports must be scheduled." escape="false" />
                <ice:outputText rendered="#{!VDCSession.loginBean.networkAdmin}" value="Please contact your network administrator to schedule study exports. "/>
                 <ice:outputText rendered="#{VDCSession.loginBean.networkAdmin}" value="To schedule study exports, go to" escape="false" />
@@ -66,6 +67,7 @@
                 <ice:outputLink rendered="#{VDCSession.loginBean.networkAdmin}" value="/dvn/faces/networkAdmin/EditExportSchedulePage.xhtml"  >
                    Schedule Study Exports
                 </ice:outputLink>
+                </p>
             </div>
         </div>
         </div>
@@ -139,7 +141,6 @@
                                        var="currentRow" value="#{EditLockssConfigPage.lockssConfig.lockssServers}">
                           <ice:column>
                             <ice:inputText id="ipAddress"
-                                           binding="#{EditLockssConfigPage.ipAddress}"
                                            value="#{currentRow.ipAddress}"
                                            validator="#{EditLockssConfigPage.validateIpAddress}"
                                            />

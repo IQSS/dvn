@@ -55,6 +55,20 @@
           }
            //]]>
       </script>
+        <div class="dvn_section">
+
+        <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage" rendered="#{VDCRequest.vdcNetwork.exportPeriod ==null }">
+            <div class="dvnMsgBlockContainer">
+              <ice:outputText value="Note: In order for LOCKSS to harvest studies, study exports must be scheduled." escape="false" />
+               <ice:outputText rendered="#{!VDCSession.loginBean.networkAdmin}" value="Please contact your network administrator to schedule study exports. "/>
+                <ice:outputText rendered="#{VDCSession.loginBean.networkAdmin}" value="To schedule study exports, go to" escape="false" />
+
+                <ice:outputLink rendered="#{VDCSession.loginBean.networkAdmin}" value="/dvn/faces/networkAdmin/EditExportSchedulePage.xhtml"  >
+                   Schedule Study Exports
+                </ice:outputLink>
+            </div>
+        </div>
+        </div>
       <ice:form id="form1">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <input type="hidden" name="pageName" value="EditDataFilesHarverstPage"/>
@@ -114,14 +128,18 @@
                     <td>
                         <div jsfc="ice:panelGroup" styleClass="vdcHelpText">
                           <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" value="/resources/images/icon_info.gif"/>
-                          <ice:outputText value="Enter IP addresses (192.168.2.1) and/or domain names (www.host.edu) in the field below. Wildcards are acceptable. Add/remove an entry by clicking the icons next to the username field."/>
+                          <ice:outputText value="Enter IP addresses (192.168.2.1) and/or domain names (www.host.edu) in the field below. Wildcards are acceptable. "/>
                         </div>
+                        <ice:message for="serverTable" styleClass="errorMessage"/>
                         <ice:dataTable styleClass="dvnFormDataTable"
+                                       id ="serverTable"
                                        cellpadding="0"
                                        cellspacing="0"
+                                       binding="#{EditLockssConfigPage.serverTable}"
                                        var="currentRow" value="#{EditLockssConfigPage.lockssConfig.lockssServers}">
                           <ice:column>
-                            <ice:inputText id="iptable"
+                            <ice:inputText id="ipAddress"
+                                           binding="#{EditLockssConfigPage.ipAddress}"
                                            value="#{currentRow.ipAddress}"
                                            validator="#{EditLockssConfigPage.validateIpAddress}"
                                            />
@@ -131,9 +149,11 @@
                             <ice:commandButton image="/resources/images/icon_remove.gif" actionListener="#{EditLockssConfigPage.removeRow}"/>
                           </ice:column>
                           <ice:column>
-                            <ice:message for="iptable" styleClass="errorMessage"/>
+                            <ice:message for="ipAddress" styleClass="errorMessage"/>
+                          
                           </ice:column>
                         </ice:dataTable>
+                        
                     </td>
                   </tr>
                    <tr class="lockssConfig" ><td colspan="2" class="dvnPermissionsTableHeader"><ice:outputText value="Licensing Settings"/></td></tr>

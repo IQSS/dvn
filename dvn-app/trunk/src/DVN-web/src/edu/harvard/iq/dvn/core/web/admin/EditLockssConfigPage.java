@@ -31,6 +31,7 @@
 package edu.harvard.iq.dvn.core.web.admin;
 
 import com.icesoft.faces.component.ext.HtmlDataTable;
+import com.icesoft.faces.component.ext.HtmlInputText;
 import com.icesoft.faces.component.ext.HtmlSelectOneMenu;
 import edu.harvard.iq.dvn.core.admin.EditLockssService;
 import edu.harvard.iq.dvn.core.vdc.LicenseType;
@@ -73,7 +74,8 @@ public class EditLockssConfigPage extends VDCBaseBean implements java.io.Seriali
     private HarvestType selectHarvestType;
     private HtmlSelectOneMenu licenseMenu;
     private HtmlSelectOneMenu oaiSetMenu;
-
+    private HtmlDataTable serverTable;
+    
     public enum HarvestType { NONE, ALL, GROUP};
 
     public void init() {
@@ -142,7 +144,7 @@ public class EditLockssConfigPage extends VDCBaseBean implements java.io.Seriali
         return selectItems;
     }
 
-    public boolean validateLicenseType() {
+    private boolean validateLicenseType() {
 
         boolean valid = true;
         if (!this.selectHarvestType.equals(HarvestType.NONE) && selectLicenseId==null) {
@@ -158,7 +160,7 @@ public class EditLockssConfigPage extends VDCBaseBean implements java.io.Seriali
         return valid;
     }
 
-    public boolean validateOaiSet() {
+    private boolean validateOaiSet() {
         boolean valid = true;
         if (!this.selectHarvestType.equals(HarvestType.NONE) && getVDCRequestBean().getCurrentVDC()==null && new Long(-1).equals(this.selectOAISetId)) {
             valid=false;
@@ -168,6 +170,27 @@ public class EditLockssConfigPage extends VDCBaseBean implements java.io.Seriali
             FacesMessage message = new FacesMessage("This field is required.");
             FacesContext context = FacesContext.getCurrentInstance();
             context.addMessage(oaiSetMenu.getClientId(context), message);
+        }
+        return valid;
+    }
+     private boolean validateLockssServers() {
+        boolean valid = false;
+        if (!selectHarvestType.equals(HarvestType.GROUP) && !getLockssConfig().isAllowRestricted()) {
+            valid = true;
+        } else {
+            for (Iterator<LockssServer> it = lockssConfig.getLockssServers().iterator(); it.hasNext();) {
+                LockssServer elem = it.next();
+                if (elem.getIpAddress() != null && !elem.getIpAddress().trim().isEmpty()) {
+                    valid = true;
+                }
+            }
+        }
+        if (!valid) {
+           
+            FacesMessage message = new FacesMessage("Please specify servers for harvesting or access to restricted data.");
+            FacesContext context = FacesContext.getCurrentInstance();
+            context.addMessage(serverTable.getClientId(context), message);
+            
         }
         return valid;
     }
@@ -222,9 +245,11 @@ public class EditLockssConfigPage extends VDCBaseBean implements java.io.Seriali
 
 
     public String save() {
+       
         boolean validLicenseType = validateLicenseType();
         boolean validOai = validateOaiSet();
-        if (validLicenseType && validOai) {
+        boolean validServers = validateLockssServers();
+        if (validLicenseType && validOai && validServers) {
             removeEmptyRows();
             if (selectHarvestType.equals(HarvestType.NONE)) {
                 editLockssService.removeLockssConfig();
@@ -271,8 +296,13 @@ public class EditLockssConfigPage extends VDCBaseBean implements java.io.Seriali
         this.oaiSetMenu = oaiSetMenu;
     }
 
- 
+    public HtmlDataTable getServerTable() {
+        return serverTable;
+    }
 
+    public void setServerTable(HtmlDataTable serverTable) {
+        this.serverTable = serverTable;
+    }
 
     public Long getSelectOAISetId() {
         return selectOAISetId;
@@ -335,8 +365,6 @@ public class EditLockssConfigPage extends VDCBaseBean implements java.io.Seriali
     }
      private void removeEmptyRows() {
         // Remove empty collection rows
-
-        // StudyAuthor
         for (Iterator<LockssServer> it = lockssConfig.getLockssServers().iterator(); it.hasNext();) {
             LockssServer elem =  it.next();
             if (elem.getIpAddress()!=null && elem.getIpAddress().trim().isEmpty()) {

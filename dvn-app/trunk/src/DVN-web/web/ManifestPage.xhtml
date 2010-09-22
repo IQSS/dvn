@@ -36,36 +36,39 @@
                         <ice:outputText value="#{ManifestPage.oaiSetUrl}"/>
                     </ice:outputLink><br/>
                 </div>
-                <div jsfc="ice:panelGroup" styleClass="dvn_padTop">
-                    <ice:outputText value="Licensing Terms:  "/>
-                    <ice:outputLink value="#{ManifestPage.lockssLicensingTerms}">
-                        <ice:outputText value="#{ManifestPage.lockssLicensingTerms}"/>
-                    </ice:outputLink><br/>
-                </div>
+
                 
-                <div>
+                <div jsfc="ice:panelGroup" styleClass="dvn_padTop">
                       <a rel="license"
                       href="#{ManifestPage.lockssLicensingTerms}"><img alt="Creative
                       Commons License" style="border-width:0"
-                      src="#{ManifestPage.lockssImageUrl}" /></a><br
-                      /><span xmlns:dc="http://purl.org/dc/elements/1.1/"
-                      property="dc:title">This Data Collection </span> by
-                      <a
-                      xmlns:cc="http://creativecommons.org/ns#"
-                      href="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditContactUsPage.xhtml"
-                      property="cc:attributionName" rel="cc:attributionURL">Owner of
-                      </a> is licensed under a 
-                      <a rel="license"
-                      href="#{ManifestPage.lockssLicensingTerms}">
-                          <ice:outputText value="#{ManifestPage.lockssLicenseDescription}"/></a>.
-                      <br />Based on a work at <a
-                      xmlns:dc="http://purl.org/dc/elements/1.1/"
-                      href="/dvn#{VDCRequest.currentVDCURL}"
-                      rel="dc:source">dataverse</a>.<br />Permissions beyond the scope of
-                      this license may be available at <a
-                      xmlns:cc="http://creativecommons.org/ns#"
-                      href="/dvn#{VDCRequest.currentVDCURL}/faces/ManifestPage.xhtml"
-                      rel="cc:morePermissions">http://dataverse/path/to/manifest/page</a>
+                      src="#{ManifestPage.lockssImageUrl}" /></a>
+                      <br/>
+                <div jsfc="ice:panelGroup" styleClass="dvn_padTop">
+                    <ice:outputText value="This Data Collection by "/>
+                    <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/ContactUsPage.xhtml">
+                        <ice:outputText value="#{ManifestPage.ownerString}"/>
+                    </ice:outputLink>
+                    <ice:outputText value="is licensed under a "/>
+                    <ice:outputLink value="#{ManifestPage.lockssLicensingTerms}">
+                        <ice:outputText value="#{ManifestPage.lockssLicenseDescription}"/>
+                    </ice:outputLink>
+                    <ice:outputText value="."/>
+                <div jsfc="ice:panelGroup" styleClass="dvn_padTop">
+                     <ice:outputText value="Based on a work at "/>
+                     <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}">
+                         <ice:outputText value="#{ManifestPage.basedOnWorkText}"/>
+                    </ice:outputLink>
+                    <ice:outputText value="."/>
+                </div>
+                <div jsfc="ice:panelGroup" styleClass="dvn_padTop">
+                    <ice:outputText value="Permissions beyond the scope of this license may be available at "/>
+                     <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/ManifestPage.xhtml">
+                         <ice:outputText value="the Manifest Page"/>
+                    </ice:outputLink>
+                    <ice:outputText value="."/>
+                </div>
+                </div>
                  </div>
 
                 <div jsfc="ice:panelGroup" styleClass="dvn_padTop">

@@ -77,6 +77,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
     @EJB RoleRequestServiceLocal roleRequestService;
     @EJB UserServiceLocal        userService;
     @EJB VDCNetworkStatsServiceLocal vdcNetworkStatsService;
+    @EJB VDCNetworkServiceLocal vdcNetworkService;
     
     
 
@@ -106,6 +107,11 @@ public class HomePage extends VDCBaseBean implements Serializable {
     private String searchField;
     StatusMessage msg;
     private boolean isAlphaSort;
+    private boolean lockssAvailable;
+
+
+
+
     private boolean hideRestricted = true; //show only restricted if set to false wjb
 
     
@@ -120,6 +126,12 @@ public class HomePage extends VDCBaseBean implements Serializable {
         initAlphabeticFilter();
         populateVDCUIList(false);
         isAlphaSort = false;
+        if (vdcNetworkService.getLockssConfig() !=null){
+            lockssAvailable = true;
+        }
+        else {
+            lockssAvailable = false;
+        }
      }
 
     public boolean isIsAlphaSort() {
@@ -511,6 +523,9 @@ public class HomePage extends VDCBaseBean implements Serializable {
         return NumberFormat.getIntegerInstance().format(count);
     }
 
+    public boolean isLockssAvailable() {
+        return lockssAvailable;
+    }
 
    //setters
  

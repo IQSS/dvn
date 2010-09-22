@@ -124,6 +124,13 @@
                             </ice:outputLink>
                           </div>
                           </div>
+                         <div jsfc="ice:panelGroup" id="manifestLink" styleClass="dvhmpgactionbox" rendered="#{VDCSession.loginBean.user!=null and HomePage.lockssAvailable  }">
+                    <div jsfc="ice:panelGroup">
+                        <ice:outputLink id="hyperlinkM" value="/dvn#{VDCRequest.currentVDCURL}/faces/ManifestPage.xhtml">
+                           <ice:outputText id="hyperlinkMText1" value=" #{bundlePageInfo.viewLOCKSSManifestPage}"/>
+                        </ice:outputLink>
+                    </div>
+                </div>
                      </td>
                  </tr>
              </table>

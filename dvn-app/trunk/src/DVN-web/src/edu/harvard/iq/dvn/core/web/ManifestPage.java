@@ -6,7 +6,12 @@
 package edu.harvard.iq.dvn.core.web;
 
 import edu.harvard.iq.dvn.core.util.PropertyUtil;
+import edu.harvard.iq.dvn.core.vdc.LockssConfig;
+import edu.harvard.iq.dvn.core.vdc.VDC;
+import edu.harvard.iq.dvn.core.vdc.VDCNetwork;
+import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
+import javax.ejb.EJB;
 
 
 
@@ -33,20 +38,57 @@ public class ManifestPage extends VDCBaseBean implements java.io.Serializable {
     private String baseUrl;
     private String lockssImageUrl;
     private String lockssLicenseDescription;
+    private String ownerString;
+    private String basedOnWorkLink;
+
+
+    private String basedOnWorkText;
+
+
+
+    private VDCNetwork vdcNetwork;
+    private VDC vdc;
+    private LockssConfig lockssConfig;
+    @EJB VDCNetworkServiceLocal vdcNetworkService;
 
 
     @Override
     public void init() {
         super.init();
-        dvName = getVDCRequestBean().getCurrentVDC().getName();
-        archivalUnit = getVDCRequestBean().getCurrentVDC().getAlias();
-        initOaiSetUrl();
-
-        dvTermsOfUse = getVDCRequestBean().getCurrentVDC().getDownloadTermsOfUse();
-        dvNetworkTermsOfUse = getVDCRequestBean().getVdcNetwork().getDownloadTermsOfUse();
-        lockssLicensingTerms = getVDCRequestBean().getCurrentVDC().getLockssConfig().getLicenseType().getLicenseUrl();
-        lockssImageUrl = getVDCRequestBean().getCurrentVDC().getLockssConfig().getLicenseType().getImageUrl();
-        lockssLicenseDescription = getVDCRequestBean().getCurrentVDC().getLockssConfig().getLicenseType().getName();
+        vdc = getVDCRequestBean().getCurrentVDC();
+        vdcNetwork = getVDCRequestBean().getVdcNetwork();
+        if (vdc != null){
+            
+            dvName = vdc.getName();
+            archivalUnit = vdc.getAlias();
+            initOaiSetUrl();
+            ownerString = vdc.getCreator().getFirstName() + " " + vdc.getCreator().getLastName();
+            dvTermsOfUse = vdc.getDownloadTermsOfUse();
+            dvNetworkTermsOfUse = vdcNetwork.getDownloadTermsOfUse();
+            basedOnWorkLink = "/dvn" + getVDCRequestBean().getCurrentVDCURL();
+            basedOnWorkText = vdc.getName();
+            lockssConfig = vdc.getLockssConfig();
+            lockssLicensingTerms = lockssConfig.getLicenseType().getLicenseUrl();
+            lockssImageUrl = lockssConfig.getLicenseType().getImageUrl();
+            lockssLicenseDescription = lockssConfig.getLicenseType().getName();
+        }
+        else{
+            
+            dvName = vdcNetwork.getName();
+            archivalUnit = vdcNetwork.getName();
+            
+            initOaiSetUrl();
+            ownerString = vdcNetwork.getDefaultNetworkAdmin().getFirstName() + " " + vdcNetwork.getDefaultNetworkAdmin().getLastName();
+            basedOnWorkLink =  getVDCRequestBean().getCurrentVDCURL();
+            basedOnWorkText = vdcNetwork.getName();
+            dvTermsOfUse = "Not Applicable.";
+            dvNetworkTermsOfUse = vdcNetwork.getDownloadTermsOfUse();
+            lockssLicensingTerms =   vdcNetworkService.getLockssConfig().getLicenseType().getLicenseUrl();
+            lockssImageUrl = vdcNetworkService.getLockssConfig().getLicenseType().getImageUrl();
+            lockssLicenseDescription = vdcNetworkService.getLockssConfig().getLicenseType().getName();
+            
+        }
+            
     }
 
     public void initOaiSetUrl(){
@@ -126,6 +168,20 @@ public class ManifestPage extends VDCBaseBean implements java.io.Serializable {
         this.lockssLicenseDescription = lockssLicenseDescription;
     }
 
+    public String getOwnerString() {
+        return ownerString;
+    }
+    
+    public void setOwnerString(String ownerString) {
+        this.ownerString = ownerString;
+    }
 
+    public String getBasedOnWorkLink() {
+        return basedOnWorkLink;
+    }
+
+    public String getBasedOnWorkText() {
+        return basedOnWorkText;
+    }
 
 }

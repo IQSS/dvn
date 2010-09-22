@@ -447,7 +447,14 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
         renderSearchCollectionFilter = false;
         renderDescription = false;
         renderContributorLink = false;
-        renderViewLOCKSSManifestBox = true;
+        VDC vdc = getVDCRequestBean().getCurrentVDC();
+        if ( vdc !=null  && vdc.getLockssConfig() != null) {
+            renderViewLOCKSSManifestBox = true;
+        }
+        else
+        {
+            renderViewLOCKSSManifestBox = false;
+        }
         renderTree = false;
 
         

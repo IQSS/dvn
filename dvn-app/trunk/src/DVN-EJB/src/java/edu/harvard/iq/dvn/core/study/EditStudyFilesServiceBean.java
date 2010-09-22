@@ -170,14 +170,14 @@ public class EditStudyFilesServiceBean implements edu.harvard.iq.dvn.core.study.
     }
 
     public boolean isNewStudy(){
-        return newStudy;
+        return newStudy; 
     }
 
 
     private void editFiles() {
         boolean recalculateStudyUNF = false;
         List filesToBeDeleted = new ArrayList();
-
+        em.flush();
         Iterator iter = currentFiles.iterator();
         while (iter.hasNext()) {
             StudyFileEditBean fileBean = (StudyFileEditBean) iter.next();
@@ -197,9 +197,6 @@ public class EditStudyFilesServiceBean implements edu.harvard.iq.dvn.core.study.
                 em.remove(fileBean.getFileMetadata());
             }
         }
-
-
-        em.flush();
 
 
         // and recalculate study UNF, if needed

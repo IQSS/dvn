@@ -31,6 +31,7 @@ import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.LockssServer;
 import edu.harvard.iq.dvn.core.vdc.LockssConfig;
+import edu.harvard.iq.dvn.core.vdc.LockssConfig.ServerAccess;
 
 
 import java.util.*;
@@ -61,9 +62,8 @@ public class LockssServerAuth {
     /* 
     */ 
 
-    private Boolean isAuthorizedLockssCrawler (VDC vdc,
-                                        HttpServletRequest req) {
-
+    private Boolean isAuthorizedLockssServer (  VDC vdc,
+                                                HttpServletRequest req) {
 
         String remoteAddress = req.getRemoteHost();
 
@@ -83,6 +83,10 @@ public class LockssServerAuth {
 
         if (lockssConfig == null) {
             return false;
+        }
+
+        if (ServerAccess.ALL.equals(lockssConfig.getserverAccess())) {
+            return true; 
         }
 
         List<LockssServer> lockssServers = lockssConfig.getLockssServers();
@@ -120,8 +124,6 @@ public class LockssServerAuth {
 
         // 140.247.116.* -> 140.247.116.220 match:
 
-        boolean isMatch     = false;
-
         if (lockssServerAddress.indexOf(".*",0) != -1) {
             String regexp = "^" + lockssServerAddress.replace(".*", "\\.");
             Pattern pattern = Pattern.compile(regexp);
@@ -132,6 +134,8 @@ public class LockssServerAuth {
         }
 
         // the above is the equivalent of what we do in GroupServiceBean;
+        // we should probably assume that the remoteAddress() can return 
+        // the address in both the numeric and domain name form.
         //
         //if (remoteAddress.matches("^[0-9][0-9]*\\.[0-9][0-9]*\\.[0-9][0-9]*\\.[0-9][0-9]*$")) {
         //

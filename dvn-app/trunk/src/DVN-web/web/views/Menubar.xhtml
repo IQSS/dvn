@@ -23,20 +23,25 @@
         <ice:outputText value="#{VDCRequest.currentVDC.name} Dataverse"/>
       </ice:outputLink>
     </div>
-  </div>      
+  </div>
   <div jsfc="ice:panelGroup" id="navblockDiv" styleClass="#{(VDCRequest.currentVDC == null) ? 'dvn_navblock dvn_navblockNetwork' : 'dvn_navblock'}">
     <div class="dvn_navblockLinks">
       <ul>
-      <li>
+        <li>
           <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/AdvSearchPage.xhtml" title="Basic or Advanced Search of #{VDCRequest.currentVDC.name} dataverse" rendered="#{VDCRequest.currentVDC != null}">
             <ice:outputText value="#{bundle.searchLabel}"/>
           </ice:outputLink>
-        </li>
-        <li>
           <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/AdvSearchPage.xhtml" title="Basic or Advanced Search of #{VDCRequest.vdcNetwork.name} Dataverse Network" rendered="#{VDCRequest.currentVDC == null}">
             <ice:outputText value="#{bundle.searchLabel}"/>
           </ice:outputLink>
         </li>
+        <ice:outputText nospan="true" escape="false" rendered="#{VDCRequest.currentVDC != null and VDCSession.loginBean.user !=null and StudyListingPage.renderViewLOCKSSManifestBox}">
+            <li>
+                <ice:outputLink id="hyperlinkM" value="/dvn#{VDCRequest.currentVDCURL}/faces/ManifestPage.xhtml">
+                  <ice:outputText id="hyperlinkMText1" value="#{bundlePageInfo.viewLOCKSSManifestPage}"/>
+                </ice:outputLink>
+            </li>
+        </ice:outputText>
         <li>
           <ice:outputLink value="http://thedata.org/guides" target="_blank" title="Go to User Guides">
             <ice:outputText value="#{bundle.helpLabel}"/>

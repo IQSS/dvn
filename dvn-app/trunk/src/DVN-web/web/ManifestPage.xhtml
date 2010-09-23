@@ -23,61 +23,35 @@
           <div class="dvn_sectionBox">
             <div class="dvn_margin12">
                 <div>
-                    <ice:outputText value="Dataverse Name:  "/>
-                    <ice:outputText value="#{ManifestPage.dvName}"/><br/>
-                </div>
-                <div>
-                    <ice:outputText value="Archival Unit:  "/>
-                    <ice:outputText value="#{ManifestPage.archivalUnit}"/><br/>
-                </div>
-                <div>
-                    <ice:outputText value="Dataverse URL:  "/>
+                    <ice:outputText value="Dataverse Name: #{ManifestPage.dvName}"/><br/>
+                    <ice:outputText value="Archival Unit: #{ManifestPage.archivalUnit}"/><br/>
+                    <ice:outputText value="Dataverse URL: "/>
                     <ice:outputLink value="#{ManifestPage.oaiSetUrl}">
                         <ice:outputText value="#{ManifestPage.oaiSetUrl}"/>
-                    </ice:outputLink><br/>
+                    </ice:outputLink>
                 </div>
-
                 
                 <div jsfc="ice:panelGroup" styleClass="dvn_padTop">
-                      <a rel="license"
-                      href="#{ManifestPage.lockssLicensingTerms}"><img alt="Creative
-                      Commons License" style="border-width:0"
-                      src="#{ManifestPage.lockssImageUrl}" /></a>
-                      <br/>
-                <div jsfc="ice:panelGroup" styleClass="dvn_padTop">
-                    <ice:outputText value="This Data Collection by "/>
-                    <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/ContactUsPage.xhtml">
-                        <ice:outputText value="#{ManifestPage.ownerString}"/>
-                    </ice:outputLink>
-                    <ice:outputText value="is licensed under a "/>
-                    <ice:outputLink value="#{ManifestPage.lockssLicensingTerms}">
-                        <ice:outputText value="#{ManifestPage.lockssLicenseDescription}"/>
-                    </ice:outputLink>
-                    <ice:outputText value="."/>
-                <div jsfc="ice:panelGroup" styleClass="dvn_padTop">
-                     <ice:outputText value="Based on a work at "/>
-                     <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}">
-                         <ice:outputText value="#{ManifestPage.basedOnWorkText}"/>
-                    </ice:outputLink>
-                    <ice:outputText value="."/>
-                </div>
-                <div jsfc="ice:panelGroup" styleClass="dvn_padTop">
-                    <ice:outputText value="Permissions beyond the scope of this license may be available at "/>
-                     <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/ManifestPage.xhtml">
-                         <ice:outputText value="the Manifest Page"/>
-                    </ice:outputLink>
-                    <ice:outputText value="."/>
-                </div>
-                </div>
-                 </div>
+                    <a rel="license" href="#{ManifestPage.lockssLicensingTerms}"><img alt="Creative Commons License" src="#{ManifestPage.lockssImageUrl}"/></a>
 
-                <div jsfc="ice:panelGroup" styleClass="dvn_padTop">
-                    <ice:outputText value="Dataverse Network Terms:"/>
-                    <ice:outputText value="#{ManifestPage.dvNetworkTermsOfUse}"/><br/>
+                    <div jsfc="ice:panelGroup" styleClass="dvn_padTop">
+                        <ice:outputText nospan="true" value="This Data Collection by &#60;a href=&#34;/dvn#{VDCRequest.currentVDCURL}/faces/ContactUsPage.xhtml&#34;&#62;#{ManifestPage.ownerString}&#60;/a&#62; is licensed under a &#60;a href=&#34;#{ManifestPage.lockssLicensingTerms}&#34;&#62;#{ManifestPage.lockssLicenseDescription}&#60;/a&#62;." escape="false"/>
+                        <div jsfc="ice:panelGroup" styleClass="dvn_padTop">
+                             <ice:outputText nospan="true" value="Based on a work at &#60;a href=&#34;/dvn#{VDCRequest.currentVDCURL}&#34;&#62;#{ManifestPage.basedOnWorkText}&#60;/a&#62;." escape="false"/>
+                        </div>
+                        <div jsfc="ice:panelGroup" styleClass="dvn_padTop">
+                            <ice:outputText nospan="true" value="Permissions beyond the scope of this license may be available at the &#60;a href=&#34;/dvn#{VDCRequest.currentVDCURL}/faces/ManifestPage.xhtml&#34;&#62;Manifest&#60;/a&#62; page." escape="false"/>
+                        </div>
+                    </div>
                 </div>
-                <div jsfc="ice:panelGroup" styleClass="dvn_padTop">
+
+                <div jsfc="ice:panelGroup" styleClass="dvn_padTop" rendered="#{ManifestPage.dvNetworkTermsOfUse != null}">
+                    <ice:outputText value="Dataverse Network Terms:"/>
+                    <ice:outputText value="#{ManifestPage.dvNetworkTermsOfUse}"/>
+                </div>
+                <div jsfc="ice:panelGroup" styleClass="dvn_padTop" rendered="#{ManifestPage.dvTermsOfUse != null}">
                     <ice:outputText value="Dataverse Terms:"/>
-                    <ice:outputText value="#{ManifestPage.dvTermsOfUse}"/><br/>
+                    <ice:outputText value="#{ManifestPage.dvTermsOfUse}"/>
                 </div>
             </div>
           </div>

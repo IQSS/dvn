@@ -103,14 +103,6 @@
                 </div>
             </div>
         </div>
-            <div jsfc="ice:panelGroup" id="manifestLink" styleClass="dvhmpgactionbox" rendered="#{VDCSession.loginBean.user!=null and  StudyListingPage.renderViewLOCKSSManifestBox }">
-                    <div jsfc="ice:panelGroup">
-                        <ice:outputLink id="hyperlinkM" value="/dvn#{VDCRequest.currentVDCURL}/faces/ManifestPage.xhtml">
-                           <ice:outputText id="hyperlinkMText1" value=" #{bundlePageInfo.viewLOCKSSManifestPage}"/>
-                        </ice:outputLink>
-                    </div>
-                </div>
-
           <!-- Start Search Results (with side panel, if available) -->
           <div jsfc="ice:panelGroup" styleClass="#{ (StudyListingPage.renderTree) ? 'dvn_section dvn_overflow' : 'dvn_section'} dvn_clear">
             <div jsfc="ice:panelGroup" styleClass="#{ (StudyListingPage.renderTree) ? 'dvn_sectionContent' : 'dvn_sectionContentNoPanels'}">

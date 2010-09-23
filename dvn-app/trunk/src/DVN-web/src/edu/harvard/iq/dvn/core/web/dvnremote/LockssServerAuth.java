@@ -62,7 +62,7 @@ public class LockssServerAuth {
     /* 
     */ 
 
-    private Boolean isAuthorizedLockssServer (  VDC vdc,
+    public Boolean isAuthorizedLockssServer (  VDC vdc,
                                                 HttpServletRequest req) {
 
         String remoteAddress = req.getRemoteHost();

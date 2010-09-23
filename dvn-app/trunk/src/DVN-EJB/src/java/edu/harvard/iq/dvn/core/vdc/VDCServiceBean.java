@@ -81,6 +81,8 @@ public class VDCServiceBean implements VDCServiceLocal {
     StudyServiceLocal studyService;
     @EJB
     HarvesterServiceLocal harvesterService;
+    @EJB
+    OAISetServiceLocal oaiSetService;
     @Resource(name = "jdbc/VDCNetDS")
     DataSource dvnDatasource;
     @PersistenceContext(unitName = "VDCNet-ejbPU")
@@ -417,6 +419,9 @@ public class VDCServiceBean implements VDCServiceLocal {
         // the collection of templates.
         if (vdc.getTemplates().contains(vdc.getDefaultTemplate())) {
             vdc.setDefaultTemplate(null);
+        }
+        if (vdc.getLockssConfig()!=null) {
+            oaiSetService.remove(vdc.getLockssConfig().getOaiSet().getId());
         }
         em.remove(vdc);
 

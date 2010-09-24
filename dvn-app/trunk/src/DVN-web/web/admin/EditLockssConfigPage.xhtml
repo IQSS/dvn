@@ -96,7 +96,7 @@
                                             requiredMessage="This field is required.">
                             <f:selectItem itemLabel="Disable harvesting of all data files" itemValue="NONE"/>
                             <f:selectItem itemLabel="Enable harvesting of public data files" itemValue="ALL"/>
-                            <f:selectItem itemLabel="Enable harvesting of public data files for specified servers only" itemValue="GROUP"/>
+                            <f:selectItem itemLabel="Enable harvesting of public data files by specified servers only" itemValue="GROUP"/>
                         </ice:selectOneRadio>
                     </td>
                   </tr>
@@ -120,7 +120,7 @@
                     </td>
                     <td>
                         <ice:selectBooleanCheckbox id="enableRestrictedCheckBox" value="#{EditLockssConfigPage.lockssConfig.allowRestricted}"/>
-                        <ice:outputText id="enableRestrictedLabel" value=" Enable LOCKSS harvesting of restricted data files from specified servers."/>
+                        <ice:outputText id="enableRestrictedLabel" value=" Enable LOCKSS harvesting of restricted data files by specified servers."/>
                     </td>
                   </tr>
                   <tr class="lockssConfig">

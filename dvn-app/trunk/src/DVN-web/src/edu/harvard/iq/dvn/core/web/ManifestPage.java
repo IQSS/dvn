@@ -57,11 +57,12 @@ public class ManifestPage extends VDCBaseBean implements java.io.Serializable {
         super.init();
         vdc = getVDCRequestBean().getCurrentVDC();
         vdcNetwork = getVDCRequestBean().getVdcNetwork();
+
         if (vdc != null){
             
             dvName = vdc.getName();
             archivalUnit = vdc.getAlias();
-            initOaiSetUrl();
+            oaiSetUrl  = "http://" + PropertyUtil.getHostUrl() + "/dvn/OAIHandler?verb=ListRecords&metadataPrefix=ddi&set=" + archivalUnit ;
             ownerString = vdc.getCreator().getFirstName() + " " + vdc.getCreator().getLastName();
             dvTermsOfUse = vdc.getDownloadTermsOfUse();
             dvNetworkTermsOfUse = vdcNetwork.getDownloadTermsOfUse();
@@ -75,9 +76,14 @@ public class ManifestPage extends VDCBaseBean implements java.io.Serializable {
         else{
             
             dvName = vdcNetwork.getName();
-            archivalUnit = vdcNetwork.getName();
-            
-            initOaiSetUrl();
+            lockssConfig = vdcNetworkService.getLockssConfig();
+            if (vdcNetworkService.getLockssConfig().getOaiSet() != null){
+                archivalUnit = vdcNetworkService.getLockssConfig().getOaiSet().getName();
+                oaiSetUrl  = "http://" + PropertyUtil.getHostUrl() + "/dvn/OAIHandler?verb=ListRecords&metadataPrefix=ddi&set=" + archivalUnit ;
+            } else {
+                archivalUnit = dvName;
+                oaiSetUrl  = "http://" + PropertyUtil.getHostUrl() + "/dvn/OAIHandler?verb=ListRecords&metadataPrefix=ddi";
+            }
             ownerString = vdcNetwork.getDefaultNetworkAdmin().getFirstName() + " " + vdcNetwork.getDefaultNetworkAdmin().getLastName();
             basedOnWorkLink =  getVDCRequestBean().getCurrentVDCURL();
             basedOnWorkText = vdcNetwork.getName();
@@ -89,11 +95,6 @@ public class ManifestPage extends VDCBaseBean implements java.io.Serializable {
             
         }
             
-    }
-
-    public void initOaiSetUrl(){
-
-        oaiSetUrl  = "http://" + PropertyUtil.getHostUrl() + "/dvn/OAIHandler?verb=ListRecords&metadataPrefix=ddi&set=" + archivalUnit ;
     }
 
     public String getArchivalUnit() {

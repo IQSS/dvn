@@ -23,9 +23,9 @@
           <div class="dvn_sectionBox">
             <div class="dvn_margin12">
                 <div>
-                    <ice:outputText value="Dataverse Name: #{ManifestPage.dvName}"/><br/>
+                    <ice:outputText value="Journal Title: #{ManifestPage.dvName}"/><br/>
                     <ice:outputText value="Archival Unit: #{ManifestPage.archivalUnit}"/><br/>
-                    <ice:outputText value="Dataverse URL: "/>
+                    <ice:outputText value="OAI Set URL: "/>
                     <ice:outputLink value="#{ManifestPage.oaiSetUrl}">
                         <ice:outputText value="#{ManifestPage.oaiSetUrl}"/>
                     </ice:outputLink>
@@ -44,7 +44,7 @@
                         </div>
                     </div>
                 </div>
-
+                <a href="#termsOfUse"></a>
                 <div jsfc="ice:panelGroup" styleClass="dvn_padTop" rendered="#{ManifestPage.dvNetworkTermsOfUse != null}">
                     <ice:outputText value="Dataverse Network Terms:"/>
                     <ice:outputText value="#{ManifestPage.dvNetworkTermsOfUse}"/>

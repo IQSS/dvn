@@ -175,6 +175,7 @@ public class EditLockssConfigPage extends VDCBaseBean implements java.io.Seriali
     }
      private boolean validateLockssServers() {
         boolean valid = false;
+
         if (!selectHarvestType.equals(HarvestType.GROUP) && !getLockssConfig().isAllowRestricted()) {
             valid = true;
         } else {
@@ -185,9 +186,18 @@ public class EditLockssConfigPage extends VDCBaseBean implements java.io.Seriali
                 }
             }
         }
+
         if (!valid) {
+            String errMessage;
+            if (selectHarvestType.equals(HarvestType.GROUP) &&!getLockssConfig().isAllowRestricted() ) {
+                errMessage = "Please specify servers that are allowed to harvest.";
+            } else if (!selectHarvestType.equals(HarvestType.GROUP) && getLockssConfig().isAllowRestricted()) {
+                errMessage = "Please specify servers that are allowed to access restricted data.";
+            } else {
+                errMessage = "Please specify servers that are allowed to harvest and access restricted data.";
+            }
            
-            FacesMessage message = new FacesMessage("Please specify servers for harvesting or access to restricted data.");
+            FacesMessage message = new FacesMessage(errMessage);
             FacesContext context = FacesContext.getCurrentInstance();
             context.addMessage(serverTable.getClientId(context), message);
             

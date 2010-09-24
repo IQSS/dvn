@@ -42,6 +42,13 @@
                 </ice:outputLink>
             </li>
         </ice:outputText>
+        <ice:outputText nospan="true" escape="false" rendered="#{VDCRequest.currentVDC == null and VDCSession.loginBean.user !=null and HomePage.lockssAvailable}">
+            <li>
+                <ice:outputLink id="hyperlinkM" value="/dvn#{VDCRequest.currentVDCURL}/faces/ManifestPage.xhtml">
+                  <ice:outputText id="hyperlinkMText1" value="#{bundlePageInfo.viewLOCKSSManifestPage}"/>
+                </ice:outputLink>
+            </li>
+        </ice:outputText>
         <li>
           <ice:outputLink value="http://thedata.org/guides" target="_blank" title="Go to User Guides">
             <ice:outputText value="#{bundle.helpLabel}"/>

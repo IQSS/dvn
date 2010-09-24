@@ -104,33 +104,26 @@
                      <td valign="bottom"><ice:outputText styleClass="dvnHmpgGroupHeader" value="#{HomePage.groupName}"/></td>
                      <td width="280" align="right" valign="bottom">
                          <div class="dvn_searchboxblock">
-                         <script type="text/javascript">
+                           <script type="text/javascript">
                                 function clickclear(thisfield, defaulttext) {
                                     if (thisfield.value == defaulttext) {
                                         thisfield.value = "";
                                     }
                                 }
-                         </script>
-                         <fieldset>
-                        <gui:include src="BasicSearchFragment.xhtml">
-                        </gui:include>
-                          </fieldset>
-                          <div class="dvn_searchlinks">
-                            <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/AdvSearchPage.xhtml">
-                                <ice:outputText value="Advanced Search"/>
-                            </ice:outputLink>
-                            <ice:outputLink value="http://thedata.org/book/search-tips" target="_blank">
-                                <ice:outputText value="Tips"/>
-                            </ice:outputLink>
-                          </div>
-                          </div>
-                         <div jsfc="ice:panelGroup" id="manifestLink" styleClass="dvhmpgactionbox" rendered="#{VDCSession.loginBean.user!=null and HomePage.lockssAvailable  }">
-                    <div jsfc="ice:panelGroup">
-                        <ice:outputLink id="hyperlinkM" value="/dvn#{VDCRequest.currentVDCURL}/faces/ManifestPage.xhtml">
-                           <ice:outputText id="hyperlinkMText1" value=" #{bundlePageInfo.viewLOCKSSManifestPage}"/>
-                        </ice:outputLink>
-                    </div>
-                </div>
+                           </script>
+                           <fieldset>
+                               <gui:include src="BasicSearchFragment.xhtml">
+                               </gui:include>
+                           </fieldset>
+                           <div class="dvn_searchlinks">
+                                <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/AdvSearchPage.xhtml">
+                                    <ice:outputText value="Advanced Search"/>
+                                </ice:outputLink>
+                                <ice:outputLink value="http://thedata.org/book/search-tips" target="_blank">
+                                    <ice:outputText value="Tips"/>
+                                </ice:outputLink>
+                           </div>
+                         </div>
                      </td>
                  </tr>
              </table>

@@ -114,6 +114,10 @@ public class EditLockssServiceBean implements EditLockssService, java.io.Seriali
     public void removeLockssConfig() {
         if (lockssConfig.getVdc()!=null && lockssConfig.getOaiSet()!=null) {
             em.remove(lockssConfig.getOaiSet());
+        } else {
+            if (lockssConfig.getOaiSet()!=null) {
+                lockssConfig.getOaiSet().setLockssConfig(null);
+            }
         }
         em.remove(lockssConfig);
         // TODO: remove harvestStudy data (same thing needs to happen when deleting a dataverse)

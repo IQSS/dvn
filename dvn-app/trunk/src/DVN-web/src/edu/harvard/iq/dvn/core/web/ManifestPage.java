@@ -32,6 +32,7 @@ public class ManifestPage extends VDCBaseBean implements java.io.Serializable {
     private String dvName;
     private String archivalUnit;
     private String oaiSetUrl;
+    private String lockssLicensingUrl;
     private String lockssLicensingTerms;
     private String dvNetworkTermsOfUse;
     private String dvTermsOfUse;
@@ -40,7 +41,6 @@ public class ManifestPage extends VDCBaseBean implements java.io.Serializable {
     private String lockssLicenseDescription;
     private String ownerString;
     private String basedOnWorkLink;
-
 
     private String basedOnWorkText;
 
@@ -69,9 +69,11 @@ public class ManifestPage extends VDCBaseBean implements java.io.Serializable {
             basedOnWorkLink = "/dvn" + getVDCRequestBean().getCurrentVDCURL();
             basedOnWorkText = vdc.getName();
             lockssConfig = vdc.getLockssConfig();
-            lockssLicensingTerms = lockssConfig.getLicenseType().getLicenseUrl();
+            lockssLicensingUrl = lockssConfig.getLicenseType().getLicenseUrl();
+            lockssLicensingTerms = lockssConfig.getLicenseText();
             lockssImageUrl = lockssConfig.getLicenseType().getImageUrl();
             lockssLicenseDescription = lockssConfig.getLicenseType().getName();
+
         }
         else{
             
@@ -87,12 +89,14 @@ public class ManifestPage extends VDCBaseBean implements java.io.Serializable {
             ownerString = vdcNetwork.getDefaultNetworkAdmin().getFirstName() + " " + vdcNetwork.getDefaultNetworkAdmin().getLastName();
             basedOnWorkLink =  getVDCRequestBean().getCurrentVDCURL();
             basedOnWorkText = vdcNetwork.getName();
-            dvTermsOfUse = "Not Applicable.";
+            dvTermsOfUse = null;
             dvNetworkTermsOfUse = vdcNetwork.getDownloadTermsOfUse();
-            lockssLicensingTerms =   vdcNetworkService.getLockssConfig().getLicenseType().getLicenseUrl();
-            lockssImageUrl = vdcNetworkService.getLockssConfig().getLicenseType().getImageUrl();
-            lockssLicenseDescription = vdcNetworkService.getLockssConfig().getLicenseType().getName();
-            
+            lockssConfig = vdcNetworkService.getLockssConfig();
+            lockssLicensingUrl =   lockssConfig.getLicenseType().getLicenseUrl();
+            lockssLicensingTerms =   lockssConfig.getLicenseText();
+            lockssImageUrl = lockssConfig.getLicenseType().getImageUrl();
+            lockssLicenseDescription = lockssConfig.getLicenseType().getName();
+
         }
             
     }
@@ -183,6 +187,10 @@ public class ManifestPage extends VDCBaseBean implements java.io.Serializable {
 
     public String getBasedOnWorkText() {
         return basedOnWorkText;
+    }
+
+    public String getLockssLicensingUrl() {
+        return lockssLicensingUrl;
     }
 
 }

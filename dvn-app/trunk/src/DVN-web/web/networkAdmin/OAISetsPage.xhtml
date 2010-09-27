@@ -38,10 +38,10 @@
               <f:facet name="header">
                 <ice:outputText id="column1Header" value="Set Name"/>
               </f:facet>
-                <ice:outputLink value="/dvn/faces/networkAdmin/EditOAISetPage.xhtml?oaiSetId=#{currentRow.id}" rendered="#{currentRow.lockssConfig == null}">
+                <ice:outputLink value="/dvn/faces/networkAdmin/EditOAISetPage.xhtml?oaiSetId=#{currentRow.id}" rendered="#{currentRow.lockssConfig == null or currentRow.lockssConfig.vdc == null}">
                 <ice:outputText value="#{currentRow.name}"/>
               </ice:outputLink>
-                <ice:outputLink value="/dvn/dv/#{currentRow.spec}/faces/admin/EditLockssConfigPage.xhtml" rendered="#{currentRow.lockssConfig != null}">
+                <ice:outputLink value="/dvn/dv/#{currentRow.spec}/faces/admin/EditLockssConfigPage.xhtml" rendered="#{currentRow.lockssConfig != null  and currentRow.lockssConfig.vdc != null}">
                 <ice:outputText value="#{currentRow.name}"/>
               </ice:outputLink>
             </ice:column>
@@ -64,6 +64,14 @@
               <ice:outputText value="#{currentRow.description}"/>
             </ice:column>
             <ice:column id="column5">
+              <f:facet name="header">
+                <ice:outputText id="column5Header" value="LockSS Level"/>
+              </f:facet>
+                <ice:outputText value="None" rendered="#{currentRow.lockssConfig == null}"/>
+                <ice:outputText value="DVN" rendered="#{currentRow.lockssConfig != null and currentRow.lockssConfig.vdc == null}"/>
+                <ice:outputText value="DV" rendered="#{currentRow.lockssConfig != null and currentRow.lockssConfig.vdc != null}"/>
+            </ice:column>
+            <ice:column id="column6">
               <f:facet name="header">
                 <ice:outputText value="Delete"/>
               </f:facet>

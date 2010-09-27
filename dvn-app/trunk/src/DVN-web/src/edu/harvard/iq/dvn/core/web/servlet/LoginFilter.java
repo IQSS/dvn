@@ -40,12 +40,16 @@ import edu.harvard.iq.dvn.core.study.StudyLock;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.study.VariableServiceLocal;
+import edu.harvard.iq.dvn.core.vdc.LockssConfig;
+import edu.harvard.iq.dvn.core.vdc.LockssConfig.ServerAccess;
 import edu.harvard.iq.dvn.core.vdc.VDC;
+import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import edu.harvard.iq.dvn.core.web.common.LoginBean;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import edu.harvard.iq.dvn.core.web.common.VDCRequestBean;
 import edu.harvard.iq.dvn.core.web.common.VDCSessionBean;
+import edu.harvard.iq.dvn.core.web.dvnremote.LockssServerAuth;
 import java.io.*;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -84,7 +88,8 @@ import javax.servlet.http.HttpSession;
 @EJB(name = "harvestStudyService", beanInterface = edu.harvard.iq.dvn.core.harvest.HarvestStudyServiceLocal.class),
 @EJB(name = "vdcGroupService", beanInterface = edu.harvard.iq.dvn.core.vdc.VDCGroupServiceLocal.class),
 @EJB(name = "vdcService", beanInterface = edu.harvard.iq.dvn.core.vdc.VDCServiceLocal.class),
-@EJB(name = "vdcUserService", beanInterface = edu.harvard.iq.dvn.core.admin.UserServiceLocal.class)
+@EJB(name = "vdcUserService", beanInterface = edu.harvard.iq.dvn.core.admin.UserServiceLocal.class),
+@EJB(name = "vdcNetworkService", beanInterface = edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal.class)
 })
 public class LoginFilter implements Filter {
 
@@ -102,6 +107,8 @@ public class LoginFilter implements Filter {
     GroupServiceLocal groupService;
     @EJB
     VariableServiceLocal variableService;
+    @EJB
+    VDCNetworkServiceLocal vdcNetworkService;
     // The filter configuration object we are associated with.  If
     // this value is null, this filter instance is not currently
     // configured.
@@ -131,7 +138,7 @@ public class LoginFilter implements Filter {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         String requestPath = httpRequest.getPathInfo();
         VDC currentVDC = vdcService.getVDCFromRequest(httpRequest);
-        
+
         if (requestPath!=null && requestPath.endsWith(".jsp")) {
               String redirectURL = httpRequest.getContextPath();
               if (currentVDC!=null) {
@@ -462,6 +469,31 @@ public class LoginFilter implements Filter {
             if (user==null || user.getId()!=Long.parseLong(userId)) {
                 return false;
             }
+        } else if (isManifestPage(pageDef)) {
+            LockssServerAuth lockssAuth = new LockssServerAuth();
+            LockssConfig chkLockssConfig = getLockssConfig(currentVDC);
+            if ( chkLockssConfig == null){
+                 return false;
+            } else if (chkLockssConfig.getserverAccess().equals(ServerAccess.GROUP)){
+                VDCRole userRole = null;
+                String userVDCRoleName = null;
+                if (currentVDC != null) {
+                    userRole = loginBean.getVDCRole(currentVDC);
+                }
+                if (userRole != null && user.isAdmin(currentVDC) ) {
+                    return true;
+                }
+
+                if (user.getNetworkRole() != null && user.getNetworkRole().getName().equals(NetworkRoleServiceLocal.ADMIN)) {
+                    // If you are network admin, you can do anything!
+                    return true;
+                }
+
+                if (!lockssAuth.isAuthorizedLockssServer(currentVDC, request) ) {
+                    return false;
+                }
+            }               
+
         }
         return true;
     }
@@ -489,6 +521,24 @@ public class LoginFilter implements Filter {
         return false;
     }
 
+    private LockssConfig getLockssConfig(VDC currentVDC){
+        if (currentVDC !=null){
+            return currentVDC.getLockssConfig();
+        }
+        else
+        {
+           return vdcNetworkService.getLockssConfig();
+        }
+
+    }
+
+    private boolean isManifestPage(PageDef pageDef ) {
+        if (pageDef != null &&
+                pageDef.getName().equals(PageDefServiceLocal.MANIFEST_PAGE )) {
+            return true;
+        }
+        return false;
+    }
     private boolean isEditStudyPage(PageDef pageDef) {
 
         if (pageDef != null &&

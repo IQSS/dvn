@@ -35,14 +35,14 @@
             <ice:outputText value="#{bundle.searchLabel}"/>
           </ice:outputLink>
         </li>
-        <ice:outputText nospan="true" escape="false" rendered="#{VDCRequest.currentVDC != null and VDCSession.loginBean.user !=null and StudyListingPage.renderViewLOCKSSManifestBox}">
+        <ice:outputText nospan="true" escape="false" rendered="#{VDCRequest.currentVDC != null  and VDCSession.loginBean.user !=null and (VDCSession.loginBean.admin or VDCRequest.authorizedLockssServer)  and StudyListingPage.renderViewLOCKSSManifestBox  }">
             <li>
                 <ice:outputLink id="hyperlinkM" value="/dvn#{VDCRequest.currentVDCURL}/faces/ManifestPage.xhtml">
                   <ice:outputText id="hyperlinkMText1" value="#{bundlePageInfo.viewLOCKSSManifestPage}"/>
                 </ice:outputLink>
             </li>
         </ice:outputText>
-        <ice:outputText nospan="true" escape="false" rendered="#{VDCRequest.currentVDC == null and VDCSession.loginBean.user !=null and HomePage.lockssAvailable}">
+                    <ice:outputText nospan="true" escape="false" rendered="#{VDCRequest.currentVDC == null and VDCSession.loginBean.user !=null and (VDCSession.loginBean.networkAdmin or VDCRequest.authorizedLockssServer) and HomePage.lockssAvailable}">
             <li>
                 <ice:outputLink id="hyperlinkM" value="/dvn#{VDCRequest.currentVDCURL}/faces/ManifestPage.xhtml">
                   <ice:outputText id="hyperlinkMText1" value="#{bundlePageInfo.viewLOCKSSManifestPage}"/>

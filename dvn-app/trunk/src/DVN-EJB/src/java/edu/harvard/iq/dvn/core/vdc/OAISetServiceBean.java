@@ -49,26 +49,11 @@ public class OAISetServiceBean implements OAISetServiceLocal {
         //List<Long> returnOaiSets = new ArrayList();
         //return em.createQuery("select object(o) from OAISet  as o where  o.lockssconfig_id != null  order by o.name").getResultList();
 
-        List<OAISet> returnOaiSets = em.createQuery("select object(o) from OAISet  as o where  o.lockssConfig is  null  order by o.name").getResultList();
-/*
-        String nativeQuery = "select * from OAISet   " +
-            " as o where  lockssconfig_id > 0  order by o.name ";
-
-        Query query = em.createNativeQuery(nativeQuery);
-
-        for (Object currentResult :  query.getResultList()) {
-            OAISet addResult = new OAISet();
-            addResult.setId(new Long(((Integer) ((Vector) currentResult).get(0))).longValue());
-            addResult.setDefinition((String) (( ((Vector) currentResult).get(1))));
-            addResult.setDescription((String) (( ((Vector) currentResult).get(2))));
-            addResult.setSpec((String) (( ((Vector) currentResult).get(3))));
-            addResult.setVersion(new Long(((Long) ((Vector) currentResult).get(4))));
-            addResult.setName((String) (( ((Vector) currentResult).get(5))));
-            addResult.setLockssConfig(new LockssConfig());
-            returnOaiSets.add(addResult);
-        }
- */
-        returnOaiSets.addAll(em.createQuery("select object(o) from OAISet  as o where  o.lockssConfig is not null  order by o.name").getResultList());
+        List<OAISet> returnOaiSets = em.createQuery("select object(o) from OAISet  as o where  o.lockssConfig is null order by o.name").getResultList();
+ //      returnOaiSets.addAll(em.createQuery("select object(o) from OAISet  as o where ((o.lockssConfig is null) or  (o.lockssConfig is not null and o.lockssConfig.vdc is  null))  order by o.name").getResultList());
+  //     returnOaiSets.addAll(em.createQuery("select object(o) from OAISet  as o where ((o.lockssConfig is not null and o.lockssConfig.vdc is  null ) or (o.lockssConfig is null)   )  order by o.name").getResultList());
+       returnOaiSets.addAll(em.createQuery("select object(o) from OAISet  as o where  o.lockssConfig is not null and o.lockssConfig.vdc is  null  order by o.name").getResultList());
+       returnOaiSets.addAll(em.createQuery("select object(o) from OAISet  as o where  o.lockssConfig is not null and o.lockssConfig.vdc is not null  order by o.name").getResultList());
 
         return returnOaiSets;
 

@@ -32,6 +32,7 @@ import edu.harvard.iq.dvn.core.util.StringUtil;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCNetwork;
 import edu.harvard.iq.dvn.core.web.StudyListing;
+import edu.harvard.iq.dvn.core.web.dvnremote.LockssServerAuth;
 import javax.ejb.EJB;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
@@ -345,4 +346,11 @@ public class VDCRequestBean extends VDCBaseBean implements java.io.Serializable 
         }
         return title;
     }
+
+    public boolean isAuthorizedLockssServer(){
+        LockssServerAuth lockssAuth = new LockssServerAuth();
+        HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        return lockssAuth.isAuthorizedLockssServer(currentVDC, request );
+    }
+
 }

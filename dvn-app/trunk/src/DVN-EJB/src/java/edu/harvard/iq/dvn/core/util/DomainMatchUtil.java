@@ -150,4 +150,13 @@ public class DomainMatchUtil implements java.io.Serializable {
 
         return false;
     }
+    public static void main(String[] args) {
+        System.out.println("DomainMatchUtil.isDomainMatch(\"dvn.iq.harvard.edu\", \"*.iq.harvard.edu\") =" +DomainMatchUtil.isDomainMatch("dvn.iq.harvard.edu", "*.iq.harvard.edu"));
+        System.out.println("DomainMatchUtil.isDomainMatch(\"1.1.1.1\", \"*.1.1.1\")="+DomainMatchUtil.isDomainMatch("1.1.1.1", "*.1.1.1"));
+        System.out.println("DomainMatchUtil.isDomainMatch(\"1.1.1.1\", \"1.1.1.*\")="+DomainMatchUtil.isDomainMatch("1.1.1.1", "1.1.1.*"));
+        
+        System.out.println("DomainMatchUtil.isDomainMatchNumeric(\"1.1.1.1\", \"1.1.1.*\")="+DomainMatchUtil.isDomainMatchNumeric("1.1.1.1", "1.1.1.*"));
+     System.out.println("DomainMatchUtil.isDomainMatchByName(\"dvn.iq.harvard.edu\", \"*.iq.harvard.edu\") =" +DomainMatchUtil.isDomainMatchByName("dvn.iq.harvard.edu", "*.iq.harvard.edu"));
+
+    }
 }

@@ -205,26 +205,14 @@ public class EditLockssConfigPage extends VDCBaseBean implements java.io.Seriali
         return valid;
     }
 
-    public void validateIpAddress(FacesContext context,
+    public  void validateIpAddress(FacesContext context,
             UIComponent toValidate,
             Object value) {
 
         boolean valid = false;
 
-
-        String ipAddress = value.toString();
-        // for the purposes of validation, replace * with 1
-        ipAddress.replace('*', '1');
-        InetAddressValidator val = InetAddressValidator.getInstance();
-
-        valid = val.isValid(ipAddress);
-
-        // If this isn't a valid ipAddress, check to see if its a valid hostname
-        if (!valid) {
-            String hostName = value.toString();
-            hostName.replace('*', 'a');
-            valid = validateDomainName(hostName);
-        }
+        valid = doValidate(value);
+        
 
         if (!valid) {
             ((UIInput) toValidate).setValid(false);
@@ -235,12 +223,50 @@ public class EditLockssConfigPage extends VDCBaseBean implements java.io.Seriali
 
     }
 
+    private static boolean doValidate(Object value) {
+        boolean valid = false;
+        String address = value.toString();
+        // first, assume it's a domain name
+        if (address.startsWith("*.")) {
+            StringBuffer sb = new StringBuffer(address);
+            sb.setCharAt(0, 'a');
+            address = sb.toString();
+        }
+        valid = validateDomainName(address);
+
+
+        if (!valid) {
+            // Try to validate it as an ip address
+            String ipAddress = value.toString();
+            
+            // for the purposes of validation, if the string ends in ".*",
+            // replace it with dummy data for the validator.
+            if (ipAddress.endsWith(".*")) {
+                StringBuffer sb = new StringBuffer(ipAddress);
+                sb.setCharAt(ipAddress.length() - 1, '1');
+                ipAddress = sb.toString();
+                // if necessary, add dummy values to the end of the string,
+                // so it will pass validation.
+                String[] splitStrings = ipAddress.split("\\.");
+                if (splitStrings.length==2) {
+                    ipAddress+=".1.1";
+                } else if (splitStrings.length==3){
+                    ipAddress+=".1";
+                }
+            }
+            InetAddressValidator val = InetAddressValidator.getInstance();
+
+            valid = val.isValid(ipAddress);
+        }
+        return valid;
+    }
+
     /**
      * Cribbed from: http://pappul.blogspot.com/2006/07/validation-of-host-name-in-java.html
      * @param domainName
      * @return
      */
-    private  boolean validateDomainName(String domainName) {
+    private  static boolean  validateDomainName(String domainName) {
         if ((domainName == null) || (domainName.length() > 63)) {
             return false;
         }
@@ -381,5 +407,10 @@ public class EditLockssConfigPage extends VDCBaseBean implements java.io.Seriali
                   editLockssService.removeCollectionElement(it,elem);
             }
         }
+     }
+
+     public static void main(String args[]) {
+         String test = "1.*.2.3";
+         System.out.println("test = "+test+", valid = "+EditLockssConfigPage.doValidate(test));
      }
 }

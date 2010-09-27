@@ -45,21 +45,38 @@
         jQuery('#editBannerFooterForm\\:chkOpenScholarDataverse[checked]').each(
             function() {
                jQuery('.dvnUrlOpenScholar').show();
+               jQuery('#editBannerFooterForm\\:banner').attr('disabled', 'disabled');
+               jQuery('#editBannerFooterForm\\:footer').attr('disabled', 'disabled');
             }
         );
-        jQuery('#editBannerFooterForm\\:chkOpenScholarDataverse').click(function(){
+        jQuery('#editBannerFooterForm\\:chkOpenScholarDataverse').change(function(){
             jQuery(".dvnUrlOpenScholar").toggle();
+               jQuery('#editBannerFooterForm\\:banner').attr('disabled', this.checked);
+               jQuery('#editBannerFooterForm\\:footer').attr('disabled', this.checked);
         });
     });
 </script>
                 <div class="dvn_padBot">
-                    <ice:selectBooleanCheckbox id="chkOpenScholarDataverse" value="#{EditBannerFooterPage.displayInFrame}"/>
+                    <ice:selectBooleanCheckbox id="chkOpenScholarDataverse" value="#{EditBannerFooterPage.displayInFrame}" partialSubmit="true"/>
                     <ice:outputText id="outputText3" value="Disable customization for Dataverses linked to an Open Scholar site."/>
                 </div>
                 <div class="dvnUrlOpenScholar dvn_padBot">
-                    <ice:inputText id="urlOpenScholarDataverse" size="60" value="#{EditBannerFooterPage.parentSite}"/>
-                    <br/>
-                    <ice:outputText styleClass="vdcHelpText" value="Enter Open Scholar site URL, including the &#34;/data&#34; directory, e.g., http://openscholar.harvard.edu/youralias/data" escape="false"/>
+                    <table class="icePnlGrd" border="0" cellpadding="0" cellspacing="0">
+                        <tr>
+                            <td class="icePnlGrdCol vdcAddSiteCol1" valign="top">
+                                <label class="iceOutLbl" for="editBannerFooterForm:urlOpenScholarDataverse"><ice:outputText id="outputText5" value="Open Scholar URL"/></label>
+                                <ice:graphicImage id="image1" value="#{bundle.iconRequired}"/>
+                            </td>
+                            <td class="icePnlGrdCol vdcAddSiteCol2">
+                                <ice:inputText id="urlOpenScholarDataverse" size="60" value="#{EditBannerFooterPage.parentSite}"
+                                 required="#{EditBannerFooterPage.displayInFrame}"
+                                 requiredMessage="This field is required."/>
+                                <ice:message for="urlOpenScholarDataverse" showSummary="true" showDetail="false" errorClass="errorMessage" styleClass="errorMessage"/>
+                                <br/>
+                                <ice:outputText styleClass="vdcHelpText" value="Enter the URL, including the &#34;/data&#34; directory, e.g., http://openscholar.harvard.edu/youralias/data" escape="false"/>
+                            </td>
+                        </tr>
+                    </table>
                 </div>
               </div>
               <div>

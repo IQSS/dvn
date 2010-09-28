@@ -1240,15 +1240,21 @@
                         <ice:message styleClass="errorMessage" for="input_westLongitude"/>
                       </div>
                       
-
                       <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField">
                         <dvn:inlinehelp helpMessage="#{editstudybundle.eastLongitudeHelp}" linkText="#{editstudybundle.eastLongitudeLabel}" heading="#{editstudybundle.eastLongitudeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                         <br/>
                         <ice:inputText binding="#{EditStudyPage.inputEastLongitude}" id="input_eastLongitude" value="#{EditStudyPage.metadata.studyGeoBoundings[0].eastLongitude}" validator="#{EditStudyPage.validateLongitude}" required="#{EditStudyPage.studyMap[sfc.eastLongitude].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." />
                         <ice:message styleClass="errorMessage" for="input_eastLongitude"/>
                       </div>
-                      
 
+                      <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField">
+                        <ice:outputText value="Use the "/>
+                        <ice:outputLink value="#" onclick="window.open('http://maps.cga.harvard.edu/samples/gpf.htm','popup','width=700,height=700,toolbar=no,directories=no,menubar=no,status=no'); return false">
+                          <ice:outputText id="outputTextCGAmapLink" value="CGA Geo-location Finder"/>
+                        </ice:outputLink>
+                        <ice:outputText value=" to find the coordinates."/>
+                      </div>
+                      
                       <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 vdcEditStudyFieldFloat3 vdcEditStudyGroupField">
                         <dvn:inlinehelp helpMessage="#{editstudybundle.northLatitudeHelp}" linkText="#{editstudybundle.northLatitudeLabel}" heading="#{editstudybundle.northLatitudeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                         <br/>
@@ -1256,7 +1262,6 @@
                         <ice:message styleClass="errorMessage" for="input_northLatitude"/>
                       </div>
                       
-
                       <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField">
                         <dvn:inlinehelp helpMessage="#{editstudybundle.southLatitudeHelp}" linkText="#{editstudybundle.southLatitudeLabel}" heading="#{editstudybundle.southLatitudeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
                         <br/>
@@ -1265,7 +1270,7 @@
                         <ice:message styleClass="errorMessage" for="input_southLatitude"/>
                       </div>
                       
-                        <ice:inputHidden validator="#{EditStudyPage.validateGeographicBounding}" value="test" required="#{EditStudyPage.validateRequired}"/>
+                      <ice:inputHidden validator="#{EditStudyPage.validateGeographicBounding}" value="test" required="#{EditStudyPage.validateRequired}"/>
                     </div>
                   </ice:panelGrid>
 

@@ -51,6 +51,14 @@
               </f:facet>
               <ice:outputText value="#{currentRow.spec}"/>
             </ice:column>
+            <ice:column id="column5">
+              <f:facet name="header">
+                <ice:outputText id="column5Header" value="LOCKSS Harvesting"/>
+              </f:facet>
+                <ice:outputText value="None" rendered="#{currentRow.lockssConfig == null}"/>
+                <ice:outputText value="DVN" rendered="#{currentRow.lockssConfig != null and currentRow.lockssConfig.vdc == null}"/>
+                <ice:outputText value="DV" rendered="#{currentRow.lockssConfig != null and currentRow.lockssConfig.vdc != null}"/>
+            </ice:column>
             <ice:column id="column3">
               <f:facet name="header">
                 <ice:outputText id="column3Header" value="Query Definition"/>
@@ -62,14 +70,6 @@
                 <ice:outputText id="column4Header" value="Description"/>
               </f:facet>
               <ice:outputText value="#{currentRow.description}"/>
-            </ice:column>
-            <ice:column id="column5">
-              <f:facet name="header">
-                <ice:outputText id="column5Header" value="LockSS Level"/>
-              </f:facet>
-                <ice:outputText value="None" rendered="#{currentRow.lockssConfig == null}"/>
-                <ice:outputText value="DVN" rendered="#{currentRow.lockssConfig != null and currentRow.lockssConfig.vdc == null}"/>
-                <ice:outputText value="DV" rendered="#{currentRow.lockssConfig != null and currentRow.lockssConfig.vdc != null}"/>
             </ice:column>
             <ice:column id="column6">
               <f:facet name="header">

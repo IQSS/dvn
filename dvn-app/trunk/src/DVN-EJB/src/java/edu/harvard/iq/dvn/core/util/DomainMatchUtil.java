@@ -70,19 +70,35 @@ public class DomainMatchUtil implements java.io.Serializable {
             remoteAddressNumeric = remoteAddress;
             try {
                 byte[] rawAddress = InetAddress.getByName(remoteAddress).getAddress();
-                remoteAddressDomainName = InetAddress.getByAddress(rawAddress).getHostName();
+                remoteAddressDomainName = InetAddress.getByAddress(rawAddress).getCanonicalHostName();
             } catch (Exception ex) {
                 // not fatal;
                 // we haven't been able to look up the domain name; but it's ok,
                 // we'll just have to work with the numeric address.
+
+                // but let's make sure it hasn't been set:
+                remoteAddressDomainName = null;
+            }
+            // A bit of an unexpected behavior here:
+            // If you try to do the above with an IP address that does not
+            // resolve to a DNS name (for example, "1.1.1.1"), instead of
+            // throwing a "host not found" exception, it will simply set the
+            // remoteAddressDomainName to this same numeric IP string
+            // (i.e., "1.1.1.1"). So, let's make sure this isn't the case:
+
+            if (remoteAddressDomainName != null &&
+                    remoteAddressNumeric.equals(remoteAddressDomainName)) {
+                remoteAddressDomainName = null;
             }
 
-        } else if (remoteAddress.matches("^$")) {
+
+        } else if (validDomainName(remoteAddress)) {
             // domain name:
             remoteAddressDomainName = remoteAddress;
             try {
                 remoteAddressNumeric = InetAddress.getByName(remoteAddress).getHostAddress();
             } catch (Exception ex) {
+                remoteAddressNumeric = null;
             }
         } else {
             // this actually means that this is not a valid IP address.
@@ -116,12 +132,12 @@ public class DomainMatchUtil implements java.io.Serializable {
 
          // 140.247.116.* -> 140.247.116.220 match:
 
-        int wildCartIndex = domainName.indexOf(".*",0);
+        int wildCardIndex = domainName.indexOf(".*",0);
 
-        if ( wildCartIndex != -1 ) {
-            String pattern = domainName.replace(".*", "\\.");
-
-            if (pattern.equals(remoteAddressNumeric.substring(0,wildCartIndex+1))) {
+        if ( wildCardIndex != -1 ) {
+            String pattern = domainName.replace(".*", ".");
+ 
+            if (pattern.equals(remoteAddressNumeric.substring(0,wildCardIndex+1))) {
                 return true;
             }
         }
@@ -150,13 +166,45 @@ public class DomainMatchUtil implements java.io.Serializable {
 
         return false;
     }
+
+    /**
+     * Cribbed from: http://pappul.blogspot.com/2006/07/validation-of-host-name-in-java.html
+     * @param domainName
+     * @return
+     */
+    private static boolean validDomainName(String domainName) {
+        if ((domainName == null)) {
+            return false;
+        }
+
+        String domainIdentifier = "((\\p{Alnum})([-]|(\\p{Alnum}))*(\\p{Alnum}))|(\\p{Alnum})";
+        String domainNameRule = "(" + domainIdentifier + ")((\\.)(" + domainIdentifier + "))*";
+        String oneAlpha = "(.)*((\\p{Alpha})|[-])(.)*";
+
+        return domainName.matches(domainNameRule) && domainName.matches(oneAlpha);
+    }
+
     public static void main(String[] args) {
+        System.out.println("The 4 main lookup cases:");
+
         System.out.println("DomainMatchUtil.isDomainMatch(\"dvn.iq.harvard.edu\", \"*.iq.harvard.edu\") =" +DomainMatchUtil.isDomainMatch("dvn.iq.harvard.edu", "*.iq.harvard.edu"));
-        System.out.println("DomainMatchUtil.isDomainMatch(\"1.1.1.1\", \"*.1.1.1\")="+DomainMatchUtil.isDomainMatch("1.1.1.1", "*.1.1.1"));
+        System.out.println("DomainMatchUtil.isDomainMatch(\"dvn.iq.harvard.edu\", \"140.247.115.*\") =" +DomainMatchUtil.isDomainMatch("dvn.iq.harvard.edu", "140.247.115.*"));
+        System.out.println("DomainMatchUtil.isDomainMatch(\"140.247.116.220\", \"140.247.116.*\")="+DomainMatchUtil.isDomainMatch("140.247.116.220", "140.247.116.*"));
+        System.out.println("DomainMatchUtil.isDomainMatch(\"140.247.116.220\", \"*.hmdc.harvard.edu\")="+DomainMatchUtil.isDomainMatch("140.247.116.220", "*.hmdc.harvard.edu"));
+
+
+        System.out.println("An incorrectly defined numeric domain:");
+
+        System.out.println("DomainMatchUtil.isDomainMatch(\"140.247.116.220\", \"*.247.116.220\")="+DomainMatchUtil.isDomainMatch("140.247.116.220", "*.247.116.220"));
+
+        System.out.println("Unresolvable IP addresses:");
+        System.out.println("(i.e., these numeric IPs don't have registered DNS ");
+        System.out.println("names; but they may still be valid addresses)");
+
+        System.out.println("DomainMatchUtil.isDomainMatch(\"12.12.12.12\", \"*.12.12.12\")="+DomainMatchUtil.isDomainMatch("12.12.12.12", "*.12.12.12"));
         System.out.println("DomainMatchUtil.isDomainMatch(\"1.1.1.1\", \"1.1.1.*\")="+DomainMatchUtil.isDomainMatch("1.1.1.1", "1.1.1.*"));
-        
-        System.out.println("DomainMatchUtil.isDomainMatchNumeric(\"1.1.1.1\", \"1.1.1.*\")="+DomainMatchUtil.isDomainMatchNumeric("1.1.1.1", "1.1.1.*"));
-     System.out.println("DomainMatchUtil.isDomainMatchByName(\"dvn.iq.harvard.edu\", \"*.iq.harvard.edu\") =" +DomainMatchUtil.isDomainMatchByName("dvn.iq.harvard.edu", "*.iq.harvard.edu"));
+        System.out.println("DomainMatchUtil.isDomainMatch(\"1.1.1.1\", \"1.*\")="+DomainMatchUtil.isDomainMatch("1.1.1.1", "1.*"));
+
 
     }
 }

@@ -39,6 +39,19 @@ public class OAISetServiceBean implements OAISetServiceLocal {
        }
        return oaiSet;
     }
+/*
+    public OAISet findByName(String name) throws NoItemsMatchException {
+     String query="SELECT o from OAISet o where o.name = :fieldName";
+       OAISet oaiSet=null;
+       try {
+           oaiSet=(OAISet)em.createQuery(query).setParameter("fieldName",name).getSingleResult();
+       } catch (javax.persistence.NoResultException e) {
+           throw new NoItemsMatchException();
+           // Do nothing, just return null.
+       }
+       return oaiSet;
+    }
+*/
     public List<OAISet> findAll() {
         return em.createQuery("select object(o) from OAISet as o order by o.name").getResultList();
     }
@@ -92,7 +105,7 @@ public class OAISetServiceBean implements OAISetServiceLocal {
 
     public void remove(Long id) {
         OAISet oaiSet = em.find(OAISet.class, id);
-        em.createQuery("delete from HarvestStudy hs where hs.setName = '" + oaiSet.getName() + "'").executeUpdate();
+        em.createQuery("delete from HarvestStudy hs where hs.setName = '" + oaiSet.getSpec() + "'").executeUpdate();
         em.remove(oaiSet);
     }
     

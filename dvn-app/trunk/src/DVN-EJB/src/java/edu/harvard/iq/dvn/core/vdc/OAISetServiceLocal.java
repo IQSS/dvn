@@ -23,6 +23,7 @@ public interface OAISetServiceLocal extends java.io.Serializable  {
    public void remove(Long id);
    public List<OAISet> findAll();
    public List<OAISet> findAllOrdered();
+   public List<OAISet> findAllOrderedSorted();
    public OAISet findById(Long id);
    public void update(OAISet oaiSet);
 }

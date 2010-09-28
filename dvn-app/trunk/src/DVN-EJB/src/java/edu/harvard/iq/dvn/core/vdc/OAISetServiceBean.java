@@ -44,19 +44,50 @@ public class OAISetServiceBean implements OAISetServiceLocal {
     }
 
      public List<OAISet> findAllOrdered() {
-        //return em.createQuery("select object(o) from OAISet as o order by o.name").getResultList();
 
-        //List<Long> returnOaiSets = new ArrayList();
-        //return em.createQuery("select object(o) from OAISet  as o where  o.lockssconfig_id != null  order by o.name").getResultList();
 
         List<OAISet> returnOaiSets = em.createQuery("select object(o) from OAISet  as o where  o.lockssConfig is null order by o.name").getResultList();
- //      returnOaiSets.addAll(em.createQuery("select object(o) from OAISet  as o where ((o.lockssConfig is null) or  (o.lockssConfig is not null and o.lockssConfig.vdc is  null))  order by o.name").getResultList());
-  //     returnOaiSets.addAll(em.createQuery("select object(o) from OAISet  as o where ((o.lockssConfig is not null and o.lockssConfig.vdc is  null ) or (o.lockssConfig is null)   )  order by o.name").getResultList());
        returnOaiSets.addAll(em.createQuery("select object(o) from OAISet  as o where  o.lockssConfig is not null and o.lockssConfig.vdc is  null  order by o.name").getResultList());
        returnOaiSets.addAll(em.createQuery("select object(o) from OAISet  as o where  o.lockssConfig is not null and o.lockssConfig.vdc is not null  order by o.name").getResultList());
 
         return returnOaiSets;
 
+    }
+
+    public List<OAISet> findAllOrderedSorted() {
+        //return em.createQuery("select object(o) from OAISet as o order by o.name").getResultList();
+
+        //List<Long> returnOaiSets = new ArrayList();
+        //return em.createQuery("select object(o) from OAISet  as o where  o.lockssconfig_id != null  order by o.name").getResultList();
+
+        List<OAISet> returnOaiSets = getNonLockssDVOAISets();
+       returnOaiSets.addAll(em.createQuery("select object(o) from OAISet  as o where  o.lockssConfig is not null and o.lockssConfig.vdc is not null  order by o.name").getResultList());
+
+        return returnOaiSets;
+
+    }
+
+    private List<OAISet> getNonLockssDVOAISets() {
+        String queryStr = "select o.id from oaiset o left join lockssconfig l on o.lockssconfig_id = l.id where vdc_id is null order by o.name";
+        Query query = em.createNativeQuery(queryStr);
+        // since query is native, must parse through Vector results
+        if (!query.getResultList().isEmpty()){
+            String inClause = "(";
+            int i = 0;
+            for (Object currentResult : query.getResultList()) {
+                // convert results into Longs
+                if (i == 0){
+                   inClause = inClause + new Long(((Integer) ((Vector) currentResult).get(0))).longValue();                           
+                } else {
+                    inClause = inClause + "," + new Long(((Integer) ((Vector) currentResult).get(0))).longValue() ;
+                }
+                i++;
+            }
+            inClause = inClause + ")";
+            return em.createQuery("select object(o) from OAISet  as o where  o.id in "+ inClause + "   order by o.name").getResultList();
+        } else {
+            return null;
+        }
     }
 
     public void remove(Long id) {

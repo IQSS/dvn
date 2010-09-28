@@ -112,15 +112,26 @@ public class EditLockssServiceBean implements EditLockssService, java.io.Seriali
     @Remove
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void removeLockssConfig() {
-        if (lockssConfig.getVdc()!=null && lockssConfig.getOaiSet()!=null) {
-            em.remove(lockssConfig.getOaiSet());
+        if (lockssConfig.getVdc() != null) {
+            // For DV level lockss,
+            // need to delete the oaiSet
+            if (lockssConfig.getOaiSet().getId() != null) {
+                // if the oai existed previously, also delete from harveststudy table
+                oaiService.remove(lockssConfig.getOaiSet().getId());
+            } else {
+                em.remove(lockssConfig.getOaiSet());
+            }
         } else {
-            if (lockssConfig.getOaiSet()!=null) {
+            // For network level lockss,
+            // we just need to delete the relationship to the oaiSet
+            if (lockssConfig.getOaiSet() != null) 
+            {
                 lockssConfig.getOaiSet().setLockssConfig(null);
             }
         }
+
         em.remove(lockssConfig);
-        // TODO: remove harvestStudy data (same thing needs to happen when deleting a dataverse)
+
     }
 
     public void removeCollectionElement(Collection coll, Object elem) {

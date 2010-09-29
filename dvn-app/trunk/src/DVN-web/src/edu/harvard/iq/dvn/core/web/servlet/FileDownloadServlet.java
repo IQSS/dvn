@@ -194,8 +194,6 @@ public class FileDownloadServlet extends HttpServlet {
             FileDownloadObject fileDownloadObject = initiateDownloadObject (file, req);
 
             if (fileDownloadObject == null || (fileDownloadObject.getStatus() != 200)) {
-                // generate error response:
-                createErrorResponse404(res);
 
                 if (fileDownloadObject != null) {
                     if (fileDownloadObject.getStatus() == 403) {

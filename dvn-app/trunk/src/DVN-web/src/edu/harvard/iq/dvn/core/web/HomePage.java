@@ -107,7 +107,6 @@ public class HomePage extends VDCBaseBean implements Serializable {
     private String searchField;
     StatusMessage msg;
     private boolean isAlphaSort;
-    private boolean lockssAvailable;
 
 
 
@@ -126,12 +125,6 @@ public class HomePage extends VDCBaseBean implements Serializable {
         initAlphabeticFilter();
         populateVDCUIList(false);
         isAlphaSort = false;
-        if (vdcNetworkService.getLockssConfig() !=null){
-            lockssAvailable = true;
-        }
-        else {
-            lockssAvailable = false;
-        }
      }
 
     public boolean isIsAlphaSort() {
@@ -523,9 +516,6 @@ public class HomePage extends VDCBaseBean implements Serializable {
         return NumberFormat.getIntegerInstance().format(count);
     }
 
-    public boolean isLockssAvailable() {
-        return lockssAvailable;
-    }
 
    //setters
  

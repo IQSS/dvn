@@ -193,11 +193,21 @@ public class FileDownloadServlet extends HttpServlet {
 
             FileDownloadObject fileDownloadObject = initiateDownloadObject (file, req);
 
-            if (fileDownloadObject == null) {
+            if (fileDownloadObject == null || (fileDownloadObject.getStatus() != 200)) {
                 // generate error response:
                 createErrorResponse404(res);
 
-                fileDownloadObject.releaseConnection();
+                if (fileDownloadObject != null) {
+                    if (fileDownloadObject.getStatus() == 403) {
+                        createErrorResponse403Remote(res);
+                    } else {
+                        // generic "not found" message:
+                        createErrorResponse404(res);
+                    }
+                    fileDownloadObject.releaseConnection();
+                } else {
+                    createErrorResponse404(res);
+                }
                 return;
 
             }
@@ -513,7 +523,7 @@ public class FileDownloadServlet extends HttpServlet {
 
         String remoteAgent = req.getHeader("user-agent");
         
-        dbgLog.info ("remote browser detected: "+remoteAgent);
+        //dbgLog.info ("remote browser detected: "+remoteAgent);
         if (remoteAgent != null && remoteAgent.matches(".*LOCKSS cache.*")) {
             return true;
         }
@@ -564,6 +574,7 @@ public class FileDownloadServlet extends HttpServlet {
         }
 
 
+        localDownload.setStatus(200);
         return localDownload;
     } // End of initiateLocalDownload;
 
@@ -831,12 +842,13 @@ public class FileDownloadServlet extends HttpServlet {
             status = 404;
         }
 
+        remoteDownload.setStatus(status);
+
         if (status != 200) {
             if (method != null) {
                 method.releaseConnection();
             }
 
-            remoteDownload.setStatus(status);
             return remoteDownload;
         }
 

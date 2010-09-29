@@ -79,11 +79,9 @@ public class LockssAuthServiceBean implements LockssAuthServiceLocal {
         LockssConfig lockssConfig = null;
 
         if (vdc != null) {
-            if (vdc.getLockssConfig()!=null) {
-                lockssConfig = vdc.getLockssConfig();
-            } else {
-                lockssConfig = vdcNetworkService.getLockssConfig();
-            }
+            lockssConfig = vdc.getLockssConfig();
+        } else {
+            lockssConfig = vdcNetworkService.getLockssConfig();
         }
 
         if (lockssConfig == null) {

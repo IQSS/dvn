@@ -51,8 +51,8 @@ import javax.servlet.http.HttpSession;
  */
 public class VDCRequestBean extends VDCBaseBean implements java.io.Serializable  {
     @EJB PageDefServiceLocal pageDefService;
-    @EJB LockssAuthServiceLocal lockssAuth;
-      
+    @EJB LockssAuthServiceLocal lockssAuthService;
+   
     /** 
      * <p>Construct a new request data bean instance.</p>
      */
@@ -243,9 +243,9 @@ public class VDCRequestBean extends VDCBaseBean implements java.io.Serializable 
     public void setCurrentVDCURL(String dataverseURL) {}  // dummy method since the get is just a wrapper 
 
     public String getRequestedPage() {
-        HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
-        return "/faces/" + request.getPathInfo();
-    }
+            HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
+            return "/faces/" + request.getPathInfo();
+        }
     
     /**
      * Holds value of property vdcNetwork.
@@ -350,7 +350,24 @@ public class VDCRequestBean extends VDCBaseBean implements java.io.Serializable 
 
     public boolean isAuthorizedLockssServer(){
         HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
-        return lockssAuth.isAuthorizedLockssServer(currentVDC, request );
+        return lockssAuthService.isAuthorizedLockssServer(currentVDC, request );
+    }
+
+    public boolean isRenderManifestLink() {
+        LoginBean lb = getVDCSessionBean().getLoginBean();
+        if (currentVDC == null) {
+            if ( (lb != null && lb.isNetworkAdmin() ) || isAuthorizedLockssServer() ) {
+                return (vdcNetworkService.getLockssConfig() != null);
+            }
+
+        } else {
+             if ( (lb != null && lb.isAdmin()) || isAuthorizedLockssServer() ) {
+                return (currentVDC.getLockssConfig() != null);
+             }
+
+
+        }
+        return false;
     }
 
 }

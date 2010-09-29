@@ -47,15 +47,21 @@
                 <a href="#termsOfUse"></a>
                 <div jsfc="ice:panelGroup" styleClass="dvn_padTop" rendered="#{ManifestPage.dvNetworkTermsOfUse != null}">
                     <ice:outputText value="Dataverse Network Terms:"/>
-                    <ice:outputText value="#{ManifestPage.dvNetworkTermsOfUse}"/>
+                    <div class="termsAgreementBox">
+                        <ice:outputText value="#{ManifestPage.dvNetworkTermsOfUse}" escape="false"/>
+                    </div>
                 </div>
                 <div jsfc="ice:panelGroup" styleClass="dvn_padTop" rendered="#{ManifestPage.dvTermsOfUse != null}">
                     <ice:outputText value="Dataverse Terms:"/>
-                    <ice:outputText value="#{ManifestPage.dvTermsOfUse}"/>
+                    <div class="termsAgreementBox">
+                        <ice:outputText value="#{ManifestPage.dvTermsOfUse}" escape="false"/>
+                    </div>
                 </div>
                 <div jsfc="ice:panelGroup" styleClass="dvn_padTop" rendered="#{ManifestPage.lockssLicensingTerms != null}">
                     <ice:outputText value="LOCKSS Additional Terms:"/>
-                    <ice:outputText value="#{ManifestPage.lockssLicensingTerms}"/>
+                    <div class="termsAgreementBox">
+                        <ice:outputText value="#{ManifestPage.lockssLicensingTerms}" escape="false"/>
+                    </div>
                 </div>
             </div>
           </div>

@@ -131,9 +131,7 @@ public class LockssAuthServiceBean implements LockssAuthServiceLocal {
         if (vdc != null) {
             if (vdc.getLockssConfig()!=null) {
                 lockssConfig = vdc.getLockssConfig();
-            } else {
-                lockssConfig = vdcNetworkService.getLockssConfig();
-            }
+            } 
         }
 
         if (lockssConfig == null) {
@@ -141,13 +139,14 @@ public class LockssAuthServiceBean implements LockssAuthServiceLocal {
         }
 
         // If this LOCKSS configuration is open to ALL, we allow downloads
-        // of public files but not of the restricted ones:
+        // of public files; so if the file is public, we can return true.
+        // We *may* also allow access to restricted ones; but only to
+        // select servers (we'll check for that further below).
 
         if (ServerAccess.ALL.equals(lockssConfig.getserverAccess())) {
-            if (fileIsRestricted) {
-                return false;
+            if (!fileIsRestricted) {
+                return true;
             }
-            return true;
         }
 
         // This is a LOCKSS configuration open only to group of servers. 

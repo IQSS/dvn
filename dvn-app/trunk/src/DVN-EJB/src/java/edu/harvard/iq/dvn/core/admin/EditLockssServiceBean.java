@@ -95,9 +95,9 @@ public class EditLockssServiceBean implements EditLockssService, java.io.Seriali
         if (vdcId!=null) {
             vdc = em.find(VDC.class, vdcId);
             lockssConfig.setVDC(vdc);
-            OAISet oaiSet = new OAISet();
-            oaiSet.setName("LOCKSS Archival Unit for "+lockssConfig.getVdc().getName()+" Dataverse");
-            oaiSet.setSpec(lockssConfig.getVdc().getAlias());  // TODO: make sure the spec name is unique!
+            OAISet oaiSet = new OAISet();          
+            oaiSet.setSpec(getOaiSpec(lockssConfig.getVdc().getAlias()));
+            oaiSet.setName("LOCKSS Archival Unit ("+oaiSet.getSpec()+")");
             oaiSet.setLockssConfig(lockssConfig);
             oaiSet.setDefinition("dvOwnerId:"+lockssConfig.getVdc().getId());
             lockssConfig.setOaiSet(oaiSet);
@@ -106,9 +106,34 @@ public class EditLockssServiceBean implements EditLockssService, java.io.Seriali
         } else {
             em.persist(lockssConfig);
         }
-  // call flush to generate a lockssConfig id, we will need that when assigning a dvn lockssConfig to an existing oaiSet
+
         
     }
+
+    /**
+     * OAI Set spec needs to be unique within this DVN, so try to use the dataverse alias,
+     * but if that already exists, keep trying until we find a unique spec name for this set.
+     * @param alias
+     * @return unique oai spec
+     */
+    private String getOaiSpec(String alias) {
+        String spec = alias;
+        boolean valid = false;
+        int count = 0;
+        while (!valid) {
+            if (count > 0) {
+                spec = alias + count;
+            }
+            try {
+                oaiService.findBySpec(spec);
+            } catch (ORG.oclc.oai.server.verb.NoItemsMatchException  e) {
+                valid = true;
+            }
+            count++;
+        }
+        return spec;
+    }
+
     @Remove
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void removeLockssConfig() {

@@ -51,7 +51,7 @@
                   <ice:graphicImage value="/resources/images/icon_required.gif"/>
                 </div>
                 <div jsfc="ice:panelGroup">
-                  <ice:inputText id="oaiSetSpec" value="#{EditOAISetPage.oaiSet.spec}" required="true" requiredMessage="This field is required."/>
+                    <ice:inputText id="oaiSetSpec" validator="#{EditOAISetPage.validateSpec}" value="#{EditOAISetPage.oaiSet.spec}" required="true" requiredMessage="This field is required."/>
                   <ice:message for="oaiSetSpec" styleClass="errorMessage"/>
                   <br/>
                   <ice:outputText styleClass="vdcHelpText" value="Unique Identifier for the set. It's the token passed from OAI server to client."/>

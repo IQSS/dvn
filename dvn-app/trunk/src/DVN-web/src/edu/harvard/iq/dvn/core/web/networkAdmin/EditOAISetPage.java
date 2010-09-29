@@ -19,10 +19,15 @@
  */
 package edu.harvard.iq.dvn.core.web.networkAdmin;
 
+import ORG.oclc.oai.server.verb.NoItemsMatchException;
 import edu.harvard.iq.dvn.core.vdc.OAISet;
 import edu.harvard.iq.dvn.core.vdc.OAISetServiceLocal;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
+import javax.faces.component.UIInput;
+import javax.faces.context.FacesContext;
 
 /**
  *
@@ -39,6 +44,8 @@ public class EditOAISetPage extends VDCBaseBean implements java.io.Serializable 
         if ( !isFromPage("EditOAISetPage") && oaiSetId!=null) {
             oaiSet = oaiSetService.findById(oaiSetId);
         }
+        originalSpec = oaiSet.getSpec();
+        originalName = oaiSet.getName();
     }
 
     public OAISet getOaiSet() {
@@ -56,7 +63,33 @@ public class EditOAISetPage extends VDCBaseBean implements java.io.Serializable 
     public void setOaiSetId(Long oaiSetId) {
         this.oaiSetId = oaiSetId;
     }
-    
+    public void validateSpec(FacesContext context,
+            UIComponent toValidate,
+            Object value) {
+ 
+        String spec = (String)value;
+        boolean valid = false;
+        if (spec.equals(originalSpec) ) {
+            valid = true;
+        } else {
+            try {
+                OAISet set = this.oaiSetService.findBySpec(spec);
+            } catch (ORG.oclc.oai.server.verb.NoItemsMatchException e) {
+                valid = true;
+            }
+        }
+
+       
+
+        if (!valid) {
+            ((UIInput) toValidate).setValid(false);
+            FacesMessage message = new FacesMessage("OAI Spec already exists.");
+            context.addMessage(toValidate.getClientId(context), message);
+        }
+
+
+    }
+
     public String save() {
       
                
@@ -71,6 +104,9 @@ public class EditOAISetPage extends VDCBaseBean implements java.io.Serializable 
     
     OAISet oaiSet;
     Long oaiSetId;
+
+    private String originalSpec;
+    private String originalName;
     
       private String SUCCESS_MESSAGE = new String("Update Successful!");
     /**

@@ -57,24 +57,22 @@
       </script>
         <div class="dvn_section">
 
-        <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage" rendered="#{VDCRequest.vdcNetwork.exportPeriod ==null }">
+        <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage" rendered="#{VDCRequest.vdcNetwork.exportPeriod ==null}">
             <div class="dvnMsgBlockContainer">
-                <p>
-              <ice:outputText value="Note: In order for LOCKSS to harvest studies, study exports must be scheduled." escape="false" />
-               <ice:outputText rendered="#{!VDCSession.loginBean.networkAdmin}" value="Please contact your network administrator to schedule study exports. "/>
-                <ice:outputText rendered="#{VDCSession.loginBean.networkAdmin}" value="To schedule study exports, go to" escape="false" />
-
-                <ice:outputLink rendered="#{VDCSession.loginBean.networkAdmin}" value="/dvn/faces/networkAdmin/EditExportSchedulePage.xhtml"  >
-                   Schedule Study Exports
+              <p>
+                <ice:outputText value="Note: In order for LOCKSS to harvest studies, study exports must be scheduled."/>
+                <ice:outputText rendered="#{!VDCSession.loginBean.networkAdmin}" value=" Please contact your network administrator to schedule study exports."/>
+                <ice:outputText rendered="#{VDCSession.loginBean.networkAdmin}" value=" To schedule study exports, go to "/>
+                <ice:outputLink rendered="#{VDCSession.loginBean.networkAdmin}" value="/dvn/faces/networkAdmin/EditExportSchedulePage.xhtml">
+                   <ice:outputText nospan="true" value="Schedule Study Exports"/>
                 </ice:outputLink>
-                </p>
+              </p>
             </div>
         </div>
         </div>
       <ice:form id="form1">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <input type="hidden" name="pageName" value="EditDataFilesHarverstPage"/>
-        <!--<ice:inputHidden id="harvestId" value="#{EditHarvestSitePage.harvestId}"/>-->
         <div class="dvn_section">
           <div class="dvn_sectionTitle">
             <ice:outputText value="Data Files Harvesting (LOCKSS Harversting)"/>
@@ -82,7 +80,6 @@
           <div jsfc="ice:panelGroup">
               <table class="dvnPermissionsTable" cellspacing="0" cellpadding="0" border="0">
                   <tr><td colspan="2" class="dvnPermissionsTableHeader"><ice:outputText value="Harvest Settings"/></td></tr>
-                 
                   <tr>
                     <td class="dvnPermissionsTableOption">
                         <ice:outputText value="Harvesting Type"/>
@@ -100,7 +97,7 @@
                         </ice:selectOneRadio>
                     </td>
                   </tr>
-                  <gui:fragment rendered ="#{VDCRequest.currentVDC==null}" >
+                  <gui:fragment rendered ="#{VDCRequest.currentVDC==null}">
                   <tr class="lockssConfig">
                     <td class="dvnPermissionsTableOption">
                         <ice:outputText value="OAI Set"/>
@@ -109,7 +106,7 @@
                           <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" value="/resources/images/icon_info.gif"/>
                           <ice:outputText value="Choose an OAI Set for harvesting by LOCKSS. Please note that LOCKSS servers can only harvest data that is local to this Dataverse Network."/>
                         </div>
-                        <ice:selectOneMenu binding="#{EditLockssConfigPage.oaiSetMenu}" id="oaiSetModel" value="#{EditLockssConfigPage.selectOAISetId}"  >
+                        <ice:selectOneMenu binding="#{EditLockssConfigPage.oaiSetMenu}" id="oaiSetModel" value="#{EditLockssConfigPage.selectOAISetId}">
                             <f:selectItem itemValue="-1" itemLabel="Not Selected"/>
                             <f:selectItems value="#{EditLockssConfigPage.selectOAISets}"/>
                         </ice:selectOneMenu>
@@ -145,8 +142,7 @@
                           <ice:column>
                             <ice:inputText id="ipAddress"
                                            value="#{currentRow.ipAddress}"
-                                           validator="#{EditLockssConfigPage.validateIpAddress}"
-                                           />
+                                           validator="#{EditLockssConfigPage.validateIpAddress}"/>
                           </ice:column>
                           <ice:column>
                             <ice:commandButton image="/resources/images/icon_add.gif" actionListener="#{EditLockssConfigPage.addRow}" />
@@ -154,14 +150,11 @@
                           </ice:column>
                           <ice:column>
                             <ice:message for="ipAddress" styleClass="errorMessage"/>
-                          
                           </ice:column>
                         </ice:dataTable>
-                        
                     </td>
                   </tr>
-                   <tr class="lockssConfig" ><td colspan="2" class="dvnPermissionsTableHeader"><ice:outputText value="Licensing Settings"/></td></tr>
-                
+                  <tr class="lockssConfig"><td colspan="2" class="dvnPermissionsTableHeader"><ice:outputText value="Licensing Settings"/></td></tr>
                   <tr class="lockssConfig">
                     <td class="dvnPermissionsTableOption">
                         <ice:outputText value="Licensing Options"/>
@@ -169,20 +162,15 @@
                     <td>
                         <div jsfc="ice:panelGroup" styleClass="vdcHelpText">
                           <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" value="/resources/images/icon_info.gif"/>
-                          <ice:outputText value="Designate the license terms to be associated with harvesting content."/>
+                          <ice:outputText value="Designate the license terms to be associated with harvesting content. For more information about CC licenses, please refer to the &#60;a href=&#34;http://creativecommons.org/about/licenses&#34;&#62; Creative Commons site&#60;/a&#62;, or &#60;a href=&#34;http://creativeCommons.org/about/cc0&#34;&#62; About CC0&#60;/a&#62;." escape="false"/>
                         </div>
                         <div jsfc="ice:panelGroup">
                             <ice:selectOneMenu binding="#{EditLockssConfigPage.licenseMenu}" id="licenseType" value="#{EditLockssConfigPage.selectLicenseId}" >
                                 <f:selectItem itemValue="" itemLabel="Not Selected"/>
                                 <f:selectItems value="#{EditLockssConfigPage.selectLicenseTypes}"/>
                             </ice:selectOneMenu>
-                               <ice:message id="licenseErrorMsg" styleClass="errorMessage" for="licenseType"/>
+                            <ice:message id="licenseErrorMsg" styleClass="errorMessage" for="licenseType"/>
                         </div>
-                        <div styleClass="vdcHelpText">
-                            For more information about CC licenses, please refer to the <a href="http://creativecommons.org/about/licenses"> Creative Commons site</a>,
-                            or <a href="http://creativeCommons.org/about/cc0"> About CC0</a>.
-                        </div>
-                        
                     </td>
                   </tr>
                   <tr class="lockssConfig">

@@ -354,14 +354,14 @@ public class VDCRequestBean extends VDCBaseBean implements java.io.Serializable 
     }
 
     public boolean isRenderManifestLink() {
-        LoginBean lb = getVDCSessionBean().getLoginBean();
+        LoginBean loginBean = getVDCSessionBean().getLoginBean();
         if (currentVDC == null) {
-            if ( (lb != null && lb.isNetworkAdmin() ) || isAuthorizedLockssServer() ) {
+            if ( (!isLogoutPage() && loginBean != null && loginBean.isNetworkAdmin() ) || isAuthorizedLockssServer() ) {
                 return (vdcNetworkService.getLockssConfig() != null);
             }
 
         } else {
-             if ( (lb != null && lb.isAdmin()) || isAuthorizedLockssServer() ) {
+             if ( (!isLogoutPage() && loginBean != null && loginBean.isAdmin()) || isAuthorizedLockssServer() ) {
                 return (currentVDC.getLockssConfig() != null);
              }
 

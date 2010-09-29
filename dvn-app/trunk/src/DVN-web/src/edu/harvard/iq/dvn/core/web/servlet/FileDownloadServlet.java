@@ -47,8 +47,8 @@ import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
 import edu.harvard.iq.dvn.core.admin.LockssAuthServiceLocal;
 
-import edu.harvard.iq.dvn.core.vdc.LockssServer;
-import edu.harvard.iq.dvn.core.vdc.LockssConfig;
+//import edu.harvard.iq.dvn.core.vdc.LockssServer;
+//import edu.harvard.iq.dvn.core.vdc.LockssConfig;
 
 
 import edu.harvard.iq.dvn.core.web.dvnremote.DvnTermsOfUseAccess;
@@ -237,8 +237,11 @@ public class FileDownloadServlet extends HttpServlet {
             deliverContent (file, fileDownloadObject, res);
 
             // step 7. increment the appropriate download counters:
+            // (but only if it's not a LOCKSS crawl!)
 
-            incrementDownloadCounts(file, vdc);
+            if (!isLockssCrawlRequest(req)) {
+                incrementDownloadCounts(file, vdc);
+            }
 
             // done!
             // End of single file download.
@@ -485,7 +488,14 @@ public class FileDownloadServlet extends HttpServlet {
 
     private Boolean isAuthorizedLockssCrawler (StudyFile file,
                                         HttpServletRequest req) {
+        // is this a LOCKSS request?
 
+        if (!isLockssCrawlRequest(req)) {
+            return false;
+        }
+
+        // OK, it is.
+        // Let's check if this address is authorized to download this file.
 
         String remoteAddress = req.getRemoteHost();
 
@@ -494,7 +504,21 @@ public class FileDownloadServlet extends HttpServlet {
         }
 
         VDC  vdc = file.getStudy().getOwner();
-        return lockssAuthService.isAuthorizedLockssServer(vdc, req);
+
+        //return lockssAuthService.isAuthorizedLockssServer(vdc, req);
+        return lockssAuthService.isAuthorizedLockssDownload(vdc, req, file.isRestricted());
+    }
+
+    private Boolean isLockssCrawlRequest (HttpServletRequest req) {
+
+        String remoteAgent = req.getHeader("user-agent");
+        
+        dbgLog.info ("remote browser detected: "+remoteAgent);
+        if (remoteAgent != null && remoteAgent.matches(".*LOCKSS cache.*")) {
+            return true;
+        }
+        
+        return false;
     }
 
 

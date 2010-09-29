@@ -60,8 +60,12 @@ public class LockssAuthServiceBean implements LockssAuthServiceLocal {
     }
 
  
-    /* 
-    */ 
+    /*
+     * isAuthorizedLockssServer method is used to check if the remote LOCKSS
+     * server is authorized to crawl this set/dv at all; meaning, at this
+     * point we are not authorizing them to download any particular files,
+     * just deciding whether to show them the Manifest page.
+     */
 
     public Boolean isAuthorizedLockssServer ( VDC vdc,
                                                 HttpServletRequest req ) {
@@ -107,5 +111,81 @@ public class LockssAuthServiceBean implements LockssAuthServiceLocal {
         return false;
     }
 
+    /*
+     * isAuthorizedLockssDownload performs authorization on individual files
+     * that the crawler is trying to download. This authorization depends on
+     * how this configuration is configured, whether it's open to all lockss
+     * servers or an IP group, and whether the file in question is restricted. 
+     */
+
+    public Boolean isAuthorizedLockssDownload ( VDC vdc,
+                                                HttpServletRequest req,
+                                                Boolean fileIsRestricted) {
+
+        String remoteAddress = req.getRemoteHost();
+
+        if (remoteAddress == null || remoteAddress.equals("")) {
+            return false;
+        }
+
+        LockssConfig lockssConfig = null;
+
+        if (vdc != null) {
+            if (vdc.getLockssConfig()!=null) {
+                lockssConfig = vdc.getLockssConfig();
+            } else {
+                lockssConfig = vdcNetworkService.getLockssConfig();
+            }
+        }
+
+        if (lockssConfig == null) {
+            return false;
+        }
+
+        // If this LOCKSS configuration is open to ALL, we allow downloads
+        // of public files but not of the restricted ones:
+
+        if (ServerAccess.ALL.equals(lockssConfig.getserverAccess())) {
+            if (fileIsRestricted) {
+                return false;
+            }
+            return true;
+        }
+
+        // This is a LOCKSS configuration open only to group of servers. 
+        // 
+        // Before we go through the list of the authorized IP addresses
+        // and see if the remote address matches, let's first check if 
+        // the file is restricted and if so, whether the LOCKSS config
+        // allows downloads of restricted files; because if not, we can
+        // return false right away:
+        
+        if (fileIsRestricted) {
+            if (!lockssConfig.isAllowRestricted()) {
+                return false;
+            }
+        }
+
+        // Now let's get the list of the authorized servers:
+
+        List<LockssServer> lockssServers = lockssConfig.getLockssServers();
+
+        if (lockssServers == null || lockssServers.size() == 0) {
+            return false;
+        }
+
+        for (Iterator<LockssServer> it = lockssServers.iterator(); it.hasNext();) {
+            LockssServer elem =  it.next();
+            if (elem.getIpAddress() != null) {
+                if (DomainMatchUtil.isDomainMatch(remoteAddress, elem.getIpAddress())) {
+                    return true;
+                }
+            }
+        }
+
+        // We've exhausted the possibilities, returning false:
+
+        return false;
+    }
 
 }

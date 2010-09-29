@@ -40,5 +40,6 @@ import javax.ejb.Local;
 public interface LockssAuthServiceLocal extends java.io.Serializable{
 
     public Boolean isAuthorizedLockssServer ( VDC vdc, HttpServletRequest req);
+    public Boolean isAuthorizedLockssDownload ( VDC vdc, HttpServletRequest req, Boolean fileIsRestricted);
 
 }

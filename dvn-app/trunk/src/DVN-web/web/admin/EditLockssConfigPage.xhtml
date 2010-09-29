@@ -105,7 +105,10 @@
                     <td class="dvnPermissionsTableOption">
                         <ice:outputText value="OAI Set"/>
                     </td>
-                    <td>
+                    <td><div jsfc="ice:panelGroup" styleClass="vdcHelpText">
+                          <ice:graphicImage alt="Information" title="Information" styleClass="vdcNoBorders" value="/resources/images/icon_info.gif"/>
+                          <ice:outputText value="Choose an OAI Set for harvesting by LOCKSS. Please note that LOCKSS servers can only harvest data that is local to this Dataverse Network."/>
+                        </div>
                         <ice:selectOneMenu binding="#{EditLockssConfigPage.oaiSetMenu}" id="oaiSetModel" value="#{EditLockssConfigPage.selectOAISetId}"  >
                             <f:selectItem itemValue="-1" itemLabel="Not Selected"/>
                             <f:selectItems value="#{EditLockssConfigPage.selectOAISets}"/>
@@ -177,7 +180,7 @@
                         </div>
                         <div styleClass="vdcHelpText">
                             For more information about CC licenses, please refer to the <a href="http://creativecommons.org/about/licenses"> Creative Commons site</a>,
-                            or <a href="http://creativeCommons.org/about/cc0"> here</a> for information about CC Zero.
+                            or <a href="http://creativeCommons.org/about/cc0"> About CC0</a>.
                         </div>
                         
                     </td>

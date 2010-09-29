@@ -294,6 +294,17 @@ public class EditLockssConfigPage extends VDCBaseBean implements java.io.Seriali
                 lockssConfig.setLicenseType(licenseTypes.get(selectLicenseId));
                 editLockssService.saveChanges(selectOAISetId);
             }
+            
+            // refresh currentVDC object
+            if (getVDCRequestBean().getCurrentVDC() != null ) {
+                if (selectHarvestType.equals(HarvestType.NONE)) {
+                    getVDCRequestBean().getCurrentVDC().setLockssConfig(null);
+                } else {
+                    getVDCRequestBean().getCurrentVDC().setLockssConfig(lockssConfig);
+                }
+            } // network level changes is determined at runtime by db call
+
+            
             getVDCRequestBean().setSuccessMessage("Successfully updated LOCKSS harvest settings.");
             return getReturnPage();
         } else {

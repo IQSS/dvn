@@ -14,8 +14,15 @@
   <gui:composition template="/template.xhtml">
     <gui:param name="pageTitle" value="Manifest - #{VDCRequest.dataversePageTitle}"/>
     <gui:define name="body">
-      <ice:form id="manifestPage">
+        <ice:form id="manifestPage" >
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+        <div >
+            <ice:outputText value="There is no LOCKS configuration for this Dataverse." rendered ="#{!ManifestPage.displayPage and ManifestPage.isDataverse}"/>
+        </div>
+        <div >
+            <ice:outputText value="There is no LOCKS configuration for this Dataverse Network." rendered ="#{!ManifestPage.displayPage and ManifestPage.isNetwork}"/>
+        </div>
+        <div jsfc="ice:panelGroup"  rendered ="#{ManifestPage.displayPage}">
         <div class="dvn_section">
           <div class="dvn_sectionTitle">
             <ice:outputText value="Manifest"/>
@@ -65,6 +72,7 @@
                 </div>
             </div>
           </div>
+        </div>
         </div>
       </ice:form>
     </gui:define>

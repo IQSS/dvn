@@ -56,8 +56,8 @@
                 <ice:outputText id="column5Header" value="LOCKSS Harvesting"/>
               </f:facet>
                 <ice:outputText value="None" rendered="#{currentRow.lockssConfig == null}"/>
-                <ice:outputText value="DVN" rendered="#{currentRow.lockssConfig != null and currentRow.lockssConfig.vdc == null}"/>
-                <ice:outputText value="DV" rendered="#{currentRow.lockssConfig != null and currentRow.lockssConfig.vdc != null}"/>
+                <ice:outputText value="#{VDCRequest.vdcNetwork.name} Dataverse Network " rendered="#{currentRow.lockssConfig != null and currentRow.lockssConfig.vdc == null}"/>
+                <ice:outputText value="#{currentRow.lockssConfig.vdc.name} Dataverse " rendered="#{currentRow.lockssConfig != null and currentRow.lockssConfig.vdc != null}"/>
             </ice:column>
             <ice:column id="column3">
               <f:facet name="header">

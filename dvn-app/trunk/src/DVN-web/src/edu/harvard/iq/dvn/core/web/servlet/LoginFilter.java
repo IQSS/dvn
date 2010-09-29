@@ -26,6 +26,7 @@
 package edu.harvard.iq.dvn.core.web.servlet;
 
 import edu.harvard.iq.dvn.core.admin.GroupServiceLocal;
+import edu.harvard.iq.dvn.core.admin.LockssAuthServiceLocal;
 import edu.harvard.iq.dvn.core.admin.NetworkRoleServiceLocal;
 import edu.harvard.iq.dvn.core.admin.PageDef;
 import edu.harvard.iq.dvn.core.admin.PageDefServiceLocal;
@@ -49,7 +50,6 @@ import edu.harvard.iq.dvn.core.web.common.LoginBean;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import edu.harvard.iq.dvn.core.web.common.VDCRequestBean;
 import edu.harvard.iq.dvn.core.web.common.VDCSessionBean;
-import edu.harvard.iq.dvn.core.web.dvnremote.LockssServerAuth;
 import java.io.*;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -89,7 +89,8 @@ import javax.servlet.http.HttpSession;
 @EJB(name = "vdcGroupService", beanInterface = edu.harvard.iq.dvn.core.vdc.VDCGroupServiceLocal.class),
 @EJB(name = "vdcService", beanInterface = edu.harvard.iq.dvn.core.vdc.VDCServiceLocal.class),
 @EJB(name = "vdcUserService", beanInterface = edu.harvard.iq.dvn.core.admin.UserServiceLocal.class),
-@EJB(name = "vdcNetworkService", beanInterface = edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal.class)
+@EJB(name = "vdcNetworkService", beanInterface = edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal.class),
+@EJB(name = "lockssAuth", beanInterface = edu.harvard.iq.dvn.core.admin.LockssAuthServiceLocal.class)
 })
 public class LoginFilter implements Filter {
 
@@ -109,6 +110,8 @@ public class LoginFilter implements Filter {
     VariableServiceLocal variableService;
     @EJB
     VDCNetworkServiceLocal vdcNetworkService;
+    @EJB
+    LockssAuthServiceLocal lockssAuth;
     // The filter configuration object we are associated with.  If
     // this value is null, this filter instance is not currently
     // configured.
@@ -470,21 +473,21 @@ public class LoginFilter implements Filter {
                 return false;
             }
         } else if (isManifestPage(pageDef)) {
-            LockssServerAuth lockssAuth = new LockssServerAuth();
+            
             LockssConfig chkLockssConfig = getLockssConfig(currentVDC);
             if ( chkLockssConfig == null){
                  return false;
             } else if (chkLockssConfig.getserverAccess().equals(ServerAccess.GROUP)){
                 VDCRole userRole = null;
                 String userVDCRoleName = null;
-                if (currentVDC != null) {
+                if (user != null && currentVDC != null) {
                     userRole = loginBean.getVDCRole(currentVDC);
                 }
-                if (userRole != null && user.isAdmin(currentVDC) ) {
+                if (user != null && userRole != null && user.isAdmin(currentVDC) ) {
                     return true;
                 }
 
-                if (user.getNetworkRole() != null && user.getNetworkRole().getName().equals(NetworkRoleServiceLocal.ADMIN)) {
+                if (user != null && user.getNetworkRole() != null && user.getNetworkRole().getName().equals(NetworkRoleServiceLocal.ADMIN)) {
                     // If you are network admin, you can do anything!
                     return true;
                 }

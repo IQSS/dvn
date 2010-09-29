@@ -32,8 +32,11 @@ public class ManifestPage extends VDCBaseBean implements java.io.Serializable {
     private String dvName;
     private String archivalUnit;
     private String oaiSetUrl;
+
+
     private String lockssLicensingUrl;
     private String lockssLicensingTerms;
+
     private String dvNetworkTermsOfUse;
     private String dvTermsOfUse;
     private String baseUrl;
@@ -41,7 +44,9 @@ public class ManifestPage extends VDCBaseBean implements java.io.Serializable {
     private String lockssLicenseDescription;
     private String ownerString;
     private String basedOnWorkLink;
-
+    private Boolean displayPage = false;
+    private Boolean isNetwork = false;
+    private Boolean isDataverse = false;
     private String basedOnWorkText;
 
 
@@ -59,44 +64,47 @@ public class ManifestPage extends VDCBaseBean implements java.io.Serializable {
         vdcNetwork = getVDCRequestBean().getVdcNetwork();
 
         if (vdc != null){
-            
+            isDataverse = true;
             dvName = vdc.getName();
-            archivalUnit = vdc.getAlias();
-            oaiSetUrl  = "http://" + PropertyUtil.getHostUrl() + "/dvn/OAIHandler?verb=ListRecords&metadataPrefix=ddi&set=" + archivalUnit ;
-            ownerString = vdc.getCreator().getFirstName() + " " + vdc.getCreator().getLastName();
-            dvTermsOfUse = vdc.getDownloadTermsOfUse();
-            dvNetworkTermsOfUse = vdcNetwork.getDownloadTermsOfUse();
-            basedOnWorkLink = "/dvn" + getVDCRequestBean().getCurrentVDCURL();
-            basedOnWorkText = vdc.getName();
             lockssConfig = vdc.getLockssConfig();
-            lockssLicensingUrl = lockssConfig.getLicenseType().getLicenseUrl();
-            lockssLicensingTerms = lockssConfig.getLicenseText();
-            lockssImageUrl = lockssConfig.getLicenseType().getImageUrl();
-            lockssLicenseDescription = lockssConfig.getLicenseType().getName();
+            if (lockssConfig !=null) {
+                displayPage = true;
+                archivalUnit = vdc.getAlias();
+                oaiSetUrl  = "http://" + PropertyUtil.getHostUrl() + "/dvn/OAIHandler?verb=ListRecords&metadataPrefix=ddi&set=" + lockssConfig.getOaiSet().getSpec() ;
+                ownerString = vdc.getCreator().getFirstName() + " " + vdc.getCreator().getLastName();
+                dvTermsOfUse = vdc.getDownloadTermsOfUse();
+                dvNetworkTermsOfUse = vdcNetwork.getDownloadTermsOfUse();
+                basedOnWorkLink = "/dvn" + getVDCRequestBean().getCurrentVDCURL();
+                basedOnWorkText = vdc.getName();
 
+                lockssLicensingUrl = lockssConfig.getLicenseType().getLicenseUrl();
+                lockssLicensingTerms = lockssConfig.getLicenseText();
+                lockssImageUrl = lockssConfig.getLicenseType().getImageUrl();
+                lockssLicenseDescription = lockssConfig.getLicenseType().getName();
+            }
         }
         else{
-            
+            isNetwork = true;
             dvName = vdcNetwork.getName();
             lockssConfig = vdcNetworkService.getLockssConfig();
-            if (vdcNetworkService.getLockssConfig().getOaiSet() != null){
-                archivalUnit = vdcNetworkService.getLockssConfig().getOaiSet().getName();
-                oaiSetUrl  = "http://" + PropertyUtil.getHostUrl() + "/dvn/OAIHandler?verb=ListRecords&metadataPrefix=ddi&set=" + archivalUnit ;
-            } else {
-                archivalUnit = dvName;
-                oaiSetUrl  = "http://" + PropertyUtil.getHostUrl() + "/dvn/OAIHandler?verb=ListRecords&metadataPrefix=ddi";
+            if (lockssConfig !=null) {
+                displayPage = true;
+                if (vdcNetworkService.getLockssConfig().getOaiSet() != null){
+                    archivalUnit = vdcNetworkService.getLockssConfig().getOaiSet().getName();
+                    oaiSetUrl  = "http://" + PropertyUtil.getHostUrl() + "/dvn/OAIHandler?verb=ListRecords&metadataPrefix=ddi&set=" + lockssConfig.getOaiSet().getSpec() ;
+                } else {
+                    archivalUnit = dvName;
+                    oaiSetUrl  = "http://" + PropertyUtil.getHostUrl() + "/dvn/OAIHandler?verb=ListRecords&metadataPrefix=ddi";
+                }
+                ownerString = vdcNetwork.getDefaultNetworkAdmin().getFirstName() + " " + vdcNetwork.getDefaultNetworkAdmin().getLastName();
+                basedOnWorkLink =  getVDCRequestBean().getCurrentVDCURL();
+                basedOnWorkText = vdcNetwork.getName();
+                dvNetworkTermsOfUse = vdcNetwork.getDownloadTermsOfUse();
+                lockssLicensingUrl =   lockssConfig.getLicenseType().getLicenseUrl();
+                lockssLicensingTerms =   lockssConfig.getLicenseText();
+                lockssImageUrl = lockssConfig.getLicenseType().getImageUrl();
+                lockssLicenseDescription = lockssConfig.getLicenseType().getName();
             }
-            ownerString = vdcNetwork.getDefaultNetworkAdmin().getFirstName() + " " + vdcNetwork.getDefaultNetworkAdmin().getLastName();
-            basedOnWorkLink =  getVDCRequestBean().getCurrentVDCURL();
-            basedOnWorkText = vdcNetwork.getName();
-            dvTermsOfUse = null;
-            dvNetworkTermsOfUse = vdcNetwork.getDownloadTermsOfUse();
-            lockssConfig = vdcNetworkService.getLockssConfig();
-            lockssLicensingUrl =   lockssConfig.getLicenseType().getLicenseUrl();
-            lockssLicensingTerms =   lockssConfig.getLicenseText();
-            lockssImageUrl = lockssConfig.getLicenseType().getImageUrl();
-            lockssLicenseDescription = lockssConfig.getLicenseType().getName();
-
         }
             
     }
@@ -105,40 +113,26 @@ public class ManifestPage extends VDCBaseBean implements java.io.Serializable {
         return archivalUnit;
     }
 
-    public void setArchivalUnit(String archivalUnit) {
-        this.archivalUnit = archivalUnit;
-    }
-
     public String getDvName() {
         return dvName;
     }
 
-    public void setDvName(String dvName) {
-        this.dvName = dvName;
-    }
-
     public String getDvNetworkTermsOfUse() {
+
         return dvNetworkTermsOfUse;
     }
 
-    public void setDvNetworkTermsOfUse(String dvNetworkTermsOfUse) {
-        this.dvNetworkTermsOfUse = dvNetworkTermsOfUse;
-    }
 
     public String getDvTermsOfUse() {
+        /*
+        if (dvTermsOfUse.trim().length() == 0){
+            return null;
+        }*/
         return dvTermsOfUse;
-    }
-
-    public void setDvTermsOfUse(String dvTermsOfUse) {
-        this.dvTermsOfUse = dvTermsOfUse;
     }
 
     public String getLockssLicensingTerms() {
         return lockssLicensingTerms;
-    }
-
-    public void setLockssLicensingTerms(String lockssLicensingTerms) {
-        this.lockssLicensingTerms = lockssLicensingTerms;
     }
 
     public String getOaiSetUrl() {
@@ -192,5 +186,70 @@ public class ManifestPage extends VDCBaseBean implements java.io.Serializable {
     public String getLockssLicensingUrl() {
         return lockssLicensingUrl;
     }
+    public Boolean getDisplayPage() {
+        return displayPage;
+    }
 
+    public Boolean getIsDataverse() {
+        return isDataverse;
+    }
+
+    public Boolean getIsNetwork() {
+        return isNetwork;
+    }
+
+    public void setArchivalUnit(String archivalUnit) {
+        this.archivalUnit = archivalUnit;
+    }
+
+    public void setBasedOnWorkLink(String basedOnWorkLink) {
+        this.basedOnWorkLink = basedOnWorkLink;
+    }
+
+    public void setBasedOnWorkText(String basedOnWorkText) {
+        this.basedOnWorkText = basedOnWorkText;
+    }
+
+    public void setDisplayPage(Boolean displayPage) {
+        this.displayPage = displayPage;
+    }
+
+    public void setDvName(String dvName) {
+        this.dvName = dvName;
+    }
+
+    public void setDvNetworkTermsOfUse(String dvNetworkTermsOfUse) {
+        this.dvNetworkTermsOfUse = dvNetworkTermsOfUse;
+    }
+
+    public void setDvTermsOfUse(String dvTermsOfUse) {
+        this.dvTermsOfUse = dvTermsOfUse;
+    }
+
+    public void setIsDataverse(Boolean isDataverse) {
+        this.isDataverse = isDataverse;
+    }
+
+    public void setIsNetwork(Boolean isNetwork) {
+        this.isNetwork = isNetwork;
+    }
+
+    public void setLockssLicensingTerms(String lockssLicensingTerms) {
+        this.lockssLicensingTerms = lockssLicensingTerms;
+    }
+
+    public void setLockssLicensingUrl(String lockssLicensingUrl) {
+        this.lockssLicensingUrl = lockssLicensingUrl;
+    }
+    public void setLockssConfig(LockssConfig lockssConfig) {
+        this.lockssConfig = lockssConfig;
+    }
+
+    public void setVdc(VDC vdc) {
+        this.vdc = vdc;
+    }
+
+    public void setVdcNetwork(VDCNetwork vdcNetwork) {
+        this.vdcNetwork = vdcNetwork;
+    }
 }

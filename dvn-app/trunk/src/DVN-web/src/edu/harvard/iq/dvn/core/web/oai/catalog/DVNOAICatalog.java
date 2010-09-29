@@ -885,9 +885,9 @@ public class DVNOAICatalog extends AbstractCatalog implements java.io.Serializab
         String pathToManifest;
         VDC vdc = lockssConfig.getVdc();
         if (vdc != null){
-            pathToManifest = "http://" + INET_ADDRESS + "/dvn/dv/" + vdc.getAlias() + "/ManifestPage";
+            pathToManifest = "http://" + INET_ADDRESS + "/dvn/dv/" + vdc.getAlias() + "/ManifestPage.jsp";
         } else{
-            pathToManifest = "http://" + INET_ADDRESS + "/dvn/ManifestPage";
+            pathToManifest = "http://" + INET_ADDRESS + "/dvn/ManifestPage.jsp";
         }
         return pathToManifest;
     }

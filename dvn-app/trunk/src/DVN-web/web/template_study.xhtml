@@ -12,11 +12,24 @@
       doctypeSystem="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"/>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
+  <script type="text/javascript">
+      // <![CDATA[
+        if(self.name == "hiddenDownloadFrame"){
+            parent.location.replace(self.location.href);
+        }
+      // ]]>
+  </script>
   <div jsfc="ice:panelGroup" rendered="#{VDCRequest.currentVDCId != null and VDCRequest.currentVDC.displayInFrame}">
   <script type="text/javascript">
       // <![CDATA[
         if(self == top){
-            window.location.href="#{VDCRequest.currentVDC.parentSite}?dvn_subpage=#{VDCRequest.requestedPage}";
+            dvn_subpage = self.location.href;
+            dvn_subpage = dvn_subpage.substring( dvn_subpage.indexOf("/dvn/dv/") + 8 ); // first strip out the /dvn/dv/ prefix
+            if ( dvn_subpage.indexOf("/") != -1) {
+                window.location.href="#{VDCRequest.currentVDC.parentSite}?dvn_subpage=" + dvn_subpage.substring( dvn_subpage.indexOf("/") );
+            } else {
+                window.location.href="#{VDCRequest.currentVDC.parentSite}";
+            }
         }
       // ]]>
   </script>

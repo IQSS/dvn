@@ -172,12 +172,7 @@
 
 
                     function downloadFile(fileUrl) {
-                        var touRequired = document.getElementById("studyForm:tabSet1:0:touRequired");
-                        if ( touRequired.value == 'true' ){
-                            window.location.href = "/dvn#{VDCRequest.currentVDCURL}/faces/study/TermsOfUsePage.xhtml?tou=download&studyId=#{studyPage.studyId}&versionNumber=#{studyPage.studyUI.studyVersion.versionNumber}&redirectPage=" + escape(fileUrl);
-                        } else {
                             self.frames['hiddenDownloadFrame'].location.href = "/dvn" + fileUrl;
-                        }
                     }
 
                     // ]]>

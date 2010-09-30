@@ -45,13 +45,7 @@ SELECT pg_catalog.setval(pg_catalog.pg_get_serial_sequence('datavariable', 'id')
 SELECT pg_catalog.setval(pg_catalog.pg_get_serial_sequence('fieldinputlevel', 'id'), 10, false);
 
 
---
--- TOC entry 1843 (class 0 OID 0)
--- Dependencies: 1310
--- Name: filecategory_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dvnApp
---
 
-SELECT pg_catalog.setval(pg_catalog.pg_get_serial_sequence('filecategory', 'id'), 1, false);
 
 
 --
@@ -208,17 +202,7 @@ INSERT INTO fieldinputlevel (id, name ) VALUES(3, 'optional');
 
 ALTER TABLE fieldinputlevel ENABLE TRIGGER ALL;
 
---
--- TOC entry 1837 (class 0 OID 113977)
--- Dependencies: 1311
--- Data for Name: filecategory; Type: TABLE DATA; Schema: public; Owner: dvnApp
---
 
-ALTER TABLE filecategory DISABLE TRIGGER ALL;
-
-
-
-ALTER TABLE filecategory ENABLE TRIGGER ALL;
 
 --
 -- TOC entry 1823 (class 0 OID 113888)
@@ -968,8 +952,6 @@ create index variablerange_id_index on  variablerange (id);
 create index study_id_index on study(id);
 create index study_owner_id_index on study(owner_id);
 create index weightedvarrelationship_id_index on  weightedvarrelationship (weighted_variable_id,variable_id);
-create index filecategory_id_index on filecategory(id);
-create index filecategory_study_id_index on filecategory(study_id);
 create index studyfile_id_index on studyfile(id);
 create index datavariable_datatable_id_index on datavariable(datatable_id);
 create index variablerange_datavariable_id_index on  variablerange (datavariable_id);

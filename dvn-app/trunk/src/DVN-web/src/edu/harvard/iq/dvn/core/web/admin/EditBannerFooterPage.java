@@ -174,8 +174,7 @@ public class EditBannerFooterPage extends VDCBaseBean  implements java.io.Serial
             vdc.setDisplayInFrame(displayInFrame);
             vdc.setParentSite(parentSite);
             vdcService.edit(vdc);
-            getVDCRequestBean().getCurrentVDC().setHeader(banner);
-            getVDCRequestBean().getCurrentVDC().setFooter(footer);
+            getVDCRequestBean().setCurrentVDC(vdc);
             forwardPage="myOptions";
         }
         getVDCRequestBean().setSuccessMessage("Successfully updated layout branding.");

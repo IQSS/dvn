@@ -72,8 +72,13 @@ public class ManifestPage extends VDCBaseBean implements java.io.Serializable {
                 archivalUnit = vdc.getAlias();
                 oaiSetUrl  = "http://" + PropertyUtil.getHostUrl() + "/dvn/OAIHandler?verb=ListRecords&metadataPrefix=ddi&set=" + lockssConfig.getOaiSet().getSpec() ;
                 ownerString = vdc.getCreator().getFirstName() + " " + vdc.getCreator().getLastName();
-                dvTermsOfUse = vdc.getDownloadTermsOfUse();
-                dvNetworkTermsOfUse = vdcNetwork.getDownloadTermsOfUse();
+
+                if (vdc.isDownloadTermsOfUseEnabled() == true)
+                    dvTermsOfUse = vdc.getDownloadTermsOfUse();
+
+                if (vdcNetwork.isDownloadTermsOfUseEnabled() == true)
+                    dvNetworkTermsOfUse = vdcNetwork.getDownloadTermsOfUse();
+
                 basedOnWorkLink = "/dvn" + getVDCRequestBean().getCurrentVDCURL();
                 basedOnWorkText = vdc.getName();
 
@@ -99,7 +104,10 @@ public class ManifestPage extends VDCBaseBean implements java.io.Serializable {
                 ownerString = vdcNetwork.getDefaultNetworkAdmin().getFirstName() + " " + vdcNetwork.getDefaultNetworkAdmin().getLastName();
                 basedOnWorkLink =  getVDCRequestBean().getCurrentVDCURL();
                 basedOnWorkText = vdcNetwork.getName();
-                dvNetworkTermsOfUse = vdcNetwork.getDownloadTermsOfUse();
+
+                if (vdcNetwork.isDownloadTermsOfUseEnabled() == true)
+                    dvNetworkTermsOfUse = vdcNetwork.getDownloadTermsOfUse();
+                
                 lockssLicensingUrl =   lockssConfig.getLicenseType().getLicenseUrl();
                 lockssLicensingTerms =   lockssConfig.getLicenseText();
                 lockssImageUrl = lockssConfig.getLicenseType().getImageUrl();

@@ -262,6 +262,7 @@ INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'AccountTer
 INSERT INTO pagedef (name, path, role_id, networkrole_id ) VALUES  ( 'StudyVersionDifferencesPage', '/study/StudyVersionDifferencesPage.xhtml', null,null );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'OptionsPage','/admin/OptionsPage.xhtml',null,null );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'ManageStudiesPage','/study/ManageStudiesPage.xhtml',null,null );
+INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'ManifestPage', '/ManifestPage.xhtml', null,null );
 
 -- Pages that require VDC Role authorization:
 -- Contributor Role 

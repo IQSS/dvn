@@ -12,6 +12,40 @@
       doctypeSystem="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"/>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
+  <script type="text/javascript">
+      // <![CDATA[
+      // check to see if page is loading in hidden grame; if so "pop" out to top level
+        if(self.name == "hiddenDownloadFrame"){
+            parent.location.replace(self.location.href);
+        }
+      // ]]>
+  </script>
+  <ice:outputText nospan="true" escape="false" rendered="#{VDCRequest.currentVDCId == null or (VDCRequest.currentVDCId != null and !VDCRequest.currentVDC.displayInFrame)}">
+    <script type="text/javascript">
+        // <![CDATA[
+        // check to see if page is loaded in an iframe; if so, and "pop" out to top level
+        if(self != top){
+            top.location.replace(self.location.href);
+        }
+        // ]]>
+    </script>
+  </ice:outputText>
+  <ice:outputText nospan="true" escape="false" rendered="#{VDCRequest.currentVDCId != null and VDCRequest.currentVDC.displayInFrame}">
+      <script type="text/javascript">
+          // <![CDATA[
+          // check to see if page should be in an iframe (and is not); if so, redirect to containing site (specifiying sub page, if neeeded)
+            if(self == top){
+                dvn_subpage = self.location.href;
+                dvn_subpage = dvn_subpage.substring( dvn_subpage.indexOf("/dvn/dv/") + 8 ); // first strip out the /dvn/dv/ prefix
+                if ( dvn_subpage.indexOf("/") != -1) {
+                    window.location.replace("#{VDCRequest.currentVDC.parentSite}?dvn_subpage=" + dvn_subpage.substring( dvn_subpage.indexOf("/") ) );
+                } else {
+                    window.location.replace("#{VDCRequest.currentVDC.parentSite}");
+                }
+            }
+          // ]]>
+      </script>
+  </ice:outputText>
  <!-- page title param passed in by param -->
  <title><h:outputText value="#{pageTitle}"/></title>
  <link rel="stylesheet" type="text/css" href="/dvn/resources/icefaces/dvn_rime/dvn_rime.css"/>

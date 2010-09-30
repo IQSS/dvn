@@ -34,3 +34,4 @@ ALTER TABLE vdc ALTER COLUMN parentsite SET STORAGE EXTENDED;
 update vdc set displayinframe = false;
 
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditLockssConfigPage','/admin/EditLockssConfigPage.xhtml',3,2 );
+INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'ManifestPage', '/ManifestPage.xhtml', null,null );

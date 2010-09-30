@@ -1451,19 +1451,18 @@ public class FileDownloadServlet extends HttpServlet {
     }
 
     private void createErrorResponse403(HttpServletResponse res) {
-        createErrorResponseGeneric(res, res.SC_FORBIDDEN, "You do not have permission to download this file.");
+        //createErrorResponseGeneric(res, res.SC_FORBIDDEN, "You do not have permission to download this file.");
+        createRedirectResponse(res, "/dvn/faces/ErrorPage.xhtml?errorMsg=You do not have permission to download this file.&errorCode=403");
     }
 
     private void createErrorResponse403Remote(HttpServletResponse res) {
-        createErrorResponseGeneric(res, res.SC_FORBIDDEN, "You do not have permission to download this remote file.");
-    }
-
-    private void createErrorResponse200(HttpServletResponse res) {
-        createErrorResponseGeneric(res, 200, "You do not have permission to download this file (200).");
+        //createErrorResponseGeneric(res, res.SC_FORBIDDEN, "You do not have permission to download this remote file.");
+        createRedirectResponse(res, "/dvn/faces/ErrorPage.xhtml?errorMsg=You do not have permission to download this remote file.&errorCode=403");
     }
 
     private void createErrorResponse404(HttpServletResponse res) {
-        createErrorResponseGeneric(res, res.SC_NOT_FOUND, "Sorry. The file you are looking for could not be found.");
+        //createErrorResponseGeneric(res, res.SC_NOT_FOUND, "Sorry. The file you are looking for could not be found.");
+        createRedirectResponse(res, "/dvn/faces/ErrorPage.xhtml?errorMsg=Sorry. The file you are looking for could not be found.&errorCode=404");
     }
 
     // private methods for generating parameters for the DSB 
@@ -1879,7 +1878,7 @@ public class FileDownloadServlet extends HttpServlet {
             // generic error message:
 
             String errorMessage = "An unknown I/O error has occured while generating a Zip archive of multiple data files. Unfortunately, no further diagnostic information on the nature of the problem is avaiable to the Application at this point. It is possible that the problem was caused by a temporary network error. Please try again later and if the problem persists, report it to your DVN technical support contact.";
-            createErrorResponseGeneric(res, 0, errorMessage);
+            createErrorResponse403(res);
 
             if (remoteDownload != null) {
                 remoteDownload.releaseConnection();

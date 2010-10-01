@@ -85,16 +85,30 @@
                         <ice:outputText value="Harvesting Type"/>
                     </td>
                     <td>
-                        <ice:selectOneRadio id="harvestType"
+                      <gui:fragment rendered ="#{VDCRequest.currentVDC==null}">
+                        <ice:selectOneRadio id="harvestType1"
                                             layout="pageDirection"
                                             required="true"
                                             onclick="hideOptions()"
                                             value="#{EditLockssConfigPage.selectHarvestType}"
                                             requiredMessage="This field is required.">
-                            <f:selectItem itemLabel="Disable harvesting of all data files" itemValue="NONE"/>
-                            <f:selectItem itemLabel="Enable harvesting of public data files" itemValue="ALL"/>
+                            <f:selectItem itemLabel="Disable harvesting of all data files" itemValue="NONE" />
+                            <f:selectItem itemLabel="Enable harvesting of public data files" itemValue="ALL"  />
                             <f:selectItem itemLabel="Enable harvesting of public data files by specified servers only" itemValue="GROUP"/>
                         </ice:selectOneRadio>
+                      </gui:fragment>
+                    <gui:fragment rendered ="#{VDCRequest.currentVDC!=null}">
+                        <ice:selectOneRadio id="harvestType2"
+                                            layout="pageDirection"
+                                            required="true"
+                                            onclick="hideOptions()"
+                                            value="#{EditLockssConfigPage.selectHarvestType}"
+                                            requiredMessage="This field is required.">
+                            <f:selectItem itemLabel="LOCKSS configured at Dataverse Network level" itemValue="NONE" />
+                            <f:selectItem itemLabel="LOCKSS configured at Dataverse level - harvest of public data files" itemValue="ALL"  />
+                            <f:selectItem itemLabel="LOCKSS configured at Dataverse level - harvest of public data files by specified servers only" itemValue="GROUP"/>
+                        </ice:selectOneRadio>
+                      </gui:fragment>
                     </td>
                   </tr>
                   <gui:fragment rendered ="#{VDCRequest.currentVDC==null}">

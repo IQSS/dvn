@@ -35,14 +35,38 @@ import java.util.List;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
+import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
+import javax.servlet.http.HttpServletResponse;
+
 /**
  *
  * @author Ellen Kraffmiller
+ * (Leonid: added mechanism for returning HTTP status codes)
  */
-public class ErrorPage implements java.io.Serializable  {
+public class ErrorPage extends VDCBaseBean implements java.io.Serializable  {
+    private Integer errorCode = 0;
     
     /** Creates a new instance of ErrorPage */
     public ErrorPage() {
+    }
+
+    public Integer getErrorCode() {
+        return errorCode;
+    }
+
+    public void setErrorCode(Integer ec) {
+        errorCode = ec;
+    }
+
+    public void init() {
+        super.init();
+
+        FacesContext context = FacesContext.getCurrentInstance();
+        HttpServletResponse response = (javax.servlet.http.HttpServletResponse) context.getExternalContext().getResponse();
+
+        if (errorCode != 0) {
+            response.setStatus(errorCode);
+        }
     }
     
     public List getMessages() {

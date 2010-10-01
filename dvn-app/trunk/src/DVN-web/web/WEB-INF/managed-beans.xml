@@ -40,6 +40,11 @@
         <managed-bean-name>ErrorPage</managed-bean-name>
         <managed-bean-class>edu.harvard.iq.dvn.core.web.ErrorPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
+        <managed-property>
+            <property-name>errorCode</property-name>
+            <property-class>java.lang.Integer</property-class>
+            <value>#{param.errorCode}</value>
+        </managed-property>
     </managed-bean>
     <managed-bean>
         <managed-bean-name>StudyListingPage</managed-bean-name>

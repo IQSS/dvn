@@ -983,7 +983,7 @@ insert into dvnversion( id, buildnumber,versionnumber) values (1,0,2);
 
 INSERT INTO vdcnetworkstats (id,studycount,filecount) values (1,0,0);
 
-insert into licensetype (id, shortname, name, licenseurl, rdfurl, imageurl) values ( 1, 'cc by', 'CC Attribution (cc by)', 'http://creativecommons.org/licenses/by/3.0/', 'http://creativecommons.org/licenses/by/3.0/rdf', 'http://i.creativecommons.org/l/by/3.0/88x31.png' );
+-- removed until we support cc0 insert into licensetype (id, shortname, name, licenseurl, rdfurl, imageurl) values ( 1, 'cc by', 'CC Attribution (cc by)', 'http://creativecommons.org/licenses/by/3.0/', 'http://creativecommons.org/licenses/by/3.0/rdf', 'http://i.creativecommons.org/l/by/3.0/88x31.png' );
 insert into licensetype (id, shortname, name, licenseurl, rdfurl, imageurl) values ( 2, 'cc0','CC Zero (cc0)','http://creativecommons.org/publicdomain/zero/1.0/','http://creativecommons.org/publicdomain/zero/1.0/rdf','http://i.creativecommons.org/l/zero/1.0/88x31.png');
 insert into licensetype (id, shortname, name, licenseurl, rdfurl, imageurl) values ( 3, 'cc by-sa','CC Attribution Share Alike (cc by-sa)','http://creativecommons.org/licenses/by-sa/3.0/', 'http://creativecommons.org/licenses/by-sa/3.0/rdf', 'http://i.creativecommons.org/l/by-sa/3.0/88x31.png' );
 insert into licensetype (id, shortname, name, licenseurl, rdfurl, imageurl) values ( 4, 'cc by-nd','CC Attribution No Derivatives (cc by-nd)','http://creativecommons.org/licenses/by-nd/3.0/', 'http://creativecommons.org/licenses/by-nd/3.0/rdf', 'http://i.creativecommons.org/l/by-nd/3.0/88x31.png' );

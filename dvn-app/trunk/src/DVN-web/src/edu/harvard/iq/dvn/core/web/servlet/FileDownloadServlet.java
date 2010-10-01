@@ -510,11 +510,38 @@ public class FileDownloadServlet extends HttpServlet {
         if (remoteAddress == null || remoteAddress.equals("")) {
             return false;
         }
+        Study study = null;
+        VDC vdc = null;
 
-        VDC  vdc = file.getStudy().getOwner();
+        study = file.getStudy();
+
+        if (study != null) {
+            vdc = study.getOwner();
+        }
 
         //return lockssAuthService.isAuthorizedLockssServer(vdc, req);
-        return lockssAuthService.isAuthorizedLockssDownload(vdc, req, file.isRestricted());
+        return lockssAuthService.isAuthorizedLockssDownload(vdc, req, isRestrictedFile(file, study, vdc));
+    }
+
+    private Boolean isRestrictedFile (StudyFile file, Study study, VDC vdc) {
+        if (vdc.isFilesRestricted()) {
+            return true;
+        }
+
+        if (study.isRestricted()) {
+            // This restriction check is only performed for LOCKSS crawlers;
+            // Studies that are restricted don't get exported. So this should
+            // not normally happen -- i.e. files from restricted studies are
+            // not supposed to be crawled at all. But better safe than sorry,
+            // you know.
+            return true;
+        }
+
+        if (file.isRestricted()) {
+            return true;
+        }
+        
+        return false;
     }
 
     private Boolean isLockssCrawlRequest (HttpServletRequest req) {

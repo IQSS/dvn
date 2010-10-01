@@ -1478,18 +1478,18 @@ public class FileDownloadServlet extends HttpServlet {
     }
 
     private void createErrorResponse403(HttpServletResponse res) {
-        //createErrorResponseGeneric(res, res.SC_FORBIDDEN, "You do not have permission to download this file.");
-        createRedirectResponse(res, "/dvn/faces/ErrorPage.xhtml?errorMsg=You do not have permission to download this file.&errorCode=403");
+        createErrorResponseGeneric(res, res.SC_FORBIDDEN, "You do not have permission to download this file.");
+        //createRedirectResponse(res, "/dvn/faces/ErrorPage.xhtml?errorMsg=You do not have permission to download this file.&errorCode=403");
     }
 
     private void createErrorResponse403Remote(HttpServletResponse res) {
-        //createErrorResponseGeneric(res, res.SC_FORBIDDEN, "You do not have permission to download this remote file.");
-        createRedirectResponse(res, "/dvn/faces/ErrorPage.xhtml?errorMsg=You do not have permission to download this remote file.&errorCode=403");
+        createErrorResponseGeneric(res, res.SC_FORBIDDEN, "You do not have permission to download this remote file.");
+        //createRedirectResponse(res, "/dvn/faces/ErrorPage.xhtml?errorMsg=You do not have permission to download this remote file.&errorCode=403");
     }
 
     private void createErrorResponse404(HttpServletResponse res) {
-        //createErrorResponseGeneric(res, res.SC_NOT_FOUND, "Sorry. The file you are looking for could not be found.");
-        createRedirectResponse(res, "/dvn/faces/ErrorPage.xhtml?errorMsg=Sorry. The file you are looking for could not be found.&errorCode=404");
+        createErrorResponseGeneric(res, res.SC_NOT_FOUND, "Sorry. The file you are looking for could not be found.");
+        //createRedirectResponse(res, "/dvn/faces/ErrorPage.xhtml?errorMsg=Sorry. The file you are looking for could not be found.&errorCode=404");
     }
 
     // private methods for generating parameters for the DSB 

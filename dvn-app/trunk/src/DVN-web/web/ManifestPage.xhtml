@@ -38,7 +38,7 @@
                     </ice:outputLink>
                 </div>
                 
-                <div jsfc="ice:panelGroup" styleClass="dvn_padTop">
+                <div jsfc="ice:panelGroup" styleClass="dvn_padTop dvn_padBot">
                     <a rel="license" href="#{ManifestPage.lockssLicensingUrl}"><img alt="Creative Commons License" src="#{ManifestPage.lockssImageUrl}"/></a>
 
                     <div jsfc="ice:panelGroup" styleClass="dvn_padTop">
@@ -52,23 +52,15 @@
                     </div>
                 </div>
                 <a href="#termsOfUse"></a>
-                <div jsfc="ice:panelGroup" styleClass="dvn_padTop" rendered="#{!empty ManifestPage.dvNetworkTermsOfUse}">
-                    <ice:outputText value="Dataverse Network Terms:"/>
-                    <div class="termsAgreementBox">
-                        <ice:outputText value="#{ManifestPage.dvNetworkTermsOfUse}" escape="false"/>
-                    </div>
-                </div>
-                <div jsfc="ice:panelGroup" styleClass="dvn_padTop" rendered="#{!empty ManifestPage.dvTermsOfUse}">
-                    <ice:outputText value="Dataverse Terms:"/>
-                    <div class="termsAgreementBox">
-                        <ice:outputText value="#{ManifestPage.dvTermsOfUse}" escape="false"/>
-                    </div>
-                </div>
-                <div jsfc="ice:panelGroup" styleClass="dvn_padTop" rendered="#{!empty ManifestPage.lockssLicensingTerms}">
-                    <ice:outputText value="LOCKSS Additional Terms:"/>
-                    <div class="termsAgreementBox">
-                        <ice:outputText value="#{ManifestPage.lockssLicensingTerms}" escape="false"/>
-                    </div>
+                <div jsfc="ice:panelGroup" styleClass="termsAgreementBox" rendered="#{!empty ManifestPage.dvNetworkTermsOfUse or !empty ManifestPage.dvTermsOfUse or !empty ManifestPage.lockssLicensingTerms}">
+                    <ice:outputText value="Dataverse Network Terms:" styleClass="termsAgreementMessageTitle" rendered="#{!empty ManifestPage.dvNetworkTermsOfUse}"/>
+                    <ice:outputText value="#{ManifestPage.dvNetworkTermsOfUse}" rendered="#{!empty ManifestPage.dvNetworkTermsOfUse}" escape="false"/>
+
+                    <ice:outputText value="Dataverse Terms:" styleClass="termsAgreementMessageTitle" rendered="#{!empty ManifestPage.dvTermsOfUse}"/>
+                    <ice:outputText value="#{ManifestPage.dvTermsOfUse}" rendered="#{!empty ManifestPage.dvTermsOfUse}" escape="false"/>
+
+                    <ice:outputText value="LOCKSS Additional Terms:" styleClass="termsAgreementMessageTitle" rendered="#{!empty ManifestPage.lockssLicensingTerms}"/>
+                    <ice:outputText value="#{ManifestPage.lockssLicensingTerms}" rendered="#{!empty ManifestPage.lockssLicensingTerms}" escape="false"/>
                 </div>
             </div>
           </div>

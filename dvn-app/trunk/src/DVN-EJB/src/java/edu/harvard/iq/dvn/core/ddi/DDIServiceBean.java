@@ -9,6 +9,7 @@
 
 package edu.harvard.iq.dvn.core.ddi;
 
+import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.study.DataTable;
 import edu.harvard.iq.dvn.core.study.DataVariable;
 import edu.harvard.iq.dvn.core.study.FileMetadata;
@@ -1210,7 +1211,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         // A special note for LOCKSS crawlers indicating the restricted
         // status of the file:
 
-        if (tdf != null && tdf.isRestricted()) {
+        if (tdf != null && isRestrictedFile(tdf)) {
             xmlw.writeStartElement("notes");
             writeAttribute( xmlw, "type", NOTE_TYPE_LOCKSS_CRAWL );
             writeAttribute( xmlw, "level", LEVEL_FILE );
@@ -1275,7 +1276,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         // A special note for LOCKSS crawlers indicating the restricted
         // status of the file:
 
-        if (sf != null && sf.isRestricted()) {
+        if (sf != null && isRestrictedFile(sf)) {
             xmlw.writeStartElement("notes");
             writeAttribute( xmlw, "type", NOTE_TYPE_LOCKSS_CRAWL );
             writeAttribute( xmlw, "level", LEVEL_FILE );
@@ -1286,6 +1287,32 @@ public class DDIServiceBean implements DDIServiceLocal {
         }
 
         xmlw.writeEndElement(); // otherMat
+    }
+
+    private Boolean isRestrictedFile(StudyFile file) {
+        Study study = null;
+        VDC vdc = null;
+
+        study = file.getStudy();
+
+        if (study != null) {
+            vdc = study.getOwner();
+        }
+
+
+        if (vdc != null && vdc.isFilesRestricted()) {
+            return true;
+        }
+
+        if (study != null && study.isRestricted()) {
+            return true;
+        }
+
+        if (file.isRestricted()) {
+            return true;
+        }
+
+        return false;
     }
 
     private void createDataDscr(XMLStreamWriter xmlw, StudyVersion studyVersion) throws XMLStreamException {

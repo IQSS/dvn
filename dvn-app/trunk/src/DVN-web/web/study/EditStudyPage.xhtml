@@ -1232,42 +1232,45 @@
                       <ice:graphicImage value="/resources/images/icon_required.gif" rendered="#{EditStudyPage.studyMap[sfc.westLongitude].required}"/>
                       <ice:graphicImage value="/resources/images/icon_recommended.gif" rendered="#{EditStudyPage.studyMap[sfc.westLongitude].recommended}"/>
                     </div>
-                    <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloatWrap">
-                      <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 vdcEditStudyGroupField">
-                        <dvn:inlinehelp helpMessage="#{editstudybundle.westLongitudeHelp}" linkText="#{editstudybundle.westLongitudeLabel}" heading="#{editstudybundle.westLongitudeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                        <br/>
-                        <ice:inputText id="input_westLongitude" binding="#{EditStudyPage.inputWestLongitude}" value="#{EditStudyPage.metadata.studyGeoBoundings[0].westLongitude}"  validator="#{EditStudyPage.validateLongitude}" required="#{EditStudyPage.studyMap[sfc.westLongitude].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." />
-                        <ice:message styleClass="errorMessage" for="input_westLongitude"/>
-                      </div>
-                      
-                      <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField">
-                        <dvn:inlinehelp helpMessage="#{editstudybundle.eastLongitudeHelp}" linkText="#{editstudybundle.eastLongitudeLabel}" heading="#{editstudybundle.eastLongitudeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                        <br/>
-                        <ice:inputText binding="#{EditStudyPage.inputEastLongitude}" id="input_eastLongitude" value="#{EditStudyPage.metadata.studyGeoBoundings[0].eastLongitude}" validator="#{EditStudyPage.validateLongitude}" required="#{EditStudyPage.studyMap[sfc.eastLongitude].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." />
-                        <ice:message styleClass="errorMessage" for="input_eastLongitude"/>
-                      </div>
+                    <div jsfc="ice:panelGroup">
+                      <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloatWrap">
+                          <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 vdcEditStudyGroupField">
+                            <dvn:inlinehelp helpMessage="#{editstudybundle.westLongitudeHelp}" linkText="#{editstudybundle.westLongitudeLabel}" heading="#{editstudybundle.westLongitudeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                            <br/>
+                            <ice:inputText id="input_westLongitude" binding="#{EditStudyPage.inputWestLongitude}" value="#{EditStudyPage.metadata.studyGeoBoundings[0].westLongitude}"  validator="#{EditStudyPage.validateLongitude}" required="#{EditStudyPage.studyMap[sfc.westLongitude].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." />
+                            <ice:message styleClass="errorMessage" for="input_westLongitude"/>
+                          </div>
 
-                      <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField">
-                        <ice:outputText value="Use the "/>
-                        <ice:outputLink value="#" onclick="window.open('http://maps.cga.harvard.edu/samples/gpf.htm','popup','width=700,height=700,toolbar=no,directories=no,menubar=no,status=no'); return false">
-                          <ice:outputText id="outputTextCGAmapLink" value="CGA Geo-location Finder"/>
-                        </ice:outputLink>
-                        <ice:outputText value=" to find the coordinates."/>
-                      </div>
-                      
-                      <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 vdcEditStudyFieldFloat3 vdcEditStudyGroupField">
-                        <dvn:inlinehelp helpMessage="#{editstudybundle.northLatitudeHelp}" linkText="#{editstudybundle.northLatitudeLabel}" heading="#{editstudybundle.northLatitudeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                        <br/>
-                        <ice:inputText binding="#{EditStudyPage.inputNorthLatitude}" id="input_northLatitude" value="#{EditStudyPage.metadata.studyGeoBoundings[0].northLatitude}" validator="#{EditStudyPage.validateLatitude}" required="#{EditStudyPage.studyMap[sfc.northLatitude].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." />
-                        <ice:message styleClass="errorMessage" for="input_northLatitude"/>
-                      </div>
-                      
-                      <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField">
-                        <dvn:inlinehelp helpMessage="#{editstudybundle.southLatitudeHelp}" linkText="#{editstudybundle.southLatitudeLabel}" heading="#{editstudybundle.southLatitudeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
-                        <br/>
-                        <ice:inputText binding="#{EditStudyPage.inputSouthLatitude}" id="input_southLatitude" value="#{EditStudyPage.metadata.studyGeoBoundings[0].southLatitude}" validator="#{EditStudyPage.validateLatitude}"  required="#{EditStudyPage.studyMap[sfc.southLatitude].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." />
+                          <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField">
+                            <dvn:inlinehelp helpMessage="#{editstudybundle.eastLongitudeHelp}" linkText="#{editstudybundle.eastLongitudeLabel}" heading="#{editstudybundle.eastLongitudeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                            <br/>
+                            <ice:inputText binding="#{EditStudyPage.inputEastLongitude}" id="input_eastLongitude" value="#{EditStudyPage.metadata.studyGeoBoundings[0].eastLongitude}" validator="#{EditStudyPage.validateLongitude}" required="#{EditStudyPage.studyMap[sfc.eastLongitude].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." />
+                            <ice:message styleClass="errorMessage" for="input_eastLongitude"/>
+                          </div>
 
-                        <ice:message styleClass="errorMessage" for="input_southLatitude"/>
+                          <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat1 vdcEditStudyFieldFloat3 vdcEditStudyGroupField">
+                            <dvn:inlinehelp helpMessage="#{editstudybundle.northLatitudeHelp}" linkText="#{editstudybundle.northLatitudeLabel}" heading="#{editstudybundle.northLatitudeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                            <br/>
+                            <ice:inputText binding="#{EditStudyPage.inputNorthLatitude}" id="input_northLatitude" value="#{EditStudyPage.metadata.studyGeoBoundings[0].northLatitude}" validator="#{EditStudyPage.validateLatitude}" required="#{EditStudyPage.studyMap[sfc.northLatitude].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." />
+                            <ice:message styleClass="errorMessage" for="input_northLatitude"/>
+                          </div>
+
+                          <div jsfc="ice:panelGroup" styleClass="vdcEditStudyFieldFloat2 vdcEditStudyGroupField">
+                            <dvn:inlinehelp helpMessage="#{editstudybundle.southLatitudeHelp}" linkText="#{editstudybundle.southLatitudeLabel}" heading="#{editstudybundle.southLatitudeHelpHeading}" eventType="mouseover" cssClass="vdcInlineHelpLink" rendered="true"/>
+                            <br/>
+                            <ice:inputText binding="#{EditStudyPage.inputSouthLatitude}" id="input_southLatitude" value="#{EditStudyPage.metadata.studyGeoBoundings[0].southLatitude}" validator="#{EditStudyPage.validateLatitude}"  required="#{EditStudyPage.studyMap[sfc.southLatitude].required and EditStudyPage.validateRequired}" requiredMessage="This field is required." />
+
+                            <ice:message styleClass="errorMessage" for="input_southLatitude"/>
+                          </div>
+                      </div>
+                      <div jsfc="ice:panelGroup">
+                          <div jsfc="ice:panelGroup">
+                              <ice:outputText value="Use the "/>
+                              <ice:outputLink value="#" onclick="window.open('http://maps.cga.harvard.edu/samples/gpf.htm','popup','width=700,height=700,toolbar=no,directories=no,menubar=no,status=no'); return false">
+                              <ice:outputText id="outputTextCGAmapLink" value="CGA Geo-location Finder"/>
+                              </ice:outputLink>
+                              <ice:outputText value=" to find the coordinates."/>
+                          </div>
                       </div>
                       
                       <ice:inputHidden validator="#{EditStudyPage.validateGeographicBounding}" value="test" required="#{EditStudyPage.validateRequired}"/>

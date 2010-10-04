@@ -109,6 +109,57 @@ public class LockssAuthServiceBean implements LockssAuthServiceLocal {
         return false;
     }
 
+        public Boolean isAuthorizedRestrictedFiles ( VDC vdc,
+                                                HttpServletRequest req ) {
+
+        String remoteAddress = req.getRemoteHost();
+
+        if (remoteAddress == null || remoteAddress.equals("")) {
+            return false;
+        }
+
+        LockssConfig lockssConfig = null;
+
+        if (vdc != null) {
+            lockssConfig = vdc.getLockssConfig();
+        } else {
+            lockssConfig = vdcNetworkService.getLockssConfig();
+        }
+
+        if (lockssConfig == null) {
+            return false;
+        }
+
+        if (ServerAccess.ALL.equals(lockssConfig.getserverAccess())) {
+            return true;
+        }
+
+        List<LockssServer> lockssServers = lockssConfig.getLockssServers();
+
+        if (lockssServers == null || lockssServers.size() == 0) {
+            return false;
+        }
+
+        // Are restricted downloads allowed at all?
+
+        if (!lockssConfig.isAllowRestricted()) {
+            return false;
+        }
+
+        // And if yes, is this server on the list? 
+
+        for (Iterator<LockssServer> it = lockssServers.iterator(); it.hasNext();) {
+            LockssServer elem =  it.next();
+            if (elem.getIpAddress() != null) {
+                  if (DomainMatchUtil.isDomainMatch(remoteAddress, elem.getIpAddress())) {
+                      return true;
+                  }
+            }
+        }
+        return false;
+    }
+
+
     /*
      * isAuthorizedLockssDownload performs authorization on individual files
      * that the crawler is trying to download. This authorization depends on

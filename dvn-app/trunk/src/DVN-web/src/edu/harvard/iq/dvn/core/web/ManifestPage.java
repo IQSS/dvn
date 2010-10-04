@@ -10,7 +10,10 @@ import edu.harvard.iq.dvn.core.vdc.LockssConfig;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCNetwork;
 import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
+import edu.harvard.iq.dvn.core.admin.LockssAuthServiceLocal;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.ejb.EJB;
 
 
@@ -48,6 +51,7 @@ public class ManifestPage extends VDCBaseBean implements java.io.Serializable {
     private Boolean isNetwork = false;
     private Boolean isDataverse = false;
     private String basedOnWorkText;
+    private Boolean isRestrictedAuthorized = false;
 
 
 
@@ -55,6 +59,7 @@ public class ManifestPage extends VDCBaseBean implements java.io.Serializable {
     private VDC vdc;
     private LockssConfig lockssConfig;
     @EJB VDCNetworkServiceLocal vdcNetworkService;
+    @EJB LockssAuthServiceLocal lockssAuthService;
 
 
     @Override
@@ -114,7 +119,8 @@ public class ManifestPage extends VDCBaseBean implements java.io.Serializable {
                 lockssLicenseDescription = lockssConfig.getLicenseType().getName();
             }
         }
-            
+        HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        setIsRestrictedAuthorized(lockssAuthService.isAuthorizedRestrictedFiles(vdc, request ));
     }
 
     public String getArchivalUnit() {
@@ -206,6 +212,10 @@ public class ManifestPage extends VDCBaseBean implements java.io.Serializable {
         return isNetwork;
     }
 
+    public Boolean getIsRestrictedAuthorized() {
+        return isRestrictedAuthorized;
+    }
+
     public void setArchivalUnit(String archivalUnit) {
         this.archivalUnit = archivalUnit;
     }
@@ -259,5 +269,9 @@ public class ManifestPage extends VDCBaseBean implements java.io.Serializable {
 
     public void setVdcNetwork(VDCNetwork vdcNetwork) {
         this.vdcNetwork = vdcNetwork;
+    }
+
+    public void setIsRestrictedAuthorized(Boolean ra) {
+        isRestrictedAuthorized = ra;
     }
 }

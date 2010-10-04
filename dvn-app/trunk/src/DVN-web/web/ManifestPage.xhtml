@@ -62,6 +62,9 @@
                     <ice:outputText value="LOCKSS Additional Terms:" styleClass="termsAgreementMessageTitle" rendered="#{!empty ManifestPage.lockssLicensingTerms}"/>
                     <ice:outputText value="#{ManifestPage.lockssLicensingTerms}" rendered="#{!empty ManifestPage.lockssLicensingTerms}" escape="false"/>
                 </div>
+                <div>
+                    <ice:inputHidden id="restrictedFilesAuthorized" rendered="#{ManifestPage.isRestrictedAuthorized}"/>
+                </div>
             </div>
           </div>
         </div>

@@ -19,11 +19,12 @@ import javax.ejb.Local;
  */
 @Local
 public interface OAISetServiceLocal extends java.io.Serializable  {
-   public OAISet findBySpec(String spec) throws NoItemsMatchException;   
+   public OAISet findBySpec(String spec) throws ORG.oclc.oai.server.verb.NoItemsMatchException;
    public void remove(Long id);
    public List<OAISet> findAll();
    public List<OAISet> findAllOrdered();
    public List<OAISet> findAllOrderedSorted();
    public OAISet findById(Long id);
    public void update(OAISet oaiSet);
+   public boolean specExists(String spec);
 }

@@ -9,6 +9,7 @@
 
 package edu.harvard.iq.dvn.core.vdc;
 
+
 import ORG.oclc.oai.server.verb.NoItemsMatchException;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,14 +28,24 @@ public class OAISetServiceBean implements OAISetServiceLocal {
    @PersistenceContext(unitName="VDCNet-ejbPU")
     private EntityManager em; 
     
-    
-    public OAISet findBySpec(String spec) throws NoItemsMatchException {
+    public boolean specExists(String spec) {
+        boolean specExists = true;
+        try {
+            OAISet set = findBySpec(spec);
+            
+        } catch(NoItemsMatchException e) {
+            specExists = false;
+        }
+        return specExists;
+    }
+
+    public OAISet findBySpec(String spec) throws NoItemsMatchException{
      String query="SELECT o from OAISet o where o.spec = :fieldName";
        OAISet oaiSet=null;
        try {
            oaiSet=(OAISet)em.createQuery(query).setParameter("fieldName",spec).getSingleResult();
        } catch (javax.persistence.NoResultException e) {
-           throw new NoItemsMatchException();
+           throw new ORG.oclc.oai.server.verb.NoItemsMatchException();
            // Do nothing, just return null. 
        }
        return oaiSet;
@@ -74,6 +85,9 @@ public class OAISetServiceBean implements OAISetServiceLocal {
         //return em.createQuery("select object(o) from OAISet  as o where  o.lockssconfig_id != null  order by o.name").getResultList();
 
         List<OAISet> returnOaiSets = getNonLockssDVOAISets();
+        if (returnOaiSets== null) {
+            returnOaiSets = new ArrayList<OAISet>();
+        }
        returnOaiSets.addAll(em.createQuery("select object(o) from OAISet  as o where  o.lockssConfig is not null and o.lockssConfig.vdc is not null  order by o.name").getResultList());
 
         return returnOaiSets;

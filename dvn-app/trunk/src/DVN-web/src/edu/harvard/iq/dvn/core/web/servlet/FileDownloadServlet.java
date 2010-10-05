@@ -440,54 +440,57 @@ public class FileDownloadServlet extends HttpServlet {
         String localHostByName = "localhost";
         String localHostNumeric = "127.0.0.1";
 
-        if (localHostByName.equals(req.getRemoteHost()) ||
-            localHostNumeric.equals(req.getRemoteHost())) {
-            return true;
-        }
+        if (!isLockssCrawlRequest(req)) {
+            // This is a non-LOCKSS download request.
 
-        // then check to see if this request is from our dedicated
-        // DSB host. DSB host is authorized to get any file without
-        // restrictions.
-        // (Chances are this is no longer required -- L.A. -- ?)
-
-        String dsbHost = System.getProperty("vdc.dsb.host");
-
-        if (dsbHost == null) {
-            // vdc.dsb.host isn't set;
-            // fall back to the old-style option:
-            dsbHost = System.getProperty("vdc.dsb.url");
-        }
-
-        boolean isDSBrequest = false;
-
-        if (dsbHost != null) {
-            if (dsbHost.equals(req.getRemoteHost())) {
+            if (localHostByName.equals(req.getRemoteHost()) ||
+                localHostNumeric.equals(req.getRemoteHost())) {
                 return true;
-            } else {
-                try {
-                    String dsbHostIPAddress = InetAddress.getByName(dsbHost).getHostAddress();
-                    if (dsbHostIPAddress.equals(req.getRemoteHost())) {
-                        return true;
+            }
+
+            // then check to see if this request is from our dedicated
+            // DSB host. DSB host is authorized to get any file without
+            // restrictions.
+            // (Chances are this is no longer required -- L.A. -- ?)
+
+            String dsbHost = System.getProperty("vdc.dsb.host");
+
+            if (dsbHost == null) {
+                // vdc.dsb.host isn't set;
+                // fall back to the old-style option:
+                dsbHost = System.getProperty("vdc.dsb.url");
+            }
+
+            boolean isDSBrequest = false;
+
+            if (dsbHost != null) {
+                if (dsbHost.equals(req.getRemoteHost())) {
+                    return true;
+                } else {
+                    try {
+                        String dsbHostIPAddress = InetAddress.getByName(dsbHost).getHostAddress();
+                        if (dsbHostIPAddress.equals(req.getRemoteHost())) {
+                            return true;
+                        }
+                    } catch (UnknownHostException ex) {
+                        // no need to do anything;
+                        // this probably means the "vdc.dsb.host" setting is
+                        // misconfigured. in any event, safe to assume this is NOT
+                        // a DSB call
                     }
-                } catch (UnknownHostException ex) {
-                    // no need to do anything;
-                    // this probably means the "vdc.dsb.host" setting is
-                    // misconfigured. in any event, safe to assume this is NOT
-                    // a DSB call
                 }
             }
-        }
 
-        // Now, let's check if the file is authorized for this specific user:
-        if (!file.isFileRestrictedForUser(user, vdc, ipUserGroup)) {
+            // Now, let's check if the file is authorized for this specific user:
+            if (!file.isFileRestrictedForUser(user, vdc, ipUserGroup)) {
+                    return true;
+            }
+        } else {
+            // this is a LOCKSS crawler:
+
+            if (isAuthorizedLockssCrawler(file, req)) {
                 return true;
-        }
-
-        // Finally, this may be a LOCKSS crawler authorized to grab restricted
-        // content:
-
-        if (isAuthorizedLockssCrawler(file, req)) {
-            return true;
+            }
         }
 
         // We've exhausted the possibilities:

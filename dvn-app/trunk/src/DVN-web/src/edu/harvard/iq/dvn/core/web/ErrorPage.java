@@ -64,7 +64,7 @@ public class ErrorPage extends VDCBaseBean implements java.io.Serializable  {
         FacesContext context = FacesContext.getCurrentInstance();
         HttpServletResponse response = (javax.servlet.http.HttpServletResponse) context.getExternalContext().getResponse();
 
-        if (errorCode != 0) {
+        if (errorCode !=null && errorCode != 0) {
             response.setStatus(errorCode);
         }
     }

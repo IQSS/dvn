@@ -130,10 +130,6 @@ public class LockssAuthServiceBean implements LockssAuthServiceLocal {
             return false;
         }
 
-        if (ServerAccess.ALL.equals(lockssConfig.getserverAccess())) {
-            return true;
-        }
-
         List<LockssServer> lockssServers = lockssConfig.getLockssServers();
 
         if (lockssServers == null || lockssServers.size() == 0) {

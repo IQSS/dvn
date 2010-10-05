@@ -68,19 +68,37 @@ public class EditOAISetPage extends VDCBaseBean implements java.io.Serializable 
             Object value) {
  
         String spec = (String)value;
-        boolean valid = false;
+        boolean valid = true;
+        /*
+        // This isn't working because of a class loader issue - we aren't able
+        // to catch the excecption because the instance doesn't match the class loader of the class.
+        // Saving this so we can revisit it later
+         
         if (spec.equals(originalSpec) ) {
             valid = true;
         } else {
             try {
                 OAISet set = this.oaiSetService.findBySpec(spec);
+                //ORG.oclc.oai.server.verb.NoItemsMatchException
+                //ORG.oclc.oai.server.verb.NoItemsMatchException
             } catch (ORG.oclc.oai.server.verb.NoItemsMatchException e) {
                 valid = true;
+            } catch (Exception e) {
+                System.out.println("class classloader: "+ORG.oclc.oai.server.verb.NoItemsMatchException.class.getClassLoader() );
+                System.out.println("object classloader: "+e.getClass().getClassLoader());
+                System.out.println("EXCEPTION!!!! class is " + e.getClass().getCanonicalName()+", "+e.getClass().getSimpleName());
+                e.printStackTrace();
+                if (e instanceof ORG.oclc.oai.server.verb.NoItemsMatchException) {
+                    valid=true;
+                }
             }
         }
 
-       
+       */
 
+        if(oaiSetService.specExists(spec)) {
+            valid = false;
+        }
         if (!valid) {
             ((UIInput) toValidate).setValid(false);
             FacesMessage message = new FacesMessage("OAI Spec already exists.");

@@ -88,7 +88,8 @@ public class DvnDate {
         return date;
     }
     public static Date convertFromPattern(String dateString, String pattern) {
-       
+        if( dateString == null)
+            return null;
         Date date=null;
         SimpleDateFormat sdf = new SimpleDateFormat(pattern);
         sdf.setLenient(false);

@@ -16,7 +16,8 @@
                         draggable="false"
                         visible="#{(MainLayoutBean.inStudyPage and studyPage.showStudyDeletePopup) or (MainLayoutBean.inManageStudiesPageByViewID and ManageStudiesList.showStudyDeletePopup)}"
                         autoCentre="true"
-                        modal="true">
+                        modal="true"
+                        style="#{VDCRequest.currentVDC.displayInFrame ? 'top:50px !important;' : ' '}">
                 <f:facet name="header">
                     <ice:panelGrid id="autoCentPanelGrid"
                                    width="100%" cellpadding="0"

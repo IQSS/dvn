@@ -15,7 +15,8 @@
                         draggable="false"
                         rendered="#{VersionNotesPopupBean.showPopup }"
                         autoCentre="true"
-                        modal="true">
+                        modal="true"
+                        style="#{VDCRequest.currentVDC.displayInFrame ? 'top:50px !important;' : ' '}">
             <f:facet name="header">
                 <ice:panelGrid id="autoCentPanelGrid"
                                width="100%" cellpadding="0"

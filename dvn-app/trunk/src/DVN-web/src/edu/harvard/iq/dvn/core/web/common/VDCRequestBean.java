@@ -361,7 +361,7 @@ public class VDCRequestBean extends VDCBaseBean implements java.io.Serializable 
             }
 
         } else {
-             if ( (!isLogoutPage() && loginBean != null && loginBean.isAdmin()) || isAuthorizedLockssServer() ) {
+             if ( (!isLogoutPage() && loginBean != null && (loginBean.isAdmin() || loginBean.isNetworkAdmin()))  || isAuthorizedLockssServer()   ) {
                 return (currentVDC.getLockssConfig() != null);
              }
 

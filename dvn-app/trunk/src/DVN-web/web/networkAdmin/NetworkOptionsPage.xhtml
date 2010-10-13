@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:gui="http://java.sun.com/jsf/facelets"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:jsp="http://java.sun.com/JSP/Page"
@@ -11,9 +11,9 @@
 </head>
 
 <body>
-    <gui:composition template="/template.xhtml">
-        <gui:param name="pageTitle" value="Dataverse Network Admin Options - #{VDCRequest.dataversePageTitle}"/>
-        <gui:define name="body">
+    <ui:composition template="/template.xhtml">
+        <ui:param name="pageTitle" value="Dataverse Network Admin Options - #{VDCRequest.dataversePageTitle}"/>
+        <ui:define name="body">
             <ice:form id="form1" rendered="#{VDCRequest.currentVDC == null}">
                 <ice:panelTabSet id="tabSet1" styleClass="dvnTabs">
                         <!-- DATAVERSE OPTIONS -->
@@ -257,7 +257,7 @@
                 </ice:panelTab>
                 </ice:panelTabSet>
             </ice:form>
-        </gui:define>
-    </gui:composition>
+        </ui:define>
+    </ui:composition>
 </body>
 </html>

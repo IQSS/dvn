@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:gui="http://java.sun.com/jsf/facelets"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:jsp="http://java.sun.com/JSP/Page"
@@ -10,9 +10,9 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
 <body>
-  <gui:composition template="/template.xhtml">
-    <gui:param name="pageTitle" value="Variable Information - #{VDCRequest.dataversePageTitle}"/>
-    <gui:define name="body">
+  <ui:composition template="/template.xhtml">
+    <ui:param name="pageTitle" value="Variable Information - #{VDCRequest.dataversePageTitle}"/>
+    <ui:define name="body">
       <ice:form id="form1">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <div class="dvn_section">
@@ -32,14 +32,14 @@
                         </div>
                     </div>
                 </div>
-                <gui:include src="/study/StudyTitleFragment.xhtml">
-                    <gui:param name="studyUI" value="#{VariablePage.studyUI}"/>
-                    <gui:param name="displayReleaseLink" value="false"/>
-                    <gui:param name="displayVersionInfo" value="true"/>
-                    <gui:param name="displayStatusBox" value="false"/>
-                    <gui:param name="displayVariableName" value="#{VariablePage.variable.name}"/>
-                    <gui:param name="displayVariableLabel" value="#{VariablePage.variable.label}"/>
-                </gui:include>
+                <ui:include src="/study/StudyTitleFragment.xhtml">
+                    <ui:param name="studyUI" value="#{VariablePage.studyUI}"/>
+                    <ui:param name="displayReleaseLink" value="false"/>
+                    <ui:param name="displayVersionInfo" value="true"/>
+                    <ui:param name="displayStatusBox" value="false"/>
+                    <ui:param name="displayVariableName" value="#{VariablePage.variable.name}"/>
+                    <ui:param name="displayVariableLabel" value="#{VariablePage.variable.label}"/>
+                </ui:include>
             </div>
           <div class="dvn_sectionBoxNoBorders">
             <div jsfc="ice:panelGroup" styleClass="dvnVariableStatisticsBlock" rendered="#{!empty VariablePage.variable.summaryStatistics}">
@@ -67,9 +67,9 @@
               </div>
               <ice:dataTable value="#{VariablePage.variable.categories}" var="cs" width="500" columnClasses="vdcColPadded">
                 <ice:column>
-                    <gui:repeat value="#{cs.valueCharacterList}" var="char" >
+                    <ui:repeat value="#{cs.valueCharacterList}" var="char" >
                         <ice:outputText escape="#{char!='&amp;nbsp;'}" value="#{char}" nospan="true" />
-                    </gui:repeat>
+                    </ui:repeat>
                   <ice:outputText rendered="#{!empty cs.label}" value=" (#{cs.label})" nospan="true"/>
                   <f:facet name="header">
                     <ice:outputText value="Value (Label)"/>
@@ -86,7 +86,7 @@
           </div>
         </div>
       </ice:form>
-    </gui:define>
-  </gui:composition>
+    </ui:define>
+  </ui:composition>
 </body>
 </html>

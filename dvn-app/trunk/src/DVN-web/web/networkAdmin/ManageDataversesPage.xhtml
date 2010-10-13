@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:gui="http://java.sun.com/jsf/facelets"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:jsp="http://java.sun.com/JSP/Page"
@@ -11,9 +11,9 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     </head>
     <body>
-        <gui:composition template="/template.xhtml">
-        <gui:param name="pageTitle" value="#{bundlePageInfo.manageDvsTitle} - #{VDCRequest.dataversePageTitle}"/>
-        <gui:define name="body">
+        <ui:composition template="/template.xhtml">
+        <ui:param name="pageTitle" value="#{bundlePageInfo.manageDvsTitle} - #{VDCRequest.dataversePageTitle}"/>
+        <ui:define name="body">
             <script type="text/javascript">
           // <![CDATA[
             function setHiddenValues(alphaKey) {
@@ -38,23 +38,23 @@
           <div jsfc="ice:panelGroup" styleClass="dvnManageTableTop">
                 <div jsfc="ice:panelGroup" styleClass="dvnHmpgGroupAlphaSortBlock" rendered="#{VDCRequest.currentVDC == null}">
                     <ul class="dvnAlphaBrowseBlock">
-                        <gui:fragment rendered="#{(manageDataversesPage.vdcUIList.alphaCharacter == '' or manageDataversesPage.vdcUIList.alphaCharacter == null)}">
+                        <ui:fragment rendered="#{(manageDataversesPage.vdcUIList.alphaCharacter == '' or manageDataversesPage.vdcUIList.alphaCharacter == null)}">
                             <li class="dvnAlphaBrowseSelected" onmouseover="this.className='dvnAlphaBrowseHover'" onmouseout="this.className='dvnAlphaBrowseSelected'">
                                 <ice:commandLink  onclick="setHiddenValues('All');">
                                         <ice:outputText value="ALL"/>
                                 </ice:commandLink>
                             </li>
-                        </gui:fragment>
-                        <gui:fragment rendered="#{(manageDataversesPage.vdcUIList.alphaCharacter != '' and manageDataversesPage.vdcUIList.alphaCharacter != null)}">
+                        </ui:fragment>
+                        <ui:fragment rendered="#{(manageDataversesPage.vdcUIList.alphaCharacter != '' and manageDataversesPage.vdcUIList.alphaCharacter != null)}">
                             <li class="dvnAlphaBrowse" onmouseover="this.className='dvnAlphaBrowseHover'" onmouseout="this.className='dvnAlphaBrowse'">
                                 <ice:commandLink  onclick="setHiddenValues('All');">
                                         <ice:outputText value="ALL"/>
                                 </ice:commandLink>
                             </li>
-                        </gui:fragment>
-                        <gui:repeat value="#{manageDataversesPage.alphaCharacterList}"
+                        </ui:fragment>
+                        <ui:repeat value="#{manageDataversesPage.alphaCharacterList}"
                                     var="item">
-                            <gui:fragment rendered="#{(manageDataversesPage.vdcUIList.alphaCharacter == item)}">
+                            <ui:fragment rendered="#{(manageDataversesPage.vdcUIList.alphaCharacter == item)}">
                                 <li class="dvnAlphaBrowseSelected" onmouseover="this.className='dvnAlphaBrowseHover'" onmouseout="this.className='dvnAlphaBrowseSelected'">
                                     <ice:commandLink onclick="setHiddenValues(document.getElementById('#{item}');">
                                         <ice:outputText value="#{item}"/>
@@ -62,8 +62,8 @@
                                         <f:attribute name="alphaCharacter" value="#{item}"/>
                                     </ice:commandLink>
                                 </li>
-                            </gui:fragment>
-                            <gui:fragment rendered="#{(manageDataversesPage.vdcUIList.alphaCharacter != item)}">
+                            </ui:fragment>
+                            <ui:fragment rendered="#{(manageDataversesPage.vdcUIList.alphaCharacter != item)}">
                                 <li class="dvnAlphaBrowse" onmouseover="this.className='dvnAlphaBrowseHover'" onmouseout="this.className='dvnAlphaBrowse'">
                                     <ice:commandLink onclick="setHiddenValues('#{item}');">
                                         <ice:outputText value="#{item}"/>
@@ -71,8 +71,8 @@
                                         <f:attribute name="alphaCharacter" value="#{item}"/>
                                     </ice:commandLink>
                                 </li>
-                            </gui:fragment>
-                        </gui:repeat>
+                            </ui:fragment>
+                        </ui:repeat>
                     </ul>
                 </div>
                 <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="2" id="gridPanel2"
@@ -235,7 +235,7 @@
             
         </div>
         </ice:form>
-        </gui:define>
-        </gui:composition>
+        </ui:define>
+        </ui:composition>
     </body>
 </html>

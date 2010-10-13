@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:gui="http://java.sun.com/jsf/facelets"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:jsp="http://java.sun.com/JSP/Page"
@@ -10,9 +10,9 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
 <body>
-  <gui:composition template="/template.xhtml">
-    <gui:param name="pageTitle" value="Data Files Harvesting (LOCKSS Harversting) - #{VDCRequest.dataversePageTitle}"/>
-    <gui:define name="body">
+  <ui:composition template="/template.xhtml">
+    <ui:param name="pageTitle" value="Data Files Harvesting (LOCKSS Harversting) - #{VDCRequest.dataversePageTitle}"/>
+    <ui:define name="body">
         <script type="text/javascript">
           // <![CDATA[
            function getRadioValue( id ) {
@@ -85,7 +85,7 @@
                         <ice:outputText value="Harvesting Type"/>
                     </td>
                     <td>
-                      <gui:fragment rendered ="#{VDCRequest.currentVDC==null}">
+                      <ui:fragment rendered ="#{VDCRequest.currentVDC==null}">
                         <ice:selectOneRadio id="harvestType1"
                                             layout="pageDirection"
                                             required="true"
@@ -96,8 +96,8 @@
                             <f:selectItem itemLabel="Enable harvesting of public data files" itemValue="ALL"  />
                             <f:selectItem itemLabel="Enable harvesting of public data files by specified servers only" itemValue="GROUP"/>
                         </ice:selectOneRadio>
-                      </gui:fragment>
-                    <gui:fragment rendered ="#{VDCRequest.currentVDC!=null}">
+                      </ui:fragment>
+                    <ui:fragment rendered ="#{VDCRequest.currentVDC!=null}">
                         <ice:selectOneRadio id="harvestType2"
                                             layout="pageDirection"
                                             required="true"
@@ -108,10 +108,10 @@
                             <f:selectItem itemLabel="LOCKSS configured at Dataverse level - harvest of public data files" itemValue="ALL"  />
                             <f:selectItem itemLabel="LOCKSS configured at Dataverse level - harvest of public data files by specified servers only" itemValue="GROUP"/>
                         </ice:selectOneRadio>
-                      </gui:fragment>
+                      </ui:fragment>
                     </td>
                   </tr>
-                  <gui:fragment rendered ="#{VDCRequest.currentVDC==null}">
+                  <ui:fragment rendered ="#{VDCRequest.currentVDC==null}">
                   <tr class="lockssConfig">
                     <td class="dvnPermissionsTableOption">
                         <ice:outputText value="OAI Set"/>
@@ -127,7 +127,7 @@
                         <ice:message id="oaiSetModelMsg" styleClass="errorMessage" for="oaiSetModel"/>
                     </td>
                   </tr>
-                  </gui:fragment>
+                  </ui:fragment>
                   <tr class="lockssConfig">
                     <td class="dvnPermissionsTableOption">
                         <ice:outputText value="Restricted Data Files"/>
@@ -210,8 +210,8 @@
           // initial call to hide LOCKSS config options, if LOCKSS is disabled
           hideOptions();
       </script>
-    </gui:define>
-  </gui:composition>
+    </ui:define>
+  </ui:composition>
 </body>
 </html>
 

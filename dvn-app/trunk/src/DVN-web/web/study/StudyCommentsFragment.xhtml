@@ -1,10 +1,9 @@
-                <div xmlns:gui="http://java.sun.com/jsf/facelets"
+                <div xmlns:ui="http://java.sun.com/jsf/facelets"
                       xmlns:h="http://java.sun.com/jsf/html"
                       xmlns:f="http://java.sun.com/jsf/core"
                       xmlns:jsp="http://java.sun.com/JSP/Page"
                       xmlns:ice="http://www.icesoft.com/icefaces/component"
                       xmlns:dvn="/WEB-INF/tlds/dvn-components"
-                      xmlns:ui="http://www.sun.com/web/ui"
                       jsfc="ice:panelGroup"
                       id="layoutPanelComments"
                       panelLayout="flow"
@@ -84,9 +83,9 @@
                             <ice:column id="commentContent"
                                         rendered="#{item.studyComment.status == 'OK' or item.studyComment.status == 'FLAGGED'}"
                                         styleClass="vdcStudyCommentContentColumn">
-                                <gui:fragment>
+                                <ui:fragment>
                                     <a name="comment#{item.studyComment.id}"></a>
-                                </gui:fragment>
+                                </ui:fragment>
                                   <ice:outputText value="#{item.studyComment.comment}"/>
                             </ice:column>
                       </ice:dataTable>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:gui="http://java.sun.com/jsf/facelets"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:jsp="http://java.sun.com/JSP/Page"
@@ -11,9 +11,9 @@
 </head>
 
 <body>
-    <gui:composition template="/template.xhtml">                
-        <gui:param name="pageTitle" value="#{bundlePageInfo.dvOptionsTitle} - #{VDCRequest.dataversePageTitle}"/>
-        <gui:define name="body">            
+    <ui:composition template="/template.xhtml">                
+        <ui:param name="pageTitle" value="#{bundlePageInfo.dvOptionsTitle} - #{VDCRequest.dataversePageTitle}"/>
+        <ui:define name="body">            
             <ice:form id="form1">
                 <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>                    
                 <div class="dvn_section">
@@ -31,7 +31,7 @@
                                 <div jsfc="ice:panelGroup">
                                     <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
                                         <tr><td colspan="2" class="dvnOptionsTableHeader"><ice:outputText value="#{bundlePageInfo.dvSettingsSectionTitle}"/></td></tr>
-                                        <gui:fragment rendered="#{not VDCRequest.currentVDC.harvestingDv or (VDCSession.loginBean.networkAdmin == false and VDCRequest.currentVDC.harvestingDv)}">
+                                        <ui:fragment rendered="#{not VDCRequest.currentVDC.harvestingDv or (VDCSession.loginBean.networkAdmin == false and VDCRequest.currentVDC.harvestingDv)}">
                                             <tr>
                                                 <td class="dvnOptionsTableOption">
                                                     <ice:outputLink id="hyperlink15a" value="/dvn#{VDCRequest.currentVDCURL}/faces/site/EditSitePage.xhtml">
@@ -40,8 +40,8 @@
                                                 </td>
                                                 <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.editDvSettingsText}"/></td>
                                             </tr>
-                                        </gui:fragment>
-                                        <gui:fragment rendered="#{VDCRequest.currentVDC.harvestingDv and VDCSession.loginBean.networkAdmin == true}">
+                                        </ui:fragment>
+                                        <ui:fragment rendered="#{VDCRequest.currentVDC.harvestingDv and VDCSession.loginBean.networkAdmin == true}">
                                             <tr>
                                                 <td class="dvnOptionsTableOption">
                                                     <ice:outputLink id="hyperlink15b" value="/dvn#{VDCRequest.currentVDCURL}/faces/site/EditHarvestSitePage.xhtml">
@@ -52,7 +52,7 @@
                                                 </td>
                                                 <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.dvHarvestSettingsText}"/></td>
                                             </tr>
-                                        </gui:fragment>
+                                        </ui:fragment>
                                         <tr>
                                             <td class="dvnOptionsTableOption">
                                                 <ice:outputLink  value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditLockssConfigPage.xhtml">
@@ -116,7 +116,7 @@
 
                                     <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
                                         <tr><td colspan="2" class="dvnOptionsTableHeader"><ice:outputText value="#{bundlePageInfo.dvTermsSectionTitle}"/></td></tr>
-                                        <gui:fragment rendered="#{not VDCRequest.currentVDC.harvestingDv}">
+                                        <ui:fragment rendered="#{not VDCRequest.currentVDC.harvestingDv}">
                                             <tr>
                                                 <td class="dvnOptionsTableOption">
                                                     <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditDepositUseTermsPage.xhtml" >
@@ -125,7 +125,7 @@
                                                 </td>
                                                 <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.editDvDepositTermsText}"/></td>
                                             </tr>
-                                        </gui:fragment>
+                                        </ui:fragment>
                                         <tr>
                                             <td class="dvnOptionsTableOption">
                                                 <ice:outputLink id="hyperlink14" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/EditUseTermsPage.xhtml">
@@ -162,7 +162,7 @@
                         <ice:panelTab id="studyOptions" label="Study Options" url="/dvn#{VDCRequest.currentVDCURL}/faces/admin/OptionsPage.xhtml&amp;tab=studyOptions" rendered="#{VDCSession.loginBean.networkAdmin or VDCSession.loginBean.curatorOrAbove or (not VDCRequest.currentVDC.harvestingDv and (VDCSession.loginBean.contributor or VDCRequest.currentVDC.allowRegisteredUsersToContribute))}">
                             <div jsfc="ice:panelGroup" id="layoutPanel2" panelLayout="flow">
                                 <table class="dvnOptionsTable" cellspacing="0" cellpadding="0" border="0">
-                                    <gui:fragment rendered="#{not VDCRequest.currentVDC.harvestingDv}">
+                                    <ui:fragment rendered="#{not VDCRequest.currentVDC.harvestingDv}">
                                         <tr>
                                             <td class="dvnOptionsTableOption dvnOptionsTableNoHeader">
                                                 <ice:outputLink id="hyperlink5" value="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyPage.xhtml">
@@ -179,10 +179,10 @@
                                             </td>
                                             <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.manageStudiesText}"/></td>
                                         </tr>
-                                    </gui:fragment>
+                                    </ui:fragment>
 
-                                    <gui:fragment rendered="#{VDCSession.loginBean.networkAdmin or VDCSession.loginBean.curatorOrAbove}">
-                                        <gui:fragment rendered="#{not VDCRequest.currentVDC.harvestingDv}">
+                                    <ui:fragment rendered="#{VDCSession.loginBean.networkAdmin or VDCSession.loginBean.curatorOrAbove}">
+                                        <ui:fragment rendered="#{not VDCRequest.currentVDC.harvestingDv}">
                                             <tr>
                                                 <td class="dvnOptionsTableOption">
                                                     <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/ManageTemplatesPage.xhtml?mode=4" >
@@ -191,7 +191,7 @@
                                                 </td>
                                                 <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.manageTemplatesText}"/></td>
                                             </tr>
-                                        </gui:fragment>
+                                        </ui:fragment>
                                         <tr>
                                             <td class="dvnOptionsTableOption">
                                                 <ice:outputLink id="hyperlink8" value="/dvn#{VDCRequest.currentVDCURL}/faces/collection/ManageCollectionsPage.xhtml">
@@ -200,7 +200,7 @@
                                             </td>
                                             <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.manageCollectionsText}"/></td>
                                         </tr>
-                                    </gui:fragment>
+                                    </ui:fragment>
                                 </table>
                             </div>
                         </ice:panelTab>
@@ -209,7 +209,7 @@
                     </div>
                 </div>
             </ice:form>                
-        </gui:define>
-    </gui:composition>
+        </ui:define>
+    </ui:composition>
 </body>
 </html>

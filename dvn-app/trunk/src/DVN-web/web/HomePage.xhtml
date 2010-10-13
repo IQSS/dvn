@@ -1,22 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:gui="http://java.sun.com/jsf/facelets"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:dvn="/WEB-INF/tlds/dvn-components"
-      xmlns:ice="http://www.icesoft.com/icefaces/component"
-      xmlns:ui="http://www.sun.com/web/ui">
+      xmlns:ice="http://www.icesoft.com/icefaces/component">
 <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
 
 <body>
-  <gui:composition template="/template.xhtml">
-    <gui:param name="pageTitle" value="#{VDCRequest.dataversePageTitle}"/>
+  <ui:composition template="/template.xhtml">
+    <ui:param name="pageTitle" value="#{VDCRequest.dataversePageTitle}"/>
 
-    <gui:define name="body">
+    <ui:define name="body">
       <f:loadBundle basename="Bundle" var="bundle"/>
       <f:loadBundle basename="BundleAnalysis" var="bundleAnalysis"/>
       <script type="text/javascript">
@@ -112,8 +111,8 @@
                                 }
                            </script>
                            <fieldset>
-                               <gui:include src="BasicSearchFragment.xhtml">
-                               </gui:include>
+                               <ui:include src="BasicSearchFragment.xhtml">
+                               </ui:include>
                            </fieldset>
                            <div class="dvn_searchlinks">
                                 <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/AdvSearchPage.xhtml">
@@ -134,23 +133,23 @@
 
                 <div jsfc="ice:panelGroup" styleClass="dvnHmpgGroupAlphaSortBlock" rendered="#{VDCRequest.currentVDC == null}">
                     <ul class="dvnAlphaBrowseBlock">
-                        <gui:fragment rendered="#{(HomePage.vdcUIList.alphaCharacter == '' or HomePage.vdcUIList.alphaCharacter == null)}">
+                        <ui:fragment rendered="#{(HomePage.vdcUIList.alphaCharacter == '' or HomePage.vdcUIList.alphaCharacter == null)}">
                             <li class="dvnAlphaBrowseSelected" onmouseover="this.className='dvnAlphaBrowseHover'" onmouseout="this.className='dvnAlphaBrowseSelected'">
                                 <ice:commandLink  onclick="setHiddenValues('All');">
                                         <ice:outputText value="ALL"/>
                                 </ice:commandLink>
                             </li>
-                        </gui:fragment>
-                        <gui:fragment rendered="#{(HomePage.vdcUIList.alphaCharacter != '' and HomePage.vdcUIList.alphaCharacter != null)}">
+                        </ui:fragment>
+                        <ui:fragment rendered="#{(HomePage.vdcUIList.alphaCharacter != '' and HomePage.vdcUIList.alphaCharacter != null)}">
                             <li class="dvnAlphaBrowse" onmouseover="this.className='dvnAlphaBrowseHover'" onmouseout="this.className='dvnAlphaBrowse'">
                                 <ice:commandLink  onclick="setHiddenValues('All');">
                                         <ice:outputText value="ALL"/>
                                 </ice:commandLink>
                             </li>
-                        </gui:fragment>
-                        <gui:repeat value="#{HomePage.alphaCharacterList}"
+                        </ui:fragment>
+                        <ui:repeat value="#{HomePage.alphaCharacterList}"
                                     var="item">
-                            <gui:fragment rendered="#{(HomePage.vdcUIList.alphaCharacter == item)}">
+                            <ui:fragment rendered="#{(HomePage.vdcUIList.alphaCharacter == item)}">
                                 <li class="dvnAlphaBrowseSelected" onmouseover="this.className='dvnAlphaBrowseHover'" onmouseout="this.className='dvnAlphaBrowseSelected'">
                                     <ice:commandLink onclick="setHiddenValues(document.getElementById('form1:groupId').value, '#{item}');">
                                         <ice:outputText value="#{item}"/>
@@ -158,8 +157,8 @@
                                         <f:attribute name="alphaCharacter" value="#{item}"/>
                                     </ice:commandLink>
                                 </li>
-                            </gui:fragment>
-                            <gui:fragment rendered="#{(HomePage.vdcUIList.alphaCharacter != item)}">
+                            </ui:fragment>
+                            <ui:fragment rendered="#{(HomePage.vdcUIList.alphaCharacter != item)}">
                                 <li class="dvnAlphaBrowse" onmouseover="this.className='dvnAlphaBrowseHover'" onmouseout="this.className='dvnAlphaBrowse'">
                                     <ice:commandLink onclick="setHiddenValues(document.getElementById('form1:groupId').value, '#{item}');">
                                         <ice:outputText value="#{item}"/>
@@ -167,8 +166,8 @@
                                         <f:attribute name="alphaCharacter" value="#{item}"/>
                                     </ice:commandLink>
                                 </li>
-                            </gui:fragment>
-                        </gui:repeat>
+                            </ui:fragment>
+                        </ui:repeat>
                     </ul>
                 </div>
                 <ice:panelGrid cellpadding="0" cellspacing="0" border="0" columns="2" id="gridPanel2"
@@ -359,20 +358,20 @@
                                         </ice:commandLink>
                                     </h4>
                                 </li>
-                                <gui:repeat rendered="#{HomePage.accordionItemBeans != null}"
+                                <ui:repeat rendered="#{HomePage.accordionItemBeans != null}"
                                             value="#{HomePage.accordionItemBeans}"
                                             var="menuItems">
-                                    <gui:fragment rendered="#{!empty(menuItems.childItems)}">
+                                    <ui:fragment rendered="#{!empty(menuItems.childItems)}">
                                         <li>
                                             <h3 class="head">
                                                 <ice:outputText value="#{menuItems.name}"/>
                                             </h3>
                                         </li>
-                                        <gui:repeat rendered="#{menuItems != null}"
+                                        <ui:repeat rendered="#{menuItems != null}"
                                                     value="#{menuItems.childItems}"
                                                     var="item">
                                             <!-- HAS SUBNODE DESCENDANTS -->
-                                            <gui:fragment rendered="#{!empty(item.xtraItems)}">
+                                            <ui:fragment rendered="#{!empty(item.xtraItems)}">
                                                 <li id="xtraMenu#{item.id}">
                                                     <h4 class="head">
                                                         <ice:commandLink onclick="deselect_active_children(this);setHiddenValues(#{item.id});"
@@ -382,9 +381,9 @@
                                                             <f:attribute name="groupId" value="#{item.id}"/>
                                                         </ice:commandLink>
                                                     </h4>
-                                                    <gui:fragment rendered="#{item.xtraItems != null and !empty(item.xtraItems)}">
+                                                    <ui:fragment rendered="#{item.xtraItems != null and !empty(item.xtraItems)}">
                                                         <ul>
-                                                            <gui:repeat rendered="#{item.xtraItems != null}"
+                                                            <ui:repeat rendered="#{item.xtraItems != null}"
                                                                         value="#{item.xtraItems}"
                                                                         var="xtraItems">
                                                                 <li>
@@ -395,14 +394,14 @@
                                                                         <f:attribute name="groupId" value="#{xtraItems.id}"/>
                                                                     </ice:commandLink>
                                                                 </li>
-                                                            </gui:repeat>
+                                                            </ui:repeat>
                                                         </ul>
-                                                    </gui:fragment>
+                                                    </ui:fragment>
                                                 </li>
-                                            </gui:fragment>
+                                            </ui:fragment>
                                             <!-- END HAS SUBNODE DESCENDANTS -->
                                             <!-- HAS NO SUBNODE DESCENDANTS -->
-                                            <gui:fragment rendered="#{empty(item.xtraItems)}">
+                                            <ui:fragment rendered="#{empty(item.xtraItems)}">
                                                 <li>
                                                     <h4 class="head noSubNode">
                                                         <ice:commandLink onclick="setHiddenValues(#{item.id});"
@@ -412,13 +411,13 @@
                                                         </ice:commandLink>
                                                     </h4>
                                                 </li>
-                                            </gui:fragment>
+                                            </ui:fragment>
                                             <!-- END HAS NO SUBNODE DESCENDANTS -->
-                                        </gui:repeat>
+                                        </ui:repeat>
 
 
-                                    </gui:fragment>
-                                </gui:repeat>
+                                    </ui:fragment>
+                                </ui:repeat>
                             </ul>
                         </li>
                     </ul>
@@ -442,7 +441,7 @@
         </div>
       </ice:form>
 
-    </gui:define>
-  </gui:composition>
+    </ui:define>
+  </ui:composition>
 </body>
 </html>

@@ -1,22 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:gui="http://java.sun.com/jsf/facelets"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:ice="http://www.icesoft.com/icefaces/component"
-      xmlns:dvn="/WEB-INF/tlds/dvn-components"
-      xmlns:ui="http://www.sun.com/web/ui">
+      xmlns:dvn="/WEB-INF/tlds/dvn-components">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   </head>
 
 <body>
-  <gui:composition template="/template_study.xhtml">
-    <gui:param name="pageTitle" value="#{studyPage.studyUI.metadata.title} - #{VDCRequest.dataversePageTitle}"/>
-    <gui:param name="uniquifier" value="#{studyPage.selectedIndex}"/>
-    <gui:define name="body">
+  <ui:composition template="/template_study.xhtml">
+    <ui:param name="pageTitle" value="#{studyPage.studyUI.metadata.title} - #{VDCRequest.dataversePageTitle}"/>
+    <ui:param name="uniquifier" value="#{studyPage.selectedIndex}"/>
+    <ui:define name="body">
        <script type="text/javascript">
                     // <![CDATA[
                     function toggleMoreInfo(moreInfo) {
@@ -341,12 +340,12 @@
                     </div>
                 </div>
                
-                <gui:include src="StudyTitleFragment.xhtml">
-                    <gui:param name="studyUI" value="#{studyPage.studyUI}"/>
-                    <gui:param name="displayReleaseLink" value="true"/>
-                    <gui:param name="displayVersionInfo" value="true"/>
-                    <gui:param name="displayStatusBox" value="true"/>
-                </gui:include>
+                <ui:include src="StudyTitleFragment.xhtml">
+                    <ui:param name="studyUI" value="#{studyPage.studyUI}"/>
+                    <ui:param name="displayReleaseLink" value="true"/>
+                    <ui:param name="displayVersionInfo" value="true"/>
+                    <ui:param name="displayStatusBox" value="true"/>
+                </ui:include>
             
             </div>
             <div class="dvn_sectionBoxNoBorders">
@@ -746,21 +745,21 @@
                             // ]]>
                         </script>
                         <f:param name="tab" value="files"/>
-                        <gui:include src="StudyFilesFragment.xhtml">
-                        </gui:include>
+                        <ui:include src="StudyFilesFragment.xhtml">
+                        </ui:include>
                     </ice:panelTab>
                     <!-- Study comments -->
   <ice:panelTab id="comments"
                 label="User Comments"
                                   rendered="#{studyPage.allowStudyComments}">
-                        <gui:include src="StudyCommentsFragment.xhtml">
-                        </gui:include>
+                        <ui:include src="StudyCommentsFragment.xhtml">
+                        </ui:include>
                     </ice:panelTab>
                     <!-- end study comments -->
   <ice:panelTab id="versions"
                                   label="Versions">
-                        <gui:include src="StudyVersionsFragment.xhtml">
-                        </gui:include>
+                        <ui:include src="StudyVersionsFragment.xhtml">
+                        </ui:include>
                     </ice:panelTab>
                 </ice:panelTabSet>
             </div>
@@ -768,9 +767,9 @@
       </ice:form>
 
     <!-- Deacessioned study! -->
-    <gui:include src="StudyDeaccessionedFragment.xhtml"/>
+    <ui:include src="StudyDeaccessionedFragment.xhtml"/>
  
-    </gui:define>
-  </gui:composition>
+    </ui:define>
+  </ui:composition>
 </body>
 </html>

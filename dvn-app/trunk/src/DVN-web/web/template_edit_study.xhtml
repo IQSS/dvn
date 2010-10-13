@@ -2,7 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:gui="http://java.sun.com/jsf/facelets"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:jsp="http://java.sun.com/JSP/Page"
@@ -95,26 +95,26 @@
 <body>
     <f:loadBundle basename="Bundle" var="bundle"/>
     <f:loadBundle basename="BundlePageInfo" var="bundlePageInfo"/>
-    <gui:insert name="title">
+    <ui:insert name="title">
         <!--  ****** THIS IS THE HEADER ******** -->
-        <gui:include src="views/CustomBanner.xhtml"/>
-        <!-- <gui:include src="views/ConnectedBanner.xhtml"/> -->
-    </gui:insert>
+        <ui:include src="views/CustomBanner.xhtml"/>
+        <!-- <ui:include src="views/ConnectedBanner.xhtml"/> -->
+    </ui:insert>
     <div class="dvn_wrapper" id="dvn_wrapper">
         <div class="dvn_content" id="content-frame">
             <!-- required to fix a bug in firefox where the connection status box can be displayed erroneously -->
             <ice:outputConnectionStatus showPopupOnDisconnect="false"/>
-            <gui:insert name="title">
+            <ui:insert name="title">
                 <!-- *** MENUBAR (Included from template) *** -->
-                <gui:include src="views/Menubar.xhtml"/>
-            </gui:insert>
-            <gui:insert name="body">Default Body</gui:insert>
+                <ui:include src="views/Menubar.xhtml"/>
+            </ui:insert>
+            <ui:insert name="body">Default Body</ui:insert>
             <div class="dvn_clear"></div>
         </div>
     </div>
-    <gui:insert name="footer">
-        <gui:include src="views/CustomFooter.xhtml"/>
-    </gui:insert>
+    <ui:insert name="footer">
+        <ui:include src="views/CustomFooter.xhtml"/>
+    </ui:insert>
     <ice:outputText escape="false" nospan="true"
                     rendered="#{applicationScope.googleAnalyticsKey != null || MainLayoutBean.googleAnalyticsKey != null}"
                     value="#{(applicationScope.googleAnalyticsCode != null) ? applicationScope.googleAnalyticsCode : MainLayoutBean.googleAnalyticsCode}"/>

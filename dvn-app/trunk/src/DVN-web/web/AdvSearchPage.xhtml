@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:gui="http://java.sun.com/jsf/facelets"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:dvn="/WEB-INF/tlds/dvn-components"
-      xmlns:ice="http://www.icesoft.com/icefaces/component"
-      xmlns:ui="http://www.sun.com/web/ui">
+      xmlns:ice="http://www.icesoft.com/icefaces/component">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
 <body>
-  <gui:composition template="/template.xhtml">
-    <gui:param name="pageTitle" value="#{bundlePageInfo.advancedSearchTitle} - #{VDCRequest.dataversePageTitle}"/>
-    <gui:define name="body">
+  <ui:composition template="/template.xhtml">
+    <ui:param name="pageTitle" value="#{bundlePageInfo.advancedSearchTitle} - #{VDCRequest.dataversePageTitle}"/>
+    <ui:define name="body">
       <ice:form id="form1">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
@@ -29,7 +28,7 @@
               <tr><td class="dvnPermissionsTableHeader"><ice:outputText value="#{bundlePageInfo.advancedSearchPageBasicTitle}"/></td></tr>
               <tr>
                 <td class="dvnFormPadding">
-                    <gui:include src="BasicSearchFragment.xhtml"></gui:include>
+                    <ui:include src="BasicSearchFragment.xhtml"></ui:include>
                 </td>
               </tr>
             </table>
@@ -148,7 +147,7 @@
         </div>
         
       </ice:form>
-    </gui:define>
-  </gui:composition>
+    </ui:define>
+  </ui:composition>
 </body>
 </html>

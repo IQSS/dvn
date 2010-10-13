@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:gui="http://java.sun.com/jsf/facelets"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:jsp="http://java.sun.com/JSP/Page"
@@ -10,9 +10,9 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
 <body>
-  <gui:composition template="/template.xhtml">
-    <gui:param name="pageTitle" value="Request to Create a Dataverse - #{VDCRequest.dataversePageTitle}"/>
-    <gui:define name="body">
+  <ui:composition template="/template.xhtml">
+    <ui:param name="pageTitle" value="Request to Create a Dataverse - #{VDCRequest.dataversePageTitle}"/>
+    <ui:define name="body">
       <ice:form id="creatorRequestForm">
         <input type="hidden" name="pageName" value="CreatorRequestPage"/>
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
@@ -71,7 +71,7 @@
           </div>
         </div>
       </ice:form>
-    </gui:define>
-  </gui:composition>
+    </ui:define>
+  </ui:composition>
 </body>
 </html>

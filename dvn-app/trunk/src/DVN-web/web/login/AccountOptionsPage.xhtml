@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:gui="http://java.sun.com/jsf/facelets"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:jsp="http://java.sun.com/JSP/Page"
@@ -11,29 +11,29 @@
     </head>
 
     <body>
-        <gui:composition template="/template.xhtml">
-            <gui:param name="pageTitle" value="Account Options"/>
-            <gui:define name="body">
+        <ui:composition template="/template.xhtml">
+            <ui:param name="pageTitle" value="Account Options"/>
+            <ui:define name="body">
                 <ice:form id="form1" >
                     <ice:panelTabSet id="tabSet1" styleClass="dvnTabs" selectedIndex="0">
                         <!-- Account Tab  -->
                         <ice:panelTab id="account" label="Account" url="/dvn#{VDCRequest.currentVDCURL}/faces/login/AccountPage.xhtml&amp;tab=account" >
-                                <gui:include src="/login/AccountFragment.xhtml">
-                                    <gui:param name="returnPage" value="accountOptions"/>
-                                </gui:include>
+                                <ui:include src="/login/AccountFragment.xhtml">
+                                    <ui:param name="returnPage" value="accountOptions"/>
+                                </ui:include>
                         </ice:panelTab>
                         <ice:panelTab id="studies" label="Studies" url="/dvn#{VDCRequest.currentVDCURL}/faces/login/AccountPage.xhtml&amp;tab=studies" rendered="#{VDCSession.loginBean.hasContributed}">
-                            <gui:include src="/study/ManageStudiesFragment.xhtml">
-                            </gui:include>
+                            <ui:include src="/study/ManageStudiesFragment.xhtml">
+                            </ui:include>
                         </ice:panelTab>
                         <!-- MY DATAVERSES -->
                         <ice:panelTab id="myDataverses" label="Dataverses" rendered="#{!VDCSession.loginBean.networkAdmin and (VDCRequest.vdcNetwork.allowCreateRequest or VDCSession.loginBean.hasDataverses)}">
-                            <gui:include src="/networkAdmin/MyDataversesFragment.xhtml">
-                            </gui:include>
+                            <ui:include src="/networkAdmin/MyDataversesFragment.xhtml">
+                            </ui:include>
                         </ice:panelTab>
                     </ice:panelTabSet>
                 </ice:form>
-            </gui:define>
-        </gui:composition>
+            </ui:define>
+        </ui:composition>
     </body>
 </html>

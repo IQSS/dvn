@@ -50,13 +50,52 @@
            var map;
 
            function init(){
+               OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control, {
+                defaultHandlerOptions: {
+                    'single': true,
+                    'double': false,
+                    'pixelTolerance': 0,
+                    'stopSingle': false,
+                    'stopDouble': false
+                },
+
+                initialize: function(options) {
+                    this.handlerOptions = OpenLayers.Util.extend(
+                        {}, this.defaultHandlerOptions
+                    );
+                    OpenLayers.Control.prototype.initialize.apply(
+                        this, arguments
+                    );
+                    this.handler = new OpenLayers.Handler.Click(
+                        this, {
+                            'click': this.trigger
+                        }, this.handlerOptions
+                    );
+                },
+
+                trigger: function(e) {
+                    var lonlat = map.getLonLatFromViewPortPx(e.xy);
+                  
+                     document.getElementById('ClusterForm:userYCoord').value= lonlat.lat;
+                     document.getElementById('ClusterForm:userXCoord').value= lonlat.lon;
+                     iceSubmitPartial(document.getElementById('ClusterForm'), document.getElementById('ClusterForm:userYCoord'), null);
+                }
+
+            });
+
                map = new OpenLayers.Map('map');
+               var click = new OpenLayers.Control.Click();
+                map.addControl(click);
+                click.activate();
+
+               map.addControl(new OpenLayers.Control.MousePosition());
+
                var wms = new OpenLayers.Layer.WMS(
                    "OpenLayers WMS", "http://vmap0.tiles.osgeo.org/wms/vmap0",
                    {layers: 'basic'}
                );
                var setId = document.getElementById("ClusterForm:setId").value;
-               alert("setId="+setId);
+            
                var layer = new OpenLayers.Layer.Vector("GML", {
                    strategies: [new OpenLayers.Strategy.Fixed()],
                    protocol: new OpenLayers.Protocol.HTTP({
@@ -64,10 +103,21 @@
                        format: new OpenLayers.Format.GML()
                    })
                });
+             //  map.events.register("mousemove", map, function(e) {
+
+               // var position = this.events.getMousePosition(e);
+                //  OpenLayers.Util.getElement("coords").innerHTML = position;
+               // var lonlat = map.getLonLatFromPixel(position);
+                // A mysterious error is causing OpenLayers to return a non-varying fraction after a zoom has been made.
+                // This is removed by toFixed().
+               // OpenLayers.Util.getElement("coords").innerHTML = lonlat.lon + "<i>m</i>" + lonlat.lat + "<i>m</i>";
+
+           // });
+
               // map.addLayer(layer);
                map.addLayers([wms, layer]);
                map.zoomToExtent(new OpenLayers.Bounds(
-                   -2.0, -2.0, 2.0, 2.0
+                   -4.0, -4.0, 4.0, 4.0
                ));
            }
 

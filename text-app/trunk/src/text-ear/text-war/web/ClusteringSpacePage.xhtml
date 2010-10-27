@@ -26,14 +26,14 @@
 </head>
 <body >
 <ui:composition template="/template.xhtml">
-<ui:param name="pageTitle" value="Clustering Map"/>
+<ui:param name="pageTitle" value="Space of Clusterings"/>
 <ui:define name="body">
    
 <ice:form id="ClusterForm">
-    <ice:inputHidden id="setId" value="#{ClusterViewPage.setId}"/>
+    <ice:inputHidden id="setId" value="#{ClusteringSpacePage.setId}"/>
 
-<ice:inputText  id="userXCoord" value="Last click by user, x coordinate: #{ClusterViewPage.xCoord}"/>
-<ice:inputText id="userYCoord" value="Last click by user, y coordinate: #{ClusterViewPage.yCoord}"/>
+<ice:inputText  id="userXCoord" value="Last click by user, x coordinate: #{ClusteringSpacePage.xCoord}"/>
+<ice:inputText id="userYCoord" value="Last click by user, y coordinate: #{ClusteringSpacePage.yCoord}"/>
 
 
 <style type="text/css">

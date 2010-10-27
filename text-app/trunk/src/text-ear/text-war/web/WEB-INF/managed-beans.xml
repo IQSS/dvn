@@ -9,14 +9,14 @@
  
   
     <managed-bean>
-        <managed-bean-name>ClusterViewPage</managed-bean-name>
-        <managed-bean-class>edu.harvard.iq.text.ClusterViewPage</managed-bean-class>
+        <managed-bean-name>ClusteringSpacePage</managed-bean-name>
+        <managed-bean-class>edu.harvard.iq.text.ClusteringSpacePage</managed-bean-class>
+
         <managed-bean-scope>request</managed-bean-scope>
         <managed-property>
             <property-name>setId</property-name>
             <value>#{param.setId}</value>
-        </managed-property>
-    </managed-bean>
+        </managed-property></managed-bean>
     
 
 </faces-config>

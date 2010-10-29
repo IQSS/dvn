@@ -7,6 +7,8 @@ package edu.harvard.iq.text;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -43,6 +45,9 @@ public class ClusterSolution {
     private int[][] fileIndexes; //A list of file index numbers- Unique Cluster Number X FileList
                         // (its really a set of vectors...,  This is now the result of makeFileIndices
 
+    // The solution organized as a list of ClusterInfo objects
+    ArrayList<ClusterInfo> clusterInfoList = new ArrayList<ClusterInfo>();
+
     //Constructor
     ClusterSolution(DocumentSet documentSet, double candidateXPoint, double candidateYPoint, int numClusters) {
         this.documentSet = documentSet;
@@ -66,10 +71,56 @@ public class ClusterSolution {
     private void doClusterCalculations() {
         // ensembleAssignments is a (# of Documents) Length Array with a cluster number for each member
         ensembleAssignments = getEnsembleAssignments(simMatrix);
-        clusters = parseMembership(ensembleAssignments);
-        fileIndexes = this.makeFileIndices(ensembleAssignments);
 
-        System.out.println("finished calculating, clusterInfo:" + getClusterInfoList());
+        createClusterObjects(ensembleAssignments, documentSet.getWordDocumentMatrix());
+
+
+        
+        /*
+         clusters = parseMembership(ensembleAssignments);
+         fileIndexes = this.makeFileIndices(ensembleAssignments);
+        clusterInfoList = new ArrayList<ClusterInfo>();
+        for (int i=0; i<numClusters; i++ ) {
+          ClusterInfo ci = new ClusterInfo(clusters[0][i], clusters[1][i], documentSet.getWordDocumentMatrix().length, fileIndexes[i], getMutualInfoWords(clusters[0][i], ensembleAssignments));
+          clusterInfoList.add(ci);
+
+        }
+        */
+        Collections.sort(clusterInfoList);
+        System.out.println("finished calculating, clusterInfo:" + clusterInfoList);
+    }
+
+    private void createClusterObjects(int[] ensembleAssignments, int[][] wordDocMatrix ) {
+
+        // first read through ensemble assignments tocreate the objects
+        //and add the file (ie document) indices to each cluster
+        
+        for (int i=0; i< ensembleAssignments.length; i++ ) {
+            int clusterNumber = ensembleAssignments[i];
+            ClusterInfo foundCluster = getCluster(clusterNumber);
+            if (foundCluster!=null) {
+                foundCluster.getFileIndices().add(i);
+            } else {
+                ClusterInfo newCluster = new ClusterInfo(clusterNumber);
+                newCluster.getFileIndices().add(i);
+                clusterInfoList.add(newCluster);
+            }
+        }
+
+        // set cluster percent & figure out the word list for each cluster
+        for (ClusterInfo ci : clusterInfoList) {
+            ci.setClusterPercent(documentSet.getWordDocumentMatrix().length);
+            ci.calculateWordList(documentSet.getWordDocumentMatrix(), documentSet.getWords());
+        }
+    }
+
+    private ClusterInfo getCluster(int clusterNum) {
+        for (ClusterInfo ci : clusterInfoList) {
+            if (ci.getClusterNumber() == clusterNum) {
+                return ci;
+            }
+        }
+        return null;
     }
 
     public void updateCandidatePoint(float candidateXPoint, float candidateYPoint) {
@@ -137,20 +188,16 @@ public class ClusterSolution {
         for (int r = 0; r < simMatrix.length; r++) { //Iterate over the rows
             for (int c = 0; c < simMatrix.length; c++) { //For each Row, Iterate over the columns
                 double cellValue = 0;
-                for (int m = 0; m < weights.length; m++) { //For each Cell, Iterate over the methods
-                    if (documentSet.getClusterMembership()[m][r] == documentSet.getClusterMembership()[m][c]) {//is the row document in the same cluster as the column document for this method?
+                for (int m = 0; m < weights.length; m++) { 
+                    // For each Cell, Iterate over the methods
+                    // Is the row document in the same cluster as the column document for this method?
+                    if (documentSet.getClusterMembership()[m][r] == documentSet.getClusterMembership()[m][c]) {
                         cellValue = cellValue + weights[m]; //If so then add the weight
                     }
                 }
                 simMatrix[r][c] = cellValue;
             }
-            /* original code from brandon:
-            float[] temp = new float[simMatrix[r].length];
-            for (int i = 0; i < simMatrix[r].length; i++) {
-                temp[i] = (float) simMatrix[r][i];  // TODO: why convert to float?
-            }
-            maxRowValue[r] = max(temp);
-            */
+           
 
             float max = 0;
             for (int i = 0; i< simMatrix[r].length; i++) {
@@ -169,13 +216,16 @@ public class ClusterSolution {
         return simMatrix;
     }
 
+
+    /*
+     * Takes the similarity matrix from "Fill Similarity Matrix"
+     *    and the number of clusters, then runs K-Means and returns the assignments.
+     *
+     */
     private int[] getEnsembleAssignments(double[][] simMatrix) {
-        /*
-        Takes the similarity matrix from "Fill Similarity Matrix"
-         and the number of clusters, then runs K-Means and returns the assignments.
-         */
-       
-        int[] ensembleAssignments = new int[documentSet.getWordDocumentMatrix().length];
+
+
+        int[] assignments = new int[documentSet.getWordDocumentMatrix().length];
         long kmeansRandomSeed = (long) 12345;
 
         BasicKMeans kmeans = new BasicKMeans(simMatrix, numClusters, 20, kmeansRandomSeed);
@@ -188,17 +238,25 @@ public class ClusterSolution {
             assignmentHolder[i] = holder[i].getMemberIndexes();
             for (int j = 0; j < holder[i].getMemberIndexes().length; j++) {
                 int index = assignmentHolder[i][j];
-                ensembleAssignments[index] = i;
+                assignments[index] = i;
             }
         }
-        
-        return ensembleAssignments;
+
+        return assignments;
     }
 
+    public ArrayList<ClusterInfo> getClusterInfoList() {
+        return clusterInfoList;
+    }
+
+
+    // The following is translated from Brandon's processing code:
+
+/*
     private int[][] parseMembership(int[] ensembleAssignments) {
-        /*
-        This Processes the EnsembleAssignments into something more useful.
-         */
+        
+       // This Processes the EnsembleAssignments into something more useful.
+         
         List<Integer> unique = new ArrayList<Integer>();
         List<Integer>  counter = new ArrayList<Integer>();
         unique.add(ensembleAssignments[0]); //Prime with the first number...
@@ -225,7 +283,7 @@ public class ClusterSolution {
                 //counter[counter.length - 1] = 1;
             }
         }
-        ArrayList<ClusterInfo> outList = new ArrayList<ClusterInfo>();
+      
         //So now we have a list of unique cluster numbers and a counter for each one.
         //Here we just process them for export.
         int[][] out = new int[2][unique.size()];
@@ -239,25 +297,29 @@ public class ClusterSolution {
      
     return out;
   }
+*/
 
+ 
 
-  public ArrayList<ClusterInfo> getClusterInfoList() {
-      ArrayList<ClusterInfo> cList = new ArrayList<ClusterInfo>();
-      for (int i=0; i<numClusters; i++ ) {
-          cList.add(new ClusterInfo(clusters[0][i], clusters[1][i]));
-      }
-      return cList;
-  }
-  
-  private int[][] makeFileIndices(int[] members) {
-    /*
-    Another Painfully inefficient way to process files
-    */
-    fileIndexes = new int[clusters[0].length][members.length];
+  /*
+   * Returns 2 dim array, rowSize = numClusters, colSize = numDocuments
+   * Loops thru the cluster numbers (clusters[0])
+   * For each cluster number, loops thru ensembleAssignments (clusterNumber assigned to each doc)
+   *    If cluster number == assigned cluster
+   *        then assign the index of the ensembleAssignments array to the fileIndexes cell
+   *
+   * Basically, for each clusterNum, we are getting a list of the indices in which this clusterNum appears in the ensempleAssignements array
+   */
+  /*
+  private int[][] makeFileIndices(int[] ensembleAssignments) {
+    
+  //  Another Painfully inefficient way to process files
+    
+    fileIndexes = new int[clusters[0].length][ensembleAssignments.length];
         for (int i = 0; i < clusters[0].length; i++) {
             int count = 0;
-            for (int j = 0; j < members.length; j++) {
-                if (clusters[0][i] == members[j]) {
+            for (int j = 0; j < ensembleAssignments.length; j++) {
+                if (clusters[0][i] == ensembleAssignments[j]) {
                     fileIndexes[i][count] = j;
                     count++;
                 }
@@ -265,25 +327,28 @@ public class ClusterSolution {
         }
         return fileIndexes;
     }
-/*
-    public String[] getMutualInfoWords(  int clusterNumber) {
+*/
+  /*
+    public String[] getMutualInfoWords(  int clusterIndex, int[] ensembleAssignments) {
         
         //This method only gets one set of Mutual Information words at a time.
         // This allows us to split the task up over many frames.
          
-
-        String[] out = new String[documentSet.getWordDocumentMatrix().length]; //The empty array for the output
+        // this array is wordSize length (the # columns in wordDocMatrix)
+        String[] out = new String[documentSet.getWordDocumentMatrix()[0].length]; //The empty array for the output
 
         //Term Document Matrix for the Documents Within the Cluster Only
-        int[] docList = subset(fileIndexes[clusterNumber], 0, int
-        (clusters[1][clusterNumber])
 
-            ); //We know the list is as long as the count of documents in the given cluster number
+        // docList - this is just subsettingthe fileIndexes array because the array length varies based on #docs in cluster
+        int[] docList = Arrays.copyOfRange(fileIndexes[clusterIndex], 0, (clusters[1][clusterIndex]));
+        // docTermIn has the same structure as wordDocumentMatrix, but the rows
+        // are from documents in this cluster only
 
-    float[][] docTermIn = new float[docList.length][documentSet.getWordDocumentMatrix().length];
-    for (int i=0; i < docList.length; i++) {
-            docTermIn[i] = wordDocumentMatrix.getDataArray(docList[i]);
+        int[][] docTermIn = new int[docList.length][];
+        for (int i=0; i < docList.length; i++) {
             //Pull the Document Term Matrix for those documents
+            docTermIn[i] = documentSet.getWordDocumentMatrix()[docList[i]];
+            
         }
 
         //Term Document Matrix for those not in the cluster (Create a not-on-the-list list)
@@ -291,15 +356,15 @@ public class ClusterSolution {
         int[] notdocList = new int[ensembleAssignments.length - docList.length];
         int count = 0;
         for (int i = 0; i < ensembleAssignments.length; i++) {
-            if (clusters[0][clusterNumber] != ensembleAssignments[i]) {
+            if (clusters[0][clusterIndex] != ensembleAssignments[i]) {
                 notdocList[count] = i;
                 count++;
             }
         }
 
-        float[][] docTermOut = new float[notdocList.length][documentSet.getWordDocumentMatrix().length];
+        int[][] docTermOut = new int[notdocList.length][documentSet.getWordDocumentMatrix().length];
         for (int i = 0; i < notdocList.length; i++) {
-            docTermOut[i] = wordDocumentMatrix.getDataArray(notdocList[i]);
+            docTermOut[i] = documentSet.getWordDocumentMatrix()[notdocList[i]];
             //Pull the Document Term Matrix for those documents
         }
 
@@ -313,18 +378,25 @@ public class ClusterSolution {
         }
 
         //Put the biggest differences at the top (This is pretty hackish and can repeat words...)
-        WordList words = new WordList(diff, wordDocumentMatrix.columnNames);
+        
+        
+        ArrayList<WordValue> words = new ArrayList<WordValue>();
+        for (int i= 0; i< diff.length; i++ ) {
+            words.add( new WordValue(documentSet.getWords().get(i),diff[i]));
+        }
+        Collections.sort(words);
         for (int i = 0; i < diff.length; i++) {
-            out[words.getRank(i)] = wordDocumentMatrix.columnNames[i];
+            out[i] = words.get(i).title;
         }
         return out;
     }
-*/
 
-    float[] getColumnMeans(float[][] matrix) {
-        /*
+*/
+  /*
+    float[] getColumnMeans(int[][] matrix) {
+        
         An ancillary useful method...
-         */
+         
         float[] out = new float[matrix[0].length];
         for (int c = 0; c < matrix[0].length; c++) {
             float sum = 0;
@@ -335,4 +407,6 @@ public class ClusterSolution {
         }
         return out;
     }
+
+   */
 }

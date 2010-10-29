@@ -32,6 +32,7 @@ public class DocumentSet {
     private MethodPoint[] methodPoints;
     private int[][] clusterMembership;
     private int[][] wordDocumentMatrix;
+    private ArrayList<String> wordList;
     private final static String POLYGON_FILE = "polygon.xml";
     private final static String METHOD_POINTS_FILE = "MethodPoints.txt";
     private final static String CLUSTER_MEMBERSHIP_FILE = "ClusterMembershipMatrix.txt";
@@ -74,6 +75,11 @@ public class DocumentSet {
 
     public void setWordDocumentMatrix(int[][] wordDocumentMatrix) {
         this.wordDocumentMatrix = wordDocumentMatrix;
+    }
+
+    public ArrayList<String> getWords() {
+        return wordList;
+
     }
 
     private void initializeSet() {
@@ -141,6 +147,7 @@ public class DocumentSet {
 
     private void initWordDocumentMatrix(){
         ArrayList<ArrayList> table = new ArrayList<ArrayList>();
+        wordList = new ArrayList<String>();
 
         File wordDocumentFile = new File(setDir, this.WORD_DOC_MATRIX_FILE );
         if ( !wordDocumentFile.exists()) {
@@ -152,11 +159,16 @@ public class DocumentSet {
             StringTokenizer st = null; 
             int lineNumber = 0, tokenNumber = 0;
 
-            // skip line 1 because it just contains headers
+            // line 1 contains headers (ie word list), so save them in separate list
             strLine = br.readLine();
+            wordList = new ArrayList<String>();
+            st = new StringTokenizer(strLine, "\t");
+            while (st.hasMoreTokens() ) {
+                wordList.add(st.nextToken());
+            }
             lineNumber++;
 
-            //read tab separated file line by line
+            //read the rest of the tab separated file line by line
             while ((strLine = br.readLine()) != null) {
                 lineNumber++;
 

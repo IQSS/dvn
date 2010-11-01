@@ -271,7 +271,7 @@ public class DVNOAIUrlCacher implements UrlCacher {
       CIProperties headers = getHeaders();
       if (headers.get("Set-Cookie") != null) {
 	if (shouldRefetchOnCookies()) {
-	  logger.debug3("Found set-cookie header, refetching");
+	  logger.debug("Found set-cookie header, refetching");
 	  input.close();
 	  input = null; // ensure don't reclose in finally if next line throws
 	  releaseConnection();
@@ -558,9 +558,9 @@ public class DVNOAIUrlCacher implements UrlCacher {
 	logger.debug3("Response: " + conn.getResponseCode() + ": " +
 		      conn.getResponseMessage());
       }
-      if ( conn.getResponseCode() == 403 ) {
-	  throw new CacheException.ExpectedNoRetryException();
-      }
+      //if ( conn.getResponseCode() == 403 ) {
+      //  throw new CacheException.ExpectedNoRetryException();
+      //}
       CacheException c_ex = resultMap.checkResult(au, conn);
       if(c_ex != null) {
 	// The stack below here is misleading.  Makes more sense for it
@@ -767,21 +767,50 @@ public class DVNOAIUrlCacher implements UrlCacher {
 	//get the location header to find out where to redirect
 
 	String TOUurl = conn.getResponseHeaderValue("location");
+
+	String extraCookies = conn.getResponseHeaderValue("set-cookie"); 
+
+	//String connCookieHeader = conn.getResponseHeaderValue("set-cookie");
+	//if ( connCookieHeader != null ) {
+	//}
+
 	releaseConnection();
 
 	GetMethod method = null; 
 	String jsessionid     = null;
 
+	if (reqProps != null) {
+	    for (Iterator iter = reqProps.keySet().iterator(); iter.hasNext(); ) {
+		String key = (String)iter.next();
+
+		logger.debug("TOU key: " + key); 
+		logger.debug("TOU property: " + reqProps.getProperty(key)); 
+		if ( key.equals("Cookie") || key.equals("cookie") ) {
+		    String cookieProperty = reqProps.getProperty(key);
+		    if ( cookieProperty != null ) {
+			String regexpJsession = "JSESSIONID=([^;]*);";
+			Pattern patternJsession = Pattern.compile(regexpJsession);
+			Matcher matcher = patternJsession.matcher(cookieProperty);
+			if ( matcher.find() ) {
+			    jsessionid = matcher.group(1);
+			    logger.debug("TOU found jsessionid: "+jsessionid);
+			}
+		    }
+		}
+	    }
+	}
+
+
 	DvnTermsOfUseAccess dvnTOU = new DvnTermsOfUseAccess(); 
 
-	logger.debug3("attempting to process DVN Terms of Use: " + TOUurl); 
+	logger.debug("attempting to process DVN Terms of Use: " + TOUurl); 
 
-	jsessionid = dvnTOU.dvnAcceptRemoteTOU (TOUurl, null, fetchUrl); 
+	jsessionid = dvnTOU.dvnAcceptRemoteTOU (TOUurl, jsessionid, fetchUrl, extraCookies); 
 
 	if ( jsessionid != null ) {
-	    logger.debug3("Received JSESSIONID: " + jsessionid); 
+	    logger.debug("Received JSESSIONID: " + jsessionid); 
 	} else {
-	    logger.debug3("Failed to obtain JSESSIONID"); 
+	    logger.debug("Failed to obtain JSESSIONID"); 
 	    return false; 
 	}
 	
@@ -805,7 +834,7 @@ public class DVNOAIUrlCacher implements UrlCacher {
 	    String myCookie = "JSESSIONID=" + jsessionid;
 	    conn.addRequestProperty("Cookie", myCookie);
 
-	    logger.debug3("executing request"); 
+	    logger.debug("executing request"); 
 	    conn.execute();
 	} catch (MalformedURLException ex) {
 	    logger.debug2("openConnection", ex);

@@ -5,6 +5,7 @@
 
 package edu.harvard.iq.text;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -17,7 +18,7 @@ public class ClusterInfo implements Comparable<ClusterInfo> {
     private float clusterPercent;
     private ArrayList<Integer> fileIndices = new ArrayList<Integer>(); 
     private ArrayList<WordValue> wordList = new ArrayList<WordValue>();
-
+    private String label;
     public ArrayList<Integer> getFileIndices() {
         return fileIndices;
     }
@@ -41,6 +42,13 @@ public class ClusterInfo implements Comparable<ClusterInfo> {
         this.clusterNumber = clusterNumber;
     }
 
+    public String getTopWords() {
+        String ret ="";
+        for (int i=0;i<10;i++) {
+            ret+=wordList.get(i).title +" ";
+        }
+        return ret;
+    }
     public int getClusterCount() {
         return  fileIndices.size();
     }
@@ -59,12 +67,20 @@ public class ClusterInfo implements Comparable<ClusterInfo> {
         this.clusterPercent = (float)getClusterCount()/numDocuments;
     }
 
+    public String getClusterPercentStr() {
+        return MessageFormat.format("{0,number,#.##%}", clusterPercent);
+
+    }
+
 
 
     public String toString() {
-        return "ClusterInfo clusterNumber:"+ clusterNumber+"\n clusterCount:"+getClusterCount() + "\nPercent:"+(float)clusterPercent+"+\n"
-                +"fileIndices: " + fileIndices + "\n"
-                +"mutualInfoWords: "+wordList+"\n\n";
+        String s = "ClusterInfo clusterNumber:" + clusterNumber + "\n clusterCount:" + getClusterCount() + "\nPercent:" + (float) clusterPercent + "+\n"
+                + "fileIndices: " + fileIndices + "\n" + "mutualInfoWords: ";
+        for (int i = 0; i < 10; i++) {
+            s += wordList.get(i) +", ";
+        }
+        return s;
     }
 
     /*

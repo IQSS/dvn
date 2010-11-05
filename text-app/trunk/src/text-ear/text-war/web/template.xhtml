@@ -48,7 +48,11 @@
   <script type="text/javascript">
       // <![CDATA[   
            var map;
+           var points = new Array();  // List of feature points
+           var pointsIndex = 0;
+           var vectorLayer;
 
+           
            function init(){
                OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control, {
                 defaultHandlerOptions: {
@@ -73,54 +77,146 @@
                     );
                 },
 
+                // The trigger is executed when you click on the map
                 trigger: function(e) {
-                    var lonlat = map.getLonLatFromViewPortPx(e.xy);
-                  
-                     document.getElementById('ClusterForm:userYCoord').value= lonlat.lat;
-                     document.getElementById('ClusterForm:userXCoord').value= lonlat.lon;
-                     iceSubmitPartial(document.getElementById('ClusterForm'), document.getElementById('ClusterForm:userYCoord'), null);
+                    var clusterNumVal = document.getElementById('ClusterForm:clusterNum').value
+                    
+                    // add new point
+                    var lonlat = map.getLonLatFromViewPortPx(e.xy);             
+                    addPointToList( lonlat.lon, lonlat.lat,clusterNumVal);
+                    
+                    // now repaint all points in the list
+                    updatePointsDisplay(clusterNumVal);
+
+                    // Submit x,y so that solution can be calculated
+                    document.getElementById('ClusterForm:userYCoord').value= lonlat.lat;
+                    document.getElementById('ClusterForm:userXCoord').value= lonlat.lon;
+                    document.getElementById('ClusterForm:calcButton').click();
+                     
                 }
 
             });
 
-               map = new OpenLayers.Map('map');
-               var click = new OpenLayers.Control.Click();
-                map.addControl(click);
-                click.activate();
+            var graphic = new OpenLayers.Layer.Image(
+                'background',
+                '/text/resources/images/gray.gif',
+                new OpenLayers.Bounds(-180, -88.759, 180, 88.759),
+                new OpenLayers.Size(580, 288)
+            );
 
-               map.addControl(new OpenLayers.Control.MousePosition());
 
-               var wms = new OpenLayers.Layer.WMS(
-                   "OpenLayers WMS", "http://vmap0.tiles.osgeo.org/wms/vmap0",
-                   {layers: 'basic'}
-               );
-               var setId = document.getElementById("ClusterForm:setId").value;
+
+            var setId = document.getElementById("ClusterForm:setId").value;
+
+            vectorLayer = new OpenLayers.Layer.Vector("GML", {
+                   strategies: [new OpenLayers.Strategy.Fixed({preload: true})],
+                   protocol: new OpenLayers.Protocol.HTTP({
+                       url: "/text/ConvexHull?setId="+setId,
+                       format: new OpenLayers.Format.GML()
+                   })
+            });
+     //     vectorLayer = new OpenLayers.Layer.Vector("test");
+
+
+            vectorLayer.events.register("loadend", vectorLayer, selected);
+    
+
+            map = new OpenLayers.Map('map');
+            map.addLayers([graphic, vectorLayer]);
+            var click = new OpenLayers.Control.Click();
+            map.addControl(click);
+            click.activate();
+            map.addControl(new OpenLayers.Control.MousePosition());
+                
+              
+            var bounds = new OpenLayers.Bounds(-2.0, -2.0, 2.0, 2.0);
             
-               var layer = new OpenLayers.Layer.Vector("GML", {
+           
+           
+            
+            map.zoomToExtent(bounds);
+            
+           //
+           // Code for overview control
+           //
+           /*
+            var overviewGraphic = new OpenLayers.Layer.Image(
+                'background',
+                '/text/resources/images/gray.gif',
+                new OpenLayers.Bounds(-180, -88.759, 180, 88.759),
+                new OpenLayers.Size(580, 288)
+            );
+            var overviewLayer =  new OpenLayers.Layer.Vector("GML", {
                    strategies: [new OpenLayers.Strategy.Fixed()],
                    protocol: new OpenLayers.Protocol.HTTP({
                        url: "/text/ConvexHull?setId="+setId,
                        format: new OpenLayers.Format.GML()
                    })
-               });
-             //  map.events.register("mousemove", map, function(e) {
+            });
+            var overviewBounds = new OpenLayers.Bounds(
+                   -2.0, -2.0, 2.0, 2.0
+            )
+            // create an overview map control with the default options
+            var controlOptions = {
+                    maximized:true,
+                    layers: [overviewLayer, overviewGraphic]
+                   
+            }
+            var overview = new OpenLayers.Control.OverviewMap(controlOptions);
+              //  var overview = new OpenLayers.Control.OverviewMap();
+            //    map.addControl(overview);
+            */
 
-               // var position = this.events.getMousePosition(e);
-                //  OpenLayers.Util.getElement("coords").innerHTML = position;
-               // var lonlat = map.getLonLatFromPixel(position);
-                // A mysterious error is causing OpenLayers to return a non-varying fraction after a zoom has been made.
-                // This is removed by toFixed().
-               // OpenLayers.Util.getElement("coords").innerHTML = lonlat.lon + "<i>m</i>" + lonlat.lat + "<i>m</i>";
+      }
+      function changeClusterNum() {
+               // get the new number of clusters
+               var clusterNumVal = document.getElementById('ClusterForm:clusterNum').value
 
-           // });
+               // Add the most recent point to the list, with the new clusterNum
+               addPointToList( points[points.length-1].geometry.x, points[points.length-1].geometry.y, clusterNumVal);
 
-              // map.addLayer(layer);
-               map.addLayers([wms, layer]);
-               map.zoomToExtent(new OpenLayers.Bounds(
-                   -4.0, -4.0, 4.0, 4.0
-               ));
+               // Now update the colors of all the  points
+               updatePointsDisplay(clusterNumVal);
            }
 
+           function addPointToList(x,y,clusterNumVal) {
+               var origin = new OpenLayers.Geometry.Point(x,y);
+                    var style = {
+                        strokeColor: "#FF0000",
+                        strokeOpacity: 1,
+                        strokeWidth: 1,
+                        pointRadius: 2,
+                        pointerEvents: "visiblePainted"
+                    };
+                    var attribs = {
+                        clusterNum: clusterNumVal
+                    }
+                    var userPoint = new OpenLayers.Feature.Vector(origin, attribs, style);
+                    vectorLayer.addFeatures([userPoint]);
+
+                    points.push(userPoint);
+           }
+
+           function updatePointsDisplay(clusterNumVal ) {
+                var pointsLength = points.length;
+
+                // update colors of the previous point features on this layer
+                for (var i=0; i<pointsLength-1; i++) {
+                    if (points[i].attributes.clusterNum == clusterNumVal) {
+                        points[i].style.strokeColor="#00FF00";  // faded
+                    } else {
+                        points[i].style.strokeColor="#0000FF";  // grayed out
+                    }
+                }
+                // most recent point is always bold (which for now is red)
+                points[pointsLength-1].style.strokColor="#FF0000"
+                vectorLayer.redraw();
+           }
+            function selected (evt) {
+               // alert("received evt: "+ evt);
+                addPointToList(0,0,5);
+
+            }
       // ]]>
   </script>
 

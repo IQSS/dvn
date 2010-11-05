@@ -27,28 +27,20 @@ public class ClusterSolution {
     private double candidateYPoint;
     private int numClusters;
 
-    // this is needed for mutualInfo words, so keep it as member variable for now
-    // ensembleAssignments is a (# of Documents) Length Array with a cluster number for each member
-    int[] ensembleAssignments;
+    // This is user's description of the cluster solution
+    private String label;
 
-    // Save this data because it is re-used when numClusters is updated
+    // Save this data because can be used to create another solution with the same point,
+    // but different number of clusters.
     double[] weightsArray;
     double[][] simMatrix;
 
     
 
-    // This is the solution
-    int[][] clusters; //Two Rows- a list of unique clusters (Row 0) and a counter for each one (Row 1)
-                      // in Brandon's code, this is "members"
- 
-    // This is the file info for the solution
-    private int[][] fileIndexes; //A list of file index numbers- Unique Cluster Number X FileList
-                        // (its really a set of vectors...,  This is now the result of makeFileIndices
-
     // The solution organized as a list of ClusterInfo objects
     ArrayList<ClusterInfo> clusterInfoList = new ArrayList<ClusterInfo>();
 
-    //Constructor
+    //Constructor - here you are starting from scratch
     ClusterSolution(DocumentSet documentSet, double candidateXPoint, double candidateYPoint, int numClusters) {
         this.documentSet = documentSet;
         this.candidateXPoint = candidateXPoint;
@@ -57,37 +49,51 @@ public class ClusterSolution {
         calculateSolution();
     }
 
+    /**
+     * Here you are using an existing solution, but recalculating
+     * based on the existing solution point, and a different number of clusters
+     */
+    ClusterSolution(ClusterSolution existingSolution, int numClusters) {
+        this.documentSet = existingSolution.documentSet;
+        this.candidateXPoint = existingSolution.candidateXPoint;
+        this.weightsArray = existingSolution.weightsArray;
+        this.simMatrix = existingSolution.simMatrix;
+        doClusterCalculations();
+    }
+
+    public ArrayList<ClusterInfo> getClusterInfoList() {
+        return clusterInfoList;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    
+
     private void calculateSolution() {
-        // These two calculations don't depend on numClusters
+        // These two calculations depend only on the candidate point
         // so when we change numClusters, we don't have to recalculate them
         weightsArray = makeWeightsArray();
         simMatrix = fillSimMatrix(weightsArray);
         
-        // These calculations depend on numClusters
+        // These calculations depend on numClusters and the candidate point
         doClusterCalculations();
         
     }
 
     private void doClusterCalculations() {
         // ensembleAssignments is a (# of Documents) Length Array with a cluster number for each member
-        ensembleAssignments = getEnsembleAssignments(simMatrix);
+        int[] ensembleAssignments = getEnsembleAssignments(simMatrix);
 
         createClusterObjects(ensembleAssignments, documentSet.getWordDocumentMatrix());
 
-
-        
-        /*
-         clusters = parseMembership(ensembleAssignments);
-         fileIndexes = this.makeFileIndices(ensembleAssignments);
-        clusterInfoList = new ArrayList<ClusterInfo>();
-        for (int i=0; i<numClusters; i++ ) {
-          ClusterInfo ci = new ClusterInfo(clusters[0][i], clusters[1][i], documentSet.getWordDocumentMatrix().length, fileIndexes[i], getMutualInfoWords(clusters[0][i], ensembleAssignments));
-          clusterInfoList.add(ci);
-
-        }
-        */
         Collections.sort(clusterInfoList);
-        System.out.println("finished calculating, clusterInfo:" + clusterInfoList);
+        System.out.println("finished calculating, x="+this.candidateXPoint+", y="+this.candidateYPoint+" clusterInfo:" + clusterInfoList);
     }
 
     private void createClusterObjects(int[] ensembleAssignments, int[][] wordDocMatrix ) {
@@ -122,6 +128,7 @@ public class ClusterSolution {
         }
         return null;
     }
+    /*
 
     public void updateCandidatePoint(float candidateXPoint, float candidateYPoint) {
         this.candidateXPoint = candidateXPoint;
@@ -137,7 +144,7 @@ public class ClusterSolution {
         doClusterCalculations();
        
     }
-
+*/
     // TODO: I converted these from floats to doubles - is this ok?
     private double[] makeWeightsArray() {
     /*
@@ -245,10 +252,7 @@ public class ClusterSolution {
         return assignments;
     }
 
-    public ArrayList<ClusterInfo> getClusterInfoList() {
-        return clusterInfoList;
-    }
-
+    
 
     // The following is translated from Brandon's processing code:
 

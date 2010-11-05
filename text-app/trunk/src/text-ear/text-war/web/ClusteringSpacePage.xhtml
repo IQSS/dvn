@@ -30,10 +30,10 @@
 <ui:define name="body">
    
 <ice:form id="ClusterForm">
-    <ice:inputHidden id="setId" value="#{ClusteringSpacePage.setId}"/>
-
-<ice:inputText  id="userXCoord" value="Last click by user, x coordinate: #{ClusteringSpacePage.xCoord}"/>
-<ice:inputText id="userYCoord" value="Last click by user, y coordinate: #{ClusteringSpacePage.yCoord}"/>
+    <ice:inputHidden id="setId" value="#{ClusteringSpacePage.setId}"/> 
+    <ice:commandButton visible="false" id="calcButton" value="calculate" action="#{ClusteringSpacePage.doCluster}"/>
+    <ice:inputText  id="userXCoord" value="#{ClusteringSpacePage.xCoord}" />
+    <ice:inputText id="userYCoord" value="#{ClusteringSpacePage.yCoord}"/>
 
 
 <style type="text/css">
@@ -58,7 +58,7 @@
         <div>Format: UTF-8.txt, Converted from PDF, English</div>
         <div>Size: 100,000 Files, 44 MB</div>
         <div>Description: Sample documents used for testing purposes.</div>
-    </div>
+    </div> 
     <div class="navSettingsBar">
         <div class="clusteringNavHistory">
             <div><a href="#">&#60;</a></div>
@@ -66,25 +66,30 @@
         </div>
         <div class="settingsBar">
             <div class="settings">
-                <label for="form1:numberclusters">Number of Clusters</label> <ice:inputText id="numberclusters" size="5" value="#{ClusteringSpacePage.clusterNum}"></ice:inputText>
+                <label for="form1:numberclusters">Number of Clusters</label>
+                <ice:inputText id="clusterNum" size="5" value="#{ClusteringSpacePage.clusterNum}"></ice:inputText>
             </div>
             <div class="settings">
-                <input type="radio" /> 10 Clusters (Low)
+                <ice:commandButton id="changeCluster" value="calculate" onclick="changeClusterNum();" action="#{ClusteringSpacePage.doChangeClusterNum}"/>
             </div>
             <div class="settings">
-                <input type="radio" /> 150 Clusters (Medium)
+                <input type="radio" onclick="updateCluster(10);" /> 10 Clusters (Low)
             </div>
             <div class="settings">
-                <input type="radio" /> 300 Clusters (High)
+                <input type="radio" onclick="updateCluster(150);" /> 150 Clusters (Medium)
             </div>
             <div class="settings">
-                <input type="checkbox" /> Discoverable
+                <input type="radio" onclick="updateCluster(300);" /> 300 Clusters (High)
+            </div>
+            <div class="settings">
+                <input type="checkbox"  /> Discoverable
             </div>
         </div>
     </div>
     <div class="clusterExplorer">
         <div class="map">
             <div id="map" style="height:380px;"/>
+            <div><ice:outputText value="Current Cluster Number:"/> <ice:outputText id="currentClusterNumber" value="#{ClusteringSpacePage.clusterNum}"></ice:outputText></div>
             <div class="mapDisplayActions">
                 <div>
                     <ice:selectBooleanCheckbox id="algorithm" value=""/><label for="algorithm">Display Clustering Algorithm</label>
@@ -136,6 +141,7 @@
             </div>
 
             <div style="height: 500px; overflow-y: scroll;">
+       <!--
                 <table width="100%" cellspacing="0" cellpadding="0" class="iceDatTbl">
                     <tbody>
                         <tr class="iceDatTblRow evenRow">
@@ -176,22 +182,27 @@
                         </tr>
                     </tbody>
                 </table>
-
-                <!--
-                <ice:dataTable cellpadding="0" cellspacing="0" value="" id="" var="" width="100%">
-                    <ice:column id="">
-                        <ice:panelGrid columns="2" cellpadding="0" cellspacing="0" border="0" width="100%"
-                                       columnClasses="vdcStudyFileCheckBox,vdcStudyFileInfo">
-                            <ice:column id="">
-
+              -->
+                
+            <ice:dataTable cellpadding="0" cellspacing="0" value="#{ClusteringSpacePage.clusterSolution.clusterInfoList}" var="clusterInfo" width="100%">
+                    <ice:column>
+                        
+                        <ice:panelGrid columns="2" cellpadding="0" cellspacing="0" border="0" width="100%">
+                                       
+                            <ice:column>
+                                
+                                    <ice:outputText value="#{clusterInfo.clusterPercentStr}"/>
+                                    <ice:outputText value="#{clusterInfo.clusterCount}"/>
+                              
                             </ice:column>
-                            <ice:column id="">
-
+                            <ice:column>
+                                <ice:outputText value="#{clusterInfo.topWords}"/>
                             </ice:column>
                         </ice:panelGrid>
+                        
                     </ice:column>
                 </ice:dataTable>
-                -->
+          
             </div>
 
         </div>

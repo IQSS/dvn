@@ -48,6 +48,8 @@ public class DVNOAIMetadataHandler extends BaseOaiMetadataHandler{
    * @param urlContainerTagName the tag name where a url can be found
    */
 
+  private boolean crawlRestricted = false;
+
   public DVNOAIMetadataHandler(String metadataPrefix,
 			       String metadataNamespaceUrl,
 			       String urlContainerTagName) {
@@ -67,7 +69,6 @@ public class DVNOAIMetadataHandler extends BaseOaiMetadataHandler{
 
     protected Set collectArticleUrls() {
 	Set articleUrls = new HashSet();
-	//String tag_attribute = null;
 
 	//tag and attribute names hard-coded, for now; -L.A.
 	
@@ -94,28 +95,72 @@ public class DVNOAIMetadataHandler extends BaseOaiMetadataHandler{
 			for (int j = 0; j < list.getLength(); j++) {
 			    String str = null; 
 			    logger.debug3("child node (" + j + ")");
-			    if ( tag_attribute != null ) {
-				//Node childnode = list.item(j).getFirstChild();
-				// Node childnode = list.item(j);
-				Attr attr = (Attr)list.item(j).getAttributes().getNamedItem(tag_attribute);
+ 
+			    Attr attr = (Attr)list.item(j).getAttributes().getNamedItem(tag_attribute);
+
+			    if (attr != null) {
 				str = attr.getNodeValue();
-				//str = ((Element)childnode).getAttributeNS (metadataNamespaceUrl, tag_attribute);
 				logger.debug3("attr. value = " + str);
-			    } else {
-				str = list.item(j).getFirstChild().getNodeValue();
-				logger.debug3("value = " + str);
 			    }
+
 			    if ( str != null ) {
-				articleUrls.add(str);
+
+				boolean crawlThisURL = true; 
+
+				// Unless we have reasons to believe that 
+				// we are specifically  authorized to crawl
+				// restricted content, let's check for the 
+				// restriction flags in the metadata. If these 
+				// files are restricted there's no need to even
+				// try crawling them -- that will only result 
+				// in 403s that will need to be retried, so 
+				// we'll be better off just skipping them. 
+
+				if (!crawlRestricted()) {
+				    // custom access restriction tags are 
+				    // stored in child element <notes> inside
+				    // <fileDscr> or <otherMat> elements. 
+
+				    Node thisnode = list.item(j);
+				    NodeList notes =
+					((Element)thisnode).getElementsByTagNameNS(metadataNamespaceUrl, "notes");
+				    if (notes.getLength() > 0) {
+					logger.debug("Processing " + notes.getLength() + " notes");
+					for (int k = 0; k < notes.getLength(); k++) {
+					    logger.debug3("note (" + k + ")");
+ 
+					    Attr noteattr = (Attr)notes.item(k).getAttributes().getNamedItem("subject");
+					    if (noteattr != null && "LOCKSS Permission".equals(attr.getNodeValue())) {
+						logger.debug3("found LOCKSS Permission note."); 
+						
+						String notevalue = notes.item(k).getFirstChild().getNodeValue();
+						if (notevalue != null && notevalue.equals("restricted")) {
+						    crawlThisURL = false;
+						}
+					    }
+					}
+				    }
+				}
+				
+				if (crawlThisURL) {
+				    articleUrls.add(str);
+				}
 			    }
 			}
 		    } else {
-			logger.siteError("No XML elements with the tag name : "+urlContainerTagName+
-					 " in the namespace : "+tag_names[n]);
+			logger.debug("No XML elements with the tag name : "+tag_names[n]);
 		    }
 		}
 	    } 	
 	}
 	return articleUrls;
+    }
+
+    public boolean crawlRestricted () {
+	return crawlRestricted; 
+    }
+
+    public void setCrawlRestricted (boolean cr) {
+	this.crawlRestricted = cr; 
     }
 }

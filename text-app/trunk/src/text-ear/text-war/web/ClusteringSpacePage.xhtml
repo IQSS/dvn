@@ -61,8 +61,8 @@
     </div> 
     <div class="navSettingsBar">
         <div class="clusteringNavHistory">
-            <div><a href="#">&#60;</a></div>
-            <div><a href="#">&#62;</a></div>
+            <div><a onclick="goBack();">&#60;</a></div>
+            <div><a onclick="goForward();">&#62;</a></div>
         </div>
         <div class="settingsBar">
             <div class="settings">
@@ -98,7 +98,7 @@
                     <ice:selectBooleanCheckbox id="history" value=""/><label for="history">Display History</label>
                 </div>
                 <div>
-                    <ice:commandButton type="submit" value="Clear History"/>
+                    <ice:commandButton type="submit" value="Clear History" onclick="clearHistory();"/>
                 </div>
             </div>
             <div>

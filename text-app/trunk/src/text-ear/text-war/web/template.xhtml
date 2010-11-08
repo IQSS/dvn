@@ -49,7 +49,7 @@
       // <![CDATA[   
            var map;
            var points = new Array();  // List of feature points
-           var pointsIndex = 0;
+           var currentIndex = -1;  // where we are in the history
            var vectorLayer;
 
            
@@ -80,18 +80,22 @@
                 // The trigger is executed when you click on the map
                 trigger: function(e) {
                     var clusterNumVal = document.getElementById('ClusterForm:clusterNum').value
-                    
-                    // add new point
-                    var lonlat = map.getLonLatFromViewPortPx(e.xy);             
-                    addPointToList( lonlat.lon, lonlat.lat,clusterNumVal);
-                    
-                    // now repaint all points in the list
-                    updatePointsDisplay(clusterNumVal);
 
-                    // Submit x,y so that solution can be calculated
+
+                    // add new point
+                    var lonlat = map.getLonLatFromViewPortPx(e.xy);  
+                    addPointToList( lonlat.lon, lonlat.lat,clusterNumVal);
+
+                    // calculate cluster solution for new point
                     document.getElementById('ClusterForm:userYCoord').value= lonlat.lat;
                     document.getElementById('ClusterForm:userXCoord').value= lonlat.lon;
                     document.getElementById('ClusterForm:calcButton').click();
+
+                    // now repaint all points in the list
+                    updatePointsDisplay(clusterNumVal);
+
+
+                   
                      
                 }
 
@@ -168,6 +172,13 @@
             */
 
       }
+
+      // Submit x,y so that solution can be calculated
+      function updateClusterResult(x,y,clusterNum) {
+
+
+      }
+
       function changeClusterNum() {
                // get the new number of clusters
                var clusterNumVal = document.getElementById('ClusterForm:clusterNum').value
@@ -180,6 +191,17 @@
            }
 
            function addPointToList(x,y,clusterNumVal) {
+               // if we have stepped back into the point history,
+               // remove the points in the forward direction
+
+               if (currentIndex<points.length-1) {
+                   for(var i= currentIndex+1; i<points.length; i++) {
+                       vectorLayer.removeFeatures(points[i]);
+                   }
+                   var elementsToRemove = points.length-currentIndex;
+                   points.splice(currentIndex+1,elementsToRemove  );
+               }
+
                var origin = new OpenLayers.Geometry.Point(x,y);
                     var style = {
                         strokeColor: "#FF0000",
@@ -195,13 +217,15 @@
                     vectorLayer.addFeatures([userPoint]);
 
                     points.push(userPoint);
+                    currentIndex++;
            }
 
            function updatePointsDisplay(clusterNumVal ) {
                 var pointsLength = points.length;
 
                 // update colors of the previous point features on this layer
-                for (var i=0; i<pointsLength-1; i++) {
+                for (var i=0; i<currentIndex; i++) {
+                    points[i].style.pointRadius=2;
                     if (points[i].attributes.clusterNum == clusterNumVal) {
                         points[i].style.strokeColor="#00FF00";  // faded
                     } else {
@@ -209,7 +233,13 @@
                     }
                 }
                 // most recent point is always bold (which for now is red)
-                points[pointsLength-1].style.strokColor="#FF0000"
+                points[currentIndex].style.pointRadius=2;
+                points[currentIndex].style.strokeColor="#FF0000";
+
+                // these points should be made invisible - so setting radius to 0
+                for(var i=currentIndex+1; i<pointsLength; i++) {
+                    points[i].style.pointRadius=0;
+                }
                 vectorLayer.redraw();
            }
             function selected (evt) {
@@ -217,6 +247,35 @@
                 addPointToList(0,0,5);
 
             }
+            function goBack() {
+                if (currentIndex>0) {
+                    currentIndex--;
+                    updateDisplay(currentIndex);
+                }
+
+            }
+            function goForward() {
+                if (currentIndex<points.length-1) {
+                    currentIndex++;
+                    updateDisplay(currentIndex);
+                }
+            }
+            function updateDisplay(index) {
+                document.getElementById('ClusterForm:clusterNum').value = points[index].attributes.clusterNum;
+                document.getElementById('ClusterForm:userYCoord').value= points[index].geometry.y;
+                document.getElementById('ClusterForm:userXCoord').value= points[index].geometry.x;
+                document.getElementById('ClusterForm:calcButton').click();
+                updatePointsDisplay(points[index].attributes.clusterNum);
+
+            }
+            function clearHistory() {
+               
+                currentIndex = -1;  // where we are in the history
+                vectorLayer.removeFeatures(points);
+                vectorLayer.redraw();
+                points = new Array();  // List of feature points
+            }
+            
       // ]]>
   </script>
 

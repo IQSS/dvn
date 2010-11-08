@@ -17,7 +17,6 @@ import edu.harvard.iq.dvn.core.util.StringUtil;
 import edu.harvard.iq.dvn.networkData.GraphBatchInserter;
 import edu.harvard.iq.dvn.networkData.DVNGraphFactory;
 import edu.harvard.iq.dvn.networkData.GraphBatchInserterFactory;
-import edu.harvard.iq.dvn.networkData.RestrictedURLClassLoader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -162,36 +161,55 @@ public class NetworkDataServiceBean implements NetworkDataServiceLocal, java.io.
         
     }
 
-    public File getSubsetExport()  {
-      //  Map<String, String> resultInfo = dgs.liveConnectionExport(rWorkspace);
-      //return new File( resultInfo.get(DvnRGraphServiceImpl.GRAPHML_FILE_EXPORTED) );
+    public File getSubsetExport() {
+        return getSubsetExport(true, true);
+    }
+
+    public File getSubsetExport(boolean getGraphML, boolean getTabular) {
+
+        if (!getGraphML && !getTabular) {
+            throw new IllegalArgumentException("At least one download type must be set to true.");
+        }
+
+        //  Map<String, String> resultInfo = dgs.liveConnectionExport(rWorkspace);
+        //return new File( resultInfo.get(DvnRGraphServiceImpl.GRAPHML_FILE_EXPORTED) );
         File xmlFile;
         File vertsFile;
         File edgesFile;
         File zipOutputFile;
         ZipOutputStream zout;
         try {
-            
+
             xmlFile = File.createTempFile("graphml", "xml");
             vertsFile = File.createTempFile("vertices", "tab");
             edgesFile = File.createTempFile("edges", "tab");
 
-            
+
             String delimiter = "\t";
-            dvnGraph.dumpGraphML(xmlFile.getAbsolutePath());
-            dvnGraph.dumpTables(vertsFile.getAbsolutePath(), edgesFile.getAbsolutePath(), delimiter);
+            if (getGraphML) {
+                dvnGraph.dumpGraphML(xmlFile.getAbsolutePath());
+            }
+            if (getTabular) {
+                dvnGraph.dumpTables(vertsFile.getAbsolutePath(), edgesFile.getAbsolutePath(), delimiter);
+            }
 
             // Create zip file
             String exportTimestamp = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss").format(new Date());
             zipOutputFile = File.createTempFile("subset_" + exportTimestamp, "zip");
-            zout = new ZipOutputStream((OutputStream)new FileOutputStream(zipOutputFile));
-            addZipEntry(zout,xmlFile.getAbsolutePath(),"graphml_" + exportTimestamp + ".xml");
-            addZipEntry(zout,vertsFile.getAbsolutePath(),"vertices_" + exportTimestamp + ".tab");
-            addZipEntry(zout,edgesFile.getAbsolutePath(),"edges_" + exportTimestamp + ".tab");
+            zout = new ZipOutputStream((OutputStream) new FileOutputStream(zipOutputFile));
+
+            if (getGraphML) {
+                addZipEntry(zout, xmlFile.getAbsolutePath(), "graphml_" + exportTimestamp + ".xml");
+            }
+            if (getTabular) {
+                addZipEntry(zout, vertsFile.getAbsolutePath(), "vertices_" + exportTimestamp + ".tab");
+                addZipEntry(zout, edgesFile.getAbsolutePath(), "edges_" + exportTimestamp + ".tab");
+            }
+
             zout.close();
 
 
-        } catch(IOException e) {
+        } catch (IOException e) {
             throw new EJBException(e);
         }
 

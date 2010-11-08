@@ -500,6 +500,14 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
         return new RFileResource( getVDCRequestBean().getCurrentVDCId() );
     }
 
+    public Resource getSubsetResourceGraphML() {
+        return new RFileResource( getVDCRequestBean().getCurrentVDCId(), true, false );
+    }
+
+    public Resource getSubsetResourceTabular() {
+        return new RFileResource( getVDCRequestBean().getCurrentVDCId(), false, true );
+    }
+
     public String getSubsetFileName() {
         return "subset_" + FileUtil.replaceExtension(file.getFileName(),"zip");
     }
@@ -588,9 +596,19 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
     class RFileResource implements Resource, Serializable{
         File file;
         Long vdcId;
+        boolean getGraphml = false;
+        boolean getTabular = false;
 
         public RFileResource(Long vdcId) {
             this.vdcId = vdcId;
+            getGraphml = true;
+            getTabular = true;
+        }
+
+        public RFileResource(Long vdcId, boolean getFraphML, boolean getTabular) {
+            this.vdcId = vdcId;
+            this.getGraphml = getGraphml;
+            this.getTabular = getTabular;
         }
 
         public String calculateDigest() {
@@ -603,7 +621,7 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
 
         public InputStream open() throws IOException {
             try {
-                file = networkDataService.getSubsetExport();
+                file = networkDataService.getSubsetExport(getGraphml, getTabular);
             } catch (Exception ex) {
                 Logger.getLogger(NetworkDataAnalysisPage.class.getName()).log(Level.SEVERE, null, ex);
                 throw new IOException("There was a problem attempting to get the export file");

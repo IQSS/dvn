@@ -38,6 +38,7 @@ public interface NetworkDataServiceLocal extends java.io.Serializable {
     public void resetAnalysis();
             
     public File getSubsetExport();
+    public File getSubsetExport(boolean getGraphML, boolean getTabular);
 
     public void ingest(StudyFileEditBean editBean);
    

@@ -22,7 +22,7 @@ public class ClusterSolution {
     // the document set we are analyzing
     private DocumentSet documentSet;
 
-    //Cluster Variables
+    //Input parameters for this cluster solution
     private double candidateXPoint; //Mapped into Methods Space
     private double candidateYPoint;
     private int numClusters;
@@ -30,7 +30,10 @@ public class ClusterSolution {
     // This is user's description of the cluster solution
     private String label;
 
-    // Save this data because can be used to create another solution with the same point,
+    // Used to identify saved solutions (right now just corresponds to index, but may
+    // be a database id later)
+    private Integer id;
+    // Save this data because it can be used to create another solution with the same point,
     // but different number of clusters.
     double[] weightsArray;
     double[][] simMatrix;
@@ -58,7 +61,28 @@ public class ClusterSolution {
         this.candidateXPoint = existingSolution.candidateXPoint;
         this.weightsArray = existingSolution.weightsArray;
         this.simMatrix = existingSolution.simMatrix;
+        this.numClusters = numClusters;
         doClusterCalculations();
+    }
+
+    public int getNumClusters() {
+        return clusterInfoList.size();
+    }
+    
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public double getX() {
+        return this.candidateXPoint;
+    }
+
+    public double getY() {
+        return this.candidateYPoint;
     }
 
     public ArrayList<ClusterInfo> getClusterInfoList() {
@@ -251,9 +275,25 @@ public class ClusterSolution {
 
         return assignments;
     }
+/*
+    public int hashCode() {
+        int hash = 0;
+        hash += (this.id != null ? this.id.hashCode() : 0);
+        return hash;
+    }
 
-    
-
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof ClusterSolution)) {
+            return false;
+        }
+        ClusterSolution other = (ClusterSolution) object;
+        if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) {
+            return false;
+        }
+        return true;
+    }
+*/
     // The following is translated from Brandon's processing code:
 
 /*

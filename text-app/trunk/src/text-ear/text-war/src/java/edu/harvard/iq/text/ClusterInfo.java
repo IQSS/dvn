@@ -1,7 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 
 package edu.harvard.iq.text;
 
@@ -19,6 +16,15 @@ public class ClusterInfo implements Comparable<ClusterInfo> {
     private ArrayList<Integer> fileIndices = new ArrayList<Integer>(); 
     private ArrayList<WordValue> wordList = new ArrayList<WordValue>();
     private String label;
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
     public ArrayList<Integer> getFileIndices() {
         return fileIndices;
     }

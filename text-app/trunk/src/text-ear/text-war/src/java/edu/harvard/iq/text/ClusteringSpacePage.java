@@ -1,5 +1,8 @@
 package edu.harvard.iq.text;
 
+import com.icesoft.faces.component.ext.HtmlDataTable;
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.event.ActionEvent;
 
@@ -18,7 +21,13 @@ public class ClusteringSpacePage {
     private double yCoord;
     private DocumentSet documentSet;
     private ClusterSolution clusterSolution;
+    private String solutionLabel;  // This is where we store the text entered in the solution label edit field
+    private Boolean editSolutionLabel = Boolean.FALSE;
+    private ArrayList<ClusterSolution> savedSolutions = new ArrayList<ClusterSolution>();
     private int clusterNum;
+    private HtmlDataTable clusterTable;
+    private ArrayList<ClusterRow> clusterTableModel = new ArrayList<ClusterRow>();
+    private int solutionIndex;  // This is passed from the form to indicate that we need to display a saved solution rather than calculate a new solution
 
     /** Creates a new instance of ClusterViewPage */
     public ClusteringSpacePage() {
@@ -32,17 +41,83 @@ public class ClusteringSpacePage {
          yCoord = 0;
          clusterNum = 5;
         documentSet = new DocumentSet(setId);
-        clusterSolution = new ClusterSolution(documentSet, xCoord, yCoord, clusterNum);
+        solutionIndex=-1;
+        calculateClusterSolution();
     }
+    public void updateClusterSolutionListener(ActionEvent ea) {
+        updateClusterSolution();
+    }
+    public void updateClusterSolution() {
+        if (solutionIndex<0) {
+            calculateClusterSolution();
+        } else {
+            clusterSolution = savedSolutions.get(solutionIndex);
+            solutionLabel = clusterSolution.getLabel();
+            initClusterTableModel();
+        }
 
-    public String doCluster() {
-        clusterSolution = new ClusterSolution(documentSet, xCoord, yCoord, clusterNum);
-        return "";
     }
     public String doChangeClusterNum() {
-        clusterSolution = new ClusterSolution(documentSet, xCoord, yCoord, clusterNum);
+        calculateClusterSolution();
         return "";
     }
+
+    private void calculateClusterSolution() {
+        clusterSolution = new ClusterSolution(documentSet, xCoord, yCoord, clusterNum);
+        solutionLabel="";
+        initClusterTableModel();
+
+    }
+    public void saveClusterLabel(ActionEvent ae) {
+        int rowIndex = clusterTable.getRowIndex();
+        ClusterRow row = (ClusterRow) clusterTable.getRowData();
+        clusterSolution.getClusterInfoList().get(rowIndex).setLabel(row.newValue);
+    }
+
+
+    public void saveSolutionLabel(ActionEvent ae) {
+           clusterSolution.setLabel(solutionLabel);
+           if (!savedSolutions.contains(clusterSolution)) {
+               // The id corresponds to the index in the savedSolutions list
+               clusterSolution.setId(savedSolutions.size());
+               savedSolutions.add(clusterSolution);
+           }
+    }
+
+    public int getSolutionIndex() {
+        return solutionIndex;
+    }
+
+    public void setSolutionIndex(int solutionIndex) {
+        this.solutionIndex = solutionIndex;
+    }
+
+    
+
+    public Boolean getEditSolutionLabel() {
+        return editSolutionLabel;
+    }
+
+    public void setEditSolutionLabel(Boolean editSolutionLabel) {
+        this.editSolutionLabel = editSolutionLabel;
+    }
+
+    public ArrayList<ClusterSolution> getSavedSolutions() {
+        return savedSolutions;
+    }
+
+    public void setSavedSolutions(ArrayList<ClusterSolution> savedSolutions) {
+        this.savedSolutions = savedSolutions;
+    }
+
+    public String getSolutionLabel() {
+        return solutionLabel;
+    }
+
+    public void setSolutionLabel(String solutionLabel) {
+        this.solutionLabel = solutionLabel;
+    }
+    
     public String getSetId() {
         return setId;
     }
@@ -71,8 +146,15 @@ public class ClusteringSpacePage {
         return clusterSolution;
     }
 
-    public void setClusterSolution(ClusterSolution clusterSolution) {
-        this.clusterSolution = clusterSolution;
+   
+
+    // Run this whenever the ClusterSolution changes
+    private void initClusterTableModel() {
+        clusterTableModel.clear();
+        for (ClusterInfo ci: clusterSolution.getClusterInfoList()) {
+            clusterTableModel.add(new ClusterRow(ci));
+        }
+      
     }
 
     public int getClusterNum() {
@@ -82,8 +164,63 @@ public class ClusteringSpacePage {
     public void setClusterNum(int newClusterNum) {
         if (newClusterNum!=clusterNum) {
             this.clusterNum = newClusterNum;
-            doCluster();
+            updateClusterSolution();
         } 
+    }
+
+    public HtmlDataTable getClusterTable() {
+        return clusterTable;
+    }
+
+    public void setClusterTable(HtmlDataTable clusterTable) {
+        this.clusterTable = clusterTable;
+    }
+
+    public ArrayList<ClusterRow> getClusterTableModel() {
+        return clusterTableModel;
+    }
+
+    public void setClusterTableModel(ArrayList<ClusterRow> clusterTableModel) {
+        this.clusterTableModel = clusterTableModel;
+    }
+
+
+
+   public class ClusterRow {
+        Boolean viewEdit;
+        String newValue;
+        ClusterInfo clusterInfo;
+
+        public ClusterInfo getClusterInfo() {
+            return clusterInfo;
+        }
+
+        public void setClusterInfo(ClusterInfo clusterInfo) {
+            this.clusterInfo = clusterInfo;
+        }
+
+        public String getNewValue() {
+            return newValue;
+        }
+
+        public void setNewValue(String newValue) {
+            this.newValue = newValue;
+        }
+
+        public Boolean getViewEdit() {
+            return viewEdit;
+        }
+
+        public void setViewEdit(Boolean viewEdit) {
+            this.viewEdit = viewEdit;
+        }
+
+        public ClusterRow(ClusterInfo clusterInfo) {
+            viewEdit = Boolean.FALSE;
+            this.clusterInfo = clusterInfo;
+            newValue = clusterInfo.getLabel();
+        }
+
     }
 
     

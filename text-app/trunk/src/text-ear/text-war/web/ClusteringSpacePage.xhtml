@@ -31,9 +31,10 @@
    
 <ice:form id="ClusterForm">
     <ice:inputHidden id="setId" value="#{ClusteringSpacePage.setId}"/> 
-    <ice:commandButton visible="false" id="calcButton" value="calculate" action="#{ClusteringSpacePage.doCluster}"/>
+    <ice:commandButton visible="false" id="calcButton" value="calculate" actionListener="#{ClusteringSpacePage.updateClusterSolutionListener}"/>
     <ice:inputText  id="userXCoord" value="#{ClusteringSpacePage.xCoord}" />
     <ice:inputText id="userYCoord" value="#{ClusteringSpacePage.yCoord}"/>
+    <ice:inputHidden id="solutionId" value="#{ClusteringSpacePage.solutionIndex}"/>
 
 
 <style type="text/css">
@@ -102,6 +103,7 @@
                 </div>
             </div>
             <div>
+                <!--
                 <table width="100%" cellspacing="0" cellpadding="0" class="iceDatTbl">
                     <thead>
                         <tr>
@@ -120,22 +122,26 @@
                         </tr>
                     </tbody>
                 </table>
-                <!--
-                <ice:dataTable cellpadding="0" cellspacing="0" value="" id="" var="" width="100%">
-                    <ice:column id="">
+                -->
+                
+                <ice:dataTable id="savedList" cellpadding="0" cellspacing="0" value="#{ClusteringSpacePage.savedSolutions}"  var="row" width="100%">
+                    <ice:column >
+                        <ice:commandLink value="#{row.label}" onclick="addSavedPoint(#{row.x},#{row.y},#{row.numClusters},#{row.id});"  actionListener="#{ClusteringSpacePage.updateClusterSolutionListener}"></ice:commandLink>
                     </ice:column>
-                    <ice:column id="">
+                    <ice:column >
+                        <ice:outputText value="#{row.numClusters}" />
                     </ice:column>
                 </ice:dataTable>
-                -->
+                
             </div>
         </div>
         <div class="table" style="background-color: #299a0b; height:630px;">
             <div class="clusterLabelHeader">
                 <div>
-                    <label for="form1:clusteringlabel">Labels</label> <ice:inputText id="clusteringlabel"></ice:inputText> [+]
+                    <label for="form1:clusteringlabel">Labels [-]</label> <ice:inputText id="clusteringlabel" value="#{ClusteringSpacePage.solutionLabel}"></ice:inputText>
+                    <ice:commandButton value="Save" onclick="saveSolution();" actionListener="#{ClusteringSpacePage.saveSolutionLabel}"/>
                     <div>
-                        Press Release Issues
+                        <ice:outputText value="#{ClusteringSpacePage.solutionLabel}" />
                     </div>
                 </div>
             </div>
@@ -184,19 +190,22 @@
                 </table>
               -->
                 
-            <ice:dataTable cellpadding="0" cellspacing="0" value="#{ClusteringSpacePage.clusterSolution.clusterInfoList}" var="clusterInfo" width="100%">
+              <ice:dataTable binding="#{ClusteringSpacePage.clusterTable}" cellpadding="0" cellspacing="0" value="#{ClusteringSpacePage.clusterTableModel}" var="row" width="100%">
                     <ice:column>
                         
                         <ice:panelGrid columns="2" cellpadding="0" cellspacing="0" border="0" width="100%">
                                        
                             <ice:column>
                                 
-                                    <ice:outputText value="#{clusterInfo.clusterPercentStr}"/>
-                                    <ice:outputText value="#{clusterInfo.clusterCount}"/>
+                                    <ice:outputText value="#{row.clusterInfo.clusterPercentStr}"/>
+                                    <ice:outputText value="#{row.clusterInfo.clusterCount}"/>
                               
                             </ice:column>
                             <ice:column>
-                                <ice:outputText value="#{clusterInfo.topWords}"/>
+                                <ice:inputText id="clusteringlabel" value="#{row.newValue}"></ice:inputText>
+                                <ice:commandButton value="Save" onclick="saveSolution();" actionListener="#{ClusteringSpacePage.saveClusterLabel}"/>
+                                <ice:outputText value="#{row.clusterInfo.label}" />
+                                <ice:outputText value="#{row.clusterInfo.topWords}"/>
                             </ice:column>
                         </ice:panelGrid>
                         

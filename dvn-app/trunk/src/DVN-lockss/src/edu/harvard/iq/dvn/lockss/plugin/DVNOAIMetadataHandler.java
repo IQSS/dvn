@@ -125,17 +125,20 @@ public class DVNOAIMetadataHandler extends BaseOaiMetadataHandler{
 				    NodeList notes =
 					((Element)thisnode).getElementsByTagNameNS(metadataNamespaceUrl, "notes");
 				    if (notes.getLength() > 0) {
-					logger.debug("Processing " + notes.getLength() + " notes");
+					logger.debug("Checking LOCKSS:DVN permission flags; processing " + notes.getLength() + " notes");
 					for (int k = 0; k < notes.getLength(); k++) {
-					    logger.debug3("note (" + k + ")");
+					    logger.debug("note (" + k + ")");
  
 					    Attr noteattr = (Attr)notes.item(k).getAttributes().getNamedItem("subject");
-					    if (noteattr != null && "LOCKSS Permission".equals(attr.getNodeValue())) {
-						logger.debug3("found LOCKSS Permission note."); 
+					    if (noteattr != null && "LOCKSS Permission".equals(noteattr.getNodeValue())) {
+						logger.debug("found LOCKSS Permission note."); 
 						
 						String notevalue = notes.item(k).getFirstChild().getNodeValue();
-						if (notevalue != null && notevalue.equals("restricted")) {
+						logger.debug("notevalue: "+notevalue); 
+
+						if (notevalue != null && notevalue.contains("restricted")) {
 						    crawlThisURL = false;
+						    logger.debug("skipping the URL "+str); 
 						}
 					    }
 					}

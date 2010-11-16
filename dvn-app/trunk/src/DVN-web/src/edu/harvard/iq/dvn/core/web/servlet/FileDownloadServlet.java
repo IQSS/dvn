@@ -1255,6 +1255,9 @@ public class FileDownloadServlet extends HttpServlet {
 
         String cachedFileSystemLocation = null;
 
+        // initialize the data variables list:
+
+        dataVariables = ((TabularDataFile) file).getDataTable().getDataVariables();
  
         // if the format requested is "D00", and it's already a TAB file,
         // we don't need to do anything:
@@ -1381,7 +1384,6 @@ public class FileDownloadServlet extends HttpServlet {
         paramListToR.put("dtdwnld", Arrays.asList(formatRequested));
         paramListToR.put("requestType", Arrays.asList("Download"));
 
-        dataVariables = ((TabularDataFile) file).getDataTable().getDataVariables();
         vls = getValueTablesForAllRequestedVariables();
         dbgLog.fine("remote: variables(getDataVariableForRequest())="+getDataVariableForRequest()+"\n");
         dbgLog.fine("remote: value table(vls)="+vls+"\n");

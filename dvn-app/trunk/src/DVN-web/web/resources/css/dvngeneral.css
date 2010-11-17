@@ -21,8 +21,6 @@
 .dvn_icon{border:0;vertical-align:bottom}
 #hiddenDiv{display:none;}
 .vdcNoBorders{border-bottom-style:none;border-left-style:none;border-right-style:none;border-top-style:none}
-.iceOutConStat{position:fixed;left:50%;top:50%;margin-top:-12px;margin-left:-12px;z-index:1}
-.iceOutConStatActv,.iceOutConStatCaution,.iceOutConStatDisconnect{width:25px;height:25px}
 .dvn_section{margin:1em 0;width:100%;text-align:center}
 .dvn_sectionHeader{width:100%;text-align:center;overflow:hidden}
 .dvn_sectionTitle{margin:0;padding:0 .65em .25em;font-size:112% !important;color:#526f76;text-transform:uppercase;text-align:left}
@@ -47,6 +45,9 @@
 span.disabled{font-weight:700}
 a.dvninlinelink, a.dvninlinelink span.iceOutTxt{display:inline;}
 a.dvninlinelink{margin-left:2em;}
+/* CONNECTION STATUS SPINNER */
+.iceOutConStat{position:fixed;left:50%;top:50%;margin-top:-12px;margin-left:-12px;z-index:1}
+.iceOutConStatActv,.iceOutConStatCaution,.iceOutConStatDisconnect{width:25px;height:25px}
 /* HEADER */
 .dvn_headerTitle{position:relative;text-align:left}
 .dvn_headerTitleLarge{margin:.25em 228px .25em 12px}

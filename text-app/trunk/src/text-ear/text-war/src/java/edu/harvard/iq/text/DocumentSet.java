@@ -30,8 +30,8 @@ public class DocumentSet {
     private String setId;
     private File setDir;
     private MethodPoint[] methodPoints;
-    private int[][] clusterMembership;
-    private int[][] wordDocumentMatrix;
+    private int[][] clusterMembership;   //
+    private int[][] wordDocumentMatrix;  // word rows and doc columns (each cell is word count)
     private ArrayList<String> wordList;
     private final static String POLYGON_FILE = "polygon.xml";
     private final static String METHOD_POINTS_FILE = "MethodPoints.txt";
@@ -41,7 +41,7 @@ public class DocumentSet {
     public DocumentSet(String setId) {
         this.setId=setId;
         initializeSet();
-        System.out.println("DocumentSet initialize complete.");
+        System.out.println("DocumentSet initialize complete."); 
     }
 
     public int[][] getClusterMembership() {
@@ -81,7 +81,9 @@ public class DocumentSet {
         return wordList;
 
     }
-
+    public int getDocumentCount() {
+        return wordDocumentMatrix.length;
+    }
     private void initializeSet() {
         setDir = ClusterUtil.getSetDir(setId);
         if (!setDir.exists()) {

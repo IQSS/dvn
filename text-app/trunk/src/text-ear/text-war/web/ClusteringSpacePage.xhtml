@@ -106,7 +106,7 @@
             // we need to do this because it takes a little time to get the data
             // from the servlet, and if we draw the first point on the map before
             // we draw the polygon, then the point is covered up by the polygon.
-            vectorLayer.events.register("loadend", vectorLayer, selected);
+            vectorLayer.events.register("loadend", vectorLayer, loadEnd);
 
             // create our map and add the layers to it.
             map = new OpenLayers.Map('map');
@@ -116,7 +116,7 @@
             click.activate();
             map.addControl(new OpenLayers.Control.MousePosition());
 
-
+            
             var bounds = new OpenLayers.Bounds(-2.0, -2.0, 2.0, 2.0);
 
             map.zoomToExtent(bounds);
@@ -154,11 +154,16 @@
 
       }
 
+           function changeClusterRadio(clusterNumVal) {
+                document.getElementById('ClusterForm:clusterNum').value = clusterNumVal;
+        //       changeClusterNum(clusterNumVal);
+        //       document.getElementById('ClusterForm:changeCluster').click();
+           }
 
-
-      function changeClusterNum() {
-               // get the new number of clusters
-               var clusterNumVal = document.getElementById('ClusterForm:clusterNum').value
+          function changeClusterNum(clusterNumVal) {
+             
+               document.getElementById('ClusterForm:clusterNum').value = clusterNumVal;
+                  
 
                // Add the most recent point to the list, with the new clusterNum
                var mostRecent = points[points.length-1];
@@ -226,8 +231,8 @@
                     points[i].style.pointRadius=2;
                     if (points[i].attributes.clusterNum == clusterNumVal) {
                         // older points in the current cluster level - small red
-                        points[i].style.strokeColor="#FFFF00";
-                        points[i].style.fillColor="#FFFF00";
+                        points[i].style.strokeColor="#FF0000";
+                        points[i].style.fillColor="#FF0000";
                     } else {
                         // older points in different cluster levels - grayed out
                         points[i].style.strokeColor="#A9A9A9";
@@ -236,8 +241,8 @@
                 }
                 // current point is always bold (which for now is a bigger red dot)
                 points[currentIndex].style.pointRadius=4;
-                points[currentIndex].style.strokeColor="#FFFF00";
-                points[currentIndex].style.fillColor="#FFFF00";
+                points[currentIndex].style.strokeColor="#FF0000";
+                points[currentIndex].style.fillColor="#FF0000";
 
                 // the points beyond the currentIndex need to be invisible - so setting radius to 0
                 for(var i=currentIndex+1; i<pointsLength; i++) {
@@ -245,9 +250,29 @@
                 }
                 vectorLayer.redraw();
            }
-            function selected (evt) {
+            function loadEnd (evt) {
                // alert("received evt: "+ evt);
+               
                 addPointToList(0,0,5,-1);
+               // var hoverCtrl = new OpenLayers.Control.SelectFeature(vectorLayer, {
+               //     hover: true,
+               //     geometryTypes: ["OpenLayers.Geometry.Point"],
+               //     onSelect: openPopup
+               //     })
+               
+              //  map.addControl(hoverCtrl);
+              //  hoverCtrl.activate();
+
+            }
+            function openPopup() {
+                
+                popup = new OpenLayers.Popup("chicken",
+                   new OpenLayers.LonLat(0,0),
+                   new OpenLayers.Size(5,5),
+                   "example popup",
+                   true);
+
+                map.addPopup(popup);
 
             }
             function goBack() {
@@ -291,8 +316,8 @@
 <ice:form id="ClusterForm">
     <ice:inputHidden id="setId" value="#{ClusteringSpacePage.setId}"/> 
     <ice:commandButton visible="false" id="calcButton" value="calculate" actionListener="#{ClusteringSpacePage.updateClusterSolutionListener}"/>
-    <ice:inputText  id="userXCoord" value="#{ClusteringSpacePage.xCoord}" />
-    <ice:inputText id="userYCoord" value="#{ClusteringSpacePage.yCoord}"/>
+    <ice:inputText visible="false" id="userXCoord" value="#{ClusteringSpacePage.xCoord}" valueChangeListener="#{ClusteringSpacePage.testValueChange}"/>
+    <ice:inputText visible="false" id="userYCoord" value="#{ClusteringSpacePage.yCoord}"/>
     <ice:inputHidden id="solutionId" value="#{ClusteringSpacePage.solutionIndex}"/>
 
 
@@ -332,16 +357,16 @@
                 <ice:inputText id="clusterNum" size="5" value="#{ClusteringSpacePage.clusterNum}"></ice:inputText>
             </div>
             <div class="settings">
-                <ice:commandButton id="changeCluster" value="calculate" onclick="changeClusterNum();" action="#{ClusteringSpacePage.doChangeClusterNum}"/>
+                <ice:commandButton id="changeCluster" value="calculate" onclick="changeClusterNum(document.getElementById('ClusterForm:clusterNum').value);" actionListener="#{ClusteringSpacePage.updateClusterSolutionListener}"/>
             </div>
             <div class="settings">
-                <input type="radio" onclick="updateCluster(10);" /> 10 Clusters (Low)
+                <input type="radio" name="clusterRadio" onclick="changeClusterRadio(10);" /> 10 Clusters (Low)
             </div>
             <div class="settings">
-                <input type="radio" onclick="updateCluster(150);" /> 150 Clusters (Medium)
+                <input type="radio" name="clusterRadio" onclick="changeClusterRadio(150);" /> 150 Clusters (Medium)
             </div>
             <div class="settings">
-                <input type="radio" onclick="updateCluster(300);" /> 300 Clusters (High)
+                <input type="radio" name="clusterRadio" onclick="changeClusterRadio(300);" /> 300 Clusters (High)
             </div>
             <div class="settings">
                 <input type="checkbox"  /> Discoverable
@@ -379,7 +404,7 @@
         <div class="table">
             <div class="clusterLabelHeader">
                 <div>
-                    <div class="clusterLabelInputBlock" style="display:none;">
+                    <div class="clusterLabelInputBlock" >
                         <label for="form1:clusteringlabel">Label [-]</label> <ice:inputText id="clusteringlabel" value="#{ClusteringSpacePage.solutionLabel}"></ice:inputText>
                         <ice:commandButton value="Save" onclick="saveSolution();" actionListener="#{ClusteringSpacePage.saveSolutionLabel}"/>
                     </div>

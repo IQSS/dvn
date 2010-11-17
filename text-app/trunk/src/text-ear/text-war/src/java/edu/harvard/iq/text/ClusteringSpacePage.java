@@ -2,9 +2,9 @@ package edu.harvard.iq.text;
 
 import com.icesoft.faces.component.ext.HtmlDataTable;
 import java.util.ArrayList;
-import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.event.ActionEvent;
+import javax.faces.event.ValueChangeEvent;
 
 /*
  * To change this template, choose Tools | Templates
@@ -31,8 +31,7 @@ public class ClusteringSpacePage {
 
     /** Creates a new instance of ClusterViewPage */
     public ClusteringSpacePage() {
-        System.out.println("creating ClusterViewPage");
-
+      
     }
 
     @PostConstruct
@@ -42,14 +41,19 @@ public class ClusteringSpacePage {
          clusterNum = 5;
         documentSet = new DocumentSet(setId);
         solutionIndex=-1;
-        calculateClusterSolution();
+        calculateClusterSolution(true);
+    }
+
+    public void testValueChange(ValueChangeEvent ve) {
+        System.out.println("Got value change event: "+ ve.getComponent());
     }
     public void updateClusterSolutionListener(ActionEvent ea) {
+        System.out.println("Got action event");
         updateClusterSolution();
     }
     public void updateClusterSolution() {
         if (solutionIndex<0) {
-            calculateClusterSolution();
+            calculateClusterSolution(true);
         } else {
             clusterSolution = savedSolutions.get(solutionIndex);
             solutionLabel = clusterSolution.getLabel();
@@ -58,12 +62,17 @@ public class ClusteringSpacePage {
 
     }
     public String doChangeClusterNum() {
-        calculateClusterSolution();
+        calculateClusterSolution(false);
         return "";
     }
 
-    private void calculateClusterSolution() {
-        clusterSolution = new ClusterSolution(documentSet, xCoord, yCoord, clusterNum);
+    private void calculateClusterSolution(boolean newPoint) {
+        if (newPoint) {
+            clusterSolution = new ClusterSolution(documentSet, xCoord, yCoord, clusterNum);
+        } else {
+            // Calculate solution based on the existing solution, and the clusterNum
+            clusterSolution = new ClusterSolution(clusterSolution,clusterNum);
+        }
         solutionLabel="";
         initClusterTableModel();
 
@@ -162,10 +171,10 @@ public class ClusteringSpacePage {
     }
 
     public void setClusterNum(int newClusterNum) {
-        if (newClusterNum!=clusterNum) {
+       
             this.clusterNum = newClusterNum;
-            updateClusterSolution();
-        } 
+           
+         
     }
 
     public HtmlDataTable getClusterTable() {

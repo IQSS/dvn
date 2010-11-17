@@ -81,6 +81,11 @@ public class ClusteringSpacePage {
         int rowIndex = clusterTable.getRowIndex();
         ClusterRow row = (ClusterRow) clusterTable.getRowData();
         clusterSolution.getClusterInfoList().get(rowIndex).setLabel(row.newValue);
+        if (!savedSolutions.contains(clusterSolution)) {
+               // The id corresponds to the index in the savedSolutions list
+               clusterSolution.setId(savedSolutions.size());
+               savedSolutions.add(clusterSolution);
+        }
     }
 
 

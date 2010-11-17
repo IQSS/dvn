@@ -225,19 +225,27 @@
            function updatePointsDisplay(clusterNumVal ) {
                 document.getElementById('ClusterForm:clusterNum').value = clusterNumVal;
                 var pointsLength = points.length;
+                var displayHistory = document.getElementById('ClusterForm:history').checked;
 
                 // update colors of the point features on the vector layer
                 for (var i=0; i<currentIndex; i++) {
-                    points[i].style.pointRadius=2;
-                    if (points[i].attributes.clusterNum == clusterNumVal) {
-                        // older points in the current cluster level - small red
-                        points[i].style.strokeColor="#FF0000";
-                        points[i].style.fillColor="#FF0000";
+                    if (displayHistory) {
+                        points[i].style.pointRadius=2;
+                        if (points[i].attributes.clusterNum == clusterNumVal) {
+                            // older points in the current cluster level - small red
+                            points[i].style.strokeColor="#FF0000";
+                            points[i].style.fillColor="#FF0000";
+                        } else {
+                            // older points in different cluster levels - grayed out
+                            points[i].style.strokeColor="#A9A9A9";
+                            points[i].style.fillColor="#A9A9A9";
+                        }
                     } else {
-                        // older points in different cluster levels - grayed out
-                        points[i].style.strokeColor="#A9A9A9";
-                        points[i].style.fillColor="#A9A9A9";
+                        // if displayHistory is false, make older points invisible
+                        points[i].style.pointRadius=0;
                     }
+
+                    
                 }
                 // current point is always bold (which for now is a bigger red dot)
                 points[currentIndex].style.pointRadius=4;
@@ -384,7 +392,7 @@
                     <ice:selectBooleanCheckbox id="algorithm" value=""/><label for="algorithm">Display Clustering Algorithm</label>
                 </div>
                 <div>
-                    <ice:selectBooleanCheckbox id="history" value=""/><label for="history">Display History</label>
+                    <ice:selectBooleanCheckbox onclick="updatePointsDisplay(document.getElementById('ClusterForm:clusterNum').value);" id="history" value=""/><label for="history">Display History</label>
                 </div>
                 <div>
                     <ice:commandButton type="submit" value="Clear History" onclick="clearHistory();"/>

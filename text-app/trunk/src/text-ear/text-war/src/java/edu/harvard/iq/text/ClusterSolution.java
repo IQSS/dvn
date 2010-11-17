@@ -65,6 +65,27 @@ public class ClusterSolution {
         doClusterCalculations();
     }
 
+    public String getInfoLabel() {
+        String str = "";
+        if (label!=null && !label.isEmpty()) {
+            return label;
+        }
+         else {
+            int count =0;
+            for (ClusterInfo ci : clusterInfoList) {
+                if (ci.getLabel()!=null && !ci.getLabel().isEmpty() && count<3) {
+                    if (!str.equals("")) {
+                        str+=", ";
+                    }
+                    str+=ci.getLabel();
+                    count++;
+                }
+            }
+
+         }
+        return str;
+    }
+    
     public int getNumClusters() {
         return clusterInfoList.size();
     }

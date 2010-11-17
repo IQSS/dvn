@@ -160,7 +160,9 @@ public class ClusteringSpacePage {
         return clusterSolution;
     }
 
-   
+    public int getDocumentCount() {
+        return documentSet.getDocumentCount();
+    }
 
     // Run this whenever the ClusterSolution changes
     private void initClusterTableModel() {

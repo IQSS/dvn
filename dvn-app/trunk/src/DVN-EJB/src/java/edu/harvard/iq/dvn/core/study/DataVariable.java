@@ -29,6 +29,7 @@
 
 package edu.harvard.iq.dvn.core.study;
 
+import edu.harvard.iq.dvn.core.visualization.DataVariableMapping;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -378,6 +379,31 @@ public class DataVariable implements java.io.Serializable{
     public void setSummaryStatistics(Collection<SummaryStatistic> summaryStatistics) {
         this.summaryStatistics = summaryStatistics;
     }
+
+    /**
+     * Holds value data Variable Mappings
+     *
+     */
+    @OneToMany (mappedBy="dataVariable", cascade={ CascadeType.REMOVE, CascadeType.MERGE,CascadeType.PERSIST})
+    private Collection<DataVariableMapping> dataVariableMapping;
+
+    /**
+     * Getter for property data Variable Mappings.
+     * @return Value of property data Variable Mappings.
+     *
+     */
+    public Collection<DataVariableMapping> getDataVariableMappings() {
+        return this.dataVariableMapping;
+    }
+
+    /**
+     * Setter for property  data Variable Mappings
+     * @param summaryStatistics New value of property data Variable Mappings.
+     */
+    public void setDataVariableMappings(Collection<DataVariableMapping> dataVariableMapping) {
+        this.dataVariableMapping = dataVariableMapping;
+    }
+
 
     /**
      * Holds value of property unf.

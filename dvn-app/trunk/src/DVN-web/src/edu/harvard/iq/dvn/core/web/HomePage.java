@@ -258,7 +258,9 @@ public class HomePage extends VDCBaseBean implements Serializable {
     public void changeFilterType(ValueChangeEvent event) {
         String newValue = (String)event.getNewValue();
         if (newValue != null && newValue.equals("alphabetic")) {
-            isAlphaSort = true;
+            this.vdcUIList.getPaginator().gotoFirstPage();
+            isAlphaSort = true;           
+            populateVDCUIList(true);
         } else if (newValue != null && newValue.equals("all")) {
             isAlphaSort = false;
             populateVDCUIList(false);

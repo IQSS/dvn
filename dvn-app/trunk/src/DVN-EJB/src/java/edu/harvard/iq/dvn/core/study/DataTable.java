@@ -29,6 +29,7 @@
 
 package edu.harvard.iq.dvn.core.study;
 
+import edu.harvard.iq.dvn.core.visualization.VarGrouping;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -145,7 +146,17 @@ public class DataTable implements java.io.Serializable {
     public void setRecordsPerCase(Long recordsPerCase) {
         this.recordsPerCase = recordsPerCase;
     }
-    
+
+    private boolean visualizationEnabled;
+
+    public boolean isVisualizationEnabled() {
+        return visualizationEnabled;
+    }
+
+    public void setVisualizationEnabled(boolean visualizationEnabled) {
+        this.visualizationEnabled = visualizationEnabled;
+    }
+
     
     /**
      * Holds value of property study.
@@ -192,7 +203,20 @@ public class DataTable implements java.io.Serializable {
     public void setDataVariables(List<DataVariable> dataVariables) {
         this.dataVariables = dataVariables;
     }      
-    
+
+    /**
+     * Holds value of property varGroupings.
+     */
+    @OneToMany (mappedBy="dataTable", cascade={ CascadeType.REMOVE, CascadeType.MERGE,CascadeType.PERSIST})
+    private List<VarGrouping> varGroupings;
+
+    public List<VarGrouping> getVarGroupings() {
+        return varGroupings;
+    }
+
+    public void setVarGroupings(List<VarGrouping> varGroupings) {
+        this.varGroupings = varGroupings;
+    }
     
     
     /**

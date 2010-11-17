@@ -59,7 +59,18 @@
     <managed-bean>
         <managed-bean-name>ManifestPage</managed-bean-name>
         <managed-bean-class>edu.harvard.iq.dvn.core.web.ManifestPage</managed-bean-class>
-        <managed-bean-scope>request</managed-bean-scope></managed-bean>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>ExploreDataPage</managed-bean-name>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.ExploreDataPage</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+        <managed-bean>
+        <managed-bean-name>SetUpDataExplorationPage</managed-bean-name>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.study.SetUpDataExplorationPage</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
     <managed-bean>
         <managed-bean-name>ContactUsPage</managed-bean-name>
         <managed-bean-class>edu.harvard.iq.dvn.core.web.ContactUsPage</managed-bean-class>

@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+
+      xmlns:ice="http://www.icesoft.com/icefaces/component">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<ui:composition template="/template.xhtml">
+<ui:param name="pageTitle" value="Explore Data - #{VDCRequest.dataversePageTitle}"/>
+<ui:define name="body">
+<ice:form id="ExploreDataPage">
+    <ice:message for="exploredataform" id ="boxErrorMsg"  styleClass="errorMessage"   />
+
+    <script type='text/javascript' src='https://www.google.com/jsapi'></script>
+    <script type='text/javascript'>
+      google.load('visualization', '1', {'packages':['annotatedtimeline']});
+      //google.setOnLoadCallback(drawChart);
+
+
+      function drawVisualization() {
+  // To see the data that this visualization uses, browse to
+  // http://spreadsheets.google.com/ccc?key=pCQbetd-CptGXxxQIG7VFIQ
+  var query = new google.visualization.Query(
+      'https://spreadsheets.google.com/tq?range=A2:E35&amp;key=0AvVjA1YZ1luDdGMxaG1mYUlLbzJBR3F1MFNlWUc1SHc&amp;gid=0&amp;authkey=COeP8bcL');
+  // Send the query with a callback function.
+  query.send(handleQueryResponse);
+}
+
+function handleQueryResponse(response) {
+  if (response.isError()) {
+    alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
+    return;
+  }
+
+  var data = response.getDataTable();
+  visualization = new google.visualization.AnnotatedTimeLine(document.getElementById('chart_div'));
+  visualization.draw(data, null);
+}
+    </script>
+<ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+
+<style type="text/css">
+    .fileInfo {margin-bottom:1em;}
+    .graphForm {margin:1em; padding-bottom:1em; border-bottom:1px solid grey;}
+    .graphResults {margin:1em; overflow:hidden;}
+</style>
+
+    <div style="border:1px solid grey;">
+        <div class="graphForm">
+
+            <div style="overflow:hidden; margin-bottom:.5em;">
+                <ice:message for="indicator" id ="boxErrorMsg"  styleClass="errorMessage"   />
+                <div style="float:left;">
+                    <ice:message for="indicator" id ="boxErrorMsg"  styleClass="errorMessage"   />
+                    <ice:outputLabel value="#{ExploreDataPage.measureLabel}" for="indicator" />
+
+                    <ice:selectOneMenu id="indicatorMenu" value ="#{ExploreDataPage.selectedMeasureId}"
+                                       onchange="submit()"
+                                       valueChangeListener="#{ExploreDataPage.resetFiltersForMeasure}" >
+                        <f:selectItems  value="#{ExploreDataPage.selectMeasureItems}"/>
+                    </ice:selectOneMenu>
+                    
+                </div>
+                <div style="float:left;">
+                    <ice:outputLabel value="narrow by" for="issue" /> 
+                    <ice:selectOneMenu  immediate="false" onchange="submit()"  id="issue"
+                                        valueChangeListener="#{ExploreDataPage.reset_MeasureItems}" value="#{ExploreDataPage.groupTypeId}" >
+                        <f:selectItems  value="#{ExploreDataPage.selectMeasureGroupTypes}"/>
+                    </ice:selectOneMenu>
+                </div>
+            </div>
+
+            <div style="overflow:hidden; margin-bottom:.5em;">
+                <div jsfc="ice:panelSeries" id ="filterPanelGroupings" var="item" value="#{ExploreDataPage.filterGroupings}" binding="#{ExploreDataPage.filterPanelGroup}" >
+
+                    <f:attribute name="groupingId" value="#{item.varGrouping.id}" />
+                    <ice:outputLabel value="#{item.varGrouping.name}" />
+
+                    <ice:selectOneMenu id ="filterGroup" styleClass="filterGroup" value = "#{item.selectedGroupId}">
+                        <f:selectItems  value="#{ExploreDataPage.selectFilterGroups}"/>
+                    </ice:selectOneMenu>
+                    <ice:message for="filterPanelGroupTypes" id ="boxErrorMsg"  styleClass="errorMessage"   />
+                    <div jsfc="ice:panelSeries" id ="filterPanelGroupTypes" var="groupType" value="#{item.varGroupTypes}"  >
+                        <!-- controls -->
+                        <div jsfc="ice:panelGroup" >
+                        <ice:selectBooleanCheckbox  id ="filterGroupTypeCheckBoxes" styleClass="filterGroupTypeCheckBoxes" value ="#{groupType.enabled}"
+                                                    partialSubmit="true" />
+                        <ice:outputLabel value="#{groupType.varGroupType.name}"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div style="overflow:hidden; margin-bottom:.5em;">
+                <div style="float:left;">
+                    <ice:outputLabel value="Label" for="graphlinelabel"/>
+
+                    <ice:inputText id="graphlinelabel" value="#{ExploreDataPage.lineLabel}"></ice:inputText>
+
+                    <ice:selectOneMenu id ="lineColor"  value = "#{ExploreDataPage.lineColor}">
+                        <f:selectItem itemLabel="Red" itemValue="red" />
+                        <f:selectItem itemLabel="Blue" itemValue="blue" />
+                        <f:selectItem itemLabel="Green" itemValue="green" />
+                        <f:selectItem itemLabel="Black" itemValue="black" />
+                        <f:selectItem itemLabel="Orange" itemValue="orange" />
+                        <f:selectItem itemLabel="Purple" itemValue="purple" />
+                        <f:selectItem itemLabel="Yellow" itemValue="yellow" />
+                    </ice:selectOneMenu>
+                </div>
+                <div>
+                    <ice:commandButton id="addLineButton" type="submit" value="Add Line" binding="#{ExploreDataPage.addLineButton}" action="#{ExploreDataPage.addLine}"/>
+                    <ice:message for="addLineButton" id ="boxErrorMsg"  styleClass="errorMessage"   />
+                </div>
+            </div>
+
+        </div>
+
+        <div class="graphResults">
+            <div class="linebox" style="float:left; width:24%;">
+
+           <div  jsfc="ice:panelSeries" id ="lineListPanelSeries" var="line" value="#{ExploreDataPage.vizLines}"
+                   style="padding:.5em;   margin:0 1em 1em 0;">
+                 <div style="#{line.border}">
+                    <div  style="font-weight:bold;">
+                        <ice:outputText value="#{line.label}"/>
+                    </div>
+
+                    <div  style="font-weight:bold;">
+                        <ice:outputText value="#{line.measureLabel}"/>
+                    </div>
+                    <div jsfc="ice:panelGroup">
+                        <ice:outputText value="#{line.measureGroup.name}"/>
+                    </div>
+                    <div jsfc="ice:panelSeries" id ="lineListPanelSeries" var="filterGroup" value="#{line.filterGroups}" >
+                        <div  style="font-weight:bold;">
+                            <ice:outputText value="#{filterGroup.groupAssociation.name}"/>
+                        </div>
+                        <div>
+                            <ice:outputText value="#{filterGroup.name}"/>
+                        </div>
+                    </div>
+
+
+                    </div>
+            </div>
+
+
+
+            </div>
+
+            <div class="graphbox" style="float:left; width:46%;">
+                <div id='chart_div' style='width: 540px; height: 400px;'></div>
+                
+            </div>
+
+            <div class="graphdisplay" style="float:left; width:30%;">
+
+                <div style="margin-bottom:.5em;">
+                    <ice:outputLabel value="Display" for="graphdisplay" style="display:block;" />
+                    <ice:selectOneMenu id="graphdisplay">
+                        <f:selectItem itemLabel="Graph" itemValue=""/>
+                    </ice:selectOneMenu>
+                    <ice:commandButton  value="Create"  onclick="drawVisualization();"/>
+                </div>
+                <div style="margin-bottom:.5em;">
+                    <ice:outputLabel value="Title" for="graphtitle" style="display:block;" />
+                    <ice:inputText id="graphtitle" size="40"></ice:inputText>
+                </div>
+                
+                <div style="overflow:hidden; margin-bottom:.5em;"  >
+                    
+                    <div style="float:left;">
+                        <ice:outputLabel value="Start" for="graphstart" rendered ="false"/>
+                        <ice:selectOneMenu id="graphstart" rendered ="false">
+                            <f:selectItem itemLabel="1918" itemValue=""/>
+                        </ice:selectOneMenu>
+                    </div>
+                    <div style="float:left;">
+                        <ice:outputLabel value="End" for="graphend" rendered ="false" />
+                        <ice:selectOneMenu id="graphend" rendered ="false">
+                            <f:selectItem itemLabel="2004" itemValue=""/>
+                        </ice:selectOneMenu>
+                    </div>
+                </div>
+                <div style="margin-bottom:.5em;">
+                    <ice:selectBooleanCheckbox id="displayindices" value="" rendered ="false"/>
+                    <ice:outputLabel value="Display Series as Indices" for="displayindices" style="font-weight:normal;" rendered="false"/>
+                    <ice:selectOneRadio id="referenceperiod"
+                                        layout="pageDirection"
+                                        immediate="true"
+                                        value=""
+                                        rendered ="false">
+                      <f:selectItem value="" itemLabel="Use First Period as Reference Period"/>
+                      <f:selectItem value="" itemLabel="Select Reference Period"/>
+                    </ice:selectOneRadio>
+                    <ice:selectOneMenu id="selectreferenceperiod" rendered ="false">
+                        <f:selectItem itemLabel="Select a Period..." itemValue=""/>
+                    </ice:selectOneMenu>
+                </div>
+                <div style="margin-bottom:.5em;">
+                    <ice:outputLabel value="Export" for="graphexport" style="display:block;" />
+                    <ice:selectOneMenu id="graphexport">
+                        <f:selectItem itemLabel="Select File Format..." itemValue=""/>
+                    </ice:selectOneMenu>
+                    <ice:commandButton type="submit" value="Download"/>
+                    
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+        <script type="text/javascript">
+            //<![CDATA[
+            // this is done to ensure that the scholar fields are properly inited. wjb
+            showAll();
+            // ]]>
+        </script>
+</ice:form>
+
+</ui:define>
+</ui:composition>
+</body>
+</html>

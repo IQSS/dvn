@@ -312,11 +312,13 @@
 
      function clearHistory() {
 
+
+                var lastPoint = points[currentIndex];
                 currentIndex = -1;  // where we are in the history
                 vectorLayer.removeFeatures(points);
                 vectorLayer.redraw();
                 points = new Array();  // clear list of feature points
-                addPointToList(0,0,5,-1); // initialize with starting point
+                addPointToList(lastPoint.geometry.x, lastPoint.geometry.y, lastPoint.attributes.clusterNum, lastPoint.attributes.solutionId); // initialize with starting point
             }
 
       // ]]>
@@ -348,10 +350,10 @@
 </style>
 
     <div class="fileInfo">
-        <div>Example 2B</div>
-        <div>uploaded by bstewart, Mon Jan 11, 2010, 10:22:19 EDT</div>
-        <div>Format: UTF-8.txt, Converted from PDF, English</div>
-        <div>Size: 100,000 Files, 44 MB</div>
+        <div><ice:outputText value="Document Set Id: #{ClusteringSpacePage.setId}" /></div>
+      <!--  <div>uploaded by bstewart, Mon Jan 11, 2010, 10:22:19 EDT</div>
+        <div>Format: UTF-8.txt, Converted from PDF, English</div>  -->
+        <div><ice:outputText value="Size: #{ClusteringSpacePage.documentCount} Files"/></div>
         <div>Description: Sample documents used for testing purposes.</div>
     </div>
     <div class="navSettingsBar">
@@ -371,10 +373,10 @@
                 <input type="radio" name="clusterRadio" onclick="changeClusterRadio(10);" /> 10 Clusters (Low)
             </div>
             <div class="settings">
-                <input type="radio" name="clusterRadio" onclick="changeClusterRadio(150);" /> 150 Clusters (Medium)
+                <input type="radio" name="clusterRadio" onclick="changeClusterRadio(15);" /> 15 Clusters (Medium)
             </div>
             <div class="settings">
-                <input type="radio" name="clusterRadio" onclick="changeClusterRadio(300);" /> 300 Clusters (High)
+                <input type="radio" name="clusterRadio" onclick="changeClusterRadio(30);" /> 30 Clusters (High)
             </div>
             <div class="settings">
                 <input type="checkbox"  /> Discoverable
@@ -388,11 +390,11 @@
                 <ice:outputText value="Current Cluster Number:"/> <ice:outputText id="currentClusterNumber" value="#{ClusteringSpacePage.clusterNum}"></ice:outputText>
             </div>
             <div class="mapDisplayActions">
-                <div>
+               <!-- <div> 
                     <ice:selectBooleanCheckbox id="algorithm" value=""/><label for="algorithm">Display Clustering Algorithm</label>
-                </div>
+                </div> -->
                 <div>
-                    <ice:selectBooleanCheckbox onclick="updatePointsDisplay(document.getElementById('ClusterForm:clusterNum').value);" id="history" value=""/><label for="history">Display History</label>
+                    <ice:selectBooleanCheckbox onclick="updatePointsDisplay(document.getElementById('ClusterForm:clusterNum').value);" id="history" value="true" /><label for="history">Display History</label>
                 </div>
                 <div>
                     <ice:commandButton type="submit" value="Clear History" onclick="clearHistory();"/>

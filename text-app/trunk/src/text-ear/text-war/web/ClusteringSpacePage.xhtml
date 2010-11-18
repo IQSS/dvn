@@ -88,6 +88,23 @@
                 new OpenLayers.Size(580, 288)
             );
 
+            // this add custom stlyes to polygon
+            var styles = new OpenLayers.StyleMap({
+                "default": new OpenLayers.Style(null, {
+                    rules: [
+                        new OpenLayers.Rule({
+                            symbolizer: {
+                                "Polygon": {
+                                    fillColor: "#CBD8C3",
+                                    strokeColor: "#B5D29C"
+                                }
+                            }
+                        })
+                    ]
+                })
+            });
+
+
             // this is the layer that contains the polygon and all the points
             var setId = document.getElementById("ClusterForm:setId").value;
             vectorLayer = new OpenLayers.Layer.Vector("GML", {
@@ -95,8 +112,11 @@
                    protocol: new OpenLayers.Protocol.HTTP({
                        url: "/text/ConvexHull?setId="+setId,
                        format: new OpenLayers.Format.GML()
-                   })
+                   }),
+                   styleMap: styles
             });
+
+
 
             // register a function to run after the polygon is loaded, which
             // will add the initial point to the layer.
@@ -182,8 +202,8 @@
 
                var origin = new OpenLayers.Geometry.Point(x,y);
                     var style = {
-                        strokeColor: "#FF0000",
-                        fillColor: "#FF0000",
+                        strokeColor: "#7995F9",
+                        fillColor: "#7995F9",
                         strokeOpacity: 1,
                         strokeWidth: 1,
                         pointRadius: 4,  // this point is bigger because its the latest
@@ -226,8 +246,8 @@
                         points[i].style.pointRadius=2;
                         if (points[i].attributes.clusterNum == clusterNumVal) {
                             // older points in the current cluster level - small red
-                            points[i].style.strokeColor="#FF0000";
-                            points[i].style.fillColor="#FF0000";
+                            points[i].style.strokeColor="#7995F9";
+                            points[i].style.fillColor="#7995F9";
                         } else {
                             // older points in different cluster levels - grayed out
                             points[i].style.strokeColor="#A9A9A9";
@@ -240,8 +260,8 @@
                 }
                 // current point is always bold (which for now is a bigger red dot)
                 points[currentIndex].style.pointRadius=4;
-                points[currentIndex].style.strokeColor="#FF0000";
-                points[currentIndex].style.fillColor="#FF0000";
+                points[currentIndex].style.strokeColor="#7995F9";
+                points[currentIndex].style.fillColor="#7995F9";
 
                 // the points beyond the currentIndex need to be invisible - so setting radius to 0
                 for(var i=currentIndex+1; i<pointsLength; i++) {
@@ -326,14 +346,17 @@
     .clusteringNavHistory div {float:left; padding:2px;}
     .clusteringNavHistory a {cursor:pointer; padding:.75em 1em; display:block;}
     .clusteringNavHistory a:hover {background:#EEEEEE;}
-    .settingsBar {float:left; border:1px solid grey; padding:.5em;}
-    .settings {float:left; margin-right:20px;}
-    .settings label {padding-right:6px;}
+    .settingsBar {border:1px solid grey;}
+    .settingsBar td {padding: .55em 1em;}
+    .settingsBar label {padding-right:6px;}
+    .settingsBar input.iceCmdBtn {margin-left:1em;}
     .clusterExplorer {overflow:hidden;}
     .clusterExplorer .map {width:540px; margin-right:20px; float:left;}
+    .clusterExplorer #map {height:380px;}
     .clusterExplorer .table {width:480px; float:left;}
     .mapDisplayActions {overflow:hidden; margin-top:1em;}
     .mapDisplayActions div {float:left; margin-right:1em;}
+    div.clusterNumberBlock {float:none; margin-bottom:1em;}
     .clusterLabelHeader {padding: .5em; background:#bfdcf1;}
 </style>
 
@@ -349,36 +372,36 @@
             <div><a onclick="goBack();">&#60;</a></div>
             <div><a onclick="goForward();">&#62;</a></div>
         </div>
-        <div class="settingsBar">
-            <div class="settings" style="padding:.05em 0;">
-                <label for="form1:numberclusters">Number of Clusters</label>
-                <ice:inputText id="clusterNum" size="5" value="#{ClusteringSpacePage.clusterNum}"></ice:inputText>
-            </div>
-            <div class="settings">
-                <ice:commandButton id="changeCluster" value="calculate" onclick="changeClusterNum(document.getElementById('ClusterForm:clusterNum').value);" actionListener="#{ClusteringSpacePage.updateClusterSolutionListener}"/>
-            </div>
-            <div class="settings">
-                <input type="radio" name="clusterRadio" onclick="changeClusterRadio(10);"/> 10 Clusters (Low)
-            </div>
-            <div class="settings">
-                <input type="radio" name="clusterRadio" onclick="changeClusterRadio(15);"/> 15 Clusters (Medium)
-            </div>
-            <div class="settings">
-                <input type="radio" name="clusterRadio" onclick="changeClusterRadio(30);"/> 30 Clusters (High)
-            </div>
-            <div class="settings">
-                <input type="checkbox"/> Discoverable
-            </div>
-        </div>
+        <table cellspacing="0" cellpadding="0" border="0" class="settingsBar">
+            <tr>
+                <td>
+                    <label for="numberclusters">Number of Clusters</label>
+                    <ice:inputText id="clusterNum" size="5" value="#{ClusteringSpacePage.clusterNum}"></ice:inputText>
+                    <ice:commandButton id="changeCluster" value="calculate" onclick="changeClusterNum(document.getElementById('ClusterForm:clusterNum').value);" actionListener="#{ClusteringSpacePage.updateClusterSolutionListener}"/>
+                </td>
+                <td>
+                    <input type="radio" name="clusterRadio10" onclick="changeClusterRadio(10);"/> <label for="clusterRadio10">10 Clusters (Low)</label>
+                </td>
+                <td>
+                    <input type="radio" name="clusterRadio15" onclick="changeClusterRadio(15);"/> <label for="clusterRadio15">15 Clusters (Medium)</label>
+                </td>
+                <td>
+                    <input type="radio" name="clusterRadio30" onclick="changeClusterRadio(30);"/> <label for="clusterRadio30">30 Clusters (High)</label>
+                </td>
+                <td>
+                    <input type="checkbox" name="clusterDiscoverable"/> <label for="clusterDiscoverable">Discoverable</label>
+                </td>
+            </tr>
+        </table>
     </div>
     <div class="clusterExplorer">
         <div class="map">
-            <div id="map" style="height:380px;"/>
-            <div>
-                <ice:outputText value="Current Cluster Number:"/> <ice:outputText id="currentClusterNumber" value="#{ClusteringSpacePage.clusterNum}"></ice:outputText>
-            </div>
+            <div id="map"/>
             <div class="mapDisplayActions">
-               <!-- <div> 
+                <div class="clusterNumberBlock">
+                   <ice:outputText value="Current Cluster Number:"/> <ice:outputText id="currentClusterNumber" value="#{ClusteringSpacePage.clusterNum}"></ice:outputText>
+                </div>
+                <!-- <div>
                     <ice:selectBooleanCheckbox id="algorithm" value=""/><label for="algorithm">Display Clustering Algorithm</label>
                 </div> -->
                 <div>
@@ -422,9 +445,9 @@
             return false;
           });
           jQuery(".clusterLabelInputBlock input:submit").click(function() {
-
             var txt = jQuery(this);
             txt.parent().parent().removeClass("edit");
+            return false;
           });
     });
 </script>
@@ -432,39 +455,27 @@
                     <div class="clusterLabelBlock">
                         <a href="#" class="clusterLabelValueEdit"><ice:outputText value="Label [+] #{ClusteringSpacePage.solutionLabel}"/></a>
                         <div class="clusterLabelInputBlock">
-                            <label for="form1:clusteringlabel">Label [-]</label> <ice:inputText id="clusteringlabel" value="#{ClusteringSpacePage.solutionLabel}"></ice:inputText>
+                            <label for="clusteringlabel">Label [-]</label> <ice:inputText id="clusteringlabel" value="#{ClusteringSpacePage.solutionLabel}"></ice:inputText>
                             <ice:commandButton value="Save" onclick="saveSolution();" actionListener="#{ClusteringSpacePage.saveSolutionLabel}"/>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div>
+            <div class="clusterTable">
 <style type="text/css">
 .clusterInfoValueBlock {display:none;}
 .clusterInfoLabelBlock.edit a {display:none;}
 .clusterInfoLabelBlock.edit div.clusterInfoValueBlock {display:block;}
+.clusterTable .iceDatTbl {margin:0;}
+td.clusterCountCol {width:14%;}
+.clusterTable .iceDatTbl tfoot {display:none;}
 </style>
 
-<script type="text/javascript">
-    jQuery(document).ready(function(){
-          jQuery("a.clusterInfoValueEdit").click(function() {
-            var a = jQuery(this);
-            a.parent().addClass("edit");
-            return false;
-          });
-          jQuery(".clusterInfoLabelBlock input:submit").click(function() {
-
-            var txt = jQuery(this);
-            txt.parent().parent().removeClass("edit");
-          });
-    });
-</script>
-
-              <ice:dataTable style="margin:0;" id="clusterInfo" binding="#{ClusteringSpacePage.clusterTable}" cellpadding="0" cellspacing="0" value="#{ClusteringSpacePage.clusterTableModel}" var="row" width="100%">
+              <ice:dataTable id="clusterInfo" binding="#{ClusteringSpacePage.clusterTable}" cellpadding="0" cellspacing="0" value="#{ClusteringSpacePage.clusterTableModel}" var="row" width="100%">
                     <ice:column>
-
-                        <ice:panelGrid columns="2" cellpadding="0" cellspacing="0" border="0" width="100%">
+                        <ice:panelGrid columns="2" cellpadding="0" cellspacing="0" border="0" width="100%"
+                                        columnClasses="clusterCountCol,clusterInfoCol">
                             <ice:column>
                                     <ice:outputText value="#{row.clusterInfo.clusterPercentStr}"/>
                                     <ice:outputText value="#{row.clusterInfo.clusterCount}"/>
@@ -476,16 +487,29 @@
                                 <div class="clusterInfoLabelBlock">
                                     <a href="#" class="clusterInfoValueEdit"><ice:outputText value="Label [+] #{row.clusterInfo.label}"/></a>
                                     <div class="clusterInfoValueBlock">
-
-                                        <ice:outputText value="Label [-] " style="float:left;"/>
-                                        <ice:inputText id="clusterlabel" value="#{row.newValue}"></ice:inputText>
+                                        <label for="clusterlabel">Label [-]</label> <ice:inputText id="clusterlabel" value="#{row.newValue}"></ice:inputText>
                                         <ice:commandButton value="Save" onclick="saveSolution();" actionListener="#{ClusteringSpacePage.saveClusterLabel}"/>
                                     </div>
                                 </div>
                             </ice:column>
                         </ice:panelGrid>
-
                     </ice:column>
+                    <f:facet name="footer">
+                        <script type="text/javascript">
+                            jQuery(document).ready(function(){
+                                  jQuery("a.clusterInfoValueEdit").click(function() {
+                                    var a = jQuery(this);
+                                    a.parent().addClass("edit");
+                                    return false;
+                                  });
+                                  jQuery(".clusterInfoLabelBlock input:submit").click(function() {
+                                    var txt = jQuery(this);
+                                    txt.parent().parent().removeClass("edit");
+                                    return false;
+                                  });
+                            });
+                        </script>
+                    </f:facet>
                 </ice:dataTable>
 
             </div>

@@ -180,9 +180,9 @@
            function changeClusterNum(clusterNumVal) {
                document.getElementById('ClusterForm:clusterNum').value = clusterNumVal;
 
-               // Add the most recent point to the list, with the new clusterNum
-               var mostRecent = points[points.length-1];
-               addPointToList( mostRecent.geometry.x, mostRecent.geometry.y, clusterNumVal, -1 );
+               // Add the current point to the list, with the new clusterNum
+               var current = points[currentIndex];
+               addPointToList( current.geometry.x, current.geometry.y, clusterNumVal, -1 );
 
                // Now update the colors of all the points, given the new clusterNum
                updatePointsDisplay(clusterNumVal);
@@ -380,13 +380,13 @@
                     <ice:commandButton id="changeCluster" value="calculate" onclick="changeClusterNum(document.getElementById('ClusterForm:clusterNum').value);" actionListener="#{ClusteringSpacePage.updateClusterSolutionListener}"/>
                 </td>
                 <td>
-                    <input type="radio" name="clusterRadio10" onclick="changeClusterRadio(10);"/> <label for="clusterRadio10">10 Clusters (Low)</label>
+                    <input type="radio" name="clusterRadio" id="clusterRadio10" onclick="changeClusterRadio(10);"/> <label for="clusterRadio10">10 Clusters (Low)</label>
                 </td>
                 <td>
-                    <input type="radio" name="clusterRadio15" onclick="changeClusterRadio(15);"/> <label for="clusterRadio15">15 Clusters (Medium)</label>
+                    <input type="radio" name="clusterRadio" id="clusterRadio15" onclick="changeClusterRadio(15);"/> <label for="clusterRadio15">15 Clusters (Medium)</label>
                 </td>
                 <td>
-                    <input type="radio" name="clusterRadio30" onclick="changeClusterRadio(30);"/> <label for="clusterRadio30">30 Clusters (High)</label>
+                    <input type="radio" name="clusterRadio" id="clusterRadio30" onclick="changeClusterRadio(30);"/> <label for="clusterRadio30">30 Clusters (High)</label>
                 </td>
                 <td>
                     <input type="checkbox" name="clusterDiscoverable"/> <label for="clusterDiscoverable">Discoverable</label>
@@ -414,9 +414,15 @@
             <div>
                 <ice:dataTable id="savedList" cellpadding="0" cellspacing="0" value="#{ClusteringSpacePage.savedSolutions}" var="row" width="100%">
                     <ice:column>
+                      <f:facet name="header">
+                        <ice:outputText  value="Label"/>
+                      </f:facet>
                         <ice:commandLink value="#{row.infoLabel}" onclick="addSavedPoint(#{row.x},#{row.y},#{row.numClusters},#{row.id});" actionListener="#{ClusteringSpacePage.updateClusterSolutionListener}"></ice:commandLink>
                     </ice:column>
                     <ice:column>
+                        <f:facet name="header">
+                            <ice:outputText  value="Number of Clusters"/>
+                        </f:facet>
                         <ice:outputText value="#{row.numClusters}"/>
                     </ice:column>
                 </ice:dataTable>

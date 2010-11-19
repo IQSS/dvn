@@ -1621,12 +1621,14 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         studyVersion.getStudy().setLastUpdateTime(lastUpdateTime);
         VDC studyVDC  = studyVersion.getStudy().getOwner();
 
-        VDCRole vdcRole = roleService.findByUserVDC(userId, studyVDC.getId());
-        if ( vdcRole == null || (vdcRole.getRole().getName().equals(RoleServiceLocal.CONTRIBUTOR)) ) {
-            studyVersion.setVersionState(VersionState.DRAFT);
-        }
-        if ( !user.isNetworkAdmin()) {
+        if ( !user.isNetworkAdmin()) {             
             userService.makeContributor(user.getId(), studyVDC.getId());
+
+            VDCRole vdcRole = roleService.findByUserVDC(userId, studyVDC.getId());
+            if ( vdcRole.getRole().getName().equals(RoleServiceLocal.CONTRIBUTOR) ) {
+                studyVersion.setVersionState(VersionState.DRAFT);
+            }
+
         }
         studyVersion.updateVersionContributors(user);
         setDisplayOrders(studyVersion.getMetadata());

@@ -320,8 +320,6 @@
 
             }
             function clearHistory() {
-
-
                 var lastPoint = points[currentIndex];
                 currentIndex = -1;  // where we are in the history
                 vectorLayer.removeFeatures(points);
@@ -329,6 +327,19 @@
                 points = new Array();  // clear list of feature points
                 addPointToList(lastPoint.geometry.x, lastPoint.geometry.y, lastPoint.attributes.clusterNum, lastPoint.attributes.solutionId); // initialize with starting point
             }
+
+            function popupDocument(mylink) {
+                if (! window.focus)return true;
+                var href;
+                if (typeof(mylink) == 'string')
+                    href=mylink;
+                else
+                    href=mylink.href;
+                window.open(href, 'Cluster Document', 'width=400,height=200,scrollbars=yes');
+                return false;
+            }
+
+
       // ]]>
       </script>
 <ice:form id="ClusterForm">
@@ -496,6 +507,10 @@ td.clusterCountCol {width:14%;}
                                         <label for="clusterlabel">Label [-]</label> <ice:inputText id="clusterlabel" value="#{row.newValue}"></ice:inputText>
                                         <ice:commandButton value="Save" onclick="saveSolution();" actionListener="#{ClusteringSpacePage.saveClusterLabel}"/>
                                     </div>
+                                    
+                                    <ice:outputLink target="_blank" value="/text/DocumentViewer?setId=#{ClusteringSpacePage.setId}&amp;docName=#{row.clusterInfo.randomDocument}" >
+                                        <ice:outputText value="Random Document: #{row.clusterInfo.randomDocument}"/>
+                                    </ice:outputLink>
                                 </div>
                             </ice:column>
                         </ice:panelGrid>

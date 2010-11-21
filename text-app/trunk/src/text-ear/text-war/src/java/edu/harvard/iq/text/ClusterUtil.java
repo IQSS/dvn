@@ -4,7 +4,6 @@
  */
 
 package edu.harvard.iq.text;
-
 import java.io.File;
 
 /**

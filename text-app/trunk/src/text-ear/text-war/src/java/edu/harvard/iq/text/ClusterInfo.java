@@ -5,6 +5,7 @@ package edu.harvard.iq.text;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Random;
 
 /**
  *
@@ -42,7 +43,13 @@ public class ClusterInfo implements Comparable<ClusterInfo> {
     }
 
 
+    public String getRandomDocument() {
+        Random ran = new Random();
+        int index = ran.nextInt(fileIndices.size());
 
+        String docName = fileIndices.get(index).toString()+ "Bush02.txt";
+        return docName;
+    }
    
     public ClusterInfo(int clusterNumber) {
         this.clusterNumber = clusterNumber;

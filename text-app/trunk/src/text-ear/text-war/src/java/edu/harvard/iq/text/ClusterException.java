@@ -13,5 +13,4 @@ public class ClusterException extends RuntimeException {
     public ClusterException(String msg){
         super(msg);
     }
-
 }

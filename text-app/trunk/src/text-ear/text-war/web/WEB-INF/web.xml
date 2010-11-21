@@ -4,15 +4,21 @@
         <param-name>javax.faces.PROJECT_STAGE</param-name>
         <param-value>Development</param-value>
     </context-param>
-   
     <servlet>
         <servlet-name>ConvexHullServlet</servlet-name>
         <servlet-class>edu.harvard.iq.text.ConvexHullServlet</servlet-class>
     </servlet>
-    
+    <servlet>
+        <servlet-name>DocumentViewerServlet</servlet-name>
+        <servlet-class>DocumentViewerServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ConvexHullServlet</servlet-name>
         <url-pattern>/ConvexHull</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DocumentViewerServlet</servlet-name>
+        <url-pattern>/DocumentViewer</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
@@ -115,7 +121,7 @@
         <servlet-name>Persistent Faces Servlet</servlet-name>
         <url-pattern>/xmlhttp/*</url-pattern>
     </servlet-mapping>
-   <servlet-mapping>
+    <servlet-mapping>
         <servlet-name>Persistent Faces Servlet</servlet-name>
         <url-pattern>*.iface</url-pattern>
     </servlet-mapping>

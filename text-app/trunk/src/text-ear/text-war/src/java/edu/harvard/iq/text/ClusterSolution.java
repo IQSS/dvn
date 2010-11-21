@@ -264,7 +264,7 @@ public class ClusterSolution {
                 simMatrix[r][c] = 1 - simMatrix[r][c] / maxRowValue[r]; //1 - Value divided by the maximum of each row
             }
         }
-
+        System.out.println("simMatrix is"+ simMatrix);
         return simMatrix;
     }
 

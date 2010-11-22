@@ -5,8 +5,16 @@
 
 package edu.harvard.iq.dvn.core.web;
 
+import edu.harvard.iq.dvn.core.study.DataVariable;
+import edu.harvard.iq.dvn.core.visualization.VarGroup;
+import edu.harvard.iq.dvn.core.visualization.VarGroupType;
 import edu.harvard.iq.dvn.core.visualization.VarGrouping;
+import edu.harvard.iq.dvn.core.visualization.VisualizationServiceLocal;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import javax.ejb.EJB;
+import javax.faces.model.SelectItem;
 
 
 /**
@@ -19,6 +27,9 @@ public class VarGroupingUI {
     private VarGrouping varGrouping;
     private Collection <VarGroupTypeUI> varGroupTypesUI;
     private Collection <VarGroupUI> varGroupUI;
+    private List <SelectItem> varGroupTypesSelect = new ArrayList();
+
+
     private Long selectedGroupId;
 
     public Collection<VarGroupTypeUI> getVarGroupTypesUI() {
@@ -29,6 +40,31 @@ public class VarGroupingUI {
         this.varGroupTypesUI = varGroupTypesUI;
     }
 
+    public void setVarGroupTypesUI(VarGroupingUI varGroupingUI) {
+        List<VarGroupTypeUI> varGroupTypeUIList = new ArrayList();
+        VarGrouping varGroupingIn = varGroupingUI.getVarGrouping();
+        varGroupingIn.getVarGroupTypes();
+
+                   List <VarGroupType> varGroupTypes = new ArrayList();
+                   List <SelectItem> selectGroupTypes = new ArrayList();
+                   selectGroupTypes.add(new SelectItem(new Long(0), "Select a Filter Type" ) );
+                   varGroupTypes = (List<VarGroupType>) varGroupingIn.getVarGroupTypes();
+                    if (varGroupTypes !=null ) {
+                       for(VarGroupType varGroupType: varGroupTypes){
+                           VarGroupTypeUI varGroupTypeUI = new VarGroupTypeUI();
+                           varGroupTypeUI.setVarGroupType(varGroupType);
+                           varGroupTypeUI.setEnabled(true);
+                           selectGroupTypes.add(new SelectItem(varGroupType.getId(), varGroupType.getName() ) );
+                           varGroupTypeUI.getVarGroupType().getName();
+                           varGroupTypeUIList.add(varGroupTypeUI);
+                       }
+                    }
+        this.varGroupTypesSelect = selectGroupTypes;
+        this.varGroupTypesUI = varGroupTypeUIList;
+    }
+
+
+    
     public Collection<VarGroupUI> getVarGroupUI() {
         return varGroupUI;
     }
@@ -45,13 +81,7 @@ public class VarGroupingUI {
         this.varGrouping = varGrouping;
     }
 
-    public Collection<VarGroupTypeUI> getVarGroupTypes() {
-        return (Collection<VarGroupTypeUI>) this.varGroupTypesUI;
-    }
 
-    public void setVarGroupTypes(Collection<VarGroupTypeUI> varGroupTypes) {
-        this.varGroupTypesUI = varGroupTypes;
-    }
 
     public Long getSelectedGroupId() {
         return selectedGroupId;
@@ -59,6 +89,14 @@ public class VarGroupingUI {
 
     public void setSelectedGroupId(Long selectedGroupId) {
         this.selectedGroupId = selectedGroupId;
+    }
+    
+    public List<SelectItem> getVarGroupTypesSelect() {
+        return varGroupTypesSelect;
+    }
+
+    public void setVarGroupTypesSelect(List<SelectItem> varGroupTypesSelect) {
+        this.varGroupTypesSelect = varGroupTypesSelect;
     }
 
 }

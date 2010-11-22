@@ -7,6 +7,7 @@ package edu.harvard.iq.dvn.core.visualization;
 
 import edu.harvard.iq.dvn.core.study.DataTable;
 import edu.harvard.iq.dvn.core.study.DataVariable;
+import edu.harvard.iq.dvn.core.study.Study;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -34,6 +35,7 @@ public interface VisualizationServiceLocal extends java.io.Serializable {
     public DataVariable getXAxisVariable(Long dataTableId);
     public List getDataVariableMappingsFromGroupId(Long groupId);
     public void saveMeasureGrouping(VarGrouping varGrouping);
+    public void saveAll();
     public List getFilterGroupsFromMeasureId(Long measureId);
     public List getFilterGroupingsFromMeasureId(Long measureId);
 
@@ -43,7 +45,9 @@ public interface VisualizationServiceLocal extends java.io.Serializable {
 
     public void removeCollectionElement(Iterator iter, Object elem);
 
-    public void setDataTable(java.lang.Long dataTableId);
+    public void setDataTable(Long dataTableId);
+    public void setDataTableFromStudyFileId(Long studyFileId);
+    public Study getStudyFromStudyFileId(Long studyFileId);
     public DataTable getDataTable();
 
 

@@ -203,6 +203,13 @@
                                                         <ice:outputText id="outputText16" value="Description"/>
                                                     </f:facet>
                                                 </ice:column>
+                                                <ice:column id="column12">
+
+                                                 <ice:outputLink rendered="#{file.studyFile.subsettable}"  value="/dvn#{VDCRequest.currentVDCURL}/faces/study/SetUpDataExplorationPage.xhtml?fileId=#{file.studyFile.id}" >
+                                                    <ice:outputText value="Visualization"/>
+                                                </ice:outputLink>
+
+                                                </ice:column>
                                                 <ice:column id="deleteColumn">
                                                     <ice:selectBooleanCheckbox id="deleteCheckBox" value="#{file.deleteFlag}"/>
                                                     <f:facet name="header">

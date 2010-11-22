@@ -73,9 +73,11 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     @Override
     public void init() {
         super.init();
-        dataTableId = "3";
-        visualizationService.setDataTable(new Long(dataTableId));
-        dt = visualizationService.getDataTable();
+         Long studyFileId = new Long( getVDCRequestBean().getRequestParam("fileId"));
+         visualizationService.setDataTableFromStudyFileId(studyFileId);
+
+
+         dt = visualizationService.getDataTable();
         varGroupings = dt.getVarGroupings();
         measureLabel = loadMeasureLabel();
         
@@ -120,7 +122,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             VarGrouping varGrouping = (VarGrouping) iterator.next();
 
             if (varGrouping.getGroupingType().equals(GroupingType.MEASURE)){
-                return varGrouping.getName();
+                return "Measure";
             }
 
         }
@@ -143,7 +145,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                 vgUI.setVarGrouping(varGrouping);
                 loadFilterGroups(filterGroups, varGrouping.getId());
                 loadFilterGroupTypes(filterGroupTypes, varGrouping.getId());
-                vgUI.setVarGroupTypes(filterGroupTypes); 
+                vgUI.setVarGroupTypesUI(filterGroupTypes);
                 filterGroupings.add(vgUI);
             }
         }
@@ -246,7 +248,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             VarGrouping varGrouping = (VarGrouping) iterator.next();
             // Don't show OAISets that have been created for dataverse-level Lockss Harvesting
             if (varGrouping.getGroupingType().equals(GroupingType.MEASURE)){
-                selectItems.add(new SelectItem(0, "Select a(n) " + varGrouping.getName() + "..."));
+                selectItems.add(new SelectItem(0, "Select a Measure..."));
                 if (grouptype_id == 0) {
                     varGroups = (List<VarGroup>) varGrouping.getVarGroups();
                 } else {
@@ -269,7 +271,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             VarGrouping varGrouping = (VarGrouping) iterator.next();
             // Don't show OAISets that have been created for dataverse-level Lockss Harvesting
             if (varGrouping.getGroupingType().equals(GroupingType.MEASURE)){
-                selectItems.add(new SelectItem(0, "Select an Issue..."));
+                selectItems.add(new SelectItem(0, "Select a Filter..."));
                 List <VarGroupType> varGroupTypes = (List<VarGroupType>) varGrouping.getVarGroupTypes();
                 for(VarGroupType varGroupType: varGroupTypes) {
                     selectItems.add(new SelectItem(varGroupType.getId(), varGroupType.getName()));
@@ -360,7 +362,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             while (itrG.hasNext()){
                 VarGroupingUI thisVarGrouping = (VarGroupingUI) itrG.next();
                 if (thisVarGrouping.getVarGrouping().getId().equals(groupingId)){
-                   List  varGroupTypeUIList = (List) thisVarGrouping.getVarGroupTypes();
+                   List  varGroupTypeUIList = (List) thisVarGrouping.getVarGroupTypesUI();
                    if (!varGroupTypeUIList.isEmpty()) {
                         List <VarGroup> varGroupsAll = (List<VarGroup>)  visualizationService.getGroupsFromGroupingId(groupingId);
                         for(VarGroup varGroup: varGroupsAll) {

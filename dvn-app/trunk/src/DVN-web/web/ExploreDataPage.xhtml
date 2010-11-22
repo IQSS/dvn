@@ -27,7 +27,8 @@
   // To see the data that this visualization uses, browse to
   // http://spreadsheets.google.com/ccc?key=pCQbetd-CptGXxxQIG7VFIQ
   var query = new google.visualization.Query(
-      'https://spreadsheets.google.com/tq?range=A2:E35&amp;key=0AvVjA1YZ1luDdGMxaG1mYUlLbzJBR3F1MFNlWUc1SHc&amp;gid=0&amp;authkey=COeP8bcL');
+
+      'https://spreadsheets.google.com/tq?range=A1:G64&amp;key=0AvVjA1YZ1luDdEhTVkM0aVpYc2dPcTN4OHc3ZnZNNVE&amp;gid=0&amp;authkey=CMnn46IM');
   // Send the query with a callback function.
   query.send(handleQueryResponse);
 }
@@ -86,7 +87,7 @@ function handleQueryResponse(response) {
                         <f:selectItems  value="#{ExploreDataPage.selectFilterGroups}"/>
                     </ice:selectOneMenu>
                     <ice:message for="filterPanelGroupTypes" id ="boxErrorMsg"  styleClass="errorMessage"   />
-                    <div jsfc="ice:panelSeries" id ="filterPanelGroupTypes" var="groupType" value="#{item.varGroupTypes}"  >
+                    <div jsfc="ice:panelSeries" id ="filterPanelGroupTypes" var="groupType" value="#{item.varGroupTypesUI}"  >
                         <!-- controls -->
                         <div jsfc="ice:panelGroup" >
                         <ice:selectBooleanCheckbox  id ="filterGroupTypeCheckBoxes" styleClass="filterGroupTypeCheckBoxes" value ="#{groupType.enabled}"

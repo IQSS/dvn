@@ -5,8 +5,10 @@
 
 package edu.harvard.iq.dvn.core.visualization;
 
+import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.study.DataTable;
 import edu.harvard.iq.dvn.core.study.DataVariable;
+import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.visualization.VarGrouping.GroupingType;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -43,6 +45,26 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
         if (dt==null) {
             throw new IllegalArgumentException("Unknown data table id: "+dataTableId);
         }  
+    }
+
+        @Override
+    public void setDataTableFromStudyFileId(Long studyFileId) {
+        String query = "SELECT d FROM  DataTable d where d.studyFile.id = " + studyFileId + "  ";
+        dt = (DataTable) em.createQuery(query).getSingleResult();
+        if (dt==null) {
+            throw new IllegalArgumentException("Unknown data table  with study file id: "+studyFileId);
+        }
+    }
+
+    @Override
+    public Study getStudyFromStudyFileId(Long studyFileId) {
+        String query = "SELECT s FROM  Study s, StudyFile f where s.id = " +
+                "f.study.id and f.id = " + studyFileId + "  ";
+        Study study = (Study) em.createQuery(query).getSingleResult();
+        if (study==null) {
+            throw new IllegalArgumentException("Unknown data table  with study file id: "+studyFileId);
+        }
+        return study;
     }
 
     public DataTable getDataTable( ) {
@@ -314,6 +336,12 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
         String query = "SELECT v FROM  DataVariableMapping m, DataVariable v where v.id = m.dataVariable.id " +
                 " and m.x_axis = true " +
                 " and m.dataTable.id = " + dataTableId + "  ORDER BY v.id";
+        if (em.createQuery(query).getResultList().isEmpty()) {
+            DataVariable dataVariable = new DataVariable();
+            dataVariable.setId(new Long (0));
+            return dataVariable;
+        }
+
         return (DataVariable) em.createQuery(query).getSingleResult();
     }
 
@@ -347,10 +375,6 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
 
     @Override
     public List getFilterGroupingsFromMeasureId(Long measureId) {
-      //  String query = "SELECT p FROM  DataVariableMapping m, DataVariable v, VarGroup g, VarGrouping p where v.id = m.dataVariable.id " +
-      //          " and m.varGroup.id = " + measureId + "  " +
-      //          " and g.varGrouping.id = p.id " +
-      //          " and m.varGroup.id = g.id  ORDER BY v.id";
 
         String query = "select  DISTINCT po from VarGrouping po, VarGroup g2 " +
                 " where g2.varGrouping.id = po.id  " +
@@ -387,10 +411,13 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
 
     @Remove
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public void saveAll(VarGrouping varGrouping) {
-        em.merge(varGrouping);
+    public void saveAll() {
+
+        em.merge(dt);
         em.flush();
     }
+
+
 
 
     

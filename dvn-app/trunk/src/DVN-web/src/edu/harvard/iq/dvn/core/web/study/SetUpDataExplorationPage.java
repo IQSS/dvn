@@ -391,6 +391,10 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         measureGrouping.getVarGrouping().getVarGroupTypes().add(newElem);
     }
 
+    public String cancel(){
+        return "editStudyFiles";
+    }
+
     public String save() {
         List <DataVariableMapping> removeList = new ArrayList();
         List <DataVariable> tempList = new ArrayList(dvList);
@@ -498,7 +502,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
 
         visualizationService.saveAll();
-       return "myOptions";
+       return "editStudyFiles";
     }
 
     private HtmlInputText inputMeasureName;

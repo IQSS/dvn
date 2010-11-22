@@ -61,7 +61,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     private Long selectedMeasureId = new Long(0);
     private Long selectedFilterGroupId = new Long(0);
     private int groupTypeId = 0;
-
+    private List <DataVariable> dvList;
     private List <String> measureString= new ArrayList();
     private DataVariable xAxisVar;
     private DataTable dt = new DataTable();
@@ -78,6 +78,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
 
          dt = visualizationService.getDataTable();
+                  dvList = dt.getDataVariables();
         varGroupings = dt.getVarGroupings();
         measureLabel = loadMeasureLabel();
         
@@ -472,7 +473,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                }
            }
 
-           List <DataVariable> dvList = varService.getDataVariablesByFileOrder( new Long( dataTableId) );
+           
            List  resultList = new ArrayList();
 
            Iterator varIter = dvList.iterator();

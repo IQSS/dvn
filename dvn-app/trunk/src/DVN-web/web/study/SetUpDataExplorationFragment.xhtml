@@ -1,0 +1,122 @@
+
+<!--
+Common Form for SetUpDataExplorationPage
+-->
+<div xmlns:ui="http://java.sun.com/jsf/facelets"
+     xmlns:h="http://java.sun.com/jsf/html"
+     xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:jsp="http://java.sun.com/JSP/Page"
+     xmlns:ice="http://www.icesoft.com/icefaces/component"
+     xmlns:dvn="/WEB-INF/tlds/dvn-components"
+     class="dvnsetupdataexloprationformblock">
+
+
+
+    <div jsfc="ice:panelGroup" style="float:right; margin-bottom:1em;">
+        <ice:commandButton type="submit" value="Save" action ="#{SetUpDataExplorationPage.save}"/>
+    </div>
+
+    <div jsfc="ice:panelGroup" style="margin-bottom:1em;">
+        <ice:outputLabel value="Units" for="filtergroupname"/>
+        <ice:inputText id="filtergroupname" value=""/>
+    </div>
+
+    <div jsfc="ice:panelGroup" style="margin-bottom:1em;">
+        <strong>Measure</strong> <ice:inputText id="filtergroupname" value=""/>
+    </div>
+
+    <div jsfc="ice:panelGroup" style="margin-bottom:1em;">
+        <div jsfc="ice:panelGroup" style="overflow:hidden;">
+            <strong>Type</strong>
+        </div>
+
+        <div jsfc="ice:panelGroup">
+            Gender <a href="#" style="padding:2px; margin:0 1em 0 .5em; border:1px solid blue;">X</a>
+        </div>
+
+        <div jsfc="ice:panelGroup">
+            <ice:inputText id="filtertype"/>
+            <ice:commandButton type="submit" value="Add"/>
+        </div>
+    </div>
+
+
+
+    <div jsfc="ice:panelGroup" style="margin-bottom:1em;">
+        <strong>Group</strong> <ice:inputText id="filtergroupname" value=""/>
+    </div>
+
+    <div jsfc="ice:panelGroup" style="margin-bottom:1em;">
+        <strong>Filter</strong> <ice:inputText id="filtername" value=""/>
+    </div>
+
+    <div jsfc="ice:panelGroup" style="margin-bottom:1em;">
+        <div jsfc="ice:panelGroup" style="overflow:hidden;">
+            <div jsfc="ice:panelGroup" style="float:left; font-weight:bold;">Variables</div>
+            <div jsfc="ice:panelGroup" style="float:right;">Filter <ice:inputText id="filtervariables"></ice:inputText></div>
+        </div>
+
+        <table width="100%" cellspacing="0" cellpadding="0" class="iceDatTbl">
+            <thead>
+                <tr>
+                    <th class="iceDatTblColHdr1 groupRow"><span class="iceOutTxt">Select</span></th>
+                    <th class="iceDatTblColHdr2 groupRow"><span class="iceOutTxt">Name</span></th>
+                    <th class="iceDatTblColHdr1 groupRow"><span class="iceOutTxt">Label</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="iceDatTblRow evenRow">
+                    <td class="iceDatTblCol1">
+                        <ice:selectBooleanCheckbox id="select1" value="true"/>
+                    </td>
+                    <td class="iceDatTblCol2">emplratio_female</td>
+                    <td class="iceDatTblCol1">blah, blah, blah</td>
+                </tr>
+                <tr class="iceDatTblRow oddRow">
+                    <td class="iceDatTblCol1">
+                        <ice:selectBooleanCheckbox id="select2" value="true"/>
+                    </td>
+                    <td class="iceDatTblCol2">emplratio_male</td>
+                    <td class="iceDatTblCol1">blah, blah, blah</td>
+                </tr>
+                <tr class="iceDatTblRow evenRow">
+                    <td class="iceDatTblCol1">
+                        <ice:selectBooleanCheckbox id="select3" value=""/>
+                    </td>
+                    <td class="iceDatTblCol2">emplratio_blacks</td>
+                    <td class="iceDatTblCol1">blah, blah, blah</td>
+                </tr>
+                <tr class="iceDatTblRow oddRow">
+                    <td class="iceDatTblCol1">
+                        <ice:selectBooleanCheckbox id="select4" value=""/>
+                    </td>
+                    <td class="iceDatTblCol2">emplratio_whites</td>
+                    <td class="iceDatTblCol1">blah, blah, blah</td>
+                </tr>
+                <tr class="iceDatTblRow evenRow">
+                    <td class="iceDatTblCol1">
+                        <ice:selectBooleanCheckbox id="select5" value=""/>
+                    </td>
+                    <td class="iceDatTblCol2">emplratio_25younger</td>
+                    <td class="iceDatTblCol1">blah, blah, blah</td>
+                </tr>
+                <tr class="iceDatTblRow oddRow">
+                    <td class="iceDatTblCol1">
+                        <ice:selectBooleanCheckbox id="select6" value=""/>
+                    </td>
+                    <td class="iceDatTblCol2">emplratio_26-64</td>
+                    <td class="iceDatTblCol1">blah, blah, blah</td>
+                </tr>
+                <tr class="iceDatTblRow evenRow">
+                    <td class="iceDatTblCol1">
+                        <ice:selectBooleanCheckbox id="select7" value=""/>
+                    </td>
+                    <td class="iceDatTblCol2">emplratio_65older</td>
+                    <td class="iceDatTblCol1">blah, blah, blah</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+</div>

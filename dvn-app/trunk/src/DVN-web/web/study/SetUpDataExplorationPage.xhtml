@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:t="/WEB-INF/tlds/scroller"
+      xmlns:ice="http://www.icesoft.com/icefaces/component">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<ui:composition template="/template.xhtml">
+<ui:param name="pageTitle" value="Set Up Data Exploration - #{VDCRequest.dataversePageTitle}"/>
+<ui:define name="body">
+
+<ice:form id="form1">
+<ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+
+<style type="text/css">
+
+</style>
+            <li>
+                <ice:outputLink id="hyperlinkM" value="/dvn/faces/ExploreDataPage.xhtml?fileId=#{SetUpDataExplorationPage.studyFileId}">
+                  <ice:outputText id="hyperlinkMText1" value="Explore Data"/>
+                </ice:outputLink>
+            </li>
+    <div jsfc="ice:panelGroup" style="float:right; margin-bottom:1em;">
+        <ice:commandButton type="submit" value="Save" action ="#{SetUpDataExplorationPage.save}"/>
+    </div>
+    <div class="dvn_sectionBoxNoBorders">
+        <ice:panelTabSet id="tabSet1">
+            <ice:panelTab id="xVariable" label="X-Variable" url="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/SetUpDataExploration.xhtml&amp;tab=xVariable">
+                <div jsfc="ice:panelGroup" panelLayout="flow">
+
+                    <div jsfc="ice:panelGroup" style="overflow:hidden;">
+                        <div jsfc="ice:panelGroup" style="width:50%; float:left; margin-right: 2em;">
+
+                            <table width="100%" cellspacing="0" cellpadding="0" class="iceDatTbl">
+                                <thead>
+                                    <tr>
+                                        <th class="iceDatTblColHdr1 groupRow"><span class="iceOutTxt">Variable</span></th>
+                                        <th class="iceDatTblColHdr2 groupRow"><span class="iceOutTxt">Units</span></th>
+                                        <th class="iceDatTblColHdr1 groupRow"><span class="iceOutTxt">Action</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="iceDatTblRow evenRow">
+
+                                        <td class="iceDatTblCol1">time_years</td>
+                                        <td class="iceDatTblCol2">Years</td>
+                                        <td class="iceDatTblCol1">
+                                            <a href="#">Edit</a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <ice:dataTable width="100%" cellspacing="0" cellpadding="0"  var ="group" value ="#{SetUpDataExplorationPage.measureGrouping}"
+                                               binding="#{SetUpDataExplorationPage.dataTableXAxis}" >
+                                    <h:column>
+                                               <ice:inputText id="input_measureName"
+                                               rendered ="false"
+                                               value="#{group.varGrouping.name}"
+                                               size="25"
+                                               maxlength="255"
+                                               
+                                                />
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <ice:outputText value="Select X-Axis Variable"/>
+                                        </f:facet>
+                                        <ice:selectOneListbox size="2" value="#{SetUpDataExplorationPage.xAxisVariable.id}">
+                                            <f:selectItems value="#{SetUpDataExplorationPage.dataVariableSelectItems}"/>
+                                        </ice:selectOneListbox>
+                                    </h:column>
+                            </ice:dataTable>
+                            <!--
+                            <ice:dataTable cellpadding="0" cellspacing="0" value="" id="" var="" width="100%">
+                                <ice:column id="">
+                                </ice:column>
+                                <ice:column id="">
+                                </ice:column>
+                            </ice:dataTable>
+                            -->
+
+                        </div>
+                        <div jsfc="ice:panelGroup" style="width:40%; float:left;">
+
+                            <ui:include src=""   >
+                                <!--<ui:param name="studyUI" value="#{studyPage.studyUI}"/>
+                                <ui:param name="displayReleaseLink" value="true"/>-->
+                            </ui:include>
+
+                        </div>
+                    </div>
+
+                </div>
+            </ice:panelTab>
+
+            <ice:panelTab id="measures" label="Measures" url="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/SetUpDataExploration.xhtml&amp;tab=measures">
+                <div jsfc="ice:panelGroup" panelLayout="flow">
+
+                    <div jsfc="ice:panelGroup" style="overflow:hidden;">
+                        <div jsfc="ice:panelGroup" style="width:50%; float:left; margin-right: 2em;">
+
+                            <div jsfc="ice:panelGroup">
+                                <ice:commandLink id="addMeasureGroup" action="#{SetUpDataExplorationPage.addMeasureGroup}">
+                                      <ice:outputText id="addMeasureGroupText" value="+Add Measure"/>
+                                 </ice:commandLink>
+                            </div>
+
+                            <div jsfc="ice:panelGroup">
+
+                                <ice:dataTable width="100%" cellspacing="0" cellpadding="0"  var ="group" value ="#{SetUpDataExplorationPage.measureGroups}"
+                                               binding="#{SetUpDataExplorationPage.dataTableVarGroup}" >
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <ice:outputText value="Name"/>
+                                        </f:facet>
+                                               <ice:inputText id="input_measureName"
+                                               value="#{group.varGroup.name}"
+                                               size="25"
+                                               maxlength="255"
+                                               binding="#{SetUpDataExplorationPage.inputMeasureName}"
+                                                />
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <ice:outputText value="Type"/>
+                                        </f:facet>
+
+                                        <ice:selectManyListbox size="2" value="#{group.varGroupTypesSelectItems}">
+                                            <f:selectItems value="#{SetUpDataExplorationPage.selectMeasureGroupTypes}"/>
+                                        </ice:selectManyListbox>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <ice:outputText value="Variables"/>
+                                        </f:facet>
+                                        <ice:selectManyListbox size="2" value="#{group.dataVariablesSelected}">
+                                            <f:selectItems value="#{SetUpDataExplorationPage.dataVariableSelectItems}"/>
+                                        </ice:selectManyListbox>
+
+
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <ice:outputText value="Units"/>
+                                        </f:facet>
+                                         <ice:inputText id="input_measureUnits"
+                                               value="#{group.varGroup.units}"
+                                               size="25"
+                                               maxlength="255"
+                                               binding="#{SetUpDataExplorationPage.inputMeasureUnits}"
+                                         />
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <ice:outputText value="Actions"/>
+                                        </f:facet>
+                                        <ice:commandLink id="deleteMeasureGroup" action="#{SetUpDataExplorationPage.deleteMeasureGroup}">
+                                             <ice:outputText id="deleteMeasureGroupText" value="Delete"/>
+                                        </ice:commandLink>
+
+                                    </h:column>
+                                </ice:dataTable>
+
+                            </div>
+
+                            <div jsfc="ice:panelGroup">
+                                <ice:commandLink id="addMeasureGroupType" action="#{SetUpDataExplorationPage.addMeasureGroupType}">
+                                      <ice:outputText id="addMeasureGroupTypeText" value="+Add Measure Type"/>
+                                 </ice:commandLink>
+                            </div>
+
+                            <div jsfc="ice:panelGroup">
+
+                                <ice:dataTable width="100%" cellspacing="0" cellpadding="0"  var ="groupType" value ="#{SetUpDataExplorationPage.measureGroupTypes}"
+                                               binding="#{SetUpDataExplorationPage.dataTableVarGroupType}">
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <ice:outputText value="Name"/>
+                                        </f:facet>
+                                         <ice:inputText id="input_measureUnits"
+                                               value="#{groupType.name}"
+                                               size="25"
+                                               maxlength="255"
+                                               binding="#{SetUpDataExplorationPage.inputGroupTypeName}"
+                                         />
+                                    </h:column>
+                                     <h:column>
+                                        <f:facet name="header">
+                                            <ice:outputText value="Actions"/>
+                                        </f:facet>
+                                        <ice:commandLink id="deleteMeasureGroupType" action="#{SetUpDataExplorationPage.deleteMeasureGroupType}">
+                                             <ice:outputText id="deleteMeasureGroupTypeText" value="Delete"/>
+                                        </ice:commandLink>
+                                    </h:column>
+                                </ice:dataTable>
+
+                    
+                            </div>
+                        </div>
+                        <div jsfc="ice:panelGroup" style="width:40%; float:left;">
+
+                            <ui:include src="">
+                                <!--<ui:param name="studyUI" value="#{studyPage.studyUI}"/>
+                                <ui:param name="displayReleaseLink" value="true"/>-->
+                            </ui:include>
+
+                        </div>
+                    </div>
+
+                </div>
+            </ice:panelTab>
+
+            <ice:panelTab id="filters" label="Filters" url="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/SetUpDataExploration.xhtml&amp;tab=filters">
+                <div jsfc="ice:panelGroup" panelLayout="flow">
+
+                    <div jsfc="ice:panelGroup" style="overflow:hidden;">
+                        <div jsfc="ice:panelGroup" style="width:50%; float:left; margin-right: 2em;">
+                            <ice:commandLink id="addFilterGroup" action="#{SetUpDataExplorationPage.addFilterGrouping}">
+                                 <ice:outputText id="addFilterGroupText" value="+ Add Group"/>
+                            </ice:commandLink>
+
+                       <div jsfc="ice:panelGroup">
+                       <div jsfc="ice:panelSeries" id ="filterPanelGroupings"
+                            width="100%"  cellspacing="0" cellpadding="0"  var ="grouping" value ="#{SetUpDataExplorationPage.filterGroupings}"
+                                               >
+                                    <h:column>
+
+                                            <ice:outputText value="Group"/>
+                                       
+                                               <ice:inputText id="input_groupingName"
+                                               value="#{grouping.varGrouping.name}"
+                                               size="25"
+                                               maxlength="255"
+                                               binding="#{SetUpDataExplorationPage.inputFilterGroupingName}"
+                                                />
+                                               <ice:commandLink id="addFilterGroup"  binding ="#{SetUpDataExplorationPage.addFilterGroupLink}"
+                                                                value ="#{grouping.varGrouping.id}"
+                                                                action="#{SetUpDataExplorationPage.addFilterGroup}">
+                                                    <ice:outputText id="addFilterGroupText" value="+ Add Filter"/>
+                                                </ice:commandLink>
+
+                                        <ice:dataTable width="100%" cellspacing="0" cellpadding="0"  var ="filter" value ="#{grouping.varGroupUI}"
+                                               binding="#{SetUpDataExplorationPage.dataTableFilterGroup}" >
+                                       <h:column>
+                                            <f:facet name="header">
+                                                <ice:outputText value="Filter"/>
+                                            </f:facet>
+                                               <ice:inputText id="input_filterGroupName"
+                                                             value="#{filter.varGroup.name}"
+                                                             size="25"
+                                                             maxlength="255"
+                                                             binding="#{SetUpDataExplorationPage.inputFilterGroupName}"
+                                                />
+                                        </h:column>
+                                        <h:column>
+                                        <f:facet name="header">
+                                            <ice:outputText value="Type"/>
+                                        </f:facet>
+
+                                        <ice:selectManyListbox size="2" value="#{filter.varGroupTypesSelectItems}" >
+                                            <f:selectItems value="#{grouping.varGroupTypesSelect}"/>
+                                        </ice:selectManyListbox>
+                                        </h:column>
+                                        <h:column>
+                                        <f:facet name="header">
+                                            <ice:outputText value="Variables"/>
+                                        </f:facet>
+                                        <ice:selectManyListbox size="2" value="#{filter.dataVariablesSelected}">
+                                            <f:selectItems value="#{SetUpDataExplorationPage.dataVariableSelectItems}"/>
+                                        </ice:selectManyListbox>
+
+
+                                        </h:column>
+                                        <h:column>
+                                        <f:facet name="header">
+                                            <ice:outputText value="Actions"/>
+                                        </f:facet>
+                                        <ice:commandLink id="deleteFilterGroup" action="#{SetUpDataExplorationPage.deleteFilterGroup}">
+                                             <ice:outputText id="deleteFilterGroupText" value="Delete"/>
+                                        </ice:commandLink>
+
+                                    </h:column>
+
+                                    </ice:dataTable>
+                                    <ice:commandLink id="addFilterGroupType"  binding ="#{SetUpDataExplorationPage.addFilterGroupTypeLink}"
+                                            value ="#{grouping.varGrouping.id}"
+                                            action="#{SetUpDataExplorationPage.addFilterGroupType}">
+                                          <ice:outputText id="addFilterGroupText" value="+ Add Filter Type"/>
+                                    </ice:commandLink>
+
+                                   <ice:dataTable width="100%" cellspacing="0" cellpadding="0"  var ="type" value ="#{grouping.varGroupTypesUI}"
+                                               binding="#{SetUpDataExplorationPage.dataTableFilterGroupType}" >
+                                       <h:column>
+                                            <f:facet name="header">
+                                                <ice:outputText value="Filter Type"/>
+                                            </f:facet>
+                                               <ice:inputText id="input_filterGroupName"
+                                                             value="#{type.varGroupType.name}"
+                                                             size="25"
+                                                             maxlength="255"
+                                                             binding="#{SetUpDataExplorationPage.inputFilterGroupTypeName}"
+                                                />
+                                        </h:column>
+                                        <h:column>
+                                        <f:facet name="header">
+                                            <ice:outputText value="Action"/>
+                                        </f:facet>
+                                        <ice:commandLink id="deleteFilterGroupType" action="#{SetUpDataExplorationPage.deleteFilterGroupType}">
+                                             <ice:outputText id="deleteFilterGroupTypeText" value="Delete"/>
+                                        </ice:commandLink>
+                                        </h:column>
+
+                                    </ice:dataTable>
+                                    </h:column>
+                                    
+                        </div>
+                        <div jsfc="ice:panelGroup" style="width:40%; float:left;">
+
+                            <ui:include src="">
+                                <!--<ui:param name="studyUI" value="#{studyPage.studyUI}"/>
+                                <ui:param name="displayReleaseLink" value="true"/>-->
+                            </ui:include>
+
+                        </div>
+                    </div>
+                </div>
+             </div>
+            </div>
+            </ice:panelTab>
+        </ice:panelTabSet>
+    </div>
+
+</ice:form>
+
+</ui:define>
+</ui:composition>
+</body>
+</html>

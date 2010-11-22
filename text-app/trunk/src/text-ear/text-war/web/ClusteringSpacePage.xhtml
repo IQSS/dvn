@@ -508,9 +508,9 @@ td.clusterCountCol {width:14%;}
                                         <ice:commandButton value="Save" onclick="saveSolution();" actionListener="#{ClusteringSpacePage.saveClusterLabel}"/>
                                     </div>
                                     
-                                    <ice:outputLink target="_blank" value="/text/DocumentViewer?setId=#{ClusteringSpacePage.setId}&amp;docName=#{row.clusterInfo.randomDocument}" >
+                                    <a onClick="return popupDocument('/text/DocumentViewer?setId=#{ClusteringSpacePage.setId}&amp;docName=#{row.clusterInfo.randomDocument}');" href="/text/DocumentViewer?setId=#{ClusteringSpacePage.setId}&amp;docName=#{row.clusterInfo.randomDocument}" >
                                         <ice:outputText value="Random Document: #{row.clusterInfo.randomDocument}"/>
-                                    </ice:outputLink>
+                                    </a>
                                 </div>
                             </ice:column>
                         </ice:panelGrid>

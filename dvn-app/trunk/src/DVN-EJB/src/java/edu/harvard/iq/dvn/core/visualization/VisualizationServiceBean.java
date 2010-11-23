@@ -347,9 +347,13 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
 
     @Override
     public List getDataVariableMappingsFromGroupId(Long groupId) {
-        String query = "SELECT v FROM  DataVariableMapping m, DataVariable v where v.id = m.dataVariable.id " +
+        if (groupId != null) {
+            String query = "SELECT v FROM  DataVariableMapping m, DataVariable v where v.id = m.dataVariable.id " +
                 " and m.varGroup.id = " + groupId + "  ORDER BY v.id";
-        return (List) em.createQuery(query).getResultList();
+            return (List) em.createQuery(query).getResultList();
+        } else {
+            return new ArrayList();
+        }
     }
 
     @Override

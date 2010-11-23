@@ -75,7 +75,7 @@ public class ManifestPage extends VDCBaseBean implements java.io.Serializable {
             if (lockssConfig !=null) {
                 displayPage = true;
                 archivalUnit = vdc.getAlias();
-                oaiSetUrl  = "http://" + PropertyUtil.getHostUrl() + "/dvn/OAIHandler?verb=ListRecords&metadataPrefix=ddi&set=" + lockssConfig.getOaiSet().getSpec() ;
+                oaiSetUrl  = "http://" + PropertyUtil.getTimerServerHost() + "/dvn/OAIHandler?verb=ListRecords&metadataPrefix=ddi&set=" + lockssConfig.getOaiSet().getSpec() ;
                 ownerString = vdc.getCreator().getFirstName() + " " + vdc.getCreator().getLastName();
 
                 if (vdc.isDownloadTermsOfUseEnabled() == true)
@@ -101,10 +101,10 @@ public class ManifestPage extends VDCBaseBean implements java.io.Serializable {
                 displayPage = true;
                 if (vdcNetworkService.getLockssConfig().getOaiSet() != null){
                     archivalUnit = vdcNetworkService.getLockssConfig().getOaiSet().getName();
-                    oaiSetUrl  = "http://" + PropertyUtil.getHostUrl() + "/dvn/OAIHandler?verb=ListRecords&metadataPrefix=ddi&set=" + lockssConfig.getOaiSet().getSpec() ;
+                    oaiSetUrl  = "http://" + PropertyUtil.getTimerServerHost() + "/dvn/OAIHandler?verb=ListRecords&metadataPrefix=ddi&set=" + lockssConfig.getOaiSet().getSpec() ;
                 } else {
                     archivalUnit = dvName;
-                    oaiSetUrl  = "http://" + PropertyUtil.getHostUrl() + "/dvn/OAIHandler?verb=ListRecords&metadataPrefix=ddi";
+                    oaiSetUrl  = "http://" + PropertyUtil.getTimerServerHost() + "/dvn/OAIHandler?verb=ListRecords&metadataPrefix=ddi";
                 }
                 ownerString = vdcNetwork.getDefaultNetworkAdmin().getFirstName() + " " + vdcNetwork.getDefaultNetworkAdmin().getLastName();
                 basedOnWorkLink =  getVDCRequestBean().getCurrentVDCURL();

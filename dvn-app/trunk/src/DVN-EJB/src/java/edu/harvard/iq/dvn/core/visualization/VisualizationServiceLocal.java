@@ -50,5 +50,8 @@ public interface VisualizationServiceLocal extends java.io.Serializable {
     public Study getStudyFromStudyFileId(Long studyFileId);
     public DataTable getDataTable();
 
+    @javax.ejb.Remove
+    public void cancel();
+
 
 }

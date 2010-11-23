@@ -26,6 +26,19 @@
                   <ice:outputText id="hyperlinkMText1" value="Explore Data"/>
                 </ice:outputLink>
             </li>
+<div>
+<ice:outputText value="Select A Data File for Data Exploration Set-up"/>
+<br></br>
+                <ice:selectOneMenu value="#{SetUpDataExplorationPage.studyFileId}"  partialSubmit="true" binding="#{SetUpDataExplorationPage.selectStudyFile}"
+                                         onchange="getElementById('form1:studyFileIdButton').click();">
+                    <f:selectItems value="#{SetUpDataExplorationPage.studyFileIdSelectItems}"/>
+                </ice:selectOneMenu>
+</div>
+
+
+                        <!-- hidden button that is clicked by select menu's onchange action -->
+                        <ice:commandButton id="studyFileIdButton"  visible="false" value="Change" action="#{SetUpDataExplorationPage.resetStudyFileId}"/>
+                        <br/>
     <div jsfc="ice:panelGroup" style="float:right; margin-bottom:1em;">
         <ice:commandButton type="submit" value="Cancel" action ="#{SetUpDataExplorationPage.cancel}"/>
     </div>
@@ -55,7 +68,7 @@
                                         <f:facet name="header">
                                             <ice:outputText value="Select X-Axis Variable"/>
                                         </f:facet>
-                                        <ice:selectOneListbox size="2" value="#{SetUpDataExplorationPage.xAxisVariable.id}">
+                                        <ice:selectOneListbox size="2" value="#{SetUpDataExplorationPage.xAxisVariableId}">
                                             <f:selectItems value="#{SetUpDataExplorationPage.dataVariableSelectItems}"/>
                                         </ice:selectOneListbox>
                                     </h:column>

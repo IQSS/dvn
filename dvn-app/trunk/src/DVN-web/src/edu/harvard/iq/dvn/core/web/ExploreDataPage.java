@@ -73,21 +73,19 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     @Override
     public void init() {
         super.init();
-         Long studyFileId = new Long( getVDCRequestBean().getRequestParam("fileId"));
-         visualizationService.setDataTableFromStudyFileId(studyFileId);
+        Long studyFileId = new Long( getVDCRequestBean().getRequestParam("fileId"));
+        visualizationService.setDataTableFromStudyFileId(studyFileId);
 
-
-         dt = visualizationService.getDataTable();
-                  dvList = dt.getDataVariables();
+        dt = visualizationService.getDataTable();
+        dvList = dt.getDataVariables();
         varGroupings = dt.getVarGroupings();
         measureLabel = loadMeasureLabel();
         
         measureGrouping = loadMeasureGrouping();
-        selectMeasureGroupTypes = loadSelectMeasureGroupTypes();
-        
+        selectMeasureGroupTypes = loadSelectMeasureGroupTypes();        
         selectMeasureItems = loadSelectMeasureItems(0);
-        //loadFilterGroupings();
-        xAxisVar =  visualizationService.getXAxisVariable(new Long(dataTableId));
+        
+        xAxisVar =  visualizationService.getXAxisVariable(dt.getId());
 
      }
 

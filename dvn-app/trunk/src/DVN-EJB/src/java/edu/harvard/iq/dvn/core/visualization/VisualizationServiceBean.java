@@ -320,13 +320,13 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
 
     @Override
     public VarGrouping getGroupingFromId(Long groupingId) {
-        String query = "SELECT g FROM  VarGrouping g where g.id = " + groupingId + "  ORDER BY g.id";
+        String query = "SELECT g FROM  VarGrouping g where g.id = " + groupingId + "  ORDER BY g.name";
         return (VarGrouping) em.createQuery(query).getSingleResult();
     }
 
     @Override
     public VarGroup getGroupFromId(Long groupId) {
-        String query = "SELECT g FROM  VarGroup g where g.id = " + groupId + "  ORDER BY g.id";
+        String query = "SELECT g FROM  VarGroup g where g.id = " + groupId + "  ORDER BY g.name";
         return (VarGroup) em.createQuery(query).getSingleResult();
 
     }
@@ -369,7 +369,7 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
     public List getFilterGroupsFromMeasureId(Long measureId) {
         String query = "SELECT g FROM  DataVariableMapping m, DataVariable v, varGroup g where v.id = m.dataVariable.id " +
                 " and m.varGroup.id = " + measureId + "  " +
-                " and m.varGroup.id = g.id and g.units is null ORDER BY v.id";
+                " and m.varGroup.id = g.id and g.units is null ORDER BY v.name";
         return (List) em.createQuery(query).getResultList();
     }
 
@@ -387,7 +387,6 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
                 " and m.varGroup.id = " + measureId + "  " +
                 " and g.varGrouping.id = p.id " +
                 " and m.varGroup.id = g.id ) ) ";
-        String test = query;
         List checkList = (List) em.createQuery(query).getResultList();
         return (List) checkList;
     }
@@ -417,7 +416,10 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
         em.flush();
     }
 
+    @Remove
+    public void cancel() {
 
+    }
 
 
     

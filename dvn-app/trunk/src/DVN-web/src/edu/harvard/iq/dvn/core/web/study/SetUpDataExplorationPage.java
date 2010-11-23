@@ -279,7 +279,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
     public void deleteMeasureGroup(){
         HtmlDataTable dataTable2 = dataTableVarGroup;
-        if (dataTable2.getRowCount()>1) {
+        if (dataTable2.getRowCount()>0) {
             VarGroupUI varGroupUI2 = (VarGroupUI) dataTable2.getRowData();
             VarGroup varGroup = varGroupUI2.getVarGroup();
             List varGroupList = (List) dataTable2.getValue();
@@ -298,7 +298,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
     public void deleteFilterGroup(){
         HtmlDataTable dataTable2 = dataTableFilterGroup;
-        if (dataTable2.getRowCount()>1) {
+        if (dataTable2.getRowCount()>0) {
             VarGroupUI varGroupUI2 = (VarGroupUI) dataTable2.getRowData();
             VarGroup varGroup = varGroupUI2.getVarGroup();
             List varGroupList = (List) dataTable2.getValue();
@@ -323,7 +323,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
     public void deleteFilterGroupType(){
         HtmlDataTable dataTable2 = dataTableFilterGroupType;
-        if (dataTable2.getRowCount()>1) {
+        if (dataTable2.getRowCount()>0) {
             VarGroupTypeUI varGroupTypeUI2 = (VarGroupTypeUI) dataTable2.getRowData();
             VarGroupType varGroupType = varGroupTypeUI2.getVarGroupType();
             List varGroupTypeList = (List) dataTable2.getValue();
@@ -348,7 +348,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
     public void deleteMeasureGroupType(){
         HtmlDataTable dataTable2 = dataTableVarGroupType;
-        if (dataTable2.getRowCount()>1) {
+        if (dataTable2.getRowCount()>0) {
             List data = (List)dataTable2.getValue();
             visualizationService.removeCollectionElement(data,dataTable2.getRowIndex());
         }

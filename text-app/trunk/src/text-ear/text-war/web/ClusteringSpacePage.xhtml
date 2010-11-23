@@ -507,10 +507,35 @@ td.clusterCountCol {width:14%;}
                                         <label for="clusterlabel">Label [-]</label> <ice:inputText id="clusterlabel" value="#{row.newValue}"></ice:inputText>
                                         <ice:commandButton value="Save" onclick="saveSolution();" actionListener="#{ClusteringSpacePage.saveClusterLabel}"/>
                                     </div>
-                                    
+                                    <!--
                                     <a onClick="return popupDocument('/text/DocumentViewer?setId=#{ClusteringSpacePage.setId}&amp;docName=#{row.clusterInfo.randomDocument}');" href="/text/DocumentViewer?setId=#{ClusteringSpacePage.setId}&amp;docName=#{row.clusterInfo.randomDocument}" >
-                                        <ice:outputText value="Random Document: #{row.clusterInfo.randomDocument}"/>
+                                        <ice:outputText value="Random Document"/>
                                     </a>
+                                    -->
+                                    <ice:commandLink actionListener="#{row.openPopup}">View Documents</ice:commandLink>
+                                  
+                                    <ice:panelPopup id="modalPnlPop"
+                                                    draggable="true" modal="false"
+                                                    visible="#{row.showPopup}"
+                                                    autoCentre="true"
+                                                    styleClass="corePopup">
+                                        <f:facet name="header">
+                                            <ice:panelGroup styleClass="popupHeaderWrapper">
+                                                <ice:outputText
+                                                    value="Viewing Document: #{row.viewDocumentName}"
+                                                        styleClass="popupHeaderText"/>
+                                                
+                                            </ice:panelGroup>
+                                        </f:facet>
+                                        <f:facet name="body">
+                                            <ice:panelGroup styleClass="popupBody">
+                                                <ice:outputText value="#{row.viewDocumentText}"/><br/>
+                                                <ice:commandButton id="modalPnlCloseButton" type="submit"
+                                                                   value="Close Popup"
+                                                                   actionListener="#{row.closePopup}"/>
+                                            </ice:panelGroup>
+                                        </f:facet>
+                                    </ice:panelPopup>
                                 </div>
                             </ice:column>
                         </ice:panelGrid>

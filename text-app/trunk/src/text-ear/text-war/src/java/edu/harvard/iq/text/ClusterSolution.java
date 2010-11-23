@@ -5,11 +5,18 @@
 
 package edu.harvard.iq.text;
 
+import cc.mallet.cluster.Clustering;
+import cc.mallet.cluster.KMeans;
+import cc.mallet.types.Alphabet;
+import cc.mallet.types.Instance;
+import cc.mallet.types.InstanceList;
+import cc.mallet.types.Metric;
+import cc.mallet.types.Minkowski;
+import cc.mallet.types.SparseVector;
 import com.vividsolutions.jts.geom.Coordinate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
+
 
 /**
  *
@@ -211,15 +218,31 @@ public class ClusterSolution {
 
         double[] weights = new double[distanceArray.length]; //Normalize the distance array
         double sumWeights = 0;
+        int smallestDistanceIndex = 0;
         for (int i = 0; i < distanceArray.length; i++) {
+            if (distanceArray[i] < distanceArray[smallestDistanceIndex]) {
+                smallestDistanceIndex=i;
+            }
             //Formula for the Normal PDF mu = 0, sigma = 0.25,
             //this is equivalent to the R code: dnorm(i, sd=0.25)
 
             // Original line from processing file:
             // weights[i] = 1 / (sqrt(TWO_PI) * .25) * exp(-(sq(distanceArray[i] - 0) / (2 * sq(.25))));
             // TODO:  why  subtract 0 from distance array?
-            weights[i] = 1 / (Math.sqrt(TWO_PI) * .25) * Math.exp(-(Math.pow((distanceArray[i] - 0),2) / (2 * Math.pow(.25,2))));
+        //    weights[i] = 1 / (Math.sqrt(TWO_PI) * .25) * Math.exp(-(Math.pow((distanceArray[i] - 0),2) / (2 * Math.pow(.25,2))));
+            if (distanceArray[i] <= 1) {
+                weights[i] = .75 * (1 - Math.pow(distanceArray[i],2));
+            } else { 
+                weights[i] = 0;
+            }
+
+
             sumWeights = weights[i] + sumWeights;
+        }
+        // if distanceArray has no value <= 1, the smallest distance gets a weight equal to 1.
+        if (sumWeights == 0.0) {
+            sumWeights = weights[smallestDistanceIndex] = 1;
+
         }
         for (int i = 0; i < weights.length; i++) {  //Divide by the sum
             weights[i] = weights[i] / sumWeights;
@@ -275,7 +298,7 @@ public class ClusterSolution {
      *
      */
     private int[] getEnsembleAssignments(double[][] simMatrix) {
-
+  //      this.malletKMeans(simMatrix,numClusters);
 
         int[] assignments = new int[documentSet.getWordDocumentMatrix().length];
         long kmeansRandomSeed = (long) 12345;
@@ -474,4 +497,19 @@ public class ClusterSolution {
     }
 
    */
+
+    private void malletKMeans(double[][] simMatrix, int numClusters) {
+        InstanceList instanceList = new InstanceList(new Alphabet(),new Alphabet());
+        for (int i=0; i< simMatrix.length; i++) {
+            SparseVector sp = new SparseVector(simMatrix[i]);  // this is dense because we don't create the object with indices
+            Instance instance = new Instance(sp, "target","name","source");
+
+            instanceList.add(instance);
+        }
+        Metric metric = new Minkowski(1.0);
+
+        KMeans kMeans = new KMeans(instanceList.getPipe(),numClusters,metric  );
+        Clustering clustering = kMeans.cluster(instanceList);
+        System.out.println("Mallet clustering result: " + clustering);
+    }
 }

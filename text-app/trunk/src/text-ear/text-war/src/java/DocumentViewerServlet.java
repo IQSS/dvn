@@ -39,7 +39,7 @@ public class DocumentViewerServlet extends HttpServlet {
             // TODO: cleanup getting of JVM option
             String docRoot = System.getProperty("text.documentRoot");
 
-            // look for xml file
+       
             File setDir = new File(docRoot, setId);
             File docDir = new File( setDir, "docs");
             File document = new File(docDir, docName);

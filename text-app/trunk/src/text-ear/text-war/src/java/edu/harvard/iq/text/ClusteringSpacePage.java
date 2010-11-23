@@ -1,7 +1,12 @@
 package edu.harvard.iq.text;
 
 import com.icesoft.faces.component.ext.HtmlDataTable;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
+import java.util.Random;
 import javax.annotation.PostConstruct;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
@@ -205,7 +210,69 @@ public class ClusteringSpacePage {
    public class ClusterRow {
         Boolean viewEdit;
         String newValue;
+        Boolean showPopup = Boolean.FALSE;
         ClusterInfo clusterInfo;
+        int viewDocumentIndex;
+
+       public int getRandomDocumentIndex() {
+           Random ran = new Random();
+           return ran.nextInt(clusterInfo.getFileIndices().size());
+       }
+
+       public int getViewDocumentIndex() {
+           return this.viewDocumentIndex;
+       }
+
+       public void setViewDocumentIndex(int i) {
+           viewDocumentIndex = i;
+       }
+        public void openPopup(ActionEvent ae) {
+            viewDocumentIndex = getRandomDocumentIndex();
+            showPopup = Boolean.TRUE;
+
+        }
+
+        public void closePopup(ActionEvent ae) {
+            showPopup=Boolean.FALSE;
+        }
+
+        public Boolean getShowPopup() {
+            return showPopup;
+        }
+
+        public void setShowPopup(Boolean showPopup) {
+            this.showPopup = showPopup;
+        }
+
+        public String getViewDocumentName() {
+            return clusterInfo.getFileIndices().get(this.viewDocumentIndex).toString() + "Bush02.txt";
+        }
+        
+        public String getViewDocumentText() {
+           String docName = getViewDocumentName();
+           String docRoot = System.getProperty("text.documentRoot");
+           ByteArrayOutputStream baos = new ByteArrayOutputStream();
+           try {
+               File setDir = new File(docRoot, setId);
+               File docDir = new File(setDir, "docs");
+               File document = new File(docDir, docName);
+
+               FileInputStream fin = new FileInputStream(document);
+               BufferedInputStream bis = new BufferedInputStream(fin);
+
+               // Now read the buffered stream.
+               while (bis.available() > 0) {
+                   baos.write(bis.read());
+                   //   .print((char) bis.read());
+               }
+
+           } catch (Exception e) {
+               // TODO: cleanup error handling
+               System.err.println("Error reading file: " + e);
+           }
+           return baos.toString();
+
+       }
 
         public ClusterInfo getClusterInfo() {
             return clusterInfo;
@@ -234,6 +301,7 @@ public class ClusteringSpacePage {
         public ClusterRow(ClusterInfo clusterInfo) {
             viewEdit = Boolean.FALSE;
             this.clusterInfo = clusterInfo;
+            viewDocumentIndex = getRandomDocumentIndex();
             newValue = clusterInfo.getLabel();
         }
 

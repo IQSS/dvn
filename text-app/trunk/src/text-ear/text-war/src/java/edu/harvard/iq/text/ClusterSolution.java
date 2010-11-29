@@ -5,14 +5,6 @@
 
 package edu.harvard.iq.text;
 
-import cc.mallet.cluster.Clustering;
-import cc.mallet.cluster.KMeans;
-import cc.mallet.types.Alphabet;
-import cc.mallet.types.Instance;
-import cc.mallet.types.InstanceList;
-import cc.mallet.types.Metric;
-import cc.mallet.types.Minkowski;
-import cc.mallet.types.SparseVector;
 import com.vividsolutions.jts.geom.Coordinate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -229,7 +221,11 @@ public class ClusterSolution {
             // Original line from processing file:
             // weights[i] = 1 / (sqrt(TWO_PI) * .25) * exp(-(sq(distanceArray[i] - 0) / (2 * sq(.25))));
             // TODO:  why  subtract 0 from distance array?
-        //    weights[i] = 1 / (Math.sqrt(TWO_PI) * .25) * Math.exp(-(Math.pow((distanceArray[i] - 0),2) / (2 * Math.pow(.25,2))));
+
+            // original calculation:
+            //    weights[i] = 1 / (Math.sqrt(TWO_PI) * .25) * Math.exp(-(Math.pow((distanceArray[i] - 0),2) / (2 * Math.pow(.25,2))));
+           
+            // New calculation from Brandon, using the Epanechnikov Kernel to normalize the weights array
             if (distanceArray[i] <= 1) {
                 weights[i] = .75 * (1 - Math.pow(distanceArray[i],2));
             } else { 
@@ -248,6 +244,15 @@ public class ClusterSolution {
             weights[i] = weights[i] / sumWeights;
         }
         return weights;
+    }
+
+    public int getDiscoverableClusterNum()
+    {
+        double discov = 0;
+        for (int i=0; i<weightsArray.length;i++) {
+            discov += (weightsArray[i] * documentSet.getMethodPoints()[i].numberOfClusters);
+        }
+        return (int)Math.round(discov);
     }
 
     private double[][] fillSimMatrix(double[] weights) {
@@ -310,10 +315,12 @@ public class ClusterSolution {
         holder = kmeans.getClusters();
         int[][] assignmentHolder = new int[numClusters][documentSet.getWordDocumentMatrix().length];
         for (int i = 0; i < numClusters; i++) {
-            assignmentHolder[i] = holder[i].getMemberIndexes();
-            for (int j = 0; j < holder[i].getMemberIndexes().length; j++) {
-                int index = assignmentHolder[i][j];
-                assignments[index] = i;
+            if (holder[i]!=null) {
+                assignmentHolder[i] = holder[i].getMemberIndexes();
+                for (int j = 0; j < holder[i].getMemberIndexes().length; j++) {
+                    int index = assignmentHolder[i][j];
+                    assignments[index] = i;
+                }
             }
         }
 
@@ -497,7 +504,7 @@ public class ClusterSolution {
     }
 
    */
-
+/*
     private void malletKMeans(double[][] simMatrix, int numClusters) {
         InstanceList instanceList = new InstanceList(new Alphabet(),new Alphabet());
         for (int i=0; i< simMatrix.length; i++) {
@@ -512,4 +519,6 @@ public class ClusterSolution {
         Clustering clustering = kMeans.cluster(instanceList);
         System.out.println("Mallet clustering result: " + clustering);
     }
+ 
+ */
 }

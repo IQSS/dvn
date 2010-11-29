@@ -11,6 +11,7 @@ package edu.harvard.iq.text;
  */
 public class MethodPoint {
   String methodName;
+  int numberOfClusters;
   double xCoord;
   double yCoord;
 

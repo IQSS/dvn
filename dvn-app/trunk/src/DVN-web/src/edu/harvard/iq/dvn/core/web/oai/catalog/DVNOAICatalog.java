@@ -336,12 +336,14 @@ public class DVNOAICatalog extends AbstractCatalog implements java.io.Serializab
             set = tokenizer.nextToken();
             metadataPrefix = tokenizer.nextToken();
         } catch (NoSuchElementException e) {
+            logger.severe("Resumption token format: "+ resumptionToken);
             throw new BadResumptionTokenException();
         }
         
         /* Get some more records from your database */
         Object[] nativeItems = (Object[])resumptionResults.remove(resumptionId);
         if (nativeItems == null) {
+            logger.severe("No resumption results found: "+ resumptionToken);
             throw new BadResumptionTokenException();
         }
         int count;
@@ -663,14 +665,14 @@ public class DVNOAICatalog extends AbstractCatalog implements java.io.Serializab
             set = tokenizer.nextToken();
             metadataPrefix = tokenizer.nextToken();
         } catch (NoSuchElementException e) {
-            logger.info("No such element");
+            logger.info("No such element: " + resumptionToken);
             throw new BadResumptionTokenException();
         }
         
         /* Get some more records from your database */
         Object[] nativeItem = (Object[])resumptionResults.remove(resumptionId);
         if (nativeItem == null) {
-            logger.info("nativeItem null");
+            logger.info("nativeItem null: " + resumptionToken);
             throw new BadResumptionTokenException();
         }
         int count;
@@ -922,12 +924,14 @@ public class DVNOAICatalog extends AbstractCatalog implements java.io.Serializab
             resumptionId = tokenizer.nextToken();
             oldCount = Integer.parseInt(tokenizer.nextToken());
         } catch (NoSuchElementException e) {
+            logger.severe("No such element: " + resumptionToken);
             throw new BadResumptionTokenException();
         }
 
         /* Get some more sets */
         String[] dbSets = (String[])resumptionResults.remove(resumptionId);
         if (dbSets == null) {
+            logger.severe("No more sets: " + resumptionToken);
             throw new BadResumptionTokenException();
         }
         int count;

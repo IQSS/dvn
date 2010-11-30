@@ -16,7 +16,8 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.StringTokenizer;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -107,14 +108,15 @@ public class DocumentSet {
             String strLine = "";
             StringTokenizer st = null;
             int lineNumber = 0, tokenNumber = 0;
+            Set uniqueClusters = new HashSet();
 
             // skip line 1 because it just contains headers
             strLine = br.readLine();
-            lineNumber++;
+         
 
             //read tab separated file line by line
             while ((strLine = br.readLine()) != null) {
-                lineNumber++;
+                
 
                 //break tab separated line using "\t"
                 st = new StringTokenizer(strLine, "\t");
@@ -126,13 +128,20 @@ public class DocumentSet {
                 ArrayList<Integer> row = new ArrayList<Integer>();
 
                 while(st.hasMoreTokens()) {
-                    row.add(new Integer(st.nextToken()));
+                    Integer clusterNumber = new Integer(st.nextToken());
+                    row.add(clusterNumber);
+                    uniqueClusters.add(clusterNumber);
                 }
 
                 // we are at the end of the row so add it to the table
                 table.add(row);
-
+                
+                // Get the number of unique clusters in this row, and add it to the MethodPoint object
+                // for this method.
+                methodPoints[lineNumber].numberOfClusters = uniqueClusters.size();
+                lineNumber++;
             }
+
             // Convert our List object to two-dim array
             this.clusterMembership = new int[table.size()][];
                 for (int i=0; i< table.size(); i++) {

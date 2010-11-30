@@ -172,14 +172,21 @@
            }
 
            function changeClusterRadio(clusterNumVal) {
+                document.getElementById('ClusterForm:discoverableCheckbox').checked = false;
                 document.getElementById('ClusterForm:clusterNum').value = clusterNumVal;
-        //       changeClusterNum(clusterNumVal);
-        //       document.getElementById('ClusterForm:changeCluster').click();
+        
            }
 
-           function changeClusterNum(clusterNumVal) {
-               document.getElementById('ClusterForm:clusterNum').value = clusterNumVal;
+           function calculateButtonAction() {
+               document.getElementById('clusterRadio1').checked = false;
+               document.getElementById('clusterRadio2').checked = false;
+               document.getElementById('clusterRadio3').checked = false;
+               document.getElementById('ClusterForm:discoverableCheckbox').checked = false;
+               addPointForClusterNum(document.getElementById('ClusterForm:clusterNum').value);
+               
+           }
 
+           function addPointForClusterNum(clusterNumVal) {             
                // Add the current point to the list, with the new clusterNum
                var current = points[currentIndex];
                addPointToList( current.geometry.x, current.geometry.y, clusterNumVal, -1 );
@@ -187,6 +194,7 @@
                // Now update the colors of all the points, given the new clusterNum
                updatePointsDisplay(clusterNumVal);
            }
+
 
            function addPointToList(x,y,clusterNumVal,solutionIdVal) {
                // if we have stepped back into the point history,
@@ -258,7 +266,7 @@
                         points[i].style.pointRadius=0;
                     }
                 }
-                // current point is always bold (which for now is a bigger red dot)
+                // current point is always bold (which for now is a bigger dot)
                 points[currentIndex].style.pointRadius=4;
                 points[currentIndex].style.strokeColor="#7995F9";
                 points[currentIndex].style.fillColor="#7995F9";
@@ -388,19 +396,20 @@
                 <td>
                     <label for="numberclusters">Number of Clusters</label>
                     <ice:inputText id="clusterNum" size="5" value="#{ClusteringSpacePage.clusterNum}"></ice:inputText>
-                    <ice:commandButton id="changeCluster" value="calculate" onclick="changeClusterNum(document.getElementById('ClusterForm:clusterNum').value);" actionListener="#{ClusteringSpacePage.updateClusterSolutionListener}"/>
+                    <ice:commandButton id="changeCluster" value="calculate" onclick="calculateButtonAction();" actionListener="#{ClusteringSpacePage.changeClusterNumberListener}"/>
+                    <ice:commandButton visible ="false" id="discoverableButton" value="getDiscoverable"  actionListener="#{ClusteringSpacePage.getDiscoverableListener}"/>
+               </td>
+                <td>
+                    <input type="radio" name="clusterRadio" id="clusterRadio1" onclick="changeClusterRadio(10);"/> <label for="clusterRadio1">10 Clusters (Low)</label>
                 </td>
                 <td>
-                    <input type="radio" name="clusterRadio" id="clusterRadio10" onclick="changeClusterRadio(10);"/> <label for="clusterRadio10">10 Clusters (Low)</label>
+                    <input type="radio" name="clusterRadio" id="clusterRadio2" onclick="changeClusterRadio(15);"/> <label for="clusterRadio2">15 Clusters (Medium)</label>
                 </td>
                 <td>
-                    <input type="radio" name="clusterRadio" id="clusterRadio15" onclick="changeClusterRadio(15);"/> <label for="clusterRadio15">15 Clusters (Medium)</label>
+                    <input type="radio" name="clusterRadio" id="clusterRadio3" onclick="changeClusterRadio(30);"/> <label for="clusterRadio3">30 Clusters (High)</label>
                 </td>
                 <td>
-                    <input type="radio" name="clusterRadio" id="clusterRadio30" onclick="changeClusterRadio(30);"/> <label for="clusterRadio30">30 Clusters (High)</label>
-                </td>
-                <td>
-                    <input type="checkbox" name="clusterDiscoverable"/> <label for="clusterDiscoverable">Discoverable</label>
+                    <ice:selectBooleanCheckbox onclick="if (this.checked) document.getElementById('ClusterForm:discoverableButton').click();" id="discoverableCheckbox"  value="#{ClusteringSpacePage.discoverable}"  /> <label for="clusterDiscoverable">Discoverable</label>
                 </td>
             </tr>
         </table>

@@ -6,6 +6,7 @@
 package edu.harvard.iq.text;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -131,29 +132,21 @@ public class ClusterSolution {
     }
 
     private void doClusterCalculations() {
-        // ensembleAssignments is a (# of Documents) Length Array with a cluster number for each member
-        int[] ensembleAssignments = getEnsembleAssignments(simMatrix);
+        
+        Cluster[] clusters = doKMeansCalc(simMatrix);
 
-        createClusterObjects(ensembleAssignments, documentSet.getWordDocumentMatrix());
+        createClusterInfoList(clusters);
 
         Collections.sort(clusterInfoList);
         System.out.println("finished calculating, x="+this.candidateXPoint+", y="+this.candidateYPoint+" clusterInfo:" + clusterInfoList);
     }
 
-    private void createClusterObjects(int[] ensembleAssignments, int[][] wordDocMatrix ) {
+    private void createClusterInfoList(Cluster[] clusters ) {
 
-        // first read through ensemble assignments tocreate the objects
-        //and add the file (ie document) indices to each cluster
         
-        for (int i=0; i< ensembleAssignments.length; i++ ) {
-            int clusterNumber = ensembleAssignments[i];
-            ClusterInfo foundCluster = getCluster(clusterNumber);
-            if (foundCluster!=null) {
-                foundCluster.getFileIndices().add(i);
-            } else {
-                ClusterInfo newCluster = new ClusterInfo(clusterNumber);
-                newCluster.getFileIndices().add(i);
-                clusterInfoList.add(newCluster);
+        for (int i=0; i< clusters.length; i++ ) {
+                if (clusters[i]!=null) {
+                clusterInfoList.add(new ClusterInfo(clusters[i]));
             }
         }
 
@@ -164,31 +157,8 @@ public class ClusterSolution {
         }
     }
 
-    private ClusterInfo getCluster(int clusterNum) {
-        for (ClusterInfo ci : clusterInfoList) {
-            if (ci.getClusterNumber() == clusterNum) {
-                return ci;
-            }
-        }
-        return null;
-    }
-    /*
-
-    public void updateCandidatePoint(float candidateXPoint, float candidateYPoint) {
-        this.candidateXPoint = candidateXPoint;
-        this.candidateYPoint = candidateYPoint;
-        // When we change the candidate point, we have to re-do all the calculations
-        calculateSolution();
-    }
-
-    //Methods
-    public void updateClusterNumber(int newNumber) {
-        numClusters = newNumber;
-        // when we change the cluster number, we have to recalculate
-        doClusterCalculations();
-       
-    }
-*/
+   
+   
     // TODO: I converted these from floats to doubles - is this ok?
     private double[] makeWeightsArray() {
     /*
@@ -292,7 +262,7 @@ public class ClusterSolution {
                 simMatrix[r][c] = 1 - simMatrix[r][c] / maxRowValue[r]; //1 - Value divided by the maximum of each row
             }
         }
-        System.out.println("simMatrix is"+ simMatrix);
+     //   System.out.println("simMatrix is"+ simMatrix);
         return simMatrix;
     }
 
@@ -302,29 +272,36 @@ public class ClusterSolution {
      *    and the number of clusters, then runs K-Means and returns the assignments.
      *
      */
-    private int[] getEnsembleAssignments(double[][] simMatrix) {
+    private Cluster[] doKMeansCalc(double[][] simMatrix) {
   //      this.malletKMeans(simMatrix,numClusters);
 
-        int[] assignments = new int[documentSet.getWordDocumentMatrix().length];
+       
         long kmeansRandomSeed = (long) 12345;
+        System.out.println("Calling BasicKMeans");
+        System.out.println("numClusters="+numClusters);
+        System.out.println("coordinates="+this.candidateXPoint+","+this.candidateYPoint);
+        DecimalFormat twoDForm = new DecimalFormat("#.####");
+        System.out.println("simMatrix=");
+        
+        for (int i=0; i< simMatrix.length; i++) {
+            StringBuffer buff = new StringBuffer("");
+           
+            buff.append("[");
+            for(int j=0; j< simMatrix[i].length; j++) {
+                if (j>0) buff.append(",");
+                buff.append(twoDForm.format(simMatrix[i][j]));
+            }
+            buff.append("]");
+            System.out.println("row["+i+"]="+buff);
+        }
+        
 
         BasicKMeans kmeans = new BasicKMeans(simMatrix, numClusters, 20, kmeansRandomSeed);
 
         kmeans.run();
-        Cluster[] holder;
-        holder = kmeans.getClusters();
-        int[][] assignmentHolder = new int[numClusters][documentSet.getWordDocumentMatrix().length];
-        for (int i = 0; i < numClusters; i++) {
-            if (holder[i]!=null) {
-                assignmentHolder[i] = holder[i].getMemberIndexes();
-                for (int j = 0; j < holder[i].getMemberIndexes().length; j++) {
-                    int index = assignmentHolder[i][j];
-                    assignments[index] = i;
-                }
-            }
-        }
-
-        return assignments;
+       
+        return kmeans.getClusters();
+     
     }
 /*
     public int hashCode() {

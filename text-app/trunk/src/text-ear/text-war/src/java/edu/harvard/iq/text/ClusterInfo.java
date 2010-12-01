@@ -4,8 +4,8 @@ package edu.harvard.iq.text;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
-import java.util.Random;
 
 /**
  *
@@ -14,6 +14,7 @@ import java.util.Random;
 public class ClusterInfo implements Comparable<ClusterInfo> {
     private int clusterNumber;
     private float clusterPercent;
+    private Cluster cluster;
     private ArrayList<Integer> fileIndices = new ArrayList<Integer>(); 
     private ArrayList<WordValue> wordList = new ArrayList<WordValue>();
     private String label;
@@ -29,6 +30,7 @@ public class ClusterInfo implements Comparable<ClusterInfo> {
     public ArrayList<Integer> getFileIndices() {
         return fileIndices;
     }
+    
 
     public void setFileIndices(ArrayList<Integer> fileIndices) {
         this.fileIndices = fileIndices;
@@ -51,7 +53,12 @@ public class ClusterInfo implements Comparable<ClusterInfo> {
     public ClusterInfo(int clusterNumber) {
         this.clusterNumber = clusterNumber;
     }
-
+    
+    public ClusterInfo(Cluster cluster) {
+        this.cluster = cluster;
+        for (int i=0;i< cluster.getMemberIndexes().length;i++)
+        this.fileIndices.add(cluster.getMemberIndexes()[i]);
+    }
     public String getTopWords() {
         String ret ="";
         for (int i=0;i<10;i++) {

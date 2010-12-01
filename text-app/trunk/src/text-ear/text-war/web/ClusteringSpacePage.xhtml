@@ -432,18 +432,18 @@
                 </div>
             </div>
             <div>
-                <ice:dataTable id="savedList" cellpadding="0" cellspacing="0" value="#{ClusteringSpacePage.savedSolutions}" var="row" width="100%">
+                <ice:dataTable id="savedList" cellpadding="0" cellspacing="0" value="#{ClusteringSpacePage.savedSolutions}" var="saved" width="100%">
                     <ice:column>
                       <f:facet name="header">
                         <ice:outputText  value="Label"/>
                       </f:facet>
-                        <ice:commandLink value="#{row.infoLabel}" onclick="addSavedPoint(#{row.x},#{row.y},#{row.numClusters},#{row.id});" actionListener="#{ClusteringSpacePage.updateClusterSolutionListener}"></ice:commandLink>
+                        <ice:commandLink value="#{saved.infoLabel}" onclick="addSavedPoint(#{saved.x},#{saved.y},#{saved.numClusters},#{saved.id});" actionListener="#{ClusteringSpacePage.updateClusterSolutionListener}"></ice:commandLink>
                     </ice:column>
                     <ice:column>
                         <f:facet name="header">
                             <ice:outputText  value="Number of Clusters"/>
                         </f:facet>
-                        <ice:outputText value="#{row.numClusters}"/>
+                        <ice:outputText value="#{saved.numClusters}"/>
                     </ice:column>
                 </ice:dataTable>
             </div>
@@ -566,12 +566,21 @@ td.clusterCountCol {width:14%;}
                                     <div class="clusterDetailBlock">
                                         <ice:panelTabSet id="tabSet1" styleClass="dvnTabs" selectedIndex="0">
                                             <ice:panelTab id="doc" label="Documents">
-                                                <!--<ice:outputLink onclick="return popupDocument('/text/DocumentViewer?setId=#{ClusteringSpacePage.setId}&amp;docName=#{row.clusterInfo.randomDocument}');" value="/text/DocumentViewer?setId=#{ClusteringSpacePage.setId}&amp;docName=#{row.clusterInfo.randomDocument}">
-                                                    Random Document
-                                                </ice:outputLink>-->
-                                                <!--
-                                                <ice:dataPaginator for="dataverseList"
-                                                                   binding="#{HomePage.vdcUIList.paginator}"
+                                               
+
+                                                <p><ice:outputText value="Examplar Document: " rendered="#{row.viewDocumentIndex==0}"/>
+                                                <ice:outputText value="#{row.viewDocumentName}"/>
+                                                </p>
+                                               
+                                                
+                                                <p><ice:outputText value="#{row.viewDocumentPreview}"/></p>
+                                                <ice:commandLink actionListener="#{row.openPopup}">Full Document</ice:commandLink>
+                                            </ice:panelTab>
+
+                                            <ice:panelTab id="list" label="List View">
+                                                 <ice:outputText value="#{row.clusterInfo.clusterCount} Documents in Cluster"/>
+                                                 <ice:dataPaginator for="clusterDocs"
+                                                                   
                                                                    id="dataScroll_3"
                                                                    paginator="true" fastStep="3"
                                                                    paginatorMaxPages="4"
@@ -580,29 +589,23 @@ td.clusterCountCol {width:14%;}
                                                   <f:facet name="first">
                                                     <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-first.gif" title="First Page"/>
                                                   </f:facet>
-                                                  <f:facet name="fastrewind">
-                                                      <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-fr.gif" title="Fast Backward"/>
-                                                  </f:facet>
+                                                  
                                                   <f:facet name="previous">
                                                     <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-previous.gif" title="Previous"/>
                                                   </f:facet>
                                                   <f:facet name="next">
                                                     <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-next.gif" title="Next"/>
                                                   </f:facet>
-                                                  <f:facet name="fastforward">
-                                                      <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-ff.gif" title="Fast Forward"/>
-                                                  </f:facet>
+                                                 
                                                   <f:facet name="last">
                                                     <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-last.gif" title="Last Page"/>
                                                   </f:facet>
                                                 </ice:dataPaginator>
-                                                -->
-                                                <p>Small text sample from Document</p>
-                                                <ice:commandLink actionListener="#{row.openPopup}">Full Document</ice:commandLink>
-                                            </ice:panelTab>
-
-                                            <ice:panelTab id="list" label="List View">
-                                                List of Documents
+                                                <ice:dataTable  rows="5" id="clusterDocs"  cellpadding="0" cellspacing="0" value="#{row.clusterInfo.fileIndices}" var="fileId" width="100%">
+                                                     <ice:column>
+                                                         <ice:commandLink value="#{fileId}" actionListener="#{row.viewDocument}"/>                    
+                                                    </ice:column>
+                                                </ice:dataTable>
                                             </ice:panelTab>
                                         </ice:panelTabSet>
                                     </div>

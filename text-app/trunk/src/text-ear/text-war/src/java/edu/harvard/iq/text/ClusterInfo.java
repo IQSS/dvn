@@ -14,7 +14,7 @@ import java.util.Collections;
 public class ClusterInfo implements Comparable<ClusterInfo> {
     private int clusterNumber;
     private float clusterPercent;
-    private Cluster cluster;
+    
     private ArrayList<Integer> fileIndices = new ArrayList<Integer>(); 
     private ArrayList<WordValue> wordList = new ArrayList<WordValue>();
     private String label;
@@ -54,8 +54,7 @@ public class ClusterInfo implements Comparable<ClusterInfo> {
         this.clusterNumber = clusterNumber;
     }
     
-    public ClusterInfo(Cluster cluster) {
-        this.cluster = cluster;
+    public ClusterInfo(Cluster cluster) {       
         for (int i=0;i< cluster.getMemberIndexes().length;i++)
         this.fileIndices.add(cluster.getMemberIndexes()[i]);
     }

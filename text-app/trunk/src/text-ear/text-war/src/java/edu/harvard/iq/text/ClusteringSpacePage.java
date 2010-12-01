@@ -1,14 +1,17 @@
 package edu.harvard.iq.text;
 
 import com.icesoft.faces.component.ext.HtmlDataTable;
+import com.icesoft.faces.component.paneltabset.PanelTabSet;
 import com.icesoft.faces.context.effects.JavascriptContext;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 import javax.annotation.PostConstruct;
+import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 
@@ -254,11 +257,33 @@ public class ClusteringSpacePage {
 
 
    public class ClusterRow {
-        Boolean viewEdit;
+        HtmlDataTable docTable;
+        PanelTabSet panelTabSet;
         String newValue;
         Boolean showPopup = Boolean.FALSE;
         ClusterInfo clusterInfo;
         int viewDocumentIndex;
+
+        public ClusterRow(ClusterInfo clusterInfo) {          
+            this.clusterInfo = clusterInfo;
+            viewDocumentIndex = 0;  // Show the examplar document first
+            newValue = clusterInfo.getLabel();
+        }
+        public HtmlDataTable getDocTable() {
+            return docTable;
+        }
+
+        public void setDocTable(HtmlDataTable docTable) {
+            this.docTable = docTable;
+        }
+
+        public PanelTabSet getPanelTabSet() {
+            return panelTabSet;
+        }
+
+        public void setPanelTabSet(PanelTabSet panelTabSet) {
+            this.panelTabSet = panelTabSet;
+        }
 
        public int getRandomDocumentIndex() {
            Random ran = new Random();
@@ -272,8 +297,24 @@ public class ClusteringSpacePage {
        public void setViewDocumentIndex(int i) {
            viewDocumentIndex = i;
        }
-        public void openPopup(ActionEvent ae) {
-            viewDocumentIndex = getRandomDocumentIndex();
+       
+       public void viewDocument(ActionEvent ae) {
+           UIComponent comp = ae.getComponent().getParent();
+           while(!(comp instanceof HtmlDataTable)) {
+               comp = comp.getParent();
+           }
+           HtmlDataTable table = (HtmlDataTable)comp;
+           comp = comp.getParent();
+           while(!(comp instanceof PanelTabSet)) {
+               comp = comp.getParent();
+           }
+           PanelTabSet tabSet = (PanelTabSet)comp;
+           viewDocumentIndex = table.getRowIndex();
+           tabSet.setSelectedIndex(0);  // Select the Document tab
+       }
+
+       public void openPopup(ActionEvent ae) {
+           
             showPopup = Boolean.TRUE;
 
         }
@@ -293,17 +334,33 @@ public class ClusteringSpacePage {
         public String getViewDocumentName() {
             return clusterInfo.getFileIndices().get(this.viewDocumentIndex).toString() + "Bush02.txt";
         }
-        
-        public String getViewDocumentText() {
-           String docName = getViewDocumentName();
-           String docRoot = System.getProperty("text.documentRoot");
-           ByteArrayOutputStream baos = new ByteArrayOutputStream();
-           try {
-               File setDir = new File(docRoot, setId);
-               File docDir = new File(setDir, "docs");
-               File document = new File(docDir, docName);
 
-               FileInputStream fin = new FileInputStream(document);
+        public String getViewDocumentPreview() {
+
+            int previewLength = 40;
+            String preview = null;
+            byte[] byteArray = new byte[previewLength];
+            try {
+                FileInputStream fin = getViewDocumentInputStream();
+                BufferedInputStream bis = new BufferedInputStream(fin);
+                bis.read(byteArray,0, previewLength);
+                preview = new String(byteArray, "utf-8");
+               if (bis.available()>0) {
+                   preview+="...";
+               }
+            } catch (IOException e) {
+                throw new ClusterException(e.getMessage());
+            }
+            return preview;
+
+        }
+
+       public String getViewDocumentText() {
+
+           ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+           try {
+               FileInputStream fin = getViewDocumentInputStream();
                BufferedInputStream bis = new BufferedInputStream(fin);
 
                // Now read the buffered stream.
@@ -311,12 +368,21 @@ public class ClusteringSpacePage {
                    baos.write(bis.read());
                    //   .print((char) bis.read());
                }
-
-           } catch (Exception e) {
-               // TODO: cleanup error handling
-               System.err.println("Error reading file: " + e);
+               fin.close();
+           } catch (IOException e) {
+               throw new ClusterException(e.getMessage());
            }
            return baos.toString();
+
+       }
+
+       private FileInputStream getViewDocumentInputStream() throws IOException {
+           String docRoot = System.getProperty("text.documentRoot");
+           File setDir = new File(docRoot, setId);
+           File docDir = new File(setDir, "docs");
+           File document = new File(docDir, getViewDocumentName());
+
+           return new FileInputStream(document);
 
        }
 
@@ -336,20 +402,9 @@ public class ClusteringSpacePage {
             this.newValue = newValue;
         }
 
-        public Boolean getViewEdit() {
-            return viewEdit;
-        }
+       
 
-        public void setViewEdit(Boolean viewEdit) {
-            this.viewEdit = viewEdit;
-        }
-
-        public ClusterRow(ClusterInfo clusterInfo) {
-            viewEdit = Boolean.FALSE;
-            this.clusterInfo = clusterInfo;
-            viewDocumentIndex = getRandomDocumentIndex();
-            newValue = clusterInfo.getLabel();
-        }
+      
 
     }
 

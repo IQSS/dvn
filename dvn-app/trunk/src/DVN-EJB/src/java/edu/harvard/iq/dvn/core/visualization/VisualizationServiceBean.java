@@ -115,13 +115,13 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
     }
 
     @Override
-    public boolean validateVariableMappings(Long dataTableId) {
+    public boolean validateVariableMappings(DataTable dataTable) {
         boolean valid = true;
 
-        valid &= validateOneMeasureMapping(dataTableId);
-        valid &= validateAtLeastOneFilterMapping(dataTableId);
-        valid &= validateUniqueVariableMappings(dataTableId);
-        valid &= validateXAxisMapping(dataTableId);
+        valid &= validateOneMeasureMapping(dataTable);
+        valid &= validateAtLeastOneFilterMapping(dataTable);
+        //valid &= validateUniqueVariableMappings(dataTable);
+        valid &= validateXAxisMapping(dataTable);
         
         return valid;
     }
@@ -129,8 +129,10 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
     private boolean validateUniqueVariableMappings(Long dataTableId){
 
         boolean valid = true;
-        List mappingIds = getUniqueMappedVariables(dataTableId);
-        List testIds = getUniqueMappedVariables(dataTableId);
+        List mappingIds = new ArrayList();
+        List testIds = new ArrayList();
+        mappingIds = getUniqueMappedVariables(dataTableId);
+        testIds = getUniqueMappedVariables(dataTableId);
         Iterator iterator = mappingIds.iterator();
         while (iterator.hasNext()) {
 
@@ -151,55 +153,84 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
         return valid;
     }
 
-    private boolean validateOneMeasureMapping(Long dataTableId){
+    public boolean validateOneMeasureMapping(DataTable dataTable){
 
        int countMeasures = 0;
-        Long oldId = new Long(0);
-        List variableMappings = getVariableMappings(dataTableId);
-        Iterator iterator = variableMappings.iterator();
-        while (iterator.hasNext()) {
-            DataVariableMapping dataVariableMapping = (DataVariableMapping) iterator.next();
-            Long newId = dataVariableMapping.getId();
-            if (!oldId.equals(newId)   || !oldId.equals(new Long(0))){
-                if (countMeasures != 1){
+       boolean hasMappings = false;
+       boolean xAxis = false;
+        List variableMappings = new ArrayList();
+        List dataVariables = new ArrayList();
+        dataVariables = dataTable.getDataVariables();
+        if (!dataVariables.isEmpty())
+        {
+            Iterator iterator = dataVariables.iterator();
+            while (iterator.hasNext()) {
+                DataVariable dataVariable = (DataVariable) iterator.next();
+                xAxis = false;
+                hasMappings = false;
+                countMeasures = 0;
+                variableMappings = (List) dataVariable.getDataVariableMappings();
+                if (!variableMappings.isEmpty()){
+                    hasMappings = true;
+                    Iterator iteratorMap = variableMappings.iterator();
+
+                    while (iteratorMap.hasNext()) {
+                        DataVariableMapping dataVariableMapping = (DataVariableMapping) iteratorMap.next();
+
+                        if (dataVariableMapping.isX_axis()) xAxis = true;
+                        if (!xAxis && dataVariableMapping.getVarGrouping() != null &&
+                                dataVariableMapping.getVarGrouping().getGroupingType().equals(GroupingType.MEASURE)){
+                            countMeasures++;
+                        }
+                    }
+                }
+                if (!xAxis && hasMappings && countMeasures != 1){
                     return false;
                 }
                 else{
-                    oldId = newId;
+                    xAxis = false;
+                    hasMappings = false;
                     countMeasures = 0;
                 }
-            }
-            if (dataVariableMapping.getVarGrouping().getGroupingType().equals(GroupingType.MEASURE)){
-                countMeasures++;
+
             }
         }
-        if (countMeasures != 1){
-            return false;
-        }
+
+
 
         return true;
     }
 
-    private boolean validateXAxisMapping(Long dataTableId){
+    public boolean validateXAxisMapping(DataTable dataTable){
 
         int countXAxis = 0;
-        Long checkId = new Long(0);
-        List variableMappings = getVariableMappings(dataTableId);
-        Iterator iterator = variableMappings.iterator();
-        while (iterator.hasNext()) {
-            DataVariableMapping dataVariableMapping = (DataVariableMapping) iterator.next();
+        List variableMappings = new ArrayList();
+        List dataVariables = new ArrayList();
+        DataVariable dvVerify = new DataVariable();
+        dataVariables = dataTable.getDataVariables();
+        if (!dataVariables.isEmpty())
+        {
+            Iterator iteratorV = dataVariables.iterator();
+            while (iteratorV.hasNext()) {
+                DataVariable dataVariable = (DataVariable) iteratorV.next();
+
+                variableMappings = (List) dataVariable.getDataVariableMappings();
+                Iterator iterator = variableMappings.iterator();
+                while (iterator.hasNext()) {
+                    DataVariableMapping dataVariableMapping = (DataVariableMapping) iterator.next();
 
 
-            if (dataVariableMapping.isX_axis()){
-                countXAxis++;
-                checkId = dataVariableMapping.getDataVariable().getId();
+                    if (dataVariableMapping.isX_axis()){
+                        countXAxis++;
+                        dvVerify = dataVariableMapping.getDataVariable();
+                    }
+                }
+                if (countXAxis != 1){
+                    return false;
+                }
             }
         }
-        if (countXAxis != 1){
-            return false;
-        }
-
-        List variableMappingsXAxis = getVariableMappingsById(checkId);
+        List variableMappingsXAxis = (List) dvVerify.getDataVariableMappings();
 
         if (variableMappingsXAxis.size() != 1 ){
             return false;
@@ -211,37 +242,51 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
 
 
 
-    private boolean validateAtLeastOneFilterMapping(Long dataTableId){
+    public boolean validateAtLeastOneFilterMapping(DataTable dataTable){
 
        int countFilters = 0;
+       boolean xAxis = false;
+       boolean hasMappings = false;
         Long oldId = new Long(0);
-        List variableMappings = getVariableMappings(dataTableId);
-        Iterator iterator = variableMappings.iterator();
-        while (iterator.hasNext()) {
-            DataVariableMapping dataVariableMapping = (DataVariableMapping) iterator.next();
-            Long newId = dataVariableMapping.getId();
-            if (!oldId.equals(newId)   || !oldId.equals(new Long(0))){
-                if (countFilters < 1){
-                    return false;
+        List variableMappings = new ArrayList();
+        List dataVariables = new ArrayList();
+        dataVariables = dataTable.getDataVariables();
+        Iterator iteratorV = dataVariables.iterator();
+            while (iteratorV.hasNext()) {
+                DataVariable dataVariable = (DataVariable) iteratorV.next();
+                xAxis = false;
+                hasMappings = false;
+                countFilters = 0;
+                variableMappings = (List) dataVariable.getDataVariableMappings();
+                Iterator iterator = variableMappings.iterator();
+                while (iterator.hasNext()) {
+                    hasMappings = true;
+                    DataVariableMapping dataVariableMapping = (DataVariableMapping) iterator.next();
+                    Long newId = dataVariableMapping.getDataVariable().getId();
+
+                    if (dataVariableMapping.isX_axis()) xAxis = true;
+                    if (!xAxis && dataVariableMapping.getVarGrouping().getGroupingType().equals(GroupingType.FILTER)){
+                        countFilters++;
+                    }
                 }
-                else{
-                    oldId = newId;
-                    countFilters = 0;
-                }
+                    if (hasMappings  && !xAxis){
+                        if (countFilters < 1){
+                            return false;
+                        }
+                        else{
+                            xAxis = false;
+                            hasMappings = false;
+                            countFilters = 0;
+                        }
+                    }
+
             }
-            if (dataVariableMapping.getVarGrouping().getGroupingType().equals(GroupingType.FILTER)){
-                countFilters++;
-            }
-        }
-        if (countFilters < 1){
-            return false;
-        }
 
         return true;
     }
 
     private List getUniqueMappedVariables(Long dataTableId){
-        String query = "SELECT distinct m.datavariable_id FROM  datavariablemapping m where m.datatable.id = " + dataTableId + "  ORDER BY m.datavariable.id";
+        String query = "SELECT distinct m.dataVariable.id FROM  datavariablemapping m where m.datatable.id = " + dataTableId + "  ORDER BY m.dataVariable.id";
         return (List) em.createQuery(query).getResultList();
 
     }

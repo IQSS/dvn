@@ -22,7 +22,7 @@ public interface VisualizationServiceLocal extends java.io.Serializable {
 
     public void updateGroupings(List <VarGrouping> groupings);
     public boolean validateGroupings(Long dataTableId);
-    public boolean validateVariableMappings(Long dataTableId);
+    public boolean validateVariableMappings(DataTable dataTable);
     public List getVariableMappings(Long dataTableId);
     public List getGroupsFromGroupTypeId(Long groupTypeId);
     public List getGroupTypesFromGroupId(Long groupId);
@@ -52,6 +52,12 @@ public interface VisualizationServiceLocal extends java.io.Serializable {
 
     @javax.ejb.Remove
     public void cancel();
+
+    public boolean validateAtLeastOneFilterMapping(edu.harvard.iq.dvn.core.study.DataTable dataTable);
+
+    public boolean validateXAxisMapping(edu.harvard.iq.dvn.core.study.DataTable dataTable);
+
+    public boolean validateOneMeasureMapping(edu.harvard.iq.dvn.core.study.DataTable dataTable);
 
 
 }

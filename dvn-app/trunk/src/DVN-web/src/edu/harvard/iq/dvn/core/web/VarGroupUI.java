@@ -21,6 +21,7 @@ public class VarGroupUI {
     private List <VarGroupTypeUI> varGroupTypesSelected;
     private List <Long> varGroupTypesSelectItems;
     private List <Long> dataVariablesSelected;
+    private Long numberOfVariablesSelected = new Long(0);
 
 
     public List<DataVariable> getDvMappings() {
@@ -65,4 +66,11 @@ public class VarGroupUI {
         this.dataVariablesSelected = dataVariablesSelected;
     }
 
+    public Long getNumberOfVariablesSelected() {
+        return numberOfVariablesSelected;
+    }
+
+    public void setNumberOfVariablesSelected(Long numberOfVariablesSelected) {
+        this.numberOfVariablesSelected = numberOfVariablesSelected;
+    }
 }

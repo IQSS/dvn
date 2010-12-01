@@ -16,20 +16,22 @@
 <ui:define name="body">
 
 <ice:form id="form1">
+    
 <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
 
 <style type="text/css">
 
 </style>
             <li>
-                <ice:outputLink id="hyperlinkM" value="/dvn/faces/ExploreDataPage.xhtml?fileId=#{SetUpDataExplorationPage.studyFileId}">
+                <ice:outputLink id="hyperlinkM" value="/dvn/faces/ExploreDataPage.xhtml?fileId=#{SetUpDataExplorationPage.studyFileId}"
+                                rendered="#{SetUpDataExplorationPage.showCommands}">
                   <ice:outputText id="hyperlinkMText1" value="Explore Data"/>
                 </ice:outputLink>
             </li>
 <div>
 <ice:outputText value="Select A Data File for Data Exploration Set-up"/>
 <br></br>
-                <ice:selectOneMenu value="#{SetUpDataExplorationPage.studyFileId}"  partialSubmit="true" binding="#{SetUpDataExplorationPage.selectStudyFile}"
+<ice:selectOneMenu value="#{SetUpDataExplorationPage.studyFileId}"  disabled="#{!SetUpDataExplorationPage.selectFile}" partialSubmit="true" binding="#{SetUpDataExplorationPage.selectStudyFile}"
                                          onchange="getElementById('form1:studyFileIdButton').click();">
                     <f:selectItems value="#{SetUpDataExplorationPage.studyFileIdSelectItems}"/>
                 </ice:selectOneMenu>
@@ -40,13 +42,28 @@
                         <ice:commandButton id="studyFileIdButton"  visible="false" value="Change" action="#{SetUpDataExplorationPage.resetStudyFileId}"/>
                         <br/>
     <div jsfc="ice:panelGroup" style="float:right; margin-bottom:1em;">
-        <ice:commandButton type="submit" value="Cancel" action ="#{SetUpDataExplorationPage.cancel}"/>
+        <ice:commandButton id="validateButton" type="submit" value="Validate" rendered="#{SetUpDataExplorationPage.showCommands}"
+                           binding="#{SetUpDataExplorationPage.validateButton}" action ="#{SetUpDataExplorationPage.validate}"/>
+        <ice:message for="validateButton" id ="boxErrorMsg"  styleClass="errorMessage"   />
+    </div>
+                 
+    <div jsfc="ice:panelGroup" style="float:right; margin-bottom:1em;" 
+         rendered ="#{!SetUpDataExplorationPage.dataTable.visualizationEnabled  and SetUpDataExplorationPage.showCommands}">
+        <ice:commandButton type="submit" value="Release" action ="#{SetUpDataExplorationPage.release}"/>
     </div>
     <div jsfc="ice:panelGroup" style="float:right; margin-bottom:1em;">
-        <ice:commandButton type="submit" value="Save" action ="#{SetUpDataExplorationPage.save}"/>
+        <ice:commandButton type="submit" value="Un-Release" action ="#{SetUpDataExplorationPage.unRelease}" 
+                           rendered ="#{SetUpDataExplorationPage.dataTable.visualizationEnabled and SetUpDataExplorationPage.showCommands}"/>
+    </div>
+
+    <div jsfc="ice:panelGroup" style="float:right; margin-bottom:1em;">
+        <ice:commandButton type="submit" value="Cancel" action ="#{SetUpDataExplorationPage.cancel}" />
+    </div>
+    <div jsfc="ice:panelGroup" style="float:right; margin-bottom:1em;">
+        <ice:commandButton type="submit" value="Save" action ="#{SetUpDataExplorationPage.save}" rendered="#{SetUpDataExplorationPage.showCommands}"/>
     </div>
     <div class="dvn_sectionBoxNoBorders">
-        <ice:panelTabSet id="tabSet1">
+        <ice:panelTabSet id="tabSet1" rendered="#{SetUpDataExplorationPage.showCommands}">
             <ice:panelTab id="xVariable" label="X-Variable" url="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/SetUpDataExploration.xhtml&amp;tab=xVariable">
                 <div jsfc="ice:panelGroup" panelLayout="flow">
 
@@ -71,6 +88,17 @@
                                         <ice:selectOneListbox size="2" value="#{SetUpDataExplorationPage.xAxisVariableId}">
                                             <f:selectItems value="#{SetUpDataExplorationPage.dataVariableSelectItems}"/>
                                         </ice:selectOneListbox>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <ice:outputText value="Units"/>
+                                        </f:facet>
+                                         <ice:inputText id="input_XAxisUnits"
+                                                        value="#{SetUpDataExplorationPage.xAxisUnits}"
+                                               size="25"
+                                               maxlength="255"
+                                               binding="#{SetUpDataExplorationPage.inputXAxisUnits}"
+                                         />
                                     </h:column>
                             </ice:dataTable>
                             <!--
@@ -136,10 +164,15 @@
                                         <f:facet name="header">
                                             <ice:outputText value="Variables"/>
                                         </f:facet>
+
                                         <ice:selectManyListbox size="2" value="#{group.dataVariablesSelected}">
                                             <f:selectItems value="#{SetUpDataExplorationPage.dataVariableSelectItems}"/>
                                         </ice:selectManyListbox>
-
+                                        <ice:outputText value="Variables Selected: #{group.numberOfVariablesSelected}"/>
+                                        <ice:commandLink id="editVariables" actionListener="#{SetUpDataExplorationPage.editMeasureVariables}" >
+                                            <f:param name="varGroupId" value="#{group.varGroup.id}"  />
+                                            <ice:outputText id="editVariablesText" value="Edit Variables"/>
+                                        </ice:commandLink>
 
                                     </h:column>
                                     <h:column>
@@ -196,9 +229,33 @@
                                         </ice:commandLink>
                                     </h:column>
                                 </ice:dataTable>
-
+                                <div jsfc="ice:panelGroup" style="overflow:hidden;" rendered ="#{SetUpDataExplorationPage.showMeasureVariables}">
+                                <ice:inputText id="inputUpdateVariableList"
+                                               size="25"
+                                               maxlength="255"
+                                               partialSubmit="true"
+                                               onchange="submit()"
+                                               onkeyup="getElementById('form1:updateMeasureVariables').click();"
+                                               valueChangeListener="#{SetUpDataExplorationPage.updateMeasureVariableList}"
+                                               binding="#{SetUpDataExplorationPage.inputVariableMeasure}"
+                               />
+                                <ice:commandButton id ="saveMeasureVariables"   visible="true"  value ="Save Variable Update"
+                                                   action="#{SetUpDataExplorationPage.saveMeasureVariableUpdate}"/>
+                                <ice:commandButton id ="cancelMeasureVariables"   visible="true"  value ="Cancel"
+                                                   action="#{SetUpDataExplorationPage.cancelVariableUpdate}"/>
+                                <ice:commandButton id ="updateMeasureVariables"   visible="false"  action="#{SetUpDataExplorationPage.updateMeasureVariableList}"/>
+                                <div jsfc="ice:panelSeries" id ="measureVariables" var="dataVariableUI" value="#{SetUpDataExplorationPage.dvMeasureFilteredListUI}"  >
+                                <!-- controls -->
+                                 <div jsfc="ice:panelGroup" >
+                                <ice:selectBooleanCheckbox  id ="measureVariableCheckBoxes" styleClass="measureVariableCheckBoxes"
+                                                    partialSubmit="false" value ="#{dataVariableUI.selected}" />
+                                <ice:outputLabel value="#{dataVariableUI.dataVariable.name}"/>
+                                </div>
+                            </div>
+                            </div>
                     
                             </div>
+
                         </div>
                         <div jsfc="ice:panelGroup" style="width:40%; float:left;">
 
@@ -211,6 +268,7 @@
                     </div>
 
                 </div>
+
             </ice:panelTab>
 
             <ice:panelTab id="filters" label="Filters" url="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/SetUpDataExploration.xhtml&amp;tab=filters">
@@ -271,8 +329,10 @@
                                         <ice:selectManyListbox size="2" value="#{filter.dataVariablesSelected}">
                                             <f:selectItems value="#{SetUpDataExplorationPage.dataVariableSelectItems}"/>
                                         </ice:selectManyListbox>
-
-
+                                        <ice:outputText value="Variables Selected: #{filter.numberOfVariablesSelected}"/>
+                                        <ice:commandLink id="editVariables" actionListener="#{SetUpDataExplorationPage.editFilterVariables}">
+                                            <ice:outputText id="editVariablesText" value="Edit Variables"/>
+                                        </ice:commandLink>
                                         </h:column>
                                         <h:column>
                                         <f:facet name="header">
@@ -283,8 +343,11 @@
                                         </ice:commandLink>
 
                                     </h:column>
+                                   
 
+                                    
                                     </ice:dataTable>
+
                                     <ice:commandLink id="addFilterGroupType"  binding ="#{SetUpDataExplorationPage.addFilterGroupTypeLink}"
                                             value ="#{grouping.varGrouping.id}"
                                             action="#{SetUpDataExplorationPage.addFilterGroupType}">
@@ -315,7 +378,31 @@
 
                                     </ice:dataTable>
                                     </h:column>
-                                    
+
+                                <div jsfc="ice:panelGroup" style="overflow:hidden;" rendered ="#{grouping.showVariables}">
+                                <ice:inputText id="inputUpdateFilterVariableList"
+                                               size="25"
+                                               maxlength="255"
+                                               partialSubmit="true"
+                                               onchange="submit()"                                               
+                                               valueChangeListener="#{SetUpDataExplorationPage.updateFilterVariableList}"
+                                               binding="#{SetUpDataExplorationPage.inputVariableFilter}"
+                               />
+                                <ice:commandButton id ="saveFilterVariables"   visible="true"  value ="Save Variable Update"
+                                                   action="#{SetUpDataExplorationPage.saveFilterVariableUpdate}"/>
+                                <ice:commandButton id ="cancelFilterVariables"   visible="true"  value ="Cancel"
+                                                   action="#{SetUpDataExplorationPage.cancelVariableUpdate}"/>
+                                <ice:commandButton id ="updateFilterVariables"   visible="false"  />
+                                <div jsfc="ice:panelSeries" id ="filterVariables" var="dataFilterVariableUI" value="#{SetUpDataExplorationPage.dvFilterFilteredListUI}"  >
+
+                                <!-- controls -->
+                                 <div jsfc="ice:panelGroup" >
+                                <ice:selectBooleanCheckbox  id ="filterVariableCheckBoxes" styleClass="filterVariableCheckBoxes"
+                                                    partialSubmit="false" value ="#{dataFilterVariableUI.selected}"/>
+                                <ice:outputLabel value="#{dataFilterVariableUI.dataVariable.name}"/>
+                                </div>
+                            </div>
+                            </div>
                         </div>
                         <div jsfc="ice:panelGroup" style="width:40%; float:left;">
 
@@ -331,7 +418,10 @@
             </div>
             </ice:panelTab>
         </ice:panelTabSet>
+
+
     </div>
+
 
 </ice:form>
 

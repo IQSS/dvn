@@ -22,6 +22,9 @@ import javax.persistence.ManyToOne;
 @Entity
 public class DataVariableMapping implements Serializable {
     private boolean x_axis;
+    private String label;
+
+
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -74,6 +77,14 @@ public class DataVariableMapping implements Serializable {
 
     public void setX_axis(boolean x_axis) {
         this.x_axis = x_axis;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 
     public VarGroup getGroup() {

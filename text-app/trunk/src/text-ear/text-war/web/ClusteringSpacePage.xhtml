@@ -496,9 +496,50 @@
 .clusterTable .iceDatTbl {margin:0;}
 td.clusterCountCol {width:14%;}
 .clusterTable .iceDatTbl tfoot {display:none;}
-</style>
 
-              <ice:dataTable id="clusterInfo" binding="#{ClusteringSpacePage.clusterTable}" cellpadding="0" cellspacing="0" value="#{ClusteringSpacePage.clusterTableModel}" var="row" width="100%">
+.clusterDetailLink {float:right;}
+.clusterDetailBlock .dvnTabs {margin-top:.5em;}
+.clusterDetailBlock .dvnTabs .icePnlTbOn .MidMid a {padding-left:4px; margin:0; text-transform:none;}
+.clusterDetailBlock .dvnTabs .icePnlTbOff .MidMid a {padding-left:4px;}
+.clusterDetailBlock .dvnTabs .icePnlTbOver .MidMid a:hover {padding-left:4px;}
+.clusterDetailBlock .dvnTabs .icePnlTbOn .MidMid a td {font-size:1em !important;}
+</style>
+<script type="text/javascript">
+    jQuery(document).ready(function(){
+        // choose text for the show/hide link - can contain HTML (e.g. an image)
+        var showText='View Detail';
+        var hideText='Close Detail';
+
+        // initialise the visibility check
+        var is_visible = false;
+
+        // append show/hide links to the element directly preceding the element with a class of "toggle"
+        jQuery(this).prev('a.clusterDetailLink').text(showText);
+
+        // hide all of the elements with a class of 'toggle'
+        jQuery('.clusterDetailBlock').hide();
+
+        // capture clicks on the toggle links
+        jQuery('a.clusterDetailLink').click(function() {
+
+            // change the link depending on whether the element is shown or hidden
+            if (jQuery(this).text()==showText) {
+                jQuery(this).text(hideText);
+            }
+            else {
+                jQuery(this).text(showText);
+            }
+
+            // toggle the display
+            jQuery(this).next('.clusterDetailBlock').toggle();
+
+            // return false so any link destination is not followed
+            return false;
+
+        });
+    });
+</script>
+                <ice:dataTable id="clusterInfo" binding="#{ClusteringSpacePage.clusterTable}" cellpadding="0" cellspacing="0" value="#{ClusteringSpacePage.clusterTableModel}" var="row" width="100%">
                     <ice:column>
                         <ice:panelGrid columns="2" cellpadding="0" cellspacing="0" border="0" width="100%"
                                         columnClasses="clusterCountCol,clusterInfoCol">
@@ -516,13 +557,56 @@ td.clusterCountCol {width:14%;}
                                         <label for="clusterlabel">Label [-]</label> <ice:inputText id="clusterlabel" value="#{row.newValue}"></ice:inputText>
                                         <ice:commandButton value="Save" onclick="saveSolution();" actionListener="#{ClusteringSpacePage.saveClusterLabel}"/>
                                     </div>
-                                    <!--
-                                    <a onClick="return popupDocument('/text/DocumentViewer?setId=#{ClusteringSpacePage.setId}&amp;docName=#{row.clusterInfo.randomDocument}');" href="/text/DocumentViewer?setId=#{ClusteringSpacePage.setId}&amp;docName=#{row.clusterInfo.randomDocument}" >
-                                        <ice:outputText value="Random Document"/>
-                                    </a>
-                                    -->
-                                    <ice:commandLink actionListener="#{row.openPopup}">View Documents</ice:commandLink>
-                                  
+                                </div>
+                            </ice:column>
+                        </ice:panelGrid>
+                                    
+                                    <a href="#" class="clusterDetailLink">View Detail</a>
+
+                                    <div class="clusterDetailBlock">
+                                        <ice:panelTabSet id="tabSet1" styleClass="dvnTabs" selectedIndex="0">
+                                            <ice:panelTab id="doc" label="Documents">
+                                                <!--<ice:outputLink onclick="return popupDocument('/text/DocumentViewer?setId=#{ClusteringSpacePage.setId}&amp;docName=#{row.clusterInfo.randomDocument}');" value="/text/DocumentViewer?setId=#{ClusteringSpacePage.setId}&amp;docName=#{row.clusterInfo.randomDocument}">
+                                                    Random Document
+                                                </ice:outputLink>-->
+                                                <!--
+                                                <ice:dataPaginator for="dataverseList"
+                                                                   binding="#{HomePage.vdcUIList.paginator}"
+                                                                   id="dataScroll_3"
+                                                                   paginator="true" fastStep="3"
+                                                                   paginatorMaxPages="4"
+                                                                   renderFacetsIfSinglePage="true"
+                                                                   styleClass="dvnPaginatorRight">
+                                                  <f:facet name="first">
+                                                    <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-first.gif" title="First Page"/>
+                                                  </f:facet>
+                                                  <f:facet name="fastrewind">
+                                                      <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-fr.gif" title="Fast Backward"/>
+                                                  </f:facet>
+                                                  <f:facet name="previous">
+                                                    <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-previous.gif" title="Previous"/>
+                                                  </f:facet>
+                                                  <f:facet name="next">
+                                                    <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-next.gif" title="Next"/>
+                                                  </f:facet>
+                                                  <f:facet name="fastforward">
+                                                      <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-ff.gif" title="Fast Forward"/>
+                                                  </f:facet>
+                                                  <f:facet name="last">
+                                                    <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-last.gif" title="Last Page"/>
+                                                  </f:facet>
+                                                </ice:dataPaginator>
+                                                -->
+                                                <p>Small text sample from Document</p>
+                                                <ice:commandLink actionListener="#{row.openPopup}">Full Document</ice:commandLink>
+                                            </ice:panelTab>
+
+                                            <ice:panelTab id="list" label="List View">
+                                                List of Documents
+                                            </ice:panelTab>
+                                        </ice:panelTabSet>
+                                    </div>
+
                                     <ice:panelPopup id="modalPnlPop"
                                                     draggable="true" modal="false"
                                                     visible="#{row.showPopup}"
@@ -533,7 +617,7 @@ td.clusterCountCol {width:14%;}
                                                 <ice:outputText
                                                     value="Viewing Document: #{row.viewDocumentName}"
                                                         styleClass="popupHeaderText"/>
-                                                
+
                                             </ice:panelGroup>
                                         </f:facet>
                                         <f:facet name="body">
@@ -545,9 +629,6 @@ td.clusterCountCol {width:14%;}
                                             </ice:panelGroup>
                                         </f:facet>
                                     </ice:panelPopup>
-                                </div>
-                            </ice:column>
-                        </ice:panelGrid>
                     </ice:column>
                     <f:facet name="footer">
                         <script type="text/javascript">

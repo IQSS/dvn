@@ -120,10 +120,7 @@ public class BasicKMeans {
 
             long executionTime = System.currentTimeMillis() - startTime;
 
-        } catch (Throwable t) {
-
-
-        } finally {
+        }  finally {
 
             // Clean up temporary data structures used during the algorithm.
             cleanup();
@@ -329,7 +326,13 @@ public class BasicKMeans {
         for (int c = 0; c < numClusters; c++) {
             ProtoCluster pcluster = mProtoClusters[c];
             if (!pcluster.isEmpty()) {
-                Cluster cluster = new Cluster(pcluster.getMembership(), pcluster.getCenter());
+                // from the mDistanceCache matrix, get the column of values that 
+                // contains the distances for this cluster.
+                double[] clusterDistances = new double[mDistanceCache.length];
+                for (int i=0;i<clusterDistances.length;i++) {
+                    clusterDistances[i] = mDistanceCache[i][c];
+                }
+                Cluster cluster = new Cluster(pcluster.getMembership(), pcluster.getCenter(), clusterDistances);
                 clusterArray[counter] = cluster;
             }
             counter++;

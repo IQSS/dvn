@@ -21,14 +21,12 @@
 package edu.harvard.iq.dvn.ingest.statdataio.impl.plugins.spss;
 
 import java.io.*;
-import java.nio.*;
-import java.nio.channels.*;
+//import java.nio.*;
+//import java.nio.channels.*;
 import java.util.logging.*;
 import java.util.Locale;
 
 import static java.lang.System.*;
-
-import org.apache.commons.codec.binary.Hex;
 
 import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.*;
 import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.spi.*;
@@ -40,7 +38,6 @@ import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.spi.*;
 public class SPSSFileReaderSpi extends StatDataFileReaderSpi{
 
     private static Logger dbgLog = Logger.getLogger(SPSSFileReaderSpi.class.getPackage().getName());
-    private static int SPSS_CONTROL_CARD_HEADER_SIZE = 4;
 
     private static String[] formatNames = {"spss", "SPSS"};
     private static String[] extensions = {"spss", "sps"};
@@ -76,50 +73,10 @@ public class SPSSFileReaderSpi extends StatDataFileReaderSpi{
         out.println("this method is actually called: object");
         if (!(source instanceof BufferedInputStream)) {
             return false;
-        } else if (source instanceof File){
-            out.println("source is a File object");
-        } else {
-            out.println("not File object");
-        }
-        if (source  == null){
-            throw new IllegalArgumentException("source == null!");
-        }
-        BufferedInputStream stream = (BufferedInputStream)source;
-
-        dbgLog.fine("applying the spss card test\n");
-
-        byte[] b = new byte[SPSS_CONTROL_CARD_HEADER_SIZE];
-
-        if (stream.markSupported()){
-            stream.mark(0);
-        }
-        int nbytes = stream.read(b, 0, SPSS_CONTROL_CARD_HEADER_SIZE);
-
-        if (nbytes == 0){
-            throw new IOException();
-        }
-        /*
-        //printHexDump(b, "hex dump of the byte-array");
-        dbgLog.info("hex dump of the 1st 4 bytes[$FL2 == 24 46 4C 32]="+
-                new String(Hex.encodeHex(b)));
-        if (stream.markSupported()){
-            stream.reset();
         }
 
-        boolean DEBUG = false;
-
-        String hdr4sav = new String(b);
-        dbgLog.fine("from string[$FL2 == 24 46 4C 32]=" + new String(Hex.encodeHex(b)).toUpperCase());
-
-        if (hdr4sav.equals(SAV_FILE_SIGNATURE)) {
-            dbgLog.fine("this file is spss-sav type");
-            return true;
-        } else {
-            dbgLog.fine("this file is NOT spss-sav type");
-            return false;
-        }*/
-        return true;
-    }
+        return canDecodeInput((BufferedInputStream)source);
+     }
 
 
     @Override
@@ -128,42 +85,32 @@ public class SPSSFileReaderSpi extends StatDataFileReaderSpi{
             throw new IllegalArgumentException("stream == null!");
         }
 
-        dbgLog.fine("\napplying the spss card test: inputstream case\n");
+        dbgLog.info("\napplying the spss card test: inputstream case\n");
 
-        byte[] b = new byte[SPSS_CONTROL_CARD_HEADER_SIZE];
-        
         if (stream.markSupported()){
             stream.mark(0);
         }
-        int nbytes = stream.read(b, 0, SPSS_CONTROL_CARD_HEADER_SIZE);
 
-        if (nbytes == 0){
-            throw new IOException();
+        BufferedReader rd = new BufferedReader(new InputStreamReader(stream));
+        String line = null;
+        Boolean supported = false;
+
+        while ((line = rd.readLine()) != null && (supported == false)) {
+
+            if (line.matches("(?i)^\\s*data\\s*list\\s*list\\(")) {
+                // This looks like a valid SPSS card for a character-delimited
+                // data file. This plugin does NOT support other kinds of
+                // data files such as fixed-field, as of yet.
+                dbgLog.info("found valid-looking datalist command: "+line);
+                supported = true;
+            }
+
         }
-        //printHexDump(b, "hex dump of the byte-array");
-        dbgLog.info("hex dump of the 1st 4 bytes[$FL2 == 24 46 4C 32]="+
-                (new String (Hex.encodeHex(b))).toUpperCase());
-
 
         if (stream.markSupported()){
             stream.reset();
         }
-
-        /*
-        boolean DEBUG = false;
-
-        String hdr4sav = new String(b);
-        dbgLog.fine("from string[$FL2 == 24 46 4C 32]=" + new String(Hex.encodeHex(b)).toUpperCase());
-
-
-        if (hdr4sav.equals(SAV_FILE_SIGNATURE)) {
-            dbgLog.fine("this file is spss-sav type");
-            return true;
-        } else {
-            dbgLog.fine("this file is NOT spss-sav type");
-            return false;
-        }*/
-        return true;
+        return supported;
     }
 
     @Override
@@ -175,35 +122,8 @@ public class SPSSFileReaderSpi extends StatDataFileReaderSpi{
             throw new IOException("cannot read the input file");
         }
 
-        dbgLog.fine("applying the sav test\n");
+        dbgLog.fine("skipping the spss test\n");
 
-        // set-up a FileChannel instance for a given file object
-        FileChannel srcChannel = new FileInputStream(file).getChannel();
-
-        // create a read-only MappedByteBuffer
-        MappedByteBuffer buff = srcChannel.map(FileChannel.MapMode.READ_ONLY, 0, SPSS_CONTROL_CARD_HEADER_SIZE);
-
-        //printHexDump(buff, "hex dump of the byte-buffer");
-        dbgLog.info("hex dump of the 1st 4 bytes[$FL2 == 24 46 4C 32]="+
-                new String(Hex.encodeHex(buff.array())));
-
-        buff.rewind();
-
-        /*boolean DEBUG = false;
-
-        byte[] hdr4 = new byte[4];
-        buff.get(hdr4, 0, 4);
-        String hdr4sav = new String(hdr4);
-        dbgLog.fine("from string[hdr4]=" + new String(Hex.encodeHex(hdr4)).toUpperCase());
-        
-        if (hdr4sav.equals("$FL2")) {
-            dbgLog.fine("this file is spss-sav type");
-            return true;
-        } else {
-            dbgLog.fine("this file is NOT spss-sav type");
-        }
-        return false;
-        */
         return true;
     }
 

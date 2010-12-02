@@ -94,7 +94,6 @@ public class ClusteringSpacePage {
      //   }
      //   else {
             calculateClusterSolution(false);
-             JavascriptContext.addJavascriptCall(FacesContext.getCurrentInstance(), "initClusterTabs();");
      //   }
     }
 

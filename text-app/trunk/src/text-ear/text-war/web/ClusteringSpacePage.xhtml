@@ -504,46 +504,6 @@ td.clusterCountCol {width:14%;}
 .clusterDetailBlock .dvnTabs .icePnlTbOver .MidMid a:hover {padding-left:4px;}
 .clusterDetailBlock .dvnTabs .icePnlTbOn .MidMid a td {font-size:1em !important;}
 </style>
-<script type="text/javascript">
-      // <![CDATA[
-    jQuery(document).ready(initClusterTabs);
-    function initClusterTabs(){
-        // choose text for the show/hide link - can contain HTML (e.g. an image)
-        var showText='View Detail';
-        var hideText='Close Detail';
-
-        // initialise the visibility check
-        var is_visible = false;
-
-        // append show/hide links to the element directly preceding the element with a class of "toggle"
-        jQuery(this).prev('a.clusterDetailLink').text(showText);
-
-        // hide all of the elements with a class of 'toggle'
-        jQuery('.clusterDetailBlock').hide();
-
-        // capture clicks on the toggle links
-        jQuery('a.clusterDetailLink').click(function() {
-
-            // change the link depending on whether the element is shown or hidden
-            if (jQuery(this).text()==showText) {
-                jQuery(this).text(hideText);
-            }
-            else {
-                jQuery(this).text(showText);
-            }
-
-            // toggle the display
-            jQuery(this).next('.clusterDetailBlock').toggle();
-
-            // return false so any link destination is not followed
-            return false;
-
-        });
-    }
-
-   // ]]>
-
-</script>
                 <ice:dataTable id="clusterInfo" binding="#{ClusteringSpacePage.clusterTable}" cellpadding="0" cellspacing="0" value="#{ClusteringSpacePage.clusterTableModel}" var="row" width="100%">
                     <ice:column>
                         <ice:panelGrid columns="2" cellpadding="0" cellspacing="0" border="0" width="100%"
@@ -652,6 +612,41 @@ td.clusterCountCol {width:14%;}
                                     return false;
                                   });
                             });
+
+                            jQuery(document).ready(initClusterTabs);
+                            function initClusterTabs(){
+                                // choose text for the show/hide link - can contain HTML (e.g. an image)
+                                var showText='View Detail';
+                                var hideText='Close Detail';
+
+                                // initialise the visibility check
+                                var is_visible = false;
+
+                                // append show/hide links to the element directly preceding the element with a class of "toggle"
+                                jQuery(this).prev('a.clusterDetailLink').text(showText);
+
+                                // hide all of the elements with a class of 'toggle'
+                                jQuery('.clusterDetailBlock').hide();
+
+                                // capture clicks on the toggle links
+                                jQuery('a.clusterDetailLink').click(function() {
+
+                                    // change the link depending on whether the element is shown or hidden
+                                    if (jQuery(this).text()==showText) {
+                                        jQuery(this).text(hideText);
+                                    }
+                                    else {
+                                        jQuery(this).text(showText);
+                                    }
+
+                                    // toggle the display
+                                    jQuery(this).next('.clusterDetailBlock').toggle();
+
+                                    // return false so any link destination is not followed
+                                    return false;
+
+                                });
+                            }
                         </script>
                     </f:facet>
                 </ice:dataTable>

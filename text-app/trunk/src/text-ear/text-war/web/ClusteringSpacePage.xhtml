@@ -388,8 +388,8 @@
     </div>
     <div class="navSettingsBar">
         <div class="clusteringNavHistory">
-            <div><a onclick="goBack();">&#60;</a></div>
-            <div><a onclick="goForward();">&#62;</a></div>
+            <div><a onclick="goBack();" title="Previous Coordinate Point">&#60;</a></div>
+            <div><a onclick="goForward();" title="Next Coordinate Point">&#62;</a></div>
         </div>
         <table cellspacing="0" cellpadding="0" border="0" class="settingsBar">
             <tr>
@@ -398,7 +398,7 @@
                     <ice:inputText id="clusterNum" size="5" value="#{ClusteringSpacePage.clusterNum}"></ice:inputText>
                     <ice:commandButton id="changeCluster" value="calculate" onclick="calculateButtonAction();" actionListener="#{ClusteringSpacePage.changeClusterNumberListener}"/>
                     <ice:commandButton visible ="false" id="discoverableButton" value="getDiscoverable"  actionListener="#{ClusteringSpacePage.getDiscoverableListener}"/>
-               </td>
+                </td>
                 <td>
                     <input type="radio" name="clusterRadio" id="clusterRadio1" onclick="changeClusterRadio(10);"/> <label for="clusterRadio1">10 Clusters (Low)</label>
                 </td>
@@ -452,7 +452,8 @@
             <div class="clusterLabelHeader">
 <style type="text/css">
 .clusterLabelInputBlock {display:none;}
-.clusterLabelBlock.edit a {display:none;}
+.clusterLabelBlock.edit a.clusterLabelValueEdit {display:none;}
+.clusterLabelBlock.edit a.clusterInfoValueLabel {display:inline;}
 .clusterLabelBlock.edit div.clusterLabelInputBlock {display:block;}
 </style>
 
@@ -475,13 +476,18 @@
             txt.parent().parent().removeClass("edit");
             return false;
           });
+          jQuery(".clusterLabelInputBlock label a.clusterInfoValueLabel").click(function() {
+            var txt = jQuery(this);
+            txt.parent().parent().parent().removeClass("edit");
+            return false;
+          });
     });
 </script>
                 <div>
                     <div class="clusterLabelBlock">
                         <a href="#" class="clusterLabelValueEdit"><ice:outputText value="Label [+] #{ClusteringSpacePage.solutionLabel}"/></a>
                         <div class="clusterLabelInputBlock">
-                            <label for="clusteringlabel">Label [-]</label> <ice:inputText id="clusteringlabel" value="#{ClusteringSpacePage.solutionLabel}"></ice:inputText>
+                            <label for="clusteringlabel"><a href="#" class="clusterInfoValueLabel">Label [-]</a></label> <ice:inputText id="clusteringlabel" value="#{ClusteringSpacePage.solutionLabel}"></ice:inputText>
                             <ice:commandButton value="Save" onclick="saveSolution();" actionListener="#{ClusteringSpacePage.saveSolutionLabel}"/>
                         </div>
                     </div>
@@ -491,7 +497,8 @@
             <div class="clusterTable">
 <style type="text/css">
 .clusterInfoValueBlock {display:none;}
-.clusterInfoLabelBlock.edit a {display:none;}
+.clusterInfoLabelBlock.edit a.clusterInfoValueEdit {display:none;}
+.clusterInfoLabelBlock.edit a.clusterInfoValueLabel {display:inline;}
 .clusterInfoLabelBlock.edit div.clusterInfoValueBlock {display:block;}
 .clusterTable .iceDatTbl {margin:0;}
 td.clusterCountCol {width:14%;}
@@ -501,7 +508,7 @@ td.clusterCountCol {width:14%;}
 .clusterDetailBlock .dvnTabs {margin-top:.5em;}
 .clusterDetailBlock .dvnTabs .icePnlTbOn .MidMid a {padding-left:4px; margin:0; text-transform:none;}
 .clusterDetailBlock .dvnTabs .icePnlTbOff .MidMid a {padding-left:4px;}
-.clusterDetailBlock .dvnTabs .icePnlTbOver .MidMid a:hover {padding-left:4px;}
+.clusterDetailBlock .dvnTabs .icePnlTbOver .MidMid a {padding-left:4px;}
 .clusterDetailBlock .dvnTabs .icePnlTbOn .MidMid a td {font-size:1em !important;}
 </style>
                 <ice:dataTable id="clusterInfo" binding="#{ClusteringSpacePage.clusterTable}" cellpadding="0" cellspacing="0" value="#{ClusteringSpacePage.clusterTableModel}" var="row" width="100%">
@@ -519,7 +526,7 @@ td.clusterCountCol {width:14%;}
                                 <div class="clusterInfoLabelBlock">
                                     <a href="#" class="clusterInfoValueEdit"><ice:outputText value="Label [+] #{row.clusterInfo.label}"/></a>
                                     <div class="clusterInfoValueBlock">
-                                        <label for="clusterlabel">Label [-]</label> <ice:inputText id="clusterlabel" value="#{row.newValue}"></ice:inputText>
+                                        <label for="clusterlabel"><a href="#" class="clusterInfoValueLabel">Label [-]</a></label> <ice:inputText id="clusterlabel" value="#{row.newValue}"></ice:inputText>
                                         <ice:commandButton value="Save" onclick="saveSolution();" actionListener="#{ClusteringSpacePage.saveClusterLabel}"/>
                                     </div>
                                 </div>
@@ -609,6 +616,11 @@ td.clusterCountCol {width:14%;}
                                   jQuery(".clusterInfoLabelBlock input:submit").click(function() {
                                     var txt = jQuery(this);
                                     txt.parent().parent().removeClass("edit");
+                                    return false;
+                                  });
+                                  jQuery(".clusterInfoLabelBlock label a.clusterInfoValueLabel").click(function() {
+                                    var txt = jQuery(this);
+                                    txt.parent().parent().parent().removeClass("edit");
                                     return false;
                                   });
                             });

@@ -158,7 +158,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             Iterator iterator = xAxisVariable.getDataVariableMappings().iterator();
             if (iterator.hasNext()){
                 DataVariableMapping mapping = (DataVariableMapping) iterator.next();
-                xAxisUnits = mapping.getLabel();
+                if (mapping.isX_axis())xAxisUnits = mapping.getLabel();
             }
          }
 
@@ -273,6 +273,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                    List <VarGroupType> varGroupTypes = new ArrayList();
                    varGroupTypes = (List<VarGroupType>) varGroupUI.getVarGroup().getGroupTypes();
                     if (varGroupTypes !=null ) {
+                       String groupTypesSelectedString = "";
                        for(VarGroupType varGroupType: varGroupTypes){
                            VarGroupTypeUI varGroupTypeUI = new VarGroupTypeUI();
                            varGroupTypeUI.setVarGroupType(varGroupType);
@@ -281,8 +282,15 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                            varGroupType.getName();
                            varGroupUI.getVarGroupTypesSelected().add(varGroupTypeUI);
                            varGroupUI.getVarGroupTypesSelectItems().add(new Long(varGroupType.getId()));
+                           if (groupTypesSelectedString.isEmpty()){
+                               groupTypesSelectedString+=varGroupTypeUI.getVarGroupType().getName();
+                           } else {
+                              groupTypesSelectedString = groupTypesSelectedString + ", " + varGroupTypeUI.getVarGroupType().getName();
+                           }
 
                        }
+                       varGroupUI.setShowTypeList(false);
+                       varGroupUI.setGroupTypesSelectedString(groupTypesSelectedString);
                     }
 
                     List <DataVariable> dataVariables = new ArrayList();
@@ -419,6 +427,90 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         showFilterVariables = false;
         showMeasureVariables = true;
 
+    }
+
+    public void editFilterTypes (ActionEvent ae){
+        
+        UIComponent uiComponent = ae.getComponent().getParent();
+        while (!(uiComponent instanceof HtmlDataTable)){
+            uiComponent = uiComponent.getParent();
+        }
+        HtmlDataTable tempTable = (HtmlDataTable) uiComponent;
+        VarGroupUI varGroupUI = (VarGroupUI) tempTable.getRowData();
+        varGroupUI.setShowTypeList(true);
+    }
+
+    public void hideFilterTypes (ActionEvent ae){
+
+        UIComponent uiComponent = ae.getComponent().getParent();
+        while (!(uiComponent instanceof HtmlDataTable)){
+            uiComponent = uiComponent.getParent();
+        }
+        HtmlDataTable tempTable = (HtmlDataTable) uiComponent;
+        VarGroupUI varGroupUI = (VarGroupUI) tempTable.getRowData();
+
+             VarGroup varGroup = varGroupUI.getVarGroup();
+             VarGrouping varGrouping = varGroup.getGroupAssociation();
+             List  groupTypeIds = varGroupUI.getVarGroupTypesSelectItems();
+             varGroup.getGroupTypes().clear();
+              String groupTypesSelectedString = "";
+             for(Object stringUI: groupTypeIds){
+                 String id = stringUI.toString();
+                 for (VarGroupType varGroupType: varGrouping.getVarGroupTypes()){
+
+                     if (varGroupType.getId() !=null &&  varGroupType.getId().equals(new Long(id))){
+                         varGroup.getGroupTypes().add(varGroupType);
+                           if (groupTypesSelectedString.isEmpty()){
+                               groupTypesSelectedString+=varGroupType.getName();
+                           } else {
+                              groupTypesSelectedString = groupTypesSelectedString + ", " + varGroupType.getName();
+                           }
+                     }
+                 }
+             }
+        varGroupUI.setGroupTypesSelectedString(groupTypesSelectedString);
+        varGroupUI.setShowTypeList(false);
+    }
+
+    public void editMeasureTypes (ActionEvent ae){
+
+        UIComponent uiComponent = ae.getComponent().getParent();
+        while (!(uiComponent instanceof HtmlDataTable)){
+            uiComponent = uiComponent.getParent();
+        }
+        HtmlDataTable tempTable = (HtmlDataTable) uiComponent;
+        VarGroupUI varGroupUI = (VarGroupUI) tempTable.getRowData();
+        varGroupUI.setShowTypeList(true);
+    }
+    public void hideMeasureTypes (ActionEvent ae){
+
+        UIComponent uiComponent = ae.getComponent().getParent();
+        while (!(uiComponent instanceof HtmlDataTable)){
+            uiComponent = uiComponent.getParent();
+        }
+        HtmlDataTable tempTable = (HtmlDataTable) uiComponent;
+        VarGroupUI varGroupUI = (VarGroupUI) tempTable.getRowData();
+             VarGroup varGroup = varGroupUI.getVarGroup();
+             List  groupTypeIds = varGroupUI.getVarGroupTypesSelectItems();
+             varGroup.getGroupTypes().clear();
+              String groupTypesSelectedString = "";
+             for(Object stringUI: groupTypeIds){
+                 String id = stringUI.toString();
+                 for (VarGroupType varGroupType: measureGroupTypes){
+
+                     if (varGroupType.getId() !=null &&  varGroupType.getId().equals(new Long(id))){
+                         varGroup.getGroupTypes().add(varGroupType);
+                           if (groupTypesSelectedString.isEmpty()){
+                               groupTypesSelectedString+=varGroupType.getName();
+                           } else {
+                              groupTypesSelectedString = groupTypesSelectedString + ", " + varGroupType.getName();
+                           }
+                     }
+                 }
+             }
+
+        varGroupUI.setGroupTypesSelectedString(groupTypesSelectedString);
+        varGroupUI.setShowTypeList(false);
     }
 
     public void editFilterVariables(ActionEvent ae){
@@ -680,7 +772,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                visualizationService.removeCollectionElement(dataVarMappingRemove.getDataVariable().getDataVariableMappings(),dataVarMappingRemove);
            }
 
-           if(!xAxisVariableId.equals(new Long(0))){
+           if(xAxisVariableId != null && !xAxisVariableId.equals(new Long(0))){
 
                for(DataVariable dataVariable: dvList){
                     if (dataVariable.getId() !=null &&  dataVariable.getId().equals(xAxisVariableId)){
@@ -690,7 +782,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                          dataVariableMapping.setGroup(null);
                          dataVariableMapping.setVarGrouping(null);
                          dataVariableMapping.setX_axis(true);
-                         dataVariableMapping.setLabel((String)inputXAxisUnits.getValue());
+                         dataVariableMapping.setLabel(xAxisUnits);
                          dataVariable.getDataVariableMappings().add(dataVariableMapping);
                      }
 
@@ -951,6 +1043,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
                            varGroupTypes = (List<VarGroupType>) varGroupUILoc.getVarGroup().getGroupTypes();
                     if (varGroupTypes !=null ) {
+                        String groupTypesSelectedString  = "";
                        for(VarGroupType varGroupType: varGroupTypes){
                            VarGroupTypeUI varGroupTypeUI = new VarGroupTypeUI();
                            varGroupTypeUI.setVarGroupType(varGroupType);
@@ -959,9 +1052,17 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                            varGroupType.getName();
                            varGroupUILoc.getVarGroupTypesSelected().add(varGroupTypeUI);
                            varGroupUILoc.getVarGroupTypesSelectItems().add(new Long(varGroupType.getId()));
+                           if (groupTypesSelectedString.isEmpty()){
+                               groupTypesSelectedString+=varGroupTypeUI.getVarGroupType().getName();
+                           } else {
+                              groupTypesSelectedString = groupTypesSelectedString + ", " + varGroupTypeUI.getVarGroupType().getName();
+                           }
 
                        }
-                    }
+                       varGroupUILoc.setShowTypeList(false);
+                       varGroupUILoc.setGroupTypesSelectedString(groupTypesSelectedString);
+                       }
+                    
                            varGroupUIList.add(varGroupUILoc);
                        }
                     }

@@ -376,4 +376,7 @@ public class StudyFileUI implements java.io.Serializable {
     public boolean isNetworkDataFile() {
         return getStudyFile() instanceof NetworkDataFile;
     }
+    public boolean isVisualizationReleased() {
+        return getStudyFile().getDataTables().get(0).isVisualizationEnabled();
+    }
 }

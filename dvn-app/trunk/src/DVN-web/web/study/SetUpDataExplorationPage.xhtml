@@ -141,15 +141,23 @@
                                         <f:facet name="header">
                                             <ice:outputText value="Type"/>
                                         </f:facet>
-                                        <ice:selectManyListbox size="2" value="#{group.varGroupTypesSelectItems}">
+                                        <ice:outputText value="Types Selected: #{group.groupTypesSelectedString}"/>
+                                        <ice:commandLink id="editMeasureTypes" visible="#{!group.showTypeList}" actionListener="#{SetUpDataExplorationPage.editMeasureTypes}">
+                                             <ice:outputText id="editTypesText" value="Edit Types"/>
+                                        </ice:commandLink>
+                                        <ice:commandLink id="hideMeasureTypes" visible="#{group.showTypeList}" actionListener="#{SetUpDataExplorationPage.hideMeasureTypes}">
+                                             <ice:outputText id="hideTypesText" value="Save Types"/>
+                                        </ice:commandLink>
+                                        <ice:selectManyListbox size="2" visible="#{group.showTypeList}"  value="#{group.varGroupTypesSelectItems}">
                                             <f:selectItems value="#{SetUpDataExplorationPage.selectMeasureGroupTypes}"/>
                                         </ice:selectManyListbox>
+
                                     </h:column>
                                     <h:column>
                                         <f:facet name="header">
                                             <ice:outputText value="Variables"/>
                                         </f:facet>
-                                        <ice:selectManyListbox size="2" value="#{group.dataVariablesSelected}">
+                                        <ice:selectManyListbox size="2" visible="false" value="#{group.dataVariablesSelected}">
                                             <f:selectItems value="#{SetUpDataExplorationPage.dataVariableSelectItems}"/>
                                         </ice:selectManyListbox>
                                         <ice:outputText value="Variables Selected: #{group.numberOfVariablesSelected}"/>
@@ -298,8 +306,15 @@
                                                 <f:facet name="header">
                                                     <ice:outputText value="Type"/>
                                                 </f:facet>
+                                                <ice:outputText value="Types Selected: #{filter.groupTypesSelectedString}"/>
+                                                <ice:commandLink id="editFilterTypes" visible="#{!filter.showTypeList}" actionListener="#{SetUpDataExplorationPage.editFilterTypes}">
+                                                    <ice:outputText id="editFilterTypesText" value="Edit Types"/>
+                                                </ice:commandLink>
+                                                <ice:commandLink id="hideFilterTypes" visible="#{filter.showTypeList}" actionListener="#{SetUpDataExplorationPage.hideFilterTypes}">
+                                                    <ice:outputText id="hideFilterTypesText" value="Save Types"/>
+                                                </ice:commandLink>
 
-                                                <ice:selectManyListbox size="2" value="#{filter.varGroupTypesSelectItems}" >
+                                                <ice:selectManyListbox size="2" visible="#{filter.showTypeList}" value="#{filter.varGroupTypesSelectItems}" >
                                                     <f:selectItems value="#{grouping.varGroupTypesSelect}"/>
                                                 </ice:selectManyListbox>
                                                 </h:column>
@@ -307,7 +322,7 @@
                                                 <f:facet name="header">
                                                     <ice:outputText value="Variables"/>
                                                 </f:facet>
-                                                <ice:selectManyListbox size="2" value="#{filter.dataVariablesSelected}">
+                                                <ice:selectManyListbox visible="false" size="2" value="#{filter.dataVariablesSelected}">
                                                     <f:selectItems value="#{SetUpDataExplorationPage.dataVariableSelectItems}"/>
                                                 </ice:selectManyListbox>
                                                 <ice:outputText value="Variables Selected: #{filter.numberOfVariablesSelected}"/>
@@ -360,7 +375,7 @@
                         </div>
                         <div jsfc="ice:panelGroup" style="width:35%; float:left;">
 
-                            <div jsfc="ice:panelGroup" rendered="#{grouping.showVariables}">
+                            <div jsfc="ice:panelGroup" rendered="#{SetUpDataExplorationPage.showFilterVariables}">
                                 <ice:inputText id="inputUpdateFilterVariableList"
                                                size="25"
                                                maxlength="255"

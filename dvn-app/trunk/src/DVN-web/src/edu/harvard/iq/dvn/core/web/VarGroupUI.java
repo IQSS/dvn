@@ -21,6 +21,9 @@ public class VarGroupUI {
     private List <VarGroupTypeUI> varGroupTypesSelected;
     private List <Long> varGroupTypesSelectItems;
     private List <Long> dataVariablesSelected;
+    private boolean showTypeList = false;
+
+    private String groupTypesSelectedString;
     private Long numberOfVariablesSelected = new Long(0);
 
 
@@ -72,5 +75,22 @@ public class VarGroupUI {
 
     public void setNumberOfVariablesSelected(Long numberOfVariablesSelected) {
         this.numberOfVariablesSelected = numberOfVariablesSelected;
+    }
+
+
+    public String getGroupTypesSelectedString() {
+        return groupTypesSelectedString;
+    }
+
+    public void setGroupTypesSelectedString(String groupTypesSelectedString) {
+        this.groupTypesSelectedString = groupTypesSelectedString;
+    }
+
+    public boolean isShowTypeList() {
+        return showTypeList;
+    }
+
+    public void setShowTypeList(boolean showTypeList) {
+        this.showTypeList = showTypeList;
     }
 }

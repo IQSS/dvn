@@ -94,6 +94,7 @@ public class ClusteringSpacePage {
      //   }
      //   else {
             calculateClusterSolution(false);
+             JavascriptContext.addJavascriptCall(FacesContext.getCurrentInstance(), "initClusterTabs();");
      //   }
     }
 
@@ -297,7 +298,11 @@ public class ClusteringSpacePage {
        public void setViewDocumentIndex(int i) {
            viewDocumentIndex = i;
        }
-       
+
+       /**
+        * ActionListener that is called when user clicks on a document in the ViewList tab
+        * @param ae
+        */
        public void viewDocument(ActionEvent ae) {
            UIComponent comp = ae.getComponent().getParent();
            while(!(comp instanceof HtmlDataTable)) {

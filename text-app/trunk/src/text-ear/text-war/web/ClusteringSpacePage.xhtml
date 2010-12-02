@@ -505,7 +505,9 @@ td.clusterCountCol {width:14%;}
 .clusterDetailBlock .dvnTabs .icePnlTbOn .MidMid a td {font-size:1em !important;}
 </style>
 <script type="text/javascript">
-    jQuery(document).ready(function(){
+      // <![CDATA[
+    jQuery(document).ready(initClusterTabs);
+    function initClusterTabs(){
         // choose text for the show/hide link - can contain HTML (e.g. an image)
         var showText='View Detail';
         var hideText='Close Detail';
@@ -537,7 +539,10 @@ td.clusterCountCol {width:14%;}
             return false;
 
         });
-    });
+    }
+
+   // ]]>
+
 </script>
                 <ice:dataTable id="clusterInfo" binding="#{ClusteringSpacePage.clusterTable}" cellpadding="0" cellspacing="0" value="#{ClusteringSpacePage.clusterTableModel}" var="row" width="100%">
                     <ice:column>

@@ -39,8 +39,10 @@ import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import com.icesoft.faces.component.ext.HtmlDataTable;
+import com.icesoft.faces.component.ext.HtmlSelectOneMenu;
 
 import javax.faces.model.SelectItem;
+import javax.faces.model.SelectItemGroup;
 import java.util.*;
 import com.icesoft.faces.component.inputfile.InputFile;
 import org.apache.commons.logging.Log;
@@ -72,8 +74,18 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
     private List<StudyFileEditBean> fileList = new ArrayList();
 
     private InputFile inputFile = null;
+    private InputFile rawDataFile = null;
     private String sessionId; // used to generate temp files
+
+    private String fileTypeSelected = "";
     private Collection<SelectItem> fileCategories = null; //for the drop-down list of the html page
+    //private Collection<SelectItemGroup> fileTypes = null;
+    private Collection<SelectItem> fileTypes = null;
+
+    private SelectItem[] fileTypesSubsettable;
+    private SelectItem[] fileTypesNetwork;
+    private SelectItem[] fileTypesOther;
+
     private List<String> preexistingLabels = new ArrayList(); // used for validation
     private List<String> currentLabels = new ArrayList<String>();// used for validation
     private int fileProgress; // TODO: file upload completed percent (Progress), currently not used!!!
@@ -116,6 +128,22 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
         inputFile = f;
     }
 
+    public InputFile getRawDataFile() {
+        return rawDataFile;
+    }
+
+    public void setRawDataFile(InputFile f) {
+        rawDataFile = f;
+    }
+
+    public String getFileTypeSelected () {
+        return fileTypeSelected;
+    }
+
+    public void setFileTypeSelected (String ft) {
+        fileTypeSelected = ft; 
+    }
+
     public int getFileProgress() {
         return fileProgress;
     }
@@ -139,6 +167,17 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
     public void setVersionNotesPopup(VersionNotesPopupBean versionNotesPopup) {
         this.versionNotesPopup = versionNotesPopup;
     }
+
+    HtmlSelectOneMenu selectFileType;
+
+    public HtmlSelectOneMenu getSelectFileType() {
+        return selectFileType;
+    }
+
+    public void setSelectFileType(HtmlSelectOneMenu selectFileType) {
+        this.selectFileType = selectFileType;
+    }
+
 
     public void init() {
         super.init();
@@ -330,6 +369,14 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
         return false;
     }
 
+    public boolean isControlCardIngestRequested() {
+        if ( "csv".equals(selectFileType.getValue()) ) {
+            return true;
+        }
+
+        return false; 
+    }
+
     private String ingestEmail;
 
     public String getIngestEmail() {
@@ -339,7 +386,6 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
     public void setIngestEmail(String ingestEmail) {
         this.ingestEmail = ingestEmail;
     }
-
 
 
     public void validateFileName(FacesContext context, UIComponent toValidate, Object value) {
@@ -417,6 +463,38 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
         }
 
         return fileCategories;
+    }
+
+    /**
+     *
+     * @return list of supported file types to display in the AddFilesPage.xhtml
+     */
+    public Collection<SelectItem> getFileTypes() {
+
+
+        if (fileTypes == null) {
+            fileTypes = new ArrayList();
+
+            fileTypesSubsettable = new SelectItem[4];
+            fileTypesNetwork = new SelectItem[1];
+            fileTypesOther = new SelectItem[1];
+
+            fileTypes.add( new SelectItem("", "Choose a Data Type", "", true) );
+            fileTypesSubsettable[0] = new SelectItem("por", "SPSS/POR");
+            fileTypesSubsettable[1] = new SelectItem("sav", "SPSS/SAV");
+            fileTypesSubsettable[2] = new SelectItem("dta", "Stata");
+            fileTypesSubsettable[3] = new SelectItem("csv", "CSV (w/card)");
+
+            fileTypes.add( new SelectItemGroup("Tabular Data", "", false, fileTypesSubsettable) );
+
+            fileTypesNetwork[0] = new SelectItem("graphml", "GraphML");
+
+            fileTypes.add( new SelectItemGroup("Network Data", "", false, fileTypesNetwork) );
+
+            fileTypes.add( new SelectItem("other", "Other") );
+        }
+
+        return fileTypes;
     }
 
    

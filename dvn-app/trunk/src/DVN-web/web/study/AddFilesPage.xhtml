@@ -83,7 +83,32 @@
               <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
               <ice:inputHidden id="studyId" value="#{AddFilesPage.study.id}"/>
               <input type="hidden" name="pageName" value="AddFilesPage"/>
-              <ice:panelGroup id ="inputFile" styleClass="dvnAddFilesInputBlock">
+
+              <ice:panelGroup id="filetypePanelGroup" styleClass="dvnAddFilesInputBlock">
+
+             <div style="overflow: hidden; border-bottom:1px solid #D9D9D9; padding-bottom:1em; margin-bottom:1em;">
+                <div style="float:left; width:350px;">
+                <ice:selectOneMenu id="filetypeDropdown" binding="#{AddFilesPage.selectFileType}">
+                    <f:selectItems value="#{AddFilesPage.fileTypes}"/>
+                </ice:selectOneMenu>
+                <!--</ice:panelGroup>-->
+
+                </div>
+                <div style="float:left; width:300px;">
+                    <p style="margin-top:0;">Select a file type. Once ingested,
+                    Tabular ("subsettable") and Netowrk Data files can be analyzed
+                    online using the Dataverse Network analysis tools.
+                    All other files will be available for download only.</p>
+                    <ice:panelGroup block="true" styleClass="dvnFormPadding" rendered="#{AddFilesPage.controlCardIngestRequested}">
+                        <ice:outputText styleClass="vdcTextStandout" value="You have selected a CSV (character-separated values) file, which requires a Control Card."/>
+                        <ice:outputText id="controlCardIngestMessage" escape="false" styleClass="warnMessage"
+                                value="First, click Browse to select an SPSS Control Card file. Once you've selected the Control Card, click Browse to select the CSV file."/>
+                    </ice:panelGroup>
+                </div>
+                </div>
+
+
+              <!--<ice:panelGroup id ="inputFile" styleClass="dvnAddFilesInputBlock">-->
                 <ice:inputFile id="inputFileComponent"
                                autoUpload="true"
                                submitOnUpload="postUpload"
@@ -97,6 +122,7 @@
                 <ice:message layout="table" globalOnly="false" for="inputFileComponent"
                               showDetail="true" showSummary="false" styleClass="errorMessage"/>
               </ice:panelGroup>
+
               <!--
               This is a very basic table comprising four columns. Each
               row represents an inventory item. Each column represents a
@@ -109,7 +135,7 @@
               change is detected.
               -->
               <!-- this is a dummy datatable wrapper used to force data retention on validation error-->
-   <ice:dataTable cellpadding="0" cellspacing="0" width="100%" id="dummy_datatable"
+            <ice:dataTable cellpadding="0" cellspacing="0" width="100%" id="dummy_datatable"
                              value="dummy_datatable" styleClass="dvnAddFilesOuterTable">
                 <ice:column>
                   <ice:dataTable cellpadding="0" cellspacing="0" width="100%" rendered="true"

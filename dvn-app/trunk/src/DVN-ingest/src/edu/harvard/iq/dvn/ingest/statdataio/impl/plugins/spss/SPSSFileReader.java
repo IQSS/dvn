@@ -61,8 +61,6 @@ public class SPSSFileReader extends StatDataFileReader{
     private static String[] MIME_TYPE = {"text/plain"};
 
 
-    private static String SPSS_CONTROL_CARD_SIGNATURE = "$FL2";
-
     private static Logger dbgLog =
        Logger.getLogger(SPSSFileReader.class.getPackage().getName());
 
@@ -87,7 +85,6 @@ public class SPSSFileReader extends StatDataFileReader{
     SDIOData sdiodata = null;
 
     NumberFormat doubleNumberFormatter = new DecimalFormat();
-    String csvFileName = null;
 
 
     /**
@@ -177,10 +174,6 @@ public class SPSSFileReader extends StatDataFileReader{
         delimiterChar = c; 
     }
 
-    void setCsvFileName (String fn) {
-        csvFileName = fn;
-    }
-
     int getCaseQnty () {
         return caseQnty;
     }
@@ -191,10 +184,6 @@ public class SPSSFileReader extends StatDataFileReader{
 
     char getDelimiterChar () {
         return delimiterChar;
-    }
-
-    String getCsvFileName () {
-        return csvFileName;
     }
 
     // Methods ---------------------------------------------------------------//
@@ -208,9 +197,9 @@ public class SPSSFileReader extends StatDataFileReader{
      * @throws java.io.IOException if a reading error occurs.
      */
     @Override
-    public SDIOData read(BufferedInputStream cardStream) throws IOException {
+    public SDIOData read(BufferedInputStream cardStream, File rawDataFile) throws IOException {
 
-        dbgLog.info("***** SPSSFileReader: read() start *****");
+        dbgLog.fine("***** SPSSFileReader: read() start *****");
 	    
 
         // TODO:
@@ -219,7 +208,7 @@ public class SPSSFileReader extends StatDataFileReader{
         getSPSScommandLines(cardStream);
 
         smd.getFileInformation().put("mimeType", MIME_TYPE[0]);
-        smd.getFileInformation().put("fileFormat", MIME_TYPE[0]);
+        smd.getFileInformation().put("fileFormat", FORMAT_NAMES[0]);
         smd.getFileInformation().put("varFormat_schema", "SPSS");
 
 
@@ -253,7 +242,7 @@ public class SPSSFileReader extends StatDataFileReader{
         // Now read the data file:
 
         CSVFileReader  csvFileReader = new CSVFileReader (getDelimiterChar());
-        BufferedReader csvRd = new BufferedReader(new InputStreamReader(new FileInputStream(getCsvFileName())));
+        BufferedReader csvRd = new BufferedReader(new InputStreamReader(new FileInputStream(rawDataFile)));
 
         csvData = csvFileReader.read(csvRd, smd);
         
@@ -266,7 +255,7 @@ public class SPSSFileReader extends StatDataFileReader{
         // Create and return the SDIOData object:
         sdiodata = new SDIOData(smd, csvData);
 
-        dbgLog.info("***** SPSSFileReader: read() end *****");
+        dbgLog.fine("***** SPSSFileReader: read() end *****");
 
 
         return sdiodata;
@@ -463,6 +452,7 @@ public class SPSSFileReader extends StatDataFileReader{
                         if (casesMatcher.find()) {
                             setCaseQnty(Integer.valueOf(casesMatcher.group(1)));
                             smd.getFileInformation().put("caseQnty", getCaseQnty());
+                            dbgLog.fine("Number of cases found: "+getCaseQnty());
                         }
                     }
                 }
@@ -770,7 +760,10 @@ public class SPSSFileReader extends StatDataFileReader{
     // I.e., it should be reproducible outside of the ingest. 
     // 
     // TODO: bring this up, soon.
-
+    //
+    // (the 2 methods below are more or less cut-and-pasted as is from Akio's
+    // SPSS/SAV file reader).
+    
     private String getUNF(Object[] varData, String[] dateFormats, int variableType,
         String unfVersionNumber, int variablePosition)
         throws NumberFormatException, UnfException,
@@ -843,7 +836,8 @@ public class SPSSFileReader extends StatDataFileReader{
                 String[] strdata = Arrays.asList(varData).toArray(
                     new String[varData.length]);
                 dbgLog.finer("string array passed to calculateUNF: "+Arrays.deepToString(strdata));
-                unfValue = UNF5Util.calculateUNF(strdata, dateFormats);
+                //unfValue = UNF5Util.calculateUNF(strdata, dateFormats);
+                unfValue = UNF5Util.calculateUNF(strdata);
                 dbgLog.finer("string:unfValue="+unfValue);
 
                 smd.getSummaryStatisticsTable().put(variablePosition,
@@ -923,7 +917,7 @@ public class SPSSFileReader extends StatDataFileReader{
         smd.setVariableUNF(unfValues);
         smd.getFileInformation().put("fileUNF", fileUNFvalue);
 
-        dbgLog.fine("unf values:\n"+unfValues);
+        dbgLog.fine("file-level unf value:\n"+fileUNFvalue);
 
     }
     
@@ -933,13 +927,14 @@ public class SPSSFileReader extends StatDataFileReader{
         SPSSFileReader spssReader = null;
 
         String testCardFile = args[0];
-        
+        String csvRawDataFile = args[1];
+
         try {
 
             spssCardStream = new BufferedInputStream(new FileInputStream(testCardFile));
 
             spssReader = new SPSSFileReader(null);
-            processedCard = spssReader.read(spssCardStream);
+            processedCard = spssReader.read(spssCardStream, new File(args[1]));
         } catch (IOException ex) {
             System.out.println("exception caught!");
             if (spssReader == null) {
@@ -948,7 +943,6 @@ public class SPSSFileReader extends StatDataFileReader{
         }
 
 
-        System.out.println("Hello World.");
     }
 
 }

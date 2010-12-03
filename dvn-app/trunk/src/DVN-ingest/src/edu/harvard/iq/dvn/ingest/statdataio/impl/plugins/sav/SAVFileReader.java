@@ -374,9 +374,13 @@ public class SAVFileReader extends StatDataFileReader{
      * @throws java.io.IOException if an reading error occurs.
      */
     @Override
-    public SDIOData read(BufferedInputStream stream) throws IOException{
+    public SDIOData read(BufferedInputStream stream, File dataFile) throws IOException{
 
         dbgLog.fine("***** SAVFileReader: read() start *****");
+
+        if (dataFile != null) {
+            throw new IOException ("this plugin does not support external raw data files");
+        }
 
 	// the following methods are now executed, in this order:
 	    

@@ -58,6 +58,9 @@ public class CSVFileReader implements java.io.Serializable {
         DataTable csvData = new DataTable();
         Object[][] dataTable = null;
         int varQnty = new Integer(smd.getFileInformation().get("varQnty").toString());
+        int caseQnty = new Integer(smd.getFileInformation().get("caseQnty").toString());
+
+        dataTable = new Object[varQnty][caseQnty];
 
         String line;
         String[] valueTokens = new String[varQnty];
@@ -65,19 +68,35 @@ public class CSVFileReader implements java.io.Serializable {
 
         int[] variableTypeList = smd.getVariableTypeMinimal();
 
+        dbgLog.fine("CSV reader; varQnty: "+varQnty);
+        dbgLog.fine("CSV reader; caseQnty: "+caseQnty);
+        dbgLog.fine("CSV reader; delimiter: "+delimiterChar);
+
         while ((line = csvReader.readLine()) != null) {
             // chop the line:
             line = line.replaceFirst("[ \t\n]*$", "");
-            valueTokens = line.split(""+delimiterChar, 0);
+            valueTokens = line.split(""+delimiterChar, varQnty);
+
+            //dbgLog.fine("case: "+lineCounter);
+            
+            Double testDoubleValue;
 
             for ( int i = 0; i < varQnty; i++ ) {
+                //dbgLog.fine("value: "+valueTokens[i]);
 
                 if (variableTypeList[i] == 0) {
                     // Numeric value:
-                    dataTable[lineCounter][i] = new Double(valueTokens[i]);
+                    try {
+                        testDoubleValue = new Double(valueTokens[i]);
+                        dataTable[i][lineCounter] = valueTokens[i];
+                    } catch (Exception ex) {
+                        dbgLog.fine("caught exception reading numeric value; variable: "+i+", case: "+lineCounter+"; value: "+valueTokens[i]);
+
+                        dataTable[i][lineCounter] = "0";
+                    }
                 } else {
                     // String. Adding to the table as is.
-                    dataTable[lineCounter][i] = valueTokens[i];
+                    dataTable[i][lineCounter] = valueTokens[i];
                 }
             }
             lineCounter++;

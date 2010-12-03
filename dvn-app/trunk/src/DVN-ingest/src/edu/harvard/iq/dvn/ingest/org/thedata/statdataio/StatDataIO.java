@@ -774,6 +774,8 @@ public final class StatDataIO {
     // All-in-one methods
 
     // read() methods: 3 varities (File, InputStream, URL)
+    // (note: the InputStream method has been updated to accept an extra
+    // argument, raw data filename -- for control card + datafile ingest.
     
     /**
      * Returns a <code>SDIOData</code> instance as the result of reading
@@ -801,7 +803,7 @@ public final class StatDataIO {
         if (stream == null) {
             throw new IOException("Can't create an InputStream!");
         }
-        SDIOData sd = read(stream);
+        SDIOData sd = read(stream, null);
         
         dbgLog.fine("after file: read");
         if (sd == null) {
@@ -824,7 +826,7 @@ public final class StatDataIO {
      *
      * @throws java.io.IOException if a reading error is detected.
      */
-    public static SDIOData read(BufferedInputStream input) throws IOException {
+    public static SDIOData read(BufferedInputStream input, File rawData) throws IOException {
         dbgLog.fine("\n\n***** within read: bis case *****");
         if (input == null) {
             throw new IllegalArgumentException("input == null!");
@@ -841,7 +843,7 @@ public final class StatDataIO {
         
         SDIOData sd;
         try {
-            sd = reader.read(input);
+            sd = reader.read(input, rawData);
         } finally {
             input.close();
         }
@@ -880,7 +882,7 @@ public final class StatDataIO {
 
         SDIOData sd;
         try {
-            sd = read(istream);
+            sd = read(istream, null);
             if (sd == null) {
                 istream.close();
             }

@@ -26,14 +26,12 @@ import java.io.*;
 import java.util.logging.*;
 import java.util.Locale;
 
-import static java.lang.System.*;
-
 import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.*;
 import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.spi.*;
 
 /**
  *
- * @author akio sone at UNC-Odum
+ * @author landreev
  */
 public class SPSSFileReaderSpi extends StatDataFileReaderSpi{
 
@@ -70,7 +68,7 @@ public class SPSSFileReaderSpi extends StatDataFileReaderSpi{
 
     @Override
     public boolean canDecodeInput(Object source) throws IOException {
-        out.println("this method is actually called: object");
+        dbgLog.fine("canDecodeInput(Object) method is called.");
         if (!(source instanceof BufferedInputStream)) {
             return false;
         }
@@ -85,7 +83,7 @@ public class SPSSFileReaderSpi extends StatDataFileReaderSpi{
             throw new IllegalArgumentException("stream == null!");
         }
 
-        dbgLog.info("\napplying the spss card test: inputstream case\n");
+        dbgLog.fine("\napplying the spss card test: inputstream case\n");
 
         if (stream.markSupported()){
             stream.mark(0);
@@ -101,7 +99,7 @@ public class SPSSFileReaderSpi extends StatDataFileReaderSpi{
                 // This looks like a valid SPSS card for a character-delimited
                 // data file. This plugin does NOT support other kinds of
                 // data files such as fixed-field, as of yet.
-                dbgLog.info("found valid-looking datalist command: "+line);
+                dbgLog.fine("found valid-looking datalist command: "+line);
                 supported = true;
             }
 

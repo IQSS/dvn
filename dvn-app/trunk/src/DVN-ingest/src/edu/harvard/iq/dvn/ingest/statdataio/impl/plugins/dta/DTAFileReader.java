@@ -483,9 +483,13 @@ public class DTAFileReader extends StatDataFileReader{
      * @throws java.io.IOException if an reading error occurs.
      */
     @Override
-    public SDIOData read(BufferedInputStream stream) throws IOException{
+    public SDIOData read(BufferedInputStream stream, File dataFile) throws IOException{
         dbgLog.info("***** DTAFileReader: read() start *****");
-        
+
+        if (dataFile != null) {
+            throw new IOException ("this plugin does not support external raw data files");
+        }
+
         decodeHeader(stream);
         decodeDescriptors(stream);
         decodeVariableLabels(stream);

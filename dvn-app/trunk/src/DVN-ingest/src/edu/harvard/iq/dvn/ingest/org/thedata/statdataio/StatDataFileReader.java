@@ -81,18 +81,28 @@ public abstract class StatDataFileReader {
      * Reads the statistical data file from a supplied
      * <code>BufferedInputStream</code> and 
      * returns its contents as a <code>SDIOData</code>.
-     * using a provided
+     *
+     * The second parameter, dataFile has been added to the method
+     * declaration in for implementation by plugins that provide
+     * 2 file ingest, with the data set metadata in one file
+     * (for ex., SPSS control card) and the raw data in a separate
+     * file (character-delimited, fixed-field, etc.)
+     *
      * 
      * @param stream  a <code>BufferedInputStream</code>
      * where a statistical data file is connected.
+     *
+     * @param dataFile <code>File</code> optional parameter
+     * representing the raw data file. For the plugins that only support
+     * single file ingest, this should be set to null.
+     *
      *
      * @return reading results as a <code>SDIOData</code>
      *
      * @throws java.io.IOException if a reading error occurs.
      */
-    public abstract SDIOData read(BufferedInputStream stream)
+    public abstract SDIOData read(BufferedInputStream stream, File dataFile)
         throws IOException;
-
 
     // Utility methods
 

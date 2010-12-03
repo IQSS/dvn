@@ -167,7 +167,11 @@ public class PORFileReader extends StatDataFileReader{
      * @throws java.io.IOException if an reading error occurs.
      */
     @Override
-    public SDIOData read(BufferedInputStream stream) throws IOException{
+    public SDIOData read(BufferedInputStream stream, File dataFile) throws IOException{
+
+        if (dataFile != null) {
+            throw new IOException ("this plugin does not support external raw data files");
+        }
 
         File tempPORfile = decodeHeader(stream);
         BufferedReader bfReader = null;

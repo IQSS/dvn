@@ -245,7 +245,11 @@ public class SPSSFileReader extends StatDataFileReader{
         BufferedReader csvRd = new BufferedReader(new InputStreamReader(new FileInputStream(rawDataFile)));
 
         csvData = csvFileReader.read(csvRd, smd);
-        
+
+        PrintWriter pwout = createOutputWriter(null);
+
+        storeTabFileData (csvData, pwout);
+
 
         // Calculate the datasets statistics, summary and category, and 
         // the UNF signatures:
@@ -480,6 +484,8 @@ public class SPSSFileReader extends StatDataFileReader{
         dbgLog.fine("dataList command: "+dataListCommand);
  
         List<Integer> variableTypeList= new ArrayList<Integer>();
+        List<Integer> printFormatList = new ArrayList<Integer>();
+        Map<String, String> printFormatNameTable = new LinkedHashMap<String, String>();
 
         String delimiterString = null;
 
@@ -536,9 +542,13 @@ public class SPSSFileReader extends StatDataFileReader{
                 // String:
                 variableTypeList.add(-1);
                 unfVariableTypes.put(varName, -1);
+                printFormatList.add(1);
+                printFormatNameTable.put(varName, "A");
             } else {
                 // Numeric:
                 variableTypeList.add(0);
+                printFormatList.add(5);
+                printFormatNameTable.put(varName, "F8.2");
 
                 // Extended numeric types for the UNF calculation:
                 // (we need to be able to differentiate between Integers and
@@ -551,6 +561,7 @@ public class SPSSFileReader extends StatDataFileReader{
                 }
 
             }
+
            
         }
 
@@ -568,8 +579,9 @@ public class SPSSFileReader extends StatDataFileReader{
             variableTypeList.toArray(new Integer[variableTypeList.size()])));
 
         //TODO: ? smd.getFileInformation().put("caseWeightVariableName", caseWeightVariableName);
-        //TODO: ? smd.setVariableFormat(printFormatList);
-        //TODO: ? smd.setVariableFormatName(printFormatNameTable);
+        smd.setVariableFormat(printFormatList);
+        smd.setVariableFormatName(printFormatNameTable);
+        smd.setVariableFormatCategory(formatCategoryTable);
 
 
         return readStatus;
@@ -751,6 +763,55 @@ public class SPSSFileReader extends StatDataFileReader{
         return readStatus;
     }
 
+
+    // method for creating the output writer for the temporary tab file.
+    // this shouldn't be in the plugins really.
+
+    PrintWriter createOutputWriter (BufferedInputStream stream) throws IOException {
+        PrintWriter pwout = null;
+	FileOutputStream fileOutTab = null;
+	        
+        try {
+
+            // create a File object to save the tab-delimited data file
+            File tabDelimitedDataFile = File.createTempFile("tempTabfile.", ".tab");
+
+            String tabDelimitedDataFileName   = tabDelimitedDataFile.getAbsolutePath();
+
+            // save the temp file name in the metadata object
+            smd.getFileInformation().put("tabDelimitedDataFileLocation", tabDelimitedDataFileName);
+
+            fileOutTab = new FileOutputStream(tabDelimitedDataFile);
+            
+            pwout = new PrintWriter(new OutputStreamWriter(fileOutTab, "utf8"), true);
+
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+        } catch (UnsupportedEncodingException ex) {
+            ex.printStackTrace();
+        } catch (IOException ex){
+            //ex.printStackTrace();
+	    throw ex; 
+        }
+
+        return pwout;
+
+    }
+
+    private void storeTabFileData (DataTable csvData, PrintWriter pwout) {
+        String[] caseRow = new String[getVarQnty()];
+
+
+        for (int i=0; i<getCaseQnty(); i++) {
+            for (int j=0; j<getVarQnty(); j++) {
+                caseRow[j] = (String)csvData.getData()[j][i];
+            }
+
+            pwout.println(StringUtils.join(caseRow, "\t"));
+        }
+        pwout.close(); 
+    }
+
     // Method for calculating the UNF signatures.
     //
     // It really isn't awesome that each of our file format readers has 
@@ -920,7 +981,7 @@ public class SPSSFileReader extends StatDataFileReader{
         dbgLog.fine("file-level unf value:\n"+fileUNFvalue);
 
     }
-    
+
     public static void main(String[] args) {
         BufferedInputStream spssCardStream = null;
         SDIOData processedCard = null;

@@ -86,7 +86,6 @@ public class StudyFileEditBean implements Serializable {
         fileMetadata.setStudyFile(studyFile);
 
 
-
         this.getStudyFile().setFileType( fileType );
 
         dbgLog.fine("reached before original filename");
@@ -110,11 +109,46 @@ public class StudyFileEditBean implements Serializable {
 
     }
 
+    public StudyFileEditBean(File file, String fileSystemName, Study study, String controlCardTempLocation) throws IOException {
+        dbgLog.fine("***** within StudyFileEditBean: control card constructor: start *****");
+        dbgLog.fine("reached before studyFile constructor");
+
+        String fileType = FileUtil.determineFileType(file);
+        dbgLog.fine("return from FileUtil.determineFileType(file), fileType="+fileType);
+
+        this.studyFile = new TabularDataFile(); // do not yet attach to study, as it has to be ingested
+
+        fileMetadata = new FileMetadata();
+        fileMetadata.setStudyFile(studyFile);
+
+
+        this.getStudyFile().setFileType( fileType );
+
+        dbgLog.fine("reached before original filename");
+        this.setOriginalFileName(file.getName());
+
+
+        this.getStudyFile().setFileType(fileType);
+        dbgLog.fine("after setFileType");
+        dbgLog.fine("before setFileName");
+        // replace extension with ".tab" if this we are going to convert this to a tabular data file
+        fileMetadata.setLabel(FileUtil.replaceExtension(this.getOriginalFileName()));
+        dbgLog.fine("before tempsystemfilelocation");
+        this.setTempSystemFileLocation(file.getAbsolutePath());
+        this.setControlCardSystemFileLocation(controlCardTempLocation);
+        this.getStudyFile().setFileSystemName(fileSystemName);
+        dbgLog.fine("StudyFileEditBean: contents:\n" + this.toString());
+
+        dbgLog.fine("***** within StudyFileEditBean: constructor: end *****");
+
+    }
+
     private FileMetadata fileMetadata;
     private StudyFile studyFile;
     private String originalFileName;
     private String tempSystemFileLocation;
     private String controlCardSystemFileLocation;
+    private String rawDataTempSystemFileLocation;
     private String ingestedSystemFileLocation;
     private boolean deleteFlag;
     private Long sizeFormatted = null;
@@ -163,6 +197,14 @@ public class StudyFileEditBean implements Serializable {
 
     public void setControlCardSystemFileLocation(String controlCardSystemFileLocation) {
         this.controlCardSystemFileLocation = controlCardSystemFileLocation;
+    }
+
+    public String getRawDataTempSystemFileLocation() {
+        return rawDataTempSystemFileLocation;
+    }
+
+    public void setRawDataTempSystemFileLocation(String rawDataTempSystemFileLocation) {
+        this.rawDataTempSystemFileLocation = rawDataTempSystemFileLocation;
     }
 
     public String getIngestedSystemFileLocation() {

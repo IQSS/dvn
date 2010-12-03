@@ -221,93 +221,119 @@ public class DSBWrapper implements java.io.Serializable  {
     public String ingest(StudyFileEditBean file)throws IOException{
         dbgLog.fine("***** DSBWrapper: ingest(): start *****\n");
 
-       String mime_type = file.getStudyFile().getFileType(); 
-       String ddi = null;
+        String ddi = null;
 
-       BufferedInputStream infile = null;
-
+        BufferedInputStream infile = null;
    
+        // ingest-source file
+        File tempFile = new File(file.getTempSystemFileLocation()); //
+        SDIOData sd = null;
 
-            // ingest-source file
-            File tempFile = new File(file.getTempSystemFileLocation()); // 
+        if (file.getControlCardSystemFileLocation() == null) {
+            // A "classic", 1 file ingest:        
+
+            String mime_type = file.getStudyFile().getFileType();
 
             infile = new BufferedInputStream(new FileInputStream(tempFile));
 
             dbgLog.fine("\nfile mimeType="+mime_type+"\n\n");
 
             // get available FileReaders for this MIME-type
-            Iterator<StatDataFileReader> itr =
+           Iterator<StatDataFileReader> itr =
                 StatDataIO.getStatDataFileReadersByMIMEType(mime_type);
 
-            if (!itr.hasNext()){
+            if (!itr.hasNext()){ 
                 throw new IllegalArgumentException("No FileReader Class found" +
                     " for this mime type="+ mime_type);
             }
             // use the first reader
             StatDataFileReader sdioReader = itr.next();
 
-            dbgLog.fine("reader class name="+sdioReader.getClass().getName());
+            dbgLog.info("reader class name="+sdioReader.getClass().getName());
 
-            SDIOData sd = null;
             if (mime_type != null){
-                sd = sdioReader.read(infile);
+                sd = sdioReader.read(infile, null);
             } else {
                 // fail-safe block if mime_type is null
                 // check the format type again and then read the file
                 dbgLog.info("mime-type was null: use the back-up method");
-                sd = StatDataIO.read(infile);
+                sd = StatDataIO.read(infile, null);
             }
+        } else {
+            // This is a 2-file ingest.
+            // As of now, the supported case is a CSV raw data file + SPSS
+            // control card pair.
             
-            SDIOMetadata smd = sd.getMetadata();
+            File rawDataFile = tempFile;
+            
+            infile = new BufferedInputStream(new FileInputStream(file.getControlCardSystemFileLocation())); 
+            
+            Iterator<StatDataFileReader> itr =
+                    StatDataIO.getStatDataFileReadersByFormatName("spss");
 
-            // tab-file: source file
-            String tabDelimitedDataFileLocation =
-                    smd.getFileInformation().get("tabDelimitedDataFileLocation").toString();
-
-            dbgLog.fine("tabDelimitedDataFileLocation="+tabDelimitedDataFileLocation);
-
-            dbgLog.fine("data file(tempFile): abs path:\n"+file.getTempSystemFileLocation());
-            dbgLog.fine("mimeType :\n"+file.getStudyFile().getFileType());
-
-
-            if (infile != null){
-                infile.close();
+            if (!itr.hasNext()){
+                throw new IllegalArgumentException("No FileReader Class found" +
+                    " for CSV data file.");
             }
+            // use the first reader
+            StatDataFileReader sdioReader = itr.next();
 
-            // parse the response
-            StudyFile f = file.getStudyFile();
+            dbgLog.info("reader class name="+sdioReader.getClass().getName());
 
-            // first, check dir
-            // create a sub-directory "ingested"
-            File newDir = new File(tempFile.getParentFile(), "ingested");
+            sd = sdioReader.read(infile, rawDataFile);
+            
+        }
+            
+        SDIOMetadata smd = sd.getMetadata();
 
-            if (!newDir.exists()) {
-                newDir.mkdirs();
-            }
-            dbgLog.fine("newDir: abs path:\n"+newDir.getAbsolutePath());
+        // tab-file: source file
+        String tabDelimitedDataFileLocation =
+        smd.getFileInformation().get("tabDelimitedDataFileLocation").toString();
 
-            // tab-file case: destination
-            File newFile = new File( newDir, tempFile.getName() );
+        dbgLog.fine("tabDelimitedDataFileLocation="+tabDelimitedDataFileLocation);
 
-            // nio-based file-copying idiom
-            FileInputStream fis = new FileInputStream(tabDelimitedDataFileLocation);
-            FileOutputStream fos = new FileOutputStream(newFile);
-            FileChannel fcin = fis.getChannel();
-            FileChannel fcout = fos.getChannel();
-            fcin.transferTo(0, fcin.size(), fcout);
-            fcin.close();
-            fcout.close();
-            fis.close();
-            fos.close();
+        dbgLog.fine("data file(tempFile): abs path:\n"+file.getTempSystemFileLocation());
+        dbgLog.fine("mimeType :\n"+file.getStudyFile().getFileType());
 
-            dbgLog.fine("newFile: abs path:\n"+newFile.getAbsolutePath());
 
-            // store the tab-file location
-            file.setIngestedSystemFileLocation(newFile.getAbsolutePath());
+        if (infile != null){
+            infile.close();
+        }
 
-            // return xmlToParse;
-            DDIWriter dw = new DDIWriter(smd);
-            ddi = dw.generateDDI();
+        // parse the response
+        StudyFile f = file.getStudyFile();
+
+        // first, check dir
+        // create a sub-directory "ingested"
+        File newDir = new File(tempFile.getParentFile(), "ingested");
+
+        if (!newDir.exists()) {
+            newDir.mkdirs();
+        }
+        dbgLog.fine("newDir: abs path:\n"+newDir.getAbsolutePath());
+
+        // tab-file case: destination
+        File newFile = new File( newDir, tempFile.getName() );
+
+        // nio-based file-copying idiom
+        FileInputStream fis = new FileInputStream(tabDelimitedDataFileLocation);
+        FileOutputStream fos = new FileOutputStream(newFile);
+        FileChannel fcin = fis.getChannel();
+        FileChannel fcout = fos.getChannel();
+        fcin.transferTo(0, fcin.size(), fcout);
+        fcin.close();
+        fcout.close();
+        fis.close();
+        fos.close();
+
+        dbgLog.fine("newFile: abs path:\n"+newFile.getAbsolutePath());
+
+        // store the tab-file location
+        file.setIngestedSystemFileLocation(newFile.getAbsolutePath());
+
+        // return xmlToParse;
+        DDIWriter dw = new DDIWriter(smd);
+        ddi = dw.generateDDI();
 
        
 

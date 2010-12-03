@@ -38,12 +38,14 @@ import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
+import javax.faces.event.ValueChangeEvent;
 import com.icesoft.faces.component.ext.HtmlDataTable;
 import com.icesoft.faces.component.ext.HtmlSelectOneMenu;
 
 import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
 import java.util.*;
+import java.util.logging.*;
 import com.icesoft.faces.component.inputfile.InputFile;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -65,7 +67,8 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
     @EJB StudyServiceLocal studyService;
     @EJB StudyFileServiceLocal studyFileService;
 
-    public static final Log mLog = LogFactory.getLog(AddFilesPage.class);
+    //public static final Log mLog = LogFactory.getLog(AddFilesPage.class);
+    private static Logger dbgLog = Logger.getLogger(AddFilesPage.class.getPackage().getName());
 
     private Long studyId = null;
     private Study study;
@@ -74,17 +77,21 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
     private List<StudyFileEditBean> fileList = new ArrayList();
 
     private InputFile inputFile = null;
-    private InputFile rawDataFile = null;
+
+    private String controlCardFilename = null;
+    private String controlCardTempFileLocation = null;
+
+    private boolean controlCardIngestInProgress = false;
+
     private String sessionId; // used to generate temp files
 
-    private String fileTypeSelected = "";
     private Collection<SelectItem> fileCategories = null; //for the drop-down list of the html page
-    //private Collection<SelectItemGroup> fileTypes = null;
-    private Collection<SelectItem> fileTypes = null;
 
+    // The selectItems (and groups) below are for the drop-down menu
+    // of the supported file types:
+    private Collection<SelectItem> fileTypes = null;
     private SelectItem[] fileTypesSubsettable;
     private SelectItem[] fileTypesNetwork;
-    private SelectItem[] fileTypesOther;
 
     private List<String> preexistingLabels = new ArrayList(); // used for validation
     private List<String> currentLabels = new ArrayList<String>();// used for validation
@@ -128,20 +135,20 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
         inputFile = f;
     }
 
-    public InputFile getRawDataFile() {
-        return rawDataFile;
+    public String getControlCardFilename () {
+        return controlCardFilename;
     }
 
-    public void setRawDataFile(InputFile f) {
-        rawDataFile = f;
+    public void setControlCardFilename (String ccf) {
+        controlCardFilename = ccf;
     }
 
-    public String getFileTypeSelected () {
-        return fileTypeSelected;
+    public String getControlCardTempFileLocation () {
+        return controlCardTempFileLocation;
     }
 
-    public void setFileTypeSelected (String ft) {
-        fileTypeSelected = ft; 
+    public void setControlCardTempFileLocation (String ccf) {
+        controlCardTempFileLocation = ccf;
     }
 
     public int getFileProgress() {
@@ -179,6 +186,7 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
     }
 
 
+
     public void init() {
         super.init();
         if (isStudyLocked()) {
@@ -203,8 +211,60 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
 
     public void uploadFile(ActionEvent event) {
         inputFile = (InputFile) event.getSource();
-        StudyFileEditBean fileBean = createStudyFile(inputFile);
-        fileList.add( fileBean );
+        StudyFileEditBean fileBean = null;
+
+        if ( "csv".equals(selectFileType.getValue()) && (!controlCardIngestInProgress)) {
+            // This is a 2 step process:
+            // First (in this step) they upload the control card;
+            // we store its file bean for the next step, where
+            // they will upload the CSV file.
+
+            // Attempt to save the control card in a temporary location:
+
+            File file = saveControlCardFile (inputFile);
+
+            if (file != null ) {
+                // Save the filenames, we'll need them in the next step:
+
+                setControlCardFilename(file.getName());
+                setControlCardTempFileLocation(file.getAbsolutePath());
+
+                // And set the flag indicating that a CSV+control card ingest
+                // is in progress:
+
+                controlCardIngestInProgress = true;
+            } else {
+                // Something went wrong as we tried to save the file;
+                // Reset the state of the process:
+ 
+                setControlCardFilename("");
+                controlCardIngestInProgress = false;
+            }
+
+        } else if (controlCardIngestInProgress) {
+            // This is step 2 of the CSV uploade.
+            // We had the control card uploaded in the previous step.
+            // Now they have uploaded the CSV file.
+
+            fileBean = createStudyFile(inputFile, getControlCardTempFileLocation());
+
+            //controlCardFileBean.setRawDataTempSystemFileLocation(fileBean.getTempSystemFileLocation());
+            // or maybe the other way around: (we probably want to display the byte size of the
+            // raw data CSV file in the file list table, not the size of the control card)
+            //fileBean.setControlCardSystemFileLocation(controlCardFileBean.getTempSystemFileLocation());
+
+            // Enable further uploads of more files:
+            controlCardIngestInProgress = false;
+
+            // Add the fileBean to the list:
+            //fileList.add(controlCardFileBean);
+            fileList.add( fileBean );
+        } else {
+            // This is a simple, 1-file ingest, we simply add the file bean
+            // to the file list:
+            fileBean = createStudyFile(inputFile, null);
+            fileList.add( fileBean );
+        }
 
 
         // produce FacesMessage for current upload (will be added to text during fummy validation)
@@ -242,7 +302,31 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
 
     }
 
-    private StudyFileEditBean createStudyFile(InputFile inputFile) { //"dvn" + File.separator +
+    private File saveControlCardFile(InputFile inputFile) {
+        File file = null;
+        File dir = new File(inputFile.getFile().getParentFile(), study.getId().toString() );
+        if ( !dir.exists() ) {
+            dir.mkdir();
+        }
+        try {
+            file = FileUtil.createTempFile(dir, inputFile.getFile().getName());
+
+            if (!inputFile.getFile().renameTo(file)) {
+                // in windows environment, rename doesn't work, so we will copy the file instead
+                FileUtil.copyFile(inputFile.getFile(), file);
+                inputFile.getFile().delete();
+            }
+        } catch (Exception ex) {
+            dbgLog.warning("Fail to create study file.");
+            dbgLog.warning(ex.getMessage());
+
+            return null;
+        }
+
+        return file;
+    }
+
+    private StudyFileEditBean createStudyFile(InputFile inputFile, String controlCardTempLocation) { //"dvn" + File.separator +
         //  FileInfo info = inputFile.getFileInfo();
         StudyFileEditBean f = null;
         try {
@@ -258,16 +342,22 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
             }
 
             //  File fstudy = FileUtil.createTempFile(sessionId, file.getName());
-            f = new StudyFileEditBean(file, studyService.generateFileSystemNameSequence(),study);
+            if (controlCardTempLocation != null) {
+                f = new StudyFileEditBean(file, studyService.generateFileSystemNameSequence(),study,controlCardTempLocation);
+            } else {
+                f = new StudyFileEditBean(file, studyService.generateFileSystemNameSequence(),study);
+            }
+
             f.setSizeFormatted(file.length());
 
         } catch (Exception ex) {
             String m = "Fail to create the study file. ";
-            mLog.error(m);
-            mLog.error(ex.getMessage());
+            dbgLog.warning(m);
+            dbgLog.warning(ex.getMessage());
         }
         return f;
     }
+
 
 
     /**
@@ -357,8 +447,73 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
         currentLabels.remove(rowIndex);
     }
 
+    public void fileTypeListener(ValueChangeEvent vce) {
+        dbgLog.fine("Addfiles: file type listener: value="+selectFileType.getValue());
+        FacesContext.getCurrentInstance().renderResponse();
+    }
+
+    public void fileTypeActionListener(ActionEvent event) {
+        dbgLog.fine("Addfiles: file type action listener: value="+selectFileType.getValue());
+        FacesContext.getCurrentInstance().renderResponse();
+    }
+
+    public String changeFileTypeAction() {
+        dbgLog.fine("Addfiles: change file type action: value="+selectFileType.getValue());
+        return "";
+    }
 
 
+    public boolean isTypeNotSelected () {
+        dbgLog.fine("AddFiles: isTypeNotSelected: selectFileType value="+selectFileType.getValue());
+
+        if ( selectFileType == null 
+            || selectFileType.getValue() == null
+            || selectFileType.getValue().equals("") ) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean isControlCardIngestInProgress() {
+        return controlCardIngestInProgress;
+    }
+
+    public boolean isControlCardIngestRequested() {
+        dbgLog.fine("AddFiles: is CCrequested: selectFileType value="+selectFileType.getValue());
+
+        // This method is used to find if we are in the first stage of a CSV
+        // file upload, when the "CSV" type was selected in the menu, but before
+        // the control card has been uploaded.
+
+        if ( "csv".equals(selectFileType.getValue()) && (!controlCardIngestInProgress)) {
+            return true;
+        }
+
+        return false; 
+    }
+
+    public boolean isOtherSubsettableIngestRequested() {
+        dbgLog.fine("AddFiles: is other subsettable ingest requested? selectFileType value="+selectFileType.getValue());
+
+        if ( "sav".equals(selectFileType.getValue()) ||
+             "por".equals(selectFileType.getValue()) ||
+             "dta".equals(selectFileType.getValue())) {
+            return true;
+        }
+
+        return false; 
+    }
+
+    public boolean isNetworkDataIngestRequested() {
+        dbgLog.fine("AddFiles: is network data ingest requested? selectFileType value="+selectFileType.getValue());
+
+        if ( "graphml".equals(selectFileType.getValue())) {
+            return true;
+        }
+
+        return false;
+    }
     public boolean isEmailRequested() {
         for (StudyFileEditBean fileBean : fileList) {
             if (fileBean.getStudyFile().isSubsettable()) {
@@ -367,14 +522,6 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
         }
 
         return false;
-    }
-
-    public boolean isControlCardIngestRequested() {
-        if ( "csv".equals(selectFileType.getValue()) ) {
-            return true;
-        }
-
-        return false; 
     }
 
     private String ingestEmail;
@@ -471,13 +618,14 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
      */
     public Collection<SelectItem> getFileTypes() {
 
+        dbgLog.fine("populating file types menu");
 
         if (fileTypes == null) {
             fileTypes = new ArrayList();
 
             fileTypesSubsettable = new SelectItem[4];
             fileTypesNetwork = new SelectItem[1];
-            fileTypesOther = new SelectItem[1];
+            //fileTypesOther = new SelectItem[1];
 
             fileTypes.add( new SelectItem("", "Choose a Data Type", "", true) );
             fileTypesSubsettable[0] = new SelectItem("por", "SPSS/POR");

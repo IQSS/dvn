@@ -353,30 +353,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         }
     }
 
-    public void deleteFilterGroup(){
-        HtmlDataTable dataTable2 = dataTableFilterGroup;
-        if (dataTable2.getRowCount()>0) {
-            VarGroupUI varGroupUI2 = (VarGroupUI) dataTable2.getRowData();
-            VarGroup varGroup = varGroupUI2.getVarGroup();
-            List varGroupList = (List) dataTable2.getValue();
-            Iterator iterator = varGroupList.iterator();
-            List deleteList = new ArrayList();
-            while (iterator.hasNext() ){
-                VarGroupUI varGroupUI = (VarGroupUI) iterator.next();
-                VarGroup data = varGroupUI.getVarGroup();
-                deleteList.add(data);
-            }
-            visualizationService.removeCollectionElement(deleteList,dataTable2.getRowIndex());
-                      for(VarGroupingUI varGroupingUI: filterGroupings){
-             if (varGroupingUI.getVarGrouping().equals(varGroup.getGroupAssociation())){
-                varGroupingUI.getVarGroupUI().remove(varGroupUI2);
-                varGroupingUI.getVarGrouping().getVarGroups().remove(varGroup);
 
-             }
-         }
-
-        }
-    }
 
     public void deleteFilterGroupType(){
         HtmlDataTable dataTable2 = dataTableFilterGroupType;
@@ -743,6 +720,56 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         loadFilterGroupings();
     }
 
+    public void deleteFilterGroup(){
+        HtmlDataTable dataTable2 = dataTableFilterGroup;
+        if (dataTable2.getRowCount()>0) {
+            VarGroupUI varGroupUI2 = (VarGroupUI) dataTable2.getRowData();
+            VarGroup varGroup = varGroupUI2.getVarGroup();
+            List varGroupList = (List) dataTable2.getValue();
+            Iterator iterator = varGroupList.iterator();
+            List deleteList = new ArrayList();
+            while (iterator.hasNext() ){
+                VarGroupUI varGroupUI = (VarGroupUI) iterator.next();
+                VarGroup data = varGroupUI.getVarGroup();
+                deleteList.add(data);
+            }
+            visualizationService.removeCollectionElement(deleteList,dataTable2.getRowIndex());
+            for(VarGroupingUI varGroupingUI: filterGroupings){
+                if (varGroupingUI.getVarGrouping().equals(varGroup.getGroupAssociation())){
+                    varGroupingUI.getVarGroupUI().remove(varGroupUI2);
+                    varGroupingUI.getVarGrouping().getVarGroups().remove(varGroup);
+                }
+            }
+
+        }
+    }
+
+    public void deleteFilterGrouping(){
+
+        Long varGroupingId = (Long) getDeleteFilterGroupLink().getValue();
+
+        List <VarGrouping> removeList = new ArrayList();
+        List <VarGroupingUI> removeListUI = new ArrayList();
+        List <VarGroupingUI> tempList = new ArrayList(filterGroupings);
+           for(VarGroupingUI varGroupingUI: tempList){
+                if (varGroupingUI.getVarGrouping().getId().equals(varGroupingId)){
+                    removeList.add(varGroupingUI.getVarGrouping());
+                    removeListUI.add(varGroupingUI);
+                }
+             }
+
+
+           for(VarGrouping varGroupingRem : removeList){
+
+               visualizationService.removeCollectionElement(varGroupings,varGroupingRem);
+           }
+
+           for(VarGroupingUI varGroupingRem : removeListUI){
+
+              filterGroupings.remove(varGroupingRem);
+           }
+
+    }
 
 
     public String cancel(){
@@ -904,24 +931,24 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                     }
                 }
 
-                             List  dataVariableIds = varGroupUI.getDataVariablesSelected();
+                List  dataVariableIds = varGroupUI.getDataVariablesSelected();
 
-             for(Object dataVariableId:  dataVariableIds){
-                 String id = dataVariableId.toString();
-                for(DataVariable dataVariable: dvList){
-                    if (dataVariable.getId() !=null &&  dataVariable.getId().equals(new Long(id))){
-                         DataVariableMapping dataVariableMapping = new DataVariableMapping();
-                         dataVariableMapping.setDataTable(dataTable);
-                         dataVariableMapping.setDataVariable(dataVariable);
-                         dataVariableMapping.setGroup(varGroup);
-                         dataVariableMapping.setVarGrouping(varGroupingUI.getVarGrouping());
-                         dataVariableMapping.setX_axis(false);
-                         dataVariable.getDataVariableMappings().add(dataVariableMapping);
-                     }
+                    for(Object dataVariableId:  dataVariableIds){
+                        String id = dataVariableId.toString();
+                        for(DataVariable dataVariable: dvList){
+                            if (dataVariable.getId() !=null &&  dataVariable.getId().equals(new Long(id))){
+                                DataVariableMapping dataVariableMapping = new DataVariableMapping();
+                                dataVariableMapping.setDataTable(dataTable);
+                                dataVariableMapping.setDataVariable(dataVariable);
+                                dataVariableMapping.setGroup(varGroup);
+                                dataVariableMapping.setVarGrouping(varGroupingUI.getVarGrouping());
+                                dataVariableMapping.setX_axis(false);
+                                dataVariable.getDataVariableMappings().add(dataVariableMapping);
+                            }
 
-              }
-             }
-            }
+                        }
+                    }
+                }
             }
         }
 
@@ -1349,7 +1376,14 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
     public void setAddFilterGroupTypeLink(HtmlCommandLink addFilterGroupTypeLink) {
         this.addFilterGroupTypeLink = addFilterGroupTypeLink;
     }
+    private HtmlCommandLink deleteFilterGroupLink;
 
+    public HtmlCommandLink getDeleteFilterGroupLink() {
+        return this.deleteFilterGroupLink;
+    }
+    public void setDeleteFilterGroupLink(HtmlCommandLink deleteFilterGroupLink) {
+        this.deleteFilterGroupLink = deleteFilterGroupLink;
+    }
     public List<SelectItem> getDataVariableSelectItems() {
         return dataVariableSelectItems;
     }

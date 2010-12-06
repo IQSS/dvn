@@ -489,8 +489,6 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
     }
 
-
-
     public void saveXAxis(){
         Long SelectedId = new Long(0);
         int countSelected = 0;
@@ -500,13 +498,26 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                 countSelected++;
             }
         }
-
-        if (countSelected < 2){
-            xAxisVariableId = SelectedId;
-            xAxisVariable = varService.getDataVariable(SelectedId);
+        if (countSelected > 1) {
+            FacesMessage message = new FacesMessage("You may not select more than one variable");
+            FacesContext fc = FacesContext.getCurrentInstance();
+            fc.addMessage(validateButton.getClientId(fc), message);
         }
 
+        if (countSelected == 1){
+            xAxisVariableId = SelectedId;
+            xAxisVariable = varService.getDataVariable(SelectedId);
 
+        }
+
+        if (countSelected == 0){
+            xAxisVariableId = SelectedId;
+            xAxisVariable = new DataVariable();
+
+        }
+
+        editFilter = false;
+        editMeasure = false;
         editXAxis = false;
     }
 
@@ -1078,7 +1089,6 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                 dvGenericFilteredListUI.add(dataVariableUI);
             }
         }
-        currentTitle = checkString;
     }
 
     public void  updateVariableList(ValueChangeEvent ce){

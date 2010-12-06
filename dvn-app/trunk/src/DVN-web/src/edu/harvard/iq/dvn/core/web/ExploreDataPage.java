@@ -25,7 +25,7 @@ import com.icesoft.faces.component.panelseries.PanelSeries;
 //import com.sun.corba.se.impl.io.TypeMismatchException;
 import javax.management.Query;
 import javax.servlet.http.HttpServletRequest;
-import com.google.gwt.visualization.client.*;
+
 import com.icesoft.faces.component.ext.HtmlCommandButton;
 import com.icesoft.faces.component.ext.HtmlInputText;
 import edu.harvard.iq.dvn.core.study.DataVariable;

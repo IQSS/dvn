@@ -38,7 +38,7 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
     DataTable dt;
 
         /**
-     *  Initialize the bean with a studyVersion for editing
+     *  Initialize the bean with a dataTable for editing
      */
     public void setDataTable(Long dataTableId ) {
         dt = em.find(DataTable.class,dataTableId);
@@ -461,8 +461,7 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void saveAll() {
 
-        em.merge(dt);
-        em.flush();
+
     }
 
     @Remove

@@ -46,7 +46,7 @@ import javax.naming.NamingException;
  *
  * @author skraffmiller
  */
-@EJB(name="visualization", beanInterface=edu.harvard.iq.dvn.core.visualization.VisualizationServiceBean.class)
+@EJB(name="visualizationService", beanInterface=edu.harvard.iq.dvn.core.visualization.VisualizationServiceBean.class)
 public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Serializable {
     @EJB
     VisualizationServiceLocal      visualizationService;
@@ -60,7 +60,8 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
     private List <DataVariableUI> dvMeasureFilteredListUI = new ArrayList();
     private List <DataVariableUI> dvFilterListUI = new ArrayList();
     private List <DataVariableUI> dvFilterFilteredListUI = new ArrayList();
-    private List <VarGroup> measureGroups = new ArrayList();
+    private List <DataVariableUI> dvGenericListUI = new ArrayList();
+    private List <DataVariableUI> dvGenericFilteredListUI = new ArrayList();
     private List <VarGroupType> measureGroupTypes = new ArrayList();
     private VarGroupingUI measureGrouping = new VarGroupingUI();
     private List <VarGroupingUI> filterGroupings = new ArrayList();
@@ -68,6 +69,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
     private List <SelectItem> filterGroupTypesUI = new ArrayList();
     private List <SelectItem> dataVariableSelectItems = new ArrayList();
     private List <SelectItem> studyFileIdSelectItems = new ArrayList();
+    private List <SelectItem> fragmentFilterGroupTypeSelectItems = new ArrayList();
 
     private DataVariable xAxisVariable = new DataVariable();
     private Long xAxisVariableId =  new Long(0);
@@ -82,8 +84,12 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
     DataTable dataTable;
     private boolean showCommands = false;
     private boolean showMeasureVariables = false;
-    private String varGroupIdParam = "";
-
+    private boolean editXAxis = false;
+    private boolean editMeasure = false;
+    private boolean editFilter = false;
+    private VarGroupUI editFragmentVarGroup = new VarGroupUI();
+    private VarGroupUI editFilterVarGroup = new VarGroupUI();
+    private VarGroupUI editMeasureVarGroup = new VarGroupUI();
     private VarGroupUI editVariableVarGroup = new VarGroupUI();
     private boolean showFilterVariables = false;
     private boolean selectFile = true;
@@ -253,6 +259,14 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             dvListUILocF.add(dataVariableUI);
         }
         dvFilterListUI = dvListUILocF;
+        List <DataVariableUI> dvListUILocG = new ArrayList();
+        for (DataVariable dataVariable : dvList){
+            DataVariableUI dataVariableUI = new DataVariableUI();
+            dataVariableUI.setDataVariable(dataVariable);
+            dataVariableUI.setSelected(false);
+            dvListUILocG.add(dataVariableUI);
+        }
+        dvGenericListUI = dvListUILocG;
     }
 
     public void loadMeasureGroupUIs (){
@@ -397,39 +411,9 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         }
     }
 
-    public void editMeasureVariables(ActionEvent ae){
-
-        UIComponent uiComponent = ae.getComponent().getParent();
-        while (!(uiComponent instanceof HtmlDataTable)){
-            uiComponent = uiComponent.getParent();
-        }
-        HtmlDataTable tempTable = (HtmlDataTable) uiComponent;
-        VarGroupUI varGroupUI = (VarGroupUI) tempTable.getRowData();
-        editVariableVarGroup = varGroupUI;
 
 
-        Iterator iterator = dvMeasureListUI.iterator();
-        List dvListUILoc = new ArrayList<DataVariableUI>();
-
-        while (iterator.hasNext() ){
-            DataVariableUI dataVariableUI = (DataVariableUI) iterator.next();
-            dataVariableUI.setSelected(false);
-            List  dvSelected = varGroupUI.getDataVariablesSelected();
-            for (Object selectedID:   dvSelected){
-                Long testID = new Long ((String) selectedID);
-                if(testID.equals(dataVariableUI.getDataVariable().getId())) {
-                    dataVariableUI.setSelected(true);
-                }
-            }
-            dvListUILoc.add(dataVariableUI);
-        }
-        dvMeasureListUI = dvListUILoc;
-        showFilterVariables = false;
-        showMeasureVariables = true;
-
-    }
-
-    public void editFilterTypes (ActionEvent ae){
+    public void editMeasureGroup (ActionEvent ae){
         
         UIComponent uiComponent = ae.getComponent().getParent();
         while (!(uiComponent instanceof HtmlDataTable)){
@@ -438,42 +422,27 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         HtmlDataTable tempTable = (HtmlDataTable) uiComponent;
         VarGroupUI varGroupUI = (VarGroupUI) tempTable.getRowData();
         varGroupUI.setShowTypeList(true);
-    }
-
-    public void hideFilterTypes (ActionEvent ae){
-
-        UIComponent uiComponent = ae.getComponent().getParent();
-        while (!(uiComponent instanceof HtmlDataTable)){
-            uiComponent = uiComponent.getParent();
+        dvGenericFilteredListUI.clear();
+        for (DataVariableUI dataVariableUI: dvGenericListUI){
+            dataVariableUI.setSelected(false);
+                for (Object dv : varGroupUI.getDataVariablesSelected() ){
+                    Long testId = new Long((String)dv);
+                    if (testId.equals(dataVariableUI.getDataVariable().getId())){
+                        dataVariableUI.setSelected(true);
+                    }
+                }
+              dvGenericFilteredListUI.add(dataVariableUI);
         }
-        HtmlDataTable tempTable = (HtmlDataTable) uiComponent;
-        VarGroupUI varGroupUI = (VarGroupUI) tempTable.getRowData();
 
-             VarGroup varGroup = varGroupUI.getVarGroup();
-             VarGrouping varGrouping = varGroup.getGroupAssociation();
-             List  groupTypeIds = varGroupUI.getVarGroupTypesSelectItems();
-             varGroup.getGroupTypes().clear();
-              String groupTypesSelectedString = "";
-             for(Object stringUI: groupTypeIds){
-                 String id = stringUI.toString();
-                 for (VarGroupType varGroupType: varGrouping.getVarGroupTypes()){
 
-                     if (varGroupType.getId() !=null &&  varGroupType.getId().equals(new Long(id))){
-                         varGroup.getGroupTypes().add(varGroupType);
-                           if (groupTypesSelectedString.isEmpty()){
-                               groupTypesSelectedString+=varGroupType.getName();
-                           } else {
-                              groupTypesSelectedString = groupTypesSelectedString + ", " + varGroupType.getName();
-                           }
-                     }
-                 }
-             }
-        varGroupUI.setGroupTypesSelectedString(groupTypesSelectedString);
-        varGroupUI.setShowTypeList(false);
+        editFragmentVarGroup = varGroupUI;
+        editFilter = false;
+        editMeasure = true;
+        editXAxis = false;
     }
 
-    public void editMeasureTypes (ActionEvent ae){
-
+    public void editFilterGroup (ActionEvent ae){
+        
         UIComponent uiComponent = ae.getComponent().getParent();
         while (!(uiComponent instanceof HtmlDataTable)){
             uiComponent = uiComponent.getParent();
@@ -481,17 +450,102 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         HtmlDataTable tempTable = (HtmlDataTable) uiComponent;
         VarGroupUI varGroupUI = (VarGroupUI) tempTable.getRowData();
         varGroupUI.setShowTypeList(true);
-    }
-    public void hideMeasureTypes (ActionEvent ae){
+        varGroupUI.getVarGroup().getName();
+        dvGenericFilteredListUI.clear();
 
-        UIComponent uiComponent = ae.getComponent().getParent();
-        while (!(uiComponent instanceof HtmlDataTable)){
-            uiComponent = uiComponent.getParent();
+        for (DataVariableUI dataVariableUI: dvGenericListUI){
+            dataVariableUI.setSelected(false);
+                for (Object dv : varGroupUI.getDataVariablesSelected() ){
+                    Long testId = new Long((String)dv);
+                    if (testId.equals(dataVariableUI.getDataVariable().getId())){
+                        dataVariableUI.setSelected(true);
+                    }
+                }
+                dvGenericFilteredListUI.add(dataVariableUI);
         }
-        HtmlDataTable tempTable = (HtmlDataTable) uiComponent;
-        VarGroupUI varGroupUI = (VarGroupUI) tempTable.getRowData();
-             VarGroup varGroup = varGroupUI.getVarGroup();
-             List  groupTypeIds = varGroupUI.getVarGroupTypesSelectItems();
+        
+        for (VarGroupingUI varGroupingUI: filterGroupings){
+            if (varGroupingUI.getVarGrouping().equals(varGroupUI.getVarGroup().getGroupAssociation())){
+                fragmentFilterGroupTypeSelectItems = varGroupingUI.getVarGroupTypesSelect();
+            }
+        }
+
+        editFilterVarGroup = varGroupUI;
+        editFilter = true;
+        editMeasure = false;
+        editXAxis = false;
+    }
+
+
+    public void editXAxisAction (){
+
+        Iterator iterator = dvGenericListUI.iterator();
+        dvGenericFilteredListUI.clear();
+        while (iterator.hasNext() ){
+
+            DataVariableUI dataVariableUI = (DataVariableUI) iterator.next();
+            dataVariableUI.setSelected(false);
+            if (dataVariableUI.getDataVariable().getId().equals(xAxisVariableId)){
+                dataVariableUI.setSelected(true);
+            }
+                dvGenericFilteredListUI.add(dataVariableUI);
+        }
+        editXAxis = true;
+        editMeasure = false;
+        editFilter = false;
+
+
+    }
+
+
+    public void cancelXAxis(){
+        editFilter = false;
+        editMeasure = false;
+        editXAxis = false;
+
+    }
+
+    public void cancelFragment(){
+        editFilter = false;
+        editMeasure = false;
+        editXAxis = false;
+
+    }
+
+
+
+    public void saveXAxis(){
+        Long SelectedId = new Long(0);
+        int countSelected = 0;
+        for (DataVariableUI dataVariableUI: dvGenericListUI){
+            if (dataVariableUI.isSelected()){
+                SelectedId = dataVariableUI.getDataVariable().getId();
+                countSelected++;
+            }
+        }
+
+        if (countSelected < 2){
+            xAxisVariableId = SelectedId;
+            xAxisVariable = varService.getDataVariable(SelectedId);
+        }
+
+
+        editXAxis = false;
+    }
+
+    public void saveFragment(){
+
+        editFragmentVarGroup.getDataVariablesSelected().clear();
+        int countSelected = 0;
+        for (DataVariableUI dataVariableUI: dvGenericListUI){
+            if (dataVariableUI.isSelected()){
+                editFragmentVarGroup.getDataVariablesSelected().add(dataVariableUI.getDataVariable().getId());
+                countSelected++;
+            }
+        }
+        editFragmentVarGroup.setNumberOfVariablesSelected(new Long(countSelected));
+             VarGroup varGroup = editFragmentVarGroup.getVarGroup();
+             List  groupTypeIds = editFragmentVarGroup.getVarGroupTypesSelectItems();
              varGroup.getGroupTypes().clear();
               String groupTypesSelectedString = "";
              for(Object stringUI: groupTypeIds){
@@ -509,109 +563,57 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                  }
              }
 
-        varGroupUI.setGroupTypesSelectedString(groupTypesSelectedString);
-        varGroupUI.setShowTypeList(false);
+        editFragmentVarGroup.setGroupTypesSelectedString(groupTypesSelectedString);
+        editFragmentVarGroup = new VarGroupUI();
+
+
+        editMeasure = false;
+        editXAxis = false;
     }
 
-    public void editFilterVariables(ActionEvent ae){
-
-        UIComponent uiComponent = ae.getComponent().getParent();
-        while (!(uiComponent instanceof HtmlDataTable)){
-            uiComponent = uiComponent.getParent();
-        }
-        HtmlDataTable tempTable = (HtmlDataTable) uiComponent;
-        VarGroupUI varGroupUI = (VarGroupUI) tempTable.getRowData();
-        editVariableVarGroup = varGroupUI;
-
-        VarGrouping varGroupingShow = editVariableVarGroup.getVarGroup().getGroupAssociation();
+    public void saveFilterFragment(){
 
 
-        Iterator iterator = dvFilterListUI.iterator();
-        List dvListUILoc = new ArrayList<DataVariableUI>();
+            editFilterVarGroup.getDataVariablesSelected().clear();
 
-        while (iterator.hasNext() ){
-            DataVariableUI dataVariableUI = (DataVariableUI) iterator.next();
-            dataVariableUI.setSelected(false);
-            List  dvSelected = varGroupUI.getDataVariablesSelected();
-            for (Object selectedID:   dvSelected){
-                Long testID = new Long ((String) selectedID);
-                if(testID.equals(dataVariableUI.getDataVariable().getId())) {
-                    dataVariableUI.setSelected(true);
-                }
-            }
-            dvListUILoc.add(dataVariableUI);
-        }
-        dvFilterListUI = dvListUILoc;
-
-        for (VarGroupingUI varGroupingUI : filterGroupings){
-            varGroupingUI.setShowVariables(false);
-            varGroupingUI.setDataVariableUIList(new ArrayList());
-            if (varGroupingUI.getVarGrouping().equals(varGroupingShow)) {
-                varGroupingUI.setShowVariables(true);
-                varGroupingUI.setDataVariableUIList(dvFilterListUI);
-            }
-
-        }
-
-        iterator = dvFilterListUI.iterator();
-        dvFilterFilteredListUI.clear();
-        while (iterator.hasNext() ){
-            DataVariableUI dataVariableUI = (DataVariableUI) iterator.next();
-                dvFilterFilteredListUI.add(dataVariableUI);
-        }
-        showMeasureVariables = false;
-        showFilterVariables = true;
-
-    }
-
-    public void cancelVariableUpdate(){
-
-        editVariableVarGroup = new VarGroupUI();
-        showMeasureVariables = false;
-        showFilterVariables = false;
-        for (VarGroupingUI varGroupingUI : filterGroupings){
-            varGroupingUI.setShowVariables(false);
-        }
-
-    }
-
-    public void saveMeasureVariableUpdate(){
-        editVariableVarGroup.getDataVariablesSelected().clear();
         int countSelected = 0;
-        for (DataVariableUI dataVariableUI: dvMeasureListUI){
+        for (DataVariableUI dataVariableUI: dvGenericListUI){
             if (dataVariableUI.isSelected()){
-                editVariableVarGroup.getDataVariablesSelected().add(dataVariableUI.getDataVariable().getId());
+                editFilterVarGroup.getDataVariablesSelected().add(dataVariableUI.getDataVariable().getId());
                 countSelected++;
             }
         }
-        editVariableVarGroup.setNumberOfVariablesSelected(new Long(countSelected));
-        editVariableVarGroup = new VarGroupUI();
-        showMeasureVariables = false;
-        showFilterVariables = false;
-        for (VarGroupingUI varGroupingUI : filterGroupings){
-            varGroupingUI.setShowVariables(false);
-        }
+        editFilterVarGroup.setNumberOfVariablesSelected(new Long(countSelected));
+             VarGroup varGroup = editFilterVarGroup.getVarGroup();
+             List  groupTypeIds = editFilterVarGroup.getVarGroupTypesSelectItems();
+             varGroup.getGroupTypes().clear();
+             String groupTypesSelectedString = "";
+             VarGrouping varGrouping = varGroup.getGroupAssociation();
 
+             for(Object stringUI: groupTypeIds){
+                 String id = stringUI.toString();
+                 for (VarGroupType varGroupType: varGrouping.getVarGroupTypes()){
+
+                     if (varGroupType.getId() !=null &&  varGroupType.getId().equals(new Long(id))){
+                         varGroup.getGroupTypes().add(varGroupType);
+                           if (groupTypesSelectedString.isEmpty()){
+                               groupTypesSelectedString+=varGroupType.getName();
+                           } else {
+                              groupTypesSelectedString = groupTypesSelectedString + ", " + varGroupType.getName();
+                           }
+                     }
+                 }
+             }
+
+        editFilterVarGroup.setGroupTypesSelectedString(groupTypesSelectedString);
+        editFilterVarGroup = new VarGroupUI();
+
+        editFilter = false;
+        editMeasure = false;
+        editXAxis = false;
     }
 
-    public void saveFilterVariableUpdate(){
-        editVariableVarGroup.getDataVariablesSelected().clear();
-        int countSelected = 0;
-        for (DataVariableUI dataVariableUI: dvFilterListUI){
-            if (dataVariableUI.isSelected()){
-                editVariableVarGroup.getDataVariablesSelected().add(dataVariableUI.getDataVariable().getId());
-                countSelected++;
-            }
-        }
-        editVariableVarGroup.setNumberOfVariablesSelected(new Long(countSelected));
-        editVariableVarGroup = new VarGroupUI();
-        showMeasureVariables = false;
-        showFilterVariables = false;
-        for (VarGroupingUI varGroupingUI : filterGroupings){
-            varGroupingUI.setShowVariables(false);
-        }
 
-    }
 
     public void addMeasureGroup() {
 
@@ -620,16 +622,16 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         newElem.getVarGroup().setGroupAssociation(measureGrouping.getVarGrouping());
         newElem.setDvMappings(null);
         newElem.getVarGroup().setGroupTypes(new ArrayList());
+        newElem.setShowTypeList(true);
         int i = measureGrouping.getVarGrouping().getVarGroups().size();
         measureGrouping.getVarGrouping().getVarGroups().add(i,  newElem.getVarGroup());
         measureGrouping.getVarGroupUI().add(newElem);
+        editFragmentVarGroup = newElem;
+        editFilterVarGroup = new VarGroupUI();
+        editMeasure = true;
+        editXAxis = false;
+        editFilter = false;
         
-    }
-
-    public void addMeasureGroupType() {
-        VarGroupType newElem = new VarGroupType();
-        newElem.setVarGrouping(measureGrouping.getVarGrouping());
-        measureGrouping.getVarGrouping().getVarGroupTypes().add(newElem);
     }
 
     public void addFilterGroup() {
@@ -645,7 +647,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                 newElem.setDvMappings(null);
                 int i = varGrouping.getVarGroups().size();
                 varGrouping.getVarGroups().add(i,  newElem.getVarGroup());
-                
+
              }
          }
           for(VarGroupingUI varGroupingUI: filterGroupings){
@@ -654,7 +656,34 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
              }
          }
+
+         for (VarGroupingUI varGroupingUI: filterGroupings){
+            if (varGroupingUI.getVarGrouping().equals(newElem.getVarGroup().getGroupAssociation())){
+                fragmentFilterGroupTypeSelectItems = varGroupingUI.getVarGroupTypesSelect();
+            }
+        }
+
+         editFilterVarGroup = newElem;
+
+        editMeasure = false;
+        editXAxis = false;
+        editFilter = true;
     }
+
+    public void addMeasureGroupType() {
+        VarGroupType newElem = new VarGroupType();
+        newElem.setVarGrouping(measureGrouping.getVarGrouping());
+        measureGrouping.getVarGrouping().getVarGroupTypes().add(newElem);
+        VarGroupTypeUI varGroupTypeUI = new VarGroupTypeUI();
+        varGroupTypeUI.setVarGroupType(newElem);
+        if (measureGrouping.getVarGroupTypesUI() == null){
+            measureGrouping.setVarGroupTypesUI(new ArrayList());
+        }
+
+        measureGrouping.getVarGroupTypesUI().add(varGroupTypeUI);
+    }
+
+
 
     public void addFilterGroupType() {
         VarGroupType newElem = new VarGroupType();
@@ -721,6 +750,34 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         return "editStudyFiles";
     }
 
+    public boolean validateForRelease(){
+
+        boolean valid = true;
+
+        if (!visualizationService.validateAtLeastOneFilterMapping(dataTable)) {
+            FacesMessage message = new FacesMessage("Each variable mapping must include at least one Filter.");
+            FacesContext fc = FacesContext.getCurrentInstance();
+            fc.addMessage(validateButton.getClientId(fc), message);
+            valid = false;
+        }
+
+        if (!visualizationService.validateXAxisMapping(dataTable)) {
+            FacesMessage message = new FacesMessage("You must select one X-axis variable and it cannot be mapped to any Measure or Filter.");
+            FacesContext fc = FacesContext.getCurrentInstance();
+            fc.addMessage(validateButton.getClientId(fc), message);
+            valid = false;
+        }
+
+        if (!visualizationService.validateOneMeasureMapping(dataTable)) {
+            FacesMessage message = new FacesMessage("Each variable mapping must include one Measure.");
+            FacesContext fc = FacesContext.getCurrentInstance();
+            fc.addMessage(validateButton.getClientId(fc), message);
+            valid = false;
+        }
+
+        return valid;
+    }
+
     public String validate(){
 
         if (!visualizationService.validateAtLeastOneFilterMapping(dataTable)) {
@@ -745,13 +802,21 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
     }
 
     public String release(){
-        dataTable.setVisualizationEnabled(true);
+        if (validateForRelease()) {
+            dataTable.setVisualizationEnabled(true);
+        }
         return "";
     }
 
     public String unRelease(){
         dataTable.setVisualizationEnabled(false);
         return "";
+    }
+
+
+    public String saveAndExit(){
+       save();
+       return "editStudyFiles";
     }
 
     public String save() {
@@ -785,9 +850,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                          dataVariableMapping.setLabel(xAxisUnits);
                          dataVariable.getDataVariableMappings().add(dataVariableMapping);
                      }
-
               }
-
            }
 
         List <VarGroupUI> measureVarGroupsUI  = (List) measureGrouping.getVarGroupUI();
@@ -864,7 +927,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
 
         visualizationService.saveAll();
-       return "editStudyFiles";
+       return "";
     }
 
 
@@ -875,6 +938,15 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
     }
     public void setInputXAxisUnits(HtmlInputText inputXAxisUnits) {
         this.inputXAxisUnits = inputXAxisUnits;
+    }
+
+    private HtmlInputText inputVariableGeneric;
+
+    public HtmlInputText getInputVariableGeneric() {
+        return this.inputVariableGeneric;
+    }
+    public void setInputVariableGeneric(HtmlInputText inputVariableGeneric) {
+        this.inputVariableGeneric = inputVariableGeneric;
     }
 
 
@@ -895,6 +967,8 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
     public void setInputVariableMeasure(HtmlInputText inputVariableMeasure) {
         this.inputVariableMeasure = inputVariableMeasure;
     }
+ 
+
     private HtmlInputText inputMeasureName;
 
     public HtmlInputText getInputMeasureName() {
@@ -960,55 +1034,97 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
          
         String checkString = (String) getInputVariableMeasure().getValue();
  
-        Iterator iterator = dvList.iterator();
-        dvFilteredList.clear();
-        while (iterator.hasNext() ){
-            DataVariable dataVariable = (DataVariable) iterator.next();
-            if (dataVariable.getName().contains(checkString)) {
-                dvFilteredList.add(dataVariable);
-            }
-        }
-        iterator = dvMeasureListUI.iterator();
-        dvMeasureFilteredListUI.clear();
+        Iterator iterator = dvGenericListUI.iterator();
+
+        dvGenericFilteredListUI.clear();
         while (iterator.hasNext() ){
             DataVariableUI dataVariableUI = (DataVariableUI) iterator.next();
+            dataVariableUI.setSelected(false);
+            List  dvSelected = editFragmentVarGroup.getDataVariablesSelected();
+                for (Object selectedID:   dvSelected){
+                    Long testID = new Long ((String) selectedID);
+                    if(testID.equals(dataVariableUI.getDataVariable().getId())) {
+                        dataVariableUI.setSelected(true);
+                    }
+                }
             if (dataVariableUI.getDataVariable().getName().contains(checkString)) {
-                dvMeasureFilteredListUI.add(dataVariableUI);
+                dvGenericFilteredListUI.add(dataVariableUI);
             }
         }
-      
+        currentTitle = checkString;
+    }
+
+    public void  updateVariableList(ValueChangeEvent ce){
+
+        String checkString = (String) inputVariableGeneric.getValue();
+
+        Iterator iterator = dvGenericListUI.iterator();
+        boolean xAxis = true;
+        dvGenericFilteredListUI.clear();
+        while (iterator.hasNext() ){
+            DataVariableUI dataVariableUI = (DataVariableUI) iterator.next();
+            dataVariableUI.setSelected(false);
+            if(!xAxis){
+                List  dvSelected = editVariableVarGroup.getDataVariablesSelected();
+                for (Object selectedID:   dvSelected){
+                    Long testID = new Long ((String) selectedID);
+                    if(testID.equals(dataVariableUI.getDataVariable().getId())) {
+                        dataVariableUI.setSelected(true);
+                    }
+                }
+
+            } else {
+
+                    if(xAxisVariable.getId().equals(dataVariableUI.getDataVariable().getId())) {
+                        dataVariableUI.setSelected(true);
+                    }
+
+            }
+
+            if (checkString != null && dataVariableUI.getDataVariable().getName().contains(checkString)) {
+                dvGenericFilteredListUI.add(dataVariableUI);
+            }
+        }
+        currentTitle = checkString;
+    }
+
+    public void  updateXAxisVariableList(ValueChangeEvent ce){
+
+        String checkString = (String) inputVariableGeneric.getValue();
+
+        Iterator iterator = dvGenericListUI.iterator();
+        dvGenericFilteredListUI.clear();
+        while (iterator.hasNext() ){
+
+            DataVariableUI dataVariableUI = (DataVariableUI) iterator.next();
+            dataVariableUI.setSelected(false);
+
+            if (dataVariableUI.getDataVariable().getName().contains(checkString)) {
+                dvGenericFilteredListUI.add(dataVariableUI);
+            }
+        }
+
     }
 
     public void  updateFilterVariableList(ValueChangeEvent ce){
         
         String checkString = (String) getInputVariableFilter().getValue();
-        Iterator iterator = dvList.iterator();
-        dvFilteredList.clear();
-        while (iterator.hasNext() ){
-            DataVariable dataVariable = (DataVariable) iterator.next();
-            if (dataVariable.getName().contains(checkString)) {
-                dvFilteredList.add(dataVariable);
-            }
-        }
-        iterator = dvFilterListUI.iterator();
-        dvFilterFilteredListUI.clear();
+        Iterator iterator = dvGenericListUI.iterator();
+        dvGenericFilteredListUI.clear();
+
         while (iterator.hasNext() ){
             DataVariableUI dataVariableUI = (DataVariableUI) iterator.next();
+            dataVariableUI.setSelected(false);
+            List  dvSelected = editFilterVarGroup.getDataVariablesSelected();
+                for (Object selectedID:   dvSelected){
+                    Long testID = new Long ((String) selectedID);
+                    if(testID.equals(dataVariableUI.getDataVariable().getId())) {
+                        dataVariableUI.setSelected(true);
+                    }
+                }
             if (dataVariableUI.getDataVariable().getName().contains(checkString)) {
-                dvFilterFilteredListUI.add(dataVariableUI);
+                dvGenericFilteredListUI.add(dataVariableUI);
             }
-        }
-
-        VarGrouping varGroupingShow = editVariableVarGroup.getVarGroup().getGroupAssociation();
-
-        for (VarGroupingUI varGroupingUI : filterGroupings){
-            varGroupingUI.setShowVariables(false);
-            varGroupingUI.setDataVariableUIList(new ArrayList());
-            if (varGroupingUI.getVarGrouping().equals(varGroupingShow)) {
-                varGroupingUI.setShowVariables(true);
-                varGroupingUI.setDataVariableUIList(dvFilterFilteredListUI);
-            }
-
         }
 
     }
@@ -1376,6 +1492,11 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         return dvMeasureFilteredListUI;
     }
 
+   public List<DataVariableUI> getDvGenericListUI() {
+
+        return dvGenericListUI;
+    }
+
     public void setDvMeasureFilteredListUI(List<DataVariableUI> dvFilteredListUI) {
         this.dvMeasureFilteredListUI = dvFilteredListUI;
     }
@@ -1403,5 +1524,67 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
     public void setShowMeasureVariables(boolean showMeasureVariables) {
         this.showMeasureVariables = showMeasureVariables;
+    }
+
+    public boolean isEditXAxis() {
+        return editXAxis;
+    }
+
+    public void setEditXAxis(boolean editXAxis) {
+        this.editXAxis = editXAxis;
+    }
+
+    public void setDvGenericFilteredListUI(List<DataVariableUI> dvGenericFilteredListUI) {
+        this.dvGenericFilteredListUI = dvGenericFilteredListUI;
+    }
+
+    public List<DataVariableUI> getDvGenericFilteredListUI() {
+        return dvGenericFilteredListUI;
+    }
+
+    public VarGroupUI getEditFragmentVarGroup() {
+        return editFragmentVarGroup;
+    }
+
+    public void setEditFragmentVarGroup(VarGroupUI editFragmentVarGroup) {
+        this.editFragmentVarGroup = editFragmentVarGroup;
+    }
+        public boolean isEditFilter() {
+        return editFilter;
+    }
+
+    public void setEditFilter(boolean editFilter) {
+        this.editFilter = editFilter;
+    }
+
+    public boolean isEditMeasure() {
+        return editMeasure;
+    }
+
+    public void setEditMeasure(boolean editMeasure) {
+        this.editMeasure = editMeasure;
+    }
+    public VarGroupUI getEditFilterVarGroup() {
+        return editFilterVarGroup;
+    }
+
+    public void setEditFilterVarGroup(VarGroupUI editFilterVarGroup) {
+        this.editFilterVarGroup = editFilterVarGroup;
+    }
+
+    public VarGroupUI getEditMeasureVarGroup() {
+        return editMeasureVarGroup;
+    }
+
+    public void setEditMeasureVarGroup(VarGroupUI editMeasureVarGroup) {
+        this.editMeasureVarGroup = editMeasureVarGroup;
+    }
+
+    public List<SelectItem> getFragmentFilterGroupTypeSelectItems() {
+        return fragmentFilterGroupTypeSelectItems;
+    }
+
+    public void setFragmentFilterGroupTypeSelectItems(List<SelectItem> fragmentFilterGroupTypeSelectItems) {
+        this.fragmentFilterGroupTypeSelectItems = fragmentFilterGroupTypeSelectItems;
     }
 }

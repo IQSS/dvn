@@ -119,6 +119,11 @@ function handleQueryResponse(response) {
                     <ice:commandButton id="addLineButton" type="submit" value="Add Line" binding="#{ExploreDataPage.addLineButton}" action="#{ExploreDataPage.addLine}"/>
                     <ice:message for="addLineButton" id ="boxErrorMsg"  styleClass="errorMessage"   />
                 </div>
+
+                <div>
+                    <ice:commandButton id="getDataTable" type="submit" value="Data Table"  action="#{ExploreDataPage.getDataTable}"/>
+                    <ice:message for="getDataTable" id ="boxErrorMsg"  styleClass="errorMessage"   />
+                </div>
             </div>
 
         </div>

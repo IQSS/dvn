@@ -25,13 +25,24 @@ import com.icesoft.faces.component.panelseries.PanelSeries;
 //import com.sun.corba.se.impl.io.TypeMismatchException;
 import javax.management.Query;
 import javax.servlet.http.HttpServletRequest;
-//import com.google.gwt.visualization.client.*;
+import com.google.gwt.visualization.client.*;
 import com.icesoft.faces.component.ext.HtmlCommandButton;
 import com.icesoft.faces.component.ext.HtmlInputText;
 import edu.harvard.iq.dvn.core.study.DataVariable;
+import edu.harvard.iq.dvn.core.study.StudyFile;
 import edu.harvard.iq.dvn.core.study.VariableServiceLocal;
 import edu.harvard.iq.dvn.core.visualization.DataVariableMapping;
+import edu.harvard.iq.dvn.ingest.dsb.FieldCutter;
+import edu.harvard.iq.dvn.ingest.dsb.impl.DvnJavaFieldCutter;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
@@ -65,7 +76,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     private List <String> measureString= new ArrayList();
     private DataVariable xAxisVar;
     private DataTable dt = new DataTable();
-
+    private DataVariable dataVariableSelected = new DataVariable();
+    
     public ExploreDataPage() {
         
     }
@@ -438,7 +450,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
           VisualizationLineDefinition vizLine = new VisualizationLineDefinition();
           vizLine.setMeasureGrouping(measureGrouping);
           vizLine.setMeasureGroup(visualizationService.getGroupFromId(selectedMeasureId));
-
+          //vizLine.setVariableId(selectedMeasureId);
           List <VarGroup> selectedFilterGroups = new ArrayList();
            for(VarGroupingUI varGrouping: filterGroupings) {
                VarGroup filterGroup = visualizationService.getGroupFromId(varGrouping.getSelectedGroupId());
@@ -449,6 +461,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
            vizLine.setMeasureLabel(measureLabel);
            vizLine.setColor(lineColor);
            vizLine.setBorder("border:1px solid " + lineColor + ";");
+           vizLine.setVariableId(dataVariableSelected.getId());
            vizLines.add(vizLine);
         }
     }
@@ -472,7 +485,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
            }
 
            
-           List  resultList = new ArrayList();
+           List <DataVariable> resultList = new ArrayList();
 
            Iterator varIter = dvList.iterator();
            while (varIter.hasNext()) {
@@ -486,9 +499,12 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                     }
                 }
            }
+           List <ArrayList> filterGroupingList = new ArrayList();
 
            List <DataVariable> resultListFilter = new ArrayList();
+
            for(VarGroupingUI varGrouping: filterGroupings) {
+               ArrayList <DataVariable> tempList = new ArrayList();
                Iterator varIterb = resultList.iterator();
                while (varIterb.hasNext()) {
                     DataVariable dv = (DataVariable) varIterb.next();
@@ -496,10 +512,12 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                     for(DataVariableMapping dvMapping:dvMappings ) {
                         if (!dvMapping.isX_axis() && dvMapping.getGroup().getId().equals(varGrouping.getSelectedGroupId())){
                             resultListFilter.add(dv);
+                            tempList.add(dv);
                             count++;
                         }
                     }
                }
+               filterGroupingList.add(tempList);
            }
 
            List <DataVariable> testCounts = resultListFilter;
@@ -517,7 +535,39 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
             }
 
+        List <DataVariable> finalList = new ArrayList();
+        finalList = resultList;
         valid = (maxCount == filterGroupings.size() );
+        List <DataVariable> removeList = new ArrayList();
+        for (DataVariable dv : finalList){
+            boolean remove = true;
+            for (ArrayList arrayList : filterGroupingList){
+                for (Object dvO: arrayList){
+                    DataVariable dvF = (DataVariable) dvO;
+                        if (dvF.equals(dv)){
+                            remove = false;
+                        }
+                }
+                if (remove) removeList.add(dv);
+            }
+        }
+
+        for(DataVariable dataVarRemove : removeList){
+              finalList.remove(dataVarRemove);
+        }
+
+
+        if(finalList.size() == 1) {
+            dataVariableSelected = finalList.get(0);
+        } else {
+            FacesMessage message = new FacesMessage("Your selections do not match any in the data table.");
+            FacesContext fc = FacesContext.getCurrentInstance();
+            fc.addMessage(addLineButton.getClientId(fc), message);
+            return false;
+        }
+
+
+
         if (!valid){
             FacesMessage message = new FacesMessage("Your selections do not match any in the data table.");
             FacesContext fc = FacesContext.getCurrentInstance();
@@ -587,4 +637,81 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     public void setAddLineButton(HtmlCommandButton hit) {
         this.addLineButton = hit;
     }
+
+    public String getDataTable(){
+
+    StudyFile sf = dt.getStudyFile();
+
+    try {
+        File tmpSubsetFile = File.createTempFile("tempsubsetfile.", ".tab");
+        List <DataVariable> dvsIn = new ArrayList();
+        dvsIn.add(xAxisVar);
+        for (VisualizationLineDefinition vld: vizLines){
+            Long testId = vld.getVariableId();
+            for (DataVariable dv : dt.getDataVariables()){
+                if (dv.getId().equals(testId)){
+                     dvsIn.add(dv);
+                }
+            }
+
+        }
+
+        Set<Integer> fields = new LinkedHashSet<Integer>();
+        List<DataVariable> dvs = dvsIn;
+
+        for (Iterator el = dvs.iterator(); el.hasNext();) {
+            DataVariable dv = (DataVariable) el.next();
+            fields.add(dv.getFileOrder());
+        }
+
+        // Execute the subsetting request:
+        FieldCutter fc = new DvnJavaFieldCutter();
+
+
+        fc.subsetFile(
+            sf.getFileSystemLocation(),
+            tmpSubsetFile.getAbsolutePath(),
+            fields,
+            dt.getCaseQuantity() );
+
+// Now, if it all went well, the file tmpSubsetFile contains the selected
+// columns (tab-separated)
+
+        if (tmpSubsetFile.exists()) {
+            
+            Long subsetFileSize = tmpSubsetFile.length();
+            List <String>  fileList = new ArrayList();
+            BufferedReader reader = new BufferedReader(new FileReader(tmpSubsetFile));
+            String line = null;
+            while ((line=reader.readLine()) != null) {
+               String check =  line.toString();
+               fileList.add(check);
+            }
+
+            for (String strBuff: fileList){
+                String splitarray[] = strBuff.split("\t");
+                for ( int i=0; i<vizLines.size(); i++ ) {
+                    if (i==0){
+
+
+                    }
+                }
+            }
+
+
+
+            return subsetFileSize.toString();
+        }
+        return "";
+
+        } catch  (IOException e) {
+            e.printStackTrace();
+                            return "failure";
+           }
+
+
+    }
+
+
+
 }

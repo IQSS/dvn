@@ -13,110 +13,51 @@ Common Form for SetUpDataExplorationPage
 
 
     <div jsfc="ice:panelGroup" style="float:right; margin-bottom:1em;">
-        <ice:commandButton type="submit" value="Save" action ="#{SetUpDataExplorationPage.save}"/>
+        <ice:commandButton type="submit" value="Save" action ="#{SetUpDataExplorationPage.saveXAxis}" visible="#{SetUpDataExplorationPage.editXAxis}"/>
+    </div>
+    <div jsfc="ice:panelGroup" style="float:right; margin-bottom:1em;">
+        <ice:commandButton type="submit" value="Cancel" action ="#{SetUpDataExplorationPage.cancelXAxis}" visible="#{SetUpDataExplorationPage.editXAxis}"/>
+    </div>
+    <div jsfc="ice:panelGroup" style="margin-bottom:1em;" >
+        <ice:outputLabel value="Units" for="filtergroupname"
+                         rendered="#{SetUpDataExplorationPage.editXAxis}"
+                         visible="#{SetUpDataExplorationPage.editXAxis}"/>
+        <ice:inputText 
+          rendered="#{SetUpDataExplorationPage.editXAxis}"
+          value="#{SetUpDataExplorationPage.xAxisUnits}"
+          size="25"
+          maxlength="255"
+          binding="#{SetUpDataExplorationPage.inputXAxisUnits}"/>
     </div>
 
-    <div jsfc="ice:panelGroup" style="margin-bottom:1em;">
-        <ice:outputLabel value="Units" for="filtergroupname"/>
-        <ice:inputText id="filtergroupname" value=""/>
-    </div>
+    <div jsfc="ice:panelGroup" rendered="#{SetUpDataExplorationPage.editXAxis}">
+         <ice:outputText value="Filter Variables" rendered="#{SetUpDataExplorationPage.editXAxis}"
+                         visible="#{SetUpDataExplorationPage.editXAxis}"/>
+         <ice:inputText
+             rendered="#{SetUpDataExplorationPage.editXAxis}"
+              visible="#{SetUpDataExplorationPage.editXAxis}"
+              size="25"
+              maxlength="255"
+              onkeyup="delayedRequest(form,this,event);"
 
-    <div jsfc="ice:panelGroup" style="margin-bottom:1em;">
-        <strong>Measure</strong> <ice:inputText id="filtergroupname" value=""/>
-    </div>
-
-    <div jsfc="ice:panelGroup" style="margin-bottom:1em;">
-        <div jsfc="ice:panelGroup" style="overflow:hidden;">
-            <strong>Type</strong>
-        </div>
-
-        <div jsfc="ice:panelGroup">
-            Gender <a href="#" style="padding:2px; margin:0 1em 0 .5em; border:1px solid blue;">X</a>
-        </div>
-
-        <div jsfc="ice:panelGroup">
-            <ice:inputText id="filtertype"/>
-            <ice:commandButton type="submit" value="Add"/>
-        </div>
-    </div>
-
-
-
-    <div jsfc="ice:panelGroup" style="margin-bottom:1em;">
-        <strong>Group</strong> <ice:inputText id="filtergroupname" value=""/>
-    </div>
-
-    <div jsfc="ice:panelGroup" style="margin-bottom:1em;">
-        <strong>Filter</strong> <ice:inputText id="filtername" value=""/>
-    </div>
-
-    <div jsfc="ice:panelGroup" style="margin-bottom:1em;">
-        <div jsfc="ice:panelGroup" style="overflow:hidden;">
-            <div jsfc="ice:panelGroup" style="float:left; font-weight:bold;">Variables</div>
-            <div jsfc="ice:panelGroup" style="float:right;">Filter <ice:inputText id="filtervariables"></ice:inputText></div>
-        </div>
-
-        <table width="100%" cellspacing="0" cellpadding="0" class="iceDatTbl">
-            <thead>
-                <tr>
-                    <th class="iceDatTblColHdr1 groupRow"><span class="iceOutTxt">Select</span></th>
-                    <th class="iceDatTblColHdr2 groupRow"><span class="iceOutTxt">Name</span></th>
-                    <th class="iceDatTblColHdr1 groupRow"><span class="iceOutTxt">Label</span></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr class="iceDatTblRow evenRow">
-                    <td class="iceDatTblCol1">
-                        <ice:selectBooleanCheckbox id="select1" value="true"/>
-                    </td>
-                    <td class="iceDatTblCol2">emplratio_female</td>
-                    <td class="iceDatTblCol1">blah, blah, blah</td>
-                </tr>
-                <tr class="iceDatTblRow oddRow">
-                    <td class="iceDatTblCol1">
-                        <ice:selectBooleanCheckbox id="select2" value="true"/>
-                    </td>
-                    <td class="iceDatTblCol2">emplratio_male</td>
-                    <td class="iceDatTblCol1">blah, blah, blah</td>
-                </tr>
-                <tr class="iceDatTblRow evenRow">
-                    <td class="iceDatTblCol1">
-                        <ice:selectBooleanCheckbox id="select3" value=""/>
-                    </td>
-                    <td class="iceDatTblCol2">emplratio_blacks</td>
-                    <td class="iceDatTblCol1">blah, blah, blah</td>
-                </tr>
-                <tr class="iceDatTblRow oddRow">
-                    <td class="iceDatTblCol1">
-                        <ice:selectBooleanCheckbox id="select4" value=""/>
-                    </td>
-                    <td class="iceDatTblCol2">emplratio_whites</td>
-                    <td class="iceDatTblCol1">blah, blah, blah</td>
-                </tr>
-                <tr class="iceDatTblRow evenRow">
-                    <td class="iceDatTblCol1">
-                        <ice:selectBooleanCheckbox id="select5" value=""/>
-                    </td>
-                    <td class="iceDatTblCol2">emplratio_25younger</td>
-                    <td class="iceDatTblCol1">blah, blah, blah</td>
-                </tr>
-                <tr class="iceDatTblRow oddRow">
-                    <td class="iceDatTblCol1">
-                        <ice:selectBooleanCheckbox id="select6" value=""/>
-                    </td>
-                    <td class="iceDatTblCol2">emplratio_26-64</td>
-                    <td class="iceDatTblCol1">blah, blah, blah</td>
-                </tr>
-                <tr class="iceDatTblRow evenRow">
-                    <td class="iceDatTblCol1">
-                        <ice:selectBooleanCheckbox id="select7" value=""/>
-                    </td>
-                    <td class="iceDatTblCol2">emplratio_65older</td>
-                    <td class="iceDatTblCol1">blah, blah, blah</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
+              valueChangeListener="#{SetUpDataExplorationPage.updateXAxisVariableList}"
+              binding="#{SetUpDataExplorationPage.inputVariableGeneric}"/>
+         
+         <ice:dataTable width="100%" cellspacing="0" cellpadding="0" id="genericVariables" var="dataVariableUI" value="#{SetUpDataExplorationPage.dvGenericFilteredListUI}">
+                                    <ice:column>
+                                        <f:facet name="header">
+                                            <ice:outputText value="Select"/>
+                                        </f:facet>
+                                        <ice:selectBooleanCheckbox id="genericVariableCheckBoxes" styleClass="measureVariableCheckBoxes"
+                                                                   partialSubmit="false" value="#{dataVariableUI.selected}"/>
+                                    </ice:column>
+                                    <ice:column>
+                                        <f:facet name="header">
+                                            <ice:outputText value="Name"/>
+                                        </f:facet>
+                                        <ice:outputLabel value="#{dataVariableUI.dataVariable.name}"/>
+                                    </ice:column>
+                                </ice:dataTable>
+                            </div>
 
 </div>

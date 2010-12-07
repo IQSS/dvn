@@ -10,49 +10,39 @@ Common Form for SetUpDataExplorationPage
      class="dvnsetupdataexloprationformblock">
 
     <div class="dvnFormPadding dvnFormMargin" style="float:right;">
-        <ice:commandButton type="submit" value="Save" action ="#{SetUpDataExplorationPage.saveXAxis}" visible="#{SetUpDataExplorationPage.editXAxis}"/>
-        <ice:commandButton type="submit" value="Cancel" action ="#{SetUpDataExplorationPage.cancelXAxis}" visible="#{SetUpDataExplorationPage.editXAxis}"/>
+        <ice:commandButton type="submit" value="Save" action="#{SetUpDataExplorationPage.saveXAxis}"/>
+        <ice:commandButton type="submit" value="Cancel" action="#{SetUpDataExplorationPage.cancelXAxis}"/>
     </div>
-    <div jsfc="ice:panelGroup" style="margin-bottom:1em;" >
-        <ice:outputLabel value="Units" for="filtergroupname"
-                         rendered="#{SetUpDataExplorationPage.editXAxis}"
-                         visible="#{SetUpDataExplorationPage.editXAxis}"/>
+    <div jsfc="ice:panelGroup" style="margin-bottom:1em;">
+        <ice:outputLabel value="Units" for="filtergroupname"/>
         <ice:inputText 
-          rendered="#{SetUpDataExplorationPage.editXAxis}"
           value="#{SetUpDataExplorationPage.xAxisUnits}"
           size="25"
           maxlength="255"
           binding="#{SetUpDataExplorationPage.inputXAxisUnits}"/>
     </div>
-
-    <div jsfc="ice:panelGroup" rendered="#{SetUpDataExplorationPage.editXAxis}">
-         <ice:outputText value="Filter Variables" rendered="#{SetUpDataExplorationPage.editXAxis}"
-                         visible="#{SetUpDataExplorationPage.editXAxis}"/>
+    <div jsfc="ice:panelGroup">
+         <ice:outputText value="Filter Variables"/>
          <ice:inputText
-             rendered="#{SetUpDataExplorationPage.editXAxis}"
-              visible="#{SetUpDataExplorationPage.editXAxis}"
               size="25"
               maxlength="255"
               onkeyup="delayedRequest(form,this,event);"
-
               valueChangeListener="#{SetUpDataExplorationPage.updateXAxisVariableList}"
               binding="#{SetUpDataExplorationPage.inputVariableGeneric}"/>
-         
          <ice:dataTable width="100%" cellspacing="0" cellpadding="0" id="genericVariables" var="dataVariableUI" value="#{SetUpDataExplorationPage.dvGenericFilteredListUI}">
-                                    <ice:column>
-                                        <f:facet name="header">
-                                            <ice:outputText value="Select"/>
-                                        </f:facet>
-                                        <ice:selectBooleanCheckbox id="genericVariableCheckBoxes" styleClass="measureVariableCheckBoxes"
-                                                                   partialSubmit="false" value="#{dataVariableUI.selected}"/>
-                                    </ice:column>
-                                    <ice:column>
-                                        <f:facet name="header">
-                                            <ice:outputText value="Name"/>
-                                        </f:facet>
-                                        <ice:outputLabel value="#{dataVariableUI.dataVariable.name}"/>
-                                    </ice:column>
-                                </ice:dataTable>
-                            </div>
-
+            <ice:column>
+                <f:facet name="header">
+                    <ice:outputText value="Select"/>
+                </f:facet>
+                <ice:selectBooleanCheckbox id="genericVariableCheckBoxes" styleClass="measureVariableCheckBoxes"
+                                           partialSubmit="false" value="#{dataVariableUI.selected}"/>
+            </ice:column>
+            <ice:column>
+                <f:facet name="header">
+                    <ice:outputText value="Name"/>
+                </f:facet>
+                <ice:outputLabel value="#{dataVariableUI.dataVariable.name}"/>
+            </ice:column>
+        </ice:dataTable>
+    </div>
 </div>

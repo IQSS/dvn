@@ -1,4 +1,3 @@
-
 <!--
 Common Form for SetUpDataExplorationPage
 -->
@@ -10,12 +9,8 @@ Common Form for SetUpDataExplorationPage
      xmlns:dvn="/WEB-INF/tlds/dvn-components"
      class="dvnsetupdataexloprationformblock">
 
-
-
-    <div jsfc="ice:panelGroup" style="float:right; margin-bottom:1em;">
+    <div class="dvnFormPadding dvnFormMargin" style="float:right;">
         <ice:commandButton type="submit" value="Save" action ="#{SetUpDataExplorationPage.saveXAxis}" visible="#{SetUpDataExplorationPage.editXAxis}"/>
-    </div>
-    <div jsfc="ice:panelGroup" style="float:right; margin-bottom:1em;">
         <ice:commandButton type="submit" value="Cancel" action ="#{SetUpDataExplorationPage.cancelXAxis}" visible="#{SetUpDataExplorationPage.editXAxis}"/>
     </div>
     <div jsfc="ice:panelGroup" style="margin-bottom:1em;" >

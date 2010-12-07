@@ -6,12 +6,8 @@
      xmlns:dvn="/WEB-INF/tlds/dvn-components"
      class="dvnsetupdataexloprationformblock">
 
-
-
-    <div jsfc="ice:panelGroup" style="float:right; margin-bottom:1em;">
+    <div class="dvnFormPadding dvnFormMargin" style="float:right;">
         <ice:commandButton type="submit" value="Save" action ="#{SetUpDataExplorationPage.saveFilterFragment}" visible="#{SetUpDataExplorationPage.editFilter}"/>
-    </div>
-    <div jsfc="ice:panelGroup" style="float:right; margin-bottom:1em;">
         <ice:commandButton type="submit" value="Cancel" action ="#{SetUpDataExplorationPage.cancelFragment}" visible="#{SetUpDataExplorationPage.editFilter}"/>
     </div>
     <div jsfc="ice:panelGroup" style="margin-bottom:1em;" >

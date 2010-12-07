@@ -235,7 +235,7 @@ public class FileDownloadServlet extends HttpServlet {
                 // generate error response:
                 createErrorResponse404(res);
 
-                fileDownloadObject.releaseConnection();
+                //fileDownloadObject.releaseConnection();
                 return;
             }
 
@@ -269,6 +269,7 @@ public class FileDownloadServlet extends HttpServlet {
         }
 
         private int status;
+        private long size;
 
         private InputStream in;
 
@@ -292,6 +293,10 @@ public class FileDownloadServlet extends HttpServlet {
 
         public int getStatus () {
             return status;
+        }
+
+        private long getSize () {
+            return size;
         }
 
         public InputStream getInputStream () {
@@ -342,6 +347,10 @@ public class FileDownloadServlet extends HttpServlet {
 
         public void setStatus (int s) {
             status = s;
+        }
+
+        public void setSize (long s) {
+            size = s;
         }
 
         public void setInputStream (InputStream is) {
@@ -578,6 +587,8 @@ public class FileDownloadServlet extends HttpServlet {
             localDownload.setNoVarHeader(true);
         }
 
+        localDownload.setSize(getLocalFileSize(file));
+
         InputStream in = getLocalFileAsStream(file);
 
         if (in == null) {
@@ -590,7 +601,6 @@ public class FileDownloadServlet extends HttpServlet {
         localDownload.setMimeType(file.getFileType());
         localDownload.setFileName(file.getFileName());
 
-        setDownloadContentHeaders (localDownload);
 
         if (file.getFileType() != null &&
             file.getFileType().equals("text/tab-separated-values")  &&
@@ -601,6 +611,8 @@ public class FileDownloadServlet extends HttpServlet {
             localDownload.setVarHeader(varHeaderLine);
         }
 
+        setDownloadContentHeaders (localDownload);
+
 
         localDownload.setStatus(200);
         return localDownload;
@@ -608,7 +620,9 @@ public class FileDownloadServlet extends HttpServlet {
 
 
     private void setDownloadContentHeaders (FileDownloadObject fileDownloadObject) {
-        Header[] respHeaders = null;
+        List<Header> headerList = new ArrayList();
+        Header contentHeader = null;
+        int headerCounter = 0;
 
         if (fileDownloadObject.getFileName() != null) {
             if (fileDownloadObject.getMimeType() != null) {
@@ -633,48 +647,89 @@ public class FileDownloadServlet extends HttpServlet {
                 //
                 //} else {
 
-                respHeaders = new Header[2];
-                respHeaders[0] = new Header ();
+                //respHeaders = new Header[2];
+                contentHeader = new Header ();
 
-                respHeaders[0].setName("Content-disposition");
-                respHeaders[0].setValue("attachment; filename=\"" + fileDownloadObject.getFileName() + "\"");
+                contentHeader.setName("Content-disposition");
+                contentHeader.setValue("attachment; filename=\"" + fileDownloadObject.getFileName() + "\"");
+
+                headerList.add(contentHeader);
+                headerCounter++;
 
                 //}
 
                 // And this one is for MS Explorer:
 
-                respHeaders[1] = new Header ();
+                contentHeader = new Header ();
 
-                respHeaders[1].setName("Content-Type");
-                respHeaders[1].setValue(fileDownloadObject.getMimeType() + "; name=\"" + fileDownloadObject.getFileName() + "\"; charset=ISO-8859-1");
+                contentHeader.setName("Content-Type");
+                contentHeader.setValue(fileDownloadObject.getMimeType() + "; name=\"" + fileDownloadObject.getFileName() + "\"; charset=ISO-8859-1");
+
+                headerList.add(contentHeader);
+                headerCounter++;
 
             } else {
                 // Have filename, but no content-type;
                 // All we can do is provide a Mozilla-friendly
                 // header:
 
-                respHeaders = new Header[1];
+                //respHeaders = new Header[1];
 
-                respHeaders[0]= new Header ();
+                contentHeader = new Header ();
 
-                respHeaders[0].setName("Content-disposition");
-                respHeaders[0].setValue("attachment; filename=\"" + fileDownloadObject.getFileName() + "\"");
+                contentHeader.setName("Content-disposition");
+                contentHeader.setValue("attachment; filename=\"" + fileDownloadObject.getFileName() + "\"");
+
+                headerList.add(contentHeader);
+                headerCounter++;
             }
         } else if (fileDownloadObject.getMimeType() != null) {
             // no filename available;
             // but if we have content-type in the database
             // we'll just set that:
 
-            respHeaders = new Header[1];
+            //respHeaders = new Header[1];
 
-            respHeaders[0]= new Header ();
+            contentHeader = new Header ();
 
-            respHeaders[0].setName("Content-Type");
-            respHeaders[0].setValue(fileDownloadObject.getMimeType());
+            contentHeader.setName("Content-Type");
+            contentHeader.setValue(fileDownloadObject.getMimeType());
+
+            headerList.add(contentHeader);
+            headerCounter++;
 
         }
 
-        fileDownloadObject.setResponseHeaders(respHeaders);
+        // Add size header, if size is available
+        // (as of now -- for local files only).
+
+        if (fileDownloadObject.isFile()) {
+            long fileSize = fileDownloadObject.getSize();
+
+            if ( fileSize > 0 ) {
+                // Don't forget about the variable header we are adding to the
+                // TAB files. This will change the size of the content!
+                
+                if (fileDownloadObject.getVarHeader() != null && (!fileDownloadObject.noVarHeader())) {
+                    fileSize += fileDownloadObject.getVarHeader().length();
+                }
+                Header contentLengthHeader = new Header();
+                contentLengthHeader.setName("Content-Length");
+                contentLengthHeader.setValue((new Long(fileSize)).toString());
+
+                headerList.add(contentLengthHeader);
+                headerCounter++;
+            }
+        }
+
+        if ( headerCounter > 0 ) {
+            Header[] respHeaders = new Header[headerCounter];
+            for (int i=0; i<headerCounter; i++) {
+                respHeaders[i] = headerList.get(i); 
+            }
+            fileDownloadObject.setResponseHeaders(respHeaders);
+        }
+
     }
 
     private FileDownloadObject initiateRemoteDownload (StudyFile file, HttpServletRequest req) {
@@ -762,7 +817,17 @@ public class FileDownloadServlet extends HttpServlet {
 
                     jsessionid = dvnRemoteAuth(remoteHost);
                 } else if (remoteAuthType.equals("icpsr")) {
+                    method = null;
+                    //remoteHost = "www.icpsr.umich.edu";
+                    dbgLog.fine("ICPSR download: Stored URL: "+remoteFileUrl);
+                    remoteFileUrl = remoteFileUrl.replace("staging", "www");
+                    remoteFileUrl = remoteFileUrl.replace("/cgi-bin/file", "/cgi-bin/bob/file");
+                    dbgLog.fine("ICPSR download: Edited URL: "+remoteFileUrl);
+                    method = new GetMethod(remoteFileUrl);
+                    
                     String icpsrCookie = getICPSRcookie(remoteHost, remoteFileUrl);
+
+                    dbgLog.fine("ICPSR download: obtained ICPSR cookie: "+icpsrCookie);
 
                     if (icpsrCookie != null) {
                         method.addRequestHeader("Cookie", icpsrCookie);
@@ -1009,6 +1074,23 @@ public class FileDownloadServlet extends HttpServlet {
         return in;
     }
 
+        public long getLocalFileSize (StudyFile file) {
+        long fileSize = 0;
+        File testFile = null;
+
+        try {
+            testFile = new File(file.getFileSystemLocation());
+            if (testFile != null) {
+                fileSize = testFile.length();
+            }
+        } catch (Exception ex) {
+            return 0;
+        }
+
+        return fileSize;
+    }
+
+
     public void incrementDownloadCounts (StudyFile file, VDC vdc) {
         if ( vdc != null ) {
             studyService.incrementNumberOfDownloads(file.getId(), vdc.getId());
@@ -1092,7 +1174,18 @@ public class FileDownloadServlet extends HttpServlet {
             fileDownload.releaseConnection();
             return;
         }
-        
+
+        // If we are streaming a TAB-delimited file, we will need to add the
+        // variable header line:
+
+
+        String varHeaderLine = null;
+
+        if (!fileDownload.noVarHeader()) {
+            varHeaderLine = fileDownload.getVarHeader();
+        }
+
+
         for (int i = 0; i < fileDownload.getResponseHeaders().length; i++) {
             String headerName = fileDownload.getResponseHeaders()[i].getName();
 			// The goal is to (re)use all the Content-* headers.
@@ -1134,15 +1227,6 @@ public class FileDownloadServlet extends HttpServlet {
         // is available. 
 
 
-        // If we are streaming a TAB-delimited file, we will need to add the
-        // variable header line: 
-        
-        
-        String varHeaderLine = null;
-        
-        if (!fileDownload.noVarHeader()) {
-            varHeaderLine = fileDownload.getVarHeader();
-        }
         
         // and now send the incoming HTTP stream as the response body       
 
@@ -1174,10 +1258,13 @@ public class FileDownloadServlet extends HttpServlet {
                 if (imgThumbFile != null && imgThumbFile.exists()) {
 
                     fileDownload.closeInputStream();
+                    fileDownload.setSize(imgThumbFile.length());
+
                     
                     InputStream imgThumbInputStream = null; 
                     
                     try {
+
                         imgThumbInputStream = new FileInputStream(imgThumbFile);
                     } catch (IOException ex) {
                         return null; 
@@ -1209,7 +1296,8 @@ public class FileDownloadServlet extends HttpServlet {
             
             if (origFile != null && origFile.exists()) {
                 
-                fileDownload.closeInputStream(); 
+                fileDownload.closeInputStream();
+                fileDownload.setSize(origFile.length());
                 
                 try {
                     fileDownload.setInputStream(new FileInputStream(origFile));
@@ -1255,10 +1343,10 @@ public class FileDownloadServlet extends HttpServlet {
 
         String cachedFileSystemLocation = null;
 
-        // initialize the data variables list:
+         // initialize the data variables list:
 
         dataVariables = ((TabularDataFile) file).getDataTable().getDataVariables();
- 
+
         // if the format requested is "D00", and it's already a TAB file,
         // we don't need to do anything:
         if (formatRequested.equals("D00") &&
@@ -1317,7 +1405,8 @@ public class FileDownloadServlet extends HttpServlet {
               
         if (formatConvertedFile != null && formatConvertedFile.exists()) {
 
-           fileDownload.closeInputStream();
+            fileDownload.closeInputStream();
+            fileDownload.setSize(formatConvertedFile.length());
 
             try {
                 fileDownload.setInputStream(new FileInputStream(formatConvertedFile));
@@ -1384,9 +1473,11 @@ public class FileDownloadServlet extends HttpServlet {
         paramListToR.put("dtdwnld", Arrays.asList(formatRequested));
         paramListToR.put("requestType", Arrays.asList("Download"));
 
-        vls = getValueTablesForAllRequestedVariables();
-        dbgLog.fine("remote: variables(getDataVariableForRequest())="+getDataVariableForRequest()+"\n");
-        dbgLog.fine("remote: value table(vls)="+vls+"\n");
+        //vls = getValueTablesForAllRequestedVariables();
+        vls = getValueTableForRequestedVariables(dataVariables);
+        dbgLog.fine("format conversion: variables(getDataVariableForRequest())="+getDataVariableForRequest()+"\n");
+        dbgLog.fine("format conversion: variables(dataVariables)="+dataVariables+"\n");
+        dbgLog.fine("format conversion: value table(vls)="+vls+"\n");
 
         Long tabFileSize = tabFile.length();
         paramListToR.put("subsetFileName", Arrays.asList(tabFile.getAbsolutePath()));

@@ -6,6 +6,8 @@
 package edu.harvard.iq.text;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -146,7 +148,7 @@ public class ClusterSolution {
         
         for (int i=0; i< clusters.length; i++ ) {
                 if (clusters[i]!=null) {
-                clusterInfoList.add(new ClusterInfo(clusters[i]));
+                clusterInfoList.add(new ClusterInfo(clusters[i],documentSet.getDocIdList()));
             }
         }
 
@@ -193,26 +195,31 @@ public class ClusterSolution {
             // TODO:  why  subtract 0 from distance array?
 
             // original calculation:
-            //    weights[i] = 1 / (Math.sqrt(TWO_PI) * .25) * Math.exp(-(Math.pow((distanceArray[i] - 0),2) / (2 * Math.pow(.25,2))));
+   //            weights[i] = 1 / (Math.sqrt(TWO_PI) * .25) * Math.exp(-(Math.pow((distanceArray[i] - 0),2) / (2 * Math.pow(.25,2))));
            
             // New calculation from Brandon, using the Epanechnikov Kernel to normalize the weights array
-            if (distanceArray[i] <= 1) {
-                weights[i] = .75 * (1 - Math.pow(distanceArray[i],2));
-            } else { 
-                weights[i] = 0;
-            }
+            if (distanceArray[i] <= 2) {
+               weights[i] = .75 * (1 - Math.pow(distanceArray[i],2));
+           } else {
+               weights[i] = 0;
+           }
 
-
+       
             sumWeights = weights[i] + sumWeights;
         }
-        // if distanceArray has no value <= 1, the smallest distance gets a weight equal to 1.
+       //  if distanceArray has no value <= 1, the smallest distance gets a weight equal to 1.
         if (sumWeights == 0.0) {
-            sumWeights = weights[smallestDistanceIndex] = 1;
+            sumWeights = 1;
+            weights[smallestDistanceIndex] = 1;
 
         }
+        String wts = "weights array: ";
         for (int i = 0; i < weights.length; i++) {  //Divide by the sum
             weights[i] = weights[i] / sumWeights;
+            wts+= weights[i]+",";
+ //           
         }
+        System.out.println(wts);
         return weights;
     }
 
@@ -277,25 +284,38 @@ public class ClusterSolution {
 
        
         long kmeansRandomSeed = (long) 12345;
-        System.out.println("Calling BasicKMeans");
-        System.out.println("numClusters="+numClusters);
-        System.out.println("coordinates="+this.candidateXPoint+","+this.candidateYPoint);
+    //    System.out.println("Calling BasicKMeans");
+    //    System.out.println("numClusters="+numClusters);
+    //    System.out.println("coordinates="+this.candidateXPoint+","+this.candidateYPoint);
         DecimalFormat twoDForm = new DecimalFormat("#.####");
-        System.out.println("simMatrix=");
         
-        for (int i=0; i< simMatrix.length; i++) {
-            StringBuffer buff = new StringBuffer("");
-           
-            buff.append("[");
-            for(int j=0; j< simMatrix[i].length; j++) {
-                if (j>0) buff.append(",");
-                buff.append(twoDForm.format(simMatrix[i][j]));
-            }
-            buff.append("]");
-            System.out.println("row["+i+"]="+buff);
-        }
-        
+     //   try {
+     //       FileOutputStream fos = new FileOutputStream("csvSimMatrix.txt");
 
+       //     System.out.println("simMatrix=");
+
+       //     for (int i = 0; i < simMatrix.length; i++) {
+        //        StringBuffer buff = new StringBuffer("");
+
+
+       //         for (int j = 0; j < simMatrix[i].length; j++) {
+       //             if (j > 0) {
+        //                buff.append(",");
+        //            }
+        //            double formattedVal = new Double(twoDForm.format(simMatrix[i][j])).doubleValue();
+       //             buff.append(twoDForm.format(simMatrix[i][j]));
+       //             simMatrix[i][j] = formattedVal;
+
+       //         }
+       ////         buff.append("\n");
+       //         fos.write(buff.toString().getBytes());
+              //  System.out.println("row[" + i + "]=" + buff);
+       //     }
+       //     fos.close();
+       // } catch (IOException e) {
+       //     throw new RuntimeException(e);
+       // }
+        
         BasicKMeans kmeans = new BasicKMeans(simMatrix, numClusters, 20, kmeansRandomSeed);
 
         kmeans.run();

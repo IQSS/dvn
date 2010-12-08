@@ -336,7 +336,11 @@ public class ClusteringSpacePage {
         }
 
         public String getViewDocumentName() {
-            return clusterInfo.getFileIndices().get(this.viewDocumentIndex).toString() + "Bush02.txt";
+            String docName = clusterInfo.getDocIds().get(this.viewDocumentIndex).toString();
+            if (setId.equals("1")) {
+                    docName += "Bush02.txt";
+            }
+            return  docName;
         }
 
         public String getViewDocumentPreview() {

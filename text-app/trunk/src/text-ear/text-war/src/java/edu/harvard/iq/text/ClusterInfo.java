@@ -15,7 +15,8 @@ public class ClusterInfo implements Comparable<ClusterInfo> {
     private int clusterNumber;
     private float clusterPercent;
     
-    private ArrayList<Integer> fileIndices = new ArrayList<Integer>(); 
+    private ArrayList<Integer> fileIndices = new ArrayList<Integer>();
+    private ArrayList<String> docIds = new ArrayList<String>();
     private ArrayList<WordValue> wordList = new ArrayList<WordValue>();
     private String label;
 
@@ -44,6 +45,14 @@ public class ClusterInfo implements Comparable<ClusterInfo> {
         this.wordList = wordList;
     }
 
+    public ArrayList<String> getDocIds() {
+        return docIds;
+    }
+
+    public void setDocIds(ArrayList<String> docIds) {
+        this.docIds = docIds;
+    }
+
 
     
 
@@ -54,9 +63,12 @@ public class ClusterInfo implements Comparable<ClusterInfo> {
         this.clusterNumber = clusterNumber;
     }
     
-    public ClusterInfo(Cluster cluster) {       
-        for (int i=0;i< cluster.getMemberIndexes().length;i++)
-        this.fileIndices.add(cluster.getMemberIndexes()[i]);
+    public ClusterInfo(Cluster cluster, ArrayList<String> docIdList) {
+        for (int i=0;i< cluster.getMemberIndexes().length;i++) {
+            this.fileIndices.add(cluster.getMemberIndexes()[i]);
+            String docId = docIdList.get(cluster.getMemberIndexes()[i]);
+            this.docIds.add(docId);
+        }
     }
     public String getTopWords() {
         String ret ="";

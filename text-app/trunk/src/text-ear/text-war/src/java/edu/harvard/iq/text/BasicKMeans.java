@@ -75,21 +75,43 @@ public class BasicKMeans {
 
             // Randomly initialize the cluster centers creating the
             // array mProtoClusters.
-            initCenters();
+            boolean assignmentSucceeded=false;
+            long seed = mRandomSeed;
+            long initTries=0;
+            do {
+                boolean emptyClusters = false;
+                // create assignments with a seed
+                initCenters(seed);
 
-            // Perform the initial computation of distances.
-            computeDistances();
+                // Perform the initial computation of distances.
+                computeDistances();
 
-            // Make the initial cluster assignments.
-            makeAssignments();
+                // Make the initial cluster assignments.
+                makeAssignments();
 
+                // check that all mProtoClusters have members.
+                // If any of the clusters are empty, we need to try again
+                // with another random seed.
+                for (ProtoCluster pc : mProtoClusters) {
+                    if (pc.mCurrentSize == 0) {
+                        emptyClusters = true;
+                    }
+                }
+                if (emptyClusters) {
+                    seed++;
+                    initTries++;
+                } else {
+                    assignmentSucceeded = true;
+                }
+            } while (!assignmentSucceeded && initTries <100);
+            System.out.println("Cluster number = "+this.mClusters+", Init tries = "+initTries);
             // Number of moves in the iteration and the iteration counter.
             int moves = 0;
             int it = 0;
-
+         
 
             // Main Loop:
-            //
+            //wh
             // Two stopping criteria:
             // - no moves in makeAssignments
             //   (moves == 0)
@@ -108,7 +130,7 @@ public class BasicKMeans {
 
                 // Make this iteration's assignments.
                 moves = makeAssignments();
-
+            
                 it++;
 
             } while (moves > 0 && it < mMaxIterations);
@@ -131,42 +153,60 @@ public class BasicKMeans {
     /**
      * Randomly select coordinates to be the initial cluster centers.
      */
-    private void initCenters() {
+    private void initCenters(long seed) {
 
-        Random random = new Random(mRandomSeed);
-
+        Random random = new Random(seed);
+     
         int coordCount = mCoordinates.length;
 
-        // The array mClusterAssignments is used only to keep track of the cluster
-        // membership for each coordinate.  The method makeAssignments() uses it
-        // to keep track of the number of moves.
-        if (mClusterAssignments == null) {
-            mClusterAssignments = new int[coordCount];
-            // Initialize to -1 to indicate that they haven't been assigned yet.
-            Arrays.fill(mClusterAssignments, -1);
-        }
+            // The array mClusterAssignments is used only to keep track of the cluster
+            // membership for each coordinate.  The method makeAssignments() uses it
+            // to keep track of the number of moves.
+            if (mClusterAssignments == null) {
+                mClusterAssignments = new int[coordCount];
+                // Initialize to -1 to indicate that they haven't been assigned yet.
+                Arrays.fill(mClusterAssignments, -1);
+            }
 
-        // Place the coordinate indices into an array and shuffle it.
-        int[] indices = new int[coordCount];
-        for (int i = 0; i < coordCount; i++) {
-            indices[i] = i;
-        }
-        for (int i = 0, m = coordCount; m > 0; i++, m--) {
-            int j = i + random.nextInt(m);
-            if (i != j) {
-                // Swap the indices.
-                indices[i] ^= indices[j];
-                indices[j] ^= indices[i];
-                indices[i] ^= indices[j];
+            // Place the coordinate indices into an array and shuffle it.
+            int[] indices = new int[coordCount];
+            for (int i = 0; i < coordCount; i++) {
+                indices[i] = i;
+            }
+            for (int i = 0, m = coordCount; m > 0; i++, m--) {
+                int j = i + random.nextInt(m);
+                if (i != j) {
+                    // Swap the indices.
+                    indices[i] ^= indices[j];
+                    indices[j] ^= indices[i];
+                    indices[i] ^= indices[j];
+                }
+            }
+
+            mProtoClusters = new ProtoCluster[mK];
+            int i=0, j=0;
+            do  {
+                int coordIndex = indices[j];
+                if (!coordinatesMatch(mCoordinates[coordIndex],i)) {
+                    mProtoClusters[i] = new ProtoCluster(mCoordinates[coordIndex], coordIndex);
+                    mClusterAssignments[indices[j]] = i;
+                    i++;
+                }
+                j++;
+                
+            } while (j<indices.length && i<mK);
+
+            
+    }
+    private boolean coordinatesMatch(double coordinates[], int clusterIndex) {
+        boolean match=false;
+        for (int i=0;i<clusterIndex;i++) {
+            if (Arrays.equals(mProtoClusters[i].getCenter(),coordinates)) {
+                match=true;
+                break;
             }
         }
-
-        mProtoClusters = new ProtoCluster[mK];
-        for (int i=0; i<mK; i++) {
-            int coordIndex = indices[i];
-            mProtoClusters[i] = new ProtoCluster(mCoordinates[coordIndex], coordIndex);
-            mClusterAssignments[indices[i]] = i;
-        }
+        return match;
     }
 
     /**
@@ -271,9 +311,16 @@ public class BasicKMeans {
                 moves++;
             }
         }
-
+        System.out.println("returning from MakeAssignments....");
+        String output = "Protocluster sizes: ";
+        for (ProtoCluster pc : this.mProtoClusters) {
+            output += pc.mCurrentSize + ", ";
+        }
+        System.out.println(output);
         return moves;
     }
+
+
 
     /**
      * Find the nearest cluster to the coordinate identified by

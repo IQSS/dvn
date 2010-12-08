@@ -178,14 +178,17 @@
            }
 
            function calculateButtonAction() {
-               document.getElementById('clusterRadio1').checked = false;
-               document.getElementById('clusterRadio2').checked = false;
-               document.getElementById('clusterRadio3').checked = false;
+               clearRadioButtons();
                document.getElementById('ClusterForm:discoverableCheckbox').checked = false;
                addPointForClusterNum(document.getElementById('ClusterForm:clusterNum').value);
                
            }
 
+           function clearRadioButtons() {
+                document.getElementById('clusterRadio1').checked = false;
+               document.getElementById('clusterRadio2').checked = false;
+               document.getElementById('clusterRadio3').checked = false;
+           }
            function addPointForClusterNum(clusterNumVal) {             
                // Add the current point to the list, with the new clusterNum
                var current = points[currentIndex];
@@ -281,6 +284,29 @@
                // alert("received evt: "+ evt);
 
                 addPointToList(0,0,5,-1);
+                var line = new OpenLayers.Geometry.LineString([
+                new OpenLayers.Geometry.Point(-100,0),
+                new OpenLayers.Geometry.Point(100,0)]);
+                 var style = {
+                        strokeColor: "#7995F9",
+                        fillColor: "#7995F9",
+                        strokeOpacity: 1,
+                        strokeWidth: 1,
+                        pointRadius: 4  // this point is bigger because its the latest
+                       
+                    };
+                 var attribs = {
+                        clusterNum: 0,
+                        solutionId: 0
+                    }
+                var lineFeature = new OpenLayers.Feature.Vector(line,attribs,style);
+              //   var testPoint = new OpenLayers.Geometry.Point(1,0);
+              //  var lineFeature = new OpenLayers.Feature.Vector(testPoint,attribs,style);
+              //
+              //  uncomment these two lines to get the line to display:
+             //   vectorLayer.addFeatures([lineFeature]);
+            //    vectorLayer.redraw();
+
                // var hoverCtrl = new OpenLayers.Control.SelectFeature(vectorLayer, {
                //     hover: true,
                //     geometryTypes: ["OpenLayers.Geometry.Point"],
@@ -289,6 +315,10 @@
 
               //  map.addControl(hoverCtrl);
               //  hoverCtrl.activate();
+
+            }
+
+            function addGrid() {
 
             }
             function openPopup() {
@@ -409,7 +439,7 @@
                     <input type="radio" name="clusterRadio" id="clusterRadio3" onclick="changeClusterRadio(30);"/> <label for="clusterRadio3">30 Clusters (High)</label>
                 </td>
                 <td>
-                    <ice:selectBooleanCheckbox onclick="if (this.checked) document.getElementById('ClusterForm:discoverableButton').click();" id="discoverableCheckbox"  value="#{ClusteringSpacePage.discoverable}"  /> <label for="clusterDiscoverable">Discoverable</label>
+                    <ice:selectBooleanCheckbox onclick="if (this.checked){ clearRadioButtons(); document.getElementById('ClusterForm:discoverableButton').click();}" id="discoverableCheckbox"  value="#{ClusteringSpacePage.discoverable}"  /> <label for="clusterDiscoverable">Discoverable</label>
                 </td>
             </tr>
         </table>

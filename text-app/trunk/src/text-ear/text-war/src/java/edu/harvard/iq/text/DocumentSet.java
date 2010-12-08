@@ -34,6 +34,7 @@ public class DocumentSet {
     private int[][] clusterMembership;   //
     private int[][] wordDocumentMatrix;  // word rows and doc columns (each cell is word count)
     private ArrayList<String> wordList;
+    private ArrayList<String> docIdList;
     private final static String POLYGON_FILE = "polygon.xml";
     private final static String METHOD_POINTS_FILE = "MethodPoints.txt";
     private final static String CLUSTER_MEMBERSHIP_FILE = "ClusterMembershipMatrix.txt";
@@ -43,6 +44,14 @@ public class DocumentSet {
         this.setId=setId;
         initializeSet();
         System.out.println("DocumentSet initialize complete."); 
+    }
+
+    public ArrayList<String> getDocIdList() {
+        return docIdList;
+    }
+
+    public void setDocIdList(ArrayList<String> docIdList) {
+        this.docIdList = docIdList;
     }
 
     public int[][] getClusterMembership() {
@@ -110,6 +119,12 @@ public class DocumentSet {
             int lineNumber = 0, tokenNumber = 0;
             Set uniqueClusters = new HashSet();
 
+            String tokenSeparator;
+            if (setId.equals("3") ) {
+                tokenSeparator=" ";
+            } else {
+                tokenSeparator="\t";
+            }
             // skip line 1 because it just contains headers
             strLine = br.readLine();
          
@@ -119,10 +134,12 @@ public class DocumentSet {
                 
 
                 //break tab separated line using "\t"
-                st = new StringTokenizer(strLine, "\t");
+                st = new StringTokenizer(strLine, tokenSeparator);
 
                 // first token is method name, so skip it
-                st.nextToken();
+                if (!setId.equals("3") ) {
+                    st.nextToken();
+                }
 
                 // create object for holding this row's values
                 ArrayList<Integer> row = new ArrayList<Integer>();
@@ -153,41 +170,56 @@ public class DocumentSet {
           } catch (java.io.IOException ex) {
             throw new ClusterException(ex.getMessage());
         }
-        System.out.println("ClusterMembership, methodSize = "+table.size()+" docSize = "+table.get(0).size());
+     //   System.out.println("ClusterMembership, methodSize = "+table.size()+" docSize = "+table.get(0).size());
     }
 
     private void initWordDocumentMatrix(){
         ArrayList<ArrayList> table = new ArrayList<ArrayList>();
         wordList = new ArrayList<String>();
+        docIdList = new ArrayList<String>();
 
         File wordDocumentFile = new File(setDir, this.WORD_DOC_MATRIX_FILE );
         if ( !wordDocumentFile.exists()) {
             throw new ClusterException(wordDocumentFile.getAbsolutePath() + " not found.");
         }
           try {
+            String tokenSeparator;
+            if (setId.equals("3") ) {
+                tokenSeparator=" ";
+            } else {
+                tokenSeparator="\t";
+            }
+
             BufferedReader br = new BufferedReader(new FileReader(wordDocumentFile));
             String strLine = "";
             StringTokenizer st = null; 
-            int lineNumber = 0, tokenNumber = 0;
+            
 
             // line 1 contains headers (ie word list), so save them in separate list
             strLine = br.readLine();
             wordList = new ArrayList<String>();
-            st = new StringTokenizer(strLine, "\t");
+            st = new StringTokenizer(strLine, tokenSeparator);
             while (st.hasMoreTokens() ) {
                 wordList.add(st.nextToken());
             }
-            lineNumber++;
+           
 
             //read the rest of the tab separated file line by line
             while ((strLine = br.readLine()) != null) {
-                lineNumber++;
+               
 
                 //break tab separated line using "\t"
-                st = new StringTokenizer(strLine, "\t");
+                st = new StringTokenizer(strLine, tokenSeparator);
 
-                // first token is documentId, so skip it
-                st.nextToken();
+                // first token is documentId, so add it to our list
+                String documentId = st.nextToken();
+                if (documentId.contains("\\")) {
+                    // If this id is a path, get the file name
+                    documentId = documentId.substring(documentId.lastIndexOf("\\")+1);
+
+                }
+            //    System.out.println("documentId is "+documentId);
+                docIdList.add(documentId);
 
                 // create object for holding this row's values
                 ArrayList<Integer> row = new ArrayList<Integer>();
@@ -211,7 +243,7 @@ public class DocumentSet {
           } catch (java.io.IOException ex) {
             throw new ClusterException(ex.getMessage());
         }
-        System.out.println("WordDocumentMatrix, docSize = "+table.size()+" wordSize = "+table.get(0).size());
+      //  System.out.println("WordDocumentMatrix, docSize = "+wordDocumentMatrix.length+" wordSize = "+table.get(0).size());
 
     }
 
@@ -219,7 +251,7 @@ public class DocumentSet {
      *  Read methodPoints.txt, and if necessary, create polygon.xml
      */
     private void initMethodPointsAndPolygon() {
-        System.out.println("initializingConvexHull: SetId is " + setId + "!");
+     //   System.out.println("initializingConvexHull: SetId is " + setId + "!");
         ConvexHull ch;
         // Read methodpoints.text:
 
@@ -256,7 +288,7 @@ public class DocumentSet {
             for (int i = 0; i < coords.length; i++) {
                 coordStr += " " + coords[i].x + "," + coords[i].y;
             }
-            System.out.println("coordStr = " + coordStr);
+         //   System.out.println("coordStr = " + coordStr);
 
             XMLOutputFactory xmlOutputFactory = javax.xml.stream.XMLOutputFactory.newInstance();
             fos = new FileOutputStream(new File(ClusterUtil.getSetDir(setId), POLYGON_FILE));
@@ -305,32 +337,39 @@ public class DocumentSet {
             BufferedReader br = new BufferedReader(new FileReader(strFile));
             String strLine = "";
             StringTokenizer st = null;
-            int lineNumber = 0, tokenNumber = 0;
+            int lineNumber = 0;
 
             // skip line 1 because it just contains headers
             strLine = br.readLine();
             lineNumber++;
             ArrayList<MethodPoint> methodPointList = new ArrayList<MethodPoint>();
             //read tab separated file line by line
+            String tokenSeparator;
+            if (setId.equals("3") ) {
+                tokenSeparator=",";
+            } else {
+                tokenSeparator="\t";
+            }
             while ((strLine = br.readLine()) != null) {
                 lineNumber++;
 
-                //break tab separated line using "\t"
-                st = new StringTokenizer(strLine, "\t");
+                
+
+                st = new StringTokenizer(strLine, tokenSeparator);
 
                 // first token is method name
                 String method = st.nextToken();
 
                 String v1 = st.nextToken();  // we assume this is x
-                System.out.println("v1 = " + v1);
+             //   System.out.println("v1 = " + v1);
                 double x = new Double(v1).doubleValue();
 
                 String v2 = st.nextToken();  // we assume this is y
-                System.out.println("v2 = " + v2);
+             //   System.out.println("v2 = " + v2);
                 double y = new Double(v2).doubleValue();
 
                 Coordinate methodCoord = new Coordinate(x, y);
-                System.out.println("methodCoord = " + methodCoord);
+             //   System.out.println("methodCoord = " + methodCoord);
                 methodCoords.add(methodCoord);
                 methodPointList.add(new MethodPoint(x,y,method));
               

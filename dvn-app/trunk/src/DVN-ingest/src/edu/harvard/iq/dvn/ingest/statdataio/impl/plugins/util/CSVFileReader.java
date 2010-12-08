@@ -66,7 +66,8 @@ public class CSVFileReader implements java.io.Serializable {
         String[] valueTokens = new String[varQnty];
         int lineCounter = 0;
 
-        int[] variableTypeList = smd.getVariableTypeMinimal();
+        boolean[] isCharacterVariable = smd.isStringVariable();
+        boolean[] isContinuousVariable = smd.isContinuousVariable();
 
         dbgLog.fine("CSV reader; varQnty: "+varQnty);
         dbgLog.fine("CSV reader; caseQnty: "+caseQnty);
@@ -79,24 +80,33 @@ public class CSVFileReader implements java.io.Serializable {
 
             //dbgLog.fine("case: "+lineCounter);
             
-            Double testDoubleValue;
-
             for ( int i = 0; i < varQnty; i++ ) {
                 //dbgLog.fine("value: "+valueTokens[i]);
 
-                if (variableTypeList[i] == 0) {
-                    // Numeric value:
+                if (isCharacterVariable[i]) {
+                    // String. Adding to the table as is.
+                    dataTable[i][lineCounter] = valueTokens[i];
+                    
+                } else if (isContinuousVariable[i]) {
+                    // Numeric, Double:
                     try {
-                        testDoubleValue = new Double(valueTokens[i]);
-                        dataTable[i][lineCounter] = valueTokens[i];
+                        Double testDoubleValue = new Double(valueTokens[i]);
+                        dataTable[i][lineCounter] = testDoubleValue.toString();//valueTokens[i];
+                    } catch (Exception ex) {
+                        dbgLog.fine("caught exception reading numeric value; variable: "+i+", case: "+lineCounter+"; value: "+valueTokens[i]);
+
+                        dataTable[i][lineCounter] = (new Double(0)).toString();
+                    }
+                } else {
+                    // Numeric, Integer:
+                    try {
+                        Integer testIntegerValue = new Integer(valueTokens[i]);
+                        dataTable[i][lineCounter] = testIntegerValue.toString();
                     } catch (Exception ex) {
                         dbgLog.fine("caught exception reading numeric value; variable: "+i+", case: "+lineCounter+"; value: "+valueTokens[i]);
 
                         dataTable[i][lineCounter] = "0";
                     }
-                } else {
-                    // String. Adding to the table as is.
-                    dataTable[i][lineCounter] = valueTokens[i];
                 }
             }
             lineCounter++;

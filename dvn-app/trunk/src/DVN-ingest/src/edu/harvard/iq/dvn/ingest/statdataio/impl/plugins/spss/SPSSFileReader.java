@@ -60,6 +60,11 @@ public class SPSSFileReader extends StatDataFileReader{
     private static String[] EXTENSIONS = {"spss", "sps"};
     private static String[] MIME_TYPE = {"text/plain"};
 
+    private static int DATA_LIST_DELIMITER_NOT_FOUND = 1;
+    private static int DATA_LIST_NO_SLASH_SEPARATOR = 2;
+    private static int DATA_LIST_UNSUPPORTED_VARIABLE_TYPE = 3;
+    private static int DATA_LIST_ILLEGAL_NUMERIC_TYPE = 4;
+
 
     private static Logger dbgLog =
        Logger.getLogger(SPSSFileReader.class.getPackage().getName());
@@ -484,8 +489,10 @@ public class SPSSFileReader extends StatDataFileReader{
         dbgLog.fine("dataList command: "+dataListCommand);
  
         List<Integer> variableTypeList= new ArrayList<Integer>();
-        List<Integer> printFormatList = new ArrayList<Integer>();
-        Map<String, String> printFormatNameTable = new LinkedHashMap<String, String>();
+        Set<Integer> decimalVariableSet = new HashSet<Integer>();
+
+        List<Integer> printFormatList = new ArrayList<Integer>(); // TODO: move
+        Map<String, String> printFormatNameTable = new LinkedHashMap<String, String>(); // TODO: move
 
         String delimiterString = null;
 
@@ -529,40 +536,102 @@ public class SPSSFileReader extends StatDataFileReader{
         Pattern varDeclarationPattern = Pattern.compile(varDeclarationRegex);
         Matcher varDeclarationMatcher = varDeclarationPattern.matcher(dataListCommand);
 
+        String stringVarDeclarationRegex = "^[aA]([0-9]+)";
+        Pattern stringVarDeclarationPattern = Pattern.compile(stringVarDeclarationRegex);
+
+        String numVarDeclarationRegex = "^[fF]([0-9]+)\\.*([0-9]*)";
+        Pattern numVarDeclarationPattern = Pattern.compile(numVarDeclarationRegex);
+
         while (varDeclarationMatcher.find()) {
             varName = varDeclarationMatcher.group(1);
             varType = varDeclarationMatcher.group(2);
 
             dbgLog.fine ("found variable "+varName+", type "+varType);
 
-            variableCounter++;
             variableNameList.add(varName);
+
+            // unfVariableTypes list holds extended type definitions for the
+            // UNF calculation;
+            // we need to be able to differentiate between Integers and
+            // real numbers, in addition to the "numeric" and "string" values.
 
             if (varType.startsWith("a") || varType.startsWith("A")) {
                 // String:
-                variableTypeList.add(-1);
-                unfVariableTypes.put(varName, -1);
-                printFormatList.add(1);
-                printFormatNameTable.put(varName, "A");
-            } else {
-                // Numeric:
-                variableTypeList.add(0);
-                printFormatList.add(5);
-                printFormatNameTable.put(varName, "F8.2");
 
-                // Extended numeric types for the UNF calculation:
-                // (we need to be able to differentiate between Integers and
-                // real numbers)
-
-                if (varType.indexOf(".") > 0 || varType.matches("^[0-9]")) {
-                    unfVariableTypes.put(varName, 1);
+                Matcher stringVarDeclarationMatcher = stringVarDeclarationPattern.matcher(varType);
+                if (stringVarDeclarationMatcher.find()) {
+                   variableTypeList.add(new Integer(stringVarDeclarationMatcher.group(1)));
                 } else {
-                    unfVariableTypes.put(varName, 0);
+                    // set to default if the string size is not explicitely
+                    // specified:
+                    variableTypeList.add(1);
                 }
 
+                unfVariableTypes.put(varName, -1);
+
+                printFormatList.add(1); // TODO: move
+                printFormatNameTable.put(varName, "A"); // TODO: move
+            } else if (varType.startsWith("f") || varType.startsWith("F")) {
+                // "minimal" format value is 0 -- numeric
+                variableTypeList.add(0);
+
+                if ( varType.equals("f") || varType.equals("F")) {
+                    // abbreviated numeric type definition;
+                    // defaults to f10.0
+
+                    // for the purposes of the UNF calculations this is an integer:
+                    unfVariableTypes.put(varName, 0);
+                } else {
+                    Matcher numVarDeclarationMatcher = numVarDeclarationPattern.matcher(varType);
+                    if (numVarDeclarationMatcher.find()) {
+                        Integer numLength = new Integer(numVarDeclarationMatcher.group(1));
+                        Integer numDecimal = 0;
+                        String  optionalToken = numVarDeclarationMatcher.group(2);
+
+                        if (optionalToken != null && !optionalToken.equals("")) {
+                            numDecimal = new Integer (optionalToken);
+
+                            if ((int)numDecimal > 0) {
+                                unfVariableTypes.put(varName, 1);
+                                decimalVariableSet.add(variableCounter);
+                            }
+                        }
+                    } else {
+                        // This does not look like a valid numeric type definition.
+                        return 4;
+                    }
+                }
+
+                printFormatList.add(5); // TODO: move
+                printFormatNameTable.put(varName, "F8.2"); // TODO: move
+
+
+                //if (varType.indexOf(".") > 0 || varType.matches("^[0-9]")) {
+                //    unfVariableTypes.put(varName, 1);
+                //} else {
+                //    unfVariableTypes.put(varName, 0);
+                //}
+            } else if (varType.matches("^[1-9]$")) {
+                // Another allowed SPSS abbreviation:
+                // type (N) where N is [1-9] means a numeric decimal with
+                // N decimal positions:
+
+                variableTypeList.add(0);
+
+                Integer numDecimal = new Integer(varType);
+                unfVariableTypes.put(varName, 1);
+                decimalVariableSet.add(variableCounter);
+
+                printFormatList.add(5); // TODO: move
+                printFormatNameTable.put(varName, "F8.2"); // TODO: move
+
+            } else {
+                // invalid variable type definition.
+                return 3;
             }
 
-           
+            variableCounter++;
+
         }
 
         // TODO: validate variable entries;
@@ -575,13 +644,22 @@ public class SPSSFileReader extends StatDataFileReader{
 
         smd.setVariableName(variableNameList.toArray(new String[variableNameList.size()]));
 
+        // "minimal" variable types: SPSS-specific type definition;
+        // 0 means numeric, >0 means string.
+
         smd.setVariableTypeMinimal(ArrayUtils.toPrimitive(
             variableTypeList.toArray(new Integer[variableTypeList.size()])));
+
+
+        // This is how the "discrete" and "continuous" numeric values are
+        // distinguished in the data set metadata:
+
+        smd.setDecimalVariables(decimalVariableSet);
 
         //TODO: ? smd.getFileInformation().put("caseWeightVariableName", caseWeightVariableName);
         smd.setVariableFormat(printFormatList);
         smd.setVariableFormatName(printFormatNameTable);
-        smd.setVariableFormatCategory(formatCategoryTable);
+        smd.setVariableFormatCategory(formatCategoryTable); //TODO: move
 
 
         return readStatus;

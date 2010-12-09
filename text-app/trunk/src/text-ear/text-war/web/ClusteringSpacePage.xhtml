@@ -35,6 +35,23 @@
            var solutionCount = 0;  // number of clustering solutions we have saved on the server side with labels
 
            function init(){
+               
+               OpenLayers.Control.Navigation.prototype.counter = 0;
+                OpenLayers.Control.Navigation.prototype.wheelUp = function(evt) {
+                    this.counter++;
+                    if(this.counter > 2) {
+                        this.counter = 0;
+                        this.wheelChange(evt, 1);
+                    }
+                };
+                OpenLayers.Control.Navigation.prototype.wheelDown = function(evt) {
+                    this.counter--;
+                    if(this.counter < -2) {
+                        this.counter = 0;
+                        this.wheelChange(evt, -1);
+                    }
+                };
+        
                OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control, {
                 defaultHandlerOptions: {
                     'single': true,
@@ -292,6 +309,7 @@
                 var lineArray = new Array();
                 var endpoint =10;
                 var lineInterval = .25;
+                var attribs = {}
                 // Horizontal lines
                 for (var i=-endpoint;i<(endpoint); i=i+lineInterval ) {
                     var line = new OpenLayers.Geometry.LineString([
@@ -304,9 +322,7 @@
                             strokeWidth: .3
                            
                         };
-                     var attribs = {
-                            
-                        }
+                     
 
                         var lineFeature = new OpenLayers.Feature.Vector(line,attribs,style);
                         vectorLayer.addFeatures([lineFeature]);
@@ -323,18 +339,11 @@
                             strokeWidth: .3
                            
                         };
-                     var attribs = {
-                            
-                        }
-
+                  
                         var lineFeature = new OpenLayers.Feature.Vector(line,attribs,style);
                         vectorLayer.addFeatures([lineFeature]);
                 }
-              //   var testPoint = new OpenLayers.Geometry.Point(1,0);
-              //  var lineFeature = new OpenLayers.Feature.Vector(testPoint,attribs,style);
-              //
-              //  uncomment these two lines to get the line to display:
-                
+                             
                 vectorLayer.redraw();
 
                // var hoverCtrl = new OpenLayers.Control.SelectFeature(vectorLayer, {
@@ -666,6 +675,7 @@ td.clusterCountCol {width:14%;}
                                     </ice:panelPopup>
                     </ice:column>
                     <f:facet name="footer">
+                        
                         <script type="text/javascript">
                             jQuery(document).ready(function(){
                                   jQuery("a.clusterInfoValueEdit").click(function() {
@@ -720,6 +730,7 @@ td.clusterCountCol {width:14%;}
                                 });
                             }
                         </script>
+                        
                     </f:facet>
                 </ice:dataTable>
 

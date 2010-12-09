@@ -237,7 +237,7 @@
                                         <dvn:tooltip tooltipMessage="#{studybundle.editFilesTip}" linkText="#{studybundle.editFilesText}" eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/EditStudyFilesPage.xhtml?studyId=#{studyPage.studyUI.study.id}&amp;#{VDCRequest.studyListingIndexAsParameter}"/>
                                     </li>
                                 </span>
-                                <span jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.studyVersion.numberOfFiles!=null and studyPage.studyUI.studyVersion == studyPage.studyUI.study.latestVersion}">
+                                <span jsfc="ice:panelGroup" rendered="#{studyPage.studyUI.subsettable and studyPage.studyUI.studyVersion == studyPage.studyUI.study.latestVersion}">
                                     <li>
                                         <dvn:tooltip tooltipMessage="#{studybundle.editSetUpVizTip}" linkText="#{studybundle.editSetUpVizText}" eventType="mouseover" linkUrl="/dvn#{VDCRequest.currentVDCURL}/faces/study/SetUpDataExplorationPage.xhtml?studyId=#{studyPage.studyUI.study.id}"/>
                                     </li>

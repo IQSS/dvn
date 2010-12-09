@@ -126,7 +126,12 @@
             vectorLayer.events.register("loadend", vectorLayer, loadEnd);
 
             // create our map and add the layers to it.
-            map = new OpenLayers.Map('map');
+            var options = {
+                maxExtent: new OpenLayers.Bounds(-10,-10,10,10),
+                numZoomLevels : 10
+            };
+            map = new OpenLayers.Map('map',options);
+            
             map.addLayers([graphic, vectorLayer]);
             var click = new OpenLayers.Control.Click();
             map.addControl(click);
@@ -284,28 +289,53 @@
                // alert("received evt: "+ evt);
 
                 addPointToList(0,0,5,-1);
-                var line = new OpenLayers.Geometry.LineString([
-                new OpenLayers.Geometry.Point(-100,0),
-                new OpenLayers.Geometry.Point(100,0)]);
-                 var style = {
-                        strokeColor: "#7995F9",
-                        fillColor: "#7995F9",
-                        strokeOpacity: 1,
-                        strokeWidth: 1,
-                        pointRadius: 4  // this point is bigger because its the latest
-                       
-                    };
-                 var attribs = {
-                        clusterNum: 0,
-                        solutionId: 0
-                    }
-                var lineFeature = new OpenLayers.Feature.Vector(line,attribs,style);
+                var lineArray = new Array();
+                var endpoint =10;
+                var lineInterval = .25;
+                // Horizontal lines
+                for (var i=-endpoint;i<(endpoint); i=i+lineInterval ) {
+                    var line = new OpenLayers.Geometry.LineString([
+                    new OpenLayers.Geometry.Point((-endpoint),i),
+                    new OpenLayers.Geometry.Point(endpoint, i)]);
+                     var style = {
+                            strokeColor: "#808080",
+                            fillColor: "#808080",
+                            strokeOpacity: 1,
+                            strokeWidth: .3
+                           
+                        };
+                     var attribs = {
+                            
+                        }
+
+                        var lineFeature = new OpenLayers.Feature.Vector(line,attribs,style);
+                        vectorLayer.addFeatures([lineFeature]);
+                }
+                 // Vertical lines
+                for (var i=-endpoint;i<(endpoint); i=i+lineInterval ) {
+                    var line = new OpenLayers.Geometry.LineString([
+                    new OpenLayers.Geometry.Point(i,-endpoint),
+                    new OpenLayers.Geometry.Point(i,endpoint)]);
+                     var style = {
+                            strokeColor: "#808080",
+                            fillColor: "#808080",
+                            strokeOpacity: 1,
+                            strokeWidth: .3
+                           
+                        };
+                     var attribs = {
+                            
+                        }
+
+                        var lineFeature = new OpenLayers.Feature.Vector(line,attribs,style);
+                        vectorLayer.addFeatures([lineFeature]);
+                }
               //   var testPoint = new OpenLayers.Geometry.Point(1,0);
               //  var lineFeature = new OpenLayers.Feature.Vector(testPoint,attribs,style);
               //
               //  uncomment these two lines to get the line to display:
-             //   vectorLayer.addFeatures([lineFeature]);
-            //    vectorLayer.redraw();
+                
+                vectorLayer.redraw();
 
                // var hoverCtrl = new OpenLayers.Control.SelectFeature(vectorLayer, {
                //     hover: true,

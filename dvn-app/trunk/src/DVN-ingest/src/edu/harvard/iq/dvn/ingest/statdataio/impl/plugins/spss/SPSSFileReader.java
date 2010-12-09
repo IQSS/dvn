@@ -120,44 +120,7 @@ public class SPSSFileReader extends StatDataFileReader{
         // also:
         // RECODE
         // FORMATS
-
-        formatCategoryTable.put("","");
-        formatCategoryTable.put("CONTINUE","other");
-        formatCategoryTable.put("A","other");
-        formatCategoryTable.put("AHEX","other");
-        formatCategoryTable.put("COMMA","other");
-        formatCategoryTable.put("DOLLAR","currency");
-        formatCategoryTable.put("F","other");
-        formatCategoryTable.put("IB","other");
-        formatCategoryTable.put("PIBHEX","other");
-        formatCategoryTable.put("P","other");
-        formatCategoryTable.put("PIB","other");
-        formatCategoryTable.put("PK","other");
-        formatCategoryTable.put("RB","other");
-        formatCategoryTable.put("RBHEX","other");
-        formatCategoryTable.put("Z","other");
-        formatCategoryTable.put("N","other");
-        formatCategoryTable.put("E","other");
-        formatCategoryTable.put("DATE","date");
-        formatCategoryTable.put("TIME","time");
-        formatCategoryTable.put("DATETIME","time");
-        formatCategoryTable.put("ADATE","date");
-        formatCategoryTable.put("JDATE","date");
-        formatCategoryTable.put("DTIME","time");
-        formatCategoryTable.put("WKDAY","other");
-        formatCategoryTable.put("MONTH","other");
-        formatCategoryTable.put("MOYR","date");
-        formatCategoryTable.put("QYR","date");
-        formatCategoryTable.put("WKYR","date");
-        formatCategoryTable.put("PCT","other");
-        formatCategoryTable.put("DOT","other");
-        formatCategoryTable.put("CCA","currency");
-        formatCategoryTable.put("CCB","currency");
-        formatCategoryTable.put("CCC","currency");
-        formatCategoryTable.put("CCD","currency");
-        formatCategoryTable.put("CCE","currency");
-        formatCategoryTable.put("EDATE","date");
-        formatCategoryTable.put("SDATE","date");
+        // (?)
 
     }
     
@@ -222,18 +185,38 @@ public class SPSSFileReader extends StatDataFileReader{
         // Now we can go through these parts and evaluate the commands,
         // which is going to give us the metadata describing the data set.
         //
-        // These are the parts of the SPSS data definition card:
-        // DATA LIST (v?)
-        // VAR LABELS (v)
-        // VALUE LABELS (v)
-        // FORMATS
-        // MISSING VALUES (v)
-        // RECODE
+        // These are the parts of the SPSS data definition card that we are
+        // interested in:
+        // DATA LIST 
+        // VAR LABELS 
+        // VALUE LABELS 
+        // FORMATS (?)
+        // MISSING VALUES 
+        // RECODE (?)
 
         int readStatus = 0;
 
         readStatus = read_DataList(commandStrings.get("DataList"));
         dbgLog.fine ("reading DataList. status: "+readStatus);
+
+        if (readStatus != 0) {
+            if (readStatus == DATA_LIST_DELIMITER_NOT_FOUND) {
+                throw new IOException ("Invalid SPSS Command Syntax: " +
+                        "no delimiter specified in the DATA LIST command.");
+            } else if (readStatus == DATA_LIST_NO_SLASH_SEPARATOR) {
+                 throw new IOException ("Invalid SPSS Command Syntax: " +
+                        "missing / delimiter on the DATA LIST line.");
+
+            } else if (readStatus == DATA_LIST_UNSUPPORTED_VARIABLE_TYPE) {
+                 throw new IOException ("Invalid SPSS Command Syntax: " +
+                        "unsupported variable type definition in DATA LIST.");
+
+            } else if (readStatus == DATA_LIST_ILLEGAL_NUMERIC_TYPE) {
+                 throw new IOException ("Invalid SPSS Command Syntax: " +
+                        "illegal numeric type definition.");
+
+            }
+        }
 
         readStatus = read_VarLabels(commandStrings.get("VarLabel"));
         dbgLog.fine ("reading VarLabels. status: "+readStatus);
@@ -442,6 +425,10 @@ public class SPSSFileReader extends StatDataFileReader{
 
                 }
 
+            // FORMATS:
+            //
+            // (not supported, for now)
+
             // NUMBER OF CASES: (optional -- may not be present)
                 
             } else if ( command1 != null &&
@@ -506,8 +493,9 @@ public class SPSSFileReader extends StatDataFileReader{
             setDelimiterChar(delimiterString.charAt(0));
             dbgLog.fine("found delimiter: "+delimiterString);
         } else {
-            return 1;   // No delimiter declaration found
-                        //(not a delimited file perhaps?)
+            return DATA_LIST_DELIMITER_NOT_FOUND;
+            // No delimiter declaration found
+            //(not a delimited file perhaps?)
         }
 
         // Cut off the remaining lines containing the variable definitions:
@@ -515,7 +503,8 @@ public class SPSSFileReader extends StatDataFileReader{
         int separatorIndex = dataListCommand.indexOf("/");
 
         if (separatorIndex == -1) {
-            return 2; // No slash found after the first line of the Data List command.
+            return DATA_LIST_NO_SLASH_SEPARATOR;
+            // No slash found after the first line of the Data List command.
         }
 
         dataListCommand = dataListCommand.substring(separatorIndex+1);
@@ -567,13 +556,17 @@ public class SPSSFileReader extends StatDataFileReader{
                     variableTypeList.add(1);
                 }
 
+                formatCategoryTable.put(varName, SPSSConstants.FORMAT_CATEGORY_TABLE.get("A"));
+
                 unfVariableTypes.put(varName, -1);
 
-                printFormatList.add(1); // TODO: move
-                printFormatNameTable.put(varName, "A"); // TODO: move
+                printFormatList.add(1);
+                //printFormatNameTable.put(varName, "A");
+
             } else if (varType.startsWith("f") || varType.startsWith("F")) {
                 // "minimal" format value is 0 -- numeric
                 variableTypeList.add(0);
+                formatCategoryTable.put(varName, SPSSConstants.FORMAT_CATEGORY_TABLE.get("F"));
 
                 if ( varType.equals("f") || varType.equals("F")) {
                     // abbreviated numeric type definition;
@@ -581,6 +574,10 @@ public class SPSSFileReader extends StatDataFileReader{
 
                     // for the purposes of the UNF calculations this is an integer:
                     unfVariableTypes.put(varName, 0);
+
+                    printFormatList.add(5); 
+                    //printFormatNameTable.put(varName, "F10.0");
+
                 } else {
                     Matcher numVarDeclarationMatcher = numVarDeclarationPattern.matcher(varType);
                     if (numVarDeclarationMatcher.find()) {
@@ -594,40 +591,37 @@ public class SPSSFileReader extends StatDataFileReader{
                             if ((int)numDecimal > 0) {
                                 unfVariableTypes.put(varName, 1);
                                 decimalVariableSet.add(variableCounter);
+                                printFormatNameTable.put(varName, "F"+numLength+"."+numDecimal);
                             }
                         }
+
+                        printFormatList.add(5); // TODO: verify (should it be 0 instead?)
+
                     } else {
-                        // This does not look like a valid numeric type definition.
-                        return 4;
+                        // This does not look like a valid numeric type
+                        // definition.
+                        return DATA_LIST_ILLEGAL_NUMERIC_TYPE;
                     }
                 }
 
-                printFormatList.add(5); // TODO: move
-                printFormatNameTable.put(varName, "F8.2"); // TODO: move
-
-
-                //if (varType.indexOf(".") > 0 || varType.matches("^[0-9]")) {
-                //    unfVariableTypes.put(varName, 1);
-                //} else {
-                //    unfVariableTypes.put(varName, 0);
-                //}
             } else if (varType.matches("^[1-9]$")) {
                 // Another allowed SPSS abbreviation:
                 // type (N) where N is [1-9] means a numeric decimal with
                 // N decimal positions:
 
                 variableTypeList.add(0);
+                formatCategoryTable.put(varName, SPSSConstants.FORMAT_CATEGORY_TABLE.get("F"));
 
                 Integer numDecimal = new Integer(varType);
                 unfVariableTypes.put(varName, 1);
                 decimalVariableSet.add(variableCounter);
 
-                printFormatList.add(5); // TODO: move
-                printFormatNameTable.put(varName, "F8.2"); // TODO: move
+                printFormatList.add(5); // TODO: verify (should it be 0 instead?)
+                printFormatNameTable.put(varName, "F10."+numDecimal);
 
             } else {
                 // invalid variable type definition.
-                return 3;
+                return DATA_LIST_UNSUPPORTED_VARIABLE_TYPE;
             }
 
             variableCounter++;
@@ -644,7 +638,7 @@ public class SPSSFileReader extends StatDataFileReader{
 
         smd.setVariableName(variableNameList.toArray(new String[variableNameList.size()]));
 
-        // "minimal" variable types: SPSS-specific type definition;
+        // "minimal" variable types: SPSS type binary definition:
         // 0 means numeric, >0 means string.
 
         smd.setVariableTypeMinimal(ArrayUtils.toPrimitive(
@@ -656,11 +650,11 @@ public class SPSSFileReader extends StatDataFileReader{
 
         smd.setDecimalVariables(decimalVariableSet);
 
-        //TODO: ? smd.getFileInformation().put("caseWeightVariableName", caseWeightVariableName);
+        //TODO: smd.getFileInformation().put("caseWeightVariableName", caseWeightVariableName);
+
         smd.setVariableFormat(printFormatList);
         smd.setVariableFormatName(printFormatNameTable);
-        smd.setVariableFormatCategory(formatCategoryTable); //TODO: move
-
+        smd.setVariableFormatCategory(formatCategoryTable); //TODO: verify
 
         return readStatus;
     }

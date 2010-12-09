@@ -256,8 +256,8 @@ public class ClusteringSpacePage {
 
 
 
-   public class ClusterRow {
-        HtmlDataTable docTable;
+    public class ClusterRow {
+       
         PanelTabSet panelTabSet;
         String newValue;
         Boolean showPopup = Boolean.FALSE;
@@ -269,13 +269,7 @@ public class ClusteringSpacePage {
             viewDocumentIndex = 0;  // Show the examplar document first
             newValue = clusterInfo.getLabel();
         }
-        public HtmlDataTable getDocTable() {
-            return docTable;
-        }
-
-        public void setDocTable(HtmlDataTable docTable) {
-            this.docTable = docTable;
-        }
+       
 
         public PanelTabSet getPanelTabSet() {
             return panelTabSet;
@@ -302,7 +296,7 @@ public class ClusteringSpacePage {
         * ActionListener that is called when user clicks on a document in the ViewList tab
         * @param ae
         */
-       public void viewDocument(ActionEvent ae) {
+       public void viewDocumentInList(ActionEvent ae) {
            UIComponent comp = ae.getComponent().getParent();
            while(!(comp instanceof HtmlDataTable)) {
                comp = comp.getParent();
@@ -315,6 +309,28 @@ public class ClusteringSpacePage {
            PanelTabSet tabSet = (PanelTabSet)comp;
            viewDocumentIndex = table.getRowIndex();
            tabSet.setSelectedIndex(0);  // Select the Document tab
+       }
+
+
+       public void viewRandom(ActionEvent ae) {
+           viewDocumentIndex=getRandomDocumentIndex();
+       }
+       public void viewFirst(ActionEvent ae) {
+           viewDocumentIndex=0;
+       }
+       public void viewLast(ActionEvent ae) {
+           viewDocumentIndex=clusterInfo.getFileIndices().size()-1;
+       }
+       public void viewNext(ActionEvent ae) {
+           if (viewDocumentIndex<clusterInfo.getFileIndices().size()) {
+                viewDocumentIndex++;
+           }
+       }
+
+       public void viewPrevious(ActionEvent ae) {
+           if (viewDocumentIndex>0) {
+                viewDocumentIndex--;
+           }
        }
 
        public void openPopup(ActionEvent ae) {
@@ -336,7 +352,7 @@ public class ClusteringSpacePage {
         }
 
         public String getViewDocumentName() {
-            String docName = clusterInfo.getDocIds().get(this.viewDocumentIndex).toString();
+            String docName = clusterInfo.getDocInfoList().get(this.viewDocumentIndex).getDocId();
             if (setId.equals("1")) {
                     docName += "Bush02.txt";
             }
@@ -345,7 +361,7 @@ public class ClusteringSpacePage {
 
         public String getViewDocumentPreview() {
 
-            int previewLength = 40;
+            int previewLength = 60;
             String preview = null;
             byte[] byteArray = new byte[previewLength];
             try {

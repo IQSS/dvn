@@ -607,10 +607,15 @@ td.clusterCountCol {width:14%;}
                                     <div class="clusterDetailBlock">
                                         <ice:panelTabSet id="tabSet1" styleClass="dvnTabs" selectedIndex="0">
                                             <ice:panelTab id="doc" label="Documents">
-                                               
+                                                <ice:commandButton disabled="#{row.viewDocumentIndex==0}" value="First" actionListener="#{row.viewFirst}"/>
+                                                <ice:commandButton disabled="#{row.viewDocumentIndex==row.clusterInfo.clusterCount-1}" value="Next" actionListener="#{row.viewNext}"/>
+                                                <ice:commandButton disabled="#{row.viewDocumentIndex==0}" value="Previous" actionListener="#{row.viewPrevious}"/>
+                                                <ice:commandButton disabled="#{row.viewDocumentIndex==row.clusterInfo.clusterCount-1}" value="Last" actionListener="#{row.viewLast}"/>
+                                                <ice:commandButton  value="Random" actionListener="#{row.viewRandom}"/>
 
-                                                <p><ice:outputText value="Examplar Document: " rendered="#{row.viewDocumentIndex==0}"/>
-                                                <ice:outputText value="#{row.viewDocumentName}"/>
+
+                                                <p><ice:outputText value="Document #{row.viewDocumentIndex+1}: #{row.viewDocumentName}"/>
+                                               
                                                 </p>
                                                
                                                 
@@ -619,7 +624,7 @@ td.clusterCountCol {width:14%;}
                                             </ice:panelTab>
 
                                             <ice:panelTab id="list" label="List View">
-                                                 <ice:outputText value="#{row.clusterInfo.clusterCount} Documents in Cluster"/>
+                                                <ice:outputText value="#{row.clusterInfo.clusterCount} Documents in Cluster"/>
                                                  <ice:dataPaginator for="clusterDocs"
                                                                    
                                                                    id="dataScroll_3"
@@ -642,9 +647,12 @@ td.clusterCountCol {width:14%;}
                                                     <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-last.gif" title="Last Page"/>
                                                   </f:facet>
                                                 </ice:dataPaginator>
-                                                <ice:dataTable  rows="5" id="clusterDocs"  cellpadding="0" cellspacing="0" value="#{row.clusterInfo.fileIndices}" var="fileId" width="100%">
+                                                <ice:dataTable   rows="5" id="clusterDocs"  cellpadding="0" cellspacing="0" value="#{row.clusterInfo.docInfoList}" var="docInfo" width="100%">
                                                      <ice:column>
-                                                         <ice:commandLink value="#{fileId}" actionListener="#{row.viewDocument}"/>                    
+                                                         <ice:commandLink value="#{docInfo.index+1}" actionListener="#{row.viewDocumentInList}"/>
+                                                    </ice:column>
+                                                    <ice:column>
+                                                         <ice:commandLink value="#{docInfo.docId}" actionListener="#{row.viewDocumentInList}"/>
                                                     </ice:column>
                                                 </ice:dataTable>
                                             </ice:panelTab>
@@ -659,13 +667,19 @@ td.clusterCountCol {width:14%;}
                                         <f:facet name="header">
                                             <ice:panelGroup styleClass="popupHeaderWrapper">
                                                 <ice:outputText
-                                                    value="Viewing Document: #{row.viewDocumentName}"
+                                                    value="Viewing Document #{row.viewDocumentIndex+1}: #{row.viewDocumentName}"
                                                         styleClass="popupHeaderText"/>
 
                                             </ice:panelGroup>
                                         </f:facet>
                                         <f:facet name="body">
                                             <ice:panelGroup styleClass="popupBody">
+                                                <ice:commandButton disabled="#{row.viewDocumentIndex==0}" value="First" actionListener="#{row.viewFirst}"/>
+                                                <ice:commandButton disabled="#{row.viewDocumentIndex==row.clusterInfo.clusterCount-1}" value="Next" actionListener="#{row.viewNext}"/>
+                                                <ice:commandButton disabled="#{row.viewDocumentIndex==0}" value="Previous" actionListener="#{row.viewPrevious}"/>
+                                                <ice:commandButton disabled="#{row.viewDocumentIndex==row.clusterInfo.clusterCount-1}" value="Last" actionListener="#{row.viewLast}"/>
+                                                <ice:commandButton  value="Random" actionListener="#{row.viewRandom}"/>
+
                                                 <ice:outputText value="#{row.viewDocumentText}"/><br/>
                                                 <ice:commandButton id="modalPnlCloseButton" type="submit"
                                                                    value="Close Popup"

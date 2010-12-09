@@ -97,6 +97,8 @@ import com.icesoft.faces.context.Resource;
 import com.icesoft.faces.component.outputresource.*;
 import com.icesoft.faces.component.datapaginator.*;
 import edu.harvard.iq.dvn.core.web.study.StudyUI;
+import edu.harvard.iq.dvn.unf.*;
+
 
 public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     
@@ -1100,12 +1102,12 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             // Step 0. Locate the data file and its attributes
     
             String fileId = sf.getId().toString();
-	    //VDC vdc = vdcService.getVDCFromRequest(req);
+            //VDC vdc = vdcService.getVDCFromRequest(req);
             //String fileURL = serverPrefix + "/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1";
             //String fileURL = "http://localhost:" + req.getServerPort() + "/dvn" + "/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1&vdcId=" + vdc.getId();
-	    String fileURL = "http://localhost:" + req.getServerPort() + "/dvn" + "/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1&vdcId=" + getVDCRequestBean().getCurrentVDCId();
+            String fileURL = "http://localhost:" + req.getServerPort() + "/dvn" + "/FileDownload/?fileId=" + fileId + "&isSSR=1&xff=0&noVarHeader=1&vdcId=" + getVDCRequestBean().getCurrentVDCId();
 
-	    dbgLog.fine("fileURL="+fileURL);
+            dbgLog.fine("fileURL="+fileURL);
             
             String fileloc = sf.getFileSystemLocation();
             String tabflnm = sf.getFileName();
@@ -1121,7 +1123,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
              
             List<File> zipFileList = new ArrayList();
             
-	    // the data file for downloading/statistical analyses must be subset-ready
+            // the data file for downloading/statistical analyses must be subset-ready
             // local (relative to the application) file case 
             // note: a typical remote case is: US Census Bureau
             
@@ -1129,18 +1131,18 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             
             File tmpsbfl= null;
             
-            if (sbstOK){
+            if (sbstOK) {
                 
                 try {
 
-                // Step 1. temporarily store the whole data set in a temp directory
+                    // Step 1. temporarily store the whole data set in a temp directory
 
-		    // temp subset file that stores requested variables 
-		    tmpsbfl = File.createTempFile("tempsubsetfile.", ".tab");
-		    deleteTempFileList.add(tmpsbfl);
+                    // temp subset file that stores requested variables
+                    tmpsbfl = File.createTempFile("tempsubsetfile.", ".tab");
+                    deleteTempFileList.add(tmpsbfl);
 
                     String cutOp1 = null;
-		    // result(subset) data file: full-path name
+                    // result(subset) data file: full-path name
                     String cutOp2 = tmpsbfl.getAbsolutePath();
 
                     // check whether a source file is tab-delimited or not
@@ -1149,82 +1151,78 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         fieldcut = false;
                     }
 
-		    if (sf.isRemote()) {			
-			// Create a URL for the data file
-			URL url = new URL(fileURL);
+                    if (sf.isRemote()) {
+                        // Create a URL for the data file
+                        URL url = new URL(fileURL);
 
-			// temp data file that stores incoming data from the above URL
-			File tmpfl = File.createTempFile("tempTabfile.", ".tab");
-			deleteTempFileList.add(tmpfl);
-			//zipFileList.add(tmpsbfl);
+                        // temp data file that stores incoming data from the above URL
+                        File tmpfl = File.createTempFile("tempTabfile.", ".tab");
+                        deleteTempFileList.add(tmpfl);
+                        //zipFileList.add(tmpsbfl);
                     
-			// Typical file-copy idiom 
-			// incoming/outgoing streams
-			InputStream inb = new BufferedInputStream(url.openStream());
-			OutputStream outb = new BufferedOutputStream(new FileOutputStream(tmpfl));
+                        // Typical file-copy idiom
+                        // incoming/outgoing streams
+                        InputStream inb = new BufferedInputStream(url.openStream());
+                        OutputStream outb = new BufferedOutputStream(new FileOutputStream(tmpfl));
 
-			int bufsize;
-			byte [] bffr = new byte[8192];
-			while ((bufsize = inb.read(bffr))!=-1) {
-			    outb.write(bffr, 0, bufsize);
-			}
+                        int bufsize;
+                        byte [] bffr = new byte[8192];
+                        while ((bufsize = inb.read(bffr))!=-1) {
+                            outb.write(bffr, 0, bufsize);
+                        }
 			
-			inb.close();
-			outb.close();
+                        inb.close();
+                        outb.close();
                     
-			// Checks the obtained data file
-			if (tmpfl.exists()){
-			    Long wholeFileSize = tmpfl.length();
-			    dbgLog.fine("whole file:length="+wholeFileSize);
-			    dbgLog.fine("tmp file:name="+tmpfl.getAbsolutePath());
+                        // Checks the obtained data file
+                        if (tmpfl.exists()){
+                            Long wholeFileSize = tmpfl.length();
+                            dbgLog.fine("whole file:length="+wholeFileSize);
+                            dbgLog.fine("tmp file:name="+tmpfl.getAbsolutePath());
                         
-			    if (wholeFileSize <= 0){
-				// subset file exists but it is empty
+                            if (wholeFileSize <= 0){
+                                // subset file exists but it is empty
 				
-				msgDwnldButton.setValue("* an data file is empty");
-				msgDwnldButton.setVisible(true);
-				dbgLog.warning("exiting dwnldAction() due to a file access error:"+
-					       "a data file is empty"
-					       );
-				getVDCRequestBean().setSelectedTab("tabDwnld");
-				dvnDSBTimerService.createTimer(deleteTempFileList, TEMP_FILE_LIFETIME);
-				return "failure";
-			    }
-                        
-			} else {
-			    // file was not created/downloaded
-			    msgDwnldButton.setValue("* a data file was not created");
-			    msgDwnldButton.setVisible(true);
-			    dbgLog.warning("exiting dwnldAction() due to a file access error:"+
-					   "a data file was not created"
-					   );
-			    getVDCRequestBean().setSelectedTab("tabDwnld");
+                                msgDwnldButton.setValue("* an data file is empty");
+                                msgDwnldButton.setVisible(true);
+                                dbgLog.warning("exiting dwnldAction() due to a file access error:"+
+                                    "a data file is empty");
+
+                                getVDCRequestBean().setSelectedTab("tabDwnld");
+                                dvnDSBTimerService.createTimer(deleteTempFileList, TEMP_FILE_LIFETIME);
+                                return "failure";
+                            }
+                        } else {
+                            // file was not created/downloaded
+                            msgDwnldButton.setValue("* a data file was not created");
+                            msgDwnldButton.setVisible(true);
+                            dbgLog.warning("exiting dwnldAction() due to a file access error:"+
+                                "a data file was not created");
+                            getVDCRequestBean().setSelectedTab("tabDwnld");
 			    
-			    return "failure";
-			}
+                            return "failure";
+                        }
 
-			// source data file: full-path name
-			cutOp1 = tmpfl.getAbsolutePath();
+                        // source data file: full-path name
+                        cutOp1 = tmpfl.getAbsolutePath();
                     
-		    } else {
-			cutOp1 = sf.getFileSystemLocation();
-			VDC vdc = vdcService.getVDCFromRequest(req);
+                    } else { // it's a LOCAL file:
+                        cutOp1 = sf.getFileSystemLocation();
+                        VDC vdc = vdcService.getVDCFromRequest(req);
 
-			if ( vdc != null ) {
-			    studyService.incrementNumberOfDownloads(sf.getId(), vdc.getId());
-			} else {
-			    studyService.incrementNumberOfDownloads(sf.getId(), (Long)null);
-			}
-
-			
-		    }
+                        if ( vdc != null ) {
+                            studyService.incrementNumberOfDownloads(sf.getId(), vdc.getId());
+                        } else {
+                            studyService.incrementNumberOfDownloads(sf.getId(), (Long)null);
+                        }
+                    }
 
                     if (fieldcut){
-                // Step 2.a. Set-up parameters for subsetting: cutting requested fields of data
+                        // Step 2.a. Set-up parameters for subsetting: cutting requested fields of data
                         // from a temp (whole) delimited file
 
                         Set<Integer> fields = getFieldNumbersForSubsetting();
-                         dbgLog.fine("fields="+fields);
+                        dbgLog.info("subsetting fields="+fields);
 
                         // Create an instance of DvnJavaFieldCutter
                         FieldCutter fc = new DvnJavaFieldCutter();
@@ -1234,13 +1232,13 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
 
                     } else {
-                // Step 2.b. Set-up parameters for subsetting: cutting requested columns of data
+                        // Step 2.b. Set-up parameters for subsetting: cutting requested columns of data
                         // from a temp (whole) non-delimited file
 
-                        // Using new, native implementation of fixed-field cutting 
+                        // Using new, native implementation of fixed-field cutting
                         // (instead of executing rcut in a shell)
 
-                        Map<Long, List<List<Integer>>> varMetaSet = getSubsettingMetaData(noRecords); 
+                        Map<Long, List<List<Integer>>> varMetaSet = getSubsettingMetaData(noRecords);
                         DvnNewJavaFieldCutter fc = new DvnNewJavaFieldCutter(varMetaSet);
 
                         try {
@@ -1249,7 +1247,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                             e.printStackTrace();
 
                             msgDwnldButton.setValue("* could not generate subset due to an IO problem");
-                            msgDwnldButton.setVisible(true); 
+                            msgDwnldButton.setVisible(true);
                             dbgLog.warning("exiting dwnldAction() due to an IO problem ");
                             getVDCRequestBean().setSelectedTab("tabDwnld");
                             dvnDSBTimerService.createTimer(deleteTempFileList, TEMP_FILE_LIFETIME);
@@ -1259,21 +1257,21 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                             re.printStackTrace();
                             
                             msgDwnldButton.setValue("* could not generate subset due to an runtime error");
-                            msgDwnldButton.setVisible(true); 
+                            msgDwnldButton.setVisible(true);
                             dbgLog.warning("exiting dwnldAction() due to an runtime error");
                             getVDCRequestBean().setSelectedTab("tabDwnld");
                             dvnDSBTimerService.createTimer(deleteTempFileList, TEMP_FILE_LIFETIME);
                             return "failure";
                             
                         }
-                        // end: non-delimited case
+                    // end: non-delimited case
                     }
                     
-                    // Checks the resulting subset file 
+                    // Checks the resulting subset file
                     if (tmpsbfl.exists()){
                         Long subsetFileSize = tmpsbfl.length();
-                        dbgLog.fine("subset file:Length="+subsetFileSize);
-                        dbgLog.fine("subset file:name="+tmpsbfl.getAbsolutePath());
+                        dbgLog.info("subset file:Length="+subsetFileSize);
+                        dbgLog.info("subset file:name="+tmpsbfl.getAbsolutePath());
                         
                         if (subsetFileSize > 0){
                             mpl.put("subsetFileName", Arrays.asList(cutOp2));
@@ -1304,41 +1302,46 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
                     }
                     
-                // Step 3. Organizes parameters/metadata to be sent to the implemented
+                    // Step 3. Organizes parameters/metadata to be sent to the implemented
                     // data-analysis-service class
-                    
-                    //Map<String, Map<String, String>> vls = getValueTableForRequestedVariables(getDataVariableForRequest());
-                    Map<String, Map<String, String>> vls = getValueTablesForAllRequestedVariables();
-                    
-                    sro = new DvnRJobRequest(getDataVariableForRequest(), mpl, vls, recodeSchema);
 
-//                    dbgLog.fine("sro dump:\n"+ToStringBuilder.reflectionToString(sro, ToStringStyle.MULTI_LINE_STYLE));
+                    // skip the Rserve call completely (for tab file format)! -- L.A.
+                    if (!formatType.equals("D01")) {
+
+                        //Map<String, Map<String, String>> vls = getValueTableForRequestedVariables(getDataVariableForRequest());
+
+                        Map<String, Map<String, String>> vls = getValueTablesForAllRequestedVariables();
                     
-                // Step 4. Creates an instance of the the implemented 
-                    // data-analysis-service class 
+                        sro = new DvnRJobRequest(getDataVariableForRequest(), mpl, vls, recodeSchema);
 
-                    DvnRDataAnalysisServiceImpl das = new DvnRDataAnalysisServiceImpl();
+                        // dbgLog.fine("sro dump:\n"+ToStringBuilder.reflectionToString(sro, ToStringStyle.MULTI_LINE_STYLE));
+                    
+                        // Step 4. Creates an instance of the the implemented
+                        // data-analysis-service class
 
-                    // Executes a request of downloading or data analysis and 
-                    // capture resulting information as a Map <String, String>
+                        DvnRDataAnalysisServiceImpl das = new DvnRDataAnalysisServiceImpl();
 
-                    resultInfo = das.execute(sro);
+                        // Executes a request of downloading or data analysis and
+                        // capture resulting information as a Map <String, String>
+
+                        resultInfo = das.execute(sro);
                     
 
-                // Step 5. Checks the DSB-exit-status code
-                    if (resultInfo.get("RexecError").equals("true")){
+                        // Step 5. Checks the DSB-exit-status code
+                        if (resultInfo.get("RexecError").equals("true")){
                     
-                        msgDwnldButton.setValue("* The Request failed due to an R-runtime error");
-                        msgDwnldButton.setVisible(true);
-                        dbgLog.fine("exiting dwnldAction() due to an R-runtime error");
-                        getVDCRequestBean().setSelectedTab("tabDwnld");
-                        dvnDSBTimerService.createTimer(deleteTempFileList, TEMP_FILE_LIFETIME);
-                        return "failure";
-                    } else {
-                        if (recodeSchema.size()> 0){
-                            resultInfo.put("subsettingCriteria",sro.getSubsetConditionsForCitation());
+                            msgDwnldButton.setValue("* The Request failed due to an R-runtime error");
+                            msgDwnldButton.setVisible(true);
+                            dbgLog.fine("exiting dwnldAction() due to an R-runtime error");
+                            getVDCRequestBean().setSelectedTab("tabDwnld");
+                            dvnDSBTimerService.createTimer(deleteTempFileList, TEMP_FILE_LIFETIME);
+                            return "failure";
                         } else {
-                            resultInfo.put("subsettingCriteria","");
+                            if (recodeSchema.size()> 0){
+                                resultInfo.put("subsettingCriteria",sro.getSubsetConditionsForCitation());
+                            } else {
+                                resultInfo.put("subsettingCriteria","");
+                            }
                         }
                     }
                     
@@ -1378,8 +1381,12 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             } // end:subsetNotOKcase
             
             // final processing steps for all successful cases
-            
-            // add stuy-metadata to the resultInfo map
+            // add study-metadata to the resultInfo map
+
+            if (formatType.equals("D01")) {
+                resultInfo.put("wbDataFileName", tmpsbfl.getAbsolutePath());
+            }
+
             resultInfo.put("offlineCitation", getCitation());
             resultInfo.put("studyTitle", getStudyTitle());
             resultInfo.put("studyNo", getStudyId().toString());
@@ -1388,11 +1395,43 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 resultInfo.put("versionNumber", versionNumber.toString());
             }
             resultInfo.put("studyURL", studyURL);
-            resultInfo.put("R_min_verion_no",resultInfo.get("Rversion").substring(2));
+            //resultInfo.put("R_min_verion_no",resultInfo.get("Rversion").substring(2));
             resultInfo.put("dataverse_version_no",dvnVersionNumber);
+
+            // calculate UNF (locally, on the application side):
+
+            //getBaseVarIdSetFromRecodedVarIdSet();
+            List<DataVariable> subsetVariableList = getDataVariableForRequest();
+
+            String subsetUNFvalue = "[NOT CALCULATED]";
+
+            String[] unfValues = new String[subsetVariableList.size()];
+
+            for (int i = 0; i < subsetVariableList.size(); i++) {
+                unfValues[i] = subsetVariableList.get(i).getUnf();
+            }
+
+            dbgLog.fine("unf set:\n"+Arrays.deepToString(unfValues));
+
+            try {
+                subsetUNFvalue = UNF5Util.calculateUNF(unfValues);
+
+            } catch (NumberFormatException ex) {
+                // if anything went wrong during the UNF calculation, it's not
+                // a fatal condition; we'll just be displaying "not calculated"
+                // instead of the UNF in the final README file.
+
+                dbgLog.info("error while trying to calculate subset UNF: Number Format Exception.");
+                ex.printStackTrace();
+            } catch (IOException ex) {
+                dbgLog.info("error while trying to calculate subset UNF: IO Exception.");
+                ex.printStackTrace();
+            }
+
+            resultInfo.put("fileUNF", subsetUNFvalue);
            
-            dbgLog.fine("wbDataFileName="+resultInfo.get("wbDataFileName"));
-            dbgLog.fine("RwrkspFileName="+resultInfo.get("wrkspFileName"));
+            //dbgLog.fine("wbDataFileName="+resultInfo.get("wbDataFileName"));
+            //dbgLog.fine("RwrkspFileName="+resultInfo.get("wrkspFileName"));
             
             // writing necessary files
             
@@ -1429,13 +1468,17 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 
 
                 if (formatType.equals("D01")){
-		    // (2) tab-delimited-format-only step:
-		    //
-		    // In the final zip file we package the subset file 
-		    // created by JCut, plus the SAS, SPSS and R control 
-		    // files created by R, above.
+                    // (2) tab-delimited-format-only step:
+                    //
+                    // In the final zip file we package the subset file
+                    // created by JCut, plus the SAS, SPSS and R control
+                    // files created by R, above.
+                    //
+                    // We are also adding the variable header to the file here.
 		    
                     // write code files:
+                    dbgLog.info("(skipping code files for the tab subset)");
+                    /* SKIP CODE FILES -- L.A.
                     String codeFileSas = "codeFile_sas_" + resultInfo.get("PID") + ".sas";
                     File tmpCCsasfl = new File(TEMP_DIR, codeFileSas);
                     
@@ -1456,57 +1499,60 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
                     StatisticalCodeFileWriter scfw = new StatisticalCodeFileWriter(sro);
                     scfw.write(tmpCCsasfl, tmpCCspsfl, tmpCCdofl);
+                     */
 
-		    // add the subset file: 
+                    // add the subset file:
 
-		    File tmpsbflnew = new File (resultInfo.get("wbDataFileName"));
-		    deleteTempFileList.add(tmpsbflnew);
+                    //File tmpsbflnew = new File (resultInfo.get("wbDataFileName"));
+                    File tmpsbflnew = File.createTempFile("tempsubsetfile_new.", ".tab");
+                    deleteTempFileList.add(tmpsbflnew);
 
-		    InputStream inb = new BufferedInputStream(new FileInputStream(tmpsbfl));
-		    OutputStream outb = new BufferedOutputStream(new FileOutputStream(tmpsbflnew));
+                    InputStream inb = new BufferedInputStream(new FileInputStream(tmpsbfl));
+                    OutputStream outb = new BufferedOutputStream(new FileOutputStream(tmpsbflnew));
 
-		    String varHeaderLine = getVariableHeaderForSubset(); 
-		    // Add the variable header to the subset file:
-		    byte[] varHeaderBuffer = null;
-		    varHeaderBuffer = varHeaderLine.getBytes();
-		    outb.write(varHeaderBuffer);
-		    outb.flush();
+                    String varHeaderLine = getVariableHeaderForSubset();
+                    // Add the variable header to the subset file:
+                    byte[] varHeaderBuffer = null;
+                    varHeaderBuffer = varHeaderLine.getBytes();
+                    outb.write(varHeaderBuffer);
+                    outb.flush();
 
-		    int bufsize;
-		    byte [] bffr = new byte[8192];
-		    while ((bufsize = inb.read(bffr))!=-1) {
-			outb.write(bffr, 0, bufsize);
-		    }
-		    inb.close();
-		    outb.close();
+                    int bufsize;
+                    byte [] bffr = new byte[8192];
+                    while ((bufsize = inb.read(bffr))!=-1) {
+                        outb.write(bffr, 0, bufsize);
+                    }
+                    inb.close();
+                    outb.close();
 
-		    dbgLog.fine("adding tab file: "+tmpsbflnew.getName());
-		    zipFileList.add(tmpsbflnew); 
+                    dbgLog.fine("adding tab file: "+tmpsbflnew.getName());
+                    zipFileList.add(tmpsbflnew);
 
                 } else {
                 
-		    // (2)The format-converted subset data file
-		    // get the path-name of the data-file to be delivered 
-		    String wbDataFileName = resultInfo.get("wbDataFileName");
-		    dbgLog.fine("wbDataFileName="+wbDataFileName);
+                    // (2)The format-converted subset data file
+                    // get the path-name of the data-file to be delivered
+                    String wbDataFileName = resultInfo.get("wbDataFileName");
+                    dbgLog.fine("wbDataFileName="+wbDataFileName);
                 
-		    File wbSubsetDataFile = new File(wbDataFileName);
-		    if (wbSubsetDataFile.exists()){
-			dbgLog.fine("wbSubsetDataFile:length="+wbSubsetDataFile.length());
-			deleteTempFileList.add(wbSubsetDataFile);
-			zipFileList.add(wbSubsetDataFile);
-		    } else {
-			// the data file was not created
-			dbgLog.fine("wbSubsetDataFile does not exist");
+                    File wbSubsetDataFile = new File(wbDataFileName);
+                    if (wbSubsetDataFile.exists()){
+                        dbgLog.info("wbSubsetDataFile:length="+wbSubsetDataFile.length());
+                        deleteTempFileList.add(wbSubsetDataFile);
+                        zipFileList.add(wbSubsetDataFile);
+                    } else {
+                        // the data file was not created
+                        dbgLog.fine("wbSubsetDataFile does not exist");
 
-			msgDwnldButton.setValue("* The requested data file is not available");
-			msgDwnldButton.setVisible(true);
-			dbgLog.warning("exiting dwnldAction(): data file was not transferred");
-			getVDCRequestBean().setSelectedTab("tabDwnld");
-			dvnDSBTimerService.createTimer(deleteTempFileList, TEMP_FILE_LIFETIME);
-			return "failure";
-		    }
+                        msgDwnldButton.setValue("* The requested data file is not available");
+                        msgDwnldButton.setVisible(true);
+                        dbgLog.warning("exiting dwnldAction(): data file was not transferred");
+                        getVDCRequestBean().setSelectedTab("tabDwnld");
+                        dvnDSBTimerService.createTimer(deleteTempFileList, TEMP_FILE_LIFETIME);
+                        return "failure";
+                    }
                 }
+
                 // R-work space file
 //                String wrkspFileName = resultInfo.get("wrkspFileName");
 //                dbgLog.fine("wrkspFileName="+wrkspFileName);
@@ -1548,17 +1594,25 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 
                 // (3) add replication readme file
                 //zipFileList.add(REP_README_FILE);
-                String readMeFileName = REP_README_FILE_PREFIX + resultInfo.get("PID") +  ".txt";
+                String readMeFileName = null; 
+                
+                if (resultInfo.get("PID") != null) {
+                    readMeFileName = REP_README_FILE_PREFIX + resultInfo.get("PID") +  ".txt";
+                } else {
+                    readMeFileName = REP_README_FILE_PREFIX + fileId + ".txt";
+                }
+                
                 File readMeFile = new File(TEMP_DIR, readMeFileName);
                 
                 DvnReplicationREADMEFileWriter rw = new DvnReplicationREADMEFileWriter(resultInfo);
                 rw.writeREADMEfile(readMeFile);
+
                 //zipFileList.add(REP_README_FILE);
                 zipFileList.add(readMeFile);
                 deleteTempFileList.add(readMeFile);
                     
                 for (File f : zipFileList){
-                    dbgLog.fine("path="+f.getAbsolutePath() +"\tname="+ f.getName());
+                    dbgLog.info("file to zip: path="+f.getAbsolutePath() +"\tname="+ f.getName());
                 }
 
 

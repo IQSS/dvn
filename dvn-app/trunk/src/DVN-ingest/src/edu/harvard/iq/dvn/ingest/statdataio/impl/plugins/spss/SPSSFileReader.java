@@ -921,9 +921,13 @@ public class SPSSFileReader extends StatDataFileReader{
                 // Convert array of Strings to array of Longs
                 Long[] ldata = new Long[varData.length];
                 for (int i = 0; i < varData.length; i++) {
-                    if (varData[i] != null) {
+                    //if (varData[i] != null) {
+                    try {
                         ldata[i] = new Long((String) varData[i]);
+                    } catch (Exception ex) {
+                        ldata[i] = null;
                     }
+                    //}
                 }
                 unfValue = UNF5Util.calculateUNF(ldata);
                 dbgLog.finer("integer:unfValue=" + unfValue);
@@ -951,9 +955,13 @@ public class SPSSFileReader extends StatDataFileReader{
                  // Convert array of Strings to array of Doubles
                 Double[]  ddata = new Double[varData.length];
                 for (int i=0;i<varData.length;i++) {
-                    if (varData[i]!=null) {
+                    //if (varData[i]!=null) {
+                    try {
                         ddata[i] = new Double((String)varData[i]);
+                    } catch (Exception ex) {
+                        ddata[i] = null;
                     }
+                    //}
                 }
                 unfValue = UNF5Util.calculateUNF(ddata);
                 dbgLog.finer("double:unfValue="+unfValue);

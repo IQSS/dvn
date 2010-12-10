@@ -85,7 +85,11 @@ public class CSVFileReader implements java.io.Serializable {
 
                 if (isCharacterVariable[i]) {
                     // String. Adding to the table as is.
-                    dataTable[i][lineCounter] = valueTokens[i];
+                    if (valueTokens[i] != null && (!valueTokens[i].equals(""))) {
+                        dataTable[i][lineCounter] = valueTokens[i];
+                    } else {
+                        dataTable[i][lineCounter] = " ";
+                    }
                     
                 } else if (isContinuousVariable[i]) {
                     // Numeric, Double:
@@ -95,7 +99,8 @@ public class CSVFileReader implements java.io.Serializable {
                     } catch (Exception ex) {
                         dbgLog.fine("caught exception reading numeric value; variable: "+i+", case: "+lineCounter+"; value: "+valueTokens[i]);
 
-                        dataTable[i][lineCounter] = (new Double(0)).toString();
+                        //dataTable[i][lineCounter] = (new Double(0)).toString();
+                        dataTable[i][lineCounter] = "";
                     }
                 } else {
                     // Numeric, Integer:
@@ -105,7 +110,8 @@ public class CSVFileReader implements java.io.Serializable {
                     } catch (Exception ex) {
                         dbgLog.fine("caught exception reading numeric value; variable: "+i+", case: "+lineCounter+"; value: "+valueTokens[i]);
 
-                        dataTable[i][lineCounter] = "0";
+                        //dataTable[i][lineCounter] = "0";
+                        dataTable[i][lineCounter] = "";
                     }
                 }
             }

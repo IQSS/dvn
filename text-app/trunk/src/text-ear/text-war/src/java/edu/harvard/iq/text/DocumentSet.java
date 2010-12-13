@@ -122,8 +122,10 @@ public class DocumentSet {
             String tokenSeparator;
             if (setId.equals("3") ) {
                 tokenSeparator=" ";
-            } else {
+            } else if (setId.equals("1")) {
                 tokenSeparator="\t";
+            } else {
+                tokenSeparator = ",";
             }
             // skip line 1 because it just contains headers
             strLine = br.readLine();
@@ -186,8 +188,10 @@ public class DocumentSet {
             String tokenSeparator;
             if (setId.equals("3") ) {
                 tokenSeparator=" ";
-            } else {
+            } else if (setId.equals("1")){
                 tokenSeparator="\t";
+            } else {
+                tokenSeparator=",";
             }
 
             BufferedReader br = new BufferedReader(new FileReader(wordDocumentFile));
@@ -329,6 +333,8 @@ public class DocumentSet {
 
     }
 
+   
+
     private CoordinateList readMethodPoints(File strFile) {
 
         CoordinateList methodCoords = new CoordinateList();
@@ -347,8 +353,10 @@ public class DocumentSet {
             String tokenSeparator;
             if (setId.equals("3") ) {
                 tokenSeparator=",";
-            } else {
+            } else if (setId.equals("1")) {
                 tokenSeparator="\t";
+            } else {
+                tokenSeparator = ",";
             }
             while ((strLine = br.readLine()) != null) {
                 lineNumber++;

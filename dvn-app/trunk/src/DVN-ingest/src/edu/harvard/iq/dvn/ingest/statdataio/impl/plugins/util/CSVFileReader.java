@@ -139,17 +139,20 @@ public class CSVFileReader implements java.io.Serializable {
         try {
             varQnty = new Integer(smd.getFileInformation().get("varQnty").toString());
         } catch (Exception ex) {
-            return -1;
+            //return -1;
+            throw new IOException ("CSV File Reader: Could not obtain varQnty from the dataset metadata.");
         }
 
         if (varQnty == 0) {
-            return -1;
+            //return -1;
+            throw new IOException ("CSV File Reader: varQnty=0 in the dataset metadata!");
         }
 
         String[] caseRow = new String[varQnty];
 
         String line;
         String[] valueTokens = new String[varQnty];
+
         int lineCounter = 0;
 
         boolean[] isCharacterVariable = smd.isStringVariable();
@@ -211,7 +214,7 @@ public class CSVFileReader implements java.io.Serializable {
         //return csvData;
 
         pwout.close();
-        return lineCounter++;
+        return lineCounter;
     }
 
 }

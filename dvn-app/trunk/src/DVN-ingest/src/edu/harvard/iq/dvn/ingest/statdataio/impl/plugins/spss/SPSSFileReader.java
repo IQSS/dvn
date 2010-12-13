@@ -1143,10 +1143,11 @@ public class SPSSFileReader extends StatDataFileReader{
 
 
                 if ( varFormat != null
-                    && (SPSSConstants.FORMAT_CATEGORY_TABLE.get(varFormat).equals("date")
-                        || SPSSConstants.FORMAT_CATEGORY_TABLE.get(varFormat).equals("time")
-                        || varFormat.equals("WKDAY")
-                        || varFormat.equals("MONTH"))) {
+                    && ( varFormat.equals("WKDAY")
+                        || varFormat.equals("MONTH")
+                        || "date".equals(SPSSConstants.FORMAT_CATEGORY_TABLE.get(varFormat))
+                        || "time".equals(SPSSConstants.FORMAT_CATEGORY_TABLE.get(varFormat)) )
+                        ) {
 
                     // TODO:
                     // All these date, time, weekday, etc. values need to be validated!

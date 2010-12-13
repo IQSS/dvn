@@ -22,6 +22,7 @@ package edu.harvard.iq.dvn.ingest.statdataio.impl.plugins.util;
 
 import java.io.*;
 import java.util.logging.*;
+import org.apache.commons.lang.StringUtils;
 
 
 import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.metadata.*;
@@ -54,6 +55,12 @@ public class CSVFileReader implements java.io.Serializable {
         this.delimiterChar = delimiterChar;
     }
 
+
+    // version of the read method that parses the CSV file and stores
+    // its content in the data table matrix (in memory).
+    // TODO: remove this method.
+    // Only the version that reads the file and stores it in a TAB file
+    // should be used.
     public DataTable read(BufferedReader csvReader, SDIOMetadata smd) throws IOException {
         DataTable csvData = new DataTable();
         Object[][] dataTable = null;
@@ -84,7 +91,8 @@ public class CSVFileReader implements java.io.Serializable {
                 //dbgLog.fine("value: "+valueTokens[i]);
 
                 if (isCharacterVariable[i]) {
-                    // String. Adding to the table as is.
+                    // String. Adding to the table, quoted.
+                    // Empty strings stored as " " (one white space):
                     if (valueTokens[i] != null && (!valueTokens[i].equals(""))) {
                         dataTable[i][lineCounter] = valueTokens[i];
                     } else {
@@ -120,6 +128,90 @@ public class CSVFileReader implements java.io.Serializable {
 
         csvData.setData(dataTable);
         return csvData;
+    }
+
+
+    public int read(BufferedReader csvReader, SDIOMetadata smd, PrintWriter pwout) throws IOException {
+
+        DataTable csvData = new DataTable();
+        int varQnty = 0;
+
+        try {
+            varQnty = new Integer(smd.getFileInformation().get("varQnty").toString());
+        } catch (Exception ex) {
+            return -1;
+        }
+
+        if (varQnty == 0) {
+            return -1;
+        }
+
+        String[] caseRow = new String[varQnty];
+
+        String line;
+        String[] valueTokens = new String[varQnty];
+        int lineCounter = 0;
+
+        boolean[] isCharacterVariable = smd.isStringVariable();
+        boolean[] isContinuousVariable = smd.isContinuousVariable();
+
+        dbgLog.fine("CSV reader; varQnty: "+varQnty);
+        dbgLog.fine("CSV reader; delimiter: "+delimiterChar);
+
+        while ((line = csvReader.readLine()) != null) {
+            // chop the line:
+            line = line.replaceFirst("[ \t\n]*$", "");
+            valueTokens = line.split(""+delimiterChar, varQnty);
+
+            //dbgLog.fine("case: "+lineCounter);
+
+            for ( int i = 0; i < varQnty; i++ ) {
+                //dbgLog.fine("value: "+valueTokens[i]);
+
+                if (isCharacterVariable[i]) {
+                    // String. Adding to the table, quoted.
+                    // Empty strings stored as " " (one white space):
+                    if (valueTokens[i] != null && (!valueTokens[i].equals(""))) {
+                        caseRow[i] = "\"" + valueTokens[i] + "\"";
+                    } else {
+                        caseRow[i] = "\" \"";
+                    }
+
+                } else if (isContinuousVariable[i]) {
+                    // Numeric, Double:
+                    try {
+                        Double testDoubleValue = new Double(valueTokens[i]);
+                        caseRow[i] = testDoubleValue.toString();//valueTokens[i];
+                    } catch (Exception ex) {
+                        dbgLog.fine("caught exception reading numeric value; variable: "+i+", case: "+lineCounter+"; value: "+valueTokens[i]);
+
+                        //dataTable[i][lineCounter] = (new Double(0)).toString();
+                        caseRow[i] = "";
+                    }
+                } else {
+                    // Numeric, Integer:
+                    try {
+                        Integer testIntegerValue = new Integer(valueTokens[i]);
+                        caseRow[i] = testIntegerValue.toString();
+                    } catch (Exception ex) {
+                        dbgLog.fine("caught exception reading numeric value; variable: "+i+", case: "+lineCounter+"; value: "+valueTokens[i]);
+
+                        //dataTable[i][lineCounter] = "0";
+                        caseRow[i] = "";
+                    }
+                }
+            }
+
+            pwout.println(StringUtils.join(caseRow, "\t"));
+
+            lineCounter++;
+        }
+
+        //csvData.setData(dataTable);
+        //return csvData;
+
+        pwout.close();
+        return lineCounter++;
     }
 
 }

@@ -64,7 +64,14 @@ public class SPSSFileReader extends StatDataFileReader{
     private static int DATA_LIST_NO_SLASH_SEPARATOR = 2;
     private static int DATA_LIST_UNSUPPORTED_VARIABLE_TYPE = 3;
     private static int DATA_LIST_ILLEGAL_NUMERIC_TYPE = 4;
+    private static int DATA_LIST_ILLEGAL_VARIABLE_TYPE = 5;
 
+    // date/time data formats
+
+    private SimpleDateFormat sdf_ymd    = new SimpleDateFormat("yyyy-MM-dd");
+    private SimpleDateFormat sdf_ymdhms = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private SimpleDateFormat sdf_dhms   = new SimpleDateFormat("DDD HH:mm:ss");
+    private SimpleDateFormat sdf_hms    = new SimpleDateFormat("HH:mm:ss");
 
     private static Logger dbgLog =
        Logger.getLogger(SPSSFileReader.class.getPackage().getName());
@@ -215,6 +222,10 @@ public class SPSSFileReader extends StatDataFileReader{
                  throw new IOException ("Invalid SPSS Command Syntax: " +
                         "illegal numeric type definition.");
 
+            } else if (readStatus == DATA_LIST_ILLEGAL_VARIABLE_TYPE) {
+                 throw new IOException ("Invalid SPSS Command Syntax: " +
+                        "unknown or illegal variable type definition in DATA LIST.");
+
             }
         }
 
@@ -231,13 +242,44 @@ public class SPSSFileReader extends StatDataFileReader{
 
         CSVFileReader  csvFileReader = new CSVFileReader (getDelimiterChar());
         BufferedReader csvRd = new BufferedReader(new InputStreamReader(new FileInputStream(rawDataFile)));
+        PrintWriter pwout = createOutputWriter();
 
-        csvData = csvFileReader.read(csvRd, smd);
+        int casesRead = 0;
+        //csvData = csvFileReader.read(csvRd, smd);
 
-        PrintWriter pwout = createOutputWriter(null);
+        try {
+            casesRead = csvFileReader.read(csvRd, smd, pwout);
+        } catch (IOException ex) {
+            dbgLog.info ("Could not read and store CSV data file: " +
+                        "IO Exception caught:" + ex.getMessage());
+            throw new IOException ("Could not read and store CSV data file: " +
+                        "IO Exception caught:" + ex.getMessage());
+        }
 
-        storeTabFileData (csvData, pwout);
+        if (casesRead < 1) {
 
+            dbgLog.info ("Could not read and store CSV data file: " +
+                        "Empty or corrupted file?");
+            throw new IOException ("Could not read and store CSV data file: " +
+                        "Empty or corrupted file?");
+        }
+
+         if (getCaseQnty() > 0) {
+             if (getCaseQnty() != casesRead) {
+                dbgLog.info ("Could not read and store CSV data file: " +
+                            "Number of cases read doesn't match the number " +
+                            "specified in the card.");
+                throw new IOException ("Could not read and store CSV data file: " +
+                            "Number of cases read doesn't match the number " +
+                            "specified in the card.");
+             }
+        } else {
+            setCaseQnty(casesRead);
+        }
+
+        
+        //storeTabFileData (csvData, pwout);
+        csvData = readTabDataFile ();
 
         // Calculate the datasets statistics, summary and category, and 
         // the UNF signatures:
@@ -537,6 +579,10 @@ public class SPSSFileReader extends StatDataFileReader{
 
             dbgLog.fine ("found variable "+varName+", type "+varType);
 
+            if (varType == null || varType.equals("")) {
+                return DATA_LIST_ILLEGAL_VARIABLE_TYPE;
+            }
+
             variableNameList.add(varName);
 
             // unfVariableTypes list holds extended type definitions for the
@@ -544,7 +590,9 @@ public class SPSSFileReader extends StatDataFileReader{
             // we need to be able to differentiate between Integers and
             // real numbers, in addition to the "numeric" and "string" values.
 
-            if (varType.startsWith("a") || varType.startsWith("A")) {
+            varType = varType.toUpperCase();
+
+            if (varType.startsWith("A")) {
                 // String:
 
                 Matcher stringVarDeclarationMatcher = stringVarDeclarationPattern.matcher(varType);
@@ -563,12 +611,12 @@ public class SPSSFileReader extends StatDataFileReader{
                 printFormatList.add(1);
                 //printFormatNameTable.put(varName, "A");
 
-            } else if (varType.startsWith("f") || varType.startsWith("F")) {
+            } else if (varType.startsWith("F")) {
                 // "minimal" format value is 0 -- numeric
                 variableTypeList.add(0);
                 formatCategoryTable.put(varName, SPSSConstants.FORMAT_CATEGORY_TABLE.get("F"));
 
-                if ( varType.equals("f") || varType.equals("F")) {
+                if (varType.equals("F")) {
                     // abbreviated numeric type definition;
                     // defaults to f10.0
 
@@ -619,9 +667,27 @@ public class SPSSFileReader extends StatDataFileReader{
                 printFormatList.add(5); // TODO: verify (should it be 0 instead?)
                 printFormatNameTable.put(varName, "F10."+numDecimal);
 
+            // Check for various date and time formats that we support:
+            } else if (SPSSConstants.FORMAT_CATEGORY_TABLE.get(varType) != null) {
+
+                if ( SPSSConstants.FORMAT_CATEGORY_TABLE.get(varType).equals("date")
+                    || SPSSConstants.FORMAT_CATEGORY_TABLE.get(varType).equals("time")
+                    || varType.equals("WKDAY")
+                    || varType.equals("MONTH")) {
+
+                    variableTypeList.add(1);
+                    formatCategoryTable.put(varName, SPSSConstants.FORMAT_CATEGORY_TABLE.get(varType));
+                    unfVariableTypes.put(varName, -1);
+                    //printFormatList.add(); // TODO: confirm that this isn't needed.
+                    printFormatNameTable.put(varName, varType);
+
+                } else {
+                    return DATA_LIST_UNSUPPORTED_VARIABLE_TYPE;
+                }
+
             } else {
-                // invalid variable type definition.
-                return DATA_LIST_UNSUPPORTED_VARIABLE_TYPE;
+                // invalid/unrecognized variable type definition.
+                return DATA_LIST_ILLEGAL_VARIABLE_TYPE;
             }
 
             variableCounter++;
@@ -741,8 +807,7 @@ public class SPSSFileReader extends StatDataFileReader{
 
                 dbgLog.fine ("found label "+valueLabel+" for value "+varValue);
 
-                Boolean isNumeric = false; // dummy placeholder
-
+                Boolean isNumeric = false; // TODO: !
                 if (isNumeric){
                     // Numeric variable:
                     dbgLog.fine("processing numeric value label");
@@ -750,6 +815,9 @@ public class SPSSFileReader extends StatDataFileReader{
                 } else {
                     // String variable
                     dbgLog.fine("processing string value label");
+                    varValue = varValue.replaceFirst("^[\"']", "");
+                    varValue = varValue.replaceFirst("[\"']$", "");
+
                     valueLabelPairs.put(varValue, valueLabel );
                 }
             }
@@ -805,7 +873,7 @@ public class SPSSFileReader extends StatDataFileReader{
 
             Matcher misValDeclarationMatcher = misValDeclarationPattern.matcher(misValuesDeclaration);
 
-            Boolean isNumericVariable = false;
+            Boolean isNumericVariable = false; // TODO: !
             List<String> mv = new ArrayList<String>();
 
             while (misValDeclarationMatcher.find()) {
@@ -819,6 +887,9 @@ public class SPSSFileReader extends StatDataFileReader{
                     // missing values.
                     mv.add(doubleNumberFormatter.format(new Double(misValue)));
                 } else {
+                    misValue = misValue.replaceFirst("^[\"']", "");
+                    misValue = misValue.replaceFirst("[\"']$", "");
+
                     mv.add(misValue);
                 }
             }
@@ -839,9 +910,9 @@ public class SPSSFileReader extends StatDataFileReader{
     // method for creating the output writer for the temporary tab file.
     // this shouldn't be in the plugins really.
 
-    PrintWriter createOutputWriter (BufferedInputStream stream) throws IOException {
+    PrintWriter createOutputWriter () throws IOException {
         PrintWriter pwout = null;
-	FileOutputStream fileOutTab = null;
+        FileOutputStream fileOutTab = null;
 	        
         try {
 
@@ -873,7 +944,6 @@ public class SPSSFileReader extends StatDataFileReader{
     private void storeTabFileData (DataTable csvData, PrintWriter pwout) {
         String[] caseRow = new String[getVarQnty()];
 
-
         for (int i=0; i<getCaseQnty(); i++) {
             for (int j=0; j<getVarQnty(); j++) {
                 caseRow[j] = (String)csvData.getData()[j][i];
@@ -884,6 +954,43 @@ public class SPSSFileReader extends StatDataFileReader{
         pwout.close(); 
     }
 
+    private DataTable readTabDataFile () throws IOException {
+        DataTable tabData = new DataTable();
+        Object[][] dataTable = null;
+        dataTable = new Object[getVarQnty()][getCaseQnty()];
+
+        String tabFileName = (String)smd.getFileInformation().get("tabDelimitedDataFileLocation");
+        BufferedReader tabFileReader = new BufferedReader(new InputStreamReader(new FileInputStream(tabFileName)));
+
+        boolean[] isCharacterVariable = smd.isStringVariable();
+
+        String line;
+        String[] valueTokens = new String[getVarQnty()];
+
+
+        for ( int j = 0; j < getCaseQnty(); j++ ) {
+            if ((line = tabFileReader.readLine()) == null) {
+                throw new IOException("Failed to read "+getCaseQnty()+" lines " +
+                        "from tabular data file "+tabFileName);
+            }
+            valueTokens = line.split("\t", getVarQnty());
+
+            for ( int i = 0; i < getVarQnty(); i++ ) {
+                if (isCharacterVariable[i]) {
+                    valueTokens[i] = valueTokens[i].replaceFirst("^\"", "");
+                    valueTokens[i] = valueTokens[i].replaceFirst("\"$", "");
+                    dataTable[i][j] = valueTokens[i];
+                } else {
+                    dataTable[i][j] = valueTokens[i];
+                }
+            }
+        }
+
+        tabFileReader.close();
+
+        tabData.setData(dataTable);
+        return tabData;
+    }
     // Method for calculating the UNF signatures.
     //
     // It really isn't awesome that each of our file format readers has 
@@ -911,10 +1018,7 @@ public class SPSSFileReader extends StatDataFileReader{
 
         switch(variableType){
             case 0:
-                // Integer case
-                // note: due to DecimalFormat class is used to
-                // remove an unnecessary decimal point and 0-padding
-                // numeric (double) data are now String objects
+                // Integer (Long):
 
                 dbgLog.fine("Integer case");
 
@@ -932,8 +1036,8 @@ public class SPSSFileReader extends StatDataFileReader{
                 unfValue = UNF5Util.calculateUNF(ldata);
                 dbgLog.finer("integer:unfValue=" + unfValue);
 
-                dbgLog.finer("sumstat:long case=" + Arrays.deepToString(
-                        ArrayUtils.toObject(StatHelper.calculateSummaryStatistics(ldata))));
+                //dbgLog.finer("sumstat:long case=" + Arrays.deepToString(
+                //        ArrayUtils.toObject(StatHelper.calculateSummaryStatistics(ldata))));
 
                 smd.getSummaryStatisticsTable().put(variablePosition,
                         ArrayUtils.toObject(StatHelper.calculateSummaryStatistics(ldata)));
@@ -945,10 +1049,7 @@ public class SPSSFileReader extends StatDataFileReader{
                 break;
 
             case 1:
-                // double case
-                // note: due to DecimalFormat class is used to
-                // remove an unnecessary decimal point and 0-padding
-                // numeric (double) data are now String objects
+                // Double:
 
                 dbgLog.finer("double case");
 
@@ -970,15 +1071,26 @@ public class SPSSFileReader extends StatDataFileReader{
 
                 break;
             case -1:
-                // String case
+                // String:
+                //
+                // i.e., this is something *stored* as string; it may still be
+                // a more complex data type than just a string of characters.
+                // Namely, it can be some date or time type that we support.
+                // These should be handled differently when calculating the
+                // UNFs.
+
                 dbgLog.finer("string case");
 
 
                 String[] strdata = Arrays.asList(varData).toArray(
                     new String[varData.length]);
                 dbgLog.finer("string array passed to calculateUNF: "+Arrays.deepToString(strdata));
-                //unfValue = UNF5Util.calculateUNF(strdata, dateFormats);
-                unfValue = UNF5Util.calculateUNF(strdata);
+
+                if (dateFormats != null) {
+                    unfValue = UNF5Util.calculateUNF(strdata, dateFormats);
+                } else {
+                    unfValue = UNF5Util.calculateUNF(strdata);
+                }
                 dbgLog.finer("string:unfValue="+unfValue);
 
                 smd.getSummaryStatisticsTable().put(variablePosition,
@@ -1010,18 +1122,67 @@ public class SPSSFileReader extends StatDataFileReader{
 
         String[] unfValues = new String[getVarQnty()];
 
+
          // TODO:
          // Catch and differentiate between different exception
          // that the UNF methods throw.
 
         for (int j=0; j<getVarQnty(); j++){
             int variableTypeNumer = unfVariableTypes.get(variableNameList.get(j));
+            String varFormat = smd.getVariableFormatName().get(smd.getVariableName()[j]);
 
             try {
                 dbgLog.finer("j = "+j);
 
-                unfValues[j] = getUNF(csvData.getData()[j], null, variableTypeNumer,
-                    unfVersionNumber, j);
+                // Before we pass the variable vector to the UNF calculator,
+                // we need to check if is of any supported date/time type.
+                // If so, we'll also need to create and pass a list of
+                // date formats, so that the UNFs could be properly calculated.
+                // (otherwise the date/time values will be treated simply as
+                // strings!)
+
+
+                if ( varFormat != null
+                    && (SPSSConstants.FORMAT_CATEGORY_TABLE.get(varFormat).equals("date")
+                        || SPSSConstants.FORMAT_CATEGORY_TABLE.get(varFormat).equals("time")
+                        || varFormat.equals("WKDAY")
+                        || varFormat.equals("MONTH"))) {
+
+                    // TODO:
+                    // All these date, time, weekday, etc. values need to be validated!
+
+                    String[] dateFormats = new String[getCaseQnty()];
+
+                    for (int k = 0; k < getCaseQnty(); k++) {
+                        if (SPSSConstants.FORMAT_CATEGORY_TABLE.get(varFormat).equals("date")) {
+                            dbgLog.finer("date case");
+                            dateFormats[k] = sdf_ymd.toPattern();
+                        } else if (SPSSConstants.FORMAT_CATEGORY_TABLE.get(varFormat).equals("time")) {
+                            dbgLog.finer("time case: DTIME or DATETIME or TIME");
+
+                            if (varFormat.equals("DTIME")) {
+                                dateFormats[k] = sdf_dhms.toPattern();
+                            } else if (varFormat.equals("DATETIME")) {
+                                dateFormats[k] = sdf_ymdhms.toPattern();
+                            } else if (varFormat.equals("TIME")) {
+                                dateFormats[k] = sdf_hms.toPattern();
+                            }
+                        } else if (varFormat.equals("WKDAY")) {
+                            // TODO: these need to be validated only.
+                            dateFormats = null;
+
+                        } else if (varFormat.equals("MONTH")) {
+                            // TODO: these need to be validated only.
+                            dateFormats = null; 
+                        }
+                    }
+
+                    unfValues[j] = getUNF(csvData.getData()[j], dateFormats, variableTypeNumer,
+                        unfVersionNumber, j);
+                } else {
+                    unfValues[j] = getUNF(csvData.getData()[j], null, variableTypeNumer,
+                        unfVersionNumber, j);
+                }
                 dbgLog.fine(j+"th unf value"+unfValues[j]);
 
             } catch (NumberFormatException ex) {

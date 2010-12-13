@@ -579,6 +579,21 @@ td.clusterCountCol {width:14%;}
 .clusterDetailBlock .dvnTabs .icePnlTbOff .MidMid a {padding-left:4px;}
 .clusterDetailBlock .dvnTabs .icePnlTbOver .MidMid a {padding-left:4px;}
 .clusterDetailBlock .dvnTabs .icePnlTbOn .MidMid a td {font-size:1em !important;}
+
+.clusterDetailBlock .icePnlTbSetCnt {padding:10px;}
+
+.iceDatTbl td .clusterDocViewNav span.iceOutTxt {display:inline; padding:0 4px; color:#D9D9D9;}
+.iceDatTbl td .clusterDocViewNav span.iceOutTxt.clusterDocViewNumber {color:#000;}
+.clusterDocViewNav img.iceGphImg {padding:0 4px !important;}
+.clusterDetailBlock .dvnPaginatorRight {margin-bottom:1em;}
+.clusterDetailBlock .iceDatTbl.clusterDocList {border-top: 1px solid #D9D9D9;}
+
+.clusterViewDocPopup {width:500px; z-index:9999;}
+.clusterViewDocPopup .popupHeaderWrapper {overflow:hidden; padding:0 1em;}
+.clusterViewDocPopup .popupHeaderWrapper .popupHeaderText {float:left;}
+.clusterViewDocPopup .popupHeaderWrapper .popupHeaderClose {float:right;}
+.clusterViewDocPopup table {width:100%;}
+.clusterViewDocPopup .clusterDocViewNav {margin-bottom:1em;}
 </style>
                 <ice:dataTable id="clusterInfo" binding="#{ClusteringSpacePage.clusterTable}" cellpadding="0" cellspacing="0" value="#{ClusteringSpacePage.clusterTableModel}" var="row" width="100%">
                     <ice:column>
@@ -602,94 +617,109 @@ td.clusterCountCol {width:14%;}
                             </ice:column>
                         </ice:panelGrid>
                                     
-                                    <a href="#" class="clusterDetailLink">View Detail</a>
+                        <a href="#" class="clusterDetailLink">View Detail</a>
 
-                                    <div class="clusterDetailBlock">
-                                        <ice:panelTabSet id="tabSet1" styleClass="dvnTabs" selectedIndex="0">
-                                            <ice:panelTab id="doc" label="Documents">
-                                                <ice:commandButton disabled="#{row.viewDocumentIndex==0}" value="First" actionListener="#{row.viewFirst}"/>
-                                                <ice:commandButton disabled="#{row.viewDocumentIndex==row.clusterInfo.clusterCount-1}" value="Next" actionListener="#{row.viewNext}"/>
-                                                <ice:commandButton disabled="#{row.viewDocumentIndex==0}" value="Previous" actionListener="#{row.viewPrevious}"/>
-                                                <ice:commandButton disabled="#{row.viewDocumentIndex==row.clusterInfo.clusterCount-1}" value="Last" actionListener="#{row.viewLast}"/>
-                                                <ice:commandButton  value="Random" actionListener="#{row.viewRandom}"/>
+                        <div class="clusterDetailBlock">
+                            <ice:panelTabSet id="tabSet1" styleClass="dvnTabs" selectedIndex="0">
+                                <ice:panelTab id="doc" label="Documents">
+                                    <div class="clusterDocViewNav">
+                                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-first.gif" title="First Document" rendered="#{row.viewDocumentIndex==0}"/>
+                                        <ice:commandLink title="First Document" rendered="#{row.viewDocumentIndex!=0}" actionListener="#{row.viewFirst}"><img title="First Document" src="/text/resources/icefaces/dvn_rime/css-images/arrow-first.gif" class="iceGphImg" alt=""/></ice:commandLink>
 
+                                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-previous.gif" title="Previous Document" rendered="#{row.viewDocumentIndex==0}"/>
+                                        <ice:commandLink title="Previous Document" rendered="#{row.viewDocumentIndex!=0}" actionListener="#{row.viewPrevious}"><img title="Previous Document" src="/text/resources/icefaces/dvn_rime/css-images/arrow-previous.gif" class="iceGphImg" alt=""/></ice:commandLink>
 
-                                                <p><ice:outputText value="Document #{row.viewDocumentIndex+1}: #{row.viewDocumentName}"/>
-                                               
-                                                </p>
-                                               
-                                                
-                                                <p><ice:outputText value="#{row.viewDocumentPreview}"/></p>
-                                                <ice:commandLink actionListener="#{row.openPopup}">Full Document</ice:commandLink>
-                                            </ice:panelTab>
+                                        <ice:outputText value="#{row.viewDocumentIndex+1} of #{row.clusterInfo.clusterCount}" styleClass="clusterDocViewNumber"/>
 
-                                            <ice:panelTab id="list" label="List View">
-                                                <ice:outputText value="#{row.clusterInfo.clusterCount} Documents in Cluster"/>
-                                                 <ice:dataPaginator for="clusterDocs"
-                                                                   
-                                                                   id="dataScroll_3"
-                                                                   paginator="true" fastStep="3"
-                                                                   paginatorMaxPages="4"
-                                                                   renderFacetsIfSinglePage="true"
-                                                                   styleClass="dvnPaginatorRight">
-                                                  <f:facet name="first">
-                                                    <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-first.gif" title="First Page"/>
-                                                  </f:facet>
-                                                  
-                                                  <f:facet name="previous">
-                                                    <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-previous.gif" title="Previous"/>
-                                                  </f:facet>
-                                                  <f:facet name="next">
-                                                    <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-next.gif" title="Next"/>
-                                                  </f:facet>
-                                                 
-                                                  <f:facet name="last">
-                                                    <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-last.gif" title="Last Page"/>
-                                                  </f:facet>
-                                                </ice:dataPaginator>
-                                                <ice:dataTable   rows="5" id="clusterDocs"  cellpadding="0" cellspacing="0" value="#{row.clusterInfo.docInfoList}" var="docInfo" width="100%">
-                                                     <ice:column>
-                                                         <ice:commandLink value="#{docInfo.index+1}" actionListener="#{row.viewDocumentInList}"/>
-                                                    </ice:column>
-                                                    <ice:column>
-                                                         <ice:commandLink value="#{docInfo.docId}" actionListener="#{row.viewDocumentInList}"/>
-                                                    </ice:column>
-                                                </ice:dataTable>
-                                            </ice:panelTab>
-                                        </ice:panelTabSet>
+                                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-next.gif" title="Next Document" rendered="#{row.viewDocumentIndex==row.clusterInfo.clusterCount-1}"/>
+                                        <ice:commandLink title="Next Document" rendered="#{row.viewDocumentIndex!=row.clusterInfo.clusterCount-1}" actionListener="#{row.viewNext}"><img title="Next Document" src="/text/resources/icefaces/dvn_rime/css-images/arrow-next.gif" class="iceGphImg" alt=""/></ice:commandLink>
+
+                                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-last.gif" title="Last Document" rendered="#{row.viewDocumentIndex==row.clusterInfo.clusterCount-1}"/>
+                                        <ice:commandLink title="Last Document" rendered="#{row.viewDocumentIndex!=row.clusterInfo.clusterCount-1}" actionListener="#{row.viewLast}"><img title="Last Document" src="/text/resources/icefaces/dvn_rime/css-images/arrow-last.gif" class="iceGphImg" alt=""/></ice:commandLink>
+
+                                        <ice:commandLink value="Random" title="View Random Document" styleClass="clusterDocViewRandom" actionListener="#{row.viewRandom}"></ice:commandLink>
                                     </div>
 
-                                    <ice:panelPopup id="modalPnlPop"
-                                                    draggable="true" modal="false"
-                                                    visible="#{row.showPopup}"
-                                                    autoCentre="true"
-                                                    styleClass="corePopup">
-                                        <f:facet name="header">
-                                            <ice:panelGroup styleClass="popupHeaderWrapper">
-                                                <ice:outputText
-                                                    value="Viewing Document #{row.viewDocumentIndex+1}: #{row.viewDocumentName}"
-                                                        styleClass="popupHeaderText"/>
+                                    <p>
+                                        <ice:outputText value="Document: #{row.viewDocumentName}"/>
+                                    </p>
+                                    <p>
+                                        <ice:outputText value="#{row.viewDocumentPreview}"/>
+                                    </p>
+                                    <ice:commandLink actionListener="#{row.openPopup}">Full Document</ice:commandLink>
+                                </ice:panelTab>
 
-                                            </ice:panelGroup>
-                                        </f:facet>
-                                        <f:facet name="body">
-                                            <ice:panelGroup styleClass="popupBody">
-                                                <ice:commandButton disabled="#{row.viewDocumentIndex==0}" value="First" actionListener="#{row.viewFirst}"/>
-                                                <ice:commandButton disabled="#{row.viewDocumentIndex==row.clusterInfo.clusterCount-1}" value="Next" actionListener="#{row.viewNext}"/>
-                                                <ice:commandButton disabled="#{row.viewDocumentIndex==0}" value="Previous" actionListener="#{row.viewPrevious}"/>
-                                                <ice:commandButton disabled="#{row.viewDocumentIndex==row.clusterInfo.clusterCount-1}" value="Last" actionListener="#{row.viewLast}"/>
-                                                <ice:commandButton  value="Random" actionListener="#{row.viewRandom}"/>
+                                <ice:panelTab id="list" label="List View">
+                                    <ice:outputText value="#{row.clusterInfo.clusterCount} Documents in Cluster"/>
+                                     <ice:dataPaginator for="clusterDocs"
+                                                       id="dataScroll_3"
+                                                       paginator="true" fastStep="3"
+                                                       paginatorMaxPages="4"
+                                                       renderFacetsIfSinglePage="true"
+                                                       styleClass="dvnPaginatorRight">
+                                      <f:facet name="first">
+                                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-first.gif" title="First Page"/>
+                                      </f:facet>
+                                      <f:facet name="previous">
+                                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-previous.gif" title="Previous"/>
+                                      </f:facet>
+                                      <f:facet name="next">
+                                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-next.gif" title="Next"/>
+                                      </f:facet>
+                                      <f:facet name="last">
+                                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-last.gif" title="Last Page"/>
+                                      </f:facet>
+                                    </ice:dataPaginator>
+                                    <ice:dataTable rows="5" id="clusterDocs" styleClass="clusterDocList" cellpadding="0" cellspacing="0" value="#{row.clusterInfo.docInfoList}" var="docInfo" width="100%">
+                                         <ice:column>
+                                             <ice:commandLink value="#{docInfo.index+1}" actionListener="#{row.viewDocumentInList}"/>
+                                        </ice:column>
+                                        <ice:column>
+                                             <ice:commandLink value="#{docInfo.docId}" actionListener="#{row.viewDocumentInList}"/>
+                                        </ice:column>
+                                    </ice:dataTable>
+                                </ice:panelTab>
+                            </ice:panelTabSet>
+                        </div>
 
-                                                <ice:outputText value="#{row.viewDocumentText}"/><br/>
-                                                <ice:commandButton id="modalPnlCloseButton" type="submit"
-                                                                   value="Close Popup"
-                                                                   actionListener="#{row.closePopup}"/>
-                                            </ice:panelGroup>
-                                        </f:facet>
-                                    </ice:panelPopup>
+                        <ice:panelPopup id="modalPnlPop"
+                                        draggable="true" modal="false"
+                                        visible="#{row.showPopup}"
+                                        autoCentre="true"
+                                        styleClass="clusterViewDocPopup">
+                            <f:facet name="header">
+                                <ice:panelGroup styleClass="popupHeaderWrapper">
+                                    <ice:outputText value="Document: #{row.viewDocumentName}" styleClass="popupHeaderText"/>
+                                    <ice:commandLink value="Close [X]" actionListener="#{row.closePopup}" styleClass="popupHeaderClose"></ice:commandLink>
+                                </ice:panelGroup>
+                            </f:facet>
+                            <f:facet name="body">
+                                <ice:panelGroup styleClass="popupBody">
+                                    <div class="clusterDocViewNav">
+                                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-first.gif" title="First Document" rendered="#{row.viewDocumentIndex==0}"/>
+                                        <ice:commandLink title="First Document" rendered="#{row.viewDocumentIndex!=0}" actionListener="#{row.viewFirst}"><img title="First Document" src="/text/resources/icefaces/dvn_rime/css-images/arrow-first.gif" class="iceGphImg" alt=""/></ice:commandLink>
+
+                                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-previous.gif" title="Previous Document" rendered="#{row.viewDocumentIndex==0}"/>
+                                        <ice:commandLink title="Previous Document" rendered="#{row.viewDocumentIndex!=0}" actionListener="#{row.viewPrevious}"><img title="Previous Document" src="/text/resources/icefaces/dvn_rime/css-images/arrow-previous.gif" class="iceGphImg" alt=""/></ice:commandLink>
+
+                                        <ice:outputText value="#{row.viewDocumentIndex+1} of #{row.clusterInfo.clusterCount}" styleClass="clusterDocViewNumber"/>
+
+                                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-next.gif" title="Next Document" rendered="#{row.viewDocumentIndex==row.clusterInfo.clusterCount-1}"/>
+                                        <ice:commandLink title="Next Document" rendered="#{row.viewDocumentIndex!=row.clusterInfo.clusterCount-1}" actionListener="#{row.viewNext}"><img title="Next Document" src="/text/resources/icefaces/dvn_rime/css-images/arrow-next.gif" class="iceGphImg" alt=""/></ice:commandLink>
+
+                                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-last.gif" title="Last Document" rendered="#{row.viewDocumentIndex==row.clusterInfo.clusterCount-1}"/>
+                                        <ice:commandLink title="Last Document" rendered="#{row.viewDocumentIndex!=row.clusterInfo.clusterCount-1}" actionListener="#{row.viewLast}"><img title="Last Document" src="/text/resources/icefaces/dvn_rime/css-images/arrow-last.gif" class="iceGphImg" alt=""/></ice:commandLink>
+
+                                        <ice:commandLink value="Random" title="View Random Document" styleClass="clusterDocViewRandom" actionListener="#{row.viewRandom}"></ice:commandLink>
+                                    </div>
+                                    <div>
+                                        <ice:outputText value="#{row.viewDocumentText}" nospan="true"/>
+                                    </div>
+                                </ice:panelGroup>
+                            </f:facet>
+                        </ice:panelPopup>
                     </ice:column>
                     <f:facet name="footer">
-                        
                         <script type="text/javascript">
                             jQuery(document).ready(function(){
                                   jQuery("a.clusterInfoValueEdit").click(function() {
@@ -708,7 +738,6 @@ td.clusterCountCol {width:14%;}
                                     return false;
                                   });
                             });
-
                             jQuery(document).ready(initClusterTabs);
                             function initClusterTabs(){
                                 // choose text for the show/hide link - can contain HTML (e.g. an image)
@@ -744,7 +773,6 @@ td.clusterCountCol {width:14%;}
                                 });
                             }
                         </script>
-                        
                     </f:facet>
                 </ice:dataTable>
 

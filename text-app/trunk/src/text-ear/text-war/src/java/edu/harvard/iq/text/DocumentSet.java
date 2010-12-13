@@ -117,7 +117,7 @@ public class DocumentSet {
             String strLine = "";
             StringTokenizer st = null;
             int lineNumber = 0, tokenNumber = 0;
-            Set uniqueClusters = new HashSet();
+          
 
             String tokenSeparator;
             if (setId.equals("3") ) {
@@ -133,7 +133,7 @@ public class DocumentSet {
 
             //read tab separated file line by line
             while ((strLine = br.readLine()) != null) {
-                
+                 Set uniqueClusters = new HashSet();
 
                 //break tab separated line using "\t"
                 st = new StringTokenizer(strLine, tokenSeparator);

@@ -62,25 +62,21 @@ public class PropertyUtil implements java.io.Serializable  {
      * This method returns the hostname of the timer server, which is needed for the LOCKSS manifest page,
      * to display the OAI URL for lockss harvesting. (We may find other uses for this in the future.)
      *
-     * If this instance is the timer server, returns the hostUrl.  Else, it will look for
+     * If this instance is the timer server, returns the canonical host name.  Else, it will look for
      * a JVM option 'dvn.timerServerHost'. If this is not the timer server, and the JVM option is not set,
-     * TODO PropertyUtil.getHostUrl() returns cluster name in our cluster environment - this does not 
-     * behave correctly for lockss harvesting
-     * If dvn.timerServerHost JVM option is set this should be used; PropertyUtil.getHostUrl() only works
-     * correctly in single instance environment; JVM option should always be set in cluster environment
-     * end TODO 
      * @return hostname of the timer server
      * @throws RuntimeException - Exception is thrown if this is not the timer server, and the JVM option 'dvn.timerServer' is not set.
      */
     public static String getTimerServerHost() {
-        String timerServerHost = System.getProperty("dvn.timerServerHost");
         if (isTimerServer()) {
-            if (timerServerHost == null) {
-                return PropertyUtil.getHostUrl();
-            } else {
-                return timerServerHost;
+            try {
+                return InetAddress.getLocalHost().getCanonicalHostName();
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+                return null;
             }
-        } else { 
+        } else {
+            String timerServerHost = System.getProperty("dvn.timerServerHost");
             if (timerServerHost == null) {
                 throw new RuntimeException("Missing JVM option: dvn.timerServerHost.  If JVM option dvn.timerServer is set to 'false', then timerServerHost must be defined.");
             }

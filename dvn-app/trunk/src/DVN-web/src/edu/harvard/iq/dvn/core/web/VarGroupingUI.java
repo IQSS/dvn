@@ -68,8 +68,6 @@ public class VarGroupingUI {
         this.varGroupTypesSelect = selectGroupTypes;
         this.varGroupTypesUI = varGroupTypeUIList;
     }
-
-
     
     public Collection<VarGroupUI> getVarGroupUI() {
         return varGroupUI;

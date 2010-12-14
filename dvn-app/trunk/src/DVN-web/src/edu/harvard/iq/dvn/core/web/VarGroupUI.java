@@ -5,7 +5,6 @@
 
 package edu.harvard.iq.dvn.core.web;
 
-import edu.harvard.iq.dvn.core.study.DataVariable;
 import edu.harvard.iq.dvn.core.visualization.VarGroup;
 import java.util.List;
 
@@ -16,24 +15,11 @@ import java.util.List;
  */
 public class VarGroupUI {
     private VarGroup varGroup;
-    private List <DataVariable> dvMappings;
-
     private List <VarGroupTypeUI> varGroupTypesSelected;
     private List <Long> varGroupTypesSelectItems;
     private List <Long> dataVariablesSelected;
-    private boolean showTypeList = false;
-
     private String groupTypesSelectedString;
     private Long numberOfVariablesSelected = new Long(0);
-
-
-    public List<DataVariable> getDvMappings() {
-        return dvMappings;
-    }
-
-    public void setDvMappings(List<DataVariable> dvMappings) {
-        this.dvMappings = dvMappings;
-    }
 
     public VarGroup getVarGroup() {
         return varGroup;
@@ -46,8 +32,6 @@ public class VarGroupUI {
     public List<VarGroupTypeUI> getVarGroupTypesSelected() {
         return varGroupTypesSelected;
     }
-
-
 
     public void setVarGroupTypesSelected(List<VarGroupTypeUI> varGroupTypesSelected) {
         this.varGroupTypesSelected = varGroupTypesSelected;
@@ -86,11 +70,5 @@ public class VarGroupUI {
         this.groupTypesSelectedString = groupTypesSelectedString;
     }
 
-    public boolean isShowTypeList() {
-        return showTypeList;
-    }
 
-    public void setShowTypeList(boolean showTypeList) {
-        this.showTypeList = showTypeList;
-    }
 }

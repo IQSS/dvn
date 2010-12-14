@@ -15,6 +15,8 @@ import edu.harvard.iq.dvn.core.visualization.VarGroupType;
 public class VarGroupTypeUI {
     private VarGroupType varGroupType;
     private boolean enabled;
+    private boolean editMode;
+
 
     public boolean isEnabled() {
         return enabled;
@@ -30,6 +32,14 @@ public class VarGroupTypeUI {
 
     public void setVarGroupType(VarGroupType varGroupType) {
         this.varGroupType = varGroupType;
+    }
+
+    public boolean isEditMode() {
+        return editMode;
+    }
+
+    public void setEditMode(boolean editMode) {
+        this.editMode = editMode;
     }
 
 

@@ -7,7 +7,7 @@
      class="dvnsetupdataexloprationformblock">
 
     <div class="dvnFormPadding dvnFormMargin" style="float:right;">
-        <ice:commandButton type="submit" value="Save" action ="#{SetUpDataExplorationPage.saveFragment}" visible="#{SetUpDataExplorationPage.editMeasure}"/>
+        <ice:commandButton type="submit" value="Update" action ="#{SetUpDataExplorationPage.saveFragment}" visible="#{SetUpDataExplorationPage.editMeasure}"/>
         <ice:commandButton type="submit" value="Cancel" action ="#{SetUpDataExplorationPage.cancelFragment}" visible="#{SetUpDataExplorationPage.editMeasure}"/>
     </div>
     <div jsfc="ice:panelGroup" style="margin-bottom:1em;" >
@@ -36,10 +36,21 @@
     <div jsfc="ice:panelGroup" rendered="#{SetUpDataExplorationPage.editMeasure}">
          <ice:outputLabel value="Measure Types" rendered="#{SetUpDataExplorationPage.editMeasure}"
               visible="#{SetUpDataExplorationPage.editMeasure}"/>
-         <ice:selectManyListbox size="2" visible="#{SetUpDataExplorationPage.editFragmentVarGroup.showTypeList}"
+         <ice:selectManyListbox size="2"
                                 value="#{SetUpDataExplorationPage.editFragmentVarGroup.varGroupTypesSelectItems}">
              <f:selectItems value="#{SetUpDataExplorationPage.selectMeasureGroupTypes}"/>
          </ice:selectManyListbox>
+         <br></br>
+         <ice:outputLabel value="Name" visible="#{SetUpDataExplorationPage.addMeasureType}"/>
+
+         <ice:inputText id="input_addMeasureType"
+                        rendered="#{SetUpDataExplorationPage.addMeasureType}"
+                        size="25"
+                        maxlength="255"
+                        binding="#{SetUpDataExplorationPage.inputGroupTypeName}"/>
+         <ice:commandButton type="submit" value="Add Measure Type" action ="#{SetUpDataExplorationPage.addMeasureTypeButton}" visible="#{!SetUpDataExplorationPage.addMeasureType}"/>
+          <ice:commandButton type="submit" value="Save Measure Type" action ="#{SetUpDataExplorationPage.saveMeasureTypeButton}" visible="#{SetUpDataExplorationPage.addMeasureType}"/>
+          <ice:commandButton type="submit" value="Cancel" action ="#{SetUpDataExplorationPage.cancelMeasureTypeButton}" visible="#{SetUpDataExplorationPage.addMeasureType}"/>
     </div>
 
 

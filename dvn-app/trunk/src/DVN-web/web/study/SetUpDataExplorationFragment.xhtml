@@ -10,8 +10,17 @@ Common Form for SetUpDataExplorationPage
      class="dvnsetupdataexloprationformblock">
 
     <div class="dvnFormPadding dvnFormMargin" style="float:right;">
+
+        <ice:commandButton type="submit" value="Update" action ="#{SetUpDataExplorationPage.saveXAxis}" visible="#{SetUpDataExplorationPage.editXAxis}"/>
+        <ice:commandButton type="submit" value="Cancel" action ="#{SetUpDataExplorationPage.cancelXAxis}" visible="#{SetUpDataExplorationPage.editXAxis}"/>
+
         <ice:commandButton type="submit" value="Save" action="#{SetUpDataExplorationPage.saveXAxis}"/>
         <ice:commandButton type="submit" value="Cancel" action="#{SetUpDataExplorationPage.cancelXAxis}"/>
+    </div>
+
+    <div jsfc="ice:panelGroup" style="margin-bottom:1em;" >
+        <ice:outputLabel value="Units"
+                         id="xAxisUnitsLabel" visible="#{SetUpDataExplorationPage.editXAxis}" for="filtergroupname"/>
     </div>
     <div jsfc="ice:panelGroup" style="margin-bottom:1em;">
         <ice:outputLabel value="Units" for="filtergroupname"/>
@@ -24,6 +33,7 @@ Common Form for SetUpDataExplorationPage
     <div jsfc="ice:panelGroup">
          <ice:outputText value="Filter Variables"/>
          <ice:inputText
+             rendered="#{SetUpDataExplorationPage.editXAxis}"             
               size="25"
               maxlength="255"
               onkeyup="delayedRequest(form,this,event);"
@@ -45,4 +55,6 @@ Common Form for SetUpDataExplorationPage
             </ice:column>
         </ice:dataTable>
     </div>
+    
+
 </div>

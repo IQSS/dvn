@@ -402,13 +402,6 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
     }
 
     @Override
-    public void saveMeasureGrouping(VarGrouping varGrouping) {
-        em.merge(varGrouping);
-        em.flush();
-    }
-
-
-    @Override
     public List getGroupTypesFromGroupId(Long groupId) {
         String query = "SELECT g.groupTypes FROM  VarGroup g where g.id = " + groupId + "  ORDER BY g.name";
         return (List) em.createQuery(query).getResultList();
@@ -469,9 +462,11 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
 
     }
 
+    @Override
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void addGroupType() {
+        em.flush();
+    }
 
-    
-    // Add business logic below. (Right-click in editor and choose
-    // "Insert Code > Add Business Method")
  
 }

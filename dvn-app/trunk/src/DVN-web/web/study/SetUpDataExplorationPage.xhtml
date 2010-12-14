@@ -94,13 +94,17 @@
                                         <f:facet name="header">
                                             &#160;
                                         </f:facet>
-                                        <ice:commandLink id="editXAxis" action="#{SetUpDataExplorationPage.editXAxisAction}">
+                                        <ice:commandLink id="editXAxis" action="#{SetUpDataExplorationPage.editXAxisAction}" visible="#{!SetUpDataExplorationPage.editXAxis}">
                                              <ice:outputText id="editXAxisText" value="Edit"/>
+                                        </ice:commandLink>
+                                        <ice:commandLink id="removeXAxis" action="#{SetUpDataExplorationPage.removeXAxisAction}" visible="#{SetUpDataExplorationPage.xAxisSet}">
+                                             <ice:outputText id="removeXAxisText" value="Remove"/>
                                         </ice:commandLink>
                                     </h:column>
                             </ice:dataTable>
                         </div>
-                        <div jsfc="ice:panelGroup" style="width:35%; float:left;" rendered="#{SetUpDataExplorationPage.editXAxis or (SetUpDataExplorationPage.xAxisVariable.name == null)}">
+
+                        <div jsfc="ice:panelGroup" style="width:35%; float:left;" visible="#{SetUpDataExplorationPage.editXAxis or (!SetUpDataExplorationPage.xAxisSet) }">
                             <ui:include src="SetUpDataExplorationFragment.xhtml"></ui:include>
                         </div>
                     </div>
@@ -112,44 +116,18 @@
                     <div jsfc="ice:panelGroup" style="overflow:hidden;">
                         <div jsfc="ice:panelGroup" style="width:60%; float:left; margin-right: 2em;">
                            <div jsfc="ice:panelGroup">
-                                <ice:commandLink id="addMeasureGroupType" action="#{SetUpDataExplorationPage.addMeasureGroupType}">
-                                      <ice:outputText id="addMeasureGroupTypeText" value="+Add Measure Type"/>
-                                 </ice:commandLink>
-                            </div>
-                            <div jsfc="ice:panelGroup" rendered="#{SetUpDataExplorationPage.measureGroupTypes == null}">
-                                <ice:dataTable width="100%" cellspacing="0" cellpadding="0" var="groupType" value="#{SetUpDataExplorationPage.measureGroupTypes}"
-                                               binding="#{SetUpDataExplorationPage.dataTableVarGroupType}">
-                                    <h:column>
-                                        <f:facet name="header">
-                                            <ice:outputText value="Name"/>
-                                        </f:facet>
-                                         <ice:inputText id="input_measureUnits"
-                                               value="#{groupType.name}"
-                                               size="25"
-                                               maxlength="255"
-                                               binding="#{SetUpDataExplorationPage.inputGroupTypeName}"/>
-                                    </h:column>
-                                     <h:column>
-                                        <f:facet name="header">
-                                            <ice:outputText value="Actions"/>
-                                        </f:facet>
-                                        <ice:commandLink id="deleteMeasureGroupType" action="#{SetUpDataExplorationPage.deleteMeasureGroupType}">
-                                             <ice:outputText id="deleteMeasureGroupTypeText" value="Delete"/>
-                                        </ice:commandLink>
-                                    </h:column>
-                                </ice:dataTable>
-                            </div>
-                            <div jsfc="ice:panelGroup">
+
+                            <div jsfc="ice:panelGroup" >
                                 <ice:commandLink id="addMeasureGroup" action="#{SetUpDataExplorationPage.addMeasureGroup}">
                                       <ice:outputText id="addMeasureGroupText" value="+Add Measure"/>
                                  </ice:commandLink>
                             </div>
-                            <div jsfc="ice:panelGroup" rendered="#{SetUpDataExplorationPage.measureGroups == null}">
+                            <div jsfc="ice:panelGroup" >
                                 <ice:dataTable width="100%" cellspacing="0" cellpadding="0" var="group" value="#{SetUpDataExplorationPage.measureGroups}"
                                                binding="#{SetUpDataExplorationPage.dataTableVarGroup}">
                                     <h:column>
                                         <f:facet name="header">
-                                            <ice:outputText value="Name"/>
+                                            <ice:outputLabel value="Name"/>
                                         </f:facet>
                                         <ice:outputText value="#{group.varGroup.name}"/>
                                     </h:column>
@@ -163,9 +141,6 @@
                                         <f:facet name="header">
                                             <ice:outputText value="Variables"/>
                                         </f:facet>
-                                        <ice:selectManyListbox size="2" visible="false" value="#{group.dataVariablesSelected}">
-                                            <f:selectItems value="#{SetUpDataExplorationPage.dataVariableSelectItems}"/>
-                                        </ice:selectManyListbox>
                                         <ice:outputText value="Variables Selected: #{group.numberOfVariablesSelected}"/>
                                     </h:column>
                                     <h:column>
@@ -187,6 +162,47 @@
                                     </h:column>
                                 </ice:dataTable>
                             </div>
+                                 <ice:commandLink id="addMeasureGroupType" action="#{SetUpDataExplorationPage.addMeasureGroupType}">
+                                      <ice:outputText id="addMeasureGroupTypeText" value="+Add Measure Type"/>
+                                 </ice:commandLink>
+                            </div>
+                            <div jsfc="ice:panelGroup">
+                                <ice:dataTable width="100%" cellspacing="0" cellpadding="0" var="groupType" value="#{SetUpDataExplorationPage.measureGroupTypes}"
+                                               binding="#{SetUpDataExplorationPage.dataTableVarGroupType}">
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <ice:outputLabel value="Name"/>
+                                        </f:facet>
+                                        <ice:outputText value="#{groupType.varGroupType.name}" rendered="#{!groupType.editMode}"/>
+                                            <ice:inputText id="input_editMeasureType"
+                                            visible="#{groupType.editMode}"
+                                            value="#{groupType.varGroupType.name}"
+                                            size="25"
+                                            maxlength="255"
+                                            binding="#{SetUpDataExplorationPage.editGroupTypeName}"/>
+                                    </h:column>
+                                     <h:column>
+                                        <f:facet name="header">
+                                            <ice:outputText value="Actions"/>
+                                        </f:facet>
+                                        <ice:commandLink id="editMeasureGroupType"
+                                                         visible="#{!groupType.editMode}"
+                                                         actionListener="#{SetUpDataExplorationPage.editMeasureType}">
+                                             <ice:outputText id="editMeasureGroupTypeText" value="Edit"/>
+                                        </ice:commandLink>
+                                        <ice:commandLink id="saveMeasureGroupType"
+                                                         visible="#{groupType.editMode}"
+                                                         actionListener="#{SetUpDataExplorationPage.saveMeasureType}">
+                                             <ice:outputText id="saveMeasureGroupTypeText" value="Save"/>
+                                        </ice:commandLink>
+                                        <ice:commandLink id="deleteMeasureGroupType"
+                                                         visible="#{!groupType.editMode}"
+                                                         action="#{SetUpDataExplorationPage.deleteMeasureGroupType}">
+                                             <ice:outputText id="deleteMeasureGroupTypeText" value="Delete"/>
+                                        </ice:commandLink>
+                                    </h:column>
+                                </ice:dataTable>
+                            </div>
                         </div>
                         <div jsfc="ice:panelGroup" style="width:30%; float:left;" visible="#{SetUpDataExplorationPage.editMeasure}" rendered="#{SetUpDataExplorationPage.editMeasure}">
                             <ui:include src="SetUpDataExplorationPageMeasureEdit.xhtml"></ui:include>
@@ -202,9 +218,18 @@
                                  <ice:outputText id="addFilterGroupText" value="+ Add Group"/>
                             </ice:commandLink>
                             <div jsfc="ice:panelGroup">
-                                <div jsfc="ice:panelSeries" id="filterPanelGroupings"
-                                     width="100%" cellspacing="0" cellpadding="0" var="grouping" value="#{SetUpDataExplorationPage.filterGroupings}">
+                                <ice:dataTable id="filterPanelGroupings"
+                                     width="100%" cellspacing="0" cellpadding="0" var="grouping" value="#{SetUpDataExplorationPage.filterGroupings}"
+                                     binding="#{SetUpDataExplorationPage.dataTableFilterGrouping}">
                                     <h:column>
+
+                                        <ice:outputLabel value="Group"/>
+
+                                        <ice:outputText value="#{grouping.varGrouping.name}"/>
+
+                                        <ice:commandLink id="editFilterGrouping" actionListener="#{SetUpDataExplorationPage.editFilterGroupingAction}">
+                                                      <ice:outputText id="editFilterGroupingText" value="Edit Filter Group"/>
+
                                         <ice:outputText value="Group #{grouping.varGrouping.name}"/>
                                         <ice:commandLink id="editGroup" actionListener="#{SetUpDataExplorationPage.editFilterGroup}">
                                               <ice:outputText id="editFilterGroupText" value="Edit Filter Group"/>
@@ -215,6 +240,9 @@
                                                 partialSubmit="true"
                                                 action="#{SetUpDataExplorationPage.deleteFilterGrouping}">
                                               <ice:outputText id="deleteFilterGroupText" value="Delete Filter Group"/>
+
+                                       </ice:commandLink>
+
                                         </ice:commandLink>
                                         <div style="float:right;">
                                             <ice:commandLink id="addFilterGroupType" binding="#{SetUpDataExplorationPage.addFilterGroupTypeLink}"
@@ -224,6 +252,7 @@
                                             </ice:commandLink>
                                         </div>
                                        
+
                                        <ice:commandLink id="addFilterGroup" binding="#{SetUpDataExplorationPage.addFilterGroupLink}"
                                                         value="#{grouping.varGrouping.id}"
                                                         action="#{SetUpDataExplorationPage.addFilterGroup}">
@@ -242,17 +271,12 @@
                                                     <ice:outputText value="Type"/>
                                                 </f:facet>
                                                 <ice:outputText value="Types Selected: #{filter.groupTypesSelectedString}"/>
-                                                <ice:selectManyListbox size="2" visible="false" value="#{filter.varGroupTypesSelectItems}">
-                                                    <f:selectItems value="#{grouping.varGroupTypesSelect}"/>
-                                                </ice:selectManyListbox>
+
                                                 </h:column>
                                             <h:column>
                                                 <f:facet name="header">
                                                     <ice:outputText value="Variables"/>
                                                 </f:facet>
-                                                <ice:selectManyListbox visible="false" size="2" value="#{filter.dataVariablesSelected}">
-                                                    <f:selectItems value="#{SetUpDataExplorationPage.dataVariableSelectItems}"/>
-                                                </ice:selectManyListbox>
                                                 <ice:outputText value="Variables Selected: #{filter.numberOfVariablesSelected}"/>
                                             </h:column>
                                             <h:column>
@@ -267,11 +291,54 @@
                                                 </ice:commandLink>
                                             </h:column>
                                         </ice:dataTable>
+                                        <ice:commandLink id="addFilterGroupType" binding="#{SetUpDataExplorationPage.addFilterGroupTypeLink}"
+                                                value="#{grouping.varGrouping.id}"
+                                                action="#{SetUpDataExplorationPage.addFilterGroupType}">
+                                              <ice:outputText id="addFilterGroupText" value="+ Add Filter Type"/>
+                                        </ice:commandLink>
+                                       <ice:dataTable width="100%" cellspacing="0" cellpadding="0" var="type" value="#{grouping.varGroupTypesUI}"
+                                                      binding="#{SetUpDataExplorationPage.dataTableFilterGroupType}">
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <ice:outputText value="Name"/>
+                                        </f:facet>
+                                        <ice:outputText value="#{type.varGroupType.name}" rendered="#{!type.editMode}"/>
+                                            <ice:inputText id="input_editMeasureType"
+                                            visible="#{type.editMode}"
+                                            value="#{type.varGroupType.name}"
+                                            size="25"
+                                            maxlength="255"
+                                            binding="#{SetUpDataExplorationPage.editFilterGroupTypeName}"/>
                                     </h:column>
-                                </div>
+                                     <h:column>
+                                        <f:facet name="header">
+                                            <ice:outputText value="Actions"/>
+                                        </f:facet>
+                                        <ice:commandLink id="editMeasureGroupType"
+                                                         visible="#{!type.editMode}"
+                                                         actionListener="#{SetUpDataExplorationPage.editFilterType}">
+                                             <ice:outputText id="editMeasureGroupTypeText" value="Edit"/>
+                                        </ice:commandLink>
+                                        <ice:commandLink id="saveMeasureGroupType"
+                                                         visible="#{type.editMode}"
+                                                         actionListener="#{SetUpDataExplorationPage.saveFilterType}">
+                                             <ice:outputText id="saveMeasureGroupTypeText" value="Save"/>
+                                        </ice:commandLink>
+                                        <ice:commandLink id="deleteMeasureGroupType"
+                                                         visible="#{!type.editMode}"
+                                                         action="#{SetUpDataExplorationPage.deleteFilterGroupType}">
+                                             <ice:outputText id="deleteMeasureGroupTypeText" value="Delete"/>
+                                        </ice:commandLink>
+                                    </h:column>
+                                       </ice:dataTable>
+                                    </h:column>
+                                </ice:dataTable>
                             </div>
                         </div>
-                        <div jsfc="ice:panelGroup" style="width:35%; float:left;" visible="#{SetUpDataExplorationPage.editFilter}" rendered="#{SetUpDataExplorationPage.editFilter}">
+                        <div jsfc="ice:panelGroup" style="width:35%; float:left;" 
+                             visible="#{SetUpDataExplorationPage.editFilterGroup or SetUpDataExplorationPage.editFilterGrouping}"
+                             >
+
                             <ui:include src="SetUpDataExplorationPageFilterEdit.xhtml"></ui:include>
                         </div>
                     </div>

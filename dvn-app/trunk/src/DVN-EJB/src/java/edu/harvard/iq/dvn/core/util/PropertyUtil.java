@@ -64,15 +64,24 @@ public class PropertyUtil implements java.io.Serializable  {
      *
      * If this instance is the timer server, returns the hostUrl.  Else, it will look for
      * a JVM option 'dvn.timerServerHost'. If this is not the timer server, and the JVM option is not set,
+     * TODO PropertyUtil.getHostUrl() returns cluster name in our cluster environment - this does not 
+     * behave correctly for lockss harvesting
+     * If dvn.timerServerHost JVM option is set this should be used; PropertyUtil.getHostUrl() only works
+     * correctly in single instance environment; JVM option should always be set in cluster environment
+     * end TODO 
      * @return hostname of the timer server
      * @throws RuntimeException - Exception is thrown if this is not the timer server, and the JVM option 'dvn.timerServer' is not set.
      */
     public static String getTimerServerHost() {
+        String timerServerHost = System.getProperty("dvn.timerServerHost");
         if (isTimerServer()) {
-            return PropertyUtil.getHostUrl();
-        } else {
-            String timerServerHost = System.getProperty("dvn.timerServerHost");
-            if (timerServerHost==null) {
+            if (timerServerHost == null) {
+                return PropertyUtil.getHostUrl();
+            } else {
+                return timerServerHost;
+            }
+        } else { 
+            if (timerServerHost == null) {
                 throw new RuntimeException("Missing JVM option: dvn.timerServerHost.  If JVM option dvn.timerServer is set to 'false', then timerServerHost must be defined.");
             }
             return timerServerHost;

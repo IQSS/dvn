@@ -526,7 +526,7 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
         return returnString;
     }
 
-    private NetworkDataAnalysisEvent getLastEvent() {
+    public NetworkDataAnalysisEvent getLastEvent() {
         return events.get( events.size() - 1);
     }
 

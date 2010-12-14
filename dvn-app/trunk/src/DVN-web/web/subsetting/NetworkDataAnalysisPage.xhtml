@@ -20,14 +20,22 @@
           attribute = document.getElementById("form1:attribute").value;
           operator = document.getElementById("form1:operator").value;
           value = document.getElementById("form1:value").value;
+          isLikeOperator = false;
           if (attribute == "" || operator == "" || value == "") {
               alert("You must select an attribute, an operator and a value to add to the query workspace.");
               return;
           }
 
+          if (operator == "LIKE") {
+            isLikeOperator = true;
+            value = "%" + value + "%" ;
+          } else if (operator == "LIKE ") {
+            isLikeOperator = true;
+            value = value + "%" ;
+          }
           // handle case insensitve checkbox
           isCaseInsensitive = document.getElementById("form1:caseInsensitive").checked;
-          if (isCaseInsensitive) {
+          if (isCaseInsensitive && !isLikeOperator) {
             attribute = "upper(" + attribute + ")";
             value = value.toUpperCase();
           }
@@ -43,6 +51,36 @@
           }
           queryWorkspace.value += attribute + " " + operator + " \"" + value + "\"";
       }
+
+      function confirmAction(action) {
+          numberOfEdges = document.getElementById("lastEventEdges").value;
+
+          if (action == "add_neighborhood") {
+              estimatedSeconds = numberOfEdges / 50;
+          } else if (action == "add_pagerank") {
+              estimatedSeconds = (numberOfEdges / 250) - 10;
+          } else {
+              return true;
+          }
+
+          if (estimatedSeconds >= 30) {
+              roundedMinutes = Math.round(estimatedSeconds/60);
+              return confirm ( "The operation you have selected is estimated to take about " + roundedMinutes + "minute" + (roundedMinutes != 1 ? "s" : "") + ". Continue?" );
+          }
+
+          return true;
+      }
+
+      function confirmNetworkDownload() {
+          numberOfVertices = document.getElementById("lastEventVertices").value;
+          if (numberOfVertices > 1000) {
+              if(confirm ( "You have selected to download a large Network Data file. This could take several minutes. Continue?" )) {
+                  document.getElementById("form1:downloadNetworkDataFile").click();
+              }
+          }
+
+      }
+
       // ]]>
                 </script>
                 <f:loadBundle basename="BundleAnalysis" var="bundleAnalysis"/>
@@ -144,6 +182,9 @@
                                                     <fieldset>
                                                         <label for="operator">Operators</label><br/>
                                                         <ice:selectOneMenu disabled="#{!NetworkDataAnalysisPage.manualQueryAction}" id="operator" name="operators" value="">
+
+                                                            <f:selectItem id="item3" itemLabel="Contains" itemValue="LIKE" />
+                                                            <f:selectItem id="item3" itemLabel="Starts with" itemValue="LIKE " />
                                                             <f:selectItem id="item3" itemLabel="Equal to, =" itemValue="=" />
                                                             <f:selectItem id="item4" itemLabel="Not equal to, !=" itemValue="!=" />
                                                             <f:selectItem id="item1" itemLabel="Less than, &lt;" itemValue="&lt;" />
@@ -195,7 +236,7 @@
                                                 <ice:inputText styleClass="automaticQuery" disabled="#{!NetworkDataAnalysisPage.automaticQueryAction}" id="nth" value="#{NetworkDataAnalysisPage.automaticQueryNthValue}"/>
                                             </fieldset>
                                             <fieldset>
-                                                <ice:commandButton disabled="#{!NetworkDataAnalysisPage.automaticQueryAction}" type="submit" value="Run" action="#{NetworkDataAnalysisPage.automaticQuery_action}"/>
+                                                <ice:commandButton onclick="return confirmAction(document.getElementById('form1:function').value);"  disabled="#{!NetworkDataAnalysisPage.automaticQueryAction}" type="submit" value="Run" action="#{NetworkDataAnalysisPage.automaticQuery_action}"/>
                                             </fieldset>
                                         </ice:panelGrid>
                                     </ice:panelGrid>
@@ -235,7 +276,7 @@
                                                 </div>
                                             </fieldset>
                                             <fieldset>
-                                                <ice:commandButton disabled="#{!NetworkDataAnalysisPage.networkMeasureAction}" type="submit" value="Run" action="#{NetworkDataAnalysisPage.networkMeasure_action}"/>
+                                                <ice:commandButton onclick="return confirmAction(document.getElementById('form1:attributes').value);" disabled="#{!NetworkDataAnalysisPage.networkMeasureAction}" type="submit" value="Run" action="#{NetworkDataAnalysisPage.networkMeasure_action}"/>
                                             </fieldset>
                                         </ice:panelGrid>
                                     </ice:panelGrid>
@@ -281,10 +322,14 @@
                                         <ice:commandButton  type="submit" value="Undo"  action="#{NetworkDataAnalysisPage.undo_action}" rendered="#{NetworkDataAnalysisPage.canUndo and NetworkDataAnalysisPage.eventTable.rowIndex == NetworkDataAnalysisPage.eventTable.rowCount - 1}" />
                                     </ice:column>
                                 </ice:dataTable>
+                                <input type="hidden" id="lastEventEdges" value="#{NetworkDataAnalysisPage.lastEvent.edges}"/>
+                                <input type="hidden" id="lastEventVertices" value="#{NetworkDataAnalysisPage.lastEvent.vertices}"/>
                                 <ice:panelGrid id="groupPanel12" styleClass="dvnNetDataAnlsSubTblBtmWrp" columns="1" cellpadding="0" cellspacing="0" width="100%">
                                     <ice:column>
                                         <div class="dvnNetDataAnlsSubTblBtm">
-                                            <ice:outputResource label="Download Latest Network file" type="button"
+                                            <input type="button" value="Download Latest Network file" onclick="confirmNetworkDownload();"/>
+                                            <ice:outputResource label="Download Latest Network file" type="button" style="display:none"
+                                                                id="downloadNetworkDataFile"
                                                                 fileName="#{NetworkDataAnalysisPage.subsetFileName}" mimeType="application/zip"
                                                                 resource="#{NetworkDataAnalysisPage.subsetResourceGraphML}" shared="false"/>
                                         </div>

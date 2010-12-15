@@ -299,7 +299,7 @@
                       <ice:outputText styleClass="dvnStudyListGlobalId" value="#{studyUI.study.globalId}"/>
                       <div class="dvnStudyListDownloadCount">
                       <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?globalId=#{studyUI.study.globalId}&amp;tab=files&amp;studyListingIndex=#{StudyListingPage.studyListingIndex}">
-                          <ice:graphicImage url="/resources/images/icon_analyze.gif" title="View study files" rendered="#{studyUI.files and studyUI.subsettable}"/>
+                          <ice:graphicImage url="/resources/images/icon_analyze.gif" title="View and Analyze study files" rendered="#{studyUI.files and studyUI.subsettable}"/>
                           <ice:graphicImage url="/resources/images/icon_files.gif" title="View study files" rendered="#{studyUI.files and !studyUI.subsettable}"/>
                       </ice:outputLink>
                       <ice:outputText styleClass="dvnStudyListIDDownloadsNonSubsettable" value="#{studyUI.downloadCount} download" rendered="#{studyUI.downloadCount == 1 and !studyUI.subsettable}"/>

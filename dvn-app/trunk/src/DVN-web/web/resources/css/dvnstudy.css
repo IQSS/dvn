@@ -168,7 +168,8 @@ tr.popupModVerNotLabel td span{font-weight:bold;}
 .dvnversionstable td.dvnversionstableCol1{width:80px;}
 .dvnversionstable td.dvnversionstableCol1, .dvnversionstable td.dvnversionstableCol2{text-align:center;}
 .dvnversionstable td.dvnversionstableCol2, .dvnversionstable td.dvnversionstableCol3{width:50px;}
-.dvnversionstable td.dvnversionstableCol5, .dvnversionstable td.dvnversionstableCol6{width:180px;}
+.dvnversionstable td.dvnversionstableCol5{width:180px;}
+.dvnversionstable td.dvnversionstableCol6{width:18%;}
 .dvnversionsreleasedate{white-space:nowrap}
 .dvnStudyVersionNote .vdcTruncatorLinkLess{margin-left:8px;}
 /* STUDY VERSION DIFFERENCES */

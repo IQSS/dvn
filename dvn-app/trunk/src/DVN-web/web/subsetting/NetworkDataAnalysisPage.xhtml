@@ -65,7 +65,7 @@
 
           if (estimatedSeconds >= 30) {
               roundedMinutes = Math.round(estimatedSeconds/60);
-              return confirm ( "The operation you have selected is estimated to take about " + roundedMinutes + "minute" + (roundedMinutes != 1 ? "s" : "") + ". Continue?" );
+              return confirm ( "The operation you have selected is estimated to take about " + roundedMinutes + " minute" + (roundedMinutes != 1 ? "s" : "") + ". Continue?" );
           }
 
           return true;

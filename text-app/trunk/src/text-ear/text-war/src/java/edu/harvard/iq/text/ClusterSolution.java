@@ -27,6 +27,9 @@ public class ClusterSolution {
     //Input parameters for this cluster solution
     private double candidateXPoint; //Mapped into Methods Space
     private double candidateYPoint;
+    // Do we need to calculate the discoverable numClusters?
+    private Boolean discoverable = Boolean.FALSE;
+    // The number of clusters (either calculated, or provided in constructor)
     private int numClusters;
 
     // This is user's description of the cluster solution
@@ -35,38 +38,92 @@ public class ClusterSolution {
     // Used to identify saved solutions (right now just corresponds to index, but may
     // be a database id later)
     private Integer id;
-    // Save this data because it can be used to create another solution with the same point,
-    // but different number of clusters.
+
+    // These two variables depend on the point, but not the number of clusters
     double[] weightsArray;
     double[][] simMatrix;
-
-    
 
     // The solution organized as a list of ClusterInfo objects
     ArrayList<ClusterInfo> clusterInfoList = new ArrayList<ClusterInfo>();
 
-    //Constructor - here you are starting from scratch
-    ClusterSolution(DocumentSet documentSet, double candidateXPoint, double candidateYPoint, int numClusters) {
-        this.documentSet = documentSet;
-        this.candidateXPoint = candidateXPoint;
-        this.candidateYPoint = candidateYPoint;
-        this.numClusters = numClusters;
-        calculateSolution();
+    
+
+    public Boolean getDiscoverable() {
+        return discoverable;
+    }
+    public void setDiscoverable(Boolean discoverable) {
+        this.discoverable = discoverable;
     }
 
     /**
-     * Here you are using an existing solution, but recalculating
-     * based on the existing solution point, and a different number of clusters
+     * Constructor for calculating a solution from scratch, with a given number
+     * of clusters
+     * @param documentSet - pre-processed document data
+     * @param candidateXPoint - user click x
+     * @param candidateYPoint - user click y
+     * @param requestedClusters - the desired number of clusters
      */
-    ClusterSolution(ClusterSolution existingSolution, int numClusters) {
-        this.documentSet = existingSolution.documentSet;
-        this.candidateXPoint = existingSolution.candidateXPoint;
-        this.weightsArray = existingSolution.weightsArray;
-        this.simMatrix = existingSolution.simMatrix;
-        this.numClusters = numClusters;
+    ClusterSolution(DocumentSet documentSet, double candidateXPoint, double candidateYPoint, int requestedClusters) {
+       init(documentSet, candidateXPoint,candidateYPoint,requestedClusters,null,null);
+    }
+    /**
+     * Constructor of calculating solution from scratch, with a discoverable clusterNumber
+     * @param documentSet
+     * @param candidateXPoint
+     * @param candidateYPoint
+     */
+    ClusterSolution(DocumentSet documentSet, double candidateXPoint, double candidateYPoint) {
+      init(documentSet,candidateXPoint,candidateYPoint,null,null,null);
+    }
+
+   /**
+     * Constructor that uses an existing solution, and recalculates
+     * based on the existing solution point, and a different number of clusters
+     *
+     * @param existingSolution - the previously calculated solution
+     * @param requestedClusters - the desired number of clusters (if = 0, then calculate the discoverable cluster Number)
+     */
+    ClusterSolution(ClusterSolution existingSolution, int requestedClusters) {
+        init(existingSolution.documentSet, existingSolution.candidateXPoint, existingSolution.candidateYPoint, requestedClusters,existingSolution.weightsArray,existingSolution.simMatrix);
+    }
+
+/**
+     * Constructor that uses an existing solution, and recalculates
+     * based on the existing solution point, and a discoverable number of clusters
+     *
+     * @param existingSolution - the previously calculated solution
+     */
+    ClusterSolution(ClusterSolution existingSolution) {
+        init(existingSolution.documentSet, existingSolution.candidateXPoint, existingSolution.candidateYPoint, null,existingSolution.weightsArray,existingSolution.simMatrix);
+    }
+    private void init(DocumentSet documentSet, double candidateXPoint, double candidateYPoint,  Integer requestedClusters,double[]weightArray, double simMatrix[][]) {
+        this.documentSet = documentSet;
+    
+        this.candidateXPoint = candidateXPoint;
+        this.candidateYPoint = candidateYPoint;
+
+        if (weightsArray==null) {
+            this.weightsArray = makeWeightsArray();
+        } else {
+            this.weightsArray = weightArray;
+        }
+        // If necessary, use the weightsArray to calculate the discoverable numClusters
+        if (requestedClusters==null) {
+            discoverable = Boolean.TRUE;
+            numClusters = this.getDiscoverableClusterNum();
+        } else {
+            numClusters = requestedClusters;
+        }
+        if (simMatrix==null) {
+            this.simMatrix = fillSimMatrix(weightsArray);
+        } else {
+            this.simMatrix = simMatrix;
+        }
+        
         doClusterCalculations();
     }
 
+    
     public String getInfoLabel() {
         String str = "";
         if (label!=null && !label.isEmpty()) {
@@ -89,9 +146,11 @@ public class ClusterSolution {
     }
     
     public int getNumClusters() {
-        return clusterInfoList.size();
+        return numClusters;
     }
-    
+     public void setNumClusters(int numClusters) {
+         this.numClusters = numClusters;
+    }
     public Integer getId() {
         return id;
     }
@@ -122,16 +181,7 @@ public class ClusterSolution {
 
     
 
-    private void calculateSolution() {
-        // These two calculations depend only on the candidate point
-        // so when we change numClusters, we don't have to recalculate them
-        weightsArray = makeWeightsArray();
-        simMatrix = fillSimMatrix(weightsArray);
-        
-        // These calculations depend on numClusters and the candidate point
-        doClusterCalculations();
-        
-    }
+   
 
     private void doClusterCalculations() {
         
@@ -140,6 +190,7 @@ public class ClusterSolution {
         createClusterInfoList(clusters);
 
         Collections.sort(clusterInfoList);
+
         System.out.println("finished calculating, x="+this.candidateXPoint+", y="+this.candidateYPoint+" clusterInfo:" + clusterInfoList);
     }
 
@@ -198,11 +249,12 @@ public class ClusterSolution {
    //            weights[i] = 1 / (Math.sqrt(TWO_PI) * .25) * Math.exp(-(Math.pow((distanceArray[i] - 0),2) / (2 * Math.pow(.25,2))));
            
             // New calculation from Brandon, using the Epanechnikov Kernel to normalize the weights array
-            if (distanceArray[i] <= 2) {
-               weights[i] = .75 * (1 - Math.pow(distanceArray[i],2));
+             if ((distanceArray[i]/2) <= 1) {
+               weights[i] = .75 * (1 - Math.pow((distanceArray[i]/2),2));
            } else {
                weights[i] = 0;
            }
+           System.out.println("distanceArray["+i+"]="+distanceArray[i]+"weights[i]"+weights[i]);
 
        
             sumWeights = weights[i] + sumWeights;
@@ -223,7 +275,7 @@ public class ClusterSolution {
         return weights;
     }
 
-    public int getDiscoverableClusterNum()
+    private int getDiscoverableClusterNum()
     {
         double discov = 0;
         for (int i=0; i<weightsArray.length;i++) {

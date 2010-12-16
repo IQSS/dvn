@@ -243,7 +243,8 @@ table.viTblinx th{background-color:#e6e6fa;font-weight:700;margin:0px;padding:2p
 .dvnNetDataAnlsSubTitle{font-weight:bold;margin-top:1em;text-align:left}
 .dvnNetDataAnlsSubTable{margin-top:0}
 .dvnNetDataAnlsSubTblBtmWrp{border:1px solid #D9D9D9;border-top:0}
-.dvnNetDataAnlsSubTblBtm{text-align:right;padding:.5em}
+.dvnNetDataAnlsSubTblBtm{overflow: hidden;}
+.dvnNetDataAnlsSubTblBtm input.dvnNetDataAnlsDnldBttn, .dvnNetDataAnlsSubTblBtm div {float:right; margin-right:1em;}
 .dvnNetDataAnlsHrzLn{text-align:center;width:98%;color:#D9D9D9}
 .dvnNetDataAnlsTbl{margin:0 0 1em 0}
 .dvnNetDataAnlsTbl td{vertical-align:top}

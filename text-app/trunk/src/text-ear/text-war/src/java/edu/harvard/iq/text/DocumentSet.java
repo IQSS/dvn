@@ -129,18 +129,21 @@ public class DocumentSet {
             }
             // skip line 1 because it just contains headers
             strLine = br.readLine();
-         
+
+            // Calculating this just for test purposes
+            int maxClusters = 0;
+            String maxClusterMethod = "";
 
             //read tab separated file line by line
             while ((strLine = br.readLine()) != null) {
                  Set uniqueClusters = new HashSet();
-
+                 String clusterMethod="";
                 //break tab separated line using "\t"
                 st = new StringTokenizer(strLine, tokenSeparator);
 
-                // first token is method name, so skip it
+                // first token is method name
                 if (!setId.equals("3") ) {
-                    st.nextToken();
+                    clusterMethod = st.nextToken();
                 }
 
                 // create object for holding this row's values
@@ -157,9 +160,17 @@ public class DocumentSet {
                 
                 // Get the number of unique clusters in this row, and add it to the MethodPoint object
                 // for this method.
+
                 methodPoints[lineNumber].numberOfClusters = uniqueClusters.size();
+           //     System.out.println("numberOfClusters = "+methodPoints[lineNumber].numberOfClusters+", method="+ clusterMethod);
+                // This is just for testing
+                if (uniqueClusters.size()>maxClusters) {
+                    maxClusters = uniqueClusters.size();
+                    maxClusterMethod = clusterMethod;
+                }
                 lineNumber++;
             }
+        //    System.out.println("maxClusters = "+maxClusters+", method="+ maxClusterMethod);
 
             // Convert our List object to two-dim array
             this.clusterMembership = new int[table.size()][];

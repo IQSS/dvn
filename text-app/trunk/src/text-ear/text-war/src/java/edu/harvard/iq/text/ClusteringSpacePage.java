@@ -33,11 +33,11 @@ public class ClusteringSpacePage {
     private String solutionLabel;  // This is where we store the text entered in the solution label edit field
     private Boolean editSolutionLabel = Boolean.FALSE;
     private ArrayList<ClusterSolution> savedSolutions = new ArrayList<ClusterSolution>();
-    private int clusterNum;
+    private Integer clusterNum;
     private HtmlDataTable clusterTable;
     private ArrayList<ClusterRow> clusterTableModel = new ArrayList<ClusterRow>();
     private int solutionIndex;  // This is passed from the form to indicate that we need to display a saved solution rather than calculate a new solution
-    private Boolean discoverable;
+    private Boolean discoverable = Boolean.FALSE;
 
     public Boolean getDiscoverable() {
         return discoverable;
@@ -71,7 +71,7 @@ public class ClusteringSpacePage {
     public void updateClusterSolutionListener(ActionEvent ae) {
          if (solutionIndex<0) {
             // This is not a saved solution, so calculate it.
-            calculateClusterSolution(true);
+                calculateClusterSolution(true);
         } else {
 
             // the request is for a saved solution, so update the page
@@ -87,44 +87,33 @@ public class ClusteringSpacePage {
      *  This is called when the user wants to get a new solution based on the
      * existing point, but a different cluster number
      */
-    public void changeClusterNumberListener(ActionEvent ae) {
-
-     //   if (discoverable) {
-     //       calculateDiscoverable();
-     //   }
-     //   else {
-            calculateClusterSolution(false);
-     //   }
+    public void changeClusterNumberListener(ActionEvent ae) {     
+            calculateClusterSolution(false);    
     }
 
-    public void getDiscoverableListener(ActionEvent ae) {
-          this.clusterNum = clusterSolution.getDiscoverableClusterNum();
-    }
-
-    private void calculateDiscoverable() {
-            // Get the discoverable cluster number
-            // for this point, and set
-            // it to the clusterNum.
-            this.clusterNum = clusterSolution.getDiscoverableClusterNum();
-
-            // Now calculate a new solution with the existing point
-            // and the discovered clusterNum.
-            calculateClusterSolution(false);
-
-            // Call javascript to add the point to the map with the calculated clusterNum
-            JavascriptContext.addJavascriptCall(FacesContext.getCurrentInstance(), "addPointForClusterNum('"+clusterNum+"');");
-        
-   }
 
     private void calculateClusterSolution(boolean newPoint) {
+       
         if (newPoint) {
             // calculate a new solution from scratch
-            clusterSolution = new ClusterSolution(documentSet, xCoord, yCoord, clusterNum);
+            if (discoverable) {
+                clusterSolution =  new ClusterSolution(documentSet, xCoord, yCoord);
+            } else {
+                clusterSolution = new ClusterSolution(documentSet, xCoord, yCoord, clusterNum);
+            }
         } else {
             // Calculate solution based on the existing solution,
-            // and the new clusterNum
-            clusterSolution = new ClusterSolution(clusterSolution,clusterNum);
+            // and the new clusterNum (or discoverable)
+            if (discoverable ) {
+                clusterSolution = new ClusterSolution(clusterSolution);
+            } else {
+                clusterSolution = new ClusterSolution(clusterSolution,clusterNum);
+            }
         }
+    //    if (discoverable) {
+             // Call javascript to add the point to the map with the calculated clusterNum
+    //        JavascriptContext.addJavascriptCall(FacesContext.getCurrentInstance(), "addPointForClusterNum('"+clusterSolution.getNumClusters()+"','true');");
+    //    }
         // This is a new solution, so clear out the solution label.
         solutionLabel="";
         populateClusterTableModel();
@@ -227,11 +216,11 @@ public class ClusteringSpacePage {
       
     }
 
-    public int getClusterNum() {
+    public Integer getClusterNum() {
         return clusterNum;
     }
 
-    public void setClusterNum(int newClusterNum) {
+    public void setClusterNum(Integer newClusterNum) {
        
             this.clusterNum = newClusterNum;
            

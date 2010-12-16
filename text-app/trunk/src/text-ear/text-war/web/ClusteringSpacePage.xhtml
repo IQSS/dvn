@@ -77,13 +77,17 @@
 
                 // The trigger is executed when you click on the map
                 trigger: function(e) {
-                    var clusterNumVal = document.getElementById('ClusterForm:clusterNum').value
+                    var clusterNumVal=0;
+                    if (document.getElementById('ClusterForm:discoverableCheckbox').checked==false ) {
+                        clusterNumVal = document.getElementById('ClusterForm:clusterNum').value;
+                    }
+                   
 
 
                     // add new point
                     var lonlat = map.getLonLatFromViewPortPx(e.xy);
                     addPointToList( lonlat.lon, lonlat.lat,clusterNumVal,-1);
-
+                   
                     // calculate cluster solution for new point
                     document.getElementById('ClusterForm:userYCoord').value= lonlat.lat;
                     document.getElementById('ClusterForm:userXCoord').value= lonlat.lon;
@@ -194,23 +198,59 @@
            }
 
            function changeClusterRadio(clusterNumVal) {
-                document.getElementById('ClusterForm:discoverableCheckbox').checked = false;
                 document.getElementById('ClusterForm:clusterNum').value = clusterNumVal;
-        
+                document.getElementById('ClusterForm:changeCluster').click();
            }
 
            function calculateButtonAction() {
-               clearRadioButtons();
-               document.getElementById('ClusterForm:discoverableCheckbox').checked = false;
-               addPointForClusterNum(document.getElementById('ClusterForm:clusterNum').value);
+
+               if (document.getElementById('ClusterForm:discoverableCheckbox').checked) {
+                   addPointForClusterNum(0);
+               } else {
+                   addPointForClusterNum(document.getElementById('ClusterForm:clusterNum').value);
+               }
                
            }
 
-           function clearRadioButtons() {
-                document.getElementById('clusterRadio1').checked = false;
+           function updateRadioButtons( clusterNum ) {
+               document.getElementById('clusterRadio1').checked = false;
                document.getElementById('clusterRadio2').checked = false;
                document.getElementById('clusterRadio3').checked = false;
+               if (clusterNum==10) {
+                   document.getElementById('clusterRadio1').checked = true;
+               } else if (clusterNum==15) {
+                   document.getElementById('clusterRadio2').checked = true;
+               } else if (clusterNum==30){
+                   document.getElementById('clusterRadio3').checked = true;
+               }
            }
+
+           // Called when going back and forth in history, and also when
+           // discoverable checkbox is selected/deselected.
+           // This method
+           function updateClusterControls(discoverableChecked, clusterNum) {
+              
+               if (discoverableChecked) {
+                   document.getElementById('ClusterForm:clusterNum').value=' ';
+               } else {
+                   
+                   if (clusterNum==null) {
+                        clusterNum = document.getElementById('ClusterForm:calculatedClusterNum').value;
+                   }
+                   document.getElementById('ClusterForm:clusterNum').value = clusterNum
+               }
+
+               updateRadioButtons(clusterNum);
+
+               document.getElementById('ClusterForm:clusterNum').disabled=discoverableChecked;
+               document.getElementById('clusterRadio1').disabled = discoverableChecked;
+               document.getElementById('clusterRadio2').disabled = discoverableChecked;
+               document.getElementById('clusterRadio3').disabled = discoverableChecked;
+               
+
+           }
+
+
            function addPointForClusterNum(clusterNumVal) {             
                // Add the current point to the list, with the new clusterNum
                var current = points[currentIndex];
@@ -269,7 +309,11 @@
                updateDisplay(currentIndex);
            }
            function updatePointsDisplay(clusterNumVal ) {
-                document.getElementById('ClusterForm:clusterNum').value = clusterNumVal;
+               if (clusterNumVal==0) {
+                   document.getElementById('ClusterForm:clusterNum').value='';
+               } else {
+                    document.getElementById('ClusterForm:clusterNum').value = clusterNumVal;
+                }
                 var pointsLength = points.length;
                 var displayHistory = document.getElementById('ClusterForm:history').checked;
 
@@ -386,6 +430,13 @@
             }
             function updateDisplay(index) {
                 // do a submit to get the clusterSolution for this point in the index
+                if (points[index].attributes.clusterNum > 0) {
+                    document.getElementById('ClusterForm:discoverableCheckbox').checked = false;
+                    updateClusterControls(false,points[index].attributes.clusterNum);
+                } else {
+                    document.getElementById('ClusterForm:discoverableCheckbox').checked = true;
+                    updateClusterControls(true,points[index].attributes.clusterNum);
+                }
                 document.getElementById('ClusterForm:clusterNum').value = points[index].attributes.clusterNum;
                 document.getElementById('ClusterForm:userYCoord').value= points[index].geometry.y;
                 document.getElementById('ClusterForm:userXCoord').value= points[index].geometry.x;
@@ -416,16 +467,33 @@
                 return false;
             }
 
+            // function for delaying input text submit
+            var timeout= 400; //milliseconds to wait for no activity
+            var countEvents= 0;
+            function delayedSubmit(  ){
+                countEvents++;
+                setTimeout(function() {
+                    countEvents--;
+                    if(countEvents==0){
+
+                        var textValue=document.getElementById('ClusterForm:clusterNum').value;
+                        if (textValue!=null && textValue!='') {
+                            updateRadioButtons( textValue )
+                            document.getElementById('ClusterForm:changeCluster').click();
+                        }
+                    }
+                },timeout);
+            }
 
       // ]]>
       </script>
 <ice:form id="ClusterForm">
     <ice:inputHidden id="setId" value="#{ClusteringSpacePage.setId}"/>
     <ice:commandButton visible="false" id="calcButton" value="calculate" actionListener="#{ClusteringSpacePage.updateClusterSolutionListener}"/>
-    <ice:inputText visible="false" id="userXCoord" value="#{ClusteringSpacePage.xCoord}" valueChangeListener="#{ClusteringSpacePage.testValueChange}"/>
+    <ice:inputText visible="false" id="userXCoord" value="#{ClusteringSpacePage.xCoord}" />
     <ice:inputText visible="false" id="userYCoord" value="#{ClusteringSpacePage.yCoord}"/>
     <ice:inputHidden id="solutionId" value="#{ClusteringSpacePage.solutionIndex}"/>
-
+    <ice:inputHidden id="calculatedClusterNum" value="#{ClusteringSpacePage.clusterSolution.numClusters}"/> 
 
 <style type="text/css">
     .fileInfo {margin-bottom:1em;}
@@ -464,9 +532,9 @@
             <tr>
                 <td>
                     <label for="numberclusters">Number of Clusters</label>
-                    <ice:inputText id="clusterNum" size="5" value="#{ClusteringSpacePage.clusterNum}"></ice:inputText>
-                    <ice:commandButton id="changeCluster" value="calculate" onclick="calculateButtonAction();" actionListener="#{ClusteringSpacePage.changeClusterNumberListener}"/>
-                    <ice:commandButton visible ="false" id="discoverableButton" value="getDiscoverable"  actionListener="#{ClusteringSpacePage.getDiscoverableListener}"/>
+                    <ice:inputText onkeyup="delayedSubmit();" id="clusterNum" size="5" value="#{ClusteringSpacePage.clusterNum}"></ice:inputText>
+                    <ice:commandButton visible="false" id="changeCluster" value="calculate" onclick="calculateButtonAction();" actionListener="#{ClusteringSpacePage.changeClusterNumberListener}"/>
+                   
                 </td>
                 <td>
                     <input type="radio" name="clusterRadio" id="clusterRadio1" onclick="changeClusterRadio(10);"/> <label for="clusterRadio1">10 Clusters (Low)</label>
@@ -478,18 +546,27 @@
                     <input type="radio" name="clusterRadio" id="clusterRadio3" onclick="changeClusterRadio(30);"/> <label for="clusterRadio3">30 Clusters (High)</label>
                 </td>
                 <td>
-                    <ice:selectBooleanCheckbox onclick="if (this.checked){ clearRadioButtons(); document.getElementById('ClusterForm:discoverableButton').click();}" id="discoverableCheckbox"  value="#{ClusteringSpacePage.discoverable}"  /> <label for="clusterDiscoverable">Discoverable</label>
+                    <ice:selectBooleanCheckbox onclick="{updateClusterControls(this.checked);document.getElementById('ClusterForm:changeCluster').click(); }" id="discoverableCheckbox"  value="#{ClusteringSpacePage.discoverable}"  /> <label for="clusterDiscoverable">Discoverable</label>
                 </td>
             </tr>
         </table>
     </div>
+    <!--
+    <div>
+       <ice:outputText value="Current Cluster Number:"/>
+                   <ice:outputText id="currentClusterNumber" rendered="#{!ClusteringSpagePage.clusterSolution.discoverable}" value="#{ClusteringSpacePage.clusterNum}"></ice:outputText>
+                   <ice:outputText  rendered="#{ClusteringSpacePage.clusterSolution.discoverable}" value="Discoverable"></ice:outputText>
+    </div>
+    -->
     <div class="clusterExplorer">
         <div class="map">
             <div id="map"/>
             <div class="mapDisplayActions">
                 <div class="clusterNumberBlock">
-                   <ice:outputText value="Current Cluster Number:"/> <ice:outputText id="currentClusterNumber" value="#{ClusteringSpacePage.clusterNum}"></ice:outputText>
-                </div>
+                   <!--   <ice:outputText value="Current Cluster Number:"/>
+                <ice:outputText rendered="#{ClusteringSpacePage.clusterNum>0}" id="currentClusterNumber1" value="#{ClusteringSpacePage.clusterNum}"></ice:outputText>
+                    <ice:outputText rendered="#{ClusteringSpacePage.clusterNum==0}" id="currentClusterNumber2" value="Discoverable"></ice:outputText> -->
+               </div>
                 <!-- <div>
                     <ice:selectBooleanCheckbox id="algorithm" value=""/><label for="algorithm">Display Clustering Algorithm</label>
                 </div> -->
@@ -554,6 +631,8 @@
 </script>
                 <div>
                     <div class="clusterLabelBlock">
+                        <ice:outputText value="(#{ClusteringSpacePage.clusterSolution.x},#{ClusteringSpacePage.clusterSolution.x}) Cluster number: #{ClusteringSpacePage.clusterSolution.numClusters}"/>
+
                         <a href="#" class="clusterLabelValueEdit"><ice:outputText value="Label [+] #{ClusteringSpacePage.solutionLabel}"/></a>
                         <div class="clusterLabelInputBlock">
                             <label for="clusteringlabel"><a href="#" class="clusterInfoValueLabel">Label [-]</a></label> <ice:inputText id="clusteringlabel" value="#{ClusteringSpacePage.solutionLabel}"></ice:inputText>

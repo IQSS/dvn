@@ -602,10 +602,12 @@
                         <ice:outputText rendered="#{saved.discoverable}" value="#{saved.numClusters}*"/>
                         <ice:outputText rendered="#{!saved.discoverable}" value="#{saved.numClusters}"/>
                     </ice:column>
-
+                       
                 </ice:dataTable>
             </div>
+            <ice:outputText value="(*) Discoverable" />
         </div>
+            
         <div class="table">
             <div class="clusterLabelHeader">
 <style type="text/css">
@@ -642,10 +644,10 @@
     });
 </script>
                 <div>
-                    <div class="clusterLabelBlock">
+                    <div class="clusterLabelBlock"> 
                         <ice:outputText value="Coordinates: (#{ClusteringSpacePage.clusterSolution.formatX},#{ClusteringSpacePage.clusterSolution.formatY})"/>
                         <br/>
-                        <ice:outputText value="Cluster number: #{ClusteringSpacePage.clusterSolution.numClusters}"/>
+                        <ice:outputText  value="Cluster number: #{ClusteringSpacePage.clusterSolution.numClusters}"/>
                         <br/>
 
                         <a href="#" class="clusterLabelValueEdit"><ice:outputText value="Label [+] #{ClusteringSpacePage.solutionLabel}"/></a>

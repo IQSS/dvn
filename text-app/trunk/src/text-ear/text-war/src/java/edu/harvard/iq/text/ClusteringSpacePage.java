@@ -2,7 +2,6 @@ package edu.harvard.iq.text;
 
 import com.icesoft.faces.component.ext.HtmlDataTable;
 import com.icesoft.faces.component.paneltabset.PanelTabSet;
-import com.icesoft.faces.context.effects.JavascriptContext;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -11,6 +10,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
@@ -69,6 +69,7 @@ public class ClusteringSpacePage {
     // This is called either when the user clicks a point on the map,
     // or is browsing thru the history of points on the map.
     public void updateClusterSolutionListener(ActionEvent ae) {
+        try {
          if (solutionIndex<0) {
             // This is not a saved solution, so calculate it.
                 calculateClusterSolution(true);
@@ -80,6 +81,11 @@ public class ClusteringSpacePage {
             solutionLabel = clusterSolution.getLabel();
             populateClusterTableModel();
         }
+        } catch (Exception e) {
+            e.printStackTrace();
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Clustering Error - ","Could not calculate solution for ("
+                    +this.xCoord+","+this.yCoord+"), number of clusters = "+this.clusterNum+"."));
+        }
     }
 
    
@@ -88,7 +94,13 @@ public class ClusteringSpacePage {
      * existing point, but a different cluster number
      */
     public void changeClusterNumberListener(ActionEvent ae) {     
-            calculateClusterSolution(false);    
+        try {
+            calculateClusterSolution(false);
+        } catch (Exception e) {
+             e.printStackTrace();
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Clustering Error - ","Could not calculate solution for ("
+                    +this.xCoord+","+this.yCoord+"), number of clusters = "+this.clusterNum+"."));
+        }
     }
 
 

@@ -163,6 +163,31 @@ public class ClusterSolution {
         return this.candidateXPoint;
     }
 
+    //
+    // These methods are just used to display the coordinates in the cluster
+    // info sections
+    public double getFormatX() {
+        DecimalFormat twoDForm = new DecimalFormat("#.#####");
+		return Double.valueOf(twoDForm.format(candidateXPoint));
+
+    }
+    // we need a setter in order for JSF to allow this to be used as
+    // a property
+    public void setFormatX() {
+       
+    }
+
+    public double getFormatY() {
+        DecimalFormat twoDForm = new DecimalFormat("#.#####");
+		return Double.valueOf(twoDForm.format(candidateYPoint));
+
+    }
+    // we need a setter in order for JSF to allow this to be used as
+    // property
+    public void setFormatY() {
+
+    }
+
     public double getY() {
         return this.candidateYPoint;
     }

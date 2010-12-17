@@ -79,12 +79,11 @@
           if (downloadbuttonId == "form1:downloadTabularFiles") {
               showWarning = numberOfVertices >= 2250;
           } else if (downloadbuttonId == "form1:downloadNetworkFile") {
-            showWarning = numberOfVertices >= 1000;
+              showWarning = numberOfVertices >= 1000;
           }
 
-          if ( !showWarning || (confirm ( "You have selected a large download to process. This could take several minutes. Continue?" ) ) {
-                  downloadButton.click();
-              }
+          if ( !showWarning || confirm ( "You have selected a large download to process. This could take several minutes. Continue?" ) ) {
+              downloadButton.click();
           }
 
       }

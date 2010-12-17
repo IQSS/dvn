@@ -7,6 +7,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Random;
 import javax.annotation.PostConstruct;
@@ -65,26 +66,19 @@ public class ClusteringSpacePage {
 
 
   
-
     // This is called either when the user clicks a point on the map,
     // or is browsing thru the history of points on the map.
     public void updateClusterSolutionListener(ActionEvent ae) {
-        try {
-         if (solutionIndex<0) {
+        if (solutionIndex < 0) {
             // This is not a saved solution, so calculate it.
-                calculateClusterSolution(true);
+            calculateClusterSolution(true);
         } else {
 
             // the request is for a saved solution, so update the page
             // with the saved solution data.
-             clusterSolution = savedSolutions.get(solutionIndex);
+            clusterSolution = savedSolutions.get(solutionIndex);
             solutionLabel = clusterSolution.getLabel();
             populateClusterTableModel();
-        }
-        } catch (Exception e) {
-            e.printStackTrace();
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Clustering Error - ","Could not calculate solution for ("
-                    +this.xCoord+","+this.yCoord+"), number of clusters = "+this.clusterNum+"."));
         }
     }
 
@@ -93,41 +87,42 @@ public class ClusteringSpacePage {
      *  This is called when the user wants to get a new solution based on the
      * existing point, but a different cluster number
      */
-    public void changeClusterNumberListener(ActionEvent ae) {     
-        try {
-            calculateClusterSolution(false);
-        } catch (Exception e) {
-             e.printStackTrace();
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Clustering Error - ","Could not calculate solution for ("
-                    +this.xCoord+","+this.yCoord+"), number of clusters = "+this.clusterNum+"."));
-        }
+    public void changeClusterNumberListener(ActionEvent ae) {
+        calculateClusterSolution(false);
     }
 
 
+
     private void calculateClusterSolution(boolean newPoint) {
-       
-        if (newPoint) {
-            // calculate a new solution from scratch
-            if (discoverable) {
-                clusterSolution =  new ClusterSolution(documentSet, xCoord, yCoord);
+        try {
+            if (newPoint) {
+                // calculate a new solution from scratch
+                if (discoverable) {
+                    clusterSolution = new ClusterSolution(documentSet, xCoord, yCoord);
+                } else {
+                    clusterSolution = new ClusterSolution(documentSet, xCoord, yCoord, clusterNum);
+                }
             } else {
-                clusterSolution = new ClusterSolution(documentSet, xCoord, yCoord, clusterNum);
+                // Calculate solution based on the existing solution,
+                // and the new clusterNum (or discoverable)
+                if (discoverable) {
+                    clusterSolution = new ClusterSolution(clusterSolution);
+                } else {
+                    clusterSolution = new ClusterSolution(clusterSolution, clusterNum);
+                }
             }
-        } else {
-            // Calculate solution based on the existing solution,
-            // and the new clusterNum (or discoverable)
-            if (discoverable ) {
-                clusterSolution = new ClusterSolution(clusterSolution);
-            } else {
-                clusterSolution = new ClusterSolution(clusterSolution,clusterNum);
-            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            DecimalFormat form = new DecimalFormat("#.#####");
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Clustering Error - ", "Could not calculate solution for ("
+                    + form.format(this.xCoord) + "," + form.format(this.yCoord) + "), number of clusters = " + this.clusterNum + ". Please try fewer clusters or a point closer to the convex hull."));
         }
-    //    if (discoverable) {
-             // Call javascript to add the point to the map with the calculated clusterNum
-    //        JavascriptContext.addJavascriptCall(FacesContext.getCurrentInstance(), "addPointForClusterNum('"+clusterSolution.getNumClusters()+"','true');");
-    //    }
+        //    if (discoverable) {
+        // Call javascript to add the point to the map with the calculated clusterNum
+        //        JavascriptContext.addJavascriptCall(FacesContext.getCurrentInstance(), "addPointForClusterNum('"+clusterSolution.getNumClusters()+"','true');");
+        //    }
         // This is a new solution, so clear out the solution label.
-        solutionLabel="";
+        solutionLabel = "";
         populateClusterTableModel();
 
     }

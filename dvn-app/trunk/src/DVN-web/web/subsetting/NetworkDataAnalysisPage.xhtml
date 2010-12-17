@@ -74,9 +74,15 @@
       function confirmDownload(downloadbuttonId) {
           numberOfVertices = document.getElementById("lastEventVertices").value;
           downloadButton = document.getElementById(downloadbuttonId);
+          showWarning = false;
 
-          if (numberOfVertices > 1000) {
-              if(confirm ( "You have selected a large download to process. This could take several minutes. Continue?" )) {
+          if (downloadbuttonId == "form1:downloadTabularFiles") {
+              showWarning = numberOfVertices > 1000;
+          } else if (downloadbuttonId == "form1:downloadNetworkFile") {
+            showWarning = numberOfVertices > 1000;
+          }
+
+          if ( !showWarning || (confirm ( "You have selected a large download to process. This could take several minutes. Continue?" ) ) {
                   downloadButton.click();
               }
           }
@@ -331,15 +337,15 @@
                                 <ice:panelGrid id="groupPanel12" styleClass="dvnNetDataAnlsSubTblBtmWrp" columns="1" cellpadding="0" cellspacing="0" width="100%">
                                     <ice:column>
                                         <div class="dvnFormPadding dvnNetDataAnlsSubTblBtm">
-                                            <input type="button" class="dvnNetDataAnlsDnldBttn" value="Download Latest Network File" onclick="confirmDownload('form1:downloadTabularkDataFiles');"/>
+                                            <input type="button" class="dvnNetDataAnlsDnldBttn" value="Download Latest Tabular Files" onclick="confirmDownload('form1:downloadTabularFiles');"/>
                                             <ice:outputResource label="Download Latest Tabular Files" type="button" style="display:none;"
-                                                                id="downloadTabularkDataFiles"
+                                                                id="downloadTabularFiles"
                                                                 fileName="#{NetworkDataAnalysisPage.subsetFileName}" mimeType="application/zip"
                                                                 resource="#{NetworkDataAnalysisPage.subsetResourceTabular}" shared="false"/>
                                             
-                                            <input type="button" class="dvnNetDataAnlsDnldBttn" value="Download Latest Network File" onclick="confirmDownload('form1:downloadNetworkDataFile');"/>
+                                            <input type="button" class="dvnNetDataAnlsDnldBttn" value="Download Latest Network File" onclick="confirmDownload('form1:downloadNetworkFile');"/>
                                             <ice:outputResource label="Download Latest Network File" type="button" style="display:none;"
-                                                                id="downloadNetworkDataFile"
+                                                                id="downloadNetworkFile"
                                                                 fileName="#{NetworkDataAnalysisPage.subsetFileName}" mimeType="application/zip"
                                                                 resource="#{NetworkDataAnalysisPage.subsetResourceGraphML}" shared="false"/>
                                         </div>

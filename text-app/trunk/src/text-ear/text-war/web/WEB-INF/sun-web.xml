@@ -8,4 +8,9 @@
       <description>Keep a copy of the generated servlet class' java code.</description>
     </property>
   </jsp-config>
+<security-role-mapping>
+    <role-name>USERS</role-name>
+    <group-name>Users</group-name>
+</security-role-mapping>
+
 </sun-web-app>

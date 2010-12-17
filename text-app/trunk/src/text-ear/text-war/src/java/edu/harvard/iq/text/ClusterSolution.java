@@ -148,8 +148,11 @@ public class ClusterSolution {
     public int getNumClusters() {
         return numClusters;
     }
-     public void setNumClusters(int numClusters) {
-         this.numClusters = numClusters;
+
+    // This property is read only, but it must have a setter
+    // to be used in JSF.  need to investigate a better option.
+    public void setNumClusters(int numClusters) {
+         
     }
     public Integer getId() {
         return id;

@@ -584,6 +584,12 @@
                         <ice:outputText  value="Label"/>
                       </f:facet>
                         <ice:commandLink value="#{saved.infoLabel}" onclick="addSavedPoint(#{saved.x},#{saved.y},#{saved.numClusters},#{saved.id});" actionListener="#{ClusteringSpacePage.updateClusterSolutionListener}"></ice:commandLink>
+                    </ice:column>                 
+                    <ice:column>
+                        <f:facet name="header">
+                            <ice:outputText  value="Coordinates"/>
+                        </f:facet>
+                            <ice:outputText value="#{saved.formatX},#{saved.formatY}"/>
                     </ice:column>
                     <ice:column>
                         <f:facet name="header">
@@ -591,6 +597,7 @@
                         </f:facet>
                         <ice:outputText value="#{saved.numClusters}"/>
                     </ice:column>
+
                 </ice:dataTable>
             </div>
         </div>
@@ -631,7 +638,8 @@
 </script>
                 <div>
                     <div class="clusterLabelBlock">
-                        <ice:outputText value="(#{ClusteringSpacePage.clusterSolution.x},#{ClusteringSpacePage.clusterSolution.x}) Cluster number: #{ClusteringSpacePage.clusterSolution.numClusters}"/>
+                        <ice:outputText value="(#{ClusteringSpacePage.clusterSolution.formatX},#{ClusteringSpacePage.clusterSolution.formatY}) Cluster number: #{ClusteringSpacePage.clusterSolution.numClusters}"/>
+                         <br/>
 
                         <a href="#" class="clusterLabelValueEdit"><ice:outputText value="Label [+] #{ClusteringSpacePage.solutionLabel}"/></a>
                         <div class="clusterLabelInputBlock">
@@ -790,7 +798,7 @@ td.clusterCountCol {width:14%;}
                                         <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-last.gif" title="Last Document" rendered="#{row.viewDocumentIndex==row.clusterInfo.clusterCount-1}"/>
                                         <ice:commandLink title="Last Document" rendered="#{row.viewDocumentIndex!=row.clusterInfo.clusterCount-1}" actionListener="#{row.viewLast}"><img title="Last Document" src="/text/resources/icefaces/dvn_rime/css-images/arrow-last.gif" class="iceGphImg" alt=""/></ice:commandLink>
 
-                                        <ice:commandLink value="Random" title="View Random Document" styleClass="clusterDocViewRandom" actionListener="#{row.viewRandom}"></ice:commandLink>
+                                        
                                     </div>
                                     <div class="clusterDocViewText">
                                         <ice:outputText value="#{row.viewDocumentText}" nospan="true"/>

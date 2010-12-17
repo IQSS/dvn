@@ -216,7 +216,7 @@
                document.getElementById('clusterRadio1').checked = false;
                document.getElementById('clusterRadio2').checked = false;
                document.getElementById('clusterRadio3').checked = false;
-               if (clusterNum==10) {
+               if (clusterNum==5) {
                    document.getElementById('clusterRadio1').checked = true;
                } else if (clusterNum==15) {
                    document.getElementById('clusterRadio2').checked = true;
@@ -347,8 +347,8 @@
                 vectorLayer.redraw();
             }
             function loadEnd (evt) {
-               // alert("received evt: "+ evt);
-
+                // By default, the number of clusters is 5
+                updateRadioButtons(5);
                 addPointToList(0,0,5,-1);
                 var lineArray = new Array();
                 var endpoint =10;
@@ -468,7 +468,7 @@
             }
 
             // function for delaying input text submit
-            var timeout= 400; //milliseconds to wait for no activity
+            var timeout= 750; //milliseconds to wait for no activity
             var countEvents= 0;
             function delayedSubmit(  ){
                 countEvents++;
@@ -538,7 +538,7 @@
                    
                 </td>
                 <td>
-                    <input type="radio" name="clusterRadio" id="clusterRadio1" onclick="changeClusterRadio(10);"/> <label for="clusterRadio1">10 Clusters (Low)</label>
+                    <input type="radio" name="clusterRadio" id="clusterRadio1" onclick="changeClusterRadio(5);"/> <label for="clusterRadio1">5 Clusters (Low)</label>
                 </td>
                 <td>
                     <input type="radio" name="clusterRadio" id="clusterRadio2" onclick="changeClusterRadio(15);"/> <label for="clusterRadio2">15 Clusters (Medium)</label>
@@ -584,7 +584,7 @@
                       <f:facet name="header">
                         <ice:outputText  value="Label"/>
                       </f:facet>
-                        <ice:commandLink value="#{saved.infoLabel}" onclick="addSavedPoint(#{saved.x},#{saved.y},#{saved.numClusters},#{saved.id});" actionListener="#{ClusteringSpacePage.updateClusterSolutionListener}"></ice:commandLink>
+                        <ice:commandLink value="#{saved.infoLabel}" onclick="addSavedPoint(#{saved.x},#{saved.y},#{saved.numClusters},#{saved.id});" ></ice:commandLink>
                     </ice:column>                 
                     <ice:column>
                         <f:facet name="header">
@@ -727,8 +727,7 @@ td.clusterCountCol {width:14%;}
 
                                         <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-last.gif" title="Last Document" rendered="#{row.viewDocumentIndex==row.clusterInfo.clusterCount-1}"/>
                                         <ice:commandLink title="Last Document" rendered="#{row.viewDocumentIndex!=row.clusterInfo.clusterCount-1}" actionListener="#{row.viewLast}"><img title="Last Document" src="/text/resources/icefaces/dvn_rime/css-images/arrow-last.gif" class="iceGphImg" alt=""/></ice:commandLink>
-
-                                        <ice:commandLink value="Random" title="View Random Document" styleClass="clusterDocViewRandom" actionListener="#{row.viewRandom}"></ice:commandLink>
+                                  
                                     </div>
 
                                     <p>

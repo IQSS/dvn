@@ -238,7 +238,7 @@
                                                 <ice:inputText styleClass="automaticQuery" disabled="#{!NetworkDataAnalysisPage.automaticQueryAction}" id="nth" value="#{NetworkDataAnalysisPage.automaticQueryNthValue}"/>
                                             </fieldset>
                                             <fieldset>
-                                                <ice:commandButton onclick="return confirmAction(document.getElementById('form1:function').value);"  disabled="#{!NetworkDataAnalysisPage.automaticQueryAction}" type="submit" value="Run" action="#{NetworkDataAnalysisPage.automaticQuery_action}"/>
+                                                <ice:commandButton onclick="if (!confirmAction(document.getElementById('form1:function').value)) return false;"  disabled="#{!NetworkDataAnalysisPage.automaticQueryAction}" type="submit" value="Run" action="#{NetworkDataAnalysisPage.automaticQuery_action}"/>
                                             </fieldset>
                                         </ice:panelGrid>
                                     </ice:panelGrid>
@@ -278,7 +278,7 @@
                                                 </div>
                                             </fieldset>
                                             <fieldset>
-                                                <ice:commandButton onclick="return confirmAction(document.getElementById('form1:attributes').value);" disabled="#{!NetworkDataAnalysisPage.networkMeasureAction}" type="submit" value="Run" action="#{NetworkDataAnalysisPage.networkMeasure_action}"/>
+                                                <ice:commandButton onclick="if (!confirmAction(document.getElementById('form1:attributes').value)) return false;" disabled="#{!NetworkDataAnalysisPage.networkMeasureAction}" type="submit" value="Run" action="#{NetworkDataAnalysisPage.networkMeasure_action}"/>
                                             </fieldset>
                                         </ice:panelGrid>
                                     </ice:panelGrid>

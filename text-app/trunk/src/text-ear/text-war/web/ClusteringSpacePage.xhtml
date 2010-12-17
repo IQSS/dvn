@@ -638,8 +638,10 @@
 </script>
                 <div>
                     <div class="clusterLabelBlock">
-                        <ice:outputText value="(#{ClusteringSpacePage.clusterSolution.formatX},#{ClusteringSpacePage.clusterSolution.formatY}) Cluster number: #{ClusteringSpacePage.clusterSolution.numClusters}"/>
-                         <br/>
+                        <ice:outputText value="Coordinates: (#{ClusteringSpacePage.clusterSolution.formatX},#{ClusteringSpacePage.clusterSolution.formatY})"/>
+                        <br/>
+                        <ice:outputText value="Cluster number: #{ClusteringSpacePage.clusterSolution.numClusters}"/>
+                        <br/>
 
                         <a href="#" class="clusterLabelValueEdit"><ice:outputText value="Label [+] #{ClusteringSpacePage.solutionLabel}"/></a>
                         <div class="clusterLabelInputBlock">

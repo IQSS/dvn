@@ -4,6 +4,24 @@
         <param-name>javax.faces.PROJECT_STAGE</param-name>
         <param-value>Development</param-value>
     </context-param>
+
+    <login-config>
+        <auth-method>BASIC</auth-method>
+        <realm-name>textclustering</realm-name>
+    </login-config>
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Secure Pages</web-resource-name>
+            <url-pattern>/*</url-pattern>
+            <http-method>GET</http-method>
+            <http-method>POST</http-method>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>USERS</role-name>
+        </auth-constraint>
+    </security-constraint>
+
     <servlet>
         <servlet-name>ConvexHullServlet</servlet-name>
         <servlet-class>edu.harvard.iq.text.ConvexHullServlet</servlet-class>

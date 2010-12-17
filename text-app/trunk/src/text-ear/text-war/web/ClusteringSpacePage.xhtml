@@ -303,8 +303,10 @@
                    solutionCount++;
                }
            }
-           function addSavedPoint(x,y,clusterNum,solutionId) {
-
+           function addSavedPoint(x,y,clusterNum,discoverable,solutionId) {
+               if (discoverable) {
+                   clusterNum=0;
+               }
                addPointToList(x,y,clusterNum,solutionId);
                updateDisplay(currentIndex);
            }
@@ -428,7 +430,7 @@
                     updateDisplay(currentIndex);
                 }
             }
-            function updateDisplay(index) {
+            function updateDisplay(index, savedPoint) {
                 // do a submit to get the clusterSolution for this point in the index
                 if (points[index].attributes.clusterNum > 0) {
                     document.getElementById('ClusterForm:discoverableCheckbox').checked = false;
@@ -441,8 +443,9 @@
                 document.getElementById('ClusterForm:userYCoord').value= points[index].geometry.y;
                 document.getElementById('ClusterForm:userXCoord').value= points[index].geometry.x;
                 document.getElementById('ClusterForm:solutionId').value= points[index].attributes.solutionId;
-                document.getElementById('ClusterForm:calcButton').click();
-
+                if (savedPoint==null) {
+                    document.getElementById('ClusterForm:calcButton').click();
+                }
                 // update the map to show the cluster layer for this point
                 updatePointsDisplay(points[index].attributes.clusterNum);
 
@@ -584,7 +587,7 @@
                       <f:facet name="header">
                         <ice:outputText  value="Label"/>
                       </f:facet>
-                        <ice:commandLink value="#{saved.infoLabel}" onclick="addSavedPoint(#{saved.x},#{saved.y},#{saved.numClusters},#{saved.id});" ></ice:commandLink>
+                        <ice:commandLink value="#{saved.infoLabel}" onclick="addSavedPoint(#{saved.x},#{saved.y},#{saved.numClusters},#{saved.discoverable},#{saved.id});" actionListener="#{ClusteringSpacePage.updateClusterSolutionListener}"></ice:commandLink>
                     </ice:column>                 
                     <ice:column>
                         <f:facet name="header">
@@ -596,7 +599,8 @@
                         <f:facet name="header">
                             <ice:outputText  value="Number of Clusters"/>
                         </f:facet>
-                        <ice:outputText value="#{saved.numClusters}"/>
+                        <ice:outputText rendered="#{saved.discoverable}" value="#{saved.numClusters}*"/>
+                        <ice:outputText rendered="#{!saved.discoverable}" value="#{saved.numClusters}"/>
                     </ice:column>
 
                 </ice:dataTable>

@@ -195,7 +195,9 @@ public class BasicKMeans {
                 j++;
                 
             } while (j<indices.length && i<mK);
-
+        //    if (i<mK) {
+        //        System.out.println("We haven't found enough non-matching coordinates! i="+i);
+        //    }
             
     }
     private boolean coordinatesMatch(double coordinates[], int clusterIndex) {

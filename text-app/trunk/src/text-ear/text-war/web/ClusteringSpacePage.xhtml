@@ -232,12 +232,22 @@
               
                if (discoverableChecked) {
                    document.getElementById('ClusterForm:clusterNum').value=' ';
+
+                   jQuery('.clusterNoClustersLabel').addClass('clusterLabelDisable');
+                   jQuery('.clusterRadioLabel1').addClass('clusterLabelDisable');
+                   jQuery('.clusterRadioLabel2').addClass('clusterLabelDisable');
+                   jQuery('.clusterRadioLabel3').addClass('clusterLabelDisable');
                } else {
                    
                    if (clusterNum==null) {
                         clusterNum = document.getElementById('ClusterForm:calculatedClusterNum').value;
                    }
                    document.getElementById('ClusterForm:clusterNum').value = clusterNum
+
+                   jQuery('.clusterNoClustersLabel').removeClass('clusterLabelDisable');
+                   jQuery('.clusterRadioLabel1').removeClass('clusterLabelDisable');
+                   jQuery('.clusterRadioLabel2').removeClass('clusterLabelDisable');
+                   jQuery('.clusterRadioLabel3').removeClass('clusterLabelDisable');
                }
 
                updateRadioButtons(clusterNum);
@@ -246,8 +256,6 @@
                document.getElementById('clusterRadio1').disabled = discoverableChecked;
                document.getElementById('clusterRadio2').disabled = discoverableChecked;
                document.getElementById('clusterRadio3').disabled = discoverableChecked;
-               
-
            }
 
 
@@ -509,6 +517,7 @@
     .settingsBar td {padding: .55em 1em;}
     .settingsBar label {padding-right:6px;}
     .settingsBar input.iceCmdBtn {margin-left:1em;}
+    .clusterLabelDisable {color: #D9D9D9;}
     .clusterExplorer {overflow:hidden;}
     .clusterExplorer .map {width:540px; margin-right:20px; float:left;}
     .clusterExplorer #map {height:380px;}
@@ -538,22 +547,21 @@
         <table cellspacing="0" cellpadding="0" border="0" class="settingsBar">
             <tr>
                 <td>
-                    <label for="numberclusters">Number of Clusters</label>
+                    <label for="numberclusters" class="clusterNoClustersLabel">Number of Clusters</label>
                     <ice:inputText onkeyup="delayedSubmit();" id="clusterNum" size="5" value="#{ClusteringSpacePage.clusterNum}"></ice:inputText>
                     <ice:commandButton visible="false" id="changeCluster" value="calculate" onclick="calculateButtonAction();" actionListener="#{ClusteringSpacePage.changeClusterNumberListener}"/>
-                   
                 </td>
                 <td>
-                    <input type="radio" name="clusterRadio" id="clusterRadio1" onclick="changeClusterRadio(5);"/> <label for="clusterRadio1">5 Clusters (Low)</label>
+                    <input type="radio" name="clusterRadio" id="clusterRadio1" onclick="changeClusterRadio(5);"/> <label for="clusterRadio1" class="clusterRadioLabel1">5 Clusters (Low)</label>
                 </td>
                 <td>
-                    <input type="radio" name="clusterRadio" id="clusterRadio2" onclick="changeClusterRadio(15);"/> <label for="clusterRadio2">15 Clusters (Medium)</label>
+                    <input type="radio" name="clusterRadio" id="clusterRadio2" onclick="changeClusterRadio(15);"/> <label for="clusterRadio2" class="clusterRadioLabel2">15 Clusters (Medium)</label>
                 </td>
                 <td>
-                    <input type="radio" name="clusterRadio" id="clusterRadio3" onclick="changeClusterRadio(30);"/> <label for="clusterRadio3">30 Clusters (High)</label>
+                    <input type="radio" name="clusterRadio" id="clusterRadio3" onclick="changeClusterRadio(30);"/> <label for="clusterRadio3" class="clusterRadioLabel3">30 Clusters (High)</label>
                 </td>
                 <td>
-                    <ice:selectBooleanCheckbox onclick="{updateClusterControls(this.checked);document.getElementById('ClusterForm:changeCluster').click(); }" id="discoverableCheckbox"  value="#{ClusteringSpacePage.discoverable}"  /> <label for="clusterDiscoverable">Discoverable</label>
+                    <ice:selectBooleanCheckbox onclick="{updateClusterControls(this.checked);document.getElementById('ClusterForm:changeCluster').click();}" id="discoverableCheckbox" value="#{ClusteringSpacePage.discoverable}"/> <label for="clusterDiscoverable">Discoverable</label>
                 </td>
             </tr>
         </table>
@@ -607,7 +615,7 @@
                     </ice:column>
                 </ice:dataTable>
             </div>
-            <ice:outputText value="(*) Discoverable" />
+            <ice:outputText value="(*) Discoverable"/>
         </div>
             
         <div class="table">

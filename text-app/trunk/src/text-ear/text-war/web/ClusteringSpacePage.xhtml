@@ -430,7 +430,6 @@
                     currentIndex--;
                     updateDisplay(currentIndex);
                 }
-
             }
             function goForward() {
                 if (currentIndex<points.length-1) {
@@ -513,6 +512,7 @@
     .clusteringNavHistory div {float:left; padding:2px;}
     .clusteringNavHistory a {cursor:pointer; padding:.75em 1em; display:block;}
     .clusteringNavHistory a:hover {background:#EEEEEE;}
+    .clusteringNavHistory span {padding:.75em 1em; display:block; color: #D9D9D9;}
     .settingsBar {border:1px solid grey;}
     .settingsBar td {padding: .55em 1em;}
     .settingsBar label {padding-right:6px;}
@@ -541,8 +541,20 @@
     <div><h:messages style="color:red;font-weight:700" showDetail="true" globalOnly="true"/></div>
     <div class="navSettingsBar">
         <div class="clusteringNavHistory">
-            <div><a onclick="goBack();" title="Previous Coordinate Point">&#60;</a></div>
-            <div><a onclick="goForward();" title="Next Coordinate Point">&#62;</a></div>
+<script type="text/javascript">
+    jQuery(document).ready(function(){
+          if (currentIndex>0) {
+              jQuery("div.previous").html("<span>&#60;</span>");
+              jQuery("div.next").html("<span>&#62;</span>");
+          }
+    });
+</script>
+            <div class="previous">
+                <a onclick="goBack();" title="Previous Coordinate Point">&#60;</a>
+            </div>
+            <div class="next">
+                <a onclick="goForward();" title="Next Coordinate Point">&#62;</a>
+            </div>
         </div>
         <table cellspacing="0" cellpadding="0" border="0" class="settingsBar">
             <tr>

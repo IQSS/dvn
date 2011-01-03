@@ -318,7 +318,21 @@
                addPointToList(x,y,clusterNum,solutionId);
                updateDisplay(currentIndex);
            }
+
            function updatePointsDisplay(clusterNumVal ) {
+               // enable/disable back/forward buttons, depending on
+                // the point to be displayed
+                if (currentIndex==0) {
+                    jQuery("div.previous").html("<span>&#60;</span>");
+                } else {
+                    jQuery("div.previous").html("<a onclick='goBack();' title='Previous Coordinate Point'>&#60;</a>");
+                }
+                if (currentIndex==points.length-1) {
+                    jQuery("div.next").html("<span>&#62;</span>");
+                } else {
+                    jQuery("div.next").html("<a onclick='goForward();' title='Previous Coordinate Point'>&#62;</a>");
+                }
+
                if (clusterNumVal==0) {
                    document.getElementById('ClusterForm:clusterNum').value='';
                } else {
@@ -356,6 +370,7 @@
                 }
                 vectorLayer.redraw();
             }
+            
             function loadEnd (evt) {
                 // By default, the number of clusters is 5
                 updateRadioButtons(5);
@@ -438,6 +453,7 @@
                 }
             }
             function updateDisplay(index, savedPoint) {
+                
                 // do a submit to get the clusterSolution for this point in the index
                 if (points[index].attributes.clusterNum > 0) {
                     document.getElementById('ClusterForm:discoverableCheckbox').checked = false;
@@ -541,13 +557,17 @@
     <div><h:messages style="color:red;font-weight:700" showDetail="true" globalOnly="true"/></div>
     <div class="navSettingsBar">
         <div class="clusteringNavHistory">
+
+<!-- disable the previous/next arrows when the page is first loaded -->
 <script type="text/javascript">
+     // <![CDATA[
     jQuery(document).ready(function(){
-          if (currentIndex>0) {
+          
               jQuery("div.previous").html("<span>&#60;</span>");
               jQuery("div.next").html("<span>&#62;</span>");
-          }
+          
     });
+      // ]]>
 </script>
             <div class="previous">
                 <a onclick="goBack();" title="Previous Coordinate Point">&#60;</a>

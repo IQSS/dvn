@@ -6,11 +6,11 @@
 package edu.harvard.iq.text;
 
 import com.vividsolutions.jts.geom.Coordinate;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -18,6 +18,7 @@ import java.util.Collections;
  * @author ekraffmiller
  */
 public class ClusterSolution {
+    private static final Logger logger = Logger.getLogger(ClusterSolution.class.getCanonicalName());
 
     private static final double TWO_PI = Math.PI*2;
 
@@ -49,6 +50,7 @@ public class ClusterSolution {
     
 
     public Boolean getDiscoverable() {
+        logger.fine("Called getDiscoverable, returning "+discoverable);
         return discoverable;
     }
     public void setDiscoverable(Boolean discoverable) {
@@ -219,7 +221,7 @@ public class ClusterSolution {
 
         Collections.sort(clusterInfoList);
 
-        System.out.println("finished calculating, x="+this.candidateXPoint+", y="+this.candidateYPoint+" clusterInfo:" + clusterInfoList);
+        logger.fine("finished calculating, x="+this.candidateXPoint+", y="+this.candidateYPoint+" clusterInfo:" + clusterInfoList);
     }
 
     private void createClusterInfoList(Cluster[] clusters ) {
@@ -282,7 +284,7 @@ public class ClusterSolution {
            } else {
                weights[i] = 0;
            }
-           System.out.println("distanceArray["+i+"]="+distanceArray[i]+"weights[i]"+weights[i]);
+           logger.fine("distanceArray["+i+"]="+distanceArray[i]+"weights[i]"+weights[i]);
 
        
             sumWeights = weights[i] + sumWeights;
@@ -293,13 +295,15 @@ public class ClusterSolution {
             weights[smallestDistanceIndex] = 1;
 
         }
+        
         String wts = "weights array: ";
         for (int i = 0; i < weights.length; i++) {  //Divide by the sum
             weights[i] = weights[i] / sumWeights;
-            wts+= weights[i]+",";
- //           
+            wts += weights[i] + ",";
+
         }
-        System.out.println(wts);
+        logger.fine(wts);
+
         return weights;
     }
 
@@ -349,7 +353,7 @@ public class ClusterSolution {
                 simMatrix[r][c] = 1 - simMatrix[r][c] / maxRowValue[r]; //1 - Value divided by the maximum of each row
             }
         }
-     //   System.out.println("simMatrix is"+ simMatrix);
+        logger.fine("simMatrix is"+ simMatrix);
         return simMatrix;
     }
 
@@ -360,18 +364,18 @@ public class ClusterSolution {
      *
      */
     private Cluster[] doKMeansCalc(double[][] simMatrix) {
-  //      this.malletKMeans(simMatrix,numClusters);
+  
 
        
         long kmeansRandomSeed = (long) 12345;
-    //    System.out.println("Calling BasicKMeans");
-    //    System.out.println("numClusters="+numClusters);
-    //    System.out.println("coordinates="+this.candidateXPoint+","+this.candidateYPoint);
-        DecimalFormat twoDForm = new DecimalFormat("#.####");
-        
+        logger.fine("Calling BasicKMeans");
+        logger.fine("numClusters="+numClusters);
+        logger.fine("coordinates="+this.candidateXPoint+","+this.candidateYPoint);
+
+
      //   try {
      //       FileOutputStream fos = new FileOutputStream("csvSimMatrix.txt");
-
+      //   DecimalFormat twoDForm = new DecimalFormat("#.####");
        //     System.out.println("simMatrix=");
 
        //     for (int i = 0; i < simMatrix.length; i++) {

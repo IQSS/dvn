@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -28,6 +30,7 @@ import javax.xml.stream.XMLStreamWriter;
  * @author ekraffmiller
  */
 public class DocumentSet {
+    private static final Logger logger = Logger.getLogger(DocumentSet.class.getCanonicalName());
     private String setId;
     private File setDir;
     private MethodPoint[] methodPoints;
@@ -43,7 +46,7 @@ public class DocumentSet {
     public DocumentSet(String setId) {
         this.setId=setId;
         initializeSet();
-        System.out.println("DocumentSet initialize complete."); 
+        
     }
 
     public ArrayList<String> getDocIdList() {
@@ -162,15 +165,17 @@ public class DocumentSet {
                 // for this method.
 
                 methodPoints[lineNumber].numberOfClusters = uniqueClusters.size();
-           //     System.out.println("numberOfClusters = "+methodPoints[lineNumber].numberOfClusters+", method="+ clusterMethod);
+                logger.fine("numberOfClusters = "+methodPoints[lineNumber].numberOfClusters+", method="+ clusterMethod);
                 // This is just for testing
-                if (uniqueClusters.size()>maxClusters) {
+                
+                if (uniqueClusters.size() > maxClusters) {
                     maxClusters = uniqueClusters.size();
                     maxClusterMethod = clusterMethod;
                 }
+
                 lineNumber++;
             }
-        //    System.out.println("maxClusters = "+maxClusters+", method="+ maxClusterMethod);
+            logger.fine("maxClusters = "+maxClusters+", method="+ maxClusterMethod);
 
             // Convert our List object to two-dim array
             this.clusterMembership = new int[table.size()][];
@@ -183,7 +188,7 @@ public class DocumentSet {
           } catch (java.io.IOException ex) {
             throw new ClusterException(ex.getMessage());
         }
-     //   System.out.println("ClusterMembership, methodSize = "+table.size()+" docSize = "+table.get(0).size());
+        logger.fine("ClusterMembership, methodSize = "+table.size()+" docSize = "+table.get(0).size());
     }
 
     private void initWordDocumentMatrix(){
@@ -233,7 +238,7 @@ public class DocumentSet {
                     documentId = documentId.substring(documentId.lastIndexOf("\\")+1);
 
                 }
-            //    System.out.println("documentId is "+documentId);
+                logger.fine("documentId is "+documentId);
                 docIdList.add(documentId);
 
                 // create object for holding this row's values
@@ -258,7 +263,7 @@ public class DocumentSet {
           } catch (java.io.IOException ex) {
             throw new ClusterException(ex.getMessage());
         }
-      //  System.out.println("WordDocumentMatrix, docSize = "+wordDocumentMatrix.length+" wordSize = "+table.get(0).size());
+        logger.fine("WordDocumentMatrix, docSize = "+wordDocumentMatrix.length+" wordSize = "+table.get(0).size());
 
     }
 
@@ -266,7 +271,7 @@ public class DocumentSet {
      *  Read methodPoints.txt, and if necessary, create polygon.xml
      */
     private void initMethodPointsAndPolygon() {
-     //   System.out.println("initializingConvexHull: SetId is " + setId + "!");
+        logger.fine("initializingConvexHull: SetId is " + setId + "!");
         ConvexHull ch;
         // Read methodpoints.text:
 
@@ -303,7 +308,7 @@ public class DocumentSet {
             for (int i = 0; i < coords.length; i++) {
                 coordStr += " " + coords[i].x + "," + coords[i].y;
             }
-         //   System.out.println("coordStr = " + coordStr);
+            logger.fine("coordStr = " + coordStr);
 
             XMLOutputFactory xmlOutputFactory = javax.xml.stream.XMLOutputFactory.newInstance();
             fos = new FileOutputStream(new File(ClusterUtil.getSetDir(setId), POLYGON_FILE));
@@ -369,6 +374,7 @@ public class DocumentSet {
             } else {
                 tokenSeparator = ",";
             }
+            logger.fine("reading method points");
             while ((strLine = br.readLine()) != null) {
                 lineNumber++;
 
@@ -380,15 +386,15 @@ public class DocumentSet {
                 String method = st.nextToken();
 
                 String v1 = st.nextToken();  // we assume this is x
-             //   System.out.println("v1 = " + v1);
+                logger.fine("v1 = " + v1);
                 double x = new Double(v1).doubleValue();
 
                 String v2 = st.nextToken();  // we assume this is y
-             //   System.out.println("v2 = " + v2);
+                logger.fine("v2 = " + v2);
                 double y = new Double(v2).doubleValue();
 
                 Coordinate methodCoord = new Coordinate(x, y);
-             //   System.out.println("methodCoord = " + methodCoord);
+                logger.fine("methodCoord = " + methodCoord);
                 methodCoords.add(methodCoord);
                 methodPointList.add(new MethodPoint(x,y,method));
               

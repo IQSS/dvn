@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
@@ -25,6 +26,7 @@ import javax.faces.event.ActionEvent;
  * @author ekraffmiller
  */
 public class ClusteringSpacePage {
+    private static final Logger logger = Logger.getLogger(ClusteringSpacePage.class.getCanonicalName());
 
     private String setId;
     private double xCoord;
@@ -55,6 +57,7 @@ public class ClusteringSpacePage {
 
     @PostConstruct
     public void init() {
+        logger.fine("initializing page");
          xCoord = 0;
          yCoord = 0;
          clusterNum = 5;
@@ -112,10 +115,12 @@ public class ClusteringSpacePage {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
             DecimalFormat form = new DecimalFormat("#.#####");
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Clustering Error - ", "Could not calculate solution for ("
-                    + form.format(this.xCoord) + "," + form.format(this.yCoord) + "), number of clusters = " + this.clusterNum + ". Please try fewer clusters or a point closer to the convex hull."));
+            String errMessage =  "Could not calculate solution for ("
+                    + form.format(this.xCoord) + "," + form.format(this.yCoord) + "), number of clusters = " + this.clusterNum+".";
+            logger.warning(errMessage);
+            
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Clustering Error- ", errMessage+" Please try fewer clusters or a point closer to the convex hull."));
         }
         //    if (discoverable) {
         // Call javascript to add the point to the map with the calculated clusterNum
@@ -385,8 +390,7 @@ public class ClusteringSpacePage {
 
                // Now read the buffered stream.
                while (bis.available() > 0) {
-                   baos.write(bis.read());
-                   //   .print((char) bis.read());
+                   baos.write(bis.read());                   
                }
                fin.close();
            } catch (IOException e) {

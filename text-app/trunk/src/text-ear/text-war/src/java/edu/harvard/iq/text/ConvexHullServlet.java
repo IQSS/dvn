@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -21,7 +22,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author ekraffmiller
  */
 public class ConvexHullServlet extends HttpServlet {
-   
+     private static final Logger logger = Logger.getLogger(ConvexHullServlet.class.getCanonicalName());
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request
@@ -36,7 +37,7 @@ public class ConvexHullServlet extends HttpServlet {
         try {
             // get documentSetId 
             String setId = request.getParameter("setId");
-            System.out.println("ConvexHull, setId=" + setId);
+            logger.fine("ConvexHull, setId=" + setId);
             // TODO: cleanup getting of JVM option
             String docRoot = System.getProperty("text.documentRoot");
 
@@ -54,21 +55,11 @@ public class ConvexHullServlet extends HttpServlet {
 
             } catch (Exception e) {
                 // TODO: cleanup error handling
-                System.err.println("Error reading file: " + e);
+                logger.severe("Error reading file: " + e);
             }
 
 
 
-            /* TODO output your page here
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet ConvexHullServlet</title>");  
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet ConvexHullServlet at " + request.getContextPath () + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-            */
         } finally { 
             out.close();
         }

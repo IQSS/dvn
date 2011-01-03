@@ -3,13 +3,17 @@ package edu.harvard.iq.text;
 
 import java.util.Arrays;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author ekraffmiller
  */
 public class BasicKMeans {
-  // Temporary clusters used during the clustering process.  Converted to
+     private static final Logger logger = Logger.getLogger(BasicKMeans.class.getCanonicalName());
+
+    // Temporary clusters used during the clustering process.  Converted to
     // an array of the simpler class Cluster at the conclusion.
     private ProtoCluster[] mProtoClusters;
 
@@ -104,7 +108,7 @@ public class BasicKMeans {
                     assignmentSucceeded = true;
                 }
             } while (!assignmentSucceeded && initTries <100);
-            System.out.println("Cluster number = "+this.mClusters+", Init tries = "+initTries);
+            logger.fine("Cluster number = "+this.mClusters+", Init tries = "+initTries);
             // Number of moves in the iteration and the iteration counter.
             int moves = 0;
             int it = 0;
@@ -195,9 +199,9 @@ public class BasicKMeans {
                 j++;
                 
             } while (j<indices.length && i<mK);
-        //    if (i<mK) {
-        //        System.out.println("We haven't found enough non-matching coordinates! i="+i);
-        //    }
+            if (i<mK) {
+                logger.warning("initCenters(): we haven't found enough non-matching coordinates! i="+i);
+            }
             
     }
     private boolean coordinatesMatch(double coordinates[], int clusterIndex) {
@@ -313,12 +317,15 @@ public class BasicKMeans {
                 moves++;
             }
         }
-        System.out.println("returning from MakeAssignments....");
+
+   
+        logger.fine("returning from MakeAssignments....");
         String output = "Protocluster sizes: ";
         for (ProtoCluster pc : this.mProtoClusters) {
             output += pc.mCurrentSize + ", ";
         }
-        System.out.println(output);
+        logger.fine(output);
+
         return moves;
     }
 

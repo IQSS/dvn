@@ -16,7 +16,7 @@ public class VarGroupTypeUI {
     private VarGroupType varGroupType;
     private boolean enabled;
     private boolean editMode;
-
+    private boolean selected;
 
     public boolean isEnabled() {
         return enabled;
@@ -42,5 +42,12 @@ public class VarGroupTypeUI {
         this.editMode = editMode;
     }
 
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
 
 }

@@ -40,11 +40,36 @@ function handleQueryResponse(response) {
   }
 
   var data = response.getDataTable();
+
+  visualization = new google.visualization.AnnotatedTimeLine(document.getElementById('chart_div'));
+  visualization.draw(data, null);
+}
+
+      function drawVisualization2() {
+  // To see the data that this visualization uses, browse to
+  // http://spreadsheets.google.com/ccc?key=pCQbetd-CptGXxxQIG7VFIQ
+  var query = new google.visualization.Query(
+
+      'https://spreadsheets.google.com/tq?range=A1:G64&amp;key=0AvVjA1YZ1luDdEhTVkM0aVpYc2dPcTN4OHc3ZnZNNVE&amp;gid=0&amp;authkey=CMnn46IM');
+  // Send the query with a callback function.
+  query.send(handleQueryResponse);
+}
+
+function handleQueryResponse2(response) {
+  if (response.isError()) {
+    alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
+    return;
+  }
+
+  var data = new google.visualization.DataTable(); 
+
+
   visualization = new google.visualization.AnnotatedTimeLine(document.getElementById('chart_div'));
   visualization.draw(data, null);
 }
     </script>
 <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+
 
 <style type="text/css">
     .fileInfo {margin-bottom:1em;}
@@ -131,8 +156,9 @@ function handleQueryResponse(response) {
         <div class="graphResults">
             <div class="linebox" style="float:left; width:24%;">
 
-           <div  jsfc="ice:panelSeries" id ="lineListPanelSeries" var="line" value="#{ExploreDataPage.vizLines}"
-                   style="padding:.5em;   margin:0 1em 1em 0;">
+          <ice:dataTable width="100%" cellspacing="0" cellpadding="0"  var="line" value="#{ExploreDataPage.vizLines}"
+                                               binding="#{ExploreDataPage.dataTableVizLines}" >
+              <h:column>
                  <div style="#{line.border}">
                     <div  style="font-weight:bold;">
                         <ice:outputText value="#{line.label}"/>
@@ -153,10 +179,17 @@ function handleQueryResponse(response) {
                         </div>
                     </div>
 
+                    <div>
+                        <ice:commandButton id="deleteLineButton" type="submit" 
+                                           value="Delete Line"
+
+                                           binding="#{ExploreDataPage.deleteLineButton}" actionListener="#{ExploreDataPage.deleteLine}"/>
+                        <ice:message for="deleteLineButton" id ="boxErrorMsg"  styleClass="errorMessage"   />
+                    </div>
 
                     </div>
-            </div>
-
+                    </h:column>
+        </ice:dataTable>
 
 
             </div>
@@ -174,6 +207,14 @@ function handleQueryResponse(response) {
                         <f:selectItem itemLabel="Graph" itemValue=""/>
                     </ice:selectOneMenu>
                     <ice:commandButton  value="Create"  onclick="drawVisualization();"/>
+                </div>
+
+               <div style="margin-bottom:.5em;">
+                    <ice:outputLabel value="Display" for="graphdisplay" style="display:block;" />
+                    <ice:selectOneMenu id="graphdisplay">
+                        <f:selectItem itemLabel="Graph" itemValue=""/>
+                    </ice:selectOneMenu>
+                    <ice:commandButton  value="Create2"  onclick="drawVisualization2();"/>
                 </div>
                 <div style="margin-bottom:.5em;">
                     <ice:outputLabel value="Title" for="graphtitle" style="display:block;" />

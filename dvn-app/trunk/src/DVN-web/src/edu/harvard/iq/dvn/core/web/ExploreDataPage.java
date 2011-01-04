@@ -26,7 +26,10 @@ import com.icesoft.faces.component.panelseries.PanelSeries;
 import javax.management.Query;
 import javax.servlet.http.HttpServletRequest;
 
+
+
 import com.icesoft.faces.component.ext.HtmlCommandButton;
+import com.icesoft.faces.component.ext.HtmlDataTable;
 import com.icesoft.faces.component.ext.HtmlInputText;
 import edu.harvard.iq.dvn.core.study.DataVariable;
 import edu.harvard.iq.dvn.core.study.StudyFile;
@@ -44,6 +47,7 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 
 
@@ -77,7 +81,9 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     private DataVariable xAxisVar;
     private DataTable dt = new DataTable();
     private DataVariable dataVariableSelected = new DataVariable();
-    
+
+
+
     public ExploreDataPage() {
         
     }
@@ -465,6 +471,34 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
            vizLines.add(vizLine);
         }
     }
+
+     public void deleteLine(ActionEvent ae){
+
+        UIComponent uiComponent = ae.getComponent().getParent();
+        while (!(uiComponent instanceof HtmlDataTable)){
+            uiComponent = uiComponent.getParent();
+        }
+        HtmlDataTable tempTable = (HtmlDataTable) uiComponent;
+        VisualizationLineDefinition vizLine = (VisualizationLineDefinition) tempTable.getRowData();
+        
+
+        List <VisualizationLineDefinition> removeList = new ArrayList();
+
+        List <VisualizationLineDefinition> tempList = new ArrayList(vizLines);
+           for(VisualizationLineDefinition vizLineCheck: tempList){
+                if (vizLineCheck.equals(vizLine)){
+                    removeList.add(vizLineCheck);
+
+                }
+             }
+
+
+           for(VisualizationLineDefinition vizLineRem : removeList){
+
+                        vizLines.remove(vizLineRem);
+           }
+
+    }
     private boolean validateSelections(){
         boolean valid  = true;
         int count = 0;
@@ -638,6 +672,16 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         this.addLineButton = hit;
     }
 
+    private HtmlCommandButton deleteLineButton = new HtmlCommandButton();
+
+    public HtmlCommandButton getDeleteLineButton() {
+        return deleteLineButton;
+    }
+
+    public void setDeleteLineButton(HtmlCommandButton hit) {
+        this.deleteLineButton = hit;
+    }
+
     public String getDataTable(){
 
     StudyFile sf = dt.getStudyFile();
@@ -678,7 +722,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 // columns (tab-separated)
 
         if (tmpSubsetFile.exists()) {
-            
+
+
             Long subsetFileSize = tmpSubsetFile.length();
             List <String>  fileList = new ArrayList();
             BufferedReader reader = new BufferedReader(new FileReader(tmpSubsetFile));
@@ -687,17 +732,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                String check =  line.toString();
                fileList.add(check);
             }
-
-            for (String strBuff: fileList){
-                String splitarray[] = strBuff.split("\t");
-                for ( int i=0; i<vizLines.size(); i++ ) {
-                    if (i==0){
-
-
-                    }
-                }
-            }
-
+            int countRows = 0;
 
 
             return subsetFileSize.toString();
@@ -712,6 +747,15 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
     }
 
+    private HtmlDataTable dataTableVizLines;
+
+    public HtmlDataTable getDataTableVizLines() {
+        return this.dataTableVizLines;
+    }
+
+    public void setDataTableVizLines(HtmlDataTable dataTableVizLines) {
+        this.dataTableVizLines = dataTableVizLines;
+    }
 
 
 }

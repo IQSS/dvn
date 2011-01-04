@@ -12,20 +12,12 @@ Common Form for SetUpDataExplorationPage
     <div class="dvnFormPadding dvnFormMargin" style="float:right;">
 
         <ice:commandButton type="submit" value="Update" action ="#{SetUpDataExplorationPage.saveXAxis}" visible="#{SetUpDataExplorationPage.editXAxis}"/>
-        <ice:commandButton type="submit" value="Cancel" action ="#{SetUpDataExplorationPage.cancelXAxis}" visible="#{SetUpDataExplorationPage.editXAxis}"/>
-
-        <ice:commandButton type="submit" value="Save" action="#{SetUpDataExplorationPage.saveXAxis}"/>
-        <ice:commandButton type="submit" value="Cancel" action="#{SetUpDataExplorationPage.cancelXAxis}"/>
-    </div>
-
-    <div jsfc="ice:panelGroup" style="margin-bottom:1em;" >
-        <ice:outputLabel value="Units"
-                         id="xAxisUnitsLabel" visible="#{SetUpDataExplorationPage.editXAxis}" for="filtergroupname"/>
+        <ice:commandButton type="submit" value="Cancel" action ="#{SetUpDataExplorationPage.cancelFragment}" visible="#{SetUpDataExplorationPage.editXAxis}"/>
     </div>
     <div jsfc="ice:panelGroup" style="margin-bottom:1em;">
         <ice:outputLabel value="Units" for="filtergroupname"/>
         <ice:inputText 
-          value="#{SetUpDataExplorationPage.xAxisUnits}"
+          
           size="25"
           maxlength="255"
           binding="#{SetUpDataExplorationPage.inputXAxisUnits}"/>

@@ -7,19 +7,33 @@
      class="dvnsetupdataexloprationformblock">
 
     <div class="dvnFormPadding dvnFormMargin" style="float:right;">
-        <ice:commandButton type="submit" value="Update" action ="#{SetUpDataExplorationPage.saveFragment}" visible="#{SetUpDataExplorationPage.editMeasure}"/>
+        <ice:commandButton type="submit" value="Update" action ="#{SetUpDataExplorationPage.saveMeasureFragment}" visible="#{SetUpDataExplorationPage.editMeasure}"/>
         <ice:commandButton type="submit" value="Cancel" action ="#{SetUpDataExplorationPage.cancelFragment}" visible="#{SetUpDataExplorationPage.editMeasure}"/>
+        <ice:commandButton type="submit" value="Update" action ="#{SetUpDataExplorationPage.saveMeasureGrouping}" 
+                           visible="#{SetUpDataExplorationPage.editMeasureGrouping  or SetUpDataExplorationPage.manageMeasureTypes}"/>
+        <ice:commandButton type="submit" value="Cancel" action ="#{SetUpDataExplorationPage.cancelFragment}" 
+                           visible="#{SetUpDataExplorationPage.editMeasureGrouping  or SetUpDataExplorationPage.manageMeasureTypes}"/>
     </div>
     <div jsfc="ice:panelGroup" style="margin-bottom:1em;" >
         <ice:outputLabel value="Measure"
                          rendered="#{SetUpDataExplorationPage.editMeasure}"
                          visible="#{SetUpDataExplorationPage.editMeasure}"/>
         <ice:inputText
-          rendered="#{SetUpDataExplorationPage.editMeasure}"
-          value="#{SetUpDataExplorationPage.editFragmentVarGroup.varGroup.name}"
+          rendered="#{SetUpDataExplorationPage.editMeasure}"          
           size="25"
           maxlength="255"
           binding="#{SetUpDataExplorationPage.inputMeasureName}"/>
+    </div>
+    <div jsfc="ice:panelGroup" style="margin-bottom:1em;" >
+        <ice:outputLabel value="Measure Label:  "
+                         rendered="#{SetUpDataExplorationPage.editMeasureGrouping}"
+                         visible="#{SetUpDataExplorationPage.editMeasureGrouping}"/>
+               <ice:inputText id="input_measureGroupingName"
+                              rendered="#{SetUpDataExplorationPage.editMeasureGrouping}"
+                              
+                    size="25"
+                    maxlength="255"
+                    binding="#{SetUpDataExplorationPage.inputMeasureGroupingName}"/>
     </div>
     <div jsfc="ice:panelGroup" style="margin-bottom:1em;" >
         <ice:outputLabel value="Units"
@@ -27,32 +41,119 @@
                          visible="#{SetUpDataExplorationPage.editMeasure}"/>
                 <ice:inputText
           rendered="#{SetUpDataExplorationPage.editMeasure}"
-          value="#{SetUpDataExplorationPage.editFragmentVarGroup.varGroup.units}"
+          
           size="25"
           maxlength="255"
           binding="#{SetUpDataExplorationPage.inputMeasureUnits}"/>
 
     </div>
-    <div jsfc="ice:panelGroup" rendered="#{SetUpDataExplorationPage.editMeasure}">
-         <ice:outputLabel value="Measure Types" rendered="#{SetUpDataExplorationPage.editMeasure}"
-              visible="#{SetUpDataExplorationPage.editMeasure}"/>
-         <ice:selectManyListbox size="2"
-                                value="#{SetUpDataExplorationPage.editFragmentVarGroup.varGroupTypesSelectItems}">
-             <f:selectItems value="#{SetUpDataExplorationPage.selectMeasureGroupTypes}"/>
-         </ice:selectManyListbox>
-         <br></br>
-         <ice:outputLabel value="Name" visible="#{SetUpDataExplorationPage.addMeasureType}"/>
 
-         <ice:inputText id="input_addMeasureType"
-                        rendered="#{SetUpDataExplorationPage.addMeasureType}"
+    <div jsfc="ice:panelGroup" rendered="#{SetUpDataExplorationPage.editMeasure  or SetUpDataExplorationPage.manageMeasureTypes }">
+       <ice:commandLink   type="submit"
+          action="#{SetUpDataExplorationPage.addMeasureTypeButton}" visible="#{!SetUpDataExplorationPage.addMeasureType}">
+          <ice:outputText  value="Add Filter Type"/>
+        </ice:commandLink>
+             <ice:outputLabel value="Name" visible="#{SetUpDataExplorationPage.addMeasureType}"/>
+
+         <ice:inputText 
+                        visible="#{SetUpDataExplorationPage.addMeasureType}"
                         size="25"
                         maxlength="255"
-                        binding="#{SetUpDataExplorationPage.inputGroupTypeName}"/>
-         <ice:commandButton type="submit" value="Add Measure Type" action ="#{SetUpDataExplorationPage.addMeasureTypeButton}" visible="#{!SetUpDataExplorationPage.addMeasureType}"/>
-          <ice:commandButton type="submit" value="Save Measure Type" action ="#{SetUpDataExplorationPage.saveMeasureTypeButton}" visible="#{SetUpDataExplorationPage.addMeasureType}"/>
-          <ice:commandButton type="submit" value="Cancel" action ="#{SetUpDataExplorationPage.cancelMeasureTypeButton}" visible="#{SetUpDataExplorationPage.addMeasureType}"/>
-    </div>
+                        binding="#{SetUpDataExplorationPage.inputMeasureGroupTypeName}"/>
+           <ice:commandLink    type="submit"
+          action="#{SetUpDataExplorationPage.saveMeasureTypeButton}" visible="#{SetUpDataExplorationPage.addMeasureType}">
+          <ice:outputText  value="Save Measure Type"/>
+        </ice:commandLink>
+           <ice:commandLink      type="submit"
+          action="#{SetUpDataExplorationPage.cancelMeasureTypeButton}" visible="#{SetUpDataExplorationPage.addMeasureType}">
+          <ice:outputText  value="Cancel"/>
+        </ice:commandLink>
 
+     </div>
+
+
+                            <div jsfc="ice:panelGroup">
+                                <ice:dataTable width="100%" cellspacing="0" cellpadding="0" var="groupType"
+                                               rendered="#{SetUpDataExplorationPage.manageMeasureTypes}"
+                                               value="#{SetUpDataExplorationPage.measureGroupTypes}"
+                                               binding="#{SetUpDataExplorationPage.dataTableManageMeasureGroupType}">
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <ice:outputLabel value="Name"/>
+                                        </f:facet>
+                                        <ice:outputText value="#{groupType.varGroupType.name}" rendered="#{!groupType.editMode}"/>
+                                            <ice:inputText 
+                                            visible="#{groupType.editMode}"
+                                            
+                                            size="25"
+                                            maxlength="255"
+                                            binding="#{SetUpDataExplorationPage.editManageMeasureGroupTypeName}"/>
+                                    </h:column>
+                                     <h:column>
+                                        <f:facet name="header">
+                                            <ice:outputText value="Actions"/>
+                                        </f:facet>
+                                        <ice:commandLink id="editMeasureGroupType"
+                                                         visible="#{!groupType.editMode}"
+                                                         actionListener="#{SetUpDataExplorationPage.editMeasureTypeAction}">
+                                             <ice:outputText id="editMeasureGroupTypeText" value="Edit"/>
+                                        </ice:commandLink>
+                                        <ice:commandLink id="saveMeasureGroupType"
+                                                         visible="#{groupType.editMode}"
+                                                         actionListener="#{SetUpDataExplorationPage.saveMeasureType}">
+                                             <ice:outputText id="saveMeasureGroupTypeText" value="Save"/>
+                                        </ice:commandLink>
+                                        <ice:commandLink id="deleteMeasureGroupType"
+                                                         visible="#{!groupType.editMode}"
+                                                         actionListener="#{SetUpDataExplorationPage.deleteMeasureGroupType}">
+                                             <ice:outputText id="deleteMeasureGroupTypeText" value="Delete"/>
+                                        </ice:commandLink>
+                                    </h:column>
+                                </ice:dataTable>
+                            </div>
+    <ice:dataTable width="100%" cellspacing="0" cellpadding="0" var="type" value="#{SetUpDataExplorationPage.editMeasureVarGroup.varGroupTypes}"
+                           rendered="#{SetUpDataExplorationPage.editMeasure}"
+              binding="#{SetUpDataExplorationPage.dataTableMeasureGroupType}">
+           <ice:column rendered="#{SetUpDataExplorationPage.editMeasure}">
+                <f:facet name="header">
+                    <ice:outputText value="Select"/>
+                </f:facet>
+                <ice:selectBooleanCheckbox  styleClass="filterVariableCheckBoxes"
+                                            partialSubmit="false" value="#{type.selected}"/>
+            </ice:column>
+              <h:column>
+                   <f:facet name="header">
+                          <ice:outputText value="Name"/>
+                   </f:facet>
+                   <ice:outputText value="#{type.varGroupType.name}" rendered="#{!type.editMode}"/>
+                        <ice:inputText
+                            visible="#{type.editMode}"
+
+                            size="25"
+                            maxlength="255"
+                            binding="#{SetUpDataExplorationPage.editMeasureGroupTypeName}"/>
+              </h:column>
+              <h:column>
+                    <f:facet name="header">
+                        <ice:outputText value="Actions"/>
+                    </f:facet>
+                    <ice:commandLink
+                        visible="#{!type.editMode}"
+                        actionListener="#{SetUpDataExplorationPage.editMeasureTypeAction}">
+                        <ice:outputText  value="Edit"/>
+                    </ice:commandLink>
+                    <ice:commandLink
+                         visible="#{type.editMode}"
+                         actionListener="#{SetUpDataExplorationPage.saveMeasureType}">
+                         <ice:outputText  value="Save"/>
+                    </ice:commandLink>
+                    <ice:commandLink
+                               visible="#{!type.editMode}"
+                               actionListener="#{SetUpDataExplorationPage.deleteMeasureGroupType}">
+                               <ice:outputText  value="Delete"/>
+                    </ice:commandLink>
+                </h:column>
+         </ice:dataTable>
 
     <div jsfc="ice:panelGroup" rendered="#{SetUpDataExplorationPage.editMeasure}">
          <ice:outputText value="Filter Variables" rendered="#{SetUpDataExplorationPage.editMeasure}"
@@ -64,6 +165,9 @@
               onkeyup="delayedRequest(form,this,event);"
               valueChangeListener="#{SetUpDataExplorationPage.updateMeasureVariableList}"
               binding="#{SetUpDataExplorationPage.inputVariableMeasure}"/>
+
+                 <ice:commandButton type="submit"  value="Select All" action="#{SetUpDataExplorationPage.selectAllVariables}"
+                           visible="true"/>
 
          <ice:dataTable width="100%" cellspacing="0" cellpadding="0" id="genericVariables" var="dataVariableUI" value="#{SetUpDataExplorationPage.dvGenericFilteredListUI}">
                                     <ice:column>

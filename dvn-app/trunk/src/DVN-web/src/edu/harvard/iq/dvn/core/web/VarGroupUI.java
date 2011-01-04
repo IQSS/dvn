@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class VarGroupUI {
     private VarGroup varGroup;
-    private List <VarGroupTypeUI> varGroupTypesSelected;
+    private List <VarGroupTypeUI> varGroupTypes;
     private List <Long> varGroupTypesSelectItems;
     private List <Long> dataVariablesSelected;
     private String groupTypesSelectedString;
@@ -29,12 +29,12 @@ public class VarGroupUI {
         this.varGroup = varGroup;
     }
 
-    public List<VarGroupTypeUI> getVarGroupTypesSelected() {
-        return varGroupTypesSelected;
+    public List<VarGroupTypeUI> getVarGroupTypes() {
+        return varGroupTypes;
     }
 
-    public void setVarGroupTypesSelected(List<VarGroupTypeUI> varGroupTypesSelected) {
-        this.varGroupTypesSelected = varGroupTypesSelected;
+    public void setVarGroupTypes(List<VarGroupTypeUI> varGroupTypesSelected) {
+        this.varGroupTypes = varGroupTypesSelected;
     }
 
     public List<Long> getVarGroupTypesSelectItems(){

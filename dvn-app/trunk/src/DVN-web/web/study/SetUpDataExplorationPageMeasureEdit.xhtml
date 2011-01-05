@@ -167,7 +167,7 @@
               binding="#{SetUpDataExplorationPage.inputVariableMeasure}"/>
 
                  <ice:commandButton type="submit"  value="Select All" action="#{SetUpDataExplorationPage.selectAllVariables}"
-                           visible="true"/>
+                           visible="#{SetUpDataExplorationPage.editMeasure}"/>
 
          <ice:dataTable width="100%" cellspacing="0" cellpadding="0" id="genericVariables" var="dataVariableUI" value="#{SetUpDataExplorationPage.dvGenericFilteredListUI}">
                                     <ice:column>

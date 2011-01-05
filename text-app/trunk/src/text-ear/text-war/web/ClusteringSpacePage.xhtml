@@ -320,6 +320,13 @@
            }
 
            function updatePointsDisplay(clusterNumVal ) {
+               // Re-initialize cluster info table, which will close
+               // any currently open document detail tables
+               // The call is commented out because it's not working currently,
+               // but this is were we need to update the cluster table display
+               // 
+             //  initClusterTabs();
+
                // enable/disable back/forward buttons, depending on
                 // the point to be displayed
                 if (currentIndex==0) {

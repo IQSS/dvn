@@ -910,28 +910,26 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
     }
 
     public void addFilterGroupAction(ActionEvent ae) {
+        UIComponent uiComponent = ae.getComponent().getParent();
+        while (!(uiComponent instanceof HtmlDataTable)){
+            uiComponent = uiComponent.getParent();
+        }
+        HtmlDataTable tempTable = (HtmlDataTable) uiComponent;
+        VarGroupingUI varGroupingUI = (VarGroupingUI) tempTable.getRowData();
         VarGroupUI newElem = new VarGroupUI();
         newElem.setVarGroup(new VarGroup());
         newElem.getVarGroup().setGroupTypes(new ArrayList());
+        newElem.getVarGroup().setGroupAssociation(varGroupingUI.getVarGrouping());
         loadEmptyVariableList();
-        VarGroupingUI varGroupingUIIn = new VarGroupingUI();
-                    HtmlDataTable dataTable2 = dataTableFilterGrouping;
-            if (dataTable2.getRowCount()>0) {
-                 varGroupingUIIn = (VarGroupingUI) dataTable2.getRowData();
-                newElem.getVarGroup().setGroupAssociation(varGroupingUIIn.getVarGrouping());
-            }
 
         newElem.setVarGroupTypes(new ArrayList());
-        for (VarGroupingUI varGroupingUI: filterGroupings){
-            if (varGroupingUI.getVarGrouping().equals(newElem.getVarGroup().getGroupAssociation())){
-                List <VarGroupTypeUI> allVarGroupTypes = (List<VarGroupTypeUI>) varGroupingUI.getVarGroupTypesUI();
-                for (VarGroupTypeUI varGroupTypeUI : allVarGroupTypes) {
-                    varGroupTypeUI.setSelected(false);
-                    newElem.getVarGroupTypes().add(varGroupTypeUI);
-                }
-            }
-        }
 
+        List <VarGroupTypeUI> allVarGroupTypes = (List<VarGroupTypeUI>) varGroupingUI.getVarGroupTypesUI();
+        for (VarGroupTypeUI varGroupTypeUI : allVarGroupTypes) {
+                varGroupTypeUI.setSelected(false);
+                newElem.getVarGroupTypes().add(varGroupTypeUI);
+        }
+        
         editFilterVarGroup = newElem;
         loadEmptyVariableList();
         cancelAddEdit();
@@ -945,7 +943,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
     }
 
     public void addFilterTypeButton(){
-        
+
         addFilterType = true;
     }
 
@@ -980,7 +978,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         Long varGroupingId = new Long(0);
         boolean groupEdit = false;
         VarGroupType newElem = new VarGroupType();
-        if (editFilterVarGroup.getVarGroup() != null) {
+        if (editFilterVarGroup != null) {
             newElem.setVarGrouping(editFilterVarGroup.getVarGroup().getGroupAssociation());
             varGroupingId = editFilterVarGroup.getVarGroup().getGroupAssociation().getId();
             groupEdit = true;

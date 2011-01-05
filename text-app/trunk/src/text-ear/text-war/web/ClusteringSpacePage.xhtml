@@ -480,6 +480,9 @@
                 vectorLayer.redraw();
                 points = new Array();  // clear list of feature points
                 addPointToList(lastPoint.geometry.x, lastPoint.geometry.y, lastPoint.attributes.clusterNum, lastPoint.attributes.solutionId); // initialize with starting point
+                // update the map to show the cluster layer for this point
+                updatePointsDisplay(points[currentIndex].attributes.clusterNum);
+
             }
 
             function popupDocument(mylink) {

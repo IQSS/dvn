@@ -57,13 +57,19 @@ public class ClusteringSpacePage {
 
     @PostConstruct
     public void init() {
+
+      
         logger.fine("initializing page");
-         xCoord = 0;
-         yCoord = 0;
-         clusterNum = 5;
+        xCoord = 0;
+        yCoord = 0;
+        clusterNum = 5;
+        if (setId==null) {
+            throw new ClusterException("missing setId parameter.");
+        }
         documentSet = new DocumentSet(setId);
         solutionIndex=-1;
         calculateClusterSolution(true);
+
     }
 
 
@@ -399,7 +405,11 @@ public class ClusteringSpacePage {
            return baos.toString();
 
        }
+       // This is just a dummy setter so we can use viewDocumentText
+       // as the value of an inputTextarea component.
+       public void setViewDocumentText(String s) {
 
+       }
        private FileInputStream getViewDocumentInputStream() throws IOException {
            String docRoot = System.getProperty("text.documentRoot");
            File setDir = new File(docRoot, setId);

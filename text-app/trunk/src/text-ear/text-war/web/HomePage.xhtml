@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-To change this template, choose Tools | Templates
-and open the template in the editor.
--->
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-        <title>Text Clustering Home Page</title>
-    </head>
-    <body>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ice="http://www.icesoft.com/icefaces/component">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<ui:composition template="/template.xhtml">
+<ui:param name="pageTitle" value="Text Clustering Home Page"/>
+<ui:define name="body">
         <p>
             TODO: Show dynamic list of document sets for clustering analysis.
             For now it is hard-coded.
@@ -22,5 +24,7 @@ and open the template in the editor.
             <br/>
             <a href="/text/faces/ClusteringSpacePage.xhtml?setId=4">SetId 4 (NSF Docs)</a>
         </p>
-    </body>
+</ui:define>
+</ui:composition>
+</body>
 </html>

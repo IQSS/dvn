@@ -1,19 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-To change this template, choose Tools | Templates
-and open the template in the editor.
--->
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://java.sun.com/jsf/html">
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-        <title>Text Analysis Error Page</title>
-    </head>
-    <body>
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ice="http://www.icesoft.com/icefaces/component">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<ui:composition template="/template.xhtml">
+<ui:param name="pageTitle" value="Text Clustering Error Page"/>
+<ui:define name="body">
         <p>
-           <h:outputText value=" Text Analysis Error:  #{sessionScope['ERROR_MESSAGE']}"></h:outputText>
+           <ice:outputText styleClass="errorMessage" value="Text Analysis Error: #{sessionScope['ERROR_MESSAGE']}"></ice:outputText>
         </p>
-    </body>
+</ui:define>
+</ui:composition>
+</body>
 </html>
  

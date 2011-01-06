@@ -783,9 +783,7 @@ td.clusterCountCol {width:14%;}
 
                                         <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-last.gif" title="Last Document" rendered="#{row.viewDocumentIndex==row.clusterInfo.clusterCount-1}"/>
                                         <ice:commandLink title="Last Document" rendered="#{row.viewDocumentIndex!=row.clusterInfo.clusterCount-1}" actionListener="#{row.viewLast}"><img title="Last Document" src="/text/resources/icefaces/dvn_rime/css-images/arrow-last.gif" class="iceGphImg" alt=""/></ice:commandLink>
-                                  
                                     </div>
-
                                     <p>
                                         <ice:outputText value="Document: #{row.viewDocumentName}"/>
                                     </p>
@@ -829,9 +827,9 @@ td.clusterCountCol {width:14%;}
                         </div>
 
                         <ice:panelPopup id="modalPnlPop"
-                                        draggable="true" modal="false"
+                                        modal="false"
                                         visible="#{row.showPopup}"
-                                        autoCentre="true"
+                                        autoCentre="true" draggable="false"
                                         styleClass="clusterViewDocPopup">
                             <f:facet name="header">
                                 <ice:panelGroup styleClass="popupHeaderWrapper">

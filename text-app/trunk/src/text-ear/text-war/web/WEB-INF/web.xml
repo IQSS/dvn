@@ -4,12 +4,10 @@
         <param-name>javax.faces.PROJECT_STAGE</param-name>
         <param-value>Development</param-value>
     </context-param>
-
     <login-config>
         <auth-method>BASIC</auth-method>
         <realm-name>textclustering</realm-name>
     </login-config>
-
     <security-constraint>
         <web-resource-collection>
             <web-resource-name>Secure Pages</web-resource-name>
@@ -21,6 +19,16 @@
             <role-name>USERS</role-name>
         </auth-constraint>
     </security-constraint>
+    <filter>
+        <filter-name>ValidationFilter</filter-name>
+        <filter-class>edu.harvard.iq.text.ValidationFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>ValidationFilter</filter-name>
+        <url-pattern>/faces/ClusteringSpacePage.xhtml</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+          <dispatcher>FORWARD</dispatcher>
+    </filter-mapping>
 
     <servlet>
         <servlet-name>ConvexHullServlet</servlet-name>

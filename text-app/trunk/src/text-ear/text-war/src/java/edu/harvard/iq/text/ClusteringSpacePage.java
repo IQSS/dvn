@@ -368,17 +368,22 @@ public class ClusteringSpacePage {
 
         public String getViewDocumentPreview() {
 
-            int previewLength = 60;
+            int previewLength = 300;
+            String temp;
             String preview = null;
             byte[] byteArray = new byte[previewLength];
             try {
                 FileInputStream fin = getViewDocumentInputStream();
                 BufferedInputStream bis = new BufferedInputStream(fin);
                 bis.read(byteArray,0, previewLength);
-                preview = new String(byteArray, "utf-8");
-               if (bis.available()>0) {
-                   preview+="...";
-               }
+                temp = new String(byteArray, "utf-8");
+                // remove leading white space
+                temp = temp.trim();
+                // remove everything after the carriage return
+                int retIndex = temp.indexOf("\n");
+                if (retIndex !=-1) {
+                    preview = temp.substring(0, retIndex);
+                }
             } catch (IOException e) {
                 throw new ClusterException(e.getMessage());
             }

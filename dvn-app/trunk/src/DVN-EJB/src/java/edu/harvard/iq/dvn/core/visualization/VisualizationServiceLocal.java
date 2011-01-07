@@ -63,5 +63,7 @@ public interface VisualizationServiceLocal extends java.io.Serializable {
 
     public boolean validateUniqueVariableMappings(java.lang.Long dataTableId);
 
+    public boolean validateAtLeastOneMeasureMapping(edu.harvard.iq.dvn.core.study.DataTable dataTable);
+
 
 }

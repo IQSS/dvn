@@ -510,5 +510,32 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
         em.flush();
     }
 
+    @Override
+    public boolean validateAtLeastOneMeasureMapping(DataTable dataTable) {
+       int countMeasures = 0;
+
+        List variableMappings = new ArrayList();
+        List dataVariables = new ArrayList();
+        dataVariables = dataTable.getDataVariables();
+        Iterator iteratorV = dataVariables.iterator();
+            while (iteratorV.hasNext()) {
+                DataVariable dataVariable = (DataVariable) iteratorV.next();
+                variableMappings = (List) dataVariable.getDataVariableMappings();
+                Iterator iterator = variableMappings.iterator();
+                while (iterator.hasNext()) {
+
+                    DataVariableMapping dataVariableMapping = (DataVariableMapping) iterator.next();
+                    if (dataVariableMapping.getVarGrouping() != null && dataVariableMapping.getVarGrouping().getGroupingType().equals(GroupingType.MEASURE)){
+                        countMeasures++;
+                    }
+                }
+            }
+            if (countMeasures < 1){
+                return false;
+            }
+
+        return true;
+    }
+
 
 }

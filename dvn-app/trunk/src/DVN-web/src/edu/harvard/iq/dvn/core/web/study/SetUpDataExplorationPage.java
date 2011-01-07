@@ -1253,6 +1253,14 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             valid = false;
         }
 
+        if (!visualizationService.validateAtLeastOneMeasureMapping(dataTable)) {
+            FacesMessage message = new FacesMessage("The Data Visualization must include at least one Measure.");
+            FacesContext fc = FacesContext.getCurrentInstance();
+            fc.addMessage(validateButton.getClientId(fc), message);
+            valid = false;
+        }
+
+
         return valid;
     }
 

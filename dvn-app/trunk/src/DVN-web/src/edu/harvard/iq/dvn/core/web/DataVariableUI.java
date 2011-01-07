@@ -14,6 +14,9 @@ import edu.harvard.iq.dvn.core.study.DataVariable;
 public class DataVariableUI {
     private DataVariable dataVariable;
     private boolean selected;
+    private boolean display;
+
+
 
     public DataVariable getDataVariable() {
         return dataVariable;
@@ -29,6 +32,14 @@ public class DataVariableUI {
 
     public void setSelected(boolean selected) {
         this.selected = selected;
+    }
+
+    public boolean isDisplay() {
+        return display;
+    }
+
+    public void setDisplay(boolean display) {
+        this.display = display;
     }
 
 

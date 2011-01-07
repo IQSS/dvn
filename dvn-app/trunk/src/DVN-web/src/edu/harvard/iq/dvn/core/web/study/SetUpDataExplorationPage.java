@@ -292,6 +292,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             DataVariableUI dataVariableUI = new DataVariableUI();
             dataVariableUI.setDataVariable(dataVariable);
             dataVariableUI.setSelected(false);
+            dataVariableUI.setDisplay(true);
             dvListUILocG.add(dataVariableUI);
         }
         dvGenericListUI = dvListUILocG;
@@ -1520,53 +1521,15 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
     }
 
    public void updateGenericGroupVariableList (String checkString){
-       List <DataVariableUI> holdVals = new <DataVariableUI> ArrayList();
-
-       System.out.println("Start Method");
-       System.out.println("Filtered List In");
-        for(DataVariableUI dvF: dvGenericFilteredListUI ){
-             System.out.println("Id "+dvF.getDataVariable().getId().toString()+", " +"  -selected "+dvF.isSelected());
-       }
-
-       for(DataVariableUI dvF: dvGenericFilteredListUI ){
-           DataVariableUI dvNew = new DataVariableUI();
-           dvNew.setDataVariable(dvF.getDataVariable());
-           dvNew.setSelected(dvF.isSelected());
-           holdVals.add(dvNew);
-       }
-
-       for (DataVariableUI dataVariableUI: dvGenericListUI){
-            for (DataVariableUI dvT: holdVals ){
-                if(dataVariableUI.getDataVariable().getId().equals(dvT.getDataVariable().getId())){
-                   dataVariableUI.setSelected(dvT.isSelected());
-                }
-            }
-       }
-
-
-
-
        Iterator iterator = dvGenericListUI.iterator();
 
-        dvGenericFilteredListUI.clear();
         while (iterator.hasNext() ){
             DataVariableUI dataVariableUI = (DataVariableUI) iterator.next();
+            dataVariableUI.setDisplay(false);
             if (dataVariableUI.getDataVariable().getName().contains(checkString)) {
-                dataVariableUI.setSelected(false);
-                for (DataVariableUI dvT: holdVals ){
-                    if(dataVariableUI.getDataVariable().getId().equals(dvT.getDataVariable().getId())){
-                        dataVariableUI.setSelected(dvT.isSelected());
-                    }
-                }
-
-                dvGenericFilteredListUI.add(dataVariableUI);
+                dataVariableUI.setDisplay(true);
             }
-        }
-         System.out.println("Filtered List Out");
-        for(DataVariableUI dvF: dvGenericFilteredListUI ){
-             System.out.println("Id "+dvF.getDataVariable().getId().toString()+", " +"  -selected "+dvF.isSelected());
-       }
-         
+        }        
    }
 
    public void updateXAxisVariableList (String checkString){
@@ -1621,13 +1584,14 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
     }
     private void selectAllVariablesPrivate(boolean check){
         
-        Iterator iterator = dvGenericFilteredListUI.iterator();
+        Iterator iterator = dvGenericListUI.iterator();
         
         while (iterator.hasNext() ){
             DataVariableUI dataVariableUI = (DataVariableUI) iterator.next();
-            dataVariableUI.setSelected(check);
+            if (dataVariableUI.isDisplay()){
+                dataVariableUI.setSelected(check);
+            }
         }
-
     }
 
     private void forceRender(ValueChangeEvent ce){

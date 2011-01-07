@@ -166,7 +166,7 @@
               valueChangeListener="#{SetUpDataExplorationPage.updateMeasureVariableList}"
               binding="#{SetUpDataExplorationPage.inputVariableMeasure}"/>
 
-         <ice:dataTable width="100%" cellspacing="0" cellpadding="0" id="genericVariables" var="dataVariableUI" value="#{SetUpDataExplorationPage.dvGenericFilteredListUI}">
+         <ice:dataTable width="100%" cellspacing="0" cellpadding="0" id="genericVariables" var="dataVariableUI" value="#{SetUpDataExplorationPage.dvGenericListUI}">
                                     <ice:column>
                                         <f:facet name="header">                                          
                                             <ice:selectBooleanCheckbox id="checkAllMeasureVars"
@@ -178,13 +178,18 @@
                                                         />
                                         </f:facet>
                                         <ice:selectBooleanCheckbox id="genericVariableCheckBoxes" styleClass="measureVariableCheckBoxes"
-                                                                   partialSubmit="false" value="#{dataVariableUI.selected}"/>
+                                                                   partialSubmit="false" value="#{dataVariableUI.selected}"
+                                                                   visible="#{dataVariableUI.display}"
+                                                                   disabled="#{!dataVariableUI.display}"
+                                                                   />
                                     </ice:column>
                                     <ice:column>
                                         <f:facet name="header">
                                             <ice:outputText value="Name"/>
                                         </f:facet>
-                                        <ice:outputLabel value="#{dataVariableUI.dataVariable.name}"/>
+                                        <ice:outputLabel value="#{dataVariableUI.dataVariable.name}"
+                                                                   visible="#{dataVariableUI.display}"
+                                                                   />
                                     </ice:column>
                                 </ice:dataTable>
                             </div>

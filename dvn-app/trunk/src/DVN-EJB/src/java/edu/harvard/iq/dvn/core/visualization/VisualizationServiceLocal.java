@@ -57,9 +57,11 @@ public interface VisualizationServiceLocal extends java.io.Serializable {
 
     public boolean validateAtLeastOneFilterMapping(edu.harvard.iq.dvn.core.study.DataTable dataTable);
 
-    public boolean validateXAxisMapping(edu.harvard.iq.dvn.core.study.DataTable dataTable);
+    public boolean validateXAxisMapping(edu.harvard.iq.dvn.core.study.DataTable dataTable, Long xAxisVariableId);
 
     public boolean validateOneMeasureMapping(edu.harvard.iq.dvn.core.study.DataTable dataTable);
+
+    public boolean validateUniqueVariableMappings(java.lang.Long dataTableId);
 
 
 }

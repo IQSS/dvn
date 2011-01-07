@@ -44,7 +44,7 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
         dt = em.find(DataTable.class,dataTableId);
         if (dt==null) {
             throw new IllegalArgumentException("Unknown data table id: "+dataTableId);
-        }  
+        }
     }
 
         @Override
@@ -76,7 +76,7 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
 
         String query = "SELECT g FROM  VarGrouping g where g.dataTable.id = " + dataTableId + "  ORDER BY g.id";
         return (List) em.createQuery(query).getResultList();
-        
+
     }
 
     @Override
@@ -121,12 +121,12 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
         valid &= validateOneMeasureMapping(dataTable);
         valid &= validateAtLeastOneFilterMapping(dataTable);
         //valid &= validateUniqueVariableMappings(dataTable);
-        valid &= validateXAxisMapping(dataTable);
-        
+        valid &= validateXAxisMapping(dataTable, new Long (0));
+
         return valid;
     }
 
-    private boolean validateUniqueVariableMappings(Long dataTableId){
+    public boolean validateUniqueVariableMappings(Long dataTableId){
 
         boolean valid = true;
         List mappingIds = new ArrayList();
@@ -201,41 +201,77 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
         return true;
     }
 
-    public boolean validateXAxisMapping(DataTable dataTable){
+    private boolean validateSingleVariableMeasureGroup(DataTable dataTable, DataVariable dataVariable){
 
-        int countXAxis = 0;
+       int countMeasures = 0;
+       boolean hasMappings = false;
+       boolean xAxis = false;
+       List variableMappings = new ArrayList();
+       VarGroup varGroupChk = new VarGroup();
+       xAxis = false;
+       hasMappings = false;
+       countMeasures = 0;
+       variableMappings = (List) dataVariable.getDataVariableMappings();
+
+       if (!variableMappings.isEmpty()){
+            hasMappings = true;
+            Iterator iteratorMap = variableMappings.iterator();
+
+            while (iteratorMap.hasNext()) {
+                DataVariableMapping dataVariableMapping = (DataVariableMapping) iteratorMap.next();
+                if (!xAxis && dataVariableMapping.getVarGrouping() != null &&
+                    dataVariableMapping.getVarGrouping().getGroupingType().equals(GroupingType.MEASURE)){
+                    varGroupChk = dataVariableMapping.getGroup();
+                }
+            }
+        }
+
+        List dataVariables = new ArrayList();
+        dataVariables = dataTable.getDataVariables();
+        if (!dataVariables.isEmpty())
+        {
+            Iterator iterator = dataVariables.iterator();
+            while (iterator.hasNext()) {
+                DataVariable dataVariableTest = (DataVariable) iterator.next();
+                variableMappings = (List) dataVariableTest.getDataVariableMappings();
+                for (Object dvMapping: variableMappings ){
+                    DataVariableMapping dvMappingTest = (DataVariableMapping) dvMapping;
+                    if (varGroupChk.equals(dvMappingTest.getGroup())){
+                        countMeasures++;
+                    }
+
+                }
+
+            }
+            if (countMeasures > 1){
+                return false;
+            }
+        }
+
+
+        return true;
+    }
+
+    public boolean validateXAxisMapping(DataTable dataTable, Long xAxisVariableId){
+
         List variableMappings = new ArrayList();
         List dataVariables = new ArrayList();
-        DataVariable dvVerify = new DataVariable();
+
         dataVariables = dataTable.getDataVariables();
         if (!dataVariables.isEmpty())
         {
             Iterator iteratorV = dataVariables.iterator();
             while (iteratorV.hasNext()) {
                 DataVariable dataVariable = (DataVariable) iteratorV.next();
-
-                variableMappings = (List) dataVariable.getDataVariableMappings();
-                Iterator iterator = variableMappings.iterator();
-                while (iterator.hasNext()) {
-                    DataVariableMapping dataVariableMapping = (DataVariableMapping) iterator.next();
-
-
-                    if (dataVariableMapping.isX_axis()){
-                        countXAxis++;
-                        dvVerify = dataVariableMapping.getDataVariable();
-                    }
+                if (dataVariable.getId().equals(xAxisVariableId)){
+                    variableMappings = (List) dataVariable.getDataVariableMappings();
+                        if (variableMappings.size() != 1 ){
+                            return false;
+                        }
                 }
-                if (countXAxis != 1){
-                    return false;
-                }
+
             }
         }
-        List variableMappingsXAxis = (List) dvVerify.getDataVariableMappings();
-
-        if (variableMappingsXAxis.size() != 1 ){
-            return false;
-        }
-
 
         return true;
     }
@@ -269,7 +305,7 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
                         countFilters++;
                     }
                 }
-                    if (hasMappings  && !xAxis){
+                    if (hasMappings  && !xAxis && !validateSingleVariableMeasureGroup(dataTable, dataVariable)){
                         if (countFilters < 1){
                             return false;
                         }
@@ -409,10 +445,16 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
 
     @Override
     public List getFilterGroupsFromMeasureId(Long measureId) {
-        String query = "SELECT g FROM  DataVariableMapping m, DataVariable v, varGroup g where v.id = m.dataVariable.id " +
-                " and m.varGroup.id = " + measureId + "  " +
-                " and m.varGroup.id = g.id and g.units is null ORDER BY v.name";
-        return (List) em.createQuery(query).getResultList();
+        String query = "SELECT distinct g FROM  DataVariableMapping m, DataVariableMapping m2, VarGroup g where " +
+                " m.varGroup.id = " + measureId + "  " +
+                " and  m.dataVariable.id = m2.dataVariable.id " +
+                " and m2.varGroup.id = g.id and g.id <> " + measureId + "  ORDER BY g.name";
+        if (em.createQuery(query).getResultList() != null){
+            return (List) em.createQuery(query).getResultList();
+        } else {
+            return new ArrayList();
+        }
+
     }
 
     @Override
@@ -444,7 +486,7 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
         em.remove(list.get(index));
         list.remove(index);
     }
-    
+
     public void removeCollectionElement(Iterator iter, Object elem) {
         iter.remove();
         em.remove(elem);
@@ -468,5 +510,5 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
         em.flush();
     }
 
- 
+
 }

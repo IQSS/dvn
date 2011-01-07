@@ -1541,7 +1541,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
    }
 
    public void updateXAxisVariableList (String checkString){
-       List <DataVariableUI> tempList = new <DataVariableUI> ArrayList();
+       List <DataVariableUI> tempList = new  ArrayList();
        for (DataVariableUI dataVariableUITemp: dvGenericListUI){
            tempList.add(dataVariableUITemp);
        }

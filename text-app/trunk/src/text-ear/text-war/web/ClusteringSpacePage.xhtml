@@ -81,13 +81,11 @@
                     if (document.getElementById('ClusterForm:discoverableCheckbox').checked==false ) {
                         clusterNumVal = document.getElementById('ClusterForm:clusterNum').value;
                     }
-                   
-
 
                     // add new point
                     var lonlat = map.getLonLatFromViewPortPx(e.xy);
                     addPointToList( lonlat.lon, lonlat.lat,clusterNumVal,-1);
-                   
+
                     // calculate cluster solution for new point
                     document.getElementById('ClusterForm:userYCoord').value= lonlat.lat;
                     document.getElementById('ClusterForm:userXCoord').value= lonlat.lon;
@@ -322,10 +320,8 @@
            function updatePointsDisplay(clusterNumVal ) {
                // Re-initialize cluster info table, which will close
                // any currently open document detail tables
-               // The call is commented out because it's not working currently,
-               // but this is were we need to update the cluster table display
                // 
-             //  initClusterTabs();
+               jQuery('.clusterDetailBlock').hide().prev('a.clusterDetailLink').text('View Detail');
 
                // enable/disable back/forward buttons, depending on
                 // the point to be displayed
@@ -841,18 +837,18 @@ td.clusterCountCol {width:14%;}
                                 <ice:panelGroup styleClass="popupBody">
                                     <div class="clusterDocViewNav">
                                         <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-first.gif" title="First Document" rendered="#{row.viewDocumentIndex==0}"/>
-                                        <ice:commandLink title="First Document" rendered="#{row.viewDocumentIndex!=0}" actionListener="#{row.viewFirst}"><img title="First Document" src="/text/resources/icefaces/dvn_rime/css-images/arrow-first.gif" class="iceGphImg" alt=""/></ice:commandLink>
+                                        <ice:commandLink title="First Document" onclick="jQuery('textarea.iceInpTxtArea-dis').animate({scrollTop:0}, 'slow');" rendered="#{row.viewDocumentIndex!=0}" actionListener="#{row.viewFirst}"><img title="First Document" src="/text/resources/icefaces/dvn_rime/css-images/arrow-first.gif" class="iceGphImg" alt=""/></ice:commandLink>
 
                                         <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-previous.gif" title="Previous Document" rendered="#{row.viewDocumentIndex==0}"/>
-                                        <ice:commandLink title="Previous Document" rendered="#{row.viewDocumentIndex!=0}" actionListener="#{row.viewPrevious}"><img title="Previous Document" src="/text/resources/icefaces/dvn_rime/css-images/arrow-previous.gif" class="iceGphImg" alt=""/></ice:commandLink>
+                                        <ice:commandLink title="Previous Document" onclick="jQuery('textarea.iceInpTxtArea-dis').animate({scrollTop:0}, 'slow');" rendered="#{row.viewDocumentIndex!=0}" actionListener="#{row.viewPrevious}"><img title="Previous Document" src="/text/resources/icefaces/dvn_rime/css-images/arrow-previous.gif" class="iceGphImg" alt=""/></ice:commandLink>
 
                                         <ice:outputText value="#{row.viewDocumentIndex+1} of #{row.clusterInfo.clusterCount}" styleClass="clusterDocViewNumber"/>
 
                                         <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-next.gif" title="Next Document" rendered="#{row.viewDocumentIndex==row.clusterInfo.clusterCount-1}"/>
-                                        <ice:commandLink title="Next Document" rendered="#{row.viewDocumentIndex!=row.clusterInfo.clusterCount-1}" actionListener="#{row.viewNext}"><img title="Next Document" src="/text/resources/icefaces/dvn_rime/css-images/arrow-next.gif" class="iceGphImg" alt=""/></ice:commandLink>
+                                        <ice:commandLink title="Next Document" onclick="jQuery('textarea.iceInpTxtArea-dis').animate({scrollTop:0}, 'slow');" rendered="#{row.viewDocumentIndex!=row.clusterInfo.clusterCount-1}" actionListener="#{row.viewNext}"><img title="Next Document" src="/text/resources/icefaces/dvn_rime/css-images/arrow-next.gif" class="iceGphImg" alt=""/></ice:commandLink>
 
                                         <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-last.gif" title="Last Document" rendered="#{row.viewDocumentIndex==row.clusterInfo.clusterCount-1}"/>
-                                        <ice:commandLink title="Last Document" rendered="#{row.viewDocumentIndex!=row.clusterInfo.clusterCount-1}" actionListener="#{row.viewLast}"><img title="Last Document" src="/text/resources/icefaces/dvn_rime/css-images/arrow-last.gif" class="iceGphImg" alt=""/></ice:commandLink>
+                                        <ice:commandLink title="Last Document" onclick="jQuery('textarea.iceInpTxtArea-dis').animate({scrollTop:0}, 'slow');" rendered="#{row.viewDocumentIndex!=row.clusterInfo.clusterCount-1}" actionListener="#{row.viewLast}"><img title="Last Document" src="/text/resources/icefaces/dvn_rime/css-images/arrow-last.gif" class="iceGphImg" alt=""/></ice:commandLink>
                                     </div>
                                     <div class="clusterDocViewText">
                                         <ice:inputTextarea value="#{row.viewDocumentText}" rows="25" disabled="true"/>

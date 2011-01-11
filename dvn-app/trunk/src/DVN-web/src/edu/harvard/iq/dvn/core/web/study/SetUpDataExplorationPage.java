@@ -1106,6 +1106,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         if (dataTable2.getRowCount()>0) {
             VarGroupUI varGroupUI2 = (VarGroupUI) dataTable2.getRowData();
             VarGroup varGroup = varGroupUI2.getVarGroup();
+            deleteVariablesFromGroup(varGroupUI2);
             List varGroupList = (List) dataTable2.getValue();
             Iterator iterator = varGroupList.iterator();
             List deleteList = new ArrayList();
@@ -1130,6 +1131,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         HtmlDataTable dataTable2 = dataTableVarGroup;
         if (dataTable2.getRowCount()>0) {
             VarGroupUI varGroupUI2 = (VarGroupUI) dataTable2.getRowData();
+            deleteVariablesFromGroup(varGroupUI2);
             VarGroup varGroup = varGroupUI2.getVarGroup();
             List varGroupList = (List) dataTable2.getValue();
             Iterator iterator = varGroupList.iterator();
@@ -1275,21 +1277,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
     private void resetDVMappingsByGroup(VarGroupUI varGroupUI){
 
-        List <DataVariableMapping> removeList = new ArrayList();
-        List <DataVariable> tempList = new ArrayList(dvList);
-           for(DataVariable dataVariable: tempList){
-               List <DataVariableMapping> deleteList = (List <DataVariableMapping>) dataVariable.getDataVariableMappings();
-                for (DataVariableMapping dataVariableMapping : deleteList ){
-                   
-                    if (dataVariableMapping.getGroup() != null && dataVariableMapping.getGroup().equals(varGroupUI.getVarGroup()))
-                    removeList.add(dataVariableMapping);
-                     }
-             }
-
-           for(DataVariableMapping dataVarMappingRemove : removeList){
-
-               visualizationService.removeCollectionElement(dataVarMappingRemove.getDataVariable().getDataVariableMappings(),dataVarMappingRemove);
-           }
+        deleteVariablesFromGroup(varGroupUI);
 
              List  dataVariableIds = varGroupUI.getDataVariablesSelected();
              if (!dataVariableIds.isEmpty()){
@@ -1312,6 +1300,26 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
              }
 
 
+
+    }
+
+    private void deleteVariablesFromGroup(VarGroupUI varGroupUI){
+
+                List <DataVariableMapping> removeList = new ArrayList();
+                List <DataVariable> tempList = new ArrayList(dvList);
+           for(DataVariable dataVariable: tempList){
+               List <DataVariableMapping> deleteList = (List <DataVariableMapping>) dataVariable.getDataVariableMappings();
+                for (DataVariableMapping dataVariableMapping : deleteList ){
+
+                    if (dataVariableMapping.getGroup() != null && dataVariableMapping.getGroup().equals(varGroupUI.getVarGroup()))
+                    removeList.add(dataVariableMapping);
+                     }
+             }
+
+           for(DataVariableMapping dataVarMappingRemove : removeList){
+
+               visualizationService.removeCollectionElement(dataVarMappingRemove.getDataVariable().getDataVariableMappings(),dataVarMappingRemove);
+           }
 
     }
 

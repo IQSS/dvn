@@ -21,16 +21,39 @@
     // <![CDATA[
     var timeout= 400; //milliseconds to wait for no activity
     var countEvents= 0;
-    function delayedRequest(form,field,event){
+    function delayedRequestMeasure(form,field,event){
     countEvents++;
     setTimeout(function() {
     countEvents--;
     if(countEvents==0){
-        iceSubmitPartial(form,field,event);
+        
+        document.getElementById('form1:updateMeasureList').click(); 
     }
     },timeout);
     }
 
+    function delayedRequestFilter(form,field,event){
+    countEvents++;
+    setTimeout(function() {
+    countEvents--;
+    if(countEvents==0){
+
+        document.getElementById('form1:updateFilterList').click();
+    }
+    },timeout);
+    }
+
+    function delayedRequestXAxis(form,field,event){
+    countEvents++;
+    setTimeout(function() {
+    countEvents--;
+    if(countEvents==0){
+
+        document.getElementById('form1:updateXAxisList').click();
+    }
+    },timeout);
+    }
+    
     // ]]>
 </script>
 
@@ -62,6 +85,9 @@
 
         <ice:commandButton type="submit" value="Cancel" action="#{SetUpDataExplorationPage.cancel}"/>
 
+        <ice:commandButton type="submit" visible="false"  id="updateMeasureList" value="update" action="#{SetUpDataExplorationPage.updateMeasureList}"/>
+        <ice:commandButton type="submit" visible="false"  id="updateFilterList" value="update" action="#{SetUpDataExplorationPage.updateFilterList}"/>
+        <ice:commandButton type="submit" visible="false"  id="updateXAxisList" value="update" action="#{SetUpDataExplorationPage.updateXAxisList}"/>
         <ice:commandButton type="submit" value="Save" action="#{SetUpDataExplorationPage.saveAndExit}" rendered="#{SetUpDataExplorationPage.showCommands}"/>
 
         <ice:commandButton type="submit" visible="false" value="Save and Continue" action="#{SetUpDataExplorationPage.saveAndContinue}" rendered="#{SetUpDataExplorationPage.showCommands}"/>

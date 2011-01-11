@@ -157,18 +157,19 @@
               visible="#{SetUpDataExplorationPage.editFilterGroup}"
               size="25"
               maxlength="255"
-              onkeyup="delayedRequest(form,this,event);"
-              valueChangeListener="#{SetUpDataExplorationPage.updateFilterVariableList}"
+              onkeyup="delayedRequestFilter(form,this,event);"
               binding="#{SetUpDataExplorationPage.inputVariableFilter}"/>
          
-         <ice:dataTable width="100%" cellspacing="0" cellpadding="0" id="genericVariables" var="dataVariableUI" 
+         <ice:dataTable width="100%" cellspacing="0" cellpadding="0" id="genericVariables" var="dataVariableUI"
+
                         rendered="#{SetUpDataExplorationPage.editFilterGroup}"
-                        value="#{SetUpDataExplorationPage.dvGenericListUI}">
+                        value="#{SetUpDataExplorationPage.dvGenericFilteredListUI}">
             <ice:column>
                 <f:facet name="header">
                      <ice:selectBooleanCheckbox id="checkAllFilterVars"
                           partialSubmit="true"
                           binding="#{SetUpDataExplorationPage.filterCheckBox}"
+                          
                           valueChangeListener="#{SetUpDataExplorationPage.selectAllFilterVariables}"
                                                         />
                 </f:facet>

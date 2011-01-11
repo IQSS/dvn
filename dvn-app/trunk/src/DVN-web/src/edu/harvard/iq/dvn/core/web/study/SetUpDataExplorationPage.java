@@ -197,12 +197,8 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
              editXAxisAction();
          }
 
-         if (xAxisVariable.getDataVariableMappings() != null) {
-            Iterator iterator = xAxisVariable.getDataVariableMappings().iterator();
-            if (iterator.hasNext()){
-                DataVariableMapping mapping = (DataVariableMapping) iterator.next();
-                if (mapping.isX_axis())xAxisUnits = mapping.getLabel();
-            }
+         for (DataVariableMapping mapping : xAxisVariable.getDataVariableMappings()){
+              if (mapping.isX_axis())xAxisUnits = mapping.getLabel();
          }
 
          if (measureGrouping.getVarGrouping() == null){
@@ -233,9 +229,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
     public List<VarGroupType> loadSelectMeasureGroupTypes() {
 
-        Iterator iterator = varGroupings.iterator();
-        while (iterator.hasNext() ){
-            VarGrouping varGrouping = (VarGrouping) iterator.next();
+        for (VarGrouping varGrouping: varGroupings ){
             if (varGrouping.getGroupingType().equals(GroupingType.MEASURE)){
                 measureGrouping.setVarGrouping(varGrouping);
                 measureGrouping.setVarGroupTypesUI(new ArrayList());
@@ -247,6 +241,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                 }
                 return (List<VarGroupType>) varGrouping.getVarGroupTypes();
             }
+
         }
         
         return null;
@@ -255,9 +250,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
     public void loadFilterGroupings() {
         filterGroupings.clear();
-        Iterator iterator = varGroupings.iterator();
-        while (iterator.hasNext() ){
-            VarGrouping varGrouping = (VarGrouping) iterator.next();
+        for (VarGrouping varGrouping: varGroupings ){
             
             if (varGrouping.getGroupingType().equals(GroupingType.FILTER)){
                 VarGroupingUI varGroupingUI = new VarGroupingUI();
@@ -300,9 +293,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
     public void loadMeasureGroupUIs (){
         List <VarGroupUI> returnList = new ArrayList();
-        Iterator iterator = varGroupings.iterator();
-        while (iterator.hasNext() ){
-            VarGrouping varGrouping = (VarGrouping) iterator.next();
+        for (VarGrouping varGrouping: varGroupings ){
            
             if (varGrouping.getGroupingType().equals(GroupingType.MEASURE)){
                 List <VarGroup> localMeasureGroups = (List<VarGroup>) varGrouping.getVarGroups();
@@ -719,6 +710,14 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
     public void saveMeasureFragment(){
         editMeasureVarGroup.getVarGroup().setName((String) getInputMeasureName().getValue());
         editMeasureVarGroup.getVarGroup().setUnits((String) getInputMeasureUnits().getValue());
+        String chkGroupName = (String) getInputMeasureName().getValue();
+
+        if (chkGroupName.isEmpty()) {
+            FacesMessage message = new FacesMessage("Please Enter a Measure Name");
+            FacesContext fc = FacesContext.getCurrentInstance();
+            fc.addMessage(validateButton.getClientId(fc), message);
+            return;
+        }
 
         updateVariableByGroup(editMeasureVarGroup);
         
@@ -744,6 +743,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
     public void saveFilterFragment(){
 
         editFilterVarGroup.getVarGroup().setName((String) getInputFilterGroupName().getValue());
+
 
         updateVariableByGroup(editFilterVarGroup);
 
@@ -857,7 +857,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         
     }
 
-    public void addMeasureGroupSave() {
+    private void addMeasureGroupSave() {
 
         int i = measureGrouping.getVarGrouping().getVarGroups().size();
         measureGrouping.getVarGrouping().getVarGroups().add(i,  editMeasureVarGroup.getVarGroup());
@@ -1184,8 +1184,10 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         getInputVariableFilter().setValue("");
         getInputVariableMeasure().setValue("");
         getInputVariableGeneric().setValue("");
+
         getMeasureCheckBox().setValue(false);
         getFilterCheckBox().setValue(false);
+
         editXAxis = false;
         editMeasure = false;
         editFilterGroup = false;
@@ -1194,6 +1196,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         addFilterType = false;
         addMeasureGroup = false;
         addFilterGroup = false;
+        addFilterGrouping = false;
         editMeasureType = false;
         editFilterType = false;
         editFilterGrouping = false;

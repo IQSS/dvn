@@ -824,9 +824,10 @@ td.clusterCountCol {width:14%;}
                         </div>
 
                         <ice:panelPopup id="modalPnlPop"
-                                        modal="false"
+                                        
                                         visible="#{row.showPopup}"
-                                        autoCentre="true" draggable="false"
+                                        draggable="true" modal="true"
+                                        positionOnLoadOnly="true" autoCentre="true"
                                         styleClass="clusterViewDocPopup">
                             <f:facet name="header">
                                 <ice:panelGroup styleClass="popupHeaderWrapper">

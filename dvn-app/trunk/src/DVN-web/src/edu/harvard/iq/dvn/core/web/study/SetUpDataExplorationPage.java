@@ -203,7 +203,6 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             }
          }
 
-
          if (measureGrouping.getVarGrouping() == null){
              addMeasureGrouping();
          } else {
@@ -1067,7 +1066,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
          }
     }
 
-    public void addMeasureGrouping() {
+    private void addMeasureGrouping() {
         VarGrouping varGrouping = new VarGrouping();
         varGrouping.setGroupingType(GroupingType.MEASURE);
         varGrouping.setDataTable(dataTable);
@@ -1105,6 +1104,9 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         varGrouping.setVarGroupTypes(new ArrayList());
 
         dataTable.getVarGroupings().add(varGrouping);
+        visualizationService.addGrouping();
+        Long newID =  varGrouping.getId();
+
         loadFilterGroupings();
         VarGroupingUI varGroupingUI = new VarGroupingUI();
         varGroupingUI.setVarGrouping(varGrouping);

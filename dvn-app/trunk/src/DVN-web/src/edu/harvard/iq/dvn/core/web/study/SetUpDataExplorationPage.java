@@ -743,6 +743,14 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
     public void saveFilterFragment(){
 
         editFilterVarGroup.getVarGroup().setName((String) getInputFilterGroupName().getValue());
+        String chkGroupName = (String) getInputFilterGroupName().getValue();
+
+        if (chkGroupName.isEmpty()) {
+            FacesMessage message = new FacesMessage("Please Enter a Filter Name");
+            FacesContext fc = FacesContext.getCurrentInstance();
+            fc.addMessage(validateButton.getClientId(fc), message);
+            return;
+        }
 
 
         updateVariableByGroup(editFilterVarGroup);

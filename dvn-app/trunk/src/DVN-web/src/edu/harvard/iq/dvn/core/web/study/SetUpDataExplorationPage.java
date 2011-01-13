@@ -196,10 +196,13 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
              xAxisSet = false;
              editXAxisAction();
          }
-
-         for (DataVariableMapping mapping : xAxisVariable.getDataVariableMappings()){
-              if (mapping.isX_axis())xAxisUnits = mapping.getLabel();
+         
+         if (xAxisSet){
+            for (DataVariableMapping mapping : xAxisVariable.getDataVariableMappings()){
+                if (mapping.isX_axis())xAxisUnits = mapping.getLabel();
+            }
          }
+
 
          if (measureGrouping.getVarGrouping() == null){
              addMeasureGrouping();
@@ -941,7 +944,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
     public void saveMeasureTypeButton(){
         boolean groupEdit = false;
         VarGroupType newElem = new VarGroupType();
-        if (editMeasureVarGroup.getVarGroup() != null) {
+        if (editMeasureVarGroup != null && editMeasureVarGroup.getVarGroup() != null ) {
             groupEdit = true;
         }
         
@@ -969,7 +972,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         Long varGroupingId = new Long(0);
         boolean groupEdit = false;
         VarGroupType newElem = new VarGroupType();
-        if (editFilterVarGroup != null) {
+        if (editFilterVarGroup != null && editFilterVarGroup.getVarGroup() != null ) {
             newElem.setVarGrouping(editFilterVarGroup.getVarGroup().getGroupAssociation());
             varGroupingId = editFilterVarGroup.getVarGroup().getGroupAssociation().getId();
             groupEdit = true;

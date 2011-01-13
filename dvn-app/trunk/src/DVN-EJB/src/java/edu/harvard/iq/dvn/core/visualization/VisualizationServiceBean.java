@@ -537,5 +537,12 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
         return true;
     }
 
+    @Override
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void addGrouping() {
+        em.flush();
+    }
+
+
 
 }

@@ -2,20 +2,28 @@ package edu.harvard.iq.text;
 
 import com.icesoft.faces.component.ext.HtmlDataTable;
 import com.icesoft.faces.component.paneltabset.PanelTabSet;
+import edu.harvard.iq.text.ClusterInfo.DocInfo;
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.StringTokenizer;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import org.apache.commons.io.FileUtils;
 
 /*
  * To change this template, choose Tools | Templates
@@ -29,12 +37,13 @@ public class ClusteringSpacePage {
     private static final Logger logger = Logger.getLogger(ClusteringSpacePage.class.getCanonicalName());
 
     private String setId;
-    private double xCoord;
-    private double yCoord;
+    private Double xCoord;
+    private Double yCoord;
+    private String initClusterLabels;
     private DocumentSet documentSet;
     private ClusterSolution clusterSolution;
     private String solutionLabel;  // This is where we store the text entered in the solution label edit field
-    private Boolean editSolutionLabel = Boolean.FALSE;
+    
     private ArrayList<ClusterSolution> savedSolutions = new ArrayList<ClusterSolution>();
     private Integer clusterNum;
     private HtmlDataTable clusterTable;
@@ -60,16 +69,21 @@ public class ClusteringSpacePage {
 
       
         logger.fine("initializing page");
-        xCoord = 0;
-        yCoord = 0;
-        clusterNum = 5;
+        if (xCoord==null) {
+        xCoord = new Double(0);
+        }
+        if (yCoord==null) {
+            yCoord = new Double(0);
+        } if (clusterNum==null) {
+            clusterNum = 5;
+        }
         if (setId==null) {
             throw new ClusterException("missing setId parameter.");
         }
         documentSet = new DocumentSet(setId);
         solutionIndex=-1;
         calculateClusterSolution(true);
-
+        initClusterLabels();
     }
 
 
@@ -137,6 +151,25 @@ public class ClusteringSpacePage {
         populateClusterTableModel();
 
     }
+    /*
+     * If labels have been passed thru the request URL,
+     * then assign them to the clusters
+     *
+     */
+    public void initClusterLabels() {
+        if (initClusterLabels!=null) {
+            StringTokenizer tokenizer = new StringTokenizer(initClusterLabels, "|");
+            if (tokenizer.countTokens()>clusterSolution.getNumClusters()) {
+                throw new ClusterException("too many cluster labels");
+            }
+            int index=0;
+            while( tokenizer.hasMoreTokens()) {
+                String label = tokenizer.nextToken();
+                clusterSolution.clusterInfoList.get(index).setLabel(label);
+                index++;
+            }
+        }
+    }
     
     public void saveClusterLabel(ActionEvent ae) {
         int rowIndex = clusterTable.getRowIndex();
@@ -167,15 +200,6 @@ public class ClusteringSpacePage {
         this.solutionIndex = solutionIndex;
     }
 
-    
-
-    public Boolean getEditSolutionLabel() {
-        return editSolutionLabel;
-    }
-
-    public void setEditSolutionLabel(Boolean editSolutionLabel) {
-        this.editSolutionLabel = editSolutionLabel;
-    }
 
     public ArrayList<ClusterSolution> getSavedSolutions() {
         return savedSolutions;
@@ -201,21 +225,30 @@ public class ClusteringSpacePage {
         this.setId = setId;
     }
 
-    public double getxCoord() {
+    public Double getxCoord() {
         return xCoord;
     }
 
-    public void setxCoord(double xCoord) {
+    public void setxCoord(Double xCoord) {
         this.xCoord = xCoord;
     }
 
-    public double getyCoord() {
+    public Double getyCoord() {
         return yCoord;
     }
 
-    public void setyCoord(double yCoord) {
+    public void setyCoord(Double yCoord) {
         this.yCoord = yCoord;
     }
+
+    public String getInitClusterLabels() {
+        return initClusterLabels;
+    }
+
+    public void setInitClusterLabels(String initClusterLabels) {
+        this.initClusterLabels = initClusterLabels;
+    }
+
 
     public ClusterSolution getClusterSolution() {
         return clusterSolution;
@@ -267,8 +300,10 @@ public class ClusteringSpacePage {
        
         PanelTabSet panelTabSet;
         String newValue;
-        Boolean showPopup = Boolean.FALSE;
+        Boolean showDocPopup = Boolean.FALSE;
+        Boolean showSumPopup = Boolean.FALSE;
         ClusterInfo clusterInfo;
+        String summary;
         int viewDocumentIndex;
 
         public ClusterRow(ClusterInfo clusterInfo) {          
@@ -340,24 +375,42 @@ public class ClusteringSpacePage {
            }
        }
 
-       public void openPopup(ActionEvent ae) {
+       public void openDocPopup(ActionEvent ae) {
            
-            showPopup = Boolean.TRUE;
+            showDocPopup = Boolean.TRUE;
 
         }
 
-        public void closePopup(ActionEvent ae) {
-            showPopup=Boolean.FALSE;
+        public void closeDocPopup(ActionEvent ae) {
+            showDocPopup=Boolean.FALSE;
         }
 
-        public Boolean getShowPopup() {
-            return showPopup;
+        public Boolean getShowDocPopup() {
+            return showDocPopup;
         }
 
-        public void setShowPopup(Boolean showPopup) {
-            this.showPopup = showPopup;
+        public void setShowDocPopup(Boolean showPopup) {
+            this.showDocPopup = showPopup;
         }
 
+        public void openSumPopup(ActionEvent ae) {
+            if (summary == null) {
+                generateSummary();
+            }
+            showSumPopup = Boolean.TRUE;
+        }
+
+        public void closeSumPopup(ActionEvent ae) {
+            showSumPopup=Boolean.FALSE;
+        }
+
+        public Boolean getShowSumPopup() {
+            return showSumPopup;
+        }
+
+        public void setShowSumPopup(Boolean showPopup) {
+            this.showSumPopup = showPopup;
+        }
         public String getViewDocumentName() {
             String docName = clusterInfo.getDocInfoList().get(this.viewDocumentIndex).getDocId();
             if (setId.equals("1")) {
@@ -441,6 +494,157 @@ public class ClusteringSpacePage {
             this.newValue = newValue;
         }
 
+        public String getSummary() {
+            
+            return summary;
+        }
+
+        private String getDocsentDir()
+        {
+            return ClusterUtil.getDocRoot() + "/" + setId + "/docs/docsent";
+        }
+
+        public boolean getSummaryAvailable() {
+            return new File(getDocsentDir()).exists();
+        }
+
+        private void generateSummary() {
+
+            try {
+                // Create temp Cluster file
+                File clusterFile = createMeadCluster();
+
+                // remove ".cluster" extension from name of clusterFile
+                // for mead clusterName parameter.
+                String clusterName = clusterFile.getName().substring(0, clusterFile.getName().indexOf(".cluster"));
+
+                // call mead with the cluster directory and docsent directory
+                String cmd = ClusterUtil.getMeadDir()+"/bin/mead.pl -cluster_dir " + clusterFile.getParent()
+                        + " -docsent_dir " + getDocsentDir()
+                        + " -sentences -absolute 10 "
+                        + clusterName;
+                logger.fine("mead command: "+cmd);                
+                Runtime r = Runtime.getRuntime();
+                Process p = r.exec(cmd);
+
+                int exitValue = p.waitFor();
+
+
+                // read result into summary string
+                InputStream is = p.getInputStream();
+                InputStream err = p.getErrorStream();
+                String line;
+                InputStreamReader esr = new InputStreamReader(err);
+                BufferedReader ebr = new BufferedReader(esr);
+
+                //
+                // mead sends informational messages, as well as
+                // error messages to errorstream.
+                while ((line = ebr.readLine()) != null) {
+                    if (exitValue==0) {
+                        logger.fine(line);
+                    } else {
+                        logger.severe(line);
+                    }
+                }
+
+                InputStreamReader isr = new InputStreamReader(is);
+                BufferedReader br = new BufferedReader(isr);
+
+
+                summary = "";
+                while ((line = br.readLine()) != null) {
+                    summary += line + "\n";
+                }
+                // delete temp directory and files
+           //     FileUtils.deleteDirectory(clusterFile.getParentFile());
+
+            } catch (java.io.IOException ex) {
+                throw new ClusterException("Error reading inputStream from mead.pl process: " + ex.getMessage());
+            
+            } catch(InterruptedException e) {
+                    Thread.currentThread().interrupt();
+            }
+        }
+
+        private File createMeadCluster() {
+            File clusterFile;
+            File clusterDir;
+            try {
+                // Create a tmpdir to put the file in.
+                // (mead only allows us to specify the
+                // directory that contains the cluster file,
+                // not the cluster file itself.)
+                // First create a file to get a unique path name,
+                // than delete it and create a directory
+                // of that name.
+
+                clusterDir = File.createTempFile("mead", "tmp");
+                if (!(clusterDir.delete())) {
+                    throw new ClusterException("Could not delete temp file: " + clusterDir.getAbsolutePath());
+                }
+
+                if (!(clusterDir.mkdir())) {
+                    throw new ClusterException("Could not create temp directory: " + clusterDir.getAbsolutePath());
+                }
+
+                // Now create a cluster file within the temp directory
+                clusterFile = new File(clusterDir, "temp.cluster");
+
+
+
+
+                // Annoying: We can't use the XMLStreamWriter
+                // because mead.pl won't accept standard XML.
+                // It requires a carriage return before the <CLUSTER> element
+
+                /*
+                // Write the XML contents to the file
+                XMLStreamWriter xmlw = null;
+                try {
+                XMLOutputFactory xmlOutputFactory = javax.xml.stream.XMLOutputFactory.newInstance();
+
+
+                xmlw = xmlOutputFactory.createXMLStreamWriter(new FileOutputStream(clusterFile));
+                xmlw.writeStartDocument();
+                xmlw.writeStartElement("CLUSTER");
+                xmlw.writeAttribute("LANG", "ENG" );
+                for ( DocInfo doc : this.docInfoList) {
+                xmlw.writeStartElement("D");
+                xmlw.writeAttribute("DID", doc.docId);
+                xmlw.writeEndElement();
+                }
+                xmlw.writeEndElement(); // cluster
+                xmlw.writeEndDocument();
+                } catch (Exception ex) {
+                throw new ClusterException("ERROR occurred writing cluster file: "+ex.getMessage());
+                }finally {
+                try {
+                if (xmlw != null) {
+                xmlw.close();
+                }
+                } catch (XMLStreamException ex) {
+                }
+
+                 */
+                PrintStream ps = new PrintStream(new FileOutputStream(clusterFile));
+                ps.println("<?xml version='1.0'?>");
+                ps.println("<CLUSTER LANG='ENG'>");
+                for (DocInfo doc : clusterInfo.getDocInfoList()) {
+                    ps.println("<D DID='" + doc.docId + "' />");
+                }
+                ps.println("</CLUSTER>");
+                ps.close();
+
+            } catch (java.io.IOException e) {
+                throw new ClusterException("Error creating clusterFile: " + e.getMessage());
+            }
+
+
+
+            return clusterFile;
+
+        }
        
 
       

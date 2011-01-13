@@ -18,6 +18,14 @@ public class ClusterUtil {
             }
             return docRoot;
         }
+        public static String getMeadDir() {
+            String docRoot = System.getProperty("text.meadDir");
+            if (docRoot==null) {
+                throw new ClusterException("Error: JVM property 'text.meadDir' is undefined.");
+            }
+            return docRoot;
+        }
+
 
         public static File getSetDir(String setId) {
             return new File(getDocRoot(),setId );

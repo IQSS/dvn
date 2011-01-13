@@ -375,9 +375,12 @@
             }
             
             function loadEnd (evt) {
-                // By default, the number of clusters is 5
-                updateRadioButtons(5);
-                addPointToList(0,0,5,-1);
+               
+                updateRadioButtons(document.getElementById('ClusterForm:clusterNum').value);
+                addPointToList(document.getElementById('ClusterForm:userXCoord').value,
+                               document.getElementById('ClusterForm:userYCoord').value,
+                               document.getElementById('ClusterForm:clusterNum').value,
+                               -1);
                 var lineArray = new Array();
                 var endpoint =10;
                 var lineInterval = .25;
@@ -586,7 +589,7 @@
             <tr>
                 <td>
                     <label for="numberclusters" class="clusterNoClustersLabel">Number of Clusters</label>
-                    <ice:inputText onkeyup="delayedSubmit();" id="clusterNum" size="5" value="#{ClusteringSpacePage.clusterNum}"></ice:inputText>
+                    <ice:inputText  onkeyup="delayedSubmit();" id="clusterNum" size="5" value="#{ClusteringSpacePage.clusterNum}"></ice:inputText>
                     <ice:commandButton visible="false" id="changeCluster" value="calculate" onclick="calculateButtonAction();" actionListener="#{ClusteringSpacePage.changeClusterNumberListener}"/>
                 </td>
                 <td>
@@ -787,7 +790,8 @@ td.clusterCountCol {width:14%;}
                                     <p>
                                         <ice:outputText value="#{row.viewDocumentPreview}"/>
                                     </p>
-                                    <ice:commandLink actionListener="#{row.openPopup}">Full Document</ice:commandLink>
+                                    <ice:commandLink actionListener="#{row.openDocPopup}">Full Document</ice:commandLink>
+
                                 </ice:panelTab>
 
                                 <ice:panelTab id="list" label="List View">
@@ -820,19 +824,22 @@ td.clusterCountCol {width:14%;}
                                         </ice:column>
                                     </ice:dataTable>
                                 </ice:panelTab>
+                                <ice:panelTab label="Cluster Summary" rendered="#{row.summaryAvailable}">
+                                     <ice:commandLink actionListener="#{row.openSumPopup}">View Cluster Summary Text</ice:commandLink>
+                                </ice:panelTab>
                             </ice:panelTabSet>
                         </div>
 
-                        <ice:panelPopup id="modalPnlPop"
+                        <ice:panelPopup id="docViewPopup"
                                         
-                                        visible="#{row.showPopup}"
+                                        visible="#{row.showDocPopup}"
                                         draggable="true" modal="true"
                                         positionOnLoadOnly="true" autoCentre="true"
                                         styleClass="clusterViewDocPopup">
                             <f:facet name="header">
                                 <ice:panelGroup styleClass="popupHeaderWrapper">
                                     <ice:outputText value="Document: #{row.viewDocumentName}" styleClass="popupHeaderText"/>
-                                    <ice:commandLink value="Close [X]" actionListener="#{row.closePopup}" styleClass="popupHeaderClose"></ice:commandLink>
+                                    <ice:commandLink value="Close [X]" actionListener="#{row.closeDocPopup}" styleClass="popupHeaderClose"></ice:commandLink>
                                 </ice:panelGroup>
                             </f:facet>
                             <f:facet name="body">
@@ -854,6 +861,25 @@ td.clusterCountCol {width:14%;}
                                     </div>
                                     <div class="clusterDocViewText">
                                         <ice:inputTextarea value="#{row.viewDocumentText}" rows="25" disabled="true"/>
+                                    </div>
+                                </ice:panelGroup>
+                            </f:facet>
+                        </ice:panelPopup>
+                        <ice:panelPopup id="summaryPopup"
+                                        visible="#{row.showSumPopup}"
+                                        draggable="true" modal="true"
+                                        positionOnLoadOnly="true" autoCentre="true"
+                                        styleClass="clusterViewDocPopup">
+                            <f:facet name="header">
+                                <ice:panelGroup styleClass="popupHeaderWrapper">
+                                    <ice:outputText value="ClusterSummary" styleClass="popupHeaderText"/>
+                                    <ice:commandLink value="Close [X]" actionListener="#{row.closeSumPopup}" styleClass="popupHeaderClose"></ice:commandLink>
+                                </ice:panelGroup>
+                            </f:facet>
+                            <f:facet name="body">
+                                <ice:panelGroup styleClass="popupBody">
+                                    <div class="clusterDocViewText">
+                                        <ice:inputTextarea value="#{row.summary}" rows="25" disabled="true"/>
                                     </div>
                                 </ice:panelGroup>
                             </f:facet>

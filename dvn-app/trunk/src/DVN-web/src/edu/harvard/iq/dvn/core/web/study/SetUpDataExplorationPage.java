@@ -1551,12 +1551,14 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
     public String updateMeasureList(){
         String checkString = (String) getInputVariableMeasure().getValue();
         updateGenericGroupVariableList(checkString);
+        selectOneMeasureVariableClick();
         return "";
     }
 
     public String updateFilterList(){
         String checkString = (String) getInputVariableFilter().getValue();
         updateGenericGroupVariableList(checkString);
+        selectOneFilterVariableClick();
         return "";
     }
 
@@ -1579,6 +1581,26 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         forceRender(ce);
 
     }
+
+    public void selectAllFilterVariablesClick(){
+        boolean value = (Boolean)filterCheckBox.getValue();
+        selectAllVariablesPrivate(value);
+    }
+
+    public void selectAllMeasureVariablesClick(){
+        boolean value = (Boolean)measureCheckBox.getValue();
+        selectAllVariablesPrivate(value);
+    }
+
+    public void selectOneFilterVariableClick(){
+        boolean setSelected = checkSelectAllVariablesPrivate();
+        filterCheckBox.setSelected(setSelected) ;
+    }
+
+    public void selectOneMeasureVariableClick(){
+        boolean setSelected = checkSelectAllVariablesPrivate();
+        measureCheckBox.setSelected(setSelected) ;
+    }
     private void selectAllVariablesPrivate(boolean check){
         
         Iterator iterator = dvGenericFilteredListUI.iterator();
@@ -1589,6 +1611,30 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                 dataVariableUI.setSelected(check);
             }
         }
+    }
+
+    public void checkSelectAllFilterVariables(ValueChangeEvent ce){
+        boolean setSelected = checkSelectAllVariablesPrivate();
+        boolean getSelected = filterCheckBox.isSelected();
+        filterCheckBox.setSelected(setSelected) ;
+
+        forceRender(ce);
+
+    }
+
+    private boolean checkSelectAllVariablesPrivate(){
+        boolean allSelected = true;
+
+        Iterator iterator = dvGenericFilteredListUI.iterator();
+
+        while (iterator.hasNext() ){
+            DataVariableUI dataVariableUI = (DataVariableUI) iterator.next();
+            if (!dataVariableUI.isSelected()){
+                allSelected = false;
+            }
+        }
+
+        return allSelected;
     }
 
     private void forceRender(ValueChangeEvent ce){

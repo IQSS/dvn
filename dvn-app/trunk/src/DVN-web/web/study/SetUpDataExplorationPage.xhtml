@@ -53,6 +53,22 @@
     }
     },timeout);
     }
+
+    function selectAllFilterVariablesClick(){
+        document.getElementById('form1:selectAllFilterVariablesClick').click();
+    }
+
+    function selectOneFilterVariableClick(){
+        document.getElementById('form1:selectOneFilterVariableClick').click();
+    }
+
+    function selectAllMeasureVariablesClick(){
+        document.getElementById('form1:selectAllMeasureVariablesClick').click();
+    }
+
+    function selectOneMeasureVariableClick(){
+        document.getElementById('form1:selectOneMeasureVariableClick').click();
+    }
     
     // ]]>
 </script>
@@ -86,6 +102,11 @@
         <ice:commandButton type="submit" value="Cancel" action="#{SetUpDataExplorationPage.cancel}"/>
 
         <ice:commandButton type="submit" visible="false"  id="updateMeasureList" value="update" action="#{SetUpDataExplorationPage.updateMeasureList}"/>
+        <ice:commandButton type="submit" visible="false"  id="selectAllFilterVariablesClick" value="update" action="#{SetUpDataExplorationPage.selectAllFilterVariablesClick}"/>
+        <ice:commandButton type="submit" visible="false"  id="selectOneFilterVariableClick" value="update" action="#{SetUpDataExplorationPage.selectOneFilterVariableClick}"/>
+        <ice:commandButton type="submit" visible="false"  id="selectAllMeasureVariablesClick" value="update" action="#{SetUpDataExplorationPage.selectAllMeasureVariablesClick}"/>
+        <ice:commandButton type="submit" visible="false"  id="selectOneMeasureVariableClick" value="update" action="#{SetUpDataExplorationPage.selectOneMeasureVariableClick}"/>
+
         <ice:commandButton type="submit" visible="false"  id="updateFilterList" value="update" action="#{SetUpDataExplorationPage.updateFilterList}"/>
         <ice:commandButton type="submit" visible="false"  id="updateXAxisList" value="update" action="#{SetUpDataExplorationPage.updateXAxisList}"/>
         <ice:commandButton type="submit" value="Save" action="#{SetUpDataExplorationPage.saveAndExit}" rendered="#{SetUpDataExplorationPage.showCommands}"/>

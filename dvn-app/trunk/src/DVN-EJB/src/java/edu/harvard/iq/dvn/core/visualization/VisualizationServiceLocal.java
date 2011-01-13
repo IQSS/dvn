@@ -49,6 +49,7 @@ public interface VisualizationServiceLocal extends java.io.Serializable {
     public void setDataTableFromStudyFileId(Long studyFileId);
 
     public void addGroupType();
+    public void addGrouping();
     public Study getStudyFromStudyFileId(Long studyFileId);
     public DataTable getDataTable();
 

@@ -1269,6 +1269,15 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
     public String release(){
         if (validateForRelease()) {
             dataTable.setVisualizationEnabled(true);
+            save();
+            getVDCRequestBean().setStudyId(study.getId());
+            if ( studyVersion.getId() == null ) {
+                getVDCRequestBean().setStudyVersionNumber(study.getReleasedVersion().getVersionNumber());
+            } else {
+                getVDCRequestBean().setStudyVersionNumber(studyVersion.getVersionNumber());
+            }
+            getVDCRequestBean().setSelectedTab("files");
+            return "viewStudy";
         }
         return "";
     }

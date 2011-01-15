@@ -1317,7 +1317,6 @@ public class FileDownloadServlet extends HttpServlet {
                     }
                 }
 
-                setDownloadContentHeaders (fileDownload);
 
                 // The fact that we have the "original format" file for this data
                 // set, means it's a subsettable, tab-delimited file. Which means
@@ -1328,6 +1327,8 @@ public class FileDownloadServlet extends HttpServlet {
 
                 fileDownload.setNoVarHeader(true);
                 fileDownload.setVarHeader(null);
+
+                setDownloadContentHeaders (fileDownload);
 
                 return fileDownload;
             }
@@ -1426,7 +1427,6 @@ public class FileDownloadServlet extends HttpServlet {
             }
 
             fileDownload.setFileName(generateAltFileName(formatRequested, dbFileName));
-            setDownloadContentHeaders (fileDownload);
 
             if (formatRequested.equals("D00") && (!fileDownload.noVarHeader())) {
 
@@ -1441,6 +1441,8 @@ public class FileDownloadServlet extends HttpServlet {
                 //  will be added to this R/Stata/etc. file -- which would
                 //  totally screw things up!)
             }
+
+            setDownloadContentHeaders (fileDownload);
 
            
             return fileDownload; 

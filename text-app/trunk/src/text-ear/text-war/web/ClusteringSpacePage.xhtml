@@ -640,7 +640,8 @@
                         <ice:outputText styleClass="savedListLabel" value="Label"/>
                       </f:facet>
                         <ice:commandLink value="#{saved.infoLabel}" onclick="addSavedPoint(#{saved.x},#{saved.y},#{saved.numClusters},#{saved.discoverable},#{saved.id});" actionListener="#{ClusteringSpacePage.updateClusterSolutionListener}"></ice:commandLink>
-                    </ice:column>                 
+                        <ice:outputLink  onclick="alert('http://#{ClusteringSpacePage.host}/text/faces/ClusteringSpacePage.xhtml?setId=#{ClusteringSpacePage.setId}&amp;x=#{saved.formatX}&amp;y=#{saved.formatY}&amp;clusterNum=#{saved.numClusters}' );">(show link)</ice:outputLink>
+                    </ice:column>
                     <ice:column>
                         <f:facet name="header">
                             <ice:outputText styleClass="savedListCoord" value="Coordinates"/>

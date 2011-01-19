@@ -509,7 +509,7 @@ public class ClusteringSpacePage {
         }
 
         private void generateSummary() {
-
+            boolean useKeywords=true;
             try {
                 // Create temp Cluster file
                 File clusterFile = createMeadCluster();
@@ -517,16 +517,51 @@ public class ClusteringSpacePage {
                 // remove ".cluster" extension from name of clusterFile
                 // for mead clusterName parameter.
                 String clusterName = clusterFile.getName().substring(0, clusterFile.getName().indexOf(".cluster"));
+                ArrayList<String> cmdArray = new ArrayList<String>();
 
                 // call mead with the cluster directory and docsent directory
                 String cmd = ClusterUtil.getMeadDir()+"/bin/mead.pl -cluster_dir " + clusterFile.getParent()
-                        + " -docsent_dir " + getDocsentDir()
-                        + " -sentences -absolute 10 "
-                        + clusterName;
+                        + " -docsent_dir " + getDocsentDir() +" "
+                     //   + " -sentences -absolute 10 "
+                        ;
+                cmdArray.add(ClusterUtil.getMeadDir()+"/bin/mead.pl");
+                cmdArray.add("-cluster_dir");
+                cmdArray.add(clusterFile.getParent());
+                cmdArray.add("-docsent_dir");
+                cmdArray.add(getDocsentDir());
+              //  cmdArray.add("-sentences");
+              //  cmdArray.add("-absolute");
+              //  cmdArray.add("10");
+
+
+                if (useKeywords) {
+                    File keywordFile = createKeywordFile(clusterFile.getParentFile());
+                    File rcFile = createRCFile(keywordFile.getAbsolutePath(), clusterFile.getParentFile());
+                    /*
+                    cmd += " -feature QueryPhraseMatch '"+ClusterUtil.getMeadDir()+"/bin/feature-scripts/keyword/QueryPhraseMatch.pl "
+                                +"-q keywords "+keywordFile.getAbsolutePath()+"' ";
+                    cmdArray.add("-feature");
+                    cmdArray.add("QueryPhraseMatch");
+                    cmdArray.add("'"+ClusterUtil.getMeadDir()+"/bin/feature-scripts/keyword/QueryPhraseMatch.pl "
+                                +"-q keywords "+keywordFile.getAbsolutePath()+"'");
+                     *
+                     */
+                    cmd += " -rc "+ rcFile.getAbsolutePath();
+                    cmdArray.add(" -rc "+ rcFile.getAbsolutePath());
+                }
+                cmd += " "+ clusterName;
+                cmdArray.add(clusterName);
                 logger.fine("mead command: "+cmd);                
                 Runtime r = Runtime.getRuntime();
+                String[] cmdStrings = new String[cmdArray.size()];
+                for (int i=0;i<cmdStrings.length; i++) {
+                    cmdStrings[i] = cmdArray.get(i);
+                }
+              //  Process p = r.exec(cmdStrings);
                 Process p = r.exec(cmd);
-
+              //  ProcessBuilder pb = new ProcessBuilder(cmd);
+              //  logger.fine(pb.command().toString());
+             //   Process p = pb.start();
                 int exitValue = p.waitFor();
 
 
@@ -557,7 +592,7 @@ public class ClusteringSpacePage {
                     summary += line + "\n";
                 }
                 // delete temp directory and files
-           //     FileUtils.deleteDirectory(clusterFile.getParentFile());
+                FileUtils.deleteDirectory(clusterFile.getParentFile());
 
             } catch (java.io.IOException ex) {
                 throw new ClusterException("Error reading inputStream from mead.pl process: " + ex.getMessage());
@@ -565,6 +600,52 @@ public class ClusteringSpacePage {
             } catch(InterruptedException e) {
                     Thread.currentThread().interrupt();
             }
+        }
+
+        private File createRCFile(String keywordFilePath, File parentDir) {
+            File rcFile = null;
+            try{
+                rcFile= new File(parentDir, "mead.rc");
+                PrintStream ps = new PrintStream(new FileOutputStream(rcFile));
+                ps.println("compression_basis sentences");
+                ps.println("compression_absolute 10");
+                ps.println("feature QueryPhraseMatch "+ClusterUtil.getMeadDir()+"/bin/feature-scripts/keyword/QueryPhraseMatch.pl -q keywords " + keywordFilePath);
+                ps.close();
+            } catch (java.io.IOException e) {
+                throw new ClusterException(e.getMessage());
+
+            }
+
+            return rcFile;
+        }
+        private File createKeywordFile(File parentDir) {
+            File keywordFile =null;
+            try {
+                keywordFile= new File(parentDir, "keywords.xml");
+                PrintStream ps = new PrintStream(new FileOutputStream(keywordFile));
+                ps.println("<?xml version='1.0'?>");
+                ps.println("<QUERY QID='KF' QNO='1' TRANSLATED='NO'>");
+                ps.println("<TITLE>");
+                ps.println("</TITLE>");
+                ps.println("<NARRATIVE>");
+                ps.println("</NARRATIVE>");
+                ps.println("<DESCRIPTION>");
+                ps.println("</DESCRIPTION>");
+                ps.println("<KEYWORDS>");
+                String keywords = "";
+                for (int i=0;i<10;i++) {
+                    keywords+="\\b"+clusterInfo.getWordList().get(i).title+".*\\b;1;";
+                }
+                ps.println(keywords);
+                ps.println("</KEYWORDS>");
+                ps.println("</QUERY>");
+                ps.close();
+            } catch (java.io.IOException e) {
+                throw new ClusterException(e.getMessage());
+
+            }
+            return keywordFile;
+
         }
 
         private File createMeadCluster() {
@@ -579,8 +660,8 @@ public class ClusteringSpacePage {
                 // than delete it and create a directory
                 // of that name.
 
-                clusterDir = File.createTempFile("mead", "tmp");
-                if (!(clusterDir.delete())) {
+               clusterDir = File.createTempFile("mead", "tmp");
+              if (!(clusterDir.delete())) {
                     throw new ClusterException("Could not delete temp file: " + clusterDir.getAbsolutePath());
                 }
 

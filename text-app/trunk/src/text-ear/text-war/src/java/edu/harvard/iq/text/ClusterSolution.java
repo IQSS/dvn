@@ -50,7 +50,7 @@ public class ClusterSolution {
     
 
     public Boolean getDiscoverable() {
-        logger.fine("Called getDiscoverable, returning "+discoverable);
+       
         return discoverable;
     }
     public void setDiscoverable(Boolean discoverable) {

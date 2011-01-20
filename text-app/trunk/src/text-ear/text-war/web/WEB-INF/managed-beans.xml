@@ -33,14 +33,14 @@
             <value>#{param.clusterNum}</value>
         </managed-property>
         <managed-property>
-            <property-name>solutionLabel</property-name>
+            <property-name>solutionLabelParam</property-name>
             <property-class>java.lang.String</property-class>
-            <value>#{param.clustering}</value>
+            <value>#{param.solutionLabel}</value>
         </managed-property>
         <managed-property>
-            <property-name>initClusterLabels</property-name>
+            <property-name>clusterLabelParam</property-name>
             <property-class>java.lang.String</property-class>
-            <value>#{param.clusters}</value>
+            <value>#{param.clusterLabels}</value>
         </managed-property>
     </managed-bean>
 

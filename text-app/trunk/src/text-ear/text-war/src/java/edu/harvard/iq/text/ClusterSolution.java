@@ -9,7 +9,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.logging.Level;
+import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
 
@@ -19,7 +19,7 @@ import java.util.logging.Logger;
  */
 public class ClusterSolution {
     private static final Logger logger = Logger.getLogger(ClusterSolution.class.getCanonicalName());
-
+    private static final String CLUSTER_LABEL_DELIMITER = ";"; // For generating/parsing cluster solution URL
     private static final double TWO_PI = Math.PI*2;
 
     // the document set we are analyzing
@@ -125,17 +125,23 @@ public class ClusterSolution {
         doClusterCalculations();
     }
 
-    public String getClusterLabels() {
-        String str="";
-        for (ClusterInfo ci : clusterInfoList) {
-                if (ci.getLabel()!=null && !ci.getLabel().isEmpty() ) {
-                    if (!str.equals("")) {
-                        str+=";";
-                    }
-                    str+=ci.getLabel();
+    public void initClusterLabels(String labels) {
+        if (labels!=null) {
+            String[] arr = labels.split(CLUSTER_LABEL_DELIMITER,-1);
 
+            for (int i=0;i<clusterInfoList.size() && i< arr.length; i++) {
+                if (!arr[i].isEmpty()){
+                    clusterInfoList.get(i).setLabel(arr[i]);
                 }
+                
             }
+        }
+    }
+    public String getClusterLabels() {
+        String str = "";
+        for (ClusterInfo ci : clusterInfoList) {
+            str += ci.getLabel() + this.CLUSTER_LABEL_DELIMITER;
+        }
         return str;
     }
     

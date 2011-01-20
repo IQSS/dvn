@@ -105,7 +105,7 @@ public class ClusteringSpacePage {
 
         clusterSolution.setLabel(solutionLabelParam);
         if (clusterLabelParam!=null) {
-            initClusterLabels();
+            clusterSolution.initClusterLabels(clusterLabelParam);
         }
 
         // If we have labels for this solution, added to the saved
@@ -176,27 +176,8 @@ public class ClusteringSpacePage {
         populateClusterTableModel();
        
     }
-    /*
-     * If labels have been passed thru the request URL,
-     * then assign them to the clusters
-     *
-     */
-    public void initClusterLabels() {
-        if (clusterLabelParam!=null) {
-            StringTokenizer tokenizer = new StringTokenizer(clusterLabelParam, ";");
-            if (tokenizer.countTokens()>clusterSolution.getNumClusters()) {
-                throw new ClusterException("too many cluster labels");
-            }
-            int index=0;
-            while( tokenizer.hasMoreTokens()) {
-                String label = tokenizer.nextToken();
-                clusterSolution.clusterInfoList.get(index).setLabel(label);
-                index++;
-            }
-        }
-    }
-
-
+    
+    
     public void saveClusterLabel(ActionEvent ae) {
         saveSolution(clusterSolution);
     }

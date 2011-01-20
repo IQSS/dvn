@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Random;
@@ -50,6 +52,15 @@ public class ClusteringSpacePage {
     private ArrayList<ClusterRow> clusterTableModel = new ArrayList<ClusterRow>();
     private int solutionIndex;  // This is passed from the form to indicate that we need to display a saved solution rather than calculate a new solution
     private Boolean discoverable = Boolean.FALSE;
+
+    public String getHost() {
+        try {
+        return InetAddress.getLocalHost().getHostName();
+        } catch (UnknownHostException e) {
+            throw new ClusterException(e.getMessage());
+        }
+
+    }
 
     public Boolean getDiscoverable() {
         return discoverable;

@@ -244,10 +244,7 @@
                                      binding="#{SetUpDataExplorationPage.dataTableFilterGrouping}">
                                     <h:column>
 
-                                        <ice:outputLabel value="Group"/>
-
-                                        <ice:outputText value="#{grouping.varGrouping.name}"/>
-
+                                        <ice:outputLabel style="float:left;" value="Group:  "/><ice:outputText  value="#{grouping.varGrouping.name}"/>
                                         <ice:commandLink id="editFilterGrouping" visible="#{!SetUpDataExplorationPage.editFilterGrouping}"
                                                          actionListener="#{SetUpDataExplorationPage.editFilterGroupingAction}">
                                                       <ice:outputText id="editFilterGroupingText" value="Edit Filter Group"/>

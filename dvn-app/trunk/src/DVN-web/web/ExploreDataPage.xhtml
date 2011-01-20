@@ -5,8 +5,9 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:jsp="http://java.sun.com/JSP/Page"
-
+      xmlns:dvn="/WEB-INF/tlds/dvn-components"
       xmlns:ice="http://www.icesoft.com/icefaces/component">
+
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
@@ -17,59 +18,120 @@
 <ice:form id="ExploreDataPage">
     <ice:message for="exploredataform" id ="boxErrorMsg"  styleClass="errorMessage"   />
 
-    <script type='text/javascript' src='https://www.google.com/jsapi'></script>
-    <script type='text/javascript'>
-      google.load('visualization', '1', {'packages':['annotatedtimeline']});
-      //google.setOnLoadCallback(drawChart);
+    <script type='text/javascript' src='https://www.google.com/jsapi'>
+         
+        
+    </script>
+<script type="text/javascript">
+    
+    google.load('visualization', '1', {'packages':['annotatedtimeline']});
 
 
-      function drawVisualization() {
-  // To see the data that this visualization uses, browse to
-  // http://spreadsheets.google.com/ccc?key=pCQbetd-CptGXxxQIG7VFIQ
-  var query = new google.visualization.Query(
+ function drawChart() {
+          
+        var data = new google.visualization.DataTable();
+        var myString = new String (document.getElementById('ExploreDataPage:columnString').textContent);
+        var myColumnList = myString.split ( ',' );
+        var myDataString = new String (document.getElementById('ExploreDataPage:dataString').textContent);
+        var myRowList = myDataString.split ( ';' );
+        var numColumnsStr =  new String (document.getElementById('ExploreDataPage:dataColumns').textContent);
+        var numColumns = parseInt(numColumnsStr);
+        
+        
+// <![CDATA[
+    for (i=0; i< myColumnList.length ;i++)
+    { 
+        var myColumn = myColumnList[i];
+        if (i==0)
+        { data.addColumn('date', myColumn); }
+        if (i>0){ data.addColumn('number', myColumn); }
 
-      'https://spreadsheets.google.com/tq?range=A1:G64&amp;key=0AvVjA1YZ1luDdEhTVkM0aVpYc2dPcTN4OHc3ZnZNNVE&amp;gid=0&amp;authkey=CMnn46IM');
-  // Send the query with a callback function.
-  query.send(handleQueryResponse);
+         }
+       
+    for (i=0; i< myRowList.length ;i++)
+    {
+        var myRow = myRowList[i];
+        if (numColumns == 1){
+            addRows1(data, myRow);
+        }
+        if (numColumns == 2){
+            addRows2(data, myRow);
+        }
+        if (numColumns == 3){
+            addRows3(data, myRow);
+        }
+        if (numColumns == 4){
+            addRows4(data, myRow);
+        }
+        if (numColumns == 5){
+            addRows5(data, myRow);
+        }
+     }
+
+    // ]]>
+
+
+        var chart = new google.visualization.AnnotatedTimeLine(document.getElementById('chart_div'));
+        chart.draw(data, {displayAnnotations: true});
+      }
+
+      function addRows1(dataTable, rowList) {
+          var myRowParse = rowList.split ( ',' );
+          var yearNum = parseInt(myRowParse[0]);
+          var dollNum = parseFloat(myRowParse[1]);
+        dataTable.addRow([new Date(yearNum, 0 ,1), dollNum]);
+      }
+
+      function addRows2(dataTable, rowList) {
+          var myRowParse = rowList.split ( ',' );
+          var yearNum = parseInt(myRowParse[0]);
+          var dollNum = parseFloat(myRowParse[1]);
+          var dollNum2 = parseFloat(myRowParse[2]);
+        dataTable.addRow([new Date(yearNum, 0 ,1), dollNum, dollNum2]);
+      }
+
+      function addRows3(dataTable, rowList) {
+          var myRowParse = rowList.split ( ',' );
+          var yearNum = parseInt(myRowParse[0]);
+          var dollNum = parseFloat(myRowParse[1]);
+          var dollNum2 = parseFloat(myRowParse[2]);
+          var dollNum3 = parseFloat(myRowParse[3]);
+        dataTable.addRow([new Date(yearNum, 0 ,1), dollNum, dollNum2, dollNum3]);
+      }
+
+      function addRows4(dataTable, rowList) {
+          var myRowParse = rowList.split ( ',' );
+          var yearNum = parseInt(myRowParse[0]);
+          var dollNum = parseFloat(myRowParse[1]);
+          var dollNum2 = parseFloat(myRowParse[2]);
+          var dollNum3 = parseFloat(myRowParse[3]);
+          var dollNum4 = parseFloat(myRowParse[4]);
+        dataTable.addRow([new Date(yearNum, 0 ,1), dollNum, dollNum2, dollNum3, dollNum4]);
+      }
+
+      function addRows5(dataTable, rowList) {
+          var myRowParse = rowList.split ( ',' );
+          var yearNum = parseInt(myRowParse[0]);
+          var dollNum = parseFloat(myRowParse[1]);
+          var dollNum2 = parseFloat(myRowParse[2]);
+          var dollNum3 = parseFloat(myRowParse[3]);
+          var dollNum4 = parseFloat(myRowParse[4]);
+          var dollNum5 = parseFloat(myRowParse[5]);
+        dataTable.addRow([new Date(yearNum, 0 ,1), dollNum, dollNum2, dollNum3, dollNum4, dollNum5]);
+      }
+
+
+function drawVisualization() {   
+         drawChart();         
 }
 
-function handleQueryResponse(response) {
-  if (response.isError()) {
-    alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
-    return;
-  }
 
-  var data = response.getDataTable();
-
-  visualization = new google.visualization.AnnotatedTimeLine(document.getElementById('chart_div'));
-  visualization.draw(data, null);
-}
-
-      function drawVisualization2() {
-  // To see the data that this visualization uses, browse to
-  // http://spreadsheets.google.com/ccc?key=pCQbetd-CptGXxxQIG7VFIQ
-  var query = new google.visualization.Query(
-
-      'https://spreadsheets.google.com/tq?range=A1:G64&amp;key=0AvVjA1YZ1luDdEhTVkM0aVpYc2dPcTN4OHc3ZnZNNVE&amp;gid=0&amp;authkey=CMnn46IM');
-  // Send the query with a callback function.
-  query.send(handleQueryResponse);
-}
-
-function handleQueryResponse2(response) {
-  if (response.isError()) {
-    alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
-    return;
-  }
-
-  var data = new google.visualization.DataTable(); 
-
-
-  visualization = new google.visualization.AnnotatedTimeLine(document.getElementById('chart_div'));
-  visualization.draw(data, null);
-}
     </script>
 <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
 
+<ice:outputText visible="false" id="columnString" value="#{ExploreDataPage.columnString}"/>
+<ice:outputText visible="false" id="dataString" value="#{ExploreDataPage.dataString}"/>
+<ice:outputText visible="false" id="dataColumns" value="#{ExploreDataPage.dataColumns}"/>
 
 <style type="text/css">
     .fileInfo {margin-bottom:1em;}
@@ -130,24 +192,10 @@ function handleQueryResponse2(response) {
 
                     <ice:inputText id="graphlinelabel" value="#{ExploreDataPage.lineLabel}"></ice:inputText>
 
-                    <ice:selectOneMenu id ="lineColor"  value = "#{ExploreDataPage.lineColor}">
-                        <f:selectItem itemLabel="Red" itemValue="red" />
-                        <f:selectItem itemLabel="Blue" itemValue="blue" />
-                        <f:selectItem itemLabel="Green" itemValue="green" />
-                        <f:selectItem itemLabel="Black" itemValue="black" />
-                        <f:selectItem itemLabel="Orange" itemValue="orange" />
-                        <f:selectItem itemLabel="Purple" itemValue="purple" />
-                        <f:selectItem itemLabel="Yellow" itemValue="yellow" />
-                    </ice:selectOneMenu>
                 </div>
                 <div>
                     <ice:commandButton id="addLineButton" type="submit" value="Add Line" binding="#{ExploreDataPage.addLineButton}" action="#{ExploreDataPage.addLine}"/>
                     <ice:message for="addLineButton" id ="boxErrorMsg"  styleClass="errorMessage"   />
-                </div>
-
-                <div>
-                    <ice:commandButton id="getDataTable" type="submit" value="Data Table"  action="#{ExploreDataPage.getDataTable}"/>
-                    <ice:message for="getDataTable" id ="boxErrorMsg"  styleClass="errorMessage"   />
                 </div>
             </div>
 
@@ -201,20 +249,14 @@ function handleQueryResponse2(response) {
 
             <div class="graphdisplay" style="float:left; width:30%;">
 
+
+
                 <div style="margin-bottom:.5em;">
                     <ice:outputLabel value="Display" for="graphdisplay" style="display:block;" />
                     <ice:selectOneMenu id="graphdisplay">
                         <f:selectItem itemLabel="Graph" itemValue=""/>
                     </ice:selectOneMenu>
                     <ice:commandButton  value="Create"  onclick="drawVisualization();"/>
-                </div>
-
-               <div style="margin-bottom:.5em;">
-                    <ice:outputLabel value="Display" for="graphdisplay" style="display:block;" />
-                    <ice:selectOneMenu id="graphdisplay">
-                        <f:selectItem itemLabel="Graph" itemValue=""/>
-                    </ice:selectOneMenu>
-                    <ice:commandButton  value="Create2"  onclick="drawVisualization2();"/>
                 </div>
                 <div style="margin-bottom:.5em;">
                     <ice:outputLabel value="Title" for="graphtitle" style="display:block;" />

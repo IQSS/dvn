@@ -710,16 +710,18 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
     }
 
     public void saveMeasureFragment(){
-        editMeasureVarGroup.getVarGroup().setName((String) getInputMeasureName().getValue());
-        editMeasureVarGroup.getVarGroup().setUnits((String) getInputMeasureUnits().getValue());
+
         String chkGroupName = (String) getInputMeasureName().getValue();
 
-        if (chkGroupName.isEmpty()) {
+        if (chkGroupName.isEmpty() || chkGroupName.trim().equals("") ) {
             FacesMessage message = new FacesMessage("Please Enter a Measure Name");
             FacesContext fc = FacesContext.getCurrentInstance();
             fc.addMessage(validateButton.getClientId(fc), message);
             return;
         }
+
+        editMeasureVarGroup.getVarGroup().setName((String) getInputMeasureName().getValue());
+        editMeasureVarGroup.getVarGroup().setUnits((String) getInputMeasureUnits().getValue());
 
         updateVariableByGroup(editMeasureVarGroup);
         
@@ -732,6 +734,16 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
     }
 
     public void saveMeasureGrouping(){
+        String chkGroupName = (String) getInputMeasureGroupingName().getValue();
+
+        if (chkGroupName.isEmpty() || chkGroupName.trim().equals("") ) {
+            FacesMessage message = new FacesMessage("Please Enter a Measure Label");
+            FacesContext fc = FacesContext.getCurrentInstance();
+            fc.addMessage(validateButton.getClientId(fc), message);
+            return;
+        }
+
+
         if (!getInputMeasureGroupingName().getValue().equals("")){
             measureGrouping.getVarGrouping().setName((String) getInputMeasureGroupingName().getValue());
         }
@@ -744,7 +756,6 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
     public void saveFilterFragment(){
 
-        editFilterVarGroup.getVarGroup().setName((String) getInputFilterGroupName().getValue());
         String chkGroupName = (String) getInputFilterGroupName().getValue();
 
         if (chkGroupName.isEmpty()) {
@@ -755,6 +766,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         }
 
 
+        editFilterVarGroup.getVarGroup().setName((String) getInputFilterGroupName().getValue());
         updateVariableByGroup(editFilterVarGroup);
 
         if(addFilterGroup){
@@ -829,15 +841,25 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
     }
 
     public void saveFilterGrouping(){
-        if (addFilterGrouping) {
-            addFilterGroupingSave();
-            cancelAddEdit();
-        } else {
-            if (!getInputFilterGroupingName().getValue().equals("")) {
+        String testString = (String) getInputFilterGroupingName().getValue();
+        if (!testString.isEmpty()){
+            if (addFilterGrouping) {
+                addFilterGroupingSave();
+                cancelAddEdit();
+            } else {
+                if (!getInputFilterGroupingName().getValue().equals("")) {
                 editFilterVarGrouping.getVarGrouping().setName((String) getInputFilterGroupingName().getValue());
+                }
+                cancelAddEdit();
             }
-            cancelAddEdit();
+
+        }  else {
+            FacesMessage message = new FacesMessage("Please Enter a Filter Group Name");
+            FacesContext fc = FacesContext.getCurrentInstance();
+            fc.addMessage(validateButton.getClientId(fc), message);
+            return;
         }
+
 
     }
 
@@ -1269,14 +1291,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
     public String release(){
         if (validateForRelease()) {
             dataTable.setVisualizationEnabled(true);
-            save();
-            getVDCRequestBean().setStudyId(study.getId());
-            if ( studyVersion.getId() == null ) {
-                getVDCRequestBean().setStudyVersionNumber(study.getReleasedVersion().getVersionNumber());
-            } else {
-                getVDCRequestBean().setStudyVersionNumber(studyVersion.getVersionNumber());
-            }
-            getVDCRequestBean().setSelectedTab("files");
+            saveAndExit();
             return "viewStudy";
         }
         return "";

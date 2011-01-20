@@ -699,9 +699,9 @@
                     <div class="clusterLabelBlock"> 
                         <div><ice:outputText value="Coordinates: #{ClusteringSpacePage.clusterSolution.formatX}, #{ClusteringSpacePage.clusterSolution.formatY}"/></div>
                         <div><ice:outputText value="Clusters: #{ClusteringSpacePage.clusterSolution.numClusters}"/></div>
-                        <a href="#" class="clusterLabelValueEdit"><ice:outputText value="Label [+] #{ClusteringSpacePage.solutionLabel}"/></a>
+                        <a href="#" class="clusterLabelValueEdit"><ice:outputText value="Label [+] #{ClusteringSpacePage.clusterSolution.label}"/></a>
                         <div class="clusterLabelInputBlock">
-                            <label for="clusteringlabel"><a href="#" class="clusterInfoValueLabel">Label [-]</a></label> <ice:inputText id="clusteringlabel" value="#{ClusteringSpacePage.solutionLabel}"></ice:inputText>
+                            <label for="clusteringlabel"><a href="#" class="clusterInfoValueLabel">Label [-]</a></label> <ice:inputText id="clusteringlabel" value="#{ClusteringSpacePage.clusterSolution.label}"></ice:inputText>
                             <ice:commandButton value="Save" onclick="saveSolution();" actionListener="#{ClusteringSpacePage.saveSolutionLabel}"/>
                         </div>
                     </div>

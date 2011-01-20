@@ -41,10 +41,11 @@ public class ClusteringSpacePage {
     private String setId;
     private Double xCoord;
     private Double yCoord;
-    private String initClusterLabels;
+    
     private DocumentSet documentSet;
     private ClusterSolution clusterSolution;
-    private String solutionLabel;  // This is where we store the text entered in the solution label edit field
+    private String clusterLabelParam;
+    private String solutionLabelParam;  //
     
     private ArrayList<ClusterSolution> savedSolutions = new ArrayList<ClusterSolution>();
     private Integer clusterNum;
@@ -77,9 +78,10 @@ public class ClusteringSpacePage {
 
     @PostConstruct
     public void init() {
-
-      
         logger.fine("initializing page");
+
+        // Initialize inputs to Cluster calculation
+
         if (xCoord==null) {
         xCoord = new Double(0);
         }
@@ -93,8 +95,25 @@ public class ClusteringSpacePage {
         }
         documentSet = new DocumentSet(setId);
         solutionIndex=-1;
+
+        // Do calculation
+
         calculateClusterSolution(true);
-        initClusterLabels();
+
+        // Update cluster solution with labels
+        // from request, if necessary
+
+        clusterSolution.setLabel(solutionLabelParam);
+        if (clusterLabelParam!=null) {
+            initClusterLabels();
+        }
+
+        // If we have labels for this solution, added to the saved
+        // solutions list
+
+        if (clusterLabelParam!=null || solutionLabelParam !=null) {
+            saveSolution(clusterSolution);
+        }
     }
 
 
@@ -111,7 +130,6 @@ public class ClusteringSpacePage {
             // the request is for a saved solution, so update the page
             // with the saved solution data.
             clusterSolution = savedSolutions.get(solutionIndex);
-            solutionLabel = clusterSolution.getLabel();
             populateClusterTableModel();
         }
     }
@@ -124,6 +142,7 @@ public class ClusteringSpacePage {
     public void changeClusterNumberListener(ActionEvent ae) {
         calculateClusterSolution(false);
     }
+
 
 
 
@@ -153,14 +172,9 @@ public class ClusteringSpacePage {
             
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Clustering Error- ", errMessage+" Please try fewer clusters or a point closer to the convex hull."));
         }
-        //    if (discoverable) {
-        // Call javascript to add the point to the map with the calculated clusterNum
-        //        JavascriptContext.addJavascriptCall(FacesContext.getCurrentInstance(), "addPointForClusterNum('"+clusterSolution.getNumClusters()+"','true');");
-        //    }
-        // This is a new solution, so clear out the solution label.
-        solutionLabel = "";
-        populateClusterTableModel();
 
+        populateClusterTableModel();
+       
     }
     /*
      * If labels have been passed thru the request URL,
@@ -168,8 +182,8 @@ public class ClusteringSpacePage {
      *
      */
     public void initClusterLabels() {
-        if (initClusterLabels!=null) {
-            StringTokenizer tokenizer = new StringTokenizer(initClusterLabels, "|");
+        if (clusterLabelParam!=null) {
+            StringTokenizer tokenizer = new StringTokenizer(clusterLabelParam, ";");
             if (tokenizer.countTokens()>clusterSolution.getNumClusters()) {
                 throw new ClusterException("too many cluster labels");
             }
@@ -195,14 +209,16 @@ public class ClusteringSpacePage {
 
 
     public void saveSolutionLabel(ActionEvent ae) {
-           clusterSolution.setLabel(solutionLabel);
-           if (!savedSolutions.contains(clusterSolution)) {
-               // The id corresponds to the index in the savedSolutions list
-               clusterSolution.setId(savedSolutions.size());
-               savedSolutions.add(clusterSolution);
-           }
+           saveSolution(clusterSolution);
     }
 
+    private void saveSolution(ClusterSolution cs) {
+        if (!savedSolutions.contains(cs)) {
+               // The id corresponds to the index in the savedSolutions list
+               cs.setId(savedSolutions.size());
+               savedSolutions.add(cs);
+           }
+    }
     public int getSolutionIndex() {
         return solutionIndex;
     }
@@ -220,13 +236,6 @@ public class ClusteringSpacePage {
         this.savedSolutions = savedSolutions;
     }
 
-    public String getSolutionLabel() {
-        return solutionLabel;
-    }
-
-    public void setSolutionLabel(String solutionLabel) {
-        this.solutionLabel = solutionLabel;
-    }
     
     public String getSetId() {
         return setId;
@@ -252,14 +261,23 @@ public class ClusteringSpacePage {
         this.yCoord = yCoord;
     }
 
-    public String getInitClusterLabels() {
-        return initClusterLabels;
+    public String getClusterLabelParam() {
+        return clusterLabelParam;
     }
 
-    public void setInitClusterLabels(String initClusterLabels) {
-        this.initClusterLabels = initClusterLabels;
+    public void setClusterLabelParam(String clusterLabelParam) {
+        this.clusterLabelParam = clusterLabelParam;
     }
 
+    public String getSolutionLabelParam() {
+        return solutionLabelParam;
+    }
+
+    public void setSolutionLabelParam(String solutionLabelParam) {
+        this.solutionLabelParam = solutionLabelParam;
+    }
+
+    
 
     public ClusterSolution getClusterSolution() {
         return clusterSolution;

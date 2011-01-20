@@ -125,6 +125,19 @@ public class ClusterSolution {
         doClusterCalculations();
     }
 
+    public String getClusterLabels() {
+        String str="";
+        for (ClusterInfo ci : clusterInfoList) {
+                if (ci.getLabel()!=null && !ci.getLabel().isEmpty() ) {
+                    if (!str.equals("")) {
+                        str+=";";
+                    }
+                    str+=ci.getLabel();
+
+                }
+            }
+        return str;
+    }
     
     public String getInfoLabel() {
         String str = "";

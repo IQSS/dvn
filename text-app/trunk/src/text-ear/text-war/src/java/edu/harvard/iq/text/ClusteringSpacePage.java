@@ -195,16 +195,10 @@ public class ClusteringSpacePage {
             }
         }
     }
-    
+
+
     public void saveClusterLabel(ActionEvent ae) {
-        int rowIndex = clusterTable.getRowIndex();
-        ClusterRow row = (ClusterRow) clusterTable.getRowData();
-        clusterSolution.getClusterInfoList().get(rowIndex).setLabel(row.newValue);
-        if (!savedSolutions.contains(clusterSolution)) {
-               // The id corresponds to the index in the savedSolutions list
-               clusterSolution.setId(savedSolutions.size());
-               savedSolutions.add(clusterSolution);
-        }
+        saveSolution(clusterSolution);
     }
 
 
@@ -328,7 +322,6 @@ public class ClusteringSpacePage {
     public class ClusterRow {
        
         PanelTabSet panelTabSet;
-        String newValue;
         Boolean showDocPopup = Boolean.FALSE;
         Boolean showSumPopup = Boolean.FALSE;
         ClusterInfo clusterInfo;
@@ -338,7 +331,6 @@ public class ClusteringSpacePage {
         public ClusterRow(ClusterInfo clusterInfo) {          
             this.clusterInfo = clusterInfo;
             viewDocumentIndex = 0;  // Show the examplar document first
-            newValue = clusterInfo.getLabel();
         }
        
 
@@ -513,14 +505,6 @@ public class ClusteringSpacePage {
 
         public void setClusterInfo(ClusterInfo clusterInfo) {
             this.clusterInfo = clusterInfo;
-        }
-
-        public String getNewValue() {
-            return newValue;
-        }
-
-        public void setNewValue(String newValue) {
-            this.newValue = newValue;
         }
 
         public String getSummary() {

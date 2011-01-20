@@ -8,6 +8,9 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
       <style type="text/css">
+            .dvn_content {
+                min-width: 920px;
+            }
             #layersmap {
                 width: 600px;
                 height: 300px;
@@ -633,14 +636,21 @@
                     <ice:commandButton type="submit" value="Clear History" onclick="clearHistory();"/>
                 </div>
             </div>
+<style type="text/css">
+.map .iceDatTbl tfoot {display:none;}
+.savedListLabelUrl {display:none;}
+.savedListLabelCell.edit a.savedListLabelUrlLink {display:none;}
+.savedListLabelCell.edit div.savedListLabelUrl {display:block;}
+</style>
             <div>
-                <ice:dataTable id="savedList" cellpadding="0" cellspacing="0" value="#{ClusteringSpacePage.savedSolutions}" var="saved" width="100%">
+                <ice:dataTable id="savedList" columnClasses="savedListLabelCell,savedListCoordCell,savedListNoClustCell" cellpadding="0" cellspacing="0" value="#{ClusteringSpacePage.savedSolutions}" var="saved" width="100%">
                     <ice:column>
                       <f:facet name="header">
                         <ice:outputText styleClass="savedListLabel" value="Label"/>
                       </f:facet>
                         <ice:commandLink value="#{saved.infoLabel}" onclick="addSavedPoint(#{saved.x},#{saved.y},#{saved.numClusters},#{saved.discoverable},#{saved.id});" actionListener="#{ClusteringSpacePage.updateClusterSolutionListener}"></ice:commandLink>
-                        <ice:outputLink  onclick="alert('http://#{ClusteringSpacePage.host}/text/faces/ClusteringSpacePage.xhtml?setId=#{ClusteringSpacePage.setId}&amp;x=#{saved.formatX}&amp;y=#{saved.formatY}&amp;clusterNum=#{saved.numClusters}&amp;solutionLabel=#{saved.label}&amp;clusterLabels=#{saved.clusterLabels}' );">(show link)</ice:outputLink>
+                        <a href="#" class="savedListLabelUrlLink">[Link]</a>
+                        <div class="savedListLabelUrl"><ice:outputText value="http://#{ClusteringSpacePage.host}/text/faces/ClusteringSpacePage.xhtml?setId=#{ClusteringSpacePage.setId}&amp;x=#{saved.formatX}&amp;y=#{saved.formatY}&amp;clusterNum=#{saved.numClusters}&amp;solutionLabel=#{saved.label}&amp;clusterLabels=#{saved.clusterLabels}"/></div>
                     </ice:column>
                     <ice:column>
                         <f:facet name="header">
@@ -655,6 +665,46 @@
                         <ice:outputText rendered="#{saved.discoverable}" value="#{saved.numClusters}*"/>
                         <ice:outputText rendered="#{!saved.discoverable}" value="#{saved.numClusters}"/>
                     </ice:column>
+                    <f:facet name="footer">
+<script type="text/javascript">
+  //// <![CDATA[
+    jQuery(document).ready(initClusterTabs);
+    function initClusterTabs(){
+        // choose text for the show/hide link - can contain HTML (e.g. an image)
+        var showText='[Link]';
+        var hideText='[Close]';
+
+        // initialise the visibility check
+        var is_visible = false;
+
+        // append show/hide links to the element directly preceding the element with a class of "toggle"
+        jQuery(this).prev('a.savedListLabelUrlLink').text(showText);
+
+        // hide all of the elements with a class of 'toggle'
+        jQuery('.savedListLabelUrl').hide();
+
+        // capture clicks on the toggle links
+        jQuery('a.savedListLabelUrlLink').click(function() {
+
+            // change the link depending on whether the element is shown or hidden
+            if (jQuery(this).text()==showText) {
+                jQuery(this).text(hideText);
+            }
+            else {
+                jQuery(this).text(showText);
+            }
+
+            // toggle the display
+            jQuery(this).next('.savedListLabelUrl').toggle();
+
+            // return false so any link destination is not followed
+            return false;
+
+        });
+    }
+    // ]]>
+</script>
+                    </f:facet>
                 </ice:dataTable>
             </div>
             <ice:outputText value="(*) Discoverable"/>
@@ -848,7 +898,7 @@ td.clusterCountCol {width:14%;}
                                         </ice:column>
                                     </ice:dataTable>
                                 </ice:panelTab>
-                                <ice:panelTab label="Cluster Summary" rendered="#{row.summaryAvailable}">
+                                <ice:panelTab label="Summary" rendered="#{row.summaryAvailable}">
                                      <ice:commandLink actionListener="#{row.openSumPopup}">View Cluster Summary Text</ice:commandLink>
                                 </ice:panelTab>
                             </ice:panelTabSet>

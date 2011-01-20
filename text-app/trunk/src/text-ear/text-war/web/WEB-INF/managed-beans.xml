@@ -16,7 +16,33 @@
         <managed-property>
             <property-name>setId</property-name>
             <value>#{param.setId}</value>
-        </managed-property></managed-bean>
-    
+        </managed-property>
+        <managed-property>
+            <property-name>xCoord</property-name>
+            <property-class>java.lang.Double</property-class>
+            <value>#{param.x}</value>
+        </managed-property>
+        <managed-property>
+            <property-name>yCoord</property-name>
+            <property-class>java.lang.Double</property-class>
+            <value>#{param.y}</value>
+        </managed-property>
+        <managed-property>
+            <property-name>clusterNum</property-name>
+            <property-class>java.lang.Integer</property-class>
+            <value>#{param.clusterNum}</value>
+        </managed-property>
+        <managed-property>
+            <property-name>solutionLabel</property-name>
+            <property-class>java.lang.String</property-class>
+            <value>#{param.clustering}</value>
+        </managed-property>
+        <managed-property>
+            <property-name>initClusterLabels</property-name>
+            <property-class>java.lang.String</property-class>
+            <value>#{param.clusters}</value>
+        </managed-property>
+    </managed-bean>
+
 
 </faces-config>

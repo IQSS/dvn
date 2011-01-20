@@ -761,6 +761,7 @@
             <div class="clusterTable">
 <style type="text/css">
 .clusterInfoValueBlock {display:none;}
+.clusterInfoLabelBlock {border:1px solid transparent;} /* Opera bug fix */
 .clusterInfoLabelBlock.edit a.clusterInfoValueEdit {display:none;}
 .clusterInfoLabelBlock.edit a.clusterInfoValueLabel {display:inline;}
 .clusterInfoLabelBlock.edit div.clusterInfoValueBlock {display:block;}
@@ -791,8 +792,8 @@ td.clusterCountCol {width:14%;}
 .clusterViewDocPopup .popupHeaderWrapper .popupHeaderClose {float:right;}
 .clusterViewDocPopup table {width:100%;}
 .clusterViewDocPopup .clusterDocViewNav {margin-bottom:1em;}
-.clusterViewDocPopup .clusterDocViewText {height:400px; padding-right:0px; overflow-y: auto;}
-.clusterViewDocPopup .clusterDocViewText textarea {margin:0; padding:0; width:41.5em; color:black;}
+.clusterViewDocPopup .clusterDocViewText {height:400px; width:460px; overflow: auto;}
+.clusterViewDocPopup .clusterDocViewText pre {color: black; width:440px; white-space:pre-wrap; word-wrap: break-word;}
 </style>
                 <ice:dataTable id="clusterInfo" binding="#{ClusteringSpacePage.clusterTable}" cellpadding="0" cellspacing="0" value="#{ClusteringSpacePage.clusterTableModel}" var="row" width="100%">
                     <ice:column>
@@ -933,7 +934,7 @@ td.clusterCountCol {width:14%;}
                                         <ice:commandLink title="Last Document" onclick="jQuery('textarea.iceInpTxtArea-dis').animate({scrollTop:0}, 'slow');" rendered="#{row.viewDocumentIndex!=row.clusterInfo.clusterCount-1}" actionListener="#{row.viewLast}"><img title="Last Document" src="/text/resources/icefaces/dvn_rime/css-images/arrow-last.gif" class="iceGphImg" alt=""/></ice:commandLink>
                                     </div>
                                     <div class="clusterDocViewText">
-                                        <ice:inputTextarea value="#{row.viewDocumentText}" rows="25" disabled="true"/>
+                                        <pre><ice:outputText value="#{row.viewDocumentText}" nospan="true"/></pre>
                                     </div>
                                 </ice:panelGroup>
                             </f:facet>
@@ -952,7 +953,7 @@ td.clusterCountCol {width:14%;}
                             <f:facet name="body">
                                 <ice:panelGroup styleClass="popupBody">
                                     <div class="clusterDocViewText">
-                                        <ice:inputTextarea value="#{row.summary}" rows="25" disabled="true"/>
+                                        <pre><ice:outputText value="#{row.summary}" nospan="true"/></pre>
                                     </div>
                                 </ice:panelGroup>
                             </f:facet>

@@ -248,7 +248,7 @@ public class ClusterSolution {
         
         for (int i=0; i< clusters.length; i++ ) {
                 if (clusters[i]!=null) {
-                clusterInfoList.add(new ClusterInfo(clusters[i],documentSet.getDocIdList()));
+                clusterInfoList.add(new ClusterInfo(clusters[i],documentSet.getDocIdList(), documentSet.getTitleList()));
             }
         }
 

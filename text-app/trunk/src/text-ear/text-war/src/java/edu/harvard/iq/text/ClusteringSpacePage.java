@@ -422,7 +422,7 @@ public class ClusteringSpacePage {
         }
 
         public String getViewDocumentPreview() {
-            if (  !clusterInfo.getDocInfoList().get(this.viewDocumentIndex).title.isEmpty() ) {
+            if (  clusterInfo.getDocInfoList().get(this.viewDocumentIndex).title !=null ) {
                 return clusterInfo.getDocInfoList().get(this.viewDocumentIndex).title;
             } else {
                 int previewLength = 300;

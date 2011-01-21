@@ -588,7 +588,7 @@ public class ClusteringSpacePage {
                     summary += line + "\n";
                 }
                 // delete temp directory and files
-              //  FileUtils.deleteDirectory(clusterFile.getParentFile());
+               FileUtils.deleteDirectory(clusterFile.getParentFile());
 
             } catch (java.io.IOException ex) {
                 throw new ClusterException("Error reading inputStream from mead.pl process: " + ex.getMessage());

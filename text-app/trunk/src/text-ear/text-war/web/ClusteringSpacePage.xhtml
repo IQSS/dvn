@@ -895,7 +895,8 @@ td.clusterCountCol {width:14%;}
                                              <ice:commandLink value="#{docInfo.index+1}" actionListener="#{row.viewDocumentInList}"/>
                                         </ice:column>
                                         <ice:column>
-                                             <ice:commandLink value="#{docInfo.docId}" actionListener="#{row.viewDocumentInList}"/>
+                                             <ice:commandLink rendered="#{empty docInfo.title}" value="#{docInfo.docId}" actionListener="#{row.viewDocumentInList}"/>
+                                             <ice:commandLink rendered="#{!empty docInfo.title}" value="#{docInfo.title}" actionListener="#{row.viewDocumentInList}"/>
                                         </ice:column>
                                     </ice:dataTable>
                                 </ice:panelTab>

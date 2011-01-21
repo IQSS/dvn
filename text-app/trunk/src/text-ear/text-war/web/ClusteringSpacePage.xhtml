@@ -650,7 +650,9 @@
                       </f:facet>
                         <ice:commandLink value="#{saved.infoLabel}" onclick="addSavedPoint(#{saved.x},#{saved.y},#{saved.numClusters},#{saved.discoverable},#{saved.id});" actionListener="#{ClusteringSpacePage.updateClusterSolutionListener}"></ice:commandLink>
                         <a href="#" class="savedListLabelUrlLink">[Link]</a>
-                        <div class="savedListLabelUrl"><ice:outputText value="http://#{ClusteringSpacePage.host}/text/faces/ClusteringSpacePage.xhtml?setId=#{ClusteringSpacePage.setId}&amp;x=#{saved.formatX}&amp;y=#{saved.formatY}&amp;clusterNum=#{saved.numClusters}&amp;solutionLabel=#{saved.label}&amp;clusterLabels=#{saved.clusterLabels}"/></div>
+                        <div class="savedListLabelUrl"><ice:outputLink value="http://#{ClusteringSpacePage.host}/text/faces/ClusteringSpacePage.xhtml?setId=#{ClusteringSpacePage.setId}&amp;x=#{saved.formatX}&amp;y=#{saved.formatY}&amp;clusterNum=#{saved.numClusters}&amp;solutionLabel=#{saved.encodedLabel}&amp;clusterLabels=#{saved.clusterLabels}">
+                                <ice:outputText value="http://#{ClusteringSpacePage.host}/text/faces/ClusteringSpacePage.xhtml?setId=#{ClusteringSpacePage.setId}&amp;x=#{saved.formatX}&amp;y=#{saved.formatY}&amp;clusterNum=#{saved.numClusters}&amp;solutionLabel=#{saved.encodedLabel}&amp;clusterLabels=#{saved.clusterLabels}"/></ice:outputLink>
+                        </div>
                     </ice:column>
                     <ice:column>
                         <f:facet name="header">

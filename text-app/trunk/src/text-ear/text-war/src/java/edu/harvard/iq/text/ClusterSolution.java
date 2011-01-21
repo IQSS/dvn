@@ -6,10 +6,11 @@
 package edu.harvard.iq.text;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
 
@@ -137,10 +138,31 @@ public class ClusterSolution {
             }
         }
     }
+    public String getEncodedLabel() {
+        if (label!=null) {
+            try {
+                return URLEncoder.encode(label, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                        throw new ClusterException(e.getMessage());
+            }
+        } else {
+            return label;
+        }
+    }
+
     public String getClusterLabels() {
         String str = "";
         for (ClusterInfo ci : clusterInfoList) {
-            str += ci.getLabel() + this.CLUSTER_LABEL_DELIMITER;
+                // str+=(ci.getLabel());
+                    if (ci.getLabel()!=null) {  
+                    try {
+
+                    str+=URLEncoder.encode(ci.getLabel(),"UTF-8");
+                    } catch (UnsupportedEncodingException e) {
+                        throw new ClusterException(e.getMessage());
+                    }
+                    }
+            str+= this.CLUSTER_LABEL_DELIMITER;
         }
         return str;
     }
@@ -157,7 +179,12 @@ public class ClusterSolution {
                     if (!str.equals("")) {
                         str+=", ";
                     }
-                    str+=ci.getLabel();
+                    str+=(ci.getLabel());
+                //    try {
+                //    str+=URLEncoder.encode(ci.getLabel(),"UTF-8");
+                 //   } catch (UnsupportedEncodingException e) {
+                 //       throw new ClusterException(e.getMessage());
+                 //   }
                     count++;
                 }
             }

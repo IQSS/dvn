@@ -38,15 +38,25 @@ public class DocumentSet {
     private int[][] wordDocumentMatrix;  // word rows and doc columns (each cell is word count)
     private ArrayList<String> wordList;
     private ArrayList<String> docIdList;
+    private ArrayList<String> titleList;
     private final static String POLYGON_FILE = "polygon.xml";
     private final static String METHOD_POINTS_FILE = "MethodPoints.txt";
     private final static String CLUSTER_MEMBERSHIP_FILE = "ClusterMembershipMatrix.txt";
     private final static String WORD_DOC_MATRIX_FILE = "WordDocumentMatrix.txt";
+    private final static String TITLES_FILE = "titles.txt";
 
     public DocumentSet(String setId) {
         this.setId=setId;
         initializeSet();
         
+    }
+
+    public ArrayList<String> getTitleList() {
+        return titleList;
+    }
+
+    public void setTitleList(ArrayList<String> titleList) {
+        this.titleList = titleList;
     }
 
     public ArrayList<String> getDocIdList() {
@@ -105,7 +115,15 @@ public class DocumentSet {
         initMethodPointsAndPolygon();
         initClusterMembership();
         initWordDocumentMatrix();
-
+        initTitles();
+        logger.fine("complete initializeSet");
+        logger.fine("title size: " + titleList.size());
+        logger.fine("docId size: " + this.docIdList.size());
+        if (!titleList.isEmpty()) {
+            for (int i=0;i< docIdList.size(); i++) {
+                logger.fine( i + "\t\t "+docIdList.get(i)+"\t\t "+titleList.get(i));
+            }
+        }
     }
 
     private void initClusterMembership() {
@@ -189,6 +207,26 @@ public class DocumentSet {
             throw new ClusterException(ex.getMessage());
         }
         logger.fine("ClusterMembership, methodSize = "+table.size()+" docSize = "+table.get(0).size());
+    }
+
+    private void initTitles() {
+        titleList = new ArrayList<String>();
+         File titleFile = new File(setDir, this.TITLES_FILE);
+        if ( titleFile.exists()) {
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(titleFile));
+               //read the rest of the tab separated file line by line
+                String strLine =null;
+                while ((strLine = br.readLine()) != null) {
+                    titleList.add(strLine);
+                }
+            }  catch (java.io.IOException ex) {
+            throw new ClusterException(ex.getMessage());
+        }
+        logger.fine("titleList, size = "+this.titleList.size());
+
+
+        }
     }
 
     private void initWordDocumentMatrix(){

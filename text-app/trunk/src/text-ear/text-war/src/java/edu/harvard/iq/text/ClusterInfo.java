@@ -48,11 +48,16 @@ public class ClusterInfo implements Comparable<ClusterInfo> {
         this.clusterNumber = clusterNumber;
     }
 
-    public ClusterInfo(Cluster cluster, ArrayList<String> completeDocIdList) {
+    public ClusterInfo(Cluster cluster, ArrayList<String> completeDocIdList, ArrayList<String> completeTitleList ) {
         for (int i = 0; i < cluster.getMemberIndexes().length; i++) {
             this.fileIndices.add(cluster.getMemberIndexes()[i]);
             String docId = completeDocIdList.get(cluster.getMemberIndexes()[i]);
-            docInfoList.add(new DocInfo(docId, docInfoList.size()));
+            DocInfo di = new DocInfo(docId, docInfoList.size());
+            if (completeTitleList.size()>0) {
+                di.title = completeTitleList.get(cluster.getMemberIndexes()[i]);
+            }
+            docInfoList.add(di);
+
         }
     }
 
@@ -164,6 +169,7 @@ public class ClusterInfo implements Comparable<ClusterInfo> {
 
         String docId;
         int index;
+        String title;
 
         public DocInfo(String docId, int index) {
             this.docId = docId;
@@ -185,6 +191,15 @@ public class ClusterInfo implements Comparable<ClusterInfo> {
         public void setIndex(int index) {
             this.index = index;
         }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+        
     }
 
     public ArrayList<DocInfo> getDocInfoList() {

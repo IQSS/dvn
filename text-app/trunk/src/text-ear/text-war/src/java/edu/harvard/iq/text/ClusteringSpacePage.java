@@ -422,28 +422,30 @@ public class ClusteringSpacePage {
         }
 
         public String getViewDocumentPreview() {
-
-            int previewLength = 300;
-            String temp;
-            String preview = null;
-            byte[] byteArray = new byte[previewLength];
-            try {
-                FileInputStream fin = getViewDocumentInputStream();
-                BufferedInputStream bis = new BufferedInputStream(fin);
-                bis.read(byteArray,0, previewLength);
-                temp = new String(byteArray, "utf-8");
-                // remove leading white space
-                temp = temp.trim();
-                // remove everything after the carriage return
-                int retIndex = temp.indexOf("\n");
-                if (retIndex !=-1) {
-                    preview = temp.substring(0, retIndex);
+            if (  !clusterInfo.getDocInfoList().get(this.viewDocumentIndex).title.isEmpty() ) {
+                return clusterInfo.getDocInfoList().get(this.viewDocumentIndex).title;
+            } else {
+                int previewLength = 300;
+                String temp;
+                String preview = null;
+                byte[] byteArray = new byte[previewLength];
+                try {
+                    FileInputStream fin = getViewDocumentInputStream();
+                    BufferedInputStream bis = new BufferedInputStream(fin);
+                    bis.read(byteArray,0, previewLength);
+                    temp = new String(byteArray, "utf-8");
+                    // remove leading white space
+                    temp = temp.trim();
+                    // remove everything after the carriage return
+                    int retIndex = temp.indexOf("\n");
+                    if (retIndex !=-1) {
+                        preview = temp.substring(0, retIndex);
+                    }
+                } catch (IOException e) {
+                    throw new ClusterException(e.getMessage());
                 }
-            } catch (IOException e) {
-                throw new ClusterException(e.getMessage());
-            }
             return preview;
-
+            }
         }
 
        public String getViewDocumentText() {
@@ -586,7 +588,7 @@ public class ClusteringSpacePage {
                     summary += line + "\n";
                 }
                 // delete temp directory and files
-                FileUtils.deleteDirectory(clusterFile.getParentFile());
+              //  FileUtils.deleteDirectory(clusterFile.getParentFile());
 
             } catch (java.io.IOException ex) {
                 throw new ClusterException("Error reading inputStream from mead.pl process: " + ex.getMessage());
@@ -628,7 +630,7 @@ public class ClusteringSpacePage {
                 ps.println("<KEYWORDS>");
                 String keywords = "";
                 for (int i=0;i<10;i++) {
-                    keywords+="\\b"+clusterInfo.getWordList().get(i).title+".*\\b;1;";
+                    keywords+="\\b"+clusterInfo.getWordList().get(i).title+"\\b;1;";
                 }
                 ps.println(keywords);
                 ps.println("</KEYWORDS>");

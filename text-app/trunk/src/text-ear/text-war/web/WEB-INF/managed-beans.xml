@@ -33,6 +33,11 @@
             <value>#{param.clusterNum}</value>
         </managed-property>
         <managed-property>
+            <property-name>discoverable</property-name>
+            <property-class>java.lang.Boolean</property-class>
+            <value>#{param.discoverable}</value>
+        </managed-property>
+        <managed-property>
             <property-name>solutionLabelParam</property-name>
             <property-class>java.lang.String</property-class>
             <value>#{param.solutionLabel}</value>

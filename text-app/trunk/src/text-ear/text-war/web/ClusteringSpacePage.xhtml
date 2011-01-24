@@ -650,8 +650,8 @@
                       </f:facet>
                         <ice:commandLink value="#{saved.infoLabel}" onclick="addSavedPoint(#{saved.x},#{saved.y},#{saved.numClusters},#{saved.discoverable},#{saved.id});" actionListener="#{ClusteringSpacePage.updateClusterSolutionListener}"></ice:commandLink>
                         <a href="#" class="savedListLabelUrlLink">[Link]</a>
-                        <div class="savedListLabelUrl"><ice:outputLink value="http://#{ClusteringSpacePage.host}/text/faces/ClusteringSpacePage.xhtml?setId=#{ClusteringSpacePage.setId}&amp;x=#{saved.formatX}&amp;y=#{saved.formatY}&amp;clusterNum=#{saved.numClusters}&amp;solutionLabel=#{saved.encodedLabel}&amp;clusterLabels=#{saved.clusterLabels}">
-                                <ice:outputText value="http://#{ClusteringSpacePage.host}/text/faces/ClusteringSpacePage.xhtml?setId=#{ClusteringSpacePage.setId}&amp;x=#{saved.formatX}&amp;y=#{saved.formatY}&amp;clusterNum=#{saved.numClusters}&amp;solutionLabel=#{saved.encodedLabel}&amp;clusterLabels=#{saved.clusterLabels}"/></ice:outputLink>
+                        <div class="savedListLabelUrl"><ice:outputLink value="http://#{ClusteringSpacePage.host}/text/faces/ClusteringSpacePage.xhtml?setId=#{ClusteringSpacePage.setId}&amp;x=#{saved.formatX}&amp;y=#{saved.formatY}&amp;clusterNum=#{saved.numClusters}&amp;discoverable=true&amp;solutionLabel=#{saved.encodedLabel}&amp;clusterLabels=#{saved.clusterLabels}">
+                                <ice:outputText value="http://#{ClusteringSpacePage.host}/text/faces/ClusteringSpacePage.xhtml?setId=#{ClusteringSpacePage.setId}&amp;x=#{saved.formatX}&amp;y=#{saved.formatY}&amp;clusterNum=#{saved.numClusters}&amp;discoverable=true&amp;solutionLabel=#{saved.encodedLabel}&amp;clusterLabels=#{saved.clusterLabels}"/></ice:outputLink>
                         </div>
                     </ice:column>
                     <ice:column>
@@ -750,7 +750,7 @@
                 <div>
                     <div class="clusterLabelBlock"> 
                         <div><ice:outputText value="Coordinates: #{ClusteringSpacePage.clusterSolution.formatX}, #{ClusteringSpacePage.clusterSolution.formatY}"/></div>
-                        <div><ice:outputText value="Clusters: #{ClusteringSpacePage.clusterSolution.numClusters}"/></div>
+                        <div><ice:outputText  value="Clusters: #{ClusteringSpacePage.clusterSolution.formatClusterNum}"/></div>
                         <a href="#" class="clusterLabelValueEdit"><ice:outputText value="Label [+] #{ClusteringSpacePage.clusterSolution.label}"/></a>
                         <div class="clusterLabelInputBlock">
                             <label for="clusteringlabel"><a href="#" class="clusterInfoValueLabel">Label [-]</a></label> <ice:inputText id="clusteringlabel" value="#{ClusteringSpacePage.clusterSolution.label}"></ice:inputText>

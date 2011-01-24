@@ -52,7 +52,7 @@ public class ClusteringSpacePage {
     private HtmlDataTable clusterTable;
     private ArrayList<ClusterRow> clusterTableModel = new ArrayList<ClusterRow>();
     private int solutionIndex;  // This is passed from the form to indicate that we need to display a saved solution rather than calculate a new solution
-    private Boolean discoverable = Boolean.FALSE;
+    private Boolean discoverable;
 
     public String getHost() {
         try {
@@ -81,9 +81,8 @@ public class ClusteringSpacePage {
         logger.fine("initializing page");
 
         // Initialize inputs to Cluster calculation
-
         if (xCoord==null) {
-        xCoord = new Double(0);
+            xCoord = new Double(0);
         }
         if (yCoord==null) {
             yCoord = new Double(0);
@@ -93,6 +92,10 @@ public class ClusteringSpacePage {
         if (setId==null) {
             throw new ClusterException("missing setId parameter.");
         }
+        if (discoverable==null) {
+            discoverable=false;
+        }
+        
         documentSet = new DocumentSet(setId);
         solutionIndex=-1;
 
@@ -352,7 +355,7 @@ public class ClusteringSpacePage {
            }
            PanelTabSet tabSet = (PanelTabSet)comp;
            viewDocumentIndex = table.getRowIndex();
-           tabSet.setSelectedIndex(0);  // Select the Document tab
+           showDocPopup=true;  // open the document viewer
        }
 
 
@@ -531,8 +534,8 @@ public class ClusteringSpacePage {
 
 
                 if (useKeywords) {
-                    File keywordFile = createKeywordFile(clusterFile.getParentFile());
-                    File rcFile = createRCFile(keywordFile.getAbsolutePath(), clusterFile.getParentFile());
+                    
+                    File rcFile = createRCFile( clusterFile.getParentFile());
                     /*
                     cmd += " -feature QueryPhraseMatch '"+ClusterUtil.getMeadDir()+"/bin/feature-scripts/keyword/QueryPhraseMatch.pl "
                                 +"-q keywords "+keywordFile.getAbsolutePath()+"' ";
@@ -598,14 +601,19 @@ public class ClusteringSpacePage {
             }
         }
 
-        private File createRCFile(String keywordFilePath, File parentDir) {
+        private File createRCFile(File parentDir) {
             File rcFile = null;
+            File keywordFile = null;
+         //   File biasFile = new File(parentDir, "bias.txt");
             try{
                 rcFile= new File(parentDir, "mead.rc");
+                keywordFile = createKeywordFile(parentDir);
+
                 PrintStream ps = new PrintStream(new FileOutputStream(rcFile));
                 ps.println("compression_basis sentences");
                 ps.println("compression_absolute 10");
-                ps.println("feature QueryPhraseMatch "+ClusterUtil.getMeadDir()+"/bin/feature-scripts/keyword/QueryPhraseMatch.pl -q keywords " + keywordFilePath);
+                ps.println("feature QueryPhraseMatch "+ClusterUtil.getMeadDir()+"/bin/feature-scripts/keyword/QueryPhraseMatch.pl -q keywords " + keywordFile.getAbsolutePath());
+             //   ps.println("feature LexRank "+ClusterUtil.getMeadDir()+"/bin/feature-scripts/lexrank/LexRank.pl -newbias " + biasFile.getAbsolutePath());
                 ps.close();
             } catch (java.io.IOException e) {
                 throw new ClusterException(e.getMessage());

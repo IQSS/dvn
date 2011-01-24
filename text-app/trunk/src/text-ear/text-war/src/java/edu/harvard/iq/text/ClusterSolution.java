@@ -243,6 +243,13 @@ public class ClusterSolution {
         return this.candidateYPoint;
     }
 
+    public String getFormatClusterNum() {
+        String ret = ""+numClusters;
+        if (discoverable) {
+            ret+="*";
+        }
+        return ret;
+    }
     public ArrayList<ClusterInfo> getClusterInfoList() {
         return clusterInfoList;
     }

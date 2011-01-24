@@ -31,7 +31,9 @@ import javax.servlet.http.HttpServletRequest;
 import com.icesoft.faces.component.ext.HtmlCommandButton;
 import com.icesoft.faces.component.ext.HtmlDataTable;
 import com.icesoft.faces.component.ext.HtmlInputText;
+import com.icesoft.faces.component.ext.HtmlSelectOneMenu;
 import edu.harvard.iq.dvn.core.study.DataVariable;
+import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyFile;
 import edu.harvard.iq.dvn.core.study.VariableServiceLocal;
 import edu.harvard.iq.dvn.core.visualization.DataVariableMapping;
@@ -85,6 +87,10 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     private String columnString = new String();
     private Long numberOfColumns =  new Long(0);
     private String dataString = "";
+    private Long displayType = new Long(0);
+    private Study studyIn = new Study();
+    private Long studyId = new Long(0);
+
 
 
     public ExploreDataPage() {
@@ -96,7 +102,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         super.init();
         Long studyFileId = new Long( getVDCRequestBean().getRequestParam("fileId"));
         visualizationService.setDataTableFromStudyFileId(studyFileId);
-
+        studyIn = visualizationService.getStudyFromStudyFileId(studyFileId);
+        studyId = studyIn.getId();
         dt = visualizationService.getDataTable();
         dvList = dt.getDataVariables();
         varGroupings = dt.getVarGroupings();
@@ -263,7 +270,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         List selectItems = new ArrayList<SelectItem>();
         List <VarGroup> varGroups = new ArrayList();
         varGroupings = dt.getVarGroupings();
-        selectItems.add(new SelectItem(0, "Select a(n) " + measureLabel + "..."));
+        selectItems.add(new SelectItem(0, "Select" ));
         Iterator iterator = varGroupings.iterator();
         while (iterator.hasNext() ){
             VarGrouping varGrouping = (VarGrouping) iterator.next();
@@ -286,13 +293,13 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
     public List<SelectItem> loadSelectMeasureGroupTypes() {
         List selectItems = new ArrayList<SelectItem>();
-
+        selectItems.add(new SelectItem(0, "Select"));
         Iterator iterator = varGroupings.iterator();
         while (iterator.hasNext() ){
             VarGrouping varGrouping = (VarGrouping) iterator.next();
             // Don't show OAISets that have been created for dataverse-level Lockss Harvesting
             if (varGrouping.getGroupingType().equals(GroupingType.MEASURE)){
-                selectItems.add(new SelectItem(0, "Select a Filter..."));
+
                 List <VarGroupType> varGroupTypes = (List<VarGroupType>) varGrouping.getVarGroupTypes();
                 for(VarGroupType varGroupType: varGroupTypes) {
                     selectItems.add(new SelectItem(varGroupType.getId(), varGroupType.getName()));
@@ -310,7 +317,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             VarGrouping varGrouping = (VarGrouping) iterator.next();
 
             if (varGrouping.getGroupingType().equals(GroupingType.FILTER)){
-                selectItems.add(new SelectItem(varGrouping.getId(), "Select an Issue..."));
+                selectItems.add(new SelectItem(varGrouping.getId(), "Select"));
                 List <VarGroupType> varGroupTypes = (List<VarGroupType>) varGrouping.getVarGroupTypes();
                 for(VarGroupType varGroupType: varGroupTypes) {
                     selectItems.add(new SelectItem(varGroupType.getId(), varGroupType.getName()));
@@ -325,7 +332,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         groupingId = new Long(filterPanelGroup.getAttributes().get("groupingId").toString());
         List selectItems = new ArrayList<SelectItem>();
             
-                selectItems.add(new SelectItem(groupingId, "Select a Filter..."));
+                selectItems.add(new SelectItem(groupingId, "Select"));
                 List <VarGroupType> varGroupTypes = (List<VarGroupType>)  visualizationService.getGroupTypesFromGroupingId(new Long(groupingId));
                 for(VarGroupType varGroupType: varGroupTypes) {
                     selectItems.add(new SelectItem(varGroupType.getId(), varGroupType.getName()));
@@ -339,7 +346,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
         List selectItems = new ArrayList<VarGroupType>();
 
-                selectItems.add(new SelectItem(groupingId, "Select a Filter..."));
+                selectItems.add(new SelectItem(groupingId, "Select"));
                 List <VarGroupType> varGroupTypes = (List<VarGroupType>)  visualizationService.getGroupTypesFromGroupingId(new Long(groupingId));
                 for(VarGroupType varGroupType: varGroupTypes) {
                     selectItems.add(new SelectItem(varGroupType.getId(), varGroupType.getName()));
@@ -363,7 +370,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
          List selectItems = new ArrayList<SelectItem>();
           Long groupingId = new Long(filterPanelGroup.getAttributes().get("groupingId").toString());
-          selectItems.add(new SelectItem(0, "Select a Filter..."));
+          selectItems.add(new SelectItem(0, "Select"));
           List <VarGroup> varGroupsAll = (List<VarGroup>)  visualizationService.getFilterGroupsFromMeasureId(selectedMeasureId);
               for(VarGroup varGroup: varGroupsAll) {
                   boolean added = false;
@@ -403,7 +410,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         if (filterPanelGroup.getAttributes().get("groupingId") != null){
             groupingId = new Long(filterPanelGroup.getAttributes().get("groupingId").toString());
         }
-         selectItems.add(new SelectItem(0, "Select a Filter..."));
+         selectItems.add(new SelectItem(0, "Select"));
             Iterator itrG = filterGroupings.iterator();
             while (itrG.hasNext()){
                 VarGroupingUI thisVarGrouping = (VarGroupingUI) itrG.next();
@@ -458,6 +465,10 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         return this.selectMeasureGroupTypes;
     }
 
+    public void reset_DisplayType(){
+        Object value= this.selectGraphType.getValue();
+        this.displayType = new Long((String) value );
+    }
 
     public void reset_MeasureItems(ValueChangeEvent ae){
         int i = (Integer) ae.getNewValue();
@@ -481,11 +492,19 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     public void addLine(){
         
         if ( lineLabel.isEmpty() || lineLabel.trim().equals("") ) {
-            FacesMessage message = new FacesMessage("Please Enter a Line Label");
+            FacesMessage message = new FacesMessage("Please Enter a label");
             FacesContext fc = FacesContext.getCurrentInstance();
             fc.addMessage(addLineButton.getClientId(fc), message);
             return;
         }
+
+        if (vizLines.size() >= 8){
+            FacesMessage message = new FacesMessage("A maximum of 8 lines may be displayed in a single graph");
+            FacesContext fc = FacesContext.getCurrentInstance();
+            fc.addMessage(addLineButton.getClientId(fc), message);
+            return;
+        }
+
 
         if (validateSelections()){
 
@@ -642,11 +661,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
         }
         return (maxCount == filterGroupings.size() );
-    }
-
-    public void createDataTable(){
-
-      
     }
 
     public List<VisualizationLineDefinition> getVizLines() {
@@ -844,5 +858,31 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
     public String getDataColumns() {
         return  this.numberOfColumns.toString();
+    }
+
+    HtmlSelectOneMenu selectGraphType;
+
+    public HtmlSelectOneMenu getSelectGraphType() {
+        return selectGraphType;
+    }
+
+    public void setSelectGraphType(HtmlSelectOneMenu selectGraphType) {
+        this.selectGraphType = selectGraphType;
+    }
+
+    public Long getDisplayType() {
+        return displayType;
+    }
+
+    public void setDisplayType(Long displayType) {
+        this.displayType = displayType;
+    }
+    
+    public Long getStudyId() {
+        return studyId;
+    }
+
+    public void setStudyId(Long studyId) {
+        this.studyId = studyId;
     }
 }

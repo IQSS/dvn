@@ -18,18 +18,15 @@
 <ice:form id="ExploreDataPage">
     <ice:message for="exploredataform" id ="boxErrorMsg"  styleClass="errorMessage"   />
 
-    <script type='text/javascript' src='https://www.google.com/jsapi'>
-         
-        
-    </script>
+   <script type='text/javascript' src='https://www.google.com/jsapi'></script>
+   <script type='text/javascript' src="http://api.timepedia.org/gviz/"></script>
 <script type="text/javascript">
     
     google.load('visualization', '1', {'packages':['annotatedtimeline']});
+    google.load('visualization', '1', {packages:['table']});
 
-
- function drawChart() {
+ function drawChart(data, intDisType) {
           
-        var data = new google.visualization.DataTable();
         var myString = new String (document.getElementById('ExploreDataPage:columnString').textContent);
         var myColumnList = myString.split ( ',' );
         var myDataString = new String (document.getElementById('ExploreDataPage:dataString').textContent);
@@ -42,74 +39,103 @@
     for (i=0; i< myColumnList.length ;i++)
     { 
         var myColumn = myColumnList[i];
-        if (i==0)
-        { data.addColumn('date', myColumn); }
-        if (i>0){ data.addColumn('number', myColumn); }
-
-         }
+        if (i==0 && intDisType != 3 ){
+            data.addColumn('date', myColumn);
+        } else {
+            data.addColumn('number', myColumn);
+        }
+    }
        
-    for (i=0; i< myRowList.length ;i++)
+    for (i=0; i< myRowList.length -1 ;i++)
     {
         var myRow = myRowList[i];
         if (numColumns == 1){
-            addRows1(data, myRow);
+            addRows1(data, myRow, intDisType);
         }
         if (numColumns == 2){
-            addRows2(data, myRow);
+            addRows2(data, myRow, intDisType);
         }
         if (numColumns == 3){
-            addRows3(data, myRow);
+            addRows3(data, myRow, intDisType);
         }
         if (numColumns == 4){
-            addRows4(data, myRow);
+            addRows4(data, myRow, intDisType);
         }
         if (numColumns == 5){
-            addRows5(data, myRow);
+            addRows5(data, myRow, intDisType);
         }
+        if (numColumns == 6){
+            addRows6(data, myRow, intDisType);
+        }
+        if (numColumns == 7){
+            addRows7(data, myRow, intDisType);
+        }
+        if (numColumns == 8){
+            addRows8(data, myRow, intDisType);
+        }
+
+
+
      }
 
     // ]]>
 
 
-        var chart = new google.visualization.AnnotatedTimeLine(document.getElementById('chart_div'));
-        chart.draw(data, {displayAnnotations: true});
       }
 
-      function addRows1(dataTable, rowList) {
+      function addRows1(dataTable, rowList, intDisType) {
           var myRowParse = rowList.split ( ',' );
           var yearNum = parseInt(myRowParse[0]);
           var dollNum = parseFloat(myRowParse[1]);
-        dataTable.addRow([new Date(yearNum, 0 ,1), dollNum]);
+          if (intDisType != 3){
+            dataTable.addRow([new Date(yearNum, 0 ,1), dollNum]);
+          }  else {
+             dataTable.addRow([yearNum, dollNum]);
+          }
       }
 
-      function addRows2(dataTable, rowList) {
+      function addRows2(dataTable, rowList, intDisType) {
           var myRowParse = rowList.split ( ',' );
           var yearNum = parseInt(myRowParse[0]);
           var dollNum = parseFloat(myRowParse[1]);
           var dollNum2 = parseFloat(myRowParse[2]);
-        dataTable.addRow([new Date(yearNum, 0 ,1), dollNum, dollNum2]);
+          if (intDisType != 3){
+            dataTable.addRow([new Date(yearNum, 0 ,1), dollNum, dollNum2]);
+          } else {
+            dataTable.addRow([yearNum, dollNum, dollNum2]);
+          }
       }
 
-      function addRows3(dataTable, rowList) {
+      function addRows3(dataTable, rowList, intDisType) {
           var myRowParse = rowList.split ( ',' );
           var yearNum = parseInt(myRowParse[0]);
           var dollNum = parseFloat(myRowParse[1]);
           var dollNum2 = parseFloat(myRowParse[2]);
           var dollNum3 = parseFloat(myRowParse[3]);
-        dataTable.addRow([new Date(yearNum, 0 ,1), dollNum, dollNum2, dollNum3]);
+          if (intDisType != 3){
+            dataTable.addRow([new Date(yearNum, 0 ,1), dollNum, dollNum2, dollNum3]);
+          } else {
+            dataTable.addRow([yearNum, dollNum, dollNum2, dollNum3]);
+          }
+        
       }
 
-      function addRows4(dataTable, rowList) {
+      function addRows4(dataTable, rowList, intDisType) {
           var myRowParse = rowList.split ( ',' );
           var yearNum = parseInt(myRowParse[0]);
           var dollNum = parseFloat(myRowParse[1]);
           var dollNum2 = parseFloat(myRowParse[2]);
           var dollNum3 = parseFloat(myRowParse[3]);
           var dollNum4 = parseFloat(myRowParse[4]);
-        dataTable.addRow([new Date(yearNum, 0 ,1), dollNum, dollNum2, dollNum3, dollNum4]);
+          if (intDisType != 3){
+            dataTable.addRow([new Date(yearNum, 0 ,1), dollNum, dollNum2, dollNum3, dollNum4]);
+          } else {
+            dataTable.addRow([yearNum, dollNum, dollNum2, dollNum3, dollNum4]);
+          }
+        
       }
 
-      function addRows5(dataTable, rowList) {
+      function addRows5(dataTable, rowList, intDisType) {
           var myRowParse = rowList.split ( ',' );
           var yearNum = parseInt(myRowParse[0]);
           var dollNum = parseFloat(myRowParse[1]);
@@ -117,12 +143,87 @@
           var dollNum3 = parseFloat(myRowParse[3]);
           var dollNum4 = parseFloat(myRowParse[4]);
           var dollNum5 = parseFloat(myRowParse[5]);
-        dataTable.addRow([new Date(yearNum, 0 ,1), dollNum, dollNum2, dollNum3, dollNum4, dollNum5]);
+          if (intDisType != 3){
+            dataTable.addRow([new Date(yearNum, 0 ,1), dollNum, dollNum2, dollNum3, dollNum4, dollNum5]);
+          } else {
+            dataTable.addRow([yearNum, dollNum, dollNum2, dollNum3, dollNum4, dollNum5]);
+          }
+      }
+
+      function addRows6(dataTable, rowList, intDisType) {
+          var myRowParse = rowList.split ( ',' );
+          var yearNum = parseInt(myRowParse[0]);
+          var dollNum = parseFloat(myRowParse[1]);
+          var dollNum2 = parseFloat(myRowParse[2]);
+          var dollNum3 = parseFloat(myRowParse[3]);
+          var dollNum4 = parseFloat(myRowParse[4]);
+          var dollNum5 = parseFloat(myRowParse[5]);
+          var dollNum6 = parseFloat(myRowParse[6]);
+          if (intDisType != 3){
+            dataTable.addRow([new Date(yearNum, 0 ,1), dollNum, dollNum2, dollNum3, dollNum4, dollNum5, dollNum6]);
+          } else {
+            dataTable.addRow([yearNum, dollNum, dollNum2, dollNum3, dollNum4, dollNum5, dollNum6]);
+          }
+      }
+
+      function addRows7(dataTable, rowList, intDisType) {
+          var myRowParse = rowList.split ( ',' );
+          var yearNum = parseInt(myRowParse[0]);
+          var dollNum = parseFloat(myRowParse[1]);
+          var dollNum2 = parseFloat(myRowParse[2]);
+          var dollNum3 = parseFloat(myRowParse[3]);
+          var dollNum4 = parseFloat(myRowParse[4]);
+          var dollNum5 = parseFloat(myRowParse[5]);
+          var dollNum6 = parseFloat(myRowParse[6]);
+          var dollNum7 = parseFloat(myRowParse[7]);
+          if (intDisType != 3){
+            dataTable.addRow([new Date(yearNum, 0 ,1), dollNum, dollNum2, dollNum3, dollNum4, dollNum5, dollNum6, dollNum7]);
+          } else {
+            dataTable.addRow([yearNum, dollNum, dollNum2, dollNum3, dollNum4, dollNum5, dollNum6, dollNum7]);
+          }
+      }
+
+      function addRows8(dataTable, rowList, intDisType) {
+          var myRowParse = rowList.split ( ',' );
+          var yearNum = parseInt(myRowParse[0]);
+          var dollNum = parseFloat(myRowParse[1]);
+          var dollNum2 = parseFloat(myRowParse[2]);
+          var dollNum3 = parseFloat(myRowParse[3]);
+          var dollNum4 = parseFloat(myRowParse[4]);
+          var dollNum5 = parseFloat(myRowParse[5]);
+          var dollNum6 = parseFloat(myRowParse[6]);
+          var dollNum7 = parseFloat(myRowParse[7]);
+          var dollNum8 = parseFloat(myRowParse[8]);
+          if (intDisType != 3){
+            dataTable.addRow([new Date(yearNum, 0 ,1), dollNum, dollNum2, dollNum3, dollNum4, dollNum5, dollNum6, dollNum7, dollNum8]);
+          } else {
+            dataTable.addRow([yearNum, dollNum, dollNum2, dollNum3, dollNum4, dollNum5, dollNum6, dollNum7, dollNum8]);
+          }
       }
 
 
-function drawVisualization() {   
-         drawChart();         
+function drawVisualization() {
+
+            var displayType = new String (document.getElementById('ExploreDataPage:displayType').textContent);
+      var intDisType = parseInt(displayType);
+
+      var data = new google.visualization.DataTable();
+        drawChart(data, intDisType);
+        if (intDisType == 1){
+                var chart = new google.visualization.AnnotatedTimeLine(document.getElementById('chart_div'));
+                chart.draw(data, {displayAnnotations: true});
+        }
+        if (intDisType == 3){
+            var table = new google.visualization.Table(document.getElementById('chart_div'));
+            table.draw(data, {showRowNumber: false});
+        }
+        if (intDisType == 2){
+            chronoscope.Chronoscope.setFontBookRendering(true);
+            chronoscopeDivID = "chart_div";
+            var chrono = new chronoscope.ChronoscopeVisualization(document.getElementById(chronoscopeDivID));
+            chrono.draw(data, { legend: "true", overview: "true"});
+        }
+
 }
 
 
@@ -132,12 +233,21 @@ function drawVisualization() {
 <ice:outputText visible="false" id="columnString" value="#{ExploreDataPage.columnString}"/>
 <ice:outputText visible="false" id="dataString" value="#{ExploreDataPage.dataString}"/>
 <ice:outputText visible="false" id="dataColumns" value="#{ExploreDataPage.dataColumns}"/>
+<ice:outputText visible="false" id="displayType" value="#{ExploreDataPage.displayType}"/>
 
 <style type="text/css">
     .fileInfo {margin-bottom:1em;}
     .graphForm {margin:1em; padding-bottom:1em; border-bottom:1px solid grey;}
     .graphResults {margin:1em; overflow:hidden;}
 </style>
+            <div class="dvnstudyadminboxfloat dvn_right">
+                <ice:outputLink
+                    value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{ExploreDataPage.studyId}&amp;tab=files">
+                    <ice:outputText
+                        value="Back to Study"/>
+                </ice:outputLink>
+
+            </div>
 
     <div style="border:1px solid grey;">
         <div class="graphForm">
@@ -156,7 +266,7 @@ function drawVisualization() {
                     
                 </div>
                 <div style="float:left;">
-                    <ice:outputLabel value="narrow by" for="issue" /> 
+                    <ice:outputLabel value="Type:" for="issue" />
                     <ice:selectOneMenu  immediate="false" onchange="submit()"  id="issue"
                                         valueChangeListener="#{ExploreDataPage.reset_MeasureItems}" value="#{ExploreDataPage.groupTypeId}" >
                         <f:selectItems  value="#{ExploreDataPage.selectMeasureGroupTypes}"/>
@@ -242,9 +352,8 @@ function drawVisualization() {
 
             </div>
 
-            <div class="graphbox" style="float:left; width:46%;">
+            <div  class="graphbox" style="float:left; width:46%;"  >
                 <div id='chart_div' style='width: 540px; height: 400px;'></div>
-                
             </div>
 
             <div class="graphdisplay" style="float:left; width:30%;">
@@ -253,10 +362,15 @@ function drawVisualization() {
 
                 <div style="margin-bottom:.5em;">
                     <ice:outputLabel value="Display" for="graphdisplay" style="display:block;" />
-                    <ice:selectOneMenu id="graphdisplay">
-                        <f:selectItem itemLabel="Graph" itemValue=""/>
+                    <ice:selectOneMenu id="graphdisplay"  binding="#{ExploreDataPage.selectGraphType}"
+                                       onchange="getElementById('ExploreDataPage:selectDisplayButton').click();">
+                        <f:selectItem itemLabel="Select Display" itemValue="0"/>
+                        <f:selectItem itemLabel="Graph" itemValue="1"/>
+                        <f:selectItem itemLabel="Table" itemValue="3"/>
+
                     </ice:selectOneMenu>
                     <ice:commandButton  value="Create"  onclick="drawVisualization();"/>
+                     <ice:commandButton visible="false" id="selectDisplayButton"  action="#{ExploreDataPage.reset_DisplayType}"/>
                 </div>
                 <div style="margin-bottom:.5em;">
                     <ice:outputLabel value="Title" for="graphtitle" style="display:block;" />

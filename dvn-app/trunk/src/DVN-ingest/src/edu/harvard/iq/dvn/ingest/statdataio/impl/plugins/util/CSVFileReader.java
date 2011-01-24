@@ -82,7 +82,7 @@ public class CSVFileReader implements java.io.Serializable {
 
         while ((line = csvReader.readLine()) != null) {
             // chop the line:
-            line = line.replaceFirst("[ \t\n]*$", "");
+            line = line.replaceFirst("[\r\n]*$", "");
             valueTokens = line.split(""+delimiterChar, varQnty);
 
             //dbgLog.fine("case: "+lineCounter);
@@ -163,7 +163,7 @@ public class CSVFileReader implements java.io.Serializable {
 
         while ((line = csvReader.readLine()) != null) {
             // chop the line:
-            line = line.replaceFirst("[ \t\n]*$", "");
+            line = line.replaceFirst("[\r\n]*$", "");
             valueTokens = line.split(""+delimiterChar, varQnty);
 
             //dbgLog.fine("case: "+lineCounter);

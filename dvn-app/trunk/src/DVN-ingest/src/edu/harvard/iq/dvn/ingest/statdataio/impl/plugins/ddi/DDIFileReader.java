@@ -197,11 +197,11 @@ public class DDIFileReader extends StatDataFileReader{
 
         try {
             casesRead = csvFileReader.read(csvRd, smd, pwout);
-        } catch (IOException ex) {
-            dbgLog.info ("Could not read and store TAB data file: " +
-                        "IO Exception caught:" + ex.getMessage());
-            throw new IOException ("Could not read and store TAB data file: " +
-                        "IO Exception caught:" + ex.getMessage());
+        } catch (Exception ex) {
+            dbgLog.info ("Could not read and store TAB data file. Empty or corrupted file?" +
+                        "Exception caught:" + ex.getMessage());
+            throw new IOException ("Could not read and store TAB data file. Empty or corrupted file?" +
+                        "Exception caught:" + ex.getMessage());
         }
 
         if (casesRead < 1) {

@@ -1306,7 +1306,16 @@ public class FileDownloadServlet extends HttpServlet {
                 }
                 fileDownload.setIsFile(true);
 
-                fileDownload.setMimeType(file.getOriginalFileType());
+                String originalMimeType = file.getOriginalFileType();
+
+                if (originalMimeType != null && !originalMimeType.equals("")) {
+                    if (originalMimeType.matches("application/x-dvn-.*-zip")) {
+                        fileDownload.setMimeType("application/zip");
+                    }
+                    fileDownload.setMimeType(originalMimeType);
+                } else {
+                    fileDownload.setMimeType("application/x-unknown");
+                }
 
                 if (file.getFileName() != null) {
                     if ( file.getOriginalFileType() != null) {
@@ -1641,6 +1650,10 @@ public class FileDownloadServlet extends HttpServlet {
             return ".por";
         } else if (fileType.equalsIgnoreCase("application/x-stata")) {
             return ".dta";
+        } else if (fileType.equalsIgnoreCase("application/x-dvn-csvspss-zip")) {
+            return ".zip";
+        } else if (fileType.equalsIgnoreCase("application/x-dvn-tabddi-zip")) {
+            return ".zip";
         }
 
         return "";

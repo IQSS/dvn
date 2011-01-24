@@ -79,7 +79,7 @@
                            onchange="getElementById('form1:studyFileIdButton').click();">
             <f:selectItems value="#{SetUpDataExplorationPage.studyFileIdSelectItems}"/>
         </ice:selectOneMenu>
-        <ice:outputText rendered="#{!SetUpDataExplorationPage.selectFile}" value="File Name #{SetUpDataExplorationPage.studyFileName}"/>
+        <ice:outputText rendered="#{!SetUpDataExplorationPage.selectFile}" value="File Name: #{SetUpDataExplorationPage.studyFileName}"/>
         </div>
         <div style="float:left;">
             <ice:graphicImage value="/resources/images/icon_information.18.png" styleClass="dvn_icon" rendered="#{SetUpDataExplorationPage.selectFile}"/>
@@ -133,15 +133,14 @@
                                         </f:facet>
                                         <ice:outputText value="#{SetUpDataExplorationPage.xAxisUnits}"/>
                                     </h:column>
-                                    <h:column>
+                                    <h:column rendered="#{!SetUpDataExplorationPage.editXAxis}">
                                         <f:facet name="header">
                                             &#160;
                                         </f:facet>
-                                        <ice:commandLink id="editXAxis" action="#{SetUpDataExplorationPage.editXAxisAction}" visible="#{!SetUpDataExplorationPage.editXAxis}">
+                                        <ice:commandLink id="editXAxis" action="#{SetUpDataExplorationPage.editXAxisAction}">
                                              <ice:outputText id="editXAxisText" value="Edit"/>
                                         </ice:commandLink>
-                                        <ice:commandLink id="removeXAxis" action="#{SetUpDataExplorationPage.removeXAxisAction}" 
-                                                         visible="#{SetUpDataExplorationPage.xAxisSet  and !SetUpDataExplorationPage.editXAxis}">
+                                        <ice:commandLink id="removeXAxis" action="#{SetUpDataExplorationPage.removeXAxisAction}" visible="#{SetUpDataExplorationPage.xAxisSet}">
                                              <ice:outputText id="removeXAxisText" value="Delete"/>
                                         </ice:commandLink>
                                     </h:column>
@@ -165,11 +164,11 @@
                                <ice:commandLink id="editMeasureGrouping" action="#{SetUpDataExplorationPage.editMeasureGroupingAction}">
                                    <ice:outputText id="editMeasureGroupText" value="[Edit]"/>
                                </ice:commandLink>
-                                <div jsfc="ice:panelGroup">
+                                <!--<div jsfc="ice:panelGroup">
                                     <ice:commandLink action="#{SetUpDataExplorationPage.manageMeasureGroupTypeAction}">
                                           <ice:outputText  value="Manage Measure Types"/>
                                      </ice:commandLink>
-                                </div>
+                                </div>-->
                                 <div jsfc="ice:panelGroup" style="text-align:right;">
                                     <ice:commandLink id="addFilterGroup" action="#{SetUpDataExplorationPage.addMeasureGroup}">
                                           <ice:outputText id="addFilterGroupText" value="+ Add Measure"/>
@@ -202,16 +201,14 @@
                                             </f:facet>
                                              <ice:outputText value="#{group.varGroup.units}"/>
                                         </h:column>
-                                        <h:column>
+                                        <h:column rendered="#{!SetUpDataExplorationPage.editMeasure}">
                                             <f:facet name="header">
-                                                <ice:outputText value="Actions"/>
+                                                &#160;
                                             </f:facet>
-                                            <ice:commandLink id="editMeasureGroup" actionListener="#{SetUpDataExplorationPage.editMeasureGroup}"
-                                                             visible="#{!SetUpDataExplorationPage.editMeasure}">
+                                            <ice:commandLink id="editMeasureGroup" actionListener="#{SetUpDataExplorationPage.editMeasureGroup}">
                                                  <ice:outputText id="editMeasureGroupText" value="Edit"/>
                                             </ice:commandLink>
-                                            <ice:commandLink id="deleteMeasureGroup" action="#{SetUpDataExplorationPage.deleteMeasureGroup}"
-                                                             visible="#{!SetUpDataExplorationPage.editMeasure}">
+                                            <ice:commandLink id="deleteMeasureGroup" action="#{SetUpDataExplorationPage.deleteMeasureGroup}">
                                                  <ice:outputText id="deleteMeasureGroupText" value="Delete"/>
                                             </ice:commandLink>
                                         </h:column>
@@ -289,9 +286,9 @@
                                                 </f:facet>
                                                 <ice:outputText value="#{filter.numberOfVariablesSelected}"/>
                                             </h:column>
-                                            <h:column>
+                                            <h:column rendered="#{!SetUpDataExplorationPage.editFilterGroup}">
                                                 <f:facet name="header">
-                                                    <ice:outputText value="Actions"/>
+                                                    &#160;
                                                 </f:facet>
                                                 <ice:commandLink id="editFilterGroup" actionListener="#{SetUpDataExplorationPage.editFilterGroup}">
                                                       <ice:outputText id="editFilterGroupText" value="Edit"/>
@@ -306,10 +303,7 @@
                             </div>
                         </div>
                         <div jsfc="ice:panelGroup" style="width:35%; float:left;" 
-                             visible="#{SetUpDataExplorationPage.editFilterGroup or SetUpDataExplorationPage.editFilterGrouping
-                                        or SetUpDataExplorationPage.manageFilterTypes}"
-                             >
-
+                             visible="#{SetUpDataExplorationPage.editFilterGroup or SetUpDataExplorationPage.editFilterGrouping or SetUpDataExplorationPage.manageFilterTypes}">
                             <ui:include src="SetUpDataExplorationPageFilterEdit.xhtml"></ui:include>
                         </div>
                     </div>

@@ -237,9 +237,13 @@ function drawVisualization() {
 
 <style type="text/css">
     .fileInfo {margin-bottom:1em;}
-    .graphForm {margin:1em; padding-bottom:1em; border-bottom:1px solid grey;}
-    .graphResults {margin:1em; overflow:hidden;}
+    .graphForm {margin:1em; padding-bottom:1em; border-bottom:1px solid grey; text-align: left;}
+    .graphResults {margin:1em; overflow:hidden; text-align: left;}
 </style>
+            
+
+    <div class="dvn_section">
+        <div class="dvnstudytitleblock">
             <div class="dvnstudyadminboxfloat dvn_right">
                 <ice:outputLink
                     value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{ExploreDataPage.studyId}&amp;tab=files">
@@ -248,8 +252,8 @@ function drawVisualization() {
                 </ice:outputLink>
 
             </div>
+        </div>
 
-    <div style="border:1px solid grey;">
         <div class="graphForm">
 
             <div style="overflow:hidden; margin-bottom:.5em;">
@@ -312,7 +316,7 @@ function drawVisualization() {
         </div>
 
         <div class="graphResults">
-            <div class="linebox" style="float:left; width:24%;">
+            <div class="linebox" style="float:left; margin-right:1em;">
 
           <ice:dataTable width="100%" cellspacing="0" cellpadding="0"  var="line" value="#{ExploreDataPage.vizLines}"
                                                binding="#{ExploreDataPage.dataTableVizLines}" >
@@ -352,14 +356,11 @@ function drawVisualization() {
 
             </div>
 
-            <div  class="graphbox" style="float:left; width:46%;"  >
+            <div  class="graphbox" style="float:left; margin-right:1em;">
                 <div id='chart_div' style='width: 540px; height: 400px;'></div>
             </div>
 
-            <div class="graphdisplay" style="float:left; width:30%;">
-
-
-
+            <div class="graphdisplay" style="float:left;">
                 <div style="margin-bottom:.5em;">
                     <ice:outputLabel value="Display" for="graphdisplay" style="display:block;" />
                     <ice:selectOneMenu id="graphdisplay"  binding="#{ExploreDataPage.selectGraphType}"
@@ -377,7 +378,7 @@ function drawVisualization() {
                     <ice:inputText id="graphtitle" size="40"></ice:inputText>
                 </div>
                 
-                <div style="overflow:hidden; margin-bottom:.5em;"  >
+                <div style="overflow:hidden; margin-bottom:.5em;">
                     
                     <div style="float:left;">
                         <ice:outputLabel value="Start" for="graphstart" rendered ="false"/>
@@ -417,7 +418,6 @@ function drawVisualization() {
                 </div>
 
             </div>
-
 
         </div>
 

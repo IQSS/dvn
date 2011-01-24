@@ -46,14 +46,14 @@
             <div style="float:left;">
                <ice:outputLabel value="Type"/>
            </div>
-           <div style="float:right;">
+           <!--<div style="float:right;">
                <ice:commandLink type="submit" action="#{SetUpDataExplorationPage.addMeasureTypeButton}" visible="#{!SetUpDataExplorationPage.addMeasureType}">
                   <ice:outputText value="+ Add Measure Type"/>
                </ice:commandLink>
-           </div>
+           </div>-->
         </div>
        
-        <ice:outputLabel value="Name" visible="#{SetUpDataExplorationPage.addMeasureType}"/>
+        <!--<ice:outputLabel value="Name" visible="#{SetUpDataExplorationPage.addMeasureType}"/>
         <ice:inputText visible="#{SetUpDataExplorationPage.addMeasureType}"
                         size="25"
                         maxlength="255"
@@ -61,9 +61,9 @@
         <div class="dvnFormPadding dvnFormMargin" style="display:inline;">
             <ice:commandButton type="submit" value="Add" action="#{SetUpDataExplorationPage.saveMeasureTypeButton}" visible="#{SetUpDataExplorationPage.addMeasureType}"/>
             <ice:commandButton type="submit" value="Cancel" action="#{SetUpDataExplorationPage.cancelMeasureTypeButton}" visible="#{SetUpDataExplorationPage.addMeasureType}"/>
-        </div>
+        </div>-->
      </div>
-                            <div jsfc="ice:panelGroup">
+                            <!--<div jsfc="ice:panelGroup">
                                 <ice:dataTable width="100%" cellspacing="0" cellpadding="0" var="groupType"
                                                rendered="#{SetUpDataExplorationPage.manageMeasureTypes}"
                                                value="#{SetUpDataExplorationPage.measureGroupTypes}"
@@ -101,21 +101,44 @@
                                         </ice:commandLink>
                                     </h:column>
                                 </ice:dataTable>
-                            </div>
+                            </div>-->
     <ice:dataTable width="100%" cellspacing="0" cellpadding="0" var="type" value="#{SetUpDataExplorationPage.editMeasureVarGroup.varGroupTypes}"
                            rendered="#{SetUpDataExplorationPage.editMeasure}"
               binding="#{SetUpDataExplorationPage.dataTableMeasureGroupType}">
-           <ice:column rendered="#{SetUpDataExplorationPage.editMeasure}">
-                <f:facet name="header">
-                    <ice:outputText value="Select"/>
-                </f:facet>
+        <f:facet name="header">
+            <ice:columnGroup>
+                <!--<ice:headerRow rendered="#{SetUpDataExplorationPage.addMeasureType}">-->
+                <ice:headerRow>
+                     <ice:column colspan="3" style="text-align:left;">
+                         <ice:outputLabel value="Name" style="font-weight:normal;"/>
+                            <ice:inputText
+                                            size="25"
+                                            maxlength="255"
+                                            binding="#{SetUpDataExplorationPage.inputMeasureGroupTypeName}"/>
+                            <div class="dvnFormPadding dvnFormMargin" style="display:inline;">
+                                <ice:commandButton type="submit" value="Add" action="#{SetUpDataExplorationPage.saveMeasureTypeButton}"/>
+                                <!-- <ice:commandButton type="submit" value="Cancel" action="#{SetUpDataExplorationPage.cancelMeasureTypeButton}"/>-->
+                            </div>
+                     </ice:column>
+                </ice:headerRow>
+                <ice:headerRow>
+                     <ice:column>
+                        <ice:outputText value="&#160;"/>
+                     </ice:column>
+                     <ice:column>
+                        <ice:outputText value="Name"/>
+                     </ice:column>
+                     <ice:column>
+                        <ice:outputText value="&#160;"/>
+                     </ice:column>
+                </ice:headerRow>
+            </ice:columnGroup>
+        </f:facet>
+        <ice:column style="text-align:center;">
                 <ice:selectBooleanCheckbox  styleClass="filterVariableCheckBoxes"
                                             partialSubmit="false" value="#{type.selected}"/>
             </ice:column>
               <h:column>
-                   <f:facet name="header">
-                          <ice:outputText value="Name"/>
-                   </f:facet>
                    <ice:outputText value="#{type.varGroupType.name}" rendered="#{!type.editMode}"/>
                         <ice:inputText
                             visible="#{type.editMode}"
@@ -125,9 +148,6 @@
                             binding="#{SetUpDataExplorationPage.editMeasureGroupTypeName}"/>
               </h:column>
               <h:column>
-                    <f:facet name="header">
-                        <ice:outputText value="Actions"/>
-                    </f:facet>
                     <ice:commandLink
                         visible="#{!type.editMode}"
                         actionListener="#{SetUpDataExplorationPage.editMeasureTypeAction}">
@@ -147,49 +167,43 @@
          </ice:dataTable>
 
     <div jsfc="ice:panelGroup" rendered="#{SetUpDataExplorationPage.editMeasure}" style="margin-top:1em;">
-         <div style="overflow:hidden;">
-            <div style="float:left;">
                 <ice:outputLabel value="Variables" rendered="#{SetUpDataExplorationPage.editMeasure}"
-                         visible="#{SetUpDataExplorationPage.editMeasure}" style="line-height:2.2;"/>
-            </div>
-                
-             <div style="float:right;">
-                 <ice:outputLabel value="Filter" for="filterDataVariable" style="font-weight:normal;"/>
-                 <ice:inputText rendered="#{SetUpDataExplorationPage.editMeasure}"
-                        visible="#{SetUpDataExplorationPage.editMeasure}"
-                          size="25"
-                          maxlength="255"
-                          onkeyup="delayedRequestMeasure(form,this,event);"
-                          binding="#{SetUpDataExplorationPage.inputVariableMeasure}"/>
-             </div>
-         </div>
+                         visible="#{SetUpDataExplorationPage.editMeasure}"/>
          <ice:dataTable width="100%" cellspacing="0" cellpadding="0" id="genericVariables" var="dataVariableUI" value="#{SetUpDataExplorationPage.dvGenericFilteredListUI}">
-                                    <ice:column>
-                                        <f:facet name="header">                                          
-                                            <ice:selectBooleanCheckbox id="checkAllMeasureVars"
-                                                                       
-                                                                   binding="#{SetUpDataExplorationPage.measureCheckBox}"
-                                                                   onclick="selectAllMeasureVariablesClick();"
-                                                                   
-                                                        />
-                                        </f:facet>
-                                        <ice:selectBooleanCheckbox id="genericVariableCheckBoxes" styleClass="measureVariableCheckBoxes"
-                                                                   partialSubmit="false" value="#{dataVariableUI.selected}"
-                                                                   onclick="selectOneMeasureVariableClick();"
-
-                                                                   />
-                                    </ice:column>
-                                    <ice:column>
-                                        <f:facet name="header">
-                                            <ice:outputText value="Name"/>
-                                        </f:facet>
-                                        <ice:outputLabel value="#{dataVariableUI.dataVariable.name}"
-                                                                   
-                                                                   />
-                                    </ice:column>
-                                </ice:dataTable>
-                            </div>
-
-
+             <f:facet name="header">
+                <ice:columnGroup>
+                    <ice:headerRow>
+                         <ice:column colspan="2" style="text-align:left;">
+                             <ice:outputLabel value="Filter" for="filterDataVariable" style="font-weight:normal;"/>
+                             <ice:inputText rendered="#{SetUpDataExplorationPage.editMeasure}"
+                                    visible="#{SetUpDataExplorationPage.editMeasure}"
+                                      size="25"
+                                      maxlength="255"
+                                      onkeyup="delayedRequestMeasure(form,this,event);"
+                                      binding="#{SetUpDataExplorationPage.inputVariableMeasure}"/>
+                         </ice:column>
+                    </ice:headerRow>
+                    <ice:headerRow>
+                         <ice:column>
+                            <ice:selectBooleanCheckbox id="checkAllMeasureVars"
+                                                       binding="#{SetUpDataExplorationPage.measureCheckBox}"
+                                                       onclick="selectAllMeasureVariablesClick();"/>
+                         </ice:column>
+                         <ice:column>
+                            <ice:outputText value="Name"/>
+                         </ice:column>
+                    </ice:headerRow>
+                </ice:columnGroup>
+            </f:facet>
+            <ice:column style="text-align:center;">
+                <ice:selectBooleanCheckbox id="genericVariableCheckBoxes" styleClass="measureVariableCheckBoxes"
+                                           partialSubmit="false" value="#{dataVariableUI.selected}"
+                                           onclick="selectOneMeasureVariableClick();"/>
+            </ice:column>
+            <ice:column>
+                <ice:outputLabel value="#{dataVariableUI.dataVariable.name}"/>
+            </ice:column>
+        </ice:dataTable>
+    </div>
 </div>
 

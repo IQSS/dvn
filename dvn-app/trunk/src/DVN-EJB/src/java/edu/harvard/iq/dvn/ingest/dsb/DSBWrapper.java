@@ -236,7 +236,7 @@ public class DSBWrapper implements java.io.Serializable  {
 
             infile = new BufferedInputStream(new FileInputStream(tempFile));
 
-            dbgLog.fine("\nfile mimeType="+mime_type+"\n\n");
+            dbgLog.info("\nfile mimeType="+mime_type+"\n\n");
 
             // get available FileReaders for this MIME-type
            Iterator<StatDataFileReader> itr =
@@ -261,21 +261,32 @@ public class DSBWrapper implements java.io.Serializable  {
             }
         } else {
             // This is a 2-file ingest.
-            // As of now, the supported case is a CSV raw data file + SPSS
-            // control card pair.
+            // As of now, there are 2 supported methods: 
+            // 1. CSV raw data file + SPSS control card;
+            // 2. TAB raw data file + DDI control card;
             
             File rawDataFile = tempFile;
             
-            infile = new BufferedInputStream(new FileInputStream(file.getControlCardSystemFileLocation())); 
-            
+            infile = new BufferedInputStream(new FileInputStream(file.getControlCardSystemFileLocation()));
+
+            String controlCardType = file.getControlCardType();
+
+            if (controlCardType == null || controlCardType.equals("")) {
+                dbgLog.info("No Control Card Type supplied.");
+
+                throw new IllegalArgumentException("No Control Card Type supplied.");
+            }
+
             Iterator<StatDataFileReader> itr =
-                    StatDataIO.getStatDataFileReadersByFormatName("spss");
+                StatDataIO.getStatDataFileReadersByFormatName(controlCardType);
 
             if (!itr.hasNext()){
-                throw new IllegalArgumentException("No FileReader Class found" +
-                    " for CSV data file.");
+                dbgLog.info("No FileReader class found for "+controlCardType+".");
+
+                throw new IllegalArgumentException("No FileReader Class found for " +
+                    controlCardType+".");
             }
-            // use the first reader
+
             StatDataFileReader sdioReader = itr.next();
 
             dbgLog.info("reader class name="+sdioReader.getClass().getName());
@@ -335,7 +346,14 @@ public class DSBWrapper implements java.io.Serializable  {
         DDIWriter dw = new DDIWriter(smd);
         ddi = dw.generateDDI();
 
-       
+       // save the ddi in a temp file:
+
+        File ddiTempFile = new File( "/tmp", "ddi.saved.xml" );
+        FileOutputStream ddios = new FileOutputStream(ddiTempFile);
+        
+        ddios.write(ddi.getBytes());
+        ddios.flush(); 
+        ddios.close(); 
 
         return ddi;
 

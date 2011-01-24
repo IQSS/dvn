@@ -50,8 +50,8 @@ public final class SPSSConstants {
     private static final String[] FORMAT_VALUES ={
     "CONTINUE","A", "AHEX","COMMA","DOLLAR","F","IB","PIBHEX","P","PIB",
     "PK", "RB", "RBHEX","Z","N","E", "DATE",
-    "TIME", "DATETIME","ADATE","JDATE","DTIME","WKDAY","MONTH","MOYR","QYR",
-    "WKYR","PCT","DOT","CCA","CCB","CCC","CCD","CCE","EDATE","SDATE"};
+    "TIME", "DATETIME","ADATE","JDATE","DTIME","WKDAY","MONTH","MOYR","QYR","WKYR",
+    "PCT","DOT","CCA","CCB","CCC","CCD","CCE","EDATE","SDATE"};
 
     private static final String[] FORMAT_CATEGORIES = {
     "other","other","other","other","currency","other","other","other","other","other",

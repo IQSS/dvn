@@ -18,7 +18,7 @@
  * Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-package edu.harvard.iq.dvn.ingest.statdataio.impl.plugins.spss;
+package edu.harvard.iq.dvn.ingest.statdataio.impl.plugins.ddi;
 
 import java.io.*;
 //import java.nio.*;
@@ -33,37 +33,37 @@ import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.spi.*;
  *
  * @author landreev
  */
-public class SPSSFileReaderSpi extends StatDataFileReaderSpi{
+public class DDIFileReaderSpi extends StatDataFileReaderSpi{
 
-    private static Logger dbgLog = Logger.getLogger(SPSSFileReaderSpi.class.getPackage().getName());
+    private static Logger dbgLog = Logger.getLogger(DDIFileReaderSpi.class.getPackage().getName());
 
-    private static String[] formatNames = {"spss", "SPSS"};
-    private static String[] extensions = {"spss", "sps"};
-    private static String[] mimeType = {"text/plain"};
+    private static String[] formatNames = {"ddi"};
+    private static String[] extensions = {"xml", "ddi"};
+    private static String[] mimeType = {"text/xml"};
 
     
     
     /**
      *
      */
-    public SPSSFileReaderSpi() {
+    public DDIFileReaderSpi() {
         super(
             "HU-IQSS-DVN-project",
             "0.1",
-            formatNames, extensions, mimeType, SPSSFileReaderSpi.class.getName());
-        dbgLog.fine(SPSSFileReaderSpi.class.getName()+" is called");
+            formatNames, extensions, mimeType, DDIFileReaderSpi.class.getName());
+        dbgLog.fine(DDIFileReaderSpi.class.getName()+" is called");
     }
 
     /**
      * Returns the value of the description of the corresponding
-     * SPSSFileReader class.
+     * DDIFileReader class.
      *
      * @param locale
      * @return the value of the description of the corresponding
-     * SPSSFileReader class
+     * DDIFileReader class
      */
     public String getDescription(Locale locale) {
-        return "HU-IQSS-DVN-project SPSS Control Card Reader";
+        return "HU-IQSS-DVN-project DDI Control Card Reader";
     }
 
     @Override
@@ -82,32 +82,8 @@ public class SPSSFileReaderSpi extends StatDataFileReaderSpi{
         if (stream ==null){
             throw new IllegalArgumentException("stream == null!");
         }
+        Boolean supported = true;
 
-        dbgLog.fine("\napplying the spss card test: inputstream case\n");
-
-        if (stream.markSupported()){
-            stream.mark(0);
-        }
-
-        BufferedReader rd = new BufferedReader(new InputStreamReader(stream));
-        String line = null;
-        Boolean supported = false;
-
-        while ((line = rd.readLine()) != null && (supported == false)) {
-
-            if (line.matches("(?i)^\\s*data\\s*list\\s*list\\(")) {
-                // This looks like a valid SPSS card for a character-delimited
-                // data file. This plugin does NOT support other kinds of
-                // data files such as fixed-field, as of yet.
-                dbgLog.fine("found valid-looking datalist command: "+line);
-                supported = true;
-            }
-
-        }
-
-        if (stream.markSupported()){
-            stream.reset();
-        }
         return supported;
     }
 
@@ -120,7 +96,7 @@ public class SPSSFileReaderSpi extends StatDataFileReaderSpi{
             throw new IOException("cannot read the input file");
         }
 
-        dbgLog.fine("skipping the spss test\n");
+        dbgLog.fine("skipping the validation test");
 
         return true;
     }
@@ -133,7 +109,7 @@ public class SPSSFileReaderSpi extends StatDataFileReaderSpi{
     @Override
     public StatDataFileReader createReaderInstance(Object ext) throws
         IOException {
-        return new SPSSFileReader(this);
+        return new DDIFileReader(this);
     }
 
 }

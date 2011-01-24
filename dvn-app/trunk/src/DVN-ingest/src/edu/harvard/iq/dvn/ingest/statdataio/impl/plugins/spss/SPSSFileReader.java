@@ -161,6 +161,7 @@ public class SPSSFileReader extends StatDataFileReader{
         return delimiterChar;
     }
 
+
     // Methods ---------------------------------------------------------------//
     /**
      * Read the given SPSS Control Card via a <code>BufferedInputStream</code>
@@ -275,6 +276,10 @@ public class SPSSFileReader extends StatDataFileReader{
              }
         } else {
             setCaseQnty(casesRead);
+            smd.getFileInformation().put("caseQnty", getCaseQnty());
+            dbgLog.fine("Number of cases not specified in the card; using the number " +
+                        "of cases read from the CSV file: "+getCaseQnty());
+
         }
 
         
@@ -526,7 +531,7 @@ public class SPSSFileReader extends StatDataFileReader{
         String delimiterString = null;
 
         //String datalistRegex = "^data\\s+list\\s+list\\('(.)'\\)\\s+?/";
-        String datalistRegex = "^list\\('(.)'\\).*/";
+        String datalistRegex = "^list\\s*\\('(.)'\\).*/";
         Pattern datalistPattern = Pattern.compile(datalistRegex, java.util.regex.Pattern.CASE_INSENSITIVE);
         Matcher datalistMatcher = datalistPattern.matcher(dataListCommand);
 
@@ -735,10 +740,15 @@ public class SPSSFileReader extends StatDataFileReader{
 
         dbgLog.fine ("parsing "+varLabelsCommand+" for variable labels.");
 
+        if (varLabelsCommand == null || varLabelsCommand.equals("")) {
+            return readStatus;
+        }
+
         Map<String, String> variableLabelMap = new LinkedHashMap<String, String>();
 
         String varName = null;
         String varLabel = null;
+        int    labelCounter = 0;
 
         String varLabelRegex = "\\s*(\\S+)\\s+\"([^\"]+)\"";
         Pattern varLabelPattern = Pattern.compile(varLabelRegex);
@@ -750,12 +760,16 @@ public class SPSSFileReader extends StatDataFileReader{
 
             dbgLog.fine ("found variable label for "+varName+": "+varLabel);
             variableLabelMap.put(varName, varLabel);
+            labelCounter++;
         }
 
         // TODO:
         // Validate the entries, make sure that the variables are legit, etc.
 
-        smd.setVariableLabel(variableLabelMap);
+        if (labelCounter > 0) {
+            smd.setVariableLabel(variableLabelMap);
+            readStatus = labelCounter;
+        }
 
         return readStatus;
     }
@@ -775,12 +789,18 @@ public class SPSSFileReader extends StatDataFileReader{
 
         dbgLog.fine ("parsing "+valLabelsCommand+" for value labels.");
 
+        if (valLabelsCommand == null || valLabelsCommand.equals("")) {
+            return readStatus;
+        }
+
 
         String varName = null;
         String valLabelDeclaration = null;
 
         String varValue = null;
         String valueLabel = null;
+
+        int    labelCounter = 0;
 
         String valLabelRegex = "\\s*(\\S+)\\s+([^/]+)/";
         Pattern valLabelPattern = Pattern.compile(valLabelRegex);
@@ -801,6 +821,8 @@ public class SPSSFileReader extends StatDataFileReader{
 
             Matcher labelDeclarationMatcher = labelDeclarationPattern.matcher(valLabelDeclaration);
 
+            int localLabelCounter = 0;
+
             while (labelDeclarationMatcher.find()) {
                 varValue = labelDeclarationMatcher.group(1);
                 valueLabel = labelDeclarationMatcher.group(2);
@@ -820,19 +842,26 @@ public class SPSSFileReader extends StatDataFileReader{
 
                     valueLabelPairs.put(varValue, valueLabel );
                 }
+
+                localLabelCounter++;
             }
 
-            valueLabelTable.put(varName,valueLabelPairs);
-            valueVariableMappingTable.put(varName, varName);
+            if (localLabelCounter > 0) {
+                valueLabelTable.put(varName,valueLabelPairs);
+                valueVariableMappingTable.put(varName, varName);
+                labelCounter += localLabelCounter;
+            }
 
             // TODO:
             // Do SPSS cards support shared value label sets -- ?
 
         }
 
-        smd.setValueLabelTable(valueLabelTable);
-        smd.setValueLabelMappingTable(valueVariableMappingTable);
-
+        if (labelCounter > 0) {
+            smd.setValueLabelTable(valueLabelTable);
+            smd.setValueLabelMappingTable(valueVariableMappingTable);
+            readStatus = labelCounter;
+        }
 
         // TODO: 
         // Better validation, error reporting.
@@ -850,12 +879,18 @@ public class SPSSFileReader extends StatDataFileReader{
 
         dbgLog.fine ("parsing "+misValuesCommand+" for missing values.");
 
+        if (misValuesCommand == null || misValuesCommand.equals("")) {
+            return readStatus;
+        }
+
         Map<String, List<String>> missingValueTable = new LinkedHashMap<String, List<String>>();
 
         String varName = null;
         String misValuesDeclaration = null;
 
         String misValue = null;
+
+        int misValueCounter = 0;
 
         String misValuesRegex = "\\s*(\\S+)\\s+\\(([^\\)]+)\\)";
         Pattern misValuesPattern = Pattern.compile(misValuesRegex);
@@ -864,10 +899,11 @@ public class SPSSFileReader extends StatDataFileReader{
         String misValDeclarationRegex = "\\s*([^,]+)\\s*,*";
         Pattern misValDeclarationPattern = Pattern.compile(misValDeclarationRegex);
 
-
         while (misValuesMatcher.find()) {
             varName = misValuesMatcher.group(1);
             misValuesDeclaration = misValuesMatcher.group(2);
+
+            int localMisValueCounter = 0;
 
             dbgLog.fine ("found missing values declaration for "+varName+": "+misValuesDeclaration);
 
@@ -892,16 +928,24 @@ public class SPSSFileReader extends StatDataFileReader{
 
                     mv.add(misValue);
                 }
+
+                localMisValueCounter++;
             }
 
-            missingValueTable.put(varName, mv);
+            if (localMisValueCounter > 0) {
+                missingValueTable.put(varName, mv);
+                misValueCounter += localMisValueCounter;
+            }
 
         }
 
         // TODO:
         // Better validation, error reporting.
 
-        smd.setMissingValueTable(missingValueTable);
+        if (misValueCounter > 0) {
+            smd.setMissingValueTable(missingValueTable);
+            readStatus = misValueCounter;
+        }
 
         return readStatus;
     }

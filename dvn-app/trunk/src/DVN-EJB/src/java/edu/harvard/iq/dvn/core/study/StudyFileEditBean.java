@@ -109,7 +109,7 @@ public class StudyFileEditBean implements Serializable {
 
     }
 
-    public StudyFileEditBean(File file, String fileSystemName, Study study, String controlCardTempLocation) throws IOException {
+    public StudyFileEditBean(File file, String fileSystemName, Study study, String controlCardTempLocation, String controlCardType) throws IOException {
         dbgLog.fine("***** within StudyFileEditBean: control card constructor: start *****");
         dbgLog.fine("reached before studyFile constructor");
 
@@ -131,11 +131,15 @@ public class StudyFileEditBean implements Serializable {
         this.getStudyFile().setFileType(fileType);
         dbgLog.fine("after setFileType");
         dbgLog.fine("before setFileName");
-        // replace extension with ".tab" if this we are going to convert this to a tabular data file
+        // replace extension with ".tab" if we are going to convert this to a tabular data file
         fileMetadata.setLabel(FileUtil.replaceExtension(this.getOriginalFileName()));
         dbgLog.fine("before tempsystemfilelocation");
         this.setTempSystemFileLocation(file.getAbsolutePath());
         this.setControlCardSystemFileLocation(controlCardTempLocation);
+        if (controlCardType != null && !controlCardType.equals("")) {
+            this.setControlCardType(controlCardType);
+        }
+
         this.getStudyFile().setFileSystemName(fileSystemName);
         dbgLog.fine("StudyFileEditBean: contents:\n" + this.toString());
 
@@ -148,6 +152,7 @@ public class StudyFileEditBean implements Serializable {
     private String originalFileName;
     private String tempSystemFileLocation;
     private String controlCardSystemFileLocation;
+    private String controlCardType;
     private String rawDataTempSystemFileLocation;
     private String ingestedSystemFileLocation;
     private boolean deleteFlag;
@@ -199,6 +204,13 @@ public class StudyFileEditBean implements Serializable {
         this.controlCardSystemFileLocation = controlCardSystemFileLocation;
     }
 
+    public String getControlCardType() {
+        return controlCardType;
+    }
+
+    public void setControlCardType(String cct) {
+        this.controlCardType = cct;
+    }
     public String getRawDataTempSystemFileLocation() {
         return rawDataTempSystemFileLocation;
     }

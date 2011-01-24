@@ -346,19 +346,8 @@ public class DSBWrapper implements java.io.Serializable  {
         DDIWriter dw = new DDIWriter(smd);
         ddi = dw.generateDDI();
 
-       // save the ddi in a temp file:
-
-        File ddiTempFile = new File( "/tmp", "ddi.saved.xml" );
-        FileOutputStream ddios = new FileOutputStream(ddiTempFile);
-        
-        ddios.write(ddi.getBytes());
-        ddios.flush(); 
-        ddios.close(); 
 
         return ddi;
-
-
-
     }
     
     public String calculateUNF(StudyVersion sv) throws IOException {

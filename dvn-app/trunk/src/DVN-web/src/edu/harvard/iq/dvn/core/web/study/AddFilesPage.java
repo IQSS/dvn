@@ -80,8 +80,11 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
 
     private String controlCardFilename = null;
     private String controlCardTempFileLocation = null;
+    private String controlCardType = ""; // SPSS, DDI, etc.
+
 
     private boolean controlCardIngestInProgress = false;
+
 
     private String sessionId; // used to generate temp files
 
@@ -213,7 +216,7 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
         inputFile = (InputFile) event.getSource();
         StudyFileEditBean fileBean = null;
 
-        if ( "csv".equals(selectFileType.getValue()) && (!controlCardIngestInProgress)) {
+        if ( ("spss".equals(selectFileType.getValue()) || "ddi".equals(selectFileType.getValue())) && (!controlCardIngestInProgress)) {
             // This is a 2 step process:
             // First (in this step) they upload the control card;
             // we store its file bean for the next step, where
@@ -222,6 +225,11 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
             // Attempt to save the control card in a temporary location:
 
             File file = saveControlCardFile (inputFile);
+
+            // TODO: We should also validate the control cards at this point!
+            // no need to waste time even uploading the raw data file -- which
+            // can be significantly bigger than the control card -- if the
+            // card is not valid.
 
             if (file != null ) {
                 // Save the filenames, we'll need them in the next step:
@@ -233,6 +241,7 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
                 // is in progress:
 
                 controlCardIngestInProgress = true;
+                controlCardType = selectFileType.getValue().toString();
             } else {
                 // Something went wrong as we tried to save the file;
                 // Reset the state of the process:
@@ -255,6 +264,7 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
 
             // Enable further uploads of more files:
             controlCardIngestInProgress = false;
+            controlCardType = null;
 
             // Add the fileBean to the list:
             //fileList.add(controlCardFileBean);
@@ -343,7 +353,7 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
 
             //  File fstudy = FileUtil.createTempFile(sessionId, file.getName());
             if (controlCardTempLocation != null) {
-                f = new StudyFileEditBean(file, studyService.generateFileSystemNameSequence(),study,controlCardTempLocation);
+                f = new StudyFileEditBean(file, studyService.generateFileSystemNameSequence(),study,controlCardTempLocation,controlCardType);
             } else {
                 f = new StudyFileEditBean(file, studyService.generateFileSystemNameSequence(),study);
             }
@@ -479,18 +489,47 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
         return controlCardIngestInProgress;
     }
 
+    public boolean isSPSSCCIngestInProgress() {
+        return controlCardIngestInProgress && "spss".equals(controlCardType);
+    }
+
+    public boolean isDDICCIngestInProgress() {
+        return controlCardIngestInProgress && "ddi".equals(controlCardType);
+    }
+
+
     public boolean isControlCardIngestRequested() {
         dbgLog.fine("AddFiles: is CCrequested: selectFileType value="+selectFileType.getValue());
 
         // This method is used to find if we are in the first stage of a CSV
-        // file upload, when the "CSV" type was selected in the menu, but before
-        // the control card has been uploaded.
+        // file upload, when one of the control card-based ingests was selected
+        // in the menu, but before the control card has been uploaded.
 
-        if ( "csv".equals(selectFileType.getValue()) && (!controlCardIngestInProgress)) {
+        if ( ("spss".equals(selectFileType.getValue()) || "ddi".equals(selectFileType.getValue())) && (!controlCardIngestInProgress)) {
             return true;
         }
 
         return false; 
+    }
+
+     public boolean isSPSSCCIngestRequested() {
+        // as above, but for SPSS card only:
+
+        if ( ("spss".equals(selectFileType.getValue())) && (!controlCardIngestInProgress)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean isDDICCIngestRequested() {
+        // as above, but for DDI card only:
+
+        if ( ("ddi".equals(selectFileType.getValue())) && (!controlCardIngestInProgress)) {
+            return true;
+        }
+
+        return false;
     }
 
     public boolean isOtherSubsettableIngestRequested() {
@@ -623,7 +662,7 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
         if (fileTypes == null) {
             fileTypes = new ArrayList();
 
-            fileTypesSubsettable = new SelectItem[4];
+            fileTypesSubsettable = new SelectItem[5];
             fileTypesNetwork = new SelectItem[1];
             //fileTypesOther = new SelectItem[1];
 
@@ -631,7 +670,8 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
             fileTypesSubsettable[0] = new SelectItem("por", "SPSS/POR");
             fileTypesSubsettable[1] = new SelectItem("sav", "SPSS/SAV");
             fileTypesSubsettable[2] = new SelectItem("dta", "Stata");
-            fileTypesSubsettable[3] = new SelectItem("csv", "CSV (w/card)");
+            fileTypesSubsettable[3] = new SelectItem("spss", "CSV (w/SPSS card)");
+            fileTypesSubsettable[4] = new SelectItem("ddi", "TAB (w/DDI)");
 
             fileTypes.add( new SelectItemGroup("Tabular Data", "", false, fileTypesSubsettable) );
 

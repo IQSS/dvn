@@ -13,6 +13,8 @@ import edu.harvard.iq.dvn.core.util.FileUtil;
 import edu.harvard.iq.dvn.ingest.dsb.DSBIngestMessage;
 import edu.harvard.iq.dvn.ingest.dsb.DSBWrapper;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -36,6 +38,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import org.apache.commons.io.FileUtils;
+import java.util.zip.*;
 
 /**
  *
@@ -397,9 +400,71 @@ public class StudyFileServiceBean implements StudyFileServiceLocal {
                 File tempOriginalFile = new File(fileBean.getTempSystemFileLocation());
                 File newOriginalLocationFile = new File(newDir, "_" + f.getFileSystemName());
                 try {
-                    FileUtil.copyFile(tempOriginalFile, newOriginalLocationFile);
+                    if (fileBean.getControlCardSystemFileLocation() != null && fileBean.getControlCardType() != null) {
+                        // For the control card-based ingests (SPSS and DDI), we save
+                        // a zipped bundle of both the card and the raw data file
+                        // (TAB-delimited or CSV):
+                                           
+                        FileInputStream instream = null;
+                        byte[] dataBuffer = new byte[8192];
+                               
+                        ZipOutputStream zout = new ZipOutputStream(new FileOutputStream(newOriginalLocationFile));
+                        
+                        // First, the control card:
+                        
+                        File controlCardFile = new File(fileBean.getControlCardSystemFileLocation());
+
+                        ZipEntry ze = new ZipEntry(controlCardFile.getName());
+                        instream = new FileInputStream(controlCardFile);
+                        zout.putNextEntry(ze);
+                        
+                        int k = 0;
+                        while ( ( k = instream.read (dataBuffer) ) > 0 ) {
+                            zout.write(dataBuffer,0,k);
+                            zout.flush(); 
+                        }
+
+                        instream.close();
+                        
+                        // And then, the data file:
+                                                
+                        ze = new ZipEntry(tempOriginalFile.getName());
+                        instream = new FileInputStream(tempOriginalFile);
+                        zout.putNextEntry(ze);
+                                                                
+                        while ( ( k = instream.read (dataBuffer) ) > 0 ) {
+                            zout.write(dataBuffer,0,k);
+                            zout.flush(); 
+                        }
+
+                        instream.close();
+                    
+                        zout.close();
+                        
+                        // and control card file can be deleted now:
+                        controlCardFile.delete();
+                        
+                        // Mime types: 
+                        // These are custom, made-up types, used to identify the 
+                        // type of the source data:
+                        
+                        if (fileBean.getControlCardType().equals("spss")) {
+                            f.setOriginalFileType("application/x-dvn-csvspss-zip");
+                        } else if (fileBean.getControlCardType().equals("ddi")) {
+                            f.setOriginalFileType("application/x-dvn-tabddi-zip");
+                        } else {
+                            logger.info("WARNING: unknown control card-based Ingest type? -- "+fileBean.getControlCardType());
+                            f.setOriginalFileType(originalFileType);
+                        }
+                        
+                    } else {
+                        // Otherwise, simply store the data that was used for
+                        // ingest as the original:
+
+                        FileUtil.copyFile(tempOriginalFile, newOriginalLocationFile);
+                        f.setOriginalFileType(originalFileType);
+                    }
                     tempOriginalFile.delete();
-                    f.setOriginalFileType(originalFileType);
                 } catch (IOException ex) {
                     throw new EJBException(ex);
                 }

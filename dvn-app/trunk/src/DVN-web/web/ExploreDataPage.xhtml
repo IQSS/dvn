@@ -16,7 +16,7 @@
 <ui:param name="pageTitle" value="Explore Data - #{VDCRequest.dataversePageTitle}"/>
 <ui:define name="body">
 <ice:form id="ExploreDataPage">
-    <ice:message for="exploredataform" id ="boxErrorMsg"  styleClass="errorMessage"   />
+    <ice:message for="exploredataform" id="boxErrorMsg" styleClass="errorMessage"/>
 
    <script type='text/javascript' src='https://www.google.com/jsapi'></script>
    <script type='text/javascript' src="http://api.timepedia.org/gviz/"></script>
@@ -219,7 +219,7 @@ function drawVisualization() {
         }
         if (intDisType == 2){
             chronoscope.Chronoscope.setFontBookRendering(true);
-            chronoscopeDivID = "chart_div";
+            chronoscopeDivID ="chart_div";
             var chrono = new chronoscope.ChronoscopeVisualization(document.getElementById(chronoscopeDivID));
             chrono.draw(data, { legend: "true", overview: "true"});
         }
@@ -239,121 +239,103 @@ function drawVisualization() {
     .fileInfo {margin-bottom:1em;}
     .graphForm {margin:1em; padding-bottom:1em; border-bottom:1px solid grey; text-align: left;}
     .graphResults {margin:1em; overflow:hidden; text-align: left;}
+    .graphResultsVizLineTable, .graphResultsVizLineTable td {border:0; padding:0;}
 </style>
             
 
     <div class="dvn_section">
         <div class="dvnstudytitleblock">
             <div class="dvnstudyadminboxfloat dvn_right">
-                <ice:outputLink
-                    value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{ExploreDataPage.studyId}&amp;tab=files">
-                    <ice:outputText
-                        value="Back to Study"/>
+                <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{ExploreDataPage.studyId}&amp;tab=files">
+                    <ice:outputText value="Back to Study"/>
                 </ice:outputLink>
-
             </div>
         </div>
 
         <div class="graphForm">
 
             <div style="overflow:hidden; margin-bottom:.5em;">
-                <ice:message for="indicator" id ="boxErrorMsg"  styleClass="errorMessage"   />
+                <ice:message for="indicator" id="boxErrorMsg" styleClass="errorMessage"/>
                 <div style="float:left;">
-                    <ice:message for="indicator" id ="boxErrorMsg"  styleClass="errorMessage"   />
-                    <ice:outputLabel value="#{ExploreDataPage.measureLabel}" for="indicator" />
+                    <ice:message for="indicator" id="boxErrorMsg" styleClass="errorMessage"/>
+                    <ice:outputLabel value="#{ExploreDataPage.measureLabel}" for="indicator"/>
 
-                    <ice:selectOneMenu id="indicatorMenu" value ="#{ExploreDataPage.selectedMeasureId}"
+                    <ice:selectOneMenu id="indicatorMenu" value="#{ExploreDataPage.selectedMeasureId}"
                                        onchange="submit()"
-                                       valueChangeListener="#{ExploreDataPage.resetFiltersForMeasure}" >
-                        <f:selectItems  value="#{ExploreDataPage.selectMeasureItems}"/>
+                                       valueChangeListener="#{ExploreDataPage.resetFiltersForMeasure}">
+                        <f:selectItems value="#{ExploreDataPage.selectMeasureItems}"/>
                     </ice:selectOneMenu>
-                    
                 </div>
                 <div style="float:left;">
-                    <ice:outputLabel value="Type:" for="issue" />
-                    <ice:selectOneMenu  immediate="false" onchange="submit()"  id="issue"
-                                        valueChangeListener="#{ExploreDataPage.reset_MeasureItems}" value="#{ExploreDataPage.groupTypeId}" >
+                    <ice:outputLabel value="Type:" for="issue"/>
+                    <ice:selectOneMenu immediate="false" onchange="submit()" id="issue"
+                                        valueChangeListener="#{ExploreDataPage.reset_MeasureItems}" value="#{ExploreDataPage.groupTypeId}">
                         <f:selectItems  value="#{ExploreDataPage.selectMeasureGroupTypes}"/>
                     </ice:selectOneMenu>
                 </div>
             </div>
 
             <div style="overflow:hidden; margin-bottom:.5em;">
-                <div jsfc="ice:panelSeries" id ="filterPanelGroupings" var="item" value="#{ExploreDataPage.filterGroupings}" binding="#{ExploreDataPage.filterPanelGroup}" >
+                <div jsfc="ice:panelSeries" id ="filterPanelGroupings" var="item" value="#{ExploreDataPage.filterGroupings}" binding="#{ExploreDataPage.filterPanelGroup}">
+                    <f:attribute name="groupingId" value="#{item.varGrouping.id}"/>
+                    <ice:outputLabel value="#{item.varGrouping.name}"/>
 
-                    <f:attribute name="groupingId" value="#{item.varGrouping.id}" />
-                    <ice:outputLabel value="#{item.varGrouping.name}" />
-
-                    <ice:selectOneMenu id ="filterGroup" styleClass="filterGroup" value = "#{item.selectedGroupId}">
-                        <f:selectItems  value="#{ExploreDataPage.selectFilterGroups}"/>
+                    <ice:selectOneMenu id ="filterGroup" styleClass="filterGroup" value="#{item.selectedGroupId}">
+                        <f:selectItems value="#{ExploreDataPage.selectFilterGroups}"/>
                     </ice:selectOneMenu>
-                    <ice:message for="filterPanelGroupTypes" id ="boxErrorMsg"  styleClass="errorMessage"   />
-                    <div jsfc="ice:panelSeries" id ="filterPanelGroupTypes" var="groupType" value="#{item.varGroupTypesUI}"  >
+                    <ice:message for="filterPanelGroupTypes" id="boxErrorMsg" styleClass="errorMessage"/>
+                    <div jsfc="ice:panelSeries" style="overflow:hidden;" id="filterPanelGroupTypes" var="groupType" value="#{item.varGroupTypesUI}">
                         <!-- controls -->
-                        <div jsfc="ice:panelGroup" >
-                        <ice:selectBooleanCheckbox  id ="filterGroupTypeCheckBoxes" styleClass="filterGroupTypeCheckBoxes" value ="#{groupType.enabled}"
-                                                    partialSubmit="true" />
-                        <ice:outputLabel value="#{groupType.varGroupType.name}"/>
+                        <div jsfc="ice:panelGroup" style="float:left;">
+                            <ice:selectBooleanCheckbox id="filterGroupTypeCheckBoxes" styleClass="filterGroupTypeCheckBoxes" value="#{groupType.enabled}"
+                                                        partialSubmit="true"/>
+                            <ice:outputLabel value="#{groupType.varGroupType.name}"/>
                         </div>
                     </div>
                 </div>
             </div>
-
 
             <div style="overflow:hidden; margin-bottom:.5em;">
                 <div style="float:left;">
                     <ice:outputLabel value="Label" for="graphlinelabel"/>
-
                     <ice:inputText id="graphlinelabel" value="#{ExploreDataPage.lineLabel}"></ice:inputText>
-
                 </div>
                 <div>
                     <ice:commandButton id="addLineButton" type="submit" value="Add Line" binding="#{ExploreDataPage.addLineButton}" action="#{ExploreDataPage.addLine}"/>
-                    <ice:message for="addLineButton" id ="boxErrorMsg"  styleClass="errorMessage"   />
+                    <ice:message for="addLineButton" id="boxErrorMsg" styleClass="errorMessage"/>
                 </div>
             </div>
-
         </div>
 
         <div class="graphResults">
             <div class="linebox" style="float:left; margin-right:1em;">
-
-          <ice:dataTable width="100%" cellspacing="0" cellpadding="0"  var="line" value="#{ExploreDataPage.vizLines}"
-                                               binding="#{ExploreDataPage.dataTableVizLines}" >
-              <h:column>
-                 <div style="#{line.border}">
-                    <div  style="font-weight:bold;">
-                        <ice:outputText value="#{line.label}"/>
-                    </div>
-
-                    <div  style="font-weight:bold;">
-                        <ice:outputText value="#{line.measureLabel}"/>
-                    </div>
-                    <div jsfc="ice:panelGroup">
-                        <ice:outputText value="#{line.measureGroup.name}"/>
-                    </div>
-                    <div jsfc="ice:panelSeries" id ="lineListPanelSeries" var="filterGroup" value="#{line.filterGroups}" >
-                        <div  style="font-weight:bold;">
-                            <ice:outputText value="#{filterGroup.groupAssociation.name}"/>
+                <ice:dataTable width="100%" cellspacing="0" cellpadding="0" var="line" styleClass="graphResultsVizLineTable" value="#{ExploreDataPage.vizLines}" binding="#{ExploreDataPage.dataTableVizLines}">
+                  <h:column>
+                     <div style="padding:4px; margin:0 0 1em 0; #{line.border}">
+                        <div style="font-weight:bold;">
+                            <ice:outputText value="#{line.label}"/>
+                        </div>
+                        <div style="font-weight:bold; color:#484848;">
+                            <ice:outputText value="#{line.measureLabel}"/>
+                        </div>
+                        <div jsfc="ice:panelGroup">
+                            <ice:outputText value="#{line.measureGroup.name}"/>
+                        </div>
+                        <div jsfc="ice:panelSeries" id="lineListPanelSeries" var="filterGroup" value="#{line.filterGroups}">
+                            <div style="font-weight:bold; color:#484848;">
+                                <ice:outputText value="#{filterGroup.groupAssociation.name}"/>
+                            </div>
+                            <div>
+                                <ice:outputText value="#{filterGroup.name}"/>
+                            </div>
                         </div>
                         <div>
-                            <ice:outputText value="#{filterGroup.name}"/>
+                            <ice:commandButton id="deleteLineButton" type="submit" value="Delete Line" binding="#{ExploreDataPage.deleteLineButton}" actionListener="#{ExploreDataPage.deleteLine}"/>
+                            <ice:message for="deleteLineButton" id ="boxErrorMsg"  styleClass="errorMessage"/>
                         </div>
                     </div>
-
-                    <div>
-                        <ice:commandButton id="deleteLineButton" type="submit" 
-                                           value="Delete Line"
-
-                                           binding="#{ExploreDataPage.deleteLineButton}" actionListener="#{ExploreDataPage.deleteLine}"/>
-                        <ice:message for="deleteLineButton" id ="boxErrorMsg"  styleClass="errorMessage"   />
-                    </div>
-
-                    </div>
-                    </h:column>
-        </ice:dataTable>
-
-
+                  </h:column>
+                </ice:dataTable>
             </div>
 
             <div  class="graphbox" style="float:left; margin-right:1em;">
@@ -362,7 +344,7 @@ function drawVisualization() {
 
             <div class="graphdisplay" style="float:left;">
                 <div style="margin-bottom:.5em;">
-                    <ice:outputLabel value="Display" for="graphdisplay" style="display:block;" />
+                    <ice:outputLabel value="Display" for="graphdisplay" style="display:block;"/>
                     <ice:selectOneMenu id="graphdisplay"  binding="#{ExploreDataPage.selectGraphType}"
                                        onchange="getElementById('ExploreDataPage:selectDisplayButton').click();">
                         <f:selectItem itemLabel="Select Display" itemValue="0"/>
@@ -374,7 +356,7 @@ function drawVisualization() {
                      <ice:commandButton visible="false" id="selectDisplayButton"  action="#{ExploreDataPage.reset_DisplayType}"/>
                 </div>
                 <div style="margin-bottom:.5em;">
-                    <ice:outputLabel value="Title" for="graphtitle" style="display:block;" />
+                    <ice:outputLabel value="Title" for="graphtitle" style="display:block;"/>
                     <ice:inputText id="graphtitle" size="40"></ice:inputText>
                 </div>
                 
@@ -387,7 +369,7 @@ function drawVisualization() {
                         </ice:selectOneMenu>
                     </div>
                     <div style="float:left;">
-                        <ice:outputLabel value="End" for="graphend" rendered ="false" />
+                        <ice:outputLabel value="End" for="graphend" rendered ="false"/>
                         <ice:selectOneMenu id="graphend" rendered ="false">
                             <f:selectItem itemLabel="2004" itemValue=""/>
                         </ice:selectOneMenu>
@@ -409,7 +391,7 @@ function drawVisualization() {
                     </ice:selectOneMenu>
                 </div>
                 <div style="margin-bottom:.5em;">
-                    <ice:outputLabel value="Export" for="graphexport" style="display:block;" />
+                    <ice:outputLabel value="Export" for="graphexport" style="display:block;"/>
                     <ice:selectOneMenu id="graphexport">
                         <f:selectItem itemLabel="Select File Format..." itemValue=""/>
                     </ice:selectOneMenu>

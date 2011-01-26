@@ -18,70 +18,64 @@
 <ice:form id="ExploreDataPage">
     <ice:message for="exploredataform" id="boxErrorMsg" styleClass="errorMessage"/>
 
-   <script type='text/javascript' src='https://www.google.com/jsapi'></script>
-   <script type='text/javascript' src="http://api.timepedia.org/gviz/"></script>
-<script type="text/javascript">
-    
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <!--<script type="text/javascript" src="http://api.timepedia.org/gviz/"></script>-->
+
+    <script type="text/javascript">
+// <![CDATA[
     google.load('visualization', '1', {'packages':['annotatedtimeline']});
     google.load('visualization', '1', {packages:['table']});
 
- function drawChart(data, intDisType) {
-          
-        var myString = new String (document.getElementById('ExploreDataPage:columnString').textContent);
-        var myColumnList = myString.split ( ',' );
-        var myDataString = new String (document.getElementById('ExploreDataPage:dataString').textContent);
-        var myRowList = myDataString.split ( ';' );
-        var numColumnsStr =  new String (document.getElementById('ExploreDataPage:dataColumns').textContent);
-        var numColumns = parseInt(numColumnsStr);
-        
-        
-// <![CDATA[
-    for (i=0; i< myColumnList.length ;i++)
-    { 
-        var myColumn = myColumnList[i];
-        if (i==0 && intDisType != 3 ){
-            data.addColumn('date', myColumn);
-        } else {
-            data.addColumn('number', myColumn);
+     function drawChart(data, intDisType) {
+
+            var myString = new String (document.getElementById('ExploreDataPage:columnString').textContent);
+            var myColumnList = myString.split ( ',' );
+            var myDataString = new String (document.getElementById('ExploreDataPage:dataString').textContent);
+            var myRowList = myDataString.split ( ';' );
+            var numColumnsStr =  new String (document.getElementById('ExploreDataPage:dataColumns').textContent);
+            var numColumns = parseInt(numColumnsStr);
+
+        for (i=0; i< myColumnList.length ;i++)
+        {
+            var myColumn = myColumnList[i];
+            if (i==0 && intDisType != 3 ){
+                data.addColumn('date', myColumn);
+            } else {
+                data.addColumn('number', myColumn);
+            }
         }
+
+        for (i=0; i< myRowList.length -1 ;i++)
+        {
+            var myRow = myRowList[i];
+            if (numColumns == 1){
+                addRows1(data, myRow, intDisType);
+            }
+            if (numColumns == 2){
+                addRows2(data, myRow, intDisType);
+            }
+            if (numColumns == 3){
+                addRows3(data, myRow, intDisType);
+            }
+            if (numColumns == 4){
+                addRows4(data, myRow, intDisType);
+            }
+            if (numColumns == 5){
+                addRows5(data, myRow, intDisType);
+            }
+            if (numColumns == 6){
+                addRows6(data, myRow, intDisType);
+            }
+            if (numColumns == 7){
+                addRows7(data, myRow, intDisType);
+            }
+            if (numColumns == 8){
+                addRows8(data, myRow, intDisType);
+            }
+
+         }
+
     }
-       
-    for (i=0; i< myRowList.length -1 ;i++)
-    {
-        var myRow = myRowList[i];
-        if (numColumns == 1){
-            addRows1(data, myRow, intDisType);
-        }
-        if (numColumns == 2){
-            addRows2(data, myRow, intDisType);
-        }
-        if (numColumns == 3){
-            addRows3(data, myRow, intDisType);
-        }
-        if (numColumns == 4){
-            addRows4(data, myRow, intDisType);
-        }
-        if (numColumns == 5){
-            addRows5(data, myRow, intDisType);
-        }
-        if (numColumns == 6){
-            addRows6(data, myRow, intDisType);
-        }
-        if (numColumns == 7){
-            addRows7(data, myRow, intDisType);
-        }
-        if (numColumns == 8){
-            addRows8(data, myRow, intDisType);
-        }
-
-
-
-     }
-
-    // ]]>
-
-
-      }
 
       function addRows1(dataTable, rowList, intDisType) {
           var myRowParse = rowList.split ( ',' );
@@ -117,7 +111,7 @@
           } else {
             dataTable.addRow([yearNum, dollNum, dollNum2, dollNum3]);
           }
-        
+
       }
 
       function addRows4(dataTable, rowList, intDisType) {
@@ -132,7 +126,7 @@
           } else {
             dataTable.addRow([yearNum, dollNum, dollNum2, dollNum3, dollNum4]);
           }
-        
+
       }
 
       function addRows5(dataTable, rowList, intDisType) {
@@ -201,10 +195,9 @@
           }
       }
 
+    function drawVisualization() {
 
-function drawVisualization() {
-
-            var displayType = new String (document.getElementById('ExploreDataPage:displayType').textContent);
+      var displayType = new String (document.getElementById('ExploreDataPage:displayType').textContent);
       var intDisType = parseInt(displayType);
 
       var data = new google.visualization.DataTable();
@@ -219,15 +212,15 @@ function drawVisualization() {
         }
         if (intDisType == 2){
             chronoscope.Chronoscope.setFontBookRendering(true);
-            chronoscopeDivID ="chart_div";
+            chronoscopeDivID = "chart_div";
             var chrono = new chronoscope.ChronoscopeVisualization(document.getElementById(chronoscopeDivID));
             chrono.draw(data, { legend: "true", overview: "true"});
         }
 
-}
-
-
+    }
+// ]]>
     </script>
+
 <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
 
 <ice:outputText visible="false" id="columnString" value="#{ExploreDataPage.columnString}"/>
@@ -239,9 +232,8 @@ function drawVisualization() {
     .fileInfo {margin-bottom:1em;}
     .graphForm {margin:1em; padding-bottom:1em; border-bottom:1px solid grey; text-align: left;}
     .graphResults {margin:1em; overflow:hidden; text-align: left;}
-    .graphResultsVizLineTable, .graphResultsVizLineTable td {border:0; padding:0;}
+    .graphResultsVizLineTable, .graphResultsVizLineTable td {border:0; margin:0; padding:0;}
 </style>
-            
 
     <div class="dvn_section">
         <div class="dvnstudytitleblock">
@@ -253,10 +245,9 @@ function drawVisualization() {
         </div>
 
         <div class="graphForm">
-
-            <div style="overflow:hidden; margin-bottom:.5em;">
-                <ice:message for="indicator" id="boxErrorMsg" styleClass="errorMessage"/>
-                <div style="float:left;">
+            <div style="overflow:hidden; margin-bottom:1em;">
+                <ice:message for="indicator" id="boxErrorMsg" styleClass="errorMessage" style="display:block;"/>
+                <div style="display:inline;">
                     <ice:message for="indicator" id="boxErrorMsg" styleClass="errorMessage"/>
                     <ice:outputLabel value="#{ExploreDataPage.measureLabel}" for="indicator"/>
 
@@ -266,41 +257,46 @@ function drawVisualization() {
                         <f:selectItems value="#{ExploreDataPage.selectMeasureItems}"/>
                     </ice:selectOneMenu>
                 </div>
-                <div style="float:left;">
-                    <ice:outputLabel value="Type:" for="issue"/>
+
+                <ice:outputText value="related to" style="font-weight:bold; margin:0 2em;"/>
+
+                <div style="display:inline;">
                     <ice:selectOneMenu immediate="false" onchange="submit()" id="issue"
                                         valueChangeListener="#{ExploreDataPage.reset_MeasureItems}" value="#{ExploreDataPage.groupTypeId}">
-                        <f:selectItems  value="#{ExploreDataPage.selectMeasureGroupTypes}"/>
+                        <f:selectItems value="#{ExploreDataPage.selectMeasureGroupTypes}"/>
                     </ice:selectOneMenu>
                 </div>
             </div>
 
-            <div style="overflow:hidden; margin-bottom:.5em;">
-                <div jsfc="ice:panelSeries" id ="filterPanelGroupings" var="item" value="#{ExploreDataPage.filterGroupings}" binding="#{ExploreDataPage.filterPanelGroup}">
+            <div style="overflow:hidden; margin-bottom:1em;">
+                <div jsfc="ice:panelSeries" id="filterPanelGroupings" var="item" value="#{ExploreDataPage.filterGroupings}" binding="#{ExploreDataPage.filterPanelGroup}">
                     <f:attribute name="groupingId" value="#{item.varGrouping.id}"/>
-                    <ice:outputLabel value="#{item.varGrouping.name}"/>
+                    <ice:outputLabel value="#{item.varGrouping.name}" style=""/>
 
-                    <ice:selectOneMenu id ="filterGroup" styleClass="filterGroup" value="#{item.selectedGroupId}">
+                    <ice:selectOneMenu id="filterGroup" style="" styleClass="filterGroup" value="#{item.selectedGroupId}">
                         <f:selectItems value="#{ExploreDataPage.selectFilterGroups}"/>
                     </ice:selectOneMenu>
-                    <ice:message for="filterPanelGroupTypes" id="boxErrorMsg" styleClass="errorMessage"/>
-                    <div jsfc="ice:panelSeries" style="overflow:hidden;" id="filterPanelGroupTypes" var="groupType" value="#{item.varGroupTypesUI}">
+
+                    <ice:outputText value="related to" style="font-weight:bold; margin:0 2em;"/>
+
+                    <div jsfc="ice:panelSeries" style="overflow:hidden; display:inline;" id="filterPanelGroupTypes" var="groupType" value="#{item.varGroupTypesUI}">
                         <!-- controls -->
-                        <div jsfc="ice:panelGroup" style="float:left;">
+                        <div jsfc="ice:panelGroup" style="display:inline; margin-right:1em;">
                             <ice:selectBooleanCheckbox id="filterGroupTypeCheckBoxes" styleClass="filterGroupTypeCheckBoxes" value="#{groupType.enabled}"
                                                         partialSubmit="true"/>
-                            <ice:outputLabel value="#{groupType.varGroupType.name}"/>
+                            <ice:outputLabel value="#{groupType.varGroupType.name}" style="font-weight:normal;"/>
                         </div>
                     </div>
+                    <ice:message for="filterPanelGroupTypes" id="boxErrorMsg" styleClass="errorMessage" style="display:block;"/>
                 </div>
             </div>
 
             <div style="overflow:hidden; margin-bottom:.5em;">
-                <div style="float:left;">
+                <div style="display:inline;">
                     <ice:outputLabel value="Label" for="graphlinelabel"/>
                     <ice:inputText id="graphlinelabel" value="#{ExploreDataPage.lineLabel}"></ice:inputText>
                 </div>
-                <div>
+                <div style="display:inline;">
                     <ice:commandButton id="addLineButton" type="submit" value="Add Line" binding="#{ExploreDataPage.addLineButton}" action="#{ExploreDataPage.addLine}"/>
                     <ice:message for="addLineButton" id="boxErrorMsg" styleClass="errorMessage"/>
                 </div>
@@ -315,101 +311,132 @@ function drawVisualization() {
                         <div style="font-weight:bold;">
                             <ice:outputText value="#{line.label}"/>
                         </div>
-                        <div style="font-weight:bold; color:#484848;">
-                            <ice:outputText value="#{line.measureLabel}"/>
-                        </div>
-                        <div jsfc="ice:panelGroup">
-                            <ice:outputText value="#{line.measureGroup.name}"/>
-                        </div>
-                        <div jsfc="ice:panelSeries" id="lineListPanelSeries" var="filterGroup" value="#{line.filterGroups}">
+                        
+                        <a href="#" class="lineDetailLink">View Detail</a>
+                        
+                        <div class="lineDetailBlock">
                             <div style="font-weight:bold; color:#484848;">
-                                <ice:outputText value="#{filterGroup.groupAssociation.name}"/>
+                                <ice:outputText value="#{line.measureLabel}"/>
                             </div>
-                            <div>
-                                <ice:outputText value="#{filterGroup.name}"/>
+                            <div jsfc="ice:panelGroup">
+                                <ice:outputText value="#{line.measureGroup.name}"/>
+                            </div>
+                            <div jsfc="ice:panelSeries" id="lineListPanelSeries" var="filterGroup" value="#{line.filterGroups}">
+                                <div style="font-weight:bold; color:#484848;">
+                                    <ice:outputText value="#{filterGroup.groupAssociation.name}"/>
+                                </div>
+                                <div>
+                                    <ice:outputText value="#{filterGroup.name}"/>
+                                </div>
                             </div>
                         </div>
                         <div>
-                            <ice:commandButton id="deleteLineButton" type="submit" value="Delete Line" binding="#{ExploreDataPage.deleteLineButton}" actionListener="#{ExploreDataPage.deleteLine}"/>
-                            <ice:message for="deleteLineButton" id ="boxErrorMsg"  styleClass="errorMessage"/>
+                            <ice:commandLink id="deleteLineLink" title="Delete Line" value="Delete Line" actionListener="#{ExploreDataPage.deleteLine}"></ice:commandLink>
+                            <ice:message for="deleteLineButton" id="boxErrorMsg" styleClass="errorMessage"/>
                         </div>
                     </div>
                   </h:column>
+                  <f:facet name="footer">
+                        <script type="text/javascript">
+                          // <![CDATA[
+                            jQuery(document).ready(function(){
+                                // choose text for the show/hide link - can contain HTML (e.g. an image)
+                                var showText='View Detail';
+                                var hideText='Close Detail';
+
+                                // initialise the visibility check
+                                var is_visible = false;
+
+                                // append show/hide links to the element directly preceding the element with a class of "toggle"
+                                jQuery(this).prev('a.lineDetailLink').text(showText);
+
+                                // hide all of the elements with a class of 'toggle'
+                                jQuery('.lineDetailBlock').hide();
+
+                                // capture clicks on the toggle links
+                                jQuery('a.lineDetailLink').click(function() {
+
+                                    // change the link depending on whether the element is shown or hidden
+                                    if (jQuery(this).text()==showText) {
+                                        jQuery(this).text(hideText);
+                                    }
+                                    else {
+                                        jQuery(this).text(showText);
+                                    }
+
+                                    // toggle the display
+                                    jQuery(this).next('.lineDetailBlock').toggle();
+
+                                    // return false so any link destination is not followed
+                                    return false;
+
+                                });
+                            });
+                            // ]]>
+                        </script>
+                    </f:facet>
                 </ice:dataTable>
             </div>
 
-            <div  class="graphbox" style="float:left; margin-right:1em;">
-                <div id='chart_div' style='width: 540px; height: 400px;'></div>
+            <div class="graphbox" style="float:left; margin-right:1em;">
+                <div id="chart_div" style="width: 540px; height: 400px;"></div>
             </div>
 
             <div class="graphdisplay" style="float:left;">
                 <div style="margin-bottom:.5em;">
                     <ice:outputLabel value="Display" for="graphdisplay" style="display:block;"/>
-                    <ice:selectOneMenu id="graphdisplay"  binding="#{ExploreDataPage.selectGraphType}"
+                    <ice:selectOneMenu id="graphdisplay" binding="#{ExploreDataPage.selectGraphType}"
                                        onchange="getElementById('ExploreDataPage:selectDisplayButton').click();">
                         <f:selectItem itemLabel="Select Display" itemValue="0"/>
                         <f:selectItem itemLabel="Graph" itemValue="1"/>
                         <f:selectItem itemLabel="Table" itemValue="3"/>
-
                     </ice:selectOneMenu>
-                    <ice:commandButton  value="Create"  onclick="drawVisualization();"/>
-                     <ice:commandButton visible="false" id="selectDisplayButton"  action="#{ExploreDataPage.reset_DisplayType}"/>
+                    <ice:commandButton value="Create" onclick="drawVisualization();"/>
+                     <ice:commandButton visible="false" id="selectDisplayButton" action="#{ExploreDataPage.reset_DisplayType}"/>
                 </div>
-                <div style="margin-bottom:.5em;">
-                    <ice:outputLabel value="Title" for="graphtitle" style="display:block;"/>
-                    <ice:inputText id="graphtitle" size="40"></ice:inputText>
-                </div>
-                
                 <div style="overflow:hidden; margin-bottom:.5em;">
-                    
                     <div style="float:left;">
-                        <ice:outputLabel value="Start" for="graphstart" rendered ="false"/>
-                        <ice:selectOneMenu id="graphstart" rendered ="false">
+                        <ice:outputLabel value="Start" for="graphstart" rendered="false"/>
+                        <ice:selectOneMenu id="graphstart" rendered="false">
                             <f:selectItem itemLabel="1918" itemValue=""/>
                         </ice:selectOneMenu>
                     </div>
                     <div style="float:left;">
-                        <ice:outputLabel value="End" for="graphend" rendered ="false"/>
-                        <ice:selectOneMenu id="graphend" rendered ="false">
+                        <ice:outputLabel value="End" for="graphend" rendered="false"/>
+                        <ice:selectOneMenu id="graphend" rendered="false">
                             <f:selectItem itemLabel="2004" itemValue=""/>
                         </ice:selectOneMenu>
                     </div>
                 </div>
                 <div style="margin-bottom:.5em;">
-                    <ice:selectBooleanCheckbox id="displayindices" value="" rendered ="false"/>
+                    <ice:selectBooleanCheckbox id="displayindices" value="" rendered="false"/>
                     <ice:outputLabel value="Display Series as Indices" for="displayindices" style="font-weight:normal;" rendered="false"/>
                     <ice:selectOneRadio id="referenceperiod"
                                         layout="pageDirection"
                                         immediate="true"
                                         value=""
-                                        rendered ="false">
+                                        rendered="false">
                       <f:selectItem value="" itemLabel="Use First Period as Reference Period"/>
                       <f:selectItem value="" itemLabel="Select Reference Period"/>
                     </ice:selectOneRadio>
-                    <ice:selectOneMenu id="selectreferenceperiod" rendered ="false">
+                    <ice:selectOneMenu id="selectreferenceperiod" rendered="false">
                         <f:selectItem itemLabel="Select a Period..." itemValue=""/>
                     </ice:selectOneMenu>
                 </div>
                 <div style="margin-bottom:.5em;">
                     <ice:outputLabel value="Export" for="graphexport" style="display:block;"/>
+                    <div style="margin-bottom:.5em;">
+                        <ice:outputLabel value="Title" for="graphtitle"/>
+                        <ice:inputText id="graphtitle" size="40"></ice:inputText>
+                    </div>
                     <ice:selectOneMenu id="graphexport">
                         <f:selectItem itemLabel="Select File Format..." itemValue=""/>
                     </ice:selectOneMenu>
                     <ice:commandButton type="submit" value="Download"/>
-                    
                 </div>
-
             </div>
-
         </div>
-
     </div>
-        <script type="text/javascript">
-            //<![CDATA[
-            // this is done to ensure that the scholar fields are properly inited. wjb
-            showAll();
-            // ]]>
-        </script>
 </ice:form>
 
 </ui:define>

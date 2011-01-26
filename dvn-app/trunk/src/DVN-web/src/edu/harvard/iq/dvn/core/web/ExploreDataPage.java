@@ -35,8 +35,10 @@ import com.icesoft.faces.component.ext.HtmlSelectOneMenu;
 import edu.harvard.iq.dvn.core.study.DataVariable;
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyFile;
+import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.study.VariableServiceLocal;
 import edu.harvard.iq.dvn.core.visualization.DataVariableMapping;
+import edu.harvard.iq.dvn.core.web.study.StudyUI;
 import edu.harvard.iq.dvn.ingest.dsb.FieldCutter;
 import edu.harvard.iq.dvn.ingest.dsb.impl.DvnJavaFieldCutter;
 
@@ -74,7 +76,10 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     private List <String> filterStrings = new ArrayList();
     private List <SelectItem> selectMeasureItems = new ArrayList();
     private List <SelectItem> selectMeasureGroupTypes = new ArrayList();
- 
+    private List <SelectItem> selectBeginYears = new ArrayList();
+
+
+    private List <SelectItem> selectEndYears = new ArrayList();
     private List <VisualizationLineDefinition> vizLines = new ArrayList();
     private Long selectedMeasureId = new Long(0);
     private Long selectedFilterGroupId = new Long(0);
@@ -88,7 +93,13 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     private Long numberOfColumns =  new Long(0);
     private String dataString = "";
     private Long displayType = new Long(0);
+    private Long startYear = new Long(0);
+    private Long endYear = new Long(3000);
     private Study studyIn = new Study();
+    private StudyUI studyUI;
+    private String fileName = "";
+    private String graphTitle = "";
+
     private Long studyId = new Long(0);
 
 
@@ -104,7 +115,19 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         visualizationService.setDataTableFromStudyFileId(studyFileId);
         studyIn = visualizationService.getStudyFromStudyFileId(studyFileId);
         studyId = studyIn.getId();
+
+
+
         dt = visualizationService.getDataTable();
+
+        Study thisStudy = dt.getStudyFile().getStudy();
+
+        studyUI = new StudyUI(thisStudy);
+
+        StudyFile sf = dt.getStudyFile();
+        fileName = sf.getFileName();
+
+
         dvList = dt.getDataVariables();
         varGroupings = dt.getVarGroupings();
         measureLabel = loadMeasureLabel();
@@ -116,6 +139,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         xAxisVar =  visualizationService.getXAxisVariable(dt.getId());
 
      }
+
+
 
     public List getVarGroupings() {
         return varGroupings;
@@ -395,19 +420,90 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                             for (VarGroupTypeUI varGroupTypeUI: varGroupTypesUI){
                                 allFalse &= !varGroupTypeUI.isEnabled();
                             }
+                            if (allFalse){
+                                for (VarGroupTypeUI varGroupTypeUI: varGroupTypesUI){
+                                    if (varGroupTypeUI.isEnabled() || allFalse ){
+                                        List <VarGroup> varGroups = (List) varGroupTypeUI.getVarGroupType().getGroups();
+                                        for (VarGroup varGroupTest: varGroups) {
+                                            if (!added && varGroupTest.getId().equals(varGroup.getId())  && varGroup.getGroupAssociation().equals(varGroupingUI.getVarGrouping()) ){
+                                                selectItems.add(new SelectItem(varGroup.getId(), varGroup.getName()));
+                                                added = true;
+                                            }
+                                        }
 
-                            for (VarGroupTypeUI varGroupTypeUI: varGroupTypesUI){
-                                if (varGroupTypeUI.isEnabled() || allFalse ){
-                                    List <VarGroup> varGroups = (List) varGroupTypeUI.getVarGroupType().getGroups();
-                                    for (VarGroup varGroupTest: varGroups) {
-                                        if (!added && varGroupTest.getId().equals(varGroup.getId())  && varGroup.getGroupAssociation().equals(varGroupingUI.getVarGrouping()) ){
-                                            selectItems.add(new SelectItem(varGroup.getId(), varGroup.getName()));
-                                            added = true;
+                                    }
+                                }
+
+                            }
+                            if (!allFalse){
+                                int countEnabled = 0;
+                                for (VarGroupTypeUI varGroupTypeUI: varGroupTypesUI){
+                                    if (varGroupTypeUI.isEnabled()){
+                                        countEnabled++;
+                                    }
+                                }
+                                if( countEnabled == 1){
+                                    for (VarGroupTypeUI varGroupTypeUI: varGroupTypesUI){
+                                    if (varGroupTypeUI.isEnabled()){
+                                        List <VarGroup> varGroups = (List) varGroupTypeUI.getVarGroupType().getGroups();
+                                            for (VarGroup varGroupTest: varGroups) {
+                                                if (!added && varGroupTest.getId().equals(varGroup.getId())  && varGroup.getGroupAssociation().equals(varGroupingUI.getVarGrouping()) ){
+                                                    selectItems.add(new SelectItem(varGroup.getId(), varGroup.getName()));
+                                                    added = true;
+                                                }
+                                            }
+
+                                        }
+                                      }
+                                }
+                                if( countEnabled > 1){
+                                    int counter = countEnabled;
+                                    List[] varGroupArrayList = new  List [countEnabled];
+
+                                    
+                                    for (VarGroupTypeUI varGroupTypeUI: varGroupTypesUI){
+                                    if (varGroupTypeUI.isEnabled()){
+                                        List <VarGroup> varGroups = (List) varGroupTypeUI.getVarGroupType().getGroups();
+                                        varGroupArrayList[counter-1] = varGroups;
+                                        counter--;
                                         }
                                     }
+                                    List <VarGroup> varGroupsSaveGet = new ArrayList((List) varGroupArrayList[0]);
+                                    List <VarGroup> varGroupsTempGet = new ArrayList((List) varGroupArrayList[0]);
+                                    List <VarGroup> varGroupsSave = new ArrayList(varGroupsSaveGet);
+                                    List <VarGroup> varGroupsTemp = new ArrayList(varGroupsTempGet);
+                                    List <VarGroup> vsrGroupRemove = new ArrayList();
+                                    for (int i=1; i<=countEnabled-1; i++){
+                                        List <VarGroup> varGroupsTest = (List) varGroupArrayList[i];
+                                        for (VarGroup vgs: varGroupsTemp){
+                                            boolean save = false;
+                                            for(VarGroup vgt : varGroupsTest){
+                                               if (vgt.getId().equals(vgs.getId())){
+                                                   save=true;
+                                               }
+                                                
+                                            }
+                                            if (!save){
+                                                vsrGroupRemove.add(vgs);
+                                            }
+                                        }
 
-                                }
+                                        
+                                    }
+
+
+                                       for(VarGroup vgr : vsrGroupRemove){
+                                            varGroupsSave.remove(vgr);
+                                       }
+                                        for (VarGroup varGroupS: varGroupsSave) {
+
+                                             selectItems.add(new SelectItem(varGroupS.getId(), varGroupS.getName()));
+
+                                        }
+                                    
+                                }                                
                             }
+
 
                         } else {
                                if (!added && varGroup.getGroupAssociation().equals(varGroupingUI.getVarGrouping()) ){
@@ -488,6 +584,16 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         this.displayType = new Long((String) value );
     }
 
+    public void update_StartYear(){
+        Object value= this.selectStartYear.getValue();
+        this.startYear = new Long((String) value );
+    }
+
+    public void update_EndYear(){
+        Object value= this.selectEndYear.getValue();
+        this.endYear = new Long((String) value );
+    }
+
     public void reset_MeasureItems(ValueChangeEvent ae){
         int i = (Integer) ae.getNewValue();
         this.selectMeasureItems = loadSelectMeasureItems(i);
@@ -510,7 +616,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     public void addLine(){
         
         if ( lineLabel.isEmpty() || lineLabel.trim().equals("") ) {
-            FacesMessage message = new FacesMessage("Please enter a Label");
+            FacesMessage message = new FacesMessage("Please enter a label");
             FacesContext fc = FacesContext.getCurrentInstance();
             fc.addMessage(addLineButton.getClientId(fc), message);
             return;
@@ -821,7 +927,11 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     }
 
     private void loadDataTableData(List inStr){
-                    String output = "";
+    selectBeginYears = new ArrayList();
+    selectEndYears = new ArrayList();
+    selectBeginYears.add(new SelectItem(0, "All"));
+    selectEndYears.add(new SelectItem(3000, "All"));
+                String output = "";
                 for (Object inObj: inStr ){
                     String nextStr = (String) inObj;
                     String[] columnDetail = nextStr.split("\t");
@@ -833,6 +943,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                         for (int i=0; i<test.length; i++){
                             if (i == 0) {
                                 col =  test[i];
+                                selectBeginYears.add(new SelectItem(col, col));
+                                selectEndYears.add(new SelectItem(col, col));
                             } else {
                                col = col + ", " +  test[i];
                             }
@@ -888,6 +1000,26 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         this.selectGraphType = selectGraphType;
     }
 
+    HtmlSelectOneMenu selectStartYear;
+
+    public HtmlSelectOneMenu getSelectStartYear() {
+        return selectStartYear;
+    }
+
+    public void setSelectStartYear(HtmlSelectOneMenu selectStartYear) {
+        this.selectStartYear = selectStartYear;
+    }
+
+    HtmlSelectOneMenu selectEndYear;
+
+    public HtmlSelectOneMenu getSelectEndYear() {
+        return selectEndYear;
+    }
+
+    public void setSelectEndYear(HtmlSelectOneMenu selectEndYear) {
+        this.selectEndYear = selectEndYear;
+    }
+
     public Long getDisplayType() {
         return displayType;
     }
@@ -902,5 +1034,78 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
     public void setStudyId(Long studyId) {
         this.studyId = studyId;
+    }
+
+
+    public StudyUI getStudyUI() {
+        return studyUI;
+    }
+
+    public void setStudyUI(StudyUI studyUI) {
+        this.studyUI = studyUI;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    private HtmlInputText inputGraphTitle;
+
+    public HtmlInputText getInputGraphTitle() {
+        return this.inputGraphTitle;
+    }
+    public void setInputGraphTitle(HtmlInputText inputGraphTitle) {
+        this.inputGraphTitle = inputGraphTitle;
+    }
+    
+
+
+    public String getGraphTitle() {
+        return graphTitle;
+    }
+
+    public void setGraphTitle(String graphTitle) {
+        this.graphTitle = graphTitle;
+    }
+
+    public String updateGraphTitle(){
+        String graphTitleIn = (String) getInputGraphTitle().getValue();
+        setGraphTitle(graphTitleIn);
+        return "";
+    }
+
+    public List<SelectItem> getSelectBeginYears() {
+        return selectBeginYears;
+    }
+
+    public void setSelectBeginYears(List<SelectItem> selectBeginYears) {
+        this.selectBeginYears = selectBeginYears;
+    }
+
+    public List<SelectItem> getSelectEndYears() {
+        return selectEndYears;
+    }
+
+    public void setSelectEndYears(List<SelectItem> selectEndYears) {
+        this.selectEndYears = selectEndYears;
+    }
+    public Long getEndYear() {
+        return endYear;
+    }
+
+    public void setEndYear(Long endYear) {
+        this.endYear = endYear;
+    }
+
+    public Long getStartYear() {
+        return startYear;
+    }
+
+    public void setStartYear(Long startYear) {
+        this.startYear = startYear;
     }
 }

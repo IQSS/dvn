@@ -180,7 +180,7 @@ public class DDIFileReader extends StatDataFileReader{
         // parse the DDI and populate the data set metadata (smd) object:
 
         try {
-            parseXML (cardStream, smd);
+            processDDI (cardStream, smd);
         } catch (IOException ex) {
             dbgLog.info("Failed to parse the supplied DDI file. Exception caught: "+ex.getMessage());
             throw ex;
@@ -247,36 +247,135 @@ public class DDIFileReader extends StatDataFileReader{
         return sdiodata;
     }
 
-    private void parseXML(BufferedInputStream ddiStream, SDIOMetadata smd) throws IOException {
+    // isValid method does attempts to parse and process the supplied DDI
+    // the same exact way as the read() method above, without processing
+    // the raw data. Thus it can be used for fast, on the fly validation
+    // of the control card as it gets uploaded by the user.
+
+    public boolean isValid(File ddiFile) throws IOException {
+
+        dbgLog.fine("***** DDIFileReader: validate() start *****");
+
+        boolean fileIsValid = true;
+
+
+        // try parsing the DDI;
+        // if it's not fully to our liking, this will throw an exception.
+
+        SDIOMetadata newSmd = new DDIMetadata();
+
+        try {
+            BufferedInputStream ddiStream = new BufferedInputStream (new FileInputStream(ddiFile));
+            processDDI (ddiStream, newSmd);
+        } catch (IOException ex) {
+            dbgLog.info("Failed to read or parse the supplied DDI file: "+ex.getMessage());
+            throw ex;
+        }
+
+
+        dbgLog.info("***** DDIFileReader: validate() end *****");
+
+
+        return fileIsValid;
+    }
+
+    
+    private void processDDI(BufferedInputStream ddiStream, SDIOMetadata smd) throws IOException {
         XMLStreamReader xmlr = null;
         try {
             xmlr =  xmlInputFactory.createXMLStreamReader(ddiStream);
-            processDDI( xmlr, smd );
+            //processDDI( xmlr, smd );
+            xmlr.nextTag();
+            xmlr.require(XMLStreamConstants.START_ELEMENT, null, "codeBook");
+            processCodeBook(xmlr, smd);
+            dbgLog.info("processed DDI.");
+
         } catch (XMLStreamException ex) {
             Logger.getLogger("global").log(Level.SEVERE, null, ex);
-            throw new IOException (ex);
+            throw new IOException(ex.getMessage());
         } finally {
             try {
-                if (xmlr != null) { xmlr.close(); }
+                if (xmlr != null) { 
+                    xmlr.close();
+                }
             } catch (XMLStreamException ex) {
                 // The message in the exception should contain diagnostics
                 // information -- what was wrong with the DDI, etc.
                 throw new IOException (ex.getMessage());
             }
-            try {
-                if (ddiStream != null) { ddiStream.close();}
-            } catch (IOException ex) {
-                throw ex;
+            if (ddiStream != null) { 
+                ddiStream.close();
             }
         }
+
+        // Having processed the entire ddi, we should have obtained all the metadata
+        // describing the data set.
+        // Configure the SMD metadata object:
+
+        if (getVarQnty() > 0) {
+            smd.getFileInformation().put("varQnty", getVarQnty());
+            dbgLog.info("var quantity: "+getVarQnty());
+            // TODO:
+            // Validate the value against the actual number of variable sections
+            // found in the DDI.
+        } else {
+            throw new IOException ("Failed to obtain the variable quantity from the DDI supplied.");
+        }
+
+
+        if (getCaseQnty() > 0) {
+            smd.getFileInformation().put("caseQnty", getCaseQnty());
+        }
+        // It's ok if caseQnty was not defined in the DDI, we'll try to read
+        // the tab file supplied and assume that the number of lines is the
+        // number of observations.
+
+        smd.setVariableName(variableNameList.toArray(new String[variableNameList.size()]));
+
+        // "minimal" variable types: SPSS type binary definition:
+        // 0 means numeric, >0 means string.
+
+        smd.setVariableTypeMinimal(ArrayUtils.toPrimitive(
+        variableTypeList.toArray(new Integer[variableTypeList.size()])));
+
+        // This is how the "discrete" and "continuous" numeric values are
+        // distinguished in the data set metadata:
+
+        smd.setDecimalVariables(decimalVariableSet);
+
+        //TODO: smd.getFileInformation().put("caseWeightVariableName", caseWeightVariableName);
+
+        smd.setVariableFormat(printFormatList);
+        smd.setVariableFormatName(printFormatNameTable);
+        smd.setVariableFormatCategory(formatCategoryTable); //TODO: verify
+
+        // Store the variable labels, if supplied:
+
+        if (!variableLabelMap.isEmpty()) {
+            smd.setVariableLabel(variableLabelMap);
+        }
+
+        // Value labels, if supplied:
+
+        if (!valueLabelTable.isEmpty()) {
+            smd.setValueLabelTable(valueLabelTable);
+            smd.setValueLabelMappingTable(valueVariableMappingTable);
+        }
+
+        // And missing values:
+
+        if (!missingValueTable.isEmpty()) {
+            smd.setMissingValueTable(missingValueTable);
+        }
+
     }
 
-    private void processDDI( XMLStreamReader xmlr, SDIOMetadata smd) throws XMLStreamException {
-        xmlr.nextTag();
-        xmlr.require(XMLStreamConstants.START_ELEMENT, null, "codeBook");
-        processCodeBook(xmlr, smd);
-        dbgLog.info("processed DDI.");
-    }
+    //private void processDDI( XMLStreamReader xmlr, SDIOMetadata smd) throws XMLStreamException {
+    //    xmlr.nextTag();
+    //    xmlr.require(XMLStreamConstants.START_ELEMENT, null, "codeBook");
+    //    processCodeBook(xmlr, smd);
+    //    dbgLog.info("processed DDI.");
+    //}
 
     private void processCodeBook( XMLStreamReader xmlr, SDIOMetadata smd) throws XMLStreamException {
 
@@ -292,66 +391,6 @@ public class DDIFileReader extends StatDataFileReader{
             } else if (event == XMLStreamConstants.END_ELEMENT) {
                 if (xmlr.getLocalName().equals("codeBook")) {
                     dbgLog.info("processed codeBook section;");
-                    // Having processed the entire codeBook section we should have obtained all the metadata
-                    // describing the data set.
-                    // Configure the SMD metadata object:
-
-                    if (getVarQnty() > 0) {
-                        smd.getFileInformation().put("varQnty", getVarQnty());
-                        dbgLog.info("var quantity: "+getVarQnty());
-                        // TODO:
-                        // Validate the value against the actual number of variable sections
-                        // found in the DDI.
-                    } else {
-                        throw new XMLStreamException ("Failed to obtain the variable quantity from the DDI supplied.");
-                    }
-
-
-                    if (getCaseQnty() > 0) {
-                        smd.getFileInformation().put("caseQnty", getCaseQnty());
-                    }
-                    // It's ok if caseQnty was not defined in the DDI, we'll try to read
-                    // the tab file supplied and assume that the number of lines is the
-                    // number of observations.
-
-                    smd.setVariableName(variableNameList.toArray(new String[variableNameList.size()]));
-
-                    // "minimal" variable types: SPSS type binary definition:
-                    // 0 means numeric, >0 means string.
-
-                    smd.setVariableTypeMinimal(ArrayUtils.toPrimitive(
-                        variableTypeList.toArray(new Integer[variableTypeList.size()])));
-
-                    // This is how the "discrete" and "continuous" numeric values are
-                    // distinguished in the data set metadata:
-
-                    smd.setDecimalVariables(decimalVariableSet);
-
-                    //TODO: smd.getFileInformation().put("caseWeightVariableName", caseWeightVariableName);
-
-                    smd.setVariableFormat(printFormatList);
-                    smd.setVariableFormatName(printFormatNameTable);
-                    smd.setVariableFormatCategory(formatCategoryTable); //TODO: verify
-
-                    // Store the variable labels, if supplied:
-
-                    if (!variableLabelMap.isEmpty()) {
-                        smd.setVariableLabel(variableLabelMap);
-                    }
-
-                    // Value labels, if supplied:
-
-                    if (!valueLabelTable.isEmpty()) {
-                        smd.setValueLabelTable(valueLabelTable);
-                        smd.setValueLabelMappingTable(valueVariableMappingTable);
-                    }
-
-                    // And missing values:
-
-                    if (!missingValueTable.isEmpty()) {
-                        smd.setMissingValueTable(missingValueTable);
-                    }
-
                     return;
                 } else {
                     throw new XMLStreamException ("Mismatched DDI Formatting: </codeBook> expected, found "+xmlr.getLocalName());

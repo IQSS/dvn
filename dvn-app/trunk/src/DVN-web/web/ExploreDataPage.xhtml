@@ -25,8 +25,60 @@
 // <![CDATA[
     google.load('visualization', '1', {'packages':['annotatedtimeline']});
     google.load('visualization', '1', {packages:['table']});
+    google.load("visualization", "1", {packages:["imagebarchart"]});
+    google.load('visualization', '1', {packages:['imagelinechart']});
 
-     function drawChart(data, intDisType) {
+// <![CDATA[
+    var timeout= 400; //milliseconds to wait for no activity
+    var countEvents= 0;
+    var delay = 500;
+    function delayedRequestTitle(form,field,event){
+    countEvents++;
+    setTimeout(function() {
+    countEvents--;
+    if(countEvents==0){
+
+        document.getElementById('ExploreDataPage:updateGraphTitle').click();
+    }
+    },timeout);
+    }
+    // ]]>
+ function drawChart(data, intDisType, startYear, endYear) {
+          
+        var myString = new String (document.getElementById('ExploreDataPage:columnString').textContent);
+        var myColumnList = myString.split ( ',' );
+        var myDataString = new String (document.getElementById('ExploreDataPage:dataString').textContent);
+        var myRowList = myDataString.split ( ';' );
+        var numColumnsStr =  new String (document.getElementById('ExploreDataPage:dataColumns').textContent);
+        var numColumns = parseInt(numColumnsStr);
+        
+        
+// <![CDATA[
+    for (i=0; i< myColumnList.length ;i++)
+    { 
+        var myColumn = myColumnList[i];
+        if (i==0 ){
+            if (intDisType == 1){
+                data.addColumn('date', myColumn);
+            }
+            if (intDisType == 2){
+                data.addColumn('string', myColumn);               
+            }
+            if (intDisType == 3){
+                data.addColumn('number', myColumn);
+            }
+        } else {
+            data.addColumn('number', myColumn);
+        }
+    }
+
+
+       
+    for (i=0; i< myRowList.length -1 ;i++)
+    {
+        var myRow = myRowList[i];
+        var myRowParse = myRow.split ( ',' );
+        var yearNum = parseInt(myRowParse[0]);
 
             var myString = new String (document.getElementById('ExploreDataPage:columnString').textContent);
             var myColumnList = myString.split ( ',' );
@@ -35,19 +87,7 @@
             var numColumnsStr =  new String (document.getElementById('ExploreDataPage:dataColumns').textContent);
             var numColumns = parseInt(numColumnsStr);
 
-        for (i=0; i< myColumnList.length ;i++)
-        {
-            var myColumn = myColumnList[i];
-            if (i==0 && intDisType != 3 ){
-                data.addColumn('date', myColumn);
-            } else {
-                data.addColumn('number', myColumn);
-            }
-        }
-
-        for (i=0; i< myRowList.length -1 ;i++)
-        {
-            var myRow = myRowList[i];
+        if (yearNum >= startYear && yearNum <= endYear ) {
             if (numColumns == 1){
                 addRows1(data, myRow, intDisType);
             }
@@ -73,17 +113,22 @@
                 addRows8(data, myRow, intDisType);
             }
 
+        }
+
+     }
+
          }
-
-    }
-
       function addRows1(dataTable, rowList, intDisType) {
           var myRowParse = rowList.split ( ',' );
           var yearNum = parseInt(myRowParse[0]);
           var dollNum = parseFloat(myRowParse[1]);
-          if (intDisType != 3){
+          if (intDisType == 1 ){
             dataTable.addRow([new Date(yearNum, 0 ,1), dollNum]);
-          }  else {
+          }
+          if  (intDisType == 2 ) {
+             dataTable.addRow([myRowParse[0], dollNum]);
+          }
+          if  (intDisType == 3 ) {
              dataTable.addRow([yearNum, dollNum]);
           }
       }
@@ -93,9 +138,13 @@
           var yearNum = parseInt(myRowParse[0]);
           var dollNum = parseFloat(myRowParse[1]);
           var dollNum2 = parseFloat(myRowParse[2]);
-          if (intDisType != 3){
+          if (intDisType == 1){
             dataTable.addRow([new Date(yearNum, 0 ,1), dollNum, dollNum2]);
-          } else {
+          } 
+          if  (intDisType == 2 ) {
+             dataTable.addRow([myRowParse[0], dollNum, dollNum2]);
+          }
+          if  (intDisType == 3 ) {
             dataTable.addRow([yearNum, dollNum, dollNum2]);
           }
       }
@@ -106,9 +155,13 @@
           var dollNum = parseFloat(myRowParse[1]);
           var dollNum2 = parseFloat(myRowParse[2]);
           var dollNum3 = parseFloat(myRowParse[3]);
-          if (intDisType != 3){
+          if (intDisType == 1 ){
             dataTable.addRow([new Date(yearNum, 0 ,1), dollNum, dollNum2, dollNum3]);
-          } else {
+          }
+          if  (intDisType == 2 ) {
+             dataTable.addRow([myRowParse[0], dollNum, dollNum2, dollNum3]);
+          }
+          if  (intDisType == 3 ){
             dataTable.addRow([yearNum, dollNum, dollNum2, dollNum3]);
           }
 
@@ -121,9 +174,13 @@
           var dollNum2 = parseFloat(myRowParse[2]);
           var dollNum3 = parseFloat(myRowParse[3]);
           var dollNum4 = parseFloat(myRowParse[4]);
-          if (intDisType != 3){
+          if (intDisType == 1){
             dataTable.addRow([new Date(yearNum, 0 ,1), dollNum, dollNum2, dollNum3, dollNum4]);
-          } else {
+          } 
+          if  (intDisType == 2 ) {
+             dataTable.addRow([myRowParse[0], dollNum, dollNum2, dollNum3, dollNum4]);
+          }
+          if  (intDisType == 3 ) {
             dataTable.addRow([yearNum, dollNum, dollNum2, dollNum3, dollNum4]);
           }
 
@@ -137,9 +194,13 @@
           var dollNum3 = parseFloat(myRowParse[3]);
           var dollNum4 = parseFloat(myRowParse[4]);
           var dollNum5 = parseFloat(myRowParse[5]);
-          if (intDisType != 3){
+          if (intDisType ==1){
             dataTable.addRow([new Date(yearNum, 0 ,1), dollNum, dollNum2, dollNum3, dollNum4, dollNum5]);
-          } else {
+          }
+          if  (intDisType == 2 ) {
+             dataTable.addRow([myRowParse[0], dollNum, dollNum2, dollNum3, dollNum4 , dollNum5]);
+          }
+          if  (intDisType == 3 ) {
             dataTable.addRow([yearNum, dollNum, dollNum2, dollNum3, dollNum4, dollNum5]);
           }
       }
@@ -153,9 +214,13 @@
           var dollNum4 = parseFloat(myRowParse[4]);
           var dollNum5 = parseFloat(myRowParse[5]);
           var dollNum6 = parseFloat(myRowParse[6]);
-          if (intDisType != 3){
+          if (intDisType == 1){
             dataTable.addRow([new Date(yearNum, 0 ,1), dollNum, dollNum2, dollNum3, dollNum4, dollNum5, dollNum6]);
-          } else {
+          }           
+          if  (intDisType == 2 ) {
+             dataTable.addRow([myRowParse[0], dollNum, dollNum2, dollNum3, dollNum4 , dollNum5, dollNum6 ]);
+          }
+          if  (intDisType == 3 ){
             dataTable.addRow([yearNum, dollNum, dollNum2, dollNum3, dollNum4, dollNum5, dollNum6]);
           }
       }
@@ -170,9 +235,13 @@
           var dollNum5 = parseFloat(myRowParse[5]);
           var dollNum6 = parseFloat(myRowParse[6]);
           var dollNum7 = parseFloat(myRowParse[7]);
-          if (intDisType != 3){
+          if (intDisType == 1){
             dataTable.addRow([new Date(yearNum, 0 ,1), dollNum, dollNum2, dollNum3, dollNum4, dollNum5, dollNum6, dollNum7]);
-          } else {
+          }
+          if  (intDisType == 2 ) {
+             dataTable.addRow([myRowParse[0], dollNum, dollNum2, dollNum3, dollNum4 , dollNum5, dollNum6, dollNum7 ]);
+          }
+          if  (intDisType == 3 ) {
             dataTable.addRow([yearNum, dollNum, dollNum2, dollNum3, dollNum4, dollNum5, dollNum6, dollNum7]);
           }
       }
@@ -188,38 +257,80 @@
           var dollNum6 = parseFloat(myRowParse[6]);
           var dollNum7 = parseFloat(myRowParse[7]);
           var dollNum8 = parseFloat(myRowParse[8]);
-          if (intDisType != 3){
+          if (intDisType == 1){
             dataTable.addRow([new Date(yearNum, 0 ,1), dollNum, dollNum2, dollNum3, dollNum4, dollNum5, dollNum6, dollNum7, dollNum8]);
-          } else {
+          }           
+          if  (intDisType == 2 ) {
+             dataTable.addRow([myRowParse[0], dollNum, dollNum2, dollNum3, dollNum4 , dollNum5, dollNum6, dollNum7, dollNum8 ]);
+          }
+          if  (intDisType == 3 ){
             dataTable.addRow([yearNum, dollNum, dollNum2, dollNum3, dollNum4, dollNum5, dollNum6, dollNum7, dollNum8]);
           }
       }
 
-    function drawVisualization() {
+
+
+function drawVisualization() {
 
       var displayType = new String (document.getElementById('ExploreDataPage:displayType').textContent);
       var intDisType = parseInt(displayType);
+      if (intDisType == 0){
+          intDisType = 1;
+      }
+
+      var startYear = new String (document.getElementById('ExploreDataPage:startYear').textContent);
+      var intStartYear = parseInt(startYear);
+
+      var endYear = new String (document.getElementById('ExploreDataPage:endYear').textContent);
+      var intEndYear = parseInt(endYear);
 
       var data = new google.visualization.DataTable();
-        drawChart(data, intDisType);
+        drawChart(data, intDisType, intStartYear, intEndYear);
         if (intDisType == 1){
                 var chart = new google.visualization.AnnotatedTimeLine(document.getElementById('chart_div'));
-                chart.draw(data, {displayAnnotations: true});
+                chart.draw(data, {allowRedraw: true} , {colors: [ 'red', 'blue', 'green']}, {displayAnnotations: false});
         }
         if (intDisType == 3){
             var table = new google.visualization.Table(document.getElementById('chart_div'));
             table.draw(data, {showRowNumber: false});
         }
         if (intDisType == 2){
-            chronoscope.Chronoscope.setFontBookRendering(true);
-            chronoscopeDivID = "chart_div";
-            var chrono = new chronoscope.ChronoscopeVisualization(document.getElementById(chronoscopeDivID));
-            chrono.draw(data, { legend: "true", overview: "true"});
+             var displayTitle = new String (document.getElementById('ExploreDataPage:graphTitleHidden').textContent );
+             var chart = new google.visualization.ImageLineChart(document.getElementById('chart_div'));
+             chart.draw(data, {title: displayTitle });
         }
 
     }
+
+function addLine(){
+    
+     document.getElementById('ExploreDataPage:addLineHidden').click();
+     setTimeout(function(){drawVisualization();}, 1500);
+}
+
+function deleteLine(){
+
+    setTimeout(function(){drawVisualization();}, 1500);
+
+}
+
+function updateStartYear(){
+     document.getElementById('ExploreDataPage:updateStartYear').click();
+     setTimeout(function(){drawVisualization();}, 500);
+}
+
+function updateEndYear(){
+     document.getElementById('ExploreDataPage:updateEndYear').click();
+     setTimeout(function(){drawVisualization();}, 500);
+}
+
+function updateDisplayType(){
+     document.getElementById('ExploreDataPage:selectDisplayButton').click();
+     setTimeout(function(){drawVisualization();}, 500);
+}
 // ]]>
     </script>
+
 
 <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
 
@@ -227,7 +338,10 @@
 <ice:outputText visible="false" id="dataString" value="#{ExploreDataPage.dataString}"/>
 <ice:outputText visible="false" id="dataColumns" value="#{ExploreDataPage.dataColumns}"/>
 <ice:outputText visible="false" id="displayType" value="#{ExploreDataPage.displayType}"/>
-
+<ice:outputText visible="false" id="startYear" value="#{ExploreDataPage.startYear}"/>
+<ice:outputText visible="false" id="endYear" value="#{ExploreDataPage.endYear}"/>
+<ice:outputText visible="false" id="graphTitleHidden" value="#{ExploreDataPage.graphTitle}"/>
+<ice:commandButton type="submit" visible="false"  id="updateGraphTitle" value="update" action="#{ExploreDataPage.updateGraphTitle}"/>
 <style type="text/css">
     .fileInfo {margin-bottom:1em;}
     .graphForm {margin:1em; padding-bottom:1em; border-bottom:1px solid grey; text-align: left;}
@@ -242,6 +356,13 @@
                     <ice:outputText value="Back to Study"/>
                 </ice:outputLink>
             </div>
+            <ui:include src="/study/StudyTitleFragment.xhtml">
+                <ui:param name="studyUI" value="#{ExploreDataPage.studyUI}"/>
+                <ui:param name="displayReleaseLink" value="false"/>
+                <ui:param name="displayVersionInfo" value="true"/>
+                <ui:param name="displayStatusBox" value="true"/>
+                <ui:param name="displayFileName" value="#{ExploreDataPage.fileName}"/>
+            </ui:include>
         </div>
 
         <div class="graphForm">
@@ -297,8 +418,13 @@
                     <ice:inputText id="graphlinelabel" value="#{ExploreDataPage.lineLabel}"></ice:inputText>
                 </div>
                 <div style="display:inline;">
-                    <ice:commandButton id="addLineButton" type="submit" value="Add Line" binding="#{ExploreDataPage.addLineButton}" action="#{ExploreDataPage.addLine}"/>
+                    <ice:commandButton id="addLineButton" type="submit" value="Add Line" binding="#{ExploreDataPage.addLineButton}" 
+                                        onclick="addLine();"
+                                       />
                     <ice:message for="addLineButton" id="boxErrorMsg" styleClass="errorMessage"/>
+                    <ice:commandButton id="addLineHidden" type="submit" visible="false" value="Add Line"
+                                       action="#{ExploreDataPage.addLine}"
+                                       />
                 </div>
             </div>
         </div>
@@ -331,7 +457,7 @@
                             </div>
                         </div>
                         <div>
-                            <ice:commandLink id="deleteLineLink" title="Delete Line" value="Delete Line" actionListener="#{ExploreDataPage.deleteLine}"></ice:commandLink>
+                            <ice:commandLink id="deleteLineLink" title="Delete Line" value="Delete Line"  onclick="deleteLine();" ></ice:commandLink>
                             <ice:message for="deleteLineButton" id="boxErrorMsg" styleClass="errorMessage"/>
                         </div>
                     </div>
@@ -346,7 +472,7 @@
 
                                 // initialise the visibility check
                                 var is_visible = false;
-
+                                          
                                 // append show/hide links to the element directly preceding the element with a class of "toggle"
                                 jQuery(this).prev('a.lineDetailLink').text(showText);
 
@@ -386,30 +512,42 @@
                 <div style="margin-bottom:.5em;">
                     <ice:outputLabel value="Display" for="graphdisplay" style="display:block;"/>
                     <ice:selectOneMenu id="graphdisplay" binding="#{ExploreDataPage.selectGraphType}"
-                                       onchange="getElementById('ExploreDataPage:selectDisplayButton').click();">
-                        <f:selectItem itemLabel="Select Display" itemValue="0"/>
-                        <f:selectItem itemLabel="Graph" itemValue="1"/>
+                                       onchange="updateDisplayType();">
+                        <f:selectItem itemLabel="Flash Graph" itemValue="1"/>
+                        <f:selectItem itemLabel="Image Graph" itemValue="2"/>
                         <f:selectItem itemLabel="Table" itemValue="3"/>
                     </ice:selectOneMenu>
-                    <ice:commandButton value="Create" onclick="drawVisualization();"/>
-                     <ice:commandButton visible="false" id="selectDisplayButton" action="#{ExploreDataPage.reset_DisplayType}"/>
+                    <ice:commandButton  value="Refresh"  onclick="drawVisualization();"/>
+                     <ice:commandButton visible="false" id="selectDisplayButton"  action="#{ExploreDataPage.reset_DisplayType}"/>
                 </div>
                 <div style="overflow:hidden; margin-bottom:.5em;">
                     <div style="float:left;">
-                        <ice:outputLabel value="Start" for="graphstart" rendered="false"/>
-                        <ice:selectOneMenu id="graphstart" rendered="false">
-                            <f:selectItem itemLabel="1918" itemValue=""/>
+                        <ice:outputLabel value="Start" for="graphstart" rendered ="true"/>
+                        <ice:selectOneMenu id="graphstart" rendered ="true" binding="#{ExploreDataPage.selectStartYear}"
+                                           onchange="updateStartYear();">
+                            <f:selectItems  value="#{ExploreDataPage.selectBeginYears}"/>
                         </ice:selectOneMenu>
                     </div>
                     <div style="float:left;">
-                        <ice:outputLabel value="End" for="graphend" rendered="false"/>
-                        <ice:selectOneMenu id="graphend" rendered="false">
-                            <f:selectItem itemLabel="2004" itemValue=""/>
+                        <ice:outputLabel value="End" for="graphend" rendered ="true" />
+                        <ice:selectOneMenu id="graphend" rendered ="true"  binding="#{ExploreDataPage.selectEndYear}"
+                                           onchange="updateEndYear();">
+                             <f:selectItems  value="#{ExploreDataPage.selectEndYears}"/>
                         </ice:selectOneMenu>
                     </div>
+                    <ice:commandButton visible="false" id="updateStartYear"  action="#{ExploreDataPage.update_StartYear}"/>
+                    <ice:commandButton visible="false" id="updateEndYear"  action="#{ExploreDataPage.update_EndYear}"/>
                 </div>
+
                 <div style="margin-bottom:.5em;">
-                    <ice:selectBooleanCheckbox id="displayindices" value="" rendered="false"/>
+                    <ice:outputLabel value="Title" for="graphTitleIn" style="display:block;" />
+                    <ice:inputText id="graphTitleIn" size="40" binding="#{ExploreDataPage.inputGraphTitle}"
+                                                 onkeyup="delayedRequestTitle(form,this,event);">
+                    </ice:inputText>
+                </div>
+                
+                <div style="margin-bottom:.5em;">
+                    <ice:selectBooleanCheckbox id="displayindices" value="" rendered ="false"/>
                     <ice:outputLabel value="Display Series as Indices" for="displayindices" style="font-weight:normal;" rendered="false"/>
                     <ice:selectOneRadio id="referenceperiod"
                                         layout="pageDirection"

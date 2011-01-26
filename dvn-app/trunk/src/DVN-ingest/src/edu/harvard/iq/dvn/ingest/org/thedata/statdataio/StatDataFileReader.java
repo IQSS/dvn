@@ -104,6 +104,13 @@ public abstract class StatDataFileReader {
     public abstract SDIOData read(BufferedInputStream stream, File dataFile)
         throws IOException;
 
+    
+    // should this be an abstract method as well? 
+    
+    public boolean isValid(File ddiFile) throws IOException {
+        return false;
+    }
+
     // Utility methods
 
 

@@ -349,7 +349,53 @@ public class DSBWrapper implements java.io.Serializable  {
 
         return ddi;
     }
-    
+
+    public void validateControlCard(File controlCardFile, String controlCardType)throws IOException{
+        dbgLog.fine("***** DSBWrapper: validateControlCard(): start *****\n");
+
+        boolean cardIsValid = false;
+
+        if (controlCardType != null) {
+            // As of now, there are 2 supported control card-based ingests:
+            // 1. CSV raw data file + SPSS control card;
+            // 2. TAB raw data file + DDI control card;
+
+            // We are going to check if we have Ingest readers for the
+            // control card supplied:
+
+            Iterator<StatDataFileReader> itr =
+                StatDataIO.getStatDataFileReadersByFormatName(controlCardType);
+
+            if (!itr.hasNext()){
+                dbgLog.info("No FileReader class found for "+controlCardType+".");
+
+                throw new IllegalArgumentException("No FileReader Class found for " +
+                    controlCardType+".");
+            }
+
+            StatDataFileReader sdioReader = itr.next();
+
+            dbgLog.fine("Validate: reader class name="+sdioReader.getClass().getName()+"; validating card.");
+
+            cardIsValid = sdioReader.isValid(controlCardFile);
+
+        } else {
+            dbgLog.info("No Control Card Type supplied.");
+
+            throw new IllegalArgumentException("No Control Card Type supplied.");
+
+        }
+
+        if ( !cardIsValid ) {
+            dbgLog.info("Control card is NOT valid! No further diagnostics is available");
+            throw new IllegalArgumentException("Control card is NOT valid! No further diagnostics is available");
+        }
+
+
+        dbgLog.fine("Validate: control card file is valid.");
+    }
+
+
     public String calculateUNF(StudyVersion sv) throws IOException {
         List unfs = new ArrayList();
         for (FileMetadata fmd : sv.getFileMetadatas()) {

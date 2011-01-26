@@ -247,9 +247,9 @@ public class DDIFileReader extends StatDataFileReader{
         return sdiodata;
     }
 
-    // isValid method does attempts to parse and process the supplied DDI
+    // isValid method attempts to parse and process the supplied DDI
     // the same exact way as the read() method above, without processing
-    // the raw data. Thus it can be used for fast, on the fly validation
+    // the raw data. Thus it can be used for quick, on the fly validation
     // of the control card as it gets uploaded by the user.
 
     public boolean isValid(File ddiFile) throws IOException {

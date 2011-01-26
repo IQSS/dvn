@@ -300,6 +300,66 @@ public class SPSSFileReader extends StatDataFileReader{
         return sdiodata;
     }
 
+    public boolean isValid(File ddiFile) throws IOException {
+
+        dbgLog.fine("***** SPSSFileReader: validate() start *****");
+
+
+        // TODO:
+        // provide better diagnostics
+
+        BufferedInputStream cardStream = new BufferedInputStream (new FileInputStream(ddiFile));
+
+        getSPSScommandLines(cardStream);
+
+        // Now we have the control card pre-parsed and the individual
+        // parts of the card ("commands") stored separately.
+        // Now we can go through these parts and evaluate the commands,
+        // which is going to give us the metadata describing the data set.
+        //
+        // These are the parts of the SPSS data definition card that we are
+        // interested in:
+        // DATA LIST
+        // VAR LABELS
+        // VALUE LABELS
+        // FORMATS (?)
+        // MISSING VALUES
+        // RECODE (?)
+
+        int readStatus = 0;
+
+        readStatus = read_DataList(commandStrings.get("DataList"));
+        dbgLog.fine ("reading DataList. status: "+readStatus);
+
+        if (readStatus != 0) {
+            if (readStatus == DATA_LIST_DELIMITER_NOT_FOUND) {
+                throw new IOException ("Invalid SPSS Command Syntax: " +
+                        "no delimiter specified in the DATA LIST command.");
+            } else if (readStatus == DATA_LIST_NO_SLASH_SEPARATOR) {
+                 throw new IOException ("Invalid SPSS Command Syntax: " +
+                        "missing / delimiter on the DATA LIST line.");
+
+            } else if (readStatus == DATA_LIST_UNSUPPORTED_VARIABLE_TYPE) {
+                 throw new IOException ("Invalid SPSS Command Syntax: " +
+                        "unsupported variable type definition in DATA LIST.");
+
+            } else if (readStatus == DATA_LIST_ILLEGAL_NUMERIC_TYPE) {
+                 throw new IOException ("Invalid SPSS Command Syntax: " +
+                        "illegal numeric type definition.");
+
+            } else if (readStatus == DATA_LIST_ILLEGAL_VARIABLE_TYPE) {
+                 throw new IOException ("Invalid SPSS Command Syntax: " +
+                        "unknown or illegal variable type definition in DATA LIST.");
+
+            }
+        }
+
+
+
+        return true;
+    }
+
+
     // This method reads the card file and separates the individual parts (commands)
     // for further parsing.
 

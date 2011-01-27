@@ -416,7 +416,7 @@ public class GNRSServiceBean implements edu.harvard.iq.dvn.core.gnrs.GNRSService
         String baseUrl = null;
         if (isAuthority(prefix)){
 //        if (prefix.equals(vdcAuthority)){
-            baseUrl = System.getProperty("dvn.handle.baseUrl");
+            baseUrl = "http://" + System.getProperty("dvn.inetAddress") + "/dvn/study?globalId=hdl:";
             if (baseUrl == null) {
                 baseUrl = "http://dvn.iq.harvard.edu/dvn/study?globalId=hdl:";
             }
@@ -477,6 +477,7 @@ public class GNRSServiceBean implements edu.harvard.iq.dvn.core.gnrs.GNRSService
     }
 
     private String getAuthHandle(){
-        return "0.NA/" + System.getProperty("dvn.handle.auth");
+        VDCNetwork network = vdcNetworkService.find();
+        return "0.NA/" + network.getAuthority();
     }
 }

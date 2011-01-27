@@ -20,13 +20,18 @@
             <div class="dvnstudytitleblock">
                 <div class="dvnstudyadminboxfloat">
                     <div class="dvnstudypreviouslisting">
+                        <div jsfc="ice:panelGroup" styleClass="dvnstudypreviouslisting" rendered="#{!empty VDCRequest.studyListingIndex}">
+                            <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/StudyListingPage.xhtml?studyListingIndex=#{VDCRequest.studyListingIndex}">
+                                <ice:outputText value="&lt; View Previous Study Listing"/>
+                            </ice:outputLink>
+                        </div>
                         <div>
-                            <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{VariablePage.variable.dataTable.studyFile.study.id}">
+                            <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{VariablePage.variable.dataTable.studyFile.study.id}#{VDCRequest.studyListingIndexAsParameter}">
                               <ice:outputText value="Go to Study"/>
                             </ice:outputLink>
                         </div>
                         <div>
-                            <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/SubsettingPage.xhtml?dtId=#{VariablePage.variable.dataTable.id}">
+                            <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/SubsettingPage.xhtml?dtId=#{VariablePage.variable.dataTable.id}#{VDCRequest.studyListingIndexAsParameter}">
                               <ice:outputText value="See all variables in data file: #{VariablePage.variable.dataTable.studyFile.fileName}"/>
                             </ice:outputLink>
                         </div>

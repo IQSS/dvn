@@ -28,7 +28,7 @@
     google.load("visualization", "1", {packages:["imagebarchart"]});
     google.load('visualization', '1', {packages:['imagelinechart']});
 
-// <![CDATA[
+
     var timeout= 400; //milliseconds to wait for no activity
     var countEvents= 0;
     var delay = 500;
@@ -42,7 +42,7 @@
     }
     },timeout);
     }
-    // ]]>
+
  function drawChart(data, intDisType, startYear, endYear) {
           
         var myString = new String (document.getElementById('ExploreDataPage:columnString').textContent);
@@ -52,8 +52,7 @@
         var numColumnsStr =  new String (document.getElementById('ExploreDataPage:dataColumns').textContent);
         var numColumns = parseInt(numColumnsStr);
         
-        
-// <![CDATA[
+
     for (i=0; i< myColumnList.length ;i++)
     { 
         var myColumn = myColumnList[i];
@@ -353,10 +352,9 @@ function updateDisplayType(){
 <ice:outputText visible="false" id="startYear" value="#{ExploreDataPage.startYear}"/>
 <ice:outputText visible="false" id="endYear" value="#{ExploreDataPage.endYear}"/>
 <ice:outputText visible="false" id="graphTitleHidden" value="#{ExploreDataPage.graphTitle}"/>
-<ice:commandButton type="submit" visible="false"  id="updateGraphTitle" value="update" action="#{ExploreDataPage.updateGraphTitle}"/>
-<ice:commandButton id="deleteLineHidden"
-                                           visible="false" value="Delete Line hidden"
-                                           actionListener="#{ExploreDataPage.deleteLine}"/>
+<ice:commandButton visible="false" id="updateGraphTitle" type="submit" value="update" action="#{ExploreDataPage.updateGraphTitle}"/>
+<ice:commandButton visible="false" id="deleteLineHidden" value="Delete Line hidden" actionListener="#{ExploreDataPage.deleteLine}"/>
+
 <style type="text/css">
     .fileInfo {margin-bottom:1em;}
     .graphForm {margin:1em; padding-bottom:1em; border-bottom:1px solid grey; text-align: left;}
@@ -396,9 +394,7 @@ function updateDisplayType(){
                     <ice:message for="indicator" id="boxErrorMsg" styleClass="errorMessage"/>
                     <ice:outputLabel value="#{ExploreDataPage.measureLabel}" for="indicator"/>
 
-                    <ice:selectOneMenu id="indicatorMenu" value="#{ExploreDataPage.selectedMeasureId}"
-                                       onchange="submit()"
-                                       valueChangeListener="#{ExploreDataPage.resetFiltersForMeasure}">
+                    <ice:selectOneMenu id="indicatorMenu" value="#{ExploreDataPage.selectedMeasureId}" onchange="submit()" valueChangeListener="#{ExploreDataPage.resetFiltersForMeasure}">
                         <f:selectItems value="#{ExploreDataPage.selectMeasureItems}"/>
                     </ice:selectOneMenu>
                 </div>
@@ -442,13 +438,9 @@ function updateDisplayType(){
                     <ice:inputText id="graphlinelabel" value="#{ExploreDataPage.lineLabel}"></ice:inputText>
                 </div>
                 <div style="display:inline;">
-                    <ice:commandButton id="addLineButton" type="submit" value="Add Line" binding="#{ExploreDataPage.addLineButton}" 
-                                        onclick="addLine();"
-                                       />
+                    <ice:commandButton id="addLineButton" type="submit" value="Add Line" binding="#{ExploreDataPage.addLineButton}" onclick="addLine();"/>
                     <ice:message for="addLineButton" id="boxErrorMsg" styleClass="errorMessage"/>
-                    <ice:commandButton id="addLineHidden" type="submit" visible="false" value="Add Line"
-                                       action="#{ExploreDataPage.addLine}"
-                                       />
+                    <ice:commandButton id="addLineHidden" type="submit" visible="false" value="Add Line" action="#{ExploreDataPage.addLine}"/>
                 </div>
             </div>
         </div>
@@ -481,13 +473,8 @@ function updateDisplayType(){
                             </div>
                         </div>
                         <div>
-                            <ice:commandLink id="deleteLineLink" title="Delete Line" value="Delete Line"
-                                             actionListener="#{ExploreDataPage.deleteLine}"
-                                              onclick="deleteLine();" ></ice:commandLink>
+                            <ice:commandLink id="deleteLineLink" title="Delete Line" value="Delete Line" actionListener="#{ExploreDataPage.deleteLine}" onclick="deleteLine();"></ice:commandLink>
                         </div>
-
-
-
                     </div>
                   </h:column>
                   <f:facet name="footer">
@@ -539,43 +526,33 @@ function updateDisplayType(){
             <div class="graphdisplay" style="float:left;">
                 <div style="margin-bottom:.5em;">
                     <ice:outputLabel value="Display" for="graphdisplay" style="display:block;"/>
-                    <ice:selectOneMenu id="graphdisplay" binding="#{ExploreDataPage.selectGraphType}"
-                                       onchange="updateDisplayType();">
+                    <ice:selectOneMenu id="graphdisplay" binding="#{ExploreDataPage.selectGraphType}" onchange="updateDisplayType();">
                         <f:selectItem itemLabel="Flash Graph" itemValue="1"/>
                         <f:selectItem itemLabel="Image Graph" itemValue="2"/>
                         <f:selectItem itemLabel="Table" itemValue="3"/>
                     </ice:selectOneMenu>
-                    <ice:commandButton  value="Refresh"  onclick="drawVisualization();"/>
-                     <ice:commandButton visible="false" id="selectDisplayButton"  action="#{ExploreDataPage.reset_DisplayType}"/>
+                    <ice:commandButton value="Refresh" onclick="drawVisualization();"/>
+                     <ice:commandButton visible="false" id="selectDisplayButton" action="#{ExploreDataPage.reset_DisplayType}"/>
                 </div>
                 <div style="overflow:hidden; margin-bottom:.5em;">
                     <div style="float:left;">
-                        <ice:outputLabel value="Start" for="graphstart" rendered ="true"/>
-                        <ice:selectOneMenu id="graphstart" rendered ="true" binding="#{ExploreDataPage.selectStartYear}"
-                                           onchange="updateStartYear();">
-                            <f:selectItems  value="#{ExploreDataPage.selectBeginYears}"/>
+                        <ice:outputLabel value="Start" for="graphstart" rendered="true"/>
+                        <ice:selectOneMenu id="graphstart" rendered="true" binding="#{ExploreDataPage.selectStartYear}" onchange="updateStartYear();">
+                            <f:selectItems value="#{ExploreDataPage.selectBeginYears}"/>
                         </ice:selectOneMenu>
                     </div>
                     <div style="float:left;">
-                        <ice:outputLabel value="End" for="graphend" rendered ="true" />
-                        <ice:selectOneMenu id="graphend" rendered ="true"  binding="#{ExploreDataPage.selectEndYear}"
-                                           onchange="updateEndYear();">
-                             <f:selectItems  value="#{ExploreDataPage.selectEndYears}"/>
+                        <ice:outputLabel value="End" for="graphend" rendered="true"/>
+                        <ice:selectOneMenu id="graphend" rendered="true" binding="#{ExploreDataPage.selectEndYear}" onchange="updateEndYear();">
+                             <f:selectItems value="#{ExploreDataPage.selectEndYears}"/>
                         </ice:selectOneMenu>
                     </div>
-                    <ice:commandButton visible="false" id="updateStartYear"  action="#{ExploreDataPage.update_StartYear}"/>
-                    <ice:commandButton visible="false" id="updateEndYear"  action="#{ExploreDataPage.update_EndYear}"/>
+                    <ice:commandButton visible="false" id="updateStartYear" action="#{ExploreDataPage.update_StartYear}"/>
+                    <ice:commandButton visible="false" id="updateEndYear" action="#{ExploreDataPage.update_EndYear}"/>
                 </div>
-
+                <!-- Pushed til v.3.0
                 <div style="margin-bottom:.5em;">
-                    <ice:outputLabel value="Title" for="graphTitleIn" style="display:block;" />
-                    <ice:inputText id="graphTitleIn" size="40" binding="#{ExploreDataPage.inputGraphTitle}"
-                                                 onkeyup="delayedRequestTitle(form,this,event);">
-                    </ice:inputText>
-                </div>
-                
-                <div style="margin-bottom:.5em;">
-                    <ice:selectBooleanCheckbox id="displayindices" value="" rendered ="false"/>
+                    <ice:selectBooleanCheckbox id="displayindices" value="" rendered="false"/>
                     <ice:outputLabel value="Display Series as Indices" for="displayindices" style="font-weight:normal;" rendered="false"/>
                     <ice:selectOneRadio id="referenceperiod"
                                         layout="pageDirection"
@@ -589,11 +566,12 @@ function updateDisplayType(){
                         <f:selectItem itemLabel="Select a Period..." itemValue=""/>
                     </ice:selectOneMenu>
                 </div>
+                -->
                 <div style="margin-bottom:.5em;">
                     <ice:outputLabel value="Export" for="graphexport" style="display:block;"/>
                     <div style="margin-bottom:.5em;">
-                        <ice:outputLabel value="Title" for="graphtitle"/>
-                        <ice:inputText id="graphtitle" size="40"></ice:inputText>
+                        <ice:outputLabel value="Title" for="graphtitleIn"/>
+                        <ice:inputText id="graphTitleIn" size="40" binding="#{ExploreDataPage.inputGraphTitle}" onkeyup="delayedRequestTitle(form,this,event);"></ice:inputText>
                     </div>
                     <ice:selectOneMenu id="graphexport">
                         <f:selectItem itemLabel="Select File Format..." itemValue=""/>

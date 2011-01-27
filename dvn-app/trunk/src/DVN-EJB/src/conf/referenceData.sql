@@ -267,6 +267,7 @@ INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'ManifestPa
 -- Pages that require VDC Role authorization:
 -- Contributor Role 
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditStudyPage','/study/EditStudyPage.xhtml',1,null );
+INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditStudyFilesPage','/study/EditStudyFilesPage.xhtml',1,null );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'AddFilesPage','/study/AddFilesPage.xhtml',1,null );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'DeleteStudyPage','/study/DeleteStudyPage.xhtml',1,null );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'EditTemplatePage','/study/EditTemplatePage.xhtml',1,null );

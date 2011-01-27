@@ -309,7 +309,7 @@ function addLine(){
 }
 
 function deleteLine(){
-
+   
     setTimeout(function(){drawVisualization();}, 1500);
 
 }
@@ -342,6 +342,9 @@ function updateDisplayType(){
 <ice:outputText visible="false" id="endYear" value="#{ExploreDataPage.endYear}"/>
 <ice:outputText visible="false" id="graphTitleHidden" value="#{ExploreDataPage.graphTitle}"/>
 <ice:commandButton type="submit" visible="false"  id="updateGraphTitle" value="update" action="#{ExploreDataPage.updateGraphTitle}"/>
+<ice:commandButton id="deleteLineHidden"
+                                           visible="false" value="Delete Line hidden"
+                                           actionListener="#{ExploreDataPage.deleteLine}"/>
 <style type="text/css">
     .fileInfo {margin-bottom:1em;}
     .graphForm {margin:1em; padding-bottom:1em; border-bottom:1px solid grey; text-align: left;}
@@ -457,9 +460,13 @@ function updateDisplayType(){
                             </div>
                         </div>
                         <div>
-                            <ice:commandLink id="deleteLineLink" title="Delete Line" value="Delete Line"  onclick="deleteLine();" ></ice:commandLink>
-                            <ice:message for="deleteLineButton" id="boxErrorMsg" styleClass="errorMessage"/>
+                            <ice:commandLink id="deleteLineLink" title="Delete Line" value="Delete Line"
+                                             actionListener="#{ExploreDataPage.deleteLine}"
+                                              onclick="deleteLine();" ></ice:commandLink>
                         </div>
+
+
+
                     </div>
                   </h:column>
                   <f:facet name="footer">

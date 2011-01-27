@@ -267,7 +267,7 @@
                           <ice:outputText value="Found In Variables:" styleClass="dvnStudyListTableOptionalFieldLabel"/>
                           <ice:dataTable cellspacing="0" cellpadding="0" width="100%" id="dvDataTable" value="#{studyUI.foundInVariables}" var="dv">
                               <ice:column>
-                                  <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/VariablePage.xhtml?dvId=#{dv.id}">
+                                  <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/VariablePage.xhtml?dvId=#{dv.id}&amp;studyListingIndex=#{StudyListingPage.studyListingIndex}">
                                       <ice:outputText value="#{dv.name}"/>
                                   </ice:outputLink>
                               </ice:column>

@@ -545,7 +545,12 @@ public class LoginFilter implements Filter {
     private boolean isEditStudyPage(PageDef pageDef) {
 
         if (pageDef != null &&
-                (pageDef.getName().equals(PageDefServiceLocal.EDIT_STUDY_PAGE) || pageDef.getName().equals(PageDefServiceLocal.EDIT_VARIABLE_PAGE) || pageDef.getName().equals(PageDefServiceLocal.ADD_FILES_PAGE) || pageDef.getName().equals(PageDefServiceLocal.DELETE_STUDY_PAGE) || pageDef.getName().equals(PageDefServiceLocal.STUDY_PERMISSIONS_PAGE))) {
+                (pageDef.getName().equals(PageDefServiceLocal.EDIT_STUDY_PAGE)
+                || pageDef.getName().equals(PageDefServiceLocal.EDIT_VARIABLE_PAGE)
+                || pageDef.getName().equals(PageDefServiceLocal.ADD_FILES_PAGE)
+                || pageDef.getName().equals(PageDefServiceLocal.DELETE_STUDY_PAGE)
+                || pageDef.getName().equals(PageDefServiceLocal.EDIT_FILES_PAGE)
+                || pageDef.getName().equals(PageDefServiceLocal.STUDY_PERMISSIONS_PAGE))) {
             return true;
         }
         return false;

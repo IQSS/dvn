@@ -168,7 +168,7 @@
                                                                         <ice:outputLink rendered="#{studyFileUI.networkDataFile}" id="fileSubset2" styleClass="vdcStudyFileSubsetAnalysisLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/NetworkDataAnalysisPage.xhtml?fileId=#{studyFileUI.studyFile.id}&amp;versionNumber=#{studyPage.studyUI.studyVersion.versionNumber}">
                                                                             <ice:outputText value="Access Subset/Analysis"/>
                                                                         </ice:outputLink>
-                                                                        <ice:outputLink rendered="#{studyFileUI.visualizationReleased}" id="datavisualization" styleClass="vdcStudyFileSubsetAnalysisLink dvnStudyFileVisualizationLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/ExploreDataPage.xhtml?fileId=#{studyFileUI.studyFile.id}">
+                                                                        <ice:outputLink rendered="#{studyFileUI.visualizationReleased}" id="datavisualization" styleClass="vdcStudyFileSubsetAnalysisLink dvnStudyFileVisualizationLink" value="/dvn#{VDCRequest.currentVDCURL}/faces/ExploreDataPage.xhtml?fileId=#{studyFileUI.studyFile.id}&amp;versionNumber=#{studyPage.studyUI.studyVersion.versionNumber}">
                                                                             <ice:outputText value="Data Visualization"/>
                                                                         </ice:outputLink>
                                                                     </div>

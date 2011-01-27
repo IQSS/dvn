@@ -101,7 +101,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     private String graphTitle = "";
 
     private Long studyId = new Long(0);
-
+    private Long versionNumber;
 
 
     public ExploreDataPage() {
@@ -115,6 +115,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         visualizationService.setDataTableFromStudyFileId(studyFileId);
         studyIn = visualizationService.getStudyFromStudyFileId(studyFileId);
         studyId = studyIn.getId();
+        versionNumber = getVDCRequestBean().getStudyVersionNumber();
 
 
 

@@ -1617,8 +1617,14 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
 
                 // zipping all required files
-                try{
-                    String zipFilePrefix = "zipFile_" + resultInfo.get("PID") + ".zip";
+                try {
+                    String zipFilePrefix = null;
+
+                    if (resultInfo.get("PID") != null) {
+                        zipFilePrefix = "zipFile_" + resultInfo.get("PID") + ".zip";
+                    } else {
+                        zipFilePrefix = "zipFile_" + fileId + ".zip";
+                    }
                     File zipFile  = new File(TEMP_DIR, zipFilePrefix);
                     
                     //deleteTempFileList.add(zipFile);

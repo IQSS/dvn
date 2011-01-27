@@ -409,6 +409,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
           Long groupingId = new Long(filterPanelGroup.getAttributes().get("groupingId").toString());
           selectItems.add(new SelectItem(0, "Select..."));
           boolean addAll = false;
+          List <VarGroup> multipleSelections = new ArrayList <VarGroup>();
           List <VarGroup> varGroupsAll = (List<VarGroup>)  visualizationService.getFilterGroupsFromMeasureId(selectedMeasureId);
               for(VarGroup varGroup: varGroupsAll) {
                   boolean added = false;
@@ -495,11 +496,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                                        for(VarGroup vgr : vsrGroupRemove){
                                             varGroupsSave.remove(vgr);
                                        }
-                                        for (VarGroup varGroupS: varGroupsSave) {
-
-                                             selectItems.add(new SelectItem(varGroupS.getId(), varGroupS.getName()));
-
-                                        }
+                                       multipleSelections = varGroupsSave;
                                     
                                 }                                
                             }
@@ -513,6 +510,12 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                         }
                       }
                   }                   
+              }
+              if (multipleSelections.size()>0){
+                  for (VarGroup vgs: multipleSelections){
+                      selectItems.add(new SelectItem(vgs.getId(), vgs.getName()));
+                  }
+
               }
           return selectItems;
 

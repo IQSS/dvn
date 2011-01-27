@@ -170,13 +170,13 @@
         <div class="dvnstudytitleblock">
             <div class="dvnstudyadminboxfloat dvn_right">
                 <ice:outputLink 
-                    value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{AnalysisPage.studyId}&amp;tab=files"
-                    rendered="#{empty AnalysisPage.versionNumber == null}">
+                    value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{AnalysisPage.studyId}&amp;tab=files#{VDCRequest.studyListingIndexAsParameter}"
+                    rendered="#{AnalysisPage.versionNumber == null}">
                     <ice:outputText 
                         value="Back to Study"/>                       
                 </ice:outputLink>
                 <ice:outputLink 
-                    value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{AnalysisPage.studyId}&amp;versionNumber=#{AnalysisPage.versionNumber}&amp;tab=files"
+                value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{AnalysisPage.studyId}&amp;versionNumber=#{AnalysisPage.versionNumber}&amp;tab=files#{VDCRequest.studyListingIndexAsParameter}"
                     rendered="#{AnalysisPage.versionNumber != null}">
                     <ice:outputText 
                         value="Back to Study"/>                       

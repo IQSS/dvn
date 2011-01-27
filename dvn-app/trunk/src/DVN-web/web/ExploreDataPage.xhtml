@@ -367,8 +367,17 @@ function updateDisplayType(){
     <div class="dvn_section">
         <div class="dvnstudytitleblock">
             <div class="dvnstudyadminboxfloat dvn_right">
-                <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{ExploreDataPage.studyId}&amp;tab=files">
-                    <ice:outputText value="Back to Study"/>
+                <ice:outputLink
+                    rendered="#{ExploreDataPage.versionNumber==null}"
+                    value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{ExploreDataPage.studyId}&amp;tab=files">
+                <ice:outputText
+                    value="Back to Study"/>
+                </ice:outputLink>
+                <ice:outputLink
+                    rendered="#{ExploreDataPage.versionNumber!=null}"
+                    value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{ExploreDataPage.studyId}&amp;tab=files&amp;versionNumber=#{ExploreDataPage.versionNumber}">
+                <ice:outputText
+                    value="Back to Study"/>
                 </ice:outputLink>
             </div>
             <ui:include src="/study/StudyTitleFragment.xhtml">

@@ -62,6 +62,11 @@ import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.util.FileUtil;
 import edu.harvard.iq.dvn.core.util.StringUtil;
 
+//import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.*;
+//import edu.harvard.iq.dvn.ingest.org.thedata.statdataio.metadata.*;
+import edu.harvard.iq.dvn.ingest.dsb.DSBWrapper;
+
+
 public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
 
     @EJB StudyServiceLocal studyService;
@@ -81,6 +86,7 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
     private String controlCardFilename = null;
     private String controlCardTempFileLocation = null;
     private String controlCardType = ""; // SPSS, DDI, etc.
+    private String controlCardValidationErrorMessage = null;
 
 
     private boolean controlCardIngestInProgress = false;
@@ -148,6 +154,14 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
 
     public String getControlCardTempFileLocation () {
         return controlCardTempFileLocation;
+    }
+
+    public String getControlCardValidationErrorMessage () {
+        return controlCardValidationErrorMessage;
+    }
+
+    public void setControlCardValidationErrorMessage (String msg) {
+        controlCardValidationErrorMessage = msg;
     }
 
     public void setControlCardTempFileLocation (String ccf) {
@@ -226,22 +240,48 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
 
             File file = saveControlCardFile (inputFile);
 
+            if (file != null ) {
             // TODO: We should also validate the control cards at this point!
             // no need to waste time even uploading the raw data file -- which
             // can be significantly bigger than the control card -- if the
             // card is not valid.
-
-            if (file != null ) {
-                // Save the filenames, we'll need them in the next step:
-
-                setControlCardFilename(file.getName());
-                setControlCardTempFileLocation(file.getAbsolutePath());
-
-                // And set the flag indicating that a CSV+control card ingest
-                // is in progress:
-
-                controlCardIngestInProgress = true;
                 controlCardType = selectFileType.getValue().toString();
+
+                try {
+                    // validate:
+                    //if ("ddi".equals(selectFileType.getValue())) {
+                    DSBWrapper.validateControlCard(file, controlCardType);
+                    //}
+                    // if it didn't throw an exception, the file is ok.                     
+
+                    // Save the filenames, we'll need them in the next step:
+                    setControlCardFilename(file.getName());
+                    setControlCardTempFileLocation(file.getAbsolutePath());
+
+                    // And set the flag indicating that a control card ingest
+                    // is in progress:
+
+                    controlCardIngestInProgress = true;
+                    controlCardType = selectFileType.getValue().toString();
+                    setControlCardValidationErrorMessage(null);
+                    
+                } catch (Exception ex) {
+                    setControlCardFilename("");
+                    controlCardIngestInProgress = false;
+                    controlCardType = null; 
+
+                    String errMsg = ex.getMessage();
+
+                    if (errMsg == null || errMsg.equals("")) {
+                        errMsg = "Ingest could not read or parse the control card you supplied (no further diagnostics is available);"+
+                                "please check your control card and try again.";
+                    }
+
+                    setControlCardValidationErrorMessage(errMsg);
+                }
+
+
+
             } else {
                 // Something went wrong as we tried to save the file;
                 // Reset the state of the process:

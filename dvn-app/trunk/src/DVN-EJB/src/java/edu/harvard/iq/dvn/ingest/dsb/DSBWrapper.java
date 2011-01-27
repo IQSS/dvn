@@ -350,7 +350,7 @@ public class DSBWrapper implements java.io.Serializable  {
         return ddi;
     }
 
-    public void validateControlCard(File controlCardFile, String controlCardType)throws IOException{
+    public static void validateControlCard(File controlCardFile, String controlCardType)throws IOException{
         dbgLog.fine("***** DSBWrapper: validateControlCard(): start *****\n");
 
         boolean cardIsValid = false;

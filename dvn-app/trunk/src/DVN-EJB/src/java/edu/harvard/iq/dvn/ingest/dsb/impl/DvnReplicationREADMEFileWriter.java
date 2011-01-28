@@ -131,7 +131,7 @@ public class DvnReplicationREADMEFileWriter {
     }
     
     
-    public static String citationBlockTitle    = "_Replication of Data-set Citation:_\n\n";
+    public static String citationBlockTitle    = "_Data-set Replication Citation:_\n\n";
     public static String citationWholesetTitle = "1.  Citation for the full data set you chose_:\n\n";
     public static String citationSubsetTitle   = "2.  Citation for this subset you chose_:\n\n";
     public static String citationSubsetingCriteriaTitle = "3.  Row selection criteria for the subset used in your analysis_:\n\n";

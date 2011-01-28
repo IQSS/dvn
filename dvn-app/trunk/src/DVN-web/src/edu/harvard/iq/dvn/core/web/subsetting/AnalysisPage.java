@@ -1336,15 +1336,15 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                             getVDCRequestBean().setSelectedTab("tabDwnld");
                             dvnDSBTimerService.createTimer(deleteTempFileList, TEMP_FILE_LIFETIME);
                             return "failure";
-                        } else {
-                            if (recodeSchema.size()> 0){
-                                resultInfo.put("subsettingCriteria",sro.getSubsetConditionsForCitation());
-                            } else {
-                                resultInfo.put("subsettingCriteria",getVariableNamesForSubset());
-                            }
-                        }
+                        } 
                     }
                     
+                    if (recodeSchema.size()> 0){
+                        resultInfo.put("subsettingCriteria",sro.getSubsetConditionsForCitation());
+                    } else {
+                        resultInfo.put("subsettingCriteria","variables: "+getVariableNamesForSubset());
+                    }
+
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
 
@@ -1402,8 +1402,11 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             resultInfo.put("PID", "N/A");
             resultInfo.put("R_min_verion_no","N/A");
             resultInfo.put("dsbHost", "N/A");
+            resultInfo.put("option", "subset");
             Date now = new Date();
             resultInfo.put("RexecDate", now.toString());
+            //resultInfo.put("variableList", getVariableIdsForRequest());
+            resultInfo.put("variableList", getVariableNamesForSubset());
 
             // calculate UNF (locally, on the application side):
 
@@ -8479,6 +8482,23 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         return ids;
     }
 
+    public String getVariableIdsForRequest() {
+        String variableIdString = "";
+        List<String> vi = new ArrayList<String>();
+
+        if (getDataVariableForRequest() != null) {
+            Iterator iter = getDataVariableForRequest().iterator();
+            while (iter.hasNext()) {
+                DataVariable dv = (DataVariable) iter.next();
+                vi.add(dv.getId().toString());
+            }
+            variableIdString = StringUtils.join(vi, ",");
+        }
+
+        return variableIdString;
+
+    }
+
     /**
      * 
      *
@@ -8748,7 +8768,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     }
     
     public String getVariableNamesForSubset() {
-        String varHeader = null;
+        String varHeader = "";
         List<DataVariable> dvs = getDataVariableForRequest();
         List<String> vn = new ArrayList<String>();
         if (dvs != null) {

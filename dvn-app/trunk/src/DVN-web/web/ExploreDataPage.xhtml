@@ -456,6 +456,7 @@ function updateDisplayType(){
                     <ice:outputLabel value="#{ExploreDataPage.measureLabel}" for="indicator"/>
 
                     <ice:selectOneMenu id="indicatorMenu" value="#{ExploreDataPage.selectedMeasureId}" onchange="submit()" valueChangeListener="#{ExploreDataPage.resetFiltersForMeasure}">
+                        <f:selectItem itemLabel="Select..." itemValue="0"/>
                         <f:selectItems value="#{ExploreDataPage.selectMeasureItems}"/>
                     </ice:selectOneMenu>
                 </div>
@@ -465,6 +466,7 @@ function updateDisplayType(){
                 <div style="display:inline;">
                     <ice:selectOneMenu immediate="false" onchange="submit()" id="issue"
                                        valueChangeListener="#{ExploreDataPage.reset_MeasureItems}" value="#{ExploreDataPage.groupTypeId}" rendered="#{!empty ExploreDataPage.selectMeasureGroupTypes}">
+                        <f:selectItem itemLabel="Select Type..." itemValue="0"/>
                         <f:selectItems value="#{ExploreDataPage.selectMeasureGroupTypes}"/>
                     </ice:selectOneMenu>
                 </div>
@@ -477,6 +479,7 @@ function updateDisplayType(){
                         <ice:outputLabel value="#{item.varGrouping.name}"/>
 
                         <ice:selectOneMenu id="filterGroup" styleClass="filterGroup" value="#{item.selectedGroupId}">
+                            <f:selectItem itemLabel="Select..." itemValue="0"/>
                             <f:selectItems value="#{ExploreDataPage.selectFilterGroups}"/>
                         </ice:selectOneMenu>
 

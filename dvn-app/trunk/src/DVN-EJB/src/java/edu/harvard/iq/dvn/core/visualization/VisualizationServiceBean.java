@@ -543,6 +543,11 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
         em.flush();
     }
 
+    @Override
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void addGroup() {
+        em.flush();
+    }
 
 
 }

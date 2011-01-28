@@ -19,6 +19,7 @@ public class DvnReplicationREADMEFileWriter {
 
     // instance fields
     private static Logger dbgLog = Logger.getLogger(DvnReplicationREADMEFileWriter.class.getPackage().getName());
+
     // value map
     public Map<String, String> valueMap = new LinkedHashMap<String, String>();
 
@@ -130,7 +131,7 @@ public class DvnReplicationREADMEFileWriter {
     }
     
     
-    public static String citationBlockTitle    = "_Replication Data-set Citation_\n\n";
+    public static String citationBlockTitle    = "_Replication of Data-set Citation:_\n\n";
     public static String citationWholesetTitle = "1.  Citation for the full data set you chose_:\n\n";
     public static String citationSubsetTitle   = "2.  Citation for this subset you chose_:\n\n";
     public static String citationSubsetingCriteriaTitle = "3.  Row selection criteria for the subset used in your analysis_:\n\n";
@@ -164,20 +165,27 @@ public class DvnReplicationREADMEFileWriter {
 
         this.valueMap = valueMap;
     }
+
+    public void writeREADMEfile(File outFile) {
+        writeREADMEfile(outFile, false);
+    }
     
-    public void writeREADMEfile(File outFile){
+    public void writeREADMEfile(File outFile, boolean citeOnly){
         OutputStream outs = null;
         try {
             outs = new BufferedOutputStream(new FileOutputStream(outFile));
             PrintWriter pw = new PrintWriter(new OutputStreamWriter(outs, "utf8"), true);
             
             pw.println(generateHeaderBlock()+"\n");
-            pw.println(generatePt1Block());
-            pw.println(generatePt2Block());
-            pw.println(generatePt3Block());
-            pw.println(generatePt4Block());
-            pw.println(generatePt5Block());
-            pw.println(generatePt6Block());
+
+            if (!citeOnly) {
+                pw.println(generatePt1Block());
+                pw.println(generatePt2Block());
+                pw.println(generatePt3Block());
+                pw.println(generatePt4Block());
+                pw.println(generatePt5Block());
+                pw.println(generatePt6Block());
+            }
             pw.println(generatePtCitationBlock());
             pw.println(generatePtSupportBlock());
 

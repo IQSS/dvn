@@ -1340,7 +1340,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                             if (recodeSchema.size()> 0){
                                 resultInfo.put("subsettingCriteria",sro.getSubsetConditionsForCitation());
                             } else {
-                                resultInfo.put("subsettingCriteria","");
+                                resultInfo.put("subsettingCriteria",getVariableNamesForSubset());
                             }
                         }
                     }
@@ -1395,8 +1395,15 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 resultInfo.put("versionNumber", versionNumber.toString());
             }
             resultInfo.put("studyURL", studyURL);
-            //resultInfo.put("R_min_verion_no",resultInfo.get("Rversion").substring(2));
             resultInfo.put("dataverse_version_no",dvnVersionNumber);
+
+            // Fields that would normally be populated by R:
+
+            resultInfo.put("PID", "N/A");
+            resultInfo.put("R_min_verion_no","N/A");
+            resultInfo.put("dsbHost", "N/A");
+            Date now = new Date();
+            resultInfo.put("RexecDate", now.toString());
 
             // calculate UNF (locally, on the application side):
 
@@ -1596,7 +1603,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 //zipFileList.add(REP_README_FILE);
                 String readMeFileName = null; 
                 
-                if (resultInfo.get("PID") != null) {
+                if (resultInfo.get("PID") != null && !resultInfo.get("PID").equals("N/A")) {
                     readMeFileName = REP_README_FILE_PREFIX + resultInfo.get("PID") +  ".txt";
                 } else {
                     readMeFileName = REP_README_FILE_PREFIX + fileId + ".txt";
@@ -1605,7 +1612,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 File readMeFile = new File(TEMP_DIR, readMeFileName);
                 
                 DvnReplicationREADMEFileWriter rw = new DvnReplicationREADMEFileWriter(resultInfo);
-                rw.writeREADMEfile(readMeFile);
+                rw.writeREADMEfile(readMeFile, true);
 
                 //zipFileList.add(REP_README_FILE);
                 zipFileList.add(readMeFile);
@@ -1620,10 +1627,11 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 try {
                     String zipFilePrefix = null;
 
-                    if (resultInfo.get("PID") != null) {
+                    if (resultInfo.get("PID") != null && !resultInfo.get("PID").equals("N/A")) {
                         zipFilePrefix = "zipFile_" + resultInfo.get("PID") + ".zip";
                     } else {
                         zipFilePrefix = "zipFile_" + fileId + ".zip";
+
                     }
                     File zipFile  = new File(TEMP_DIR, zipFilePrefix);
                     
@@ -8739,6 +8747,19 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
         return fields;
     }
     
+    public String getVariableNamesForSubset() {
+        String varHeader = null;
+        List<DataVariable> dvs = getDataVariableForRequest();
+        List<String> vn = new ArrayList<String>();
+        if (dvs != null) {
+            for (Iterator el = dvs.iterator(); el.hasNext();) {
+                DataVariable dv = (DataVariable) el.next();
+                vn.add(dv.getName());
+            }
+            varHeader = StringUtils.join(vn, ",");
+        }
+        return varHeader;
+    }
     
     
     

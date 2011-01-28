@@ -473,30 +473,32 @@ function updateDisplayType(){
                 </div>
             </div>
 
-            <div style="overflow:hidden; margin-bottom:1em;">
+            <div style="margin-bottom:1em;">
                 <div jsfc="ice:panelSeries" id="filterPanelGroupings" var="item" value="#{ExploreDataPage.filterGroupings}" binding="#{ExploreDataPage.filterPanelGroup}">
                     <f:attribute name="groupingId" value="#{item.varGrouping.id}"/>
-                    <ice:outputLabel value="#{item.varGrouping.name}" style=""/>
+                    <div style="margin-bottom:1em;">
+                        <ice:outputLabel value="#{item.varGrouping.name}"/>
 
-                    <ice:selectOneMenu id="filterGroup" style="" styleClass="filterGroup" value="#{item.selectedGroupId}">
-                        <f:selectItems value="#{ExploreDataPage.selectFilterGroups}"/>
-                    </ice:selectOneMenu>
+                        <ice:selectOneMenu id="filterGroup" styleClass="filterGroup" value="#{item.selectedGroupId}">
+                            <f:selectItems value="#{ExploreDataPage.selectFilterGroups}"/>
+                        </ice:selectOneMenu>
 
-                    <ice:outputText value="related to" style="font-weight:bold; margin:0 2em;"/>
+                        <ice:outputText value="related to" style="font-weight:bold; margin:0 2em;"/>
 
-                    <div jsfc="ice:panelSeries" style="overflow:hidden; display:inline;" id="filterPanelGroupTypes" var="groupType" value="#{item.varGroupTypesUI}">
-                        <!-- controls -->
-                        <div jsfc="ice:panelGroup" style="display:inline; margin-right:1em;">
-                            <ice:selectBooleanCheckbox id="filterGroupTypeCheckBoxes" styleClass="filterGroupTypeCheckBoxes" value="#{groupType.enabled}"
-                                                        partialSubmit="true"/>
-                            <ice:outputLabel value="#{groupType.varGroupType.name}" style="font-weight:normal;"/>
+                        <div jsfc="ice:panelSeries" style="overflow:hidden; display:inline;" id="filterPanelGroupTypes" var="groupType" value="#{item.varGroupTypesUI}">
+                            <!-- controls -->
+                            <div jsfc="ice:panelGroup" style="display:inline; margin-right:1em;">
+                                <ice:selectBooleanCheckbox id="filterGroupTypeCheckBoxes" styleClass="filterGroupTypeCheckBoxes" value="#{groupType.enabled}"
+                                                            partialSubmit="true"/>
+                                <ice:outputLabel value="#{groupType.varGroupType.name}" style="font-weight:normal;"/>
+                            </div>
                         </div>
+                        <ice:message for="filterPanelGroupTypes" id="boxErrorMsg" styleClass="errorMessage" style="display:block;"/>
                     </div>
-                    <ice:message for="filterPanelGroupTypes" id="boxErrorMsg" styleClass="errorMessage" style="display:block;"/>
                 </div>
             </div>
 
-            <div style="overflow:hidden; margin-bottom:.5em;">
+            <div style="margin-bottom:.5em;">
                 <div style="display:inline;">
                     <ice:outputLabel value="Label" for="graphlinelabel"/>
                     <ice:inputText id="graphlinelabel" value="#{ExploreDataPage.lineLabel}"></ice:inputText>

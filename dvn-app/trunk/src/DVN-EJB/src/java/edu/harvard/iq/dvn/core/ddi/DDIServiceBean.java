@@ -1616,7 +1616,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
                 if (xmlr.getLocalName().equals("docDscr")) processDocDscr(xmlr, metadata);
-                else if (xmlr.getLocalName().equals("stdyDscr")) processStdyDscr(xmlr, metadata);
+                else if (xmlr.getLocalName().equals("stdyDscr")) processStdyDscr(xmlr, studyVersion);
                 else if (xmlr.getLocalName().equals("fileDscr")) processFileDscr(xmlr, studyVersion, filesMap);
                 else if (xmlr.getLocalName().equals("dataDscr")) processDataDscr(xmlr, filesMap);
                 else if (xmlr.getLocalName().equals("otherMat")) processOtherMat(xmlr, studyVersion);
@@ -1644,10 +1644,11 @@ public class DDIServiceBean implements DDIServiceLocal {
         }
     }
 
-    private void processStdyDscr(XMLStreamReader xmlr, Metadata metadata) throws XMLStreamException {
+    private void processStdyDscr(XMLStreamReader xmlr, StudyVersion sv) throws XMLStreamException {
+        Metadata metadata = sv.getMetadata();
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
-                if (xmlr.getLocalName().equals("citation")) processCitation(xmlr, metadata);
+                if (xmlr.getLocalName().equals("citation")) processCitation(xmlr, sv);
                 else if (xmlr.getLocalName().equals("stdyInfo")) processStdyInfo(xmlr, metadata);
                 else if (xmlr.getLocalName().equals("method")) processMethod(xmlr, metadata);
                 else if (xmlr.getLocalName().equals("dataAccs")) processDataAccs(xmlr, metadata);
@@ -1659,7 +1660,8 @@ public class DDIServiceBean implements DDIServiceLocal {
         }
     }
 
-     private void processCitation(XMLStreamReader xmlr, Metadata metadata) throws XMLStreamException {
+     private void processCitation(XMLStreamReader xmlr, StudyVersion sv) throws XMLStreamException {
+        Metadata metadata = sv.getMetadata();
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
                 if (xmlr.getLocalName().equals("titlStmt")) processTitlStmt(xmlr, metadata);
@@ -1667,7 +1669,7 @@ public class DDIServiceBean implements DDIServiceLocal {
                 else if (xmlr.getLocalName().equals("prodStmt")) processProdStmt(xmlr,metadata);
                 else if (xmlr.getLocalName().equals("distStmt")) processDistStmt(xmlr,metadata);
                 else if (xmlr.getLocalName().equals("serStmt")) processSerStmt(xmlr,metadata);
-                else if (xmlr.getLocalName().equals("verStmt")) processVerStmt(xmlr,metadata);
+                else if (xmlr.getLocalName().equals("verStmt")) processVerStmt(xmlr,sv);
                 else if (xmlr.getLocalName().equals("notes")) {
                     String _note = parseNoteByType( xmlr, NOTE_TYPE_UNF );
                     if (_note != null) {
@@ -1806,7 +1808,8 @@ public class DDIServiceBean implements DDIServiceLocal {
         }
     }
 
-    private void processVerStmt(XMLStreamReader xmlr, Metadata metadata) throws XMLStreamException {
+    private void processVerStmt(XMLStreamReader xmlr, StudyVersion sv) throws XMLStreamException {
+        Metadata metadata = sv.getMetadata();
         if (!"DVN".equals(xmlr.getAttributeValue(null, "source"))) {
             for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
                 if (event == XMLStreamConstants.START_ELEMENT) {
@@ -1819,9 +1822,15 @@ public class DDIServiceBean implements DDIServiceLocal {
                 }
             }
         } else {
-            // this is the DVN version info and should just be skipped
+            // this is the DVN version info; get version number for StudyVersion object
             for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
-                if (event == XMLStreamConstants.END_ELEMENT) {
+                 if (event == XMLStreamConstants.START_ELEMENT) {
+                    if (xmlr.getLocalName().equals("version")) {
+                        String elementText = getElementText(xmlr);
+                        System.out.println("Reading DVN version: "+elementText);
+                        sv.setVersionNumber(Long.parseLong(elementText));
+                     }
+                } else if(event == XMLStreamConstants.END_ELEMENT) {
                     if (xmlr.getLocalName().equals("verStmt")) return;
                 }
             }

@@ -66,5 +66,8 @@ public interface VisualizationServiceLocal extends java.io.Serializable {
 
     public boolean validateAtLeastOneMeasureMapping(edu.harvard.iq.dvn.core.study.DataTable dataTable);
 
+    @javax.ejb.TransactionAttribute(value = javax.ejb.TransactionAttributeType.REQUIRES_NEW)
+    public void addGroup();
+
 
 }

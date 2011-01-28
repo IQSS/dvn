@@ -550,6 +550,7 @@ public class LoginFilter implements Filter {
                 || pageDef.getName().equals(PageDefServiceLocal.ADD_FILES_PAGE)
                 || pageDef.getName().equals(PageDefServiceLocal.DELETE_STUDY_PAGE)
                 || pageDef.getName().equals(PageDefServiceLocal.EDIT_FILES_PAGE)
+                || pageDef.getName().equals(PageDefServiceLocal.SETUP_DATA_EXPLORATION_PAGE)
                 || pageDef.getName().equals(PageDefServiceLocal.STUDY_PERMISSIONS_PAGE))) {
             return true;
         }

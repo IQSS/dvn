@@ -969,7 +969,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     private void loadDataTableData(List inStr){
     selectBeginYears = new ArrayList();
     selectEndYears = new ArrayList();
-    selectEndYears.add(new SelectItem(3000, "Min"));
+    selectEndYears.add(new SelectItem(3000, "Max"));
     boolean firstYearSet = false;
     String maxYear = "";
                 String output = "";

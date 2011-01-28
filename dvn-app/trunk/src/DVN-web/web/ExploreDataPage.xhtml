@@ -71,13 +71,40 @@
         }
     }
 
+    var startRange = 0;
+    var endRange = 0;
+       var yearLabelInt = 0
+    if (startYear != 0 && endYear !=3000){
+       yearLabelInt = Math.round((endYear-startYear)/5);
+    } else {
+            for (i=0; i< myRowList.length -1 ;i++){
+                var myRow = myRowList[i];
+                var myRowParse = myRow.split ( ',' );
+                var yearNum = parseInt(myRowParse[0]);
+                if (i==0){
+                    startRange = yearNum;
+                }
+                endRange = yearNum;
 
+            }
+       yearLabelInt = Math.round((endRange-startRange)/5);
+    }
+
+    var counter = yearLabelInt;
        
     for (i=0; i< myRowList.length -1 ;i++)
     {
+
+        var yearPrint = false;
         var myRow = myRowList[i];
         var myRowParse = myRow.split ( ',' );
         var yearNum = parseInt(myRowParse[0]);
+        if (i== 0 || counter == 0  ){
+           counter = yearLabelInt;
+           yearPrint = true;
+        }
+
+        counter--;
 
             var myString = new String (document.getElementById('ExploreDataPage:columnString').textContent);
             var myColumnList = myString.split ( ',' );
@@ -88,28 +115,28 @@
 
         if (yearNum >= startYear && yearNum <= endYear ) {
             if (numColumns == 1){
-                addRows1(data, myRow, intDisType);
+                addRows1(data, myRow, intDisType, yearPrint);
             }
             if (numColumns == 2){
-                addRows2(data, myRow, intDisType);
+                addRows2(data, myRow, intDisType, yearPrint);
             }
             if (numColumns == 3){
-                addRows3(data, myRow, intDisType);
+                addRows3(data, myRow, intDisType, yearPrint);
             }
             if (numColumns == 4){
-                addRows4(data, myRow, intDisType);
+                addRows4(data, myRow, intDisType, yearPrint);
             }
             if (numColumns == 5){
-                addRows5(data, myRow, intDisType);
+                addRows5(data, myRow, intDisType, yearPrint);
             }
             if (numColumns == 6){
-                addRows6(data, myRow, intDisType);
+                addRows6(data, myRow, intDisType, yearPrint);
             }
             if (numColumns == 7){
-                addRows7(data, myRow, intDisType);
+                addRows7(data, myRow, intDisType, yearPrint);
             }
             if (numColumns == 8){
-                addRows8(data, myRow, intDisType);
+                addRows8(data, myRow, intDisType, yearPrint);
             }
 
         }
@@ -117,7 +144,7 @@
      }
 
          }
-      function addRows1(dataTable, rowList, intDisType) {
+      function addRows1(dataTable, rowList, intDisType, year) {
           var myRowParse = rowList.split ( ',' );
           var yearNum = parseInt(myRowParse[0]);
           var dollNum = myParseFloat(myRowParse[1]);
@@ -125,14 +152,19 @@
             dataTable.addRow([new Date(yearNum, 0 ,1), dollNum]);
           }
           if  (intDisType == 2 ) {
-             dataTable.addRow([myRowParse[0], dollNum]);
+              if (year){
+                  dataTable.addRow([myRowParse[0], dollNum]);
+              } else {
+                  dataTable.addRow([null, dollNum]);
+              }
+             
           }
           if  (intDisType == 3 ) {
-             dataTable.addRow([yearNum, dollNum]);
+                dataTable.addRow([yearNum, dollNum]);
           }
       }
 
-      function addRows2(dataTable, rowList, intDisType) {
+      function addRows2(dataTable, rowList, intDisType, year) {
           var myRowParse = rowList.split ( ',' );
           var yearNum = parseInt(myRowParse[0]);
           var dollNum = myParseFloat(myRowParse[1]);
@@ -141,14 +173,18 @@
             dataTable.addRow([new Date(yearNum, 0 ,1), dollNum, dollNum2]);
           } 
           if  (intDisType == 2 ) {
-             dataTable.addRow([myRowParse[0], dollNum, dollNum2]);
+              if (year){
+                   dataTable.addRow([myRowParse[0], dollNum, dollNum2]);
+              } else {
+                  dataTable.addRow([null, dollNum, dollNum2]);
+              }
           }
           if  (intDisType == 3 ) {
-            dataTable.addRow([yearNum, dollNum, dollNum2]);
+                dataTable.addRow([yearNum, dollNum, dollNum2]);           
           }
       }
 
-      function addRows3(dataTable, rowList, intDisType) {
+      function addRows3(dataTable, rowList, intDisType, year) {
           var myRowParse = rowList.split ( ',' );
           var yearNum = parseInt(myRowParse[0]);
           var dollNum = myParseFloat(myRowParse[1]);
@@ -158,7 +194,11 @@
             dataTable.addRow([new Date(yearNum, 0 ,1), dollNum, dollNum2, dollNum3]);
           }
           if  (intDisType == 2 ) {
-             dataTable.addRow([myRowParse[0], dollNum, dollNum2, dollNum3]);
+              if(year){
+                  dataTable.addRow([myRowParse[0], dollNum, dollNum2, dollNum3]);
+              } else {
+                  dataTable.addRow([null, dollNum, dollNum2, dollNum3]);
+              }
           }
           if  (intDisType == 3 ){
             dataTable.addRow([yearNum, dollNum, dollNum2, dollNum3]);
@@ -166,7 +206,7 @@
 
       }
 
-      function addRows4(dataTable, rowList, intDisType) {
+      function addRows4(dataTable, rowList, intDisType, year) {
           var myRowParse = rowList.split ( ',' );
           var yearNum = parseInt(myRowParse[0]);
           var dollNum = myParseFloat(myRowParse[1]);
@@ -177,7 +217,11 @@
             dataTable.addRow([new Date(yearNum, 0 ,1), dollNum, dollNum2, dollNum3, dollNum4]);
           } 
           if  (intDisType == 2 ) {
-             dataTable.addRow([myRowParse[0], dollNum, dollNum2, dollNum3, dollNum4]);
+              if(year){
+                  dataTable.addRow([myRowParse[0], dollNum, dollNum2, dollNum3, dollNum4]);
+              } else {
+                  dataTable.addRow([null, dollNum, dollNum2, dollNum3, dollNum4]);
+              }
           }
           if  (intDisType == 3 ) {
             dataTable.addRow([yearNum, dollNum, dollNum2, dollNum3, dollNum4]);
@@ -185,7 +229,7 @@
 
       }
 
-      function addRows5(dataTable, rowList, intDisType) {
+      function addRows5(dataTable, rowList, intDisType, year) {
           var myRowParse = rowList.split ( ',' );
           var yearNum = parseInt(myRowParse[0]);
           var dollNum = myParseFloat(myRowParse[1]);
@@ -197,14 +241,18 @@
             dataTable.addRow([new Date(yearNum, 0 ,1), dollNum, dollNum2, dollNum3, dollNum4, dollNum5]);
           }
           if  (intDisType == 2 ) {
-             dataTable.addRow([myRowParse[0], dollNum, dollNum2, dollNum3, dollNum4 , dollNum5]);
+             if(year){
+                 dataTable.addRow([myRowParse[0], dollNum, dollNum2, dollNum3, dollNum4 , dollNum5]);
+             } else {
+                 dataTable.addRow([null, dollNum, dollNum2, dollNum3, dollNum4 , dollNum5]);
+             }
           }
           if  (intDisType == 3 ) {
             dataTable.addRow([yearNum, dollNum, dollNum2, dollNum3, dollNum4, dollNum5]);
           }
       }
 
-      function addRows6(dataTable, rowList, intDisType) {
+      function addRows6(dataTable, rowList, intDisType, year) {
           var myRowParse = rowList.split ( ',' );
           var yearNum = parseInt(myRowParse[0]);
           var dollNum = myParseFloat(myRowParse[1]);
@@ -217,14 +265,19 @@
             dataTable.addRow([new Date(yearNum, 0 ,1), dollNum, dollNum2, dollNum3, dollNum4, dollNum5, dollNum6]);
           }           
           if  (intDisType == 2 ) {
-             dataTable.addRow([myRowParse[0], dollNum, dollNum2, dollNum3, dollNum4 , dollNum5, dollNum6 ]);
+              if (year){
+                  dataTable.addRow([myRowParse[0], dollNum, dollNum2, dollNum3, dollNum4 , dollNum5, dollNum6 ]);
+              } else {
+                 dataTable.addRow([null, dollNum, dollNum2, dollNum3, dollNum4 , dollNum5, dollNum6 ]);
+              }
+             
           }
           if  (intDisType == 3 ){
             dataTable.addRow([yearNum, dollNum, dollNum2, dollNum3, dollNum4, dollNum5, dollNum6]);
           }
       }
 
-      function addRows7(dataTable, rowList, intDisType) {
+      function addRows7(dataTable, rowList, intDisType, year) {
           var myRowParse = rowList.split ( ',' );
           var yearNum = parseInt(myRowParse[0]);
           var dollNum = myParseFloat(myRowParse[1]);
@@ -238,14 +291,19 @@
             dataTable.addRow([new Date(yearNum, 0 ,1), dollNum, dollNum2, dollNum3, dollNum4, dollNum5, dollNum6, dollNum7]);
           }
           if  (intDisType == 2 ) {
-             dataTable.addRow([myRowParse[0], dollNum, dollNum2, dollNum3, dollNum4 , dollNum5, dollNum6, dollNum7 ]);
+              if (year){
+                  dataTable.addRow([myRowParse[0], dollNum, dollNum2, dollNum3, dollNum4 , dollNum5, dollNum6, dollNum7 ]);
+              } else {
+                  dataTable.addRow([null, dollNum, dollNum2, dollNum3, dollNum4 , dollNum5, dollNum6, dollNum7 ]);
+              }
+             
           }
           if  (intDisType == 3 ) {
             dataTable.addRow([yearNum, dollNum, dollNum2, dollNum3, dollNum4, dollNum5, dollNum6, dollNum7]);
           }
       }
 
-      function addRows8(dataTable, rowList, intDisType) {
+      function addRows8(dataTable, rowList, intDisType, year) {
           var myRowParse = rowList.split ( ',' );
           var yearNum = parseInt(myRowParse[0]);
           var dollNum = myParseFloat(myRowParse[1]);
@@ -260,7 +318,12 @@
             dataTable.addRow([new Date(yearNum, 0 ,1), dollNum, dollNum2, dollNum3, dollNum4, dollNum5, dollNum6, dollNum7, dollNum8]);
           }           
           if  (intDisType == 2 ) {
-             dataTable.addRow([myRowParse[0], dollNum, dollNum2, dollNum3, dollNum4 , dollNum5, dollNum6, dollNum7, dollNum8 ]);
+              if (year){
+                  dataTable.addRow([myRowParse[0], dollNum, dollNum2, dollNum3, dollNum4 , dollNum5, dollNum6, dollNum7, dollNum8 ]);
+              } else {
+                  dataTable.addRow([null, dollNum, dollNum2, dollNum3, dollNum4 , dollNum5, dollNum6, dollNum7, dollNum8 ]);
+              }
+             
           }
           if  (intDisType == 3 ){
             dataTable.addRow([yearNum, dollNum, dollNum2, dollNum3, dollNum4, dollNum5, dollNum6, dollNum7, dollNum8]);
@@ -531,7 +594,6 @@ function updateDisplayType(){
                         <f:selectItem itemLabel="Image Graph" itemValue="2"/>
                         <f:selectItem itemLabel="Table" itemValue="3"/>
                     </ice:selectOneMenu>
-                    <ice:commandButton value="Refresh" onclick="drawVisualization();"/>
                      <ice:commandButton visible="false" id="selectDisplayButton" action="#{ExploreDataPage.reset_DisplayType}"/>
                 </div>
                 <div style="overflow:hidden; margin-bottom:.5em;">

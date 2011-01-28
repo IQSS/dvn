@@ -208,6 +208,7 @@ public class DataTable implements java.io.Serializable {
      * Holds value of property varGroupings.
      */
     @OneToMany (mappedBy="dataTable", cascade={ CascadeType.REMOVE, CascadeType.MERGE,CascadeType.PERSIST})
+    @OrderBy ("name")
     private List<VarGrouping> varGroupings;
 
     public List<VarGrouping> getVarGroupings() {

@@ -723,11 +723,12 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         editMeasureVarGroup.getVarGroup().setName((String) getInputMeasureName().getValue());
         editMeasureVarGroup.getVarGroup().setUnits((String) getInputMeasureUnits().getValue());
 
-        updateVariableByGroup(editMeasureVarGroup);
+
         
         if(addMeasureGroup){
             addMeasureGroupSave();
         }
+        updateVariableByGroup(editMeasureVarGroup);
         resetDVMappingsByGroup(editMeasureVarGroup);
         editMeasureVarGroup = null;
         cancelAddEdit();
@@ -767,11 +768,12 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
 
         editFilterVarGroup.getVarGroup().setName((String) getInputFilterGroupName().getValue());
-        updateVariableByGroup(editFilterVarGroup);
+
 
         if(addFilterGroup){
             addFilterGroupSave();
         }
+        updateVariableByGroup(editFilterVarGroup);
         resetDVMappingsByGroup(editFilterVarGroup);
         editFilterVarGroup = null;
         getInputFilterGroupName().setValue("");
@@ -894,6 +896,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         int i = measureGrouping.getVarGrouping().getVarGroups().size();
         measureGrouping.getVarGrouping().getVarGroups().add(i,  editMeasureVarGroup.getVarGroup());
         measureGrouping.getVarGroupUI().add(editMeasureVarGroup);
+        visualizationService.addGroup();
         cancelAddEdit();
         editMeasure = false;
         addMeasureGroup = false;
@@ -919,7 +922,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                 varGroupingUI.getVarGrouping().getVarGroups().add( editFilterVarGroup.getVarGroup());
              }
          }
-
+         visualizationService.addGroup();
         cancelAddEdit();
 
     }

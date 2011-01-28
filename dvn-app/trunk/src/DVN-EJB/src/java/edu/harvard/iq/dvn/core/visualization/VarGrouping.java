@@ -19,6 +19,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.*;
 
 /**
  *
@@ -68,6 +69,7 @@ public class VarGrouping implements Serializable {
      * Holds value of property groups.
      */
     @OneToMany(mappedBy="varGrouping", cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
+    @OrderBy ("name")
     private List<VarGroup> varGroups;
 
      /**
@@ -91,6 +93,7 @@ public class VarGrouping implements Serializable {
      * Holds value of property groups.
      */
     @OneToMany(mappedBy="varGrouping", cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
+    @OrderBy ("name")
     private Collection<VarGroupType> varGroupTypes;
 
      /**

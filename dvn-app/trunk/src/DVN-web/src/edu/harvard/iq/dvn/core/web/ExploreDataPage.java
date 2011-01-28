@@ -969,8 +969,9 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     private void loadDataTableData(List inStr){
     selectBeginYears = new ArrayList();
     selectEndYears = new ArrayList();
-    selectBeginYears.add(new SelectItem(0, "All"));
-    selectEndYears.add(new SelectItem(3000, "All"));
+    selectEndYears.add(new SelectItem(3000, "Min"));
+    boolean firstYearSet = false;
+    String maxYear = "";
                 String output = "";
                 for (Object inObj: inStr ){
                     String nextStr = (String) inObj;
@@ -983,20 +984,26 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                         for (int i=0; i<test.length; i++){
                             if (i == 0) {
                                 col =  test[i];
-                                selectBeginYears.add(new SelectItem(col, col));
+                                if (!firstYearSet){
+                                   selectBeginYears.add(new SelectItem(col, "Min"));
+                                   firstYearSet = true;
+                                }
+                                maxYear = col;
+                                selectBeginYears.add(new SelectItem( col, col));
                                 selectEndYears.add(new SelectItem(col, col));
                             } else {
                                col = col + ", " +  test[i];
                             }
 
                         }
-
                         col = col + ";";
-
                     }
 
                     output = output + col;
                 }
+                SelectItem setSI = selectEndYears.get(0);
+                setSI.setValue(maxYear);
+                selectEndYears.set(0, setSI);
 
                 dataString = output;
     }

@@ -460,11 +460,11 @@ function updateDisplayType(){
                     </ice:selectOneMenu>
                 </div>
 
-                <ice:outputText value="related to" style="font-weight:bold; margin:0 2em;"/>
+                <ice:outputText value="related to" style="font-weight:bold; margin:0 2em;" rendered="#{!empty ExploreDataPage.selectMeasureGroupTypes}"/>
 
                 <div style="display:inline;">
                     <ice:selectOneMenu immediate="false" onchange="submit()" id="issue"
-                                        valueChangeListener="#{ExploreDataPage.reset_MeasureItems}" value="#{ExploreDataPage.groupTypeId}">
+                                       valueChangeListener="#{ExploreDataPage.reset_MeasureItems}" value="#{ExploreDataPage.groupTypeId}" rendered="#{!empty ExploreDataPage.selectMeasureGroupTypes}">
                         <f:selectItems value="#{ExploreDataPage.selectMeasureGroupTypes}"/>
                     </ice:selectOneMenu>
                 </div>
@@ -480,7 +480,7 @@ function updateDisplayType(){
                             <f:selectItems value="#{ExploreDataPage.selectFilterGroups}"/>
                         </ice:selectOneMenu>
 
-                        <ice:outputText value="related to" style="font-weight:bold; margin:0 2em;"/>
+                        <ice:outputText value="related to" style="font-weight:bold; margin:0 2em;" rendered ="#{!empty item.varGroupTypesUI}" />
 
                         <div jsfc="ice:panelSeries" style="overflow:hidden; display:inline;" id="filterPanelGroupTypes" var="groupType" value="#{item.varGroupTypesUI}">
                             <!-- controls -->

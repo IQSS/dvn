@@ -296,7 +296,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         List selectItems = new ArrayList<SelectItem>();
         List <VarGroup> varGroups = new ArrayList();
         varGroupings = dt.getVarGroupings();
-        selectItems.add(new SelectItem(0, "Select..." ));
         Iterator iterator = varGroupings.iterator();
         while (iterator.hasNext() ){
             VarGrouping varGrouping = (VarGrouping) iterator.next();
@@ -331,7 +330,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
     public List<SelectItem> loadSelectMeasureGroupTypes() {
         List selectItems = new ArrayList<SelectItem>();
-        selectItems.add(new SelectItem(0, "Select Type..."));
         Iterator iterator = varGroupings.iterator();
         while (iterator.hasNext() ){
             VarGrouping varGrouping = (VarGrouping) iterator.next();
@@ -355,7 +353,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             VarGrouping varGrouping = (VarGrouping) iterator.next();
 
             if (varGrouping.getGroupingType().equals(GroupingType.FILTER)){
-                selectItems.add(new SelectItem(varGrouping.getId(), "Select..."));
                 List <VarGroupType> varGroupTypes = (List<VarGroupType>) varGrouping.getVarGroupTypes();
                 for(VarGroupType varGroupType: varGroupTypes) {
                     selectItems.add(new SelectItem(varGroupType.getId(), varGroupType.getName()));
@@ -370,7 +367,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         groupingId = new Long(filterPanelGroup.getAttributes().get("groupingId").toString());
         List selectItems = new ArrayList<SelectItem>();
             
-                selectItems.add(new SelectItem(groupingId, "Select..."));
                 List <VarGroupType> varGroupTypes = (List<VarGroupType>)  visualizationService.getGroupTypesFromGroupingId(new Long(groupingId));
                 for(VarGroupType varGroupType: varGroupTypes) {
                     selectItems.add(new SelectItem(varGroupType.getId(), varGroupType.getName()));
@@ -384,7 +380,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
         List selectItems = new ArrayList<VarGroupType>();
 
-                selectItems.add(new SelectItem(groupingId, "Select..."));
                 List <VarGroupType> varGroupTypes = (List<VarGroupType>)  visualizationService.getGroupTypesFromGroupingId(new Long(groupingId));
                 for(VarGroupType varGroupType: varGroupTypes) {
                     selectItems.add(new SelectItem(varGroupType.getId(), varGroupType.getName()));
@@ -408,7 +403,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
          List selectItems = new ArrayList<SelectItem>();
           Long groupingId = new Long(filterPanelGroup.getAttributes().get("groupingId").toString());
-          selectItems.add(new SelectItem(0, "Select..."));
           boolean addAll = false;
           List <VarGroup> multipleSelections = new ArrayList <VarGroup>();
           List <VarGroup> varGroupsAll = (List<VarGroup>)  visualizationService.getFilterGroupsFromMeasureId(selectedMeasureId);
@@ -528,7 +522,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         if (filterPanelGroup.getAttributes().get("groupingId") != null){
             groupingId = new Long(filterPanelGroup.getAttributes().get("groupingId").toString());
         }
-         selectItems.add(new SelectItem(0, "Select..."));
             Iterator itrG = filterGroupings.iterator();
             while (itrG.hasNext()){
                 VarGroupingUI thisVarGrouping = (VarGroupingUI) itrG.next();

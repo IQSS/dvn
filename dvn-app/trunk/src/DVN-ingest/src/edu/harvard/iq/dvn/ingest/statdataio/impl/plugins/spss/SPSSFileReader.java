@@ -800,36 +800,46 @@ public class SPSSFileReader extends StatDataFileReader{
 
         dbgLog.fine ("parsing "+varLabelsCommand+" for variable labels.");
 
-        if (varLabelsCommand == null || varLabelsCommand.equals("")) {
-            return readStatus;
-        }
-
         Map<String, String> variableLabelMap = new LinkedHashMap<String, String>();
-
-        String varName = null;
-        String varLabel = null;
         int    labelCounter = 0;
 
-        String varLabelRegex = "\\s*(\\S+)\\s+\"([^\"]+)\"";
-        Pattern varLabelPattern = Pattern.compile(varLabelRegex);
-        Matcher varLabelMatcher = varLabelPattern.matcher(varLabelsCommand);
+        if (varLabelsCommand != null && !varLabelsCommand.equals("")) {
 
-        while (varLabelMatcher.find()) {
-            varName = varLabelMatcher.group(1);
-            varLabel = varLabelMatcher.group(2);
+            String varName = null;
+            String varLabel = null;
 
-            dbgLog.fine ("found variable label for "+varName+": "+varLabel);
-            variableLabelMap.put(varName, varLabel);
-            labelCounter++;
+            String varLabelRegex = "\\s*(\\S+)\\s+\"([^\"]+)\"";
+            Pattern varLabelPattern = Pattern.compile(varLabelRegex);
+            Matcher varLabelMatcher = varLabelPattern.matcher(varLabelsCommand);
+
+            while (varLabelMatcher.find()) {
+                varName = varLabelMatcher.group(1);
+                varLabel = varLabelMatcher.group(2);
+
+                dbgLog.fine ("found variable label for "+varName+": "+varLabel);
+                variableLabelMap.put(varName, varLabel);
+                labelCounter++;
+            }
         }
+
+        readStatus = labelCounter;
 
         // TODO:
         // Validate the entries, make sure that the variables are legit, etc.
 
-        if (labelCounter > 0) {
-            smd.setVariableLabel(variableLabelMap);
-            readStatus = labelCounter;
+        // Create default placeholder labels for the variables that
+        // do not have labels declared:
+        // (should we make variable labels mandatory?)
+
+        for (int j=0; j<getVarQnty(); j++){
+            String variableName = variableNameList.get(j);
+            if (!variableLabelMap.containsKey(variableName)) {
+                variableLabelMap.put(variableName, "variable "+variableName);
+            }
+
         }
+
+        smd.setVariableLabel(variableLabelMap);
 
         return readStatus;
     }

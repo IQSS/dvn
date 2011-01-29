@@ -642,7 +642,7 @@ public class DDIFileReader extends StatDataFileReader{
 
                     // Value Labels:
 
-                    if ( !valueLabelTable.isEmpty() ) {
+                    if ( !valueLabelPairs.isEmpty() ) {
                         valueLabelTable.put(variableName,valueLabelPairs);
                         valueVariableMappingTable.put(variableName, variableName);
                     }
@@ -737,7 +737,6 @@ public class DDIFileReader extends StatDataFileReader{
                 if (xmlr.getLocalName().equals("labl")) {
                     valueLabel = processLabl( xmlr, LEVEL_CATEGORY );
                 } else if (xmlr.getLocalName().equals("catValu")) {
-                    // STORE cat value -- (TODO NOW)
                     varValue = parseText(xmlr, false);
                 }
                 else if (xmlr.getLocalName().equals("catStat")) {
@@ -749,11 +748,13 @@ public class DDIFileReader extends StatDataFileReader{
                 if (xmlr.getLocalName().equals("catgry")) {
 
                     if (varValue != null && !varValue.equals("")) {
-                        if (isMissing) {
-                            missingValues.add(varValue);
-                        } else if (valueLabel != null && !valueLabel.equals("") ) {
+                        if (valueLabel != null && !valueLabel.equals("") ) {
+                            dbgLog.fine("DDI Reader: storing label "+valueLabel+" for value "+varValue);
                             valueLabelPairs.put(varValue, valueLabel );
                         }
+                        if (isMissing) {
+                            missingValues.add(varValue);
+                        } 
                     }
 
                     return;

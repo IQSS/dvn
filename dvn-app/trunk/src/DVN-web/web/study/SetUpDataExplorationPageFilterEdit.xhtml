@@ -8,7 +8,7 @@
 
     <div class="dvnFormPadding dvnFormMargin" style="float:right;">
 
-        <ice:commandButton type="submit" value="Update" action ="#{SetUpDataExplorationPage.saveFilterFragment}"
+        <ice:commandButton type="submit" value="Update" actionListener ="#{SetUpDataExplorationPage.saveFilterFragment}"
                            visible="#{SetUpDataExplorationPage.editFilterGroup}"/>
         <ice:commandButton type="submit" value="Cancel" action ="#{SetUpDataExplorationPage.cancelFragment}"
         visible="#{SetUpDataExplorationPage.editFilterGroup}"/>

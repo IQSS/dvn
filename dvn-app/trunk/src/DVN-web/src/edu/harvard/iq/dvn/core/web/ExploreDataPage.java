@@ -299,7 +299,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         Iterator iterator = varGroupings.iterator();
         while (iterator.hasNext() ){
             VarGrouping varGrouping = (VarGrouping) iterator.next();
-            // Don't show OAISets that have been created for dataverse-level Lockss Harvesting
             if (varGrouping.getGroupingType().equals(GroupingType.MEASURE)){
 
                 if (grouptype_id == 0) {

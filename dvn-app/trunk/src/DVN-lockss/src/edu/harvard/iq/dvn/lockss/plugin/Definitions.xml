@@ -22,8 +22,10 @@
 <ElementKey>au_crawlrules</ElementKey>
 <ElementValue xsi:type="java:java.util.ArrayList" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <string xsi:type="java:java.lang.String">4,"^%s", base_url</string>
-<string xsi:type="java:java.lang.String">1,"%s", base_url</string>
-<string xsi:type="java:java.lang.String">1,"%s", oai_request_url</string>
+<string xsi:type="java:java.lang.String">1,"%s.*FileDownload.*fileId=[0-9][0-9]*", base_url</string>
+<string xsi:type="java:java.lang.String">1,"%s.*cgi-bin/file.*file_id=[0-9][0-9]*", base_url</string>
+<string xsi:type="java:java.lang.String">1,"%s.*hsrun.*fi=[0-9][0-9]*", base_url</string>
+<string xsi:type="java:java.lang.String">1,"%s.*dpassTrans.*id=[0-9][0-9]*", base_url</string>
 <string xsi:type="java:java.lang.String">1,"%s", base_url2</string>
 </ElementValue>
 </MapElement>

@@ -12,6 +12,7 @@ import com.icesoft.faces.component.ext.HtmlInputText;
 import com.icesoft.faces.component.ext.HtmlCommandLink;
 import com.icesoft.faces.component.ext.HtmlSelectBooleanCheckbox;
 import com.icesoft.faces.component.ext.HtmlSelectOneMenu;
+import com.icesoft.faces.component.panelseries.UISeries;
 import edu.harvard.iq.dvn.core.study.DataVariable;
 import edu.harvard.iq.dvn.core.study.EditStudyFilesService;
 import edu.harvard.iq.dvn.core.study.Metadata;
@@ -31,12 +32,12 @@ import edu.harvard.iq.dvn.core.web.VarGroupUI;
 import edu.harvard.iq.dvn.core.web.VarGroupingUI;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
+import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.PhaseId;
@@ -253,8 +254,9 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
     }
 
 
-    public void loadFilterGroupings() {
+    private void loadFilterGroupings() {
         filterGroupings.clear();
+
         for (VarGrouping varGrouping: varGroupings ){
             
             if (varGrouping.getGroupingType().equals(GroupingType.FILTER)){
@@ -267,6 +269,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         }
       
     }
+
 
     public void setMeasureGroups(){
         
@@ -763,7 +766,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         cancelAddEdit();
     }
 
-    public void saveFilterFragment(){
+    public void saveFilterFragment(ActionEvent ae){
 
         String chkGroupName = (String) getInputFilterGroupName().getValue();
 
@@ -888,6 +891,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                     varGroupTypeUI.setSelected(false);
                     newElem.getVarGroupTypes().add(varGroupTypeUI);
                 }
+        dvGenericListUI = dvNumericListUI;
 
         loadEmptyVariableList();
 
@@ -924,6 +928,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
     private void addFilterGroupSave() {
 
+         visualizationService.addGroup();
          for(VarGroupingUI varGroupingUI: filterGroupings){
              if (varGroupingUI.getVarGrouping().getId().equals(editFilterVarGroup.getVarGroup().getGroupAssociation().getId())){
                 varGroupingUI.getVarGroupUI().add(editFilterVarGroup);
@@ -940,8 +945,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         while (!(uiComponent instanceof HtmlDataTable)){
             uiComponent = uiComponent.getParent();
         }
-        HtmlDataTable tempTable = (HtmlDataTable) uiComponent;
-        VarGroupingUI varGroupingUI = (VarGroupingUI) tempTable.getRowData();
+        VarGroupingUI varGroupingUI = (VarGroupingUI) dataTableFilterGrouping.getRowData();
         VarGroupUI newElem = new VarGroupUI();
         newElem.setVarGroup(new VarGroup());
         newElem.getVarGroup().setGroupTypes(new ArrayList());
@@ -957,6 +961,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         }
         
         editFilterVarGroup = newElem;
+        dvGenericListUI = dvNumericListUI;
         loadEmptyVariableList();
         cancelAddEdit();
         editFilterGroup = true;
@@ -1037,6 +1042,8 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         if (groupEdit){           
             addNewTypeToGroupUI(editFilterVarGroup, varGroupTypeUI);
         }
+
+        loadFilterGroupings();
                 addFilterType = false;
     }
 
@@ -1147,10 +1154,13 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         editFilterVarGrouping.getVarGrouping().setName((String) getInputFilterGroupingName().getValue());
     }
 
-    public void deleteFilterGroup(){
+    public void deleteFilterGroup(ActionEvent ae){
+
+
         HtmlDataTable dataTable2 = dataTableFilterGroup;
         if (dataTable2.getRowCount()>0) {
             VarGroupUI varGroupUI2 = (VarGroupUI) dataTable2.getRowData();
+
             VarGroup varGroup = varGroupUI2.getVarGroup();
             deleteVariablesFromGroup(varGroupUI2);
             List varGroupList = (List) dataTable2.getValue();
@@ -1167,10 +1177,15 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                     varGroupingUI.getVarGroupUI().remove(varGroupUI2);
                     varGroupingUI.getVarGrouping().getVarGroups().remove(varGroup);
                     setVarGroupUI(varGroupingUI);
+
+                    dataTableFilterGroup.setValue(varGroupingUI.getVarGroupUI());
                 }
             }
 
         }
+
+        loadFilterGroupings();
+        forceRender();
     }
 
     public void deleteMeasureGroup(){
@@ -1197,12 +1212,17 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
             HtmlDataTable dataTable2 = dataTableFilterGrouping;
             VarGroupingUI varGroupingUI2 = (VarGroupingUI) dataTable2.getRowData();
-            if (dataTable2.getRowCount()>0) {
-                
+            if (dataTable2.getRowCount()>0) {                
                 filterGroupings.remove(varGroupingUI2);
+                varGroupings.remove(varGroupingUI2.getVarGrouping());
             }
-               visualizationService.removeCollectionElement(varGroupings,varGroupingUI2.getVarGrouping());
 
+            visualizationService.removeCollectionElement(varGroupings,varGroupingUI2.getVarGrouping());
+            loadFilterGroupings();
+            for(VarGroupingUI varGroupingUI: filterGroupings){
+
+                    dataTableFilterGroup.setValue(varGroupingUI.getVarGroupUI());
+            }
     }
 
 
@@ -1250,43 +1270,62 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         manageMeasureTypes = false;
     }
 
-    public boolean validateForRelease(){
+    public boolean validateForRelease(boolean messages){
 
         boolean valid = true;
 
         if (!visualizationService.validateAtLeastOneFilterMapping(dataTable)) {
-            FacesMessage message = new FacesMessage("Each variable mapping must include at least one Filter.");
-            FacesContext fc = FacesContext.getCurrentInstance();
-            fc.addMessage(validateButton.getClientId(fc), message);
+            if (messages){
+                FacesMessage message = new FacesMessage("Each variable mapping must include at least one Filter.");
+                FacesContext fc = FacesContext.getCurrentInstance();
+                fc.addMessage(validateButton.getClientId(fc), message);
+            }
             valid = false;
         }
 
         if (!xAxisSet) {
-            FacesMessage message = new FacesMessage("You must select one X-axis variable and it cannot be mapped to any Measure or Filter.");
-            FacesContext fc = FacesContext.getCurrentInstance();
-            fc.addMessage(validateButton.getClientId(fc), message);
+            if (messages){
+                FacesMessage message = new FacesMessage("You must select one X-axis variable and it cannot be mapped to any Measure or Filter.");
+                FacesContext fc = FacesContext.getCurrentInstance();
+                fc.addMessage(validateButton.getClientId(fc), message);
+            }
+
             valid = false;
         }
 
         if (!visualizationService.validateXAxisMapping(dataTable, xAxisVariableId)) {
-            FacesMessage message = new FacesMessage("You must select one X-axis variable and it cannot be mapped to any Measure or Filter.");
-            FacesContext fc = FacesContext.getCurrentInstance();
-            fc.addMessage(validateButton.getClientId(fc), message);
+            if (messages){
+                FacesMessage message = new FacesMessage("You must select one X-axis variable and it cannot be mapped to any Measure or Filter.");
+                FacesContext fc = FacesContext.getCurrentInstance();
+                fc.addMessage(validateButton.getClientId(fc), message);
+            }
+
             valid = false;
         }
 
         if (!visualizationService.validateOneMeasureMapping(dataTable)) {
-            FacesMessage message = new FacesMessage("Each variable mapping must include one Measure.");
-            FacesContext fc = FacesContext.getCurrentInstance();
-            fc.addMessage(validateButton.getClientId(fc), message);
+            if (messages){
+                FacesMessage message = new FacesMessage("Each variable mapping must include one Measure.");
+                FacesContext fc = FacesContext.getCurrentInstance();
+                fc.addMessage(validateButton.getClientId(fc), message);
+            }
+
             valid = false;
         }
 
         if (!visualizationService.validateAtLeastOneMeasureMapping(dataTable)) {
-            FacesMessage message = new FacesMessage("The Data Visualization must include at least one Measure.");
-            FacesContext fc = FacesContext.getCurrentInstance();
-            fc.addMessage(validateButton.getClientId(fc), message);
+            if (messages){
+                FacesMessage message = new FacesMessage("The Data Visualization must include at least one Measure.");
+                FacesContext fc = FacesContext.getCurrentInstance();
+                fc.addMessage(validateButton.getClientId(fc), message);
+            }
             valid = false;
+        }
+
+        if (valid && messages){
+                FacesMessage message = new FacesMessage("The Data Visualization is valid for release.");
+                FacesContext fc = FacesContext.getCurrentInstance();
+                fc.addMessage(validateButton.getClientId(fc), message);
         }
 
 
@@ -1295,12 +1334,12 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
     public String validate(){
 
-        validateForRelease();
+        validateForRelease(true);
         return "";
     }
 
     public String release(){
-        if (validateForRelease()) {
+        if (validateForRelease(true)) {
             dataTable.setVisualizationEnabled(true);
             saveAndExit();
             return "viewStudy";
@@ -1316,8 +1355,10 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
     public String saveAndExit(){
        if (dataTable.isVisualizationEnabled()){
-           if (!validateForRelease()) {
-               dataTable.setVisualizationEnabled(false);
+           if (!validateForRelease(false)) {
+               FacesMessage message = new FacesMessage("Changes not saved because exploration is no longer valid for release.");
+               FacesContext fc = FacesContext.getCurrentInstance();
+               fc.addMessage(validateButton.getClientId(fc), message);
                return "";
            }
        }
@@ -1700,6 +1741,12 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             ce.setPhaseId(PhaseId.INVOKE_APPLICATION);
             ce.queue();
         }
+
+    }
+
+    private void forceRender(){
+
+            FacesContext.getCurrentInstance().renderResponse();
 
     }
 

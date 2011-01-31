@@ -61,6 +61,8 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
     private List <DataVariable> dvList = new ArrayList();
     private List <DataVariable> dvFilteredList = new ArrayList();
     private List <DataVariableUI> dvGenericListUI = new ArrayList();
+    private List <DataVariableUI> dvDateListUI = new ArrayList();
+    private List <DataVariableUI> dvNumericListUI = new ArrayList();
     private List <DataVariableUI> dvGenericFilteredListUI = new ArrayList();
     private List <VarGroupType> measureGroupTypes = new ArrayList();
     private VarGroupingUI measureGrouping = new VarGroupingUI();
@@ -187,7 +189,8 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
          measureGroupTypes = loadSelectMeasureGroupTypes();
          loadMeasureGroupUIs();
-         loadDvListUIs();
+         dvNumericListUI = loadDvListUIs(false);
+         dvDateListUI = loadDvListUIs(true);
          xAxisVariable = visualizationService.getXAxisVariable(dataTable.getId());
          xAxisVariableId = xAxisVariable.getId();
          if (xAxisVariableId.intValue() > 0){
@@ -280,17 +283,20 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
        
     }
 
-    public void loadDvListUIs(){
+    public List <DataVariableUI> loadDvListUIs(boolean isDate){
 
         List <DataVariableUI> dvListUILocG = new ArrayList();
         for (DataVariable dataVariable : dvList){
-            DataVariableUI dataVariableUI = new DataVariableUI();
-            dataVariableUI.setDataVariable(dataVariable);
-            dataVariableUI.setSelected(false);
-            dataVariableUI.setDisplay(true);
-            dvListUILocG.add(dataVariableUI);
+            if ((isDate &&  "date".equals(dataVariable.getFormatCategory())) ||
+               (!isDate && dataVariable.getVariableFormatType().getName().equals("numeric"))) {
+                DataVariableUI dataVariableUI = new DataVariableUI();
+                dataVariableUI.setDataVariable(dataVariable);
+                dataVariableUI.setSelected(false);
+                dataVariableUI.setDisplay(true);
+                dvListUILocG.add(dataVariableUI);
+            }
         }
-        dvGenericListUI = dvListUILocG;
+        return dvListUILocG;
     }
 
     public void loadMeasureGroupUIs (){
@@ -431,6 +437,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         VarGroupUI varGroupUI = (VarGroupUI) tempTable.getRowData();
 
         dvGenericFilteredListUI.clear();
+        dvGenericListUI = dvNumericListUI;
         for (DataVariableUI dataVariableUI: dvGenericListUI){
             dataVariableUI.setSelected(false);
             if (varGroupUI.getDataVariablesSelected() != null){
@@ -549,6 +556,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         varGroupUI.getVarGroup().getName();
         dvGenericFilteredListUI.clear();
 
+        dvGenericListUI = dvNumericListUI;
         for (DataVariableUI dataVariableUI: dvGenericListUI){
             dataVariableUI.setSelected(false);
             if (varGroupUI.getDataVariablesSelected() != null){
@@ -638,7 +646,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
     }
 
     public void editXAxisAction (){
-
+        dvGenericListUI = dvDateListUI;
         Iterator iterator = dvGenericListUI.iterator();
         dvGenericFilteredListUI.clear();
         while (iterator.hasNext() ){

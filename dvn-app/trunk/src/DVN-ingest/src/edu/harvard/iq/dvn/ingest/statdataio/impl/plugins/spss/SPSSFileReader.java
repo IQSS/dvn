@@ -60,16 +60,11 @@ public class SPSSFileReader extends StatDataFileReader{
     private static String[] EXTENSIONS = {"spss", "sps"};
     private static String[] MIME_TYPE = {"text/plain"};
 
-    private static int DATA_LIST_DELIMITER_NOT_FOUND = 1;
-    private static int DATA_LIST_NO_SLASH_SEPARATOR = 2;
-    private static int DATA_LIST_UNSUPPORTED_VARIABLE_TYPE = 3;
-    private static int DATA_LIST_ILLEGAL_NUMERIC_TYPE = 4;
-    private static int DATA_LIST_ILLEGAL_VARIABLE_TYPE = 5;
-
     // date/time data formats
 
     private SimpleDateFormat sdf_ymd    = new SimpleDateFormat("yyyy-MM-dd");
     private SimpleDateFormat sdf_ymdhms = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
     private SimpleDateFormat sdf_dhms   = new SimpleDateFormat("DDD HH:mm:ss");
     private SimpleDateFormat sdf_hms    = new SimpleDateFormat("HH:mm:ss");
 
@@ -77,7 +72,6 @@ public class SPSSFileReader extends StatDataFileReader{
        Logger.getLogger(SPSSFileReader.class.getPackage().getName());
 
     private static final Map<String, String> formatCategoryTable = new HashMap<String, String>();
-    private static final List<String> commandNames = new ArrayList<String>();
     
     private static String unfVersionNumber = "5";
 
@@ -119,15 +113,6 @@ public class SPSSFileReader extends StatDataFileReader{
 
 
     static {
-        commandNames.add("DataList");
-        commandNames.add("VarLabel");
-        commandNames.add("ValLabel");
-        commandNames.add("MisValue");
-
-        // also:
-        // RECODE
-        // FORMATS
-        // (?)
 
     }
     
@@ -207,27 +192,9 @@ public class SPSSFileReader extends StatDataFileReader{
         readStatus = read_DataList(commandStrings.get("DataList"));
         dbgLog.fine ("reading DataList. status: "+readStatus);
 
-        if (readStatus != 0) {
-            if (readStatus == DATA_LIST_DELIMITER_NOT_FOUND) {
-                throw new IOException ("Invalid SPSS Command Syntax: " +
-                        "no delimiter specified in the DATA LIST command.");
-            } else if (readStatus == DATA_LIST_NO_SLASH_SEPARATOR) {
-                 throw new IOException ("Invalid SPSS Command Syntax: " +
-                        "missing / delimiter on the DATA LIST line.");
-
-            } else if (readStatus == DATA_LIST_UNSUPPORTED_VARIABLE_TYPE) {
-                 throw new IOException ("Invalid SPSS Command Syntax: " +
-                        "unsupported variable type definition in DATA LIST.");
-
-            } else if (readStatus == DATA_LIST_ILLEGAL_NUMERIC_TYPE) {
-                 throw new IOException ("Invalid SPSS Command Syntax: " +
-                        "illegal numeric type definition.");
-
-            } else if (readStatus == DATA_LIST_ILLEGAL_VARIABLE_TYPE) {
-                 throw new IOException ("Invalid SPSS Command Syntax: " +
-                        "unknown or illegal variable type definition in DATA LIST.");
-
-            }
+        if (readStatus == 0) {
+            throw new IOException ("Invalid control card: " +
+                    "No variable definitions found");
         }
 
         readStatus = read_VarLabels(commandStrings.get("VarLabel"));
@@ -304,56 +271,19 @@ public class SPSSFileReader extends StatDataFileReader{
 
         dbgLog.fine("***** SPSSFileReader: validate() start *****");
 
-
-        // TODO:
-        // provide better diagnostics
-
         BufferedInputStream cardStream = new BufferedInputStream (new FileInputStream(ddiFile));
 
         getSPSScommandLines(cardStream);
-
-        // Now we have the control card pre-parsed and the individual
-        // parts of the card ("commands") stored separately.
-        // Now we can go through these parts and evaluate the commands,
-        // which is going to give us the metadata describing the data set.
-        //
-        // These are the parts of the SPSS data definition card that we are
-        // interested in:
-        // DATA LIST
-        // VAR LABELS
-        // VALUE LABELS
-        // FORMATS (?)
-        // MISSING VALUES
-        // RECODE (?)
 
         int readStatus = 0;
 
         readStatus = read_DataList(commandStrings.get("DataList"));
         dbgLog.fine ("reading DataList. status: "+readStatus);
 
-        if (readStatus != 0) {
-            if (readStatus == DATA_LIST_DELIMITER_NOT_FOUND) {
-                throw new IOException ("Invalid SPSS Command Syntax: " +
-                        "no delimiter specified in the DATA LIST command.");
-            } else if (readStatus == DATA_LIST_NO_SLASH_SEPARATOR) {
-                 throw new IOException ("Invalid SPSS Command Syntax: " +
-                        "missing / delimiter on the DATA LIST line.");
-
-            } else if (readStatus == DATA_LIST_UNSUPPORTED_VARIABLE_TYPE) {
-                 throw new IOException ("Invalid SPSS Command Syntax: " +
-                        "unsupported variable type definition in DATA LIST.");
-
-            } else if (readStatus == DATA_LIST_ILLEGAL_NUMERIC_TYPE) {
-                 throw new IOException ("Invalid SPSS Command Syntax: " +
-                        "illegal numeric type definition.");
-
-            } else if (readStatus == DATA_LIST_ILLEGAL_VARIABLE_TYPE) {
-                 throw new IOException ("Invalid SPSS Command Syntax: " +
-                        "unknown or illegal variable type definition in DATA LIST.");
-
-            }
+        if (readStatus == 0) {
+            throw new IOException ("Invalid control card: " +
+                    "No variable definitions found");
         }
-
 
 
         return true;
@@ -392,7 +322,7 @@ public class SPSSFileReader extends StatDataFileReader{
                 // continuation of a wrapped line.
 
                 if (linesCombined == null) {
-                    throw new IOException ("Illegal entry: line \""+line+"\" starts with a white space, but does not appear within a defined SPSS command block");
+                    throw new IOException ("Illegal entry: line "+line+" starts with a white space, but does not appear within a defined SPSS command block");
                 }
 
                 if (line.matches("^[ \t]*\\. *")) {
@@ -407,8 +337,7 @@ public class SPSSFileReader extends StatDataFileReader{
             } else {
                 // a new command line:
                 if (linesCombined != null) {
-                    throw new IOException ("Illegal Control Card Syntax: command "+commandHead+" not terminated properly.");
-
+                    throw new IOException ("line "+line+": bad formatting; (command "+commandHead+" not terminated properly?)");
                 }
 
                 if (line.matches("^[Nn]\\w* [Oo]\\w* [Cc].*")) {
@@ -558,10 +487,6 @@ public class SPSSFileReader extends StatDataFileReader{
 
                 }
 
-            // FORMATS:
-            //
-            // (not supported, for now)
-
             // NUMBER OF CASES: (optional -- may not be present)
                 
             } else if ( command1 != null &&
@@ -603,7 +528,7 @@ public class SPSSFileReader extends StatDataFileReader{
 
     // DATA LIST:
 
-    int read_DataList (String dataListCommand) {
+    int read_DataList (String dataListCommand) throws IOException {
         int readStatus = 0;
 
         // Read the first line (DATA LIST ...) to determine
@@ -630,9 +555,8 @@ public class SPSSFileReader extends StatDataFileReader{
             setDelimiterChar(delimiterString.charAt(0));
             dbgLog.fine("found delimiter: "+delimiterString);
         } else {
-            return DATA_LIST_DELIMITER_NOT_FOUND;
-            // No delimiter declaration found
-            //(not a delimited file perhaps?)
+            throw new IOException ("Invalid SPSS Command Syntax: " +
+                "no delimiter specified in the DATA LIST command.");
         }
 
         // Cut off the remaining lines containing the variable definitions:
@@ -640,7 +564,8 @@ public class SPSSFileReader extends StatDataFileReader{
         int separatorIndex = dataListCommand.indexOf("/");
 
         if (separatorIndex == -1) {
-            return DATA_LIST_NO_SLASH_SEPARATOR;
+            throw new IOException ("Invalid SPSS Command Syntax: " +
+                "missing / delimiter on the DATA LIST line.");
             // No slash found after the first line of the Data List command.
         }
 
@@ -658,7 +583,7 @@ public class SPSSFileReader extends StatDataFileReader{
         String varName = null;
         String varType = null;
 
-        String varDeclarationRegex = "\\s*(\\S+)\\s+\\((\\S+)\\)";
+        String varDeclarationRegex = "\\s*(\\S+)\\s+\\((\\S*)\\)";
         Pattern varDeclarationPattern = Pattern.compile(varDeclarationRegex);
         Matcher varDeclarationMatcher = varDeclarationPattern.matcher(dataListCommand);
 
@@ -668,14 +593,19 @@ public class SPSSFileReader extends StatDataFileReader{
         String numVarDeclarationRegex = "^[fF]([0-9]+)\\.*([0-9]*)";
         Pattern numVarDeclarationPattern = Pattern.compile(numVarDeclarationRegex);
 
+        int endOfMatches = 0;
+
         while (varDeclarationMatcher.find()) {
             varName = varDeclarationMatcher.group(1);
             varType = varDeclarationMatcher.group(2);
 
+            endOfMatches = varDeclarationMatcher.end();
+
             dbgLog.fine ("found variable "+varName+", type "+varType);
 
             if (varType == null || varType.equals("")) {
-                return DATA_LIST_ILLEGAL_VARIABLE_TYPE;
+                throw new IOException ("Invalid variable declaration in DATA LIST command: no type specified for variable "+varName+".");
+
             }
 
             variableNameList.add(varName);
@@ -743,7 +673,9 @@ public class SPSSFileReader extends StatDataFileReader{
                     } else {
                         // This does not look like a valid numeric type
                         // definition.
-                        return DATA_LIST_ILLEGAL_NUMERIC_TYPE;
+                        throw new IOException ("Invalid variable declaration in the DATA LIST command: " +
+                            "Illegal or unsupported numeric type definition for variable "+varName);
+
                     }
                 }
 
@@ -765,10 +697,14 @@ public class SPSSFileReader extends StatDataFileReader{
             // Check for various date and time formats that we support:
             } else if (SPSSConstants.FORMAT_CATEGORY_TABLE.get(varType) != null) {
 
-                if ( SPSSConstants.FORMAT_CATEGORY_TABLE.get(varType).equals("date")
-                    || SPSSConstants.FORMAT_CATEGORY_TABLE.get(varType).equals("time")
-                    || varType.equals("WKDAY")
-                    || varType.equals("MONTH")) {
+                //if ( SPSSConstants.FORMAT_CATEGORY_TABLE.get(varType).equals("date")
+                //    || SPSSConstants.FORMAT_CATEGORY_TABLE.get(varType).equals("time")
+                //    || varType.equals("WKDAY")
+                //    || varType.equals("MONTH")) {
+
+                if ( varType.equalsIgnoreCase("DATE")
+                    || varType.equalsIgnoreCase("DATETIME")) {
+
 
                     variableTypeList.add(1);
                     formatCategoryTable.put(varName, SPSSConstants.FORMAT_CATEGORY_TABLE.get(varType));
@@ -777,21 +713,29 @@ public class SPSSFileReader extends StatDataFileReader{
                     printFormatNameTable.put(varName, varType);
 
                 } else {
-                    return DATA_LIST_UNSUPPORTED_VARIABLE_TYPE;
+                    throw new IOException ("Invalid variable declaration in DATA LIST command: " +
+                        "unsupported variable type definition for variable "+varName+".");
+
                 }
 
             } else {
                 // invalid/unrecognized variable type definition.
-                return DATA_LIST_ILLEGAL_VARIABLE_TYPE;
+                throw new IOException ("Invalid variable declaration in DATA LIST command: " +
+                    "unknown or illegal type definition for variable "+varName+".");
             }
 
             variableCounter++;
 
         }
 
-        // TODO: validate variable entries;
-        // return error code if any unsupported variable declarations are
-        // found (for example, fixed width columns).
+        dataListCommand = dataListCommand.substring(endOfMatches);
+
+        // check to see if we've parsed the entire DATA LIST section:
+        if (!dataListCommand.matches("^[ \t\n\r]*$")) {
+            throw new IOException ("Illegal control card syntax: "+
+                    "this portion of the DATA LIST command could not be parsed: "+
+                    dataListCommand);
+        }
 
         smd.getFileInformation().put("varQnty", variableCounter);
         setVarQnty(variableCounter);
@@ -817,12 +761,12 @@ public class SPSSFileReader extends StatDataFileReader{
         smd.setVariableFormatName(printFormatNameTable);
         smd.setVariableFormatCategory(formatCategoryTable); //TODO: verify
 
-        return readStatus;
+        return variableCounter;
     }
 
     // VARIABLE LABELS:
 
-    int read_VarLabels (String varLabelsCommand) {
+    int read_VarLabels (String varLabelsCommand) throws IOException {
         int readStatus = 0;
 
         // List of variable labels.
@@ -854,19 +798,25 @@ public class SPSSFileReader extends StatDataFileReader{
 
         readStatus = labelCounter;
 
-        // TODO:
-        // Validate the entries, make sure that the variables are legit, etc.
-
         // Create default placeholder labels for the variables that
         // do not have labels declared:
         // (should we make variable labels mandatory?)
+
+        int labeledVariablesVerified = 0;
 
         for (int j=0; j<getVarQnty(); j++){
             String variableName = variableNameList.get(j);
             if (!variableLabelMap.containsKey(variableName)) {
                 variableLabelMap.put(variableName, "variable "+variableName);
+            } else {
+                labeledVariablesVerified++;
             }
 
+        }
+        // Make sure that the labels we found are for legit variables:
+
+        if (labelCounter != labeledVariablesVerified) {
+            throw new IOException ("Invalid control card: Variable label(s) defined for undeclared variables.");
         }
 
         smd.setVariableLabel(variableLabelMap);
@@ -1381,9 +1331,10 @@ public class SPSSFileReader extends StatDataFileReader{
             spssCardStream = new BufferedInputStream(new FileInputStream(testCardFile));
 
             spssReader = new SPSSFileReader(null);
-            processedCard = spssReader.read(spssCardStream, new File(args[1]));
+            processedCard = spssReader.read(spssCardStream, new File(csvRawDataFile));
         } catch (IOException ex) {
-            System.out.println("exception caught!");
+            System.out.println("exception caught: ");
+            System.out.println(ex.getMessage());
             if (spssReader == null) {
                 System.out.println("failed to create an SPSS file reader.");
             }

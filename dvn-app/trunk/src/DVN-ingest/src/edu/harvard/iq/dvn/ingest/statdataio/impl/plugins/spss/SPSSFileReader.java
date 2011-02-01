@@ -583,7 +583,7 @@ public class SPSSFileReader extends StatDataFileReader{
         String varName = null;
         String varType = null;
 
-        String varDeclarationRegex = "\\s*(\\S+)\\s+\\((\\S*)\\)";
+        String varDeclarationRegex = "^\\s*(\\S+)\\s+\\((\\S*)\\)";
         Pattern varDeclarationPattern = Pattern.compile(varDeclarationRegex);
         Matcher varDeclarationMatcher = varDeclarationPattern.matcher(dataListCommand);
 
@@ -600,6 +600,8 @@ public class SPSSFileReader extends StatDataFileReader{
             varType = varDeclarationMatcher.group(2);
 
             endOfMatches = varDeclarationMatcher.end();
+            dataListCommand = dataListCommand.substring(endOfMatches);
+            varDeclarationMatcher.reset(dataListCommand);
 
             dbgLog.fine ("found variable "+varName+", type "+varType);
 
@@ -728,7 +730,7 @@ public class SPSSFileReader extends StatDataFileReader{
 
         }
 
-        dataListCommand = dataListCommand.substring(endOfMatches);
+        //dataListCommand = dataListCommand.substring(endOfMatches);
 
         // check to see if we've parsed the entire DATA LIST section:
         if (!dataListCommand.matches("^[ \t\n\r]*$")) {

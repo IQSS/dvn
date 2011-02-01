@@ -133,7 +133,7 @@ public class CSVFileReader implements java.io.Serializable {
 
     public int read(BufferedReader csvReader, SDIOMetadata smd, PrintWriter pwout) throws IOException {
 
-        DataTable csvData = new DataTable();
+        //DataTable csvData = new DataTable();
         int varQnty = 0;
 
         try {
@@ -151,7 +151,7 @@ public class CSVFileReader implements java.io.Serializable {
         String[] caseRow = new String[varQnty];
 
         String line;
-        String[] valueTokens = new String[varQnty];
+        String[] valueTokens;
 
         int lineCounter = 0;
 
@@ -164,7 +164,17 @@ public class CSVFileReader implements java.io.Serializable {
         while ((line = csvReader.readLine()) != null) {
             // chop the line:
             line = line.replaceFirst("[\r\n]*$", "");
-            valueTokens = line.split(""+delimiterChar, varQnty);
+            valueTokens = line.split(""+delimiterChar, -2);
+
+            if (valueTokens == null) {
+                throw new IOException("Failed to read line "+(lineCounter+1)+" of the Data file.");
+
+            }
+
+            if (valueTokens.length != varQnty) {
+                throw new IOException("Reading mismatch, line "+(lineCounter+1)+" of the Data file: " +
+                        varQnty + " delimited values expected, "+valueTokens.length+" found.");
+            }
 
             //dbgLog.fine("case: "+lineCounter);
 

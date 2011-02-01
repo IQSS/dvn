@@ -370,8 +370,11 @@ public class SPSSFileReader extends StatDataFileReader{
         BufferedReader rd = new BufferedReader(new InputStreamReader(cardStream));
         String line = null;
         String linesCombined = null;
+        String commandHead = "";
+        boolean commandTerminated = false;
 
         List<String> SPSScommands = new ArrayList<String>();
+
 
         while ((line = rd.readLine()) != null) {
             // chop all blanks at the end, replace with a single whitespace:
@@ -382,30 +385,53 @@ public class SPSSFileReader extends StatDataFileReader{
 
             if (line.equals(" ") ||
                 line.startsWith("comment") ||
+                line.startsWith("finish") ||
                 line.matches("^[ \t]*.$")) {
                     dbgLog.fine("skipping line");
-            }
+            } else if (line.startsWith(" ") || line.startsWith("\t") || line.startsWith(".")) {
+                // continuation of a wrapped line.
 
-            // check first character:
+                if (linesCombined == null) {
+                    throw new IOException ("Illegal entry: line \""+line+"\" starts with a white space, but does not appear within a defined SPSS command block");
+                }
 
-            //String firstChar = line.substring(0, 1);
+                if (line.matches("^[ \t]*\\. *")) {
+                    // command termination
+                    SPSScommands.add(linesCombined);
+                    linesCombined = null;
+                } else {
+                    line = line.replaceAll("^[ \t]*", "");
+                    linesCombined = linesCombined + line;
+                }
 
-            if (line.startsWith(" ") || line.startsWith("\t")) {
-                // continuation line;
-                line = line.replaceAll("^[ \t]*", "");
-                linesCombined = linesCombined + line;
             } else {
                 // a new command line:
                 if (linesCombined != null) {
-                    SPSScommands.add(linesCombined);
+                    throw new IOException ("Illegal Control Card Syntax: command "+commandHead+" not terminated properly.");
+
                 }
-                linesCombined = line;
+
+                if (line.matches("^[Nn]\\w* [Oo]\\w* [Cc].*")) {
+                    // looks like the "Number of Cases" command; 
+                    // special case -- doesn't need to be terminated by 
+                    // the "." -- which means we can put it directly 
+                    // on the command stack:
+                    
+                    SPSScommands.add(line);
+
+                } else {
+                    commandHead = line;
+                    linesCombined = commandHead;
+                }
+
+
             }
          }
 
         rd.close();
+
         if (linesCombined != null) {
-            SPSScommands.add(linesCombined);
+            throw new IOException ("Illegal Control Card Syntax: command "+commandHead+" not terminated properly.");
         }
 
         String regexCommandLine = "^(\\w+?)\\s+?(\\w+)(.*)";
@@ -560,9 +586,13 @@ public class SPSSFileReader extends StatDataFileReader{
                     }
                 }
 
-            } // also:
-            // RECODE
-            // FORMATS
+            } else {
+                throw new IOException ("Unsupported or illegal command: "+command1+" ("+commandLine+")");                
+            }
+
+            // also:
+            // RECODE?
+            // FORMATS?
 
 
         }
@@ -591,7 +621,7 @@ public class SPSSFileReader extends StatDataFileReader{
         String delimiterString = null;
 
         //String datalistRegex = "^data\\s+list\\s+list\\('(.)'\\)\\s+?/";
-        String datalistRegex = "^list\\s*\\('(.)'\\).*/";
+        String datalistRegex = "^list\\s*\\('(.)'\\)";
         Pattern datalistPattern = Pattern.compile(datalistRegex, java.util.regex.Pattern.CASE_INSENSITIVE);
         Matcher datalistMatcher = datalistPattern.matcher(dataListCommand);
 

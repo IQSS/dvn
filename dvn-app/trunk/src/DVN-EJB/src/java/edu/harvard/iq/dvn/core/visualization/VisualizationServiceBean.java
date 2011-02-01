@@ -382,7 +382,7 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
     @Override
     public List getGroupsFromGroupTypeId(Long groupTypeId) {
 
-        String query = "SELECT g.varGroups FROM  VarGroupType g where g.id = " + groupTypeId + "  ORDER BY g.groups.varGroup.name";
+        String query = "SELECT g.varGroups FROM  VarGroupType g where g.id = " + groupTypeId + "  ORDER BY g.name";
         return (List) em.createQuery(query).getResultList();
     }
 

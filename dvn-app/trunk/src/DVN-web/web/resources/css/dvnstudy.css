@@ -111,9 +111,9 @@ select.vdcStudyFileRowFileDownloadAsList{margin-left:.5em}
 .vdcStudyFileSubset table.vdcStudyFileSubsetTable td a{text-transform:uppercase;font-size:100% !important}
 .vdcStudyFileSubsetAnalysis a:hover,.vdcStudyFileSubsetAnalysis a:active{color:#c55b28;text-decoration:underline}
 a.vdcStudyFileSubsetAnalysisLink:link,a.vdcStudyFileSubsetAnalysisLink:hover,a.vdcStudyFileSubsetAnalysisLink:active,a.vdcStudyFileSubsetAnalysisLink:visited{padding:2px 0px 2px 24px;background:url(/dvn/resources/images/icon_analyze.gif) no-repeat;font-size:90% !important;vertical-align:top}
-a.vdcStudyFileSubsetAnalysisLink.dvnStudyFileVisualizationLink{display:block; margin-top:4px;}
+a.vdcStudyFileSubsetAnalysisLink.dvnStudyFileVisualizationLink{display:block; margin-top:4px;background-position:0 2px;}
 .vdcStudyDataCitationContainer{padding:0 .5em 0 .25em;}
-.vdcStudyDataCitation span{padding:0 0 2px 24px !important;display:inline !important;background:url(/dvn/resources/images/icon_citation.gif) no-repeat;font-size:90% !important}
+.vdcStudyDataCitation span{padding:2px 0 2px 24px !important;display:inline !important;background:url(/dvn/resources/images/icon_citation.gif) no-repeat;font-size:90% !important}
 .downloadas,.downloadas ul{list-style:none;margin:0;padding:0}
 .downloadas li{margin:0;padding:0;display:block;position:relative;z-index:5}
 .downloadas li:hover{z-index:10000;white-space:normal}

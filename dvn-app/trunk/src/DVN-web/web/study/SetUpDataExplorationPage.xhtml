@@ -74,49 +74,66 @@
 </script>
 
 <style type="text/css">
+.dvnstudyadminboxfloat {width:340px;}
 .iceDatTbl .dvnDataTableHeaderForm {text-align:left;}
 .iceDatTbl .dvnDataTableHeaderForm label.dvnDataTableHeaderFilter {font-weight:normal;}
 </style>
 
-    <div style="overflow:hidden;">
-        <div style="float:left; margin-right:2em;">
-        <ice:selectOneMenu value="#{SetUpDataExplorationPage.studyFileId}" rendered="#{SetUpDataExplorationPage.selectFile}" partialSubmit="true" binding="#{SetUpDataExplorationPage.selectStudyFile}"
-                           onchange="getElementById('form1:studyFileIdButton').click();">
-            <f:selectItems value="#{SetUpDataExplorationPage.studyFileIdSelectItems}"/>
-        </ice:selectOneMenu>
-        <ice:outputText rendered="#{!SetUpDataExplorationPage.selectFile}" value="File Name: #{SetUpDataExplorationPage.studyFileName}"/>
+    <div class="dvn_section">
+        <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnWarningMessage">
+            <div class="dvnMsgBlockContainer">
+                <p><ice:message for="validateButton" id="boxErrorMsg" styleClass="errorMessage"/></p>
+            </div>
         </div>
-        <div style="float:left;">
-            <ice:graphicImage value="/resources/images/icon_information.18.png" styleClass="dvn_icon" rendered="#{SetUpDataExplorationPage.selectFile}"/>
-            <ice:outputText value=" Select A Data File for Data Exploration Set-up" rendered="#{SetUpDataExplorationPage.selectFile}"/>
+          <div class="dvnstudytitleblock dvn_padBot">
+            <div class="dvnstudyadminboxfloat dvn_right">
+                <div class="dvnFormMargin">
+                    <!-- hidden button that is clicked by select menu's onchange action -->
+                    <ice:commandButton id="studyFileIdButton" visible="false" value="Change" action="#{SetUpDataExplorationPage.resetStudyFileId}"/>
+
+                    <ice:commandButton id="validateButton" type="submit" value="Validate" rendered="#{SetUpDataExplorationPage.showCommands}"
+                                       binding="#{SetUpDataExplorationPage.validateButton}" action="#{SetUpDataExplorationPage.validate}" onclick="jQuery('div.dvnMsgBlockRound').corner('10px');"/>
+
+                    <ice:commandButton type="submit" value="Release" action="#{SetUpDataExplorationPage.release}" rendered="#{!SetUpDataExplorationPage.dataTable.visualizationEnabled and SetUpDataExplorationPage.showCommands}"/>
+
+                    <ice:commandButton type="submit" value="Un-Release" action="#{SetUpDataExplorationPage.unRelease}" rendered="#{SetUpDataExplorationPage.dataTable.visualizationEnabled and SetUpDataExplorationPage.showCommands}"/>
+
+                    <ice:commandButton type="submit" value="Cancel" action="#{SetUpDataExplorationPage.cancel}"/>
+
+                    <ice:commandButton type="submit" visible="false" id="updateMeasureList" value="update" action="#{SetUpDataExplorationPage.updateMeasureList}"/>
+                    <ice:commandButton type="submit" visible="false" id="selectAllFilterVariablesClick" value="update" action="#{SetUpDataExplorationPage.selectAllFilterVariablesClick}"/>
+                    <ice:commandButton type="submit" visible="false" id="selectOneFilterVariableClick" value="update" action="#{SetUpDataExplorationPage.selectOneFilterVariableClick}"/>
+                    <ice:commandButton type="submit" visible="false" id="selectAllMeasureVariablesClick" value="update" action="#{SetUpDataExplorationPage.selectAllMeasureVariablesClick}"/>
+                    <ice:commandButton type="submit" visible="false" id="selectOneMeasureVariableClick" value="update" action="#{SetUpDataExplorationPage.selectOneMeasureVariableClick}"/>
+
+                    <ice:commandButton type="submit" visible="false" id="updateFilterList" value="update" action="#{SetUpDataExplorationPage.updateFilterList}"/>
+                    <ice:commandButton type="submit" visible="false" id="updateXAxisList" value="update" action="#{SetUpDataExplorationPage.updateXAxisList}"/>
+                    <ice:commandButton type="submit" value="Save" action="#{SetUpDataExplorationPage.saveAndExit}" rendered="#{SetUpDataExplorationPage.showCommands}"/>
+
+                    <ice:commandButton type="submit" visible="false" value="Save and Continue" action="#{SetUpDataExplorationPage.saveAndContinue}" rendered="#{SetUpDataExplorationPage.showCommands}"/>
+                </div>
+            </div>
+            <!--<ui:include src="/study/StudyTitleFragment.xhtml">
+                <ui:param name="studyUI" value="#{SetUpDataExplorationPage.studyUI}"/>
+                <ui:param name="displayReleaseLink" value="false"/>
+                <ui:param name="displayVersionInfo" value="false"/>
+                <ui:param name="displayStatusBox" value="false"/>
+            </ui:include>-->
+          </div>
+
+        <div style="overflow:hidden;">
+            <div style="float:left; margin-right:2em;">
+            <ice:selectOneMenu value="#{SetUpDataExplorationPage.studyFileId}" rendered="#{SetUpDataExplorationPage.selectFile}" partialSubmit="true" binding="#{SetUpDataExplorationPage.selectStudyFile}"
+                               onchange="getElementById('form1:studyFileIdButton').click();">
+                <f:selectItems value="#{SetUpDataExplorationPage.studyFileIdSelectItems}"/>
+            </ice:selectOneMenu>
+            <ice:outputText rendered="#{!SetUpDataExplorationPage.selectFile}" value="File Name: #{SetUpDataExplorationPage.studyFileName}"/>
+            </div>
+            <div style="float:left;">
+                <ice:graphicImage value="/resources/images/icon_information.18.png" styleClass="dvn_icon" rendered="#{SetUpDataExplorationPage.selectFile}"/>
+                <ice:outputText value=" Select A Data File for Data Exploration Set-up" rendered="#{SetUpDataExplorationPage.selectFile}"/>
+            </div>
         </div>
-    </div>
-
-    <!-- hidden button that is clicked by select menu's onchange action -->
-    <ice:commandButton id="studyFileIdButton" visible="false" value="Change" action="#{SetUpDataExplorationPage.resetStudyFileId}"/>
-    <br/>
-    <div class="dvnFormPadding dvnFormMargin" style="float:right;">
-        <ice:commandButton id="validateButton" type="submit" value="Validate" rendered="#{SetUpDataExplorationPage.showCommands}"
-                           binding="#{SetUpDataExplorationPage.validateButton}" action="#{SetUpDataExplorationPage.validate}"/>
-        <ice:message for="validateButton" id="boxErrorMsg" styleClass="errorMessage"/>
-
-        <ice:commandButton type="submit" value="Release" action="#{SetUpDataExplorationPage.release}" rendered="#{!SetUpDataExplorationPage.dataTable.visualizationEnabled and SetUpDataExplorationPage.showCommands}"/>
-
-        <ice:commandButton type="submit" value="Un-Release" action="#{SetUpDataExplorationPage.unRelease}" rendered="#{SetUpDataExplorationPage.dataTable.visualizationEnabled and SetUpDataExplorationPage.showCommands}"/>
-
-        <ice:commandButton type="submit" value="Cancel" action="#{SetUpDataExplorationPage.cancel}"/>
-
-        <ice:commandButton type="submit" visible="false"  id="updateMeasureList" value="update" action="#{SetUpDataExplorationPage.updateMeasureList}"/>
-        <ice:commandButton type="submit" visible="false"  id="selectAllFilterVariablesClick" value="update" action="#{SetUpDataExplorationPage.selectAllFilterVariablesClick}"/>
-        <ice:commandButton type="submit" visible="false"  id="selectOneFilterVariableClick" value="update" action="#{SetUpDataExplorationPage.selectOneFilterVariableClick}"/>
-        <ice:commandButton type="submit" visible="false"  id="selectAllMeasureVariablesClick" value="update" action="#{SetUpDataExplorationPage.selectAllMeasureVariablesClick}"/>
-        <ice:commandButton type="submit" visible="false"  id="selectOneMeasureVariableClick" value="update" action="#{SetUpDataExplorationPage.selectOneMeasureVariableClick}"/>
-
-        <ice:commandButton type="submit" visible="false"  id="updateFilterList" value="update" action="#{SetUpDataExplorationPage.updateFilterList}"/>
-        <ice:commandButton type="submit" visible="false"  id="updateXAxisList" value="update" action="#{SetUpDataExplorationPage.updateXAxisList}"/>
-        <ice:commandButton type="submit" value="Save" action="#{SetUpDataExplorationPage.saveAndExit}" rendered="#{SetUpDataExplorationPage.showCommands}"/>
-
-        <ice:commandButton type="submit" visible="false" value="Save and Continue" action="#{SetUpDataExplorationPage.saveAndContinue}" rendered="#{SetUpDataExplorationPage.showCommands}"/>
     </div>
     <div class="dvn_sectionBoxNoBorders">
         <ice:panelTabSet id="tabSet1" rendered="#{SetUpDataExplorationPage.showCommands}">

@@ -37,7 +37,7 @@
     <div jsfc="ice:panelGroup" rendered="#{SetUpDataExplorationPage.editMeasure}" style="margin-bottom:1em;">
         <ice:outputLabel value="Units"
                          visible="#{SetUpDataExplorationPage.editMeasure}"/>
-        <ice:inputText rendered="#{SetUpDataExplorationPage.addMeasureType}"
+        <ice:inputText rendered="#{SetUpDataExplorationPage.editMeasure}"
           size="25"
           maxlength="255"
           binding="#{SetUpDataExplorationPage.inputMeasureUnits}"/>
@@ -50,7 +50,7 @@
                        binding="#{SetUpDataExplorationPage.dataTableManageMeasureGroupType}">
             <f:facet name="header">
                 <ice:columnGroup>
-                    <!--<ice:headerRow rendered="#{SetUpDataExplorationPage.addMeasureType}">-->
+                     <!--<ice:headerRow rendered="#{SetUpDataExplorationPage.addMeasureType}">-->
                     <ice:headerRow>
                          <ice:column colspan="2" style="text-align:left;">
                              <ice:outputLabel value="Name" style="font-weight:normal;"/>
@@ -59,7 +59,7 @@
                                                 maxlength="255"
                                                 binding="#{SetUpDataExplorationPage.inputMeasureGroupTypeName}"/>
                                 <div class="dvnFormPadding dvnFormMargin" style="display:inline;">
-                                    <ice:commandButton type="submit" value="Add" action="#{SetUpDataExplorationPage.saveMeasureTypeButton}"/>
+                                    <ice:commandButton type="submit" value="Add Type" action="#{SetUpDataExplorationPage.saveMeasureTypeButton}"/>
                                     <!-- <ice:commandButton type="submit" value="Cancel" action="#{SetUpDataExplorationPage.cancelMeasureTypeButton}"/>-->
                                 </div>
                          </ice:column>

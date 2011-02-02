@@ -185,7 +185,16 @@ public class CSVFileReader implements java.io.Serializable {
                     // String. Adding to the table, quoted.
                     // Empty strings stored as " " (one white space):
                     if (valueTokens[i] != null && (!valueTokens[i].equals(""))) {
-                        caseRow[i] = "\"" + valueTokens[i] + "\"";
+                        String charToken = valueTokens[i];
+                        // Dealing with quotes: 
+                        // remove the leading and trailing quotes, if present:
+                        charToken = charToken.replaceFirst("^\"", "");
+                        charToken = charToken.replaceFirst("\"$", "");
+                        // escape the remaining ones:
+                        charToken = charToken.replace("\"", "\\\"");
+                        // final pair of quotes:
+                        charToken = "\"" + charToken + "\"";
+                        caseRow[i] = charToken;
                     } else {
                         caseRow[i] = "\" \"";
                     }

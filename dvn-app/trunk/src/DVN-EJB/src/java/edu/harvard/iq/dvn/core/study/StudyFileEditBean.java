@@ -36,6 +36,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+
+
 import java.util.logging.*;
 import javax.ejb.EJBException;
 import javax.xml.stream.XMLStreamConstants;
@@ -198,6 +200,15 @@ public class StudyFileEditBean implements Serializable {
 
     public String getControlCardSystemFileLocation() {
         return controlCardSystemFileLocation;
+    }
+
+    public String getControlCardFileName() {
+        if (controlCardSystemFileLocation != null
+                && !controlCardSystemFileLocation.equals("")) {
+            return (new File(controlCardSystemFileLocation)).getName(); 
+        }
+
+        return null;
     }
 
     public void setControlCardSystemFileLocation(String controlCardSystemFileLocation) {

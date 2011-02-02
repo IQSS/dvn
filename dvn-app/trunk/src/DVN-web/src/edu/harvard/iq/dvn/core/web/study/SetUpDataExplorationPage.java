@@ -1367,7 +1367,8 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
     public String unRelease(){
         dataTable.setVisualizationEnabled(false);
-        return "";
+            saveAndExit();
+            return "viewStudy";
     }
 
 

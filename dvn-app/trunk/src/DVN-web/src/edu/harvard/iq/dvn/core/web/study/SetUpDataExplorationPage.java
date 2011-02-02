@@ -371,6 +371,9 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
 
  private boolean hasAssignedGroups(VarGroupType varGroupTypeIn){
+        if (varGroupTypeIn.getId() == null){
+            return false;
+        }
                 List varGroup =  visualizationService.getGroupsFromGroupTypeId(varGroupTypeIn.getId());
 
             if (!varGroup.isEmpty()){

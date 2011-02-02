@@ -99,7 +99,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     private StudyUI studyUI;
     private String fileName = "";
     private String graphTitle = "";
-
+    private boolean lineAdded = false;
     private Long studyId = new Long(0);
     private Long versionNumber;
 
@@ -610,11 +610,13 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
 
     public void addLine(){
+        lineAdded = false;
         
         if ( lineLabel.isEmpty() || lineLabel.trim().equals("") ) {
             FacesMessage message = new FacesMessage("Please enter a label");
             FacesContext fc = FacesContext.getCurrentInstance();
             fc.addMessage(addLineButton.getClientId(fc), message);
+            FacesContext.getCurrentInstance().renderResponse();
             return;
         }
 
@@ -622,12 +624,14 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             FacesMessage message = new FacesMessage("A maximum of 8 lines may be displayed in a single graph");
             FacesContext fc = FacesContext.getCurrentInstance();
             fc.addMessage(addLineButton.getClientId(fc), message);
+            FacesContext.getCurrentInstance().renderResponse();
             return;
         }
 
 
         if (validateSelections()){
-
+            lineAdded = true;
+            FacesContext.getCurrentInstance().renderResponse();
           VisualizationLineDefinition vizLine = new VisualizationLineDefinition();
           vizLine.setMeasureGrouping(measureGrouping);
           vizLine.setMeasureGroup(visualizationService.getGroupFromId(selectedMeasureId));
@@ -1153,5 +1157,14 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
     public void setStartYear(Long startYear) {
         this.startYear = startYear;
+    }
+
+
+    public boolean isLineAdded() {
+        return lineAdded;
+    }
+
+    public void setLineAdded(boolean lineAdded) {
+        this.lineAdded = lineAdded;
     }
 }

@@ -67,7 +67,12 @@
                 data.addColumn('number', myColumn);
             }
         } else {
-            data.addColumn('number', "");
+            if (intDisType ==1){
+                data.addColumn('number', "");
+            } else {
+                data.addColumn('number', myColumn);
+            }
+
         }
     }
 
@@ -313,8 +318,14 @@ function addLine(){
 
      document.getElementById('ExploreDataPage:addLineHidden').click();
 
-     setTimeout(function(){drawVisualization();}, 1500);
+   var test =   document.getElementById('ExploreDataPage:boxErrorMsg').textContent;
+   if (test.length == 0){
+       setTimeout(function(){drawVisualization();}, 1500);
+   }
+     
 }
+
+
 
 function deleteLine(){
    
@@ -337,6 +348,7 @@ function updateDisplayType(){
      document.getElementById('ExploreDataPage:selectDisplayButton').click();
      setTimeout(function(){drawVisualization();}, 500);
 }
+
 // ]]>
     </script>
 
@@ -352,6 +364,7 @@ function updateDisplayType(){
 <ice:outputText visible="false" id="graphTitleHidden" value="#{ExploreDataPage.graphTitle}"/>
 <ice:commandButton visible="false" id="updateGraphTitle" type="submit" value="update" action="#{ExploreDataPage.updateGraphTitle}"/>
 <ice:commandButton visible="false" id="deleteLineHidden" value="Delete Line hidden" actionListener="#{ExploreDataPage.deleteLine}"/>
+<ice:selectBooleanCheckbox id="addLineCheck" visible="false"  value="#{ExploreDataPage.lineAdded}"   />
 
 <style type="text/css">
     .fileInfo {margin-bottom:1em;}
@@ -441,9 +454,9 @@ function updateDisplayType(){
                     <ice:inputText id="graphlinelabel" value="#{ExploreDataPage.lineLabel}"></ice:inputText>
                 </div>
                 <div style="display:inline;">
-                    <ice:commandButton id="addLineButton" type="submit" value="Add Line" binding="#{ExploreDataPage.addLineButton}" onclick="addLine();"/>
+                    <ice:commandButton id="addLineButton"  value="Add Line" binding="#{ExploreDataPage.addLineButton}" onclick="addLine();"/>
                     <ice:message for="addLineButton" id="boxErrorMsg" styleClass="errorMessage"/>
-                    <ice:commandButton id="addLineHidden" type="submit" visible="false" value="Add Line" action="#{ExploreDataPage.addLine}"/>
+                    <ice:commandButton id="addLineHidden"  visible="false" value="Add Line" action="#{ExploreDataPage.addLine}"/>
                 </div>
             </div>
         </div>

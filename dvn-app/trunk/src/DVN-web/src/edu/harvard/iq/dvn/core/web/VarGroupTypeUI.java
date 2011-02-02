@@ -17,6 +17,7 @@ public class VarGroupTypeUI {
     private boolean enabled;
     private boolean editMode;
     private boolean selected;
+    private boolean deletable;
 
     public boolean isEnabled() {
         return enabled;
@@ -49,5 +50,15 @@ public class VarGroupTypeUI {
     public void setSelected(boolean selected) {
         this.selected = selected;
     }
+
+
+    public boolean isDeletable() {
+        return deletable;
+    }
+
+    public void setDeletable(boolean deletable) {
+        this.deletable = deletable;
+    }
+
 
 }

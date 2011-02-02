@@ -13,9 +13,11 @@
         <ice:commandButton type="submit" value="Cancel" action ="#{SetUpDataExplorationPage.cancelFragment}"
         visible="#{SetUpDataExplorationPage.editFilterGroup}"/>
         <ice:commandButton type="submit" value="Update" action ="#{SetUpDataExplorationPage.saveFilterGrouping}"
-                           visible="#{SetUpDataExplorationPage.editFilterGrouping or SetUpDataExplorationPage.manageFilterTypes}"/>
+                           visible="#{SetUpDataExplorationPage.editFilterGrouping}"/>
         <ice:commandButton type="submit" value="Cancel" action="#{SetUpDataExplorationPage.cancelFragment}"
                            visible="#{SetUpDataExplorationPage.editFilterGrouping or SetUpDataExplorationPage.manageFilterTypes}"/>
+        <ice:commandButton type="submit" value="Done" action="#{SetUpDataExplorationPage.cancelFragment}"
+                           visible="#{ SetUpDataExplorationPage.manageFilterTypes}"/>
     </div>
 
     <div jsfc="ice:panelGroup" style="margin-bottom:1em;" >

@@ -338,7 +338,9 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
                 List <VarGroupType> varGroupTypes = (List<VarGroupType>) varGrouping.getVarGroupTypes();
                 for(VarGroupType varGroupType: varGroupTypes) {
-                    selectItems.add(new SelectItem(varGroupType.getId(), varGroupType.getName()));
+                    if (varGroupType.getGroups().size() > 0) {
+                        selectItems.add(new SelectItem(varGroupType.getId(), varGroupType.getName()));
+                    }
                 }
             }
         }

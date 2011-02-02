@@ -46,9 +46,11 @@
  function drawChart(data, intDisType, startYear, endYear) {
           
         var myString = new String (document.getElementById('ExploreDataPage:columnString').textContent);
+
         var myColumnList = myString.split ( ',' );
         var myDataString = new String (document.getElementById('ExploreDataPage:dataString').textContent);
         var myRowList = myDataString.split ( ';' );
+
         var numColumnsStr =  new String (document.getElementById('ExploreDataPage:dataColumns').textContent);
         var numColumns = parseInt(numColumnsStr);
         
@@ -64,7 +66,7 @@
                 data.addColumn('string', myColumn);               
             }
             if (intDisType == 3){
-                data.addColumn('number', myColumn);
+                data.addColumn('string', myColumn);
             }
         } else {
             if (intDisType ==1){
@@ -152,6 +154,7 @@
       function addRows1(dataTable, rowList, intDisType, year) {
           var myRowParse = rowList.split ( ',' );
           var dollNum = myParseFloat(myRowParse[1]);
+
           var dateReturn = myParseXaxis(myRowParse[0],intDisType, year);
           dataTable.addRow([dateReturn, dollNum]);
 
@@ -249,13 +252,14 @@ function myParseXaxis(dataIn, intDisType, year){
 
     var myDateList = dataIn.split('-');
 
+
     if (intDisType == 1){
         var yearOut = parseInt(myDateList[0]);
         var moOut = 0
         var dayOut = 1;
 
         var countDashes = dataIn.split("-").length
-        if (countDashes == 2){
+        if (countDashes ==3){
             if (myDateList[1].length > 0){
                 moOut = parseInt(myDateList[1]) - 1;
             }
@@ -269,13 +273,28 @@ function myParseXaxis(dataIn, intDisType, year){
         return dateOut;
 
     } 
-    if (intDisType == 2) {
-        if (year) {
-            return myDateList[0];
+    if (intDisType == 2 || intDisType == 3  ) {
+        if (year  || intDisType == 3 ) {
+            var countDashes = dataIn.split("-").length
+            if (countDashes == 3){
+                if (myDateList[1].length > 0){
+                    moOut = parseInt(myDateList[1]) - 1;
+                }
+
+                if (myDateList[2].length > 0){
+                    dayOut = parseInt(myDateList[2]);
+                }
+
+                return myDateList[1] + "/" + myDateList[2] + "/" + myDateList[0];
+
+            } else{
+                return myDateList[0];
+            }
         } else {
             return null;
         }
     }
+
     var yearInt = parseInt(myDateList[0]) ;
     return yearInt;
 }
@@ -290,10 +309,12 @@ function drawVisualization() {
       }
 
       var startYear = new String (document.getElementById('ExploreDataPage:startYear').textContent);
-      var intStartYear = parseInt(startYear);
+       var myDateList = startYear.split('-');
+      var intStartYear = parseInt(myDateList[0]);
 
       var endYear = new String (document.getElementById('ExploreDataPage:endYear').textContent);
-      var intEndYear = parseInt(endYear);
+      myDateList = endYear.split('-');
+      var intEndYear = parseInt(myDateList[0]);
 
       var data = new google.visualization.DataTable();
         drawChart(data, intDisType, intStartYear, intEndYear);

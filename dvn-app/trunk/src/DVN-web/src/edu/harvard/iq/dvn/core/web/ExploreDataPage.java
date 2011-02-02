@@ -94,8 +94,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     private Long numberOfColumns =  new Long(0);
     private String dataString = "";
     private Long displayType = new Long(0);
-    private Long startYear = new Long(0);
-    private Long endYear = new Long(3000);
+    private String startYear = new String("0");
+    private String endYear = new String("3000");
     private Study studyIn = new Study();
     private StudyUI studyUI;
     private String fileName = "";
@@ -583,12 +583,12 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
     public void update_StartYear(){
         Object value= this.selectStartYear.getValue();
-        this.startYear = new Long((String) value );
+        this.startYear = (String) value ;
     }
 
     public void update_EndYear(){
         Object value= this.selectEndYear.getValue();
-        this.endYear = new Long((String) value );
+        this.endYear = (String) value ;
     }
 
     public void reset_MeasureItems(ValueChangeEvent ae){
@@ -1145,19 +1145,19 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     public void setSelectEndYears(List<SelectItem> selectEndYears) {
         this.selectEndYears = selectEndYears;
     }
-    public Long getEndYear() {
+    public String getEndYear() {
         return endYear;
     }
 
-    public void setEndYear(Long endYear) {
+    public void setEndYear( String endYear) {
         this.endYear = endYear;
     }
 
-    public Long getStartYear() {
+    public String getStartYear() {
         return startYear;
     }
 
-    public void setStartYear(Long startYear) {
+    public void setStartYear(String startYear) {
         this.startYear = startYear;
     }
 

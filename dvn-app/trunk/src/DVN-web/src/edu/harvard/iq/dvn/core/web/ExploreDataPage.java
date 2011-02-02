@@ -32,6 +32,7 @@ import com.icesoft.faces.component.ext.HtmlCommandButton;
 import com.icesoft.faces.component.ext.HtmlDataTable;
 import com.icesoft.faces.component.ext.HtmlInputText;
 import com.icesoft.faces.component.ext.HtmlSelectOneMenu;
+import com.icesoft.faces.context.effects.JavascriptContext;
 import edu.harvard.iq.dvn.core.study.DataVariable;
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyFile;
@@ -616,7 +617,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             FacesMessage message = new FacesMessage("Please enter a label");
             FacesContext fc = FacesContext.getCurrentInstance();
             fc.addMessage(addLineButton.getClientId(fc), message);
-            FacesContext.getCurrentInstance().renderResponse();
             return;
         }
 
@@ -624,7 +624,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             FacesMessage message = new FacesMessage("A maximum of 8 lines may be displayed in a single graph");
             FacesContext fc = FacesContext.getCurrentInstance();
             fc.addMessage(addLineButton.getClientId(fc), message);
-            FacesContext.getCurrentInstance().renderResponse();
             return;
         }
 
@@ -651,6 +650,9 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
            this.numberOfColumns = new Long(vizLines.size());
            getDataTable();
            resetLineBorder();
+           FacesContext fc = FacesContext.getCurrentInstance();
+           JavascriptContext.addJavascriptCall(fc, "drawVisualization();");
+                                    
         }
 
     }

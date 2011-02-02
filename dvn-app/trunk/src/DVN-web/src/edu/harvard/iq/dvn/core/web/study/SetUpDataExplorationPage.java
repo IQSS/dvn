@@ -366,7 +366,17 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
     }
 
 
+ private boolean hasAssignedGroups(VarGroupType varGroupTypeIn){
+                List varGroup =  visualizationService.getGroupsFromGroupTypeId(varGroupTypeIn.getId());
 
+            if (!varGroup.isEmpty()){
+                 FacesMessage message = new FacesMessage("You may not delete a type that is assigned to a measure or filter.");
+                 FacesContext fc = FacesContext.getCurrentInstance();
+                fc.addMessage(validateButton.getClientId(fc), message);
+                return true;
+            }
+                return false;
+ }
 
 
     public void deleteFilterGroupType(ActionEvent ae){
@@ -380,6 +390,12 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             VarGroupTypeUI varGroupTypeUI2 = (VarGroupTypeUI) dataTable2.getRowData();
             VarGroupType varGroupType = varGroupTypeUI2.getVarGroupType();
             List varGroupTypeList = (List) dataTable2.getValue();
+
+            if (hasAssignedGroups(varGroupType)){
+                return;
+            }
+
+
             Iterator iterator = varGroupTypeList.iterator();
             List deleteList = new ArrayList();
             while (iterator.hasNext() ){
@@ -414,6 +430,9 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             List varGroupTypeList = (List) dataTable2.getValue();
             Iterator iterator = varGroupTypeList.iterator();
             List deleteList = new ArrayList();
+            if (hasAssignedGroups(varGroupType)){
+                return;
+            }
             while (iterator.hasNext() ){
                 VarGroupTypeUI varGroupTypeUI = (VarGroupTypeUI) iterator.next();
                 VarGroupType data = varGroupTypeUI.getVarGroupType();

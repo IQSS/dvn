@@ -646,6 +646,13 @@ public class DDIFileReader extends StatDataFileReader{
                         // TODO: special case for dates.
                     }
 
+                    // Variable Label:
+                    // (if it's not supplied, we create a default placeholder)
+
+                    if (variableLabelMap.get(variableName) == null || variableLabelMap.get(variableName).equals("")) {
+                        variableLabelMap.put(variableName, "variable "+variableName);
+                    }
+
                     // Value Labels:
 
                     if ( !valueLabelPairs.isEmpty() ) {

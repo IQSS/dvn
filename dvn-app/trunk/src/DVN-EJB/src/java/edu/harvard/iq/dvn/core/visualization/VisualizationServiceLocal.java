@@ -25,7 +25,7 @@ public interface VisualizationServiceLocal extends java.io.Serializable {
     public boolean validateVariableMappings(DataTable dataTable);
     public List getVariableMappings(Long dataTableId);
     public List getGroupsFromGroupTypeId(Long groupTypeId);
-    public List getGroupsFromGroupingId(Long groupingId);
+
     public List getGroupTypesFromGroupingId(Long groupingId);
     public List<VarGroupType> getGroupTypes(Long dataTableId);
     public List<VarGroupType> getFilterGroupTypes(Long dataTableId);
@@ -33,6 +33,9 @@ public interface VisualizationServiceLocal extends java.io.Serializable {
     public VarGroup getGroupFromId(Long groupId);
     public DataVariable getXAxisVariable(Long dataTableId);
     public List getDataVariableMappingsFromGroupId(Long groupId);
+
+    public List getGroupTypesFromGroupId(Long groupId);
+
    
     public void saveAll();
     public List getFilterGroupsFromMeasureId(Long measureId);

@@ -57,7 +57,7 @@
                                 <ice:inputText 
                                                 size="25"
                                                 maxlength="255"
-                                                binding="#{SetUpDataExplorationPage.inputMeasureGroupTypeName}"/>
+                                                binding="#{SetUpDataExplorationPage.inputManageMeasureGroupTypeName}"/>
                                 <div class="dvnFormPadding dvnFormMargin" style="display:inline;">
                                     <ice:commandButton type="submit" value="Add Type" action="#{SetUpDataExplorationPage.saveMeasureTypeButton}"/>
                                     <!-- <ice:commandButton type="submit" value="Cancel" action="#{SetUpDataExplorationPage.cancelMeasureTypeButton}"/>-->
@@ -110,13 +110,13 @@
                 <!--<ice:headerRow rendered="#{SetUpDataExplorationPage.addMeasureType}">-->
                 <ice:headerRow>
                      <ice:column colspan="3" style="text-align:left;">
-                         <ice:outputLabel value="Name" style="font-weight:normal;"/>
-                            <ice:inputText  rendered="#{SetUpDataExplorationPage.addMeasureType}"
+                         <ice:outputLabel value="Type Name" style="font-weight:normal;"/>
+                            <ice:inputText  
                                             size="25"
                                             maxlength="255"
                                             binding="#{SetUpDataExplorationPage.inputMeasureGroupTypeName}"/>
                             <div class="dvnFormPadding dvnFormMargin" style="display:inline;">
-                                <ice:commandButton type="submit" value="Add" action="#{SetUpDataExplorationPage.saveMeasureTypeButton}"/>
+                                <ice:commandButton type="submit" value="Add Type" action="#{SetUpDataExplorationPage.saveMeasureTypeButton}"/>
                                 <!-- <ice:commandButton type="submit" value="Cancel" action="#{SetUpDataExplorationPage.cancelMeasureTypeButton}"/>-->
                             </div>
                      </ice:column>

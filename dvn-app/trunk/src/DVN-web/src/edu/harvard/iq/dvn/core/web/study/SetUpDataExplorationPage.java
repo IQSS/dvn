@@ -77,6 +77,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
     private StudyVersion studyVersion;
 
     private Study study;
+    private StudyUI studyUI;
     private Long studyFileId = new Long(0);
     private Long studyId ;
     private Metadata metadata;
@@ -157,8 +158,14 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             //Should not get here.
             //Must always be in a study to get to this page.
         }
+
+
+         studyUI = new StudyUI(studyVersion, null);
+
+
          studyFileIdSelectItems = loadStudyFileSelectItems();
     }
+
 
 
     public void resetStudyFileId(){
@@ -1089,11 +1096,12 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
          }
         if (groupEdit){           
             addNewTypeToGroupUI(editFilterVarGroup, varGroupTypeUI);
+            dataTableFilterGroupType.setValue(editFilterVarGroup.getVarGroupTypes());
         }
 
         loadFilterGroupings();
         dataTableFilterGrouping.getChildren().clear();
-        dataTableFilterGroupType.setValue(editFilterVarGroup.getVarGroupTypes());
+
         addFilterType = false;
     }
 
@@ -2451,5 +2459,13 @@ errorMessages = false;
 
     public void setErrorMessages(boolean errorMessages) {
         this.errorMessages = errorMessages;
+    }
+
+    public StudyUI getStudyUI() {
+        return studyUI;
+    }
+
+    public void setStudyUI(StudyUI studyUI) {
+        this.studyUI = studyUI;
     }
 }

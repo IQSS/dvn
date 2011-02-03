@@ -45,7 +45,7 @@
                                 <ice:inputText id="input_addFilterType"
                                                 size="25"
                                                 maxlength="255"
-                                                binding="#{SetUpDataExplorationPage.inputFilterGroupTypeName}"/>
+                                                binding="#{SetUpDataExplorationPage.inputManageFilterGroupTypeName}"/>
                                 <div class="dvnFormPadding dvnFormMargin" style="display:inline;">
                                     <ice:commandButton type="submit" value="Add" action="#{SetUpDataExplorationPage.saveFilterTypeButton}"/>
                                     <!-- <ice:commandButton type="submit" value="Cancel" action="#{SetUpDataExplorationPage.cancelFilterTypeButton}"/>-->
@@ -73,7 +73,7 @@
           <h:column>
                 <ice:commandLink
                     visible="#{!type.editMode}" style="margin-right:1em;"
-                    actionListener="#{SetUpDataExplorationPage.editFilterType}">
+                    actionListener="#{SetUpDataExplorationPage.editManageFilterType}">
                     <ice:outputText style="display:inline;" value="Edit"/>
                 </ice:commandLink>
                 <ice:commandLink
@@ -99,7 +99,7 @@
                                 <ice:inputText
                                                 size="25"
                                                 maxlength="255"
-                                                binding="#{SetUpDataExplorationPage.editManageFilterGroupTypeName}"/>
+                                                binding="#{SetUpDataExplorationPage.inputFilterGroupTypeName}"/>
                                 <div class="dvnFormPadding dvnFormMargin" style="display:inline;">
                                     <ice:commandButton type="submit" value="Add" action="#{SetUpDataExplorationPage.saveFilterTypeButton}"/>
                                     <!-- <ice:commandButton type="submit" value="Cancel" action="#{SetUpDataExplorationPage.cancelFilterTypeButton}"/>-->

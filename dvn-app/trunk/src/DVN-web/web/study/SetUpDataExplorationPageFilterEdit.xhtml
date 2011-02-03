@@ -7,99 +7,80 @@
      class="dvnsetupdataexloprationformblock">
 
     <div class="dvnFormPadding dvnFormMargin" style="text-align:right;">
-        <ice:commandButton type="submit" value="Update" actionListener="#{SetUpDataExplorationPage.saveFilterFragment}"
-                           visible="#{SetUpDataExplorationPage.editFilterGroup}"/>
-        <ice:commandButton type="submit" value="Cancel" action="#{SetUpDataExplorationPage.cancelFragment}"
-                           visible="#{SetUpDataExplorationPage.editFilterGroup}"/>
-        <ice:commandButton type="submit" value="Update" action="#{SetUpDataExplorationPage.saveFilterGrouping}"
-                           visible="#{SetUpDataExplorationPage.editFilterGrouping}"/>
-        <ice:commandButton type="submit" value="Cancel" action="#{SetUpDataExplorationPage.cancelFragment}"
-                           visible="#{SetUpDataExplorationPage.editFilterGrouping or SetUpDataExplorationPage.manageFilterTypes}"/>
-        <ice:commandButton type="submit" value="Done" action="#{SetUpDataExplorationPage.cancelFragment}"
-                           visible="#{ SetUpDataExplorationPage.manageFilterTypes}"/>
+        <ice:commandButton type="submit" value="Update" actionListener="#{SetUpDataExplorationPage.saveFilterFragment}" visible="#{SetUpDataExplorationPage.editFilterGroup}"/>
+        <ice:commandButton type="submit" value="Cancel" action="#{SetUpDataExplorationPage.cancelFragment}" visible="#{SetUpDataExplorationPage.editFilterGroup}"/>
+        <ice:commandButton type="submit" value="Update" action="#{SetUpDataExplorationPage.saveFilterGrouping}" visible="#{SetUpDataExplorationPage.editFilterGrouping}"/>
+        <ice:commandButton type="submit" value="Cancel" action="#{SetUpDataExplorationPage.cancelFragment}" visible="#{SetUpDataExplorationPage.editFilterGrouping}"/>
+        <ice:commandButton type="submit" value="Done" action="#{SetUpDataExplorationPage.cancelFragment}" visible="#{ SetUpDataExplorationPage.manageFilterTypes}"/>
     </div>
-
     <div jsfc="ice:panelGroup" rendered="#{SetUpDataExplorationPage.editFilterGroup}" style="margin-bottom:1em;">
         <ice:outputLabel value="Filter"/>
-        <ice:inputText id="input_filterGroupName"
-                        size="25"
-                        maxlength="255"
-                        binding="#{SetUpDataExplorationPage.inputFilterGroupName}"/>
+        <ice:inputText id="input_filterGroupName" size="25" maxlength="255"
+                       binding="#{SetUpDataExplorationPage.inputFilterGroupName}"/>
     </div>
-
     <div jsfc="ice:panelGroup" rendered="#{SetUpDataExplorationPage.editFilterGrouping}" style="margin-bottom:1em;">
         <ice:outputLabel value="Group"/>
-               <ice:inputText id="input_groupingName"
-                                size="25"
-                                maxlength="255"
-                                binding="#{SetUpDataExplorationPage.inputFilterGroupingName}"/>
+        <ice:inputText id="input_groupingName" size="25" maxlength="255"
+                       binding="#{SetUpDataExplorationPage.inputFilterGroupingName}"/>
     </div>
 
-    <ice:dataTable width="100%" cellspacing="0" cellpadding="0" var="type" value="#{SetUpDataExplorationPage.editFilterVarGrouping.varGroupTypesUI}"
-                   rendered="#{SetUpDataExplorationPage.manageFilterTypes}" binding="#{SetUpDataExplorationPage.dataTableManageFilterGroupType}">
-          <f:facet name="header">
-                <ice:columnGroup>
-                    <ice:headerRow>
-                         <ice:column colspan="2" style="text-align:left;">
-                             <ice:outputLabel value="Name" style="font-weight:normal;"/>
-                                <ice:inputText id="input_addFilterType"
-                                                size="25"
-                                                maxlength="255"
-                                                binding="#{SetUpDataExplorationPage.inputManageFilterGroupTypeName}"/>
-                                <div class="dvnFormPadding dvnFormMargin" style="display:inline;">
-                                    <ice:commandButton type="submit" value="Add" action="#{SetUpDataExplorationPage.saveFilterTypeButton}"/>
-                                    <!-- <ice:commandButton type="submit" value="Cancel" action="#{SetUpDataExplorationPage.cancelFilterTypeButton}"/>-->
-                                </div>
-                         </ice:column>
-                    </ice:headerRow>
-                    <ice:headerRow>
-                         <ice:column>
-                            <ice:outputText value="Name"/>
-                         </ice:column>
-                         <ice:column>
-                            <ice:outputText value="&#160;"/>
-                         </ice:column>
-                    </ice:headerRow>
-                </ice:columnGroup>
-          </f:facet>
-          <h:column>
-               <ice:outputText value="#{type.varGroupType.name}" rendered="#{!type.editMode}"/>
-                <ice:inputText
-                    rendered="#{type.editMode}"
-                    size="25"
-                    maxlength="255"
-                    binding="#{SetUpDataExplorationPage.editManageFilterGroupTypeName}"/>
-          </h:column>
-          <h:column>
-                <ice:commandLink
-                    visible="#{!type.editMode}" style="margin-right:1em;"
-                    actionListener="#{SetUpDataExplorationPage.editManageFilterType}">
-                    <ice:outputText style="display:inline;" value="Edit"/>
-                </ice:commandLink>
-                <ice:commandLink
-                     visible="#{type.editMode}" style="margin-right:1em;"
-                     actionListener="#{SetUpDataExplorationPage.saveFilterType}">
-                     <ice:outputText style="display:inline;" value="Save"/>
-                </ice:commandLink>
-                <ice:commandLink
-                           visible="#{!type.editMode}"
-                           actionListener="#{SetUpDataExplorationPage.deleteFilterGroupType}">
-                           <ice:outputText style="display:inline;" value="Delete"/>
-                </ice:commandLink>
-            </h:column>
-    </ice:dataTable>
+    <div jsfc="ice:panelGroup" rendered="#{SetUpDataExplorationPage.manageFilterTypes}">
+        <ice:dataTable width="100%" cellspacing="0" cellpadding="0" var="type" value="#{SetUpDataExplorationPage.editFilterVarGrouping.varGroupTypesUI}"
+                       binding="#{SetUpDataExplorationPage.dataTableManageFilterGroupType}">
+              <f:facet name="header">
+                    <ice:columnGroup>
+                        <ice:headerRow>
+                             <ice:column colspan="2" style="text-align:left;">
+                                 <ice:outputLabel value="Name" style="font-weight:normal;"/>
+                                    <ice:inputText id="input_addFilterType" size="25" maxlength="255"
+                                                   binding="#{SetUpDataExplorationPage.inputManageFilterGroupTypeName}"/>
+                                    <div class="dvnFormPadding dvnFormMargin" style="display:inline;">
+                                        <ice:commandButton type="submit" value="Add" action="#{SetUpDataExplorationPage.saveFilterTypeButton}"/>
+                                        <!-- <ice:commandButton type="submit" value="Cancel" action="#{SetUpDataExplorationPage.cancelFilterTypeButton}"/>-->
+                                    </div>
+                             </ice:column>
+                        </ice:headerRow>
+                        <ice:headerRow>
+                             <ice:column>
+                                <ice:outputText value="Name"/>
+                             </ice:column>
+                             <ice:column>
+                                <ice:outputText value="&#160;"/>
+                             </ice:column>
+                        </ice:headerRow>
+                    </ice:columnGroup>
+              </f:facet>
+              <h:column>
+                   <ice:outputText value="#{type.varGroupType.name}" rendered="#{!type.editMode}"/>
+                    <ice:inputText size="25" maxlength="255"
+                                   rendered="#{type.editMode}" binding="#{SetUpDataExplorationPage.editManageFilterGroupTypeName}"/>
+              </h:column>
+              <h:column>
+                    <ice:commandLink visible="#{!type.editMode}" style="margin-right:1em;"
+                                     actionListener="#{SetUpDataExplorationPage.editFilterType}">
+                        <ice:outputText style="display:inline;" value="Edit"/>
+                    </ice:commandLink>
+                    <ice:commandLink visible="#{type.editMode}" style="margin-right:1em;"
+                                     actionListener="#{SetUpDataExplorationPage.saveFilterType}">
+                         <ice:outputText style="display:inline;" value="Save"/>
+                    </ice:commandLink>
+                    <ice:commandLink visible="#{!type.editMode}"
+                                     actionListener="#{SetUpDataExplorationPage.deleteFilterGroupType}">
+                         <ice:outputText style="display:inline;" value="Delete"/>
+                    </ice:commandLink>
+                </h:column>
+        </ice:dataTable>
+    </div>
 
     <ice:dataTable width="100%" cellspacing="0" cellpadding="0" var="type" value="#{SetUpDataExplorationPage.editFilterVarGroup.varGroupTypes}"
-                           rendered="#{SetUpDataExplorationPage.editFilterGroup}" binding="#{SetUpDataExplorationPage.dataTableFilterGroupType}">
+                   rendered="#{SetUpDataExplorationPage.editFilterGroup}" binding="#{SetUpDataExplorationPage.dataTableFilterGroupType}">
             <f:facet name="header">
                 <ice:columnGroup>
                     <ice:headerRow>
                          <ice:column colspan="3" style="text-align:left;">
                              <ice:outputLabel value="Name" style="font-weight:normal;"/>
-                                <ice:inputText
-                                                size="25"
-                                                maxlength="255"
-                                                binding="#{SetUpDataExplorationPage.inputFilterGroupTypeName}"/>
+                                <ice:inputText size="25" maxlength="255"
+                                               binding="#{SetUpDataExplorationPage.inputFilterGroupTypeName}"/>
                                 <div class="dvnFormPadding dvnFormMargin" style="display:inline;">
                                     <ice:commandButton type="submit" value="Add" action="#{SetUpDataExplorationPage.saveFilterTypeButton}"/>
                                     <!-- <ice:commandButton type="submit" value="Cancel" action="#{SetUpDataExplorationPage.cancelFilterTypeButton}"/>-->
@@ -121,31 +102,25 @@
             </f:facet>
             <ice:column rendered="#{SetUpDataExplorationPage.editFilterGroup}">
                 <ice:selectBooleanCheckbox styleClass="filterVariableCheckBoxes"
-                                            partialSubmit="false" value="#{type.selected}"/>
+                                           partialSubmit="false" value="#{type.selected}"/>
             </ice:column>
               <h:column>
                    <ice:outputText value="#{type.varGroupType.name}" rendered="#{!type.editMode}"/>
-                    <ice:inputText
-                        visible="#{type.editMode}"
-                        size="25"
-                        maxlength="255"
-                        binding="#{SetUpDataExplorationPage.editFilterGroupTypeName}"/>
+                    <ice:inputText size="25" maxlength="255"
+                                   rendered="#{type.editMode}" binding="#{SetUpDataExplorationPage.editFilterGroupTypeName}"/>
               </h:column>
               <h:column>
-                    <ice:commandLink
-                        visible="#{!type.editMode}" style="margin-right:1em;"
-                        actionListener="#{SetUpDataExplorationPage.editFilterType}">
+                    <ice:commandLink visible="#{!type.editMode}" style="margin-right:1em;"
+                                     actionListener="#{SetUpDataExplorationPage.editFilterType}">
                         <ice:outputText style="display:inline;" value="Edit"/>
                     </ice:commandLink>
-                    <ice:commandLink
-                         visible="#{type.editMode}" style="margin-right:1em;"
-                         actionListener="#{SetUpDataExplorationPage.saveFilterType}">
+                    <ice:commandLink visible="#{type.editMode}" style="margin-right:1em;"
+                                     actionListener="#{SetUpDataExplorationPage.saveFilterType}">
                          <ice:outputText style="display:inline;" value="Save"/>
                     </ice:commandLink>
-                    <ice:commandLink
-                               visible="#{!type.editMode}"
-                               actionListener="#{SetUpDataExplorationPage.deleteFilterGroupType}">
-                               <ice:outputText style="display:inline;" value="Delete"/>
+                    <ice:commandLink visible="#{!type.editMode}"
+                                     actionListener="#{SetUpDataExplorationPage.deleteFilterGroupType}">
+                         <ice:outputText style="display:inline;" value="Delete"/>
                     </ice:commandLink>
                 </h:column>
     </ice:dataTable>
@@ -159,11 +134,9 @@
                     <ice:headerRow>
                          <ice:column colspan="2" styleClass="dvnDataTableHeaderForm">
                              <ice:outputLabel value="Filter" for="filterDataVariable" styleClass="dvnDataTableHeaderFilter"/>
-                             <ice:inputText
-                                  size="25"
-                                  maxlength="255"
-                                  onkeyup="delayedRequestFilter(form,this,event);"
-                                  binding="#{SetUpDataExplorationPage.inputVariableFilter}"/>
+                             <ice:inputText size="25" maxlength="255"
+                                              onkeyup="delayedRequestFilter(form,this,event);"
+                                              binding="#{SetUpDataExplorationPage.inputVariableFilter}"/>
                          </ice:column>
                     </ice:headerRow>
                     <ice:headerRow>
@@ -188,5 +161,4 @@
             </ice:column>
         </ice:dataTable>
     </div>
-
 </div>

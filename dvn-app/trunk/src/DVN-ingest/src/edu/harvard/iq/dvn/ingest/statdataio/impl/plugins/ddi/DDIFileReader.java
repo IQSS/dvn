@@ -70,6 +70,13 @@ public class DDIFileReader extends StatDataFileReader{
     private static Logger dbgLog =
        Logger.getLogger(DDIFileReader.class.getPackage().getName());
 
+    // date/time data formats
+
+    private SimpleDateFormat sdf_ymd    = new SimpleDateFormat("yyyy-MM-dd");
+    private SimpleDateFormat sdf_ymdhms = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+    private SimpleDateFormat sdf_dhms   = new SimpleDateFormat("DDD HH:mm:ss");
+    private SimpleDateFormat sdf_hms    = new SimpleDateFormat("HH:mm:ss");
 
     public static final String VAR_WEIGHTED = "wgtd";
     public static final String VAR_INTERVAL_CONTIN = "contin";
@@ -1100,7 +1107,7 @@ public class DDIFileReader extends StatDataFileReader{
 
                     String[] dateFormats = new String[getCaseQnty()];
 
-                    /*for (int k = 0; k < getCaseQnty(); k++) {
+                    for (int k = 0; k < getCaseQnty(); k++) {
                         if (SPSSConstants.FORMAT_CATEGORY_TABLE.get(varFormat).equals("date")) {
                             dbgLog.finer("date case");
                             dateFormats[k] = sdf_ymd.toPattern();
@@ -1122,7 +1129,7 @@ public class DDIFileReader extends StatDataFileReader{
                             // TODO: these need to be validated only.
                             dateFormats = null; 
                         }
-                    }*/
+                    }
 
                     unfValues[j] = getUNF(csvData.getData()[j], dateFormats, variableTypeNumer,
                         unfVersionNumber, j);

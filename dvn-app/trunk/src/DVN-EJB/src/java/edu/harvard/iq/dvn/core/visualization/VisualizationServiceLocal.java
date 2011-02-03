@@ -25,7 +25,6 @@ public interface VisualizationServiceLocal extends java.io.Serializable {
     public boolean validateVariableMappings(DataTable dataTable);
     public List getVariableMappings(Long dataTableId);
     public List getGroupsFromGroupTypeId(Long groupTypeId);
-    public List getGroupTypesFromGroupId(Long groupId);
     public List getGroupsFromGroupingId(Long groupingId);
     public List getGroupTypesFromGroupingId(Long groupingId);
     public List<VarGroupType> getGroupTypes(Long dataTableId);

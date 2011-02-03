@@ -699,11 +699,13 @@ public class DDIFileReader extends StatDataFileReader{
 
     private int processVarFormat(XMLStreamReader xmlr, SDIOMetadata smd, String variableName) throws XMLStreamException {
         String type = xmlr.getAttributeValue(null, "type");
-        type = (type == null ? VAR_FORMAT_TYPE_NUMERIC : type);
+        //type = (type == null ? VAR_FORMAT_TYPE_NUMERIC : type);
         // (defaults to numeric)
 
 
-        String schema = xmlr.getAttributeValue(null, "schema");
+        String formatCategory = xmlr.getAttributeValue(null, "category"); 
+        String formatSchema = xmlr.getAttributeValue(null, "schema");
+        String formatName = xmlr.getAttributeValue(null, "formatname");
         //schema = (schema == null ? VAR_FORMAT_SCHEMA_ISO : schema); // default is ISO
 
         // STORE type and schema, if not null. (TODO NOW)
@@ -713,11 +715,19 @@ public class DDIFileReader extends StatDataFileReader{
         //dv.setFormatSchemaName( xmlr.getAttributeValue(null, "formatname") );
         //dv.setFormatCategory( xmlr.getAttributeValue(null, "category") );
 
+        if (type == null || type.equals("")) {
+            throw new XMLStreamException ("no varFormat type supplied for variable "+variableName);
+        }
+
         if (type.equals(VAR_FORMAT_TYPE_NUMERIC)) {
             return 0;
         }
 
-        return 1;
+        if (type.equals("")) {
+            return 1;
+        }
+
+        throw new XMLStreamException ("unknown or unsupported varFormat type supplied for variable "+variableName);
 
     }
 

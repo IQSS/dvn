@@ -76,6 +76,7 @@ public class DDIFileReader extends StatDataFileReader{
     public static final String VAR_INTERVAL_DISCRETE = "discrete";
     public static final String CAT_STAT_TYPE_FREQUENCY = "freq";
     public static final String VAR_FORMAT_TYPE_NUMERIC = "numeric";
+    public static final String VAR_FORMAT_TYPE_CHARACTER = "character";
     public static final String VAR_FORMAT_SCHEMA_ISO = "ISO";
 
     public static final String LEVEL_VARIABLE = "variable";
@@ -699,9 +700,6 @@ public class DDIFileReader extends StatDataFileReader{
 
     private int processVarFormat(XMLStreamReader xmlr, SDIOMetadata smd, String variableName) throws XMLStreamException {
         String type = xmlr.getAttributeValue(null, "type");
-        //type = (type == null ? VAR_FORMAT_TYPE_NUMERIC : type);
-        // (defaults to numeric)
-
 
         String formatCategory = xmlr.getAttributeValue(null, "category"); 
         String formatSchema = xmlr.getAttributeValue(null, "schema");
@@ -723,7 +721,7 @@ public class DDIFileReader extends StatDataFileReader{
             return 0;
         }
 
-        if (type.equals("")) {
+        if (type.equals(VAR_FORMAT_TYPE_CHARACTER)) {
             return 1;
         }
 

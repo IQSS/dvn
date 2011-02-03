@@ -391,14 +391,11 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     }
 
     public List<SelectItem> getSelectFilterGroups() {
-        if (selectedMeasureId.equals(new Long(0))){
-            return getFilterGroupsWithoutMeasure();
-        } else {
+        if (!selectedMeasureId.equals(new Long(0))){
+          
             return getFilterGroupsWithMeasure();
         }
-
-
-
+        return null;
     }
 
     private List<SelectItem> getFilterGroupsWithMeasure(){
@@ -517,6 +514,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
           return selectItems;
 
     }
+    /*
 
     private List<SelectItem> getFilterGroupsWithoutMeasure(){
             List selectItems = new ArrayList<SelectItem>();
@@ -571,7 +569,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             }
             return selectItems;
     }
-
+*/
 
     public List<SelectItem> getSelectMeasureGroupTypes() {
 

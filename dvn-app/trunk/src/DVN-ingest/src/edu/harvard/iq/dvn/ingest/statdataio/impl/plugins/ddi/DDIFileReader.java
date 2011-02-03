@@ -634,9 +634,14 @@ public class DDIFileReader extends StatDataFileReader{
 
                     } else {
                         // this is a string variable.
+                        // (or Date; whih is stored as a string, for most purposes,
+                        // but requires some special treatment.
+
                         unfVariableTypes.put(variableName, -1);
                         printFormatList.add(1);
-                        formatCategoryTable.put(variableName, "other");
+                        if (!"date".equals(formatCategoryTable.get(variableName))) {
+                            formatCategoryTable.put(variableName, "other");
+                        }
 
                         // TODO: special case for dates.
                     }
@@ -701,21 +706,37 @@ public class DDIFileReader extends StatDataFileReader{
     private int processVarFormat(XMLStreamReader xmlr, SDIOMetadata smd, String variableName) throws XMLStreamException {
         String type = xmlr.getAttributeValue(null, "type");
 
-        String formatCategory = xmlr.getAttributeValue(null, "category"); 
-        String formatSchema = xmlr.getAttributeValue(null, "schema");
-        String formatName = xmlr.getAttributeValue(null, "formatname");
-        //schema = (schema == null ? VAR_FORMAT_SCHEMA_ISO : schema); // default is ISO
-
-        // STORE type and schema, if not null. (TODO NOW)
-
-        //dv.setVariableFormatType( varService.findVariableFormatTypeByName( variableFormatTypeList, type ) );
-        //dv.setFormatSchema(schema);
-        //dv.setFormatSchemaName( xmlr.getAttributeValue(null, "formatname") );
-        //dv.setFormatCategory( xmlr.getAttributeValue(null, "category") );
-
         if (type == null || type.equals("")) {
             throw new XMLStreamException ("no varFormat type supplied for variable "+variableName);
         }
+
+        String formatCategory = xmlr.getAttributeValue(null, "category"); 
+        String formatSchema = xmlr.getAttributeValue(null, "schema");
+        String formatName = xmlr.getAttributeValue(null, "formatname");
+
+        if (formatCategory != null && !formatCategory.equals("")) {
+            if (!formatCategory.equals("other") && !formatCategory.equals("date")) {
+                throw new XMLStreamException ("unsupported varFormat category supplied for variable "+variableName +
+                        ". (supported categories are \"date\" and \"other\")");
+            }
+            formatCategoryTable.put(variableName, formatCategory);
+        }
+
+        if (formatName != null) {
+            if (!formatName.equalsIgnoreCase("DATE") && !formatName.equalsIgnoreCase("DATETIME") ) {
+                // We will support more special formats in the future, but for now it is
+                // just DATE and DATETIME.
+                throw new XMLStreamException ("unsupported varFormat formatname  supplied for variable "+variableName +
+                        ". (supported formatnames are \"DATE\" and \"DATETIME\")");
+            }
+            printFormatNameTable.put(variableName, formatName);
+
+        }
+
+        // Not doing anything with the Schema attribute for now. The supported
+        // DATE and DATETIME formats are both from the SPSS schema; once we
+        // start supporting formats from other schemas, we'll have to use
+        // this attribute to identify them.
 
         if (type.equals(VAR_FORMAT_TYPE_NUMERIC)) {
             return 0;

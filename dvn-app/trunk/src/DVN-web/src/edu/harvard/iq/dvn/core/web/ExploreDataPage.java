@@ -822,6 +822,13 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             fc.addMessage(addLineButton.getClientId(fc), message);
 
         }
+         if (!(maxCount == filterGroupings.size())){
+            FacesMessage message = new FacesMessage("Your selections do not match a unique data variable.");
+            FacesContext fc = FacesContext.getCurrentInstance();
+            fc.addMessage(addLineButton.getClientId(fc), message);
+
+        }
+
         return (maxCount == filterGroupings.size() );
     }
 

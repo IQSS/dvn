@@ -639,11 +639,11 @@ public class DDIFileReader extends StatDataFileReader{
 
                         unfVariableTypes.put(variableName, -1);
                         printFormatList.add(1);
-                        if (!"date".equals(formatCategoryTable.get(variableName))) {
+                        if (!"date".equals(formatCategoryTable.get(variableName)) &&
+                            !"time".equals(formatCategoryTable.get(variableName)) )  {
                             formatCategoryTable.put(variableName, "other");
                         }
 
-                        // TODO: special case for dates.
                     }
 
                     // Variable Label:
@@ -722,9 +722,9 @@ public class DDIFileReader extends StatDataFileReader{
         String formatName = xmlr.getAttributeValue(null, "formatname");
 
         if (formatCategory != null && !formatCategory.equals("")) {
-            if (!formatCategory.equals("other") && !formatCategory.equals("date")) {
+            if (!formatCategory.equals("other") && !formatCategory.equals("date") && !formatCategory.equals("time")) {
                 throw new XMLStreamException ("unsupported varFormat category supplied for variable "+variableName +
-                        ". (supported categories are \"date\" and \"other\")");
+                        ". (supported categories are \"date\", \"time\" and \"other\")");
             }
             formatCategoryTable.put(variableName, formatCategory);
         }

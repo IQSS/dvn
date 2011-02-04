@@ -522,7 +522,8 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         }
         HtmlDataTable tempTable = (HtmlDataTable) uiComponent;
         VarGroupTypeUI varGroupTypeUI = (VarGroupTypeUI) tempTable.getRowData();
-
+        getEditMeasureGroupTypeName().setValue(varGroupTypeUI.getVarGroupType().getName());
+        getEditManageMeasureGroupTypeName().setValue(varGroupTypeUI.getVarGroupType().getName());
         varGroupTypeUI.setEditMode(true);
         editMeasureType = true;
     }

@@ -66,18 +66,27 @@ public class StudyFileEditBean implements Serializable {
     }
 
     public StudyFileEditBean(File file, String fileSystemName, Study study) throws IOException {
+        this(file,fileSystemName,study,false);
+    }
+
+    public StudyFileEditBean(File file, String fileSystemName, Study study, boolean asOtherMaterial) throws IOException {
+
         dbgLog.fine("***** within StudyFileEditBean: constructor: start *****");
         dbgLog.fine("reached before studyFile constructor");
 
         String fileType = FileUtil.determineFileType(file);
         dbgLog.fine("return from FileUtil.determineFileType(file), fileType="+fileType);
 
-        if (fileType.equals("application/x-stata") ||
-            fileType.equals("application/x-spss-por") ||
-            fileType.equals("application/x-spss-sav") ) {
+        // boolean asOtherMaterial flag is to force uploading a potentially
+        // subsettable file as a non-subsettable ("Other Material") data file. 
+
+        if (!asOtherMaterial && (
+                fileType.equals("application/x-stata") ||
+                fileType.equals("application/x-spss-por") ||
+                fileType.equals("application/x-spss-sav") ) ) {
             dbgLog.fine("tablularFile");
             this.studyFile = new TabularDataFile(); // do not yet attach to study, as it has to be ingested
-        } else if (fileType.equals("text/xml-graphml")) {
+        } else if (!asOtherMaterial && fileType.equals("text/xml-graphml")) {
             dbgLog.fine("isGraphMLFile = true");
             this.studyFile = new NetworkDataFile();
         } else    {

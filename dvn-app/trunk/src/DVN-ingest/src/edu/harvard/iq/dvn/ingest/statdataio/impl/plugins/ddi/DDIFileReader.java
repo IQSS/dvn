@@ -654,10 +654,10 @@ public class DDIFileReader extends StatDataFileReader{
                     }
 
                     // Variable Label:
-                    // (if it's not supplied, we create a default placeholder)
+                    // (if it's not supplied, we create an empty placeholder)
 
                     if (variableLabelMap.get(variableName) == null || variableLabelMap.get(variableName).equals("")) {
-                        variableLabelMap.put(variableName, "variable "+variableName);
+                        variableLabelMap.put(variableName, "");
                     }
 
                     // Value Labels:
@@ -1036,14 +1036,23 @@ public class DDIFileReader extends StatDataFileReader{
 
 
                 String[] strdata = Arrays.asList(varData).toArray(
-                    new String[varData.length]);
+                new String[varData.length]);
                 dbgLog.finer("string array passed to calculateUNF: "+Arrays.deepToString(strdata));
 
                 if (dateFormats != null) {
+
+                    for (int i = 0; i < varData.length; i++) {
+                        if (dateFormats[i] != null && strdata[i].equals(" ")) {
+                            strdata[i] = null;
+                            dateFormats[i] = null;
+                        }
+                    }
+
                     unfValue = UNF5Util.calculateUNF(strdata, dateFormats);
                 } else {
                     unfValue = UNF5Util.calculateUNF(strdata);
                 }
+
                 dbgLog.finer("string:unfValue="+unfValue);
 
                 smd.getSummaryStatisticsTable().put(variablePosition,

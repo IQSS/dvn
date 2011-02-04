@@ -393,9 +393,12 @@ public class AddFilesPage extends VDCBaseBean implements java.io.Serializable {
 
             //  File fstudy = FileUtil.createTempFile(sessionId, file.getName());
             if (controlCardTempLocation != null) {
-                f = new StudyFileEditBean(file, studyService.generateFileSystemNameSequence(),study,controlCardTempLocation,controlCardType);
+                f = new StudyFileEditBean(file, studyService.generateFileSystemNameSequence(), study,controlCardTempLocation, controlCardType);
+            } else if ("other".equals(selectFileType.getValue())) {
+                // Forced ingest as non-subsettable, even if it is a potentially subsettable type.
+                f = new StudyFileEditBean(file, studyService.generateFileSystemNameSequence(), study, true);
             } else {
-                f = new StudyFileEditBean(file, studyService.generateFileSystemNameSequence(),study);
+                f = new StudyFileEditBean(file, studyService.generateFileSystemNameSequence(), study);
             }
 
             f.setSizeFormatted(file.length());

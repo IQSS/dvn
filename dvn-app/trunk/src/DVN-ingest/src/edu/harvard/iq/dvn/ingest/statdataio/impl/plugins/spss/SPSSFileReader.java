@@ -800,7 +800,7 @@ public class SPSSFileReader extends StatDataFileReader{
 
         readStatus = labelCounter;
 
-        // Create default placeholder labels for the variables that
+        // Create empty placeholder labels for the variables that
         // do not have labels declared:
         // (should we make variable labels mandatory?)
 
@@ -809,7 +809,7 @@ public class SPSSFileReader extends StatDataFileReader{
         for (int j=0; j<getVarQnty(); j++){
             String variableName = variableNameList.get(j);
             if (!variableLabelMap.containsKey(variableName)) {
-                variableLabelMap.put(variableName, "variable "+variableName);
+                variableLabelMap.put(variableName, "");
             } else {
                 labeledVariablesVerified++;
             }
@@ -1017,6 +1017,8 @@ public class SPSSFileReader extends StatDataFileReader{
 
             String tabDelimitedDataFileName   = tabDelimitedDataFile.getAbsolutePath();
 
+            dbgLog.fine("tab file location: "+tabDelimitedDataFileName);
+
             // save the temp file name in the metadata object
             smd.getFileInformation().put("tabDelimitedDataFileLocation", tabDelimitedDataFileName);
 
@@ -1183,10 +1185,19 @@ public class SPSSFileReader extends StatDataFileReader{
                 dbgLog.finer("string array passed to calculateUNF: "+Arrays.deepToString(strdata));
 
                 if (dateFormats != null) {
+
+                    for (int i = 0; i < varData.length; i++) {
+                        if (dateFormats[i] != null && strdata[i].equals(" ")) {
+                            strdata[i] = null;
+                            dateFormats[i] = null;
+                        }
+                    }
+
                     unfValue = UNF5Util.calculateUNF(strdata, dateFormats);
                 } else {
                     unfValue = UNF5Util.calculateUNF(strdata);
                 }
+                
                 dbgLog.finer("string:unfValue="+unfValue);
 
                 smd.getSummaryStatisticsTable().put(variablePosition,

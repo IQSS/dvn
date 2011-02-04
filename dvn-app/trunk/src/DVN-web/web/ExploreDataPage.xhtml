@@ -335,12 +335,6 @@ function drawVisualization() {
     }
 
 
-function addLine(){
-     document.getElementById('ExploreDataPage:addLineHidden').click();     
-}
-
-
-
 function deleteLine(){
    
     setTimeout(function(){drawVisualization();}, 1500);
@@ -468,9 +462,8 @@ function updateDisplayType(){
                     <ice:inputText id="graphlinelabel" value="#{ExploreDataPage.lineLabel}"></ice:inputText>
                 </div>
                 <div style="display:inline;">
-                    <ice:commandButton id="addLineButton"  value="Add Line" binding="#{ExploreDataPage.addLineButton}" onclick="addLine();"/>
+                    <ice:commandButton id="addLineButton"  value="Add Line" binding="#{ExploreDataPage.addLineButton}" action="#{ExploreDataPage.addLine}"/>
                     <ice:message for="addLineButton" id="boxErrorMsg" styleClass="errorMessage"/>
-                    <ice:commandButton id="addLineHidden"  visible="false" value="Add Line" action="#{ExploreDataPage.addLine}"/>
                 </div>
             </div>
         </div>

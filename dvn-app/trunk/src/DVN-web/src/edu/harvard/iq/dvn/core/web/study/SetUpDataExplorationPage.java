@@ -115,7 +115,6 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
     private boolean showFilterVariables = false;
     private boolean selectFile = true;
-    private boolean errorMessages = false;
 
 
     public SetUpDataExplorationPage(){
@@ -136,7 +135,6 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             e.printStackTrace();
             FacesContext context = FacesContext.getCurrentInstance();
             FacesMessage errMessage = new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), null);
-            errorMessages = true;
             context.addMessage(null, errMessage);
 
         }
@@ -154,7 +152,6 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             FacesContext context = FacesContext.getCurrentInstance();
             FacesMessage errMessage = new FacesMessage(FacesMessage.SEVERITY_ERROR, "The Study ID is null", null);
             context.addMessage(null, errMessage);
-           errorMessages = true;
             //Should not get here.
             //Must always be in a study to get to this page.
         }
@@ -384,7 +381,6 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                 List varGroup =  visualizationService.getGroupsFromGroupTypeId(varGroupTypeIn.getId());
 
             if (!varGroup.isEmpty()){
-                errorMessages = true;
                  FacesMessage message = new FacesMessage("You may not delete a type that is assigned to a measure or filter.");
                  FacesContext fc = FacesContext.getCurrentInstance();
                 fc.addMessage(validateButton.getClientId(fc), message);
@@ -730,7 +726,6 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
     }
 
     public void saveXAxis(){
-    errorMessages = false;
         xAxisUnits = (String) getInputXAxisUnits().getValue();
         Long SelectedId = new Long(0);
         for(DataVariableUI dataVariableUI:dvGenericListUI){
@@ -749,7 +744,6 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             }
         }
         if (countSelected > 1) {
-            errorMessages = true;
             FacesMessage message = new FacesMessage("You may not select more than one variable");
             FacesContext fc = FacesContext.getCurrentInstance();
             fc.addMessage(validateButton.getClientId(fc), message);
@@ -772,11 +766,9 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
     }
 
     public void saveMeasureFragment(){
-    errorMessages = false;
         String chkGroupName = (String) getInputMeasureName().getValue();
 
         if (chkGroupName.isEmpty() || chkGroupName.trim().equals("") ) {
-            errorMessages = true;
             FacesMessage message = new FacesMessage("Please Enter a Measure Name");
             FacesContext fc = FacesContext.getCurrentInstance();
             fc.addMessage(validateButton.getClientId(fc), message);
@@ -798,11 +790,9 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
     }
 
     public void saveMeasureGrouping(){
-        errorMessages = false;
         String chkGroupName = (String) getInputMeasureGroupingName().getValue();
 
         if (chkGroupName.isEmpty() || chkGroupName.trim().equals("") ) {
-            errorMessages = true;
             FacesMessage message = new FacesMessage("Please Enter a Measure Label");
             FacesContext fc = FacesContext.getCurrentInstance();
             fc.addMessage(validateButton.getClientId(fc), message);
@@ -823,11 +813,9 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
     }
 
     public void saveFilterFragment(ActionEvent ae){
-    errorMessages = false;
         String chkGroupName = (String) getInputFilterGroupName().getValue();
 
         if (chkGroupName.isEmpty()) {
-            errorMessages = true;
             FacesMessage message = new FacesMessage("Please Enter a Filter Name");
             FacesContext fc = FacesContext.getCurrentInstance();
             fc.addMessage(validateButton.getClientId(fc), message);
@@ -905,7 +893,6 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
     }
 
     public void saveFilterGrouping(){
-        errorMessages = false;
         String testString = (String) getInputFilterGroupingName().getValue();
         if (!testString.isEmpty()){
             if (addFilterGrouping) {
@@ -919,7 +906,6 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             }
 
         }  else {
-            errorMessages = true;
             FacesMessage message = new FacesMessage("Please Enter a Filter Group Name");
             FacesContext fc = FacesContext.getCurrentInstance();
             fc.addMessage(validateButton.getClientId(fc), message);
@@ -1330,7 +1316,6 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
     }
 
     public boolean validateForRelease(boolean messages){
-        errorMessages = false;
         boolean valid = true;
 
         if (!visualizationService.validateAtLeastOneFilterMapping(dataTable)) {
@@ -1383,13 +1368,9 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         }
 
         if (valid && messages){
-            errorMessages = true;
                 FacesMessage message = new FacesMessage("The Data Visualization is valid for release.");
                 FacesContext fc = FacesContext.getCurrentInstance();
                 fc.addMessage(validateButton.getClientId(fc), message);
-        }
-        if (!valid){
-            errorMessages = true;
         }
 
         return valid;
@@ -1418,10 +1399,8 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
 
     public String saveAndExit(){
-        errorMessages = false;
        if (dataTable.isVisualizationEnabled()){
            if (!validateForRelease(false)) {
-               errorMessages = true;
                FacesMessage message = new FacesMessage("Changes not saved because exploration is no longer valid for release.");
                FacesContext fc = FacesContext.getCurrentInstance();
                fc.addMessage(validateButton.getClientId(fc), message);
@@ -2451,12 +2430,9 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         this.filterCheckBox = filterCheckBox;
     }
 
-    public boolean isErrorMessages() {
-        return errorMessages;
-    }
-
-    public void setErrorMessages(boolean errorMessages) {
-        this.errorMessages = errorMessages;
+    public boolean isInvalidSetup() {
+        FacesContext fc = FacesContext.getCurrentInstance();
+        return fc.getMessages(validateButton.getClientId(fc)).hasNext();
     }
 
     public StudyUI getStudyUI() {

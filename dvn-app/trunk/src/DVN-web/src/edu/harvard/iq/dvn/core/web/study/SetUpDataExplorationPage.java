@@ -427,7 +427,8 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                 dataTable2.setValue(varGroupingUI.getVarGroupTypesUI());
              }
            }
-             if (editFilterVarGroup.getVarGroup() != null){
+
+             if (editFilterVarGroup !=null &&  editFilterVarGroup.getVarGroup() != null){
                  removeTypeFromGroupUI(editFilterVarGroup, varGroupTypeUI2 );
              }
 
@@ -1060,16 +1061,13 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
     }
 
     public void saveFilterTypeButton(){
-        Long varGroupingId = new Long(0);
         boolean groupEdit = false;
         VarGroupType newElem = new VarGroupType();
         if (editFilterVarGroup != null && editFilterVarGroup.getVarGroup() != null ) {
             newElem.setVarGrouping(editFilterVarGroup.getVarGroup().getGroupAssociation());
-            varGroupingId = editFilterVarGroup.getVarGroup().getGroupAssociation().getId();
             groupEdit = true;
         } else {
             newElem.setVarGrouping(editFilterVarGrouping.getVarGrouping());
-            varGroupingId = editFilterVarGrouping.getVarGrouping().getId();
         }
 
         newElem.setName((String)getInputFilterGroupTypeName().getValue());
@@ -1078,9 +1076,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         }
 
         for(VarGrouping varGrouping: varGroupings){
-             if (varGrouping.getId() == varGroupingId){
-                newElem.setVarGrouping(varGrouping);
-                int i = varGrouping.getVarGroupTypes().size();
+             if (varGrouping == newElem.getVarGrouping()){
                 varGrouping.getVarGroupTypes().add(newElem);
              }
          }
@@ -1088,9 +1084,8 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         VarGroupTypeUI varGroupTypeUI = new VarGroupTypeUI();
         varGroupTypeUI.setVarGroupType(newElem);
         for(VarGroupingUI varGroupingUI: filterGroupings){
-             if (varGroupingUI.getVarGrouping().getId() == varGroupingId){
+             if (varGroupingUI.getVarGrouping() == newElem.getVarGrouping()){
                 varGroupingUI.getVarGroupTypesUI().add(varGroupTypeUI);
-                varGroupingUI.setVarGroupTypesUI(varGroupingUI);
                 dataTableManageFilterGroupType.setValue(varGroupingUI.getVarGroupTypesUI());
              }
          }
@@ -1142,19 +1137,22 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
 
 
-    public void addFilterGroupType() {
+    public void addFilterGroupType(ActionEvent ae) {
         VarGroupType newElem = new VarGroupType();
+        UIComponent uiComponent = ae.getComponent().getParent();
+        while (!(uiComponent instanceof HtmlDataTable)){
+            uiComponent = uiComponent.getParent();
+        }
+        VarGroupingUI varGroupingUI = (VarGroupingUI) dataTableFilterGrouping.getRowData();
 
-        Long varGroupingId = (Long) getAddFilterGroupLink().getValue();
         for(VarGrouping varGrouping: varGroupings){
-             if (varGrouping.getId() == varGroupingId){
+             if (varGrouping == varGroupingUI.getVarGrouping()){
                 newElem.setVarGrouping(varGrouping);
-                int i = varGrouping.getVarGroupTypes().size();
                 varGrouping.getVarGroupTypes().add(newElem);
             }
          }
-         for(VarGroupingUI varGroupingUI: filterGroupings){
-             if (varGroupingUI.getVarGrouping().getId() == varGroupingId){
+         for(VarGroupingUI varGroupingUIList: filterGroupings){
+             if (varGroupingUIList.getVarGrouping() == newElem.getVarGrouping()){
                  VarGroupTypeUI varGroupTypeUI = new VarGroupTypeUI();
                  varGroupTypeUI.setVarGroupType(newElem);
                  varGroupTypeUI.setEditMode(true);
@@ -1332,7 +1330,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
     }
 
     public boolean validateForRelease(boolean messages){
-errorMessages = false;
+        errorMessages = false;
         boolean valid = true;
 
         if (!visualizationService.validateAtLeastOneFilterMapping(dataTable)) {

@@ -367,6 +367,26 @@ public class SDIOMetadata {
         return variableFormatCategory;
     }
 
+    public boolean[] isDateVariable() {
+       boolean [] isDate = new boolean[variableName.length];
+       String formatCategory = null;
+
+        for (int i =0; i< variableName.length;i++){
+
+            if (variableFormatCategory != null) {
+                formatCategory = variableFormatCategory.get(variableName[i]);
+            }
+
+            if (formatCategory != null && !formatCategory.equals("")) {
+
+                isDate[i] = formatCategory.equals("date") || formatCategory.equals("time");
+            } else {
+                isDate[i] = false;
+            }
+        }
+        return isDate;
+    }
+
     /**
      * Sets the new value of the variableFormatCategory field.
      *

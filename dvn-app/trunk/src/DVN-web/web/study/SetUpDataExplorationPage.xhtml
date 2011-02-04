@@ -84,9 +84,12 @@
 </style>
 
     <div class="dvn_section">
-        <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnWarningMessage" rendered="#{SetUpDataExplorationPage.invalidSetup}">
+        <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound #{SetUpDataExplorationPage.displayValidationFailure?'dvnWarningMessage':'dvnSuccessMessage'}" rendered="#{SetUpDataExplorationPage.displayValidationFailure or SetUpDataExplorationPage.displayValidationSuccess}">
             <div class="dvnMsgBlockContainer">
-                <p><ice:message for="validateButton" id="boxErrorMsg" styleClass="errorMessage"/></p>
+                <p>
+                    <ice:message for="validateButton" id="boxErrorMsg"/>
+                    <ice:message for="releaseButton" id="boxErrorMsg" />
+                </p>
             </div>
         </div>
           <div class="dvnstudytitleblock dvn_padBot">
@@ -98,7 +101,8 @@
                     <ice:commandButton id="validateButton" type="submit" value="Validate" rendered="#{SetUpDataExplorationPage.showCommands}"
                                        binding="#{SetUpDataExplorationPage.validateButton}" action="#{SetUpDataExplorationPage.validate}" onclick="jQuery('div.dvnMsgBlockRound').corner('10px');"/>
 
-                    <ice:commandButton type="submit" value="Release" action="#{SetUpDataExplorationPage.release}" rendered="#{!SetUpDataExplorationPage.dataTable.visualizationEnabled and SetUpDataExplorationPage.showCommands}"/>
+                    <ice:commandButton id="releaseButton" type="submit" value="Release" rendered="#{!SetUpDataExplorationPage.dataTable.visualizationEnabled and SetUpDataExplorationPage.showCommands}"
+                                       binding="#{SetUpDataExplorationPage.releaseButton}" action="#{SetUpDataExplorationPage.release}" />
 
                     <ice:commandButton type="submit" value="Un-Release" action="#{SetUpDataExplorationPage.unRelease}" rendered="#{SetUpDataExplorationPage.dataTable.visualizationEnabled and SetUpDataExplorationPage.showCommands}"/>
 

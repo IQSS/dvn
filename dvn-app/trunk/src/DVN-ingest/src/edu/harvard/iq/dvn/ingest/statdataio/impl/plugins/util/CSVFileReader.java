@@ -61,78 +61,9 @@ public class CSVFileReader implements java.io.Serializable {
     // TODO: remove this method.
     // Only the version that reads the file and stores it in a TAB file
     // should be used.
-    public DataTable read(BufferedReader csvReader, SDIOMetadata smd) throws IOException {
-        DataTable csvData = new DataTable();
-        Object[][] dataTable = null;
-        int varQnty = new Integer(smd.getFileInformation().get("varQnty").toString());
-        int caseQnty = new Integer(smd.getFileInformation().get("caseQnty").toString());
-
-        dataTable = new Object[varQnty][caseQnty];
-
-        String line;
-        String[] valueTokens = new String[varQnty];
-        int lineCounter = 0;
-
-        boolean[] isCharacterVariable = smd.isStringVariable();
-        boolean[] isContinuousVariable = smd.isContinuousVariable();
-
-        dbgLog.fine("CSV reader; varQnty: "+varQnty);
-        dbgLog.fine("CSV reader; caseQnty: "+caseQnty);
-        dbgLog.fine("CSV reader; delimiter: "+delimiterChar);
-
-        while ((line = csvReader.readLine()) != null) {
-            // chop the line:
-            line = line.replaceFirst("[\r\n]*$", "");
-            valueTokens = line.split(""+delimiterChar, varQnty);
-
-            //dbgLog.fine("case: "+lineCounter);
-            
-            for ( int i = 0; i < varQnty; i++ ) {
-                //dbgLog.fine("value: "+valueTokens[i]);
-
-                if (isCharacterVariable[i]) {
-                    // String. Adding to the table, quoted.
-                    // Empty strings stored as " " (one white space):
-                    if (valueTokens[i] != null && (!valueTokens[i].equals(""))) {
-                        dataTable[i][lineCounter] = valueTokens[i];
-                    } else {
-                        dataTable[i][lineCounter] = " ";
-                    }
-                    
-                } else if (isContinuousVariable[i]) {
-                    // Numeric, Double:
-                    try {
-                        Double testDoubleValue = new Double(valueTokens[i]);
-                        dataTable[i][lineCounter] = testDoubleValue.toString();//valueTokens[i];
-                    } catch (Exception ex) {
-                        dbgLog.fine("caught exception reading numeric value; variable: "+i+", case: "+lineCounter+"; value: "+valueTokens[i]);
-
-                        //dataTable[i][lineCounter] = (new Double(0)).toString();
-                        dataTable[i][lineCounter] = "";
-                    }
-                } else {
-                    // Numeric, Integer:
-                    try {
-                        Integer testIntegerValue = new Integer(valueTokens[i]);
-                        dataTable[i][lineCounter] = testIntegerValue.toString();
-                    } catch (Exception ex) {
-                        dbgLog.fine("caught exception reading numeric value; variable: "+i+", case: "+lineCounter+"; value: "+valueTokens[i]);
-
-                        //dataTable[i][lineCounter] = "0";
-                        dataTable[i][lineCounter] = "";
-                    }
-                }
-            }
-            lineCounter++;
-        }
-
-        csvData.setData(dataTable);
-        return csvData;
-    }
 
 
     public int read(BufferedReader csvReader, SDIOMetadata smd, PrintWriter pwout) throws IOException {
-
         //DataTable csvData = new DataTable();
         int varQnty = 0;
 
@@ -157,6 +88,8 @@ public class CSVFileReader implements java.io.Serializable {
 
         boolean[] isCharacterVariable = smd.isStringVariable();
         boolean[] isContinuousVariable = smd.isContinuousVariable();
+        boolean[] isDateVariable = smd.isDateVariable(); 
+
 
         dbgLog.fine("CSV reader; varQnty: "+varQnty);
         dbgLog.fine("CSV reader; delimiter: "+delimiterChar);
@@ -193,10 +126,16 @@ public class CSVFileReader implements java.io.Serializable {
                         // escape the remaining ones:
                         charToken = charToken.replace("\"", "\\\"");
                         // final pair of quotes:
-                        charToken = "\"" + charToken + "\"";
+                        if (isDateVariable==null || (!isDateVariable[i])) {
+                            charToken = "\"" + charToken + "\"";
+                        }
                         caseRow[i] = charToken;
                     } else {
-                        caseRow[i] = "\" \"";
+                        if (isDateVariable==null || (!isDateVariable[i])) {
+                           caseRow[i] = "\" \"";
+                        } else {
+                           caseRow[i] = ""; 
+                        }
                     }
 
                 } else if (isContinuousVariable[i]) {

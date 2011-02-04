@@ -71,7 +71,7 @@ public class VarGroup implements Serializable {
 
 
 
-    @ManyToMany
+    @ManyToMany (cascade={ CascadeType.PERSIST })
     @JoinTable(name = "GROUP_GROUPTYPES",
     joinColumns = @JoinColumn(name = "group_id"),
     inverseJoinColumns = @JoinColumn(name = "group_type_id"))

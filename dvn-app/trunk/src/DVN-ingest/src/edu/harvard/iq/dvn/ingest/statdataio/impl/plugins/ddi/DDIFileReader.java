@@ -1042,7 +1042,7 @@ public class DDIFileReader extends StatDataFileReader{
                 if (dateFormats != null) {
 
                     for (int i = 0; i < varData.length; i++) {
-                        if (dateFormats[i] != null && strdata[i].equals(" ")) {
+                        if (dateFormats[i] != null && (strdata[i].equals("") || strdata[i].equals(" "))) {
                             strdata[i] = null;
                             dateFormats[i] = null;
                         }

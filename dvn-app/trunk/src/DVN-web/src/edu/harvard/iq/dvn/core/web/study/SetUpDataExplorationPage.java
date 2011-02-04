@@ -1370,7 +1370,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         if (valid && messages){
                 FacesMessage message = new FacesMessage("The Data Visualization is valid for release.");
                 FacesContext fc = FacesContext.getCurrentInstance();
-                fc.addMessage(validateButton.getClientId(fc), message);
+                fc.addMessage(releaseButton.getClientId(fc), message);
         }
 
         return valid;
@@ -2146,6 +2146,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
     }
 
     private HtmlCommandButton validateButton = new HtmlCommandButton();
+    private HtmlCommandButton releaseButton = new HtmlCommandButton();
 
     public HtmlCommandButton getValidateButton() {
         return validateButton;
@@ -2153,6 +2154,14 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
     public void setValidateButton(HtmlCommandButton hit) {
         this.validateButton = hit;
+    }
+
+    public HtmlCommandButton getReleaseButton() {
+        return releaseButton;
+    }
+
+    public void setReleaseButton(HtmlCommandButton releaseButton) {
+        this.releaseButton = releaseButton;
     }
 
     public boolean isShowCommands() {
@@ -2430,9 +2439,14 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         this.filterCheckBox = filterCheckBox;
     }
 
-    public boolean isInvalidSetup() {
+    public boolean isDisplayValidationFailure() {
         FacesContext fc = FacesContext.getCurrentInstance();
         return fc.getMessages(validateButton.getClientId(fc)).hasNext();
+    }
+
+    public boolean isDisplayValidationSuccess() {
+        FacesContext fc = FacesContext.getCurrentInstance();
+        return fc.getMessages(releaseButton.getClientId(fc)).hasNext();
     }
 
     public StudyUI getStudyUI() {

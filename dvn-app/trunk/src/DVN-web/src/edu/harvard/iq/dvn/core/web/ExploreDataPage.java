@@ -293,6 +293,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     }
 
     public List<SelectItem> loadSelectMeasureItems(int grouptype_id) {
+        boolean resetSelected = true;
 
         List selectItems = new ArrayList<SelectItem>();
         List <VarGroup> varGroups = new ArrayList();
@@ -319,11 +320,17 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                     }
                     if (!added ){
                         selectItems.add(new SelectItem(varGroup.getId(), varGroup.getName()));
+                        if (varGroup.getId().equals(selectedMeasureId)){
+                            resetSelected = false;
+                        }
                         added = true;
                     }
 
                 }
             }
+        }
+        if (resetSelected){
+            selectedMeasureId = new Long(0);
         }
         return selectItems;
     }
@@ -594,6 +601,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     public void reset_MeasureItems(ValueChangeEvent ae){
         int i = (Integer) ae.getNewValue();
         this.selectMeasureItems = loadSelectMeasureItems(i);
+        loadFilterGroupings();
+
     }
 
     public void reset_FilterItems(){

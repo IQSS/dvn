@@ -242,6 +242,7 @@ ALTER TABLE pagedef DISABLE TRIGGER ALL;
 -- Pages that don't require role authorization
 INSERT INTO pagedef (name, path, role_id, networkrole_id ) VALUES  ( 'StudyPage', '/study/StudyPage.xhtml', null,null );
 INSERT INTO pagedef (name, path, role_id, networkrole_id ) VALUES  ( 'SubsettingPage', '/subsetting/SubsettingPage.xhtml', null,null );
+INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'ExploreDataPage','/viz/ExploreDataPage.xhtml',null,null );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'ErrorPage', '/ErrorPage.xhtml', null,null );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'HomePage', '/HomePage.xhtml', null,null );
 INSERT INTO pagedef ( name, path, role_id, networkrole_id ) VALUES ( 'UnauthorizedPage', '/login/UnauthorizedPage.xhtml', null,null );

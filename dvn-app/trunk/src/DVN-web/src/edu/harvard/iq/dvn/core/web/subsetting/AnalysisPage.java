@@ -1385,6 +1385,13 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
 
             if (formatType.equals("D01")) {
                 resultInfo.put("wbDataFileName", tmpsbfl.getAbsolutePath());
+                // Fields that would normally be populated by R:
+
+                resultInfo.put("PID", "N/A");
+                resultInfo.put("R_min_verion_no","N/A");
+                resultInfo.put("dsbHost", "N/A");
+                Date now = new Date();
+                resultInfo.put("RexecDate", now.toString());
             }
 
             resultInfo.put("offlineCitation", getCitation());
@@ -1397,15 +1404,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             resultInfo.put("studyURL", studyURL);
             resultInfo.put("dataverse_version_no",dvnVersionNumber);
 
-            // Fields that would normally be populated by R:
-
-            resultInfo.put("PID", "N/A");
-            resultInfo.put("R_min_verion_no","N/A");
-            resultInfo.put("dsbHost", "N/A");
             resultInfo.put("option", "subset");
-            Date now = new Date();
-            resultInfo.put("RexecDate", now.toString());
-            //resultInfo.put("variableList", getVariableIdsForRequest());
             resultInfo.put("variableList", getVariableNamesForSubset());
 
             // calculate UNF (locally, on the application side):

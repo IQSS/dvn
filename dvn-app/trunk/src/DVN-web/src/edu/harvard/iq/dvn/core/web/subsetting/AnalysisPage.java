@@ -1392,6 +1392,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 resultInfo.put("dsbHost", "N/A");
                 Date now = new Date();
                 resultInfo.put("RexecDate", now.toString());
+            } else {
+                resultInfo.put("R_min_verion_no",resultInfo.get("Rversion").substring(2));
             }
 
             resultInfo.put("offlineCitation", getCitation());

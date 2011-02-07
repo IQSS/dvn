@@ -103,6 +103,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     private boolean lineAdded = false;
     private Long studyId = new Long(0);
     private Long versionNumber;
+    private List filterMeasureAssociation = new ArrayList();
+    private List <VarGrouping> allVarGroupings = new ArrayList();
 
 
     public ExploreDataPage() {
@@ -131,7 +133,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
 
         dvList = dt.getDataVariables();
-        varGroupings = dt.getVarGroupings();
+        allVarGroupings = dt.getVarGroupings();
+        loadAllFilterGroupings();
         measureLabel = loadMeasureLabel();
         
         measureGrouping = loadMeasureGrouping();
@@ -186,15 +189,30 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     private void loadFilterGroupings(){
         filterStrings.clear();
         filterGroupings.clear();
-        varGroupings = visualizationService.getFilterGroupingsFromMeasureId(selectedMeasureId);
-        Iterator iterator = varGroupings.iterator();
-        while (iterator.hasNext() ){
-            VarGrouping varGrouping = (VarGrouping) iterator.next();
+        List <VarGrouping> localVGList = new ArrayList();
+
+        Iterator i = filterMeasureAssociation.listIterator();
+        int count = 0;
+        while (i.hasNext()){
+            Object test = i.next();
+            if ( count % 2 == 0 ){
+                Long id = (Long) test;
+                if (id.equals(selectedMeasureId)){
+                    localVGList.add((VarGrouping) i.next());
+                    count++;
+                }
+            }
+
+            count++;
+        }
+
+
+
+        for (VarGrouping varGrouping: localVGList){
 
             if (varGrouping.getGroupingType().equals(GroupingType.FILTER)){
                 List <VarGroup> filterGroups = new ArrayList();
                 List <VarGroupTypeUI> filterGroupTypes = new ArrayList();
-
                 VarGroupingUI vgUI = new VarGroupingUI();
                 vgUI.setVarGrouping(varGrouping);
                 loadFilterGroups(filterGroups);
@@ -202,8 +220,28 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                 vgUI.setVarGroupTypesUI(filterGroupTypes);
                 filterGroupings.add(vgUI);
             }
+
         }
 
+
+    }
+
+    private void loadAllFilterGroupings(){
+
+        
+        for (VarGrouping varGroupingTest: allVarGroupings){
+            if (varGroupingTest.getGroupingType().equals(GroupingType.MEASURE)){
+                for (VarGroup varGroup : varGroupingTest.getVarGroups() ){
+                     List <VarGrouping> varGroupingsBack = visualizationService.getFilterGroupingsFromMeasureId(varGroup.getId());
+
+                     for(VarGrouping varGroupingBack: varGroupingsBack){
+                         filterMeasureAssociation.add(varGroup.getId());
+                         filterMeasureAssociation.add(varGroupingBack);
+                     }
+                }
+            }
+
+        }
     }
 
     private void loadFilterGroups(List <VarGroup> inList){
@@ -286,6 +324,9 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     public void resetFiltersForMeasure(ValueChangeEvent ae){
         selectedMeasureId = (Long) ae.getNewValue();
         //this.selectMeasureItems = loadSelectMeasureItems(i);
+        if (selectedMeasureId == null ){
+            selectedMeasureId = new Long(0);
+        }
         if (selectedMeasureId != null) {
             loadFilterGroupings();
         }

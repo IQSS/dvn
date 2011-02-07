@@ -222,7 +222,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
              }
          }
 
-         loadFilterGroupingsInit();
+         loadFilterGroupings();
          if (!filterGroupings.isEmpty()){
              hasFilterGroupings = true;
          }
@@ -270,6 +270,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                 VarGroupingUI varGroupingUI = new VarGroupingUI();
                 varGroupingUI.setVarGrouping(varGrouping);
                 varGroupingUI.setVarGroupTypesUI(varGroupingUI);
+                setVarGroupUI(varGroupingUI);
                 filterGroupings.add(varGroupingUI);
             }
         }
@@ -1394,11 +1395,11 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                 FacesContext fc = FacesContext.getCurrentInstance();
                 fc.addMessage(releaseButton.getClientId(fc), message);
         }
-        
-        // add rounded corners to the validation message box
-        FacesContext fc = FacesContext.getCurrentInstance();
-        JavascriptContext.addJavascriptCall(fc, "jQuery(\"div.dvnMsgBlockRound\").corner(\"10px\");" );
-       
+        if (!valid) {
+            // add rounded corners to the validation message box
+            FacesContext fc = FacesContext.getCurrentInstance();
+            JavascriptContext.addJavascriptCall(fc, "jQuery(\"div.dvnMsgBlockRound\").corner(\"10px\");" );
+        }
 
         return valid;
     }

@@ -1428,8 +1428,10 @@ public class DDIServiceBean implements DDIServiceLocal {
         // categories
         for (VariableCategory cat : dv.getCategories()) {
             xmlw.writeStartElement("catgry");
-
-
+            if (cat.isMissing()) {
+                writeAttribute(xmlw, "missing", "Y");
+            }
+            
             // catValu
             xmlw.writeStartElement("catValu");
             xmlw.writeCharacters( cat.getValue());

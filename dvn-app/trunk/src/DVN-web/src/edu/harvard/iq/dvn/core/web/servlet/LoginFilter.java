@@ -37,6 +37,8 @@ import edu.harvard.iq.dvn.core.admin.VDCRole;
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.study.DataTable;
 import edu.harvard.iq.dvn.core.study.Study;
+import edu.harvard.iq.dvn.core.study.StudyFile;
+import edu.harvard.iq.dvn.core.study.StudyFileServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyLock;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyVersion;
@@ -98,6 +100,8 @@ public class LoginFilter implements Filter {
     PageDefServiceLocal pageDefService;
     @EJB
     StudyServiceLocal studyService;
+    @EJB
+    StudyFileServiceLocal studyFileService;
     @EJB
     VariableServiceLocal varService;
     @EJB
@@ -460,13 +464,20 @@ public class LoginFilter implements Filter {
 
 
 
-        }else if (isSubsettingPage(pageDef)) {
+        }else if (isSubsettingPage(pageDef) ) {
             String dtId = VDCBaseBean.getParamFromRequestOrComponent("dtId", request);
+
             DataTable dataTable = variableService.getDataTable(Long.parseLong(dtId));
             Study study = dataTable.getStudyFile().getStudy();
             if (study.isStudyRestrictedForUser(user, ipUserGroup)) {
                 return false;
             }        
+        } else if (isExploreDataPage(pageDef) ) {
+            String fileId = VDCBaseBean.getParamFromRequestOrComponent("fileId", request);
+            StudyFile sf = studyFileService.getStudyFile(Long.parseLong(fileId));
+            if (sf.isFileRestrictedForUser(user, currentVDC, ipUserGroup)) {
+                return false;
+            }
         } else if (isEditAccountPage(pageDef)) {
             String userId = VDCBaseBean.getParamFromRequestOrComponent("userId", request);
             if (user==null || user.getId()!=Long.parseLong(userId)) {
@@ -653,6 +664,13 @@ public class LoginFilter implements Filter {
         }
         return false;
     }
+     private boolean isExploreDataPage(PageDef pageDef) {
+        if (pageDef != null && pageDef.getName().equals(pageDefService.EXPLOREDATA_PAGE)) {
+            return true;
+        }
+        return false;
+    }
+
 
     private boolean isVdcRestricted(PageDef pageDef, HttpServletRequest request) {
         boolean restricted = false;

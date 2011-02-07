@@ -297,6 +297,36 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             }
     }
 
+    private List <VarGroup> getFilterGroupsFromMeasureId(Long MeasureId){
+        List returnList = new ArrayList();
+         List <VarGroup> localVGList = new ArrayList();
+
+        Iterator i = filterGroupMeasureAssociation.listIterator();
+        int count = 0;
+        while (i.hasNext()){
+            Object test = i.next();
+            if ( count % 2 == 0 ){
+                Long id = (Long) test;
+                if (id.equals(MeasureId)){
+                    localVGList.add((VarGroup) i.next());
+                    count++;
+                }
+            }
+
+            count++;
+        }
+
+
+
+            Iterator iterator = localVGList.iterator();
+                while (iterator.hasNext() ){
+                VarGroup varGroup = (VarGroup) iterator.next();
+                returnList.add(varGroup);
+            }
+
+            return returnList;
+    }
+
 
     private void loadFilterGroupTypes(List <VarGroupTypeUI> inList, Long groupingId){
         
@@ -507,7 +537,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
           Long groupingId = new Long(filterPanelGroup.getAttributes().get("groupingId").toString());
           boolean addAll = false;
           List <VarGroup> multipleSelections = new ArrayList <VarGroup>();
-          List <VarGroup> varGroupsAll = (List<VarGroup>)  visualizationService.getFilterGroupsFromMeasureId(selectedMeasureId);
+          List <VarGroup> varGroupsAll = (List<VarGroup>)  getFilterGroupsFromMeasureId(selectedMeasureId);
               for(VarGroup varGroup: varGroupsAll) {
                   boolean added = false;
                   for (VarGroupingUI varGroupingUI :filterGroupings){
@@ -519,18 +549,14 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                                 allFalse &= !varGroupTypeUI.isEnabled();
                             }
                             if (allFalse){
-                                for (VarGroupTypeUI varGroupTypeUI: varGroupTypesUI){
-                                    if (varGroupTypeUI.isEnabled() || allFalse ){
-                                        List <VarGroup> varGroups = (List) varGroupTypeUI.getVarGroupType().getGroups();
-                                        for (VarGroup varGroupTest: varGroups) {
+                                
+                                       for (VarGroup varGroupTest: varGroupsAll) {
                                             if (!added && varGroupTest.getId().equals(varGroup.getId())  && varGroup.getGroupAssociation().equals(varGroupingUI.getVarGrouping()) ){
                                                 selectItems.add(new SelectItem(varGroup.getId(), varGroup.getName()));
                                                 added = true;
                                             }
                                         }
 
-                                    }
-                                }
 
                             }
                             if (!allFalse){

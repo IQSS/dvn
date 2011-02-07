@@ -222,7 +222,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
              }
          }
 
-         loadFilterGroupings();
+         loadFilterGroupingsInit();
          if (!filterGroupings.isEmpty()){
              hasFilterGroupings = true;
          }
@@ -270,14 +270,27 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                 VarGroupingUI varGroupingUI = new VarGroupingUI();
                 varGroupingUI.setVarGrouping(varGrouping);
                 varGroupingUI.setVarGroupTypesUI(varGroupingUI);
-                setVarGroupUI(varGroupingUI);
                 filterGroupings.add(varGroupingUI);
             }
         }
       
     }
 
+    private void loadFilterGroupingsInit() {
+        filterGroupings.clear();
 
+        for (VarGrouping varGrouping: varGroupings ){
+
+            if (varGrouping.getGroupingType().equals(GroupingType.FILTER)){
+                VarGroupingUI varGroupingUI = new VarGroupingUI();
+                varGroupingUI.setVarGrouping(varGrouping);
+                varGroupingUI.setVarGroupTypesUI(varGroupingUI);
+                setVarGroupUI(varGroupingUI);
+                filterGroupings.add(varGroupingUI);
+            }
+        }
+
+    }
     public void setMeasureGroups(){
         
     }

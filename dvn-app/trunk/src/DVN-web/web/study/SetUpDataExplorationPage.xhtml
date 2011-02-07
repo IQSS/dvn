@@ -84,9 +84,10 @@
 </style>
 
     <div class="dvn_section">
-        <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound #{SetUpDataExplorationPage.displayValidationFailure?'dvnWarningMessage':'dvnSuccessMessage'}" rendered="#{SetUpDataExplorationPage.displayValidationFailure or SetUpDataExplorationPage.displayValidationSuccess}">
+        <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound #{SetUpDataExplorationPage.displayValidationFailure ? 'dvnWarningMessage': (SetUpDataExplorationPage.displayValidationSuccess ? 'dvnSuccessMessage':'dvnInformationMessage')}">
             <div class="dvnMsgBlockContainer">
                 <p>
+                    <ice:outputText value="(Please report any issues found in our open beta release of Explore Data to the Network Administrator using the &lt;a href=&#34;/dvn#{VDCRequest.currentVDCURL}/faces/ContactUsPage.xhtml&#34;&gt;Contact&lt;/a&gt; form.)" escape="false" rendered="#{!SetUpDataExplorationPage.displayValidationFailure and !SetUpDataExplorationPage.displayValidationSuccess}"/>
                     <ice:message for="validateButton" id="boxErrorMsg"/>
                     <ice:message for="releaseButton" id="boxSuccessMsg" />
                 </p>

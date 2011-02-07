@@ -470,6 +470,24 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
         return (List) checkList;
     }
 
+    @Override
+    public List getFilterMeasureAssociationFromDataTableId(Long dataTableId) {
+
+        String query = "select  DISTINCT po.id, g2.id from VarGrouping po, VarGroup g2 " +
+                " where g2.varGrouping.id = po.id  " +
+                "  AND g2.id in ( " +
+                " select distinct m2.varGroup.id from DataVariableMapping m2 " +
+                " where m2.dataVariable.id in " +
+                "   ( " +
+                "  SELECT DISTINCT M.dataVariable.id FROM  DataVariableMapping m, DataVariable v, VarGroup g, VarGrouping p " +
+                " where v.id = m.dataVariable.id " +
+                " and m.dataTable.id = " + dataTableId + "  " +
+                " and g.varGrouping.id = p.id " +
+                " and m.varGroup.id = g.id ) ) ";
+        List checkList = (List) em.createQuery(query).getResultList();
+        return (List) checkList;
+    }
+
 
     public void removeCollectionElement(Collection coll, Object elem) {
         coll.remove(elem);

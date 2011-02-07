@@ -103,7 +103,9 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     private boolean lineAdded = false;
     private Long studyId = new Long(0);
     private Long versionNumber;
-    private List filterMeasureAssociation = new ArrayList();
+    private List filterGroupingMeasureAssociation = new ArrayList();
+    private List groupingTypeAssociation = new ArrayList();
+    private List filterGroupMeasureAssociation = new ArrayList();
     private List <VarGrouping> allVarGroupings = new ArrayList();
 
 
@@ -141,6 +143,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         selectMeasureGroupTypes = loadSelectMeasureGroupTypes();        
         selectMeasureItems = loadSelectMeasureItems(0);
         loadAllFilterGroupings();
+        loadAllFilterGroupTypes();
         xAxisVar =  visualizationService.getXAxisVariable(dt.getId());
 
      }
@@ -191,7 +194,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         filterGroupings.clear();
         List <VarGrouping> localVGList = new ArrayList();
 
-        Iterator i = filterMeasureAssociation.listIterator();
+        Iterator i = filterGroupingMeasureAssociation.listIterator();
         int count = 0;
         while (i.hasNext()){
             Object test = i.next();
@@ -233,10 +236,14 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             if (varGroupingTest.getGroupingType().equals(GroupingType.MEASURE)){
                 for (VarGroup varGroup : varGroupingTest.getVarGroups() ){
                      List <VarGrouping> varGroupingsBack = visualizationService.getFilterGroupingsFromMeasureId(varGroup.getId());
-
                      for(VarGrouping varGroupingBack: varGroupingsBack){
-                         filterMeasureAssociation.add(varGroup.getId());
-                         filterMeasureAssociation.add(varGroupingBack);
+                         filterGroupingMeasureAssociation.add(varGroup.getId());
+                         filterGroupingMeasureAssociation.add(varGroupingBack);
+                     }
+                     List <VarGroup> varGroupsBack = visualizationService.getFilterGroupsFromMeasureId(varGroup.getId());
+                     for(VarGroup varGroupBack: varGroupsBack){
+                         filterGroupMeasureAssociation.add(varGroup.getId());
+                         filterGroupMeasureAssociation.add(varGroupBack);
                      }
                 }
             }
@@ -244,26 +251,74 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         }
     }
 
+    private void loadAllFilterGroupTypes(){
+
+
+        for (VarGrouping varGroupingTest: allVarGroupings){
+            if (varGroupingTest.getGroupingType().equals(GroupingType.FILTER)){
+                     List <VarGroupType> varGroupTypesBack = visualizationService.getGroupTypesFromGroupingId(varGroupingTest.getId());
+
+                     for(VarGroupType varGroupTypeBack: varGroupTypesBack){
+                         groupingTypeAssociation.add(varGroupingTest.getId());
+                         groupingTypeAssociation.add(varGroupTypeBack);
+                     }
+
+            }
+
+        }
+    }
+
+
     private void loadFilterGroups(List <VarGroup> inList){
         inList.clear();
+         List <VarGroup> localVGList = new ArrayList();
 
-            List groups = visualizationService.getFilterGroupsFromMeasureId(selectedMeasureId);
+        Iterator i = filterGroupMeasureAssociation.listIterator();
+        int count = 0;
+        while (i.hasNext()){
+            Object test = i.next();
+            if ( count % 2 == 0 ){
+                Long id = (Long) test;
+                if (id.equals(selectedMeasureId)){
+                    localVGList.add((VarGroup) i.next());
+                    count++;
+                }
+            }
 
-                Iterator iterator = groups.iterator();
+            count++;
+        }
+
+
+
+                Iterator iterator = localVGList.iterator();
                 while (iterator.hasNext() ){
                 VarGroup varGroup = (VarGroup) iterator.next();
                 inList.add(varGroup);
             }
-
-
-
     }
 
 
     private void loadFilterGroupTypes(List <VarGroupTypeUI> inList, Long groupingId){
         
-        List groups = visualizationService.getGroupTypesFromGroupingId(groupingId);
-        Iterator iterator = groups.iterator();
+
+        List <VarGroupType> localVGList = new ArrayList();
+
+        Iterator i = groupingTypeAssociation.listIterator();
+        int count = 0;
+        while (i.hasNext()){
+            Object test = i.next();
+            if ( count % 2 == 0 ){
+                Long id = (Long) test;
+                if (id.equals(groupingId)){
+                    localVGList.add((VarGroupType) i.next());
+                    count++;
+                }
+            }
+
+            count++;
+        }
+
+        Iterator iterator = localVGList.iterator();
         while (iterator.hasNext() ){
             VarGroupType varGroupType = (VarGroupType) iterator.next();
             VarGroupTypeUI varGroupTypeUI = new VarGroupTypeUI();

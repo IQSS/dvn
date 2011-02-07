@@ -134,13 +134,13 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
         dvList = dt.getDataVariables();
         allVarGroupings = dt.getVarGroupings();
-        loadAllFilterGroupings();
+
         measureLabel = loadMeasureLabel();
         
         measureGrouping = loadMeasureGrouping();
         selectMeasureGroupTypes = loadSelectMeasureGroupTypes();        
         selectMeasureItems = loadSelectMeasureItems(0);
-        
+        loadAllFilterGroupings();
         xAxisVar =  visualizationService.getXAxisVariable(dt.getId());
 
      }
@@ -378,7 +378,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
     public List<SelectItem> loadSelectMeasureGroupTypes() {
         List selectItems = new ArrayList<SelectItem>();
-        Iterator iterator = varGroupings.iterator();
+        Iterator iterator = allVarGroupings.iterator();
         while (iterator.hasNext() ){
             VarGrouping varGrouping = (VarGrouping) iterator.next();
             // Don't show OAISets that have been created for dataverse-level Lockss Harvesting

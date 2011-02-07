@@ -71,5 +71,7 @@ public interface VisualizationServiceLocal extends java.io.Serializable {
     @javax.ejb.TransactionAttribute(value = javax.ejb.TransactionAttributeType.REQUIRES_NEW)
     public void addGroup();
 
+    public java.util.List getFilterMeasureAssociationFromDataTableId(java.lang.Long dataTableId);
+
 
 }

@@ -99,7 +99,7 @@
                     <ice:commandButton id="studyFileIdButton" visible="false" value="Change" action="#{SetUpDataExplorationPage.resetStudyFileId}"/>
 
                     <ice:commandButton id="validateButton" type="submit" value="Validate" rendered="#{SetUpDataExplorationPage.showCommands}"
-                                       binding="#{SetUpDataExplorationPage.validateButton}" action="#{SetUpDataExplorationPage.validate}" onclick="jQuery('div.dvnMsgBlockRound').corner('10px');"/>
+                                       binding="#{SetUpDataExplorationPage.validateButton}" action="#{SetUpDataExplorationPage.validate}" />
 
                     <ice:commandButton id="releaseButton" type="submit" value="Release" rendered="#{!SetUpDataExplorationPage.dataTable.visualizationEnabled and SetUpDataExplorationPage.showCommands}"
                                        binding="#{SetUpDataExplorationPage.releaseButton}" action="#{SetUpDataExplorationPage.release}" />

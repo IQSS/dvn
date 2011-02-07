@@ -12,7 +12,7 @@ import com.icesoft.faces.component.ext.HtmlInputText;
 import com.icesoft.faces.component.ext.HtmlCommandLink;
 import com.icesoft.faces.component.ext.HtmlSelectBooleanCheckbox;
 import com.icesoft.faces.component.ext.HtmlSelectOneMenu;
-import com.icesoft.faces.component.panelseries.UISeries;
+import com.icesoft.faces.context.effects.JavascriptContext;
 import edu.harvard.iq.dvn.core.study.DataVariable;
 import edu.harvard.iq.dvn.core.study.EditStudyFilesService;
 import edu.harvard.iq.dvn.core.study.Metadata;
@@ -37,7 +37,6 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
-import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.PhaseId;
@@ -1367,11 +1366,25 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             }
             valid = false;
         }
-
+/*
+        if (visualizationService.getDuplicateMappings(dataTable).size() > 0) {
+             if (messages){
+                FacesMessage message = new FacesMessage("Found non-unique groups for variables.");
+                FacesContext fc = FacesContext.getCurrentInstance();
+                fc.addMessage(validateButton.getClientId(fc), message);
+            }
+            valid=false;
+        }
+*/
         if (valid && messages){
                 FacesMessage message = new FacesMessage("The Data Visualization is valid for release.");
                 FacesContext fc = FacesContext.getCurrentInstance();
                 fc.addMessage(releaseButton.getClientId(fc), message);
+        }
+        if (!valid) {
+            // add rounded corners to the validation message box
+            FacesContext fc = FacesContext.getCurrentInstance();
+            JavascriptContext.addJavascriptCall(fc, "jQuery(\"div.dvnMsgBlockRound\").corner(\"10px\");" );
         }
 
         return valid;

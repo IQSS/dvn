@@ -415,12 +415,10 @@ function updateDisplayType(){
 
         <div class="graphForm">
             <div style="overflow:hidden; margin-bottom:1em;">
-                <ice:message for="indicator" id="boxErrorMsg" styleClass="errorMessage" style="display:block;"/>
                 <div style="display:inline;">
-                    <ice:message for="indicator" id="boxErrorMsg" styleClass="errorMessage"/>
                     <ice:outputLabel value="#{ExploreDataPage.measureLabel}" for="indicator"/>
 
-                    <ice:selectOneMenu id="indicatorMenu" value="#{ExploreDataPage.selectedMeasureId}" onchange="submit()" valueChangeListener="#{ExploreDataPage.resetFiltersForMeasure}">
+                    <ice:selectOneMenu  id="indicatorMenu" value="#{ExploreDataPage.selectedMeasureId}" onchange="document.forms['ExploreDataPage'].submit();" valueChangeListener="#{ExploreDataPage.resetFiltersForMeasure}">
                         <f:selectItem itemLabel="Select..." itemValue="0"/>
                         <f:selectItems value="#{ExploreDataPage.selectMeasureItems}"/>
                     </ice:selectOneMenu>
@@ -429,7 +427,7 @@ function updateDisplayType(){
                 <ice:outputText value="related to" style="font-weight:bold; margin:0 2em;" rendered="#{!empty ExploreDataPage.selectMeasureGroupTypes}"/>
 
                 <div style="display:inline;">
-                    <ice:selectOneMenu immediate="false" onchange="submit()" id="issue"
+                    <ice:selectOneMenu immediate="false" onchange="document.forms['ExploreDataPage'].submit();" id="issue"
                                        valueChangeListener="#{ExploreDataPage.reset_MeasureItems}" value="#{ExploreDataPage.groupTypeId}" rendered="#{!empty ExploreDataPage.selectMeasureGroupTypes}">
                         <f:selectItem itemLabel="Select Type..." itemValue="0"/>
                         <f:selectItems value="#{ExploreDataPage.selectMeasureGroupTypes}"/>

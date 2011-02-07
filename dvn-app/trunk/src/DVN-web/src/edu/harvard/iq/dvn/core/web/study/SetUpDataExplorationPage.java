@@ -1381,11 +1381,11 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                 FacesContext fc = FacesContext.getCurrentInstance();
                 fc.addMessage(releaseButton.getClientId(fc), message);
         }
-        if (!valid) {
-            // add rounded corners to the validation message box
-            FacesContext fc = FacesContext.getCurrentInstance();
-            JavascriptContext.addJavascriptCall(fc, "jQuery(\"div.dvnMsgBlockRound\").corner(\"10px\");" );
-        }
+        
+        // add rounded corners to the validation message box
+        FacesContext fc = FacesContext.getCurrentInstance();
+        JavascriptContext.addJavascriptCall(fc, "jQuery(\"div.dvnMsgBlockRound\").corner(\"10px\");" );
+       
 
         return valid;
     }

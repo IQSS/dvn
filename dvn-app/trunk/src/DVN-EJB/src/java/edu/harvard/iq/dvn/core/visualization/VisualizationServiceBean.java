@@ -562,5 +562,29 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
         em.flush();
     }
 
+    @Override
+    public List getDataVariableMappingsFromDataTableGroup(DataTable dataTable, VarGroup varGroup) {
+
+        List <DataVariableMapping> variableMappings = new ArrayList();
+        List <DataVariable> dataVariables = dataTable.getDataVariables();
+        List <DataVariable> returnDataVariables = new ArrayList();
+
+
+        for (DataVariable dataVariable : dataVariables ){
+            variableMappings = (List) dataVariable.getDataVariableMappings();
+            for (DataVariableMapping dataVariableMapping: variableMappings){
+
+                if (!dataVariableMapping.isX_axis() && dataVariableMapping.getGroup().equals(varGroup)){
+                    returnDataVariables.add(dataVariable);
+                }
+
+            }
+
+        }
+
+
+        return returnDataVariables;
+    }
+
 
 }

@@ -33,6 +33,7 @@ public interface VisualizationServiceLocal extends java.io.Serializable {
     public VarGroup getGroupFromId(Long groupId);
     public DataVariable getXAxisVariable(Long dataTableId);
     public List getDataVariableMappingsFromGroupId(Long groupId);
+    public List getDataVariableMappingsFromDataTableGroup(edu.harvard.iq.dvn.core.study.DataTable dataTable, VarGroup varGroup);
 
     public List getGroupTypesFromGroupId(Long groupId);
 

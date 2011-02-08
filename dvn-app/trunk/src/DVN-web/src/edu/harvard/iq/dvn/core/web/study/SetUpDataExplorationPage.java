@@ -364,7 +364,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
     }
 
-        private void setVarGroupUI(VarGroupingUI varGroupingUI) {
+    private void setVarGroupUI(VarGroupingUI varGroupingUI) {
         List<VarGroupUI> varGroupUIList = new ArrayList();
         VarGrouping varGroupingIn = varGroupingUI.getVarGrouping();
         varGroupingIn.getVarGroupTypes();
@@ -892,8 +892,10 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         }
         updateVariableByGroup(editFilterVarGroup);
         resetDVMappingsByGroup(editFilterVarGroup);
+        loadFilterGroupings();
         editFilterVarGroup = null;
         getInputFilterGroupName().setValue("");
+        dataTableFilterGrouping.getChildren().clear();
         cancelAddEdit();
     }
 

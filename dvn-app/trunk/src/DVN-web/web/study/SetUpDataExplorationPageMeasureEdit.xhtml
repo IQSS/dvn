@@ -75,7 +75,7 @@
                 </ice:commandLink>
                 <ice:commandLink id="deleteMeasureGroupType"
                                  visible="#{!groupType.editMode}"
-                                 actionListener="#{SetUpDataExplorationPage.deleteMeasureGroupType}">
+                                 actionListener="#{SetUpDataExplorationPage.deleteGroupType}">
                      <ice:outputText id="deleteMeasureGroupTypeText" style="display:inline;" value="Delete"/>
                 </ice:commandLink>
             </h:column>
@@ -129,7 +129,7 @@
                      <ice:outputText style="display:inline;" value="Save"/>
                 </ice:commandLink>
                 <ice:commandLink visible="#{!type.editMode}"
-                                 actionListener="#{SetUpDataExplorationPage.deleteMeasureGroupType}">
+                                 actionListener="#{SetUpDataExplorationPage.deleteGroupType}">
                      <ice:outputText style="display:inline;" value="Delete"/>
                 </ice:commandLink>
            </h:column>

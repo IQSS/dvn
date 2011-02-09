@@ -5,15 +5,16 @@
 
 package edu.harvard.iq.dvn.core.visualization;
 
-import edu.harvard.iq.dvn.core.admin.VDCUser;
 import edu.harvard.iq.dvn.core.study.DataTable;
 import edu.harvard.iq.dvn.core.study.DataVariable;
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.visualization.VarGrouping.GroupingType;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
 
@@ -319,6 +320,59 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
             }
 
         return true;
+    }
+
+    /**
+     * Test that for each variable, that there is  defined set of filters
+     * such that the variable can be individually chosen in the Explore data page
+     *
+     * @return a list of variables that are not uniquely identified by measure & filters
+     */
+
+    public List getDuplicateMappings( DataTable datatable ) {
+        List duplicateVariables = new ArrayList<String>();
+        Set<ArrayList<String>> set = new HashSet();
+        List<DataVariable> variables = datatable.getDataVariables();
+        List<VarGrouping> varGroupings = datatable.getVarGroupings();
+        for (VarGrouping vg : varGroupings) {
+            System.out.println(" varGrouping Name: "+ vg.getName());
+        }
+        for (DataVariable var: variables) {
+
+            ArrayList<String> groupMembership = getGroupMembership(var,varGroupings);
+            String groups = "";
+            for (String s: groupMembership) {
+                groups +=" "+s;
+            }
+            groups+=".";
+            System.out.println("\n\n\nvar="+var.getName()+", groups = "+groups);
+            if (groupMembership.size() >0) {
+                if (set.contains(groupMembership)) {
+                    duplicateVariables.add(var.getName());
+                } else {
+                    set.add(groupMembership);
+                }
+            }
+        }
+        return duplicateVariables;
+    }
+    /*
+     * For each grouping, get the group that this var belongs to, if any
+     */
+    private ArrayList<String> getGroupMembership(DataVariable var, List<VarGrouping> groupings ) {
+        System.out.println("var= "+var.getName());
+        ArrayList<String> membership = new ArrayList<String>();
+        for (VarGrouping grouping : groupings) {
+            System.out.println("grouping="+grouping.getName());
+            for (DataVariableMapping dvm : grouping.getDataVariableMappings()) {
+                System.out.println(" dvm - group "+ dvm.getGroup().getName());
+                if (dvm.getDataVariable().getId().equals(var.getId())) {
+                    membership.add(dvm.getGroup().getName());
+                    System.out.println("adding group "+ dvm.getGroup().getName());
+                }
+            }
+        }
+        return membership;
     }
 
     private List getUniqueMappedVariables(Long dataTableId){

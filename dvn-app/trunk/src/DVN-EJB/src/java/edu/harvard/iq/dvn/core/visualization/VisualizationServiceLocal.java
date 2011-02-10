@@ -22,7 +22,6 @@ public interface VisualizationServiceLocal extends java.io.Serializable {
 
     public void updateGroupings(List <VarGrouping> groupings);
     public boolean validateGroupings(Long dataTableId);
-    public boolean validateVariableMappings(DataTable dataTable);
     public List getVariableMappings(Long dataTableId);
     public List getGroupsFromGroupTypeId(Long groupTypeId);
 
@@ -33,7 +32,7 @@ public interface VisualizationServiceLocal extends java.io.Serializable {
     public VarGroup getGroupFromId(Long groupId);
     public DataVariable getXAxisVariable(Long dataTableId);
     public List getDataVariableMappingsFromGroupId(Long groupId);
-    public List getDataVariableMappingsFromDataTableGroup(edu.harvard.iq.dvn.core.study.DataTable dataTable, VarGroup varGroup);
+    public List getDataVariableMappingsFromDataTableGroup(DataTable dataTable, VarGroup varGroup);
 
     public List getGroupTypesFromGroupId(Long groupId);
 
@@ -51,30 +50,27 @@ public interface VisualizationServiceLocal extends java.io.Serializable {
     public void setDataTable(Long dataTableId);
     public void setDataTableFromStudyFileId(Long studyFileId);
 
-    public void addGroupType();
-    public void addGrouping();
+
     public Study getStudyFromStudyFileId(Long studyFileId);
     public DataTable getDataTable();
 
     @javax.ejb.Remove
     public void cancel();
 
-    public boolean validateAtLeastOneFilterMapping(edu.harvard.iq.dvn.core.study.DataTable dataTable);
+    public boolean validateAtLeastOneFilterMapping(DataTable dataTable, List returnListOfErrors);
 
-    public boolean validateXAxisMapping(edu.harvard.iq.dvn.core.study.DataTable dataTable, Long xAxisVariableId);
+    public boolean validateXAxisMapping(DataTable dataTable, Long xAxisVariableId);
 
-    public boolean validateOneMeasureMapping(edu.harvard.iq.dvn.core.study.DataTable dataTable);
+    public boolean validateOneMeasureMapping(DataTable dataTable, List returnListOfErrors);
 
-    public boolean validateUniqueVariableMappings(java.lang.Long dataTableId);
+    public boolean validateAtLeastOneMeasureMapping(DataTable dataTable);
 
-    public boolean validateAtLeastOneMeasureMapping(edu.harvard.iq.dvn.core.study.DataTable dataTable);
+    public List getDuplicateMappings( DataTable datatable, List returnListOfErrors );
 
-    public List getDuplicateMappings( DataTable datatable );
+    public java.util.List getFilterMeasureAssociationFromDataTableId(Long dataTableId);
 
-    @javax.ejb.TransactionAttribute(value = javax.ejb.TransactionAttributeType.REQUIRES_NEW)
-    public void addGroup();
 
-    public java.util.List getFilterMeasureAssociationFromDataTableId(java.lang.Long dataTableId);
+    public boolean validateMoreThanZeroMeasureMapping(DataTable dataTable, List returnListOfErrors);
 
 
 }

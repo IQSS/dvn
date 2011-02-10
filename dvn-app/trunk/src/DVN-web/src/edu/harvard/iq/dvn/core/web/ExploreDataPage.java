@@ -948,19 +948,13 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
 
         if (!valid){
-            FacesMessage message = new FacesMessage("Your selections do not match any in the data table.");
-            FacesContext fc = FacesContext.getCurrentInstance();
-            fc.addMessage(addLineButton.getClientId(fc), message);
-
-        }
-         if (!(maxCount == filterGroupings.size())){
-            FacesMessage message = new FacesMessage("Your selections do not match a unique data variable.");
+            FacesMessage message = new FacesMessage("You must select a filter for each group.");
             FacesContext fc = FacesContext.getCurrentInstance();
             fc.addMessage(addLineButton.getClientId(fc), message);
 
         }
 
-        return (maxCount == filterGroupings.size() );
+        return valid;
     }
 
     public List<VisualizationLineDefinition> getVizLines() {

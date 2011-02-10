@@ -435,7 +435,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             return false;
         }
                 List varGroup =  visualizationService.getGroupsFromGroupTypeId(varGroupTypeIn.getId());
-
+              varGroup = (List) varGroupTypeIn.getGroups();
             if (!varGroup.isEmpty()){
                  FacesMessage message = new FacesMessage("You may not delete a type that is assigned to a measure or filter.");
                  FacesContext fc = FacesContext.getCurrentInstance();
@@ -1380,42 +1380,50 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
     public boolean validateForRelease(boolean messages){
         boolean valid = true;
+        List <String> errorMessages = new ArrayList();
+        List fullListOfErrors = new ArrayList();
+        List returnListOfErrors = new ArrayList();
+        List duplicateVariables = new ArrayList();
+        String fullErrorMessage = "";
 
-        if (!visualizationService.validateAtLeastOneFilterMapping(dataTable)) {
+
+
+        if (!xAxisSet  || !visualizationService.validateXAxisMapping(dataTable, xAxisVariableId)) {
             if (messages){
-
-                FacesMessage message = new FacesMessage("Each variable mapping must include at least one Filter.");
-                FacesContext fc = FacesContext.getCurrentInstance();
-                fc.addMessage(validateButton.getClientId(fc), message);
-            }
-            valid = false;
-        }
-
-        if (!xAxisSet) {
-            if (messages){
-                FacesMessage message = new FacesMessage("You must select one X-axis variable and it cannot be mapped to any Measure or Filter.");
-                FacesContext fc = FacesContext.getCurrentInstance();
-                fc.addMessage(validateButton.getClientId(fc), message);
+                fullErrorMessage += ("You must select one X-axis variable and it cannot be mapped to any Measure or Filter.<br>");
             }
 
             valid = false;
         }
 
-        if (!visualizationService.validateXAxisMapping(dataTable, xAxisVariableId)) {
+        if (!visualizationService.validateAtLeastOneFilterMapping(dataTable, returnListOfErrors)) {
             if (messages){
-                FacesMessage message = new FacesMessage("You must select one X-axis variable and it cannot be mapped to any Measure or Filter.");
-                FacesContext fc = FacesContext.getCurrentInstance();
-                fc.addMessage(validateButton.getClientId(fc), message);
+                if (!returnListOfErrors.isEmpty()){
+                    for(Object dataVariableIn: returnListOfErrors){
+                        DataVariable dataVariable = (DataVariable) dataVariableIn;
+                        String errorMessage = "\r" + dataVariable.getName() + " requires at least one filter.<br>";
+                        fullListOfErrors.add(errorMessage);
+                        fullErrorMessage += errorMessage;
+                    }
+                }
+                returnListOfErrors.clear();
+                errorMessages.add("validateAtLeastOneFilterMapping.");
             }
-
             valid = false;
         }
 
-        if (!visualizationService.validateOneMeasureMapping(dataTable)) {
+        if (!visualizationService.validateMoreThanZeroMeasureMapping(dataTable, returnListOfErrors)) {
             if (messages){
-                FacesMessage message = new FacesMessage("Each variable mapping must include one Measure.");
-                FacesContext fc = FacesContext.getCurrentInstance();
-                fc.addMessage(validateButton.getClientId(fc), message);
+                if (!returnListOfErrors.isEmpty()){
+                    for(Object dataVariableIn: returnListOfErrors){
+                        DataVariable dataVariable = (DataVariable) dataVariableIn;
+                        String errorMessage = dataVariable.getName() + " is mapped to a filter but not to any measure.<br>";
+                        fullListOfErrors.add(errorMessage);
+                        fullErrorMessage += errorMessage;
+                    }
+                }
+                returnListOfErrors.clear();
+                errorMessages.add("validateOneMeasureMapping");
             }
 
             valid = false;
@@ -1423,30 +1431,48 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
         if (!visualizationService.validateAtLeastOneMeasureMapping(dataTable)) {
             if (messages){
-                FacesMessage message = new FacesMessage("The Data Visualization must include at least one Measure.");
+                FacesMessage message = new FacesMessage("The Data Visualization must include at least one Measure.<br>");
                 FacesContext fc = FacesContext.getCurrentInstance();
-                fc.addMessage(validateButton.getClientId(fc), message);
+                errorMessages.add("validateAtLeastOneMeasureMapping");
+                //fc.addMessage(validateButton.getClientId(fc), message);
             }
             valid = false;
         }
-/*
-        if (visualizationService.getDuplicateMappings(dataTable).size() > 0) {
+
+        duplicateVariables = visualizationService.getDuplicateMappings(dataTable, returnListOfErrors);
+        if (duplicateVariables.size() > 0) {
+
              if (messages){
-                FacesMessage message = new FacesMessage("Found non-unique groups for variables.");
-                FacesContext fc = FacesContext.getCurrentInstance();
-                fc.addMessage(validateButton.getClientId(fc), message);
+                if (!duplicateVariables.isEmpty()){
+                    int i = 0;
+                    for(Object dataVariableIn: duplicateVariables){
+
+                        DataVariable dataVariable = (DataVariable) dataVariableIn;
+                        String errorMessage = dataVariable.getName() + " is mapped to a non-unique measure and filter combination.";
+                        errorMessage += "(" + returnListOfErrors.get(i).toString() + ") <br>";
+                        fullListOfErrors.add(errorMessage);
+                        fullErrorMessage += errorMessage;
+                        i++;
+                    }
+                }
+                fullErrorMessage+= "  Found non-unique groups for variables.";
             }
+             returnListOfErrors.clear();
             valid=false;
         }
-*/
+
         if (valid && messages){
                 FacesMessage message = new FacesMessage("The Data Visualization is valid for release.");
                 FacesContext fc = FacesContext.getCurrentInstance();
                 fc.addMessage(releaseButton.getClientId(fc), message);
+                JavascriptContext.addJavascriptCall(fc, "jQuery(\"div.dvnMsgBlockRound\").corner(\"10px\");" );
         }
-        if (!valid) {
+        if (!valid&& messages) {
             // add rounded corners to the validation message box
             FacesContext fc = FacesContext.getCurrentInstance();
+            fullErrorMessage = "This visualization is not valid for release.  <br>" + fullErrorMessage;
+            FacesMessage message = new FacesMessage(fullErrorMessage);
+            fc.addMessage(validateButton.getClientId(fc), message);
             JavascriptContext.addJavascriptCall(fc, "jQuery(\"div.dvnMsgBlockRound\").corner(\"10px\");" );
         }
 
@@ -1478,7 +1504,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
     public String saveAndExit(){
        if (dataTable.isVisualizationEnabled()){
            if (!validateForRelease(false)) {
-               FacesMessage message = new FacesMessage("Changes not saved because exploration is no longer valid for release.");
+               FacesMessage message = new FacesMessage("Your current changes are invalid.  Correct these issues or unrelease your visualization before saving.");
                FacesContext fc = FacesContext.getCurrentInstance();
                fc.addMessage(validateButton.getClientId(fc), message);
                return "";
@@ -1512,6 +1538,12 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                          dataVariableMapping.setVarGrouping(varGroupUI.getVarGroup().getGroupAssociation());
                          dataVariableMapping.setX_axis(false);
                          dataVariable.getDataVariableMappings().add(dataVariableMapping);
+                         for(VarGrouping varGrouping : varGroupings){
+                             if (varGrouping.equals(varGroupUI.getVarGroup().getGroupAssociation())){
+                                varGrouping.getDataVariableMappings().add(dataVariableMapping);
+                             }
+
+                         }
                      }
 
                   }
@@ -1527,17 +1559,27 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
                 List <DataVariableMapping> removeList = new ArrayList();
                 List <DataVariable> tempList = new ArrayList(dvList);
+                List <DataVariableMapping> groupingRemoveList = new ArrayList();
            for(DataVariable dataVariable: tempList){
                List <DataVariableMapping> deleteList = (List <DataVariableMapping>) dataVariable.getDataVariableMappings();
-                for (DataVariableMapping dataVariableMapping : deleteList ){
+               for (DataVariableMapping dataVariableMapping : deleteList ){
                     if (dataVariableMapping.getGroup() != null && dataVariableMapping.getGroup() == (varGroupUI.getVarGroup()))
                     removeList.add(dataVariableMapping);
-                     }
-             }
+               }
+               for (DataVariableMapping dataVariableMapping : deleteList ){
+                    if (dataVariableMapping.getGroup() != null && dataVariableMapping.getGroup() == (varGroupUI.getVarGroup()))
+                    groupingRemoveList.add(dataVariableMapping);
+               }
+           }
 
            for(DataVariableMapping dataVarMappingRemove : removeList){
 
                visualizationService.removeCollectionElement(dataVarMappingRemove.getDataVariable().getDataVariableMappings(),dataVarMappingRemove);
+           }
+
+           for(DataVariableMapping dataVarMappingRemove : groupingRemoveList){
+
+               visualizationService.removeCollectionElement(dataVarMappingRemove.getVarGrouping().getDataVariableMappings(),dataVarMappingRemove);
            }
 
     }

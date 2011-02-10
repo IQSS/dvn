@@ -116,57 +116,17 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
     }
 
     @Override
-    public boolean validateVariableMappings(DataTable dataTable) {
+    public boolean validateOneMeasureMapping(DataTable dataTable, List returnListOfErrors){
         boolean valid = true;
-
-        valid &= validateOneMeasureMapping(dataTable);
-        valid &= validateAtLeastOneFilterMapping(dataTable);
-        //valid &= validateUniqueVariableMappings(dataTable);
-        valid &= validateXAxisMapping(dataTable, new Long (0));
-
-        return valid;
-    }
-
-    public boolean validateUniqueVariableMappings(Long dataTableId){
-
-        boolean valid = true;
-        List mappingIds = new ArrayList();
-        List testIds = new ArrayList();
-        mappingIds = getUniqueMappedVariables(dataTableId);
-        testIds = getUniqueMappedVariables(dataTableId);
-        Iterator iterator = mappingIds.iterator();
-        while (iterator.hasNext()) {
-
-            Long dataVariableId = (Long) iterator.next();
-            List thisVariablesMappings = getVariableMappingsById(dataVariableId);
-            Iterator iteratorTest = testIds.iterator();
-            while (iteratorTest.hasNext()) {
-                Long testDataVariableId = (Long) iteratorTest.next();
-                List testVariablesMappings = getVariableMappingsById(dataVariableId);
-                if (!dataVariableId.equals(testDataVariableId)){
-                    valid &= getAreVariableMappingsDifferent(thisVariablesMappings, testVariablesMappings  );
-                }
-            }
-
-        }
-
-
-        return valid;
-    }
-
-    public boolean validateOneMeasureMapping(DataTable dataTable){
-
        int countMeasures = 0;
        boolean hasMappings = false;
        boolean xAxis = false;
         List variableMappings = new ArrayList();
-        List dataVariables = new ArrayList();
-        dataVariables = dataTable.getDataVariables();
-        if (!dataVariables.isEmpty())
-        {
-            Iterator iterator = dataVariables.iterator();
-            while (iterator.hasNext()) {
-                DataVariable dataVariable = (DataVariable) iterator.next();
+        List<DataVariable> dataVariables = (List<DataVariable>) dataTable.getDataVariables();
+
+            for (DataVariable dataVariable: dataVariables){
+
+
                 xAxis = false;
                 hasMappings = false;
                 countMeasures = 0;
@@ -180,13 +140,14 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
 
                         if (dataVariableMapping.isX_axis()) xAxis = true;
                         if (!xAxis && dataVariableMapping.getVarGrouping() != null &&
-                                dataVariableMapping.getVarGrouping().getGroupingType().equals(GroupingType.MEASURE)){
+                            dataVariableMapping.getVarGrouping().getGroupingType().equals(GroupingType.MEASURE)){
                             countMeasures++;
                         }
                     }
                 }
                 if (!xAxis && hasMappings && countMeasures != 1){
-                    return false;
+                    returnListOfErrors.add(dataVariable);
+                    valid = false;
                 }
                 else{
                     xAxis = false;
@@ -194,13 +155,64 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
                     countMeasures = 0;
                 }
 
-            }
+
         }
 
 
 
-        return true;
+
+        return valid;
     }
+
+    @Override
+    public boolean validateMoreThanZeroMeasureMapping(DataTable dataTable, List returnListOfErrors){
+        boolean valid = true;
+       int countMeasures = 0;
+       boolean hasMappings = false;
+       boolean xAxis = false;
+        List variableMappings = new ArrayList();
+        List<DataVariable> dataVariables = (List<DataVariable>) dataTable.getDataVariables();
+
+            for (DataVariable dataVariable: dataVariables){
+
+
+                xAxis = false;
+                hasMappings = false;
+                countMeasures = 0;
+                variableMappings = (List) dataVariable.getDataVariableMappings();
+                if (!variableMappings.isEmpty()){
+                    hasMappings = true;
+                    Iterator iteratorMap = variableMappings.iterator();
+
+                    while (iteratorMap.hasNext()) {
+                        DataVariableMapping dataVariableMapping = (DataVariableMapping) iteratorMap.next();
+
+                        if (dataVariableMapping.isX_axis()) xAxis = true;
+                        if (!xAxis && dataVariableMapping.getVarGrouping() != null &&
+                            dataVariableMapping.getVarGrouping().getGroupingType().equals(GroupingType.MEASURE)){
+                            countMeasures++;
+                        }
+                    }
+                }
+                if (!xAxis && hasMappings && countMeasures == 0){
+                    returnListOfErrors.add(dataVariable);
+                    valid = false;
+                }
+                else{
+                    xAxis = false;
+                    hasMappings = false;
+                    countMeasures = 0;
+                }
+
+
+        }
+
+
+
+
+        return valid;
+    }
+
 
     private boolean validateSingleVariableMeasureGroup(DataTable dataTable, DataVariable dataVariable){
 
@@ -253,6 +265,7 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
         return true;
     }
 
+    @Override
     public boolean validateXAxisMapping(DataTable dataTable, Long xAxisVariableId){
 
         List variableMappings = new ArrayList();
@@ -278,36 +291,34 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
     }
 
 
-
-    public boolean validateAtLeastOneFilterMapping(DataTable dataTable){
+    @Override
+    public boolean validateAtLeastOneFilterMapping(DataTable dataTable, List returnListOfErrors){
 
        int countFilters = 0;
        boolean xAxis = false;
        boolean hasMappings = false;
-        Long oldId = new Long(0);
-        List variableMappings = new ArrayList();
-        List dataVariables = new ArrayList();
-        dataVariables = dataTable.getDataVariables();
-        Iterator iteratorV = dataVariables.iterator();
-            while (iteratorV.hasNext()) {
-                DataVariable dataVariable = (DataVariable) iteratorV.next();
+
+        List<DataVariable> dataVariables = (List<DataVariable>) dataTable.getDataVariables();
+
+            for (DataVariable dataVariable: dataVariables){
+                
                 xAxis = false;
                 hasMappings = false;
                 countFilters = 0;
-                variableMappings = (List) dataVariable.getDataVariableMappings();
-                Iterator iterator = variableMappings.iterator();
-                while (iterator.hasNext()) {
+                List <DataVariableMapping> variableMappings =  (List<DataVariableMapping>) dataVariable.getDataVariableMappings();
+                for (DataVariableMapping dataVariableMapping: variableMappings){
                     hasMappings = true;
-                    DataVariableMapping dataVariableMapping = (DataVariableMapping) iterator.next();
-                    Long newId = dataVariableMapping.getDataVariable().getId();
 
                     if (dataVariableMapping.isX_axis()) xAxis = true;
                     if (!xAxis && dataVariableMapping.getVarGrouping().getGroupingType().equals(GroupingType.FILTER)){
                         countFilters++;
                     }
+
                 }
+
                     if (hasMappings  && !xAxis && !validateSingleVariableMeasureGroup(dataTable, dataVariable)){
                         if (countFilters < 1){
+                            returnListOfErrors.add(dataVariable);
                             return false;
                         }
                         else{
@@ -329,45 +340,65 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
      * @return a list of variables that are not uniquely identified by measure & filters
      */
 
-    public List getDuplicateMappings( DataTable datatable ) {
-        List duplicateVariables = new ArrayList<String>();
+    public List getDuplicateMappings( DataTable datatable, List returnListOfErrors ) {
+        List duplicateVariables = new ArrayList();
         Set<ArrayList<String>> set = new HashSet();
+        Set<String> setString = new HashSet();
         List<DataVariable> variables = datatable.getDataVariables();
         List<VarGrouping> varGroupings = datatable.getVarGroupings();
         for (VarGrouping vg : varGroupings) {
             System.out.println(" varGrouping Name: "+ vg.getName());
         }
         for (DataVariable var: variables) {
-
-            ArrayList<String> groupMembership = getGroupMembership(var,varGroupings);
-            String groups = "";
-            for (String s: groupMembership) {
-                groups +=" "+s;
-            }
-            groups+=".";
-            System.out.println("\n\n\nvar="+var.getName()+", groups = "+groups);
-            if (groupMembership.size() >0) {
-                if (set.contains(groupMembership)) {
-                    duplicateVariables.add(var.getName());
-                } else {
-                    set.add(groupMembership);
+            if (!var.getDataVariableMappings().isEmpty()){
+                System.out.println("\n\n\nvar="+var.getName());
+                ArrayList<String> groupMembership = getGroupMembership(var,varGroupings);
+                String groups = "";
+                for (String s: groupMembership) {
+                    groups +=" "+s;
                 }
+                groups+=".";
+
+                if (groupMembership.size() >0) {
+                    Set <ArrayList<String>> groupSet = new HashSet();
+
+                    groupSet.add(groupMembership);
+                    System.out.println("\n\n\nvar="+var.getName()+", groupMembership = "+ groupMembership);
+                    System.out.println("\n\n\nvar="+var.getName()+" group membership size > 0 ");
+                    System.out.println("\n\n\nvar="+var.getName()+", set = "+set);
+
+                    if (set.contains(groupMembership)) {
+                        System.out.println("set contains groupMembership");
+                        duplicateVariables.add(var);
+                        returnListOfErrors.add(groupMembership);
+                    } else {
+                        set.add(groupMembership);
+                        for(String groupString: groupMembership){
+                            setString.add(groupString);
+                        }
+                    }
+                }
+
             }
+
         }
+        System.out.println("duplicate variables size=" + duplicateVariables.size());
         return duplicateVariables;
     }
     /*
      * For each grouping, get the group that this var belongs to, if any
      */
     private ArrayList<String> getGroupMembership(DataVariable var, List<VarGrouping> groupings ) {
-        System.out.println("var= "+var.getName());
+
         ArrayList<String> membership = new ArrayList<String>();
+        System.out.println("var= "+var.getName());
         for (VarGrouping grouping : groupings) {
             System.out.println("grouping="+grouping.getName());
             for (DataVariableMapping dvm : grouping.getDataVariableMappings()) {
                 System.out.println(" dvm - group "+ dvm.getGroup().getName());
                 if (dvm.getDataVariable().getId().equals(var.getId())) {
                     membership.add(dvm.getGroup().getName());
+                    System.out.println("var= "+var.getName());
                     System.out.println("adding group "+ dvm.getGroup().getName());
                 }
             }
@@ -572,12 +603,6 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
     }
 
     @Override
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void addGroupType() {
-        em.flush();
-    }
-
-    @Override
     public boolean validateAtLeastOneMeasureMapping(DataTable dataTable) {
        int countMeasures = 0;
 
@@ -604,17 +629,7 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
         return true;
     }
 
-    @Override
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void addGrouping() {
-        em.flush();
-    }
 
-    @Override
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void addGroup() {
-        em.flush();
-    }
 
     @Override
     public List getDataVariableMappingsFromDataTableGroup(DataTable dataTable, VarGroup varGroup) {

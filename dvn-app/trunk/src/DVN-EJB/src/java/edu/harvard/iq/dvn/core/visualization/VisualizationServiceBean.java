@@ -655,5 +655,70 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
         return returnDataVariables;
     }
 
+    @Override
+    public boolean checkForDuplicateEntries(VarGrouping varGrouping, String name, boolean group, Object testObject) {
+
+        boolean hasDuplicates = false;
+
+        List<String> set = new ArrayList();
+        List checkList = new ArrayList();
+        List editList = new ArrayList();
+
+        if (group){
+           checkList =  varGrouping.getVarGroups();
+
+        } else {
+           checkList = (List)  varGrouping.getVarGroupTypes();
+        }
+
+        for (Object obj: checkList) {
+            if (group) {
+                VarGroup varGroup = (VarGroup) obj;
+                set.add(varGroup.getName());
+                editList.add(varGroup);
+            } else {
+                VarGroupType varGroupType = (VarGroupType) obj;
+                set.add(varGroupType.getName());
+                editList.add(varGroupType);
+            }
+        }
+        
+        if (set.contains(name)) {
+            hasDuplicates = true;
+        }
+        if (testObject!=null){
+            if (group){
+               VarGroup varGroupTest = (VarGroup) testObject;
+               for(Object listObj: editList){
+                   VarGroup varGroup = (VarGroup) listObj;
+
+                   boolean checkForMatch =  (varGroup.getId() != null && varGroupTest.getId() != null ) && varGroup.getId().equals(varGroupTest.getId() ) ;
+                   checkForMatch |= (varGroup.getId() == null && varGroupTest.getId() == null );
+                   if (checkForMatch  && name.equals(varGroup.getName())){
+                       hasDuplicates = false;
+                   }
+               }
+
+            } else {
+
+               VarGroupType  varGroupTypeTest = (VarGroupType) testObject;
+               for(Object listObj: editList){
+                   VarGroupType varGroupType = (VarGroupType) listObj;
+                   boolean checkForMatch =  (varGroupType.getId() != null && varGroupTypeTest.getId() != null ) && varGroupType.getId().equals(varGroupTypeTest.getId() ) ;
+                   checkForMatch |= (varGroupType.getId() == null && varGroupTypeTest.getId() == null );
+                   if (checkForMatch  && name.equals(varGroupType.getName())){
+                       hasDuplicates = false;
+                   }
+               }
+
+            }
+
+
+        }
+
+
+        return hasDuplicates;
+    }
+
 
 }

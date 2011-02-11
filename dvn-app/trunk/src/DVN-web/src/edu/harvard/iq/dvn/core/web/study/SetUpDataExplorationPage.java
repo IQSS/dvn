@@ -620,13 +620,19 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         }
         HtmlDataTable tempTable = (HtmlDataTable) uiComponent;
         VarGroupTypeUI varGroupTypeUI = (VarGroupTypeUI) tempTable.getRowData();
+        String getName = "";
 
         if (tempTable.equals(dataTableManageFilterGroupType)) {
-            varGroupTypeUI.getVarGroupType().setName((String) getEditManageFilterGroupTypeName().getValue());
+            getName = (String) getEditManageFilterGroupTypeName().getValue();
         } else {
-            varGroupTypeUI.getVarGroupType().setName((String) getEditFilterGroupTypeName().getValue());
+            getName = (String) getEditFilterGroupTypeName().getValue();
+        }
+        
+        if (checkForDuplicateEntries(varGroupTypeUI.getVarGroupType().getVarGrouping(), getName, false, varGroupTypeUI.getVarGroupType()  )){
+            return;
         }
 
+        varGroupTypeUI.getVarGroupType().setName(getName);
         
         loadFilterGroupings();
         dataTableFilterGrouping.getChildren().clear();
@@ -642,12 +648,19 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         HtmlDataTable tempTable = (HtmlDataTable) uiComponent;
         VarGroupTypeUI varGroupTypeUI = (VarGroupTypeUI) tempTable.getRowData();
 
+        String getName = "";
+
         if (tempTable.equals(dataTableManageMeasureGroupType)) {
-            varGroupTypeUI.getVarGroupType().setName((String) getEditManageMeasureGroupTypeName().getValue());
+            getName = (String) getEditManageMeasureGroupTypeName().getValue();
         } else {
-            varGroupTypeUI.getVarGroupType().setName((String) getEditMeasureGroupTypeName().getValue());
+            getName = (String) ((String) getEditMeasureGroupTypeName().getValue());
         }
 
+        if (checkForDuplicateEntries(varGroupTypeUI.getVarGroupType().getVarGrouping(), getName, false, varGroupTypeUI.getVarGroupType()  )){
+            return;
+        }
+
+        varGroupTypeUI.getVarGroupType().setName(getName);
         
         varGroupTypeUI.setEditMode(false);
 
@@ -836,14 +849,22 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             return;
         }
 
-        editMeasureVarGroup.getVarGroup().setName((String) getInputMeasureName().getValue());
-        editMeasureVarGroup.getVarGroup().setUnits((String) getInputMeasureUnits().getValue());
 
-
-        
         if(addMeasureGroup){
+            if (checkForDuplicateEntries(editMeasureVarGroup.getVarGroup().getGroupAssociation(), chkGroupName, true, null )){
+                return;
+            }
+            editMeasureVarGroup.getVarGroup().setName(chkGroupName);
+            editMeasureVarGroup.getVarGroup().setUnits((String) getInputMeasureUnits().getValue());
             addMeasureGroupSave();
+        } else {
+            if (checkForDuplicateEntries(editMeasureVarGroup.getVarGroup().getGroupAssociation(), chkGroupName, true, editMeasureVarGroup.getVarGroup() )){
+                return;
+            }
+            editMeasureVarGroup.getVarGroup().setName(chkGroupName);
+            editMeasureVarGroup.getVarGroup().setUnits((String) getInputMeasureUnits().getValue());
         }
+
         updateVariableByGroup(editMeasureVarGroup);
         resetDVMappingsByGroup(editMeasureVarGroup);
         editMeasureVarGroup = null;
@@ -883,13 +904,20 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             return;
         }
 
-
-        editFilterVarGroup.getVarGroup().setName((String) getInputFilterGroupName().getValue());
-
-
+     
         if(addFilterGroup){
+            if (checkForDuplicateEntries(editFilterVarGroup.getVarGroup().getGroupAssociation(), chkGroupName, true, null )){
+                return;
+            }
             addFilterGroupSave();
+        } else {
+            if (checkForDuplicateEntries(editFilterVarGroup.getVarGroup().getGroupAssociation(), chkGroupName, true, editFilterVarGroup.getVarGroup() )){
+                return;
+            }            
         }
+
+        editFilterVarGroup.getVarGroup().setName(chkGroupName);
+
         updateVariableByGroup(editFilterVarGroup);
         resetDVMappingsByGroup(editFilterVarGroup);
         loadFilterGroupings();
@@ -1048,6 +1076,8 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         while (!(uiComponent instanceof HtmlDataTable)){
             uiComponent = uiComponent.getParent();
         }
+
+
         VarGroupingUI varGroupingUI = (VarGroupingUI) dataTableFilterGrouping.getRowData();
         VarGroupUI newElem = new VarGroupUI();
         newElem.setVarGroup(new VarGroup());
@@ -1095,6 +1125,21 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             newElem.setName((String)getInputManageMeasureGroupTypeName().getValue());
         }
 
+        VarGrouping varGroupingTest = new VarGrouping();
+        if (editMeasureVarGroup != null && editMeasureVarGroup.getVarGroup() != null ) {
+            newElem.setVarGrouping(editMeasureVarGroup.getVarGroup().getGroupAssociation());
+            varGroupingTest = editMeasureVarGroup.getVarGroup().getGroupAssociation();
+            groupEdit = true;
+        } else {
+            newElem.setVarGrouping(measureGrouping.getVarGrouping());
+            varGroupingTest = measureGrouping.getVarGrouping();
+        }
+
+        if (checkForDuplicateEntries(varGroupingTest, newElem.getName(), false, null )){
+            return;
+        }
+
+
         measureGrouping.getVarGrouping().getVarGroupTypes().add(newElem);
         VarGroupTypeUI varGroupTypeUI = new VarGroupTypeUI();
         varGroupTypeUI.setVarGroupType(newElem);
@@ -1109,19 +1154,41 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         addMeasureType = false;
     }
 
+    private boolean checkForDuplicateEntries(VarGrouping varGrouping,  String name, boolean group, Object testObject){
+        boolean duplicates = visualizationService.checkForDuplicateEntries(varGrouping, name, group, testObject);
+            if (duplicates) {
+                FacesContext fc = FacesContext.getCurrentInstance();
+                String fullErrorMessage = "This name already exists.  Please enter another.  <br>" ;
+                FacesMessage message = new FacesMessage(fullErrorMessage);
+                fc.addMessage(validateButton.getClientId(fc), message);
+                JavascriptContext.addJavascriptCall(fc, "jQuery(\"div.dvnMsgBlockRound\").corner(\"10px\");" );
+            }
+
+         return duplicates;
+    }
+
+
     public void saveFilterTypeButton(){
         boolean groupEdit = false;
         VarGroupType newElem = new VarGroupType();
+        VarGrouping varGroupingTest = new VarGrouping();
+
         if (editFilterVarGroup != null && editFilterVarGroup.getVarGroup() != null ) {
             newElem.setVarGrouping(editFilterVarGroup.getVarGroup().getGroupAssociation());
+            varGroupingTest = editFilterVarGroup.getVarGroup().getGroupAssociation();
             groupEdit = true;
         } else {
             newElem.setVarGrouping(editFilterVarGrouping.getVarGrouping());
+            varGroupingTest = editFilterVarGrouping.getVarGrouping();
         }
 
         newElem.setName((String)getInputFilterGroupTypeName().getValue());
         if (newElem.getName().isEmpty()){
             newElem.setName((String)getInputManageFilterGroupTypeName().getValue());
+        }
+
+        if (checkForDuplicateEntries(varGroupingTest, newElem.getName(), false, null )){
+            return;
         }
 
         for(VarGrouping varGrouping: varGroupings){
@@ -1504,7 +1571,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
     public String saveAndExit(){
        if (dataTable.isVisualizationEnabled()){
            if (!validateForRelease(false)) {
-               FacesMessage message = new FacesMessage("Your current changes are invalid.  Correct these issues or unrelease your visualization before saving.");
+               FacesMessage message = new FacesMessage("Your current changes are invalid.  Correct these issues or unrelease your visualization before saving.<br>Click Validate button to get a full list of validation issues.");
                FacesContext fc = FacesContext.getCurrentInstance();
                fc.addMessage(validateButton.getClientId(fc), message);
                return "";

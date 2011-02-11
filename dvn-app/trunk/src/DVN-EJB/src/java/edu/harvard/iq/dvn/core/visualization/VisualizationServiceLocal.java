@@ -73,4 +73,8 @@ public interface VisualizationServiceLocal extends java.io.Serializable {
     public boolean validateMoreThanZeroMeasureMapping(DataTable dataTable, List returnListOfErrors);
 
 
+
+    public boolean checkForDuplicateEntries(edu.harvard.iq.dvn.core.visualization.VarGrouping varGrouping, java.lang.String name, boolean group, Object testObject);
+
+
 }

@@ -9,6 +9,7 @@ import edu.harvard.iq.dvn.core.study.DataTable;
 import edu.harvard.iq.dvn.core.study.DataVariable;
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.visualization.VarGrouping.GroupingType;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -716,6 +717,41 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
 
         }
 
+
+        return hasDuplicates;
+    }
+
+    @Override
+    public boolean checkForDuplicateGroupings(List filterGroupings, String name, Object testObject) {
+    boolean hasDuplicates = false;
+
+        List<String> set = new ArrayList();
+        List editList = new ArrayList();
+
+        for (Object filterGrouping: filterGroupings ){
+            VarGrouping varGrouping = (VarGrouping) filterGrouping;
+            set.add(varGrouping.getName());
+            editList.add(varGrouping);
+        }
+
+
+        if (set.contains(name)) {
+            hasDuplicates = true;
+        }
+        if (testObject!=null){
+
+               VarGrouping varGroupingTest = (VarGrouping) testObject;
+               for(Object listObj: editList){
+                   VarGrouping varGrouping = (VarGrouping) listObj;
+
+                   boolean checkForMatch =  (varGrouping.getId() != null && varGroupingTest.getId() != null ) && varGrouping.getId().equals(varGroupingTest.getId() ) ;
+                   checkForMatch |= (varGrouping.getId() == null && varGroupingTest.getId() == null );
+                   if (checkForMatch  && name.equals(varGrouping.getName())){
+                       hasDuplicates = false;
+                   }
+               }
+
+         }
 
         return hasDuplicates;
     }

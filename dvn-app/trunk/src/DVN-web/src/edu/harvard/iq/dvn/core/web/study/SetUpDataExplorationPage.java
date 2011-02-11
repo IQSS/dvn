@@ -985,13 +985,36 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
     public void saveFilterGrouping(){
         String testString = (String) getInputFilterGroupingName().getValue();
+        boolean duplicates = false;
         if (!testString.isEmpty()){
+            List filterVarGroupings = new ArrayList();
+            for (VarGroupingUI varGroupingUI : filterGroupings){
+                filterVarGroupings.add(varGroupingUI.getVarGrouping());
+
+            }
+
+            if (addFilterGrouping){
+                 duplicates = visualizationService.checkForDuplicateGroupings(filterVarGroupings, testString, null     );
+            } else {
+                duplicates = visualizationService.checkForDuplicateGroupings(filterVarGroupings, testString, editFilterVarGrouping.getVarGrouping());
+            }
+            
+            if (duplicates) {
+                FacesContext fc = FacesContext.getCurrentInstance();
+                String fullErrorMessage = "This name already exists.  Please enter another.  <br>" ;
+                FacesMessage message = new FacesMessage(fullErrorMessage);
+                fc.addMessage(validateButton.getClientId(fc), message);
+                JavascriptContext.addJavascriptCall(fc, "jQuery(\"div.dvnMsgBlockRound\").corner(\"10px\");" );
+                return;
+            }
+
+
             if (addFilterGrouping) {
                 addFilterGroupingSave();
                 cancelAddEdit();
             } else {
                 if (!getInputFilterGroupingName().getValue().equals("")) {
-                editFilterVarGrouping.getVarGrouping().setName((String) getInputFilterGroupingName().getValue());
+                editFilterVarGrouping.getVarGrouping().setName(testString);
                 }
                 cancelAddEdit();
             }

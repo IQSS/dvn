@@ -359,14 +359,16 @@ public class ClusteringSpacePage {
     }
 
     public FileResource getExportResource() {
-        return new FileResource(this.clusterSolution);
+        return new FileResource(this.clusterSolution, this.setId);
     }
 
     class FileResource implements Resource, Serializable{
        
         ClusterSolution solution;
-        public FileResource(ClusterSolution cs) {
+        String setId;
+        public FileResource(ClusterSolution cs, String setId) {
             solution = cs;
+            this.setId = setId;
         }
 
 
@@ -380,8 +382,10 @@ public class ClusteringSpacePage {
         }
 
         public InputStream open() throws IOException {
-            
-            return new ByteArrayInputStream(solution.toString().getBytes());
+            String exportStr = "Clustering Export, Set Id = "+ setId;
+            exportStr += "\nExport Time: " + new Date()+"\n";
+            exportStr+=solution.toString();
+            return new ByteArrayInputStream(exportStr.getBytes());
         }
 
         public void withOptions(Options arg0) throws IOException {

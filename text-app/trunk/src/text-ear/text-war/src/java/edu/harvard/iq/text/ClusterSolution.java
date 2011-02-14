@@ -264,12 +264,36 @@ public class ClusterSolution {
 
     
     public String toString() {
-        String str = "Cluster Solution: ";
-        
-        for (ClusterInfo ci : this.clusterInfoList) {
-            str+= ci.toString();
+        StringBuffer str = new StringBuffer();
+        str.append( "\nCoordinates: " + getFormatX() +", " + getFormatY() );
+        str.append( "\nClusters: " + getFormatClusterNum() );
+        str.append( "\nLabel: ");
+        if (label!=null) {
+            str.append(label);
         }
-        return str;
+        str.append("\n");
+
+        int count = 1;
+        for (ClusterInfo ci : this.clusterInfoList) {
+            str.append("\nCluster "+count);
+            str.append("\nLabel: ");
+            if (ci.getLabel()!=null) {
+                str.append(ci.getLabel());
+            }
+            str.append("\nDocument Count: "+ci.getClusterCount());
+            str.append("\nDocument Percentage: "+ci.getClusterPercentStr());
+            str.append("\nWord List: " + ci.getTopWords());
+            str.append("\nDocument Titles:");
+            int docCount = 1;
+            for (ClusterInfo.DocInfo di: ci.getDocInfoList()) {
+                str.append("\n"+docCount+".  "+di.title);
+                docCount++;
+            }
+            str.append("\n");
+
+            count++;
+        }
+        return str.toString();
     }
    
 

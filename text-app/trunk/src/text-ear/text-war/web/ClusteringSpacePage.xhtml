@@ -716,7 +716,7 @@
                     </ice:column>
                     <f:facet name="footer">
 <script type="text/javascript">
-  //// <![CDATA[
+  // <![CDATA[
     jQuery(document).ready(initClusterTabs);
     function initClusterTabs(){
         // choose text for the show/hide link - can contain HTML (e.g. an image)
@@ -815,6 +815,7 @@
 
             <div class="clusterTable">
 <style type="text/css">
+div.clusterInfoBarGraph {background: blue; line-height: 12px !important;}
 .clusterInfoValueBlock {display:none;}
 .clusterInfoLabelBlock {border:1px solid transparent;} /* Opera bug fix */
 .clusterInfoLabelBlock.edit a.clusterInfoValueEdit {display:none;}
@@ -859,6 +860,9 @@ td.clusterCountCol {width:14%;}
                                     <ice:outputText value="#{row.clusterInfo.clusterCount}"/>
                             </ice:column>
                             <ice:column>
+                                <div class="clusterInfoBarGraphBlock">
+                                    <div jsfc="ice:panelGroup" styleClass="clusterInfoBarGraph" style="width: #{row.clusterInfo.clusterPercentStr};">&#160;</div>
+                                </div>
                                 <div class="clusterInfoLabelBlock">
                                     <div jsfc="ice:panelGroup" styleClass="clusterInfoStems" rendered="#{empty row.clusterInfo.label}"><ice:outputText value="#{row.clusterInfo.topWords}"/></div>
                                     <a href="#" class="clusterInfoValueEdit"><ice:outputText value="Label [+] #{row.clusterInfo.label}"/></a>
@@ -869,7 +873,7 @@ td.clusterCountCol {width:14%;}
                                     </div>
                                 </div>
                                 <script type="text/javascript">
-                                  //// <![CDATA[
+                                  // <![CDATA[
                                     jQuery(document).ready(function(){
                                           jQuery("a.clusterInfoValueEdit").click(function() {
                                             var a = jQuery(this);
@@ -920,7 +924,7 @@ td.clusterCountCol {width:14%;}
                                     <p>
                                         <ice:outputText value="#{row.viewDocumentPreview}"/>
                                     </p>
-                                    <ice:commandLink actionListener="#{row.openDocPopup}">Full Document</ice:commandLink>
+                                    <ice:commandLink actionListener="#{row.openDocPopup}" styleClass="clusterViewDocLink">Full Document</ice:commandLink>
 
                                 </ice:panelTab>
 
@@ -1017,7 +1021,7 @@ td.clusterCountCol {width:14%;}
                     </ice:column>
                     <f:facet name="footer">
                         <script type="text/javascript">
-                          //// <![CDATA[
+                          // <![CDATA[
                             jQuery(document).ready(initClusterTabs);
                             function initClusterTabs(){
                                 // choose text for the show/hide link - can contain HTML (e.g. an image)

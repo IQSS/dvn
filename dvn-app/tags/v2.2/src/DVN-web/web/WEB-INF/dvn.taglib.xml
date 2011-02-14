@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE facelet-taglib PUBLIC
+  "-//Sun Microsystems, Inc.//DTD Facelet Taglib 1.0//EN"
+  "http://java.sun.com/dtd/facelet-taglib_1_0.dtd">
+  <facelet-taglib>
+    <namespace>/WEB-INF/tlds/dvn-components</namespace>
+    <tag>
+      <tag-name>inlinehelpsupport</tag-name>
+        <component>
+            <component-type>DvnInlineHelpSupport</component-type>
+        </component>
+    </tag>
+    <tag>
+          <tag-name>inlinehelp</tag-name>
+        <component>
+            <component-type>DvnInlineHelp</component-type>
+        </component>
+    </tag>
+    <tag>
+          <tag-name>tooltip</tag-name>
+        <component>
+            <component-type>DvnTooltip</component-type>
+        </component>
+    </tag>
+   </facelet-taglib>

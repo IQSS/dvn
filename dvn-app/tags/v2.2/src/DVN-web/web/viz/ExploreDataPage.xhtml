@@ -1,0 +1,615 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:dvn="/WEB-INF/tlds/dvn-components"
+      xmlns:ice="http://www.icesoft.com/icefaces/component">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<ui:composition template="/template.xhtml">
+<ui:param name="pageTitle" value="Explore Data - #{VDCRequest.dataversePageTitle}"/>
+<ui:define name="body">
+<ice:form id="ExploreDataPage">
+    <ice:message for="exploredataform" id="boxErrorMsg" styleClass="errorMessage"/>
+
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <!--<script type="text/javascript" src="http://api.timepedia.org/gviz/"></script>-->
+
+    <script type="text/javascript">
+// <![CDATA[
+    google.load('visualization', '1', {'packages':['annotatedtimeline']});
+    google.load('visualization', '1', {packages:['table']});
+    google.load("visualization", "1", {packages:["imagebarchart"]});
+    google.load('visualization', '1', {packages:['imagelinechart']});
+
+
+    var timeout= 400; //milliseconds to wait for no activity
+    var countEvents= 0;
+    var delay = 500;
+    function delayedRequestTitle(form,field,event){
+    countEvents++;
+    setTimeout(function() {
+    countEvents--;
+    if(countEvents==0){
+
+        document.getElementById('ExploreDataPage:updateGraphTitle').click();
+    }
+    },timeout);
+    }
+
+ function drawChart(data, intDisType, startYear, endYear) {
+          
+        var myString = new String (document.getElementById('ExploreDataPage:columnString').textContent);
+
+        var myColumnList = myString.split ( ',' );
+        var myDataString = new String (document.getElementById('ExploreDataPage:dataString').textContent);
+        var myRowList = myDataString.split ( ';' );
+
+        var numColumnsStr =  new String (document.getElementById('ExploreDataPage:dataColumns').textContent);
+        var numColumns = parseInt(numColumnsStr);
+        
+
+    for (i=0; i< myColumnList.length ;i++)
+    { 
+        var myColumn = myColumnList[i];
+        if (i==0 ){
+            if (intDisType == 1){
+                data.addColumn('date', myColumn);
+            }
+            if (intDisType == 2){
+                data.addColumn('string', myColumn);               
+            }
+            if (intDisType == 3){
+                data.addColumn('string', myColumn);
+            }
+        } else {
+            if (intDisType ==1){
+                data.addColumn('number', "");
+            } else {
+                data.addColumn('number', myColumn);
+            }
+
+        }
+    }
+
+    var startRange = 0;
+    var endRange = 0;
+       var yearLabelInt = 0
+    if (startYear != 0 && endYear !=3000){
+       yearLabelInt = Math.round((endYear-startYear)/5);
+    } else {
+            for (i=0; i< myRowList.length -1 ;i++){
+                var myRow = myRowList[i];
+                var myRowParse = myRow.split ( ',' );
+                var yearNum = parseInt(myRowParse[0]);
+                if (i==0){
+                    startRange = yearNum;
+                }
+                endRange = yearNum;
+
+            }
+       yearLabelInt = Math.round((endRange-startRange)/5);
+    }
+
+    var counter = yearLabelInt;
+       
+    for (i=0; i< myRowList.length -1 ;i++)
+    {
+
+        var yearPrint = false;
+        var myRow = myRowList[i];
+        var myRowParse = myRow.split ( ',' );
+        var yearNum = parseInt(myRowParse[0]);
+        if (i== 0 || counter == 0  ){
+           counter = yearLabelInt;
+           yearPrint = true;
+        }
+
+        counter--;
+
+            var myString = new String (document.getElementById('ExploreDataPage:columnString').textContent);
+            var myColumnList = myString.split ( ',' );
+            var myDataString = new String (document.getElementById('ExploreDataPage:dataString').textContent);
+            var myRowList = myDataString.split ( ';' );
+            var numColumnsStr =  new String (document.getElementById('ExploreDataPage:dataColumns').textContent);
+            var numColumns = parseInt(numColumnsStr);
+
+        if (yearNum >= startYear && yearNum <= endYear ) {
+            if (numColumns == 1){
+                addRows1(data, myRow, intDisType, yearPrint);
+            }
+            if (numColumns == 2){
+                addRows2(data, myRow, intDisType, yearPrint);
+            }
+            if (numColumns == 3){
+                addRows3(data, myRow, intDisType, yearPrint);
+            }
+            if (numColumns == 4){
+                addRows4(data, myRow, intDisType, yearPrint);
+            }
+            if (numColumns == 5){
+                addRows5(data, myRow, intDisType, yearPrint);
+            }
+            if (numColumns == 6){
+                addRows6(data, myRow, intDisType, yearPrint);
+            }
+            if (numColumns == 7){
+                addRows7(data, myRow, intDisType, yearPrint);
+            }
+            if (numColumns == 8){
+                addRows8(data, myRow, intDisType, yearPrint);
+            }
+
+        }
+
+     }
+
+         }
+      function addRows1(dataTable, rowList, intDisType, year) {
+          var myRowParse = rowList.split ( ',' );
+          var dollNum = myParseFloat(myRowParse[1]);
+
+          var dateReturn = myParseXaxis(myRowParse[0],intDisType, year);
+          dataTable.addRow([dateReturn, dollNum]);
+
+      }
+
+      function addRows2(dataTable, rowList, intDisType, year) {
+          var myRowParse = rowList.split ( ',' );
+          var dateReturn = myParseXaxis(myRowParse[0],intDisType, year);
+          var dollNum = myParseFloat(myRowParse[1]);
+          var dollNum2 = myParseFloat(myRowParse[2]);
+          dataTable.addRow([dateReturn, dollNum, dollNum2]);
+
+      }
+
+      function addRows3(dataTable, rowList, intDisType, year) {
+          var myRowParse = rowList.split ( ',' );
+          var dateReturn = myParseXaxis(myRowParse[0],intDisType, year);
+          var dollNum = myParseFloat(myRowParse[1]);
+          var dollNum2 = myParseFloat(myRowParse[2]);
+          var dollNum3 = myParseFloat(myRowParse[3]);
+          dataTable.addRow([dateReturn, dollNum, dollNum2, dollNum3]);
+      }
+
+      function addRows4(dataTable, rowList, intDisType, year) {
+          var myRowParse = rowList.split ( ',' );
+          var dateReturn = myParseXaxis(myRowParse[0],intDisType, year);
+          var dollNum = myParseFloat(myRowParse[1]);
+          var dollNum2 = myParseFloat(myRowParse[2]);
+          var dollNum3 = myParseFloat(myRowParse[3]);
+          var dollNum4 = myParseFloat(myRowParse[4]);
+          dataTable.addRow([dateReturn, dollNum, dollNum2, dollNum3, dollNum4]);
+      }
+
+      function addRows5(dataTable, rowList, intDisType, year) {
+          var myRowParse = rowList.split ( ',' );
+          var dateReturn = myParseXaxis(myRowParse[0],intDisType, year);
+          var dollNum = myParseFloat(myRowParse[1]);
+          var dollNum2 = myParseFloat(myRowParse[2]);
+          var dollNum3 = myParseFloat(myRowParse[3]);
+          var dollNum4 = myParseFloat(myRowParse[4]);
+          var dollNum5 = myParseFloat(myRowParse[5]);
+          dataTable.addRow([dateReturn, dollNum, dollNum2, dollNum3, dollNum4, dollNum5]);
+      }
+
+      function addRows6(dataTable, rowList, intDisType, year) {
+          var myRowParse = rowList.split ( ',' );
+          var dateReturn = myParseXaxis(myRowParse[0],intDisType, year);
+          var dollNum = myParseFloat(myRowParse[1]);
+          var dollNum2 = myParseFloat(myRowParse[2]);
+          var dollNum3 = myParseFloat(myRowParse[3]);
+          var dollNum4 = myParseFloat(myRowParse[4]);
+          var dollNum5 = myParseFloat(myRowParse[5]);
+          var dollNum6 = myParseFloat(myRowParse[6]);
+          dataTable.addRow([dateReturn, dollNum, dollNum2, dollNum3, dollNum4, dollNum5, dollNum6]);
+      }
+
+      function addRows7(dataTable, rowList, intDisType, year) {
+          var myRowParse = rowList.split ( ',' );
+          var dateReturn = myParseXaxis(myRowParse[0],intDisType, year);
+          var dollNum = myParseFloat(myRowParse[1]);
+          var dollNum2 = myParseFloat(myRowParse[2]);
+          var dollNum3 = myParseFloat(myRowParse[3]);
+          var dollNum4 = myParseFloat(myRowParse[4]);
+          var dollNum5 = myParseFloat(myRowParse[5]);
+          var dollNum6 = myParseFloat(myRowParse[6]);
+          var dollNum7 = myParseFloat(myRowParse[7]);
+          dataTable.addRow([dateReturn, dollNum, dollNum2, dollNum3, dollNum4, dollNum5, dollNum6, dollNum7]);
+      }
+
+      function addRows8(dataTable, rowList, intDisType, year) {
+          var myRowParse = rowList.split ( ',' );
+          var dateReturn = myParseXaxis(myRowParse[0],intDisType, year);
+          var dollNum = myParseFloat(myRowParse[1]);
+          var dollNum2 = myParseFloat(myRowParse[2]);
+          var dollNum3 = myParseFloat(myRowParse[3]);
+          var dollNum4 = myParseFloat(myRowParse[4]);
+          var dollNum5 = myParseFloat(myRowParse[5]);
+          var dollNum6 = myParseFloat(myRowParse[6]);
+          var dollNum7 = myParseFloat(myRowParse[7]);
+          var dollNum8 = myParseFloat(myRowParse[8]);
+          dataTable.addRow([dateReturn, dollNum, dollNum2, dollNum3, dollNum4, dollNum5, dollNum6, dollNum7, dollNum8]);
+      }
+
+
+function myParseFloat(floatIn){
+
+    if(!isNaN(parseFloat(floatIn))){
+            return parseFloat(floatIn);
+    } else {
+        return null;
+    }
+}
+
+function myParseXaxis(dataIn, intDisType, year){
+
+    var myDateList = dataIn.split('-');
+
+
+    if (intDisType == 1){
+        var yearOut = parseInt(myDateList[0]);
+        var moOut = 0
+        var dayOut = 1;
+
+        var countDashes = dataIn.split("-").length
+        if (countDashes ==3){
+            if (myDateList[1].length > 0){
+                moOut = parseInt(myDateList[1]) - 1;
+            }
+
+            if (myDateList[2].length > 0){
+                dayOut = parseInt(myDateList[2]);
+            }
+        }
+
+        var dateOut = new Date(yearOut, moOut, dayOut);
+        return dateOut;
+
+    } 
+    if (intDisType == 2 || intDisType == 3  ) {
+        if (year  || intDisType == 3 ) {
+            var countDashes = dataIn.split("-").length
+            if (countDashes == 3){
+                if (myDateList[1].length > 0){
+                    moOut = parseInt(myDateList[1]) - 1;
+                }
+
+                if (myDateList[2].length > 0){
+                    dayOut = parseInt(myDateList[2]);
+                }
+
+                return myDateList[1] + "/" + myDateList[2] + "/" + myDateList[0];
+
+            } else{
+                return myDateList[0];
+            }
+        } else {
+            return null;
+        }
+    }
+
+    var yearInt = parseInt(myDateList[0]) ;
+    return yearInt;
+}
+
+
+function drawVisualization() {
+
+      var displayType = new String (document.getElementById('ExploreDataPage:displayType').textContent);
+      var intDisType = parseInt(displayType);
+      if (intDisType == 0){
+          intDisType = 1;
+      }
+
+      var startYear = new String (document.getElementById('ExploreDataPage:startYear').textContent);
+       var myDateList = startYear.split('-');
+      var intStartYear = parseInt(myDateList[0]);
+
+      var endYear = new String (document.getElementById('ExploreDataPage:endYear').textContent);
+      myDateList = endYear.split('-');
+      var intEndYear = parseInt(myDateList[0]);
+
+      var data = new google.visualization.DataTable();
+        drawChart(data, intDisType, intStartYear, intEndYear);
+        if (intDisType == 1){
+                var chart = new google.visualization.AnnotatedTimeLine(document.getElementById('chart_div'));
+                chart.draw(data, {allowRedraw: true},  {displayZoomButtons: false}, {displayAnnotations: false});
+        }
+        if (intDisType == 3){
+            var table = new google.visualization.Table(document.getElementById('chart_div'));
+            table.draw(data, {showRowNumber: false});
+        }
+        if (intDisType == 2){
+             var displayTitle = new String (document.getElementById('ExploreDataPage:graphTitleHidden').textContent );
+             var chart = new google.visualization.ImageLineChart(document.getElementById('chart_div'));
+             chart.draw(data, {colors: [ '#4684EE', '#DC3912', '#FF9900', '#008000', '#4942CC', '#990099',  '#FF80F2', '#7FD127']}, {title: displayTitle });
+        }
+
+    }
+
+
+function deleteLine(){
+   
+    setTimeout(function(){drawVisualization();}, 1500);
+
+}
+
+function updateStartYear(){
+     document.getElementById('ExploreDataPage:updateStartYear').click();
+     setTimeout(function(){drawVisualization();}, 500);
+}
+
+function updateEndYear(){
+     document.getElementById('ExploreDataPage:updateEndYear').click();
+     setTimeout(function(){drawVisualization();}, 500);
+}
+
+function updateDisplayType(){
+
+     document.getElementById('ExploreDataPage:selectDisplayButton').click();
+     setTimeout(function(){drawVisualization();}, 500);
+}
+
+// ]]>
+    </script>
+
+
+<ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+
+<ice:outputText visible="false" id="columnString" value="#{ExploreDataPage.columnString}"/>
+<ice:outputText visible="false" id="dataString" value="#{ExploreDataPage.dataString}"/>
+<ice:outputText visible="false" id="dataColumns" value="#{ExploreDataPage.dataColumns}"/>
+<ice:outputText visible="false" id="displayType" value="#{ExploreDataPage.displayType}"/>
+<ice:outputText visible="false" id="startYear" value="#{ExploreDataPage.startYear}"/>
+<ice:outputText visible="false" id="endYear" value="#{ExploreDataPage.endYear}"/>
+<ice:outputText visible="false" id="graphTitleHidden" value="#{ExploreDataPage.graphTitle}"/>
+<ice:commandButton visible="false" id="updateGraphTitle" type="submit" value="update" action="#{ExploreDataPage.updateGraphTitle}"/>
+<ice:commandButton visible="false" id="deleteLineHidden" value="Delete Line hidden" actionListener="#{ExploreDataPage.deleteLine}"/>
+<ice:selectBooleanCheckbox id="addLineCheck" visible="false"  value="#{ExploreDataPage.lineAdded}"   />
+
+<style type="text/css">
+    .fileInfo {margin-bottom:1em;}
+    .graphForm {margin:1em; padding-bottom:1em; border-bottom:1px solid grey; text-align: left;}
+    .graphResults {margin:1em; overflow:hidden; text-align: left;}
+    .graphResultsVizLineTable, .graphResultsVizLineTable td {border:0; margin:0; padding:0;}
+</style>
+
+    <div class="dvn_section">
+        <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
+            <div class="dvnMsgBlockContainer">
+                <p>
+                    <ice:outputText value="(Please report any issues found in our open beta release of Explore Data to the Network Administrator using the &lt;a href=&#34;/dvn#{VDCRequest.currentVDCURL}/faces/ContactUsPage.xhtml&#34;&gt;Contact&lt;/a&gt; form.)" escape="false"/>
+                </p>
+            </div>
+        </div>
+        <div class="dvnstudytitleblock">
+            <div class="dvnstudyadminboxfloat dvn_right">
+                <ice:outputLink
+                    rendered="#{ExploreDataPage.versionNumber==null}"
+                    value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{ExploreDataPage.studyId}&amp;tab=files#{VDCRequest.studyListingIndexAsParameter}">
+                <ice:outputText
+                    value="Back to Study"/>
+                </ice:outputLink>
+                <ice:outputLink
+                    rendered="#{ExploreDataPage.versionNumber!=null}"
+                    value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{ExploreDataPage.studyId}&amp;tab=files&amp;versionNumber=#{ExploreDataPage.versionNumber}#{VDCRequest.studyListingIndexAsParameter}">
+                <ice:outputText
+                    value="Back to Study"/>
+                </ice:outputLink>
+            </div>
+            <ui:include src="/study/StudyTitleFragment.xhtml">
+                <ui:param name="studyUI" value="#{ExploreDataPage.studyUI}"/>
+                <ui:param name="displayReleaseLink" value="false"/>
+                <ui:param name="displayVersionInfo" value="true"/>
+                <ui:param name="displayStatusBox" value="true"/>
+                <ui:param name="displayFileName" value="#{ExploreDataPage.fileName}"/>
+            </ui:include>
+        </div>
+
+        <div class="graphForm">
+            <div style="overflow:hidden; margin-bottom:1em;">
+                <div style="display:inline;">
+                    <ice:outputLabel value="#{ExploreDataPage.measureLabel}" for="indicator"/>
+
+                    <ice:selectOneMenu  id="indicatorMenu" value="#{ExploreDataPage.selectedMeasureId}" partialSubmit="true" valueChangeListener="#{ExploreDataPage.resetFiltersForMeasure}">
+                        <f:selectItem itemLabel="Select..." itemValue="0"/>
+                        <f:selectItems value="#{ExploreDataPage.selectMeasureItems}"/>
+                    </ice:selectOneMenu>
+                </div>
+
+                <ice:outputText value="related to" style="font-weight:bold; margin:0 2em;" rendered="#{!empty ExploreDataPage.selectMeasureGroupTypes}"/>
+
+                <div style="display:inline;">
+                    <ice:selectOneMenu immediate="false" partialSubmit="true"  id="issue"
+                                       valueChangeListener="#{ExploreDataPage.reset_MeasureItems}" value="#{ExploreDataPage.groupTypeId}" rendered="#{!empty ExploreDataPage.selectMeasureGroupTypes}">
+                        <f:selectItem itemLabel="Select Type..." itemValue="0"/>
+                        <f:selectItems value="#{ExploreDataPage.selectMeasureGroupTypes}"/>
+                    </ice:selectOneMenu>
+                </div>
+            </div>
+
+            <div style="margin-bottom:1em;">
+                <div jsfc="ice:panelSeries" id="filterPanelGroupings" var="item" value="#{ExploreDataPage.filterGroupings}" binding="#{ExploreDataPage.filterPanelGroup}">
+                    <f:attribute name="groupingId" value="#{item.varGrouping.id}"/>
+                    <div style="margin-bottom:1em;">
+                        <ice:outputLabel value="#{item.varGrouping.name}"/>
+
+                        <ice:selectOneMenu id="filterGroup" styleClass="filterGroup" value="#{item.selectedGroupId}">
+                            <f:selectItem itemLabel="Select..." itemValue="0"/>
+                            <f:selectItems value="#{ExploreDataPage.selectFilterGroups}"/>
+                        </ice:selectOneMenu>
+
+                        <ice:outputText value="related to" style="font-weight:bold; margin:0 2em;" rendered ="#{!empty item.varGroupTypesUI}" />
+
+                        <div jsfc="ice:panelSeries" style="overflow:hidden; display:inline;" id="filterPanelGroupTypes" var="groupType" value="#{item.varGroupTypesUI}">
+                            <!-- controls -->
+                            <div jsfc="ice:panelGroup" style="display:inline; margin-right:1em;">
+                                <ice:selectBooleanCheckbox id="filterGroupTypeCheckBoxes" styleClass="filterGroupTypeCheckBoxes" value="#{groupType.enabled}"
+                                                            partialSubmit="true"/>
+                                <ice:outputLabel value="#{groupType.varGroupType.name}" style="font-weight:normal;"/>
+                            </div>
+                        </div>
+                        <ice:message for="filterPanelGroupTypes" id="boxErrorMsg" styleClass="errorMessage" style="display:block;"/>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-bottom:.5em;">
+                <div style="display:inline;">
+                    <ice:outputLabel value="Label" for="graphlinelabel"/>
+                    <ice:inputText id="graphlinelabel" value="#{ExploreDataPage.lineLabel}"></ice:inputText>
+                </div>
+                <div style="display:inline;">
+                    <ice:commandButton id="addLineButton"  value="Add Line" binding="#{ExploreDataPage.addLineButton}" action="#{ExploreDataPage.addLine}"/>
+                    <ice:message for="addLineButton" id="boxErrorMsg" styleClass="errorMessage"/>
+                </div>
+            </div>
+        </div>
+
+        <div class="graphResults">
+            <div class="linebox" style="float:left; margin-right:1em;">
+                <ice:dataTable width="100%" cellspacing="0" cellpadding="0" var="line" styleClass="graphResultsVizLineTable" value="#{ExploreDataPage.vizLines}" binding="#{ExploreDataPage.dataTableVizLines}">
+                  <h:column>
+                      <div style="padding:4px; margin:0 0 1em 0; #{line.border}">
+                        <div style="font-weight:bold;">
+                            <ice:outputText value="#{line.label}"/>
+                        </div>
+                        
+                        <a href="#" class="lineDetailLink">View Detail</a>
+                        
+                        <div class="lineDetailBlock">
+                            <div style="font-weight:bold; color:#484848;">
+                                <ice:outputText value="#{line.measureLabel}"/>
+                            </div>
+                            <div jsfc="ice:panelGroup">
+                                <ice:outputText value="#{line.measureGroup.name}"/>
+                            </div>
+                            <div jsfc="ice:panelSeries" id="lineListPanelSeries" var="filterGroup" value="#{line.filterGroups}">
+                                <div style="font-weight:bold; color:#484848;">
+                                    <ice:outputText value="#{filterGroup.groupAssociation.name}"/>
+                                </div>
+                                <div>
+                                    <ice:outputText value="#{filterGroup.name}"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <ice:commandLink id="deleteLineLink" title="Delete Line" value="Delete Line" actionListener="#{ExploreDataPage.deleteLine}" onclick="deleteLine();"></ice:commandLink>
+                        </div>
+                    </div>
+                  </h:column>
+                  <f:facet name="footer">
+                        <script type="text/javascript">
+                          // <![CDATA[
+                            jQuery(document).ready(function(){
+                                // choose text for the show/hide link - can contain HTML (e.g. an image)
+                                var showText='View Detail';
+                                var hideText='Close Detail';
+
+                                // initialise the visibility check
+                                var is_visible = false;
+                                          
+                                // append show/hide links to the element directly preceding the element with a class of "toggle"
+                                jQuery(this).prev('a.lineDetailLink').text(showText);
+
+                                // hide all of the elements with a class of 'toggle'
+                                jQuery('.lineDetailBlock').hide();
+
+                                // capture clicks on the toggle links
+                                jQuery('a.lineDetailLink').click(function() {
+
+                                    // change the link depending on whether the element is shown or hidden
+                                    if (jQuery(this).text()==showText) {
+                                        jQuery(this).text(hideText);
+                                    }
+                                    else {
+                                        jQuery(this).text(showText);
+                                    }
+
+                                    // toggle the display
+                                    jQuery(this).next('.lineDetailBlock').toggle();
+
+                                    // return false so any link destination is not followed
+                                    return false;
+
+                                });
+                            });
+                            // ]]>
+                        </script>
+                    </f:facet>
+                </ice:dataTable>
+            </div>
+
+            <div class="graphbox" style="float:left; margin-right:1em;">
+                <div id="chart_div" style="width: 540px; height: 400px;"></div>
+            </div>
+
+            <div class="graphdisplay" style="float:left;">
+                <div style="margin-bottom:.5em;">
+                    <ice:outputLabel value="Display" for="graphdisplay" style="display:block;"/>
+                    <ice:selectOneMenu id="graphdisplay" binding="#{ExploreDataPage.selectGraphType}" onchange="updateDisplayType();">
+                        <f:selectItem itemLabel="Flash Graph" itemValue="1"/>
+                        <f:selectItem itemLabel="Image Graph" itemValue="2"/>
+                        <f:selectItem itemLabel="Table" itemValue="3"/>
+                    </ice:selectOneMenu>
+                     <ice:commandButton visible="false" id="selectDisplayButton" action="#{ExploreDataPage.reset_DisplayType}"/>
+                </div>
+                <div style="overflow:hidden; margin-bottom:.5em;">
+                    <div style="float:left;">
+                        <ice:outputLabel value="Start" for="graphstart" rendered="true"/>
+                        <ice:selectOneMenu id="graphstart" rendered="true" binding="#{ExploreDataPage.selectStartYear}" onchange="updateStartYear();">
+                            <f:selectItems value="#{ExploreDataPage.selectBeginYears}"/>
+                        </ice:selectOneMenu>
+                    </div>
+                    <div style="float:left;">
+                        <ice:outputLabel value="End" for="graphend" rendered="true"/>
+                        <ice:selectOneMenu id="graphend" rendered="true" binding="#{ExploreDataPage.selectEndYear}" onchange="updateEndYear();">
+                             <f:selectItems value="#{ExploreDataPage.selectEndYears}"/>
+                        </ice:selectOneMenu>
+                    </div>
+                    <ice:commandButton visible="false" id="updateStartYear" action="#{ExploreDataPage.update_StartYear}"/>
+                    <ice:commandButton visible="false" id="updateEndYear" action="#{ExploreDataPage.update_EndYear}"/>
+                </div>
+                <!-- Pushed til v.3.0
+                <div style="margin-bottom:.5em;">
+                    <ice:selectBooleanCheckbox id="displayindices" value="" rendered="false"/>
+                    <ice:outputLabel value="Display Series as Indices" for="displayindices" style="font-weight:normal;" rendered="false"/>
+                    <ice:selectOneRadio id="referenceperiod"
+                                        layout="pageDirection"
+                                        immediate="true"
+                                        value=""
+                                        rendered="false">
+                      <f:selectItem value="" itemLabel="Use First Period as Reference Period"/>
+                      <f:selectItem value="" itemLabel="Select Reference Period"/>
+                    </ice:selectOneRadio>
+                    <ice:selectOneMenu id="selectreferenceperiod" rendered="false">
+                        <f:selectItem itemLabel="Select a Period..." itemValue=""/>
+                    </ice:selectOneMenu>
+                </div>
+                <div style="margin-bottom:.5em;">
+                    <ice:outputLabel value="Export" for="graphexport" style="display:block;"/>
+                    <div style="margin-bottom:.5em;">
+                        <ice:outputLabel value="Title" for="graphtitleIn"/>
+                        <ice:inputText id="graphTitleIn" size="40" binding="#{ExploreDataPage.inputGraphTitle}" onkeyup="delayedRequestTitle(form,this,event);"></ice:inputText>
+                    </div>
+                    <ice:selectOneMenu id="graphexport">
+                        <f:selectItem itemLabel="Select File Format..." itemValue=""/>
+                    </ice:selectOneMenu>
+                    <ice:commandButton type="submit" value="Download"/>
+                </div> -->
+            </div>
+        </div>
+    </div>
+</ice:form>
+
+</ui:define>
+</ui:composition>
+</body>
+</html>

@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taglib version="2.0" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee web-jsptaglibrary_2_0.xsd">
+  <tlib-version>1.0</tlib-version>
+  <short-name>dvn-components</short-name>
+  <uri>/WEB-INF/tlds/dvn-components</uri>
+    <tag>
+      <description>This is a simple inlinehelp component</description>
+      <name>inlinehelp</name>
+      <tag-class>edu.harvard.iq.dvn.core.web.component.DvnInlineHelpTag</tag-class>
+      <attribute>
+          <name>rendered</name>
+      </attribute>
+      <attribute>
+          <description>The context sensitive help</description>
+          <name>helpMessage</name>
+          <type>String</type>
+          <required>true</required>
+      </attribute>
+      <attribute>
+          <description>The link text that triggers the popup event.</description>
+          <name>linkText</name>
+          <type>String</type>
+          <required>true</required>
+      </attribute>
+      <attribute>
+          <description>The javascript event that triggers the popup. Possible options are mouseover or click.</description>
+          <name>eventType</name>
+          <type>String</type>
+          <required>true</required>
+      </attribute>
+      <!-- optional arguments -->
+      <attribute>
+          <description>Heading for this help. This appears in the color block.</description>
+          <name>heading</name>
+          <type>String</type>
+          <required>false</required>
+      </attribute>
+      <attribute>
+          <description>The class which styles the link text.</description>
+          <name>cssClass</name>
+          <type>String</type>
+          <required>false</required>
+      </attribute>
+      <attribute>
+          <description>The tooltip text. Tooltip text will not be rendered if the eventType is mouseover.</description>
+          <name>tooltipText</name>
+          <type>String</type>
+          <required>false</required>
+      </attribute>
+  </tag>
+  <tag>
+    <description>This is a simple tag support component</description>
+    <name>inlinehelpsupport</name>
+    <tag-class>edu.harvard.iq.dvn.core.web.component.DvnInlineHelpSupportTag</tag-class>
+    <attribute>
+          <name>writeTipDiv</name>
+      </attribute>
+      <attribute>
+          <name>writeHelpDiv</name>
+      </attribute>
+       <attribute>
+          <name>writePopupDiv</name>
+      </attribute>
+      <attribute>
+          <name>rendered</name>
+      </attribute>
+  </tag>
+  <tag>
+      <description>This is a simple tooltip component</description>
+      <name>tooltip</name>
+      <tag-class>edu.harvard.iq.dvn.core.web.component.DvnTooltipTag</tag-class>
+      <attribute>
+          <name>rendered</name>
+      </attribute>
+      <attribute>
+          <description>The context sensitive tooltip</description>
+          <name>tooltipMessage</name>
+          <type>String</type>
+          <required>true</required>
+      </attribute>
+      <attribute>
+          <description>The link text that triggers the popup event. If this is not provided, provide an imageLink and Source (see below).</description>
+          <name>linkText</name>
+          <type>String</type>
+          <required>false</required>
+      </attribute>
+      <attribute>
+          <description>The link url for the onclick event</description>
+          <name>linkUrl</name>
+          <type>String</type>
+          <required>true</required>
+      </attribute>
+      <attribute>
+          <description>The javascript event that triggers the popup. Possible options are mouseover or click. Please note a click is a vdcPopup, not a tooltip.</description>
+          <name>eventType</name>
+          <type>String</type>
+          <required>true</required>
+      </attribute>
+      <!-- optional arguments -->
+      <attribute>
+          <description>Heading for this help.  If this is a click triggered event, then please send text that means close window. (This could be i18n'd.)</description>
+          <name>heading</name>
+          <type>String</type>
+          <required>false</required>
+      </attribute>
+      <attribute>
+          <description>The class which styles the link text.</description>
+          <name>cssClass</name>
+          <type>String</type>
+          <required>false</required>
+      </attribute>
+      <attribute>
+          <description>The tooltip text. Please use this if you're using an onclick. Tooltip text will not be rendered if the eventType is mouseover.</description>
+          <name>tooltipText</name>
+          <type>String</type>
+          <required>false</required>
+      </attribute>
+      <attribute>
+          <description>The desired width of the popup block.</description>
+          <name>width</name>
+          <type>String</type>
+          <required>false</required>
+      </attribute>
+      <attribute>
+          <description>Is this an image or a text link.</description>
+          <name>imageLink</name>
+          <type>String</type>
+          <required>false</required>
+      </attribute>
+      <attribute>
+          <description>Required if the link type is image.</description>
+          <name>imageSource</name>
+          <type>String</type>
+          <required>false</required>
+      </attribute>
+      <attribute>
+          <description>Text used in link to close this block.  Send the string you wish to be painted.</description>
+          <name>closeText</name>
+          <type>String</type>
+          <required>false</required>
+      </attribute>
+  </tag>
+</taglib>

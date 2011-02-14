@@ -2,9 +2,12 @@ package edu.harvard.iq.text;
 
 import com.icesoft.faces.component.ext.HtmlDataTable;
 import com.icesoft.faces.component.paneltabset.PanelTabSet;
+import com.icesoft.faces.context.Resource;
+import com.icesoft.faces.context.Resource.Options;
 import edu.harvard.iq.text.ClusterInfo.DocInfo;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,12 +16,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Random;
-import java.util.StringTokenizer;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -41,18 +45,62 @@ public class ClusteringSpacePage {
     private String setId;
     private Double xCoord;
     private Double yCoord;
-    
+    private Integer clusterNum;
+    private Boolean discoverable;
+    private Boolean displayMethodPoints;
+
     private DocumentSet documentSet;
     private ClusterSolution clusterSolution;
     private String clusterLabelParam;
     private String solutionLabelParam;  //
     
     private ArrayList<ClusterSolution> savedSolutions = new ArrayList<ClusterSolution>();
-    private Integer clusterNum;
+    
     private HtmlDataTable clusterTable;
     private ArrayList<ClusterRow> clusterTableModel = new ArrayList<ClusterRow>();
     private int solutionIndex;  // This is passed from the form to indicate that we need to display a saved solution rather than calculate a new solution
-    private Boolean discoverable;
+
+
+    /**
+     *
+     * @return MethodPoints array as JSON object
+     */
+    public String getMethodPointsString() {
+      
+        String str = "{\"MethodPoints\":[";
+        for (int i= 0; i< documentSet.getMethodPoints().length;i++) {
+            MethodPoint mp = documentSet.getMethodPoints()[i];
+            str+= "{\"methodName\":"+"\""+mp.methodName+"\""+
+                   ",\"numberOfClusters\":"+mp.numberOfClusters+
+                   ",\"xCoord\":"+mp.xCoord+
+                   ",\"yCoord\":"+mp.yCoord+
+                   "}";
+            if (i<documentSet.getMethodPoints().length-1) {
+                str+=",";
+            }
+        }
+       str+="]}";
+        /*
+        {"MethodPoint":
+               [{"methodName":"biclust_spectral","numberOfClusters":1,"xCoord":-0.610430826336493,"yCoord":-0.129151779834482},
+                {"methodName":"clust_convex","numberOfClusters":1,"xCoord":-0.610439235474672,"yCoord":-0.129141887730466},
+                {"methodName":"mult_dirproc","numberOfClusters":16,"xCoord":-2.38303704237162,"yCoord":-0.385230029269905},
+                {"methodName":"dismea","numberOfClusters":18,"xCoord":1.31139618587246,"yCoord":2.04711592386508},
+                {"methodName":"hclust kendall centroid","numberOfClusters":18,"xCoord":-0.433970815564751,"yCoord":0.381697369669168}
+              ]
+             }
+         
+*/
+
+        
+        System.out.println(str);
+        return str;
+
+    }
+
+    public void setMethodPointsString(String s) {
+
+    }
 
     public String getHost() {
         try {
@@ -98,7 +146,7 @@ public class ClusteringSpacePage {
         
         documentSet = new DocumentSet(setId);
         solutionIndex=-1;
-
+        this.getMethodPointsString();
         // Do calculation
 
         calculateClusterSolution(true);
@@ -239,6 +287,15 @@ public class ClusteringSpacePage {
         this.yCoord = yCoord;
     }
 
+    public Boolean getDisplayMethodPoints() {
+        return displayMethodPoints;
+    }
+
+    public void setDisplayMethodPoints(Boolean displayMethodPoints) {
+        this.displayMethodPoints = displayMethodPoints;
+    }
+
+
     public String getClusterLabelParam() {
         return clusterLabelParam;
     }
@@ -299,6 +356,36 @@ public class ClusteringSpacePage {
 
     public void setClusterTableModel(ArrayList<ClusterRow> clusterTableModel) {
         this.clusterTableModel = clusterTableModel;
+    }
+
+    public FileResource getExportResource() {
+        return new FileResource(this.clusterSolution);
+    }
+
+    class FileResource implements Resource, Serializable{
+       
+        ClusterSolution solution;
+        public FileResource(ClusterSolution cs) {
+            solution = cs;
+        }
+
+
+
+        public String calculateDigest() {
+            return null;
+        }
+
+        public Date lastModified() {
+            return null;
+        }
+
+        public InputStream open() throws IOException {
+            
+            return new ByteArrayInputStream(solution.toString().getBytes());
+        }
+
+        public void withOptions(Options arg0) throws IOException {
+        }
     }
 
 

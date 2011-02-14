@@ -263,7 +263,14 @@ public class ClusterSolution {
     }
 
     
-
+    public String toString() {
+        String str = "Cluster Solution: ";
+        
+        for (ClusterInfo ci : this.clusterInfoList) {
+            str+= ci.toString();
+        }
+        return str;
+    }
    
 
     private void doClusterCalculations() {
@@ -426,32 +433,7 @@ public class ClusterSolution {
         logger.fine("coordinates="+this.candidateXPoint+","+this.candidateYPoint);
 
 
-     //   try {
-     //       FileOutputStream fos = new FileOutputStream("csvSimMatrix.txt");
-      //   DecimalFormat twoDForm = new DecimalFormat("#.####");
-       //     System.out.println("simMatrix=");
-
-       //     for (int i = 0; i < simMatrix.length; i++) {
-        //        StringBuffer buff = new StringBuffer("");
-
-
-       //         for (int j = 0; j < simMatrix[i].length; j++) {
-       //             if (j > 0) {
-        //                buff.append(",");
-        //            }
-        //            double formattedVal = new Double(twoDForm.format(simMatrix[i][j])).doubleValue();
-       //             buff.append(twoDForm.format(simMatrix[i][j]));
-       //             simMatrix[i][j] = formattedVal;
-
-       //         }
-       ////         buff.append("\n");
-       //         fos.write(buff.toString().getBytes());
-              //  System.out.println("row[" + i + "]=" + buff);
-       //     }
-       //     fos.close();
-       // } catch (IOException e) {
-       //     throw new RuntimeException(e);
-       // }
+   
         
         BasicKMeans kmeans = new BasicKMeans(simMatrix, numClusters, 20, kmeansRandomSeed);
 
@@ -460,25 +442,7 @@ public class ClusterSolution {
         return kmeans.getClusters();
      
     }
-/*
-    public int hashCode() {
-        int hash = 0;
-        hash += (this.id != null ? this.id.hashCode() : 0);
-        return hash;
-    }
 
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof ClusterSolution)) {
-            return false;
-        }
-        ClusterSolution other = (ClusterSolution) object;
-        if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) {
-            return false;
-        }
-        return true;
-    }
-*/
     // The following is translated from Brandon's processing code:
 
 /*

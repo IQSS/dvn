@@ -5,6 +5,7 @@
 
 package edu.harvard.iq.dvn.ingest.dsb;
 
+import java.io.InputStream;
 import java.util.*;
     
 /**
@@ -17,4 +18,6 @@ public interface FieldCutter {
     public void subsetFile(String infile, String outfile, Set<Integer> columns, Long numCases,
         String delimiter);
 
+    public void subsetFile(InputStream in, String outfile, Set<Integer> columns, Long numCases,
+        String delimiter);
 }

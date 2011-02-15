@@ -72,37 +72,39 @@ public class DvnNewJavaFieldCutter {
      * @param
      * @return
      */
-    public void cutColumns(File fl, int noCardsPerCase, int caseLength,
-        String delimitor, String tabFileName) throws FileNotFoundException {
+    public void cutColumns (File fl, int noCardsPerCase, int caseLength,
+        String delimitor, String tabFileName) throws IOException {
 
         if (delimitor == null) {
             delimitor = defaultDelimitor;
         }
 
         int[] lineLength = new int[noCardsPerCase];
-        InputStream in = null;
         String line = null;
 
-        // caseLength info is not available
-        // check all lines have the same length
         int columnCounter = 0;
-        in = new FileInputStream(fl);
         Set<Integer> lengthSet = new LinkedHashSet<Integer>();
 
+        InputStream in = new FileInputStream (fl);
+
         if (caseLength == 0) {
+            // If case length was not explicitly supplied, we'll just read
+            // the file and find out. We'll validate the file in the process,
+            // or at least confirm that all the lines have the same length.
+
             BufferedReader rd = new BufferedReader(new InputStreamReader(in));
-            try {
+//           try {
                 for (int l = 0; l < noCardsPerCase; l++) {
                     line = rd.readLine();
                     lengthSet.add(line.length());
                     lineLength[l] = line.length();
                     dbgLog.fine(l + "th line=" + line);
                 }
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            } finally {
+//            } catch (IOException ex) {
+//                ex.printStackTrace();
+//            } finally {
 
-            }
+//            }
 
             if (lengthSet.size() == 1) {
                 // all lines have the same length
@@ -110,31 +112,79 @@ public class DvnNewJavaFieldCutter {
             } else {
                 // TODO
                 // temporary solution
-                columnCounter = lineLength[0];
+                // columnCounter = lineLength[0]; (not a solution, really)
+                throw new IOException ("subsetting on fixed-field files with "+
+                        "lines of varying size not supported.");
             }
             dbgLog.fine("final columnCounter=" + columnCounter);
-        }
-        // close in
-        try {
-            in.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+
+            if (columnCounter > 0) {
+                caseLength = columnCounter + 1;
+            }
         }
 
-        REC_LEN = columnCounter;
-        REC_LEN++;
-        dbgLog.fine("REC_LEN=" + REC_LEN);
+        in.close();
+
+        // open the stream again, and perform the subsetting:
+
+        in = new FileInputStream(fl);
+
+        cutColumns (in, noCardsPerCase, caseLength, delimitor, tabFileName);
+
+    }
+
+    public void cutColumns(InputStream in, int noCardsPerCase, int caseLength,
+        String delimitor, String tabFileName) throws IOException {
+
+
+        if (delimitor == null) {
+            delimitor = defaultDelimitor;
+        }
+
         OUT_LEN = colwidth; // calculated by parseList
         dbgLog.fine("out_len=" + OUT_LEN);
 
+        String firstline = null;
+
+        if (caseLength == 0) {
+
+            InputStreamReader isr = new InputStreamReader(in);
+
+            int cread;
+            int ccounter = 0;
+
+            firstline = "";
+
+            while (caseLength == 0 && (cread = isr.read()) != -1) {
+                ccounter++;
+                if (cread == '\n') {
+                    caseLength = ccounter;
+                }
+                char c = (char)cread;
+                firstline = firstline + c;
+            }
+
+            //throw new IOException ("InputStream version of cutColumns called "+
+            //        "without the caseLength argument.");
+
+            //  TODO: this is the only reason we cannot subset ICPSR files
+            //  on the fly, without first saving in a temp file.
+            //  Fixing this could make a noticeable improvemnt when a large
+            //  file is being subset.
+
+        }
+
+        
+        REC_LEN = caseLength;
+        dbgLog.fine("REC_LEN=" + REC_LEN);
+
         Boolean dottednotation = false;
-	Boolean foundData = false; 
+        Boolean foundData = false;
 	
 
         // cutting a data file
 
-        InputStream inx = new FileInputStream(fl);
-        ReadableByteChannel rbc = Channels.newChannel(inx);
+        ReadableByteChannel rbc = Channels.newChannel(in);
         // input byte-buffer size = row-length + 1(=> new line char)
         ByteBuffer inbuffer = ByteBuffer.allocate(REC_LEN);
 
@@ -149,13 +199,22 @@ public class DvnNewJavaFieldCutter {
         int begin = 0;
         int end = 0;
         int blankoffset = 0;
-	int blanktail = 0; 
-	int k; 
+
+        int blanktail = 0;
+    	int k;
+
 
         try {
             // lc: line counter
             int lc = 0;
-            while (rbc.read(inbuffer) != -1) {
+            while (firstline != null || rbc.read(inbuffer) != -1) {
+
+                if (firstline != null) {
+                    // we have the first line saved as a String:
+                    inbuffer.put(firstline.getBytes());
+                    firstline = null;
+                }
+
                 // calculate i-th card number
                 lc++;
                 k = lc % noCardsPerCase;
@@ -201,10 +260,10 @@ public class DvnNewJavaFieldCutter {
                         pos = outoffset;
 
                         dottednotation = false;
-			foundData = false; 
+                        foundData = false;
 
                         blankoffset = 0;
-			blanktail = 0; 
+                        blanktail = 0;
 
                         // as position increases
                         while (pos <= (outoffset + (end - begin))) {

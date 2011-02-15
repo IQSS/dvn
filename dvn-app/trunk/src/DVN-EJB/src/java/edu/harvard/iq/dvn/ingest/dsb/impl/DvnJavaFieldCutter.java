@@ -10,7 +10,6 @@ import java.util.Scanner;
 import java.util.logging.*;
 import java.io.*;
 import java.io.FileNotFoundException;
-import static java.lang.System.*;
 import org.apache.commons.lang.*;
 
 import edu.harvard.iq.dvn.ingest.dsb.*;
@@ -35,10 +34,20 @@ public class DvnJavaFieldCutter implements FieldCutter{
     public void subsetFile(String infile, String outfile, Set<Integer> columns, Long numCases,
         String delimiter) {
         try {
-          Scanner scanner =  new Scanner(new File(infile));
-          
+            subsetFile(new FileInputStream(new File(infile)), outfile, columns, numCases, delimiter);
+        } catch (IOException ex) {
+            throw new RuntimeException("Could not open file "+infile);
+        }
+    }
+
+
+    public void subsetFile(InputStream in, String outfile, Set<Integer> columns, Long numCases,
+        String delimiter) {
+        try {
+          Scanner scanner =  new Scanner(in);
+
           dbgLog.fine("outfile="+outfile);
-          
+
           BufferedWriter out = new BufferedWriter(new FileWriter(outfile));
           scanner.useDelimiter("\\n");
 
@@ -61,15 +70,17 @@ public class DvnJavaFieldCutter implements FieldCutter{
 
               }
           }
-          
+
           scanner.close();
           out.close();
-          
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
+
 
 }

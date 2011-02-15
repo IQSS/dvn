@@ -81,6 +81,9 @@ import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import edu.harvard.iq.dvn.ingest.dsb.*;
 import edu.harvard.iq.dvn.ingest.dsb.impl.*;
 
+import edu.harvard.iq.dvn.core.web.dataaccess.*;
+
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
@@ -1125,7 +1128,6 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             
             // the data file for downloading/statistical analyses must be subset-ready
             // local (relative to the application) file case 
-            // note: a typical remote case is: US Census Bureau
             
 
             
@@ -1135,146 +1137,112 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 
                 try {
 
-                    // Step 1. temporarily store the whole data set in a temp directory
-
-                    // temp subset file that stores requested variables
+                    // this temp file will store the requested columns:
                     tmpsbfl = File.createTempFile("tempsubsetfile.", ".tab");
                     deleteTempFileList.add(tmpsbfl);
 
-                    String cutOp1 = null;
-                    // result(subset) data file: full-path name
-                    String cutOp2 = tmpsbfl.getAbsolutePath();
+                    // to produce this file, we'll either open the stream
+                    // and run our local subsetting code on it, or request
+                    // the subsetting to be performed natively by the access
+                    // driver, if it supports the functionality:
+
 
                     // check whether a source file is tab-delimited or not
+
                     boolean fieldcut = true;
                     if ((noRecords != null) && (noRecords >=1)){
                         fieldcut = false;
                     }
 
-                    if (sf.isRemote()) {
-                        // Create a URL for the data file
-                        URL url = new URL(fileURL);
+                    DataAccessRequest daReq = new DataAccessRequest();
+                    daReq.setParameter("noVarHeader", "1");
 
-                        // temp data file that stores incoming data from the above URL
-                        File tmpfl = File.createTempFile("tempTabfile.", ".tab");
-                        deleteTempFileList.add(tmpfl);
-                        //zipFileList.add(tmpsbfl);
-                    
-                        // Typical file-copy idiom
-                        // incoming/outgoing streams
-                        InputStream inb = new BufferedInputStream(url.openStream());
-                        OutputStream outb = new BufferedOutputStream(new FileOutputStream(tmpfl));
+                    DataAccessObject accessObject = DataAccess.createDataAccessObject(sf, daReq);
 
-                        int bufsize;
-                        byte [] bffr = new byte[8192];
-                        while ((bufsize = inb.read(bffr))!=-1) {
-                            outb.write(bffr, 0, bufsize);
+                    if (accessObject.isSubsetSupported()) {
+                        dbgLog.info("Using NATIVE subset functionality of the repository.");
+                        daReq.setParameter("vars", getVariableNamesForSubset());
+
+                        accessObject.open();
+
+                        InputStream inSubset = accessObject.getInputStream();
+                        OutputStream outSubset = new BufferedOutputStream(new FileOutputStream(tmpsbfl.getAbsolutePath()));
+
+                        int bufsize = 8192;
+                        byte [] subsetDataBuffer = new byte[bufsize];
+                        while ((bufsize = inSubset.read(subsetDataBuffer))!=-1) {
+                            outSubset.write(subsetDataBuffer, 0, bufsize);
                         }
-			
-                        inb.close();
-                        outb.close();
-                    
-                        // Checks the obtained data file
-                        if (tmpfl.exists()){
-                            Long wholeFileSize = tmpfl.length();
-                            dbgLog.fine("whole file:length="+wholeFileSize);
-                            dbgLog.fine("tmp file:name="+tmpfl.getAbsolutePath());
-                        
-                            if (wholeFileSize <= 0){
-                                // subset file exists but it is empty
-				
-                                msgDwnldButton.setValue("* an data file is empty");
-                                msgDwnldButton.setVisible(true);
-                                dbgLog.warning("exiting dwnldAction() due to a file access error:"+
-                                    "a data file is empty");
 
+                        inSubset.close();
+                        outSubset.close();
+
+                        // TODO: catch exceptions; reset the state of the page
+                        // if anything went wrong. See the fixed-field section
+                        // below for an example.
+
+                    } else {
+                        accessObject.open();
+
+                        if (fieldcut){
+                            // Cutting requested fields of data from a TAB-delimited stream:
+
+                            Set<Integer> fields = getFieldNumbersForSubsetting();
+                            dbgLog.info("subsetting fields="+fields);
+
+                            // Create an instance of DvnJavaFieldCutter
+                            FieldCutter fc = new DvnJavaFieldCutter();
+
+                            // Executes the subsetting request
+                            fc.subsetFile(accessObject.getInputStream(), tmpsbfl.getAbsolutePath(), fields, dataTable.getCaseQuantity(), "\t");
+
+                            // TODO: catch exceptions; reset the state of the page
+                            // if anything went wrong. See the fixed-field section
+                            // below for an example.
+
+                        } else {
+                            // Cutting requested columns of data from a fixed-field stream:
+
+                            Map<Long, List<List<Integer>>> varMetaSet = getSubsettingMetaData(noRecords);
+                            DvnNewJavaFieldCutter fc = new DvnNewJavaFieldCutter(varMetaSet);
+
+                            try {
+                                //fc.cutColumns(new File(cutOp1), noRecords.intValue(), 0, "\t", tmpsbfl.getAbsolutePath());
+                                fc.cutColumns(accessObject.getInputStream(), noRecords.intValue(), 0, "\t", tmpsbfl.getAbsolutePath());
+                            } catch (FileNotFoundException e) {
+                                e.printStackTrace();
+
+                                msgDwnldButton.setValue("* could not generate subset due to an IO problem");
+                                msgDwnldButton.setVisible(true);
+                                dbgLog.warning("exiting dwnldAction() due to an IO problem ");
                                 getVDCRequestBean().setSelectedTab("tabDwnld");
                                 dvnDSBTimerService.createTimer(deleteTempFileList, TEMP_FILE_LIFETIME);
                                 return "failure";
+
+                            } catch (RuntimeException re){
+                                re.printStackTrace();
+                            
+                                msgDwnldButton.setValue("* could not generate subset due to an runtime error");
+                                msgDwnldButton.setVisible(true);
+                                dbgLog.warning("exiting dwnldAction() due to an runtime error");
+                                getVDCRequestBean().setSelectedTab("tabDwnld");
+                                dvnDSBTimerService.createTimer(deleteTempFileList, TEMP_FILE_LIFETIME);
+                                return "failure";
+                            
                             }
-                        } else {
-                            // file was not created/downloaded
-                            msgDwnldButton.setValue("* a data file was not created");
-                            msgDwnldButton.setVisible(true);
-                            dbgLog.warning("exiting dwnldAction() due to a file access error:"+
-                                "a data file was not created");
-                            getVDCRequestBean().setSelectedTab("tabDwnld");
-			    
-                            return "failure";
-                        }
 
-                        // source data file: full-path name
-                        cutOp1 = tmpfl.getAbsolutePath();
-                    
-                    } else { // it's a LOCAL file:
-                        cutOp1 = sf.getFileSystemLocation();
-                        VDC vdc = vdcService.getVDCFromRequest(req);
-
-                        if ( vdc != null ) {
-                            studyService.incrementNumberOfDownloads(sf.getId(), vdc.getId());
-                        } else {
-                            studyService.incrementNumberOfDownloads(sf.getId(), (Long)null);
                         }
                     }
-
-                    if (fieldcut){
-                        // Step 2.a. Set-up parameters for subsetting: cutting requested fields of data
-                        // from a temp (whole) delimited file
-
-                        Set<Integer> fields = getFieldNumbersForSubsetting();
-                        dbgLog.info("subsetting fields="+fields);
-
-                        // Create an instance of DvnJavaFieldCutter
-                        FieldCutter fc = new DvnJavaFieldCutter();
-
-                        // Executes the subsetting request
-                        fc.subsetFile(cutOp1, cutOp2, fields, dataTable.getCaseQuantity() );
-
-
-                    } else {
-                        // Step 2.b. Set-up parameters for subsetting: cutting requested columns of data
-                        // from a temp (whole) non-delimited file
-
-                        // Using new, native implementation of fixed-field cutting
-                        // (instead of executing rcut in a shell)
-
-                        Map<Long, List<List<Integer>>> varMetaSet = getSubsettingMetaData(noRecords);
-                        DvnNewJavaFieldCutter fc = new DvnNewJavaFieldCutter(varMetaSet);
-
-                        try {
-                            fc.cutColumns(new File(cutOp1), noRecords.intValue(), 0, "\t", cutOp2);
-                        } catch (FileNotFoundException e) {
-                            e.printStackTrace();
-
-                            msgDwnldButton.setValue("* could not generate subset due to an IO problem");
-                            msgDwnldButton.setVisible(true);
-                            dbgLog.warning("exiting dwnldAction() due to an IO problem ");
-                            getVDCRequestBean().setSelectedTab("tabDwnld");
-                            dvnDSBTimerService.createTimer(deleteTempFileList, TEMP_FILE_LIFETIME);
-                            return "failure";
-
-                        } catch (RuntimeException re){
-                            re.printStackTrace();
-                            
-                            msgDwnldButton.setValue("* could not generate subset due to an runtime error");
-                            msgDwnldButton.setVisible(true);
-                            dbgLog.warning("exiting dwnldAction() due to an runtime error");
-                            getVDCRequestBean().setSelectedTab("tabDwnld");
-                            dvnDSBTimerService.createTimer(deleteTempFileList, TEMP_FILE_LIFETIME);
-                            return "failure";
-                            
-                        }
-                    // end: non-delimited case
-                    }
                     
-                    // Checks the resulting subset file
+                    // Checks the resulting subset file:
+                    
                     if (tmpsbfl.exists()){
                         Long subsetFileSize = tmpsbfl.length();
                         dbgLog.info("subset file:Length="+subsetFileSize);
                         dbgLog.info("subset file:name="+tmpsbfl.getAbsolutePath());
                         
                         if (subsetFileSize > 0){
-                            mpl.put("subsetFileName", Arrays.asList(cutOp2));
+                            mpl.put("subsetFileName", Arrays.asList(tmpsbfl.getAbsolutePath()));
                             mpl.put("subsetDataFileName",Arrays.asList(tmpsbfl.getName()));
                         } else {
                             // subset file exists but it is empty
@@ -1301,7 +1269,19 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                         return "failure";
 
                     }
-                    
+
+                    // If we've made it this far, we can increment the number of
+                    // downloads for the study file:
+
+                    VDC vdc = vdcService.getVDCFromRequest(req);
+
+                    if ( vdc != null ) {
+                        studyService.incrementNumberOfDownloads(sf.getId(), vdc.getId());
+                    } else {
+                        studyService.incrementNumberOfDownloads(sf.getId(), (Long)null);
+                    }
+
+
                     // Step 3. Organizes parameters/metadata to be sent to the implemented
                     // data-analysis-service class
 

@@ -43,6 +43,14 @@
     },timeout);
     }
 
+    function delayedRequestFileName(form,field,event)
+    { countEvents++; setTimeout(function()
+        { countEvents--;
+            if(countEvents==0)
+            { document.getElementById('ExploreDataPage:updateFileName').click(); }
+        },timeout);
+    }
+
  function drawChart(data, intDisType, startYear, endYear) {
           
         var myString = new String (document.getElementById('ExploreDataPage:columnString').textContent);
@@ -357,6 +365,17 @@ function updateDisplayType(){
      setTimeout(function(){drawVisualization();}, 500);
 }
 
+function startDownload()
+{ var myDataString = new String (document.getElementById('ExploreDataPage:dataString').textContent);
+    if (myDataString == "")
+    { alert("There is no data to export.");
+        return null; }
+    var fileName = document.getElementById('ExploreDataPage:downloadFileName').value;
+    if(fileName == "")
+    { alert("Please enter a file name"); }
+    else { document.getElementById('ExploreDataPage:downloadDataFiles').click(); }
+}
+
 // ]]>
     </script>
 
@@ -371,6 +390,7 @@ function updateDisplayType(){
 <ice:outputText visible="false" id="endYear" value="#{ExploreDataPage.endYear}"/>
 <ice:outputText visible="false" id="graphTitleHidden" value="#{ExploreDataPage.graphTitle}"/>
 <ice:commandButton visible="false" id="updateGraphTitle" type="submit" value="update" action="#{ExploreDataPage.updateGraphTitle}"/>
+<ice:commandButton visible="false" id="updateFileName" type="submit" value="update" action="#{ExploreDataPage.updateFileName}"/>
 <ice:commandButton visible="false" id="deleteLineHidden" value="Delete Line hidden" actionListener="#{ExploreDataPage.deleteLine}"/>
 <ice:selectBooleanCheckbox id="addLineCheck" visible="false"  value="#{ExploreDataPage.lineAdded}"   />
 
@@ -467,7 +487,7 @@ function updateDisplayType(){
                     <ice:inputText id="graphlinelabel" value="#{ExploreDataPage.lineLabel}"></ice:inputText>
                 </div>
                 <div style="display:inline;">
-                    <ice:commandButton id="addLineButton"  value="Add Line" binding="#{ExploreDataPage.addLineButton}" action="#{ExploreDataPage.addLine}"/>
+                    <ice:commandButton id="addLineButton"  value="Add Line" binding="#{ExploreDataPage.addLineButton}" actionListener="#{ExploreDataPage.addLine}"/>
                     <ice:message for="addLineButton" id="boxErrorMsg" styleClass="errorMessage"/>
                 </div>
             </div>
@@ -547,7 +567,7 @@ function updateDisplayType(){
                 </ice:dataTable>
             </div>
 
-            <div class="graphbox" style="float:left; margin-right:1em;">
+            <div rendered ="#{!empty ExploreDataPage.vizLines}" class="graphbox" style="float:left; margin-right:1em;">
                 <div id="chart_div" style="width: 540px; height: 400px;"></div>
             </div>
 
@@ -604,6 +624,26 @@ function updateDisplayType(){
                     </ice:selectOneMenu>
                     <ice:commandButton type="submit" value="Download"/>
                 </div> -->
+
+                <ice:panelGrid id="export12" styleClass="dvnExportBtmWrp" columns="1" cellpadding="0" cellspacing="0" width="100%">
+                    <ice:column>
+                         <div class="dvnFormPadding dvnExportBtmWrp">
+                              <div style="display:inline;">
+                                    <ice:outputLabel value="File Name" for="graphlinelabel"/>
+                                    <ice:inputText id="downloadFileName" value ="#{ExploreDataPage.downloadFileName}"
+                                                    onkeyup="delayedRequestFileName(form,this,event);"
+                                                   binding="#{ExploreDataPage.inputDownloadFileName}"></ice:inputText>
+                              </div>
+                              <input type="button" class="dvnDataExplorationDnldBttn" value="Export"
+                                     onclick="startDownload();"/>
+                              <ice:outputResource label="Export" type="button" style="display:none;"
+                                   id="downloadDataFiles"
+                                   fileName="#{ExploreDataPage.csvFileName}" mimeType="application/zip"
+                                   resource="#{ExploreDataPage.csvFile}" shared="false"/>
+
+                         </div>
+                   </ice:column>
+              </ice:panelGrid>
             </div>
         </div>
     </div>

@@ -70,7 +70,6 @@ import edu.harvard.iq.dvn.core.study.StudyFile;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
-import edu.harvard.iq.dvn.core.admin.DVNVersionServiceLocal;
 
 import edu.harvard.iq.dvn.core.admin.VDCUser;
 
@@ -112,8 +111,6 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     private VariableServiceLocal variableService;
     @EJB
     private DvnDSBTimerServiceLocal dvnDSBTimerService;
-    @EJB
-    private DVNVersionServiceLocal dvnVersionService;
     @EJB
     private StudyServiceLocal studyService;
     @EJB

@@ -32,12 +32,15 @@ import com.icesoft.faces.component.ext.HtmlCommandButton;
 import com.icesoft.faces.component.ext.HtmlDataTable;
 import com.icesoft.faces.component.ext.HtmlInputText;
 import com.icesoft.faces.component.ext.HtmlSelectOneMenu;
+import com.icesoft.faces.context.Resource;
+import com.icesoft.faces.context.StringResource;
 import com.icesoft.faces.context.effects.JavascriptContext;
 import edu.harvard.iq.dvn.core.study.DataVariable;
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyFile;
 import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.study.VariableServiceLocal;
+import edu.harvard.iq.dvn.core.util.FileUtil;
 import edu.harvard.iq.dvn.core.visualization.DataVariableMapping;
 import edu.harvard.iq.dvn.core.web.study.StudyUI;
 import edu.harvard.iq.dvn.ingest.dsb.FieldCutter;
@@ -69,6 +72,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
     private String measureLabel;
     private String lineLabel;
+    private String downloadFileName = "";
+
     private String lineColor;
     private String dataTableId = "";
     private List <VarGrouping> varGroupings = new ArrayList();
@@ -93,6 +98,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     private String columnString = new String();
     private Long numberOfColumns =  new Long(0);
     private String dataString = "";
+    private String csvString = "";
     private Long displayType = new Long(0);
     private String startYear = new String("0");
     private String endYear = new String("3000");
@@ -741,7 +747,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     }
 
 
-    public void addLine(){
+    public void addLine(ActionEvent ae){
         lineAdded = false;
         
         if ( lineLabel.isEmpty() || lineLabel.trim().equals("") ) {
@@ -850,6 +856,9 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
            this.numberOfColumns = new Long(vizLines.size());
            getDataTable();
            resetLineBorder();
+
+           FacesContext fc = FacesContext.getCurrentInstance();
+           JavascriptContext.addJavascriptCall(fc, "drawVisualization();");
 
     }
     private boolean validateSelections(){
@@ -1103,17 +1112,21 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     boolean firstYearSet = false;
     String maxYear = "";
                 String output = "";
+                String csvOutput =columnString + "\n";
                 for (Object inObj: inStr ){
                     String nextStr = (String) inObj;
                     String[] columnDetail = nextStr.split("\t");
                     String[] test = columnDetail;
 
                     String col = "";
+                    String csvCol = "";
                     if (test.length > 1)
                     {
                         for (int i=0; i<test.length; i++){
                             if (i == 0) {
                                 col =  test[i];
+                                csvCol  = test[i];
+
                                 if (!firstYearSet){
                                    selectBeginYears.add(new SelectItem(col, "Min"));
                                    firstYearSet = true;
@@ -1123,18 +1136,21 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                                 selectEndYears.add(new SelectItem(col, col));
                             } else {
                                col = col + ", " +  test[i];
+                               csvCol = csvCol + ", " +  test[i];
                             }
 
                         }
                         col = col + ";";
+                        csvCol = csvCol + "\n";
                     }
 
                     output = output + col;
+                    csvOutput = csvOutput + csvCol;
                 }
                 SelectItem setSI = selectEndYears.get(0);
                 setSI.setValue(maxYear);
                 selectEndYears.set(0, setSI);
-
+                csvString = csvOutput;
                 dataString = output;
     }
 
@@ -1157,6 +1173,10 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
     public void setDataFile(String dataFile) {
         this.columnString = dataFile;
+    }
+
+    public void setDataString(String dataString) {
+        this.dataString = dataString;
     }
 
     public String getDataString() {
@@ -1245,7 +1265,14 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     public void setInputGraphTitle(HtmlInputText inputGraphTitle) {
         this.inputGraphTitle = inputGraphTitle;
     }
-    
+    private HtmlInputText inputDownloadFileName;
+
+    public HtmlInputText getInputDownloadFileName() {
+        return this.inputDownloadFileName;
+    }
+    public void setInputDownloadFileName(HtmlInputText inputDownloadFileName) {
+        this.inputDownloadFileName = inputDownloadFileName;
+    }
 
 
     public String getGraphTitle() {
@@ -1259,6 +1286,12 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     public String updateGraphTitle(){
         String graphTitleIn = (String) getInputGraphTitle().getValue();
         setGraphTitle(graphTitleIn);
+        return "";
+    }
+
+    public String updateFileName(){
+        String fileNameIn = (String) getInputDownloadFileName().getValue();
+        setDownloadFileName(fileNameIn);
         return "";
     }
 
@@ -1301,4 +1334,24 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     public void setLineAdded(boolean lineAdded) {
         this.lineAdded = lineAdded;
     }
+
+    public Resource getCsvFile() {
+
+        Resource csvResource = new StringResource(csvString.toString());
+        return csvResource;
+    }
+
+    public String getCsvFileName() {
+        return downloadFileName;
+    }
+
+
+    public String getDownloadFileName() {
+        return downloadFileName;
+    }
+
+    public void setDownloadFileName(String downloadFileName) {
+        this.downloadFileName = downloadFileName;
+    }
+
 }

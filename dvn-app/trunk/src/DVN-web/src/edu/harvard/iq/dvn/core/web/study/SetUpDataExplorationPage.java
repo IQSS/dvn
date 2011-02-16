@@ -1481,7 +1481,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
         if (!xAxisSet  || !visualizationService.validateXAxisMapping(dataTable, xAxisVariableId)) {
             if (messages){
-                fullErrorMessage += ("You must select one X-axis variable and it cannot be mapped to any Measure or Filter.<br>");
+                fullErrorMessage += "You must select one X-axis variable and it cannot be mapped to any Measure or Filter.<br>";
             }
 
             valid = false;
@@ -1498,7 +1498,6 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                     }
                 }
                 returnListOfErrors.clear();
-                errorMessages.add("validateAtLeastOneFilterMapping.");
             }
             valid = false;
         }
@@ -1514,7 +1513,6 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                     }
                 }
                 returnListOfErrors.clear();
-                errorMessages.add("validateOneMeasureMapping");
             }
 
             valid = false;
@@ -1522,10 +1520,8 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
         if (!visualizationService.validateAtLeastOneMeasureMapping(dataTable)) {
             if (messages){
-                FacesMessage message = new FacesMessage("The Data Visualization must include at least one Measure.<br>");
-                FacesContext fc = FacesContext.getCurrentInstance();
-                errorMessages.add("validateAtLeastOneMeasureMapping");
-                //fc.addMessage(validateButton.getClientId(fc), message);
+                String errorMessage = "The Data Visualization must include at least one Measure.<br>";
+                fullErrorMessage += errorMessage;
             }
             valid = false;
         }

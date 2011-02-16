@@ -799,7 +799,7 @@
                          <div>
                             <ice:outputResource label="Export" type="button"
                                                                 id="downloadClustering"
-                                                                fileName="clustering.txt" mimeType="text/plain"
+                                                                fileName="clustering_set_#{ClusteringSpacePage.setId}_#{ClusteringSpacePage.clusterSolution.formatClusterNum}_#{ClusteringSpacePage.clusterSolution.formatX}_#{ClusteringSpacePage.clusterSolution.formatY}.txt" mimeType="text/plain"
                                                                 resource="#{ClusteringSpacePage.exportResource}" shared="false"/>
                         </div>
                         <div><ice:outputText value="Coordinates: #{ClusteringSpacePage.clusterSolution.formatX}, #{ClusteringSpacePage.clusterSolution.formatY}"/></div>

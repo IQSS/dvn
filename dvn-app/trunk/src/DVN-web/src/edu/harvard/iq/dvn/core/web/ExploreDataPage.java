@@ -789,7 +789,9 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
            resetLineBorder();
            FacesContext fc = FacesContext.getCurrentInstance();
            JavascriptContext.addJavascriptCall(fc, "drawVisualization();");
-                                    
+           JavascriptContext.addJavascriptCall(fc, "jQuery(\"div.dvnMsgBlockRound\").corner(\"10px\");");
+           JavascriptContext.addJavascriptCall(fc, "initLineDetails");
+           return;
         }
 
     }
@@ -800,28 +802,28 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         if (vizLines.size()>=1){
             for (VisualizationLineDefinition vl: vizLines){
                 if (i==0){
-                    vl.setBorder("border:1px solid  #4684EE;");
+                    vl.setBorder("border:1px solid #4684EE;");
                 }
                 if (i==1){
-                    vl.setBorder("border:1px solid  #DC3912;");
+                    vl.setBorder("border:1px solid #DC3912;");
                 }
                 if (i==2){
-                    vl.setBorder("border:1px solid  #FF9900;");
+                    vl.setBorder("border:1px solid #FF9900;");
                 }
                 if (i==3){
-                    vl.setBorder("border:1px solid  #008000;");
+                    vl.setBorder("border:1px solid #008000;");
                 }
                 if (i==4){
-                    vl.setBorder("border:1px solid  #4942CC;");
+                    vl.setBorder("border:1px solid #4942CC;");
                 }
                 if (i==5){
-                    vl.setBorder("border:1px solid  #990099;");
+                    vl.setBorder("border:1px solid #990099;");
                 }
                 if (i==6){
-                    vl.setBorder("border:1px solid  #FF80F2;");
+                    vl.setBorder("border:1px solid #FF80F2;");
                 }
                 if (i==7){
-                    vl.setBorder("border:1px solid  #7FD127;");
+                    vl.setBorder("border:1px solid #7FD127;");
                 }
                 i++;
             }
@@ -859,6 +861,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
            FacesContext fc = FacesContext.getCurrentInstance();
            JavascriptContext.addJavascriptCall(fc, "drawVisualization();");
+           JavascriptContext.addJavascriptCall(fc, "jQuery(\"div.dvnMsgBlockRound\").corner(\"10px\");");
 
     }
     private boolean validateSelections(){

@@ -392,13 +392,13 @@ function startDownload()
 <ice:commandButton visible="false" id="updateGraphTitle" type="submit" value="update" action="#{ExploreDataPage.updateGraphTitle}"/>
 <ice:commandButton visible="false" id="updateFileName" type="submit" value="update" action="#{ExploreDataPage.updateFileName}"/>
 <ice:commandButton visible="false" id="deleteLineHidden" value="Delete Line hidden" actionListener="#{ExploreDataPage.deleteLine}"/>
-<ice:selectBooleanCheckbox id="addLineCheck" visible="false"  value="#{ExploreDataPage.lineAdded}"   />
+<ice:selectBooleanCheckbox id="addLineCheck" visible="false" value="#{ExploreDataPage.lineAdded}"/>
 
 <style type="text/css">
     .fileInfo {margin-bottom:1em;}
     .graphForm {margin:1em; padding-bottom:1em; border-bottom:1px solid grey; text-align: left;}
     .graphResults {margin:1em; overflow:hidden; text-align: left;}
-    .graphResultsVizLineTable, .graphResultsVizLineTable td {border:0; margin:0; padding:0;}
+    .graphResultsVizLineTable, .graphResultsVizLineTable tr, .graphResultsVizLineTable td {border:0; margin:0; padding:0; background-color: transparent;}
 </style>
 
     <div class="dvn_section">
@@ -438,7 +438,7 @@ function startDownload()
                 <div style="display:inline;">
                     <ice:outputLabel value="#{ExploreDataPage.measureLabel}" for="indicator"/>
 
-                    <ice:selectOneMenu  id="indicatorMenu" value="#{ExploreDataPage.selectedMeasureId}" partialSubmit="true" valueChangeListener="#{ExploreDataPage.resetFiltersForMeasure}">
+                    <ice:selectOneMenu id="indicatorMenu" value="#{ExploreDataPage.selectedMeasureId}" partialSubmit="true" valueChangeListener="#{ExploreDataPage.resetFiltersForMeasure}">
                         <f:selectItem itemLabel="Select..." itemValue="0"/>
                         <f:selectItems value="#{ExploreDataPage.selectMeasureItems}"/>
                     </ice:selectOneMenu>
@@ -493,8 +493,8 @@ function startDownload()
             </div>
         </div>
 
-        <div class="graphResults">
-            <div class="linebox" style="float:left; margin-right:1em;">
+        <div jsfc="ice:panelGroup" styleClass="graphResults">
+            <div jsfc="ice:panelGroup" styleClass="linebox" style="float:left; margin-right:1em;">
                 <ice:dataTable width="100%" cellspacing="0" cellpadding="0" var="line" styleClass="graphResultsVizLineTable" value="#{ExploreDataPage.vizLines}" binding="#{ExploreDataPage.dataTableVizLines}">
                   <h:column>
                       <div style="padding:4px; margin:0 0 1em 0; #{line.border}">
@@ -528,14 +528,15 @@ function startDownload()
                   <f:facet name="footer">
                         <script type="text/javascript">
                           // <![CDATA[
-                            jQuery(document).ready(function(){
+                            jQuery(document).ready(initLineDetails);
+                            function initLineDetails(){
                                 // choose text for the show/hide link - can contain HTML (e.g. an image)
                                 var showText='View Detail';
                                 var hideText='Close Detail';
 
                                 // initialise the visibility check
                                 var is_visible = false;
-                                          
+
                                 // append show/hide links to the element directly preceding the element with a class of "toggle"
                                 jQuery(this).prev('a.lineDetailLink').text(showText);
 
@@ -560,18 +561,18 @@ function startDownload()
                                     return false;
 
                                 });
-                            });
+                            }
                             // ]]>
                         </script>
                     </f:facet>
                 </ice:dataTable>
             </div>
 
-            <div rendered ="#{!empty ExploreDataPage.vizLines}" class="graphbox" style="float:left; margin-right:1em;">
+            <div jsfc="ice:panelGroup" rendered="#{!empty ExploreDataPage.vizLines}" styleClass="graphbox" style="float:left; margin-right:1em;">
                 <div id="chart_div" style="width: 540px; height: 400px;"></div>
             </div>
 
-            <div class="graphdisplay" style="float:left;">
+            <div jsfc="ice:panelGroup" rendered="#{!empty ExploreDataPage.vizLines}" styleClass="graphdisplay" style="float:left;">
                 <div style="margin-bottom:.5em;">
                     <ice:outputLabel value="Display" for="graphdisplay" style="display:block;"/>
                     <ice:selectOneMenu id="graphdisplay" binding="#{ExploreDataPage.selectGraphType}" onchange="updateDisplayType();">

@@ -591,7 +591,7 @@
     .clusterExplorer {overflow:hidden;}
     .clusterExplorer .map {width:540px; margin-right:20px; float:left;}
     .clusterExplorer #map {height:380px;}
-    .clusterExplorer .table {width:360px; float:left;}
+    .clusterExplorer .table {/*width:360px; float:left;*/}
     .mapDisplayActions {overflow:hidden; margin-top:1em;}
     .mapDisplayActions div {float:left; margin-right:1em;}
     div.clusterNumberBlock {float:none; margin-bottom:1em;}
@@ -901,35 +901,9 @@ td.clusterCountCol {width:14%;}
                         <a href="#" class="clusterDetailLink">View Detail</a>
                         
                         <div class="clusterDetailBlock">
-                            <ice:panelTabSet id="tabSet1" styleClass="dvnTabs" selectedIndex="0">
-                                <ice:panelTab id="doc" label="Documents">
-                                    <div class="clusterDocViewNav">
-                                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-first.gif" title="First Document" rendered="#{row.viewDocumentIndex==0}"/>
-                                        <ice:commandLink title="First Document" rendered="#{row.viewDocumentIndex!=0}" actionListener="#{row.viewFirst}"><img title="First Document" src="/text/resources/icefaces/dvn_rime/css-images/arrow-first.gif" class="iceGphImg" alt=""/></ice:commandLink>
-
-                                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-previous.gif" title="Previous Document" rendered="#{row.viewDocumentIndex==0}"/>
-                                        <ice:commandLink title="Previous Document" rendered="#{row.viewDocumentIndex!=0}" actionListener="#{row.viewPrevious}"><img title="Previous Document" src="/text/resources/icefaces/dvn_rime/css-images/arrow-previous.gif" class="iceGphImg" alt=""/></ice:commandLink>
-
-                                        <ice:outputText value="#{row.viewDocumentIndex+1} of #{row.clusterInfo.clusterCount}" styleClass="clusterDocViewNumber"/>
-
-                                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-next.gif" title="Next Document" rendered="#{row.viewDocumentIndex==row.clusterInfo.clusterCount-1}"/>
-                                        <ice:commandLink title="Next Document" rendered="#{row.viewDocumentIndex!=row.clusterInfo.clusterCount-1}" actionListener="#{row.viewNext}"><img title="Next Document" src="/text/resources/icefaces/dvn_rime/css-images/arrow-next.gif" class="iceGphImg" alt=""/></ice:commandLink>
-
-                                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-last.gif" title="Last Document" rendered="#{row.viewDocumentIndex==row.clusterInfo.clusterCount-1}"/>
-                                        <ice:commandLink title="Last Document" rendered="#{row.viewDocumentIndex!=row.clusterInfo.clusterCount-1}" actionListener="#{row.viewLast}"><img title="Last Document" src="/text/resources/icefaces/dvn_rime/css-images/arrow-last.gif" class="iceGphImg" alt=""/></ice:commandLink>
-                                    </div>
-                                    <p>
-                                        <ice:outputText value="Document: #{row.viewDocumentName}"/>
-                                    </p>
-                                    <p>
-                                        <ice:outputText value="#{row.viewDocumentPreview}"/>
-                                    </p>
-                                    <ice:commandLink actionListener="#{row.openDocPopup}" styleClass="clusterViewDocLink">Full Document</ice:commandLink>
-
-                                </ice:panelTab>
-
-                                <ice:panelTab id="list" label="List View">
-                                    <ice:outputText value="#{row.clusterInfo.clusterCount} Documents in Cluster"/>
+                            
+                                     <ice:commandLink rendered="#{row.summaryAvailable}" actionListener="#{row.openSumPopup}">Generate Cluster Summary Text</ice:commandLink>
+                                     <ice:outputText value="#{row.clusterInfo.clusterCount} Documents in Cluster"/>
                                      <ice:dataPaginator for="clusterDocs"
                                                        id="dataScroll_3"
                                                        paginator="true" fastStep="3"
@@ -958,11 +932,7 @@ td.clusterCountCol {width:14%;}
                                              <ice:commandLink rendered="#{!empty docInfo.title}" value="#{docInfo.title}" actionListener="#{row.viewDocumentInList}"/>
                                         </ice:column>
                                     </ice:dataTable>
-                                </ice:panelTab>
-                                <ice:panelTab label="Summary" rendered="#{row.summaryAvailable}">
-                                     <ice:commandLink actionListener="#{row.openSumPopup}">View Cluster Summary Text</ice:commandLink>
-                                </ice:panelTab>
-                            </ice:panelTabSet>
+                                
                         </div>
 
                         <ice:panelPopup id="docViewPopup"

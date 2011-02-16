@@ -792,6 +792,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         xAxisVariableId =  new Long(0);
         xAxisSet = false;
         xAxisUnits = "";
+        resetDVMappingsXAxis();
         cancelAddEdit();
     }
 

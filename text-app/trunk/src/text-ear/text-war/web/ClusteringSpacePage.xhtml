@@ -7,23 +7,6 @@
       xmlns:ice="http://www.icesoft.com/icefaces/component">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-      <style type="text/css">
-            .dvn_content {
-                min-width: 920px;
-            }
-            #layersmap {
-                width: 600px;
-                height: 300px;
-                border: 1px solid black;
-                float:left;
-            }
-            #map2 {
-                width: 400px;
-                height: 400px;
-                border: 1px solid black;
-                float:left;
-            }
-        </style>
 </head>
 <body>
 <ui:composition template="/template.xhtml">
@@ -576,6 +559,21 @@
     <ice:inputHidden id="methodPoints" value="#{ClusteringSpacePage.methodPointsString}"/>
 
 <style type="text/css">
+            .dvn_content {
+                min-width: 920px;
+            }
+            #layersmap {
+                width: 600px;
+                height: 300px;
+                border: 1px solid black;
+                float:left;
+            }
+            #map2 {
+                width: 400px;
+                height: 400px;
+                border: 1px solid black;
+                float:left;
+            }
     .fileInfo {margin-bottom:1em;}
     .navSettingsBar {overflow:hidden; margin-bottom:1.5em;}
     .clusteringNavHistory {float:left; overflow:hidden; border:1px solid grey; margin-right: 1em;}
@@ -591,7 +589,7 @@
     .clusterExplorer {overflow:hidden;}
     .clusterExplorer .map {width:540px; margin-right:20px; float:left;}
     .clusterExplorer #map {height:380px;}
-    .clusterExplorer .table {/*width:360px; float:left;*/}
+    .clusterExplorer .table {min-width:300px; /*width:360px; float:left;*/}
     .mapDisplayActions {overflow:hidden; margin-top:1em;}
     .mapDisplayActions div {float:left; margin-right:1em;}
     div.clusterNumberBlock {float:none; margin-bottom:1em;}
@@ -599,6 +597,12 @@
     .savedListLabel {display: block; width:270px;}
     .savedListCoord {display: block; width:135px;}
     .savedListNoClust {}
+
+.map .iceDatTbl tfoot {display:none;}
+.savedListLabelUrl {display:none;}
+.savedListLabelCell.edit a.savedListLabelUrlLink {display:none;}
+.savedListLabelCell.edit div.savedListLabelUrl {display:block;}
+
 </style>
 
     <div class="fileInfo">
@@ -683,12 +687,6 @@
                 </div>
                
                 </div>
-<style type="text/css">
-.map .iceDatTbl tfoot {display:none;}
-.savedListLabelUrl {display:none;}
-.savedListLabelCell.edit a.savedListLabelUrlLink {display:none;}
-.savedListLabelCell.edit div.savedListLabelUrl {display:block;}
-</style>
             <div>
                 <ice:dataTable id="savedList" columnClasses="savedListLabelCell,savedListCoordCell,savedListNoClustCell" cellpadding="0" cellspacing="0" value="#{ClusteringSpacePage.savedSolutions}" var="saved" width="100%">
                     <ice:column>
@@ -761,12 +759,6 @@
             
         <div class="table">
             <div class="clusterLabelHeader">
-<style type="text/css">
-.clusterLabelInputBlock {display:none;}
-.clusterLabelBlock.edit a.clusterLabelValueEdit {display:none;}
-.clusterLabelBlock.edit a.clusterInfoValueLabel {display:inline;}
-.clusterLabelBlock.edit div.clusterLabelInputBlock {display:block;}
-</style>
 
 <script type="text/javascript">
     jQuery(document).ready(function(){
@@ -794,14 +786,14 @@
           });
     });
 </script>
-                <div>
+                <div class="clusterTableHeaderBlock">
+                    <div class="clusterExportBlock">
+                        <ice:outputResource label="Export" type="button"
+                                                            id="downloadClustering"
+                                                            fileName="clustering_set_#{ClusteringSpacePage.setId}_#{ClusteringSpacePage.clusterSolution.formatClusterNum}_#{ClusteringSpacePage.clusterSolution.formatX}_#{ClusteringSpacePage.clusterSolution.formatY}.txt" mimeType="text/plain"
+                                                            resource="#{ClusteringSpacePage.exportResource}" shared="false"/>
+                    </div>
                     <div class="clusterLabelBlock">
-                         <div>
-                            <ice:outputResource label="Export" type="button"
-                                                                id="downloadClustering"
-                                                                fileName="clustering_set_#{ClusteringSpacePage.setId}_#{ClusteringSpacePage.clusterSolution.formatClusterNum}_#{ClusteringSpacePage.clusterSolution.formatX}_#{ClusteringSpacePage.clusterSolution.formatY}.txt" mimeType="text/plain"
-                                                                resource="#{ClusteringSpacePage.exportResource}" shared="false"/>
-                        </div>
                         <div><ice:outputText value="Coordinates: #{ClusteringSpacePage.clusterSolution.formatX}, #{ClusteringSpacePage.clusterSolution.formatY}"/></div>
                         <div><ice:outputText  value="Clusters: #{ClusteringSpacePage.clusterSolution.formatClusterNum}"/></div>
                         <a href="#" class="clusterLabelValueEdit"><ice:outputText value="Label [+] #{ClusteringSpacePage.clusterSolution.label}"/></a>
@@ -815,19 +807,39 @@
 
             <div class="clusterTable">
 <style type="text/css">
+.clusterLabelInputBlock {display:none;}
+.clusterLabelBlock.edit a.clusterLabelValueEdit {display:none;}
+.clusterLabelBlock.edit a.clusterInfoValueLabel {display:inline;}
+.clusterLabelBlock.edit div.clusterLabelInputBlock {display:block;}
+
+.clusterInfoBarGraphBlock {width: 200px;}
 div.clusterInfoBarGraph {background: blue; line-height: 12px !important;}
 .clusterInfoValueBlock {display:none;}
-.clusterInfoLabelBlock {border:1px solid transparent;} /* Opera bug fix */
+.clusterTableHeaderBlock {overflow:hidden;}
+.clusterExportBlock {float:right;}
+.clusterInfoLabelBlock {float:left; border:1px solid transparent;} /* Opera bug fix */
 .clusterInfoLabelBlock.edit a.clusterInfoValueEdit {display:none;}
 .clusterInfoLabelBlock.edit a.clusterInfoValueLabel {display:inline;}
 .clusterInfoLabelBlock.edit div.clusterInfoValueBlock {display:block;}
 .clusterInfoStems.edit {display:none;}
 .clusterTable .iceDatTbl {margin:0;}
 .clusterTable .iceDatTbl .iceDatTblRow2 {background: #EEF3FB;}
-td.clusterCountCol {width:14%;}
+.clusterTable .iceDatTbl .iceDatTblCol1 {border-right:0;}
+td.clusterCountCol {width:60px;}
 .clusterTable .iceDatTbl tfoot {display:none;}
 
+.clusterTable .iceDatTbl.clusterDocList {margin-top:1em;}
+.clusterTable .iceDatTbl.clusterDocList td.iceDatTblCol1 {border-right:1px solid #CCCCCC;}
+
+.clusterTable .iceDatTbl.clusterDocList .dvnClusterListPaginatorBlock {overflow:hidden;}
+.dvnClusterListPaginatorBlock .dvnPaginatorBlock {float:right;}
+.dvnClusterListPaginatorBlock .dvnClusterListDocCount {float:left;}
+
+.clusterTable .iceDatTbl.clusterDocList tfoot {display:table-footer-group;}
+.clusterTable .iceDatTbl.clusterDocList thead td, .clusterTable .iceDatTbl.clusterDocList tfoot td {text-align:left;}
+
 .clusterDetailLink {float:right;}
+/*
 .clusterDetailBlock .dvnTabs {margin:.5em 0 1em 0;}
 .clusterDetailBlock .dvnTabs .icePnlTbOn .MidMid a {padding-left:4px; margin:0; text-transform:none;}
 .clusterDetailBlock .dvnTabs .icePnlTbOff .MidMid a {padding-left:4px;}
@@ -835,12 +847,14 @@ td.clusterCountCol {width:14%;}
 .clusterDetailBlock .dvnTabs .icePnlTbOn .MidMid a td {font-size:1em !important;}
 
 .clusterDetailBlock .icePnlTbSetCnt {padding:10px;}
+*/
 
 .iceDatTbl td .clusterDocViewNav span.iceOutTxt {display:inline; padding:0 4px; color:#D9D9D9;}
 .iceDatTbl td .clusterDocViewNav span.iceOutTxt.clusterDocViewNumber {color:#000;}
 .clusterDocViewNav img.iceGphImg {padding:0 4px !important;}
-.clusterDetailBlock .dvnPaginatorRight {margin-bottom:1em;}
-.clusterDetailBlock .iceDatTbl.clusterDocList {border-top: 1px solid #D9D9D9;}
+.clusterDetailBlock {padding-left:60px; clear:both;}
+.clusterDetailBlock .dvnPaginatorRight {}
+.clusterDetailBlock .iceDatTbl.clusterDocList {border-top: 1px solid #D9D9D9; margin-bottom:1em;}
 
 .clusterViewDocPopup {width:480px; z-index:9999;}
 .clusterViewDocPopup .popupHeaderWrapper {overflow:hidden; padding:0 1em;}
@@ -901,38 +915,54 @@ td.clusterCountCol {width:14%;}
                         <a href="#" class="clusterDetailLink">View Detail</a>
                         
                         <div class="clusterDetailBlock">
-                            
-                                     <ice:commandLink rendered="#{row.summaryAvailable}" actionListener="#{row.openSumPopup}">Generate Cluster Summary Text</ice:commandLink>
-                                     <ice:outputText value="#{row.clusterInfo.clusterCount} Documents in Cluster"/>
-                                     <ice:dataPaginator for="clusterDocs"
-                                                       id="dataScroll_3"
-                                                       paginator="true" fastStep="3"
-                                                       paginatorMaxPages="4"
-                                                       renderFacetsIfSinglePage="true"
-                                                       styleClass="dvnPaginatorRight">
-                                      <f:facet name="first">
-                                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-first.gif" title="First Page"/>
-                                      </f:facet>
-                                      <f:facet name="previous">
-                                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-previous.gif" title="Previous"/>
-                                      </f:facet>
-                                      <f:facet name="next">
-                                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-next.gif" title="Next"/>
-                                      </f:facet>
-                                      <f:facet name="last">
-                                        <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-last.gif" title="Last Page"/>
-                                      </f:facet>
-                                    </ice:dataPaginator>
-                                    <ice:dataTable rows="5" id="clusterDocs" styleClass="clusterDocList" cellpadding="0" cellspacing="0" value="#{row.clusterInfo.docInfoList}" var="docInfo" width="100%">
-                                         <ice:column>
-                                             <ice:commandLink value="#{docInfo.index+1}" actionListener="#{row.viewDocumentInList}"/>
-                                        </ice:column>
-                                        <ice:column>
-                                             <ice:commandLink rendered="#{empty docInfo.title}" value="#{docInfo.docId}" actionListener="#{row.viewDocumentInList}"/>
-                                             <ice:commandLink rendered="#{!empty docInfo.title}" value="#{docInfo.title}" actionListener="#{row.viewDocumentInList}"/>
-                                        </ice:column>
-                                    </ice:dataTable>
-                                
+                            <ice:dataTable rows="5" id="clusterDocs" styleClass="clusterDocList" width="100%" cellpadding="0" cellspacing="0" value="#{row.clusterInfo.docInfoList}" var="docInfo">
+                                <f:facet name="header">
+                                    <ice:columnGroup>
+                                        <ice:headerRow>
+                                             <ice:column colspan="2">
+                                                <div class="dvnClusterListPaginatorBlock">
+                                                     <div class="dvnPaginatorBlock">
+                                                         <ice:dataPaginator for="clusterDocs"
+                                                                           id="dataScroll_3"
+                                                                           paginator="true" fastStep="3"
+                                                                           paginatorMaxPages="4"
+                                                                           renderFacetsIfSinglePage="true"
+                                                                           styleClass="dvnPaginatorRight">
+                                                          <f:facet name="first">
+                                                            <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-first.gif" title="First Page"/>
+                                                          </f:facet>
+                                                          <f:facet name="previous">
+                                                            <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-previous.gif" title="Previous"/>
+                                                          </f:facet>
+                                                          <f:facet name="next">
+                                                            <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-next.gif" title="Next"/>
+                                                          </f:facet>
+                                                          <f:facet name="last">
+                                                            <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-last.gif" title="Last Page"/>
+                                                          </f:facet>
+                                                        </ice:dataPaginator>
+                                                     </div>
+                                                     <div class="dvnClusterListDocCount">
+                                                         <ice:outputText value="#{row.clusterInfo.clusterCount} Documents"/>
+                                                     </div>
+                                                 </div>
+                                             </ice:column>
+                                        </ice:headerRow>
+                                    </ice:columnGroup>
+                                </f:facet>
+
+                                <ice:column>
+                                     <ice:commandLink value="#{docInfo.index+1}" actionListener="#{row.viewDocumentInList}"/>
+                                </ice:column>
+                                <ice:column>
+                                     <ice:commandLink rendered="#{empty docInfo.title}" value="#{docInfo.docId}" actionListener="#{row.viewDocumentInList}"/>
+                                     <ice:commandLink rendered="#{!empty docInfo.title}" value="#{docInfo.title}" actionListener="#{row.viewDocumentInList}"/>
+                                </ice:column>
+
+                                <f:facet name="footer">
+                                    <ice:commandLink rendered="#{row.summaryAvailable}" actionListener="#{row.openSumPopup}">Generate Cluster Summary Text</ice:commandLink>
+                                </f:facet>
+                            </ice:dataTable>
                         </div>
 
                         <ice:panelPopup id="docViewPopup"

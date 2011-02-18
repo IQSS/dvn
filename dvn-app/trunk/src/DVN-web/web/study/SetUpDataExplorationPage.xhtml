@@ -139,9 +139,26 @@
             <ice:outputText rendered="#{!SetUpDataExplorationPage.selectFile}" value="File Name: #{SetUpDataExplorationPage.studyFileName}"/>
             </div>
             <div style="float:left;">
-                <ice:graphicImage value="/resources/images/icon_information.18.png" styleClass="dvn_icon" rendered="#{SetUpDataExplorationPage.selectFile}"/>
-                <ice:outputText value=" Select A Data File for Data Exploration Set-up" rendered="#{SetUpDataExplorationPage.selectFile}"/>
+                <ice:graphicImage value="/resources/images/icon_information.18.png" styleClass="dvn_icon" rendered="#{!SetUpDataExplorationPage.selectFile}"/>
+                <ice:outputText value=" Select A Data File for Data Exploration Set-up" rendered="#{!SetUpDataExplorationPage.selectFile}"/>
             </div>
+        </div>
+        <div style="float:left; margin-right:2em;">
+            <ice:outputLabel value="Optional Source URL for end users' graphs" for="sourceURL"   rendered="#{!SetUpDataExplorationPage.selectFile}"/>
+                             <ice:inputText
+                                  id="inputSourceURL"
+                                  rendered="#{!SetUpDataExplorationPage.selectFile}"
+                                  size="25"
+                                  maxlength="255"
+                                  value="#{SetUpDataExplorationPage.dataTable.visualizationUrl}"
+                                  accesskey="">
+                                  <f:validator validatorId="UrlValidator"/>
+                                 </ice:inputText>
+            <ice:message styleClass="errorMessage" for="inputSourceURL"/>
+
+            <ice:selectBooleanCheckbox id="fieldNames" styleClass="filterGroupTypeCheckBoxes" value="#{SetUpDataExplorationPage.dataTable.visualizationUrlIncludeVariableNames}"
+                                      rendered="#{!SetUpDataExplorationPage.selectFile}"                      partialSubmit="true"/>
+          <ice:outputLabel value="Append selected field names to Source URL" style="font-weight:normal;" rendered="#{!SetUpDataExplorationPage.selectFile}"/>
         </div>
     </div>
     <div class="dvn_sectionBoxNoBorders">

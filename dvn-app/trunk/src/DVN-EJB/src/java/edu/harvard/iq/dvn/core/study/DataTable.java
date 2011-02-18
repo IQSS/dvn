@@ -157,6 +157,29 @@ public class DataTable implements java.io.Serializable {
         this.visualizationEnabled = visualizationEnabled;
     }
 
+    private boolean visualizationUrlIncludeVariableNames;
+
+    public boolean isVisualizationUrlIncludeVariableNames() {
+        return visualizationUrlIncludeVariableNames;
+    }
+
+    public void setVisualizationUrlIncludeVariableNames(boolean visualizationUrlIncludeVariableNames) {
+        this.visualizationUrlIncludeVariableNames = visualizationUrlIncludeVariableNames;
+    }
+
+    /**
+     * Holds value of property visualizationUrl.
+     */
+    private String visualizationUrl;
+
+    public String getVisualizationUrl() {
+        return this.visualizationUrl;
+    }
+
+    public void setVisualizationUrl(String visualizationUrl) {
+        this.visualizationUrl = visualizationUrl;
+    }
+
     
     /**
      * Holds value of property study.

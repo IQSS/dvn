@@ -98,10 +98,10 @@
                     </div>
                     <div style="float:left; width:300px;">
                         <ice:panelGroup rendered="#{AddFilesPage.typeNotSelected}">
-                            <ice:outputText value="Select a file type. Once ingested,
-                                    Tabular (&#34;subsettable&#34;) and Netowrk Data files can be analyzed
-                                    online using the Dataverse Network analysis tools.
-                                    All other files will be available for download only."/>
+                            <ice:outputText value="&#60;strong&#62;Tabular&#60;/strong&#62; and &#60;strong&#62;Network Data&#60;/strong&#62; files can
+                                            be subset and analyzed using the Dataverse Network analysis tools. These files will take longer to upload and
+                                            you'll get a notification once the upload is completed. Tabular files will also get Universal Numerical
+                                            Fingerprint (UNF). All other files types will be available for download only." escape="false"/>
                         </ice:panelGroup>
                         <ice:panelGroup rendered="#{AddFilesPage.controlCardIngestRequested}">
                             <ice:outputText nospan="true" escape="false" value="&#60;p style=&#34;margin-top:0;&#34; class=&#34;warnMessage&#34;&#62;&#60;img src=&#34;/dvn/resources/images/icon_warning.18.png&#34; class=&#34;dvn_icon&#34; /&#62; #{AddFilesPage.controlCardValidationErrorMessage} &#60;p&#62;" rendered="#{AddFilesPage.controlCardValidationErrorMessage != null}"/>

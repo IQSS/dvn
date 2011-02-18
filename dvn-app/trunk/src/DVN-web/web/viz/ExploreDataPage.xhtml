@@ -341,10 +341,10 @@ function drawVisualization() {
             table.draw(data, {showRowNumber: false});
         }
         if (intDisType == 2){
-             var displayTitle = new String (document.getElementById('ExploreDataPage:graphTitleIn').textContent );
-            
+             var displayTitle = document.getElementById('ExploreDataPage:graphTitleIn').value;
+            alert (displayTitle);
              var chart = new google.visualization.ImageLineChart(document.getElementById('chart_div'));
-             chart.draw(data, {colors: [ '#4684EE', '#DC3912', '#FF9900', '#008000', '#4942CC', '#990099',  '#FF80F2', '#7FD127']});
+             chart.draw(data, {title: displayTitle, colors: [ '#4684EE', '#DC3912', '#FF9900', '#008000', '#4942CC', '#990099',  '#FF80F2', '#7FD127']});
         }
 
     }
@@ -591,6 +591,10 @@ function startDownload()
             <div jsfc="ice:panelGroup" rendered="#{!empty ExploreDataPage.vizLines}" styleClass="graphbox" style="float:left; margin-right:1em;">
                 <div id="chart_div" style="width: 540px; height: 400px;"></div>
             </div>
+                <div style="margin-bottom:.5em;">
+                    <ice:outputLabel value="Source"  style="display:block;" rendered="#{!empty ExploreDataPage.vizLines}"/>
+                    <ice:outputText value="#{ExploreDataPage.sourceURL}"  style="font-weight:normal;" rendered="#{!empty ExploreDataPage.vizLines}"/>
+                </div>
 
             <div jsfc="ice:panelGroup" rendered="#{!empty ExploreDataPage.vizLines}" styleClass="graphdisplay" style="float:left;">
                 <div style="margin-bottom:.5em;">
@@ -635,6 +639,7 @@ function startDownload()
                     <div style="margin-bottom:.5em;">
                         <ice:outputLabel value="Title" for="graphtitleIn"/>
                         <ice:inputText id="graphTitleIn" size="40" binding="#{ExploreDataPage.inputGraphTitle}"
+                                       value ="#{ExploreDataPage.graphTitle}"
                                        onkeyup="delayedRequestTitle(form,this,event);"></ice:inputText>
                     </div>
                 </div> 

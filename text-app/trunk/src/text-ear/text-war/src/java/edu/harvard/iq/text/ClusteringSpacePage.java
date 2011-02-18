@@ -1,7 +1,6 @@
 package edu.harvard.iq.text;
 
 import com.icesoft.faces.component.ext.HtmlDataTable;
-import com.icesoft.faces.component.paneltabset.PanelTabSet;
 import com.icesoft.faces.context.Resource;
 import com.icesoft.faces.context.Resource.Options;
 import edu.harvard.iq.text.ClusterInfo.DocInfo;
@@ -404,7 +403,6 @@ public class ClusteringSpacePage {
 
     public class ClusterRow {
        
-        PanelTabSet panelTabSet;
         Boolean showDocPopup = Boolean.FALSE;
         Boolean showSumPopup = Boolean.FALSE;
         ClusterInfo clusterInfo;
@@ -414,15 +412,6 @@ public class ClusteringSpacePage {
         public ClusterRow(ClusterInfo clusterInfo) {          
             this.clusterInfo = clusterInfo;
             viewDocumentIndex = 0;  // Show the examplar document first
-        }
-       
-
-        public PanelTabSet getPanelTabSet() {
-            return panelTabSet;
-        }
-
-        public void setPanelTabSet(PanelTabSet panelTabSet) {
-            this.panelTabSet = panelTabSet;
         }
 
        public int getRandomDocumentIndex() {
@@ -448,11 +437,6 @@ public class ClusteringSpacePage {
                comp = comp.getParent();
            }
            HtmlDataTable table = (HtmlDataTable)comp;
-           comp = comp.getParent();
-           while(!(comp instanceof PanelTabSet)) {
-               comp = comp.getParent();
-           }
-           PanelTabSet tabSet = (PanelTabSet)comp;
            viewDocumentIndex = table.getRowIndex();
            showDocPopup=true;  // open the document viewer
        }

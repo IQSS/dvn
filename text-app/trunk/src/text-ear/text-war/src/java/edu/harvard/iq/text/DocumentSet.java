@@ -10,8 +10,10 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.CoordinateList;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Polygon;
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -19,7 +21,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.StringTokenizer;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -32,6 +33,7 @@ import javax.xml.stream.XMLStreamWriter;
 public class DocumentSet {
     private static final Logger logger = Logger.getLogger(DocumentSet.class.getCanonicalName());
     private String setId;
+    private String description;
     private File setDir;
     private MethodPoint[] methodPoints;
     private int[][] clusterMembership;   //
@@ -92,6 +94,14 @@ public class DocumentSet {
         this.setId = setId;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public int[][] getWordDocumentMatrix() {
         return wordDocumentMatrix;
     }
@@ -112,6 +122,7 @@ public class DocumentSet {
         if (!setDir.exists()) {
             throw new ClusterException("setDir not found");
         }
+        initDescription();
         initMethodPointsAndPolygon();
         initClusterMembership();
         initWordDocumentMatrix();
@@ -123,6 +134,28 @@ public class DocumentSet {
             for (int i=0;i< docIdList.size(); i++) {
                 logger.fine( i + "\t\t "+docIdList.get(i)+"\t\t "+titleList.get(i));
             }
+        }
+    }
+    
+    private void initDescription() {
+        description = "";
+        File desc = new File(setDir, "description.txt");
+        if (desc.exists()) {
+            byte[] buffer = new byte[(int) desc.length()];
+            BufferedInputStream bi = null;
+            try {
+                bi = new BufferedInputStream(new FileInputStream(desc));
+                bi.read(buffer);
+            } catch (IOException ignored) {
+            } finally {
+                if (bi != null) {
+                    try {
+                        bi.close();
+                    } catch (IOException ignored) {
+                    }
+                }
+            }
+            description = new String(buffer);
         }
     }
 

@@ -132,9 +132,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         studyIn = visualizationService.getStudyFromStudyFileId(studyFileId);
         studyId = studyIn.getId();
         versionNumber = getVDCRequestBean().getStudyVersionNumber();
-
-
-
         dt = visualizationService.getDataTable();
 
         Study thisStudy = dt.getStudyFile().getStudy();
@@ -143,8 +140,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
         StudyFile sf = dt.getStudyFile();
         fileName = sf.getFileName();
-
-
         dvList = dt.getDataVariables();
         allVarGroupings = dt.getVarGroupings();
 
@@ -786,6 +781,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
            vizLine.setColor(lineColor);
            vizLine.setBorder("border:1px solid black;");
            vizLine.setVariableId(dataVariableSelected.getId());
+           vizLine.setVariableName(dataVariableSelected.getName());
            vizLines.add(vizLine);
            this.numberOfColumns = new Long(vizLines.size());
            getDataTable();
@@ -1483,5 +1479,18 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         this.displayIndexes = displayIndexes;
     }
 
+    public boolean isIncludeVariableNames() {
+        return dt.isVisualizationUrlIncludeVariableNames();
+    }
+
+    public String getSourceURL() {
+        String returnString = dt.getVisualizationUrl();
+        if(dt.isVisualizationUrlIncludeVariableNames()){
+            for (VisualizationLineDefinition vld : vizLines){
+                returnString = returnString + "?" + vld.getVariableName();
+            }
+        }
+        return returnString;
+    }
 
 }

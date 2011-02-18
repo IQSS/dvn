@@ -359,16 +359,18 @@ public class ClusteringSpacePage {
     }
 
     public FileResource getExportResource() {
-        return new FileResource(this.clusterSolution, this.setId);
+        return new FileResource(this.clusterSolution, this.setId, this.getHost());
     }
 
     class FileResource implements Resource, Serializable{
        
         ClusterSolution solution;
         String setId;
-        public FileResource(ClusterSolution cs, String setId) {
+        String host;
+        public FileResource(ClusterSolution cs, String setId, String host) {
             solution = cs;
             this.setId = setId;
+            this.host = host;
         }
 
 
@@ -384,6 +386,8 @@ public class ClusteringSpacePage {
         public InputStream open() throws IOException {
             String exportStr = "Clustering Export, Set Id = "+ setId;
             exportStr += "\nExport Time: " + new Date()+"\n";
+            //"http://#{ClusteringSpacePage.host}/text/faces/ClusteringSpacePage.xhtml?setId=#{ClusteringSpacePage.setId}&amp;x=#{saved.formatX}&amp;y=#{saved.formatY}&amp;clusterNum=#{saved.numClusters}&amp;discoverable=#{saved.discoverable}&amp;solutionLabel=#{saved.encodedLabel}&amp;clusterLabels=#{saved.clusterLabels}"/></ice:outputLink>
+            exportStr +="\nLink: http://"+host+"/text/faces/ClusteringSpacePage.xhtml?setId="+setId+"&x="+solution.getFormatX()+"&y="+solution.getFormatY()+"&clusterNum="+solution.getNumClusters()+"&discoverable="+solution.getDiscoverable()+"&solutionLabel="+solution.getEncodedLabel()+"&clusterLabels="+solution.getClusterLabels();
             exportStr+=solution.toString();
             return new ByteArrayInputStream(exportStr.getBytes());
         }

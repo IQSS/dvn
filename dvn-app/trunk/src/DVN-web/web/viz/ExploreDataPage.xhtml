@@ -51,12 +51,19 @@
         },timeout);
     }
 
- function drawChart(data, intDisType, startYear, endYear) {
+ function parseData(data, intDisType, startYear, endYear, indexed) {
           
         var myString = new String (document.getElementById('ExploreDataPage:columnString').textContent);
 
         var myColumnList = myString.split ( ',' );
-        var myDataString = new String (document.getElementById('ExploreDataPage:dataString').textContent);
+        
+        if (indexed){
+           
+            var myDataString = new String (document.getElementById('ExploreDataPage:indexedDataString').textContent);
+        } else {
+            var myDataString = new String (document.getElementById('ExploreDataPage:dataString').textContent);
+        }
+
         var myRowList = myDataString.split ( ';' );
 
         var numColumnsStr =  new String (document.getElementById('ExploreDataPage:dataColumns').textContent);
@@ -123,8 +130,6 @@
 
             var myString = new String (document.getElementById('ExploreDataPage:columnString').textContent);
             var myColumnList = myString.split ( ',' );
-            var myDataString = new String (document.getElementById('ExploreDataPage:dataString').textContent);
-            var myRowList = myDataString.split ( ';' );
             var numColumnsStr =  new String (document.getElementById('ExploreDataPage:dataColumns').textContent);
             var numColumns = parseInt(numColumnsStr);
 
@@ -323,9 +328,10 @@ function drawVisualization() {
       var endYear = new String (document.getElementById('ExploreDataPage:endYear').textContent);
       myDateList = endYear.split('-');
       var intEndYear = parseInt(myDateList[0]);
+      var useIndex = document.getElementById('ExploreDataPage:displayindices').checked;
 
       var data = new google.visualization.DataTable();
-        drawChart(data, intDisType, intStartYear, intEndYear);
+        parseData(data, intDisType, intStartYear, intEndYear, useIndex);
         if (intDisType == 1){
                 var chart = new google.visualization.AnnotatedTimeLine(document.getElementById('chart_div'));
                 chart.draw(data, {allowRedraw: true},  {displayZoomButtons: false}, {displayAnnotations: false});
@@ -335,9 +341,10 @@ function drawVisualization() {
             table.draw(data, {showRowNumber: false});
         }
         if (intDisType == 2){
-             var displayTitle = new String (document.getElementById('ExploreDataPage:graphTitleHidden').textContent );
+             var displayTitle = new String (document.getElementById('ExploreDataPage:graphTitleIn').textContent );
+            
              var chart = new google.visualization.ImageLineChart(document.getElementById('chart_div'));
-             chart.draw(data, {colors: [ '#4684EE', '#DC3912', '#FF9900', '#008000', '#4942CC', '#990099',  '#FF80F2', '#7FD127']}, {title: displayTitle });
+             chart.draw(data, {colors: [ '#4684EE', '#DC3912', '#FF9900', '#008000', '#4942CC', '#990099',  '#FF80F2', '#7FD127']});
         }
 
     }
@@ -354,8 +361,19 @@ function updateStartYear(){
      setTimeout(function(){drawVisualization();}, 500);
 }
 
+function resetIndices(){
+     
+     setTimeout(function(){drawVisualization();}, 500);
+}
+
+
 function updateEndYear(){
      document.getElementById('ExploreDataPage:updateEndYear').click();
+     setTimeout(function(){drawVisualization();}, 500);
+}
+
+function updateIndexYear(){
+     document.getElementById('ExploreDataPage:updateIndexYear').click();
      setTimeout(function(){drawVisualization();}, 500);
 }
 
@@ -384,6 +402,7 @@ function startDownload()
 
 <ice:outputText visible="false" id="columnString" value="#{ExploreDataPage.columnString}"/>
 <ice:outputText visible="false" id="dataString" value="#{ExploreDataPage.dataString}"/>
+<ice:outputText visible="false" id="indexedDataString" value="#{ExploreDataPage.indexedDataString}"/>
 <ice:outputText visible="false" id="dataColumns" value="#{ExploreDataPage.dataColumns}"/>
 <ice:outputText visible="false" id="displayType" value="#{ExploreDataPage.displayType}"/>
 <ice:outputText visible="false" id="startYear" value="#{ExploreDataPage.startYear}"/>
@@ -392,6 +411,7 @@ function startDownload()
 <ice:commandButton visible="false" id="updateGraphTitle" type="submit" value="update" action="#{ExploreDataPage.updateGraphTitle}"/>
 <ice:commandButton visible="false" id="updateFileName" type="submit" value="update" action="#{ExploreDataPage.updateFileName}"/>
 <ice:commandButton visible="false" id="deleteLineHidden" value="Delete Line hidden" actionListener="#{ExploreDataPage.deleteLine}"/>
+<ice:commandButton visible="false" id="resetIndexValue"  actionListener="#{ExploreDataPage.resetIndexDisplay}"/>
 <ice:selectBooleanCheckbox id="addLineCheck" visible="false" value="#{ExploreDataPage.lineAdded}"/>
 
 <style type="text/css">
@@ -598,33 +618,26 @@ function startDownload()
                     <ice:commandButton visible="false" id="updateStartYear" action="#{ExploreDataPage.update_StartYear}"/>
                     <ice:commandButton visible="false" id="updateEndYear" action="#{ExploreDataPage.update_EndYear}"/>
                 </div>
-                <!-- Pushed til v.3.0
+
                 <div style="margin-bottom:.5em;">
-                    <ice:selectBooleanCheckbox id="displayindices" value="" rendered="false"/>
-                    <ice:outputLabel value="Display Series as Indices" for="displayindices" style="font-weight:normal;" rendered="false"/>
-                    <ice:selectOneRadio id="referenceperiod"
-                                        layout="pageDirection"
-                                        immediate="true"
-                                        value=""
-                                        rendered="false">
-                      <f:selectItem value="" itemLabel="Use First Period as Reference Period"/>
-                      <f:selectItem value="" itemLabel="Select Reference Period"/>
-                    </ice:selectOneRadio>
-                    <ice:selectOneMenu id="selectreferenceperiod" rendered="false">
-                        <f:selectItem itemLabel="Select a Period..." itemValue=""/>
+                    <ice:selectBooleanCheckbox id="displayindices" value="#{ExploreDataPage.displayIndexes}" 
+                                               rendered="true" onchange="resetIndices();" />
+                    <ice:outputLabel value="Display Series as Indices" for="displayindices" style="font-weight:normal;" rendered="true"/>
+                    <br></br>
+                    <ice:outputLabel value="Select Reference Period" for="selectreferenceperiod" style="font-weight:normal;" rendered="true"/>
+                    <ice:selectOneMenu id="selectreferenceperiod" rendered="true" onchange="updateIndexYear();"  binding="#{ExploreDataPage.selectIndexYear}">
+                        <f:selectItems value="#{ExploreDataPage.selectIndexDate}"/>
                     </ice:selectOneMenu>
+                    <ice:commandButton visible="false" id="updateIndexYear" action="#{ExploreDataPage.update_IndexYear}"/>
                 </div>
                 <div style="margin-bottom:.5em;">
                     <ice:outputLabel value="Export" for="graphexport" style="display:block;"/>
                     <div style="margin-bottom:.5em;">
                         <ice:outputLabel value="Title" for="graphtitleIn"/>
-                        <ice:inputText id="graphTitleIn" size="40" binding="#{ExploreDataPage.inputGraphTitle}" onkeyup="delayedRequestTitle(form,this,event);"></ice:inputText>
+                        <ice:inputText id="graphTitleIn" size="40" binding="#{ExploreDataPage.inputGraphTitle}"
+                                       onkeyup="delayedRequestTitle(form,this,event);"></ice:inputText>
                     </div>
-                    <ice:selectOneMenu id="graphexport">
-                        <f:selectItem itemLabel="Select File Format..." itemValue=""/>
-                    </ice:selectOneMenu>
-                    <ice:commandButton type="submit" value="Download"/>
-                </div> -->
+                </div> 
 
                 <ice:panelGrid id="export12" styleClass="dvnExportBtmWrp" columns="1" cellpadding="0" cellspacing="0" width="100%">
                     <ice:column>

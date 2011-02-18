@@ -610,7 +610,7 @@
       <!--  <div>uploaded by bstewart, Mon Jan 11, 2010, 10:22:19 EDT</div>
         <div>Format: UTF-8.txt, Converted from PDF, English</div>  -->
         <div><ice:outputText value="Size: #{ClusteringSpacePage.documentCount} Files"/></div>
-        <div>Description: Sample documents used for testing purposes.</div>
+        <div><ice:outputText rendered="#{!empty ClusteringSpacePage.description}" value="Description: #{ClusteringSpacePage.description}"/></div>
     </div>
     <div><h:messages style="color:red;font-weight:700" showDetail="true" globalOnly="true"/></div>
     <div class="navSettingsBar">

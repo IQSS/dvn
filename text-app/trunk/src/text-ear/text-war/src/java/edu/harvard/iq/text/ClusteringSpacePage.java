@@ -60,6 +60,10 @@ public class ClusteringSpacePage {
     private ArrayList<ClusterRow> clusterTableModel = new ArrayList<ClusterRow>();
     private int solutionIndex;  // This is passed from the form to indicate that we need to display a saved solution rather than calculate a new solution
 
+    public String getDescription() {
+        return documentSet.getDescription();
+    }
+
 
     /**
      *

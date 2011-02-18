@@ -32,6 +32,7 @@ import com.icesoft.faces.component.ext.HtmlCommandButton;
 import com.icesoft.faces.component.ext.HtmlDataTable;
 import com.icesoft.faces.component.ext.HtmlInputText;
 import com.icesoft.faces.component.ext.HtmlSelectOneMenu;
+import com.icesoft.faces.component.ext.HtmlCheckbox;
 import com.icesoft.faces.context.Resource;
 import com.icesoft.faces.context.StringResource;
 import com.icesoft.faces.context.effects.JavascriptContext;
@@ -83,7 +84,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     private List <SelectItem> selectMeasureItems = new ArrayList();
     private List <SelectItem> selectMeasureGroupTypes = new ArrayList();
     private List <SelectItem> selectBeginYears = new ArrayList();
-
+    private List <SelectItem> selectIndexDate = new ArrayList();
 
     private List <SelectItem> selectEndYears = new ArrayList();
     private List <VisualizationLineDefinition> vizLines = new ArrayList();
@@ -98,7 +99,11 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     private String columnString = new String();
     private Long numberOfColumns =  new Long(0);
     private String dataString = "";
+    private String indexedDataString = "";
     private String csvString = "";
+    private String indexDate = "";
+    private boolean displayIndexes = false;
+
     private Long displayType = new Long(0);
     private String startYear = new String("0");
     private String endYear = new String("3000");
@@ -294,13 +299,9 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             count++;
         }
 
-
-
-                Iterator iterator = localVGList.iterator();
-                while (iterator.hasNext() ){
-                VarGroup varGroup = (VarGroup) iterator.next();
-                inList.add(varGroup);
-            }
+        for (VarGroup varGroup: localVGList ){
+            inList.add(varGroup);
+        }
     }
 
     private List <VarGroup> getFilterGroupsFromMeasureId(Long MeasureId){
@@ -322,15 +323,11 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             count++;
         }
 
+        for (VarGroup varGroup: localVGList ){
+            returnList.add(varGroup);
+        }
 
-
-            Iterator iterator = localVGList.iterator();
-                while (iterator.hasNext() ){
-                VarGroup varGroup = (VarGroup) iterator.next();
-                returnList.add(varGroup);
-            }
-
-            return returnList;
+       return returnList;
     }
 
 
@@ -354,9 +351,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             count++;
         }
 
-        Iterator iterator = localVGList.iterator();
-        while (iterator.hasNext() ){
-            VarGroupType varGroupType = (VarGroupType) iterator.next();
+        for (VarGroupType varGroupType: localVGList ){
             VarGroupTypeUI varGroupTypeUI = new VarGroupTypeUI();
             varGroupTypeUI.setVarGroupType(varGroupType);
             varGroupTypeUI.setEnabled(false);
@@ -726,6 +721,14 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         this.endYear = (String) value ;
     }
 
+    public void update_IndexYear(){
+        Object value= this.selectIndexYear.getValue();
+        this.indexDate= (String) value ;
+        getDataTable();
+        resetLineBorder();
+    }
+
+
     public void reset_MeasureItems(ValueChangeEvent ae){
         int i = (Integer) ae.getNewValue();
         this.selectMeasureItems = loadSelectMeasureItems(i);
@@ -789,9 +792,12 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
            resetLineBorder();
            FacesContext fc = FacesContext.getCurrentInstance();
            JavascriptContext.addJavascriptCall(fc, "drawVisualization();");
-           JavascriptContext.addJavascriptCall(fc, "jQuery(\"div.dvnMsgBlockRound\").corner(\"10px\");");
+           
            JavascriptContext.addJavascriptCall(fc, "initLineDetails");
            return;
+        } else {
+            FacesContext fc = FacesContext.getCurrentInstance();
+            JavascriptContext.addJavascriptCall(fc, "jQuery(\"div.dvnMsgBlockRound\").corner(\"10px\");");
         }
 
     }
@@ -1089,10 +1095,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
             int countRows = 0;
 
-          // googleDataTable = com.google.gwt.visualization.client.DataTable.create();
-
-           // com.google.gwt.visualization.client.DataTable googleDataTable = com.google.gwt.visualization.client.DataTable.create();
-
             
             return subsetFileSize.toString();
 
@@ -1102,8 +1104,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
         } catch  (IOException e) {
             e.printStackTrace();
-                            return "failure";
-           }
+            return "failure";
+        }
 
 
     }
@@ -1111,50 +1113,130 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     private void loadDataTableData(List inStr){
     selectBeginYears = new ArrayList();
     selectEndYears = new ArrayList();
+    selectIndexDate = new ArrayList();
     selectEndYears.add(new SelectItem(3000, "Max"));
     boolean firstYearSet = false;
     String maxYear = "";
-                String output = "";
-                String csvOutput =columnString + "\n";
-                for (Object inObj: inStr ){
-                    String nextStr = (String) inObj;
-                    String[] columnDetail = nextStr.split("\t");
-                    String[] test = columnDetail;
+    String output = "";
+    String indexedOutput = "";
+    String csvOutput =columnString + "\n";
+    boolean indexSet = false;
+    boolean addIndexDate = false;
+    boolean[] getIndexes = new boolean[9];
+    for (int i = 1; i<9; i++){
+        getIndexes[i] = false;
+    }
+    String[] indexVals = new String[9];
+    int maxLength = 0;
+    for (Object inObj: inStr ){
+        String nextStr = (String) inObj;
+        String[] columnDetail = nextStr.split("\t");
+        String[] test = columnDetail;
 
-                    String col = "";
-                    String csvCol = "";
-                    if (test.length > 1)
-                    {
-                        for (int i=0; i<test.length; i++){
-                            if (i == 0) {
-                                col =  test[i];
-                                csvCol  = test[i];
+        if (test.length -1 > maxLength)
+            {
+                maxLength = test.length -1;
+           }
+    }
 
-                                if (!firstYearSet){
-                                   selectBeginYears.add(new SelectItem(col, "Min"));
-                                   firstYearSet = true;
-                                }
-                                maxYear = col;
-                                selectBeginYears.add(new SelectItem( col, col));
-                                selectEndYears.add(new SelectItem(col, col));
-                            } else {
-                               col = col + ", " +  test[i];
-                               csvCol = csvCol + ", " +  test[i];
-                            }
+    for (Object inObj: inStr ){
+        String nextStr = (String) inObj;
+        String[] columnDetail = nextStr.split("\t");
+        String[] test = columnDetail;
+
+        String col = "";
+        String csvCol = "";
+
+        if (test.length > 1)
+            {
+                for (int i=0; i<test.length; i++){
+                if (i == 0) {
+                    col =  test[i];
+                    csvCol  = test[i];
+
+                    if (!firstYearSet){
+                         selectBeginYears.add(new SelectItem(col, "Min"));
+                         firstYearSet = true;
+                    }
+                    if (maxLength == test.length -1){
+                         addIndexDate = true;
+                    }
+                    if (!indexSet && maxLength == test.length -1 &&  (indexDate.isEmpty()  ||  indexDate.equals(col)) ){
+                             for (int j = 1; j<9; j++){
+                                getIndexes[j] = true;
+                             }
+                         indexSet = true;                       
+                    }
+                    maxYear = col;
+                    selectBeginYears.add(new SelectItem( col, col));
+                    selectEndYears.add(new SelectItem(col, col));
+                    if (addIndexDate){
+                         selectIndexDate.add(new SelectItem(col, col));
+                    }
+                } else {
+                        col = col + ", " +  test[i];
+                        csvCol = csvCol + ", " +  test[i];
+                        Double testIndexVal = new Double (0);
+                        if (!test[i].isEmpty()){
+                            testIndexVal =  new Double (test[i]);
+                        }
+                        if (getIndexes[i] && testIndexVal > 0){
+                            indexVals[i] = test[i];
+                            getIndexes[i] = false;
+                        }
+                }
+
+                }
+                  col = col + ";";
+                  csvCol = csvCol + "\n";
+           }
+
+           output = output + col;
+           csvOutput = csvOutput + csvCol;
+    }
+   
+    for (Object inObj: inStr ){
+        String nextStr = (String) inObj;
+        String[] columnDetail = nextStr.split("\t");
+        String[] test = columnDetail;
+        String indexDate = "";
+     String indexCol = "";         
+
+
+        if (test.length > 1)
+            {
+                for (int i=0; i<test.length; i++){
+                if (i == 0) {
+                    indexCol = test[i];
+                    indexDate = test[i];
+                } else {
+                        Double numerator = new Double (test[i]);
+                        Double denominator = new Double (indexVals[i]);
+                        Double result = new Double(0);
+                        if (!denominator.equals(new Double (0))){
+                            result = (numerator / denominator) *  new Double (100);
+                        } else {
 
                         }
-                        col = col + ";";
-                        csvCol = csvCol + "\n";
-                    }
+                        indexCol = indexCol + ", " +  result;
 
-                    output = output + col;
-                    csvOutput = csvOutput + csvCol;
                 }
-                SelectItem setSI = selectEndYears.get(0);
-                setSI.setValue(maxYear);
-                selectEndYears.set(0, setSI);
-                csvString = csvOutput;
-                dataString = output;
+
+                }
+                  indexCol = indexCol + ";";
+
+           }
+
+
+           indexedOutput = indexedOutput + indexCol;
+    }
+
+          SelectItem setSI = selectEndYears.get(0);
+          setSI.setValue(maxYear);
+          selectEndYears.set(0, setSI);
+          csvString = csvOutput;
+          dataString = output;
+          indexedDataString = indexedOutput;
     }
 
     private HtmlDataTable dataTableVizLines;
@@ -1200,6 +1282,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         this.selectGraphType = selectGraphType;
     }
 
+
     HtmlSelectOneMenu selectStartYear;
 
     public HtmlSelectOneMenu getSelectStartYear() {
@@ -1220,6 +1303,15 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         this.selectEndYear = selectEndYear;
     }
 
+    HtmlSelectOneMenu selectIndexYear;
+
+    public HtmlSelectOneMenu getSelectIndexYear() {
+        return selectIndexYear;
+    }
+
+    public void setSelectIndexYear(HtmlSelectOneMenu selectIndexYear) {
+        this.selectIndexYear = selectIndexYear;
+    }
     public Long getDisplayType() {
         return displayType;
     }
@@ -1356,5 +1448,40 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     public void setDownloadFileName(String downloadFileName) {
         this.downloadFileName = downloadFileName;
     }
+
+    public String getIndexedDataString() {
+        return indexedDataString;
+    }
+
+    public void setIndexedDataString(String indexedDataString) {
+        this.indexedDataString = indexedDataString;
+    }
+
+    public String getIndexDate() {
+        return indexDate;
+    }
+
+    public void setIndexDate(String indexDate) {
+        this.indexDate = indexDate;
+    }
+
+
+    public List<SelectItem> getSelectIndexDate() {
+        return selectIndexDate;
+    }
+
+    public void setSelectIndexDate(List<SelectItem> selectIndexDate) {
+        this.selectIndexDate = selectIndexDate;
+    }
+
+
+    public boolean isDisplayIndexes() {
+        return displayIndexes;
+    }
+
+    public void setDisplayIndexes(boolean displayIndexes) {
+        this.displayIndexes = displayIndexes;
+    }
+
 
 }

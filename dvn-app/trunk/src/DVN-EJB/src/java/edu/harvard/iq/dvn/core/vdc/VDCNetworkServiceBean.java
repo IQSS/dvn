@@ -29,6 +29,7 @@
 
 package edu.harvard.iq.dvn.core.vdc;
 
+import edu.harvard.iq.dvn.core.admin.DvnTimerRemote;
 import edu.harvard.iq.dvn.core.mail.MailServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyVersion;
@@ -63,7 +64,10 @@ public class VDCNetworkServiceBean implements VDCNetworkServiceLocal {
     @Resource javax.ejb.TimerService timerService;
     @EJB MailServiceLocal mailService;
      @EJB StudyServiceLocal studyService;
-  
+
+    @EJB (name="dvnTimer")
+    DvnTimerRemote remoteTimerService;
+
     private static final Logger logger = Logger.getLogger("edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceBean");    
     /**
      * Creates a new instance of VDCNetworkServiceBean
@@ -179,7 +183,8 @@ public class VDCNetworkServiceBean implements VDCNetworkServiceLocal {
             for (Object timer:timerService.getTimers()) {
                 logger.info("Found timer: "+((Timer)timer).getInfo());
             }
-            timerService.createTimer(initExpirationDate, intervalDuration,exportTimerInfo);
+//            timerService.createTimer(initExpirationDate, intervalDuration,exportTimerInfo);
+            remoteTimerService.createTimer(initExpirationDate, intervalDuration, exportTimerInfo);
       
     }
 

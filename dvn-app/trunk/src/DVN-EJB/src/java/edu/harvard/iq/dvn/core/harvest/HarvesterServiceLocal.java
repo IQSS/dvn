@@ -62,5 +62,7 @@ public interface HarvesterServiceLocal extends java.io.Serializable  {
 
     public List<HarvestFormatType> findAllHarvestFormatTypes();    
     public HarvestFormatType findHarvestFormatTypeByMetadataPrefix(String metadataPrefix);
+
+    public void doHarvesting(java.lang.Long dataverseId) throws java.io.IOException;
   
 }

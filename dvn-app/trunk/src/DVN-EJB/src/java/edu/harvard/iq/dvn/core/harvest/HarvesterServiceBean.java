@@ -44,6 +44,7 @@ import edu.harvard.hmdc.vdcnet.jaxb.oai.OAIPMHerrorcodeType;
 import edu.harvard.hmdc.vdcnet.jaxb.oai.OAIPMHtype;
 import edu.harvard.hmdc.vdcnet.jaxb.oai.ResumptionTokenType;
 import edu.harvard.hmdc.vdcnet.jaxb.oai.SetType;
+import edu.harvard.iq.dvn.core.admin.DvnTimerRemote;
 import edu.harvard.iq.dvn.core.mail.MailServiceLocal;
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
@@ -105,6 +106,10 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
     javax.ejb.TimerService timerService;
     @Resource
     SessionContext ejbContext;
+
+    @EJB (name="dvnTimer")
+    DvnTimerRemote remoteTimerService;
+    
     @EJB
     StudyServiceLocal studyService;
     @EJB
@@ -235,7 +240,8 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
                 initExpirationDate.setTime(initExpiration.getTimeInMillis() + intervalDuration);
             }
             logger.log(Level.INFO, "Setting timer for dataverse " + dataverse.getVdc().getName() + ", initial expiration: " + initExpirationDate);
-            timerService.createTimer(initExpirationDate, intervalDuration, new HarvestTimerInfo(dataverse.getId(), dataverse.getVdc().getName(), dataverse.getSchedulePeriod(), dataverse.getScheduleHourOfDay(), dataverse.getScheduleDayOfWeek()));
+//            timerService.createTimer(initExpirationDate, intervalDuration, new HarvestTimerInfo(dataverse.getId(), dataverse.getVdc().getName(), dataverse.getSchedulePeriod(), dataverse.getScheduleHourOfDay(), dataverse.getScheduleDayOfWeek()));
+            remoteTimerService.createTimer(initExpirationDate, intervalDuration, new HarvestTimerInfo(dataverse.getId(), dataverse.getVdc().getName(), dataverse.getSchedulePeriod(), dataverse.getScheduleHourOfDay(), dataverse.getScheduleDayOfWeek()));
         }
     }
     
@@ -271,7 +277,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
      * Harvest an individual Dataverse
      * @param dataverseId
      */
-    private void doHarvesting(Long dataverseId) throws IOException {
+    public void doHarvesting(Long dataverseId) throws IOException {
         HarvestingDataverse dataverse = em.find(HarvestingDataverse.class, dataverseId);
         MutableBoolean harvestErrorOccurred = new MutableBoolean(false);
         String logTimestamp = logFormatter.format(new Date());

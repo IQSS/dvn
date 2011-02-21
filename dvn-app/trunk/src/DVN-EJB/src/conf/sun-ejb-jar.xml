@@ -8,5 +8,11 @@
     <ejb>
       <ejb-name>MailServiceBean</ejb-name>
     </ejb>
+   <ejb>
+     <ejb-ref>
+       <ejb-ref-name>dvnTimer</ejb-ref-name>
+       <jndi-name>corbaname:iiop:1.2@localhost:3700#dvnTimer</jndi-name>
+     </ejb-ref>
+   </ejb>
   </enterprise-beans>
 </sun-ejb-jar>

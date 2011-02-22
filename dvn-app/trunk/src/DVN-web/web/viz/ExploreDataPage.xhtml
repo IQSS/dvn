@@ -411,15 +411,8 @@ function startDownload()
 <ice:commandButton visible="false" id="updateGraphTitle" type="submit" value="update" action="#{ExploreDataPage.updateGraphTitle}"/>
 <ice:commandButton visible="false" id="updateFileName" type="submit" value="update" action="#{ExploreDataPage.updateFileName}"/>
 <ice:commandButton visible="false" id="deleteLineHidden" value="Delete Line hidden" actionListener="#{ExploreDataPage.deleteLine}"/>
-<ice:commandButton visible="false" id="resetIndexValue"  actionListener="#{ExploreDataPage.resetIndexDisplay}"/>
+<ice:commandButton visible="false" id="resetIndexValue" actionListener="#{ExploreDataPage.resetIndexDisplay}"/>
 <ice:selectBooleanCheckbox id="addLineCheck" visible="false" value="#{ExploreDataPage.lineAdded}"/>
-
-<style type="text/css">
-    .fileInfo {margin-bottom:1em;}
-    .graphForm {margin:1em; padding-bottom:1em; border-bottom:1px solid grey; text-align: left;}
-    .graphResults {margin:1em; overflow:hidden; text-align: left;}
-    .graphResultsVizLineTable, .graphResultsVizLineTable tr, .graphResultsVizLineTable td {border:0; margin:0; padding:0; background-color: transparent;}
-</style>
 
     <div class="dvn_section">
         <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
@@ -453,9 +446,9 @@ function startDownload()
             </ui:include>
         </div>
 
-        <div class="graphForm">
-            <div style="overflow:hidden; margin-bottom:1em;">
-                <div style="display:inline;">
+        <div class="dvnGraphForm">
+            <div class="dvnGraphIndicatorBlock">
+                <div class="dvnGraphIndicatorSelect">
                     <ice:outputLabel value="#{ExploreDataPage.measureLabel}" for="indicator"/>
 
                     <ice:selectOneMenu id="indicatorMenu" value="#{ExploreDataPage.selectedMeasureId}" partialSubmit="true" valueChangeListener="#{ExploreDataPage.resetFiltersForMeasure}">
@@ -464,10 +457,10 @@ function startDownload()
                     </ice:selectOneMenu>
                 </div>
 
-                <ice:outputText value="related to" style="font-weight:bold; margin:0 2em;" rendered="#{!empty ExploreDataPage.selectMeasureGroupTypes}"/>
+                <ice:outputText value="related to" styleClass="dvnGraphRelatedTo" rendered="#{!empty ExploreDataPage.selectMeasureGroupTypes}"/>
 
-                <div style="display:inline;">
-                    <ice:selectOneMenu immediate="false" partialSubmit="true"  id="issue"
+                <div class="dvnGraphIndicatorSelect">
+                    <ice:selectOneMenu immediate="false" partialSubmit="true" id="issue"
                                        valueChangeListener="#{ExploreDataPage.reset_MeasureItems}" value="#{ExploreDataPage.groupTypeId}" rendered="#{!empty ExploreDataPage.selectMeasureGroupTypes}">
                         <f:selectItem itemLabel="Select Type..." itemValue="0"/>
                         <f:selectItems value="#{ExploreDataPage.selectMeasureGroupTypes}"/>
@@ -475,10 +468,10 @@ function startDownload()
                 </div>
             </div>
 
-            <div style="margin-bottom:1em;">
+            <div class="dvnGraphFilterBlock">
                 <div jsfc="ice:panelSeries" id="filterPanelGroupings" var="item" value="#{ExploreDataPage.filterGroupings}" binding="#{ExploreDataPage.filterPanelGroup}">
                     <f:attribute name="groupingId" value="#{item.varGrouping.id}"/>
-                    <div style="margin-bottom:1em;">
+                    <div class="dvnGraphFilterBlock">
                         <ice:outputLabel value="#{item.varGrouping.name}"/>
 
                         <ice:selectOneMenu id="filterGroup" styleClass="filterGroup" value="#{item.selectedGroupId}">
@@ -486,53 +479,53 @@ function startDownload()
                             <f:selectItems value="#{ExploreDataPage.selectFilterGroups}"/>
                         </ice:selectOneMenu>
 
-                        <ice:outputText value="related to" style="font-weight:bold; margin:0 2em;" rendered ="#{!empty item.varGroupTypesUI}" />
+                        <ice:outputText value="related to" styleClass="dvnGraphRelatedTo" rendered="#{!empty item.varGroupTypesUI}"/>
 
-                        <div jsfc="ice:panelSeries" style="overflow:hidden; display:inline;" id="filterPanelGroupTypes" var="groupType" value="#{item.varGroupTypesUI}">
+                        <div jsfc="ice:panelSeries" styleClass="dvnGraphFilterTypesBlock" id="filterPanelGroupTypes" var="groupType" value="#{item.varGroupTypesUI}">
                             <!-- controls -->
-                            <div jsfc="ice:panelGroup" style="display:inline; margin-right:1em;">
+                            <div jsfc="ice:panelGroup" styleClass="dvnGraphFilterTypesControls">
                                 <ice:selectBooleanCheckbox id="filterGroupTypeCheckBoxes" styleClass="filterGroupTypeCheckBoxes" value="#{groupType.enabled}"
                                                             partialSubmit="true"/>
-                                <ice:outputLabel value="#{groupType.varGroupType.name}" style="font-weight:normal;"/>
+                                <ice:outputLabel value="#{groupType.varGroupType.name}"/>
                             </div>
                         </div>
-                        <ice:message for="filterPanelGroupTypes" id="boxErrorMsg" styleClass="errorMessage" style="display:block;"/>
+                        <ice:message for="filterPanelGroupTypes" id="boxErrorMsg" styleClass="errorMessage"/>
                     </div>
                 </div>
             </div>
 
-            <div style="margin-bottom:.5em;">
-                <div style="display:inline;">
+            <div class="dvnGraphLabelBlock">
+                <div>
                     <ice:outputLabel value="Label" for="graphlinelabel"/>
                     <ice:inputText id="graphlinelabel" value="#{ExploreDataPage.lineLabel}"></ice:inputText>
                 </div>
-                <div style="display:inline;">
-                    <ice:commandButton id="addLineButton"  value="Add Line" binding="#{ExploreDataPage.addLineButton}" actionListener="#{ExploreDataPage.addLine}"/>
+                <div>
+                    <ice:commandButton id="addLineButton" value="Add Line" binding="#{ExploreDataPage.addLineButton}" actionListener="#{ExploreDataPage.addLine}"/>
                     <ice:message for="addLineButton" id="boxErrorMsg" styleClass="errorMessage"/>
                 </div>
             </div>
         </div>
 
-        <div jsfc="ice:panelGroup" styleClass="graphResults">
-            <div jsfc="ice:panelGroup" styleClass="linebox" style="float:left; margin-right:1em;">
-                <ice:dataTable width="100%" cellspacing="0" cellpadding="0" var="line" styleClass="graphResultsVizLineTable" value="#{ExploreDataPage.vizLines}" binding="#{ExploreDataPage.dataTableVizLines}">
+        <div jsfc="ice:panelGroup" styleClass="dvnGraphResults">
+            <div jsfc="ice:panelGroup" styleClass="dvnGraphResultsLineBox">
+                <ice:dataTable width="100%" cellspacing="0" cellpadding="0" var="line" styleClass="dvnGraphResultsVizLineTable" value="#{ExploreDataPage.vizLines}" binding="#{ExploreDataPage.dataTableVizLines}">
                   <h:column>
-                      <div style="padding:4px; margin:0 0 1em 0; #{line.border}">
-                        <div style="font-weight:bold;">
+                      <div class="dvnGraphResultsVizLineBlock" style="#{line.border}">
+                        <div class="dvnGraphResultsVizLineLabel">
                             <ice:outputText value="#{line.label}"/>
                         </div>
                         
                         <a href="#" class="lineDetailLink">View Detail</a>
                         
                         <div class="lineDetailBlock">
-                            <div style="font-weight:bold; color:#484848;">
+                            <div class="lineDetailBlockLabel">
                                 <ice:outputText value="#{line.measureLabel}"/>
                             </div>
                             <div jsfc="ice:panelGroup">
                                 <ice:outputText value="#{line.measureGroup.name}"/>
                             </div>
                             <div jsfc="ice:panelSeries" id="lineListPanelSeries" var="filterGroup" value="#{line.filterGroups}">
-                                <div style="font-weight:bold; color:#484848;">
+                                <div class="lineDetailBlockFilter">
                                     <ice:outputText value="#{filterGroup.groupAssociation.name}"/>
                                 </div>
                                 <div>
@@ -588,32 +581,33 @@ function startDownload()
                 </ice:dataTable>
             </div>
 
-            <div jsfc="ice:panelGroup" rendered="#{!empty ExploreDataPage.vizLines}" styleClass="graphbox" style="float:left; margin-right:1em;">
-                <div id="chart_div" style="width: 540px; height: 400px;"></div>
+            <div jsfc="ice:panelGroup" rendered="#{!empty ExploreDataPage.vizLines}" styleClass="dvnGraphBox">
+                <div id="chart_div"></div>
             </div>
                 <div style="margin-bottom:.5em;">
                     <ice:outputLabel value="Source"  style="display:block;" rendered="#{!empty ExploreDataPage.vizLines}"/>
                     <ice:outputText value="#{ExploreDataPage.sourceURL}"  style="font-weight:normal;" rendered="#{!empty ExploreDataPage.vizLines}"/>
                 </div>
 
-            <div jsfc="ice:panelGroup" rendered="#{!empty ExploreDataPage.vizLines}" styleClass="graphdisplay" style="float:left;">
-                <div style="margin-bottom:.5em;">
-                    <ice:outputLabel value="Display" for="graphdisplay" style="display:block;"/>
+            <div jsfc="ice:panelGroup" rendered="#{!empty ExploreDataPage.vizLines}" styleClass="dvnGraphDisplay">
+                <div class="dvnGraphDisplayBlock">
+                    <ice:outputLabel value="Display" for="graphdisplay"/>
                     <ice:selectOneMenu id="graphdisplay" binding="#{ExploreDataPage.selectGraphType}" onchange="updateDisplayType();">
                         <f:selectItem itemLabel="Flash Graph" itemValue="1"/>
                         <f:selectItem itemLabel="Image Graph" itemValue="2"/>
                         <f:selectItem itemLabel="Table" itemValue="3"/>
                     </ice:selectOneMenu>
-                     <ice:commandButton visible="false" id="selectDisplayButton" action="#{ExploreDataPage.reset_DisplayType}"/>
+                    <ice:commandButton visible="false" id="selectDisplayButton" action="#{ExploreDataPage.reset_DisplayType}"/>
                 </div>
-                <div style="overflow:hidden; margin-bottom:.5em;">
-                    <div style="float:left;">
+                <div class="dvnGraphTimeSeriesBlock">
+                    <ice:outputLabel value="Time Series" for="graphtimeseries" styleClass="dvnGraphTimeSeriesTitle"/>
+                    <div>
                         <ice:outputLabel value="Start" for="graphstart" rendered="true"/>
                         <ice:selectOneMenu id="graphstart" rendered="true" binding="#{ExploreDataPage.selectStartYear}" onchange="updateStartYear();">
                             <f:selectItems value="#{ExploreDataPage.selectBeginYears}"/>
                         </ice:selectOneMenu>
                     </div>
-                    <div style="float:left;">
+                    <div>
                         <ice:outputLabel value="End" for="graphend" rendered="true"/>
                         <ice:selectOneMenu id="graphend" rendered="true" binding="#{ExploreDataPage.selectEndYear}" onchange="updateEndYear();">
                              <f:selectItems value="#{ExploreDataPage.selectEndYears}"/>
@@ -623,46 +617,42 @@ function startDownload()
                     <ice:commandButton visible="false" id="updateEndYear" action="#{ExploreDataPage.update_EndYear}"/>
                 </div>
 
-                <div style="margin-bottom:.5em;">
-                    <ice:selectBooleanCheckbox id="displayindices" value="#{ExploreDataPage.displayIndexes}" 
-                                               rendered="true" onchange="resetIndices();" />
-                    <ice:outputLabel value="Display Series as Indices" for="displayindices" style="font-weight:normal;" rendered="true"/>
-                    <br></br>
-                    <ice:outputLabel value="Select Reference Period" for="selectreferenceperiod" style="font-weight:normal;" rendered="true"/>
+                <div class="dvnGraphIndicesBlock">
+                    <ice:outputLabel value="Indices" for="graphindices" styleClass="dvnGraphIndicesTitle"/>
+                    <div>
+                        <ice:selectBooleanCheckbox id="displayindices" value="#{ExploreDataPage.displayIndexes}"
+                                                   rendered="true" onchange="resetIndices();"/>
+                        <ice:outputLabel value="Display Series as Indices" for="displayindices" rendered="true"/>
+                    </div>
+                    <ice:outputLabel value="Select Reference Period" for="selectreferenceperiod" rendered="true"/>
                     <ice:selectOneMenu id="selectreferenceperiod" rendered="true" onchange="updateIndexYear();"  binding="#{ExploreDataPage.selectIndexYear}">
                         <f:selectItems value="#{ExploreDataPage.selectIndexDate}"/>
                     </ice:selectOneMenu>
                     <ice:commandButton visible="false" id="updateIndexYear" action="#{ExploreDataPage.update_IndexYear}"/>
                 </div>
-                <div style="margin-bottom:.5em;">
-                    <ice:outputLabel value="Export" for="graphexport" style="display:block;"/>
-                    <div style="margin-bottom:.5em;">
+                <div class="dvnGraphExportBlock">
+                    <ice:outputLabel value="Export" for="graphexport"/>
+                    <div>
                         <ice:outputLabel value="Title" for="graphtitleIn"/>
                         <ice:inputText id="graphTitleIn" size="40" binding="#{ExploreDataPage.inputGraphTitle}"
                                        value ="#{ExploreDataPage.graphTitle}"
                                        onkeyup="delayedRequestTitle(form,this,event);"></ice:inputText>
                     </div>
-                </div> 
-
-                <ice:panelGrid id="export12" styleClass="dvnExportBtmWrp" columns="1" cellpadding="0" cellspacing="0" width="100%">
-                    <ice:column>
-                         <div class="dvnFormPadding dvnExportBtmWrp">
-                              <div style="display:inline;">
-                                    <ice:outputLabel value="File Name" for="graphlinelabel"/>
-                                    <ice:inputText id="downloadFileName" value ="#{ExploreDataPage.downloadFileName}"
-                                                    onkeyup="delayedRequestFileName(form,this,event);"
-                                                   binding="#{ExploreDataPage.inputDownloadFileName}"></ice:inputText>
-                              </div>
-                              <input type="button" class="dvnDataExplorationDnldBttn" value="Export"
-                                     onclick="startDownload();"/>
-                              <ice:outputResource label="Export" type="button" style="display:none;"
-                                   id="downloadDataFiles"
-                                   fileName="#{ExploreDataPage.csvFileName}" mimeType="application/zip"
-                                   resource="#{ExploreDataPage.csvFile}" shared="false"/>
-
-                         </div>
-                   </ice:column>
-              </ice:panelGrid>
+                    <div class="dvnFormPadding dvnExportBtmWrp">
+                          <div class="dvnExportFileNameInput">
+                                <ice:outputLabel value="File Name" for="graphlinelabel"/>
+                                <ice:inputText id="downloadFileName" value ="#{ExploreDataPage.downloadFileName}"
+                                                onkeyup="delayedRequestFileName(form,this,event);"
+                                               binding="#{ExploreDataPage.inputDownloadFileName}"></ice:inputText>
+                          </div>
+                          <input type="button" class="dvnDataExplorationDnldBttn" value="Export"
+                                 onclick="startDownload();"/>
+                          <ice:outputResource label="Export" type="button" style="display:none;"
+                               id="downloadDataFiles"
+                               fileName="#{ExploreDataPage.csvFileName}" mimeType="application/zip"
+                               resource="#{ExploreDataPage.csvFile}" shared="false"/>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

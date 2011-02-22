@@ -267,3 +267,36 @@ table.viTblinx th{background-color:#e6e6fa;font-weight:700;margin:0px;padding:2p
 .dvnNtwkDataSubsetHistCol3{width:42%}
 .dvnNtwkDataSubsetHistCol4{width:12%}
 .dvnNtwkDataSubsetHistCol5{width:12%}
+/* EXPLORE DATA */
+.dvnGraphForm {margin:1em; padding-bottom:1em; border-bottom:1px solid grey; text-align:left;}
+.dvnGraphResults {margin:1em; overflow:hidden; text-align:left;}
+.dvnGraphResultsVizLineTable, .dvnGraphResultsVizLineTable tr, .dvnGraphResultsVizLineTable td {border:0; margin:0; padding:0; background-color: transparent;}
+.dvnGraphIndicatorBlock {overflow:hidden; margin-bottom:1em;}
+.dvnGraphIndicatorSelect {display:inline;}
+.dvnGraphRelatedTo {font-weight:bold; margin:0 2em;}
+.dvnGraphFilterBlock {margin-bottom:1em;}
+.dvnGraphFilterTypesBlock {overflow:hidden; display:inline;}
+.dvnGraphFilterTypesBlock .errorMessage {display:block;}
+.dvnGraphFilterTypesControls {display:inline; margin-right:1em;}
+.dvnGraphFilterTypesControls label {font-weight:normal;}
+.dvnGraphLabelBlock {margin-bottom:.5em;}
+.dvnGraphLabelBlock div {display:inline;}
+.dvnGraphResultsLineBox {float:left; margin-right:1em;}
+.dvnGraphResultsLineBox .dvnGraphResultsVizLineTable .dvnGraphResultsVizLineBlock {padding:4px; margin:0 0 1em 0;}
+.dvnGraphResultsVizLineLabel {font-weight:bold;}
+.lineDetailBlockLabel, .lineDetailBlockFilter {font-weight:bold; color:#484848;}
+.dvnGraphBox {float:left; margin-right:1em;}
+.dvnGraphBox #chart_div {width:540px; height:400px;}
+.dvnGraphDisplay {float:left;}
+.dvnGraphDisplayBlock {margin-bottom:2em;}
+.dvnGraphDisplayBlock label {display:block;}
+.dvnGraphTimeSeriesBlock {overflow:hidden; margin-bottom:2em;}
+.dvnGraphTimeSeriesBlock div {float:left; margin-right:2em;}
+.dvnGraphTimeSeriesTitle {float:left; width:100%;}
+.dvnGraphIndicesBlock {margin-bottom:2em;}
+.dvnGraphIndicesBlock label {font-weight:normal;}
+label.dvnGraphIndicesTitle {font-weight:bold;}
+.dvnGraphExportBlock {margin-bottom:.5em;}
+.dvnGraphExportBlock div {margin-bottom:.5em;}
+.dvnExportFileNameInput {display:inline;}
+.dvnExportBtmWrp input.dvnDataExplorationDnldBttn {margin-left:.5em;}

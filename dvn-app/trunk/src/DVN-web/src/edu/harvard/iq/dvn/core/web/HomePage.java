@@ -248,6 +248,7 @@ public class HomePage extends VDCBaseBean implements Serializable {
             if (newValue.equals("All")) {
                 populateVDCUIList(false);
             } else {
+                this.vdcUIList.getPaginator().gotoFirstPage();
                 hiddenAlphaCharacter.setValue(newValue);
                 populateVDCUIList(true);
 

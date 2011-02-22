@@ -342,7 +342,7 @@ function drawVisualization() {
         }
         if (intDisType == 2){
              var displayTitle = document.getElementById('ExploreDataPage:graphTitleIn').value;
-            alert (displayTitle);
+
              var chart = new google.visualization.ImageLineChart(document.getElementById('chart_div'));
              chart.draw(data, {title: displayTitle, colors: [ '#4684EE', '#DC3912', '#FF9900', '#008000', '#4942CC', '#990099',  '#FF80F2', '#7FD127']});
         }

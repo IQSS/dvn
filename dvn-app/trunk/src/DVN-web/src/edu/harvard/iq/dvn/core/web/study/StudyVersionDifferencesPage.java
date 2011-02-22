@@ -32,6 +32,7 @@ package edu.harvard.iq.dvn.core.web.study;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.study.FileMetadata;
+import edu.harvard.iq.dvn.core.util.FileUtil;
 import edu.harvard.iq.dvn.core.web.MainLayoutBean;
 import java.io.File;
 import org.apache.commons.io.FileUtils;
@@ -509,8 +510,8 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 		}
 
         // file size:
-        value1 = FileUtils.byteCountToDisplaySize(new File(fm1.getStudyFile().getFileSystemLocation()).length());
-        value2 = FileUtils.byteCountToDisplaySize(new File(fm2.getStudyFile().getFileSystemLocation()).length());
+        value1 = FileUtil.byteCountToDisplaySize(new File(fm1.getStudyFile().getFileSystemLocation()).length());
+        value2 = FileUtil.byteCountToDisplaySize(new File(fm2.getStudyFile().getFileSystemLocation()).length());
 
         if (value1 != null || value2 != null) {
 			if ((value1 != null && !value1.equals(value2)) ||
@@ -557,7 +558,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
         } if (fm2 == null) {
             fdi.setFileName1(fm1.getLabel());
 		    fdi.setFileType1(fm1.getStudyFile().getFileType());
-            fdi.setFileSize1(FileUtils.byteCountToDisplaySize(new File(fm1.getStudyFile().getFileSystemLocation()).length()));
+            fdi.setFileSize1(FileUtil.byteCountToDisplaySize(new File(fm1.getStudyFile().getFileSystemLocation()).length()));
             fdi.setFileCat1(fm1.getCategory());
             fdi.setFileDesc1(fm1.getDescription());
 
@@ -568,7 +569,7 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
             fdi.setFileName2(fm2.getLabel());
 		    fdi.setFileType2(fm2.getStudyFile().getFileType());
-            fdi.setFileSize2(FileUtils.byteCountToDisplaySize(new File(fm2.getStudyFile().getFileSystemLocation()).length()));
+            fdi.setFileSize2(FileUtil.byteCountToDisplaySize(new File(fm2.getStudyFile().getFileSystemLocation()).length()));
             fdi.setFileCat2(fm2.getCategory());
             fdi.setFileDesc2(fm2.getDescription());
 

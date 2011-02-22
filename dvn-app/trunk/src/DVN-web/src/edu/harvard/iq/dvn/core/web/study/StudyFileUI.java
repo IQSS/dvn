@@ -361,7 +361,7 @@ public class StudyFileUI implements java.io.Serializable {
 
     public String getFileSize() {
         File pFile = new File (getStudyFile().getFileSystemLocation());
-        return FileUtils.byteCountToDisplaySize( pFile.length() );
+        return FileUtil.byteCountToDisplaySize( pFile.length() );
         //return String.valueOf( pFile.length() );
     }
     

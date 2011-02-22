@@ -73,6 +73,21 @@ public class FileUtil implements java.io.Serializable  {
     
     private static MimetypesFileTypeMap MIME_TYPE_MAP = new MimetypesFileTypeMap();
 
+    /**
+     * The number of bytes in a kilobyte.
+     */
+    public static final long ONE_KB = 1024;
+
+    /**
+     * The number of bytes in a megabyte.
+     */
+    public static final long ONE_MB = ONE_KB * ONE_KB;
+
+    /**
+     * The number of bytes in a gigabyte.
+     */
+    public static final long ONE_GB = ONE_KB * ONE_MB;
+
     /** Creates a new instance of FileUtil */
     public FileUtil() {
     }
@@ -344,4 +359,29 @@ public class FileUtil implements java.io.Serializable  {
         return isGraphML;
     }
     
+    //-----------------------------------------------------------------------
+    /**
+     * This borrows from Apache commons io FileUtils, with a slightly finer
+     * grained display of file sizes greater than 1 GB
+     * Returns a human-readable version of the file size, where the input
+     * represents a specific number of bytes.
+     *
+     * @param size  the number of bytes
+     * @return a human-readable display value (includes units)
+     */
+    public static String byteCountToDisplaySize(long size) {
+        String displaySize;
+
+        if (size / ONE_GB > 0) {
+            displaySize = String.valueOf(size / ONE_GB) + "." + String.valueOf((size % ONE_GB)/ (100*ONE_MB)) + " GB";
+        } else if (size / ONE_MB > 0) {
+            displaySize = String.valueOf(size / ONE_MB) + " MB";
+        } else if (size / ONE_KB > 0) {
+            displaySize = String.valueOf(size / ONE_KB) + " KB";
+        } else {
+            displaySize = String.valueOf(size) + " bytes";
+        }
+        return displaySize;
+    }
+
 }

@@ -8,6 +8,7 @@ package edu.harvard.iq.dvn.core.visualization;
 import edu.harvard.iq.dvn.core.study.DataTable;
 import edu.harvard.iq.dvn.core.study.DataVariable;
 import java.io.Serializable;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -31,15 +32,15 @@ public class DataVariableMapping implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne (cascade={ CascadeType.PERSIST })
     @JoinColumn(nullable=true)
     private VarGroup varGroup;
 
-    @ManyToOne
+    @ManyToOne (cascade={ CascadeType.PERSIST })
     @JoinColumn(nullable=false)
     private DataTable dataTable;
 
-    @ManyToOne
+    @ManyToOne (cascade={ CascadeType.PERSIST })
     @JoinColumn(nullable=true)
     private VarGrouping varGrouping;
 

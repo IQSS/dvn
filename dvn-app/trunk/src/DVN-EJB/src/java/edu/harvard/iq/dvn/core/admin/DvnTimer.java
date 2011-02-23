@@ -15,6 +15,7 @@ import edu.harvard.iq.dvn.core.vdc.HarvestingDataverseServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.Timer;
@@ -93,6 +94,31 @@ public class DvnTimer implements DvnTimerRemote {
         }
 
     }
+
+    public void removeHarvestTimer(HarvestingDataverse dataverse) {
+         // Clear dataverse timer, if one exists
+        for (Iterator it = timerService.getTimers().iterator(); it.hasNext();) {
+            Timer timer = (Timer) it.next();
+            if (timer.getInfo() instanceof HarvestTimerInfo) {
+                HarvestTimerInfo info = (HarvestTimerInfo) timer.getInfo();
+                if (info.getHarvestingDataverseId().equals(dataverse.getId())) {
+                    timer.cancel();
+                }
+            }
+        }
+    }
+    
+    public void removeExportTimer() {
+        // Clear dataverse timer, if one exists
+        for (Iterator it = timerService.getTimers().iterator(); it.hasNext();) {
+            Timer timer = (Timer) it.next();
+            if (timer.getInfo() instanceof ExportTimerInfo ) {
+                    timer.cancel();
+
+            }
+        }
+    }
+
 
     private void logException(Throwable e, Logger logger) {
 

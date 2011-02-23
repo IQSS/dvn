@@ -126,14 +126,7 @@ public class VDCNetworkServiceBean implements VDCNetworkServiceLocal {
    }     
     
     private void removeExportTimer() {
-        // Clear dataverse timer, if one exists 
-        for (Iterator it = timerService.getTimers().iterator(); it.hasNext();) {
-            Timer timer = (Timer) it.next();
-            if (timer.getInfo() instanceof ExportTimerInfo ) {
-                    timer.cancel();
-                
-            }    
-        } 
+        remoteTimerService.removeExportTimer();
     }
     
     public void updateExportTimer() {

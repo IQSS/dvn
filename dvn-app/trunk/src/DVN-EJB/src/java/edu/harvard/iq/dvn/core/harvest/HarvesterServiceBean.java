@@ -185,16 +185,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
     }
 
     public void removeHarvestTimer(HarvestingDataverse dataverse) {
-        // Clear dataverse timer, if one exists 
-        for (Iterator it = timerService.getTimers().iterator(); it.hasNext();) {
-            Timer timer = (Timer) it.next();
-            if (timer.getInfo() instanceof HarvestTimerInfo) {
-                HarvestTimerInfo info = (HarvestTimerInfo) timer.getInfo();
-                if (info.getHarvestingDataverseId().equals(dataverse.getId())) {
-                    timer.cancel();
-                }
-            }
-        }
+        remoteTimerService.removeHarvestTimer(dataverse);
     }
 
     public void updateHarvestTimer(HarvestingDataverse dataverse) {

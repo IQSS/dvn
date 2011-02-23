@@ -22,5 +22,9 @@ public interface DvnTimerRemote extends java.io.Serializable {
     @javax.ejb.Timeout
     @javax.ejb.TransactionAttribute(value = javax.ejb.TransactionAttributeType.NOT_SUPPORTED)
     public void handleTimeout(javax.ejb.Timer timer);
+
+    public void removeHarvestTimer(edu.harvard.iq.dvn.core.vdc.HarvestingDataverse dataverse);
+
+    public void removeExportTimer();
     
 }

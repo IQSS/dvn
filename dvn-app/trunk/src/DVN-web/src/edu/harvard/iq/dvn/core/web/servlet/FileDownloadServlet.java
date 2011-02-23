@@ -1473,6 +1473,15 @@ public class FileDownloadServlet extends HttpServlet {
     // This is mostly Akio Sone's code.
 
     public File runFormatConversion (StudyFile file, File tabFile, String formatRequested) {
+
+        if ( formatRequested.equals ("D00") ) {
+            // if the *requested* format is TAB-delimited, we don't
+            // need to call R to do any conversions, we can just
+            // send back the TAB file we have just produced.
+
+            return tabFile;
+        }
+
         DvnRJobRequest sro = null;
         Map<String, List<String>> paramListToR = null;
         Map<String, Map<String, String>> vls = null;
@@ -1497,41 +1506,35 @@ public class FileDownloadServlet extends HttpServlet {
         File frmtCnvrtdFile = null;
         Map<String, String> resultInfo = new HashMap<String, String>();
 
-        if ( !(formatRequested.equals ("D00")) ) {
-            // if the *requested* format is TAB-delimited, we don't
-            // need to call R to do any conversions, we can just
-            // send back the TAB file we have just produced.
+        dbgLog.fine("local: paramListToR="+paramListToR);
 
-            dbgLog.fine("local: paramListToR="+paramListToR);
+        sro = new DvnRJobRequest(getDataVariableForRequest(), paramListToR, vls);
 
-            sro = new DvnRJobRequest(getDataVariableForRequest(), paramListToR, vls);
+        // create the service instance
+        DvnRforeignFileConversionServiceImpl dfcs = new DvnRforeignFileConversionServiceImpl();
 
-            // create the service instance
-            DvnRforeignFileConversionServiceImpl dfcs = new DvnRforeignFileConversionServiceImpl();
+        // execute the service
+        resultInfo = dfcs.execute(sro);
 
-            // execute the service
-            resultInfo = dfcs.execute(sro);
+        //resultInfo.put("offlineCitation", citation);
+        dbgLog.fine("resultInfo="+resultInfo+"\n");
 
-            //resultInfo.put("offlineCitation", citation);
-            dbgLog.fine("resultInfo="+resultInfo+"\n");
+        // check whether a requested file is actually created
 
-            // check whether a requested file is actually created
+        if (resultInfo.get("RexecError").equals("true")){
+            dbgLog.fine("R-runtime error trying to convert a file.");
+            return  null;
+        } else {
+            String wbDataFileName = resultInfo.get("wbDataFileName");
+            dbgLog.fine("wbDataFileName="+wbDataFileName);
 
-            if (resultInfo.get("RexecError").equals("true")){
-                dbgLog.fine("R-runtime error trying to convert a file.");
-                return  null;
+            frmtCnvrtdFile = new File(wbDataFileName);
+
+            if (frmtCnvrtdFile.exists()){
+                dbgLog.fine("frmtCnvrtdFile:length="+frmtCnvrtdFile.length());
             } else {
-                String wbDataFileName = resultInfo.get("wbDataFileName");
-                dbgLog.fine("wbDataFileName="+wbDataFileName);
-
-                frmtCnvrtdFile = new File(wbDataFileName);
-
-                if (frmtCnvrtdFile.exists()){
-                    dbgLog.fine("frmtCnvrtdFile:length="+frmtCnvrtdFile.length());
-                } else {
-                    dbgLog.warning("Format-converted file was not properly created.");
-                    return null;
-                }
+                dbgLog.warning("Format-converted file was not properly created.");
+                return null;
             }
         }
 

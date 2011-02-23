@@ -527,7 +527,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
     private static final String DELETE_VARIABLE_RANGE_ITEMS_PREFIX = " delete from variablerangeitem where datavariable_id in ";
     private static final String DELETE_VARIABLE_RANGES_PREFIX = "delete from variablerange where datavariable_id in ";
     private static final String DELETE_DATA_VARIABLES_PREFIX = "delete from datavariable where id in ";
-
+    private static final String DELETE_DATA_VARIABLE_MAPPINGS_PREFIX = "delete from datavariablemapping where datavariable_id in ";
     private static final String SELECT_DATATABLE_IDS = "select dt.id from study s, studyfile sf, datatable dt " +
             "where s.id= ? " +
             "and s.id = sf.study_id " +
@@ -563,6 +563,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
                 em.createNativeQuery(DELETE_SUMMARY_STATISTICS_PREFIX + varString).executeUpdate();
                 em.createNativeQuery(DELETE_VARIABLE_RANGE_ITEMS_PREFIX + varString).executeUpdate();
                 em.createNativeQuery(DELETE_VARIABLE_RANGES_PREFIX + varString).executeUpdate();
+                em.createNativeQuery(DELETE_DATA_VARIABLE_MAPPINGS_PREFIX + varString).executeUpdate();
                 em.createNativeQuery(DELETE_DATA_VARIABLES_PREFIX + varString).executeUpdate();
 
             }

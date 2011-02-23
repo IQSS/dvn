@@ -335,8 +335,10 @@ function drawVisualization() {
         if (intDisType == 1){
                 var chart = new google.visualization.AnnotatedTimeLine(document.getElementById('chart_div'));
                 chart.draw(data, {allowRedraw: true},  {displayZoomButtons: false}, {displayAnnotations: false});
+                jQuery('#chart_div').css({'overflow-y' : 'visible'});
         }
         if (intDisType == 3){
+            jQuery('#chart_div').css({'overflow-y' : 'auto'});
             var table = new google.visualization.Table(document.getElementById('chart_div'));
             table.draw(data, {showRowNumber: false});
         }
@@ -352,6 +354,7 @@ function drawVisualization() {
              var imageURL = chart.getImageUrl();
              document.getElementById('ExploreDataPage:imageURL').value = imageURL;
              document.getElementById('ExploreDataPage:hasURL').value = "true";
+             jQuery('#chart_div').css({'overflow-y' : 'visible'});
         }
 
     }
@@ -385,7 +388,6 @@ function updateIndexYear(){
 }
 
 function updateDisplayType(){
-
      document.getElementById('ExploreDataPage:selectDisplayButton').click();
      setTimeout(function(){drawVisualization();}, 500);
 }
@@ -606,13 +608,6 @@ function getImageURLButton()
             <div jsfc="ice:panelGroup" rendered="#{!empty ExploreDataPage.vizLines}" styleClass="dvnGraphBox">
                 <div id="chart_div"></div>
             </div>
-                <div style="margin-bottom:.5em;">
-                    <ice:outputLabel value="Source"  style="display:block;" 
-                                     rendered="#{!empty ExploreDataPage.vizLines  and !empty ExploreDataPage.sourceURL}"/>
-                    <ice:outputText value="#{ExploreDataPage.sourceURL}"  style="font-weight:normal;"
-                                    id ="sourceData"
-                                    visible="#{!empty ExploreDataPage.vizLines  and !empty ExploreDataPage.sourceURL}"/>
-                </div>
 
             <div jsfc="ice:panelGroup" rendered="#{!empty ExploreDataPage.vizLines}" styleClass="dvnGraphDisplay">
                 <div class="dvnGraphDisplayBlock">
@@ -641,7 +636,6 @@ function getImageURLButton()
                     <ice:commandButton visible="false" id="updateStartYear" action="#{ExploreDataPage.update_StartYear}"/>
                     <ice:commandButton visible="false" id="updateEndYear" action="#{ExploreDataPage.update_EndYear}"/>
                 </div>
-
                 <div class="dvnGraphIndicesBlock">
                     <ice:outputLabel value="Indices" for="graphindices" styleClass="dvnGraphIndicesTitle"/>
                     <div>
@@ -654,6 +648,10 @@ function getImageURLButton()
                         <f:selectItems value="#{ExploreDataPage.selectIndexDate}"/>
                     </ice:selectOneMenu>
                     <ice:commandButton visible="false" id="updateIndexYear" action="#{ExploreDataPage.update_IndexYear}"/>
+                </div>
+                <div jsfc="ice:panelGroup" styleClass="dvnGraphSourceBlock" style="margin-bottom:.5em;" rendered="#{!empty ExploreDataPage.vizLines and !empty ExploreDataPage.sourceURL}">
+                    <ice:outputLabel value="Source" style="display:block;"/>
+                    <ice:outputText value="#{ExploreDataPage.sourceURL}" style="font-weight:normal;" id="sourceData"/>
                 </div>
                 <div class="dvnGraphExportBlock">
                     <ice:outputLabel value="Export" for="graphexport"/>

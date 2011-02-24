@@ -342,9 +342,9 @@ function drawVisualization() {
             var table = new google.visualization.Table(document.getElementById('chart_div'));
             table.draw(data, {showRowNumber: false});
         }
-        if (intDisType == 2){
+        if (intDisType == 2){            
              var displayTitle = document.getElementById('ExploreDataPage:graphTitleIn').value;
-             var sourceData = document.getElementById('ExploreDataPage:sourceData').textContent;
+             var sourceData = document.getElementById('ExploreDataPage:sourceData').textContent;             
              if (sourceData != "") {
                  sourceData = "Source: " + sourceData;
              }
@@ -649,7 +649,7 @@ function getImageURLButton()
                     </ice:selectOneMenu>
                     <ice:commandButton visible="false" id="updateIndexYear" action="#{ExploreDataPage.update_IndexYear}"/>
                 </div>
-                <div jsfc="ice:panelGroup" styleClass="dvnGraphSourceBlock" style="margin-bottom:.5em;" rendered="#{!empty ExploreDataPage.vizLines and !empty ExploreDataPage.sourceURL}">
+                <div jsfc="ice:panelGroup" styleClass="dvnGraphSourceBlock" style="margin-bottom:.5em;" visible="#{!empty ExploreDataPage.vizLines and !empty ExploreDataPage.sourceURL}">
                     <ice:outputLabel value="Source" style="display:block;"/>
                     <ice:outputText value="#{ExploreDataPage.sourceURL}" style="font-weight:normal;" id="sourceData"/>
                 </div>

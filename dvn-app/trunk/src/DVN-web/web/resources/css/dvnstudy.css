@@ -289,7 +289,11 @@ table.viTblinx th{background-color:#e6e6fa;font-weight:700;margin:0px;padding:2p
 .dvnGraphBox #chart_div {width:540px; height:400px;}
 .dvnGraphDisplay {float:left;}
 .dvnGraphDisplayBlock {margin-bottom:2em;}
-.dvnGraphDisplayBlock label {display:block;}
+.dvnGraphDisplayBlock label {display:inline;}
+.dvnGraphDisplayBlock div {margin-top:.5em;}
+.dvnGraphSourceBlock {margin-bottom:2em;}
+.dvnGraphSourceBlock label {display:block;}
+.dvnGraphSourceBlock span {font-weight:normal;}
 .dvnGraphTimeSeriesBlock {overflow:hidden; margin-bottom:2em;}
 .dvnGraphTimeSeriesBlock div {float:left; margin-right:2em;}
 .dvnGraphTimeSeriesTitle {float:left; width:100%;}
@@ -297,6 +301,7 @@ table.viTblinx th{background-color:#e6e6fa;font-weight:700;margin:0px;padding:2p
 .dvnGraphIndicesBlock label {font-weight:normal;}
 label.dvnGraphIndicesTitle {font-weight:bold;}
 .dvnGraphExportBlock {margin-bottom:.5em;}
-.dvnGraphExportBlock div {margin-bottom:.5em;}
+.dvnGraphExportBlock div {margin-bottom:1em;}
 .dvnExportFileNameInput {display:inline;}
 .dvnExportBtmWrp input.dvnDataExplorationDnldBttn {margin-left:.5em;}
+.dvnGraphExtractImageButton {display:none; margin-top:1em;}

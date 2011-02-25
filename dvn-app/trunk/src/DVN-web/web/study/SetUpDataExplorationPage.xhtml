@@ -143,8 +143,8 @@
                 <ice:outputText value=" Select A Data File for Data Exploration Set-up" rendered="#{SetUpDataExplorationPage.selectFile}"/>
             </div>
         </div>
-        <div style="float:left; margin-right:2em;">
-            <ice:outputLabel value="Optional Source URL for end users' graphs" for="sourceURL"   rendered="#{!SetUpDataExplorationPage.selectFile}"/>
+        <div jsfc="ice:panelGroup" rendered="#{!SetUpDataExplorationPage.selectFile}" style="float:left; margin-right:2em;">
+            <ice:outputLabel value="Graph Source URL" for="sourceURL"/>
                              <ice:inputText
                                   id="inputSourceURL"
                                   rendered="#{!SetUpDataExplorationPage.selectFile}"
@@ -153,12 +153,11 @@
                                   value="#{SetUpDataExplorationPage.dataTable.visualizationUrl}"
                                   accesskey="">
                                   <f:validator validatorId="UrlValidator"/>
-                                 </ice:inputText>
+                             </ice:inputText>
             <ice:message styleClass="errorMessage" for="inputSourceURL"/>
-
-            <ice:selectBooleanCheckbox id="fieldNames" styleClass="filterGroupTypeCheckBoxes" value="#{SetUpDataExplorationPage.dataTable.visualizationUrlIncludeVariableNames}"
-                                      rendered="#{!SetUpDataExplorationPage.selectFile}"                      partialSubmit="true"/>
-          <ice:outputLabel value="Append selected field names to Source URL" style="font-weight:normal;" rendered="#{!SetUpDataExplorationPage.selectFile}"/>
+            <ice:selectBooleanCheckbox id="fieldNames" styleClass="filterGroupTypeCheckBoxes" 
+                                       value="#{SetUpDataExplorationPage.dataTable.visualizationUrlIncludeVariableNames}" partialSubmit="true"/>
+          <ice:outputLabel value="Append selected variable names to Graph Source URL" style="font-weight:normal;"/>
         </div>
     </div>
     <div class="dvn_sectionBoxNoBorders">

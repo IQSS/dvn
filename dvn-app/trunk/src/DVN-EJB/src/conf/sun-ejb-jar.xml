@@ -9,9 +9,17 @@
       <ejb-name>MailServiceBean</ejb-name>
     </ejb>
    <ejb>
+       <ejb-name>harvesterService</ejb-name>
      <ejb-ref>
        <ejb-ref-name>dvnTimer</ejb-ref-name>
-       <jndi-name>corbaname:iiop:1.2@localhost:3700#dvnTimer</jndi-name>
+       <jndi-name>corbaname:iiop:1.2@127.0.0.1:3700#edu.harvard.iq.dvn.core.admin.DvnTimerRemote</jndi-name>
+     </ejb-ref>
+   </ejb>
+   <ejb>
+       <ejb-name>VDCNetworkServiceBean</ejb-name>
+     <ejb-ref>
+       <ejb-ref-name>dvnTimer</ejb-ref-name>
+       <jndi-name>corbaname:iiop:1.2@127.0.0.1:3700#edu.harvard.iq.dvn.core.admin.DvnTimerRemote</jndi-name>
      </ejb-ref>
    </ejb>
   </enterprise-beans>

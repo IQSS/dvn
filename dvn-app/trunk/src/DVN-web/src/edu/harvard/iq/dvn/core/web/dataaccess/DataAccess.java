@@ -29,7 +29,7 @@ public class DataAccess {
 
         if (!sf.isRemote()) {
             return new FileAccessObject (sf, req);
-        } else if (sf.getFileSystemLocation().matches("census\\.gov")) {
+        } else if (sf.getFileSystemLocation().matches(".*census\\.gov.*")) {
                 return new CensusAccessObject (sf, req);
         }
 

@@ -1394,16 +1394,16 @@ public class DTAFileReader extends StatDataFileReader{
         
         
       
-            if (stream.available() != 0) {
-                if ((Integer) smd.getFileInformation().get("releaseNumber") <= 105) {
-                    parseValueLabelsRelease105(stream);
-                } else if ((Integer) smd.getFileInformation().get("releaseNumber") >= 105) {
-                    parseValueLabelsReleasel108(stream);
-                }
-            } else {
-                dbgLog.fine("no value-label table: end of file");
-       
+        if (stream.available() != 0) {
+            if ((Integer) smd.getFileInformation().get("releaseNumber") <= 105) {
+                parseValueLabelsRelease105(stream);
+            } else if ((Integer) smd.getFileInformation().get("releaseNumber") >= 105) {
+                parseValueLabelsReleasel108(stream);
             }
+        } else {
+            dbgLog.fine("no value-label table: end of file");
+
+        }
        dbgLog.fine("***** decodeValueLabels(): end *****");
     }
     
@@ -1683,7 +1683,13 @@ public class DTAFileReader extends StatDataFileReader{
 
 
                 // 2-3. 4-byte-integer array (4xm): offset values for the label sec.
-                
+
+                // these "label offsets" actually appear to represent the byte
+                // offsets of the label strings, as stored in the next section.
+                // as of now, these are not used for anything, and the code
+                // below assumes that the labels are already in the same
+                // order as the numeric values! -- L.A.
+
                 
                 int[] label_offsets = new int[no_value_label_pairs];
                 int byte_offset = valueLabelTable_offset;
@@ -1696,9 +1702,10 @@ public class DTAFileReader extends StatDataFileReader{
                         value_label_table_length);
                     if (isLittleEndian){
                         bb_label_offset.order(ByteOrder.LITTLE_ENDIAN);
-                        //dbgLog.fine("label offset: byte reversed");
+                        dbgLog.fine("label offset: byte reversed");
                     }
                     label_offsets[j] = bb_label_offset.getInt();
+                    dbgLog.fine("label offset ["+j+"]: "+label_offsets[j]);
 
                     byte_offset += value_label_table_length;
 
@@ -1736,7 +1743,36 @@ public class DTAFileReader extends StatDataFileReader{
                                 offset_value,
                                 (length_label_segment+offset_value)), "ISO-8859-1");
 
-                String[] labelList = label_segment.split("\0");
+                // L.A. -- 2011.2.25:
+                // This assumes that the labels are already stored in the right
+                // order: (see my comment for the section 2.3 above)
+
+                //String[] labelList = label_segment.split("\0");
+
+                // Instead, we should be using the offset values obtained in
+                // the section 2.3 above, and select the corresponding
+                // substrings:
+
+                String[] labelList = new String[no_value_label_pairs];
+
+                for (int l=0; l< no_value_label_pairs; l++){
+                    String lblString = null;
+                    int lblOffset = label_offsets[l];
+
+                    lblString = label_segment.substring(lblOffset);
+
+                    int nullIndx = lblString.indexOf('\000');
+
+                    if (nullIndx > -1) {
+                        lblString = lblString.substring(0, nullIndx);
+                    }
+
+                    labelList[l] = lblString;
+                }
+
+                // this should work! -- L.A.
+                // (TODO: check the v105 value label parsing method, to see if
+                // something similar applies there)
 
 
                 Map<String, String> tmpValueLabelTable = new LinkedHashMap<String, String>();

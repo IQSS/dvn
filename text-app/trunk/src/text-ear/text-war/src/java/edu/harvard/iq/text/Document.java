@@ -5,7 +5,14 @@
 
 package edu.harvard.iq.text;
 
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -13,17 +20,20 @@ import java.util.HashMap;
  */
 public class Document {
     private String id;
-    private String setId;
+   
     private String filename;
-    private HashMap<String, String> metadata = new HashMap<String,String>();
+    private DocumentSet documentSet;
+    // Metadata ordered according to how it is read from the DocumentSet spreadsheet
+    private LinkedHashMap<String, String> metadata = new LinkedHashMap<String,String>();
+
+    public Document(DocumentSet set) {
+        documentSet = set;
+    }
 
     public String getSetId() {
-        return setId;
+        return documentSet.getSetId();
     }
 
-    public void setSetId(String setId) {
-        this.setId = setId;
-    }
 
     public String getFilename() {
         return filename;
@@ -41,11 +51,11 @@ public class Document {
         this.id = id;
     }
 
-    public HashMap<String, String> getMetadata() {
+    public LinkedHashMap<String, String> getMetadata() {
         return metadata;
     }
 
-    public void setMetadata(HashMap<String, String> metadata) {
+    public void setMetadata(LinkedHashMap<String, String> metadata) {
         this.metadata = metadata;
     }
 
@@ -58,8 +68,29 @@ public class Document {
        
     }
 
+    /**
+     *
+     * @param summaryFields list of summary metadata field names defined for the document set
+     * @return ordered List of metadata (key value pairs) for this document, ordered first by summaryFields order, and then alphabetically
+     */
+    public ArrayList<Map.Entry>  getOrderedMetadata() {
+
+        ArrayList ordered = new ArrayList<Map.Entry>();
+        HashMap tempMap = (HashMap)metadata.clone();
+        for(String field: documentSet.getSummaryFields()) {
+            ordered.add(new AbstractMap.SimpleEntry(field,metadata.get(field)));
+            tempMap.remove(field);
+        }
+        List remainingFields = Arrays.asList(tempMap.keySet().toArray());
+        Collections.sort(remainingFields);
+        for (Object field: remainingFields) {
+              ordered.add(new AbstractMap.SimpleEntry(field,metadata.get(field)));
+        }
+        return ordered;
+    }
+
     public String toString() {
-        return "Document: setId="+setId+", id="+id+", filename="+filename+", metadata="+metadata;
+        return "Document: setId="+documentSet.getSetId()+", id="+id+", filename="+filename+", metadata="+metadata;
     }
 
 }

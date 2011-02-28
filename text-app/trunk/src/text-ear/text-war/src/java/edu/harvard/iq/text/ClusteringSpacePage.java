@@ -486,13 +486,7 @@ public class ClusteringSpacePage {
             return null;
         }
     
-        public Integer getDocIndex() {
-              if (rowModel.isRowAvailable() && columnsModel.isRowAvailable()) {
-                  return rowModel.getRowIndex();
-              }
-              return null;
-
-        }
+      
         
 
        public ArrayList<DocumentRow> getDocumentRows() {
@@ -519,6 +513,10 @@ public class ClusteringSpacePage {
           
            viewDocumentIndex = rowModel.getRowIndex();
            showDocPopup=true;  // open the document viewer
+       }
+
+       public Document getViewDocument() {
+           return clusterInfo.getDocumentList().get(this.viewDocumentIndex);
        }
 
 
@@ -579,14 +577,10 @@ public class ClusteringSpacePage {
         public void setShowSumPopup(Boolean showPopup) {
             this.showSumPopup = showPopup;
         }
-        public String getViewDocumentName() {
-            String docName = clusterInfo.getDocumentList().get(this.viewDocumentIndex).getFilename();
-           
-            return  docName;
-        }
+      
 
         public String getViewDocumentPreview() {
-            String title = clusterInfo.getDocumentList().get(this.viewDocumentIndex).getTitle();
+            String title = getViewDocument().getTitle();
             if (  title !=null ) {
                 return title;
             } else {
@@ -632,16 +626,12 @@ public class ClusteringSpacePage {
            return baos.toString();
 
        }
-       // This is just a dummy setter so we can use viewDocumentText
-       // as the value of an inputTextarea component.
-       public void setViewDocumentText(String s) {
-
-       }
+      
        private FileInputStream getViewDocumentInputStream() throws IOException {
            String docRoot = System.getProperty("text.documentRoot");
            File setDir = new File(docRoot, setId);
            File docDir = new File(setDir, "docs");
-           File document = new File(docDir, getViewDocumentName());
+           File document = new File(docDir, getViewDocument().getFilename());
 
            return new FileInputStream(document);
 

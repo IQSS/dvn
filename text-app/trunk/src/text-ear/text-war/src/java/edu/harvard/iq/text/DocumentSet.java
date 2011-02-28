@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
@@ -164,10 +165,9 @@ public class DocumentSet {
                 StringTokenizer st;
                 while ((strLine = br.readLine()) != null) {
                     st = new StringTokenizer(strLine, ",");
-                    Document doc = new Document();
+                    Document doc = new Document(this);
                     doc.setId(st.nextToken());
                     doc.setFilename(st.nextToken());
-                    doc.setSetId(setId);
                     this.documents.put(doc.getId(), doc);
                 }
                 //
@@ -195,22 +195,27 @@ public class DocumentSet {
                 // Read metadata values
 
                 while ((strLine = br.readLine()) != null) {
-                    HashMap<String, String> values = new HashMap();
+                    LinkedHashMap<String, String> values = new LinkedHashMap();
                     st = new StringTokenizer(strLine,",");
                     int col = 0;
+                    String docId = null;
                     while(st.hasMoreTokens()) {
                         
                         String value = st.nextToken();
-                        values.put(metadataFields.get(col),value);
+                        if (metadataFields.get(col).equals(DOCUMENT_ID_FIELD)) {
+                            docId = value;
+                        } else {
+                            values.put(metadataFields.get(col),value);
+                        }
                         col++;
                     }
-                    String id = values.get(DOCUMENT_ID_FIELD);
-                    Document doc = this.documents.get(id);
+    
+                    Document doc = this.documents.get(docId);
                     if (doc==null) {
-                        throw new ClusterException("Error reading "+ this.METADATA_FILE+", unknown id: "+ id);
+                        throw new ClusterException("Error reading "+ this.METADATA_FILE+", unknown id: "+ docId);
                     }
                     if (doc.getMetadata()!=null && doc.getMetadata().size()>0) {
-                        throw new ClusterException("Error reading "+this.METADATA_FILE+", duplicate id: "+ id);
+                        throw new ClusterException("Error reading "+this.METADATA_FILE+", duplicate id: "+ docId);
                     }
                     doc.setMetadata(values);
 

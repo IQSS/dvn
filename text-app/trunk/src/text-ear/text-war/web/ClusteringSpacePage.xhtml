@@ -983,7 +983,7 @@ td.clusterCountCol {width:60px;}
                                         styleClass="clusterViewDocPopup">
                             <f:facet name="header">
                                 <ice:panelGroup styleClass="popupHeaderWrapper">
-                                    <ice:outputText value="Document: #{row.viewDocumentName}" styleClass="popupHeaderText"/>
+                                    <ice:outputText value="Document: #{row.viewDocument.filename}" styleClass="popupHeaderText"/>
                                     <ice:commandLink value="Close [X]" actionListener="#{row.closeDocPopup}" styleClass="popupHeaderClose"></ice:commandLink>
                                 </ice:panelGroup>
                             </f:facet>
@@ -1004,12 +1004,20 @@ td.clusterCountCol {width:60px;}
                                         <ice:graphicImage url="/resources/icefaces/dvn_rime/css-images/arrow-last.gif" title="Last Document" rendered="#{row.viewDocumentIndex==row.clusterInfo.clusterCount-1}"/>
                                         <ice:commandLink title="Last Document" onclick="jQuery('textarea.iceInpTxtArea-dis').animate({scrollTop:0}, 'slow');" rendered="#{row.viewDocumentIndex!=row.clusterInfo.clusterCount-1}" actionListener="#{row.viewLast}"><img title="Last Document" src="/text/resources/icefaces/dvn_rime/css-images/arrow-last.gif" class="iceGphImg" alt=""/></ice:commandLink>
                                     </div>
+
+                                    <div >
+                                        <ui:repeat value="#{row.viewDocument.orderedMetadata}" var="field">
+                                            <pre><ice:outputText value="#{field.key}: #{field.value}" nospan="true"/></pre>
+                                        </ui:repeat>                                       
+                                    </div>
+
                                     <div class="clusterDocViewText">
                                         <pre><ice:outputText value="#{row.viewDocumentText}" nospan="true"/></pre>
                                     </div>
                                 </ice:panelGroup>
                             </f:facet>
                         </ice:panelPopup>
+
                         <ice:panelPopup id="summaryPopup"
                                         visible="#{row.showSumPopup}"
                                         draggable="true" modal="true"

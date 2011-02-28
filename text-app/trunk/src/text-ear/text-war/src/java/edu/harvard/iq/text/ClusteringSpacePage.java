@@ -3,7 +3,6 @@ package edu.harvard.iq.text;
 import com.icesoft.faces.component.ext.HtmlDataTable;
 import com.icesoft.faces.context.Resource;
 import com.icesoft.faces.context.Resource.Options;
-import edu.harvard.iq.text.ClusterInfo.DocInfo;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -20,7 +19,9 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
@@ -28,6 +29,9 @@ import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.faces.model.ArrayDataModel;
+import javax.faces.model.DataModel;
+import javax.faces.model.ListDataModel;
 import org.apache.commons.io.FileUtils;
 
 /*
@@ -329,7 +333,7 @@ public class ClusteringSpacePage {
     private void populateClusterTableModel() {
         clusterTableModel.clear();
         for (ClusterInfo ci: clusterSolution.getClusterInfoList()) {
-            clusterTableModel.add(new ClusterRow(ci));
+            clusterTableModel.add(new ClusterRow(ci, documentSet.getSummaryFields()));
         }
       
     }
@@ -399,24 +403,104 @@ public class ClusteringSpacePage {
         }
     }
 
-
+    public class DocumentRow {
+        
+        Document document;
+        int rowIndex;
+        DocumentRow( Document doc, int rowIndex) {
+            this.document=doc;
+            this.rowIndex=rowIndex;
+        }
+        public int getRowIndex() {
+            return rowIndex;
+        }
+        
+        public Document getDocument() {
+            return document;
+        }
+    }
 
     public class ClusterRow {
        
         Boolean showDocPopup = Boolean.FALSE;
         Boolean showSumPopup = Boolean.FALSE;
         ClusterInfo clusterInfo;
+        ArrayList<DocumentRow> documentRows;
+        private DataModel rowModel;
+        private ListDataModel columnsModel;
+
         String summary;
         int viewDocumentIndex;
 
-        public ClusterRow(ClusterInfo clusterInfo) {          
+        public ClusterRow(ClusterInfo clusterInfo, ArrayList<String> summaryFields) {
             this.clusterInfo = clusterInfo;
+            documentRows = new ArrayList<DocumentRow>();
             viewDocumentIndex = 0;  // Show the examplar document first
+
+            for (int i=0;i<clusterInfo.getDocumentList().size();i++) {
+                documentRows.add(new DocumentRow(clusterInfo.getDocumentList().get(i),i));
+
+            }
+            ArrayList metadata = new ArrayList();
+
+            for (Document doc : clusterInfo.getDocumentList()) {
+                ArrayList<String> values = new ArrayList<String>();
+                for (String fld : summaryFields) {
+                    String val = doc.getMetadata().get(fld);
+                    if (val==null) {
+                        val = "";
+                    }
+                    values.add(val);
+                }
+                metadata.add(values);
+            }
+           
+            rowModel = new ListDataModel(metadata);
+
+            
+            columnsModel = new ListDataModel(summaryFields);
+
         }
 
+        public ListDataModel getColumnsModel() {
+            return columnsModel;
+        }
+
+        public void setColumnsModel(ListDataModel columnsModel) {
+            this.columnsModel = columnsModel;
+        }
+
+        public DataModel getRowModel() {
+            return rowModel;
+        }
+
+        public void setRowModel(DataModel rowModel) {
+            this.rowModel = rowModel;
+        }
+
+        public Object getCellValue() {
+            if (rowModel.isRowAvailable() && columnsModel.isRowAvailable()) {
+                int col = columnsModel.getRowIndex();
+                return ((List) rowModel.getRowData()).get(col).toString();
+            }
+            return null;
+        }
+    
+        public Integer getDocIndex() {
+              if (rowModel.isRowAvailable() && columnsModel.isRowAvailable()) {
+                  return rowModel.getRowIndex();
+              }
+              return null;
+
+        }
+        
+
+       public ArrayList<DocumentRow> getDocumentRows() {
+           return documentRows;
+       }
        public int getRandomDocumentIndex() {
            Random ran = new Random();
-           return ran.nextInt(clusterInfo.getFileIndices().size());
+           return ran.nextInt(clusterInfo.getClusterCount());
        }
 
        public int getViewDocumentIndex() {
@@ -432,12 +516,8 @@ public class ClusteringSpacePage {
         * @param ae
         */
        public void viewDocumentInList(ActionEvent ae) {
-           UIComponent comp = ae.getComponent().getParent();
-           while(!(comp instanceof HtmlDataTable)) {
-               comp = comp.getParent();
-           }
-           HtmlDataTable table = (HtmlDataTable)comp;
-           viewDocumentIndex = table.getRowIndex();
+          
+           viewDocumentIndex = rowModel.getRowIndex();
            showDocPopup=true;  // open the document viewer
        }
 
@@ -449,10 +529,10 @@ public class ClusteringSpacePage {
            viewDocumentIndex=0;
        }
        public void viewLast(ActionEvent ae) {
-           viewDocumentIndex=clusterInfo.getFileIndices().size()-1;
+           viewDocumentIndex=clusterInfo.getClusterCount()-1;
        }
        public void viewNext(ActionEvent ae) {
-           if (viewDocumentIndex<clusterInfo.getFileIndices().size()) {
+           if (viewDocumentIndex<clusterInfo.getClusterCount()) {
                 viewDocumentIndex++;
            }
        }
@@ -500,16 +580,15 @@ public class ClusteringSpacePage {
             this.showSumPopup = showPopup;
         }
         public String getViewDocumentName() {
-            String docName = clusterInfo.getDocInfoList().get(this.viewDocumentIndex).getDocId();
-            if (setId.equals("1")) {
-                    docName += "Bush02.txt";
-            }
+            String docName = clusterInfo.getDocumentList().get(this.viewDocumentIndex).getFilename();
+           
             return  docName;
         }
 
         public String getViewDocumentPreview() {
-            if (  clusterInfo.getDocInfoList().get(this.viewDocumentIndex).title !=null ) {
-                return clusterInfo.getDocInfoList().get(this.viewDocumentIndex).title;
+            String title = clusterInfo.getDocumentList().get(this.viewDocumentIndex).getTitle();
+            if (  title !=null ) {
+                return title;
             } else {
                 int previewLength = 300;
                 String temp;
@@ -762,44 +841,12 @@ public class ClusteringSpacePage {
 
 
 
-                // Annoying: We can't use the XMLStreamWriter
-                // because mead.pl won't accept standard XML.
-                // It requires a carriage return before the <CLUSTER> element
-
-                /*
-                // Write the XML contents to the file
-                XMLStreamWriter xmlw = null;
-                try {
-                XMLOutputFactory xmlOutputFactory = javax.xml.stream.XMLOutputFactory.newInstance();
-
-
-                xmlw = xmlOutputFactory.createXMLStreamWriter(new FileOutputStream(clusterFile));
-                xmlw.writeStartDocument();
-                xmlw.writeStartElement("CLUSTER");
-                xmlw.writeAttribute("LANG", "ENG" );
-                for ( DocInfo doc : this.docInfoList) {
-                xmlw.writeStartElement("D");
-                xmlw.writeAttribute("DID", doc.docId);
-                xmlw.writeEndElement();
-                }
-                xmlw.writeEndElement(); // cluster
-                xmlw.writeEndDocument();
-                } catch (Exception ex) {
-                throw new ClusterException("ERROR occurred writing cluster file: "+ex.getMessage());
-                }finally {
-                try {
-                if (xmlw != null) {
-                xmlw.close();
-                }
-                } catch (XMLStreamException ex) {
-                }
-
-                 */
+            
                 PrintStream ps = new PrintStream(new FileOutputStream(clusterFile));
                 ps.println("<?xml version='1.0'?>");
                 ps.println("<CLUSTER LANG='ENG'>");
-                for (DocInfo doc : clusterInfo.getDocInfoList()) {
-                    ps.println("<D DID='" + doc.docId + "' />");
+                for (Document doc : clusterInfo.getDocumentList()) {
+                    ps.println("<D DID='" + doc.getFilename() + "' />");
                 }
                 ps.println("</CLUSTER>");
                 ps.close();

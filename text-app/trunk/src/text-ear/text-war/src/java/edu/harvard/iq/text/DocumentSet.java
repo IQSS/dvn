@@ -18,6 +18,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -33,19 +34,24 @@ import javax.xml.stream.XMLStreamWriter;
 public class DocumentSet {
     private static final Logger logger = Logger.getLogger(DocumentSet.class.getCanonicalName());
     private String setId;
-    private String description;
     private File setDir;
+    
+    private String description;
+    private ArrayList<String> summaryFields;  // Metadata fields that will appear in Document details table
     private MethodPoint[] methodPoints;
     private int[][] clusterMembership;   //
     private int[][] wordDocumentMatrix;  // word rows and doc columns (each cell is word count)
-    private ArrayList<String> wordList;
-    private ArrayList<String> docIdList;
-    private ArrayList<String> titleList;
+    private ArrayList<String> wordList;  // all words in the set (column headers in WordDocumentMatrix)
+    private ArrayList<String> matrixIds; // DocumentID's in the order they appear in WordDocumentMatrix and ClusterMembershipMatrix
+    private HashMap<String, Document> documents;  // list of Documents, mapped to their DocumentIDs
     private final static String POLYGON_FILE = "polygon.xml";
-    private final static String METHOD_POINTS_FILE = "MethodPoints.txt";
-    private final static String CLUSTER_MEMBERSHIP_FILE = "ClusterMembershipMatrix.txt";
-    private final static String WORD_DOC_MATRIX_FILE = "WordDocumentMatrix.txt";
-    private final static String TITLES_FILE = "titles.txt";
+    private final static String METHOD_POINTS_FILE = "MethodPoints.csv";
+    private final static String CLUSTER_MEMBERSHIP_FILE = "ClusterMembershipMatrix.csv";
+    private final static String WORD_DOC_MATRIX_FILE = "WordDocumentMatrix.csv";
+    private final static String FILELIST_FILE = "FileList.csv";
+    private final static String METADATA_FILE = "Metadata.csv";
+    private final static String SUMMARY_FIELDS_FILE = "SummaryFields.csv";
+    private final static String DOCUMENT_ID_FIELD = "DocumentID";
 
     public DocumentSet(String setId) {
         this.setId=setId;
@@ -53,21 +59,24 @@ public class DocumentSet {
         
     }
 
-    public ArrayList<String> getTitleList() {
-        return titleList;
+    
+   
+   
+
+
+   public Document getDocumentByIndex(int index) {
+       return documents.get(matrixIds.get(index));
+   }
+
+    public ArrayList<String> getSummaryFields() {
+        return summaryFields;
     }
 
-    public void setTitleList(ArrayList<String> titleList) {
-        this.titleList = titleList;
+    public void setSummaryFields(ArrayList<String> summaryFields) {
+        this.summaryFields = summaryFields;
     }
+  
 
-    public ArrayList<String> getDocIdList() {
-        return docIdList;
-    }
-
-    public void setDocIdList(ArrayList<String> docIdList) {
-        this.docIdList = docIdList;
-    }
 
     public int[][] getClusterMembership() {
 
@@ -123,18 +132,108 @@ public class DocumentSet {
             throw new ClusterException("setDir not found");
         }
         initDescription();
+        initSummaryFields();
         initMethodPointsAndPolygon();
         initClusterMembership();
         initWordDocumentMatrix();
-        initTitles();
+        boolean uploadMetadata = true;
+        initDocuments(uploadMetadata);
+
         logger.fine("complete initializeSet");
-        logger.fine("title size: " + titleList.size());
-        logger.fine("docId size: " + this.docIdList.size());
-        if (!titleList.isEmpty()) {
-            for (int i=0;i< docIdList.size(); i++) {
-                logger.fine( i + "\t\t "+docIdList.get(i)+"\t\t "+titleList.get(i));
+        
+       
+            for (int i=0;i< matrixIds.size(); i++) {
+                logger.fine( i + "\t\t "+documents.get(matrixIds.get(i)));
             }
+        
+    }
+
+    private void initDocuments(boolean uploadMetadata) {
+        documents = new HashMap<String, Document>();
+        if (uploadMetadata) {
+            try {
+                //
+                // Read file list - populate Document Hashmap
+                //
+                File fileListFile = new File(setDir, this.FILELIST_FILE);
+                if (!fileListFile.exists()) {
+                    throw new ClusterException(fileListFile.getAbsolutePath() + " not found.");
+                }
+                BufferedReader br = new BufferedReader(new FileReader(fileListFile));
+                String strLine;
+                StringTokenizer st;
+                while ((strLine = br.readLine()) != null) {
+                    st = new StringTokenizer(strLine, ",");
+                    Document doc = new Document();
+                    doc.setId(st.nextToken());
+                    doc.setFilename(st.nextToken());
+                    doc.setSetId(setId);
+                    this.documents.put(doc.getId(), doc);
+                }
+                //
+                // read metadata - update Document Hashmap.
+                // if  id in metadata doesn't exist, throw exception
+                //
+                 File metadataFile = new File(setDir, this.METADATA_FILE);
+                if (!metadataFile.exists()) {
+                    throw new ClusterException(metadataFile.getAbsolutePath() + " not found.");
+                }
+                br = new BufferedReader(new FileReader(metadataFile));
+
+                // read headers - they are the metadata field names
+                //
+                st = new StringTokenizer(br.readLine(),",");             
+                ArrayList<String> metadataFields = new ArrayList<String>();
+                while(st.hasMoreTokens()) {
+                    metadataFields.add(st.nextToken());
+                }
+                // One of the field names must refer to the document ID
+                if (!metadataFields.contains(DOCUMENT_ID_FIELD)) {
+                    throw new ClusterException("Error reading "+ METADATA_FILE+ ", missing "+this.DOCUMENT_ID_FIELD+ " column");
+                }
+                //
+                // Read metadata values
+
+                while ((strLine = br.readLine()) != null) {
+                    HashMap<String, String> values = new HashMap();
+                    st = new StringTokenizer(strLine,",");
+                    int col = 0;
+                    while(st.hasMoreTokens()) {
+                        
+                        String value = st.nextToken();
+                        values.put(metadataFields.get(col),value);
+                        col++;
+                    }
+                    String id = values.get(DOCUMENT_ID_FIELD);
+                    Document doc = this.documents.get(id);
+                    if (doc==null) {
+                        throw new ClusterException("Error reading "+ this.METADATA_FILE+", unknown id: "+ id);
+                    }
+                    if (doc.getMetadata()!=null && doc.getMetadata().size()>0) {
+                        throw new ClusterException("Error reading "+this.METADATA_FILE+", duplicate id: "+ id);
+                    }
+                    doc.setMetadata(values);
+
+                }
+                //
+                // Test that all ids in matrixIds table exist in the documents Hashmap
+                //
+                for (String id: matrixIds) {
+                    if (documents.get(id)==null) {
+                        throw new ClusterException("Error loading metadata and fileList - no data found for document id: "+id);
+                    }
+                }
+            } catch (IOException ex) {
+                throw new ClusterException(ex.getMessage());
+            }
+
+          
+
+            // load docs into mongo db!
+        } else {
+            // get docs from mongo db!
         }
+
     }
     
     private void initDescription() {
@@ -170,7 +269,7 @@ public class DocumentSet {
             BufferedReader br = new BufferedReader(new FileReader(clusterMembershipFile));
             String strLine = "";
             StringTokenizer st = null;
-            int lineNumber = 0, tokenNumber = 0;
+            int lineNumber = 0;
           
 
             String tokenSeparator;
@@ -181,8 +280,13 @@ public class DocumentSet {
             } else {
                 tokenSeparator = ",";
             }
-            // skip line 1 because it just contains headers
+            // populate matrixIds from the column headers
+            matrixIds = new ArrayList<String>();
             strLine = br.readLine();
+            st = new StringTokenizer(strLine, tokenSeparator);
+            while(st.hasMoreTokens()) {
+                matrixIds.add(st.nextToken());
+            }
 
             // Calculating this just for test purposes
             int maxClusters = 0;
@@ -242,31 +346,28 @@ public class DocumentSet {
         logger.fine("ClusterMembership, methodSize = "+table.size()+" docSize = "+table.get(0).size());
     }
 
-    private void initTitles() {
-        titleList = new ArrayList<String>();
-         File titleFile = new File(setDir, this.TITLES_FILE);
-        if ( titleFile.exists()) {
+    private void initSummaryFields() {
+        summaryFields = new ArrayList<String>();
+         File sumFile = new File(setDir, this.SUMMARY_FIELDS_FILE);
+        if ( sumFile.exists()) {
             try {
-                BufferedReader br = new BufferedReader(new FileReader(titleFile));
-               //read the rest of the tab separated file line by line
+                BufferedReader br = new BufferedReader(new FileReader(sumFile));
+               //read the file line by line
                 String strLine =null;
                 while ((strLine = br.readLine()) != null) {
-                    titleList.add(strLine);
+                    summaryFields.add(strLine);
                 }
             }  catch (java.io.IOException ex) {
-            throw new ClusterException(ex.getMessage());
+                throw new ClusterException(ex.getMessage());
+            }
         }
-        logger.fine("titleList, size = "+this.titleList.size());
-
-
-        }
+        logger.fine("SummaryFields, size = "+this.summaryFields.size());
     }
-
+ 
     private void initWordDocumentMatrix(){
         ArrayList<ArrayList> table = new ArrayList<ArrayList>();
         wordList = new ArrayList<String>();
-        docIdList = new ArrayList<String>();
-
+      
         File wordDocumentFile = new File(setDir, this.WORD_DOC_MATRIX_FILE );
         if ( !wordDocumentFile.exists()) {
             throw new ClusterException(wordDocumentFile.getAbsolutePath() + " not found.");
@@ -309,8 +410,7 @@ public class DocumentSet {
                     documentId = documentId.substring(documentId.lastIndexOf("\\")+1);
 
                 }
-                logger.fine("documentId is "+documentId);
-                docIdList.add(documentId);
+               
 
                 // create object for holding this row's values
                 ArrayList<Integer> row = new ArrayList<Integer>();
@@ -430,27 +530,13 @@ public class DocumentSet {
             BufferedReader br = new BufferedReader(new FileReader(strFile));
             String strLine = "";
             StringTokenizer st = null;
-            int lineNumber = 0;
-
-            // skip line 1 because it just contains headers
-            strLine = br.readLine();
-            lineNumber++;
+        
             ArrayList<MethodPoint> methodPointList = new ArrayList<MethodPoint>();
-            //read tab separated file line by line
-            String tokenSeparator;
-            if (setId.equals("3") ) {
-                tokenSeparator=",";
-            } else if (setId.equals("1")) {
-                tokenSeparator="\t";
-            } else {
-                tokenSeparator = ",";
-            }
+            //read comma separated file line by line
+            String tokenSeparator =",";
+           
             logger.fine("reading method points");
             while ((strLine = br.readLine()) != null) {
-                lineNumber++;
-
-                
-
                 st = new StringTokenizer(strLine, tokenSeparator);
 
                 // first token is method name

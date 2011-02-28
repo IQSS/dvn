@@ -915,7 +915,7 @@ td.clusterCountCol {width:60px;}
                         <a href="#" class="clusterDetailLink">View Detail</a>
                         
                         <div class="clusterDetailBlock">
-                            <ice:dataTable rows="5" id="clusterDocs" styleClass="clusterDocList" width="100%" cellpadding="0" cellspacing="0" value="#{row.clusterInfo.docInfoList}" var="docInfo">
+                            <ice:dataTable rows="5" id="clusterDocs" styleClass="clusterDocList" width="100%" cellpadding="0" cellspacing="0" value="#{row.rowModel}" var="index">
                                 <f:facet name="header">
                                     <ice:columnGroup>
                                         <ice:headerRow>
@@ -950,19 +950,30 @@ td.clusterCountCol {width:60px;}
                                         </ice:headerRow>
                                     </ice:columnGroup>
                                 </f:facet>
-
+                                
                                 <ice:column>
-                                     <ice:commandLink value="#{docInfo.index+1}" actionListener="#{row.viewDocumentInList}"/>
+                                    <ice:commandLink value="#{row.rowModel.rowIndex +1}" actionListener="#{row.viewDocumentInList}"/>
                                 </ice:column>
+                                
+                                 <ice:columns value="#{row.columnsModel}" var="headings">
+                                    <f:facet name="header">
+                                        <h:outputText value="#{headings}"/>
+                                    </f:facet>
+                                    <ice:outputText value="#{row.cellValue}"/>
+                                </ice:columns>
+                                <!--
                                 <ice:column>
-                                     <ice:commandLink rendered="#{empty docInfo.title}" value="#{docInfo.docId}" actionListener="#{row.viewDocumentInList}"/>
-                                     <ice:commandLink rendered="#{!empty docInfo.title}" value="#{docInfo.title}" actionListener="#{row.viewDocumentInList}"/>
+                                     <ice:commandLink rendered="#{empty docRow.document.title}" value="#{docRow.document.filename}" actionListener="#{row.viewDocumentInList}"/>
+                                     <ice:commandLink rendered="#{!empty docRow.document.title}" value="#{docRow.document.title}" actionListener="#{row.viewDocumentInList}"/>
                                 </ice:column>
-
+                                -->
                                 <f:facet name="footer">
                                     <ice:commandLink rendered="#{row.summaryAvailable}" actionListener="#{row.openSumPopup}">Generate Cluster Summary Text</ice:commandLink>
                                 </f:facet>
                             </ice:dataTable>
+
+                          
+
                         </div>
 
                         <ice:panelPopup id="docViewPopup"

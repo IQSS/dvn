@@ -267,8 +267,9 @@ public class ClusterSolution {
         StringBuffer str = new StringBuffer();
         str.append( "\nCoordinates: " + getFormatX() +", " + getFormatY() );
         str.append( "\nClusters: " + getFormatClusterNum() );
-        str.append( "\nLabel: ");
+        
         if (label!=null) {
+            str.append( "\nLabel: ");
             str.append(label);
         }
         str.append("\n");
@@ -276,8 +277,9 @@ public class ClusterSolution {
         int count = 1;
         for (ClusterInfo ci : this.clusterInfoList) {
             str.append("\nCluster "+count);
-            str.append("\nLabel: ");
+            
             if (ci.getLabel()!=null) {
+                str.append("\nLabel: ");
                 str.append(ci.getLabel());
             }
             str.append("\nDocument Count: "+ci.getClusterCount());
@@ -285,8 +287,8 @@ public class ClusterSolution {
             str.append("\nWord List: " + ci.getTopWords());
             str.append("\nDocument Titles:");
             int docCount = 1;
-            for (ClusterInfo.DocInfo di: ci.getDocInfoList()) {
-                str.append("\n"+docCount+".  "+di.title);
+            for (Document doc: ci.getDocumentList()) {
+                str.append("\n"+docCount+".  "+doc.getTitle());
                 docCount++;
             }
             str.append("\n");
@@ -313,19 +315,70 @@ public class ClusterSolution {
         
         for (int i=0; i< clusters.length; i++ ) {
                 if (clusters[i]!=null) {
-                clusterInfoList.add(new ClusterInfo(clusters[i],documentSet.getDocIdList(), documentSet.getTitleList()));
+                ClusterInfo ci = new ClusterInfo(clusters[i].getMemberIndexes(),documentSet);
+                ci.setWordList(calculateWordList(clusters[i].getMemberIndexes(), documentSet.getWordDocumentMatrix(), documentSet.getWords()));
+                ci.setClusterPercent(documentSet.getWordDocumentMatrix().length);
+                clusterInfoList.add(ci);
             }
         }
 
-        // set cluster percent & figure out the word list for each cluster
-        for (ClusterInfo ci : clusterInfoList) {
-            ci.setClusterPercent(documentSet.getWordDocumentMatrix().length);
-            ci.calculateWordList(documentSet.getWordDocumentMatrix(), documentSet.getWords());
-        }
+      
     }
 
-   
-   
+     private ArrayList<WordValue> calculateWordList(int[] memberIndexes, int[][] wordDocumentMatrix, ArrayList<String> words) {
+
+        ArrayList indexes = new ArrayList<Integer>();
+        for(int i=0;i< memberIndexes.length;i++) {
+            indexes.add(memberIndexes[i]);
+        }
+        ArrayList<WordValue> wordList = new ArrayList<WordValue>();
+        // 1. Split Matrix into two smaller matrices,
+        //    for documents in cluster and documents not in cluster
+
+        ArrayList<int[]> inCluster = new ArrayList<int[]>();
+        ArrayList<int[]> outCluster = new ArrayList<int[]>();
+
+        for (int i = 0; i < wordDocumentMatrix.length; i++) {
+            if (indexes.contains(i)) {
+                inCluster.add(wordDocumentMatrix[i]);
+            } else {
+                outCluster.add(wordDocumentMatrix[i]);
+            }
+        }
+
+        // 2. For each smaller matrix, get the mean of each column (word count)
+
+        ArrayList<Float> inMean = getMean(inCluster);
+        ArrayList<Float> outMean = getMean(outCluster);
+
+        // 3. create a word list array, which contains the word and the difference in the means
+        wordList = new ArrayList<WordValue>();
+        for (int i = 0; i < inMean.size(); i++) {
+            wordList.add(new WordValue(words.get(i), inMean.get(i) - outMean.get(i)));
+        }
+
+        // 4. sort this array by difference.
+        Collections.sort(wordList);
+        return wordList;
+
+
+    }
+    /*
+     * For this matrix,return an Array whose values are the mean of each column
+     */
+    private ArrayList<Float> getMean(ArrayList<int[]> docMatrix) {
+        ArrayList<Float> mean = new ArrayList<Float>();
+        for (int col = 0; col < docMatrix.get(0).length; col++) {
+            float sum = 0;
+            for (int row = 0; row < docMatrix.size(); row++) {
+                sum += docMatrix.get(row)[col];
+            }
+            mean.add(sum / docMatrix.size());
+        }
+        return mean;
+    }
+
+
     // TODO: I converted these from floats to doubles - is this ok?
     private double[] makeWeightsArray() {
     /*

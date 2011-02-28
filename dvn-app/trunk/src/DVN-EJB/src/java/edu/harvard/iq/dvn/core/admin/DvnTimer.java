@@ -14,6 +14,8 @@ import edu.harvard.iq.dvn.core.vdc.HarvestingDataverse;
 import edu.harvard.iq.dvn.core.vdc.HarvestingDataverseServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
 import java.io.Serializable;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.logging.Level;
@@ -52,6 +54,11 @@ public class DvnTimer implements DvnTimerRemote {
 
     @Override
     public void createTimer(Date initialExpiration, long intervalDuration, Serializable info) {
+        try {
+            System.out.println("Creating timer on " + InetAddress.getLocalHost().getCanonicalHostName());
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(DvnTimer.class.getName()).log(Level.SEVERE, null, ex);
+        }
         timerService.createTimer(initialExpiration, intervalDuration, info);
     }
 
@@ -69,6 +76,11 @@ public class DvnTimer implements DvnTimerRemote {
         // if an exception is thrown from this method, Glassfish will automatically
         // call the method a second time. (The minimum number of re-tries for a Timer method is 1)
 
+        try {
+            System.out.println("Handling timeout on " + InetAddress.getLocalHost().getCanonicalHostName());
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(DvnTimer.class.getName()).log(Level.SEVERE, null, ex);
+        }
         if (timer.getInfo() instanceof HarvestTimerInfo) {
             HarvestTimerInfo info = (HarvestTimerInfo) timer.getInfo();
             try {
@@ -97,6 +109,11 @@ public class DvnTimer implements DvnTimerRemote {
 
     public void removeHarvestTimer(HarvestingDataverse dataverse) {
          // Clear dataverse timer, if one exists
+        try {
+            System.out.println("Removing harvest timer on " + InetAddress.getLocalHost().getCanonicalHostName());
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(DvnTimer.class.getName()).log(Level.SEVERE, null, ex);
+        }
         for (Iterator it = timerService.getTimers().iterator(); it.hasNext();) {
             Timer timer = (Timer) it.next();
             if (timer.getInfo() instanceof HarvestTimerInfo) {
@@ -110,6 +127,11 @@ public class DvnTimer implements DvnTimerRemote {
     
     public void removeExportTimer() {
         // Clear dataverse timer, if one exists
+        try {
+            System.out.println("Removing export timer on " + InetAddress.getLocalHost().getCanonicalHostName());
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(DvnTimer.class.getName()).log(Level.SEVERE, null, ex);
+        }
         for (Iterator it = timerService.getTimers().iterator(); it.hasNext();) {
             Timer timer = (Timer) it.next();
             if (timer.getInfo() instanceof ExportTimerInfo ) {

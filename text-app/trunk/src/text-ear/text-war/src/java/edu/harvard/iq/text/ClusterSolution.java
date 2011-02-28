@@ -268,7 +268,7 @@ public class ClusterSolution {
         str.append( "\nCoordinates: " + getFormatX() +", " + getFormatY() );
         str.append( "\nClusters: " + getFormatClusterNum() );
         
-        if (label!=null) {
+        if (label!=null && !label.isEmpty()) {
             str.append( "\nLabel: ");
             str.append(label);
         }
@@ -278,7 +278,7 @@ public class ClusterSolution {
         for (ClusterInfo ci : this.clusterInfoList) {
             str.append("\nCluster "+count);
             
-            if (ci.getLabel()!=null) {
+            if (ci.getLabel()!=null && !label.isEmpty()) {
                 str.append("\nLabel: ");
                 str.append(ci.getLabel());
             }

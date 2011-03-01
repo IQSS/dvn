@@ -130,8 +130,8 @@ public class DvnTimer implements DvnTimerRemote {
             }
         }
     }
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-     public void createExportTimer() {
+
+    public void createExportTimer() {
             VDCNetwork vdcNetwork= (VDCNetwork) em.find(VDCNetwork.class, new Long(1));
             long intervalDuration=0;
             Calendar initExpiration = Calendar.getInstance();
@@ -178,7 +178,6 @@ public class DvnTimer implements DvnTimerRemote {
 
     }
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
      public void createExportTimer(VDCNetwork vdcNetwork) {
             long intervalDuration=0;
             Calendar initExpiration = Calendar.getInstance();

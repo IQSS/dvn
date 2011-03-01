@@ -54,6 +54,7 @@ public class DocumentSet {
     private final static String METADATA_FILE = "Metadata.csv";
     private final static String SUMMARY_FIELDS_FILE = "SummaryFields.csv";
     private final static String DOCUMENT_ID_FIELD = "DocumentID";
+    public final static String TITLE_FIELD = "Title";
 
     public DocumentSet(String setId) {
         this.setId=setId;

@@ -47,7 +47,7 @@ import javax.faces.context.FacesContext;
  */
 public class EditExportSchedulePage extends VDCBaseBean implements java.io.Serializable  {
     @EJB VDCNetworkServiceLocal vdcNetworkService;
-    @EJB
+    @EJB (name="dvnTimer")
     DvnTimerRemote remoteTimerService;
      /** 
      * <p>Construct a new Page bean instance.</p>

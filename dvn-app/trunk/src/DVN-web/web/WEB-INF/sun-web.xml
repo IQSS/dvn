@@ -11,4 +11,8 @@
       <description>Maintain a one-to-one correspondence between static content and the generated servlet class' java code</description>
     </property>
   </jsp-config>
+    <ejb-ref>
+        <ejb-ref-name>dvnTimer</ejb-ref-name>
+        <jndi-name>corbaname::127.0.0.1:3700#edu.harvard.iq.dvn.core.admin.DvnTimerRemote</jndi-name>
+    </ejb-ref>
 </sun-web-app>

@@ -82,7 +82,7 @@ public class EditHarvestSitePage extends VDCBaseBean implements java.io.Serializ
     @EJB VDCServiceLocal vdcService;
     @EJB HarvesterServiceLocal harvesterService;
     @EJB HandlePrefixServiceLocal handlePrefixService;
-    @EJB
+    @EJB (name="dvnTimer")
     DvnTimerRemote remoteTimerService;
 
     public String getFrom() {

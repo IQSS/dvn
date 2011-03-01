@@ -167,7 +167,7 @@ public class EditHarvestSiteServiceBean implements EditHarvestSiteService  {
         vdc.setAllowedFileGroups(allowedFileGroups);
         vdc.setAllowedFileUsers(allowedFileUsers);
              
-        harvesterService.updateHarvestTimer(harvestingDataverse);
+//        harvesterService.updateHarvestTimer(harvestingDataverse);
         em.flush();        
     }
     

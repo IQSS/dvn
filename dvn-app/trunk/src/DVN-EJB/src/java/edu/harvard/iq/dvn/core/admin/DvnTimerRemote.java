@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.Date;
 import javax.ejb.Timer;
 import javax.ejb.Remote;
+import javax.ejb.Stateless;
 
 /**
  *
@@ -26,5 +27,11 @@ public interface DvnTimerRemote extends java.io.Serializable {
     public void removeHarvestTimer(edu.harvard.iq.dvn.core.vdc.HarvestingDataverse dataverse);
 
     public void removeExportTimer();
+
+    public void createExportTimer();
+
+    public void createExportTimer(edu.harvard.iq.dvn.core.vdc.VDCNetwork vdcNetwork);
+
+    public void updateHarvestTimer(edu.harvard.iq.dvn.core.vdc.HarvestingDataverse dataverse);
     
 }

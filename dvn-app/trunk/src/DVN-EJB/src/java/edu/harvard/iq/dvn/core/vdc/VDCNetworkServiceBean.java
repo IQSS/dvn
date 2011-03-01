@@ -81,7 +81,6 @@ public class VDCNetworkServiceBean implements VDCNetworkServiceLocal {
 
     public void edit(VDCNetwork vDCNetwork) {
         em.merge(vDCNetwork);
-        this.updateExportTimer();
     }
 
     public void destroy(VDCNetwork vDCNetwork) {

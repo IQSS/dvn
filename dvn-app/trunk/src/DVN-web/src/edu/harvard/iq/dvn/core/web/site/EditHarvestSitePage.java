@@ -60,6 +60,7 @@ import com.icesoft.faces.component.ext.HtmlInputText;
 import com.icesoft.faces.component.ext.HtmlSelectBooleanCheckbox;
 import com.icesoft.faces.component.ext.HtmlSelectOneMenu;
 import com.icesoft.faces.component.ext.HtmlSelectOneRadio;
+import edu.harvard.iq.dvn.core.admin.DvnTimerRemote;
 import java.util.Map;
 import java.util.ResourceBundle;
 import javax.faces.context.FacesContext;
@@ -81,6 +82,8 @@ public class EditHarvestSitePage extends VDCBaseBean implements java.io.Serializ
     @EJB VDCServiceLocal vdcService;
     @EJB HarvesterServiceLocal harvesterService;
     @EJB HandlePrefixServiceLocal handlePrefixService;
+    @EJB
+    DvnTimerRemote remoteTimerService;
 
     public String getFrom() {
         return from;
@@ -266,6 +269,7 @@ public class EditHarvestSitePage extends VDCBaseBean implements java.io.Serializ
         }
         
         editHarvestSiteService.save(userId, dataverseName, dataverseAlias, filesRestricted, _HARVEST_DTYPE, dataverseAffiliation);
+        remoteTimerService.updateHarvestTimer(harvestingDataverse);
 
         if (isCreateMode()) {
             getVDCRequestBean().setCurrentVDC( editHarvestSiteService.getHarvestingDataverse().getVdc() );

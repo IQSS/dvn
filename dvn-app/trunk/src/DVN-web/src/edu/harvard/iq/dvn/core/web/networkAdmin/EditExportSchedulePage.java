@@ -27,6 +27,7 @@
 package edu.harvard.iq.dvn.core.web.networkAdmin;
 
 import com.icesoft.faces.component.ext.HtmlSelectOneMenu;
+import edu.harvard.iq.dvn.core.admin.DvnTimerRemote;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import edu.harvard.iq.dvn.core.web.util.ExceptionMessageWriter;
 import edu.harvard.iq.dvn.core.vdc.VDCNetwork;
@@ -46,6 +47,8 @@ import javax.faces.context.FacesContext;
  */
 public class EditExportSchedulePage extends VDCBaseBean implements java.io.Serializable  {
     @EJB VDCNetworkServiceLocal vdcNetworkService;
+    @EJB
+    DvnTimerRemote remoteTimerService;
      /** 
      * <p>Construct a new Page bean instance.</p>
      */
@@ -117,6 +120,7 @@ public class EditExportSchedulePage extends VDCBaseBean implements java.io.Seria
                 }
                 vdcnetwork.setExportDayOfWeek(exportDayOfWeek);
                 vdcNetworkService.edit(vdcnetwork);
+                remoteTimerService.createExportTimer(vdcnetwork);
                 getVDCRequestBean().setSuccessMessage("Successfully updated export schedule.");
             } else {
                 ExceptionMessageWriter.removeGlobalMessage(SUCCESS_MESSAGE);

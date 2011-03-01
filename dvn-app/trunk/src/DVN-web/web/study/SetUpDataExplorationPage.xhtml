@@ -143,11 +143,11 @@
                 <ice:outputText value=" Select A Data File for Data Exploration Set-up" rendered="#{SetUpDataExplorationPage.selectFile}"/>
             </div>
         </div>
-        <div jsfc="ice:panelGroup" rendered="#{!SetUpDataExplorationPage.selectFile}" style="float:left; margin-right:2em;">
+        <div jsfc="ice:panelGroup" rendered="false" style="float:left; margin-right:2em;">
             <ice:outputLabel value="Graph Source URL" for="sourceURL"/>
                              <ice:inputText
                                   id="inputSourceURL"
-                                  rendered="#{!SetUpDataExplorationPage.selectFile}"
+                                  rendered="false"
                                   size="25"
                                   maxlength="255"
                                   value="#{SetUpDataExplorationPage.dataTable.visualizationUrl}"

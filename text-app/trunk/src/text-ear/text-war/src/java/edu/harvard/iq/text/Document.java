@@ -64,7 +64,7 @@ public class Document {
      *  metadata field.
      */
     public String getTitle() {
-        return  metadata.get("Title");
+        return  metadata.get(DocumentSet.TITLE_FIELD);
        
     }
 

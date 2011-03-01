@@ -683,7 +683,7 @@
                 </div>
                 
                  <div>
-                    <ice:selectBooleanCheckbox id="displayMethodPoints" value="false" onclick="toggleMethodPoints(this.checked);"  /><label for="displayMethodPoints">Display Method Points</label>
+                    <ice:selectBooleanCheckbox  id="displayMethodPoints" value="false" onclick="toggleMethodPoints(this.checked);"  /><label for="displayMethodPoints">Display Method Points</label>
                 </div>
                
                 </div>
@@ -788,10 +788,9 @@
 </script>
                 <div class="clusterTableHeaderBlock">
                     <div class="clusterExportBlock">
-                        <ice:outputResource label="Export" type="button"
-                                                            id="downloadClustering"
-                                                            fileName="clustering_set_#{ClusteringSpacePage.setId}_#{ClusteringSpacePage.clusterSolution.formatClusterNum}_#{ClusteringSpacePage.clusterSolution.formatX}_#{ClusteringSpacePage.clusterSolution.formatY}.txt" mimeType="text/plain"
-                                                            resource="#{ClusteringSpacePage.exportResource}" shared="false"/>
+                       
+                        <ice:commandLink actionListener="#{ClusteringSpacePage.openExportPopup}" value="Export" />
+
                     </div>
                     <div class="clusterLabelBlock">
                         <div><ice:outputText value="Coordinates: #{ClusteringSpacePage.clusterSolution.formatX}, #{ClusteringSpacePage.clusterSolution.formatY}"/></div>
@@ -804,6 +803,31 @@
                     </div>
                 </div>
             </div>
+            <ice:panelPopup id="exportPopup"
+                            visible="#{ClusteringSpacePage.showExportPopup}"
+                            draggable="true" modal="true"
+                            positionOnLoadOnly="true" autoCentre="true"
+                            styleClass="clusterViewDocPopup">
+                <f:facet name="header">
+                    <ice:panelGroup styleClass="popupHeaderWrapper">
+                        <ice:outputText value="Choose meatadata to include in your export" styleClass="popupHeaderText"/>
+                        <ice:commandLink value="Close [X]" actionListener="#{ClusteringSpacePage.closeExportPopup}" styleClass="popupHeaderClose"></ice:commandLink>
+                    </ice:panelGroup>
+                </f:facet>
+                <f:facet name="body">
+                    <ice:panelGroup styleClass="popupBody">
+                        <ui:repeat value="#{ClusteringSpacePage.exportFieldList}" var="exportField">
+                            <ice:selectBooleanCheckbox partialSubmit="true" value="#{exportField[0]}" />
+                            <ice:outputText value="#{exportField[1]}" /><br></br>
+                        </ui:repeat>
+                        <ice:outputResource label="Export" type="button"
+                                            id="downloadClustering"
+                                            fileName="clustering_set_#{ClusteringSpacePage.setId}_#{ClusteringSpacePage.clusterSolution.formatClusterNum}_#{ClusteringSpacePage.clusterSolution.formatX}_#{ClusteringSpacePage.clusterSolution.formatY}.txt" mimeType="text/plain"
+                                            resource="#{ClusteringSpacePage.exportResource}" shared="false"/>
+                    </ice:panelGroup>
+                    
+                </f:facet>
+            </ice:panelPopup>
 
             <div class="clusterTable">
 <style type="text/css">

@@ -39,6 +39,7 @@ public class DocumentSet {
     
     private String description;
     private ArrayList<String> summaryFields;  // Metadata fields that will appear in Document details table
+    private ArrayList<String> allFields;  // List of all Metadata fields that are defined for this document set
     private MethodPoint[] methodPoints;
     private int[][] clusterMembership;   //
     private int[][] wordDocumentMatrix;  // word rows and doc columns (each cell is word count)
@@ -75,6 +76,14 @@ public class DocumentSet {
 
     public void setSummaryFields(ArrayList<String> summaryFields) {
         this.summaryFields = summaryFields;
+    }
+
+    public ArrayList<String> getAllFields() {
+        return allFields;
+    }
+
+    public void setAllFields(ArrayList<String> allFields) {
+        this.allFields = allFields;
     }
   
 
@@ -183,17 +192,17 @@ public class DocumentSet {
                 // read headers - they are the metadata field names
                 //
                 st = new StringTokenizer(br.readLine(),",");             
-                ArrayList<String> metadataFields = new ArrayList<String>();
+                allFields = new ArrayList<String>();
                 while(st.hasMoreTokens()) {
-                    metadataFields.add(st.nextToken());
+                    allFields.add(st.nextToken());
                 }
                 // One of the field names must refer to the document ID
-                if (!metadataFields.contains(DOCUMENT_ID_FIELD)) {
+                if (!allFields.contains(DOCUMENT_ID_FIELD)) {
                     throw new ClusterException("Error reading "+ METADATA_FILE+ ", missing "+this.DOCUMENT_ID_FIELD+ " column");
                 }
                 //
                 // Read metadata values
-
+                //
                 while ((strLine = br.readLine()) != null) {
                     LinkedHashMap<String, String> values = new LinkedHashMap();
                     st = new StringTokenizer(strLine,",");
@@ -202,10 +211,10 @@ public class DocumentSet {
                     while(st.hasMoreTokens()) {
                         
                         String value = st.nextToken();
-                        if (metadataFields.get(col).equals(DOCUMENT_ID_FIELD)) {
+                        if (allFields.get(col).equals(DOCUMENT_ID_FIELD)) {
                             docId = value;
                         } else {
-                            values.put(metadataFields.get(col),value);
+                            values.put(allFields.get(col),value);
                         }
                         col++;
                     }

@@ -34,10 +34,7 @@ import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 import org.apache.commons.io.FileUtils;
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 /**
  *
  * @author ekraffmiller
@@ -51,22 +48,110 @@ public class ClusteringSpacePage {
     private Integer clusterNum;
     private Boolean discoverable;
     private Boolean displayMethodPoints;
-
     private DocumentSet documentSet;
+
+    // The currently displayed solution
     private ClusterSolution clusterSolution;
-    private String clusterLabelParam;
-    private String solutionLabelParam;  //
     
+    // Labels passed in the clustering URL
+    private String clusterLabelParam;
+    private String solutionLabelParam;  
+
+    // history of solutions in this session
     private ArrayList<ClusterSolution> savedSolutions = new ArrayList<ClusterSolution>();
     
     private HtmlDataTable clusterTable;
     private ArrayList<ClusterRow> clusterTableModel = new ArrayList<ClusterRow>();
     private int solutionIndex;  // This is passed from the form to indicate that we need to display a saved solution rather than calculate a new solution
 
+    // List for selecting metadata export fields
+    private List<ArrayList> exportFieldList = new ArrayList<ArrayList>();
+    // flag for opening and closing export poput form
+    private Boolean showExportPopup = Boolean.FALSE;
+
+
+     /** Creates a new instance of ClusterViewPage */
+    public ClusteringSpacePage() {
+
+    }
+
+    @PostConstruct
+    public void init() {
+        logger.fine("initializing page");
+
+        // Initialize inputs to Cluster calculation
+        if (xCoord==null) {
+            xCoord = new Double(0);
+        }
+        if (yCoord==null) {
+            yCoord = new Double(0);
+        } if (clusterNum==null) {
+            clusterNum = 5;
+        }
+        if (setId==null) {
+            throw new ClusterException("missing setId parameter.");
+        }
+        if (discoverable==null) {
+            discoverable=false;
+        }
+
+        documentSet = new DocumentSet(setId);
+        solutionIndex=-1;
+
+        // Do calculation
+        calculateClusterSolution(true);
+
+        // Update cluster solution with labels
+        // from request, if necessary
+
+        clusterSolution.setLabel(solutionLabelParam);
+        if (clusterLabelParam!=null) {
+            clusterSolution.initClusterLabels(clusterLabelParam);
+        }
+
+        // If we have labels for this solution, added to the saved
+        // solutions list
+
+        if (clusterLabelParam!=null || solutionLabelParam !=null) {
+            saveSolution(clusterSolution);
+        }
+
+        // initialize Export field list values
+        for(int i=0;i< documentSet.getAllFields().size(); i++) {
+            ArrayList<Object> exportField = new ArrayList<Object>();
+            exportField.add(Boolean.FALSE);
+            exportField.add(documentSet.getAllFields().get(i));
+            exportFieldList.add(exportField);
+        }
+    }
+
     public String getDescription() {
         return documentSet.getDescription();
     }
 
+    public List<ArrayList> getExportFieldList() {
+        return exportFieldList;
+    }
+
+    public void setExportFieldList(List<ArrayList> exportFieldList) {
+        this.exportFieldList = exportFieldList;
+    }
+
+    
+    public Boolean getShowExportPopup() {
+        return showExportPopup;
+    }
+
+    public void setShowExportPopup(Boolean showExportPopup) {
+        this.showExportPopup = showExportPopup;
+    }
+
+    public void openExportPopup(ActionEvent ae) {
+        showExportPopup = true;
+    }
+    public void closeExportPopup(ActionEvent ae) {
+        showExportPopup = false;
+    }
 
     /**
      *
@@ -87,20 +172,7 @@ public class ClusteringSpacePage {
             }
         }
        str+="]}";
-        /*
-        {"MethodPoint":
-               [{"methodName":"biclust_spectral","numberOfClusters":1,"xCoord":-0.610430826336493,"yCoord":-0.129151779834482},
-                {"methodName":"clust_convex","numberOfClusters":1,"xCoord":-0.610439235474672,"yCoord":-0.129141887730466},
-                {"methodName":"mult_dirproc","numberOfClusters":16,"xCoord":-2.38303704237162,"yCoord":-0.385230029269905},
-                {"methodName":"dismea","numberOfClusters":18,"xCoord":1.31139618587246,"yCoord":2.04711592386508},
-                {"methodName":"hclust kendall centroid","numberOfClusters":18,"xCoord":-0.433970815564751,"yCoord":0.381697369669168}
-              ]
-             }
-         
-*/
-
         
-        System.out.println(str);
         return str;
 
     }
@@ -126,53 +198,7 @@ public class ClusteringSpacePage {
         this.discoverable = discoverable;
     }  
 
-    /** Creates a new instance of ClusterViewPage */
-    public ClusteringSpacePage() {
-      
-    }
-
-    @PostConstruct
-    public void init() {
-        logger.fine("initializing page");
-
-        // Initialize inputs to Cluster calculation
-        if (xCoord==null) {
-            xCoord = new Double(0);
-        }
-        if (yCoord==null) {
-            yCoord = new Double(0);
-        } if (clusterNum==null) {
-            clusterNum = 5;
-        }
-        if (setId==null) {
-            throw new ClusterException("missing setId parameter.");
-        }
-        if (discoverable==null) {
-            discoverable=false;
-        }
-        
-        documentSet = new DocumentSet(setId);
-        solutionIndex=-1;
-        this.getMethodPointsString();
-        // Do calculation
-
-        calculateClusterSolution(true);
-
-        // Update cluster solution with labels
-        // from request, if necessary
-
-        clusterSolution.setLabel(solutionLabelParam);
-        if (clusterLabelParam!=null) {
-            clusterSolution.initClusterLabels(clusterLabelParam);
-        }
-
-        // If we have labels for this solution, added to the saved
-        // solutions list
-
-        if (clusterLabelParam!=null || solutionLabelParam !=null) {
-            saveSolution(clusterSolution);
-        }
-    }
+   
 
 
 
@@ -366,7 +392,8 @@ public class ClusteringSpacePage {
     }
 
     public FileResource getExportResource() {
-        return new FileResource(this.clusterSolution, this.setId, this.getHost());
+      
+        return new FileResource(this.clusterSolution, this.setId, this.getHost(), exportFieldList);
     }
 
     class FileResource implements Resource, Serializable{
@@ -374,10 +401,15 @@ public class ClusteringSpacePage {
         ClusterSolution solution;
         String setId;
         String host;
-        public FileResource(ClusterSolution cs, String setId, String host) {
+        List<ArrayList> exportFieldList;
+        ClusteringSpacePage pg;
+        public FileResource(ClusterSolution cs, String setId, String host, List<ArrayList> exportFieldList) {
             solution = cs;
             this.setId = setId;
             this.host = host;
+            this.exportFieldList = exportFieldList;
+          
+
         }
 
 
@@ -393,9 +425,12 @@ public class ClusteringSpacePage {
         public InputStream open() throws IOException {
             String exportStr = "Clustering Export, Set Id = "+ setId;
             exportStr += "\nExport Time: " + new Date()+"\n";
-            //"http://#{ClusteringSpacePage.host}/text/faces/ClusteringSpacePage.xhtml?setId=#{ClusteringSpacePage.setId}&amp;x=#{saved.formatX}&amp;y=#{saved.formatY}&amp;clusterNum=#{saved.numClusters}&amp;discoverable=#{saved.discoverable}&amp;solutionLabel=#{saved.encodedLabel}&amp;clusterLabels=#{saved.clusterLabels}"/></ice:outputLink>
+            for (int i=0;i<exportFieldList.size();i++) {
+                exportStr+="\n "+exportFieldList.get(i).get(1) + ", "+exportFieldList.get(i).get(0);
+            }
             exportStr +="\nLink: http://"+host+"/text/faces/ClusteringSpacePage.xhtml?setId="+setId+"&x="+solution.getFormatX()+"&y="+solution.getFormatY()+"&clusterNum="+solution.getNumClusters()+"&discoverable="+solution.getDiscoverable()+"&solutionLabel="+solution.getEncodedLabel()+"&clusterLabels="+solution.getClusterLabels();
             exportStr+=solution.toString();
+         
             return new ByteArrayInputStream(exportStr.getBytes());
         }
 

@@ -106,7 +106,12 @@ public class LoginPage extends VDCBaseBean implements java.io.Serializable  {
             loginFailed = true;
             errMessage = "Login failed. Please check your username and password and try again.";
             return null;
-        } else{
+        } else if (!PropertyUtil.isTimerServer() && user.getNetworkRole()!=null && user.getNetworkRole().getName().equals(NetworkRoleServiceLocal.ADMIN)) {
+           loginFailed = true;
+           errMessage = "Login failed.  Users with Network Admin privileges must log into the timer server.";
+           return null;
+        }
+        else{
             String forward = null;
               LoginWorkflowBean loginWorkflowBean = (LoginWorkflowBean)this.getBean("LoginWorkflowBean");
               forward = loginWorkflowBean.processLogin(user, studyId);

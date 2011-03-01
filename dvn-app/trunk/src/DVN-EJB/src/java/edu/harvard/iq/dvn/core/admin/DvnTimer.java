@@ -61,7 +61,7 @@ public class DvnTimer implements DvnTimerRemote {
     @Override
     public void createTimer(Date initialExpiration, long intervalDuration, Serializable info) {
         try {
-            System.out.println("Creating timer on " + InetAddress.getLocalHost().getCanonicalHostName());
+            logger.log(Level.INFO,"Creating timer on " + InetAddress.getLocalHost().getCanonicalHostName());
         } catch (UnknownHostException ex) {
             Logger.getLogger(DvnTimer.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -83,7 +83,7 @@ public class DvnTimer implements DvnTimerRemote {
         // call the method a second time. (The minimum number of re-tries for a Timer method is 1)
 
         try {
-            System.out.println("Handling timeout on " + InetAddress.getLocalHost().getCanonicalHostName());
+            logger.log(Level.INFO,"Handling timeout on " + InetAddress.getLocalHost().getCanonicalHostName());
         } catch (UnknownHostException ex) {
             Logger.getLogger(DvnTimer.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -116,7 +116,7 @@ public class DvnTimer implements DvnTimerRemote {
     public void removeHarvestTimer(HarvestingDataverse dataverse) {
          // Clear dataverse timer, if one exists
         try {
-            System.out.println("Removing harvest timer on " + InetAddress.getLocalHost().getCanonicalHostName());
+            logger.log(Level.INFO,"Removing harvest timer on " + InetAddress.getLocalHost().getCanonicalHostName());
         } catch (UnknownHostException ex) {
             Logger.getLogger(DvnTimer.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -227,7 +227,7 @@ public class DvnTimer implements DvnTimerRemote {
      public void removeExportTimer() {
         // Clear dataverse timer, if one exists
         try {
-            System.out.println("Removing export timer on " + InetAddress.getLocalHost().getCanonicalHostName());
+            logger.log(Level.INFO,"Removing export timer on " + InetAddress.getLocalHost().getCanonicalHostName());
         } catch (UnknownHostException ex) {
             Logger.getLogger(DvnTimer.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -25,6 +25,7 @@ public class VisualizationLineDefinition {
     private String color = new String();
     private String border = new String();
     private String variableName = new String();
+    private String variableLabel = new String();
 
     public List<VarGroup> getFilterGroups() {
         return filterGroups;
@@ -97,6 +98,14 @@ public class VisualizationLineDefinition {
 
     public void setVariableName(String variableName) {
         this.variableName = variableName;
+    }
+
+    public String getVariableLabel() {
+        return variableLabel;
+    }
+
+    public void setVariableLabel(String variableLabel) {
+        this.variableLabel = variableLabel;
     }
 
 }

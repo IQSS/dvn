@@ -173,7 +173,7 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
        boolean xAxis = false;
         List variableMappings = new ArrayList();
         List<DataVariable> dataVariables = (List<DataVariable>) dataTable.getDataVariables();
-
+        List <DataVariable>  errorVariables = new ArrayList();
             for (DataVariable dataVariable: dataVariables){
 
 
@@ -196,7 +196,7 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
                     }
                 }
                 if (!xAxis && hasMappings && countMeasures == 0){
-                    returnListOfErrors.add(dataVariable);
+                    errorVariables.add(dataVariable);
                     valid = false;
                 }
                 else{
@@ -208,6 +208,24 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
 
         }
 
+        if (!errorVariables.isEmpty()){
+            for (DataVariable dv : errorVariables){
+                variableMappings = (List) dv.getDataVariableMappings();
+                if (!variableMappings.isEmpty()){
+                    Iterator iteratorMap = variableMappings.iterator();
+
+                    while (iteratorMap.hasNext()) {
+                        DataVariableMapping dataVariableMapping = (DataVariableMapping) iteratorMap.next();
+                        returnListOfErrors.add(dv);
+                        returnListOfErrors.add(dataVariableMapping);
+                    }
+
+                }
+
+
+            }
+
+        }
 
 
 

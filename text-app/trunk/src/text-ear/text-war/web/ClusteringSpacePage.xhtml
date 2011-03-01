@@ -945,7 +945,7 @@ td.clusterCountCol {width:60px; vertical-align:top;}
                                 <f:facet name="header">
                                     <ice:columnGroup>
                                         <ice:headerRow>
-                                             <ice:column colspan="2">
+                                             <ice:column colspan="#{row.columnsModel.rowCount+1}">
                                                 <div class="dvnClusterListPaginatorBlock">
                                                      <div class="dvnPaginatorBlock">
                                                          <ice:dataPaginator for="clusterDocs"
@@ -978,21 +978,17 @@ td.clusterCountCol {width:60px; vertical-align:top;}
                                 </f:facet>
                                 
                                 <ice:column>
-                                    <ice:commandLink value="#{row.rowModel.rowIndex +1}" actionListener="#{row.viewDocumentInList}"/>
+                                    <h:outputText value="#{row.rowModel.rowIndex +1}" />
                                 </ice:column>
                                 
                                  <ice:columns value="#{row.columnsModel}" var="headings">
                                     <f:facet name="header">
                                         <h:outputText value="#{headings}"/>
                                     </f:facet>
-                                    <ice:outputText value="#{row.cellValue}"/>
-                                </ice:columns>
-                                <!--
-                                <ice:column>
-                                     <ice:commandLink rendered="#{empty docRow.document.title}" value="#{docRow.document.filename}" actionListener="#{row.viewDocumentInList}"/>
-                                     <ice:commandLink rendered="#{!empty docRow.document.title}" value="#{docRow.document.title}" actionListener="#{row.viewDocumentInList}"/>
-                                </ice:column>
-                                -->
+                                     <ice:commandLink rendered="#{row.columnsModel.rowIndex == 0}" value="#{row.cellValue}" actionListener="#{row.viewDocumentInList}"/>
+                                     <ice:outputText rendered="#{row.columnsModel.rowIndex > 0}" value="#{row.cellValue}"/>
+                               </ice:columns>
+                                
                                 <f:facet name="footer">
                                     <ice:commandLink rendered="#{row.summaryAvailable}" actionListener="#{row.openSumPopup}">Generate Cluster Summary Text</ice:commandLink>
                                 </f:facet>

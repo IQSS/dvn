@@ -849,8 +849,9 @@ div.clusterInfoBarGraph {background: blue; line-height: 12px !important;}
 .clusterTable .iceDatTbl {margin:0;}
 .clusterTable .iceDatTbl .iceDatTblRow2 {background: #EEF3FB;}
 .clusterTable .iceDatTbl .iceDatTblCol1 {border-right:0;}
-td.clusterCountCol {width:60px;}
+td.clusterCountCol {width:60px; vertical-align:top;}
 .clusterTable .iceDatTbl tfoot {display:none;}
+.clusterDetaillLinkCol {white-space:nowrap;}
 
 .clusterTable .iceDatTbl.clusterDocList {margin-top:1em;}
 .clusterTable .iceDatTbl.clusterDocList td.iceDatTblCol1 {border-right:1px solid #CCCCCC;}
@@ -891,8 +892,8 @@ td.clusterCountCol {width:60px;}
 </style>
                 <ice:dataTable id="clusterInfo" binding="#{ClusteringSpacePage.clusterTable}" cellpadding="0" cellspacing="0" value="#{ClusteringSpacePage.clusterTableModel}" var="row" width="100%">
                     <ice:column>
-                        <ice:panelGrid columns="2" cellpadding="0" cellspacing="0" border="0" width="100%"
-                                        columnClasses="clusterCountCol,clusterInfoCol">
+                        <ice:panelGrid columns="3" cellpadding="0" cellspacing="0" border="0" width="100%"
+                                        columnClasses="clusterCountCol,clusterInfoCol,clusterDetaillLinkCol">
                             <ice:column>
                                     <ice:outputText value="#{row.clusterInfo.clusterPercentStr}"/>
                                     <ice:outputText value="#{row.clusterInfo.clusterCount}"/>
@@ -934,9 +935,10 @@ td.clusterCountCol {width:60px;}
                                     // ]]>
                                 </script>
                             </ice:column>
+                            <ice:column>
+                                <a href="#" class="clusterDetailLink">View Detail</a>
+                            </ice:column>
                         </ice:panelGrid>
-                        
-                        <a href="#" class="clusterDetailLink">View Detail</a>
                         
                         <div class="clusterDetailBlock">
                             <ice:dataTable rows="5" id="clusterDocs" styleClass="clusterDocList" width="100%" cellpadding="0" cellspacing="0" value="#{row.rowModel}" var="index">
@@ -995,9 +997,6 @@ td.clusterCountCol {width:60px;}
                                     <ice:commandLink rendered="#{row.summaryAvailable}" actionListener="#{row.openSumPopup}">Generate Cluster Summary Text</ice:commandLink>
                                 </f:facet>
                             </ice:dataTable>
-
-                          
-
                         </div>
 
                         <ice:panelPopup id="docViewPopup"
@@ -1029,10 +1028,10 @@ td.clusterCountCol {width:60px;}
                                         <ice:commandLink title="Last Document" onclick="jQuery('textarea.iceInpTxtArea-dis').animate({scrollTop:0}, 'slow');" rendered="#{row.viewDocumentIndex!=row.clusterInfo.clusterCount-1}" actionListener="#{row.viewLast}"><img title="Last Document" src="/text/resources/icefaces/dvn_rime/css-images/arrow-last.gif" class="iceGphImg" alt=""/></ice:commandLink>
                                     </div>
 
-                                    <div >
+                                    <div>
                                         <ui:repeat value="#{row.viewDocument.orderedMetadata}" var="field">
                                             <ice:outputText value="#{field.key}: #{field.value}" nospan="true"/><br></br>
-                                        </ui:repeat>                                       
+                                        </ui:repeat>
                                     </div>
 
                                     <div class="clusterDocViewText">
@@ -1092,7 +1091,7 @@ td.clusterCountCol {width:60px;}
                                     }
 
                                     // toggle the display
-                                    jQuery(this).next('.clusterDetailBlock').toggle();
+                                    jQuery(this).parents('.iceDatTblCol1').children('.clusterDetailBlock').toggle();
 
                                     // return false so any link destination is not followed
                                     return false;

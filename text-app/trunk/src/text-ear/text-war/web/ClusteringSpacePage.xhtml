@@ -903,7 +903,7 @@ td.clusterCountCol {width:60px; vertical-align:top;}
                                     <div jsfc="ice:panelGroup" styleClass="clusterInfoBarGraph" style="width: #{row.clusterInfo.clusterPercentStr};">&#160;</div>
                                 </div>
                                 <div class="clusterInfoLabelBlock">
-                                    <div jsfc="ice:panelGroup" styleClass="clusterInfoStems" rendered="#{empty row.clusterInfo.label}"><ice:outputText value="#{row.clusterInfo.topWords}"/></div>
+                                    <div jsfc="ice:panelGroup" styleClass="clusterInfoStems"><ice:outputText value="#{row.clusterInfo.topWords}"/></div>
                                     <a href="#" class="clusterInfoValueEdit"><ice:outputText value="Label [+] #{row.clusterInfo.label}"/></a>
                                     <div class="clusterInfoValueBlock">
                                         <div><ice:outputText value="#{row.clusterInfo.topWords}"/></div>
@@ -922,13 +922,14 @@ td.clusterCountCol {width:60px; vertical-align:top;}
                                           });
                                           jQuery(".clusterInfoLabelBlock input:submit").click(function() {
                                             var txt = jQuery(this);
-                                            txt.parent().parent().removeClass("edit");
+                                            txt.parents(".clusterInfoLabelBlock").removeClass("edit");
+                                            txt.parents(".clusterInfoLabelBlock").children(".clusterInfoStems").removeClass("edit");
                                             return false;
                                           });
                                           jQuery(".clusterInfoLabelBlock label a.clusterInfoValueLabel").click(function() {
                                             var txt = jQuery(this);
-                                            txt.parent().parent().parent().removeClass("edit");
-                                            txt.parent().parent().parent().children(".clusterInfoStems").removeClass("edit");
+                                            txt.parents(".clusterInfoLabelBlock").removeClass("edit");
+                                            txt.parents(".clusterInfoLabelBlock").children(".clusterInfoStems").removeClass("edit");
                                             return false;
                                           });
                                     });

@@ -5,6 +5,7 @@
 
 package edu.harvard.iq.dvn.core.web;
 
+
 import edu.harvard.iq.dvn.core.study.DataTable;
 import edu.harvard.iq.dvn.core.visualization.VarGroup;
 import edu.harvard.iq.dvn.core.visualization.VarGroupType;
@@ -33,6 +34,7 @@ import com.icesoft.faces.component.ext.HtmlDataTable;
 import com.icesoft.faces.component.ext.HtmlInputText;
 import com.icesoft.faces.component.ext.HtmlSelectOneMenu;
 import com.icesoft.faces.component.ext.HtmlCheckbox;
+import com.icesoft.faces.context.FileResource;
 import com.icesoft.faces.context.Resource;
 import com.icesoft.faces.context.StringResource;
 import com.icesoft.faces.context.effects.JavascriptContext;
@@ -49,13 +51,25 @@ import edu.harvard.iq.dvn.ingest.dsb.impl.DvnJavaFieldCutter;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+import javax.ejb.EJBException;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -102,6 +116,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     private String indexedDataString = "";
     private String csvString = "";
     private String indexDate = "";
+    private String sources = "";
+
     private boolean displayIndexes = false;
 
     private Long displayType = new Long(0);
@@ -111,6 +127,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     private StudyUI studyUI;
     private String fileName = "";
     private String graphTitle = "";
+    private String imageURL = "";
+
     private boolean lineAdded = false;
     private Long studyId = new Long(0);
     private Long versionNumber;
@@ -118,6 +136,10 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     private List groupingTypeAssociation = new ArrayList();
     private List filterGroupMeasureAssociation = new ArrayList();
     private List <VarGrouping> allVarGroupings = new ArrayList();
+    private boolean showVariableInfoPopup = false;
+    private String variableLabel = "";
+
+
 
 
     public ExploreDataPage() {
@@ -762,6 +784,15 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             return;
         }
 
+        if (validateSelections()){
+            for (VisualizationLineDefinition vl :vizLines)
+                if (vl.getVariableId().equals(dataVariableSelected.getId())){
+                   FacesMessage message = new FacesMessage("This data has already been selected");
+                    FacesContext fc = FacesContext.getCurrentInstance();
+                    fc.addMessage(addLineButton.getClientId(fc), message);
+                    return;
+                }
+        }
 
         if (validateSelections()){
             lineAdded = true;
@@ -782,10 +813,12 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
            vizLine.setBorder("border:1px solid black;");
            vizLine.setVariableId(dataVariableSelected.getId());
            vizLine.setVariableName(dataVariableSelected.getName());
+           vizLine.setVariableLabel(dataVariableSelected.getLabel());
            vizLines.add(vizLine);
            this.numberOfColumns = new Long(vizLines.size());
            getDataTable();
            resetLineBorder();
+           getSourceList();
            FacesContext fc = FacesContext.getCurrentInstance();
            JavascriptContext.addJavascriptCall(fc, "drawVisualization();");
            
@@ -1134,7 +1167,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                 maxLength = test.length -1;
            }
     }
-
+    boolean indexesDone = false;
     for (Object inObj: inStr ){
         String nextStr = (String) inObj;
         String[] columnDetail = nextStr.split("\t");
@@ -1142,7 +1175,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
         String col = "";
         String csvCol = "";
-
+        boolean alreadyAdded = false;
         if (test.length > 1)
             {
                 for (int i=0; i<test.length; i++){
@@ -1158,17 +1191,15 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                          addIndexDate = true;
                     }
                     if (!indexSet && maxLength == test.length -1 &&  (indexDate.isEmpty()  ||  indexDate.equals(col)) ){
-                             for (int j = 1; j<9; j++){
-                                getIndexes[j] = true;
-                             }
+                         for (int k = 1; k<maxLength+1; k++){
+                             getIndexes[k] = true;
+                         }
                          indexSet = true;                       
                     }
                     maxYear = col;
                     selectBeginYears.add(new SelectItem( col, col));
                     selectEndYears.add(new SelectItem(col, col));
-                    if (addIndexDate){
-                         selectIndexDate.add(new SelectItem(col, col));
-                    }
+
                 } else {
                         col = col + ", " +  test[i];
                         csvCol = csvCol + ", " +  test[i];
@@ -1180,6 +1211,26 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                             indexVals[i] = test[i];
                             getIndexes[i] = false;
                         }
+                        boolean allfalse = true;
+                        for (int j = 1; j<9; j++){
+                            if( getIndexes[j] == true){
+                                allfalse = false;
+                            }
+                        }
+
+                        if (addIndexDate && allfalse && !alreadyAdded){
+                            selectIndexDate.add(new SelectItem(test[0], test[0]));
+                            alreadyAdded = true;
+                        }
+
+                        if (allfalse && !indexesDone  ){
+                            for (int q = 1; q<test.length; q++){
+                                    indexVals[q] = test[q];
+                                    indexesDone = true;
+                            }
+                        }
+
+
                 }
 
                 }
@@ -1196,9 +1247,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         String[] columnDetail = nextStr.split("\t");
         String[] test = columnDetail;
         String indexDate = "";
-     String indexCol = "";         
-
-
+        String indexCol = "";         
         if (test.length > 1)
             {
                 for (int i=0; i<test.length; i++){
@@ -1206,15 +1255,23 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                     indexCol = test[i];
                     indexDate = test[i];
                 } else {
-                        Double numerator = new Double (test[i]);
-                        Double denominator = new Double (indexVals[i]);
-                        Double result = new Double(0);
-                        if (!denominator.equals(new Double (0))){
+
+                        Double numerator = new Double(0);
+                        if (!test[i].isEmpty()){
+                            numerator = new Double (test[i]);
+                        }
+                        Double denominator = new Double (0);
+                        if (!indexVals[i].isEmpty()){
+                            denominator = new Double (indexVals[i]);
+                        }
+                        
+                        Object result = new Double(0);
+                        if (!denominator.equals(new Double (0))  && !numerator.equals(new Double (0))){
                             result = (numerator / denominator) *  new Double (100);
                         } else {
-
+                            result = "";
                         }
-                        indexCol = indexCol + ", " +  result;
+                        indexCol = indexCol + ", " +  result.toString();
 
                 }
 
@@ -1235,6 +1292,121 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
           indexedDataString = indexedOutput;
     }
 
+     public File getZipFileExport() {
+
+
+        File zipOutputFile;
+        ZipOutputStream zout;
+        try {
+            String exportTimestamp = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss").format(new Date());
+            File csvFile = new File("csvData_" + exportTimestamp +  ".txt");
+            File imageUrlFile = new File("imageUrl_" + exportTimestamp +  ".txt");
+            writeFile(csvFile, csvString.toString().toCharArray(), csvString.toString().length() );
+            writeFile(imageUrlFile, imageURL.toCharArray(), imageURL.length() );
+            
+
+            zipOutputFile = File.createTempFile("dataDownload_" + exportTimestamp , "zip");
+            zout = new ZipOutputStream((OutputStream) new FileOutputStream(zipOutputFile));
+
+            addZipEntry(zout, csvFile.getAbsolutePath(), "csvData_" + exportTimestamp +  ".txt");
+            addZipEntry(zout, imageUrlFile.getAbsolutePath(), "imageGraphURL_" + exportTimestamp + ".txt");
+            zout.close();
+        } catch (IOException e) {
+            throw new EJBException(e);
+        }
+
+        return zipOutputFile;
+    }
+
+    private void writeFile(File fileIn, char[] charArrayIn, int bufSize){
+            try {
+
+            FileOutputStream outputFile = null;
+            outputFile = new FileOutputStream(fileIn, true);
+            FileChannel outChannel = outputFile.getChannel();
+            ByteBuffer buf = ByteBuffer.allocate((bufSize * 2) + 1000);
+            for (char ch : charArrayIn) {
+              buf.putChar(ch);
+            }
+
+            buf.flip();
+
+            try {
+              outChannel.write(buf);
+              outputFile.close();
+            } catch (IOException e) {
+              e.printStackTrace(System.err);
+            }
+
+
+
+        } catch (IOException e) {
+            throw new EJBException(e);
+        }
+
+
+    }
+
+    private void addZipEntry(ZipOutputStream zout, String inputFileName, String outputFileName) throws IOException{
+        FileInputStream tmpin = new FileInputStream(inputFileName);
+        byte[] dataBuffer = new byte[8192];
+        int i = 0;
+
+        ZipEntry e = new ZipEntry(outputFileName);
+        zout.putNextEntry(e);
+
+        while ((i = tmpin.read(dataBuffer)) > 0) {
+            zout.write(dataBuffer, 0, i);
+            zout.flush();
+        }
+        tmpin.close();
+        zout.closeEntry();
+     }
+
+
+    private void getSourceList(  ) {
+        String returnString = "";
+
+        Set<String> set = new HashSet();
+/*
+        for (VisualizationLineDefinition vl: vizLines){
+            VarGroup vg = vl.getMeasureGroup();
+            String checkSource = vg.getSource();
+            if (!checkSource.isEmpty()){
+                if (set.contains(checkSource)){
+
+                } else {
+                    set.add(checkSource);
+                    if (returnString.isEmpty()){
+                        returnString = returnString + checkSource;
+                    } else {
+                        returnString = returnString + ", " + checkSource;
+                    }
+                }
+            }
+        }
+
+*/
+        sources = returnString;
+    }
+
+    public void openVariableInfoPopup(ActionEvent ae){
+
+        UIComponent uiComponent = ae.getComponent().getParent();
+        while (!(uiComponent instanceof HtmlDataTable)){
+            uiComponent = uiComponent.getParent();
+        }
+        HtmlDataTable tempTable = (HtmlDataTable) uiComponent;
+        VisualizationLineDefinition vizLine = (VisualizationLineDefinition) tempTable.getRowData();
+
+        variableLabel = vizLine.getVariableLabel();
+        showVariableInfoPopup = true;
+    }
+
+    public void closeVariableInfoPopup(ActionEvent ae){
+        variableLabel = "";
+        showVariableInfoPopup = false;
+    }
     private HtmlDataTable dataTableVizLines;
 
     public HtmlDataTable getDataTableVizLines() {
@@ -1364,7 +1536,14 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     public void setInputDownloadFileName(HtmlInputText inputDownloadFileName) {
         this.inputDownloadFileName = inputDownloadFileName;
     }
+    private HtmlInputText inputImageURL;
 
+    public HtmlInputText getInputImageURL() {
+        return this.inputImageURL;
+    }
+    public void setInputImageURL(HtmlInputText inputImageURL) {
+        this.inputImageURL = inputImageURL;
+    }
 
     public String getGraphTitle() {
         return graphTitle;
@@ -1383,6 +1562,12 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     public String updateFileName(){
         String fileNameIn = (String) getInputDownloadFileName().getValue();
         setDownloadFileName(fileNameIn);
+        return "";
+    }
+
+    public String updateImageURL(){
+        String fileNameIn = (String) getInputImageURL().getValue();
+        setImageURL(fileNameIn);
         return "";
     }
 
@@ -1429,6 +1614,16 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     public Resource getCsvFile() {
 
         Resource csvResource = new StringResource(csvString.toString());
+        /*return new FileResource();*/
+
+        return csvResource;
+    }
+
+    public Resource getDownloadFile() {
+
+        Resource csvResource = new FileResource(getZipFileExport());
+        /*return new FileResource();*/
+
         return csvResource;
     }
 
@@ -1491,6 +1686,39 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             }
         }
         return returnString;
+    }
+
+
+    public String getSources() {
+        return sources;
+    }
+
+    public void setSources(String sources) {
+        this.sources = sources;
+    }
+
+    public boolean isShowVariableInfoPopup() {
+        return showVariableInfoPopup;
+    }
+
+    public void setShowVariableInfoPopup(boolean showVariableInfoPopup) {
+        this.showVariableInfoPopup = showVariableInfoPopup;
+    }
+
+    public String getVariableLabel() {
+        return variableLabel;
+    }
+
+    public void setVariableLabel(String variableLabel) {
+        this.variableLabel = variableLabel;
+    }
+
+    public String getImageURL() {
+        return imageURL;
+    }
+
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
     }
 
 }

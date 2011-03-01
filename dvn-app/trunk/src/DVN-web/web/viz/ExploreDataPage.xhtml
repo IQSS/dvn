@@ -317,7 +317,9 @@ function drawVisualization() {
       document.getElementById('ExploreDataPage:hasURL').value = "false";
       var displayType = new String (document.getElementById('ExploreDataPage:displayType').textContent);
       var intDisType = parseInt(displayType);
+      var first = false;
       if (intDisType == 0){
+          first = true;
           intDisType = 1;
       }
 
@@ -331,8 +333,21 @@ function drawVisualization() {
       var useIndex = document.getElementById('ExploreDataPage:displayindices').checked;
 
       var data = new google.visualization.DataTable();
+      var data2 = new google.visualization.DataTable();
         parseData(data, intDisType, intStartYear, intEndYear, useIndex);
         if (intDisType == 1){
+                if (first){                    
+                    intDisType = 2;
+                    parseData(data2, intDisType, intStartYear, intEndYear, useIndex);                    
+                    var chart = new google.visualization.ImageChart(document.getElementById('chart_div'));
+                    chart.draw(data2, {cht: 'lc', title: fullTitle, colors: ['#4684EE', '#DC3912', '#FF9900', '#008000', '#4942CC', '#990099', '#FF80F2', '#7FD127']});                    
+                    var imageURL = chart.getImageUrl();
+
+                    document.getElementById('ExploreDataPage:imageURL').value = imageURL;
+                    document.getElementById('ExploreDataPage:hasURL').value = "true";
+                    intDisType = 1;
+                }
+
                 var chart = new google.visualization.AnnotatedTimeLine(document.getElementById('chart_div'));
                 chart.draw(data, {allowRedraw: true}, {displayZoomButtons: false}, {displayAnnotations: false});
                 jQuery('#chart_div').css({'overflow-y' : 'visible'});
@@ -354,11 +369,14 @@ function drawVisualization() {
              var chart = new google.visualization.ImageChart(document.getElementById('chart_div'));
              chart.draw(data, {cht: 'lc', title: fullTitle, colors: ['#4684EE', '#DC3912', '#FF9900', '#008000', '#4942CC', '#990099', '#FF80F2', '#7FD127']});
              var imageURL = chart.getImageUrl();
+
              document.getElementById('ExploreDataPage:imageURL').value = imageURL;
              document.getElementById('ExploreDataPage:hasURL').value = "true";
              jQuery('#chart_div').css({'overflow-y' : 'visible'});
              jQuery('.dvnGraphExtractImageButton').css({'display' : 'block'});
         }
+
+        document.getElementById('ExploreDataPage:updateImageURL').click();
 
     }
 
@@ -400,10 +418,7 @@ function startDownload()
     if (myDataString == "")
     { alert("There is no data to export.");
         return null; }
-    var fileName = document.getElementById('ExploreDataPage:downloadFileName').value;
-    if(fileName == "")
-    { alert("Please enter a file name"); }
-    else { document.getElementById('ExploreDataPage:downloadDataFiles').click(); }
+    document.getElementById('ExploreDataPage:downloadDataFiles').click();
 }
 
 function getImageURLButton()
@@ -433,11 +448,12 @@ function getImageURLButton()
 <ice:outputText visible="false" id="startYear" value="#{ExploreDataPage.startYear}"/>
 <ice:outputText visible="false" id="endYear" value="#{ExploreDataPage.endYear}"/>
 <ice:outputText visible="false" id="graphTitleHidden" value="#{ExploreDataPage.graphTitle}"/>
-<ice:outputText visible="false" id="imageURL"/>
+<ice:inputText visible="false" id="imageURL" binding="#{ExploreDataPage.inputImageURL}" />
 <ice:outputText visible="false" id="hasURL"/>
 <ice:commandButton visible="false" id="updateGraphTitle" type="submit" value="update" action="#{ExploreDataPage.updateGraphTitle}"/>
 <ice:commandButton visible="false" id="updateFileName" type="submit" value="update" action="#{ExploreDataPage.updateFileName}"/>
 <ice:commandButton visible="false" id="deleteLineHidden" value="Delete Line hidden" actionListener="#{ExploreDataPage.deleteLine}"/>
+<ice:commandButton visible="false" id="updateImageURL" value="Update URL" action="#{ExploreDataPage.updateImageURL}"/>
 <ice:commandButton visible="false" id="resetIndexValue" actionListener="#{ExploreDataPage.resetIndexDisplay}"/>
 <ice:selectBooleanCheckbox id="addLineCheck" visible="false" value="#{ExploreDataPage.lineAdded}"/>
 
@@ -559,7 +575,12 @@ function getImageURLButton()
                                     <ice:outputText value="#{filterGroup.name}"/>
                                 </div>
                             </div>
+                            <ice:commandLink
+                                rendered="#{line.variableLabel!=null}" actionListener="#{ExploreDataPage.openVariableInfoPopup}">
+                                <ice:outputText value="Source Info"/>
+                            </ice:commandLink>
                         </div>
+
                         <div>
                             <ice:commandLink id="deleteLineLink" title="Delete Line" value="Delete Line" actionListener="#{ExploreDataPage.deleteLine}" onclick="deleteLine();"></ice:commandLink>
                         </div>
@@ -628,9 +649,9 @@ function getImageURLButton()
                                        onkeyup="delayedRequestTitle(form,this,event);"></ice:inputText>
                     </div>
                 </div>
-                <div jsfc="ice:panelGroup" styleClass="dvnGraphSourceBlock" visible="#{!empty ExploreDataPage.vizLines and !empty ExploreDataPage.sourceURL}">
+                <div jsfc="ice:panelGroup" styleClass="dvnGraphSourceBlock" visible="false">
                     <ice:outputLabel value="Source"/>
-                    <ice:outputText value="#{ExploreDataPage.sourceURL}" id="sourceData"/>
+                    <ice:outputText value="#{ExploreDataPage.sources}" id="sourceData"/>
                 </div>
                 <div class="dvnGraphTimeSeriesBlock">
                     <ice:outputLabel value="Time Series" for="graphtimeseries" styleClass="dvnGraphTimeSeriesTitle"/>
@@ -665,20 +686,37 @@ function getImageURLButton()
                 <div class="dvnGraphExportBlock">
                     <ice:outputLabel value="Export" for="graphexport"/>
                     <div class="dvnExportBtmWrp">
-                          <div class="dvnExportFileNameInput">
-                                <ice:outputLabel value="File Name" for="graphlinelabel"/>
-                                <ice:inputText id="downloadFileName" value ="#{ExploreDataPage.downloadFileName}"
-                                                onkeyup="delayedRequestFileName(form,this,event);"
-                                               binding="#{ExploreDataPage.inputDownloadFileName}"></ice:inputText>
-                          </div>
-                          <input type="button" class="dvnDataExplorationDnldBttn" value="Export CSV" onclick="startDownload();"/>
+
+                          <input type="button" class="dvnDataExplorationDnldBttn" value="Export Results" onclick="startDownload();"/>
                           <ice:outputResource label="Export" type="button" style="display:none;"
                                id="downloadDataFiles"
                                fileName="#{ExploreDataPage.csvFileName}" mimeType="application/zip"
-                               resource="#{ExploreDataPage.csvFile}" shared="false"/>
+                               resource="#{ExploreDataPage.downloadFile}" shared="false"/>
                           <ice:commandButton id="getImageURL" styleClass="dvnGraphExtractImageButton" value="Extract Image Graph" onclick="getImageURLButton();"/>
                     </div>
                 </div>
+               <ice:panelPopup id="variableInfoPopup"
+                            visible="#{ExploreDataPage.showVariableInfoPopup}"
+                            draggable="true" modal="true"
+                            positionOnLoadOnly="true" autoCentre="true"
+                            styleClass="clusterViewDocPopup">
+                <f:facet name="header">
+                    <ice:panelGroup styleClass="popupHeaderWrapper">
+                        <ice:outputText value="Variable Information" styleClass="popupHeaderText"/>
+                        <ice:commandLink value="Close [X]" actionListener="#{ExploreDataPage.closeVariableInfoPopup}" styleClass="popupHeaderClose"></ice:commandLink>
+                    </ice:panelGroup>
+                </f:facet>
+                <f:facet name="body">
+                    <ice:panelGroup styleClass="popupBody">
+
+                        <ice:outputText value="#{ExploreDataPage.variableLabel}" /><br></br>
+
+                    </ice:panelGroup>
+
+                </f:facet>
+            </ice:panelPopup>
+
+
             </div>
         </div>
     </div>

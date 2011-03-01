@@ -263,40 +263,6 @@ public class ClusterSolution {
     }
 
     
-    public String toString() {
-        StringBuffer str = new StringBuffer();
-        str.append( "\nCoordinates: " + getFormatX() +", " + getFormatY() );
-        str.append( "\nClusters: " + getFormatClusterNum() );
-        
-        if (label!=null && !label.isEmpty()) {
-            str.append( "\nLabel: ");
-            str.append(label);
-        }
-        str.append("\n");
-
-        int count = 1;
-        for (ClusterInfo ci : this.clusterInfoList) {
-            str.append("\nCluster "+count);
-            
-            if (ci.getLabel()!=null && !label.isEmpty()) {
-                str.append("\nLabel: ");
-                str.append(ci.getLabel());
-            }
-            str.append("\nDocument Count: "+ci.getClusterCount());
-            str.append("\nDocument Percentage: "+ci.getClusterPercentStr());
-            str.append("\nWord List: " + ci.getTopWords());
-            str.append("\nDocument Titles:");
-            int docCount = 1;
-            for (Document doc: ci.getDocumentList()) {
-                str.append("\n"+docCount+".  "+doc.getTitle());
-                docCount++;
-            }
-            str.append("\n");
-
-            count++;
-        }
-        return str.toString();
-    }
    
 
     private void doClusterCalculations() {

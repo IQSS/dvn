@@ -425,17 +425,61 @@ public class ClusteringSpacePage {
         public InputStream open() throws IOException {
             String exportStr = "Clustering Export, Set Id = "+ setId;
             exportStr += "\nExport Time: " + new Date()+"\n";
-            for (int i=0;i<exportFieldList.size();i++) {
-                exportStr+="\n "+exportFieldList.get(i).get(1) + ", "+exportFieldList.get(i).get(0);
-            }
             exportStr +="\nLink: http://"+host+"/text/faces/ClusteringSpacePage.xhtml?setId="+setId+"&x="+solution.getFormatX()+"&y="+solution.getFormatY()+"&clusterNum="+solution.getNumClusters()+"&discoverable="+solution.getDiscoverable()+"&solutionLabel="+solution.getEncodedLabel()+"&clusterLabels="+solution.getClusterLabels();
-            exportStr+=solution.toString();
+            exportStr+=getClusteringExportString(exportFieldList);
          
             return new ByteArrayInputStream(exportStr.getBytes());
         }
 
         public void withOptions(Options arg0) throws IOException {
         }
+
+        public String getClusteringExportString(List<ArrayList> exportFieldList) {
+            StringBuffer str = new StringBuffer();
+            str.append("\nCoordinates: " + solution.getFormatX() + ", " + solution.getFormatY());
+            str.append("\nClusters: " + solution.getFormatClusterNum());
+
+            if (solution.getLabel() != null && !solution.getLabel().isEmpty()) {
+                str.append("\nLabel: ");
+                str.append(solution.getLabel());
+            }
+            str.append("\n");
+
+            int count = 1;
+            for (ClusterInfo ci : solution.getClusterInfoList()) {
+                str.append("\nCluster " + count);
+
+                if (ci.getLabel() != null && !ci.getLabel().isEmpty()) {
+                    str.append("\nLabel: ");
+                    str.append(ci.getLabel());
+                }
+                str.append("\nDocument Count: " + ci.getClusterCount());
+                str.append("\nDocument Percentage: " + ci.getClusterPercentStr());
+                str.append("\nWord List: " + ci.getTopWords());
+                str.append("\nDocument Listing: Document Number");
+                for (ArrayList exportField : exportFieldList) {
+                    if (exportField.get(0).equals(Boolean.TRUE)) {
+                        str.append(", "+ exportField.get(1));
+                    }
+                }
+
+                int docCount = 1;
+                for (Document doc : ci.getDocumentList()) {
+                    str.append("\n" + docCount);
+                    for (ArrayList exportField : exportFieldList) {
+                        if (exportField.get(0).equals(Boolean.TRUE)) {
+                            str.append(", " + doc.getMetadata().get(exportField.get(1)));
+                        }
+                    }
+                    docCount++;
+                }
+                str.append("\n");
+
+                count++;
+            }
+            return str.toString();
+        }
+
     }
 
 

@@ -303,7 +303,7 @@ public class HttpAccessObject extends DataAccessObject {
 
     } // End of initiateLocalDownload;
 
-    // Auxilary helper methods, filesystem access-specific:
+    // Auxilary helper methods, HTTP access-specific:
 
     private String remoteAuthRequired(String remoteHost) {
         String remoteAuthType = null;
@@ -312,7 +312,8 @@ public class HttpAccessObject extends DataAccessObject {
             return null;
         }
 
-        RemoteAccessAuth remoteAuth = null; //studyService.lookupRemoteAuthByHost(remoteHost);
+        RemoteAccessAuth remoteAuth = studyService.lookupRemoteAuthByHost(remoteHost);
+
         if (remoteAuth != null) {
             remoteAuthType = remoteAuth.getType();
         }

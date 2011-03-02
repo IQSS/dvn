@@ -19,7 +19,7 @@
                                     <ice:outputText value="No files have been provided for this study."/>
                                 </div>
                                 <div jsfc="ice:panelGroup" id="noFilesPanel3" styleClass="vdcStudyFilesEmptyMessage" rendered="#{studyPage.studyUI.userAuthorizedToEdit and (studyPage.studyUI.study.studyLock==null)}">
-                                    <ice:outputText value="No files have been uploaded to this study. To add a file, follow the 'Add File(s)' link on the top right of this page."/>
+                                    <ice:outputText value="No files have been uploaded to this study. To add a file, use the upload files utility on the &#60;a href=&#34;/dvn#{VDCRequest.currentVDCURL}/faces/study/AddFilesPage.xhtml?studyId=#{studyPage.studyUI.study.id}#{VDCRequest.studyListingIndexAsParameter}&#34;&#62;Add File(s)&#60;/a&#62; page." escape="false"/>
                                 </div>
 
                                 <div jsfc="ice:panelGroup" id="noFilesPanel4a" styleClass="vdcStudyFilesEmptyMessage" rendered="#{studyPage.studyUI.userAuthorizedToEdit and !(studyPage.studyUI.study.studyLock==null)}">

@@ -1243,7 +1243,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         File imageUrlFile = new File("imageUrl_" + exportTimestamp +  ".png");
         try {
             writeFile(csvFile, csvString.toString().toCharArray(), csvString.toString().length() );
-            zipOutputFile = File.createTempFile("dataDownload_" + exportTimestamp , "zip");
+            zipOutputFile = File.createTempFile("dataDownload_" + exportTimestamp , ".zip");
             zout = new ZipOutputStream((OutputStream) new FileOutputStream(zipOutputFile));
             addZipEntry(zout, csvFile.getAbsolutePath(), "csvData_" + exportTimestamp +  ".txt");
             String decoded = URLDecoder.decode(imageURL, "UTF-8");

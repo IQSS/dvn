@@ -72,6 +72,7 @@ import com.icesoft.faces.webapp.xmlhttp.RenderingException;
 import com.icesoft.faces.webapp.xmlhttp.TransientRenderingException;
 import edu.harvard.iq.dvn.core.study.FileMetadata;
 import edu.harvard.iq.dvn.core.study.StudyFileServiceLocal;
+import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.util.StringUtil;
 import java.util.EventObject;
 import javax.faces.context.ExternalContext;
@@ -976,6 +977,64 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable, 
     }
 
     // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="study utilities">
+    public boolean isStudyPanelRendered() {
+        return "study".equals(selectedPanel);
+    }
+
+    String createStudyDraftIds;
+
+    public String getCreateStudyDraftIds() {
+        return createStudyDraftIds;
+    }
+
+    public void setCreateStudyDraftIds(String createStudyDraftIds) {
+        this.createStudyDraftIds = createStudyDraftIds;
+    }
+
+
+
+
+
+    public String createStudyDrafts_action() {
+        try {
+            Map tokenizedLists = determineStudyIds(createStudyDraftIds);
+            List ignoredList = new ArrayList();
+
+            for (Iterator it = ((List) tokenizedLists.get("idList")).iterator(); it.hasNext();) {
+                Long studyId = (Long) it.next();
+                Study study = studyService.getStudy(studyId);
+                Long currentVersionNumber = study.getLatestVersion().getVersionNumber();
+                StudyVersion editVersion = study.getEditVersion();
+                if ( currentVersionNumber.equals(editVersion.getVersionNumber()) ){
+                    // working copy already exists
+                    it.remove();
+                    ignoredList.add(studyId);
+                } else {
+                    // save new version
+                    studyService.saveStudyVersion(editVersion, getVDCSessionBean().getLoginBean().getUser().getId());
+                    studyService.updateStudyVersion(editVersion);
+                }
+            }
+
+            tokenizedLists.put("ignoredList", ignoredList );
+            tokenizedLists.put("ignoredReason", "working verison already exists" );
+
+            addMessage( "studyMessage", "Create Study Draft request completed." );
+            addStudyMessages( "studyMessage", tokenizedLists);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            addMessage( "studyMessage", "Create Drafts failed: An unknown error occurred trying to delete the following: \"" + deleteStudyIds + "\"" );
+        }
+
+        return null;
+    }
+
+
+    // </editor-fold>
+
     // ****************************
     // Common methods
     // ****************************

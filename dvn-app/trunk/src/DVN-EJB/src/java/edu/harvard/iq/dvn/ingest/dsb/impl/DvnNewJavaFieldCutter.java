@@ -148,14 +148,12 @@ public class DvnNewJavaFieldCutter {
 
         if (caseLength == 0) {
 
-            InputStreamReader isr = new InputStreamReader(in);
-
             int cread;
             int ccounter = 0;
 
             firstline = "";
 
-            while (caseLength == 0 && (cread = isr.read()) != -1) {
+            while (caseLength == 0 && (cread = in.read()) != -1) {
                 ccounter++;
                 if (cread == '\n') {
                     caseLength = ccounter;
@@ -164,13 +162,6 @@ public class DvnNewJavaFieldCutter {
                 firstline = firstline + c;
             }
 
-            //throw new IOException ("InputStream version of cutColumns called "+
-            //        "without the caseLength argument.");
-
-            //  TODO: this is the only reason we cannot subset ICPSR files
-            //  on the fly, without first saving in a temp file.
-            //  Fixing this could make a noticeable improvemnt when a large
-            //  file is being subset.
 
         }
 

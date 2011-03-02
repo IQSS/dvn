@@ -1753,9 +1753,6 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
     }
 
     public String save() {
-       if(dataTable.getVisualizationUrl().isEmpty()){
-           dataTable.setVisualizationUrlIncludeVariableNames(false);
-       }
        visualizationService.saveAll();
        return "";
     }

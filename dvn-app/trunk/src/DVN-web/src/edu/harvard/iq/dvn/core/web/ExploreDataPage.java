@@ -23,11 +23,6 @@ import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 import com.icesoft.faces.component.panelseries.PanelSeries;
-//import com.sun.corba.se.impl.io.TypeMismatchException;
-import javax.management.Query;
-import javax.servlet.http.HttpServletRequest;
-
-
 
 import com.icesoft.faces.component.ext.HtmlCommandButton;
 import com.icesoft.faces.component.ext.HtmlDataTable;
@@ -36,7 +31,6 @@ import com.icesoft.faces.component.ext.HtmlSelectOneMenu;
 import com.icesoft.faces.component.ext.HtmlCheckbox;
 import com.icesoft.faces.context.FileResource;
 import com.icesoft.faces.context.Resource;
-import com.icesoft.faces.context.StringResource;
 import com.icesoft.faces.context.effects.JavascriptContext;
 import edu.harvard.iq.dvn.core.study.DataVariable;
 import edu.harvard.iq.dvn.core.study.Study;
@@ -48,6 +42,8 @@ import edu.harvard.iq.dvn.core.visualization.DataVariableMapping;
 import edu.harvard.iq.dvn.core.web.study.StudyUI;
 import edu.harvard.iq.dvn.ingest.dsb.FieldCutter;
 import edu.harvard.iq.dvn.ingest.dsb.impl.DvnJavaFieldCutter;
+import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -55,8 +51,12 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.net.URL;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
@@ -73,7 +73,7 @@ import javax.ejb.EJBException;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
-
+import javax.imageio.ImageIO;
 
 /**
  *
@@ -138,9 +138,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     private List <VarGrouping> allVarGroupings = new ArrayList();
     private boolean showVariableInfoPopup = false;
     private String variableLabel = "";
-
-
-
 
     public ExploreDataPage() {
         
@@ -661,62 +658,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
           return selectItems;
 
     }
-    /*
 
-    private List<SelectItem> getFilterGroupsWithoutMeasure(){
-            List selectItems = new ArrayList<SelectItem>();
-        Long groupingId = new Long(0);
-        if (filterPanelGroup.getAttributes().get("groupingId") != null){
-            groupingId = new Long(filterPanelGroup.getAttributes().get("groupingId").toString());
-        }
-            Iterator itrG = filterGroupings.iterator();
-            while (itrG.hasNext()){
-                VarGroupingUI thisVarGrouping = (VarGroupingUI) itrG.next();
-                if (thisVarGrouping.getVarGrouping().getId().equals(groupingId)){
-                   List  varGroupTypeUIList = (List) thisVarGrouping.getVarGroupTypesUI();
-                   if (!varGroupTypeUIList.isEmpty()) {
-                        List <VarGroup> varGroupsAll = (List<VarGroup>)  visualizationService.getGroupsFromGroupingId(groupingId);
-                        for(VarGroup varGroup: varGroupsAll) {
-                            if (visualizationService.getGroupTypesFromGroupId(varGroup.getId()).isEmpty()){
-                                selectItems.add(new SelectItem(varGroup.getId(), varGroup.getName()));
-                            }
-
-                        }
-                   Iterator iterator = varGroupTypeUIList.iterator();
-                    while (iterator.hasNext() ){
-                        VarGroupTypeUI varGroupType = (VarGroupTypeUI) iterator.next();
-                        if (varGroupType.isEnabled()){
-                        List <VarGroup> varGroups = (List<VarGroup>)  visualizationService.getGroupsFromGroupTypeId(varGroupType.getVarGroupType().getId());
-                        for(VarGroup varGroup: varGroups) {
-                            boolean add = true;
-                            Iterator itrb = selectItems.iterator();
-                            while (itrb.hasNext()){
-                                SelectItem selectItemTest = (SelectItem) itrb.next();
-                                SelectItem selectItemNew = new SelectItem(varGroup.getId(), varGroup.getName());
-                                if (selectItemTest.getValue().equals(selectItemNew.getValue()) ) {
-                                            add = false;
-                                 }
-                            }
-                            if (add) selectItems.add(new SelectItem(varGroup.getId(), varGroup.getName()));
-                        }
-                        }
-
-                    }
-                   }  else {
-                        List <VarGroup> varGroups = (List<VarGroup>)  visualizationService.getGroupsFromGroupingId(groupingId);
-                        for(VarGroup varGroup: varGroups) {
-
-                            selectItems.add(new SelectItem(varGroup.getId(), varGroup.getName()));
-                        }
-
-                   }
-
-
-                }
-            }
-            return selectItems;
-    }
-*/
 
     public List<SelectItem> getSelectMeasureGroupTypes() {
 
@@ -1294,22 +1236,25 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
      public File getZipFileExport() {
 
-
         File zipOutputFile;
         ZipOutputStream zout;
+        String exportTimestamp = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss").format(new Date());
+        File csvFile = new File("csvData_" + exportTimestamp +  ".txt");
+        File imageUrlFile = new File("imageUrl_" + exportTimestamp +  ".png");
         try {
-            String exportTimestamp = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss").format(new Date());
-            File csvFile = new File("csvData_" + exportTimestamp +  ".txt");
-            File imageUrlFile = new File("imageUrl_" + exportTimestamp +  ".txt");
             writeFile(csvFile, csvString.toString().toCharArray(), csvString.toString().length() );
-            writeFile(imageUrlFile, imageURL.toCharArray(), imageURL.length() );
-            
-
             zipOutputFile = File.createTempFile("dataDownload_" + exportTimestamp , "zip");
             zout = new ZipOutputStream((OutputStream) new FileOutputStream(zipOutputFile));
-
             addZipEntry(zout, csvFile.getAbsolutePath(), "csvData_" + exportTimestamp +  ".txt");
-            addZipEntry(zout, imageUrlFile.getAbsolutePath(), "imageGraphURL_" + exportTimestamp + ".txt");
+            String decoded = URLDecoder.decode(imageURL, "UTF-8");
+            System.out.println("testURL is "+imageURL);
+            System.out.println(" decoded "+ decoded);
+            if (!decoded.isEmpty()){
+                 URL imageURLnew = new URL(decoded);
+                BufferedImage image =     ImageIO.read(imageURLnew);
+                ImageIO.write(image, "png", imageUrlFile);
+                addZipEntry(zout, imageUrlFile.getAbsolutePath(), "imageGraphURL_" + exportTimestamp + ".png");
+            }
             zout.close();
         } catch (IOException e) {
             throw new EJBException(e);
@@ -1317,6 +1262,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
         return zipOutputFile;
     }
+    
+
 
     private void writeFile(File fileIn, char[] charArrayIn, int bufSize){
             try {
@@ -1611,18 +1558,9 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         this.lineAdded = lineAdded;
     }
 
-    public Resource getCsvFile() {
-
-        Resource csvResource = new StringResource(csvString.toString());
-        /*return new FileResource();*/
-
-        return csvResource;
-    }
-
     public Resource getDownloadFile() {
 
         Resource csvResource = new FileResource(getZipFileExport());
-        /*return new FileResource();*/
 
         return csvResource;
     }
@@ -1720,5 +1658,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     public void setImageURL(String imageURL) {
         this.imageURL = imageURL;
     }
+
+    
 
 }

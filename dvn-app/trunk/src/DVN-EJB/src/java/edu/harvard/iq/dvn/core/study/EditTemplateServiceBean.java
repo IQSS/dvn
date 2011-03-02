@@ -96,6 +96,7 @@ public class EditTemplateServiceBean implements edu.harvard.iq.dvn.core.study.Ed
         initTemplate( vdcId);
         
         template.getMetadata().setDateOfDeposit("");
+        template.getMetadata().setUNF(null);
 
         em.persist(template);
       

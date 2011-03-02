@@ -327,300 +327,308 @@
     id="tabRecode"
     label="#{bundleAnalysis['recode.tab.text']}"
     title="Recoding and Case Selection">
-    <ice:panelGrid id="layoutPanel2"
-        columns="1"
-        cellpadding="0"
-        cellspacing="0"
-        style="width: 100%;">
-        <ice:panelGrid  id="gridPanel7"
-              cellpadding="0" 
-              cellspacing="0" 
-              columnClasses="vdcAnalysisCol1, vdcAnalysisCol2" 
-              columns="2" width="100%">
+
+    <ice:outputText id="msgRecodeUnavailable"
+        visible="true"
+        escape="false"
+        styleClass="errorMessage"
+		value="Recode functionality is temporarily unavailable. It is expected to be made available again in the next release. -- the DVN development team."/>
+
+
+<!--    <ice:panelGrid id="layoutPanel2"-->
+<!--        columns="1"-->
+<!--        cellpadding="0"-->
+<!--        cellspacing="0"-->
+<!--        style="width: 100%;">-->
+<!--        <ice:panelGrid  id="gridPanel7"-->
+<!--              cellpadding="0" -->
+<!--              cellspacing="0" -->
+<!--              columnClasses="vdcAnalysisCol1, vdcAnalysisCol2" -->
+<!--              columns="2" width="100%">-->
             <!-- 1st column -->
-            <ice:panelGrid id="groupPanel10"
-                columns="2">
-                <ice:panelGrid 
-                    columns="1">
-                    <ice:outputLabel id="listboxRecodeLabel" 
-                        for="listboxRecode" 
-                        value="#{bundleAnalysis['advStat.selectedVarBox.title']}" />                                
-                    <ice:selectOneListbox id="listboxRecode" 
-                        binding="#{AnalysisPage.listboxRecode}"
-                        immediate="true"
-                        value="#{AnalysisPage.selectedRecodeVariable}"
-                        valueChangeListener="#{AnalysisPage.recodeVariableChanged}"
-                        size="10" >
-                        <f:selectItems id="itemsRecode"  
-                             value="#{AnalysisPage.varSetAdvStat}"/>                                     
-                    </ice:selectOneListbox>
-                </ice:panelGrid>
-                
-                <ice:panelGroup id="groupPanelRecodeMiddleColumn">
-                    <ice:commandButton id="moveRecodeVarBttn"
-                        binding="#{AnalysisPage.moveRecodeVarBttn}"
-                        actionListener="#{AnalysisPage.moveRecodeVariable}"
-                        disabled="true"
-                        style="vertical-align:top"
-                        partialSubmit="true"
-                        alt="#{bundleAnalysis['recode.button.moveVar.alt']}"  
-                        value="Start" />
-                </ice:panelGroup>
-                <ice:panelGroup>
-                    <ice:outputText id="msgMoveRecodeVarBttn"
-                        binding="#{AnalysisPage.msgMoveRecodeVarBttn}"
-                        rendered="false"
-                        escape="false"
-                        styleClass="errorMessage"/>
-                </ice:panelGroup>
-            </ice:panelGrid>
+<!--            <ice:panelGrid id="groupPanel10"-->
+<!--                columns="2">-->
+<!--                <ice:panelGrid -->
+<!--                    columns="1">-->
+<!--                    <ice:outputLabel id="listboxRecodeLabel" -->
+<!--                        for="listboxRecode" -->
+<!--                        value="#{bundleAnalysis['advStat.selectedVarBox.title']}" />                                -->
+<!--                    <ice:selectOneListbox id="listboxRecode" -->
+<!--                        binding="#{AnalysisPage.listboxRecode}"-->
+<!--                        immediate="true"-->
+<!--                        value="#{AnalysisPage.selectedRecodeVariable}"-->
+<!--                        valueChangeListener="#{AnalysisPage.recodeVariableChanged}"-->
+<!--                        size="10" >-->
+<!--                        <f:selectItems id="itemsRecode"  -->
+<!--                             value="#{AnalysisPage.varSetAdvStat}"/>                                     -->
+<!--                    </ice:selectOneListbox>-->
+<!--                </ice:panelGrid>-->
+<!--                -->
+<!--                <ice:panelGroup id="groupPanelRecodeMiddleColumn">-->
+<!--                    <ice:commandButton id="moveRecodeVarBttn"-->
+<!--                        binding="#{AnalysisPage.moveRecodeVarBttn}"-->
+<!--                        actionListener="#{AnalysisPage.moveRecodeVariable}"-->
+<!--                        disabled="true"-->
+<!--                        style="vertical-align:top"-->
+<!--                        partialSubmit="true"-->
+<!--                        alt="#{bundleAnalysis['recode.button.moveVar.alt']}"  -->
+<!--                        value="Start" />-->
+<!--                </ice:panelGroup>-->
+<!--                <ice:panelGroup>-->
+<!--                    <ice:outputText id="msgMoveRecodeVarBttn"-->
+<!--                        binding="#{AnalysisPage.msgMoveRecodeVarBttn}"-->
+<!--                        rendered="false"-->
+<!--                        escape="false"-->
+<!--                        styleClass="errorMessage"/>-->
+<!--                </ice:panelGroup>-->
+<!--            </ice:panelGrid>-->
             <!-- end: 1st column -->
-
+<!---->
             <!-- 2nd column -->
-            <ice:panelGrid id="groupPanel11" 
-                columns="1">
+<!--            <ice:panelGrid id="groupPanel11" -->
+<!--                columns="1">-->
                 <!-- instruction lines-->
-                <ice:column>
-                    <ice:panelGrid id="groupPanelRecodeInstruction1"
-                        binding="#{AnalysisPage.groupPanelRecodeInstruction1}"
-                        rendered="true"
-                        columns="1">
-                        <ice:panelGroup styleClass="vdcHelpText">
-                            <ice:graphicImage
-                                alt="Information"
-                                title="Information"
-                                value="/resources/images/icon_info.gif"/>
-                            <ice:outputText id="outputText491"
-                                value="#{bundleAnalysis['recode.instruction.line1']}"/>
-                        </ice:panelGroup>
-                    </ice:panelGrid>
-
-                <ice:panelGrid id="groupPanelRecodeInstruction2" 
-                    binding="#{AnalysisPage.groupPanelRecodeInstruction2}"
-                    rendered="false"
-                    columns="1">
-                    <ice:panelGroup styleClass="vdcHelpText">
-                        <ice:graphicImage 
-                            alt="Information" 
-                            title="Information" 
-                            value="/resources/images/icon_info.gif"/>
-                        <ice:outputText id="outputText492"
-                                        value="#{bundleAnalysis['recode.instruction.line2']}"/>
-                        <ice:outputText id="outputText493"
-                                        value="#{bundleAnalysis['recode.instruction.line3']}"/>
-                    </ice:panelGroup>
-
-                    <ice:panelGroup styleClass="vdcHelpText">
-                        <ice:outputText id="rfb" escape="false" value="(" />
-                        <ice:graphicImage value="/resources/images/icon_required.gif" />
-                        <ice:outputText id="rfa"
-                            value="indicates a required field.)" />
-                    </ice:panelGroup>
-                </ice:panelGrid>
-                
+<!--                <ice:column>-->
+<!--                    <ice:panelGrid id="groupPanelRecodeInstruction1"-->
+<!--                        binding="#{AnalysisPage.groupPanelRecodeInstruction1}"-->
+<!--                        rendered="true"-->
+<!--                        columns="1">-->
+<!--                        <ice:panelGroup styleClass="vdcHelpText">-->
+<!--                            <ice:graphicImage-->
+<!--                                alt="Information"-->
+<!--                                title="Information"-->
+<!--                                value="/resources/images/icon_info.gif"/>-->
+<!--                            <ice:outputText id="outputText491"-->
+<!--                                value="#{bundleAnalysis['recode.instruction.line1']}"/>-->
+<!--                        </ice:panelGroup>-->
+<!--                    </ice:panelGrid>-->
+<!-- -->
+<!--                <ice:panelGrid id="groupPanelRecodeInstruction2" -->
+<!--                    binding="#{AnalysisPage.groupPanelRecodeInstruction2}"-->
+<!--                    rendered="false"-->
+<!--                    columns="1">-->
+<!--                    <ice:panelGroup styleClass="vdcHelpText">-->
+<!--                        <ice:graphicImage -->
+<!--                            alt="Information" -->
+<!--                            title="Information" -->
+<!--                            value="/resources/images/icon_info.gif"/>-->
+<!--                        <ice:outputText id="outputText492"-->
+<!--                                        value="#{bundleAnalysis['recode.instruction.line2']}"/>-->
+<!--                        <ice:outputText id="outputText493"-->
+<!--                                        value="#{bundleAnalysis['recode.instruction.line3']}"/>-->
+<!--                    </ice:panelGroup>-->
+<!---->
+<!--                    <ice:panelGroup styleClass="vdcHelpText">-->
+<!--                        <ice:outputText id="rfb" escape="false" value="(" />-->
+<!--                        <ice:graphicImage value="/resources/images/icon_required.gif" />-->
+<!--                        <ice:outputText id="rfa"-->
+<!--                            value="indicates a required field.)" />-->
+<!--                    </ice:panelGroup>-->
+<!--                </ice:panelGrid>-->
+<!--                -->
                 <!-- recoding working area -->
-                <ice:panelGrid id="groupPanelRecodeTableArea" 
-                    binding="#{AnalysisPage.groupPanelRecodeTableArea}"
-                    rendered="false"
-                    columns="1" >
-                    
+<!--                <ice:panelGrid id="groupPanelRecodeTableArea" -->
+<!--                    binding="#{AnalysisPage.groupPanelRecodeTableArea}"-->
+<!--                    rendered="false"-->
+<!--                    columns="1" >-->
+<!--                    -->
                     <!-- input boxes for variable name/label -->
-                    <ice:panelGrid id="groupPanel15" 
-                        cellpadding="0" 
-                        cellspacing="10px" 
-                        columns="2">
-
-                        <ice:panelGrid id="groupPanelRecodeNewVarInfo" 
-                            binding="#{AnalysisPage.groupPanelRecodeNewVarInfo}" 
-                            columns="1">
-                            <ice:panelGroup>
-                                <ice:outputText id="currentConditionVar" 
-                                     value="#{bundleAnalysis['recode.currentConditionVar']}"/>
-                            </ice:panelGroup>
-                            
-                                <ice:panelGroup>    
-                                <ice:outputText id="recodeNewVarName" 
-                                    value="#{bundleAnalysis['recode.newVar.name']}"/>
-                                <ice:graphicImage  value="/resources/images/icon_required.gif"/>
-                                </ice:panelGroup>
-                            
-                            <ice:panelGroup>
-                                <ice:outputText id="recodeNewVarLabel"
-                                    value="#{bundleAnalysis['recode.newVar.label']}"/>
-                            </ice:panelGroup>
-                        </ice:panelGrid>
-                        <ice:panelGrid
-                            columns="1">
-                            <ice:panelGroup>
-                            <ice:outputText id="currentRecodeVariableName"
-                                value="#{AnalysisPage.currentRecodeVariableName}"/>
-                            </ice:panelGroup>
-                            <ice:panelGroup>
-                            <ice:inputText id="recodeTargetVarName"
-                                 binding="#{AnalysisPage.recodeTargetVarName}"
-                                 immediate="true"/>
-                            </ice:panelGroup>
-                            <ice:panelGroup>
-                            <ice:inputText id="recodeTargetVarLabel"
-                                binding="#{AnalysisPage.recodeTargetVarLabel}"
-                                immediate="true"
-                                size="40"/>
-                            </ice:panelGroup>
-                        </ice:panelGrid>
-                    </ice:panelGrid>
+<!--                    <ice:panelGrid id="groupPanel15" -->
+<!--                        cellpadding="0" -->
+<!--                        cellspacing="10px" -->
+<!--                        columns="2">-->
+<!---->
+<!--                        <ice:panelGrid id="groupPanelRecodeNewVarInfo" -->
+<!--                            binding="#{AnalysisPage.groupPanelRecodeNewVarInfo}" -->
+<!--                            columns="1">-->
+<!--                            <ice:panelGroup>-->
+<!--                                <ice:outputText id="currentConditionVar" -->
+<!--                                     value="#{bundleAnalysis['recode.currentConditionVar']}"/>-->
+<!--                            </ice:panelGroup>-->
+<!--                            -->
+<!--                                <ice:panelGroup>    -->
+<!--                                <ice:outputText id="recodeNewVarName" -->
+<!--                                    value="#{bundleAnalysis['recode.newVar.name']}"/>-->
+<!--                                <ice:graphicImage  value="/resources/images/icon_required.gif"/>-->
+<!--                                </ice:panelGroup>-->
+<!--                            -->
+<!--                            <ice:panelGroup>-->
+<!--                                <ice:outputText id="recodeNewVarLabel"-->
+<!--                                    value="#{bundleAnalysis['recode.newVar.label']}"/>-->
+<!--                            </ice:panelGroup>-->
+<!--                        </ice:panelGrid>-->
+<!--                        <ice:panelGrid-->
+<!--                            columns="1">-->
+<!--                            <ice:panelGroup>-->
+<!--                            <ice:outputText id="currentRecodeVariableName"-->
+<!--                                value="#{AnalysisPage.currentRecodeVariableName}"/>-->
+<!--                            </ice:panelGroup>-->
+<!--                            <ice:panelGroup>-->
+<!--                            <ice:inputText id="recodeTargetVarName"-->
+<!--                                 binding="#{AnalysisPage.recodeTargetVarName}"-->
+<!--                                 immediate="true"/>-->
+<!--                            </ice:panelGroup>-->
+<!--                            <ice:panelGroup>-->
+<!--                            <ice:inputText id="recodeTargetVarLabel"-->
+<!--                                binding="#{AnalysisPage.recodeTargetVarLabel}"-->
+<!--                                immediate="true"-->
+<!--                                size="40"/>-->
+<!--                            </ice:panelGroup>-->
+<!--                        </ice:panelGrid>-->
+<!--                    </ice:panelGrid>-->
                     <!-- end of variable name/label boxes-->
                     <!-- help pane -->
-                    <ice:panelGrid id="recodeTableHelpPanel" columns="1"
-                        binding="#{AnalysisPage.groupPanelRecodeTableHelp}">
-                        
-                            <ice:panelGroup styleClass="vdcHelpText">
-                                <ice:graphicImage
-                                    alt="Information"
-                                    title="Information"
-                                    value="/resources/images/icon_info.gif"/>
-                                <ice:outputText id="recodeHowToRecodeInstruction"
-                                                value="#{bundleAnalysis['recode.howToRecode.instruction']} "/>
-                                <ice:graphicImage
-                                    alt="Click to show the how-to information"
-                                    title="Click to show/hide how-to information"
-                                    value="/resources/images/icon_help.gif"
-                                    onclick="return shwNshwTxt('recodeDetail');"/>
-                                <div id="recodeDetail"
-                                     style="display:none">
-                                    <ice:outputText id="recodeHowToRecodeDetails"
-                                                    value="#{bundleAnalysis['recode.howToRecode.details']}"/>
-                                </div>
-                            </ice:panelGroup>                        
-                        
-                        
-                            <ice:panelGroup styleClass="vdcHelpText">
-                                <ice:graphicImage
-                                    alt="Information"
-                                    title="Information"
-                                    value="/resources/images/icon_info.gif"/>
-                                <ice:outputText id="recodeHowToSubsetInstruction"
-                                    value="#{bundleAnalysis['recode.howToSubset.instruction']} "/>
-                                <ice:graphicImage
-                                    alt="Click to show the how-to information"
-                                    title="Click to show/hide how-to information"
-                                    value="/resources/images/icon_help.gif"
-                                    onclick="return shwNshwTxt('subsetDetail');"/>
-                                <div id="subsetDetail"
-                                     style="display:none">
-                                    <ice:outputText id="recodeHowToSubsetDetails"
-                                                    value="#{bundleAnalysis['recode.howToSubset.details']}"/>
-                                </div>
-                            </ice:panelGroup>
-                        
-                            <ice:panelGroup styleClass="vdcHelpText">
-                                <ice:graphicImage
-                                    alt="Information"
-                                    title="Information"
-                                    value="/resources/images/icon_info.gif"/>
-                                <ice:outputText id="recodeHowToEnterConditionInstruction"
-                                    value="#{bundleAnalysis['recode.howToEnterCondition.instruction']} "/>
-                                <ice:graphicImage
-                                    alt="Click to show the how-to information"
-                                    title="Click to show/hide how-to information"
-                                    value="/resources/images/icon_help.gif"
-                                    onclick="return shwNshwTxt('conditionDetail');"/>
-                                <div id="conditionDetail"
-                                     style="display:none">
-                                    <ice:outputText id="recodeHowToEnterConditionDetails"
-                                                    value="#{bundleAnalysis['recode.howToEnterCondition.details']}"/>
-                                </div>
-                            </ice:panelGroup>
-                    </ice:panelGrid>
+<!--                    <ice:panelGrid id="recodeTableHelpPanel" columns="1"-->
+<!--                        binding="#{AnalysisPage.groupPanelRecodeTableHelp}">-->
+<!--                        -->
+<!--                            <ice:panelGroup styleClass="vdcHelpText">-->
+<!--                                <ice:graphicImage-->
+<!--                                    alt="Information"-->
+<!--                                    title="Information"-->
+<!--                                    value="/resources/images/icon_info.gif"/>-->
+<!--                                <ice:outputText id="recodeHowToRecodeInstruction"-->
+<!--                                                value="#{bundleAnalysis['recode.howToRecode.instruction']} "/>-->
+<!--                                <ice:graphicImage-->
+<!--                                    alt="Click to show the how-to information"-->
+<!--                                    title="Click to show/hide how-to information"-->
+<!--                                    value="/resources/images/icon_help.gif"-->
+<!--                                    onclick="return shwNshwTxt('recodeDetail');"/>-->
+<!--                                <div id="recodeDetail"-->
+<!--                                     style="display:none">-->
+<!--                                    <ice:outputText id="recodeHowToRecodeDetails"-->
+<!--                                                    value="#{bundleAnalysis['recode.howToRecode.details']}"/>-->
+<!--                                </div>-->
+<!--                            </ice:panelGroup>                        -->
+<!--                        -->
+<!--                        -->
+<!--                            <ice:panelGroup styleClass="vdcHelpText">-->
+<!--                                <ice:graphicImage-->
+<!--                                    alt="Information"-->
+<!--                                    title="Information"-->
+<!--                                    value="/resources/images/icon_info.gif"/>-->
+<!--                                <ice:outputText id="recodeHowToSubsetInstruction"-->
+<!--                                    value="#{bundleAnalysis['recode.howToSubset.instruction']} "/>-->
+<!--                                <ice:graphicImage-->
+<!--                                    alt="Click to show the how-to information"-->
+<!--                                    title="Click to show/hide how-to information"-->
+<!--                                    value="/resources/images/icon_help.gif"-->
+<!--                                    onclick="return shwNshwTxt('subsetDetail');"/>-->
+<!--                                <div id="subsetDetail"-->
+<!--                                     style="display:none">-->
+<!--                                    <ice:outputText id="recodeHowToSubsetDetails"-->
+<!--                                                    value="#{bundleAnalysis['recode.howToSubset.details']}"/>-->
+<!--                                </div>-->
+<!--                            </ice:panelGroup>-->
+<!--                        -->
+<!--                            <ice:panelGroup styleClass="vdcHelpText">-->
+<!--                                <ice:graphicImage-->
+<!--                                    alt="Information"-->
+<!--                                    title="Information"-->
+<!--                                    value="/resources/images/icon_info.gif"/>-->
+<!--                                <ice:outputText id="recodeHowToEnterConditionInstruction"-->
+<!--                                    value="#{bundleAnalysis['recode.howToEnterCondition.instruction']} "/>-->
+<!--                                <ice:graphicImage-->
+<!--                                    alt="Click to show the how-to information"-->
+<!--                                    title="Click to show/hide how-to information"-->
+<!--                                    value="/resources/images/icon_help.gif"-->
+<!--                                    onclick="return shwNshwTxt('conditionDetail');"/>-->
+<!--                                <div id="conditionDetail"-->
+<!--                                     style="display:none">-->
+<!--                                    <ice:outputText id="recodeHowToEnterConditionDetails"-->
+<!--                                                    value="#{bundleAnalysis['recode.howToEnterCondition.details']}"/>-->
+<!--                                </div>-->
+<!--                            </ice:panelGroup>-->
+<!--                    </ice:panelGrid>-->
                     <!-- end of help panel -->
                     <!-- recoding table panel -->
-                    <ice:dataTable id="recodeTable" 
-                        binding="#{AnalysisPage.recodeTable}"
-                        var="rd"
-                        value="#{AnalysisPage.recodeDataList}"
-                        rendered="false"
-                        cellpadding="0" cellspacing="0" 
-                        columnClasses="vdcRecodesColA, vdcRecodesColB, vdcRecodesColB, vdcRecodesColB, vdcRecodesColB, vdcRecodesColB, vdcRecodesColB, vdcRecodesColB" 
-                        headerClass="vdcRecodesHeader" 
-                        style="margin-top: 20px">
-
-                        <ice:column id="recodeClDropx">
-                            <f:facet name="header">
-                                <ice:outputText id="recodeHdrDrop" 
-                                    value="#{bundleAnalysis['recode.valueTable.drop.header']}"/>
-                            </f:facet>
-                            <ice:selectBooleanCheckbox
-                                id="recodeDropValueCheckboxx"
-                                binding="#{AnalysisPage.recodeDropValueCheckboxx}" 
-                                value="#{rd[0]}" 
-                                title="#{bundleAnalysis['recode.valueTable.drop.checkbox']}"
-                                immediate="true"/>   
-                        </ice:column>
-                        <ice:column id="recodeClVariable">
-                            <f:facet name="header">
-                                <ice:outputText id="recodeHdrVariable" 
-                                    value="#{AnalysisPage.currentRecodeVariableName}"/>
-                            </f:facet>
-                            <ice:inputText  id="recodeVariableNameBox"
-                                value="#{rd[3]}" 
-                                size="10"/>
-                        </ice:column>
-                        <ice:column id="recodeClArrow">
-                            <f:facet name="header">
-                            </f:facet>
-                            <ice:graphicImage
-                                alt="Information"
-                                title="Information"
-                                styleClass="vdcNoBorders"
-                                style="vertical-align: middle"
-                                value="/resources/images/arrow_right.gif"/>
-                        </ice:column>
-                        <ice:column id="recodeClValue">
-                            <f:facet name="header">
-                                <ice:outputText id="recodeHdrValue" 
-                                    value="#{bundleAnalysis['recode.valueTable.value.header']}"/>
-                            </f:facet>
-                            <ice:inputText id="recodeValueBox" 
-                                binding="#{AnalysisPage.recodeValueBox}"
-                                immediate="true"
-                                value="#{rd[1]}"
-                                size="10"/>
-                        </ice:column>
-                        <ice:column id="recodeClValueLabel">
-                            <f:facet name="header">
-                                <ice:outputText id="recodeHdrValueLabel" 
-                                    value="#{bundleAnalysis['recode.valueTable.valuelabel.header']}"/>
-                            </f:facet>
-                            <ice:inputText id="recodeValueLabelBox"
-                                immediate="false"
-                                value="#{rd[2]}" 
-                                size="25"/>
-                        </ice:column>
-                    </ice:dataTable>
+<!--                    <ice:dataTable id="recodeTable" -->
+<!--                        binding="#{AnalysisPage.recodeTable}"-->
+<!--                        var="rd"-->
+<!--                        value="#{AnalysisPage.recodeDataList}"-->
+<!--                        rendered="false"-->
+<!--                        cellpadding="0" cellspacing="0" -->
+<!--                        columnClasses="vdcRecodesColA, vdcRecodesColB, vdcRecodesColB, vdcRecodesColB, vdcRecodesColB, vdcRecodesColB, vdcRecodesColB, vdcRecodesColB" -->
+<!--                        headerClass="vdcRecodesHeader" -->
+<!--                        style="margin-top: 20px">-->
+<!-- -->
+<!--                        <ice:column id="recodeClDropx">-->
+<!--                            <f:facet name="header">-->
+<!--                                <ice:outputText id="recodeHdrDrop" -->
+<!--                                    value="#{bundleAnalysis['recode.valueTable.drop.header']}"/>-->
+<!--                            </f:facet>-->
+<!--                            <ice:selectBooleanCheckbox-->
+<!--                                id="recodeDropValueCheckboxx"-->
+<!--                                binding="#{AnalysisPage.recodeDropValueCheckboxx}" -->
+<!--                                value="#{rd[0]}" -->
+<!--                                title="#{bundleAnalysis['recode.valueTable.drop.checkbox']}"-->
+<!--                                immediate="true"/>   -->
+<!--                        </ice:column>-->
+<!--                        <ice:column id="recodeClVariable">-->
+<!--                            <f:facet name="header">-->
+<!--                                <ice:outputText id="recodeHdrVariable" -->
+<!--                                    value="#{AnalysisPage.currentRecodeVariableName}"/>-->
+<!--                            </f:facet>-->
+<!--                            <ice:inputText  id="recodeVariableNameBox"-->
+<!--                                value="#{rd[3]}" -->
+<!--                                size="10"/>-->
+<!--                        </ice:column>-->
+<!--                        <ice:column id="recodeClArrow">-->
+<!--                            <f:facet name="header">-->
+<!--                            </f:facet>-->
+<!--                            <ice:graphicImage-->
+<!--                                alt="Information"-->
+<!--                                title="Information"-->
+<!--                                styleClass="vdcNoBorders"-->
+<!--                                style="vertical-align: middle"-->
+<!--                                value="/resources/images/arrow_right.gif"/>-->
+<!--                        </ice:column>-->
+<!--                        <ice:column id="recodeClValue">-->
+<!--                            <f:facet name="header">-->
+<!--                                <ice:outputText id="recodeHdrValue" -->
+<!--                                    value="#{bundleAnalysis['recode.valueTable.value.header']}"/>-->
+<!--                            </f:facet>-->
+<!--                            <ice:inputText id="recodeValueBox" -->
+<!--                                binding="#{AnalysisPage.recodeValueBox}"-->
+<!--                                immediate="true"-->
+<!--                                value="#{rd[1]}"-->
+<!--                                size="10"/>-->
+<!--                        </ice:column>-->
+<!--                        <ice:column id="recodeClValueLabel">-->
+<!--                            <f:facet name="header">-->
+<!--                                <ice:outputText id="recodeHdrValueLabel" -->
+<!--                                    value="#{bundleAnalysis['recode.valueTable.valuelabel.header']}"/>-->
+<!--                            </f:facet>-->
+<!--                            <ice:inputText id="recodeValueLabelBox"-->
+<!--                                immediate="false"-->
+<!--                                value="#{rd[2]}" -->
+<!--                                size="25"/>-->
+<!--                        </ice:column>-->
+<!--                    </ice:dataTable>-->
                     <!-- end of recoding table -->
-                    <br />
-                    <ice:commandButton id="addValueRangeBttn" 
-                        binding="#{AnalysisPage.addValueRangeBttn}"
-                        value="#{bundleAnalysis['recode.button.addValue']}"
-                        actionListener="#{AnalysisPage.addValueRange}"
-                        rendered ="false"/>
-                    <ice:panelGrid id="groupPanel18" 
-                        columns="1" styleClass="dvnFormPaddingTop">
-                        <ice:commandButton id="recodeBttn"
-                            binding="#{AnalysisPage.recodeButton}" 
-                            value="#{bundleAnalysis['recode.button.save']}"
-                            actionListener="#{AnalysisPage.saveRecodedVariable}"
-                            disabled="true" />
-                        <ice:outputText id="msgSaveRecodeBttn"
-                            binding="#{AnalysisPage.msgSaveRecodeBttn}" 
-                            rendered="false"
-                            escape="false"
-                            styleClass="errorMessage"/>
-                    </ice:panelGrid>
-                </ice:panelGrid><!-- recodeTableArea -->
-                </ice:column>
-            </ice:panelGrid><!--end 2nd column  -->
-        </ice:panelGrid>
-    </ice:panelGrid>
+<!--                    <br />-->
+<!--                    <ice:commandButton id="addValueRangeBttn" -->
+<!--                        binding="#{AnalysisPage.addValueRangeBttn}"-->
+<!--                        value="#{bundleAnalysis['recode.button.addValue']}"-->
+<!--                        actionListener="#{AnalysisPage.addValueRange}"-->
+<!--                        rendered ="false"/>-->
+<!--                    <ice:panelGrid id="groupPanel18" -->
+<!--                        columns="1" styleClass="dvnFormPaddingTop">-->
+<!--                        <ice:commandButton id="recodeBttn"-->
+<!--                            binding="#{AnalysisPage.recodeButton}" -->
+<!--                            value="#{bundleAnalysis['recode.button.save']}"-->
+<!--                            actionListener="#{AnalysisPage.saveRecodedVariable}"-->
+<!--                            disabled="true" />-->
+<!--                        <ice:outputText id="msgSaveRecodeBttn"-->
+<!--                            binding="#{AnalysisPage.msgSaveRecodeBttn}" -->
+<!--                            rendered="false"-->
+<!--                            escape="false"-->
+<!--                            styleClass="errorMessage"/>-->
+<!--                    </ice:panelGrid>-->
+<!--                </ice:panelGrid> recodeTableArea -->
+<!--                </ice:column>-->
+<!--            </ice:panelGrid> end 2nd column  -->
+<!--        </ice:panelGrid>-->
+<!--    </ice:panelGrid>-->
     </ice:panelTab>
 <!-- 3. EDA -->
 <ice:panelTab

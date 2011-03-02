@@ -10,7 +10,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipInputStream;
 
-import javax.ejb.EJB;
+import javax.naming.InitialContext;
 
 
 // Apache toolkit imports:
@@ -30,8 +30,8 @@ import edu.harvard.iq.dvn.core.study.RemoteAccessAuth;
 import edu.harvard.iq.dvn.core.web.dvnremote.DvnTermsOfUseAccess;
 import edu.harvard.iq.dvn.core.web.dvnremote.ICPSRauth;
 
-
 public class HttpAccessObject extends DataAccessObject {
+    private StudyServiceLocal studyService = null;
 
     public HttpAccessObject () throws IOException {
         this(null);
@@ -55,8 +55,6 @@ public class HttpAccessObject extends DataAccessObject {
         //this.setIsNIOSupported(true);
     }
 
-    @EJB StudyServiceLocal studyService;
-
 
     public boolean canAccess (String location) throws IOException{
         return true;
@@ -74,6 +72,12 @@ public class HttpAccessObject extends DataAccessObject {
 
         if (req.getParameter("noVarHeader") != null) {
             this.setNoVarHeader(true);
+        }
+
+        try {
+            this.studyService = (StudyServiceLocal) new InitialContext().lookup("java:comp/env/studyService");
+        } catch (Exception e) {
+            throw new IOException ("Caught exception trying to look up studyService; "+e.getMessage());
         }
 
 

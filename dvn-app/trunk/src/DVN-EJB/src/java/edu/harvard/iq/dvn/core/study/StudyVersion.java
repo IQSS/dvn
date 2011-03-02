@@ -242,6 +242,9 @@ public class StudyVersion implements Serializable {
      */
     public void updateVersionContributors(VDCUser user) {
             boolean foundUser = false;
+            if (versionContributors == null) {
+                versionContributors = new ArrayList();
+            }
             for (VersionContributor vc : versionContributors) {
                 if (vc.getContributor().equals(user)) {
                   vc.setLastUpdateTime(new Date());

@@ -272,7 +272,22 @@
                   <ice:commandButton value="Fix Handles" action="#{UtilitiesPage.handleFixAll_action}"/>
                 </div>
               </ice:panelGrid>
-
+              <!-- STUDY PANEL -->
+              <div class="vdcStudyInfoHeader dvnFormPadding">
+                <ice:outputText value="Study Utilities"/>
+                <ice:outputLink title="Display this panel" rendered="#{!UtilitiesPage.studyPanelRendered}" value="/dvn#{VDCRequest.currentVDCURL}/faces/networkAdmin/UtilitiesPage.xhtml?selectedPanel=study">
+                  <ice:graphicImage styleClass="vdcNoBorders" value="/resources/images/icon_contract.gif"/>
+                </ice:outputLink>
+                <ice:graphicImage styleClass="vdcNoBorders" value="/resources/images/icon_expand.gif" rendered="#{UtilitiesPage.studyPanelRendered}"/>
+              </div>
+              <ice:panelGrid styleClass="dvnUtilitiesTable" rendered="#{UtilitiesPage.studyPanelRendered}">
+                <ice:messages id="studyMessage" styleClass="errorMessage"/>
+                <ice:outputText value="To create draft versions of studies, input the study ids and click on the button below. Note: If the study already has a draft (or in review) version, that study will be ignored:"/>
+                <div>
+                  <ice:inputTextarea value="#{UtilitiesPage.createStudyDraftIds}" rows="8" cols="80"/>
+                  <ice:commandButton value="Create Drafts" action="#{UtilitiesPage.createStudyDrafts_action}"/>
+              </div>
+          </ice:panelGrid>
             </div>
           </div>
         </div>

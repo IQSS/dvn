@@ -335,19 +335,15 @@ function drawVisualization() {
       var data = new google.visualization.DataTable();
       var data2 = new google.visualization.DataTable();
         parseData(data, intDisType, intStartYear, intEndYear, useIndex);
+                                   
+        parseData(data2, 2, intStartYear, intEndYear, useIndex);
+        var chart = new google.visualization.ImageChart(document.getElementById('chart_div'));
+        chart.draw(data2, {cht: 'lc', title: fullTitle, colors: ['#4684EE', '#DC3912', '#FF9900', '#008000', '#4942CC', '#990099', '#FF80F2', '#7FD127']});
+        var imageURL = chart.getImageUrl();
+        document.getElementById('ExploreDataPage:imageURL').value = imageURL;
+
+
         if (intDisType == 1){
-                if (first){                    
-                    intDisType = 2;
-                    parseData(data2, intDisType, intStartYear, intEndYear, useIndex);                    
-                    var chart = new google.visualization.ImageChart(document.getElementById('chart_div'));
-                    chart.draw(data2, {cht: 'lc', title: fullTitle, colors: ['#4684EE', '#DC3912', '#FF9900', '#008000', '#4942CC', '#990099', '#FF80F2', '#7FD127']});                    
-                    var imageURL = chart.getImageUrl();
-
-                    document.getElementById('ExploreDataPage:imageURL').value = imageURL;
-                    document.getElementById('ExploreDataPage:hasURL').value = "true";
-                    intDisType = 1;
-                }
-
                 var chart = new google.visualization.AnnotatedTimeLine(document.getElementById('chart_div'));
                 chart.draw(data, {allowRedraw: true}, {displayZoomButtons: false}, {displayAnnotations: false});
                 jQuery('#chart_div').css({'overflow-y' : 'visible'});
@@ -368,10 +364,6 @@ function drawVisualization() {
              var fullTitle = displayTitle + "  "  + sourceData;
              var chart = new google.visualization.ImageChart(document.getElementById('chart_div'));
              chart.draw(data, {cht: 'lc', title: fullTitle, colors: ['#4684EE', '#DC3912', '#FF9900', '#008000', '#4942CC', '#990099', '#FF80F2', '#7FD127']});
-             var imageURL = chart.getImageUrl();
-
-             document.getElementById('ExploreDataPage:imageURL').value = imageURL;
-             document.getElementById('ExploreDataPage:hasURL').value = "true";
              jQuery('#chart_div').css({'overflow-y' : 'visible'});
              jQuery('.dvnGraphExtractImageButton').css({'display' : 'block'});
         }
@@ -410,7 +402,7 @@ function updateIndexYear(){
 
 function updateDisplayType(){
      document.getElementById('ExploreDataPage:selectDisplayButton').click();
-     setTimeout(function(){drawVisualization();}, 500);
+     
 }
 
 function startDownload()
@@ -690,9 +682,9 @@ function getImageURLButton()
                           <input type="button" class="dvnDataExplorationDnldBttn" value="Export Results" onclick="startDownload();"/>
                           <ice:outputResource label="Export" type="button" style="display:none;"
                                id="downloadDataFiles"
-                               fileName="#{ExploreDataPage.csvFileName}" mimeType="application/zip"
+                                mimeType="application/zip"
                                resource="#{ExploreDataPage.downloadFile}" shared="false"/>
-                          <ice:commandButton id="getImageURL" styleClass="dvnGraphExtractImageButton" value="Extract Image Graph" onclick="getImageURLButton();"/>
+
                     </div>
                 </div>
                <ice:panelPopup id="variableInfoPopup"

@@ -1269,8 +1269,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                     ImageIO.write(image, "png", imageUrlFile);
                     addZipEntry(zout, imageUrlFile.getAbsolutePath(), "imageGraphURL_" + exportTimestamp + ".png");
                 } catch (IIOException io){
-                    
-                     System.out.println(" IIOException "+ exportTimestamp);
+
+                     System.out.println(" IIOException "+ io.getMessage() + " " + exportTimestamp );
                 }
             }
             zout.close();
@@ -1633,19 +1633,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         this.displayIndexes = displayIndexes;
     }
 
-    public boolean isIncludeVariableNames() {
-        return dt.isVisualizationUrlIncludeVariableNames();
-    }
 
-    public String getSourceURL() {
-        String returnString = dt.getVisualizationUrl();
-        if(dt.isVisualizationUrlIncludeVariableNames()){
-            for (VisualizationLineDefinition vld : vizLines){
-                returnString = returnString + "?" + vld.getVariableName();
-            }
-        }
-        return returnString;
-    }
 
 
     public String getSources() {

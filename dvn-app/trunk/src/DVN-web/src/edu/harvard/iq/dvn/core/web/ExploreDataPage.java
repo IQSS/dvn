@@ -73,6 +73,7 @@ import javax.ejb.EJBException;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
+import javax.imageio.IIOException;
 import javax.imageio.ImageIO;
 
 /**
@@ -138,6 +139,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     private List <VarGrouping> allVarGroupings = new ArrayList();
     private boolean showVariableInfoPopup = false;
     private String variableLabel = "";
+    private File zipFileResource = new File ("placeholder.zip");
 
     public ExploreDataPage() {
         
@@ -668,6 +670,9 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     public void reset_DisplayType(){
         Object value= this.selectGraphType.getValue();
         this.displayType = new Long((String) value );
+           FacesContext fc = FacesContext.getCurrentInstance();
+           JavascriptContext.addJavascriptCall(fc, "drawVisualization();");
+           JavascriptContext.addJavascriptCall(fc, "initLineDetails");
     }
 
     public void update_StartYear(){
@@ -761,10 +766,11 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
            getDataTable();
            resetLineBorder();
            getSourceList();
+
            FacesContext fc = FacesContext.getCurrentInstance();
-           JavascriptContext.addJavascriptCall(fc, "drawVisualization();");
-           
+           JavascriptContext.addJavascriptCall(fc, "drawVisualization();");           
            JavascriptContext.addJavascriptCall(fc, "initLineDetails");
+
            return;
         } else {
             FacesContext fc = FacesContext.getCurrentInstance();
@@ -1237,32 +1243,37 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
      public File getZipFileExport() {
 
         File zipOutputFile;
+
         ZipOutputStream zout;
         String exportTimestamp = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss").format(new Date());
         File csvFile = new File("csvData_" + exportTimestamp +  ".txt");
         File imageUrlFile = new File("imageUrl_" + exportTimestamp +  ".png");
         try {
-            writeFile(csvFile, csvString.toString().toCharArray(), csvString.toString().length() );
             zipOutputFile = File.createTempFile("dataDownload_" + exportTimestamp , ".zip");
+            writeFile(csvFile, csvString.toString().toCharArray(), csvString.toString().length() );
             zout = new ZipOutputStream((OutputStream) new FileOutputStream(zipOutputFile));
             addZipEntry(zout, csvFile.getAbsolutePath(), "csvData_" + exportTimestamp +  ".txt");
             String decoded = URLDecoder.decode(imageURL, "UTF-8");
-            System.out.println("testURL is "+imageURL);
-            System.out.println(" decoded "+ decoded);
             if (!decoded.isEmpty()){
-                 URL imageURLnew = new URL(decoded);
-                BufferedImage image =     ImageIO.read(imageURLnew);
-                ImageIO.write(image, "png", imageUrlFile);
-                addZipEntry(zout, imageUrlFile.getAbsolutePath(), "imageGraphURL_" + exportTimestamp + ".png");
+                URL imageURLnew = new URL(decoded);
+                try{
+                    BufferedImage image =     ImageIO.read(imageURLnew);
+                    ImageIO.write(image, "png", imageUrlFile);
+                    addZipEntry(zout, imageUrlFile.getAbsolutePath(), "imageGraphURL_" + exportTimestamp + ".png");
+                } catch (IIOException io){
+
+                     System.out.println(" IIOException "+ exportTimestamp);
+                }
             }
             zout.close();
         } catch (IOException e) {
-            throw new EJBException(e);
+           throw new EJBException(e);
         }
 
         return zipOutputFile;
+
+
     }
-    
 
 
     private void writeFile(File fileIn, char[] charArrayIn, int bufSize){
@@ -1513,8 +1524,10 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     }
 
     public String updateImageURL(){
-        String fileNameIn = (String) getInputImageURL().getValue();
-        setImageURL(fileNameIn);
+        String imageURLIn = (String) getInputImageURL().getValue();
+        setImageURL(imageURLIn);
+        getZipFileExport();
+        
         return "";
     }
 

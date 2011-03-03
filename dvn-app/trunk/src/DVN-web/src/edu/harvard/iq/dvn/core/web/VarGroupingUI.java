@@ -52,20 +52,18 @@ public class VarGroupingUI {
         varGroupingIn.getVarGroupTypes();
 
                    List <VarGroupType> varGroupTypes = new ArrayList();
-                   List <SelectItem> selectGroupTypes = new ArrayList();
-                   selectGroupTypes.add(new SelectItem(new Long(0), "Select a Filter Type" ) );
+
                    varGroupTypes = (List<VarGroupType>) varGroupingIn.getVarGroupTypes();
                     if (varGroupTypes !=null ) {
                        for(VarGroupType varGroupType: varGroupTypes){
                            VarGroupTypeUI varGroupTypeUI = new VarGroupTypeUI();
                            varGroupTypeUI.setVarGroupType(varGroupType);
-                           varGroupTypeUI.setEnabled(true);
-                           selectGroupTypes.add(new SelectItem(varGroupType.getId(), varGroupType.getName() ) );
+                           varGroupTypeUI.setEnabled(true);                           
                            varGroupTypeUI.getVarGroupType().getName();
                            varGroupTypeUIList.add(varGroupTypeUI);
                        }
                     }
-        this.varGroupTypesSelect = selectGroupTypes;
+
         this.varGroupTypesUI = varGroupTypeUIList;
     }
     

@@ -1254,6 +1254,14 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             zout = new ZipOutputStream((OutputStream) new FileOutputStream(zipOutputFile));
             addZipEntry(zout, csvFile.getAbsolutePath(), "csvData_" + exportTimestamp +  ".txt");
             String decoded = URLDecoder.decode(imageURL, "UTF-8");
+
+            
+            if (!graphTitle.isEmpty()){
+                String encodedTitle = URLEncoder.encode(graphTitle, "UTF-8");
+
+                decoded = decoded + "&chtt=" + encodedTitle;
+            }
+
             if (!decoded.isEmpty()){
                 URL imageURLnew = new URL(decoded);
                 try{
@@ -1261,7 +1269,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                     ImageIO.write(image, "png", imageUrlFile);
                     addZipEntry(zout, imageUrlFile.getAbsolutePath(), "imageGraphURL_" + exportTimestamp + ".png");
                 } catch (IIOException io){
-
+                    
                      System.out.println(" IIOException "+ exportTimestamp);
                 }
             }
@@ -1572,7 +1580,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     }
 
     public Resource getDownloadFile() {
-
+        updateImageURL();
         Resource csvResource = new FileResource(getZipFileExport());
 
         return csvResource;

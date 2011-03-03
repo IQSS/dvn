@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!-- =========== FULL CONFIGURATION FILE ================================== -->
+
+<faces-config version="1.2" 
+    xmlns="http://java.sun.com/xml/ns/javaee" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_1_2.xsd">
+ 
+  
+    <managed-bean>
+        <managed-bean-name>HomePage</managed-bean-name>
+        <managed-bean-class>edu.harvard.iq.text.HomePage</managed-bean-class>
+
+        <managed-bean-scope>request</managed-bean-scope>
+     </managed-bean>
+     <managed-bean>
+        <managed-bean-name>ClusteringSpacePage</managed-bean-name>
+        <managed-bean-class>edu.harvard.iq.text.ClusteringSpacePage</managed-bean-class>
+
+        <managed-bean-scope>request</managed-bean-scope>
+        <managed-property>
+            <property-name>setId</property-name>
+            <value>#{param.setId}</value>
+        </managed-property>
+        <managed-property>
+            <property-name>xCoord</property-name>
+            <property-class>java.lang.Double</property-class>
+            <value>#{param.x}</value>
+        </managed-property>
+        <managed-property>
+            <property-name>yCoord</property-name>
+            <property-class>java.lang.Double</property-class>
+            <value>#{param.y}</value>
+        </managed-property>
+        <managed-property>
+            <property-name>clusterNum</property-name>
+            <property-class>java.lang.Integer</property-class>
+            <value>#{param.clusterNum}</value>
+        </managed-property>
+        <managed-property>
+            <property-name>discoverable</property-name>
+            <property-class>java.lang.Boolean</property-class>
+            <value>#{param.discoverable}</value>
+        </managed-property>
+        <managed-property>
+            <property-name>solutionLabelParam</property-name>
+            <property-class>java.lang.String</property-class>
+            <value>#{param.solutionLabel}</value>
+        </managed-property>
+        <managed-property>
+            <property-name>clusterLabelParam</property-name>
+            <property-class>java.lang.String</property-class>
+            <value>#{param.clusterLabels}</value>
+        </managed-property>
+    </managed-bean>
+
+
+</faces-config>

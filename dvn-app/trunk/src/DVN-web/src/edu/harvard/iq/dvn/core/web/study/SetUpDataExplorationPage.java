@@ -637,7 +637,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
         varGroupTypeUI.getVarGroupType().setName(getName);
         
-        loadFilterGroupings();
+        
         dataTableFilterGrouping.getChildren().clear();
         varGroupTypeUI.setEditMode(false);
 
@@ -1237,6 +1237,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
              if (varGroupingUI.getVarGrouping() == newElem.getVarGrouping()){
                 varGroupingUI.getVarGroupTypesUI().add(varGroupTypeUI);
                 dataTableManageFilterGroupType.setValue(varGroupingUI.getVarGroupTypesUI());
+                varGroupingUI.getVarGrouping().getVarGroupTypes().add(newElem);
              }
          }
         if (groupEdit){           
@@ -1244,7 +1245,6 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             dataTableFilterGroupType.setValue(editFilterVarGroup.getVarGroupTypes());
         }
 
-        loadFilterGroupings();
         dataTableFilterGrouping.getChildren().clear();
 
         addFilterType = false;

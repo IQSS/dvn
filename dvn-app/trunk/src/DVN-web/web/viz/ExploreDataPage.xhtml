@@ -317,9 +317,8 @@ function drawVisualization() {
       document.getElementById('ExploreDataPage:hasURL').value = "false";
       var displayType = new String (document.getElementById('ExploreDataPage:displayType').textContent);
       var intDisType = parseInt(displayType);
-      var first = false;
+
       if (intDisType == 0){
-          first = true;
           intDisType = 1;
       }
 
@@ -338,10 +337,11 @@ function drawVisualization() {
                                    
         parseData(data2, 2, intStartYear, intEndYear, useIndex);
         var chart = new google.visualization.ImageChart(document.getElementById('chart_div'));
+
         chart.draw(data2, {cht: 'lc', title: fullTitle, colors: ['#4684EE', '#DC3912', '#FF9900', '#008000', '#4942CC', '#990099', '#FF80F2', '#7FD127']});
         var imageURL = chart.getImageUrl();
         document.getElementById('ExploreDataPage:imageURL').value = imageURL;
-
+        document.getElementById('ExploreDataPage:updateImageURL').click();
 
         if (intDisType == 1){
                 var chart = new google.visualization.AnnotatedTimeLine(document.getElementById('chart_div'));
@@ -355,20 +355,16 @@ function drawVisualization() {
             var table = new google.visualization.Table(document.getElementById('chart_div'));
             table.draw(data, {showRowNumber: false});
         }
-        if (intDisType == 2){            
-             var displayTitle = document.getElementById('ExploreDataPage:graphTitleIn').value;
-             var sourceData = document.getElementById('ExploreDataPage:sourceData').textContent;             
-             if (sourceData != "") {
-                 sourceData = "Source: " + sourceData;
-             }
-             var fullTitle = displayTitle + "  "  + sourceData;
+        if (intDisType == 2){
+            var displayTitle = document.getElementById('ExploreDataPage:graphTitleIn').value;
+            var fullTitle = displayTitle;
              var chart = new google.visualization.ImageChart(document.getElementById('chart_div'));
              chart.draw(data, {cht: 'lc', title: fullTitle, colors: ['#4684EE', '#DC3912', '#FF9900', '#008000', '#4942CC', '#990099', '#FF80F2', '#7FD127']});
              jQuery('#chart_div').css({'overflow-y' : 'visible'});
              jQuery('.dvnGraphExtractImageButton').css({'display' : 'block'});
         }
 
-        document.getElementById('ExploreDataPage:updateImageURL').click();
+
 
     }
 

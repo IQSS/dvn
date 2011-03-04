@@ -165,9 +165,27 @@ public class DvnNewJavaFieldCutter {
 
         }
 
+        if (caseLength == 0) {
+            throw new IOException ("Subsetting failed: could not read incoming byte stream. "+
+                        "(Requested file may be unavailable or missing)");
+
+        }
         
         REC_LEN = caseLength;
         dbgLog.fine("REC_LEN=" + REC_LEN);
+
+       for (int i = 0; i < cargSet.get(Long.valueOf(noCardsPerCase)).size(); i++) {
+            int varEndOffset = cargSet.get(Long.valueOf(noCardsPerCase)).get(i).get(1);
+
+            if ( REC_LEN <= varEndOffset + 1 ) {
+                throw new IOException ("Failed to subset incoming byte stream. Invalid input. "+
+                        "(Detected the first record of "+REC_LEN+" bytes; "+
+                        "one of the columns requested ends at "+varEndOffset+" bytes).");
+            }
+       }
+
+
+
 
         Boolean dottednotation = false;
         Boolean foundData = false;
@@ -302,7 +320,8 @@ public class DvnNewJavaFieldCutter {
                         }
 
                     } catch (BufferUnderflowException bufe) {
-                        bufe.printStackTrace();
+                        //bufe.printStackTrace();
+                        throw new IOException(bufe.getMessage());
                     }
                     // set offset to the value of end-position
                     offset = end;
@@ -336,7 +355,8 @@ public class DvnNewJavaFieldCutter {
 
             } // while loop
         } catch (IOException ex) {
-            ex.printStackTrace();
+            //ex.printStackTrace();
+            throw new IOException("Failed to subset incoming fixed-field stream: "+ex.getMessage());
         }
 
     }

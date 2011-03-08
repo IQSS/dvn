@@ -38,7 +38,7 @@ import javax.persistence.PersistenceContext;
  * @author roberttreacy
  */
 @Stateless
-public class DvnTimer implements DvnTimerRemote {
+public class DvnTimer implements DvnTimerRemote, DvnTimerLocal {
     @Resource
     javax.ejb.TimerService timerService;
     @PersistenceContext(unitName = "VDCNet-ejbPU")
@@ -220,6 +220,7 @@ public class DvnTimer implements DvnTimerRemote {
                 logger.info("Found timer: "+((Timer)timer).getInfo());
             }
 //            timerService.createTimer(initExpirationDate, intervalDuration,exportTimerInfo);
+            removeExportTimer();
             createTimer(initExpirationDate, intervalDuration, exportTimerInfo);
 
     }

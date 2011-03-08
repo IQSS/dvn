@@ -29,14 +29,13 @@
 
 package edu.harvard.iq.dvn.core.vdc;
 
-import edu.harvard.iq.dvn.core.admin.DvnTimerRemote;
+import edu.harvard.iq.dvn.core.admin.DvnTimerLocal;
 import edu.harvard.iq.dvn.core.mail.MailServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.util.StringUtil;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -66,7 +65,7 @@ public class VDCNetworkServiceBean implements VDCNetworkServiceLocal {
      @EJB StudyServiceLocal studyService;
 
     @EJB
-    DvnTimerRemote remoteTimerService;
+    DvnTimerLocal dvnTimerService;
 
     private static final Logger logger = Logger.getLogger("edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceBean");    
     /**
@@ -125,7 +124,7 @@ public class VDCNetworkServiceBean implements VDCNetworkServiceLocal {
    }     
     
     private void removeExportTimer() {
-        remoteTimerService.removeExportTimer();
+        dvnTimerService.removeExportTimer();
     }
     
     public void updateExportTimer() {
@@ -176,7 +175,7 @@ public class VDCNetworkServiceBean implements VDCNetworkServiceLocal {
                 logger.info("Found timer: "+((Timer)timer).getInfo());
             }
 //            timerService.createTimer(initExpirationDate, intervalDuration,exportTimerInfo);
-            remoteTimerService.createTimer(initExpirationDate, intervalDuration, exportTimerInfo);
+            dvnTimerService.createTimer(initExpirationDate, intervalDuration, exportTimerInfo);
       
     }
 

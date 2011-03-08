@@ -44,7 +44,7 @@ import edu.harvard.hmdc.vdcnet.jaxb.oai.OAIPMHerrorcodeType;
 import edu.harvard.hmdc.vdcnet.jaxb.oai.OAIPMHtype;
 import edu.harvard.hmdc.vdcnet.jaxb.oai.ResumptionTokenType;
 import edu.harvard.hmdc.vdcnet.jaxb.oai.SetType;
-import edu.harvard.iq.dvn.core.admin.DvnTimerRemote;
+import edu.harvard.iq.dvn.core.admin.DvnTimerLocal;
 import edu.harvard.iq.dvn.core.mail.MailServiceLocal;
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
@@ -108,7 +108,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
     SessionContext ejbContext;
 
     @EJB
-    DvnTimerRemote remoteTimerService;
+    DvnTimerLocal dvnTimerService;
     
     @EJB
     StudyServiceLocal studyService;
@@ -185,7 +185,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
     }
 
     public void removeHarvestTimer(HarvestingDataverse dataverse) {
-        remoteTimerService.removeHarvestTimer(dataverse);
+        dvnTimerService.removeHarvestTimer(dataverse);
     }
 
     public void updateHarvestTimer(HarvestingDataverse dataverse) {
@@ -232,7 +232,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
             }
             logger.log(Level.INFO, "Setting timer for dataverse " + dataverse.getVdc().getName() + ", initial expiration: " + initExpirationDate);
 //            timerService.createTimer(initExpirationDate, intervalDuration, new HarvestTimerInfo(dataverse.getId(), dataverse.getVdc().getName(), dataverse.getSchedulePeriod(), dataverse.getScheduleHourOfDay(), dataverse.getScheduleDayOfWeek()));
-            remoteTimerService.createTimer(initExpirationDate, intervalDuration, new HarvestTimerInfo(dataverse.getId(), dataverse.getVdc().getName(), dataverse.getSchedulePeriod(), dataverse.getScheduleHourOfDay(), dataverse.getScheduleDayOfWeek()));
+            dvnTimerService.createTimer(initExpirationDate, intervalDuration, new HarvestTimerInfo(dataverse.getId(), dataverse.getVdc().getName(), dataverse.getSchedulePeriod(), dataverse.getScheduleHourOfDay(), dataverse.getScheduleDayOfWeek()));
         }
     }
     

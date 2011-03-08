@@ -903,7 +903,7 @@ td.clusterCountCol {width:60px; vertical-align:top;}
                                     <div jsfc="ice:panelGroup" styleClass="clusterInfoBarGraph" style="width: #{row.clusterInfo.clusterPercentStr};">&#160;</div>
                                 </div>
                                 <div class="clusterInfoLabelBlock">
-                                    <div jsfc="ice:panelGroup" styleClass="clusterInfoStems"><ice:outputText value="#{row.clusterInfo.topWords}"/></div>
+                                    <div jsfc="ice:panelGroup" styleClass="clusterInfoStems"><ice:outputText  rendered="#{empty row.clusterInfo.label}" value="#{row.clusterInfo.topWords}"/></div>
                                     <a href="#" class="clusterInfoValueEdit"><ice:outputText value="Label [+] #{row.clusterInfo.label}"/></a>
                                     <div class="clusterInfoValueBlock">
                                         <div><ice:outputText value="#{row.clusterInfo.topWords}"/></div>

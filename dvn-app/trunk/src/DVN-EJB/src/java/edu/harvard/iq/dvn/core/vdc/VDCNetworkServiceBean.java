@@ -65,7 +65,7 @@ public class VDCNetworkServiceBean implements VDCNetworkServiceLocal {
     @EJB MailServiceLocal mailService;
      @EJB StudyServiceLocal studyService;
 
-    @EJB (name="dvnTimer")
+    @EJB
     DvnTimerRemote remoteTimerService;
 
     private static final Logger logger = Logger.getLogger("edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceBean");    

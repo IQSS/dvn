@@ -107,7 +107,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
     @Resource
     SessionContext ejbContext;
 
-    @EJB (name="dvnTimer")
+    @EJB
     DvnTimerRemote remoteTimerService;
     
     @EJB

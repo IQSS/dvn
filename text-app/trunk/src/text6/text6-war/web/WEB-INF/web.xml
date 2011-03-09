@@ -4,6 +4,49 @@
         <param-name>javax.faces.PROJECT_STAGE</param-name>
         <param-value>Development</param-value>
     </context-param>
+    
+  <login-config>
+        <auth-method>BASIC</auth-method>
+        <realm-name>textclustering</realm-name>
+    </login-config>
+   
+    <welcome-file-list>
+        <welcome-file>faces/HomePage.xhtml</welcome-file>
+    </welcome-file-list>
+    
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Secure Pages</web-resource-name>
+            <url-pattern>/faces/*</url-pattern>
+            <http-method>GET</http-method>
+            <http-method>POST</http-method>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>USERS</role-name>
+        </auth-constraint>
+    </security-constraint>
+   
+    <filter>
+        <filter-name>ValidationFilter</filter-name>
+        <filter-class>edu.harvard.iq.text.ValidationFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>ValidationFilter</filter-name>
+        <url-pattern>/faces/ClusteringSpacePage.xhtml</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+          <dispatcher>FORWARD</dispatcher>
+    </filter-mapping>
+
+    <servlet>
+        <servlet-name>ConvexHullServlet</servlet-name>
+        <servlet-class>edu.harvard.iq.text.ConvexHullServlet</servlet-class>
+    </servlet>
+   
+    <servlet-mapping>
+        <servlet-name>ConvexHullServlet</servlet-name>
+        <url-pattern>/ConvexHull</url-pattern>
+    </servlet-mapping>
+
     <servlet>
         <servlet-name>Faces Servlet</servlet-name>
         <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
@@ -15,7 +58,7 @@
     </servlet-mapping>
     <session-config>
         <session-timeout>
-            30
+            480
         </session-timeout>
     </session-config>
     <welcome-file-list>

@@ -108,7 +108,9 @@ public class DeleteDataversePage extends VDCBaseBean implements java.io.Serializ
     public String delete() {
         deleteId = (Long)hiddenVdcId.getValue();
         VDC vdc = vdcService.find(deleteId);
-        remoteTimerService.removeHarvestTimer(vdc.getHarvestingDataverse());
+        if (vdc.isHarvestingDv()) {
+            remoteTimerService.removeHarvestTimer(vdc.getHarvestingDataverse());
+        }
         vdcService.delete(deleteId);
         HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
         String referer      = (String)request.getHeader("referer");

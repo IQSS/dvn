@@ -80,15 +80,15 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">"%s", archunit_name</Eleme
 <Description>This is the name under which the Archival Unit will appear in the LOCKSS UI. It's a good practice to make this name descriptive, indicating the name or location of the remote archive and the name of the OAI set, if used.</Description>
 <Type>1</Type>
 <Size>40</Size>
-<Definitional>true</Definitional>
+<Definitional>false</Definitional>
 </ConfigParamDescr>
 <ConfigParamDescr>
 <Key>oai_spec</Key>
 <DisplayName>OAI Set</DisplayName>
-<Description>name of the OAI set. ok to leave blank</Description>
+<Description>name of the OAI set. if no set name is needed, do not leave blank. Use &quot;::@default@::&quot; instead.</Description>
 <Type>1</Type>
 <Size>40</Size>
-<Definitional>false</Definitional>
+<Definitional>true</Definitional>
 </ConfigParamDescr>
 </ElementValue>
 </MapElement>

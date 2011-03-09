@@ -80,6 +80,15 @@ public class DVNOAIArchivalUnit extends DefinableArchivalUnit {
 	    logger.debug("No oai_spec for this plugin.");
 	}
 
+	if (oai_au_spec != null && oai_au_spec.equals("::@default@::")) {
+	    // This is the IMLS code for "no set". 
+	    // (It cannot be left blank when configuring the plugin, since
+	    // the parameter is used as "definitional" -- i.e. it is part 
+	    // of what defines the AU. All definitional parameters are 
+	    // mandatory. 
+	    oai_au_spec = null; 
+	}
+
 	//oai_namespace = "http://purl.org/dc/elements/1.1/";
 	//oai_tagname = "identifier"; 
 	//oai_metaprefix = "oai_dc";

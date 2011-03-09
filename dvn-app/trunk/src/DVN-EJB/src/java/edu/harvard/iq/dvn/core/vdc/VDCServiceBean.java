@@ -409,10 +409,6 @@ public class VDCServiceBean implements VDCServiceLocal {
 
 
 
-        if (vdc.isHarvestingDv()) {
-            harvesterService.removeHarvestTimer(vdc.getHarvestingDataverse());
-        }
-
         // If the vdc Default Template is in the list of dataverse templates
         // (not the Network Default Template), then remove the reference before deleting the dataverse.
         // If not removed, you will get a foreign key violation when the persistence logic deletes

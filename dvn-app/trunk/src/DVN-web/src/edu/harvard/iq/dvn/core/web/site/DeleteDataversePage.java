@@ -31,6 +31,7 @@ import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import javax.ejb.EJB;
 import com.icesoft.faces.component.ext.HtmlInputHidden;
+import edu.harvard.iq.dvn.core.admin.DvnTimerRemote;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 
@@ -45,6 +46,8 @@ import javax.servlet.http.HttpServletRequest;
 
 public class DeleteDataversePage extends VDCBaseBean implements java.io.Serializable  {
     @EJB VDCServiceLocal vdcService;
+    @EJB (name="dvnTimer")
+    DvnTimerRemote remoteTimerService;
     
     HtmlInputHidden hiddenVdcId;
     HtmlInputHidden hiddenVdcName;
@@ -104,6 +107,8 @@ public class DeleteDataversePage extends VDCBaseBean implements java.io.Serializ
     
     public String delete() {
         deleteId = (Long)hiddenVdcId.getValue();
+        VDC vdc = vdcService.find(deleteId);
+        remoteTimerService.removeHarvestTimer(vdc.getHarvestingDataverse());
         vdcService.delete(deleteId);
         HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
         String referer      = (String)request.getHeader("referer");

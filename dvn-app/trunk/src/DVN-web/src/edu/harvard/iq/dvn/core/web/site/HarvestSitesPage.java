@@ -38,6 +38,7 @@ import javax.ejb.EJB;
 import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import java.util.Date;
 import com.icesoft.faces.component.ext.HtmlDataTable;
+import edu.harvard.iq.dvn.core.admin.DvnTimerRemote;
 import javax.faces.event.ActionEvent;
 
 /**
@@ -52,6 +53,8 @@ public class HarvestSitesPage extends VDCBaseBean implements java.io.Serializabl
     HarvesterServiceLocal harvesterService;
     @EJB
     VDCServiceLocal vdcService;
+    @EJB (name="dvnTimer")
+    DvnTimerRemote remoteTimerService;
 
     /** Creates a new instance of HarvestSitesPage */
     public HarvestSitesPage() {
@@ -92,6 +95,7 @@ public class HarvestSitesPage extends VDCBaseBean implements java.io.Serializabl
     public void doSchedule(ActionEvent ae) {
         HarvestingDataverse hd = (HarvestingDataverse) this.harvestDataTable.getRowData();
         hd.setScheduled(true);
+        remoteTimerService.updateHarvestTimer(hd);
         harvestingDataverseService.edit(hd);
         // set list to null, to force a fresh retrieval of data
         harvestSiteList=null;
@@ -100,6 +104,7 @@ public class HarvestSitesPage extends VDCBaseBean implements java.io.Serializabl
     public void doUnschedule(ActionEvent ae) {
         HarvestingDataverse hd = (HarvestingDataverse) this.harvestDataTable.getRowData();
         hd.setScheduled(false);
+        remoteTimerService.updateHarvestTimer(hd);
         harvestingDataverseService.edit(hd);
         // set list to null, to force a fresh retrieval of data
         harvestSiteList=null;

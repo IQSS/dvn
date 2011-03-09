@@ -69,7 +69,6 @@ public class HarvestingDataverseServiceBean implements edu.harvard.iq.dvn.core.v
     }
     
     public void edit(HarvestingDataverse harvestingDataverse) {
-        harvesterService.updateHarvestTimer(harvestingDataverse);
         em.merge(harvestingDataverse);
     }
     

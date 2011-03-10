@@ -1,17 +1,14 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<f:view
+
+<html
       xmlns:gui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:jsp="http://java.sun.com/JSP/Page"
+  
       xmlns:ice="http://www.icesoft.com/icefaces/component"
-      xmlns:dvn="/WEB-INF/tlds/dvn-components">
-<ice:outputDeclaration
-      doctypeRoot="HTML"
-      doctypePublic="-//W3C//DTD XHTML 1.0 Transitional//EN"
-      doctypeSystem="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"/>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
+    
+
+      xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<h:head>
   
   <!-- page title param passed in by param -->
   <title><h:outputText value="#{pageTitle}"/></title>
@@ -42,9 +39,9 @@
       // ]]>
   </script>
 
- </head>
+ </h:head>
 <!--  this template is example 4.3 in the Facelets Shortcut -->
-<body onload="init();" >
+<h:body onload="init();" >
     
     <div class="dvn_wrapper" id="dvn_wrapper">
         <div class="dvn_content" id="content-frame">
@@ -59,6 +56,5 @@
         <p>Version: 0.3 - Powered by&#160; <a href="http://thedata.org" target="_blank">The Dataverse Network</a></p>
     </div>
    
-</body>
+</h:body>
 </html>
-</f:view>

@@ -551,7 +551,7 @@
       </script>
 <ice:form id="ClusterForm">
     <ice:inputHidden id="setId" value="#{ClusteringSpacePage.setId}"/>
-    <ice:commandButton visible="false" id="calcButton" value="calculate" actionListener="#{ClusteringSpacePage.updateClusterSolutionListener}"/>
+    <ice:commandButton visible="true" id="calcButton" value="calculate" actionListener="#{ClusteringSpacePage.updateClusterSolutionListener}"/>
     <ice:inputText visible="false" id="userXCoord" value="#{ClusteringSpacePage.xCoord}" />
     <ice:inputText visible="false" id="userYCoord" value="#{ClusteringSpacePage.yCoord}"/>
     <ice:inputHidden id="solutionId" value="#{ClusteringSpacePage.solutionIndex}"/>
@@ -639,7 +639,7 @@
                 <td>
                     <label for="numberclusters" class="clusterNoClustersLabel">Number of Clusters</label>
                     <ice:inputText  onkeyup="delayedSubmit();" id="clusterNum" size="5" value="#{ClusteringSpacePage.clusterNum}"></ice:inputText>
-                    <ice:commandButton visible="false" id="changeCluster" value="calculate" onclick="calculateButtonAction();" actionListener="#{ClusteringSpacePage.changeClusterNumberListener}"/>
+                    <ice:commandButton visible="true" id="changeCluster" value="calculate" onclick="calculateButtonAction();" actionListener="#{ClusteringSpacePage.changeClusterNumberListener}"/>
                 </td>
                 <td>
                     <input type="radio" name="clusterRadio" id="clusterRadio1" onclick="changeClusterRadio(5);"/> <label for="clusterRadio1" class="clusterRadioLabel1">5 Clusters (Low)</label>
@@ -788,7 +788,7 @@
 </script>
                 <div class="clusterTableHeaderBlock">
                     <div class="clusterExportBlock">
-                       
+                        <h:commandButton value="click me" actionListener="#{ClusteringSpacePage.clickActionListener}"/>
                         <ice:commandLink actionListener="#{ClusteringSpacePage.openExportPopup}" value="Export" />
 
                     </div>

@@ -3,46 +3,38 @@ package edu.harvard.iq.text;
 import com.icesoft.faces.component.ext.HtmlDataTable;
 import com.icesoft.faces.context.Resource;
 import com.icesoft.faces.context.Resource.Options;
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
 import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 import java.util.logging.Logger;
+
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
-import javax.faces.component.UIComponent;
+
+import javax.faces.bean.*;
+
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
-import javax.faces.model.ArrayDataModel;
-import javax.faces.model.DataModel;
-import javax.faces.model.ListDataModel;
-import org.apache.commons.io.FileUtils;
 
 
 /**
  *
  * @author ekraffmiller
  */
+@ManagedBean (name="ClusteringSpacePage")
+@ViewScoped
 public class ClusteringSpacePage {
     private static final Logger logger = Logger.getLogger(ClusteringSpacePage.class.getCanonicalName());
-
-    private String setId;
+    
+   
+    private String setId = "NewFormat";
     private Double xCoord;
     private Double yCoord;
     private Integer clusterNum;
@@ -373,6 +365,9 @@ public class ClusteringSpacePage {
             this.clusterNum = newClusterNum;
            
          
+    }
+    public void clickActionListener(ActionEvent ae) {
+        System.out.println("button was clicked!");
     }
 
     public HtmlDataTable getClusterTable() {

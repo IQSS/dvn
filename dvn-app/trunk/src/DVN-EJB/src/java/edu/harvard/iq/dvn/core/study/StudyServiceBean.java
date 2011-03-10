@@ -315,10 +315,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         //System.out.println("DEBUG: " + (new Date().getTime() - start) + "\t - deleteStudy - delete relationships");
         study.getAllowedGroups().clear();
         study.getAllowedUsers().clear();
-        if (study.getOwner() != null) {
-            study.getOwner().getOwnedStudies().remove(study);
 
-        }
         for (Iterator<StudyFile> it = study.getStudyFiles().iterator(); it.hasNext();) {
             StudyFile elem = it.next();
             elem.getAllowedGroups().clear();

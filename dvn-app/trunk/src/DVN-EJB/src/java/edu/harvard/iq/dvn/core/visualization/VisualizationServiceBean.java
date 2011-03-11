@@ -97,10 +97,6 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
 
     }
 
-    @Override
-    public void updateGroupings(List<VarGrouping> groupings) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
 
     @Override
     public boolean validateGroupings(Long dataTableId) {
@@ -116,22 +112,56 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
 
     }
 
+    private List getMeasureAndFilterMappings (List<DataVariableMapping> mappingList){
+        List <DataVariableMapping> returnList = new ArrayList();
+
+        for (DataVariableMapping dvm: mappingList){
+            if (!dvm.isX_axis()  && !(dvm.getVarGrouping().getGroupingType().equals(GroupingType.SOURCE))){
+                returnList.add(dvm);
+            }
+        }
+
+        return returnList;
+    }
+
+    private List getMeasureMappings (List<DataVariableMapping> mappingList){
+        List <DataVariableMapping> returnList = new ArrayList();
+
+        for (DataVariableMapping dvm: mappingList){
+            if (!dvm.isX_axis()  &&  (dvm.getVarGrouping().getGroupingType().equals(GroupingType.MEASURE))){
+                returnList.add(dvm);
+            }
+        }
+
+        return returnList;
+    }
+
+    public List getSourceMappings (List<DataVariableMapping> mappingList){
+        List <DataVariableMapping> returnList = new ArrayList();
+
+        for (DataVariableMapping dvm: mappingList){
+            if (!dvm.isX_axis()  &&  (dvm.getVarGrouping().getGroupingType().equals(GroupingType.SOURCE))){
+                returnList.add(dvm);
+            }
+        }
+
+        return returnList;
+    }
+
     @Override
     public boolean validateOneMeasureMapping(DataTable dataTable, List returnListOfErrors){
-        boolean valid = true;
+       boolean valid = true;
        int countMeasures = 0;
        boolean hasMappings = false;
        boolean xAxis = false;
-        List variableMappings = new ArrayList();
-        List<DataVariable> dataVariables = (List<DataVariable>) dataTable.getDataVariables();
+       List variableMappings = new ArrayList();
+       List<DataVariable> dataVariables = (List<DataVariable>) dataTable.getDataVariables();
 
             for (DataVariable dataVariable: dataVariables){
-
-
                 xAxis = false;
                 hasMappings = false;
                 countMeasures = 0;
-                variableMappings = (List) dataVariable.getDataVariableMappings();
+                variableMappings = getMeasureAndFilterMappings((List) dataVariable.getDataVariableMappings());
                 if (!variableMappings.isEmpty()){
                     hasMappings = true;
                     Iterator iteratorMap = variableMappings.iterator();
@@ -155,12 +185,56 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
                     hasMappings = false;
                     countMeasures = 0;
                 }
-
-
         }
+        return valid;
+    }
+
+    @Override
+    public boolean validateAllGroupsAreMapped(DataTable dataTable, List returnListOfErrors){
+       boolean valid = true;
+       List<DataVariable> dataVariables = (List<DataVariable>) dataTable.getDataVariables();
+
+       List<VarGrouping> varGroupings = dataTable.getVarGroupings();
 
 
 
+       List <VarGroup> groupsMapped = new ArrayList();
+
+       List variableMappings = new ArrayList();
+            for (DataVariable dataVariable: dataVariables){
+                variableMappings = getMeasureAndFilterMappings((List) dataVariable.getDataVariableMappings());
+                if (!variableMappings.isEmpty()){
+                    Iterator iteratorMap = variableMappings.iterator();
+
+                    while (iteratorMap.hasNext()) {
+                        DataVariableMapping dataVariableMapping = (DataVariableMapping) iteratorMap.next();
+                        boolean xAxis = false;
+                        if (dataVariableMapping.isX_axis()) xAxis = true;
+                        if (!xAxis && dataVariableMapping.getVarGrouping() != null ){
+                            groupsMapped.add(dataVariableMapping.getGroup());
+                        }
+                    }
+                }
+
+            }
+
+       for (VarGrouping vgr: varGroupings){
+           if (!vgr.getGroupingType().equals(GroupingType.SOURCE)){
+               List <VarGroup> vgList = vgr.getVarGroups();
+               for (VarGroup vgTest: vgList ){
+                   boolean mapped = false;
+                   for (VarGroup vgMapped: groupsMapped){
+                       if (vgTest.equals(vgMapped)){
+                           mapped = true;
+                       }
+                       }
+                   if (!mapped){
+                       returnListOfErrors.add(vgTest);
+                       valid = false;
+                   }
+              }
+           }
+       }
 
         return valid;
     }
@@ -180,7 +254,7 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
                 xAxis = false;
                 hasMappings = false;
                 countMeasures = 0;
-                variableMappings = (List) dataVariable.getDataVariableMappings();
+                variableMappings = getMeasureAndFilterMappings((List) dataVariable.getDataVariableMappings());
                 if (!variableMappings.isEmpty()){
                     hasMappings = true;
                     Iterator iteratorMap = variableMappings.iterator();
@@ -243,7 +317,7 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
        xAxis = false;
        hasMappings = false;
        countMeasures = 0;
-       variableMappings = (List) dataVariable.getDataVariableMappings();
+       variableMappings = getMeasureAndFilterMappings((List) dataVariable.getDataVariableMappings());
 
        if (!variableMappings.isEmpty()){
             hasMappings = true;
@@ -257,7 +331,11 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
                 }
             }
         }
-
+       List <DataVariableMapping> dvmTestList = this.getDataVariableMappingsFromDataTableGroup(dataTable, varGroupChk);
+       if (dvmTestList.size() > 1){
+           return false;
+       }
+/*
         List dataVariables = new ArrayList();
         dataVariables = dataTable.getDataVariables();
         if (!dataVariables.isEmpty())
@@ -279,7 +357,7 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
                 return false;
             }
         }
-
+*/
 
         return true;
     }
@@ -324,7 +402,7 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
                 xAxis = false;
                 hasMappings = false;
                 countFilters = 0;
-                List <DataVariableMapping> variableMappings =  (List<DataVariableMapping>) dataVariable.getDataVariableMappings();
+                List <DataVariableMapping> variableMappings = getMeasureAndFilterMappings ( (List<DataVariableMapping>) dataVariable.getDataVariableMappings());
                 for (DataVariableMapping dataVariableMapping: variableMappings){
                     hasMappings = true;
 
@@ -365,29 +443,14 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
         Set<String> setString = new HashSet();
         List<DataVariable> variables = datatable.getDataVariables();
         List<VarGrouping> varGroupings = datatable.getVarGroupings();
-        for (VarGrouping vg : varGroupings) {
-            System.out.println(" varGrouping Name: "+ vg.getName());
-        }
+
         for (DataVariable var: variables) {
             if (!var.getDataVariableMappings().isEmpty()){
-                System.out.println("\n\n\nvar="+var.getName());
                 ArrayList<String> groupMembership = getGroupMembership(var,varGroupings);
-                String groups = "";
-                for (String s: groupMembership) {
-                    groups +=" "+s;
-                }
-                groups+=".";
-
                 if (groupMembership.size() >0) {
                     Set <ArrayList<String>> groupSet = new HashSet();
-
                     groupSet.add(groupMembership);
-                    System.out.println("\n\n\nvar="+var.getName()+", groupMembership = "+ groupMembership);
-                    System.out.println("\n\n\nvar="+var.getName()+" group membership size > 0 ");
-                    System.out.println("\n\n\nvar="+var.getName()+", set = "+set);
-
-                    if (set.contains(groupMembership)) {
-                        System.out.println("set contains groupMembership");
+                    if (set.contains(groupMembership)) {                        
                         duplicateVariables.add(var);
                         returnListOfErrors.add(groupMembership);
                     } else {
@@ -401,7 +464,7 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
             }
 
         }
-        System.out.println("duplicate variables size=" + duplicateVariables.size());
+        
         return duplicateVariables;
     }
     /*
@@ -410,78 +473,17 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
     private ArrayList<String> getGroupMembership(DataVariable var, List<VarGrouping> groupings ) {
 
         ArrayList<String> membership = new ArrayList<String>();
-        System.out.println("var= "+var.getName());
         for (VarGrouping grouping : groupings) {
-            System.out.println("grouping="+grouping.getName());
             for (DataVariableMapping dvm : grouping.getDataVariableMappings()) {
-                System.out.println(" dvm - group "+ dvm.getGroup().getName());
                 if (dvm.getDataVariable().getId().equals(var.getId())) {
                     membership.add(dvm.getGroup().getName());
-                    System.out.println("var= "+var.getName());
-                    System.out.println("adding group "+ dvm.getGroup().getName());
                 }
             }
         }
         return membership;
     }
 
-    private List getUniqueMappedVariables(Long dataTableId){
-        String query = "SELECT distinct m.dataVariable.id FROM  datavariablemapping m where m.datatable.id = " + dataTableId + "  ORDER BY m.dataVariable.id";
-        return (List) em.createQuery(query).getResultList();
 
-    }
-
-    private List getVariableMappingsById(Long dataVariableId){
-        String query = "SELECT  m FROM  datavariablemapping m where m.dataVariable.id = " + dataVariableId + "  ";
-        return (List) em.createQuery(query).getResultList();
-
-    }
-
-    private boolean getAreVariableMappingsDifferent(List <DataVariableMapping> mapping1, List <DataVariableMapping> mapping2){
-
-        if (mapping1.size() != mapping2.size()){
-            return true;
-        }
-
-        if (!getMeasureGroupIdFromMapping(mapping1).equals(getMeasureGroupIdFromMapping(mapping2)) ){
-            return true;
-        }
-
-        Iterator iterator1 = mapping1.iterator();
-        Iterator iterator2 = mapping2.iterator();
-        int countMatches = 0;
-        int compareMappings = mapping1.size();
-        while (iterator1.hasNext()){
-             DataVariableMapping dataVariableMapping = (DataVariableMapping) iterator1.next();
-             VarGroup group1 = (VarGroup) dataVariableMapping.getGroup();
-             while (iterator2.hasNext()){
-                DataVariableMapping dataVariableMapping2 = (DataVariableMapping) iterator2.next();
-                VarGroup group2 = (VarGroup) dataVariableMapping2.getGroup();
-                if (group1.equals(group2)){
-                    countMatches++;
-                }
-             }
-        }
-
-        if (countMatches != compareMappings){
-            return true;
-        }
-
-        return false;
-    }
-
-    private Long getMeasureGroupIdFromMapping(List <DataVariableMapping> mapping){
-        Iterator iterator = mapping.iterator();
-        while (iterator.hasNext() ){
-            DataVariableMapping dataVariableMapping = (DataVariableMapping) iterator.next();
-
-            if (dataVariableMapping.getVarGrouping().getGroupingType().equals(GroupingType.MEASURE)){
-                return dataVariableMapping.getGroup().getId();
-            }
-
-        }
-        return new Long(0);
-    }
 
     @Override
     public List getGroupsFromGroupTypeId(Long groupTypeId) {
@@ -498,11 +500,6 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
         return (List) em.createQuery(query).getResultList();
     }
 
-    @Override
-    public VarGrouping getGroupingFromId(Long groupingId) {
-        String query = "SELECT g FROM  VarGrouping g where g.id = " + groupingId + "  ORDER BY g.name";
-        return (VarGrouping) em.createQuery(query).getSingleResult();
-    }
 
     @Override
     public VarGroup getGroupFromId(Long groupId) {
@@ -662,7 +659,7 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
             variableMappings = (List) dataVariable.getDataVariableMappings();
             for (DataVariableMapping dataVariableMapping: variableMappings){
 
-                if (!dataVariableMapping.isX_axis() && dataVariableMapping.getGroup().equals(varGroup)){
+                if (!dataVariableMapping.isX_axis() && dataVariableMapping.getGroup().getName().equals(varGroup.getName())){
                     returnDataVariables.add(dataVariable);
                 }
 

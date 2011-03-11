@@ -46,23 +46,21 @@ public class VarGroupingUI {
         this.varGroupTypesUI = varGroupTypesUI;
     }
 
-    public void setVarGroupTypesUI(VarGroupingUI varGroupingUI) {
+    public void setVarGroupTypesUI() {
         List<VarGroupTypeUI> varGroupTypeUIList = new ArrayList();
-        VarGrouping varGroupingIn = varGroupingUI.getVarGrouping();
-        varGroupingIn.getVarGroupTypes();
 
-                   List <VarGroupType> varGroupTypes = new ArrayList();
+           List <VarGroupType> varGroupTypes = new ArrayList();
 
-                   varGroupTypes = (List<VarGroupType>) varGroupingIn.getVarGroupTypes();
-                    if (varGroupTypes !=null ) {
-                       for(VarGroupType varGroupType: varGroupTypes){
-                           VarGroupTypeUI varGroupTypeUI = new VarGroupTypeUI();
-                           varGroupTypeUI.setVarGroupType(varGroupType);
-                           varGroupTypeUI.setEnabled(true);                           
-                           varGroupTypeUI.getVarGroupType().getName();
-                           varGroupTypeUIList.add(varGroupTypeUI);
-                       }
-                    }
+           varGroupTypes = (List<VarGroupType>) this.getVarGrouping().getVarGroupTypes();
+           if (varGroupTypes !=null ) {
+                for(VarGroupType varGroupType: varGroupTypes){
+                    VarGroupTypeUI varGroupTypeUI = new VarGroupTypeUI();
+                    varGroupTypeUI.setVarGroupType(varGroupType);
+                    varGroupTypeUI.setEnabled(true);                           
+                    varGroupTypeUI.getVarGroupType().getName();
+                    varGroupTypeUIList.add(varGroupTypeUI);
+                }
+           }
 
         this.varGroupTypesUI = varGroupTypeUIList;
     }

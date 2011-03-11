@@ -29,7 +29,7 @@ import javax.persistence.*;
 public class VarGrouping implements Serializable {
 
     private String name;
-    public enum GroupingType { MEASURE, FILTER };
+    public enum GroupingType { MEASURE, FILTER, SOURCE };
 
     private static final long serialVersionUID = 1L;
     @Id

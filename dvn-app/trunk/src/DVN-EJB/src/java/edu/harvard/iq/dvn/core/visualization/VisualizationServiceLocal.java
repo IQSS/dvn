@@ -19,8 +19,6 @@ import java.util.List;
 public interface VisualizationServiceLocal extends java.io.Serializable {
 
     public List getGroupings(Long dataTableId);
-
-    public void updateGroupings(List <VarGrouping> groupings);
     public boolean validateGroupings(Long dataTableId);
     public List getVariableMappings(Long dataTableId);
     public List getGroupsFromGroupTypeId(Long groupTypeId);
@@ -28,7 +26,6 @@ public interface VisualizationServiceLocal extends java.io.Serializable {
     public List getGroupTypesFromGroupingId(Long groupingId);
     public List<VarGroupType> getGroupTypes(Long dataTableId);
     public List<VarGroupType> getFilterGroupTypes(Long dataTableId);
-    public VarGrouping getGroupingFromId(Long groupingId);
     public VarGroup getGroupFromId(Long groupId);
     public DataVariable getXAxisVariable(Long dataTableId);
     public List getDataVariableMappingsFromGroupId(Long groupId);
@@ -75,4 +72,8 @@ public interface VisualizationServiceLocal extends java.io.Serializable {
     public boolean checkForDuplicateEntries(VarGrouping varGrouping, String name, boolean group, Object testObject);
 
     public boolean checkForDuplicateGroupings(List filterGroupings, String name, Object testObject);
+
+    public boolean validateAllGroupsAreMapped(edu.harvard.iq.dvn.core.study.DataTable dataTable, java.util.List returnListOfErrors);
+
+    public java.util.List getSourceMappings(java.util.List<edu.harvard.iq.dvn.core.visualization.DataVariableMapping> mappingList);
 }

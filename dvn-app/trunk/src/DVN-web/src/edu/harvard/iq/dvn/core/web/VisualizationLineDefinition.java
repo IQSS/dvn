@@ -16,9 +16,10 @@ import java.util.List;
  */
 public class VisualizationLineDefinition {
 
-    private VarGrouping measureGrouping;
     private VarGroup measureGroup;
     private List <VarGroup> filterGroups;
+    private List <VarGroup> sourceGroups;
+
     private Long variableId = new Long(0);
     private String measureLabel = new String();
     private String label = new String();
@@ -41,14 +42,6 @@ public class VisualizationLineDefinition {
 
     public void setMeasureGroup(VarGroup measureGroup) {
         this.measureGroup = measureGroup;
-    }
-
-    public VarGrouping getMeasureGrouping() {
-        return measureGrouping;
-    }
-
-    public void setMeasureGrouping(VarGrouping measureGrouping) {
-        this.measureGrouping = measureGrouping;
     }
 
     public String getLabel() {
@@ -106,6 +99,15 @@ public class VisualizationLineDefinition {
 
     public void setVariableLabel(String variableLabel) {
         this.variableLabel = variableLabel;
+    }
+
+
+    public List<VarGroup> getSourceGroups() {
+        return sourceGroups;
+    }
+
+    public void setSourceGroups(List<VarGroup> sourceGroups) {
+        this.sourceGroups = sourceGroups;
     }
 
 }

@@ -1301,7 +1301,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                     ImageIO.write(bic, "png", imageUrlFile);
                     addZipEntry(zout, imageUrlFile.getAbsolutePath(), "imageGraphURL_" + exportTimestamp + ".png");
                 } catch (IIOException io){
-
+                    System.out.println("imageURL:" + imageURL );
+                    System.out.println("imageURLnew:" + imageURLnew );
                      System.out.println(" IIOException "+ io.getMessage() + " " + exportTimestamp );
                 }
             }

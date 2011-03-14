@@ -298,7 +298,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
         List <DataVariableUI> dvListUILocG = new ArrayList();
         for (DataVariable dataVariable : dvList){
-            if ((isDate &&  "date".equals(dataVariable.getFormatCategory())) ||
+            if ((isDate &&  ("date".equals(dataVariable.getFormatCategory())  || "time".equals(dataVariable.getFormatCategory()))) ||
                (!isDate && dataVariable.getVariableFormatType().getName().equals("numeric"))) {
                 DataVariableUI dataVariableUI = new DataVariableUI();
                 dataVariableUI.setDataVariable(dataVariable);

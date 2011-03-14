@@ -291,11 +291,16 @@ function myParseXaxis(dataIn, intDisType, year){
                     moOut = parseInt(myDateList[1]) - 1;
                 }
 
-                if (myDateList[2].length > 0){
+                if (myDateList[2].length > 0  && myDateList[2].length < 3){
                     dayOut = parseInt(myDateList[2]);
+                    
+                } else if (myDateList[2].length > 0  ) {
+                    dayOut = parseInt(myDateList[2].substring(0, 1));
+                    
                 }
 
-                return myDateList[1] + "/" + myDateList[2] + "/" + myDateList[0];
+                return myDateList[1] + "/" + myDateList[2].substring(0, 2)
+                    + "/" + myDateList[0];
 
             } else{
                 return myDateList[0];

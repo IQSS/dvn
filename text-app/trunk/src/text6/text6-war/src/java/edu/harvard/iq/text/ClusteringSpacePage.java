@@ -22,6 +22,7 @@ import javax.faces.bean.*;
 
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -29,12 +30,12 @@ import javax.faces.event.ActionEvent;
  * @author ekraffmiller
  */
 @ManagedBean (name="ClusteringSpacePage")
-@ViewScoped
+@SessionScoped
 public class ClusteringSpacePage {
     private static final Logger logger = Logger.getLogger(ClusteringSpacePage.class.getCanonicalName());
     
    
-    private String setId = "NewFormat";
+    private String setId;
     private Double xCoord;
     private Double yCoord;
     private Integer clusterNum;
@@ -69,53 +70,70 @@ public class ClusteringSpacePage {
 
     @PostConstruct
     public void init() {
-        logger.fine("initializing page");
+        System.out.println("++++++++++++++++++++++++++initializing page");
+            HttpServletRequest req  = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
+            String xParam = req.getParameter("x");
+            String yParam = req.getParameter("y");
+            String clusterNumParam = req.getParameter("clusterNum");
+            String discoverableParam = req.getParameter("discoverable");
+            solutionLabelParam = req.getParameter("solutionLabel");
+            clusterLabelParam = req.getParameter("clusterLabels");
+            setId = req.getParameter("setId");
 
-        // Initialize inputs to Cluster calculation
-        if (xCoord==null) {
-            xCoord = new Double(0);
+            // Initialize inputs to Cluster calculation
+            if (xParam != null) {
+                xCoord =  Double.valueOf(xParam);
+            } else {
+                xCoord = new Double(0);
+            }
+            if (xParam !=null) {
+                yCoord = Double.valueOf(yParam);
+            } else {
+                yCoord = new Double(0);
+            }
+            if (clusterNumParam != null) {
+                clusterNum= Integer.valueOf(clusterNumParam);
+            } else {
+                clusterNum = 5;
+            }
+            if (setId==null) {
+               throw new ClusterException("missing setId parameter.");
+            }
+            if (discoverableParam == null) {
+                discoverable = false;
+            } else {
+                discoverable = Boolean.valueOf(discoverableParam);
+            }
+
+            documentSet = new DocumentSet(setId);
+            solutionIndex = -1;
+
+            // Do calculation
+            calculateClusterSolution(true);
+
+            // Update cluster solution with labels
+            // from request, if necessary
+
+            clusterSolution.setLabel(solutionLabelParam);
+             if (clusterLabelParam!=null) {
+                clusterSolution.initClusterLabels(clusterLabelParam);
+            }
+
+            // If we have labels for this solution, added to the saved
+            // solutions list
+
+            if (clusterLabelParam!=null || solutionLabelParam !=null) {
+                saveSolution(clusterSolution);
+            }
+
+            // initialize Export field list values
+            for(int i=0;i< documentSet.getAllFields().size(); i++) {
+                ArrayList<Object> exportField = new ArrayList<Object>();
+                exportField.add(Boolean.FALSE);
+                exportField.add(documentSet.getAllFields().get(i));
+                exportFieldList.add(exportField);
+            }
         }
-        if (yCoord==null) {
-            yCoord = new Double(0);
-        } if (clusterNum==null) {
-            clusterNum = 5;
-        }
-        if (setId==null) {
-            throw new ClusterException("missing setId parameter.");
-        }
-        if (discoverable==null) {
-            discoverable=false;
-        }
-
-        documentSet = new DocumentSet(setId);
-        solutionIndex=-1;
-
-        // Do calculation
-        calculateClusterSolution(true);
-
-        // Update cluster solution with labels
-        // from request, if necessary
-
-        clusterSolution.setLabel(solutionLabelParam);
-        if (clusterLabelParam!=null) {
-            clusterSolution.initClusterLabels(clusterLabelParam);
-        }
-
-        // If we have labels for this solution, added to the saved
-        // solutions list
-
-        if (clusterLabelParam!=null || solutionLabelParam !=null) {
-            saveSolution(clusterSolution);
-        }
-
-        // initialize Export field list values
-        for(int i=0;i< documentSet.getAllFields().size(); i++) {
-            ArrayList<Object> exportField = new ArrayList<Object>();
-            exportField.add(Boolean.FALSE);
-            exportField.add(documentSet.getAllFields().get(i));
-            exportFieldList.add(exportField);
-        }
-    }
 
     public String getDescription() {
         return documentSet.getDescription();

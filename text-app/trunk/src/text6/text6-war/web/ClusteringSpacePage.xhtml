@@ -11,6 +11,15 @@
 <body>
 <ui:composition template="/template.xhtml">
 <ui:param name="pageTitle" value="Space of Clusterings"/>
+<!--
+<ui:define name="metadata">
+    <f:metadata>
+        <f:viewParam name="setId" value="#{ClusteringSpacePage.setId}"/>
+        <f:event type="preRenderView" listener="#{ClusteringSpacePage.renderListener}"/>
+
+    </f:metadata>
+</ui:define>
+-->
 <ui:define name="body">
      <script type="text/javascript">
           // <![CDATA[
@@ -548,16 +557,18 @@
             }
 
       // ]]>
-      </script>
+      </script>    
+   
+
 <ice:form id="ClusterForm">
     <ice:inputHidden id="setId" value="#{ClusteringSpacePage.setId}"/>
-    <ice:commandButton visible="true" id="calcButton" value="calculate" actionListener="#{ClusteringSpacePage.updateClusterSolutionListener}"/>
+    <ice:commandButton visible="false" id="calcButton" value="calculate" actionListener="#{ClusteringSpacePage.updateClusterSolutionListener}"/>
     <ice:inputText visible="false" id="userXCoord" value="#{ClusteringSpacePage.xCoord}" />
     <ice:inputText visible="false" id="userYCoord" value="#{ClusteringSpacePage.yCoord}"/>
     <ice:inputHidden id="solutionId" value="#{ClusteringSpacePage.solutionIndex}"/>
     <ice:inputHidden id="calculatedClusterNum" value="#{ClusteringSpacePage.clusterSolution.numClusters}"/>
     <ice:inputHidden id="methodPoints" value="#{ClusteringSpacePage.methodPointsString}"/>
-
+ <ice:outputConnectionStatus />
 <style type="text/css">
             .dvn_content {
                 min-width: 920px;
@@ -639,7 +650,7 @@
                 <td>
                     <label for="numberclusters" class="clusterNoClustersLabel">Number of Clusters</label>
                     <ice:inputText  onkeyup="delayedSubmit();" id="clusterNum" size="5" value="#{ClusteringSpacePage.clusterNum}"></ice:inputText>
-                    <ice:commandButton visible="true" id="changeCluster" value="calculate" onclick="calculateButtonAction();" actionListener="#{ClusteringSpacePage.changeClusterNumberListener}"/>
+                    <ice:commandButton visible="false" id="changeCluster" value="calculate" onclick="calculateButtonAction();" actionListener="#{ClusteringSpacePage.changeClusterNumberListener}"/>
                 </td>
                 <td>
                     <input type="radio" name="clusterRadio" id="clusterRadio1" onclick="changeClusterRadio(5);"/> <label for="clusterRadio1" class="clusterRadioLabel1">5 Clusters (Low)</label>
@@ -788,7 +799,6 @@
 </script>
                 <div class="clusterTableHeaderBlock">
                     <div class="clusterExportBlock">
-                        <h:commandButton value="click me" actionListener="#{ClusteringSpacePage.clickActionListener}"/>
                         <ice:commandLink actionListener="#{ClusteringSpacePage.openExportPopup}" value="Export" />
 
                     </div>
@@ -890,7 +900,7 @@ td.clusterCountCol {width:60px; vertical-align:top;}
 .clusterViewDocPopup .clusterDocViewText {height:400px; width:460px; overflow: auto;}
 .clusterViewDocPopup .clusterDocViewText pre {color: black; width:440px; white-space:pre-wrap; word-wrap: break-word;}
 </style>
-                <ice:dataTable id="clusterInfo" binding="#{ClusteringSpacePage.clusterTable}" cellpadding="0" cellspacing="0" value="#{ClusteringSpacePage.clusterTableModel}" var="row" width="100%">
+                <ice:dataTable  binding="#{ClusteringSpacePage.clusterTable}" cellpadding="0" cellspacing="0" value="#{ClusteringSpacePage.clusterTableModel}" var="row" width="100%">
                     <ice:column>
                         <ice:panelGrid columns="3" cellpadding="0" cellspacing="0" border="0" width="100%"
                                         columnClasses="clusterCountCol,clusterInfoCol,clusterDetaillLinkCol">

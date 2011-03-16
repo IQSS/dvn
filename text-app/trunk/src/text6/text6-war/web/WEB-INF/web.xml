@@ -1,23 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
-    <context-param>
-        <param-name>javax.faces.PROJECT_STAGE</param-name>
-        <param-value>Development</param-value>
-    </context-param>
-    
+  
   <login-config>
         <auth-method>BASIC</auth-method>
         <realm-name>textclustering</realm-name>
     </login-config>
-   
+ <!--
     <welcome-file-list>
         <welcome-file>faces/HomePage.xhtml</welcome-file>
     </welcome-file-list>
-    
+-->
     <security-constraint>
         <web-resource-collection>
             <web-resource-name>Secure Pages</web-resource-name>
-            <url-pattern>/faces/*</url-pattern>
+            <url-pattern>/faces/HomePage.xhtml</url-pattern>
+            <url-pattern>/faces/ClusteringSpacePage.xhtml</url-pattern>
+
             <http-method>GET</http-method>
             <http-method>POST</http-method>
         </web-resource-collection>
@@ -25,18 +23,8 @@
             <role-name>USERS</role-name>
         </auth-constraint>
     </security-constraint>
+ 
    
-    <filter>
-        <filter-name>ValidationFilter</filter-name>
-        <filter-class>edu.harvard.iq.text.ValidationFilter</filter-class>
-    </filter>
-    <filter-mapping>
-        <filter-name>ValidationFilter</filter-name>
-        <url-pattern>/faces/ClusteringSpacePage.xhtml</url-pattern>
-        <dispatcher>REQUEST</dispatcher>
-          <dispatcher>FORWARD</dispatcher>
-    </filter-mapping>
-
     <servlet>
         <servlet-name>ConvexHullServlet</servlet-name>
         <servlet-class>edu.harvard.iq.text.ConvexHullServlet</servlet-class>
@@ -63,6 +51,7 @@
     </session-config>
 
     <!-- Icefaces 1.8 compatibility -->
+    
     <servlet>
         <servlet-name>Resource Servlet</servlet-name>
         <servlet-class>com.icesoft.faces.webapp.CompatResourceServlet</servlet-class>
@@ -85,6 +74,32 @@
     <context-param>
         <param-name>javax.faces.VALIDATE_EMPTY_FIELDS</param-name>
         <param-value>false</param-value>
+    </context-param>
+
+   <!-- match auction app -->
+    <context-param>
+        <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
+        <param-value>server</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>javax.faces.PROJECT_STAGE</param-name>
+        <param-value>Development</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>org.icefaces.render.auto</param-name>
+        <param-value>true</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>org.icefaces.autoid</param-name>
+        <param-value>true</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>org.icefaces.strictSessionTimeout</param-name>
+        <param-value>true</param-value>
     </context-param>
 
 

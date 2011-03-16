@@ -11,6 +11,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.annotation.PostConstruct;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
 
 /**
  *
@@ -19,7 +21,8 @@ import javax.annotation.PostConstruct;
  *  This class isn't used yet, but may be needed in the future
  *  for dynamically displaying sets on the HomePage.
  */
-
+@ManagedBean (name="HomePage")
+@ViewScoped
 public class HomePage {
 
     private ArrayList<SetInfo> setList = new ArrayList<SetInfo>();
@@ -27,6 +30,8 @@ public class HomePage {
 
     @PostConstruct
     public void init() {
+        System.out.println("INIT-----------------------------------------------------------------------------");
+        /*
         File setDir = new File(ClusterUtil.getDocRoot());
         File[] files = setDir.listFiles();
         for (File f : files) {
@@ -57,9 +62,18 @@ public class HomePage {
                 setList.add(setInfo);
             }
         }
+         
+         */
+    }
+
+    public String clickAction() {
+      
+        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!link was clicked");
+        return "";
     }
 
     public ArrayList<SetInfo> getSetList() {
+        System.out.println("in get set list");
         return setList;
     }
 
@@ -74,7 +88,7 @@ public class HomePage {
         public String getId() {
             return id;
         }
-
+ 
         public void setId(String id) {
             this.id = id;
         }

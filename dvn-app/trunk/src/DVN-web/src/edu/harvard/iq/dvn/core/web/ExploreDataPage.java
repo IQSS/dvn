@@ -27,6 +27,7 @@ import com.icesoft.faces.component.panelseries.PanelSeries;
 import com.icesoft.faces.component.ext.HtmlCommandButton;
 import com.icesoft.faces.component.ext.HtmlDataTable;
 import com.icesoft.faces.component.ext.HtmlInputText;
+import com.icesoft.faces.component.ext.HtmlSelectBooleanCheckbox;
 import com.icesoft.faces.component.ext.HtmlSelectOneMenu;
 import com.icesoft.faces.context.FileResource;
 import com.icesoft.faces.context.Resource;
@@ -51,16 +52,20 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.Locale;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -70,6 +75,17 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.imageio.IIOException;
 import javax.imageio.ImageIO;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import jxl.Cell;
+import jxl.Sheet;
+import jxl.Workbook;
+import jxl.WorkbookSettings;
+import jxl.write.Label;
+import jxl.write.WritableSheet;
+import jxl.write.WritableWorkbook;
+
 
 /**
  *
@@ -118,6 +134,10 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     private String sources = "";
 
     private boolean displayIndexes = false;
+    private boolean includeImage = true;
+
+    private boolean includeExcel = true;
+    private boolean includeCSV = true;
 
     private Long displayType = new Long(0);
     private String startYear = new String("0");
@@ -1239,81 +1259,46 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
      public File getZipFileExport() {
 
         File zipOutputFile;
-
+        if (imageURL.isEmpty()){
+            try {
+                zipOutputFile = File.createTempFile("dataDownloadEmpty", ".zip");
+            } catch (IOException e) {
+                throw new EJBException(e);
+            } catch (Exception ie){
+                zipOutputFile = null;
+            }
+            return zipOutputFile;
+        }
+        boolean noneIncluded =  (!includeExcel  && !includeImage && !includeCSV);
         ZipOutputStream zout;
         String exportTimestamp = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss").format(new Date());
         File csvFile = new File("csvData_" + exportTimestamp +  ".txt");
         File imageUrlFile = new File("imageUrl_" + exportTimestamp +  ".png");
+        File excelDataFile = new File("excelData_" +  exportTimestamp +  ".xls");
         try {
             zipOutputFile = File.createTempFile("dataDownload_" + exportTimestamp , ".zip");
-            writeFile(csvFile, csvString.toString().toCharArray(), csvString.toString().length() );
+
             zout = new ZipOutputStream((OutputStream) new FileOutputStream(zipOutputFile));
-            addZipEntry(zout, csvFile.getAbsolutePath(), "csvData_" + exportTimestamp +  ".txt");
-            String decoded = URLDecoder.decode(imageURL, "UTF-8");
-
-            
-            if (!graphTitle.isEmpty()){
-                String graphTitleOut = "";
-                if (graphTitle.length() > 80  && graphTitle.indexOf("|") == -1 ){
-                    int strLen = graphTitle.length();
-                    int half = graphTitle.length()/2;
-                    int nextSpace = graphTitle.indexOf(" ",  half);
-                    graphTitleOut = graphTitle.substring(0, nextSpace) + "|" + graphTitle.substring(nextSpace + 1, strLen);
-                    graphTitle = graphTitleOut;
-                } else {
-                    graphTitleOut = graphTitle;
-                }
-                String encodedTitle = URLEncoder.encode(graphTitleOut, "UTF-8");
-                decoded = decoded + "&chtt=" + encodedTitle;
+            if (includeCSV  || noneIncluded){
+                writeFile(csvFile, csvString.toString().toCharArray(), csvString.toString().length() );
+                addZipEntry(zout, csvFile.getAbsolutePath(), "csvData_" + exportTimestamp +  ".txt");
+            }            
+            if (includeImage){
+                writeImageFile(imageUrlFile);
+                addZipEntry(zout, imageUrlFile.getAbsolutePath(), "imageGraphURL_" + exportTimestamp + ".png");
             }
-
-            if (!decoded.isEmpty()){
-                URL imageURLnew = new URL(decoded);
-                try{
-                    BufferedImage image =     ImageIO.read(imageURLnew);
-                    int width1 = image.getWidth();
-                    int height1 = image.getHeight();
-                    ImageIO.write(image, "png", imageUrlFile);
-                    BufferedImage img = new BufferedImage(width1, 50, BufferedImage.TYPE_INT_RGB);
-                    int heightbic =  height1+ 50;
-                     if (sources.isEmpty()){
-                         heightbic = height1;
-                     }
-
-                    BufferedImage bic = new BufferedImage(width1, heightbic, BufferedImage.TYPE_INT_RGB);
-                    
-                    Graphics2D g2 = img.createGraphics();
-                    g2.setColor(Color.WHITE);
-                    g2.fillRect(0, 0, width1 - 1, 50- 1);
-                    g2.setColor(Color.BLACK);
-                    g2.drawRect(0, 0, width1 - 1, 50 - 1);
-
-                    Font font = new Font("Arial", Font.PLAIN, 12);
-                    g2.setFont(font);
-                    g2.setColor(Color.BLACK);
-                    g2.drawString("Source(s): " + sources, 10,20);
-                     boolean image1Drawn = bic.createGraphics().drawImage(image, 0, 0, null); // 0, 0 are the x and y positions
-                    if(!image1Drawn) System.out.println("Problems drawing first image"); //where we are placing image1 in final image
-                     if (!sources.isEmpty()){
-                         boolean image2Drawn = bic.createGraphics().drawImage(img, 0, height1, null); // here width is mentioned as width o
-                     }
-                     
-                    ImageIO.write(bic, "png", imageUrlFile);
-                    addZipEntry(zout, imageUrlFile.getAbsolutePath(), "imageGraphURL_" + exportTimestamp + ".png");
-                } catch (IIOException io){
-                    System.out.println("imageURL:" + imageURL );
-                    System.out.println("imageURLnew:" + imageURLnew );
-                     System.out.println(" IIOException "+ io.getMessage() + " " + exportTimestamp );
-                }
+            if (includeExcel){
+                writeExcelFile(excelDataFile);
+                addZipEntry(zout, excelDataFile.getAbsolutePath(), "excelData_" + exportTimestamp + ".xls");
             }
             zout.close();
         } catch (IOException e) {
            throw new EJBException(e);
+        } catch (Exception ie){
+           zipOutputFile = null;
         }
 
         return zipOutputFile;
-
-
     }
 
 
@@ -1346,6 +1331,88 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
     }
 
+    private void writeImageFile(File fileIn) {
+               
+        try {
+            String decoded = URLDecoder.decode(imageURL, "UTF-8");
+            if (!graphTitle.isEmpty()){
+                String graphTitleOut = "";
+                if (graphTitle.length() > 80  && graphTitle.indexOf("|") == -1 ){
+                    int strLen = graphTitle.length();
+                    int half = graphTitle.length()/2;
+                    int nextSpace = graphTitle.indexOf(" ",  half);
+                    graphTitleOut = graphTitle.substring(0, nextSpace) + "|" + graphTitle.substring(nextSpace + 1, strLen);
+                    graphTitle = graphTitleOut;
+                } else {
+                    graphTitleOut = graphTitle;
+                }
+                String encodedTitle = URLEncoder.encode(graphTitleOut, "UTF-8");
+                decoded = decoded + "&chtt=" + encodedTitle;
+            }
+
+       
+        if (!decoded.isEmpty()){
+                URL imageURLnew = new URL(decoded);
+                String sourcesOut1 = "";
+                String sourcesOut2 = "";
+                try{
+                    BufferedImage image =     ImageIO.read(imageURLnew);
+                    int width1 = image.getWidth();
+                    int height1 = image.getHeight();
+                    ImageIO.write(image, "png", fileIn);
+                    BufferedImage img = new BufferedImage(width1, 50, BufferedImage.TYPE_INT_RGB);
+                    int heightbic =  height1+ 50;
+                     if (sources.isEmpty()){
+                         heightbic = height1;
+                        } else {
+                         
+                         if (sources.length() > 80  ){
+                            int strLen = sources.length();
+                            int previousSpace = sources.lastIndexOf(" ",  80);
+                            sourcesOut1 = sources.substring(0, previousSpace);
+                            sourcesOut2 = sources.substring(previousSpace + 1, strLen);
+
+                        } else {
+                            sourcesOut1 = sources;
+                        }
+                     }
+
+
+                    BufferedImage bic = new BufferedImage(width1, heightbic, BufferedImage.TYPE_INT_RGB);
+
+                    Graphics2D g2 = img.createGraphics();
+                    g2.setColor(Color.WHITE);
+                    g2.fillRect(0, 0, width1 - 1, 50- 1);
+                    g2.setColor(Color.BLACK);
+                    g2.drawRect(0, 0, width1 - 1, 50 - 1);
+
+                    Font font = new Font("Arial", Font.PLAIN, 12);
+                    g2.setFont(font);
+                    g2.setColor(Color.BLACK);
+                    g2.drawString("Source(s): " + sourcesOut1, 10,20);
+                    g2.drawString( sourcesOut2, 10,40);
+                     bic.createGraphics().drawImage(image, 0, 0, null);
+                     if (!sources.isEmpty()){
+                         bic.createGraphics().drawImage(img, 0, height1, null);
+                     }
+
+                    ImageIO.write(bic, "png", fileIn);
+
+                } catch (IIOException io){
+                     System.out.println("IIOException ");
+                }
+            }
+
+        } catch (UnsupportedEncodingException uee){
+              System.out.println("UnsupportedEncodingException ");
+
+        } catch (MalformedURLException mue){
+            System.out.println("MalformedURLException ");
+        } catch (IOException io){
+            System.out.println("IOException - outer ");
+        }
+    }
+
     private void addZipEntry(ZipOutputStream zout, String inputFileName, String outputFileName) throws IOException{
         FileInputStream tmpin = new FileInputStream(inputFileName);
         byte[] dataBuffer = new byte[8192];
@@ -1362,6 +1429,57 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         zout.closeEntry();
      }
 
+  private void writeExcelFile   (File fileIn) throws IOException {
+      String parseString = new String(dataString);
+      List list = Arrays.asList(parseString.split(";"));
+      String parseColumn = new String(columnString);
+
+      try {
+            WorkbookSettings ws = new WorkbookSettings();
+            ws.setLocale(new Locale("en", "EN"));
+            WritableWorkbook w =
+            Workbook.createWorkbook(fileIn, ws);
+
+            WritableSheet s = w.createSheet("Data", 0);
+            List columnHeads = Arrays.asList(parseColumn.split(","));
+            int ccounter = 0;
+            for (Object c: columnHeads){
+                 Label h = new Label (ccounter, 0,  c.toString());
+                 s.addCell(h);
+                 ccounter++;
+            }
+
+            int rowCounter = 1;
+            for (Object o: list){
+                List dataFields = Arrays.asList(o.toString().split(","));
+                int dcounter = 0;
+                for (Object d: dataFields){
+                    if (dcounter == 0){
+                      Label l = new Label (dcounter, rowCounter,  d.toString());
+                      s.addCell(l);
+
+                    } else {
+                        if (!d.toString().isEmpty()){
+                            jxl.write.Number n = new jxl.write.Number(dcounter, rowCounter,  new Double(d.toString()));
+                            s.addCell(n);
+                        } else {
+                            Label m = new Label  (dcounter, rowCounter,  "N/A");
+                            s.addCell(m);
+                        }
+                    }
+                    
+                    dcounter++;
+                }
+                rowCounter++;
+            }
+            w.write();
+            w.close();
+        }
+            catch (Exception e){
+
+        }
+
+  }
 
     private void getSourceList(  ) {
         String returnString = "";
@@ -1574,6 +1692,19 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         return "";
     }
 
+    public String updateIncludeFlags(){
+
+    if (!includeExcel  && !includeImage && !includeCSV){
+           FacesMessage message = new FacesMessage("You must select at least one download file");
+           FacesContext fc = FacesContext.getCurrentInstance();
+           fc.addMessage(dataExcelCheckBox.getClientId(fc), message);
+           return "";
+    }
+       getZipFileExport();
+
+        return "";
+    }
+
     public List<SelectItem> getSelectBeginYears() {
         return selectBeginYears;
     }
@@ -1704,4 +1835,57 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         this.imageColumnString = imageColumnString;
     }
 
+    private HtmlSelectBooleanCheckbox imageGraphCheckBox;
+
+    public HtmlSelectBooleanCheckbox getImageGraphCheckBox() {
+        return imageGraphCheckBox;
+    }
+
+    public void setImageGraphCheckBox(HtmlSelectBooleanCheckbox imageGraphCheckBox) {
+        this.imageGraphCheckBox = imageGraphCheckBox;
+    }
+
+    private HtmlSelectBooleanCheckbox dataCSVCheckBox;
+
+    public HtmlSelectBooleanCheckbox getDataCSVCheckBox() {
+        return dataCSVCheckBox;
+    }
+
+    public void setDataCSVCheckBox(HtmlSelectBooleanCheckbox dataCSVCheckBox) {
+        this.dataCSVCheckBox = dataCSVCheckBox;
+    }
+
+    private HtmlSelectBooleanCheckbox dataExcelCheckBox;
+
+    public HtmlSelectBooleanCheckbox getDataExcelCheckBox() {
+        return dataExcelCheckBox;
+    }
+
+    public void setDataExcelCheckBox(HtmlSelectBooleanCheckbox dataExcelCheckBox) {
+        this.dataExcelCheckBox = dataExcelCheckBox;
+    }
+
+    public boolean isIncludeCSV() {
+        return includeCSV;
+    }
+
+    public void setIncludeCSV(boolean includeCSV) {
+        this.includeCSV = includeCSV;
+    }
+
+    public boolean isIncludeExcel() {
+        return includeExcel;
+    }
+
+    public void setIncludeExcel(boolean includeExcel) {
+        this.includeExcel = includeExcel;
+    }
+
+    public boolean isIncludeImage() {
+        return includeImage;
+    }
+
+    public void setIncludeImage(boolean includeImage) {
+        this.includeImage = includeImage;
+    }
 }

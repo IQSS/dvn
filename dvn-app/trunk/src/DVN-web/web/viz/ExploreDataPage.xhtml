@@ -287,18 +287,6 @@ function myParseXaxis(dataIn, intDisType, year){
         if (year  || intDisType == 3 ) {
             var countDashes = dataIn.split("-").length
             if (countDashes == 3){
-                if (myDateList[1].length > 0){
-                    moOut = parseInt(myDateList[1]) - 1;
-                }
-
-                if (myDateList[2].length > 0  && myDateList[2].length < 3){
-                    dayOut = parseInt(myDateList[2]);
-                    
-                } else if (myDateList[2].length > 0  ) {
-                    dayOut = parseInt(myDateList[2].substring(0, 1));
-                    
-                }
-
                 return myDateList[1] + "/" + myDateList[2].substring(0, 2)
                     + "/" + myDateList[0];
 
@@ -359,7 +347,8 @@ function drawVisualization() {
             table.draw(data, {showRowNumber: false});
         }
         if (intDisType == 2){
-            var displayTitle = document.getElementById('ExploreDataPage:graphTitleHidden').value;
+
+            var displayTitle = new String (document.getElementById('ExploreDataPage:graphTitleHidden').textContent);
             var fullTitle = displayTitle;
              var chart = new google.visualization.ImageChart(document.getElementById('chart_div'));
              chart.draw(data, {cht: 'lc', title: fullTitle, colors: ['#4684EE', '#DC3912', '#FF9900', '#008000', '#4942CC', '#990099', '#FF80F2', '#7FD127']});
@@ -381,6 +370,10 @@ function deleteLine(){
 function updateStartYear(){
      document.getElementById('ExploreDataPage:updateStartYear').click();
      setTimeout(function(){drawVisualization();}, 500);
+}
+
+function updateIncludeFlags(){
+     document.getElementById('ExploreDataPage:updateIncludeFlags').click();
 }
 
 function resetIndices(){
@@ -446,6 +439,7 @@ function getImageURLButton()
 <ice:commandButton visible="false" id="updateFileName" type="submit" value="update" action="#{ExploreDataPage.updateFileName}"/>
 <ice:commandButton visible="false" id="deleteLineHidden" value="Delete Line hidden" actionListener="#{ExploreDataPage.deleteLine}"/>
 <ice:commandButton visible="false" id="updateImageURL" value="Update URL" action="#{ExploreDataPage.updateImageURL}"/>
+<ice:commandButton visible="false" id="updateIncludeFlags" value="Update URL" action="#{ExploreDataPage.updateIncludeFlags}"/>
 <ice:commandButton visible="false" id="resetIndexValue" actionListener="#{ExploreDataPage.resetIndexDisplay}"/>
 
     <div class="dvn_section">
@@ -676,8 +670,22 @@ function getImageURLButton()
                 </div>
                 <div class="dvnGraphExportBlock">
                     <ice:outputLabel value="Export" for="graphexport"/>
-                    <div class="dvnExportBtmWrp">
 
+                    <div class="dvnExportBtmWrp">
+                        <ice:selectBooleanCheckbox id="downloadImageGraph" binding="#{ExploreDataPage.imageGraphCheckBox}"
+                                                   value="#{ExploreDataPage.includeImage}" onchange="updateIncludeFlags();"
+                                                   rendered="true" />
+                        <ice:outputLabel value="Image Graph" for="downloadImageGraph" rendered="true"/>
+                        <ice:selectBooleanCheckbox id="downloadDataCSV" binding="#{ExploreDataPage.dataCSVCheckBox}"
+                                                   value="#{ExploreDataPage.includeCSV}" onchange="updateIncludeFlags();"
+                                                   rendered="true" />
+                        <ice:outputLabel value="Raw Data CSV" for="downloadDataCSV" rendered="true"/>
+                        <ice:selectBooleanCheckbox id="downloadDataExcel" binding="#{ExploreDataPage.dataExcelCheckBox}"
+                                                   value="#{ExploreDataPage.includeExcel}" onchange="updateIncludeFlags();"
+                                                   rendered="true" />
+                        <ice:outputLabel value="Excel File" for="downloadDataExcel" rendered="true"/>
+                        <ice:message for="downloadDataExcel" id="boxErrorMsgExcel" styleClass="errorMessage"/>
+                        <br></br>
                           <input type="button" class="dvnDataExplorationDnldBttn" value="Export Results" onclick="startDownload();"/>
                           <ice:outputResource label="Export" type="button" style="display:none;"
                                id="downloadDataFiles"

@@ -16,6 +16,7 @@ import com.icesoft.faces.component.ext.HtmlSelectOneMenu;
 import com.icesoft.faces.context.effects.JavascriptContext;
 import edu.harvard.iq.dvn.core.study.DataVariable;
 import edu.harvard.iq.dvn.core.study.EditStudyFilesService;
+import edu.harvard.iq.dvn.core.study.FileMetadata;
 import edu.harvard.iq.dvn.core.study.Metadata;
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyFile;
@@ -1938,13 +1939,12 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
    public List<SelectItem> loadStudyFileSelectItems(){
         List selectItems = new ArrayList<SelectItem>();
         selectItems.add(new SelectItem(0, "Select a File"));
-        Iterator iterator = study.getStudyFiles().iterator();
-        while (iterator.hasNext() ){
-            StudyFile studyFile = (StudyFile) iterator.next();            
-            if (studyFile.isSubsettable()){
-                    selectItems.add(new SelectItem(studyFile.getId(), studyFile.getFileName()));
+        for (FileMetadata fileMetaData: studyVersion.getFileMetadatas()){
+            if (fileMetaData.getStudyFile().isSubsettable()){
+                    selectItems.add(new SelectItem(fileMetaData.getStudyFile().getId(), fileMetaData.getStudyFile().getFileName()));
             }
         }
+
         return selectItems;
     }
 

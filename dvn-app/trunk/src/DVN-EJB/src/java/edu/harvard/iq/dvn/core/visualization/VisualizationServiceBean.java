@@ -394,9 +394,11 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
        int countFilters = 0;
        boolean xAxis = false;
        boolean hasMappings = false;
+       boolean retVal = true;
 
         List<DataVariable> dataVariables = (List<DataVariable>) dataTable.getDataVariables();
-
+        List<DataVariable> errorVariables = new ArrayList();
+        List<DataVariableMapping>  errorMappings = new ArrayList();
             for (DataVariable dataVariable: dataVariables){
                 
                 xAxis = false;
@@ -415,8 +417,8 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
 
                     if (hasMappings  && !xAxis && !validateSingleVariableMeasureGroup(dataTable, dataVariable)){
                         if (countFilters < 1){
-                            returnListOfErrors.add(dataVariable);
-                            return false;
+                            errorVariables.add(dataVariable);
+                            retVal = false;
                         }
                         else{
                             xAxis = false;
@@ -427,7 +429,22 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
 
             }
 
-        return true;
+            if (!errorVariables.isEmpty()){
+                for (DataVariable dv : errorVariables){
+                    List <DataVariableMapping>  variableMappings = (List) dv.getDataVariableMappings();
+                    if (!variableMappings.isEmpty()){
+                        Iterator iteratorMap = variableMappings.iterator();
+
+                        while (iteratorMap.hasNext()) {
+                            DataVariableMapping dataVariableMapping = (DataVariableMapping) iteratorMap.next();
+                            returnListOfErrors.add(dv);
+                            returnListOfErrors.add(dataVariableMapping);
+                        }
+                    }
+                }
+            }
+
+        return retVal;
     }
 
     /**

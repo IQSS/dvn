@@ -1506,7 +1506,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         manageMeasureTypes = false;
     }
 
-    public boolean validateForRelease(boolean messages){
+     public boolean validateForRelease(boolean messages){
         boolean valid = true;
         List fullListOfErrors = new ArrayList();
         List returnListOfErrors = new ArrayList();
@@ -1526,11 +1526,24 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         if (!visualizationService.validateAtLeastOneFilterMapping(dataTable, returnListOfErrors)) {
             if (messages){
                 if (!returnListOfErrors.isEmpty()){
+                    String errorMessage = "";
+                    boolean first = true;
                     for(Object dataVariableIn: returnListOfErrors){
-                        DataVariable dataVariable = (DataVariable) dataVariableIn;
-                        String errorMessage = "\r" + dataVariable.getName() + " requires at least one filter.<br>";
-                        fullListOfErrors.add(errorMessage);
-                        fullErrorMessage += errorMessage;
+
+                        if (first){
+                            DataVariable dataVariable = (DataVariable) dataVariableIn;
+                            errorMessage = dataVariable.getName() + " is mapped to ";
+
+                        }
+                        if (!first){
+                            DataVariableMapping dataVariableMapping = (DataVariableMapping) dataVariableIn;
+                            errorMessage = errorMessage + dataVariableMapping.getGroup().getName() + " measure but needs to be mapped to one or more filters to yield a unique combination.<br>";
+                            fullListOfErrors.add(errorMessage);
+                            fullErrorMessage += errorMessage;
+                            errorMessage = "";
+                        }
+
+                        first = !first;
                     }
                 }
                 

@@ -38,6 +38,8 @@ import java.security.PrivateKey;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -448,6 +450,11 @@ public class GNRSServiceBean implements edu.harvard.iq.dvn.core.gnrs.GNRSService
             if (!isHandleRegistered(handle)){
                 createHandle(handle);
             }
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(GNRSServiceBean.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         
     }
@@ -460,6 +467,11 @@ public class GNRSServiceBean implements edu.harvard.iq.dvn.core.gnrs.GNRSService
             if (isHandleRegistered(handle) && !handle.startsWith("1902.1")){
                 deleteHandle(handle);
             }
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(GNRSServiceBean.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         
     }
@@ -471,6 +483,11 @@ public class GNRSServiceBean implements edu.harvard.iq.dvn.core.gnrs.GNRSService
             String handle = elem.getAuthority() + "/" + elem.getStudyId();
             if (isHandleRegistered(handle)) {
                 fixHandle(handle);
+            }
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(GNRSServiceBean.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 

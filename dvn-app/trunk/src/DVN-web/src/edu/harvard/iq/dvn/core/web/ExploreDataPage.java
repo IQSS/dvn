@@ -32,6 +32,9 @@ import com.icesoft.faces.component.ext.HtmlSelectOneMenu;
 import com.icesoft.faces.context.FileResource;
 import com.icesoft.faces.context.Resource;
 import com.icesoft.faces.context.effects.JavascriptContext;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.pdf.PdfWriter;
 import edu.harvard.iq.dvn.core.study.DataVariable;
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyFile;
@@ -78,6 +81,7 @@ import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import jxl.Cell;
 import jxl.Sheet;
 import jxl.Workbook;
@@ -85,6 +89,8 @@ import jxl.WorkbookSettings;
 import jxl.write.Label;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
+
+
 
 
 /**
@@ -135,6 +141,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
     private boolean displayIndexes = false;
     private boolean includeImage = true;
+    private boolean includePdf = true;
 
     private boolean includeExcel = true;
     private boolean includeCSV = true;
@@ -783,6 +790,27 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     }
 
 
+    public void downloadButton(ActionEvent ae){
+        System.out.println("downloadButton start" );
+        FacesContext fc = FacesContext.getCurrentInstance();
+        JavascriptContext.addJavascriptCall(fc, "drawVisualization();");
+        JavascriptContext.addJavascriptCall(fc, "initLineDetails");
+        File zipOutputFile = getZipFileExport();
+        String exportTimestamp = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss").format(new Date());
+        System.out.println("downloadButton " + exportTimestamp);
+
+        if (zipOutputFile != null){
+           exportTimestamp = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss").format(new Date());
+            System.out.println("downloadButtonAfter " + exportTimestamp);
+          
+
+        }
+         JavascriptContext.addJavascriptCall(fc, "returnDownload();");
+
+           return;
+    }
+
+
     private void resetLineBorder(){
         int i = 0;
         if (vizLines.size()>=1){
@@ -1272,9 +1300,11 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         boolean noneIncluded =  (!includeExcel  && !includeImage && !includeCSV);
         ZipOutputStream zout;
         String exportTimestamp = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss").format(new Date());
+        System.out.println("getZipFileExport " + exportTimestamp);
         File csvFile = new File("csvData_" + exportTimestamp +  ".txt");
         File imageUrlFile = new File("imageUrl_" + exportTimestamp +  ".png");
         File excelDataFile = new File("excelData_" +  exportTimestamp +  ".xls");
+        File imagePdfFile = new File("imagePdf_" +  exportTimestamp +  ".pdf");
         try {
             zipOutputFile = File.createTempFile("dataDownload_" + exportTimestamp , ".zip");
 
@@ -1283,9 +1313,14 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                 writeFile(csvFile, csvString.toString().toCharArray(), csvString.toString().length() );
                 addZipEntry(zout, csvFile.getAbsolutePath(), "csvData_" + exportTimestamp +  ".txt");
             }            
-            if (includeImage){
-                writeImageFile(imageUrlFile);
-                addZipEntry(zout, imageUrlFile.getAbsolutePath(), "imageGraphURL_" + exportTimestamp + ".png");
+            if (includeImage || includePdf ){
+                writeImageFile(imageUrlFile, imagePdfFile);
+                if (includeImage){
+                    addZipEntry(zout, imageUrlFile.getAbsolutePath(), "imageGraphURL_" + exportTimestamp + ".png");
+                }
+                if (includePdf){
+                    addZipEntry(zout, imagePdfFile.getAbsolutePath(), "imagePdf_" + exportTimestamp + ".pdf");
+                }
             }
             if (includeExcel){
                 writeExcelFile(excelDataFile);
@@ -1331,8 +1366,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
     }
 
-    private void writeImageFile(File fileIn) {
-               
+    private void writeImageFile(File fileIn, File pdfFileIn) {
+
         try {
             String decoded = URLDecoder.decode(imageURL, "UTF-8");
             if (!graphTitle.isEmpty()){
@@ -1397,6 +1432,17 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                      }
 
                     ImageIO.write(bic, "png", fileIn);
+                    Document document = new Document();
+            PdfWriter.getInstance(document, new FileOutputStream(pdfFileIn, true));
+                document.open();
+
+		java.awt.Image awtImg = bic;
+
+		com.itextpdf.text.Image image2 =
+			com.itextpdf.text.Image.getInstance(awtImg, null);
+
+		document.add(image2);
+                document.close();
 
                 } catch (IIOException io){
                      System.out.println("IIOException ");
@@ -1410,6 +1456,9 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             System.out.println("MalformedURLException ");
         } catch (IOException io){
             System.out.println("IOException - outer ");
+        } catch (DocumentException io){
+            System.out.println("IOException - document ");
+            System.out.println(io.getMessage());
         }
     }
 
@@ -1675,6 +1724,9 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     public String updateGraphTitle(){
         String graphTitleIn = (String) getInputGraphTitle().getValue();
         setGraphTitle(graphTitleIn);
+        FacesContext fc = FacesContext.getCurrentInstance();
+        JavascriptContext.addJavascriptCall(fc, "drawVisualization();");
+        JavascriptContext.addJavascriptCall(fc, "initLineDetails");
         return "";
     }
 
@@ -1694,13 +1746,13 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
     public String updateIncludeFlags(){
 
-    if (!includeExcel  && !includeImage && !includeCSV){
+    if (!includeExcel  && !includeImage && !includeCSV && !includePdf){
            FacesMessage message = new FacesMessage("You must select at least one download file");
            FacesContext fc = FacesContext.getCurrentInstance();
            fc.addMessage(dataExcelCheckBox.getClientId(fc), message);
            return "";
     }
-       getZipFileExport();
+       
 
         return "";
     }
@@ -1835,26 +1887,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         this.imageColumnString = imageColumnString;
     }
 
-    private HtmlSelectBooleanCheckbox imageGraphCheckBox;
-
-    public HtmlSelectBooleanCheckbox getImageGraphCheckBox() {
-        return imageGraphCheckBox;
-    }
-
-    public void setImageGraphCheckBox(HtmlSelectBooleanCheckbox imageGraphCheckBox) {
-        this.imageGraphCheckBox = imageGraphCheckBox;
-    }
-
-    private HtmlSelectBooleanCheckbox dataCSVCheckBox;
-
-    public HtmlSelectBooleanCheckbox getDataCSVCheckBox() {
-        return dataCSVCheckBox;
-    }
-
-    public void setDataCSVCheckBox(HtmlSelectBooleanCheckbox dataCSVCheckBox) {
-        this.dataCSVCheckBox = dataCSVCheckBox;
-    }
-
     private HtmlSelectBooleanCheckbox dataExcelCheckBox;
 
     public HtmlSelectBooleanCheckbox getDataExcelCheckBox() {
@@ -1887,5 +1919,14 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
     public void setIncludeImage(boolean includeImage) {
         this.includeImage = includeImage;
+    }
+
+
+    public boolean isIncludePdf() {
+        return includePdf;
+    }
+
+    public void setIncludePdf(boolean includePdf) {
+        this.includePdf = includePdf;
     }
 }

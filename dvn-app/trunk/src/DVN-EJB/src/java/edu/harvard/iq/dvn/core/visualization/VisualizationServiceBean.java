@@ -335,29 +335,6 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
        if (dvmTestList.size() > 1){
            return false;
        }
-/*
-        List dataVariables = new ArrayList();
-        dataVariables = dataTable.getDataVariables();
-        if (!dataVariables.isEmpty())
-        {
-            Iterator iterator = dataVariables.iterator();
-            while (iterator.hasNext()) {
-                DataVariable dataVariableTest = (DataVariable) iterator.next();
-                variableMappings = (List) dataVariableTest.getDataVariableMappings();
-                for (Object dvMapping: variableMappings ){
-                    DataVariableMapping dvMappingTest = (DataVariableMapping) dvMapping;
-                    if (varGroupChk.equals(dvMappingTest.getGroup())){
-                        countMeasures++;
-                    }
-
-                }
-
-            }
-            if (countMeasures > 1){
-                return false;
-            }
-        }
-*/
 
         return true;
     }
@@ -491,9 +468,11 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
 
         ArrayList<String> membership = new ArrayList<String>();
         for (VarGrouping grouping : groupings) {
-            for (DataVariableMapping dvm : grouping.getDataVariableMappings()) {
-                if (dvm.getDataVariable().getId().equals(var.getId())) {
-                    membership.add(dvm.getGroup().getName());
+            if (!grouping.getGroupingType().equals(GroupingType.SOURCE)){
+                for (DataVariableMapping dvm : grouping.getDataVariableMappings()) {
+                    if (dvm.getDataVariable().getId().equals(var.getId())) {
+                        membership.add(dvm.getGroup().getName());
+                    }
                 }
             }
         }

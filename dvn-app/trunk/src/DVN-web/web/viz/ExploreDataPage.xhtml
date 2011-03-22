@@ -609,6 +609,10 @@ function getImageURLButton()
 
             <div jsfc="ice:panelGroup" rendered="#{!empty ExploreDataPage.vizLines}" styleClass="dvnGraphBox">
                 <div id="chart_div"></div>
+                <div jsfc="ice:panelGroup" styleClass="dvnGraphSourceBlock" visible="#{!empty ExploreDataPage.sources}">
+                    <ice:outputLabel value="Source"/>
+                    <ice:outputText value="#{ExploreDataPage.sources}" id="sourceData"/>
+                </div>
             </div>
 
             <div jsfc="ice:panelGroup" rendered="#{!empty ExploreDataPage.vizLines}" styleClass="dvnGraphDisplay">
@@ -627,10 +631,7 @@ function getImageURLButton()
                                        onkeyup="delayedRequestTitle(form,this,event);"></ice:inputText>
                     </div>
                 </div>
-                <div jsfc="ice:panelGroup" styleClass="dvnGraphSourceBlock" visible="#{!empty ExploreDataPage.sources}">
-                    <ice:outputLabel value="Source"/>
-                    <ice:outputText value="#{ExploreDataPage.sources}" id="sourceData"/>
-                </div>
+
                 <div class="dvnGraphTimeSeriesBlock">
                     <ice:outputLabel value="Time Series" for="graphtimeseries" styleClass="dvnGraphTimeSeriesTitle"/>
                     <div>

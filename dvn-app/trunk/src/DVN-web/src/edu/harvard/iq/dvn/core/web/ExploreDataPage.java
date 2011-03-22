@@ -1285,6 +1285,10 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     }
 
      public File getZipFileExport() {
+        boolean onlyExcel = false;
+        boolean onlyPdf = false;
+        boolean onlyImage = false;
+        boolean onlyCSV = false;
 
         File zipOutputFile;
         if (imageURL.isEmpty()){
@@ -1300,11 +1304,14 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         boolean noneIncluded =  (!includeExcel  && !includeImage && !includeCSV);
         ZipOutputStream zout;
         String exportTimestamp = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss").format(new Date());
-        System.out.println("getZipFileExport " + exportTimestamp);
         File csvFile = new File("csvData_" + exportTimestamp +  ".txt");
         File imageUrlFile = new File("imageUrl_" + exportTimestamp +  ".png");
         File excelDataFile = new File("excelData_" +  exportTimestamp +  ".xls");
         File imagePdfFile = new File("imagePdf_" +  exportTimestamp +  ".pdf");
+        if (includeExcel && !includeImage && !includePdf && !includeCSV) onlyExcel = true;
+        if (!includeExcel && includeImage && !includePdf && !includeCSV) onlyImage = true;
+        if (!includeExcel && !includeImage && includePdf && !includeCSV) onlyPdf = true;
+        if (!includeExcel && !includeImage && !includePdf && includeCSV) onlyCSV = true;
         try {
             zipOutputFile = File.createTempFile("dataDownload_" + exportTimestamp , ".zip");
 
@@ -1332,7 +1339,15 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         } catch (Exception ie){
            zipOutputFile = null;
         }
-
+        if (onlyExcel){
+            return excelDataFile;
+        } else if (onlyImage){
+            return imageUrlFile;
+        } else if (onlyPdf){
+            return imagePdfFile;
+        } else if (onlyCSV){
+            return csvFile;
+        }
         return zipOutputFile;
     }
 

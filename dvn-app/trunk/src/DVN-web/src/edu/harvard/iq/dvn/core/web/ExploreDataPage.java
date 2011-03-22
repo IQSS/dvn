@@ -1403,61 +1403,27 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
        
         if (!decoded.isEmpty()){
                 URL imageURLnew = new URL(decoded);
-                String sourcesOut1 = "";
-                String sourcesOut2 = "";
+
                 try{
                     BufferedImage image =     ImageIO.read(imageURLnew);
                     int width1 = image.getWidth();
                     int height1 = image.getHeight();
                     ImageIO.write(image, "png", fileIn);
-                    BufferedImage img = new BufferedImage(width1, 50, BufferedImage.TYPE_INT_RGB);
-                    int heightbic =  height1+ 50;
-                     if (sources.isEmpty()){
-                         heightbic = height1;
-                        } else {
-                         
-                         if (sources.length() > 80  ){
-                            int strLen = sources.length();
-                            int previousSpace = sources.lastIndexOf(" ",  80);
-                            sourcesOut1 = sources.substring(0, previousSpace);
-                            sourcesOut2 = sources.substring(previousSpace + 1, strLen);
-
-                        } else {
-                            sourcesOut1 = sources;
-                        }
-                     }
-
-
-                    BufferedImage bic = new BufferedImage(width1, heightbic, BufferedImage.TYPE_INT_RGB);
-
-                    Graphics2D g2 = img.createGraphics();
-                    g2.setColor(Color.WHITE);
-                    g2.fillRect(0, 0, width1 - 1, 50- 1);
-                    g2.setColor(Color.BLACK);
-                    g2.drawRect(0, 0, width1 - 1, 50 - 1);
-
-                    Font font = new Font("Arial", Font.PLAIN, 12);
-                    g2.setFont(font);
-                    g2.setColor(Color.BLACK);
-                    g2.drawString("Source(s): " + sourcesOut1, 10,20);
-                    g2.drawString( sourcesOut2, 10,40);
-                     bic.createGraphics().drawImage(image, 0, 0, null);
-                     if (!sources.isEmpty()){
-                         bic.createGraphics().drawImage(img, 0, height1, null);
-                     }
-
+                    BufferedImage bif = getSourceFooter(width1,height1 );
+                    BufferedImage bic = new BufferedImage(width1, height1 + bif.getHeight(), BufferedImage.TYPE_INT_RGB);
+                    bic.createGraphics().drawImage(image, 0, 0, null);
+                    bic.createGraphics().drawImage(bif, 0, height1, null);
                     ImageIO.write(bic, "png", fileIn);
                     Document document = new Document();
-            PdfWriter.getInstance(document, new FileOutputStream(pdfFileIn, true));
-                document.open();
+                    PdfWriter.getInstance(document, new FileOutputStream(pdfFileIn, true));
+                    document.open();
 
-		java.awt.Image awtImg = bic;
+                    java.awt.Image awtImg = bic;
 
-		com.itextpdf.text.Image image2 =
-			com.itextpdf.text.Image.getInstance(awtImg, null);
+                    com.itextpdf.text.Image image2 =   com.itextpdf.text.Image.getInstance(awtImg, null);
 
-		document.add(image2);
-                document.close();
+                    document.add(image2);
+                    document.close();
 
                 } catch (IIOException io){
                      System.out.println("IIOException ");
@@ -1475,6 +1441,61 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             System.out.println("IOException - document ");
             System.out.println(io.getMessage());
         }
+    }
+
+    private BufferedImage getSourceFooter(int width, int height){
+
+          BufferedImage img = new BufferedImage(width, 50, BufferedImage.TYPE_INT_RGB);
+          if (sources.isEmpty()){
+              return img;
+          }
+          boolean done = false;
+          String sourcesWLabel = "Source(s): " + sources;
+          int numberOfLines = sourcesWLabel.length() / 80;
+          numberOfLines = numberOfLines + 2;
+          String[] sourceLines = new String[numberOfLines];
+          int begOfLine = 0;
+          int endOfLine = 80;
+          for (int i = 0; i < numberOfLines; i++){
+
+              int previousSpace = sourcesWLabel.lastIndexOf(" ",  endOfLine);
+              
+              if (previousSpace > begOfLine  && (endOfLine - begOfLine) > 79 && !done){
+                  sourceLines[i] = sourcesWLabel.substring(begOfLine, previousSpace);
+              } else if (!done) {
+                  sourceLines[i] = sourcesWLabel.substring(begOfLine, endOfLine);
+                  done = true;
+              } else {
+                  sourceLines[i] = "";
+              }
+
+              begOfLine =  previousSpace + 1;
+              endOfLine = Math.min(sourcesWLabel.length(), previousSpace + 81);
+          }
+          
+          int heightbic =  numberOfLines * 25;
+        img = new BufferedImage(width, heightbic, BufferedImage.TYPE_INT_RGB);
+         BufferedImage bic = new BufferedImage(width, heightbic, BufferedImage.TYPE_INT_RGB);
+
+         Graphics2D g2 = img.createGraphics();
+         g2.setColor(Color.WHITE);
+         g2.fillRect(0, 0, width , heightbic );
+
+         Font font = new Font("Arial", Font.PLAIN, 12);
+         g2.setFont(font);
+         g2.setColor(Color.BLACK);
+         
+         for (int i = 0; i < numberOfLines; i++){
+            
+            g2.drawString( sourceLines[i], 10, (i+1)*20);
+         } 
+        
+             if (!sources.isEmpty()){
+                 bic.createGraphics().drawImage(img, 0, 0, null);
+             }
+
+         return img;
+
     }
 
     private void addZipEntry(ZipOutputStream zout, String inputFileName, String outputFileName) throws IOException{

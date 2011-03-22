@@ -488,8 +488,8 @@ public class StudyVersionDifferencesPage extends VDCBaseBean implements java.io.
 
         // filename:
 
-        value1 = fm1.getStudyFile().getFileName();
-        value2 = fm2.getStudyFile().getFileName();
+        value1 = fm1.getLabel();
+        value2 = fm2.getLabel();
 
         if (value1 != null || value2 != null) {
 			if ((value1 != null && !value1.equals(value2)) ||

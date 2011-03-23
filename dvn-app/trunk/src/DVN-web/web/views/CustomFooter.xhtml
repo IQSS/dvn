@@ -9,8 +9,8 @@
       >
 
     <ui:composition>
-    <h:outputText escape="false" rendered="#{VDCRequest.currentVDCId != null and !VDCRequest.currentVDC.displayInFrame}" value="#{VDCRequest.currentVDC.footer}"/>
-    <h:outputText escape="false" rendered="#{VDCRequest.currentVDCId == null}" value="#{VDCRequest.vdcNetwork.networkPageFooter}"/>
+    <h:outputText escape="false" rendered="#{VDCRequest.currentVDCId != null and VDCRequest.displayDVNCustomization}" value="#{VDCRequest.currentVDC.footer}"/>
+    <h:outputText escape="false" rendered="#{VDCRequest.currentVDCId == null and VDCRequest.displayDVNCustomization}" value="#{VDCRequest.vdcNetwork.networkPageFooter}"/>
 
 </ui:composition>
 </div>

@@ -1597,6 +1597,51 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             valid = false;
         }
 
+        returnListOfErrors.clear();
+
+        if (!visualizationService.validateOneMeasureMapping(dataTable, returnListOfErrors)) {
+            if (messages){
+                if (!returnListOfErrors.isEmpty()){
+                    String errorMessage = "";
+                    boolean first = true;
+                    boolean firstGroup = true;
+                    for(Object dataVariableIn: returnListOfErrors){
+                        if (dataVariableIn instanceof DataVariable ){
+                            firstGroup = true;
+                            if (!first) {
+                                  errorMessage = errorMessage + ".  It can only be mapped to one measure.<br>";
+                                  fullListOfErrors.add(errorMessage);
+                                  fullErrorMessage += errorMessage;
+                                  errorMessage = "";
+                            }
+                            first = false;
+                            DataVariable dataVariable = (DataVariable) dataVariableIn;
+                            errorMessage = dataVariable.getName() + " is mapped to ";
+                        }
+
+                        if (dataVariableIn instanceof VarGroup){
+
+                            VarGroup varGroup = (VarGroup) dataVariableIn;
+                            if (firstGroup){
+                                errorMessage = errorMessage + varGroup.getName() + " measure ";
+                            }
+                            if (!firstGroup){
+                                errorMessage = errorMessage + " and " + varGroup.getName() + " measure ";
+                            }
+                            firstGroup = false;
+                        }
+
+                        
+                    }
+                    errorMessage = errorMessage + ".  It can only be mapped to one measure.<br>";
+                    fullListOfErrors.add(errorMessage);
+                    fullErrorMessage += errorMessage;
+                }
+            }
+
+            valid = false;
+        }
+
         if (!visualizationService.validateAtLeastOneMeasureMapping(dataTable)) {
             if (messages){
                 String errorMessage = "The Data Visualization must include at least one Measure.<br>";

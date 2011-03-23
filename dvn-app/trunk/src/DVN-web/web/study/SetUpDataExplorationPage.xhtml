@@ -170,7 +170,8 @@
         </div>
     </div>
     <div class="dvn_sectionBoxNoBorders">
-        <ice:panelTabSet id="tabSet1" rendered="#{SetUpDataExplorationPage.showCommands}">
+        <ice:panelTabSet id="tabSet1" rendered="#{SetUpDataExplorationPage.showCommands}"
+                         tabChangeListener="#{SetUpDataExplorationPage.changeTab}">
             <ice:panelTab id="xVariable" label="Time Variable" url="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/SetUpDataExploration.xhtml&amp;tab=xVariable">
                 <div jsfc="ice:panelGroup" panelLayout="flow">
                     <div jsfc="ice:panelGroup" style="overflow:hidden;">
@@ -203,7 +204,8 @@
                             </ice:dataTable>
                         </div>
 
-                        <div jsfc="ice:panelGroup" style="width:35%; float:left;" visible="#{SetUpDataExplorationPage.editXAxis or (!SetUpDataExplorationPage.xAxisSet) }">
+                        <div jsfc="ice:panelGroup" style="width:35%; float:left;" visible="#{SetUpDataExplorationPage.editXAxis or (!SetUpDataExplorationPage.xAxisSet) }"
+                             >
                             <ui:include src="SetUpDataExplorationFragment.xhtml"></ui:include>
                         </div>
                     </div>

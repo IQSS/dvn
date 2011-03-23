@@ -124,7 +124,7 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
         return returnList;
     }
 
-    private List getMeasureMappings (List<DataVariableMapping> mappingList){
+    private List <DataVariableMapping> getMeasureMappings (List<DataVariableMapping> mappingList){
         List <DataVariableMapping> returnList = new ArrayList();
 
         for (DataVariableMapping dvm: mappingList){
@@ -151,40 +151,23 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
     @Override
     public boolean validateOneMeasureMapping(DataTable dataTable, List returnListOfErrors){
        boolean valid = true;
-       int countMeasures = 0;
-       boolean hasMappings = false;
-       boolean xAxis = false;
-       List variableMappings = new ArrayList();
+
+       List <DataVariableMapping> variableMappings = new ArrayList();
        List<DataVariable> dataVariables = (List<DataVariable>) dataTable.getDataVariables();
 
             for (DataVariable dataVariable: dataVariables){
-                xAxis = false;
-                hasMappings = false;
-                countMeasures = 0;
-                variableMappings = getMeasureAndFilterMappings((List) dataVariable.getDataVariableMappings());
-                if (!variableMappings.isEmpty()){
-                    hasMappings = true;
-                    Iterator iteratorMap = variableMappings.iterator();
 
-                    while (iteratorMap.hasNext()) {
-                        DataVariableMapping dataVariableMapping = (DataVariableMapping) iteratorMap.next();
+                variableMappings = getMeasureMappings((List) dataVariable.getDataVariableMappings());
 
-                        if (dataVariableMapping.isX_axis()) xAxis = true;
-                        if (!xAxis && dataVariableMapping.getVarGrouping() != null &&
-                            dataVariableMapping.getVarGrouping().getGroupingType().equals(GroupingType.MEASURE)){
-                            countMeasures++;
-                        }
-                    }
-                }
-                if (!xAxis && hasMappings && countMeasures != 1){
+                if ( variableMappings.size() > 1){
                     returnListOfErrors.add(dataVariable);
+                    for (DataVariableMapping dvm: variableMappings){
+                        returnListOfErrors.add(dvm.getGroup());
+                    }
+                    
                     valid = false;
                 }
-                else{
-                    xAxis = false;
-                    hasMappings = false;
-                    countMeasures = 0;
-                }
+
         }
         return valid;
     }
@@ -224,7 +207,7 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
                for (VarGroup vgTest: vgList ){
                    boolean mapped = false;
                    for (VarGroup vgMapped: groupsMapped){
-                       if (vgTest.equals(vgMapped)){
+                       if (vgTest.getName().equals(vgMapped.getName())){
                            mapped = true;
                        }
                        }

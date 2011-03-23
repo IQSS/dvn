@@ -6,8 +6,8 @@
        >
 
     <ui:composition>
-            <h:outputText escape="false" rendered="#{VDCRequest.currentVDCId != null and !VDCRequest.currentVDC.displayInFrame}" value="#{VDCRequest.currentVDC.header}"/>
-            <h:outputText escape="false" rendered="#{VDCRequest.currentVDCId == null}" value="#{VDCRequest.vdcNetwork.networkPageHeader}"/>
+            <h:outputText escape="false" rendered="#{VDCRequest.currentVDCId != null and VDCRequest.displayDVNCustomization}" value="#{VDCRequest.currentVDC.header}"/>
+            <h:outputText escape="false" rendered="#{VDCRequest.currentVDCId == null and VDCRequest.displayDVNCustomization}" value="#{VDCRequest.vdcNetwork.networkPageHeader}"/>
     </ui:composition>
 </div>
 

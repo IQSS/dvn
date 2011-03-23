@@ -370,4 +370,36 @@ public class VDCRequestBean extends VDCBaseBean implements java.io.Serializable 
         return false;
     }
 
+    private boolean isDisableCustomization() {
+        String vdcAlias = getCurrentVDC() != null ? getCurrentVDC().getAlias() : "";
+        String disableCustomizationParam = getRequestParam("disableCustomization");
+
+        if (disableCustomizationParam != null) {
+            if ("true".equals(disableCustomizationParam) ){
+                sessionPut("disableCustomization", vdcAlias);
+            } else if ("false".equals(disableCustomizationParam) ){
+               sessionPut("disableCustomization", null);
+            }
+        }
+
+        return vdcAlias.equals(sessionGet("disableCustomization"));
+    }
+
+    public boolean isDisplayInFrame() {
+        // only valid for VDCs
+        if (getCurrentVDC() != null) {
+            return getCurrentVDC().isDisplayInFrame() && !isDisableCustomization();
+        }
+
+        return false;
+    }
+
+    public boolean isDisplayDVNCustomization() {
+        if (getCurrentVDC() != null) {
+            return !getCurrentVDC().isDisplayInFrame() && !isDisableCustomization();
+        } else {
+            return  !isDisableCustomization();
+        }
+    }
+
 }

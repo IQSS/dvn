@@ -112,7 +112,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
     @EJB
     private DvnDSBTimerServiceLocal dvnDSBTimerService;
     @EJB
-    private StudyServiceLocal studyService;
+    StudyServiceLocal studyService;
     @EJB
     private VDCServiceLocal vdcService;
 
@@ -1277,8 +1277,8 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                     // Step 3. Organizes parameters/metadata to be sent to the implemented
                     // data-analysis-service class
 
-                    // skip the Rserve call completely (for tab file format)! -- L.A.
-                    if (!formatType.equals("D01")) {
+                    // skip the Rserve call completely (for plain tab file format, with no recoding)! -- L.A.
+                    if (!formatType.equals("D01") || (recodeSchema.size() > 0)) {
 
                         //Map<String, Map<String, String>> vls = getValueTableForRequestedVariables(getDataVariableForRequest());
 
@@ -1355,7 +1355,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
             // final processing steps for all successful cases
             // add study-metadata to the resultInfo map
 
-            if (formatType.equals("D01")) {
+            if (formatType.equals("D01") && !(recodeSchema.size() > 0)) {
                 resultInfo.put("wbDataFileName", tmpsbfl.getAbsolutePath());
                 // Fields that would normally be populated by R:
 
@@ -1450,7 +1450,7 @@ public class AnalysisPage extends VDCBaseBean implements java.io.Serializable {
                 //writeRhistory(tmpRhfl, rhistNew);
                 
 
-                if (formatType.equals("D01")){
+                if (formatType.equals("D01") && !(recodeSchema.size() > 0)){
                     // (2) tab-delimited-format-only step:
                     //
                     // In the final zip file we package the subset file

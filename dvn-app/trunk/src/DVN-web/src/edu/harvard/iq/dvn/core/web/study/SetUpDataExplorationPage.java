@@ -13,6 +13,7 @@ import com.icesoft.faces.component.ext.HtmlInputText;
 import com.icesoft.faces.component.ext.HtmlCommandLink;
 import com.icesoft.faces.component.ext.HtmlSelectBooleanCheckbox;
 import com.icesoft.faces.component.ext.HtmlSelectOneMenu;
+import com.icesoft.faces.component.paneltabset.TabChangeEvent;
 import com.icesoft.faces.context.effects.JavascriptContext;
 import edu.harvard.iq.dvn.core.study.DataVariable;
 import edu.harvard.iq.dvn.core.study.EditStudyFilesService;
@@ -2736,5 +2737,10 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
     public void setAddSourceGroup(boolean addSource) {
         this.addSourceGroup = addSource;
+    }
+
+    public void changeTab(TabChangeEvent te){
+
+        cancelAddEdit();
     }
 }

@@ -391,7 +391,7 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
 
             if (!errorVariables.isEmpty()){
                 for (DataVariable dv : errorVariables){
-                    List <DataVariableMapping>  variableMappings = (List) dv.getDataVariableMappings();
+                    List <DataVariableMapping>  variableMappings = getMeasureMappings((List) dv.getDataVariableMappings());
                     if (!variableMappings.isEmpty()){
                         Iterator iteratorMap = variableMappings.iterator();
 

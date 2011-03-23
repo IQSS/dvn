@@ -20,7 +20,7 @@
         }
       // ]]>
   </script>
-  <ice:outputText nospan="true" escape="false" rendered="#{VDCRequest.currentVDCId == null or (VDCRequest.currentVDCId != null and !VDCRequest.currentVDC.displayInFrame)}">
+  <ice:outputText nospan="true" escape="false" rendered="#{VDCRequest.currentVDCId == null or (VDCRequest.currentVDCId != null and !VDCRequest.displayInFrame)}">
     <script type="text/javascript">
         // <![CDATA[
         // check to see if page is loaded in an iframe; if so, and "pop" out to top level
@@ -30,7 +30,7 @@
         // ]]>
     </script>
   </ice:outputText>
-  <ice:outputText nospan="true" escape="false" rendered="#{VDCRequest.currentVDCId != null and VDCRequest.currentVDC.displayInFrame}">
+  <ice:outputText nospan="true" escape="false" rendered="#{VDCRequest.currentVDCId != null and VDCRequest.displayInFrame}">
       <script type="text/javascript">
           // <![CDATA[
           // check to see if page should be in an iframe (and is not); if so, redirect to containing site (specifiying sub page, if neeeded)

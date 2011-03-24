@@ -1410,18 +1410,21 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                     int height1 = image.getHeight();
                     ImageIO.write(image, "png", fileIn);
                     BufferedImage bif = getSourceFooter(width1,height1 );
-                    BufferedImage bic = new BufferedImage(width1, height1 + bif.getHeight(), BufferedImage.TYPE_INT_RGB);
+                    int bicHt = height1;
+                    if (!sources.isEmpty()) {
+                        bicHt = height1 + bif.getHeight();
+                    }
+                    BufferedImage bic = new BufferedImage(width1, bicHt, BufferedImage.TYPE_INT_RGB);
                     bic.createGraphics().drawImage(image, 0, 0, null);
-                    bic.createGraphics().drawImage(bif, 0, height1, null);
+                    if (!sources.isEmpty()) {
+                        bic.createGraphics().drawImage(bif, 0, height1, null);
+                    } 
                     ImageIO.write(bic, "png", fileIn);
                     Document document = new Document();
                     PdfWriter.getInstance(document, new FileOutputStream(pdfFileIn, true));
                     document.open();
-
                     java.awt.Image awtImg = bic;
-
                     com.itextpdf.text.Image image2 =   com.itextpdf.text.Image.getInstance(awtImg, null);
-
                     document.add(image2);
                     document.close();
 
@@ -1455,7 +1458,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
           numberOfLines = numberOfLines + 2;
           String[] sourceLines = new String[numberOfLines];
           int begOfLine = 0;
-          int endOfLine = 80;
+          int endOfLine = Math.min(sourcesWLabel.length(), 80);
           for (int i = 0; i < numberOfLines; i++){
 
               int previousSpace = sourcesWLabel.lastIndexOf(" ",  endOfLine);

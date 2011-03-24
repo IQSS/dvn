@@ -1,6 +1,5 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Encapsulates ingested files used for clustering
  */
 
 package edu.harvard.iq.text;
@@ -211,7 +210,7 @@ public class DocumentSet {
                     String docId = null;
                     while(st.hasMoreTokens()) {
                         
-                        String value = st.nextToken();
+                        String value = getNextToken(st);
                         if (allFields.get(col).equals(DOCUMENT_ID_FIELD)) {
                             docId = value;
                         } else {
@@ -273,6 +272,47 @@ public class DocumentSet {
         }
     }
 
+    /**
+     * Gets the next comma delimited token, but considers text that is surrounded
+     * by quotes as a single token, even if it contains commas - we need to do this
+     * so we can handle commas within a comma-delimited file.
+     * @param st
+     * @return 
+     */
+    private String getNextToken(StringTokenizer st) {
+        String fullToken = st.nextToken().trim();       
+        if (fullToken.startsWith("\"")) {
+            // if the number of quotes in the string is odd, then we know that 
+            // this is NOT the end of the token
+            while (numQuotes(fullToken)%2!=0) {
+                System.out.println("fullToken: "+fullToken);
+                fullToken+=","+st.nextToken();
+            }
+       
+           // remove quotes that were used to escape "real" quotes in the string
+           fullToken.replace("\"\"", "\"");
+           // remove beginning and ending quote
+           if (fullToken.charAt(0)=='"') {
+               fullToken.substring(1);
+           }
+           if (fullToken.charAt(fullToken.length()-1)=='"') {
+               fullToken.substring(0, fullToken.length()-1);
+           }
+        }
+        return fullToken;
+    }
+        
+    private int numQuotes(String s) {
+        char[] chars = s.toCharArray();
+        int count = 0;
+        for (int i=0;i<chars.length;i++) {
+            if (chars[i]=='"') {
+                count++;
+            }
+        }
+        return count;
+    }
+    
     private void initClusterMembership() {
         ArrayList<ArrayList> table = new ArrayList<ArrayList>();
         

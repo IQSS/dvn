@@ -136,6 +136,18 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
         return returnList;
     }
 
+    private List <DataVariableMapping> getFilterMappings (List<DataVariableMapping> mappingList){
+        List <DataVariableMapping> returnList = new ArrayList();
+
+        for (DataVariableMapping dvm: mappingList){
+            if (!dvm.isX_axis()  &&  (dvm.getVarGrouping().getGroupingType().equals(GroupingType.FILTER))){
+                returnList.add(dvm);
+            }
+        }
+
+        return returnList;
+    }
+
     public List getSourceMappings (List<DataVariableMapping> mappingList){
         List <DataVariableMapping> returnList = new ArrayList();
 
@@ -266,19 +278,27 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
         }
 
         if (!errorVariables.isEmpty()){
-            for (DataVariable dv : errorVariables){
-                variableMappings = (List) dv.getDataVariableMappings();
-                if (!variableMappings.isEmpty()){
-                    Iterator iteratorMap = variableMappings.iterator();
+            List <DataVariableMapping> allMappings = new ArrayList();
 
-                    while (iteratorMap.hasNext()) {
-                        DataVariableMapping dataVariableMapping = (DataVariableMapping) iteratorMap.next();
-                        returnListOfErrors.add(dv);
-                        returnListOfErrors.add(dataVariableMapping);
+            if (!errorVariables.isEmpty()){
+                for (DataVariable dv : errorVariables){
+                    List <DataVariableMapping>  errorMappings = getFilterMappings((List) dv.getDataVariableMappings());
+                    if (!variableMappings.isEmpty()){
+                        for (DataVariableMapping dvm: errorMappings){
+                            allMappings.add(dvm);
+                        }
                     }
-
                 }
+            }
+            List <VarGroup> distinctMeasures = getDistinctMeasures(allMappings);
 
+            for ( VarGroup measure: distinctMeasures){
+                returnListOfErrors.add(measure);
+                for (DataVariableMapping dvm: allMappings){
+                    if (dvm.getGroup().getName().equals(measure.getName())){
+                        returnListOfErrors.add(dvm.getDataVariable());
+                    }
+                }
 
             }
 
@@ -389,21 +409,29 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
 
             }
 
+            List <DataVariableMapping> allMappings = new ArrayList();
+            
             if (!errorVariables.isEmpty()){
                 for (DataVariable dv : errorVariables){
                     List <DataVariableMapping>  variableMappings = getMeasureMappings((List) dv.getDataVariableMappings());
                     if (!variableMappings.isEmpty()){
-                        Iterator iteratorMap = variableMappings.iterator();
-
-                        while (iteratorMap.hasNext()) {
-                            DataVariableMapping dataVariableMapping = (DataVariableMapping) iteratorMap.next();
-                            returnListOfErrors.add(dv);
-                            returnListOfErrors.add(dataVariableMapping);
+                        for (DataVariableMapping dvm: variableMappings){
+                            allMappings.add(dvm);
                         }
                     }
                 }
             }
+            List <VarGroup> distinctMeasures = getDistinctMeasures(allMappings);
 
+            for ( VarGroup measure: distinctMeasures){
+                returnListOfErrors.add(measure);
+                for (DataVariableMapping dvm: allMappings){
+                    if (dvm.getGroup().getName().equals(measure.getName())){
+                        returnListOfErrors.add(dvm.getDataVariable());
+                    }
+                }
+
+            }
         return retVal;
     }
 
@@ -415,7 +443,7 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
      */
 
     public List getDuplicateMappings( DataTable datatable, List returnListOfErrors ) {
-        List duplicateVariables = new ArrayList();
+        List <DataVariable> duplicateVariables = new ArrayList();
         Set<ArrayList<String>> set = new HashSet();
         Set<String> setString = new HashSet();
         List<DataVariable> variables = datatable.getDataVariables();
@@ -424,12 +452,12 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
         for (DataVariable var: variables) {
             if (!var.getDataVariableMappings().isEmpty()){
                 ArrayList<String> groupMembership = getGroupMembership(var,varGroupings);
-                if (groupMembership.size() >0) {
+                if (groupMembership != null && groupMembership.size() >0) {
                     Set <ArrayList<String>> groupSet = new HashSet();
                     groupSet.add(groupMembership);
-                    if (set.contains(groupMembership)) {                        
+                    if (set.contains(groupMembership) && groupMembership.size() > 1 ) {
                         duplicateVariables.add(var);
-                        returnListOfErrors.add(groupMembership);
+                        
                     } else {
                         set.add(groupMembership);
                         for(String groupString: groupMembership){
@@ -441,6 +469,36 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
             }
 
         }
+            List <DataVariableMapping> allMappings = new ArrayList();
+
+            if (!duplicateVariables.isEmpty()){
+                for (DataVariable dv : duplicateVariables){
+                    List <DataVariableMapping>  variableMappings = getMeasureMappings((List) dv.getDataVariableMappings());
+                    if (!variableMappings.isEmpty()){
+                        for (DataVariableMapping dvm: variableMappings){
+                            allMappings.add(dvm);
+                        }
+                    }
+                }
+            }
+            List <VarGroup> distinctMeasures = getDistinctMeasures(allMappings);
+            for ( VarGroup measure: distinctMeasures){
+                returnListOfErrors.add(measure);
+                for (DataVariable var: variables) {
+                    if (!var.getDataVariableMappings().isEmpty()){
+                        List dvmList = (List)  var.getDataVariableMappings();
+                        for (Object dvmIn :dvmList){
+                            DataVariableMapping dvm = (DataVariableMapping) dvmIn;
+                            
+                            if (!dvm.isX_axis() && dvm.getGroup().getName().equals(measure.getName())){
+                                returnListOfErrors.add(dvm.getDataVariable());
+                            }
+                        }
+                    }
+
+                }
+
+            }
         
         return duplicateVariables;
     }
@@ -448,20 +506,48 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
      * For each grouping, get the group that this var belongs to, if any
      */
     private ArrayList<String> getGroupMembership(DataVariable var, List<VarGrouping> groupings ) {
-
+        int countgroups = 0;
         ArrayList<String> membership = new ArrayList<String>();
         for (VarGrouping grouping : groupings) {
             if (!grouping.getGroupingType().equals(GroupingType.SOURCE)){
                 for (DataVariableMapping dvm : grouping.getDataVariableMappings()) {
                     if (dvm.getDataVariable().getId().equals(var.getId())) {
                         membership.add(dvm.getGroup().getName());
+                        countgroups++;
                     }
                 }
             }
         }
-        return membership;
+        if (countgroups > 1){
+            return membership;
+        } else {
+            return null;
+        }
+        
     }
 
+    private List getDistinctMeasures( List <DataVariableMapping> dvmList) {
+        List <VarGroup> returnList = new ArrayList();
+        
+        for (DataVariableMapping dvm: dvmList) {
+            if (returnList.isEmpty()){
+                returnList.add(dvm.getGroup());
+            } else {
+                boolean added = false;
+                for (VarGroup test: returnList){
+                    if (test.getName().equals(dvm.getGroup().getName())){
+                        added = true;
+                    }
+                }
+                if (!added){
+                    returnList.add(dvm.getGroup());
+                }
+            }
+
+        }
+        
+        return returnList;
+    }
 
 
     @Override

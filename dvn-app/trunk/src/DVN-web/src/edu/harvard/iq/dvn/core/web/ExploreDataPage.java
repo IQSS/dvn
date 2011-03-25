@@ -36,9 +36,11 @@ import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.PdfWriter;
 import edu.harvard.iq.dvn.core.study.DataVariable;
+import edu.harvard.iq.dvn.core.study.NetworkDataFile;
 import edu.harvard.iq.dvn.core.study.Study;
 import edu.harvard.iq.dvn.core.study.StudyFile;
 import edu.harvard.iq.dvn.core.study.VariableServiceLocal;
+import edu.harvard.iq.dvn.core.util.FileUtil;
 import edu.harvard.iq.dvn.core.visualization.DataVariableMapping;
 import edu.harvard.iq.dvn.core.web.study.StudyUI;
 import edu.harvard.iq.dvn.ingest.dsb.FieldCutter;
@@ -54,6 +56,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -105,7 +108,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
     private String measureLabel;
     private String lineLabel;
-    private String downloadFileName = "";
 
     private String lineColor;
     private String dataTableId = "";
@@ -163,6 +165,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     private List <VarGrouping> allVarGroupings = new ArrayList();
     private boolean showVariableInfoPopup = false;
     private String variableLabel = "";
+    private String exportFileNameExt = "";
+    private String exportFileNameBody = "";
 
     public ExploreDataPage() {
         
@@ -789,28 +793,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
     }
 
-
-    public void downloadButton(ActionEvent ae){
-        System.out.println("downloadButton start" );
-        FacesContext fc = FacesContext.getCurrentInstance();
-        JavascriptContext.addJavascriptCall(fc, "drawVisualization();");
-        JavascriptContext.addJavascriptCall(fc, "initLineDetails");
-        File zipOutputFile = getZipFileExport();
-        String exportTimestamp = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss").format(new Date());
-        System.out.println("downloadButton " + exportTimestamp);
-
-        if (zipOutputFile != null){
-           exportTimestamp = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss").format(new Date());
-            System.out.println("downloadButtonAfter " + exportTimestamp);
-          
-
-        }
-         JavascriptContext.addJavascriptCall(fc, "returnDownload();");
-
-           return;
-    }
-
-
     private void resetLineBorder(){
         int i = 0;
         if (vizLines.size()>=1){
@@ -1285,6 +1267,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     }
 
      public File getZipFileExport() {
+         updateIncludeFlags();
         boolean onlyExcel = false;
         boolean onlyPdf = false;
         boolean onlyImage = false;
@@ -1313,19 +1296,19 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         if (!includeExcel && !includeImage && includePdf && !includeCSV) onlyPdf = true;
         if (!includeExcel && !includeImage && !includePdf && includeCSV) onlyCSV = true;
         try {
-            zipOutputFile = File.createTempFile("dataDownload_" + exportTimestamp , ".zip");
-
+            zipOutputFile = File.createTempFile("dataDownload_" + exportTimestamp , ".zip");            
             zout = new ZipOutputStream((OutputStream) new FileOutputStream(zipOutputFile));
-            if (includeCSV  || noneIncluded){
+            if (includeCSV ){
                 writeFile(csvFile, csvString.toString().toCharArray(), csvString.toString().length() );
                 addZipEntry(zout, csvFile.getAbsolutePath(), "csvData_" + exportTimestamp +  ".txt");
+                
             }            
             if (includeImage || includePdf ){
                 writeImageFile(imageUrlFile, imagePdfFile);
-                if (includeImage){
-                    addZipEntry(zout, imageUrlFile.getAbsolutePath(), "imageGraphURL_" + exportTimestamp + ".png");
+                if (includeImage  ){
+                    addZipEntry(zout, imageUrlFile.getAbsolutePath(), "imageGraph_" + exportTimestamp + ".png");
                 }
-                if (includePdf){
+                if (includePdf ){
                     addZipEntry(zout, imagePdfFile.getAbsolutePath(), "imagePdf_" + exportTimestamp + ".pdf");
                 }
             }
@@ -1339,15 +1322,25 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         } catch (Exception ie){
            zipOutputFile = null;
         }
+        /*
         if (onlyExcel){
+            exportFileNameBody = "excelData_" + exportTimestamp;
+            exportFileNameExt = ".xls";
             return excelDataFile;
         } else if (onlyImage){
+            exportFileNameBody = "imageGraph_" + exportTimestamp;
+            exportFileNameExt = ".png";
             return imageUrlFile;
         } else if (onlyPdf){
+            exportFileNameBody = "imagePdf_" + exportTimestamp;
+            exportFileNameExt = ".pdf";
             return imagePdfFile;
         } else if (onlyCSV){
+            exportFileNameBody = "csvData_" + exportTimestamp;
+            exportFileNameExt = ".csv";
             return csvFile;
-        }
+        }*/
+
         return zipOutputFile;
     }
 
@@ -1398,6 +1391,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                 }
                 String encodedTitle = URLEncoder.encode(graphTitleOut, "UTF-8");
                 decoded = decoded + "&chtt=" + encodedTitle;
+                decoded = decoded + "&chtf=" + encodedTitle;
             }
 
        
@@ -1639,6 +1633,12 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         this.dataString = dataString;
     }
 
+     public String getExportFileName() {
+        String exportTimestamp = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss").format(new Date());
+        return "DataDownload" + exportTimestamp + ".zip";
+    }
+
+
     public String getDataString() {
         return  this.dataString;
     }
@@ -1769,16 +1769,9 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         return "";
     }
 
-    public String updateFileName(){
-        String fileNameIn = (String) getInputDownloadFileName().getValue();
-        setDownloadFileName(fileNameIn);
-        return "";
-    }
-
     public String updateImageURL(){
         String imageURLIn = (String) getInputImageURL().getValue();
-        setImageURL(imageURLIn);
-        getZipFileExport();
+        setImageURL(imageURLIn);       
         
         return "";
     }
@@ -1792,7 +1785,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
            return "";
     }
        
-
         return "";
     }
 
@@ -1829,22 +1821,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
     public Resource getDownloadFile() {
         updateImageURL();
-        Resource csvResource = new FileResource(getZipFileExport());
-
-        return csvResource;
-    }
-
-    public String getCsvFileName() {
-        return downloadFileName;
-    }
-
-
-    public String getDownloadFileName() {
-        return downloadFileName;
-    }
-
-    public void setDownloadFileName(String downloadFileName) {
-        this.downloadFileName = downloadFileName;
+        return new ExportFileResource( );
     }
 
     public String getIndexedDataString() {
@@ -1967,5 +1944,41 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
     public void setIncludePdf(boolean includePdf) {
         this.includePdf = includePdf;
+    }
+    
+    public class ExportFileResource implements Resource, Serializable{
+        File file;
+
+
+
+        public ExportFileResource() {
+
+        }
+
+        public String calculateDigest() {
+            return file != null ? file.getPath() : null;
+        }
+
+        public Date lastModified() {
+            return file != null ? new Date(file.lastModified()) : null;
+        }
+
+        public InputStream open() throws IOException {
+            try {                
+                file = getZipFileExport();
+            } catch (Exception ex) {                
+                throw new IOException("There was a problem attempting to get the export file");
+            }
+
+            return new FileInputStream(file);
+        }
+
+        public void withOptions(Options arg0) throws IOException {
+        }
+
+        public File getFile() {
+            return file;
+        }
+
     }
 }

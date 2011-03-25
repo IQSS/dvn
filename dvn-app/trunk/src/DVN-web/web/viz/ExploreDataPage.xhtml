@@ -394,6 +394,15 @@ function startDownload()
     if (myDataString == "")
     { alert("There is no data to export.");
         return null; }
+
+   var imageFlag = document.getElementById('ExploreDataPage:downloadImageGraph').checked;
+   var pdfFlag = document.getElementById('ExploreDataPage:downloadPDFGraph').checked;
+   var csvFlag = document.getElementById('ExploreDataPage:downloadDataCSV').checked;
+   var excelFlag = document.getElementById('ExploreDataPage:downloadDataExcel').checked;
+
+   if (!imageFlag && !pdfFlag  && !csvFlag  && !excelFlag )
+   { alert("Please select one or more items to export.");
+        return null; }
  document.getElementById('ExploreDataPage:downloadDataFiles').click();   
 }
 
@@ -428,12 +437,10 @@ function getImageURLButton()
 <ice:inputText visible="false" id="imageURL" binding="#{ExploreDataPage.inputImageURL}" />
 <ice:outputText visible="false" id="hasURL"/>
 <ice:commandButton visible="false" id="updateGraphTitle" type="submit" value="update" action="#{ExploreDataPage.updateGraphTitle}"/>
-<ice:commandButton visible="false" id="updateFileName" type="submit" value="update" action="#{ExploreDataPage.updateFileName}"/>
 <ice:commandButton visible="false" id="deleteLineHidden" value="Delete Line hidden" actionListener="#{ExploreDataPage.deleteLine}"/>
 <ice:commandButton visible="false" id="updateImageURL" value="Update URL" action="#{ExploreDataPage.updateImageURL}"/>
 <ice:commandButton visible="false" id="updateIncludeFlags" value="Update Include Flags" action="#{ExploreDataPage.updateIncludeFlags}"/>
 <ice:commandButton visible="false" id="resetIndexValue" actionListener="#{ExploreDataPage.resetIndexDisplay}"/>
-<ice:commandButton visible="false" id="hiddenDownloadButton" actionListener="#{ExploreDataPage.downloadButton}"/>
 
     <div class="dvn_section">
         <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
@@ -667,27 +674,28 @@ function getImageURLButton()
 
                     <div class="dvnExportBtmWrp">
                         <ice:selectBooleanCheckbox id="downloadImageGraph" 
-                                                   value="#{ExploreDataPage.includeImage}" onchange="updateIncludeFlags();"
+                                                   value="#{ExploreDataPage.includeImage}" 
                                                    rendered="true" />
                         <ice:outputLabel value="Image Graph" for="downloadImageGraph" rendered="true"/>
                         <ice:selectBooleanCheckbox id="downloadPDFGraph"
-                                                   value="#{ExploreDataPage.includePdf}" onchange="updateIncludeFlags();"
+                                                   value="#{ExploreDataPage.includePdf}" 
                                                    rendered="true" />
                         <ice:outputLabel value="PDF Graph" for="downloadPDFGraph" rendered="true"/>
                         <ice:selectBooleanCheckbox id="downloadDataCSV"
-                                                   value="#{ExploreDataPage.includeCSV}" onchange = "updateIncludeFlags();"
+                                                   value="#{ExploreDataPage.includeCSV}" 
                                                    rendered="true" />
                         <ice:outputLabel value="Raw Data CSV" for="downloadDataCSV" rendered="true"/>
                         <ice:selectBooleanCheckbox id="downloadDataExcel" binding="#{ExploreDataPage.dataExcelCheckBox}"
-                                                   value="#{ExploreDataPage.includeExcel}" onchange="updateIncludeFlags();"
+                                                   value="#{ExploreDataPage.includeExcel}" 
                                                    rendered="true" />
                         <ice:outputLabel value="Excel File" for="downloadDataExcel" rendered="true"/>
                         <ice:message for="downloadDataExcel" id="boxErrorMsgExcel" styleClass="errorMessage"/>
                         <br></br>
-                        <input type="button" class="dvnDataExplorationDnldBttn" value="Export Results" onclick="startDownload();"/>
+                        <ice:commandButton visible="true" value="Export Results" id="exportResults" type="submit" onclick="startDownload();" />
                           <ice:outputResource label="Export" type="button" style="display:none;"
                                id="downloadDataFiles"
                                mimeType="application/zip"
+                               fileName="#{ExploreDataPage.exportFileName}"
                                resource="#{ExploreDataPage.downloadFile}" shared="false"/>
 
                     </div>

@@ -1448,16 +1448,16 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
           }
           boolean done = false;
           String sourcesWLabel = "Source(s): " + sources;
-          int numberOfLines = sourcesWLabel.length() / 80;
+          int numberOfLines = sourcesWLabel.length() / 72;
           numberOfLines = numberOfLines + 2;
           String[] sourceLines = new String[numberOfLines];
           int begOfLine = 0;
-          int endOfLine = Math.min(sourcesWLabel.length(), 80);
+          int endOfLine = Math.min(sourcesWLabel.length(), 72);
           for (int i = 0; i < numberOfLines; i++){
 
               int previousSpace = sourcesWLabel.lastIndexOf(" ",  endOfLine);
               
-              if (previousSpace > begOfLine  && (endOfLine - begOfLine) > 79 && !done){
+              if (previousSpace > begOfLine  && (endOfLine - begOfLine) > 71 && !done){
                   sourceLines[i] = sourcesWLabel.substring(begOfLine, previousSpace);
               } else if (!done) {
                   sourceLines[i] = sourcesWLabel.substring(begOfLine, endOfLine);
@@ -1467,7 +1467,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
               }
 
               begOfLine =  previousSpace + 1;
-              endOfLine = Math.min(sourcesWLabel.length(), previousSpace + 81);
+              endOfLine = Math.min(sourcesWLabel.length(), previousSpace + 73);
           }
           
           int heightbic =  numberOfLines * 25;

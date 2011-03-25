@@ -447,13 +447,8 @@ public class GNRSServiceBean implements edu.harvard.iq.dvn.core.gnrs.GNRSService
         for (Iterator it = studies.iterator(); it.hasNext();) {
             Study elem = (Study) it.next();
             String handle = elem.getAuthority()+"/"+ elem.getStudyId();
-            if (!isHandleRegistered(handle)){
+            if (isAuthority(handle) && !isHandleRegistered(handle)){
                 createHandle(handle);
-            }
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(GNRSServiceBean.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         
@@ -464,13 +459,8 @@ public class GNRSServiceBean implements edu.harvard.iq.dvn.core.gnrs.GNRSService
         for (Iterator it = studies.iterator(); it.hasNext();) {
             Study elem = (Study) it.next();
             String handle = elem.getAuthority()+"/"+ elem.getStudyId();
-            if (isHandleRegistered(handle) && !handle.startsWith("1902.1")){
+            if (isAuthority(handle) && isHandleRegistered(handle) && !handle.startsWith("1902.1")){
                 deleteHandle(handle);
-            }
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(GNRSServiceBean.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         
@@ -481,13 +471,8 @@ public class GNRSServiceBean implements edu.harvard.iq.dvn.core.gnrs.GNRSService
         for (Iterator it = studies.iterator(); it.hasNext();) {
             Study elem = (Study) it.next();
             String handle = elem.getAuthority() + "/" + elem.getStudyId();
-            if (isHandleRegistered(handle)) {
+            if (isAuthority(handle) && isHandleRegistered(handle)) {
                 fixHandle(handle);
-            }
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(GNRSServiceBean.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 

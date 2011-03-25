@@ -4,6 +4,7 @@
 
 package edu.harvard.iq.text;
 
+import au.com.bytecode.opencsv.CSVReader;
 import com.vividsolutions.jts.algorithm.ConvexHull;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.CoordinateList;
@@ -203,20 +204,22 @@ public class DocumentSet {
                 //
                 // Read metadata values
                 //
-                while ((strLine = br.readLine()) != null) {
+                CSVReader reader = new CSVReader(new FileReader(metadataFile));
+                String [] nextLine;
+                nextLine = reader.readNext();  // skip over headers for now
+                while ((nextLine = reader.readNext()) != null) {
                     LinkedHashMap<String, String> values = new LinkedHashMap();
-                    st = new StringTokenizer(strLine,",");
-                    int col = 0;
+
+
                     String docId = null;
-                    while(st.hasMoreTokens()) {
+                    for (int col=0;col< nextLine.length; col++) {
                         
-                        String value = getNextToken(st);
                         if (allFields.get(col).equals(DOCUMENT_ID_FIELD)) {
-                            docId = value;
+                            docId = nextLine[col];
                         } else {
-                            values.put(allFields.get(col),value);
+                            values.put(allFields.get(col),nextLine[col]);
                         }
-                        col++;
+                        
                     }
     
                     Document doc = this.documents.get(docId);

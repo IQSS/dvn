@@ -447,7 +447,7 @@ public class GNRSServiceBean implements edu.harvard.iq.dvn.core.gnrs.GNRSService
         for (Iterator it = studies.iterator(); it.hasNext();) {
             Study elem = (Study) it.next();
             String handle = elem.getAuthority()+"/"+ elem.getStudyId();
-            if (isAuthority(handle) && !isHandleRegistered(handle)){
+            if (isAuthority(elem.getAuthority()) && !isHandleRegistered(handle)){
                 createHandle(handle);
             }
         }
@@ -459,7 +459,7 @@ public class GNRSServiceBean implements edu.harvard.iq.dvn.core.gnrs.GNRSService
         for (Iterator it = studies.iterator(); it.hasNext();) {
             Study elem = (Study) it.next();
             String handle = elem.getAuthority()+"/"+ elem.getStudyId();
-            if (isAuthority(handle) && isHandleRegistered(handle) && !handle.startsWith("1902.1")){
+            if (isAuthority(elem.getAuthority()) && isHandleRegistered(handle) && !handle.startsWith("1902.1")){
                 deleteHandle(handle);
             }
         }
@@ -471,7 +471,7 @@ public class GNRSServiceBean implements edu.harvard.iq.dvn.core.gnrs.GNRSService
         for (Iterator it = studies.iterator(); it.hasNext();) {
             Study elem = (Study) it.next();
             String handle = elem.getAuthority() + "/" + elem.getStudyId();
-            if (isAuthority(handle) && isHandleRegistered(handle)) {
+            if (isAuthority(elem.getAuthority()) && isHandleRegistered(handle)) {
                 fixHandle(handle);
             }
         }

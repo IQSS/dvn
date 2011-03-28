@@ -386,14 +386,42 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         if (varGroupTypeIn.getId() == null){
             return false;
         }
-                List varGroup =  visualizationService.getGroupsFromGroupTypeId(varGroupTypeIn.getId());
-              varGroup = (List) varGroupTypeIn.getGroups();
-            if (!varGroup.isEmpty()){
-                 FacesMessage message = new FacesMessage("You may not delete a type that is assigned to a measure or filter.");
-                 FacesContext fc = FacesContext.getCurrentInstance();
-                fc.addMessage(validateButton.getClientId(fc), message);
-                return true;
+            VarGrouping varGrouping = varGroupTypeIn.getVarGrouping();
+            
+            if (varGrouping !=null){
+                if (varGrouping.getGroupingType().equals(GroupingType.FILTER)){
+                    for (VarGroupingUI testGrouping : filterGroupings){
+                        if(testGrouping.getVarGrouping().getName().equals(varGrouping.getName())){
+                            for (VarGroup varGroup : varGrouping.getVarGroups()){
+                                for (VarGroupType testGroupType: varGroup.getGroupTypes()){
+                                    if (testGroupType.getName().equals(varGroupTypeIn.getName())){
+                                        FacesMessage message = new FacesMessage("You may not delete a type that is assigned to a measure or filter.");
+                                        FacesContext fc = FacesContext.getCurrentInstance();
+                                        fc.addMessage(validateButton.getClientId(fc), message);
+                                        return true;                                       
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                if (varGrouping.getGroupingType().equals(GroupingType.MEASURE)){
+                    for (VarGroup varGroup: measureGrouping.getVarGrouping().getVarGroups()){
+                         for(VarGroupType testGroupType: varGroup.getGroupTypes()){
+                             if (testGroupType.getName().equals(varGroupTypeIn.getName())){
+                                  FacesMessage message = new FacesMessage("You may not delete a type that is assigned to a measure or filter.");
+                                  FacesContext fc = FacesContext.getCurrentInstance();
+                                  fc.addMessage(validateButton.getClientId(fc), message);
+                                  return true;
+                             }
+                         }
+                    }
+                }
+
+
+                
             }
+
                 return false;
  }
 
@@ -911,6 +939,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         }
 
         saveGroupFragment(editMeasureVarGroup);
+        saveGroupTypes(editMeasureVarGroup);
         editMeasureVarGroup = null;
         cancelAddEdit();
     }
@@ -939,6 +968,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         editFilterVarGroup.getVarGroup().setName(chkGroupName);
 
         saveGroupFragment(editFilterVarGroup);
+        saveGroupTypes(editFilterVarGroup);
         editFilterVarGroup = null;
         getInputFilterGroupName().setValue("");
         dataTableFilterGrouping.getChildren().clear();
@@ -949,6 +979,29 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         updateVariableByGroup(varGroupIn);
         resetDVMappingsByGroup(varGroupIn);
     }
+
+    private void saveGroupTypes(VarGroupUI varGroupIn){
+        List <VarGroupType> removeList = new ArrayList();
+        for (VarGroupTypeUI varGroupTypeTest : varGroupIn.getVarGroupTypes()){
+            if (!varGroupTypeTest.isSelected()){
+                VarGroupType varGroupTypeRemove = varGroupTypeTest.getVarGroupType();{
+                    for (VarGroupType varGroupType :varGroupIn.getVarGroup().getGroupTypes()){
+                        if (varGroupTypeRemove.getName().equals(varGroupType.getName())){
+                           removeList.add(varGroupTypeRemove);
+                        }
+                    }
+                }
+            }
+        }
+
+        if (removeList.size() > 0){
+            for (VarGroupType removeType: removeList){
+                varGroupIn.getVarGroup().getGroupTypes().remove(removeType);
+            }
+        }
+
+    }
+
 
     private void updateVariableByGroup(VarGroupUI varGroupUIin){
 
@@ -1795,12 +1848,17 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         List <DataVariableMapping> groupingRemoveList = new ArrayList();
         for (DataVariable dataVariable: tempList){
             List <DataVariableMapping> deleteList = (List <DataVariableMapping>) dataVariable.getDataVariableMappings();
-            for (DataVariableMapping dataVariableMapping : deleteList ){
-                if (dataVariableMapping.getGroup() != null && dataVariableMapping.getGroup() == (varGroup))
+
+            for (DataVariableMapping dataVariableMapping : deleteList ){                   
+                if (dataVariableMapping.getGroup() != null && !dataVariableMapping.isX_axis()
+                        && dataVariableMapping.getGroup().getName().equals(varGroup.getName())
+                        )
                     removeList.add(dataVariableMapping);
             }
             for (DataVariableMapping dataVariableMapping : deleteList ){
-                if (dataVariableMapping.getGroup() != null && dataVariableMapping.getGroup() == (varGroup))
+                if (dataVariableMapping.getGroup() != null && !dataVariableMapping.isX_axis()
+                        && dataVariableMapping.getGroup().getName().equals(varGroup.getName())
+                        )
                 groupingRemoveList.add(dataVariableMapping);
             }
         }

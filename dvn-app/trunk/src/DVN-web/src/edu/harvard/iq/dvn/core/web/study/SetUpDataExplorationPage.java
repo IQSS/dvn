@@ -383,9 +383,6 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
 
  private boolean hasAssignedGroups(VarGroupType varGroupTypeIn){
-        if (varGroupTypeIn.getId() == null){
-            return false;
-        }
             VarGrouping varGrouping = varGroupTypeIn.getVarGrouping();
             
             if (varGrouping !=null){
@@ -394,7 +391,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                         if(testGrouping.getVarGrouping().getName().equals(varGrouping.getName())){
                             for (VarGroup varGroup : varGrouping.getVarGroups()){
                                 for (VarGroupType testGroupType: varGroup.getGroupTypes()){
-                                    if (testGroupType.getName().equals(varGroupTypeIn.getName())){
+                                    if (testGroupType.getName().equals(varGroupTypeIn.getName())){                                       
                                         FacesMessage message = new FacesMessage("You may not delete a type that is assigned to a measure or filter.");
                                         FacesContext fc = FacesContext.getCurrentInstance();
                                         fc.addMessage(validateButton.getClientId(fc), message);
@@ -453,7 +450,6 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             VarGroupTypeUI varGroupTypeUI2 = (VarGroupTypeUI) dataTable2.getRowData();
             VarGroupType varGroupType = varGroupTypeUI2.getVarGroupType();
             List varGroupTypeList = (List) dataTable2.getValue();
-
             if (hasAssignedGroups(varGroupType)){
                 return;
             }
@@ -467,14 +463,6 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                 deleteList.add(data);
             }
             visualizationService.removeCollectionElement(deleteList,dataTable2.getRowIndex());
-             for(VarGroupingUI varGroupingUI: filterGroupings){
-             if (varGroupingUI.getVarGrouping() == (varGroupType.getVarGrouping())){
-                varGroupingUI.getVarGroupTypesUI().remove(varGroupTypeUI2);
-                varGroupingUI.getVarGrouping().getVarGroupTypes().remove(varGroupType);
-                dataTableManageFilterGroupType.setValue(varGroupingUI.getVarGroupTypesUI());
-                dataTable2.setValue(varGroupingUI.getVarGroupTypesUI());
-             }
-           }
 
              if (filter) {
                 for(VarGroupingUI varGroupingUI: filterGroupings){

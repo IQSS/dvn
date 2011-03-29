@@ -142,11 +142,12 @@ public class StudyVersion implements Serializable {
     }
 
     public void setVersionNote(String note) {
-  if (note.length()>VERSION_NOTE_MAX_LENGTH ) {
+        if (note != null &&  note.length()>VERSION_NOTE_MAX_LENGTH ) {
             throw new IllegalArgumentException("Error setting versionNote: String length is greater than maximum ("+ VERSION_NOTE_MAX_LENGTH + ")."
                    +"  StudyVersion id="+id+", versionNote="+note);
         }
-        this.versionNote = note;    }
+        this.versionNote = note;
+    }
 
     public Long getVersionNumber() {
         return versionNumber;

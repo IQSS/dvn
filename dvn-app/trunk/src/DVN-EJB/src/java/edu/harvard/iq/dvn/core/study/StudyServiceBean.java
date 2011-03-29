@@ -1944,7 +1944,9 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
 
         // Step 2b: initialize new Study
         if (study == null) {
-            study = new Study(vdc, creator, StudyVersion.VersionState.RELEASED);
+            VersionState newVersionState = isHarvest ? StudyVersion.VersionState.RELEASED : StudyVersion.VersionState.DRAFT;
+            study = new Study(vdc, creator, newVersionState);
+
             studyVersion = study.getLatestVersion();
             em.persist(study);
 
@@ -1984,7 +1986,9 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         }
 
         saveStudyVersion(studyVersion, userId);
-        studyVersion.setReleaseTime( new Date() );
+        if (isHarvest) {
+            studyVersion.setReleaseTime( new Date() );
+        }
 
         boolean registerHandle = determineId(studyVersion, vdc, globalIdComponents);
         if (newStudy && !studyService.isUniqueStudyId( study.getStudyId(), study.getProtocol(), study.getAuthority() ) ) {

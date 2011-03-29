@@ -683,6 +683,7 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable, 
                                 // TODO: we need to incorporate the add files step into the same transaction of the import!!!
                                 Study study = studyService.importStudy( 
                                         xmlFile, importFileFormat, importDVId, getVDCSessionBean().getLoginBean().getUser().getId());
+                                study.getLatestVersion().setVersionNote("Study imported via batch import.");
                                 importLogger.info("Import of study.xml succeeded: study id = " + study.getId());
                                 studiesToIndex.add(study.getId());
                                 
@@ -696,8 +697,7 @@ public class UtilitiesPage extends VDCBaseBean implements java.io.Serializable, 
                                     }
 
                                     try {
-                                        studyFileService.addFiles( study.getReleasedVersion(), fileBeans, getVDCSessionBean().getLoginBean().getUser() );
-                                        studyService.updateStudy(study); // for now, must call this to persist the new files
+                                        studyFileService.addFiles( study.getLatestVersion(), fileBeans, getVDCSessionBean().getLoginBean().getUser() );
                                         importLogger.info("File upload succeeded.");
                                     } catch (Exception e) {
                                         fileFailureCount++;

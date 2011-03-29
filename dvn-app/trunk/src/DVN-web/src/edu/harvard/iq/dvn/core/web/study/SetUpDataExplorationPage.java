@@ -510,7 +510,8 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             uiComponent = uiComponent.getParent();
         }
         HtmlDataTable tempTable = (HtmlDataTable) uiComponent;
-        VarGroupUI varGroupUI = (VarGroupUI) tempTable.getRowData();
+        VarGroupUI varGroupUI = new VarGroupUI();
+        varGroupUI = (VarGroupUI) tempTable.getRowData();
 
         dvGenericFilteredListUI.clear();
         dvGenericListUI = dvNumericListUI;
@@ -546,7 +547,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                         }
                     varGroupUI.getVarGroupTypes().add(varGroupTypeUI);
                 }
-
+        editMeasureVarGroup = new VarGroupUI();
         editMeasureVarGroup = varGroupUI;
 
         cancelAddEdit();
@@ -1125,6 +1126,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
 
     public void addMeasureGroup() {
+        editMeasureVarGroup = new VarGroupUI();
         editMeasureVarGroup = addGroupingGroup(measureGrouping);
         cancelAddEdit();
         editMeasure = true;
@@ -1385,7 +1387,12 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         if (groupingType.equals(GroupingType.MEASURE)  || groupingType.equals(GroupingType.FILTER)){
             loadGroupingGroupTypes(varGroupingUIin);
         }
-
+        if (groupingType.equals(GroupingType.MEASURE) ){
+            varGrouping.setName("Measure");
+        }
+        if (groupingType.equals(GroupingType.SOURCE) ){
+            varGrouping.setName("Source");
+        }
         dataTable.getVarGroupings().add(varGrouping);
         varGroupingUIin.setVarGrouping(varGrouping);
     }
@@ -1849,16 +1856,18 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         for (DataVariable dataVariable: tempList){
             List <DataVariableMapping> deleteList = (List <DataVariableMapping>) dataVariable.getDataVariableMappings();
 
-            for (DataVariableMapping dataVariableMapping : deleteList ){                   
+            for (DataVariableMapping dataVariableMapping : deleteList ){
+                 
                 if (dataVariableMapping.getGroup() != null && !dataVariableMapping.isX_axis()
                         && dataVariableMapping.getGroup().getName().equals(varGroup.getName())
-                        )
+                        && dataVariableMapping.getVarGrouping().getGroupingType().equals(varGroup.getGroupAssociation().getGroupingType()))
+
                     removeList.add(dataVariableMapping);
             }
             for (DataVariableMapping dataVariableMapping : deleteList ){
                 if (dataVariableMapping.getGroup() != null && !dataVariableMapping.isX_axis()
                         && dataVariableMapping.getGroup().getName().equals(varGroup.getName())
-                        )
+                        && dataVariableMapping.getVarGrouping().getGroupingType().equals(varGroup.getGroupAssociation().getGroupingType()))
                 groupingRemoveList.add(dataVariableMapping);
             }
         }

@@ -724,7 +724,10 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
             variableMappings = (List) dataVariable.getDataVariableMappings();
             for (DataVariableMapping dataVariableMapping: variableMappings){
 
-                if (!dataVariableMapping.isX_axis() && dataVariableMapping.getGroup().getName().equals(varGroup.getName())){
+                if (!dataVariableMapping.isX_axis() &&
+                        dataVariableMapping.getGroup().getName().equals(varGroup.getName())
+                        && dataVariableMapping.getVarGrouping().getGroupingType().equals(varGroup.getGroupAssociation().getGroupingType()))
+                {
                     returnDataVariables.add(dataVariable);
                 }
 

@@ -389,21 +389,29 @@ function updateDisplayType(){
      
 }
 
-function startDownload()
-    { var myDataString = new String (document.getElementById('ExploreDataPage:dataString').textContent);
-    if (myDataString == "")
-    { alert("There is no data to export.");
-        return null; }
+function startDownload() {
+    var imageFlag = document.getElementById('ExploreDataPage:downloadImageGraph').checked;
+    var pdfFlag = document.getElementById('ExploreDataPage:downloadPDFGraph').checked;
+    var csvFlag = document.getElementById('ExploreDataPage:downloadDataCSV').checked;
+    var excelFlag = document.getElementById('ExploreDataPage:downloadDataExcel').checked;
 
-   var imageFlag = document.getElementById('ExploreDataPage:downloadImageGraph').checked;
-   var pdfFlag = document.getElementById('ExploreDataPage:downloadPDFGraph').checked;
-   var csvFlag = document.getElementById('ExploreDataPage:downloadDataCSV').checked;
-   var excelFlag = document.getElementById('ExploreDataPage:downloadDataExcel').checked;
+    if (!imageFlag && !pdfFlag  && !csvFlag  && !excelFlag ) {
+        alert("Please select one or more items to export.");
+        return null;
+    }
 
-   if (!imageFlag && !pdfFlag  && !csvFlag  && !excelFlag )
-   { alert("Please select one or more items to export.");
-        return null; }
- document.getElementById('ExploreDataPage:downloadDataFiles').click();   
+    if (imageFlag && !pdfFlag  && !csvFlag  && !excelFlag ) {
+        document.getElementById('ExploreDataPage:downloadImage').click();
+    } else if (!imageFlag && pdfFlag  && !csvFlag  && !excelFlag ) {
+        document.getElementById('ExploreDataPage:downloadPDF').click();
+    } else if (!imageFlag && !pdfFlag  && csvFlag  && !excelFlag ) {
+        document.getElementById('ExploreDataPage:downloadCSV').click();
+    } else if (!imageFlag && !pdfFlag  && !csvFlag  && excelFlag ) {
+        document.getElementById('ExploreDataPage:downloadExcel').click();
+    } else {
+        document.getElementById('ExploreDataPage:downloadZip').click();
+    }
+   
 }
 
 function getImageURLButton()
@@ -675,28 +683,38 @@ function getImageURLButton()
                     <div class="dvnExportBtmWrp">
                         <ice:selectBooleanCheckbox id="downloadImageGraph" 
                                                    value="#{ExploreDataPage.includeImage}" 
-                                                   rendered="true" />
+                                                   partialSubmit="true" />
                         <ice:outputLabel value="Image Graph" for="downloadImageGraph" rendered="true"/>
                         <ice:selectBooleanCheckbox id="downloadPDFGraph"
                                                    value="#{ExploreDataPage.includePdf}" 
-                                                   rendered="true" />
+                                                   partialSubmit="true" />
                         <ice:outputLabel value="PDF Graph" for="downloadPDFGraph" rendered="true"/>
                         <ice:selectBooleanCheckbox id="downloadDataCSV"
                                                    value="#{ExploreDataPage.includeCSV}" 
-                                                   rendered="true" />
+                                                   partialSubmit="true" />
                         <ice:outputLabel value="Raw Data CSV" for="downloadDataCSV" rendered="true"/>
                         <ice:selectBooleanCheckbox id="downloadDataExcel" binding="#{ExploreDataPage.dataExcelCheckBox}"
                                                    value="#{ExploreDataPage.includeExcel}" 
-                                                   rendered="true" />
+                                                   partialSubmit="true" />
                         <ice:outputLabel value="Excel File" for="downloadDataExcel" rendered="true"/>
                         <ice:message for="downloadDataExcel" id="boxErrorMsgExcel" styleClass="errorMessage"/>
                         <br></br>
                         <ice:commandButton visible="true" value="Export Results" id="exportResults" type="submit" onclick="startDownload();" />
                           <ice:outputResource label="Export" type="button" style="display:none;"
-                               id="downloadDataFiles"
-                               mimeType="application/zip"
-                               fileName="#{ExploreDataPage.exportFileName}"
-                               resource="#{ExploreDataPage.downloadFile}" shared="false"/>
+                               id="downloadImage" mimeType="application/png"
+                               resource="#{ExploreDataPage.downloadImage}" shared="false"/>
+                          <ice:outputResource label="Export" type="button" style="display:none;"
+                               id="downloadPDF" mimeType="application/pdf"
+                               resource="#{ExploreDataPage.downloadPDF}" shared="false"/>
+                          <ice:outputResource label="Export" type="button" style="display:none;"
+                               id="downloadCSV" mimeType="text/comma-separated-values"
+                               resource="#{ExploreDataPage.downloadCSV}" shared="false"/>
+                          <ice:outputResource label="Export" type="button" style="display:none;"
+                               id="downloadExcel" mimeType="application/vnd.ms-excel"
+                               resource="#{ExploreDataPage.downloadExcel}" shared="false"/>
+                          <ice:outputResource label="Export" type="button" style="display:none;"
+                               id="downloadZip" mimeType="application/zip"
+                               resource="#{ExploreDataPage.downloadZip}" shared="false"/>
 
                     </div>
                 </div>

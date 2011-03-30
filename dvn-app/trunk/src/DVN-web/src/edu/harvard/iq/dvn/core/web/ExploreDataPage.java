@@ -1882,27 +1882,22 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     }
 
     public Resource getDownloadImage() {
-        updateImageURL();
         return new ExportFileResource("png");
     }
 
     public Resource getDownloadPDF() {
-        updateImageURL();
         return new ExportFileResource("pdf");
     }
 
     public Resource getDownloadExcel() {
-        updateImageURL();
         return new ExportFileResource("xls");
     }
 
     public Resource getDownloadCSV() {
-        updateImageURL();
         return new ExportFileResource("csv");
     }
 
     public Resource getDownloadZip() {
-        updateImageURL();
         return new ExportFileResource("zip");
     }
 

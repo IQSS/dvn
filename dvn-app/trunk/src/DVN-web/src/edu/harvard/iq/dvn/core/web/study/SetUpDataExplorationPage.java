@@ -1478,23 +1478,6 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         
     }
 
-    public void deleteGroupingsGroup(VarGroupingUI varGroupingUI){
-        List <VarGroupUI> varGroupUIs = (List)  varGroupingUI.getVarGroupUI();
-        for (VarGroupUI varGroupUI : varGroupUIs){
-             VarGroup varGroup = varGroupUI.getVarGroup();
-             deleteVariablesFromGroup(varGroup);
-             List varGroupList = (List) dataTableFilterGroup.getValue();
-             List deleteList = new ArrayList();
-             VarGroup data = varGroupUI.getVarGroup();
-             deleteList.add(data);
-             visualizationService.removeCollectionElement(deleteList,varGroupList);
-             varGroupingUI.getVarGroupUI().remove(varGroupUI);
-             varGroupingUI.getVarGrouping().getVarGroups().remove(varGroup);
-             dataTableFilterGroup.setValue(varGroupingUI.getVarGroupUI());
-        }
-        dataTableFilterGrouping.getChildren().clear();
-    }
-
     public void deleteMeasureGroup(){
         HtmlDataTable dataTable2 = dataTableVarGroup;
         if (dataTable2.getRowCount()>0) {
@@ -1540,11 +1523,35 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
     public void deleteFilterGrouping(ActionEvent ae){
 
+        List <VarGroupType> removeList = new ArrayList();
+        List <VarGroupType> typeList;
+
             HtmlDataTable dataTable2 = dataTableFilterGrouping;
+
             VarGroupingUI varGroupingUI2 = (VarGroupingUI) dataTable2.getRowData();
+
+        for (VarGroupType groupType: varGroupingUI2.getVarGrouping().getVarGroupTypes()){
+            removeList.add(groupType);
+        }
+            typeList = new ArrayList(varGroupingUI2.getVarGrouping().getVarGroupTypes());
+
             if (dataTable2.getRowCount()>0) {                
                 filterGroupings.remove(varGroupingUI2);
                 varGroupings.remove(varGroupingUI2.getVarGrouping());
+            }
+
+            for (VarGroupUI groupUI: varGroupingUI2.getVarGroupUI() ){
+                for (VarGroupTypeUI varGroupTypeTest : groupUI.getVarGroupTypes()) {
+                    varGroupTypeTest.setSelected(false);
+                }
+                saveGroupTypes(groupUI);
+            }
+            for (VarGroup group: varGroupingUI2.getVarGrouping().getVarGroups() ){
+                visualizationService.removeCollectionElement(varGroupingUI2.getVarGrouping().getVarGroups(),group);
+            }
+
+            for (VarGroupType groupType: removeList ){
+                visualizationService.removeCollectionElement(typeList,groupType);
             }
             visualizationService.removeCollectionElement(varGroupings,varGroupingUI2.getVarGrouping());
             for(VarGroupingUI varGroupingUI: filterGroupings){

@@ -121,10 +121,24 @@ public class DataVariableMapping implements Serializable {
             return false;
         }
         DataVariableMapping other = (DataVariableMapping) object;
+        if (this == other){            
+            return true;
+        }
+        if (this.dataVariable.equals(other.dataVariable)
+                && this.varGroup.equals(other.varGroup) &&
+                this.varGrouping.equals(other.varGrouping)){           
+            return true;
+        } else {
+            
+            return false;
+        }
+        /*
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
         return true;
+         
+         */
     }
 
     @Override

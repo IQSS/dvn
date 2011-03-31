@@ -896,7 +896,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             }
             editSourceVarGroup.getVarGroup().setName(chkGroupName);
         }
-
+        editSourceVarGroup.getVarGroup().setGroupAssociation(sourceGrouping.getVarGrouping());
         saveGroupFragment(editSourceVarGroup);
         editSourceVarGroup = null;
         cancelAddEdit();
@@ -966,7 +966,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
     private void saveGroupFragment(VarGroupUI varGroupIn){
         updateVariableByGroup(varGroupIn);
-        resetDVMappingsByGroup(varGroupIn);
+        /*resetDVMappingsByGroup(varGroupIn);*/
     }
 
     private void saveGroupTypes(VarGroupUI varGroupIn){
@@ -994,7 +994,15 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
     private void updateVariableByGroup(VarGroupUI varGroupUIin){
 
+        List <Long> priorVariablesSelected = new ArrayList();
+        List <Long> newVariablesSelected = new ArrayList();
+        List <Long> variablesToDelete = new ArrayList();
+        List <Long> variablesToAdd = new ArrayList();
+
         if (varGroupUIin.getDataVariablesSelected() != null){
+            for (Long id:varGroupUIin.getDataVariablesSelected()){
+                priorVariablesSelected.add(id);
+            }
             varGroupUIin.getDataVariablesSelected().clear();
         } else {
             varGroupUIin.setDataVariablesSelected(new ArrayList());
@@ -1006,16 +1014,52 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                     dataVariableUI.setSelected(dvTest.isSelected());
                 }
             }
-
         }
 
         int countSelected = 0;
         for (DataVariableUI dataVariableUI: dvGenericListUI){
             if (dataVariableUI.isSelected()){
+                newVariablesSelected.add(dataVariableUI.getDataVariable().getId());
                 varGroupUIin.getDataVariablesSelected().add(dataVariableUI.getDataVariable().getId());
                 countSelected++;
             }
         }
+
+        varGroupUIin.setNumberOfVariablesSelected(new Long(countSelected));
+
+        for (int i=0;i<priorVariablesSelected.size();i++) {            
+            boolean match = false;
+            for (int j=0;j<newVariablesSelected.size(); j++) {
+		if(priorVariablesSelected.get(i).equals(newVariablesSelected.get(j))) {                    
+                    match = true;
+                }
+            }
+            if (!match){
+                variablesToDelete.add(priorVariablesSelected.get(i));
+            }
+	}
+
+        for (int i=0;i<newVariablesSelected.size();i++) {
+            boolean match = false;
+            for (int j=0;j<priorVariablesSelected.size(); j++) {
+		if(newVariablesSelected.get(i).equals(priorVariablesSelected.get(j))) {                   
+                    match = true;
+                }
+            }
+            if (!match){
+                variablesToAdd.add(newVariablesSelected.get(i));
+            }
+	}
+        if (!variablesToDelete.isEmpty()){
+            System.out.println("trying to delete");
+            deleteVariablesFromGroup(varGroupUIin.getVarGroup(), variablesToDelete);
+        }
+        if (!variablesToAdd.isEmpty()){
+            addDVMappingsByGroup(varGroupUIin, variablesToAdd);
+        }
+
+
+        
 
         if (varGroupUIin.getVarGroupTypesSelectItems() != null) {
             varGroupUIin.getVarGroupTypesSelectItems().clear();
@@ -1029,7 +1073,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             }
         }
 
-        varGroupUIin.setNumberOfVariablesSelected(new Long(countSelected));
+
 
              VarGroup varGroup = varGroupUIin.getVarGroup();
 
@@ -1834,6 +1878,67 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                 }
             }
         }
+    }
+
+    private void addDVMappingsByGroup(VarGroupUI varGroupUI, List addList){
+        if (!addList.isEmpty()){
+            for(Object dataVariableId:  addList){
+                String id = dataVariableId.toString();
+                for(DataVariable dataVariable: dvList){
+                    if (dataVariable.getId() !=null &&  dataVariable.getId().equals(new Long(id))){
+                         DataVariableMapping dataVariableMapping = new DataVariableMapping();
+                         dataVariableMapping.setDataTable(dataTable);
+                         dataVariableMapping.setDataVariable(dataVariable);
+                         dataVariableMapping.setGroup(varGroupUI.getVarGroup());
+                         dataVariableMapping.setVarGrouping(varGroupUI.getVarGroup().getGroupAssociation());
+                         dataVariableMapping.setX_axis(false);
+                         dataVariable.getDataVariableMappings().add(dataVariableMapping);
+                         for(VarGrouping varGrouping : varGroupings){
+                             if (varGrouping.equals(varGroupUI.getVarGroup().getGroupAssociation())){
+                                varGrouping.getDataVariableMappings().add(dataVariableMapping);
+                             }
+                         }
+                     }
+                }
+            }
+        }
+    }
+
+    private void deleteVariablesFromGroup(VarGroup varGroup, List <Long> longList){
+
+        List <DataVariableMapping> removeList = new ArrayList();
+        List <DataVariable> checkList = new ArrayList(dvList);
+        List <DataVariable> dvRemoveList = new ArrayList();
+        List <DataVariableMapping> groupingRemoveList = new ArrayList();
+
+        for (DataVariable dataVariable: checkList){
+            for (Long id: longList){
+                if(id.equals(dataVariable.getId())){
+                    dvRemoveList.add(dataVariable);
+                }
+            }
+        }
+
+        for (DataVariable dataVariable: dvRemoveList){
+            List <DataVariableMapping> deleteList = (List <DataVariableMapping>) dataVariable.getDataVariableMappings();
+            for (DataVariableMapping dataVariableMapping : deleteList ){
+                if (dataVariableMapping.getGroup() != null && !dataVariableMapping.isX_axis()
+                        && dataVariableMapping.getGroup().equals(varGroup) ) {
+                          removeList.add(dataVariableMapping);
+                          groupingRemoveList.add(dataVariableMapping);
+                }
+            }
+        }
+
+        for(DataVariableMapping dataVarMappingRemove : removeList){
+            visualizationService.removeCollectionElement(dataVarMappingRemove.getDataVariable().getDataVariableMappings(),dataVarMappingRemove);
+        }
+
+        for(DataVariableMapping dataVarMappingRemove : groupingRemoveList){
+            visualizationService.removeCollectionElement(dataVarMappingRemove.getVarGrouping().getDataVariableMappings(),dataVarMappingRemove);
+        }
+
+
     }
 
     private void deleteVariablesFromGroup(VarGroup varGroup){

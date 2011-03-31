@@ -150,16 +150,27 @@ public class VarGrouping implements Serializable {
     }
 
     @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
+    public boolean equals(Object object) {        
         if (!(object instanceof VarGrouping)) {
             return false;
         }
         VarGrouping other = (VarGrouping) object;
+        if (this == other){
+            return true;
+        }
+        if ((!this.groupingType.equals(GroupingType.FILTER) && this.groupingType.equals(other.groupingType) )
+                || (this.groupingType.equals(GroupingType.FILTER) && this.name.equals(other.name))) {
+            return true;
+        } else {
+            return false;
+        }
+        /*
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
         return true;
+         * 
+         */
     }
 
     @Override

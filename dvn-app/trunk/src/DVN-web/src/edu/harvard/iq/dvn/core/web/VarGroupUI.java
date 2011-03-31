@@ -70,5 +70,5 @@ public class VarGroupUI {
         this.groupTypesSelectedString = groupTypesSelectedString;
     }
 
-
+    
 }

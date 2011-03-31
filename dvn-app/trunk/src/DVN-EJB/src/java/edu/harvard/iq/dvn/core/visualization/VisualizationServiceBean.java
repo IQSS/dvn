@@ -283,19 +283,19 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
             if (!errorVariables.isEmpty()){
                 for (DataVariable dv : errorVariables){
                     List <DataVariableMapping>  errorMappings = getFilterMappings((List) dv.getDataVariableMappings());
-                    if (!variableMappings.isEmpty()){
+                    if (!errorMappings.isEmpty()){
                         for (DataVariableMapping dvm: errorMappings){
                             allMappings.add(dvm);
                         }
                     }
                 }
             }
-            List <VarGroup> distinctMeasures = getDistinctMeasures(allMappings);
+            List <VarGroup> distinctFilters = getDistinctGroups(allMappings);
 
-            for ( VarGroup measure: distinctMeasures){
-                returnListOfErrors.add(measure);
+               for ( VarGroup filter: distinctFilters){
+                returnListOfErrors.add(filter);
                 for (DataVariableMapping dvm: allMappings){
-                    if (dvm.getGroup().getName().equals(measure.getName())){
+                    if (dvm.getGroup().getName().equals(filter.getName())){
                         returnListOfErrors.add(dvm.getDataVariable());
                     }
                 }
@@ -421,7 +421,7 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
                     }
                 }
             }
-            List <VarGroup> distinctMeasures = getDistinctMeasures(allMappings);
+            List <VarGroup> distinctMeasures = getDistinctGroups(allMappings);
 
             for ( VarGroup measure: distinctMeasures){
                 returnListOfErrors.add(measure);
@@ -481,7 +481,7 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
                     }
                 }
             }
-            List <VarGroup> distinctMeasures = getDistinctMeasures(allMappings);
+            List <VarGroup> distinctMeasures = getDistinctGroups(allMappings);
             for ( VarGroup measure: distinctMeasures){
                 returnListOfErrors.add(measure);
                 for (DataVariable var: variables) {
@@ -526,7 +526,7 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
         
     }
 
-    private List getDistinctMeasures( List <DataVariableMapping> dvmList) {
+    private List getDistinctGroups( List <DataVariableMapping> dvmList) {
         List <VarGroup> returnList = new ArrayList();
         
         for (DataVariableMapping dvm: dvmList) {

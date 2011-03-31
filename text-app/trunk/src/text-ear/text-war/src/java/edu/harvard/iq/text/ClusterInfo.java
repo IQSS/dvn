@@ -60,9 +60,10 @@ public class ClusterInfo implements Comparable<ClusterInfo> {
 
     public String getTopWords() {
         String ret = "";
-        for (int i = 0; i < 10; i++) {
-            ret += wordList.get(i).title + " ";
+        for (int i = 0; i < 9; i++) {
+            ret += wordList.get(i).title + ", ";
         }
+        ret += wordList.get(9).title;
         return ret;
     }
 

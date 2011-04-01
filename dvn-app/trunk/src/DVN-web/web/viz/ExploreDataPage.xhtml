@@ -675,7 +675,7 @@ function getImageURLButton()
 
             <div jsfc="ice:panelGroup" rendered="#{!empty ExploreDataPage.vizLines}" styleClass="dvnGraphBox">
                 <div id="chart_div"></div>
-                <div jsfc="ice:panelGroup" styleClass="dvnGraphSourceBlock" visible="#{!empty ExploreDataPage.sources}">
+                <div jsfc="ice:panelGroup" styleClass="dvnGraphSourceBlock" visible="#{!empty ExploreDataPage.sources  and !(ExploreDataPage.displayType == 2)}">
                     <ice:outputLabel value="Source"/>
                     <ice:outputText value="#{ExploreDataPage.sources}" id="sourceData"/>
                 </div>

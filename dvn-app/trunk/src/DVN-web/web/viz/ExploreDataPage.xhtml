@@ -43,6 +43,41 @@
 
     }
 
+
+
+function getXaxisString(startYear, endYear)
+{
+    var myDataString = new String (document.getElementById('ExploreDataPage:dataString').textContent);
+    var startRange = 0;
+    var endRange = 0;
+    var yearLabelInt = 0;
+    var myRowList = myDataString.split ( ';' );
+    var retString = "|";
+    if (startYear != 0 && endYear !=3000)
+    { yearLabelInt = Math.round((endYear-startYear)/5); }
+    else {
+        for (i=0; i< myRowList.length -1 ;i++)
+        { var myRow = myRowList[i];
+            var myRowParse = myRow.split ( ',' );
+            var yearNum = parseInt(myRowParse[0]);
+            if (i==0)
+            { startRange = yearNum; } endRange = yearNum; }
+        yearLabelInt = Math.round((endRange-startRange)/5); }
+    var counter = yearLabelInt;
+    for (i=0; i< myRowList.length -1 ;i++)
+    { var yearPrint = false; var myRow = myRowList[i];
+        var myRowParse = myRow.split ( ',' );
+        var yearNum = parseInt(myRowParse[0]);
+        if (i== 0 || counter == 0 )
+        { counter = yearLabelInt; yearPrint = true; }
+        counter--;
+        if (yearNum >= startYear && yearNum <= endYear )
+        { if (yearPrint){ retString= retString + yearNum + '|'; }
+            else { retString = retString + '|'; } } }
+    return retString;
+}
+
+
  function parseData(data, intDisType, startYear, endYear, indexed, columnString) {
           
         var myString = columnString;
@@ -298,6 +333,8 @@ function myParseXaxis(dataIn, intDisType, year){
 function drawVisualization() {
       document.getElementById('ExploreDataPage:hasURL').value = "false";
       var displayType = new String (document.getElementById('ExploreDataPage:displayType').textContent);
+
+      var footerAvailable = new String (document.getElementById('ExploreDataPage:sourceText').textContent);
       var intDisType = parseInt(displayType);
 
       if (intDisType == 0){
@@ -317,10 +354,16 @@ function drawVisualization() {
       var data2 = new google.visualization.DataTable();
       var colStr = new String (document.getElementById('ExploreDataPage:columnString').textContent);
         parseData(data, intDisType, intStartYear, intEndYear, useIndex, colStr);
-      var icolStr = new String (document.getElementById('ExploreDataPage:imageColumnString').textContent);
+        var icolStr = new String (document.getElementById('ExploreDataPage:imageColumnString').textContent);
         parseData(data2, 2, intStartYear, intEndYear, useIndex, icolStr);
         var chart = new google.visualization.ImageChart(document.getElementById('chart_div'));
-
+        var optionsURL = {cht: 'lc', title: fullTitle, colors: ['#4684EE', '#DC3912', '#FF9900', '#008000', '#4942CC', '#990099', '#FF80F2', '#7FD127']};
+            if (footerAvailable.length > 0){
+                var labelString = '0:' + getXaxisString(startYear, endYear) + '|2:|Source:' + footerAvailable + '|';
+                optionsURL = {cht: 'lc', title: fullTitle, chxt: 'x,y,x', chxl: labelString,
+                    colors: ['#4684EE', '#DC3912', '#FF9900', '#008000', '#4942CC', '#990099', '#FF80F2', '#7FD127']};
+            }
+            
         chart.draw(data2, {cht: 'lc', title: fullTitle, colors: ['#4684EE', '#DC3912', '#FF9900', '#008000', '#4942CC', '#990099', '#FF80F2', '#7FD127']});
         var imageURL = chart.getImageUrl();
         document.getElementById('ExploreDataPage:imageURL').value = imageURL;
@@ -342,8 +385,15 @@ function drawVisualization() {
 
             var displayTitle = new String (document.getElementById('ExploreDataPage:graphTitleHidden').textContent);
             var fullTitle = displayTitle;
+            var options = {cht: 'lc', title: fullTitle, colors: ['#4684EE', '#DC3912', '#FF9900', '#008000', '#4942CC', '#990099', '#FF80F2', '#7FD127']};
+            if (footerAvailable.length > 0){
+                var labelString = '0:' + getXaxisString(startYear, endYear) + '|2:|    Source:  ' + footerAvailable + '|';
+                options = {cht: 'lc', title: fullTitle, chxt: 'x,y,x', chxl: labelString,
+                    colors: ['#4684EE', '#DC3912', '#FF9900', '#008000', '#4942CC', '#990099', '#FF80F2', '#7FD127']};
+            }
              var chart = new google.visualization.ImageChart(document.getElementById('chart_div'));
-             chart.draw(data, {cht: 'lc', title: fullTitle, colors: ['#4684EE', '#DC3912', '#FF9900', '#008000', '#4942CC', '#990099', '#FF80F2', '#7FD127']});
+             chart.draw(data, options
+                );
              jQuery('#chart_div').css({'overflow-y' : 'visible'});
              jQuery('.dvnGraphExtractImageButton').css({'display' : 'block'});
         }
@@ -442,6 +492,7 @@ function getImageURLButton()
 <ice:outputText visible="false" id="startYear" value="#{ExploreDataPage.startYear}"/>
 <ice:outputText visible="false" id="endYear" value="#{ExploreDataPage.endYear}"/>
 <ice:outputText visible="false" id="graphTitleHidden" value="#{ExploreDataPage.graphTitle}"/>
+<ice:outputText visible="false" id="sourceText" value="#{ExploreDataPage.sources}"/>
 <ice:inputText visible="false" id="imageURL" binding="#{ExploreDataPage.inputImageURL}" />
 <ice:outputText visible="false" id="hasURL"/>
 <ice:commandButton visible="false" id="updateGraphTitle" type="submit" value="update" action="#{ExploreDataPage.updateGraphTitle}"/>

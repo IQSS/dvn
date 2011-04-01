@@ -9,13 +9,11 @@ import java.io.*;
 import java.util.*;
 import java.util.logging.*;
 
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
+
 import org.rosuda.REngine.*;
 import org.rosuda.REngine.Rserve.*;
 
 import org.apache.commons.lang.*;
-import org.apache.commons.lang.builder.*;
 
 /**
  *
@@ -85,7 +83,7 @@ public class DvnRService implements java.io.Serializable {
         }
     }
 
-    static String librarySetup= "source('/usr/local/vdc-admin/etc/Labelling.R');";
+    static String librarySetup= "source('/usr/lib64/R/share/dvn/Labelling.R');";
 
     boolean DEBUG = true;
     
@@ -216,11 +214,11 @@ public class DvnRService implements java.io.Serializable {
     // change this once I figure out what it is the function on the R
     // side is actually supposed to return -- L.A.)
     
-    public String executeLabeling(String savedRworkSpace, String labellingFunction, int n, int[] clustVector) throws DvnRServiceException {
+    public int[] executeLabelling(String savedRworkSpace, String labellingFunction, int n, int[] clustVector) throws DvnRServiceException {
 
         // set the return object
 
-        String cmdResponse = null;
+        int[] resultVector = new int[n];
 
         if (clustVector == null) {
             throw new DvnRServiceException("execute method called with a NULL cluster vector.");
@@ -252,13 +250,9 @@ public class DvnRService implements java.io.Serializable {
             REXPInteger RclustVector = new REXPInteger(clustVector);
             drc.Rcon.assign ("clust", RclustVector);
 
-            // for now, let's just save the work space.
-            String saveIdleWS = "save.image(file='" + drc.getWorkSpace() + "')";
-            drc.Rcon.voidEval(saveIdleWS);
 
-
-            String labellingCommand = labellingFunction+"(clust, "+n+")";
-            cmdResponse = safeEval(drc.Rcon, labellingCommand).asString();
+            String labellingCommand = labellingFunction+"("+n+", clust)";
+            resultVector = safeEval(drc.Rcon, labellingCommand).asIntegers();
 
 
             if (!savedRworkSpace.equals(drc.getWorkSpace())) {
@@ -295,7 +289,7 @@ public class DvnRService implements java.io.Serializable {
             }
         }
 
-        return cmdResponse;
+        return resultVector;
 
     }
 
@@ -397,22 +391,28 @@ public class DvnRService implements java.io.Serializable {
 
                     RList rowVectorsList = new RList();
 
-                    for ( int i = 0; i < cMatrix.length; i++ ) {
 
-                        REXPInteger rowVector = new REXPInteger(cMatrix[i]);
+                    for ( int j = 0; j < cMatrix[0].length; j++ ) {
+                        int[] column = new int[cMatrix.length];
+                        
+                        for ( int i = 0; i < cMatrix.length; i++ ) {
+                            column[i] = cMatrix[i][j];
+                        }
+                        REXPInteger rowVector = new REXPInteger(column);
                         rowVectorsList.add(rowVector);
 
-                     }
+                    }
 
-                    REXPGenericVector matrixData = new REXPGenericVector (rowVectorsList);
+                    //REXPGenericVector matrixData = new REXPGenericVector (rowVectorsList);
+                    REXP matrixData = org.rosuda.REngine.REXP.createDataFrame(rowVectorsList);
 
                     drc.Rcon.assign ("data", matrixData);
 
                     drc.setWorkSpace(workSpaceRemote);
 
 
-                    String saveIdleWS = "save.image(file='" + drc.getWorkSpace() + "')";
-                    drc.Rcon.voidEval(saveIdleWS);
+                    String saveWS = "save.image(file='" + drc.getWorkSpace() + "')";
+                    drc.Rcon.voidEval(saveWS);
 
 
                 }
@@ -637,15 +637,17 @@ public class DvnRService implements java.io.Serializable {
         DvnRService rs = new DvnRService();
 
         int[][] matrix = {{1,2,3},{4,5,6},{7,8,9}};
-        int[] testClustVector = {1,1,1};
+        int[] testClustVector = {0,0,0};
 
         try {
             String RsessionId = rs.initializeConnection(matrix, null);
 
-            String result = rs.executeLabeling(RsessionId, "meansLabel", 3, testClustVector);
+            int[] labelledVector = rs.executeLabelling(RsessionId, "meansLabel", 3, testClustVector);
 
-            if (result != null) {
-                System.out.println("result: "+result);
+            if (labelledVector != null) {
+                for (int i = 0; i < labelledVector.length; i++) {
+                    System.out.println("result: "+labelledVector[i]);
+                }
             } else {
                 System.out.println("NULL response from the labelling command");
             }

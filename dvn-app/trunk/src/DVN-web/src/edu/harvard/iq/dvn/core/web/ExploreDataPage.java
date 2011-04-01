@@ -1263,18 +1263,18 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         String exportTimestamp = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss").format(new Date());
 
         try {
-            zipOutputFile = File.createTempFile("dataDownload_" + exportTimestamp, ".zip");
+            zipOutputFile = File.createTempFile("dataDownload","zip");
             zout = new ZipOutputStream((OutputStream) new FileOutputStream(zipOutputFile));
 
             if (includeCSV) {
-                File csvFile = new File("csvData_" + exportTimestamp + ".txt");
+                File csvFile = File.createTempFile("dataDownload_","csv");
                 writeFile(csvFile, csvString.toString().toCharArray(), csvString.toString().length());
                 addZipEntry(zout, csvFile.getAbsolutePath(), "csvData_" + exportTimestamp + ".txt");
 
             }
             if (includeImage || includePdf) {
-                File imageUrlFile = includeImage ? new File("imageUrl_" + exportTimestamp + ".png") : null;
-                File imagePdfFile = includePdf ? new File("imagePdf_" + exportTimestamp + ".pdf") : null;
+                File imageUrlFile = includeImage ? File.createTempFile("dataDownload","png") : null;
+                File imagePdfFile = includePdf ? File.createTempFile("dataDownload","pdf") : null;
                 writeImageFile(imageUrlFile, imagePdfFile);
                 if (includeImage) {
                     addZipEntry(zout, imageUrlFile.getAbsolutePath(), "imageGraph_" + exportTimestamp + ".png");
@@ -1284,7 +1284,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                 }
             }
             if (includeExcel) {
-                File excelDataFile = new File("excelData_" + exportTimestamp + ".xls");
+                File excelDataFile = File.createTempFile("dataDownload","xls");
                 writeExcelFile(excelDataFile);
                 addZipEntry(zout, excelDataFile.getAbsolutePath(), "excelData_" + exportTimestamp + ".xls");
             }

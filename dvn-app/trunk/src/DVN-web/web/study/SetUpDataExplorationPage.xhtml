@@ -366,41 +366,36 @@
                 <div jsfc="ice:panelGroup" panelLayout="flow">
                     <div jsfc="ice:panelGroup" style="overflow:hidden;">
                         <div jsfc="ice:panelGroup" style="width:60%; float:left; margin-right: 2em;">
-                           <div jsfc="ice:panelGroup">
-
-                                <div jsfc="ice:panelGroup" style="float:right;">
-                                    <ice:commandLink id="addSourceGroup" action="#{SetUpDataExplorationPage.addSourceGroup}">
-                                          <ice:outputText id="addSourceGroupText" value="+ Add Source"/>
-                                     </ice:commandLink>
-                                </div>
-                                <div jsfc="ice:panelGroup">
-                                    <ice:dataTable width="100%" cellspacing="0" cellpadding="0" var="group" value="#{SetUpDataExplorationPage.sourceGroups}"
-                                                   binding="#{SetUpDataExplorationPage.dataTableSourceVarGroup}">
-                                        <h:column>
-                                            <f:facet name="header">
-                                                <ice:outputText value="Name"/>
-                                            </f:facet>
-                                            <ice:outputText value="#{group.varGroup.name}"/>
-                                        </h:column>
-                                        <h:column>
-                                            <f:facet name="header">
-                                                <ice:outputText value="Variables"/>
-                                            </f:facet>
-                                            <ice:outputText value="#{group.numberOfVariablesSelected}"/>
-                                        </h:column>
-                                        <h:column rendered="#{!SetUpDataExplorationPage.editSource}">
-                                            <f:facet name="header">
-                                                &#160;
-                                            </f:facet>
-                                            <ice:commandLink id="editMeasureGroup" style="margin-right:1em;" actionListener="#{SetUpDataExplorationPage.editSourceGroup}">
-                                                 <ice:outputText style="display:inline;" id="editSourceGroupText" value="Edit"/>
-                                            </ice:commandLink>
-                                            <ice:commandLink id="deleteMeasureGroup" action="#{SetUpDataExplorationPage.deleteSourceGroup}">
-                                                 <ice:outputText style="display:inline;" id="deleteSourceGroupText" value="Delete"/>
-                                            </ice:commandLink>
-                                        </h:column>
-                                    </ice:dataTable>
-                                </div>
+                            <ice:commandLink id="addSourceGroup" action="#{SetUpDataExplorationPage.addSourceGroup}">
+                                 <ice:outputText id="addSourceGroupText" value="+ Add Source"/>
+                            </ice:commandLink>
+                            <div jsfc="ice:panelGroup">
+                                <ice:dataTable width="100%" cellspacing="0" cellpadding="0" var="group" value="#{SetUpDataExplorationPage.sourceGroups}"
+                                               binding="#{SetUpDataExplorationPage.dataTableSourceVarGroup}">
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <ice:outputText value="Name"/>
+                                        </f:facet>
+                                        <ice:outputText value="#{group.varGroup.name}"/>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <ice:outputText value="Variables"/>
+                                        </f:facet>
+                                        <ice:outputText value="#{group.numberOfVariablesSelected}"/>
+                                    </h:column>
+                                    <h:column rendered="#{!SetUpDataExplorationPage.editSource}">
+                                        <f:facet name="header">
+                                            &#160;
+                                        </f:facet>
+                                        <ice:commandLink id="editMeasureGroup" style="margin-right:1em;" actionListener="#{SetUpDataExplorationPage.editSourceGroup}">
+                                             <ice:outputText style="display:inline;" id="editSourceGroupText" value="Edit"/>
+                                        </ice:commandLink>
+                                        <ice:commandLink id="deleteMeasureGroup" action="#{SetUpDataExplorationPage.deleteSourceGroup}">
+                                             <ice:outputText style="display:inline;" id="deleteSourceGroupText" value="Delete"/>
+                                        </ice:commandLink>
+                                    </h:column>
+                                </ice:dataTable>
                             </div>
                         </div>
                         <div jsfc="ice:panelGroup" style="width:35%; float:left;" rendered="#{SetUpDataExplorationPage.editSource}">

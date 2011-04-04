@@ -1745,21 +1745,18 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                 if (!returnListOfErrors.isEmpty()){
 
                     fullErrorMessage += "<br>Variables were found that are mapped to multiple measures.  ";
-                    fullErrorMessage += "<br> Variables failing validation: ";
                     boolean firstGroup = true;
                     for(Object dataVariableIn: returnListOfErrors){
                         if (dataVariableIn instanceof DataVariable ){
                             DataVariable dataVariable = (DataVariable) dataVariableIn;
-
                             fullErrorMessage += "<br>&#8226;&nbsp;&nbsp;Variable: " + dataVariable.getName() + "<br>";
-
                             firstGroup = true;
 
                         }
                         if (dataVariableIn instanceof VarGroup){
                             VarGroup varGroup = (VarGroup) dataVariableIn;
                             if (firstGroup){
-                                fullErrorMessage += "&#8226;&nbsp;&nbsp;Measures: " + varGroup.getName() ;
+                                fullErrorMessage += "&nbsp;&nbsp;&nbsp;&nbsp;Measures: " + varGroup.getName() ;
                             } else {
                                  fullErrorMessage += " , " + varGroup.getName() ;
                             }

@@ -335,6 +335,8 @@ function drawVisualization() {
       var displayType = new String (document.getElementById('ExploreDataPage:displayType').textContent);
 
       var footerAvailable = new String (document.getElementById('ExploreDataPage:sourceText').textContent);
+      var axisLabel = new String (document.getElementById('ExploreDataPage:imageAxisLabel').textContent);
+      var sourceFooter = new String (document.getElementById('ExploreDataPage:imageSourceFooter').textContent);
       var intDisType = parseInt(displayType);
 
       if (intDisType == 0){
@@ -386,9 +388,10 @@ function drawVisualization() {
             var displayTitle = new String (document.getElementById('ExploreDataPage:graphTitleHidden').textContent);
             var fullTitle = displayTitle;
             var options = {cht: 'lc', title: fullTitle, colors: ['#4684EE', '#DC3912', '#FF9900', '#008000', '#4942CC', '#990099', '#FF80F2', '#7FD127']};
+
             if (footerAvailable.length > 0){
-                var labelString = '0:' + getXaxisString(startYear, endYear) + '|2:|    Source:  ' + footerAvailable + '|';
-                options = {cht: 'lc', title: fullTitle, chxt: 'x,y,x', chxl: labelString,
+                var labelString = '0:' + getXaxisString(startYear, endYear) + sourceFooter;
+                options = {cht: 'lc', title: fullTitle, chxt: axisLabel, chxl: labelString,
                     colors: ['#4684EE', '#DC3912', '#FF9900', '#008000', '#4942CC', '#990099', '#FF80F2', '#7FD127']};
             }
              var chart = new google.visualization.ImageChart(document.getElementById('chart_div'));
@@ -494,6 +497,8 @@ function getImageURLButton()
 <ice:outputText visible="false" id="graphTitleHidden" value="#{ExploreDataPage.graphTitle}"/>
 <ice:outputText visible="false" id="sourceText" value="#{ExploreDataPage.sources}"/>
 <ice:inputText visible="false" id="imageURL" binding="#{ExploreDataPage.inputImageURL}" />
+<ice:outputText visible="false" id="imageAxisLabel" value="#{ExploreDataPage.imageAxisLabel}"/>
+<ice:outputText visible="false" id="imageSourceFooter" value="#{ExploreDataPage.imageSourceFooter}"/>
 <ice:outputText visible="false" id="hasURL"/>
 <ice:commandButton visible="false" id="updateGraphTitle" type="submit" value="update" action="#{ExploreDataPage.updateGraphTitle}"/>
 <ice:commandButton visible="false" id="deleteLineHidden" value="Delete Line hidden" actionListener="#{ExploreDataPage.deleteLine}"/>

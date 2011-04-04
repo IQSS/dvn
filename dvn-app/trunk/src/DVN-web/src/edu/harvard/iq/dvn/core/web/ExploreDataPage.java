@@ -132,6 +132,10 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     private String indexDate = "";
     private String sources = "";
 
+
+    private String imageSourceFooter = "";
+    private String imageAxisLabel = "";
+
     private boolean displayIndexes = false;
     private boolean includeImage = true;
     private boolean includePdf = true;
@@ -770,6 +774,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
            getDataTable();
            resetLineBorder();
            getSourceList();
+           updateImageFooters();
 
            FacesContext fc = FacesContext.getCurrentInstance();
            JavascriptContext.addJavascriptCall(fc, "drawVisualization();");           
@@ -844,6 +849,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
            this.numberOfColumns = new Long(vizLines.size());
            getDataTable();
            resetLineBorder();
+           getSourceList();
+           updateImageFooters();
 
            FacesContext fc = FacesContext.getCurrentInstance();
            JavascriptContext.addJavascriptCall(fc, "drawVisualization();");
@@ -1347,7 +1354,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                 }
                 String encodedTitle = URLEncoder.encode(graphTitleOut, "UTF-8");
                 decoded = decoded + "&chtt=" + encodedTitle;
-                decoded = decoded + "&chtf=" + encodedTitle;
             }
 
        
@@ -1554,6 +1560,75 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         sources = returnString;
     }
 
+
+
+    private void updateImageFooters(  ) {
+        String sourcesWLabel = "";
+        String returnString = "";
+        boolean done = false;
+        String footerNotes = "";
+        Set<String> set = new HashSet();
+        if (sourceList != null  && !sourceList.isEmpty()){
+            for (DataVariableMapping dvm: sourceList){
+            String checkSource = dvm.getGroup().getName();
+            if (!checkSource.isEmpty()){
+                if (set.contains(checkSource)){
+
+                    } else {
+                        set.add(checkSource);
+                        if (returnString.isEmpty()){
+                            returnString = returnString + checkSource;
+                        } else {
+                            returnString = returnString + ", " + checkSource;
+                        }
+                    }
+                }
+            }
+
+        }
+
+        sourcesWLabel = "Source:" + returnString;
+
+          int numberOfLines = sourcesWLabel.length() / 72;
+          numberOfLines = numberOfLines + 2;
+          String[] sourceLines = new String[numberOfLines];
+          int begOfLine = 0;
+          int endOfLine = Math.min(sourcesWLabel.length(), 72);
+          for (int i = 0; i < numberOfLines; i++){
+
+              int previousSpace = sourcesWLabel.lastIndexOf(" ",  endOfLine);
+
+              if (previousSpace > begOfLine  && (endOfLine - begOfLine) > 71 && !done){
+                  sourceLines[i] = sourcesWLabel.substring(begOfLine, previousSpace);
+              } else if (!done) {
+                  sourceLines[i] = sourcesWLabel.substring(begOfLine, endOfLine);
+                  done = true;
+              } else {
+                  sourceLines[i] = "";
+              }
+
+              begOfLine =  previousSpace + 1;
+              endOfLine = Math.min(sourcesWLabel.length(), previousSpace + 73);
+          }
+          String axisLabelTemp = "x,y";
+          footerNotes = "|";
+          Integer lineNum = 2;
+          for (String sourceLine : sourceLines){
+              axisLabelTemp += ",x";
+              footerNotes += "|" + lineNum + ":||"+ sourceLine +"|";
+              lineNum++;
+          }
+
+
+          setImageAxisLabel(axisLabelTemp);
+          setImageSourceFooter(footerNotes);
+
+    }
+
+    public String getTitleOut() {
+        return "";
+    }
+
     public void openVariableInfoPopup(ActionEvent ae){
 
         UIComponent uiComponent = ae.getComponent().getParent();
@@ -1630,6 +1705,21 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         this.selectEndYear = selectEndYear;
     }
 
+    public String getImageAxisLabel() {
+        return imageAxisLabel;
+    }
+
+    public String getImageSourceFooter() {
+        return imageSourceFooter;
+    }
+
+    public void setImageAxisLabel(String imageAxisLabel) {
+        this.imageAxisLabel = imageAxisLabel;
+    }
+
+    public void setImageSourceFooter(String imageSourceFooter) {
+        this.imageSourceFooter = imageSourceFooter;
+    }
     HtmlSelectOneMenu selectIndexYear;
 
     public HtmlSelectOneMenu getSelectIndexYear() {
@@ -1847,6 +1937,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     public void setDataExcelCheckBox(HtmlSelectBooleanCheckbox dataExcelCheckBox) {
         this.dataExcelCheckBox = dataExcelCheckBox;
     }
+
+
 
     public boolean isIncludeCSV() {
         return includeCSV;

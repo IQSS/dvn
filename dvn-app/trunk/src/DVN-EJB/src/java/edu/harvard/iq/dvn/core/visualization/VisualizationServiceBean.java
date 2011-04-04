@@ -378,7 +378,7 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
 
         List<DataVariable> dataVariables = (List<DataVariable>) dataTable.getDataVariables();
         List<DataVariable> errorVariables = new ArrayList();
-        List<DataVariableMapping>  errorMappings = new ArrayList();
+        List<VarGroup> errorGroups = new ArrayList();
             for (DataVariable dataVariable: dataVariables){
                 
                 xAxis = false;
@@ -424,13 +424,21 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
             List <VarGroup> distinctMeasures = getDistinctGroups(allMappings);
 
             for ( VarGroup measure: distinctMeasures){
-                returnListOfErrors.add(measure);
+                int countMappings = 0;
                 for (DataVariableMapping dvm: allMappings){
                     if (dvm.getGroup().getName().equals(measure.getName())){
-                        returnListOfErrors.add(dvm.getDataVariable());
+                        countMappings++;
                     }
                 }
-
+                if (countMappings > 1){
+                    returnListOfErrors.add(measure);
+                    for (DataVariableMapping dvm: allMappings){
+                        if (dvm.getGroup().getName().equals(measure.getName())){
+                            returnListOfErrors.add(dvm.getDataVariable());
+                        }
+                    }
+                }
+                countMappings = 0;
             }
         return retVal;
     }

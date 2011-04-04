@@ -359,14 +359,13 @@ function drawVisualization() {
         var icolStr = new String (document.getElementById('ExploreDataPage:imageColumnString').textContent);
         parseData(data2, 2, intStartYear, intEndYear, useIndex, icolStr);
         var chart = new google.visualization.ImageChart(document.getElementById('chart_div'));
-        var optionsURL = {cht: 'lc', title: fullTitle, colors: ['#4684EE', '#DC3912', '#FF9900', '#008000', '#4942CC', '#990099', '#FF80F2', '#7FD127']};
+        var optionsURL = {cht: 'lc', title: fullTitle,  wmode: 'transparent', colors: ['#4684EE', '#DC3912', '#FF9900', '#008000', '#4942CC', '#990099', '#FF80F2', '#7FD127']};
             if (footerAvailable.length > 0){
-                var labelString = '0:' + getXaxisString(startYear, endYear) + '|2:|Source:' + footerAvailable + '|';
-                optionsURL = {cht: 'lc', title: fullTitle, chxt: 'x,y,x', chxl: labelString,
+                optionsURL = {cht: 'lc', title: fullTitle, chxt: axisLabel,  wmode: 'transparent',
                     colors: ['#4684EE', '#DC3912', '#FF9900', '#008000', '#4942CC', '#990099', '#FF80F2', '#7FD127']};
             }
             
-        chart.draw(data2, {cht: 'lc', title: fullTitle, wmode: 'transparent', colors: ['#4684EE', '#DC3912', '#FF9900', '#008000', '#4942CC', '#990099', '#FF80F2', '#7FD127']});
+        chart.draw(data2, optionsURL);
         var imageURL = chart.getImageUrl();
         document.getElementById('ExploreDataPage:imageURL').value = imageURL;
         document.getElementById('ExploreDataPage:updateImageURL').click();
@@ -391,7 +390,8 @@ function drawVisualization() {
 
             if (footerAvailable.length > 0){
                 var labelString = '0:' + getXaxisString(startYear, endYear) + sourceFooter;
-                options = {cht: 'lc', title: fullTitle, chxt: axisLabel, chxl: labelString,
+                alert (getXaxisString(startYear, endYear));
+                options = {cht: 'lc', title: fullTitle, chxt: axisLabel, chxl: labelString,  wmode: 'transparent',
                     colors: ['#4684EE', '#DC3912', '#FF9900', '#008000', '#4942CC', '#990099', '#FF80F2', '#7FD127']};
             }
              var chart = new google.visualization.ImageChart(document.getElementById('chart_div'));

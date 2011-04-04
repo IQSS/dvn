@@ -1355,6 +1355,10 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                 String encodedTitle = URLEncoder.encode(graphTitleOut, "UTF-8");
                 decoded = decoded + "&chtt=" + encodedTitle;
             }
+            if (!sources.isEmpty()){
+                String xAxisDecoded = "0:" + getXaxisString() + URLEncoder.encode(getImageSourceFooter(), "UTF-8") ;
+                decoded = decoded + "&chxl=" + xAxisDecoded;
+            }
 
        
         if (!decoded.isEmpty()){
@@ -1362,30 +1366,15 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
                 try{
                     BufferedImage image =     ImageIO.read(imageURLnew);
-                    int width1 = image.getWidth();
-                    int height1 = image.getHeight();
-                    BufferedImage bif = getSourceFooter(width1, height1);
-                    int bicHt = height1;
-                    if (!sources.isEmpty()) {
-                        bicHt = height1 + bif.getHeight();
-                    }
-                    BufferedImage bic = new BufferedImage(width1, bicHt, BufferedImage.TYPE_INT_RGB);
-                    bic.createGraphics().drawImage(image, 0, 0, null);
-                    if (!sources.isEmpty()) {
-                        bic.createGraphics().drawImage(bif, 0, height1, null);
-                    }
-
                     if (fileIn != null) {
                         ImageIO.write(image, "png", fileIn);
-                        ImageIO.write(bic, "png", fileIn);
                     }
-
 
                     if (pdfFileIn != null) {
                         Document document = new Document();
                         PdfWriter.getInstance(document, new FileOutputStream(pdfFileIn, true));
                         document.open();
-                        java.awt.Image awtImg = bic;
+                        java.awt.Image awtImg = image;
                         com.itextpdf.text.Image image2 =   com.itextpdf.text.Image.getInstance(awtImg, null);
                         document.add(image2);
                         document.close();
@@ -1409,60 +1398,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         }
     }
 
-    private BufferedImage getSourceFooter(int width, int height){
-
-          BufferedImage img = new BufferedImage(width, 50, BufferedImage.TYPE_INT_RGB);
-          if (sources.isEmpty()){
-              return img;
-          }
-          boolean done = false;
-          String sourcesWLabel = "Source(s): " + sources;
-          int numberOfLines = sourcesWLabel.length() / 72;
-          numberOfLines = numberOfLines + 2;
-          String[] sourceLines = new String[numberOfLines];
-          int begOfLine = 0;
-          int endOfLine = Math.min(sourcesWLabel.length(), 72);
-          for (int i = 0; i < numberOfLines; i++){
-
-              int previousSpace = sourcesWLabel.lastIndexOf(" ",  endOfLine);
-              
-              if (previousSpace > begOfLine  && (endOfLine - begOfLine) > 71 && !done){
-                  sourceLines[i] = sourcesWLabel.substring(begOfLine, previousSpace);
-              } else if (!done) {
-                  sourceLines[i] = sourcesWLabel.substring(begOfLine, endOfLine);
-                  done = true;
-              } else {
-                  sourceLines[i] = "";
-              }
-
-              begOfLine =  previousSpace + 1;
-              endOfLine = Math.min(sourcesWLabel.length(), previousSpace + 73);
-          }
-          
-          int heightbic =  numberOfLines * 25;
-        img = new BufferedImage(width, heightbic, BufferedImage.TYPE_INT_RGB);
-         BufferedImage bic = new BufferedImage(width, heightbic, BufferedImage.TYPE_INT_RGB);
-
-         Graphics2D g2 = img.createGraphics();
-         g2.setColor(Color.WHITE);
-         g2.fillRect(0, 0, width , heightbic );
-
-         Font font = new Font("Arial", Font.PLAIN, 12);
-         g2.setFont(font);
-         g2.setColor(Color.BLACK);
-         
-         for (int i = 0; i < numberOfLines; i++){
-            
-            g2.drawString( sourceLines[i], 10, (i+1)*20);
-         } 
-        
-             if (!sources.isEmpty()){
-                 bic.createGraphics().drawImage(img, 0, 0, null);
-             }
-
-         return img;
-
-    }
+    
 
     private void addZipEntry(ZipOutputStream zout, String inputFileName, String outputFileName) throws IOException{
         FileInputStream tmpin = new FileInputStream(inputFileName);
@@ -1554,9 +1490,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             }
 
         }
-
-
-
         sources = returnString;
     }
 
@@ -1619,11 +1552,50 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
               lineNum++;
           }
 
+          String outputSourceFooter =  "";
+          try {
+                outputSourceFooter= URLEncoder.encode(footerNotes, "UTF-8");
+          } catch (Exception e){
+                outputSourceFooter= footerNotes;
+          }
 
           setImageAxisLabel(axisLabelTemp);
           setImageSourceFooter(footerNotes);
 
     }
+    
+    private String getXaxisString()
+{
+    int startRange = 0;
+    int endRange = 0;
+    int yearLabelInt = 0;
+    String myRowList[] = getDataString().split(";");
+    String retString = "|";
+    ;
+    if (new Integer( startYear.toString()).intValue() != 0 && new Integer( endYear.toString()).intValue() !=3000)
+        
+    { yearLabelInt = Math.round((new Integer( endYear.toString()).intValue()-new Integer( startYear.toString()).intValue())/5); }
+    else {
+        for (int i=0; i< myRowList.length -1 ;i++)
+        { String myRow = myRowList[i];
+            String myRowParse[] = myRow.split ( "," );
+            int yearNum = new Integer( myRowParse[0].toString()).intValue();
+            if (i==0)
+            { startRange = yearNum; } endRange = yearNum; }
+        yearLabelInt = Math.round((endRange-startRange)/5); }
+    int counter = yearLabelInt;
+    for (int i=0; i< myRowList.length -1 ;i++)
+    { boolean yearPrint = false; String myRow = myRowList[i];
+        String myRowParse[] = myRow.split ( "," );
+        int yearNum = new Integer( myRowParse[0].toString());
+        if (i== 0 || counter == 0 )
+        { counter = yearLabelInt; yearPrint = true; }
+        counter--;
+        if (yearNum >= new Integer( startYear.toString()).intValue() && yearNum <= new Integer( endYear.toString()).intValue() )
+        { if (yearPrint){ retString= retString + yearNum + '|'; }
+            else { retString = retString + '|'; } } }
+    return retString;
+}
 
     public String getTitleOut() {
         return "";

@@ -359,9 +359,9 @@ function drawVisualization() {
         var icolStr = new String (document.getElementById('ExploreDataPage:imageColumnString').textContent);
         parseData(data2, 2, intStartYear, intEndYear, useIndex, icolStr);
         var chart = new google.visualization.ImageChart(document.getElementById('chart_div'));
-        var optionsURL = {cht: 'lc', title: fullTitle,  wmode: 'transparent', colors: ['#4684EE', '#DC3912', '#FF9900', '#008000', '#4942CC', '#990099', '#FF80F2', '#7FD127']};
+        var optionsURL = {cht: 'lc', title: fullTitle, colors: ['#4684EE', '#DC3912', '#FF9900', '#008000', '#4942CC', '#990099', '#FF80F2', '#7FD127']};
             if (footerAvailable.length > 0){
-                optionsURL = {cht: 'lc', title: fullTitle, chxt: axisLabel,  wmode: 'transparent',
+                optionsURL = {cht: 'lc', title: fullTitle, chxt: axisLabel,
                     colors: ['#4684EE', '#DC3912', '#FF9900', '#008000', '#4942CC', '#990099', '#FF80F2', '#7FD127']};
             }
             
@@ -372,7 +372,7 @@ function drawVisualization() {
 
         if (intDisType == 1){
                 var chart = new google.visualization.AnnotatedTimeLine(document.getElementById('chart_div'));
-                chart.draw(data, {allowRedraw: true}, {displayZoomButtons: false}, {displayAnnotations: false});
+                chart.draw(data, {allowRedraw: true, wmode: 'transparent'}, {displayZoomButtons: false}, {displayAnnotations: false});
                 jQuery('#chart_div').css({'overflow-y' : 'visible'});
                 jQuery('.dvnGraphExtractImageButton').css({'display' : 'none'});
         }
@@ -391,7 +391,7 @@ function drawVisualization() {
             if (footerAvailable.length > 0){
                 var labelString = '0:' + getXaxisString(startYear, endYear) + sourceFooter;
                 
-                options = {cht: 'lc', title: fullTitle, chxt: axisLabel, chxl: labelString,  wmode: 'transparent',
+                options = {cht: 'lc', title: fullTitle, chxt: axisLabel, chxl: labelString,
                     colors: ['#4684EE', '#DC3912', '#FF9900', '#008000', '#4942CC', '#990099', '#FF80F2', '#7FD127']};
             }
              var chart = new google.visualization.ImageChart(document.getElementById('chart_div'));
@@ -680,7 +680,7 @@ function getImageURLButton()
 
             <div jsfc="ice:panelGroup" rendered="#{!empty ExploreDataPage.vizLines}" styleClass="dvnGraphBox">
                 <div id="chart_div"></div>
-                <div jsfc="ice:panelGroup" styleClass="dvnGraphSourceBlock" visible="#{!empty ExploreDataPage.sources  and !(ExploreDataPage.displayType == 2)}">
+                <div jsfc="ice:panelGroup" styleClass="dvnGraphSourceBlock" visible="#{!empty ExploreDataPage.sources and !(ExploreDataPage.displayType == 2)}">
                     <ice:outputLabel value="Source"/>
                     <ice:outputText value="#{ExploreDataPage.sources}" id="sourceData"/>
                 </div>

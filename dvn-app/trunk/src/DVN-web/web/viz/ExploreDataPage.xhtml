@@ -741,24 +741,24 @@ function getImageURLButton()
                             <ice:selectBooleanCheckbox id="downloadImageGraph"
                                                        value="#{ExploreDataPage.includeImage}"
                                                        partialSubmit="true" />
-                            <ice:outputLabel value="Image Graph" for="downloadImageGraph" rendered="true" style="font-weight: normal; margin-right:1em;"/>
+                            <ice:outputLabel value="Image Graph" for="downloadImageGraph" rendered="true" styleClass="dvnFormElementMargin"/>
                             <ice:selectBooleanCheckbox id="downloadPDFGraph"
                                                        value="#{ExploreDataPage.includePdf}"
                                                        partialSubmit="true" />
-                            <ice:outputLabel value="PDF Graph" for="downloadPDFGraph" rendered="true" style="font-weight: normal;"/>
+                            <ice:outputLabel value="PDF Graph" for="downloadPDFGraph" rendered="true"/>
                         </div>
                         <div>
                             <ice:selectBooleanCheckbox id="downloadDataCSV"
                                                        value="#{ExploreDataPage.includeCSV}"
-                                                       partialSubmit="true" style="clear: left;"/>
-                            <ice:outputLabel value="Raw Data CSV" for="downloadDataCSV" rendered="true" style="font-weight: normal; margin-right:1em;"/>
+                                                       partialSubmit="true"/>
+                            <ice:outputLabel value="Raw Data CSV" for="downloadDataCSV" rendered="true" styleClass="dvnFormElementMargin"/>
                             <ice:selectBooleanCheckbox id="downloadDataExcel" binding="#{ExploreDataPage.dataExcelCheckBox}"
                                                        value="#{ExploreDataPage.includeExcel}"
                                                        partialSubmit="true" />
-                            <ice:outputLabel value="Excel File" for="downloadDataExcel" rendered="true" style="font-weight: normal;"/>
+                            <ice:outputLabel value="Excel File" for="downloadDataExcel" rendered="true"/>
                         </div>
                         <ice:message for="downloadDataExcel" id="boxErrorMsgExcel" styleClass="errorMessage"/>
-                        <div style="margin-top:1em;">
+                        <div class="dvnFormButtonMargin">
                             <ice:commandButton visible="true" value="Export Results" id="exportResults" type="submit" onclick="startDownload();" />
                               <ice:outputResource label="Export" type="button" style="display:none;"
                                    id="downloadImage" mimeType="application/png"

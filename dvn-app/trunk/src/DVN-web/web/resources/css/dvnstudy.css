@@ -304,4 +304,7 @@ label.dvnGraphIndicesTitle {font-weight:bold;}
 .dvnGraphExportBlock div {margin-bottom:1em;}
 .dvnExportFileNameInput {display:inline;}
 .dvnExportBtmWrp input.dvnDataExplorationDnldBttn {margin-left:.5em;}
+.dvnExportBtmWrp label {font-weight:normal;}
+.dvnExportBtmWrp label.dvnFormElementMargin {margin-right:1em;}
+.dvnExportBtmWrp div.dvnFormButtonMargin {margin-top:1em;}
 .dvnGraphExtractImageButton {display:none; margin-top:1em;}

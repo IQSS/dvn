@@ -609,7 +609,7 @@ function getImageURLButton()
                         
                         <a href="#" class="lineDetailLink">View Detail</a>
                         
-                        <div class="lineDetailBlock">
+                        <div class="lineDetailBlock" style="display:none;">
                             <div class="lineDetailBlockLabel">
                                 <ice:outputText value="#{line.measureLabel}"/>
                             </div>
@@ -651,21 +651,26 @@ function getImageURLButton()
                                 jQuery(this).prev('a.lineDetailLink').text(showText);
 
                                 // hide all of the elements with a class of 'toggle'
-                                jQuery('.lineDetailBlock').hide();
+                                // jQuery('.lineDetailBlock').hide();
 
                                 // capture clicks on the toggle links
                                 jQuery('a.lineDetailLink').click(function() {
 
+                                    // switch visibility
+                                    is_visible = !is_visible;
+
                                     // change the link depending on whether the element is shown or hidden
-                                    if (jQuery(this).text()==showText) {
-                                        jQuery(this).text(hideText);
-                                    }
-                                    else {
-                                        jQuery(this).text(showText);
-                                    }
+                                    jQuery(this).text( (!is_visible) ? showText : hideText);
 
                                     // toggle the display
-                                    jQuery(this).next('.lineDetailBlock').toggle();
+                                    // jQuery(this).next('.lineDetailBlock').slideToggle('fast');
+
+                                    if (jQuery(this).text()==hideText) {
+                                        jQuery(this).next('.lineDetailBlock').show();
+                                    }
+                                    else {
+                                        jQuery(this).next('.lineDetailBlock').hide();
+                                    }
 
                                     // return false so any link destination is not followed
                                     return false;

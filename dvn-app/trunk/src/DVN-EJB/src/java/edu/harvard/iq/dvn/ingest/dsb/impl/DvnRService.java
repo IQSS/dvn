@@ -5,7 +5,6 @@
 
 package edu.harvard.iq.dvn.ingest.dsb.impl;
 
-import java.io.*;
 import java.util.*;
 import java.util.logging.*;
 
@@ -70,10 +69,10 @@ public class DvnRService implements java.io.Serializable {
         }
         
 
-        if (System.getProperty("vdc.dsb.rserve.port") == null ){
+        if (System.getProperty("dvn.rserve.port") == null ){
             RSERVE_PORT= 6311;
         } else {
-            RSERVE_PORT = Integer.parseInt(System.getProperty("vdc.dsb.rserve.port"));
+            RSERVE_PORT = Integer.parseInt(System.getProperty("dvn.rserve.port"));
         }
 
         if (System.getProperty("dvn.rserve.poolsize") == null) {
@@ -83,7 +82,7 @@ public class DvnRService implements java.io.Serializable {
         }
     }
 
-    static String librarySetup= "source('/usr/lib64/R/share/dvn/Labelling.R');";
+    private String librarySetup = null;
 
     boolean DEBUG = true;
     
@@ -103,7 +102,7 @@ public class DvnRService implements java.io.Serializable {
             +"." + IdSuffix + RDATA_FILE_EXT;
 
         if ( RConnectionPool == null ) {
-            dbgLog.info ("number of RServe connections: "+RSERVE_CONNECTION_POOLSIZE);
+            dbgLog.fine ("number of RServe connections: "+RSERVE_CONNECTION_POOLSIZE);
             RConnectionPool = new DvnRConnectionPool ( RSERVE_CONNECTION_POOLSIZE );
         }
 	
@@ -112,20 +111,21 @@ public class DvnRService implements java.io.Serializable {
     public void setupWorkingDirectories(RConnection c) throws RserveException {
         // set up the working directory in the designated temp directory
         // location;
-        // the 4 lines below are R code being sent over to Rserve;
-        // it looks kinda messy, true.
 
-        //String checkWrkDir = "if (file_test('-d', '" + TMP_DIR_REMOTE + "')) {Sys.chmod('" +
-        //        TMP_DIR_LOCAL + "', mode = '0777'); Sys.chmod('" + TMP_DIR_REMOTE + "', mode = '0777');} else {dir.create('" + TMP_DIR_REMOTE + "', showWarnings = FALSE, recursive = TRUE);Sys.chmod('" + TMP_DIR_LOCAL + "', mode = '0777');Sys.chmod('" +
-        //        TMP_DIR_REMOTE + "', mode = '0777');}";
-
-        //dbgLog.fine("w permission=" + checkWrkDir);
-
-        //c.voidEval(checkWrkDir);
-
+        // Not necessary anymore;
+        // Keeping the function around, just in case any additional setup becomes
+        // necessary again.
     }
-    
-    private RConnection openNewConnection() throws RserveException {
+
+    public void setInitialSetup (String initialSetup) {
+        librarySetup = initialSetup;
+    }
+
+    public String getInitialSetup () {
+        return librarySetup;
+    }
+
+    private RConnection openNewConnection(String initialSetup) throws RserveException {
         RConnection rc = null;
 
         dbgLog.fine("RSERVE_USER=" + RSERVE_USER + "[default=rserve]");
@@ -140,7 +140,9 @@ public class DvnRService implements java.io.Serializable {
         // load the required libraries.
         // this needs to be done on all new connections.
 
-        rc.voidEval(librarySetup);
+        if (initialSetup != null && (!initialSetup.equals(""))) {
+            rc.voidEval(initialSetup);
+        }
 
         return rc;
 
@@ -159,27 +161,27 @@ public class DvnRService implements java.io.Serializable {
 
     
     /** *************************************************************
-     * initialize the RServe connection and load the R data file;
-     * keep the open connection.
+     * initialize the RServe connection and load the data file;
+     * keep the connection open.
      *
-     * @param sro    a DvnRJobRequest object that contains various parameters
-     * @return    a Map that contains various information about the results
-     */    
+     */
     
-    public String initializeConnection(int[][] cMatrix, String savedRworkSpace) throws DvnRServiceException {
 
+    public String initializeConnection(REXP initialData, String initialSetup, String savedRworkSpace) throws DvnRServiceException {
 
+        setInitialSetup(initialSetup);
 
         if (savedRworkSpace != null) {
             myConnection = RConnectionPool.securePooledConnection(savedRworkSpace, null, true, 0);
             RDataFileName = savedRworkSpace;
 
-        } else if (cMatrix != null) {
-            myConnection = RConnectionPool.securePooledConnection(RDataFileName, cMatrix, false, 0);
+        } else if (initialData != null) {
+            myConnection = RConnectionPool.securePooledConnection(RDataFileName, initialData, false, 0);
 
         } else {
             throw new DvnRServiceException("Initialize method called without either a matrix or remote session data file");
         }
+
 
         if (myConnection == 0) {
             throw new DvnRServiceException("failed to obtain an R connection");
@@ -195,36 +197,85 @@ public class DvnRService implements java.io.Serializable {
             }
         }
 
-        dbgLog.info("Initialize: obtained connection " + myConnection);
+        dbgLog.fine("Initialize: obtained connection " + myConnection);
 
         return RDataFileName;
 
     }
 
+    //  Creates a new connection with an integer matrix as the data frame:
 
-  
-    /** *************************************************************
-     * Execute an R-based dvn analysis request on a Graph object
-     * using an open connection created during the Initialize call. 
-     *
-     */
+    public String initializeConnectionWithIntegerDataframe(int[][] cMatrix, String initialSetup, String savedRworkSpace) throws DvnRServiceException {
+        RList rowVectorsList = new RList();
 
-    // (for now the function simply returns the output of the R function,
-    // as string; it should probably return the actual vector -- will
-    // change this once I figure out what it is the function on the R
-    // side is actually supposed to return -- L.A.)
-    
-    public int[] executeLabelling(String savedRworkSpace, String labellingFunction, int n, int[] clustVector) throws DvnRServiceException {
+        REXP matrixData = null;
 
-        // set the return object
+        for (int j = 0; j < cMatrix[0].length; j++) {
+            int[] column = new int[cMatrix.length];
 
-        int[] resultVector = new int[n];
-
-        if (clustVector == null) {
-            throw new DvnRServiceException("execute method called with a NULL cluster vector.");
+            for (int i = 0; i < cMatrix.length; i++) {
+                column[i] = cMatrix[i][j];
+            }
+            REXPInteger rowVector = new REXPInteger(column);
+            rowVectorsList.add(rowVector);
 
         }
 
+        try {
+            matrixData = org.rosuda.REngine.REXP.createDataFrame(rowVectorsList);
+        } catch (REXPMismatchException rmme) {
+            throw new DvnRServiceException ("Data type mismatch: "+rmme.getMessage());
+        }
+
+        
+        return initializeConnection(matrixData, initialSetup, savedRworkSpace);
+    }
+
+    // New connection with a matrix of Doubles as the data frame:
+
+    public String initializeConnectionWithDoubleDataframe(double[][] cMatrix, String initialSetup, String savedRworkSpace) throws DvnRServiceException {
+        RList rowVectorsList = new RList();
+
+        REXP matrixData = null;
+
+        for (int j = 0; j < cMatrix[0].length; j++) {
+            double[] column = new double[cMatrix.length];
+
+            for (int i = 0; i < cMatrix.length; i++) {
+                column[i] = cMatrix[i][j];
+            }
+            REXPDouble rowVector = new REXPDouble(column);
+            rowVectorsList.add(rowVector);
+
+        }
+
+        try {
+            matrixData = org.rosuda.REngine.REXP.createDataFrame(rowVectorsList);
+        } catch (REXPMismatchException rmme) {
+            throw new DvnRServiceException ("Data type mismatch: "+rmme.getMessage());
+        }
+
+
+        return initializeConnection(matrixData, initialSetup, savedRworkSpace);
+    }
+
+    // We may need to add more versions of the "initialize function above, to
+    // support creating original data frames of different types;
+    // Will be trivial to do.
+
+
+    /** *************************************************************
+     * Execute an R command.
+     * Returns a generic R expression, that needs to be properly interpreted
+     * by the application code.
+     *
+     */
+
+    public REXP executeRCommand(String savedRworkSpace, String rCommand) throws DvnRServiceException {
+
+        // set the return object
+
+        REXP resultExpression;
 
         if (savedRworkSpace == null) {
             throw new DvnRServiceException("execute method called with a null " 
@@ -243,16 +294,11 @@ public class DvnRService implements java.io.Serializable {
 
 
             myConnection = RConnectionPool.securePooledConnection(savedRworkSpace, null, true, myConnection);
-            dbgLog.info("Execute: obtained connection " + myConnection);
+            dbgLog.fine("Execute: obtained connection " + myConnection);
 
             drc = RConnectionPool.getConnection(myConnection);
 
-            REXPInteger RclustVector = new REXPInteger(clustVector);
-            drc.Rcon.assign ("clust", RclustVector);
-
-
-            String labellingCommand = labellingFunction+"("+n+", clust)";
-            resultVector = safeEval(drc.Rcon, labellingCommand).asIntegers();
+            resultExpression = safeEval(drc.Rcon, rCommand);
 
 
             if (!savedRworkSpace.equals(drc.getWorkSpace())) {
@@ -267,8 +313,8 @@ public class DvnRService implements java.io.Serializable {
 
         } catch (RserveException rse) {
 
-            dbgLog.info("rserve exception message: " + rse.getMessage());
-            dbgLog.info("rserve exception description: " + rse.getRequestErrorDescription());
+            dbgLog.fine("rserve exception message: " + rse.getMessage());
+            dbgLog.fine("rserve exception description: " + rse.getRequestErrorDescription());
             throw new DvnRServiceException("RServe failure: " + rse.getMessage());
 
         } catch (REXPMismatchException mme) {
@@ -289,9 +335,148 @@ public class DvnRService implements java.io.Serializable {
             }
         }
 
-        return resultVector;
+        return resultExpression;
 
     }
+
+   /** *************************************************************
+     * Creates an R integer vector value and assigns it to an
+     * R expression in an ongoing R session:
+     *
+     */
+
+    public void assignRIntegerVector (String savedRworkSpace, String vectorName, int[] intVector) throws DvnRServiceException {
+
+        if (intVector == null) {
+            throw new DvnRServiceException("Assign method called with a NULL integer vector.");
+
+        }
+
+
+        if (savedRworkSpace == null) {
+            throw new DvnRServiceException("Assign method called with a null "
+                    + "session Id (i.e. file name of the saved R work space).");
+        }
+
+        DvnRConnection drc = null;
+
+
+        try {
+            // let's see if we have a connection that we can use:
+
+            if (myConnection == 0) {
+                throw new DvnRServiceException("assignment method called without securing a connection first");
+            }
+
+
+            myConnection = RConnectionPool.securePooledConnection(savedRworkSpace, null, true, myConnection);
+            dbgLog.fine("Execute: obtained connection " + myConnection);
+
+            drc = RConnectionPool.getConnection(myConnection);
+
+            REXPInteger RintVector = new REXPInteger(intVector);
+            drc.Rcon.assign (vectorName, RintVector);
+
+            if (!savedRworkSpace.equals(drc.getWorkSpace())) {
+                throw new DvnRServiceException("Could not execute query: connection lost");
+            }
+
+        } catch (DvnRServiceException dre) {
+            throw dre;
+
+        } catch (RserveException rse) {
+
+            dbgLog.fine("rserve exception message: " + rse.getMessage());
+            dbgLog.fine("rserve exception description: " + rse.getRequestErrorDescription());
+            throw new DvnRServiceException("RServe failure: " + rse.getMessage());
+
+        } catch (Exception ex) {
+
+            throw new DvnRServiceException("Execute: unknown exception occured: " + ex.getMessage());
+
+        } finally {
+            if (drc != null) {
+                // set the connection time stamp:
+                Date now = new Date();
+                drc.setLastQueryTime(now.getTime());
+
+                drc.unlockConnection();
+            }
+        }
+    }
+
+
+
+   /** *************************************************************
+     * Creates an R string vector value and assigns it to an
+     * R expression in an ongoing R session:
+     *
+     */
+
+    public void assignStringVector (String savedRworkSpace, String vectorName, String[] stringVector) throws DvnRServiceException {
+
+        if (stringVector == null) {
+            throw new DvnRServiceException("Assign method called with a NULL string vector.");
+
+        }
+
+
+        if (savedRworkSpace == null) {
+            throw new DvnRServiceException("execute method called with a null "
+                    + "session Id (i.e. file name of the saved R work space).");
+        }
+
+        DvnRConnection drc = null;
+
+
+        try {
+            // let's see if we have a connection that we can use:
+
+            if (myConnection == 0) {
+                throw new DvnRServiceException("assignment method called without securing a connection first");
+            }
+
+
+            myConnection = RConnectionPool.securePooledConnection(savedRworkSpace, null, true, myConnection);
+            dbgLog.fine("Execute: obtained connection " + myConnection);
+
+            drc = RConnectionPool.getConnection(myConnection);
+
+            REXPString RstringVector = new REXPString(stringVector);
+            drc.Rcon.assign (vectorName, RstringVector);
+
+            if (!savedRworkSpace.equals(drc.getWorkSpace())) {
+                throw new DvnRServiceException("Could not execute query: connection lost");
+            }
+
+        } catch (DvnRServiceException dre) {
+            throw dre;
+
+        } catch (RserveException rse) {
+
+            dbgLog.fine("rserve exception message: " + rse.getMessage());
+            dbgLog.fine("rserve exception description: " + rse.getRequestErrorDescription());
+            throw new DvnRServiceException("RServe failure: " + rse.getMessage());
+
+        } catch (Exception ex) {
+
+            throw new DvnRServiceException("Execute: unknown exception occured: " + ex.getMessage());
+
+        } finally {
+            if (drc != null) {
+                // set the connection time stamp:
+                Date now = new Date();
+                drc.setLastQueryTime(now.getTime());
+
+                drc.unlockConnection();
+            }
+        }
+    }
+
+
+    // We will likely need more assignment functions for other data types.
+    // Will be trivial to add.
+
 
 
     // -- utilitiy methods
@@ -360,7 +545,9 @@ public class DvnRService implements java.io.Serializable {
          * 
          * @return index of the pooled connection secured and locked for the requestor.
          */
-        public int securePooledConnection(String workSpaceRemote, int[][] cMatrix, boolean reestablishConnection, int existingConnection) throws DvnRServiceException {
+
+
+         public int securePooledConnection(String workSpaceRemote, REXP initialData, boolean reestablishConnection, int existingConnection) throws DvnRServiceException {
 
             DvnRConnection drc = null;
 
@@ -389,24 +576,7 @@ public class DvnRService implements java.io.Serializable {
                     // we need to first create an R matrix and load it in the
                     // remote workspace.
 
-                    RList rowVectorsList = new RList();
-
-
-                    for ( int j = 0; j < cMatrix[0].length; j++ ) {
-                        int[] column = new int[cMatrix.length];
-                        
-                        for ( int i = 0; i < cMatrix.length; i++ ) {
-                            column[i] = cMatrix[i][j];
-                        }
-                        REXPInteger rowVector = new REXPInteger(column);
-                        rowVectorsList.add(rowVector);
-
-                    }
-
-                    //REXPGenericVector matrixData = new REXPGenericVector (rowVectorsList);
-                    REXP matrixData = org.rosuda.REngine.REXP.createDataFrame(rowVectorsList);
-
-                    drc.Rcon.assign ("data", matrixData);
+                    drc.Rcon.assign ("data", initialData);
 
                     drc.setWorkSpace(workSpaceRemote);
 
@@ -499,7 +669,7 @@ public class DvnRService implements java.io.Serializable {
                         drc = RConnectionStack[i];
 
                         if (drc.Rcon == null) {
-                            RConnectionStack[i].Rcon = openNewConnection();
+                            RConnectionStack[i].Rcon = openNewConnection(getInitialSetup());
                         }
 
                         //drc = RConnectionStack[i];
@@ -552,7 +722,7 @@ public class DvnRService implements java.io.Serializable {
 
                         drc.Rcon.close();
 
-                        drc.Rcon = openNewConnection();
+                        drc.Rcon = openNewConnection(getInitialSetup());
                         retConnectionNumber = mostIdleConnection;
                     } else {
                         // all connections are busy AND locked.
@@ -639,10 +809,48 @@ public class DvnRService implements java.io.Serializable {
         int[][] matrix = {{1,2,3},{4,5,6},{7,8,9}};
         int[] testClustVector = {0,0,0};
 
-        try {
-            String RsessionId = rs.initializeConnection(matrix, null);
 
-            int[] labelledVector = rs.executeLabelling(RsessionId, "meansLabel", 3, testClustVector);
+        // the initial library setup:
+        // these are semicolon-separated R commands that need to be executed
+        // once, when a new connection is created.
+        // Usually this will be a list of libraries and source files.
+
+        String initialLibrarySetup = "source('/usr/lib64/R/share/dvn/Labelling.R'); "
+                + "library(MASS); "
+                + "library(randomForest);";
+
+        try {
+            // Initialize R connection,
+            // with the integer matrix as the main data frame.
+            //
+            // !This only needs to be done once!
+
+            String RsessionId = rs.initializeConnectionWithIntegerDataframe(matrix, initialLibrarySetup, null);
+
+
+            // Create an R integer vector, to be used as a parameter by the
+            // next R function:
+
+            rs.assignRIntegerVector(RsessionId, "clust", testClustVector);
+
+            // Execute an R command:
+
+            // (the function below has 2 parameters; note that the second parameter
+            // is a vector variable that was created in the previous step).
+
+            String rCommand = "meansLabel(3, clust)";
+
+            // We expect the command to produce a vector of integers as the
+            // output, hence we use ".asIntegers()" below:
+
+            int[] labelledVector = rs.executeRCommand(RsessionId, rCommand).asIntegers();
+
+            String[] stringVector = rs.executeRCommand(RsessionId, rCommand).asStrings();
+
+            // If you need to execute an R command that returns a character string,
+            // use .asString();
+            // a vector of character strings -- .asStrings()
+            // ... etc.
 
             if (labelledVector != null) {
                 for (int i = 0; i < labelledVector.length; i++) {
@@ -654,6 +862,9 @@ public class DvnRService implements java.io.Serializable {
         } catch (DvnRServiceException drse) {
             System.out.println("Exception caught:");
             System.out.println(drse.getMessage());
+        } catch (REXPMismatchException rmme) {
+            System.out.println("Exception: the return result is not a vector of Integers!");
+            System.out.println(rmme.getMessage());
         }
 
     }

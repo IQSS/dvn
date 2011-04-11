@@ -152,6 +152,14 @@
                                         </tr>
                                         <tr>
                                             <td class="dvnOptionsTableOption">
+                                                <ice:outputLink id="hyperlink16" value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/DefaultSortOrderPage.xhtml">
+                                                    <ice:outputText id="hyperlink16Text" value="#{bundlePageInfo.defaultStudySortOrderTitle}"/>
+                                                </ice:outputLink>
+                                            </td>
+                                            <td><ice:outputText styleClass="dvnOptionsTableNote" value="#{bundlePageInfo.defaultStudySortOrderText}"/></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="dvnOptionsTableOption">
                                                 <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/admin/PromotionalLinkSearchBoxPage.xhtml">
                                                     <ice:outputText value="#{bundlePageInfo.codePromotionalTitle}"/>
                                                 </ice:outputLink>

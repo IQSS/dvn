@@ -749,6 +749,14 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
                     "and s.id in (" + studyIds + ") " +
                     "ORDER BY sv.releasetime desc";
 
+        } else if (orderBy.equals("productionDate")) {
+            queryStr = "SELECT s.id " +
+                    "from metadata m, studyversion sv, study s " +
+                    "where sv.metadata_id = m.id " +
+                    "and s.id = sv.study_id " +
+                    "and sv.versionstate = '" + StudyVersion.VersionState.RELEASED + "'" +
+                    "and s.id in (" + studyIds + ") " +
+                    "ORDER BY m.productionDate desc";
         } else if (orderBy.equals("downloadCount")) {
             // this query runs fine in Postgres, but will need to be tested with other DBs if they are used
             queryStr = "select s.id " +

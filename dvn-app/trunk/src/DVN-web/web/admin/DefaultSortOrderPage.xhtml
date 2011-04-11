@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:ice="http://www.icesoft.com/icefaces/component">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+</head>
+<body>
+  <ui:composition template="/template.xhtml">
+    <ui:param name="pageTitle" value="#{bundlePageInfo.defaultStudySortOrderTitle} - #{VDCRequest.dataversePageTitle}"/>
+    <ui:define name="body">
+      <ice:form id="form1">
+        <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+        <div class="dvn_section">
+          <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
+            <div class="dvnMsgBlockContainer">
+              <ice:outputText value="#{bundlePageInfo.defaultStudySortOrderHelp}" escape="false"/>
+            </div>
+          </div>
+          <div class="dvn_sectionTitle">
+            <ice:outputText value="#{bundlePageInfo.defaultStudySortOrderTitle}"/>
+          </div>
+          <div jsfc="ice:panelGroup" id="groupPanel5" >
+            <ice:selectOneMenu id="dropdown2" value="#{DefaultSortOrderPage.defaultSortOrder}">
+               <f:selectItem itemLabel="Sort By:" itemValue=""/>
+               <f:selectItem itemLabel="- Global ID" itemValue="globalId"/>
+               <f:selectItem itemLabel="- Title" itemValue="title"/>
+               <f:selectItem itemLabel="- Last Released" itemValue="releaseTime"/>
+               <f:selectItem itemLabel="- Production Date" itemValue="productionDate"/>
+               <f:selectItem itemLabel="- Download Count" itemValue="downloadCount"/>
+            </ice:selectOneMenu>
+          </div>
+            <ice:commandButton id="saveButton" value="Save"  action="#{DefaultSortOrderPage.save}"/>
+            <ice:commandButton id="cancelButton" value="Cancel" immediate="true"  action="#{DefaultSortOrderPage.cancel}"/>
+        </div>
+      </ice:form>
+    </ui:define>
+  </ui:composition>
+</body>
+</html>

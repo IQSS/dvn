@@ -73,6 +73,7 @@
                   <ice:selectOneMenu binding="#{EditExportSchedulePage.exportPeriod}" validator="#{EditExportSchedulePage.validateExportPeriod}" id="exportPeriod" value="#{EditExportSchedulePage.exportSchedulePeriod}"  onchange='updateExportInput();' >
 <!--                  <ice:selectOneMenu id="exportPeriod" value="#{EditExportSchedulePage.exportPeriod}" onchange='updateExportInput();'> -->
                     <f:selectItem itemValue="notSelected" itemLabel="Not Selected"/>
+                    <f:selectItem itemValue="none" itemLabel="None"/>
                     <f:selectItem itemValue="daily" itemLabel="Export daily"/>
                     <f:selectItem itemValue="weekly" itemLabel="Export weekly"/>
                   </ice:selectOneMenu>

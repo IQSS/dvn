@@ -44,7 +44,7 @@ import javax.persistence.*;
 public class VDCNetwork implements java.io.Serializable  {
     public static final String EXPORT_PERIOD_DAILY="daily";
     public static final String EXPORT_PERIOD_WEEKLY="weekly";
-
+    public static final String EXPORT_PERIOD_NONE="none";
    
     /** Creates a new instance of VDCNetwork */
     public VDCNetwork() {

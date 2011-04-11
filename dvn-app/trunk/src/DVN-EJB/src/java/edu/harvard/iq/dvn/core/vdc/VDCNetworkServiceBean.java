@@ -155,6 +155,11 @@ public class VDCNetworkServiceBean implements VDCNetworkServiceLocal {
               //   initExpiration.set(Calendar.MINUTE,15);  //REMOVE!!!!!
                  logger.log(Level.INFO, "Scheduling daily export");  
 
+            }  else if (vdcNetwork.getExportPeriod().equals(vdcNetwork.EXPORT_PERIOD_NONE)) {
+
+                logger.log(Level.INFO, "Unscheduling export");
+                return;
+
             } else {
                 logger.log(Level.WARNING, "Could not set timer for export, unknown schedule period: "+ vdcNetwork.getExportPeriod());
                 return;

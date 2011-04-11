@@ -248,7 +248,10 @@ public class HomePage extends VDCBaseBean implements Serializable {
             if (newValue.equals("All")) {
                 populateVDCUIList(false);
             } else {
-                this.vdcUIList.getPaginator().gotoFirstPage();
+                if (!(this.vdcUIList.getPaginator() == null)){
+                    this.vdcUIList.getPaginator().gotoFirstPage();
+                }
+                
                 hiddenAlphaCharacter.setValue(newValue);
                 populateVDCUIList(true);
 
@@ -259,10 +262,15 @@ public class HomePage extends VDCBaseBean implements Serializable {
     public void changeFilterType(ValueChangeEvent event) {
         String newValue = (String)event.getNewValue();
         if (newValue != null && newValue.equals("alphabetic")) {
-            this.vdcUIList.getPaginator().gotoFirstPage();
+            if (!(this.vdcUIList.getPaginator() == null)){
+                this.vdcUIList.getPaginator().gotoFirstPage();
+            }
             isAlphaSort = true;           
             populateVDCUIList(true);
         } else if (newValue != null && newValue.equals("all")) {
+            if (!(this.vdcUIList.getPaginator() == null)){
+                this.vdcUIList.getPaginator().gotoFirstPage();
+            }
             isAlphaSort = false;
             populateVDCUIList(false);
         } else {

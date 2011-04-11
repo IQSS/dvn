@@ -477,6 +477,17 @@ public class DvnRService implements java.io.Serializable {
     // We will likely need more assignment functions for other data types.
     // Will be trivial to add.
 
+    /** *************************************************************
+     * close RServe connection;
+     */
+
+    public void closeConnection(String savedRworkSpace) {
+
+        if (myConnection != 0) {
+            RConnectionPool.closePooledConnection(savedRworkSpace, myConnection);
+        }
+    }
+
 
 
     // -- utilitiy methods
@@ -668,11 +679,7 @@ public class DvnRService implements java.io.Serializable {
                         RConnectionStack[i] = new DvnRConnection();
                         drc = RConnectionStack[i];
 
-                        if (drc.Rcon == null) {
-                            RConnectionStack[i].Rcon = openNewConnection(getInitialSetup());
-                        }
-
-                        //drc = RConnectionStack[i];
+                        RConnectionStack[i].Rcon = openNewConnection(getInitialSetup());
 
 
                         retConnectionNumber = i + 1;
@@ -757,7 +764,37 @@ public class DvnRService implements java.io.Serializable {
 
             return retConnectionNumber;
         }
-    }
+
+        public synchronized void closePooledConnection (String workSpaceRemote, int existingConnection) {
+
+            if (existingConnection > 0) {
+                DvnRConnection drc = RConnectionStack[existingConnection - 1];
+
+                // check if the connection exists, if it's alive, and if it's still ours
+
+                if (drc != null) {
+                    String wspace = drc.getWorkSpace();
+
+                    if (wspace != null) {
+                        if (wspace.equals(workSpaceRemote)) {
+
+                            // close it (if alive):
+                            if (drc.Rcon.isConnected()) {
+                                drc.Rcon.close();
+                            }
+
+                            // free the space on the stack:
+                            RConnectionStack[existingConnection - 1] = null;
+                        }
+                    }
+                }
+            }
+
+            // And if any of the conditions above are not true, it means that
+            // the connection has already been closed or recycled.
+
+        }
+    } // end of DvnRConnectionPool class
 
     // And the individual R connection class: 
 
@@ -859,6 +896,9 @@ public class DvnRService implements java.io.Serializable {
             } else {
                 System.out.println("NULL response from the labelling command");
             }
+
+            rs.closeConnection(RsessionId);
+            
         } catch (DvnRServiceException drse) {
             System.out.println("Exception caught:");
             System.out.println(drse.getMessage());

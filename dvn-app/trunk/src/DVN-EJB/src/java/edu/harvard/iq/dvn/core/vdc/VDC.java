@@ -361,6 +361,17 @@ public class VDC implements java.io.Serializable  {
     public void setLogo(String logo) {
         this.logo = logo;
     }
+
+    private String defaultSortOrder;
+
+    public String getDefaultSortOrder() {
+        return defaultSortOrder;
+    }
+
+    public void setDefaultSortOrder(String defaultSortOrder) {
+        this.defaultSortOrder = defaultSortOrder;
+    }
+
     
     /**
      * Holds value of property contactEmail.

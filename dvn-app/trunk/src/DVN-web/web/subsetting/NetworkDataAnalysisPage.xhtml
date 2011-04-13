@@ -14,7 +14,347 @@
         <ui:composition template="/template.xhtml">
             <ui:param name="pageTitle" value="Network Data Analysis - #{VDCRequest.dataversePageTitle}"/>
             <ui:define name="body">
-            Network Data Analysis is currently unavailable. Please contact us dvn_support (at) help.hmdc.harvard.edu if you would like to know when it is available again. We apologize for any inconvenience.
+                <script type="text/javascript">
+      // <![CDATA[
+      function addToManualQuery() {
+          attribute = document.getElementById("form1:attribute").value;
+          operator = document.getElementById("form1:operator").value;
+          value = document.getElementById("form1:value").value;
+          isLikeOperator = false;
+          if (attribute == "" || operator == "" || value == "") {
+              alert("You must select an attribute, an operator and a value to add to the query workspace.");
+              return;
+          }
+
+          if (operator == "LIKE") {
+            isLikeOperator = true;
+            value = "%" + value + "%" ;
+          } else if (operator == "LIKE ") {
+            isLikeOperator = true;
+            value = value + "%" ;
+          }
+          // handle case insensitve checkbox
+          isCaseInsensitive = document.getElementById("form1:caseInsensitive").checked;
+          if (isCaseInsensitive && !isLikeOperator) {
+            attribute = "upper(" + attribute + ")";
+            value = value.toUpperCase();
+          }
+
+          queryWorkspace = document.getElementById("form1:queryWorkspace");
+          if (queryWorkspace.value != "") {
+              logicalOperatorRadioCount = 0;
+              while ( !document.getElementById("form1:queryLogicalOperator:_" + logicalOperatorRadioCount).checked ) {
+                logicalOperatorRadioCount++;
+              }
+              logicalOperator = document.getElementById("form1:queryLogicalOperator:_" + logicalOperatorRadioCount).value;
+              queryWorkspace.value += " " + logicalOperator + " ";
+          }
+          queryWorkspace.value += attribute + " " + operator + " \"" + value + "\"";
+      }
+
+      function confirmAction(action) {
+          numberOfEdges = document.getElementById("lastEventEdges").value;
+
+          if (action == "add_neighborhood") {
+              estimatedSeconds = numberOfEdges / 50;
+          } else if (action == "add_pagerank") {
+              estimatedSeconds = (numberOfEdges / 250) - 10;
+          } else {
+              return true;
+          }
+
+          if (estimatedSeconds >= 30) {
+              roundedMinutes = Math.round(estimatedSeconds/60);
+              return confirm ( "The operation you have selected is estimated to take about " + roundedMinutes + " minute" + (roundedMinutes != 1 ? "s" : "") + ". Continue?" );
+          }
+
+          return true;
+      }
+
+      function confirmDownload(downloadbuttonId) {
+          numberOfVertices = document.getElementById("lastEventVertices").value;
+          downloadButton = document.getElementById(downloadbuttonId);
+          showWarning = false;
+
+          if (downloadbuttonId == "form1:downloadTabularFiles") {
+              showWarning = numberOfVertices >= 2250;
+          } else if (downloadbuttonId == "form1:downloadNetworkFile") {
+              showWarning = numberOfVertices >= 1000;
+          }
+
+          if ( !showWarning || confirm ( "You have selected a large download to process. This could take several minutes. Continue?" ) ) {
+              downloadButton.click();
+          }
+
+      }
+
+      // ]]>
+                </script>
+                <f:loadBundle basename="BundleAnalysis" var="bundleAnalysis"/>
+                <ice:form id="form1">
+                    <input type="hidden" name="fileId" value="${param.fileId}"/>
+                    <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+                    <div class="dvn_section">
+                        <div class="dvnstudytitleblock">
+                            <div class="dvnstudyadminboxfloat dvn_right">
+                                <ice:outputLink
+                                    rendered="#{NetworkDataAnalysisPage.versionNumber==null}"
+                                    value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{NetworkDataAnalysisPage.file.study.id}&amp;tab=files#{VDCRequest.studyListingIndexAsParameter}">
+                                <ice:outputText
+                                    value="Back to Study"/>
+                                </ice:outputLink>
+                                <ice:outputLink
+                                    rendered="#{NetworkDataAnalysisPage.versionNumber!=null}"
+                                    value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?studyId=#{NetworkDataAnalysisPage.file.study.id}&amp;tab=files&amp;versionNumber=#{NetworkDataAnalysisPage.versionNumber}#{VDCRequest.studyListingIndexAsParameter}">
+                                <ice:outputText
+                                    value="Back to Study"/>
+                                </ice:outputLink>
+                            </div>
+                            <ui:include src="/study/StudyTitleFragment.xhtml">
+                                <ui:param name="studyUI" value="#{NetworkDataAnalysisPage.studyUI}"/>
+                                <ui:param name="displayReleaseLink" value="false"/>
+                                <ui:param name="displayVersionInfo" value="true"/>
+                                <ui:param name="displayStatusBox" value="true"/>
+                                <ui:param name="displayFileName" value="#{NetworkDataAnalysisPage.file.fileName}"/>
+                            </ui:include>
+                        </div>
+                        <div class="dvn_sectionBoxNoBorders">
+                            <div class="dvnNetworkDataBlock">
+                                <ice:selectOneRadio id="analysisActions" layout="spread" value="#{NetworkDataAnalysisPage.actionType}" partialSubmit="true">
+                                    <f:selectItem itemValue="manualQuery" itemLabel="Manual Query"/>
+                                    <f:selectItem itemValue="automaticQuery" itemLabel="Automatic Query"/>
+                                    <f:selectItem itemValue="networkMeasure" itemLabel="Network Measure"/>
+                                </ice:selectOneRadio>
+                                <ice:panelGrid id="groupPanel1" styleClass="dvnNetDataAnlsSubTblWrap" columns="1" cellpadding="0" cellspacing="0" width="100%">
+                                    <ice:panelGroup styleClass="vdcHelpText dvn_spacing">
+                                        <ice:graphicImage value="/resources/images/icon_info.gif" alt="Information" title="Information"/>
+                                        <ice:outputText value="Write a Manual Query to subset this network data by filtering on vertex or edge attributes." escape="false"/>
+                                        <ice:inputHidden id="manualQueryError"  binding="#{NetworkDataAnalysisPage.manualQueryError}"/>
+                                        <ice:message layout="table" for="manualQueryError" styleClass="errorMessageBlock"/>
+                                    </ice:panelGroup>
+                                    <ice:panelGrid id="groupPanel2" cellpadding="0" cellspacing="0" width="100%"
+                                                   columns="2" columnClasses="dvnNetDataAnlsCol1,dvnNetDataAnlsCol2">
+                                        <fieldset>
+                                            <ice:radio for="analysisActions" index="0"/>
+                                        </fieldset>
+                                        <ice:panelGrid id="groupPanel3" styleClass="dvnNetDataAnlsTbl" columns="3" cellpadding="0" cellspacing="0" border="0" width="100%"
+                                                       columnClasses="dvnNetDataAnlsTbl1,dvnNetDataAnlsTbl2,dvnNetDataAnlsTbl3">
+                                            <fieldset>
+                                                <label for="attributeSet">Attribute Set</label><br/>
+                                                <ice:selectOneMenu disabled="#{!NetworkDataAnalysisPage.manualQueryAction}" id="attributeSet" name="attributeSet" value="#{NetworkDataAnalysisPage.manualQueryType}" partialSubmit="true">
+                                                    <f:selectItem id="item1" itemLabel="Vertex" itemValue="vertex" />
+                                                    <f:selectItem id="item2" itemLabel="Edge" itemValue="edge" />
+                                                </ice:selectOneMenu>
+                                            </fieldset>
+                                            <fieldset>
+                                                <label for="values">Query Workspace</label><br/>
+                                                <ice:inputTextarea disabled="#{!NetworkDataAnalysisPage.manualQueryAction}" cols="40" rows="5" id="queryWorkspace" styleClass="dvnTextareaAuto" value="#{NetworkDataAnalysisPage.manualQuery}"/>
+                                                <br/>
+                                                <ice:selectBooleanCheckbox disabled="#{!NetworkDataAnalysisPage.manualQueryAction}" id="eliminate" value="#{NetworkDataAnalysisPage.eliminateDisconnectedVertices}" /><label for="eliminate">Eliminate disconnected vertices</label>
+                                            </fieldset>
+                                            <fieldset>
+                                                <ice:commandButton disabled="#{!NetworkDataAnalysisPage.manualQueryAction}" type="submit" value="Run" action="#{NetworkDataAnalysisPage.manualQuery_action}" />
+                                            </fieldset>
+                                        </ice:panelGrid>
+                                        <div>
+                                            &#160;
+                                        </div>
+                                        <ice:panelGrid id="groupPanel4" styleClass="dvnNetDataAnlsQryBldrWrap" cellpadding="0" cellspacing="0" width="95%"
+                                                       columns="1" columnClasses="dvnNetDataAnlsQryBldrWrapCol1">
+                                            <div class="dvnNetDataAnlsAddQryInfoTitle">Manual Query Builder</div>
+                                            <ice:panelGrid id="groupPanel5" styleClass="dvnNetDataAnlsSubTblWrap" columns="1" cellpadding="0" cellspacing="0" border="0">
+                                                <ice:panelGroup styleClass="vdcHelpText dvn_spacing">
+                                                    <ice:graphicImage value="/resources/images/icon_info.gif" alt="Information" title="Information"/>
+                                                    <ice:outputText value="Use these attribute and operator selectors to build a query string in the Query Workspace. Add parentheses by hand to the Query Workspace, to group logic operators, in order to get the intended results." escape="false"/>
+                                                </ice:panelGroup>
+                                                <ice:selectOneRadio disabled="#{!NetworkDataAnalysisPage.manualQueryAction}" id="queryLogicalOperator" layout="spread" value="and">
+                                                    <f:selectItem  itemValue="and" itemLabel="And"/>
+                                                    <f:selectItem  itemValue="or" itemLabel="Or"/>
+                                                </ice:selectOneRadio>
+                                                <ice:panelGrid id="groupPanel6" columns="" cellpadding="0" cellspacing="0" border="0">
+                                                    <fieldset>
+                                                        <ice:radio for="queryLogicalOperator" index="0"/>
+                                                    </fieldset>
+                                                    <fieldset>
+                                                        <ice:radio for="queryLogicalOperator" index="1"/>
+                                                    </fieldset>
+                                                </ice:panelGrid>
+                                                <ice:panelGrid id="groupPanel7" columns="3" cellpadding="0" cellspacing="0" border="0" width="100%">
+                                                    <fieldset>
+                                                        <label for="attribute">Attributes</label><br/>
+                                                        <ice:selectOneListbox disabled="#{!NetworkDataAnalysisPage.manualQueryAction}" id="attribute" size="5">
+                                                            <f:selectItems value="#{NetworkDataAnalysisPage.attributeSelectItems}"/>
+                                                        </ice:selectOneListbox>
+                                                    </fieldset>
+                                                    <fieldset>
+                                                        <label for="operator">Operators</label><br/>
+                                                        <ice:selectOneMenu disabled="#{!NetworkDataAnalysisPage.manualQueryAction}" id="operator" name="operators" value="">
+
+                                                            <f:selectItem id="item3" itemLabel="Contains" itemValue="LIKE" />
+                                                            <f:selectItem id="item3" itemLabel="Starts with" itemValue="LIKE " />
+                                                            <f:selectItem id="item3" itemLabel="Equal to, =" itemValue="=" />
+                                                            <f:selectItem id="item4" itemLabel="Not equal to, !=" itemValue="!=" />
+                                                            <f:selectItem id="item1" itemLabel="Less than, &lt;" itemValue="&lt;" />
+                                                            <f:selectItem id="item1" itemLabel="Less than or equal to, &lt;=" itemValue="&lt;=" />
+                                                            <f:selectItem id="item2" itemLabel="Greater than, &gt;" itemValue="&gt;" />
+                                                            <f:selectItem id="item2" itemLabel="Greater than or equal to, &gt;=" itemValue="&gt;=" />
+                                                        </ice:selectOneMenu>
+                                                    </fieldset>
+                                                    <fieldset>
+                                                        <label for="value">Values</label><br/>
+                                                        <ice:inputText disabled="#{!NetworkDataAnalysisPage.manualQueryAction}" id="value" />
+                                                        <div>
+                                                            <ice:selectBooleanCheckbox disabled="#{!NetworkDataAnalysisPage.manualQueryAction}" id="caseInsensitive"/><label for="caseInsenstive">Case Insensitive</label>
+                                                        </div>
+                                                    </fieldset>
+                                                    <div>
+                                                        &#160;
+                                                    </div>
+                                                    <div>
+                                                        &#160;
+                                                    </div>
+                                                    <fieldset class="dvnNetDataAnlsQryBldrAddButton">
+                                                        <ice:commandButton value="Add to Query" disabled="#{!NetworkDataAnalysisPage.manualQueryAction}" onclick="addToManualQuery();return false;" />
+                                                    </fieldset>
+                                                </ice:panelGrid>
+                                            </ice:panelGrid>
+                                        </ice:panelGrid>
+                                    </ice:panelGrid>
+                                    <hr class="dvnNetDataAnlsHrzLn" noshade="noshade" size="1"/>
+                                    <ice:panelGroup styleClass="vdcHelpText dvn_spacing">
+                                        <ice:graphicImage value="/resources/images/icon_info.gif" alt="Information" title="Information"/>
+                                        <ice:outputText value="Subset with an Automatic Query to choose parts of the network based on structural properties." escape="false"/>
+                                        <ice:inputHidden id="automaticQueryError"  binding="#{NetworkDataAnalysisPage.automaticQueryError}"/>
+                                        <ice:message layout="table" for="automaticQueryError" styleClass="errorMessageBlock"/>
+                                    </ice:panelGroup>
+                                    <ice:panelGrid id="groupPanel8" cellpadding="0" cellspacing="0" width="100%"
+                                                   columns="2" columnClasses="dvnNetDataAnlsCol1,dvnNetDataAnlsCol2">
+                                        <fieldset>
+                                            <ice:radio for="analysisActions" index="1"/>
+                                        </fieldset>
+                                        <ice:panelGrid id="groupPanel9" styleClass="dvnNetDataAnlsTbl" columns="3" cellpadding="0" cellspacing="0" border="0" width="100%"
+                                                       columnClasses="dvnNetDataAnlsTbl1,dvnNetDataAnlsTbl2,dvnNetDataAnlsTbl3">
+                                            <fieldset>
+                                                <label for="function">Function</label><br/>
+                                                <ice:selectOneMenu styleClass="automaticQuery" disabled="#{!NetworkDataAnalysisPage.automaticQueryAction}" id="function" name="function" value="#{NetworkDataAnalysisPage.automaticQueryType}">
+                                                    <f:selectItems value="#{NetworkDataAnalysisPage.automaticQuerySelectItem}"/>
+                                                </ice:selectOneMenu>
+                                            </fieldset>
+                                            <fieldset>
+                                                <label for="nth">N<span class="dvnLittleLetters">th</span> (default value = 1)</label><br/>
+                                                <ice:inputText styleClass="automaticQuery" disabled="#{!NetworkDataAnalysisPage.automaticQueryAction}" id="nth" value="#{NetworkDataAnalysisPage.automaticQueryNthValue}"/>
+                                            </fieldset>
+                                            <fieldset>
+                                                <ice:commandButton onclick="if (!confirmAction(document.getElementById('form1:function').value)) return false;"  disabled="#{!NetworkDataAnalysisPage.automaticQueryAction}" type="submit" value="Run" action="#{NetworkDataAnalysisPage.automaticQuery_action}"/>
+                                            </fieldset>
+                                        </ice:panelGrid>
+                                    </ice:panelGrid>
+                                    <hr class="dvnNetDataAnlsHrzLn" noshade="noshade" size="1"/>
+                                    <ice:panelGroup styleClass="vdcHelpText dvn_spacing">
+                                        <ice:graphicImage value="/resources/images/icon_info.gif" alt="Information" title="Information"/>
+                                        <ice:outputText value="Run a Network Measure to generate new network-based attributes for the vertices." escape="false"/>
+                                        <ice:inputHidden id="networkMeasureError"  binding="#{NetworkDataAnalysisPage.networkMeasureError}"/>
+                                        <ice:message layout="table" for="networkMeasureError" styleClass="errorMessageBlock"/>
+                                    </ice:panelGroup>
+                                    <ice:panelGrid id="groupPanel10" cellpadding="0" cellspacing="0" width="100%"
+                                                   columns="2" columnClasses="dvnNetDataAnlsCol1,dvnNetDataAnlsCol2">
+                                        <fieldset>
+                                            <ice:radio for="analysisActions" index="2"/>
+                                        </fieldset>
+                                        <ice:panelGrid id="groupPanel11" styleClass="dvnNetDataAnlsTbl" columns="3" cellpadding="0" cellspacing="0" border="0" width="100%"
+                                                       columnClasses="dvnNetDataAnlsTbl1,dvnNetDataAnlsTbl2,dvnNetDataAnlsTbl3">
+                                            <fieldset>
+                                                <label for="attributes">Attributes</label><br/>
+                                                <ice:selectOneMenu disabled="#{!NetworkDataAnalysisPage.networkMeasureAction}" id="attributes" name="attributes" value="#{NetworkDataAnalysisPage.networkMeasureType}"  partialSubmit="true" valueChangeListener="#{NetworkDataAnalysisPage.networkMeasureSelect_action}">
+                                                    <f:selectItems value="#{NetworkDataAnalysisPage.networkMeasureSelectItems}"/>
+                                                </ice:selectOneMenu>
+                                            </fieldset>
+                                            <fieldset>
+                                                <label>Parameters (default value)</label><br/>
+                                                <div class="dvnNetDataAnlsPrmtrWrp">
+                                                    <ice:dataTable id="networkMeasureParamterList" styleClass="dvnNetDataAnlsPrmtrTbl" cellpadding="0" cellspacing="0" width="100%"
+                                                                   value="#{NetworkDataAnalysisPage.networkMeasureParameterList}" var="parameter"
+                                                                   columnClasses="dvnNetDataAnlsPrmtrTblCol1,dvnNetDataAnlsPrmtrTblCol2" rowClasses="list-row-odd,list-row-even">
+                                                        <ice:column>
+                                                            <ice:outputText value="#{parameter.name}"/><ice:outputText rendered="#{parameter.defaultValue != null}" value=" (#{parameter.defaultValue})"/>
+                                                        </ice:column>
+                                                        <ice:column>
+                                                            <ice:inputText disabled="#{!NetworkDataAnalysisPage.networkMeasureAction}" value="#{parameter.value}" size="10"/>
+                                                        </ice:column>
+                                                    </ice:dataTable>
+                                                </div>
+                                            </fieldset>
+                                            <fieldset>
+                                                <ice:commandButton onclick="if (!confirmAction(document.getElementById('form1:attributes').value)) return false;" disabled="#{!NetworkDataAnalysisPage.networkMeasureAction}" type="submit" value="Run" action="#{NetworkDataAnalysisPage.networkMeasure_action}"/>
+                                            </fieldset>
+                                        </ice:panelGrid>
+                                    </ice:panelGrid>
+                                </ice:panelGrid>
+                                <div class="dvnNetDataAnlsSubTitle">Subset History</div>
+                                <ice:dataTable id="dvnNtwkDataSubsetHistory" binding="#{NetworkDataAnalysisPage.eventTable}"
+                                               styleClass="dvnNetDataAnlsSubTable" cellpadding="0" cellspacing="0" width="100%"
+                                               value="#{NetworkDataAnalysisPage.events}" var="event"
+                                               headerClass="list-header" rowClasses="list-row-odd,list-row-even"
+                                               columnClasses="dvnNtwkDataSubsetHistCol1,dvnNtwkDataSubsetHistCol2,dvnNtwkDataSubsetHistCol3,dvnNtwkDataSubsetHistCol4,dvnNtwkDataSubsetHistCol5">
+                                    <ice:column>
+                                        <f:facet name="header">
+                                            <ice:outputText value="Label"/>
+                                        </f:facet>
+                                        <ice:outputText value="#{event.label}"/>
+                                    </ice:column>
+                                    <ice:column>
+                                        <f:facet name="header">
+                                            <ice:outputText value="Attribute Set"/>
+                                        </f:facet>
+                                        <ice:outputText value="#{event.attributeSet}"/>
+                                    </ice:column>
+                                    <ice:column>
+                                        <f:facet name="header">
+                                            <ice:outputText value="Query"/>
+                                        </f:facet>
+                                        <ice:outputText value="#{event.query}"/>
+                                    </ice:column>
+                                    <ice:column>
+                                        <f:facet name="header">
+                                            <ice:outputText value="Vertices"/>
+                                        </f:facet>
+                                        <ice:outputText value="#{event.vertices}"/>
+                                    </ice:column>
+                                    <ice:column>
+                                        <f:facet name="header">
+                                            <ice:outputText value="Edges"/>
+                                        </f:facet>
+                                        <ice:outputText value="#{event.edges}"/>
+                                    </ice:column>
+                                    <ice:column>
+                                        <ice:commandButton  type="submit" value="Restart" action="#{NetworkDataAnalysisPage.restart_action}" rendered="#{NetworkDataAnalysisPage.eventTable.rowIndex == 0}"/>
+                                        <ice:commandButton  type="submit" value="Undo"  action="#{NetworkDataAnalysisPage.undo_action}" rendered="#{NetworkDataAnalysisPage.canUndo and NetworkDataAnalysisPage.eventTable.rowIndex == NetworkDataAnalysisPage.eventTable.rowCount - 1}" />
+                                    </ice:column>
+                                </ice:dataTable>
+                                <input type="hidden" id="lastEventEdges" value="#{NetworkDataAnalysisPage.lastEvent.edges}"/>
+                                <input type="hidden" id="lastEventVertices" value="#{NetworkDataAnalysisPage.lastEvent.vertices}"/>
+                                <ice:panelGrid id="groupPanel12" styleClass="dvnNetDataAnlsSubTblBtmWrp" columns="1" cellpadding="0" cellspacing="0" width="100%">
+                                    <ice:column>
+                                        <div class="dvnFormPadding dvnNetDataAnlsSubTblBtm">
+                                            <input type="button" class="dvnNetDataAnlsDnldBttn" value="Download Latest Tabular Files" onclick="confirmDownload('form1:downloadTabularFiles');"/>
+                                            <ice:outputResource label="Download Latest Tabular Files" type="button" style="display:none;"
+                                                                id="downloadTabularFiles"
+                                                                fileName="#{NetworkDataAnalysisPage.subsetFileName}" mimeType="application/zip"
+                                                                resource="#{NetworkDataAnalysisPage.subsetResourceTabular}" shared="false"/>
+
+                                            <input type="button" class="dvnNetDataAnlsDnldBttn" value="Download Latest Network File" onclick="confirmDownload('form1:downloadNetworkFile');"/>
+                                            <ice:outputResource label="Download Latest Network File" type="button" style="display:none;"
+                                                                id="downloadNetworkFile"
+                                                                fileName="#{NetworkDataAnalysisPage.subsetFileName}" mimeType="application/zip"
+                                                                resource="#{NetworkDataAnalysisPage.subsetResourceGraphML}" shared="false"/>
+                                        </div>
+                                    </ice:column>
+                                </ice:panelGrid>
+                            </div>
+                        </div>
+                    </div>
+                </ice:form>
+
             </ui:define>
         </ui:composition>
     </body>

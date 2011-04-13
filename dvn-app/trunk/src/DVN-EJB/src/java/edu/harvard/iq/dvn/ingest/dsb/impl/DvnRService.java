@@ -882,10 +882,9 @@ public class DvnRService implements java.io.Serializable {
 
             int[] labelledVector = rs.executeRCommand(RsessionId, rCommand).asIntegers();
 
-            String[] stringVector = rs.executeRCommand(RsessionId, rCommand).asStrings();
-
             // If you need to execute an R command that returns a character string,
-            // use .asString();
+            // use .asString():
+            //String[] stringVector = rs.executeRCommand(RsessionId, rCommand).asStrings();
             // a vector of character strings -- .asStrings()
             // ... etc.
 

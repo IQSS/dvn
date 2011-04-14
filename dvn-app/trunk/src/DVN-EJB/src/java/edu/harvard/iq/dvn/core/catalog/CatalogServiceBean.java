@@ -52,6 +52,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -330,9 +331,15 @@ public class CatalogServiceBean implements CatalogServiceLocal {
     }
 
     private String getRecord(Study study, String metadataPrefix, String set) {
+
+        DateFormat gmtFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        TimeZone gmtTime = TimeZone.getTimeZone("GMT");
+        gmtFormat.setTimeZone(gmtTime);
+
         String identifier = "<identifier>" + study.getGlobalId() + "</identifier>";
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        String dateStamp = "<datestamp>"+sdf.format(study.getLastExportTime())+"</datestamp>";
+        //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'"); --getting UTC now.
+
+        String dateStamp = "<datestamp>"+gmtFormat.format(study.getLastExportTime())+"</datestamp>";
         String setSpec = set != null ? "<setSpec>"+set+"</setSpec>" : "";
 //        Date lastUpdateTime = study.getLastUpdateTime();
         File studyFileDir = FileUtil.getStudyFileDir(study);

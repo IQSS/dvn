@@ -49,6 +49,7 @@ import com.icesoft.faces.component.ext.HtmlInputText;
 import edu.harvard.iq.dvn.core.admin.VDCRole;
 import edu.harvard.iq.dvn.core.mail.MailServiceLocal;
 import edu.harvard.iq.dvn.core.util.PropertyUtil;
+import edu.harvard.iq.dvn.core.vdc.VDCCollection;
 import edu.harvard.iq.dvn.core.vdc.VDCGroup;
 import edu.harvard.iq.dvn.core.web.push.beans.NetworkStatsBean;
 import java.util.logging.Logger;
@@ -566,21 +567,15 @@ public class PrivilegedUsersPage extends VDCBaseBean implements java.io.Serializ
         if (getVDCRequestBean().getVdcNetwork().isRequireDVstudiesforrelease() == false || !vdc.isRestricted()){
            return true;
         }
-        else {
-           return (vdc.getNumberReleasedStudies() > 0 || vdc.isHarvestingDv() ||  vdc.getOwnedCollections().size() > 1
-                   ||  vdc.getLinkedCollections().size() > 0 || vdc.getRootCollection().getStudies().size() > 0);
-        }
+        return hasStudies(vdc);
     }
 
 
     public boolean isReleasable(){
         if (getVDCRequestBean().getVdcNetwork().isRequireDVstudiesforrelease() == false){
            return true; 
-        }
-        else {      
-           return (vdc.getNumberReleasedStudies() > 0 || vdc.isHarvestingDv() ||  vdc.getOwnedCollections().size() > 1
-                   ||  vdc.getLinkedCollections().size() > 0 || vdc.getRootCollection().getStudies().size() > 0);
-        }
+        }    
+        return hasStudies(vdc);
     }
 
     public boolean isNotReleasableAndNotReleased(){
@@ -588,20 +583,48 @@ public class PrivilegedUsersPage extends VDCBaseBean implements java.io.Serializ
            return false;
         }
         else {
-           return (!(vdc.getNumberReleasedStudies() > 0 || vdc.isHarvestingDv() ||  vdc.getOwnedCollections().size() > 1
-                   ||  vdc.getLinkedCollections().size() > 0 || vdc.getRootCollection().getStudies().size() > 0)  && vdc.isRestricted() );
+           return (!(hasStudies(vdc))  && vdc.isRestricted() );
         }
     }
 
     public boolean isReleasedWithoutRequiredStudies(){
         if (!vdc.isRestricted() && getVDCRequestBean().getVdcNetwork().isRequireDVstudiesforrelease() == true
-                && !(vdc.getNumberReleasedStudies() > 0 || vdc.isHarvestingDv() ||  vdc.getOwnedCollections().size() > 1
-                   ||  vdc.getLinkedCollections().size() > 0 || vdc.getRootCollection().getStudies().size() > 0) ){
+                && !(hasStudies(vdc))){
            return true;
         }
         else {
            return false;
         }
+    }
+
+    private boolean hasStudies(VDC vdcIn){
+
+        if (vdcIn.getNumberReleasedStudies() > 0 || vdcIn.isHarvestingDv()
+                || vdcIn.getRootCollection().getStudies().size() > 0) {
+                    return true;
+        }
+
+        if (vdcIn.getRootCollection().getStudies().size() > 0 ) {
+            return true;
+        }
+
+        if (vdcIn.getOwnedCollections().size() > 1  ) {
+            for (VDCCollection vdcc: vdcIn.getOwnedCollections() ) {
+                if (vdcc.getStudies().size() > 0){
+                    return true;
+                }
+            }
+        }
+
+        if (vdcIn.getLinkedCollections().size() > 0 ){
+            for (VDCCollection vdcc: vdcIn.getLinkedCollections() ) {
+                if (vdcc.getStudies().size() > 0){
+                    return true;
+                }
+            }
+        }
+        
+        return false;
     }
     
     public boolean validateUserName(FacesContext context,

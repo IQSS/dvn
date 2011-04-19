@@ -1,0 +1,55 @@
+<div xmlns:ui="http://java.sun.com/jsf/facelets"
+     xmlns:h="http://java.sun.com/jsf/html"
+     xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:jsp="http://java.sun.com/JSP/Page"
+     xmlns:ice="http://www.icesoft.com/icefaces/component"
+     xmlns:dvn="/WEB-INF/tlds/dvn-components"
+     class="dvnsetupdataexloprationformblock">
+
+    <div class="dvnFormPadding dvnFormMargin" style="text-align:right;">
+        <ice:commandButton type="submit" value="Update" action="#{SetUpDataExplorationPage.saveSourceFragment}" visible="#{SetUpDataExplorationPage.editSource}"/>
+        <ice:commandButton type="submit" value="Cancel" action="#{SetUpDataExplorationPage.cancelFragment}" visible="#{SetUpDataExplorationPage.editSource}"/>
+    </div>
+    <div jsfc="ice:panelGroup" rendered="#{SetUpDataExplorationPage.editSource}" style="margin-bottom:1em;">
+        <ice:outputLabel value="Name"/>
+        <ice:inputText size="25" maxlength="255"
+                       binding="#{SetUpDataExplorationPage.inputSourceName}"/>
+    </div>
+    <div jsfc="ice:panelGroup" rendered="#{SetUpDataExplorationPage.editSource}" style="margin-top:1em;">
+         <ice:outputLabel value="Variables"/>
+         <ice:dataTable width="100%" cellspacing="0" cellpadding="0" id="genericVariableSource" var="dataVariableUI" value="#{SetUpDataExplorationPage.dvGenericFilteredListUI}"
+                        scrollable="true" scrollHeight="200px" columnWidths="40,348">
+             <f:facet name="header">
+                <ice:columnGroup>
+                    <ice:headerRow>
+                         <ice:column colspan="2" styleClass="dvnDataTableHeaderForm">
+                             <ice:outputLabel value="Filter" for="filterDataVariable" styleClass="dvnDataTableHeaderFilter"/>
+                             <ice:inputText size="25" maxlength="255"
+                                              onkeyup="delayedRequestSource(form,this,event);"
+                                              binding="#{SetUpDataExplorationPage.inputVariableSource}"/>
+                         </ice:column>
+                    </ice:headerRow>
+                    <ice:headerRow>
+                         <ice:column style="width:40px;">
+                            <ice:selectBooleanCheckbox id="checkAllSourceVars"
+                                                       binding="#{SetUpDataExplorationPage.sourceCheckBox}"
+                                                       onclick="selectAllSourceVariablesClick();"/>
+                         </ice:column>
+                         <ice:column style="width:348px;">
+                            <ice:outputText value="Name"/>
+                         </ice:column>
+                    </ice:headerRow>
+                </ice:columnGroup>
+            </f:facet>
+            <ice:column style="width:40px; text-align:center;">
+                <ice:selectBooleanCheckbox id="genericVariableCheckBoxes" styleClass="measureVariableCheckBoxes"
+                                           partialSubmit="false" value="#{dataVariableUI.selected}"
+                                           onclick="selectOneSourceVariableClick();"/>
+            </ice:column>
+            <ice:column style="width:348px;">
+                <ice:outputLabel value="#{dataVariableUI.dataVariable.name}"/>
+            </ice:column>
+        </ice:dataTable>
+    </div>
+</div>
+

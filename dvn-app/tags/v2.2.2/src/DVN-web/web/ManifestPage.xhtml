@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:ice="http://www.icesoft.com/icefaces/component">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+
+<body>
+  <ui:composition template="/template.xhtml">
+    <ui:param name="pageTitle" value="Manifest - #{VDCRequest.dataversePageTitle}"/>
+    <ui:define name="body">
+        <ice:form id="manifestPage" >
+        <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+        <div >
+            <ice:outputText value="There is no LOCKS configuration for this Dataverse." rendered ="#{!ManifestPage.displayPage and ManifestPage.isDataverse}"/>
+        </div>
+        <div >
+            <ice:outputText value="There is no LOCKS configuration for this Dataverse Network." rendered ="#{!ManifestPage.displayPage and ManifestPage.isNetwork}"/>
+        </div>
+        <div jsfc="ice:panelGroup"  rendered ="#{ManifestPage.displayPage}">
+        <div class="dvn_section">
+          <div class="dvn_sectionTitle">
+            <ice:outputText value="Manifest"/>
+          </div>
+          <div class="dvn_sectionBox">
+            <div class="dvn_margin12">
+                <div>
+                    <ice:outputText value="Journal Title: #{ManifestPage.dvName}"/><br/>
+                    <ice:outputText value="Archival Unit: #{ManifestPage.archivalUnit}"/><br/>
+                    <ice:outputText value="Content URL: "/>
+                    <ice:outputLink value="#{ManifestPage.oaiSetUrl}">
+                        <ice:outputText value="#{ManifestPage.oaiSetUrl}"/>
+                    </ice:outputLink>
+                </div>
+                
+                <div jsfc="ice:panelGroup" styleClass="dvn_padTop dvn_padBot">
+                    <a rel="license" href="#{ManifestPage.lockssLicensingUrl}"><img alt="Creative Commons License" src="#{ManifestPage.lockssImageUrl}"/></a>
+
+                    <div jsfc="ice:panelGroup" styleClass="dvn_padTop">
+                        <ice:outputText nospan="true" value="This Data Collection by &#60;a href=&#34;/dvn#{VDCRequest.currentVDCURL}/faces/ContactUsPage.xhtml&#34;&#62;#{ManifestPage.ownerString}&#60;/a&#62; is licensed under a &#60;a href=&#34;#{ManifestPage.lockssLicensingUrl}&#34;&#62;#{ManifestPage.lockssLicenseDescription}&#60;/a&#62;." escape="false"/>
+                        <div jsfc="ice:panelGroup" styleClass="dvn_padTop">
+                             <ice:outputText nospan="true" value="Based on a work at &#60;a href=&#34;/dvn#{VDCRequest.currentVDCURL}&#34;&#62;#{ManifestPage.basedOnWorkText}&#60;/a&#62;." escape="false"/>
+                        </div>
+                        <div jsfc="ice:panelGroup" styleClass="dvn_padTop">
+                            <ice:outputText nospan="true" value="Permissions beyond the scope of this license may be available at the &#60;a href=&#34;/dvn#{VDCRequest.currentVDCURL}/faces/ManifestPage.xhtml#termsOfUse&#34;&#62;Manifest&#60;/a&#62; page." escape="false"/>
+                        </div>
+                    </div>
+                </div>
+                <a href="#termsOfUse"></a>
+                <div jsfc="ice:panelGroup" styleClass="termsAgreementBox" rendered="#{!empty ManifestPage.dvNetworkTermsOfUse or !empty ManifestPage.dvTermsOfUse or !empty ManifestPage.lockssLicensingTerms}">
+                    <ice:outputText value="Dataverse Network Terms:" styleClass="termsAgreementMessageTitle" rendered="#{!empty ManifestPage.dvNetworkTermsOfUse}"/>
+                    <ice:outputText value="#{ManifestPage.dvNetworkTermsOfUse}" rendered="#{!empty ManifestPage.dvNetworkTermsOfUse}" escape="false"/>
+
+                    <ice:outputText value="Dataverse Terms:" styleClass="termsAgreementMessageTitle" rendered="#{!empty ManifestPage.dvTermsOfUse}"/>
+                    <ice:outputText value="#{ManifestPage.dvTermsOfUse}" rendered="#{!empty ManifestPage.dvTermsOfUse}" escape="false"/>
+
+                    <ice:outputText value="LOCKSS Additional Terms:" styleClass="termsAgreementMessageTitle" rendered="#{!empty ManifestPage.lockssLicensingTerms}"/>
+                    <ice:outputText value="#{ManifestPage.lockssLicensingTerms}" rendered="#{!empty ManifestPage.lockssLicensingTerms}" escape="false"/>
+                </div>
+                <div>
+                    <ice:inputHidden id="restrictedFilesAuthorized" rendered="#{ManifestPage.isRestrictedAuthorized}"/>
+                </div>
+            </div>
+          </div>
+        </div>
+        </div>
+      </ice:form>
+    </ui:define>
+  </ui:composition>
+</body>
+</html>

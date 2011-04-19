@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Elements>
+<MapElement>
+<ElementKey>plugin_version</ElementKey>
+<ElementValue xsi:type="java:java.lang.String" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">2</ElementValue>
+</MapElement>
+<MapElement>
+<ElementKey>plugin_crawl_type</ElementKey>
+<ElementValue xsi:type="java:java.lang.String" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">OAI</ElementValue>
+</MapElement>
+<MapElement>
+<ElementKey>au_manifest</ElementKey>
+<ElementValue xsi:type="java:java.util.ArrayList" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<string xsi:type="java:java.lang.String">"%s", base_url2</string>
+</ElementValue>
+</MapElement>
+<MapElement>
+<ElementKey>au_redirect_to_login_url_pattern</ElementKey>
+<ElementValue xsi:type="java:java.lang.String" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">1,"%s.*TermsOfUsePage.xhtml.*", base_url</ElementValue>
+</MapElement>
+<MapElement>
+<ElementKey>au_crawlrules</ElementKey>
+<ElementValue xsi:type="java:java.util.ArrayList" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<string xsi:type="java:java.lang.String">4,"^%s", base_url</string>
+<string xsi:type="java:java.lang.String">1,"%s.*FileDownload.*fileId=[0-9][0-9]*", base_url</string>
+<string xsi:type="java:java.lang.String">1,"%s.*cgi-bin/file.*file_id=[0-9][0-9]*", base_url</string>
+<string xsi:type="java:java.lang.String">1,"%s.*hsrun.*fi=[0-9][0-9]*", base_url</string>
+<string xsi:type="java:java.lang.String">1,"%s.*dpassTrans.*id=[0-9][0-9]*", base_url</string>
+<string xsi:type="java:java.lang.String">1,"%s", base_url2</string>
+</ElementValue>
+</MapElement>
+<MapElement>
+<ElementKey>plugin_name</ElementKey>
+<ElementValue xsi:type="java:java.lang.String"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">HMDC DVN DDI Plugin</ElementValue>
+</MapElement>
+<MapElement>
+<ElementKey>au_name</ElementKey>
+<ElementValue xsi:type="java:java.lang.String"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">"%s", archunit_name</ElementValue>
+</MapElement>
+<MapElement>
+<ElementKey>au_start_url</ElementKey>
+<ElementValue xsi:type="java:java.lang.String" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">"%s", oai_request_url</ElementValue>
+</MapElement>
+<MapElement>
+<ElementKey>plugin_identifier</ElementKey>
+<ElementValue xsi:type="java:java.lang.String" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">edu.harvard.iq.dvn.lockss.plugin.DVNOAIPlugin</ElementValue>
+</MapElement>
+<MapElement>
+<ElementKey>plugin_config_props</ElementKey>
+<ElementValue xsi:type="java:java.util.ArrayList" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<ConfigParamDescr>
+<Key>base_url</Key>
+<DisplayName>Base URL</DisplayName>
+<Description>Usually of the form http://&lt;journal-name&gt;.com/</Description>
+<Type>3</Type>
+<Size>40</Size>
+<Definitional>true</Definitional>
+</ConfigParamDescr>
+<ConfigParamDescr>
+<Key>base_url2</Key>
+<DisplayName>Manifest location</DisplayName>
+<Description>the url of the license manifest for this collection</Description>
+<Type>3</Type>
+<Size>40</Size>
+<Definitional>true</Definitional>
+</ConfigParamDescr>
+<ConfigParamDescr>
+<Key>oai_request_url</Key>
+<DisplayName>OAI Request URL</DisplayName>
+<Description>Usually of the form http://&lt;journal-name&gt;.com/</Description>
+<Type>3</Type>
+<Size>40</Size>
+<Definitional>true</Definitional>
+</ConfigParamDescr>
+<ConfigParamDescr>
+<Key>archunit_name</Key>
+<DisplayName>Archival Unit Name</DisplayName>
+<Description>This is the name under which the Archival Unit will appear in the LOCKSS UI. It's a good practice to make this name descriptive, indicating the name or location of the remote archive and the name of the OAI set, if used.</Description>
+<Type>1</Type>
+<Size>40</Size>
+<Definitional>false</Definitional>
+</ConfigParamDescr>
+<ConfigParamDescr>
+<Key>oai_spec</Key>
+<DisplayName>OAI Set</DisplayName>
+<Description>name of the OAI set. if no set name is needed, do not leave blank. Use &quot;::@default@::&quot; instead.</Description>
+<Type>1</Type>
+<Size>40</Size>
+<Definitional>true</Definitional>
+</ConfigParamDescr>
+</ElementValue>
+</MapElement>
+</Elements>

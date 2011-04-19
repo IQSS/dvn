@@ -1,0 +1,77 @@
+<div xmlns:gui="http://java.sun.com/jsf/facelets"
+     xmlns:h="http://java.sun.com/jsf/html"
+     xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:jsp="http://java.sun.com/JSP/Page"
+     xmlns:ice="http://www.icesoft.com/icefaces/component"
+     xmlns:dvn="/WEB-INF/tlds/dvn-components"
+     xmlns:ui="http://www.sun.com/web/ui"
+     jsfc="ice:panelGroup"
+     id="layoutPanelVersions"
+     panelLayout="flow"
+     styleClass="vdcStudyCommentsBlock"/>
+    <div jsfc="ice:panelGroup"
+         id="versionsContentPanel"
+         panelLayout="flow">
+        <div jsfc="ice:panelGroup" id="groupPanel11" styleClass="vdcStudyInfoHeader">
+            <ice:outputText id="outputText11" value="Version History"/>
+        </div>
+<script type="text/javascript">
+  // <![CDATA[
+
+  // ]]>
+</script>
+        <ice:dataTable id="filterGroupsDataTable" cellpadding="0" cellspacing="0" width="100%"
+                       styleClass="dvnversionstable" rowClasses="oddRow evenRow"
+                       columnClasses="dvnversionstableCol1, dvnversionstableCol2, dvnversionstableCol3, dvnversionstableCol4, dvnversionstableCol5, dvnversionstableCol6"
+                       value="#{ExploreDataPage.filterStrings}" var="sv">
+            <ice:column>
+                <f:facet name="header">
+                    <div>
+                        <ice:outputText value="&#60;input type=&#34;button&#34; value=&#34;Difference&#34; onclick=&#34;viewStudyVersionDifferences();&#34; /&#62;" rendered="#{studyPage.studyUI.hasMultipleVersions}" nospan="true" escape="false" />
+                        <ice:outputText value="&#60;input type=&#34;button&#34; value=&#34;Difference&#34; onclick=&#34;viewStudyVersionDifferences();&#34; disabled=&#34;disabled&#34; /&#62;" rendered="#{!studyPage.studyUI.hasMultipleVersions}" nospan="true" escape="false" />
+                    </div>
+                </f:facet>
+                <ice:inputHidden id="versionNumber" value="#{sv.versionNumber}"/>
+                <ice:selectBooleanCheckbox id="versionCheckBox" styleClass="versionCheckBox" disabled="#{!studyPage.studyUI.hasMultipleVersions}"/>
+            </ice:column>
+            <ice:column>
+                  <f:facet name="header">
+                      <ice:outputText value="Version"/>
+                  </f:facet>
+                <ice:outputText value="#{sv.versionNumber}"/>
+            </ice:column>
+            <ice:column>
+                  <f:facet name="header">
+                      <ice:outputText value="Status"/>
+                  </f:facet>
+                  <ice:outputLink value="/dvn#{VDCRequest.currentVDCURL}/faces/study/StudyPage.xhtml?globalId=#{sv.study.globalId}&amp;versionNumber=#{sv.versionNumber}#{VDCRequest.studyListingIndexAsParameter}">
+                      <ice:outputText value="#{studybundle.DRAFT}" rendered="#{sv.draft}"/>
+                      <ice:outputText value="#{studybundle.IN_REVIEW}" rendered="#{sv.inReview}"/>
+                      <ice:outputText value="#{studybundle.RELEASED}" rendered="#{sv.released}"/>
+                      <ice:outputText value="#{studybundle.ARCHIVED}" rendered="#{sv.archived}"/>
+                      <ice:outputText value="#{studybundle.DEACCESSIONED}" rendered="#{sv.deaccessioned}"/>
+                  </ice:outputLink>
+            </ice:column>
+            <ice:column>
+                  <f:facet name="header">
+                      <ice:outputText value="Comments"/>
+                  </f:facet>
+                <ice:outputText styleClass="dvnStudyVersionNote" value="#{sv.versionNote}"/>
+            </ice:column>
+            <ice:column>
+                  <f:facet name="header">
+                      <ice:outputText value="Released"/>
+                  </f:facet>
+                <ice:outputText value="#{sv.releaseTime}"/>
+            </ice:column>
+            <ice:column>
+                  <f:facet name="header">
+                      <ice:outputText value="Contributors"/>
+                  </f:facet>
+                  <gui:repeat value="#{sv.versionContributors}" var="elem">
+                      <ice:outputText value="#{elem.contributor.firstName} #{elem.contributor.lastName}"/>
+                  </gui:repeat>
+            </ice:column>
+        </ice:dataTable>
+    </div>
+

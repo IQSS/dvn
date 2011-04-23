@@ -54,10 +54,11 @@ public class NetworkDataServiceBean implements NetworkDataServiceLocal, java.io.
     private static final String NEO4J_CONFIG_FILE = "neodb.props";
     public static final String SQLITE_EXTENSION = "sqliteDB";
     public static final String NEO4J_EXTENSION = "neo4jDB";
-    
+
+
     @EJB VariableServiceLocal varService;
 
- 
+     private static DVNGraphFactory dvnGraphFactory = null;
      
      DVNGraph dvnGraph;
      String fileSystemLocation;
@@ -79,8 +80,11 @@ public class NetworkDataServiceBean implements NetworkDataServiceLocal, java.io.
             // File copyNeoDB = FileUtils.
             File sqliteFile = new File(fileLocation.getParent(), FileUtil.replaceExtension(fileLocation.getName(), SQLITE_EXTENSION));
             try {
-                dvnGraph = new DVNGraphFactory(LIB_PATH).
-                        newInstance(tempNeoDir.getAbsolutePath(), sqliteFile.getAbsolutePath(), NEO4J_CONFIG_FILE);
+                if (dvnGraphFactory == null) {
+                    dvnGraphFactory = new DVNGraphFactory(LIB_PATH);
+                }
+                //dvnGraph = new DVNGraphFactory(LIB_PATH).
+                        dvnGraph = dvnGraphFactory.newInstance(tempNeoDir.getAbsolutePath(), sqliteFile.getAbsolutePath(), NEO4J_CONFIG_FILE);
                 //dvnGraph = new DVNGraphImpl(tempNeoDir.getAbsolutePath(), sqliteFile.getAbsolutePath(), NEO4J_CONFIG_FILE);
             } catch (ClassNotFoundException e) {
                 throw new EJBException(e);

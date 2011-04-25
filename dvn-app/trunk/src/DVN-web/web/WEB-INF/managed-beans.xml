@@ -602,6 +602,11 @@
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
     <managed-bean>
+        <managed-bean-name>DefaultSortOrderPage</managed-bean-name>
+        <managed-bean-class>edu.harvard.iq.dvn.core.web.admin.DefaultSortOrderPage</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
         <managed-bean-name>EditBannerFooterPage</managed-bean-name>
         <managed-bean-class>edu.harvard.iq.dvn.core.web.admin.EditBannerFooterPage</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>

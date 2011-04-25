@@ -13,7 +13,7 @@
   <ui:composition template="/template.xhtml">
     <ui:param name="pageTitle" value="#{bundlePageInfo.defaultStudySortOrderTitle} - #{VDCRequest.dataversePageTitle}"/>
     <ui:define name="body">
-      <ice:form id="form1">
+      <ice:form id="setDefaultStudyListingSortOrderForm">
         <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
         <div class="dvn_section">
           <div jsfc="ice:panelGroup" styleClass="dvnMsgBlockRound dvnInformationMessage">
@@ -24,18 +24,31 @@
           <div class="dvn_sectionTitle">
             <ice:outputText value="#{bundlePageInfo.defaultStudySortOrderTitle}"/>
           </div>
-          <div jsfc="ice:panelGroup" id="groupPanel5" >
-            <ice:selectOneMenu id="dropdown2" value="#{DefaultSortOrderPage.defaultSortOrder}">
-               <f:selectItem itemLabel="Sort By:" itemValue=""/>
-               <f:selectItem itemLabel="- Global ID" itemValue="globalId"/>
-               <f:selectItem itemLabel="- Title" itemValue="title"/>
-               <f:selectItem itemLabel="- Last Released" itemValue="releaseTime"/>
-               <f:selectItem itemLabel="- Production Date" itemValue="productionDate"/>
-               <f:selectItem itemLabel="- Download Count" itemValue="downloadCount"/>
-            </ice:selectOneMenu>
+          <div class="dvn_sectionBox">
+            <div class="dvn_margin12">
+              <ice:panelGrid cellpadding="0" cellspacing="0" columns="2"
+                             columnClasses="vdcColPadded, vdcColPadded" id="gridPanel2">
+                <div jsfc="ice:panelGroup" id="groupPanel1">
+                  <ice:outputLabel for="defaultsort" id="defaultsortLabel">
+                    <ice:outputText value="Default Sort Order"/>
+                  </ice:outputLabel>
+                </div>
+                <div jsfc="ice:panelGroup">
+                  <ice:selectOneMenu id="defaultsort" value="#{DefaultSortOrderPage.defaultSortOrder}">
+                   <f:selectItem itemLabel="Global ID" itemValue="globalId"/>
+                   <f:selectItem itemLabel="Title" itemValue="title"/>
+                   <f:selectItem itemLabel="Last Released" itemValue="releaseTime"/>
+                   <f:selectItem itemLabel="Production Date" itemValue="productionDate"/>
+                   <f:selectItem itemLabel="Download Count" itemValue="downloadCount"/>
+                  </ice:selectOneMenu>
+                </div>
+              </ice:panelGrid>
+              <div id="groupPanel6" class="dvnFormPadding dvnFormMargin">
+                <ice:commandButton id="saveButton" value="Save" action="#{DefaultSortOrderPage.save}"/>
+                <ice:commandButton id="cancelButton" value="Cancel" immediate="true" action="#{DefaultSortOrderPage.cancel}"/>
+              </div>
+            </div>
           </div>
-            <ice:commandButton id="saveButton" value="Save"  action="#{DefaultSortOrderPage.save}"/>
-            <ice:commandButton id="cancelButton" value="Cancel" immediate="true"  action="#{DefaultSortOrderPage.cancel}"/>
         </div>
       </ice:form>
     </ui:define>

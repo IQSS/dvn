@@ -59,8 +59,10 @@ public class NetworkDataServiceBean implements NetworkDataServiceLocal, java.io.
     @EJB VariableServiceLocal varService;
 
      private static DVNGraphFactory dvnGraphFactory = null;
+     private static GraphBatchInserterFactory batchInserterFactory = null;
      
      DVNGraph dvnGraph;
+     GraphBatchInserter dvnGBI;
      String fileSystemLocation;
      private static final String baseTempPath = System.getProperty("java.io.tmpdir");
      private static final String LIB_PATH = System.getProperty("dvn.networkData.libPath");
@@ -84,7 +86,7 @@ public class NetworkDataServiceBean implements NetworkDataServiceLocal, java.io.
                     dvnGraphFactory = new DVNGraphFactory(LIB_PATH);
                 }
                 //dvnGraph = new DVNGraphFactory(LIB_PATH).
-                        dvnGraph = dvnGraphFactory.newInstance(tempNeoDir.getAbsolutePath(), sqliteFile.getAbsolutePath(), NEO4J_CONFIG_FILE);
+                dvnGraph = dvnGraphFactory.newInstance(tempNeoDir.getAbsolutePath(), sqliteFile.getAbsolutePath(), NEO4J_CONFIG_FILE);
                 //dvnGraph = new DVNGraphImpl(tempNeoDir.getAbsolutePath(), sqliteFile.getAbsolutePath(), NEO4J_CONFIG_FILE);
             } catch (ClassNotFoundException e) {
                 throw new EJBException(e);
@@ -394,10 +396,14 @@ public class NetworkDataServiceBean implements NetworkDataServiceLocal, java.io.
         String sqliteFileName = FileUtil.replaceExtension(temploc.getName(),this.SQLITE_EXTENSION);
         File sqliteFile = new File(ingestedDir, sqliteFileName);
 
-          try {
-            GraphBatchInserter gbi = new GraphBatchInserterFactory(LIB_PATH).
+        try {
+
+            if (batchInserterFactory == null) {
+                batchInserterFactory = new GraphBatchInserterFactory(LIB_PATH);
+            }
+            dvnGBI = batchInserterFactory.
                 newInstance(neo4jDir.getAbsolutePath(), sqliteFile.getAbsolutePath(),  SQLITE_CONFIG_FILE, NEO4J_CONFIG_FILE);
-            gbi.ingest(editBean.getTempSystemFileLocation());
+            dvnGBI.ingest(editBean.getTempSystemFileLocation());
         } catch (Exception e) {
             throw new EJBException(e);
         }

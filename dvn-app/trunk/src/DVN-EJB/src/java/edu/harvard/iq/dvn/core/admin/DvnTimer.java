@@ -200,7 +200,12 @@ public class DvnTimer implements DvnTimerRemote, DvnTimerLocal {
               //   initExpiration.set(Calendar.MINUTE,15);  //REMOVE!!!!!
                  logger.log(Level.INFO, "Scheduling daily export");
 
-            } else {
+            } else if (vdcNetwork.getExportPeriod().equals(vdcNetwork.EXPORT_PERIOD_NONE)) {
+                 removeExportTimer();
+                 logger.log(Level.INFO, "Removing Export Timer");
+                 return;
+            }
+            else {
                 logger.log(Level.WARNING, "Could not set timer for export, unknown schedule period: "+ vdcNetwork.getExportPeriod());
                 return;
             }

@@ -32,11 +32,14 @@ import edu.harvard.iq.dvn.core.web.common.VDCBaseBean;
 import edu.harvard.iq.dvn.core.web.util.ExceptionMessageWriter;
 import edu.harvard.iq.dvn.core.vdc.VDCNetwork;
 import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
+import java.util.ArrayList;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
 
 /**
  * <p>Page bean that corresponds to a similarly named JSP page.  This
@@ -49,6 +52,9 @@ public class EditExportSchedulePage extends VDCBaseBean implements java.io.Seria
     @EJB VDCNetworkServiceLocal vdcNetworkService;
     @EJB (name="dvnTimer")
     DvnTimerRemote remoteTimerService;
+    private List <SelectItem> selectExportPeriod = new ArrayList();
+
+
      /** 
      * <p>Construct a new Page bean instance.</p>
      */
@@ -70,7 +76,33 @@ public class EditExportSchedulePage extends VDCBaseBean implements java.io.Seria
                exportPeriod.setValue( vdcNetwork.getExportPeriod());
                exportHourOfDay=vdcNetwork.getExportHourOfDay();
                exportDayOfWeek = vdcNetwork.getExportDayOfWeek();
-           } 
+           }
+        setSelectExportPeriod(loadSelectExportPeriod());
+    }
+
+    public List<SelectItem> loadSelectExportPeriod() {
+        List selectItems = new ArrayList<SelectItem>();
+
+        if (this.getVDCRequestBean().getVdcNetwork().getExportPeriod().equals("")){
+            selectItems.add(new SelectItem("", "Not Selected"));
+        }
+
+         selectItems.add(new SelectItem("daily", "Export daily"));
+         selectItems.add(new SelectItem("weekly", "Export weekly"));
+
+        if (!this.getVDCRequestBean().getVdcNetwork().getExportPeriod().equals("")){
+            selectItems.add(new SelectItem("none", "Disable export"));
+        }
+
+        return selectItems;
+    }
+
+    public List<SelectItem> getSelectExportPeriod() {
+        return selectExportPeriod;
+    }
+
+    public void setSelectExportPeriod(List<SelectItem> selectExportPeriod) {
+        this.selectExportPeriod = selectExportPeriod;
     }
     /** 
      * <p>Callback method that is called after the component tree has been

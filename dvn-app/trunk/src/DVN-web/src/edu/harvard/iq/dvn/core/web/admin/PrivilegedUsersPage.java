@@ -50,8 +50,11 @@ import edu.harvard.iq.dvn.core.admin.VDCRole;
 import edu.harvard.iq.dvn.core.mail.MailServiceLocal;
 import edu.harvard.iq.dvn.core.util.PropertyUtil;
 import edu.harvard.iq.dvn.core.vdc.VDCCollection;
+import edu.harvard.iq.dvn.core.vdc.VDCCollectionServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDCGroup;
+import edu.harvard.iq.dvn.core.web.collection.CollectionUI;
 import edu.harvard.iq.dvn.core.web.push.beans.NetworkStatsBean;
+import edu.harvard.iq.dvn.core.web.site.VDCUI;
 import java.util.logging.Logger;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
@@ -71,6 +74,8 @@ public class PrivilegedUsersPage extends VDCBaseBean implements java.io.Serializ
     @EJB UserServiceLocal userService;
     @EJB GroupServiceLocal groupService;
     @EJB MailServiceLocal mailService;
+        @EJB
+    VDCCollectionServiceLocal vdcCollectionService;
 
     public class RoleListItem {
         private VDCRole vdcRole;
@@ -623,6 +628,25 @@ public class PrivilegedUsersPage extends VDCBaseBean implements java.io.Serializ
                 }
             }
         }
+
+
+            if (vdcIn != null) {
+                Long collectionId = new Long(0);
+                if ( new VDCUI(vdcIn).containsOnlyLinkedCollections() ) {
+                    collectionId = new Long(getVDCRequestBean().getCurrentVDC().getLinkedCollections().get(0).getId());
+                } else {
+                    collectionId = new Long(getVDCRequestBean().getCurrentVDC().getRootCollection().getId());
+                }
+
+                CollectionUI collUI = new CollectionUI(vdcCollectionService.find(new Long(collectionId)));
+                if (collUI.getStudyIds().size() > 0){
+                    return true;
+                }
+
+            } else {
+
+            }
+
         
         return false;
     }

@@ -61,7 +61,17 @@ public class HarvestingDataverse implements Serializable {
     private Date lastSuccessfulHarvestTime; 
     private Long harvestedStudyCount;
     private Long failedStudyCount;
+    @Temporal(value = TemporalType.TIMESTAMP)
+    private Date lastSuccessfulNonZeroHarvestTime;
+    private Long harvestedStudyCountNonZero;
+    private Long failedStudyCountNonZero;
     private String harvestResult;
+
+    /*
+     * ALTER TABLE harvestingdataverse ADD COLUMN lastsuccessfulnonzeroharvesttime timestamp without time zone;
+ALTER TABLE harvestingdataverse ADD COLUMN failedstudycountnonzero bigint;
+ALTER TABLE harvestingdataverse ADD COLUMN harvestedstudycountnonzero bigint;
+     */
 
    
        
@@ -427,5 +437,29 @@ public class HarvestingDataverse implements Serializable {
 
     public void setLastSuccessfulHarvestTime(Date lastSuccessfulHarvestTime) {
         this.lastSuccessfulHarvestTime = lastSuccessfulHarvestTime;
-    }   
+    }
+
+    public Long getFailedStudyCountNonZero() {
+        return failedStudyCountNonZero;
+    }
+
+    public void setFailedStudyCountNonZero(Long failedStudyCountNonZero) {
+        this.failedStudyCountNonZero = failedStudyCountNonZero;
+    }
+
+    public Long getHarvestedStudyCountNonZero() {
+        return harvestedStudyCountNonZero;
+    }
+
+    public void setHarvestedStudyCountNonZero(Long harvestedStudyCountNonZero) {
+        this.harvestedStudyCountNonZero = harvestedStudyCountNonZero;
+    }
+
+    public Date getLastSuccessfulNonZeroHarvestTime() {
+        return lastSuccessfulNonZeroHarvestTime;
+    }
+
+    public void setLastSuccessfulNonZeroHarvestTime(Date lastSuccessfulNonZeroHarvestTime) {
+        this.lastSuccessfulNonZeroHarvestTime = lastSuccessfulNonZeroHarvestTime;
+    }
 }

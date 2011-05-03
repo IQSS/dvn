@@ -53,6 +53,8 @@ public interface HarvestingDataverseServiceLocal extends java.io.Serializable {
 
     public void setHarvestSuccess(Long hdId, Date harvestSuccessTime, int harvestedStudyCount, int failedCount);
 
+    public void setHarvestSuccessNotEmpty(Long hdId, Date currentTime, int harvestedCount, int failedCount);
+
     public void setHarvestFailure(Long hdId, int harvestedStudyCount, int failedCount);
 
     public void setHarvestResult(Long hdId, String result);

@@ -28,7 +28,7 @@
                          binding="#{HarvestSitesPage.harvestDataTable}"
                          styleClass="dvnHarvestSitesTable" id="dataTable1"
                          headerClass="iceDatTblColHdr1 list-header-left vdcColPadded"
-                         columnWidths="30%,10%,18%,25%,10%,7%"
+                         columnWidths="25%,8%,18%,20%,17%,7%,5%"
                          rowClasses="list-row-even vdcColPadded, list-row-odd vdcColPadded"
                          value="#{HarvestSitesPage.harvestSiteList}" var="currentRow">
             <ice:column>
@@ -74,6 +74,16 @@
               </f:facet>
               <ice:outputText value="Harvest Completed " rendered="#{currentRow.harvestResult == currentRow.harvestResultSuccess}"/>
               <ice:outputText value="Harvest failed before completion (see log file for details) " rendered = "#{currentRow.harvestResult == currentRow.harvestResultFailed}"/>
+              <ice:outputText value="#{currentRow.harvestedStudyCount} Studies harvested" rendered="#{!empty currentRow.harvestedStudyCount}"  />
+              <ice:outputText value="#{currentRow.failedStudyCount} Failures" rendered="#{currentRow.harvestResult == currentRow.harvestResultSuccess and currentRow.failedStudyCount > 0}" />
+              <ice:outputText value="No results available" rendered="#{empty currentRow.harvestResult}"/>
+            </ice:column>
+            <ice:column>
+              <f:facet name="header">
+                <ice:outputText value="Last Non-Zero Result"/>
+              </f:facet>
+                <ice:outputText value="#{currentRow.lastSuccessfulNonZeroHarvestTime}" rendered="#{!empty currentRow.lastSuccessfulNonZeroHarvestTime}"/>
+              <ice:outputText value="No non-zero harvests" rendered="#{empty currentRow.lastSuccessfulNonZeroHarvestTime}"/>
               <ice:outputText value="#{currentRow.harvestedStudyCount} Studies harvested" rendered="#{!empty currentRow.harvestedStudyCount}"  />
               <ice:outputText value="#{currentRow.failedStudyCount} Failures" rendered="#{currentRow.harvestResult == currentRow.harvestResultSuccess and currentRow.failedStudyCount > 0}" />
               <ice:outputText value="No results available" rendered="#{empty currentRow.harvestResult}"/>

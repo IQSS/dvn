@@ -126,6 +126,15 @@ public class HarvestingDataverseServiceBean implements edu.harvard.iq.dvn.core.v
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void setHarvestSuccessNotEmpty(Long hdId, Date currentTime, int harvestedCount, int failedCount) {
+        HarvestingDataverse hd = em.find(HarvestingDataverse.class, hdId);
+        em.refresh(hd);
+        hd.setLastSuccessfulNonZeroHarvestTime(currentTime);
+        hd.setHarvestedStudyCountNonZero(new Long(harvestedCount));
+        hd.setFailedStudyCountNonZero(new Long(failedCount));
+    }
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void setHarvestFailure(Long hdId, int harvestedStudyCount, int failedCount) {
         HarvestingDataverse hd = em.find(HarvestingDataverse.class, hdId);
         em.refresh(hd);

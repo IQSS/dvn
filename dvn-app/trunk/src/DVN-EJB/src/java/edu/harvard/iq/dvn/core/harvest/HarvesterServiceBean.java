@@ -311,7 +311,11 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
                     } 
                     harvestingDataverseService.setHarvestSuccess(dataverse.getId(),currentTime, harvestedStudyIds.size(), failedIdentifiers.size());
                     hdLogger.log(Level.INFO, "COMPLETED HARVEST, server=" + dataverse.getServerUrl() + ", metadataPrefix=" + dataverse.getHarvestFormatType().getMetadataPrefix());
-              
+
+                    if (harvestedStudyIds.size() > 0){
+                        harvestingDataverseService.setHarvestSuccessNotEmpty(dataverse.getId(),currentTime, harvestedStudyIds.size(), failedIdentifiers.size());
+                        hdLogger.log(Level.INFO, "COMPLETED HARVEST withe results");
+                    }
                     // now index all studies (need to modify for update)
                     hdLogger.log(Level.INFO, "POST HARVEST, reindexing the remaining studies.");
                     indexService.updateIndexList(harvestedStudyIdsThisBatch);

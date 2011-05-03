@@ -54,6 +54,16 @@
     },timeout);
     }
 
+    function delayedRequestSource(form,field,event){
+    countEvents++;
+    setTimeout(function() {
+    countEvents--;
+    if(countEvents==0){
+
+        document.getElementById('form1:updateSourceList').click();
+    }
+    },timeout);
+    }
     function selectAllFilterVariablesClick(){
         document.getElementById('form1:selectAllFilterVariablesClick').click();
     }
@@ -126,6 +136,7 @@
 
                     <ice:commandButton type="submit" visible="false" id="updateFilterList" value="update" action="#{SetUpDataExplorationPage.updateFilterList}"/>
                     <ice:commandButton type="submit" visible="false" id="updateXAxisList" value="update" action="#{SetUpDataExplorationPage.updateXAxisList}"/>
+                    <ice:commandButton type="submit" visible="false" id="updateSourceList" value="update" action="#{SetUpDataExplorationPage.updateSourceList}"/>
                     <ice:commandButton type="submit" value="Save" action="#{SetUpDataExplorationPage.saveAndExit}" rendered="#{SetUpDataExplorationPage.showCommands}"/>
 
                     <ice:commandButton type="submit" visible="false" value="Save and Continue" action="#{SetUpDataExplorationPage.saveAndContinue}" rendered="#{SetUpDataExplorationPage.showCommands}"/>

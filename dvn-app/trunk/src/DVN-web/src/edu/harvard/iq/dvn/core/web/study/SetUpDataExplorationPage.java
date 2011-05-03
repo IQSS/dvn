@@ -2271,6 +2271,12 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         return "";
     }
 
+    public String updateSourceList(){
+        String checkString = (String) getInputVariableSource().getValue();
+        updateGenericGroupVariableList(checkString);
+        return "";
+    }
+
     public void selectAllMeasureVariables(ValueChangeEvent ce){
 
         selectAllVariablesPrivate((Boolean)measureCheckBox.getValue());

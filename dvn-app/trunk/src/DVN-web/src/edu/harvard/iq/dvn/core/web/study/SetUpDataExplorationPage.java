@@ -1523,17 +1523,27 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
     public void deleteFilterGrouping(ActionEvent ae){
 
-        List <VarGroupType> removeList = new ArrayList();
+        List <VarGroupType> removeListGroupType = new ArrayList();
+        List <VarGroup> removeListGroup= new ArrayList();
         List <VarGroupType> typeList;
+        List <VarGroup> groupList;
 
             HtmlDataTable dataTable2 = dataTableFilterGrouping;
 
             VarGroupingUI varGroupingUI2 = (VarGroupingUI) dataTable2.getRowData();
 
         for (VarGroupType groupType: varGroupingUI2.getVarGrouping().getVarGroupTypes()){
-            removeList.add(groupType);
+            removeListGroupType.add(groupType);
         }
-            typeList = new ArrayList(varGroupingUI2.getVarGrouping().getVarGroupTypes());
+        
+        typeList = new ArrayList(varGroupingUI2.getVarGrouping().getVarGroupTypes());
+
+        for (VarGroup group: varGroupingUI2.getVarGrouping().getVarGroups()){
+            removeListGroup.add(group);
+        }
+
+        groupList = new ArrayList(varGroupingUI2.getVarGrouping().getVarGroups());
+
 
             if (dataTable2.getRowCount()>0) {                
                 filterGroupings.remove(varGroupingUI2);
@@ -1546,11 +1556,11 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                 }
                 saveGroupTypes(groupUI);
             }
-            for (VarGroup group: varGroupingUI2.getVarGrouping().getVarGroups() ){
-                visualizationService.removeCollectionElement(varGroupingUI2.getVarGrouping().getVarGroups(),group);
+            for (VarGroup group: removeListGroup ){
+                visualizationService.removeCollectionElement(groupList,group);
             }
 
-            for (VarGroupType groupType: removeList ){
+            for (VarGroupType groupType: removeListGroupType ){
                 visualizationService.removeCollectionElement(typeList,groupType);
             }
             visualizationService.removeCollectionElement(varGroupings,varGroupingUI2.getVarGrouping());

@@ -41,9 +41,6 @@ import edu.harvard.iq.dvn.core.visualization.DataVariableMapping;
 import edu.harvard.iq.dvn.core.web.study.StudyUI;
 import edu.harvard.iq.dvn.ingest.dsb.FieldCutter;
 import edu.harvard.iq.dvn.ingest.dsb.impl.DvnJavaFieldCutter;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 import java.io.BufferedReader;
@@ -224,7 +221,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     }
 
     public String loadMeasureLabel() {
-        Iterator iterator = varGroupings.iterator();
+        Iterator iterator = allVarGroupings.iterator();
         while (iterator.hasNext() ){
             VarGrouping varGrouping = (VarGrouping) iterator.next();
 
@@ -1200,9 +1197,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                                     indexesDone = true;
                             }
                         }
-
-
-                }
+                    }
 
                 }
                   col = col + ";";
@@ -1217,38 +1212,34 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         String nextStr = (String) inObj;
         String[] columnDetail = nextStr.split("\t");
         String[] test = columnDetail;
-        String indexDate = "";
         String indexCol = "";         
         if (test.length > 1)
             {
                 for (int i=0; i<test.length; i++){
-                if (i == 0) {
-                    indexCol = test[i];
-                    indexDate = test[i];
-                } else {
+                    if (i == 0) {
+                        indexCol = test[i];
+                    } else {
 
-                        Double numerator = new Double(0);
-                        if (!test[i].isEmpty()){
-                            numerator = new Double (test[i]);
-                        }
-                        Double denominator = new Double (0);
-                        if (!indexVals[i].isEmpty()){
-                            denominator = new Double (indexVals[i]);
-                        }
-                        
-                        Object result = new Double(0);
-                        if (!denominator.equals(new Double (0))  && !numerator.equals(new Double (0))){
-                            result = (numerator / denominator) *  new Double (100);
-                        } else {
-                            result = "";
-                        }
-                        indexCol = indexCol + ", " +  result.toString();
+                            Double numerator = new Double(0);
+                            if (!test[i].isEmpty()){
+                                numerator = new Double (test[i]);
+                            }
+                            Double denominator = new Double (0);
+                            if (!indexVals[i].isEmpty()){
+                                denominator = new Double (indexVals[i]);
+                            }
 
-                }
+                            Object result = new Double(0);
+                            if (!denominator.equals(new Double (0))  && !numerator.equals(new Double (0))){
+                                result = (numerator / denominator) *  new Double (100);
+                            } else {
+                                result = "";
+                            }
+                            indexCol = indexCol + ", " +  result.toString();
 
+                    }
                 }
                   indexCol = indexCol + ";";
-
            }
 
 
@@ -1571,7 +1562,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     int yearLabelInt = 0;
     String myRowList[] = getDataString().split(";");
     String retString = "|";
-    ;
     if (new Integer( startYear.toString()).intValue() != 0 && new Integer( endYear.toString()).intValue() !=3000)
         
     { yearLabelInt = Math.round((new Integer( endYear.toString()).intValue()-new Integer( startYear.toString()).intValue())/5); }

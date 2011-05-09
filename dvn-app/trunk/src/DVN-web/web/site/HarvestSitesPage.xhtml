@@ -79,7 +79,7 @@
                 <ice:outputText value="Last Non-Zero Result"/>
               </f:facet>
               <ice:outputText value="#{currentRow.lastSuccessfulNonZeroHarvestTime}" rendered="#{!empty currentRow.lastSuccessfulNonZeroHarvestTime}"/>
-              <ice:outputText value="No non-zero harvests" rendered="#{empty currentRow.lastSuccessfulNonZeroHarvestTime}"/>
+              <ice:outputText value="N/A" rendered="#{empty currentRow.lastSuccessfulNonZeroHarvestTime}"/>
               <ice:outputText value="#{currentRow.harvestedStudyCountNonZero} Studies harvested" rendered="#{!empty currentRow.harvestedStudyCountNonZero}"  />
               <ice:outputText value="#{currentRow.failedStudyCountNonZero} Failures" rendered="#{currentRow.harvestedStudyCountNonZero > 0}" />
             </ice:column>

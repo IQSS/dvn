@@ -78,6 +78,8 @@ import edu.harvard.iq.dvn.core.harvest.HarvestStudy;
 import edu.harvard.iq.dvn.core.harvest.HarvestStudyServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.LockssConfig;
 import edu.harvard.iq.dvn.core.vdc.VDC;
+import java.text.DateFormat;
+import java.util.TimeZone;
 import java.util.logging.Logger;
 import javax.naming.InitialContext;
 
@@ -447,10 +449,13 @@ public class DVNOAICatalog extends AbstractCatalog implements java.io.Serializab
         }
         
         // now create the nativeItem to be returned
+        DateFormat gmtFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        TimeZone gmtTime = TimeZone.getTimeZone("GMT");
+        gmtFormat.setTimeZone(gmtTime);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
       
         String nativeItem = "<identifier>" + identifier + "</identifier>";
-        nativeItem += "<datestamp>" + sdf.format(hs.getLastUpdateTime()) + "</datestamp>";
+        nativeItem += "<datestamp>" + gmtFormat.format(hs.getLastUpdateTime()) + "</datestamp>";
  
         if (hs.isRemoved()) {
             nativeItem +=  "<status>deleted</status>";
@@ -509,12 +514,15 @@ public class DVNOAICatalog extends AbstractCatalog implements java.io.Serializab
     }
 
     private String getRecord(Study study, String metadataPrefix) {
-        String oai_dc = "<oai_dc:dc>";
+
         String identifier = "<identifier>" + study.getGlobalId() + "</identifier>";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        String dateStamp = "<datestamp>"+sdf.format(study.getLastExportTime())+"</datestamp>";
+        DateFormat gmtFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        TimeZone gmtTime = TimeZone.getTimeZone("GMT");
+        gmtFormat.setTimeZone(gmtTime);
+        String dateStamp = "<datestamp>"+gmtFormat.format(study.getLastExportTime())+"</datestamp>";
         String setSpec = "<setSpec>"+study.getAuthority()+"</setSpec>";
-        Date lastUpdateTime = study.getLastUpdateTime();
+        
         File studyFileDir = FileUtil.getStudyFileDir(study);
         String exportFileName= studyFileDir.getAbsolutePath() + File.separator + "export_" + metadataPrefix+".xml";
         String record = identifier+dateStamp+setSpec+readFile(new File(exportFileName));

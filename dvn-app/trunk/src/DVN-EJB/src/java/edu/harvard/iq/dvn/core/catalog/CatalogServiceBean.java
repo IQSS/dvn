@@ -184,15 +184,20 @@ public class CatalogServiceBean implements CatalogServiceLocal {
 
      public String []  listRecords(String from, String until, String set, String metadataPrefix) throws NoItemsMatchException{
         
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        /*SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");*/
+        
+        
+        DateFormat gmtFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        TimeZone gmtTime = TimeZone.getTimeZone("GMT");
+        gmtFormat.setTimeZone(gmtTime);
         List <String> records = new ArrayList();
         
         try {
-            List<HarvestStudy> harvestStudies = harvestStudyService.findHarvestStudiesBySetName(set, sdf.parse(from), sdf.parse(until) );
+            List<HarvestStudy> harvestStudies = harvestStudyService.findHarvestStudiesBySetName(set, gmtFormat.parse(from), gmtFormat.parse(until) );
 
             for (HarvestStudy hs : harvestStudies) {
                 String record = "<identifier>" + ( set != null ? set + "//" : "") +  hs.getGlobalId() + "</identifier>";
-                record += "<datestamp>" + sdf.format(hs.getLastUpdateTime()) + "</datestamp>";            
+                record += "<datestamp>" + gmtFormat.format(hs.getLastUpdateTime()) + "</datestamp>";            
 
                 if (hs.isRemoved() ) {
                     record += "<status>deleted</status>";

@@ -397,7 +397,7 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
             // first filter the visible studies; visible studies are those that are released
             // and not from a restricted VDC (unless you are in that VDC)
             studyListing.setStudyIds( studyService.getVisibleStudies( studyListing.getStudyIds(), (vdc != null ? vdc.getId() : null) ) );
-            if (vdc.getDefaultSortOrder() != null){
+            if (vdc != null && vdc.getDefaultSortOrder() != null){
                 String sortBy = vdc.getDefaultSortOrder();
                 if (studyListing.getStudyIds() != null && studyListing.getStudyIds().size() > 0) {
                     List sortedStudies = studyService.getOrderedStudies(studyListing.getStudyIds(), sortBy);

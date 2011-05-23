@@ -109,6 +109,8 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
     UserServiceLocal userService;
     @EJB
     IndexServiceLocal indexService;
+    @EJB
+    VariableServiceLocal variableService;
 
     @EJB
     StudyExporterFactoryLocal studyExporterFactory;
@@ -1382,7 +1384,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public Study importHarvestStudy(File xmlFile, Long vdcId, Long userId, String harvestIdentifier) {
         VDC vdc = em.find(VDC.class, vdcId);
-        em.refresh(vdc); // workaround to get correct value for harvesting dataverse (to be investigated)
+        //em.refresh(vdc); // workaround to get correct value for harvesting dataverse (to be investigated)
 
         if (vdc.getHarvestingDataverse() == null) {
             throw new EJBException("importHarvestStudy(...) should only be called for a harvesting dataverse.");
@@ -1392,9 +1394,11 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
 
         // new create exports files for these studies
 
-        studyService.exportStudy(study);
+        // skipping (as a test -- L.A.)
+        // studyService.exportStudy(study);
 
 
+        logger.info("completed importHarvestStudy() returning study" + study.getGlobalId());
         return study;
     }
 
@@ -1956,7 +1960,24 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
             study = new Study(vdc, creator, newVersionState);
 
             studyVersion = study.getLatestVersion();
-            em.persist(study);
+
+            /*
+            //em.persist(studyVersion);
+            //em.flush();
+            Long newstudyid = study.getId();
+
+            if (newstudyid == null) {
+                em.persist(study);
+                //em.merge(study);
+                em.flush();
+                newstudyid = study.getId();
+                logger.info("study id, after flushing: "+newstudyid);
+                //em.merge(study);
+            } else {
+                em.persist(study);
+                logger.info("new study id: "+newstudyid);
+            }
+             */ // -- L.A.
 
             // if not a harvest, set initial date of deposit (this may get overridden during map ddi step
             if (!isHarvest) {
@@ -1969,6 +1990,8 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         // Step 3: map the ddi
         ddiService.mapDDI(ddiFile, studyVersion);
 
+        logger.info("doImportStudy: ddi mapped");
+
 
         //Step 4: post mapping processing
         if (isHarvest) {
@@ -1980,12 +2003,18 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
             studyVersion.getMetadata().setHarvestDVTermsOfUse(null);
             studyVersion.getMetadata().setHarvestDVNTermsOfUse(null);
         }
-        
+
+        logger.info("persisting;");
+        em.persist(study);
+        logger.info("flushing");
+        em.flush();
+
+
         // step 5: persist files from ddi (since studyFile is not persisted when the new FileMetadata objects are created - since
         // the studyFile often already exists - we need to manually persist the study files here)
-        for (FileMetadata fmd : studyVersion.getFileMetadatas()) {
-           em.persist( fmd.getStudyFile() );
-        }
+        //for (FileMetadata fmd : studyVersion.getFileMetadatas()) {
+        //   em.persist( fmd.getStudyFile() );
+        //} (this block was repeated twice -- L.A.)
 
         // persist files from ddi (since studyFile is not persisted when the new FileMetadata objects are created - since
         // the studyFile often already exists - we need to manually persist the study files here)
@@ -1993,7 +2022,68 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
            em.persist( fmd.getStudyFile() );
         }
 
-        saveStudyVersion(studyVersion, userId);
+        
+
+        Map variablesMap = ddiService.reMapDDI(ddiFile, studyVersion);
+
+        logger.info("doImportStudy: ddi re-mapped");
+
+        logger.info("reading the variables map;");
+
+        for (Object mapKey : variablesMap.keySet()) {
+            List<DataVariable> variablesMapEntry = (List<DataVariable>) variablesMap.get(mapKey);
+            Long dataTableId = (Long)mapKey;
+            if (variablesMapEntry != null) {
+                logger.info("found non-empty map entry for datatable id "+dataTableId);
+
+                DataVariable dv = variablesMapEntry.get(0);
+                DataTable tmpDt = dv.getDataTable();
+
+                if (tmpDt != null) {
+                    tmpDt.setDataVariables(variablesMapEntry);
+                    logger.info("added variables to datatable "+tmpDt.getId());
+                } else {
+                    logger.info("first variable on the map for id "+tmpDt.getId()+" is referencing NULL datatable! WTF?");
+                }
+
+/*
+                  for (DataVariable dv : variablesMapEntry) {
+                    if (dv != null) {
+ */
+                        /*
+//                        em.persist(dv);
+                        String varName = dv.getName();
+                        Long varFormatId = dv.getVariableFormatType().getId();
+                        Long decPoints = dv.getNumberOfDecimalPoints();
+                        String queryString = "INSERT INTO datavariable " +
+                                "(name,variableformattype_id,datatable_id,numberofdecimalpoints)" +
+                                " VALUES " +
+                                "('" + varName + "'," + varFormatId + "," + dataTableId + "," + decPoints + ")";
+                        Query insertQuery = em.createNativeQuery(queryString);
+                        insertQuery.executeUpdate();
+                        logger.info("inserted query: "+queryString);
+                        //logger.info("inserted variable "+varName+", data table "+dataTableId);
+                         */
+ /*
+                        DataTable tmpDt = dv.getDataTable();
+                        if (tmpDt != null) {
+                            tmpDt.getDataVariables().add(dv);
+                            logger.info("variable "+dv.getName()+" added to datatable "+tmpDt.getId());
+                        } else {
+                            logger.info("variable "+dv.getName()+" is referencing NULL datatable");
+                        }
+                    }
+                }
+  */
+            } else {
+                logger.info("found empty map entry for datatable id "+dataTableId);
+            }
+        }
+
+        logger.info("finished ingesting mapped variables");
+        
+
+        //saveStudyVersion(studyVersion, userId);
         if (isHarvest) {
             studyVersion.setReleaseTime( new Date() );
         }
@@ -2025,10 +2115,15 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
             gnrsService.createHandle(handle);
         }
 
-        logger.info("completed doImportStudyStax() returning study" + study.getGlobalId());
+        //logger.info("completed doImportStudy();");
+        //em.flush(); -- L.A.
+        //em.persist(study);
+        logger.info("completed doImportStudy() returning study" + study.getGlobalId());
         return study;
     }
 
+
+ 
     private boolean determineId(StudyVersion sv, VDC vdc, Map<String, String> globalIdComponents) {
         Study study = sv.getStudy();
 

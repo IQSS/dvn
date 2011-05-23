@@ -14,6 +14,7 @@ import edu.harvard.iq.dvn.core.study.StudyVersion;
 import edu.harvard.iq.dvn.core.study.TabularDataFile;
 import java.io.File;
 import java.io.OutputStream;
+import java.util.Map;
 import javax.ejb.Local;
 
 /**
@@ -25,6 +26,7 @@ public interface DDIServiceLocal extends StudyExporter, java.io.Serializable {
 
     void mapDDI(String xmlToParse, StudyVersion studyVersion);
     void mapDDI(File ddiFile, StudyVersion studyVersion);
+    Map reMapDDI(File ddiFile, StudyVersion studyVersion);
 
     void exportDataFile(TabularDataFile tdf, OutputStream out);
 

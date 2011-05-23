@@ -144,6 +144,7 @@ public interface StudyServiceLocal extends java.io.Serializable {
 
     //3
     edu.harvard.iq.dvn.core.study.Study importHarvestStudy(File xmlFile, Long vdcId, Long userId, String harvestIdentifier);
+    //void importHarvestStudyExperimental(File ddiFile, Study study);
     
     //3
     edu.harvard.iq.dvn.core.study.Study importStudy(File xmlFile,  Long harvestFormatTypeId, Long vdcId, Long userId);

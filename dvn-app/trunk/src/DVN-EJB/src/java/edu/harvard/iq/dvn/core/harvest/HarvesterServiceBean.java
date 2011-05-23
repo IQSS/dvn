@@ -28,7 +28,7 @@
  */
 package edu.harvard.iq.dvn.core.harvest;
 
-import ORG.oclc.oai.harvester2.verb.GetRecord;
+//import ORG.oclc.oai.harvester2.verb.GetRecord;
 import ORG.oclc.oai.harvester2.verb.ListIdentifiers;
 import ORG.oclc.oai.harvester2.verb.ListMetadataFormats;
 import ORG.oclc.oai.harvester2.verb.ListSets;
@@ -317,9 +317,13 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
                         hdLogger.log(Level.INFO, "COMPLETED HARVEST with results");
                     }
                     // now index all studies (need to modify for update)
-                    hdLogger.log(Level.INFO, "POST HARVEST, reindexing the remaining studies.");
-                    indexService.updateIndexList(harvestedStudyIdsThisBatch);
-                    hdLogger.log(Level.INFO, "POST HARVEST, calls to index finished.");                   
+                    //if (processedSizeThisBatch > 0) {
+                        hdLogger.log(Level.INFO, "POST HARVEST, reindexing the remaining studies.");
+                        indexService.updateIndexList(harvestedStudyIdsThisBatch);
+                        hdLogger.log(Level.INFO, "POST HARVEST, calls to index finished.");
+                    //} else {
+                    //    hdLogger.log(Level.INFO, "(All harvested content already reindexed)");
+                    //}
                 }else {
                     harvestErrorOccurred.setValue(true);
                     harvestingDataverseService.setHarvestFailure(dataverse.getId(), harvestedStudyIds.size(), failedIdentifiers.size());
@@ -455,14 +459,16 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     public Long getRecord(Logger hdLogger, HarvestingDataverse dataverse, String identifier, String metadataPrefix, MutableBoolean recordErrorOccurred) {
 
-        String errMessage = null;;
+        String errMessage = null;
         Study harvestedStudy = null;
         String oaiUrl = dataverse.getServerUrl();
         try {
             hdLogger.log(Level.INFO, "Calling GetRecord: oaiUrl =" + oaiUrl + "?verb=GetRecord&identifier=" + identifier + "&metadataPrefix=" + metadataPrefix);
 
-            GetRecord record = new GetRecord(oaiUrl, identifier, metadataPrefix);
+            DvnFastGetRecord record = new DvnFastGetRecord(oaiUrl, identifier, metadataPrefix);
             errMessage = record.getErrorMessage();
+            //errMessage=null;
+
             if (errMessage != null) {
                 hdLogger.log(Level.SEVERE, "Error calling GetRecord - " + errMessage);
             } else if (record.isDeleted()) {
@@ -476,29 +482,32 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
                 }
 
             } else {
+                hdLogger.log(Level.INFO, "Successfully retreived GetRecord response.");
+
                 VDCUser networkAdmin = vdcNetworkService.find().getDefaultNetworkAdmin();
+
                 harvestedStudy = studyService.importHarvestStudy(record.getMetadataFile(), dataverse.getVdc().getId(), networkAdmin.getId(), identifier);
+                //hdLogger.log(Level.INFO, "imported study (step 1., no data); proceeding with step 2.");
+                //studyService.importHarvestStudyExperimental(harvestedStudyFile, harvestedStudy);
                 hdLogger.log(Level.INFO, "Harvest Successful for identifier " + identifier);
 
-		processedSizeThisBatch += record.getMetadataFile().length(); 
-		if ( harvestedStudyIdsThisBatch == null ) {
-		    harvestedStudyIdsThisBatch = new ArrayList<Long>();
-		}
-		harvestedStudyIdsThisBatch.add(harvestedStudy.getId()); 
+        		processedSizeThisBatch += record.getMetadataFile().length();
+                if ( harvestedStudyIdsThisBatch == null ) {
+                    harvestedStudyIdsThisBatch = new ArrayList<Long>();
+                }
+                harvestedStudyIdsThisBatch.add(harvestedStudy.getId());
 
-		if ( processedSizeThisBatch > 10000000 ) {
-		    // 
-		    hdLogger.log(Level.INFO, "REACHED CONTENT BATCH SIZE LIMIT; calling index ("+harvestedStudyIdsThisBatch.size()+" studies in the batch).");
+                if ( processedSizeThisBatch > 10000000 ) {
+
+                    hdLogger.log(Level.INFO, "REACHED CONTENT BATCH SIZE LIMIT; calling index ("+harvestedStudyIdsThisBatch.size()+" studies in the batch).");
                     indexService.updateIndexList(harvestedStudyIdsThisBatch);
-                    hdLogger.log(Level.INFO, "REINDEX DONE.");                   
+                    hdLogger.log(Level.INFO, "REINDEX DONE.");
 
 
-		    processedSizeThisBatch = 0; 
-		    harvestedStudyIdsThisBatch = null; 
-		}
-			
+                    processedSizeThisBatch = 0;
+                    harvestedStudyIdsThisBatch = null;
+                }
             }
-
         } catch (Throwable e) {
             errMessage = "Exception processing getRecord(), oaiUrl=" + oaiUrl + ",identifier=" + identifier + " " + e.getClass().getName() + " " + e.getMessage();
             hdLogger.log(Level.SEVERE, errMessage);

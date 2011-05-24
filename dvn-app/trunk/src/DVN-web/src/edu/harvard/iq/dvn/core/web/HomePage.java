@@ -120,6 +120,8 @@ public class HomePage extends VDCBaseBean implements Serializable {
      @SuppressWarnings("unchecked")
     public void init() {
         super.init();
+        String defaultDVSortColumn =  vdcNetworkService.find().getDefaultDVSortColumn();
+        System.out.println("defaultDVSortColumn in HP init "+ defaultDVSortColumn);
         initChrome();
         initAccordionMenu();
         initAlphabeticFilter();
@@ -282,6 +284,9 @@ public class HomePage extends VDCBaseBean implements Serializable {
     private VDCGroup group;
 
     private void populateVDCUIList(boolean isAlphaSort) {
+                
+        String defaultDVSortColumn =  vdcNetworkService.find().getDefaultDVSortColumn();
+        System.out.println("defaultDVSortColumn "+ defaultDVSortColumn);
         boolean isNewGroup = false;
         if ( hiddenGroupId.getValue() == null || (vdcUIList != null &&
                 ( (vdcUIList.getVdcGroupId() != null &&
@@ -294,14 +299,14 @@ public class HomePage extends VDCBaseBean implements Serializable {
         }
         if (!isAlphaSort) {
             if (isNewGroup || vdcUIList != null && vdcUIList.getAlphaCharacter() != null && !vdcUIList.getAlphaCharacter().equals("")) {
-                vdcUIList = new VDCUIList(groupId, hideRestricted);
+                vdcUIList = new VDCUIList(groupId, hideRestricted, defaultDVSortColumn);
             } else {
                 vdcUIList.setAlphaCharacter("");
                 vdcUIList.getVdcUIList();
                 vdcUIListSize = new Long(String.valueOf(vdcUIList.getVdcUIList().size()));
             }
         } else {
-            vdcUIList = new VDCUIList(groupId, (String)hiddenAlphaCharacter.getValue(), hideRestricted);
+            vdcUIList = new VDCUIList(groupId, (String)hiddenAlphaCharacter.getValue(), hideRestricted, defaultDVSortColumn);
             if (!((String)hiddenAlphaCharacter.getValue()).equals(vdcUIList.getAlphaCharacter())) {
                 vdcUIList.setAlphaCharacter((String)hiddenAlphaCharacter.getValue());
                 vdcUIList.oldSort = "";

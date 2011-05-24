@@ -9,6 +9,7 @@ import com.icesoft.faces.component.datapaginator.DataPaginator;
 import edu.harvard.iq.dvn.core.vdc.VDC;
 import edu.harvard.iq.dvn.core.vdc.VDCGroup;
 import edu.harvard.iq.dvn.core.vdc.VDCGroupServiceLocal;
+import edu.harvard.iq.dvn.core.vdc.VDCNetworkServiceLocal;
 import edu.harvard.iq.dvn.core.vdc.VDCServiceLocal;
 import edu.harvard.iq.dvn.core.web.site.VDCUI;
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ import java.util.Collections;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.naming.InitialContext;
+   
 
 /**
  *
@@ -25,6 +27,7 @@ public class VDCUIList extends SortableList {
     
     private @EJB VDCServiceLocal vdcService;
     private @EJB VDCGroupServiceLocal vdcGroupService;
+     @EJB VDCNetworkServiceLocal vdcNetworkService;
 
     private boolean hideRestricted; //show unrestricted and restricted dataverses
     private List<VDCUI> vdcUIList;
@@ -49,7 +52,11 @@ public class VDCUIList extends SortableList {
     
     
     public void init() {
-        sortColumnName = DATERELEASED_COLUMN_NAME;
+
+        if (sortColumnName == null || sortColumnName.isEmpty()){
+            sortColumnName = DATERELEASED_COLUMN_NAME;
+        } 
+        
         ascending = true;
         oldSort = "";
         if (paginator!=null) {
@@ -64,13 +71,45 @@ public class VDCUIList extends SortableList {
     public VDCUIList() {
         init();
     }
+    
+    public VDCUIList( String networkSortOrder) {
+        if (networkSortOrder!=null && !networkSortOrder.isEmpty() ){
+            sortColumnName = networkSortOrder;
+        } else {
+            sortColumnName = DATERELEASED_COLUMN_NAME;
+        }
+        init();
+    }
 
+    public VDCUIList(Long vdcGroupId, boolean hideRestricted, String networkSortOrder) {
+        this.vdcGroupId = vdcGroupId;
+        this.hideRestricted    = hideRestricted;
+        if (networkSortOrder!=null && !networkSortOrder.isEmpty() ){
+            sortColumnName = networkSortOrder;
+        } else {
+            sortColumnName = DATERELEASED_COLUMN_NAME;
+        }
+        init();  
+    }
+    
     public VDCUIList(Long vdcGroupId, boolean hideRestricted) {
         this.vdcGroupId = vdcGroupId;
         this.hideRestricted    = hideRestricted;
         init();  
     }
 
+    public VDCUIList(Long vdcGroupId, String alphaCharacter, boolean hideRestricted , String networkSortOrder) {
+        this.vdcGroupId = vdcGroupId;
+        this.hideRestricted    = hideRestricted;
+        if (networkSortOrder!=null && !networkSortOrder.isEmpty() ){
+            sortColumnName = networkSortOrder;
+        } else {
+            sortColumnName = DATERELEASED_COLUMN_NAME;
+        }
+        init();
+        this.alphaCharacter = alphaCharacter;        
+    }
+    
     public VDCUIList(Long vdcGroupId, String alphaCharacter, boolean hideRestricted) {
         this.vdcGroupId = vdcGroupId;
         this.hideRestricted    = hideRestricted;
@@ -97,6 +136,8 @@ public class VDCUIList extends SortableList {
             }
         }
     }
+    
+    
     public DataPaginator getPaginator() {
         return paginator;
     }

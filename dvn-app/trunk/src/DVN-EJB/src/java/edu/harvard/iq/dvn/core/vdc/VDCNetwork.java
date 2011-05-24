@@ -722,6 +722,16 @@ public class VDCNetwork implements java.io.Serializable  {
     public void setDefaultDisplayNumber(Long defaultDisplayNumber) {
         this.defaultDisplayNumber = defaultDisplayNumber;
     }
+    
+    private String defaultDVSortColumn;
+
+    public String getDefaultDVSortColumn() {
+        return defaultDVSortColumn;
+    }
+
+    public void setDefaultDVSortColumn(String defaultDVSortColumn) {
+        this.defaultDVSortColumn = defaultDVSortColumn;
+    }
 
     private boolean requireDVaffiliation;
 

@@ -1961,24 +1961,6 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
 
             studyVersion = study.getLatestVersion();
 
-            /*
-            //em.persist(studyVersion);
-            //em.flush();
-            Long newstudyid = study.getId();
-
-            if (newstudyid == null) {
-                em.persist(study);
-                //em.merge(study);
-                em.flush();
-                newstudyid = study.getId();
-                logger.info("study id, after flushing: "+newstudyid);
-                //em.merge(study);
-            } else {
-                em.persist(study);
-                logger.info("new study id: "+newstudyid);
-            }
-             */ // -- L.A.
-
             // if not a harvest, set initial date of deposit (this may get overridden during map ddi step
             if (!isHarvest) {
                 studyVersion.getMetadata().setDateOfDeposit(  new SimpleDateFormat("yyyy-MM-dd").format(new Date()) );
@@ -2030,21 +2012,23 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
 
         logger.info("reading the variables map;");
 
-        for (Object mapKey : variablesMap.keySet()) {
-            List<DataVariable> variablesMapEntry = (List<DataVariable>) variablesMap.get(mapKey);
-            Long dataTableId = (Long)mapKey;
-            if (variablesMapEntry != null) {
-                logger.info("found non-empty map entry for datatable id "+dataTableId);
+        if (variablesMap != null) {
+        
+            for (Object mapKey : variablesMap.keySet()) {
+                List<DataVariable> variablesMapEntry = (List<DataVariable>) variablesMap.get(mapKey);
+                Long dataTableId = (Long)mapKey;
+                if (variablesMapEntry != null) {
+                    logger.info("found non-empty map entry for datatable id "+dataTableId);
 
-                DataVariable dv = variablesMapEntry.get(0);
-                DataTable tmpDt = dv.getDataTable();
+                    DataVariable dv = variablesMapEntry.get(0);
+                    DataTable tmpDt = dv.getDataTable();
 
-                if (tmpDt != null) {
-                    tmpDt.setDataVariables(variablesMapEntry);
-                    logger.info("added variables to datatable "+tmpDt.getId());
-                } else {
-                    logger.info("first variable on the map for id "+tmpDt.getId()+" is referencing NULL datatable! WTF?");
-                }
+                    if (tmpDt != null) {
+                        tmpDt.setDataVariables(variablesMapEntry);
+                        logger.info("added variables to datatable "+tmpDt.getId());
+                    } else {
+                        logger.info("first variable on the map for id "+tmpDt.getId()+" is referencing NULL datatable! WTF?");
+                    }
 
 /*
                   for (DataVariable dv : variablesMapEntry) {
@@ -2075,12 +2059,13 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
                     }
                 }
   */
-            } else {
-                logger.info("found empty map entry for datatable id "+dataTableId);
+                } else {
+                    logger.info("found empty map entry for datatable id "+dataTableId);
+             }
+  
             }
+            logger.info("finished ingesting mapped variables");
         }
-
-        logger.info("finished ingesting mapped variables");
         
 
         //saveStudyVersion(studyVersion, userId);

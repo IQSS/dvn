@@ -144,7 +144,7 @@ public class DvnFastGetRecord {
  
             while ( ( line = rd.readLine () ) != null) {
                 if (metadataFlag) {
-                    if (line.matches("</metadata>")) {
+                    if (line.matches(".*</metadata>.*")) {
                         line = line.replaceAll("</metadata>.*", "");
                         metadataOut.println(line);
                         metadataOut.close();
@@ -154,7 +154,7 @@ public class DvnFastGetRecord {
                     }
                     metadataOut.println(line);
                 } else {
-                    if (line.matches("<metadata>")) {
+                    if (line.matches(".*<metadata>.*")) {
                         String lineCopy = line;
 
                         metadataOut.println(line.replaceAll("^.*<metadata>", ""));
@@ -162,8 +162,6 @@ public class DvnFastGetRecord {
                         oaiResponseHeader = oaiResponseHeader.concat(line.replaceAll("<metadata>.*", "<metadata></metadata></record></GetRecord></OAI-PMH>"));
 
                         // parse the OAI Record header:
-
-                        InputSource data = new InputSource(new StringReader(oaiResponseHeader));
 
                         XMLStreamReader xmlr = null;
 
@@ -185,7 +183,7 @@ public class DvnFastGetRecord {
                                 metadataOut.close();
                             }
                             if (savedMetadataFile != null) {
-                                savedMetadataFile.delete();
+                                //savedMetadataFile.delete();
                             }
 
                             try {
@@ -222,7 +220,7 @@ public class DvnFastGetRecord {
             if (savedMetadataFile != null) {
                 savedMetadataFile.delete();
             }
-            this.errorMessage = "Malformed GetRecord response";
+            this.errorMessage = "Malformed GetRecord response; "+oaiResponseHeader;
             throw new IOException (this.errorMessage);
 
         } else {

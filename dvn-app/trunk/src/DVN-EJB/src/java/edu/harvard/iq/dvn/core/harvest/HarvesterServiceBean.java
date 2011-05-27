@@ -131,8 +131,8 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
     private JAXBContext jaxbContext;
     private Unmarshaller unmarshaller;
 
-    private long processedSizeThisBatch; 
-    private List<Long> harvestedStudyIdsThisBatch;
+    private long processedSizeThisBatch = 0;
+    private List<Long> harvestedStudyIdsThisBatch = null;
 
 
     public void ejbCreate() {
@@ -277,8 +277,9 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
         FileHandler fileHandler = new FileHandler(logFileName);
         hdLogger.addHandler(fileHandler);
         List<Long> harvestedStudyIds = null;
-	processedSizeThisBatch = 0; 
-	harvestedStudyIdsThisBatch = new ArrayList<Long>();
+
+    	this.processedSizeThisBatch = 0;
+        this.harvestedStudyIdsThisBatch = new ArrayList<Long>();
 
         List<String> failedIdentifiers = new ArrayList<String>();
         try {
@@ -317,13 +318,17 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
                         hdLogger.log(Level.INFO, "COMPLETED HARVEST with results");
                     }
                     // now index all studies (need to modify for update)
-                    //if (processedSizeThisBatch > 0) {
+                    if (this.processedSizeThisBatch > 0) {
                         hdLogger.log(Level.INFO, "POST HARVEST, reindexing the remaining studies.");
-                        indexService.updateIndexList(harvestedStudyIdsThisBatch);
+                        if (this.harvestedStudyIdsThisBatch != null) {
+                            hdLogger.log(Level.INFO, this.harvestedStudyIdsThisBatch.size()+" studies in the batch");
+                        }
+                        hdLogger.log(Level.INFO, this.processedSizeThisBatch + " bytes of content");
+                        indexService.updateIndexList(this.harvestedStudyIdsThisBatch);
                         hdLogger.log(Level.INFO, "POST HARVEST, calls to index finished.");
-                    //} else {
-                    //    hdLogger.log(Level.INFO, "(All harvested content already reindexed)");
-                    //}
+                    } else {
+                        hdLogger.log(Level.INFO, "(All harvested content already reindexed)");
+                    }
                 }else {
                     harvestErrorOccurred.setValue(true);
                     harvestingDataverseService.setHarvestFailure(dataverse.getId(), harvestedStudyIds.size(), failedIdentifiers.size());
@@ -365,7 +370,8 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
             ResumptionTokenType resumptionToken = null;
 
             do {
-                resumptionToken = harvesterService.harvestFromIdentifiers(hdLogger, resumptionToken, dataverse, from, until, harvestedStudyIds, failedIdentifiers, harvestErrorOccurred);        
+                //resumptionToken = harvesterService.harvestFromIdentifiers(hdLogger, resumptionToken, dataverse, from, until, harvestedStudyIds, failedIdentifiers, harvestErrorOccurred
+                resumptionToken = harvestFromIdentifiers(hdLogger, resumptionToken, dataverse, from, until, harvestedStudyIds, failedIdentifiers, harvestErrorOccurred);
             } while (resumptionToken != null && !resumptionToken.equals(""));
 
             hdLogger.log(Level.INFO, "COMPLETED HARVEST, oaiUrl=" + dataverse.getServerUrl() + ",set=" + dataverse.getHarvestingSet() + ", metadataPrefix=" + dataverse.getHarvestFormatType().getMetadataPrefix() + ", from=" + from + ", until=" + until);
@@ -412,7 +418,7 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
                 for (Iterator it = listIdentifiersType.getHeader().iterator(); it.hasNext();) {
                     HeaderType header = (HeaderType) it.next();
                     MutableBoolean getRecordErrorOccurred = new MutableBoolean(false);
-                    Long studyId = harvesterService.getRecord(hdLogger, dataverse, header.getIdentifier(), dataverse.getHarvestFormatType().getMetadataPrefix(), getRecordErrorOccurred);
+                    Long studyId = getRecord(hdLogger, dataverse, header.getIdentifier(), dataverse.getHarvestFormatType().getMetadataPrefix(), getRecordErrorOccurred);
                     if (studyId != null) {
                         harvestedStudyIds.add(studyId);
                     }
@@ -491,21 +497,21 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
                 //studyService.importHarvestStudyExperimental(harvestedStudyFile, harvestedStudy);
                 hdLogger.log(Level.INFO, "Harvest Successful for identifier " + identifier);
 
-        		processedSizeThisBatch += record.getMetadataFile().length();
-                if ( harvestedStudyIdsThisBatch == null ) {
-                    harvestedStudyIdsThisBatch = new ArrayList<Long>();
+        		this.processedSizeThisBatch += record.getMetadataFile().length();
+                if ( this.harvestedStudyIdsThisBatch == null ) {
+                    this.harvestedStudyIdsThisBatch = new ArrayList<Long>();
                 }
-                harvestedStudyIdsThisBatch.add(harvestedStudy.getId());
+                this.harvestedStudyIdsThisBatch.add(harvestedStudy.getId());
 
-                if ( processedSizeThisBatch > 10000000 ) {
+                if ( this.processedSizeThisBatch > 10000000 ) {
 
-                    hdLogger.log(Level.INFO, "REACHED CONTENT BATCH SIZE LIMIT; calling index ("+harvestedStudyIdsThisBatch.size()+" studies in the batch).");
-                    indexService.updateIndexList(harvestedStudyIdsThisBatch);
+                    hdLogger.log(Level.INFO, "REACHED CONTENT BATCH SIZE LIMIT; calling index ("+this.harvestedStudyIdsThisBatch.size()+" studies in the batch).");
+                    indexService.updateIndexList(this.harvestedStudyIdsThisBatch);
                     hdLogger.log(Level.INFO, "REINDEX DONE.");
 
 
-                    processedSizeThisBatch = 0;
-                    harvestedStudyIdsThisBatch = null;
+                    this.processedSizeThisBatch = 0;
+                    this.harvestedStudyIdsThisBatch = null;
                 }
             }
         } catch (Throwable e) {

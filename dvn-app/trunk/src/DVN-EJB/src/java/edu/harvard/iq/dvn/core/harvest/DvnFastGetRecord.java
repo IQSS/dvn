@@ -214,6 +214,7 @@ public class DvnFastGetRecord {
             }
 
             // shouldn't get here!
+            // (unless it's a deleted record)
 
             if (rd != null) {
                 rd.close();
@@ -224,6 +225,10 @@ public class DvnFastGetRecord {
             if (savedMetadataFile != null) {
                 //savedMetadataFile.delete();
             }
+            if (this.isDeleted()) {
+                return;
+            }
+
             this.errorMessage = "Failed to parse GetRecord response; "+oaiResponseHeader;
             throw new IOException (this.errorMessage);
 

@@ -135,6 +135,7 @@ public class DvnFastGetRecord {
             String line = null;
             String oaiResponseHeader = "";
             boolean metadataFlag = false;
+            boolean metadataWritten = false;
 
             savedMetadataFile = File.createTempFile("meta", ".tmp");
             FileOutputStream tempFileStream = new FileOutputStream(savedMetadataFile);
@@ -151,86 +152,70 @@ public class DvnFastGetRecord {
 
                     oaiResponseHeader = oaiResponseHeader.concat(lineCopy.replaceAll("<metadata>.*", "<metadata></metadata></record></GetRecord></OAI-PMH>"));
 
-                    // parse the OAI Record header:
-
-                    XMLStreamReader xmlr = null;
-
-                    try {
-                        StringReader reader = new StringReader(oaiResponseHeader);
-                        xmlr = xmlInputFactory.createXMLStreamReader(reader);
-                        processOAIheader(xmlr);
-
-                    } catch (XMLStreamException ex) {
-                        //Logger.getLogger("global").log(Level.SEVERE, null, ex);
-                        if (this.errorMessage == null) {
-                            this.errorMessage = "Failed to parse GetRecord response: " + ex.getMessage();
-                        }
-
-                        if (rd != null) {
-                            rd.close();
-                        }
-                        if (metadataOut != null) {
-                            metadataOut.close();
-                        }
-                        if (savedMetadataFile != null) {
-                            //savedMetadataFile.delete();
-                            }
-
-                        try {
-                            if (xmlr != null) {
-                                xmlr.close();
-                            }
-                        } catch (Exception ex2) {
-                        }
-
-                        return;
-                    }
-
                     metadataFlag = true;
-                    
-                    try {
-                        if (xmlr != null) {
-                            xmlr.close();
-                        }
-                    } catch (Exception ed) {
-                    }
-
-
                 }
 
                 if (metadataFlag) {
-                    if (line.matches(".*</metadata>.*")) {
-                        line = line.replaceAll("</metadata>.*", "");
+                    if (!metadataWritten) {
+                        if (line.matches(".*</metadata>.*")) {
+                            line = line.replaceAll("</metadata>.*", "");
+                            metadataWritten = true;
+                        }
                         metadataOut.println(line);
-                        metadataOut.close();
-                        rd.close();
-
-                        return;
                     }
-                    metadataOut.println(line);
                 } else {
                     oaiResponseHeader = oaiResponseHeader.concat(line);
                 }
             }
 
-            // shouldn't get here!
-            // (unless it's a deleted record)
+            // parse the OAI Record header:
+
+            XMLStreamReader xmlr = null;
+
+            try {
+                StringReader reader = new StringReader(oaiResponseHeader);
+                xmlr = xmlInputFactory.createXMLStreamReader(reader);
+                processOAIheader(xmlr);
+
+            } catch (XMLStreamException ex) {
+                //Logger.getLogger("global").log(Level.SEVERE, null, ex);
+                if (this.errorMessage == null) {
+                    this.errorMessage = "Malformed GetRecord response: " + oaiResponseHeader;
+                }
+
+                // delete the temp metadata file; we won't need it:
+                if (savedMetadataFile != null) {
+                    //savedMetadataFile.delete();
+                }
+
+            }
+
+            try {
+                if (xmlr != null) {
+                    xmlr.close();
+                }
+            } catch (Exception ed) {
+                // seems OK to ignore;
+            }
+
 
             if (rd != null) {
                 rd.close();
             }
+
             if (metadataOut != null) {
                 metadataOut.close();
             }
-            if (savedMetadataFile != null) {
+
+            if (!(metadataWritten) && !(this.isDeleted())) {
+                this.errorMessage = "Failed to parse GetRecord response; "+oaiResponseHeader;
                 //savedMetadataFile.delete();
             }
+
             if (this.isDeleted()) {
-                return;
+                //savedMetadataFile.delete();
             }
 
-            this.errorMessage = "Failed to parse GetRecord response; "+oaiResponseHeader;
-            throw new IOException (this.errorMessage);
 
         } else {
             this.errorMessage = "GetRecord request failed. HTTP error code "+responseCode;

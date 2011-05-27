@@ -143,6 +143,61 @@ public class DvnFastGetRecord {
             metadataOut.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
  
             while ( ( line = rd.readLine () ) != null) {
+                if (line.matches(".*<metadata>.*")) {
+                    String lineCopy = line;
+
+                    //metadataOut.println(line.replaceAll("^.*<metadata>", ""));
+                    line = line.replaceAll("^.*<metadata>", "");
+
+                    oaiResponseHeader = oaiResponseHeader.concat(lineCopy.replaceAll("<metadata>.*", "<metadata></metadata></record></GetRecord></OAI-PMH>"));
+
+                    // parse the OAI Record header:
+
+                    XMLStreamReader xmlr = null;
+
+                    try {
+                        StringReader reader = new StringReader(oaiResponseHeader);
+                        xmlr = xmlInputFactory.createXMLStreamReader(reader);
+                        processOAIheader(xmlr);
+
+                    } catch (XMLStreamException ex) {
+                        //Logger.getLogger("global").log(Level.SEVERE, null, ex);
+                        if (this.errorMessage == null) {
+                            this.errorMessage = "Failed to parse GetRecord response: " + ex.getMessage();
+                        }
+
+                        if (rd != null) {
+                            rd.close();
+                        }
+                        if (metadataOut != null) {
+                            metadataOut.close();
+                        }
+                        if (savedMetadataFile != null) {
+                            //savedMetadataFile.delete();
+                            }
+
+                        try {
+                            if (xmlr != null) {
+                                xmlr.close();
+                            }
+                        } catch (Exception ex2) {
+                        }
+
+                        return;
+                    }
+
+                    metadataFlag = true;
+                    
+                    try {
+                        if (xmlr != null) {
+                            xmlr.close();
+                        }
+                    } catch (Exception ed) {
+                    }
+
+
+                }
+
                 if (metadataFlag) {
                     if (line.matches(".*</metadata>.*")) {
                         line = line.replaceAll("</metadata>.*", "");
@@ -154,58 +209,7 @@ public class DvnFastGetRecord {
                     }
                     metadataOut.println(line);
                 } else {
-                    if (line.matches(".*<metadata>.*")) {
-                        String lineCopy = line;
-
-                        metadataOut.println(line.replaceAll("^.*<metadata>", ""));
-
-                        oaiResponseHeader = oaiResponseHeader.concat(line.replaceAll("<metadata>.*", "<metadata></metadata></record></GetRecord></OAI-PMH>"));
-
-                        // parse the OAI Record header:
-
-                        XMLStreamReader xmlr = null;
-
-                        try {
-                            StringReader reader = new StringReader(oaiResponseHeader);
-                            xmlr =  xmlInputFactory.createXMLStreamReader(reader);
-                            processOAIheader( xmlr);
-
-                        } catch (XMLStreamException ex) {
-                            //Logger.getLogger("global").log(Level.SEVERE, null, ex);
-                            if (this.errorMessage == null) {
-                                this.errorMessage = "Failed to parse GetRecord response: " + ex.getMessage();
-                            }
-
-                            if (rd != null) {
-                                rd.close();
-                            }
-                            if (metadataOut != null) {
-                                metadataOut.close();
-                            }
-                            if (savedMetadataFile != null) {
-                                //savedMetadataFile.delete();
-                            }
-
-                            try {
-                                if (xmlr != null) {
-                                    xmlr.close();
-                                }
-                            } catch (Exception ex2) {}
-
-                            return;
-                        }
-
-                        metadataFlag = true;
-                        try {
-                            if (xmlr != null) {
-                                xmlr.close();
-                            }
-                        } catch (Exception ed) {}
-
-
-                    } else {
-                        oaiResponseHeader = oaiResponseHeader.concat(line);
-                    }
+                    oaiResponseHeader = oaiResponseHeader.concat(line);
                 }
             }
 
@@ -218,9 +222,9 @@ public class DvnFastGetRecord {
                 metadataOut.close();
             }
             if (savedMetadataFile != null) {
-                savedMetadataFile.delete();
+                //savedMetadataFile.delete();
             }
-            this.errorMessage = "Malformed GetRecord response; "+oaiResponseHeader;
+            this.errorMessage = "Failed to parse GetRecord response; "+oaiResponseHeader;
             throw new IOException (this.errorMessage);
 
         } else {

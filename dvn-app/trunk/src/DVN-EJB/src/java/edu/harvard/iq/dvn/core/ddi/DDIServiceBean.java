@@ -1612,7 +1612,23 @@ public class DDIServiceBean implements DDIServiceLocal {
         //while ( xmlr.next() == XMLStreamConstants.COMMENT ); // skip pre root comments
         xmlr.nextTag();
         xmlr.require(XMLStreamConstants.START_ELEMENT, null, "codeBook");
+
+        // Some DDIs provide an ID in the <codeBook> section.
+        // We are going to treat it as just another otherId.
+        // (we've seen instances where this ID was the only ID found in
+        // in a harvested DDI).
+
+        String codeBookLevelId = xmlr.getAttributeValue(null, "ID");
+        
+        if (codeBookLevelId != null && !codeBookLevelId.equals("")) {
+            StudyOtherId sid = new StudyOtherId();
+            sid.setOtherId( codeBookLevelId );
+            sid.setMetadata(studyVersion.getMetadata());
+            studyVersion.getMetadata().getStudyOtherIds().add(sid);
+        }
+
         processCodeBook(xmlr, studyVersion);
+
     }
 
      private Map processDDIdataSection( XMLStreamReader xmlr, StudyVersion studyVersion) throws XMLStreamException {
@@ -2223,7 +2239,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         //StudyFile sf = new OtherFile(studyVersion.getStudy()); // until we connect the sf and dt, we have to assume it's an other file
         // as an experiment, I'm going to do it the other way around:
         // assume that every fileDscr is a subsettable file now, and convert them
-        // to otherFiles later if no variables ar fpimd referemcing it -- L.A.
+        // to otherFiles later if no variables are referemming it -- L.A.
         TabularDataFile sf = new TabularDataFile(studyVersion.getStudy()); 
         DataTable dt = new DataTable();
         dt.setStudyFile(sf);
@@ -2411,10 +2427,6 @@ public class DDIServiceBean implements DDIServiceLocal {
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
                 if (xmlr.getLocalName().equals("dataDscr")) {
-                    // We can now go through the list of map of the variables
-                    // and files that we've compiled, and assign the
-                    // datavariables to the corresponding datatables,
-                    // *all at once*: -- L.A.
 
                     for (Object fileId : datatablesMap.keySet()) {
                         DataTable datatablesMapEntry = (DataTable) datatablesMap.get( fileId );
@@ -2465,9 +2477,11 @@ public class DDIServiceBean implements DDIServiceLocal {
 
         // associate dv with the correct file
 
-        // is this a typo?
-        // or is this some kind of a special attribute used in batch
-        // import? -- L.A.
+        // the attribute "files" in the <var> element below is legit;
+        // it is never used in the DVN-produced DDIs (we use the <location>
+        // element to link the variable to the datafile); it must have
+        // been added to process DDIs produced by one of our partners (who?).
+        // -- L.A.
         String fileId = xmlr.getAttributeValue(null, "files");
         if ( fileId != null ) {
             linkDataVariableToDatable(filesMap, xmlr.getAttributeValue(null, "fileid"), dv );
@@ -2770,11 +2784,11 @@ public class DDIServiceBean implements DDIServiceLocal {
         schema = (schema == null ? VAR_FORMAT_SCHEMA_ISO : schema); // default is ISO
 
         dv.setVariableFormatType( varService.findVariableFormatTypeByName( variableFormatTypeList, type ) );
-        /*
+        
         dv.setFormatSchema(schema);
         dv.setFormatSchemaName( xmlr.getAttributeValue(null, "formatname") );
         dv.setFormatCategory( xmlr.getAttributeValue(null, "category") );
-         */ // -- L.A.
+
     }
 
     private void processSumStat(XMLStreamReader xmlr, DataVariable dv) throws XMLStreamException {

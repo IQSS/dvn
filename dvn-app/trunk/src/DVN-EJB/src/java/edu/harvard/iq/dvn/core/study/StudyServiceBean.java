@@ -1913,10 +1913,24 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         StudyVersion studyVersion = null;
 
         boolean newStudy = true;
-        boolean isHarvest = (harvestIdentifier != null);
-        Map<String, String> globalIdComponents = null; // used if this is an update of a harvested study
 
         VDC vdc = em.find(VDC.class, vdcId);
+
+        if (vdc.getHarvestingDataverse() == null ) {
+            throw new EJBException("importHarvestStudy(...) should only be called for a harvesting dataverse.");
+        }
+
+        // Note on the logic below:
+        // It IS possible for the method to be called on a Harvested study, but without the
+        // harvestIdentifier supplied! This happens when harvesting from Nesstar sources
+        // (see more comments on Nesstar harvesting below).
+        // (then we should probably check explicitly that this is indeed a Nesstar
+        // harvesting dataverse).
+        //  --L.A.
+        boolean isHarvest = (harvestIdentifier != null || (vdc.getHarvestingDataverse() != null));
+        Map<String, String> globalIdComponents = null; // used if this is an update of a harvested study
+
+
         VDCUser creator = em.find(VDCUser.class, userId);
 
 
@@ -1933,7 +1947,37 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
 
         // Step 2a: if harvested, check if exists
         if (isHarvest) {
+            if (harvestIdentifier == null) {
+                // When harvesting from Nesstar sources, no unique identifiers
+                // are provided on the protocol level. Instead, we have to
+                // check the actual DDI metadata and see if it provides
+                // an ID we could use as the harvestidentifier.
+                //  -- L.A.
+                Study tmpStudy = new Study(vdc, creator, StudyVersion.VersionState.RELEASED);
+                StudyVersion tmpStudyVersion = tmpStudy.getLatestVersion();
+                String tmpStudyId = null;
+
+                // We are doing an extra run of ddiService.mapDDI in order
+                // to achieve this; note that mapDDI is a fairly cheap
+                // operation, since it doesn't parse the data portion of the
+                // ddi.
+
+                ddiService.mapDDI(ddiFile, tmpStudyVersion);
+
+                if (tmpStudyVersion.getMetadata().getStudyOtherIds().size() > 0) {
+                    tmpStudyId = tmpStudyVersion.getMetadata().getStudyOtherIds().get(0).getOtherId();
+                }
+
+                if (tmpStudyId == null || !isValidStudyIdString(tmpStudyId)) {
+                    throw new EJBException("No suitable ID was found in the Nesstar-harvested metadata.");
+                }
+
+                harvestIdentifier = tmpStudyId;
+
+            }
+
             study = getStudyByHarvestInfo(vdc, harvestIdentifier);
+
             if (study != null) {
 //                if (!study.isIsHarvested()) {
 //                    // This study actually belongs to the local DVN, so don't continue with harvest

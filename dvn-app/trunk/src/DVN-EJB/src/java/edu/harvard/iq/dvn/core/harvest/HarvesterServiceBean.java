@@ -710,7 +710,8 @@ public class HarvesterServiceBean implements HarvesterServiceLocal {
                         out.write( ddi.getXml() );
                         out.close();
 
-                        Study harvestedStudy = studyService.importHarvestStudy(xmlFile, dataverse.getVdc().getId(), networkAdmin.getId(), String.valueOf(++count) );
+                        //Study harvestedStudy = studyService.importHarvestStudy(xmlFile, dataverse.getVdc().getId(), networkAdmin.getId(), String.valueOf(++count) );
+                        Study harvestedStudy = studyService.importHarvestStudy(xmlFile, dataverse.getVdc().getId(), networkAdmin.getId(), null );
                         harvestedStudyIds.add(harvestedStudy.getId());               
 
                     } catch (Exception e) {

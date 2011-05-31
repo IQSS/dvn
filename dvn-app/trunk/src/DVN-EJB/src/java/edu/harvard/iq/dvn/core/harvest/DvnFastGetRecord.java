@@ -142,24 +142,62 @@ public class DvnFastGetRecord {
             PrintWriter metadataOut = new PrintWriter (tempFileStream, true);
 
             metadataOut.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+
+            int mopen = 0;
+            int mclose = 0;
  
             while ( ( line = rd.readLine () ) != null) {
-                if (line.matches(".*<metadata>.*")) {
-                    String lineCopy = line;
+                if (!metadataFlag) {
+                    if (line.matches(".*<metadata>.*")) {
+                        String lineCopy = line;
 
-                    //metadataOut.println(line.replaceAll("^.*<metadata>", ""));
-                    line = line.replaceAll("^.*<metadata>", "");
+                        int i = line.indexOf("<metadata>");
+                        line = line.substring(i+10);
 
-                    oaiResponseHeader = oaiResponseHeader.concat(lineCopy.replaceAll("<metadata>.*", "<metadata></metadata></record></GetRecord></OAI-PMH>"));
+                        oaiResponseHeader = oaiResponseHeader.concat(lineCopy.replaceAll("<metadata>.*", "<metadata></metadata></record></GetRecord></OAI-PMH>"));
 
-                    metadataFlag = true;
+                        metadataFlag = true;
+                    }
                 }
 
                 if (metadataFlag) {
                     if (!metadataWritten) {
+                        // Inside an OAI-PMH GetRecord response, the metadata
+                        // record returned is enclosed in <metadata> ... </metadata>
+                        // tags, after the OAI service sections that provide the
+                        // date, identifier and other protocol-level information.
+                        // However, it is possible for the metadata record itself
+                        // to have <metadata> tags of its own. So we have no
+                        // choice but to count the opening and closing tags in
+                        // order to recognize the one terminating the metadata
+                        // section.
+                        // This code isn't pretty, but on seriously large records
+                        // the savings from not fully parsing the XML are
+                        // significant.
+                        //  -- L.A. 
+
+                        if (line.matches("<metadata")) {
+                           int i = 0;
+                           while ((i = line.indexOf("<metadata", i)) > -1) {
+                               if (!line.substring(i).matches("^<metadata[^>]*/")) {
+                                   // don't count if it's a closed, empty tag:
+                                   // <metadata />
+                                   mopen++;
+                               }
+                               i+=10;
+                           }
+                        }
                         if (line.matches(".*</metadata>.*")) {
-                            line = line.replaceAll("</metadata>.*", "");
-                            metadataWritten = true;
+                            int i = 0;
+                            while ((i = line.indexOf("</metadata>", i)) > -1) {
+                                i+=11;
+                                mclose++;
+                            }
+
+                            if ( mclose > mopen ) {
+                                line = line.substring(0, line.lastIndexOf("</metadata>"));
+                                metadataWritten = true;
+                            }
                         }
                         metadataOut.println(line);
                     }

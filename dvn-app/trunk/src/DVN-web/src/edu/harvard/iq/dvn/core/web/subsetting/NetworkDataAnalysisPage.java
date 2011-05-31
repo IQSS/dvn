@@ -6,7 +6,11 @@
 package edu.harvard.iq.dvn.core.web.subsetting;
 
 import com.icesoft.faces.component.ext.HtmlDataTable;
+import com.icesoft.faces.component.ext.HtmlSelectBooleanCheckbox;
 import com.icesoft.faces.context.Resource;
+import com.icesoft.faces.context.effects.JavascriptContext;
+import com.icesoft.faces.webapp.xmlhttp.PersistentFacesState;
+import javax.faces.context.FacesContext;
 import edu.harvard.iq.dvn.core.analysis.NetworkDataServiceLocal;
 import edu.harvard.iq.dvn.core.analysis.NetworkDataSubsetResult;
 import edu.harvard.iq.dvn.core.analysis.NetworkMeasureParameter;
@@ -33,14 +37,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.ejb.ConcurrentAccessException;
 import javax.ejb.EJB;
+import javax.faces.FactoryFinder;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
+import javax.faces.context.FacesContextFactory;
 import javax.faces.event.ValueChangeEvent;
+import javax.faces.lifecycle.Lifecycle;
+import javax.faces.lifecycle.LifecycleFactory;
 import javax.faces.model.SelectItem;
 import javax.naming.Context;
 import javax.naming.InitialContext;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  *
@@ -62,7 +76,7 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
     private Long versionNumber;
     private StudyUI studyUI;
     private NetworkDataFile file;
-   
+    
     private String actionType = "manualQuery";
     private String manualQueryType = DataTable.TYPE_VERTEX;
     private String manualQuery;
@@ -88,8 +102,10 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
     private UIComponent automaticQueryError;
     private UIComponent networkMeasureError;
     private HtmlDataTable eventTable;
+    private boolean downloadInProgress = false;
+    private boolean showInProgressPopup = false;
 
-
+    
     public void init() {
         super.init();
 
@@ -365,8 +381,15 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
         this.events = events;
     }
 
-    
+    public boolean isDownloadInProgress() {
+        System.out.println("downloadInProgress is called by IS "+ downloadInProgress);
+        return downloadInProgress;
+    }
 
+    public void setDownloadInProgress(boolean downloadInProgress) {
+        this.downloadInProgress = downloadInProgress;
+    }
+    
 
     public List<SelectItem> getAttributeSelectItems() {
         if (DataTable.TYPE_VERTEX.equals(manualQueryType)) {
@@ -411,12 +434,15 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
         } catch (SQLException e) {
             FacesMessage message = new FacesMessage("Error executing query: "+e.getMessage());
             getFacesContext().addMessage(manualQueryError.getClientId(getFacesContext()), message);
+        } catch (ConcurrentAccessException a){
+             setShowInProgressPopup(true); 
         }
 
         return null;
     }
 
     public String automaticQuery_action() {
+
         try {
             int queryValue = 1;
             if (!StringUtil.isEmpty(automaticQueryNthValue)) {
@@ -433,7 +459,10 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
             events.add(event);
             canUndo = true;
             
-       } catch (Exception e) {
+       } catch (ConcurrentAccessException a){
+             setShowInProgressPopup(true); 
+       } 
+        catch (Exception e) {
                 FacesMessage message = new FacesMessage(e.getMessage());
                 getFacesContext().addMessage(automaticQueryError.getClientId(getFacesContext()), message);
        }
@@ -443,6 +472,7 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
     }
 
     public String networkMeasure_action() {
+
         try {
             String result = networkDataService.runNetworkMeasure( networkMeasureType, networkMeasureParamterList);
 
@@ -459,6 +489,8 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
             vertexAttributeSelectItems.add(new SelectItem(result));
             canUndo = true;
 
+        } catch (ConcurrentAccessException a){
+             setShowInProgressPopup(true); 
         } catch (Exception e) {
                 FacesMessage message = new FacesMessage(e.getMessage());
                 getFacesContext().addMessage(networkMeasureError.getClientId(getFacesContext()), message);
@@ -529,8 +561,18 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
     public NetworkDataAnalysisEvent getLastEvent() {
         return events.get( events.size() - 1);
     }
+    
+    public boolean isShowInProgressPopup() {
+        return showInProgressPopup;
+    }
 
-
+    public void setShowInProgressPopup(boolean showInProgressPopup) {
+        this.showInProgressPopup = showInProgressPopup;
+    }
+    
+    public void togglePopup(javax.faces.event.ActionEvent event) {
+         showInProgressPopup = !showInProgressPopup;
+    }
 
     public class NetworkDataAnalysisEvent {
 
@@ -620,8 +662,12 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
         }
 
         public InputStream open() throws IOException {
+            setDownloadInProgress(true);
+            System.out.println("downloadInProgress is called by OPEN"+ downloadInProgress);
             try {
                 file = networkDataService.getSubsetExport(getGraphML, getTabular);
+            } catch (ConcurrentAccessException a){
+             setShowInProgressPopup(true); 
             } catch (Exception ex) {
                 Logger.getLogger(NetworkDataAnalysisPage.class.getName()).log(Level.SEVERE, null, ex);
                 throw new IOException("There was a problem attempting to get the export file");

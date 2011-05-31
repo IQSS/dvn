@@ -87,7 +87,7 @@
           }
 
       }
-
+      
       // ]]>
                 </script>
                 <f:loadBundle basename="BundleAnalysis" var="bundleAnalysis"/>
@@ -353,6 +353,39 @@
                             </div>
                         </div>
                     </div>
+                    
+           <ice:panelPopup id="inProgressPopup"
+                        draggable="false"
+                        visible="#{NetworkDataAnalysisPage.showInProgressPopup}"
+                        autoCentre="true"
+                        modal="true">
+            <f:facet name="header">
+                <ice:panelGrid id="autoCentPanelGrid"
+                               width="100%" cellpadding="0"
+                               cellspacing="0" columns="2"
+                               columnClasses="none,popupButton">
+                    <ice:outputText value="Please wait"/>
+                    <ice:commandLink id="autoCentPopupClose"
+                                     actionListener="#{NetworkDataAnalysisPage.togglePopup}"
+                                     styleClass="popupModalClose">
+                        <ice:graphicImage value="/resources/images/icon_close.gif"/>
+                    </ice:commandLink>
+                </ice:panelGrid>
+            </f:facet>
+            <f:facet name="body">
+                <ice:panelGrid id="autoCentContent"
+                               width="100%" cellpadding="0"
+                               cellspacing="0" columns="1"
+                               styleClass="popupModalBody">
+                    <ice:outputText value="A download or query is in process, please try again once it has completed."/>
+                    <div jsfc="ice:panelGroup" styleClass="dvnFormPadding dvnFormMargin">
+                        <ice:commandButton id="autoCentPopupCancel"
+                                           actionListener="#{NetworkDataAnalysisPage.togglePopup}"
+                                           value="OK"/>
+                    </div>
+                </ice:panelGrid>
+            </f:facet>
+        </ice:panelPopup>
                 </ice:form>
 
             </ui:define>

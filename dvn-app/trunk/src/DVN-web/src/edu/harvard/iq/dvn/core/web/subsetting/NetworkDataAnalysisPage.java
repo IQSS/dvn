@@ -501,7 +501,13 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
 
     public String restart_action() throws Exception {
         //reinit workspace and clear events
-        networkDataService.resetAnalysis();
+        try {
+            networkDataService.resetAnalysis();
+        } catch (ConcurrentAccessException a){
+             setShowInProgressPopup(true); 
+        }
+        
+        
         events.clear();
         events.add(getInitialEvent());
         canUndo = false;
@@ -633,6 +639,22 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
 
         
     }
+    
+    //
+    class IOExceptionInProgress extends IOException{
+          private int id; // a unique id
+
+            private String message; // a detailed message 
+
+  
+  
+  public IOExceptionInProgress(int id, 
+    String message) {
+    this.id        = id;
+    this.message   = message;
+  }
+        
+    }
 
     // resource class which doesn't create the file (called via R) until the open method is called (ie the download button is pressed)
     class RFileResource implements Resource, Serializable{
@@ -662,20 +684,22 @@ public class NetworkDataAnalysisPage extends VDCBaseBean implements Serializable
         }
 
         public InputStream open() throws IOException {
-            setDownloadInProgress(true);
-            System.out.println("downloadInProgress is called by OPEN"+ downloadInProgress);
+
             try {
                 file = networkDataService.getSubsetExport(getGraphML, getTabular);
             } catch (ConcurrentAccessException a){
-             setShowInProgressPopup(true); 
-            } catch (Exception ex) {
+               setShowInProgressPopup(true);  
+               throw new IOExceptionInProgress(599, "There was a download or query already in progress.  Please wait.");
+
+            } 
+            catch (Exception ex) {
                 Logger.getLogger(NetworkDataAnalysisPage.class.getName()).log(Level.SEVERE, null, ex);
                 throw new IOException("There was a problem attempting to get the export file");
             }
 
             studyService.incrementNumberOfDownloads(fileId, vdcId);
 
-            return new FileInputStream(file);  
+            return new FileInputStream(file);              
         }
 
         public void withOptions(Options arg0) throws IOException {

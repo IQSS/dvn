@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:ice="http://www.icesoft.com/icefaces/component">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+
+<body>
+    <ui:composition template="/template.xhtml">
+        <ui:param name="pageTitle" value="Error - #{VDCRequest.dataversePageTitle}"/>
+        <ui:define name="body">
+            <ice:form  id="errorForm">
+                <ice:inputHidden id="vdcId" value="#{VDCRequest.currentVDCId}"/>
+                <div class="dvn_section">
+                    <div class="dvn_sectionTitle">
+                        <ice:outputText value="Error"/>
+                    </div>
+                    <div class="dvn_sectionBox">
+                        <div class="dvn_margin12">
+                            
+                            <ice:outputText styleClass="errorMessage" value="A download or query is in progress, please try again once it has completed. "/>
+                            
+                            <br/> <br/>
+                            <ice:outputText value="Error Message:" rendered="#{param.errorMsg!=null}"/>
+                            <ice:outputText escape="false" styleClass="errorMessage" value="#{param.errorMsg}" rendered="#{param.errorMsg!=null}"/>
+                            <ice:dataTable value="#{ErrorPage.messages}" var="currentRow">
+                                <ice:column>
+                                    <ice:outputText escape="false" styleClass="errorMessage" value="#{currentRow}"/>
+                                </ice:column>
+                            </ice:dataTable>
+                            <br/><br/>
+                            <ice:outputText styleClass="errorMessage" value="Event occurred at " rendered="#{param.time!=null}"/>
+                            <ice:outputText styleClass="errorMessage" value="#{param.time}" rendered="#{param.time!=null}">
+                                <f:convertDateTime dateStyle="full"/>
+                            </ice:outputText>
+                        </div>
+                    </div>
+                </div>
+            </ice:form>
+        </ui:define>
+    </ui:composition>
+</body>
+</html>
+

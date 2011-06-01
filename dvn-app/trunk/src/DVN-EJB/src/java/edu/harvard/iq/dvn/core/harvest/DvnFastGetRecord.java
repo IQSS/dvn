@@ -136,6 +136,7 @@ public class DvnFastGetRecord {
             String oaiResponseHeader = "";
             boolean metadataFlag = false;
             boolean metadataWritten = false;
+            boolean schemaChecked = false;
 
             savedMetadataFile = File.createTempFile("meta", ".tmp");
             FileOutputStream tempFileStream = new FileOutputStream(savedMetadataFile);
@@ -199,6 +200,22 @@ public class DvnFastGetRecord {
                                 metadataWritten = true;
                             }
                         }
+
+                        if (!schemaChecked) {
+                            // if the top-level XML element lacks the schema definition,
+                            // insert the generic xmlns and xmlns:xsi attributes; these
+                            // may be needed by the transform stylesheets.
+                            // this mimicks the behaviour of the OCLC GetRecord
+                            // client implementation.
+                            //      -L.A. 
+                            if (line.indexOf('<') > -1) {
+                                if (!line.matches("^[^<]*<[^>]*xmlns")) {
+                                    line = line.replaceFirst(">", " xmlns=\"http://www.openarchives.org/OAI/2.0/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">");
+                                }
+                                schemaChecked = true; 
+                            }
+                        }
+
                         metadataOut.println(line);
                     }
                 } else {

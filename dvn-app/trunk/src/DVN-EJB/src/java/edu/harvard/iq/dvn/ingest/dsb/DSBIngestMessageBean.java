@@ -41,9 +41,11 @@ import edu.harvard.iq.dvn.core.study.StudyFileEditBean;
 import edu.harvard.iq.dvn.core.study.StudyFileServiceLocal;
 import edu.harvard.iq.dvn.core.study.StudyServiceLocal;
 import edu.harvard.iq.dvn.core.study.TabularDataFile;
+import edu.harvard.iq.dvn.core.study.DataVariable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.EJB;
 import javax.ejb.MessageDriven;
@@ -144,18 +146,29 @@ public class DSBIngestMessageBean implements MessageListener {
     private void parseXML(String xmlToParse, FileMetadata fileMetadata) {
         // now map and get dummy dataTable
         Study dummyStudy = new Study();
-        ddiService.mapDDI(xmlToParse, dummyStudy.getLatestVersion());
-        TabularDataFile tdf = (TabularDataFile) dummyStudy.getStudyFiles().iterator().next();
-        DataTable dt = tdf.getDataTable();
+        Map filesMap = ddiService.mapDDI(xmlToParse, dummyStudy.getLatestVersion());
+        Map variablesMap = ddiService.reMapDDI(xmlToParse, dummyStudy.getLatestVersion(), filesMap);
+        if (variablesMap != null) {
 
-        TabularDataFile file = (TabularDataFile) fileMetadata.getStudyFile();
-      
-        // set to actual file (and copy over the UNF)
-        file.setDataTable( dt );
-        dt.setStudyFile(file);
-        file.setUnf(dt.getUnf());
-        //file.getFileMetadatas().add(fileMetadata);
+            Object mapKey = variablesMap.keySet().iterator().next();
+            List<DataVariable> variablesMapEntry = (List<DataVariable>)variablesMap.get(mapKey);
 
+            if (variablesMapEntry != null) {
+                DataVariable dv = variablesMapEntry.get(0);
+                DataTable tmpDt = dv.getDataTable();
+
+                if (tmpDt != null) {
+                    tmpDt.setDataVariables(variablesMapEntry);
+
+                    TabularDataFile file = (TabularDataFile) fileMetadata.getStudyFile();
+
+                    // set to actual file (and copy over the UNF)
+                    file.setDataTable( tmpDt );
+                    tmpDt.setStudyFile(file);
+                    file.setUnf(tmpDt.getUnf());
+                }
+            }
+        }
     }
  
     

@@ -24,9 +24,10 @@ import javax.ejb.Local;
 @Local
 public interface DDIServiceLocal extends StudyExporter, java.io.Serializable {
 
-    void mapDDI(String xmlToParse, StudyVersion studyVersion);
-    void mapDDI(File ddiFile, StudyVersion studyVersion);
-    Map reMapDDI(File ddiFile, StudyVersion studyVersion);
+    Map mapDDI(String xmlToParse, StudyVersion studyVersion);
+    Map mapDDI(File ddiFile, StudyVersion studyVersion);
+    Map reMapDDI(String xmlToParse, StudyVersion studyVersion, Map filesMap);
+    Map reMapDDI(File ddiFile, StudyVersion studyVersion, Map filesMap);
 
     void exportDataFile(TabularDataFile tdf, OutputStream out);
 

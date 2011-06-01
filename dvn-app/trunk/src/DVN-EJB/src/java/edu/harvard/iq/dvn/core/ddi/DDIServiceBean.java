@@ -1532,15 +1532,16 @@ public class DDIServiceBean implements DDIServiceLocal {
     // IMPORT METHODS
     //**********************
 
-    public void mapDDI(String xmlToParse, StudyVersion studyVersion) {
+    public Map mapDDI(String xmlToParse, StudyVersion studyVersion) {
         StringReader reader = null;
         XMLStreamReader xmlr = null;
+        Map filesMap = new HashMap();
         
                 
         try {
             reader = new StringReader(xmlToParse);
             xmlr =  xmlInputFactory.createXMLStreamReader(reader);
-            processDDI( xmlr, studyVersion );
+            processDDI( xmlr, studyVersion, filesMap);
         } catch (XMLStreamException ex) {
             Logger.getLogger("global").log(Level.SEVERE, null, ex);
             throw new EJBException("ERROR occurred in mapDDI.", ex);
@@ -1551,15 +1552,18 @@ public class DDIServiceBean implements DDIServiceLocal {
 
             if (reader != null) { reader.close();}
         }
+        return filesMap;
     }
 
-    public void mapDDI(File ddiFile, StudyVersion studyVersion) {
+    public Map mapDDI(File ddiFile, StudyVersion studyVersion) {
         FileInputStream in = null;
         XMLStreamReader xmlr = null;
+        Map filesMap = new HashMap();
+
         try {
             in = new FileInputStream(ddiFile);
             xmlr =  xmlInputFactory.createXMLStreamReader(in);
-            processDDI( xmlr, studyVersion );
+            processDDI( xmlr, studyVersion, filesMap );
         } catch (FileNotFoundException ex) {
             Logger.getLogger("global").log(Level.SEVERE, null, ex);
             throw new EJBException("ERROR occurred in mapDDI: File Not Found!");
@@ -1575,9 +1579,36 @@ public class DDIServiceBean implements DDIServiceLocal {
                 if (in != null) { in.close();}
             } catch (IOException ex) {}
         }
+
+        return filesMap;
     }
 
-    public Map reMapDDI(File ddiFile, StudyVersion studyVersion) {
+    public Map reMapDDI(String xmlToParse, StudyVersion studyVersion, Map filesMap) {
+        StringReader reader = null;
+        XMLStreamReader xmlr = null;
+        Map variablesMap;
+
+        try {
+            reader = new StringReader(xmlToParse);
+            xmlr =  xmlInputFactory.createXMLStreamReader(reader);
+            variablesMap = processDDIdataSection( xmlr, studyVersion, filesMap );
+        }  catch (XMLStreamException ex) {
+            Logger.getLogger("global").log(Level.SEVERE, null, ex);
+            throw new EJBException("ERROR occurred in mapDDI.", ex);
+        } finally {
+            try {
+                if (xmlr != null) { xmlr.close(); }
+            } catch (XMLStreamException ex) {}
+
+            if (reader != null) { reader.close();}
+
+        }
+        return variablesMap;
+    }
+
+
+
+    public Map reMapDDI(File ddiFile, StudyVersion studyVersion, Map filesMap) {
         FileInputStream in = null;
         XMLStreamReader xmlr = null;
         Map variablesMap;
@@ -1585,7 +1616,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         try {
             in = new FileInputStream(ddiFile);
             xmlr =  xmlInputFactory.createXMLStreamReader(in);
-            variablesMap = processDDIdataSection( xmlr, studyVersion );
+            variablesMap = processDDIdataSection( xmlr, studyVersion, filesMap );
         } catch (FileNotFoundException ex) {
             Logger.getLogger("global").log(Level.SEVERE, null, ex);
             throw new EJBException("ERROR occurred in mapDDI: File Not Found!");
@@ -1605,7 +1636,7 @@ public class DDIServiceBean implements DDIServiceLocal {
     }
 
     // <editor-fold defaultstate="collapsed" desc="import methods">
-    private void processDDI( XMLStreamReader xmlr, StudyVersion studyVersion) throws XMLStreamException {
+    private void processDDI( XMLStreamReader xmlr, StudyVersion studyVersion, Map filesMap) throws XMLStreamException {
         initializeCollections(studyVersion); // not sure we need this call; to be investigated
         
         // make sure we have a codeBook
@@ -1627,16 +1658,16 @@ public class DDIServiceBean implements DDIServiceLocal {
             studyVersion.getMetadata().getStudyOtherIds().add(sid);
         }
 
-        processCodeBook(xmlr, studyVersion);
+        processCodeBook(xmlr, studyVersion, filesMap);
 
     }
 
-     private Map processDDIdataSection( XMLStreamReader xmlr, StudyVersion studyVersion) throws XMLStreamException {
+     private Map processDDIdataSection( XMLStreamReader xmlr, StudyVersion studyVersion, Map filesMap) throws XMLStreamException {
         Map variablesMap = null;
 
         xmlr.nextTag();
         xmlr.require(XMLStreamConstants.START_ELEMENT, null, "codeBook");
-        variablesMap = processCodeBookDataSection(xmlr, studyVersion);
+        variablesMap = processCodeBookDataSection(xmlr, studyVersion, filesMap);
         return variablesMap;
     }
 
@@ -1662,33 +1693,39 @@ public class DDIServiceBean implements DDIServiceLocal {
         metadata.setStudyTopicClasses(new ArrayList());
 
         studyVersion.setFileMetadatas( new ArrayList() );
-}
+    }
 
-     private void processCodeBook( XMLStreamReader xmlr, StudyVersion studyVersion) throws XMLStreamException {
-        Map filesMap = new HashMap();
+    private void processCodeBook( XMLStreamReader xmlr, StudyVersion studyVersion, Map filesMap) throws XMLStreamException {
         Metadata metadata = studyVersion.getMetadata();
 
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
-                if (xmlr.getLocalName().equals("docDscr")) processDocDscr(xmlr, metadata);
-                else if (xmlr.getLocalName().equals("stdyDscr")) processStdyDscr(xmlr, studyVersion);
-                else if (xmlr.getLocalName().equals("fileDscr")) processFileDscr(xmlr, studyVersion, filesMap);
-                else if (xmlr.getLocalName().equals("dataDscr")) processDataDscr(xmlr, filesMap);
-                else if (xmlr.getLocalName().equals("otherMat")) processOtherMat(xmlr, studyVersion);
+                if (xmlr.getLocalName().equals("docDscr")) {
+                    processDocDscr(xmlr, metadata);
+                }
+                else if (xmlr.getLocalName().equals("stdyDscr")) {
+                    processStdyDscr(xmlr, studyVersion);
+                }
+                else if (xmlr.getLocalName().equals("fileDscr")) {
+                    processFileDscr(xmlr, studyVersion, filesMap);
+                }
+                //else if (xmlr.getLocalName().equals("dataDscr")) processDataDscr(xmlr, filesMap);
+                else if (xmlr.getLocalName().equals("otherMat")) {
+                    processOtherMat(xmlr, studyVersion);
+                }
+
             } else if (event == XMLStreamConstants.END_ELEMENT) {
                 if (xmlr.getLocalName().equals("codeBook")) return;
             }
         }
     }
-     private Map processCodeBookDataSection( XMLStreamReader xmlr, StudyVersion studyVersion) throws XMLStreamException {
-        Map filesMap = new HashMap();
+
+    private Map processCodeBookDataSection( XMLStreamReader xmlr, StudyVersion studyVersion, Map filesMap) throws XMLStreamException {
+        //Map filesMap = new HashMap();
         Map variablesMap = null;
 
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
-                if (xmlr.getLocalName().equals("fileDscr")) {
-                    reProcessFileDscr(xmlr, studyVersion, filesMap);
-                }
                 if (xmlr.getLocalName().equals("dataDscr")) {
                     variablesMap = processDataDscrForReal(xmlr, filesMap);
                 }
@@ -2240,6 +2277,8 @@ public class DDIServiceBean implements DDIServiceLocal {
         // as an experiment, I'm going to do it the other way around:
         // assume that every fileDscr is a subsettable file now, and convert them
         // to otherFiles later if no variables are referemming it -- L.A.
+
+
         TabularDataFile sf = new TabularDataFile(studyVersion.getStudy()); 
         DataTable dt = new DataTable();
         dt.setStudyFile(sf);
@@ -2303,6 +2342,8 @@ public class DDIServiceBean implements DDIServiceLocal {
     }
 
 
+    // Not used -- L.A.
+    /*
     private void reProcessFileDscr(XMLStreamReader xmlr, StudyVersion studyVersion, Map filesMap) throws XMLStreamException {
 
         String ddiFileId = xmlr.getAttributeValue(null, "ID");
@@ -2339,7 +2380,7 @@ public class DDIServiceBean implements DDIServiceLocal {
                 }
             }
         }
-    }
+    }*/
 
     private String processFileTxt(XMLStreamReader xmlr, FileMetadata fmd, DataTable dt) throws XMLStreamException {
         String ddiFileId = null;
@@ -2399,45 +2440,38 @@ public class DDIServiceBean implements DDIServiceLocal {
         }
     }
 
+    // Not used -- L.A.
+    /*
     private void processDataDscr(XMLStreamReader xmlr, Map filesMap) throws XMLStreamException {
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
                 if (xmlr.getLocalName().equals("var")) {
-                    // Do nothing! (for now)
-                    // we'll process the variables in another pass
-                    // -- L.A.
-                    /*
                     processVar(xmlr, filesMap);
-                     */
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
                 if (xmlr.getLocalName().equals("dataDscr")) return;
             }
         }
     }
+     */
 
-    private Map processDataDscrForReal(XMLStreamReader xmlr, Map datatablesMap) throws XMLStreamException {
+    private Map processDataDscrForReal(XMLStreamReader xmlr, Map filesMap) throws XMLStreamException {
         Map variableMap = new HashMap();
-        Map variableMapByTableId = new HashMap();
+        //Map variableMapByTableId = new HashMap();
 
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {
                 if (xmlr.getLocalName().equals("var")) {
-                    processVarForReal(xmlr, datatablesMap,variableMap);
+                    processVarForReal(xmlr, filesMap, variableMap);
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
                 if (xmlr.getLocalName().equals("dataDscr")) {
 
-                    for (Object fileId : datatablesMap.keySet()) {
-                        DataTable datatablesMapEntry = (DataTable) datatablesMap.get( fileId );
+                    for (Object fileId : filesMap.keySet()) {
                         List<DataVariable> variablesMapEntry = (List<DataVariable>) variableMap.get(fileId);
                         if (variablesMapEntry != null) {
-                            // commenting out, for now: -- L.A.
-                            //datatablesMapEntry.setDataVariables(variablesMapEntry);
-                            Long dtId = datatablesMapEntry.getId();
-                            if ( dtId != null) {
-                                variableMapByTableId.put(dtId, variablesMapEntry);
-                            }
+                            // OK, this looks like we have found variables for this
+                            // data file entry.
                         } else {
                             // TODO:
                             //  otherwise, the studyfile needs to be converted
@@ -2454,8 +2488,7 @@ public class DDIServiceBean implements DDIServiceLocal {
                         }
                     }
 
-                    //return variableMap;
-                    return variableMapByTableId; 
+                    return variableMap;
                 }
             }
         }
@@ -2468,6 +2501,7 @@ public class DDIServiceBean implements DDIServiceLocal {
     // see processVarForReal()
     // -- L.A.
 
+    /*
     private void processVar(XMLStreamReader xmlr, Map filesMap) throws XMLStreamException {
         DataVariable dv = new DataVariable();
         dv.setInvalidRanges(new ArrayList());
@@ -2539,6 +2573,7 @@ public class DDIServiceBean implements DDIServiceLocal {
             }
         }
     }
+     */
 
     private void processVarForReal(XMLStreamReader xmlr, Map filesMap, Map variableMap) throws XMLStreamException {
         DataVariable dv = new DataVariable();
@@ -2600,6 +2635,7 @@ public class DDIServiceBean implements DDIServiceLocal {
 
     // not used; 
     // see processLocationForReal();
+    /*
     private void processLocation(XMLStreamReader xmlr, DataVariable dv, Map filesMap) throws XMLStreamException {
         // associate dv with the correct file
         if ( dv.getDataTable() == null ) {
@@ -2635,6 +2671,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         } catch (NumberFormatException ex) {}
 
     }
+     */
 
     private void processLocationForReal(XMLStreamReader xmlr, DataVariable dv, Map filesMap, Map variableMap) throws XMLStreamException {
 
@@ -2655,19 +2692,32 @@ public class DDIServiceBean implements DDIServiceLocal {
             String fileId = xmlr.getAttributeValue(null, "fileid");
 
             if (fileId != null && !fileId.equals("")) {
-                DataTable filesMapEntry = (DataTable) filesMap.get( fileId );
 
+                //DataTable filesMapEntry = (DataTable) filesMap.get( fileId );
+
+                List filesMapEntry = (List) filesMap.get( fileId );
                 if (filesMapEntry != null) {
-                    dv.setDataTable(filesMapEntry);
+                    //FileMetadata fmd = (FileMetadata) filesMapEntry.get(0);
+                    DataTable dt = (DataTable) filesMapEntry.get(1);
 
-                    if (variableMap.get(fileId) == null) {
-                        variableMap.put(fileId, new ArrayList());
+                    Long fileDbId = dt.getStudyFile().getId();
+
+                    dv.setDataTable(dt);
+
+                    if (variableMap.get(fileDbId) == null) {
+                        variableMap.put(fileDbId, new ArrayList());
                     }
-                    List<DataVariable> variablesMapEntry = (List<DataVariable>) variableMap.get(fileId);
 
+                    List<DataVariable> variablesMapEntry = (List<DataVariable>) variableMap.get(fileDbId);
 
-
-                    // set fileOrder to size of list (pre add, since indexes start at 0)
+                    // fileOrder storeds the physical position of the variable
+                    // in the file. We are operating under the assumption that
+                    // the order in which the <var> sections appear in the DDI
+                    // reflects this physical order.
+                    // Which is a little dangerous; technically, the order of
+                    // elements is considered meaningless in XML, and
+                    // transformations do NOT guarantee to preserve it.
+                    //  -- L.A.
                     dv.setFileOrder( variablesMapEntry.size() );
 
                     variablesMapEntry.add(dv);
@@ -2675,18 +2725,18 @@ public class DDIServiceBean implements DDIServiceLocal {
             }
         }
 
-
     }
 
 
     // not used -- L.A.
+    /*
     private void linkDataVariableToDatable(Map filesMap, String fileId, DataVariable dv) {
         List filesMapEntry = (List) filesMap.get( fileId );
         if (filesMapEntry != null) {
             FileMetadata fmd = (FileMetadata) filesMapEntry.get(0);
             DataTable dt = (DataTable) filesMapEntry.get(1);
-            /*
-            if ( fmd.getStudyFile() instanceof OtherFile) {
+
+     if ( fmd.getStudyFile() instanceof OtherFile) {
                 // first time with this file, so attach the dt to the file and set as subsettable)
                 TabularDataFile tdf = converOtherFileToTabularDataFile( fmd);
 
@@ -2695,7 +2745,7 @@ public class DDIServiceBean implements DDIServiceLocal {
                 tdf.setDataTable(dt);
                 tdf.setFileType( FileUtil.determineTabularDataFileType( tdf ) ); // redetermine file type (suing dt), now that we know it's subsettable
             }
-             */ // -- L.A.
+             
 
             // set fileOrder to size of list (pre add, since indexes start at 0)
             dv.setFileOrder( dt.getDataVariables().size() );
@@ -2704,8 +2754,10 @@ public class DDIServiceBean implements DDIServiceLocal {
             dt.getDataVariables().add(dv);
         }
     }
+    */
 
     // not used -- L.A.
+    /*
     private TabularDataFile converOtherFileToTabularDataFile(FileMetadata fmd) {
         OtherFile of = (OtherFile) fmd.getStudyFile();
         TabularDataFile tdf = new TabularDataFile();
@@ -2730,7 +2782,7 @@ public class DDIServiceBean implements DDIServiceLocal {
 
         return tdf;
     }
-
+    */
 
     private void processInvalrng(XMLStreamReader xmlr, DataVariable dv) throws XMLStreamException {
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
@@ -2804,7 +2856,7 @@ public class DDIServiceBean implements DDIServiceLocal {
         cat.setMissing( "Y".equals( xmlr.getAttributeValue(null, "missing") ) ); // default is N, so null sets missing to false
         cat.setDataVariable(dv);
         // commented out: -- L.A.
-        //dv.getCategories().add(cat);
+        dv.getCategories().add(cat);
 
         for (int event = xmlr.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlr.next()) {
             if (event == XMLStreamConstants.START_ELEMENT) {

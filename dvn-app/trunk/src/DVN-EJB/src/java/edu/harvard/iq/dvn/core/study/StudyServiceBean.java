@@ -2012,9 +2012,12 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
 
         }
 
+        em.persist(study);
+
+
 
         // Step 3: map the ddi
-        ddiService.mapDDI(ddiFile, studyVersion);
+        Map dataFilesMap = ddiService.mapDDI(ddiFile, studyVersion);
 
         logger.info("doImportStudy: ddi mapped");
 
@@ -2030,9 +2033,6 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
             studyVersion.getMetadata().setHarvestDVNTermsOfUse(null);
         }
 
-        logger.info("persisting;");
-        em.persist(study);
-        logger.info("flushing");
         em.flush();
 
 
@@ -2044,13 +2044,14 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
 
         // persist files from ddi (since studyFile is not persisted when the new FileMetadata objects are created - since
         // the studyFile often already exists - we need to manually persist the study files here)
+
         for (FileMetadata fmd : studyVersion.getFileMetadatas()) {
            em.persist( fmd.getStudyFile() );
         }
 
         
 
-        Map variablesMap = ddiService.reMapDDI(ddiFile, studyVersion);
+        Map variablesMap = ddiService.reMapDDI(ddiFile, studyVersion, dataFilesMap);
 
         logger.info("doImportStudy: ddi re-mapped");
 
@@ -2060,9 +2061,9 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         
             for (Object mapKey : variablesMap.keySet()) {
                 List<DataVariable> variablesMapEntry = (List<DataVariable>) variablesMap.get(mapKey);
-                Long dataTableId = (Long)mapKey;
+                Long fileId = (Long)mapKey;
                 if (variablesMapEntry != null) {
-                    logger.info("found non-empty map entry for datatable id "+dataTableId);
+                    logger.info("found non-empty map entry for datatable id "+fileId);
 
                     DataVariable dv = variablesMapEntry.get(0);
                     DataTable tmpDt = dv.getDataTable();
@@ -2104,7 +2105,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
                 }
   */
                 } else {
-                    logger.info("found empty map entry for datatable id "+dataTableId);
+                    logger.info("found empty map entry for datatable id "+fileId);
              }
   
             }

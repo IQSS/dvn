@@ -209,7 +209,7 @@ public class DvnFastGetRecord {
                             // client implementation.
                             //      -L.A. 
                             if (line.indexOf('<') > -1) {
-                                if (!line.matches("^[^<]*<[^>]*xmlns")) {
+                                if (!line.matches("^[^<]*<[^>]*xmlns.*")) {
                                     line = line.replaceFirst(">", " xmlns=\"http://www.openarchives.org/OAI/2.0/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">");
                                 }
                                 schemaChecked = true; 

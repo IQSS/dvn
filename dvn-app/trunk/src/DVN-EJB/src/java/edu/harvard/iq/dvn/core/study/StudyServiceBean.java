@@ -1384,7 +1384,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public Study importHarvestStudy(File xmlFile, Long vdcId, Long userId, String harvestIdentifier) {
         VDC vdc = em.find(VDC.class, vdcId);
-        //em.refresh(vdc); // workaround to get correct value for harvesting dataverse (to be investigated)
+        em.refresh(vdc); // workaround to get correct value for harvesting dataverse (to be investigated)
 
         if (vdc.getHarvestingDataverse() == null) {
             throw new EJBException("importHarvestStudy(...) should only be called for a harvesting dataverse.");
@@ -2112,7 +2112,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
         }
         
 
-        //saveStudyVersion(studyVersion, userId);
+        saveStudyVersion(studyVersion, userId);
         if (isHarvest) {
             studyVersion.setReleaseTime( new Date() );
         }

@@ -1394,8 +1394,7 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
 
         // new create exports files for these studies
 
-        // skipping (as a test -- L.A.)
-        // studyService.exportStudy(study);
+        studyService.exportStudy(study);
 
 
         logger.info("completed importHarvestStudy() returning study" + study.getGlobalId());
@@ -2145,9 +2144,6 @@ public class StudyServiceBean implements edu.harvard.iq.dvn.core.study.StudyServ
             gnrsService.createHandle(handle);
         }
 
-        //logger.info("completed doImportStudy();");
-        //em.flush(); -- L.A.
-        //em.persist(study);
         logger.info("completed doImportStudy() returning study" + study.getGlobalId());
         return study;
     }

@@ -2790,7 +2790,7 @@ public class DDIServiceBean implements DDIServiceLocal {
                 if (xmlr.getLocalName().equals("item")) {
                     VariableRange range = new VariableRange();
                     // commented out: -- L.A.
-                    //dv.getInvalidRanges().add(range);
+                    dv.getInvalidRanges().add(range);
                     range.setDataVariable(dv);
 
                     range.setBeginValue( xmlr.getAttributeValue(null, "VALUE") );
@@ -2798,7 +2798,7 @@ public class DDIServiceBean implements DDIServiceLocal {
                 } else if (xmlr.getLocalName().equals("range")) {
                     VariableRange range = new VariableRange();
                     // commented out: -- L.A.
-                    //dv.getInvalidRanges().add(range);
+                    dv.getInvalidRanges().add(range);
                     range.setDataVariable(dv);
 
                     String min = xmlr.getAttributeValue(null, "min");

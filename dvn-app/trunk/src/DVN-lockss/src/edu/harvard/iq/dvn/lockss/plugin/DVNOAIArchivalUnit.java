@@ -141,9 +141,22 @@ public class DVNOAIArchivalUnit extends DefinableArchivalUnit {
 	CrawlRule rule = makeRules();
 	boolean follow_links = true; 
 	    
-	return new OaiCrawlSpec(makeOaiData(), getPermissionPages(),
-				null, rule, follow_links,
-				makeLoginPageChecker());
+	OaiCrawlSpec c_spec = new OaiCrawlSpec(makeOaiData(), getPermissionPages(),
+					       null, rule, follow_links,
+					       makeLoginPageChecker());
+
+	// The DVN download URLs are found in the DDI metadata, that is 
+	// returned as part of the initial OAI ListRecords request.
+	// In the LOCKSS scheme of things this makes all these URLs 
+	// *START URLs*. This in turn makes LOCKSS treat any error 
+	// encountered while retrieving these as FATAL. 
+	//
+	// A mechanism has been added to override this, with a flag in the 
+	// OaiCrawlSpec: 
+
+	c_spec.setFailOnStartUrlError(false);
+
+	return c_spec;
     }
 
 

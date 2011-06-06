@@ -1,10 +1,6 @@
 /*
- * $Id: DVNOAIUrlCacher.java,v 1.76 2008/02/29 12:01:59 leonid Exp $
- */
 
-/*
-
-Copyright (c) 2000-2003 Board of Trustees of Leland Stanford Jr. University,
+Copyright (c) 2000-2010 Board of Trustees of Leland Stanford Jr. University,
 all rights reserved.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -30,25 +26,18 @@ in this Software without prior written authorization from Stanford University.
 
 */
 
+//D-B
 package edu.harvard.iq.dvn.lockss.plugin;
+//D-E
 
 import java.io.*;
 import java.net.*;
 import java.util.*;
 import java.text.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern; 
-
-import org.apache.commons.httpclient.HttpClient;
-//import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
-import org.apache.commons.httpclient.methods.GetMethod; 
-import org.apache.commons.httpclient.methods.PostMethod; 
-import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
-import org.apache.commons.httpclient.methods.multipart.Part;
-import org.apache.commons.httpclient.methods.multipart.StringPart;
 
 import org.lockss.app.*;
 import org.lockss.state.*;
+import org.lockss.config.*;
 import org.lockss.plugin.*;
 import org.lockss.repository.*;
 import org.lockss.util.*;
@@ -56,28 +45,45 @@ import org.lockss.util.urlconn.*;
 import org.lockss.daemon.*;
 import org.lockss.crawler.*;
 
-import edu.harvard.iq.dvn.core.web.dvnremote.DvnTermsOfUseAccess; 
+//D-B
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.apache.commons.httpclient.HttpClient;
+//import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
+import org.apache.commons.httpclient.methods.GetMethod;
+
+import edu.harvard.iq.dvn.core.web.dvnremote.DvnTermsOfUseAccess;
+//D-E
 
 /**
- * (Leonid:) My clone of BaseUrlCacher; I chose to create my own copy 
- * of the class instead of extending it just to have more freedom in 
- * figuring out how it all works. I'll probably reimplement it later
- * as an extension.
- * --
  * Basic, fully functional UrlCacher.  Utilizes the LockssRepository for
  * caching, and {@link LockssUrlConnection}s for fetching.  Plugins may
  * extend this to achieve, <i>eg</i>, specialized host connection or
  * authentication.  The redirection semantics offered here must be
  * preserved.
  */
+//D-B
 public class DVNOAIUrlCacher implements UrlCacher {
-  protected static Logger logger = Logger.getLogger("DVNOAIUrlCacher");
+    protected static Logger logger = Logger.getLogger("DVNOAIUrlCacher");
+  //D-E
+
+  /** If true, normalize redirect targets (location header). */
+  public static final String PARAM_NORMALIZE_REDIRECT_URL =
+    Configuration.PREFIX + "baseuc.normalizeRedirectUrl";
+  public static final boolean DEFAULT_NORMALIZE_REDIRECT_URL = true;
+
+  /** Limit on rewinding the network input stream after checking for a
+   * login page.  If LoginPageChecker returns false after reading father
+   * than this the page will be refetched. */
+  public static final String PARAM_LOGIN_CHECKER_MARK_LIMIT =
+    Configuration.PREFIX + "baseuc.loginPageCheckerMarkLimit";
+  public static final int DEFAULT_LOGIN_CHECKER_MARK_LIMIT = 24 * 1024;
 
   /** Maximum number of redirects that will be followed */
-  // (We don't expect more than 1! -- if the terms-of-use click through
-  // is not resolved after 1 redirect, it's safe to assume we're screwed.
+  //D-B
   static final int MAX_REDIRECTS = 1;
+  //D-E
 
   // Preferred date format according to RFC 2068(HTTP1.1),
   // RFC 822 and RFC 1123
@@ -111,31 +117,36 @@ public class DVNOAIUrlCacher implements UrlCacher {
     "refetch_on_set_cookie";
   private static final boolean DEFAULT_SHOULD_REFETCH_ON_SET_COOKIE = true;
 
-  // Max amount we'll buffer up to avoid refetching a page when we check if
-  // it's a login page
-  static final int LOGIN_BUFFER_MAX = 16 * 1024;
+//D-B
+  private HttpClient client = null;
 
-    private HttpClient client = null;
-    
-    private HttpClient getClient() {
-        //if (client == null) {
-	//    client = new HttpClient( new MultiThreadedHttpConnectionManager() );
-        //}
-	client = new HttpClient();
-        return client;
-    }
+  private HttpClient getClient() {
+    //if (client == null) {
+    //    client = new HttpClient( new MultiThreadedHttpConnectionManager() );
+    //}
+    client = new HttpClient();
+    return client;
+  }
+//D-E
 
-
+  //D-B
   public DVNOAIUrlCacher(ArchivalUnit owner, String url) {
+  //D-E
     this.origUrl = url;
     this.fetchUrl = url;
-
+    //au = owner.getArchivalUnit();
     au = owner;
+    // D-B
     DVNOAIPlugin plugin = (DVNOAIPlugin)au.getPlugin();
+    // D-E
+
     repository = plugin.getDaemon().getLockssRepository(au);
     nodeMgr = plugin.getDaemon().getNodeManager(au);
     logger.debug3("Node manager "+nodeMgr);
+    // D-B
     resultMap = plugin.getCacheResultMap();
+    //D-E
+
   }
 
   /**
@@ -271,8 +282,8 @@ public class DVNOAIUrlCacher implements UrlCacher {
       CIProperties headers = getHeaders();
       if (headers.get("Set-Cookie") != null) {
 	if (shouldRefetchOnCookies()) {
-	  logger.debug("Found set-cookie header, refetching");
-	  input.close();
+	  logger.debug3("Found set-cookie header, refetching");
+	  IOUtil.safeClose(input);
 	  input = null; // ensure don't reclose in finally if next line throws
 	  releaseConnection();
 	  input = getUncachedInputStream(lastModified);
@@ -300,9 +311,7 @@ public class DVNOAIUrlCacher implements UrlCacher {
       }
       return CACHE_RESULT_FETCHED;
     } finally {
-      if (input != null) {
-	input.close();
-      }
+      IOUtil.safeClose(input);
     }
   }
 
@@ -344,7 +353,8 @@ public class DVNOAIUrlCacher implements UrlCacher {
       if (!input.markSupported()) {
         input = new BufferedInputStream(input);
       }
-      input.mark(LOGIN_BUFFER_MAX);
+      input.mark(CurrentConfig.getIntParam(PARAM_LOGIN_CHECKER_MARK_LIMIT,
+					   DEFAULT_LOGIN_CHECKER_MARK_LIMIT));
       Reader reader = new InputStreamReader(input, Constants.DEFAULT_ENCODING);
       try {
 	if (checker.isLoginPage(headers, reader)) {
@@ -362,7 +372,9 @@ public class DVNOAIUrlCacher implements UrlCacher {
   }
 
   private boolean shouldRefetchOnCookies() {
-      return false;
+    //D-B
+    return false;
+    //D-E
   }
 
   private CIProperties getHeaders() throws IOException {
@@ -378,7 +390,7 @@ public class DVNOAIUrlCacher implements UrlCacher {
   /** Store into the repository the content and headers from a successful
    * fetch.  If redirects were followed and
    * REDIRECT_OPTION_STORE_ALL was specified, store the content and
-   * headers under each name on the chain of redirections.
+   * headers under each name in the chain of redirections.
    */
   public void storeContent(InputStream input, CIProperties headers)
       throws IOException {
@@ -399,27 +411,31 @@ public class DVNOAIUrlCacher implements UrlCacher {
 	if (logger.isDebug2())
 	  logger.debug2("Storing in redirected-to url: " + name);
 	InputStream is = cu.getUnfilteredInputStream();
-	if (ix < last) {
-	  // this one was redirected, set its redirected-to prop to the
-	  // next in the list.
-	  headerCopy.setProperty(CachedUrl.PROPERTY_REDIRECTED_TO,
-				 (String)otherNames.get(ix + 1));
-	} else if (!name.equals(fetchUrl)) {
-	  // Last in list.  If not same as fetchUrl, means the final
-	  // redirection was a directory(slash) redirection, which we don't
-	  // store as a different name or put on otherNames.  Indicate the
-	  // redirection to the slashed version.  The proxy must be aware
-	  // of this.  (It can't rely on this property being present,
-	  // becuase foo/ might later be fetched, not due to a redirect
-	  // from foo.)
-	  headerCopy.setProperty(CachedUrl.PROPERTY_REDIRECTED_TO, fetchUrl);
-	} else {
-	  // This is the name that finally got fetched, don't store
-	  // redirect prop or content-url
-	  headerCopy.remove(CachedUrl.PROPERTY_REDIRECTED_TO);
-	  headerCopy.remove(CachedUrl.PROPERTY_CONTENT_URL);
+	try {
+	  if (ix < last) {
+	    // this one was redirected, set its redirected-to prop to the
+	    // next in the list.
+	    headerCopy.setProperty(CachedUrl.PROPERTY_REDIRECTED_TO,
+				   (String)otherNames.get(ix + 1));
+	  } else if (!name.equals(fetchUrl)) {
+	    // Last in list.  If not same as fetchUrl, means the final
+	    // redirection was a directory(slash) redirection, which we don't
+	    // store as a different name or put on otherNames.  Indicate the
+	    // redirection to the slashed version.  The proxy must be aware
+	    // of this.  (It can't rely on this property being present,
+	    // becuase foo/ might later be fetched, not due to a redirect
+	    // from foo.)
+	    headerCopy.setProperty(CachedUrl.PROPERTY_REDIRECTED_TO, fetchUrl);
+	  } else {
+	    // This is the name that finally got fetched, don't store
+	    // redirect prop or content-url
+	    headerCopy.remove(CachedUrl.PROPERTY_REDIRECTED_TO);
+	    headerCopy.remove(CachedUrl.PROPERTY_CONTENT_URL);
+	  }
+	  storeContentIn(name, is, headerCopy);
+	} finally {
+	  IOUtil.safeClose(is);
 	}
-	storeContentIn(name, is, headerCopy);
       }
     }
   }
@@ -428,21 +444,46 @@ public class DVNOAIUrlCacher implements UrlCacher {
 			     CIProperties headers)
       throws IOException {
     RepositoryNode leaf = null;
+    OutputStream os = null;
     try {
-      leaf = repository.createNewNode(url);
-      leaf.makeNewVersion();
+      try {
+	leaf = repository.createNewNode(url);
+	leaf.makeNewVersion();
 
-      OutputStream os = leaf.getNewOutputStream();
-      StreamUtil.copy(input, os, wdog);
-      if (!fetchFlags.get(DONT_CLOSE_INPUT_STREAM_FLAG)) {
-	input.close();
+	os = leaf.getNewOutputStream();
+	StreamUtil.copy(input, os, -1, wdog, true);
+	if (!fetchFlags.get(DONT_CLOSE_INPUT_STREAM_FLAG)) {
+	  try {
+	    input.close();
+	  } catch (IOException ex) {
+	    CacheException closeEx =
+	      resultMap.mapException(au, conn, ex, null);
+	    if (!(closeEx instanceof CacheException.IgnoreCloseException)) {
+	      throw new StreamUtil.InputException(ex);
+	    }
+	  }
+	}
+	os.close();
+	headers.setProperty(CachedUrl.PROPERTY_NODE_URL, url);
+	leaf.setNewProperties(headers);
+	leaf.sealNewVersion();
+      } catch (StreamUtil.InputException ex) {
+	throw resultMap.mapException(au, conn, ex.getIOCause(), null);
+      } catch (StreamUtil.OutputException ex) {
+	throw resultMap.getRepositoryException(ex.getIOCause());
       }
-      os.close();
-      headers.setProperty(CachedUrl.PROPERTY_NODE_URL, url);
-      leaf.setNewProperties(headers);
-      leaf.sealNewVersion();
+    } catch (IOException ex) {
+      logger.debug("storeContentIn1", ex);
+      if (leaf != null) {
+	try {
+	  leaf.abandonNewVersion();
+	} catch (Exception e) {
+	  // just being paranoid
+	}
+      }
+      throw ex;
     } catch (Exception ex) {
-      logger.debug("storeContentIn", ex);
+      logger.debug("storeContentIn2", ex);
       if (leaf != null) {
 	try {
 	  leaf.abandonNewVersion();
@@ -451,6 +492,8 @@ public class DVNOAIUrlCacher implements UrlCacher {
 	}
       }
       throw resultMap.getRepositoryException(ex);
+    } finally {
+      IOUtil.safeClose(os);
     }
   }
 
@@ -558,9 +601,6 @@ public class DVNOAIUrlCacher implements UrlCacher {
 	logger.debug3("Response: " + conn.getResponseCode() + ": " +
 		      conn.getResponseMessage());
       }
-      //if ( conn.getResponseCode() == 403 ) {
-      //  throw new CacheException.ExpectedNoRetryException();
-      //}
       CacheException c_ex = resultMap.checkResult(au, conn);
       if(c_ex != null) {
 	// The stack below here is misleading.  Makes more sense for it
@@ -587,37 +627,50 @@ public class DVNOAIUrlCacher implements UrlCacher {
     }
   }
 
-    private void openWithRedirects(String lastModified) throws IOException {
-	int retry = 0;
-	while (true) {
-	    try {
-		openOneConnection(lastModified);
-		break;
-	    } catch (CacheException.NoRetryNewUrlException e) {
-		//get the location header to find out where to redirect to
-		String location = conn.getResponseHeaderValue("location");
-		if (logger.isDebug3()) {
-		    logger.debug3("Redirect requested from '" + fetchUrl +
-				  "' to '" + location + "'");
-		}
-		if (au.isLoginPageUrl(location)) {
-		    logger.debug3("Redirected to TermsOfUse page: " + location);
-		} else {
-		    throw e;
-		}
-		
-		if (!processTermsOfUseResponse()) {
-		    throw e;
-		}
-		checkConnectException(conn);
-		break; 
-	    }
-	}
+  private void openWithRedirects(String lastModified) throws IOException {
+    int retry = 0;
+    while (true) {
+      try {
+        openOneConnection(lastModified);
+        break;
+      } catch (CacheException.NoRetryNewUrlException e) {
+        //D-B
+        //get the location header to find out where to redirect to
+        String location = conn.getResponseHeaderValue("location");
+        if (logger.isDebug3()) {
+            logger.debug3("Redirect requested from '" + fetchUrl +
+                "' to '" + location + "'");
+        }
+        if (au.isLoginPageUrl(location)) {
+            logger.debug3("Redirected to TermsOfUse page: " + location);
+        } else {
+            throw e;
+        }
+
+        if (!processTermsOfUseResponse()) {
+            throw e;
+        }
+        checkConnectException(conn);
+        break;
+        //D-E
+      }
     }
-    
-  /** Overridable so testing code can return a MockLockssUrlConnection */
+  }
+
   protected LockssUrlConnection makeConnection(String url,
 					       LockssUrlConnectionPool pool)
+      throws IOException {
+    LockssUrlConnection res = makeConnection0(url, pool);
+    String cookiePolicy = au.getCrawlSpec().getCookiePolicy();
+    if (cookiePolicy != null) {
+      res.setCookiePolicy(cookiePolicy);
+    }
+    return res;
+  }
+
+  /** Overridable so testing code can return a MockLockssUrlConnection */
+  protected LockssUrlConnection makeConnection0(String url,
+						LockssUrlConnectionPool pool)
       throws IOException {
     return UrlUtil.openConnection(url, pool);
   }
@@ -631,32 +684,39 @@ public class DVNOAIUrlCacher implements UrlCacher {
     try {
       conn = makeConnection(fetchUrl, connectionPool);
       if (proxyHost != null) {
-	if (logger.isDebug3()) logger.debug3("Proxying through " + proxyHost
-					     + ":" + proxyPort);
-	conn.setProxy(proxyHost, proxyPort);
+    	if (logger.isDebug3()) logger.debug3("Proxying through " + proxyHost
+            + ":" + proxyPort);
+        conn.setProxy(proxyHost, proxyPort);
       }
       if (localAddr != null) {
-	conn.setLocalAddress(localAddr);
+        conn.setLocalAddress(localAddr);
+      }
+      String userPass = getUserPass();
+      if (userPass != null) {
+        List<String> lst = StringUtil.breakAt(userPass, ':');
+        if (lst.size() == 2) {
+            conn.setCredentials(lst.get(0), lst.get(1));
+        }
       }
       if (reqProps != null) {
-	for (Iterator iter = reqProps.keySet().iterator(); iter.hasNext(); ) {
-	  String key = (String)iter.next();
-	  conn.setRequestProperty(key, reqProps.getProperty(key));
-	}
+        for (Iterator iter = reqProps.keySet().iterator(); iter.hasNext(); ) {
+            String key = (String)iter.next();
+            conn.setRequestProperty(key, reqProps.getProperty(key));
+        }
       }
       conn.setFollowRedirects(isRedirectOption(REDIRECT_OPTION_FOLLOW_AUTO));
       conn.setRequestProperty("user-agent", LockssDaemon.getUserAgent());
 
       if (lastModified != null) {
-	conn.setIfModifiedSince(lastModified);
+        conn.setIfModifiedSince(lastModified);
       }
       conn.execute();
     } catch (MalformedURLException ex) {
       logger.debug2("openConnection", ex);
       throw resultMap.getMalformedURLException(ex);
     } catch (IOException ex) {
-      logger.warning("openConnection: IO Exception", ex);
-      throw ex;
+      logger.debug2("openConnection", ex);
+      throw resultMap.mapException(au, conn, ex, null);
     } catch (RuntimeException e) {
       logger.warning("openConnection: unexpected exception", e);
       throw e;
@@ -672,10 +732,17 @@ public class DVNOAIUrlCacher implements UrlCacher {
     }
   }
 
+  String getUserPass() {
+    Configuration auConfig = au.getConfiguration();
+    if (auConfig != null) {		// can be null in unit tests
+      return auConfig.get(ConfigParamDescr.USER_CREDENTIALS.getKey());
+    }
+    return null;
+  }
+
   /** Handle a single redirect response: determine whether it should be
    * followed and change the state (fetchUrl) to set up for the next fetch.
    * @return true if another request should be issued, false if not. */
-
   private boolean processRedirectResponse() throws CacheException {
     //get the location header to find out where to redirect to
     String location = conn.getResponseHeaderValue("location");
@@ -692,17 +759,30 @@ public class DVNOAIUrlCacher implements UrlCacher {
     // update the current location with the redirect location.
     try {
       String newUrlString = UrlUtil.resolveUri(fetchUrl, location);
+      if (CurrentConfig.getBooleanParam(PARAM_NORMALIZE_REDIRECT_URL,
+					DEFAULT_NORMALIZE_REDIRECT_URL)) {
+	try {
+	  newUrlString = UrlUtil.normalizeUrl(newUrlString, au);
+	  logger.debug3("Normalized to '" + newUrlString + "'");
+	} catch (PluginBehaviorException e) {
+	  logger.warning("Couldn't normalize redirect URL: " + newUrlString, e);
+	}
+      }
       // Check redirect to login page *before* crawl spec, else plugins
       // would have to include login page URLs in crawl spec
+      // D-B
       logger.debug3("Checking if a login page");
-      if (au.isLoginPageUrl(newUrlString)) {
-	String msg = "Redirected to login page: " + newUrlString;
-	logger.debug3(msg);
-	// actually, we don't want to throw an exception here!
-	// we want to go ahead and authenticate... or not??
-	//throw new CacheException.PermissionException(msg);
+      // D-E
 
-	
+      if (au.isLoginPageUrl(newUrlString)) {
+       // D-B
+        String msg = "Redirected to login page: " + newUrlString;
+        logger.debug3(msg);
+        // BaseCrawler throws an exception here;
+        // we don't want to throw an exception,
+        // we want to go ahead and authenticate.
+        // D-E
+
       }
       if (isRedirectOption(REDIRECT_OPTION_IF_CRAWL_SPEC)) {
 	if (!au.shouldBeCached(newUrlString)) {
@@ -756,99 +836,96 @@ public class DVNOAIUrlCacher implements UrlCacher {
       return false;
     }
   }
-
-    // Very DVN-specific, custom case -- the content is protected
+    
+    // D-B
+    // Very D-specific, custom case -- the content is protected
     // by a Terms-of-Use agreement clickthrough, but otherwise is
     // available to the public.
-
-    //    private boolean processTermsOfUseResponse() throws CacheException {
     private boolean processTermsOfUseResponse() throws IOException {
 
-	//get the location header to find out where to redirect
+        //get the location header to find out where to redirect:
 
-	String TOUurl = conn.getResponseHeaderValue("location");
+        String TOUurl = conn.getResponseHeaderValue("location");
 
-	String extraCookies = conn.getResponseHeaderValue("set-cookie"); 
+        String extraCookies = conn.getResponseHeaderValue("set-cookie");
 
-	//String connCookieHeader = conn.getResponseHeaderValue("set-cookie");
-	//if ( connCookieHeader != null ) {
-	//}
+        releaseConnection();
 
-	releaseConnection();
+        GetMethod method = null;
+        String jsessionid = null;
 
-	GetMethod method = null; 
-	String jsessionid     = null;
+        if (reqProps != null) {
+            for (Iterator iter = reqProps.keySet().iterator(); iter.hasNext();) {
+                String key = (String) iter.next();
 
-	if (reqProps != null) {
-	    for (Iterator iter = reqProps.keySet().iterator(); iter.hasNext(); ) {
-		String key = (String)iter.next();
-
-		logger.debug("TOU key: " + key); 
-		logger.debug("TOU property: " + reqProps.getProperty(key)); 
-		if ( key.equals("Cookie") || key.equals("cookie") ) {
-		    String cookieProperty = reqProps.getProperty(key);
-		    if ( cookieProperty != null ) {
-			String regexpJsession = "JSESSIONID=([^;]*);";
-			Pattern patternJsession = Pattern.compile(regexpJsession);
-			Matcher matcher = patternJsession.matcher(cookieProperty);
-			if ( matcher.find() ) {
-			    jsessionid = matcher.group(1);
-			    logger.debug("TOU found jsessionid: "+jsessionid);
-			}
-		    }
-		}
-	    }
-	}
+                logger.debug("TOU key: " + key);
+                logger.debug("TOU property: " + reqProps.getProperty(key));
+                if (key.equals("Cookie") || key.equals("cookie")) {
+                    String cookieProperty = reqProps.getProperty(key);
+                    if (cookieProperty != null) {
+                        String regexpJsession = "JSESSIONID=([^;]*);";
+                        Pattern patternJsession = Pattern.compile(regexpJsession);
+                        Matcher matcher = patternJsession.matcher(cookieProperty);
+                        if (matcher.find()) {
+                            jsessionid = matcher.group(1);
+                            logger.debug("TOU found jsessionid: " + jsessionid);
+                        }
+                    }
+                }
+            }
+        }
 
 
-	DvnTermsOfUseAccess dvnTOU = new DvnTermsOfUseAccess(); 
+        DvnTermsOfUseAccess dvnTOU = new DvnTermsOfUseAccess();
 
-	logger.debug("attempting to process DVN Terms of Use: " + TOUurl); 
+        logger.debug("attempting to process DVN Terms of Use: " + TOUurl);
 
-	jsessionid = dvnTOU.dvnAcceptRemoteTOU (TOUurl, jsessionid, fetchUrl, extraCookies); 
+        jsessionid = dvnTOU.dvnAcceptRemoteTOU(TOUurl, jsessionid, fetchUrl, extraCookies);
 
-	if ( jsessionid != null ) {
-	    logger.debug("Received JSESSIONID: " + jsessionid); 
-	} else {
-	    logger.debug("Failed to obtain JSESSIONID"); 
-	    return false; 
-	}
-	
-	// OK, we can try again now!
+        if (jsessionid != null) {
+            logger.debug("Received JSESSIONID: " + jsessionid);
+        } else {
+            logger.debug("Failed to obtain JSESSIONID");
+            return false;
+        }
 
-	logger.debug3("trying to access the file again " + fetchUrl); 
+        // OK, we can try again now!
 
-	try {
-	    conn = makeConnection(fetchUrl, connectionPool);
-	    if (localAddr != null) {
-		conn.setLocalAddress(localAddr);
-	    }
-	    if (reqProps != null) {
-		for (Iterator iter = reqProps.keySet().iterator(); iter.hasNext(); ) {
-		    String key = (String)iter.next();
-		    conn.setRequestProperty(key, reqProps.getProperty(key));
-		}
-	    }
+        logger.debug3("trying to access the file again " + fetchUrl);
 
-	    conn.setRequestProperty("user-agent", LockssDaemon.getUserAgent());
-	    String myCookie = "JSESSIONID=" + jsessionid;
-	    conn.addRequestProperty("Cookie", myCookie);
+        try {
+            conn = makeConnection(fetchUrl, connectionPool);
+            if (localAddr != null) {
+                conn.setLocalAddress(localAddr);
+            }
+            if (reqProps != null) {
+                for (Iterator iter = reqProps.keySet().iterator(); iter.hasNext();) {
+                    String key = (String) iter.next();
+                    conn.setRequestProperty(key, reqProps.getProperty(key));
+                }
+            }
 
-	    logger.debug("executing request"); 
-	    conn.execute();
-	} catch (MalformedURLException ex) {
-	    logger.debug2("openConnection", ex);
-	    throw resultMap.getMalformedURLException(ex);
-	} catch (IOException ex) {
-	    logger.warning("openConnection: IO Exception", ex);
-	    throw ex;
-	} catch (RuntimeException e) {
-	    logger.warning("openConnection: unexpected exception", e);
-	    throw e;
-	}
-	
-	return true; 
+            conn.setRequestProperty("user-agent", LockssDaemon.getUserAgent());
+            String myCookie = "JSESSIONID=" + jsessionid;
+            conn.addRequestProperty("Cookie", myCookie);
+
+            logger.debug("executing request");
+            conn.execute();
+        } catch (MalformedURLException ex) {
+            logger.debug2("openConnection", ex);
+            throw resultMap.getMalformedURLException(ex);
+        } catch (IOException ex) {
+            logger.warning("openConnection: IO Exception", ex);
+            throw ex;
+        } catch (RuntimeException e) {
+            logger.warning("openConnection: unexpected exception", e);
+            throw e;
+        }
+
+        return true;
     }
+    //D-E
+
 
   /** Return true iff there are options in common between the argument and
    * redirectOptions */
@@ -867,12 +944,14 @@ public class DVNOAIUrlCacher implements UrlCacher {
 */
 
   /**
-   * Sets the PermissionMapSource object, which is what DVNOAIUrlCacher
+   * Sets the PermissionMapSource object, which is what BaseUrlCacher
    * will use to get the permission map when needed
    *
    */
   public void setPermissionMapSource(PermissionMapSource permissionMapSource) {
     this.permissionMapSource = permissionMapSource;
   }
+
+
 
 }

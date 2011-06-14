@@ -50,6 +50,7 @@ public class DataTable implements java.io.Serializable {
 
     public static String TYPE_VERTEX = "vertex";
     public static String TYPE_EDGE = "edge";
+    
 
     /** Creates a new instance of DataTable */
     public DataTable() {
@@ -157,7 +158,34 @@ public class DataTable implements java.io.Serializable {
         this.visualizationEnabled = visualizationEnabled;
     }
 
+    private String visualizationShowDataTable;
+    private String visualizationShowImageGraph;
+    private String visualizationShowFlashGraph;
     
+    public String getVisualizationShowDataTable() {
+        return visualizationShowDataTable;
+    }
+
+    public void setVisualizationShowDataTable(String visualizationShowDataTable) {
+        this.visualizationShowDataTable = visualizationShowDataTable;
+    }
+
+    public String getVisualizationShowFlashGraph() {
+        return visualizationShowFlashGraph;
+    }
+
+    public void setVisualizationShowFlashGraph(String visualizationShowFlashGraph) {
+        this.visualizationShowFlashGraph = visualizationShowFlashGraph;
+    }
+
+    public String getVisualizationShowImageGraph() {
+        return visualizationShowImageGraph;
+    }
+
+    public void setVisualizationShowImageGraph(String visualizationShowImageGraph) {
+        this.visualizationShowImageGraph = visualizationShowImageGraph;
+    }
+
     
     /**
      * Holds value of property study.

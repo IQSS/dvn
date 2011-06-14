@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Set;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
+import javax.ejb.PrePassivate;
+
 
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -440,6 +442,21 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
                 }
                 countMappings = 0;
             }
+            if (!retVal && !errorVariables.isEmpty() && returnListOfErrors.isEmpty() ){
+                for (DataVariable dv : errorVariables){
+                    if (!returnListOfErrors.contains(dv)){
+                        List <DataVariableMapping>  variableMappings = getMeasureMappings((List) dv.getDataVariableMappings());
+                        if (!variableMappings.isEmpty()){
+                            for (DataVariableMapping dvm: variableMappings){
+                                returnListOfErrors.add(dvm.getGroup());
+                                returnListOfErrors.add(dvm.getDataVariable());
+                            }
+                        }
+                        
+                    }
+
+                }                                
+            }
         return retVal;
     }
 
@@ -619,11 +636,35 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
                 " and  m.dataVariable.id = m2.dataVariable.id " +
                 " and m2.varGroup.id = g.id and g.id <> " + measureId + "  ORDER BY g.name";
         if (em.createQuery(query).getResultList() != null){
-            return (List) em.createQuery(query).getResultList();
+            List varGroupList = (List) em.createQuery(query).getResultList();
+            if (checkSortByType(varGroupList)){
+
+            }
+            return varGroupList;
         } else {
             return new ArrayList();
         }
 
+    }
+    
+    private boolean checkSortByType(List  varGroupList){
+        
+        for (Object group:varGroupList){
+            VarGroup varGroup = (VarGroup) group;
+            if (varGroup.getGroupTypes().size() != 1) return false;
+        }        
+        return true;
+    }
+    
+    private List getSortedGroupList(List varGroupList){
+        ArrayList varGroupAndType = new ArrayList();
+        for (Object group:varGroupList){
+            VarGroup varGroup = (VarGroup) group;
+            VarGroupType varGroupType = varGroup.getGroupTypes().get(0);
+            varGroupAndType.add(group);
+            varGroupAndType.add(varGroupType);
+        }
+        return new ArrayList();
     }
 
     @Override
@@ -685,7 +726,14 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
 
 
     }
+    
+        
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    public void saveAndContinue() {
 
+
+    }
+    
     @Remove
     public void cancel() {
 
@@ -847,5 +895,39 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
         return hasDuplicates;
     }
 
+    public boolean validateDisplayOptions(DataTable dataTable) {
+        int countDisplay = 0;
+        int countDefault = 0;
+        
+        if(dataTable.getVisualizationShowDataTable().equals("default")){
+            countDisplay++;
+            countDefault++;
+        }
+        
+        if(dataTable.getVisualizationShowImageGraph().equals("default")){
+            countDisplay++;
+            countDefault++;
+        }
+        
+        if(dataTable.getVisualizationShowFlashGraph().equals("default")){
+            countDisplay++;
+            countDefault++;
+        }
+        
+        if(dataTable.getVisualizationShowDataTable().equals("available")){
+            countDisplay++;
+        }
+        if(dataTable.getVisualizationShowImageGraph().equals("available")){
+            countDisplay++;
+        }
+        if(dataTable.getVisualizationShowFlashGraph().equals("available")){
+            countDisplay++;
+        }
+        if (countDisplay == 0 || countDefault > 1){
+            return false;
+        } else {
+            return true;
+        }
+    }
 
 }

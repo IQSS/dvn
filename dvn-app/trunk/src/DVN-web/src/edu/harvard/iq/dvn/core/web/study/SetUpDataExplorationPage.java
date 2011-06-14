@@ -128,8 +128,10 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
     public void init() {
         super.init();
-
-         studyId = new Long( getVDCRequestBean().getRequestParam("studyId"));
+        if (studyId == null){
+            studyId = new Long( getVDCRequestBean().getRequestParam("studyId"));
+        }
+         
 
 
         try {
@@ -1623,7 +1625,12 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         List duplicateVariables = new ArrayList();
         String fullErrorMessage = "";
 
-
+        if (!visualizationService.validateDisplayOptions(dataTable)) {
+            if (messages){
+                fullErrorMessage += "<br>Please select at least one view and no more than one default view  <br>";
+            }
+            valid = false;
+        }
 
         if (!xAxisSet  || !visualizationService.validateXAxisMapping(dataTable, xAxisVariableId)) {
             if (messages){
@@ -1632,7 +1639,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
             valid = false;
         }
-
+        
         if (!visualizationService.validateAtLeastOneFilterMapping(dataTable, returnListOfErrors)) {
             
             if (messages){
@@ -1644,7 +1651,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
                        if (errorObject instanceof VarGroup){
                            firstVar = true;
                             VarGroup vg = (VarGroup) errorObject;
-                            fullErrorMessage += "<br>&#8226;&nbsp;&nbsp;Measure " + vg.getName() + " contains multiple variables with no associated filter. <br> ";
+                            fullErrorMessage += "<br>&#8226;&nbsp;&nbsp;Measure " + vg.getName() + " contains at least one variable with no associated filter. <br> ";
                        }
 
 
@@ -1886,6 +1893,12 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         }
         getVDCRequestBean().setSelectedTab("files");
        return "viewStudy";
+    }
+    
+    public String saveAndContinue(){
+
+       visualizationService.saveAndContinue();
+       return "";
     }
 
     private void resetDVMappingsByGroup(VarGroupUI varGroupUI){

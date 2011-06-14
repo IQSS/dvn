@@ -61,6 +61,8 @@ public interface VisualizationServiceLocal extends java.io.Serializable {
     public boolean validateOneMeasureMapping(DataTable dataTable, List returnListOfErrors);
 
     public boolean validateAtLeastOneMeasureMapping(DataTable dataTable);
+    
+    public boolean validateDisplayOptions(DataTable dataTable);
 
     public List getDuplicateMappings( DataTable datatable, List returnListOfErrors );
 
@@ -76,4 +78,7 @@ public interface VisualizationServiceLocal extends java.io.Serializable {
     public boolean validateAllGroupsAreMapped(edu.harvard.iq.dvn.core.study.DataTable dataTable, java.util.List returnListOfErrors);
 
     public java.util.List getSourceMappings(java.util.List<edu.harvard.iq.dvn.core.visualization.DataVariableMapping> mappingList);
+
+    @javax.ejb.TransactionAttribute(value = javax.ejb.TransactionAttributeType.REQUIRED)
+    public void saveAndContinue();
 }

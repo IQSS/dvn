@@ -830,7 +830,11 @@ public class StudyListingPage extends VDCBaseBean implements java.io.Serializabl
     }
 
     public int getStudyCount() {
-        return studyListing.getStudyIds().size();
+        if (studyListing != null){
+            return studyListing.getStudyIds().size();
+        }
+        
+        return 0;
     }
 
     public int getCollectionTreeVisibleNodeCount() {

@@ -110,6 +110,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
     private boolean hasMeasureGroups = false;
     private boolean hasFilterGroupings = false;
     private boolean hasFilterGroups = false;
+    private boolean edited = false;
 
 
     private VarGroupUI editFragmentVarGroup = new VarGroupUI();
@@ -236,8 +237,8 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
              hasFilterGroupings = true;
          }
          
-        
-
+         edited = false;
+         
     }
 
     private void loadVarGroupingUIs(){
@@ -637,12 +638,10 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             return;
         }
 
-        varGroupTypeUI.getVarGroupType().setName(getName);
-        
-        
+        varGroupTypeUI.getVarGroupType().setName(getName);        
         dataTableFilterGrouping.getChildren().clear();
         varGroupTypeUI.setEditMode(false);
-
+        edited = true;
      }
 
     public void saveMeasureType(ActionEvent ae){
@@ -668,7 +667,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         varGroupTypeUI.getVarGroupType().setName(getName);
         
         varGroupTypeUI.setEditMode(false);
-
+        edited = true;
     }
 
     public void editFilterGroup (ActionEvent ae){
@@ -849,6 +848,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             xAxisSet = false;
         }
         cancelAddEdit();
+        edited = true;
     }
 
     
@@ -868,6 +868,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             measureGrouping.getVarGrouping().setName((String) getInputMeasureGroupingName().getValue());
         }
         cancelAddEdit();
+        edited = true;
     }
 
 
@@ -902,6 +903,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         saveGroupFragment(editSourceVarGroup);
         editSourceVarGroup = null;
         cancelAddEdit();
+        edited = true;
     }
 
     public void saveMeasureFragment(){
@@ -933,6 +935,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         saveGroupTypes(editMeasureVarGroup);
         editMeasureVarGroup = null;
         cancelAddEdit();
+        edited = true;
     }
 
     public void saveFilterFragment(ActionEvent ae){
@@ -964,6 +967,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         getInputFilterGroupName().setValue("");
         dataTableFilterGrouping.getChildren().clear();
         cancelAddEdit();
+        edited = true;
     }
 
     private void saveGroupFragment(VarGroupUI varGroupIn){
@@ -1137,8 +1141,8 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             fc.addMessage(validateButton.getClientId(fc), message);
             return;
         }
-
-
+            
+        edited = true;
     }
     public void addFilterGroupAction(ActionEvent ae) {
         UIComponent uiComponent = ae.getComponent().getParent();
@@ -1294,6 +1298,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             addNewTypeToGroupUI(editMeasureVarGroup, varGroupTypeUI);
         }
         addMeasureType = false;
+        edited = true;
     }
 
     private boolean checkForDuplicateEntries(VarGrouping varGrouping,  String name, boolean group, Object testObject){
@@ -1356,6 +1361,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         dataTableFilterGrouping.getChildren().clear();
 
         addFilterType = false;
+        edited = true;
     }
 
     private void addNewTypeToGroupUI(VarGroupUI varGroupUI, VarGroupTypeUI varGroupTypeUI ){
@@ -1573,6 +1579,10 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
 
     public String cancel(){
+        if (edited){
+            setShowInProgressPopup(true);
+            return "";
+        }
         visualizationService.cancel();
         getVDCRequestBean().setStudyId(study.getId());
         if ( studyVersion.getId() == null ) {
@@ -1584,7 +1594,33 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
         return "viewStudy";
     }
+    
+    boolean showInProgressPopup = false;
+    
+    public boolean isShowInProgressPopup() {
+        return showInProgressPopup;
+    }
 
+    public void setShowInProgressPopup(boolean showInProgressPopup) {
+        this.showInProgressPopup = showInProgressPopup;
+    }
+    
+    public void togglePopup(javax.faces.event.ActionEvent event) {
+         showInProgressPopup = !showInProgressPopup;
+    }
+
+    public String cancelAction() {
+        visualizationService.cancel();
+        getVDCRequestBean().setStudyId(study.getId());
+        if ( studyVersion.getId() == null ) {
+            getVDCRequestBean().setStudyVersionNumber(study.getReleasedVersion().getVersionNumber());
+        } else {
+            getVDCRequestBean().setStudyVersionNumber(studyVersion.getVersionNumber());
+        }
+        getVDCRequestBean().setSelectedTab("files");
+
+        return "viewStudy";
+    }
     private void cancelAddEdit(){
         getInputFilterGroupName().setValue("");
         getInputFilterGroupTypeName().setValue("");
@@ -1898,6 +1934,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
     public String saveAndContinue(){
 
        visualizationService.saveAndContinue();
+       edited = false;
        return "";
     }
 

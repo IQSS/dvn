@@ -124,7 +124,7 @@
 
                     <ice:commandButton type="submit" value="Un-Release" action="#{SetUpDataExplorationPage.unRelease}" rendered="#{SetUpDataExplorationPage.dataTable.visualizationEnabled and SetUpDataExplorationPage.showCommands}"/>
 
-                    <ice:commandButton type="submit" value="Cancel" action="#{SetUpDataExplorationPage.cancel}"/>
+
 
                     <ice:commandButton type="submit" visible="false" id="updateMeasureList" value="update" action="#{SetUpDataExplorationPage.updateMeasureList}"/>
                     <ice:commandButton type="submit" visible="false" id="selectAllFilterVariablesClick" value="update" action="#{SetUpDataExplorationPage.selectAllFilterVariablesClick}"/>
@@ -137,9 +137,9 @@
                     <ice:commandButton type="submit" visible="false" id="updateFilterList" value="update" action="#{SetUpDataExplorationPage.updateFilterList}"/>
                     <ice:commandButton type="submit" visible="false" id="updateXAxisList" value="update" action="#{SetUpDataExplorationPage.updateXAxisList}"/>
                     <ice:commandButton type="submit" visible="false" id="updateSourceList" value="update" action="#{SetUpDataExplorationPage.updateSourceList}"/>
-                    <ice:commandButton type="submit" value="Save" action="#{SetUpDataExplorationPage.saveAndExit}" rendered="#{SetUpDataExplorationPage.showCommands}"/>
-                    <ice:commandButton type="submit" value="Continue" action="#{SetUpDataExplorationPage.saveAndContinue}" rendered="#{SetUpDataExplorationPage.showCommands}"/>
-
+                    <ice:commandButton type="submit" visible="false" value="Save" action="#{SetUpDataExplorationPage.saveAndExit}" rendered="#{SetUpDataExplorationPage.showCommands}"/>
+                    <ice:commandButton type="submit" value="Save" action="#{SetUpDataExplorationPage.saveAndContinue}" rendered="#{SetUpDataExplorationPage.showCommands}"/>
+                    <ice:commandButton type="submit" value="Exit" action="#{SetUpDataExplorationPage.cancel}"/>
                     <ice:commandButton type="submit" visible="false" value="Save and Continue" action="#{SetUpDataExplorationPage.saveAndContinue}" rendered="#{SetUpDataExplorationPage.showCommands}"/>
                 </div>
             </div>
@@ -459,6 +459,42 @@
             </ice:panelTab>
         </ice:panelTabSet>
     </div>
+    
+               <ice:panelPopup id="editInProgressPopup"
+                        draggable="false"
+                        visible="#{SetUpDataExplorationPage.showInProgressPopup}"
+                        autoCentre="true"
+                        modal="true">
+            <f:facet name="header">
+                <ice:panelGrid id="autoCentPanelGrid"
+                               width="100%" cellpadding="0"
+                               cellspacing="0" columns="2"
+                               columnClasses="none,popupButton">
+                    <ice:outputText value="Please wait"/>
+                    <ice:commandLink id="autoCentPopupClose"
+                                     actionListener="#{SetUpDataExplorationPage.togglePopup}"
+                                     styleClass="popupModalClose">
+                        <ice:graphicImage value="/resources/images/icon_close.gif"/>
+                    </ice:commandLink>
+                </ice:panelGrid>
+            </f:facet>
+            <f:facet name="body">
+                <ice:panelGrid id="autoCentContent"
+                               width="100%" cellpadding="0"
+                               cellspacing="0" columns="1"
+                               styleClass="popupModalBody">
+                    <ice:outputText value="This visualization has been edited. Do you want to exit without saving?"/>
+                    <div jsfc="ice:panelGroup" styleClass="dvnFormPadding dvnFormMargin">
+                        <ice:commandButton id="autoCentPopupCancel"
+                                           actionListener="#{SetUpDataExplorationPage.togglePopup}"
+                                           value="No"/>
+                       <ice:commandButton id="autoCentPopupExit"
+                                           action="#{SetUpDataExplorationPage.cancelAction}"
+                                           value="Yes"/>
+                    </div>
+                </ice:panelGrid>
+            </f:facet>
+        </ice:panelPopup>
 </ice:form>
 
 </ui:define>

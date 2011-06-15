@@ -151,6 +151,9 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     private boolean includePdf = true;
     private boolean includeExcel = true;
     private boolean includeCSV = true;
+    private boolean imageAvailable = false;
+
+    private boolean dataTableAvailable = false;           
     private boolean showFilterGroupTypes = false;
 
     public boolean isShowFilterGroupTypes() {
@@ -561,22 +564,36 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
         if (viewImage.equals("default")) {
             selectItems.add(new SelectItem(2, "Image Graph"));
+            imageAvailable = true;
         }
         if (viewFlash.equals("default")) {
             selectItems.add(new SelectItem(1, "Flash Graph"));
         }
         if (viewTable.equals("default")) {
             selectItems.add(new SelectItem(3, "Data Table"));
+            dataTableAvailable = true;            
         }
         if (viewImage.equals("available")) {
             selectItems.add(new SelectItem(2, "Image Graph"));
+            imageAvailable = true;
         }
         if (viewFlash.equals("available")) {
             selectItems.add(new SelectItem(1, "Flash Graph"));
         }
         if (viewTable.equals("available")) {
             selectItems.add(new SelectItem(3, "Data Table"));
+            dataTableAvailable = true;
         }
+
+        if (viewImage.equals("hidden")) {
+            includeImage = false;
+            includePdf = false;
+        }
+
+        if (viewTable.equals("hidden")) {
+            includeExcel = false;
+        }
+        
         return selectItems;
     }
     
@@ -2132,6 +2149,23 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     
     public String getImageSourceFooterNoYLabel() {
         return imageSourceFooterNoYLabel;
+    }
+    
+    
+    public boolean isDataTableAvailable() {
+        return dataTableAvailable;
+    }
+
+    public void setDataTableAvailable(boolean dataTableAvailable) {
+        this.dataTableAvailable = dataTableAvailable;
+    }
+
+    public boolean isImageAvailable() {
+        return imageAvailable;
+    }
+
+    public void setImageAvailable(boolean imageAvailable) {
+        this.imageAvailable = imageAvailable;
     }
     
     public Integer getDefaultView() {

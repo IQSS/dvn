@@ -812,12 +812,14 @@ function setLegendValue(obj) {
                         <div>
                             <ice:selectBooleanCheckbox id="downloadImageGraph"
                                                        value="#{ExploreDataPage.includeImage}"
+                                                       visible="#{ExploreDataPage.imageAvailable}"
                                                        partialSubmit="true" />
-                            <ice:outputLabel value="Image Graph" for="downloadImageGraph" rendered="true" styleClass="dvnFormElementMargin"/>
+                            <ice:outputLabel value="Image Graph" for="downloadImageGraph" rendered="true" visible="#{ExploreDataPage.imageAvailable}" styleClass="dvnFormElementMargin"/>
                             <ice:selectBooleanCheckbox id="downloadPDFGraph"
                                                        value="#{ExploreDataPage.includePdf}"
+                                                       visible="#{ExploreDataPage.imageAvailable}"
                                                        partialSubmit="true" />
-                            <ice:outputLabel value="PDF Graph" for="downloadPDFGraph" rendered="true"/>
+                            <ice:outputLabel value="PDF Graph" for="downloadPDFGraph" rendered="true" visible="#{ExploreDataPage.imageAvailable}"/>
                         </div>
                         <div>
                             <ice:selectBooleanCheckbox id="downloadDataCSV"
@@ -826,8 +828,9 @@ function setLegendValue(obj) {
                             <ice:outputLabel value="Raw Data CSV" for="downloadDataCSV" rendered="true" styleClass="dvnFormElementMargin"/>
                             <ice:selectBooleanCheckbox id="downloadDataExcel" binding="#{ExploreDataPage.dataExcelCheckBox}"
                                                        value="#{ExploreDataPage.includeExcel}"
+                                                       visible="#{ExploreDataPage.dataTableAvailable}"
                                                        partialSubmit="true" />
-                            <ice:outputLabel value="Excel File" for="downloadDataExcel" rendered="true"/>
+                            <ice:outputLabel value="Excel File" for="downloadDataExcel" rendered="true" visible="#{ExploreDataPage.dataTableAvailable}"/>
                         </div>
                         <ice:message for="downloadDataExcel" id="boxErrorMsgExcel" styleClass="errorMessage"/>
                         <div class="dvnFormButtonMargin">

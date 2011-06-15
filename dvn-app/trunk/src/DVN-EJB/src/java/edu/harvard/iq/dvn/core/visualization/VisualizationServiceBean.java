@@ -12,6 +12,7 @@ import edu.harvard.iq.dvn.core.visualization.VarGrouping.GroupingType;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -637,10 +638,11 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
                 " and m2.varGroup.id = g.id and g.id <> " + measureId + "  ORDER BY g.name";
         if (em.createQuery(query).getResultList() != null){
             List varGroupList = (List) em.createQuery(query).getResultList();
-            if (checkSortByType(varGroupList)){
 
-            }
-            return varGroupList;
+                    List <VarGroup> retList = getSortedGroupList(varGroupList);
+                    Collections.sort(retList);
+                    return retList;
+
         } else {
             return new ArrayList();
         }
@@ -656,15 +658,13 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
         return true;
     }
     
-    private List getSortedGroupList(List varGroupList){
-        ArrayList varGroupAndType = new ArrayList();
+    private List <VarGroup> getSortedGroupList(List varGroupList){
+        List <VarGroup> varGroupListOut = new ArrayList();
         for (Object group:varGroupList){
             VarGroup varGroup = (VarGroup) group;
-            VarGroupType varGroupType = varGroup.getGroupTypes().get(0);
-            varGroupAndType.add(group);
-            varGroupAndType.add(varGroupType);
+            varGroupListOut.add(varGroup);            
         }
-        return new ArrayList();
+        return varGroupListOut;
     }
 
     @Override

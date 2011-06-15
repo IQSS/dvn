@@ -28,7 +28,7 @@ import javax.persistence.*;
  * @author skraffmiller
  */
 @Entity
-public class VarGroup implements Serializable {
+public class VarGroup implements Serializable, Comparable <VarGroup> {
     private String name;
     private String units;
 
@@ -135,6 +135,33 @@ public class VarGroup implements Serializable {
 
     public void setUnits(String units) {
         this.units = units;
+    }
+
+    public int compareTo(VarGroup o) {
+        List <VarGroupType> thisVarGroupTypeList = this.getGroupTypes();
+        List <VarGroupType> oVarGroupTypeList = o.getGroupTypes();
+        
+        if(thisVarGroupTypeList.isEmpty() && oVarGroupTypeList.isEmpty() ){
+            return this.getName().compareTo(o.getName());
+        }
+
+        if(thisVarGroupTypeList.isEmpty() && !oVarGroupTypeList.isEmpty() ){
+            return -1;
+        }
+        
+        if(!thisVarGroupTypeList.isEmpty() && oVarGroupTypeList.isEmpty() ){
+            return 1;
+        }
+        
+        VarGroupType thisFirstGroupType = thisVarGroupTypeList.get(0);
+        VarGroupType oFirstGroupType = oVarGroupTypeList.get(0);
+        
+        if (!thisFirstGroupType.equals(oFirstGroupType)){
+            return thisFirstGroupType.getName().compareTo(oFirstGroupType.getName());
+        }  else {
+            return this.getName().compareTo(o.getName());
+        }
+
     }
 
 }

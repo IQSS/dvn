@@ -137,7 +137,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     private String csvString = "";
     private String indexDate = "";
     private String sources = "";
-    private String defaultView = "";
     private String imageSourceFooter = "";
     private String imageSourceFooterNoYLabel = "";
     private String imageAxisLabel = "";
@@ -145,6 +144,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     private String yAxisLabel = "";
     private boolean displayLegend = true;
     private int legendInt = 1;
+    
+    private Integer defaultView = new Integer(2);
 
     private boolean displayIndexes = false;
     private boolean includeImage = true;
@@ -556,7 +557,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     }
 
     public List<SelectItem> loadSelectViewItems() {
-
+        defaultView = 0;
         List selectItems = new ArrayList<SelectItem>();
         String viewImage = dt.getVisualizationShowImageGraph();
         String viewFlash = dt.getVisualizationShowFlashGraph();
@@ -565,24 +566,36 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         if (viewImage.equals("default")) {
             selectItems.add(new SelectItem(2, "Image Graph"));
             imageAvailable = true;
+            defaultView = 2;
         }
         if (viewFlash.equals("default")) {
             selectItems.add(new SelectItem(1, "Flash Graph"));
+            defaultView = 1;
         }
         if (viewTable.equals("default")) {
             selectItems.add(new SelectItem(3, "Data Table"));
-            dataTableAvailable = true;            
+            dataTableAvailable = true;  
+            defaultView = 3;
         }
         if (viewImage.equals("available")) {
             selectItems.add(new SelectItem(2, "Image Graph"));
             imageAvailable = true;
+            if (defaultView == 0){
+                defaultView = 2;
+            }
         }
         if (viewFlash.equals("available")) {
             selectItems.add(new SelectItem(1, "Flash Graph"));
+            if (defaultView == 0){
+                defaultView = 1;
+            }
         }
         if (viewTable.equals("available")) {
             selectItems.add(new SelectItem(3, "Data Table"));
             dataTableAvailable = true;
+            if (defaultView == 0){
+                defaultView = 3;
+            }
         }
 
         if (viewImage.equals("hidden")) {
@@ -2169,10 +2182,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     }
     
     public Integer getDefaultView() {
-        Integer retval = new Integer(2);
-        if (dt.getVisualizationShowDataTable().equals("default")) retval = 3;
-        if (dt.getVisualizationShowFlashGraph().equals("default")) retval = 1;
-        return retval;
+
+        return defaultView;
     }
 
 

@@ -424,7 +424,16 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
                 return false;
  }
-
+ 
+ private boolean hasAssignedGroupTypes(VarGroup varGroupIn){                       
+          if(  !varGroupIn.getGroupTypes().isEmpty()) {
+                FacesMessage message = new FacesMessage("You may not delete a group that is assigned to a type.");
+                FacesContext fc = FacesContext.getCurrentInstance();
+                fc.addMessage(validateButton.getClientId(fc), message);
+                return true;                 
+          }
+       return false;
+ }
 
  public void deleteGroupType(ActionEvent ae){
     boolean measure = false;
@@ -1457,11 +1466,16 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
     public void deleteFilterGroup(ActionEvent ae){
 
 
+
         HtmlDataTable dataTable2 = dataTableFilterGroup;
         if (dataTable2.getRowCount()>0) {
             VarGroupUI varGroupUI2 = (VarGroupUI) dataTable2.getRowData();
 
             VarGroup varGroup = varGroupUI2.getVarGroup();
+            if(hasAssignedGroupTypes(varGroup)){
+                return;
+            }
+                
             deleteVariablesFromGroup(varGroup);
             List varGroupList = (List) dataTable2.getValue();
             Iterator iterator = varGroupList.iterator();
@@ -1492,6 +1506,9 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             VarGroupUI varGroupUI2 = (VarGroupUI) dataTable2.getRowData();
             
             VarGroup varGroup = varGroupUI2.getVarGroup();
+            if(hasAssignedGroupTypes(varGroup)){
+                return;
+            }
             deleteVariablesFromGroup(varGroup);
             List varGroupList = (List) dataTable2.getValue();
             Iterator iterator = varGroupList.iterator();
@@ -1898,16 +1915,16 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
     public String release(){
         if (validateForRelease(true)) {
             dataTable.setVisualizationEnabled(true);
-            saveAndExit();
-            return "viewStudy";
+            edited = true;
+            return "";
         }
         return "";
     }
 
     public String unRelease(){
         dataTable.setVisualizationEnabled(false);
-            saveAndExit();
-            return "viewStudy";
+            edited = true;
+            return "";
     }
 
 
@@ -1932,7 +1949,14 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
     }
     
     public String saveAndContinue(){
-
+       if (dataTable.isVisualizationEnabled()){
+           if (!validateForRelease(false)) {
+               dataTable.setVisualizationEnabled(false);
+               FacesMessage message = new FacesMessage("Your current changes are invalid. This visualization has been set to 'unreleased'. <br>Click Validate button to get a full list of validation issues.");
+               FacesContext fc = FacesContext.getCurrentInstance();
+               fc.addMessage(validateButton.getClientId(fc), message);               
+           }
+       }
        visualizationService.saveAndContinue();
        edited = false;
        return "";
@@ -2059,6 +2083,8 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         }
 
     }
+    
+
 
     private void resetDVMappingsXAxis(){
 

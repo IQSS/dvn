@@ -498,6 +498,8 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
              }
 
         }
+        
+        edited = true;
     }
 
 
@@ -1495,7 +1497,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             }
 
         }
-
+        edited = true;
         dataTableFilterGrouping.getChildren().clear();
         
     }
@@ -1521,6 +1523,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             visualizationService.removeCollectionElement(deleteList,dataTable2.getRowIndex());
             measureGrouping.getVarGroupUI().remove(varGroupUI2);
             measureGrouping.getVarGrouping().getVarGroups().remove(varGroup);
+            edited = true;
         }
     }
 
@@ -1542,6 +1545,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             visualizationService.removeCollectionElement(deleteList,dataTable2.getRowIndex());
             sourceGrouping.getVarGroupUI().remove(varGroupUI2);
             sourceGrouping.getVarGrouping().getVarGroups().remove(varGroup);
+            edited = true;
         }
     }
 
@@ -1592,6 +1596,8 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             for(VarGroupingUI varGroupingUI: filterGroupings){
                 dataTableFilterGroup.setValue(varGroupingUI.getVarGroupUI());
             }
+            
+            edited = true;
     }
 
 

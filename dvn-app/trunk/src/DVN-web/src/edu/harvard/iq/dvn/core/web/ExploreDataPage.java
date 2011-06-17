@@ -183,6 +183,9 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     private boolean showVariableInfoPopup = false;
     private String variableLabel = "";
     private String xAxisLabel = "";
+    private String sourceLineLabel = "";
+
+
 
     public ExploreDataPage() {
         
@@ -214,6 +217,11 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         loadAllFilterGroupTypes();
         loadAllMeasureGroups();
         loadAllFilterGroups();
+        if (!dt.getVisualizationSourceInfoLabel().isEmpty()){
+            setSourceLineLabel(dt.getVisualizationSourceInfoLabel());
+        } else {
+            setSourceLineLabel("Source Info"); 
+        }
         xAxisVar =  visualizationService.getXAxisVariable(dt.getId());
             for (DataVariableMapping mapping : xAxisVar.getDataVariableMappings()){
                 if (mapping.isX_axis())xAxisLabel = mapping.getLabel();
@@ -491,20 +499,19 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         }
         if (selectedMeasureId != null) {
             loadFilterGroupings();
-            updateLineLabel();
+            updateTableLabel();
         }
        
     }
     
     
     public void updateLineLabelForFilter(ValueChangeEvent ae){
-        Long filterId =  (Long) ae.getNewValue();
-        String tmpLineLabel= (String) getInputLineLabel().getValue();
-        if (filterId != null) {
-
-        }
-       
+       Long filterId =  (Long) ae.getNewValue();
+       String tmpLineLabel = "";          
+       tmpLineLabel += getFilterGroupFromId(filterId).getName();    
+       getInputLineLabel().setValue(tmpLineLabel);                      
     }
+    
     public List<SelectItem> loadSelectMeasureItems(int grouptype_id) {
         boolean resetSelected = true;
 
@@ -869,19 +876,13 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         
     }
     
-    private void updateLineLabel(){
+    private void updateTableLabel(){
        String tmpLineLabel = "";
           
            tmpLineLabel += getMeasureGroupFromId(selectedMeasureId).getName();
 
-           for(VarGroupingUI varGrouping: filterGroupings) {
-               if (varGrouping.getSelectedGroupId() != null) {
-                    if (!(varGrouping.getSelectedGroupId() == 0)){
-                        tmpLineLabel += ", " + getFilterGroupFromId(varGrouping.getSelectedGroupId()).getName();
-                    }
-               }
-           }           
-           getInputLineLabel().setValue(tmpLineLabel);                
+           setGraphTitle(tmpLineLabel);
+           getInputGraphTitle().setValue(tmpLineLabel);                
     }
 
     public void reset_FilterItems(){
@@ -1245,11 +1246,11 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             for (DataVariable dv : dt.getDataVariables()){
                 if (dv.getId().equals(testId)){
                      dvsIn.add(dv);
-                     columnString = columnString + "," + vld.getLabel();
+                     columnString = columnString + "^" + vld.getLabel();
                       try {
-                           imageColumnString= imageColumnString + "," +  URLEncoder.encode(vld.getLabel(), "UTF-8");
+                           imageColumnString= imageColumnString + "^" +  URLEncoder.encode(vld.getLabel(), "UTF-8");
                         }    catch (Exception e){
-                           imageColumnString= imageColumnString + "," + vld.getLabel();
+                           imageColumnString= imageColumnString + "^" + vld.getLabel();
                      }
                 }
             }
@@ -2179,6 +2180,14 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
     public void setImageAvailable(boolean imageAvailable) {
         this.imageAvailable = imageAvailable;
+    }
+    
+    public String getSourceLineLabel() {
+        return sourceLineLabel;
+    }
+
+    public void setSourceLineLabel(String sourceLineLabel) {
+        this.sourceLineLabel = sourceLineLabel;
     }
     
     public Integer getDefaultView() {

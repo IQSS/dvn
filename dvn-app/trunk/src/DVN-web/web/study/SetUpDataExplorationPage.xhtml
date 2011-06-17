@@ -165,21 +165,18 @@
             </div>
 
         </div>
-        <div jsfc="ice:panelGroup" rendered="false" style="float:left; margin-right:2em;">
-            <ice:outputLabel value="Graph Source URL" for="sourceURL"/>
+        <div jsfc="ice:panelGroup" rendered="#{SetUpDataExplorationPage.dataTable !=null}" style="float:left; margin-right:2em;">
+            <ice:outputLabel value="Source Label" for="sourceLabel"/>
                              <ice:inputText
-                                  id="inputSourceURL"
-                                  rendered="false"
+                                  id="inputSourceLabel"
+                                  rendered="#{SetUpDataExplorationPage.dataTable !=null}"
                                   size="25"
                                   maxlength="255"
-                                  value="#{SetUpDataExplorationPage.dataTable.visualizationUrl}"
+                                  value="#{SetUpDataExplorationPage.dataTable.visualizationSourceInfoLabel}"
                                   accesskey="">
-                                  <f:validator validatorId="UrlValidator"/>
                              </ice:inputText>
-            <ice:message styleClass="errorMessage" for="inputSourceURL"/>
-            <ice:selectBooleanCheckbox id="fieldNames" styleClass="filterGroupTypeCheckBoxes" 
-                                       value="#{SetUpDataExplorationPage.dataTable.visualizationUrlIncludeVariableNames}" partialSubmit="true"/>
-          <ice:outputLabel value="Append selected variable names to Graph Source URL" style="font-weight:normal;"/>          
+            <ice:message styleClass="errorMessage" for="inputSourceLabel"/>
+         
         </div>
         <div style="float:left;" >
                <ice:outputLabel value="Image Graph" style="font-weight:normal;" rendered="#{SetUpDataExplorationPage.dataTable !=null}"/> 

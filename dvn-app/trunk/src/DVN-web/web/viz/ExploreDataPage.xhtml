@@ -81,10 +81,8 @@ function getXaxisString(startYear, endYear)
  function parseData(data, intDisType, startYear, endYear, indexed, columnString) {
           
         var myString = columnString;
-        var myColumnList = myString.split ( ',' );
-        
-        if (indexed){
-           
+        var myColumnList = myString.split ( '^' );
+        if (indexed){           
             var myDataString = new String (document.getElementById('ExploreDataPage:indexedDataString').textContent);
         } else {
             var myDataString = new String (document.getElementById('ExploreDataPage:dataString').textContent);
@@ -154,7 +152,7 @@ function getXaxisString(startYear, endYear)
         counter--;
 
             var myString = new String (document.getElementById('ExploreDataPage:columnString').textContent);
-            var myColumnList = myString.split ( ',' );
+            var myColumnList = myString.split ( '^' );
             var numColumnsStr =  new String (document.getElementById('ExploreDataPage:dataColumns').textContent);
             var numColumns = parseInt(numColumnsStr);
 
@@ -333,6 +331,7 @@ function myParseXaxis(dataIn, intDisType, year){
 
 
 function drawVisualization() {
+
       document.getElementById('ExploreDataPage:hasURL').value = "false";
       var displayType = new String (document.getElementById('ExploreDataPage:displayType').textContent);
 
@@ -357,6 +356,7 @@ function drawVisualization() {
               intDisType = intDefaultView;
           }          
       }
+      
 
       var startYear = new String (document.getElementById('ExploreDataPage:startYear').textContent);
       var myDateList = startYear.split('-');
@@ -390,8 +390,11 @@ function drawVisualization() {
                 chxs: '1N*sz2*,000000', 
                     colors: ['#4684EE', '#DC3912', '#FF9900', '#008000', '#4942CC', '#990099', '#FF80F2', '#7FD127']};
         }
+
         chart.draw(data2, optionsURL);
+        
         var imageURL = chart.getImageUrl();
+
         document.getElementById('ExploreDataPage:imageURL').value = imageURL;
         document.getElementById('ExploreDataPage:updateImageURL').click();
 
@@ -627,7 +630,7 @@ function setLegendValue(obj) {
                     <div class="dvnGraphFilterBlock">
                         <ice:outputLabel value="#{item.varGrouping.name}"/>
 
-                        <ice:selectOneMenu id="filterGroup" styleClass="filterGroup" value="#{item.selectedGroupId}"  valueChangeListener="#{ExploreDataPage.updateLineLabelForFilter}">
+                        <ice:selectOneMenu id="filterGroup" styleClass="filterGroup" value="#{item.selectedGroupId}" partialSubmit="true"  valueChangeListener="#{ExploreDataPage.updateLineLabelForFilter}">
                             <f:selectItem itemLabel="Select..." itemValue="0"/>
                             <f:selectItems value="#{ExploreDataPage.selectFilterGroups}"/>
                         </ice:selectOneMenu>
@@ -688,7 +691,7 @@ function setLegendValue(obj) {
                             </div>
                             <ice:commandLink
                                 rendered="#{line.variableLabel!=null}" actionListener="#{ExploreDataPage.openVariableInfoPopup}">
-                                <ice:outputText value="Source Info"/>
+                                <ice:outputText value="#{ExploreDataPage.sourceLineLabel}"/>
                             </ice:commandLink>
                         </div>
 

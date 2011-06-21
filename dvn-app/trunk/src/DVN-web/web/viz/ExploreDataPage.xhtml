@@ -387,6 +387,7 @@ function drawVisualization() {
         var optionsURL = {cht: 'lc', title: fullTitle, legend: legendAlignment, chxs: '1N*sz2*,000000',
             colors: ['#4684EE', '#DC3912', '#FF9900', '#008000', '#4942CC', '#990099', '#FF80F2', '#7FD127']};               
         if (sourceFooter.length > 0){
+                var labelString = '0:' + getXaxisString(startYear, endYear) + sourceFooter; 
                 optionsURL = {cht: 'lc', title: fullTitle, chxt: axisLabel, chxl: labelString, legend: legendAlignment, 
                 chxs: '1N*sz2*,000000', 
                     colors: ['#4684EE', '#DC3912', '#FF9900', '#008000', '#4942CC', '#990099', '#FF80F2', '#7FD127']};

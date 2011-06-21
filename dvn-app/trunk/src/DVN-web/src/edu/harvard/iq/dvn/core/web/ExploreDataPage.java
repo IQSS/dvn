@@ -930,6 +930,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         }
 
         if (validateSelections()){
+           setLegendInt(1);
            FacesContext.getCurrentInstance().renderResponse();
            VisualizationLineDefinition vizLine = new VisualizationLineDefinition();
 
@@ -1262,6 +1263,9 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         dvsIn.add(xAxisVar);
         columnString = columnString + xAxisVar.getName();
         for (VisualizationLineDefinition vld: vizLines){
+            if (vld.getLabel().length() > 6){
+                setLegendInt(2);
+            }
             Long testId = vld.getVariableId();
             for (DataVariable dv : dt.getDataVariables()){
                 if (dv.getId().equals(testId)){
@@ -1398,12 +1402,15 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                 } else {
                         col = col + ", " +  test[i];
                         csvCol = csvCol + ", " +  test[i];
+                        /*
                         if (lowValStandard.equals(new Float  (0))  || lowValStandard.compareTo(new Float (test[i])) > 0 ){
                             lowValStandard = new Float(test[i]);
                         }
                         if (highValStandard.equals(new Float (0))  || highValStandard.compareTo(new Float (test[i])) < 0 ){
                             highValStandard = new Float(test[i]);
                         }
+                         
+                         */
                         Double testIndexVal = new Double (0);
                         if (!test[i].isEmpty()){
                             testIndexVal =  new Double (test[i]);
@@ -1789,15 +1796,29 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
           displayFooterNotes = "|";
         if (!yAxisLabel.isEmpty()){
                axisLabelTemp += ",y";
-               footerNotes += "|" + lineNum + ":||"+ yAxisLabel +"|";
+              String codedYAxisLabel = "";
+              try {
+                  codedYAxisLabel = URLEncoder.encode(yAxisLabel, "UTF-8");
+              } catch (Exception e) {
+                  System.out.println("catch code y-axis exception  ");
+                  codedYAxisLabel = yAxisLabel;
+              }
+               footerNotes += "|" + lineNum + ":||"+ codedYAxisLabel +"|";
                displayFooterNotes += "|" + lineNum + ":||"+ yAxisLabel +"|";
                lineNum++;
         }
         
         if (!xAxisLabel.isEmpty()){
                axisLabelTemp += ",x";
-               footerNotes += "|" + lineNum + ":||"+ xAxisLabel +"|";
-               footerNotesNoY += "|" + lineNumNoY + ":||"+ xAxisLabel +"|";
+               String codedXAxisLabel = "";
+              try {
+                  codedXAxisLabel = URLEncoder.encode(xAxisLabel, "UTF-8");
+              } catch (Exception e) {
+                  System.out.println("catch code X-axis exception  ");                  
+                  codedXAxisLabel = xAxisLabel;
+              }
+               footerNotes += "|" + lineNum + ":||"+ codedXAxisLabel +"|";
+               footerNotesNoY += "|" + lineNumNoY + ":||"+ codedXAxisLabel +"|";
                displayFooterNotes += "|" + lineNum + ":||"+ xAxisLabel +"|";
                displayFooterNotesNoY += "|" + lineNumNoY + ":||"+ xAxisLabel +"|";
                lineNum++;
@@ -1855,6 +1876,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
               try {
                   codedSourceLine = URLEncoder.encode(sourceLine, "UTF-8");
               } catch (Exception e) {
+                  System.out.println("catch code source exception  ");
                   codedSourceLine = sourceLine;
               }
               footerNotes += "|" + lineNum + ":||"+  codedSourceLine +"|";
@@ -1865,6 +1887,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
               lineNumNoY++;
           }
 
+          System.out.println("displayFooterNotes  " + displayFooterNotes);
+          System.out.println("footerNotes  " + footerNotes);
         }
           String outputSourceFooter =  "";
           try {

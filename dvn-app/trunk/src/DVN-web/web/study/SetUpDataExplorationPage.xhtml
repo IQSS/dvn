@@ -151,58 +151,20 @@
             </ui:include>
           </div>
 
-        <div style="overflow:hidden;">
-            <div style="float:left; margin-right:2em;">
-            <ice:selectOneMenu value="#{SetUpDataExplorationPage.studyFileId}" rendered="#{SetUpDataExplorationPage.selectFile}" partialSubmit="true" binding="#{SetUpDataExplorationPage.selectStudyFile}"
-                               onchange="getElementById('form1:studyFileIdButton').click();">
-                <f:selectItems value="#{SetUpDataExplorationPage.studyFileIdSelectItems}"/>
-            </ice:selectOneMenu>
-            <ice:outputText rendered="#{!SetUpDataExplorationPage.selectFile}" value="File Name: #{SetUpDataExplorationPage.studyFileName}"/>
-            </div>
-            <div style="float:left;">
-                <ice:graphicImage value="/resources/images/icon_information.18.png" styleClass="dvn_icon" rendered="#{SetUpDataExplorationPage.selectFile}"/>
-                <ice:outputText value=" Select A Data File for Data Exploration Set-up" rendered="#{SetUpDataExplorationPage.selectFile}"/>
-            </div>
+          <div style="overflow:hidden;">
+                <div style="float:left; margin-right:2em;">
+                <ice:selectOneMenu value="#{SetUpDataExplorationPage.studyFileId}" rendered="#{SetUpDataExplorationPage.selectFile}" partialSubmit="true" binding="#{SetUpDataExplorationPage.selectStudyFile}"
+                                   onchange="getElementById('form1:studyFileIdButton').click();">
+                    <f:selectItems value="#{SetUpDataExplorationPage.studyFileIdSelectItems}"/>
+                </ice:selectOneMenu>
+                <ice:outputText rendered="#{!SetUpDataExplorationPage.selectFile}" value="File Name: #{SetUpDataExplorationPage.studyFileName}"/>
+                </div>
+                <div style="float:left;">
+                    <ice:graphicImage value="/resources/images/icon_information.18.png" styleClass="dvn_icon" rendered="#{SetUpDataExplorationPage.selectFile}"/>
+                    <ice:outputText value=" Select A Data File for Data Exploration Set-up" rendered="#{SetUpDataExplorationPage.selectFile}"/>
+                </div>
+          </div>
 
-        </div>
-        <div jsfc="ice:panelGroup" rendered="#{SetUpDataExplorationPage.dataTable !=null}" style="float:left; margin-right:2em;">
-            <ice:outputLabel value="Source Label" for="sourceLabel"/>
-                             <ice:inputText
-                                  id="inputSourceLabel"
-                                  rendered="#{SetUpDataExplorationPage.dataTable !=null}"
-                                  size="25"
-                                  maxlength="255"
-                                  value="#{SetUpDataExplorationPage.dataTable.visualizationSourceInfoLabel}"
-                                  accesskey="">
-                             </ice:inputText>
-            <ice:message styleClass="errorMessage" for="inputSourceLabel"/>
-         
-        </div>
-        <div style="float:left;" >
-               <ice:outputLabel value="Image Graph" style="font-weight:normal;" rendered="#{SetUpDataExplorationPage.dataTable !=null}"/> 
-               <ice:selectOneMenu rendered="#{SetUpDataExplorationPage.dataTable !=null}" value="#{SetUpDataExplorationPage.dataTable.visualizationShowImageGraph}">
-               <f:selectItem itemLabel="Hide" itemValue="hidden"/>
-               <f:selectItem itemLabel="Show" itemValue="available"/>
-               <f:selectItem itemLabel="Default" itemValue="default"/>
-            </ice:selectOneMenu>
-       </div>
-        
-       <div >
-               <ice:outputLabel value="Flash Graph" style="font-weight:normal;" rendered="#{SetUpDataExplorationPage.dataTable !=null}"/> 
-               <ice:selectOneMenu rendered="#{SetUpDataExplorationPage.dataTable !=null}" value="#{SetUpDataExplorationPage.dataTable.visualizationShowFlashGraph}">
-               <f:selectItem itemLabel="Hide" itemValue="hidden"/>
-               <f:selectItem itemLabel="Show" itemValue="available"/>
-               <f:selectItem itemLabel="Default" itemValue="default"/>
-            </ice:selectOneMenu>
-       </div>
-       <div  >
-               <ice:outputLabel value="Data Table" style="font-weight:normal;" rendered="#{SetUpDataExplorationPage.dataTable !=null}"/> 
-               <ice:selectOneMenu rendered="#{SetUpDataExplorationPage.dataTable !=null}" value="#{SetUpDataExplorationPage.dataTable.visualizationShowDataTable}">
-               <f:selectItem itemLabel="Hide" itemValue="hidden"/>
-               <f:selectItem itemLabel="Show" itemValue="available"/>
-               <f:selectItem itemLabel="Default" itemValue="default"/>
-            </ice:selectOneMenu>
-       </div>
     </div>
     <div class="dvn_sectionBoxNoBorders">
         <ice:panelTabSet id="tabSet1" rendered="#{SetUpDataExplorationPage.showCommands}"
@@ -450,6 +412,70 @@
                         </div>
                         <div jsfc="ice:panelGroup" style="width:35%; float:left;" rendered="#{SetUpDataExplorationPage.editSource}">
                             <ui:include src="SetUpDataExplorationSourceEdit.xhtml"></ui:include>
+                        </div>
+                    </div>
+                </div>
+            </ice:panelTab>
+
+            <ice:panelTab id="displaySettings" label="Display" url="/dvn#{VDCRequest.currentVDCURL}/faces/subsetting/SetUpDataExploration.xhtml&amp;tab=displaySettings">
+                <div jsfc="ice:panelGroup" panelLayout="flow">
+                    <div jsfc="ice:panelGroup" style="overflow:hidden;">
+                        <div jsfc="ice:panelGroup" style="width:60%; float:left; margin-right: 2em;">
+
+                            <div jsfc="ice:panelGroup" rendered="#{SetUpDataExplorationPage.dataTable !=null}">
+                                <ice:outputLabel value="Variable Info Label" for="sourceLabel"/>
+                                <ice:inputText
+                                      id="inputSourceLabel"
+                                      rendered="#{SetUpDataExplorationPage.dataTable !=null}"
+                                      size="25"
+                                      maxlength="255"
+                                      value="#{SetUpDataExplorationPage.dataTable.visualizationSourceInfoLabel}"
+                                      accesskey="">
+                                </ice:inputText>
+                                <ice:message styleClass="errorMessage" for="inputSourceLabel"/>
+                            </div>
+
+                            <div style="margin-top:1em;">
+                                <ice:outputLabel value="Display Options"/><br/>
+                                <ice:selectBooleanCheckbox partialSubmit="false" value="flash"/> <ice:outputLabel value="Flash Graph" style="font-weight:normal;"/>
+                                <ice:selectBooleanCheckbox partialSubmit="false" value="image"/> <ice:outputLabel value="Image Graph" style="font-weight:normal; margin-left:1em;"/>
+                                <ice:selectBooleanCheckbox partialSubmit="false" value="table"/> <ice:outputLabel value="Data Table" style="font-weight:normal; margin-left:1em;"/>
+                            </div>
+
+                            <div style="margin-top:1em;">
+                                <ice:outputLabel value="Default View"/>
+                                <ice:selectOneMenu value="#">
+                                   <f:selectItem itemLabel="Flash Graph" itemValue="flash"/>
+                                   <f:selectItem itemLabel="Image Graph" itemValue="image"/>
+                                   <f:selectItem itemLabel="Data Table" itemValue="table"/>
+                                </ice:selectOneMenu>
+                            </div>
+
+                            <!-- <div>
+                               <ice:outputLabel value="Image Graph" style="font-weight:normal;" rendered="#{SetUpDataExplorationPage.dataTable !=null}"/>
+                               <ice:selectOneMenu rendered="#{SetUpDataExplorationPage.dataTable !=null}" value="#{SetUpDataExplorationPage.dataTable.visualizationShowImageGraph}">
+                                   <f:selectItem itemLabel="Hide" itemValue="hidden"/>
+                                   <f:selectItem itemLabel="Show" itemValue="available"/>
+                                   <f:selectItem itemLabel="Default" itemValue="default"/>
+                                </ice:selectOneMenu>
+                            </div>
+                            <div>
+                               <ice:outputLabel value="Flash Graph" style="font-weight:normal;" rendered="#{SetUpDataExplorationPage.dataTable !=null}"/>
+                               <ice:selectOneMenu rendered="#{SetUpDataExplorationPage.dataTable !=null}" value="#{SetUpDataExplorationPage.dataTable.visualizationShowFlashGraph}">
+                                   <f:selectItem itemLabel="Hide" itemValue="hidden"/>
+                                   <f:selectItem itemLabel="Show" itemValue="available"/>
+                                   <f:selectItem itemLabel="Default" itemValue="default"/>
+                                </ice:selectOneMenu>
+                            </div>
+                            <div>
+                               <ice:outputLabel value="Default View" style="font-weight:normal;"/>
+                               <ice:selectOneMenu rendered="#{SetUpDataExplorationPage.dataTable !=null}" value="#{SetUpDataExplorationPage.dataTable.visualizationShowDataTable}">
+                                   <f:selectItem itemLabel="Hide" itemValue="hidden"/>
+                                   <f:selectItem itemLabel="Show" itemValue="available"/>
+                                   <f:selectItem itemLabel="Default" itemValue="default"/>
+                                </ice:selectOneMenu>
+                            </div> -->
+
                         </div>
                     </div>
                 </div>

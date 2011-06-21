@@ -139,6 +139,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     private String sources = "";
     private String imageSourceFooter = "";
     private String imageSourceFooterNoYLabel = "";
+    private String displaySourceFooter = "";
+    private String displaySourceFooterNoYLabel = "";
     private String imageAxisLabel = "";
     private String imageAxisLabelNoYLabel = "";   
     private String yAxisLabel = "";
@@ -156,6 +158,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
 
     private boolean dataTableAvailable = false;           
     private boolean showFilterGroupTypes = false;
+    private String chxrStandard = "";
+    private String chxrIndex = "";
 
     public boolean isShowFilterGroupTypes() {
         return showFilterGroupTypes;
@@ -1202,6 +1206,22 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     public void setLineColor(String lineColor) {
         this.lineColor = lineColor;
     }
+    
+    public String getDisplaySourceFooter() {
+        return displaySourceFooter;
+    }
+
+    public void setDisplaySourceFooter(String displaySourceFooter) {
+        this.displaySourceFooter = displaySourceFooter;
+    }
+
+    public String getDisplaySourceFooterNoYLabel() {
+        return displaySourceFooterNoYLabel;
+    }
+
+    public void setDisplaySourceFooterNoYLabel(String displaySourceFooterNoYLabel) {
+        this.displaySourceFooterNoYLabel = displaySourceFooterNoYLabel;
+    }
 
     public String getDataTableId() {
         return dataTableId;
@@ -1322,6 +1342,11 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     boolean indexSet = false;
     boolean addIndexDate = false;
     boolean[] getIndexes = new boolean[9];
+    Float lowValStandard = new Float(0);
+    Float lowValIndex = new Float (0);
+    Float highValStandard = new Float (0);
+    Float highValIndex = new Float(0);    
+    
     for (int i = 1; i<9; i++){
         getIndexes[i] = false;
     }
@@ -1373,6 +1398,12 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                 } else {
                         col = col + ", " +  test[i];
                         csvCol = csvCol + ", " +  test[i];
+                        if (lowValStandard.equals(new Float  (0))  || lowValStandard.compareTo(new Float (test[i])) > 0 ){
+                            lowValStandard = new Float(test[i]);
+                        }
+                        if (highValStandard.equals(new Float (0))  || highValStandard.compareTo(new Float (test[i])) < 0 ){
+                            highValStandard = new Float(test[i]);
+                        }
                         Double testIndexVal = new Double (0);
                         if (!test[i].isEmpty()){
                             testIndexVal =  new Double (test[i]);
@@ -1409,7 +1440,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
            output = output + col;
            csvOutput = csvOutput + csvCol;
     }
-   
+
     for (Object inObj: inStr ){
         String nextStr = (String) inObj;
         String[] columnDetail = nextStr.split("\t");
@@ -1533,7 +1564,9 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
     private void writeImageFile(File fileIn, File pdfFileIn) {
 
         try {
+            System.out.println("imageURL " + imageURL);
             String decoded = URLDecoder.decode(imageURL, "UTF-8");
+            System.out.println("decoded " + decoded);
             if (!graphTitle.isEmpty()){
                 String graphTitleOut = "";
                 if (graphTitle.length() > 80  && graphTitle.indexOf("|") == -1 ){
@@ -1548,19 +1581,24 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                 String encodedTitle = URLEncoder.encode(graphTitleOut, "UTF-8");
                 decoded = decoded + "&chtt=" + encodedTitle;
             }
+            /*
             if (!sources.isEmpty()){
                 String xAxisDecoded = "0:" + getXaxisString() + URLEncoder.encode(getImageSourceFooter(), "UTF-8") ;
                 decoded = decoded + "&chxl=" + xAxisDecoded;
             }
-
+*/
        
         if (!decoded.isEmpty()){
                 URL imageURLnew = new URL(decoded);
 
                 try{
+                    System.out.println("Before Read");
                     BufferedImage image =     ImageIO.read(imageURLnew);
+                    System.out.println("No Exception " + imageURLnew);
                     if (fileIn != null) {
+                         System.out.println("Before Write");
                         ImageIO.write(image, "png", fileIn);
+                         System.out.println("After Write");
                     }
 
                     if (pdfFileIn != null) {
@@ -1574,8 +1612,11 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                     }
 
                 } catch (IIOException io){
-                     System.out.println("IIOException ");
-                }
+                    System.out.println(io.getMessage().toString());
+                     System.out.println(io.getCause().toString());
+                     System.out.println("IIOException " + imageURLnew);
+                    
+                } 
             }
 
         } catch (UnsupportedEncodingException uee){
@@ -1613,6 +1654,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
       String parseString = new String(dataString);
       List list = Arrays.asList(parseString.split(";"));
       String parseColumn = new String(columnString);
+      
+      System.out.println("parseColumn is "+parseColumn);
 
       try {
             WorkbookSettings ws = new WorkbookSettings();
@@ -1621,15 +1664,34 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
             Workbook.createWorkbook(fileIn, ws);
 
             WritableSheet s = w.createSheet("Data", 0);
-            List columnHeads = Arrays.asList(parseColumn.split(","));
+            
+            int rowCounter = 0;
+            
+            if (!graphTitle.isEmpty()){
+                Label h = new Label (0, 0,  graphTitle.toString());
+                s.addCell(h);
+                rowCounter++;
+            }
+            
+            List columnHeads = Arrays.asList(parseColumn.split("\\^"));
+            
+            if(!sources.isEmpty()){
+                
+                Label h = new Label (0, rowCounter,  "Source(s): " + sources.toString());
+                s.addCell(h);
+                rowCounter++;
+                
+            }
+            
+            
             int ccounter = 0;
             for (Object c: columnHeads){
-                 Label h = new Label (ccounter, 0,  c.toString());
+                 Label h = new Label (ccounter, rowCounter,  c.toString());
                  s.addCell(h);
                  ccounter++;
             }
-
-            int rowCounter = 1;
+            rowCounter++;
+            
             for (Object o: list){
                 List dataFields = Arrays.asList(o.toString().split(","));
                 int dcounter = 0;
@@ -1713,6 +1775,8 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         boolean sources = false;
         String footerNotes = "";
         String footerNotesNoY = "";
+        String displayFooterNotes = "";
+        String displayFooterNotesNoY = "";
         
         Set<String> set = new HashSet();
         String axisLabelTemp = "x,y";
@@ -1721,9 +1785,12 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
           Integer lineNumNoY = 2;
           footerNotesNoY = "|";
           footerNotes = "|";
+          displayFooterNotesNoY = "|";
+          displayFooterNotes = "|";
         if (!yAxisLabel.isEmpty()){
                axisLabelTemp += ",y";
                footerNotes += "|" + lineNum + ":||"+ yAxisLabel +"|";
+               displayFooterNotes += "|" + lineNum + ":||"+ yAxisLabel +"|";
                lineNum++;
         }
         
@@ -1731,7 +1798,10 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                axisLabelTemp += ",x";
                footerNotes += "|" + lineNum + ":||"+ xAxisLabel +"|";
                footerNotesNoY += "|" + lineNumNoY + ":||"+ xAxisLabel +"|";
+               displayFooterNotes += "|" + lineNum + ":||"+ xAxisLabel +"|";
+               displayFooterNotesNoY += "|" + lineNumNoY + ":||"+ xAxisLabel +"|";
                lineNum++;
+               lineNumNoY++;
         }
         
         if (sourceList != null  && !sourceList.isEmpty()){
@@ -1752,7 +1822,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                 }
             }
             
-                    sourcesWLabel = "Source:" + returnString;
+                    sourcesWLabel = "" + returnString;
 
           int numberOfLines = sourcesWLabel.length() / 72;
           numberOfLines = numberOfLines + 2;
@@ -1781,8 +1851,16 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
           for (String sourceLine : sourceLines){
               axisLabelTemp += ",x";
               axisLabelTempNoY += ",x";
-              footerNotes += "|" + lineNum + ":||"+ sourceLine +"|";
-              footerNotesNoY += "|" + lineNumNoY + ":||"+ sourceLine +"|";
+              String codedSourceLine = "";
+              try {
+                  codedSourceLine = URLEncoder.encode(sourceLine, "UTF-8");
+              } catch (Exception e) {
+                  codedSourceLine = sourceLine;
+              }
+              footerNotes += "|" + lineNum + ":||"+  codedSourceLine +"|";
+              footerNotesNoY += "|" + lineNumNoY + ":||"+ codedSourceLine +"|";
+              displayFooterNotes += "|" + lineNum + ":||"+  sourceLine +"|";
+              displayFooterNotesNoY += "|" + lineNumNoY + ":||"+ sourceLine +"|";
               lineNum++;
               lineNumNoY++;
           }
@@ -1791,14 +1869,19 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
           String outputSourceFooter =  "";
           try {
                 outputSourceFooter = URLEncoder.encode(footerNotes, "UTF-8");
+                System.out.println("Output source footer" + outputSourceFooter);
           } catch (Exception e){
+                System.out.println("footer encode exception");
                 outputSourceFooter= footerNotes;
+                System.out.println(outputSourceFooter);
           }
           
           setImageAxisLabel(axisLabelTemp);
           setImageSourceFooter(footerNotes);
           setImageAxisLabelNoYLabel(axisLabelTempNoY);
           setImageSourceFooterNoYLabel(footerNotesNoY);
+          setDisplaySourceFooter(displayFooterNotes);
+          setDisplaySourceFooterNoYLabel(displayFooterNotesNoY);          
 
     }
     

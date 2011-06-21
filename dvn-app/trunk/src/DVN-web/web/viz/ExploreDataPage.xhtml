@@ -340,9 +340,11 @@ function drawVisualization() {
       if (!useIndex){
           var axisLabel = new String (document.getElementById('ExploreDataPage:imageAxisLabel').textContent);
           var sourceFooter = new String (document.getElementById('ExploreDataPage:imageSourceFooter').textContent);
+          var displaySourceFooter = new String (document.getElementById('ExploreDataPage:displaySourceFooter').textContent);
       } else {
           var axisLabel = new String (document.getElementById('ExploreDataPage:imageAxisLabelNoYLabel').textContent);
           var sourceFooter = new String (document.getElementById('ExploreDataPage:imageSourceFooterNoYLabel').textContent);
+          var displaySourceFooter = new String (document.getElementById('ExploreDataPage:displaySourceFooterNoYLabel').textContent);
       }
       
       var defaultView = new String (document.getElementById('ExploreDataPage:defaultView').textContent);
@@ -385,7 +387,6 @@ function drawVisualization() {
         var optionsURL = {cht: 'lc', title: fullTitle, legend: legendAlignment, chxs: '1N*sz2*,000000',
             colors: ['#4684EE', '#DC3912', '#FF9900', '#008000', '#4942CC', '#990099', '#FF80F2', '#7FD127']};               
         if (sourceFooter.length > 0){
-                var labelString = '0:' + getXaxisString(startYear, endYear) + sourceFooter;                
                 optionsURL = {cht: 'lc', title: fullTitle, chxt: axisLabel, chxl: labelString, legend: legendAlignment, 
                 chxs: '1N*sz2*,000000', 
                     colors: ['#4684EE', '#DC3912', '#FF9900', '#008000', '#4942CC', '#990099', '#FF80F2', '#7FD127']};
@@ -415,11 +416,11 @@ function drawVisualization() {
             var displayTitle = new String (document.getElementById('ExploreDataPage:graphTitleHidden').textContent);
             var fullTitle = displayTitle;            
             var vAxTitle = 'vAxisTitle';
-            var options = {cht: 'lc', title: fullTitle, legend: legendAlignment, chxs: '1N*sz2*,000000',
+            var options = {cht: 'lc', title: fullTitle, legend: legendAlignment, chxs: '1N*sz2*,000000', 
                 colors: ['#4684EE', '#DC3912', '#FF9900', '#008000', '#4942CC', '#990099', '#FF80F2', '#7FD127']};
             
             if (sourceFooter.length > 0){
-                var labelString = '0:' + getXaxisString(startYear, endYear) + sourceFooter;                
+                var labelString = '0:' + getXaxisString(startYear, endYear) + displaySourceFooter;                
                 options = {cht: 'lc', title: fullTitle, chxt: axisLabel, chxl: labelString, legend: legendAlignment, 
                 chxs: '1N*sz2*,000000', 
                     colors: ['#4684EE', '#DC3912', '#FF9900', '#008000', '#4942CC', '#990099', '#FF80F2', '#7FD127']};
@@ -562,6 +563,8 @@ function setLegendValue(obj) {
 <ice:outputText visible="false" id="imageSourceFooter" value="#{ExploreDataPage.imageSourceFooter}"/>
 <ice:outputText visible="false" id="imageAxisLabelNoYLabel" value="#{ExploreDataPage.imageAxisLabelNoYLabel}"/>
 <ice:outputText visible="false" id="imageSourceFooterNoYLabel" value="#{ExploreDataPage.imageSourceFooterNoYLabel}"/>
+<ice:outputText visible="false" id="displaySourceFooter" value="#{ExploreDataPage.displaySourceFooter}"/>
+<ice:outputText visible="false" id="displaySourceFooterNoYLabel" value="#{ExploreDataPage.displaySourceFooterNoYLabel}"/>
 <ice:outputText visible="false" id="defaultView" value="#{ExploreDataPage.defaultView}"/>
 <ice:outputText visible="false" id="hasURL"/>
 <ice:commandButton visible="false" id="updateGraphTitle" type="submit" value="update" action="#{ExploreDataPage.updateGraphTitle}"/>

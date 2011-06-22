@@ -1558,7 +1558,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
         try {
 
             String decoded = URLDecoder.decode(imageURL, "UTF-8");
-            System.out.println("decoded " + decoded);
+
             if (!graphTitle.isEmpty()){
                 String graphTitleOut = "";
                 if (graphTitle.length() > 80  && graphTitle.indexOf("|") == -1 ){
@@ -1584,13 +1584,9 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                 URL imageURLnew = new URL(decoded);
 
                 try{
-                    System.out.println("Before Read");
                     BufferedImage image =     ImageIO.read(imageURLnew);
-                    System.out.println("No Exception " + imageURLnew);
-                    if (fileIn != null) {
-                         System.out.println("Before Write");
-                        ImageIO.write(image, "png", fileIn);
-                         System.out.println("After Write");
+                    if (fileIn != null) {                         
+                        ImageIO.write(image, "png", fileIn);                         
                     }
 
                     if (pdfFileIn != null) {
@@ -1647,8 +1643,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
       List list = Arrays.asList(parseString.split(";"));
       String parseColumn = new String(columnString);
       
-      System.out.println("parseColumn is "+parseColumn);
-
       try {
             WorkbookSettings ws = new WorkbookSettings();
             ws.setLocale(new Locale("en", "EN"));
@@ -1785,7 +1779,6 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
               try {
                   codedYAxisLabel = URLEncoder.encode(yAxisLabel, "UTF-8");
               } catch (Exception e) {
-                  System.out.println("catch code y-axis exception  ");
                   codedYAxisLabel = yAxisLabel;
               }
                footerNotes += "|" + lineNum + ":||"+ codedYAxisLabel +"|";
@@ -1798,8 +1791,7 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
                String codedXAxisLabel = "";
               try {
                   codedXAxisLabel = URLEncoder.encode(xAxisLabel, "UTF-8");
-              } catch (Exception e) {
-                  System.out.println("catch code X-axis exception  ");                  
+              } catch (Exception e) {                
                   codedXAxisLabel = xAxisLabel;
               }
                footerNotes += "|" + lineNum + ":||"+ codedXAxisLabel +"|";
@@ -1861,28 +1853,22 @@ public class ExploreDataPage extends VDCBaseBean  implements Serializable {
               try {
                   codedSourceLine = URLEncoder.encode(sourceLine, "UTF-8");
               } catch (Exception e) {
-                  System.out.println("catch code source exception  ");
                   codedSourceLine = sourceLine;
               }
-              footerNotes += "|" + lineNum + ":||"+  codedSourceLine +"|";
-              footerNotesNoY += "|" + lineNumNoY + ":||"+ codedSourceLine +"|";
-              displayFooterNotes += "|" + lineNum + ":||"+  sourceLine +"|";
-              displayFooterNotesNoY += "|" + lineNumNoY + ":||"+ sourceLine +"|";
+              footerNotes += "|" + lineNum + ":|"+  codedSourceLine +"|";
+              footerNotesNoY += "|" + lineNumNoY + ":|"+ codedSourceLine +"|";
+              displayFooterNotes += "|" + lineNum + ":|"+  sourceLine +"|";
+              displayFooterNotesNoY += "|" + lineNumNoY + ":|"+ sourceLine +"|";
               lineNum++;
               lineNumNoY++;
           }
 
-          System.out.println("displayFooterNotes  " + displayFooterNotes);
-          System.out.println("footerNotes  " + footerNotes);
         }
           String outputSourceFooter =  "";
           try {
                 outputSourceFooter = URLEncoder.encode(footerNotes, "UTF-8");
-                System.out.println("Output source footer" + outputSourceFooter);
           } catch (Exception e){
-                System.out.println("footer encode exception");
                 outputSourceFooter= footerNotes;
-                System.out.println(outputSourceFooter);
           }
           
           setImageAxisLabel(axisLabelTemp);

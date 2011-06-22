@@ -897,36 +897,32 @@ public class VisualizationServiceBean implements VisualizationServiceLocal {
 
     public boolean validateDisplayOptions(DataTable dataTable) {
         int countDisplay = 0;
-        int countDefault = 0;
         
-        if(dataTable.getVisualizationShowDataTable().equals("default")){
+        if(dataTable.getVisualizationDisplay().isShowDataTable()){
             countDisplay++;
-            countDefault++;
         }
         
-        if(dataTable.getVisualizationShowImageGraph().equals("default")){
+        if(dataTable.getVisualizationDisplay().isShowImageGraph()){
             countDisplay++;
-            countDefault++;
         }
         
-        if(dataTable.getVisualizationShowFlashGraph().equals("default")){
-            countDisplay++;
-            countDefault++;
-        }
-        
-        if(dataTable.getVisualizationShowDataTable().equals("available")){
+        if(dataTable.getVisualizationDisplay().isShowFlashGraph()){
             countDisplay++;
         }
-        if(dataTable.getVisualizationShowImageGraph().equals("available")){
-            countDisplay++;
-        }
-        if(dataTable.getVisualizationShowFlashGraph().equals("available")){
-            countDisplay++;
-        }
-        if (countDisplay == 0 || countDefault > 1){
+                        
+        if (countDisplay == 0 ){
             return false;
         } else {
-            return true;
+            if (!dataTable.getVisualizationDisplay().isShowFlashGraph() && dataTable.getVisualizationDisplay().getDefaultDisplay() == 1 ) {
+                return false;
+            }
+            if (!dataTable.getVisualizationDisplay().isShowImageGraph() && dataTable.getVisualizationDisplay().getDefaultDisplay() == 0 ) {
+                return false;
+            }
+            if (!dataTable.getVisualizationDisplay().isShowDataTable() && dataTable.getVisualizationDisplay().getDefaultDisplay() == 2 ) {
+                return false;
+            }
+            return true;            
         }
     }
 

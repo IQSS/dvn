@@ -30,6 +30,7 @@
 package edu.harvard.iq.dvn.core.study;
 
 import edu.harvard.iq.dvn.core.visualization.VarGrouping;
+import edu.harvard.iq.dvn.core.visualization.VisualizationDisplay;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -255,6 +256,17 @@ public class DataTable implements java.io.Serializable {
 
     public void setVarGroupings(List<VarGrouping> varGroupings) {
         this.varGroupings = varGroupings;
+    }
+    
+    @OneToOne (mappedBy="dataTable",cascade={CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST })
+    private  VisualizationDisplay visualizationDisplay;
+
+    public VisualizationDisplay getVisualizationDisplay() {
+        return visualizationDisplay;
+    }
+
+    public void setVisualizationDisplay(VisualizationDisplay visualizationDisplay) {
+        this.visualizationDisplay = visualizationDisplay;
     }
     
     

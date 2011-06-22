@@ -28,6 +28,7 @@ import edu.harvard.iq.dvn.core.visualization.VarGroup;
 import edu.harvard.iq.dvn.core.visualization.VarGroupType;
 import edu.harvard.iq.dvn.core.visualization.VarGrouping;
 import edu.harvard.iq.dvn.core.visualization.VarGrouping.GroupingType;
+import edu.harvard.iq.dvn.core.visualization.VisualizationDisplay;
 import edu.harvard.iq.dvn.core.visualization.VisualizationServiceLocal;
 import edu.harvard.iq.dvn.core.web.DataVariableUI;
 import edu.harvard.iq.dvn.core.web.VarGroupTypeUI;
@@ -72,7 +73,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
     private List <VarGroupingUI> filterGroupings = new ArrayList();
 
     private List <SelectItem> studyFileIdSelectItems = new ArrayList();
-
+    private VisualizationDisplay visualizationDisplay;
 
     private DataVariable xAxisVariable = new DataVariable();
     private Long xAxisVariableId =  new Long(0);
@@ -132,9 +133,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
         if (studyId == null){
             studyId = new Long( getVDCRequestBean().getRequestParam("studyId"));
         }
-         
-
-
+        
         try {
             Context ctx = new InitialContext();
             editStudyFilesService = (EditStudyFilesService) ctx.lookup("java:comp/env/editStudyFiles");
@@ -161,10 +160,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
             //Must always be in a study to get to this page.
         }
 
-
          studyUI = new StudyUI(studyVersion, null);
-
-
          studyFileIdSelectItems = loadStudyFileSelectItems();
     }
 
@@ -236,9 +232,26 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
          if (!filterGroupings.isEmpty()){
              hasFilterGroupings = true;
          }
-         
+         visualizationDisplay = dataTable.getVisualizationDisplay();
+
+         if (visualizationDisplay == null){
+             visualizationDisplay = getDefaultVisualizationDisplay();
+             dataTable.setVisualizationDisplay(visualizationDisplay);
+         }
          edited = false;
          
+    }
+    
+    private VisualizationDisplay getDefaultVisualizationDisplay(){
+       
+        VisualizationDisplay retVal = new VisualizationDisplay();
+        retVal.setDataTable(dataTable);
+        retVal.setShowDataTable(true);
+        retVal.setShowFlashGraph(true);
+        retVal.setShowImageGraph(true);
+        retVal.setDefaultDisplay(0);
+        retVal.setSourceInfoLabel("Source Info");
+        return retVal;
     }
 
     private void loadVarGroupingUIs(){
@@ -434,6 +447,8 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
           }
        return false;
  }
+ 
+ 
 
  public void deleteGroupType(ActionEvent ae){
     boolean measure = false;
@@ -1686,7 +1701,7 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
 
         if (!visualizationService.validateDisplayOptions(dataTable)) {
             if (messages){
-                fullErrorMessage += "<br>Please select at least one view and no more than one default view  <br>";
+                fullErrorMessage += "<br>Please select at least one view and the default view must be selected. <br>";
             }
             valid = false;
         }
@@ -2411,6 +2426,10 @@ public class SetUpDataExplorationPage extends VDCBaseBean implements java.io.Ser
     public void selectOneSourceVariableClick(){
         boolean setSelected = checkSelectAllVariablesPrivate();
         sourceCheckBox.setSelected(setSelected) ;
+    }
+    
+    public void setEdited(){
+        edited = true;
     }
 
     private void selectAllVariablesPrivate(boolean check){
